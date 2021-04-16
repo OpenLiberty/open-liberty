@@ -13,17 +13,18 @@
 
 package com.ibm.ws.microprofile.openapi.impl.parser.util;
 
+import java.io.FileInputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Set;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.ibm.ws.microprofile.openapi.impl.parser.core.models.AuthorizationValue;
 import com.ibm.ws.microprofile.openapi.impl.parser.models.RefFormat;
-
-import java.io.FileInputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.List;
-import java.util.Set;
 
 public class RefUtils {
 
@@ -159,7 +160,7 @@ public class RefUtils {
                 final Path pathToUse = parentDirectory.resolve(file).normalize();
 
                 if (Files.exists(pathToUse)) {
-                    result = IOUtils.toString(new FileInputStream(pathToUse.toFile()), "UTF-8");
+                    result = IOUtils.toString(new FileInputStream(pathToUse.toFile()), StandardCharsets.UTF_8);
                 } else {
                     result = ClasspathHelper.loadFileFromClasspath(file);
                 }

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.wsspi.genericbnf;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
@@ -17,7 +19,7 @@ import java.util.List;
  * format, which looks like "Name: value". This provides the various methods
  * for interacting with the headers in storage, adding, removing, comparing,
  * etc.
- * 
+ *
  * @ibm-private-in-use
  */
 public interface HeaderStorage {
@@ -26,12 +28,12 @@ public interface HeaderStorage {
     int NOTSET = -1;
 
     /** English charset for various String conversions */
-    String ENGLISH_CHARSET = "iso-8859-1";
+    Charset ENGLISH_CHARSET = StandardCharsets.ISO_8859_1;
 
     /**
      * Allow the debug context object to be set to the input Object for more
      * specialized debugging. A null input object will be ignored.
-     * 
+     *
      * @param o
      */
     void setDebugContext(Object o);
@@ -39,7 +41,7 @@ public interface HeaderStorage {
     /**
      * Access the first instance, if multiple exist, of the header. If the
      * header does not exist, then an empty header field is returned.
-     * 
+     *
      * @param name
      * @return HeaderField
      */
@@ -48,7 +50,7 @@ public interface HeaderStorage {
     /**
      * Access the first instance, if multiple exist, of the header. If the
      * header does not exist, then an empty header field is returned.
-     * 
+     *
      * @param name
      * @return HeaderField
      */
@@ -57,7 +59,7 @@ public interface HeaderStorage {
     /**
      * Access the first instance, if multiple exist, of the header. If the
      * header does not exist, then an empty header field is returned.
-     * 
+     *
      * @param name
      * @return HeaderField
      */
@@ -66,7 +68,7 @@ public interface HeaderStorage {
     /**
      * Access a list of all instances that exist of the input header. This
      * list is never null but may be empty.
-     * 
+     *
      * @param name
      * @return List<HeaderField>
      */
@@ -75,7 +77,7 @@ public interface HeaderStorage {
     /**
      * Access a list of all instances that exist of the input header. This
      * list is never null but may be empty.
-     * 
+     *
      * @param name
      * @return List<HeaderField>
      */
@@ -84,7 +86,7 @@ public interface HeaderStorage {
     /**
      * Access a list of all instances that exist of the input header. This
      * list is never null but may be empty.
-     * 
+     *
      * @param name
      * @return List<HeaderField>
      */
@@ -95,7 +97,7 @@ public interface HeaderStorage {
      * individual
      * header name exists multiple times, it will appear on this list for each
      * instance. This list is never null but may be empty.
-     * 
+     *
      * @return List<HeaderField>
      */
     List<HeaderField> getAllHeaders();
@@ -104,7 +106,7 @@ public interface HeaderStorage {
      * Query a list of all the unique header names found in this particular
      * message.
      * This list is never null but may be empty.
-     * 
+     *
      * @return List<String>
      */
     List<String> getAllHeaderNames();
@@ -116,7 +118,7 @@ public interface HeaderStorage {
      * <p>
      * Any String encoding or decoding on the value will be performed with the
      * ISO-8859-1 charset.
-     * 
+     *
      * @param header
      * @param value
      * @throws IllegalArgumentException
@@ -128,7 +130,7 @@ public interface HeaderStorage {
      * Create a new instance of this header with the given value. The value is
      * only a subset of the input array, specified by the offset into the array
      * and the length from that point.
-     * 
+     *
      * @param header
      * @param value
      * @param offset
@@ -146,7 +148,7 @@ public interface HeaderStorage {
      * <p>
      * Any String encoding or decoding on the value will be performed with the
      * ISO-8859-1 charset.
-     * 
+     *
      * @param header
      * @param value
      * @throws IllegalArgumentException
@@ -161,7 +163,7 @@ public interface HeaderStorage {
      * <p>
      * Any String encoding or decoding on the value will be performed with the
      * ISO-8859-1 charset.
-     * 
+     *
      * @param header
      * @param value
      * @throws IllegalArgumentException
@@ -173,7 +175,7 @@ public interface HeaderStorage {
      * Create a new instance of this header with the given value. The value is
      * only a subset of the input array, specified by the offset into the array
      * and the length from that point.
-     * 
+     *
      * @param header
      * @param value
      * @param offset
@@ -191,7 +193,7 @@ public interface HeaderStorage {
      * <p>
      * Any String encoding or decoding on the value will be performed with the
      * ISO-8859-1 charset.
-     * 
+     *
      * @param header
      * @param value
      * @throws IllegalArgumentException
@@ -206,7 +208,7 @@ public interface HeaderStorage {
      * <p>
      * Any String encoding or decoding on the value will be performed with the
      * ISO-8859-1 charset.
-     * 
+     *
      * @param header
      * @param value
      * @throws IllegalArgumentException
@@ -218,7 +220,7 @@ public interface HeaderStorage {
      * Create a new instance of this header with the given value. The value is
      * only a subset of the input array, specified by the offset into the array
      * and the length from that point.
-     * 
+     *
      * @param header
      * @param value
      * @param offset
@@ -236,7 +238,7 @@ public interface HeaderStorage {
      * <p>
      * Any String encoding or decoding on the value will be performed with the
      * ISO-8859-1 charset.
-     * 
+     *
      * @param header
      * @param value
      * @throws IllegalArgumentException
@@ -247,7 +249,7 @@ public interface HeaderStorage {
     /**
      * Query how many instances of the target header are currently stored in
      * this message.
-     * 
+     *
      * @param header
      * @return int (0 if none)
      */
@@ -255,7 +257,7 @@ public interface HeaderStorage {
 
     /**
      * Query whether a header is present in storage.
-     * 
+     *
      * @param header
      * @return boolean
      * @throws IllegalArgumentException
@@ -265,7 +267,7 @@ public interface HeaderStorage {
 
     /**
      * Query whether a header is present in storage.
-     * 
+     *
      * @param header
      * @return boolean
      * @throws IllegalArgumentException
@@ -275,7 +277,7 @@ public interface HeaderStorage {
 
     /**
      * Query whether a header is present in storage.
-     * 
+     *
      * @param header
      * @return boolean
      * @throws IllegalArgumentException
@@ -286,7 +288,7 @@ public interface HeaderStorage {
     /**
      * Query how many instances of the target header are currently stored in
      * this message.
-     * 
+     *
      * @param header
      * @return int (0 if none)
      */
@@ -295,7 +297,7 @@ public interface HeaderStorage {
     /**
      * Query how many instances of the target header are currently stored in
      * this message.
-     * 
+     *
      * @param header
      * @return int (0 if none)
      */
@@ -303,7 +305,7 @@ public interface HeaderStorage {
 
     /**
      * Remove all instances of this header from storage.
-     * 
+     *
      * @param header
      * @throws IllegalArgumentException
      *             if input is invalid
@@ -312,7 +314,7 @@ public interface HeaderStorage {
 
     /**
      * Remove a specific instance of this header from storage.
-     * 
+     *
      * @param header
      * @param instance
      * @throws IllegalArgumentException
@@ -322,7 +324,7 @@ public interface HeaderStorage {
 
     /**
      * Remove all instances of a particular header from storage
-     * 
+     *
      * @param header
      * @throws IllegalArgumentException
      *             if input is invalid
@@ -331,7 +333,7 @@ public interface HeaderStorage {
 
     /**
      * Remove a specific instance of a header from storage.
-     * 
+     *
      * @param header
      * @param instance
      * @throws IllegalArgumentException
@@ -341,7 +343,7 @@ public interface HeaderStorage {
 
     /**
      * Remove all instances of this header from storage.
-     * 
+     *
      * @param header
      * @throws IllegalArgumentException
      *             if input is invalid
@@ -350,7 +352,7 @@ public interface HeaderStorage {
 
     /**
      * Remove a specific instance of this header from storage.
-     * 
+     *
      * @param header
      * @param instance
      * @throws IllegalArgumentException
@@ -360,7 +362,7 @@ public interface HeaderStorage {
 
     /**
      * Remove all of the headers from storage, cleaning up the memory
-     * 
+     *
      */
     void removeAllHeaders();
 
@@ -369,7 +371,7 @@ public interface HeaderStorage {
      * <p>
      * Any String encoding or decoding on the value will be performed with the
      * ISO-8859-1 charset.
-     * 
+     *
      * @param header
      * @param value
      * @throws IllegalArgumentException
@@ -381,7 +383,7 @@ public interface HeaderStorage {
      * Set the header to the input value, erasing any existing values. The value
      * is only a subset of the input array, specified by the offset into the array
      * and the length from that point.
-     * 
+     *
      * @param header
      * @param value
      * @param offset
@@ -397,7 +399,7 @@ public interface HeaderStorage {
      * <p>
      * Any String encoding or decoding on the value will be performed with the
      * ISO-8859-1 charset.
-     * 
+     *
      * @param header
      * @param value
      * @throws IllegalArgumentException
@@ -410,7 +412,7 @@ public interface HeaderStorage {
      * <p>
      * Any String encoding or decoding on the value will be performed with the
      * ISO-8859-1 charset.
-     * 
+     *
      * @param header
      * @param value
      * @throws IllegalArgumentException
@@ -422,7 +424,7 @@ public interface HeaderStorage {
      * Set the header to the input value, erasing any existing values. The value
      * is only a subset of the input array, specified by the offset into the array
      * and the length from that point.
-     * 
+     *
      * @param header
      * @param value
      * @param offset
@@ -438,7 +440,7 @@ public interface HeaderStorage {
      * <p>
      * Any String encoding or decoding on the value will be performed with the
      * ISO-8859-1 charset.
-     * 
+     *
      * @param header
      * @param value
      * @throws IllegalArgumentException
@@ -451,7 +453,7 @@ public interface HeaderStorage {
      * <p>
      * Any String encoding or decoding on the value will be performed with the
      * ISO-8859-1 charset.
-     * 
+     *
      * @param header
      * @param value
      * @throws IllegalArgumentException
@@ -463,7 +465,7 @@ public interface HeaderStorage {
      * Set the header to the input value, erasing any existing values. The value
      * is only a subset of the input array, specified by the offset into the array
      * and the length from that point.
-     * 
+     *
      * @param header
      * @param value
      * @param offset
@@ -479,7 +481,7 @@ public interface HeaderStorage {
      * <p>
      * Any String encoding or decoding on the value will be performed with the
      * ISO-8859-1 charset.
-     * 
+     *
      * @param header
      * @param value
      * @throws IllegalArgumentException
@@ -489,7 +491,7 @@ public interface HeaderStorage {
 
     /**
      * Set the limit on the number of headers allowed to be set on this message.
-     * 
+     *
      * @param number
      * @throws IllegalArgumentException
      *             if number is negative or zero
@@ -498,7 +500,7 @@ public interface HeaderStorage {
 
     /**
      * Query the current limit on number of headers allowed in the message.
-     * 
+     *
      * @return int
      */
     int getLimitOnNumberOfHeaders();
@@ -506,7 +508,7 @@ public interface HeaderStorage {
     /**
      * Set the limit on the size of individual protocol tokens, ie. header names
      * or header values, etc, when parsing inbound messages.
-     * 
+     *
      * @param size
      * @throws IllegalArgumentException
      *             if size is negative or zero
@@ -515,7 +517,7 @@ public interface HeaderStorage {
 
     /**
      * Query the current limit on the size of protocol tokens.
-     * 
+     *
      * @return int
      */
     int getLimitOfTokenSize();
