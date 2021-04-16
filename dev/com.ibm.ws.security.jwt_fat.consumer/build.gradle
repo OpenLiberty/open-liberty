@@ -32,7 +32,7 @@ dependencies {
       'commons-codec:commons-codec:1.6',
       'xml-apis:xml-apis:1.4.01',
       'xalan:xalan:2.7.2',
-      'commons-io:commons-io:2.6',
+      project(':com.ibm.ws.org.apache.commons.io'),
       'xerces:xercesImpl:2.11.0',
       'org.slf4j:slf4j-api:1.7.7'
       

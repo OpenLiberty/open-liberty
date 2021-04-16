@@ -34,7 +34,7 @@ dependencies {
       'xml-apis:xml-apis:1.4.01',
       'xerces:xercesImpl:2.11.0',
       'xalan:xalan:2.7.2',
-      'commons-io:commons-io:2.6',
+      project(':com.ibm.ws.org.apache.commons.io'),
       'org.slf4j:slf4j-api:1.7.7',
       'com.unboundid:unboundid-ldapsdk:4.0.9'
       
