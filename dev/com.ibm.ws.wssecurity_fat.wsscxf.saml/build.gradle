@@ -432,9 +432,7 @@ autoFVT.doLast {
     }
   
     copy {
-    //Need to update the version of perperties to add java2sec exempt on this server
-    //from new File(project(':com.ibm.ws.security.saml.sso_fat.common').projectDir, 'publish/servers/' + server + '/bootstrap.properties')
-    from project.file('publish/files/bootstrap.properties')
+    from new File(project(':com.ibm.ws.security.saml.sso_fat.common').projectDir, 'publish/servers/' + server + '/bootstrap.properties')
     into new File(autoFvtDir, 'publish/servers/' + server + '/')
     }
     
@@ -445,15 +443,19 @@ autoFVT.doLast {
     }
 
     copy {
-    from new File(project(':com.ibm.ws.security.fat.common').buildDir, 'test-application/testmarker.war')
-    into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
+      from new File(project(':com.ibm.ws.security.fat.common').buildDir, 'test-application/testmarker.war')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
     }
     
-    copy {
-    from new File(project(':com.ibm.ws.security.saml.sso_fat.common').buildDir, 'test-application/idp.war')
-    into new File(autoFvtDir, 'publish/servers/' + server + '/test-apps')
-    }
-
+    // copyShibbolethTestAppFilesToServer  (copy both 3.3.1 and 4.1.0 and let the tests decide at runtime which to use)
+   	copy {
+	  from new File(project(':com.ibm.ws.security.saml.sso_fat.common').buildDir, 'test-application/idp-war-3.3.1.war')
+ 	  into new File(autoFvtDir, "publish/servers/${server}/test-apps")
+	}
+	copy {
+	  from new File(project(':com.ibm.ws.security.saml.sso_fat.common').buildDir, 'test-application/idp-war-4.1.0.war')
+	  into new File(autoFvtDir, "publish/servers/${server}/test-apps")
+	}
     
   }
 
