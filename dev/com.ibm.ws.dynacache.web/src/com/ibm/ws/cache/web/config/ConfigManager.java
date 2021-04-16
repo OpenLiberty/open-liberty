@@ -18,6 +18,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -116,7 +117,7 @@ public class ConfigManager {
                 URL u = bc.getBundle().getEntry("/META-INF/" + CACHE_SPEC_DTD);
                 
                 if (u != null) {
-                  isr = new InputStreamReader(u.openStream(), "UTF-8");
+                  isr = new InputStreamReader(u.openStream(), StandardCharsets.UTF_8);
                   in = new BufferedReader(isr);
                   String inputLine;
                   while ((inputLine = in.readLine()) != null)
@@ -360,7 +361,7 @@ public class ConfigManager {
 		
     	try {
     		if (u != null) {
-    			isr = new InputStreamReader(u.openStream(), "UTF-8");
+    			isr = new InputStreamReader(u.openStream(), StandardCharsets.UTF_8);
     			in = new BufferedReader(isr);
     			String inputLine;
 

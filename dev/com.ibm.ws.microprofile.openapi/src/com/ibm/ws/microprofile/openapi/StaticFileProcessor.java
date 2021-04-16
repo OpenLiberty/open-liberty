@@ -12,6 +12,7 @@ package com.ibm.ws.microprofile.openapi;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.IOUtils;
 
@@ -56,7 +57,7 @@ public class StaticFileProcessor {
         }
 
         try {
-            result = IOUtils.toString(is, "UTF-8");
+            result = IOUtils.toString(is, StandardCharsets.UTF_8);
         } catch (IOException e) {
             if (OpenAPIUtils.isEventEnabled(tc)) {
                 Tr.event(tc, "Unable to read openapi file into a string");

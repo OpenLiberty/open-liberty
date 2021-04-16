@@ -20,6 +20,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -141,38 +142,38 @@ public class KernelResolver {
 
             // Make sure we can find the log provider
             if (logProviderName == null || logProviderName.trim().length() == 0)
-                logThrowLaunchException(new LaunchException("Log provider definition not found (Tr/FFDC)",
-                                BootstrapConstants.messages.getString("error.rasProvider")));
+                logThrowLaunchException(new LaunchException("Log provider definition not found (Tr/FFDC)", BootstrapConstants.messages.getString("error.rasProvider")));
 
             logProviderMf = new File(platformDir, logProviderName + ".mf");
             if (!logProviderMf.exists())
-                logThrowLaunchException(new LaunchException("Kernel definition could not be found: " + logProviderMf.getAbsolutePath(),
-                                MessageFormat.format(BootstrapConstants.messages.getString("error.kernelDefFile"), logProviderName)));
+                logThrowLaunchException(new LaunchException("Kernel definition could not be found: "
+                                                            + logProviderMf.getAbsolutePath(), MessageFormat.format(BootstrapConstants.messages.getString("error.kernelDefFile"),
+                                                                                                                    logProviderName)));
 
             // The log provider also most specify the class we should be creating so we have logging!
             ManifestCacheElement entry = cache.checkEntry(logProviderMf, true, repo);
             logProviderClass = entry.getLogProviderClass();
             if (logProviderClass == null)
-                logThrowLaunchException(new LaunchException("A log provider implementation was not defined",
-                                BootstrapConstants.messages.getString("error.rasProvider")));
+                logThrowLaunchException(new LaunchException("A log provider implementation was not defined", BootstrapConstants.messages.getString("error.rasProvider")));
 
             // Make sure we can find the kernel definition
             if (kernelDefName == null || kernelDefName.trim().length() == 0)
-                logThrowLaunchException(new LaunchException("Could not find kernel definition",
-                                BootstrapConstants.messages.getString("error.kernelDef")));
+                logThrowLaunchException(new LaunchException("Could not find kernel definition", BootstrapConstants.messages.getString("error.kernelDef")));
 
             kernelMf = new File(platformDir, kernelDefName + ".mf");
             if (!kernelMf.exists())
-                logThrowLaunchException(new LaunchException("Kernel definition could not be found: " + kernelMf.getAbsolutePath(),
-                                MessageFormat.format(BootstrapConstants.messages.getString("error.kernelDefFile"), kernelDefName)));
+                logThrowLaunchException(new LaunchException("Kernel definition could not be found: "
+                                                            + kernelMf.getAbsolutePath(), MessageFormat.format(BootstrapConstants.messages.getString("error.kernelDefFile"),
+                                                                                                               kernelDefName)));
             cache.checkEntry(kernelMf, false, repo);
 
             // If we have an os extension to work with, make sure we can find it, too
             if (osExtensionName != null) {
                 osExtensionMf = new File(platformDir, osExtensionName + ".mf");
                 if (!osExtensionMf.exists())
-                    logThrowLaunchException(new LaunchException("Kernel definition could not be found: " + osExtensionMf.getAbsolutePath(),
-                                    MessageFormat.format(BootstrapConstants.messages.getString("error.kernelDefFile"), osExtensionName)));
+                    logThrowLaunchException(new LaunchException("Kernel definition could not be found: "
+                                                                + osExtensionMf.getAbsolutePath(), MessageFormat.format(BootstrapConstants.messages.getString("error.kernelDefFile"),
+                                                                                                                        osExtensionName)));
 
                 cache.checkEntry(osExtensionMf, true, repo);
             } else {
@@ -346,8 +347,9 @@ public class KernelResolver {
                     packages = (packages == null) ? mPackages : packages + "," + mPackages;
                 }
             } catch (IOException e) {
-                throw new LaunchException("Exception loading log provider jar " + (jarFile != null ? jarFile.getName() : "null") + ", " + e,
-                                MessageFormat.format(BootstrapConstants.messages.getString("error.rasProviderResolve"), (jarFile != null ? jarFile.getName() : "null")), e);
+                throw new LaunchException("Exception loading log provider jar " + (jarFile != null ? jarFile.getName() : "null") + ", "
+                                          + e, MessageFormat.format(BootstrapConstants.messages.getString("error.rasProviderResolve"),
+                                                                    (jarFile != null ? jarFile.getName() : "null")), e);
             } finally {
                 Utils.tryToClose(jarFile);
             }
@@ -412,7 +414,7 @@ public class KernelResolver {
                     //   kernelManifest-1.0=kernel;manifest;information
                     //   --|kernelManifest-1.0|bundle.symbolic.name....
                     // It is expected that the manifest line will precede the lines with the bundle..
-                    reader = new BufferedReader(new InputStreamReader(new FileInputStream(cacheFile), "UTF-8"));
+                    reader = new BufferedReader(new InputStreamReader(new FileInputStream(cacheFile), StandardCharsets.UTF_8));
                     while ((line = reader.readLine()) != null) {
                         if (line.startsWith(BUNDLE_LINE)) {
                             // If line starts with --|, this is a line describing a kernel bundle
@@ -468,7 +470,7 @@ public class KernelResolver {
                     if (!parentExists)
                         throw new IOException("Unable to create parent(s) of file " + cacheFile.getAbsolutePath());
 
-                    writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(cacheFile), "UTF-8"));
+                    writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(cacheFile), StandardCharsets.UTF_8));
                     for (ManifestCacheElement entry : cacheEntries.values()) {
                         entry.write(writer);
                         writer.write(NL);
@@ -591,8 +593,8 @@ public class KernelResolver {
                                     File bestMatchFile = repo.selectBundle(element.symbolicName,
                                                                            VersionUtility.stringToVersionRange(element.vrangeString));
                                     if (bestMatchFile == null) {
-                                        throw new LaunchException("Could not find bundle for " + element + ".",
-                                                        BootstrapConstants.messages.getString("error.missingBundleException"));
+                                        throw new LaunchException("Could not find bundle for " + element
+                                                                  + ".", BootstrapConstants.messages.getString("error.missingBundleException"));
                                     } else {
                                         // Add to the list of boot jars...
                                         jarList.add(bestMatchFile);
@@ -643,8 +645,8 @@ public class KernelResolver {
                     cacheEntries.put(mfFile.getName(), entry);
                     return entry;
                 } catch (IOException e) {
-                    throw new LaunchException("Kernel definition could not be read: " + mfFile.getAbsolutePath(),
-                                    MessageFormat.format(BootstrapConstants.messages.getString("error.unknownException"), e));
+                    throw new LaunchException("Kernel definition could not be read: "
+                                              + mfFile.getAbsolutePath(), MessageFormat.format(BootstrapConstants.messages.getString("error.unknownException"), e));
                 } finally {
                     Utils.tryToClose(reader);
                 }

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package com.ibm.jbatch.container.persistence.jpa;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -185,20 +185,12 @@ public class JobInstanceEntity implements JobInstance, WSJobInstance, EntityCons
 
     @Override
     public String getJobXml() {
-        try {
-            return (jobXml == null ? null : new String(jobXml, "UTF-8"));
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalStateException("Problem with UTF-8 encoding", e);
-        }
+        return (jobXml == null ? null : new String(jobXml, StandardCharsets.UTF_8));
     }
 
     public void setJobXml(String jobXml) {
-        try {
-            if (jobXml != null) {
-                this.jobXml = jobXml.getBytes("UTF-8");
-            }
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalStateException("Problem with UTF-8 encoding", e);
+        if (jobXml != null) {
+            this.jobXml = jobXml.getBytes(StandardCharsets.UTF_8);
         }
     }
 
