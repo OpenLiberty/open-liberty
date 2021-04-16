@@ -1,0 +1,102 @@
+/*******************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+  
+task copyShibbolethServer (dependsOn: [':com.ibm.ws.security.fat.common:assemble', ':com.ibm.ws.security.saml.sso_fat.common:assemble']) {
+  doLast {
+    println 'in copyShibbolethServer'
+    def serverName = "com.ibm.ws.security.saml.sso-2.0_fat.shibboleth"
+
+    // updateShibbolethServerFiles -->
+    copy {
+      from new File(project(':com.ibm.ws.security.saml.sso_fat.common').projectDir, "publish/servers/${serverName}/configs")
+      into new File(autoFvtDir, "publish/servers/${serverName}/configs")
+    }
+    copy {
+      from new File(project(':com.ibm.ws.security.saml.sso_fat.common').projectDir, "publish/servers/${serverName}/bootstrap.properties")
+    into new File(autoFvtDir, "publish/servers/${serverName}")
+    }
+    // copyTestMarker
+    copy {
+      from new File(project(':com.ibm.ws.security.fat.common').buildDir, 'test-application/testmarker.war')
+      into new File(autoFvtDir, "publish/servers/${serverName}/dropins")
+    }
+    // enable ldap trace
+    copy {
+      from new File(project(':com.ibm.ws.security.saml.sso_fat.common').projectDir, 'publish/envVars/jvm.options')
+      into new File(autoFvtDir, "publish/servers/${serverName}")
+    }
+//
+// The restricted policy files have been standard for a while now. They shouldn't be needed.
+//
+//  copy { 
+//    from new File(project(':com.ibm.ws.security.saml.sso_fat.common').projectDir, 'publish/files/policyFiles')
+//    into new File(autoFvtDir, "publish/servers/${serverName}/policyFiles")
+//  }
+    // copyShibbolethTestAppFilesToServer  (copy both 3.3.1 and 4.1.0 and let the tests decide at runtime which to use)
+   	copy {
+	  from new File(project(':com.ibm.ws.security.saml.sso_fat.common').buildDir, 'test-application/idp-war-3.3.1.war')
+ 	  into new File(autoFvtDir, "publish/servers/${serverName}/test-apps")
+	}
+	copy {
+	  from new File(project(':com.ibm.ws.security.saml.sso_fat.common').buildDir, 'test-application/idp-war-4.1.0.war')
+	  into new File(autoFvtDir, "publish/servers/${serverName}/test-apps")
+	}
+ 
+    // copySecurityKeysToServer
+    copy {
+      from new File(project(':com.ibm.ws.security.saml.sso_fat.common').projectDir, 'securitykeys')
+      into new File(autoFvtDir, "publish/servers/${serverName}")
+      include "*.jks", "*.arm"
+    }
+    copy {
+      from new File(projectDir, 'securitykeys')
+      into new File(autoFvtDir, "publish/servers/${serverName}")
+      include "*.jks", "*.arm"
+    }
+  }
+  
+}
+
+task copyShibKeys () {
+   doLast {
+     copy {
+      from project(':com.ibm.ws.security.saml.sso_fat.common').projectDir
+      into autoFvtDir
+      include 'securitykeys/**'
+     }
+   }
+}
+
+task copyApache () {
+  doLast {
+    /*
+     * Copy the local ApacheDS LDAP instances. 
+     */
+    copy {
+      from project(':com.ibm.ws.org.apache.directory.server').projectDir
+      into autoFvtDir
+      include 'apacheds-2.0.0-M15/**'
+    }
+  }  
+}
+
+task copyShibbolethIdpConfig (dependsOn: [':com.ibm.ws.security.fat.common:assemble', ':com.ibm.ws.security.saml.sso_fat.common:assemble', 'copyShibKeys']) {
+
+  doLast {
+
+    copy {
+      from project(':com.ibm.ws.security.saml.sso_fat.common').buildDir
+      into autoFvtDir
+      include 'shibboleth-idp/**'
+    }
+  }
+}
+  
