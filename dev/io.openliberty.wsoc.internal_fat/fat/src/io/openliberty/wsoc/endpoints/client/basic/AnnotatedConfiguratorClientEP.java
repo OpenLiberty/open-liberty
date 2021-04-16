@@ -129,7 +129,8 @@ public class AnnotatedConfiguratorClientEP implements TestHelper {
         @OnOpen
         public void onOpen(Session sess, EndpointConfig epc) {
             List<Extension> exts = sess.getNegotiatedExtensions();
-            _wtr.addMessage("CLIENTNEGOTIATED" + exts.size());
+            LOG.info("TESTING TESTING TESTING: " + exts);
+            _wtr.addMessage("CLIENTNEGOTIATED" + (exts==null ? 0 : exts.size()) );
         }
 
         @OnMessage

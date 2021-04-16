@@ -34,12 +34,15 @@ public class IdleTimeoutTCKClientEP implements TestHelper {
     public long startTime = 0;
     public long endTime = 0;
     public boolean closeCalledAlready = false;
+    private boolean EXPECT_TIMEOUT_ERROR = false;
+    private final String CLOSE_1006_ERROR_EXCEPTION = "org.eclipse.jetty.websocket.api.ProtocolException: Frame forbidden close status code: 1006";
 
     public WsocTestContext _wtr = null;
     private static final Logger LOG = Logger.getLogger(IdleTimeoutTCKClientEP.class.getName());
 
     public IdleTimeoutTCKClientEP(String[] data) {
         _data = data;
+        this.EXPECT_TIMEOUT_ERROR = true;
     }
 
     @OnMessage
@@ -100,8 +103,13 @@ public class IdleTimeoutTCKClientEP implements TestHelper {
 
     @OnError
     public void onError(Session session, java.lang.Throwable throwable) {
-
-        _wtr.addExceptionAndTerminate("Error during wsoc session", throwable);
+        // Client automatically throws an error when a 1006 response is added. Verify if this
+        // is what is happening on this client and do not throw error when it does since as seen above
+        // on the onClose we expect it to behave this way and need to verify it
+        if (this.EXPECT_TIMEOUT_ERROR && throwable.toString().equals(CLOSE_1006_ERROR_EXCEPTION))
+            LOG.info("Skipping error when receiving a 1006 response since it is expected.");
+        else
+            _wtr.addExceptionAndTerminate("Error during wsoc session", throwable);
     }
 
     @Override
