@@ -72,5 +72,5 @@ generate.replacement: true
     com.ibm.ws.kernel.boot;version=latest, \
     com.ibm.ws.security.test.common;version=latest, \
     commons-logging:commons-logging;version=1.1.3, \
-    commons-io:commons-io;version=2.6
+    com.ibm.ws.org.apache.commons.io;version=latest
 

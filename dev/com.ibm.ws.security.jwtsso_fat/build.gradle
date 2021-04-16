@@ -21,7 +21,7 @@ dependencies {
       'org.seleniumhq.webdriver:webdriver-common:0.9.7376',
       'org.brotli:dec:0.1.2',
       'xalan:xalan:2.7.2',
-      'commons-io:commons-io:2.6',
+      project(':com.ibm.ws.org.apache.commons.io'),
       'net.sourceforge.htmlunit:htmlunit-core-js:2.44.0',
       'net.sourceforge.htmlunit:htmlunit-cssparser:1.6.0',
       'org.apache.commons:commons-lang3:3.8',
