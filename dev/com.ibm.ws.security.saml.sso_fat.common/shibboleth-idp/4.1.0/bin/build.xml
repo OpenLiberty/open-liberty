@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Shibboleth Identity Provider V4" default="install">  
+
+    <taskdef resource="net/shibboleth/idp/installer/ant.xml" />
+
+    <!--  TARGETS:
+
+        The following top level targets are implemented and supported.  These in turn call subsidiary targets,
+        whose use outside this file is not supported.
+
+        install-nocopy:  Does the installation/upgrade on a layout that has been copied (ie, the important
+                         stuff has been copied or overwritten from the distribution)
+                         A V2 upgrade will be performed if a V2 site is detected.
+        build-war:       Create the war file
+        install:         Copies files from the distribution to the specified target and then
+                         invokes install-nocopy
+    -->
+	
+    <target name="install">
+        <v4install task="install"/>
+    </target>
+    <target name="install-nocopy">
+    	<v4install task="install-nocopy"/>
+    </target>
+    <target name="build-war">
+        <v4install task="build-war"/>
+    </target>
+
+</project>
