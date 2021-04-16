@@ -13,6 +13,7 @@ package com.ibm.ws.jaxrs20.utils;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 /**
@@ -20,7 +21,7 @@ import java.util.Arrays;
  */
 public final class UriEncoder {
 
-    private static final Charset CHARSET_UTF_8 = Charset.forName("UTF-8"); //$NON-NLS-1$
+    private static final Charset CHARSET_UTF_8 = StandardCharsets.UTF_8;
 
     private UriEncoder() {
         // no instances

@@ -14,7 +14,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 import com.ibm.wsspi.adaptable.module.AddEntryToOverlay;
 import com.ibm.wsspi.adaptable.module.Container;
@@ -26,9 +26,6 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 import com.ibm.wsspi.kernel.service.utils.PathUtils;
 
 public class AddEntryToOverlayContainerAdapter implements ContainerAdapter<AddEntryToOverlay> {
-
-    // UTF-8 Charset must exist in any JVM, so no exception will occur.
-    static final Charset UTF8_CHARSET = Charset.forName("UTF-8");
 
     @Override
     public AddEntryToOverlay adapt(Container root, OverlayContainer rootOverlay,
@@ -67,7 +64,7 @@ public class AddEntryToOverlayContainerAdapter implements ContainerAdapter<AddEn
 
         public AddedArtifactEntry(String name, String data) {
             this.name = name;
-            this.bytes = data.getBytes(UTF8_CHARSET);
+            this.bytes = data.getBytes(StandardCharsets.UTF_8);
             this.lastModified = System.currentTimeMillis();
         }
 

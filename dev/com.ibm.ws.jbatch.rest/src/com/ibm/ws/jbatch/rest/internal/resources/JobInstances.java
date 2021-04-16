@@ -18,6 +18,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -636,7 +637,7 @@ public class JobInstances implements RESTHandler {
             if (jslInput != null) {
                 // Defaulting to UTF-8
                 BufferedReader br = new BufferedReader(new InputStreamReader(
-                                jslInput, "UTF-8"));
+                                jslInput, StandardCharsets.UTF_8));
                 String jslBody = IOUtils.toString(br);
 
                 jobInstance = batchManager.start(
