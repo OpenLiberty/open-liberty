@@ -18,6 +18,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
                 AppAndResourceTest.class,
                 AppAndResourceCDIBeanDiscoveryModeDisabledTest.class,
+                CDIInjectIntoAppTest.class,
                 ExceptionTest.class,
                 InjectAppTest.class,
                 JsonbTest.class,
