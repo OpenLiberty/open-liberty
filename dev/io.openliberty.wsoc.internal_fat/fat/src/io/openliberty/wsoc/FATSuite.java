@@ -52,11 +52,11 @@ public class FATSuite {
     private static final Class<?> c = FATSuite.class;
 
     //websocket-1.0 is not part of EE6/7/8, so we are doing a manual replacement
-    // @ClassRule
-    // public static RepeatTests repeat = RepeatTests.with(new EmptyAction())
-    //                 .andWith(FeatureReplacementAction.EE9_FEATURES()
-    //                                 .removeFeature("websocket-1.0")
-    //                                 .addFeature("websocket-2.0"));
+    @ClassRule
+    public static RepeatTests repeat = RepeatTests.with(new EmptyAction())
+                    .andWith(FeatureReplacementAction.EE9_FEATURES()
+                                    .removeFeature("websocket-1.0")
+                                    .addFeature("websocket-2.0"));
 
     /**
      * @see {@link FatLogHandler#generateHelpFile()}
