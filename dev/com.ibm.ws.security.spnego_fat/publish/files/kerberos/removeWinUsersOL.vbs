@@ -55,13 +55,14 @@ rem ComputerName = oCmdLib.gethostname (objService)
 ComputerName = host
 wsh.echo "Computername: " + ComputerName
 
-Set userGroup = GetObject("WinNT://"&Computername&"/Users,group")
-Set fso=CreateObject("Scripting.FileSystemObject")
+rem Set userGroup = GetObject("WinNT://"&Computername&"/Users,group")
 Set Computer= GetObject("WinNT://"&Computername&",computer")
+wsh.echo "Retrieved Computer.Name: " + Computer.Name
 
 If (isUserType) Then
 	call removeUser (user, group)
 ElseIf (isFileType) Then
+	Set fso=CreateObject("Scripting.FileSystemObject")
 	Set UserFile = fso.OpenTextFile(inputFile,1)
 	lineNo=0
 
@@ -90,11 +91,12 @@ End If
 wsh.echo "Done."
 
 Function removeUser(ByRef UserName, ByRef GroupName)
- 'wsh.echo ">>removeUser"
+ wsh.echo ">>removeUser"
  userDeleted = false
  groupDeleted = false
  for each UserObject In Computer
   if UCASE(UserObject.name) = UCASE(UserName) then
+    wsh.echo "Attempting to delete user " + UserName + "..."
     Computer.Delete "user", UserName
     wsh.echo "User " + UserName + " deleted."
     userDeleted = true
@@ -116,7 +118,7 @@ Function removeUser(ByRef UserName, ByRef GroupName)
  if userDeleted = false then
   wsh.echo "user " + UserName + " not found"
  end if
- 'wsh.echo "<<removeUser"
+ wsh.echo "<<removeUser"
 End Function
 
 Function getArgValue(ByRef index)
