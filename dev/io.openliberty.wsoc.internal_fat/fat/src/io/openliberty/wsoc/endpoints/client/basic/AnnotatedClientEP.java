@@ -51,6 +51,8 @@ public class AnnotatedClientEP implements TestHelper {
 
     public WsocTestContext _wtr = null;
     private static final Logger LOG = Logger.getLogger(AnnotatedClientEP.class.getName());
+    protected boolean EXPECT_TIMEOUT_ERROR = false;
+    private final String CLOSE_1006_ERROR_EXCEPTION = "org.eclipse.jetty.websocket.api.ProtocolException: Frame forbidden close status code: 1006";
 
     @ClientEndpoint
     public static class ByteArrayTest extends AnnotatedClientEP {
@@ -1193,8 +1195,9 @@ public class AnnotatedClientEP implements TestHelper {
 
     @ClientEndpoint
     public static class SessionIdleTest extends AnnotatedClientEP {
-
-        public SessionIdleTest() {}
+        public SessionIdleTest() {
+            this.EXPECT_TIMEOUT_ERROR = true;
+        }
 
         @OnMessage
         public void echoText(String data) {
@@ -1209,6 +1212,7 @@ public class AnnotatedClientEP implements TestHelper {
             //implementation converts the closeCode to 1002 and closeReasonPhrase to "Invalid close code: 1006" before calling this
             //onClose() method. Tyrus client does do not this conversion from 1006--> 1002 and TCK test case also expects 1006 from server
             //when idleTimeout occurs at the server
+            LOG.info("On close code: " + closeReason.getCloseCode().getCode());
             if (closeReason.getReasonPhrase().contains("1006"))
                 closeCode = 1006;
             else
@@ -1224,8 +1228,13 @@ public class AnnotatedClientEP implements TestHelper {
 
     @OnError
     public void onError(Session session, java.lang.Throwable throwable) {
-
-        _wtr.addExceptionAndTerminate("Error during wsoc session", throwable);
+        // Client automatically throws an error when a 1006 response is added. Verify if this
+        // is what is happening on this client and do not throw error when it does since as seen above
+        // on the onClose we expect it to behave this way and need to verify it
+        if (this.EXPECT_TIMEOUT_ERROR && throwable.toString().equals(CLOSE_1006_ERROR_EXCEPTION))
+            LOG.info("Skipping error when receiving a 1006 response since it is expected.");
+        else
+            _wtr.addExceptionAndTerminate("Error during wsoc session", throwable);
     }
 
     @Override
