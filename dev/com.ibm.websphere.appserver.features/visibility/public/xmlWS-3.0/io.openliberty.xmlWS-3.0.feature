@@ -12,7 +12,7 @@ IBM-API-Package: \
 -features=\
  com.ibm.websphere.appserver.eeCompatible-9.0, \
  com.ibm.websphere.appserver.servlet-5.0, \
- io.openliberty.globalhandler-2.0, \
+ com.ibm.websphere.appserver.globalhandler-1.0, \
  io.openliberty.xmlws.common-3.0
 -bundles=\
  com.ibm.ws.javaee.ddmodel.ws, \
