@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,20 +16,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.XmlValue;
-
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
 
 /**
  * <p>Java class for LangType complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="LangType">
  * &lt;simpleContent>
@@ -39,22 +33,17 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
  * &lt;/simpleContent>
  * &lt;/complexType>
  * </pre>
- * 
+ *
  * <p> The LangType object defines the language to be used. By default, the
  * language is set to English.
- * 
+ *
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "LangType", propOrder = {
-                                         "value"
-})
 @Trivial
 public class LangType {
 
-    @XmlValue
     protected String value;
-    @XmlAttribute(name = "lang", namespace = "http://www.w3.org/XML/1998/namespace")
     protected String lang;
+
     private static List propertyNames = null;
     private static HashMap dataTypeMap = null;
     private static ArrayList superTypeList = null;
@@ -68,10 +57,10 @@ public class LangType {
 
     /**
      * Gets the value of the <b>value</b> property.
-     * 
+     *
      * @return
      *         possible object is {@link String }
-     * 
+     *
      */
     public String getValue() {
         return value;
@@ -79,10 +68,10 @@ public class LangType {
 
     /**
      * Sets the value of the <b>value</b> property.
-     * 
+     *
      * @param value
-     *            allowed object is {@link String }
-     * 
+     *                  allowed object is {@link String }
+     *
      */
     public void setValue(String value) {
         this.value = value;
@@ -90,10 +79,10 @@ public class LangType {
 
     /**
      * Returns true if the <b>value</b> property is set; false, otherwise.
-     * 
+     *
      * @return
      *         returned object is {@link boolean }
-     * 
+     *
      */
 
     public boolean isSetValue() {
@@ -102,10 +91,10 @@ public class LangType {
 
     /**
      * Gets the value of the <b>lang</b> property.
-     * 
+     *
      * @return
      *         possible object is {@link String }
-     * 
+     *
      */
     public String getLang() {
         if (lang == null) {
@@ -117,10 +106,10 @@ public class LangType {
 
     /**
      * Sets the value of the <b>lang</b> property.
-     * 
+     *
      * @param value
-     *            allowed object is {@link String }
-     * 
+     *                  allowed object is {@link String }
+     *
      */
     public void setLang(String value) {
         this.lang = value;
@@ -128,10 +117,10 @@ public class LangType {
 
     /**
      * Returns true if the <b>lang</b> property is set; false, otherwise.
-     * 
+     *
      * @return
      *         returned object is {@link boolean }
-     * 
+     *
      */
 
     public boolean isSetLang() {
@@ -140,13 +129,13 @@ public class LangType {
 
     /**
      * Gets the value of the requested property
-     * 
+     *
      * @param propName
-     *            allowed object is {@link String}
-     * 
+     *                     allowed object is {@link String}
+     *
      * @return
      *         returned object is {@link Object}
-     * 
+     *
      */
     public Object get(String propName) {
         if (propName.equals("value")) {
@@ -160,10 +149,10 @@ public class LangType {
 
     /**
      * Returns true if the requested property is set; false, otherwise.
-     * 
+     *
      * @return
      *         returned object is {@link boolean }
-     * 
+     *
      */
 
     public boolean isSet(String propName) {
@@ -178,12 +167,12 @@ public class LangType {
 
     /**
      * Sets the value of the provided property to the provided value.
-     * 
+     *
      * @param propName
-     *            allowed object is {@link String}
+     *                     allowed object is {@link String}
      * @param value
-     *            allowed object is {@link Object}
-     * 
+     *                     allowed object is {@link Object}
+     *
      */
 
     public void set(String propName, Object value) {
@@ -197,17 +186,18 @@ public class LangType {
 
     /**
      * Sets the value of provided property to null.
-     * 
+     *
      * @param propName
-     *            allowed object is {@link String}
-     * 
+     *                     allowed object is {@link String}
+     *
      */
 
-    public void unset(String propName) {}
+    public void unset(String propName) {
+    }
 
     /**
      * Gets the name of this model object, <b>LangType</b>
-     * 
+     *
      * @return
      *         returned object is {@link String}
      */
@@ -217,10 +207,10 @@ public class LangType {
 
     /**
      * Gets a list of all supported properties for this model object, <b>LangType</b>
-     * 
+     *
      * @param entityTypeName
-     *            allowed object is {@link String}
-     * 
+     *                           allowed object is {@link String}
+     *
      * @return
      *         returned object is {@link List}
      */
@@ -248,10 +238,10 @@ public class LangType {
 
     /**
      * Gets the Java type of the value of the provided property. For example: String, List
-     * 
+     *
      * @param propName
-     *            allowed object is {@link String}
-     * 
+     *                     allowed object is {@link String}
+     *
      * @return
      *         returned object is {@link String}
      */
@@ -272,7 +262,7 @@ public class LangType {
     /**
      * Gets a list of any model objects which this model object, <b>LangType</b>, is
      * an extension of.
-     * 
+     *
      * @return
      *         returned object is {@link ArrayList}
      */
@@ -287,10 +277,10 @@ public class LangType {
     /**
      * Returns a true if the provided model object is one that this
      * model object extends; false, otherwise.
-     * 
+     *
      * @param superTypeName
-     * 
-     *            allowed object is {@link String}
+     *
+     *                          allowed object is {@link String}
      * @return
      *         returned object is {@link boolean}
      */
@@ -307,7 +297,7 @@ public class LangType {
 
     /**
      * Gets a set of any model objects which extend this model object, <b>LangType</b>
-     * 
+     *
      * @return
      *         returned object is {@link HashSet}
      */
@@ -321,7 +311,7 @@ public class LangType {
 
     /**
      * Returns this model object, <b>LangType</b>, and its contents as a String
-     * 
+     *
      * @return
      *         returned object is {@link String}
      */

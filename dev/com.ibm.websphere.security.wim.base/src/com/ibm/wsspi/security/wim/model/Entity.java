@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,12 +17,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlSeeAlso;
-import javax.xml.bind.annotation.XmlType;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -77,23 +71,6 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
  * </ul>
  *
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Entity", propOrder = {
-                                        "identifier",
-                                        "viewIdentifiers",
-                                        "parent",
-                                        "children",
-                                        "groups",
-                                        "createTimestamp",
-                                        "modifyTimestamp",
-                                        "entitlementInfo",
-                                        "changeType"
-})
-@XmlSeeAlso({
-              Container.class,
-              GeographicLocation.class,
-              RolePlayer.class
-})
 @Trivial
 public class Entity {
 
@@ -112,9 +89,7 @@ public class Entity {
     protected Entity parent;
     protected List<Entity> children;
     protected List<com.ibm.wsspi.security.wim.model.Group> groups;
-    @XmlSchemaType(name = "dateTime")
     protected Date createTimestamp;
-    @XmlSchemaType(name = "dateTime")
     protected Date modifyTimestamp;
     protected EntitlementInfoType entitlementInfo;
     protected String changeType;
@@ -166,7 +141,7 @@ public class Entity {
      * Sets the value of the <b>identifier</b> property.
      *
      * @param value
-     *            allowed object is {@link IdentifierType }
+     *                  allowed object is {@link IdentifierType }
      *
      */
     public void setIdentifier(IdentifierType value) {
@@ -248,7 +223,7 @@ public class Entity {
      * Sets the value of the <b>parent</b> property.
      *
      * @param value
-     *            allowed object is {@link Entity }
+     *                  allowed object is {@link Entity }
      *
      */
     public void setParent(Entity value) {
@@ -379,7 +354,7 @@ public class Entity {
      * Sets the value of the <b>createTimestamp</b> property.
      *
      * @param value
-     *            allowed object is {@link Date }
+     *                  allowed object is {@link Date }
      *
      */
     public void setCreateTimestamp(Date value) {
@@ -412,7 +387,7 @@ public class Entity {
      * Sets the value of the <b>modifyTimestamp</b> property.
      *
      * @param value
-     *            allowed object is {@link Date }
+     *                  allowed object is {@link Date }
      *
      */
     public void setModifyTimestamp(Date value) {
@@ -445,7 +420,7 @@ public class Entity {
      * Sets the value of the <b>entitlementInfo</b> property.
      *
      * @param value
-     *            allowed object is {@link EntitlementInfoType }
+     *                  allowed object is {@link EntitlementInfoType }
      *
      */
     public void setEntitlementInfo(EntitlementInfoType value) {
@@ -478,7 +453,7 @@ public class Entity {
      * Sets the value of the <b>changeType</b> property.
      *
      * @param value
-     *            allowed object is {@link String }
+     *                  allowed object is {@link String }
      *
      */
     public void setChangeType(String value) {
@@ -500,7 +475,7 @@ public class Entity {
      * Gets the value of the requested property
      *
      * @param propName
-     *            allowed object is {@link String}
+     *                     allowed object is {@link String}
      *
      * @return
      *         returned object is {@link Object}
@@ -579,9 +554,9 @@ public class Entity {
      * Sets the value of the provided property to the provided value.
      *
      * @param propName
-     *            allowed object is {@link String}
+     *                     allowed object is {@link String}
      * @param value
-     *            allowed object is {@link Object}
+     *                     allowed object is {@link Object}
      *
      */
     public void set(String propName, Object value) {
@@ -618,7 +593,7 @@ public class Entity {
      * Sets the value of provided property to null.
      *
      * @param propName
-     *            allowed object is {@link String}
+     *                     allowed object is {@link String}
      *
      */
     public void unset(String propName) {
@@ -741,7 +716,7 @@ public class Entity {
      * Gets a list of all supported properties for this model object, <b>Entity</b>
      *
      * @param entityTypeName
-     *            allowed object is {@link String}
+     *                           allowed object is {@link String}
      *
      * @return
      *         returned object is {@link List}
@@ -792,7 +767,7 @@ public class Entity {
      * Gets the Java type of the value of the provided property. For example: String, List
      *
      * @param propName
-     *            allowed object is {@link String}
+     *                     allowed object is {@link String}
      *
      * @return
      *         returned object is {@link String}
@@ -831,7 +806,7 @@ public class Entity {
      *
      * @param superTypeName
      *
-     *            allowed object is {@link String}
+     *                          allowed object is {@link String}
      * @return
      *         returned object is {@link boolean}
      */

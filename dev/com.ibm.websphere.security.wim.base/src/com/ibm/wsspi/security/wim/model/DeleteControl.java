@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,19 +16,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlType;
-
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
 
 /**
  * <p>Java class for DeleteControl complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="DeleteControl">
  * &lt;complexContent>
@@ -39,12 +34,12 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
  * &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
+ *
  * <p> The DeleteControl object extends the Control object.
- * 
+ *
  * <p> DeleteControl is used for specifying whether or not to delete descendants if the
  * entity to be deleted has descendants. It contains two properties: <b>deleteDescendants</b> and <b>returnDeleted</b>.
- * 
+ *
  * <ul>
  * <li><b>deleteDescendants</b>: indicates whether or not delete the descendants of the entity if it has
  * descendants.</li>
@@ -55,18 +50,12 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
  * <li><b>returnDeleted</b>: indicates whether or not to return the entities which are actually deleted in
  * the output Root object. The default value is false, which means no output Root object is returned.</li>
  * </ul>
- * 
+ *
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "DeleteControl")
 @Trivial
-public class DeleteControl
-                extends Control
-{
+public class DeleteControl extends Control {
 
-    @XmlAttribute(name = "deleteDescendants")
     protected Boolean deleteDescendants;
-    @XmlAttribute(name = "returnDeleted")
     protected Boolean returnDeleted;
     private static List propertyNames = null;
     private static HashMap dataTypeMap = null;
@@ -81,10 +70,10 @@ public class DeleteControl
 
     /**
      * Gets the value of the <b>deleteDescendants</b> property.
-     * 
+     *
      * @return
      *         possible object is {@link Boolean }
-     * 
+     *
      */
     public boolean isDeleteDescendants() {
         if (deleteDescendants == null) {
@@ -96,10 +85,10 @@ public class DeleteControl
 
     /**
      * Sets the value of the <b>deleteDescendants</b> property.
-     * 
+     *
      * @param value
-     *            allowed object is {@link Boolean }
-     * 
+     *                  allowed object is {@link Boolean }
+     *
      */
     public void setDeleteDescendants(boolean value) {
         this.deleteDescendants = value;
@@ -107,10 +96,10 @@ public class DeleteControl
 
     /**
      * Returns true if the <b>deleteDescendants</b> property is set; false, otherwise.
-     * 
+     *
      * @return
      *         returned object is {@link boolean }
-     * 
+     *
      */
     public boolean isSetDeleteDescendants() {
         return (this.deleteDescendants != null);
@@ -118,7 +107,7 @@ public class DeleteControl
 
     /**
      * Resets the <b>deleteDescendants</b> property to null.
-     * 
+     *
      */
     public void unsetDeleteDescendants() {
         this.deleteDescendants = null;
@@ -126,10 +115,10 @@ public class DeleteControl
 
     /**
      * Gets the value of the <b>returnDeleted</b> property.
-     * 
+     *
      * @return
      *         possible object is {@link Boolean }
-     * 
+     *
      */
     public boolean isReturnDeleted() {
         if (returnDeleted == null) {
@@ -141,10 +130,10 @@ public class DeleteControl
 
     /**
      * Sets the value of the <b>returnDeleted</b> property.
-     * 
+     *
      * @param value
-     *            allowed object is {@link Boolean }
-     * 
+     *                  allowed object is {@link Boolean }
+     *
      */
     public void setReturnDeleted(boolean value) {
         this.returnDeleted = value;
@@ -152,10 +141,10 @@ public class DeleteControl
 
     /**
      * Returns true if the <b>returnDeleted</b> property is set; false, otherwise.
-     * 
+     *
      * @return
      *         returned object is {@link boolean }
-     * 
+     *
      */
     public boolean isSetReturnDeleted() {
         return (this.returnDeleted != null);
@@ -163,7 +152,7 @@ public class DeleteControl
 
     /**
      * Resets the <b>returnDeleted</b> property to null.
-     * 
+     *
      */
     public void unsetReturnDeleted() {
         this.returnDeleted = null;
@@ -171,13 +160,13 @@ public class DeleteControl
 
     /**
      * Gets the value of the requested property
-     * 
+     *
      * @param propName
-     *            allowed object is {@link String}
-     * 
+     *                     allowed object is {@link String}
+     *
      * @return
      *         returned object is {@link Object}
-     * 
+     *
      */
     @Override
     public Object get(String propName) {
@@ -186,10 +175,10 @@ public class DeleteControl
 
     /**
      * Returns true if the requested property is set; false, otherwise.
-     * 
+     *
      * @return
      *         returned object is {@link boolean }
-     * 
+     *
      */
     @Override
     public boolean isSet(String propName) {
@@ -204,12 +193,12 @@ public class DeleteControl
 
     /**
      * Sets the value of the provided property to the provided value.
-     * 
+     *
      * @param propName
-     *            allowed object is {@link String}
+     *                     allowed object is {@link String}
      * @param value
-     *            allowed object is {@link Object}
-     * 
+     *                     allowed object is {@link Object}
+     *
      */
     @Override
     public void set(String propName, Object value) {
@@ -224,10 +213,10 @@ public class DeleteControl
 
     /**
      * Sets the value of provided property to null.
-     * 
+     *
      * @param propName
-     *            allowed object is {@link String}
-     * 
+     *                     allowed object is {@link String}
+     *
      */
     @Override
     public void unset(String propName) {
@@ -242,7 +231,7 @@ public class DeleteControl
 
     /**
      * Gets the name of this model object, <b>DeleteControl</b>
-     * 
+     *
      * @return
      *         returned object is {@link String}
      */
@@ -253,10 +242,10 @@ public class DeleteControl
 
     /**
      * Gets a list of all supported properties for this model object, <b>DeleteControl</b>
-     * 
+     *
      * @param entityTypeName
-     *            allowed object is {@link String}
-     * 
+     *                           allowed object is {@link String}
+     *
      * @return
      *         returned object is {@link List}
      */
@@ -285,10 +274,10 @@ public class DeleteControl
 
     /**
      * Gets the Java type of the value of the provided property. For example: String, List
-     * 
+     *
      * @param propName
-     *            allowed object is {@link String}
-     * 
+     *                     allowed object is {@link String}
+     *
      * @return
      *         returned object is {@link String}
      */
@@ -311,7 +300,7 @@ public class DeleteControl
     /**
      * Gets a list of any model objects which this model object, <b>DeleteControl</b>, is
      * an extension of.
-     * 
+     *
      * @return
      *         returned object is {@link ArrayList}
      */
@@ -327,10 +316,10 @@ public class DeleteControl
     /**
      * Returns a true if the provided model object is one that this
      * model object extends; false, otherwise.
-     * 
+     *
      * @param superTypeName
-     * 
-     *            allowed object is {@link String}
+     *
+     *                          allowed object is {@link String}
      * @return
      *         returned object is {@link boolean}
      */
@@ -347,7 +336,7 @@ public class DeleteControl
 
     /**
      * Gets a set of any model objects which extend this model object, <b>DeleteControl</b>
-     * 
+     *
      * @return
      *         returned object is {@link HashSet}
      */
@@ -361,7 +350,7 @@ public class DeleteControl
 
     /**
      * Returns this model object, <b>DeleteControl</b>, and its contents as a String
-     * 
+     *
      * @return
      *         returned object is {@link String}
      */

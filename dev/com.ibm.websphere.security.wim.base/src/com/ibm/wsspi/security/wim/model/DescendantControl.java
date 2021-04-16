@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,18 +16,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlType;
-
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
 
 /**
  * <p>Java class for DescendantControl complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="DescendantControl">
  * &lt;complexContent>
@@ -36,38 +32,34 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
  * &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
+ *
  * <p> The DescendantControl object extends the HierarchyControl object.
- * 
+ *
  * <p> It is used in the input Root object of the get() API to request descendants of the entity. If the DescendantControl
  * object is added to the Root object in a get() API call, this means the descendants of the entities under the Root object
  * will be returned in the returning Root object.
- * 
+ *
  * <p> Besides indicating whether or not to return descendants, DescendantControl can also be used for specifying the
  * properties to be returned for descendants as well as the level of descendants to be returned.
- * 
+ *
  * <ul>
  * <li><b>level</b></li>
  * <ul>
  * <li><b>0</b>: return all descendants</li>
  * <li><b>1</b>: return only the children</li>
  * <li><b>greater than 1</b>: return the specified number of descendants. For example, a level set to 2 will return both the children
- * and the granchildren.</li>
+ * and the grandchildren.</li>
  * </ul>
  * </ul>
- * 
+ *
  * <p>Since DescendantControl is also extended from SearchControl, it is possible to specify other search properties like
  * <b>countLimit</b>, and <b>timeLimit</b> in DescendantControl to only return the descendants which satisfies the search criteria.
  * For example, adding the property <b>expression</b> with value: @xsi:type='Person' to only return the descendants which are
  * of the Person entity type.
- * 
+ *
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "DescendantControl")
 @Trivial
-public class DescendantControl
-                extends HierarchyControl
-{
+public class DescendantControl extends HierarchyControl {
 
     private static List propertyNames = null;
     private static HashMap dataTypeMap = null;
@@ -82,13 +74,13 @@ public class DescendantControl
 
     /**
      * Gets the value of the requested property
-     * 
+     *
      * @param propName
-     *            allowed object is {@link String}
-     * 
+     *                     allowed object is {@link String}
+     *
      * @return
      *         returned object is {@link Object}
-     * 
+     *
      */
     @Override
     public Object get(String propName) {
@@ -97,10 +89,10 @@ public class DescendantControl
 
     /**
      * Returns true if the requested property is set; false, otherwise.
-     * 
+     *
      * @return
      *         returned object is {@link boolean }
-     * 
+     *
      */
     @Override
     public boolean isSet(String propName) {
@@ -109,12 +101,12 @@ public class DescendantControl
 
     /**
      * Sets the value of the provided property to the provided value.
-     * 
+     *
      * @param propName
-     *            allowed object is {@link String}
+     *                     allowed object is {@link String}
      * @param value
-     *            allowed object is {@link Object}
-     * 
+     *                     allowed object is {@link Object}
+     *
      */
     @Override
     public void set(String propName, Object value) {
@@ -123,10 +115,10 @@ public class DescendantControl
 
     /**
      * Sets the value of provided property to null.
-     * 
+     *
      * @param propName
-     *            allowed object is {@link String}
-     * 
+     *                     allowed object is {@link String}
+     *
      */
     @Override
     public void unset(String propName) {
@@ -135,7 +127,7 @@ public class DescendantControl
 
     /**
      * Gets the name of this model object, <b>DescendantControl</b>
-     * 
+     *
      * @return
      *         returned object is {@link String}
      */
@@ -146,10 +138,10 @@ public class DescendantControl
 
     /**
      * Gets a list of all supported properties for this model object, <b>DescendantControl</b>
-     * 
+     *
      * @param entityTypeName
-     *            allowed object is {@link String}
-     * 
+     *                           allowed object is {@link String}
+     *
      * @return
      *         returned object is {@link List}
      */
@@ -174,10 +166,10 @@ public class DescendantControl
 
     /**
      * Gets the Java type of the value of the provided property. For example: String, List
-     * 
+     *
      * @param propName
-     *            allowed object is {@link String}
-     * 
+     *                     allowed object is {@link String}
+     *
      * @return
      *         returned object is {@link String}
      */
@@ -203,7 +195,7 @@ public class DescendantControl
     /**
      * Gets a list of any model objects which this model object, <b>DescendantControl</b>, is
      * an extension of.
-     * 
+     *
      * @return
      *         returned object is {@link ArrayList}
      */
@@ -218,10 +210,10 @@ public class DescendantControl
     /**
      * Returns a true if the provided model object is one that this
      * model object extends; false, otherwise.
-     * 
+     *
      * @param superTypeName
-     * 
-     *            allowed object is {@link String}
+     *
+     *                          allowed object is {@link String}
      * @return
      *         returned object is {@link boolean}
      */
@@ -238,7 +230,7 @@ public class DescendantControl
 
     /**
      * Gets a set of any model objects which extend this model object, <b>DescendantControl</b>
-     * 
+     *
      * @return
      *         returned object is {@link HashSet}
      */
@@ -251,7 +243,7 @@ public class DescendantControl
 
     /**
      * Returns this model object, <b>DescendantControl</b>, and its contents as a String
-     * 
+     *
      * @return
      *         returned object is {@link String}
      */

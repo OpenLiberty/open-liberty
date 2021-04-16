@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,11 +15,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlType;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
@@ -65,19 +60,12 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
  * </ul>
  *
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Root", propOrder = {
-                                      "contexts",
-                                      "entities",
-                                      "controls"
-})
 @Trivial
 public class Root {
 
     protected List<com.ibm.wsspi.security.wim.model.Context> contexts;
     protected List<com.ibm.wsspi.security.wim.model.Entity> entities;
     protected List<com.ibm.wsspi.security.wim.model.Control> controls;
-    @XmlAttribute(name = "validated")
     protected Boolean validated;
     private static List propertyNames = null;
     private static HashMap dataTypeMap = null;
@@ -220,7 +208,7 @@ public class Root {
      * Sets the value of the validated property.
      *
      * @param value
-     *            allowed object is {@link Boolean }
+     *                  allowed object is {@link Boolean }
      *
      */
     public void setValidated(boolean value) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,11 +17,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -58,69 +53,6 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
  *
  *
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "PersonAccount", propOrder = {
-                                               "uid",
-                                               "cn",
-                                               "sn",
-                                               "preferredLanguage",
-                                               "displayName",
-                                               "initials",
-                                               "mail",
-                                               "ibmPrimaryEmail",
-                                               "jpegPhoto",
-                                               "labeledURI",
-                                               "carLicense",
-                                               "telephoneNumber",
-                                               "facsimileTelephoneNumber",
-                                               "pager",
-                                               "mobile",
-                                               "homePostalAddress",
-                                               "postalAddress",
-                                               "roomNumber",
-                                               "l",
-                                               "localityName",
-                                               "st",
-                                               "stateOrProvinceName",
-                                               "street",
-                                               "postalCode",
-                                               "city",
-                                               "employeeType",
-                                               "employeeNumber",
-                                               "manager",
-                                               "secretary",
-                                               "departmentNumber",
-                                               "title",
-                                               "ibmJobTitle",
-                                               "c",
-                                               "countryName",
-                                               "givenName",
-                                               "homeStreet",
-                                               "homeCity",
-                                               "homeStateOrProvinceName",
-                                               "homePostalCode",
-                                               "homeCountryName",
-                                               "businessStreet",
-                                               "businessCity",
-                                               "businessStateOrProvinceName",
-                                               "businessPostalCode",
-                                               "businessCountryName",
-                                               "description",
-                                               "businessCategory",
-                                               "seeAlso",
-                                               "kerberosId",
-                                               "photoURL",
-                                               "photoURLThumbnail",
-                                               "middleName",
-                                               "honorificPrefix",
-                                               "honorificSuffix",
-                                               "nickName",
-                                               "profileUrl",
-                                               "timezone",
-                                               "locale",
-                                               "ims",
-                                               "active"
-})
 @Trivial
 public class PersonAccount extends LoginAccount {
     private static final TraceComponent tc = Tr.register(PersonAccount.class);
@@ -193,8 +125,7 @@ public class PersonAccount extends LoginAccount {
     protected List<String> displayName;
     protected List<String> initials;
     protected String mail;
-    @XmlElement(name = "ibm-primaryEmail")
-    protected String ibmPrimaryEmail;
+    protected String ibmPrimaryEmail; // ibm-primaryEmail
     protected List<byte[]> jpegPhoto;
     protected String labeledURI;
     protected List<String> carLicense;
@@ -218,8 +149,7 @@ public class PersonAccount extends LoginAccount {
     protected List<com.ibm.wsspi.security.wim.model.IdentifierType> secretary;
     protected List<String> departmentNumber;
     protected List<String> title;
-    @XmlElement(name = "ibm-jobTitle")
-    protected List<String> ibmJobTitle;
+    protected List<String> ibmJobTitle; // ibm-jobTitle
     protected List<String> c;
     protected List<String> countryName;
     protected List<String> givenName;
@@ -319,7 +249,7 @@ public class PersonAccount extends LoginAccount {
      * Sets the value of the uid property.
      *
      * @param value
-     *            allowed object is {@link String }
+     *                  allowed object is {@link String }
      *
      */
     public void setUid(String value) {
@@ -345,7 +275,7 @@ public class PersonAccount extends LoginAccount {
      * Sets the value of the cn property.
      *
      * @param value
-     *            allowed object is {@link String }
+     *                  allowed object is {@link String }
      *
      */
     public void setCn(String value) {
@@ -371,7 +301,7 @@ public class PersonAccount extends LoginAccount {
      * Sets the value of the sn property.
      *
      * @param value
-     *            allowed object is {@link String }
+     *                  allowed object is {@link String }
      *
      */
     public void setSn(String value) {
@@ -397,7 +327,7 @@ public class PersonAccount extends LoginAccount {
      * Sets the value of the preferredLanguage property.
      *
      * @param value
-     *            allowed object is {@link String }
+     *                  allowed object is {@link String }
      *
      */
     public void setPreferredLanguage(String value) {
@@ -497,7 +427,7 @@ public class PersonAccount extends LoginAccount {
      * Sets the value of the mail property.
      *
      * @param value
-     *            allowed object is {@link String }
+     *                  allowed object is {@link String }
      *
      */
     public void setMail(String value) {
@@ -523,7 +453,7 @@ public class PersonAccount extends LoginAccount {
      * Sets the value of the ibmPrimaryEmail property.
      *
      * @param value
-     *            allowed object is {@link String }
+     *                  allowed object is {@link String }
      *
      */
     public void setIbmPrimaryEmail(String value) {
@@ -586,7 +516,7 @@ public class PersonAccount extends LoginAccount {
      * Sets the value of the labeledURI property.
      *
      * @param value
-     *            allowed object is {@link String }
+     *                  allowed object is {@link String }
      *
      */
     public void setLabeledURI(String value) {
@@ -1167,7 +1097,7 @@ public class PersonAccount extends LoginAccount {
      * Sets the value of the employeeType property.
      *
      * @param value
-     *            allowed object is {@link String }
+     *                  allowed object is {@link String }
      *
      */
     public void setEmployeeType(String value) {
@@ -1193,7 +1123,7 @@ public class PersonAccount extends LoginAccount {
      * Sets the value of the employeeNumber property.
      *
      * @param value
-     *            allowed object is {@link String }
+     *                  allowed object is {@link String }
      *
      */
     public void setEmployeeNumber(String value) {
@@ -1626,7 +1556,7 @@ public class PersonAccount extends LoginAccount {
      * Sets the value of the kerberosId property.
      *
      * @param value
-     *            allowed object is {@link String }
+     *                  allowed object is {@link String }
      *
      */
     public void setKerberosId(String value) {
@@ -1652,7 +1582,7 @@ public class PersonAccount extends LoginAccount {
      * Sets the value of the photoURL property.
      *
      * @param value
-     *            allowed object is {@link String }
+     *                  allowed object is {@link String }
      *
      */
     public void setPhotoUrl(String value) {
@@ -1678,7 +1608,7 @@ public class PersonAccount extends LoginAccount {
      * Sets the value of the photoURLThumbnail property.
      *
      * @param value
-     *            allowed object is {@link String }
+     *                  allowed object is {@link String }
      *
      */
     public void setPhotoUrlThumbnail(String value) {
@@ -1704,7 +1634,7 @@ public class PersonAccount extends LoginAccount {
      * Sets the value of the honorificSuffix property.
      *
      * @param value
-     *            allowed object is {@link String }
+     *                  allowed object is {@link String }
      *
      */
     public void setHonorificSuffix(String value) {
@@ -1734,7 +1664,7 @@ public class PersonAccount extends LoginAccount {
      * Sets the value of the honorificPrefix property.
      *
      * @param value
-     *            allowed object is {@link String }
+     *                  allowed object is {@link String }
      *
      */
     public void setHonorificPrefix(String value) {
@@ -1764,7 +1694,7 @@ public class PersonAccount extends LoginAccount {
      * Sets the value of the middleName property.
      *
      * @param value
-     *            allowed object is {@link String }
+     *                  allowed object is {@link String }
      *
      */
     public void setMiddleName(String value) {
@@ -1794,7 +1724,7 @@ public class PersonAccount extends LoginAccount {
      * Sets the value of the nickName property.
      *
      * @param value
-     *            allowed object is {@link String }
+     *                  allowed object is {@link String }
      *
      */
     public void setNickName(String value) {
@@ -1824,7 +1754,7 @@ public class PersonAccount extends LoginAccount {
      * Sets the value of the profileUrl property.
      *
      * @param value
-     *            allowed object is {@link String }
+     *                  allowed object is {@link String }
      *
      */
     public void setProfileUrl(String value) {
@@ -1854,7 +1784,7 @@ public class PersonAccount extends LoginAccount {
      * Sets the value of the timezone property.
      *
      * @param value
-     *            allowed object is {@link String }
+     *                  allowed object is {@link String }
      *
      */
     public void setTimezone(String value) {
@@ -1884,7 +1814,7 @@ public class PersonAccount extends LoginAccount {
      * Sets the value of the locale property.
      *
      * @param value
-     *            allowed object is {@link String }
+     *                  allowed object is {@link String }
      *
      */
     public void setLocale(String value) {
@@ -1914,7 +1844,7 @@ public class PersonAccount extends LoginAccount {
      * Sets the value of the active property.
      *
      * @param value
-     *            allowed object is {@link String }
+     *                  allowed object is {@link String }
      *
      */
     public void setActive(Boolean value) {
@@ -3192,7 +3122,7 @@ public class PersonAccount extends LoginAccount {
      * Set an extended property's value.
      *
      * @param property The property to set.
-     * @param value The value to set.
+     * @param value    The value to set.
      * @throws ClassCastException If the value was not of the correct data type.
      */
     private void setExtendedProperty(String property, Object value) {
@@ -3228,14 +3158,14 @@ public class PersonAccount extends LoginAccount {
      * Allows for an extended property, or a property not pre-defined as part of this PersonAccount entity type, to be
      * added to the PersonAccount entity
      *
-     * @param propName: name of property
-     *            <ul><li>allowed object is a {@link String}</li></ul>
-     * @param dataType: Java type of property
-     *            <ul><li>allowed object is a {@link String}</li></ul>
-     * @param multiValued: describes if the property is a single valued or multi-valued property
-     *            <ul><li>allowed object is a {@link boolean}</li></ul>
+     * @param propName:     name of property
+     *                          <ul><li>allowed object is a {@link String}</li></ul>
+     * @param dataType:     Java type of property
+     *                          <ul><li>allowed object is a {@link String}</li></ul>
+     * @param multiValued:  describes if the property is a single valued or multi-valued property
+     *                          <ul><li>allowed object is a {@link boolean}</li></ul>
      * @param defaultValue: defines the default value for this property
-     *            <ul><li>allowed object is a {@link Object}</li></ul>
+     *                          <ul><li>allowed object is a {@link Object}</li></ul>
      *
      */
     public static void addExtendedProperty(String propName, String dataType, boolean multiValued, Object defaultValue) {

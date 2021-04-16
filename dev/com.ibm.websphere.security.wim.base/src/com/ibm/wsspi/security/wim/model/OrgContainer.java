@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,10 +16,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlType;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
@@ -61,26 +57,6 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
  * extends the Party object.
  *
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "OrgContainer", propOrder = {
-                                              "o",
-                                              "ou",
-                                              "dc",
-                                              "cn",
-                                              "telephoneNumber",
-                                              "facsimileTelephoneNumber",
-                                              "postalAddress",
-                                              "l",
-                                              "localityName",
-                                              "st",
-                                              "stateOrProvinceName",
-                                              "street",
-                                              "postalCode",
-                                              "businessAddress",
-                                              "description",
-                                              "businessCategory",
-                                              "seeAlso"
-})
 @Trivial
 public class OrgContainer extends Party {
     private static final String PROP_O = "o";
@@ -162,7 +138,7 @@ public class OrgContainer extends Party {
      * Sets the value of the o property.
      *
      * @param value
-     *            allowed object is {@link String }
+     *                  allowed object is {@link String }
      *
      */
     public void setO(String value) {
@@ -188,7 +164,7 @@ public class OrgContainer extends Party {
      * Sets the value of the ou property.
      *
      * @param value
-     *            allowed object is {@link String }
+     *                  allowed object is {@link String }
      *
      */
     public void setOu(String value) {
@@ -214,7 +190,7 @@ public class OrgContainer extends Party {
      * Sets the value of the dc property.
      *
      * @param value
-     *            allowed object is {@link String }
+     *                  allowed object is {@link String }
      *
      */
     public void setDc(String value) {
@@ -240,7 +216,7 @@ public class OrgContainer extends Party {
      * Sets the value of the cn property.
      *
      * @param value
-     *            allowed object is {@link String }
+     *                  allowed object is {@link String }
      *
      */
     public void setCn(String value) {
@@ -599,7 +575,7 @@ public class OrgContainer extends Party {
      * Sets the value of the businessAddress property.
      *
      * @param value
-     *            allowed object is {@link AddressType }
+     *                  allowed object is {@link AddressType }
      *
      */
     public void setBusinessAddress(AddressType value) {

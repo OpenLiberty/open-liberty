@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016,2018 IBM Corporation and others.
+ * Copyright (c) 2016,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,9 +9,9 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 /**
- * @version 1.1
+ * @version 2.0
  */
-@org.osgi.annotation.versioning.Version("1.1")
+@org.osgi.annotation.versioning.Version("2.0")
 @com.ibm.websphere.ras.annotation.TraceOptions(traceGroup = com.ibm.websphere.security.wim.util.TraceConstants.TRACE_GROUP,
                                                messageBundle = com.ibm.websphere.security.wim.util.TraceConstants.MESSAGE_BUNDLE)
 package com.ibm.wsspi.security.wim.model;

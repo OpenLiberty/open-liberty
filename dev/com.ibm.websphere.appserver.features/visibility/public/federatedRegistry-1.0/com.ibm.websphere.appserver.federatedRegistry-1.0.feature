@@ -17,7 +17,7 @@ IBM-SPI-Package: \
   com.ibm.ws.security.wim.registry
 
 -jars=com.ibm.websphere.appserver.spi.federatedRepository; location:=dev/spi/ibm/
--files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.federatedRepository_1.2-javadoc.zip
+-files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.federatedRepository_2.0-javadoc.zip
  
 kind=ga
 edition=core

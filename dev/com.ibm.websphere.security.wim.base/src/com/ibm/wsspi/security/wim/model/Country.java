@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,10 +16,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlType;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
@@ -52,12 +48,6 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
  * <li><b>description</b>: describes this object.</li>
  * </ul>
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Country", propOrder = {
-                                         "c",
-                                         "countryName",
-                                         "description"
-})
 @Trivial
 public class Country extends GeographicLocation {
     private static final String PROP_C = "c";
@@ -100,7 +90,7 @@ public class Country extends GeographicLocation {
      * Sets the value of the <b>c</b> property.
      *
      * @param value
-     *            allowed object is {@link String }
+     *                  allowed object is {@link String }
      *
      */
     public void setC(String value) {
@@ -133,7 +123,7 @@ public class Country extends GeographicLocation {
      * Sets the value of the <b>countryName</b> property.
      *
      * @param value
-     *            allowed object is {@link String }
+     *                  allowed object is {@link String }
      *
      */
     public void setCountryName(String value) {
@@ -203,7 +193,7 @@ public class Country extends GeographicLocation {
      * Gets the value of the requested property
      *
      * @param propName
-     *            allowed object is {@link String}
+     *                     allowed object is {@link String}
      *
      * @return
      *         returned object is {@link Object}
@@ -248,9 +238,9 @@ public class Country extends GeographicLocation {
      * Sets the value of the provided property to the provided value.
      *
      * @param propName
-     *            allowed object is {@link String}
+     *                     allowed object is {@link String}
      * @param value
-     *            allowed object is {@link Object}
+     *                     allowed object is {@link Object}
      *
      */
     @Override
@@ -271,7 +261,7 @@ public class Country extends GeographicLocation {
      * Sets the value of provided property to null.
      *
      * @param propName
-     *            allowed object is {@link String}
+     *                     allowed object is {@link String}
      *
      */
     @Override
@@ -297,7 +287,7 @@ public class Country extends GeographicLocation {
      * Gets a list of all supported properties for this model object, <b>Country</b>
      *
      * @param entityTypeName
-     *            allowed object is {@link String}
+     *                           allowed object is {@link String}
      *
      * @return
      *         returned object is {@link List}
@@ -331,7 +321,7 @@ public class Country extends GeographicLocation {
      * Gets the Java type of the value of the provided property. For example: String, List
      *
      * @param propName
-     *            allowed object is {@link String}
+     *                     allowed object is {@link String}
      *
      * @return
      *         returned object is {@link String}
@@ -374,7 +364,7 @@ public class Country extends GeographicLocation {
      *
      * @param superTypeName
      *
-     *            allowed object is {@link String}
+     *                          allowed object is {@link String}
      * @return
      *         returned object is {@link boolean}
      */

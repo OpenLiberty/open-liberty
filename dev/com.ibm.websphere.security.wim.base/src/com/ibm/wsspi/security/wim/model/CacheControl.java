@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,11 +15,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
@@ -59,14 +54,9 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
  * value other than clearEntity or clearAll, an error message appears.
  *
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "CacheControl", propOrder = {
-                                              "mode"
-})
 @Trivial
 public class CacheControl extends Control {
 
-    @XmlElement(required = true)
     protected String mode;
     private static List propertyNames = null;
     private static HashMap dataTypeMap = null;
@@ -94,7 +84,7 @@ public class CacheControl extends Control {
      * Sets the value of the <b>mode</b> property.
      *
      * @param value
-     *            allowed object is {@link String }
+     *                  allowed object is {@link String }
      *
      */
     public void setMode(String value) {
@@ -116,7 +106,7 @@ public class CacheControl extends Control {
      * Gets the value of the requested property
      *
      * @param propName
-     *            allowed object is {@link String}
+     *                     allowed object is {@link String}
      *
      * @return
      *         returned object is {@link Object}
@@ -149,9 +139,9 @@ public class CacheControl extends Control {
      * Sets the value of the provided property to the provided value.
      *
      * @param propName
-     *            allowed object is {@link String}
+     *                     allowed object is {@link String}
      * @param value
-     *            allowed object is {@link Object}
+     *                     allowed object is {@link Object}
      *
      */
     @Override
@@ -166,7 +156,7 @@ public class CacheControl extends Control {
      * Sets the value of provided property to null.
      *
      * @param propName
-     *            allowed object is {@link String}
+     *                     allowed object is {@link String}
      *
      */
     @Override
@@ -189,7 +179,7 @@ public class CacheControl extends Control {
      * Gets a list of all supported properties for this model object, <b>CacheControl</b>
      *
      * @param entityTypeName
-     *            allowed object is {@link String}
+     *                           allowed object is {@link String}
      *
      * @return
      *         returned object is {@link List}
@@ -220,7 +210,7 @@ public class CacheControl extends Control {
      * Gets the Java type of the value of the provided property. For example: String, List
      *
      * @param propName
-     *            allowed object is {@link String}
+     *                     allowed object is {@link String}
      *
      * @return
      *         returned object is {@link String}
@@ -263,7 +253,7 @@ public class CacheControl extends Control {
      *
      * @param superTypeName
      *
-     *            allowed object is {@link String}
+     *                          allowed object is {@link String}
      * @return
      *         returned object is {@link boolean}
      */

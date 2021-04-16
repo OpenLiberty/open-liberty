@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,20 +16,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlSeeAlso;
-import javax.xml.bind.annotation.XmlType;
-
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
 
 /**
  * <p>Java class for GroupControl complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="GroupControl">
  * &lt;complexContent>
@@ -39,14 +33,14 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
  * &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
+ *
  * <p> The GroupControl object extends the HierarchyControl object, and defines one property: <b>modifyMode</b>.
- * 
+ *
  * <p> The GroupControl object may be used to specify the assign or un-assign mode through
  * the <b>modifyMode</b> property. Multiple entities can be assigned or un-assigned in a single call.
  * If there is only partial success when assigning or un-assigning multiple entities, an exception will be thrown.
  * It is responsibility of the caller to perform any clean-up needed in the event of an exception.
- * 
+ *
  * <ul>
  * <li><b>modifyMode</b>: controls the number of members defined in a group object to be added as members of this group</li>
  * <ul>
@@ -57,18 +51,9 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
  * </ul>
  * </ul>
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "GroupControl")
-@XmlSeeAlso({
-             GroupMemberControl.class,
-             GroupMembershipControl.class
-})
 @Trivial
-public class GroupControl
-                extends HierarchyControl
-{
+public class GroupControl extends HierarchyControl {
 
-    @XmlAttribute(name = "modifyMode")
     protected Integer modifyMode;
     private static List propertyNames = null;
     private static HashMap dataTypeMap = null;
@@ -83,10 +68,10 @@ public class GroupControl
 
     /**
      * Gets the value of the <b>modifyMode</b> property.
-     * 
+     *
      * @return
      *         possible object is {@link Integer }
-     * 
+     *
      */
     public int getModifyMode() {
         if (modifyMode == null) {
@@ -98,10 +83,10 @@ public class GroupControl
 
     /**
      * Sets the value of the <b>modifyMode</b> property.
-     * 
+     *
      * @param value
-     *            allowed object is {@link Integer }
-     * 
+     *                  allowed object is {@link Integer }
+     *
      */
     public void setModifyMode(int value) {
         this.modifyMode = value;
@@ -109,10 +94,10 @@ public class GroupControl
 
     /**
      * Returns true if the <b>modifyMode</b> property is set; false, otherwise.
-     * 
+     *
      * @return
      *         returned object is {@link boolean }
-     * 
+     *
      */
 
     public boolean isSetModifyMode() {
@@ -121,7 +106,7 @@ public class GroupControl
 
     /**
      * Resets the <b>modifyMode</b> property to null.
-     * 
+     *
      */
 
     public void unsetModifyMode() {
@@ -130,13 +115,13 @@ public class GroupControl
 
     /**
      * Gets the value of the requested property
-     * 
+     *
      * @param propName
-     *            allowed object is {@link String}
-     * 
+     *                     allowed object is {@link String}
+     *
      * @return
      *         returned object is {@link Object}
-     * 
+     *
      */
     @Override
     public Object get(String propName) {
@@ -148,10 +133,10 @@ public class GroupControl
 
     /**
      * Returns true if the requested property is set; false, otherwise.
-     * 
+     *
      * @return
      *         returned object is {@link boolean }
-     * 
+     *
      */
     @Override
     public boolean isSet(String propName) {
@@ -163,12 +148,12 @@ public class GroupControl
 
     /**
      * Sets the value of the provided property to the provided value.
-     * 
+     *
      * @param propName
-     *            allowed object is {@link String}
+     *                     allowed object is {@link String}
      * @param value
-     *            allowed object is {@link Object}
-     * 
+     *                     allowed object is {@link Object}
+     *
      */
     @Override
     public void set(String propName, Object value) {
@@ -180,10 +165,10 @@ public class GroupControl
 
     /**
      * Sets the value of provided property to null.
-     * 
+     *
      * @param propName
-     *            allowed object is {@link String}
-     * 
+     *                     allowed object is {@link String}
+     *
      */
     @Override
     public void unset(String propName) {
@@ -195,7 +180,7 @@ public class GroupControl
 
     /**
      * Gets the name of this model object, <b>GroupControl</b>
-     * 
+     *
      * @return
      *         returned object is {@link String}
      */
@@ -206,10 +191,10 @@ public class GroupControl
 
     /**
      * Gets a list of all supported properties for this model object, <b>GroupControl</b>
-     * 
+     *
      * @param entityTypeName
-     *            allowed object is {@link String}
-     * 
+     *                           allowed object is {@link String}
+     *
      * @return
      *         returned object is {@link List}
      */
@@ -236,10 +221,10 @@ public class GroupControl
 
     /**
      * Gets the Java type of the value of the provided property. For example: String, List
-     * 
+     *
      * @param propName
-     *            allowed object is {@link String}
-     * 
+     *                     allowed object is {@link String}
+     *
      * @return
      *         returned object is {@link String}
      */
@@ -265,7 +250,7 @@ public class GroupControl
     /**
      * Gets a list of any model objects which this model object, <b>GroupControl</b>, is
      * an extension of.
-     * 
+     *
      * @return
      *         returned object is {@link ArrayList}
      */
@@ -280,10 +265,10 @@ public class GroupControl
     /**
      * Returns a true if the provided model object is one that this
      * model object extends; false, otherwise.
-     * 
+     *
      * @param superTypeName
-     * 
-     *            allowed object is {@link String}
+     *
+     *                          allowed object is {@link String}
      * @return
      *         returned object is {@link boolean}
      */
@@ -302,7 +287,7 @@ public class GroupControl
 
     /**
      * Gets a set of any model objects which extend this model object, <b>GroupControl</b>
-     * 
+     *
      * @return
      *         returned object is {@link HashSet}
      */
@@ -315,7 +300,7 @@ public class GroupControl
 
     /**
      * Returns this model object, <b>GroupControl</b>, and its contents as a String
-     * 
+     *
      * @return
      *         returned object is {@link String}
      */

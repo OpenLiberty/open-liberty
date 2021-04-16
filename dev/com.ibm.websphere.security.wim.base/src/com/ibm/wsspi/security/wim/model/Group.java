@@ -18,11 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
-
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
@@ -64,15 +59,6 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
  * </ul>
  *
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Group", propOrder = {
-                                       "cn",
-                                       "members",
-                                       "displayName",
-                                       "description",
-                                       "businessCategory",
-                                       "seeAlso"
-})
 @Trivial
 public class Group extends Party {
     private static final TraceComponent tc = Tr.register(Group.class);
@@ -84,7 +70,6 @@ public class Group extends Party {
     private static final String PROP_BUSINESS_CATEGORY = "businessCategory";
     private static final String PROP_SEE_ALSO = "seeAlso";
 
-    @XmlElement(required = true)
     protected String cn;
     protected List<com.ibm.wsspi.security.wim.model.Entity> members;
     protected List<String> displayName;
@@ -137,7 +122,7 @@ public class Group extends Party {
      * Sets the value of the <b>cn</b> property.
      *
      * @param value
-     *            allowed object is {@link String }
+     *                  allowed object is {@link String }
      *
      */
     public void setCn(String value) {
@@ -400,7 +385,7 @@ public class Group extends Party {
      * Gets the value of the requested property
      *
      * @param propName
-     *            allowed object is {@link String}
+     *                     allowed object is {@link String}
      *
      * @return
      *         returned object is {@link Object}
@@ -487,9 +472,9 @@ public class Group extends Party {
      * Sets the value of the provided property to the provided value.
      *
      * @param propName
-     *            allowed object is {@link String}
+     *                     allowed object is {@link String}
      * @param value
-     *            allowed object is {@link Object}
+     *                     allowed object is {@link Object}
      *
      */
     @Override
@@ -523,7 +508,7 @@ public class Group extends Party {
      * Sets the value of provided property to null.
      *
      * @param propName
-     *            allowed object is {@link String}
+     *                     allowed object is {@link String}
      *
      */
     @Override
@@ -584,7 +569,7 @@ public class Group extends Party {
      * Returns true if the provided property name is a mandatory property; false, otherwise.
      *
      * @param propName
-     *            allowed object is {@link String}
+     *                     allowed object is {@link String}
      * @return
      *         returned object is {@link boolean}
      *
@@ -605,7 +590,7 @@ public class Group extends Party {
      * Returns true if the provided property name is a persistent property; false, otherwise.
      *
      * @param propName
-     *            allowed object is {@link String}
+     *                     allowed object is {@link String}
      * @return
      *         returned object is {@link boolean}
      *
@@ -638,7 +623,7 @@ public class Group extends Party {
      * Gets a list of all supported properties for this model object, <b>Group</b>
      *
      * @param entityTypeName
-     *            allowed object is {@link String}
+     *                           allowed object is {@link String}
      *
      * @return
      *         returned object is {@link List}
@@ -680,7 +665,7 @@ public class Group extends Party {
      * Gets the Java type of the value of the provided property. For example: String, List
      *
      * @param propName
-     *            allowed object is {@link String}
+     *                     allowed object is {@link String}
      *
      * @return
      *         returned object is {@link String}
@@ -726,7 +711,7 @@ public class Group extends Party {
      *
      * @param superTypeName
      *
-     *            allowed object is {@link String}
+     *                          allowed object is {@link String}
      * @return
      *         returned object is {@link boolean}
      */
@@ -786,7 +771,7 @@ public class Group extends Party {
      * Set an extended property's value.
      *
      * @param property The property to set.
-     * @param value The value to set.
+     * @param value    The value to set.
      * @throws ClassCastException If the value was not of the correct data type.
      */
     private void setExtendedProperty(String property, Object value) {
@@ -822,14 +807,14 @@ public class Group extends Party {
      * Allows for an extended property, or a property not pre-defined as part of this Group entity type, to be
      * added to the Group entity
      *
-     * @param propName: name of property
-     *            <ul><li>allowed object is a {@link String}</li></ul>
-     * @param dataType: Java type of property
-     *            <ul><li>allowed object is a {@link String}</li></ul>
-     * @param multiValued: describes if the property is a single valued or multi-valued property
-     *            <ul><li>allowed object is a {@link boolean}</li></ul>
+     * @param propName:     name of property
+     *                          <ul><li>allowed object is a {@link String}</li></ul>
+     * @param dataType:     Java type of property
+     *                          <ul><li>allowed object is a {@link String}</li></ul>
+     * @param multiValued:  describes if the property is a single valued or multi-valued property
+     *                          <ul><li>allowed object is a {@link boolean}</li></ul>
      * @param defaultValue: defines the default value for this property
-     *            <ul><li>allowed object is a {@link Object}</li></ul>
+     *                          <ul><li>allowed object is a {@link Object}</li></ul>
      *
      */
     public static void addExtendedProperty(String propName, String dataType, boolean multiValued, Object defaultValue) {

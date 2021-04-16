@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,19 +16,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlType;
-
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
 
 /**
  * <p>Java class for PageResponseControl complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="PageResponseControl">
  * &lt;complexContent>
@@ -39,25 +34,19 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
  * &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
+ *
  * <p> The PageResponseControl object extends the Control object, and defines two
  * properties:
- * 
+ *
  * <ul>
  * <li><b>cookie</b>: contains the cookie to be used for the subsequent
  * calls in a paging search.</li>
- * 
+ *
  * <li><b>totalSize</b>: indicates the totalSize of the paging search.</li>
  * </ul>
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "PageResponseControl")
 @Trivial
-public class PageResponseControl
-                extends Control
-{
-
-    @XmlAttribute(name = "totalSize")
+public class PageResponseControl extends Control {
     protected Integer totalSize;
     private static List propertyNames = null;
     private static HashMap dataTypeMap = null;
@@ -72,10 +61,10 @@ public class PageResponseControl
 
     /**
      * Gets the value of the totalSize property.
-     * 
+     *
      * @return
      *         possible object is {@link Integer }
-     * 
+     *
      */
     public int getTotalSize() {
         if (totalSize == null) {
@@ -87,10 +76,10 @@ public class PageResponseControl
 
     /**
      * Sets the value of the totalSize property.
-     * 
+     *
      * @param value
-     *            allowed object is {@link Integer }
-     * 
+     *                  allowed object is {@link Integer }
+     *
      */
     public void setTotalSize(int value) {
         this.totalSize = value;

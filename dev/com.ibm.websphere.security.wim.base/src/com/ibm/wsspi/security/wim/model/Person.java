@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,11 +16,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
@@ -45,52 +40,6 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
  * <p> The Person object defines the various properties that can be associated with a user, such as uid, cn,
  * and mail.
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Person", propOrder = {
-                                        "uid",
-                                        "cn",
-                                        "sn",
-                                        "preferredLanguage",
-                                        "displayName",
-                                        "initials",
-                                        "mail",
-                                        "ibmPrimaryEmail",
-                                        "jpegPhoto",
-                                        "labeledURI",
-                                        "carLicense",
-                                        "telephoneNumber",
-                                        "facsimileTelephoneNumber",
-                                        "pager",
-                                        "mobile",
-                                        "homePostalAddress",
-                                        "postalAddress",
-                                        "roomNumber",
-                                        "l",
-                                        "localityName",
-                                        "st",
-                                        "stateOrProvinceName",
-                                        "street",
-                                        "postalCode",
-                                        "city",
-                                        "employeeType",
-                                        "employeeNumber",
-                                        "manager",
-                                        "secretary",
-                                        "departmentNumber",
-                                        "title",
-                                        "ibmJobTitle",
-                                        "c",
-                                        "countryName",
-                                        "givenName",
-                                        "homeAddress",
-                                        "businessAddress",
-                                        "description",
-                                        "businessCategory",
-                                        "seeAlso",
-                                        "kerberosId",
-                                        "photoURL",
-                                        "photoURLThumbnail"
-})
 @Trivial
 public class Person extends Party {
     private static final String PROP_UID = "uid";
@@ -144,8 +93,7 @@ public class Person extends Party {
     protected List<String> displayName;
     protected List<String> initials;
     protected String mail;
-    @XmlElement(name = "ibm-primaryEmail")
-    protected String ibmPrimaryEmail;
+    protected String ibmPrimaryEmail; // ibm-primaryEmail
     protected List<byte[]> jpegPhoto;
     protected String labeledURI;
     protected List<String> carLicense;
@@ -169,8 +117,7 @@ public class Person extends Party {
     protected List<com.ibm.wsspi.security.wim.model.IdentifierType> secretary;
     protected List<String> departmentNumber;
     protected List<String> title;
-    @XmlElement(name = "ibm-jobTitle")
-    protected List<String> ibmJobTitle;
+    protected List<String> ibmJobTitle; // ibm-jobTitle
     protected List<String> c;
     protected List<String> countryName;
     protected List<String> givenName;
@@ -245,7 +192,7 @@ public class Person extends Party {
      * Sets the value of the uid property.
      *
      * @param value
-     *            allowed object is {@link String }
+     *                  allowed object is {@link String }
      *
      */
     public void setUid(String value) {
@@ -271,7 +218,7 @@ public class Person extends Party {
      * Sets the value of the cn property.
      *
      * @param value
-     *            allowed object is {@link String }
+     *                  allowed object is {@link String }
      *
      */
     public void setCn(String value) {
@@ -297,7 +244,7 @@ public class Person extends Party {
      * Sets the value of the sn property.
      *
      * @param value
-     *            allowed object is {@link String }
+     *                  allowed object is {@link String }
      *
      */
     public void setSn(String value) {
@@ -323,7 +270,7 @@ public class Person extends Party {
      * Sets the value of the preferredLanguage property.
      *
      * @param value
-     *            allowed object is {@link String }
+     *                  allowed object is {@link String }
      *
      */
     public void setPreferredLanguage(String value) {
@@ -423,7 +370,7 @@ public class Person extends Party {
      * Sets the value of the mail property.
      *
      * @param value
-     *            allowed object is {@link String }
+     *                  allowed object is {@link String }
      *
      */
     public void setMail(String value) {
@@ -449,7 +396,7 @@ public class Person extends Party {
      * Sets the value of the ibmPrimaryEmail property.
      *
      * @param value
-     *            allowed object is {@link String }
+     *                  allowed object is {@link String }
      *
      */
     public void setIbmPrimaryEmail(String value) {
@@ -512,7 +459,7 @@ public class Person extends Party {
      * Sets the value of the labeledURI property.
      *
      * @param value
-     *            allowed object is {@link String }
+     *                  allowed object is {@link String }
      *
      */
     public void setLabeledURI(String value) {
@@ -1093,7 +1040,7 @@ public class Person extends Party {
      * Sets the value of the employeeType property.
      *
      * @param value
-     *            allowed object is {@link String }
+     *                  allowed object is {@link String }
      *
      */
     public void setEmployeeType(String value) {
@@ -1119,7 +1066,7 @@ public class Person extends Party {
      * Sets the value of the employeeNumber property.
      *
      * @param value
-     *            allowed object is {@link String }
+     *                  allowed object is {@link String }
      *
      */
     public void setEmployeeNumber(String value) {
@@ -1626,7 +1573,7 @@ public class Person extends Party {
      * Sets the value of the kerberosId property.
      *
      * @param value
-     *            allowed object is {@link String }
+     *                  allowed object is {@link String }
      *
      */
     public void setKerberosId(String value) {
@@ -1652,7 +1599,7 @@ public class Person extends Party {
      * Sets the value of the photoURL property.
      *
      * @param value
-     *            allowed object is {@link String }
+     *                  allowed object is {@link String }
      *
      */
     public void setPhotoUrl(String value) {
@@ -1678,7 +1625,7 @@ public class Person extends Party {
      * Sets the value of the photoURLThumbnail property.
      *
      * @param value
-     *            allowed object is {@link String }
+     *                  allowed object is {@link String }
      *
      */
     public void setPhotoUrlThumbnail(String value) {

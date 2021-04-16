@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,22 +16,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
 
 /**
  * <p>Java class for SortControl complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="SortControl">
  * &lt;complexContent>
@@ -44,9 +36,9 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
  * &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
+ *
  * <p> The SortControl object extends the Control object and defines two properties:
- * 
+ *
  * <ul>
  * <li><b>sortKeys</b>: contains a list of attributes will be used to do the sorting.
  * For each attribute a sorting order can be specified by the <b>ascendingOrder</b> property in
@@ -54,25 +46,15 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
  * descending order. The caller needs to set the <b>ascendingOrder</b> property to false.
  * The properties included in the SortControl object must be listed in the property list of
  * the SearchControl.</li>
- * 
+ *
  * <li><b>locale</b>: indicates which language will be used during the sorting operation.</li>
  * </ul>
- * 
+ *
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "SortControl", propOrder = {
-                                            "sortKeys",
-                                            "locale"
-})
 @Trivial
-public class SortControl
-                extends Control
-{
+public class SortControl extends Control {
 
     protected List<com.ibm.wsspi.security.wim.model.SortKeyType> sortKeys;
-    @XmlElement(required = true)
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    @XmlSchemaType(name = "language")
     protected String locale;
     private static List propertyNames = null;
     private static HashMap dataTypeMap = null;
@@ -87,24 +69,25 @@ public class SortControl
 
     /**
      * Gets the value of the sortKeys property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the sortKeys property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
      * getSortKeys().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link com.ibm.wsspi.security.wim.model.SortKeyType }
-     * 
-     * 
+     *
+     *
      */
     public List<com.ibm.wsspi.security.wim.model.SortKeyType> getSortKeys() {
         if (sortKeys == null) {
@@ -123,10 +106,10 @@ public class SortControl
 
     /**
      * Gets the value of the locale property.
-     * 
+     *
      * @return
      *         possible object is {@link String }
-     * 
+     *
      */
     public String getLocale() {
         return locale;
@@ -134,10 +117,10 @@ public class SortControl
 
     /**
      * Sets the value of the locale property.
-     * 
+     *
      * @param value
-     *            allowed object is {@link String }
-     * 
+     *                  allowed object is {@link String }
+     *
      */
     public void setLocale(String value) {
         this.locale = value;

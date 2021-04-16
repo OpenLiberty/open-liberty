@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,11 +16,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlSeeAlso;
-import javax.xml.bind.annotation.XmlType;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
@@ -49,14 +44,6 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
  * <li><b>partyroles</b>: a containment property which is used to link the party roles the role player is
  * playing. <b>partyRoles</b> may contain multiple PartyRole objects since a role player can play multiple roles.
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "RolePlayer", propOrder = {
-                                            "partyRoles"
-})
-@XmlSeeAlso({
-              com.ibm.wsspi.security.wim.model.PartyRole.class,
-              Party.class
-})
 @Trivial
 public class RolePlayer extends Entity {
     private static final String PROP_PARTY_ROLES = "partyRoles";

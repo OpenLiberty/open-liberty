@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,21 +15,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlSeeAlso;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.XmlValue;
-
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
 
 /**
  * <p>Java class for PropertyControl complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="PropertyControl">
  * &lt;complexContent>
@@ -50,36 +43,26 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
  * &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
+ *
  * <p> The PropertyControl object extends the Control object.
- * 
+ *
  * <p> PropertyControl is used in the input Root object of the get() API to specify the properties of the entity to be
  * returned.
- * 
+ *
  * <ul>
  * <li><b>properties</b>: a list of the properties to return from the entities which match the search criteria.
  * For example, <b>properties</b> may include the 'sn' and 'givenName' attributes of the users who are managers.</li>
- * 
+ *
  * <li><b>contextProperties</b>: used for adding names of the contexted properties and the meta data, for e.g.
  * the <b>description</b> property with meta data 'lang=FR'.
- * 
+ *
  * </ul>
- * 
+ *
  * <p> If the property 'properties' contains a wildcard value '*', all supported properties of the entity will be returned
- * 
+ *
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "PropertyControl", propOrder = {
-                                                "properties",
-                                                "contextProperties"
-})
-@XmlSeeAlso({
-             SearchControl.class
-})
 @Trivial
-public class PropertyControl
-                extends Control
-{
+public class PropertyControl extends Control {
 
     protected List<String> properties;
     protected List<PropertyControl.ContextProperties> contextProperties;
@@ -96,24 +79,25 @@ public class PropertyControl
 
     /**
      * Gets the value of the properties property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the properties property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
      * getProperties().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link String }
-     * 
-     * 
+     *
+     *
      */
     public List<String> getProperties() {
         if (properties == null) {
@@ -132,24 +116,25 @@ public class PropertyControl
 
     /**
      * Gets the value of the contextProperties property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the contextProperties property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
+     *
      * <pre>
      * getContextProperties().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list {@link PropertyControl.ContextProperties }
-     * 
-     * 
+     *
+     *
      */
     public List<PropertyControl.ContextProperties> getContextProperties() {
         if (contextProperties == null) {
@@ -296,9 +281,9 @@ public class PropertyControl
 
     /**
      * <p>Java class for anonymous complex type.
-     * 
+     *
      * <p>The following schema fragment specifies the expected content contained within this class.
-     * 
+     *
      * <pre>
      * &lt;complexType>
      * &lt;simpleContent>
@@ -308,18 +293,12 @@ public class PropertyControl
      * &lt;/simpleContent>
      * &lt;/complexType>
      * </pre>
-     * 
-     * 
+     *
+     *
      */
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-                                     "value"
-    })
     public static class ContextProperties {
 
-        @XmlValue
         protected String value;
-        @XmlAttribute(name = "lang", namespace = "http://www.w3.org/XML/1998/namespace")
         protected String lang;
         private static List propertyNames = null;
         private static HashMap dataTypeMap = null;
@@ -334,10 +313,10 @@ public class PropertyControl
 
         /**
          * Gets the value of the value property.
-         * 
+         *
          * @return
          *         possible object is {@link String }
-         * 
+         *
          */
         public String getValue() {
             return value;
@@ -345,10 +324,10 @@ public class PropertyControl
 
         /**
          * Sets the value of the value property.
-         * 
+         *
          * @param value
-         *            allowed object is {@link String }
-         * 
+         *                  allowed object is {@link String }
+         *
          */
         public void setValue(String value) {
             this.value = value;
@@ -360,10 +339,10 @@ public class PropertyControl
 
         /**
          * Gets the value of the lang property.
-         * 
+         *
          * @return
          *         possible object is {@link String }
-         * 
+         *
          */
         public String getLang() {
             return lang;
@@ -371,10 +350,10 @@ public class PropertyControl
 
         /**
          * Sets the value of the lang property.
-         * 
+         *
          * @param value
-         *            allowed object is {@link String }
-         * 
+         *                  allowed object is {@link String }
+         *
          */
         public void setLang(String value) {
             this.lang = value;
@@ -413,7 +392,8 @@ public class PropertyControl
             }
         }
 
-        public void unset(String propName) {}
+        public void unset(String propName) {
+        }
 
         public String getTypeName() {
             return "ContextProperties";

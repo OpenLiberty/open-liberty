@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,11 +16,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
@@ -54,17 +49,11 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
  * </ul>
  *
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "PartyRole", propOrder = {
-                                           "primaryRolePlayer",
-                                           "relatedRolePlayer"
-})
 @Trivial
 public class PartyRole extends com.ibm.wsspi.security.wim.model.RolePlayer {
     private static final String PROP_PRIMARY_ROLE_PLAYER = "primaryRolePlayer";
     private static final String PROP_RELATED_ROLE_PLAYER = "relatedRolePlayer";
 
-    @XmlElement(required = true)
     protected com.ibm.wsspi.security.wim.model.RolePlayer primaryRolePlayer;
     protected List<com.ibm.wsspi.security.wim.model.RolePlayer> relatedRolePlayer;
 
@@ -100,7 +89,7 @@ public class PartyRole extends com.ibm.wsspi.security.wim.model.RolePlayer {
      * Sets the value of the primaryRolePlayer property.
      *
      * @param value
-     *            allowed object is {@link com.ibm.wsspi.security.wim.model.RolePlayer }
+     *                  allowed object is {@link com.ibm.wsspi.security.wim.model.RolePlayer }
      *
      */
     public void setPrimaryRolePlayer(com.ibm.wsspi.security.wim.model.RolePlayer value) {

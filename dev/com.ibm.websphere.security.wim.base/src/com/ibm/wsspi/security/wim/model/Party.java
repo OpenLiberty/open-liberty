@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,6 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-//
 
 package com.ibm.wsspi.security.wim.model;
 
@@ -18,19 +17,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlSeeAlso;
-import javax.xml.bind.annotation.XmlType;
-
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
 
 /**
  * <p>Java class for Party complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="Party">
  * &lt;complexContent>
@@ -39,23 +33,13 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
  * &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
+ *
  * <p> The Party object extends the RolePlayer object, and represents a Party which is extended by Person,
  * Group, OrgContainer and LoginAccount.
- * 
+ *
  **/
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Party")
-@XmlSeeAlso({
-             Group.class,
-             OrgContainer.class,
-             Person.class,
-             LoginAccount.class
-})
 @Trivial
-public class Party
-                extends RolePlayer
-{
+public class Party extends RolePlayer {
 
     private static List mandatoryProperties = null;
     private static List transientProperties = null;
