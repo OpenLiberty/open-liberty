@@ -9,3 +9,4 @@ Subsystem-Name: Checkpoint and Restore Support 1.0
  io.openliberty.criu.lib
 kind=noship
 edition=full
+WLP-Activation-Type: parallel
