@@ -14,7 +14,8 @@ Subsystem-Name: OpenID Connect Client 1.0
   com.ibm.wsspi.appserver.webBundleSecurity-1.0, \
   com.ibm.websphere.appserver.authFilter-1.0, \
   com.ibm.wsspi.appserver.webBundle-1.0, \
-  com.ibm.websphere.appserver.internal.slf4j-1.7.7
+  com.ibm.websphere.appserver.internal.slf4j-1.7.7, \
+  io.openliberty.openidConnectClient1.0.internal.ee-6.0; ibm.tolerates:="9.0"
 -bundles=\
   com.ibm.ws.net.oauth.jsontoken.1.1-r42, \
   com.ibm.ws.org.joda.time.1.6.2, \
@@ -26,7 +27,8 @@ Subsystem-Name: OpenID Connect Client 1.0
   com.ibm.ws.security.common.jsonwebkey, \
   com.ibm.ws.com.google.gson.2.2.4, \
   com.ibm.ws.org.jose4j, \
-  com.ibm.ws.org.json.simple.1.1.1, \
+  com.ibm.ws.org.json.simple.1.1.1
+-jars=\
   com.ibm.websphere.appserver.api.oidc; location:=dev/api/ibm/
 -files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.oidc_1.0-javadoc.zip
 kind=ga

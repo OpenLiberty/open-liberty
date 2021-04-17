@@ -35,13 +35,13 @@ Export-Package: \
   org.opensaml.saml2.*;version="1.0.16", \
   org.opensaml.samlext.*;version="1.0.16", \
   org.opensaml.xacml.*;version="1.0.16", \
-  org.opensaml.security;version="1.0.16", \
-  org.opensaml.xml;version="1.0.16"
+  org.opensaml.security;version="1.0.16"
 
 Private-Package: templates,schema
 
 Import-Package: \
  org.apache.commons.*;resolution:=optional,\
+ org.opensaml.xml.*;version="1.0.16", \
  !org.apache.velocity.*,\
  !org.bouncycastle.*,\
  !org.owasp.esapi.*,\
