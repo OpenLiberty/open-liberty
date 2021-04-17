@@ -15,7 +15,6 @@ Bundle-Name: JPA 2.2 Container Runtime
 Bundle-SymbolicName: com.ibm.ws.jpa.container.v22
 Bundle-Description: JPA 2.2 Container Runtime; version=${bVersion}
 
-jakartaeeMe: true
 WS-TraceGroup: JPA
 
 Private-Package: \
