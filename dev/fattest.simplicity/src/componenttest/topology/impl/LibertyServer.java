@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2020 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1115,7 +1115,9 @@ public class LibertyServer implements LogMonitorClient {
                                              boolean validateTimedExit) throws Exception {
         final String method = "startServerWithArgs";
         Log.info(c, method, ">>> STARTING SERVER: " + this.getServerName());
-        Log.info(c, method, "Starting " + this.getServerName() + "; clean=" + cleanStart + ", validateApps=" + validateApps + ", expectStartFailure=" + expectStartFailure
+        Log.info(c, method,
+                 "Starting " + this.getServerName() + "; preClean=" + preClean + ", clean=" + cleanStart + ", validateApps=" + validateApps + ", expectStartFailure="
+                            + expectStartFailure
                             + ", cmd=" + serverCmd + ", args=" + args);
 
         if (serverCleanupProblem) {
@@ -2642,8 +2644,7 @@ public class LibertyServer implements LogMonitorClient {
         String logDirectoryName = "";
         if (runLevel == null || runLevel.isEmpty()) {
             logDirectoryName = pathToAutoFVTOutputServersFolder + "/" + serverToUse + "-" + sdf.format(d);
-        }
-        else {
+        } else {
             logDirectoryName = pathToAutoFVTOutputServersFolder + "/" + serverToUse + "-" + runLevel + "-" + sdf.format(d);
         }
         LocalFile logFolder = new LocalFile(logDirectoryName);
