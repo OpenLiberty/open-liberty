@@ -1,0 +1,82 @@
+<!--
+    Copyright (c) 2019 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>  
+  <featureManager>
+    <feature>wasJmsServer-1.0</feature>
+    <feature>wasJmsClient-2.0</feature>
+    <feature>jndi-1.0</feature>
+    <feature>mdb-3.2</feature>
+  </featureManager>
+  
+  <messagingEngine id="defaultME">
+    <!-- JMS Resources to invoke an MDB and return TestResults -->
+    <queue id="JPAFVT_ReplyQueue"/>  <!-- Queue MDB posts its reply (typiclaly TestResults) -->
+    <queue id="JPAFVT_Queue"/>       <!-- Dispatch Queue to invoke MDBs with Queue activation spec -->
+    <topicSpace id="JPAFVT_Topic"/>  <!-- Dispatch Topic to invoke MDBs with Topic activation spec -->
+    
+    <!-- JMS Resources for bidirectional communication between Client A and Client B Configurations -->
+    <queue id="JPAFVT_CliA_XMit_CliB_Recv_Queue"/>      <!-- Client A to Client B using Queue -->
+    <queue id="JPAFVT_CliA_Recv_CliB_Xmit_Queue"/>      <!-- Client B to Client A using Queue -->
+    <topicSpace id="JPAFVT_CliA_XMit_CliB_Recv_Topic"/> <!-- Client A to Client B using Topic -->
+    <topicSpace id="JPAFVT_CliA_Recv_CliB_Xmit_Topic"/> <!-- Client B to Client A using Topic -->
+  </messagingEngine>
+
+  <!-- Queue and Topic Connection Factory Declarations -->
+  
+  <jmsQueueConnectionFactory jndiName="jms/JPA_QCF">
+    <properties.wasJms/>          
+  </jmsQueueConnectionFactory>
+  
+  <jmsTopicConnectionFactory jndiName="jms/JPA_TCF">
+    <properties.wasJms/>  
+  </jmsTopicConnectionFactory>
+  
+  <!-- JPAFVT Queues and Topic Definitions for driving MDBs -->
+  
+  <jmsQueue id="jms/JPAFVT_ReplyQueue" jndiName="jms/JPAFVT_ReplyQueue">
+    <properties.wasJms queueName="JPAFVT_ReplyQueue" />
+  </jmsQueue>
+  
+  <jmsQueue id="jms/JPAFVT_Queue" jndiName="jms/JPAFVT_Queue">
+    <properties.wasJms queueName="JPAFVT_Queue" />
+  </jmsQueue>
+  
+  <jmsTopic id="jms/JPAFVT_Topic" jndiName="jms/JPAFVT_Topic">
+    <properties.wasJms topicName="JPAFVT_Topic" />
+  </jmsTopic>
+  
+  <!-- JPAFVT Queues and Topic Definitions for driving bidirectional inter client communication -->
+  <jmsQueue id="jms/JPAFVT_CliA_XMit_CliB_Recv_Queue" jndiName="jms/JPAFVT_CliA_XMit_CliB_Recv_Queue">
+    <properties.wasJms queueName="JPAFVT_CliA_XMit_CliB_Recv_Queue" />
+  </jmsQueue>
+  <jmsQueue id="jms/JPAFVT_CliA_Recv_CliB_Xmit_Queue" jndiName="jms/JPAFVT_CliA_Recv_CliB_Xmit_Queue">
+    <properties.wasJms queueName="JPAFVT_CliA_Recv_CliB_Xmit_Queue" />
+  </jmsQueue>
+  
+  <jmsTopic id="jms/JPAFVT_CliA_XMit_CliB_Recv_Topic" jndiName="jms/JPAFVT_CliA_XMit_CliB_Recv_Topic">
+    <properties.wasJms topicName="JPAFVT_CliA_XMit_CliB_Recv_Topic" />
+  </jmsTopic>
+  <jmsTopic id="jms/JPAFVT_CliA_Recv_CliB_Xmit_Topic" jndiName="jms/JPAFVT_CliA_Recv_CliB_Xmit_Topic">
+    <properties.wasJms topicName="JPAFVT_CliA_Recv_CliB_Xmit_Topic" />
+  </jmsTopic>
+  
+  <jmsActivationSpec id="JPAFVT_QueueDriven_ActivationSpec">
+    <properties.wasJms
+      destinationRef="jms/JPAFVT_Queue"
+      destinationType="javax.jms.Queue"/>
+  </jmsActivationSpec>
+  
+  <jmsActivationSpec id="JPAFVT_TopicDriven_ActivationSpec">
+    <properties.wasJms
+      destinationRef="jms/JPAFVT_Topic"
+      destinationType="javax.jms.Topic"/>
+  </jmsActivationSpec>
+</server>
