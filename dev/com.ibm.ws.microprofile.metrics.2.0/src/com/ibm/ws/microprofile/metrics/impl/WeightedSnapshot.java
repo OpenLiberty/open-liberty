@@ -26,7 +26,7 @@ package com.ibm.ws.microprofile.metrics.impl;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
@@ -50,8 +50,6 @@ public class WeightedSnapshot extends Snapshot {
             this.weight = weight;
         }
     }
-
-    private static final Charset UTF_8 = Charset.forName("UTF-8");
 
     private final long[] values;
     private final double[] normWeights;
@@ -221,7 +219,7 @@ public class WeightedSnapshot extends Snapshot {
      */
     @Override
     public void dump(OutputStream output) {
-        final PrintWriter out = new PrintWriter(new OutputStreamWriter(output, UTF_8));
+        final PrintWriter out = new PrintWriter(new OutputStreamWriter(output, StandardCharsets.UTF_8));
         try {
             for (long value : values) {
                 out.printf("%d%n", value);

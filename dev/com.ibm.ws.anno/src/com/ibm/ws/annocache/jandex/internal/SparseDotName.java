@@ -23,6 +23,7 @@
 package com.ibm.ws.annocache.jandex.internal;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,10 +55,8 @@ public final class SparseDotName implements Comparable<SparseDotName> {
 
     //
 
-    private static Charset UTF8 = Charset.forName("UTF-8");
-
     public static SparseDotName createSimple(byte[] bytes) {
-        return createSimple(new String(bytes, UTF8));
+        return createSimple(new String(bytes, StandardCharsets.UTF_8));
     }
 
     /**

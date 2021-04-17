@@ -21,6 +21,7 @@ import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.net.UnknownHostException;
 import java.nio.channels.FileChannel;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.security.AccessController;
@@ -809,7 +810,7 @@ public class PluginGenerator {
                 try {
                     if (!cachedFile.exists() || writeFile) {
                         fOutputStream = new FileOutputStream(cachedFile);
-                        pluginCfgWriter = new BufferedWriter(new OutputStreamWriter(fOutputStream, "ISO-8859-1"));
+                        pluginCfgWriter = new BufferedWriter(new OutputStreamWriter(fOutputStream, StandardCharsets.ISO_8859_1));
 
                         // Write the plugin config file
                         // Create a style sheet to indent the output

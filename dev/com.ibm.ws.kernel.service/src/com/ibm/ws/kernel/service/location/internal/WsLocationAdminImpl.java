@@ -22,6 +22,7 @@ import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
@@ -217,12 +218,12 @@ public class WsLocationAdminImpl implements WsLocationAdmin {
      * includes some set in response to command line argument parsing).
      *
      * @param config
-     *                   Map containing location service configuration information
+     *            Map containing location service configuration information
      * @throws IllegalArgumentException
-     *                                      if serverName, instanceRootStr, or bootstrapLibStr are empty or
-     *                                      null
+     *             if serverName, instanceRootStr, or bootstrapLibStr are empty or
+     *             null
      * @throws IllegalStateException
-     *                                      if bootstrap library location or instance root don't exist.
+     *             if bootstrap library location or instance root don't exist.
      */
     protected WsLocationAdminImpl(Map<String, Object> config) {
         String userRootStr = (String) config.get(WsLocationConstants.LOC_USER_DIR);
@@ -455,7 +456,7 @@ public class WsLocationAdminImpl implements WsLocationAdmin {
             UUID result = null;
             BufferedReader in = null;
             try {
-                in = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
+                in = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
                 String id = in.readLine();
                 if (id != null) {
                     result = UUID.fromString(id);
@@ -478,7 +479,7 @@ public class WsLocationAdminImpl implements WsLocationAdmin {
                 if (!FileUtils.ensureDirExists(file.getParentFile())) {
                     return;
                 }
-                out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file, false), "UTF-8"));
+                out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file, false), StandardCharsets.UTF_8));
                 out.write(idString);
             } catch (IOException e) {
                 // failed to write the id to the file ... log FFDC
