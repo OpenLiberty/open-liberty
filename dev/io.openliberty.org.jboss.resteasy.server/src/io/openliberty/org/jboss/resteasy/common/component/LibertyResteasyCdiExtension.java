@@ -22,6 +22,7 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.WithAnnotations;
+import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.ext.Provider;
@@ -48,6 +49,7 @@ import io.openliberty.org.jboss.resteasy.common.cdi.LibertyCdiInjectorFactory;
              "bean.defining.annotations=" +
                 "jakarta.ws.rs.Path;" +
                 "jakarta.ws.rs.core.Application;" +
+                "jakarta.ws.rs.ApplicationPath;" +
                 "jakarta.ws.rs.ext.Provider;" +
                 "jakarta.annotation.ManagedBean",
              "service.vendor=IBM" })
