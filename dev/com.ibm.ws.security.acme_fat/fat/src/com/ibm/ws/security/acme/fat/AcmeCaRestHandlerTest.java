@@ -60,6 +60,7 @@ import com.ibm.ws.security.acme.utils.AcmeFatUtils;
 
 import componenttest.annotation.CheckForLeakedPasswords;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -68,6 +69,7 @@ import componenttest.topology.impl.LibertyServer;
  * Test the {@link AcmeCaRestHandler} REST endpoint.
  */
 @RunWith(FATRunner.class)
+@SkipForRepeat(SkipForRepeat.EE9_FEATURES) // No value added
 public class AcmeCaRestHandlerTest {
 	
     //Required to ensure we calculate the correct strategy each run even when
