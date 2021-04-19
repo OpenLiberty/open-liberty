@@ -590,7 +590,7 @@ public class FeatureToolService implements IFeatureToolService, EventHandler {
         String endpointNames = featureHeaders.get(ManifestUtils.SUBSYSTEM_ENDPOINT_NAMES);
         String endpointUrls = featureHeaders.get(ManifestUtils.SUBSYSTEM_ENDPOINT_URLS);
         String endpointShortNames = featureHeaders.get(ManifestUtils.SUBSYSTEM_ENDPOINT_SHORTNAMES);
-        String endpointIcons = featureHeaders.get(ManifestUtils.SUBSYSTEM_ENDPOINT_ICONS); // To do later
+        String endpointIcons = featureHeaders.get(ManifestUtils.SUBSYSTEM_ICON); // To do later
 
         if (endpointNames != null && endpointUrls != null && endpointShortNames != null) {
             // convert the string into map format, eg.
