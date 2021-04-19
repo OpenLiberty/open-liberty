@@ -1,7 +1,5 @@
 package com.ibm.ws.sib.msgstore.persistence.dispatcher;
 
-import com.ibm.ws.sib.msgstore.persistence.dispatcher.StateUtils.StateUpdater;
-
 /*******************************************************************************
  * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
@@ -12,6 +10,7 @@ import com.ibm.ws.sib.msgstore.persistence.dispatcher.StateUtils.StateUpdater;
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+import com.ibm.ws.sib.msgstore.persistence.dispatcher.StateUtils.StateUpdater;
 
 final class DispatcherState {
     static final StateUpdater<DispatcherState> updaterForStart = new StateUpdater<DispatcherState>() {
@@ -59,19 +58,19 @@ final class DispatcherState {
         this.threadWriteErrors = threadWriteErrors;
     }
 
-    DispatcherState running(final boolean running) {
+    private DispatcherState running(final boolean running) {
         return (running == isRunning) ? this : new DispatcherState(running, this.isStopRequested, this.threadWriteErrors);
     }
 
-    DispatcherState stopRequested(final boolean stopRequested) {
+    private DispatcherState stopRequested(final boolean stopRequested) {
         return (stopRequested == isStopRequested) ? this : new DispatcherState(this.isRunning, stopRequested, this.threadWriteErrors);
     }
 
-    DispatcherState addThreadWriteError() {
+    private DispatcherState addThreadWriteError() {
         return new DispatcherState(isRunning, isStopRequested, (threadWriteErrors + 1));
     }
 
-    DispatcherState clearThreadWriteError() {
+    private DispatcherState clearThreadWriteError() {
         return (0 >= threadWriteErrors) ? this : new DispatcherState(isRunning, isStopRequested, (threadWriteErrors - 1));
     }
 
