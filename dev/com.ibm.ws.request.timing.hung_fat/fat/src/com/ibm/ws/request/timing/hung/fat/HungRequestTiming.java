@@ -65,7 +65,7 @@ public class HungRequestTiming {
     @BeforeClass
     public static void setUp() throws Exception {
         ShrinkHelper.defaultDropinApp(server, "TestWebApp", "com.ibm.testwebapp");
-        CommonTasks.writeLogMsg(Level.INFO, " starting server..");
+        CommonTasks.writeLogMsg(Level.INFO, " starting server...");
         server.startServer();
     }
 
@@ -476,6 +476,7 @@ public class HungRequestTiming {
         long previous = -2;
 
         List<String> timerStartLine = server.findStringsInFileInLibertyServerRoot("Starting thread dump scheduler", TRACE_LOG);
+        server.waitForStringInLogUsingMark("CWWKE0068I", 90000);
         lines = server.findStringsInFileInLibertyServerRoot("CWWKE0068I", MESSAGE_LOG);
 
         assertTrue("No Java core generated warnings found!", (lines.size() > 0));

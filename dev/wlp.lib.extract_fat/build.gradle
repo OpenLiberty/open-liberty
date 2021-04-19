@@ -10,7 +10,7 @@ task addRequiredFiles(type: Copy) {
     }
   }
 }
-
+build.dependsOn ':wlp.lib.extract:assemble'
 autoFVT {
   dependsOn addRequiredFiles
 }

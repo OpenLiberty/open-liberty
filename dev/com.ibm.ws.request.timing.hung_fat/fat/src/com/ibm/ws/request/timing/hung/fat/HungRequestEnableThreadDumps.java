@@ -53,7 +53,7 @@ public class HungRequestEnableThreadDumps {
     @BeforeClass
     public static void setUp() throws Exception {
         ShrinkHelper.defaultDropinApp(server, "TestWebApp", "com.ibm.testwebapp");
-        CommonTasks.writeLogMsg(Level.INFO, " Starting server..");
+        CommonTasks.writeLogMsg(Level.INFO, " Starting server...");
         server.startServer();
     }
 

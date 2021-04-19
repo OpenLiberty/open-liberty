@@ -61,7 +61,7 @@ public class TimingRequestTiming {
     @BeforeClass
     public static void setUp() throws Exception {
         ShrinkHelper.defaultDropinApp(server, "jdbcTestPrj_3", "com.ibm.ws.request.timing");
-        CommonTasks.writeLogMsg(Level.INFO, " starting server..");
+        CommonTasks.writeLogMsg(Level.INFO, " starting server...");
         server.startServer();
     }
 

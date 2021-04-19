@@ -17,6 +17,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -173,7 +175,11 @@ public class PackageProcessor implements ArchiveProcessor {
         mf.getMainAttributes().putValue("Server-Name", processName);
 
         // For Java 9, we need to apply the /wlp/lib/platform/java/java9.options to the manifest.
+        System.out.println("java spec version = " + System.getProperty("java.specification.version"));
+        Debug.println("java spec version = " + System.getProperty("java.specification.version"));
         if (System.getProperty("java.specification.version") != null && !System.getProperty("java.specification.version").startsWith("1.")) {
+            System.out.println("reading java9.options file");
+            Debug.println("reading java9.options file");
             HashMap<String, String> map = readJava9Options();
             mf.getMainAttributes().putValue("Add-Exports", map.get("exports"));
             mf.getMainAttributes().putValue("Add-Opens", map.get("opens"));
@@ -182,6 +188,8 @@ public class PackageProcessor implements ArchiveProcessor {
         File newMani = new File(workAreaTmpDir, "MANIFEST.usrinclude.tmp");
         try (FileOutputStream out = new FileOutputStream(newMani)) {
             mf.write(out);
+            out.flush();
+            out.close();
         }
 
         return newMani;
@@ -206,8 +214,11 @@ public class PackageProcessor implements ArchiveProcessor {
 
             // for a Jar archive, the manifest must be first.
             if (isArchiveJar()) {
+                System.out.println("In isArchiveJar");
                 File manifest = new File(bootProps.getInstallRoot(), "lib/extract/META-INF/MANIFEST.MF");
                 if (!manifest.exists()) {
+                    System.out.println("manifest at lib/extract/META-INF/MANIFEST.MF did not exist.  Using unzip path: "
+                                       + bootProps.getInstallRoot().getParentFile().getAbsolutePath());
                     //maybe user didnt extract file with jar -jar, but unzipped..
                     manifest = new File(bootProps.getInstallRoot().getParentFile(), "META-INF/MANIFEST.MF");
                 }
@@ -215,16 +226,26 @@ public class PackageProcessor implements ArchiveProcessor {
                     System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("error.minify.missing.manifest"), processName));
                     return ReturnCode.ERROR_SERVER_PACKAGE;
                 }
+                System.out.println("manifest initial read = '" + dumpManiContent(manifest.getAbsolutePath()) + "'");
+
+                File tmpFile = null;
 
                 if (isIncludeOptionEqualToUsr()) {
+                    System.out.println("In isIncludeOptionEqualToUsr conditional");
                     // Build a special manifest for --include=usr.
                     archive.addFileEntry("META-INF/MANIFEST.MF", buildManifestForIncludeEqualsUsr(manifest));
                 } else if (doesIncludeOptionHaveRunnable()) {
+                    System.out.println("In doesIncludeOptionHaveRunnable conditional");
                     // Build a special manifest for --include=runnable
-                    archive.addFileEntry("META-INF/MANIFEST.MF", buildManifestForIncludeHasRunnable(manifest));
+                    tmpFile = buildManifestForIncludeHasRunnable(manifest);
+                    archive.addFileEntry("META-INF/MANIFEST.MF", tmpFile);
                 } else {
+                    System.out.println("default else conditional");
                     archive.addFileEntry("META-INF/MANIFEST.MF", manifest);
                 }
+
+                System.out.println("manifest = " + manifest.toString());
+                System.out.println("manifest after java9.options = '" + dumpManiContent(tmpFile.getAbsolutePath()) + "'");
 
                 //add any meta-inf folder content, and the auto-extract code.
                 archive.addEntryConfigs(createSelfExtractEntryConfigs());
@@ -246,6 +267,7 @@ public class PackageProcessor implements ArchiveProcessor {
                     archive.addEntryConfigs(createAllConfigs(processName, runtimeOnly));
                 }
             }
+
             archive.create();
         } catch (IOException e) {
             System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("error.unableZipDir"), e));
@@ -253,13 +275,24 @@ public class PackageProcessor implements ArchiveProcessor {
             return ReturnCode.ERROR_SERVER_PACKAGE;
         } finally {
             // must close the archive so that the create can complete
-            Utils.tryToClose(archive);
+            System.out.println("archive is closed = " + Utils.tryToClose(archive));
             restoreWebSphereApplicationServerProperty(installRoot);
             // clean temporary files
             FileUtils.recursiveClean(workAreaTmpDir);
         }
         return ReturnCode.OK;
 
+    }
+
+    private static String dumpManiContent(String filePath) {
+        String maniContent = "";
+        try {
+            maniContent = new String(Files.readAllBytes(Paths.get(filePath)));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return maniContent;
     }
 
     /*
@@ -310,6 +343,10 @@ public class PackageProcessor implements ArchiveProcessor {
         //exclude the manifest from the add, as it's already been added due to needing to be 1st.
         metaInfDirConfig.exclude(Pattern.compile(Pattern.quote(new File(metaInf, "MANIFEST.MF").getAbsolutePath())));
         entryConfigs.add(metaInfDirConfig);
+
+        for (int i = 0; i < entryConfigs.size(); i++) {
+            System.out.println("entryConfigs = " + entryConfigs.get(i).getEntryPath());
+        }
 
         addLibExtractDir(entryConfigs);
 
