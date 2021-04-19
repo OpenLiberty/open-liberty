@@ -1,0 +1,353 @@
+###############################################################################
+# Copyright (c) 2021 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.saml.sso-2.0/resources/com/ibm/ws/security/saml/sso20/internal/resources/SamlSso20Messages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security SAML Web SSO 20 Authentication Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# HTML title of the default post logout page
+POST_LOGOUT_PAGE_TITLE=SAML Single Logout (SLO) - po odhl\u00e1\u0161en\u00ed
+
+# Text that is displayed to an end user if logout completed successfully
+POST_LOGOUT_PAGE_SUCCESS_TEXT=\u00dasp\u011b\u0161n\u011b jste se odhl\u00e1sili.
+
+# Text that is displayed to an end user if logout did not complete successfully
+POST_LOGOUT_PAGE_FAILURE_TEXT=Je mo\u017en\u00e9, \u017ee nebudete zcela odhl\u00e1\u0161eni. Zav\u0159ete prohl\u00ed\u017ee\u010d, abyste zcela ukon\u010dili relaci.
+
+#Message prefix block: CWWKS5000 - CWWKS5099
+SAML20_CONFIG_PROCESSED=CWWKS5000I: Konfigurace jednotn\u00e9ho webov\u00e9ho p\u0159ihl\u00e1\u0161en\u00ed pomoc\u00ed SAML verze 2.0 [{0}] byla \u00fasp\u011b\u0161n\u011b zpracov\u00e1na.
+SAML20_CONFIG_PROCESSED.explanation=Konfigurace jednotn\u00e9ho webov\u00e9ho p\u0159ihl\u00e1\u0161en\u00ed pomoc\u00ed SAML verze 2.0 byla \u00fasp\u011b\u0161n\u011b zpracov\u00e1na.
+SAML20_CONFIG_PROCESSED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+SAML20_CONFIG_MODIFIED=CWWKS5001I: Konfigurace jednotn\u00e9ho webov\u00e9ho p\u0159ihl\u00e1\u0161en\u00ed pomoc\u00ed SAML verze 2.0 [{0}] byla \u00fasp\u011b\u0161n\u011b zpracov\u00e1na.
+SAML20_CONFIG_MODIFIED.explanation=Konfigurace jednotn\u00e9ho webov\u00e9ho p\u0159ihl\u00e1\u0161en\u00ed pomoc\u00ed SAML verze 2.0 byla \u00fasp\u011b\u0161n\u011b zpracov\u00e1na.
+SAML20_CONFIG_MODIFIED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+SAML20_ENDPOINT_SERVICE_ACTIVATED=CWWKS5002I: Slu\u017eba koncov\u00e9ho bodu jednotn\u00e9ho webov\u00e9ho p\u0159ihl\u00e1\u0161en\u00ed pomoc\u00ed SAML verze 2.0 je aktivov\u00e1na.
+SAML20_ENDPOINT_SERVICE_ACTIVATED.explanation=Slu\u017eba koncov\u00e9ho bodu jednotn\u00e9ho webov\u00e9ho p\u0159ihl\u00e1\u0161en\u00ed pomoc\u00ed SAML verze 2.0 je aktivov\u00e1na.
+SAML20_ENDPOINT_SERVICE_ACTIVATED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+# web RequestFilter
+SAML20_INVALID_ACS_URL=CWWKS5003E: Po\u017eadovan\u00fd koncov\u00fd bod [{0}] nen\u00ed v tomto poskytovateli slu\u017eeb (SP) jednotn\u00e9ho webov\u00e9ho p\u0159ihl\u00e1\u0161en\u00ed pomoc\u00ed SAML podporov\u00e1n. 
+SAML20_INVALID_ACS_URL.explanation=Uveden\u00e1 adresa URL nen\u00ed platn\u00fdm koncov\u00fdm bodem SP. P\u0159\u00ed\u010dinou m\u016f\u017ee b\u00fdt nespr\u00e1vn\u00e1 konfigurace v r\u00e1mci SP. 
+SAML20_INVALID_ACS_URL.useraction=Ujist\u011bte se, \u017ee je poskytovatel slu\u017eeb spr\u00e1vn\u011b nakonfigurov\u00e1n.
+
+ 
+# web EndpointServices 
+SAML20_NO_SUCH_ACS_PROVIDER=CWWKS5004E: ID poskytovatele slu\u017eeb [{0}] v po\u017eadavku nen\u00ed v tomto poskytovateli slu\u017eeb (SP) jednotn\u00e9ho webov\u00e9ho p\u0159ihl\u00e1\u0161en\u00ed pomoc\u00ed SAML nakonfigurov\u00e1no nebo nen\u00ed povoleno.
+SAML20_NO_SUCH_ACS_PROVIDER.explanation=Uveden\u00e9 ID SP nen\u00ed nakonfigurov\u00e1no nebo nen\u00ed povoleno v souboru server.xml. 
+SAML20_NO_SUCH_ACS_PROVIDER.useraction=Zkontrolujte, zda je v souboru server.xml nakonfigurov\u00e1no ID poskytovatele a jsou v\u0161echna nastaven\u00ed spr\u00e1vn\u00e1.
+
+
+# Do not translate "id"
+SAML20_SP_ID_ATTRIBUTE_EMPTY=CWWKS5006E: Poskytovatel slu\u017eeb jednotn\u00e9ho webov\u00e9ho p\u0159ihl\u00e1\u0161en\u00ed pomoc\u00ed SAML verze 2.0 byl nakonfigurov\u00e1n s pr\u00e1zdn\u00fdm atributem ID. Atribut ID poskytovatel\u016f slu\u017eeb \
+jednotn\u00e9ho webov\u00e9ho p\u0159ihl\u00e1\u0161en\u00ed pomoc\u00ed SAML nesm\u00ed b\u00fdt pr\u00e1zdn\u00fd.
+SAML20_SP_ID_ATTRIBUTE_EMPTY.explanation=Atribut ID poskytovatel\u016f slu\u017eeb jednotn\u00e9ho webov\u00e9ho p\u0159ihl\u00e1\u0161en\u00ed pomoc\u00ed SAML zaji\u0161\u0165uje jedine\u010dnou identifikaci jednotliv\u00fdch poskytovatel\u016f slu\u017eeb. Atribut \
+ID se pou\u017e\u00edv\u00e1 p\u0159i vytv\u00e1\u0159en\u00ed informac\u00ed nezbytn\u00fdch pro \u0159\u00e1dn\u00e9 fungov\u00e1n\u00ed jednotn\u00e9ho webov\u00e9ho p\u0159ihl\u00e1\u0161en\u00ed pomoc\u00ed SAML, nap\u0159\u00edklad pro generov\u00e1n\u00ed platn\u00fdch adres URL poskytovatel\u016f slu\u017eeb.
+SAML20_SP_ID_ATTRIBUTE_EMPTY.useraction=Zkontrolujte, zda jsou v souboru server.xml v\u0161ichni poskytovatel\u00e9 slu\u017eeb jednotn\u00e9ho webov\u00e9ho p\u0159ihl\u00e1\u0161en\u00ed pomoc\u00ed SAML nakonfigurov\u00e1ni s nepr\u00e1zdnou \
+hodnotou atributu ID.
+
+SAML20_SERVER_INTERNAL_LOG_ERROR=CWWKS5007E: P\u0159i zpracov\u00e1n\u00ed po\u017eadavku na jednotn\u00e9 webov\u00e9 p\u0159ihl\u00e1\u0161en\u00ed pomoc\u00ed SAML [{0}] do\u0161lo k intern\u00ed chyb\u011b serveru. P\u0159\u00ed\u010dina: [{1}], trasov\u00e1n\u00ed z\u00e1sobn\u00edku: [{2}].
+SAML20_SERVER_INTERNAL_LOG_ERROR.explanation=P\u0159i zpracov\u00e1n\u00ed po\u017eadavku na jednotn\u00e9 webov\u00e9 p\u0159ihl\u00e1\u0161en\u00ed pomoc\u00ed SAML do\u0161lo k intern\u00ed chyb\u011b serveru. 
+SAML20_SERVER_INTERNAL_LOG_ERROR.useraction=Vyhledejte chyby v souboru protokolu serveru a ujist\u011bte se, \u017ee m\u00e1te spr\u00e1vnou konfiguraci. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, nahl\u00e9dn\u011bte do informac\u00ed k ur\u010den\u00ed probl\u00e9mu na webu podpory produktu WebSphere Application Server na adrese: http://www.ibm.com/software/webservers/appserv/was/support.
+
+SAML20_SP_BAD_SAML_RESPONSE_ERROR=CWWKS5008E: Odezva SAML poskytovatele identit (IdP) [{0}] m\u00e1 jin\u00fd stavov\u00fd k\u00f3d ne\u017e Success (\u00dasp\u011bch). Stavov\u00fd k\u00f3d: [{1}]. Stavov\u00e1 zpr\u00e1va: [{2}].
+SAML20_SP_BAD_SAML_RESPONSE_ERROR.explanation=Poskytovatel identit m\u00e1 patrn\u011b probl\u00e9m s vyd\u00e1n\u00edm odezvy SAML. P\u0159\u00ed\u010dina tohoto probl\u00e9mu je uvedena ve zpr\u00e1v\u011b.
+SAML20_SP_BAD_SAML_RESPONSE_ERROR.useraction=Zkontrolujte stavov\u00fd k\u00f3d a voliteln\u00e9 zpr\u00e1vy a ujist\u011bte se, \u017ee jsou poskytovatel identit i poskytovatel slu\u017eeb spr\u00e1vn\u011b nakonfigurov\u00e1ni.
+
+SAML20_SP_NO_ASSERTION_ERROR=CWWKS5009E: Odezva SAML poskytovatele identit [{0}] neobsahuje deklaraci.
+SAML20_SP_NO_ASSERTION_ERROR.explanation=Odezva SAML vydan\u00e1 uveden\u00fdm poskytovatelem identit mus\u00ed obsahovat deklaraci.   Odezva SAML p\u0159ijat\u00e1 od poskytovatele identit neobsahuje deklaraci. Tato situace nen\u00ed povolena.
+SAML20_SP_NO_ASSERTION_ERROR.useraction=Ujist\u011bte se, \u017ee je poskytovatel identit (IdP) \u0159\u00e1dn\u011b nakonfigurov\u00e1n a je \u0159\u00e1dn\u011b p\u0159ihl\u00e1\u0161en u\u017eivatel do IdP.
+
+SAML20_SP_BAD_VERSION_ERROR=CWWKS5010E: Odezva SAML obsahuje deklaraci SAML verze [{0}], kterou b\u011bhov\u00e9 prost\u0159ed\u00ed nepodporuje. Po\u017eadovan\u00e1 verze je 2.0.
+SAML20_SP_BAD_VERSION_ERROR.explanation=Odezva SAML obsahuje verzi deklarace, kterou poskytovatel slu\u017eeb nepodporuje. Podporovan\u00e1 verze je uvedena ve zpr\u00e1v\u011b.
+SAML20_SP_BAD_VERSION_ERROR.useraction=Ujist\u011bte se, \u017ee je poskytovatel identit nakonfigurov\u00e1n na deklarace verze 2.0.
+
+SAML20_RESPONSE_BAD_ISSUE_TIME=CWWKS5011E: IssueInstant [{0}] v odezv\u011b SAML je mimo rozsah. Aktu\u00e1ln\u00ed \u010das je [{1}]. Aktu\u00e1ln\u00ed nastaven\u00ed posunu hodin je {2} \
+sekund.
+SAML20_RESPONSE_BAD_ISSUE_TIME.explanation=Odezva SAML je zad\u00e1na mimo p\u0159ijateln\u00e9 \u010dasov\u00e9 obdob\u00ed. P\u0159\u00ed\u010dinou chyby m\u016f\u017ee b\u00fdt skute\u010dnost, \u017ee hodiny p\u0159\u00edjemce nejsou synchronizovan\u00e9 s hodinami tv\u016frce deklarace.
+SAML20_RESPONSE_BAD_ISSUE_TIME.useraction=Ujist\u011bte se, \u017ee jsou datum a \u010das v poskytovateli identit synchronizovan\u00e9 s t\u00edmto poskytovatelem slu\u017eeb jednotn\u00e9ho webov\u00e9ho p\u0159ihl\u00e1\u0161en\u00ed pomoc\u00ed SAML \
+nebo zvy\u0161te hodnotu posunu hodin.
+
+SAML20_RESPONSE_BAD_DESTINATION=CWWKS5012E: M\u00edsto ur\u010den\u00ed [{0}] v odezv\u011b SAML je neplatn\u00e9. O\u010dek\u00e1van\u00e9 m\u00edsto ur\u010den\u00ed je. [{1}].
+SAML20_RESPONSE_BAD_DESTINATION.explanation=M\u00edsto ur\u010den\u00ed v odezv\u011b SAML mus\u00ed odpov\u00eddat adrese URL poskytovatele slu\u017eeb.
+SAML20_RESPONSE_BAD_DESTINATION.useraction=Po\u017e\u00e1dejte administr\u00e1tora poskytovatele identit, aby spr\u00e1vn\u011b nakonfiguroval IdP.   
+
+RS_EMPTY_SAML_ASSERTION=CWWKS5013E: Z\u00e1hlav\u00ed nazvan\u00e9 [{0}] mus\u00ed obsahovat platnou deklaraci SAML, ale takov\u00e1 deklarace v po\u017eadavku HTTP neexistuje, nebo se jedn\u00e1 o pr\u00e1zdn\u00fd \u0159et\u011bzec.
+RS_EMPTY_SAML_ASSERTION.explanation=V uveden\u00e9m z\u00e1hlav\u00ed v po\u017eadavku HTTP je t\u0159eba nastavit platnou deklaraci SAML. 
+RS_EMPTY_SAML_ASSERTION.useraction=Ujist\u011bte se, \u017ee konfigurace rsSaml ud\u00e1v\u00e1 spr\u00e1vn\u00fd n\u00e1zev headerName a uveden\u00e9 z\u00e1hlav\u00ed v po\u017eadavku HTTP m\u00e1 nastavenu platnou deklaraci SAML.
+
+# 0=URL specified in the config, 1=Name of configuration attribute, 2=ID of the SAML configuration element
+SAML20_POST_LOGOUT_URL_NOT_VALID=CWWKS5014W: Adresa URL [{0}], kter\u00e1 je ur\u010dena atributem [{1}] v konfiguraci [{2}], nen\u00ed platn\u00e1. Bude pou\u017eita v\u00fdchoz\u00ed str\u00e1nka pro stav po odhl\u00e1\u0161en\u00ed.
+SAML20_POST_LOGOUT_URL_NOT_VALID.explanation=Vlastn\u00ed hodnota adresy URL pro stav po odhl\u00e1\u0161en\u00ed je neplatn\u00e1, tak\u017ee nelze str\u00e1nku zobrazit. Hodnota pravd\u011bpodobn\u011b obsahuje znaky, kter\u00e9 nejsou platn\u00e9 pro cesty identifik\u00e1toru URI, jako jsou mezery nebo znaky fragment\u016f.
+SAML20_POST_LOGOUT_URL_NOT_VALID.useraction=Ujist\u011bte se, \u017ee vlastn\u00ed hodnota adresy URL pro stav po odhl\u00e1\u0161en\u00ed obsahuje pouze znaky, kter\u00e9 mohou b\u00fdt pou\u017eity v cest\u00e1ch URI.
+
+SAML20_CONFIG_DEACTIVATED=CWWKS5016I: Konfigurace jednotn\u00e9ho webov\u00e9ho p\u0159ihl\u00e1\u0161en\u00ed pomoc\u00ed SAML verze 2.0 [{0}] byla \u00fasp\u011b\u0161n\u011b deaktivov\u00e1na.
+SAML20_CONFIG_DEACTIVATED.explanation=Konfigurace jednotn\u00e9ho webov\u00e9ho p\u0159ihl\u00e1\u0161en\u00ed pomoc\u00ed SAML verze 2.0 byla \u00fasp\u011b\u0161n\u011b deaktivov\u00e1na.
+SAML20_CONFIG_DEACTIVATED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+# CWWKS5017E removed (using SAML20_DECODE_SAML_RESPONSE_FAILURE_LOG/CWWKS5018E instead)
+# {0} = Error message text
+# {1} = Error class
+SAML20_DECODE_SAML_RESPONSE_FAILURE_LOG=CWWKS5018E: Odezvu SAML nelze dek\u00f3dovat nebo analyzovat. [{1}:{0}].
+SAML20_DECODE_SAML_RESPONSE_FAILURE_LOG.explanation=Poskytovatel slu\u017eeb (SP) nem\u016f\u017ee dek\u00f3dovat \u010di analyzovat zpr\u00e1vu odezvy SAML. P\u0159\u00ed\u010dinou tohoto selh\u00e1n\u00ed m\u016f\u017ee b\u00fdt nespr\u00e1vn\u00e9 k\u00f3dov\u00e1n\u00ed \
+na stran\u011b IdP, nespr\u00e1vn\u00e9 sch\u00e9ma nebo selh\u00e1n\u00ed komunikace.
+SAML20_DECODE_SAML_RESPONSE_FAILURE_LOG.useraction=Obra\u0165te se na administr\u00e1tora IdP SAML.
+
+SAML20_NO_IDP_METADATA_FOR_ISSUER=CWWKS5021E: Soubor metadat [{1}] poskytovatele identit (IdP) neobsahuje vydavatele [{0}] deklarace SAML s ID [{2}].
+SAML20_NO_IDP_METADATA_FOR_ISSUER.explanation=Uveden\u00e1 metadata v konfiguraci neexistuj\u00ed. Bez metadat nen\u00ed mo\u017en\u00e9 deklaraci SAML ov\u011b\u0159it. 
+SAML20_NO_IDP_METADATA_FOR_ISSUER.useraction=Ujist\u011bte se, \u017ee soubor metadat pro poskytovatele identit obsahuje instanci uveden\u00e9ho vydavatele.
+
+SAML20_IDP_METADATA_PARSE_ERROR=CWWKS5023E: Soubor metadat [{0}] poskytovatele identit (IdP) v poskytovateli slu\u017eeb (SP) [{1}] je neplatn\u00fd. P\u0159\u00ed\u010dinou t\u00e9to chyby je [{2}].
+SAML20_IDP_METADATA_PARSE_ERROR.explanation=Uveden\u00fd soubor metadat nelze zpracovat. P\u0159\u00ed\u010dina t\u00e9to chyby je uvedena ve zpr\u00e1v\u011b.
+SAML20_IDP_METADATA_PARSE_ERROR.useraction=Ujist\u011bte se, \u017ee je soubor metadat ve spr\u00e1vn\u00e9m form\u00e1tu XML a spr\u00e1vn\u00e9m oboru n\u00e1zv\u016f. Tak\u00e9 v\u011bnujte pozornost akci u\u017eivatele odpov\u00eddaj\u00edc\u00ed p\u0159\u00ed\u010din\u011b uveden\u00e9 ve \
+zpr\u00e1v\u011b.
+
+# {2} = Cause of the error
+SAML20_NO_IDP_METADATA_ERROR=CWWKS5025E: Soubor metadat [{0}] poskytovatele identit (IdP) v poskytovateli slu\u017eeb (SP) [{1}] neexistuje nebo k n\u011bmu nelze p\u0159istupovat. [{2}]  
+SAML20_NO_IDP_METADATA_ERROR.explanation=Uveden\u00fd soubor metadat poskytovatele identit neexistuje nebo k n\u011bmu nelze z\u00edskat p\u0159\u00edstup. 
+SAML20_NO_IDP_METADATA_ERROR.useraction=Ujist\u011bte se, \u017ee soubor metadat IdP existuje a lze k n\u011bmu p\u0159istupovat.
+
+SAML20_NO_SAML_RESPONSE=CWWKS5028E: Poskytovatel identit (IdP) neodpov\u00edd\u00e1 zpr\u00e1vou SAMLResponse. 
+SAML20_NO_SAML_RESPONSE.explanation=Poskytovatel identit (IdP) mus\u00ed odpov\u00eddat zpr\u00e1vou SAMLResponse. 
+SAML20_NO_SAML_RESPONSE.useraction=Ujist\u011bte se, \u017ee je poskytovatel identit spr\u00e1vn\u011b nakonfigurov\u00e1n.
+
+SAML20_POTENTIAL_REPLAY_ATTACK=CWWKS5029E: Nebyl rozpozn\u00e1n stav p\u0159evad\u011b\u010de [{0}] b odezv\u011b poskytovatele identit (IdP).
+SAML20_POTENTIAL_REPLAY_ATTACK.explanation=Mohlo doj\u00edt k n\u011bkter\u00e9 z t\u011bchto ud\u00e1lost\u00ed:\n\
+1) Odezva SAML byla pou\u017eita v\u00edcekr\u00e1t.\n\
+2) Poskytovateli identit trvalo poskytnut\u00ed odezvy p\u0159\u00edli\u0161 dlouho a stav p\u0159evad\u011b\u010de byl z SP odstran\u011bn.\n\
+3) Poskytovatel identit zm\u011bnil stav p\u0159evad\u011b\u010de, kter\u00fd mu byl zasl\u00e1n. 
+SAML20_POTENTIAL_REPLAY_ATTACK.useraction=Ujist\u011bte se, \u017ee IdP odes\u00edl\u00e1 odezvy pouze jednou, odezvy jsou odes\u00edl\u00e1ny v\u010das a nem\u011bn\u00ed se stav p\u0159evad\u011b\u010de.
+
+SAML20_CACHED_DATA_NOT_FOUND=CWWKS5033E: Nebyla nalezena deklarace SAML s kl\u00ed\u010dem mezipam\u011bti [{0}].
+SAML20_CACHED_DATA_NOT_FOUND.explanation=K chr\u00e1n\u011bn\u00e9m prost\u0159edku nelze p\u0159istupovat kv\u016fli intern\u00ed chyb\u011b. Mo\u017en\u00e1 ji\u017e k dat\u016fm v mezipam\u011bti n\u011bkdo z\u00edskal p\u0159\u00edstup a byla odebr\u00e1na. 
+SAML20_CACHED_DATA_NOT_FOUND.useraction=Dal\u0161\u00ed informace naleznete v protokolech serveru.
+
+ACCESS_FILE_INFO_ERROR=CWWKS5036E: Soubor [{0}] se nena\u010detl. [{1}] 
+ACCESS_FILE_INFO_ERROR.explanation=Uveden\u00fd soubor neexistuje nebo nen\u00ed p\u0159\u00edstupn\u00fd. P\u0159\u00ed\u010dina chyby je uvedena ve zpr\u00e1v\u011b.
+ACCESS_FILE_INFO_ERROR.useraction=Zkontrolujte, zda soubor existuje a aplikace k n\u011bmu m\u00e1 p\u0159\u00edstup. Tak\u00e9 v\u011bnujte pozornost akci u\u017eivatele odpov\u00eddaj\u00edc\u00ed p\u0159\u00ed\u010din\u011b chyby.
+
+SAML20_IDP_METADATA_FILE_CHANGED=CWWKS5038I: Soubor metadat [{1}] poskytovatele identit (IdP) pro poskytovatele slu\u017eeb (SP) [{0}] byl zm\u011bn\u011bn.
+SAML20_IDP_METADATA_FILE_CHANGED.explanation=Soubor metadat poskytovatele identit byl aktualizov\u00e1n nov\u00fdmi konfigura\u010dn\u00edmi daty pro IdP; poskytovatel slu\u017eeb (SP) soubor na\u010dte znovu.
+SAML20_IDP_METADATA_FILE_CHANGED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+SAML20_SP_UNSOLICITED_WITH_IN_RESPONSE_TO=CWWKS5040E: Atribut InResponseTo [{0}] nen\u00ed v nevy\u017e\u00e1dan\u00e9 odezv\u011b SAML povolen.
+SAML20_SP_UNSOLICITED_WITH_IN_RESPONSE_TO.explanation=Nevy\u017e\u00e1dan\u00fd odezva SAML obsahuje atribut InResponseTo. Tato situace nen\u00ed povolena.
+SAML20_SP_UNSOLICITED_WITH_IN_RESPONSE_TO.useraction=Po\u017e\u00e1dejte administr\u00e1tora poskytovatele identit, aby spr\u00e1vn\u011b nakonfiguroval IdP.
+
+SAML20_NO_PROTECTED_RESOURCE_ENDPOINT_ERR=CWWKS5041E: Zpr\u00e1va odezvy SAML od IdP neobsahovala o\u010dek\u00e1van\u00fd parametr RelayState.
+SAML20_NO_PROTECTED_RESOURCE_ENDPOINT_ERR.explanation= RelayState je parametr protokolu SAML pou\u017e\u00edvan\u00fd k identifikaci specifick\u00e9ho prost\u0159edku, k n\u011bmu\u017e bude p\u0159istupovat u\u017eivatel/agent \
+u\u017eivatele po p\u0159ihl\u00e1\u0161en\u00ed. Pokud tyto informace chyb\u00ed, nev\u00ed SP, kam u\u017eivatele/agenta u\u017eivatele p\u0159esm\u011brovat.
+SAML20_NO_PROTECTED_RESOURCE_ENDPOINT_ERR.useraction=Po\u017e\u00e1dejte administr\u00e1tora poskytovatele identit, aby zajistil, \u017ee je IdP spr\u00e1vn\u011b nakonfigurov\u00e1n a zahrnuje do odezvy SAML RelayState.
+
+SAML20_NO_ISSUER_ERR=CWWKS5044E: Prvek Issuer v deklaraci SAML m\u00e1 atribut Format [{1}], kter\u00fd nen\u00ed podporov\u00e1n. Form\u00e1t mus\u00ed b\u00fdt vynech\u00e1n, nebo nastaven na [{0}].
+SAML20_NO_ISSUER_ERR.explanation=Deklarace SAML m\u00e1 prvek Issuer s nepodporovanou hodnotou atributu Format. Atribut Format mus\u00ed b\u00fdt vynech\u00e1n, nebo nastaven na podporovanou hodnotu.
+SAML20_NO_ISSUER_ERR.useraction=Po\u017e\u00e1dejte administr\u00e1tora poskytovatele identit, aby spr\u00e1vn\u011b nakonfiguroval IdP.
+
+SAML20_INCORRECT_ISSUER_ERR=CWWKS5045E: Hodnota prvku Issuer [{0}] v deklaraci SAML je neplatn\u00e1.
+SAML20_INCORRECT_ISSUER_ERR.explanation=Deklarace SAML mus\u00ed obsahovat prvek Issuer, kter\u00fd odpov\u00edd\u00e1 vydavateli definovan\u00e9mu v souboru metadat IdP. Prvek Issuer v deklaraci SAML \
+neodpov\u00edd\u00e1 vydavateli v souboru metadat.
+SAML20_INCORRECT_ISSUER_ERR.useraction=Po\u017e\u00e1dejte administr\u00e1tora poskytovatele identit, aby spr\u00e1vn\u011b nakonfiguroval IdP.
+
+SAML20_SIGNATURE_NOT_VERIFIED_ERR=CWWKS5046E: P\u0159i ov\u011b\u0159ov\u00e1n\u00ed podpisu zpr\u00e1vy odezvy SAML do\u0161lo k chyb\u011b.
+SAML20_SIGNATURE_NOT_VERIFIED_ERR.explanation=Zpr\u00e1va odezvy SAML obsahuje podpis, ale b\u011bhov\u00e9 prost\u0159ed\u00ed jej nem\u016f\u017ee identifikovat kv\u016fli intern\u00ed chyb\u011b. 
+SAML20_SIGNATURE_NOT_VERIFIED_ERR.useraction=Ujist\u011bte se, \u017ee jsou metadata poskytovatele identit (IdP) aktu\u00e1ln\u00ed.
+
+SAML20_ASSERTION_SIGNATURE_NOT_VERIFIED_ERR=CWWKS5048E: P\u0159i ov\u011b\u0159ov\u00e1n\u00ed podpisu deklarace SAML do\u0161lo k chyb\u011b.
+SAML20_ASSERTION_SIGNATURE_NOT_VERIFIED_ERR.explanation=Deklarace SAML obsahuje podpis, ale b\u011bhov\u00e9 prost\u0159ed\u00ed jej nem\u016f\u017ee identifikovat kv\u016fli intern\u00ed chyb\u011b.
+SAML20_ASSERTION_SIGNATURE_NOT_VERIFIED_ERR.useraction=Ujist\u011bte se, \u017ee jsou metadata poskytovatele identit (IdP) aktu\u00e1ln\u00ed.
+
+# {0} = Message text for cause of the failure
+SAML20_ASSERTION_SIGNATURE_FAIL_ERR=CWWKS5049E: Podpis deklarace SAML nen\u00ed d\u016fv\u011bryhodn\u00fd nebo je neplatn\u00fd. [{0}]
+SAML20_ASSERTION_SIGNATURE_FAIL_ERR.explanation=Deklarace SAML obsahuje podpis, kter\u00fd nen\u00ed platn\u00fd, nebo je podeps\u00e1n s pomoc\u00ed ned\u016fv\u011bryhodn\u00e9ho certifik\u00e1tu podepsan\u00e9ho. P\u0159\u00ed\u010dina chyby je uvedena ve zpr\u00e1v\u011b.
+SAML20_ASSERTION_SIGNATURE_FAIL_ERR.useraction=M\u016f\u017ee j\u00edt o chybu konfigurace. Ujist\u011bte se, \u017ee jsou metadata poskytovatele identit (IdP) \u0159\u00e1dn\u011b aktualizov\u00e1na a nakonfigurov\u00e1na. Tak\u00e9 v\u011bnujte \
+pozornost akci u\u017eivatele odpov\u00eddaj\u00edc\u00ed p\u0159\u00ed\u010din\u011b chyby zobrazen\u00e9 ve zpr\u00e1v\u011b.
+
+# Example: {0} = Subject
+SAML20_ELEMENT_ERR=CWWKS5050E: Deklarace SAML neobsahuje prvek [{0}]. Prvek [{0}] je povinn\u00fd. 
+SAML20_ELEMENT_ERR.explanation=V deklaraci SAML chyb\u00ed prvek vy\u017eadovan\u00fd b\u011bhov\u00fdm prost\u0159ed\u00edm.
+SAML20_ELEMENT_ERR.useraction=Tento povinn\u00fd prvek je t\u0159eba do deklarace SAML p\u0159idat. Po\u017e\u00e1dejte administr\u00e1tora poskytovatele identit (IdP), aby spr\u00e1vn\u011b nakonfiguroval IdP.
+
+SAML20_SUBJECT_NOTBEFORE_ERR=CWWKS5051E: Deklarace SAML obsahuje prvek SubjectConfirmationData s atributem NotBefore. Tato situace nen\u00ed povolena.
+SAML20_SUBJECT_NOTBEFORE_ERR.explanation=Prvek SubjectConfirmationData v deklaraci SAML nesm\u00ed obsahovat atribut NotBefore.
+SAML20_SUBJECT_NOTBEFORE_ERR.useraction=Po\u017e\u00e1dejte administr\u00e1tora poskytovatele identit (IdP), aby spr\u00e1vn\u011b nakonfiguroval IdP.
+
+# Examples:
+# {0} = NotOnOrAfter
+# {1} = SubjectConfirmationData
+SAML20_ELEMENT_ATTR_ERR=CWWKS5052E: V deklaraci SAML chyb\u00ed atribut [{0}] prvku [{1}] nebo je tento atribut pr\u00e1zdn\u00fd. Tato situace nen\u00ed povolena.
+SAML20_ELEMENT_ATTR_ERR.explanation=V deklaraci SAML chyb\u00ed atribut vy\u017eadovan\u00fd b\u011bhov\u00fdm prost\u0159ed\u00edm.
+SAML20_ELEMENT_ATTR_ERR.useraction=Tento povinn\u00fd atribut je t\u0159eba do deklarace SAML p\u0159idat. Po\u017e\u00e1dejte administr\u00e1tora poskytovatele identit (IdP), aby spr\u00e1vn\u011b nakonfiguroval IdP.
+
+SAML20_SUBJECT_NOTONAFTER_ERR=CWWKS5053E: Atribut NotOnOrAfter [{0}] v prvku SubjectConfirmationData je mimo rozsah. Aktu\u00e1ln\u00ed \u010das je [{1}]. Aktu\u00e1ln\u00ed nastaven\u00ed posunu hodin je {2} \
+sekund.
+SAML20_SUBJECT_NOTONAFTER_ERR.explanation=Deklarace SAML byla p\u0159ijata v \u010dase, kter\u00fd je v r\u00e1mci deklarace ur\u010den\u00fd nastaven\u00edm NotOnOrAfter prvku SubjectConfirmationData, nebo pozd\u011bji. Tato situace nen\u00ed povolena. P\u0159\u00ed\u010dinou chyby m\u016f\u017ee b\u00fdt skute\u010dnost, \u017ee hodiny p\u0159\u00edjemce nejsou synchronizovan\u00e9 s hodinami tv\u016frce deklarace.
+SAML20_SUBJECT_NOTONAFTER_ERR.useraction=Prove\u010fte synchronizaci hodin poskytovatele slu\u017eeb (SP) SAML a poskytovatele identit (IdP), nebo zvy\u0161te hodnotu posunu hodin.
+
+SAML20_SUBJECT_NO_REC_MATCH_ERR=CWWKS5055E: P\u0159\u00edjemce [{0}] v deklaraci SAML neodpov\u00edd\u00e1 adrese URL pro AssertionConsumerService (ACS): [{1}].
+SAML20_SUBJECT_NO_REC_MATCH_ERR.explanation=Atribut Recipient prvku SubjectConfirmationData mus\u00ed b\u00fdt nastaven na adresu URL ACS.
+SAML20_SUBJECT_NO_REC_MATCH_ERR.useraction=Po\u017e\u00e1dejte administr\u00e1tora poskytovatele identit (IdP), aby spr\u00e1vn\u011b nakonfiguroval IdP.
+
+SAML20_SUBJECT_NOBEFORE_ERR=CWWKS5057E: Atribut NotBefore [{0}] je mimo rozsah. Aktu\u00e1ln\u00ed \u010das je [{1}]. Aktu\u00e1ln\u00ed nastaven\u00ed posunu hodin je {2} \
+sekund.
+SAML20_SUBJECT_NOBEFORE_ERR.explanation=Deklarace SAML byla p\u0159ijata d\u0159\u00edve, ne\u017e umo\u017e\u0148uje nastaven\u00ed podm\u00ednky NotBefore v deklaraci. Tato situace nen\u00ed povolena. P\u0159\u00ed\u010dinou chyby m\u016f\u017ee b\u00fdt skute\u010dnost, \u017ee hodiny p\u0159\u00edjemce nejsou synchronizovan\u00e9 s hodinami tv\u016frce deklarace.
+SAML20_SUBJECT_NOBEFORE_ERR.useraction=Prove\u010fte synchronizaci hodin poskytovatele slu\u017eeb (SP) SAML a poskytovatele identit (IdP), nebo zvy\u0161te hodnotu posunu hodin.
+
+SAML20_SUBJECT_NOAFTER_ERR=CWWKS5058E: Podm\u00ednka NotOnOrAfter [{0}] je mimo rozsah. Aktu\u00e1ln\u00ed \u010das je [{1}]. Posun hodin je aktu\u00e1ln\u011b nastaven na {2} minut.
+SAML20_SUBJECT_NOAFTER_ERR.explanation=Deklarace SAML byla p\u0159ijata v \u010dase ur\u010den\u00e9m v r\u00e1mci deklarace nastaven\u00edm NotOnOrAfter, nebo pozd\u011bji. Tato situace nen\u00ed povolena. P\u0159\u00ed\u010dinou chyby m\u016f\u017ee b\u00fdt skute\u010dnost, \u017ee hodiny p\u0159\u00edjemce nejsou synchronizovan\u00e9 s hodinami tv\u016frce deklarace nebo byla deklarace z\u00edsk\u00e1na a p\u0159eposl\u00e1na neautorizovanou aplikac\u00ed.
+SAML20_SUBJECT_NOAFTER_ERR.useraction=Prove\u010fte synchronizaci hodin poskytovatele slu\u017eeb (SP) SAML a poskytovatele identit (IdP), nebo zvy\u0161te hodnotu posunu hodin.
+
+SAML20_CONDITION_UNKNOWN_ERR=CWWKS5059E: Prvek Conditions v deklaraci SAML obsahuje atribut [{0}], kter\u00fd nen\u00ed podporov\u00e1n.
+SAML20_CONDITION_UNKNOWN_ERR.explanation=Prvek Conditions v deklaraci SAML obsahuje atribut nepodporovan\u00fd b\u011bhov\u00fdm prost\u0159ed\u00edm. Tato situace nen\u00ed povolena.
+SAML20_CONDITION_UNKNOWN_ERR.useraction=Po\u017e\u00e1dejte administr\u00e1tora poskytovatele identit, aby spr\u00e1vn\u011b nakonfiguroval IdP.
+
+SAML20_AUDIENCE_UNKNOWN_ERR=CWWKS5060E: Hodnota [{0}] prvku Audience v deklaraci SAML je neplatn\u00e1. O\u010dek\u00e1van\u00e1 hodnota prvku Audience je [{1}].
+SAML20_AUDIENCE_UNKNOWN_ERR.explanation=Prvek Audience mus\u00ed b\u00fdt nastaven na hodnotu EntityID poskytovatele slu\u017eeb.
+SAML20_AUDIENCE_UNKNOWN_ERR.useraction=Po\u017e\u00e1dejte administr\u00e1tora poskytovatele identit (IdP), aby spr\u00e1vn\u011b nakonfiguroval IdP.
+
+SAML20_SESSION_ERR=CWWKS5062E: Atribut SessionNotOnOrAfter [{0}] je mimo rozsah. Aktu\u00e1ln\u00ed \u010das je [{1}]. Aktu\u00e1ln\u00ed nastaven\u00ed posunu hodin je {2} \
+sekund.
+SAML20_SESSION_ERR.explanation=Deklarace SAML byla p\u0159ijata v \u010dase, kter\u00fd je v r\u00e1mci deklarace ur\u010den\u00fd nastaven\u00edm SessionNotOnOrAfter prvku AuthnStatement, nebo pozd\u011bji. Tato situace nen\u00ed povolena. P\u0159\u00ed\u010dinou chyby m\u016f\u017ee b\u00fdt skute\u010dnost, \u017ee hodiny p\u0159\u00edjemce nejsou synchronizovan\u00e9 s hodinami tv\u016frce deklarace nebo byla deklarace z\u00edsk\u00e1na a p\u0159eposl\u00e1na neautorizovanou aplikac\u00ed.
+SAML20_SESSION_ERR.useraction=Prove\u010fte synchronizaci hodin poskytovatele slu\u017eeb (SP) SAML a poskytovatele identit (IdP), nebo zvy\u0161te hodnotu posunu hodin.
+
+SAML20_AUTHENTICATION_FAIL=CWWKS5063E: V\u00fdjimka SAML: Poskytoval slu\u017eeb (SP) SAML nedok\u00e1zal zpracovat po\u017eadavek o ov\u011b\u0159en\u00ed.
+SAML20_AUTHENTICATION_FAIL.explanation=Proces ov\u011b\u0159en\u00ed nebyl \u00fasp\u011b\u0161n\u00fd, nebo\u0165 p\u0159ed touto zpr\u00e1vou do\u0161lo k n\u011bjak\u00e9 jin\u00e9 chyb\u011b.
+SAML20_AUTHENTICATION_FAIL.useraction=Projd\u011bte si akce u\u017eivatele pro tuto chybu, kter\u00e9 se zobrazily p\u0159ed touto zpr\u00e1vou. 
+
+SAML20_NO_BEARER_FOUND=CWWKSS5065E: Atribut Method [{0}] prvku SubjectConfirmationData v deklaraci SAML nen\u00ed podporov\u00e1n. Podporovan\u00e1 hodnota je \
+["urn:oasis:names:tc:SAML:2.0:cm:bearer"].
+SAML20_NO_BEARER_FOUND.explanation= Deklarace mus\u00ed obsahovat metodu potvrzen\u00ed p\u0159edm\u011btu urn:oasis:names:tc:SAML:2.0:cm:bearer.
+SAML20_NO_BEARER_FOUND.useraction=Po\u017e\u00e1dejte administr\u00e1tora poskytovatele identit, aby spr\u00e1vn\u011b nakonfiguroval IdP.
+
+SAML20_NO_INRESPONSETO=CWWKS5067E: Odezva SAML [{0}] obsahuje atribut InResponseTo [{1}], kter\u00fd je neplatn\u00fd. O\u010dek\u00e1van\u00e1 hodnota atributu InResponseTo je [{2}].
+SAML20_NO_INRESPONSETO.explanation=Uveden\u00e1 odezva SAML m\u00e1 neplatnou hodnotu atributu InResponseTo.  
+SAML20_NO_INRESPONSETO.useraction=Po\u017e\u00e1dejte administr\u00e1tora poskytovatele identit, aby spr\u00e1vn\u011b nakonfiguroval IdP, a bylo tak mo\u017en\u00e9 spr\u00e1vnou hodnotu atributu InResponseTo vynechat.
+
+# similar to the tWas messages
+# Example: {0} = realm
+SAML20_ATTRIBUTE_ERR=CWWKS5068E: Deklarace SAML neobsahuje prvek [{0}]. Prvek [{0}] je povinn\u00fd. 
+SAML20_ATTRIBUTE_ERR.explanation=V deklaraci SAML chyb\u00ed atribut vy\u017eadovan\u00fd b\u011bhov\u00fdm prost\u0159ed\u00edm.
+SAML20_ATTRIBUTE_ERR.useraction=Tento povinn\u00fd atribut je t\u0159eba do deklarace SAML p\u0159idat. Po\u017e\u00e1dejte administr\u00e1tora poskytovatele identit (IdP), aby spr\u00e1vn\u011b nakonfiguroval IdP, nebo \
+nakonfigurujte poskytovatele slu\u017eby (SP), p\u0159\u00edpadn\u011b TAI, aby definovali hodnotu tohoto atributu.
+
+SAML20_USER_CANNOT_AUTHENTICATED=CWWKS5072E: Ov\u011b\u0159en\u00ed ID u\u017eivatele [{0}] nebylo \u00fasp\u011b\u0161n\u00e9.
+SAML20_USER_CANNOT_AUTHENTICATED.explanation=Uveden\u00fd u\u017eivatel bu\u010f nen\u00ed v registru u\u017eivatel\u016f, nebo nen\u00ed spr\u00e1vn\u00e1 konfigurace.
+SAML20_USER_CANNOT_AUTHENTICATED.useraction=Ujist\u011bte se, \u017ee je u\u017eivatel nakonfigurov\u00e1n v registru u\u017eivatel\u016f, a nastavte spr\u00e1vn\u011b poskytovatele identit i poskytovatele slu\u017eeb.
+
+SAML20_NO_PRIVATE_KEY=CWWKS5073E: Poskytovatel slu\u017eeb [{0}] nem\u016f\u017ee v \u00falo\u017ei\u0161ti kl\u00ed\u010d\u016f [{1}] naj\u00edt soukrom\u00fd kl\u00ed\u010d.
+SAML20_NO_PRIVATE_KEY.explanation=Uveden\u00e9 \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f neobsahuje po\u017eadovan\u00fd soukrom\u00fd kl\u00ed\u010d.
+SAML20_NO_PRIVATE_KEY.useraction=Ujist\u011bte se, \u017ee nakonfigurovan\u00e9 \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f obsahuje pot\u0159ebn\u00e9 kl\u00ed\u010de, nebo nakonfigurujte jin\u00e9 \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f.
+
+SAML20_NO_CERT=CWWKS5074E: Poskytovatel slu\u017eeb [{0}] nem\u016f\u017ee v \u00falo\u017ei\u0161ti kl\u00ed\u010d\u016f [{1}] naj\u00edt certifik\u00e1t.
+SAML20_NO_CERT.explanation=Uveden\u00e9 \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f neobsahuje po\u017eadovan\u00fd podpisov\u00fd certifik\u00e1t.
+SAML20_NO_CERT.useraction=Ujist\u011bte se, \u017ee nakonfigurovan\u00e9 \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f obsahuje pot\u0159ebn\u00fd certifik\u00e1t, nebo nakonfigurujte jin\u00e9 \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f.
+
+SAML20_AUTH_FILTER_NOT_EXISTING=CWWKS5075E: B\u011bhov\u00e9 prost\u0159ed\u00ed [{1}] poskytovatele slu\u017eeb nem\u016f\u017ee naj\u00edt filtr authFilter ur\u010den\u00fd odkazem authFilterRef [{0}]. Opravte konfiguraci.
+SAML20_AUTH_FILTER_NOT_EXISTING.explanation=Filtr authFilter ur\u010den\u00fd odkazem authFilterRef v konfiguraci SAML WebSSO neexistuje.
+SAML20_AUTH_FILTER_NOT_EXISTING.useraction=Ujist\u011bte se, \u017ee na serveru existuje po\u017eadovan\u00e1 konfigurace pro authFilter, nebo z konfigurace SAML WebSSO odeberte prvek authFilterRef.
+
+SAML20_CANNOT_RESOLVE_ASSERTION=CWWKS5076E: Slu\u017eba UserCredentialResolver nerozpoznala deklaraci SAML a vrac\u00ed v\u00fdjimku UserIdentityException se zpr\u00e1vou [{0}].
+SAML20_CANNOT_RESOLVE_ASSERTION.explanation=Slu\u017eba UserCredentialResolver poskytovan\u00e1 u\u017eivatelskou funkc\u00ed nem\u016f\u017ee \u0159\u00e1dn\u011b namapovat deklaraci SAML a vrac\u00ed v\u00fdjimku UserIdentityException.
+SAML20_CANNOT_RESOLVE_ASSERTION.useraction=Pokud v\u00fdjimka UserIdentityException nen\u00ed o\u010dek\u00e1van\u00e1, zkontrolujte, zda je slu\u017eba UserCredentialResolver nastaven\u00e1 spr\u00e1vn\u011b.
+
+SAML20_MULTI_SPECIFIC_SP=CWWKS5077E: B\u011bhov\u00e9 prost\u0159ed\u00ed nem\u016f\u017ee ze seznamu poskytovatel\u016f slu\u017eeb [{1}] vybrat poskytovatele slu\u017eeb (SP) pro zpracov\u00e1n\u00ed po\u017eadavku [{0}]. 
+SAML20_MULTI_SPECIFIC_SP.explanation=Po\u017eadavek by nem\u011bl spl\u0148ovat filtrovac\u00ed krit\u00e9ria v\u00edce prvk\u016f authFilter. M\u011bl by spl\u0148ovat podm\u00ednky pouze jednoho prvku authFilter, aby si mohlo b\u011bhov\u00e9 \
+prost\u0159ed\u00ed vybrat pro zpracov\u00e1n\u00ed spr\u00e1vn\u00e9ho poskytovatele slu\u017eeb.
+SAML20_MULTI_SPECIFIC_SP.useraction=Zkontrolujte konfiguraci serveru a vyla\u010fte prvek authnFilter, aby byly spln\u011bny podm\u00ednky jednoho prvku authFilter, a po\u017eadavek bude zpracov\u00e1n poskytovatelem \
+slu\u017eeb, kter\u00fd na prvek authFilter odkazuje.
+
+OSGI_SERVICE_ERROR=CWWKS5078E: Slu\u017eba OSGi {0} nen\u00ed dostupn\u00e1.
+OSGI_SERVICE_ERROR.explanation=Zadan\u00e1 slu\u017eba OSGi nen\u00ed dostupn\u00e1.
+OSGI_SERVICE_ERROR.useraction=Restartujte server s volbou "clean".
+
+SAML20_NO_IDP_URL_ERROR=CWWKS5079E: Poskytovatel slu\u017eeb [{1}] nem\u016f\u017ee naj\u00edt adresu URL poskytovatele identit (IdP) na z\u00e1klad\u011b souboru metadat [{0}]. 
+SAML20_NO_IDP_URL_ERROR.explanation=V souboru metadat IdP chyb\u00ed informace o adrese URL.
+SAML20_NO_IDP_URL_ERROR.useraction=Ujist\u011bte se, \u017ee je obsah souboru metadat IdP spr\u00e1vn\u00fd.
+
+SAML20_NO_IDP_URL_OR_METADATA=CWWKS5080E: Poskytovatel slu\u017eeb [{0}] nem\u016f\u017ee naj\u00edt adresu URL poskytovatele identit (IdP), proto\u017ee v konfiguraci SAML WebSSO chyb\u00ed idpMetadata. 
+SAML20_NO_IDP_URL_OR_METADATA.explanation=SP nem\u00e1 informace t\u00fdkaj\u00edc\u00ed se metadat IdP. P\u0159\u00ed\u010dinou m\u016f\u017ee b\u00fdt, \u017ee 1) nen\u00ed spr\u00e1vn\u011b nastaven atribut idpMetadata nebo \u017ee 2) soubor ur\u010den\u00fd t\u00edmto \
+atributem neexistuje.
+SAML20_NO_IDP_URL_OR_METADATA.useraction=Ujist\u011bte se, \u017ee pokud je atribut idpMetadata nastaven, soubor, na kter\u00fd tento atribut odkazuje, existuje.
+
+SAML20_AUTHN_REQUEST_EXPIRED=CWWKS5081E: Poskytovatel slu\u017eeb (SP) nem\u016f\u017ee zpracovat odezvu SAML, proto\u017ee \u017e\u00e1dosti SAML vypr\u0161ela platnost. Poskytovatel slu\u017eeb (SP) nep\u0159ijal odezvu SAML od poskytovatele identit (IdP) v o\u010dek\u00e1van\u00e9m \u010dasov\u00e9m intervalu. \u017d\u00e1dost SAML byla vytvo\u0159ena v \u010dase [{0}] a proto\u017ee atribut konfigurace authnRequestTime je nastaven na [{1}] min, vypr\u0161ela \u017e\u00e1dost v \u010dase [{2}]. Aktu\u00e1ln\u00ed \u010das je [{3}].
+SAML20_AUTHN_REQUEST_EXPIRED.explanation=Poskytovatel identit (IdP) nemusel zpracovat \u017e\u00e1dost SAML v odpov\u00eddaj\u00edc\u00edm \u010dase. Kontrolou protokol\u016f IdP se ujist\u011bte, \u017ee IdP pracuje spr\u00e1vn\u011b.
+SAML20_AUTHN_REQUEST_EXPIRED.useraction=Ode\u0161lete \u017e\u00e1dost znovu a rovn\u011b\u017e zvy\u0161te hodnotu pro atribut authnRequestTime, abyste se ujistili, \u017ee IdP m\u00e1 dostatek \u010dasu ke zpracov\u00e1n\u00ed \u017e\u00e1dosti SAML.
+
+SAML20_RESPONSE_REPLAY=CWWKS5082E: Poskytovatel slu\u017eeb (SP) nem\u016f\u017ee zpracovat odezvu SAML, proto\u017ee deklarace SAML s ID [{0}] ji\u017e byla zpracov\u00e1na.
+SAML20_RESPONSE_REPLAY.explanation=Odezva SAML z poskytovatele identit (IdP) obsahuje deklaraci SAML, kter\u00e1 ji\u017e byla zahrnuta do p\u0159edchoz\u00ed odezvy SAML.
+SAML20_RESPONSE_REPLAY.useraction=Ujist\u011bte se, \u017ee poskytovatel identit (IdP) negeneruje duplicitn\u00ed ID deklarace SAML nebo neodes\u00edl\u00e1 v\u00edcekr\u00e1t stejnou deklaraci SAML.
+
+#do not translate httpsRequired
+SAML20_EP_PROTOCOL_NOT_HTTPS=CWWKS5083E: Poskytovatel slu\u017eeb (SP) vy\u017eaduje SSL (HTTPS), ale HTTP bylo pou\u017eito v adrese URL \u017e\u00e1dosti [{0}]. Aktualizujte konfiguraci, aby atribut [httpsRequired] odpov\u00eddal sch\u00e9matu adresy URL \u017e\u00e1dosti.
+SAML20_EP_PROTOCOL_NOT_HTTPS.explanation=Poskytovatel slu\u017eeb (SP) SAML WebSSO vy\u017eaduje \u017e\u00e1dost SAML WebSSO pro pou\u017eit\u00ed komunikace HTTPS, ale v adrese URL \u017e\u00e1dosti byla ur\u010deno HTTP.
+SAML20_EP_PROTOCOL_NOT_HTTPS.useraction=Prove\u010fte jednu z n\u00e1sleduj\u00edc\u00edch akc\u00ed: 1) Ujist\u011bte se, \u017ee poskytovatel slu\u017eeb SAML WebSSO podporuje SSL. 2) Pokud poskytovatel slu\u017eeb SAML WebSSO nepodporuje SSL, nastavte atribut httpsRequired v konfiguraci poskytovatele slu\u017eeb SAML WebSSO na false.
+
+#do not translate httpsRequired
+SAML20_IDP_PROTOCOL_NOT_HTTPS=CWWKS5084E: Poskytovatel slu\u017eeb (SP) vy\u017eaduje SSL (HTTPS), ale HTTP bylo pou\u017eito v adrese URL poskytovatele identity (IdP) [{0}]. Aktualizujte konfiguraci, aby atribut [httpsRequired] odpov\u00eddal sch\u00e9matu adresy URL IdP.
+SAML20_IDP_PROTOCOL_NOT_HTTPS.explanation=Poskytovatel slu\u017eeb (SP) SAML WebSSO vy\u017eaduje komunikaci SSL, ale HTTP bylo pou\u017eito v adrese URL IdP.
+SAML20_IDP_PROTOCOL_NOT_HTTPS.useraction=Prove\u010fte jednu z n\u00e1sleduj\u00edc\u00edch akc\u00ed: 1) Ujist\u011bte se, \u017ee poskytovatel identity SAML WebSSO podporuje SSL. 2) Pokud poskytovatel identity SAML WebSSO nepodporuje SSL, nastavte atribut httpsRequired v konfiguraci poskytovatele slu\u017eeb SAML WebSSO na false.
+
+RS_SAML_RESPONSE_NOT_SUPPORTED=CWWKS5085E: Odezva SAML v obsahu z\u00e1hlav\u00ed [{0}] nen\u00ed v po\u017eadavku HTTP podporov\u00e1na.
+RS_SAML_RESPONSE_NOT_SUPPORTED.explanation=U obsahu uveden\u00e9ho z\u00e1hlav\u00ed po\u017eadavku HTTP je podporov\u00e1na pouze deklarace SAML. 
+RS_SAML_RESPONSE_NOT_SUPPORTED.useraction=Ujist\u011bte se, \u017ee je v obsahu uveden\u00e9ho z\u00e1hlav\u00ed p\u0159\u00edslu\u0161n\u00e1 deklarace SAML.
+
+# Message prefix block: CWWKS5200 - CWWKS5209
+RS_SAML_SERVER_INTERNAL_LOG_ERROR=CWWKS5201E: P\u0159i zpracov\u00e1n\u00ed webov\u00e9ho jednotn\u00e9ho p\u0159ihl\u00e1\u0161en\u00ed SAML (SSO) pro p\u0159\u00edchoz\u00ed \u0161\u00ed\u0159en\u00ed [{0}] do\u0161lo k intern\u00ed chyb\u011b serveru. P\u0159\u00ed\u010dina: [{1}], trasov\u00e1n\u00ed z\u00e1sobn\u00edku: [{2}].
+RS_SAML_SERVER_INTERNAL_LOG_ERROR.explanation=P\u0159i zpracov\u00e1n\u00ed po\u017eadavku na p\u0159\u00edchoz\u00ed \u0161\u00ed\u0159en\u00ed webov\u00e9ho jednotn\u00e9ho p\u0159ihl\u00e1\u0161en\u00ed SAML SSO do\u0161lo k intern\u00ed chyb\u011b serveru. 
+RS_SAML_SERVER_INTERNAL_LOG_ERROR.useraction=Vyhledejte chyby v souboru protokolu serveru a ujist\u011bte se, \u017ee m\u00e1te spr\u00e1vnou konfiguraci. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, nahl\u00e9dn\u011bte do informac\u00ed k ur\u010den\u00ed probl\u00e9mu na webu podpory produktu WebSphere Application Server na adrese: http://www.ibm.com/software/webservers/appserv/was/support.
+
+RS_SAML_TRUSTED_ISSUERS_ERROR=CWWKS5205E: Vydavatel\u00e9 trustedIssuers [{0}] definovan\u00ed v konfiguraci pkixTrustEngine nejsou pou\u017e\u00edv\u00e1ny webov\u00fdm jednotn\u00fdm p\u0159ihl\u00e1\u0161en\u00edm SAML SSO pro funkci p\u0159\u00edchoz\u00edho \u0161\u00ed\u0159en\u00ed [{1}], a budou ignorov\u00e1ny.
+RS_SAML_TRUSTED_ISSUERS_ERROR.explanation=Vydavatel\u00e9 trustedIssuers v pkixTrustEngine jsou pou\u017e\u00edv\u00e1ny pouze funkc\u00ed jednotn\u00e9ho webov\u00e9ho p\u0159ihl\u00e1\u0161en\u00ed SAML. Ta je ignorov\u00e1na ve webov\u00e9m jednotn\u00e9m p\u0159ihl\u00e1\u0161en\u00ed SAML SSO pro funkci p\u0159\u00edchoz\u00edho \u0161\u00ed\u0159en\u00ed. 
+RS_SAML_TRUSTED_ISSUERS_ERROR.useraction=Odeberte trustedIssuers z pkixTrustEngine.
+
+# 0=Boolean value (i.e. "true" or "false"), 1=Configuration attribute names, 2=Configuration ID
+SAML_CONFIG_IGNORE_ATTRIBUTES=CWWKS5207W: Atribut inboundPropagation je nastaven na [{0}] v konfiguraci samlWebSso20 [{2}]. Atributy [{1}] budou b\u011bhem zpracov\u00e1n\u00ed ignorov\u00e1ny.
+SAML_CONFIG_IGNORE_ATTRIBUTES.explanation=Konfigurace samlWebSso20 je nastavena na zpracov\u00e1n\u00ed p\u0159\u00edchoz\u00edho \u0161\u00ed\u0159en\u00ed tokenu SAML anebo webov\u00e9ho jednotn\u00e9ho p\u0159ihl\u00e1\u0161en\u00ed SAML SSO, ale ne obou. Uveden\u00e9 atributy jsou ignorov\u00e1ny p\u0159i zpracov\u00e1n\u00ed webov\u00fdch po\u017eadavk\u016f s uvedenou konfigurac\u00ed SAML.
+SAML_CONFIG_IGNORE_ATTRIBUTES.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+SAML_BAD_INBOUND_SAML_TOKEN=CWWKS5208E: P\u0159\u00edchoz\u00ed deklarace SAML nen\u00ed platn\u00e1 [{0}].
+SAML_BAD_INBOUND_SAML_TOKEN.explanation=Deklarace SAML, kter\u00e1 je obsa\u017eena v z\u00e1hlav\u00ed po\u017eadavku HTTP, nen\u00ed platn\u00e1 a nelze ji spr\u00e1vn\u011b zanalyzovat.
+SAML_BAD_INBOUND_SAML_TOKEN.useraction=Ujist\u011bte se, \u017ee je deklarace SAML spr\u00e1vn\u011b vygenerov\u00e1na.
+
+# Message prefix block: CWWKS5210 - CWWKS5299
+
+# 0=Exception message from the error encountered
+ERROR_HANDLING_LOGOUT_REQUEST=CWWKS5210E: Slu\u017eba jednotn\u00e9ho odhl\u00e1\u0161en\u00ed SAML rozpoznala chybu p\u0159i zpracov\u00e1n\u00ed po\u017eadavku na odhl\u00e1\u0161en\u00ed. {0}
+ERROR_HANDLING_LOGOUT_REQUEST.explanation=Slu\u017eba rozpoznala chybu p\u0159i zpracov\u00e1n\u00ed po\u017eadavku bu\u010f jako po\u017eadavek koncov\u00e9ho bodu na odhl\u00e1\u0161en\u00ed, z odpov\u011bdi odhl\u00e1\u0161en\u00ed od poskytovatele identit (IdP), nebo z po\u017eadavku na odhl\u00e1\u0161en\u00ed od poskytovatele identit. Zpr\u00e1va zahrnuje informace o typu po\u017eadavku a dal\u0161\u00ed podrobnosti o chyb\u011b.
+ERROR_HANDLING_LOGOUT_REQUEST.useraction=Projd\u011bte si akce u\u017eivatele pro chybu zobrazenou ve zpr\u00e1v\u011b. Zkontrolujte protokoly serveru, zda neobsahuj\u00ed dal\u0161\u00ed chybov\u00e9 zpr\u00e1vy.
+
+LOGOUT_CANNOT_FIND_SAML_SSO_SERVICE=CWWKS5211E: Slu\u017eba jednotn\u00e9ho odhl\u00e1\u0161en\u00ed SAML nem\u016f\u017ee zpracovat po\u017eadavek, proto\u017ee slu\u017eba nem\u016f\u017ee naj\u00edt poskytovatele SAML (SP), kter\u00fd je uveden v po\u017eadavku.
+LOGOUT_CANNOT_FIND_SAML_SSO_SERVICE.explanation=Slu\u017eba jednotn\u00e9ho odhl\u00e1\u0161en\u00ed SAML nem\u016f\u017ee naj\u00edt slu\u017ebu jednotn\u00e9ho p\u0159ihl\u00e1\u0161en\u00ed (SSO) pro poskytovatele SAML (SP), kter\u00e1 je uvedena v po\u017eadavku. Je mo\u017en\u00e9, \u017ee je poskytovatel SP v konfiguraci serveru zak\u00e1z\u00e1n nebo v konfiguraci chyb\u00ed.
+LOGOUT_CANNOT_FIND_SAML_SSO_SERVICE.useraction=Ujist\u011bte se, \u017ee poskytovatel SAML (SP), kter\u00fd odpov\u00edd\u00e1 uveden\u00e9mu n\u00e1zvu poskytovatele, je konfigurov\u00e1n a povolen. Zkontrolujte protokoly serveru, zda neobsahuj\u00ed dal\u0161\u00ed chybov\u00e9 zpr\u00e1vy.
+
+LOGOUT_REQUEST_MISSING_SSO_REQUEST=CWWKS5212E: Slu\u017eba jednotn\u00e9ho odhl\u00e1\u0161en\u00ed SAML nem\u016f\u017ee zpracovat po\u017eadavek, proto\u017ee slu\u017eba nem\u016f\u017ee naj\u00edt informace o po\u017eadavku jednotn\u00e9ho p\u0159ihl\u00e1\u0161en\u00ed (SSO) SAML.
+LOGOUT_REQUEST_MISSING_SSO_REQUEST.explanation=Informace o SSO SAML mus\u00ed b\u00fdt zahrnuty, aby bylo mo\u017en\u00e9 zpracovat po\u017eadavek jednotn\u00e9ho odhl\u00e1\u0161en\u00ed SAML. Je mo\u017en\u00e9, \u017ee poskytovatel SAML (SP) nen\u00ed nakonfigurov\u00e1n nebo \u017ee jej nelze konfigurovat pro zpracov\u00e1n\u00ed po\u017eadavku.
+LOGOUT_REQUEST_MISSING_SSO_REQUEST.useraction=Ujist\u011bte se, \u017ee je nakonfigurov\u00e1n alespo\u0148 jeden poskytovatel SAML (SP), nebo \u017ee pro zpracov\u00e1n\u00ed tohoto po\u017eadavku je nakonfigurov\u00e1n alespo\u0148 jeden poskytovatel SP.
+
+POST_LOGOUT_PAGE_MISSING_MESSAGE_CONTEXT=CWWKS5213E: Slu\u017eba jednotn\u00e9ho odhl\u00e1\u0161en\u00ed SAML nem\u016f\u017ee zobrazit str\u00e1nku pro stav po odhl\u00e1\u0161en\u00ed, proto\u017ee chyb\u00ed informace o zpr\u00e1v\u011b SAML.
+POST_LOGOUT_PAGE_MISSING_MESSAGE_CONTEXT.explanation=Slu\u017eba SAML Single Sign-On (SSO) rozpoznala chybu p\u0159i odes\u00edl\u00e1n\u00ed po\u017eadavku na odhl\u00e1\u0161en\u00ed SAML nebo p\u0159i zpracov\u00e1n\u00ed odezvy odhl\u00e1\u0161en\u00ed SAML.
+POST_LOGOUT_PAGE_MISSING_MESSAGE_CONTEXT.useraction=Zkontrolujte protokoly serveru, zda neobsahuj\u00ed dal\u0161\u00ed chybov\u00e9 zpr\u00e1vy. Ujist\u011bte se, \u017ee slu\u017eba jednotn\u00e9ho p\u0159ihl\u00e1\u0161en\u00ed SAML nezaznamenala \u017e\u00e1dn\u00e9 dal\u0161\u00ed chyby.
+
+# do not translate HTTP-POST, SingleLogoutService
+SAML20_SLOENDPOINT_NOT_IN_METADATA=CWWKS5214E: Slu\u017eba jednotn\u00e9ho odhl\u00e1\u0161en\u00ed SAML pro poskytovatele {0} nem\u016f\u017ee z\u00edskat adresu URL koncov\u00e9ho bodu slu\u017eby jednotn\u00e9ho odhl\u00e1\u0161en\u00ed poskytovatele identit (IdP) z metadat IdP.
+SAML20_SLOENDPOINT_NOT_IN_METADATA.explanation=Adresu URL koncov\u00e9ho bodu slu\u017eby jednotn\u00e9ho odhl\u00e1\u0161en\u00ed poskytovatele identit (IdP) nebylo mo\u017en\u00e9 z\u00edskat z metadat IdP.
+SAML20_SLOENDPOINT_NOT_IN_METADATA.useraction=Ov\u011b\u0159te, \u017ee metadata IdP obsahuj\u00ed polo\u017eku SingleLogoutService s vazbou HTTP-POST a um\u00edst\u011bn\u00ed, kter\u00e9 ur\u010duje platnou adresu URL.
+
+LOGOUT_CANNOT_PERFORM_SLO=CWWKS5215E: Slu\u017eba odhl\u00e1\u0161en\u00ed nem\u016f\u017ee dokon\u010dit jednotn\u00e9 odhl\u00e1\u0161en\u00ed SAML, dokud nebude nalezen jeden jedine\u010dn\u00fd poskytovatel slu\u017eeb. Relace zabezpe\u010den\u00ed u\u017eivatele v poskytovatel\u00edch slu\u017eeb je v\u0161ak odstran\u011bna. Dostupn\u00ed poskytovatel\u00e9 slu\u017eeb jsou [{0}].
+LOGOUT_CANNOT_PERFORM_SLO.explanation=V serveru Liberty je nakonfigurov\u00e1no v\u00edce instanc\u00ed poskytovatele slu\u017eeb. Server Liberty nem\u016f\u017ee vyhledat jednoho jedine\u010dn\u00e9ho poskytovatele slu\u017eeb, aby inicializoval jednotn\u00e9 odhl\u00e1\u0161en\u00ed SAML. Odstran\u00ed se pouze relace zabezpe\u010den\u00ed u\u017eivatele v poskytovatel\u00edch slu\u017eeb.
+LOGOUT_CANNOT_PERFORM_SLO.useraction=Ujist\u011bte se, \u017ee aplikace pro odhl\u00e1\u0161en\u00ed je p\u0159idru\u017eena pouze k jednomu poskytovateli slu\u017eeb. Nap\u0159\u00edklad jeden poskytovatel slu\u017eeb na aplikaci.
+
+LOGOUT_CANNOT_FIND_SAMLTOKEN=CWWKS5218E: Slu\u017eba odhl\u00e1\u0161en\u00ed nem\u016f\u017ee dokon\u010dit jednotn\u00e9 odhl\u00e1\u0161en\u00ed SAML, dokud nebude nalezena jedna relace zabezpe\u010den\u00ed u\u017eivatele.
+LOGOUT_CANNOT_FIND_SAMLTOKEN.explanation=Poskytovatel slu\u017eeb nem\u016f\u017ee nal\u00e9zt relaci zabezpe\u010den\u00ed u\u017eivatele k vytvo\u0159en\u00ed zpr\u00e1vy po\u017eadavku jednotn\u00e9ho odhl\u00e1\u0161en\u00ed SAML. U\u017eivatel byl odhl\u00e1\u0161en od poskytovatele slu\u017eeb, ale m\u016f\u017ee st\u00e1le m\u00edt aktivn\u00ed relaci zabezpe\u010den\u00ed s poskytovatelem identit (IdP).
+LOGOUT_CANNOT_FIND_SAMLTOKEN.useraction=Zva\u017ete implementaci inicializovan\u00e9ho odhl\u00e1\u0161en\u00ed p\u0159es poskytovatele identit (IdP) a pro odhl\u00e1\u0161en\u00ed p\u0159esm\u011brovat u\u017eivatele na poskytovatele identit (IdP), a to zejm\u00e9na v p\u0159\u00edpad\u011b, kdy\u017e se odhl\u00e1\u0161en\u00ed poskytovatele slu\u017eeb nezda\u0159\u00ed nebo nen\u00ed dokon\u010deno. 

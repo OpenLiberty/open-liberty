@@ -1,0 +1,335 @@
+###############################################################################
+# Copyright (c) 2021 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.saml.sso-2.0/resources/com/ibm/ws/security/saml/sso20/internal/resources/SamlSso20Messages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security SAML Web SSO 20 Authentication Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# HTML title of the default post logout page
+POST_LOGOUT_PAGE_TITLE=Post-delogare SAML SLO (Single Logout)
+
+# Text that is displayed to an end user if logout completed successfully
+POST_LOGOUT_PAGE_SUCCESS_TEXT=V-a\u0163i delogat cu succes.
+
+# Text that is displayed to an end user if logout did not complete successfully
+POST_LOGOUT_PAGE_FAILURE_TEXT=Este posibil s\u0103 nu fi\u0163i complet delogat. \u00cenchide\u0163i-v\u0103 browser-ul pentru a v\u0103 \u00eencheia complet sesiunea.
+
+#Message prefix block: CWWKS5000 - CWWKS5099
+SAML20_CONFIG_PROCESSED=CWWKS5000I: Configura\u0163ia SAML Web SSO Versiunea 2.0 [{0}] a fost procesat\u0103 cu succes.
+SAML20_CONFIG_PROCESSED.explanation=Configura\u0163ia SAML Web SSO Versiunea 2.0 a fost procesat\u0103 cu succes.
+SAML20_CONFIG_PROCESSED.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+
+SAML20_CONFIG_MODIFIED=CWWKS5001I: Configura\u0163ia SAML Web SSO Versiunea 2.0 [{0}] a fost procesat\u0103 cu succes.
+SAML20_CONFIG_MODIFIED.explanation=Configura\u0163ia SAML Web SSO Versiunea 2.0 a fost procesat\u0103 cu succes.
+SAML20_CONFIG_MODIFIED.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+
+SAML20_ENDPOINT_SERVICE_ACTIVATED=CWWKS5002I: Serviciul pentru punctul final SAML Web SSO Versiunea 2.0 este activat.
+SAML20_ENDPOINT_SERVICE_ACTIVATED.explanation=Serviciul pentru punctul final SAML Web SSO Versiunea 2.0 este activat.
+SAML20_ENDPOINT_SERVICE_ACTIVATED.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+
+# web RequestFilter
+SAML20_INVALID_ACS_URL=CWWKS5003E: Punctul final cerut pentru [{0}] nu este suportat \u00een acest furnizor de servicii (service provider - SP) SAML Web Single Sign-On (SSO). 
+SAML20_INVALID_ACS_URL.explanation=URL-ul indicat nu este un punct final SP valid. Acest lucru ar putea fi cauzat de o configura\u0163ie incorect\u0103 \u00een SP. 
+SAML20_INVALID_ACS_URL.useraction=Asigura\u0163i-v\u0103 c\u0103 SP este configurat corespunz\u0103tor.
+
+ 
+# web EndpointServices 
+SAML20_NO_SUCH_ACS_PROVIDER=CWWKS5004E: ID-ul furnizorului de servicii [{0}] \u00een cerere nu este configurat \u00een acest furnizor de servicii SAML Web Single Sign-On (SSO) (SP) sau nu este activat.
+SAML20_NO_SUCH_ACS_PROVIDER.explanation=ID-ul SP indicat nu este configurat \u00een fi\u015fierul server.xml sau nu este activat. 
+SAML20_NO_SUCH_ACS_PROVIDER.useraction=Verifica\u0163i fi\u015fierul server.xml pentru a vedea dac\u0103 ID-ul furnizorului este configurat \u015fi c\u0103 toate set\u0103rile sale sunt corecte.
+
+
+# Do not translate "id"
+SAML20_SP_ID_ATTRIBUTE_EMPTY=CWWKS5006E: Un furnizor de servicii SAML Web SSO Versiunea 2.0 a fost configurat cu un atribut ID gol. Atributul ID pentru furnizorii de servicii SAML Web SSO nu trebuie s\u0103 fie gol.
+SAML20_SP_ID_ATTRIBUTE_EMPTY.explanation=Atributul ID pentru furnizorii de servicii SAML Web SSO identific\u0103 \u00een mod unic fiecare furnizor de servicii. Atributul ID este folosit pentru a construi informa\u0163iile necesare pentru func\u0163ionarea corespunz\u0103toare a SAML Web SSO, cum ar fi generarea de URL-uri de furnizor de servicii valide.
+SAML20_SP_ID_ATTRIBUTE_EMPTY.useraction=Verifica\u0163i fi\u015fierul server.xml pentru a v\u0103 asigura c\u0103 to\u0163i furnizorii de servicii SAML Web SSO au fost configura\u0163i cu o valoare de atribut ID negoal\u0103.
+
+SAML20_SERVER_INTERNAL_LOG_ERROR=CWWKS5007E: O eroare intern\u0103 de server a ap\u0103rut \u00een timpul proces\u0103rii cererii SAML Web Single Sign-On (SSO) [{0}]. Cauz\u0103:[{1}], StackTrace: [{2}].
+SAML20_SERVER_INTERNAL_LOG_ERROR.explanation=\u00cen timpul proces\u0103rii unei cereri SAML Web SSO, a ap\u0103rut o eroare intern\u0103 de server. 
+SAML20_SERVER_INTERNAL_LOG_ERROR.useraction=Verifica\u0163i pentru erori \u00een fi\u015fierele istoric ale serverului \u015fi asigura\u0163i-v\u0103 c\u0103 configura\u0163ia dumneavoastr\u0103 este corect\u0103. Dac\u0103 problema persist\u0103, consulta\u0163i informa\u0163iile de determinare a problemei de pe pagina web de suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+SAML20_SP_BAD_SAML_RESPONSE_ERROR=CWWKS5008E: R\u0103spunsul SAML de la furnizorul de identitate (IdP) [{0}] are un cod de stare, altul dec\u00e2t Succes.  Cod stare: [{1}]. Mesaj stare:[{2}].
+SAML20_SP_BAD_SAML_RESPONSE_ERROR.explanation=IdP pare s\u0103 aib\u0103 o problem\u0103 care emite un r\u0103spuns SAML. Motivul pentru problem\u0103 apare \u00een mesaj.
+SAML20_SP_BAD_SAML_RESPONSE_ERROR.useraction=Examina\u0163i codul de stare de \u015fi mesajele op\u0163ionale \u015fi asigura\u0163i-v\u0103 c\u0103 furnizorul de identitate \u015fi furnizorul de servicii sunt configurate corespunz\u0103tor.
+
+SAML20_SP_NO_ASSERTION_ERROR=CWWKS5009E: R\u0103spunsul SAML de la furnizorul de identitate [{0}] nu con\u0163ine o revendicare.
+SAML20_SP_NO_ASSERTION_ERROR.explanation=R\u0103spunsul SAML emis de IdP-ul indicat trebuie s\u0103 con\u0163in\u0103 o revendicare.   R\u0103spunsul SAML primit de la IdP nu con\u0163ine o revendicare.  Aceast\u0103 condi\u0163ie nu este permis\u0103.
+SAML20_SP_NO_ASSERTION_ERROR.useraction=Asigura\u0163i-v\u0103 c\u0103 IdP-ul este configurat corespunz\u0103tor \u015fi c\u0103 utilizatorul s-a autentificat \u00een mod corespunz\u0103tor \u00een IdP.
+
+SAML20_SP_BAD_VERSION_ERROR=CWWKS5010E: R\u0103spunsul SAML con\u0163ine o versiune SAML Revendicare [{0}] care nu este suportat\u0103 de runtime. Versiunea necesar\u0103 este 2.0.
+SAML20_SP_BAD_VERSION_ERROR.explanation=R\u0103spunsul SAML con\u0163ine o versiune de revendicare care nu este suportat\u0103 de furnizorul de servicii. Versiunea acceptat\u0103 este afi\u015fat\u0103 \u00een mesaj.
+SAML20_SP_BAD_VERSION_ERROR.useraction=Asigura\u0163i-v\u0103 c\u0103 IdP este configurat pentru revendicarea cu versiunea 2.0.
+
+SAML20_RESPONSE_BAD_ISSUE_TIME=CWWKS5011E: IssueInstant [{0}] din r\u0103spunsul SAML este \u00een afara intervalului. Momentul de timp curent este [{1}]. Setarea devia\u0163iei ceasului prezent este {2} secunde.
+SAML20_RESPONSE_BAD_ISSUE_TIME.explanation=R\u0103spunsul SAML este emis \u00een afara unei perioade de timp acceptabile.  Un posibil motiv al erorii este nesincronizarea ceasului primitorului cu ceasul creatorului aser\u0163iunii.
+SAML20_RESPONSE_BAD_ISSUE_TIME.useraction=Asigura\u0163i-v\u0103 c\u0103 data \u015fi timpul pentru IdP sunt sincronizate cu acest furnizor de servicii SAML Web Single Sign-On (SSO) sau cre\u015fte\u0163i devia\u0163ia ceasului.
+
+SAML20_RESPONSE_BAD_DESTINATION=CWWKS5012E: Destina\u0163ia [{0}] din r\u0103spunsul SAML nu este valid\u0103. Destina\u0163ia a\u015fteptat\u0103 este [{1}].
+SAML20_RESPONSE_BAD_DESTINATION.explanation=Destina\u0163ia din r\u0103spunsul SAML trebuie s\u0103 se potriveasc\u0103 cu URL-ul furnizorului de servicii.
+SAML20_RESPONSE_BAD_DESTINATION.useraction=Contacta\u0163i administratorul IdP pentru a v\u0103 asigura c\u0103 IdP-ul este configurat corespunz\u0103tor.    
+
+RS_EMPTY_SAML_ASSERTION=CWWKS5013E: Antetul numit [{0}] trebuie s\u0103 con\u0163in\u0103 o aser\u0163iune SAML valid\u0103, dar fie nu exist\u0103 \u00een cererea HTTP, fie aser\u0163iunea SAML este un \u015fir gol.
+RS_EMPTY_SAML_ASSERTION.explanation=O Aser\u0163iune valid\u0103 SAML trebuie s\u0103 fie setat\u0103 la antetul indicat \u00een cererea HTTP. 
+RS_EMPTY_SAML_ASSERTION.useraction=Asigura\u0163i-v\u0103 c\u0103 configura\u0163ia rsSaml specific\u0103 un headerName corect \u015fi c\u0103 este setat\u0103 o Aser\u0163iune valid\u0103 SAML la acel antet specificat \u00een cererea HTTP.
+
+# 0=URL specified in the config, 1=Name of configuration attribute, 2=ID of the SAML configuration element
+SAML20_POST_LOGOUT_URL_NOT_VALID=CWWKS5014W: URL-ul [{0}] care este specificat de atributul [{1}] \u00een configura\u0163ia [{2}] nu este valid. Va fi utilizat\u0103 pagina implicit\u0103 de post-delogare.
+SAML20_POST_LOGOUT_URL_NOT_VALID.explanation=Valoarea URL-ului de post-delogare personalizat nu este valid, deci pagina nu poate fi afi\u015fat\u0103. Cel mai probabil valoarea con\u0163ine caractere care nu sunt valide pentru c\u0103ile URI, cum ar fi spa\u0163ii sau caractere fragment.
+SAML20_POST_LOGOUT_URL_NOT_VALID.useraction=Asigura\u0163i-v\u0103 c\u0103 valoarea  URL-ului de post-delogare personalizat con\u0163ine numai caractere care poate fi folosite \u00een c\u0103ile URI.
+
+SAML20_CONFIG_DEACTIVATED=CWWKS5016I: Configura\u0163ia SAML Web SSO Versiunea 2.0 [{0}] a fost dezactivat\u0103 cu succes.
+SAML20_CONFIG_DEACTIVATED.explanation=Configura\u0163ia SAML Web SSO Versiunea 2.0 a fost dezactivat\u0103 cu succes.
+SAML20_CONFIG_DEACTIVATED.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+
+# CWWKS5017E removed (using SAML20_DECODE_SAML_RESPONSE_FAILURE_LOG/CWWKS5018E instead)
+# {0} = Error message text
+# {1} = Error class
+SAML20_DECODE_SAML_RESPONSE_FAILURE_LOG=CWWKS5018E: R\u0103spunsul SAML nu poate fi decodificat sau parsat. [{1}:{0}].
+SAML20_DECODE_SAML_RESPONSE_FAILURE_LOG.explanation=Furnizorul de servicii (service provider - SP) nu poate decodifica sau parsa mesajul de r\u0103spuns SAML. Cauzele acestui e\u015fec includ codificarea incorect\u0103 de c\u0103tre IdP, schema incorect\u0103, sau e\u015fu\u0103rile de comunica\u0163ie.
+SAML20_DECODE_SAML_RESPONSE_FAILURE_LOG.useraction=Contacta\u0163i administratorul IdP SAML.
+
+SAML20_NO_IDP_METADATA_FOR_ISSUER=CWWKS5021E: Fi\u015fierul de metadate pentru furnizorul de identitate (IdP) [{1}] nu con\u0163ine emitent [{0}] pentru revendicarea SAML cu ID-ul [{2}].
+SAML20_NO_IDP_METADATA_FOR_ISSUER.explanation=Metadatele indicate nu exist\u0103 \u00een configura\u0163ie. Revendicarea SAML nu poate fi validat\u0103 f\u0103r\u0103 metadate. 
+SAML20_NO_IDP_METADATA_FOR_ISSUER.useraction=Asigura\u0163i-v\u0103 c\u0103 fi\u015fierul de metadate pentru IdP con\u0163ine instan\u0163a emitentului indicat.
+
+SAML20_IDP_METADATA_PARSE_ERROR=CWWKS5023E: Fi\u015fierul de metadate pentru furnizorul de identitate (IdP) [{0}] din furnizorul de servicii (SP - service provider) [{1}] nu este valid. Cauza erorii este [{2}]
+SAML20_IDP_METADATA_PARSE_ERROR.explanation=Fi\u015fierul de metadate indicat nu poate fi procesat. Motivul pentru eroare apare \u00een mesaj.
+SAML20_IDP_METADATA_PARSE_ERROR.useraction=Asigura\u0163i-v\u0103 c\u0103 fi\u015fierul de metadate este \u00een formatul \u015fi spa\u0163iul de nume XML corect.  De asemenea, referi\u0163i-v\u0103 la ac\u0163iunea utilizatorului pentru cauza afi\u015fat\u0103 \u00een mesaj.
+
+# {2} = Cause of the error
+SAML20_NO_IDP_METADATA_ERROR=CWWKS5025E: Fi\u015fierul de metadate pentru furnizorul de identitate (IdP) [{0}] din furnizorul de servicii (SP - service provider) [{1}] nu exist\u0103 sau nu poate fi accesat. [ {2} ]  
+SAML20_NO_IDP_METADATA_ERROR.explanation=Fi\u015fierul de metadate IdP indicat nu exist\u0103 sau nu poate fi accesat. 
+SAML20_NO_IDP_METADATA_ERROR.useraction=Asigura\u0163i-v\u0103 c\u0103 fi\u015fierul de metadate al IdP-ului exist\u0103 \u015fi este accesibil.
+
+SAML20_NO_SAML_RESPONSE=CWWKS5028E: Furnizorul de identitate (IdP) nu r\u0103spunde cu un mesaj SAMLResponse. 
+SAML20_NO_SAML_RESPONSE.explanation=Furnizorul de identitate (IdP) trebuie s\u0103 r\u0103spund\u0103 cu un mesaj SAMLResponse. 
+SAML20_NO_SAML_RESPONSE.useraction=Asigura\u0163i-v\u0103 c\u0103 IdP-ul este configurat corespunz\u0103tor.
+
+SAML20_POTENTIAL_REPLAY_ATTACK=CWWKS5029E: Starea de retransmitere [{0}] din r\u0103spunsul de furnizorul de identitate (IdP) nu a fost recunoscut.
+SAML20_POTENTIAL_REPLAY_ATTACK.explanation=Una dintre urm\u0103toarele este posibil s\u0103 se fi \u00eent\u00e2mplat:\n\
+1) R\u0103spunsul SAML a fost folosit mai mult dec\u00e2t o singur\u0103 dat\u0103.\n\
+2) R\u0103spunsul de la IdP a durat prea mult timp iar starea de retransmitere a fost \u015ftears\u0103 de la SP.\n\
+3) IdP a modificat starea de retransmitere care a fost trimis\u0103 c\u0103tre acesta. 
+SAML20_POTENTIAL_REPLAY_ATTACK.useraction=Asigura\u0163i-v\u0103 c\u0103 IdP trimite r\u0103spunsurile doar o singur\u0103 dat\u0103, r\u0103spunsurile sunt trimise \u00een timp util \u015fi nu modific\u0103 starea de retransmitere.
+
+SAML20_CACHED_DATA_NOT_FOUND=CWWKS5033E: Revendicarea SAML cu cheia cache [{0}] nu a fost g\u0103sit\u0103.
+SAML20_CACHED_DATA_NOT_FOUND.explanation=Resursa protejat\u0103 nu poate fi accesat\u0103 din cauza unei erori interne. Este posibil ca datele cache s\u0103 fi fost deja accesate \u015fi \u00eenl\u0103turate.  
+SAML20_CACHED_DATA_NOT_FOUND.useraction=Verifica\u0163i istoricele serverului pentru informa\u0163ii suplimentare.
+
+ACCESS_FILE_INFO_ERROR=CWWKS5036E: Fi\u015fierul [{0}] nu a fost \u00eenc\u0103rcat. [ {1} ] 
+ACCESS_FILE_INFO_ERROR.explanation=Fi\u015fierul indicat fie nu exist\u0103, fie nu este accesibil.  Motivul pentru eroarea este afi\u015fat \u00een mesaj.
+ACCESS_FILE_INFO_ERROR.useraction=Asigura\u0163i-v\u0103 c\u0103 fi\u015fierul exist\u0103 \u015fi c\u0103 aplica\u0163ia are acces la fi\u015fier.  De asemenea, referi\u0163i-v\u0103 la ac\u0163iunea utilizatorului pentru cauza erorii.
+
+SAML20_IDP_METADATA_FILE_CHANGED=CWWKS5038I: Fi\u015fierul de metadate pentru furnizorul de identitate (IdP) [{1}] pentru furnizorul de servicii (SP - service provider) [{0}] a fost modificat.
+SAML20_IDP_METADATA_FILE_CHANGED.explanation=Fi\u015fierul de metadate IdP a fost actualizat cu noile date de configurare pentru IdP; furnizor de servicii (SP) va re\u00eenc\u0103rca fi\u015fierul.
+SAML20_IDP_METADATA_FILE_CHANGED.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+
+SAML20_SP_UNSOLICITED_WITH_IN_RESPONSE_TO=CWWKS5040E: Atributul InResponseTo [{0}] nu este permis \u00eentr-un r\u0103spuns SAML nesolicitat.
+SAML20_SP_UNSOLICITED_WITH_IN_RESPONSE_TO.explanation=R\u0103spunsul SAML nesolicitat con\u0163ine un atribut InResponseTo.  Aceast\u0103 condi\u0163ie nu este permis\u0103.
+SAML20_SP_UNSOLICITED_WITH_IN_RESPONSE_TO.useraction=Contacta\u0163i administratorul IdP pentru a v\u0103 asigura c\u0103 IdP-ul este configurat corespunz\u0103tor.
+
+SAML20_NO_PROTECTED_RESOURCE_ENDPOINT_ERR=CWWKS5041E: Parametrul RelayState a\u015fteptat nu a fost inclus \u00een mesajul de r\u0103spuns SAML de la IdP.
+SAML20_NO_PROTECTED_RESOURCE_ENDPOINT_ERR.explanation= RelayState este un parametru de protocol SAML care este utilizat pentru a identifica resursa specific\u0103 pe care utilizatorul/agentul utilizator o va accesa dup\u0103 ce sunt semnate. Dac\u0103 aceast\u0103 informa\u0163ie lipse\u015fte, atunci SP nu \u015ftie unde s\u0103 redirecteze utilizatorul/agentul utilizator.
+SAML20_NO_PROTECTED_RESOURCE_ENDPOINT_ERR.useraction=Contacta\u0163i administratorul IdP pentru a v\u0103 asigura c\u0103 IdP-ul este configurat corespunz\u0103tor pentru a include RelayState \u00een r\u0103spunsul SAML.
+
+SAML20_NO_ISSUER_ERR=CWWKS5044E: Elementul emitent din revendicarea SAML are un atribut Format [{1}] care nu este suportat, formatul trebuie s\u0103 fie omis sau setat la [{0}].
+SAML20_NO_ISSUER_ERR.explanation=Revendicarea SAML are un element Emitent cu o valoare pentru atributul Format care nu este suportat\u0103.  Atributul Format trebuie s\u0103 fie omis sau setat la o valoare suportat\u0103.
+SAML20_NO_ISSUER_ERR.useraction=Contacta\u0163i administratorul IdP pentru a v\u0103 asigura c\u0103 IdP-ul este configurat corespunz\u0103tor.
+
+SAML20_INCORRECT_ISSUER_ERR=CWWKS5045E: Valoarea pentru elementul Emitent [{0}] din revendicarea SAML nu este valid\u0103.
+SAML20_INCORRECT_ISSUER_ERR.explanation=Revendicarea SAML trebuie s\u0103 con\u0163in\u0103 un element Emitent care se potrive\u015fte cu emitentul definit \u00een fi\u015fierul de metadate IdP.  Emitentul din revendicarea SAML nu se potrive\u015fte cu cel din fi\u015fierul de metadate.
+SAML20_INCORRECT_ISSUER_ERR.useraction=Contacta\u0163i administratorul IdP pentru a v\u0103 asigura c\u0103 IdP-ul este configurat corespunz\u0103tor.
+
+SAML20_SIGNATURE_NOT_VERIFIED_ERR=CWWKS5046E: A ap\u0103rut o eroare \u00een timpul verific\u0103rii semn\u0103turii mesajului de r\u0103spuns SAML.
+SAML20_SIGNATURE_NOT_VERIFIED_ERR.explanation=Mesajul de r\u0103spuns SAML con\u0163ine o semn\u0103tur\u0103, dar runtime-ul nu-l poate verifica din cauza unei erori interne. 
+SAML20_SIGNATURE_NOT_VERIFIED_ERR.useraction=Asigura\u0163i-v\u0103 c\u0103 metadatele furnizorului de identitate (IdP) sunt actualizate.
+
+SAML20_ASSERTION_SIGNATURE_NOT_VERIFIED_ERR=CWWKS5048E: A ap\u0103rut o eroare \u00een timpul verific\u0103rii semn\u0103turii revendic\u0103rii SAML.
+SAML20_ASSERTION_SIGNATURE_NOT_VERIFIED_ERR.explanation=Revendicarea SAML con\u0163ine o semn\u0103tur\u0103, dar runtime-ul nu-l poate verifica din cauza unei erori interne.
+SAML20_ASSERTION_SIGNATURE_NOT_VERIFIED_ERR.useraction=Asigura\u0163i-v\u0103 c\u0103 metadatele furnizorului de identitate (IdP) sunt actualizate.
+
+# {0} = Message text for cause of the failure
+SAML20_ASSERTION_SIGNATURE_FAIL_ERR=CWWKS5049E: Semn\u0103tura revendic\u0103rii SAML nu este de \u00eencredere sau nu este valid\u0103. [ {0} ]
+SAML20_ASSERTION_SIGNATURE_FAIL_ERR.explanation=Revendicarea SAML con\u0163ine o semn\u0103tur\u0103 care nu este valid\u0103, sau este semnat\u0103 cu un certificat semnatar care nu este de \u00eencredere.  Motivul pentru eroarea este afi\u015fat \u00een mesaj.
+SAML20_ASSERTION_SIGNATURE_FAIL_ERR.useraction=Acest lucru ar putea fi o eroare de configurare, \u015fi asigura\u0163i-v\u0103 c\u0103 metadatele furnizorului dde identitate (IdP) sunt actualizate \u015fi configurate corespunz\u0103tor.  De asemenea, a se vedea ac\u0163iunea utilizatorului pentru motivul erorii afi\u015fate \u00een mesaj.
+
+# Example: {0} = Subject
+SAML20_ELEMENT_ERR=CWWKS5050E: Revendicarea SAML nu con\u0163ine un element [{0}].  Un element [{0}] este necesar.  
+SAML20_ELEMENT_ERR.explanation=Pentru revendicarea SAML lipse\u015fte un element necesar la momentul rul\u0103rii.
+SAML20_ELEMENT_ERR.useraction=Element necesar trebuie ad\u0103ugat la revendicarea SAML.  Contacta\u0163i administratorul furnizorului de identitate (IdP) pentru a v\u0103 asigura c\u0103 IdP-ul este configurat corespunz\u0103tor.
+
+SAML20_SUBJECT_NOTBEFORE_ERR=CWWKS5051E: Revendicarea SAML con\u0163ine un element SubjectConfirmationData cu un atribut NotBefore.  Aceast\u0103 condi\u0163ie nu este permis\u0103.
+SAML20_SUBJECT_NOTBEFORE_ERR.explanation=Elementul SubjectConfirmationData din revendicarea SAML nu trebuie s\u0103 con\u0163in\u0103 un atribut NotBefore.
+SAML20_SUBJECT_NOTBEFORE_ERR.useraction=Contacta\u0163i administratorul furnizorului de identitate (IdP) pentru a v\u0103 asigura c\u0103 IdP-ul este configurat corespunz\u0103tor.
+
+# Examples:
+# {0} = NotOnOrAfter
+# {1} = SubjectConfirmationData
+SAML20_ELEMENT_ATTR_ERR=CWWKS5052E: Atributul [{0}] din elementul [{1}] din revendicarea SAML lipse\u015fte sau este gol.  Aceast\u0103 condi\u0163ie nu este permis\u0103.
+SAML20_ELEMENT_ATTR_ERR.explanation=Revendicarea SAML are un element c\u0103ruia \u00eei lipse\u015fte un atribut necesar la momentul rul\u0103rii.
+SAML20_ELEMENT_ATTR_ERR.useraction=Atributul necesar trebuie s\u0103 fie ad\u0103ugat la revendicarea SAML.  Contacta\u0163i administratorul furnizorului de identitate (IdP) pentru a v\u0103 asigura c\u0103 IdP-ul este configurat corespunz\u0103tor.
+
+SAML20_SUBJECT_NOTONAFTER_ERR=CWWKS5053E: Atributul NotOnOrAfter [{0}] din elementul SubjectConfirmationData este \u00een afara intervalului.  Momentul de timp curent este [{1}]. Setarea devia\u0163iei ceasului prezent este {2} secunde.
+SAML20_SUBJECT_NOTONAFTER_ERR.explanation=Valoarea revendic\u0103rii SAML a fost primit\u0103 la un moment dat care este la sau dup\u0103 setarea NotOnOrAfter pe SubjectConfirmationData \u00een revendicare.  Aceast\u0103 condi\u0163ie nu este permis\u0103. Un posibil motiv pentru eroare este c\u0103 ceasul receptorului nu este sincronizat cu ceasul creatorului aser\u0163iunii.
+SAML20_SUBJECT_NOTONAFTER_ERR.useraction=Sincroniza\u0163i ceasurile furnizorului de servicii (SP) SAML \u015fi al furnizorului de identitate (IdP) sau m\u0103ri\u0163i setarea pentru decalajul ceasului.
+
+SAML20_SUBJECT_NO_REC_MATCH_ERR=CWWKS5055E: Destinatarul [{0}] din revendicarea SAML nu se potrive\u015fte cu URl-ul AssertionConsumerService (ACS): [{1}].
+SAML20_SUBJECT_NO_REC_MATCH_ERR.explanation=Atributul Recipient din elementul SubjectConfirmationData trebuie s\u0103 fie setat la URL-ul ACS.
+SAML20_SUBJECT_NO_REC_MATCH_ERR.useraction=Contacta\u0163i administratorul furnizorului de identitate (IdP) pentru a v\u0103 asigura c\u0103 IdP-ul este configurat corespunz\u0103tor.
+
+SAML20_SUBJECT_NOBEFORE_ERR=CWWKS5057E: Atributul NotBefore [{0}] este \u00een afara intervalului. Momentul de timp curent este [{1}]. Setarea curent\u0103 pentru devia\u0163ia ceasului este {2} secunde.
+SAML20_SUBJECT_NOBEFORE_ERR.explanation=Revendicarea SAML a fost primit\u0103 la un moment dat care este mai devreme dec\u00e2t setarea NotBefore din revendicare.  Aceast\u0103 condi\u0163ie nu este permis\u0103. Un posibil motiv al erorii este nesincronizarea ceasului primitorului cu ceasul creatorului aser\u0163iunii.
+SAML20_SUBJECT_NOBEFORE_ERR.useraction=Sincroniza\u0163i ceasurile furnizorului de servicii (SP) SAML \u015fi al furnizorului de identitate (IdP) sau m\u0103ri\u0163i setarea pentru decalajul ceasului.
+
+SAML20_SUBJECT_NOAFTER_ERR=CWWKS5058E: Condi\u0163ia NotOnOrAfter [{0}] este \u00een afara intervalului. Momentul de timp curent este [{1}]. Setarea curent\u0103 pentru decalajul de timp este de {2} minute.
+SAML20_SUBJECT_NOAFTER_ERR.explanation=Revendicarea SAML a fost primit\u0103 la un moment dat care este la sau dup\u0103 setarea NotOnOrAfter din revendicare.  Aceast\u0103 condi\u0163ie nu este permis\u0103. Motivele posibile ale erorii sunt nesincronizarea ceasului primitorului cu ceasul creatorului aser\u0163iunii sau faptul c\u0103 aser\u0163iunea a fost ob\u0163inut\u0103 \u015fi retrimis\u0103 de c\u0103tre o aplica\u0163ie neautorizat\u0103.
+SAML20_SUBJECT_NOAFTER_ERR.useraction=Sincroniza\u0163i ceasurile furnizorului de servicii (SP) SAML \u015fi al furnizorului de identitate (IdP) sau m\u0103ri\u0163i setarea pentru decalajul ceasului.
+
+SAML20_CONDITION_UNKNOWN_ERR=CWWKS5059E: Elementul Condi\u0163ii din revendicarea SAML con\u0163ine un atribut [{0}] care nu este suportat.
+SAML20_CONDITION_UNKNOWN_ERR.explanation=Elementul Condi\u0163ii din revendicarea SAML con\u0163ine un atribut care nu este suportat la runtime.  Aceast\u0103 condi\u0163ie nu este permis\u0103.
+SAML20_CONDITION_UNKNOWN_ERR.useraction=Contacta\u0163i administratorul IdP pentru a v\u0103 asigura c\u0103 IdP-ul este configurat corespunz\u0103tor.
+
+SAML20_AUDIENCE_UNKNOWN_ERR=CWWKS5060E: Valoarea [{0}] pentru elementul Audien\u0163\u0103 din revendicarea SAML nu este valid\u0103. Valoarea a\u015fteptat\u0103 pentru elemetul Audien\u0163\u0103 este [{1}].
+SAML20_AUDIENCE_UNKNOWN_ERR.explanation=Valoarea elementului Audien\u0163\u0103 trebuie s\u0103 fie setat la EntityID-ul SP-ului.
+SAML20_AUDIENCE_UNKNOWN_ERR.useraction=Contacta\u0163i administratorul furnizorului de identitate (IdP) pentru a v\u0103 asigura c\u0103 IdP-ul este configurat corespunz\u0103tor.
+
+SAML20_SESSION_ERR=CWWKS5062E: Atributul SessionNotOnOrAfter [{0}] este \u00een afara intervalului. Momentul de timp curent este [{1}]. Setarea curent\u0103 pentru devia\u0163ia ceasului este {2} secunde.
+SAML20_SESSION_ERR.explanation=Valoarea revendic\u0103rii SAML a fost primit\u0103 la un moment dat care este la sau dup\u0103 setarea SessionNotOnOrAfter din AuthnStatement \u00een revendicare.  Aceast\u0103 condi\u0163ie nu este permis\u0103. Motivele posibile ale erorii sunt nesincronizarea ceasului primitorului cu ceasul creatorului aser\u0163iunii sau faptul c\u0103 aser\u0163iunea a fost ob\u0163inut\u0103 \u015fi retrimis\u0103 de c\u0103tre o aplica\u0163ie neautorizat\u0103.
+SAML20_SESSION_ERR.useraction=Sincroniza\u0163i ceasurile furnizorului de servicii (SP) SAML \u015fi al furnizorului de identitate (IdP) sau m\u0103ri\u0163i setarea pentru decalajul ceasului.
+
+SAML20_AUTHENTICATION_FAIL=CWWKS5063E: Excep\u0163ie SAML: Furnizorul de servicii (SP) SAML a e\u015fuat s\u0103 proceseze cererea de autentificare.
+SAML20_AUTHENTICATION_FAIL.explanation=Procesul de autentificare nu s-a desf\u0103\u015furat cu succes deoarece c\u00e2teva alte erori au ap\u0103rut \u00eenainte de acest mesaj.
+SAML20_AUTHENTICATION_FAIL.useraction=Vede\u0163i ac\u0163iunea de utilizator pentru eroarea care apare \u00eenainte de acest mesaj. 
+
+SAML20_NO_BEARER_FOUND=CWWKSS5065E: Atributul Metod\u0103 [{0}] pentru elementul SubjectConfirmationData din revendicarea SAML nu este suportat\u0103.  Valoarea suportat\u0103 este ["urn:oasis:names:tc:SAML:2.0:cm:bearer"].
+SAML20_NO_BEARER_FOUND.explanation= Revendicarea trebuie s\u0103 con\u0163in\u0103 metoda de confirmare a subiectului urn:oasis:names:tc:SAML:2.0:cm:bearer.
+SAML20_NO_BEARER_FOUND.useraction=Contacta\u0163i administratorul IdP pentru a v\u0103 asigura c\u0103 IdP-ul este configurat corespunz\u0103tor.
+
+SAML20_NO_INRESPONSETO=CWWKS5067E: R\u0103spunsul SAML [{0}] con\u0163ine un atribut InResponseTo [{1}] care nu este valid. Valoarea a\u015fteptat\u0103 pentru InResponseTo este [{2}].
+SAML20_NO_INRESPONSETO.explanation=R\u0103spunsul SAML indicat are o valoare de atribut InResponseTo care nu este valid\u0103.   
+SAML20_NO_INRESPONSETO.useraction=Contacta\u0163i administratorul IdP administrator pentru a v\u0103 asigura c\u0103 IdP-ul este configurat corespunz\u0103tor, astfel \u00eenc\u00e2t s\u0103 se poat\u0103 emite o valoare corect\u0103 de atribut InResponseTo.
+
+# similar to the tWas messages
+# Example: {0} = realm
+SAML20_ATTRIBUTE_ERR=CWWKS5068E: Revendicarea SAML nu con\u0163ine un element [{0}].  Un element [{0}] este necesar.  
+SAML20_ATTRIBUTE_ERR.explanation=Aser\u0163iunea SAML nu are un atribut necesar la momentul rul\u0103rii.
+SAML20_ATTRIBUTE_ERR.useraction=Atributul necesar trebuie s\u0103 fie ad\u0103ugat la revendicarea SAML.  Contacta\u0163i administratorul furnizorului de identitate (IdP) pentru a v\u0103 asigura c\u0103 IdP-ul este configurat corespunz\u0103tor sau configura\u0163i furnizorul de servicii (SP) sau TAI-ul pentru a defini o valoare pentru atribut.
+
+SAML20_USER_CANNOT_AUTHENTICATED=CWWKS5072E: Autentificarea nu a avut succes pentru ID-ul de utilizator [{0}].
+SAML20_USER_CANNOT_AUTHENTICATED.explanation=Utilizator indicat fie nu este \u00een registrul utilizator sau configura\u0163ia nu este corect\u0103.
+SAML20_USER_CANNOT_AUTHENTICATED.useraction=Asigura\u0163i-v\u0103 c\u0103 utilizatorul este configurat \u00een registrul de utilizator \u015fi, de asemenea, seta\u0163i furnizorul de servicii \u015fu furnizorul de identitate \u00een mod corespunz\u0103tor.
+
+SAML20_NO_PRIVATE_KEY=CWWKS5073E: Furnizorul de servicii [{0}] nu poate g\u0103si cheia privat\u0103 \u00een depozitul de chei [{1}].
+SAML20_NO_PRIVATE_KEY.explanation=Depozitul de chei specificat nu are cheia privat\u0103 necesar\u0103.
+SAML20_NO_PRIVATE_KEY.useraction=Asigura\u0163i-v\u0103 c\u0103 depozitul de chei configurat are cheile necesare sau modifica\u0163i configura\u0163ia pentru a specifica alt depozit de chei.
+
+SAML20_NO_CERT=CWWKS5074E: Furnizorul de servicii [{0}] nu poate g\u0103si certificatul \u00een depozitul de chei [{1}].
+SAML20_NO_CERT.explanation=Depozitul de chei specificat nu are certificatul de semn\u0103tur\u0103 necesar.
+SAML20_NO_CERT.useraction=Asigura\u0163i-v\u0103 c\u0103 depozitul de chei configurat are certificatul necesar sau modifica\u0163i configura\u0163ia pentru a specifica alt depozit de chei.
+
+SAML20_AUTH_FILTER_NOT_EXISTING=CWWKS5075E: Runtime-ul furnizorului de servicii [{1}] nu poate g\u0103si authFilter-ul specificat de authFilterRef-ul [{0}]. V\u0103 rug\u0103m s\u0103 corecta\u0163i configura\u0163ia.
+SAML20_AUTH_FILTER_NOT_EXISTING.explanation=Valoarea de authFilter specificat\u0103 de authFilterRef \u00een configura\u0163ia SAML WebSSO nu exist\u0103.
+SAML20_AUTH_FILTER_NOT_EXISTING.useraction=Asigura\u0163i-v\u0103 c\u0103 exist\u0103 configura\u0163ia authFilter necesar\u0103 \u00een server sau \u00eenl\u0103tura\u0163i elementul authFilterRef din configura\u0163ia SAML WebSSO.
+
+SAML20_CANNOT_RESOLVE_ASSERTION=CWWKS5076E: UserCredentialResolver nu rezolv\u0103 revendicarea SAML \u015fi arunc\u0103 o UserIdentityException cu mesajul [{0}].
+SAML20_CANNOT_RESOLVE_ASSERTION.explanation=Serviciul UserCredentialResolver oferit de caracteristica utilizatorului nu poate mapa corespunz\u0103tor revendicarea SAML \u015fi atunc\u0103 o excep\u0163ie UserIdentityException.
+SAML20_CANNOT_RESOLVE_ASSERTION.useraction=Asigura\u0163i-v\u0103 c\u0103 serviciul UserCredentialResolver este setat corespunz\u0103tor dac\u0103 UserIdentityException nu este a\u015fteptat\u0103.
+
+SAML20_MULTI_SPECIFIC_SP=CWWKS5077E: Runtime-ul nu poate selecta furnizorul de servicii (SP) din lista de furnizori de servicii [{1}] pentru a procesa cererea [{0}]. 
+SAML20_MULTI_SPECIFIC_SP.explanation=Cererea nu ar trebui s\u0103 \u00eendeplineasc\u0103 criteriile de filtrare ale mai mult de un element authFilter. Ar trebui s\u0103 \u00eendeplineasc\u0103 doar condi\u0163iile unui singur authFilter, astfel c\u0103 runtime-ul poate alege furnizorul de servicii corect pentru a procesa.
+SAML20_MULTI_SPECIFIC_SP.useraction=Verifica\u0163i configura\u0163ia de server \u015fi regla\u0163i fin elementele authnFilter astfel \u00eenc\u00e2t s\u0103 fie \u00eendeplinite condi\u0163iile unui element authFilter \u015fi cererea va fi procesat\u0103 de furnizorul de servicii la care se refer\u0103 elementul authFilter.
+
+OSGI_SERVICE_ERROR=CWWKS5078E: Serviciul OSGi {0} nu este disponibil.
+OSGI_SERVICE_ERROR.explanation=Serviciul OSGi specificat nu este disponibil.
+OSGI_SERVICE_ERROR.useraction=Reporni\u0163i serverul cu op\u0163iunea "clean" (cur\u0103\u0163are).
+
+SAML20_NO_IDP_URL_ERROR=CWWKS5079E: Furnizorul de servicii [{1}]  nu poate g\u0103si URL-ul furnizorului de identitate (IdP) URL utiliz\u00e2nd fi\u015fierul de metadate [{0}].  
+SAML20_NO_IDP_URL_ERROR.explanation=Fi\u015fierul de metadate IdP nu are informa\u0163ii despre URL.
+SAML20_NO_IDP_URL_ERROR.useraction=Asigura\u0163i-v\u0103 c\u0103 con\u0163inutul fi\u015fierului de metadate IdP este corect.
+
+SAML20_NO_IDP_URL_OR_METADATA=CWWKS5080E: Furnizorul de servicii [{0}] nu poate g\u0103si URL-ul furnizorului de identitate (IdP) deoarece lipse\u015fte idpMetadata din configura\u0163ia SAML WebSSO.  
+SAML20_NO_IDP_URL_OR_METADATA.explanation=SP-ul nu are informa\u0163ii cu privire la metadatele IdP. Aceasta ar putea fi din cauz\u0103 c\u0103 1) Atributul idpMetadata nu este setat corespunz\u0103tor 2) Fi\u015fierul specificat de atribut nu exist\u0103.
+SAML20_NO_IDP_URL_OR_METADATA.useraction=Asigura\u0163i-v\u0103 c\u0103, dac\u0103 atributul idpMetadata este setat, atunci fi\u015fierul la care se refer\u0103 atributul exist\u0103.
+
+SAML20_AUTHN_REQUEST_EXPIRED=CWWKS5081E: Furnizorul de servicii (SP) nu poate procesa r\u0103spunsul SAML deoarece cererea SAML este expirat\u0103. SP-ul nu a primit r\u0103spunsul SAML de la furnizorul de identitate (IdP) \u00een intervalul de timp a\u015fteptat. Cererea SAML a fost creat\u0103 la [{0}] \u015fi, de vreme ce atributul de configura\u0163ie authnRequestTime este setat la [{1}] minute, cererea a expirat la [{2}] \u015fi ora curent\u0103 este [{3}].
+SAML20_AUTHN_REQUEST_EXPIRED.explanation=E posibil ca furnizorul de identitate (IdP) s\u0103 nu fie procesat cererea SAML la timp. Verifica\u0163i istoricele IdP pentru a v\u0103 asigura c\u0103 IdP-ul func\u0163ioneaz\u0103 corect.
+SAML20_AUTHN_REQUEST_EXPIRED.useraction=Lansa\u0163i cererea din nou \u015fi cre\u015fte\u0163i \u015fi valoarea pentru atributul authnRequestTime pentru a v\u0103 asigura c\u0103 IdP-ul are suficient timp pentru a procesa cererea SAML.
+
+SAML20_RESPONSE_REPLAY=CWWKS5082E: Furnizorul de servicii (SP) nu poate procesa r\u0103spunsul SAML deoarece aser\u0163iunea SAML de ID [{0}] a fost procesat\u0103 deja.
+SAML20_RESPONSE_REPLAY.explanation=R\u0103spunsul SAML de la furnizorul de identitate (IdP) con\u0163ine o aser\u0163iune SAML care a fost deja inclus\u0103 \u00eentr-un r\u0103spuns SAML anterior.
+SAML20_RESPONSE_REPLAY.useraction=Asigura\u0163i-v\u0103 c\u0103 furnizorul de identitate (IdP) nu genereaz\u0103 un ID de aser\u0163iune SAML duplicat sau c\u0103 nu trimite aceea\u015fi aser\u0163iune SAML mai mult de o dat\u0103.
+
+#do not translate httpsRequired
+SAML20_EP_PROTOCOL_NOT_HTTPS=CWWKS5083E: Furnizorul de servicii (SP) necesit\u0103 SSL (HTTPS) dar a fost utilizat HTTP \u00een URL-ul de cerere [{0}]. Actualiza\u0163i configura\u0163ia astfel \u00eenc\u00e2t atributul [httpsRequired] s\u0103 se potriveasc\u0103 cu schema de URL de cerere.
+SAML20_EP_PROTOCOL_NOT_HTTPS.explanation=Furnizorul de servicii SAML WebSSO (SP) impune ca cerereae SAML WebSSO s\u0103 utilizeze HTTPS, dar a fost utilizat HTTP \u00een URL-ul de cerere.
+SAML20_EP_PROTOCOL_NOT_HTTPS.useraction=Face\u0163i una din urm\u0103toarele ac\u0163iuni: 1) Asigura\u0163i-v\u0103 c\u0103 furnizorul de servicii SAML WebSSO suport\u0103 SSL. 2) Dac\u0103 furnizorul de servicii SAML WebSSO nu suport\u0103 SSL, seta\u0163i httpsRequired \u00een configura\u0163ia furnizorului de servicii SAML WebSSO la false.
+
+#do not translate httpsRequired
+SAML20_IDP_PROTOCOL_NOT_HTTPS=CWWKS5084E: Furnizorul de servicii (SP) necesit\u0103 SSL (HTTPS) dar a fost utilizat HTTP \u00een URL-ul furnizorului de identitate (IdP) [{0}]. Actualiza\u0163i configura\u0163ia astfel \u00eenc\u00e2t atributul [httpsRequired] s\u0103 se potriveasc\u0103 cu schema de URL IdP.
+SAML20_IDP_PROTOCOL_NOT_HTTPS.explanation=Furnizorul de servicii SAML WebSSO (SP) necesit\u0103 comunica\u0163ie SSL, dar a fost utilizat HTTP \u00een URL-ul IdP.
+SAML20_IDP_PROTOCOL_NOT_HTTPS.useraction=Face\u0163i una din urm\u0103toarele ac\u0163iuni: 1) Asigura\u0163i-v\u0103 c\u0103 furnizorul de identitate SAML WebSSO suport\u0103 SSL. 2) Dac\u0103 furnizorul de identitate SAML WebSSO nu suport\u0103 SSL, seta\u0163i httpsRequired \u00een configura\u0163ia furnizorului de servicii SAML WebSSO la false.
+
+RS_SAML_RESPONSE_NOT_SUPPORTED=CWWKS5085E: R\u0103spunsul SAML din con\u0163inutul antetului [{0}] din cererea HTTP nu este suportat.
+RS_SAML_RESPONSE_NOT_SUPPORTED.explanation=Este suportat\u0103 numai Aser\u0163iunea SAML pentru con\u0163inutul antetului indicat \u00een cererea HTTP. 
+RS_SAML_RESPONSE_NOT_SUPPORTED.useraction=Asigura\u0163i-v\u0103 c\u0103 Aser\u0163iunea SAML este \u00een con\u0163inutul antetului indicat.
+
+# Message prefix block: CWWKS5200 - CWWKS5209
+RS_SAML_SERVER_INTERNAL_LOG_ERROR=CWWKS5201E: A ap\u0103rut o eroare intern\u0103 de server \u00een timpul proces\u0103rii SAML Web Single Sign-On (SSO) pentru propagarea de intrare [{0}]. Cauz\u0103:[{1}], StackTrace: [{2}].
+RS_SAML_SERVER_INTERNAL_LOG_ERROR.explanation=\u00cen timpul proces\u0103rii unei cereri de propagare de intrareSAML Web SSO, a ap\u0103rut o eroare intern\u0103 de server. 
+RS_SAML_SERVER_INTERNAL_LOG_ERROR.useraction=Verifica\u0163i pentru erori \u00een fi\u015fierele istoric ale serverului \u015fi asigura\u0163i-v\u0103 c\u0103 configura\u0163ia dumneavoastr\u0103 este corect\u0103. Dac\u0103 problema persist\u0103, consulta\u0163i informa\u0163iile de determinare a problemei de pe pagina web de suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+RS_SAML_TRUSTED_ISSUERS_ERROR=CWWKS5205E: TrustedIssuers [{0}] definit \u00een configura\u0163ia pkixTrustEngine nu este utilizat de SAML Web SSO pentru caracteristica de propagare de intrare [{1}] \u015fi va fi ignorat.
+RS_SAML_TRUSTED_ISSUERS_ERROR.explanation=TrustedIssuers din pkixTrustEngine este utilizat numai de caracteristica SAML Web SSO. Este ignorat \u00een SAML Web SSO pentru caracteristica de propagare de intrare. 
+RS_SAML_TRUSTED_ISSUERS_ERROR.useraction=\u00cenl\u0103tura\u0163i trustedIssuers de pe pkixTrustEngine.
+
+# 0=Boolean value (i.e. "true" or "false"), 1=Configuration attribute names, 2=Configuration ID
+SAML_CONFIG_IGNORE_ATTRIBUTES=CWWKS5207W: Atributul inboundPropagation este setat la [{0}] \u00een configura\u0163ia samlWebSso20 [{2}]. Atributele [{1}] vor fi ignorate \u00een timpul proces\u0103rii.
+SAML_CONFIG_IGNORE_ATTRIBUTES.explanation=Configura\u0163ia samlWebSso20 este setat\u0103 s\u0103 setat\u0103 s\u0103 proceseze fie propagarea la intrare a jetonului SAML, fie SAML Web SSO, dar nu am\u00e2ndou\u0103. Atributele listate sunt ignorate la tratarea cererilor web cu configura\u0163ia SAML specificat\u0103.
+SAML_CONFIG_IGNORE_ATTRIBUTES.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+
+SAML_BAD_INBOUND_SAML_TOKEN=CWWKS5208E: Aser\u0163iunea SAML de intrare nu este valid\u0103 [{0}].
+SAML_BAD_INBOUND_SAML_TOKEN.explanation=Aser\u0163iunea SAML, care este con\u0163inut\u0103 \u00een antetul cererii HTTP, nu este valid\u0103 \u015fi nu poate fi parsat\u0103 corespunz\u0103tor.
+SAML_BAD_INBOUND_SAML_TOKEN.useraction=Asigura\u0163i-v\u0103 c\u0103 este generat\u0103 o Aser\u0163iune SAML valid\u0103 corespunz\u0103tor.
+
+# Message prefix block: CWWKS5210 - CWWKS5299
+
+# 0=Exception message from the error encountered
+ERROR_HANDLING_LOGOUT_REQUEST=CWWKS5210E: Serviciul SAML Single Logout a \u00eent\u00e2lnit o eroare c\u00e2nd a procesat cererea de delogare. {0}
+ERROR_HANDLING_LOGOUT_REQUEST.explanation=Serviciul a \u00eent\u00e2lnit o eroare c\u00e2nd a procesat cererea ca cerere de punct final de delogare, ca r\u0103spuns la delogarea de la un furnizor de identitate (IdP) sau ca cerere de delogare de la un IdP. Mesajul include informa\u0163ii despre tipul de cerere \u015fi mai multe detalii despre eroare.
+ERROR_HANDLING_LOGOUT_REQUEST.useraction=Vede\u0163i ac\u0163iunea de utilizator pentru eroarea specificat\u0103 \u00een mesaj. Verifica\u0163i istoricele serverului pentru toate mesajele de eroare suplimentare.
+
+LOGOUT_CANNOT_FIND_SAML_SSO_SERVICE=CWWKS5211E: Serviciul SAML Single Logout nu poate procesa cererea deoarece serviciul nu poate g\u0103si furnizorul SAML (SP) care este specificat \u00een cerere.
+LOGOUT_CANNOT_FIND_SAML_SSO_SERVICE.explanation=Serviciul Delogare singular\u0103 SAML nu poate g\u0103si serviciul Single Sign-On (SSO) pentru furnizorul SAML (SP) care este specificat \u00een cerere. SP-ul ar putea fi dezactivat sau ar putea lipsi din configura\u0163ia serverului.
+LOGOUT_CANNOT_FIND_SAML_SSO_SERVICE.useraction=Asigura\u0163i-v\u0103 c\u0103 un furnizor SAML (SP) care se potrive\u015fte cu numele furnizorului specificat este configurat \u015fi activat. Verifica\u0163i istoricele serverului pentru toate mesajele de eroare suplimentare.
+
+LOGOUT_REQUEST_MISSING_SSO_REQUEST=CWWKS5212E: Serviciul SAML Single Logout nu poate procesa cererea deoarece serviciul nu poate g\u0103si informa\u0163iile de cerere SAML Single Sign-On (SSO).
+LOGOUT_REQUEST_MISSING_SSO_REQUEST.explanation=Informa\u0163iile SAML SSO trebuie s\u0103 fie incluse pentru a procesa cererea de delogare singular\u0103 SAML. Este posibil s\u0103 nu fie configurat un furnizor SAML (SP) sau este posibil s\u0103 nu fie configurat pentru a trata cererea.
+LOGOUT_REQUEST_MISSING_SSO_REQUEST.useraction=Asigura\u0163i-v\u0103 c\u0103 este configurat cel pu\u0163in un furnizor SAML (SP) sau c\u0103 exist\u0103 cel pu\u0163in un SP configurat pentru a procesa aceast\u0103 cerere.
+
+POST_LOGOUT_PAGE_MISSING_MESSAGE_CONTEXT=CWWKS5213E: Serviciul SAML Single Logout nu poate afi\u015fa pagina de post-delogare deoarece lipsesc informa\u0163iile de mesaje SAML.
+POST_LOGOUT_PAGE_MISSING_MESSAGE_CONTEXT.explanation=Este posibil ca serviciul SAML Single Sign-On (SSO) s\u0103 fi \u00eent\u00e2lnit o eroare \u00een timpul lans\u0103rii cererii de delogare SAML sau \u00een timpul proces\u0103rii r\u0103spunsului la delogarea SAML.
+POST_LOGOUT_PAGE_MISSING_MESSAGE_CONTEXT.useraction=Verifica\u0163i istoricele serverului pentru toate mesajele de eroare suplimentare. Asigura\u0163i-v\u0103 c\u0103 serviciul SAML SSO nu a \u00eent\u00e2lnit nicio alt\u0103 eroare.
+
+# do not translate HTTP-POST, SingleLogoutService
+SAML20_SLOENDPOINT_NOT_IN_METADATA=CWWKS5214E: SAML Single Logout Service pentru furnizorul {0} nu poate ob\u0163ine URL-ul punctului final Single Logout Service al Identity Provider (IdP) din metadatele IdP.
+SAML20_SLOENDPOINT_NOT_IN_METADATA.explanation=URL-ul punctului final Single Logout Service al Identity Provider (IdP) nu a putut fi ob\u0163inut din metadatele IdP.
+SAML20_SLOENDPOINT_NOT_IN_METADATA.useraction=Verifica\u0163i dac\u0103 fi\u015fierul de metadate IdP con\u0163ine o intrare SingleLogoutService cu o legare HTTP-POST \u015fi o loca\u0163ie care specific\u0103 un URL valid.
+
+LOGOUT_CANNOT_PERFORM_SLO=CWWKS5215E: Serviciul de delogare nu poate finaliza SAML Single Logout din moment ce acesta nu poate localiza un furnizor de servicii unic. Totu\u015fi, furnizorii \u00een serviciu ai sesiunii de securitate utilizator sunt \u015fter\u015fi. Furnizorii de servicii disponibili sunt [{0}].
+LOGOUT_CANNOT_PERFORM_SLO.explanation=Exist\u0103 instan\u0163e multiple de furnizori de servicii configurate \u00een serverul Liberty. Serverul Liberty nu poate localiza un furnizor de servicii unic pentru a ini\u0163ializa SAML Single Logout. Numai furnizorii \u00een serviciu ai sesiunii de securitate utilizator sunt \u015fter\u015fi.
+LOGOUT_CANNOT_PERFORM_SLO.useraction=Asigura\u0163i-v\u0103 c\u0103 aplica\u0163ia de delogare este asociat\u0103 doar cu un furnizor de servicii. De exemplu, un furnizor de servicii per aplica\u0163ie.
+
+LOGOUT_CANNOT_FIND_SAMLTOKEN=CWWKS5218E: Serviciul de delogare nu poate finaliza SAML Single Logout din moment ce acesta nu poate localiza sesiunea de securitate utilizator.
+LOGOUT_CANNOT_FIND_SAMLTOKEN.explanation=Furnizorul de servicii nu poate localiza sesiunea de securitate utilizator pentru a crea mesajul de cerere de delogare SAML Single. Utilizatorul a fost deconectat de la furnizorul de servicii, dar poate \u00eenc\u0103 avea o sesiune activ\u0103 de securitate cu Identity Provider (IdP).
+LOGOUT_CANNOT_FIND_SAMLTOKEN.useraction=Lua\u0163i \u00een considerare implementarea delog\u0103rii ini\u0163iate de Identity Provider (IdP) \u015fi redirec\u0163iona\u0163i utilizatorul la Identity Provider (IdP) pentru delogare, mai ales dac\u0103 e\u015fueaz\u0103 delogarea furnizorului de servicii sau dac\u0103 aceasta nu este complet\u0103. 
