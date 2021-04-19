@@ -1,0 +1,280 @@
+<server>
+    <featureManager>
+        <feature>ejblite-3.2</feature>
+        <feature>servlet-4.0</feature>
+        <feature>jpa-2.2</feature>
+        
+        <feature>wasJmsServer-1.0</feature>
+        <feature>wasJmsClient-2.0</feature>
+        <feature>jndi-1.0</feature>
+        <feature>mdb-3.2</feature>
+        <feature>componenttest-1.0</feature>
+    </featureManager>
+    
+  <messagingEngine id="defaultME">
+    <queue id="AnnotatedJNDIMBean_Queue"/>
+    <queue id="DDJNDIMBean_Queue"/>
+    
+    <queue id="DFIPkgNoInhMDB_Queue"/>
+    <queue id="DFIPriNoInhMDB_Queue"/>
+    <queue id="DFIProNoInhMDB_Queue"/>
+    <queue id="DFIPubNoInhMDB_Queue"/>
+
+    <queue id="DFIPkgYesInhAnoOvrdMDB_Queue"/>
+    <queue id="DFIPriYesInhAnoOvrdMDB_Queue"/>
+    <queue id="DFIProYesInhAnoOvrdMDB_Queue"/>
+    <queue id="DFIPubYesInhAnoOvrdMDB_Queue"/>
+
+    <queue id="DFIPkgYesInhDDOvrdMDB_Queue"/>
+    <queue id="DFIPriYesInhDDOvrdMDB_Queue"/>
+    <queue id="DFIProYesInhDDOvrdMDB_Queue"/>
+    <queue id="DFIPubYesInhDDOvrdMDB_Queue"/>
+            
+    <queue id="DMIPkgNoInhMDB_Queue"/>
+    <queue id="DMIPriNoInhMDB_Queue"/>
+    <queue id="DMIProNoInhMDB_Queue"/>
+    <queue id="DMIPubNoInhMDB_Queue"/>
+    
+    <queue id="DMIPkgYesInhAnoOvrdMDB_Queue"/>
+    <queue id="DMIPriYesInhAnoOvrdMDB_Queue"/>
+    <queue id="DMIProYesInhAnoOvrdMDB_Queue"/>
+    <queue id="DMIPubYesInhAnoOvrdMDB_Queue"/>
+
+    <queue id="DMIPkgYesInhDDOvrdMDB_Queue"/>
+    <queue id="DMIPriYesInhDDOvrdMDB_Queue"/>
+    <queue id="DMIProYesInhDDOvrdMDB_Queue"/>
+    <queue id="DMIPubYesInhDDOvrdMDB_Queue"/>
+  </messagingEngine>
+
+  <jmsQueueConnectionFactory jndiName="jms/JPAConnectionFactory">
+    <properties.wasJms/>          
+  </jmsQueueConnectionFactory>
+  
+  <!-- JPAFVT Queues and Topic Definitions for driving MDBs -->
+  
+  <jmsQueue id="AnnotatedJNDIMBean_Queue" jndiName="jms/AnnotatedJNDIMBean_Queue">
+    <properties.wasJms queueName="AnnotatedJNDIMBean_Queue" />
+  </jmsQueue>
+  <jmsQueue id="DDJNDIMBean_Queue" jndiName="jms/DDJNDIMBean_Queue">
+    <properties.wasJms queueName="DDJNDIMBean_Queue" />
+  </jmsQueue>
+  
+  <jmsQueue id="DFIPkgNoInhMDB_Queue" jndiName="jms/DFIPkgNoInhMDB_Queue">
+    <properties.wasJms queueName="DFIPkgNoInhMDB_Queue" />
+  </jmsQueue>
+  <jmsQueue id="DFIPriNoInhMDB_Queue" jndiName="jms/DFIPriNoInhMDB_Queue">
+    <properties.wasJms queueName="DFIPriNoInhMDB_Queue" />
+  </jmsQueue>
+  <jmsQueue id="DFIProNoInhMDB_Queue" jndiName="jms/DFIProNoInhMDB_Queue">
+    <properties.wasJms queueName="DFIProNoInhMDB_Queue" />
+  </jmsQueue>
+  <jmsQueue id="DFIPubNoInhMDB_Queue" jndiName="jms/DFIPubNoInhMDB_Queue">
+    <properties.wasJms queueName="DFIPubNoInhMDB_Queue" />
+  </jmsQueue>
+ 
+  <jmsQueue id="DFIPkgYesInhAnoOvrdMDB_Queue" jndiName="jms/DFIPkgYesInhAnoOvrdMDB_Queue">
+    <properties.wasJms queueName="DFIPkgYesInhAnoOvrdMDB_Queue" />
+  </jmsQueue>
+  <jmsQueue id="DFIPriYesInhAnoOvrdMDB_Queue" jndiName="jms/DFIPriYesInhAnoOvrdMDB_Queue">
+    <properties.wasJms queueName="DFIPriYesInhAnoOvrdMDB_Queue" />
+  </jmsQueue>  
+  <jmsQueue id="DFIProYesInhAnoOvrdMDB_Queue" jndiName="jms/DFIProYesInhAnoOvrdMDB_Queue">
+    <properties.wasJms queueName="DFIProYesInhAnoOvrdMDB_Queue" />
+  </jmsQueue>
+  <jmsQueue id="DFIPubYesInhAnoOvrdMDB_Queue" jndiName="jms/DFIPubYesInhAnoOvrdMDB_Queue">
+    <properties.wasJms queueName="DFIPubYesInhAnoOvrdMDB_Queue" />
+  </jmsQueue>  
+
+  <jmsQueue id="DFIPkgYesInhDDOvrdMDB_Queue" jndiName="jms/DFIPkgYesInhDDOvrdMDB_Queue">
+    <properties.wasJms queueName="DFIPkgYesInhDDOvrdMDB_Queue" />
+  </jmsQueue>
+  <jmsQueue id="DFIPriYesInhDDOvrdMDB_Queue" jndiName="jms/DFIPriYesInhDDOvrdMDB_Queue">
+    <properties.wasJms queueName="DFIPriYesInhDDOvrdMDB_Queue" />
+  </jmsQueue>  
+  <jmsQueue id="DFIProYesInhDDOvrdMDB_Queue" jndiName="jms/DFIProYesInhDDOvrdMDB_Queue">
+    <properties.wasJms queueName="DFIProYesInhDDOvrdMDB_Queue" />
+  </jmsQueue>
+  <jmsQueue id="DFIPubYesInhDDOvrdMDB_Queue" jndiName="jms/DFIPubYesInhDDOvrdMDB_Queue">
+    <properties.wasJms queueName="DFIPubYesInhDDOvrdMDB_Queue" />
+  </jmsQueue>
+  
+  <jmsQueue id="DMIPkgNoInhMDB_Queue" jndiName="jms/DMIPkgNoInhMDB_Queue">
+    <properties.wasJms queueName="DMIPkgNoInhMDB_Queue" />
+  </jmsQueue>
+  <jmsQueue id="DMIPriNoInhMDB_Queue" jndiName="jms/DMIPriNoInhMDB_Queue">
+    <properties.wasJms queueName="DMIPriNoInhMDB_Queue" />
+  </jmsQueue>
+  <jmsQueue id="DMIProNoInhMDB_Queue" jndiName="jms/DMIProNoInhMDB_Queue">
+    <properties.wasJms queueName="DMIProNoInhMDB_Queue" />
+  </jmsQueue>
+  <jmsQueue id="DMIPubNoInhMDB_Queue" jndiName="jms/DMIPubNoInhMDB_Queue">
+    <properties.wasJms queueName="DMIPubNoInhMDB_Queue" />
+  </jmsQueue>
+  
+  <jmsQueue id="DMIPkgYesInhAnoOvrdMDB_Queue" jndiName="jms/DMIPkgYesInhAnoOvrdMDB_Queue">
+    <properties.wasJms queueName="DMIPkgYesInhAnoOvrdMDB_Queue" />
+  </jmsQueue>
+  <jmsQueue id="DMIPriYesInhAnoOvrdMDB_Queue" jndiName="jms/DMIPriYesInhAnoOvrdMDB_Queue">
+    <properties.wasJms queueName="DMIPriYesInhAnoOvrdMDB_Queue" />
+  </jmsQueue>  
+  <jmsQueue id="DMIProYesInhAnoOvrdMDB_Queue" jndiName="jms/DMIProYesInhAnoOvrdMDB_Queue">
+    <properties.wasJms queueName="DMIProYesInhAnoOvrdMDB_Queue" />
+  </jmsQueue>
+  <jmsQueue id="DMIPubYesInhAnoOvrdMDB_Queue" jndiName="jms/DMIPubYesInhAnoOvrdMDB_Queue">
+    <properties.wasJms queueName="DMIPubYesInhAnoOvrdMDB_Queue" />
+  </jmsQueue>  
+
+  <jmsQueue id="DMIPkgYesInhDDOvrdMDB_Queue" jndiName="jms/DMIPkgYesInhDDOvrdMDB_Queue">
+    <properties.wasJms queueName="DMIPkgYesInhDDOvrdMDB_Queue" />
+  </jmsQueue>
+  <jmsQueue id="DMIPriYesInhDDOvrdMDB_Queue" jndiName="jms/DMIPriYesInhDDOvrdMDB_Queue">
+    <properties.wasJms queueName="DMIPriYesInhDDOvrdMDB_Queue" />
+  </jmsQueue>  
+  <jmsQueue id="DMIProYesInhDDOvrdMDB_Queue" jndiName="jms/DMIProYesInhDDOvrdMDB_Queue">
+    <properties.wasJms queueName="DMIProYesInhDDOvrdMDB_Queue" />
+  </jmsQueue>
+  <jmsQueue id="DMIPubYesInhDDOvrdMDB_Queue" jndiName="jms/DMIPubYesInhDDOvrdMDB_Queue">
+    <properties.wasJms queueName="DMIPubYesInhDDOvrdMDB_Queue" />
+  </jmsQueue>
+    
+    
+  <jmsActivationSpec id="InjectionMDB/injectionMDB/AnnotatedJNDIMBean">
+    <properties.wasJms
+      destinationRef="AnnotatedJNDIMBean_Queue"
+      destinationType="javax.jms.Queue"/>
+  </jmsActivationSpec>
+  <jmsActivationSpec id="InjectionMDB/injectionMDB/DDJNDIMBean">
+    <properties.wasJms
+      destinationRef="DDJNDIMBean_Queue"
+      destinationType="javax.jms.Queue"/>
+  </jmsActivationSpec>
+  
+  <jmsActivationSpec id="InjectionMDB/injectionMDB/DFIPkgNoInhMDB">
+    <properties.wasJms
+      destinationRef="DFIPkgNoInhMDB_Queue"
+      destinationType="javax.jms.Queue"/>
+  </jmsActivationSpec>
+  <jmsActivationSpec id="InjectionMDB/injectionMDB/DFIPriNoInhMDB">
+    <properties.wasJms
+      destinationRef="DFIPriNoInhMDB_Queue"
+      destinationType="javax.jms.Queue"/>
+  </jmsActivationSpec>
+  <jmsActivationSpec id="InjectionMDB/injectionMDB/DFIProNoInhMDB">
+    <properties.wasJms
+      destinationRef="DFIProNoInhMDB_Queue"
+      destinationType="javax.jms.Queue"/>
+  </jmsActivationSpec>
+  <jmsActivationSpec id="InjectionMDB/injectionMDB/DFIPubNoInhMDB">
+    <properties.wasJms
+      destinationRef="DFIPubNoInhMDB_Queue"
+      destinationType="javax.jms.Queue"/>
+  </jmsActivationSpec>
+
+  <jmsActivationSpec id="InjectionMDB/injectionMDB/DFIPkgYesInhAnoOvrdMDB">
+    <properties.wasJms
+      destinationRef="DFIPkgYesInhAnoOvrdMDB_Queue"
+      destinationType="javax.jms.Queue"/>
+  </jmsActivationSpec>    
+  <jmsActivationSpec id="InjectionMDB/injectionMDB/DFIPriYesInhAnoOvrdMDB">
+    <properties.wasJms
+      destinationRef="DFIPriYesInhAnoOvrdMDB_Queue"
+      destinationType="javax.jms.Queue"/>
+  </jmsActivationSpec> 
+  <jmsActivationSpec id="InjectionMDB/injectionMDB/DFIProYesInhAnoOvrdMDB">
+    <properties.wasJms
+      destinationRef="DFIProYesInhAnoOvrdMDB_Queue"
+      destinationType="javax.jms.Queue"/>
+  </jmsActivationSpec> 
+  <jmsActivationSpec id="InjectionMDB/injectionMDB/DFIPubYesInhAnoOvrdMDB">
+    <properties.wasJms
+      destinationRef="DFIPubYesInhAnoOvrdMDB_Queue"
+      destinationType="javax.jms.Queue"/>
+  </jmsActivationSpec> 
+
+  <jmsActivationSpec id="InjectionMDB/injectionMDB/DFIPkgYesInhDDOvrdMDB">
+    <properties.wasJms
+      destinationRef="DFIPkgYesInhDDOvrdMDB_Queue"
+      destinationType="javax.jms.Queue"/>
+  </jmsActivationSpec>    
+  <jmsActivationSpec id="InjectionMDB/injectionMDB/DFIPriYesInhDDOvrdMDB">
+    <properties.wasJms
+      destinationRef="DFIPriYesInhDDOvrdMDB_Queue"
+      destinationType="javax.jms.Queue"/>
+  </jmsActivationSpec> 
+  <jmsActivationSpec id="InjectionMDB/injectionMDB/DFIProYesInhDDOvrdMDB">
+    <properties.wasJms
+      destinationRef="DFIProYesInhDDOvrdMDB_Queue"
+      destinationType="javax.jms.Queue"/>
+  </jmsActivationSpec> 
+  <jmsActivationSpec id="InjectionMDB/injectionMDB/DFIPubYesInhDDOvrdMDB">
+    <properties.wasJms
+      destinationRef="DFIPubYesInhDDOvrdMDB_Queue"
+      destinationType="javax.jms.Queue"/>
+  </jmsActivationSpec>
+
+  <jmsActivationSpec id="InjectionMDB/injectionMDB/DMIPkgNoInhMDB">
+    <properties.wasJms
+      destinationRef="DMIPkgNoInhMDB_Queue"
+      destinationType="javax.jms.Queue"/>
+  </jmsActivationSpec>
+  <jmsActivationSpec id="InjectionMDB/injectionMDB/DMIPriNoInhMDB">
+    <properties.wasJms
+      destinationRef="DMIPriNoInhMDB_Queue"
+      destinationType="javax.jms.Queue"/>
+  </jmsActivationSpec>
+  <jmsActivationSpec id="InjectionMDB/injectionMDB/DMIProNoInhMDB">
+    <properties.wasJms
+      destinationRef="DMIProNoInhMDB_Queue"
+      destinationType="javax.jms.Queue"/>
+  </jmsActivationSpec>
+  <jmsActivationSpec id="InjectionMDB/injectionMDB/DMIPubNoInhMDB">
+    <properties.wasJms
+      destinationRef="DMIPubNoInhMDB_Queue"
+      destinationType="javax.jms.Queue"/>
+  </jmsActivationSpec>  
+
+  <jmsActivationSpec id="InjectionMDB/injectionMDB/DMIPkgYesInhAnoOvrdMDB">
+    <properties.wasJms
+      destinationRef="DMIPkgYesInhAnoOvrdMDB_Queue"
+      destinationType="javax.jms.Queue"/>
+  </jmsActivationSpec>    
+  <jmsActivationSpec id="InjectionMDB/injectionMDB/DMIPriYesInhAnoOvrdMDB">
+    <properties.wasJms
+      destinationRef="DMIPriYesInhAnoOvrdMDB_Queue"
+      destinationType="javax.jms.Queue"/>
+  </jmsActivationSpec> 
+  <jmsActivationSpec id="InjectionMDB/injectionMDB/DMIProYesInhAnoOvrdMDB">
+    <properties.wasJms
+      destinationRef="DMIProYesInhAnoOvrdMDB_Queue"
+      destinationType="javax.jms.Queue"/>
+  </jmsActivationSpec> 
+  <jmsActivationSpec id="InjectionMDB/injectionMDB/DMIPubYesInhAnoOvrdMDB">
+    <properties.wasJms
+      destinationRef="DMIPubYesInhAnoOvrdMDB_Queue"
+      destinationType="javax.jms.Queue"/>
+  </jmsActivationSpec> 
+
+  <jmsActivationSpec id="InjectionMDB/injectionMDB/DMIPkgYesInhDDOvrdMDB">
+    <properties.wasJms
+      destinationRef="DMIPkgYesInhDDOvrdMDB_Queue"
+      destinationType="javax.jms.Queue"/>
+  </jmsActivationSpec>    
+  <jmsActivationSpec id="InjectionMDB/injectionMDB/DMIPriYesInhDDOvrdMDB">
+    <properties.wasJms
+      destinationRef="DMIPriYesInhDDOvrdMDB_Queue"
+      destinationType="javax.jms.Queue"/>
+  </jmsActivationSpec> 
+  <jmsActivationSpec id="InjectionMDB/injectionMDB/DMIProYesInhDDOvrdMDB">
+    <properties.wasJms
+      destinationRef="DMIProYesInhDDOvrdMDB_Queue"
+      destinationType="javax.jms.Queue"/>
+  </jmsActivationSpec> 
+  <jmsActivationSpec id="InjectionMDB/injectionMDB/DMIPubYesInhDDOvrdMDB">
+    <properties.wasJms
+      destinationRef="DMIPubYesInhDDOvrdMDB_Queue"
+      destinationType="javax.jms.Queue"/>
+  </jmsActivationSpec>
+  
+
+  
+</server>
