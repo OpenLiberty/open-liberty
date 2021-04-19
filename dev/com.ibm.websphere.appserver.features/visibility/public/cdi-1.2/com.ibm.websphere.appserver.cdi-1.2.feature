@@ -65,7 +65,8 @@ Subsystem-Name: Contexts and Dependency Injection 1.2
  com.ibm.websphere.appserver.spi.cdi; location:="dev/spi/ibm/,lib/"
 -jars=com.ibm.websphere.appserver.thirdparty.cdi; location:="dev/api/third-party/,lib/"; mavenCoordinates="org.jboss.weld:weld-osgi-bundle:2.4.7.Final"
 -files=dev/api/ibm/schema/ibm-managed-bean-bnd_1_0.xsd, \
- dev/api/ibm/schema/ibm-managed-bean-bnd_1_1.xsd
+ dev/api/ibm/schema/ibm-managed-bean-bnd_1_1.xsd, \
+ dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.cdi_1.1-javadoc.zip
 kind=ga
 edition=core
 WLP-Activation-Type: parallel
