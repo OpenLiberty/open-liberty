@@ -25,6 +25,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
@@ -122,6 +123,7 @@ public class JAXRS20ClientAsyncInvokerTest extends AbstractTest {
     }
 
     @Test
+    @SkipForRepeat("EE9_FEATURES") // Skip this test for EE9 as this test is failing intermittently with EE9.  See issue https://github.com/OpenLiberty/open-liberty/issues/16651
     @AllowedFFDC("javax.ws.rs.ProcessingException")
     public void testAsyncInvoker_getConnectionTimeout() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
