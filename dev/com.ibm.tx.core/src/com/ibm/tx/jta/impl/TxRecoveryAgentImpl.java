@@ -85,7 +85,8 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
 
     private boolean _checkingLeases = true;
 
-    protected TxRecoveryAgentImpl() {}
+    protected TxRecoveryAgentImpl() {
+    }
 
     private static ThreadLocal<Boolean> _replayThread = new ThreadLocal<Boolean>();
 
@@ -129,7 +130,8 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
     }
 
     @Override
-    public void agentReportedFailure(int clientId, FailureScope failureScope) {}
+    public void agentReportedFailure(int clientId, FailureScope failureScope) {
+    }
 
     @Override
     public int clientIdentifier() {
@@ -458,7 +460,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                                                     _recoveryGroup,
                                                     this,
                                                     _recoveryDirector,
-                                                    cp.getLeaseLength() * cp.getLeaseRenewalTime() / 100,
+                                                    cp.getLeaseLength() * cp.getLeaseRenewalThreshold() / 100,
                                                     cp.getLeaseCheckInterval());
                 }
             }
