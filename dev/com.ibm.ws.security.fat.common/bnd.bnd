@@ -87,7 +87,7 @@ generate.replacement: true
     net.sourceforge.htmlunit:webdriver;version=2.6,\
     org.seleniumhq.webdriver:webdriver-common;version=0.9.7376,\
     org.brotli:dec;version=0.1.2,\
-    commons-io:commons-io;version=2.8.0,\
+    com.ibm.ws.org.apache.commons.io;version=latest, \
     net.sourceforge.htmlunit:htmlunit-core-js;version=2.44.0, \
     net.sourceforge.htmlunit:neko-htmlunit;strategy=exact;version=2.44.0, \
     org.apache.commons:commons-lang3;version=3.8, \
