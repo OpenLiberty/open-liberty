@@ -67,7 +67,7 @@ dependencies {
   mockserver 'com.jcraft:jzlib:1.1.3'
   mockserver 'javax.servlet:javax.servlet-api:3.0.1'
   mockserver 'org.apache.commons:commons-lang3:3.4'
-  mockserver 'org.apache.commons:commons-io:1.3.2'
+  mockserver project(':com.ibm.ws.org.apache.commons.io')
   mockserver 'org.bouncycastle:bcprov-jdk15on:1.56'
   mockserver 'org.bouncycastle:bcmail-jdk15on:1.56'
   mockserver 'org.bouncycastle:bcpkix-jdk15on:1.56'
