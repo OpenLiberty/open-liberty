@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2019 IBM Corporation and others.
+ * Copyright (c) 2013, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1231,6 +1231,7 @@ public class AnnotatedClientEP implements TestHelper {
         // Client automatically throws an error when a 1006 response is added. Verify if this
         // is what is happening on this client and do not throw error when it does since as seen above
         // on the onClose we expect it to behave this way and need to verify it
+        LOG.warning(throwable.toString());
         if (this.EXPECT_TIMEOUT_ERROR && throwable.toString().equals(CLOSE_1006_ERROR_EXCEPTION))
             LOG.info("Skipping error when receiving a 1006 response since it is expected.");
         else
