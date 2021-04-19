@@ -64,7 +64,6 @@ public class WsocTest {
 
     public void runEchoTest(Object tep, String resource, Object[] data, int timeout) throws Exception {
         WsocTestContext testdata = runWsocTest(tep, resource, WsocTestRunner.getDefaultConfig(), data.length, timeout);
-        LOG.info("Getting test data got: " +testdata.getException());
         testdata.reThrowException();
         Assert.assertArrayEquals(data, testdata.getMessage().toArray());
     }
