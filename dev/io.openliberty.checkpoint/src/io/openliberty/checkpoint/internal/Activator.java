@@ -12,18 +12,19 @@ package io.openliberty.checkpoint.internal;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.Constants;
 
 public class Activator implements BundleActivator {
-	private CheckpointImpl checkpoint;
+    private CheckpointImpl checkpoint;
 
-	public void start(BundleContext context) throws Exception {
-		checkpoint = new CheckpointImpl();
-		checkpoint.register(context);
-	}
+    @Override
+    public void start(BundleContext context) throws Exception {
+        checkpoint = new CheckpointImpl();
+        checkpoint.register(context);
+    }
 
+    @Override
     public void stop(BundleContext context) throws Exception {
-    	checkpoint.unregister();
-	}
+        checkpoint.unregister();
+    }
 
 }
