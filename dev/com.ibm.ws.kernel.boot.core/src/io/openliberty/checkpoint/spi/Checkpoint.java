@@ -30,10 +30,15 @@ public interface Checkpoint {
     }
 
     /**
-     * Perform a snapshot for the specified phase with the specified name.
-     * Before the snapshot is taken the registered {@link SnapshotHook#prepare(Phase)}
+     * Perform a snapshot for the specified phase. The result of the
+     * snapshot will be stored in the specified directory.
+     * Before the snapshot is taken the registered {@link SnapshotHookFactory#create(Phase)}
+     * methods are called to obtain the {@link SnapshotHook} instances which will participate
+     * in the prepare and restore steps for the snapshot process.
+     * Each snapshot hook instance will their {@link SnapshotHook#prepare(Phase)}
      * methods are called before the snapshot is taken. After the snapshot
-     * is take the registered {@link SnapshotHook#restore(Phase)} are called.
+     * is taken each snapshot hook instance will have their {@link SnapshotHook#restore(Phase)}
+     * methods called.
      *
      * @param phase     the phase to take the snapshot
      * @param directory the directory to store the snapshot
