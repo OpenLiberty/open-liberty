@@ -26,7 +26,8 @@ Export-Package: \
 	com.ibm.ws.kernel.productinfo,\
 	com.ibm.ws.kernel.provisioning,\
 	com.ibm.ws.kernel.boot.utils,\
-	com.ibm.wsspi.kernel.embeddable
+	com.ibm.wsspi.kernel.embeddable, \
+	io.openliberty.checkpoint.spi
 	
 
 instrument.disabled: true

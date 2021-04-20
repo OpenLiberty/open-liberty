@@ -61,7 +61,8 @@ Export-Package: com.ibm.ws.kernel.launch.service;provide:=true, \
   com.ibm.ws.kernel.security.thread;provide:=true, \
   com.ibm.ws.kernel.provisioning.packages;provide:=true, \
   com.ibm.ws.kernel.boot.utils,\
-  com.ibm.wsspi.kernel.security.thread;provide:=true
+  com.ibm.wsspi.kernel.security.thread;provide:=true, \
+  io.openliberty.checkpoint.spi
  
 Import-Package: !org.omg.CORBA*, *
 

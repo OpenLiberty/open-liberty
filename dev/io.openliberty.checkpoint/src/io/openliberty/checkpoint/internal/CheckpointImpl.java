@@ -16,6 +16,7 @@ import java.util.Hashtable;
 import java.util.List;
 
 import org.apache.felix.service.command.Descriptor;
+import org.apache.felix.service.command.Parameter;
 import org.checkpoint.CheckpointRestore;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -46,7 +47,8 @@ public class CheckpointImpl implements Checkpoint {
 
     @Override
     @Descriptor("Take a snapshot")
-    public void snapshot(@Descriptor("The phase to snapshot") Phase phase, @Descriptor("Directory to store the snapshot") File directory) throws SnapshotFailed {
+    public void snapshot(@Parameter(names = "-p", absentValue = "server") @Descriptor("The phase to snapshot") Phase phase,
+                         @Descriptor("Directory to store the snapshot") File directory) throws SnapshotFailed {
         doSnapshot(phase, directory);
     }
 
