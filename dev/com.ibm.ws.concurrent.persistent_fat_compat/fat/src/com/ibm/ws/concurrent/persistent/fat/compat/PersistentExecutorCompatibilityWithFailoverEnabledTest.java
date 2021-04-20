@@ -78,8 +78,6 @@ public class PersistentExecutorCompatibilityWithFailoverEnabledTest {
         mySchedulerWithContext.setExtraAttribute("ignore.minimum.for.test.use.only", "true");
 
         Set<String> features = config.getFeatureManager().getFeatures();
-        features.remove("persistentexecutor-1.0"); // compatible with Java EE 8
-        features.add("persistentExecutor-2.0"); // compatible with Jakarta EE 9
 
         // config.getEJBContainer().getTimerService() lacks a way to get to the nested persistentExecutor, so this is left as is.
 
