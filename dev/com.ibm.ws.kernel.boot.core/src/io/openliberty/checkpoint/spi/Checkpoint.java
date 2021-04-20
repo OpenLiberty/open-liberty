@@ -24,7 +24,6 @@ public interface Checkpoint {
      *
      */
     public enum Phase {
-        KERNEL,
         FEATURE,
         APP,
         SERVER

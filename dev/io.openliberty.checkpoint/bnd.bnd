@@ -22,6 +22,7 @@ Private-Package: io.openliberty.checkpoint.*
 
 -buildpath: \
     com.ibm.websphere.org.osgi.core, \
+    com.ibm.ws.kernel.boot.core;version=latest, \
     io.openliberty.criu.lib;version=latest, \
     com.ibm.ws.org.apache.felix.gogo.runtime;version=latest, \
     com.ibm.ws.org.osgi.annotation.versioning;version=latest
