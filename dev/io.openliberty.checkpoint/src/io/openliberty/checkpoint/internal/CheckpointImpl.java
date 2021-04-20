@@ -12,37 +12,39 @@ package io.openliberty.checkpoint.internal;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.Collections;
 import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
 import org.checkpoint.CheckpointRestore;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
-import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import io.openliberty.checkpoint.spi.Checkpoint;
 import io.openliberty.checkpoint.spi.SnapshotFailed;
 import io.openliberty.checkpoint.spi.SnapshotFailed.Type;
 import io.openliberty.checkpoint.spi.SnapshotHook;
+import io.openliberty.checkpoint.spi.SnapshotHookFactory;
 
+@Component(
+           reference = @Reference(name = "hookFactories", service = SnapshotHookFactory.class, cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC,
+                                  policyOption = ReferencePolicyOption.GREEDY),
+           property = { "osgi.command.function=snapshot", "osgi.command.scope=criu" })
 public class CheckpointImpl implements Checkpoint {
-    private volatile ServiceTracker<SnapshotHook, SnapshotHook> hooks;
-    private volatile ServiceRegistration<Checkpoint> reg;
+    private final ComponentContext cc;
 
-    void register(BundleContext context) {
-        hooks = new ServiceTracker<>(context, SnapshotHook.class, null);
-        hooks.open();
-        Hashtable<String, Object> props = new Hashtable<>();
-        props.put("osgi.command.function", new String[] { "snapshot" });
-        props.put("osgi.command.scope", "criu");
-        reg = context.registerService(Checkpoint.class, this, props);
-    }
-
-    void unregister() {
-        reg.unregister();
-        hooks.close();
+    @Activate
+    public CheckpointImpl(ComponentContext cc) {
+        this.cc = cc;
     }
 
     @Override
@@ -53,9 +55,10 @@ public class CheckpointImpl implements Checkpoint {
     }
 
     private void doSnapshot(Phase phase, File directory) throws SnapshotFailed {
-        SnapshotHook[] snapshotHooks = hooks.getServices(new SnapshotHook[0]);
-        prepare(phase, snapshotHooks);
         System.out.println("Go save the world");
+        Object[] factories = cc.locateServices("hooksFactories");
+        List<SnapshotHook> snapshotHooks = getHooks(factories, phase);
+        prepare(snapshotHooks);
         try {
             CheckpointRestore.saveTheWorld(directory.getAbsolutePath());
         } catch (Exception e) {
@@ -63,45 +66,66 @@ public class CheckpointImpl implements Checkpoint {
         } finally {
             restore(phase, snapshotHooks);
         }
-        System.out.println("Saved the world");
-
+        System.out.println("Restored the world");
     }
 
-    private void prepare(Phase phase, SnapshotHook[] snapshotHooks) throws SnapshotFailed {
-        List<SnapshotHook> called = new ArrayList<>(snapshotHooks.length);
+    List<SnapshotHook> getHooks(Object[] factories, Phase phase) {
+        if (factories == null) {
+            return Collections.emptyList();
+        }
+        List<SnapshotHook> hooks = new ArrayList<>(factories.length);
+        for (Object o : factories) {
+            // if o is anything other than a napshotHookFactory then
+            // there is a bug in SCR
+            SnapshotHook hook = ((SnapshotHookFactory) o).create(phase);
+            if (hook != null) {
+                hooks.add(hook);
+            }
+        }
+        return hooks;
+    }
+
+    private void callHooks(List<SnapshotHook> snapshotHooks,
+                           Consumer<SnapshotHook> perform,
+                           BiConsumer<SnapshotHook, Exception> abort,
+                           Function<Exception, SnapshotFailed> failed) throws SnapshotFailed {
+        List<SnapshotHook> called = new ArrayList<>(snapshotHooks.size());
         for (SnapshotHook snapshotHook : snapshotHooks) {
             try {
-                snapshotHook.prepare(phase);
+                perform.accept(snapshotHook);
                 called.add(snapshotHook);
             } catch (Exception abortCause) {
                 for (SnapshotHook abortHook : called) {
                     try {
-                        abortHook.abortPrepare(phase, abortCause);
+                        abort.accept(abortHook, abortCause);
                     } catch (Exception unexpected) {
-                        // TODO should log
+                        // auto FFDC is fine here
                     }
                 }
-                throw new SnapshotFailed(Type.PREPARE_ABORT, "Failed to prepare for snapshot.", abortCause);
+                throw failed.apply(abortCause);
             }
         }
     }
 
-    private void restore(Phase phase, SnapshotHook[] snapshotHooks) throws SnapshotFailed {
-        List<SnapshotHook> called = new ArrayList<>(snapshotHooks.length);
-        for (SnapshotHook snapshotHook : snapshotHooks) {
-            try {
-                snapshotHook.restore(phase);
-                called.add(snapshotHook);
-            } catch (Exception abortCause) {
-                for (SnapshotHook abortHook : called) {
-                    try {
-                        abortHook.abortRestore(phase, abortCause);
-                    } catch (Exception unexpected) {
-                        // TODO should log
-                    }
-                }
-                throw new SnapshotFailed(Type.RESTORE_ABORT, "Failed to restore from snapshot.", abortCause);
-            }
-        }
+    private void prepare(List<SnapshotHook> snapshotHooks) throws SnapshotFailed {
+        callHooks(snapshotHooks,
+                  SnapshotHook::prepare,
+                  SnapshotHook::abortPrepare,
+                  CheckpointImpl::failedPrepare);
+    }
+
+    private static SnapshotFailed failedPrepare(Exception cause) {
+        return new SnapshotFailed(Type.PREPARE_ABORT, "Failed to prepare for a snapshot.", cause);
+    }
+
+    private void restore(Phase phase, List<SnapshotHook> snapshotHooks) throws SnapshotFailed {
+        callHooks(snapshotHooks,
+                  SnapshotHook::restore,
+                  SnapshotHook::abortRestore,
+                  CheckpointImpl::failedRestore);
+    }
+
+    private static SnapshotFailed failedRestore(Exception cause) {
+        return new SnapshotFailed(Type.RESTORE_ABORT, "Failed to restore from snapshot.", cause);
     }
 }

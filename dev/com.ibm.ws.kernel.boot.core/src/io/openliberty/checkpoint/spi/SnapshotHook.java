@@ -17,41 +17,40 @@ import io.openliberty.checkpoint.spi.Checkpoint.Phase;
 /**
  * A hook that gets called during a snapshot to allow the system to
  * prepare and restore during a snapshot operation.
+ *
+ * @see Checkpoint#snapshot(Phase, java.io.File)
  */
 @ConsumerType
 public interface SnapshotHook {
-	/**
-	 * Prepare for the specified phase to snapshot.  If the hook throws
-	 * an exception then the snapshot will be aborted.  All hooks
-	 * that already had their {@link apply} method called
-	 * will then have their {@link #abortPrepare(Phase, Exception)}
-	 * method called for the specified phase.
-	 * @param phase the phase to prepare
-	 * @return an exception to abort the prepare or {@code null}.
-	 */
-	void prepare(Phase phase);
+    /**
+     * Prepare to snapshot. If the hook throws
+     * an exception then the snapshot will be aborted. All hooks
+     * that already had their {@link prepare()} method called
+     * will then have their {@link #abortPrepare(Exception)}
+     * method called.
+     */
+    void prepare();
 
-	/**
-	 * Abort the prepare for the specified phase.
-	 * @param phase the phase being aborted
-	 * @param cause the exception that caused the abort
-	 */
-	void abortPrepare(Phase phase, Exception cause);
+    /**
+     * Abort the prepare for snapshot.
+     *
+     * @param cause the exception that caused the abort
+     */
+    void abortPrepare(Exception cause);
 
-	/**
-	 * Restore for the specified phase after a snapshot.  If the hook
-	 * throws an exception then the restore will be aborted. All hooks
-	 * that already had their {@link #restore(Phase)} method called
-	 * will then have their {@link #abortRestore(Phase, Exception)}
-	 * method called for the specified phase.
-	 * @param phase the phase to restore
-	 */
-	Exception restore(Phase phase);
+    /**
+     * Restore the state after a snapshot. If the hook
+     * throws an exception then the restore will be aborted. All hooks
+     * that already had their {@link #restore()} method called
+     * will then have their {@link #abortRestore(Exception)}
+     * method called.
+     */
+    Exception restore();
 
-	/**
-	 * Abort the restore for the specified phase.
-	 * @param phase the phase being aborted
-	 * @param cause the exception the caused the abort
-	 */
-	void abortRestore(Phase phase, Exception cause);
+    /**
+     * Abort the restore from snapshot.
+     *
+     * @param cause the exception the caused the abort
+     */
+    void abortRestore(Exception cause);
 }
