@@ -53,10 +53,12 @@ import org.apache.cxf.security.SecurityContext;
 import org.apache.cxf.ws.policy.AssertionInfo;
 import org.apache.cxf.ws.policy.AssertionInfoMap;
 import org.apache.cxf.ws.security.SecurityConstants;
+import org.apache.wss4j.policy.SPConstants;
 import org.apache.wss4j.policy.SP12Constants;
 import org.apache.wss4j.policy.model.SamlToken;
 import org.apache.cxf.ws.security.wss4j.SamlTokenInterceptor;
 import org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor;
+import org.apache.cxf.ws.security.wss4j.WSS4JUtils;
 import org.apache.wss4j.dom.WSConstants;
 import org.apache.wss4j.dom.WSDocInfo;
 import org.apache.wss4j.dom.engine.WSSConfig;
@@ -134,11 +136,11 @@ public class WSSecuritySamlTokenInterceptor extends SamlTokenInterceptor {
     private void processSamlToken(SoapMessage message) {
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "processSamlToken(1)");
-        };
+        }
         Header h = findSecurityHeader(message, false);
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "processSamlToken(2):" + h);
-        };
+        }
         if (h == null) {
             return;
         }
@@ -165,8 +167,11 @@ public class WSSecuritySamlTokenInterceptor extends SamlTokenInterceptor {
                                 break;
                             }
                         }
-                        //assertTokens(message, SPConstants.SAML_TOKEN, signed); //@2020 TODO
-                        assertSamlTokens(message);
+                        if (tc.isDebugEnabled()) {
+                            Tr.debug(tc, "asserting token , signed = " + signed);
+                        }
+                        assertTokens(message, SPConstants.SAML_TOKEN, signed); //@2020 TODO
+                        //assertSamlTokens(message);
                         Integer key = WSConstants.ST_UNSIGNED;
                         if (signed) {
                             key = WSConstants.ST_SIGNED;
@@ -174,7 +179,7 @@ public class WSSecuritySamlTokenInterceptor extends SamlTokenInterceptor {
                         WSHandlerResult rResult = new WSHandlerResult(null, samlResults, Collections.singletonMap(key, samlResults));
                         results.add(0, rResult);
 
-                        //assertSamlTokens(message); //@2020
+                        assertSamlTokens(message); //@2020
                         
                         //@2020 TODO - look into doing this?
                         // Check version against policy
@@ -182,7 +187,10 @@ public class WSSecuritySamlTokenInterceptor extends SamlTokenInterceptor {
                         Principal principal =
                                         (Principal) samlResults.get(0).get(WSSecurityEngineResult.TAG_PRINCIPAL);
                         //message.put(WSS4JInInterceptor.PRINCIPAL_RESULT, principal); //@2020 TODO
-
+                        if (tc.isDebugEnabled()) {
+                            Tr.debug(tc, "principal from the results  = " + principal.toString());
+                            Tr.debug(tc, "principal from the results  = " + principal.getName());
+                        }
                         SecurityContext sc = message.get(SecurityContext.class);
                         if (sc == null || sc.getUserPrincipal() == null) {
                             message.put(SecurityContext.class, new DefaultSecurityContext(principal, null));
@@ -190,7 +198,8 @@ public class WSSecuritySamlTokenInterceptor extends SamlTokenInterceptor {
 
                     }
                 } catch (WSSecurityException ex) {
-                    throw new Fault(ex);
+                    //throw new Fault(ex);
+                    throw WSS4JUtils.createSoapFault(message, message.getVersion(), ex);//v3
                 }
             }
             child = DOMUtils.getNextElement(child);
@@ -244,7 +253,9 @@ public class WSSecuritySamlTokenInterceptor extends SamlTokenInterceptor {
                 return super.getValidator(qName);
             }
         };
+        data.setMsgContext(message);
         data.setWssConfig(WSSConfig.getNewInstance());
+        data.setWsDocInfo(wsDocInfo); //v3
         // IBM Specific settings.
         SAMLTokenProcessor p = new SAMLTokenProcessor();
         // Get the cryptor properties and set them into requestData
@@ -287,25 +298,38 @@ public class WSSecuritySamlTokenInterceptor extends SamlTokenInterceptor {
     private SamlToken assertSamlTokens(SoapMessage message) {
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "assertSamlToken(1)");
-        };
+        }      
         AssertionInfoMap aim = message.get(AssertionInfoMap.class);
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "asserting saml (WssSamlV20Token11) policy! " );
+        }
+        org.apache.cxf.ws.security.policy.PolicyUtils.assertPolicy(aim, "WssSamlV20Token11");
         Collection<AssertionInfo> ais = aim.getAssertionInfo(SP12Constants.SAML_TOKEN);
         SamlToken tok = null;
         for (AssertionInfo ai : ais) {
             tok = (SamlToken) ai.getAssertion();
             ai.setAsserted(true);
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "asserting saml token, assertion = " , ai.toString() );
+            }
         }
         ais = aim.getAssertionInfo(SP12Constants.SUPPORTING_TOKENS);
         for (AssertionInfo ai : ais) {
             ai.setAsserted(true);
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "asserting supporting saml token!");
+            }
         }
         ais = aim.getAssertionInfo(SP12Constants.SIGNED_SUPPORTING_TOKENS);
         for (AssertionInfo ai : ais) {
             ai.setAsserted(true);
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "asserting signed supporting saml token!");
+            }
         }
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "assertSamlToken(2)" + (tok != null));
-        };
+        }
         return tok;
     }
 
@@ -313,7 +337,7 @@ public class WSSecuritySamlTokenInterceptor extends SamlTokenInterceptor {
     protected Header findSecurityHeader(SoapMessage message, boolean create) {
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "findSecurityHeader(1) create" + create);
-        };
+        }
         for (Header h : message.getHeaders()) {
             QName n = h.getName();
             if (n.getLocalPart().equals("Security")
@@ -327,7 +351,7 @@ public class WSSecuritySamlTokenInterceptor extends SamlTokenInterceptor {
         }
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "findSecurityHeader(2)");
-        };
+        }
         Document doc = DOMUtils.createDocument();
         Element el = doc.createElementNS(WSConstants.WSSE_NS, "wsse:Security");
         el.setAttributeNS(WSConstants.XMLNS_NS, "xmlns:wsse", WSConstants.WSSE_NS);
@@ -339,7 +363,7 @@ public class WSSecuritySamlTokenInterceptor extends SamlTokenInterceptor {
 
     private CallbackHandler getCallback(SoapMessage message) {
         //Then try to get the password from the given callback handler
-        Object o = Utils.getSecurityPropertyValue(SecurityConstants.CALLBACK_HANDLER, message);//message.getContextualProperty(SecurityConstants.CALLBACK_HANDLER); //@AV999
+        Object o = Utils.getSecurityPropertyValue(SecurityConstants.CALLBACK_HANDLER, message);//message.getContextualProperty(SecurityConstants.CALLBACK_HANDLER); //v3
 
         CallbackHandler handler = null;
         if (o instanceof CallbackHandler) {

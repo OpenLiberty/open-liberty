@@ -11,10 +11,16 @@
 -include= jar:${fileuri;${repo;org.apache.cxf:cxf-rt-security;3.4.1;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 -includeresource: \
-    @${repo;org.apache.cxf:cxf-rt-security;3.4.1;EXACT}!/!META-INF/maven/*|META-INF/MANIFEST.MF
+    @${repo;org.apache.cxf:cxf-rt-security;3.4.1;EXACT}!/!META-INF/maven/*|META-INF/MANIFEST.MF, \
+    @${repo;org.apache.cxf:cxf-rt-security;3.4.1;EXACT}!/META-INF/DEPENDENCIES, \
+    @${repo;org.apache.cxf:cxf-rt-security;3.4.1;EXACT}!/META-INF/LICENSE, \
+    @${repo;org.apache.cxf:cxf-rt-security;3.4.1;EXACT}!/META-INF/NOTICE, \
+    @${repo;org.apache.cxf:cxf-rt-security;3.4.1;EXACT}!/META-INF/cxf/*, \
+    org/apache/cxf=${bin}/org/apache/cxf
 
 globalize: false
 instrument.ffdc: true
 
 -buildpath: \
-	org.apache.cxf:cxf-rt-security;strategy=exact;version=3.4.1
+	org.apache.cxf:cxf-rt-security;strategy=exact;version=3.4.1, \
+    com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest
