@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -99,8 +99,8 @@ public class WsocTestContext {
     public synchronized void addMessage(Object msg) {
 
         _curMessage++;
-        // log the first five messages of each test, for better debugging
-        if (_curMessage <= 5) {
+        // log the six messages of each test, for better debugging
+        if (_curMessage <= 6) {
             LOG.info("Adding message to test results, message #: " + _curMessage + " " + msg);
         }
         if (!_messageCountOnly) {
@@ -117,7 +117,7 @@ public class WsocTestContext {
 
         if (_numMsgsExpected > 0) {
             if (_curMessage >= _numMsgsExpected) {
-
+                LOG.info(this.toString() + " --  Message Total: " + this._messages.toString());
                 _limitReached = true;
 
             }
