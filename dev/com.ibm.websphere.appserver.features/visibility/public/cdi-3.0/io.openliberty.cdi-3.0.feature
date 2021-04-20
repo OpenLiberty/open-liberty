@@ -67,7 +67,8 @@ Subsystem-Name: Jakarta Contexts and Dependency Injection 3.0
  com.ibm.websphere.appserver.spi.cdi.jakarta; location:="dev/spi/ibm/,lib/"
 -jars=io.openliberty.cdi.3.0.thirdparty; location:="dev/api/third-party/,lib/"; mavenCoordinates="org.jboss.weld:weld-osgi-bundle:4.0.0"
 -files=dev/api/ibm/schema/ibm-managed-bean-bnd_1_0.xsd, \
- dev/api/ibm/schema/ibm-managed-bean-bnd_1_1.xsd
+ dev/api/ibm/schema/ibm-managed-bean-bnd_1_1.xsd, \
+ dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.cdi_1.1-javadoc.zip
 kind=beta
 edition=core
 WLP-Activation-Type: parallel
