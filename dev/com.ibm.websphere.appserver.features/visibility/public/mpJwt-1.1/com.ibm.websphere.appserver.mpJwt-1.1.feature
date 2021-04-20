@@ -20,8 +20,8 @@ Subsystem-Name: MicroProfile JSON Web Token 1.1
   io.openliberty.mpCompatible-0.0
 -bundles=com.ibm.ws.security.mp.jwt,\
   com.ibm.ws.security.mp.jwt.cdi,\
-  com.ibm.ws.org.apache.commons.codec, \
-  com.ibm.ws.org.apache.commons.logging.1.0.3, \
+  io.openliberty.org.apache.commons.codec, \
+  io.openliberty.org.apache.commons.logging, \
   com.ibm.ws.security.mp.jwt.1.1.config
 kind=ga
 edition=core

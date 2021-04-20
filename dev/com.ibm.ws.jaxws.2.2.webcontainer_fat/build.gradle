@@ -31,7 +31,7 @@ dependencies {
   'org.springframework:spring-web:3.0.7.RELEASE'
   pureCXF 'aopalliance:aopalliance:1.0',
   'asm:asm:3.1',
-  'commons-logging:commons-logging:1.1.1',
+  project(':io.openliberty.org.apache.commons.logging'),
   'org.apache.cxf:cxf-api:2.6.2',
   'org.apache.cxf:cxf-rt-bindings-soap:2.6.2',
   'org.apache.cxf:cxf-rt-bindings-xml:2.6.2',

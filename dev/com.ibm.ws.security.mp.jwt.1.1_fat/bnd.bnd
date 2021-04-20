@@ -70,7 +70,7 @@ test.project: true
 	com.ibm.websphere.security;version=latest,\
 	com.ibm.ws.cdi.interfaces;version=latest,\
 	com.ibm.ws.logging;version=latest,\
-	com.ibm.ws.org.apache.commons.logging.1.0.3;version=latest,\
+	io.openliberty.org.apache.commons.logging;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.security.fat.common;version=latest,\
 	com.ibm.ws.security.fat.common.jwt;version=latest,\

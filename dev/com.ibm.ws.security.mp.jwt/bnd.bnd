@@ -82,7 +82,7 @@ Include-Resource: \
         com.ibm.ws.security.token;version=latest, \
         com.ibm.ws.security.common;version=latest, \
         com.ibm.ws.security.common.jsonwebkey;version=latest, \
-        com.ibm.ws.org.apache.commons.codec;version=latest, \
+        io.openliberty.org.apache.commons.codec;version=latest, \
         com.ibm.websphere.org.eclipse.microprofile.jwt.1.0;version=latest, \
         com.ibm.ws.security.mp.jwt.proxy;version=latest, \
         com.ibm.ws.transport.http;version=latest

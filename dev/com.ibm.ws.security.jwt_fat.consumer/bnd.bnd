@@ -47,8 +47,7 @@ runtime.minimum.java.level: 1.8
 	javax.servlet-api,\
 	com.ibm.ws.org.jose4j;version=latest,\
 	com.ibm.json4j;version=latest,\
-	com.ibm.ws.org.apache.commons.codec.1.4;version=latest,\
-	org.apache.commons.codec, \
+	io.openliberty.org.apache.commons.codec;version=latest,\
 	com.ibm.ws.org.apache.httpcomponents;version=latest,\
 	net.sourceforge.htmlunit:htmlunit-cssparser;version=1.6.0,\
 	net.sourceforge.htmlunit:webdriver;version=2.6,\

@@ -21,8 +21,8 @@ Subsystem-Name: OpenID Connect Client 1.0
   com.ibm.ws.org.joda.time.1.6.2, \
   com.ibm.ws.com.google.guava, \
   com.ibm.json4j, \
-  com.ibm.ws.org.apache.commons.codec, \
-  com.ibm.ws.org.apache.commons.logging.1.0.3, \
+  io.openliberty.org.apache.commons.codec, \
+  io.openliberty.org.apache.commons.logging, \
   com.ibm.ws.security.openidconnect.common, \
   com.ibm.ws.security.common.jsonwebkey, \
   com.ibm.ws.com.google.gson.2.2.4, \

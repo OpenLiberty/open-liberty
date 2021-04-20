@@ -15,9 +15,9 @@ Subsystem-Name: SAML Web Single Sign-On 2.0
 -bundles=\
   com.ibm.ws.org.opensaml.xmltooling.1.4.4, \
   com.ibm.ws.org.joda.time.1.6.2, \
-  com.ibm.ws.org.apache.commons.logging.1.0.3, \
+  io.openliberty.org.apache.commons.logging, \
   com.ibm.json4j, \
-  com.ibm.ws.org.apache.commons.codec, \
+  io.openliberty.org.apache.commons.codec, \
   com.ibm.ws.org.jose4j, \
   com.ibm.ws.org.apache.commons.httpclient
 kind=ga

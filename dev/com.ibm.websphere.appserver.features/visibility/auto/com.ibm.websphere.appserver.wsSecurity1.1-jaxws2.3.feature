@@ -18,6 +18,6 @@ IBM-Install-Policy: when-satisfied
   com.ibm.ws.org.apache.cxf.rt.security.3.4.1, \
   com.ibm.ws.org.apache.cxf.rt.security.saml.3.4.1, \
   com.ibm.ws.wssecurity.3.4.1, \
-  com.ibm.ws.org.apache.commons.logging.1.0.3
+  io.openliberty.org.apache.commons.logging
 kind=noship
 edition=full

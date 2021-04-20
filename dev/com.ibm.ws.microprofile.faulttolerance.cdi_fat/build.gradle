@@ -11,7 +11,7 @@
 
 
 dependencies {
-  requiredLibs 'commons-logging:commons-logging:1.1.3', 'commons-codec:commons-codec:1.6'
+  requiredLibs project(':io.openliberty.org.apache.commons.logging'), project(':io.openliberty.org.apache.commons.codec')
   requiredLibs project(path: ':com.ibm.websphere.org.eclipse.microprofile', configuration: 'ft10')
   requiredLibs project(':com.ibm.ws.microprofile.faulttolerance_repeat_tests') // For RepeatFaultTolerance
 }
