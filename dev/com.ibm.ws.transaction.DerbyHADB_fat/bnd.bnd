@@ -21,6 +21,8 @@ src: \
 
 fat.project: true
 
+tested.features: cdi-3.0
+
 -buildpath: \
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	com.ibm.tx.jta;version=latest,\
