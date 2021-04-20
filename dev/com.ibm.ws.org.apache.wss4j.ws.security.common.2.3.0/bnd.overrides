@@ -20,8 +20,8 @@ WS-TraceGroup: WSS4J
 
 Export-Package: \
  org.apache.wss4j.common.*, \
- org.apache.wss4j.common.cache;version=2.3.0           
- 
+ org.apache.wss4j.common.cache;version=2.3.0
+  
 # these should be optional only when resolving jars from wlp/dev
 Import-Package: \
  !com.ibm.security.jgss, \
@@ -31,7 +31,7 @@ Import-Package: \
  !org.bouncycastle.asn1.x509, \
  com.ibm.websphere.ras, \
  com.ibm.websphere.ras.annotation, \
- com.ibm.ws.ffdc, \ 
+ com.ibm.ws.ffdc, \
  *
  
 DynamicImport-Package: \
@@ -45,4 +45,3 @@ Include-Resource: \
  @${repo;org.apache.wss4j:wss4j-ws-security-common;2.3.0}!/schemas/**,\
  @${repo;org.apache.wss4j:wss4j-ws-security-common;2.3.0}!/*xml, \
  @${repo;org.bouncycastle:bcprov-jdk15on;1.61;EXACT}!/!META-INF/MANIFEST.MF|META-INF/maven/*
-
