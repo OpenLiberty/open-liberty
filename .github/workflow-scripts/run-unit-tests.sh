@@ -15,7 +15,7 @@ chmod +x gradlew
 
 # global variables
 OUTPUT_FILE=tmp/gradle.log && mkdir -p -- "$(dirname -- "$OUTPUT_FILE")" && touch -- "$OUTPUT_FILE"
-UNIT_DIR=unit-results/ && mkdir -p $UNIT_DIR
+UNIT_DIR=$PWD/unit-results/ && mkdir -p $UNIT_DIR
 
 # Redirect stdout to log file that will get archived if build fails
 echo "Running gradle test and testReport tasks.  This will take approx. 30 minutes."

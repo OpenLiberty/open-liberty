@@ -3,6 +3,7 @@ com.ibm.ws.jdbc_fat_db2
 com.ibm.ws.jdbc_fat_derby
 com.ibm.ws.jdbc_fat_driver
 com.ibm.ws.jdbc_fat_heritage
+com.ibm.ws.jdbc_fat_heritageinterop
 com.ibm.ws.jdbc_fat_krb5
 com.ibm.ws.jdbc_fat_loadfromapp
 com.ibm.ws.jdbc_fat_oracle
