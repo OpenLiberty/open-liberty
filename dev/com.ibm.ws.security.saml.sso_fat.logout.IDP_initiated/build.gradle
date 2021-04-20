@@ -17,4 +17,4 @@ dependencies {
 }
 
 addRequiredLibraries.dependsOn ':com.ibm.ws.security.saml.sso_fat.logout:assemble'
-addRequiredLibraries.dependsOn copyApache, copyShibbolethServer, copySamlFat_sp_server, copySamlFat_second_sp_server
+addRequiredLibraries.dependsOn copyApache, copyShibbolethIdpConfig, copyShibbolethServer, copySamlFat_sp_server, copySamlFat_second_sp_server
