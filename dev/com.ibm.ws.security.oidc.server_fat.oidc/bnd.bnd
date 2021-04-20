@@ -16,7 +16,7 @@ src: \
 
 fat.project: true
 
-tested.features: oidctai-2.0
+tested.features: oidctai-2.0, appsecurity-4.0, expressionlanguage-4.0, cdi-3.0, pages-3.0
 
 -buildpath: \
     com.ibm.json4j;version=latest,\

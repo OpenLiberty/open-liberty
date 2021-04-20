@@ -24,6 +24,7 @@ fat.test.databases: true
 tested.features:\
 	servlet-4.0,\
 	cdi-2.0,\
+	cdi-3.0,\
 	jdbc-4.2
 
 -buildpath: \
