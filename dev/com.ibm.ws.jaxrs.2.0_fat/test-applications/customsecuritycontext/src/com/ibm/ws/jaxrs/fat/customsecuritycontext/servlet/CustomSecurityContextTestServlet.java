@@ -60,6 +60,7 @@ public class CustomSecurityContextTestServlet extends FATServlet {
     }
 
     @Test
+    @SkipForRepeat("EE9_FEATURES") // Skip this test for EE9 as this test is failing intermittently with EE9.  See issue  https://github.com/OpenLiberty/open-liberty/issues/16693
     public void testCustomSecurityContextSetInFilter() throws Exception {
         String uri = customEndpoint + "Get";
         String token = "adam:password1";
