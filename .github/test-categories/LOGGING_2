@@ -3,3 +3,4 @@ com.ibm.ws.request.probe.servlet_fat
 com.ibm.ws.request.probes_fat
 com.ibm.ws.request.timing_fat
 com.ibm.ws.request.timing.hung_fat
+com.ibm.ws.request.timing.monitor_fat
