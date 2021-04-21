@@ -5,6 +5,8 @@ java.base/sun.security.action=ALL-UNNAMED
 # for com.ibm.ws.jndi.internal.WASInitialContextFactoryBuilder
 --add-exports
 java.naming/com.sun.jndi.ldap=ALL-UNNAMED
+--add-exports
+java.naming/com.sun.jndi.url.ldap=ALL-UNNAMED
 ### Opens
 --add-opens
 java.base/java.util=ALL-UNNAMED
