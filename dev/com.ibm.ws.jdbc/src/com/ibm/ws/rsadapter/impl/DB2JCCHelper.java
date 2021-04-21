@@ -238,6 +238,11 @@ public class DB2JCCHelper extends DB2Helper {
 
     @Override
     public void doStatementCleanup(PreparedStatement stmt) throws SQLException {
+        if (dataStoreHelper != null) {
+            doStatementCleanupLegacy(stmt);
+            return;
+        }
+
         try {
             stmt.setCursorName(null);
         } catch (NullPointerException npe) {
