@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 
 def featurePropertiesMap
 def gaFeatures
+def noShipFeatures
 def betaFeatures
 def gaPublicFeatures
 def getFeatureMap = {
@@ -18,6 +19,7 @@ def getFeatureMap = {
         Map<String,Properties> map = new TreeMap()
         Set<String> featuresGa = new TreeSet()
         Set<String> featuresBeta = new TreeSet()
+        Set<String> featuresNoShip = new TreeSet()
         Set<String> publicFeatures = new TreeSet()
         project(':com.ibm.websphere.appserver.features').fileTree(dir: '.', include: 'visibility/**/*.feature').each { featureFile ->
             Properties featureProps = new Properties()
@@ -30,11 +32,14 @@ def getFeatureMap = {
                 }
             } else if ('beta'.equals(featureProps['kind'])) {
                 featuresBeta.add(featureProps['symbolicName'])
+            } else if ('noship'.equals(featureProps['kind'])) {
+                featuresNoShip.add(featureProps['symbolicName'])
             }
         }
         featurePropertiesMap = map
         gaFeatures = featuresGa
         betaFeatures = featuresBeta
+        noShipFeatures = featuresNoShip
         gaPublicFeatures = publicFeatures
     }
     featurePropertiesMap
@@ -65,6 +70,13 @@ rootProject.ext.betaFeatures = {
         getFeatureMap()
     }
     betaFeatures
+}
+
+rootProject.ext.noShipFeatures = {
+    if (noShipFeatures == null) {
+        getFeatureMap()
+    }
+    noShipFeatures
 }
 
 copyPiiFiles {
