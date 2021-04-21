@@ -41,7 +41,7 @@ public class DerbyHelper extends DatabaseHelper {
     DerbyHelper(WSManagedConnectionFactoryImpl mcf) {
         super(mcf);
 
-        dataStoreHelper = "com.ibm.websphere.rsadapter.DerbyDataStoreHelper";
+        dataStoreHelperClassName = "com.ibm.websphere.rsadapter.DerbyDataStoreHelper";
 
         mcf.defaultIsolationLevel = Connection.TRANSACTION_REPEATABLE_READ;
         mcf.supportsGetTypeMap = false;

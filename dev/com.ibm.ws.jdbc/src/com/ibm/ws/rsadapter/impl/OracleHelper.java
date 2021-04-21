@@ -131,7 +131,7 @@ public class OracleHelper extends DatabaseHelper {
     OracleHelper(WSManagedConnectionFactoryImpl mcf) throws Exception {
         super(mcf);
 
-        dataStoreHelper = "com.ibm.websphere.rsadapter.Oracle11gDataStoreHelper";
+        dataStoreHelperClassName = "com.ibm.websphere.rsadapter.Oracle11gDataStoreHelper";
 
         mcf.supportsIsReadOnly = false;
         xaEndResetsAutoCommit = true;
