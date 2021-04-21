@@ -17,6 +17,7 @@ Bundle-Name: Open Liberty Checkpoint Support
 Bundle-Description: Open Liberty Checkoint Support, version ${bVersion}
 Bundle-SymbolicName: io.openliberty.checkpoint
 Private-Package: io.openliberty.checkpoint.internal
+Export-Package: io.openliberty.checkpoint.internal.criu
 
 -buildpath: \
     com.ibm.websphere.org.osgi.core, \
@@ -31,4 +32,6 @@ Private-Package: io.openliberty.checkpoint.internal
 	com.ibm.ws.junit.extensions;version=latest
 
 -dsannotations: \
-    io.openliberty.checkpoint.internal.CheckpointImpl
+    io.openliberty.checkpoint.internal.CheckpointImpl, \
+    io.openliberty.checkpoint.internal.ExecuteCRIU_JNI
+
