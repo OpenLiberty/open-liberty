@@ -2135,11 +2135,9 @@ public class LibertyServer implements LogMonitorClient {
                 }
                 TopologyException serverStartException = new TopologyException(exMessage);
                 Log.error(c, method, serverStartException, errMessage);
-                postStopServerArchive();
-
                 // since a startup error was not expected, trigger a dump to help with debugging
                 serverDump();
-
+                postStopServerArchive();
                 throw serverStartException;
             }
         } else if (expectStartFailure) {
