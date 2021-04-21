@@ -21,7 +21,6 @@ import java.sql.Driver;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Statement;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Properties;
@@ -2356,32 +2355,18 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                 (stateMgr.getState() == WSStateManager.RRS_GLOBAL_TRANSACTION_ACTIVE 
                 && !rrsGlobalTransactionReallyActive)) 
             {
-                if (mcf.dataStoreHelper != null)
-                    try
-                    {
-                        if (doConnectionSetupPerTranProps == null) {
-                            doConnectionSetupPerTranProps = new Properties();
-                            doConnectionSetupPerTranProps.setProperty("FIRST_TIME_CALLED", "true");
-                        } else {
-                            doConnectionSetupPerTranProps.setProperty("FIRST_TIME_CALLED", "false");
-                        }
-
-                        // Remove the wrapper for supplemental trace before invoking a custom helper
-                        // because the java.sql.Connection wrapper prevents access to vendor APIs
-                        // that might be used by the custom helper.
-                        Connection conn = mcf.isCustomHelper ?
-                            (Connection) WSJdbcTracer.getImpl(sqlConn) : sqlConn;
-
-                        // if we have a subject, it will take precedence
-                        mcf.dataStoreHelper.doConnectionSetupPerTransaction(subject,
-                           (subject == null ? newCRI.ivUserName : null),
-                            conn, _claimedVictim, doConnectionSetupPerTranProps);
+                if (mcf.dataStoreHelper != null) {
+                    if (doConnectionSetupPerTranProps == null) {
+                        doConnectionSetupPerTranProps = new Properties();
+                        doConnectionSetupPerTranProps.setProperty("FIRST_TIME_CALLED", "true");
+                    } else {
+                        doConnectionSetupPerTranProps.setProperty("FIRST_TIME_CALLED", "false");
                     }
-                    catch (SQLException sqe)
-                    {
-                        FFDCFilter.processException(sqe, getClass().getName(), "2294", this);
-                        throw new DataStoreAdapterException("DSA_ERROR", sqe, getClass());
-                    }
+
+                    // if we have a subject, it will take precedence
+                    helper.doConnectionSetupPerTransaction(subject, (subject == null ? newCRI.ivUserName : null),
+                                                           sqlConn, _claimedVictim, doConnectionSetupPerTranProps);
+                }
 
                 // setting the new subject in the managed connection, this may be the same
                 // as the existing one, however, in the claimedVictim path it won't. Setting it all the time.
@@ -2436,32 +2421,11 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
         if (isTraceOn && tc.isDebugEnabled())
             Tr.debug(this, tc, "numHandlesInUse", numHandlesInUse);
 
-        if (mcf.isCustomHelper && numHandlesInUse == 1)
-            try
-            {
-                Map<String, Object> props = new HashMap<String, Object>();
-                props.put("SUBJECT", subject);
-
-                // Remove the wrapper for supplemental trace before invoking a custom helper
-                // because the java.sql.Connection wrapper prevents access to vendor APIs
-                // that might be used by the custom helper.
-                Connection conn = mcf.isCustomHelper ?
-                    (Connection) WSJdbcTracer.getImpl(sqlConn) : sqlConn;
-
-                boolean conSetupPerformed = mcf.dataStoreHelper.doConnectionSetupPerGetConnection(conn, false, props);
-                if (isTraceOn && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "doConnectionSetupPerGetConnection", mcf.dataStoreHelper, this, sqlConn, conSetupPerformed);
-
-                // indicate that we need to undo in case cleanup is called before close
-                perCloseCleanupNeeded = true;
-            }
-            catch (Throwable t)
-            {
-                FFDCFilter.processException(t, getClass().getName(), "2849", this);
-                if (t instanceof SQLException)
-                    t = AdapterUtil.mapSQLException((SQLException) t, this);
-                throw new DataStoreAdapterException("DSA_ERROR", t, getClass());
-            }
+        if (mcf.isCustomHelper && numHandlesInUse == 1) {
+            helper.doConnectionSetupPerGetConnection(sqlConn, subject);
+            // indicate that we need to undo in case cleanup is called before close
+            perCloseCleanupNeeded = true;
+        }
 
         // Record the number of fatal connection errors found on connections created by the
         // parent ManagedConnectionFactory at the time the last handle was created for this
@@ -2804,25 +2768,12 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
             throw x;
         }
 
-        if (perCloseCleanupNeeded)
-            try {
-                perCloseCleanupNeeded = false;
-
-                Connection conn = mcf.isCustomHelper ?
-                    (Connection) WSJdbcTracer.getImpl(sqlConn) : sqlConn;
-
-                boolean conCleanupPerformed = mcf.dataStoreHelper.doConnectionCleanupPerCloseConnection(conn, false, null);
-
-                if (isTraceOn && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "doConnectionCleanupPerCloseConnection", mcf.dataStoreHelper, sqlConn, conCleanupPerformed);
-            }
-            catch (Throwable x) {
-                if (isTraceOn && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "doConnectionCleanupPerCloseConnection", x);
-                SQLException sqlx = x instanceof SQLException ? (SQLException) x
-                                : new SQLException(x.getMessage(), null, 999999); // 999999 matches legacy behavior
-                throw AdapterUtil.translateSQLException(sqlx, this, false, getClass());
-            }
+        if (perCloseCleanupNeeded) {
+            perCloseCleanupNeeded = false;
+            SQLException failure = helper.doConnectionCleanupPerCloseConnection(sqlConn);
+            if (failure != null)
+                throw AdapterUtil.translateSQLException(failure, this, false, getClass());
+        }
 
         // Reset to null so that it gets refreshed on next use.
         transactional = null; 

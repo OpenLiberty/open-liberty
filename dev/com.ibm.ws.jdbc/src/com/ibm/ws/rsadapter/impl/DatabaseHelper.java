@@ -11,6 +11,7 @@
 package com.ibm.ws.rsadapter.impl;
 
 import java.io.PrintWriter;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
@@ -61,6 +62,7 @@ import com.ibm.ws.rsadapter.SQLStateAndCode;
 import com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException;
 import com.ibm.ws.rsadapter.impl.WSManagedConnectionFactoryImpl.KerbUsage;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcStatement;
+import com.ibm.ws.rsadapter.jdbc.WSJdbcTracer;
 
 /**
  * Helper for generic relational databases, coded to the most common cases.
@@ -76,7 +78,7 @@ public class DatabaseHelper {
     /**
      * Legacy data store helper if providing legacy API, otherwise null.
      */
-    private Object dataStoreHelper;
+    Object dataStoreHelper;
 
     /**
      * Class name of corresponding legacy data store helper class.
@@ -347,6 +349,41 @@ public class DatabaseHelper {
     }
 
     /**
+     * Legacy DataStoreHelper method to invoke after the last active connection handle is closed.
+     * This provides an opportunity to undo connection setup that was previously performed by
+     * <code>doConnectionSetupPerGetConnection</code>.
+     *
+     * @param con the connection to clean up.
+     * @return SQLException if it fails.
+     */
+    public final SQLException doConnectionCleanupPerCloseConnection(Connection con) {
+        try {
+            // Remove the wrapper for supplemental trace before invoking a custom helper
+            // because the java.sql.Connection wrapper prevents access to vendor APIs
+            // that might be used by the custom helper.
+            Connection conn = mcf.isCustomHelper ? (Connection) WSJdbcTracer.getImpl(con) : con;
+
+            boolean conCleanupPerformed = AccessController.doPrivileged((PrivilegedExceptionAction<Boolean>) () -> {
+                return (Boolean) doConnectionCleanupPerCloseConnection.invoke(dataStoreHelper, conn, false, null);
+            });
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(this, tc, "doConnectionCleanupPerCloseConnection", dataStoreHelper, con, conCleanupPerformed);
+            return null;
+        } catch (PrivilegedActionException x) {
+            Throwable cause = x.getCause();
+            cause = cause instanceof InvocationTargetException ? cause.getCause() : cause;
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(this, tc, "doConnectionCleanupPerCloseConnection", x);
+
+            if (cause instanceof SQLException)
+                return AdapterUtil.mapSQLException((SQLException) cause, mcf);
+            else
+                return new SQLException(x.getMessage(), null, 999999); // 999999 matches legacy behavior
+        }
+    }
+
+    /**
      * <p>This method configures a connection before first use. This method is invoked only
      * when a new connection to the database is created. It is not invoked when connections
      * are reused from the connection pool.</p>
@@ -363,6 +400,71 @@ public class DatabaseHelper {
      * @exception SQLException if connection setup cannot be completed successfully.
      */
     public void doConnectionSetup(Connection conn) throws SQLException {
+    }
+
+    /**
+     * Legacy DataStoreHelper method to invoked per getConnection request when the connection handle count is 1,
+     * meaning that the second, third, and so forth sharable connection handles are skipped over.
+     *
+     * @param conn connection to set up.
+     * @param subject Subject, if available.
+     * @throws ResourceException if it fails.
+     */
+    final void doConnectionSetupPerGetConnection(Connection con, Subject subject) throws ResourceException {
+        try {
+            Map<String, Object> props = new HashMap<String, Object>();
+            props.put("SUBJECT", subject);
+
+            // Remove the wrapper for supplemental trace before invoking a custom helper
+            // because the java.sql.Connection wrapper prevents access to vendor APIs
+            // that might be used by the custom helper.
+            Connection conn = mcf.isCustomHelper ? (Connection) WSJdbcTracer.getImpl(con) : con;
+
+            boolean conSetupPerformed = AccessController.doPrivileged((PrivilegedExceptionAction<Boolean>) () -> {
+                return (Boolean) doConnectionSetupPerGetConnection.invoke(dataStoreHelper, conn, false, props);
+            });
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(this, tc, "doConnectionSetupPerGetConnection", dataStoreHelper, this, con, conSetupPerformed);
+        } catch (PrivilegedActionException x) {
+            Throwable cause = x.getCause();
+            cause = cause instanceof InvocationTargetException ? cause.getCause() : cause;
+            FFDCFilter.processException(cause, getClass().getName(), "435", this);
+            if (cause instanceof SQLException)
+                cause = AdapterUtil.mapSQLException((SQLException) cause, mcf);
+            throw new DataStoreAdapterException("DSA_ERROR", cause, getClass());
+        }
+    }
+
+    /**
+     * Legacy DataStoreHelper method to invoke prior to a connection being used in a transaction.
+     *
+     * @param subject subject for the newly requested connection if container authentication is used, otherwise null.
+     * @param user user name for the newly requested connection. Null if container authentication is used and a subject is provided.
+     * @param con the connection.
+     * @param reauthRequired indicates whether reauthentication is required to get the connection in sync with the subject or user name.
+     * @param props contains a property with key, "FIRST_TIME_CALLED", and value of "true" or "false"
+     *        depending on whether or not this is the first time invoking this method for the specified connection.
+     * @throws ResourceException to indicate failure of this method.
+     */
+    final void doConnectionSetupPerTransaction(Subject subject, String user, Connection con, boolean reauthRequired, Properties props) throws ResourceException {
+        try {
+            // Remove the wrapper for supplemental trace before invoking a custom helper
+            // because the java.sql.Connection wrapper prevents access to vendor APIs
+            // that might be used by the custom helper.
+            Connection conn = mcf.isCustomHelper ? (Connection) WSJdbcTracer.getImpl(con) : con;
+
+            // if we have a subject, it will take precedence
+            AccessController.doPrivileged((PrivilegedExceptionAction<Void>) () -> {
+                doConnectionSetupPerTransaction.invoke(dataStoreHelper, subject, user, conn, reauthRequired, props);
+                return null;
+            });
+        } catch (PrivilegedActionException x) {
+            Throwable cause = x.getCause();
+            cause = cause instanceof InvocationTargetException ? cause.getCause() : cause;
+            FFDCFilter.processException(cause, getClass().getName(), "433", this);
+            throw new DataStoreAdapterException("DSA_ERROR", cause, getClass());
+        }
     }
 
     /**
@@ -524,6 +626,28 @@ public class DatabaseHelper {
     }
 
     /**
+     * Initializes the unit-of-work detection support indicator from the legacy DataStoreHelper.
+     * The value returned by the DataStoreHelper overrides the previously inferred value.
+     *
+     * @throws SQLException if an error occurs.
+     */
+    final void initUOWDetection() throws SQLException {
+        try {
+            mcf.supportsUOWDetection = AccessController.doPrivileged((PrivilegedExceptionAction<Boolean>) () -> {
+                Object metadata = dataStoreHelper.getClass().getMethod("getMetaData").invoke(dataStoreHelper);
+                return (Boolean) metadata.getClass().getMethod("supportsUOWDetection").invoke(metadata);
+            });
+        } catch (PrivilegedActionException x) {
+            Throwable cause = x.getCause();
+            cause = cause instanceof InvocationTargetException ? cause.getCause() : cause;
+            if (cause instanceof SQLException)
+                throw (SQLException) cause;
+            else
+                throw new SQLException(cause);
+        }
+    }
+
+    /**
      * This method determines whether a <code>SQLException</code> indicates a stale connection error.
      * 
      * @param ex the <code>SQLException</code> to check.
@@ -676,6 +800,45 @@ public class DatabaseHelper {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc, "isUnsupported? " + unsupported + ": " + sqlState + ' ' + errorCode + ' ' + sqlX.getClass().getName());
         return unsupported;
+    }
+
+    /**
+     * Invokes mapException on the legacy DataStoreHelper to identify an exception
+     * and possibly replace it (if replaceExceptions=true).
+     *
+     * @param x an exception.
+     * @return the exception to identify as or replace with.
+     */
+    public final SQLException mapException(SQLException sqlX) {
+        try {
+            return AccessController.doPrivileged((PrivilegedExceptionAction<SQLException>) () -> {
+                Method mapException = dataStoreHelper.getClass().getMethod("mapException", SQLException.class);
+                return (SQLException) mapException.invoke(dataStoreHelper, sqlX);
+            });
+        } catch (PrivilegedActionException x) {
+            FFDCFilter.processException(x, DatabaseHelper.class.getName(), "819", this);
+            return sqlX;
+        }
+    }
+
+    /**
+     * Invokes modifyXAFlag on the legacy DataStoreHelper.
+     *
+     * @param xaStartFlags XA start flags to add to.
+     * @return updated XA start flags which are a combination of the flags supplied to this method
+     *         and the flag for loosely coupled transaction branches.
+     */
+    final int modifyXAFlag(int xaStartFlags) {
+        try {
+            return AccessController.doPrivileged((PrivilegedExceptionAction<Integer>) () -> {
+                return (Integer) modifyXAFlag.invoke(dataStoreHelper, xaStartFlags);
+            });
+        } catch (PrivilegedActionException x) {
+            Throwable cause = x.getCause();
+            cause = cause instanceof InvocationTargetException ? cause.getCause() : cause;
+            FFDCFilter.processException(x, DatabaseHelper.class.getName(), "839", this);
+            throw new RuntimeException(cause);
+        }
     }
 
     /**
@@ -1376,8 +1539,8 @@ public class DatabaseHelper {
      * @return xa_start flag value
      */
     public int branchCouplingSupported(int couplingType) {
-        int result = couplingType == ResourceRefInfo.BRANCH_COUPLING_LOOSE && mcf.dataStoreHelper != null
-                   ? mcf.dataStoreHelper.modifyXAFlag(XAResource.TMNOFLAGS)
+        int result = couplingType == ResourceRefInfo.BRANCH_COUPLING_LOOSE && dataStoreHelper != null
+                   ? modifyXAFlag(XAResource.TMNOFLAGS)
                    : XAResource.TMNOFLAGS;
 
         if (couplingType == ResourceRefInfo.BRANCH_COUPLING_LOOSE && result == XAResource.TMNOFLAGS

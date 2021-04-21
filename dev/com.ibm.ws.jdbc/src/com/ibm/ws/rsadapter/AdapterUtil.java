@@ -1196,7 +1196,7 @@ public class AdapterUtil {
                 mappedX = sqlX;
                 mapsToStaleConnection = iHelper.isConnectionError(sqlX);
             } else {
-                mappedX = mcf.dataStoreHelper.mapException(sqlX);
+                mappedX = iHelper.mapException(sqlX);
                 mapsToStaleConnection = isLegacyException(mappedX, IdentifyExceptionAs.StaleConnection.legacyClassName);
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, mappedX == sqlX ? "not replaced" : ("mapped to " + mappedX.getClass().getName()));

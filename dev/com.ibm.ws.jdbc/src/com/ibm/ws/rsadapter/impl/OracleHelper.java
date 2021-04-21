@@ -295,10 +295,10 @@ public class OracleHelper extends DatabaseHelper {
             return super.branchCouplingSupported(couplingType);
 
         if (couplingType == ResourceRefInfo.BRANCH_COUPLING_LOOSE)
-            if (mcf.dataStoreHelper == null)
+            if (dataStoreHelper == null)
                 return 0x10000; // value of oracle.jdbc.xa.OracleXAResource.ORATRANSLOOSE
             else
-                return mcf.dataStoreHelper.modifyXAFlag(XAResource.TMNOFLAGS);
+                return modifyXAFlag(XAResource.TMNOFLAGS);
 
         // Tight branch coupling is default for Oracle
         return XAResource.TMNOFLAGS;
