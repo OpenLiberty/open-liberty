@@ -93,7 +93,7 @@ public class HDConnection implements Connection, HeritageDBConnection, XAConnect
     /**
      * Counts the number of times that doConnectionSetupPerTransaction is invoked for this connection.
      */
-    public final AtomicInteger transactionCount = new AtomicInteger(-1);
+    public final AtomicInteger transactionCount = new AtomicInteger(Integer.MIN_VALUE); // make it obvious if it never gets initialized to 1
 
     /**
      * Xid of transaction that we are pretending to participate in.

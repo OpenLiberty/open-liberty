@@ -1348,8 +1348,8 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
             helper.gatherAndDisplayMetaDataInfo(conn, this);
 
             // If a legacy data store helper is used, allow it to determine the unit-of-work detection support:
-            if (dataStoreHelper != null)
-                supportsUOWDetection = dataStoreHelper.getMetaData().supportsUOWDetection();
+            if (helper.dataStoreHelper != null)
+                helper.initUOWDetection();
 
             wasUsedToGetAConnection = true;
         }
