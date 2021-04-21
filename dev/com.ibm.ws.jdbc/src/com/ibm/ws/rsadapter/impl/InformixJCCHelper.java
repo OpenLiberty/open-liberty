@@ -62,7 +62,7 @@ public class InformixJCCHelper extends InformixHelper {
     InformixJCCHelper(WSManagedConnectionFactoryImpl mcf) throws Exception {
         super(mcf);
 
-        dataStoreHelper = "com.ibm.websphere.rsadapter.InformixJccDataStoreHelper";
+        dataStoreHelperClassName = "com.ibm.websphere.rsadapter.InformixJccDataStoreHelper";
 
         mcf.doesStatementCacheIsoLevel = true;
         mcf.supportsGetTypeMap = false;

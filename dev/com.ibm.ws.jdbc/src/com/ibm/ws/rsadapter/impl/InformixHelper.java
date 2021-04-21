@@ -42,7 +42,7 @@ public class InformixHelper extends DatabaseHelper {
     InformixHelper(WSManagedConnectionFactoryImpl mcf) {
         super(mcf);
 
-        dataStoreHelper = "com.ibm.websphere.rsadapter.InformixDataStoreHelper";
+        dataStoreHelperClassName = "com.ibm.websphere.rsadapter.InformixDataStoreHelper";
 
         mcf.defaultIsolationLevel = Connection.TRANSACTION_REPEATABLE_READ;
 
