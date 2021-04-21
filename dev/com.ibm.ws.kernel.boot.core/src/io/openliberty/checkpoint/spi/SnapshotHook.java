@@ -45,7 +45,7 @@ public interface SnapshotHook {
      * will then have their {@link #abortRestore(Exception)}
      * method called.
      */
-    Exception restore();
+    void restore();
 
     /**
      * Abort the restore from snapshot.

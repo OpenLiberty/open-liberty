@@ -20,7 +20,6 @@ import java.util.function.Function;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
-import org.checkpoint.CheckpointRestore;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -29,6 +28,7 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
+import io.openliberty.checkpoint.internal.criu.ExecuteCRIU;
 import io.openliberty.checkpoint.spi.Checkpoint;
 import io.openliberty.checkpoint.spi.SnapshotFailed;
 import io.openliberty.checkpoint.spi.SnapshotFailed.Type;
@@ -42,9 +42,18 @@ import io.openliberty.checkpoint.spi.SnapshotHookFactory;
 public class CheckpointImpl implements Checkpoint {
     private final ComponentContext cc;
 
+    @Reference(policyOption = ReferencePolicyOption.GREEDY)
+    private volatile ExecuteCRIU criu;
+
     @Activate
     public CheckpointImpl(ComponentContext cc) {
         this.cc = cc;
+    }
+
+    // only for unit tests
+    CheckpointImpl(ComponentContext cc, ExecuteCRIU criu) {
+        this.cc = cc;
+        this.criu = criu;
     }
 
     @Override
@@ -60,12 +69,12 @@ public class CheckpointImpl implements Checkpoint {
         List<SnapshotHook> snapshotHooks = getHooks(factories, phase);
         prepare(snapshotHooks);
         try {
-            CheckpointRestore.saveTheWorld(directory.getAbsolutePath());
+            criu.dump(directory);
         } catch (Exception e) {
+            abortPrepare(snapshotHooks, e);
             throw new SnapshotFailed(Type.SNAPSHOT_FAILED, "Failed to create snapshot.", e);
-        } finally {
-            restore(phase, snapshotHooks);
         }
+        restore(phase, snapshotHooks);
         System.out.println("Restored the world");
     }
 
@@ -75,7 +84,7 @@ public class CheckpointImpl implements Checkpoint {
         }
         List<SnapshotHook> hooks = new ArrayList<>(factories.length);
         for (Object o : factories) {
-            // if o is anything other than a napshotHookFactory then
+            // if o is anything other than a SnapshotHookFactory then
             // there is a bug in SCR
             SnapshotHook hook = ((SnapshotHookFactory) o).create(phase);
             if (hook != null) {
@@ -116,6 +125,16 @@ public class CheckpointImpl implements Checkpoint {
 
     private static SnapshotFailed failedPrepare(Exception cause) {
         return new SnapshotFailed(Type.PREPARE_ABORT, "Failed to prepare for a snapshot.", cause);
+    }
+
+    private void abortPrepare(List<SnapshotHook> snapshotHooks, Exception cause) {
+        for (SnapshotHook hook : snapshotHooks) {
+            try {
+                hook.abortPrepare(cause);
+            } catch (Exception e) {
+                // ignore
+            }
+        }
     }
 
     private void restore(Phase phase, List<SnapshotHook> snapshotHooks) throws SnapshotFailed {
