@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2015 IBM Corporation and others.
+    Copyright (c) 2015, 2021 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -132,5 +132,7 @@
     <javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
     
     <webContainer deferServletLoad="false"/>
-    
+
+	<logging maxFileSize="50" maxFiles="3" traceFileName="wsocTrace.log" traceSpecification="*=info:com.ibm.ws.webcontainer.*=all:com.ibm.wsspi.webcontainer.*=all:com.ibm.ws.webcontainer31.*=all:ChannelFramework=all:HTTPChannel=all:TCPChannel=all:websockets=all"/> 
+  
 </server>
