@@ -39,7 +39,7 @@ public class FATSuite {
         ExternalTestServiceDockerClientStrategy.setupTestcontainers();
     }
 
-    private static final DockerImageName sqlserverImage = DockerImageName.parse("aguibert/sqlserver-ssl:1.0")//
+    private static final DockerImageName sqlserverImage = DockerImageName.parse("kyleaure/sqlserver-ssl:2019-CU10-ubuntu-16.04")//
                     .asCompatibleSubstituteFor("mcr.microsoft.com/mssql/server");
 
     @ClassRule
