@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -115,10 +115,10 @@ public class ClientTestServlet extends HttpServlet {
         sb.append(compareResult(register1, FALSE));
 
         Future<Response> exception1 = client.target(BASE_URL + "rest/resource/resumechecked?stage=1").request().async().get();
-        Response response3 = exception1.get();
+        Response response1 = exception1.get();
 
         Response suspendResponse1 = suspend1.get();
-        sb.append(intequalCompare(suspendResponse1.getStatusInfo().getStatusCode(), Response.Status.INTERNAL_SERVER_ERROR.getStatusCode()));
+        sb.append(intequalCompare(suspendResponse1.getStatusInfo().getStatusCode(), Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),true));
 //        assertEquals(suspendResponse1.getStatusInfo().getStatusCode(), Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
 
         suspendResponse1.close();
@@ -145,9 +145,10 @@ public class ClientTestServlet extends HttpServlet {
         sb.append(compareResult(register2, FALSE));
 
         Future<Response> exception2 = client.target(BASE_URL + "rest/resource/resumechecked?stage=1").request().async().get();
+        Response response3 = exception2.get();
 
         Response suspendResponse3 = suspend2.get();
-        sb.append(intequalCompare(suspendResponse3.getStatusInfo().getStatusCode(), Response.Status.INTERNAL_SERVER_ERROR.getStatusCode()));
+        sb.append(intequalCompare(suspendResponse3.getStatusInfo().getStatusCode(), Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),true));
 //        assertEquals(suspendResponse3.getStatusInfo().getStatusCode(), Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
 
         suspendResponse3.close();
@@ -214,11 +215,11 @@ public class ClientTestServlet extends HttpServlet {
         try {
             Thread.sleep(2000);
         } catch (Exception e) {
-            //no-op
+            System.out.println("Thread.sleep threw exception: " + e.getMessage());
         }
         Response response = future.get();
         //System.out.println(response.getStatus());
-        intequalCompare(200, response.getStatus());
+        intequalCompare(200, response.getStatus(),false);
 //        assertEquals(200, response.getStatus());
 
         String entity = response.readEntity(String.class);
@@ -231,6 +232,7 @@ public class ClientTestServlet extends HttpServlet {
         }
         else
         {
+            System.out.println("success");
             return "success";
         }
     }
@@ -269,8 +271,17 @@ public class ClientTestServlet extends HttpServlet {
 //        response.close();
     }
 
-    private static String intequalCompare(int a, int b)
+    private static String intequalCompare(int a, int b, boolean delay)
     {
+        //282545 Delay to allow CompletionCallback.onComplete() to execute
+        if (delay) {
+            try {
+                Thread.sleep(2000);
+            } catch (Exception e) {
+                System.out.println("Thread.sleep threw exception: " + e.getMessage());
+            }
+        }
+
         System.out.println(a);
         System.out.println(b);
         if (a != b)
