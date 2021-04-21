@@ -101,7 +101,7 @@ public class DataDirectConnectSQLServerHelper extends DatabaseHelper {
     DataDirectConnectSQLServerHelper(WSManagedConnectionFactoryImpl mcf) {
         super(mcf);
 
-        dataStoreHelper = "com.ibm.websphere.rsadapter.ConnectJDBCDataStoreHelper";
+        dataStoreHelperClassName = "com.ibm.websphere.rsadapter.ConnectJDBCDataStoreHelper";
 
         mcf.defaultIsolationLevel = Connection.TRANSACTION_REPEATABLE_READ;
 

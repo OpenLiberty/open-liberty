@@ -11,6 +11,7 @@
 package com.ibm.ws.rsadapter.impl;
 
 import java.io.PrintWriter;
+import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
@@ -25,6 +26,7 @@ import java.sql.SQLRecoverableException;
 import java.sql.SQLTransientConnectionException;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
@@ -33,6 +35,7 @@ import java.util.Set;
 
 import javax.naming.Context;
 import javax.resource.ResourceException;
+import javax.security.auth.Subject;
 import javax.sql.CommonDataSource;
 import javax.sql.ConnectionPoolDataSource;
 import javax.sql.DataSource;
@@ -49,6 +52,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.jca.adapter.WSConnectionManager;
 import com.ibm.ws.jca.cm.AbstractConnectionFactoryService;
+import com.ibm.ws.jdbc.heritage.GenericDataStoreHelper;
 import com.ibm.ws.resource.ResourceRefInfo;
 import com.ibm.ws.rsadapter.AdapterUtil;
 import com.ibm.ws.rsadapter.DSConfig;
@@ -65,14 +69,19 @@ import com.ibm.ws.rsadapter.jdbc.WSJdbcStatement;
 public class DatabaseHelper {
     // register the generic database trace needed for enabling database jdbc logging/tracing
     @SuppressWarnings("deprecation")
-    private static final com.ibm.ejs.ras.TraceComponent databaseTc = com.ibm.ejs.ras.Tr.register("com.ibm.ws.database.logwriter", "WAS.database", null); 
-    private static final TraceComponent tc = Tr.register(DatabaseHelper.class, "RRA", AdapterUtil.NLS_FILE); 
+    private static final com.ibm.ejs.ras.TraceComponent databaseTc = com.ibm.ejs.ras.Tr.register("com.ibm.ws.database.logwriter", "WAS.database", null);
+    private static final TraceComponent tc = Tr.register(DatabaseHelper.class, "RRA", AdapterUtil.NLS_FILE);
     transient PrintWriter genPw;
+
+    /**
+     * Legacy data store helper if providing legacy API, otherwise null.
+     */
+    private Object dataStoreHelper;
 
     /**
      * Class name of corresponding legacy data store helper class.
      */
-    String dataStoreHelper = "com.ibm.websphere.rsadapter.GenericDataStoreHelper";
+    String dataStoreHelperClassName = "com.ibm.websphere.rsadapter.GenericDataStoreHelper";
 
     /**
      * Default query timeout configured on the data source.
@@ -82,6 +91,17 @@ public class DatabaseHelper {
     private String databaseProductName = null; 
     private String driverName; 
     int driverMajorVersion; 
+
+    /**
+     * Legacy operations, or null if legacy API isn't enabled.
+     */
+    private Method doConnectionCleanup,
+                   doConnectionCleanupPerCloseConnection,
+                   doConnectionSetup,
+                   doConnectionSetupPerGetConnection,
+                   doConnectionSetupPerTransaction,
+                   doStatementCleanup,
+                   modifyXAFlag;
 
     /**
      * The managed connection factory associated with this internal data store helper.
@@ -160,6 +180,138 @@ public class DatabaseHelper {
      */
     public boolean alwaysSetAutoCommit() {
         return false;
+    }
+
+    /**
+     * Creates a legacy DataStoreHelper and populates or overrides some default values from it.
+     *
+     * @return legacy DataStoreHelper.
+     * @throws PrivilegedActionException if an error occurs.
+     * @throws ResourceException if an error occurs.
+     * @throws ClassNotFoundException if unable to load a data store helper class.
+     */
+    GenericDataStoreHelper createDataStoreHelper() throws PrivilegedActionException, ResourceException, ClassNotFoundException {
+        DSConfig config = mcf.dsConfig.get();
+        Properties helperProps = new Properties();
+        Object value;
+
+        if ((value = config.vendorProps.get("currentSQLID")) != null)
+            helperProps.setProperty("currentSQLID", value.toString());
+
+        helperProps.setProperty("dataSourceClass", mcf.vendorImplClass.getName());
+
+        if ((value = config.vendorProps.get("driverType")) != null)
+            helperProps.put("driverType", value.toString());
+
+        if ((value = config.vendorProps.get("informixAllowNewLine")) != null)
+            helperProps.put("informixAllowNewLine", value.toString());
+
+        if ((value = config.vendorProps.get("informixLockModeWait")) != null)
+            helperProps.put("informixLockModeWait", value.toString());
+
+        if ((value = config.vendorProps.get("longDataCacheSize")) != null)
+            helperProps.put("longDataCacheSize", value.toString());
+
+        if (config.queryTimeout != null)
+            helperProps.put("queryTimeout", Integer.toString(config.queryTimeout));
+
+        // reauthentication is not configurable, defaults to false
+
+        if ((value = config.vendorProps.get("responseBuffering")) != null)
+            helperProps.put("responseBuffering", value.toString());
+
+        // useTrustedContextWithAuthentication is not configurable, defaults to false
+
+        if (config.isolationLevel != -1)
+            helperProps.put("webSphereDefaultIsolationLevel", Integer.toString(config.isolationLevel));
+
+        String helperClassName = config.heritageHelperClass == null ? dataStoreHelperClassName : config.heritageHelperClass;
+
+        mcf.isCustomHelper = !helperClassName.startsWith("com.ibm.websphere.rsadapter");
+
+        Map<Object, Class<?>> map = new HashMap<Object, Class<?>>();
+        for (Map.Entry<Object, String> entry : config.identifyExceptions.entrySet())
+            try {
+                String className = entry.getValue();
+                if (!className.contains("."))
+                    try {
+                        IdentifyExceptionAs identifyAs = IdentifyExceptionAs.valueOf(className);
+                        if (identifyAs.legacyClassName == null)
+                            className = IdentifyExceptionAs.None.legacyClassName; // no equivalent legacy exception class, do not replace it
+                        else
+                            className = identifyAs.legacyClassName;
+                    } catch (IllegalArgumentException x) {
+                        // probably an error, but maybe the user has a custom exception class without a package, so continue on...
+                    }
+                Class<?> exceptionClass = WSManagedConnectionFactoryImpl.priv.loadClass(mcf.jdbcDriverLoader, className);
+                Object key = entry.getKey();
+                if (key instanceof String || key instanceof Integer)
+                    map.put(key, exceptionClass);
+                else
+                    // TODO NLS message
+                    throw new IllegalArgumentException("The sqlState and errorCode attributes cannot both be configured on the same identifyException element when replaceExceptions=true is enabled.");
+            } catch (ClassNotFoundException x) {
+                Tr.error(tc, "8066E_IDENTIFY_EXCEPTION_INVALID_TARGET", entry.getValue(), Arrays.toString(IdentifyExceptionAs.values()) + ", com.ibm.websphere.ce.cm.*, ...");
+                throw x;
+            }
+
+        dataStoreHelper = AccessController.doPrivileged((PrivilegedExceptionAction<?>) () -> {
+            Class<?> c = mcf.jdbcDriverLoader.loadClass(helperClassName);
+            Object h = c.getConstructor(Properties.class).newInstance(helperProps);
+
+            // dataStoreHelper.setConfig(mcf.dsConfig);
+            c.getMethod("setConfig", Object.class).invoke(h, mcf.dsConfig);
+
+            // genPw = dataStoreHelper.getPrintWriter();
+            if (genPw == null)
+                genPw = (PrintWriter) c.getMethod("getPrintWriter").invoke(h);
+
+            // mcf.defaultIsolationLevel = dataStoreHelper.getIsolationLevel(null);
+            Class<?> AccessIntent = mcf.jdbcDriverLoader.loadClass("com.ibm.websphere.appprofile.accessintent.AccessIntent");
+            mcf.defaultIsolationLevel = (Integer) c.getMethod("getIsolationLevel", AccessIntent).invoke(h, (Object) null);
+
+            // dataStoreHelper.setUserDefinedMap(map);
+            if (!map.isEmpty())
+                c.getMethod("setUserDefinedMap", Map.class).invoke(h, map);
+
+            // DataStoreHelperMetaData metadata = dataStoreHelper.getMetaData();
+            Object metadata = c.getMethod("getMetaData").invoke(h);
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(this, tc, "createDataStoreHelper", dataStoreHelper, metadata, map);
+
+            doConnectionCleanup = c.getMethod("doConnectionCleanup", Connection.class);
+            doConnectionCleanupPerCloseConnection = c.getMethod("doConnectionCleanupPerCloseConnection", Connection.class, boolean.class, Object.class);
+            doConnectionSetup = c.getMethod("doConnectionSetup", Connection.class);
+            doConnectionSetupPerGetConnection = c.getMethod("doConnectionSetupPerGetConnection", Connection.class, boolean.class, Object.class);
+            doConnectionSetupPerTransaction = c.getMethod("doConnectionSetupPerTransaction", Subject.class, String.class, Connection.class, boolean.class, Object.class);
+            doStatementCleanup = c.getMethod("doStatementCleanup", PreparedStatement.class);
+            modifyXAFlag = c.getMethod("modifyXAFlag", int.class);
+
+            Class<?> mdc = metadata.getClass();
+
+            // mcf.doesStatementCacheIsoLevel = metadata.doesStatementCacheIsoLevel();
+            mcf.doesStatementCacheIsoLevel = (Boolean) mdc.getMethod("doesStatementCacheIsoLevel").invoke(metadata);
+
+            // mcf.supportsGetCatalog = metadata.supportsGetCatalog();
+            mcf.supportsGetCatalog = (Boolean) mdc.getMethod("supportsGetCatalog").invoke(metadata);
+
+            // mcf.supportsGetNetworkTimeout = metadata.supportsGetNetworkTimeout();
+            mcf.supportsGetNetworkTimeout = (Boolean) mdc.getMethod("supportsGetNetworkTimeout").invoke(metadata);
+
+            // mcf.supportsGetSchema = metadata.supportsGetSchema();
+            mcf.supportsGetSchema = (Boolean) mdc.getMethod("supportsGetSchema").invoke(metadata);
+
+            // mcf.supportsGetTypeMap = metadata.supportsGetTypeMap();
+            mcf.supportsGetTypeMap = (Boolean) mdc.getMethod("supportsGetTypeMap").invoke(metadata);
+
+            // mcf.supportsIsReadOnly = metadata.supportsIsReadOnly();
+            mcf.supportsIsReadOnly = (Boolean) mdc.getMethod("supportsIsReadOnly").invoke(metadata);
+
+            return h;
+        });
+
+        return (GenericDataStoreHelper) dataStoreHelper;
     }
 
     /**
@@ -596,11 +748,11 @@ public class DatabaseHelper {
     public void enableJdbcLogging(WSManagedConnectionFactoryImpl mcf) throws ResourceException {
         // in the Generic case (internalGeneric) just pass the pw
 
-        PrintWriter pw = getPrintWriter(); 
+        PrintWriter pw = getPrintWriter();
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "enabling logging", mcf, pw);
-        mcf.reallySetLogWriter(pw); 
+        mcf.reallySetLogWriter(pw);
         mcf.loggingEnabled = true;
     }
 
@@ -866,7 +1018,7 @@ public class DatabaseHelper {
         java.sql.DatabaseMetaData mData = conn.getMetaData();
 
         String databaseProductName = mData.getDatabaseProductName();
-        String driverName = mData.getDriverName(); 
+        String driverName = mData.getDriverName();
 
         String driverVersion = null;
         String databaseProductVersion = null;
@@ -881,13 +1033,13 @@ public class DatabaseHelper {
         }
 
         setDatabaseProductName(databaseProductName);
-        setDriverName(driverName); 
-        setDriverMajorVersion(mData.getDriverMajorVersion()); 
+        setDriverName(driverName);
+        setDriverMajorVersion(mData.getDriverMajorVersion());
 
         Tr.info(tc, "DB_PRODUCT_NAME", databaseProductName);
-        Tr.info(tc, "DB_PRODUCT_VERSION", databaseProductVersion); 
-        Tr.info(tc, "JDBC_DRIVER_NAME", driverName); 
-        Tr.info(tc, "JDBC_DRIVER_VERSION", driverVersion); 
+        Tr.info(tc, "DB_PRODUCT_VERSION", databaseProductVersion);
+        Tr.info(tc, "JDBC_DRIVER_NAME", driverName);
+        Tr.info(tc, "JDBC_DRIVER_VERSION", driverVersion);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "exception identification",
@@ -1083,7 +1235,7 @@ public class DatabaseHelper {
             if (tc.isEntryEnabled())
                 Tr.exit(this, tc, "getPooledConnection", AdapterUtil.toString(pConn));
 
-            return new ConnectionResults(pConn, null); 
+            return new ConnectionResults(pConn, null);
         } catch (PrivilegedActionException pae) {
             FFDCFilter.processException(pae.getException(), getClass().getName(), "1298");
 

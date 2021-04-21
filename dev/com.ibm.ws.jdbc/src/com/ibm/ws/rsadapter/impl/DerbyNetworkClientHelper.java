@@ -53,7 +53,7 @@ public class DerbyNetworkClientHelper extends DerbyHelper {
     DerbyNetworkClientHelper(WSManagedConnectionFactoryImpl mcf) {
         super(mcf);
 
-        dataStoreHelper = "com.ibm.websphere.rsadapter.DerbyNetworkServerDataStoreHelper";
+        dataStoreHelperClassName = "com.ibm.websphere.rsadapter.DerbyNetworkServerDataStoreHelper";
 
         mcf.doesStatementCacheIsoLevel = true;
 

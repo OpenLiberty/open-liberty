@@ -61,7 +61,7 @@ public class DB2iNativeHelper extends DB2Helper {
     DB2iNativeHelper(WSManagedConnectionFactoryImpl mcf) throws Exception {
         super(mcf);
 
-        dataStoreHelper = "com.ibm.websphere.rsadapter.DB2AS400DataStoreHelper";
+        dataStoreHelperClassName = "com.ibm.websphere.rsadapter.DB2AS400DataStoreHelper";
 
         // For the Native driver (unlike the Toolbox driver) the custom property isolationLevelSwitchingSupport is
         // optional and really is only needed if the target database is a remote one.  If this property is not set

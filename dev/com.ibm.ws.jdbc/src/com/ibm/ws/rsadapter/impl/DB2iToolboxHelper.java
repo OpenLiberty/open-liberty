@@ -60,7 +60,7 @@ public class DB2iToolboxHelper extends DB2Helper {
     DB2iToolboxHelper(WSManagedConnectionFactoryImpl mcf) throws Exception {
         super(mcf);
 
-        dataStoreHelper = "com.ibm.websphere.rsadapter.DB2AS400DataStoreHelper";
+        dataStoreHelperClassName = "com.ibm.websphere.rsadapter.DB2AS400DataStoreHelper";
 
         localZOS = false;
         isRRSTransaction = false;
