@@ -42,7 +42,7 @@ import com.mongodb.WriteResult;
 /**
  * The main purpose of this sample is to demonstrate the use of a CustomStore
  * for an OAuth Provider. It is provided as-is.
- * 
+ *
  * It uses a MongoDB back end.
  **/
 public class CustomStoreSample implements OAuthStore {
@@ -117,6 +117,7 @@ public class CustomStoreSample implements OAuthStore {
                 MongoClientOptions.Builder optionsBuilder = new MongoClientOptions.Builder().connectTimeout(30000);
                 optionsBuilder.socketTimeout(10000);
                 optionsBuilder.socketKeepAlive(true);
+                optionsBuilder.maxWaitTime(30000);
                 MongoClientOptions clientOptions = optionsBuilder.build();
                 mongoClient = new MongoClient(new ServerAddress(dbHost, dbPort), credentials, clientOptions);
                 db = mongoClient.getDB(dbName);
@@ -137,6 +138,7 @@ public class CustomStoreSample implements OAuthStore {
                 } else {
                     System.out.println("Database is not pre-populated with clients: " + OAUTHCLIENT);
                 }
+                result.close();
             } catch (UnknownHostException e) {
                 System.out.println("CustomStoreSample failed connecting to the database " + e);
                 e.printStackTrace();
@@ -383,7 +385,9 @@ public class CustomStoreSample implements OAuthStore {
                     results.add(createOAuthClientHelper(dbo));
                 }
             }
-
+            if (cursor != null) {
+                cursor.close();
+            }
         } catch (Exception e) {
             throw new OAuthStoreException("Failed on readAllClients found under " + providerId, e);
         }
@@ -438,6 +442,7 @@ public class CustomStoreSample implements OAuthStore {
                 }
                 collection.add(createOAuthTokenHelper(dbo));
             }
+            result.close();
             return collection;
         } catch (Exception e) {
             throw new OAuthStoreException("Failed to readAllTokens for " + username + " under " + providerId, e);
@@ -604,13 +609,15 @@ public class CustomStoreSample implements OAuthStore {
     }
 
     private boolean isNetworkFailure(Exception e) {
+        System.out.println("CustomStoreSample isNetworkFailure processing for " + e);
         Throwable causeBy = e;
         while (causeBy != null) {
             if (causeBy instanceof IOException) {
                 System.out.println("Hit an IOException: " + causeBy);
                 return true;
             } else {
-                causeBy = e.getCause();
+                System.out.println("Not an IOException: " + causeBy);
+                causeBy = causeBy.getCause();
             }
         }
         return false;
