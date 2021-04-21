@@ -58,9 +58,6 @@
         <attributesCache size="4000" timeout="1200ms" enabled="true" sizeLimit="2000"/>
         <searchResultsCache size="2000" timeout="600ms" enabled="true" resultsSizeLimit="1000"/>
       </ldapCache>
-      <failoverServers name="failoverLdapServers">
-      	<server host="${ldap.server.3.name}" port="${ldap.server.3.port}"/>
-       </failoverServers>
 	</ldapRegistry> 
 
     <federatedRepository>
