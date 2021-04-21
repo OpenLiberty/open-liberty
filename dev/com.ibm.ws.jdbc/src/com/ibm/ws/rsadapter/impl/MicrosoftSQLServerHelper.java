@@ -107,6 +107,11 @@ public class MicrosoftSQLServerHelper extends DatabaseHelper {
 
     @Override
     public void doStatementCleanup(PreparedStatement stmt) throws SQLException {
+        if (dataStoreHelper != null) {
+            doStatementCleanupLegacy(stmt);
+            return;
+        }
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(this, tc, "doStatementCleanup", AdapterUtil.toString(stmt));
 

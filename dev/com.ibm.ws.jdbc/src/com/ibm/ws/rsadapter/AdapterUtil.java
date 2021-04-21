@@ -1192,7 +1192,7 @@ public class AdapterUtil {
         }
         else
         {
-            if (mcf.dataStoreHelper == null) {
+            if (iHelper.dataStoreHelper == null) {
                 mappedX = sqlX;
                 mapsToStaleConnection = iHelper.isConnectionError(sqlX);
             } else {
@@ -1210,7 +1210,7 @@ public class AdapterUtil {
 
             // Check for stale statement
 
-            if (mcf.dataStoreHelper == null)
+            if (iHelper.dataStoreHelper == null)
                 isStaleStatement = iHelper.isStaleStatement(sqlX);
             else if (isLegacyException(mappedX, IdentifyExceptionAs.StaleStatement.legacyClassName))
                 try {

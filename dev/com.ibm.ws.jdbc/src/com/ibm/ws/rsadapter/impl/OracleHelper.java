@@ -21,6 +21,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
@@ -378,6 +380,9 @@ public class OracleHelper extends DatabaseHelper {
      */
     @Override
     public boolean doConnectionCleanup(Connection conn) throws SQLException {
+        if (dataStoreHelper != null)
+            return doConnectionCleanupLegacy(conn);
+
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
             Tr.entry(tc, "doConnectionCleanup");
@@ -492,6 +497,11 @@ public class OracleHelper extends DatabaseHelper {
 
     @Override
     public void doStatementCleanup(PreparedStatement stmt) throws SQLException {
+        if (dataStoreHelper != null) {
+            doStatementCleanupLegacy(stmt);
+            return;
+        }
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(this, tc, "doStatementCleanup");
 
@@ -602,6 +612,19 @@ public class OracleHelper extends DatabaseHelper {
      */
     @Override
     public String getXAExceptionContents(XAException xae) {
+        // Use the equivalent method on DataStoreHelper if legacy API is available.
+        if (dataStoreHelper != null)
+            try {
+                return AccessController.doPrivileged((PrivilegedExceptionAction<String>) () -> {
+                    return (String) dataStoreHelper.getClass()
+                                    .getMethod("getXAExceptionContents", XAException.class)
+                                    .invoke(dataStoreHelper, xae);
+                });
+            } catch (PrivilegedActionException x) {
+                FFDCFilter.processException(x, getClass().getName(), "616", this);
+            }
+
+
         StringBuilder xsb = new StringBuilder(350);
         try {
             Class<?> c = WSManagedConnectionFactoryImpl.priv.loadClass(mcf.jdbcDriverLoader, "oracle.jdbc.xa.OracleXAException");

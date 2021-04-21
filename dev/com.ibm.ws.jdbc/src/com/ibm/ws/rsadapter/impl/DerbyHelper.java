@@ -57,6 +57,11 @@ public class DerbyHelper extends DatabaseHelper {
 
     @Override
     public void doStatementCleanup(PreparedStatement stmt) throws SQLException {
+        if (dataStoreHelper != null) {
+            doStatementCleanupLegacy(stmt);
+            return;
+        }
+
         stmt.setCursorName(null);
         stmt.setFetchDirection(ResultSet.FETCH_FORWARD);
         stmt.setMaxFieldSize(0);
