@@ -18,6 +18,7 @@
 	<application id="myApp" name="ProgrammaticLoginWithCallbackHandlerNullUser" type="ear"
 		location="ProgrammaticLoginWithCallbackHandlerNullUser.ear" />
 
+    <orb id="defaultOrb" orbSSLInitTimeout="60"/>
 	<keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" />
 
 </client>
