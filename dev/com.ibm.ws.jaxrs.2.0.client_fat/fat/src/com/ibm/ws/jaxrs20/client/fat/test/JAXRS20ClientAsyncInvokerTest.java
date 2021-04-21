@@ -13,7 +13,6 @@ package com.ibm.ws.jaxrs20.client.fat.test;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -144,6 +143,7 @@ public class JAXRS20ClientAsyncInvokerTest extends AbstractTest {
     }
 
     @Test
+    @AllowedFFDC("javax.ws.rs.ProcessingException")
     public void testAsyncInvoker_getReceiveTimeoutwithInvocationCallback() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         this.runTestOnServer(asyncInvokerTarget, "testAsyncInvoker_getReceiveTimeoutwithInvocationCallback", p, "Timeout as expected");
