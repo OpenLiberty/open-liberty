@@ -18,6 +18,8 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.jpa.spec20.olgh.TestOLGH10515_EJB;
 import com.ibm.ws.jpa.spec20.olgh.TestOLGH10515_WEB;
+import com.ibm.ws.jpa.spec20.olgh.TestOLGH16686_EJB;
+import com.ibm.ws.jpa.spec20.olgh.TestOLGH16686_WEB;
 import com.ibm.ws.jpa.spec20.olgh.TestOLGH9018_EJB;
 import com.ibm.ws.jpa.spec20.olgh.TestOLGH9018_WEB;
 import com.ibm.ws.jpa.spec20.olgh.TestOLGH9339_EJB;
@@ -35,6 +37,8 @@ import componenttest.rules.repeater.RepeatTests;
                 TestOLGH9339_WEB.class,
                 TestOLGH10515_EJB.class,
                 TestOLGH10515_WEB.class,
+                TestOLGH16686_EJB.class,
+                TestOLGH16686_WEB.class,
                 componenttest.custom.junit.runner.AlwaysPassesTest.class
 })
 public class FATSuite {

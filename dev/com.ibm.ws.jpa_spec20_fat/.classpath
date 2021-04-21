@@ -9,6 +9,7 @@
 	<classpathentry kind="src" path="test-applications/olgh9018/src"/>
 	<classpathentry kind="src" path="test-applications/olgh9339/src"/>
 	<classpathentry kind="src" path="test-applications/olgh10515/src"/>
+	<classpathentry kind="src" path="test-applications/olgh16686/src"/>
 	<classpathentry kind="src" path="test-applications/ordercolumn/src"/>
 	<classpathentry kind="src" path="test-applications/query/src"/>
 	<classpathentry kind="src" path="test-applications/querylockmode/src"/>
