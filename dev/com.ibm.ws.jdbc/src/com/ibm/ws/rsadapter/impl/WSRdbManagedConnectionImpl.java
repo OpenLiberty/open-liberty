@@ -2355,7 +2355,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                 (stateMgr.getState() == WSStateManager.RRS_GLOBAL_TRANSACTION_ACTIVE 
                 && !rrsGlobalTransactionReallyActive)) 
             {
-                if (mcf.dataStoreHelper != null) {
+                if (helper.dataStoreHelper != null) {
                     if (doConnectionSetupPerTranProps == null) {
                         doConnectionSetupPerTranProps = new Properties();
                         doConnectionSetupPerTranProps.setProperty("FIRST_TIME_CALLED", "true");
@@ -2421,7 +2421,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
         if (isTraceOn && tc.isDebugEnabled())
             Tr.debug(this, tc, "numHandlesInUse", numHandlesInUse);
 
-        if (mcf.isCustomHelper && numHandlesInUse == 1) {
+        if (helper.isCustomHelper && numHandlesInUse == 1) {
             helper.doConnectionSetupPerGetConnection(sqlConn, subject);
             // indicate that we need to undo in case cleanup is called before close
             perCloseCleanupNeeded = true;
@@ -2831,9 +2831,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                 helper.resetClientInformation(this);
             }
 
-            modifiedByCleanup = mcf.dataStoreHelper == null
-                              ? helper.doConnectionCleanup(sqlConn)
-                              : mcf.dataStoreHelper.doConnectionCleanup((Connection) WSJdbcTracer.getImpl(sqlConn));
+            modifiedByCleanup = helper.doConnectionCleanup(sqlConn);
 
             if (!connectionErrorDetected) 
             {
@@ -4264,10 +4262,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
             }
 
             // Clean up the connection.
-            if (mcf.dataStoreHelper == null)
-                helper.doConnectionCleanup(sqlConn);
-            else
-                mcf.dataStoreHelper.doConnectionCleanup((Connection) WSJdbcTracer.getImpl(sqlConn));
+            helper.doConnectionCleanup(sqlConn);
 
             // Clear the warning.
             sqlConn.clearWarnings();
@@ -4284,7 +4279,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
             if (isTraceOn && tc.isDebugEnabled()) 
                 Tr.debug(this, tc, "validate", AdapterUtil.getStackTraceWithState(sqle));
 
-            if (mcf.dataStoreHelper == null ? helper.isConnectionError(sqle) : mcf.dataStoreHelper.isConnectionError(sqle)) {
+            if (helper.isConnectionError(sqle)) {
                 // Don't do any cleanup
                 if (isTraceOn && tc.isEntryEnabled())
                     Tr.exit(this, tc, "validate", false);
@@ -4303,7 +4298,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
 
                         // There is a possibility that now the connection is stale.
 
-                        if (mcf.dataStoreHelper == null ? helper.isConnectionError(rollbackEx) : mcf.dataStoreHelper.isConnectionError(rollbackEx)) {
+                        if (helper.isConnectionError(rollbackEx)) {
                             if (isTraceOn && tc.isEntryEnabled())
                                 Tr.exit(this, tc, "validate", AdapterUtil.getStackTraceWithState(rollbackEx));
                             return false;
@@ -4312,16 +4307,13 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                 }
 
                 try {
-                    if (mcf.dataStoreHelper == null)
-                        helper.doConnectionCleanup(sqlConn);
-                    else
-                        mcf.dataStoreHelper.doConnectionCleanup((Connection) WSJdbcTracer.getImpl(sqlConn));
+                    helper.doConnectionCleanup(sqlConn);
                 } catch (SQLException cleanEx) {
                     // No FFDC coded needed
 
                     // There is a possibility that now the connection is stale.
 
-                    if (mcf.dataStoreHelper == null ? helper.isConnectionError(cleanEx) : mcf.dataStoreHelper.isConnectionError(cleanEx)) {
+                    if (helper.isConnectionError(cleanEx)) {
                         if (isTraceOn && tc.isEntryEnabled())
                             Tr.exit(this, tc, "validate", AdapterUtil.getStackTraceWithState(cleanEx));
                         return false;
@@ -4335,7 +4327,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
 
                     // There is a possibility that now the connection is stale.
 
-                    if (mcf.dataStoreHelper == null ? helper.isConnectionError(cleanEx) : mcf.dataStoreHelper.isConnectionError(cleanEx)) {
+                    if (helper.isConnectionError(cleanEx)) {
                         if (isTraceOn && tc.isEntryEnabled())
                             Tr.exit(this, tc, "validate", AdapterUtil.getStackTraceWithState(cleanEx));
                         return false;

@@ -492,12 +492,10 @@ public class WSJdbcConnection extends WSJdbcObject implements Connection {
      */
     protected SQLException closeWrapper(boolean closeWrapperOnly) 
     {
-        final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
-
         // Looking for the public close method?  Try WSJdbcObject.
         SQLException sqlX = null;
 
-        if (mcf.isCustomHelper && managedConn != null && managedConn.getHandleCount() == 1
+        if (mcf.getHelper().isCustomHelper && managedConn != null && managedConn.getHandleCount() == 1
          && null == (sqlX = mcf.getHelper().doConnectionCleanupPerCloseConnection(connImpl)))
             managedConn.perCloseCleanupNeeded = false;
 
@@ -2542,14 +2540,7 @@ public class WSJdbcConnection extends WSJdbcObject implements Connection {
     {
         // - in order to free up memory, parameters are cleared before caching instead of after
         if (managedConn.resetStmtsInCacheOnRemove)
-        {
-            if (mcf.dataStoreHelper == null)
-                mcf.getHelper().doStatementCleanup(cstmt);
-            else
-                mcf.dataStoreHelper.doStatementCleanup(mcf.isCustomHelper ?
-                                (CallableStatement) WSJdbcTracer.getImpl(cstmt) :
-                                cstmt);
-        }
+            mcf.getHelper().doStatementCleanup(cstmt);
         return cstmt;
     }
 
@@ -2568,14 +2559,7 @@ public class WSJdbcConnection extends WSJdbcObject implements Connection {
     {
         // - in order to free up memory, parameters are cleared before caching instead of after
         if (managedConn.resetStmtsInCacheOnRemove)
-        {
-            if (mcf.dataStoreHelper == null)
-                mcf.getHelper().doStatementCleanup(pstmt);
-            else
-                mcf.dataStoreHelper.doStatementCleanup(mcf.isCustomHelper ?
-                                (PreparedStatement) WSJdbcTracer.getImpl(pstmt) :
-                                pstmt);
-        }
+            mcf.getHelper().doStatementCleanup(pstmt);
 
         return pstmt;
     }

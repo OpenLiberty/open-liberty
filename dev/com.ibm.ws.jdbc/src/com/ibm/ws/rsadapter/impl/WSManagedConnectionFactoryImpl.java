@@ -70,7 +70,6 @@ import com.ibm.ws.jca.adapter.WSConnectionManager;
 import com.ibm.ws.jca.adapter.WSManagedConnectionFactory;
 import com.ibm.ws.jca.cm.AbstractConnectionFactoryService;
 import com.ibm.ws.jca.cm.ConnectorService;
-import com.ibm.ws.jdbc.heritage.GenericDataStoreHelper;
 import com.ibm.ws.jdbc.internal.PropertyService;
 import com.ibm.ws.jdbc.osgi.JDBCRuntimeVersion;
 import com.ibm.ws.kernel.service.util.SecureAction;
@@ -133,11 +132,6 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
      * The type of data source (for example, javax.sql.XADataSource) or java.sql.Driver that this managed connection factory uses to establish connections.
      */
     final Class<?> type;
-
-    /**
-     * Same as the DatabaseHelper unless overridden via the heritage helperClass.
-     */
-    public final GenericDataStoreHelper dataStoreHelper;
 
     /**
      * Helps cope with differences between databases/JDBC drivers.
@@ -266,12 +260,6 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
      * in order to allow for our future implementation of dynamic updates.
      */
     public final AtomicReference<DSConfig> dsConfig;
-
-    /**
-     * Indicates if the user provides their own custom legacy data store helper.
-     */
-    public boolean isCustomHelper;
-
     /**
      * Indicates whether or not the JDBC driver supports <code>java.sql.Connection.getCatalog()</code>.
      */
@@ -359,9 +347,8 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
         createDatabaseHelper(config.vendorProps instanceof PropertyService ? ((PropertyService) config.vendorProps).getFactoryPID() : PropertyService.FACTORY_PID);
 
         if (connectorSvc.isHeritageEnabled()) {
-            dataStoreHelper = helper.createDataStoreHelper();
+            helper.createDataStoreHelper();
         } else {
-            dataStoreHelper = null;
             supportsGetNetworkTimeout = supportsGetSchema = atLeastJDBCVersion(JDBCRuntimeVersion.VERSION_4_1);
         }
 
@@ -1331,10 +1318,7 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
      * utility used to gather metadata info and issue doConnectionSetup.
      */
     private void postGetConnectionHandling(Connection conn) throws SQLException {
-        if (dataStoreHelper == null)
-            helper.doConnectionSetup(conn);
-        else
-            dataStoreHelper.doConnectionSetup(isCustomHelper ? (Connection) WSJdbcTracer.getImpl(conn) : conn);
+        helper.doConnectionSetup(conn);
 
         String[] sqlCommands = dsConfig.get().onConnect;
         if (sqlCommands != null && sqlCommands.length > 0)
