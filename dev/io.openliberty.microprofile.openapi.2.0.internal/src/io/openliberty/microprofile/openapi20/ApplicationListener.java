@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@ package io.openliberty.microprofile.openapi20;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -29,6 +30,9 @@ import io.openliberty.microprofile.openapi20.utils.LoggingUtils;
 public class ApplicationListener implements ApplicationStateListener {
 
     private static final TraceComponent tc = Tr.register(ApplicationListener.class);
+    
+    @Reference
+    private ApplicationRegistry appRegistry;
 
     /** {@inheritDoc} */
     @Override
