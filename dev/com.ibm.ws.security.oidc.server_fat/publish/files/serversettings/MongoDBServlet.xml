@@ -21,4 +21,17 @@
 	<javaPermission
 		codebase="${server.config.dir}/mongoDB/mongo-java-driver.jar"
 		className="java.security.AllPermission" />
+    <javaPermission
+		codebase="${wlp.user.dir}/shared/mongo-java-driver.jar"
+		className="java.security.AllPermission" />
+	<javaPermission
+		codebase="${wlp.user.dir}/shared/security.custom.store_1.0.jar"
+		className="java.security.AllPermission" />
+	<javaPermission
+		codebase="${server.config.dir}/publish/bundles/security.custom.store_1.0.jar"
+		className="java.security.AllPermission" />
+    <javaPermission
+		codebase="${server.config.dir}/test-apps/oAuth20MongoSetup.war"
+		className="java.security.AllPermission" />		
+		
 </server>
