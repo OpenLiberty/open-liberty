@@ -14,10 +14,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
-import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.Tr;
@@ -50,28 +48,6 @@ public class ApplicationRegistry {
     private ApplicationInfo currentApp = null;
     private OpenAPIProvider currentProvider = null;
 
-    /**
-     * The getInstance method returns the singleton instance of the ApplicationRegistry
-     * 
-     * @return ApplicationRegistry
-     *             The singleton instance
-     */
-    public static ApplicationRegistry getInstance() {
-        return INSTANCE;
-    }
-    
-    @Activate
-    protected void activate() {
-        INSTANCE = this;
-    }
-    
-    @Deactivate
-    protected void deactivate() {
-        if (INSTANCE == this) {
-            INSTANCE = null;
-        }
-    }
-    
     /**
      * The addApplication method is invoked by the {@link ApplicationListener} when it is notified that an application
      * is starting. It only needs to process the application if we have not already found an application that implements

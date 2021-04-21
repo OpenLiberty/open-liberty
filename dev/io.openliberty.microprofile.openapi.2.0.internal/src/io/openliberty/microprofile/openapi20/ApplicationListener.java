@@ -42,7 +42,7 @@ public class ApplicationListener implements ApplicationStateListener {
                 Tr.event(tc, "Application starting process started: " + appInfo);
             }
             
-            ApplicationRegistry.getInstance().addApplication(appInfo);
+            appRegistry.addApplication(appInfo);
             
             if (LoggingUtils.isEventEnabled(tc)) {
                 Tr.event(tc, "Application starting process ended: " + appInfo);
@@ -62,7 +62,7 @@ public class ApplicationListener implements ApplicationStateListener {
     @Override
     public void applicationStopping(ApplicationInfo appInfo) {
         try {
-            ApplicationRegistry.getInstance().removeApplication(appInfo);
+            appRegistry.removeApplication(appInfo);
         } catch (Throwable e) {
             if (LoggingUtils.isEventEnabled(tc)) {
                 Tr.event(tc, "Failed to remove application: " + e.getMessage());
