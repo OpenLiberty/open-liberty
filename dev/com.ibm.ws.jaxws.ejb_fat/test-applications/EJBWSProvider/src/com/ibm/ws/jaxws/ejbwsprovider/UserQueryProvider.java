@@ -36,7 +36,7 @@ import javax.xml.ws.soap.Addressing;
                     targetNamespace = "http://ejbbasic.jaxws.ws.ibm.com/")
 @BindingType(javax.xml.ws.soap.SOAPBinding.SOAP11HTTP_BINDING)
 @Stateless(name = "UserQuery")
-@Addressing(enabled = true, required = true)
+@Addressing(enabled = true, required = false)
 public class UserQueryProvider implements Provider<Source> {
 
     private static final JAXBContext USER_QUERY_JAXB_CONTEXT;

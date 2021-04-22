@@ -95,6 +95,9 @@ public class EJBBasicClientServlet extends HttpServlet {
         PrintWriter writer = resp.getWriter();
         try {
             setEndpointAddress((BindingProvider) userQuery, req, "EJBWSBasic/UserQueryService");
+            BindingProvider bp = (BindingProvider) userQuery;
+
+            bp.getRequestContext().put(BindingProvider.SOAPACTION_URI_PROPERTY, "http://ejbbasic.jaxws.ws.ibm.com/UserQuery/getUser");
             userQuery.getUser("none");
             writer.write("FAILED UserNotFoundException is expected");
         } catch (UserNotFoundException_Exception e) {
@@ -113,6 +116,8 @@ public class EJBBasicClientServlet extends HttpServlet {
 
             setEndpointAddress((BindingProvider) userQueryService, req, "EJBWSBasic/UserQueryService");
             BindingProvider bp = (BindingProvider) userQuery;
+
+            bp.getRequestContext().put(BindingProvider.SOAPACTION_URI_PROPERTY, "http://ejbbasic.jaxws.ws.ibm.com/UserQuery/getUser");
             UserQuery uq = userQueryService;
             System.out.println("@TJJ From servlet bp syntehic get is: " + bp.getRequestContext().get("operation.is.synthetic"));
             User user = uq.getUser("Illidan Stormrage");
@@ -132,6 +137,9 @@ public class EJBBasicClientServlet extends HttpServlet {
         PrintWriter writer = resp.getWriter();
         try {
             setEndpointAddress((BindingProvider) userQuery, req, "EJBWSBasic/UserQueryService");
+
+            BindingProvider bp = (BindingProvider) userQuery;
+            bp.getRequestContext().put(BindingProvider.SOAPACTION_URI_PROPERTY, "http://ejbbasic.jaxws.ws.ibm.com/UserQuery/getUser");
             Response<GetUserResponse> response = userQuery.getUserAsync("Illidan Stormrage");
 
             long curWaitTime = 0;
@@ -177,6 +185,9 @@ public class EJBBasicClientServlet extends HttpServlet {
         final PrintWriter writer = resp.getWriter();
         try {
             setEndpointAddress((BindingProvider) userQuery, req, "EJBWSBasic/UserQueryService");
+
+            BindingProvider bp = (BindingProvider) userQuery;
+            bp.getRequestContext().put(BindingProvider.SOAPACTION_URI_PROPERTY, "http://ejbbasic.jaxws.ws.ibm.com/UserQuery/getUser");
             Future<?> future = userQuery.getUserAsync("Illidan Stormrage", new AsyncHandler<GetUserResponse>() {
                 @Override
                 public void handleResponse(Response<GetUserResponse> response) {
@@ -249,6 +260,9 @@ public class EJBBasicClientServlet extends HttpServlet {
         PrintWriter writer = resp.getWriter();
         setEndpointAddress((BindingProvider) userQuery, req, "EJBWSBasic/UserQueryService");
 
+        BindingProvider bp = (BindingProvider) userQuery;
+
+        bp.getRequestContext().put(BindingProvider.SOAPACTION_URI_PROPERTY, "http://ejbbasic.jaxws.ws.ibm.com/UserQuery/listUser");
         List<User> users = userQuery.listUsers();
         if (users == null) {
             writer.write("FAILED Expected user instances are not returned");
@@ -264,7 +278,6 @@ public class EJBBasicClientServlet extends HttpServlet {
                                                 "http://" + request.getServerName() + ":" + request.getServerPort() + "/" + endpointPath);
 
         bindingProvider.getRequestContext().put("operation.is.synthetic", true);
-        bindingProvider.getRequestContext().put("allowNonMatchingToDefaultSoapAction", true);
         bindingProvider.getRequestContext().put("allowNonMatchingToDefaultSoapAction", true);
     }
 }
