@@ -11,7 +11,7 @@ Subsystem-Name: SAML Web Single Sign-On 2.0
   com.ibm.websphere.appserver.ssoCommon-1.0, \
   com.ibm.websphere.appserver.authFilter-1.0
 -bundles=\
-  io.openliberty.org.apache.commons.logging, \, \
+  io.openliberty.org.apache.commons.logging, \
   com.ibm.json4j, \
   io.openliberty.org.apache.commons.codec, \
   com.ibm.ws.org.jose4j
