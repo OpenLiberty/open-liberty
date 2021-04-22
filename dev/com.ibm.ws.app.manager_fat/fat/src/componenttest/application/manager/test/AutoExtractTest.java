@@ -1034,7 +1034,9 @@ public class AutoExtractTest extends AbstractAppManagerTest {
             // This case gets caught as a UnsupportedOperationException exception else where.
             assertNotNull("The application testWarApplication did not appear to have started.",
                           server.waitForStringInLog(APP_FAIL_INSTALL + ".* testWarApplication"));
-
+        } catch (Throwable th ) {
+            //If one of our assertions failed, dump the server
+            server.serverDump();
         } finally {
             //if we failed to delete file before, try to delete it now.
             pathsToCleanup.add(server.getServerRoot() + "/" + APPS_DIR);
