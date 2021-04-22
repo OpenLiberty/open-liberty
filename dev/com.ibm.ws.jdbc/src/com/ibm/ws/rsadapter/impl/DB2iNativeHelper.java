@@ -61,7 +61,7 @@ public class DB2iNativeHelper extends DB2Helper {
     DB2iNativeHelper(WSManagedConnectionFactoryImpl mcf) throws Exception {
         super(mcf);
 
-        dataStoreHelper = "com.ibm.websphere.rsadapter.DB2AS400DataStoreHelper";
+        dataStoreHelperClassName = "com.ibm.websphere.rsadapter.DB2AS400DataStoreHelper";
 
         // For the Native driver (unlike the Toolbox driver) the custom property isolationLevelSwitchingSupport is
         // optional and really is only needed if the target database is a remote one.  If this property is not set
@@ -100,6 +100,9 @@ public class DB2iNativeHelper extends DB2Helper {
 
     @Override
     public boolean doConnectionCleanup(java.sql.Connection conn) throws SQLException {
+        if (dataStoreHelper != null)
+            return doConnectionCleanupLegacy(conn);
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(this, tc, "doConnectionCleanup");
 
@@ -124,6 +127,11 @@ public class DB2iNativeHelper extends DB2Helper {
 
     @Override
     public void doStatementCleanup(PreparedStatement stmt) throws SQLException {
+        if (dataStoreHelper != null) {
+            doStatementCleanupLegacy(stmt);
+            return;
+        }
+
         stmt.setCursorName(null);
         stmt.setFetchDirection(ResultSet.FETCH_FORWARD);
         stmt.setMaxFieldSize(0);

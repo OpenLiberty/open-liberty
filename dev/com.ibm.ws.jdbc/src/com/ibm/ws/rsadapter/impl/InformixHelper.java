@@ -42,7 +42,7 @@ public class InformixHelper extends DatabaseHelper {
     InformixHelper(WSManagedConnectionFactoryImpl mcf) {
         super(mcf);
 
-        dataStoreHelper = "com.ibm.websphere.rsadapter.InformixDataStoreHelper";
+        dataStoreHelperClassName = "com.ibm.websphere.rsadapter.InformixDataStoreHelper";
 
         mcf.defaultIsolationLevel = Connection.TRANSACTION_REPEATABLE_READ;
 
@@ -61,6 +61,11 @@ public class InformixHelper extends DatabaseHelper {
 
     @Override
     public void doStatementCleanup(PreparedStatement stmt) throws SQLException {
+        if (dataStoreHelper != null) {
+            doStatementCleanupLegacy(stmt);
+            return;
+        }
+
         // Informix doesn't support cursorName
         stmt.setFetchDirection(ResultSet.FETCH_FORWARD);
         stmt.setMaxFieldSize(0);

@@ -120,6 +120,11 @@ public class DB2Helper extends DatabaseHelper {
      */
     @Override
     public void doConnectionSetup(Connection conn) throws SQLException {
+        if (dataStoreHelper != null) {
+            doConnectionSetupLegacy(conn);
+            return;
+        }
+
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
         if (isTraceOn && tc.isEntryEnabled()) 

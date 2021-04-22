@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2020, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -20,11 +20,21 @@ src: src
 
 -dsannotations-inherit: true
 
+Include-Resource: \
+    @${repo;io.smallrye:smallrye-open-api-jaxrs}!/META-INF/services/*
+
+Service-Component: \
+    io.smallrye.openapi.runtime.scanner.spi.AnnotationScanner; \
+    implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
+    provide:=com.ibm.wsspi.classloading.ResourceProvider; \
+    configuration-policy:=optional; \
+    properties:="resources=META-INF/services/io.smallrye.openapi.runtime.scanner.spi.AnnotationScanner"
+
 Import-Package: \
    *
 
 Export-Package: \
-    io.smallrye.openapi.jaxrs;version=2.0.0
+    io.smallrye.openapi.jaxrs;version=2.0.0;thread-context=true
 
 -buildpath: \
     io.smallrye:smallrye-open-api-jaxrs;version=latest,\

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<persistence 
+    xmlns="http://java.sun.com/xml/ns/persistence"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
+    version="1.0">
+    
+    <!-- Commonly named persistence units (for scoping validation) -->
+    
+    <persistence-unit name="COMMON_JTA">
+        <jta-data-source>jdbc/JPA_JTA_DS</jta-data-source>
+        <non-jta-data-source>jdbc/JPA_NJTA_DS</non-jta-data-source>
+        <jar-file>jpacore.jar</jar-file>
+        <class>com.ibm.ws.jpa.fvt.injection.entities.core.CoreInjectionEntity</class>
+        <class>com.ibm.ws.jpa.fvt.injection.entities.earlib.EARLIBEntityA</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <properties>
+            <property name="eclipselink.logging.parameters" value="true"/>
+        	<property name="eclipselink.cache.shared.default" value="false"/>
+        </properties>
+    </persistence-unit>
+    
+    <persistence-unit name="COMMON_RL" transaction-type="RESOURCE_LOCAL">
+        <non-jta-data-source>jdbc/JPA_NJTA_DS</non-jta-data-source>
+        <jar-file>jpacore.jar</jar-file>
+        <class>com.ibm.ws.jpa.fvt.injection.entities.core.CoreInjectionEntity</class>
+        <class>com.ibm.ws.jpa.fvt.injection.entities.earlib.EARLIBEntityA</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <properties>
+            <property name="eclipselink.logging.parameters" value="true"/>
+        	<property name="eclipselink.cache.shared.default" value="false"/>
+        </properties>
+    </persistence-unit>
+    
+    <persistence-unit name="OVRD_COMMON_JTA">
+        <jta-data-source>jdbc/JPA_JTA_DS</jta-data-source>
+        <non-jta-data-source>jdbc/JPA_NJTA_DS</non-jta-data-source>
+        <jar-file>jpacore.jar</jar-file>
+        <class>com.ibm.ws.jpa.fvt.injection.entities.core.CoreInjectionEntity</class>
+        <class>com.ibm.ws.jpa.fvt.injection.entities.earlib.EARLIBEntityA</class>
+        <class>com.ibm.ws.jpa.fvt.injection.entities.earlib.EARLIBEntityB</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <properties>
+            <property name="eclipselink.logging.parameters" value="true"/>
+        	<property name="eclipselink.cache.shared.default" value="false"/>
+        </properties>
+    </persistence-unit>
+    
+    <persistence-unit name="OVRD_COMMON_RL" transaction-type="RESOURCE_LOCAL">
+        <non-jta-data-source>jdbc/JPA_NJTA_DS</non-jta-data-source>
+        <jar-file>jpacore.jar</jar-file>
+        <class>com.ibm.ws.jpa.fvt.injection.entities.core.CoreInjectionEntity</class>
+        <class>com.ibm.ws.jpa.fvt.injection.entities.earlib.EARLIBEntityA</class>
+        <class>com.ibm.ws.jpa.fvt.injection.entities.earlib.EARLIBEntityB</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <properties>
+            <property name="eclipselink.logging.parameters" value="true"/>
+        	<property name="eclipselink.cache.shared.default" value="false"/>
+        </properties>
+    </persistence-unit>
+    
+    <!-- Uniquely named persistence units -->
+    
+    <persistence-unit name="JPALIB_JTA">
+        <jta-data-source>jdbc/JPA_JTA_DS</jta-data-source>
+        <non-jta-data-source>jdbc/JPA_NJTA_DS</non-jta-data-source>
+        <jar-file>jpacore.jar</jar-file>
+        <class>com.ibm.ws.jpa.fvt.injection.entities.core.CoreInjectionEntity</class>
+        <class>com.ibm.ws.jpa.fvt.injection.entities.earlib.EARLIBEntityA</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <properties>
+            <property name="eclipselink.logging.parameters" value="true"/>
+        	<property name="eclipselink.cache.shared.default" value="false"/>
+        </properties>
+    </persistence-unit>
+    
+    <persistence-unit name="JPALIB_RL" transaction-type="RESOURCE_LOCAL">
+        <non-jta-data-source>jdbc/JPA_NJTA_DS</non-jta-data-source>
+        <jar-file>jpacore.jar</jar-file>
+        <class>com.ibm.ws.jpa.fvt.injection.entities.core.CoreInjectionEntity</class>
+        <class>com.ibm.ws.jpa.fvt.injection.entities.earlib.EARLIBEntityA</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <properties>
+            <property name="eclipselink.logging.parameters" value="true"/>
+        	<property name="eclipselink.cache.shared.default" value="false"/>
+        </properties>
+    </persistence-unit>
+    
+    <persistence-unit name="OVRD_JPALIB_JTA">
+        <jta-data-source>jdbc/JPA_JTA_DS</jta-data-source>
+        <non-jta-data-source>jdbc/JPA_NJTA_DS</non-jta-data-source>
+        <jar-file>jpacore.jar</jar-file>
+        <class>com.ibm.ws.jpa.fvt.injection.entities.core.CoreInjectionEntity</class>
+        <class>com.ibm.ws.jpa.fvt.injection.entities.earlib.EARLIBEntityA</class>
+        <class>com.ibm.ws.jpa.fvt.injection.entities.earlib.EARLIBEntityB</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <properties>
+            <property name="eclipselink.logging.parameters" value="true"/>
+        	<property name="eclipselink.cache.shared.default" value="false"/>
+        </properties>
+    </persistence-unit>
+    
+    <persistence-unit name="OVRD_JPALIB_RL" transaction-type="RESOURCE_LOCAL">
+        <non-jta-data-source>jdbc/JPA_NJTA_DS</non-jta-data-source>
+        <jar-file>jpacore.jar</jar-file>
+        <class>com.ibm.ws.jpa.fvt.injection.entities.core.CoreInjectionEntity</class>
+        <class>com.ibm.ws.jpa.fvt.injection.entities.earlib.EARLIBEntityA</class>
+        <class>com.ibm.ws.jpa.fvt.injection.entities.earlib.EARLIBEntityB</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <properties>
+            <property name="eclipselink.logging.parameters" value="true"/>
+        	<property name="eclipselink.cache.shared.default" value="false"/>
+        </properties>
+    </persistence-unit>
+</persistence>

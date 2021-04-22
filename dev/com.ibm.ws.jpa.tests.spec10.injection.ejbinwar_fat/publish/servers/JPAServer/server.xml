@@ -27,7 +27,11 @@
     </library>
     
     <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
-
+    
+    <!-- File read write permissions -->
+    <javaPermission className="java.util.PropertyPermission" name="user.dir" actions="read"/>
+    <javaPermission className="java.io.FilePermission" name="files/timertestoutput.txt" actions="read,write"/>
+    <javaPermission className="java.io.FilePermission" name="files" actions="write"/>
 
     <!--
     <logging  traceSpecification="JPA=all=enabled:EJBContainer=all=enabled:jakarta.xml.bind.*=all:org.glassfish.jaxb*=all:com.sun.istack.*=all:com.sun.tools.rngdatatype.*=all:com.sun.tools.rngom.*=all"
