@@ -22,8 +22,8 @@ dependencies {
      * for eash of retrieval by other projects.
      */
     collectedDeps 'org.mongodb:mongo-java-driver:2.13.3',
-                  'commons-codec:commons-codec:1.4',
-                  'commons-logging:commons-logging:1.1.1',
+                  project(':io.openliberty.org.apache.commons.codec'),
+                  project(':io.openliberty.org.apache.commons.logging'),
                   project(':com.ibm.json4j'),
                   project(':com.ibm.ws.com.google.gson'),
                   project(':com.ibm.ws.com.google.guava'),

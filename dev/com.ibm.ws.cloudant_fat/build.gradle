@@ -16,8 +16,8 @@ configurations {
 dependencies {
   cloudant 'com.cloudant:cloudant-client:2.16.0',
            'com.cloudant:cloudant-http:2.16.0',
-           'commons-codec:commons-codec:1.11',
-           'commons-io:commons-io:2.6',
+           project(':io.openliberty.org.apache.commons.codec'),
+           project(':com.ibm.ws.org.apache.commons.io'),
            'com.google.code.gson:gson:2.2.4'
 }
 

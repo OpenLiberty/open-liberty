@@ -23,7 +23,7 @@ dependencies {
   jackson2x project(':io.openliberty.com.fasterxml.jackson'),
     project(':io.openliberty.com.fasterxml.jackson.jaxrs')
   requiredLibs 'commons-httpclient:commons-httpclient:3.1',
-    'commons-logging:commons-logging:1.2',
+    project(':io.openliberty.org.apache.commons.logging'),
     project(':com.ibm.ws.org.apache.httpcomponents'),
     'org.apache.httpcomponents:httpmime:4.3.1',
     project(':io.openliberty.com.fasterxml.jackson'),
@@ -31,7 +31,7 @@ dependencies {
     'org.apache.wink:wink-common:1.4',
     'org.apache.wink:wink-client-apache-httpclient:1.4',
     "org.slf4j:slf4j-api:1.7.7",
-    "commons-codec:commons-codec:1.10"
+    project(':io.openliberty.org.apache.commons.codec')
   jersey 'org.glassfish.hk2.external:aopalliance-repackaged:2.3.0-b10',
     'org.ow2.asm:asm-debug-all:5.2',
     'org.glassfish.hk2:hk2-api:2.3.0-b10',

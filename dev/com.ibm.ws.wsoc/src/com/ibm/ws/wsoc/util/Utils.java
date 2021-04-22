@@ -19,6 +19,7 @@ import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CodingErrorAction;
+import java.nio.charset.StandardCharsets;
 import java.security.AccessController;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -38,7 +39,7 @@ import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 
 public class Utils {
 
-    public static final Charset UTF8_CHARSET = Charset.forName("UTF-8");
+    public static final Charset UTF8_CHARSET = StandardCharsets.UTF_8;
 
     private static final TraceComponent tc = Tr.register(Utils.class);
 
@@ -465,7 +466,7 @@ public class Utils {
         String inputKey = key + Constants.GUID;
 
         MessageDigest md = MessageDigest.getInstance("SHA-1");
-        byte[] arrayKey = inputKey.getBytes("iso-8859-1");
+        byte[] arrayKey = inputKey.getBytes(StandardCharsets.ISO_8859_1);
         // Question: should it be:  "utf-8" above?
         md.update(arrayKey, 0, arrayKey.length);
         byte[] sha1hash = md.digest();

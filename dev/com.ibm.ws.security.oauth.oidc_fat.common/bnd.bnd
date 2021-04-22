@@ -55,7 +55,7 @@ test.project: true
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.ws.mongo_fat;version=latest,\
 	com.ibm.ws.net.oauth.jsontoken.1.1-r42;version=latest,\
-	com.ibm.ws.org.apache.commons.codec;version=latest,\
+	io.openliberty.org.apache.commons.codec;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.security.fat.common;version=latest,\
 	com.ibm.ws.security.oauth.2.0;version=latest,\

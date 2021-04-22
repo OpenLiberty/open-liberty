@@ -512,7 +512,7 @@ public class WSJdbcStatement extends WSJdbcObject implements Statement {
             try {
                 WSJdbcConnection connWrapper = (WSJdbcConnection) parentWrapper;
 
-                if (mcf.dataStoreHelper == null ? mcf.getHelper().isConnectionError(batchX) : mcf.dataStoreHelper.isConnectionError(batchX)) {
+                if (mcf.getHelper().isConnectionError(batchX)) {
                     if (tc.isEventEnabled())
                         Tr.event(this, tc,
                                  "Encountered a Stale Connection: ", connWrapper);

@@ -14,6 +14,9 @@
 #   App: GenerateCategories.java        - calculates category matrix and outputs in json format
 ##############################
 
+# global variables
+OUTPUT_FILE=tmp/GenerateCategories.out && mkdir -p -- "$(dirname -- "$OUTPUT_FILE")" && touch -- "$OUTPUT_FILE"
+
 # Save off PR Summary
 echo $PRBODY >> .github/pull_request_body.txt
 echo "::group::PR Summary"
@@ -27,8 +30,12 @@ cat .github/modified_files.diff
 echo "::endgroup::"
 
 # Generate test categories
-MATRIX_RESULT=$(java .github/workflow-scripts/GenerateCategories.java .github/pull_request_body.txt)
+echo "::group::GenerateCategories Debug"
+java .github/workflow-scripts/GenerateCategories.java .github/pull_request_body.txt 1>> $OUTPUT_FILE
+echo "::endgroup::"
+
 echo "::group::MATRIX_RESULT"
+MATRIX_RESULT=$(cat $OUTPUT_FILE)
 echo $MATRIX_RESULT
 echo "::endgroup::"
 

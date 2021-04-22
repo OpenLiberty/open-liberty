@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2020, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -16,23 +16,23 @@ src: \
 
 fat.project: true
 
-tested.features: pages-3.0
+tested.features: pages-3.0, appsecurity-4.0, cdi-3.0
 
 -buildpath: \
     fattest.simplicity;version=latest,\
-    commons-codec:commons-codec;version=1.4,\
-    commons-logging:commons-logging;version=1.1.1,\
+    io.openliberty.org.apache.commons.codec;version=latest,\
+    io.openliberty.org.apache.commons.logging;version=latest,\
     com.ibm.websphere.javaee.servlet.3.1;version=latest,\
-	com.ibm.websphere.security;version=latest,\
-	com.ibm.ws.kernel.service;version=latest,\
-	com.ibm.ws.logging;version=latest,\
-	com.ibm.ws.security;version=latest,\
-	com.ibm.ws.security.authentication.filter;version=latest,\
-	com.ibm.ws.security.jaas.common;version=latest,\
-	com.ibm.ws.security.kerberos.java8;version=latest,\
-	com.ibm.ws.security.spnego.fat.common;version=latest,\
-	com.ibm.ws.security.token;version=latest,\
+    com.ibm.websphere.security;version=latest,\
+    com.ibm.ws.kernel.service;version=latest,\
+    com.ibm.ws.logging;version=latest,\
+    com.ibm.ws.security;version=latest,\
+    com.ibm.ws.security.authentication.filter;version=latest,\
+    com.ibm.ws.security.jaas.common;version=latest,\
+    com.ibm.ws.security.kerberos.java8;version=latest,\
+    com.ibm.ws.security.spnego.fat.common;version=latest,\
+    com.ibm.ws.security.token;version=latest,\
     com.ibm.ws.security.token.s4u2;version=latest,\
-	com.ibm.ws.webcontainer.security;version=latest,\
-	com.ibm.ws.webcontainer.security_test.servlets;version=latest,\
+    com.ibm.ws.webcontainer.security;version=latest,\
+    com.ibm.ws.webcontainer.security_test.servlets;version=latest,\
     org.apache.httpcomponents:httpcore;version=4.1.2

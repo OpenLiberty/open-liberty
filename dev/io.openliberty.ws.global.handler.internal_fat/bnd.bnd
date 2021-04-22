@@ -39,7 +39,7 @@ src: \
 fat.project: true
 
 tested.features=appSecurity-3.0, cdi-2.0, cdi-3.0, enterprisebeanslite-4.0, jaxrs-2.1, jaxrsClient-2.1, restfulWS-3.0, \
- restfulWSClient-3.0, jsonp-1.1, jsonp-2.0, servlet-4.0, servlet-5.0, xmlWS-3.0
+ restfulWSClient-3.0, jsonp-1.1, jsonp-2.0, servlet-4.0, servlet-5.0, xmlWS-3.0, appSecurity-4.0, expressionlanguage-4.0, pages-3.0
 
 -buildpath: \
 	io.openliberty.jakarta.enterpriseBeans.4.0;version=latest,\

@@ -19,8 +19,8 @@ tested.features: spnego-1.0
 
 -buildpath: \
     fattest.simplicity;version=latest,\
-    commons-codec:commons-codec;version=1.4,\
-    commons-logging:commons-logging;version=1.1.1,\
+    io.openliberty.org.apache.commons.codec;version=latest,\
+    io.openliberty.org.apache.commons.logging;version=latest,\
     com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	com.ibm.websphere.security;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\

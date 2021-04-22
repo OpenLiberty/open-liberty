@@ -1,5 +1,7 @@
-com.ibm.ws.jpa_spec10_injection_ejbinwar_fat
 com.ibm.ws.jpa_spec10_query_fat
 com.ibm.ws.jpa_spec20_fat
-com.ibm.ws.jpa_spec21_fat
+com.ibm.ws.jpa.tests.spec20.lock_fat
+com.ibm.ws.jpa.tests.spec21.cdi_fat
+com.ibm.ws.jpa.tests.spec21.issues_fat
+com.ibm.ws.jpa.tests.spec21.txsynchronization_fat
 com.ibm.ws.persistence_fat

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ package io.openliberty.microprofile.openapi20.servlets;
 import java.io.IOException;
 import java.util.List;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -22,6 +23,8 @@ import javax.ws.rs.core.Response.Status;
 
 import org.eclipse.microprofile.openapi.models.OpenAPI;
 import org.eclipse.microprofile.openapi.models.servers.Server;
+import org.osgi.framework.BundleContext;
+import org.osgi.util.tracker.ServiceTracker;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -38,6 +41,22 @@ public class ApplicationServlet extends OpenAPIServletBase {
     private static final long serialVersionUID = 1L;
 
     private static final TraceComponent tc = Tr.register(ApplicationServlet.class);
+    
+    private ServiceTracker<ApplicationRegistry, ApplicationRegistry> appRegistryTracker;
+    
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        BundleContext bundleContext = (BundleContext) config.getServletContext().getAttribute("osgi-bundlecontext");
+        appRegistryTracker = new ServiceTracker<>(bundleContext, ApplicationRegistry.class, null);
+        appRegistryTracker.open();
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+        appRegistryTracker.close();
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -55,7 +74,11 @@ public class ApplicationServlet extends OpenAPIServletBase {
              * Retrieve the current provider and get the OpenAPI model for it. If there is no current provider then
              * generate a default (empty) OpenAPI model.
              */
-            final OpenAPIProvider currentProvider = ApplicationRegistry.getInstance().getCurrentOpenAPIProvider();
+            ApplicationRegistry appRegistry = appRegistryTracker.getService();
+            OpenAPIProvider currentProvider = null;
+            if (appRegistry != null) {
+                currentProvider = appRegistry.getCurrentOpenAPIProvider();
+            }
             final String document;
             if (currentProvider != null) {
                 /*

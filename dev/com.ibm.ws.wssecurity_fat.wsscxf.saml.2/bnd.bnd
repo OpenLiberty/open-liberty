@@ -21,7 +21,7 @@ src: \
 
 fat.project: true
 
-tested.features: jsp-2.3, jdbc-4.1, el-3.0
+tested.features: jsp-2.3, jdbc-4.1, el-3.0, federatedregistry-1.0, ldapregistry-3.0
 
 # Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
 #      or binaries from Artifactory (e.g. commons-logging:commons-logging)
@@ -30,7 +30,6 @@ tested.features: jsp-2.3, jdbc-4.1, el-3.0
 
 # net.sourceforge.htmlunit:htmlunit for com.gargoylesoftware.htmlunit
 # not used com.ibm.ws.security_fat.common.tooling;version=latest,\
-#'commons-codec:commons-codec:1.6',
 	
 -buildpath: \
   com.ibm.ws.wssecurity.fat.utils.common;version=latest,\
@@ -42,9 +41,9 @@ tested.features: jsp-2.3, jdbc-4.1, el-3.0
   com.ibm.ws.org.apache.cxf.ws.security.2.6.2;version=latest,\
   com.ibm.websphere.security;version=latest,\
   com.ibm.ws.wssecurity;version=latest,\
-  com.ibm.ws.org.apache.commons.codec.1.4;version=latest,\
+  io.openliberty.org.apache.commons.codec;version=latest,\
   com.ibm.ws.org.apache.commons.lang3;version=latest,\
-  com.ibm.ws.org.apache.commons.logging.1.0.3;version=latest,\
+  io.openliberty.org.apache.commons.logging;version=latest,\
   com.ibm.ws.org.apache.cxf.cxf.api.2.6.2;version=latest,\
   com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.2.6.2;version=latest,\
   com.ibm.ws.org.apache.cxf.cxf.rt.core.2.6.2;version=latest,\

@@ -8,8 +8,8 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;commons-io:commons-io;2.6;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;${repo;commons-io:commons-io;2.8.0;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
 
--includeresource: @${repo;commons-io:commons-io;2.6;EXACT}!/!META-INF/MANIFEST.MF|META-INF/maven/*
+-includeresource: @${repo;commons-io:commons-io;2.8.0;EXACT}!/!META-INF/MANIFEST.MF|META-INF/maven/*
 
--buildpath: commons-io:commons-io;strategy=exact;version=2.6
+-buildpath: commons-io:commons-io;strategy=exact;version=2.8.0

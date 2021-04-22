@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2020 IBM Corporation and others.
+ * Copyright (c) 2009, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -203,10 +204,15 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
             featureBundlesResolved = runtimeUpdateManager.createNotification(RuntimeUpdateNotification.FEATURE_BUNDLES_RESOLVED);
         }
 
-        Set<String> getFeaturesWithLowerCaseName() {
+        Set<String> getFeaturesWithLowerCaseName(FeatureRepository featureRepo) {
             Set<String> lcnFeatures = new HashSet<String>();
             for (String feature : features) {
-                lcnFeatures.add(FeatureRepository.lowerFeature(feature));
+                ProvisioningFeatureDefinition f = featureRepo.getFeature(feature);
+                if (f == null || f.getVisibility() == Visibility.PUBLIC) {
+                    lcnFeatures.add(FeatureRepository.lowerFeature(feature));
+                } else {
+                    lcnFeatures.add(feature);
+                }
             }
 
             return lcnFeatures;
@@ -1209,7 +1215,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
     private Result resolveFeatures(FeatureChange featureChange) {
         // In 850 we were not case sensitive so we need to stay that way.
         // Use a set to eliminate duplicates.
-        Set<String> newConfiguredFeatures = featureChange.getFeaturesWithLowerCaseName();
+        Set<String> newConfiguredFeatures = featureChange.getFeaturesWithLowerCaseName(featureRepository);
 
         return resolveFeatures(newConfiguredFeatures, new ArrayList<String>(), featureChange.provisioningMode);
     }
@@ -1222,10 +1228,17 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
         Repository restrictedRespository;
         Collection<String> restrictedRepoAccessAttempts = new ArrayList<String>();
         boolean allowMultipleVersions = false;
+        boolean featureListIsComplete = false;
         if (ProvisioningMode.CONTENT_REQUEST == mode || ProvisioningMode.FEATURES_REQUEST == mode) {
             // allow multiple versions if in minify (TODO strange since we are minifying!)
             // For feature request using the minified approach but that could cause additional singletons to be provisioned.
             allowMultipleVersions = Boolean.getBoolean("internal.minify.ignore.singleton");
+            // For packaging purposes; have an option that just blindly takes
+            // the feature list and uses it without using the resolver.
+            // This feature list may include public, protected, private and auto-features.
+            // No additional feature resolution will be done to pull in additional required features.
+            // The feature list is expected to be complete.
+            featureListIsComplete = Boolean.getBoolean("internal.minify.feature.list.complete");
             // do not restrict any features
             restrictedRespository = featureRepository;
         } else {
@@ -1249,6 +1262,19 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
                 restrictedRespository = temp;
             }
         }
+        Result result;
+        if (featureListIsComplete) {
+            result = createResultFromCompleteList(restrictedRespository, rootFeatures);
+        } else {
+            result = callFeatureResolver(restrictedRespository, kernelFeaturesHolder.getKernelFeatures(), rootFeatures, allowMultipleVersions);
+        }
+        restrictedAccessAttempts.addAll(restrictedRepoAccessAttempts);
+        return result;
+    }
+
+    private Result callFeatureResolver(Repository restrictedRespository, Collection<ProvisioningFeatureDefinition> kernelFeatures, Set<String> rootFeatures,
+                                       boolean allowMultipleVersions) {
+
         // resolve the features
         // TODO Note that we are just supporting all types at runtime right now.  In the future this may be restricted by the actual running process type
         Result result = featureResolver.resolveFeatures(restrictedRespository, kernelFeaturesHolder.getKernelFeatures(), rootFeatures, Collections.<String> emptySet(),
@@ -1258,9 +1284,55 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
                 result = featureResolver.resolveFeatures(restrictedRespository, kernelFeaturesHolder.getKernelFeatures(), rootFeatures, Collections.<String> emptySet(), true);
             }
         }
-        restrictedAccessAttempts.addAll(restrictedRepoAccessAttempts);
 
         return result;
+    }
+
+    private Result createResultFromCompleteList(Repository repository, Set<String> rootFeatures) {
+        final Set<String> missing = new HashSet<>();
+        final Set<String> resolved = new LinkedHashSet<>();
+
+        for (String featureName : rootFeatures) {
+            ProvisioningFeatureDefinition feature = repository.getFeature(featureName);
+            if (feature == null) {
+                missing.add(featureName);
+            } else {
+                resolved.add(feature.getFeatureName());
+            }
+        }
+
+        return new Result() {
+
+            @Override
+            public boolean hasErrors() {
+                return !getMissing().isEmpty();
+            }
+
+            @Override
+            public Map<String, Chain> getWrongProcessTypes() {
+                return Collections.emptyMap();
+            }
+
+            @Override
+            public Set<String> getResolvedFeatures() {
+                return resolved;
+            }
+
+            @Override
+            public Set<String> getNonPublicRoots() {
+                return Collections.emptySet();
+            }
+
+            @Override
+            public Set<String> getMissing() {
+                return missing;
+            }
+
+            @Override
+            public Map<String, Collection<Chain>> getConflicts() {
+                return Collections.emptyMap();
+            }
+        };
     }
 
     /**
@@ -1284,7 +1356,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
 
         // In 850 we were not case sensitive so we need to stay that way.
         // Use a set to eliminate duplicates.
-        Set<String> newConfiguredFeatures = featureChange.getFeaturesWithLowerCaseName();
+        Set<String> newConfiguredFeatures = featureChange.getFeaturesWithLowerCaseName(featureRepository);
 
         if (newConfiguredFeatures.isEmpty() && featureRepository.emptyFeatures()) {
 

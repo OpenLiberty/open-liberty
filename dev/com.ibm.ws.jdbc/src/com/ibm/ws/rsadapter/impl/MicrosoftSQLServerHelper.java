@@ -60,7 +60,7 @@ public class MicrosoftSQLServerHelper extends DatabaseHelper {
     MicrosoftSQLServerHelper(WSManagedConnectionFactoryImpl mcf) {
         super(mcf);
 
-        dataStoreHelper = "com.ibm.websphere.rsadapter.MicrosoftSQLServerDataStoreHelper";
+        dataStoreHelperClassName = "com.ibm.websphere.rsadapter.MicrosoftSQLServerDataStoreHelper";
 
         mcf.defaultIsolationLevel = Connection.TRANSACTION_REPEATABLE_READ;
         mcf.supportsGetTypeMap = false;
@@ -107,6 +107,11 @@ public class MicrosoftSQLServerHelper extends DatabaseHelper {
 
     @Override
     public void doStatementCleanup(PreparedStatement stmt) throws SQLException {
+        if (dataStoreHelper != null) {
+            doStatementCleanupLegacy(stmt);
+            return;
+        }
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(this, tc, "doStatementCleanup", AdapterUtil.toString(stmt));
 

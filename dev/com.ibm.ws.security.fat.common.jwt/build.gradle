@@ -11,8 +11,8 @@
 apply from: '../wlp-gradle/subprojects/fat.gradle'
 
 dependencies {
-  requiredLibs 'commons-codec:commons-codec:1.6',
-				'commons-logging:commons-logging:1.1.3',
+  requiredLibs project(':io.openliberty.org.apache.commons.codec'),
+				project(':io.openliberty.org.apache.commons.logging'),
 				'net.sourceforge.htmlunit:htmlunit-cssparser:1.6.0',
 				'net.sourceforge.htmlunit:htmlunit-core-js:2.44.0',
 				'net.sourceforge.htmlunit:htmlunit:2.44.0',
@@ -21,7 +21,7 @@ dependencies {
         'org.seleniumhq.webdriver:webdriver-common:0.9.7376',
         'org.brotli:dec:0.1.2',
         'xalan:xalan:2.7.2',
-        'commons-io:commons-io:2.6',
+        project(':com.ibm.ws.org.apache.commons.io'),
 				'org.apache.commons:commons-lang3:3.5',
 				'org.apache.commons:commons-lang3:3.8',
 				project(':com.ibm.ws.org.apache.httpcomponents'),

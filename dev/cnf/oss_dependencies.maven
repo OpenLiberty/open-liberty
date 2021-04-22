@@ -40,7 +40,7 @@ com.ibm.ws.componenttest:mantis-nls-standalone:2.5.0
 com.ibm.ws.componenttest:provider.api:1.0.0
 com.ibm.ws.componenttest:public.api:1.0.0
 com.icegreen:greenmail:1.5.10
-com.microsoft.sqlserver:mssql-jdbc:8.2.1.jre8
+com.microsoft.sqlserver:mssql-jdbc:9.2.1.jre8
 com.nimbusds:nimbus-jose-jwt:4.23
 com.oracle.database.jdbc.debug:ojdbc8_g:21.1.0.0
 com.oracle.database.jdbc:ucp:21.1.0.0
@@ -73,12 +73,15 @@ commons-cli:commons-cli:1.4
 commons-codec:commons-codec:1.10
 commons-codec:commons-codec:1.11
 commons-codec:commons-codec:1.14
+commons-codec:commons-codec:1.15
 commons-codec:commons-codec:1.3
 commons-codec:commons-codec:1.6
 commons-collections:commons-collections:3.2.2
+commons-io:commons-io:2.8.0
 commons-lang:commons-lang:2.4
 commons-logging:commons-logging:1.1.1
 commons-logging:commons-logging:1.1.3
+commons-logging:commons-logging:1.2
 commons-net:commons-net:3.6
 httpunit:httpunit:1.5.4
 httpunit:httpunit:1.6.2

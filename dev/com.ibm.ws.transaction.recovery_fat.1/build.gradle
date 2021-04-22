@@ -11,7 +11,7 @@
 
 // Define G:A:V coordinates of each dependency
 dependencies {
-  requiredLibs project(":com.ibm.ws.tx.embeddable"), 'commons-logging:commons-logging:1.1.3'
+  requiredLibs project(":com.ibm.ws.tx.embeddable"), project(':io.openliberty.org.apache.commons.logging')
 }
 
 File sharedDir = new File(autoFvtDir, 'publish/shared/resources')

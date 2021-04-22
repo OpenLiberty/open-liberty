@@ -14,10 +14,14 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.AccessController;
 
 import org.eclipse.microprofile.openapi.models.OpenAPI;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -28,9 +32,11 @@ import com.ibm.ws.container.service.app.deploy.ContainerInfo.Type;
 import com.ibm.ws.container.service.app.deploy.ModuleClassesContainerInfo;
 import com.ibm.ws.container.service.app.deploy.WebModuleInfo;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.util.ThreadContextAccessor;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.NonPersistentCache;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
+import com.ibm.wsspi.classloading.ClassLoadingService;
 
 import io.openliberty.microprofile.openapi20.cache.CacheEntry;
 import io.openliberty.microprofile.openapi20.utils.Constants;
@@ -50,9 +56,15 @@ import io.smallrye.openapi.runtime.io.Format;
  * The ApplicationProcessor class processes an application that has been deployed to the OpenLiberty instance in order
  * to generate an OpenAPI model.
  */
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE, service = ApplicationProcessor.class)
 public class ApplicationProcessor {
 
     private static final TraceComponent tc = Tr.register(ApplicationProcessor.class);
+    
+    private static final ThreadContextAccessor THREAD_CONTEXT_ACCESSOR = AccessController.doPrivileged(ThreadContextAccessor.getPrivilegedAction());
+    
+    @Reference
+    private ClassLoadingService classLoadingService;
 
     /**
      * The processApplication method processes applications that are added to the OpenLiberty instance.
@@ -63,7 +75,7 @@ public class ApplicationProcessor {
      *         The OpenAPIProvider for the application, or null if the application is not an OAS applciation.
      */
     @FFDCIgnore(UnableToAdaptException.class)
-    public static OpenAPIProvider processApplication(final ApplicationInfo appInfo) {
+    public OpenAPIProvider processApplication(final ApplicationInfo appInfo) {
 
         // Create the variable to return
         OpenAPIProvider openAPIProvider = null;
@@ -142,7 +154,7 @@ public class ApplicationProcessor {
      * @return OpenAPIProvider
      *         The OpenAPIProvider for the web module, or null if the web module is not an OAS applciation.
      */
-    private static OpenAPIProvider processWebModule(final Container appContainer, final WebModuleInfo moduleInfo, final ModuleClassesContainerInfo moduleClassesContainerInfo) {
+    private OpenAPIProvider processWebModule(final Container appContainer, final WebModuleInfo moduleInfo, final ModuleClassesContainerInfo moduleClassesContainerInfo) {
 
         // Create the variable to return
         OpenAPIProvider openAPIProvider = null;
@@ -238,33 +250,43 @@ public class ApplicationProcessor {
         return openAPIProvider;
     }
 
-    private static OpenAPI generateModel(OpenApiConfig config, Container appContainer, WebModuleInfo moduleInfo, ModuleClassesContainerInfo moduleClassesContainerInfo, ClassLoader appClassloader) {
+    private OpenAPI generateModel(OpenApiConfig config, Container appContainer, WebModuleInfo moduleInfo, ModuleClassesContainerInfo moduleClassesContainerInfo, ClassLoader appClassloader) {
         OpenAPI openAPIModel;
         OpenApiDocument.INSTANCE.reset();
         OpenApiDocument.INSTANCE.config(config);
-        OpenApiStaticFile staticFile = StaticFileProcessor.getOpenAPIFile(appContainer);
-        OpenApiDocument.INSTANCE.modelFromStaticFile(OpenApiProcessor.modelFromStaticFile(staticFile));
-        OpenApiDocument.INSTANCE.modelFromAnnotations(OpenApiProcessor.modelFromAnnotations(config, IndexUtils.getIndexView(moduleInfo, moduleClassesContainerInfo, config)));
-        OpenApiDocument.INSTANCE.modelFromReader(OpenApiProcessor.modelFromReader(config, appClassloader));
-        OpenApiDocument.INSTANCE.filter(OpenApiProcessor.getFilter(config, appClassloader));
-        OpenApiDocument.INSTANCE.initialize();
+        
+        ClassLoader tccl = classLoadingService.createThreadContextClassLoader(appClassloader);
+        Object oldClassLoader = THREAD_CONTEXT_ACCESSOR.pushContextClassLoaderForUnprivileged(tccl);
+        try {
+            OpenApiStaticFile staticFile = StaticFileProcessor.getOpenAPIFile(appContainer);
+            OpenApiDocument.INSTANCE.modelFromStaticFile(OpenApiProcessor.modelFromStaticFile(staticFile));
+            OpenApiDocument.INSTANCE.modelFromAnnotations(OpenApiProcessor.modelFromAnnotations(config, IndexUtils.getIndexView(moduleInfo, moduleClassesContainerInfo, config)));
+            OpenApiDocument.INSTANCE.modelFromReader(OpenApiProcessor.modelFromReader(config, appClassloader));
+            OpenApiDocument.INSTANCE.filter(OpenApiProcessor.getFilter(config, appClassloader));
+            OpenApiDocument.INSTANCE.initialize();
 
-        openAPIModel = OpenApiDocument.INSTANCE.get();
+            openAPIModel = OpenApiDocument.INSTANCE.get();
 
-        /*
-         * We need to determine whether the scanned application is an OAS application at all. In order to do
-         * this we can check two things:
-         * 
-         * 1) Whether a static file was found in the application.
-         * 2) Whether the generated OpenAPI model object is a just the default generated by the SmallRye
-         * implementation.
-         */
-        if (staticFile == null && OpenAPIUtils.isDefaultOpenApiModel(openAPIModel)) {
-            if (LoggingUtils.isEventEnabled(tc)) {
-                Tr.event(tc, "Default Open API document generated");
+            /*
+             * We need to determine whether the scanned application is an OAS application at all. In order to do
+             * this we can check two things:
+             * 
+             * 1) Whether a static file was found in the application.
+             * 2) Whether the generated OpenAPI model object is a just the default generated by the SmallRye
+             * implementation.
+             */
+            if (staticFile == null && OpenAPIUtils.isDefaultOpenApiModel(openAPIModel)) {
+                if (LoggingUtils.isEventEnabled(tc)) {
+                    Tr.event(tc, "Default Open API document generated");
+                }
+                openAPIModel = null;
             }
-            openAPIModel = null;
+
+        } finally {
+            THREAD_CONTEXT_ACCESSOR.popContextClassLoaderForUnprivileged(oldClassLoader);
+            classLoadingService.destroyThreadContextClassLoader(tccl);
         }
+
         return openAPIModel;
     }
 

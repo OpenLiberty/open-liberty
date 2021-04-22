@@ -9,7 +9,7 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
-bVersion: 1.0
+bVersion: 1.1
 
 Bundle-Name: WebSphere CDI Extension SPI
 Bundle-Description: WebSphere CDI Extension SPI, version ${bVersion}

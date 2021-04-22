@@ -14,6 +14,9 @@ bVersion=1.0
 src: \
     fat/src
 
+tested.features:\
+    appsecurity-4.0, expressionlanguage-4.0, cdi-3.0, pages-3.0
+
 fat.project: true
 
 -buildpath: \

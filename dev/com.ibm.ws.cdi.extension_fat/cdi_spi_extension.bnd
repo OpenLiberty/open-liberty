@@ -22,6 +22,7 @@ Import-Package: \
 
 Export-Package: \
 	com.ibm.ws.cdi.extension.spi.test.bundle;version=1.0.0,\
+	com.ibm.ws.cdi.extension.spi.test.bundle.annotations;version=1.0.0,\
 	com.ibm.ws.cdi.extension.spi.test.bundle.extension;version=1.0.0,\
 	com.ibm.ws.cdi.extension.spi.test.bundle.getclass.producer;version=1.0.0,\
 	com.ibm.ws.cdi.extension.spi.test.bundle.getclass.beaninjection;version=1.0.0,\

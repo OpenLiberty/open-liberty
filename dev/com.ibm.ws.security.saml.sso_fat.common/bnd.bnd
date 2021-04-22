@@ -32,7 +32,7 @@ test.project: true
     com.ibm.ws.security.openidconnect.common;version=latest, \
     com.ibm.ws.security.openidconnect.server;version=latest, \
     com.ibm.ws.org.joda.time.1.6.2;version=latest, \
-    com.ibm.ws.org.apache.commons.codec;version=latest, \
+    io.openliberty.org.apache.commons.codec;version=latest, \
     com.ibm.ws.logging;version=latest, \
     com.ibm.websphere.security;version=latest, \
     com.ibm.websphere.javaee.servlet.3.0;version=latest, \

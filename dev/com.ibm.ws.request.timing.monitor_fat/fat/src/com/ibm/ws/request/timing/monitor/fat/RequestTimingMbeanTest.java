@@ -44,6 +44,7 @@ import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -59,7 +60,7 @@ import componenttest.topology.impl.LibertyServer;
  * request during the mbean call which happens inside the initial servlet call.
  */
 @RunWith(FATRunner.class)
-@SkipForRepeat({"MPM23", "MPM22", "MPM20"})
+@SkipForRepeat({ "MPM23", "MPM22", "MPM20" })
 public class RequestTimingMbeanTest {
 
     private static final Class<RequestTimingMbeanTest> c = RequestTimingMbeanTest.class;
@@ -88,6 +89,13 @@ public class RequestTimingMbeanTest {
     @BeforeClass
     public static void setUp() throws Exception {
         ShrinkHelper.defaultDropinApp(server, "RequestTimingWebApp", "com.ibm.ws.request.timing.app");
+
+        // Fix for Java 16 Hotspot exception during java dump
+        JavaInfo java = JavaInfo.forCurrentVM();
+        if (java.majorVersion() != 8) {
+            server.copyFileToLibertyServerRoot("illegalAccess/jvm.options");
+        }
+
         server.startServer();
     }
 
@@ -532,7 +540,7 @@ public class RequestTimingMbeanTest {
      * allow a test to finish
      *
      * @param countToWaitFor
-     *                           Value looked for in CountDownLatch
+     *            Value looked for in CountDownLatch
      * @throws Exception
      */
     private void waitInServletForCountDownLatch(int countToWaitFor) throws Exception {
@@ -606,13 +614,13 @@ public class RequestTimingMbeanTest {
      * test
      *
      * @param th
-     *                            -- array of threads
+     *            -- array of threads
      * @param numReqs
-     *                            -- number of requests is the number of threads needed
+     *            -- number of requests is the number of threads needed
      * @param servletTestName
-     *                            -- Used for request to servlet
+     *            -- Used for request to servlet
      * @param testMethodName
-     *                            -- Used for printing to logs
+     *            -- Used for printing to logs
      */
     private void createRequestThreads(Thread[] th, int numReqs) {
         // Send N servlet requests to server, last request used to terminate

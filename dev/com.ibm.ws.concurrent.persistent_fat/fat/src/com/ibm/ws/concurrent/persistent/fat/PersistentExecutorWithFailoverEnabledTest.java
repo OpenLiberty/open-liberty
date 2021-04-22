@@ -73,9 +73,7 @@ public class PersistentExecutorWithFailoverEnabledTest extends FATServletClient 
         if (JakartaEE9Action.isActive()) {
             ServerConfiguration config = server.getServerConfiguration();
             Set<String> features = config.getFeatureManager().getFeatures();
-            features.remove("persistentexecutor-1.0");
             features.remove("timerinterfacestestfeature-1.0");
-            features.add("persistentExecutor-2.0");
             features.add("timerInterfacesTestFeature-2.0");
             server.updateServerConfiguration(config);
         }

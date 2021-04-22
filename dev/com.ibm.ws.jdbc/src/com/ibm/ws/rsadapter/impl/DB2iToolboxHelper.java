@@ -60,7 +60,7 @@ public class DB2iToolboxHelper extends DB2Helper {
     DB2iToolboxHelper(WSManagedConnectionFactoryImpl mcf) throws Exception {
         super(mcf);
 
-        dataStoreHelper = "com.ibm.websphere.rsadapter.DB2AS400DataStoreHelper";
+        dataStoreHelperClassName = "com.ibm.websphere.rsadapter.DB2AS400DataStoreHelper";
 
         localZOS = false;
         isRRSTransaction = false;
@@ -103,6 +103,9 @@ public class DB2iToolboxHelper extends DB2Helper {
 
     @Override
     public boolean doConnectionCleanup(java.sql.Connection conn) throws SQLException {
+        if (dataStoreHelper != null)
+            return doConnectionCleanupLegacy(conn);
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(this, tc, "doConnectionCleanup");
 
@@ -127,6 +130,11 @@ public class DB2iToolboxHelper extends DB2Helper {
 
     @Override
     public void doStatementCleanup(PreparedStatement stmt) throws SQLException {
+        if (dataStoreHelper != null) {
+            doStatementCleanupLegacy(stmt);
+            return;
+        }
+
         stmt.setCursorName(null);
         stmt.setFetchDirection(ResultSet.FETCH_FORWARD);
         stmt.setMaxFieldSize(0);

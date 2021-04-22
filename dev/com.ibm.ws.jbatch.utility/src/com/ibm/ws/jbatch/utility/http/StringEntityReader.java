@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +34,7 @@ public class StringEntityReader implements EntityReader<List<String>> {
         }
         
         String line;
-        BufferedReader br = new BufferedReader(new InputStreamReader(entityStream, Charset.forName("UTF-8")));
+        BufferedReader br = new BufferedReader(new InputStreamReader(entityStream, StandardCharsets.UTF_8));
         while ( (line = br.readLine()) != null ) {
             retMe.add(line);
         }

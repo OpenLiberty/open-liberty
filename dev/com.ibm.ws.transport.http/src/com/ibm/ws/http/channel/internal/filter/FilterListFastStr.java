@@ -10,7 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.http.channel.internal.filter;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -94,7 +94,7 @@ public class FilterListFastStr implements FilterListStr {
      * Add a new address to the address tree
      *
      * @param newAddress
-     *                       address to add
+     *            address to add
      */
     private boolean addAddressToList(String newAddress) {
         return putInList(convertToEntries(newAddress));
@@ -105,7 +105,7 @@ public class FilterListFastStr implements FilterListStr {
      * tree
      *
      * @param oEntry
-     *                   Entry object for the address to look for
+     *            Entry object for the address to look for
      * @return true if this address is found in the address tree, false if
      *         it is not.
      */
@@ -124,14 +124,14 @@ public class FilterListFastStr implements FilterListStr {
      * the address is found in the tree.
      *
      * @param hashcodes
-     *                      - array of hashcodes of the substrings of the address to find
+     *            - array of hashcodes of the substrings of the address to find
      * @param lengths
-     *                      - array of lengths of the substrings of the address to find
+     *            - array of lengths of the substrings of the address to find
      * @param cell
-     *                      - the current cell that is being traversed in the address tree
+     *            - the current cell that is being traversed in the address tree
      * @param index
-     *                      - the next index into the arrays that is to be matched against the
-     *                      tree
+     *            - the next index into the arrays that is to be matched against the
+     *            tree
      * @return true if this address is found in the address tree, false if
      *         it is not.
      */
@@ -210,7 +210,7 @@ public class FilterListFastStr implements FilterListStr {
      * address
      *
      * @param newAddress
-     *                       address to convert
+     *            address to convert
      * @return the Entry object created from this address.
      */
     private Entry convertToEntries(String newAddress) {
@@ -220,15 +220,7 @@ public class FilterListFastStr implements FilterListStr {
             Tr.entry(tc, "convertToEntries");
         }
 
-        try {
-            ba = newAddress.getBytes("ISO-8859-1");
-        } catch (UnsupportedEncodingException x) {
-            // should never happen, log a message and use default encoding
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                Tr.event(tc, "ISO-8859-1 encoding not supported.  Exception: " + x);
-            }
-            ba = newAddress.getBytes();
-        }
+        ba = newAddress.getBytes(StandardCharsets.ISO_8859_1);
         int baLength = ba.length;
         int hashValue = 0;
         int hashLength = 0;
@@ -354,9 +346,9 @@ public class FilterListFastStr implements FilterListStr {
          * the substrings that represent this entry
          *
          * @param hashcode
-         *                     hashcode to add
+         *            hashcode to add
          * @param length
-         *                     length to add
+         *            length to add
          */
         public void addEntry(int hashcode, int length) {
             if (iSwitch == 1) {
