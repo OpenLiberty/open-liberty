@@ -384,4 +384,5 @@ public class MetaTypeUtilsTest {
 
         assertEquals(5, (long) MetatypeUtils.evaluateDuration("5\u6beb\u79d2", TimeUnit.MILLISECONDS)); // zh_TW
     }
+
 }

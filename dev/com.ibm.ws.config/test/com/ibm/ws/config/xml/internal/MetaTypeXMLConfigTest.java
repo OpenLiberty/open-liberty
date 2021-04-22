@@ -18,6 +18,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.StringReader;
+import java.time.DayOfWeek;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.Vector;
@@ -37,6 +39,7 @@ import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsResource;
 import com.ibm.wsspi.kernel.service.utils.PathUtils;
 import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
+import com.ibm.wsspi.kernel.service.utils.SerializableSchedule;
 
 import test.common.SharedLocationManager;
 import test.common.SharedOutputManager;
@@ -149,14 +152,16 @@ public class MetaTypeXMLConfigTest {
     public void testMetaTypeArrayTypes() throws Exception {
         changeLocationSettings("default");
 
-        ConfigElement config = configParser.parseConfigElement(new StringReader("<test>" + "<testBoolean>true</testBoolean><testBoolean>false</testBoolean>"
+        ConfigElement config = configParser.parseConfigElement(new StringReader("<test>"
+                                                                                + "<testBoolean>true</testBoolean><testBoolean>false</testBoolean>"
                                                                                 + "<testInteger>123</testInteger><testInteger>345</testInteger><testInteger>678</testInteger>"
                                                                                 + "<testLong>1234</testLong><testLong>5678</testLong>"
                                                                                 + "<testShort>12</testShort><testShort>34</testShort><testShort>56</testShort>"
                                                                                 + "<testString>abc</testString><testString>ghi</testString>"
                                                                                 + "<testCharacter>a</testCharacter><testCharacter>b</testCharacter>"
-                                                                                + "<testByte>65</testByte><testByte>66</testByte>" +
-                                                                                "<testToken>good  bye   </testToken><testToken>   hello </testToken>" + "</test>"));
+                                                                                + "<testByte>65</testByte><testByte>66</testByte>"
+                                                                                + "<testToken>good  bye   </testToken><testToken>   hello </testToken>"
+                                                                                + "</test>"));
 
         TestConfigEvaluator evaluator = createConfigEvaluator();
 
@@ -178,14 +183,16 @@ public class MetaTypeXMLConfigTest {
     public void testMetaTypeCollectionTypes() throws Exception {
         changeLocationSettings("default");
 
-        ConfigElement config = configParser.parseConfigElement(new StringReader("<test>" + "<testBoolean>true</testBoolean><testBoolean>false</testBoolean>"
+        ConfigElement config = configParser.parseConfigElement(new StringReader("<test>"
+                                                                                + "<testBoolean>true</testBoolean><testBoolean>false</testBoolean>"
                                                                                 + "<testInteger>123</testInteger><testInteger>345</testInteger><testInteger>678</testInteger>"
                                                                                 + "<testLong>1234</testLong><testLong>5678</testLong>"
                                                                                 + "<testShort>12</testShort><testShort>34</testShort><testShort>56</testShort>"
                                                                                 + "<testString>abc</testString><testString>ghi</testString>"
                                                                                 + "<testCharacter>a</testCharacter><testCharacter>b</testCharacter>"
-                                                                                + "<testByte>65</testByte><testByte>66</testByte>" +
-                                                                                " <testToken> a b c </testToken><testToken>  def  </testToken>" + "</test>"));
+                                                                                + "<testByte>65</testByte><testByte>66</testByte>"
+                                                                                + "<testToken> a b c </testToken><testToken>  def  </testToken>"
+                                                                                + "</test>"));
 
         TestConfigEvaluator evaluator = createConfigEvaluator();
 
@@ -437,6 +444,70 @@ public class MetaTypeXMLConfigTest {
         assertEquals(overrideUser, dict.get("dbUser"));
         assertEquals(overridePassword, new String(((SerializableProtectedString) dict.get("dbPassword")).getChars()));
         assertEquals(overrideLocation, new String(((SerializableProtectedString) dict.get("dbLocation")).getChars()));
+    }
+
+    @Test
+    public void testMetaTypeSchedule() throws Exception {
+        changeLocationSettings("default");
+
+        TestConfigEvaluator evaluator = createConfigEvaluator();
+
+        MockObjectClassDefinition objectClass = new MockObjectClassDefinition("schedule");
+        objectClass.addAttributeDefinition(new MockAttributeDefinition("testScheduleSingleInstance", MetaTypeFactory.SCHEDULE_TYPE, 0), false);
+        objectClass.addAttributeDefinition(new MockAttributeDefinition("testScheduleSingleRange", MetaTypeFactory.SCHEDULE_TYPE, 0), false);
+        objectClass.addAttributeDefinition(new MockAttributeDefinition("testScheduleSingleStartup", MetaTypeFactory.SCHEDULE_TYPE, 0), false);
+        objectClass.addAttributeDefinition(new MockAttributeDefinition("testScheduleMultipleInstances", MetaTypeFactory.SCHEDULE_TYPE, 2), false);
+        objectClass.addAttributeDefinition(new MockAttributeDefinition("testScheduleMultipleRanges", MetaTypeFactory.SCHEDULE_TYPE, 2), false);
+        objectClass.addAttributeDefinition(new MockAttributeDefinition("testScheduleMultipleStartup", MetaTypeFactory.SCHEDULE_TYPE, 2), false);
+        objectClass.addAttributeDefinition(new MockAttributeDefinition("testScheduleCardinalInstances", MetaTypeFactory.SCHEDULE_TYPE, 0), false);
+        objectClass.addAttributeDefinition(new MockAttributeDefinition("testScheduleCardinalRanges", MetaTypeFactory.SCHEDULE_TYPE, 0), false);
+        objectClass.addAttributeDefinition(new MockAttributeDefinition("testScheduleCardinalStartup", MetaTypeFactory.SCHEDULE_TYPE, 0), false);
+
+        RegistryEntry re = toRegistryEntry(objectClass);
+
+        ConfigElement config = configParser.parseConfigElement(new StringReader("<test>"
+                                                                                //Single config elements
+                                                                                + "<testScheduleSingleInstance>MON 8:00</testScheduleSingleInstance>"
+                                                                                + "<testScheduleSingleRange>MON-TUES 8:00</testScheduleSingleRange>"
+                                                                                + "<testScheduleSingleStartup>startup</testScheduleSingleStartup>"
+                                                                                //Multiple config elements as array
+                                                                                + "<testScheduleMultipleInstances>WED 10:00</testScheduleMultipleInstances> <testScheduleMultipleInstances>THURS 10:30</testScheduleMultipleInstances>"
+                                                                                + "<testScheduleMultipleRanges>FRI 10:00-13:00</testScheduleMultipleRanges> <testScheduleMultipleRanges>MON 10:15-13:00</testScheduleMultipleRanges>"
+                                                                                + "<testScheduleMultipleStartup>startup</testScheduleMultipleStartup> <testScheduleMultipleStartup>sat-tues 23:00</testScheduleMultipleStartup>"
+                                                                                //Single config with cardinality.  Should return as array?
+                                                                                + "<testScheduleCardinalInstances>WED 10:00, THURS 10:30</testScheduleCardinalInstances>"
+                                                                                + "<testScheduleCardinalRanges>FRI 10:00-13:00, MON 10:15-13:00</testScheduleCardinalRanges>"
+                                                                                + "<testScheduleCardinalStartup>startup, sat-tues 23:00</testScheduleCardinalStartup>"
+                                                                                + "</test>"));
+
+        Dictionary<String, Object> dict = evaluator.evaluateToDictionary(config, re);
+
+        //Single config elements
+        SerializableSchedule expectedSingleInstance = new SerializableSchedule(DayOfWeek.MONDAY, null, LocalTime.of(8, 0), null);
+        SerializableSchedule expectedSingleRange = new SerializableSchedule(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, LocalTime.of(8, 0), null);
+        SerializableSchedule expectedSingleStartup = new SerializableSchedule();
+
+        //Multiple config elements
+        SerializableSchedule[] expectedMultipleInstances = new SerializableSchedule[] { new SerializableSchedule(DayOfWeek.WEDNESDAY, null, LocalTime.of(10, 0), null),
+                                                                                        new SerializableSchedule(DayOfWeek.THURSDAY, null, LocalTime.of(10, 30), null) };
+        SerializableSchedule[] expectedMultipleRanges = new SerializableSchedule[] { new SerializableSchedule(DayOfWeek.FRIDAY, null, LocalTime.of(10, 0), LocalTime.of(13, 0)),
+                                                                                     new SerializableSchedule(DayOfWeek.MONDAY, null, LocalTime.of(10, 15), LocalTime.of(13, 0)) };
+        SerializableSchedule[] expectedMultipleStartup = new SerializableSchedule[] { new SerializableSchedule(),
+                                                                                      new SerializableSchedule(DayOfWeek.SATURDAY, DayOfWeek.TUESDAY, LocalTime.of(23, 0), null) };
+
+        //Single config elements
+        assertEquals(expectedSingleInstance, dict.get("testScheduleSingleInstance"));
+        assertEquals(expectedSingleRange, dict.get("testScheduleSingleRange"));
+        assertEquals(expectedSingleStartup, dict.get("testScheduleSingleStartup"));
+        //Multiple config elements as array
+        assertArrayEquals(expectedMultipleInstances, (SerializableSchedule[]) dict.get("testScheduleMultipleInstances"));
+        assertArrayEquals(expectedMultipleRanges, (SerializableSchedule[]) dict.get("testScheduleMultipleRanges"));
+        assertArrayEquals(expectedMultipleStartup, (SerializableSchedule[]) dict.get("testScheduleMultipleStartup"));
+        //Single config with cardinality.  Should return as array?
+        assertArrayEquals(expectedMultipleInstances, (SerializableSchedule[]) dict.get("testScheduleCardinalInstances"));
+        assertArrayEquals(expectedMultipleRanges, (SerializableSchedule[]) dict.get("testScheduleCardinalRanges"));
+        assertArrayEquals(expectedMultipleStartup, (SerializableSchedule[]) dict.get("testScheduleCardinalStartup"));
+
     }
 
 }
