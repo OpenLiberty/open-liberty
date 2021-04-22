@@ -114,19 +114,31 @@ public class JaxWsClientProxy extends org.apache.cxf.frontend.ClientProxy implem
         } else
             params = args;       
         
+        try {
             
-            try {
-                if (method.getDeclaringClass().equals(BindingProvider.class)
-                    || method.getDeclaringClass().equals(Object.class)
-                    || method.getDeclaringClass().equals(Closeable.class)
-                    || method.getDeclaringClass().equals(AutoCloseable.class)) {
-                    return method.invoke(this, params);
-                } else if (method.getDeclaringClass().isInstance(client)) {
-                    return method.invoke(client, params);
-                }
-            } catch (InvocationTargetException e) {
-                throw e.getCause();
+            // check for method on BindingProvider and Object
+            if (method.getDeclaringClass().equals(BindingProvider.class)
+                || method.getDeclaringClass().equals(Object.class)
+                || method.getDeclaringClass().equals(Closeable.class)) {       
+                
+                return  AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() { 
+                    public Object run() throws IllegalAccessException, InvocationTargetException {
+                        return method.invoke(this, params);
+                    }
+              
+                });
+            } else if (method.getDeclaringClass().isInstance(client)) {
+                
+                return  AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() { 
+                    public Object run() throws IllegalAccessException, InvocationTargetException {
+                        return method.invoke(client, params);
+                    }
+              
+                });
             }
+       } catch (PrivilegedActionException e) {
+        throw e.getCause();
+       }
 
         final BindingOperationInfo oi = dispatcher.getBindingOperation(method, endpoint);
         if (oi == null) {
@@ -136,7 +148,6 @@ public class JaxWsClientProxy extends org.apache.cxf.frontend.ClientProxy implem
 
         client.getRequestContext().put(Method.class.getName(), method);
         boolean isAsync = isAsync(method);
-
 
             Object result = null;
             try {
@@ -154,7 +165,7 @@ public class JaxWsClientProxy extends org.apache.cxf.frontend.ClientProxy implem
                         throw e.getCause();
                     }
                     
-                } else {
+                } else { 
                     //Liberty change
                     try { 
                         result = AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() { 
