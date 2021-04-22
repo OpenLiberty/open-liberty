@@ -26,31 +26,49 @@ import com.ibm.websphere.simplicity.log.Log;
 public class FileUtils {
     private static final Class<?> c = FileUtils.class;
 
-    private static final boolean enableLogging = false; // Enable for debug. This can be verbose.
+    private static final boolean enableLogging = false; // Enable for debug. This can be quite verbose.
 
     /**
      * Recursively deletes the supplied file or the files within the supplied directory and
      * then deletes the directory itself.
      *
-     * @param file The file or directory to delete
+     * @param  file        The file or directory to delete
+     * @throws IOException If there was an error deleting the file, the directory or its contents.
      */
-    public static void recursiveDelete(File file) {
+    public static void recursiveDelete(File file) throws IOException {
         final String methodName = "recursiveDelete(File)";
 
         if (file.exists()) {
-            if (enableLogging) {
-                Log.info(c, methodName, "Deleting " + file);
-            }
+            /*
+             * If a directory, delete all contents first.
+             */
             if (file.isDirectory()) {
                 for (File child : file.listFiles()) {
                     if (child.isDirectory()) {
                         recursiveDelete(child);
                     } else {
-                        child.delete();
+                        try {
+                            Files.delete(child.toPath());
+                        } catch (IOException ioe) {
+                            Log.error(c, methodName, ioe, "Failed to delete file " + child);
+                            throw ioe;
+                        }
                     }
                 }
             }
-            file.delete();
+
+            /*
+             * Finally delete the directory (or file) itself.
+             */
+            if (enableLogging) {
+                Log.info(c, methodName, "Deleting " + file);
+            }
+            try {
+                Files.delete(file.toPath());
+            } catch (IOException ioe) {
+                Log.error(c, methodName, ioe, "Failed to delete file or directory " + file);
+                throw ioe;
+            }
         }
     }
 
@@ -77,10 +95,20 @@ public class FileUtils {
             if (enableLogging) {
                 Log.info(c, methodName, "Creating parent directory " + parentFile);
             }
-            Files.createDirectories(parentFile.toPath());
+            try {
+                Files.createDirectories(parentFile.toPath());
+            } catch (IOException ioe) {
+                Log.error(c, methodName, ioe, "Failed to create directory " + parentFile);
+                throw ioe;
+            }
         }
 
-        Files.copy(sourceFile.toPath(), destFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        try {
+            Files.copy(sourceFile.toPath(), destFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException ioe) {
+            Log.error(c, methodName, ioe, "Failed to copy file " + sourceFile + " to " + destFile);
+            throw ioe;
+        }
     }
 
     /**
@@ -98,7 +126,12 @@ public class FileUtils {
                 if (enableLogging) {
                     Log.info(c, methodName, "Creating directory " + target);
                 }
-                Files.createDirectories(target.toPath());
+                try {
+                    Files.createDirectories(target.toPath());
+                } catch (IOException ioe) {
+                    Log.error(c, methodName, ioe, "Failed to create directory " + target);
+                    throw ioe;
+                }
             }
             if (enableLogging) {
                 Log.info(c, methodName, "Copying directory " + source + " to " + target);
