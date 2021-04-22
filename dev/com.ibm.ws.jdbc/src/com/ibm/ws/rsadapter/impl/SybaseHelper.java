@@ -45,7 +45,7 @@ public class SybaseHelper extends DatabaseHelper
     SybaseHelper(WSManagedConnectionFactoryImpl mcf) {
         super(mcf);
 
-        dataStoreHelper = "com.ibm.websphere.rsadapter.Sybase11DataStoreHelper";
+        dataStoreHelperClassName = "com.ibm.websphere.rsadapter.Sybase11DataStoreHelper";
 
         mcf.defaultIsolationLevel = Connection.TRANSACTION_REPEATABLE_READ;
         mcf.supportsGetTypeMap = false;
@@ -57,6 +57,9 @@ public class SybaseHelper extends DatabaseHelper
 
     @Override
     public boolean doConnectionCleanup(Connection conn) throws SQLException {
+        if (dataStoreHelper != null)
+            return doConnectionCleanupLegacy(conn);
+
         boolean standardPropModified = false;
 
         if (XADataSource.class.isAssignableFrom(mcf.vendorImplClass)) {
@@ -95,6 +98,11 @@ public class SybaseHelper extends DatabaseHelper
      */
     @Override
     public void doConnectionSetup(Connection conn) throws SQLException {
+        if (dataStoreHelper != null) {
+            doConnectionSetupLegacy(conn);
+            return;
+        }
+
         SQLWarning warn = conn.getWarnings();
 
         if (warn != null) {
@@ -123,6 +131,11 @@ public class SybaseHelper extends DatabaseHelper
 
     @Override
     public void doStatementCleanup(PreparedStatement stmt) throws SQLException {
+        if (dataStoreHelper != null) {
+            doStatementCleanupLegacy(stmt);
+            return;
+        }
+
         // Sybase doesn't support cursor name. Cursor name will
         // be reset when the result set is closed.
 
@@ -201,7 +214,7 @@ public class SybaseHelper extends DatabaseHelper
             super.gatherAndDisplayMetaDataInfo(conn, mcf);                 
         } catch (SQLException x)
         {
-            if (mcf.dataStoreHelper == null ? isConnectionError(x) : mcf.dataStoreHelper.isConnectionError(x))
+            if (isConnectionError(x))
                 throw x;
 
             Tr.info(tc, "META_DATA_EXCEPTION", x.getMessage());

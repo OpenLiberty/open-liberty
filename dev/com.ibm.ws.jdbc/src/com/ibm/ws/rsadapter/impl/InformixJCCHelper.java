@@ -62,7 +62,7 @@ public class InformixJCCHelper extends InformixHelper {
     InformixJCCHelper(WSManagedConnectionFactoryImpl mcf) throws Exception {
         super(mcf);
 
-        dataStoreHelper = "com.ibm.websphere.rsadapter.InformixJccDataStoreHelper";
+        dataStoreHelperClassName = "com.ibm.websphere.rsadapter.InformixJccDataStoreHelper";
 
         mcf.doesStatementCacheIsoLevel = true;
         mcf.supportsGetTypeMap = false;
@@ -74,11 +74,20 @@ public class InformixJCCHelper extends InformixHelper {
     }
 
     public void doConnectionSetup(Connection conn) throws SQLException {
-        // don't inherit from Informix helper because external Informix JCC helper didn't either 
+        // don't inherit from Informix helper because external Informix JCC helper didn't either
+        if (dataStoreHelper != null) {
+            doConnectionSetupLegacy(conn);
+            return;
+        }
     }
 
     @Override
     public void doStatementCleanup(PreparedStatement stmt) throws SQLException {
+        if (dataStoreHelper != null) {
+            doStatementCleanupLegacy(stmt);
+            return;
+        }
+
         try {
             stmt.setCursorName(null);
         } catch (NullPointerException npe) {
