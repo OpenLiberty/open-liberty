@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+
+<ejb-jar id="ejb-jar_id" 
+        xmlns="http://java.sun.com/xml/ns/javaee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_0.xsd"
+        metadata-complete="false" version="3.0">   
+
+    <enterprise-beans>
+
+        <!--  Field Injection, Annotation Injection into SuperClass EJBs -->
+        <session>
+            <ejb-name>DFIPkgYesInhAnoOvrdTestSLEJB</ejb-name>
+            <persistence-unit-ref>
+                <description>Cleanup Persistence Context</description>
+                <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
+                <persistence-unit-name>CLEANUP_RL</persistence-unit-name>
+            </persistence-unit-ref>
+        </session>
+        <session>
+            <ejb-name>DFIPriYesInhAnoOvrdTestSLEJB</ejb-name>
+            <persistence-unit-ref>
+                <description>Cleanup Persistence Context</description>
+                <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
+                <persistence-unit-name>CLEANUP_RL</persistence-unit-name>
+            </persistence-unit-ref>
+        </session>
+        <session>
+            <ejb-name>DFIProYesInhAnoOvrdTestSLEJB</ejb-name>
+            <persistence-unit-ref>
+                <description>Cleanup Persistence Context</description>
+                <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
+                <persistence-unit-name>CLEANUP_RL</persistence-unit-name>
+            </persistence-unit-ref>
+        </session>
+        <session>
+            <ejb-name>DFIPubYesInhAnoOvrdTestSLEJB</ejb-name>
+            <persistence-unit-ref>
+                <description>Cleanup Persistence Context</description>
+                <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
+                <persistence-unit-name>CLEANUP_RL</persistence-unit-name>
+            </persistence-unit-ref>
+        </session>
+        
+        <session>
+            <ejb-name>DFIPkgYesInhAnoOvrdTestSFEJB</ejb-name>
+            <persistence-unit-ref>
+                <description>Cleanup Persistence Context</description>
+                <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
+                <persistence-unit-name>CLEANUP_RL</persistence-unit-name>
+            </persistence-unit-ref>
+        </session>
+        <session>
+            <ejb-name>DFIPkgYesInhAnoOvrdTestSFEXEJB</ejb-name>
+            <persistence-unit-ref>
+                <description>Cleanup Persistence Context</description>
+                <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
+                <persistence-unit-name>CLEANUP_RL</persistence-unit-name>
+            </persistence-unit-ref>
+        </session>
+        <session>
+            <ejb-name>DFIPriYesInhAnoOvrdTestSFEJB</ejb-name>
+            <persistence-unit-ref>
+                <description>Cleanup Persistence Context</description>
+                <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
+                <persistence-unit-name>CLEANUP_RL</persistence-unit-name>
+            </persistence-unit-ref>
+        </session>
+         <session>
+            <ejb-name>DFIPriYesInhAnoOvrdTestSFEXEJB</ejb-name>
+            <persistence-unit-ref>
+                <description>Cleanup Persistence Context</description>
+                <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
+                <persistence-unit-name>CLEANUP_RL</persistence-unit-name>
+            </persistence-unit-ref>
+        </session>
+        <session>
+            <ejb-name>DFIProYesInhAnoOvrdTestSFEJB</ejb-name>
+            <persistence-unit-ref>
+                <description>Cleanup Persistence Context</description>
+                <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
+                <persistence-unit-name>CLEANUP_RL</persistence-unit-name>
+            </persistence-unit-ref>
+        </session>
+        <session>
+            <ejb-name>DFIProYesInhAnoOvrdTestSFEXEJB</ejb-name>
+            <persistence-unit-ref>
+                <description>Cleanup Persistence Context</description>
+                <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
+                <persistence-unit-name>CLEANUP_RL</persistence-unit-name>
+            </persistence-unit-ref>
+        </session>
+        <session>
+            <ejb-name>DFIPubYesInhAnoOvrdTestSFEJB</ejb-name>
+            <persistence-unit-ref>
+                <description>Cleanup Persistence Context</description>
+                <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
+                <persistence-unit-name>CLEANUP_RL</persistence-unit-name>
+            </persistence-unit-ref>
+        </session>
+        <session>
+            <ejb-name>DFIPubYesInhAnoOvrdTestSFEXEJB</ejb-name>
+            <persistence-unit-ref>
+                <description>Cleanup Persistence Context</description>
+                <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
+                <persistence-unit-name>CLEANUP_RL</persistence-unit-name>
+            </persistence-unit-ref>
+        </session>
+        
+    </enterprise-beans>
+</ejb-jar>

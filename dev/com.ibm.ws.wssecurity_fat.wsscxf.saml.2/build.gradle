@@ -8,13 +8,14 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+apply from: '../com.ibm.ws.security.saml.sso_fat.common/ShibbolethCommon.gradle'
 
 dependencies {
   requiredLibs project(':com.ibm.ws.wssecurity.fat.utils.common'),
                project(':com.ibm.ws.security.saml.sso_fat.common'),
                project(':com.ibm.ws.org.apache.commons.io'),
-               'commons-logging:commons-logging:1.1.3',
-               'commons-codec:commons-codec:1.6',
+               project(':io.openliberty.org.apache.commons.logging'),
+               project(':io.openliberty.org.apache.commons.codec'),
                'org.apache.httpcomponents:httpclient:4.5.4',
                'org.apache.httpcomponents:httpcore:4.4.9',
                'org.apache.commons:commons-lang3:3.5',
@@ -125,6 +126,7 @@ assemble {
   dependsOn samltoken_WAR
 }
 
+addRequiredLibraries.dependsOn copyShibbolethIdpConfig, copyShibbolethServer
 
 autoFVT.doLast {
 
@@ -273,41 +275,4 @@ autoFVT.doLast {
     
   }
   
-  
-  servers = [
-    'com.ibm.ws.security.saml.sso-2.0_fat.shibboleth'
-  ]
-
-  servers.each { server ->
-
-    copy {
-    from new File(project(':com.ibm.ws.security.saml.sso_fat.common').projectDir, 'publish/servers/' + server + '/configs')
-    into new File(autoFvtDir, 'publish/servers/' + server + '/configs')
-    }
-  
-    copy {
-    //Need to use the updated version of perperties for java2sec exempt on this server; instead of directly copying from sso fat common
-    //from new File(project(':com.ibm.ws.security.saml.sso_fat.common').projectDir, 'publish/servers/' + server + '/bootstrap.properties')
-    from project.file('publish/files/bootstrap.properties')
-    into new File(autoFvtDir, 'publish/servers/' + server + '/')
-    }
-    
-    copy { 
-      from project.file('securitykeys')
-      include '**'
-      into new File(autoFvtDir, 'publish/servers/' + server + '/')
-    }
-
-    copy {
-    from new File(project(':com.ibm.ws.security.fat.common').buildDir, 'test-application/testmarker.war')
-    into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
-    }
-    
-    copy {
-    from new File(project(':com.ibm.ws.security.saml.sso_fat.common').buildDir, 'test-application/idp.war')
-    into new File(autoFvtDir, 'publish/servers/' + server + '/test-apps')
-    }
-  
-  }
-
 }

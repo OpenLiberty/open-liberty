@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  *******************************************************************************/
 package io.openliberty.cdi.spi;
 
+import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.Set;
 
@@ -19,10 +20,11 @@ import javax.enterprise.inject.spi.Extension;
  * This is a interface for CDI Runtime extensions. Liberty features that wish to extend CDI will need to
  * register a service under this interface.
  * <p>
- * To use this class you must implement at least one of the two methods. If you implement {@link #getBeanClasses()} all classes returned by that
- * method will be registered with CDI and may be used normally by application code. If you implement {@link #getExtensions()} then
+ * To use this class you must implement at least one of the three methods. If you implement {@link #getBeanClasses()} all classes returned by that
+ * method will be registered with CDI and may be used normally by application code. If you implement {@link #getBeanDefiningAnnotationClasses()} 
+ * all annotations returned by that method will become bean defining annotations as per the CDI specifications. If you implement {@link #getExtensions()} then
  * all classes returned by that method will be treated as CDI extensions any observer methods for container lifecycle events will be called
- * when creating the CDI container for each application. Both methods can be implemented in the same class.
+ * when creating the CDI container for each application. All three methods can be implemented in the same class.
  * <p>
  * Classes returned from {@code getExtensions()} must implement {@link javax.enterprise.inject.spi.Extension}. They do <b>not</b> and should not be listed in a
  * {@code META-INF/services file}. It is best practice to not put CDIExtensionMetaData and {@code javax.enterprise.inject.spi.Extension} on the same class
@@ -66,6 +68,15 @@ public interface CDIExtensionMetadata {
      * All classes must be in the same archive as your CDIExtensionMetadata.
      */
     default public Set<Class<?>> getBeanClasses() {
+        return Collections.emptySet();
+    }
+
+    /**
+     * All classes returned by this method will be will be treated as bean defining annotations when CDI
+     * performs annotation scanning during application startup.
+     * All classes must be in the same archive as your CDIExtensionMetadata.
+     */
+    default public Set<Class<? extends Annotation>> getBeanDefiningAnnotationClasses() {
         return Collections.emptySet();
     }
 

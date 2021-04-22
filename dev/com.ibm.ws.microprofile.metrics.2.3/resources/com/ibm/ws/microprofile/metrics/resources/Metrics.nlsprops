@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2020 IBM Corporation and others.
+# Copyright (c) 2009, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -141,6 +141,11 @@ grpc.client.receivedMessages.total.description=The total number of stream messag
 grpc.client.responseTime.total.description=The total response time of completed RPCs.
 
 REST.request.description=The number of invocations and total response time of this RESTful resource method since the start of the server.
+
+requestTiming.requestCount.description=The number of servlet requests since the server started.
+requestTiming.activeRequestCount.description=The number of servlet requests currently running.
+requestTiming.slowRequestCount.description=The number of servlet requests that are currently running but are slow.
+requestTiming.hungRequestCount.description=The number of servlet requests that are currently running but are hung.
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message
 #-----------------------------------------------------------------------------------------------------------------------------

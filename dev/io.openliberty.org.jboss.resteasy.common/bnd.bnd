@@ -137,7 +137,7 @@ Private-Package: \
   org.apache.james.*
   
   instrument.ffdc: false
-  instrument.disabled: true
+  instrument.disabled: false
 
 
 Include-Resource:\
@@ -198,7 +198,7 @@ Include-Resource:\
 	../build.sharedResources/lib/junit/old/junit.jar;version=file,\
 	com.ibm.websphere.javaee.mail.1.6,\
 	com.ibm.ws.org.apache.commons.io,\
-	com.ibm.ws.org.apache.commons.logging.1.0.3,\
+	io.openliberty.org.apache.commons.logging,\
 	com.ibm.ws.org.apache.httpcomponents,\
 	com.ibm.ws.org.glassfish.json.1.1
 

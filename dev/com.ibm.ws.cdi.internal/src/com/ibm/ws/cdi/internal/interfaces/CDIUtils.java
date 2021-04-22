@@ -18,6 +18,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Arrays;
@@ -40,19 +41,17 @@ import javax.enterprise.inject.Stereotype;
 import javax.enterprise.inject.spi.Extension;
 import javax.interceptor.Interceptor;
 
+import org.jboss.weld.bean.proxy.ProxyObject;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.bootstrap.spi.helpers.MetadataImpl;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.cdi.CDIException;
 import com.ibm.ws.cdi.CDIRuntimeException;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.util.ThreadContextAccessor;
-
-import org.jboss.weld.bean.proxy.ProxyObject;
 
 /**
  * Common constants and utility methods
@@ -208,7 +207,7 @@ public class CDIUtils {
             InputStreamReader isReader = null;
             try {
                 is = metaInfServicesUrl.openStream();
-                bfReader = new BufferedReader(isReader = new InputStreamReader(is, "UTF-8"));
+                bfReader = new BufferedReader(isReader = new InputStreamReader(is, StandardCharsets.UTF_8));
                 String line;
                 while ((line = bfReader.readLine()) != null) {
                     line = line.trim();

@@ -33,4 +33,5 @@ tested.features: mpConfig-1.2,\
 	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
 	com.ibm.websphere.org.eclipse.microprofile.config.1.2.1;version=latest,\
 	com.ibm.websphere.javaee.annotation.1.3;version=latest,\
-	com.ibm.websphere.javaee.cdi.2.0;version=latest
+	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
+	io.openliberty.org.apache.commons.logging;version=latest

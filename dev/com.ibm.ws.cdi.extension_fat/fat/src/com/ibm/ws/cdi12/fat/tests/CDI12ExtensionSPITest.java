@@ -62,7 +62,7 @@ public class CDI12ExtensionSPITest {
     @Test
     public void testExtensionSPI() throws Exception {
         HttpUtils.findStringInUrl(server, "/SPIExtension/",
-                       new String[] { "Extension injection", "bean injection", "Intercepted bean injection", "Could not find unregistered bean", "Intercepted application bean" });
+                       new String[] { "Extension injection", "bean injection", "Intercepted bean injection", "Could not find unregistered bean", "Intercepted application bean", "CustomBDABeanTwo"  });
     }
 
     @AfterClass

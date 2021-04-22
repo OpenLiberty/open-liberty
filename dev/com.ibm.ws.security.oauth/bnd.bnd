@@ -43,11 +43,10 @@ instrument.classesExcludes: \
 # Append ";provide:=true" if this bundle also provides an implementation
 # for the exported API.
 
-# 240526 remove from exports: com.ibm.websphere.security.openidconnect.token
-
 Export-Package: \
  com.ibm.websphere.security.oauth20, \
  com.ibm.websphere.security.oauth20.store, \
+ com.ibm.websphere.security.openidconnect.token, \
  com.ibm.wsspi.security.oauth20, \
  com.ibm.wsspi.security.openidconnect, \
  !com.ibm.ws.security.oauth20.internal.resources, \
@@ -68,7 +67,6 @@ Import-Package: \
 	 *
 
 Private-Package: \
- com.ibm.websphere.security.openidconnect.token, \
  com.ibm.ws.config.xml.internal.nester, \
  com.ibm.ws.security.oauth20.internal.resources, \
  com.ibm.ws.security.oauth20.internal.tai.resources
@@ -167,7 +165,7 @@ Include-Resource.zh: ${if;${include.zh};com/ibm/ws/security/oauth20/resources/Pr
 	com.ibm.ws.logging.core,\
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.ws.org.jose4j;version=latest,\
-	com.ibm.ws.org.apache.commons.codec;version=latest,\
+	io.openliberty.org.apache.commons.codec;version=latest,\
 	com.ibm.ws.org.json.simple.1.1.1;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.resource;version=latest,\

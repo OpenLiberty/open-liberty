@@ -114,14 +114,12 @@ public class JAXRS21ClientJerseyRxInvokerTest extends JAXRS21AbstractTest {
     }
 
     @Test
-    @SkipForRepeat("EE9_FEATURES") // currently broken due to multiple issues
     public void testRxObservableInvoker_get3WithGenericType() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         this.runTestOnServer(jerseyRxInvokerTarget, "testRxObservableInvoker_get3WithGenericType", p, "true");
     }
 
     @Test
-    @SkipForRepeat("EE9_FEATURES") // currently broken due to multiple issues
     public void testRxFlowableInvoker_get3WithGenericType() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         this.runTestOnServer(jerseyRxInvokerTarget, "testRxFlowableInvoker_get3WithGenericType", p, "true");
@@ -176,14 +174,12 @@ public class JAXRS21ClientJerseyRxInvokerTest extends JAXRS21AbstractTest {
     }
 
     @Test
-    @SkipForRepeat("EE9_FEATURES") // currently broken due to multiple issues
     public void testRxObservableInvoker_post3WithGenericType() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         this.runTestOnServer(jerseyRxInvokerTarget, "testRxObservableInvoker_post3WithGenericType", p, "Test book3");
     }
 
     @Test
-    @SkipForRepeat("EE9_FEATURES") // currently broken due to multiple issues
     public void testRxFlowableInvoker_post3WithGenericType() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         this.runTestOnServer(jerseyRxInvokerTarget, "testRxFlowableInvoker_post3WithGenericType", p, "Test book3");
@@ -238,6 +234,7 @@ public class JAXRS21ClientJerseyRxInvokerTest extends JAXRS21AbstractTest {
     }
 
     @Test
+    @SkipForRepeat("EE9_FEATURES") // Skip this test for EE9 as this test is failing intermittently with EE9.  See issue  https://github.com/OpenLiberty/open-liberty/issues/16648
     public void testRxObservableInvoker_getConnectionTimeout() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         this.runTestOnServer(jerseyRxInvokerTarget, "testRxObservableInvoker_getConnectionTimeout", p, "Timeout as expected");

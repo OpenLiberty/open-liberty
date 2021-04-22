@@ -1,0 +1,35 @@
+#*******************************************************************************
+# Copyright (c) 2021 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+# For more information, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
+
+Bundle-Name: JDBC heritage simulation bundle
+Bundle-SymbolicName: jdbcHeritage
+Bundle-Description: Test bundle that simulates providing heritageSettings
+
+IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
+
+WS-TraceGroup: jdbcHeritage
+
+Export-Package:\
+ com.ibm.websphere.appprofile.accessintent,\
+ com.ibm.websphere.ce.cm,\
+ com.ibm.websphere.rsadapter
+
+Import-Package: *
+
+Private-Package: test.jdbc.heritage.bundle.*
+
+Include-Resource:\
+ OSGI-INF/metatype/metatype.xml=test-bundles/jdbcHeritage/resources/OSGI-INF/metatype/metatype.xml,\
+ OSGI-INF/wlp/defaultInstances.xml=test-bundles/jdbcHeritage/resources/OSGI-INF/wlp/defaultInstances.xml

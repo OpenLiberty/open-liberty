@@ -41,7 +41,7 @@ public class TicketCacheBadPrincipalJava8 extends CommonBindTest {
 
     @BeforeClass
     public static void setStopMessages() {
-        stopStrings = new String[] { "CWIML4507E", "CWWKS4347E", "CWIML4512E" };
+        stopStrings = new String[] { "CWIML4507E", "CWWKS4347E", "CWIML4512E", "CWIML4520E" };
     }
 
     /**
@@ -65,12 +65,18 @@ public class TicketCacheBadPrincipalJava8 extends CommonBindTest {
         loginUserShouldFail();
 
         /*
-         * The same base exception is not always thrown, two options here, either confirms that we tried to use an
+         * The same base exception is not always thrown in Java8, multi options here, either confirms that we tried to use an
          * invalid principal name.
          */
         boolean foundBadPrincipalName = !server.findStringsInLogsAndTraceUsingMark("CWIML4512E").isEmpty();
         boolean foundKerberosLevelError = !server.findStringsInLogsAndTraceUsingMark("CWWKS4347E").isEmpty();
-        assertTrue("Expected to find Kerberos bind failure: Either `CWIML4512E` or `CWWKS4347E`", foundBadPrincipalName || foundKerberosLevelError);
+        /*
+         * Sometimes the JDK logs a more specific error, java.io.IOException: Primary principals don't match, but throws a more generic
+         * error: Unable to obtain password from user
+         */
+        boolean foundGenFailure = !server.findStringsInLogsAndTraceUsingMark("CWIML4520E").isEmpty();
+        assertTrue("Expected to find Kerberos bind failure: Either `CWIML4512E` or `CWWKS4347E` or `CWIML4520E`",
+                   foundBadPrincipalName || foundKerberosLevelError || foundGenFailure);
 
         if (foundKerberosLevelError) { // should be wrapped in a WIM level message.
             assertFalse("Expected to find Kerberos bind failure: CWIML4507E", server.findStringsInLogsAndTraceUsingMark("CWIML4507E").isEmpty());

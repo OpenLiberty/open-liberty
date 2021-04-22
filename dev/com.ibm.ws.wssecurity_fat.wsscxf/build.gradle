@@ -11,8 +11,8 @@
 
 dependencies {
   requiredLibs project(':com.ibm.ws.wssecurity.fat.utils.common'),
-               'commons-logging:commons-logging:1.1.3',
-               'commons-codec:commons-codec:1.6',
+               project(':io.openliberty.org.apache.commons.logging'),
+               project(':io.openliberty.org.apache.commons.codec'),
                'org.apache.httpcomponents:httpclient:4.5.4',
                'org.apache.httpcomponents:httpcore:4.4.9',
                'org.apache.commons:commons-lang3:3.5',

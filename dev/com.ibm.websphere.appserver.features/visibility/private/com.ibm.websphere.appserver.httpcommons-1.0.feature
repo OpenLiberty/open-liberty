@@ -5,8 +5,8 @@ visibility=private
 IBM-App-ForceRestart: uninstall, \
  install
 -bundles=com.ibm.ws.org.apache.httpcomponents, \
- com.ibm.ws.org.apache.commons.codec, \
- com.ibm.ws.org.apache.commons.logging.1.0.3
+ io.openliberty.org.apache.commons.codec, \
+ io.openliberty.org.apache.commons.logging
 kind=ga
 edition=core
 WLP-Activation-Type: parallel

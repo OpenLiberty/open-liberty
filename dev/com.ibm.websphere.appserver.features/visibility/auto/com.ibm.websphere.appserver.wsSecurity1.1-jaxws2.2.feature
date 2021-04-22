@@ -17,6 +17,6 @@ IBM-Install-Policy: when-satisfied
   com.ibm.ws.wssecurity, \
   com.ibm.ws.org.apache.cxf.ws.security.2.6.2, \
   com.ibm.ws.org.opensaml.openws.1.5.6, \
-  com.ibm.ws.org.apache.commons.logging.1.0.3
+  io.openliberty.org.apache.commons.logging
 kind=ga
 edition=base

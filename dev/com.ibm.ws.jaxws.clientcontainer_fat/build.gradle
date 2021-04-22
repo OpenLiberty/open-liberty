@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 dependencies {
-  requiredLibs 'commons-logging:commons-logging:1.1.3'
+  requiredLibs project(':io.openliberty.org.apache.commons.logging')
 }
 
 addRequiredLibraries.dependsOn addJakartaTransformer

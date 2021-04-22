@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,7 +23,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
+import com.ibm.websphere.simplicity.config.wim.LdapRegistry;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.com.unboundid.InMemorySunLDAPServer;
 import com.ibm.ws.security.registry.SearchResult;
 import com.ibm.ws.security.registry.test.UserRegistryServletConnection;
 
@@ -32,7 +35,6 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
-import componenttest.topology.utils.LDAPUtils;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
@@ -41,17 +43,40 @@ public class URAPIs_SUNLDAPTest_URAttrMappingVar4 {
     private static final Class<?> c = URAPIs_SUNLDAPTest_URAttrMappingVar4.class;
     private static UserRegistryServletConnection servlet;
 
+    private static InMemorySunLDAPServer ldapServer;
+
     /**
      * Updates the sample, which is expected to be at the hard-coded path.
      * If this test is failing, check this path is correct.
      */
     @BeforeClass
     public static void setUp() throws Exception {
-        // Add LDAP variables to bootstrap properties file
-        LDAPUtils.addLDAPVariables(server);
+        setupLdapServer();
+        setupLibertyServer();
+    }
+
+    /**
+     * Setup the Liberty server. This server will start with very basic configuration. The tests
+     * will configure the server dynamically.
+     *
+     * @throws Exception If there was an issue setting up the Liberty server.
+     */
+    public static void setupLibertyServer() throws Exception {
         Log.info(c, "setUp", "Starting the server... (will wait for userRegistry servlet to start)");
         server.copyFileToLibertyInstallRoot("lib/features", "internalfeatures/securitylibertyinternals-1.0.mf");
         server.addInstalledAppForValidation("userRegistry");
+
+        /*
+         * Update LDAP configuration with In-Memory Server
+         */
+        ServerConfiguration serverConfig = server.getServerConfiguration();
+        LdapRegistry ldap = serverConfig.getLdapRegistries().get(0);
+        ldap.setHost("localhost");
+        ldap.setPort(String.valueOf(ldapServer.getLdapPort()));
+        ldap.setBindDN(InMemorySunLDAPServer.getBindDN());
+        ldap.setBindPassword(InMemorySunLDAPServer.getBindPassword());
+        server.updateServerConfiguration(serverConfig);
+
         server.startServer(c.getName() + ".log");
 
         //Make sure the application has come up before proceeding
@@ -71,12 +96,31 @@ public class URAPIs_SUNLDAPTest_URAttrMappingVar4 {
         }
     }
 
+    /**
+     * Configure the embedded LDAP server.
+     *
+     * @throws Exception If the server failed to start for some reason.
+     */
+    private static void setupLdapServer() throws Exception {
+        ldapServer = new InMemorySunLDAPServer();
+    }
+
     @AfterClass
     public static void tearDown() throws Exception {
         Log.info(c, "tearDown", "Stopping the server...");
         try {
-            server.stopServer();
+            if (server != null) {
+                server.stopServer();
+            }
         } finally {
+            try {
+                if (ldapServer != null) {
+                    ldapServer.shutDown(true);
+                }
+            } catch (Exception e) {
+                Log.error(c, "teardown", e, "LDAP server threw error while shutting down. " + e.getMessage());
+            }
+
             server.deleteFileFromLibertyInstallRoot("lib/features/internalfeatures/securitylibertyinternals-1.0.mf");
         }
     }

@@ -52,7 +52,7 @@ dependencies {
   
   jdbcDrivers 'com.ibm.db2:jcc:11.1.4.4',
 		'org.postgresql:postgresql:42.2.5',
-		'com.microsoft.sqlserver:mssql-jdbc:8.2.1.jre8',
+		'com.microsoft.sqlserver:mssql-jdbc:9.2.1.jre8',
 		'org.apache.derby:derbyclient:10.11.1.1',
 		'org.apache.derby:derby:10.11.1.1',
 		'com.oracle.database.jdbc.debug:ojdbc8_g:21.1.0.0'
@@ -65,7 +65,7 @@ dependencies {
        "org.testcontainers:postgresql:${testcontainersVersion}",
        "org.testcontainers:db2:${testcontainersVersion}"
 
-  jakartaTransformer 'biz.aQute.bnd:biz.aQute.bnd.transform:5.1.1',
+  jakartaTransformer 'biz.aQute.bnd:biz.aQute.bnd.transform:5.3.0',
        'commons-cli:commons-cli:1.4',
        'org.slf4j:slf4j-simple:1.7.30',
        'org.slf4j:slf4j-api:1.7.26',

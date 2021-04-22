@@ -117,7 +117,7 @@ instrument.classesExcludes: com/ibm/ws/security/jwt/internal/resources/*.class
     com.ibm.ws.webcontainer.security;version=latest, \
     com.ibm.ws.crypto.passwordutil;version=latest, \
     com.ibm.ws.org.joda.time.1.6.2;version=latest, \
-    com.ibm.ws.org.apache.commons.codec;version=latest, \
+    io.openliberty.org.apache.commons.codec;version=latest, \
     com.ibm.ws.config;version=latest, \
     com.ibm.ws.org.jose4j;version=latest, \
     com.ibm.ws.security.common;version=latest, \

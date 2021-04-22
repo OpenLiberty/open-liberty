@@ -11,7 +11,8 @@ Subsystem-Name: Application Security for Client 1.0
 -features=\
   io.openliberty.servlet.api-3.0; ibm.tolerates:="3.1,4.0,5.0"; apiJar=false, \
   com.ibm.websphere.appserver.ssl-1.0, \
-  com.ibm.websphere.appserver.csiv2Client-1.0
+  com.ibm.websphere.appserver.csiv2Client-1.0, \
+  io.openliberty.appSecurityClient1.0.internal.ee-6.0; ibm.tolerates:="9.0"
 -bundles=\
   com.ibm.ws.security.authentication, \
   com.ibm.ws.security.credentials, \

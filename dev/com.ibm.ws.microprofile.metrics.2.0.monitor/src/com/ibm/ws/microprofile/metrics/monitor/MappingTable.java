@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,8 @@ import java.util.Set;
 
 import org.eclipse.microprofile.metrics.MetricType;
 import org.eclipse.microprofile.metrics.MetricUnits;
+
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 public class MappingTable {
 	
@@ -38,17 +40,28 @@ public class MappingTable {
 	public static final String COUNTER = MetricType.COUNTER.toString().toUpperCase();
 	public static final String GAUGE = MetricType.GAUGE.toString().toUpperCase();
 	
+	private static boolean isBeta = false;
+
 	private static MappingTable singleton = null;
 
 	private Map<String, String[][]> mappingTable = new HashMap<String, String[][]>();
 
 	public static MappingTable getInstance() {
+		betaFenceCheck();
 		if (singleton == null)
 			singleton = new MappingTable();
 		return singleton;
 	}
 	
 	private MappingTable() {
+		
+		String[][] requestTimeTable = new String[][] {
+			{ "requestTiming.requestCount", "Request Count", "requestTiming.requestCount.description", COUNTER, MetricUnits.NONE, "RequestCount", null, null },
+			{ "requestTiming.activeRequestCount", "Active Request Count", "requestTiming.activeRequestCount.description", GAUGE, MetricUnits.NONE, "ActiveRequestCount", null, null },
+			{ "requestTiming.slowRequestCount", "Slow Request Count", "requestTiming.slowRequestCount.description", GAUGE, MetricUnits.NONE, "SlowRequestCount", null, null },
+			{ "requestTiming.hungRequestCount", "Hung Request Count", "requestTiming.hungRequestCount.description", GAUGE, MetricUnits.NONE, "HungRequestCount", null, null }
+		};
+		if (isBeta) mappingTable.put("WebSphere:type=RequestTimingStats,name=*", requestTimeTable);
 		
 		String[][] threadPoolTable = new String[][] {
 			{ "threadpool.activeThreads", "Active Threads", "threadpool.activeThreads.description", GAUGE, MetricUnits.NONE, "ActiveThreads", null, THREADPOOL_TAG_NAME },
@@ -133,5 +146,14 @@ public class MappingTable {
 
 	public Set<String> getKeys() {
 		return mappingTable.keySet();
+	}
+
+	private static void betaFenceCheck() {
+		/*
+		 * If this is a BETA, flip  the beta flag to true.
+		 */
+		if (ProductInfo.getBetaEdition() && !isBeta) {
+			isBeta = !isBeta;
+		}
 	}
 }

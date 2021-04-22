@@ -38,7 +38,7 @@ tested.features: \
 	com.ibm.ws.security.wim.repository_test.custom;version=latest,\
 	com.ibm.ws.security.wim_test.servlet;version=latest,\
 	com.ibm.ws.webcontainer.security_test.servlets;version=latest,\
-	commons-logging:commons-logging;version=1.1.1,\
+	io.openliberty.org.apache.commons.logging;version=latest,\
 	org.apache.directory.server:apacheds-service;version=latest,\
 	org.apache.httpcomponents:httpclient;strategy=exact;version=4.1.2,\
 	org.apache.httpcomponents:httpcore;strategy=exact;version=4.1.2,\

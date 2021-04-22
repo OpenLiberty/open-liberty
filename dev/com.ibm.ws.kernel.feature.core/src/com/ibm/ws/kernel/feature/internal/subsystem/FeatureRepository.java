@@ -17,6 +17,7 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -430,7 +431,7 @@ public final class FeatureRepository implements FeatureResolver.Repository {
             // this is a long string
             byte[] data = new byte[in.readInt()];
             in.readFully(data);
-            return new String(data, "UTF-8");
+            return new String(data, StandardCharsets.UTF_8);
         } else {
             // normal string
             return in.readUTF();

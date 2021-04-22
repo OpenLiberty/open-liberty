@@ -10,8 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.security.wim.adapter.ldap.fat.krb5;
 
-import static componenttest.topology.utils.LDAPFatUtils.updateConfigDynamically;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 
@@ -32,6 +32,8 @@ import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.LDAPFatUtils;
 
 /**
  * Tests Kerberos bind (GSSAPI) for Ldap, using primarily the krb5TicketCache.
@@ -357,4 +359,17 @@ public class TicketCacheBindTest extends CommonBindTest {
         assertFalse("Expected to find Kerberos bind failure: CWIML4520E", server.findStringsInLogsAndTraceUsingMark("CWIML4520E").isEmpty());
     }
 
+    /**
+     * Double check that we did update the server since we're doing several updates.
+     *
+     * @param server
+     * @param newServer
+     * @throws Exception
+     */
+    private void updateConfigDynamically(LibertyServer server, ServerConfiguration newServer) throws Exception {
+        LDAPFatUtils.updateConfigDynamically(server, newServer);
+
+        assertTrue("Should not find a no-op update, should have updated the config. CWWKG0018I", server.findStringsInLogsAndTraceUsingMark("CWWKG0018I").isEmpty());
+
+    }
 }

@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2011 IBM Corporation and others.
+# Copyright (c) 2009, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -127,6 +127,11 @@ session.liveSessions.description=The number of users that are currently logged i
 session.activeSessions.description=The number of concurrently active sessions. (A session is active if the product is currently processing a request that uses that user session).
 session.invalidated.total.description=The number of sessions that have logged out since this metric was enabled.
 session.invalidatedbyTimeout.total.description=The number of sessions that have logged out by timeout since this metric was enabled.
+
+requestTiming.requestCount.description=The number of servlet requests since the server started.
+requestTiming.activeRequestCount.description=The number of servlet requests currently running.
+requestTiming.slowRequestCount.description=The number of servlet requests that are currently running but are slow.
+requestTiming.hungRequestCount.description=The number of servlet requests that are currently running but are hung.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message

@@ -27,6 +27,10 @@ fat.project: true
 tested.features: \
   enterprisebeanslite-4.0,\
   servlet-5.0, \
+  expressionLanguage-4.0, \
+  pages-3.0, \
+  appSecurity-4.0, \
+  cdi-3.0, \
   xmlBinding-3.0, \
   xmlWS-3.0
 
@@ -40,4 +44,5 @@ tested.features: \
 # fattest.simplicity, and componenttest-1.0 will be automatically added to the buildpath
 -buildpath: \
 	com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
-	com.ibm.websphere.javaee.ejb.3.2;version=latest
+	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
+	io.openliberty.org.apache.commons.logging;version=latest

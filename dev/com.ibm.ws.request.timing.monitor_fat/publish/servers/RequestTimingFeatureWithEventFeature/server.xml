@@ -1,0 +1,91 @@
+<server description="request timing test server">
+
+  <!-- Enable features -->
+  <featureManager>
+   <feature>requestTiming-1.0</feature>
+    <feature>servlet-3.1</feature>
+    <feature>monitor-1.0</feature>
+    <feature>appSecurity-2.0</feature>
+    <feature>audit-1.0</feature>
+    <feature>jndi-1.0</feature>
+    <feature>jdbc-4.1</feature>
+    <feature>eventLogging-1.0</feature>
+  </featureManager>
+  
+  <eventLogging includeContextInfo="true" minDuration="0" logMode="entryexit"/>
+  
+    <requestTiming slowRequestThreshold="15s" hungRequestThreshold="25s"/>
+  
+    <auditFileHandler 
+		maxFiles="5"
+		maxFileSize="20"
+		encrypt="false"
+		sign="false"
+		compact="true"
+	    wrapBehavior="WRAP">
+  </auditFileHandler>
+
+	<jdbcDriver id="DerbyDB" libraryRef="DerbyRef"/>
+	
+    <library id="DerbyRef">
+        <!-- <fileset includes="derby.jar"/>-->
+        <fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
+    </library>
+​
+    <dataSource id="exampleDS" jdbcDriverRef="DerbyDB" jndiName="jdbc/exampleDS" type="javax.sql.XADataSource" >
+        <!-- The following configures in-memory Derby.  For Derby on disk, which is needed if the database
+    	is required beyond a single server start, configure the databaseName with a file location such as:
+    	databaseName="${shared.config.dir}/data/derbydb" -->
+        <properties createDatabase="create" databaseName="memory:database"/>
+		<connectionManager maxIdleTime="1s" maxPoolSize="100" minPoolSize="1" reapTime="2s"/>
+    </dataSource> 
+    
+    
+    <basicRegistry id="basic" realm="BasicRealm">
+        <user name="user0" password="user0pwd" />
+        <user name="user1" password="user1pwd" />
+        <group name="group1">
+            <member name="user0" />
+            <member name="user1" />
+        </group>
+        <user name="user2" password="user2pwd" />
+        <group name="group2">
+            <member name="user2" />
+            <member name="user6" />
+        </group>
+        <user name="user3" password="user3pwd" />
+        <group name="group3">
+            <member name="user3" />
+        </group>
+        <user name="user4" password="user4 pwd" />
+        <group name="group4">
+            <member name="user4" />
+        </group>
+        <user name="user5" password="user5pwd " />
+        <group name="group5">
+            <member name="user5" />
+        </group>
+        <user name="user6" password="user6pwd" />
+    </basicRegistry>
+    
+    <application type="war" id="RequestTimingWebApp" context-root="RequestTimingWebApp" name="RequestTimingWebApp" location="RequestTimingWebApp.war">
+        <application-bnd>
+            <security-role name="audit_basic">
+                <user name="user1" />
+                <group name="group1" />
+            </security-role>
+            <security-role name="audit_form">
+                <user name="user2" />
+                <group name="group2" />
+            </security-role>
+            <security-role name="AllAuthenticated">
+                <special-subject type="ALL_AUTHENTICATED_USERS" />
+            </security-role>
+        </application-bnd>
+    </application>
+    
+  <include location="../fatTestPorts.xml"/>
+  <javaPermission className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
+  <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+   
+</server>

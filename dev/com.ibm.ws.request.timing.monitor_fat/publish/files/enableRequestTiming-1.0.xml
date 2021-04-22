@@ -1,0 +1,12 @@
+<server description="request timing test server">
+
+  <!-- Enable features -->
+  <featureManager>
+   <feature>requestTiming-1.0</feature>
+    <feature>jsp-2.3</feature>
+  </featureManager>
+
+  <include location="../fatTestPorts.xml"/>
+  <javaPermission className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
+   
+</server>

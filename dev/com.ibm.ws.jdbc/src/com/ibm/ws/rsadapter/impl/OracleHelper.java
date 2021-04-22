@@ -21,6 +21,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
@@ -50,6 +52,7 @@ import javax.transaction.xa.XAResource;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.service.util.JavaInfo;
 import com.ibm.ws.kernel.service.util.JavaInfo.Vendor;
 import com.ibm.ws.resource.ResourceRefInfo;
@@ -130,7 +133,7 @@ public class OracleHelper extends DatabaseHelper {
     OracleHelper(WSManagedConnectionFactoryImpl mcf) throws Exception {
         super(mcf);
 
-        dataStoreHelper = "com.ibm.websphere.rsadapter.Oracle11gDataStoreHelper";
+        dataStoreHelperClassName = "com.ibm.websphere.rsadapter.Oracle11gDataStoreHelper";
 
         mcf.supportsIsReadOnly = false;
         xaEndResetsAutoCommit = true;
@@ -294,10 +297,10 @@ public class OracleHelper extends DatabaseHelper {
             return super.branchCouplingSupported(couplingType);
 
         if (couplingType == ResourceRefInfo.BRANCH_COUPLING_LOOSE)
-            if (mcf.dataStoreHelper == null)
+            if (dataStoreHelper == null)
                 return 0x10000; // value of oracle.jdbc.xa.OracleXAResource.ORATRANSLOOSE
             else
-                return mcf.dataStoreHelper.modifyXAFlag(XAResource.TMNOFLAGS);
+                return modifyXAFlag(XAResource.TMNOFLAGS);
 
         // Tight branch coupling is default for Oracle
         return XAResource.TMNOFLAGS;
@@ -377,6 +380,9 @@ public class OracleHelper extends DatabaseHelper {
      */
     @Override
     public boolean doConnectionCleanup(Connection conn) throws SQLException {
+        if (dataStoreHelper != null)
+            return doConnectionCleanupLegacy(conn);
+
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
             Tr.entry(tc, "doConnectionCleanup");
@@ -491,6 +497,11 @@ public class OracleHelper extends DatabaseHelper {
 
     @Override
     public void doStatementCleanup(PreparedStatement stmt) throws SQLException {
+        if (dataStoreHelper != null) {
+            doStatementCleanupLegacy(stmt);
+            return;
+        }
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(this, tc, "doStatementCleanup");
 
@@ -601,6 +612,19 @@ public class OracleHelper extends DatabaseHelper {
      */
     @Override
     public String getXAExceptionContents(XAException xae) {
+        // Use the equivalent method on DataStoreHelper if legacy API is available.
+        if (dataStoreHelper != null)
+            try {
+                return AccessController.doPrivileged((PrivilegedExceptionAction<String>) () -> {
+                    return (String) dataStoreHelper.getClass()
+                                    .getMethod("getXAExceptionContents", XAException.class)
+                                    .invoke(dataStoreHelper, xae);
+                });
+            } catch (PrivilegedActionException x) {
+                FFDCFilter.processException(x, getClass().getName(), "616", this);
+            }
+
+
         StringBuilder xsb = new StringBuilder(350);
         try {
             Class<?> c = WSManagedConnectionFactoryImpl.priv.loadClass(mcf.jdbcDriverLoader, "oracle.jdbc.xa.OracleXAException");
@@ -860,13 +884,28 @@ public class OracleHelper extends DatabaseHelper {
             Tr.exit(this, tc, "getPooledConnection", results);
         return results;
     }
-    
-    private static void checkIBMJava8() throws ResourceException {
+
+    @FFDCIgnore(Exception.class)
+    private void checkIBMJava8() throws ResourceException {
         if (JavaInfo.majorVersion() == 8 && JavaInfo.vendor() == Vendor.IBM) {
-            // The Oracle JDBC driver does not support kerberos authentication on IBM JDK 8 because
+            // The Oracle JDBC driver prior to 21c does not support kerberos authentication on IBM JDK 8 because
             // it has dependencies to the internal Sun security APIs which don't exist in IBM JDK 8
-            Tr.error(tc, "KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED");
-            throw new ResourceException(AdapterUtil.getNLSMessage("KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED"));
+            boolean ibmJdkSupported;
+            try {
+                Class<?> OracleDatabaseMetaData = mcf.jdbcDriverLoader.loadClass("oracle.jdbc.OracleDatabaseMetaData");
+                int majorVersion = (int) OracleDatabaseMetaData.getMethod("getDriverMajorVersionInfo").invoke(null);
+                ibmJdkSupported = majorVersion >= 21;
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "Oracle major version: " + majorVersion);
+            } catch (Exception x) {
+                // absence of the Oracle class/methods means a newer version beyond 21c, where the IBM JDK is supported
+                ibmJdkSupported = true;
+            }
+
+            if (!ibmJdkSupported) {
+                Tr.error(tc, "KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED");
+                throw new ResourceException(AdapterUtil.getNLSMessage("KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED"));
+            }
         }
     }
 

@@ -49,4 +49,5 @@ Service-Component: \
 	com.ibm.ws.anno;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
 	com.ibm.ws.jaxrs.defaultexceptionmapper;version=latest, \
-	com.ibm.websphere.javaee.jaxrs.2.0;version=latest
+	com.ibm.websphere.javaee.jaxrs.2.0;version=latest,\
+	com.ibm.ws.kernel.boot.core;version=latest

@@ -31,7 +31,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference; 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -71,15 +70,12 @@ import com.ibm.ws.jca.adapter.WSConnectionManager;
 import com.ibm.ws.jca.adapter.WSManagedConnectionFactory;
 import com.ibm.ws.jca.cm.AbstractConnectionFactoryService;
 import com.ibm.ws.jca.cm.ConnectorService;
-import com.ibm.ws.jdbc.heritage.GenericDataStoreHelper;
-import com.ibm.ws.jdbc.heritage.DataStoreHelperMetaData;
 import com.ibm.ws.jdbc.internal.PropertyService;
 import com.ibm.ws.jdbc.osgi.JDBCRuntimeVersion;
 import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.ws.resource.ResourceRefInfo;
 import com.ibm.ws.rsadapter.AdapterUtil;
 import com.ibm.ws.rsadapter.DSConfig;
-import com.ibm.ws.rsadapter.IdentifyExceptionAs;
 import com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcTracer;
 
@@ -136,11 +132,6 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
      * The type of data source (for example, javax.sql.XADataSource) or java.sql.Driver that this managed connection factory uses to establish connections.
      */
     final Class<?> type;
-
-    /**
-     * Same as the DatabaseHelper unless overridden via the heritage helperClass.
-     */
-    public final GenericDataStoreHelper dataStoreHelper;
 
     /**
      * Helps cope with differences between databases/JDBC drivers.
@@ -269,12 +260,6 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
      * in order to allow for our future implementation of dynamic updates.
      */
     public final AtomicReference<DSConfig> dsConfig;
-
-    /**
-     * Indicates if the user provides their own custom legacy data store helper.
-     */
-    public boolean isCustomHelper;
-
     /**
      * Indicates whether or not the JDBC driver supports <code>java.sql.Connection.getCatalog()</code>.
      */
@@ -362,9 +347,8 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
         createDatabaseHelper(config.vendorProps instanceof PropertyService ? ((PropertyService) config.vendorProps).getFactoryPID() : PropertyService.FACTORY_PID);
 
         if (connectorSvc.isHeritageEnabled()) {
-            dataStoreHelper = createDataStoreHelper();
+            helper.createDataStoreHelper();
         } else {
-            dataStoreHelper = null;
             supportsGetNetworkTimeout = supportsGetSchema = atLeastJDBCVersion(JDBCRuntimeVersion.VERSION_4_1);
         }
 
@@ -459,100 +443,6 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
         if (helper == null)
             if (dsClassName.startsWith("com.ibm.db2.jcc.")) helper = new DB2JCCHelper(this); // unable to distinguish between DB2/Informix
             else helper = new DatabaseHelper(this);
-    }
-
-    /**
-     * Creates a legacy DataStoreHelper and populates or overrides some default values from it.
-     *
-     * @return legacy DataStoreHelper.
-     * @throws PrivilegedActionException if an error occurs.
-     * @throws ResourceException if an error occurs.
-     * @throws ClassNotFoundException if unable to load a data store helper class.
-     */
-    private GenericDataStoreHelper createDataStoreHelper() throws PrivilegedActionException, ResourceException, ClassNotFoundException {
-        DSConfig config = dsConfig.get();
-        Properties helperProps = new Properties();
-        Object value;
-
-        if ((value = config.vendorProps.get("currentSQLID")) != null)
-            helperProps.setProperty("currentSQLID", value.toString());
-
-        helperProps.setProperty("dataSourceClass", vendorImplClass.getName());
-
-        if ((value = config.vendorProps.get("driverType")) != null)
-            helperProps.put("driverType", value.toString());
-
-        if ((value = config.vendorProps.get("informixAllowNewLine")) != null)
-            helperProps.put("informixAllowNewLine", value.toString());
-
-        if ((value = config.vendorProps.get("informixLockModeWait")) != null)
-            helperProps.put("informixLockModeWait", value.toString());
-
-        if ((value = config.vendorProps.get("longDataCacheSize")) != null)
-            helperProps.put("longDataCacheSize", value.toString());
-
-        if (config.queryTimeout != null)
-            helperProps.put("queryTimeout", Integer.toString(config.queryTimeout));
-
-        // reauthentication is not configurable, defaults to false
-
-        if ((value = config.vendorProps.get("responseBuffering")) != null)
-            helperProps.put("responseBuffering", value.toString());
-
-        // useTrustedContextWithAuthentication is not configurable, defaults to false
-
-        if (config.isolationLevel != -1)
-            helperProps.put("webSphereDefaultIsolationLevel", Integer.toString(config.isolationLevel));
-
-        String helperClassName = config.heritageHelperClass == null ? helper.dataStoreHelper : config.heritageHelperClass;
-
-        GenericDataStoreHelper dataStoreHelper = AccessController.doPrivileged((PrivilegedExceptionAction<GenericDataStoreHelper>) () ->
-            (GenericDataStoreHelper) jdbcDriverLoader.loadClass(helperClassName).getConstructor(Properties.class).newInstance(helperProps));
-
-        dataStoreHelper.setConfig(dsConfig);
-
-        if (helper.genPw == null)
-            helper.genPw = dataStoreHelper.getPrintWriter();
-
-        DataStoreHelperMetaData metadata = dataStoreHelper.getMetaData();
-        defaultIsolationLevel = dataStoreHelper.getIsolationLevel(null);
-        doesStatementCacheIsoLevel = metadata.doesStatementCacheIsoLevel();
-        isCustomHelper = !helperClassName.startsWith("com.ibm.websphere.rsadapter");
-        supportsGetCatalog = metadata.supportsGetCatalog();
-        supportsGetNetworkTimeout = metadata.supportsGetNetworkTimeout();
-        supportsGetSchema = metadata.supportsGetSchema();
-        supportsGetTypeMap = metadata.supportsGetTypeMap();
-        supportsIsReadOnly = metadata.supportsIsReadOnly();
-
-        Map<Object, Class<?>> map = new HashMap<Object, Class<?>>();
-        for (Map.Entry<Object, String> entry : config.identifyExceptions.entrySet())
-            try {
-                String className = entry.getValue();
-                if (!className.contains("."))
-                    try {
-                        IdentifyExceptionAs identifyAs = IdentifyExceptionAs.valueOf(className);
-                        if (identifyAs.legacyClassName == null)
-                            className = IdentifyExceptionAs.None.legacyClassName; // no equivalent legacy exception class, do not replace it
-                        else
-                            className = identifyAs.legacyClassName;
-                    } catch (IllegalArgumentException x) {
-                        // probably an error, but maybe the user has a custom exception class without a package, so continue on...
-                    }
-                Class<?> exceptionClass = WSManagedConnectionFactoryImpl.priv.loadClass(jdbcDriverLoader, className);
-                Object key = entry.getKey();
-                if (key instanceof String || key instanceof Integer)
-                    map.put(key, exceptionClass);
-                else
-                    // TODO NLS message
-                    throw new IllegalArgumentException("The sqlState and errorCode attributes cannot both be configured on the same identifyException element when replaceExceptions=true is enabled.");
-            } catch (ClassNotFoundException x) {
-                Tr.error(tc, "8066E_IDENTIFY_EXCEPTION_INVALID_TARGET", entry.getValue(), Arrays.toString(IdentifyExceptionAs.values()) + ", com.ibm.websphere.ce.cm.*, ...");
-                throw x;
-            }
-        if (!map.isEmpty())
-            dataStoreHelper.setUserDefinedMap(map);
-
-        return dataStoreHelper;
     }
 
     /**
@@ -1428,10 +1318,7 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
      * utility used to gather metadata info and issue doConnectionSetup.
      */
     private void postGetConnectionHandling(Connection conn) throws SQLException {
-        if (dataStoreHelper == null)
-            helper.doConnectionSetup(conn);
-        else
-            dataStoreHelper.doConnectionSetup(isCustomHelper ? (Connection) WSJdbcTracer.getImpl(conn) : conn);
+        helper.doConnectionSetup(conn);
 
         String[] sqlCommands = dsConfig.get().onConnect;
         if (sqlCommands != null && sqlCommands.length > 0)
@@ -1445,8 +1332,8 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
             helper.gatherAndDisplayMetaDataInfo(conn, this);
 
             // If a legacy data store helper is used, allow it to determine the unit-of-work detection support:
-            if (dataStoreHelper != null)
-                supportsUOWDetection = dataStoreHelper.getMetaData().supportsUOWDetection();
+            if (helper.dataStoreHelper != null)
+                helper.initUOWDetection();
 
             wasUsedToGetAConnection = true;
         }
