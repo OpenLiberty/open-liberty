@@ -25,6 +25,7 @@ repositories {
 
 dependencies {
    requiredLibs project(':com.ibm.ws.security.fat.common'),
+                project(':com.ibm.ws.security.fat.common.jwt'),
                 project(':com.ibm.ws.security.oauth.oidc_fat.common'),
                 project(':com.ibm.ws.com.meterware.httpunit.1.7'),
                 'jtidy:jtidy:4aug2000r7-dev',
@@ -46,7 +47,8 @@ dependencies {
                'org.apache.httpcomponents:httpmime:4.5.12',
                'org.brotli:dec:0.1.2',
                'xalan:xalan:2.7.2',
-               'xerces:xercesImpl:2.11.0'
+               'xerces:xercesImpl:2.11.0',
+               'httpunit:httpunit:1.7'
 }
 
 addRequiredLibraries.dependsOn addJakartaTransformer
@@ -60,6 +62,7 @@ addRequiredLibraries.dependsOn addJakartaTransformer
  ******************************************************************
  ******************************************************************/
 autoFVT.dependsOn ':com.ibm.ws.security.fat.common:assemble'
+autoFVT.dependsOn ':com.ibm.ws.security.fat.common.jwt:assemble'
 autoFVT.dependsOn ':com.ibm.ws.security.oauth.oidc_fat.common:assemble'
 autoFVT.doLast {
 
@@ -77,6 +80,7 @@ autoFVT.doLast {
    */
   def servers = [
     'com.ibm.ws.security.openidconnect.client-1.0_fat.op',
+    'com.ibm.ws.security.openidconnect.client-1.0_fat.opWithStub',
     'com.ibm.ws.security.openidconnect.client-1.0_fat.rp',
     'com.ibm.ws.security.openidconnect.client-1.0_fat.rpd',
     'com.ibm.ws.security.openidconnect.client-1.0_fat.rs'
@@ -93,6 +97,14 @@ autoFVT.doLast {
       into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
     }
 
+  	/* copy shared key/trust stores from the common security fat project */
+    copy { 
+     from project(':com.ibm.ws.security.fat.common').file('publish/shared/securityKeys')
+     into new File(autoFvtDir, 'publish/servers/' + server + '/')
+     include 'allAlgKeyStore.p12'
+     include 'allAlgTrustStore.p12'
+    }
+    
     copy {
       from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, "/securitykeys")
       into new File(autoFvtDir, 'publish/servers/' + server)
@@ -115,6 +127,7 @@ autoFVT.doLast {
       into new File(autoFvtDir, 'publish/servers/' + server + '/test-apps')
       rename 'formlogin.zip', 'formlogin.war'
     }
+    
   }
 
 
@@ -131,8 +144,37 @@ autoFVT.doLast {
     into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.openidconnect.client-1.0_fat.rs')
     include 'commonKeyStore.jks'
   }
+  copy { 
+    from project(':com.ibm.ws.security.fat.common.jwt').file('publish/shared/securityKeys')
+    into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.openidconnect.client-1.0_fat.rs/')
+    include '*.pem'
+  }  	
+  /* copy shared key/trust stores from the common security fat project */
+  copy { 
+   from project(':com.ibm.ws.security.fat.common').file('publish/shared/securityKeys')
+   into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.openidconnect.client-1.0_fat.rs/')
+   include 'allAlgKeyStore.p12'
+   include 'allAlgTrustStore.p12'
+  }
   
-  
+   /*
+   * Copy TokenEndpointServlet application and the associated keystore to the applicable test server.
+   */
+  copy {
+    from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').buildDir, 'test-application/testTokenEndpoint.zip')
+    into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.openidconnect.client-1.0_fat.opWithStub/test-apps')
+    rename 'testTokenEndpoint.zip', 'testTokenEndpoint.war'
+  }
+  /*
+  * Copy the pem files that are needed to use with the TokenEndpointServlet
+  */
+       	/* copy shared key/trust stores from the common jwt security fat project */
+    copy { 
+      from project(':com.ibm.ws.security.fat.common.jwt').file('publish/shared/securityKeys')
+      into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.openidconnect.client-1.0_fat.opWithStub')
+      include '*.pem'
+    }
+     
   /*
    * Copy some other testing artifacts to the root autofvt directory.
    */
