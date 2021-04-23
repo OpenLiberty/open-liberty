@@ -29,5 +29,7 @@ tested.features: oidctai-2.0, appsecurity-4.0, expressionlanguage-4.0, cdi-3.0, 
     com.ibm.ws.org.joda.time.1.6.2;version=latest,\
     io.openliberty.org.apache.commons.codec;version=latest,\
     io.openliberty.org.apache.commons.logging;version=latest,\
-    net.sourceforge.htmlunit:htmlunit;version=2.44.0
+    net.sourceforge.htmlunit:htmlunit;version=2.44.0,\
+    de.flapdoodle.embed.mongo;version=3.0.0,\
+    de.flapdoodle.embed.process;version=3.0.1
 
