@@ -2354,7 +2354,7 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-core</artifactId>
-      <version>4.5.8.Final</version>
+      <version>4.5.10.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
