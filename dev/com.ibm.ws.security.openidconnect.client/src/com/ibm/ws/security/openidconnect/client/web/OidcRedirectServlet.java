@@ -42,7 +42,6 @@ import com.ibm.ws.security.openidconnect.clients.common.HashUtils;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientUtil;
 import com.ibm.ws.security.openidconnect.clients.common.OidcUtil;
 import com.ibm.ws.security.openidconnect.common.Constants;
-import com.ibm.ws.webcontainer.security.CookieHelper;
 import com.ibm.ws.webcontainer.security.openidconnect.OidcClient;
 
 /**
@@ -66,8 +65,8 @@ public class OidcRedirectServlet extends HttpServlet {
 
     /**
      * @param activatedOidcClientImpl
-     *                                    the activatedOidcClientImpl to set
-     *                                    (called by the oidcClientImpl on activation)
+     *            the activatedOidcClientImpl to set
+     *            (called by the oidcClientImpl on activation)
      */
     public static void setActivatedOidcClientImpl(OidcClientImpl activatedOidcClientImpl) {
         OidcRedirectServlet.activatedOidcClientImpl = activatedOidcClientImpl;
@@ -129,8 +128,7 @@ public class OidcRedirectServlet extends HttpServlet {
         //  this cookie was set to hold the original URL.
         //  Now it's time to get it back.
         String cookieName = ClientConstants.WAS_REQ_URL_OIDC + HashUtils.getStrHashCode(state);
-        Cookie[] cookies = request.getCookies();
-        String requestUrl = CookieHelper.getCookieValue(cookies, cookieName);
+        String requestUrl = OidcClientUtil.getReferrerURLCookieHandler().getReferrerURLFromCookies(request, cookieName);
         // 240540
         //CookieHelper.clearCookie(request, response, cookieName, cookies); //clear the WAS_REQ_URL_OIDC cookie
         OidcClientUtil.invalidateReferrerURLCookie(request, response, cookieName);
