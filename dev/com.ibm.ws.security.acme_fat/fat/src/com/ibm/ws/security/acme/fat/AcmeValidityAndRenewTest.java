@@ -43,6 +43,7 @@ import com.ibm.ws.security.acme.utils.AcmeFatUtils;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.CheckForLeakedPasswords;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -54,6 +55,7 @@ import componenttest.topology.impl.LibertyServer;
  */
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
+@SkipForRepeat(SkipForRepeat.EE9_FEATURES) // No value added
 public class AcmeValidityAndRenewTest {
 
 	@Server("com.ibm.ws.security.acme.fat.renew")

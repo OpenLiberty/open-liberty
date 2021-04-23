@@ -19,9 +19,9 @@ Bundle-Description: Liberty Security Social Media, version=${bVersion}
 # Generate an Jakarta EE compliant JAR for the bundle.
 #
 jakartaeeMe: true
-#jakartaee.transform.jar.name=io.openliberty.security.social.jar
+#jakartaee.transform.jar.name=io.openliberty.security.social.internal.jar
 #JakartaEE-Bundle-Name: Liberty Security Social Media 1.0 
-#JakartaEE-Bundle-Symbolic-Name: io.openliberty.security.social
+#JakartaEE-Bundle-Symbolic-Name: io.openliberty.security.social.internal
 #JakartaEE-Bundle-Description: Liberty Security Social Media, version=${bVersion}
 #JakartaEE-Bundle-Version:
 

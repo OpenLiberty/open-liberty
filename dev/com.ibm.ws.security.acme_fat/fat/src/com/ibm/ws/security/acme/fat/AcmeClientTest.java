@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,6 +42,7 @@ import com.ibm.ws.security.acme.internal.util.AcmeConstants;
 import com.ibm.ws.security.acme.utils.AcmeFatUtils;
 import com.ibm.ws.security.acme.utils.HttpChallengeServer;
 
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 
 /**
@@ -49,6 +50,7 @@ import componenttest.custom.junit.runner.FATRunner;
  * that do not interact with an ACME CA service.
  */
 @RunWith(FATRunner.class)
+@SkipForRepeat(SkipForRepeat.EE9_FEATURES) // No value added
 public class AcmeClientTest {
 
 	private static final String TEST_DOMAIN_1 = "domain1.com";
