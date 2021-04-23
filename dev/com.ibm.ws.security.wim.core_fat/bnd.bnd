@@ -16,6 +16,7 @@ src: \
 	fat/src
 
 fat.project: true
+tested.features: appsecurity-4.0, expressionlanguage-4.0, cdi-3.0
 
 -buildpath: \
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
