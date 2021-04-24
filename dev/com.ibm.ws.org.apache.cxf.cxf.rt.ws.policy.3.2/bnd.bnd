@@ -8,10 +8,10 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.apache.cxf:cxf-rt-ws-policy;3.4.1;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;${repo;org.apache.cxf:cxf-rt-ws-policy;3.4.3;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 
-cxfVersion=3.4.1
+cxfVersion=3.4.3
 
 -includeresource: \
    @${repo;org.apache.cxf:cxf-rt-ws-policy;${cxfVersion};EXACT}!/!*-INF/*, \
