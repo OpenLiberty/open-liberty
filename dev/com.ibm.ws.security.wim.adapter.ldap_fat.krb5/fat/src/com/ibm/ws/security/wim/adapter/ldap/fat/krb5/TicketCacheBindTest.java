@@ -48,7 +48,7 @@ public class TicketCacheBindTest extends CommonBindTest {
 
     @BeforeClass
     public static void setStopMessages() {
-        stopStrings = new String[] { "CWIML4507E", "CWIML4513E", "CWIML4515E", "CWIML4520E", "CWIML4529E", "CWIML0004E", "CWWKE0701E", "CWWKS3005E" };
+        stopStrings = new String[] { "CWIML4507E", "CWIML4513E", "CWIML4515E", "CWIML4520E", "CWIML4529E", "CWIML0004E", "CWWKE0701E", "CWWKS3005E", "CWIML4512E" };
     }
 
     /**
@@ -186,7 +186,12 @@ public class TicketCacheBindTest extends CommonBindTest {
         Log.info(c, testName.getMethodName(), "Login expected to fail, config has a bad principalName");
         loginUserShouldFail();
 
-        assertFalse("Expected to find Kerberos bind failure: CWIML4507E", server.findStringsInLogsAndTraceUsingMark("CWIML4507E").isEmpty());
+        boolean foundBadPrincipalName = !server.findStringsInLogsAndTraceUsingMark("CWIML4512E").isEmpty();
+        boolean foundNoUser = !server.findStringsInLogsAndTraceUsingMark("CWIML4507E").isEmpty();
+
+        assertTrue("Expected to find Kerberos bind failure: Either `CWIML4512E` or `CWIML4507E`",
+                   foundBadPrincipalName || foundNoUser);
+
     }
 
     /**
