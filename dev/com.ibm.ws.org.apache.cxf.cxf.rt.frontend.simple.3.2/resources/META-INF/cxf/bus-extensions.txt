@@ -1,0 +1,1 @@
+org.apache.cxf.endpoint.dynamic.ExceptionClassCreatorProxyService:org.apache.cxf.endpoint.dynamic.ExceptionClassCreator:true

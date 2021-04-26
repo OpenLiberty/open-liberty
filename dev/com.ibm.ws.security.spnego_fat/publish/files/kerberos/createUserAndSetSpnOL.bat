@@ -26,6 +26,12 @@ set OP10=%6
 set OP11=%7
 set OP12=%8
 
+echo %DATE% %TIME%
 cscript removeWinUsersOL.vbs -user %USER% -host %KDC%
+echo %DATE% %TIME%, Exit Code is %errorlevel%
+
 cscript createWinUserOL.vbs -user %USER% -password %PASSWORD% -host %KDC% %OP1% %OP2% %OP3% %OP4% %OP5% %OP6% %OP7% %OP8% %OP9% %OP10% %OP11% %OP12%
+echo %DATE% %TIME%, Exit Code is %errorlevel%
+
 setspn -a %SERVICE_NAME%/%HOSTNAME% %USER%
+echo %DATE% %TIME%, Exit Code is %errorlevel%

@@ -67,6 +67,7 @@ import com.ibm.wsspi.security.audit.AuditEncryptionException;
 import com.ibm.wsspi.security.audit.AuditService;
 import com.ibm.wsspi.security.audit.AuditSigningException;
 
+
 /**
  * This class is a collector manager Handler that takes audit events from the
  * BufferManager and writes them to local files. (copied from com.ibm.ws.logging temporary)
@@ -986,7 +987,7 @@ public class AuditFileHandler implements SynchronousHandler {
                                             if (tc.isDebugEnabled())
                                                 Tr.debug(tc, "maxFileSize: " + max);
 
-                                            if ((currentFileSize + total_to_add_length) >= max) {
+                                            if ((currentFileSize + total_to_add_length + 2) >= max) {
                                                 if (tc.isDebugEnabled())
                                                     Tr.debug(tc, "adding padding to roll into new log");
                                                 byte[] padding = new byte[(int) (max - currentFileSize)];
@@ -1021,7 +1022,7 @@ public class AuditFileHandler implements SynchronousHandler {
                                             if (tc.isDebugEnabled())
                                                 Tr.debug(tc, "maxFileSize: " + max);
 
-                                            if ((currentFileSize + total_to_add_length) >= max) {
+                                            if ((currentFileSize + total_to_add_length + 2) >= max) {
                                                 if (tc.isDebugEnabled())
                                                     Tr.debug(tc, "adding padding to roll into new log");
                                                 byte[] padding = new byte[(int) (max - currentFileSize)];
@@ -1078,7 +1079,7 @@ public class AuditFileHandler implements SynchronousHandler {
                                         if (tc.isDebugEnabled())
                                             Tr.debug(tc, "maxFileSize: " + max);
 
-                                        if ((currentFileSize + total_to_add_length) >= max) {
+                                        if ((currentFileSize + total_to_add_length + 2) >= max) {
                                             if (tc.isDebugEnabled())
                                                 Tr.debug(tc, "adding padding to roll into new log");
                                             byte[] padding = new byte[(int) (max - currentFileSize)];
