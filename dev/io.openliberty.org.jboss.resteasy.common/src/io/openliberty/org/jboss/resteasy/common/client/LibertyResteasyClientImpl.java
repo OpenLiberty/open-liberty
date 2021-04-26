@@ -11,8 +11,11 @@
 package io.openliberty.org.jboss.resteasy.common.client;
 
 import java.net.URI;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
 import javax.ws.rs.core.UriBuilder;
@@ -25,6 +28,7 @@ import org.jboss.resteasy.client.jaxrs.internal.ResteasyClientImpl;
 public class LibertyResteasyClientImpl extends ResteasyClientImpl {
     private final LibertyResteasyClientBuilderImpl builder;
     private final Supplier<ClientHttpEngine> httpEngineSupplier;
+    private AtomicReference<ClientHttpEngine> httpEngine = new AtomicReference<>();
 
     protected LibertyResteasyClientImpl(final Supplier<ClientHttpEngine> httpEngine,
                                         final ExecutorService asyncInvocationExecutor,
@@ -54,19 +58,37 @@ public class LibertyResteasyClientImpl extends ResteasyClientImpl {
 
     @Override
     public ClientHttpEngine httpEngine() {
-        if (httpEngine == null) {
-            synchronized(httpEngineSupplier) {
-                if (httpEngine == null) {
-                    httpEngine = httpEngineSupplier.get();
-                }
-            }
+        ClientHttpEngine engine = httpEngine.get();
+        if (engine == null) {
+            httpEngine.compareAndSet(null, httpEngineSupplier.get());
+            engine = httpEngine.get();
         }
-        return httpEngine;
+        return engine;
     }
 
     @Override
     public void close() {
-        httpEngine();
-        super.close();
+        closed = true;
+        try {
+            ClientHttpEngine engine = httpEngine.get();
+            if (engine != null) {
+                engine.close();
+            }
+            if (cleanupExecutor) {
+                if (System.getSecurityManager() == null) {
+                    asyncInvocationExecutor.shutdown();
+                } else {
+                    AccessController.doPrivileged(new PrivilegedAction<Void>() {
+                        @Override
+                        public Void run() {
+                            asyncInvocationExecutor.shutdown();
+                            return null;
+                        }
+                    });
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
