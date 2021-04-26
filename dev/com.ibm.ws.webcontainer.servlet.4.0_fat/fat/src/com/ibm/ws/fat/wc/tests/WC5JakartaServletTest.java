@@ -95,4 +95,32 @@ public class WC5JakartaServletTest {
             }
         }
     }
+
+    /**
+     * Request a simple snoop servlet.
+     * 
+     * Query param with no equals is registered as an empty string.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testNoEqualsQueryParameter() throws Exception {
+        String expectedResponse = "For query 'test', the value is an empty string (expected).";
+        String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + APP_NAME + "/query?test";
+
+        LOG.info("url: " + url);
+        LOG.info("expectedResponse: " + expectedResponse);
+
+        HttpGet getMethod = new HttpGet(url);
+
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
+
+                assertTrue("The response did not contain the following String: " + expectedResponse, responseText.contains(expectedResponse));
+            }
+        }
+    }
 }

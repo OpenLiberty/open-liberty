@@ -18,4 +18,16 @@
 		<url-pattern>/snoop5</url-pattern>
 	</servlet-mapping>
 
+	<servlet>
+		<display-name>Query Servlet</display-name>
+		<servlet-name>Query Servlet</servlet-name>
+		<servlet-class>servlet5snoop.war.servlets.QueryServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>Query Servlet</servlet-name>
+		<url-pattern>/query</url-pattern>
+	</servlet-mapping>
+
 </web-app>
