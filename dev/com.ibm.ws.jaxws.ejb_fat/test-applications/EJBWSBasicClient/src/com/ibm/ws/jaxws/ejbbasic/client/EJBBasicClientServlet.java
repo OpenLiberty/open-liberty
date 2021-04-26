@@ -119,7 +119,6 @@ public class EJBBasicClientServlet extends HttpServlet {
 
             bp.getRequestContext().put(BindingProvider.SOAPACTION_URI_PROPERTY, "http://ejbbasic.jaxws.ws.ibm.com/UserQuery/getUser");
             UserQuery uq = userQueryService;
-            System.out.println("@TJJ From servlet bp syntehic get is: " + bp.getRequestContext().get("operation.is.synthetic"));
             User user = uq.getUser("Illidan Stormrage");
             if (user == null) {
                 writer.write("FAILED Expected user instance is not returned");
@@ -277,7 +276,6 @@ public class EJBBasicClientServlet extends HttpServlet {
         bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
                                                 "http://" + request.getServerName() + ":" + request.getServerPort() + "/" + endpointPath);
 
-        bindingProvider.getRequestContext().put("operation.is.synthetic", true);
         bindingProvider.getRequestContext().put("allowNonMatchingToDefaultSoapAction", true);
     }
 }

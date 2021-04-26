@@ -54,6 +54,7 @@ import org.w3c.dom.NodeList;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -88,19 +89,6 @@ public class EJBWSProviderTest {
     public static final String LIST_USERS_MESSAGE = "<?xml version=\"1.0\"?><S:Envelope xmlns:S=\"http://schemas.xmlsoap.org/soap/envelope/\"><S:Body><p:listUsers xmlns:p=\"http://ejbbasic.jaxws.ws.ibm.com/\"/>"
                                                     + "</S:Body></S:Envelope>";
 
-    public static final String LIST_USERS_SOAPACTION_MESSAGE = "<?xml version=\"1.0\"?>"
-                                                               + "<S:Envelope xmlns:S=\"http://schemas.xmlsoap.org/soap/envelope/\">"
-                                                               + "  <S:Header>\n"
-                                                               + "    <Action xmlns=\"http://www.w3.org/2005/08/addressing\">http://ejbbasic.jaxws.ws.ibm.com/UserQueryProvider/listUsers</Action>"
-                                                               + "    <ReplyTo xmlns=\"http://www.w3.org/2005/08/addressing\">"
-                                                               + "      <Address>http://www.w3.org/2005/08/addressing/anonymous</Address>"
-                                                               + "    </ReplyTo>"
-                                                               + "  </S:Header>"
-                                                               + "  <S:Body>"
-                                                               + "         <p:listUsers xmlns:p=\"http://ejbbasic.jaxws.ws.ibm.com/\"/>"
-                                                               + "  </S:Body>"
-                                                               + "</S:Envelope>";
-
     private static long MAX_ASYNC_WAIT_TIME = 30 * 1000;
 
     @BeforeClass
@@ -131,6 +119,11 @@ public class EJBWSProviderTest {
         }
     }
 
+    /* 
+     * This test is a basic invocation of a Dynamic Service that uses the @WebServiceProvider annotation
+     * by invoking the WSP with a dynamic dispatch client. 
+     * TODO: Re-factor the SOAPAction tests into a separate Test Class. 
+     */
     @Test
     public void testQueryUserProvider() throws Exception {
         Service service = Service.create(SERVICE_NAME);
@@ -141,14 +134,17 @@ public class EJBWSProviderTest {
 
         SOAPMessage requestSOAPMessage = createGetUserSOAPMessage();
 
-        //MimeHeaders headers = requestSOAPMessage.getMimeHeaders();
-        //headers.addHeader("SOAPAction", "http://ejbbasic.jaxws.ws.ibm.com/UserQuery#getUser");
-
         SOAPMessage responseSOAPMessage = dispatch.invoke(requestSOAPMessage);
 
         assertQueryUserResponse(responseSOAPMessage);
     }
 
+    
+    /* 
+     * This test makes sure that with the fix, a dynamic client cannot still invoke a WSP based service even when the
+     * SOAPAction header mismatches the expected value since the allowNonMatchingToDefaultSoapAction property isn't set
+     * TODO: Re-factor the SOAPAction tests into a separate Test Class. 
+     */
     @Test
     public void testQueryUserProviderWithSOAPActionMismatch() throws Exception {
         Service service = Service.create(SERVICE_NAME);
@@ -161,9 +157,6 @@ public class EJBWSProviderTest {
         dispatch.getRequestContext().put("allowNonMatchingToDefaultSoapAction", "false");
         SOAPMessage requestSOAPMessage = createGetUserSOAPMessage();
 
-        //MimeHeaders headers = requestSOAPMessage.getMimeHeaders();
-        //headers.addHeader("SOAPAction", "http://ejbbasic.jaxws.ws.ibm.com/UserQuery#getUser");
-
         SOAPMessage responseSOAPMessage = dispatch.invoke(requestSOAPMessage);
 
         assertQueryUserResponse(responseSOAPMessage);
@@ -171,6 +164,7 @@ public class EJBWSProviderTest {
 
     @Mode(TestMode.FULL)
     @Test
+    @SkipForRepeat("EE9_FEATURES")
     public void testUserNotFoundExceptionProvider() throws Exception {
         Service service = Service.create(new URL(ENDPOINT_URL + "?wsdl"), SERVICE_NAME);
         Dispatch<Source> dispatch = service.createDispatch(PORT_NAME, Source.class, Service.Mode.PAYLOAD, new AddressingFeature());
