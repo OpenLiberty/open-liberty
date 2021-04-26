@@ -16,6 +16,7 @@ import static org.junit.Assume.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,9 +38,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -101,6 +104,9 @@ public class PackageRunnableTest {
         } else {
             Log.info(c, method, runnableJar.getAbsolutePath() + " did not exist.");
         }
+
+        // Create the /lib/extract folder if it does not exist so that the package tests will execute.
+        Log.info(c, method, "Was the /lib/extract folder created manually for this test case execution : " + createWLPLibExtract());
     }
 
     @BeforeClass
@@ -653,4 +659,71 @@ public class PackageRunnableTest {
 
         return manifestFound;
     }
+
+    /**
+     * As of today, the FAT environment's installation of WLP does not include lib/extract directory.
+     * The package command requires that the lib/extract directory exists, as this directory
+     * contains a required manifest, self extractable classes, etc. Copy the wlp.lib.extract.jar
+     * contents to wlp/lib/extract folder.
+     *
+     * @return false if /lib/extract exists, else true if it is created
+     *
+     * @throws Exception
+     */
+    private static boolean createWLPLibExtract() throws Exception {
+        try {
+            server.getFileFromLibertyInstallRoot("lib/extract");
+            return false;
+        } catch (FileNotFoundException ex) {
+            //expected - the directory does not exist - so proceed.
+        }
+        RemoteFile libExtractDir = LibertyFileManager.createRemoteFile(server.getMachine(), server.getInstallRoot() + "/lib/extract");
+        libExtractDir.mkdirs();
+
+        JarFile libExtractJar = new JarFile("lib/LibertyFATTestFiles/wlp.lib.extract.jar");
+
+        for (Enumeration<JarEntry> entries = libExtractJar.entries(); entries.hasMoreElements();) {
+            JarEntry entry = entries.nextElement();
+            String entryName = entry.getName();
+
+            if ("wlp/".equals(entryName) || "wlp/lib/".equals(entryName) || "wlp/lib/extract/".equals(entryName)) {
+                continue;
+            }
+            File libExtractFile = new File(libExtractDir.getAbsolutePath() + "/" + entryName);
+
+            //Jar contains some contents in wlp/lib/extract folder. Copy those contents in libExtractDir directly.
+            if (entryName.startsWith("wlp/lib/extract")) {
+                libExtractFile = new File(libExtractDir.getAbsolutePath() + "/" + entryName.substring(entryName.lastIndexOf("extract/") + 8));
+            }
+
+            if (entryName.endsWith("/")) {
+                libExtractFile.mkdirs();
+            } else if (!entryName.endsWith("/")) {
+                writeFile(libExtractJar, entry, libExtractFile);
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Writes out a jar file
+     *
+     * @param jar
+     * @param entry
+     * @param file
+     * @throws IOException
+     * @throws FileNotFoundException
+     */
+    private static void writeFile(JarFile jar, JarEntry entry, File file) throws IOException, FileNotFoundException {
+        try (InputStream is = jar.getInputStream(entry)) {
+            try (FileOutputStream fos = new FileOutputStream(file)) {
+                byte[] buffer = new byte[4096];
+                int read = -1;
+                while ((read = is.read(buffer)) != -1) {
+                    fos.write(buffer, 0, read);
+                }
+            }
+        }
+    }
+
 }
