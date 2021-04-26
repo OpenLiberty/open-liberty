@@ -1,0 +1,83 @@
+<server>
+    <featureManager>
+    	<feature>user.feature.meta.inf.services-1.0</feature>
+        <feature>servlet-3.1</feature>
+        <feature>bells-1.0</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+
+ 	<library id="testImplClassNotConstructible" name="testImplClassNotConstructible" 
+	         description="testImplClassNotConstructible">
+        <fileset dir="${server.output.dir}/sharedLib" includes="testImplClassNotConstructible.jar" />
+    </library>
+
+    <bell libraryRef="testImplClassNotConstructible"/>
+
+    <library id="testImplClassNotFound" name="testImplClassNotFound" 
+             description="testImplClassNotFound">
+        <fileset dir="${server.output.dir}/sharedLib" includes="testImplClassNotFound.jar" />
+    </library>
+
+    <bell libraryRef="testImplClassNotFound"/>
+
+    <library id="testImplClassThrowsException" name="testImplClassThrowsException" 
+             description="testImplClassThrowsException">
+        <fileset dir="${server.output.dir}/sharedLib" includes="testImplClassThrowsException.jar" />
+    </library>
+
+    <bell libraryRef="testImplClassThrowsException"/>
+
+    <library id="testInterfaceClassNotFound" name="testInterfaceClassNotFound" 
+             description="testInterfaceClassNotFound">
+        <fileset dir="${server.output.dir}/sharedLib" includes="testInterfaceClassNotFound.jar" />
+    </library>
+
+    <bell libraryRef="testInterfaceClassNotFound"/>
+
+    <library id="testMultipleImplsOfSingleService" name="testMultipleImplsOfSingleService" 
+             description="testMultipleImplsOfSingleService">
+        <fileset dir="${server.output.dir}/sharedLib" includes="testMultipleImplsOfSingleService.jar" />
+    </library>
+
+    <bell libraryRef="testMultipleImplsOfSingleService"/>
+
+    <library id="testAllValidServices" name="testAllValidServices" 
+             description="testAllValidServices">
+        <fileset dir="${server.output.dir}/sharedLib" includes="testMultipleValidServices.jar" />
+    </library>
+
+    <bell libraryRef="testAllValidServices"/>
+    
+    <library id="testScopeValidServices" name="testScopeValidServices" 
+             description="testScopeValidServices">
+        <fileset dir="${server.output.dir}/sharedLib" includes="testMultipleValidServices.jar" />
+    </library>
+
+    <bell libraryRef="testScopeValidServices">
+        <service>com.ibm.ws.classloading.exporting.test.TestInterface2</service>
+    </bell>
+
+    <library id="testOneValidEntry" name="testOneValidEntry" 
+             description="testOneValidEntry">
+        <fileset dir="${server.output.dir}/sharedLib" includes="testOneValidEntry.jar" />
+    </library>
+
+    <bell libraryRef="testOneValidEntry"/>
+
+    <library id="testNoEntry" name="testNoEntry" 
+             description="testNoEntry">
+        <fileset dir="${server.output.dir}/sharedLib" includes="testNoEntry.jar" />
+    </library>
+
+    <bell libraryRef="testNoEntry"/>
+    
+    <library id="testReadingServicesFile" name="testReadingServicesFile" 
+             description="testReadingServicesFile">
+        <fileset dir="${server.output.dir}/sharedLib" includes="testReadingServicesFile.jar" />
+    </library>
+
+    <bell libraryRef="testReadingServicesFile"/>
+
+</server>
+
