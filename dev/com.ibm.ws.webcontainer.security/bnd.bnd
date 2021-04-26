@@ -115,8 +115,8 @@ instrument.classesExcludes: com/ibm/ws/webcontainer/security/resources/*.class
 	cglib:cglib-nodep;version=3.3.0, \
 	com.ibm.ws.junit.extensions;version=latest, \
 	com.ibm.ws.org.apache.httpcomponents;version=latest, \
-	commons-logging:commons-logging;version=1.1.1, \
-	commons-codec:commons-codec;version=1.14, \
+	io.openliberty.org.apache.commons.logging;version=latest, \
+	io.openliberty.org.apache.commons.codec;version=latest, \
 	com.ibm.ws.kernel.boot;version=latest, \
 	com.ibm.websphere.org.osgi.service.cm, \
 	com.ibm.ws.injection;version=latest, \

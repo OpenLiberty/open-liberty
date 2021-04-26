@@ -13,6 +13,7 @@ package com.ibm.ws.jndi.iiop;
 import static org.osgi.service.component.annotations.ConfigurationPolicy.IGNORE;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.BitSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -103,7 +104,7 @@ public class CorbanameUrlContextFactory extends UrlContextFactory implements Obj
             // * any of these: ; / : ? @ & = + $ , - _ . ! ~ * ’ ( )
             StringBuilder escaped = new StringBuilder(twoParts[0]).append("#");
             // since we must use an octet-based representation to URI-encode, convert the string into its UTF-8 bytes
-            for (byte b : sn.toString().getBytes(Charset.forName("UTF-8"))) {
+            for (byte b : sn.toString().getBytes(StandardCharsets.UTF_8)) {
                 if (ESCAPE_NOT_NEEDED.get(b)) {
                     escaped.append((char) b);
                 } else {

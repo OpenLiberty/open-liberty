@@ -13,6 +13,9 @@ package com.ibm.ws.rsadapter.impl;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.sql.Connection;
 import java.sql.SQLException; 
 import java.sql.SQLFeatureNotSupportedException;
@@ -101,7 +104,7 @@ public class DataDirectConnectSQLServerHelper extends DatabaseHelper {
     DataDirectConnectSQLServerHelper(WSManagedConnectionFactoryImpl mcf) {
         super(mcf);
 
-        dataStoreHelper = "com.ibm.websphere.rsadapter.ConnectJDBCDataStoreHelper";
+        dataStoreHelperClassName = "com.ibm.websphere.rsadapter.ConnectJDBCDataStoreHelper";
 
         mcf.defaultIsolationLevel = Connection.TRANSACTION_REPEATABLE_READ;
 
@@ -153,6 +156,9 @@ public class DataDirectConnectSQLServerHelper extends DatabaseHelper {
 
     @Override
     public boolean doConnectionCleanup(Connection conn) throws  SQLException {
+        if (dataStoreHelper != null)
+            return doConnectionCleanupLegacy(conn);
+
         final boolean trace = TraceComponent.isAnyTracingEnabled(); 
         if (trace && tc.isEntryEnabled())
             Tr.entry(this, tc, "doConnectionCleanup", AdapterUtil.toString(conn));
@@ -220,6 +226,11 @@ public class DataDirectConnectSQLServerHelper extends DatabaseHelper {
     @Override
     public void doStatementCleanup(java.sql.PreparedStatement stmt) throws SQLException
     {
+       if (dataStoreHelper != null) {
+           doStatementCleanupLegacy(stmt);
+           return;
+       }
+
        if (TraceComponent.isAnyTracingEnabled() &&  tc.isEntryEnabled()) 
            Tr.entry(this, tc, "doStatementCleanup", AdapterUtil.toString(stmt));  
 
@@ -352,6 +363,21 @@ public class DataDirectConnectSQLServerHelper extends DatabaseHelper {
 
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(this, tc, "isConnectionError", ex);
+
+        // Use the equivalent method on DataStoreHelper if possible.
+        if (dataStoreHelper != null)
+            try {
+                boolean stale = AccessController.doPrivileged((PrivilegedExceptionAction<Boolean>) () -> {
+                    return (Boolean) dataStoreHelper.getClass()
+                                    .getMethod("isConnectionError", SQLException.class)
+                                    .invoke(dataStoreHelper, ex);
+                });
+                if (isTraceOn && tc.isEntryEnabled())
+                    Tr.exit(this, tc, "isConnectionError", stale);
+                return stale;
+            } catch (PrivilegedActionException x) {
+                FFDCFilter.processException(x, getClass().getName(), "673", this);
+            }
 
         DSConfig config = mcf.dsConfig.get();
 

@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	version="2.5">
+
+	<servlet>
+		<servlet-name>AnnotatedJNDIMDBServlet</servlet-name>
+		<servlet-class>com.ibm.ws.jpa.fvt.injection.tests.mdb.jndi.AnnotatedJNDIMDBServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>DDJNDIMDBServlet</servlet-name>
+		<servlet-class>com.ibm.ws.jpa.fvt.injection.tests.mdb.jndi.DDJNDIMDBServlet</servlet-class>
+	</servlet>
+	
+	<servlet>
+		<servlet-name>DFIPkgNoInhMDBServlet</servlet-name>
+		<servlet-class>com.ibm.ws.jpa.fvt.injection.tests.mdb.dfi.noovrd.DFIPkgNoInhMDBServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>DFIPriNoInhMDBServlet</servlet-name>
+		<servlet-class>com.ibm.ws.jpa.fvt.injection.tests.mdb.dfi.noovrd.DFIPriNoInhMDBServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>DFIProNoInhMDBServlet</servlet-name>
+		<servlet-class>com.ibm.ws.jpa.fvt.injection.tests.mdb.dfi.noovrd.DFIProNoInhMDBServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>DFIPubNoInhMDBServlet</servlet-name>
+		<servlet-class>com.ibm.ws.jpa.fvt.injection.tests.mdb.dfi.noovrd.DFIPubNoInhMDBServlet</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>DFIPkgYesInhAnoOvrdMDBServlet</servlet-name>
+		<servlet-class>com.ibm.ws.jpa.fvt.injection.tests.mdb.dfi.anoovrd.DFIPkgYesInhAnoOvrdMDBServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>DFIPriYesInhAnoOvrdMDBServlet</servlet-name>
+		<servlet-class>com.ibm.ws.jpa.fvt.injection.tests.mdb.dfi.anoovrd.DFIPriYesInhAnoOvrdMDBServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>DFIProYesInhAnoOvrdMDBServlet</servlet-name>
+		<servlet-class>com.ibm.ws.jpa.fvt.injection.tests.mdb.dfi.anoovrd.DFIProYesInhAnoOvrdMDBServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>DFIPubYesInhAnoOvrdMDBServlet</servlet-name>
+		<servlet-class>com.ibm.ws.jpa.fvt.injection.tests.mdb.dfi.anoovrd.DFIPubYesInhAnoOvrdMDBServlet</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>DFIPkgYesInhDDOvrdMDBServlet</servlet-name>
+		<servlet-class>com.ibm.ws.jpa.fvt.injection.tests.mdb.dfi.ddovrd.DFIPkgYesInhDDOvrdMDBServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>DFIPriYesInhDDOvrdMDBServlet</servlet-name>
+		<servlet-class>com.ibm.ws.jpa.fvt.injection.tests.mdb.dfi.ddovrd.DFIPriYesInhDDOvrdMDBServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>DFIProYesInhDDOvrdMDBServlet</servlet-name>
+		<servlet-class>com.ibm.ws.jpa.fvt.injection.tests.mdb.dfi.ddovrd.DFIProYesInhDDOvrdMDBServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>DFIPubYesInhDDOvrdMDBServlet</servlet-name>
+		<servlet-class>com.ibm.ws.jpa.fvt.injection.tests.mdb.dfi.ddovrd.DFIPubYesInhDDOvrdMDBServlet</servlet-class>
+	</servlet>		
+	
+	
+	<servlet>
+		<servlet-name>DMIPkgNoInhMDBServlet</servlet-name>
+		<servlet-class>com.ibm.ws.jpa.fvt.injection.tests.mdb.dmi.noovrd.DMIPkgNoInhMDBServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>DMIPriNoInhMDBServlet</servlet-name>
+		<servlet-class>com.ibm.ws.jpa.fvt.injection.tests.mdb.dmi.noovrd.DMIPriNoInhMDBServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>DMIProNoInhMDBServlet</servlet-name>
+		<servlet-class>com.ibm.ws.jpa.fvt.injection.tests.mdb.dmi.noovrd.DMIProNoInhMDBServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>DMIPubNoInhMDBServlet</servlet-name>
+		<servlet-class>com.ibm.ws.jpa.fvt.injection.tests.mdb.dmi.noovrd.DMIPubNoInhMDBServlet</servlet-class>
+	</servlet>
+	
+    <servlet>
+		<servlet-name>DMIPkgYesInhAnoOvrdMDBServlet</servlet-name>
+		<servlet-class>com.ibm.ws.jpa.fvt.injection.tests.mdb.dmi.anoovrd.DMIPkgYesInhAnoOvrdMDBServlet</servlet-class>
+	</servlet>
+    <servlet>
+		<servlet-name>DMIPriYesInhAnoOvrdMDBServlet</servlet-name>
+		<servlet-class>com.ibm.ws.jpa.fvt.injection.tests.mdb.dmi.anoovrd.DMIPriYesInhAnoOvrdMDBServlet</servlet-class>
+	</servlet>	
+    <servlet>
+		<servlet-name>DMIProYesInhAnoOvrdMDBServlet</servlet-name>
+		<servlet-class>com.ibm.ws.jpa.fvt.injection.tests.mdb.dmi.anoovrd.DMIProYesInhAnoOvrdMDBServlet</servlet-class>
+	</servlet>
+    <servlet>
+		<servlet-name>DMIPubYesInhAnoOvrdMDBServlet</servlet-name>
+		<servlet-class>com.ibm.ws.jpa.fvt.injection.tests.mdb.dmi.anoovrd.DMIPubYesInhAnoOvrdMDBServlet</servlet-class>
+	</servlet>
+
+    <servlet>
+		<servlet-name>DMIPkgYesInhDDOvrdMDBServlet</servlet-name>
+		<servlet-class>com.ibm.ws.jpa.fvt.injection.tests.mdb.dmi.ddovrd.DMIPkgYesInhDDOvrdMDBServlet</servlet-class>
+	</servlet>
+    <servlet>
+		<servlet-name>DMIPriYesInhDDOvrdMDBServlet</servlet-name>
+		<servlet-class>com.ibm.ws.jpa.fvt.injection.tests.mdb.dmi.ddovrd.DMIPriYesInhDDOvrdMDBServlet</servlet-class>
+	</servlet>
+    <servlet>
+		<servlet-name>DMIProYesInhDDOvrdMDBServlet</servlet-name>
+		<servlet-class>com.ibm.ws.jpa.fvt.injection.tests.mdb.dmi.ddovrd.DMIProYesInhDDOvrdMDBServlet</servlet-class>
+	</servlet>
+    <servlet>
+		<servlet-name>DMIPubYesInhDDOvrdMDBServlet</servlet-name>
+		<servlet-class>com.ibm.ws.jpa.fvt.injection.tests.mdb.dmi.ddovrd.DMIPubYesInhDDOvrdMDBServlet</servlet-class>
+	</servlet>
+
+
+	
+	<servlet-mapping>
+		<servlet-name>AnnotatedJNDIMDBServlet</servlet-name>
+		<url-pattern>/AnnotatedJNDIMDBServlet</url-pattern>
+	</servlet-mapping>
+    <servlet-mapping>
+		<servlet-name>DDJNDIMDBServlet</servlet-name>
+		<url-pattern>/DDJNDIMDBServlet</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>DFIPkgNoInhMDBServlet</servlet-name>
+		<url-pattern>/DFIPkgNoInhMDBServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>DFIPriNoInhMDBServlet</servlet-name>
+		<url-pattern>/DFIPriNoInhMDBServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>DFIProNoInhMDBServlet</servlet-name>
+		<url-pattern>/DFIProNoInhMDBServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>DFIPubNoInhMDBServlet</servlet-name>
+		<url-pattern>/DFIPubNoInhMDBServlet</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>DFIPkgYesInhAnoOvrdMDBServlet</servlet-name>
+		<url-pattern>/DFIPkgYesInhAnoOvrdMDBServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>DFIPriYesInhAnoOvrdMDBServlet</servlet-name>
+		<url-pattern>/DFIPriYesInhAnoOvrdMDBServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>DFIProYesInhAnoOvrdMDBServlet</servlet-name>
+		<url-pattern>/DFIProYesInhAnoOvrdMDBServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>DFIPubYesInhAnoOvrdMDBServlet</servlet-name>
+		<url-pattern>/DFIPubYesInhAnoOvrdMDBServlet</url-pattern>
+	</servlet-mapping>	
+
+	<servlet-mapping>
+		<servlet-name>DFIPkgYesInhDDOvrdMDBServlet</servlet-name>
+		<url-pattern>/DFIPkgYesInhDDOvrdMDBServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>DFIPriYesInhDDOvrdMDBServlet</servlet-name>
+		<url-pattern>/DFIPriYesInhDDOvrdMDBServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>DFIProYesInhDDOvrdMDBServlet</servlet-name>
+		<url-pattern>/DFIProYesInhDDOvrdMDBServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>DFIPubYesInhDDOvrdMDBServlet</servlet-name>
+		<url-pattern>/DFIPubYesInhDDOvrdMDBServlet</url-pattern>
+	</servlet-mapping>	
+
+	
+	<servlet-mapping>
+		<servlet-name>DMIPkgNoInhMDBServlet</servlet-name>
+		<url-pattern>/DMIPkgNoInhMDBServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>DMIPriNoInhMDBServlet</servlet-name>
+		<url-pattern>/DMIPriNoInhMDBServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>DMIProNoInhMDBServlet</servlet-name>
+		<url-pattern>/DMIProNoInhMDBServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>DMIPubNoInhMDBServlet</servlet-name>
+		<url-pattern>/DMIPubNoInhMDBServlet</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>DMIPkgYesInhAnoOvrdMDBServlet</servlet-name>
+		<url-pattern>/DMIPkgYesInhAnoOvrdMDBServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>DMIPriYesInhAnoOvrdMDBServlet</servlet-name>
+		<url-pattern>/DMIPriYesInhAnoOvrdMDBServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>DMIProYesInhAnoOvrdMDBServlet</servlet-name>
+		<url-pattern>/DMIProYesInhAnoOvrdMDBServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>DMIPubYesInhAnoOvrdMDBServlet</servlet-name>
+		<url-pattern>/DMIPubYesInhAnoOvrdMDBServlet</url-pattern>
+	</servlet-mapping>	
+
+	<servlet-mapping>
+		<servlet-name>DMIPkgYesInhDDOvrdMDBServlet</servlet-name>
+		<url-pattern>/DMIPkgYesInhDDOvrdMDBServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>DMIPriYesInhDDOvrdMDBServlet</servlet-name>
+		<url-pattern>/DMIPriYesInhDDOvrdMDBServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>DMIProYesInhDDOvrdMDBServlet</servlet-name>
+		<url-pattern>/DMIProYesInhDDOvrdMDBServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>DMIPubYesInhDDOvrdMDBServlet</servlet-name>
+		<url-pattern>/DMIPubYesInhDDOvrdMDBServlet</url-pattern>
+	</servlet-mapping>	
+
+
+
+</web-app>

@@ -53,11 +53,16 @@ import org.apache.james.mime4j.stream.BodyDescriptorBuilder;
 import org.apache.james.mime4j.stream.MimeConfig;
 import org.jboss.resteasy.microprofile.config.ResteasyConfigProvider;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+
 /**
  * Copy code from org.apache.james.mime4j.message.DefaultMessageBuilder.parseMessage().
  * Alter said code to use Mime4JWorkaroundBinaryEntityBuilder instead of EntityBuilder.
  */
 public class Mime4JWorkaround {
+    private static final TraceComponent tc = Tr.register(Mime4JWorkaround.class);
+    private static final String MEM_THRESHOLD_PROPERTY = "org.jboss.resteasy.plugins.providers.multipart.memoryThreshold";
     /**
      * This is a rough copy of DefaultMessageBuilder.parseMessage() modified to use a Mime4JWorkaround as the contentHandler instead
      * of an EntityBuilder.
@@ -82,7 +87,7 @@ public class Mime4JWorkaround {
                 storageProvider = DefaultStorageProvider.getInstance();
             } else {
                 StorageProvider backend = new CustomTempFileStorageProvider();
-                storageProvider = new ThresholdStorageProvider(backend, 1024);
+                storageProvider = new ThresholdStorageProvider(backend, getMemThreshold()); // Liberty change - getMemThreshold() instead of hardcoded 1024
             }
             BodyFactory bf = new StorageBodyFactory(storageProvider, mon);
 
@@ -100,6 +105,29 @@ public class Mime4JWorkaround {
         }
     }
 
+    // Liberty change start - adding configurable memory threshold
+    private static int getMemThreshold() {
+        //int threshold = 1024;
+        try {
+            int threshold = Integer.parseInt(
+                ResteasyConfigProvider.getConfig()
+                                      .getOptionalValue(MEM_THRESHOLD_PROPERTY, String.class)
+                                      .orElse("1024"));
+            if (threshold > -1) {
+                return threshold;
+            }
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Memory attachment threshold is configured to negative number (" + threshold
+                         + ") - using default 1024 instead");
+            }
+        } catch (Exception e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Caught exception reading configuration for " + MEM_THRESHOLD_PROPERTY, e);
+            }
+        }
+        return 1024;
+    }
+    // Liberty change end
 
     /**
      * A custom TempFileStorageProvider that do no set deleteOnExit on temp files,

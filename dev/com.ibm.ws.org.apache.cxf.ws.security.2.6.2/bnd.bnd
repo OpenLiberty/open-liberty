@@ -43,6 +43,7 @@ instrument.classesIncludes: \
     com.ibm.ws.org.apache.cxf.cxf.rt.core.2.6.2;version=latest, \
     com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.2.6.2;version=latest, \
     com.ibm.ws.org.opensaml.opensaml.2.6.1;version=latest, \
+    com.ibm.ws.org.opensaml.xmltooling.1.4.4;version=latest, \
     com.ibm.ws.org.apache.ws.security.wss4j.1.6.7;version=latest, \
     com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.2.6.2;version=latest, \
     com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.2.6.2;version=latest, \

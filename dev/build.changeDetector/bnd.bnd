@@ -23,7 +23,7 @@ test.project: true
 -buildpath: \
   com.ibm.websphere.javaee.jsonp.1.1;version=latest,\
   com.ibm.ws.org.apache.aries.util;version=latest,\
-  com.ibm.ws.org.apache.commons.logging.1.0.3;version=latest,\
+  io.openliberty.org.apache.commons.logging;version=latest,\
   com.ibm.ws.org.apache.httpcomponents;version=latest,\
   com.ibm.ws.org.glassfish.json.1.1;version=latest,\
   com.ibm.ws.kernel.feature;version=latest,\

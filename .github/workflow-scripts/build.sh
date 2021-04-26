@@ -12,11 +12,13 @@
 cd dev
 chmod +x gradlew
 
+# global variables
+OUTPUT_FILE=tmp/gradle.log && mkdir -p -- "$(dirname -- "$OUTPUT_FILE")" && touch -- "$OUTPUT_FILE"
+
 echo "::group::Building Liberty.  This will take approx. 30 minutes"
 
 #Initalize, assemble, and redirect output to a gradle.log file
-mkdir tmp && touch tmp/gradle.log
-./gradlew cnf:initialize assemble &> tmp/gradle.log
+./gradlew cnf:initialize assemble &> $OUTPUT_FILE
 
 echo "::endgroup::"
 

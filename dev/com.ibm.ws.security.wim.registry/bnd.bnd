@@ -33,6 +33,7 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 instrument.classesExcludes: com/ibm/ws/security/wim/registry/util/resources/*.class
 
 -buildpath: \
+	com.ibm.ws.security;version=latest,\
 	com.ibm.ws.security.wim.core;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.websphere.org.osgi.service.component;version=latest,\

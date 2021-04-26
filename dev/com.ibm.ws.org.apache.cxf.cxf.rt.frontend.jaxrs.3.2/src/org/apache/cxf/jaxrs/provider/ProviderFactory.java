@@ -121,6 +121,75 @@ public abstract class ProviderFactory {
     private static final String PROVIDER_CACHE_ALLOWED = "org.apache.cxf.jaxrs.provider.cache.allowed";
     private static final String PROVIDER_CACHE_CHECK_ALL = "org.apache.cxf.jaxrs.provider.cache.checkAllCandidates";
 
+    // Liberty start:  The following code was added with CXF 3.4.3 but causes potential issues for Liberty and
+    // is therefore commented out.
+ /*   static class LazyProviderClass {
+        // class to Lazily call the ClassLoaderUtil.loadClass, but do it once
+        // and cache the result.  Then use the class to create instances as needed.
+        // This avoids calling loadClass every time a factory is initialized as
+        // calling loadClass is super expensive, particularly if the class
+        // cannot be found and particularly in osgi where the search is very complex.
+        // This would record that the class is not found and prevent future
+        // searches.
+        final String className;
+        volatile boolean initialized;
+        Class<?> cls;
+
+        LazyProviderClass(String cn) {
+            className = cn;
+        }
+
+        synchronized void loadClass() {
+            if (!initialized) {
+                try {
+                    cls = ClassLoaderUtils.loadClass(className, ProviderFactory.class);
+                } catch (final Throwable ex) {
+				    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, className + " not available, skipping");
+				    }  
+                }
+                initialized = true;
+            }
+        }
+
+        public Object tryCreateInstance(Bus bus) {
+            if (!initialized) {
+                loadClass();
+            }
+            if (cls != null) {
+                try {
+                    for (Constructor<?> c : cls.getConstructors()) {
+                        if (c.getParameterTypes().length == 1 && c.getParameterTypes()[0] == Bus.class) {
+                            return c.newInstance(bus);
+                        }
+                    }
+                    return cls.newInstance();
+                } catch (Throwable ex) {
+                    String message = "Problem with creating the provider " + className;
+                    if (ex.getMessage() != null) {
+                        message += ": " + ex.getMessage();
+                    } else {
+                        message += ", exception class : " + ex.getClass().getName();
+                    }
+ 				    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, message);
+				    }  
+                }
+            }
+            return null;
+        }
+    };
+
+    private static final LazyProviderClass DATA_SOURCE_PROVIDER_CLASS =
+        new LazyProviderClass("org.apache.cxf.jaxrs.provider.DataSourceProvider");
+    private static final LazyProviderClass JAXB_PROVIDER_CLASS =
+        new LazyProviderClass(JAXB_PROVIDER_NAME);
+    private static final LazyProviderClass JAXB_ELEMENT_PROVIDER_CLASS =
+        new LazyProviderClass("org.apache.cxf.jaxrs.provider.JAXBElementTypedProvider");
+    private static final LazyProviderClass MULTIPART_PROVIDER_CLASS =
+        new LazyProviderClass("org.apache.cxf.jaxrs.provider.MultipartProvider");
+*/
+    //Liberty end
     protected Map<NameKey, ProviderInfo<ReaderInterceptor>> readerInterceptors =
         new NameKeyMap<>(true);
     protected Map<NameKey, ProviderInfo<WriterInterceptor>> writerInterceptors =
@@ -193,20 +262,21 @@ public abstract class ProviderFactory {
                              false,
                      new BinaryDataProvider<Object>(),
                      new SourceProvider<Object>(),
-                     //tryCreateInstance("org.apache.cxf.jaxrs.provider.DataSourceProvider"),
+                     //DATA_SOURCE_PROVIDER_CLASS.tryCreateInstance(factory.getBus()),
                      new DataSourceProvider<Object>(), // Liberty change - tryCreateInstance changes behavior
                      new FormEncodingProvider<Object>(),
                      new StringTextProvider(),
                      new PrimitiveTextProvider<Object>(),
-                     //tryCreateInstance(JAXB_PROVIDER_NAME),
+                     //JAXB_PROVIDER_CLASS.tryCreateInstance(factory.getBus()),
                      new JAXBElementProvider<Object>(), // Liberty change - tryCreateInstance changes behavior
-                     //tryCreateInstance("org.apache.cxf.jaxrs.provider.JAXBElementTypedProvider"),
+                     //JAXB_ELEMENT_PROVIDER_CLASS.tryCreateInstance(factory.getBus()),
                      new JAXBElementTypedProvider(), // Liberty change - tryCreateInstance changes behavior
                      createJsonpProvider(), // Liberty Change for CXF Begin
                      createJsonBindingProvider(factory.contextResolvers),
                      new IBMMultipartProvider(), // Liberty Change for CXF End
-                     //tryCreateInstance("org.apache.cxf.jaxrs.provider.MultipartProvider"));
+                     //MULTIPART_PROVIDER_CLASS.tryCreateInstance(factory.getBus()));
                      new MultipartProvider());// Liberty change - tryCreateInstance changes behavior
+        
         // Liberty change begin
         // Liberty sets JSON providers above and does not ship the CXF JSONProvider
         /*Object prop = factory.getBus().getProperty("skip.default.json.provider.registration");
@@ -214,21 +284,6 @@ public abstract class ProviderFactory {
             factory.setProviders(false, false, createProvider(JSON_PROVIDER_NAME, factory.getBus()));
         }*/
         // Liberty change end
-    }
-
-    protected static Object tryCreateInstance(final String className) {
-        try {
-            final Class<?> cls = ClassLoaderUtils.loadClass(className, ProviderFactory.class);
-            return cls.getConstructor().newInstance();
-        } catch (final Throwable ex) {
-            // Liberty change start
-            //LOG.fine(className + " not available, skipping");
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "className not available, skipping", ex);
-            }
-            // Liberty change end
-        }
-        return null;
     }
 
     @FFDCIgnore(value = { Throwable.class }) // Liberty Change
@@ -577,7 +632,7 @@ public abstract class ProviderFactory {
                                                       m);
         int size = readerInterceptors.size();
         if (mr != null || size > 0) {
-            ReaderInterceptor mbrReader = new ReaderInterceptorMBR(mr, m.getExchange().getInMessage());
+            ReaderInterceptor mbrReader = new ReaderInterceptorMBR(mr, getResponseMessage(m));
 
             List<ReaderInterceptor> interceptors = null;
             if (size > 0) {
@@ -1657,6 +1712,14 @@ private final Map<MessageBodyReader<?>, List<MediaType>> readerMediaTypesMap = n
         return new ProviderInfo<Object>(instance, proxies, theBus, checkContexts, custom);
     }
 
+    private Message getResponseMessage(Message message) {
+        Message responseMessage = message.getExchange().getInMessage();
+        if (responseMessage == null) {
+            responseMessage = message.getExchange().getInFaultMessage();
+        }
+
+        return responseMessage;
+    }
 
     protected static class NameKey {
         private String name;

@@ -3,6 +3,4 @@ com.ibm.ws.jpa.container.ormdiagnostics_3.0_fat
 com.ibm.ws.jpa_22_fat
 com.ibm.ws.jpa_30_fat
 com.ibm.ws.jpa_eclipselink_fat
-com.ibm.ws.jpa_locking_fat
 com.ibm.ws.jpa_ol_fat
-com.ibm.ws.jpa_spec10_injection_fat

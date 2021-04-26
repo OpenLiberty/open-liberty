@@ -44,7 +44,7 @@ generate.replacement: true
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
-	com.ibm.ws.org.apache.commons.codec.1.4;version=latest,\
+	io.openliberty.org.apache.commons.codec;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.componenttest:public.api;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
@@ -87,14 +87,14 @@ generate.replacement: true
     net.sourceforge.htmlunit:webdriver;version=2.6,\
     org.seleniumhq.webdriver:webdriver-common;version=0.9.7376,\
     org.brotli:dec;version=0.1.2,\
-    commons-io:commons-io;version=2.6,\
+    com.ibm.ws.org.apache.commons.io;version=latest, \
     net.sourceforge.htmlunit:htmlunit-core-js;version=2.44.0, \
     net.sourceforge.htmlunit:neko-htmlunit;strategy=exact;version=2.44.0, \
     org.apache.commons:commons-lang3;version=3.8, \
-    commons-codec:commons-codec;version=1.6, \
+    io.openliberty.org.apache.commons.codec;version=latest, \
     org.eclipse.birt.runtime:org.w3c.css.sac;version=1.3.1.v200903091627, \
     org.eclipse.birt.runtime.3_7_1:org.apache.xml.serializer;version=2.7.1, \
-    commons-logging:commons-logging;version=1.1.3, \
+    io.openliberty.org.apache.commons.logging;version=latest, \
     xalan:xalan;version=2.7.1, \
     xml-apis:xml-apis;version=1.4.01, \
     xerces:xercesImpl;version=2.11.0

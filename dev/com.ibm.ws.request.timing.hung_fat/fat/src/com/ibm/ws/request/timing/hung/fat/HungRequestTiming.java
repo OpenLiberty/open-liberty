@@ -47,6 +47,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
@@ -64,8 +65,14 @@ public class HungRequestTiming {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        JavaInfo java = JavaInfo.forCurrentVM();
         ShrinkHelper.defaultDropinApp(server, "TestWebApp", "com.ibm.testwebapp");
-        CommonTasks.writeLogMsg(Level.INFO, " starting server..");
+        int javaVersion = java.majorVersion();
+        if (javaVersion != 8) {
+            CommonTasks.writeLogMsg(Level.INFO, " Java version = " + javaVersion + " - It is higher than 8, adding --add-exports...");
+            server.copyFileToLibertyServerRoot("add-exports/jvm.options");
+        }
+        CommonTasks.writeLogMsg(Level.INFO, " starting server...");
         server.startServer();
     }
 

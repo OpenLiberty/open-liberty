@@ -16,7 +16,7 @@
 
 -buildpath: \
     org.eclipse.transformer:org.eclipse.transformer.cli;version=0.2.0,\
-    biz.aQute.bnd:biz.aQute.bnd.transform;version=5.1.1,\
+    biz.aQute.bnd:biz.aQute.bnd.transform;version=5.3.0,\
     org.slf4j:slf4j-api;version=1.7.26,\
     org.eclipse.transformer:org.eclipse.transformer;version=0.2.0,\
     commons-cli:commons-cli;version=1.4,\

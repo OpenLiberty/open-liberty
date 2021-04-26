@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This file is an EXAMPLE metadata configuration file. -->
+<MetadataProvider id="ShibbolethMetadata" xsi:type="ChainingMetadataProvider"
+    xmlns="urn:mace:shibboleth:2.0:metadata"
+    xmlns:resource="urn:mace:shibboleth:2.0:resource"
+    xmlns:security="urn:mace:shibboleth:2.0:security"
+    xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="urn:mace:shibboleth:2.0:metadata http://shibboleth.net/schema/idp/shibboleth-metadata.xsd
+                        urn:mace:shibboleth:2.0:resource http://shibboleth.net/schema/idp/shibboleth-resource.xsd 
+                        urn:mace:shibboleth:2.0:security http://shibboleth.net/schema/idp/shibboleth-security.xsd
+                        urn:oasis:names:tc:SAML:2.0:metadata http://docs.oasis-open.org/security/saml/v2.0/saml-schema-metadata-2.0.xsd">
+                        
+    <!-- ========================================================================================== -->
+    <!--                             Metadata Configuration                                         -->
+    <!--                                                                                            -->
+    <!--  Below you place the mechanisms which define how to load the metadata for SP(s) you will   -->
+    <!--  provide service to.                                                                       -->
+    <!--                                                                                            -->
+    <!--  Two examples are provided.  The Shibboleth Documentation at                               -->
+    <!--  https://wiki.shibboleth.net/confluence/display/IDP30/MetadataConfiguration                -->
+    <!--  provides more details.                                                                    --> 
+    <!--                                                                                            -->
+    <!--  NOTE.  This file SHOULD NOT contain the metadata for this IdP.                            -->
+    <!-- ========================================================================================== -->
+
+    <!--
+    Example HTTP metadata provider.  Use this if you want to download the metadata
+    from a remote source.
+
+    You *MUST* provide the SignatureValidationFilter in order to function securely.
+    Get the public key certificate from the party publishing the metadata, and validate
+    it with them via some out of band mechanism (e.g., a fingerprint on a secure page).
+
+    The EntityRoleWhiteList saves memory by only loading metadata from SAML roles
+    that the IdP needs to interoperate with. 
+    -->
+    
+    <!--
+    <MetadataProvider id="HTTPMetadata"
+                      xsi:type="FileBackedHTTPMetadataProvider"
+                      backingFile="%{idp.home}/metadata/localCopyFromXYZHTTP.xml"
+                      metadataURL="http://WHATEVER"> 
+        
+        <MetadataFilter xsi:type="SignatureValidation" certificateFile="%{idp.home}/credentials/metaroot.pem" />
+        <MetadataFilter xsi:type="RequiredValidUntil" maxValidityInterval="P30D"/>
+        <MetadataFilter xsi:type="EntityRoleWhiteList">
+            <RetainedRole>md:SPSSODescriptor</RetainedRole>
+        </MetadataFilter>
+    </MetadataProvider>
+    -->   
+
+    <!--
+    Example file metadata provider.  Use this if you want to load metadata
+    from a local file.  You might use this if you have some local SPs
+    which are not "federated" but you wish to offer a service to.
+    
+    If you do not provide a SignatureValidation filter, then you have the
+    responsibility to ensure that the contents on disk are trustworthy.
+    -->
+    
+    <!--
+    <MetadataProvider id="LocalMetadata"  xsi:type="FilesystemMetadataProvider" metadataFile="PATH_TO_YOUR_METADATA"/>
+    <MetadataProvider id="LocalMetadata"  xsi:type="FilesystemMetadataProvider" metadataFile="c:/opt/shibboleth-idp/metadata/spMetadata.xml"/>
+    <MetadataProvider id="LocalMetadata"  xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/spMetadata.xml"/>
+	-->
+<!--   -->     
+<MetadataProvider id="chain" xsi:type="ChainingMetadataProvider">
+    <MetadataProvider id="spMetadata1" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/sp1Metadata.xml"/>
+    <MetadataProvider id="spMetadata1s2" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/sp1s2Metadata.xml"/>
+    <MetadataProvider id="spMetadata1ReqSigned" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/sp1ReqSignedMetadata.xml"/>
+    <MetadataProvider id="spMetadata1NotSigned" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/sp1NotSignedMetadata.xml"/>
+    <MetadataProvider id="spMetadata2" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/sp2Metadata.xml"/>
+    <MetadataProvider id="spMetadata5" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/sp5Metadata.xml"/>
+    <MetadataProvider id="spMetadata13" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/sp13Metadata.xml"/>
+    <MetadataProvider id="spMetadata50" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/sp50Metadata.xml"/>
+    <MetadataProvider id="spMetadataDefaultSP" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/defaultSPMetadata.xml"/>
+    <MetadataProvider id="spMetadata_enc_aes128" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/sp_enc_aes128Metadata.xml"/>
+    <MetadataProvider id="spMetadata_enc_aes256" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/sp_enc_aes256Metadata.xml"/>
+    <MetadataProvider id="spMetadata_enc_aes192" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/sp_enc_aes192Metadata.xml"/>
+    <MetadataProvider id="spMetadata_enc_aes256_mismatch" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/sp_enc_aes256MisMatchMetadata.xml"/>
+    <MetadataProvider id="spMetadata_OAuth01" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/spOAuth01Metadata.xml"/>
+    <MetadataProvider id="spMetadata_dash" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/spDashMetadata.xml"/>
+    <MetadataProvider id="spMetadata_OP" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/spOPMetadata.xml"/>
+    <MetadataProvider id="spMetadata_underscore" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/spUnderscoreMetadata.xml"/>
+	<MetadataProvider id="spMetadataNameIdCustomize" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/spNameIDCustomizeMetaData.xml"/>
+	<MetadataProvider id="spMetadataNameIdEncrypted" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/spNameIDEncryptedMetaData.xml"/>
+	<MetadataProvider id="spMetadataNameIdEntity" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/spNameIDEntityMetaData.xml"/>
+	<MetadataProvider id="spMetadataNameIdKerberos" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/spNameIDKerberosMetaData.xml"/>
+	<MetadataProvider id="spMetadataNameIdPersistent" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/spNameIDPersistentMetaData.xml"/>
+	<MetadataProvider id="spMetadataNameIdTransient" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/spNameIDTransientMetaData.xml"/>
+	<MetadataProvider id="spMetadataNameIdWindowsDomain" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/spNameIDWindowsDomainMetaData.xml"/>
+	<MetadataProvider id="spMetadataNameIdX590SubjectName" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/spNameIDX509SubjectNameMetaData.xml"/>
+    <MetadataProvider id="spMetadataabsExternalURL" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/customLogout_absExternalURLMetadata.xml"/>
+    <MetadataProvider id="spMetadataabsLocalURL" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/customLogout_absLocalURLMetadata.xml"/>
+    <MetadataProvider id="spMetadataemptyString" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/customLogout_emptyStringMetadata.xml"/>
+    <MetadataProvider id="spMetadatainvalidRelativePath" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/customLogout_invalidRelativePathMetadata.xml"/>
+    <MetadataProvider id="spMetadatainvalidURL" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/customLogout_invalidURLMetadata.xml"/>
+	<MetadataProvider id="spMetadatarelativePath" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/customLogout_relativePathMetadata.xml"/>
+	<MetadataProvider id="spMetadata1server2" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/server2sp1Metadata.xml"/>
+	<MetadataProvider id="spMetadata2server2" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/server2sp2Metadata.xml"/>
+	<MetadataProvider id="spShortLifetime" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/spShortLifetimeMetadata.xml"/>
+</MetadataProvider>  
+<!--   --> 
+</MetadataProvider>

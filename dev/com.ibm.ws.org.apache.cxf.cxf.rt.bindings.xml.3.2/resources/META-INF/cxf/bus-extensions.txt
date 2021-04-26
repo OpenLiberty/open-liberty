@@ -1,2 +1,3 @@
 org.apache.cxf.binding.xml.XMLBindingFactory::true
 org.apache.cxf.binding.xml.wsdl11.XMLWSDLExtensionLoader::true:true
+

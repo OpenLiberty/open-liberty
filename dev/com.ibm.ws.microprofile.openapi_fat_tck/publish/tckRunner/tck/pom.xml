@@ -13,7 +13,7 @@
     <properties>
         <microprofile.openapi.version>1.0.1</microprofile.openapi.version>
         <surefire.version>2.17</surefire.version> <!-- Any changes to the surefire version must be tested against ZOS -->
-        <arquillian.version>1.1.13.Final</arquillian.version>
+        <arquillian.version>1.3.0.Final</arquillian.version>
         <arquillian-wlp.version>1.0.0.Final-SNAPSHOT</arquillian-wlp.version>
 
         <suiteXmlFile>${defaultSuiteFiles}</suiteXmlFile>
@@ -88,7 +88,7 @@
         <dependency>
             <groupId>org.jboss.arquillian.testng</groupId>
             <artifactId>arquillian-testng-container</artifactId>
-            <version>${arquillian.version}</version>
+            <version>1.1.14.Final</version>
             <scope>test</scope>
         </dependency>
         <dependency>

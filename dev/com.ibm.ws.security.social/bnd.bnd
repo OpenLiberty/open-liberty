@@ -19,9 +19,9 @@ Bundle-Description: Liberty Security Social Media, version=${bVersion}
 # Generate an Jakarta EE compliant JAR for the bundle.
 #
 jakartaeeMe: true
-#jakartaee.transform.jar.name=io.openliberty.security.social.jar
+#jakartaee.transform.jar.name=io.openliberty.security.social.internal.jar
 #JakartaEE-Bundle-Name: Liberty Security Social Media 1.0 
-#JakartaEE-Bundle-Symbolic-Name: io.openliberty.security.social
+#JakartaEE-Bundle-Symbolic-Name: io.openliberty.security.social.internal
 #JakartaEE-Bundle-Description: Liberty Security Social Media, version=${bVersion}
 #JakartaEE-Bundle-Version:
 
@@ -140,7 +140,7 @@ Include-Resource: \
 	com.ibm.ws.crypto.passwordutil;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\
 	com.ibm.ws.logging;version=latest,\
-	com.ibm.ws.org.apache.commons.codec;version=latest,\
+	io.openliberty.org.apache.commons.codec;version=latest,\
 	com.ibm.ws.org.apache.httpcomponents;version=latest,\
 	com.ibm.ws.org.jose4j;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
@@ -173,7 +173,7 @@ Include-Resource: \
     fattest.simplicity;version=latest, \
     com.ibm.ws.security.test.common;version=latest, \
     com.ibm.json4j;version=latest, \
-    commons-logging:commons-logging;version=1.1.3, \
+    io.openliberty.org.apache.commons.logging;version=latest, \
     com.ibm.ws.security.registry;version=latest, \
     com.ibm.ws.kernel.boot.logging;version=latest, \
     com.ibm.ws.kernel.security.thread;version=latest, \

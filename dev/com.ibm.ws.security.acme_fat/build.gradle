@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,7 @@ configurations {
 
 dependencies {
   requiredLibs project(':com.ibm.ws.org.apache.httpcomponents'),
-               'commons-logging:commons-logging:1.1.1',
+               project(':io.openliberty.org.apache.commons.logging'),
                'org.shredzone.acme4j:acme4j-client:2.7',
                'org.shredzone.acme4j:acme4j-utils:2.7',
                project(':com.ibm.ws.security.acme'),
@@ -25,15 +25,16 @@ dependencies {
   runPebble    'net.java.dev.jna:jna:5.2.0',
                'org.rnorth.visible-assertions:visible-assertions:2.1.2',
                'org.apache.commons:commons-compress:1.20',
-               'commons-logging:commons-logging:1.1.1'
+               project(':io.openliberty.org.apache.commons.logging')
                
   runBoulder   'net.java.dev.jna:jna:5.2.0',
                'org.rnorth.visible-assertions:visible-assertions:2.1.2',
                'org.apache.commons:commons-compress:1.20',
-               'commons-logging:commons-logging:1.1.1'
+               project(':io.openliberty.org.apache.commons.logging')
 }
 
 addRequiredLibraries.dependsOn addTestcontainers
+addRequiredLibraries.dependsOn addJakartaTransformer
 
 autoFVT.doLast {
   /*

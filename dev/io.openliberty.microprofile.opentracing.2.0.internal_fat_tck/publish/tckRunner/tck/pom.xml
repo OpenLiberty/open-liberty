@@ -94,7 +94,7 @@
         <dependency>
             <groupId>org.jboss.arquillian.testng</groupId>
             <artifactId>arquillian-testng-container</artifactId>
-            <version>${arquillian.version}</version>
+            <version>1.1.14.Final</version>
         </dependency>
 
         <dependency>

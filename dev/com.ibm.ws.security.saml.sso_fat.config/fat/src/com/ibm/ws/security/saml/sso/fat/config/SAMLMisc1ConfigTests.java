@@ -309,11 +309,23 @@ public class SAMLMisc1ConfigTests extends SAMLConfigCommonTests {
         List<validationData> expectations = vData.addSuccessStatusCodes();
         expectations = vData.addExpectation(expectations, SAMLConstants.PERFORM_IDP_LOGIN, SAMLConstants.RESPONSE_TITLE, SAMLConstants.STRING_CONTAINS, "Did not get a SAML Post Response instead of the IDP login page", null, cttools.getResponseTitle(updatedTestSettings.getIdpRoot()));
         expectations = vData.addExpectation(expectations, SAMLConstants.PERFORM_IDP_LOGIN, SAMLConstants.SAML_POST_TOKEN, SAMLConstants.STRING_CONTAINS, "SAML Token did not contain expected values", null, null);
-
         IDP_initiated_SAML(_testName, updatedTestSettings, SAMLConstants.IDP_INITIATED_FLOW, helpers.setDefaultGoodSAMLIDPInitiatedExpectations(updatedTestSettings));
+
+        // We test with multiple versions of Java - We need to test with Shibboleth version 3.3.1 with Java < 10 and version 4.1.0 with Java > 10
+        // Shibboleth changed the order that they check the AuthenticationContext - when using 3.3.1, we have to authenticate and invoke ACS with the response before we see the failure.
+        // When using 4.1.0, we get the failure on the initial request - updating the test case to handle the different behavior.
+        String[] spFlow = null;
+        String failingStep = null;
+        if (System.getProperty("java.specification.version").matches("1\\.[789]")) {
+            spFlow = SAMLConstants.SOLICITED_SP_INITIATED_FLOW;
+            failingStep = SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE;
+        } else {
+            spFlow = SAMLConstants.SOLICITED_SP_INITIATED_FLOW_ONLY_SP;
+            failingStep = SAMLConstants.BUILD_POST_SP_INITIATED_REQUEST;
+        }
         updatedTestSettings.setSamlTokenValidationData(updatedTestSettings.getSamlTokenValidationData().getNameId(), updatedTestSettings.getSamlTokenValidationData().getIssuer(), updatedTestSettings.getSamlTokenValidationData().getInResponseTo(), SAMLConstants.BAD_TOKEN_EXCHANGE, updatedTestSettings.getSamlTokenValidationData().getEncryptionKeyUser(), updatedTestSettings.getSamlTokenValidationData().getRecipient(), SAMLConstants.AES256);
-        expectations = helpers.addMessageExpectation(testSAMLServer, expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_MESSAGES_LOG, SAMLConstants.STRING_CONTAINS, "The IDP did NOT return an error status code to the SP", SAMLMessageConstants.CWWKS5008E_STATUS_CODE_NOT_SUCCESS);
-        solicited_SP_initiated_SAML(_testName, updatedTestSettings, SAMLConstants.SOLICITED_SP_INITIATED_FLOW, expectations);
+        expectations = helpers.addMessageExpectation(testSAMLServer, expectations, failingStep, SAMLConstants.SAML_MESSAGES_LOG, SAMLConstants.STRING_CONTAINS, "The IDP did NOT return an error status code to the SP", SAMLMessageConstants.CWWKS5008E_STATUS_CODE_NOT_SUCCESS);
+        solicited_SP_initiated_SAML(_testName, updatedTestSettings, spFlow, expectations);
 
     }
 

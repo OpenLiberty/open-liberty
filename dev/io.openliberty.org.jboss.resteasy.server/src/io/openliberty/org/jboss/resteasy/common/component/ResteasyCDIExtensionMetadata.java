@@ -32,6 +32,7 @@ import io.openliberty.cdi.spi.CDIExtensionMetadata;
                  "bean.defining.annotations=" +
                     "javax.ws.rs.Path;" +
                     "javax.ws.rs.core.Application;" +
+                    "javax.ws.rs.ApplicationPath;" +
                     "javax.ws.rs.ext.Provider",
                  "service.vendor=IBM" })
 public class ResteasyCDIExtensionMetadata implements CDIExtensionMetadata {

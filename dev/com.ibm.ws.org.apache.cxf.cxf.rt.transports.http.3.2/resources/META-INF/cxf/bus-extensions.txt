@@ -3,3 +3,4 @@ org.apache.cxf.transport.http.HTTPWSDLExtensionLoader::true:true
 org.apache.cxf.transport.http.policy.HTTPClientAssertionBuilder::true:true
 org.apache.cxf.transport.http.policy.HTTPServerAssertionBuilder::true:true
 org.apache.cxf.transport.http.policy.NoOpPolicyInterceptorProvider::true:true
+

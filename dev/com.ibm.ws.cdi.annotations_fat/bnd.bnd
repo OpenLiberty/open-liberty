@@ -29,4 +29,6 @@ test.project: true
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
 	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
-	com.ibm.websphere.javaee.interceptor.1.2;version=latest
+	com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
+	io.openliberty.org.apache.commons.logging;version=latest,\
+        io.openliberty.org.apache.commons.codec;version=latest

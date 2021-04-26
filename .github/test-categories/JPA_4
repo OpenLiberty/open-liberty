@@ -1,0 +1,7 @@
+com.ibm.ws.jpa.tests.spec10.injection.dfi_fat
+com.ibm.ws.jpa.tests.spec10.injection.dmi_fat
+com.ibm.ws.jpa.tests.spec10.injection.jndi_fat
+com.ibm.ws.jpa.tests.spec10.injection.mdb_fat
+com.ibm.ws.jpa.tests.spec10.injection.ejbinwar_fat
+com.ibm.ws.jpa.tests.spec10.injection.defaultPersistenceUnit_fat
+

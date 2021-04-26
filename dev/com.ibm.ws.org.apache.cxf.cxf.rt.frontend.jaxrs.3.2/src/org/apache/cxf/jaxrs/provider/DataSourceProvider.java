@@ -51,7 +51,7 @@ public class DataSourceProvider<T> implements MessageBodyReader<T>, MessageBodyW
     private boolean useDataSourceContentType;
 
     public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mt) {
-        return isSupported(type, mt);
+        return isSupported(type);
     }
 
     public T readFrom(Class<T> cls, Type genericType, Annotation[] annotations,
@@ -81,10 +81,10 @@ public class DataSourceProvider<T> implements MessageBodyReader<T>, MessageBodyW
     }
 
     public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mt) {
-        return isSupported(type, mt);
+        return isSupported(type);
     }
 
-    private boolean isSupported(Class<?> type, MediaType mt) {
+    private static boolean isSupported(Class<?> type) {
         return DataSource.class.isAssignableFrom(type) || DataHandler.class.isAssignableFrom(type);
     }
 

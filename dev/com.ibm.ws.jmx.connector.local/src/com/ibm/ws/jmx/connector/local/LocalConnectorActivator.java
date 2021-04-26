@@ -13,6 +13,7 @@ package com.ibm.ws.jmx.connector.local;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.management.ManagementFactory;
+import java.nio.charset.StandardCharsets;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Properties;
@@ -221,7 +222,7 @@ public final class LocalConnectorActivator {
                     resource.create();
                 }
                 OutputStream os = resource.putStream();
-                os.write(connectorAddress.getBytes("UTF-8"));
+                os.write(connectorAddress.getBytes(StandardCharsets.UTF_8));
                 os.flush();
                 os.close();
 

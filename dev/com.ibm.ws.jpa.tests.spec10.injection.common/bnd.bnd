@@ -1,0 +1,50 @@
+#*******************************************************************************
+# Copyright (c) 2021 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: JPA Injection Test Common Elements
+Bundle-SymbolicName: com.ibm.ws.jpa.tests.spec10.injection.common
+Bundle-Description: JPA Injection Test Common Elements; version=${bVersion}
+
+test.project: false
+publish.wlp.jar.disabled: true
+instrument.disabled: true
+
+src: \
+    fat/src,\
+    test-applications/injection/src,\
+    test-applications/helpers/DatabaseManagement/src
+
+# Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
+#      or binaries from Artifactory (e.g. commons-logging:commons-logging)
+-buildpath: \
+	com.ibm.ws.componenttest,\
+    com.ibm.ws.jpa_testframework;version=latest,\
+    fattest.simplicity;version=latest,\
+    com.github.docker-java:docker-java-api;version=latest,\
+    com.ibm.websphere.javaee.annotation.1.1;version=latest,\
+    com.ibm.websphere.javaee.cdi.2.0;version=latest,\
+    com.ibm.websphere.javaee.ejb.3.2;version=latest,\
+    com.ibm.websphere.javaee.jms.2.0;version=latest,\
+    com.ibm.websphere.javaee.servlet.4.0;version=latest,\
+    com.ibm.websphere.javaee.persistence.2.1;version=latest,\
+    com.ibm.websphere.javaee.transaction.1.2;version=latest,\
+    com.ibm.websphere.javaee.validation.2.0;version=latest,\
+    io.openliberty.jakarta.persistence.3.0;version=latest,\
+    org.testcontainers:database-commons;version=latest,\
+    org.testcontainers:jdbc;version=latest,\
+    org.testcontainers:testcontainers;version=latest,\
+    org.rnorth.duct-tape:duct-tape;version=latest,\
+    org.slf4j:slf4j-api;version=latest,\
+    org.jboss.shrinkwrap:shrinkwrap-api;version=1.2.3,\
+	org.jboss.shrinkwrap:shrinkwrap-impl-base;version=1.2.3,\
+	org.jboss.shrinkwrap:shrinkwrap-spi;version=1.2.3

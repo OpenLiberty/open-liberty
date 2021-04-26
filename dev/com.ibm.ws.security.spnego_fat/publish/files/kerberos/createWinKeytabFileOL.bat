@@ -29,7 +29,15 @@ set OP11=%9
 shift
 set OP12=%9
 
-cscript removeWinUsers.vbs -user %USER% -host %KDC%
-cscript createWinUser.vbs -user %USER% -password %PASSWORD% -host %KDC% %OP1% %OP2% %OP3% %OP4% %OP5% %OP6% %OP7% %OP8% %OP9% %OP10% %OP11% %OP12%
+echo %DATE% %TIME%
+cscript removeWinUsersOL.vbs -user %USER% -host %KDC%
+echo %DATE% %TIME%, Exit Code is %errorlevel%
+
+cscript createWinUserOL.vbs -user %USER% -password %PASSWORD% -host %KDC% %OP1% %OP2% %OP3% %OP4% %OP5% %OP6% %OP7% %OP8% %OP9% %OP10% %OP11% %OP12%
+echo %DATE% %TIME%, Exit Code is %errorlevel%
+
 setspn -a %SERVICE_NAME%/%HOSTNAME% %USER%
+echo %DATE% %TIME%, Exit Code is %errorlevel%
+
 ktpass -out %KEYTAB% -in localhost_HTTP_krb5.keytab -princ %SERVICE_NAME%/%HOSTNAME%@%REALM% -mapUser %USER%@%REALM% -mapOp set -pass %PASSWORD% -crypto RC4-HMAC-NT -kvno 0 -ptype KRB5_NT_PRINCIPAL +Answer
+echo %DATE% %TIME%, Exit Code is %errorlevel%

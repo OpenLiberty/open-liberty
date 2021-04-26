@@ -16,7 +16,7 @@ src: \
 
 fat.project: true
 
-tested.features: oidctai-2.0
+tested.features: oidctai-2.0, appsecurity-4.0, expressionlanguage-4.0, cdi-3.0, pages-3.0
 
 -buildpath: \
     com.ibm.json4j;version=latest,\
@@ -27,7 +27,7 @@ tested.features: oidctai-2.0
     com.ibm.ws.security.oidc.server_fat;version=latest,\
     com.ibm.ws.org.apache.directory.server;version=latest,\
     com.ibm.ws.org.joda.time.1.6.2;version=latest,\
-    commons-codec:commons-codec;version=1.4,\
-    commons-logging:commons-logging;version=1.1.1,\
+    io.openliberty.org.apache.commons.codec;version=latest,\
+    io.openliberty.org.apache.commons.logging;version=latest,\
     net.sourceforge.htmlunit:htmlunit;version=2.44.0
 

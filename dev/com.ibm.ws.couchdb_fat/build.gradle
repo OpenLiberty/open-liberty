@@ -15,9 +15,9 @@ configurations {
 
 dependencies {
   couchdb project(':io.openliberty.com.fasterxml.jackson'),
-          'commons-codec:commons-codec:1.6',
-          'commons-io:commons-io:2.6',
-          'commons-logging:commons-logging:1.1.1',
+          project(':io.openliberty.org.apache.commons.codec'),
+          project(':com.ibm.ws.org.apache.commons.io'),
+          project(':io.openliberty.org.apache.commons.logging'),
           project(':com.ibm.ws.org.apache.httpcomponents'),
           'org.apache.httpcomponents:httpclient-cache:4.5.13',
           'org.ektorp:org.ektorp:1.5.0',

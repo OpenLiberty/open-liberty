@@ -11,7 +11,7 @@
 package com.ibm.wsspi.kernel.service.utils;
 
 import java.io.CharConversionException;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,7 +21,7 @@ public class LDAPUtils {
 
     /**
      * Escape a term for use in an LDAP filter.
-     * 
+     *
      * @param term
      * @return
      */
@@ -58,7 +58,7 @@ public class LDAPUtils {
      * Java char values. This routine <em>will</em> work with any
      * Java chars from any human language string expressible in
      * Java (at least in Java version 7.0).
-     * 
+     *
      * @param ch the character (or high/low surrogate) to be escaped
      * @return the escaped form of the character
      */
@@ -75,7 +75,7 @@ public class LDAPUtils {
             default:
                 // must be a character > 128, so process it as UTF-8 bytes
                 try {
-                    byte[] bytes = Character.toString(ch).getBytes("UTF-8");
+                    byte[] bytes = Character.toString(ch).getBytes(StandardCharsets.UTF_8);
                     switch (bytes.length) {
                         case 1:
                             return String.format("\\%02x", bytes[0]);
@@ -86,9 +86,6 @@ public class LDAPUtils {
                         default:
                             throw new CharConversionException("No character should map to more than three UTF-8 bytes");
                     }
-                } catch (UnsupportedEncodingException e) {
-                    //auto-FFDC: Every Java platform should support the UTF-8 encoding
-                    return "";
                 } catch (CharConversionException e) {
                     // auto-FFDC
                     return "";

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,7 +42,7 @@ public class TestUtils {
         try {
             // We expect this to fail since it is gonna crash the server
             FATServletClient.runTest(crashingServer, servletName, "setupRec" + id);
-            crashingServer.restartServer();
+            restartServer(crashingServer);
             fail(crashingServer.getServerName() + " did not crash as expected");
         } catch (Exception e) {
             Log.info(TestUtils.class, method, "setupRec" + id + " crashed as expected");

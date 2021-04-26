@@ -78,22 +78,23 @@ for FAT_BUCKET in $FAT_BUCKETS
 do
   echo "::group:: Run $FAT_BUCKET with FAT_ARGS=$FAT_ARGS"
   BUCKET_PASSED=true
-  TEMP_DIR=tmp/$FAT_BUCKET && mkdir -p $TEMP_DIR && touch $TEMP_DIR/gradle.log
+  OUTPUT_FILE=tmp/$FAT_BUCKET/gradle.log && mkdir -p -- "$(dirname -- "$OUTPUT_FILE")" && touch -- "$OUTPUT_FILE"
 
   #Run fat
-  ./gradlew :$FAT_BUCKET:buildandrun $FAT_ARGS &> $TEMP_DIR/gradle.log || BUCKET_PASSED=false
+  ./gradlew :$FAT_BUCKET:buildandrun $FAT_ARGS &> $OUTPUT_FILE || BUCKET_PASSED=false
 
   OUTPUT_DIR=$FAT_BUCKET/build/libs/autoFVT/output
   RESULTS_DIR=$FAT_BUCKET/build/libs/autoFVT/results
-  mkdir -p $OUTPUT_DIR && touch $OUTPUT_DIR/gradle.log && mv $TEMP_DIR/gradle.log $OUTPUT_DIR/gradle.log
 
   # Create a file to mark whether a bucket failed or passed
   if $BUCKET_PASSED; then
     echo "The bucket $FAT_BUCKET passed.";
     touch "$OUTPUT_DIR/passed.log";
+    rm -rf tmp/
   else
     echo "$FAT_BUCKET failed."
     touch "$OUTPUT_DIR/fail.log";
+    mv $OUTPUT_FILE $OUTPUT_DIR
   fi
   
   # Collect all junit files in a central location

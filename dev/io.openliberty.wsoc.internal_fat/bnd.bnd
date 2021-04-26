@@ -32,8 +32,10 @@ tested.features: \
     websocket-2.0, \
     messagingserver-3.0, \
     messagingclient-3.0, \
-    enterprisebeanslite-4.0
-
+    enterprisebeanslite-4.0, \
+    cdi-3.0, \
+    appsecurity-4.0, \
+    expressionlanguage-4.0
 
 -buildpath: \
     com.ibm.websphere.javaee.ejb.3.2;version=latest,\

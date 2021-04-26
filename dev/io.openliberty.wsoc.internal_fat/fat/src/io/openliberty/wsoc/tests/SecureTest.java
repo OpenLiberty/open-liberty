@@ -66,7 +66,9 @@ public class SecureTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        LS.startServer();
+        // Test fail if running twice without building since app cannot start when validated
+        // Turn off validation, add the app if missing and then make the validation ourselves
+        LS.startServerAndValidate(true, true, false);
         // Build the war app and add the dependencies
         WebArchive SecureApp = ShrinkHelper.buildDefaultApp(SECURE_WAR_NAME + ".war",
                                                             "secure.war",
@@ -75,6 +77,7 @@ public class SecureTest {
                                                             "io.openliberty.wsoc.tests.all",
                                                             "io.openliberty.wsoc.endpoints.client.secure");
         SecureApp = (WebArchive) ShrinkHelper.addDirectory(SecureApp, "test-applications/" + SECURE_WAR_NAME + ".war/resources");
+        LOG.info("addAppToServer : " + SECURE_WAR_NAME + " already installed check");
         // Verify if the apps are in the server before trying to deploy them
         if (LS.isStarted()) {
             Set<String> appInstalled = LS.getInstalledAppNames(SECURE_WAR_NAME);
@@ -85,7 +88,7 @@ public class SecureTest {
 
         LS.saveServerConfiguration();
         LS.setServerConfigurationFile("Secure/server.xml");
-
+        // Validate app started
         LS.waitForStringInLog("CWWKZ0001I.* " + SECURE_WAR_NAME);
 
         bwst = new WebServerSetup(LS);

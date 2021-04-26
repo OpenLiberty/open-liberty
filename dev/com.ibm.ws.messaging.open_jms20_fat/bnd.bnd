@@ -42,7 +42,8 @@ tested.features:\
   messaging-3.0,\
   ejbLite-3.2,\
   enterprisebeanslite-4.0,\
-  pages-3.0
+  pages-3.0,\
+  cdi-3.0
 
 # To define a global minimum java level for the FAT, use the following property.
 # If unspecified, the default value is ${javac.source}

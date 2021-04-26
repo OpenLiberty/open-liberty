@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2019, 2020 IBM Corporation and others.
+# Copyright (c) 2019, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -18,9 +18,19 @@ bVersion=1.0
 
 bSymbolicName=com.ibm.ws.security.acme
 
-Bundle-Name: ACME support
+Bundle-Name: ACME 2.0
 Bundle-SymbolicName: com.ibm.ws.security.acme
-Bundle-Description: This feature adds support for ACME and LetsEncrypt (and other CA providers).
+Bundle-Description: ACME 2.0; version=${bVersion}
+
+#
+# Produce a JakartaEE compliant JAR.
+#
+jakartaeeMe: true
+#jakartaee.transform.jar.name=io.openliberty.security.acme.internal.jar
+#JakartaEE-Bundle-Name: ACME 2.0
+#JakartaEE-Bundle-Symbolic-Name: io.openliberty.security.acme.internal
+#JakartaEE-Bundle-Description: ACME 2.0; Jakarta enabled
+#JakartaEE-Bundle-Version: 
 
 WS-TraceGroup: ACMECA
 

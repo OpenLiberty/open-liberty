@@ -18,7 +18,7 @@ dependencies {
     'org.eclipse.jetty.websocket:websocket-api:9.2.2.v20140723',
     'org.eclipse.jetty.websocket:websocket-common:9.2.2.v20140723',
     'javax.websocket:javax.websocket-api:1.0',
-    'commons-codec:commons-codec:1.11',
+    project(':io.openliberty.org.apache.commons.codec'),
     'org.eclipse.jetty.websocket:javax-websocket-client-impl:9.2.2.v20140723',
     'org.eclipse.jetty:jetty-io:9.2.2.v20140723',
     'org.eclipse.jetty:jetty-util:9.2.2.v20140723',
@@ -31,7 +31,7 @@ dependencies {
     project(':com.ibm.ws.org.apache.cxf.cxf.api.2.6.2'),
     project(':com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxws.2.6.2'),
     project(':com.ibm.ws.org.apache.ws.xmlschema.core'),
-    'commons-logging:commons-logging:1.1.3'
+    project(':io.openliberty.org.apache.commons.logging')
 }
 /*
 addRequiredLibraries {
