@@ -159,13 +159,13 @@ instrument.classesExcludes: com/ibm/ws/jaxrs20/internal/resources/*.class, \
 
 -buildpath: \
 	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
-	org.apache.cxf.cxf-core;strategy=exact;version='3.1.18',\
-	org.apache.cxf.cxf-rt-frontend-jaxrs;strategy=exact;version='3.1.18',\
-	org.apache.cxf.cxf-rt-rs-client;strategy=exact;version='3.1.18',\
-	org.apache.cxf.cxf-rt-transports-http;strategy=exact;version='3.1.18',\
-	org.apache.cxf.cxf-tools-common;strategy=exact;version='3.1.18',\
-	org.apache.cxf.cxf-tools-wadlto-jaxrs;strategy=exact;version='3.1.18',\
-	org.apache.cxf.cxf-rt-rs-service-description;strategy=exact;version='3.1.18',\
+	org.apache.cxf.cxf-core;strategy=exact;version=3.1.18,\
+	org.apache.cxf.cxf-rt-frontend-jaxrs;strategy=exact;version=3.1.18,\
+	org.apache.cxf.cxf-rt-rs-client;strategy=exact;version=3.1.18,\
+	org.apache.cxf.cxf-rt-transports-http;strategy=exact;version=3.1.18,\
+	org.apache.cxf.cxf-tools-common;strategy=exact;version=3.1.18,\
+	org.apache.cxf.cxf-tools-wadlto-jaxrs;strategy=exact;version=3.1.18,\
+	org.apache.cxf.cxf-rt-rs-service-description;strategy=exact;version=3.1.18,\
 	com.ibm.ws.org.codehaus.jackson.1.6.2;version=latest,\
 	com.ibm.ws.adaptable.module;version=latest,\
 	com.ibm.ws.anno;version=latest,\
@@ -185,13 +185,12 @@ instrument.classesExcludes: com/ibm/ws/jaxrs20/internal/resources/*.class, \
 	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.wsspi.org.osgi.service.component.annotations,\
 	com.ibm.ws.logging.core,\
-	com.ibm.ws.kernel.boot.core;version=latest,\
 	com.ibm.ws.kernel.feature,\
 	com.ibm.ws.kernel.service,\
-	com.ibm.websphere.appserver.spi.threading,\
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.websphere.appserver.spi.threading, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
 	com.ibm.ws.jaxrs.2.x.config;version=latest,\
-	javax.activation:activation;version='1.1'
+	javax.activation:activation;version=1.1
 
 -testpath: \
 	org.hamcrest:hamcrest-all;version=1.3, \

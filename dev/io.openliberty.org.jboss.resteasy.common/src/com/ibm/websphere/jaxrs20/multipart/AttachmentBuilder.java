@@ -22,9 +22,6 @@ import javax.ws.rs.core.MultivaluedMap;
 
 import org.jboss.resteasy.plugins.providers.multipart.IAttachmentImpl;
 
-import com.ibm.ws.kernel.productinfo.ProductInfo;
-
-
 /**
  * The {@code AttachmentBuilder} class is used to create instances of {@link IAttachment} for sending
  * multipart/form-data payloads in a client request or server response. Instances of the
@@ -83,11 +80,7 @@ public class AttachmentBuilder {
      * @return this builder
      * @throws IllegalArgumentException if the {@code fieldName} is {@code null}
      */
-    @Deprecated //TODO: remove for GA
     public static AttachmentBuilder newBuilder(String fieldName) {
-        if (!ProductInfo.getBetaEdition()) {
-            throw new UnsupportedOperationException("AttachmentBuilder API is currently only available in Beta");
-        }
         if (fieldName == null) {
             throw new IllegalArgumentException("fieldName must be non-null");
         }
