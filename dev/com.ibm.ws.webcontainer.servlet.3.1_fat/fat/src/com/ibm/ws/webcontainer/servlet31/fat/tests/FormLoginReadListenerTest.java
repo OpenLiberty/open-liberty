@@ -11,7 +11,6 @@
 package com.ibm.ws.webcontainer.servlet31.fat.tests;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -20,7 +19,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import org.apache.http.HttpEntity;
@@ -32,16 +30,14 @@ import org.apache.http.protocol.HTTP;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.fat.util.LoggingTest;
-import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.webcontainer.security.test.servlets.PostParamsClient;
 
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -49,11 +45,11 @@ import componenttest.topology.impl.LibertyServer;
 
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-public class FormLoginReadListenerTest extends LoggingTest {
+public class FormLoginReadListenerTest {
     private static final Logger LOG = Logger.getLogger(FormLoginReadListenerTest.class.getName());
 
-    @ClassRule
-    public static SharedServer SHARED_SERVER = new SharedServer("servlet31_wcServer");
+    @Server("servlet31_formLoginReadListener")
+    public static LibertyServer server;
 
     private static final String FORM_LOGIN_READ_LISTENER_APP_NAME = "FormLogin_ReadListener";
 
@@ -67,39 +63,22 @@ public class FormLoginReadListenerTest extends LoggingTest {
     @BeforeClass
     public static void setupClass() throws Exception {
         // Build the war app and add the dependencies
-        WebArchive FormLoginReadListenerApp = ShrinkHelper.buildDefaultApp(FORM_LOGIN_READ_LISTENER_APP_NAME + ".war",
+        WebArchive formLoginReadListenerApp = ShrinkHelper.buildDefaultApp(FORM_LOGIN_READ_LISTENER_APP_NAME + ".war",
                                                                            "com.ibm.ws.webcontainer.servlet_31_fat.formlogin_readlistener.war.web");
-        FormLoginReadListenerApp = (WebArchive) ShrinkHelper.addDirectory(FormLoginReadListenerApp, "test-applications/FormLogin_ReadListener.war/resources");
-        // Verify if the apps are in the server before trying to deploy them
-        if (SHARED_SERVER.getLibertyServer().isStarted()) {
-            Set<String> appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(FORM_LOGIN_READ_LISTENER_APP_NAME);
-            LOG.info("addAppToServer : " + FORM_LOGIN_READ_LISTENER_APP_NAME + " already installed : " + !appInstalled.isEmpty());
-            if (appInstalled.isEmpty())
-                ShrinkHelper.exportAppToServer(SHARED_SERVER.getLibertyServer(), FormLoginReadListenerApp);
-        }
-        //Replace config for the other server
-        LibertyServer wlp = SHARED_SERVER.getLibertyServer();
-        wlp.saveServerConfiguration();
-        wlp.setMarkToEndOfLog();
-        wlp.setServerConfigurationFile("FormLogin_ReadListener/server.xml");
+        formLoginReadListenerApp = (WebArchive) ShrinkHelper.addDirectory(formLoginReadListenerApp, "test-applications/FormLogin_ReadListener.war/resources");
 
-        SHARED_SERVER.startIfNotStarted();
-        wlp.waitForStringInLogUsingMark("CWWKZ0001I.* " + FORM_LOGIN_READ_LISTENER_APP_NAME);
+        // Export the application.
+        ShrinkHelper.exportAppToServer(server, formLoginReadListenerApp);
 
-        // Wait for LTPA key to be available to avoid CWWKS4000E
-        // CWWKS4105I: LTPA configuration is ready after x seconds
-        assertNotNull("CWWKS4105I LTPA configuration message not found.",
-                      wlp.waitForStringInLogUsingMark("CWWKS4105I.*"));
+        // Start the server and use the class name so we can find logs easily.
+        server.startServer(FormLoginReadListenerTest.class.getSimpleName() + ".log");
     }
 
     @AfterClass
     public static void testCleanup() throws Exception {
         // test cleanup
-        SHARED_SERVER.getLibertyServer().setMarkToEndOfLog();
-        SHARED_SERVER.getLibertyServer().restoreServerConfiguration();
-        SHARED_SERVER.getLibertyServer().waitForConfigUpdateInLogUsingMark(null);
-        if (SHARED_SERVER.getLibertyServer() != null && SHARED_SERVER.getLibertyServer().isStarted()) {
-            SHARED_SERVER.getLibertyServer().stopServer("SRVE8015E:.*");
+        if (server != null && server.isStarted()) {
+            server.stopServer("SRVE8015E:.*");
         }
     }
 
@@ -136,14 +115,14 @@ public class FormLoginReadListenerTest extends LoggingTest {
 
         Log.info(getClass(), "test_Login_AsyncRL", "Start test with " + numValues + " parameters");
 
-        String URLString = SHARED_SERVER.getServerUrl(true, READ_LISTENER_SERVLET_URL);
+        String URLString = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + READ_LISTENER_SERVLET_URL;
 
         HttpPost postMethod = new HttpPost(URLString);
 
         setPostParams(postMethod, numValues);
         int postDataLength = (int) postMethod.getEntity().getContentLength();
 
-        myClient = new PostParamsClient(SHARED_SERVER.getLibertyServer(), SERVLET_NAME, CONTEXT_ROOT);
+        myClient = new PostParamsClient(server, SERVLET_NAME, CONTEXT_ROOT);
 
         String responseContent = myClient.accessAndAuthenticate(postMethod, "user1", "user1Login", PostParamsClient.STORE_SESSION, 200, headers).trim();
 
@@ -178,15 +157,4 @@ public class FormLoginReadListenerTest extends LoggingTest {
         }
 
     }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.fat.util.LoggingTest#getSharedServer()
-     */
-    @Override
-    protected SharedServer getSharedServer() {
-        return SHARED_SERVER;
-    }
-
 }
