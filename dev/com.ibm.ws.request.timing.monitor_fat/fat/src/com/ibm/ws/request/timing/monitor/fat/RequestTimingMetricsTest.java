@@ -71,6 +71,16 @@ public class RequestTimingMetricsTest {
         totalRequestCount = new AtomicInteger();
         activeServletRequest = 1;
         server.startServer();
+
+        //Wait until server has started
+        String logMsg = server.waitForStringInLogUsingMark("CWWKF0011I");
+
+        Log.info(c, "setUp", logMsg);
+        Assert.assertNotNull("No CWWKF0011I was found.", logMsg);
+
+        //Validate that we have registered the RequestTiming MBean
+        Assert.assertNotNull("RequestTiming Mbean not registered",
+                             server.waitForStringInTraceUsingMark("Monitoring MXBean WebSphere:type=RequestTimingStats"));
     }
 
     /**
@@ -95,24 +105,6 @@ public class RequestTimingMetricsTest {
     public void testBasic() throws Exception {
         String testName = "testBasic";
         Log.info(c, testName, "Entry");
-
-        //Wait until server has started
-        String logMsg = server.waitForStringInLogUsingMark("CWWKF0011I");
-
-        /*
-         * Run the following block only if we found a server start message
-         * If it is null then that indicates that the tests are running out of order.
-         * If the other tests have already executed, then the server would have
-         * already started ;)
-         */
-        if (logMsg != null) {
-            Log.info(c, testName, logMsg);
-            Assert.assertNotNull("No CWWKF0011I was found.", logMsg);
-
-            //Validate that we have registered the RequestTiming MBean
-            Assert.assertNotNull("RequestTiming Mbean not registered",
-                                 server.waitForStringInTraceUsingMark("Monitoring MXBean WebSphere:type=RequestTimingStats"));
-        }
 
         /*
          * The call to /metrics counts as an active request. And the total is 1.
