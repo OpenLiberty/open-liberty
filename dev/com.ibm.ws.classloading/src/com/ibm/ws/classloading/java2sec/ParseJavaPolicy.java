@@ -79,11 +79,18 @@ public class ParseJavaPolicy {
         // if we don't find it there, we'll try a level higher (without the jre)
         // if we don't find it there, we'll return as java.policy not found
         
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "java.home: " + javaHome + " javaVendor: " + javaVendor + " javaSecurityPolicy: " + javaSecurityPolicy + " javaVersion: " + javaVersion);
+        }
+        
         try {
             file = javaSecurityPolicy;
             
             if (file == null) {
-                
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Did not find java.policy under the location specified by java.security.policy");
+                }
+                    
                 if (javaHome != null) {
                     // first let's check if this is openjdk version 10 or up, where the java.policy file would 
                     // be under java.home/config/security
@@ -109,6 +116,9 @@ public class ParseJavaPolicy {
 
                 }
             } 
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "File location of java.policy file: " + file);
+            }
             
             if (file != null && file.charAt(0) == '=') {
                 // skip '=' for case where "==" is specified
@@ -176,9 +186,12 @@ public class ParseJavaPolicy {
                     if (tc.isDebugEnabled()) {
                         Tr.debug(tc, "javaHome: " + javaHome + "Could not find java.policy file under either java.home/jre/lib/security or java.home/lib/security");
                     }
+                } else {
                     return policyLocation;
-                } 
-            } 
+                }
+            } else {
+                return policyLocation;                
+            }
         } else {
             // let's look under java.home/lib/security
             policyLocation = javaHome.concat("/lib/security.java.policy");
@@ -192,11 +205,14 @@ public class ParseJavaPolicy {
                     if (tc.isDebugEnabled()) {
                         Tr.debug(tc, "javaHome: " + javaHome + "Could not find java.policy file under either java.home/jre/lib/security or java.home/lib/security");
                     }
+                } else {
                     return policyLocation;
                 }
+            } else {
+                return policyLocation;
             }
         }                        
-       
+        return policyLocation;
     }
     
     /*
