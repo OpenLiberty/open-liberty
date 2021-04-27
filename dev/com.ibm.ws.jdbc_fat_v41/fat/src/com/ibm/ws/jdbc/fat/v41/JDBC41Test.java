@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2020 IBM Corporation and others.
+ * Copyright (c) 2017,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -47,9 +47,11 @@ public class JDBC41Test extends FATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         server.stopServer("J2CA0081E.*slowDS", // expected by testNetworkTimeoutSimple
+                          "J2CA0026E.*RollbackException", // from testTransactionTimeoutAbort when transaction times out before enlist
                           "J2CA0027E", // expected by testTransactionTimeoutAbort - XAds removed because it does not appear on the same line as the message ID in every language
                           "DSRA0302E.*XAException*", // expected by testTransactionTimeoutAbort
                           "DSRA0304E.*XAException*", // expected by testTransactionTimeoutAbort
+                          "DSRA9400E.*addSync", // from testTransactionTimeoutAbort when transaction times out before enlist
                           "J2CA0079E"); // expected by testMBeanPurgeAbort
     }
 
