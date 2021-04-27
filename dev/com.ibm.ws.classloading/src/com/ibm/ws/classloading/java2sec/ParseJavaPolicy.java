@@ -75,9 +75,10 @@ public class ParseJavaPolicy {
     public ParseJavaPolicy(boolean expandProp) throws FileNotFoundException, IOException, ParserException {
 
         // let's find the java.policy file
+        // if using Oracle OpenJDK at version 10 or higher, find it under java.home/conf/security
+        // if using Oracle OpenJDK at version 10 and java.policy is not under conf/security OR not using Oracle OpenJDK at version 10 or higher:
         // it should be under <java.home>/jre/lib/security
-        // if we don't find it there, we'll try a level higher (without the jre)
-        // if we don't find it there, we'll return as java.policy not found
+        
         
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "java.home: " + javaHome + " javaVendor: " + javaVendor + " javaSecurityPolicy: " + javaSecurityPolicy + " javaVersion: " + javaVersion);
@@ -90,32 +91,54 @@ public class ParseJavaPolicy {
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "Did not find java.policy under the location specified by java.security.policy");
                 }
-                    
+                
+                // first we look at whatever java.security.policy is pointing at
+                // if java.security.policy isn't defined, then we look under java.home
+                
                 if (javaHome != null) {
+                    Integer version;
+                    
                     // first let's check if this is openjdk version 10 or up, where the java.policy file would 
-                    // be under java.home/config/security
+                    // be under java.home/conf/security
+                    
                     if (javaVendor != null && javaVendor.contains("openjdk") && javaVendor.contains("oracle")) {
-                        if (javaVersion != null && javaVersion.indexOf(".") != -1) {
-                             String major = javaVersion.substring(0, javaVersion.indexOf(".") - 1 );
-                             Integer version = new Integer(major);
-                             if (version.intValue() >= 10) {
-                                 file = javaHome.concat("/conf/security/java.policy");
-                                 File fileToCheck = new File(file);
-                                 if (!fileToCheck.exists()) {
-                                     if (tc.isDebugEnabled()) {
-                                         Tr.debug(tc, "openjdk version " + version.intValue() + " did not find java.home/conf/security/java.policy");
-                                     }                                   
-                                     // then let's just check the old places
-                                     file = wheresJavaPolicy();
-                                 }
-                             }
+                        if (javaVersion != null) {
+                            
+                            // let's get the major version number of the JDK - if it's something like 10.1, then let's just pull 
+                            // the major number to check if we're at version 10 or up
+                            
+                            if (javaVersion.indexOf(".") != -1) {
+                                String major = javaVersion.substring(0, javaVersion.indexOf(".") - 1);
+                                version = new Integer(major);
+                            } else {
+                                version = new Integer(javaVersion);
+                            }
+                            if (tc.isDebugEnabled()) {
+                                Tr.debug(tc, "Using Oracle OpenJDK at major version: " + version);
+                            }
+                        }
+                        
+                        if (version.intValue() >= 10) {
+                            
+                            // we are using Oracle OpenJDK 10 or higher, so let's find java.policy under conf/security
+                            
+                            file = javaHome.concat("/conf/security/java.policy");
+                            File fileToCheck = new File(file);
+                            if (!fileToCheck.exists()) {
+                                if (tc.isDebugEnabled()) {
+                                    Tr.debug(tc, "openjdk version " + version.intValue() + " did not find java.home/conf/security/java.policy");
+                                }
+                                // if not there, then let's just check the usual old places
+                                file = wheresJavaPolicy();
+                            }
                         }
                     } else {
-                        file = wheresJavaPolicy();                   
+                        // not using Oracle OpenJDK 10 or higher, so let's check the usual old places
+                        file = wheresJavaPolicy();
                     }
 
                 }
-            } 
+            }
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "File location of java.policy file: " + file);
             }
