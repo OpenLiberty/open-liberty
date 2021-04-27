@@ -10,7 +10,6 @@
  *******************************************************************************/
 package io.openliberty.microprofile.openapi20;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,10 +42,12 @@ public class ApplicationRegistry {
     @Reference
     private ApplicationProcessor applicationProcessor;
     
-    private static ApplicationRegistry INSTANCE;
-    private Map<String, ApplicationInfo> applications = Collections.synchronizedMap(new HashMap<>());
+    // Thread safety: access to these fields must be synchronized on this
+    private Map<String, ApplicationInfo> applications = new HashMap<>();
     private ApplicationInfo currentApp = null;
-    private OpenAPIProvider currentProvider = null;
+    
+    // Thread safety: writes to this field must be synchronized on this
+    private volatile OpenAPIProvider currentProvider = null;
 
     /**
      * The addApplication method is invoked by the {@link ApplicationListener} when it is notified that an application
@@ -57,18 +58,20 @@ public class ApplicationRegistry {
      *           The ApplicationInfo for the application that is starting.
      */
     public void addApplication(ApplicationInfo newAppInfo) {
-        if (LoggingUtils.isEventEnabled(tc)) {
-            Tr.event(tc, "Application Processor: Adding application started: appInfo=" + newAppInfo);
-        }
+        synchronized (this) {
+            if (LoggingUtils.isEventEnabled(tc)) {
+                Tr.event(tc, "Application Processor: Adding application started: appInfo=" + newAppInfo);
+            }
 
-        // Store the app in our collection
-        applications.put(newAppInfo.getName(), newAppInfo);
+            // Store the app in our collection
+            applications.put(newAppInfo.getName(), newAppInfo);
 
-        // Process the application... this will only scan the application if we do not have a current application
-        processApplication(newAppInfo);
+            // Process the application... this will only scan the application if we do not have a current application
+            processApplication(newAppInfo);
 
-        if (LoggingUtils.isEventEnabled(tc)) {
-            Tr.event(tc, "Application Processor: Adding application ended: appInfo=" + newAppInfo);
+            if (LoggingUtils.isEventEnabled(tc)) {
+                Tr.event(tc, "Application Processor: Adding application ended: appInfo=" + newAppInfo);
+            }
         }
     }
     
@@ -81,20 +84,20 @@ public class ApplicationRegistry {
      *           The ApplicationInfo for the application that is stopping.
      */
     public void removeApplication(ApplicationInfo removedAppInfo) {
-        if (LoggingUtils.isEventEnabled(tc)) {
-            Tr.event(tc, "Application Processor: Removing application started: appInfo=" + removedAppInfo);
-        }
-        
-        // Remove the app from our collection
-        applications.remove(removedAppInfo.getName());
-        
-        // Check to see if the application being remove is the currentApp
-        if (currentApp != null && currentApp.getName().equals(removedAppInfo.getName())) {
+        synchronized(this) {
+            if (LoggingUtils.isEventEnabled(tc)) {
+                Tr.event(tc, "Application Processor: Removing application started: appInfo=" + removedAppInfo);
+            }
             
-            // The currentApp is being removed... see if any of the other applications implement a JAX-RS REST API
-            currentApp = null;
-            currentProvider = null;
-            synchronized (applications) {
+            // Remove the app from our collection
+            applications.remove(removedAppInfo.getName());
+            
+            // Check to see if the application being remove is the currentApp
+            if (currentApp != null && currentApp.getName().equals(removedAppInfo.getName())) {
+                
+                // The currentApp is being removed... see if any of the other applications implement a JAX-RS REST API
+                currentApp = null;
+                currentProvider = null;
                 for (ApplicationInfo appInfo : applications.values()) {
                     processApplication(appInfo);
                     if (currentApp != null) {
@@ -102,10 +105,10 @@ public class ApplicationRegistry {
                     }
                 } // FOR
             }
-        }
-        
-        if (LoggingUtils.isEventEnabled(tc)) {
-            Tr.event(tc, "Application Processor: Removing application ended: appInfo=" + removedAppInfo);
+            
+            if (LoggingUtils.isEventEnabled(tc)) {
+                Tr.event(tc, "Application Processor: Removing application ended: appInfo=" + removedAppInfo);
+            }
         }
     }
 
