@@ -94,6 +94,7 @@ public class ParseJavaPolicy {
                 if (javaHome != null) {
                     // first let's check if this is oracle openjdk version 10 or up, where the java.policy file would 
                     // be under java.home/conf/security
+                    
                     if (javaVendor != null && javaVendor.contains("openjdk") && javaVendor.contains("oracle")) {
                         if (javaVersion != null && javaVersion.indexOf(".") != -1) {
                              String major = javaVersion.substring(0, javaVersion.indexOf(".") - 1 );
