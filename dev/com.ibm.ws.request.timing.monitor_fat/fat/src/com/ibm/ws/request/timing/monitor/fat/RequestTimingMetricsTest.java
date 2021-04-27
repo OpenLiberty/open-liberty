@@ -96,19 +96,23 @@ public class RequestTimingMetricsTest {
         String testName = "testBasic";
         Log.info(c, testName, "Entry");
 
-        //Metrics Monitor Bundle has started - using default timeout
-        String logMsg = server.waitForStringInLogUsingMark("CWPMI2003I");
-        Log.info(c, testName, logMsg);
-        Assert.assertNotNull("No CWPMI2003I was found.", logMsg);
-
         //Wait until server has started
-        logMsg = server.waitForStringInLogUsingMark("CWWKF0011I");
-        Log.info(c, testName, logMsg);
-        Assert.assertNotNull("No CWWKF0011I was found.", logMsg);
+        String logMsg = server.waitForStringInLogUsingMark("CWWKF0011I");
 
-        //Validate that we have registered the RequestTiming MBean
-        Assert.assertNotNull("RequestTiming Mbean not registered",
-                             server.waitForStringInTraceUsingMark("Monitoring MXBean WebSphere:type=RequestTimingStats"));
+        /*
+         * Run the following block only if we found a server start message
+         * If it is null then that indicates that the tests are running out of order.
+         * If the other tests have already executed, then the server would have
+         * already started ;)
+         */
+        if (logMsg != null) {
+            Log.info(c, testName, logMsg);
+            Assert.assertNotNull("No CWWKF0011I was found.", logMsg);
+
+            //Validate that we have registered the RequestTiming MBean
+            Assert.assertNotNull("RequestTiming Mbean not registered",
+                                 server.waitForStringInTraceUsingMark("Monitoring MXBean WebSphere:type=RequestTimingStats"));
+        }
 
         /*
          * The call to /metrics counts as an active request. And the total is 1.
