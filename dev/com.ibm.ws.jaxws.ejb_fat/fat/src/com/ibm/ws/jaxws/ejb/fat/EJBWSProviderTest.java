@@ -119,10 +119,10 @@ public class EJBWSProviderTest {
         }
     }
 
-    /* 
+    /*
      * This test is a basic invocation of a Dynamic Service that uses the @WebServiceProvider annotation
-     * by invoking the WSP with a dynamic dispatch client. 
-     * TODO: Re-factor the SOAPAction tests into a separate Test Class. 
+     * by invoking the WSP with a dynamic dispatch client.
+     * TODO: Re-factor the SOAPAction tests into a separate Test Class.
      */
     @Test
     public void testQueryUserProvider() throws Exception {
@@ -139,11 +139,10 @@ public class EJBWSProviderTest {
         assertQueryUserResponse(responseSOAPMessage);
     }
 
-    
-    /* 
+    /*
      * This test makes sure that with the fix, a dynamic client cannot still invoke a WSP based service even when the
      * SOAPAction header mismatches the expected value since the allowNonMatchingToDefaultSoapAction property isn't set
-     * TODO: Re-factor the SOAPAction tests into a separate Test Class. 
+     * TODO: Re-factor the SOAPAction tests into a separate Test Class.
      */
     @Test
     public void testQueryUserProviderWithSOAPActionMismatch() throws Exception {
@@ -164,7 +163,7 @@ public class EJBWSProviderTest {
 
     @Mode(TestMode.FULL)
     @Test
-    @SkipForRepeat("EE9_FEATURES")
+    @SkipForRepeat({ "EE9_FEATURES", "jaxws-2.3" })
     public void testUserNotFoundExceptionProvider() throws Exception {
         Service service = Service.create(new URL(ENDPOINT_URL + "?wsdl"), SERVICE_NAME);
         Dispatch<Source> dispatch = service.createDispatch(PORT_NAME, Source.class, Service.Mode.PAYLOAD, new AddressingFeature());
