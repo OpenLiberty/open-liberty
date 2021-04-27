@@ -1282,7 +1282,7 @@ MODIFIABLE THIRD PARTY CODE
 This Program includes some or all of the following Modifiable Third 
 Party Code that IBM obtained under the GNU Library General Public 
 License. For copies of the source code for this software, send an email 
-to alanl@us.ibm.com identifying the IBM Program and the Modifiable Third 
+to alasdair@ibm.com identifying the IBM Program and the Modifiable Third 
 Party Code for which you are requesting the source code. 
 
 JBOSS RESTEASY
@@ -1742,7 +1742,7 @@ MODIFIABLE THIRD PARTY CODE
 This Program includes some or all of the following Modifiable Third 
 Party Code that IBM obtained under the GNU Lesser General Public 
 License. For copies of the source code for this software, send an email 
-to alanl@us.ibm.com identifying the IBM Program and the Modifiable Third 
+to alasdair@ibm.com identifying the IBM Program and the Modifiable Third 
 Party Code for which you are requesting the source code. 
 
 XMLHTTPREQUEST [Esprima (node)]
@@ -2885,8 +2885,6 @@ Otherwise, there is no need to include a copy of the license - you can
 delete all text following the list of packages above, leaving the END OF 
 RUBY LICENSE NOTICES statement intact. 
 
-(see https://w3-connections.ibm.com/wikis/home?lang=en-us#!/wiki/SWGLegal/page/Ruby%20License
-for more information)
 
 END OF RUBY LICENSE NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -3051,9 +3049,6 @@ holders.
 END OF W3C SOFTWARE LICENSE NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-END OF OPEN LIBERTY NOTICES AND INFORMATION 
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
 END OF OPEN LIBERTY @LIBERTY_VERSION@ NOTICES AND INFORMATION 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -3120,7 +3115,7 @@ GNU GENERAL PUBLIC LICENSE, VERSION 2
 
 The Program includes some or all of the following licensed to you as
 Separately Licensed Code under the GNU General Public License. For copies
-of the source code for this software, send an email to alanl@us.ibm.com
+of the source code for this software, send an email to alasdair@ibm.com
 identifying the IBM product and the GPL-licensed program for which you
 are requesting the source code
 
@@ -3133,7 +3128,7 @@ GNU GENERAL PUBLIC LICENSE, VERSION 3
 
 The Program includes some or all of the following licensed to you as
 Separately Licensed Code under the GNU General Public License. For copies
-of the source code for this software, send an email to alanl@us.ibm.com
+of the source code for this software, send an email to alasdair@ibm.com
 identifying the IBM product and the GPL-licensed program for which you
 are requesting the source code
 
