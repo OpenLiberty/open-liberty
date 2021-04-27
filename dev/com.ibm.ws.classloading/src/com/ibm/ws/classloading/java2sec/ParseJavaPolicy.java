@@ -96,7 +96,7 @@ public class ParseJavaPolicy {
                 // if java.security.policy isn't defined, then we look under java.home
                 
                 if (javaHome != null) {
-                    Integer version;
+                    Integer version = 0;
                     
                     // first let's check if this is openjdk version 10 or up, where the java.policy file would 
                     // be under java.home/conf/security
