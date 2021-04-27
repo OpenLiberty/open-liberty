@@ -137,6 +137,7 @@ public class JAXRS20ClientAsyncInvokerTest extends AbstractTest {
 
     @Test
     @AllowedFFDC("javax.ws.rs.ProcessingException")
+    @SkipForRepeat("EE9_FEATURES") // Skip this test for EE9 as this test is failing intermittently with EE9.  See issue https://github.com/OpenLiberty/open-liberty/issues/16651
     public void testAsyncInvoker_postConnectionTimeout() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         this.runTestOnServer(asyncInvokerTarget, "testAsyncInvoker_postConnectionTimeout", p, "Timeout as expected");
@@ -150,6 +151,7 @@ public class JAXRS20ClientAsyncInvokerTest extends AbstractTest {
     }
 
     @Test
+    @SkipForRepeat("EE9_FEATURES") // Skip this test for EE9 as this test is failing intermittently with EE9.  See issue https://github.com/OpenLiberty/open-liberty/issues/16651
     @AllowedFFDC("javax.ws.rs.ProcessingException")
     public void testAsyncInvoker_getConnectionTimeoutwithInvocationCallback() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
@@ -163,6 +165,7 @@ public class JAXRS20ClientAsyncInvokerTest extends AbstractTest {
     }
 
     @Test
+    @SkipForRepeat("EE9_FEATURES") // Skip this test for EE9 as this test is failing intermittently with EE9.  See issue https://github.com/OpenLiberty/open-liberty/issues/16651
     @AllowedFFDC("javax.ws.rs.ProcessingException")
     public void testAsyncInvoker_postConnectionTimeoutwithInvocationCallback() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
