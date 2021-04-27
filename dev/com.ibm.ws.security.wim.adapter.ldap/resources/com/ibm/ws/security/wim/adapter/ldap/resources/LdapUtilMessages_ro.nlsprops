@@ -279,3 +279,7 @@ IDMAP_INVALID_FORMAT.useraction=Actualiza\u0163i valoarea userIdMap astfel \u00e
 KRB5_SERVICE_NOT_AVAILABLE=CWIML4521E: Registrul LDAP {0} a \u00eencercat s\u0103 se lege la serverul LDAP prin utilizarea acredit\u0103rilor Kerberos pentru numele de principal {1}, dar serviciul Kerberos care furnizeaz\u0103 aceste acredit\u0103ri nu este disponibil. Mecanismul de autentificare pentru legare este {2}.
 KRB5_SERVICE_NOT_AVAILABLE.explanation=Serviciul Kerberos nu a fost disponibil c\u00e2nd registrul LDAP a \u00eencercat s\u0103 se lege la serverul LDAP. Dac\u0103 serviciul Kerberos nu este disponibil, niciun utilizator nu se poate autentifica.
 KRB5_SERVICE_NOT_AVAILABLE.useraction=Examina\u0163i set\u0103rile de configura\u0163ie ale registrului LDAP pentru atributele bindAuthMechanism, krb5Principal \u015fi krb5TicketCache, precum \u015fi configura\u0163ia Kerberos. Reporni\u0163i serverul.
+
+FILTER_MISSING_PERCENT_V=CWIML4523E: Valoarea {0} pentru {1} nu este valid\u0103. Necesit\u0103 o aser\u0163iune de valoare de atribut cu aser\u0163iunea de valoare =%v. De exemplu, {2}.
+FILTER_MISSING_PERCENT_V.explanation=Registrul LDAP \u00eenlocuie\u015fte %v cu valoarea de c\u0103utat atunci c\u00e2nd fac c\u0103ut\u0103ri pentru utilizatori sau grupuri.
+FILTER_MISSING_PERCENT_V.useraction=Actualiza\u0163i filtrul specificat pentru a include o aser\u0163iune de valoare atribut care con\u0163ine =%v \u00een aser\u0163iunea de valoare.

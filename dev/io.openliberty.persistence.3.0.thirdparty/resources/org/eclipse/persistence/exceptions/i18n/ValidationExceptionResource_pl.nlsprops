@@ -291,7 +291,7 @@
 
 7166=Znaleziono w [{1}] generator tabel, kt\u00f3ry u\u017cywa zarezerwowanej nazwy [{0}] jako atrybutu "name". Nie mo\u017cna u\u017cywa\u0107 tej nazwy, poniewa\u017c jest zarezerwowana jako domy\u015blna dla atrybutu "sequence name" generatora sekwencji.
 
-7167=Znaleziono w [{1}] generator sekwencji, kt\u00f3ry u\u017cywa zarezerwowanej nazwy [{0}] jako atrybutu "sequence name". Nie mo\u017cna u\u017cywa\u0107 tej nazwy, poniewa\u017c jest zarezerwowana jako domy\u015blna dla atrybutu "name" generatora tabel .
+7167=Znaleziono w [{1}] generator sekwencji, kt\u00f3ry u\u017cywa zarezerwowanej nazwy [{0}] jako atrybutu "sequence name". Nie mo\u017cna u\u017cywa\u0107 tej nazwy, poniewa\u017c jest zarezerwowana jako domy\u015blna dla atrybutu "name" generatora tabel.
 
 7168=Atrybut [{0}] typu [{1}] w klasie obiektu [{2}] nie jest poprawny dla w\u0142a\u015bciwo\u015bci wersji. Obs\u0142ugiwane s\u0105 nast\u0119puj\u0105ce typy: int, Integer, short, Short, long, Long, Timestamp.
 

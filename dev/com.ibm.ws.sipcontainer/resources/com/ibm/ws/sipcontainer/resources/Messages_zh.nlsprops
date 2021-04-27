@@ -29,23 +29,18 @@ info.container.version.useraction=\u8fd9\u662f\u4e00\u6761\u53c2\u8003\u6d88\u60
 warning.mean.disabled=CWSCT0003W: SIP \u5bb9\u5668 MBean \u65e0\u6cd5\u542f\u52a8\u3002
 warning.mean.disabled.explanation=SIP \u5bb9\u5668 MBean \u65e0\u6cd5\u542f\u52a8\u3002\u5c06\u4e0d\u80fd\u5bf9 SIP \u5bb9\u5668\u6267\u884c JMX \u64cd\u4f5c\u3002
 warning.mean.disabled.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.exception=CWSCT0004E: \u53d1\u751f\u4e0b\u5217\u5f02\u5e38\uff1a
 error.exception.explanation=SIP com.ibm.ws.sip.container \u6355\u83b7\u5230\u5f02\u5e38\u3002
 error.exception.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 info.failover.started=CWSCT0006I: \u6545\u969c\u8f6c\u79fb\u5df2\u542f\u52a8\u3002\u5bf9\u4e8e\u903b\u8f91\u540d {1}\uff0c\u63a5\u6536\u5230\u7684\u5bf9\u8c61\u6570\u4e3a {0}\u3002
 info.failover.started.explanation=\u96c6\u7fa4\u4e2d\u7684\u67d0\u4e2a\u670d\u52a1\u5668\u5df2\u7ec8\u6b62\uff0c\u5176\u67d0\u4e9b\u903b\u8f91\u540d\u5c06\u8f6c\u79fb\u5230\u6b64\u670d\u52a1\u5668\u3002\u73b0\u5728\uff0c\u6b64\u670d\u52a1\u5668\u4e0a\u6b63\u5728\u6fc0\u6d3b\u4e0e\u8fd9\u4e9b\u903b\u8f91\u540d\u76f8\u5173\u8054\u7684\u4f1a\u8bdd\u5bf9\u8c61\u3002
 info.failover.started.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 info.failover.ended=CWSCT0008I: \u903b\u8f91\uff08\u540d\u79f0\u4e3a {0}\uff09\u7684\u6545\u969c\u8f6c\u79fb\u5df2\u7ed3\u675f
 info.failover.ended.explanation=\u5df2\u5b8c\u6210\u6fc0\u6d3b\u4e0e\u903b\u8f91\u540d\u76f8\u5173\u8054\u7684\u4f1a\u8bdd\u5bf9\u8c61\u3002\u8981\u4e86\u89e3\u903b\u8f91\u540d\u548c\u5bf9\u8c61\u6570\uff0c\u8bf7\u53c2\u9605\u201c\u6545\u969c\u8f6c\u79fb\u5df2\u542f\u52a8\u201d\u3002
 info.failover.ended.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.parser.configuration=CWSCT0010E: \u914d\u7f6e sip.xml \u89e3\u6790\u5668\u65f6\u51fa\u9519\u3002
 error.parser.configuration.explanation=\u5c1d\u8bd5\u521d\u59cb\u5316 XML \u89e3\u6790\u5668\u65f6\u53d1\u751f\u9519\u8bef\u3002\u8fd9\u672a\u8868\u660e sip.xml \u6587\u6863\u4e2d\u6709\u9519\u8bef\u3002
 error.parser.configuration.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.parser.not.available=CWSCT0011E: \u89e3\u6790\u5668\u4e0d\u53ef\u7528\uff1b\u65e0\u6cd5\u88c5\u5165\u5e94\u7528\u7a0b\u5e8f\u914d\u7f6e\u3002
 error.parser.not.available.explanation=SIP com.ibm.ws.sip.container \u65e0\u6cd5\u4ece sip.xml \u6587\u4ef6\u88c5\u5165\u5e94\u7528\u7a0b\u5e8f\uff0c\u56e0\u4e3a\u6ca1\u6709 XML \u89e3\u6790\u5668\u3002
 error.parser.not.available.useraction=\u8bf7\u67e5\u770b\u65e5\u5fd7\u4e2d\u7684\u4e0a\u4e00\u6761\u9519\u8bef\u6d88\u606f\uff0c\u5176\u5185\u5bb9\u4e3a\u201c\u914d\u7f6e sip.xml \u89e3\u6790\u5668\u201d\u65f6\u51fa\u9519\u3002
@@ -93,35 +88,27 @@ error.parsing.sip.app.useraction=\u8bf7\u68c0\u67e5 sip.xml \u6587\u4ef6\u4ee5\u
 error.local.sip.dtd.not.found=CWSCT0022E: \u9519\u8bef - \u627e\u4e0d\u5230\u672c\u5730 SIP DTD \u6587\u6863\u3002
 error.local.sip.dtd.not.found.explanation=\u6ca1\u6709 /javax/servlet/sip/sip-app_1_0.dtd \u7684\u672c\u5730\u5b9a\u4e49
 error.local.sip.dtd.not.found.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 info.server.overload.cleared=CWSCT0023I: \u670d\u52a1\u5668\u4e0d\u518d\u8d85\u8d1f\u8377\u3002\u8d1f\u8f7d\u56e0\u5b50\u5df2\u51cf\u5c11\u5230 {0}
 info.server.overload.cleared.explanation=SIP com.ibm.ws.sip.container \u4e0d\u518d\u88ab\u8ba4\u4e3a\u8d85\u8d1f\u8377\uff0c\u5b83\u73b0\u5728\u968f\u65f6\u53ef\u4ee5\u5904\u7406\u65b0\u7684\u4f1a\u8bdd
 info.server.overload.cleared.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.failed.create.stack=CWSCT0025E: \u672a\u80fd\u521b\u5efa SIP \u5806\u6808\u3002
 error.failed.create.stack.explanation=\u5185\u90e8 SIP \u5806\u6808\u672a\u80fd\u521d\u59cb\u5316\u3002
 error.failed.create.stack.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.sip.stack.exception=CWSCT0026E: SIP \u5806\u6808\u4e2d\u53d1\u751f\u5f02\u5e38\u3002
 error.sip.stack.exception.explanation=\u5728 SIP \u5806\u6808\u5c42\u4e2d\u6355\u83b7\u5230\u5f02\u5e38\u3002\u8be5\u5806\u6808\u5c06\u5c1d\u8bd5\u7ee7\u7eed\u6b63\u5e38\u8fd0\u884c\u3002
 error.sip.stack.exception.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 info.listening.point=CWSCT0028I: SIP \u5bb9\u5668\u4fa6\u542c\u70b9\u4e3a {0}\uff1a{1}/{2}
 info.listening.point.explanation=\u8fd9\u662f\u4e00\u6761\u6709\u5173 SIP com.ibm.ws.sip.container \u4fa6\u542c\u5165\u5c40 SIP \u6d41\u91cf\u7684\u6bcf\u4e2a\u4e3b\u673a\u5730\u5740\u3001\u7aef\u53e3\u53f7\u548c\u4f20\u8f93\u534f\u8bae\u7684\u53c2\u8003\u6d88\u606f\u3002
 info.listening.point.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.forward.response=CWSCT0029E: SIP \u672a\u80fd\u8f6c\u53d1\uff1b\u54cd\u5e94\u8bf7\u6c42\u4e3a {0}
 error.forward.response.explanation=SIP com.ibm.ws.sip.container \u672a\u80fd\u8f6c\u53d1 SIP \u6d88\u606f\u3002
 error.forward.response.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.proxying.to.branch=CWSCT0030E: SIP \u672a\u80fd\u4ee3\u7406\u81f3\u5206\u652f\uff1bURI \u4e3a {0}
 error.proxying.to.branch.explanation=\u6b63\u5728\u5145\u5f53\u4ee3\u7406\u7684 SIP com.ibm.ws.sip.container \u672a\u80fd\u5c06\u8bf7\u6c42\u8f6c\u53d1\u81f3\u67d0\u4e2a\u76ee\u6807\u3002
 error.proxying.to.branch.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.create.record.route.uri=CWSCT0031E: SIP \u672a\u80fd\u521b\u5efa\u8bb0\u5f55\u8def\u7531 {0}
 error.create.record.route.uri.explanation=\u6b63\u5728\u5145\u5f53\u4ee3\u7406\u7684 SIP com.ibm.ws.sip.container \u672a\u80fd\u521b\u5efa\u201c\u8bb0\u5f55 - \u8def\u7531\u201d\u5934
 error.create.record.route.uri.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.proxy.set.parallel.illegal.state=CWSCT0032E: SIP \u4e0d\u80fd\u5728 proxyTo \u4e4b\u540e\u5c06\u4ee3\u7406\u66f4\u6539\u4e3a\u5e76\u884c
 error.proxy.set.parallel.illegal.state.explanation=SIP servlet \u4ee3\u7801\u5728\u8c03\u7528 Proxy.proxyTo() \u4e4b\u540e\u8c03\u7528 Proxy.setParallel()\u3002
 error.proxy.set.parallel.illegal.state.useraction=\u8bf7\u66f4\u6539\u5e94\u7528\u7a0b\u5e8f\u4ee3\u7801\uff0c\u4ee5\u4fbf\u5728\u8c03\u7528 Proxy.proxyTo() \u4e4b\u540e\u4e0d\u4f1a\u8c03\u7528 Proxy.setParallel()
@@ -137,11 +124,9 @@ error.proxy.set.stateful.illegal.state.useraction=\u8bf7\u66f4\u6539\u5e94\u7528
 error.proxy.cancel.request=CWSCT0035E: SIP \u5728\u4ee3\u7406\u4e2d\u6267\u884c\u53d6\u6d88\u8bf7\u6c42\u5931\u8d25\uff1b\u53d6\u6d88\u8bf7\u6c42\uff1a{0}
 error.proxy.cancel.request.explanation=SIP com.ibm.ws.sip.container \u672a\u80fd\u53d1\u9001\u51fa CANCEL \u8bf7\u6c42\u3002
 error.proxy.cancel.request.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.sending.response.upstream=CWSCT0036E: SIP \u672a\u80fd\u5411\u4e0a\u6e38\u53d1\u9001\u54cd\u5e94\uff1b\u54cd\u5e94\uff1a{0}
 error.sending.response.upstream.explanation=SIP com.ibm.ws.sip.container \u672a\u80fd\u5411\u4e0a\u6e38\u53d1\u9001\u54cd\u5e94\uff08\u4e0a\u6e38\u662f\u54cd\u5e94\u4ece UAS \u5f80\u56de\u6d41\u52a8\u81f3 UAC \u7684\u65b9\u5411\uff09\u3002
 error.sending.response.upstream.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.proxy.set.recordroute.illegal.state=CWSCT0037E: SIP \u4e0d\u80fd\u5728 proxyTo \u4e4b\u540e\u8bbe\u7f6e\u8bb0\u5f55\u8def\u7531
 error.proxy.set.recordroute.illegal.state.explanation=SIP servlet \u4ee3\u7801\u5728\u8c03\u7528 Proxy.proxyTo() \u4e4b\u540e\u8c03\u7528\u4e86 Proxy.setRecordRoute()\u3002
 error.proxy.set.recordroute.illegal.state.useraction=\u8bf7\u66f4\u6539\u5e94\u7528\u7a0b\u5e8f\u4ee3\u7801\uff0c\u4ee5\u4fbf\u5728\u8c03\u7528 Proxy.proxyTo() \u4e4b\u540e\u4e0d\u4f1a\u8c03\u7528 Proxy.setRecordRoute()
@@ -149,15 +134,12 @@ error.proxy.set.recordroute.illegal.state.useraction=\u8bf7\u66f4\u6539\u5e94\u7
 error.create.request=CWSCT0040E: SIP \u672a\u80fd\u521b\u5efa\u8bf7\u6c42\uff1b\u8bf7\u6c42\uff1a{0}
 error.create.request.explanation=SIP com.ibm.ws.sip.container \u672a\u80fd\u521b\u5efa SIP \u8bf7\u6c42\u6d88\u606f\u3002
 error.create.request.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.failed.parse.route.header=CWSCT0041E: \u672a\u80fd\u83b7\u53d6\u8def\u7531\u5934\u3002
 error.failed.parse.route.header.explanation=SIP com.ibm.ws.sip.container \u672a\u80fd\u83b7\u53d6\u8bf7\u6c42\u4e2d\u7684\u8def\u7531\u5934\u3002
 error.failed.parse.route.header.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.resolving.inet.address=CWSCT0042E: \u672a\u80fd\u89e3\u6790\u56e0\u7279\u7f51\u5730\u5740\u3002
 error.resolving.inet.address.explanation=\u672a\u80fd\u4ece\u4e3b\u673a\u540d\u81f3 IP \u5730\u5740\u89e3\u6790\u56e0\u7279\u7f51\u5730\u5740\u3002
 error.resolving.inet.address.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.proxy.set.recordroute.non.dialog.method=CWSCT0043E: \u65e0\u6cd5\u4e3a\u975e\u5bf9\u8bdd\u8bf7\u6c42\u8bbe\u7f6e\u8bb0\u5f55\u8def\u7531\uff1a{0}
 error.proxy.set.recordroute.non.dialog.method.explanation=SIP servlet \u4ee3\u7801\u5bf9\u4e0d\u521b\u5efa\u5bf9\u8bdd\u7684\u8bf7\u6c42\u8c03\u7528 Proxy.setRecordRoute()\u3002
 error.proxy.set.recordroute.non.dialog.method.useraction=\u8bf7\u66f4\u6539\u5e94\u7528\u7a0b\u5e8f\u4ee3\u7801\uff0c\u4ee5\u4fbf\u5b83\u4e0d\u4f1a\u5bf9\u4e0d\u521b\u5efa\u5bf9\u8bdd\u7684\u8bf7\u6c42\u8c03\u7528 Proxy.setRecordRoute()\u3002\u4e0d\u521b\u5efa\u5bf9\u8bdd\u7684\u8bf7\u6c42\u793a\u4f8b\u4e3a INVITE\u3001REFER \u548c SUBSCRIBE\u3002
@@ -165,24 +147,19 @@ error.proxy.set.recordroute.non.dialog.method.useraction=\u8bf7\u66f4\u6539\u5e9
 error.call.should.be.invoked=CWSCT0044E: \u4ee3\u7406\u9047\u5230\u610f\u5916\u7684\u51fd\u6570\u8c03\u7528\u3002
 error.call.should.be.invoked.explanation=SIP com.ibm.ws.sip.container \u63a5\u6536\u5230\u610f\u5916\u7684\u6d88\u606f\u3002
 error.call.should.be.invoked.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.route.header.unavailable=CWSCT0045E: \u6ca1\u6709\u8def\u7531\u5934\u7684\u60c5\u51b5\u4e0b\u65e0\u6cd5\u4ee3\u7406\u540e\u7eed\u8bf7\u6c42\uff1a{0}
 error.route.header.unavailable.explanation=SIP com.ibm.ws.sip.container \u65e0\u6cd5\u4ee3\u7406\u5bf9\u8bdd\u671f\u95f4\u7684\u540e\u7eed\u8bf7\u6c42\uff0c\u56e0\u4e3a\u5165\u5c40\u8bf7\u6c42\u6ca1\u6709\u8def\u7531\u5934\u3002
 error.route.header.unavailable.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
 
-
 error.unkown.uri.type=CWSCT0046E: URI \u7c7b\u578b\u672a\u77e5\uff1b\u65e0\u6cd5\u8bbf\u95ee\u5934\u4e2d\u7684\u53c2\u6570\uff1a{0}
 error.unkown.uri.type.explanation=SIP com.ibm.ws.sip.container \u65e0\u6cd5\u5904\u7406\u6d88\u606f\uff0c\u56e0\u4e3a URI \u4e0d\u662f sip \u6216 sips URI\u3002
 error.unkown.uri.type.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.processing.strict.routing=CWSCT0048E: \u5904\u7406\u4e25\u683c\u8def\u7531\u65f6\u51fa\u9519\uff1b\u8bf7\u6c42 URI \u672a\u5305\u542b\u4f1a\u8bdd\u6807\u8bc6\u3002{0}
 error.processing.strict.routing.explanation=SIP com.ibm.ws.sip.container \u5728\u5bf9\u8bdd\u671f\u95f4\u63a5\u6536\u5230\u6765\u81ea\u4e25\u683c\u8def\u7531\u5668\u7684\u8bf7\u6c42\uff0c\u8bf7\u6c42 URI \u4e2d\u7f3a\u5c11\u4f1a\u8bdd\u6807\u8bc6\u53c2\u6570\uff0c\u6216\u8be5\u53c2\u6570\u7684\u503c\u4e0d\u6b63\u786e\u3002
 error.processing.strict.routing.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.sending.response=CWSCT0049E: \u53d1\u9001\u54cd\u5e94\u65f6\u51fa\u9519
 error.sending.response.explanation=SIP com.ibm.ws.sip.container \u672a\u80fd\u53d1\u9001\u51fa\u54cd\u5e94\u3002
 error.sending.response.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.default.invoke.siplet.not.found=CWSCT0051E: \u627e\u4e0d\u5230\u53ef\u4f9b\u8c03\u7528\u7684 siplet\uff1b\u7f3a\u7701\u5904\u7406\u7a0b\u5e8f\u4e0d\u53ef\u7528\u3002
 error.default.invoke.siplet.not.found.explanation=\u6ca1\u6709\u5339\u914d\u7684 SIP servlet \u7528\u4e8e\u5904\u7406\u8bf7\u6c42\u3002
 error.default.invoke.siplet.not.found.useraction=\u8bf7\u68c0\u67e5\u6240\u5b89\u88c5\u7684\u5e94\u7528\u7a0b\u5e8f\u7684\u5339\u914d\u89c4\u5219\u5e76\u786e\u4fdd\u81f3\u5c11\u6709\u4e00\u4e2a\u5e94\u7528\u7a0b\u5e8f\u53ef\u4ee5\u4e0e\u8be5\u8bf7\u6c42\u5339\u914d\u3002
@@ -190,7 +167,6 @@ error.default.invoke.siplet.not.found.useraction=\u8bf7\u68c0\u67e5\u6240\u5b89\
 error.handling.request=CWSCT0052E: \u627e\u4e0d\u5230\u7528\u4e8e\u5df2\u63a5\u6536 BYE \u8bf7\u6c42\u7684\u5bf9\u8bdd\u3002\u8c03\u7528\u6807\u8bc6\u4e3a {0}
 error.handling.request.explanation=SIP com.ibm.ws.sip.container \u63a5\u6536\u5230\u4e0d\u4e0e\u4efb\u4f55\u73b0\u6709\u5bf9\u8bdd\u5339\u914d\u7684 BYE \u8bf7\u6c42\u3002
 error.handling.request.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.invalid.operator.var=CWSCT0053E: \u8fd0\u7b97\u7b26\u4e2d\u7684\u53d8\u91cf\u65e0\u6548\uff1b\u53d8\u91cf\uff1a{0}
 error.invalid.operator.var.explanation=sip.xml \u6587\u6863\u672a\u5305\u542b\u6709\u6548\u53d8\u91cf\u3002
 error.invalid.operator.var.useraction=\u8bf7\u68c0\u67e5 sip.xml \u6587\u4ef6\u4ee5\u786e\u4fdd\u4f9d\u7167 JSR 116 (SIP Servlet API) 11.2\uff08SIP \u8bf7\u6c42\u5bf9\u8c61\u6a21\u578b\uff09\u8be5\u53d8\u91cf\u6709\u6548\u3002
@@ -210,15 +186,12 @@ error.ip.host.useraction=\u8bf7\u68c0\u67e5\u914d\u7f6e\u5c5e\u6027 com.ibm.ws.s
 error.ip.header.parse=CWSCT0057E: IPAuthenticator \u5728\u89e3\u6790\u5934\u65f6\u5931\u8d25
 error.ip.header.parse.explanation=SIP com.ibm.ws.sip.container \u672a\u80fd\u89e3\u6790\u7528\u4e8e IP \u8ba4\u8bc1\u7684 Via \u5934\u3002
 error.ip.header.parse.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.ip.header.exception=CWSCT0058E: IPAuthenticator \u5934\u53d1\u751f\u95ee\u9898\u3002
 error.ip.header.exception.explanation=SIP com.ibm.ws.sip.container \u5728\u6d88\u606f\u4e2d\u627e\u4e0d\u5230\u7528\u4e8e IP \u8ba4\u8bc1\u7684 Via \u5934\u3002
 error.ip.header.exception.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.get.expires=CWSCT0059E: SIP \u672a\u80fd\u83b7\u53d6\u5230\u671f\u65f6\u95f4\uff1b\u672a\u6b63\u786e\u683c\u5f0f\u5316\uff1a{0}
 error.get.expires.explanation=\u5e94\u7528\u7a0b\u5e8f\u8c03\u7528 Address.setExpires() \u5931\u8d25\uff0c\u56e0\u4e3a\u6d88\u606f\u7684\u5730\u5740\u5934\u5305\u542b\u683c\u5f0f\u4e0d\u6b63\u786e\u7684\u5230\u671f\u53c2\u6570\u503c\u3002
 error.get.expires.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.set.display.name=CWSCT0060E: SIP \u672a\u80fd\u8bbe\u7f6e\u663e\u793a\u540d\u79f0\uff1b\u540d\u79f0\uff1a{0}
 error.set.display.name.explanation=\u5e94\u7528\u7a0b\u5e8f\u8c03\u7528 Address.setDisplayName() \u5931\u8d25\u3002
 error.set.display.name.useraction=\u8bf7\u68c0\u67e5\u5e94\u7528\u7a0b\u5e8f\u4ee3\u7801\u4ee5\u786e\u4fdd\u663e\u793a\u540d\u79f0\u6709\u6548\u4e14\u4e0d\u4e3a\u7a7a\u3002
@@ -226,7 +199,6 @@ error.set.display.name.useraction=\u8bf7\u68c0\u67e5\u5e94\u7528\u7a0b\u5e8f\u4e
 error.set.expires=CWSCT0061E: SIP \u672a\u80fd\u8bbe\u7f6e\u5230\u671f\u65f6\u95f4\uff1b\u79d2\uff1a{0}
 error.set.expires.explanation=\u5e94\u7528\u7a0b\u5e8f\u8c03\u7528 Address.setExpires() \u5931\u8d25\u3002
 error.set.expires.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.set.parameter=CWSCT0062E: SIP \u672a\u80fd\u8bbe\u7f6e\u53c2\u6570\uff1b\u540d\u79f0\uff1a{0}\uff0c\u503c\uff1a{1}
 error.set.parameter.explanation=\u5e94\u7528\u7a0b\u5e8f\u8c03\u7528 Address.setParameter() \u6216 SipURI.setParameter() \u5931\u8d25\u3002
 error.set.parameter.useraction=\u8bf7\u68c0\u67e5\u5e94\u7528\u7a0b\u5e8f\u4ee3\u7801\u4ee5\u786e\u4fdd\u53c2\u6570\u7684\u540d\u79f0\u548c\u503c\u6709\u6548\u3002
@@ -238,31 +210,24 @@ error.set.q.useraction=\u8bf7\u68c0\u67e5\u5e94\u7528\u7a0b\u5e8f\u4ee3\u7801\u4
 error.get.method=CWSCT0064E: SIP \u672a\u80fd\u4ece\u63d0\u4ea4\u7684\u8bf7\u6c42\u4e2d\u83b7\u53d6\u65b9\u6cd5\uff1a{0}
 error.get.method.explanation=\u5e94\u7528\u7a0b\u5e8f\u8c03\u7528 SipServletMessage.getMethod() \u5931\u8d25\u3002
 error.get.method.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.get.request.uri=CWSCT0065E: SIP \u672a\u80fd\u4ece\u63d0\u4ea4\u7684\u8bf7\u6c42\u4e2d\u83b7\u53d6\u8bf7\u6c42 URI\uff1a{0}
 error.get.request.uri.explanation=\u5e94\u7528\u7a0b\u5e8f\u8c03\u7528 SipServletRequest.getRequestURI() \u5931\u8d25\u3002
 error.get.request.uri.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.create.response=CWSCT0066E: SIP \u672a\u80fd\u521b\u5efa\u5bf9\u8bf7\u6c42\u7684\u54cd\u5e94\uff1a{0}
 error.create.response.explanation=SIP com.ibm.ws.sip.container \u672a\u80fd\u521b\u5efa\u5bf9\u8bf7\u6c42\u7684\u54cd\u5e94\u3002
 error.create.response.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.send.request=CWSCT0067E: SIP \u672a\u80fd\u4f7f\u7528 JAIN \u53d1\u9001\u8bf7\u6c42\uff1bURI\uff1a{0}
 error.send.request.explanation=SIP com.ibm.ws.sip.container \u672a\u80fd\u53d1\u9001\u51fa\u8bf7\u6c42\u3002
 error.send.request.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.add.header=CWSCT0069E: SIP \u672a\u80fd\u6dfb\u52a0\u5934\uff1b\u540d\u79f0\uff1a{0}\uff0c\u503c\uff1a{1}
 error.add.header.explanation=SIP com.ibm.ws.sip.container \u672a\u80fd\u5c06\u5934\u6dfb\u52a0\u5230\u6d88\u606f\u4e2d\u3002
 error.add.header.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.send.response=CWSCT0070E: SIP \u672a\u80fd\u53d1\u9001\u54cd\u5e94\uff0c{0}
 error.send.response.explanation=SIP com.ibm.ws.sip.container \u5c1d\u8bd5\u53d1\u9001\u51fa\u54cd\u5e94\u65f6\u53d1\u751f\u9519\u8bef\u3002
 error.send.response.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.set.header=CWSCT0071E: SIP \u672a\u80fd\u8bbe\u7f6e\u5934\uff1b\u540d\u79f0\uff1a{0}\uff0c\u503c\uff1a{1}
 error.set.header.explanation=SIP com.ibm.ws.sip.container \u672a\u80fd\u5728\u6d88\u606f\u4e2d\u8bbe\u7f6e\u5934\u503c\u3002
 error.set.header.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.set.host=CWSCT0072E: SIP \u672a\u80fd\u8bbe\u7f6e\u4e3b\u673a\uff1b\u4e3b\u673a\uff1a{0}
 error.set.host.explanation=\u5e94\u7528\u7a0b\u5e8f\u8c03\u7528 SipURI.setHost() \u5931\u8d25\u3002
 error.set.host.useraction=\u8bf7\u68c0\u67e5\u5e94\u7528\u7a0b\u5e8f\u4ee3\u7801\u4ee5\u786e\u4fdd\u4e3b\u673a\u540d\u6709\u6548\u4e14\u4e0d\u4e3a\u7a7a\u3002
@@ -270,11 +235,9 @@ error.set.host.useraction=\u8bf7\u68c0\u67e5\u5e94\u7528\u7a0b\u5e8f\u4ee3\u7801
 error.set.port=CWSCT0073E: SIP \u672a\u80fd\u8bbe\u7f6e\u7aef\u53e3\uff1b\u7aef\u53e3\uff1a{0}
 error.set.port.explanation=\u5e94\u7528\u7a0b\u5e8f\u8c03\u7528 SipURI.setPort() \u5931\u8d25\u3002
 error.set.port.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.set.secure=CWSCT0074E: SIP \u672a\u80fd\u8bbe\u7f6e\u5b89\u5168\uff1b\u503c\uff1a{0}
 error.set.secure.explanation=\u5e94\u7528\u7a0b\u5e8f\u8c03\u7528 SipURI.setSecure() \u5931\u8d25\u3002
 error.set.secure.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.set.user=CWSCT0075E: SIP \u672a\u80fd\u8bbe\u7f6e\u7528\u6237\uff1b\u7528\u6237\uff1a{0}
 error.set.user.explanation=\u5e94\u7528\u7a0b\u5e8f\u8c03\u7528 SipURI.setUser() \u5931\u8d25\u3002
 error.set.user.useraction=\u8bf7\u68c0\u67e5\u5e94\u7528\u7a0b\u5e8f\u4ee3\u7801\u4ee5\u786e\u4fdd\u7528\u6237\u540d\u6709\u6548\u4e14\u4e0d\u4e3a\u7a7a\u3002
@@ -286,43 +249,33 @@ error.set.user.password.useraction=\u8bf7\u68c0\u67e5\u5e94\u7528\u7a0b\u5e8f\u4
 error.get.accept.language=CWSCT0077E: SIP \u672a\u80fd\u83b7\u53d6\u63a5\u53d7\u5230\u7684\u8bed\u8a00\uff0c{0}
 error.get.accept.language.explanation=\u5e94\u7528\u7a0b\u5e8f\u8c03\u7528 SipServletMessage.getAcceptLanguage() \u5931\u8d25\u3002
 error.get.accept.language.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.get.accept.languages=CWSCT0078E: SIP \u672a\u80fd\u83b7\u53d6\u63a5\u53d7\u5230\u7684\u8bed\u8a00\uff0c{0}
 error.get.accept.languages.explanation=\u5e94\u7528\u7a0b\u5e8f\u8c03\u7528 SipServletMessage.getAcceptLanguages() \u5931\u8d25\u3002
 error.get.accept.languages.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.get.address.header=CWSCT0079E: SIP \u672a\u80fd\u83b7\u53d6\u5730\u5740\u5934\uff1b\u540d\u79f0\uff1a{0}
 error.get.address.header.explanation=\u5e94\u7528\u7a0b\u5e8f\u8c03\u7528 SipServletMessage.getAddressHeader() \u5931\u8d25\u3002
 error.get.address.header.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.get.address.headers=CWSCT0080E: SIP \u672a\u80fd\u83b7\u53d6\u5730\u5740\u5934\uff1b\u540d\u79f0\uff1a{0}
 error.get.address.headers.explanation=\u5e94\u7528\u7a0b\u5e8f\u8c03\u7528 SipServletMessage.getAddressHeaders() \u5931\u8d25\u3002
 error.get.address.headers.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.get.character.encoding=CWSCT0081E: SIP \u672a\u80fd\u83b7\u53d6\u5b57\u7b26\u7f16\u7801 {0}
 error.get.character.encoding.explanation=\u5e94\u7528\u7a0b\u5e8f\u8c03\u7528 SipServletMessage.getCharacterEncoding() \u5931\u8d25\u3002
 error.get.character.encoding.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.get.content.length=CWSCT0082E: SIP \u672a\u80fd\u83b7\u53d6\u5185\u5bb9\u957f\u5ea6 {0}
 error.get.content.length.explanation=\u5e94\u7528\u7a0b\u5e8f\u8c03\u7528 SipServletMessage.getContentLength() \u5931\u8d25\u3002
 error.get.content.length.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.get.content.type=CWSCT0083E: SIP \u672a\u80fd\u83b7\u53d6\u5185\u5bb9\u7c7b\u578b {0}
 error.get.content.type.explanation=\u5e94\u7528\u7a0b\u5e8f\u8c03\u7528 SipServletMessage.getContentType() \u5931\u8d25\u3002
 error.get.content.type.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.get.header=CWSCT0084E: SIP \u672a\u80fd\u83b7\u53d6\u5934\uff1b\u540d\u79f0\uff1a{0}
 error.get.header.explanation=\u5e94\u7528\u7a0b\u5e8f\u8c03\u7528 SipServletMessage.getHeader() \u5931\u8d25\u3002
 error.get.header.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.get.header.names=CWSCT0085E: SIP \u672a\u80fd\u83b7\u53d6\u5934\uff1b\u540d\u79f0\uff1a{0}
 error.get.header.names.explanation=\u5e94\u7528\u7a0b\u5e8f\u8c03\u7528 SipServletMessage.getHeaderNames() \u5931\u8d25\u3002
 error.get.header.names.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.get.headers=CWSCT0086E: SIP \u672a\u80fd\u83b7\u53d6\u5934\uff1b\u540d\u79f0\uff1a{0}
 error.get.headers.explanation=\u5e94\u7528\u7a0b\u5e8f\u8c03\u7528 SipServletMessage.getHeaders() \u5931\u8d25\u3002
 error.get.headers.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.set.content=CWSCT0087E: SIP \u672a\u80fd\u8bbe\u7f6e\u5185\u5bb9\uff1b\u5185\u5bb9\uff1a{0}\uff0c\u5185\u5bb9\u7c7b\u578b\uff1a{1}
 error.set.content.explanation=\u5e94\u7528\u7a0b\u5e8f\u8c03\u7528 SipServletMessage.setContent() \u5931\u8d25\u3002
 error.set.content.useraction=\u8bf7\u68c0\u67e5\u5e94\u7528\u7a0b\u5e8f\u4ee3\u7801\u4ee5\u786e\u4fdd\u6d88\u606f\u5185\u5bb9\u6709\u6548\u4e14\u4e0d\u4e3a\u7a7a\u3002
@@ -330,27 +283,21 @@ error.set.content.useraction=\u8bf7\u68c0\u67e5\u5e94\u7528\u7a0b\u5e8f\u4ee3\u7
 error.get.via.headers=CWSCT0088E: SIP \u672a\u80fd\u83b7\u53d6 VIA \u5934 {0}
 error.get.via.headers.explanation=\u5e94\u7528\u7a0b\u5e8f\u8c03\u7528 SipServletMessage.getViaHeaders() \u5931\u8d25\u3002
 error.get.via.headers.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.get.contact.header=CWSCT0089E: SIP \u672a\u80fd\u83b7\u53d6\u8054\u7cfb\u5934 {0}
 error.get.contact.header.explanation=\u5e94\u7528\u7a0b\u5e8f\u8c03\u7528 SipServletMessage.getContactHeader() \u5931\u8d25\u3002
 error.get.contact.header.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.get.jain.sip.headers=CWSCT0090E: SIP \u672a\u80fd\u83b7\u53d6 JAIN SIP \u5934 {0}
 error.get.jain.sip.headers.explanation=SIP com.ibm.ws.sip.container \u5728\u4ece\u5185\u90e8 JAIN \u6d88\u606f\u5bf9\u8c61\u83b7\u53d6\u4e00\u4e2a\u6216\u591a\u4e2a\u5934\u65f6\u5931\u8d25\u3002
 error.get.jain.sip.headers.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.get.max.forwards=CWSCT0091E: SIP \u672a\u80fd\u83b7\u53d6\u6700\u5927\u8f6c\u53d1\u6b21\u6570 {0}
 error.get.max.forwards.explanation=\u5e94\u7528\u7a0b\u5e8f\u8c03\u7528 SipServletRequest.getMaxForwards() \u5931\u8d25\u3002
 error.get.max.forwards.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.get.reason.phrase=CWSCT0092E: SIP \u672a\u80fd\u83b7\u53d6\u539f\u56e0\u77ed\u8bed {0}
 error.get.reason.phrase.explanation=\u5e94\u7528\u7a0b\u5e8f\u8c03\u7528 SipServletResponse.getReasonPhrase() \u5931\u8d25\u3002
 error.get.reason.phrase.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.get.status=CWSCT0093E: SIP \u672a\u80fd\u83b7\u53d6\u72b6\u6001 {0}
 error.get.status.explanation=\u5e94\u7528\u7a0b\u5e8f\u8c03\u7528 SipServletResponse.getStatus() \u5931\u8d25\u3002
 error.get.status.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.set.status=CWSCT0094E: SIP \u672a\u80fd\u8bbe\u7f6e\u72b6\u6001\uff1b\u72b6\u6001\uff1a{0}\uff0c\u539f\u56e0\u77ed\u8bed\uff1a{1}
 error.set.status.explanation=\u5e94\u7528\u7a0b\u5e8f\u8c03\u7528 SipServletResponse.setStatus() \u5931\u8d25\u3002
 error.set.status.useraction=\u8bf7\u68c0\u67e5\u5e94\u7528\u7a0b\u5e8f\u4ee3\u7801\u4ee5\u786e\u4fdd\u72b6\u6001\u7801\u6709\u6548\u3002\u5982\u679c\u60a8\u8fd8\u63d0\u4f9b\u4e86\u539f\u56e0\u77ed\u8bed\uff0c\u8bf7\u786e\u4fdd\u5b83\u4e0d\u4e3a NULL \u4e14\u4e0d\u4e3a\u7a7a\u3002
@@ -378,19 +325,15 @@ error.set.uri.useraction=\u8bf7\u68c0\u67e5\u5e94\u7528\u7a0b\u5e8f\u4ee3\u7801\
 error.sending.ack=CWSCT0101E: \u672a\u80fd\u53d1\u9001 ACK \u8bf7\u6c42\u3002
 error.sending.ack.explanation=SIP com.ibm.ws.sip.container \u672a\u80fd\u53d1\u9001\u51fa ACK \u8bf7\u6c42\u3002
 error.sending.ack.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.sending.cancel=CWSCT0102E: \u672a\u80fd\u53d1\u9001 CANCEL \u8bf7\u6c42\u3002
 error.sending.cancel.explanation=SIP com.ibm.ws.sip.container \u672a\u80fd\u53d1\u9001\u51fa CANCEL \u8bf7\u6c42\u3002
 error.sending.cancel.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.failed.create.timeout.response=CWSCT0103E: \u672a\u80fd\u751f\u6210\u8d85\u65f6\u54cd\u5e94\u3002
 error.failed.create.timeout.response.explanation=\u4ece SIP com.ibm.ws.sip.container \u53d1\u9001\u51fa\u7684\u8bf7\u6c42\u5728 32 \u79d2\u5185\u672a\u5f97\u5230\u54cd\u5e94\uff0cSIP com.ibm.ws.sip.container \u672a\u80fd\u751f\u6210\u5bf9\u5e94\u7528\u7a0b\u5e8f\u7684\u8d85\u65f6\u54cd\u5e94\u3002
 error.failed.create.timeout.response.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.cloning.address=CWSCT0104E: \u672a\u80fd\u514b\u9686\u5730\u5740\u3002
 error.cloning.address.explanation=\u514b\u9686\u5730\u5740\u5bf9\u8c61\u65f6\u5728 SIP com.ibm.ws.sip.container \u4e2d\u53d1\u751f\u5185\u90e8\u9519\u8bef\u3002
 error.cloning.address.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.invalid.tel.url=CWSCT0105E: \u7535\u8bdd URL \u65e0\u6548\uff1a{0}
 error.invalid.tel.url.explanation=SIP com.ibm.ws.sip.container \u672a\u80fd\u521b\u5efa\u7535\u8bdd URL\u3002
 error.invalid.tel.url.useraction=\u786e\u4fdd\u539f\u59cb URL \u5b57\u7b26\u4e32\u7684\u957f\u5ea6\u81f3\u5c11\u4e3a 4 \u4e2a\u5b57\u8282\uff083 \u4e2a\u7528\u4e8e\u8868\u793a\u6a21\u5f0f\uff0c1 \u4e2a\u7528\u4e8e\u8868\u793a\u5192\u53f7\u5b57\u7b26\uff09\u3002
@@ -398,7 +341,6 @@ error.invalid.tel.url.useraction=\u786e\u4fdd\u539f\u59cb URL \u5b57\u7b26\u4e32
 error.sending.487.response=CWSCT0106E: \u53d1\u9001 487 \u54cd\u5e94 {0} \u65f6\u51fa\u9519
 error.sending.487.response.explanation=\u53d6\u6d88\u8bf7\u6c42\u65f6\uff0cSIP com.ibm.ws.sip.container \u672a\u80fd\u5c06 487\uff08\u8bf7\u6c42\u5df2\u7ec8\u6b62\uff09\u54cd\u5e94\u53d1\u9001\u5230\u539f\u59cb\u8bf7\u6c42\u3002
 error.sending.487.response.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.set.character.encoding=CWSCT0108E: \u8bbe\u7f6e\u5b57\u7b26\u7f16\u7801\u65f6\u51fa\u9519\uff1a{0}
 error.set.character.encoding.explanation=\u5e94\u7528\u7a0b\u5e8f\u8c03\u7528 SipServletMessage.setCharacterEncoding() \u5931\u8d25\u3002
 error.set.character.encoding.useraction=\u8bf7\u68c0\u67e5\u5e94\u7528\u7a0b\u5e8f\u4ee3\u7801\u4ee5\u786e\u4fdd\u7f16\u7801\u53c2\u6570\u6709\u6548\u4e14\u4e0d\u4e3a\u7a7a\u3002
@@ -410,15 +352,12 @@ error.setting.tag.useraction=\u8bf7\u68c0\u67e5\u5e94\u7528\u7a0b\u5e8f\u4ee3\u7
 info.sequence.logger.enabled=CWSCT0113I: SIP \u4f1a\u8bdd\u5e8f\u5217\u8bb0\u5f55\u5668\u5df2\u542f\u7528\uff0c\u7ea7\u522b\uff1a{0}
 info.sequence.logger.enabled.explanation=SIP \u4f1a\u8bdd/\u5bf9\u8bdd\u5e8f\u5217\u7684\u8bb0\u5f55\u5668\u5df2\u542f\u7528\u3002
 info.sequence.logger.enabled.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.unexpected.uri.in.route=CWSCT0115E: \u539f\u5e94\u4e3a SIP URI\uff0c\u4f46\u63a5\u6536\u5230 {0}
 error.unexpected.uri.in.route.explanation=
 error.unexpected.uri.in.route.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 info.standalone.started=CWSCT0116I: SIP \u5bb9\u5668\u6b63\u5728\u4f7f\u7528\u72ec\u7acb\u914d\u7f6e\u3002
 info.standalone.started.explanation=SIP com.ibm.ws.sip.container \u672a\u4f5c\u4e3a Websphere \u670d\u52a1\u5728\u8fd0\u884c\u3002
 info.standalone.started.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.init.siplet=CWSCT0117E: \u672a\u80fd\u521d\u59cb\u5316 siplet {0}
 error.init.siplet.explanation=SIP com.ibm.ws.sip.container \u5728\u88c5\u5165\u6216\u5b9e\u4f8b\u5316 SIP servlet \u7c7b\u65f6\u5931\u8d25\u3002
 error.init.siplet.useraction=\u8bf7\u68c0\u67e5 sip.xml \u6587\u4ef6\u4ee5\u786e\u4fdd\u7c7b\u540d\u6b63\u786e\u4e14\u5177\u6709\u4e0d\u9700\u8981\u81ea\u53d8\u91cf\u7684\u516c\u5171\u6784\u9020\u51fd\u6570\u3002
@@ -426,7 +365,6 @@ error.init.siplet.useraction=\u8bf7\u68c0\u67e5 sip.xml \u6587\u4ef6\u4ee5\u786e
 error.invoke.servlet=CWSCT0118E: \u670d\u52a1 siplet \u5931\u8d25 {0}
 error.invoke.servlet.explanation=SIP servlet \u4ee3\u7801\u4ea7\u751f\u4e86\u5f02\u5e38\u3002
 error.invoke.servlet.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.servlet.unavailable=CWSCT0119E: \u8c03\u7528 siplet \u5931\u8d25\uff1bservlet \u4e0d\u53ef\u7528\uff1a{0}\uff0c{1}
 error.servlet.unavailable.explanation=SIP servlet \u4e0d\u5b58\u5728\u3002
 error.servlet.unavailable.useraction=\u8bf7\u68c0\u67e5 sip.xml \u6587\u4ef6\u4ee5\u786e\u4fdd servlet \u7c7b\u540d\u6b63\u786e\u3002
@@ -438,7 +376,6 @@ error.initialize.sip.container.useraction=\u8bf7\u5bf9 SIP com.ibm.ws.sip.contai
 warning.timer.listener.unavailable=CWSCT0122W: \u5206\u6d3e\u8ba1\u65f6\u5668\u4e8b\u4ef6\u65f6\u51fa\u9519\uff1b\u8ba1\u65f6\u5668\u4fa6\u542c\u5668\u4e0d\u53ef\u7528\uff1a{0}
 warning.timer.listener.unavailable.explanation=\u89e6\u53d1\u4e86 SIP servlet \u8ba1\u65f6\u5668\uff0c\u4f46\u6ca1\u6709\u4e0e\u5b83\u76f8\u5173\u8054\u7684\u4fa6\u542c\u5668\u3002
 warning.timer.listener.unavailable.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 warning.timer.unavailable=CWSCT0124W: TimerServiceImpl \u4e0d\u53ef\u7528
 warning.timer.unavailable.explanation=SIP com.ibm.ws.sip.container \u4e2d\u5df2\u7981\u7528\u6240\u6709\u8ba1\u65f6\u5668
 warning.timer.unavailable.useraction=\u8bf7\u68c0\u67e5 SIP com.ibm.ws.sip.container \u914d\u7f6e\u5e76\u79fb\u9664\u201cenable.timers\u201d\u5c5e\u6027\uff0c\u6216\u5c06\u5176\u503c\u8bbe\u7f6e\u4e3a\u201ctrue\u201d\u3002
@@ -446,67 +383,51 @@ warning.timer.unavailable.useraction=\u8bf7\u68c0\u67e5 SIP com.ibm.ws.sip.conta
 error.transaction.id.alreay.set=CWSCT0125E: \u5df2\u4e3a\u4e8b\u52a1\u8bbe\u7f6e\u4e86\u4e8b\u52a1\u6807\u8bc6\uff1b\u5f53\u524d\u6807\u8bc6\u4e3a {0}\uff0c\u65b0\u6807\u8bc6\u4e3a {1}
 error.transaction.id.alreay.set.explanation=\u5df2\u7ecf\u7528\u4e00\u4e2a\u4e8b\u52a1\u6807\u8bc6\u521d\u59cb\u5316 SIP \u4e8b\u52a1\uff0c\u4e0d\u80fd\u66f4\u6539\u8be5\u4e8b\u52a1\u3002
 error.transaction.id.alreay.set.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.cannot.lookup.host=CWSCT0336E: VirtualHostAlias.init\uff1a\u65e0\u6cd5\u67e5\u8be2\u4e3b\u673a {0}
 error.cannot.lookup.host.explanation=SIP com.ibm.ws.sip.container \u672a\u80fd\u5c06\u865a\u62df\u4e3b\u673a\u522b\u540d\u7684\u4e3b\u673a\u540d\u89e3\u6790\u4e3a IP \u5730\u5740\u3002
 error.cannot.lookup.host.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.invoking.request=CWSCT0139E: SIP \u672a\u80fd\u8c03\u7528\u8bf7\u6c42\uff1b\u6d88\u606f\u4e3a {0}
 error.invoking.request.explanation=SIP com.ibm.ws.sip.container \u5c1d\u8bd5\u8c03\u7528\u8bf7\u6c42\u65f6\u4ea7\u751f\u4e86\u5f02\u5e38\u3002
 error.invoking.request.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.sending.response.from.prepare.for.write=CWSCT0140E: SIP \u672a\u80fd\u53d1\u9001\u54cd\u5e94\u4ee5\u51c6\u5907\u5199\u5165\u3002
 error.sending.response.from.prepare.for.write.explanation=SIP com.ibm.ws.sip.container \u672a\u80fd\u4ece prepareHeadersForWrite() \u8c03\u7528\u4e2d\u53d1\u9001\u51fa\u54cd\u5e94\u3002
 error.sending.response.from.prepare.for.write.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.message.dispatcher.invalid.state=CWSCT0142E: \u9519\u8bef\uff1a\u5206\u6d3e\u5668\u5c1a\u672a\u5b8c\u6210\u5148\u524d\u6d88\u606f\u7684\u5206\u6d3e\u3002
 error.message.dispatcher.invalid.state.explanation=SIP com.ibm.ws.sip.container \u4e0d\u80fd\u5206\u6d3e\u6d88\u606f\uff0c\u56e0\u4e3a\u5148\u524d\u6d88\u606f\u7684\u5206\u6d3e\u5c1a\u672a\u5b8c\u6210\u3002
 error.message.dispatcher.invalid.state.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.non.http.request=CWSCT0145E: \u63a5\u6536\u5230 {0} \u8bf7\u6c42\uff0c\u4f46\u539f\u5e94\u4e3a javax.servlet.http.HttpServletRequest
 error.non.http.request.explanation=SIP com.ibm.ws.sip.container \u4ece Web com.ibm.ws.sip.container \u63a5\u6536\u5230 javax.servlet.http.HttpServletRequest \u4ee5\u5916\u7684\u8bf7\u6c42\u3002
 error.non.http.request.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.failed.to.register.collaborator=CWSCT0146E: \u672a\u80fd\u6ce8\u518c {0} \u534f\u8c03\u7a0b\u5e8f
 error.failed.to.register.collaborator.explanation=SIP com.ibm.ws.sip.container \u672a\u80fd\u5411 Websphere \u5c06\u81ea\u5df1\u6ce8\u518c\u4e3a\u4fa6\u542c\u5668\u3002
 error.failed.to.register.collaborator.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.exception.cnf=CWSCT0188E: \u9519\u8bef - \u53d1\u751f\u201c\u627e\u4e0d\u5230\u7c7b\u201d\u5f02\u5e38\uff1b\u65e0\u6cd5\u53cd\u5e8f\u5217\u5316\u3002
 error.exception.cnf.explanation=SIP com.ibm.ws.sip.container \u5728\u5bf9\u8c61\u5e8f\u5217\u5316\u671f\u95f4\u6355\u83b7\u5230\u7c7b\u578b\u4e3a ClassNotFoundException \u7684\u5f02\u5e38\u3002
 error.exception.cnf.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.exception.io.serialize.deserialize=CWSCT0189E: \u9519\u8bef - IO \u5f02\u5e38\uff1b\u65e0\u6cd5\u5e8f\u5217\u5316\uff0f\u53cd\u5e8f\u5217\u5316\u3002
 error.exception.io.serialize.deserialize.explanation=SIP com.ibm.ws.sip.container \u5728\u5bf9\u8c61\u5e8f\u5217\u5316\u671f\u95f4\u6355\u83b7\u5230\u7c7b\u578b\u4e3a IOException \u7684\u5f02\u5e38\u3002
 error.exception.io.serialize.deserialize.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.exception.cache.alg=CWSCT0185E: \u9519\u8bef - \u9ad8\u901f\u7f13\u5b58\u7b97\u6cd5\u4e0d\u5b58\u5728\u3002
 error.exception.cache.alg.explanation=SIP com.ibm.ws.sip.container \u4f1a\u8bdd\u7ba1\u7406\u5668\u6240\u8bf7\u6c42\u7684\u9ad8\u901f\u7f13\u5b58\u7b97\u6cd5\u4e0d\u5b58\u5728\u3002
 error.exception.cache.alg.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.exception.replicator=CWSCT0186E: \u9519\u8bef - \u590d\u5236\u5668\u5f02\u5e38
 error.exception.replicator.explanation=SIP com.ibm.ws.sip.container \u4f1a\u8bdd\u7ba1\u7406\u5668\u6355\u83b7\u5230\u590d\u5236\u5f02\u5e38\u3002
 error.exception.replicator.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 info.sipha.version=CWSCT0187I: SIP HA {0}
 info.sipha.version.explanation=SIP com.ibm.ws.sip.container \u9ad8\u53ef\u7528\u6027\u7ec4\u4ef6\u5df2\u521d\u59cb\u5316\u3002
 info.sipha.version.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.exception.drs=CWSCT0219E: \u9519\u8bef - drs \u5f02\u5e38
 error.exception.drs.explanation=DRS \u590d\u5236\u671f\u95f4\u5728 SIP com.ibm.ws.sip.container \u4e2d\u6355\u83b7\u5230\u5f02\u5e38\u3002
 error.exception.drs.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.exception.admin=CWSCT0220E: \u9519\u8bef - \u7ba1\u7406 JMX \u5f02\u5e38
 error.exception.admin.explanation=\u6fc0\u6d3b\u4f1a\u8bdd\u7ba1\u7406\u5668\u7684 MBean \u65f6\u5728 SIP com.ibm.ws.sip.container \u4e2d\u6355\u83b7\u5230\u5f02\u5e38\u3002
 error.exception.admin.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.drs.broker=CWSCT0222E: \u9519\u8bef - DRS \u591a\u4ee3\u7406\u7a0b\u5e8f\u5f02\u5e38\u3002
 error.drs.broker.explanation=\u4f7f\u7528 DRS \u591a\u4ee3\u7406\u7a0b\u5e8f\u65f6\u5728 SIP com.ibm.ws.sip.container \u4e2d\u6355\u83b7\u5230\u5f02\u5e38\u3002
 error.drs.broker.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.drs.setting.mode=CWSCT0224E: \u9519\u8bef - DRS \u65b9\u5f0f\u4e0d\u662f BOTH_CLIENT_SERVER\uff08\u5bf9\u7b49\uff09
 error.drs.setting.mode.explanation=DRS \u65b9\u5f0f\u4e0d\u9002\u5408\u4e8e SIP com.ibm.ws.sip.container \u4e2d\u7684\u6570\u636e\u590d\u5236\u3002
 error.drs.setting.mode.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 info.drs.setting.missing=CWSCT0225E: \u53c2\u8003 - \u672a\u8bbe\u7f6e DRS
 info.drs.setting.missing.explanation=\u5df2\u7981\u7528 SIP com.ibm.ws.sip.container \u4e2d\u7684\u590d\u5236\uff0c\u56e0\u4e3a\u672a\u8bbe\u7f6e DRS\u3002
 info.drs.setting.missing.useraction=\u8bf7\u786e\u4fdd\u914d\u7f6e WebContainer SessionManager \u4ee5\u4f7f\u7528\u201c\u5185\u5b58\u81f3\u5185\u5b58\u201d\u590d\u5236\u3002
@@ -518,103 +439,78 @@ info.drs.enablefailover.disabled.useraction=\u8bf7\u4f7f\u7528\u201cenable.repli
 info.drs.enablefailover.enabled=CWSCT0227I: \u53c2\u8003 - \u5df2\u542f\u7528 SIP com.ibm.ws.sip.container \u9ad8\u53ef\u7528\u6027\u7ec4\u4ef6\u3002
 info.drs.enablefailover.enabled.explanation=\u5df2\u542f\u7528 SIP com.ibm.ws.sip.containercom.ibm.ws.sip.container \u9ad8\u53ef\u7528\u6027\u7ec4\u4ef6\u7684\u8d1f\u8f7d\u5747\u8861\u548c\u6545\u969c\u8f6c\u79fb\u529f\u80fd\u3002
 info.drs.enablefailover.enabled.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.exception.ha.groupleft=CWSCT0228E: \u9519\u8bef - HAGroupLeftException
 error.exception.ha.groupleft.explanation=SIP com.ibm.ws.sip.container \u5728\u88ab\u4f5c\u4e3a\u7ec4\u6210\u5458\u6fc0\u6d3b\u65f6\u6355\u83b7\u5230\u7c7b\u578b\u4e3a HAGroupLeftException \u7684\u5f02\u5e38\u3002
 error.exception.ha.groupleft.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.exception.ha.param.reject=CWSCT0229E: \u9519\u8bef - HAParameterRejectedException
 error.exception.ha.param.reject.explanation=SIP com.ibm.ws.sip.container \u5728\u88ab\u4f5c\u4e3a\u7ec4\u6210\u5458\u6fc0\u6d3b\u65f6\u6355\u83b7\u5230\u7c7b\u578b\u4e3a HAParameterRejectedException \u7684\u5f02\u5e38\u3002
 error.exception.ha.param.reject.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.exception.io.deserialize=CWSCT0231E: \u9519\u8bef - IO \u5f02\u5e38\uff1b\u65e0\u6cd5\u53cd\u5e8f\u5217\u5316\u3002
 error.exception.io.deserialize.explanation=\u5728 SIP com.ibm.ws.sip.container \u4e2d\uff0c\u6570\u636e\u5e8f\u5217\u5316\u5931\u8d25\u3002
 error.exception.io.deserialize.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.exception.ha=CWSCT0232E: \u9519\u8bef - HA \u5f02\u5e38
 error.exception.ha.explanation=\u5728 SIP com.ibm.ws.sip.container \u9ad8\u53ef\u7528\u6027\u7ec4\u4ef6\u4e2d\u6355\u83b7\u5230\u5f02\u5e38\u3002
 error.exception.ha.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.exception.ds=CWSCT0233E: \u9519\u8bef - \u6570\u636e\u5806\u6808\u5f02\u5e38
 error.exception.ds.explanation=\u5728 SIP com.ibm.ws.sip.container \u9ad8\u53ef\u7528\u6027\u7ec4\u4ef6\u4e2d\u6355\u83b7\u5230 DataStackException\u3002
 error.exception.ds.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.exception.io=CWSCT0237E: \u9519\u8bef - IO \u5f02\u5e38
 error.exception.io.explanation=\u5728 SIP com.ibm.ws.sip.container \u4e2d\u6355\u83b7\u5230 IOException\u3002
 error.exception.io.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.exception.ucf.no_cluster_define=CWSCT0238E: \u9519\u8bef - UCF \u5f02\u5e38\uff1b\u672a\u5b9a\u4e49\u96c6\u7fa4\u3002
 error.exception.ucf.no_cluster_define.explanation=SIP com.ibm.ws.sip.container \u65e0\u6cd5\u52a0\u5165\u6216\u8131\u79bb\u96c6\u7fa4\uff0c\u56e0\u4e3a\u672a\u5b9a\u4e49\u96c6\u7fa4\u3002
 error.exception.ucf.no_cluster_define.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.exception.ucf.noclusterservice=CWSCT0240E: \u9519\u8bef - \u65e0\u96c6\u7fa4\u6210\u5458\u670d\u52a1\u3002
 error.exception.ucf.noclusterservice.explanation=SIP com.ibm.ws.sip.container \u65e0\u6cd5\u542f\u52a8\u6216\u505c\u6b62\u9ad8\u53ef\u7528\u6027\u7ec4\u4ef6\uff0c\u56e0\u4e3a\u5728\u5c1d\u8bd5\u8bbf\u95ee\u96c6\u7fa4\u670d\u52a1\u65f6\u53d1\u751f\u5f02\u5e38\u3002
 error.exception.ucf.noclusterservice.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.exception.ucf.no.member.available=CWSCT0241E: \u9519\u8bef - UCF \u5f02\u5e38 - \u65e0\u53ef\u7528\u6210\u5458\u3002
 error.exception.ucf.no.member.available.explanation=SIP com.ibm.ws.sip.container \u4ece UCF \u83b7\u53d6 SIP \u4ee3\u7406\u7aef\u70b9\u4fe1\u606f\u65f6\u5931\u8d25\u3002
 error.exception.ucf.no.member.available.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.exception.class.not.found=CWSCT0243E: \u9519\u8bef - \u53d1\u751f\u201c\u627e\u4e0d\u5230\u7c7b\u201d\u5f02\u5e38\u3002
 error.exception.class.not.found.explanation=\u5728 SIP com.ibm.ws.sip.container \u4e2d\u6355\u83b7\u5230 ClassNotFoundException\u3002
 error.exception.class.not.found.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.orb=CWSCT0244E: \u9519\u8bef - \u4e0d\u80fd\u83b7\u53d6 ORB \u5bf9\u8c61
 error.orb.explanation=SIP com.ibm.ws.sip.container \u7531\u4e8e\u5728\u83b7\u53d6 ORB \u5bf9\u8c61\u65f6\u51fa\u9519\u800c\u4e0d\u80fd\u53d1\u5e03\u5176\u903b\u8f91\u540d\u3002
 error.orb.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.orb.cc=CWSCT0245E: \u9519\u8bef - ORB \u7c7b\u5f3a\u5236\u7c7b\u578b\u8f6c\u6362\u5f02\u5e38
 error.orb.cc.explanation=SIP com.ibm.ws.sip.container \u7531\u4e8e ClassCastException \u800c\u4e0d\u80fd\u53d1\u5e03\u5176\u903b\u8f91\u540d\u3002
 error.orb.cc.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.orb.in=CWSCT0246E: \u9519\u8bef - ORB \u540d\u79f0\u8bf7\u6c42\u65e0\u6548
 error.orb.in.explanation=SIP com.ibm.ws.sip.container \u7531\u4e8e InvalidName \u5f02\u5e38\u800c\u4e0d\u80fd\u53d1\u5e03\u5176\u903b\u8f91\u540d\u3002
 error.orb.in.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.exception.classnotfound=CWSCT0259E: \u9519\u8bef - \u627e\u4e0d\u5230\u7c7b
 error.exception.classnotfound.explanation=SIP com.ibm.ws.sip.container TAI \u7531\u4e8e ClassNotFoundException \u800c\u672a\u80fd\u521d\u59cb\u5316
 error.exception.classnotfound.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.exception.instantiate=CWSCT0260E: \u9519\u8bef - \u5b9e\u4f8b\u5316\u5f02\u5e38
 error.exception.instantiate.explanation=SIP com.ibm.ws.sip.container TAI \u7531\u4e8e InstantiationException \u800c\u672a\u80fd\u521d\u59cb\u5316\u3002
 error.exception.instantiate.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.exception.illegalaccess=CWSCT0261E: \u9519\u8bef - \u975e\u6cd5\u8bbf\u95ee\u5f02\u5e38\u3002
 error.exception.illegalaccess.explanation=SIP com.ibm.ws.sip.container TAI \u7531\u4e8e IllegalAccessException \u800c\u672a\u80fd\u521d\u59cb\u5316\u3002
 error.exception.illegalaccess.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.exception.filenotfound=CWSCT0262E: \u9519\u8bef - \u627e\u4e0d\u5230\u6587\u4ef6\u3002
 error.exception.filenotfound.explanation=SIP com.ibm.ws.sip.container \u5b89\u5168\u6027\u4e0d\u80fd\u6253\u5f00\u5bc6\u7801\u6587\u4ef6\u3002
 error.exception.filenotfound.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.exception.login=CWSCT0264E: \u9519\u8bef - \u767b\u5f55\u4e0a\u4e0b\u6587\u5931\u8d25
 error.exception.login.explanation=SIP com.ibm.ws.sip.container TAI \u5728\u83b7\u53d6\u7528\u6237\u4e3b\u9898\u96c6\u65f6\u6355\u83b7\u5230 LoginException \u3002
 error.exception.login.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.exception.naming=CWSCT0266E: \u9519\u8bef - \u547d\u540d\u5f02\u5e38
 error.exception.naming.explanation=\u5728 SIP com.ibm.ws.sip.container \u5b89\u5168\u6027\u4e2d\u6355\u83b7\u5230 NamingException\u3002
 error.exception.naming.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.exception.parse=CWSCT0267E: \u9519\u8bef - \u89e3\u6790\u5f02\u5e38\u3002
 error.exception.parse.explanation=\u5728 SIP com.ibm.ws.sip.container TAI\uff08\u4fe1\u4efb\u5173\u8054\u62e6\u622a\u5668\uff09\u4e2d\u6355\u83b7\u5230\u89e3\u6790\u5f02\u5e38\u3002
 error.exception.parse.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.exception.stack=CWSCT0315E: SIP \u5806\u6808\u4e2d\u53d1\u751f\u5f02\u5e38\u3002
 error.exception.stack.explanation= \u521d\u59cb\u5316 SIP \u5806\u6808\u65f6\u6355\u83b7\u5230\u5f02\u5e38\u3002
 error.exception.stack.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 info.sipstack.version=CWSCT0316I: SIP \u5806\u6808 {0}
 info.sipstack.version.explanation=SIP \u5806\u6808\u6b63\u5728\u521d\u59cb\u5316
 info.sipstack.version.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.unknown.host.exception=CWSCT0317E: \u201c\u4e3b\u673a\u672a\u77e5\u201d\u5f02\u5e38\uff1b\u65e0\u6cd5\u89e3\u6790\u4e3b\u673a\u540d\u3002
 error.unknown.host.exception.explanation=\u5c1d\u8bd5\u5c06\u4e3b\u673a\u540d\u89e3\u6790\u4e3a IP \u5730\u5740\u65f6\uff0c\u5728 SIP \u5806\u6808\u4e2d\u6355\u83b7\u5230 UnknownHostException\u3002
 error.unknown.host.exception.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.base64parser.exception=CWSCT0318E: \u89e3\u6790\u5668\u5f02\u5e38\uff1b\u672a\u80fd\u5199\u5165\u8f93\u51fa\u6d41\u3002
 error.base64parser.exception.explanation=SIP \u5806\u6808\u5728\u5199\u5165\u8f93\u51fa\u6d41\u65f6\u5931\u8d25\u3002
 error.base64parser.exception.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.same.to.tag=CWSCT0319E: \u591a\u4e2a\u4ee3\u7406\u5206\u652f\u53d1\u51fa\u7684\u4e24\u4e2a\u6216\u4e24\u4e2a\u4ee5\u4e0a\u54cd\u5e94\u4e2d\u5177\u6709\u76f8\u540c\u201c\u76ee\u7684\u5730\u201d\u6807\u7b7e
 error.same.to.tag.explanation=\u4e0d\u540c\u4ee3\u7406\u5206\u652f\u53d1\u51fa\u7684\u4e24\u4e2a\u6216\u4e24\u4e2a\u4ee5\u4e0a\u54cd\u5e94\u4e2d\u63a5\u6536\u5230\u76f8\u540c\u201c\u76ee\u7684\u5730\u201d\u6807\u7b7e\u3002\u6839\u636e RFC 3261 \u89c4\u8303\uff0c\u8be5\u64cd\u4f5c\u65e0\u6548\u3002
 error.same.to.tag.useraction=\u8bf7\u786e\u4fdd\u54cd\u5e94\u7528\u6237\u4ee3\u7406\u670d\u52a1\u5668 (UAS) \u5b9e\u4f8b\u4e3a\u6bcf\u4e2a\u5bf9\u8bdd\u751f\u6210\u552f\u4e00\u7684\u201c\u76ee\u7684\u5730\u201d\u6807\u7b7e\uff0c\u4ee5\u7b26\u5408 RFC 3261 \u89c4\u8303\u3002
@@ -622,39 +518,30 @@ error.same.to.tag.useraction=\u8bf7\u786e\u4fdd\u54cd\u5e94\u7528\u6237\u4ee3\u7
 info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.1=CWSCT0321I: SIP \u5806\u6808\u521d\u59cb\u5316\u914d\u7f6e
 info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.1.explanation=SIP \u5806\u6808\u914d\u7f6e\u5df2\u521d\u59cb\u5316\u3002
 info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.1.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.2=CWSCT0322I: SIP \u5806\u6808\u521d\u59cb\u5316\u4f20\u8f93\u3002
 info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.2.explanation=SIP \u5806\u6808\u4f20\u8f93\u5df2\u521d\u59cb\u5316\u3002
 info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.2.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.3=CWSCT0323I: SIP \u5806\u6808\u521d\u59cb\u5316\u5df2\u5b8c\u6210\u3002
 info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.3.explanation=SIP \u5806\u6808\u521d\u59cb\u5316\u5df2\u5b8c\u6210\u3002
 info.com.ibm.ws.sip.stack.transaction.SIPTransactionStack.init.3.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 info.stack.timer.b=CWSCT0324I: SIP \u5806\u6808\u7684\u8ba1\u65f6\u5668 B \u5df2\u8bbe\u7f6e\u4e3a {0} \u6beb\u79d2\u3002
 info.stack.timer.b.explanation=\u5df2\u8bbe\u7f6e SIP \u5806\u6808\u7684\u8ba1\u65f6\u5668 B\u3002\u6709\u5173\u8ba1\u65f6\u5668 B \u7684\u66f4\u591a\u4fe1\u606f\uff0c\u8bf7\u53c2\u9605 RFC 3261\u3002
 info.stack.timer.b.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 info.com.ibm.ws.sip.stack.transaction.transport.initListeningPoints=CWSCT0328I: SIP \u5f00\u59cb\u5728 {0} \u4e0a\u4fa6\u542c\u3002
 info.com.ibm.ws.sip.stack.transaction.transport.initListeningPoints.explanation=SIP \u5806\u6808\u5f00\u59cb\u5728\u6307\u5b9a\u7684\u4fa6\u542c\u70b9\u4e0a\u4fa6\u542c\u3002
 info.com.ibm.ws.sip.stack.transaction.transport.initListeningPoints.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 info.sip.container.launched.but.not.loaded=CWSCT0332I: SIP \u5bb9\u5668\u5df2\u6210\u529f\u542f\u52a8\uff0c\u4f46\u4ec5\u5f53\u88c5\u5165\u7b2c\u4e00\u4e2a SIP \u5e94\u7528\u7a0b\u5e8f\u65f6\u624d\u4f1a\u5c06\u5b83\u521d\u59cb\u5316\u3002
 info.sip.container.launched.but.not.loaded.explanation=\u88c5\u5165\u7b2c\u4e00\u4e2a SIP \u5e94\u7528\u7a0b\u5e8f\u65f6\uff0c\u5c06\u521d\u59cb\u5316 SIP \u5bb9\u5668\u3002
 info.sip.container.launched.but.not.loaded.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.replication.failed=CWSCT0333E: \u590d\u5236\u64cd\u4f5c\u5931\u8d25\u3002
 error.replication.failed.explanation=\u590d\u5236\u671f\u95f4\u5728 SIP com.ibm.ws.sip.container \u4e2d\u53d1\u751f\u5f02\u5e38\u3002
 error.replication.failed.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.failed.to.deserialize.replication=CWSCT0334E: \u672a\u80fd\u53cd\u5e8f\u5217\u5316\u590d\u5236\u64cd\u4f5c\u3002
 error.failed.to.deserialize.replication.explanation=\u5bf9\u8c61\u53cd\u5e8f\u5217\u5316\u671f\u95f4\u5728 SIP com.ibm.ws.sip.container \u590d\u5236\u4e2d\u53d1\u751f\u5f02\u5e38\u3002
 error.failed.to.deserialize.replication.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.failed.to.reactivate.objects.after.failover=CWSCT0335E: \u5728\u6545\u969c\u8f6c\u79fb\u4e4b\u540e\u672a\u80fd\u91cd\u65b0\u6fc0\u6d3b\u5bf9\u8c61\u3002
 error.failed.to.reactivate.objects.after.failover.explanation=\u6545\u969c\u8f6c\u79fb\u4e4b\u540e\u7684\u4f1a\u8bdd\u6fc0\u6d3b\u671f\u95f4\uff0c\u5728 SIP com.ibm.ws.sip.container \u4e2d\u53d1\u751f\u5f02\u5e38\u3002
 error.failed.to.reactivate.objects.after.failover.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 warning.display.name.different=CWSCT0337W: sip.xml\uff08{0}\uff09\u4e2d\u7684\u663e\u793a\u540d\u79f0\u4e0e web.xml\uff08{1}\uff09\u4e2d\u7684\u663e\u793a\u540d\u79f0\u4e0d\u540c\u3002
 warning.display.name.different.explanation=\u5e94\u7528\u7a0b\u5e8f\u5728 sip.xml \u4e2d\u7684\u663e\u793a\u540d\u79f0\u4e0e\u5728 web.xml \u4e2d\u7684\u663e\u793a\u540d\u79f0\u4e0d\u540c\u3002\u8fd9\u4e0d\u7b26\u5408 JSR-116 \u7684\u7b2c 15.2 \u6761\u3002
 warning.display.name.different.useraction=\u8bf7\u66f4\u6539\u90e8\u7f72\u63cf\u8ff0\u7b26\u4ee5\u4e0e\u5e94\u7528\u7a0b\u5e8f\u663e\u793a\u540d\u79f0\u5339\u914d\u3002
@@ -662,11 +549,9 @@ warning.display.name.different.useraction=\u8bf7\u66f4\u6539\u90e8\u7f72\u63cf\u
 warning.dispatch.failed=CWSCT0338W: \u672a\u80fd\u5c06 SIP \u6d88\u606f\u5206\u6d3e\u5230\u7ebf\u7a0b\u6c60\u3002\u6d88\u606f = {0}\uff0c\u8c03\u7528\u6807\u8bc6 = {1}\uff0c\u9519\u8bef\u4ee3\u7801 = {2}\u3002
 warning.dispatch.failed.explanation=SIP com.ibm.ws.sip.container \u672a\u80fd\u5c06\u6d88\u606f\u5206\u6d3e\u5230\u7ebf\u7a0b\u6c60\u3002
 warning.dispatch.failed.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.cannot.identify.object.type=CWSCT0339E: \u53cd\u5e8f\u5217\u5316\uff1a\u65e0\u6cd5\u6807\u8bc6\u5bf9\u8c61\u7c7b\u578b\u3002
 error.cannot.identify.object.type.explanation=SIP com.ibm.ws.sip.container \u65e0\u6cd5\u6807\u8bc6\u5bf9\u8c61\u7c7b\u578b\u4ee5\u8fdb\u884c\u53cd\u5e8f\u5217\u5316\u3002
 error.cannot.identify.object.type.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.security.password.retrieve=CWSCT0340E: \u9519\u8bef - \u65e0\u6cd5\u68c0\u7d22\u5bc6\u7801\u5c5e\u6027\u3002
 error.security.password.retrieve.explanation=\u8ba4\u8bc1\u5931\u8d25\uff0c\u56e0\u4e3a SIP com.ibm.ws.sip.container \u65e0\u6cd5\u4ece\u76ee\u5f55\u7684\u4e2a\u4eba\u6761\u76ee\u4e2d\u68c0\u7d22 userPassword \u5c5e\u6027\u3002
 error.security.password.retrieve.useraction=\u66f4\u6539 LDAP \u914d\u7f6e\u8bbe\u7f6e\uff0c\u4ee5\u4fbf\u670d\u52a1\u5668\u80fd\u591f\u8bbf\u95ee\u76ee\u5f55\u4e2d\u7684 userPassword \u5c5e\u6027\u3002
@@ -680,7 +565,6 @@ warn.server.overloaded.too.many.sessions.explanation=SIP \u670d\u52a1\u5668\u572
 warn.server.overloaded.too.many.sessions.useraction=\u51cf\u5c11\u6240\u521b\u5efa\u7684\u5e94\u7528\u7a0b\u5e8f\u4f1a\u8bdd\u6570\uff0c\u6216\u4e3a\u4f1a\u8bdd\u542f\u52a8\u534f\u8bae (SIP) com.ibm.ws.sip.container \u4e2d\u7684\u6700\u5927\u5e94\u7528\u7a0b\u5e8f\u4f1a\u8bdd\u6570\u8bbe\u7f6e\u4e00\u4e2a\u66f4\u5927\u7684\u503c\u3002
 
 warn.server.overloaded.too.many.messages=CWSCT0343W: \u670d\u52a1\u5668\u8d85\u8d1f\u8377\uff0c\u56e0\u4e3a\u5e73\u5747\u65f6\u95f4\u6bb5\u5185\u63a5\u6536\u5230\u592a\u591a\u6d88\u606f\u3002
-
 warn.server.overloaded.too.many.messages.explanation=SIP \u670d\u52a1\u5668\u5728\u8d85\u8d1f\u8377\u65f6\u4e0d\u80fd\u518d\u63a5\u53d7\u4efb\u4f55\u5165\u5c40\u6d88\u606f\u3002\u6d88\u606f\u6d41\u91cf\u592a\u5927\u3002
 warn.server.overloaded.too.many.messages.useraction=\u51cf\u5c11\u6d88\u606f\u8d1f\u8f7d\uff0c\u6216\u5728\u4f1a\u8bdd\u542f\u52a8\u534f\u8bae (SIP) com.ibm.ws.sip.container \u4e0a\u5c06\u6bcf\u4e2a\u5e73\u5747\u65f6\u95f4\u6bb5\u503c\u7684\u6700\u5927\u6d88\u606f\u6570\u8bbe\u7f6e\u4e3a\u66f4\u5927\u7684\u503c\u3002
 
@@ -704,7 +588,6 @@ info.bootstrap.finished=CWSCT0348I: \u5f15\u5bfc\u7a0b\u5e8f\u590d\u5236\u5df2\u
 
 info.bootstrap.finished.explanation=\u4f1a\u8bdd\u542f\u52a8\u534f\u8bae (SIP) com.ibm.ws.sip.container \u5df2\u5c06\u5176\u4f1a\u8bdd\u6570\u636e\u590d\u5236\u5230\u65b0\u8fde\u63a5\u7684\u540c\u7ea7\u3002
 info.bootstrap.finished.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 info.sip.stack.timer=CWSCT0349I: SIP \u5806\u6808\u8ba1\u65f6\u5668 [{0}] \u503c\u5df2\u8bbe\u7f6e\u4e3a [{1}]
 info.sip.stack.timer.explanation=\u5df2\u5728\u914d\u7f6e\u4e2d\u4fee\u6539\u8ba1\u65f6\u5668\u503c\u3002
 info.sip.stack.timer.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c
@@ -736,13 +619,11 @@ error.sip.cannot.run.on.server.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u
 error.parse.auth.challange=CWSCT0356E: \u672a\u80fd\u89e3\u6790\u8ba4\u8bc1\u5934\u3002
 error.parse.auth.challange.explanation=\u5e94\u7528\u7a0b\u5e8f\u8c03\u7528 SipServletResponse.getChallangeRealm() \u5931\u8d25\u3002
 error.parse.auth.challange.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.exception.ioeinbody=CWSCT0357E: \u9519\u8bef - \u65e0\u6cd5\u83b7\u53d6\u6d88\u606f\u4f53\u3002
 error.exception.ioeinbody.explanation=\u5728 SIP com.ibm.ws.sip.container \u5b89\u5168\u6027\u4ee3\u7801\u4e2d\u6355\u83b7\u5230 IOException\u3002
 error.exception.ioeinbody.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 warn.unsupported.realm=CWSCT0358W: \u8ba4\u8bc1\u57df {0} \u662f\u672a\u77e5\u7684
-warn.unsupported.realm.explanation=\u63a5\u6536\u5230\u672a\u77e5\u8ba4\u8bc1\u57df\u7684 SIP \u8bf7\u6c42\u3002
+warn.unsupported.realm.explanation=\u63a5\u6536\u5230\u9488\u5bf9\u672a\u77e5\u8ba4\u8bc1\u57df\u7684 SIP \u8bf7\u6c42
 warn.unsupported.realm.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c
 
 info.unhashed.creds=CWSCT0359I: \u627e\u4e0d\u5230\u201c\u6563\u5217\u51ed\u8bc1\u201d\u5c5e\u6027\u3002
@@ -772,7 +653,6 @@ error.sip.heartbeat.restart.failure.useraction=\u8bf7\u624b\u52a8\u91cd\u65b0\u5
 error.replication.b2blinkage.failed=CWSCT0365E: \u5728\u6545\u969c\u8f6c\u79fb\u4e4b\u540e\u627e\u4e0d\u5230 B2B \u8054\u63a5 {0} \u7684 SIP \u4f1a\u8bdd
 error.replication.b2blinkage.failed.explanation=\u590d\u5236\u671f\u95f4\u5728 SIP com.ibm.ws.sip.container \u4e2d\u53d1\u751f\u9519\u8bef\u3002
 error.replication.b2blinkage.failed.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 info.dar.init.2=CWSCT0401I: \u5df2\u521d\u59cb\u5316\u7f3a\u7701\u5e94\u7528\u7a0b\u5e8f\u8def\u7531\u5668\u3002
 info.dar.init.2.explanation=\u7f3a\u7701\u5e94\u7528\u7a0b\u5e8f\u8def\u7531\u5668\u6309\u5e94\u7528\u7a0b\u5e8f\u542f\u52a8\u987a\u5e8f\u9009\u62e9\u5e94\u7528\u7a0b\u5e8f\u3002
 info.dar.init.2.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c
@@ -805,7 +685,6 @@ error.dar.property.parser.1.useraction=\u8bf7\u9a8c\u8bc1\u5e94\u7528\u7a0b\u5e8
 warn.sip.proxy.outboundif.invalid=CWSCT0409W: \u4f7f\u7528\u4e0d\u540c\u7684\u51fa\u7ad9\u63a5\u53e3\u914d\u7f6e\u4e86\u4ee3\u7406\u3002
 warn.sip.proxy.outboundif.invalid.explanation=\u5fc5\u987b\u4f7f\u7528\u76f8\u540c\u7684\u865a\u62df IP \u914d\u7f6e\u6240\u6709\u4ee3\u7406\u3002
 warn.sip.proxy.outboundif.invalid.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.failed.create.500.response=CWSCT0410E: \u672a\u80fd\u751f\u6210\u5e94\u7528\u7a0b\u5e8f\u8def\u7531\u5668\u54cd\u5e94\u3002
 error.failed.create.500.response.explanation=\u5e94\u7528\u7a0b\u5e8f\u8def\u7531\u5668\u53d1\u751f\u4e86\u610f\u5916\u7684\u5f02\u5e38\uff0ccom.ibm.ws.sip.container \u5df2\u5c1d\u8bd5\u751f\u6210 500 \u54cd\u5e94\uff0c\u4f46\u5931\u8d25\u3002
 error.failed.create.500.response.useraction=\u8bf7\u4e0e\u5e94\u7528\u7a0b\u5e8f\u8def\u7531\u5668\u6240\u6709\u8005\u8054\u7cfb\u3002
@@ -817,7 +696,6 @@ warn.sip.custom.property.deprecated.useraction=\u8bf7\u901a\u8fc7\u7ba1\u7406 UI
 warn.sip.queue.hung=CWSCT0412W: \u4e0e {0} \u76f8\u5173\u7684 SIP \u4efb\u52a1\u4f3c\u4e4e\u5df2\u6302\u8d77\u3002\u5c06\u5ffd\u7565\u6b64\u4efb\u52a1\u3002
 warn.sip.queue.hung.explanation= \u6b64\u4efb\u52a1\u5df2\u8d85\u8fc7\u7ebf\u7a0b\u6302\u8d77\u68c0\u6d4b\u7684\u914d\u7f6e\u65f6\u95f4\u3002\u6b64\u4f1a\u8bdd\u4e2d\u7684\u540e\u7eed SIP \u6d88\u606f\u53ef\u80fd\u65e0\u6cd5\u4f20\u9012\u3002
 warn.sip.queue.hung.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 warn.server.overloaded.message.queue.overloaded=CWSCT0413W: \u670d\u52a1\u5668\u5df2\u7ecf\u8d85\u8d1f\u8377\uff0c\u56e0\u4e3a com.ibm.ws.sip.container \u7ebf\u7a0b\u961f\u5217\u5df2\u8fbe\u5230\u6700\u5927\u5bb9\u91cf\u3002
 warn.server.overloaded.message.queue.overloaded.explanation=SIP \u670d\u52a1\u5668\u5728\u8d85\u8d1f\u8377\u65f6\u4e0d\u80fd\u518d\u63a5\u53d7\u4efb\u4f55\u5165\u5c40\u6d88\u606f\u3002
 warn.server.overloaded.message.queue.overloaded.useraction=\u8bf7\u51cf\u5c0f\u5165\u5c40\u6d88\u606f\u6d41\u91cf\u6216\u5c06\u4f1a\u8bdd\u542f\u52a8\u534f\u8bae (SIP) com.ibm.ws.sip.container \u961f\u5217\u5927\u5c0f\u7684\u6700\u5927\u503c\u8bbe\u7f6e\u4e3a\u66f4\u5927\u7684\u503c\u3002
@@ -850,7 +728,6 @@ warn.sip.outbound.no.key.set.useraction=\u8981\u542f\u7528\u5ba2\u6237\u673a\u54
 info.sip.outbound.key.set.updated=CWSCT0420I: \u7528\u4e8e SIP\u201c\u51fa\u7ad9\u201d\u534f\u8bae\u6269\u5c55\u7684\u5bc6\u94a5\u96c6\u5df2\u66f4\u65b0\u3002
 info.sip.outbound.key.set.updated.explanation=\u5bc6\u94a5\u96c6\u4e2d\u5df2\u751f\u6210\u4e86\u65b0\u5bc6\u94a5\u3002
 info.sip.outbound.key.set.updated.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-
 error.sip.outbound.failure=CWSCT0421E: SIP\u201c\u51fa\u7ad9\u201d\u534f\u8bae\u6269\u5c55\u672a\u80fd\u4ee5\u5bc6\u94a5\u96c6 {0} \u8fdb\u884c\u521d\u59cb\u5316\u3002
 error.sip.outbound.failure.explanation=SIP servlet com.ibm.ws.sip.container \u65e0\u6cd5\u5904\u7406\u201c\u51fa\u7ad9\u201d\u534f\u8bae\u6269\u5c55\uff0c\u56e0\u4e3a\u5c1d\u8bd5\u521d\u59cb\u5316\u6307\u5b9a\u5bc6\u94a5\u96c6\u65f6\u53d1\u751f\u4e86\u9519\u8bef\u3002
 error.sip.outbound.failure.useraction=\u786e\u4fdd\u5bc6\u94a5\u96c6\u914d\u7f6e\u4e2d\u5b58\u5728\u6307\u5b9a\u7684\u5bc6\u94a5\u96c6\u3002\u6709\u5173\u66f4\u591a\u4fe1\u606f\uff0c\u8bf7\u53c2\u9605 WebSphere Application Server \u4fe1\u606f\u4e2d\u5fc3\u4e2d\u7684\u201cSIP \u5ba2\u6237\u673a\u542f\u52a8\u7684\u8fde\u63a5\u590d\u7528\u201d\u3002

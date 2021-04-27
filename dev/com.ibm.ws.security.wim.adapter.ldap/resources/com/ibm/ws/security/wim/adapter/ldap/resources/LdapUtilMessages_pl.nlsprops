@@ -278,4 +278,8 @@ IDMAP_INVALID_FORMAT.useraction=Zmodyfikuj warto\u015b\u0107 userIdMap, aby by\u
 
 KRB5_SERVICE_NOT_AVAILABLE=CWIML4521E: Rejestr LDAP {0} pr\u00f3bowa\u0142 utworzy\u0107 powi\u0105zanie z serwerem LDAP przy u\u017cyciu referencji Kerberos dla nazwy u\u017cytkownika {1}, ale us\u0142uga Kerberos udost\u0119pniaj\u0105ca te referencje jest niedost\u0119pna. Mechanizm uwierzytelniania wi\u0105zania to {2}.
 KRB5_SERVICE_NOT_AVAILABLE.explanation=Us\u0142uga Kerberos by\u0142\u0105 niedost\u0119pna, gdy rejestr LDAP pr\u00f3bowa\u0142 utworzy\u0107 powi\u0105zanie z serwerem LDAP. Gdy us\u0142uga Kerberos jest niedost\u0119pna, uwierzytelnianie u\u017cytkownik\u00f3w nie jest mo\u017cliwe.
-KRB5_SERVICE_NOT_AVAILABLE.useraction=Sprawd\u017a, czy ustawienia konfiguracji rejestru LDAP zawieraj\u0105 atrybuty bindAuthMechanism, krb5Principal i krb5TicketCache, a tak\u017ce sprawd\u017a konfiguracj\u0119 protoko\u0142u Kerberos. Zrestartuj serwer.  
+KRB5_SERVICE_NOT_AVAILABLE.useraction=Sprawd\u017a, czy ustawienia konfiguracji rejestru LDAP zawieraj\u0105 atrybuty bindAuthMechanism, krb5Principal i krb5TicketCache, a tak\u017ce sprawd\u017a konfiguracj\u0119 protoko\u0142u Kerberos. Zrestartuj serwer.
+
+FILTER_MISSING_PERCENT_V=CWIML4523E: Warto\u015b\u0107 {0} dla {1} jest niepoprawna. Wymagana jest asercja warto\u015bci atrybutu, gdzie asercja warto\u015bci jest =%v. Na przyk\u0142ad {2}.
+FILTER_MISSING_PERCENT_V.explanation=Rejestr LDAP zast\u0119puje %v warto\u015bci\u0105, kt\u00f3ra ma by\u0107 wyszukiwana podczas wyszukiwania u\u017cytkownik\u00f3w lub grup.
+FILTER_MISSING_PERCENT_V.useraction=Zmie\u0144 okre\u015blony filtr, aby uwzgl\u0119dni\u0107 asercj\u0119 warto\u015bci atrybutu zawieraj\u0105c\u0105 =%v.

@@ -1069,9 +1069,9 @@ NO_NEIGHBOUR_REPLY_WARNING_CWSIP0381.useraction=Aseg\u00farese de que el motor d
 
 # -------------------------------------------------------------------------------------------------
 # {0} The UUID of the Remote messaging engine
-NEIGHBOUR_REPLY_RECIEVED_INFO_CWSIP0382=CWSIP0382I: El motor de mensajer\u00eda {0} ha respondido a la petici\u00f3n de suscripci\u00f3n, ahora la topolog\u00eda de publicaci\u00f3n y suscripci\u00f3n es coherente.
-NEIGHBOUR_REPLY_RECIEVED_INFO_CWSIP0382.explanation=Se han realizado comunicaciones satisfactorias entre los motores de mensajer\u00eda y la topolog\u00eda de publicaci\u00f3n/suscripci\u00f3n es coherente.
-NEIGHBOUR_REPLY_RECIEVED_INFO_CWSIP0382.useraction=ninguna
+NEIGHBOUR_REPLY_RECEIVED_INFO_CWSIP0382=CWSIP0382I: El motor de mensajer\u00eda {0} ha respondido a la petici\u00f3n de suscripci\u00f3n, ahora la topolog\u00eda de publicaci\u00f3n y suscripci\u00f3n es coherente.
+NEIGHBOUR_REPLY_RECEIVED_INFO_CWSIP0382.explanation=Se han establecido comunicaciones correctas entre los motores de mensajer\u00eda y la topolog\u00eda de publicaci\u00f3n y suscripci\u00f3n es coherente.
+NEIGHBOUR_REPLY_RECEIVED_INFO_CWSIP0382.useraction=Ninguna
 
 # -------------------------------------------------------------------------------------------------
 # {0} The remote messaging engine name
@@ -1847,7 +1847,7 @@ HEALTHSTATE_STATUS_CWSIP0908.useraction=CMSG0002
 # {0} Exception class causing the blockage
 # {1} Target destination
 HEALTHSTATE_STATUS_CWSIP0919=CWSIP0919W: Receptor bloqueado; el receptor no puede entregar el mensaje de entrada actual por el motivo {0} en el destino {1}
-HEALTHSTATE_STATUS_CWSIP0919.explanation=El receptor no puede entregar un mensaje en el destino por el motivo indicado; hasta que no se resuelva este problema, la entrega de mensajes subsiguientes estar\u00e1 bloqueada.
+HEALTHSTATE_STATUS_CWSIP0919.explanation=El receptor no puede entregar un mensaje en el destino por el motivo indicado. Hasta que se resuelva este problema, la entrega de los mensajes siguientes queda bloqueada.
 HEALTHSTATE_STATUS_CWSIP0919.useraction=Si contin\u00faa este estado, realice las acciones adecuadas para resolver el problema con el mensaje.
 
 # -------------------------------------------------------------------------------------------------

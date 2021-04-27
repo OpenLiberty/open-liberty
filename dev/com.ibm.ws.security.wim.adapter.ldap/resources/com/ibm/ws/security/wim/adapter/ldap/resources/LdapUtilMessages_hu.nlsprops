@@ -257,6 +257,7 @@ INVALID_KRB5_PRINCIPAL.useraction=Jav\u00edtsa ki az azonos\u00edt\u00f3nevet, v
 CANNOT_READ_KRB5_FILE=CWIML4513E: A(z) {0} LDAP nyilv\u00e1ntart\u00e1s nem tudja olvasni a(z) {1} Kerberos f\u00e1jlt.
 CANNOT_READ_KRB5_FILE.explanation=A Kerberos f\u00e1jlt nem lehet megnyitni. Vagy a f\u00e1jlenged\u00e9lyek nem megfelel\u0151ek, vagy a f\u00e1jl nem l\u00e9tezik.
 CANNOT_READ_KRB5_FILE.useraction=Ellen\u0151rizze, hogy a f\u00e1jl helye megfelel\u0151-e, \u00e9s a kiszolg\u00e1l\u00f3 rendelkezik-e f\u00e1jlolvas\u00e1si enged\u00e9llyel.
+
 # CWIML4514 already used
 
 KRB5_FILE_NOT_FOUND=CWIML4515E: A(z) {1} elem {0} attrib\u00fatuma a(z) {2} helyen nem l\u00e9tez\u0151 f\u00e1jlra van konfigur\u00e1lva.
@@ -272,8 +273,13 @@ KRB5_FILE_FOUND.useraction=Nincs teend\u0151.
 IDMAP_INVALID_FORMAT=CWIML4518W: A(z) {0} {1} \u00e9rt\u00e9k nem megfelel\u0151 form\u00e1tum\u00fa. Az \u00e9rt\u00e9k az ''objektumoszt\u00e1ly:attrib\u00fatum'' vagy ''*:attrib\u00fatum'' p\u00e1rok pontosvessz\u0151vel elv\u00e1lasztott list\u00e1ja lehet.
 IDMAP_INVALID_FORMAT.explanation=A userIdMap \u00e9rt\u00e9k\u00e9nek \u00e9rv\u00e9nyes form\u00e1tumban kell lennie, hogy az objektumoszt\u00e1ly \u00e9s az attrib\u00fatum \u00e9rtelmezhet\u0151 legyen.
 IDMAP_INVALID_FORMAT.useraction=Friss\u00edtse a userIdMap \u00e9rt\u00e9k\u00e9t \u00fagy, hogy az megfeleljen a megadott form\u00e1tumnak.
+
 # CWIML4519 and CWIML4520 already used
 
 KRB5_SERVICE_NOT_AVAILABLE=CWIML4521E: A(z) {0} LDAP nyilv\u00e1ntart\u00e1s megk\u00eds\u00e9relte a k\u00f6t\u00e9st az LDAP kiszolg\u00e1l\u00f3hoz a(z) {1} azonos\u00edt\u00f3n\u00e9v Kerberos hiteles\u00edt\u0151 adataival, de a hiteles\u00edt\u0151 adatokat biztos\u00edt\u00f3 Kerberos szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el. A k\u00f6t\u00e9shiteles\u00edt\u00e9si mechanizmus: {2}.
 KRB5_SERVICE_NOT_AVAILABLE.explanation=A Kerberos szolg\u00e1ltat\u00e1s nem volt el\u00e9rhet\u0151, amikor az LDAP nyilv\u00e1ntart\u00e1s megk\u00eds\u00e9relte a k\u00f6t\u00e9st az LDAP kiszolg\u00e1l\u00f3hoz. Ha a Kerberos szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el, akkor a felhaszn\u00e1l\u00f3k hiteles\u00edt\u00e9se nem v\u00e9gezhet\u0151 el.
 KRB5_SERVICE_NOT_AVAILABLE.useraction=Tekintse \u00e1t a bindAuthMechanism, krb5Principal \u00e9s krb5TicketCache attrib\u00fatumokra vonatkoz\u00f3 LDAP nyilv\u00e1ntart\u00e1s konfigur\u00e1ci\u00f3s be\u00e1ll\u00edt\u00e1sokat, valamint a Kerberos konfigur\u00e1ci\u00f3t. Ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t.
+
+FILTER_MISSING_PERCENT_V=CWIML4523E: A(z) {1} sz\u0171r\u0151 {0} \u00e9rt\u00e9ke \u00e9rv\u00e9nytelen. Az \u00e9rt\u00e9k attrib\u00fatum\u00e9rt\u00e9k-hozz\u00e1rendel\u00e9st (AVA) ig\u00e9nyel, ahol az \u00e9rt\u00e9khozz\u00e1rendel\u00e9s = %v. P\u00e9ld\u00e1ul: {2}.
+FILTER_MISSING_PERCENT_V.explanation=Az LDAP nyilv\u00e1ntart\u00e1s fel\u00fcl\u00edrja a(z) %v \u00e9rt\u00e9k\u00e9t a felhaszn\u00e1l\u00f3k vagy csoportok keres\u00e9sekor haszn\u00e1land\u00f3 \u00e9rt\u00e9kkel.
+FILTER_MISSING_PERCENT_V.useraction=A megadott sz\u0171r\u0151 m\u00f3dos\u00edt\u00e1s\u00e1val szerepeltessen egy olyan attrib\u00fatum\u00e9rt\u00e9k-hozz\u00e1rendel\u00e9st, amely  =%v \u00e9rt\u00e9ket tartalmaz az \u00e9rt\u00e9khozz\u00e1rendel\u00e9sben.
