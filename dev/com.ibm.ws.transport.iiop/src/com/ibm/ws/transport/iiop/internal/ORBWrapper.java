@@ -24,7 +24,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Supplier;
 
 import org.osgi.service.component.ComponentFactory;
 import org.osgi.service.component.ComponentInstance;
@@ -70,7 +70,7 @@ public final class ORBWrapper {
         private final Map<SubsystemFactory, ? extends AtomicBoolean> subsystemFactories;
         private final Map<String, Object> properties;
         private final ComponentFactory<ORBWrapperInternal> factory;
-        private final AtomicReference<ComponentInstance<ORBWrapperInternal>> instanceRef = new AtomicReference<>();
+        private final AcidReference<ComponentInstance<ORBWrapperInternal>> instanceRef = new AcidReference<>();
 
         ReadyListenerImpl(Map<SubsystemFactory, ? extends AtomicBoolean> subsystemFactories,
                 Map<String, Object> properties, ComponentFactory<ORBWrapperInternal> factory) {
@@ -82,15 +82,23 @@ public final class ORBWrapper {
         /** {@inheritDoc} */
         @Override
         public void readyChanged(SubsystemFactory id, boolean ready) {
-            instanceRef.getAndUpdate(i -> {
-                try {
-                    subsystemFactories.get(id).set(ready);
-                } catch (NullPointerException unexpected) { // FFDC and continue
-                }
-                if (subsystemFactories.values().stream().allMatch(AtomicBoolean::get)) return null == i ? factory.newInstance(copyProps()) : i;
-                if (null != i) i.dispose();
-                return null;
-            });
+            try {
+                subsystemFactories.get(id).set(ready);
+            } catch (NullPointerException unexpected) { // FFDC and continue
+            }
+            instanceRef.update(this::updateInstance);
+        }
+
+        Supplier<ComponentInstance<ORBWrapperInternal>> updateInstance(ComponentInstance<ORBWrapperInternal> current) {
+            boolean shouldExist = subsystemFactories.values().stream().allMatch(AtomicBoolean::get);
+            boolean doesExist = current != null;
+            if (shouldExist == doesExist) return null;
+            if (shouldExist) return this::newInstance;
+            // if we get to here, it exists but needs to DIE
+            return () -> {
+		current.dispose();
+		return null;
+            };
         }
 
         /** {@inheritDoc} */
@@ -103,10 +111,11 @@ public final class ORBWrapper {
             subsystemFactories.keySet().forEach(sf -> sf.unregister(this));
         }
 
-        private Hashtable<String, Object> copyProps() {
+        private ComponentInstance<ORBWrapperInternal> newInstance() {
             final Hashtable<String, Object> h = new Hashtable<>();
             h.putAll(properties);
-            return h;
+            return factory.newInstance(h);
         }
+
     }
 }
