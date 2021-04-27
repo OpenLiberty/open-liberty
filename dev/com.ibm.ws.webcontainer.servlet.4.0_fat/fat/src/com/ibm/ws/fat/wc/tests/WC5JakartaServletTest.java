@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -97,15 +97,14 @@ public class WC5JakartaServletTest {
     }
 
     /**
-     * Request a simple snoop servlet.
      * 
-     * Query param with no equals is registered as an empty string.
+     * Ensure query param with no equals is registered as an empty string for servlet 5.0.
      *
      * @throws Exception
      */
     @Test
     public void testNoEqualsQueryParameter() throws Exception {
-        String expectedResponse = "For query 'test', the value is an empty string (expected).";
+        String expectedResponse = "SUCCESS!";
         String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + APP_NAME + "/query?test";
 
         LOG.info("url: " + url);
