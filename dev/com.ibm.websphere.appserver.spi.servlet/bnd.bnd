@@ -9,7 +9,7 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
-bVersion: 2.9
+bVersion: 2.10
 
 Bundle-Name: WebSphere WebContainer Servlet SPI
 Bundle-Description: WebSphere WebContainer Servlet SPI, version ${bVersion}
