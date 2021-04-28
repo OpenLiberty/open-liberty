@@ -22,7 +22,6 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.WithAnnotations;
-import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.ext.Provider;
@@ -30,31 +29,8 @@ import javax.ws.rs.ext.Provider;
 import org.jboss.resteasy.cdi.ResteasyCdiExtension;
 import org.jboss.resteasy.cdi.i18n.LogMessages;
 import org.jboss.resteasy.cdi.i18n.Messages;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
-import org.osgi.service.component.annotations.Reference;
 
-import com.ibm.ws.cdi.CDIService;
-import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
-
-import io.openliberty.org.jboss.resteasy.common.cdi.LibertyCdiInjectorFactory;
-
-@Component(service = WebSphereCDIExtension.class,
-    configurationPolicy = ConfigurationPolicy.IGNORE,
-    immediate = true,
-    property = { "api.classes=" +
-                "jakarta.ws.rs.Path;" +
-                "jakarta.ws.rs.core.Application;" +
-                "jakarta.ws.rs.ext.Provider",
-             "bean.defining.annotations=" +
-                "jakarta.ws.rs.Path;" +
-                "jakarta.ws.rs.core.Application;" +
-                "jakarta.ws.rs.ApplicationPath;" +
-                "jakarta.ws.rs.ext.Provider;" +
-                "jakarta.annotation.ManagedBean",
-             "service.vendor=IBM" })
-
-public class LibertyResteasyCdiExtension extends ResteasyCdiExtension implements Extension, WebSphereCDIExtension {
+public class LibertyResteasyCdiExtension extends ResteasyCdiExtension implements Extension {
 
     private static final String JAVAX_EJB_STATELESS = "javax.ejb.Stateless";
     private static final String JAVAX_EJB_SINGLETON = "javax.ejb.Singleton";
@@ -161,14 +137,5 @@ public class LibertyResteasyCdiExtension extends ResteasyCdiExtension implements
           return true;
        }
        return Modifier.isPrivate(constructor.getModifiers());
-    }
-
-    @Reference
-    protected void setCdiService(CDIService cdiService) {
-        LibertyCdiInjectorFactory.cdiService = cdiService;
-    }
-
-    protected void unsetCdiService(CDIService cdiService) {
-        LibertyCdiInjectorFactory.cdiService = null;
     }
 }
