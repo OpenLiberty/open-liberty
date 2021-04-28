@@ -24,6 +24,9 @@ src: \
     test-applications/olgh10068/src,\
     test-applications/olgh14426/src,\
     test-applications/olgh14457/src,\
+    test-applications/olgh16588/src,\
+    test-applications/olgh16685/src,\
+    test-applications/olgh16772/src,\
     test-applications/helpers/DatabaseManagement/src
 
 fat.project: true
