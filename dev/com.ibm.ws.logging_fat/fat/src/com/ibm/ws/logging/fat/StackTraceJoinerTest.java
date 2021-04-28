@@ -20,6 +20,8 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -45,6 +47,7 @@ public class StackTraceJoinerTest {
     protected static RemoteFile consoleLog;
 
     protected static final int CONN_TIMEOUT = 10;
+    protected static final int threadsToRun = 5;
 
     protected static void hitWebPage(String contextRoot, String servletName, boolean failureAllowed) throws MalformedURLException, IOException, ProtocolException {
         try {
@@ -117,7 +120,39 @@ public class StackTraceJoinerTest {
     }
 
     @Test
-    public void testPrintStackTraceMultipleThreads() {
-        // TODO: Test printStackTrace in multiple threads and ensure that messages are not leaking from one stack trace to another
+    public void testPrintStackTraceMultipleThreads() throws Exception {
+        final int threadsToRun = 3;
+        final int expectedErrOut = threadsToRun + 3;
+        Logger logger = Logger.getLogger("com.ibm.ws.logging.stackjoiner");
+        logger.log(Level.INFO, ">>>>> Create threads");
+
+        for (int i = 0; i < threadsToRun; i++) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                      messagesLog = server.getDefaultLogFile();
+                      server.setMarkToEndOfLog(messagesLog);
+                      hitWebPage("broken-servlet", "ExceptionPrintingServlet", false);
+
+                    } catch (Exception e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+            logger.log(Level.INFO, "Thread-" + (i + 1) + " started.");
+            try {
+              Thread.sleep(500);
+            }
+            catch (InterruptedException e) {
+                System.out.println("Caught :" + e);
+            }
+
+        }
+        List<String> systemErrOutput = server.findStringsInLogsUsingMark("err.*", consoleLog);
+        assertTrue("Expected " + expectedErrOut + " events but found " + systemErrOutput.size() + " messages.", systemErrOutput.size() == expectedErrOut);
+        logger.log(Level.INFO, ">>>>> Threads finished");
+
     }
 }
