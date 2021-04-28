@@ -740,7 +740,7 @@ error.exception.ioeinbody.explanation=O IOException a fost prins\u0103 \u00een c
 error.exception.ioeinbody.useraction=Nu este nevoie de realizarea niciunei ac\u0163iuni.
 
 warn.unsupported.realm=CWSCT0358W: Regiune de autentificare necunoscut\u0103 {0}
-warn.unsupported.realm.explanation=A fost primit\u0103 o cerere SIP pentru o regiune de autentificare necunoscut\u0103. 
+warn.unsupported.realm.explanation=A fost primit\u0103 o cerere SIP pentru o regiune de autentificare necunoscut\u0103
 warn.unsupported.realm.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
 
 info.unhashed.creds=CWSCT0359I: Atributele Acreditare hash nu au fost g\u0103site.

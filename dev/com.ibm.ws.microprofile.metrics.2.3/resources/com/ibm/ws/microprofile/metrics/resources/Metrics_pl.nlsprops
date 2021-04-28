@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2020 IBM Corporation and others.
+# Copyright (c) 2009, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -133,12 +133,19 @@ grpc.server.rpcCompleted.total.description=\u0141\u0105czna liczba wywo\u0142a\u
 grpc.server.sentMessages.total.description=\u0141\u0105czna liczba komunikat\u00f3w strumieni wys\u0142anych przez serwer.
 grpc.server.receivedMessages.total.description=\u0141\u0105czna liczba komunikat\u00f3w strumieni odebranych z klienta.
 grpc.server.responseTime.total.description=\u0141\u0105czny czas odpowiedzi uko\u0144czonych wywo\u0142a\u0144 RPC.
+
 grpc.client.rpcStarted.total.description=\u0141\u0105czna liczba wywo\u0142a\u0144 RPC uruchomionych na kliencie.
 grpc.client.rpcCompleted.total.description=\u0141\u0105czna liczba wywo\u0142a\u0144 RPC uko\u0144czonych na kliencie (obejmuje zar\u00f3wno wywo\u0142ania zako\u0144czone powodzeniem, jak i zako\u0144czone niepowodzeniem).
 grpc.client.sentMessages.total.description=\u0141\u0105czna liczba komunikat\u00f3w strumieni wys\u0142anych przez klienta.
 grpc.client.receivedMessages.total.description=\u0141\u0105czna liczba komunikat\u00f3w strumieni odebranych z serwera.
 grpc.client.responseTime.total.description=\u0141\u0105czny czas odpowiedzi uko\u0144czonych wywo\u0142a\u0144 RPC.
+
 REST.request.description=Liczba wywo\u0142a\u0144 i \u0142\u0105czny czas odpowiedzi tej metody zasobu RESTful od momentu uruchomienia serwera.
+
+requestTiming.requestCount.description=Liczba \u017c\u0105da\u0144 serwlet\u00f3w od uruchomienia serwera.
+requestTiming.activeRequestCount.description=Liczba obecnie realizowanych \u017c\u0105da\u0144 serwlet\u00f3w.
+requestTiming.slowRequestCount.description=Liczba obecnie realizowanych, ale wolno dzia\u0142aj\u0105cych \u017c\u0105da\u0144 serwlet\u00f3w.
+requestTiming.hungRequestCount.description=Liczba obecnie realizowanych, ale zawieszonych \u017c\u0105da\u0144 serwlet\u00f3w.
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message
 #-----------------------------------------------------------------------------------------------------------------------------

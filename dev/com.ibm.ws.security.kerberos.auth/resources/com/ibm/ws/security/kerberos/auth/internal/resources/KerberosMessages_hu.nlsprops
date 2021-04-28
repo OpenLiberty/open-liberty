@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2020, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -25,3 +25,15 @@ KRB5_FILE_NOT_FOUND_CWWKS4345E.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a ko
 KRB5_FILE_FOUND_CWWKS4346I=CWWKS4346I: A Kerberos \u00f6sszetev\u0151 a(z) {1} helyen tal\u00e1lhat\u00f3 {0} f\u00e1jl haszn\u00e1lat\u00e1ra van be\u00e1ll\u00edtva
 KRB5_FILE_FOUND_CWWKS4346I.explanation=A rendszer sikeresen megtal\u00e1lta a be\u00e1ll\u00edtott f\u00e1jlt.
 KRB5_FILE_FOUND_CWWKS4346I.useraction=Nincs teend\u0151.
+
+KRB5_LOGIN_FAILED_CACHE_CWWKS4347E=CWWKS4347E: Nem siker\u00fclt a Kerberos bejelentkez\u00e9s a(z) {0} Kerberos azonos\u00edt\u00f3val \u00e9s a(z) {1} Kerberos hiteles\u00edt\u00e9si adat gyors\u00edt\u00f3t\u00e1rral (ccache). Nem tal\u00e1lhat\u00f3 Kerberos jegy.
+KRB5_LOGIN_FAILED_CACHE_CWWKS4347E.explanation=Vagy a megadott Kerberos azonos\u00edt\u00f3 \u00e9rv\u00e9nytelen, vagy a Kerberos hiteles\u00edt\u0151 adat gyors\u00edt\u00f3t\u00e1r (ccache) \u00e9rv\u00e9nytelen, illetve lej\u00e1rt.
+KRB5_LOGIN_FAILED_CACHE_CWWKS4347E.useraction=Gondoskodj\u00e9k \u00e9rv\u00e9nyes Kerberos azonos\u00edt\u00f3 megad\u00e1s\u00e1r\u00f3l, illetve arr\u00f3l, hogy a Kerberos hiteles\u00edt\u0151 adat gyors\u00edt\u00f3t\u00e1r (ccache) \u00e9rv\u00e9nyes legyen \u00e9s nem lej\u00e1rt.
+
+KRB5_LOGIN_FAILED_KEYTAB_CWWKS4348E=CWWKS4348E: Nem siker\u00fclt a Kerberos bejelentkez\u00e9s a(z) {0} Kerberos azonos\u00edt\u00f3val \u00e9s a(z) {1} Kerberos kulcsc\u00edmkef\u00e1jllal. Nem tal\u00e1lhat\u00f3 Kerberos jegy.
+KRB5_LOGIN_FAILED_KEYTAB_CWWKS4348E.explanation=Vagy a megadott Kerberos azonos\u00edt\u00f3, vagy a Kerberos kulcsc\u00edmkef\u00e1jl \u00e9rv\u00e9nytelen.
+KRB5_LOGIN_FAILED_KEYTAB_CWWKS4348E.useraction=Gondoskodj\u00e9k \u00e9rv\u00e9nyes Kerberos azonos\u00edt\u00f3t tartalmaz\u00f3 \u00e9rv\u00e9nyes Kerberos kulcsc\u00edmkef\u00e1jl megad\u00e1s\u00e1r\u00f3l.
+		
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB_CWWKS4349E=CWWKS4349E: Nem siker\u00fclt a Kerberos bejelentkez\u00e9s a(z) {0} Kerberos azonos\u00edt\u00f3val \u00e9s az alap\u00e9rtelmezett Kerberos kulcsc\u00edmkef\u00e1jllal. Nem tal\u00e1lhat\u00f3 Kerberos jegy.
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB_CWWKS4349E.explanation=Vagy a megadott Kerberos azonos\u00edt\u00f3, vagy az alap\u00e9rtelmezett Kerberos kulcsc\u00edmkef\u00e1jl \u00e9rv\u00e9nytelen.
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB_CWWKS4349E.useraction=Gondoskodj\u00e9k \u00e9rv\u00e9nyes Kerberos azonos\u00edt\u00f3t tartalmaz\u00f3 \u00e9rv\u00e9nyes Kerberos kulcsc\u00edmkef\u00e1jl megad\u00e1s\u00e1r\u00f3l.

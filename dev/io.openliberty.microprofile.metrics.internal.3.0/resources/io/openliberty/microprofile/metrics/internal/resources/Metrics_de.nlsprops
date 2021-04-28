@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2020 IBM Corporation and others.
+# Copyright (c) 2009, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -128,8 +128,14 @@ session.invalidated.total.description=Die Anzahl der Sitzungen, die seit der Akt
 session.invalidatedbyTimeout.total.description=Die Anzahl der Sitzungen, die seit der Aktivierung dieser Metrik aufgrund einer Zeitlimit\u00fcberschreitung abgemeldet wurden.
 
 
-REST.request.description=Die Anzahl der Aufrufe und die Gesamtantwortzeit dieser REST-konformen Ressourcenmethode seit dem Start des Servers. Die Metrik zeichnet weder die abgelaufene Zeit noch die Anzahl einer REST-Anforderung auf, wenn diese zu einer nicht zugeordneten Ausgabe f\u00fchrt. Au\u00dferdem werden der h\u00f6chste und der niedrigste aufgezeichnete Wert f\u00fcr die Dauer innerhalb der letzten vollen Minute aufgezeichnet.
-REST.request.unmappedException.description=Die Gesamtanzahl nicht zugeordneter Ausnahmen, die in dieser REST-konformen Ressourcenmethode seit dem Start des Servers aufgetreten sind.
+REST.request.description=Die Anzahl der Aufrufe und die Gesamtantwortzeit dieser REST-konformen Ressourcenmethode seit dem Start des Servers. Die Metrik zeichnet die abgelaufene Zeit und nicht den Z\u00e4hler der REST-Anforderung auf, wenn das Ergebnis eine nicht zugeordnete Ausnahme ist. Sie verfolgt au\u00dferdem die l\u00e4ngste erfasste Zeitdauer innerhalb der vorherigen ganzen Minute und die k\u00fcrzeste erfasste Zeitdauer innerhalb der vorherigen ganzen Minute.
+REST.request.unmappedException.description=Die Gesamtzahl der nicht zugeordneten Ausnahmen, die bei dieser REST-konformen Ressourcenmethode seit dem Serverstart aufgetreten ist.
+
+
+requestTiming.requestCount.description=Die Anzahl der Servletanforderungen seit dem Serverstart.
+requestTiming.activeRequestCount.description=Die Anzahl der Servletanforderungen, die momentan ausgef\u00fchrt werden.
+requestTiming.slowRequestCount.description=Die Anzahl der Servletanforderungen, die momentan zwar ausgef\u00fchrt werden, deren Ausf\u00fchrung jedoch langsam ist.
+requestTiming.hungRequestCount.description=Die Anzahl der Servletanforderungen, die zwar momentan ausgef\u00fchrt werden, jedoch blockiert sind.
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message
 #-----------------------------------------------------------------------------------------------------------------------------

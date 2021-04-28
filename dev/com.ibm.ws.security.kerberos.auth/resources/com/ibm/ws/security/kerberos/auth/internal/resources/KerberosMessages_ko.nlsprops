@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2020, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -25,3 +25,15 @@ KRB5_FILE_NOT_FOUND_CWWKS4345E.useraction=\uc774 \uad6c\uc131\uc5d0\uc11c \uc874
 KRB5_FILE_FOUND_CWWKS4346I=CWWKS4346I: Kerberos \ucef4\ud3ec\ub10c\ud2b8\uac00 {1}\uc5d0 \uc788\ub294 {0} \ud30c\uc77c\uc744 \uc0ac\uc6a9\ud558\ub3c4\ub85d \uad6c\uc131\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
 KRB5_FILE_FOUND_CWWKS4346I.explanation=\uad6c\uc131\ub41c \ud30c\uc77c\uc744 \ucc3e\uc558\uc2b5\ub2c8\ub2e4.
 KRB5_FILE_FOUND_CWWKS4346I.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+
+KRB5_LOGIN_FAILED_CACHE_CWWKS4347E=CWWKS4347E: Kerberos \ub85c\uadf8\uc778\uc774 {0} Kerberos \ud504\ub9b0\uc2dc\ud384 \ubc0f {1} Kerberos \uc2e0\uc784 \uc815\ubcf4 \uce90\uc2dc(ccache)\ub97c \uc0ac\uc6a9\ud558\uc5ec \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4. Kerberos \ud2f0\ucf13\uc744 \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+KRB5_LOGIN_FAILED_CACHE_CWWKS4347E.explanation=\uc9c0\uc815\ub41c Kerberos \ud504\ub9b0\uc2dc\ud384\uc774 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc740 \uacbd\uc6b0, \ub610\ub294 Kerberos \uc2e0\uc784 \uc815\ubcf4 \uce90\uc2dc(ccache)\uac00 \uc62c\ubc14\ub974\uc9c0 \uc54a\uac70\ub098 \ub9cc\ub8cc\ub41c \uacbd\uc6b0\uc785\ub2c8\ub2e4.
+KRB5_LOGIN_FAILED_CACHE_CWWKS4347E.useraction=\uc62c\ubc14\ub978 Kerberos \ud504\ub9b0\uc2dc\ud384\uc774 \uc9c0\uc815\ub418\uc5c8\ub294\uc9c0, \uadf8\ub9ac\uace0 Kerberos \uc2e0\uc784 \uc815\ubcf4 \uce90\uc2dc(ccache)\uac00 \uc62c\ubc14\ub974\uace0 \ub9cc\ub8cc\ub418\uc9c0 \uc54a\uc558\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+KRB5_LOGIN_FAILED_KEYTAB_CWWKS4348E=CWWKS4348E: Kerberos \ub85c\uadf8\uc778\uc774 {0} Kerberos \ud504\ub9b0\uc2dc\ud384 \ubc0f {1} Kerberos \ud0a4 \ud0ed\uc73c\ub85c \uc778\ud574 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4. Kerberos \ud2f0\ucf13\uc744 \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+KRB5_LOGIN_FAILED_KEYTAB_CWWKS4348E.explanation=\uc9c0\uc815\ub41c Kerberos \ud504\ub9b0\uc2dc\ud384 \ub610\ub294 Kerberos \ud0a4 \ud0ed \ud30c\uc77c\uc774 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+KRB5_LOGIN_FAILED_KEYTAB_CWWKS4348E.useraction=\uc62c\ubc14\ub978 Kerberos \ud0a4 \ud0ed \ud30c\uc77c\uc774 \uc9c0\uc815\ub418\uc5c8\ub294\uc9c0, \uadf8\ub9ac\uace0 \uc62c\ubc14\ub978 Kerberos \ud504\ub9b0\uc2dc\ud384\uc744 \ud3ec\ud568\ud558\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+		
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB_CWWKS4349E=CWWKS4349E: Kerberos \ub85c\uadf8\uc778\uc774 {0} Kerberos \ud504\ub9b0\uc2dc\ud384 \ubc0f \uae30\ubcf8 Kerberos \ud0a4 \ud0ed \ud30c\uc77c\ub85c \uc778\ud574 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4. Kerberos \ud2f0\ucf13\uc744 \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB_CWWKS4349E.explanation=\uc9c0\uc815\ub41c Kerberos \ud504\ub9b0\uc2dc\ud384 \ub610\ub294 \uae30\ubcf8 Kerberos \ud0a4 \ud0ed \ud30c\uc77c\uc774 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB_CWWKS4349E.useraction=\uc62c\ubc14\ub978 Kerberos \ud0a4 \ud0ed \ud30c\uc77c\uc774 \uc9c0\uc815\ub418\uc5c8\ub294\uc9c0, \uadf8\ub9ac\uace0 \uc62c\ubc14\ub978 Kerberos \ud504\ub9b0\uc2dc\ud384\uc744 \ud3ec\ud568\ud558\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.

@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2020 IBM Corporation and others.
+# Copyright (c) 2009, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -110,7 +110,7 @@ garbageCollectionTime.description=Visualizza il tempo trascorso accumulato appro
 #-----------------------------------------------------------------------------------------------------------------------------
 # Monitor Metrics messages
 #-----------------------------------------------------------------------------------------------------------------------------
-threadpool.activeThreads.description=Il numero di thread che stanno eseguento attivit\u00e0.
+threadpool.activeThreads.description=Il numero di thread che stanno eseguendo attivit\u00e0.
 threadpool.size.description=La dimensione del pool di thread.
 
 servlet.request.total.description=Il numero di visite a questo servlet dall'avvio del server.
@@ -141,6 +141,11 @@ grpc.client.receivedMessages.total.description=Il numero totale di messaggi di f
 grpc.client.responseTime.total.description=Il tempo di risposta totale delle RPC completate.
 
 REST.request.description=Il numero di richiami e il tempo di risposta totale di questo metodo di risorsa RESTful dall'avvio del server.
+
+requestTiming.requestCount.description=Il numero di richieste servlet dall'avvio del server.
+requestTiming.activeRequestCount.description=Il numero di richieste servlet attualmente in esecuzione.
+requestTiming.slowRequestCount.description=Il numero di richieste servlet che sono attualmente in esecuzione, ma l'esecuzione \u00e8 lenta.
+requestTiming.hungRequestCount.description=Il numero di richieste servlet che sono attualmente in esecuzione, ma l'esecuzione \u00e8 bloccata.
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message
 #-----------------------------------------------------------------------------------------------------------------------------

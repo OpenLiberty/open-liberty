@@ -740,7 +740,7 @@ error.exception.ioeinbody.explanation=IOException t\u00f6rt\u00e9nt a SIP com.ib
 error.exception.ioeinbody.useraction=Nincs teend\u0151. 
 
 warn.unsupported.realm=CWSCT0358W: Ismeretlen hiteles\u00edt\u00e9si tartom\u00e1ny: {0}
-warn.unsupported.realm.explanation=Ismeretlen hiteles\u00edt\u00e9si tartom\u00e1nyra vonatkoz\u00f3 SIP k\u00e9r\u00e9s \u00e9rkezett 
+warn.unsupported.realm.explanation=Ismeretlen hiteles\u00edt\u00e9si tartom\u00e1nyra vonatkoz\u00f3 SIP k\u00e9r\u00e9s \u00e9rkezett
 warn.unsupported.realm.useraction=Nem kell semmit tennie
 
 info.unhashed.creds=CWSCT0359I: Nem tal\u00e1lhat\u00f3k kivonatolt hiteles\u00edt\u00e9si adatok.

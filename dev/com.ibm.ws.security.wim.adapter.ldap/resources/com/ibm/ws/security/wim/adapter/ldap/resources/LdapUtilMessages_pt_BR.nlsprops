@@ -266,7 +266,7 @@ KRB5_FILE_NOT_FOUND.useraction=Certifique-se de que a configura\u00e7\u00e3o apo
 
 KRB5_FILE_FOUND=CWIML4516E: O componente do registro LDAP est\u00e1 configurado para usar um arquivo {0} localizado em {1}.
 KRB5_FILE_FOUND.explanation=O arquivo configurado foi localizado com sucesso.
-KRB5_FILE_FOUND.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+KRB5_FILE_FOUND.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
 
 # CWIML4517 already used
 
@@ -279,3 +279,7 @@ IDMAP_INVALID_FORMAT.useraction=Atualize o valor userIdMap para que ele siga o f
 KRB5_SERVICE_NOT_AVAILABLE=CWIML4521E: O registro LDAP {0} tentou ligar-se ao servidor LDAP usando as credenciais do Kerberos referentes ao nome do principal {1}, mas o servi\u00e7o Kerberos que fornece essas credenciais n\u00e3o est\u00e1 dispon\u00edvel. O mecanismo de autentica\u00e7\u00e3o de liga\u00e7\u00e3o \u00e9 o {2}.
 KRB5_SERVICE_NOT_AVAILABLE.explanation=O servi\u00e7o Kerberos n\u00e3o estava dispon\u00edvel quando o registro LDAP tentou se ligar ao servidor LDAP. Se o servi\u00e7o Kerberos n\u00e3o estiver dispon\u00edvel, nenhum usu\u00e1rio poder\u00e1 ser autenticado.
 KRB5_SERVICE_NOT_AVAILABLE.useraction=Revise as defini\u00e7\u00f5es de configura\u00e7\u00e3o de registro LDAP dos atributos bindAuthMechanism, krb5Principal e krb5TicketCache, bem como a configura\u00e7\u00e3o do Kerberos. Inicie novamente o servidor.
+
+FILTER_MISSING_PERCENT_V=CWIML4523E: O valor {0} para {1} \u00e9 inv\u00e1lido. Ele requer uma asser\u00e7\u00e3o de valor de atributo na qual a asser\u00e7\u00e3o de valor \u00e9 =%v. Por exemplo, {2}.
+FILTER_MISSING_PERCENT_V.explanation=O registro LDAP substitui o %v pelo valor a ser procurado ao fazer buscas por usu\u00e1rios ou grupos.
+FILTER_MISSING_PERCENT_V.useraction=Atualize o filtro especificado para incluir uma asser\u00e7\u00e3o de valor de atributo que cont\u00e9m =%v na asser\u00e7\u00e3o de valor.

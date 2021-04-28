@@ -45,7 +45,7 @@
 
 7012=A survenit o eroare fatal\u0103.
 
-7013=Utiliza\u0163i SessionManager API perimat \u015fi nu a putut fi g\u0103sit nici un fi\u015fier EclipseLink.properties \u00een calea dumneavoastr\u0103 de clase.  Nici o sesiunea nu a putut fi citit\u0103 din fi\u015fier.
+7013=Utiliza\u0163i SessionManager API perimat \u015fi nu a putut fi g\u0103sit niciun fi\u015fier EclipseLink.properties \u00een calea dumneavoastr\u0103 de clase.  Nici o sesiunea nu a putut fi citit\u0103 din fi\u015fier.
 
 7017=Descriptorii de copii nu au o hart\u0103 de identitate, ei \u00ee\u015fi partajeaz\u0103 p\u0103rin\u0163ii
 
@@ -77,9 +77,9 @@
 
 7042=Clasa platformei bazei de date [{0}] nu a fost g\u0103sit\u0103.
 
-7043=[{0}] nu are nici un tabel de creat \u00een baza de date.
+7043=[{0}] nu are niciun tabel de creat \u00een baza de date.
 
-7044=Clasa containerului specificat [{0}] nu poate fi utilizata ca \u015fi container deoarece nu implementeaz\u0103 Colec\u0163ie sau Hart\u0103.
+7044=Clasa de container specificat\u0103 [{0}] nu poate fi utilizat\u0103 ca un container, deoarece nu implementeaz\u0103 Colec\u0163ie sau Hart\u0103.
 
 7047=Containerul specificat [{0}] nu necesit\u0103 chei.  A\u0163i \u00eencercat s\u0103 utiliza\u0163i metoda [{1}].
 
@@ -163,9 +163,9 @@
 
 7100=Nu s-a putut g\u0103si sesiunea cu numele [{0}] \u00een fi\u015fierul session.xml [{1}]
 
-7101=Nici un "meta-inf/eclipselink-ejb-jar.xml" nu a putut fi g\u0103sit \u00een classpath-ul dumneavoastr\u0103.  Sesiunea CMP nu a putut fi citit\u0103 din fi\u015fier.
+7101=Nu a putut fi g\u0103sit niciun "meta-inf/eclipselink-ejb-jar.xml" \u00een classpath-ul dumneavoastr\u0103.  Sesiunea CMP nu a putut fi citit\u0103 din fi\u015fier.
 
-7102=A fost\u00eent\u00e2lnit\u0103 o valoare null pentru o cheie cache \u00een timp ce \u00eencearc\u0103 s\u0103 \u00eenl\u0103ture {2} un obiect din harta identitate: [{0}]{2} ce con\u0163ine un obiect de clas\u0103: [{1}] (sau o clas\u0103 din aceast\u0103 ierarhie){2}Cea mai probabil\u0103 cauz\u0103 a aceste situa\u0163ii este c\u0103 obiectul a fost deja colectat-{2}gunoi \u015fi astfel, nu exist\u0103 \u00een harta de identitat\u0103.{2}Lua\u0163i \u00een considerare o hart\u0103 de identitate alternativ\u0103 pentru a \u00eempiedica aceast\u0103 situa\u0163ie.{2}Face\u0163i referire la documenta\u0163ia EclipseLink pentru mai multe detalii cu privire la h\u0103r\u0163ile de identitate.
+7102=A fost \u00eent\u00e2lnit\u0103 o valoare null pentru o cheie cache \u00een timp ce \u00eencearc\u0103 s\u0103 \u00eenl\u0103ture {2} un obiect din harta identitate: [{0}]{2} ce con\u0163ine un obiect de clas\u0103: [{1}] (sau o clas\u0103 din aceast\u0103 ierarhie){2}Cea mai probabil\u0103 cauz\u0103 a aceste situa\u0163ii este c\u0103 obiectul a fost deja colectat-{2}gunoi \u015fi astfel, nu exist\u0103 \u00een harta de identitat\u0103.{2}Lua\u0163i \u00een considerare o hart\u0103 de identitate alternativ\u0103 pentru a \u00eempiedica aceast\u0103 situa\u0163ie.{2}Face\u0163i referire la documenta\u0163ia EclipseLink pentru mai multe detalii cu privire la h\u0103r\u0163ile de identitate.
 
 7103=A fost \u00eent\u00e2lnit\u0103 o referin\u0163\u0103 nul\u0103 \u00een timpul \u00eencerc\u0103rii de invocare{1}metod\u0103: [{0}] la un obiect ce utilizeaz\u0103 indirec\u0163ie proxy.{1}Verifica\u0163i dac\u0103 acest obiect nu este nul \u00eenainte de a-i invoca metodele.
 
@@ -211,7 +211,7 @@
 
 7124=Un writeChanges() cu succes, a fost apelat la aceast\u0103 UnitOfWork.  Dat fiind pericolul ca modific\u0103rile par\u0163iale s\u0103 fi fost scrise \u00een depozitul de date, dar nu \u015fi deulate \u00eenapoi (dac\u0103 \u00een interiorul unei tranzac\u0163ii externe), singurele opera\u0163ii suportate acum sunt eliberarea, derularea \u00eenapoi a tranzac\u0163iei globale, orice interogare la nivel de non-obiect sau execu\u0163ia SQLCall.  Opera\u0163iunea {0} a fost \u00eencercat\u0103.
 
-7125=O dat\u0103 ce UnitOfWork a fost comis \u015fi/sau eliberat, nu ar mai trebui efectuat\u0103 nici o opera\u0163iune asupra acestuia.  Opera\u0163iunea {0} a fost \u00eencercat\u0103 asupra acestuia.
+7125=Dup\u0103 ce UnitOfWork a fost comis \u015fi/sau eliberat, nu ar mai trebui efectuat\u0103 nicio opera\u0163ie asupra acestuia. S-a \u00eencercat opera\u0163ia {0} asupra acestuia.
 
 7126=Nu se poate apela writeChanges pentru un UnitOfWork imbricat.  Un UnitOfWork imbricat nu scrie niciodat\u0103 modific\u0103rile direct \u00een depozitul de date, numai p\u0103rintele UnitOfWork face aceasta.
 
@@ -375,7 +375,7 @@
 
 7216=Nu a putut fi \u00eenc\u0103rcat\u0103 metoda pentru numele propriet\u0103\u0163ii [{0}] \u00een clasa [{1}]. Asigura\u0163i-v\u0103 c\u0103 exist\u0103 metod\u0103 de ob\u0163inere corespunz\u0103toare pentru acel nume de proprietate definit \u00een clas\u0103.
 
-7217=Valoarea de ordonare dup\u0103 [{0}], specificat\u0103 \u00een elementul [{2}] din entitatea [{3}], este invalid. Nu exist\u0103 nici o proprietate sau c\u00e2mp cu acel nume \u00een entitatea \u0163int\u0103 [{1}].
+7217=Valoarea de ordonare dup\u0103 [{0}], specificat\u0103 \u00een elementul [{2}] din entitatea [{3}], este invalid. Nu exist\u0103 nicio proprietate sau c\u00e2mp cu numele respectiv \u00een entitatea \u0163int\u0103 [{1}].
 
 7218=[{0}] nu \u00eenlocuie\u015fte metoda getCreateTempTableSqlPrefix. DatabasePlatforms ce suport\u0103 tabele temporare trebuie s\u0103 \u00eenlocuiasc\u0103 aceast\u0103 metod\u0103.
 
@@ -427,7 +427,7 @@
 
 7247=O referin\u0163\u0103 circular\u0103 a fost descoperit\u0103 la procesarea ID-urilor derivate din urm\u0103toarele clase Intrare: [{0}] 
 
-7249=Entitatea [{0}] utilizeaz\u0103 [{1}] ca \u015fi clas\u0103 ID \u00eenglobat\u0103 a c\u0103rei tip de acces a fost determinat ca \u015fi [{2}]. Dar [{1}] nu define\u015fte nici un [{2}]. Este posibil s\u0103 nu fi furnizat suficiente metadate \u00een clasa dumneavoastr\u0103 de ID [{1}].
+7249=Entitatea [{0}] utilizeaz\u0103 [{1}] ca o clas\u0103 de ID \u00eenglobat\u0103 al c\u0103rei tip de acces a fost determinat ca [{2}]. Dar [{1}] nu define\u015fte niciun [{2}]. Este posibil s\u0103 nu fi furnizat suficiente metadate \u00een clasa dumneavoastr\u0103 de ID [{1}].
 
 7250=[{0}] utilizeaz\u0103 o non-entitate [{1}] ca \u015fi entitate \u0163int\u0103 \u00een atributul rela\u0163ional [{2}].
 
@@ -545,7 +545,7 @@
 
 7311=O clas\u0103 \u0163int\u0103 invalid\u0103 este utilizat\u0103 cu atributul de colec\u0163ie element [{0}] \u00een clasa [{1}].  Sunt permise numai tipurile de baz\u0103 \u015fi clasele ce pot fi \u00eenglobate.
 
-7312=O clas\u0103 invalid\u0103 ce poate fi \u00eenglobat\u0103 [{0}] este utilizat\u0103 cu atributul de colec\u0163ie element [{1}] \u00een clasa [{2}]. Vede\u0163i sec\u0163iunea 2.6 a specifica\u0163iei: " O clas\u0103 ce poate fi \u00eenglobat\u0103 (ce include o clas\u0103 ce poate fi \u00eenglobat\u0103 \u00eentr-o alt\u0103 clas\u0103 ce poate fi \u00eenglobat\u0103) con\u0163inut\u0103 \u00eentr-o colec\u0163ie de element trebuie s\u0103 nu con\u0163in\u0103 o colec\u0163ie de element \u015fi nici o rela\u0163ie cu o intrare alta dec\u00e2t de la mai multe la una sau de la una la mai multe. Clasa ce poate fi \u00eenglobat\u0103 trebuie s\u0103 fie pe partea proprie a unei asemenea rela\u0163ii \u015fi rela\u0163ia trebuie mapat\u0103 de o mapare de cheie extern\u0103." Maparea atributului [{3}] pe clasa ce poate fi \u00eenglobat\u0103 nu respect\u0103 aceasta.
+7312=O clas\u0103 invalid\u0103 ce poate fi \u00eenglobat\u0103 [{0}] este utilizat\u0103 cu atributul de colec\u0163ie element [{1}] \u00een clasa [{2}]. Vede\u0163i sec\u0163iunea 2.6 a specifica\u0163iei: "O clas\u0103 ce poate fi \u00eenglobat\u0103 (inclusiv o clas\u0103 ce poate fi \u00eenglobat\u0103 \u00een alt\u0103 clas\u0103 \u00eenglobat\u0103) con\u0163inut\u0103 \u00eentr-o colec\u0163ie de elemente trebuie s\u0103 nu con\u0163in\u0103 o colec\u0163ie de elemente \u015fi nici s\u0103 nu con\u0163in\u0103 o rela\u0163ie cu o entitate \u00een afar\u0103 de o rela\u0163ie multe-la-una sau una-la-multe. Clasa ce poate fi \u00eenglobat\u0103 trebuie s\u0103 fie pe partea proprie a unei asemenea rela\u0163ii \u015fi rela\u0163ia trebuie mapat\u0103 de o mapare de cheie extern\u0103." Maparea atributului [{3}] pe clasa ce poate fi \u00eenglobat\u0103 nu respect\u0103 aceasta.
 
 7313=Atributul [{1}] nu a fost g\u0103sit \u00een clasa ce poate fi \u00eenglobat\u0103 [{0}]. Este referit \u00eentr-o \u00eenlocuire de asociere pentru atributul \u00eencorporabil [{3}] pentru clasa [{2}].
 

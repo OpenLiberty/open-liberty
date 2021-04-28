@@ -740,7 +740,7 @@ error.exception.ioeinbody.explanation=Uma IOException foi detectada no c\u00f3di
 error.exception.ioeinbody.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
 
 warn.unsupported.realm=CWSCT0358W: Regi\u00e3o de autentica\u00e7\u00e3o desconhecida {0}
-warn.unsupported.realm.explanation=Um pedido do SIP foi recebido para uma regi\u00e3o de autentica\u00e7\u00e3o desconhecida 
+warn.unsupported.realm.explanation=Uma solicita\u00e7\u00e3o SIP para uma regi\u00e3o de autentica\u00e7\u00e3o desconhecida foi recebida
 warn.unsupported.realm.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria
 
 info.unhashed.creds=CWSCT0359I: Atributos de Credencial em Hash n\u00e3o localizados.

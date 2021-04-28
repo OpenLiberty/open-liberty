@@ -1069,9 +1069,9 @@ NO_NEIGHBOUR_REPLY_WARNING_CWSIP0381.useraction=Assurez-vous que le moteur de me
 
 # -------------------------------------------------------------------------------------------------
 # {0} The UUID of the Remote messaging engine
-NEIGHBOUR_REPLY_RECIEVED_INFO_CWSIP0382=CWSIP0382I: Le moteur de messagerie {0} a r\u00e9pondu \u00e0 la demande d''abonnement. La topologie d''abonnement de publication est maintenant coh\u00e9rente.
-NEIGHBOUR_REPLY_RECIEVED_INFO_CWSIP0382.explanation=Les communications entre les moteurs de messagerie ont abouti et le topologie d'abonnement de publication est coh\u00e9rente.
-NEIGHBOUR_REPLY_RECIEVED_INFO_CWSIP0382.useraction=Aucune
+NEIGHBOUR_REPLY_RECEIVED_INFO_CWSIP0382=CWSIP0382I: Le moteur de messagerie {0} a r\u00e9pondu \u00e0 la demande d''abonnement. La topologie de publication/abonnement est maintenant coh\u00e9rente.
+NEIGHBOUR_REPLY_RECEIVED_INFO_CWSIP0382.explanation=Les communications entre les moteurs de messagerie ont abouti et la topologie de publication/abonnement est coh\u00e9rente.
+NEIGHBOUR_REPLY_RECEIVED_INFO_CWSIP0382.useraction=Aucune
 
 # -------------------------------------------------------------------------------------------------
 # {0} The remote messaging engine name
@@ -1847,7 +1847,7 @@ HEALTHSTATE_STATUS_CWSIP0908.useraction=CMSG0002
 # {0} Exception class causing the blockage
 # {1} Target destination
 HEALTHSTATE_STATUS_CWSIP0919=CWSIP0919W: Destinataire bloqu\u00e9, le destinataire ne peut pas distribuer le message entrant actuel pour le motif {0} sur la destination {1}
-HEALTHSTATE_STATUS_CWSIP0919.explanation=Le destinataire n'est pas en mesure de distribuer un message vers la destination cible pour le motif donn\u00e9 ; tant que ce probl\u00e8me n'est pas r\u00e9solu, la distribution des messages suivants sera bloqu\u00e9e.
+HEALTHSTATE_STATUS_CWSIP0919.explanation=Le destinataire ne parvient pas \u00e0 distribuer un message \u00e0 la destination cible pour le motif donn\u00e9. Tant que ce probl\u00e8me ne sera pas r\u00e9solu, la distribution des messages cons\u00e9cutifs sera bloqu\u00e9e.
 HEALTHSTATE_STATUS_CWSIP0919.useraction=Si cet \u00e9tat persiste, entreprendre les actions appropri\u00e9es pour r\u00e9soudre le probl\u00e8me signal\u00e9 par le message.
 
 # -------------------------------------------------------------------------------------------------

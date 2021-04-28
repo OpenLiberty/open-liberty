@@ -740,7 +740,7 @@ error.exception.ioeinbody.explanation=V k\u00f3du zabezpe\u010den\u00ed kontejne
 error.exception.ioeinbody.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
 
 warn.unsupported.realm=CWSCT0358W: Nezn\u00e1m\u00e1 sf\u00e9ra ov\u011b\u0159en\u00ed {0}
-warn.unsupported.realm.explanation=Byla p\u0159ijata \u017e\u00e1dost SIP pro nezn\u00e1mou sf\u00e9ru ov\u011b\u0159en\u00ed. 
+warn.unsupported.realm.explanation=Byla p\u0159ijata \u017e\u00e1dost SIP pro nezn\u00e1mou sf\u00e9ru ov\u011b\u0159en\u00ed.
 warn.unsupported.realm.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
 
 info.unhashed.creds=CWSCT0359I: Nebyly nalezeny atributy ha\u0161ovan\u00fdch pov\u011b\u0159en\u00ed.
