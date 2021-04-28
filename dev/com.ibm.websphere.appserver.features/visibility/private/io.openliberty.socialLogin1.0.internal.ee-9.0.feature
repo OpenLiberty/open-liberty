@@ -8,5 +8,5 @@ visibility = private
 -bundles=\
   io.openliberty.security.social.internal,\
   io.openliberty.security.openidconnect.internal.clients.common
-kind=noship
-edition=full
+kind=beta
+edition=core
