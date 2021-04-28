@@ -628,6 +628,8 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
         return this.probeExtensionArchive;
     }
 
+    private static boolean issuedBetaMessage = false;
+
     private ExtensionArchive newSPIExtensionArchive(ServiceReference<CDIExtensionMetadata> sr,
                                                     CDIExtensionMetadata webSphereCDIExtensionMetaData, WebSphereCDIDeployment applicationContext) throws CDIException {
         Bundle bundle = sr.getBundle();
@@ -635,6 +637,15 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
         Set<Class<? extends Extension>> extensionClasses = webSphereCDIExtensionMetaData.getExtensions();
         Set<Class<?>> beanClasses = webSphereCDIExtensionMetaData.getBeanClasses();
         Set<Class<? extends Annotation>> beanDefiningAnnotationClasses = webSphereCDIExtensionMetaData.getBeanDefiningAnnotationClasses();
+
+        if (! beanDefiningAnnotationClasses.isEmpty()) {
+            if (! com.ibm.ws.kernel.productinfo.ProductInfo.getBetaEdition()) {
+                throw new UnsupportedOperationException("This method is beta and is not available.");
+            } else if (!issuedBetaMessage) {
+                Tr.info(tc, "BETA: A beta method getBeanDefiningAnnotationClasses has been invoked for the class " + this.getClass().getName() + " for the first time.");
+                issuedBetaMessage = true;
+            }
+        }
 
         for (Iterator<Class<? extends Extension>> i = extensionClasses.iterator(); i.hasNext();) {
             Class extensionClass = i.next();
@@ -656,6 +667,7 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
 
         Set<String> extra_classes = beanClasses.stream().map(clazz -> clazz.getCanonicalName()).collect(Collectors.toSet());
         Set<String> extraAnnotations = beanDefiningAnnotationClasses.stream().map(clazz -> clazz.getCanonicalName()).collect(Collectors.toSet());
+
         //The simpler SPI does not offer these properties.
         boolean applicationBDAsVisible = false;
         boolean extClassesOnly = false;

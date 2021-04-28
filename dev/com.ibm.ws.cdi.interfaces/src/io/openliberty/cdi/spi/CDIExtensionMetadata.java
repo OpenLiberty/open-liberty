@@ -76,6 +76,7 @@ public interface CDIExtensionMetadata {
      * performs annotation scanning during application startup.
      * All classes must be in the same archive as your CDIExtensionMetadata.
      */
+    @Deprecated//This method is currently beta, if you override this default you must include beta guards
     default public Set<Class<? extends Annotation>> getBeanDefiningAnnotationClasses() {
         return Collections.emptySet();
     }
