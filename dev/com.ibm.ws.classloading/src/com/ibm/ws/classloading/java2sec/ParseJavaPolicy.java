@@ -47,6 +47,17 @@ public class ParseJavaPolicy {
     String keyStoreUrlString;
     String keyStoreType;
     static List<GrantEntry> grants = new ArrayList<GrantEntry>();
+    
+    /**
+     * The java.vendor of the JDK. Note that Sun and Oracle JDKs are considered to be the same.
+     */
+    public static enum Vendor {
+        IBM,
+        OPENJ9,
+        SUN_ORACLE,
+        UNKNOWN
+    }
+
 
     String javaHome = AccessController.doPrivileged(new PrivilegedAction<String>() {
         public String run() {
@@ -75,9 +86,9 @@ public class ParseJavaPolicy {
     public ParseJavaPolicy(boolean expandProp) throws FileNotFoundException, IOException, ParserException {
 
         // let's find the java.policy file
-        // if using Oracle OpenJDK at version 10 or higher, find it under java.home/conf/security
-        // if using Oracle OpenJDK at version 10 and java.policy is not under conf/security OR not using Oracle OpenJDK at version 10 or higher:
-        // it should be under <java.home>/jre/lib/security
+        // if using JDK 9 or higher, find it under java.home/conf/security
+        // if not there, look for it under java.home/jre/lib/security
+        // if not there, look for it under java.home/lib/security
         
         
         if (tc.isDebugEnabled()) {
@@ -101,37 +112,37 @@ public class ParseJavaPolicy {
                     // first let's check if this is openjdk version 10 or up, where the java.policy file would 
                     // be under java.home/conf/security
                     
-                    if (javaVendor != null && javaVendor.contains("openjdk") && javaVendor.contains("oracle")) {
-                        if (javaVersion != null) {
-                            
-                            // let's get the major version number of the JDK - if it's something like 10.1, then let's just pull 
-                            // the major number to check if we're at version 10 or up
-                            
-                            if (javaVersion.indexOf(".") != -1) {
-                                String major = javaVersion.substring(0, javaVersion.indexOf(".") - 1);
-                                version = new Integer(major);
-                            } else {
-                                version = new Integer(javaVersion);
-                            }
-                            if (tc.isDebugEnabled()) {
-                                Tr.debug(tc, "Using Oracle OpenJDK at major version: " + version);
-                            }
-                        }
-                        
-                        if (version.intValue() >= 10) {
-                            
-                            // we are using Oracle OpenJDK 10 or higher, so let's find java.policy under conf/security
-                            
+                    
+                    String[] versionElements = javaVersion.split("\\D"); // split on non-digits
+
+                    // Pre-JDK 9 the java.version is 1.MAJOR.MINOR
+                    // Post-JDK 9 the java.version is MAJOR.MINOR
+                    int i = Integer.valueOf(versionElements[0]) == 1 ? 1 : 0;
+                    Integer MAJOR = Integer.valueOf(versionElements[i++]);
+
+                    Integer MINOR;
+                    if (i < versionElements.length)
+                        MINOR = Integer.valueOf(versionElements[i++]);
+                    else
+                        MINOR = 0;
+
+                    Integer MICRO;
+                    if (i < versionElements.length)
+                        MICRO = Integer.valueOf(versionElements[i]);
+                    else
+                        MICRO = 0;
+
+                    
+                    if (9 <= MAJOR.intValue()) {
                             file = javaHome.concat("/conf/security/java.policy");
                             File fileToCheck = new File(file);
                             if (!fileToCheck.exists()) {
                                 if (tc.isDebugEnabled()) {
-                                    Tr.debug(tc, "openjdk version " + version.intValue() + " did not find java.home/conf/security/java.policy");
+                                    Tr.debug(tc, "JDK version installed: " + version.intValue() + " but did not find java.home/conf/security/java.policy");
                                 }
                                 // if not there, then let's just check the usual old places
                                 file = wheresJavaPolicy();
                             }
-                        }
                     } else {
                         // not using Oracle OpenJDK 10 or higher, so let's check the usual old places
                         file = wheresJavaPolicy();
