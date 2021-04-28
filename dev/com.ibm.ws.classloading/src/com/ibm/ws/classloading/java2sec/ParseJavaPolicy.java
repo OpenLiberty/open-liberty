@@ -48,17 +48,6 @@ public class ParseJavaPolicy {
     String keyStoreType;
     static List<GrantEntry> grants = new ArrayList<GrantEntry>();
     
-    /**
-     * The java.vendor of the JDK. Note that Sun and Oracle JDKs are considered to be the same.
-     */
-    public static enum Vendor {
-        IBM,
-        OPENJ9,
-        SUN_ORACLE,
-        UNKNOWN
-    }
-
-
     String javaHome = AccessController.doPrivileged(new PrivilegedAction<String>() {
         public String run() {
             return System.getProperty("java.home");
@@ -86,7 +75,7 @@ public class ParseJavaPolicy {
     public ParseJavaPolicy(boolean expandProp) throws FileNotFoundException, IOException, ParserException {
 
         // let's find the java.policy file
-        // if using JDK 9 or higher, find it under java.home/conf/security
+        // if using Open JDK 9 or higher, find it under java.home/conf/security
         // if not there, look for it under java.home/jre/lib/security
         // if not there, look for it under java.home/lib/security
         
@@ -109,7 +98,7 @@ public class ParseJavaPolicy {
                 if (javaHome != null) {
                     Integer version = 0;
                     
-                    // first let's check if this is openjdk version 10 or up, where the java.policy file would 
+                    // first let's check if this is version 9 or up, where the java.policy file would 
                     // be under java.home/conf/security
                     
                     
@@ -144,7 +133,7 @@ public class ParseJavaPolicy {
                                 file = wheresJavaPolicy();
                             }
                     } else {
-                        // not using Oracle OpenJDK 10 or higher, so let's check the usual old places
+                        // not using 9 or higher, so let's check the usual old places
                         file = wheresJavaPolicy();
                     }
 
@@ -201,7 +190,7 @@ public class ParseJavaPolicy {
     
     /*
      * In the fashion of Where's Waldo, let's find our java.policy file
-     * With OpenJDK 10 and up, it should be under java.home/conf/security
+     * With open jdk version 9 and up, it should be under java.home/conf/security
      * With earlier versions of the non-open JDK and OpenJDK, it should be under java.home/security 
      * if java.home points to the jre directory; else it should be under java.home/jre/security
      */
