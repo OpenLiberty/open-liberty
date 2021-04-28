@@ -378,6 +378,7 @@ public class SQLJTest extends FATServletClient {
             args.add("--add-opens=java.base/java.util.jar=ALL-UNNAMED");
             args.add("--add-opens=java.base/jdk.internal.util.jar=ALL-UNNAMED");
             args.add("--add-opens=java.base/sun.net.www.protocol.jar=ALL-UNNAMED");
+            args.add("--add-opens=java.base/java.security=ALL-UNNAMED");
         }
         args.add("com.ibm.db2.jcc.sqlj.Customizer");
         args.add("-url");
