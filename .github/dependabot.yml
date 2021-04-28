@@ -12,4 +12,4 @@ updates:
     assignees:
       - "tevans78"
       - "cbridgha"
-    target_branch: "integration"
+    target-branch: "integration"
