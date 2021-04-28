@@ -56,10 +56,20 @@ public interface MCWrapper {
 
     /**
      * We must remove the managed connection from the mcToMCWMap
-     * reguardless of its state. Therefore this method does not
+     * regardless of its state. Therefore this method does not
      * check the state, it just returns the managed connection.
      */
     ManagedConnection getManagedConnectionWithoutStateCheck();
+
+    /**
+     * Returns managed connection after performing a state check
+     * similarly to {@link #getManagedConnection()}.
+     * However, if the state check fails an IllegalStateException
+     * will be thrown without tracing an error message.
+     * It is expected that the internal code calling this method will
+     * handle the IllegalStateException.
+     */
+    ManagedConnection getManagedConnectionWithoutTrace();
 
     /**
      * Calls <code>cleanup()</code> on the wrappered <code>ManagedConnection<code>.

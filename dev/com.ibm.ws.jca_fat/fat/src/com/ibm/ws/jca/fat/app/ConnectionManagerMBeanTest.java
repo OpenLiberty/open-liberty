@@ -171,6 +171,36 @@ public class ConnectionManagerMBeanTest extends FATServletClient {
     }
 
     /**
+     * Purges the connections from a connection pool, using the MBean "purgePoolContents", with the "abort" option.
+     * The purge occurs while a connection is in an LTC, we ensure that the connection
+     * is marked to be destroyed. Then check to make sure connections were destroyed after transaction is committed.
+     */
+    @Test //TODO move this test to jca_fat_mbean when it is ported
+    public void testMBeanPurgeAndDestroyCount() throws Exception {
+        //Ensure thread supported cleanup and destroy connection are destoryed before running test
+        server.setMarkToEndOfLog();
+        runTest("cleanUpConnectionPoolCF1");
+        server.waitForStringInLogUsingMark(".*Finished processing the thread supported cleanup and destroy of a connection.*");
+
+        runTest();
+    }
+
+    /**
+     * Purges the connections from a connection pool, using the MBean "purgePoolContents", with the "abort" option.
+     * The purge occurs while a connection is in-use in a transaction, we ensure that the connection
+     * is marked to be destroyed. Then check to make sure connections were destroyed after transaction is committed.
+     */
+    @Test //TODO move this test to jca_fat_mbean when it is ported
+    public void testMBeanPurgeAndDestroyCountDuringTransaction() throws Exception {
+        //Ensure thread supported cleanup and destroy connection are destoryed before running test
+        server.setMarkToEndOfLog();
+        runTest("cleanUpConnectionPoolCF1");
+        server.waitForStringInLogUsingMark(".*Finished processing the thread supported cleanup and destroy of a connection.*");
+
+        runTest();
+    }
+
+    /**
      * Purge the connections from a connection pool, using the MBean "purgePoolContents".
      * The purge occurs while a connection is in-use in a transaction, we ensure that
      * the connection is purged after the transaction ends.

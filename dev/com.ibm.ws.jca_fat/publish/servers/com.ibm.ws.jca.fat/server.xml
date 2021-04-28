@@ -17,6 +17,7 @@
       <feature>jms-2.0</feature>
       <feature>concurrent-1.0</feature>
       <feature>componenttest-1.0</feature>
+      <feature>monitor-1.0</feature>
     </featureManager>
 
     <include optional="true" location="../fatTestPorts.xml"/>
@@ -87,6 +88,8 @@
 	<javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
 	<javaPermission className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
 	<javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
+	<javaPermission className="java.lang.RuntimePermission" name="getClassLoader" />
+	<javaPermission className="javax.management.MBeanPermission" name="com.ibm.ws.*" actions="registerMBean"/>
 
     <!-- needed by fake resource adapter -->
     <javaPermission codebase="${server.config.dir}/connectors/JCAFAT1.rar" className="java.lang.RuntimePermission" name="getClassLoader"/>

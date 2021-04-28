@@ -539,7 +539,6 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
 
     @Override
     public Object getUnSharedPoolCoordinator() {
-        // TODO Auto-generated method stub
         return unSharedPoolCoordinator;
     }
 
@@ -687,6 +686,17 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
             Tr.exit(this, tc, "setManagedConnection");
         }
 
+    }
+
+    @Override
+    public ManagedConnection getManagedConnectionWithoutTrace() throws IllegalStateException {
+
+        if (state != MCWrapper.STATE_NEW && state != MCWrapper.STATE_INACTIVE) {
+            return mc;
+        } else {
+            throw new IllegalStateException("getManagedConnection: illegal state exception. State = " + getStateString() + " MCW = "
+                                            + mcWrapperObject_hexString);
+        }
     }
 
     /**
