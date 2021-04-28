@@ -313,9 +313,13 @@ public class CommonTest {
             Log.info(c, thisMethod, "Using initial config: " + config);
         }
 
+        /*
+         * Configure the KdcHelper appropriately.
+         */
         if (getKdcHelper() == null) {
             setKdcHelper(getKdcHelper(getMyServer()));
         } else {
+            getKdcHelper().server = getMyServer();
             createKrbConf(getKdcHelper().server);
         }
 
