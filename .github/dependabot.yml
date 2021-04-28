@@ -13,3 +13,7 @@ updates:
       - "tevans78"
       - "cbridgha"
     target-branch: "integration"
+    open-pull-requests-limit: 100
+    allowed_updates:
+      - match:
+          update_type: "security"
