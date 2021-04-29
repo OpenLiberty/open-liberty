@@ -28,6 +28,11 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.logging.Logger;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -36,14 +41,39 @@ import com.ibm.ws.install.InstallException;
 public class ArtifactDownloaderUtils {
 
     private static boolean isFinished = false;
+    private final static Logger logger = InstallLogUtils.getInstallLogger();
 
     public static List<String> getMissingFiles(List<String> featureURLs, Map<String, Object> envMap) throws IOException {
         List<String> result = new ArrayList<String>();
+        logger.info("number of missing features: " + featureURLs.size());
+        final ExecutorService executor = Executors.newCachedThreadPool();
+        final List<Future<?>> futures = new ArrayList<>();
+
         for (String url : featureURLs) {
-            if (!(exists(url, envMap) == HttpURLConnection.HTTP_OK)) {
-                result.add(url);
-            }
+            Future<?> future = executor.submit(() -> {
+                try {
+                    if (!(exists(url, envMap) == HttpURLConnection.HTTP_OK)) {
+                        result.add(url);
+                    }
+                } catch (IOException ioe) {
+                    ioe.printStackTrace();
+                }
+            });
+            futures.add(future);
         }
+
+        try {
+            for (Future<?> future : futures) {
+                while (!future.isDone()) {
+                    logger.info("Finding url... ");
+                    Thread.sleep(100);
+                }
+                future.get();
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+
         return result;
     }
 
