@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1998, 2016 IBM Corporation and others.
+ * Copyright (c) 1998, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,7 +24,9 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
 
+import javax.ejb.ConcurrentAccessTimeoutException;
 import javax.ejb.CreateException;
 import javax.ejb.DuplicateKeyException;
 import javax.ejb.EJBException;
@@ -77,12 +79,7 @@ import com.ibm.ws.util.ThreadContextAccessor;
  * Provides the base implementation of javax.ejb.EJBHome
  */
 @SuppressWarnings({ "serial" })
-public abstract class EJSHome
-                implements PoolDiscardStrategy,
-                HomeInternal,
-                SessionBean,
-                PersisterHome
-{
+public abstract class EJSHome implements PoolDiscardStrategy, HomeInternal, SessionBean, PersisterHome {
     private final static TraceComponent tc = Tr.register(EJSHome.class,
                                                          "EJBContainer",
                                                          "com.ibm.ejs.container.container");
@@ -93,8 +90,7 @@ public abstract class EJSHome
      * Accessor to setup ComponentMetaData on thread.
      **/
     // d627931
-    private final static ComponentMetaDataAccessorImpl ivCMDAccessor =
-                    ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor();
+    private final static ComponentMetaDataAccessorImpl ivCMDAccessor = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor();
 
     /**
      * The beanO factory creates beanOs appropriate for wrapping the
@@ -298,7 +294,7 @@ public abstract class EJSHome
      * The first time createBeanO method is called for a singleton
      * sees this field as being null and creates the SingletonBeanO.
      */
-    private SingletonBeanO ivSingletonBeanO = null; //d565527
+    private volatile SingletonBeanO ivSingletonBeanO = null;
 
     /**
      * True while the SingletonBeanO is being created. This is to avoid
@@ -331,31 +327,26 @@ public abstract class EJSHome
      */
     private boolean ivApplicationStarted = false; //F743-1753CodRev
 
-    public EJSHome() throws RemoteException
-    {
+    public EJSHome() throws RemoteException {
         // Intentionally blank.
     }
 
     /**
      * Throw a runtime exception if this home is not open for business.
      */
-    protected final void homeEnabled()
-    {
-        if (!enabled)
-        {
+    protected final void homeEnabled() {
+        if (!enabled) {
             // Provide some meaningful message text.                        d350987
-            String msgTxt =
-                            "The referenced version of the " + j2eeName.getComponent() +
-                                            " bean in the " + j2eeName.getApplication() +
-                                            " application has been stopped and may no longer be used. " +
-                                            "If the " + j2eeName.getApplication() +
-                                            " application has been started again, a new reference for " +
-                                            "the new image of the " + j2eeName.getComponent() +
-                                            " bean must be obtained. Local references to a bean or home " +
-                                            "are no longer valid once the application has been stopped.";
+            String msgTxt = "The referenced version of the " + j2eeName.getComponent() +
+                            " bean in the " + j2eeName.getApplication() +
+                            " application has been stopped and may no longer be used. " +
+                            "If the " + j2eeName.getApplication() +
+                            " application has been started again, a new reference for " +
+                            "the new image of the " + j2eeName.getComponent() +
+                            " bean must be obtained. Local references to a bean or home " +
+                            "are no longer valid once the application has been stopped.";
 
-            if (beanMetaData.ivModuleVersion < BeanMetaData.J2EE_EJB_VERSION_3_0)
-            {
+            if (beanMetaData.ivModuleVersion < BeanMetaData.J2EE_EJB_VERSION_3_0) {
                 throw new HomeDisabledException(msgTxt);
             }
 
@@ -377,9 +368,7 @@ public abstract class EJSHome
 
     private void enable(EJSContainer ejsContainer,
                         BeanId id,
-                        BeanMetaData bmd)
-                    throws RemoteException
-    {
+                        BeanMetaData bmd) throws RemoteException {
         this.container = ejsContainer;
         this.ivEntityHelper = ejsContainer.ivEntityHelper;
         this.ivHomeId = id;
@@ -394,8 +383,7 @@ public abstract class EJSHome
 
         if (bmd.type != InternalConstants.TYPE_MANAGED_BEAN) // F743-34301
         {
-            if (ejsContainer.pmiFactory != null)
-            {
+            if (ejsContainer.pmiFactory != null) {
                 pmiBean = ejsContainer.pmiFactory.createPmiBean(bmd, ejsContainer.ivName);
             }
 
@@ -418,9 +406,7 @@ public abstract class EJSHome
 
     public void initialize(EJSContainer ejsContainer,
                            BeanId id,
-                           BeanMetaData bmd)
-                    throws RemoteException
-    {
+                           BeanMetaData bmd) throws RemoteException {
         // Cache the noLocalCopies system property, to determine when
         // container needs to make copies of the primary key objects,
         // since the ORB is not copying them.                              PQ62081
@@ -444,8 +430,7 @@ public abstract class EJSHome
         this.noPrimaryKeyMutation = NoPrimaryKeyMutation;
 
         /* PQ89520 -start */
-        if (bmd.cmpVersion == InternalConstants.CMP_VERSION_1_X)
-        {
+        if (bmd.cmpVersion == InternalConstants.CMP_VERSION_1_X) {
             // Property access & default now handled by ContainerProperties. 391302
             this.ivAllowEarlyInsert = AllowEarlyInsert;
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()
@@ -458,29 +443,21 @@ public abstract class EJSHome
         enable(ejsContainer, id, bmd);
     }
 
-    public void completeInitialization()
-                    throws RemoteException
-    {
+    public void completeInitialization() throws RemoteException {
         enterpriseBeanClass = beanMetaData.enterpriseBeanClass;
         remoteEJBObjectClass = beanMetaData.remoteImplClass;
         localEJBObjectClass = beanMetaData.localImplClass; // f111627
         environment = beanMetaData.envProps;
 
-        if (beanMetaData.type == InternalConstants.TYPE_STATELESS_SESSION)
-        {
+        if (beanMetaData.type == InternalConstants.TYPE_STATELESS_SESSION) {
             statelessSessionHome = true;
             ivStatelessId = new BeanId(this, null); // d140003.26
-        }
-        else if (beanMetaData.type == InternalConstants.TYPE_STATEFUL_SESSION)
-        {
+        } else if (beanMetaData.type == InternalConstants.TYPE_STATEFUL_SESSION) {
             statefulSessionHome = true;
-        }
-        else if (beanMetaData.type == InternalConstants.TYPE_MESSAGE_DRIVEN)
-        {
+        } else if (beanMetaData.type == InternalConstants.TYPE_MESSAGE_DRIVEN) {
             messageDrivenHome = true;
             ivStatelessId = new BeanId(this, null); // d140003.26
-        }
-        else if (beanMetaData.type == InternalConstants.TYPE_SINGLETON_SESSION) // F743-508
+        } else if (beanMetaData.type == InternalConstants.TYPE_SINGLETON_SESSION) // F743-508
         {
             ivSingletonSessionHome = true;
             ivStatelessId = new BeanId(this, null);
@@ -492,10 +469,8 @@ public abstract class EJSHome
         // interfaces.                                                   d369262.5
         if (statefulSessionHome &&
             (beanMetaData.ivBusinessLocalInterfaceClasses != null ||
-            beanMetaData.ivBusinessRemoteInterfaceClasses != null))
-        {
-            try
-            {
+             beanMetaData.ivBusinessRemoteInterfaceClasses != null)) {
+            try {
                 EJSLocalWrapper wrapper = new EJSLocalWrapper();
                 wrapper.beanId = ivHomeId;
                 wrapper.bmd = beanMetaData;
@@ -517,8 +492,7 @@ public abstract class EJSHome
                                                               false);
                 wrapper.methodInfos[0].setMethodDescriptor("(Ljava.lang.Class;)Ljava.lang.Object;");
                 ivStatefulBusinessHomeWrapper = wrapper;
-            } catch (Throwable th)
-            {
+            } catch (Throwable th) {
                 FFDCFilter.processException(th, CLASS_NAME + ".completeInitialization",
                                             "642", this);
                 throw ExceptionUtil.EJBException(th);
@@ -529,12 +503,9 @@ public abstract class EJSHome
         // caching, as well as for Stateless Session beans with a
         // maximum creation limit.                                         PK20648
         if (beanMetaData.optionACommitOption ||
-            beanMetaData.ivMaxCreation > 0)
-        {
+            beanMetaData.ivMaxCreation > 0) {
             lockStrategy = LockStrategy.EXCLUSIVE_LOCK_STRATEGY;
-        }
-        else
-        {
+        } else {
             lockStrategy = LockStrategy.NULL_LOCK_STRATEGY;
         }
 
@@ -546,26 +517,21 @@ public abstract class EJSHome
         if (statefulSessionHome == true || ivSingletonSessionHome) //d565527
         {
             beanPool = null;
-        }
-        else
-        {
+        } else {
             beanPool = container.poolManager.create(beanMetaData.minPoolSize,
                                                     beanMetaData.maxPoolSize,
                                                     pmiBean,
                                                     this);
 
-            if (beanMetaData.ivInitialPoolSize != 0)
-            {
+            if (beanMetaData.ivInitialPoolSize != 0) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(tc, "Pre-loading BeanPool with " + beanMetaData.ivInitialPoolSize);
 
                 // d648522 - Pre-load the bean pool on a separate thread to avoid
                 // wrapper locking issues during deferred initialization.
-                container.getEJBRuntime().getScheduledExecutorService().schedule(new Runnable()
-                {
+                container.getEJBRuntime().getScheduledExecutorService().schedule(new Runnable() {
                     @Override
-                    public void run()
-                    {
+                    public void run() {
                         // d664917.1 - We already have a reference to the
                         // EJSHome, but we call through HomeRecord to ensure
                         // the deferred init thread has finished before we
@@ -580,8 +546,7 @@ public abstract class EJSHome
         // We only want to use AccessIntent service when it is a BMP in a EJB 2.0
         // or later version of module where a BMP is supported in that version.
         if (beanMetaData.getEJBModuleVersion() >= BeanMetaData.J2EE_EJB_VERSION_2_0 && //d174083
-            beanMetaData.getEJBComponentType() == InternalConstants.TYPE_BEAN_MANAGED_ENTITY)
-        {
+            beanMetaData.getEJBComponentType() == InternalConstants.TYPE_BEAN_MANAGED_ENTITY) {
             ivAIServiceEnabled = true;
         }
         //139562.15.EJBC end
@@ -641,8 +606,7 @@ public abstract class EJSHome
      * Disable this home instance and free all resources associated
      * with it.
      */
-    public synchronized void destroy()
-    {
+    public void destroy() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
             Tr.event(tc, "Destroying home ", new Object[] { this, j2eeName });
 
@@ -651,31 +615,29 @@ public abstract class EJSHome
         }
 
         // F743-1751 - Explicitly destroy singletons since they are not pooled.
-        if (ivSingletonBeanO != null)
-        {
-            try
-            {
+        if (ivSingletonBeanO != null) {
+            try {
                 ivSingletonBeanO.destroy();
-            } catch (Throwable ex)
-            {
+            } catch (Throwable ex) {
                 FFDCFilter.processException(ex, CLASS_NAME + ".destroy", "809", this);
             }
         }
 
-        if (beanPool != null) {
-            beanPool.destroy();
-        }
+        synchronized (this) {
+            if (beanPool != null) {
+                beanPool.destroy();
+            }
 
-        enabled = false;
+            enabled = false;
 
-        if (pmiBean != null) {
-            container.pmiFactory.removePmiModule(pmiBean); // d146239.14
+            if (pmiBean != null) {
+                container.pmiFactory.removePmiModule(pmiBean); // d146239.14
+            }
         }
     } // destroy
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return hashValue;
     }
 
@@ -683,8 +645,7 @@ public abstract class EJSHome
      * Get the JNDI name of this home.
      */
     @Override
-    public String getJNDIName(Object pkey)
-    {
+    public String getJNDIName(Object pkey) {
         return jndiName;
     } // getJNDIName
 
@@ -692,8 +653,7 @@ public abstract class EJSHome
      * Get the Java EE name of this home. <p>
      */
     @Override
-    public J2EEName getJ2EEName()
-    {
+    public J2EEName getJ2EEName() {
         return j2eeName;
     } // getJ2EEName
 
@@ -701,8 +661,7 @@ public abstract class EJSHome
      * Get the id of this home bean. <p>
      */
     @Override
-    public BeanId getId()
-    {
+    public BeanId getId() {
         return ivHomeId;
     } // getId
 
@@ -720,16 +679,14 @@ public abstract class EJSHome
     @Override
     public void setCustomFinderAccessIntentThreadState(boolean cfwithupdateaccess,
                                                        boolean readonly,
-                                                       String methodname)
-    {
+                                                       String methodname) {
         container.setCustomFinderAccessIntentThreadState(cfwithupdateaccess,
                                                          readonly,
                                                          methodname);
     }
 
     @Override
-    public void resetCustomFinderAccessIntentContext()
-    {
+    public void resetCustomFinderAccessIntentContext() {
         container.resetCustomFinderAccessIntentContext();
     }
 
@@ -740,9 +697,7 @@ public abstract class EJSHome
      */
     @Override
     public final EJSWrapperCommon getWrapper() // f111627
-    throws CSIException,
-                    RemoteException
-    {
+                    throws CSIException, RemoteException {
         homeEnabled();
 
         // EJS Homes are stateless session beans with singleton wrappers.
@@ -752,8 +707,7 @@ public abstract class EJSHome
         // updating the LRU data and preventing it from unregistering with
         // the ORB.                                                      d196581.1
         if (ivHomeWrappers == null ||
-            !ivHomeWrappers.inCache())
-        {
+            !ivHomeWrappers.inCache()) {
             ivHomeWrappers = wrapperManager.getWrapper(ivHomeId); // d156807.1
         }
 
@@ -764,9 +718,7 @@ public abstract class EJSHome
      * Gets the set of wrappers for binding this home to naming.
      */
     public final HomeWrapperSet getWrapperSet() // d648522, d739542
-    throws CSIException,
-                    RemoteException
-    {
+                    throws CSIException, RemoteException {
         EJSWrapperCommon w = getWrapper();
         Remote remote = beanMetaData.homeRemoteImplClass == null ? null : w.getRemoteWrapper();
         Object local = beanMetaData.homeLocalImplClass == null ? null : w.getLocalObject();
@@ -778,9 +730,7 @@ public abstract class EJSHome
      */
     @Override
     public final EJSWrapperCommon getWrapper(BeanId id) // f111627
-    throws CSIException,
-                    RemoteException
-    {
+                    throws CSIException, RemoteException {
         homeEnabled();
         return wrapperManager.getWrapper(id); // d156807.1
     }
@@ -803,8 +753,7 @@ public abstract class EJSHome
      * @return a TimedObject wrapper for the given bean id.
      **/
     // LI2281.07
-    final TimedObjectWrapper getTimedObjectWrapper(BeanId beanId)
-    {
+    final TimedObjectWrapper getTimedObjectWrapper(BeanId beanId) {
         TimedObjectWrapper timedWrapper = null;
 
         // Get timedObject from container pool of timed objects.
@@ -812,8 +761,7 @@ public abstract class EJSHome
 
         // If the pool was empty, create a new one... and set the
         // invariant fields.
-        if (timedWrapper == null)
-        {
+        if (timedWrapper == null) {
             timedWrapper = new TimedObjectWrapper();
             timedWrapper.container = container;
             timedWrapper.wrapperManager = wrapperManager;
@@ -848,8 +796,7 @@ public abstract class EJSHome
      * @param timedWrapper TimedObject wrapper to return to the pool.
      **/
     // LI2281.07
-    final void putTimedObjectWrapper(TimedObjectWrapper timedWrapper)
-    {
+    final void putTimedObjectWrapper(TimedObjectWrapper timedWrapper) {
         // Clear the variant fields and return to pool...
         timedWrapper.beanId = null;
         timedWrapper.bmd = null;
@@ -901,9 +848,7 @@ public abstract class EJSHome
     private BeanO createBeanO(EJBThreadData threadData,
                               ContainerTx tx,
                               boolean activate,
-                              ManagedObjectContext context)
-                    throws RemoteException
-    {
+                              ManagedObjectContext context) throws RemoteException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); // d532639.2
 
         if (isTraceOn && tc.isEntryEnabled()) // d367572.7
@@ -921,8 +866,7 @@ public abstract class EJSHome
         // NOT be returned until a BeanO has been allocated... or the attempt
         // has timed out, in which case an Exception will be thrown.       PK20648
         // -----------------------------------------------------------------------
-        if (beanMetaData.ivMaxCreation > 0)
-        {
+        if (beanMetaData.ivMaxCreation > 0) {
             result = allocateBeanO(tx);
         }
         // -----------------------------------------------------------------------
@@ -941,8 +885,7 @@ public abstract class EJSHome
         // home.  If there is a bean pool, get an instance from the pool. Otherwise,
         // fall through and create a new one.
         // -----------------------------------------------------------------------
-        else if (beanPool != null)
-        {
+        else if (beanPool != null) {
             result = (BeanO) beanPool.get();
         }
 
@@ -956,19 +899,15 @@ public abstract class EJSHome
                     FFDCFilter.processException(e, CLASS_NAME + ".createBeanO", "960", this);
                     throw new IllegalStateException(e);
                 }
-            }
-            else
-            {
+            } else {
                 long createStartTime = -1;
-                try
-                {
+                try {
                     // For Stateless and MessageDriven, create count is the same
                     // as instantiation count. For these types, create time should
                     // include creating the instance and calling any lifecycle
                     // callbacks.                                           d626533.1
                     if (pmiBean != null &&
-                        (statelessSessionHome || messageDrivenHome))
-                    {
+                        (statelessSessionHome || messageDrivenHome)) {
                         createStartTime = pmiBean.initialTime(EJBPMICollaborator.CREATE_RT);
                     }
 
@@ -976,12 +915,10 @@ public abstract class EJSHome
                 } catch (InvocationTargetException e) {
                     FFDCFilter.processException(e, CLASS_NAME + ".createBeanO", "977", this);
                     throw new RemoteException(enterpriseBeanClass.getName(), e.getCause());
-                } finally
-                {
+                } finally {
                     // Even if the create fails, go ahead and add the time, so
                     // the number of times counted matches the create count.
-                    if (createStartTime > -1)
-                    {
+                    if (createStartTime > -1) {
                         pmiBean.finalTime(EJBPMICollaborator.CREATE_RT, createStartTime);
                     }
                 }
@@ -1020,8 +957,7 @@ public abstract class EJSHome
                 } catch (IllegalAccessException iae) {
                     FFDCFilter.processException(iae, CLASS_NAME + ".createBeanO",
                                                 "598", this);
-                    throw new ContainerException("Problem occurred resetting CMP fields to Java default values",
-                                    iae);
+                    throw new ContainerException("Problem occurred resetting CMP fields to Java default values", iae);
                 }
             }
         }
@@ -1070,9 +1006,7 @@ public abstract class EJSHome
      */
     // Added ContainerTx d168509; added EJBThreadData d630940
     @Override
-    public BeanO createBeanO(EJBThreadData threadData, ContainerTx tx, BeanId id)
-                    throws RemoteException
-    {
+    public BeanO createBeanO(EJBThreadData threadData, ContainerTx tx, BeanId id) throws RemoteException {
         homeEnabled();
         BeanO result = createBeanO(threadData, tx, true, null); // d630940
         result.setId(id);
@@ -1099,8 +1033,7 @@ public abstract class EJSHome
      * entire sequence is successful, then {@link #afterPostCreateCompletion} must be called. If an exception
      * occurs at any point, then {@link #createFailure} must be called.
      */
-    public BeanO createBeanO() throws RemoteException
-    {
+    public BeanO createBeanO() throws RemoteException {
         EJSDeployedSupport s = EJSContainer.getMethodContext();
         return createBeanO(s.ivThreadData, s.currentTx, false, null); // d630940
     }
@@ -1130,9 +1063,7 @@ public abstract class EJSHome
      *         if a new instance needs to be created.
      **/
     // PK20648
-    private BeanO allocateBeanO(ContainerTx tx)
-                    throws RemoteException
-    {
+    private BeanO allocateBeanO(ContainerTx tx) throws RemoteException {
         BeanO result = null;
         long wait_time = beanMetaData.ivMaxCreationTimeout; // default is 5 minutes
         boolean beanAvailable = false;
@@ -1146,18 +1077,13 @@ public abstract class EJSHome
         if (isTraceOn && tc.isDebugEnabled())
             Tr.debug(tc, "allocateBeanO: Obtained HomeId lock for BeanPool : " + tx);
 
-        try
-        {
-            while (!beanAvailable)
-            {
-                synchronized (beanPool)
-                {
+        try {
+            while (!beanAvailable) {
+                synchronized (beanPool) {
                     result = (BeanO) beanPool.get();
 
-                    if (result == null)
-                    {
-                        if (ivNumberBeansCreated < beanMetaData.ivMaxCreation)
-                        {
+                    if (result == null) {
+                        if (ivNumberBeansCreated < beanMetaData.ivMaxCreation) {
                             beanAvailable = true;
                             ++ivNumberBeansCreated;
                             if (isTraceOn && tc.isDebugEnabled())
@@ -1165,9 +1091,7 @@ public abstract class EJSHome
                                              ivNumberBeansCreated + "/" +
                                              beanMetaData.ivMaxCreation +
                                              ") : creating new instance");
-                        }
-                        else
-                        {
+                        } else {
                             long wait_interval = Math.min(wait_time, BEAN_POOL_WAIT_INTERVAL);
                             if (wait_interval > 0) {
                                 if (isTraceOn && tc.isDebugEnabled())
@@ -1179,9 +1103,7 @@ public abstract class EJSHome
                                 wait_time -= wait_interval;
                             }
                         }
-                    }
-                    else
-                    {
+                    } else {
                         beanAvailable = true;
                         if (isTraceOn && tc.isDebugEnabled())
                             Tr.debug(tc, "allocateBeanO: Found in BeanPool(" +
@@ -1190,11 +1112,9 @@ public abstract class EJSHome
                     }
                 }
 
-                if (!beanAvailable)
-                {
+                if (!beanAvailable) {
                     homeEnabled();
-                    if (tx.getGlobalRollbackOnly())
-                    {
+                    if (tx.getGlobalRollbackOnly()) {
                         if (isTraceOn && tc.isDebugEnabled())
                             Tr.debug(tc, "allocateBeanO: Tx timeout waiting for bean " +
                                          "(" + (beanMetaData.ivMaxCreationTimeout - wait_time)
@@ -1215,19 +1135,16 @@ public abstract class EJSHome
                     }
                 }
             }
-        } catch (InterruptedException iex)
-        {
+        } catch (InterruptedException iex) {
             FFDCFilter.processException(iex, CLASS_NAME + ".allocateBeanO",
                                         "919", this);
-            ContainerEJBException ex = new ContainerEJBException
-                            ("Instance of EJB " + j2eeName +
-                             " not available : interrupted", iex);
+            ContainerEJBException ex = new ContainerEJBException("Instance of EJB " + j2eeName +
+                                                                 " not available : interrupted", iex);
             Tr.error(tc,
                      "CAUGHT_EXCEPTION_THROWING_NEW_EXCEPTION_CNTR0035E",
                      new Object[] { iex, ex.toString() });
             throw ex;
-        } finally
-        {
+        } finally {
             if (isTraceOn && tc.isDebugEnabled())
                 Tr.debug(tc, "allocateBeanO: Releasing HomeId lock for BeanPool : " +
                              tx);
@@ -1257,11 +1174,7 @@ public abstract class EJSHome
      * @return <code>EJSWrapper</code> instance whose most specific
      *         type is the type of wrappers managed by this home <p>
      */
-    public EJSWrapper createWrapper(BeanId id)
-                    throws CreateException,
-                    RemoteException,
-                    CSIException
-    {
+    public EJSWrapper createWrapper(BeanId id) throws CreateException, RemoteException, CSIException {
         homeEnabled();
         EJSWrapper result = null;
 
@@ -1276,14 +1189,11 @@ public abstract class EJSHome
         // updating the LRU data and preventing it from unregistering with
         // the ORB.                                                      d196581.1
         if (ivStatelessWrappers != null &&
-            ivStatelessWrappers.inCache())
-        {
+            ivStatelessWrappers.inCache()) {
             // Calling getRemoteWrapper will cause the wrapper to register with
             // the ORB, if that hasn't already been done.
             result = ivStatelessWrappers.getRemoteWrapper();
-        }
-        else
-        {
+        } else {
             // The singleton wrapper has either not been created yet, or is not
             // currently in the wrapper cache.  So, getting it from the Wrapper
             // Manager will cause it to be created (if needed) and faulted into
@@ -1293,8 +1203,7 @@ public abstract class EJSHome
             // Use a cached instance beanId... for stateless and message beans all
             // instances have the same id.                               d140003.26
 
-            if (statelessSessionHome)
-            {
+            if (statelessSessionHome) {
                 // Since this is is one of the home types with a singleton wrapper,
                 // then set the local cached value now that it has been created
                 // and inserted into the Wrapper Cache.  It cannot be cached
@@ -1332,11 +1241,7 @@ public abstract class EJSHome
      * @return <code>EJSWrapper</code> instance whose most specific
      *         type is the type of wrappers managed by this home <p>
      */
-    public EJSLocalWrapper createWrapper_Local(BeanId id)
-                    throws CreateException,
-                    RemoteException,
-                    CSIException
-    {
+    public EJSLocalWrapper createWrapper_Local(BeanId id) throws CreateException, RemoteException, CSIException {
         homeEnabled();
         EJSLocalWrapper result = null;
 
@@ -1350,12 +1255,9 @@ public abstract class EJSHome
         // Note that 'inCache' will 'touch' the wrapper in the Wrapper Cache,
         // updating the LRU data.                                        d196581.1
         if (ivStatelessWrappers != null &&
-            ivStatelessWrappers.inCache())
-        {
+            ivStatelessWrappers.inCache()) {
             result = (EJSLocalWrapper) ivStatelessWrappers.getLocalObject();
-        }
-        else
-        {
+        } else {
             // The singleton wrapper has either not been created yet, or is not
             // currently in the wrapper cache.  So, getting it from the Wrapper
             // Manager will cause it to be created (if needed) and faulted into
@@ -1364,8 +1266,7 @@ public abstract class EJSHome
             // Use a cached instance beanId... for stateless and message beans all
             // instances have the same id.                               d140003.26
 
-            if (statelessSessionHome || messageDrivenHome)
-            {
+            if (statelessSessionHome || messageDrivenHome) {
                 // Since this is is one of the home types with a singleton wrapper,
                 // then set the local cached value now that it has been created
                 // and inserted into the Wrapper Cache.  It cannot be cached
@@ -1412,46 +1313,35 @@ public abstract class EJSHome
      */
     // d366807.4
     public Object createBusinessObject(String businessInterfaceName,
-                                       boolean useSupporting)
-                    throws CreateException,
-                    RemoteException,
-                    ClassNotFoundException,
-                    EJBConfigurationException
-    {
+                                       boolean useSupporting) throws CreateException, RemoteException, ClassNotFoundException, EJBConfigurationException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "createBusinessObject: " + businessInterfaceName); // d367572.7
 
         int localIndex = beanMetaData.getLocalBusinessInterfaceIndex(businessInterfaceName);
-        if (localIndex != -1)
-        {
+        if (localIndex != -1) {
             return createLocalBusinessObject(localIndex, null);
         }
 
         int remoteIndex = beanMetaData.getRemoteBusinessInterfaceIndex(businessInterfaceName);
-        if (remoteIndex != -1)
-        {
+        if (remoteIndex != -1) {
             container.getEJBRuntime().checkRemoteSupported(this, businessInterfaceName);
             return createRemoteBusinessObject(remoteIndex, null);
         }
 
-        if (useSupporting)
-        {
+        if (useSupporting) {
             Class<?> target = beanMetaData.classLoader.loadClass(businessInterfaceName);
             localIndex = beanMetaData.getAssignableLocalBusinessInterfaceIndex(target);
             remoteIndex = beanMetaData.getAssignableRemoteBusinessInterfaceIndex(target);
 
-            if (localIndex != -1)
-            {
-                if (remoteIndex != -1)
-                {
+            if (localIndex != -1) {
+                if (remoteIndex != -1) {
                     Tr.error(tc, "AMBIGUOUS_REFERENCE_TO_DUPLICATE_INTERFACE_CNTR0155E",
                              new Object[] { beanMetaData.enterpriseBeanName,
-                                           beanMetaData._moduleMetaData.ivName,
-                                           businessInterfaceName });
-                    EJBConfigurationException ejbex = new EJBConfigurationException
-                                    ("Another component has an ambiguous reference to interface: " + businessInterfaceName +
-                                     " which has both local and remote implementions on bean: " + j2eeName);
+                                            beanMetaData._moduleMetaData.ivName,
+                                            businessInterfaceName });
+                    EJBConfigurationException ejbex = new EJBConfigurationException("Another component has an ambiguous reference to interface: " + businessInterfaceName +
+                                                                                    " which has both local and remote implementions on bean: " + j2eeName);
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                         Tr.debug(tc, "createBusinessObject : " + ejbex);
 
@@ -1461,15 +1351,13 @@ public abstract class EJSHome
                 return createLocalBusinessObject(localIndex, null);
             }
 
-            if (remoteIndex == -1)
-            {
+            if (remoteIndex == -1) {
                 Tr.error(tc, "ATTEMPT_TO_REFERENCE_MISSING_INTERFACE_CNTR0154E",
                          new Object[] { beanMetaData.enterpriseBeanName,
-                                       beanMetaData._moduleMetaData.ivName,
-                                       businessInterfaceName });
-                EJBConfigurationException ejbex = new EJBConfigurationException
-                                ("Another component is attempting to reference local interface: " + businessInterfaceName +
-                                 " which is not implemented by bean: " + j2eeName);
+                                        beanMetaData._moduleMetaData.ivName,
+                                        businessInterfaceName });
+                EJBConfigurationException ejbex = new EJBConfigurationException("Another component is attempting to reference local interface: " + businessInterfaceName +
+                                                                                " which is not implemented by bean: " + j2eeName);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(tc, "createBusinessObject : " + ejbex);
 
@@ -1478,9 +1366,7 @@ public abstract class EJSHome
 
             container.getEJBRuntime().checkRemoteSupported(this, businessInterfaceName);
             return createRemoteBusinessObject(remoteIndex, null);
-        }
-        else
-        {
+        } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "createBusinessObject : IllegalStateException : " +
                              "Requested business interface not found : " +
@@ -1521,23 +1407,16 @@ public abstract class EJSHome
      * @throws ClassNotFoundException
      * @throws EJBConfigurationException
      */
-    public Object createLocalBusinessObject(String interfaceName, boolean useSupporting)
-                    throws RemoteException,
-                    CreateException,
-                    ClassNotFoundException,
-                    EJBConfigurationException
-    {
+    public Object createLocalBusinessObject(String interfaceName,
+                                            boolean useSupporting) throws RemoteException, CreateException, ClassNotFoundException, EJBConfigurationException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "createLocalBusinessObject: " + interfaceName); // d367572.7
 
         int interfaceIndex;
-        if (useSupporting)
-        {
+        if (useSupporting) {
             interfaceIndex = beanMetaData.getSupportingLocalBusinessInterfaceIndex(interfaceName);
-        }
-        else
-        {
+        } else {
             interfaceIndex = beanMetaData.getRequiredLocalBusinessInterfaceIndex(interfaceName);
         }
 
@@ -1558,10 +1437,7 @@ public abstract class EJSHome
      * @param interfaceIndex the local business interface index
      * @param context the context for creating the object, or null
      */
-    public Object createLocalBusinessObject(int interfaceIndex, ManagedObjectContext context)
-                    throws RemoteException,
-                    CreateException
-    {
+    public Object createLocalBusinessObject(int interfaceIndex, ManagedObjectContext context) throws RemoteException, CreateException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "createLocalBusinessObject: " + interfaceIndex); // d367572.7
@@ -1608,28 +1484,20 @@ public abstract class EJSHome
      * @throws ClassNotFoundException
      * @throws EJBConfigurationException
      */
-    public Object createRemoteBusinessObject(String interfaceName, boolean useSupporting)
-                    throws RemoteException,
-                    CreateException,
-                    ClassNotFoundException,
-                    EJBConfigurationException
-    {
+    public Object createRemoteBusinessObject(String interfaceName,
+                                             boolean useSupporting) throws RemoteException, CreateException, ClassNotFoundException, EJBConfigurationException {
 
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "createRemoteBusinessObject: " + interfaceName); // d367572.7
 
         int interfaceIndex;
-        if (useSupporting)
-        {
+        if (useSupporting) {
             interfaceIndex = beanMetaData.getSupportingRemoteBusinessInterfaceIndex(interfaceName);
-        }
-        else
-        {
+        } else {
             interfaceIndex = beanMetaData.getRemoteBusinessInterfaceIndex(interfaceName);
 
-            if (interfaceIndex == -1)
-            {
+            if (interfaceIndex == -1) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(tc, "createRemoteBusinessObject : IllegalStateException : " +
                                  "Requested business interface not found : " +
@@ -1657,10 +1525,7 @@ public abstract class EJSHome
      * @param interfaceIndex the remote business interface index
      * @param context the context for creating the object, or null
      */
-    public Object createRemoteBusinessObject(int interfaceIndex, ManagedObjectContext context)
-                    throws RemoteException,
-                    CreateException
-    {
+    public Object createRemoteBusinessObject(int interfaceIndex, ManagedObjectContext context) throws RemoteException, CreateException {
 
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
@@ -1706,15 +1571,13 @@ public abstract class EJSHome
      *             aggregate wrapper class or create an instance of it.
      */
     // F743-34304
-    public Object createAggregateLocalReference(ManagedObjectContext context) throws CreateException
-    {
+    public Object createAggregateLocalReference(ManagedObjectContext context) throws CreateException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "createAggregateLocalReference: " + beanMetaData.j2eeName);
         Object result = null;
 
-        try
-        {
+        try {
             EJSWrapperCommon wrappers = createBusinessObjectWrappers(context);
             result = wrappers.getAggregateLocalWrapper();
 
@@ -1722,14 +1585,12 @@ public abstract class EJSHome
                 Tr.exit(tc, "createAggregateLocalReference: " + Util.identity(result));
 
             return result;
-        } catch (RemoteException rex)
-        {
+        } catch (RemoteException rex) {
             FFDCFilter.processException(rex, CLASS_NAME + ".createAggregateLocalReference",
                                         "1697", this);
             if (isTraceOn && tc.isEntryEnabled())
                 Tr.exit(tc, "createAggregateLocalReference: " + Util.identity(result));
-            throw ExceptionUtil.EJBException
-                            ("Failed to create aggregate local reference: ", rex);
+            throw ExceptionUtil.EJBException("Failed to create aggregate local reference: ", rex);
         }
     }
 
@@ -1746,10 +1607,7 @@ public abstract class EJSHome
      *             aggregate wrapper class or create an instance of it.
      */
     // F743-34304
-    public EJSWrapperCommon createBusinessObjectWrappers(ManagedObjectContext context)
-                    throws CreateException,
-                    RemoteException
-    {
+    public EJSWrapperCommon createBusinessObjectWrappers(ManagedObjectContext context) throws CreateException, RemoteException {
         homeEnabled();
         EJSWrapperCommon result = null;
 
@@ -1759,22 +1617,18 @@ public abstract class EJSHome
         //------------------------------------------------------------------------
 
         if ((ivSingletonSessionHome) || // F743-508
-            (statelessSessionHome))
-        {
+            (statelessSessionHome)) {
             // If the wrapper has been created, and is still in the wrapper cache,
             // then just return the remote wrapper from the singleton WrapperCommon.
             // Note that 'inCache' will 'touch' the wrapper in the Wrapper Cache,
             // updating the LRU data and preventing it from unregistering with
             // the ORB.
             if (ivStatelessWrappers != null &&
-                ivStatelessWrappers.inCache())
-            {
+                ivStatelessWrappers.inCache()) {
                 // Calling getRemoteWrapper will cause the wrapper to register with
                 // the ORB, if that hasn't already been done.
                 result = ivStatelessWrappers;
-            }
-            else
-            {
+            } else {
                 // The stateless wrapper (which is a singleton) has either not been
                 // created yet, or is not currently in
                 // the wrapper cache.  So, getting it from the Wrapper
@@ -1806,21 +1660,18 @@ public abstract class EJSHome
         //
         //------------------------------------------------------------------------
 
-        else if (statefulSessionHome)
-        {
+        else if (statefulSessionHome) {
             EJSDeployedSupport s = new EJSDeployedSupport();
 
             // BEGIN home wrapper
-            try
-            {
+            try {
                 container.preInvoke(ivStatefulBusinessHomeWrapper, 0, s);
 
                 // BEGIN home create
                 BeanO beanO = null;
                 boolean exceptionOccurred = false;
                 boolean preEjbCreateCalled = false;
-                try
-                {
+                try {
                     // NOTE: Deployed code calls no-arg createBeanO().
                     beanO = createBeanO(s.ivThreadData, s.currentTx, false, context); // d630940
                     preEjbCreateCalled = preEjbCreate(beanO);
@@ -1830,36 +1681,28 @@ public abstract class EJSHome
                     // anything throws, createFailure is called and we should not pop
                     // twice.
                     EJSContainer.getThreadData().popCallbackBeanO();
-                } catch (CreateException createexception)
-                {
+                } catch (CreateException createexception) {
                     exceptionOccurred = true;
                     throw createexception;
-                } catch (Throwable throwable)
-                {
+                } catch (Throwable throwable) {
                     exceptionOccurred = true;
                     throw ExceptionUtil.EJBException("Create failed", throwable);
-                } finally
-                {
+                } finally {
                     if (exceptionOccurred)
                         createFailure(beanO);
                     else if (preEjbCreateCalled)
                         afterPostCreateCompletion(beanO);
                 }
                 // END home create
-            } catch (CreateException createexception)
-            {
+            } catch (CreateException createexception) {
                 s.setCheckedException(createexception);
                 throw createexception;
-            } catch (Throwable throwable)
-            {
+            } catch (Throwable throwable) {
                 s.setUncheckedLocalException(throwable);
-            } finally
-            {
-                try
-                {
+            } finally {
+                try {
                     container.postInvoke(ivStatefulBusinessHomeWrapper, 0, s);
-                } catch (Throwable throwable)
-                {
+                } catch (Throwable throwable) {
                     s.setUncheckedLocalException(throwable);
                 }
             }
@@ -1871,8 +1714,7 @@ public abstract class EJSHome
 
     @Override
     public EJSWrapperCommon internalCreateWrapper(BeanId id) // f111627
-    throws RemoteException
-    {
+                    throws RemoteException {
         homeEnabled();
 
         EJSWrapperCommon wrappers;
@@ -1884,22 +1726,19 @@ public abstract class EJSHome
         // wrapper is registered with the ORB properly. If the wrappers are ever
         // evicted from the Wrapper Cache, then this method will be called to
         // fault it back in, and may just return that singleton.         d196581.1
-        if (ivStatelessWrappers != null)
-        {
+        if (ivStatelessWrappers != null) {
             wrappers = ivStatelessWrappers;
-        }
-        else
-        {
+        } else {
             // This home does not have a singleton wrapper, or it is not been
             // created yet, so create a new one now.
             wrappers = new EJSWrapperCommon(remoteEJBObjectClass, // f111627
-            localEJBObjectClass, // f111627
-            id, // f111627
-            beanMetaData, // f111627
-            pmiBean, // d140003.33
-            container, // f111627
-            wrapperManager, // f111627
-            false); // f111627
+                            localEJBObjectClass, // f111627
+                            id, // f111627
+                            beanMetaData, // f111627
+                            pmiBean, // d140003.33
+                            container, // f111627
+                            wrapperManager, // f111627
+                            false); // f111627
         }
 
         return wrappers;
@@ -1909,8 +1748,7 @@ public abstract class EJSHome
      * Return true iff this home contains message driven beans. <p>
      */
     @Override
-    public final boolean isMessageDrivenHome()
-    {
+    public final boolean isMessageDrivenHome() {
         return messageDrivenHome;
     }
 
@@ -1927,8 +1765,7 @@ public abstract class EJSHome
      * Return true iff this home contains stateless session beans. <p>
      */
     @Override
-    public final boolean isStatelessSessionHome()
-    {
+    public final boolean isStatelessSessionHome() {
         return statelessSessionHome;
     }
 
@@ -1936,8 +1773,7 @@ public abstract class EJSHome
      * Return true iff this home contains stateful session beans. <p>
      */
     @Override
-    public final boolean isStatefulSessionHome()
-    {
+    public final boolean isStatefulSessionHome() {
         return statefulSessionHome;
     }
 
@@ -1945,26 +1781,22 @@ public abstract class EJSHome
      * Return true iff this home contains managed beans. <p>
      */
     // F743-34301
-    public boolean isManagedBeanHome()
-    {
+    public boolean isManagedBeanHome() {
         return false;
     }
 
-    public EJSContainer getContainer()
-    {
+    public EJSContainer getContainer() {
         return container;
     }
 
     @Override
-    public BeanMetaData getBeanMetaData(Object homeKey)
-    {
+    public BeanMetaData getBeanMetaData(Object homeKey) {
         homeEnabled();
         return beanMetaData;
     }
 
     // LIDB2775-23.0/LIDB2775-23.1 Begins
-    public BeanMetaData getBeanMetaData()
-    {
+    public BeanMetaData getBeanMetaData() {
         homeEnabled();
         return beanMetaData;
     }
@@ -1972,8 +1804,7 @@ public abstract class EJSHome
     // LIDB2775-23.0/LIDB2775-23.1 Ends
 
     @Override
-    public ClassLoader getClassLoader()
-    {
+    public ClassLoader getClassLoader() {
         homeEnabled();
         return beanMetaData.classLoader;
     }
@@ -1983,8 +1814,7 @@ public abstract class EJSHome
      * this home. <p>
      */
     @Override
-    public final ActivationStrategy getActivationStrategy()
-    {
+    public final ActivationStrategy getActivationStrategy() {
         return activationStrategy;
     }
 
@@ -1992,8 +1822,7 @@ public abstract class EJSHome
      * Return the method name for the given method id.
      */
     @Override
-    public final String getMethodName(Object homeKey, int id, boolean isHome)
-    {
+    public final String getMethodName(Object homeKey, int id, boolean isHome) {
         homeEnabled();
         if (isHome) {
             return beanMetaData.homeMethodNames[id];
@@ -2007,8 +1836,7 @@ public abstract class EJSHome
      * by the given home.
      */
     @Override
-    public String getEnterpriseBeanClassName(Object homeKey)
-    {
+    public String getEnterpriseBeanClassName(Object homeKey) {
         homeEnabled();
         return beanMetaData.enterpriseBeanClass.getName();
     } // getEnterpriseBeanClassName
@@ -2017,16 +1845,13 @@ public abstract class EJSHome
      * Create a Handle for the given BeanId
      */
     @Override
-    public final Handle createHandle(BeanId id)
-                    throws RemoteException
-    {
+    public final Handle createHandle(BeanId id) throws RemoteException {
         EJSWrapper wrapper = null;
         homeEnabled();
 
         wrapper = getWrapper(id).getRemoteWrapper(); // f111627; //p116577
 
-        if (!statelessSessionHome && !statefulSessionHome)
-        {
+        if (!statelessSessionHome && !statefulSessionHome) {
             if (cvUsePortableClass) //p125891
             {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -2038,17 +1863,13 @@ public abstract class EJSHome
                 // stub to the EntityHandle constructor.
                 return new HandleImpl((EJBObject) PortableRemoteObject.toStub(wrapper)); // F743-509.CodRev
                 // p116577 - end of change
-            }
-            else
-            {
+            } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(tc, "createHandle():Creating non-portable EntityHandle"); //p125891
                 Properties pFake = null;
                 return new EntityHandle(id, beanMetaData, pFake); //p125891 //d145386
             }
-        }
-        else
-        {
+        } else {
             Object wrapperRef = container.getEJBRuntime().getRemoteReference(wrapper);
             EJBObject object = (EJBObject) PortableRemoteObject.narrow(wrapperRef, EJBObject.class);
             return container.sessionHandleFactory.create(object);
@@ -2082,10 +1903,7 @@ public abstract class EJSHome
      */
     // d146034.6
     public EJSWrapperCommon activateBean(BeanId beanId,
-                                         ContainerTx currentTx)
-                    throws CSIException,
-                    RemoteException
-    {
+                                         ContainerTx currentTx) throws CSIException, RemoteException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); // d532639.2
 
         if (isTraceOn && tc.isEntryEnabled())
@@ -2094,18 +1912,15 @@ public abstract class EJSHome
         homeEnabled();
 
         EJSWrapperCommon result = null;
-        try
-        {
+        try {
             // For Single-object finder methods (other than findByPrimaryKey),
             // the Persistence Manager is required to perform a flush of the
             // Entity beans prior to the query.  If this flush was not
             // performed, then throw an exception indicating the tx is in an
             // illegal state.
-            if (currentTx.ivFlushRequired)
-            {
-                IllegalStateException isex = new IllegalStateException
-                                ("Persistence Manager failed to perform synchronization " +
-                                 "of Entity beans prior to find<METHOD>");
+            if (currentTx.ivFlushRequired) {
+                IllegalStateException isex = new IllegalStateException("Persistence Manager failed to perform synchronization " +
+                                                                       "of Entity beans prior to find<METHOD>");
 
                 if (isTraceOn && tc.isEntryEnabled())
                     Tr.exit(tc, "activateBean", isex);
@@ -2120,8 +1935,7 @@ public abstract class EJSHome
 
             container.activator.activateBean(EJSContainer.getThreadData(), currentTx, beanId); // d630940
             result = wrapperManager.getWrapper(beanId); // d156807.1
-        } catch (NoSuchObjectException ex)
-        {
+        } catch (NoSuchObjectException ex) {
             FFDCFilter.processException(ex, CLASS_NAME + ".activateBean",
                                         "998", this);
             if (isTraceOn && tc.isDebugEnabled())
@@ -2169,17 +1983,13 @@ public abstract class EJSHome
      *                corresponding to the primary key.
      */
     @Override
-    public EJBObject activateBean(Object primaryKey)
-                    throws FinderException,
-                    RemoteException
-    {
+    public EJBObject activateBean(Object primaryKey) throws FinderException, RemoteException {
         EJSWrapperCommon wrappers = null; // d215317
 
         // Single-object ejbSelect methods may result in a null value,
         // and since this code path also supports ejbSelect, null must
         // be tolerated and returned.                                      d149627
-        if (primaryKey == null)
-        {
+        if (primaryKey == null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "activateBean : key = null, returning null");
             return null;
@@ -2193,8 +2003,7 @@ public abstract class EJSHome
         // must be done here, as it is different for local and remote.     d215317
         // "Primary Key" should not be copied for a StatefulSession bean.  d247634
         boolean pkeyCopyRequired = false;
-        if (noLocalCopies && allowPrimaryKeyMutation && !statefulSessionHome)
-        {
+        if (noLocalCopies && allowPrimaryKeyMutation && !statefulSessionHome) {
             pkeyCopyRequired = true;
         }
 
@@ -2234,17 +2043,13 @@ public abstract class EJSHome
      */
     // f111627
     @Override
-    public EJBLocalObject activateBean_Local(Object primaryKey)
-                    throws FinderException,
-                    RemoteException
-    {
+    public EJBLocalObject activateBean_Local(Object primaryKey) throws FinderException, RemoteException {
         EJSWrapperCommon wrappers = null; // d215317
 
         // Single-object ejbSelect methods may result in a null value,
         // and since this code path also supports ejbSelect, null must
         // be tolerated and returned.                                      d149627
-        if (primaryKey == null)
-        {
+        if (primaryKey == null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "activateBean_Local : key = null, returning null");
             return null;
@@ -2259,8 +2064,7 @@ public abstract class EJSHome
         // must be done here, as it is different for local and remote.     d215317
         // "Primary Key" should not be copied for a StatefulSession bean.  d247634
         boolean pkeyCopyRequired = false;
-        if (!noPrimaryKeyMutation && !statefulSessionHome)
-        {
+        if (!noPrimaryKeyMutation && !statefulSessionHome) {
             pkeyCopyRequired = true;
         }
 
@@ -2270,10 +2074,7 @@ public abstract class EJSHome
     } // f111627
 
     @Override
-    public EJBObject getBeanWrapper(Object primaryKey)
-                    throws FinderException,
-                    RemoteException
-    {
+    public EJBObject getBeanWrapper(Object primaryKey) throws FinderException, RemoteException {
         BeanId id = new BeanId(this, (Serializable) primaryKey, false);
         return getWrapper(id).getRemoteWrapper(); // f111627
     }
@@ -2307,10 +2108,7 @@ public abstract class EJSHome
      *                exception occurs while trying to activate the
      *                <code>BeanO</code> instance corresponding
      */
-    public EJBObject getBean(String type, Object primaryKey, Object data)
-                    throws FinderException,
-                    RemoteException
-    {
+    public EJBObject getBean(String type, Object primaryKey, Object data) throws FinderException, RemoteException {
         return ivEntityHelper.getBean(this, type, primaryKey, data);
     } // getBean
 
@@ -2327,8 +2125,7 @@ public abstract class EJSHome
      **/
     // PQ57446
     @Override
-    public final boolean hasInheritance()
-    {
+    public final boolean hasInheritance() {
         return homeRecord.ivHasInheritance; // d154342.9 , LIDB859-4.1
     }
 
@@ -2378,9 +2175,7 @@ public abstract class EJSHome
      **/
     // d116859
     @Override
-    public EJBObject getBean(Object primaryKey)
-                    throws RemoteException
-    {
+    public EJBObject getBean(Object primaryKey) throws RemoteException {
         return ivEntityHelper.getBean(this, primaryKey);
     } // getBean
 
@@ -2419,9 +2214,7 @@ public abstract class EJSHome
      *                corresponding to the primary key within the cache.
      **/
     // d140003.14
-    public EJBLocalObject getBean_Local(Object primaryKey)
-                    throws RemoteException
-    {
+    public EJBLocalObject getBean_Local(Object primaryKey) throws RemoteException {
         return ivEntityHelper.getBean_Local(this, primaryKey);
     } // getBean_Local
 
@@ -2450,10 +2243,7 @@ public abstract class EJSHome
     // d142250
     public EJBObject postCreate(BeanO beanO,
                                 Object primaryKey,
-                                boolean inSupportOfEJBPostCreateChanges)
-                    throws CreateException,
-                    RemoteException
-    {
+                                boolean inSupportOfEJBPostCreateChanges) throws CreateException, RemoteException {
 
         boolean supportEJBPostCreateChanges = inSupportOfEJBPostCreateChanges && !ivAllowEarlyInsert; //PQ89520
 
@@ -2461,15 +2251,13 @@ public abstract class EJSHome
         // must create a deep copy of the primaryKey object to avoid data
         // corruption.                                             PQ62081 d138865
         // "Primary Key" should not be copied for a StatefulSession bean.  d247634
-        if (noLocalCopies && allowPrimaryKeyMutation && !statefulSessionHome)
-        {
+        if (noLocalCopies && allowPrimaryKeyMutation && !statefulSessionHome) {
             try {
                 primaryKey = container.ivObjectCopier.copy((Serializable) primaryKey); // RTC102299
             } catch (Throwable t) {
                 FFDCFilter.processException(t, CLASS_NAME + ".postCreate",
                                             "1551", this);
-                ContainerEJBException ex = new ContainerEJBException
-                                ("postCreate failed attempting to process PrimaryKey", t);
+                ContainerEJBException ex = new ContainerEJBException("postCreate failed attempting to process PrimaryKey", t);
                 Tr.error(tc,
                          "CAUGHT_EXCEPTION_THROWING_NEW_EXCEPTION_CNTR0035E",
                          new Object[] { t, ex.toString() }); // d194031
@@ -2484,8 +2272,7 @@ public abstract class EJSHome
         // Pop the callback bean if afterPostCreate will not be called.  This
         // must be be the last action of this method because if anything throws,
         // createFailure is called and we should not pop twice.
-        if (!inSupportOfEJBPostCreateChanges || statefulSessionHome)
-        {
+        if (!inSupportOfEJBPostCreateChanges || statefulSessionHome) {
             EJSContainer.getThreadData().popCallbackBeanO();
         }
 
@@ -2503,10 +2290,7 @@ public abstract class EJSHome
      * @exception RemoteException thrown if a container
      *                error occurs <p>
      */
-    public EJBObject postCreate(BeanO beanO)
-                    throws CreateException,
-                    RemoteException
-    {
+    public EJBObject postCreate(BeanO beanO) throws CreateException, RemoteException {
         homeEnabled();
         return postCreate(beanO, beanO.getId(), false); // d142250
     } // postCreate
@@ -2527,10 +2311,7 @@ public abstract class EJSHome
      *                error occurs <p>
      */
     // d142250
-    public EJBObject postCreate(BeanO beanO, boolean supportEJBPostCreateChanges)
-                    throws CreateException,
-                    RemoteException
-    {
+    public EJBObject postCreate(BeanO beanO, boolean supportEJBPostCreateChanges) throws CreateException, RemoteException {
         homeEnabled();
         return postCreate(beanO, beanO.getId(), supportEJBPostCreateChanges);
     } // postCreate
@@ -2546,10 +2327,7 @@ public abstract class EJSHome
      * @exception RemoteException thrown if a container
      *                error occurs <p>
      */
-    public EJBObject postCreate(BeanO beanO, Object primaryKey)
-                    throws CreateException,
-                    RemoteException
-    {
+    public EJBObject postCreate(BeanO beanO, Object primaryKey) throws CreateException, RemoteException {
         homeEnabled();
         return postCreate(beanO, primaryKey, false); //142250
     } // postCreate
@@ -2561,10 +2339,7 @@ public abstract class EJSHome
     // f111627 d142250
     private EJSWrapperCommon postCreateCommon(BeanO beanO,
                                               Object primaryKey,
-                                              boolean supportEJBPostCreateChanges)
-                    throws CreateException,
-                    RemoteException
-    {
+                                              boolean supportEJBPostCreateChanges) throws CreateException, RemoteException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); // d532639.2
 
         if (isTraceOn && tc.isEntryEnabled())
@@ -2614,8 +2389,7 @@ public abstract class EJSHome
         // EJBPostCreate().  However we must still support EJBs which were
         // deployed in previous WebSphere versions so this code remains,
         // gated by the supportEJBPostCreateChanges flag.                  d142250
-        if (!supportEJBPostCreateChanges)
-        {
+        if (!supportEJBPostCreateChanges) {
             // At this point, the deployed home has successfully created teh EB
             // so, we call the perfdata hooks for create
             if (pmiBean != null) {
@@ -2653,10 +2427,7 @@ public abstract class EJSHome
      *                exists within context of this transaction <p>
      **/
     // d142250
-    public void afterPostCreate(BeanO beanO, Object primaryKey)
-                    throws CreateException,
-                    RemoteException
-    {
+    public void afterPostCreate(BeanO beanO, Object primaryKey) throws CreateException, RemoteException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); // d532639.2
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "afterPostCreate", primaryKey);
@@ -2690,9 +2461,7 @@ public abstract class EJSHome
      * called if ejbCreate returns successfully.
      */
     //d142250
-    public void afterPostCreateCompletion(BeanO beanO)
-                    throws CreateException
-    {
+    public void afterPostCreateCompletion(BeanO beanO) throws CreateException {
         // Inform the beanO that the create() is complete... the bean
         // is now in the READY state.                                    d140886.1
         beanO.afterPostCreateCompletion(); //d142250
@@ -2722,25 +2491,19 @@ public abstract class EJSHome
     // f111627
     public EJBLocalObject postCreate_Local(BeanO beanO,
                                            Object primaryKey,
-                                           boolean supportEJBPostCreateChanges)
-                    throws CreateException,
-                    ContainerException,
-                    RemoteException
-    {
+                                           boolean supportEJBPostCreateChanges) throws CreateException, ContainerException, RemoteException {
         // Make a "deep copy" of the primarykey object if the noPriaryKeyMutation
         // property is false. This property can be set to "true" by the customer
         // to increase performance, however they must guarentee that their code
         // will no mutate existing primary key objects.                  d138865.1
         // "Primary Key" should not be copied for a StatefulSession bean.  d247634
-        if (!noPrimaryKeyMutation && !statefulSessionHome)
-        {
+        if (!noPrimaryKeyMutation && !statefulSessionHome) {
             try {
                 primaryKey = container.ivObjectCopier.copy((Serializable) primaryKey); // RTC102299
             } catch (Throwable t) {
                 FFDCFilter.processException(t, CLASS_NAME + ".postCreate_Local",
                                             "1674", this);
-                ContainerEJBException ex = new ContainerEJBException
-                                ("postCreate_Local failed attempting to process PrimaryKey", t);
+                ContainerEJBException ex = new ContainerEJBException("postCreate_Local failed attempting to process PrimaryKey", t);
                 Tr.error(tc,
                          "CAUGHT_EXCEPTION_THROWING_NEW_EXCEPTION_CNTR0035E",
                          new Object[] { t, ex.toString() }); // d194031
@@ -2756,8 +2519,7 @@ public abstract class EJSHome
         // Pop the callback bean if afterPostCreate will not be called.  This
         // must be be the last action of this method because if anything throws,
         // createFailure is called and we should not pop twice.
-        if (!supportEJBPostCreateChanges || statefulSessionHome)
-        {
+        if (!supportEJBPostCreateChanges || statefulSessionHome) {
             EJSContainer.getThreadData().popCallbackBeanO();
         }
 
@@ -2776,11 +2538,7 @@ public abstract class EJSHome
      *                error occurs <p>
      */
     // f111627
-    public EJBLocalObject postCreate_Local(BeanO beanO)
-                    throws CreateException,
-                    ContainerException,
-                    RemoteException
-    {
+    public EJBLocalObject postCreate_Local(BeanO beanO) throws CreateException, ContainerException, RemoteException {
         homeEnabled();
         return postCreate_Local(beanO, beanO.getId(), false);
     } // postCreate_Local
@@ -2802,11 +2560,7 @@ public abstract class EJSHome
      */
     // f111627
     public EJBLocalObject postCreate_Local(BeanO beanO,
-                                           boolean supportEJBPostCreateChanges)
-                    throws CreateException,
-                    ContainerException,
-                    RemoteException
-    {
+                                           boolean supportEJBPostCreateChanges) throws CreateException, ContainerException, RemoteException {
         homeEnabled();
         return postCreate_Local(beanO, beanO.getId(), supportEJBPostCreateChanges);
     } // postCreate_Local
@@ -2823,11 +2577,7 @@ public abstract class EJSHome
      *                error occurs <p>
      */
     // f111627
-    public EJBLocalObject postCreate_Local(BeanO beanO, Object primaryKey)
-                    throws CreateException,
-                    ContainerException,
-                    RemoteException
-    {
+    public EJBLocalObject postCreate_Local(BeanO beanO, Object primaryKey) throws CreateException, ContainerException, RemoteException {
         homeEnabled();
         return postCreate_Local(beanO, primaryKey, false);
     } // postCreate_Local
@@ -2838,8 +2588,7 @@ public abstract class EJSHome
      * @param beanO the <code>BeanO</code> instance that was
      *            being created <p>
      */
-    public void createFailure(BeanO beanO)
-    {
+    public void createFailure(BeanO beanO) {
         //-----------------------------------------------------------
         // If beanO is null then it was never added to the container
         // so we don't need to do anything.
@@ -2870,10 +2619,7 @@ public abstract class EJSHome
      * @exception RemoteException
      * @exception RemoveException
      */
-    public void remove(Handle handle)
-                    throws RemoteException,
-                    RemoveException
-    {
+    public void remove(Handle handle) throws RemoteException, RemoveException {
         homeEnabled();
 
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); // d532639.2
@@ -2894,11 +2640,7 @@ public abstract class EJSHome
      * @param primaryKey the <code>Object</code> containing the primary
      *            key of EJB to remove from this home <p>
      */
-    public void remove(Object primaryKey)
-                    throws RemoteException,
-                    RemoveException,
-                    FinderException
-    {
+    public void remove(Object primaryKey) throws RemoteException, RemoveException, FinderException {
         // d141216 method rewritten to avoid calling preinvoke/postinvoke
         //         twice in code path (i.e. don't just call remove on the
         //         bean after it is activated).  With the re-write, the
@@ -2917,8 +2659,7 @@ public abstract class EJSHome
         // to indicate this (no PK). MDB section not specific, thus do
         // the same for consistency.
 
-        if (statefulSessionHome || statelessSessionHome || messageDrivenHome)
-        {
+        if (statefulSessionHome || statelessSessionHome || messageDrivenHome) {
             throw new RemoveException();
         }
 
@@ -2946,9 +2687,7 @@ public abstract class EJSHome
      *         may be obtained (and optionally activated).
      */
     // d140003.16
-    public EntityBeanO getFindByPrimaryKeyEntityBeanO()
-                    throws RemoteException
-    {
+    public EntityBeanO getFindByPrimaryKeyEntityBeanO() throws RemoteException {
         return ivEntityHelper.getFindByPrimaryKeyEntityBeanO(this);
     } // getFindByPrimaryKeyEntityBeanO
 
@@ -2966,9 +2705,7 @@ public abstract class EJSHome
      * successfully or throws FinderException, or the caller must call {@link #discardFinderEntityBeanO} if any other exception occurs.
      */
     // f110762.5
-    public EntityBeanO getFinderEntityBeanO()
-                    throws RemoteException
-    {
+    public EntityBeanO getFinderEntityBeanO() throws RemoteException {
         return ivEntityHelper.getFinderEntityBeanO(this);
     } // getFinderEntityBeanO
 
@@ -2983,9 +2720,7 @@ public abstract class EJSHome
      * persistence or EJB 2.x container managed persistence. <p>
      */
     // d140003.16
-    public void discardFinderEntityBeanO(EntityBeanO beanO)
-                    throws RemoteException
-    {
+    public void discardFinderEntityBeanO(EntityBeanO beanO) throws RemoteException {
         ivEntityHelper.discardFinderEntityBeanO(this, beanO);
     } // discardFinderEntityBeanO
 
@@ -2998,9 +2733,7 @@ public abstract class EJSHome
      * persistence or EJB 2.x container managed persistence. <p>
      */
     // f110762.5
-    public void releaseFinderEntityBeanO(EntityBeanO beanO)
-                    throws RemoteException
-    {
+    public void releaseFinderEntityBeanO(EntityBeanO beanO) throws RemoteException {
         ivEntityHelper.releaseFinderEntityBeanO(this, beanO);
     } // releaseFinderEntityBeanO
 
@@ -3017,9 +2750,7 @@ public abstract class EJSHome
      *
      * Maintained for EJB 1.1 compatibility. Use getFinderEntityBeano instead.
      */
-    public BeanManagedBeanO getFinderBeanO()
-                    throws RemoteException
-    {
+    public BeanManagedBeanO getFinderBeanO() throws RemoteException {
         return ivEntityHelper.getFinderBeanO(this);
     } // getFinderBeanO
 
@@ -3033,9 +2764,7 @@ public abstract class EJSHome
      *
      * Maintained for EJB 1.1 compatibility. Use releaseFinderEntityBeano instead.
      */
-    public void releaseFinderBeanO(BeanManagedBeanO beanO)
-                    throws RemoteException
-    {
+    public void releaseFinderBeanO(BeanManagedBeanO beanO) throws RemoteException {
         ivEntityHelper.releaseFinderBeanO(this, beanO);
     } // releaseFinderBeanO
 
@@ -3051,9 +2780,7 @@ public abstract class EJSHome
      * must call {@link #releaseHomeMethodEntityBeanO} after the home method has
      * been invoked. <p>
      */
-    public EntityBeanO getHomeMethodEntityBeanO()
-                    throws RemoteException
-    {
+    public EntityBeanO getHomeMethodEntityBeanO() throws RemoteException {
         return ivEntityHelper.getHomeMethodEntityBeanO(this);
     } // getHomeMethodEntityBeanO
 
@@ -3064,9 +2791,7 @@ public abstract class EJSHome
      * Note, this method must be invoked only on <code>EJSHome</code>
      * instances that manage entity beans. <p>
      */
-    public void releaseHomeMethodEntityBeanO(EntityBeanO beanO)
-                    throws RemoteException
-    {
+    public void releaseHomeMethodEntityBeanO(EntityBeanO beanO) throws RemoteException {
         ivEntityHelper.releaseHomeMethodEntityBeanO(this, beanO);
     } // releaseHomeMethodEntityBeanO
 
@@ -3080,10 +2805,7 @@ public abstract class EJSHome
      */
     @Override
     @SuppressWarnings("rawtypes")
-    public Enumeration getEnumeration(Finder finder)
-                    throws FinderException,
-                    RemoteException
-    {
+    public Enumeration getEnumeration(Finder finder) throws FinderException, RemoteException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); // d532639.2
 
         if (isTraceOn && tc.isEntryEnabled())
@@ -3092,10 +2814,9 @@ public abstract class EJSHome
         homeEnabled();
 
         final ContainerTx currentTx = container.getCurrentContainerTx();//d171654
-        Enumeration rtnEnum =
-                        container.persisterFactory.wrapResultsInEnumeration(currentTx,
-                                                                            this,
-                                                                            finder);
+        Enumeration rtnEnum = container.persisterFactory.wrapResultsInEnumeration(currentTx,
+                                                                                  this,
+                                                                                  finder);
         if (isTraceOn && tc.isEntryEnabled())
             Tr.exit(tc, "getEnumeration");
 
@@ -3104,10 +2825,7 @@ public abstract class EJSHome
 
     @Override
     @SuppressWarnings("rawtypes")
-    public Collection getCollection(Finder finder)
-                    throws FinderException,
-                    RemoteException
-    {
+    public Collection getCollection(Finder finder) throws FinderException, RemoteException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); // d532639.2
 
         if (isTraceOn && tc.isEntryEnabled())
@@ -3116,9 +2834,8 @@ public abstract class EJSHome
         homeEnabled();
 
         final ContainerTx currentTx = container.getCurrentContainerTx();//d171654
-        Collection rtnColl =
-                        container.persisterFactory.wrapResultsInCollection(currentTx,
-                                                                           this, finder);
+        Collection rtnColl = container.persisterFactory.wrapResultsInCollection(currentTx,
+                                                                                this, finder);
 
         if (isTraceOn && tc.isEntryEnabled())
             Tr.exit(tc, "getCollection");
@@ -3136,10 +2853,7 @@ public abstract class EJSHome
      */
     @Override
     @SuppressWarnings("rawtypes")
-    public Enumeration getEnumeration(Enumeration keys)
-                    throws FinderException,
-                    RemoteException
-    {
+    public Enumeration getEnumeration(Enumeration keys) throws FinderException, RemoteException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); // d532639.2
 
         if (isTraceOn && tc.isEntryEnabled())
@@ -3148,9 +2862,8 @@ public abstract class EJSHome
         homeEnabled();
 
         final ContainerTx currentTx = container.getCurrentContainerTx();//d171654
-        Enumeration rtnEnum =
-                        container.persisterFactory.wrapResultsInEnumeration(currentTx,
-                                                                            this, keys);
+        Enumeration rtnEnum = container.persisterFactory.wrapResultsInEnumeration(currentTx,
+                                                                                  this, keys);
 
         if (isTraceOn && tc.isEntryEnabled())
             Tr.exit(tc, "getEnumeration");
@@ -3168,10 +2881,7 @@ public abstract class EJSHome
      */
     @Override
     @SuppressWarnings("rawtypes")
-    public Collection getCollection(Collection keys)
-                    throws FinderException,
-                    RemoteException
-    {
+    public Collection getCollection(Collection keys) throws FinderException, RemoteException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); // d532639.2
 
         if (isTraceOn && tc.isEntryEnabled())
@@ -3180,9 +2890,8 @@ public abstract class EJSHome
         homeEnabled();
 
         final ContainerTx currentTx = container.getCurrentContainerTx();//d171654
-        Collection rtnColl =
-                        container.persisterFactory.wrapResultsInCollection(currentTx,
-                                                                           this, keys);
+        Collection rtnColl = container.persisterFactory.wrapResultsInCollection(currentTx,
+                                                                                this, keys);
 
         if (isTraceOn && tc.isEntryEnabled())
             Tr.exit(tc, "getCollection");
@@ -3200,10 +2909,7 @@ public abstract class EJSHome
      * beans.
      */
     @SuppressWarnings("rawtypes")
-    public Enumeration getCMP20Enumeration(Enumeration keys)
-                    throws FinderException,
-                    RemoteException
-    {
+    public Enumeration getCMP20Enumeration(Enumeration keys) throws FinderException, RemoteException {
         return ivEntityHelper.getCMP20Enumeration(this, keys);
     }
 
@@ -3216,10 +2922,8 @@ public abstract class EJSHome
      * beans.
      */
     @SuppressWarnings("rawtypes")
-    public Enumeration getCMP20Enumeration_Local(Enumeration keys)
-                    throws FinderException, // d135330
-                    RemoteException
-    {
+    public Enumeration getCMP20Enumeration_Local(Enumeration keys) throws FinderException, // d135330
+                    RemoteException {
         return ivEntityHelper.getCMP20Enumeration_Local(this, keys);
     }
 
@@ -3232,10 +2936,7 @@ public abstract class EJSHome
      * managed entity beans.
      */
     @SuppressWarnings("rawtypes")
-    public Collection getCMP20Collection(Collection keys)
-                    throws FinderException,
-                    RemoteException
-    {
+    public Collection getCMP20Collection(Collection keys) throws FinderException, RemoteException {
         return ivEntityHelper.getCMP20Collection(this, keys);
     }
 
@@ -3248,10 +2949,8 @@ public abstract class EJSHome
      * managed entity beans.
      */
     @SuppressWarnings("rawtypes")
-    public Collection getCMP20Collection_Local(Collection keys)
-                    throws FinderException, // d135330
-                    RemoteException
-    {
+    public Collection getCMP20Collection_Local(Collection keys) throws FinderException, // d135330
+                    RemoteException {
         return ivEntityHelper.getCMP20Collection_Local(this, keys);
     }
 
@@ -3262,9 +2961,7 @@ public abstract class EJSHome
      *
      * Part of the EJBHome interface. <p>
      */
-    public EJBMetaData getEJBMetaData()
-                    throws RemoteException
-    {
+    public EJBMetaData getEJBMetaData() throws RemoteException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); // d532639.2
 
         if (isTraceOn && tc.isEntryEnabled())
@@ -3275,8 +2972,7 @@ public abstract class EJSHome
         // We construct the meta data lazily here to avoid initialization-
         // ordering issues if we attempt to do it in initialize().
 
-        if (ejbMetaData == null)
-        {
+        if (ejbMetaData == null) {
             // p116618 - start of change
             EJSWrapper wrapper = getWrapper().getRemoteWrapper();
 
@@ -3285,15 +2981,9 @@ public abstract class EJSHome
                 if (isTraceOn && tc.isDebugEnabled())
                     Tr.debug(tc, "getEJBMetaData():Creating non-portable EJBMetaDataImpl");
 
-                ejbMetaData =
-                                new com.ibm.ejs.container.EJBMetaDataImpl
-                                (beanMetaData,
-                                                getWrapper().getRemoteWrapper(),
-                                                j2eeName); // p125891
+                ejbMetaData = new com.ibm.ejs.container.EJBMetaDataImpl(beanMetaData, getWrapper().getRemoteWrapper(), j2eeName); // p125891
 
-            }
-            else
-            {
+            } else {
                 if (isTraceOn && tc.isDebugEnabled()) // p125891
                     Tr.debug(tc, "getEJBMetaData():Creating portable EJBMetaDataImpl"); //p125891
 
@@ -3307,18 +2997,12 @@ public abstract class EJSHome
                 int beanType = EJBMetaDataImpl.NON_SESSION_BEAN;
                 if (beanMetaData.type == InternalConstants.TYPE_STATEFUL_SESSION) {
                     beanType = EJBMetaDataImpl.STATEFUL_SESSION;
-                }
-                else if (beanMetaData.type == InternalConstants.TYPE_STATELESS_SESSION) {
+                } else if (beanMetaData.type == InternalConstants.TYPE_STATELESS_SESSION) {
                     beanType = EJBMetaDataImpl.STATELESS_SESSION;
                 }
 
-                ejbMetaData =
-                                new EJBMetaDataImpl(beanType,
-                                                homeStub,
-                                                beanMetaData.enterpriseBeanAbstractClass, //150685
-                                                beanMetaData.homeInterfaceClass,
-                                                beanMetaData.remoteInterfaceClass,
-                                                pKeyClass);
+                ejbMetaData = new EJBMetaDataImpl(beanType, homeStub, beanMetaData.enterpriseBeanAbstractClass, //150685
+                                beanMetaData.homeInterfaceClass, beanMetaData.remoteInterfaceClass, pKeyClass);
             }
             // p116618 - end of change
         }
@@ -3328,8 +3012,7 @@ public abstract class EJSHome
         return ejbMetaData;
     } // getEJBMetaData
 
-    public HomeHandle getHomeHandle()
-    {
+    public HomeHandle getHomeHandle() {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); // d532639.2
 
         if (isTraceOn && tc.isEntryEnabled())
@@ -3351,8 +3034,7 @@ public abstract class EJSHome
             // stub to the EntityHomeHandle constructor. Unlike EJBHome
             // interface, the EJBLocalHome does not have a getHomeHandle
             // method.  So, it is safe to assume we need a stub.
-            try
-            {
+            try {
                 if (cvUsePortableClass) //p125891
                 {
                     if (isTraceOn && tc.isDebugEnabled())
@@ -3362,19 +3044,13 @@ public abstract class EJSHome
                     Object wrapperRef = container.getEJBRuntime().getRemoteReference(wrapper);
                     EJBHome home = (EJBHome) PortableRemoteObject.narrow(wrapperRef, EJBHome.class);
                     ehh = new HomeHandleImpl(home);
-                }
-                else
-                {
+                } else {
                     if (isTraceOn && tc.isDebugEnabled())
                         Tr.debug(tc, "getHomeHandle():Creating non-portable EntityHomeHandle"); //p125891
                     Properties pFake = null;
-                    ehh = new EntityHomeHandle(ivHomeId,
-                                    beanMetaData.homeInterfaceClass.getName(),
-                                    beanMetaData,
-                                    pFake); // p125891 d145368
+                    ehh = new EntityHomeHandle(ivHomeId, beanMetaData.homeInterfaceClass.getName(), beanMetaData, pFake); // p125891 d145368
                 }
-            } catch (Exception e)
-            {
+            } catch (Exception e) {
                 FFDCFilter.processException(e, CLASS_NAME + ".getHomeHandle",
                                             "2362", this);
                 EJBException ex = new EJBException("get of EJBHome failed", e);
@@ -3382,8 +3058,7 @@ public abstract class EJSHome
                          "CAUGHT_EXCEPTION_THROWING_NEW_EXCEPTION_CNTR0035E",
                          new Object[] { e, ex.toString() }); // d194031
                 throw ex;
-            } catch (Throwable t)
-            {
+            } catch (Throwable t) {
                 FFDCFilter.processException(t, CLASS_NAME + ".getHomeHandle",
                                             "2372", this);
                 ContainerEJBException ex;
@@ -3398,8 +3073,7 @@ public abstract class EJSHome
             if (isTraceOn && tc.isEntryEnabled())
                 Tr.exit(tc, "getHomeHandle", ehh);
             return ehh;
-        } finally
-        {
+        } finally {
             if (cmdAccessor != null)
                 cmdAccessor.endContext(); // p125735
         }
@@ -3409,16 +3083,14 @@ public abstract class EJSHome
      * Return a <code>LockStrategy</code> instance to use when locking
      * bean instances associated with this home. <p>
      */
-    public LockStrategy getLockStrategy()
-    {
+    public LockStrategy getLockStrategy() {
         return lockStrategy;
     } // getLockStrategy
 
     /**
      * Get environment properties associated with this home.
      */
-    public Properties getEnvironment()
-    {
+    public Properties getEnvironment() {
         homeEnabled();
         return environment;
     } // getEnvironment
@@ -3432,9 +3104,7 @@ public abstract class EJSHome
     /**
      * Nothing to do on create. <p>
      */
-    public void ejbCreate()
-                    throws RemoteException
-    {
+    public void ejbCreate() throws RemoteException {
         //--------------------------------------------
         // This method body intentionally left blank.
         //--------------------------------------------
@@ -3444,9 +3114,7 @@ public abstract class EJSHome
      * Nothing to do on activation. <p>
      */
     @Override
-    public void ejbActivate()
-                    throws RemoteException
-    {
+    public void ejbActivate() throws RemoteException {
         //--------------------------------------------
         // This method body intentionally left blank.
         //--------------------------------------------
@@ -3456,9 +3124,7 @@ public abstract class EJSHome
      * EJS homes must never be passivated. <p>
      */
     @Override
-    public void ejbPassivate()
-                    throws RemoteException
-    {
+    public void ejbPassivate() throws RemoteException {
         throw new UnsupportedOperationException(); // OK
     } // ejbPassivate
 
@@ -3466,9 +3132,7 @@ public abstract class EJSHome
      * Nothing to do when home removed. <p>
      */
     @Override
-    public void ejbRemove()
-                    throws RemoteException
-    {
+    public void ejbRemove() throws RemoteException {
         //--------------------------------------------
         // This method body intentionally left blank.
         //--------------------------------------------
@@ -3479,9 +3143,7 @@ public abstract class EJSHome
      * use its session context. <p>
      */
     @Override
-    public void setSessionContext(SessionContext ctx)
-                    throws RemoteException
-    {
+    public void setSessionContext(SessionContext ctx) throws RemoteException {
         //--------------------------------------------
         // This method body intentionally left blank.
         //--------------------------------------------
@@ -3497,8 +3159,7 @@ public abstract class EJSHome
      * This method is called when beans are deallocated from the pool.
      */
     @Override
-    public void discard(Object o)
-    {
+    public void discard(Object o) {
         BeanO beanO = (BeanO) o;
         beanO.destroy();
     } // discard
@@ -3514,14 +3175,12 @@ public abstract class EJSHome
      *         called
      */
     // d117006
-    public boolean preEjbCreate(BeanO beanO)
-                    throws CreateException //144144
+    public boolean preEjbCreate(BeanO beanO) throws CreateException //144144
     {
         // Beans that have been configured with a reload interval, and are
         // therefore ReadOnly, may not be created. However this is not
         // considered a rollback situation, so throw a checked exception.   LI3408
-        if (beanMetaData.ivCacheReloadType != BeanMetaData.CACHE_RELOAD_NONE)
-        {
+        if (beanMetaData.ivCacheReloadType != BeanMetaData.CACHE_RELOAD_NONE) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "CreateException: Read only EJB may not be created.");
 
@@ -3541,8 +3200,7 @@ public abstract class EJSHome
      */
     // d117006
     @Deprecated
-    public void postEjbPostCreate(BeanO beanO)
-                    throws CreateException //144144
+    public void postEjbPostCreate(BeanO beanO) throws CreateException //144144
     {
         // Inform the beanO that the create() is complete... the bean
         // is now in the READY state.                                    d140886.1
@@ -3586,8 +3244,7 @@ public abstract class EJSHome
             } catch (Throwable t) {
                 FFDCFilter.processException(t, CLASS_NAME + ".WASInternal_copyPrimaryKey",
                                             "4016", this);
-                ContainerEJBException ex = new ContainerEJBException
-                                ("WASInternal_copyPrimaryKey failed attempting to process PrimaryKey", t);
+                ContainerEJBException ex = new ContainerEJBException("WASInternal_copyPrimaryKey failed attempting to process PrimaryKey", t);
                 Tr.error(tc,
                          "CAUGHT_EXCEPTION_THROWING_NEW_EXCEPTION_CNTR0035E",
                          new Object[] { t, ex.toString() });
@@ -3609,8 +3266,7 @@ public abstract class EJSHome
      * hasMethodLevelAccessIntentSet returns true if there is an access intent policy
      * set on at least one of the method for this bean.
      */
-    public final boolean hasMethodLevelAccessIntentSet()
-    {
+    public final boolean hasMethodLevelAccessIntentSet() {
         return ivEntityHelper.hasMethodLevelAccessIntentSet(this);
     }
 
@@ -3619,10 +3275,11 @@ public abstract class EJSHome
     /**
      * Returns the HomeRecord associated with this EJSHome instance. <p>
      **/
-    public HomeRecord getHomeRecord()
-    {
+    public HomeRecord getHomeRecord() {
         return homeRecord;
     }
+
+    private final ReentrantLock createSingletonLock = new ReentrantLock();
 
     /**
      * Create the Singleton bean instance if it doesn't
@@ -3633,8 +3290,7 @@ public abstract class EJSHome
      * @return BeanO - Singleton BeanO instance
      */
     //F743-1753
-    public synchronized BeanO createSingletonBeanO()
-    {
+    public BeanO createSingletonBeanO() {
         boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "createSingletonBeanO: " + j2eeName);
@@ -3643,136 +3299,180 @@ public abstract class EJSHome
         // it also needs to happen for dependencies.
         homeEnabled();
 
+        if (ivSingletonBeanO != null) {
+            if (isTraceOn && tc.isEntryEnabled())
+                Tr.exit(tc, "createSingletonBeanO");
+            return ivSingletonBeanO;
+        }
+
         BeanO result = null;
-        if (ivSingletonBeanO == null)
-        {
-            if (ivCreatingSingletonBeanO)
-            {
-                if (isTraceOn && tc.isEntryEnabled())
-                    Tr.exit(tc, "createSingletonBeanO: IllegalLoopbackException");
-                throw new IllegalLoopbackException("Cannot call a method on a singleton session bean while " +
-                                                   "constructing the bean instance : " + j2eeName);
-            }
 
-            // F7434950.CodRev - The EG has decided that the container must only
-            // attempt to initialize a singleton once.
-            // d632115 - and the required exception is NoSuchEJBException.
-            if (ivSingletonBeanOCreateFailed)
-            {
-                if (isTraceOn && tc.isEntryEnabled())
-                    Tr.exit(tc, "createSingletonBeanO: NoSuchEJBException - prior failure");
-                throw ExceptionUtil.NoSuchEJBException
-                                ("An error occurred during a previous attempt to initialize the " +
-                                 "singleton session bean " + j2eeName + ".", null);
-            }
+        /*
+         * This method used to just be synchronized but was converted to use a ReentrantLock instead to avoid deadlocks.
+         *
+         * The EJB specification states that regardless of our concurrency management type (BEAN or CONTAINER) Singleton
+         * initialization sequence should block, but never forever. So we must have a timeout value. We have a default of 2
+         * minutes which can be overridden by ContainerProperties.DefaultSessionAccessTimeout ONLY if it is not set to -1
+         * (block forever) which then can also be overridden for CONTAINER managed concurrency through @AcessTimeout ONLY
+         * if the @AcessTimeout is not -1 or 0 which mean block forever and concurrent access is not permitted respectively.
+         */
+        // Timeout is in milliseconds
+        long timeout = 2 * 60 * 1000;
 
-            // F743-4950 - Avoid direct (or indirect) attempts to use this
-            // singleton before it has finished initializing.
-            ivCreatingSingletonBeanO = true;
+        // NOTE: We are very specifically checking >= 0 for DefaultSessionAccessTimeout and > 0 for @AccessTimeout as
+        // 0 for DefaultSessionAccessTimeout is immediate timeout and 0 for @AccessTimeout means concurrent access is not permitted.
+        timeout = ContainerProperties.DefaultSessionAccessTimeout >= 0 ? ContainerProperties.DefaultSessionAccessTimeout : timeout;
 
-            try
-            {
-                // If anything below this point fails, then any subsequent attempts
-                // to create the bean instance must also fail.               d632115
-                ivSingletonBeanOCreateFailed = true; // F7434950.CodRev
-
-                // F743-20281 - Resolve dependencies.
-                List<J2EEName> dependsOn;
-                try
-                {
-                    dependsOn = beanMetaData._moduleMetaData.getEJBApplicationMetaData().resolveBeanDependencies(beanMetaData);
-                } catch (RuntimeWarning rw)
-                {
-                    if (isTraceOn && tc.isDebugEnabled())
-                        Tr.debug(tc, "dependency resolution error", rw);
-                    throw ExceptionUtil.NoSuchEJBException(rw.getMessage(), rw);
-                }
-
-                // F743-4950 - Initialize dependencies before this singleton.
-                if (dependsOn != null) // F743-20281
-                {
-                    for (J2EEName dependency : dependsOn) // F743-20281
-                    {
-                        if (isTraceOn && tc.isDebugEnabled())
-                            Tr.debug(tc, "initializing dependency " + dependency);
-
-                        try
-                        {
-                            EJSHome dependencyHome = (EJSHome) EJSContainer.homeOfHomes.getHome(dependency);
-                            dependencyHome.createSingletonBeanO();
-                        } catch (Throwable t)
-                        {
-                            if (isTraceOn && tc.isDebugEnabled())
-                                Tr.exit(tc, "createSingletonBeanO: failed to initialize dependency",
-                                        t);
-                            // d632115 - required exception is NoSuchEJBException.
-                            throw ExceptionUtil.NoSuchEJBException
-                                            ("Failed to initialize singleton session bean " + j2eeName +
-                                             " because the dependency " + dependency +
-                                             " failed to initialize.", t);
-                        }
-                    }
-                }
-
-                // Now that dependencies have been initialized, add the singleton
-                // to the initialization list.  It doesn't matter if initialization
-                // fails since addInitializedSingleton is idempotent, and we really
-                // only care that the initialization is recorded for this home at
-                // some point after it is recorded for all its dependencies.
-                beanMetaData._moduleMetaData.getEJBApplicationMetaData().addSingletonInitialization(this);
-
-                long createStartTime = -1;
-                Object oldClassLoader = ThreadContextAccessor.UNCHANGED; // d627931
-                try
-                {
-                    // For Singleton, create time should include creating the
-                    // instance and calling any lifecycle callbacks.        d626533.1
-                    if (pmiBean != null)
-                    {
-                        createStartTime = pmiBean.initialTime(EJBPMICollaborator.CREATE_RT);
-                    }
-
-                    // To support injection, etc. we must put the bmd and classloader
-                    // on the thread.   // d627931
-                    ivCMDAccessor.beginContext(beanMetaData);
-                    oldClassLoader = EJBThreadData.svThreadContextAccessor.pushContextClassLoaderForUnprivileged(beanMetaData.ivContextClassLoader); // F85059
-
-                    ivSingletonBeanO = (SingletonBeanO) beanOFactory.create(container, this, false);
-                    ivSingletonBeanOCreateFailed = false; // F7434950.CodRev
-                } catch (Throwable t)
-                {
-                    FFDCFilter.processException(t, CLASS_NAME + ".createBeanO", "1047", this);
-                    if (t instanceof InvocationTargetException)
-                    {
-                        t = t.getCause();
-                    }
-                    // F743-1751CodRev - Always wrap the exception in EJBException to
-                    // satisfy the contract of preInvokeForLifecycleInterceptors.
-                    // d632115 - and the required exception is NoSuchEJBException.
-                    String msgTxt = "An error occurred during initialization of singleton session bean " +
-                                    j2eeName + ", resulting in the discarding of the singleton instance.";
-                    throw ExceptionUtil.NoSuchEJBException(msgTxt, t);
-                } finally // d627931
-                {
-                    EJBThreadData.svThreadContextAccessor.popContextClassLoaderForUnprivileged(oldClassLoader);
-                    ivCMDAccessor.endContext();
-
-                    // Even if the create fails, go ahead and add the time, so
-                    // the number of times counted matches the create count.
-                    if (createStartTime > -1)
-                    {
-                        pmiBean.finalTime(EJBPMICollaborator.CREATE_RT, createStartTime);
-                    }
-                }
-
-            } finally
-            {
-                ivCreatingSingletonBeanO = false;
+        if (!beanMetaData.ivSingletonUsesBeanManagedConcurrency) {
+            if (getCurrentThreadDeployedSupport() != null) {
+                EJSDeployedSupport ds = (EJSDeployedSupport) getCurrentThreadDeployedSupport();
+                timeout = ds.getConcurrencyAccessTimeout() > 0 ? ds.getConcurrencyAccessTimeout() : timeout;
             }
         }
 
-        // Return the cached Singleton instance.
-        result = ivSingletonBeanO;
+        if (isTraceOn && tc.isDebugEnabled())
+            Tr.debug(tc, "createSingletonBeanO: timeout (in ms) = " + timeout);
+
+        boolean finishedWaiting;
+        try {
+            if (isTraceOn && tc.isDebugEnabled())
+                Tr.debug(tc, "createSingletonBeanO: attempting to acquire lock");
+            finishedWaiting = createSingletonLock.tryLock(timeout, TimeUnit.MILLISECONDS);
+
+            // returned false from hitting timeout
+            if (!finishedWaiting) {
+                throw new ConcurrentAccessTimeoutException("Timeout occured trying to acquire singleton session bean " + j2eeName + ".");
+            }
+        } catch (InterruptedException e) {
+            throw new ConcurrentAccessTimeoutException("Timeout occured trying to acquire singleton session bean " + j2eeName + ".");
+        }
+        // Now we are synchronized through the ReentrantLock, very important to have a finally block to release lock.
+        try {
+            if (ivSingletonBeanO == null) {
+
+                if (isTraceOn && tc.isDebugEnabled())
+                    Tr.debug(tc, "createSingletonBeanO: synchronized block");
+
+                if (ivCreatingSingletonBeanO) {
+                    if (isTraceOn && tc.isEntryEnabled())
+                        Tr.exit(tc, "createSingletonBeanO: IllegalLoopbackException");
+                    throw new IllegalLoopbackException("Cannot call a method on a singleton session bean while " +
+                                                       "constructing the bean instance : " + j2eeName);
+                }
+
+                // F7434950.CodRev - The EG has decided that the container must only
+                // attempt to initialize a singleton once.
+                // d632115 - and the required exception is NoSuchEJBException.
+                if (ivSingletonBeanOCreateFailed) {
+                    if (isTraceOn && tc.isEntryEnabled())
+                        Tr.exit(tc, "createSingletonBeanO: NoSuchEJBException - prior failure");
+                    throw ExceptionUtil.NoSuchEJBException("An error occurred during a previous attempt to initialize the " +
+                                                           "singleton session bean " + j2eeName + ".", null);
+                }
+
+                // F743-4950 - Avoid direct (or indirect) attempts to use this
+                // singleton before it has finished initializing.
+                ivCreatingSingletonBeanO = true;
+
+                try {
+
+                    // If anything below this point fails, then any subsequent attempts
+                    // to create the bean instance must also fail.               d632115
+                    ivSingletonBeanOCreateFailed = true; // F7434950.CodRev
+
+                    // F743-20281 - Resolve dependencies.
+                    List<J2EEName> dependsOn;
+                    try {
+                        dependsOn = beanMetaData._moduleMetaData.getEJBApplicationMetaData().resolveBeanDependencies(beanMetaData);
+                    } catch (RuntimeWarning rw) {
+                        if (isTraceOn && tc.isDebugEnabled())
+                            Tr.debug(tc, "dependency resolution error", rw);
+                        throw ExceptionUtil.NoSuchEJBException(rw.getMessage(), rw);
+                    }
+
+                    // F743-4950 - Initialize dependencies before this singleton.
+                    if (dependsOn != null) // F743-20281
+                    {
+                        for (J2EEName dependency : dependsOn) // F743-20281
+                        {
+                            if (isTraceOn && tc.isDebugEnabled())
+                                Tr.debug(tc, "initializing dependency " + dependency);
+
+                            try {
+                                EJSHome dependencyHome = (EJSHome) EJSContainer.homeOfHomes.getHome(dependency);
+                                dependencyHome.createSingletonBeanO();
+                            } catch (Throwable t) {
+                                if (isTraceOn && tc.isDebugEnabled())
+                                    Tr.exit(tc, "createSingletonBeanO: failed to initialize dependency",
+                                            t);
+                                // d632115 - required exception is NoSuchEJBException.
+                                throw ExceptionUtil.NoSuchEJBException("Failed to initialize singleton session bean " + j2eeName +
+                                                                       " because the dependency " + dependency +
+                                                                       " failed to initialize.", t);
+                            }
+                        }
+                    }
+
+                    // Now that dependencies have been initialized, add the singleton
+                    // to the initialization list.  It doesn't matter if initialization
+                    // fails since addInitializedSingleton is idempotent, and we really
+                    // only care that the initialization is recorded for this home at
+                    // some point after it is recorded for all its dependencies.
+                    beanMetaData._moduleMetaData.getEJBApplicationMetaData().addSingletonInitialization(this);
+
+                    long createStartTime = -1;
+                    Object oldClassLoader = ThreadContextAccessor.UNCHANGED; // d627931
+                    try {
+                        // For Singleton, create time should include creating the
+                        // instance and calling any lifecycle callbacks.        d626533.1
+                        if (pmiBean != null) {
+                            createStartTime = pmiBean.initialTime(EJBPMICollaborator.CREATE_RT);
+                        }
+
+                        // To support injection, etc. we must put the bmd and classloader
+                        // on the thread.   // d627931
+                        ivCMDAccessor.beginContext(beanMetaData);
+                        oldClassLoader = EJBThreadData.svThreadContextAccessor.pushContextClassLoaderForUnprivileged(beanMetaData.ivContextClassLoader); // F85059
+
+                        ivSingletonBeanO = (SingletonBeanO) beanOFactory.create(container, this, false);
+                        ivSingletonBeanOCreateFailed = false; // F7434950.CodRev
+                    } catch (Throwable t) {
+                        FFDCFilter.processException(t, CLASS_NAME + ".createBeanO", "1047", this);
+                        if (t instanceof InvocationTargetException) {
+                            t = t.getCause();
+                        }
+                        // F743-1751CodRev - Always wrap the exception in EJBException to
+                        // satisfy the contract of preInvokeForLifecycleInterceptors.
+                        // d632115 - and the required exception is NoSuchEJBException.
+                        String msgTxt = "An error occurred during initialization of singleton session bean " +
+                                        j2eeName + ", resulting in the discarding of the singleton instance.";
+                        throw ExceptionUtil.NoSuchEJBException(msgTxt, t);
+                    } finally // d627931
+                    {
+                        EJBThreadData.svThreadContextAccessor.popContextClassLoaderForUnprivileged(oldClassLoader);
+                        ivCMDAccessor.endContext();
+
+                        // Even if the create fails, go ahead and add the time, so
+                        // the number of times counted matches the create count.
+                        if (createStartTime > -1) {
+                            pmiBean.finalTime(EJBPMICollaborator.CREATE_RT, createStartTime);
+                        }
+                    }
+
+                } finally {
+
+                    ivCreatingSingletonBeanO = false;
+                }
+
+            }
+
+            // Return the cached Singleton instance.
+            result = ivSingletonBeanO;
+
+        } finally {
+            // un-synchronized
+            createSingletonLock.unlock();
+        }
 
         if (isTraceOn && tc.isEntryEnabled())
             Tr.exit(tc, "createSingletonBeanO");
