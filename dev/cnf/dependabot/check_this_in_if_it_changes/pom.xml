@@ -494,7 +494,7 @@
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-stub</artifactId>
-      <version>1.36.1</version>
+      <version>1.37.0</version>
     </dependency>
     <dependency>
       <groupId>io.jaegertracing</groupId>
