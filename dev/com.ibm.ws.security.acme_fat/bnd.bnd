@@ -25,10 +25,7 @@ tested.features: appsecurity-4.0, expressionlanguage-4.0, cdi-3.0
 
 -buildpath: \
     com.ibm.ws.security.acme;version=latest, \
-    org.rnorth.duct-tape:duct-tape;version=1.0.8,\
-    org.testcontainers:testcontainers;version=1.15.1,\
-    com.github.docker-java:docker-java-api;version=3.2.7,\
-    org.slf4j:slf4j-api;version=1.7.7,\
+    io.openliberty.org.testcontainers;version=latest,\
     com.ibm.ws.org.apache.httpcomponents;version=latest, \
     org.shredzone.acme4j:acme4j-client;version=2.7,\
     org.shredzone.acme4j:acme4j-utils;version=2.7,\

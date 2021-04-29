@@ -44,8 +44,6 @@ tested.features:\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	fattest.simplicity;version=latest,\
-	org.testcontainers:database-commons;version=1.15.1,\
-	org.testcontainers:jdbc;version=1.15.1,\
-	org.testcontainers:testcontainers;version=1.15.1,\
+	io.openliberty.org.testcontainers;version=latest,\
 	com.ibm.ws.transaction.test.util;version=latest
 	

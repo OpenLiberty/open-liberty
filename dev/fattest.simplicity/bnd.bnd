@@ -60,9 +60,6 @@ test.project: true
 	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
 	../build.sharedResources/lib/junit/old/junit.jar;version=file,\
 	com.ibm.ws.junit.extensions;version=latest,\
-	com.github.docker-java:docker-java-api;version=3.2.7,\
-	com.github.docker-java:docker-java-transport;version=3.2.7,\
-	com.github.docker-java:docker-java-transport-zerodep;version=3.2.7,\
 	commons-httpclient:commons-httpclient;version=3.1,\
 	com.ibm.websphere.javaee.jsonp.1.0;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
@@ -70,8 +67,6 @@ test.project: true
 	org.eclipse.transformer:org.eclipse.transformer.cli;version=0.2.0,\
 	biz.aQute.bnd:biz.aQute.bnd.transform;version=5.3.0,\
 	commons-cli:commons-cli;version=1.4,\
-	org.slf4j:slf4j-simple;version=1.7.30,\
-	org.slf4j:slf4j-api;version=1.7.26,\
 	org.eclipse.transformer:org.eclipse.transformer;version=0.2.0,\
 	com.ibm.ws.common.encoder;version=latest,\
 	com.ibm.ws.componenttest;version=latest,\
@@ -99,9 +94,6 @@ test.project: true
 	org.jboss.arquillian.core:arquillian-core-api;version=1.3.0.Final,\
 	org.jboss.arquillian.test:arquillian-test-spi;version=1.3.0.Final,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-	org.testcontainers:database-commons;version=1.15.1,\
-	org.testcontainers:jdbc;version=1.15.1,\
-	org.rnorth.duct-tape:duct-tape;version=1.0.8,\
-	org.testcontainers:testcontainers;version=1.15.1,\
+	io.openliberty.org.testcontainers;version=latest,\
 	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
-        io.openliberty.jakarta.cdi.3.0;version=latest
+	io.openliberty.jakarta.cdi.3.0;version=latest

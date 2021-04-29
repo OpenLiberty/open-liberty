@@ -25,7 +25,4 @@ fat.project: true
     com.ibm.ws.logging;version=latest,\
     httpunit:httpunit;version=1.5.4,\
     org.json:json;version=20080701,\
-    org.rnorth.duct-tape:duct-tape;version=1.0.8,\
-    com.github.docker-java:docker-java-api;version=3.2.7,\
-    org.testcontainers:testcontainers;version=1.15.1,\
-    org.slf4j:slf4j-api;version=1.7.7
+    io.openliberty.org.testcontainers;version=latest
