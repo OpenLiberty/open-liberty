@@ -214,9 +214,9 @@ public class KerberosService {
      * the resulting Subject is cached.
      *
      * @param principal The principal to obtain a subject for
-     * @param pass      The password to be used via CallbackHandler. This will only be used if no password
-     *                      is found in the credential cache or keytab files first. May be null.
-     * @param ccache    The path to the credential cache to be used for this principal. May be null.
+     * @param pass The password to be used via CallbackHandler. This will only be used if no password
+     *            is found in the credential cache or keytab files first. May be null.
+     * @param ccache The path to the credential cache to be used for this principal. May be null.
      * @return A valid subject for the supplied principal
      */
     public Subject getOrCreateSubject(String principal, SerializableProtectedString pass, Path ccache) throws LoginException {
@@ -264,12 +264,17 @@ public class KerberosService {
         }
 
         krb5.initialize(subject, callback, sharedState, options);
-        krb5.login();
-        krb5.commit();
+        boolean goodResult = krb5.login();
+        if (goodResult)
+            goodResult = krb5.commit();
+
+        if (!goodResult) // login/commit return false but JDK does not throw an exception so we have to do it here
+            throwAnException(principal, ccache);
 
         // If the created Subject does not have a GSSCredential, then create one and
         // associate it with the Subject
         Set<GSSCredential> gssCreds = subject.getPrivateCredentials(GSSCredential.class);
+
         if (gssCreds == null || gssCreds.size() == 0) {
             GSSCredential gssCred = SubjectHelper.createGSSCredential(subject);
 
@@ -277,16 +282,9 @@ public class KerberosService {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "The createGSSCredential on subject " + subject + " using principal, " + principal + ", returned null. ");
                 }
-                String msg = null;
-                if (ccache != null) {
-                    msg = Tr.formatMessage(tc, "KRB5_LOGIN_FAILED_CACHE_CWWKS4347E", principal, ccache.toAbsolutePath());
-                } else if (keytab != null) {
-                    msg = Tr.formatMessage(tc, "KRB5_LOGIN_FAILED_KEYTAB_CWWKS4348E", principal, keytab.toAbsolutePath());
-                } else {
-                    msg = Tr.formatMessage(tc, "KRB5_LOGIN_FAILED_DEFAULT_KEYTAB_CWWKS4349E", principal);
-                }
-                throw new LoginException(msg);
+                throwAnException(principal, ccache);
             }
+
             if (System.getSecurityManager() == null) {
                 subject.getPrivateCredentials().add(gssCred);
             } else {
@@ -301,6 +299,18 @@ public class KerberosService {
         }
 
         return subject;
+    }
+
+    private void throwAnException(String principal, Path ccache) throws LoginException {
+        String msg = null;
+        if (ccache != null) {
+            msg = Tr.formatMessage(tc, "KRB5_LOGIN_FAILED_CACHE_CWWKS4347E", principal, ccache.toAbsolutePath());
+        } else if (keytab != null) {
+            msg = Tr.formatMessage(tc, "KRB5_LOGIN_FAILED_KEYTAB_CWWKS4348E", principal, keytab.toAbsolutePath());
+        } else {
+            msg = Tr.formatMessage(tc, "KRB5_LOGIN_FAILED_DEFAULT_KEYTAB_CWWKS4349E", principal);
+        }
+        throw new LoginException(msg);
     }
 
     /**

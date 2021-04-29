@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -174,33 +174,35 @@ public class Krb5LoginModuleWrapper implements LoginModule {
 
     @Override
     public boolean login() throws LoginException {
-        krb5loginModule.login();
         login_called = true;
-        return true;
+        return krb5loginModule.login();
     }
 
     /** {@inheritDoc} */
     @Override
     public boolean commit() throws LoginException {
         if (login_called)
-            krb5loginModule.commit();
-        return true;
+            return krb5loginModule.commit();
+        else
+            return true;
     }
 
     /** {@inheritDoc} */
     @Override
     public boolean abort() throws LoginException {
         if (login_called)
-            krb5loginModule.abort();
-        return true;
+            return krb5loginModule.abort();
+        else
+            return true;
     }
 
     /** {@inheritDoc} */
     @Override
     public boolean logout() throws LoginException {
         if (login_called)
-            krb5loginModule.logout();
-        return true;
+            return krb5loginModule.logout();
+        else
+            return true;
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
