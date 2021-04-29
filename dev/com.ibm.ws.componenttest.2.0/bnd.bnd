@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2020,2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -11,42 +11,13 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-Bundle-Name: FAT infrastructure
-Bundle-SymbolicName: com.ibm.ws.componenttest.2.0
-Bundle-Description: FAT infrastructure; version=${bVersion}
-
--dsannotations: \
-  componenttest.serverinfo.impl.FATServerInfoMBeanImpl
-  
-Export-Package: \
-  componenttest.app;version=1.0.16, \
-  componenttest.matchers;version=1.0.16, \
-  componenttest.serverinfo;version=1.0.16, \
-  junit.*;version=1.0.16, \
-  org.jmock.*;version=1.0.16, \
-  org.junit.*;version=1.0.16, \
-  org.hamcrest.*;version=1.0.16
-  
-Private-Package: \
-  componenttest.serverinfo.impl
-
-# componenttest.app depends on jakarta.servlet, but we don't want to include it in
-# the componenttest-2.0 feature since we want tests to fail if a product feature
-# is actually missing jakarta.servlet, so we use a dynamic import instead.
-Import-Package: \
-  !jakarta.servlet.*, \
-  !org.apache.tools.ant.*, \
-  !org.easymock, \
-  !org.jmock.core, \
-  *
-
-DynamicImport-Package: \
-  jakarta.servlet, \
-  jakarta.servlet.http
+-sub: *.bnd
 
 publish.wlp.jar.disabled: false
 
 test.project: true
+
+generate.replacement: true
 
 #This really really needs org.hamcrest since otherwise an older version of Matcher
 #gets put on the classpath and causes unfortunate issues.
