@@ -7,5 +7,5 @@ singleton=true
   com.ibm.websphere.appserver.servlet-5.0
 -bundles=\
   io.openliberty.security.acme.internal
-kind=noship
-edition=full
+kind=beta
+edition=base
