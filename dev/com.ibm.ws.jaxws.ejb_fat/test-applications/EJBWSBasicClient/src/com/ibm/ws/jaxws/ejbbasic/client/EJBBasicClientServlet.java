@@ -28,6 +28,7 @@ import javax.xml.ws.AsyncHandler;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.Response;
 import javax.xml.ws.WebServiceRef;
+import javax.xml.ws.soap.Addressing;
 
 import com.ibm.ws.jaxws.ejbbasic.view.client.SayHelloInterface;
 import com.ibm.ws.jaxws.ejbbasic.view.client.SayHelloService;
@@ -42,7 +43,12 @@ public class EJBBasicClientServlet extends HttpServlet {
 
     private static final long MAX_ASYNC_WAIT_TIME = 30 * 1000;
 
-    @WebServiceRef(value = UserQueryService.class, wsdlLocation = "WEB-INF/wsdl/UserQueryService.wsdl")
+    @Addressing
+    @WebServiceRef(name = "service/UserQueryService", value = UserQueryService.class, wsdlLocation = "WEB-INF/wsdl/UserQueryService.wsdl")
+    private UserQuery userQueryService;
+
+    @Addressing
+    @WebServiceRef(name = "service/UserQuery", value = UserQueryService.class, wsdlLocation = "WEB-INF/wsdl/UserQueryService.wsdl")
     private UserQuery userQuery;
 
     @EJB(beanName = "UseQueryEJBBean")
@@ -89,6 +95,9 @@ public class EJBBasicClientServlet extends HttpServlet {
         PrintWriter writer = resp.getWriter();
         try {
             setEndpointAddress((BindingProvider) userQuery, req, "EJBWSBasic/UserQueryService");
+            BindingProvider bp = (BindingProvider) userQuery;
+
+            bp.getRequestContext().put(BindingProvider.SOAPACTION_URI_PROPERTY, "http://ejbbasic.jaxws.ws.ibm.com/UserQuery/getUser");
             userQuery.getUser("none");
             writer.write("FAILED UserNotFoundException is expected");
         } catch (UserNotFoundException_Exception e) {
@@ -104,8 +113,13 @@ public class EJBBasicClientServlet extends HttpServlet {
     public void testQueryUser(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         PrintWriter writer = resp.getWriter();
         try {
-            setEndpointAddress((BindingProvider) userQuery, req, "EJBWSBasic/UserQueryService");
-            User user = userQuery.getUser("Illidan Stormrage");
+
+            setEndpointAddress((BindingProvider) userQueryService, req, "EJBWSBasic/UserQueryService");
+            BindingProvider bp = (BindingProvider) userQuery;
+
+            bp.getRequestContext().put(BindingProvider.SOAPACTION_URI_PROPERTY, "http://ejbbasic.jaxws.ws.ibm.com/UserQuery/getUser");
+            UserQuery uq = userQueryService;
+            User user = uq.getUser("Illidan Stormrage");
             if (user == null) {
                 writer.write("FAILED Expected user instance is not returned");
             } else if (!"Illidan Stormrage".equals(user.getName())) {
@@ -122,6 +136,9 @@ public class EJBBasicClientServlet extends HttpServlet {
         PrintWriter writer = resp.getWriter();
         try {
             setEndpointAddress((BindingProvider) userQuery, req, "EJBWSBasic/UserQueryService");
+
+            BindingProvider bp = (BindingProvider) userQuery;
+            bp.getRequestContext().put(BindingProvider.SOAPACTION_URI_PROPERTY, "http://ejbbasic.jaxws.ws.ibm.com/UserQuery/getUser");
             Response<GetUserResponse> response = userQuery.getUserAsync("Illidan Stormrage");
 
             long curWaitTime = 0;
@@ -167,6 +184,9 @@ public class EJBBasicClientServlet extends HttpServlet {
         final PrintWriter writer = resp.getWriter();
         try {
             setEndpointAddress((BindingProvider) userQuery, req, "EJBWSBasic/UserQueryService");
+
+            BindingProvider bp = (BindingProvider) userQuery;
+            bp.getRequestContext().put(BindingProvider.SOAPACTION_URI_PROPERTY, "http://ejbbasic.jaxws.ws.ibm.com/UserQuery/getUser");
             Future<?> future = userQuery.getUserAsync("Illidan Stormrage", new AsyncHandler<GetUserResponse>() {
                 @Override
                 public void handleResponse(Response<GetUserResponse> response) {
@@ -238,6 +258,10 @@ public class EJBBasicClientServlet extends HttpServlet {
     public void testListUsers(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         PrintWriter writer = resp.getWriter();
         setEndpointAddress((BindingProvider) userQuery, req, "EJBWSBasic/UserQueryService");
+
+        BindingProvider bp = (BindingProvider) userQuery;
+
+        bp.getRequestContext().put(BindingProvider.SOAPACTION_URI_PROPERTY, "http://ejbbasic.jaxws.ws.ibm.com/UserQuery/listUser");
         List<User> users = userQuery.listUsers();
         if (users == null) {
             writer.write("FAILED Expected user instances are not returned");
@@ -251,5 +275,7 @@ public class EJBBasicClientServlet extends HttpServlet {
     protected void setEndpointAddress(BindingProvider bindingProvider, HttpServletRequest request, String endpointPath) {
         bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
                                                 "http://" + request.getServerName() + ":" + request.getServerPort() + "/" + endpointPath);
+
+        bindingProvider.getRequestContext().put("allowNonMatchingToDefaultSoapAction", true);
     }
 }
