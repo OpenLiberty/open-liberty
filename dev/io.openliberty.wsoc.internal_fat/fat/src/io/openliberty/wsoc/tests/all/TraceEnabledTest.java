@@ -187,7 +187,7 @@ public class TraceEnabledTest {
                                                                       "/trace/singlePubMultiReceive",
                                                                       WsocTestRunner.getDefaultConfig(),
                                                                       textValues.length,
-                                                                      Constants.getDefaultTimeout(),
+                                                                      Constants.getLongTimeout(),
                                                                       Constants.getDefaultTimeout(),
                                                                       true);
         for (WsocTestContext wtc : mctr.getReceivers()) {
