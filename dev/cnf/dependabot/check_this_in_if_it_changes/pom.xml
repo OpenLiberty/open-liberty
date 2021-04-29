@@ -1079,7 +1079,7 @@
     <dependency>
       <groupId>org.apache.cxf.xjcplugins</groupId>
       <artifactId>cxf-xjc-bug671</artifactId>
-      <version>2.6.0</version>
+      <version>3.3.1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.cxf.xjcplugins</groupId>
