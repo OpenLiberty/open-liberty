@@ -2574,22 +2574,22 @@
     <dependency>
       <groupId>org.mongodb</groupId>
       <artifactId>mongo-java-driver</artifactId>
-      <version>1.0</version>
+      <version>3.12.8</version>
     </dependency>
     <dependency>
       <groupId>org.mongodb</groupId>
       <artifactId>mongo-java-driver</artifactId>
-      <version>2.10.1</version>
+      <version>3.12.8</version>
     </dependency>
     <dependency>
       <groupId>org.mongodb</groupId>
       <artifactId>mongo-java-driver</artifactId>
-      <version>2.13.3</version>
+      <version>3.12.8</version>
     </dependency>
     <dependency>
       <groupId>org.mongodb</groupId>
       <artifactId>mongo-java-driver</artifactId>
-      <version>2.9.3</version>
+      <version>3.12.8</version>
     </dependency>
     <dependency>
       <groupId>org.objenesis</groupId>
