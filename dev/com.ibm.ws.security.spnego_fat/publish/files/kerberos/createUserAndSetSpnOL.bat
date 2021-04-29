@@ -1,13 +1,31 @@
-set USER=%1
-set PASSWORD=%2
-set SERVICE_NAME=%3
-set HOSTNAME=%4
-set KDC=%5
+set REMOVE_WIN_USERS=%1
+set CREATE_WIN_USER=%2
+set USER=%3
+set PASSWORD=%4
+set SERVICE_NAME=%5
+set HOSTNAME=%6
+set KDC=%7
+set OP1=%8
+set OP2=%9
+shift
+shift
+shift
+shift
+shift
+shift
+shift
+shift
+shift
 
-set OP1=%6
-set OP2=%7
-set OP3=%8
-set OP4=%9
+set OP3=%1
+set OP4=%2
+set OP5=%3
+set OP6=%4
+set OP7=%5
+set OP8=%6
+set OP9=%7
+set OP10=%8
+set OP11=%9
 shift
 shift
 shift
@@ -17,20 +35,14 @@ shift
 shift
 shift
 shift
-set OP5=%1
-set OP6=%2
-set OP7=%3
-set OP8=%4
-set OP9=%5
-set OP10=%6
-set OP11=%7
-set OP12=%8
+
+set OP12=%1
 
 echo %DATE% %TIME%
-cscript removeWinUsersOL.vbs -user %USER% -host %KDC%
+cscript %REMOVE_WIN_USERS% -user %USER% -host %KDC%
 echo %DATE% %TIME%, Exit Code is %errorlevel%
 
-cscript createWinUserOL.vbs -user %USER% -password %PASSWORD% -host %KDC% %OP1% %OP2% %OP3% %OP4% %OP5% %OP6% %OP7% %OP8% %OP9% %OP10% %OP11% %OP12%
+cscript %CREATE_WIN_USER% -user %USER% -password %PASSWORD% -host %KDC% %OP1% %OP2% %OP3% %OP4% %OP5% %OP6% %OP7% %OP8% %OP9% %OP10% %OP11% %OP12%
 echo %DATE% %TIME%, Exit Code is %errorlevel%
 
 setspn -a %SERVICE_NAME%/%HOSTNAME% %USER%

@@ -187,6 +187,13 @@ public abstract class KdcHelper {
      */
     public abstract void addSpnToKeytab(String user, String spn) throws Exception;
 
+    /**
+     * Cleanup any test artifacts on the KDC.
+     *
+     * @throws Exception If there was an issue cleaning files.
+     */
+    public abstract void teardown() throws Exception;
+
     public String getKdcHost() {
         return kdcHost;
     }
@@ -889,13 +896,13 @@ public abstract class KdcHelper {
                         ChannelExec channel = sshSession.createExecChannel(command)) {
 
             /*
-			 * Redirect stdout and stderr to one stream. I don't capture each separately b/c I want
-			 * to see the output in temporal order.
-			 */
+             * Redirect stdout and stderr to one stream. I don't capture each separately b/c I want
+             * to see the output in temporal order.
+             */
             channel.setOut(stdout);
             channel.setErr(stdout);
             channel.addChannelListener(new SshChannelListener());
-			
+
             try {
                 long remainingTimeoutMs = TimeUnit.SECONDS.toMillis(timeout);
 

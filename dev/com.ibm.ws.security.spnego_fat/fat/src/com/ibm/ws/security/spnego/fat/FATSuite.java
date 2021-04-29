@@ -148,22 +148,10 @@ public class FATSuite extends InitClass {
         protected void after() {
             try {
                 if (RUN_TESTS) {
-                    CommonTest.getKdcHelper().deleteUser();
-                    CommonTest.getKdcHelper()
-                                    .deleteRemoteFileFromRemoteMachine(CommonTest.getKdcHelper().getKdcMachine(),
-                                                                       SPNEGOConstants.KRB5_KEYTAB_FILE);
-
-                    /*
-                     * Don't delete the localhost_HTTP_krb5.keytab from the remote machine.
-                     */
-                    if (!"localhost".equalsIgnoreCase(InitClass.serverShortHostName)) {
-                        CommonTest.getKdcHelper()
-                                        .deleteRemoteFileFromRemoteMachine(CommonTest.getKdcHelper().getKdcMachine(),
-                                                                           InitClass.serverShortHostName + SPNEGOConstants.KRB5_KEYTAB_TEMP_SUFFIX);
-                    }
+                    CommonTest.getKdcHelper().teardown();
                 }
             } catch (Exception e) {
-                Log.info(c, "after", "Exception thrown while deleting SPN: " + CommonTest.maskHostnameAndPassword(e.getMessage()));
+                Log.info(c, "after", "Exception thrown while cleaning the FAT suite: " + CommonTest.maskHostnameAndPassword(e.getMessage()));
                 e.printStackTrace();
             }
         };
