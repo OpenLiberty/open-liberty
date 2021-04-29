@@ -574,7 +574,7 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-resolver</artifactId>
-      <version>4.1.62.Final</version>
+      <version>4.1.63.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
@@ -1478,8 +1478,18 @@
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
+      <artifactId>maven-artifact</artifactId>
+      <version>3.6.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
       <artifactId>maven-model</artifactId>
       <version>3.5.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-model</artifactId>
+      <version>3.6.3</version>
     </dependency>
     <dependency>
       <groupId>org.apache.myfaces.core</groupId>
@@ -1655,6 +1665,11 @@
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-xc</artifactId>
       <version>1.6.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
+      <version>3.2.1</version>
     </dependency>
     <dependency>
       <groupId>org.codehaus.woodstox</groupId>
