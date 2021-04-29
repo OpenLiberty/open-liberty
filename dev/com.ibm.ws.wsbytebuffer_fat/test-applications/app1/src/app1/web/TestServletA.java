@@ -40,7 +40,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 
 @SuppressWarnings("serial")
 @WebServlet("/TestServletA")
-public class WsByteBufferTests extends FATServlet {
+public class TestServletA extends FATServlet {
 
     @Test
     @Mode(TestMode.EXPERIMENTAL)
@@ -337,7 +337,7 @@ public class WsByteBufferTests extends FATServlet {
 
         // test put WsByteBuffer
         buffer.clear();
-        buffer2 = WsByteBufferFactory.getBufferManager().wrap("pbx".getBytes());
+        buffer2 = getBM().wrap("pbx".getBytes());
         buffer.put(buffer2);
         assertEquals(3, buffer.position());
         assertEquals(size, buffer.limit());
@@ -348,7 +348,7 @@ public class WsByteBufferTests extends FATServlet {
 
         // test put WsByteBuffer list
         buffer.clear();
-        buffer2 = WsByteBufferFactory.getBufferManager().wrap("calico".getBytes());
+        buffer2 = getBM().wrap("calico".getBytes());
         WsByteBuffer buffer3 = WsByteBufferFactory.getBufferManager().wrap("quasar".getBytes());
         buffer.put(new WsByteBuffer[] { buffer2, buffer3 });
         assertEquals(12, buffer.position());

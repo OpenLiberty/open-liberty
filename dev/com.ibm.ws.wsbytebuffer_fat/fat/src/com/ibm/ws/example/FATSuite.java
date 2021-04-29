@@ -21,7 +21,7 @@ import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                NettyWsByteBufferTests.class,
+                SimpleTest.class,
 })
 public class FATSuite {
 
