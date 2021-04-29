@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1877,6 +1877,52 @@ public class CommonTestHelpers extends TestHelpers {
         }
         theMap.put(settings.getHeaderName(), builtValue);
         return theMap;
+    }
+
+    public Object processPutRequest(String testcase, WebClient webClient, String token, TestSettings settings, List<validationData> expectations) throws Exception {
+
+        String thisMethod = "processLogout";
+        msgUtils.printMethodName(thisMethod);
+
+        // set the mark to the end of all logs to ensure that any checking for
+        // messages is done only for this step of the testing
+        setMarkToEndOfAllServersLogs();
+        Object thePage = null;
+
+        try {
+
+            setMarkToEndOfAllServersLogs();
+
+            // Invoke protected resource
+            URL url = AutomationTools.getNewUrl(settings.getTokenEndpt());
+            com.gargoylesoftware.htmlunit.WebRequest request = new com.gargoylesoftware.htmlunit.WebRequest(url, HttpMethod.PUT);
+            request.setRequestParameters(new ArrayList());
+
+            if (token != null) {
+                setRequestParameterIfSet(request, "tokenToSave", token);
+                Log.info(thisClass, testcase, "tokenToSave: " + token);
+            } else {
+                Log.info(thisClass, testcase, "tokenToSave will NOT be set");
+                throw new Exception("We need to save off a token for the tokenEndpoint to return to the RP - it's kinda the point of the test");
+            }
+
+            msgUtils.printRequestParts(webClient, request, thisMethod, "Request for " + Constants.PUTMETHOD);
+            thePage = webClient.getPage(request);
+
+            // make sure the page is processed before continuing
+            waitBeforeContinuing(webClient);
+
+            msgUtils.printAllCookies(webClient);
+            msgUtils.printResponseParts(thePage, thisMethod, "Response from protected app: ");
+
+        } catch (Exception e) {
+
+            validationTools.validateException(expectations, Constants.PUTMETHOD, e);
+
+        }
+        validationTools.validateResult(thePage, Constants.PUTMETHOD, expectations, settings);
+        return thePage;
+
     }
 
 }
