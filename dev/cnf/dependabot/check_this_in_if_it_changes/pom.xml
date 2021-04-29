@@ -1439,7 +1439,7 @@
     <dependency>
       <groupId>org.apache.james</groupId>
       <artifactId>apache-mime4j-dom</artifactId>
-      <version>0.8.3</version>
+      <version>0.8.4</version>
     </dependency>
     <dependency>
       <groupId>org.apache.james</groupId>
