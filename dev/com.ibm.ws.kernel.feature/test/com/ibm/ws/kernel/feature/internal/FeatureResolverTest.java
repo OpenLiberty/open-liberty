@@ -221,7 +221,7 @@ public class FeatureResolverTest {
     @Test
     public void testRootConflictWithOtherFeature() {
         Result result = resolver.resolveFeatures(repository, noKernelFeatures, Arrays.asList("t1.a-1.0", "t1.a-1.1", "t1.b-1.0"), Collections.<String> emptySet(), false);
-        Set<String> expected = new HashSet<String>(Arrays.asList("t1.b-1.0"));
+        Set<String> expected = new HashSet<String>(Arrays.asList("t1.a-1.0", "t1.b-1.0"));
         Assert.assertEquals("Wrong results found.", new TreeSet<String>(expected), new TreeSet<String>(result.getResolvedFeatures()));
         Assert.assertEquals("Unexpected missing.", Collections.emptySet(), result.getMissing());
         checkConflict(result.getConflicts(), "t1.a");
@@ -398,6 +398,20 @@ public class FeatureResolverTest {
         Assert.assertEquals("Unexpected missing.", Collections.emptySet(), result.getMissing());
         checkConflict(result.getConflicts(), "t7.h", ROOT, "t7.l-1.0");
         checkConflict(result.getConflicts(), "t7.i", "t7.c-1.0", "t7.m-1.0");
+    }
+
+    @Test
+    public void testComplicatedPreferenceWithHardConflictAndRootConflict() {
+        Result result = resolver.resolveFeatures(repository, noKernelFeatures, Arrays.asList("t7.a-1.0", "t7.b-1.0", "t7.h-1.0", "t7.p-1.0", "t7.p-2.0"),
+                                                 Collections.<String> emptySet(),
+                                                 false);
+        Set<String> expected = new HashSet<String>(Arrays.asList("t7.a-1.0", "t7.b-1.0", "t7.c-1.0", "t7.d-2.0", "t7.f-1.0", "t7.g-1.0",
+                                                                 "t7.j-2.0", "t7.k-2.0", "t7.l-1.0", "t7.m-1.0", "t7.n-1.0", "t7.o-1.0"));
+        Assert.assertEquals("Wrong results found.", new TreeSet<String>(expected), new TreeSet<String>(result.getResolvedFeatures()));
+        Assert.assertEquals("Unexpected missing.", Collections.emptySet(), result.getMissing());
+        checkConflict(result.getConflicts(), "t7.h", ROOT, "t7.l-1.0");
+        checkConflict(result.getConflicts(), "t7.i", "t7.c-1.0", "t7.m-1.0");
+        checkConflict(result.getConflicts(), "t7.p");
     }
 
     @Test
