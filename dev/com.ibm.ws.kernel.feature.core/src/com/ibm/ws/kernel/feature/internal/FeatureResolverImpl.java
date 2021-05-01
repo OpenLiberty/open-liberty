@@ -162,8 +162,8 @@ public class FeatureResolverImpl implements FeatureResolver {
             }
             resolved = doResolveFeatures(rootFeatures, preResolved, selectionContext);
         } while (!!!(autoFeaturesToInstall = processAutoFeatures(kernelFeatures, resolved, seenAutoFeatures, selectionContext)).isEmpty());
-        // Finalize the result and finally return the selected result
-        return selectionContext.finalizeResult();
+        // Finally return the selected result
+        return selectionContext.getResult();
     }
 
     private List<String> checkRootsAreAccessibleAndSetFullName(List<String> rootFeatures, SelectionContext selectionContext, Set<String> preResolved) {
@@ -611,7 +611,6 @@ public class FeatureResolverImpl implements FeatureResolver {
         private final AtomicInteger _initialBlockedCount = new AtomicInteger(-1);
         private final Map<String, Collection<Chain>> _preResolveConflicts = new HashMap<String, Collection<Chain>>();
         private Permutation _current = _permutations.getFirst();
-        private final Map<String, Collection<Chain>> _primeConflicts = new HashMap<String, Collection<Chain>>();
 
         SelectionContext(FeatureResolver.Repository repository, boolean allowMultipleVersions, EnumSet<ProcessType> supportedProcessTypes) {
             this._repository = repository;
@@ -821,7 +820,7 @@ public class FeatureResolverImpl implements FeatureResolver {
                         if (features.contains(selectedFeature)) {
                             Chain conflictedFeatureChain = new Chain(Collections.<String> emptyList(), Collections.singletonList(featureSymbolicName), preferredVersion,
                                                                      featureSymbolicName);
-                            addPrimeConflict(base, new ArrayList<Chain>(Arrays.asList(selectedChain, conflictedFeatureChain)));
+                            addConflict(base, new ArrayList<Chain>(Arrays.asList(selectedChain, conflictedFeatureChain)));
                             conflicts.put(selectedFeature, base);
                         }
                     } else {
@@ -854,23 +853,6 @@ public class FeatureResolverImpl implements FeatureResolver {
         void addConflict(String baseFeatureName, List<Chain> conflicts) {
             _current._blockedFeatures.add(baseFeatureName);
             _current._result.addConflict0(baseFeatureName, conflicts);
-        }
-
-        void addPrimeConflict(String baseFeatureName, List<Chain> conflicts) {
-            trace("Found a conflict for root (prime) feature: \"" + baseFeatureName + "\" with conficts: " + conflicts);
-            _primeConflicts.put(baseFeatureName, conflicts);
-        }
-
-        Result finalizeResult() {
-            // be sure there is at least one conflict reported conflicts of the prime (root) features
-            Map<String, Collection<Chain>> conflicts = _current._result.getConflicts();
-            for (Map.Entry<String, Collection<Chain>> primeConflict : _primeConflicts.entrySet()) {
-                if (!conflicts.containsKey(primeConflict.getKey())) {
-                    conflicts.put(primeConflict.getKey(), primeConflict.getValue());
-
-                }
-            }
-            return _current._result;
         }
     }
 
