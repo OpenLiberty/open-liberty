@@ -426,6 +426,13 @@ public class PermissionManager implements PermissionsCombiner {
                 }
             }
             
+            if (codeBase.startsWith("/")) {
+                String truncatedCodeBase = codeBase.substring(1, codeBase.length());
+                CodeSource codeSource = createCodeSource(truncatedCodeBase);
+                ProtectionDomain protectionDomain = createProtectionDomain(codeSource, permissions);
+                
+            }
+
             CodeSource codeSource = createCodeSource(codeBase);
             ProtectionDomain protectionDomain = createProtectionDomain(codeSource, permissions);
             protectionDomainMap.put(codeBase, protectionDomain);
