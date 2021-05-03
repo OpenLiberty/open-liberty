@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,8 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.javaeesec.fat;
+
+import static org.junit.Assume.assumeTrue;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -38,6 +40,7 @@ import com.ibm.ws.security.javaeesec.fat_helper.WCApplicationHelper;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -176,6 +179,7 @@ public class MultipleModuleNoExpandTest extends JavaEESecTestBase {
     @Test
     public void testMultipleModuleWars() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+        assumeNotWindowsEe9();
 
         // create module1, form login, redirect, ldap1. grouponly.
         WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR1_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.form.get.redirect",
@@ -293,6 +297,7 @@ public class MultipleModuleNoExpandTest extends JavaEESecTestBase {
     @Test
     public void testMultipleModuleWarsWithModuleJar() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+        assumeNotWindowsEe9();
 
         // create module1, form login, redirect, ldap1. grouponly.
         WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR1_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.form.get.redirect",
@@ -406,6 +411,7 @@ public class MultipleModuleNoExpandTest extends JavaEESecTestBase {
     @Test
     public void testMultipleModuleWithCommonJar() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+        assumeNotWindowsEe9();
 
         // create module1, form login, redirect, ldap1. grouponly.
         WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR1_NAME, true, null, false, "web.war.servlets.form.get.redirect", "web.war.identitystores.ldap.ldap1",
@@ -464,6 +470,7 @@ public class MultipleModuleNoExpandTest extends JavaEESecTestBase {
     @Test
     public void testMultipleModuleWithModuleHAMJar() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+        assumeNotWindowsEe9();
 
         // create module1, ldap1. grouponly.
         WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR1_NAME, true, HAM_JAR_NAME, true, "web.jar.base", "web.war.servlets.secured", "web.war.identitystores.ldap.ldap1",
@@ -520,6 +527,7 @@ public class MultipleModuleNoExpandTest extends JavaEESecTestBase {
     @Test
     public void testMultipleModuleWithCommonHAMJar() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+        assumeNotWindowsEe9();
 
         // create module1, ldap1. grouponly.
         WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR1_NAME, true, null, false, "web.war.servlets.secured", "web.war.identitystores.ldap.ldap1",
@@ -585,4 +593,18 @@ public class MultipleModuleNoExpandTest extends JavaEESecTestBase {
         verifyGroups(response, groups);
     }
 
+    /**
+     * Assume we are not on Windows and running the EE9 repeat action. There is an issue with
+     * the Jakarta transformer where the application fails to be transformed b/c the application
+     * directory cannot be deleted due to a "The process cannot access the file because it is
+     * being used by another process" error. I assume that either the transformer or the server
+     * is not releasing the handle to the directory, but I have not yet been able to figure it
+     * out.
+     */
+    private static void assumeNotWindowsEe9() {
+        if (JakartaEE9Action.isActive() && System.getProperty("os.name").toLowerCase().startsWith("win")) {
+            Log.info(logClass, "assumeNotWindowsEe9", "Skipping EE9 repeat action on Windows.");
+            assumeTrue(false);
+        }
+    }
 }
