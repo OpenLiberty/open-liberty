@@ -923,7 +923,7 @@ public class PermissionManager implements PermissionsCombiner {
        
         if (codeBase != null && !codeBase.contains("expanded") && (!tempFile.isDirectory() && (fileName.endsWith(".ear") || fileName.endsWith(".war")))) {
             if (tc.isDebugEnabled()) {
-                Tr.debug("        codebase: " + codeBase + " will expanded recursively to ensure all sub-modules get the right permissions");
+                Tr.debug(tc,"        codebase: " + codeBase + " will expanded recursively to ensure all sub-modules get the right permissions");
             }
             try {
                 z = (ZipFile) AccessController.doPrivileged(new PrivilegedExceptionAction() {
