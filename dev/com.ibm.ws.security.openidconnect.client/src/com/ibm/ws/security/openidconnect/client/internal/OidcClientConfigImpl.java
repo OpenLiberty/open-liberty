@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2020 IBM Corporation and others.
+ * Copyright (c) 2013, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -158,6 +158,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     public static final String CFG_KEY_FORWARD_LOGIN_PARAMETER = "forwardLoginParameter";
     public static final String CFG_KEY_REQUIRE_EXP_CLAIM = "requireExpClaimForIntrospection";
     public static final String CFG_KEY_REQUIRE_IAT_CLAIM = "requireIatClaimForIntrospection";
+    public static final String CFG_KEY_KEY_MANAGEMENT_KEY_ALIAS = "keyManagementKeyAlias";
 
     public static final String OPDISCOVERY_AUTHZ_EP_URL = "authorization_endpoint";
     public static final String OPDISCOVERY_TOKEN_EP_URL = "token_endpoint";
@@ -248,6 +249,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     private List<String> forwardLoginParameter;
     private boolean requireExpClaimForIntrospection = true;
     private boolean requireIatClaimForIntrospection = true;
+    private String keyManagementKeyAlias;
 
     private String oidcClientCookieName;
     private boolean authnSessionDisabled;
@@ -515,6 +517,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
         forwardLoginParameter = oidcConfigUtils.readAndSanitizeForwardLoginParameter(props, id, CFG_KEY_FORWARD_LOGIN_PARAMETER);
         requireExpClaimForIntrospection = configUtils.getBooleanConfigAttribute(props, CFG_KEY_REQUIRE_EXP_CLAIM, requireExpClaimForIntrospection);
         requireIatClaimForIntrospection = configUtils.getBooleanConfigAttribute(props, CFG_KEY_REQUIRE_IAT_CLAIM, requireIatClaimForIntrospection);
+        keyManagementKeyAlias = configUtils.getConfigAttribute(props, CFG_KEY_KEY_MANAGEMENT_KEY_ALIAS);
         // TODO - 3Q16: Check the validationEndpointUrl to make sure it is valid
         // before continuing to process this config
         // checkValidationEndpointUrl();
@@ -1867,6 +1870,11 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     @Override
     public boolean requireIatClaimForIntrospection() {
         return requireIatClaimForIntrospection;
+    }
+
+    @Override
+    public String getKeyManagementKeyAlias() {
+        return keyManagementKeyAlias;
     }
 
 }
