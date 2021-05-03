@@ -268,10 +268,7 @@ public class SoapActionInInterceptor extends AbstractSoapInterceptor {
             }
             
             boolean synthetic = Boolean.TRUE.equals(boi.getProperty("operation.is.synthetic"));
-            LOG.info("@TJJ MessageUtils.getContextualBoolean(message, \"operation.is.synthetic\", false) = " + MessageUtils.getContextualBoolean(message, "operation.is.synthetic", false));
-            
 
-            LOG.info("@TJJ synthetic = " + synthetic);
             if (!synthetic) {
                 throw new Fault("SOAP_ACTION_MISMATCH", LOG, null, action);
             }
@@ -281,18 +278,9 @@ public class SoapActionInInterceptor extends AbstractSoapInterceptor {
     private static boolean isActionMatch(SoapMessage message, BindingOperationInfo boi, String action) {
         SoapOperationInfo soi = boi.getExtensor(SoapOperationInfo.class);
         if (soi == null) {
-            LOG.info("@TJJ soi == null isActionMatch() return false");
             return false;
         }
-        LOG.info("@TJJ MessageUtils.getContextualBoolean(message, ALLOW_NON_MATCHING_TO_DEFAULT) returns " 
-                                                + MessageUtils.getContextualBoolean(message, ALLOW_NON_MATCHING_TO_DEFAULT, false));
 
-        
-
-        LOG.info("@TJJ boi.getProperty(ALLOW_NON_MATCHING_TO_DEFAULT) returns " 
-                                                + boi.getProperty(ALLOW_NON_MATCHING_TO_DEFAULT));
-        
-        
         boolean allowNoMatchingToDefault = MessageUtils.getContextualBoolean(message,
                                                                     ALLOW_NON_MATCHING_TO_DEFAULT,
                                                                     false);
