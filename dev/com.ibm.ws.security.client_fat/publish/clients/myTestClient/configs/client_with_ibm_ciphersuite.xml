@@ -30,6 +30,8 @@
 		</clientPolicy.clientContainerCsiv2>
 	</orb>
 
+    <orb id="defaultOrb" orbSSLInitTimeout="60"/>
+
 	<keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" />
 
 	<sslDefault sslRef="supportedClientAuthenticationSSLConfig" />
