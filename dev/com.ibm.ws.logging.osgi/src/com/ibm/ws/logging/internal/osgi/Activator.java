@@ -32,17 +32,14 @@ import com.ibm.ws.ras.instrument.internal.main.LibertyRuntimeTransformer;
  */
 public class Activator implements BundleActivator {
 
-    private MessageRouterConfigurator msgRouter;
-    private TraceRouterConfigurator traceRouter;
-    private CollectorManagerPipelineConfigurator collectorMgrPipeConfigurator; 
-
-    private LoggingConfigurationService logCfgService;
-
-    private Instrumentation inst;
-    private RuntimeTransformerComponentListener runtimeTransformer = null;
-
-    private static TraceComponentChangeListenerTracker listenerTracker = null;
-    private ComponentContext componentContext;
+	private MessageRouterConfigurator msgRouter;
+	private TraceRouterConfigurator traceRouter;
+	private CollectorManagerPipelineConfigurator collectorMgrPipeConfigurator; 
+	private LoggingConfigurationService logCfgService;
+	private Instrumentation inst;
+	private RuntimeTransformerComponentListener runtimeTransformer = null;
+	private static TraceComponentChangeListenerTracker listenerTracker = null;
+	private ComponentContext componentContext;
 	private ThrowableProxyActivator proxyActivator;
 	
 	/**
@@ -51,11 +48,11 @@ public class Activator implements BundleActivator {
      *
      * @param bundleContext the bundleContext
      */
-    synchronized void activate(ComponentContext componentContext) throws Exception {
-    	this.componentContext = componentContext;
-        this.proxyActivator = new ThrowableProxyActivator(this.inst, componentContext.getBundleContext());
-        this.proxyActivator.activate();
-    }
+	synchronized void activate(ComponentContext componentContext) throws Exception {
+		this.componentContext = componentContext;
+		this.proxyActivator = new ThrowableProxyActivator(this.inst, componentContext.getBundleContext());
+		this.proxyActivator.activate();
+	}
     
     /**
      * Deactivation callback from the Declarative Services runtime where the

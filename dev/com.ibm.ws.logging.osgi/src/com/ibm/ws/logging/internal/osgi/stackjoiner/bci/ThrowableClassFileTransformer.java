@@ -20,31 +20,31 @@ import org.objectweb.asm.ClassWriter;
 
 public class ThrowableClassFileTransformer implements ClassFileTransformer {
 
-    @Override
-    public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain,
-                            byte[] classfileBuffer) throws IllegalClassFormatException {
-        byte[] ba = null;
-        try {
-            ba = transformClassIfThrowable(classfileBuffer, className);;
-        } catch (Exception e) {
-
-            throw e;
-        }
-        return ba;
-    }
-
-    @SuppressWarnings("static-access")
+	@Override
+	public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain,
+	                        byte[] classfileBuffer) throws IllegalClassFormatException {
+	    byte[] ba = null;
+	    try {
+	        ba = transformClassIfThrowable(classfileBuffer, className);;
+	    } catch (Exception e) {
+	
+	        throw e;
+	    }
+	    return ba;
+	}
+	
+	@SuppressWarnings("static-access")
 	private byte[] transformClassIfThrowable(byte[] cBuffer, String nameOfClass) {
-        ClassReader reader = new ClassReader(cBuffer);
-        ClassWriter writer = new ClassWriter(reader, ClassWriter.COMPUTE_FRAMES);
-        ClassVisitor visitor = writer;
-        /*
-        if (nameOfClass.equals("java/lang/Throwable")) {
-            visitor = new ThrowableClassAdapter(visitor);
-        }*/
-        visitor = new ThrowableClassAdapter(visitor);
-        reader.accept(visitor, reader.SKIP_FRAMES);
-        return writer.toByteArray();
-    }
+	    ClassReader reader = new ClassReader(cBuffer);
+	    ClassWriter writer = new ClassWriter(reader, ClassWriter.COMPUTE_FRAMES);
+	    ClassVisitor visitor = writer;
+	    /*
+	    if (nameOfClass.equals("java/lang/Throwable")) {
+	        visitor = new ThrowableClassAdapter(visitor);
+	    }*/
+	    visitor = new ThrowableClassAdapter(visitor);
+	    reader.accept(visitor, reader.SKIP_FRAMES);
+	    return writer.toByteArray();
+	}
 
 }
