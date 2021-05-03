@@ -32,6 +32,7 @@ import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -70,6 +71,14 @@ public class RequestTimingMetricsTest {
         ShrinkHelper.defaultDropinApp(server, "RequestTimingWebApp", "com.ibm.ws.request.timing.app");
         totalRequestCount = new AtomicInteger();
         activeServletRequest = 1;
+
+        JavaInfo java = JavaInfo.forCurrentVM();
+        int javaMajorVersion = java.majorVersion();
+        if (javaMajorVersion != 8) {
+            Log.info(c, "setUp", " Java version = " + javaMajorVersion + " - It is higher than 8, adding --add-exports...");
+            server.copyFileToLibertyServerRoot("add-exports/jvm.options");
+        }
+
         server.startServer();
 
         //Wait until server has started
