@@ -715,7 +715,7 @@ public class ContextManagerTest {
         assertTrue("Did not find Return to Primary in toString: " + toString, toString.contains("iReturnToPrimary=true"));
     }
 
-    //@Test
+    @Test
     public void testToStringKRB5() throws Exception {
         ContextManager cm = new ContextManager();
         cm.setPrimaryServer("localhost", primaryLdapServer.getLdapServer().getPort());
@@ -724,10 +724,10 @@ public class ContextManagerTest {
         cm.initialize();
 
         String toString = cm.toString();
-        assertTrue("Found find Bind DN in toString: " + toString, toString.contains("iBindDN="));
+        assertTrue("Found Bind DN in toString: " + toString, toString.contains("iBindDN=null"));
         assertTrue("Did not find Primary Server in toString: " + toString, toString.contains("iPrimaryServer=localhost:" + primaryLdapServer.getLdapServer().getPort()));
         assertTrue("Did not find bindAuthMeach in toString: " + toString, toString.contains("bindAuthMechanism=" + ConfigConstants.CONFIG_BIND_AUTH_KRB5));
-        assertTrue("Did not find krb5PrincipalName in toString: " + toString, toString.contains("krb5PrincipalName=testPrincipal"));
+        assertTrue("Did not find krb5Principal in toString: " + toString, toString.contains("krb5Principal=testPrincipal"));
         assertTrue("Did not find krb5TicketCache in toString: " + toString, toString.contains("krb5TicketCache=DummyTicketCache"));
     }
 
