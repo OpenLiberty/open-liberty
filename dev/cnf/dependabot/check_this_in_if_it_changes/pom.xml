@@ -1529,7 +1529,7 @@
     <dependency>
       <groupId>org.apache.servicemix.bundles</groupId>
       <artifactId>org.apache.servicemix.bundles.bcel</artifactId>
-      <version>5.2_3</version>
+      <version>5.2_4</version>
     </dependency>
     <dependency>
       <groupId>org.apache.sshd</groupId>
