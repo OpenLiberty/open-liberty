@@ -193,7 +193,6 @@ public class ClientTestServlet extends HttpServlet {
     }
 
     public void testNewClientSslContext(Map<String, String> param, StringBuilder ret) throws NoSuchAlgorithmException {
-        SSLContext.getInstance("SSL");
         SSLContext ssl = SSLContext.getDefault();
         ClientBuilder cb = ClientBuilder.newBuilder().sslContext(ssl);
         Client c = cb.build();
