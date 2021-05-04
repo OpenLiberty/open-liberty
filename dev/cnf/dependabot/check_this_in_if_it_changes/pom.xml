@@ -3479,7 +3479,7 @@
     <dependency>
       <groupId>io.smallrye.reactive</groupId>
       <artifactId>smallrye-reactive-streams-operators</artifactId>
-      <version>1.0.10</version>
+      <version>1.0.13</version>
     </dependency>
     <dependency>
       <groupId>io.smallrye</groupId>
