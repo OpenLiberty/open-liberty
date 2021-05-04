@@ -259,7 +259,7 @@ public class TicketCacheBindTest extends CommonBindTest {
         newServer.getLdapRegistries().add(ldap);
         updateConfigDynamically(server, newServer);
 
-        bodySwapToKeytab(ldap, kerb);
+        bodySwapToKeytab(ldap, kerb, newServer);
     }
 
     /**
@@ -281,7 +281,7 @@ public class TicketCacheBindTest extends CommonBindTest {
         newServer.getLdapRegistries().add(ldap);
         updateConfigDynamically(server, newServer);
 
-        bodySwapToKeytab(ldap, kerb);
+        bodySwapToKeytab(ldap, kerb, newServer);
     }
 
     /**
@@ -291,21 +291,24 @@ public class TicketCacheBindTest extends CommonBindTest {
      * @param kerb
      * @throws Exception
      */
-    private void bodySwapToKeytab(LdapRegistry ldap, Kerberos kerb) throws Exception {
+    private void bodySwapToKeytab(LdapRegistry ldap, Kerberos kerb, ServerConfiguration newServer) throws Exception {
         loginUser();
 
         Log.info(c, testName.getMethodName(), "Add valid keytab, should be successful");
         kerb.keytab = keytabFile;
+        updateConfigDynamically(server, newServer);
 
         loginUser();
 
         Log.info(c, testName.getMethodName(), "Change the ticketCache to a bad config, login should be successful because we'll use the keytab");
         ldap.setKrb5TicketCache("badCache.cc");
+        updateConfigDynamically(server, newServer);
 
         loginUser();
 
         Log.info(c, testName.getMethodName(), "Remove the bad ticketCache, login should be successful because we'll use the keytab");
         ldap.setKrb5TicketCache(null);
+        updateConfigDynamically(server, newServer);
 
         loginUser();
     }
