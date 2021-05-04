@@ -9,10 +9,17 @@
         IBM Corporation - initial API and implementation
  -->
 <server>
-	<include location="${server.config.dir}/imports/oidc_mini_features.xml" />
-	<include location="${server.config.dir}/imports/BasicRegistry_ssl_required.xml" />
-	<include location="${server.config.dir}/imports/misc.xml" />
-	<include location="${server.config.dir}/imports/provider_OAuthConfigSample_allowCert.xml" />
-	<include location="${server.config.dir}/imports/certRequiredJavaPermissions.xml" />
+
+	<javaPermission
+		className="java.io.FilePermission"
+		name="ALL FILES"
+		actions="read" />
+	<javaPermission
+		className="java.lang.RuntimePermission"
+		name="setFactory" />
+	 <javaPermission 
+	 	className="javax.security.auth.PrivateCredentialPermission" 
+	 	signedBy="com.ibm.ws.security.token.internal.SingleSignonTokenImpl" 
+	 	actions="read"/>	
 
 </server>

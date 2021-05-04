@@ -57,7 +57,7 @@ public class OAuthWebClientAuthCertRequiredTest extends genericWebClientAuthCert
 
         testSettings = new TestSettings();
         testSettings.setProviderType(Constants.OAUTH_OP);
-        setupSSLClientKeyStore("./securitykeys/commonLDAPUser1.jks", "security", "jks");
+        setupSSLClientKeyStore("./securitykeys/commonLDAPUser1.p12", "Liberty", "pkcs12");
         testOPServer = commonSetUp("com.ibm.ws.security.openidconnect.server-1.0_fat.cert_required", "server_no_cert_required.xml", Constants.OAUTH_OP, extraApps, Constants.DO_NOT_USE_DERBY, extraMsgs);
         testSettings.setAdminUser("LDAPUser1");
         testSettings.setAdminPswd("LDAPUser1pwd");
