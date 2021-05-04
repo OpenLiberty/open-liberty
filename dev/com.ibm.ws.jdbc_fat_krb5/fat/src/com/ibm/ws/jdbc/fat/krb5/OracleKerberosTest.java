@@ -83,6 +83,10 @@ public class OracleKerberosTest extends FATServletClient {
         jvmOpts.add("-Dsun.security.krb5.debug=true"); // Hotspot/OpenJ9
         jvmOpts.add("-Dsun.security.jgss.debug=true");
         jvmOpts.add("-Dcom.ibm.security.krb5.krb5Debug=true"); // IBM JDK
+
+        if (JavaInfo.JAVA_VERSION >= 9) {
+            jvmOpts.add("--illegal-access=permit"); // Java 16 JEPS 396
+        }
         server.setJvmOptions(jvmOpts);
 
         server.startServer();
