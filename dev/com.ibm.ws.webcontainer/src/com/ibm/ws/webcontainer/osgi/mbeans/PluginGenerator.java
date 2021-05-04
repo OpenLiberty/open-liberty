@@ -207,10 +207,6 @@ public class PluginGenerator {
         }
     }
 
-    private boolean isBundleUninstalled() {
-        return bundle.getState() == Bundle.UNINSTALLED;
-    }
-
     /**
      * Generate the XML configuration with the current container information.
      *
@@ -360,14 +356,7 @@ public class PluginGenerator {
             rootElement.appendChild(esiProp5);
 
             HttpEndpointInfo httpEndpointInfo;
-            try {
-                httpEndpointInfo = new HttpEndpointInfo(context, output, pcd.httpEndpointPid);
-            } catch(IllegalStateException e) { //  BundleContext is no longer valid
-                if(!this.isBundleUninstalled()){
-                    throw e; // Missing for some other reason
-                }
-                return;
-            }
+            httpEndpointInfo = new HttpEndpointInfo(context, output, pcd.httpEndpointPid);
 
             // Map of virtual host name to the list of alias data being collected...
             Map<String, List<VHostData>> vhostAliasData = new HashMap<String, List<VHostData>>();
@@ -827,11 +816,6 @@ public class PluginGenerator {
                         serializer.setOutputProperties(oprops);
                         serializer.transform(new DOMSource(output), new StreamResult(pluginCfgWriter));
                     }
-                } catch(IOException e){
-                    //path to the cachedFile is broken when bundle was uninstalled
-                    if(!this.isBundleUninstalled()){
-                        throw e; // Missing for some other reason
-                    }
                 } finally {
                     if (pluginCfgWriter != null) {
                         pluginCfgWriter.flush();
@@ -839,19 +823,20 @@ public class PluginGenerator {
                         fOutputStream.getFD().sync();
                         pluginCfgWriter.close();
                     }
-                    try {
-                        copyFile(cachedFile, outFile.asFile());
-                    } catch (IOException e){
-                        //cachedFile no longer exists if the bundle was uninstalled
-                        if(!this.isBundleUninstalled()){
-                            throw e; // Missing for some other reason
-                        }
-                    }
+                    copyFile(cachedFile, outFile.asFile());
                 }
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "A new plugin configuration file was not written: the configuration did not change.");
                 }
+            }
+        } catch (IOException | IllegalStateException exception) {
+            // only FFDC if the bundle is in the expected state, otherwise we shouldn't be concerned
+            if (bundle.getState() == Bundle.ACTIVE) {
+                FFDCFilter.processException(exception, PluginGenerator.class.getName(), "generateXML", new Object[] { container });
+            }
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(tc, "Error creating plugin config xml; " + exception.getMessage());
             }
         } catch (Throwable t) {
             FFDCFilter.processException(t, PluginGenerator.class.getName(), "generateXML", new Object[] { container });
