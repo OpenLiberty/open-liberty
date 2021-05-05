@@ -106,6 +106,7 @@ File mavenDir = new File(project.buildDir, 'maven')
 class PackageLibertyWithFeatures extends DefaultTask {
     Closure withFeatures
     Boolean completeFeatureList
+    Boolean packageServerConflict
     File outputTo
 
     @TaskAction
@@ -126,7 +127,7 @@ class PackageLibertyWithFeatures extends DefaultTask {
             def serverXml = project.file("wlp/usr/servers/packageOpenLiberty/server.xml")
             serverXml.text = """<?xml version="1.0" encoding="UTF-8"?>
 <server description="new server">
-    <featureManager>${withFeatures()}
+    <featureManager package.server.conflict="${packageServerConflict}">${withFeatures()}
     </featureManager>
 </server>
 """
@@ -138,8 +139,6 @@ class PackageLibertyWithFeatures extends DefaultTask {
                 def args = ["package", "packageOpenLiberty", "--archive=${archive}", "--include=minify"]
                 if (completeFeatureList) { 
                     args.add("-Dinternal.minify.feature.list.complete=true") 
-                } else {
-                    args.add("-Dinternal.minify.ignore.singleton=true") 
                 }
                 if (OperatingSystem.current().windows) {
                     commandLine = ["cmd", "/c", "server"] + args
@@ -368,6 +367,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
         withFeatures this.&webProfile8Features
+        packageServerConflict = true
         outputTo packageDir
         doLast {
             copy {
@@ -394,6 +394,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
         withFeatures this.&javaee8Features
+        packageServerConflict = true
         outputTo packageDir
         doLast {
             copy {
@@ -439,6 +440,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
         withFeatures this.&microProfile3Features
+        packageServerConflict = true
         outputTo packageDir
         doLast {
             copy {

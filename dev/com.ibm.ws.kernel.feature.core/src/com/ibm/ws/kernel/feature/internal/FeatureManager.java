@@ -263,6 +263,9 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      */
     protected OnError onError;
 
+    private final String CONFIG_PACKAGE_SERVER_CONFLICT = "package.server.conflict";
+    private Boolean packageServerConflict = Boolean.FALSE;
+
     /** Cache for currently installed features (and for all information we know about features) */
     protected FeatureRepository featureRepository;
 
@@ -631,6 +634,10 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
         }
 
         onError = (OnError) configuration.get(OnErrorUtil.CFG_KEY_ON_ERROR);
+        packageServerConflict = (Boolean) configuration.get(CONFIG_PACKAGE_SERVER_CONFLICT);
+        if (packageServerConflict == null) {
+            packageServerConflict = Boolean.FALSE;
+        }
 
         String[] features = (String[]) configuration.get(CFG_KEY_ACTIVE_FEATURES);
         if (features == null) {
@@ -1229,6 +1236,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
         Collection<String> restrictedRepoAccessAttempts = new ArrayList<String>();
         boolean allowMultipleVersions = false;
         boolean featureListIsComplete = false;
+        boolean currentPackageServerConflict = false;
         if (ProvisioningMode.CONTENT_REQUEST == mode || ProvisioningMode.FEATURES_REQUEST == mode) {
             // allow multiple versions if in minify (TODO strange since we are minifying!)
             // For feature request using the minified approach but that could cause additional singletons to be provisioned.
@@ -1241,6 +1249,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
             featureListIsComplete = Boolean.getBoolean("internal.minify.feature.list.complete");
             // do not restrict any features
             restrictedRespository = featureRepository;
+            currentPackageServerConflict = packageServerConflict;
         } else {
             if (supportedProcessTypes.contains(ProcessType.CLIENT)) {
                 // do not restrict any features while resolving, but ....
@@ -1266,22 +1275,26 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
         if (featureListIsComplete) {
             result = createResultFromCompleteList(restrictedRespository, rootFeatures);
         } else {
-            result = callFeatureResolver(restrictedRespository, kernelFeaturesHolder.getKernelFeatures(), rootFeatures, allowMultipleVersions);
+            result = callFeatureResolver(restrictedRespository, kernelFeaturesHolder.getKernelFeatures(), rootFeatures, allowMultipleVersions, currentPackageServerConflict);
         }
         restrictedAccessAttempts.addAll(restrictedRepoAccessAttempts);
         return result;
     }
 
     private Result callFeatureResolver(Repository restrictedRespository, Collection<ProvisioningFeatureDefinition> kernelFeatures, Set<String> rootFeatures,
-                                       boolean allowMultipleVersions) {
+                                       boolean allowMultipleVersions, boolean currentPackageServerConflict) {
 
+        // short circuit if package server is expecting conflicts
+        if (currentPackageServerConflict) {
+            return featureResolver.resolveFeatures(restrictedRespository, kernelFeatures, rootFeatures, Collections.<String> emptySet(), true);
+        }
         // resolve the features
         // TODO Note that we are just supporting all types at runtime right now.  In the future this may be restricted by the actual running process type
-        Result result = featureResolver.resolveFeatures(restrictedRespository, kernelFeaturesHolder.getKernelFeatures(), rootFeatures, Collections.<String> emptySet(),
+        Result result = featureResolver.resolveFeatures(restrictedRespository, kernelFeatures, rootFeatures, Collections.<String> emptySet(),
                                                         false);
         if (allowMultipleVersions) {
             if (!result.getConflicts().isEmpty()) {
-                result = featureResolver.resolveFeatures(restrictedRespository, kernelFeaturesHolder.getKernelFeatures(), rootFeatures, Collections.<String> emptySet(), true);
+                result = featureResolver.resolveFeatures(restrictedRespository, kernelFeatures, rootFeatures, Collections.<String> emptySet(), true);
             }
         }
 
