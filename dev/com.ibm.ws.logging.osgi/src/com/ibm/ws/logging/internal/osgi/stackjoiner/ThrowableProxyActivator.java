@@ -94,50 +94,49 @@ public class ThrowableProxyActivator {
 	 *
 	 * @param bundleContext the bundleContext
 	 */
-	public void activate() throws Exception {    
-	    // Store a reference to the printStackTraceOverride method from BaseTraceService
-	    throwableInfo = new ThrowableInfo(inst);
+	public void activate() throws Exception {   
+		// Store a reference to the printStackTraceOverride method from BaseTraceService
+		throwableInfo = new ThrowableInfo(inst);
 		
-	    if (throwableInfo.isInitialized()) {
-	    	String runtimeVersion = getRuntimeClassVersion();
-	        if (runtimeVersion != null && !runtimeVersion.equals(getCurrentVersion())) {
-	            // TODO: Use a compatibility check instead
-	        	throw new IllegalStateException("Incompatible proxy code (version " + runtimeVersion + ")");
-	        }
-	        
-	        // Find or create the proxy jar if the runtime code isn't loaded
-			if (runtimeVersion == null) {
-			    JarFile proxyJar = getBootProxyJarIfCurrent();
-			    if (proxyJar == null) {
-			    	proxyJar = createBootProxyJar();
-			    }
-			    inst.appendToBootstrapClassLoaderSearch(proxyJar);
+		if (throwableInfo.isInitialized()) {
+			String runtimeVersion = getRuntimeClassVersion();
+			if (runtimeVersion != null && !runtimeVersion.equals(getCurrentVersion())) {
+				// TODO: Use a compatibility check instead
+				throw new IllegalStateException("Incompatible proxy code (version " + runtimeVersion + ")");
 			}
 	        
-	    	activateThrowableProxyMethodTarget();
+			// Find or create the proxy jar if the runtime code isn't loaded
+			if (runtimeVersion == null) {
+				JarFile proxyJar = getBootProxyJarIfCurrent();
+				if (proxyJar == null) {
+					proxyJar = createBootProxyJar();
+				}
+				inst.appendToBootstrapClassLoaderSearch(proxyJar);
+			}
+	        
+			activateThrowableProxyMethodTarget();
+			ThrowableClassFileTransformer tcfTransformer = new ThrowableClassFileTransformer();
 	
-	    	ThrowableClassFileTransformer tcfTransformer = new ThrowableClassFileTransformer();
-	
-	    	try {
-	    		inst.addTransformer(tcfTransformer, true);
-	            inst.retransformClasses(Throwable.class); //something to replace retransfornm
-	        } 
-	    	catch (Throwable t) {
-	            t.printStackTrace();
-	        } 
-	    	finally {
-	        	inst.removeTransformer(tcfTransformer);
-	        }
-	    }
+			try {
+				inst.addTransformer(tcfTransformer, true);
+				inst.retransformClasses(Throwable.class); //something to replace retransfornm
+			} 
+			catch (Throwable t) {
+				t.printStackTrace();
+			} 
+			finally {
+				inst.removeTransformer(tcfTransformer);
+			}
+		}
 	}
 	
 	public void deactivate() throws Exception {
-	    try {
-	    	if (throwableInfo.isInitialized())
-	    		deactivateThrowableProxyTarget();
-	    } catch (Exception e) {
-	        throw new Exception(e);
-	    }
+		try {
+			if (throwableInfo.isInitialized())
+				deactivateThrowableProxyTarget();
+		} catch (Exception e) {
+			throw new Exception(e);
+		}
 	}
 	
 	/**
@@ -149,14 +148,14 @@ public class ThrowableProxyActivator {
 	 */
 	@FFDCIgnore(Exception.class)
 	String getRuntimeClassVersion() {
-	    String runtimeVersion = null;
-	    try {
-	        Class<?> clazz = Class.forName(THROWABLE_PROXY_CLASS_NAME);
-	        Field version = ReflectionHelper.getDeclaredField(clazz, VERSION_FIELD_NAME);
-	        runtimeVersion = (String) version.get(null);
-	    } catch (Exception e) {
-	    }
-	    return runtimeVersion;
+		String runtimeVersion = null;
+		try {
+			Class<?> clazz = Class.forName(THROWABLE_PROXY_CLASS_NAME);
+			Field version = ReflectionHelper.getDeclaredField(clazz, VERSION_FIELD_NAME);
+			runtimeVersion = (String) version.get(null);
+		} catch (Exception e) {
+		}
+		return runtimeVersion;
 	}
 	
 	/**
@@ -169,36 +168,36 @@ public class ThrowableProxyActivator {
 	 * @throws IOException if a file I/O error occurs
 	 */
 	JarFile createBootProxyJar() throws IOException {
-	    File dataFile = bundleContext.getDataFile("boot-proxy-throwable.jar");
+		File dataFile = bundleContext.getDataFile("boot-proxy-throwable.jar");
 	
-	    // Create the file if it doesn't already exist
-	    if (!dataFile.exists()) {
-	        dataFile.createNewFile();
-	    }
-	    
-	    // Generate a manifest
-	    Manifest manifest = createBootJarManifest();
-	
-	    // Create the file
-	    FileOutputStream fileOutputStream = new FileOutputStream(dataFile, false);
-	    JarOutputStream jarOutputStream = new JarOutputStream(fileOutputStream, manifest);
-	
-	    // Add the jar path entries to reduce class load times
-	    createDirectoryEntries(jarOutputStream, BOOT_DELEGATED_PACKAGE);
-	
-	    // Map the template classes into the delegation package and add to the jar
-	    Bundle bundle = bundleContext.getBundle();
-	    Enumeration<?> entryPaths = bundle.getEntryPaths(TEMPLATE_CLASSES_PATH);
-	    if (entryPaths != null) {
-	        while (entryPaths.hasMoreElements()) {
-	            URL sourceClassResource = bundle.getEntry((String) entryPaths.nextElement());
-	            if (sourceClassResource != null)
-	                writeRemappedClass(sourceClassResource, jarOutputStream, BOOT_DELEGATED_PACKAGE);
-	        }
-	    }
-	    jarOutputStream.close();
-	    fileOutputStream.close();
-	    return new JarFile(dataFile);
+		// Create the file if it doesn't already exist
+		if (!dataFile.exists()) {
+			dataFile.createNewFile();
+		}
+		
+		// Generate a manifest
+		Manifest manifest = createBootJarManifest();
+		
+		// Create the file
+		FileOutputStream fileOutputStream = new FileOutputStream(dataFile, false);
+		JarOutputStream jarOutputStream = new JarOutputStream(fileOutputStream, manifest);
+		
+		// Add the jar path entries to reduce class load times
+		createDirectoryEntries(jarOutputStream, BOOT_DELEGATED_PACKAGE);
+		
+		// Map the template classes into the delegation package and add to the jar
+		Bundle bundle = bundleContext.getBundle();
+		Enumeration<?> entryPaths = bundle.getEntryPaths(TEMPLATE_CLASSES_PATH);
+		if (entryPaths != null) {
+		    while (entryPaths.hasMoreElements()) {
+		        URL sourceClassResource = bundle.getEntry((String) entryPaths.nextElement());
+		        if (sourceClassResource != null)
+		            writeRemappedClass(sourceClassResource, jarOutputStream, BOOT_DELEGATED_PACKAGE);
+		    }
+		}
+		jarOutputStream.close();
+		fileOutputStream.close();
+		return new JarFile(dataFile);
 	}
 	
 	/**
@@ -210,20 +209,20 @@ public class ThrowableProxyActivator {
 	 * @throws IOException if an IO exception raised while processing the class
 	 */
 	private void writeRemappedClass(URL classUrl, JarOutputStream jarStream, String targetPackage) throws IOException {
-	    InputStream inputStream = classUrl.openStream();
-	    String sourceInternalName = getClassInternalName(classUrl);
-	    String targetInternalName = getTargetInternalName(sourceInternalName, targetPackage);
-	    SimpleRemapper remapper = new SimpleRemapper(sourceInternalName, targetInternalName);
-	
-	    ClassReader reader = new ClassReader(inputStream);
-	    ClassWriter writer = new ClassWriter(reader, ClassWriter.COMPUTE_FRAMES);
-	    ClassRemapper remappingVisitor = new ClassRemapper(writer, remapper);
-	    ClassVisitor versionVisitor = new AddVersionFieldClassAdapter(remappingVisitor, VERSION_FIELD_NAME, getCurrentVersion());
-	    reader.accept(versionVisitor, ClassReader.EXPAND_FRAMES);
-	
-	    JarEntry jarEntry = new JarEntry(targetInternalName + ".class");
-	    jarStream.putNextEntry(jarEntry);
-	    jarStream.write(writer.toByteArray());
+		InputStream inputStream = classUrl.openStream();
+		String sourceInternalName = getClassInternalName(classUrl);
+		String targetInternalName = getTargetInternalName(sourceInternalName, targetPackage);
+		SimpleRemapper remapper = new SimpleRemapper(sourceInternalName, targetInternalName);
+		
+		ClassReader reader = new ClassReader(inputStream);
+		ClassWriter writer = new ClassWriter(reader, ClassWriter.COMPUTE_FRAMES);
+		ClassRemapper remappingVisitor = new ClassRemapper(writer, remapper);
+		ClassVisitor versionVisitor = new AddVersionFieldClassAdapter(remappingVisitor, VERSION_FIELD_NAME, getCurrentVersion());
+		reader.accept(versionVisitor, ClassReader.EXPAND_FRAMES);
+		
+		JarEntry jarEntry = new JarEntry(targetInternalName + ".class");
+		jarStream.putNextEntry(jarEntry);
+		jarStream.write(writer.toByteArray());
 	}
 	
 	/**
@@ -236,12 +235,12 @@ public class ThrowableProxyActivator {
 	 * @throws IOException if an IO exception raised while creating the entries
 	 */
 	public void createDirectoryEntries(JarOutputStream jarStream, String packageName) throws IOException {
-	    StringBuilder entryName = new StringBuilder(packageName.length());
-	    for (String str : packageName.split("\\.")) {
-	        entryName.append(str).append("/");
-	        JarEntry jarEntry = new JarEntry(entryName.toString());
-	        jarStream.putNextEntry(jarEntry);
-	    }
+		StringBuilder entryName = new StringBuilder(packageName.length());
+		for (String str : packageName.split("\\.")) {
+			entryName.append(str).append("/");
+			JarEntry jarEntry = new JarEntry(entryName.toString());
+			jarStream.putNextEntry(jarEntry);
+		}
 	}
 	
 	/**
@@ -254,13 +253,11 @@ public class ThrowableProxyActivator {
 	 * @throws IOException if an IO error occurs during processing
 	 */
 	String getClassInternalName(URL classUrl) throws IOException {
-	    InputStream inputStream = classUrl.openStream();
-	
-	    ClassReader reader = new ClassReader(inputStream);
-	    reader.accept(new ClassVisitor(Opcodes.ASM7) {}, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
-	    inputStream.close();
-	
-	    return reader.getClassName();
+		InputStream inputStream = classUrl.openStream();
+		ClassReader reader = new ClassReader(inputStream);
+		reader.accept(new ClassVisitor(Opcodes.ASM7) {}, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
+		inputStream.close();
+		return reader.getClassName();
 	}
 	
 	/**
@@ -273,13 +270,11 @@ public class ThrowableProxyActivator {
 	 * @return the target class name
 	 */
 	String getTargetInternalName(String sourceInternalName, String targetPackage) {
-	    StringBuilder targetInternalName = new StringBuilder();
-	    targetInternalName.append(targetPackage.replaceAll("\\.", "/"));
-	
-	    int lastSlashIndex = sourceInternalName.lastIndexOf('/');
-	    targetInternalName.append(sourceInternalName.substring(lastSlashIndex));
-	
-	    return targetInternalName.toString();
+		StringBuilder targetInternalName = new StringBuilder();
+		targetInternalName.append(targetPackage.replaceAll("\\.", "/"));
+		int lastSlashIndex = sourceInternalName.lastIndexOf('/');
+		targetInternalName.append(sourceInternalName.substring(lastSlashIndex));
+		return targetInternalName.toString();
 	}
 	
 	/**
@@ -290,25 +285,26 @@ public class ThrowableProxyActivator {
 	 *         bundle's version
 	 */
 	JarFile getBootProxyJarIfCurrent() {
-	    File dataFile = bundleContext.getDataFile("boot-proxy-throwable.jar");
-	    if (!dataFile.exists()) {
-	        return null;
-	    }
+		File dataFile = bundleContext.getDataFile("boot-proxy-throwable.jar");
+		if (!dataFile.exists()) {
+			return null;
+		}
+		
+		JarFile jarFile = null;
+		try {
+			jarFile = new JarFile(dataFile);
+			Manifest manifest = jarFile.getManifest();
+			Attributes attrs = manifest.getMainAttributes();
+			String jarVersion = attrs.getValue(LOGGING_VERSION_MANIFEST_HEADER);
+			if (!getCurrentVersion().equals(jarVersion)) {
+				jarFile.close();
+				jarFile = null;
+			}
+		} 
+		catch (Exception e) {
+		}
 	
-	    JarFile jarFile = null;
-	    try {
-	        jarFile = new JarFile(dataFile);
-	        Manifest manifest = jarFile.getManifest();
-	        Attributes attrs = manifest.getMainAttributes();
-	        String jarVersion = attrs.getValue(LOGGING_VERSION_MANIFEST_HEADER);
-	        if (!getCurrentVersion().equals(jarVersion)) {
-	            jarFile.close();
-	            jarFile = null;
-	        }
-	    } catch (Exception e) {
-	    }
-	
-	    return jarFile;
+		return jarFile;
 	}
 	
 	/**
@@ -317,14 +313,14 @@ public class ThrowableProxyActivator {
 	 * @return the boot proxy jar {@code Manifest}
 	 */
 	Manifest createBootJarManifest() {
-	    Manifest manifest = new Manifest();
-	
-	    Attributes manifestAttributes = manifest.getMainAttributes();
-	    manifestAttributes.putValue(Attributes.Name.MANIFEST_VERSION.toString(), "1.0");
-	    manifestAttributes.putValue("Created-By", "Liberty Logging Osgi Extender");
-	    manifestAttributes.putValue("Created-Time", DateFormat.getInstance().format(new Date()));
-	    manifestAttributes.putValue(LOGGING_VERSION_MANIFEST_HEADER, getCurrentVersion());
-	    return manifest;
+		Manifest manifest = new Manifest();
+		
+		Attributes manifestAttributes = manifest.getMainAttributes();
+		manifestAttributes.putValue(Attributes.Name.MANIFEST_VERSION.toString(), "1.0");
+		manifestAttributes.putValue("Created-By", "Liberty Logging Osgi Extender");
+		manifestAttributes.putValue("Created-Time", DateFormat.getInstance().format(new Date()));
+		manifestAttributes.putValue(LOGGING_VERSION_MANIFEST_HEADER, getCurrentVersion());
+		return manifest;
 	}
 	
 	/**
@@ -333,7 +329,7 @@ public class ThrowableProxyActivator {
 	 * @return the host bundle's version string
 	 */
 	String getCurrentVersion() {
-	    return bundleContext.getBundle().getVersion().toString();
+		return bundleContext.getBundle().getVersion().toString();
 	}
 	
 	/**
@@ -342,9 +338,9 @@ public class ThrowableProxyActivator {
 	 * @throws Exception the method invocation exception
 	 */
 	void activateThrowableProxyMethodTarget() throws Exception {
-	    Method method = ReflectionHelper.getDeclaredMethod(getClass(), "printStackTraceOverride", Throwable.class, PrintStream.class);
-	    ReflectionHelper.setAccessible(method, true);
-	    findThrowableProxySetFireTargetMethod().invoke(null, this, method);
+		Method method = ReflectionHelper.getDeclaredMethod(getClass(), "printStackTraceOverride", Throwable.class, PrintStream.class);
+		ReflectionHelper.setAccessible(method, true);
+		findThrowableProxySetFireTargetMethod().invoke(null, this, method);
 	}
 	
 	/**
@@ -354,10 +350,10 @@ public class ThrowableProxyActivator {
 	 * @throws Exception
 	 */
 	Method findThrowableProxySetFireTargetMethod() throws Exception {
-	    Class<?> proxyClass = Class.forName(THROWABLE_PROXY_CLASS_NAME);
-	    Method method = ReflectionHelper.getDeclaredMethod(proxyClass, "setFireTarget", Object.class, Method.class);
-	    ReflectionHelper.setAccessible(method, true);
-	    return method;
+		Class<?> proxyClass = Class.forName(THROWABLE_PROXY_CLASS_NAME);
+		Method method = ReflectionHelper.getDeclaredMethod(proxyClass, "setFireTarget", Object.class, Method.class);
+		ReflectionHelper.setAccessible(method, true);
+		return method;
 	}
 	
 	/**
@@ -366,7 +362,7 @@ public class ThrowableProxyActivator {
 	 * @throws Exception
 	 */
 	void deactivateThrowableProxyTarget() throws Exception {
-	    findThrowableProxySetFireTargetMethod().invoke(null, null, null);
+		findThrowableProxySetFireTargetMethod().invoke(null, null, null);
 	}
 	
 	/**
@@ -379,14 +375,14 @@ public class ThrowableProxyActivator {
 	 * @return true if printStackTraceOverride() method in BaseTraceService evaluated to true, false otherwise
 	 */
 	public boolean printStackTraceOverride(Throwable t, PrintStream originalStream) {
-	    Method method = throwableInfo.getBtsMethod();
-	    Boolean b = Boolean.FALSE;
-	    try {
-	        b = (Boolean) method.invoke(null, t, originalStream);
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    }
-	    return b;
+		Method method = throwableInfo.getBtsMethod();
+		Boolean b = Boolean.FALSE;
+		try {
+			b = (Boolean) method.invoke(null, t, originalStream);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return b;
 	}
     
 }

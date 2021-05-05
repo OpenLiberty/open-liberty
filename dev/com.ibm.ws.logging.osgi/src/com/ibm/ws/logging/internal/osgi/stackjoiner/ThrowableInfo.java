@@ -31,13 +31,14 @@ public class ThrowableInfo {
 	
 	public ThrowableInfo(Instrumentation inst) {
 		if (isEnabled()) {
-	    	Class<?> btsClass = retrieveClass(inst, BASE_TRACE_SERVICE_CLASS_NAME);
-	        if (btsClass != null) {
-	        	Method method = ReflectionHelper.getDeclaredMethod(btsClass, BASE_TRACE_SERVICE_METHOD_NAME, Throwable.class, PrintStream.class);
-	        	setBtsMethod(method);
-	        }
+			Class<?> btsClass = retrieveClass(inst, BASE_TRACE_SERVICE_CLASS_NAME);
+			if (btsClass != null) {
+				Method method = ReflectionHelper.getDeclaredMethod(btsClass, BASE_TRACE_SERVICE_METHOD_NAME, Throwable.class, PrintStream.class);
+				setBtsMethod(method);
+			}
 		}
 	}
+	
 	public boolean isInitialized() {
 		if (isEnabled()) {
 			if (getBtsMethod() == null) {
