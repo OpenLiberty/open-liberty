@@ -676,22 +676,33 @@ public class RecoveryManager implements Runnable {
                     FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RecoveryManager.postShutdown", "824", this);
                     Tr.error(tc, "WTRN0029_ERROR_CLOSE_LOG_IN_SHUTDOWN");
                 }
-
-                try {
-                    if (_leaseLog != null) {
-                        _leaseLog.releasePeerLease(_failureScopeController.serverName());
-                        _leaseLog.deleteServerLease(_failureScopeController.serverName());
-                    }
-                } catch (Exception e) {
-                    // TODO Auto-generated catch block
-                    // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-                    e.printStackTrace();
-                }
             }
         }
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "postShutdown");
+    }
+
+    /**
+     * Delete server lease if peer recovery is enabled
+     *
+     * @param recoveryIdentity
+     */
+    public void deleteServerLease(String recoveryIdentity) {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "deleteServerLease", new Object[] { this, recoveryIdentity });
+        try {
+            if (_leaseLog != null) {
+                _leaseLog.deleteServerLease(recoveryIdentity);
+            }
+        } catch (Exception e) {
+            // FFDC exception but allow processing to continue
+            FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RecoveryManager.deleteServerLease", "701", this);
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "deleteServerLease caught exception ", e);
+        }
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "deleteServerLease");
     }
 
     protected void checkPartnerServiceData(RecoverableUnit ru) throws IOException {
@@ -1552,6 +1563,15 @@ public class RecoveryManager implements Runnable {
                     } /* @PK31789A */
 
                     postShutdown(true); // Close the partner log
+
+                    // Recovery is complete, if this was peer recovery then we may delete the peer server lease
+                    // This is a noop if peer recovery is not enabled.
+                    if (_leaseLog != null && _localRecoveryIdentity != null && !_localRecoveryIdentity.equals(_failureScopeController.serverName())) {
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Server with identity " + _localRecoveryIdentity + " has recovered the logs of server " + _failureScopeController.serverName());
+                        deleteServerLease(_failureScopeController.serverName());
+                    }
+
                 } else /* @PK31789A */
                 { /* @PK31789A */
                     // Ensure all end-tran records processed before we delete partners
@@ -1674,17 +1694,12 @@ public class RecoveryManager implements Runnable {
     }
 
     /**
-     * Close the loggs without any keypoint - to be called on a failure to leave
+     * Close the logs without any keypoint - to be called on a failure to leave
      * the logs alone and ensure distributed shutdown code does not update them.
-     *
-     * The closeLeaseLog parameter will be false in the case that we have determined that a peer is
-     * recovering the server's logs.
-     *
-     * @param closeLeaseLog is true if we should process a lease log
      */
-    protected void closeLogs(boolean closeLeaseLog) {
+    protected void closeLogs() {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "closeLogs", new Object[] { this, closeLeaseLog });
+            Tr.entry(tc, "closeLogs", new Object[] { this });
 
         if ((_tranLog != null) && (_tranLog instanceof DistributedRecoveryLog)) {
             try {
@@ -1704,15 +1719,6 @@ public class RecoveryManager implements Runnable {
             _xaLog = null;
         }
 
-        try {
-            if (_leaseLog != null && closeLeaseLog) {
-                _leaseLog.deleteServerLease(_failureScopeController.serverName());
-            }
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            e.printStackTrace();
-        }
         if (tc.isEntryEnabled())
             Tr.exit(tc, "closeLogs");
     }
@@ -1742,7 +1748,7 @@ public class RecoveryManager implements Runnable {
                 // TODO - need a sensible lease time
                 try {
                     //Don't update the server lease if this is a peer rather than local server.
-                    if (_localRecoveryIdentity.equals(serverName))
+                    if (_localRecoveryIdentity != null && _localRecoveryIdentity.equals(serverName))
                         _leaseLog.updateServerLease(serverName, _recoveryGroup, true);
                 } catch (Exception exc) {
                     FFDCFilter.processException(exc, "com.ibm.tx.jta.impl.RecoveryManager.run", "1698", this);
@@ -1753,7 +1759,7 @@ public class RecoveryManager implements Runnable {
                     Tr.info(tc, "CWRLS0009_RECOVERY_LOG_FAILED_DETAIL", exc);
                     // If the logs were opened successfully then attempt to close them with a close immediate. This does
                     // not cause any keypointing, it just closes the file channels and handles (if they are still open)
-                    closeLogs(false);
+                    closeLogs();
 
                     recoveryFailed(exc);
 
@@ -1810,7 +1816,7 @@ public class RecoveryManager implements Runnable {
                     FFDCFilter.processException(exc, "com.ibm.tx.jta.impl.RecoveryManager.run", "1830", this);
                     Tr.error(tc, "WTRN0111_LOG_ALLOCATION", _tranLog);
 
-                    closeLogs(true);
+                    closeLogs();
 
                     recoveryFailed(exc);
 
@@ -1823,7 +1829,7 @@ public class RecoveryManager implements Runnable {
 
                     // If the logs were opened successfully then attempt to close them with a close immediate. This does
                     // not cause any keypointing, it just closes the file channels and handles (if they are still open)
-                    closeLogs(true);
+                    closeLogs();
 
                     recoveryFailed(exc);
 
@@ -1894,7 +1900,7 @@ public class RecoveryManager implements Runnable {
 
                     // If the logs were opened successfully then attempt to close them with a close immediate. This does
                     // not cause any keypointing, it just closes the file channels and handles (if they are still open)
-                    closeLogs(true);
+                    closeLogs();
 
                     recoveryFailed(exc);
 
@@ -1907,7 +1913,7 @@ public class RecoveryManager implements Runnable {
 
                     // If the logs were opened successfully then attempt to close them with a close immediate. This does
                     // not cause any keypointing, it just closes the file channels and handles (if they are still open)
-                    closeLogs(true);
+                    closeLogs();
 
                     // Signal recovery completion to ensure that no shutdown logic will hang pending this
                     // "recovery" process.
@@ -1945,7 +1951,7 @@ public class RecoveryManager implements Runnable {
                     if (tc.isEventEnabled())
                         Tr.event(tc, "An unexpected error occured during partner log replay: " + exc);
 
-                    closeLogs(true);
+                    closeLogs();
 
                     recoveryFailed(exc);
 
@@ -1985,7 +1991,7 @@ public class RecoveryManager implements Runnable {
                     if (tc.isEventEnabled())
                         Tr.event(tc, "An unexpected error occured during transaction log replay: " + exc);
 
-                    closeLogs(true);
+                    closeLogs();
 
                     recoveryFailed(exc);
 
