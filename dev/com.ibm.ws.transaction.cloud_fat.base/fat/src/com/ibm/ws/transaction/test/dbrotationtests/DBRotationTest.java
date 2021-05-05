@@ -13,6 +13,7 @@ package com.ibm.ws.transaction.test.dbrotationtests;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import org.junit.After;
 import org.junit.BeforeClass;
@@ -185,7 +186,18 @@ public class DBRotationTest extends FATServletClient {
 
         // Server appears to have started ok. Check for key string to see whether peer recovery has succeeded
         assertNotNull("peer recovery failed", server2.waitForStringInTrace("Performed recovery for cloud0011", LOG_SEARCH_TIMEOUT));
+
+        // Check ABSENCE of WAS_TRAN_LOGCLOUD0011 database table
+        try {
+            sb = runTestWithResponse(server2, SERVLET_NAME, "testTranlogTableAccess");
+
+        } catch (Throwable e) {
+            Log.info(this.getClass(), method, "testTranlogTableAccess" + id + " caught exception: " + e);
+        }
+        Log.info(this.getClass(), method, "testTranlogTableAccess" + id + " returned: " + sb);
         server2.stopServer();
+        if (sb != null && sb.toString().contains("Unexpectedly"))
+            fail(sb.toString());
     }
 
     /**
