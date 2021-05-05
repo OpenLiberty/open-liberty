@@ -387,7 +387,7 @@ public class LDAPRegressionTest {
 
         updateConfigDynamically(libertyServer, clone);
 
-        assertFalse("Did not find CWIML4523E in log", libertyServer.findStringsInLogsAndTraceUsingMark("CWIML4523E.*uid=someuser.*userFilter").isEmpty());
+        assertFalse("Did not find CWIML4523E in log", libertyServer.waitForStringInLogUsingMark("CWIML4523E.*uid=someuser.*userFilter") == null);
     }
 
     /**
@@ -401,6 +401,6 @@ public class LDAPRegressionTest {
 
         updateConfigDynamically(libertyServer, clone);
 
-        assertFalse("Did not find CWIML4523E in log", libertyServer.findStringsInLogsAndTraceUsingMark("CWIML4523E.*cn=somegroup.*groupFilter").isEmpty());
+        assertFalse("Did not find CWIML4523E in log", libertyServer.waitForStringInLogUsingMark("CWIML4523E.*cn=somegroup.*groupFilter") == null);
     }
 }
