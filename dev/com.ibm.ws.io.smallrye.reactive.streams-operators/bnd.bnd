@@ -19,12 +19,12 @@ Bundle-SymbolicName: com.ibm.ws.io.smallrye.reactive.streams-operators; singleto
 
 # We will whittle this down once it is working
 Export-Package: \
-  io.smallrye.reactive.streams; version="1.0.10", \
-  io.smallrye.reactive.streams.operators; version="1.0.10", \
-  io.smallrye.reactive.streams.spi; version="1.0.10", \
-  io.smallrye.reactive.streams.stages; version="1.0.10", \
-  io.smallrye.reactive.streams.utils; version="1.0.10", \
-  io.smallrye.reactive.streams.utils.recovery; version="1.0.10"
+  io.smallrye.reactive.streams; version="1.0.13", \
+  io.smallrye.reactive.streams.operators; version="1.0.13", \
+  io.smallrye.reactive.streams.spi; version="1.0.13", \
+  io.smallrye.reactive.streams.stages; version="1.0.13", \
+  io.smallrye.reactive.streams.utils; version="1.0.13", \
+  io.smallrye.reactive.streams.utils.recovery; version="1.0.13"
 
 WS-TraceGroup: REACTIVESTREAMS
 
@@ -32,4 +32,4 @@ instrument.disabled: true
 
 -buildpath: \
   com.ibm.ws.io.reactivex.rxjava.2.2;version=latest, \
-  io.smallrye.reactive:smallrye-reactive-streams-operators;version=1.0.10
+  io.smallrye.reactive:smallrye-reactive-streams-operators;version=1.0.13

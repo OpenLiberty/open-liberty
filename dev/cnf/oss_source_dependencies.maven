@@ -37,7 +37,7 @@ io.perfmark:perfmark-api:0.23.0
 io.reactivex.rxjava2:rxjava:2.2.13
 io.smallrye.reactive:smallrye-reactive-converter-api:1.0.10
 io.smallrye.reactive:smallrye-reactive-messaging-provider:1.0.8
-io.smallrye.reactive:smallrye-reactive-streams-operators:1.0.10
+io.smallrye.reactive:smallrye-reactive-streams-operators:1.0.13
 io.smallrye:smallrye-graphql-api:1.0.9
 io.smallrye:smallrye-graphql-cdi:1.0.9
 io.smallrye:smallrye-graphql-schema-builder:1.0.9
