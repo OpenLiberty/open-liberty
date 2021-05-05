@@ -38,7 +38,6 @@
     <!-- File read write permissions -->
     <javaPermission className="java.util.PropertyPermission" name="user.dir" actions="read"/>
     <javaPermission className="java.io.FilePermission" name="files/timertestoutput.txt" actions="read,write"/>
-    <javaPermission className="java.io.FilePermission" name="files" actions="write"/>
 
     <!--<logging  traceSpecification="JPA=all=enabled:EJBContainer=all=enabled"
               traceFileName="trace.log"

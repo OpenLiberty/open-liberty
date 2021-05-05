@@ -33,9 +33,9 @@
    </permission>
    <permission>
       <class-name>java.io.FilePermission</class-name>
-      <name>-</name>
+      <name>&lt;&lt;ALL FILES&gt;&gt;</name>
       <actions>read</actions>
-   </permission>
+   </permission>   
    <permission>
       <class-name>java.net.URLPermission</class-name>
       <name>http://localhost:*/DatabaseManagement/DMS</name>
