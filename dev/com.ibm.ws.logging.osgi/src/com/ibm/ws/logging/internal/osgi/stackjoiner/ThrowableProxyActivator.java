@@ -87,7 +87,7 @@ public class ThrowableProxyActivator {
 		this.inst = inst;
 		this.bundleContext = bundleContext;
 	}
-    
+	
 	/**
 	 * Activation callback from the Declarative Services runtime where the
 	 * component is ready for activation.
@@ -104,8 +104,8 @@ public class ThrowableProxyActivator {
 	            // TODO: Use a compatibility check instead
 	        	throw new IllegalStateException("Incompatible proxy code (version " + runtimeVersion + ")");
 	        }
-	
-			// Find or create the proxy jar if the runtime code isn't loaded
+	        
+	        // Find or create the proxy jar if the runtime code isn't loaded
 			if (runtimeVersion == null) {
 			    JarFile proxyJar = getBootProxyJarIfCurrent();
 			    if (proxyJar == null) {
