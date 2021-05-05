@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2020 IBM Corporation and others.
+ * Copyright (c) 2010, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1019,8 +1019,8 @@ public class WebApp extends com.ibm.ws.webcontainer.webapp.WebApp implements Com
                           logger.logp(Level.FINE, CLASS_NAME, methodName, "Selection Type: [ {0} ]", handledType.getName() );
                       }
 
-                      // add the @HandlesTypes param class for init if setHandledTypesClasses=false
-                      if (!WCCustomProperties.SET_HANDLED_TYPES_CLASSES) {
+                      // add the @HandlesTypes param class for init only if excludeAllHandledTypesClasses=false
+                      if (!WCCustomProperties.EXCLUDE_ALL_HANDLED_TYPES_CLASSES) {
                           String actualClassReason = "Selection of handlesType class [ " + handledTypeName + " ]";
                           addClassToHandlesTypesStartupSet(handledTypeName, startupTypes, actualClassReason);
                       }
