@@ -13,6 +13,7 @@ package com.ibm.ws.transaction.test.tests;
 import org.junit.Test;
 
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
@@ -24,16 +25,19 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 public abstract class DualServerDynamicCoreTest1 extends DualServerDynamicTestBase {
 
     @Test
+    @SkipForRepeat({ SkipForRepeat.EE8_FEATURES, SkipForRepeat.NO_MODIFICATION })
     public void dynamicCloudRecovery001() throws Exception {
         dynamicTest(server1, server2, 1, 2);
     }
 
     @Test
+    @SkipForRepeat({ SkipForRepeat.EE9_FEATURES, SkipForRepeat.NO_MODIFICATION })
     public void dynamicCloudRecovery002() throws Exception {
         dynamicTest(server1, server2, 2, 2);
     }
 
     @Test
+    @SkipForRepeat({ SkipForRepeat.EE8_FEATURES, SkipForRepeat.EE9_FEATURES })
     public void dynamicCloudRecovery003() throws Exception {
         dynamicTest(server1, server2, 3, 2);
     }
@@ -45,12 +49,14 @@ public abstract class DualServerDynamicCoreTest1 extends DualServerDynamicTestBa
     }
 
     @Test
+    @SkipForRepeat({ SkipForRepeat.EE8_FEATURES, SkipForRepeat.NO_MODIFICATION })
     @ExpectedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
     public void dynamicCloudRecovery005() throws Exception {
         dynamicTest(server1, server2, 5, 3);
     }
 
     @Test
+    @SkipForRepeat({ SkipForRepeat.EE9_FEATURES, SkipForRepeat.NO_MODIFICATION })
     @ExpectedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
     public void dynamicCloudRecovery006() throws Exception {
         dynamicTest(server1, server2, 6, 3);
@@ -63,6 +69,7 @@ public abstract class DualServerDynamicCoreTest1 extends DualServerDynamicTestBa
     }
 
     @Test
+    @SkipForRepeat({ SkipForRepeat.EE8_FEATURES, SkipForRepeat.EE9_FEATURES })
     public void dynamicCloudRecovery008() throws Exception {
         dynamicTest(server1, server2, 8, 2);
     }

@@ -45,8 +45,8 @@ public class FATSuite {
     // used in all 3 runs of the tests against the different version of EE.
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-    .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
-    .andWith(new JakartaEE9Action().fullFATOnly());
+    .andWith(FeatureReplacementAction.EE8_FEATURES())
+    .andWith(new JakartaEE9Action());
 
     public static DatabaseContainerType type = DatabaseContainerType.DB2;
     public static JdbcDatabaseContainer<?> testContainer;
