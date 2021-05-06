@@ -11,28 +11,18 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion: 1.0
 
-Bundle-Name: WebSphere Security Auth Data
-Bundle-Description: WebSphere Security Auth Data, version ${bVersion}
-Bundle-SymbolicName: com.ibm.websphere.appserver.api.authData.ee9
+Bundle-Name: WebSphere Security Auth Data, JakartaEE Enabled
+Bundle-Description: WebSphere Security Auth Data, JakartaEE Enabled, version ${bVersion}
+Bundle-SymbolicName: com.ibm.websphere.appserver.api.authData.jakarta
 
-#
-# Produce a JakartaEE compliant JAR.
-#
-jakartaeeMe: true
-#jakartaee.transform.jar.name=io.openliberty.authData.jar
-#JakartaEE-Bundle-Name: Security Auth Data
-#JakartaEE-Bundle-Symbolic-Name: io.openliberty.authData
-#JakartaEE-Bundle-Description: Security Auth Data; Jakarta enabled
-#JakartaEE-Bundle-Version: 2.0
 
 Import-Package: com.ibm.websphere.crypto,com.ibm.websphere.security.auth.data,com.ibm.websphere.security.jca
 
 Export-Package: com.ibm.websphere.crypto,com.ibm.websphere.security.auth.data,com.ibm.websphere.security.jca
 
--includeresource: {META-INF/maven/com.ibm.websphere.appserver.api/com.ibm.websphere.appserver.api.authData.ee9.jakarta/pom.xml=com.ibm.websphere.appserver.api.authData.ee9.jakarta.pom}
+-includeresource: {META-INF/maven/com.ibm.websphere.appserver.api/com.ibm.websphere.appserver.api.authData.jakarta/pom.xml=com.ibm.websphere.appserver.api.authData.jakarta.pom}
 
 publish.wlp.jar.suffix: dev/api/ibm
-publish.wlp.jar.exclude: com.ibm.websphere.appserver.api.authData.ee9.jar
 
 -buildpath: \
 	com.ibm.ws.crypto.passwordutil;version=latest, \

@@ -24,9 +24,8 @@ if (bnd('publish.tool.jar', '').empty && !parseBoolean(bnd('publish.wlp.jar.disa
             dependsOn jakartaeeTransform
         }
         from project.buildDir
-        include bnd('publish.wlp.jar.include', '*.jar')
-        exclude bnd('publish.wlp.jar.exclude','')
         into buildImage.file('wlp/' + bnd('publish.wlp.jar.suffix', 'lib'))
+        include bnd('publish.wlp.jar.include', '*.jar')
         def hasIFIXHeaders = [:]
         def fullVersions = [:]
         if (parseBoolean(bnd('publish.wlp.jar.rename', 'true'))) {

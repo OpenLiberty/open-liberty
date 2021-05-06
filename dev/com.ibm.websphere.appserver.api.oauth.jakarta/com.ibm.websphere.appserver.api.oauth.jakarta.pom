@@ -22,7 +22,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.ibm.websphere.appserver.api</groupId>
-  <artifactId>com.ibm.websphere.appserver.api.oauth.ee9.jakarta</artifactId>
+  <artifactId>com.ibm.websphere.appserver.api.oauth.jakarta</artifactId>
   <version>${bFullVersion}</version>
   <name>WebSphere OAuth 2.0 web single sign-on API, JakartaEE Enabled</name>
   <description>WebSphere OAuth 2.0 web single sign-on API, JakartaEE Enabled, version 1.2</description>

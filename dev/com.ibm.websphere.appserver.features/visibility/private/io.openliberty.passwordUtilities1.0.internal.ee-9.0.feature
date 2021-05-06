@@ -8,7 +8,7 @@ singleton=true
  com.ibm.websphere.appserver.servlet-5.0, \
  com.ibm.websphere.appserver.transaction-2.0
 -jars=\
- com.ibm.websphere.appserver.api.authData.ee9.jakarta; location:=dev/api/ibm/
+ com.ibm.websphere.appserver.api.authData.jakarta; location:=dev/api/ibm/
 -files=\
  dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.authData_1.0-javadoc.zip
 kind=beta

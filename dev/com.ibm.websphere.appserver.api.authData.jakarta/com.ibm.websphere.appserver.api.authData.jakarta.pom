@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2012 IBM Corporation and others.
+    Copyright (c) 2021 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -21,9 +21,9 @@
   </licenses>
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.ibm.websphere.appserver.spi</groupId>
-  <artifactId>com.ibm.websphere.appserver.spi.globalhandler.ee9.jakarta</artifactId>
+  <groupId>com.ibm.websphere.appserver.api</groupId>
+  <artifactId>com.ibm.websphere.appserver.api.authData.jakarta</artifactId>
   <version>${bFullVersion}</version>
-  <name>WebSphere Global Handler SPI, Jakarta Enabled</name>
-  <description>WebSphere Global Handler SPI, Jakarta Enabled, version 1.0</description>
+  <name>WebSphere Security Auth Data JakartaEE Enabled</name>
+  <description>WebSphere Security Auth Data JakartaEE Enabled, version 1.0</description>
 </project>

@@ -11,20 +11,17 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion: 1.0
 
-Bundle-Name: WebSphere Global Handler SPI
-Bundle-Description: WebSphere Global Handler SPI, version ${bVersion}
-Bundle-SymbolicName: com.ibm.websphere.appserver.spi.globalhandler.ee9
+Bundle-Name: WebSphere Global Handler SPI, JakartaEE Enabled
+Bundle-Description: WebSphere Global Handler SPI, JakartaEE Enabled, version ${bVersion}
+Bundle-SymbolicName: com.ibm.websphere.appserver.spi.globalhandler.jakarta
 
 Import-Package: com.ibm.wsspi.webservices.handler
 
 Export-Package: com.ibm.wsspi.webservices.handler
 
--includeresource: {META-INF/maven/com.ibm.websphere.appserver.spi/com.ibm.websphere.appserver.spi.globalhandler.ee9.jakarta/pom.xml=com.ibm.websphere.appserver.spi.globalhandler.ee9.jakarta.pom}
+-includeresource: {META-INF/maven/com.ibm.websphere.appserver.spi/com.ibm.websphere.appserver.spi.globalhandler.jakarta/pom.xml=com.ibm.websphere.appserver.spi.globalhandler.jakarta.pom}
 
 publish.wlp.jar.suffix: dev/spi/ibm
-publish.wlp.jar.exclude: com.ibm.websphere.appserver.spi.globalhandler.ee9.jar
 
 -buildpath: \
 	com.ibm.ws.webservices.handler
-
-jakartaeeMe: true
