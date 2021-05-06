@@ -35,7 +35,9 @@ import com.ibm.wsspi.genericbnf.HeaderField;
 import com.ibm.wsspi.genericbnf.HeaderKeys;
 import com.ibm.wsspi.genericbnf.HeaderStorage;
 import com.ibm.wsspi.genericbnf.exception.MalformedMessageException;
+import com.ibm.wsspi.genericbnf.exception.UnsupportedSchemeException;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
+import com.ibm.wsspi.http.channel.values.SchemeValues;
 
 /**
  * Generic class implementing an Augmented BNF Header/Value storage. This
@@ -3958,8 +3960,19 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
             this.currentElem.setByteArrayValue(this.parsedToken);
             addHeader(this.currentElem, FILTER_YES);
         }
+
+        // When using remoteIp, a bad scheme defined in the proto value should be treated
+        // as an error.
+        if (getRemoteIp() && this.forwardedProto != null) {
+            SchemeValues val = SchemeValues.match(forwardedProto, 0, forwardedProto.length());
+            if (null == val) {
+                throw new UnsupportedSchemeException("Illegal scheme " + forwardedProto);
+            }
+        }
+
         // now that we have the parsed value saved, start tracking changes/removes
         this.currentElem.startTracking();
+
     }
 
     /**
