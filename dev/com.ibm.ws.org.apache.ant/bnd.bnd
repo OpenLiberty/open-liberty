@@ -8,17 +8,17 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.apache.ant:ant;1.9.6}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;${repo;org.apache.ant:ant;1.10.10}}!/META-INF/MANIFEST.MF,bnd.overrides
 
-Export-Package: org.apache.tools.ant;version="1.9.6"
+Export-Package: org.apache.tools.ant;version="1.10.10"
 
 -includeresource: \
-	@${repo;org.apache.ant:ant;1.9.6}!/!META-INF/MANIFEST.MF
+	@${repo;org.apache.ant:ant;1.10.10}!/!META-INF/MANIFEST.MF
 
 instrument.disabled: true
 
 publish.wlp.jar.disabled: true
 
 -buildpath: \
-	org.apache.ant:ant;version=1.9.6, \
+	org.apache.ant:ant;version=1.10.10, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest

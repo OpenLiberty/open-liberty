@@ -27,11 +27,13 @@ import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.security.KeyStore;
+import java.security.Security;
 import java.security.cert.X509Certificate;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,7 +50,6 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -65,12 +66,12 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.util.Cookie;
 import com.gargoylesoftware.htmlunit.util.NameValuePair;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.security.fat.common.utils.AutomationTools;
 import com.ibm.ws.security.fat.common.CommonIOTools;
+import com.ibm.ws.security.fat.common.servers.ServerBootstrapUtils;
 import com.ibm.ws.security.fat.common.ShibbolethHelpers;
 import com.ibm.ws.security.fat.common.TestHelpers;
 import com.ibm.ws.security.fat.common.apps.AppConstants;
-import com.ibm.ws.security.fat.common.servers.ServerBootstrapUtils;
-import com.ibm.ws.security.fat.common.utils.AutomationTools;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.EndpointSettings.endpointSettings;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.ValidationData.validationData;
 import com.meterware.httpunit.GetMethodWebRequest;
@@ -89,7 +90,9 @@ import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.HttpUtils;
 import componenttest.topology.utils.LDAPUtils;
+import org.apache.commons.io.IOUtils;
 
 public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
 
@@ -515,25 +518,6 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
         msgUtils.printMethodName(thisMethod);
         Log.info(thisClass, thisMethod, "Setting up global trust");
 
-        /*
-         * TODO BEGIN DELETE
-         *
-         * This block of code was added to support DSA keys until they are replaced
-         * in our tests.
-         */
-//        String protocols = "SSLv3,TLSv1";
-//        if (JavaInfo.JAVA_VERSION >= 8 || overrideForConsul)
-//            protocols += ",TLSv1.1,TLSv1.2";
-//
-//        System.setProperty("com.ibm.jsse2.disableSSLv3", "false");
-//        System.setProperty("https.protocols", protocols);
-//        Security.setProperty("jdk.tls.disabledAlgorithms", "");
-//
-//        Log.info(thisClass, "enableSSLv3", "Enabled SSLv3.  https.protocols=" + protocols);
-        /*
-         * TODO END DELETE
-         */
-
         try {
             KeyManager keyManagers[] = null;
 
@@ -551,13 +535,7 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
                                     .getInstance(KeyManagerFactory.getDefaultAlgorithm());
 
                     File ksFile = new File(ksPath);
-                    KeyStore keyStore = null;
-                    try {
-                        keyStore = KeyStore.getInstance(ksType);
-                    } catch (Exception e2) {
-                        Log.info(thisClass, thisMethod, "Can not init type: " + e2);
-                        throw e2;
-                    }
+                    KeyStore keyStore = KeyStore.getInstance(ksType);
                     FileInputStream ksStream = new FileInputStream(ksFile);
                     keyStore.load(ksStream, ksPassword.toCharArray());
 

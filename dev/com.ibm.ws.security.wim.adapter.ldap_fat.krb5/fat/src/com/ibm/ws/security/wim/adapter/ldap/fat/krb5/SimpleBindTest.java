@@ -123,6 +123,8 @@ public class SimpleBindTest extends CommonBindTest {
 
             ServerConfiguration newServer = emptyConfiguration.clone();
             LdapRegistry ldap = getLdapRegistryWithSimpleBind();
+            ldap.setBindDN(null);
+            ldap.setBindPassword(null);
             ldap.setBindAuthMechanism(ConfigConstants.CONFIG_AUTHENTICATION_TYPE_NONE);
             newServer.getLdapRegistries().add(ldap);
             updateConfigDynamically(server, newServer);
@@ -139,7 +141,7 @@ public class SimpleBindTest extends CommonBindTest {
     }
 
     /**
-     * Regression test. Do not set bindAuthMech and run tests with DirectoryService allowing anonymous bind.
+     * Regression test. Do not set bindAuthMech and run tests with/without DirectoryService allowing anonymous bind.
      *
      * @throws Exception
      */
@@ -156,7 +158,9 @@ public class SimpleBindTest extends CommonBindTest {
 
             ServerConfiguration newServer = emptyConfiguration.clone();
             LdapRegistry ldap = getLdapRegistryWithSimpleBind();
-            ldap.setBindAuthMechanism(ConfigConstants.CONFIG_AUTHENTICATION_TYPE_NONE);
+            ldap.setBindDN(null);
+            ldap.setBindPassword(null);
+            ldap.setBindAuthMechanism(null);
             newServer.getLdapRegistries().add(ldap);
             updateConfigDynamically(server, newServer);
 
@@ -167,6 +171,8 @@ public class SimpleBindTest extends CommonBindTest {
             ds.setAllowAnonymousAccess(false);
         }
 
+        Log.info(c, testName.getMethodName(), "Basic logins should fail with bindAuth=none, blocked by DirectoryService.");
+        loginUserShouldFail();
     }
 
     /**

@@ -85,8 +85,7 @@ public class LDAPRegressionTest {
     public static void teardownClass() throws Exception {
         try {
             if (libertyServer != null) {
-                /* Temporarily allow CWWKE0701E for testBetaFenceForBindAuthMech */
-                libertyServer.stopServer("CWIML4523E", "CWWKE0701E");
+                libertyServer.stopServer("CWIML4523E");
             }
         } finally {
             if (ds != null) {
@@ -378,27 +377,6 @@ public class LDAPRegressionTest {
     }
 
     /**
-     * Temporary fat test to ensure our Beta fence for bindAuthmechanism/GSSPI/Kerberos is working as expected.
-     *
-     * Can be removed when betaFence code is removed from LdapConnection
-     *
-     * Also remove CWWKE0701E from teardownClass
-     */
-    @Test
-    public void testBetaFenceForBindAuthMech() throws Exception {
-        final String methodName = "testBetaFenceForBindAuthMech";
-        ServerConfiguration clone = basicConfiguration.clone();
-        LdapRegistry ldap = createLdapRegistry(clone);
-        ldap.setBindAuthMechanism("simple");
-
-        updateConfigDynamically(libertyServer, clone);
-
-        Log.info(c, methodName, "Finished Liberty server update");
-
-        assertFalse("Did not find CWWKE0701E for beta fence in log", libertyServer.findStringsInLogs("CWWKE0701E").isEmpty());
-    }
-
-    /**
      * Verify that we issue an error and throw an exception when a user filter without a %v is found.
      */
     @Test
@@ -409,7 +387,7 @@ public class LDAPRegressionTest {
 
         updateConfigDynamically(libertyServer, clone);
 
-        assertFalse("Did not find CWIML4523E in log", libertyServer.findStringsInLogsAndTraceUsingMark("CWIML4523E.*uid=someuser.*userFilter").isEmpty());
+        assertFalse("Did not find CWIML4523E in log", libertyServer.waitForStringInLogUsingMark("CWIML4523E.*uid=someuser.*userFilter") == null);
     }
 
     /**
@@ -423,6 +401,6 @@ public class LDAPRegressionTest {
 
         updateConfigDynamically(libertyServer, clone);
 
-        assertFalse("Did not find CWIML4523E in log", libertyServer.findStringsInLogsAndTraceUsingMark("CWIML4523E.*cn=somegroup.*groupFilter").isEmpty());
+        assertFalse("Did not find CWIML4523E in log", libertyServer.waitForStringInLogUsingMark("CWIML4523E.*cn=somegroup.*groupFilter") == null);
     }
 }

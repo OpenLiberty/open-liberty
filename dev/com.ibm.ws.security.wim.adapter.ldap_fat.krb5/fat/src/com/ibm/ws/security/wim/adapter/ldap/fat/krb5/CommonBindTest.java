@@ -158,7 +158,7 @@ public class CommonBindTest {
     @After
     public void resetServerConfig() throws Exception {
         Log.info(c, testName.getMethodName(), "Reset server config.");
-        server.setJvmOptions(Arrays.asList("-Dsun.security.krb5.debug=true", "-Dcom.ibm.security.krb5.krb5Debug=true", "-Dcom.ibm.ws.beta.edition=true"));
+        server.setJvmOptions(Arrays.asList("-Dsun.security.krb5.debug=true", "-Dcom.ibm.security.krb5.krb5Debug=true"));
         ServerConfiguration newServer = emptyConfiguration.clone();
         updateConfigDynamically(server, newServer);
     }
