@@ -27,25 +27,23 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
-
 import com.ibm.ws.logging.internal.osgi.stackjoiner.bci.AddVersionFieldClassAdapter;
 import com.ibm.ws.logging.internal.osgi.stackjoiner.bci.ThrowableClassFileTransformer;
 import com.ibm.ws.logging.internal.osgi.stackjoiner.boot.templates.ThrowableProxy;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.commons.ClassRemapper;
 import org.objectweb.asm.commons.SimpleRemapper;
-
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Bundle;
 
 public class ThrowableProxyActivator {
 	
-	private ThrowableInfo throwableInfo;
+	private MethodProxy methodProxy;
 	private Instrumentation inst;
 	private BundleContext bundleContext;
 	
@@ -82,6 +80,16 @@ public class ThrowableProxyActivator {
 	 */
 	final static String LOGGING_VERSION_MANIFEST_HEADER = "Liberty-Logging-Osgi-Bundle-Version";
 	
+	/**
+	 * The name of the BTS Class that will be used for reflection
+	 */
+	final String BASE_TRACE_SERVICE_CLASS_NAME = "com.ibm.ws.logging.internal.impl.BaseTraceService";
+	
+	/**
+	 * The name of the method within the BTS Class that will be used for reflection
+	 */
+	final String BASE_TRACE_SERVICE_METHOD_NAME = "printStackTraceOverride";
+	
 	
 	public ThrowableProxyActivator(Instrumentation inst, BundleContext bundleContext) {
 		this.inst = inst;
@@ -95,10 +103,13 @@ public class ThrowableProxyActivator {
 	 * @param bundleContext the bundleContext
 	 */
 	public void activate() throws Exception {   
-		// Store a reference to the printStackTraceOverride method from BaseTraceService
-		throwableInfo = new ThrowableInfo(inst);
 		
-		if (throwableInfo.isInitialized()) {
+		if(isEnabled()) {
+			// Create a methodProxy of the printStackTraceOverride method within the BaseTraceService Class
+			methodProxy = new MethodProxy(inst, BASE_TRACE_SERVICE_CLASS_NAME, BASE_TRACE_SERVICE_METHOD_NAME);
+		}
+
+		if (methodProxy != null && methodProxy.isInitialized()) {
 			String runtimeVersion = getRuntimeClassVersion();
 			if (runtimeVersion != null && !runtimeVersion.equals(getCurrentVersion())) {
 				// TODO: Use a compatibility check instead
@@ -132,7 +143,7 @@ public class ThrowableProxyActivator {
 	
 	public void deactivate() throws Exception {
 		try {
-			if (throwableInfo.isEnabled())
+			if (isEnabled())
 				deactivateThrowableProxyTarget();
 		} catch (Exception e) {
 			throw new Exception(e);
@@ -375,7 +386,7 @@ public class ThrowableProxyActivator {
 	 * @return true if printStackTraceOverride() method in BaseTraceService evaluated to true, false otherwise
 	 */
 	public boolean printStackTraceOverride(Throwable t, PrintStream originalStream) {
-		Method method = throwableInfo.getBtsMethod();
+		Method method = methodProxy.getMethodProxy();
 		Boolean b = Boolean.FALSE;
 		try {
 			b = (Boolean) method.invoke(null, t, originalStream);
@@ -383,6 +394,15 @@ public class ThrowableProxyActivator {
 			e.printStackTrace();
 		}
 		return b;
+	}
+	
+	/**
+	 * Returns true if the stack joiner feature has been enabled, otherwise false
+	 * @return true if the stack joiner feature has been enabled, otherwise false
+	 */
+	public boolean isEnabled() {
+		if (ProductInfo.getBetaEdition() || (System.getenv("WLP_LOGGING_STACK_JOIN") != null && System.getenv("WLP_LOGGING_STACK_JOIN").equals("true")) ) return Boolean.TRUE;
+		return Boolean.FALSE;
 	}
     
 }
