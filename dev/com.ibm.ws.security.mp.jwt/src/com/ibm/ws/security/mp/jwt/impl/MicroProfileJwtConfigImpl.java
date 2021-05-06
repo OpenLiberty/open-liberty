@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt.impl;
 
+import java.security.GeneralSecurityException;
+import java.security.Key;
 import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -612,6 +614,16 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
     @Override
     public String getKeyManagementKeyAlias() {
         return keyManagementKeyAlias;
+    }
+
+    @Override
+    public Key getJweDecryptionKey() throws GeneralSecurityException {
+        String keyAlias = getKeyManagementKeyAlias();
+        if (keyAlias != null) {
+            String keyStoreRef = getKeyStoreRef();
+            return JwtUtils.getPrivateKey(keyAlias, keyStoreRef);
+        }
+        return null;
     }
 
 }

@@ -15,9 +15,7 @@ import java.util.List;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.security.common.jwk.impl.JWKSet;
 
-public interface JwtConsumerConfig {
-
-    String getId();
+public interface JwtConsumerConfig extends JweConsumerConfig {
 
     String getIssuer();
 
@@ -57,7 +55,5 @@ public interface JwtConsumerConfig {
     boolean getUseSystemPropertiesForHttpClientConnections();
 
     List<String> getAMRClaim();
-
-    public String getKeyManagementKeyAlias();
 
 }

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.security.social.internal;
 
+import java.security.GeneralSecurityException;
+import java.security.Key;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -49,7 +51,7 @@ import com.ibm.ws.security.social.error.SocialLoginException;
  * .. So, we can reuse the jwksUri and sslRef defined in the oidcLogin.
  */
 @Component(name = "com.ibm.ws.security.social.oidclogin", configurationPolicy = ConfigurationPolicy.REQUIRE, service = { SocialLoginConfig.class, JwtConsumerConfig.class }, property = { "service.vendor=IBM", "type=oidcLogin" })
-public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtConsumerConfig, ConvergedClientConfig {
+public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements ConvergedClientConfig {
     public static final TraceComponent tc = Tr.register(OidcLoginConfigImpl.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
 
     ConsumerUtils consumerUtils = null; // lazy init
@@ -872,11 +874,6 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
     }
 
     @Override
-    public String getKeyManagementKeyAlias() {
-        return null;
-    }
-
-    @Override
     public String toString() {
         StringBuffer sb = new StringBuffer();
         sb.append("{");
@@ -891,6 +888,16 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
         sb.append(" userInfoEndpointUrl: " + userInfoEndpoint);
         sb.append("}");
         return sb.toString();
+    }
+
+    @Override
+    public String getKeyManagementKeyAlias() {
+        return null;
+    }
+
+    @Override
+    public Key getJweDecryptionKey() throws GeneralSecurityException {
+        return null;
     }
 
 }

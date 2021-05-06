@@ -35,6 +35,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.authentication.AuthenticationConstants;
 import com.ibm.ws.security.common.jwk.impl.JwKRetriever;
+import com.ibm.ws.security.jwt.utils.JweHelper;
 import com.ibm.ws.security.openidconnect.clients.common.AttributeToSubject;
 import com.ibm.ws.security.openidconnect.clients.common.ClientConstants;
 import com.ibm.ws.security.openidconnect.clients.common.ConvergedClientConfig;
@@ -96,7 +97,7 @@ public class Jose4jUtil {
                 return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
             }
 
-            JwtContext jwtContext = parseJwtWithoutValidation(tokenStr);
+            JwtContext jwtContext = parseJwtWithoutValidation(tokenStr, clientConfig);
             JwtClaims jwtClaims = parseJwtWithValidation(clientConfig, tokenStr, jwtContext, oidcClientRequest);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "post jwtClaims: " + jwtClaims + " firstPass jwtClaims=" + jwtContext.getJwtClaims());
@@ -146,7 +147,7 @@ public class Jose4jUtil {
                 String customCacheKey = oidcClientRequest.getAndSetCustomCacheKeyValue(); //username + tokenStr.toString().hashCode();
                 customProperties.put(ClientConstants.CREDENTIAL_STORING_TIME_MILLISECONDS, Long.valueOf(storingTime));
                 if (clientConfig.isIncludeCustomCacheKeyInSubject()) {
-                  customProperties.put(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY, customCacheKey);
+                    customProperties.put(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY, customCacheKey);
                 }
                 customProperties.put(AuthenticationConstants.INTERNAL_ASSERTION_KEY, Boolean.TRUE); // TODO checking?
             }
@@ -196,103 +197,19 @@ public class Jose4jUtil {
         return clientConfig.getUseAccessTokenAsIdToken();
     }
 
-    /**
-     * @param customProperties
-     * @param accessToken
-     * @param idToken
-     * @param clientConfig
-     * @throws Exception
-     */
-    //    private void addJWTTokenToSubject(Hashtable<String, Object> customProperties, OidcTokenImpl idToken, OidcClientConfig clientConfig) throws Exception {
-    //        //
-    //        if (clientConfig.jwtRef() != null && idToken != null) {
-    //            String[] claimsToCopy = clientConfig.getJwtClaims();
-    //            Map<String, Object> claimsToCopyMap = new HashMap<String, Object>();
-    //            //claimsToCopyMap.put(ClientConstants.SUB, idToken.getSubject()); //always copy this
-    //            if (claimsToCopy != null && claimsToCopy.length > 0) {
-    //                for (String claim : claimsToCopy) {
-    //                    Object v;
-    //                    if ((v = idToken.getClaim(claim)) != null) {
-    //                        claimsToCopyMap.put(claim, v);
-    //                    }
-    //                }
-    //            } else {
-    //                String subToAdd = null;
-    //                String sub = getSubjectClaim(clientConfig);
-    //                if (sub == null) {
-    //                    sub = ClientConstants.SUB;
-    //                }
-    //                try {
-    //                    subToAdd = (String) idToken.getClaim(sub);
-    //
-    //                } catch (ClassCastException cce) {
-    //                    subToAdd = null;
-    //                }
-    //                if (subToAdd != null) {
-    //                    claimsToCopyMap.put(sub, subToAdd);
-    //                }
-    //            }
-    //            buildJWTTokenAndAddToSubject(clientConfig, claimsToCopyMap, customProperties);
-    //        }
-    //    }
-    //
-    //    protected String getSubjectClaim(OidcClientConfig clientConfig) {
-    //        String sub = null;
-    //
-    //        sub = clientConfig.getUserIdentifier();
-    //        if (sub == null) {
-    //            sub = clientConfig.getUserIdentityToCreateSubject(); //default is "sub"
-    //        }
-    //        return sub;
-    //    }
-    //
-    //    protected String getSubClaimFromIdToken(OidcClientConfig clientConfig, OidcTokenImpl idToken) {
-    //        String sub = null;
-    //        String subToAdd = null;
-    //
-    //        sub = clientConfig.getUserIdentifier();
-    //        if (sub == null) {
-    //            sub = clientConfig.getUserIdentityToCreateSubject(); //default is "sub"
-    //        }
-    //        if (sub != null) {
-    //            try {
-    //                subToAdd = (String) idToken.getClaim(sub);
-    //
-    //            } catch (ClassCastException cce) {
-    //                subToAdd = null;
-    //            }
-    //        }
-    //        return subToAdd;
-    //    }
-
-    /**
-     * @param clientConfig
-     * @param claimsFromAnother
-     * @param customProperties
-     * @throws Exception
-     */
-    //    private void buildJWTTokenAndAddToSubject(OidcClientConfig clientConfig, Map claimsFromAnother, Hashtable<String, Object> customProperties) throws Exception {
-    //
-    //        JwtToken token = JwtBuilder.create(clientConfig.jwtRef()).claim(claimsFromAnother).buildJwt();
-    //        String jwt = token.compact();//JwtBuilder.create(clientConfig.jwtRef()).claim(idToken.getAllClaims()).buildJwt().compact();
-    //        if (jwt != null) {
-    //            customProperties.put(ClientConstants.ISSUED_JWT_TOKEN, jwt);
-    //        }
-    //
-    //    }
-
     //Just parse without validation for now
-    protected static JwtContext parseJwtWithoutValidation(String jwtString) throws Exception {
+    protected static JwtContext parseJwtWithoutValidation(String jwtString, ConvergedClientConfig clientConfig) throws Exception {
+        String jwtStringToProcess = jwtString;
+        if (JweHelper.isJwe(jwtString)) {
+            jwtStringToProcess = JweHelper.extractJwsFromJweToken(jwtString, clientConfig, null);
+        }
         JwtConsumer firstPassJwtConsumer = new JwtConsumerBuilder()
                 .setSkipAllValidators()
                 .setDisableRequireSignature()
                 .setSkipSignatureVerification()
                 .build();
 
-        JwtContext jwtContext = firstPassJwtConsumer.process(jwtString);
-
-        return jwtContext;
-
+        return firstPassJwtConsumer.process(jwtStringToProcess);
     }
 
     @FFDCIgnore({ Exception.class })
@@ -413,7 +330,7 @@ public class Jose4jUtil {
         String clientId = clientConfig.getClientId();
         try {
 
-            JwtContext jwtContext = parseJwtWithoutValidation(jwtString);
+            JwtContext jwtContext = parseJwtWithoutValidation(jwtString, clientConfig);
             JwtClaims jwtClaims = parseJwtWithValidation(clientConfig, jwtString, jwtContext, oidcClientRequest);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "jwtClaims: " + jwtClaims);
@@ -443,7 +360,7 @@ public class Jose4jUtil {
             if (accessToken != null) {
                 customProperties.put(Constants.ACCESS_TOKEN, accessToken);
                 if (clientConfig.isIncludeCustomCacheKeyInSubject()) {
-                  customProperties.put(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY, String.valueOf(accessToken.hashCode()));
+                    customProperties.put(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY, String.valueOf(accessToken.hashCode()));
                 }
                 customProperties.put(AuthenticationConstants.INTERNAL_ASSERTION_KEY, Boolean.TRUE);
             }
