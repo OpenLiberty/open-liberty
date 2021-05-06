@@ -13,15 +13,24 @@ bVersion: 1.2
 
 Bundle-Name: WebSphere OAuth 2.0 web single sign-on API
 Bundle-Description: WebSphere OAuth 2.0 web single sign-on API, version ${bVersion}
-Bundle-SymbolicName: com.ibm.websphere.appserver.api.oauth
+Bundle-SymbolicName: com.ibm.websphere.appserver.api.oauth.ee9
 
+#
+# Produce a JakartaEE compliant JAR.
+#
+jakartaeeMe: true
+#jakartaee.transform.jar.name=io.openliberty.oauth.jar
+#JakartaEE-Bundle-Name: Liberty OAuth 2.0 web single sign-on API
+#JakartaEE-Bundle-Symbolic-Name: io.openliberty.oauth
+#JakartaEE-Bundle-Description: Liberty OAuth 2.0 web single sign-on API; Jakarta enabled
+#JakartaEE-Bundle-Version:
 
 Import-Package: com.ibm.oauth.core.api.attributes,com.ibm.oauth.core.api.config,com.ibm.oauth.core.api.error,com.ibm.oauth.core.api.error.oauth20,com.ibm.oauth.core.api.oauth20.mediator,com.ibm.websphere.security.oauth20,com.ibm.websphere.security.oauth20.store,com.ibm.websphere.security.openidconnect.token,com.ibm.wsspi.security.oauth20.token,com.ibm.ws.security.oauth20.resources,*
 
 Export-Package: com.ibm.oauth.core.api.attributes,com.ibm.oauth.core.api.config,com.ibm.oauth.core.api.error,com.ibm.oauth.core.api.error.oauth20,com.ibm.oauth.core.api.oauth20.mediator,com.ibm.websphere.security.oauth20,com.ibm.websphere.security.oauth20.store,com.ibm.websphere.security.openidconnect.token,com.ibm.wsspi.security.oauth20.token
 
 -includeresource: \
-    {META-INF/maven/com.ibm.websphere.appserver.api/com.ibm.websphere.appserver.api.oauth/pom.xml=com.ibm.websphere.appserver.api.oauth.pom}, \
+    {META-INF/maven/com.ibm.websphere.appserver.api/com.ibm.websphere.appserver.api.oauth.ee9.jakarta/pom.xml=com.ibm.websphere.appserver.api.oauth.ee9.jakarta.pom}, \
     com/ibm/ws/security/oauth20/resources/ProviderMsgs_cs.properties=../com.ibm.ws.security.oauth/resources/com/ibm/ws/security/oauth20/resources/ProviderMsgs_cs.properties, \
     com/ibm/ws/security/oauth20/resources/ProviderMsgs_de.properties=../com.ibm.ws.security.oauth/resources/com/ibm/ws/security/oauth20/resources/ProviderMsgs_de.properties, \
     com/ibm/ws/security/oauth20/resources/ProviderMsgs_es.properties=../com.ibm.ws.security.oauth/resources/com/ibm/ws/security/oauth20/resources/ProviderMsgs_es.properties, \
@@ -38,6 +47,7 @@ Export-Package: com.ibm.oauth.core.api.attributes,com.ibm.oauth.core.api.config,
     com/ibm/ws/security/oauth20/resources/ProviderMsgs_zh.properties=../com.ibm.ws.security.oauth/resources/com/ibm/ws/security/oauth20/resources/ProviderMsgs_zh.properties
 
 publish.wlp.jar.suffix: dev/api/ibm
+publish.wlp.jar.exclude: com.ibm.websphere.appserver.api.oauth.ee9.jar
 
 -buildpath: \
 	com.ibm.ws.security.oauth.2.0

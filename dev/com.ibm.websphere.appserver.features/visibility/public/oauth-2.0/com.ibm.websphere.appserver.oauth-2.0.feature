@@ -32,7 +32,6 @@ Subsystem-Name: OAuth 2.0
   com.ibm.ws.org.json.simple.1.1.1
 -jars=\
   com.ibm.websphere.appserver.api.oauth; location:=dev/api/ibm/, \
-  io.openliberty.oauth; location:=dev/api/ibm/, \
   com.ibm.websphere.appserver.spi.oauth; location:=dev/spi/ibm/
 -files=\
   dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.oauth_1.4-javadoc.zip

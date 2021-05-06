@@ -13,16 +13,27 @@ bVersion: 1.1
 
 Bundle-Name: WebSphere Security JWT Builder And Token API
 Bundle-Description: WebSphere Security JWT Builder And Token API, version ${bVersion}
-Bundle-SymbolicName: com.ibm.websphere.appserver.api.jwt
+Bundle-SymbolicName: com.ibm.websphere.appserver.api.jwt.ee9
+
+#
+# Generate an Jakarta EE compliant JAR for the bundle.
+#
+jakartaeeMe: true
+#jakartaee.transform.jar.name=io.openliberty.jwt.jar
+#JakartaEE-Bundle-Name: Liberty Security JWT Builder And Token API
+#JakartaEE-Bundle-Symbolic-Name: io.openliberty.jwt
+#JakartaEE-Bundle-Description: Liberty Security JWT Builder And Token API, version ${bVersion}
+#JakartaEE-Bundle-Version: 
 
 
 Import-Package: com.ibm.websphere.security.jwt
 
 Export-Package: com.ibm.websphere.security.jwt
 
--includeresource: {META-INF/maven/com.ibm.websphere.appserver.api/com.ibm.websphere.appserver.api.jwt/pom.xml=com.ibm.websphere.appserver.api.jwt.pom}
+-includeresource: {META-INF/maven/com.ibm.websphere.appserver.api/com.ibm.websphere.appserver.api.jwt.ee9.jakarta/pom.xml=com.ibm.websphere.appserver.api.jwt.ee9.jakarta.pom}
 
 publish.wlp.jar.suffix: dev/api/ibm
+publish.wlp.jar.exclude: com.ibm.websphere.appserver.api.jwt.ee9.jar
 
 -buildpath: \
 	com.ibm.ws.security.jwt;version=latest

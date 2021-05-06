@@ -13,15 +13,18 @@ bVersion: 1.0
 
 Bundle-Name: WebSphere Global Handler SPI
 Bundle-Description: WebSphere Global Handler SPI, version ${bVersion}
-Bundle-SymbolicName: com.ibm.websphere.appserver.spi.globalhandler
+Bundle-SymbolicName: com.ibm.websphere.appserver.spi.globalhandler.ee9
 
 Import-Package: com.ibm.wsspi.webservices.handler
 
 Export-Package: com.ibm.wsspi.webservices.handler
 
--includeresource: {META-INF/maven/com.ibm.websphere.appserver.spi/com.ibm.websphere.appserver.spi.globalhandler/pom.xml=com.ibm.websphere.appserver.spi.globalhandler.pom}
+-includeresource: {META-INF/maven/com.ibm.websphere.appserver.spi/com.ibm.websphere.appserver.spi.globalhandler.ee9.jakarta/pom.xml=com.ibm.websphere.appserver.spi.globalhandler.ee9.jakarta.pom}
 
 publish.wlp.jar.suffix: dev/spi/ibm
+publish.wlp.jar.exclude: com.ibm.websphere.appserver.spi.globalhandler.ee9.jar
 
 -buildpath: \
 	com.ibm.ws.webservices.handler
+
+jakartaeeMe: true
