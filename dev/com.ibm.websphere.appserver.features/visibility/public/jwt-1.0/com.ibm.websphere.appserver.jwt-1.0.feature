@@ -21,7 +21,6 @@ Subsystem-Name: JSON Web Token 1.0
   com.ibm.ws.org.slf4j.jdk14.1.7.7, \
   com.ibm.json4j
 -jars=\
-  com.ibm.websphere.appserver.api.jwt; location:=dev/api/ibm/, \
-  io.openliberty.jwt; location:=dev/api/ibm/
+  com.ibm.websphere.appserver.api.jwt; location:=dev/api/ibm/
 kind=ga
 edition=core
