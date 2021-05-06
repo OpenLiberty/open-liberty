@@ -132,7 +132,7 @@ public class ThrowableProxyActivator {
 	
 	public void deactivate() throws Exception {
 		try {
-			if (throwableInfo.isInitialized())
+			if (throwableInfo.isEnabled())
 				deactivateThrowableProxyTarget();
 		} catch (Exception e) {
 			throw new Exception(e);
