@@ -26,8 +26,10 @@ import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -42,11 +44,16 @@ public class ArtifactDownloaderUtils {
 
     private static boolean isFinished = false;
     private final static Logger logger = InstallLogUtils.getInstallLogger();
+    private final static String DEFAULT_THREAD_NUM = "8";
 
-    public static List<String> getMissingFiles(List<String> featureURLs, Map<String, Object> envMap) throws IOException {
-        List<String> result = new ArrayList<String>();
-        logger.info("number of missing features: " + featureURLs.size());
-        final ExecutorService executor = Executors.newCachedThreadPool();
+    public static List<String> getMissingFiles(List<String> featureURLs, Map<String, Object> envMap) throws IOException, InterruptedException, ExecutionException {
+        List<String> result = new Vector<String>();
+        logger.fine("number of missing features: " + featureURLs.size());
+
+        String num_threads = System.getProperty("artifactThreads", DEFAULT_THREAD_NUM).toString();
+        logger.fine("number of threads that will be used: " + num_threads);
+
+        final ExecutorService executor = Executors.newFixedThreadPool(Integer.parseInt(num_threads));
         final List<Future<?>> futures = new ArrayList<>();
 
         for (String url : featureURLs) {
@@ -55,25 +62,28 @@ public class ArtifactDownloaderUtils {
                     if (!(exists(url, envMap) == HttpURLConnection.HTTP_OK)) {
                         result.add(url);
                     }
-                } catch (IOException ioe) {
-                    ioe.printStackTrace();
+                } catch (IOException e) {
+                    logger.fine(e.getMessage());
                 }
+
             });
             futures.add(future);
         }
 
-        try {
-            for (Future<?> future : futures) {
-                while (!future.isDone()) {
-                    logger.info("Finding url... ");
-                    Thread.sleep(100);
-                }
-                future.get();
-            }
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
+        while (!futures.isEmpty()) {
+            Iterator<Future<?>> iter = futures.iterator();
 
+            while (iter.hasNext()) {
+                Future<?> future = iter.next();
+                if (future.isDone()) {
+                    future.get();
+                    iter.remove();
+                }
+            }
+            logger.fine("Finding " + futures.size() + " maven artifacts.. ");
+            Thread.sleep(100);
+        }
+        executor.shutdown();
         return result;
     }
 
