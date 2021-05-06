@@ -35,8 +35,6 @@ Export-Package: com.ibm.websphere.channelfw*;provide:=true, \
 	com.ibm.io.async
 	
 Private-Package: com.ibm.io.async, \
-	com.ibm.ws.bytebuffer.internal, \
-	com.ibm.ws.bytebuffer.internal.resources, \
 	com.ibm.ws.channelfw*, \
 	com.ibm.ws.tcpchannel.internal, \
 	com.ibm.ws.tcpchannel.internal.resources, \
@@ -46,8 +44,7 @@ Private-Package: com.ibm.io.async, \
 Include-Resource: \
     OSGI-INF=resources/OSGI-INF
 
--dsannotations: com.ibm.websphere.channelfw.osgi.CHFWBundle,\
-   com.ibm.ws.bytebuffer.internal.ByteBufferConfiguration
+-dsannotations: com.ibm.websphere.channelfw.osgi.CHFWBundle
 
 Service-Component: \
     com.ibm.ws.tcpchannel.options; \

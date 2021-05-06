@@ -42,7 +42,7 @@ import com.ibm.websphere.event.EventEngine;
 import com.ibm.websphere.event.ScheduledEventService;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.bytebuffer.internal.ByteBufferConfiguration;
+import com.ibm.websphere.wsbytebuffer.osgi.WsByteBufferBundle;
 import com.ibm.ws.channelfw.internal.ChannelFrameworkConstants;
 import com.ibm.ws.channelfw.internal.ChannelFrameworkImpl;
 import com.ibm.ws.channelfw.internal.chains.EndPointMgrImpl;
@@ -84,8 +84,7 @@ public class CHFWBundle implements ServerQuiesceListener {
 
     /** Reference to the channel framework */
     private ChannelFrameworkImpl chfw = null;
-    /** Reference to ByteBufferConfiguration */
-    private ByteBufferConfiguration wsbbmgr = null;
+
     /** Reference to the event service */
     private EventEngine eventService = null;
     /** Reference to the scheduler service -- required */
@@ -101,6 +100,8 @@ public class CHFWBundle implements ServerQuiesceListener {
     }; // use brackets/inner class to make lock appear in dumps using class name
 
     private volatile ServiceReference<HttpProtocolBehavior> protocolBehaviorRef;
+
+    private WsByteBufferBundle wsbbbundle;
     private static volatile String httpVersionSetting = null;
     private static volatile boolean versionSet = false;
     private static volatile boolean default20Off = false;
@@ -189,6 +190,14 @@ public class CHFWBundle implements ServerQuiesceListener {
         }
 
         this.chfw.updateConfig(cfwConfiguration);
+    }
+
+    /**
+     * Make sure we have an active/ready/configured ByteBuffer service
+     */
+    @Reference(service = WsByteBufferBundle.class, cardinality = ReferenceCardinality.MANDATORY)
+    protected void setByteBufferBundle(WsByteBufferBundle wsbbb) {
+        chfw.setBufferManager(wsbbb != null ? wsbbb.getBufferManager() : null);
     }
 
     @Reference(service = AsyncIOHelper.class, cardinality = ReferenceCardinality.OPTIONAL)
@@ -317,24 +326,6 @@ public class CHFWBundle implements ServerQuiesceListener {
      */
     protected synchronized void unsetServerStarted(ServiceReference<ServerStarted> ref) {
         // server is shutting down
-    }
-
-    /**
-     * Make sure we have an active/ready/configured ByteBuffer service
-     */
-    @Reference(service = ByteBufferConfiguration.class,
-               cardinality = ReferenceCardinality.MANDATORY)
-    protected void setByteBufferConfig(ByteBufferConfiguration bbConfig) {
-        wsbbmgr = bbConfig;
-    }
-
-    /**
-     * DS method for removing the ByteBufferConfiguration.
-     * This is a required reference, will be called after deactivate.
-     *
-     * @param service
-     */
-    protected void unsetByteBufferConfig(ByteBufferConfiguration bbConfig) {
     }
 
     /**
@@ -579,21 +570,15 @@ public class CHFWBundle implements ServerQuiesceListener {
     }
 
     /**
-     * Access the reference to the bytebuffer pool manager created by this
-     * bundle, or the default/fallback pool.
+     * Access the reference to the bytebuffer pool manager
+     * that will be used by the channel framework.
      *
      * This method should never return null
      *
      * @return WsByteBufferPoolManager
      */
     public WsByteBufferPoolManager getBufferManager() {
-        ByteBufferConfiguration bbMgr = this.wsbbmgr;
-
-        // Get the byte buffer manager-- bbMgr could return null
-        WsByteBufferPoolManager result = (bbMgr == null) ? null : bbMgr.getBufferManager();
-
-        // Fall back to a default if bbMgr was null or null was returned
-        return result != null ? result : ChannelFrameworkFactory.getBufferManager();
+        return ChannelFrameworkFactory.getBufferManager();
     }
 
     /**

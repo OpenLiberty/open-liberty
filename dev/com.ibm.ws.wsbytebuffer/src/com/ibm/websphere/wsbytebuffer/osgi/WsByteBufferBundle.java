@@ -67,7 +67,7 @@ public class WsByteBufferBundle implements ServerQuiesceListener {
     private static final AtomicReference<WsByteBufferBundle> instance = new AtomicReference<WsByteBufferBundle>();
 
     /** Reference to ByteBufferConfiguration */
-    private ByteBufferConfiguration wsbbmgr = null;
+    private ByteBufferConfiguration wsbbConfig = null;
     /** Reference to the event service */
     private EventEngine eventService = null;
     /** Reference to the scheduler service -- required */
@@ -258,7 +258,7 @@ public class WsByteBufferBundle implements ServerQuiesceListener {
     @Reference(service = ByteBufferConfiguration.class,
                cardinality = ReferenceCardinality.MANDATORY)
     protected void setByteBufferConfig(ByteBufferConfiguration bbConfig) {
-        wsbbmgr = bbConfig;
+        wsbbConfig = bbConfig;
     }
 
     /**
@@ -434,10 +434,10 @@ public class WsByteBufferBundle implements ServerQuiesceListener {
      * @return WsByteBufferPoolManager
      */
     public WsByteBufferPoolManager getBufferManager() {
-        ByteBufferConfiguration bbMgr = this.wsbbmgr;
+        ByteBufferConfiguration bbConfig = this.wsbbConfig;
 
         // Get the byte buffer manager-- bbMgr could return null
-        WsByteBufferPoolManager result = (bbMgr == null) ? null : bbMgr.getBufferManager();
+        WsByteBufferPoolManager result = (bbConfig == null) ? null : bbConfig.getBufferManager();
 
         // Fall back to a default if bbMgr was null or null was returned
         return result != null ? result : WsByteBufferFactory.getBufferManager();

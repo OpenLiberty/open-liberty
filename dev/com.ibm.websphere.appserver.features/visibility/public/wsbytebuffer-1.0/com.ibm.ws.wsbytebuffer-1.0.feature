@@ -6,9 +6,9 @@ IBM-App-ForceRestart: install, \
   uninstall
 IBM-ShortName: wsbytebuffer-1.0
 Subsystem-Name: Websphere WsByteBuffer SPI 1.0
--features=
 -bundles=\
-  com.ibm.ws.wsbytebuffer
+  com.ibm.ws.wsbytebuffer, \
+  com.ibm.ws.timer
 kind=noship
 edition=full
 WLP-Activation-Type: parallel

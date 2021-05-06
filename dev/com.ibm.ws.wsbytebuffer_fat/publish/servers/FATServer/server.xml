@@ -12,6 +12,8 @@
 
 	<include location="../fatTestPorts.xml" />
 
+    <logging traceSpecification="*=info:HealthAction=all:HealthAnalyzer=all:TCPChannel=all:ChannelFramework=all"/>
+	
 	<application location="app1.war" />
 
 </server>

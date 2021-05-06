@@ -15,7 +15,6 @@ Bundle-Name: WsByteBuffer
 Bundle-SymbolicName: com.ibm.ws.wsbytebuffer; singleton:=true
 Bundle-Description: Provides WsByteBuffer buffer functionality
 
-# TODO
 WS-TraceGroup: ChannelFramework
 
 IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
@@ -25,7 +24,8 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 # Append ";provide:=true" if this bundle also provides an implementation
 # for the exported API.
 Export-Package: \
-	com.ibm.wsspi.bytebuffer;provide:=true
+	com.ibm.wsspi.bytebuffer;provide:=true, \
+	com.ibm.websphere.wsbytebuffer.osgi;provide:=true
 		
 Private-Package: \
 	com.ibm.ws.bytebuffer.internal, \
