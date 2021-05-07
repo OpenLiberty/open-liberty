@@ -835,10 +835,8 @@ public class OracleHelper extends DatabaseHelper {
             if (connProps == null)
                 connProps = new Properties();
             
-            if (!connProps.containsKey("oracle.net.authentication_services") &&
-                !connProps.containsKey("oracle.net.kerberos5_mutual_authentication")) {
+            if (!connProps.containsKey("oracle.net.authentication_services")) {
                 connProps.put("oracle.net.authentication_services", "( KERBEROS5 )");
-                connProps.put("oracle.net.kerberos5_mutual_authentications", "true");
                 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(tc, "Automatically setting kerberos connectionProperties for Oracle: ", connProps);
