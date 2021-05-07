@@ -18,12 +18,23 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 
-public class ThrowableClassFileTransformer implements ClassFileTransformer {
+import com.ibm.ws.logging.internal.osgi.stackjoiner.ThrowableProxyActivator;
+import com.ibm.ws.logging.internal.osgi.stackjoiner.boot.templates.ThrowableProxy;
 
+public class ThrowableClassFileTransformer implements ClassFileTransformer {
+	
+	/**
+	 * The name of the Throwable class that will be transformed.
+	 */
+	public final static String THROWABLE_CLASS_NAME = "java/lang/Throwable";
+	
 	@Override
 	public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain,
 	                        byte[] classfileBuffer) throws IllegalClassFormatException {
-	    byte[] ba = null;
+		byte[] ba = null;
+		
+		if(!className.equals(THROWABLE_CLASS_NAME)) return ba;
+		
 	    try {
 	        ba = transformClassIfThrowable(classfileBuffer, className);;
 	    } catch (Exception e) {
