@@ -106,7 +106,7 @@ public class ThrowableProxyActivator {
 		
 		if(isEnabled()) {
 			// Create a methodProxy of the printStackTraceOverride method within the BaseTraceService Class
-			methodProxy = new MethodProxy(inst, BASE_TRACE_SERVICE_CLASS_NAME, BASE_TRACE_SERVICE_METHOD_NAME);
+			methodProxy = new MethodProxy(inst, BASE_TRACE_SERVICE_CLASS_NAME, BASE_TRACE_SERVICE_METHOD_NAME, Throwable.class, PrintStream.class);
 		}
 
 		if (methodProxy != null && methodProxy.isInitialized()) {

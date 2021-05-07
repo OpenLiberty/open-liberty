@@ -23,12 +23,12 @@ public class MethodProxy {
 	private String className;
 	private String methodName;
 	
-	public MethodProxy(Instrumentation inst, String className, String methodName) {
+	public MethodProxy(Instrumentation inst, String className, String methodName, Class<?>... parameterTypes) {
 		this.className = className;
 		this.methodName = methodName;
 		Class<?> classRetrieved = retrieveClass(inst, className);
 		if (classRetrieved != null) {
-			Method method = ReflectionHelper.getDeclaredMethod(classRetrieved, methodName, Throwable.class, PrintStream.class);
+			Method method = ReflectionHelper.getDeclaredMethod(classRetrieved, methodName, parameterTypes);
 			setMethodProxy(method);
 		}
 		
