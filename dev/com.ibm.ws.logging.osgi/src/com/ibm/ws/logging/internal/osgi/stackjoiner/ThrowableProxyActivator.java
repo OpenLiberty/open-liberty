@@ -111,13 +111,9 @@ public class ThrowableProxyActivator {
 
 		if (methodProxy != null && methodProxy.isInitialized()) {
 			String runtimeVersion = getRuntimeClassVersion();
-			if (runtimeVersion != null && !runtimeVersion.equals(getCurrentVersion())) {
-				// TODO: Use a compatibility check instead
-				throw new IllegalStateException("Incompatible proxy code (version " + runtimeVersion + ")");
-			}
 	        
 			// Find or create the proxy jar if the runtime code isn't loaded
-			if (runtimeVersion == null) {
+			if (runtimeVersion == null || (runtimeVersion != null && !runtimeVersion.equals(getCurrentVersion()))) {
 				JarFile proxyJar = getBootProxyJarIfCurrent();
 				if (proxyJar == null) {
 					proxyJar = createBootProxyJar();
