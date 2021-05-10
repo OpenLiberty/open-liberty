@@ -70,7 +70,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
     
     
     /**
-     * Test the install of jsp-2.3 from maven central.
+     * Test the install of jsp-2.3 from local repository.
      *
      * @throws Exception
      */
