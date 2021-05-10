@@ -15,6 +15,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeTrue;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -932,6 +933,21 @@ public class JavaEESecTestBase {
             assertFalse("Did not find '" + regexp + "' in trace.", results.isEmpty());
         } else {
             assertTrue("Found '" + regexp + "' in trace: " + results, results.isEmpty());
+        }
+    }
+
+    /**
+     * Assume we are not on Windows and running the EE9 repeat action. There is an issue with
+     * the Jakarta transformer where the application fails to be transformed b/c the application
+     * directory cannot be deleted due to a "The process cannot access the file because it is
+     * being used by another process" error. I assume that either the transformer or the server
+     * is not releasing the handle to the directory, but I have not yet been able to figure it
+     * out.
+     */
+    public static void assumeNotWindowsEe9() {
+        if (JakartaEE9Action.isActive() && System.getProperty("os.name").toLowerCase().startsWith("win")) {
+            Log.info(logClass, "assumeNotWindowsEe9", "Skipping EE9 repeat action on Windows.");
+            assumeTrue(false);
         }
     }
 }
