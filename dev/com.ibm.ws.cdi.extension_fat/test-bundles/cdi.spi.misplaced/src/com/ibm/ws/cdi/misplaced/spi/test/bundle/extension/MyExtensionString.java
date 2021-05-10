@@ -8,15 +8,18 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.cdi.extension.spi.test.app;
+package com.ibm.ws.cdi.misplaced.spi.test.bundle.extension;
 
-import com.ibm.ws.cdi.extension.spi.test.bundle.annotations.NewBDATwo;
+public class MyExtensionString {
 
-@NewBDATwo
-public class CustomBDABeanTwo {
+    String s;
 
-    public String toString() {
-        return "A Bean with an annotation registered via getBeanDefiningAnnotationClasses was successfully injected into a different bean with an annotation registered via getBeanDefiningAnnotationClasses";
+    public MyExtensionString(String s) {
+        this.s = s;
     }
 
+    @Override
+    public String toString() {
+        return s;
+    }
 }

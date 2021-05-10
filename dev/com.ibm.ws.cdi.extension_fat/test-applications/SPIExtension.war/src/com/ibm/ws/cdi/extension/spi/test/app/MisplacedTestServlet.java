@@ -21,16 +21,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.ibm.ws.cdi.extension.spi.test.bundle.UnregisteredBean;
-import com.ibm.ws.cdi.extension.spi.test.bundle.extension.MyExtensionString;
-import com.ibm.ws.cdi.extension.spi.test.bundle.getclass.beaninjection.MyBeanInjectionString;
-import com.ibm.ws.cdi.extension.spi.test.bundle.getclass.producer.MyProducedString;
+import com.ibm.ws.cdi.misplaced.spi.test.bundle.extension.MyExtensionString;
+import com.ibm.ws.cdi.misplaced.spi.test.bundle.getclass.beaninjection.MyBeanInjectionString;
+import com.ibm.ws.cdi.misplaced.spi.test.bundle.getclass.producer.MyProducedString;
 
-@WebServlet("/")
-public class TestServlet extends HttpServlet {
-
-    @Inject
-    MyExtensionString extensionString;
+@WebServlet("/misplaced")
+public class MisplacedTestServlet extends HttpServlet {
 
     @Inject
     MyProducedString classString;
@@ -51,18 +47,18 @@ public class TestServlet extends HttpServlet {
 
         String unregString = "";
         try {
-            UnregisteredBean ub = javax.enterprise.inject.spi.CDI.current().select(UnregisteredBean.class).get();
-            unregString = "Found unregistered bean";
+            //This will fail because while the extension will run as expected and add MyExtensionString to the BDA, it will be filtered out later because it cannot be found in the bundle.
+            MyExtensionString ub = javax.enterprise.inject.spi.CDI.current().select(MyExtensionString.class).get();
+            unregString = "Bean registered via an extension when both the bean and the extension are in a different bundle to the SPI impl class. This is unexpected";
         } catch (UnsatisfiedResolutionException e) {
-            unregString = "Could not find unregistered bean";
+            unregString = "Could not find bean registered via an extension when both the bean and the extension are in a different bundle to the SPI impl class";
         }
 
         PrintWriter pw = response.getWriter();
         pw.println("Test Results:");
-        pw.println(extensionString.toString());
+        pw.println(unregString);
         pw.println(beanInjectedString.toString());
         pw.println(classString.toString());
-        pw.println(unregString);
         pw.println(appBean.toString());
         pw.println(customBDABean.toString());
 

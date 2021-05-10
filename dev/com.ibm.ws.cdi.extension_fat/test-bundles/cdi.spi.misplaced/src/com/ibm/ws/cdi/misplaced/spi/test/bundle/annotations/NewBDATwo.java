@@ -8,15 +8,16 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.cdi.extension.spi.test.app;
+package com.ibm.ws.cdi.misplaced.spi.test.bundle.annotations;
 
-import com.ibm.ws.cdi.extension.spi.test.bundle.annotations.NewBDATwo;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-@NewBDATwo
-public class CustomBDABeanTwo {
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-    public String toString() {
-        return "A Bean with an annotation registered via getBeanDefiningAnnotationClasses was successfully injected into a different bean with an annotation registered via getBeanDefiningAnnotationClasses";
-    }
-
+@Target({ METHOD, TYPE })
+@Retention(RUNTIME)
+public @interface NewBDATwo {
 }

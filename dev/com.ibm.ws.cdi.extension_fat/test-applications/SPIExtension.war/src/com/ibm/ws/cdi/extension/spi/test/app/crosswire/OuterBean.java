@@ -10,13 +10,19 @@
  *******************************************************************************/
 package com.ibm.ws.cdi.extension.spi.test.app;
 
-import com.ibm.ws.cdi.extension.spi.test.bundle.annotations.NewBDATwo;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 
-@NewBDATwo
-public class CustomBDABeanTwo {
+@RequestScoped
+@com.ibm.ws.cdi.extension.spi.test.bundle.getclass.interceptor.Intercept
+@com.ibm.ws.cdi.misplaced.spi.test.bundle.getclass.interceptor.Intercept
+public class OuterBean {
+
+    @Inject
+    WellPlacedBean bean;
 
     public String toString() {
-        return "A Bean with an annotation registered via getBeanDefiningAnnotationClasses was successfully injected into a different bean with an annotation registered via getBeanDefiningAnnotationClasses";
+        return bean.toString();
     }
 
 }

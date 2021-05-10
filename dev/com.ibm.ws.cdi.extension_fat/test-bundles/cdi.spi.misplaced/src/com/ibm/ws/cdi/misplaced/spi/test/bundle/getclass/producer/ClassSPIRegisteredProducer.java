@@ -8,15 +8,16 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.cdi.extension.spi.test.app;
+package com.ibm.ws.cdi.misplaced.spi.test.bundle.getclass.producer;
 
-import com.ibm.ws.cdi.extension.spi.test.bundle.annotations.NewBDATwo;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Produces;
 
-@NewBDATwo
-public class CustomBDABeanTwo {
+@RequestScoped
+public class ClassSPIRegisteredProducer {
 
-    public String toString() {
-        return "A Bean with an annotation registered via getBeanDefiningAnnotationClasses was successfully injected into a different bean with an annotation registered via getBeanDefiningAnnotationClasses";
+    @Produces
+    public MyProducedString createMyString() {
+        return new MyProducedString("Produced injection");
     }
-
 }
