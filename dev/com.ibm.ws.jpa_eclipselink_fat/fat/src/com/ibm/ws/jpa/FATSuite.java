@@ -17,8 +17,30 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
+import com.ibm.ws.jpa.eclipselink.TestOLGH10068_EJB;
+import com.ibm.ws.jpa.eclipselink.TestOLGH10068_Web;
+import com.ibm.ws.jpa.eclipselink.TestOLGH14426_EJB;
+import com.ibm.ws.jpa.eclipselink.TestOLGH14426_Web;
+import com.ibm.ws.jpa.eclipselink.TestOLGH14457_EJB;
+import com.ibm.ws.jpa.eclipselink.TestOLGH14457_Web;
+import com.ibm.ws.jpa.eclipselink.TestOLGH16588_EJB;
+import com.ibm.ws.jpa.eclipselink.TestOLGH16588_Web;
+import com.ibm.ws.jpa.eclipselink.TestOLGH16685_EJB;
+import com.ibm.ws.jpa.eclipselink.TestOLGH16685_Web;
 import com.ibm.ws.jpa.eclipselink.TestOLGH16772_EJB;
 import com.ibm.ws.jpa.eclipselink.TestOLGH16772_Web;
+import com.ibm.ws.jpa.eclipselink.TestOLGH8014_EJB;
+import com.ibm.ws.jpa.eclipselink.TestOLGH8014_Web;
+import com.ibm.ws.jpa.eclipselink.TestOLGH8294_EJB;
+import com.ibm.ws.jpa.eclipselink.TestOLGH8294_Web;
+import com.ibm.ws.jpa.eclipselink.TestOLGH8461_EJB;
+import com.ibm.ws.jpa.eclipselink.TestOLGH8461_Web;
+import com.ibm.ws.jpa.eclipselink.TestOLGH8950_EJB;
+import com.ibm.ws.jpa.eclipselink.TestOLGH8950_Web;
+import com.ibm.ws.jpa.eclipselink.TestOLGH9018_EJB;
+import com.ibm.ws.jpa.eclipselink.TestOLGH9018_Web;
+import com.ibm.ws.jpa.eclipselink.TestOLGH9035_EJB;
+import com.ibm.ws.jpa.eclipselink.TestOLGH9035_Web;
 
 import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 import componenttest.rules.repeater.FeatureReplacementAction;
@@ -29,28 +51,28 @@ import componenttest.topology.database.container.DatabaseContainerFactory;
 @SuiteClasses({
 //                TestExample_EJB.class,
 //                TestExample_Web.class,
-//                TestOLGH8014_EJB.class,
-//                TestOLGH8014_Web.class,
-//                TestOLGH8294_EJB.class,
-//                TestOLGH8294_Web.class,
-//                TestOLGH8461_EJB.class,
-//                TestOLGH8461_Web.class,
-//                TestOLGH8950_EJB.class,
-//                TestOLGH8950_Web.class,
-//                TestOLGH9018_EJB.class,
-//                TestOLGH9018_Web.class,
-//                TestOLGH9035_EJB.class,
-//                TestOLGH9035_Web.class,
-//                TestOLGH10068_EJB.class,
-//                TestOLGH10068_Web.class,
-//                TestOLGH14426_EJB.class,
-//                TestOLGH14426_Web.class,
-//                TestOLGH14457_EJB.class,
-//                TestOLGH14457_Web.class,
-//                TestOLGH16588_EJB.class,
-//                TestOLGH16588_Web.class,
-//                TestOLGH16685_EJB.class,
-//                TestOLGH16685_Web.class,
+                TestOLGH8014_EJB.class,
+                TestOLGH8014_Web.class,
+                TestOLGH8294_EJB.class,
+                TestOLGH8294_Web.class,
+                TestOLGH8461_EJB.class,
+                TestOLGH8461_Web.class,
+                TestOLGH8950_EJB.class,
+                TestOLGH8950_Web.class,
+                TestOLGH9018_EJB.class,
+                TestOLGH9018_Web.class,
+                TestOLGH9035_EJB.class,
+                TestOLGH9035_Web.class,
+                TestOLGH10068_EJB.class,
+                TestOLGH10068_Web.class,
+                TestOLGH14426_EJB.class,
+                TestOLGH14426_Web.class,
+                TestOLGH14457_EJB.class,
+                TestOLGH14457_Web.class,
+                TestOLGH16588_EJB.class,
+                TestOLGH16588_Web.class,
+                TestOLGH16685_EJB.class,
+                TestOLGH16685_Web.class,
                 TestOLGH16772_EJB.class,
                 TestOLGH16772_Web.class,
                 componenttest.custom.junit.runner.AlwaysPassesTest.class
