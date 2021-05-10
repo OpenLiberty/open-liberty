@@ -8,9 +8,8 @@ IBM-SPI-Package: \
   com.ibm.wsspi.security.wim; type="ibm-spi", \
   com.ibm.wsspi.security.wim.exception; type="ibm-spi", \
   com.ibm.wsspi.security.wim.model; type="ibm-spi"
--features=\
-  com.ibm.websphere.appserver.securityInfrastructure-1.0,\
-  com.ibm.websphere.appserver.wimcore-1.0
+-features=com.ibm.websphere.appserver.wimcore-1.0, \
+  com.ibm.websphere.appserver.securityInfrastructure-1.0
 -bundles=\
   com.ibm.websphere.security, \
   com.ibm.ws.security.registry, \

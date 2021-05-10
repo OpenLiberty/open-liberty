@@ -6,10 +6,9 @@ IBM-App-ForceRestart: install, \
   uninstall
 IBM-ShortName: netty-1.0
 Subsystem-Name: Netty Transport Framework 1.0
--features=\
-  com.ibm.websphere.appserver.channelfw-1.0, \
-  io.openliberty.io.netty, \
-  io.openliberty.io.netty.ssl
+-features=com.ibm.websphere.appserver.channelfw-1.0, \
+  io.openliberty.io.netty.ssl, \
+  io.openliberty.io.netty
 -bundles=\
   io.openliberty.netty.internal
 kind=noship

@@ -5,10 +5,9 @@ IBM-App-ForceRestart: install, \
 IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.jaxws-2.3))", \
  osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.wsSecurity-1.1))"
 IBM-Install-Policy: when-satisfied
--features= \
-  com.ibm.websphere.appserver.ssoCommon-1.0, \
-  com.ibm.websphere.appserver.wss4j-2.3, \
-  com.ibm.websphere.appserver.httpcommons-1.0
+-features=com.ibm.websphere.appserver.wss4j-2.3, \
+  com.ibm.websphere.appserver.httpcommons-1.0, \
+  com.ibm.websphere.appserver.ssoCommon-1.0
 -bundles= \
   com.ibm.ws.org.joda.time.2.9.9, \
   com.ibm.ws.org.cryptacular.cryptacular.1.2.4, \

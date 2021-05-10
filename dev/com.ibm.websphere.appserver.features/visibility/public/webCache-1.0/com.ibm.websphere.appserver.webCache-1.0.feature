@@ -13,9 +13,9 @@ IBM-API-Package: com.ibm.websphere.servlet.cache; type="ibm-api", \
 IBM-ShortName: webCache-1.0
 IBM-SPI-Package: com.ibm.wsspi.cache.web
 Subsystem-Name: Web Response Cache 1.0
--features=com.ibm.websphere.appserver.distributedMap-1.0, \
- com.ibm.websphere.appserver.jsp-2.2; ibm.tolerates:=2.3, \
- com.ibm.websphere.appserver.servlet-3.0; ibm.tolerates:="3.1,4.0"
+-features=com.ibm.websphere.appserver.jsp-2.2; ibm.tolerates:="2.3", \
+  com.ibm.websphere.appserver.servlet-3.0; ibm.tolerates:="3.1,4.0", \
+  com.ibm.websphere.appserver.distributedMap-1.0
 -bundles=com.ibm.ws.dynacache.web
 -jars=com.ibm.websphere.appserver.spi.webCache; location:=dev/spi/ibm/, \
  com.ibm.websphere.appserver.api.webCache; location:=dev/api/ibm/
