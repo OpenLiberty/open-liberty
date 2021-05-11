@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<web-app id="SimpleJaxRSClient" version="3.0" 
+     xmlns="http://java.sun.com/xml/ns/javaee"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+     http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+     
+  <display-name>JAX-RS Simple Service client</display-name>
+  <description>Server-side application to test RS SAML.</description>
+  
+  <!-- SERVLET DEFINITIONS -->
+  <servlet id="Servlet_1">
+  	<servlet-name>simplejaxrsclient</servlet-name>
+  	<servlet-class>com.ibm.ws.jaxrs.fat.jaxrsclient.SimpleJaxRSClient</servlet-class>
+  	<load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <!-- SERVLET MAPPINGS -->        
+  <servlet-mapping id="ServletMapping_1">
+    <servlet-name>simplejaxrsclient</servlet-name>
+    <url-pattern>/SimpleJaxRSClient/*</url-pattern>
+  </servlet-mapping>
+ 
+   <!-- SERVLET MAPPINGS -->        
+  <servlet-mapping id="ServletMapping_2">
+    <servlet-name>simplejaxrsclient</servlet-name>
+    <url-pattern>/Protected_SimpleJaxRSClient/*</url-pattern>
+  </servlet-mapping>
+  
+    <!-- SECURITY CONSTRAINTS -->  
+  <security-constraint id="SecurityConstraint_1">
+     <web-resource-collection id="WebResourceCollection_1">
+        <web-resource-name>Protected with Employee or Manager roles</web-resource-name>
+        <url-pattern>/Protected_SimpleJaxRSClient/*</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>
+     </web-resource-collection>
+     <auth-constraint id="AuthConstraint_1">
+        <role-name>Employee</role-name>
+        <role-name>Manager</role-name>        
+     </auth-constraint>
+  </security-constraint>
+  
+    <!-- ROLES DEFINITION -->
+  <security-role id="SecurityRole_1">
+     <description>Employee role</description>
+     <role-name>Employee</role-name>
+  </security-role>       
+  <security-role id="SecurityRole_2">
+     <description>Manager role</description>
+     <role-name>Manager</role-name>
+  </security-role>
+  <security-role id="SecurityRole_3">
+     <description>AllAuthenticated role</description>
+     <role-name>AllAuthenticated</role-name>
+  </security-role>
+  
+  
+</web-app>
+
+
+
+  

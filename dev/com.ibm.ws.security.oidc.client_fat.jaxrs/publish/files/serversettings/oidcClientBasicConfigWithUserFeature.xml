@@ -1,0 +1,57 @@
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+	<authFilter id="helloAuthFilter_userMap">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_userMap"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="client01_userMap"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+		authFilterRef="helloAuthFilter_userMap"
+	>
+	</openidConnectClient>
+
+	<authFilter id="helloAuthFilter_noUserMapToReg">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_noUserMapToReg"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="client01_noMap"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		mapIdentityToRegistryUser="false"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+		authFilterRef="helloAuthFilter_noUserMapToReg"
+	>
+	</openidConnectClient>
+
+</server>
