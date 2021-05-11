@@ -75,11 +75,11 @@ public class POJOServiceSecurityTest {
     @Test
     @AllowedFFDC({ "java.rmi.AccessException" })
     public void test_pojows_security_with_bndfile() throws Exception {
-        //runTest("user1", "user2pwd", "SayHelloServiceOne", "Hello user1 from SayHelloServiceOne.", false);
+        runTest("user1", "user2pwd", "SayHelloServiceOne", "Hello user1 from SayHelloServiceOne.", false);
         runTest("user1", "user1pwd", "SayHelloServiceOne", "Hello user1 from SayHelloServiceOne.", true);
-        //runTest("user2", "user2pwd", "SayHelloServiceOne", "Hello user2 from SayHelloServiceOne.", false);
-        //runTest("user3", "user3pwd", "SayHelloServiceOne", "Hello user3 from SayHelloServiceOne.", false);
-        //runTest("user4", "user4pwd", "SayHelloServiceOne", "Hello user4 from SayHelloServiceOne.", false);
+        runTest("user2", "user2pwd", "SayHelloServiceOne", "Hello user2 from SayHelloServiceOne.", false);
+        runTest("user3", "user3pwd", "SayHelloServiceOne", "Hello user3 from SayHelloServiceOne.", false);
+        runTest("user4", "user4pwd", "SayHelloServiceOne", "Hello user4 from SayHelloServiceOne.", false);
     }
 
     @Test
