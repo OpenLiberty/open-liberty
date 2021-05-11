@@ -20,7 +20,7 @@ dependencies {
     'org.apache.johnzon:johnzon-jsonb:1.1.8',
     'org.apache.johnzon:johnzon-mapper:1.1.8'
   jsonbapi 'javax.json.bind:javax.json.bind-api:1.0'
-  reactivestreams 'org.reactivestreams:reactive-streams:1.0.3'
+  reactivestreams project(':com.ibm.websphere.org.reactivestreams.reactive-streams.1.0')
 }
 
 task addJohnzon(type: Copy) {

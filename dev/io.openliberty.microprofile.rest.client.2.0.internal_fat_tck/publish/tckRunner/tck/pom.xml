@@ -101,11 +101,11 @@
         </dependency>
 
         <dependency>
-            <groupId>com.ibm.ws.org.reactivestreams</groupId>
+            <groupId>com.ibm.websphere.org.reactivestreams</groupId>
             <artifactId>reactive-streams</artifactId>
             <version>${reactive.streams.version}</version>
             <scope>system</scope>
-            <systemPath>${com.ibm.ws.org.reactivestreams.reactive-streams.1.0_}</systemPath>
+            <systemPath>${com.ibm.websphere.org.reactivestreams.reactive-streams.1.0_}</systemPath>
         </dependency>
 
         <dependency>
@@ -181,11 +181,11 @@
         </dependency>
 
         <dependency>
-            <groupId>com.ibm.ws</groupId>
+            <groupId>com.ibm.websphere</groupId>
             <artifactId>org.reactivestreams.reactive-streams</artifactId>
             <version>1.0</version>
             <scope>system</scope>
-            <systemPath>${com.ibm.ws.org.reactivestreams.reactive-streams.1.0_}</systemPath>
+            <systemPath>${com.ibm.websphere.org.reactivestreams.reactive-streams.1.0_}</systemPath>
         </dependency>
 
         <dependency>

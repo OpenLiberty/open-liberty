@@ -2884,17 +2884,12 @@
     <dependency>
       <groupId>org.reactivestreams</groupId>
       <artifactId>reactive-streams-examples</artifactId>
-      <version>1.0.2</version>
+      <version>1.0.3</version>
     </dependency>
     <dependency>
       <groupId>org.reactivestreams</groupId>
       <artifactId>reactive-streams-tck</artifactId>
-      <version>1.0.2</version>
-    </dependency>
-    <dependency>
-      <groupId>org.reactivestreams</groupId>
-      <artifactId>reactive-streams</artifactId>
-      <version>1.0.2</version>
+      <version>1.0.3</version>
     </dependency>
     <dependency>
       <groupId>org.reactivestreams</groupId>
@@ -2910,11 +2905,6 @@
       <groupId>org.seleniumhq.webdriver</groupId>
       <artifactId>webdriver-common</artifactId>
       <version>0.9.7376</version>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <version>1.7.30</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
