@@ -13,8 +13,15 @@ package com.ibm.ws.util;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
-public class WSUtil {
+import com.ibm.ejs.ras.Tr;
+import com.ibm.ejs.ras.TraceComponent;
 
+public class WSUtil {
+    // Using the same trace style as used by
+    // com.ibm.ws.util.ThreadPool
+    private static TraceComponent tc =
+        Tr.register(WSUtil.class, "Runtime", "com.ibm.ws.runtime.runtime");
+    
     @SuppressWarnings("unchecked")
     public static String resolveURI(String uriToResolve) { // rewrote method to improve perf (251221)
 
@@ -91,6 +98,7 @@ public class WSUtil {
 
         StringTokenizer uriParser = new StringTokenizer(uriToResolve, "/", false);
         String currentElement = null;
+        @SuppressWarnings("rawtypes")
         ArrayList uriElements = new ArrayList();
 
         while (uriParser.hasMoreTokens() == true) {
@@ -104,8 +112,27 @@ public class WSUtil {
             if (currentElement.equals("..") == true) {
                 if (uriElements.size() < 1) {
                     // URI is outside the current context
-                    throw new java.lang.IllegalArgumentException("The specified URI, " + uriToResolve
-                                                                 + ", is invalid because it contains more references to parent directories (\"..\") than is possible.");
+
+                    // Start: Issue 17123:
+                    // "UPDATE ERROR OUTPUT TO MEET THE MESSAGING STANDARD" 
+                    //
+                    // Per the issue, the current text is to be changed to a
+                    // generic message, and error details are to be written
+                    // to server logs.
+                    
+                    // throw new java.lang.IllegalArgumentException(
+                    //     "The specified URI, " + uriToResolve + ", is invalid because" +
+                    //     " it contains more references to parent directories (\"..\")" +
+                    //     " than is possible.");
+
+                    if ( TraceComponent.isAnyTracingEnabled() && tc.isErrorEnabled() ) {
+                        Tr.error(tc,
+                            "Non-valid URI [ " + uriToResolve + " ]:" +
+                            " The URI contains too many parent directory elements (\"..\")."); 
+                    }
+                    throw new IllegalArgumentException("Non-valid URI.");
+
+                    // End: Issue 17123
                 }
 
                 uriElements.remove(uriElements.size() - 1);
