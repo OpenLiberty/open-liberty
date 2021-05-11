@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*******************************************************************************
  * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
@@ -8,6 +9,9 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+=======
+
+>>>>>>> f8f25ee2d3... SOAPAction and test fixes
 package com.ibm.samples.jaxws2;
 
 import javax.xml.bind.JAXBElement;
@@ -15,6 +19,7 @@ import javax.xml.bind.annotation.XmlElementDecl;
 import javax.xml.bind.annotation.XmlRegistry;
 import javax.xml.namespace.QName;
 
+<<<<<<< HEAD
 /**
  * This object contains factory methods for each
  * Java content interface and Java element interface
@@ -28,6 +33,22 @@ import javax.xml.namespace.QName;
  * groups. Factory methods for each of these are
  * provided in this class.
  *
+=======
+
+/**
+ * This object contains factory methods for each 
+ * Java content interface and Java element interface 
+ * generated in the com.ibm.samples.jaxws2 package. 
+ * <p>An ObjectFactory allows you to programatically 
+ * construct new instances of the Java representation 
+ * for XML content. The Java representation of XML 
+ * content can consist of schema derived interfaces 
+ * and classes representing the binding of schema 
+ * type definitions, element declarations and model 
+ * groups.  Factory methods for each of these are 
+ * provided in this class.
+ * 
+>>>>>>> f8f25ee2d3... SOAPAction and test fixes
  */
 @XmlRegistry
 public class ObjectFactory {
@@ -37,14 +58,22 @@ public class ObjectFactory {
 
     /**
      * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: com.ibm.samples.jaxws2
+<<<<<<< HEAD
      *
+=======
+     * 
+>>>>>>> f8f25ee2d3... SOAPAction and test fixes
      */
     public ObjectFactory() {
     }
 
     /**
      * Create an instance of {@link SayHelloResponse }
+<<<<<<< HEAD
      *
+=======
+     * 
+>>>>>>> f8f25ee2d3... SOAPAction and test fixes
      */
     public SayHelloResponse createSayHelloResponse() {
         return new SayHelloResponse();
@@ -52,7 +81,11 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link SayHello_Type }
+<<<<<<< HEAD
      *
+=======
+     * 
+>>>>>>> f8f25ee2d3... SOAPAction and test fixes
      */
     public SayHello_Type createSayHello_Type() {
         return new SayHello_Type();
@@ -60,7 +93,11 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link SayHello_Type }{@code >}}
+<<<<<<< HEAD
      *
+=======
+     * 
+>>>>>>> f8f25ee2d3... SOAPAction and test fixes
      */
     @XmlElementDecl(namespace = "http://jaxws2.samples.ibm.com", name = "sayHello")
     public JAXBElement<SayHello_Type> createSayHello(SayHello_Type value) {
@@ -69,7 +106,11 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link SayHelloResponse }{@code >}}
+<<<<<<< HEAD
      *
+=======
+     * 
+>>>>>>> f8f25ee2d3... SOAPAction and test fixes
      */
     @XmlElementDecl(namespace = "http://jaxws2.samples.ibm.com", name = "sayHelloResponse")
     public JAXBElement<SayHelloResponse> createSayHelloResponse(SayHelloResponse value) {

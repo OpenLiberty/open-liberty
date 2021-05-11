@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*******************************************************************************
  * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
@@ -8,6 +9,8 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+=======
+>>>>>>> f8f25ee2d3... SOAPAction and test fixes
 package com.ibm.samples.servlets;
 
 import java.io.IOException;

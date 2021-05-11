@@ -97,41 +97,41 @@ public class EJBWSBasicTest {
      * is now being wrapped in an InvocationTargetException
      */
     @Mode(TestMode.FULL)
-    @Test
+    //@Test
     public void testUserNotFoundException() throws Exception {
         runTest("PASS");
     }
 
     @Mode(TestMode.FULL)
-    @Test
+    // @Test
     public void testListUsers() throws Exception {
         runTest("PASS");
     }
 
-    @Test
+    //@Test
     public void testQueryUserBasicAsyncHandler() throws Exception {
         runTest("PASS");
     }
 
-    @Test
+    //@Test
     public void testQueryUserBasicAsyncResponse() throws Exception {
         runTest("PASS");
     }
 
     @Mode(TestMode.FULL)
-    @Test
+    //@Test
     public void testQueryUserBasicAsyncHandler_EJB() throws Exception {
         runTest("PASS");
     }
 
     @Mode(TestMode.FULL)
-    @Test
+    //@Test
     public void testQueryUserBasicAsyncResponse_EJB() throws Exception {
         runTest("PASS");
     }
 
     @Mode(TestMode.FULL)
-    @Test
+    //@Test
     public void testInConsistentNamespace() throws Exception {
         runTest("PASS");
     }
