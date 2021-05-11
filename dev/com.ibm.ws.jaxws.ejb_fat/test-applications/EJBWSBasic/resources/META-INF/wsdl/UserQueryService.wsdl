@@ -87,22 +87,22 @@ xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://ejbbasic.jaxws.w
     <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
     <wsdl:operation name="getUser">
       <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="getUser">
+      <wsdl:input name="getUser" wsam:Action="getUserInput">
         <soap:body use="literal"/>
       </wsdl:input>
-      <wsdl:output name="getUserResponse">
+      <wsdl:output name="getUserResponse" wsam:Action="getUserOutput">
         <soap:body use="literal"/>
       </wsdl:output>
       <wsdl:fault name="UserNotFoundException">
         <soap:fault name="UserNotFoundException" use="literal"/>
       </wsdl:fault>
     </wsdl:operation>
-    <wsdl:operation name="listUsers">
+    <wsdl:operation name="listUsers" >
       <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="listUsers">
+      <wsdl:input name="listUsers" wsam:Action="listUsersInput">
         <soap:body use="literal"/>
       </wsdl:input>
-      <wsdl:output name="listUsersResponse">
+      <wsdl:output name="listUsersResponse" wsam:Action="listUsersOutput">
         <soap:body use="literal"/>
       </wsdl:output>
     </wsdl:operation>

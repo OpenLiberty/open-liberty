@@ -5,6 +5,8 @@
         <feature>jaxws-2.2</feature>
         <feature>ejbLite-3.2</feature>
     </featureManager>
+    
+    <logging traceSpecification="org.apache.cxf.ws.addressing.*=all:org.apache.cxf.wsdl*=all:org.apache.cxf.binding.soap.*=all" />
 	
     <include location="../fatTestPorts.xml"/>
     

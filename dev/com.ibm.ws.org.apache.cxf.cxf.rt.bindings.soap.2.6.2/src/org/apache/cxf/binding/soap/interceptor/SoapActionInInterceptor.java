@@ -46,9 +46,12 @@ import org.apache.cxf.service.model.BindingOperationInfo;
 import org.apache.cxf.service.model.OperationInfo;
 import org.apache.cxf.ws.addressing.JAXWSAConstants;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 // Liberty Change - This is a modified version of SoapActionInInterceptor
 // that's currently in 3.4.1. It was backported inorder to provide SOAPAction
 // Compatibility for dynamic clients invoking a dynamic Provider. 
+@Trivial
 public class SoapActionInInterceptor extends AbstractSoapInterceptor {
 
     private static final Logger LOG = LogUtils.getL7dLogger(SoapActionInInterceptor.class);
@@ -71,12 +74,13 @@ public class SoapActionInInterceptor extends AbstractSoapInterceptor {
                 = CastUtils.cast((Map<?, ?>)message.get(Message.PROTOCOL_HEADERS));
             if (headers != null) {
                 List<String> sa = headers.get(SoapBindingConstants.SOAP_ACTION);
-                if (sa != null && !sa.isEmpty()) {
+                if (sa != null && sa.size() > 0) {
                     String action = sa.get(0);
-                    if (action.startsWith("\"") || action.startsWith("\'")) {
+                    if (action.startsWith("\"")) {
                         action = action.substring(1, action.length() - 1);
                     }
-                    return action;
+                    return action; 
+
                 }
             }
         } else if (message.getVersion() instanceof Soap12) {
@@ -140,15 +144,12 @@ public class SoapActionInInterceptor extends AbstractSoapInterceptor {
     }
 
     public static void getAndSetOperation(SoapMessage message, String action) {
-        getAndSetOperation(message, action, true);
-    }
-    public static void getAndSetOperation(SoapMessage message, String action, boolean strict) {
         if (StringUtils.isEmpty(action)) {
             return;
         }
 
         Exchange ex = message.getExchange();
-        Endpoint ep = ex.getEndpoint();
+        Endpoint ep = ex.get(Endpoint.class);
         if (ep == null) {
             return;
         }
@@ -159,14 +160,19 @@ public class SoapActionInInterceptor extends AbstractSoapInterceptor {
             .getBinding().getOperations();
         if (bops != null) {
             for (BindingOperationInfo boi : bops) {
-                if (isActionMatch(message, boi, action)) {
+                SoapOperationInfo soi = boi.getExtensor(SoapOperationInfo.class);
+                if (soi != null && action.equals(soi.getAction())) {
                     if (bindingOp != null) {
                         //more than one op with the same action, will need to parse normally
                         return;
                     }
                     bindingOp = boi;
                 }
-                if (matchWSAAction(boi, action)) {
+                Object o = boi.getOperationInfo().getInput().getExtensionAttribute(JAXWSAConstants.WSAM_ACTION_QNAME);
+                if (o == null) {
+                    o = boi.getOperationInfo().getInput().getExtensionAttribute(JAXWSAConstants.WSAW_ACTION_QNAME);
+                }
+                if (o != null && action.equals(o.toString())) {
                     if (bindingOp != null && bindingOp != boi) {
                         //more than one op with the same action, will need to parse normally
                         return;
@@ -177,17 +183,16 @@ public class SoapActionInInterceptor extends AbstractSoapInterceptor {
         }
 
         if (bindingOp == null) {
-            if (strict) {
                 //we didn't match the an operation, we'll try again later to make
                 //sure the incoming message did end up matching an operation.
                 //This could occur in some cases like WS-RM and WS-SecConv that will
                 //intercept the message with a new endpoint/operation
-                message.getInterceptorChain().add(new SoapActionInAttemptTwoInterceptor(action));
-            }
-            return;
+                message.getInterceptorChain().add(new SoapActionInAttemptTwoInterceptor());
+                return;
         }
 
         ex.put(BindingOperationInfo.class, bindingOp);
+        ex.put(OperationInfo.class, bindingOp.getOperationInfo());
     }
     private static boolean matchWSAAction(BindingOperationInfo boi, String action) {
         Object o = getWSAAction(boi);
@@ -247,16 +252,24 @@ public class SoapActionInInterceptor extends AbstractSoapInterceptor {
 
 
     public static class SoapActionInAttemptTwoInterceptor extends AbstractSoapInterceptor {
-        final String action;
+        String action;
+        public SoapActionInAttemptTwoInterceptor() {
+            super(Phase.PRE_LOGICAL);
+        }
+        
         public SoapActionInAttemptTwoInterceptor(String action) {
             super(action, Phase.PRE_LOGICAL);
             this.action = action;
         }
         public void handleMessage(SoapMessage message) throws Fault {
             BindingOperationInfo boi = message.getExchange().getBindingOperationInfo();
+            if(action == null) 
+                action = getSoapAction(message);
+            
             if (boi == null) {
                 return;
             }
+            LOG.info("boi = " + boi + " action = " + action + " message = " + message);
             if (StringUtils.isEmpty(action)) {
                 return;
             }
@@ -264,6 +277,19 @@ public class SoapActionInInterceptor extends AbstractSoapInterceptor {
                 return;
             }
             if (matchWSAAction(boi, action)) {
+                return;
+            }
+            
+            SoapOperationInfo soi = boi.getExtensor(SoapOperationInfo.class);
+            if (soi == null || action.equals(soi.getAction())) {
+                return;
+            }
+
+            Object o = boi.getOperationInfo().getInput().getExtensionAttribute(JAXWSAConstants.WSAM_ACTION_QNAME);
+            if (o == null) {
+                o = boi.getOperationInfo().getInput().getExtensionAttribute(JAXWSAConstants.WSAW_ACTION_QNAME);
+            }
+            if (o != null && action.equals(o.toString())) {
                 return;
             }
             
@@ -277,10 +303,11 @@ public class SoapActionInInterceptor extends AbstractSoapInterceptor {
 
     private static boolean isActionMatch(SoapMessage message, BindingOperationInfo boi, String action) {
         SoapOperationInfo soi = boi.getExtensor(SoapOperationInfo.class);
+
         if (soi == null) {
             return false;
         }
-
+        
         boolean allowNoMatchingToDefault = MessageUtils.getContextualBoolean(message,
                                                                     ALLOW_NON_MATCHING_TO_DEFAULT,
                                                                     false);
