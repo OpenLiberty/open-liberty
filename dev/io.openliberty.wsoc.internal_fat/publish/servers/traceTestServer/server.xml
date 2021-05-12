@@ -31,7 +31,7 @@
     </featureManager>
    
     
- <logging maxFileSize="50" maxFiles="3" traceFileName="wsocTrace.log" traceSpecification="*=info:com.ibm.ws.webcontainer.*=all:com.ibm.wsspi.webcontainer.*=all:com.ibm.ws.webcontainer31.*=all:ChannelFramework=all:HTTPChannel=all:TCPChannel=all:websockets=all:com.ibm.ws.runtime.update.*=all"/> 
+ <logging maxFileSize="50" maxFiles="3" traceFileName="wsocTrace.log" traceSpecification="*=info:com.ibm.ws.webcontainer.*=all:com.ibm.wsspi.webcontainer.*=all:com.ibm.ws.webcontainer31.*=all:ChannelFramework=all:HTTPChannel=all:TCPChannel=all:HttpTransport=all:websockets=all:com.ibm.ws.runtime.update.*=all"/> 
       
     <javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
     <javaPermission className="java.lang.RuntimePermission" name="modifyThread"/>  
