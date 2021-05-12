@@ -144,6 +144,11 @@ public class ApplicationProcessorTest extends FATServletClient {
         assertEquals("FAIL: Only a single application must be processed by the application processor.", app1Doc,
             openapi);
 
+        // Check we didn't output the beta message
+        // Combining OpenAPI documentation from multiple modules is disabled
+        assertThat(server.findStringsInLogs("CWWKO1663I"),
+            is(empty()));
+
         // Remove the first application and ensure now the appWithStaticDoc app is now
         // processed
         OpenAPITestUtil.removeApplication(server, APP_NAME_1);
