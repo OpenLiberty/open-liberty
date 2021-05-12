@@ -14,17 +14,23 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.security.openidconnect.client.fat.jaxrs.IBM.OIDCTokenMappingResolverGenericTest;
+import com.ibm.ws.security.openidconnect.client.fat.jaxrs.IBM.OidcJaxRSClientAPITests;
+import com.ibm.ws.security.openidconnect.client.fat.jaxrs.IBM.OidcJaxRSClientBasicTests;
+import com.ibm.ws.security.openidconnect.client.fat.jaxrs.IBM.OidcJaxRSClientDiscoveryBasicTests;
 import com.ibm.ws.security.openidconnect.client.fat.jaxrs.IBM.OidcJaxRSClientReAuthnTests;
+
+import componenttest.custom.junit.runner.AlwaysPassesTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-//                AlwaysPassesTest.class,
-//                OidcJaxRSClientBasicTests.class,
-//                OidcJaxRSClientAPITests.class,
-//                OIDCTokenMappingResolverGenericTest.class,
+                AlwaysPassesTest.class,
+                OidcJaxRSClientBasicTests.class,
+                OidcJaxRSClientAPITests.class,
+                OIDCTokenMappingResolverGenericTest.class,
                 OidcJaxRSClientReAuthnTests.class,
-//                OidcJaxRSClientDiscoveryBasicTests.class,
-// OidcJaxRSClientRequestFilterTests.class
+                OidcJaxRSClientDiscoveryBasicTests.class,
+//                OidcJaxRSClientRequestFilterTests.class
 })
 /**
  * Purpose: This suite collects and runs all known good test suites.
