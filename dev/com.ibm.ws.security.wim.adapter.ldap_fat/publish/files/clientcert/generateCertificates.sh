@@ -19,6 +19,7 @@
 
 PASSWORD=security
 VALIDITY=3650
+STORETYPE=JKS
 
 ROOT_ALIAS=chain_root
 ROOT_JKS=${ROOT_ALIAS}.jks
@@ -56,9 +57,9 @@ USER1_INVALID_ALIAS=ldapuser1invalid
 rm -f ${ROOT_JKS} ${ROOT_PEM} ${CA_JKS} ${CA_PEM} ${USER3_JKS} ${USER3_PEM}
 
 # Generate private keys
-keytool -genkeypair -keyalg RSA -keystore ${ROOT_JKS} -storepass ${PASSWORD} -keypass ${PASSWORD} -alias ${ROOT_ALIAS} -validity ${VALIDITY} -dname "cn=${ROOT_ALIAS}" -ext BC=ca:true -ext KU=keyCertSign
-keytool -genkeypair -keyalg RSA -keystore ${CA_JKS}   -storepass ${PASSWORD} -keypass ${PASSWORD} -alias ${CA_ALIAS}   -validity ${VALIDITY} -dname "cn=${CA_ALIAS}"
-keytool -genkeypair -keyalg RSA -keystore ${USER3_JKS} -storepass ${PASSWORD} -keypass ${PASSWORD} -alias ${USER3_ALIAS} -validity ${VALIDITY} -dname "cn=LDAPUser3,o=IBM,c=US"
+keytool -genkeypair -keyalg RSA -keystore ${ROOT_JKS}  -storetype ${STORETYPE} -storepass ${PASSWORD} -keypass ${PASSWORD} -alias ${ROOT_ALIAS}  -validity ${VALIDITY} -dname "cn=${ROOT_ALIAS}" -ext BC=ca:true -ext KU=keyCertSign
+keytool -genkeypair -keyalg RSA -keystore ${CA_JKS}    -storetype ${STORETYPE} -storepass ${PASSWORD} -keypass ${PASSWORD} -alias ${CA_ALIAS}    -validity ${VALIDITY} -dname "cn=${CA_ALIAS}"
+keytool -genkeypair -keyalg RSA -keystore ${USER3_JKS} -storetype ${STORETYPE} -storepass ${PASSWORD} -keypass ${PASSWORD} -alias ${USER3_ALIAS} -validity ${VALIDITY} -dname "cn=LDAPUser3,o=IBM,c=US"
 
 # Generate the root certificate
 keytool -exportcert -keystore ${ROOT_JKS} -storepass ${PASSWORD} -alias ${ROOT_ALIAS} -rfc > ${ROOT_PEM}
@@ -94,60 +95,54 @@ rm -f ${CA_JKS}
 #
 # dummyserver
 #
-rm -f ${DUMMY_KEYSTORE_JKS}
-keytool -genkeypair -keyalg RSA -alias ${DUMMY_SERVER_ALIAS} -dname CN=DummyServer,O=IBM,C=US -validity ${VALIDITY} -keystore ${DUMMY_KEYSTORE_JKS} -storepass ${PASSWORD}
-keytool -export -noprompt -rfc -alias ${DUMMY_SERVER_ALIAS} -file cert.crt -keystore ${DUMMY_KEYSTORE_JKS} -storepass ${PASSWORD}
-keytool -delete -alias ${DUMMY_SERVER_ALIAS} -keystore ${DUMMY_TRUSTSTORE_JKS} -storepass ${PASSWORD}
-keytool -import -noprompt -alias ${DUMMY_SERVER_ALIAS} -file cert.crt -keystore ${DUMMY_TRUSTSTORE_JKS} -storepass ${PASSWORD}
+rm -f ${DUMMY_KEYSTORE_JKS} ${DUMMY_TRUSTSTORE_JKS}
+keytool -genkeypair -keyalg RSA -alias ${DUMMY_SERVER_ALIAS} -dname CN=DummyServer,O=IBM,C=US -validity ${VALIDITY} -keystore ${DUMMY_KEYSTORE_JKS} -storetype ${STORETYPE} -storepass ${PASSWORD} -keypass ${PASSWORD}
+keytool -export -noprompt -rfc -alias ${DUMMY_SERVER_ALIAS} -file cert.crt -keystore ${DUMMY_KEYSTORE_JKS} -storetype ${STORETYPE} -storepass ${PASSWORD}
+keytool -import -noprompt -alias ${DUMMY_SERVER_ALIAS} -file cert.crt -keystore ${DUMMY_TRUSTSTORE_JKS} -storetype ${STORETYPE} -storepass ${PASSWORD}
 
 #
 # ldapuser1
 #
 rm -f ${USER1_JKS}
-keytool -genkeypair -keyalg RSA -alias ${USER1_ALIAS} -dname CN=LDAPUser1,O=IBM,C=US -validity ${VALIDITY} -keystore ${USER1_JKS} -storepass ${PASSWORD}
-keytool -export -noprompt -rfc -alias ${USER1_ALIAS} -file cert.crt -keystore ${USER1_JKS} -storepass ${PASSWORD}
-keytool -delete -alias ${USER1_ALIAS} -keystore ${DUMMY_TRUSTSTORE_JKS} -storepass ${PASSWORD}
-keytool -import -noprompt -alias ${USER1_ALIAS} -file cert.crt -keystore ${DUMMY_TRUSTSTORE_JKS} -storepass ${PASSWORD}
+keytool -genkeypair -keyalg RSA -alias ${USER1_ALIAS} -dname CN=LDAPUser1,O=IBM,C=US -validity ${VALIDITY} -keystore ${USER1_JKS} -storetype ${STORETYPE} -storepass ${PASSWORD} -keypass ${PASSWORD}
+keytool -export -noprompt -rfc -alias ${USER1_ALIAS} -file cert.crt -keystore ${USER1_JKS} -storetype ${STORETYPE} -storepass ${PASSWORD}
+keytool -import -noprompt -alias ${USER1_ALIAS} -file cert.crt -keystore ${DUMMY_TRUSTSTORE_JKS} -storetype ${STORETYPE} -storepass ${PASSWORD}
 
 #
 # ldapuser2
 #
 rm -f ${USER2_JKS}
-keytool -genkeypair -keyalg RSA -alias ${USER2_ALIAS} -dname CN=LDAPUser2 -validity ${VALIDITY} -keystore ${USER2_JKS} -storepass ${PASSWORD}
-keytool -export -noprompt -rfc -alias ${USER2_ALIAS} -file cert.crt -keystore ${USER2_JKS} -storepass ${PASSWORD}
-keytool -delete -alias ${USER2_ALIAS} -keystore ${DUMMY_TRUSTSTORE_JKS} -storepass ${PASSWORD}
-keytool -import -noprompt -alias ${USER2_ALIAS} -file cert.crt -keystore ${DUMMY_TRUSTSTORE_JKS} -storepass ${PASSWORD}
+keytool -genkeypair -keyalg RSA -alias ${USER2_ALIAS} -dname CN=LDAPUser2 -validity ${VALIDITY} -keystore ${USER2_JKS} -storetype ${STORETYPE} -storepass ${PASSWORD} -keypass ${PASSWORD}
+keytool -export -noprompt -rfc -alias ${USER2_ALIAS} -file cert.crt -keystore ${USER2_JKS} -storetype ${STORETYPE} -storepass ${PASSWORD}
+keytool -import -noprompt -alias ${USER2_ALIAS} -file cert.crt -keystore ${DUMMY_TRUSTSTORE_JKS} -storetype ${STORETYPE} -storepass ${PASSWORD}
 
 #
 # ldapuser3 (really the CA cert)
 #
-keytool -keystore ${DUMMY_TRUSTSTORE_JKS} -storepass ${PASSWORD} -importcert -trustcacerts -noprompt -alias ${CA_ALIAS} -file ${CA_PEM}
+keytool -keystore ${DUMMY_TRUSTSTORE_JKS} -storetype ${STORETYPE} -storepass ${PASSWORD} -importcert -trustcacerts -noprompt -alias ${CA_ALIAS} -file ${CA_PEM}
 
 #
 # ldapuser5
 #
 rm -f ${USER5_JKS}
-keytool -genkeypair -keyalg RSA -alias ${USER5_ALIAS} -dname CN=LDAPUser5,O=IBM,C=US -validity ${VALIDITY} -keystore ${USER5_JKS} -storepass ${PASSWORD}
-keytool -export -noprompt -rfc -alias ${USER5_ALIAS} -file cert.crt -keystore ${USER5_JKS} -storepass ${PASSWORD}
-keytool -delete -alias ${USER5_ALIAS} -keystore ${DUMMY_TRUSTSTORE_JKS} -storepass ${PASSWORD}
-keytool -import -noprompt -alias ${USER5_ALIAS} -file cert.crt -keystore ${DUMMY_TRUSTSTORE_JKS} -storepass ${PASSWORD}
+keytool -genkeypair -keyalg RSA -alias ${USER5_ALIAS} -dname CN=LDAPUser5,O=IBM,C=US -validity ${VALIDITY} -keystore ${USER5_JKS} -storetype ${STORETYPE} -storepass ${PASSWORD} -keypass ${PASSWORD}
+keytool -export -noprompt -rfc -alias ${USER5_ALIAS} -file cert.crt -keystore ${USER5_JKS} -storetype ${STORETYPE} -storepass ${PASSWORD}
+keytool -import -noprompt -alias ${USER5_ALIAS} -file cert.crt -keystore ${DUMMY_TRUSTSTORE_JKS} -storetype ${STORETYPE} -storepass ${PASSWORD}
 
 #
 # ldapuser1extraoid
 #
 rm -f ${USER1_XTRA_JKS}
-keytool -genkeypair -keyalg RSA -alias ${USER1_XTRA_ALIAS} -dname CN=LDAPUser1,C=US,O=IBM,EMAILADDRESS=badWolf@badwolf.com -validity ${VALIDITY} -keystore ${USER1_XTRA_JKS} -storepass ${PASSWORD}
-keytool -export -noprompt -rfc -alias ${USER1_XTRA_ALIAS} -file cert.crt -keystore ${USER1_XTRA_JKS} -storepass ${PASSWORD}
-keytool -delete -alias ${USER1_XTRA_ALIAS} -keystore ${DUMMY_TRUSTSTORE_JKS} -storepass ${PASSWORD}
-keytool -import -noprompt -alias ${USER1_XTRA_ALIAS} -file cert.crt -keystore ${DUMMY_TRUSTSTORE_JKS} -storepass ${PASSWORD}
+keytool -genkeypair -keyalg RSA -alias ${USER1_XTRA_ALIAS} -dname CN=LDAPUser1,C=US,O=IBM,EMAILADDRESS=badWolf@badwolf.com -validity ${VALIDITY} -keystore ${USER1_XTRA_JKS} -storetype ${STORETYPE} -storepass ${PASSWORD}  -keypass ${PASSWORD}
+keytool -export -noprompt -rfc -alias ${USER1_XTRA_ALIAS} -file cert.crt -keystore ${USER1_XTRA_JKS} -storetype ${STORETYPE} -storepass ${PASSWORD}
+keytool -import -noprompt -alias ${USER1_XTRA_ALIAS} -file cert.crt -keystore ${DUMMY_TRUSTSTORE_JKS} -storetype ${STORETYPE} -storepass ${PASSWORD}
 
 #
 # ldapuser1invalid
 #
 rm -f ${USER1_INVALID_JKS}
-keytool -genkeypair -keyalg RSA -alias ${USER1_INVALID_ALIAS} -dname CN=LDAPUser1,O=INVALID,C=US -validity ${VALIDITY} -keystore ${USER1_INVALID_JKS} -storepass ${PASSWORD}
-keytool -export -noprompt -rfc -alias ${USER1_INVALID_ALIAS} -file cert.crt -keystore ${USER1_INVALID_JKS} -storepass ${PASSWORD}
-keytool -delete -alias ${USER1_INVALID_ALIAS} -keystore ${DUMMY_TRUSTSTORE_JKS} -storepass ${PASSWORD}
-keytool -import -noprompt -alias ${USER1_INVALID_ALIAS} -file cert.crt -keystore ${DUMMY_TRUSTSTORE_JKS} -storepass ${PASSWORD}
+keytool -genkeypair -keyalg RSA -alias ${USER1_INVALID_ALIAS} -dname CN=LDAPUser1,O=INVALID,C=US -validity ${VALIDITY} -keystore ${USER1_INVALID_JKS} -storetype ${STORETYPE} -storepass ${PASSWORD} -keypass ${PASSWORD}
+keytool -export -noprompt -rfc -alias ${USER1_INVALID_ALIAS} -file cert.crt -keystore ${USER1_INVALID_JKS} -storetype ${STORETYPE} -storepass ${PASSWORD}
+keytool -import -noprompt -alias ${USER1_INVALID_ALIAS} -file cert.crt -keystore ${DUMMY_TRUSTSTORE_JKS} -storetype ${STORETYPE} -storepass ${PASSWORD}
 
 rm cert.crt
