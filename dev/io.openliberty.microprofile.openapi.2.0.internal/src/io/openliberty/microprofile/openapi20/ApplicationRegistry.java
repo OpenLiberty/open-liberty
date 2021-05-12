@@ -13,6 +13,7 @@ package io.openliberty.microprofile.openapi20;
 import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -25,6 +26,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 
+import io.openliberty.microprofile.openapi20.merge.MergeProcessor;
 import io.openliberty.microprofile.openapi20.utils.LoggingUtils;
 
 /**
@@ -69,9 +71,11 @@ public class ApplicationRegistry {
         }
 
         // Process the application
-        OpenAPIProvider openApiProvider = applicationProcessor.processApplication(newAppInfo);
-        if (openApiProvider != null) {
-            record.providers.add(openApiProvider);
+        Collection<OpenAPIProvider> openApiProviders = applicationProcessor.processApplication(newAppInfo);
+        synchronized (this) {
+            for (OpenAPIProvider openApiProvider : openApiProviders) {
+                record.providers.add(openApiProvider);
+            }
         }
 
         if (LoggingUtils.isEventEnabled(tc)) {
@@ -128,9 +132,20 @@ public class ApplicationRegistry {
         List<OpenAPIProvider> providers = getProvidersToMerge();
         if (providers.isEmpty()) {
             return null;
+        } else if (providers.size() == 1) {
+            return providers.get(0);
+        } else {
+            OpenAPIProvider mergedProvider = MergeProcessor.mergeDocuments(providers);
+            if (!mergedProvider.getMergeProblems().isEmpty()) {
+                StringBuilder sb = new StringBuilder();
+                for (String problem : mergedProvider.getMergeProblems()) {
+                    sb.append("\n - ");
+                    sb.append(problem);
+                }
+                Tr.warning(tc, "CWWKO1662W: The following problems occurred while merging OpenAPI documents: {0}", sb.toString());
+            }
+            return mergedProvider;
         }
-        
-        return providers.get(0);
     }
 
     private List<OpenAPIProvider> getProvidersToMerge() {

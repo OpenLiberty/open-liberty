@@ -77,7 +77,7 @@ public class ApplicationServlet extends OpenAPIServletBase {
             ApplicationRegistry appRegistry = appRegistryTracker.getService();
             OpenAPIProvider currentProvider = null;
             if (appRegistry != null) {
-                currentProvider = appRegistry.getCurrentOpenAPIProvider();
+                currentProvider = appRegistry.getMergedOpenAPIProvider();
             }
             final String document;
             if (currentProvider != null) {
@@ -88,12 +88,12 @@ public class ApplicationServlet extends OpenAPIServletBase {
                  * to the model before generating the OpenAPI document.  We need to synchronize access to the model
                  * while we are updating it.
                  */
-                if (currentProvider.getServersDefined()) {
+                if (OpenAPIUtils.containsServersDefinition(currentProvider.getModel())) {
                     /*
                      * No need to modify the model. Retrieve the cached version of the OpenAPI document from the
                      * currentProvider in the specified format.
                      */
-                    document = currentProvider.getOpenAPIDocument(responseFormat);
+                    document = OpenAPIUtils.getOpenAPIDocument(currentProvider.getModel(), responseFormat);
                     if (LoggingUtils.isEventEnabled(tc)) {
                         Tr.event(this, tc, "Server information was already set by the user. So not setting Liberty's server information");
                     }
@@ -104,7 +104,8 @@ public class ApplicationServlet extends OpenAPIServletBase {
                      * specified format.
                      */
                     List<Server> servers = getOpenAPIModelServers(request, currentProvider.getApplicationPath());
-                    document = currentProvider.getOpenAPIDocument(servers, responseFormat);
+                    OpenAPI modelWithServers = OpenAPIUtils.getOpenAPIModelWithServers(currentProvider.getModel(), servers);
+                    document = OpenAPIUtils.getOpenAPIDocument(modelWithServers, responseFormat);
                 }
             } else {
                 /*

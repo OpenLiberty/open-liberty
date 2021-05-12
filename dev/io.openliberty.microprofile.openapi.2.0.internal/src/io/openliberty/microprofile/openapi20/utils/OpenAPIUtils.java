@@ -252,4 +252,30 @@ public class OpenAPIUtils {
     private OpenAPIUtils() {
         // This class is not meant to be instantiated.
     }
+
+    /**
+     * Create a shallow copy of an OpenAPI model with a different list of servers
+     * 
+     * @param model the original OpenAPI model
+     * @param servers the list of servers
+     * @return shallow copy of {@code model} with the new list of servers set
+     */
+    public static OpenAPI getOpenAPIModelWithServers(OpenAPI model, List<Server> servers) {
+        OpenAPI modelWithServers = OASFactory.createOpenAPI();
+        
+        // Set the new servers
+        modelWithServers.setServers(servers);
+        
+        // Shallow copy of other parts
+        modelWithServers.setOpenapi(model.getOpenapi());
+        modelWithServers.setComponents(model.getComponents());
+        modelWithServers.setExtensions(model.getExtensions());
+        modelWithServers.setExternalDocs(model.getExternalDocs());
+        modelWithServers.setInfo(model.getInfo());
+        modelWithServers.setPaths(model.getPaths());
+        modelWithServers.setSecurity(model.getSecurity());
+        modelWithServers.setTags(model.getTags());
+        
+        return modelWithServers;
+    }
 }

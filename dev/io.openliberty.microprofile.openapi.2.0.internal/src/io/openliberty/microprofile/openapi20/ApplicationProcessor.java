@@ -15,6 +15,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.AccessController;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import org.eclipse.microprofile.openapi.OASFactory;
 import org.eclipse.microprofile.openapi.OASFilter;
@@ -80,10 +83,10 @@ public class ApplicationProcessor {
      *         The OpenAPIProvider for the application, or null if the application is not an OAS applciation.
      */
     @FFDCIgnore(UnableToAdaptException.class)
-    public OpenAPIProvider processApplication(final ApplicationInfo appInfo) {
+    public Collection<OpenAPIProvider> processApplication(final ApplicationInfo appInfo) {
 
         // Create the variable to return
-        OpenAPIProvider openAPIProvider = null;
+        List<OpenAPIProvider> openAPIProviders = new ArrayList<>();
 
         if (LoggingUtils.isEventEnabled(tc)) {
             Tr.event(tc, "Application Processor: Processing application started: appInfo=" + appInfo);
@@ -114,10 +117,10 @@ public class ApplicationProcessor {
                             }
                             
                             // Process the web module
-                            openAPIProvider = processWebModule(containerInfo.getContainer(), webModuleInfo, moduleClassesContainerInfo);
+                            OpenAPIProvider openAPIProvider = processWebModule(containerInfo.getContainer(), webModuleInfo, moduleClassesContainerInfo);
                             if (openAPIProvider != null) {
                                 Tr.info(tc, MessageConstants.OPENAPI_APPLICATION_PROCESSED, webModuleInfo.getApplicationInfo().getDeploymentName());
-                                break;
+                                openAPIProviders.add(openAPIProvider);
                             }
                         }
                         if (LoggingUtils.isEventEnabled(tc)) {
@@ -145,7 +148,7 @@ public class ApplicationProcessor {
             }
         }
 
-        return openAPIProvider;
+        return openAPIProviders;
     }
 
     /**
@@ -220,7 +223,7 @@ public class ApplicationProcessor {
                 }
 
                 // Create the OpenAPIProvider to return
-                openAPIProvider = new WebModuleOpenAPIProvider(moduleInfo, openAPIModel, OpenAPIUtils.containsServersDefinition(openAPIModel));
+                openAPIProvider = new WebModuleOpenAPIProvider(moduleInfo, openAPIModel);
 
                 // Validate the document if the validation property has been enabled.
                 if (configProcessor.isValidating()) {
@@ -269,13 +272,13 @@ public class ApplicationProcessor {
             openAPIModel = MergeUtil.merge(openAPIModel, OpenApiProcessor.modelFromStaticFile(staticFile));
             openAPIModel = MergeUtil.merge(openAPIModel, OpenApiProcessor.modelFromAnnotations(config, IndexUtils.getIndexView(moduleInfo, moduleClassesContainerInfo, config)));
             
+            OASFilter filter = OpenApiProcessor.getFilter(config, appClassloader);
+            if (filter != null) {
+                openAPIModel = FilterUtil.applyFilter(filter, openAPIModel);
+            }
+            
             // At this point if we have an empty model, we can give up
             if (openAPIModel != null) {
-                OASFilter filter = OpenApiProcessor.getFilter(config, appClassloader);
-                if (filter != null) {
-                    openAPIModel = FilterUtil.applyFilter(filter, openAPIModel);
-                }
-                
                 // Set required fields
                 if (openAPIModel.getOpenapi() == null) {
                     openAPIModel.setOpenapi(OpenApiConstants.OPEN_API_VERSION);
@@ -290,11 +293,15 @@ public class ApplicationProcessor {
                 }
                 
                 if (openAPIModel.getInfo().getTitle() == null) {
-                    openAPIModel.getInfo().setTitle("Generated API");
+                    openAPIModel.getInfo().setTitle(Constants.DEFAULT_OPENAPI_DOC_TITLE);
                 }
                 
                 if (openAPIModel.getInfo().getVersion() == null) {
-                    openAPIModel.getInfo().setVersion("1.0");
+                    openAPIModel.getInfo().setVersion(Constants.DEFAULT_OPENAPI_DOC_VERSION);
+                }
+                
+                if (OpenAPIUtils.isDefaultOpenApiModel(openAPIModel)) {
+                    openAPIModel = null;
                 }
             }
             
