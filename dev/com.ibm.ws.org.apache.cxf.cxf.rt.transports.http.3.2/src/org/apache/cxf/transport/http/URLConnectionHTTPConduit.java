@@ -126,7 +126,7 @@ public class URLConnectionHTTPConduit extends HTTPConduit {
                                                   proxy != null ? proxy : address.getDefaultProxy(), url);
     }
     
-    
+    //Liberty start    
     public void setAddress(String address) throws IOException {
         try {
             defaultAddress = new Address(address);
@@ -135,6 +135,7 @@ public class URLConnectionHTTPConduit extends HTTPConduit {
             throw new IOException(e);
         }
     }
+    //Liberty end
 
     @FFDCIgnore({java.net.ProtocolException.class, Throwable.class, Throwable.class})
     protected void setupConnection(Message message, Address address, HTTPClientPolicy csPolicy) throws IOException {
@@ -175,6 +176,7 @@ public class URLConnectionHTTPConduit extends HTTPConduit {
 
                             java.lang.reflect.Field f2 = ReflectionUtil.getDeclaredField(connection.getClass(),
                                                                                          "delegate");
+						    //Liberty start
                             if (f2 == null) {
                                 for (java.lang.reflect.Field field : ReflectionUtil.getDeclaredFields(connection.getClass())) {
                                    
@@ -201,6 +203,7 @@ public class URLConnectionHTTPConduit extends HTTPConduit {
 
                                 ReflectionUtil.setAccessible(f).set(c2, httpRequestMethod);
                             }
+							//Liberty end
                         } catch (Throwable t) {
                             //ignore
                             logStackTrace(t);
@@ -315,7 +318,7 @@ public class URLConnectionHTTPConduit extends HTTPConduit {
                     Boolean b =  (Boolean)outMessage.get(HTTPURL_CONNECTION_METHOD_REFLECTION);
                     cout = connectAndGetOutputStream(b); 
                 }
-            } catch (SocketException e) {
+            } catch (SocketException e) { //Liberty
                 if ("Socket Closed".equals(e.getMessage())
                     || "HostnameVerifier, socket reset for TTL".equals(e.getMessage())) {
                     connection.connect();
@@ -434,7 +437,7 @@ public class URLConnectionHTTPConduit extends HTTPConduit {
                 //reason phrase in response, return a informative value
                 //to tell user no reason phrase in the response instead of null
                 return "no reason phrase in the response";
-            } else {
+            } else { //Liberty
                 return connection.getResponseMessage();
             }
         }
@@ -451,6 +454,7 @@ public class URLConnectionHTTPConduit extends HTTPConduit {
         @FFDCIgnore(PrivilegedActionException.class)
         protected void handleNoOutput() throws IOException {
             if ("POST".equals(getMethod())) {
+			    //Liberty start
                 try {
                     AccessController.doPrivileged((PrivilegedExceptionAction<Void>)() -> {
                         connection.getOutputStream().close(); 
@@ -463,6 +467,7 @@ public class URLConnectionHTTPConduit extends HTTPConduit {
                     }
                     throw new RuntimeException(t);
                 }
+				//Liberty end
             }
         }
         @FFDCIgnore(URISyntaxException.class)

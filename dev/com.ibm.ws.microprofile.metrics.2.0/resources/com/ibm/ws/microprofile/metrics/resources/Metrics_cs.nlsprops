@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2011 IBM Corporation and others.
+# Copyright (c) 2009, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -127,6 +127,11 @@ session.liveSessions.description=Po\u010det u\u017eivatel\u016f, kte\u0159\u00ed
 session.activeSessions.description=Po\u010det soub\u011b\u017en\u011b aktivn\u00edch relac\u00ed. (Relace je aktivn\u00ed, pokud produkt aktu\u00e1ln\u011b zpracov\u00e1v\u00e1 po\u017eadavek, kter\u00fd pou\u017e\u00edv\u00e1 relace u\u017eivatele).
 session.invalidated.total.description=Po\u010det relac\u00ed, u nich\u017e do\u0161lo od povolen\u00ed t\u00e9to metriky k odhl\u00e1\u0161en\u00ed.
 session.invalidatedbyTimeout.total.description=Po\u010det relac\u00ed, u nich\u017e do\u0161lo od povolen\u00ed t\u00e9to metriky k odhl\u00e1\u0161en\u00ed z d\u016fvodu p\u0159ekro\u010den\u00ed \u010dasov\u00e9ho limitu.
+
+requestTiming.requestCount.description=Po\u010det po\u017eadavk\u016f servletu od spu\u0161t\u011bn\u00ed serveru.
+requestTiming.activeRequestCount.description=Po\u010det aktu\u00e1ln\u011b spu\u0161t\u011bn\u00fdch po\u017eadavk\u016f servletu.
+requestTiming.slowRequestCount.description=Po\u010det po\u017eadavk\u016f servlet\u016f, kter\u00e9 jsou moment\u00e1ln\u011b spu\u0161t\u011bn\u00e9, ale jsou pomal\u00e9.
+requestTiming.hungRequestCount.description=Po\u010det po\u017eadavk\u016f servlet\u016f, kter\u00e9 jsou moment\u00e1ln\u011b spu\u0161t\u011bn\u00e9, ale jsou zablokovan\u00e9.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message

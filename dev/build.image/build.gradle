@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -105,6 +105,8 @@ File mavenDir = new File(project.buildDir, 'maven')
 
 class PackageLibertyWithFeatures extends DefaultTask {
     Closure withFeatures
+    Boolean completeFeatureList
+    Boolean packageServerConflict
     File outputTo
 
     @TaskAction
@@ -125,7 +127,7 @@ class PackageLibertyWithFeatures extends DefaultTask {
             def serverXml = project.file("wlp/usr/servers/packageOpenLiberty/server.xml")
             serverXml.text = """<?xml version="1.0" encoding="UTF-8"?>
 <server description="new server">
-    <featureManager>${withFeatures()}
+    <featureManager package.server.conflict="${packageServerConflict}">${withFeatures()}
     </featureManager>
 </server>
 """
@@ -134,7 +136,10 @@ class PackageLibertyWithFeatures extends DefaultTask {
             project.delete archive
             project.exec {
                 workingDir project.file('wlp/bin')
-                def args = ["package", "packageOpenLiberty", "--archive=${archive}", "--include=minify", "-Dinternal.minify.ignore.singleton=true"]
+                def args = ["package", "packageOpenLiberty", "--archive=${archive}", "--include=minify"]
+                if (completeFeatureList) { 
+                    args.add("-Dinternal.minify.feature.list.complete=true") 
+                }
                 if (OperatingSystem.current().windows) {
                     commandLine = ["cmd", "/c", "server"] + args
                 } else {
@@ -211,7 +216,7 @@ def allFeatures() {
 
 def gaPublicFeatures() {
     String features = ""
-    gaFeatures(true).each {
+    gaFeatures(false).each {
         features += '<feature>' + it + '</feature>\n'
     }
     features
@@ -219,10 +224,24 @@ def gaPublicFeatures() {
 
 def gaAndBetaPublicFeatures() {
     String features = ""
-    gaFeatures(true).each {
+    gaFeatures(false).each {
         features += '<feature>' + it + '</feature>\n'
     }
     betaFeatures().each {
+        features += '<feature>' + it + '</feature>\n'
+    }
+    features
+}
+
+def gaAndBetaAndNoShipPublicFeatures() {
+    String features = ""
+    gaFeatures(false).each {
+        features += '<feature>' + it + '</feature>\n'
+    }
+    betaFeatures().each {
+        features += '<feature>' + it + '</feature>\n'
+    }
+    noShipFeatures().each {
         features += '<feature>' + it + '</feature>\n'
     }
     features
@@ -303,28 +322,18 @@ def replaceBetaVersionAndEdition(String pathname, String release, String beta) {
 
 if (isAutomatedBuild && !isIFIXBuild) {
     task packageOpenLibertyAll(type: PackageLibertyWithFeatures) {
-        def excludedFeatures = []
-        doFirst {
-            excludedFeatures.addAll(testFeatures())
-            excludedFeatures.each {
-                this.&removeFeature("${it}")
-            }
-        }
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
-        withFeatures this.&allFeatures
+        withFeatures this.&gaAndBetaAndNoShipPublicFeatures
+        completeFeatureList = true
         outputTo packageDir
-        doLast {
-            excludedFeatures.each {
-                this.&restoreFeature("${it}")
-            }
-        }
     }
 
     task packageOpenLiberty(type: PackageLibertyWithFeatures) {
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
         withFeatures this.&gaPublicFeatures
+        completeFeatureList = true
         outputTo packageDir
     }
 
@@ -333,6 +342,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
         withFeatures this.&gaAndBetaPublicFeatures
+        completeFeatureList = true
         outputTo packageDir
         doLast {
             ["$packageDir/wlp/NOTICES", "$packageDir/wlp/README.TXT", "$packageDir/wlp/lib/versions/openliberty.properties"].each { path ->
@@ -357,6 +367,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
         withFeatures this.&webProfile8Features
+        packageServerConflict = true
         outputTo packageDir
         doLast {
             copy {
@@ -383,6 +394,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
         withFeatures this.&javaee8Features
+        packageServerConflict = true
         outputTo packageDir
         doLast {
             copy {
@@ -428,6 +440,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
         withFeatures this.&microProfile3Features
+        packageServerConflict = true
         outputTo packageDir
         doLast {
             copy {

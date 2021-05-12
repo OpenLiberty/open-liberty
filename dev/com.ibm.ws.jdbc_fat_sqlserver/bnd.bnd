@@ -31,5 +31,5 @@ com.ibm.websphere.tx.propagateXAResourceTransactionTimeout: true
 	org.testcontainers:mssqlserver;version=1.15.1,\
 	org.rnorth.duct-tape:duct-tape;version=1.0.8,\
 	org.slf4j:slf4j-api;version=1.7.7,\
-	com.microsoft.sqlserver:mssql-jdbc;version=8.2.1.jre8,\
+	com.microsoft.sqlserver:mssql-jdbc;version=9.2.1.jre8,\
 	com.ibm.websphere.javaee.annotation.1.1;version=latest

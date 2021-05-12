@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2020 IBM Corporation and others.
+# Copyright (c) 2009, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -131,6 +131,12 @@ session.invalidatedbyTimeout.total.description=\u555f\u7528\u6b64\u5ea6\u91cf\u4
 
 REST.request.description=\u81ea\u4f3a\u670d\u5668\u555f\u52d5\u4ee5\u4f86\uff0c\u9019\u500b RESTful \u8cc7\u6e90\u65b9\u6cd5\u7684\u547c\u53eb\u6578\u76ee\u4ee5\u53ca\u7e3d\u8a08\u56de\u61c9\u6642\u9593\u3002\u5982\u679c REST \u8981\u6c42\u5c0e\u81f4\u672a\u5c0d\u6620\u7684\u7570\u5e38\u72c0\u6cc1\uff0c\u5247\u8a72\u5ea6\u91cf\u4e0d\u6703\u8a18\u9304\u5176\u7d93\u6b77\u6642\u9593\uff0c\u4e5f\u4e0d\u6703\u8a18\u9304\u5176\u8a08\u6578\u3002\u6b64\u5916\uff0c\u9084\u6703\u8a18\u9304\u524d\u4e00\u500b\u5b8c\u6574\u5206\u9418\u5167\u8a18\u9304\u7684\u6700\u9ad8\u671f\u9593\uff0c\u53ca\u524d\u4e00\u500b\u5b8c\u6574\u5206\u9418\u5167\u8a18\u9304\u7684\u6700\u4f4e\u671f\u9593\u3002
 REST.request.unmappedException.description=\u81ea\u4f3a\u670d\u5668\u555f\u52d5\u4ee5\u4f86\uff0c\u9019\u500b RESTful \u8cc7\u6e90\u65b9\u6cd5\u4e2d\u767c\u751f\u7684\u672a\u5c0d\u6620\u7570\u5e38\u72c0\u6cc1\u7e3d\u6578\u3002
+
+
+requestTiming.requestCount.description=\u81ea\u4f3a\u670d\u5668\u555f\u52d5\u4ee5\u4f86\u7684 Servlet \u8981\u6c42\u6578\u76ee\u3002
+requestTiming.activeRequestCount.description=\u76ee\u524d\u5728\u57f7\u884c\u4e2d\u7684 Servlet \u8981\u6c42\u6578\u76ee\u3002
+requestTiming.slowRequestCount.description=\u76ee\u524d\u5728\u57f7\u884c\u4e2d\u4f46\u901f\u5ea6\u6162\u7684 Servlet \u8981\u6c42\u6578\u76ee\u3002
+requestTiming.hungRequestCount.description=\u76ee\u524d\u5728\u57f7\u884c\u4e2d\u4f46\u537b\u7576\u6389\u7684 Servlet \u8981\u6c42\u6578\u76ee\u3002
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message
 #-----------------------------------------------------------------------------------------------------------------------------

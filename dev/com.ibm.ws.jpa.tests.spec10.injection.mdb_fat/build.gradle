@@ -1,0 +1,124 @@
+/*******************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+configurations {
+  hibernateJPA22
+  jpaFatTools
+}
+
+dependencies {
+  hibernateJPA22 'org.hibernate:hibernate-core:5.4.2.Final'
+  hibernateJPA22 'org.jboss.logging:jboss-logging:3.3.2.Final'
+  
+  hibernateJPA22 'org.javassist:javassist:3.24.0-GA'
+  hibernateJPA22 'net.bytebuddy:byte-buddy:1.9.10'
+  hibernateJPA22 'antlr:antlr:2.7.7'
+  hibernateJPA22 'org.jboss:jandex:2.0.5.Final'
+  hibernateJPA22 'com.fasterxml:classmate:1.3.4'
+  
+  hibernateJPA22 'org.dom4j:dom4j:2.1.1'
+  hibernateJPA22 'org.hibernate.common:hibernate-commons-annotations:5.1.0.Final'
+  
+  jpaFatTools project(':com.ibm.ws.jpa_testframework')
+  requiredLibs project(":com.ibm.ws.jpa.tests.spec10.injection.common")
+}
+
+task addhibernateJPA22(type: Copy) {
+  shouldRunAfter jar
+  from configurations.hibernateJPA22
+  into new File(autoFvtDir, 'publish/shared/resources/jpa21_hibernate')
+  rename 'antlr-.*.jar', 'antlr.jar'
+  rename 'classmate-.*.jar', 'classmate.jar' 
+  rename 'dom4j-.*.jar', 'dom4j.jar'
+  rename 'hibernate-commons-annotations-.*.jar', 'hibernate-commons-annotations.jar'
+  rename 'hibernate-core-.*.jar', 'hibernate-core.jar'
+  rename 'jandex-.*.jar', 'jandex.jar' 
+  rename 'javassist-.*.jar', 'javassist.jar'
+  rename 'jboss-logging-.*.jar', 'jboss-logging.jar'
+}
+
+task addJPAFATTools (type: Copy) {
+  mustRunAfter jar
+  from configurations.jpaFatTools
+  include "**/com.ibm.ws.jpa_testframework*.jar"
+  into new File(autoFvtDir, 'lib')      
+  rename 'com.ibm.ws.jpa_testframework-(.*).jar', 'com.ibm.ws.jpa_testframework.jar'
+}
+
+task copyFAT {
+    dependsOn ':com.ibm.ws.jpa.tests.spec10.injection.common:build'
+    copy {
+      from project(':com.ibm.ws.jpa.tests.spec10.injection.common').file('fat/src/com/ibm/ws/jpa/tests/spec10/injection/common')
+      into new File('fat/src/com/ibm/ws/jpa/tests/spec10/injection/common')
+    }
+}
+
+task copyCommonFiles {
+  dependsOn ':com.ibm.ws.jpa.tests.spec10.injection.common:build'
+  doLast {
+    /*
+     * Copy test application resources.
+     */
+    copy {
+      from project(':com.ibm.ws.jpa.tests.spec10.injection.common').file('test-applications')
+      into new File('test-applications')
+    }
+    copy {
+      from project(':com.ibm.ws.jpa.tests.spec10.injection.common').file('test-bundles')
+      into new File('test-bundles')
+    }
+
+    /*
+     * Copy common publish files.
+     */
+    copy {
+      from project(':com.ibm.ws.jpa.tests.spec10.injection.common').file('publish')
+      into new File('publish')
+    }
+  }
+}
+
+addRequiredLibraries {
+  dependsOn copyJdbcDrivers
+  dependsOn copyDatabaseRotationDrivers
+  dependsOn addhibernateJPA22
+  dependsOn addJakartaTransformer
+  dependsOn addJPAFATTools
+  dependsOn copyFAT
+}
+
+jar {
+  dependsOn copyCommonFiles
+}
+
+autoFVT.dependsOn copyCommonFiles
+
+clean.doLast {
+  if (file('test-applications/helpers').exists()){
+    file('test-applications/helpers').deleteDir()
+  }
+  if (file('test-applications/injection').exists()){
+    file('test-applications/injection').deleteDir()
+  }
+  if (file('test-bundles').exists()){
+    file('test-bundles').deleteDir()
+  }
+  if (file('publish').exists()){
+    file('publish').deleteDir()
+  }
+  if (file('build').exists()){
+    file('build').deleteDir()
+  }
+  if (file('fat/src/com/ibm/ws/jpa/tests/spec10/injection/common').exists()){
+    file('fat/src/com/ibm/ws/jpa/tests/spec10/injection/common').deleteDir()
+  }
+}
+

@@ -34,6 +34,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import javax.security.auth.Subject;
 import javax.transaction.xa.XAException;
 
+import com.ibm.websphere.appprofile.accessintent.AccessIntent;
 import com.ibm.websphere.ce.cm.DuplicateKeyException;
 import com.ibm.websphere.ce.cm.StaleConnectionException;
 import com.ibm.websphere.ce.cm.StaleStatementException;
@@ -105,9 +106,6 @@ public class HDDataStoreHelper extends GenericDataStoreHelper {
     @Override
     public boolean doConnectionCleanupPerCloseConnection(Connection con, boolean isCMP, Object unused) throws SQLException {
         ((HDConnection) con).cleanupCount.incrementAndGet();
-        try (CallableStatement stmt = con.prepareCall("CALL SYSCS_UTIL.SYSCS_SET_STATISTICS_TIMING(0)")) {
-            stmt.execute();
-        }
         return true;
     }
 
@@ -124,9 +122,6 @@ public class HDDataStoreHelper extends GenericDataStoreHelper {
     @Override
     public boolean doConnectionSetupPerGetConnection(Connection con, boolean isCMP, Object props) throws SQLException {
         ((HDConnection) con).setupCount.incrementAndGet();
-        try (CallableStatement stmt = con.prepareCall("CALL SYSCS_UTIL.SYSCS_SET_STATISTICS_TIMING(1)")) {
-            stmt.execute();
-        }
         return true;
     }
 
@@ -153,8 +148,14 @@ public class HDDataStoreHelper extends GenericDataStoreHelper {
         stmt.setQueryTimeout(queryTimeout);
     }
 
+    // TODO remove
     @Override
     public int getIsolationLevel() {
+        return getIsolationLevel(null);
+    }
+
+    // TODO @Override
+    public int getIsolationLevel(AccessIntent unused) {
         return Connection.TRANSACTION_SERIALIZABLE;
     }
 

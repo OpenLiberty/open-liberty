@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2020, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -25,3 +25,15 @@ KRB5_FILE_NOT_FOUND_CWWKS4345E.useraction=Ujist\u011bte se, \u017ee konfigurace 
 KRB5_FILE_FOUND_CWWKS4346I=CWWKS4346I: Komponenta Kerberos je nakonfigurov\u00e1na pro pou\u017eit\u00ed souboru {0} um\u00edst\u011bn\u00e9ho v {1}
 KRB5_FILE_FOUND_CWWKS4346I.explanation=Nakonfigurovan\u00fd soubor byl \u00fasp\u011b\u0161n\u011b um\u00edst\u011bn.
 KRB5_FILE_FOUND_CWWKS4346I.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+KRB5_LOGIN_FAILED_CACHE_CWWKS4347E=CWWKS4347E: P\u0159ihl\u00e1\u0161en\u00ed Kerberos se nezda\u0159ilo pomoc\u00ed \u010dinitele ov\u011b\u0159ov\u00e1n\u00ed Kerberos {0} a mezipam\u011bti pov\u011b\u0159en\u00ed Kerberos {1} (ccache). Tiket Kerberos nebyl nalezen.
+KRB5_LOGIN_FAILED_CACHE_CWWKS4347E.explanation=Bu\u010f je zadan\u00fd \u010dinitel ov\u011b\u0159ov\u00e1n\u00ed Kerberos neplatn\u00fd, nebo je mezipam\u011b\u0165 pov\u011b\u0159en\u00ed Kerberos (ccache) neplatn\u00e1 nebo vypr\u0161ela jej\u00ed platnost.
+KRB5_LOGIN_FAILED_CACHE_CWWKS4347E.useraction=Ujist\u011bte se, \u017ee je zad\u00e1n platn\u00fd \u010dinitel ov\u011b\u0159ov\u00e1n\u00ed Kerberos a \u017ee mezipam\u011b\u0165 pov\u011b\u0159en\u00ed Kerberos (ccache) je platn\u00e1 a nevypr\u0161ela jej\u00ed platnost.
+
+KRB5_LOGIN_FAILED_KEYTAB_CWWKS4348E=CWWKS4348E: P\u0159ihl\u00e1\u0161en\u00ed Kerberos se nezda\u0159ilo pomoc\u00ed \u010dinitele ov\u011b\u0159ov\u00e1n\u00ed Kerberos {0} a souboru keytab Kerberos {1}. Tiket Kerberos nebyl nalezen.
+KRB5_LOGIN_FAILED_KEYTAB_CWWKS4348E.explanation=Bu\u010f je neplatn\u00fd zadan\u00fd \u010dinitel ov\u011b\u0159ov\u00e1n\u00ed Kerberos, nebo soubor keytab Kerberos.
+KRB5_LOGIN_FAILED_KEYTAB_CWWKS4348E.useraction=Ujist\u011bte se, \u017ee je zad\u00e1n platn\u00fd soubor keytab Kerberos a \u017ee obsahuje platn\u00fd \u010dinitel ov\u011b\u0159ov\u00e1n\u00ed Kerberos.
+		
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB_CWWKS4349E=CWWKS4349E: P\u0159ihl\u00e1\u0161en\u00ed Kerberos se nezda\u0159ilo pomoc\u00ed \u010dinitele ov\u011b\u0159ov\u00e1n\u00ed Kerberos {0} a v\u00fdchoz\u00edho souboru keytab Kerberos. Tiket Kerberos nebyl nalezen.
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB_CWWKS4349E.explanation=Bu\u010f je neplatn\u00fd zadan\u00fd \u010dinitel ov\u011b\u0159ov\u00e1n\u00ed Kerberos, nebo v\u00fdchoz\u00ed soubor keytab Kerberos.
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB_CWWKS4349E.useraction=Ujist\u011bte se, \u017ee je zad\u00e1n platn\u00fd soubor keytab Kerberos a \u017ee obsahuje platn\u00fd \u010dinitel ov\u011b\u0159ov\u00e1n\u00ed Kerberos.

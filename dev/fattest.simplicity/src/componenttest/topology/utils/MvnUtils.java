@@ -194,7 +194,7 @@ public class MvnUtils {
             try (Scanner s = new Scanner(installOutput)) {
                 while (s.hasNextLine() && sb.length() < 20000) {
                     String line = s.nextLine();
-                    if (line.startsWith("[ERROR]"))
+                    if (line.contains("[ERROR]"))
                         sb.append(line).append("\n");
                 }
             } catch (FileNotFoundException e) {
@@ -207,7 +207,7 @@ public class MvnUtils {
             try (Scanner s = new Scanner(testOutput)) {
                 while (s.hasNextLine() && sb.length() < 20000) {
                     String line = s.nextLine();
-                    if (line.startsWith("[ERROR]"))
+                    if (line.contains("[ERROR]"))
                         sb.append(line).append("\n");
                 }
             } catch (FileNotFoundException e) {

@@ -139,7 +139,7 @@ public class DatabaseContainerFactory {
                     withCommand.invoke(cont, "postgres -c max_prepared_transactions=5");
                     break;
                 case SQLServer:
-                    cont = (JdbcDatabaseContainer<?>) clazz.getConstructor(String.class).newInstance("mcr.microsoft.com/mssql/server:2019-CU2-ubuntu-16.04");
+                    cont = (JdbcDatabaseContainer<?>) clazz.getConstructor(String.class).newInstance("mcr.microsoft.com/mssql/server:2019-CU10-ubuntu-16.04");
                     //Accept license agreement
                     Method acceptSQLServerLicense = cont.getClass().getMethod("acceptLicense");
                     acceptSQLServerLicense.invoke(cont);

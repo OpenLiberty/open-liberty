@@ -31,6 +31,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import javax.security.auth.Subject;
 import javax.transaction.xa.XAException;
 
+import com.ibm.websphere.appprofile.accessintent.AccessIntent;
 import com.ibm.websphere.ce.cm.DuplicateKeyException;
 import com.ibm.websphere.ce.cm.StaleConnectionException;
 import com.ibm.ws.jdbc.heritage.DataStoreHelperMetaData;
@@ -104,8 +105,14 @@ public class GenericDataStoreHelper extends com.ibm.ws.jdbc.heritage.GenericData
         stmt.setQueryTimeout(queryTimeout);
     }
 
+    // TODO remove
     @Override
     public int getIsolationLevel() {
+        return getIsolationLevel(null);
+    }
+
+    // TODO @Override
+    public int getIsolationLevel(AccessIntent unused) {
         return Connection.TRANSACTION_READ_COMMITTED;
     }
 

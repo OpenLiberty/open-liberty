@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013,2020 IBM Corporation and others.
+ * Copyright (c) 2013,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import java.io.PrintWriter;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.Map;
 import java.util.Set;
@@ -32,6 +33,7 @@ import javax.jms.JMSRuntimeException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.MessageFormatRuntimeException;
+import javax.jms.MessageNotWriteableException;
 import javax.jms.MessageNotWriteableRuntimeException;
 import javax.jms.MessageProducer;
 import javax.jms.Queue;
@@ -68,11 +70,18 @@ public class JMSProducerServlet extends HttpServlet {
 
     public static Queue queue1;
     public static Queue queue2;
-    public static Queue queue3;
-
+    
     public static Topic topic1;
-    public static Topic topic2;
-
+    
+    /** @return the methodName of the caller. */
+    private static final String methodName() { return new Exception().getStackTrace()[1].getMethodName(); }
+    
+    private final class TestException extends Exception {
+        TestException(String message) {
+            super(new Date() +" "+message);
+        }
+    }
+    
     @Override
     public void init() throws ServletException {
         System.out.println("JMSProducerServlet.init ENTRY");
@@ -126,32 +135,18 @@ public class JMSProducerServlet extends HttpServlet {
         System.out.println("Queue 'java:comp/env/jndi_INPUT_Q2':\n" + queue2);
 
         try {
-            queue3 = (Queue) new InitialContext().lookup("java:comp/env/jndi_INPUT_Q3");
-        } catch ( NamingException e ) {
-            e.printStackTrace();
-        }
-        System.out.println("Queue 'java:comp/env/jndi_INPUT_Q3':\n" + queue3);
-
-        try {
             topic1 = (Topic) new InitialContext().lookup("java:comp/env/eis/topic1");
         } catch ( NamingException e ) {
             e.printStackTrace();
         }
         System.out.println("Topic 'java:comp/env/eis/topic1':\n" + topic1);
 
-        try {
-            topic2 = (Topic) new InitialContext().lookup("java:comp/env/eis/topic2");
-        } catch ( NamingException e ) {
-            e.printStackTrace();
-        }
-        System.out.println("Topic 'java:comp/env/eis/topic2':\n" + topic2);
-
         System.out.println("JMSProducerServlet.init RETURN");
 
         if ( (qcfBindings == null) || (tcfBindings == null) ||
              (qcfTCP == null) || (tcfTCP == null) ||
-             (queue1 == null) || (queue2 == null) || (queue3 == null) ||
-             (topic1 == null) || (topic2 == null) ) {
+             (queue1 == null) || (queue2 == null) ||
+             (topic1 == null)) {
             throw new ServletException("Failed JMS initialization");
         }
     }
@@ -214,11 +209,9 @@ public class JMSProducerServlet extends HttpServlet {
 
         Tr.entry(this, tc, test);
         try {
-            getClass()
-                .getMethod(test, HttpServletRequest.class, HttpServletResponse.class)
-                .invoke(this, request, response);
-
             System.out.println(" Starting : " + test);
+            getClass().getMethod(test, HttpServletRequest.class, HttpServletResponse.class)
+                      .invoke(this, request, response);          
             out.println(test + " COMPLETED SUCCESSFULLY");
             System.out.println(" Ending : " + test);
             Tr.exit(this, tc, test);
@@ -562,120 +555,69 @@ public class JMSProducerServlet extends HttpServlet {
 
     public void testJMSProducerSendMessage_Topic_B_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
-
-        JMSContext jmsContextTCFBindings = tcfBindings.createContext();
-
-        String sentMessageText = "Test";
-        TextMessage msgOut = jmsContextTCFBindings.createTextMessage(sentMessageText);
-        msgOut.setJMSType("TestType");
-        msgOut.setJMSCorrelationID("MyCorrelID");
-
-        JMSConsumer jmsConsumer = jmsContextTCFBindings.createConsumer(topic1);
-        JMSProducer producer = jmsContextTCFBindings.createProducer();
-
-        producer
-            .setJMSCorrelationID("TestCorrelID")
-            .setJMSType("NewTestType")
-            .send(topic1, msgOut);
-
-        TextMessage recvdMessage = (TextMessage) jmsConsumer.receive(30000);
-        String receivedMessageText = recvdMessage.getText();
-
-        boolean testFailed = false;
-        if ( !receivedMessageText.equals(sentMessageText) ) {
-            testFailed = true;
-        }
-
-        jmsConsumer.close();
-        jmsContextTCFBindings.close();
-
-        if ( testFailed ) {
-            throw new Exception("testJMSProducerSendMessage_Topic_B_SecOff failed");
-        }
+        testJMSProducerSendMessage_Topic_SecOff(tcfBindings);
     }
 
     public void testJMSProducerSendMessage_Topic_TCP_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        testJMSProducerSendMessage_Topic_SecOff(tcfTCP);
+    }
+    
+    private void testJMSProducerSendMessage_Topic_SecOff(TopicConnectionFactory topicConnectionFactory) 
+            throws JMSException, TestException {
+     
+        // Use the default context so that the message is produced and consumed using the 
+        // servlet transaction which is committed after the servlet returns.
+        try (JMSContext jmsContext = topicConnectionFactory.createContext()) {  
+            // Create the consumer first, JMS does not guarantee when the first message will be received
+            // but in practice the subscription will have been made before the message has been sent. 
+            JMSConsumer jmsConsumer = jmsContext.createConsumer(topic1);
+            JMSProducer jmsProducer = jmsContext.createProducer();
 
-        JMSContext jmsContextTCFTCP = tcfTCP.createContext();
+            String sentMessageBody = methodName()+" at "+new Date();
+            TextMessage sentMessage = jmsContext.createTextMessage(sentMessageBody);
+            sentMessage.setJMSType("TestType");
+            sentMessage.setJMSCorrelationID("MyCorrelID");
 
-        String sentMessageText = "Test";
+            // The jmsProducer set methods override the values set on the message itself.
+            
+            jmsProducer.setJMSCorrelationID("TestCorrelID")
+                       .setJMSType("NewTestType")
+                       .send(topic1, sentMessage);
 
-        TextMessage msgOut = jmsContextTCFTCP.createTextMessage(sentMessageText);
-        msgOut.setJMSType("TestType");
-        msgOut.setJMSCorrelationID("MyCorrelID");
-
-        JMSConsumer jmsConsumer = jmsContextTCFTCP.createConsumer(topic1);
-        JMSProducer producer = jmsContextTCFTCP.createProducer();
-
-        producer
-            .setJMSCorrelationID("TestCorrelID")
-            .setJMSType("NewTestType")
-            .send(topic1, msgOut);
-
-        TextMessage recvdMessage = (TextMessage) jmsConsumer.receive(30000);
-        String receivedMessageText = recvdMessage.getText();
-
-        boolean testFailed = false;
-        if ( !receivedMessageText.equals(sentMessageText) ) {
-            testFailed = true;
-        }
-
-        jmsConsumer.close();
-        jmsContextTCFTCP.close();
-
-        if ( testFailed ) {
-            throw new Exception("testJMSProducerSendMessage_Topic_B_SecOff failed");
+            TextMessage receivedMessage = (TextMessage) jmsConsumer.receive(30000);
+            if (receivedMessage == null)                    
+                  throw new TestException("No message received, sent:"+sentMessage);
+            if (    !receivedMessage.getText().equals(sentMessageBody) 
+                 || !receivedMessage.getJMSCorrelationID().equals("TestCorrelID") 
+                 || !receivedMessage.getJMSType().equals("NewTestType"))
+                  throw new TestException("Wrong message received:"+receivedMessage+" sent:"+sentMessage); 
         }
     }
 
     public void testJMSProducerSendMessage_NullMessage_Topic_B_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
-
-        JMSContext jmsContextTCFBindings = tcfBindings.createContext();
-        JMSConsumer jmsConsumer = jmsContextTCFBindings.createConsumer(topic1);
-        JMSProducer producer = jmsContextTCFBindings.createProducer();
-
-        Message msg = null;
-
-        boolean testFailed = false;
-        try {
-            producer.send(topic1, msg);
-            testFailed = true;
-        } catch ( MessageFormatRuntimeException ex ) {
-            ex.printStackTrace();
-        }
-
-        jmsConsumer.close();
-        jmsContextTCFBindings.close();
-
-        if ( testFailed ) {
-            throw new Exception("testJMSProducerSendMessage_NullMessage_Topic_B_SecOff failed");
-        }
+        testJMSProducerSendMessage_NullMessage_Topic_SecOff(tcfBindings);
     }
 
     public void testJMSProducerSendMessage_NullMessage_Topic_TCP_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        testJMSProducerSendMessage_NullMessage_Topic_SecOff(tcfTCP);
+    }
+    
+    private void testJMSProducerSendMessage_NullMessage_Topic_SecOff(TopicConnectionFactory topicConnectionFactory)
+            throws TestException {
 
-        JMSContext jmsContextTCFTCP = tcfTCP.createContext();
-        JMSConsumer jmsConsumer = jmsContextTCFTCP.createConsumer(topic1);
-        JMSProducer producer = jmsContextTCFTCP.createProducer();
+        try (JMSContext jmsContext = topicConnectionFactory.createContext()) {
+            JMSProducer jmsProducer = jmsContext.createProducer();
 
-        Message msg = null;
-
-        boolean testFailed = false;
-        try {
-            producer.send(topic1, msg);
-            testFailed = true;
-        } catch ( MessageFormatRuntimeException ex ) {
-            ex.printStackTrace();
-        }
-
-        jmsConsumer.close();
-        jmsContextTCFTCP.close();
-
-        if ( testFailed ) {
-            throw new Exception("testJMSProducerSendMessage_NullMessage_Topic_TCP_SecOff failed");
+            Message sentMessage = null;
+            try {
+                jmsProducer.send(topic1, sentMessage);
+                throw new TestException("Sent null message without throwing MessageFormatRuntimeException sent:"+sentMessage);
+            } catch (MessageFormatRuntimeException ex) {
+                // Expected.
+            }
         }
     }
 
@@ -684,175 +626,112 @@ public class JMSProducerServlet extends HttpServlet {
 
     public void testJMSProducerSendMessage_InvalidDestinationTopic_B_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
-
-        JMSContext jmsContextTCFBindings = tcfBindings.createContext();
-        JMSProducer producer = jmsContextTCFBindings.createProducer();
-
-        Message msg = jmsContextTCFBindings.createMessage();
-
-        boolean testFailed = false;
-        try {
-            Topic topic1 = null;
-            producer.send(topic1, msg);
-            testFailed = true;
-        } catch ( InvalidDestinationRuntimeException ex ) {
-            ex.printStackTrace();
-        }
-
-        jmsContextTCFBindings.close();
-
-        if ( testFailed ) {
-            throw new Exception("testJMSProducerSendMessage_InvalidDestinationTopic_B_SecOff failed");
-        }
+        testJMSProducerSendMessage_InvalidDestinationTopic_SecOff(tcfBindings);
     }
 
     public void testJMSProducerSendMessage_InvalidDestinationTopic_TCP_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
-
-        JMSContext jmsContextTCFTCP = tcfTCP.createContext();
-        JMSProducer producer = jmsContextTCFTCP.createProducer();
-
-        Message msg = jmsContextTCFTCP.createMessage();
-
-        boolean testFailed = false;
-
-        try {
-            Topic topic1 = null;
-            producer.send(topic1, msg);
-            testFailed = true;
-        } catch ( InvalidDestinationRuntimeException ex ) {
-            ex.printStackTrace();
-        }
-
-        jmsContextTCFTCP.close();
-
-        if ( testFailed ) {
-            throw new Exception("testJMSProducerSendMessage_InvalidDestinationTopic_B_SecOff failed");
-        }
+        testJMSProducerSendMessage_InvalidDestinationTopic_SecOff(tcfTCP);
     }
 
+    private void testJMSProducerSendMessage_InvalidDestinationTopic_SecOff(TopicConnectionFactory topicConnectionFactory) 
+        throws TestException {
+        
+        try (JMSContext jmsContext = topicConnectionFactory.createContext()) {
+            JMSProducer jmsProducer = jmsContext.createProducer();
+
+            TextMessage sentMessage = jmsContext.createTextMessage(methodName() + " at " + new Date());
+            try {
+                Topic topic1 = null;
+                jmsProducer.send(topic1, sentMessage);
+                throw new TestException("Sent message to null topic without throwing InvalidDestinationRuntimeException, sent:" + sentMessage);
+            } catch (InvalidDestinationRuntimeException ex) {
+                // Expected.
+            }
+        }
+    }
+    
     // 118071_1_10_T MessageNotWriteableRuntimeException - if this JMSProducer
     // has been configured to set a message property, but the message's
     // properties are read-only
+    //TODO Badly named, its the message thats not writable, the topic is writable.
 
     public void testJMSProducerSendMessage_NotWriteableTopic_B_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
-
-        JMSContext jmsContextTCFBindings = tcfBindings.createContext();
-
-        StreamMessage msgOut = jmsContextTCFBindings.createStreamMessage();
-        msgOut.reset();
-
-        JMSProducer producer = jmsContextTCFBindings.createProducer();
-        JMSConsumer jmsConsumer = jmsContextTCFBindings.createConsumer(topic1);
-
-        producer.send(topic1, msgOut);
-
-        StreamMessage msgIn = (StreamMessage) jmsConsumer.receive(30000);
-        producer.setProperty("Role", "Tester");
-
-        boolean testFailed = false;
-        try {
-            producer.send(topic1, msgIn);
-            testFailed = true;
-        } catch ( MessageNotWriteableRuntimeException ex ) {
-            ex.printStackTrace();
-        }
-
-        jmsConsumer.close();
-        jmsContextTCFBindings.close();
-
-        if ( testFailed ) {
-            throw new Exception("testJMSProducerSendMessage_NotWriteableTopic_B_SecOff failed");
-        }
+        testJMSProducerSendMessage_NotWriteableTopic_SecOff(tcfBindings);
     }
 
     public void testJMSProducerSendMessage_NotWriteableTopic_TCP_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
-
-        JMSContext jmsContextTCFTCP = tcfTCP.createContext();
-
-        StreamMessage msgOut = jmsContextTCFTCP.createStreamMessage();
-        msgOut.reset();
-
-        JMSProducer producer = jmsContextTCFTCP.createProducer();
-        JMSConsumer jmsConsumer = jmsContextTCFTCP.createConsumer(topic1);
-
-        producer.send(topic1, msgOut);
-
-        StreamMessage msgIn = (StreamMessage) jmsConsumer.receive(30000);
-        producer.setProperty("Role", "Tester");
-
-        boolean testFailed = false;
-        try {
-            producer.send(topic1, msgIn);
-            testFailed = true;
-        } catch ( MessageNotWriteableRuntimeException ex ) {
-            ex.printStackTrace();
-        }
-
-        jmsConsumer.close();
-        jmsContextTCFTCP.close();
-
-        if ( testFailed ) {
-            throw new Exception("testJMSProducerSendMessage_NotWriteableTopic_TCP_SecOff failed");
-        }
+        testJMSProducerSendMessage_NotWriteableTopic_SecOff(tcfTCP);
     }
 
+    private void testJMSProducerSendMessage_NotWriteableTopic_SecOff(TopicConnectionFactory topicConnectionFactory)
+            throws JMSException, TestException {
+
+        try (JMSContext jmsContext = topicConnectionFactory.createContext()) {
+            JMSProducer jmsProducer = jmsContext.createProducer();
+            JMSConsumer jmsConsumer = jmsContext.createConsumer(topic1);
+
+            StreamMessage sentMessage = jmsContext.createStreamMessage();
+            sentMessage.writeString(methodName() + " 1 at " + new Date());
+            sentMessage.reset();
+            try {
+                sentMessage.writeString(methodName() + " 2 at " + new Date());
+                throw new TestException("Write to a read only message after reset() without throwing MessageNotWriteableException"
+                        + " sent(1):" + sentMessage);
+            } catch (MessageNotWriteableException ex) {
+                // Expected
+            }
+
+            jmsProducer.send(topic1, sentMessage);
+
+            StreamMessage receivedMessage = (StreamMessage) jmsConsumer.receive(30000);
+            jmsProducer.setProperty("Role", "Tester");
+
+            try {
+                jmsProducer.send(topic1, receivedMessage);
+                throw new TestException("Sent a read only message after modifying a property without throwing MessageNotWriteableRuntimeException"
+                                       + " sent(2):" + receivedMessage);
+            } catch (MessageNotWriteableRuntimeException ex) {
+                // Expected
+            }
+
+        }
+
+    }
+    
     // 118071_1_12_T Test with message as empty string
 
     public void testJMSProducerSendMessage_EmptyMessage_Topic_B_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
-
-        JMSContext jmsContextTCFBindings = tcfBindings.createContext();
-        JMSConsumer jmsConsumer = jmsContextTCFBindings.createConsumer(topic1);
-        JMSProducer producer = jmsContextTCFBindings.createProducer();
-
-        TextMessage tmsg = jmsContextTCFBindings.createTextMessage("");
-        producer.send(topic1, tmsg);
-
-        TextMessage recvdMessage = (TextMessage) jmsConsumer.receive(30000);
-        String msgText = recvdMessage.getText();
-
-        boolean testFailed = false;
-        if ( !msgText.equals("") ) {
-            testFailed = true;
-        }
-
-        jmsConsumer.close();
-        jmsContextTCFBindings.close();
-
-        if (testFailed) {
-            throw new Exception("testJMSProducerSendMessage_EmptyMessage_Topic_B_SecOff failed");
-        }
+        testJMSProducerSendMessage_EmptyMessage_Topic_SecOff(tcfBindings);
     }
 
     public void testJMSProducerSendMessage_EmptyMessage_Topic_TCP_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
-
-        JMSContext jmsContextTCFTCP = tcfTCP.createContext();
-        JMSConsumer jmsConsumer = jmsContextTCFTCP.createConsumer(topic1);
-        JMSProducer producer = jmsContextTCFTCP.createProducer();
-
-        TextMessage tmsg = jmsContextTCFTCP.createTextMessage("");
-        producer.send(topic1, tmsg);
-
-        TextMessage recvdMessage = (TextMessage) jmsConsumer.receive(30000);
-        String msgText = recvdMessage.getText();
-
-        boolean testFailed = false;
-        if ( !msgText.equals("") ) {
-            testFailed = true;
-        }
-
-        jmsConsumer.close();
-        jmsContextTCFTCP.close();
-
-        if (testFailed) {
-            throw new Exception("testJMSProducerSendMessage_EmptyMessage_Topic_B_SecOff failed");
-        }
+        testJMSProducerSendMessage_EmptyMessage_Topic_SecOff(tcfTCP);
     }
 
+    private void testJMSProducerSendMessage_EmptyMessage_Topic_SecOff(TopicConnectionFactory topicConnectionFactory)
+        throws JMSException, TestException {
+            
+        try (JMSContext jmsContext = topicConnectionFactory.createContext()) {
+            JMSConsumer jmsConsumer = jmsContext.createConsumer(topic1);
+            JMSProducer jmsProducer = jmsContext.createProducer();
+
+            TextMessage sentMessage = jmsContext.createTextMessage("");
+            jmsProducer.send(topic1, sentMessage);
+
+            TextMessage receivedMessage = (TextMessage) jmsConsumer.receive(30000);
+            String receivedMessageText = receivedMessage.getText();
+
+            if ( !receivedMessageText.equals("") ) {
+                throw new TestException("Wrong message received:"+receivedMessage+" sent:"+sentMessage);
+            }
+        }
+    }
+ 
     // 118071_2 JMSProducer send(Destination destination, String body)
     // 118071_2_1_Q Send a TextMessage with the specified body to the specified
     // queue, using any send options, message properties and message headers
@@ -1124,216 +1003,145 @@ public class JMSProducerServlet extends HttpServlet {
 
     public void testJMSProducerSendTextMessage_Topic_B_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
-
-        JMSContext jmsContextTCFBindings = tcfBindings.createContext();
-        JMSConsumer jmsConsumer = jmsContextTCFBindings.createConsumer(topic1);
-        JMSProducer producer = jmsContextTCFBindings.createProducer();
-
-        producer
-            .setJMSCorrelationID("TestCorrelID")
-            .setJMSType("NewTestType")
-            .send(topic1, "This is message body");
-
-        String recvdMessage = jmsConsumer.receive(30000).getBody(String.class);
-
-        boolean testFailed = false;
-        if ( !recvdMessage.equals("This is message body") ||
-             !producer.getJMSCorrelationID().equals("TestCorrelID") ||
-             !producer.getJMSType().equals("NewTestType") ) {
-            testFailed = true;
-        }
-
-        jmsConsumer.close();
-        jmsContextTCFBindings.close();
-
-        if ( testFailed ) {
-            throw new Exception("testJMSProducerSendTextMessage_Topic_B_SecOff failed");
-        }
+        testJMSProducerSendTextMessage_Topic_SecOff(tcfBindings);
     }
 
     public void testJMSProducerSendTextMessage_Topic_TCP_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
-
-        JMSContext jmsContextTCFTCP = tcfTCP.createContext();
-        JMSConsumer jmsConsumer = jmsContextTCFTCP.createConsumer(topic1);
-        JMSProducer producer = jmsContextTCFTCP.createProducer();
-
-        producer
-            .setJMSCorrelationID("TestCorrelID")
-            .setJMSType("NewTestType")
-            .send(topic1, "This is message body");
-
-        String recvdMessage = jmsConsumer.receive(30000).getBody(String.class);
-
-        boolean testFailed = false;
-        if ( !recvdMessage.equals("This is message body") ||
-             !producer.getJMSCorrelationID().equals("TestCorrelID") ||
-             !producer.getJMSType().equals("NewTestType") ) {
-            testFailed = true;
-        }
-
-        jmsConsumer.close();
-        jmsContextTCFTCP.close();
-
-        if ( testFailed ) {
-            throw new Exception("testJMSProducerSendTextMessage_Topic_TCP_SecOff failed");
-        }
+        testJMSProducerSendTextMessage_Topic_SecOff(tcfTCP);
     }
 
+    private void testJMSProducerSendTextMessage_Topic_SecOff(TopicConnectionFactory topicConnectionFactory)
+            throws JMSException, TestException {
+        
+        try (JMSContext jmsContext = topicConnectionFactory.createContext()) {
+            JMSConsumer jmsConsumer = jmsContext.createConsumer(topic1);
+            JMSProducer jmsProducer = jmsContext.createProducer();
+
+            String sentMessageBody1 = methodName()+" 1 at "+new Date();
+            jmsProducer.setJMSCorrelationID("TestCorrelID")
+                       .setJMSType("NewTestType")
+                       .send(topic1, sentMessageBody1);
+
+            Message receivedMessage1 = jmsConsumer.receive(30000);
+            String receivedMessageBody1 = receivedMessage1.getBody(String.class);
+
+            if ( !receivedMessageBody1.equals(sentMessageBody1) ||
+                 !receivedMessage1.getJMSCorrelationID().equals("TestCorrelID") ||
+                 !receivedMessage1.getJMSType().equals("NewTestType") ) {
+                throw new TestException("Wrong message received 1:"+receivedMessage1);
+            }
+            
+            // Repeat, to establish that the producer correlationId and message type have not changed.
+            
+            String sentMessageBody2 = methodName()+" 2 at "+new Date();
+            jmsProducer.send(topic1, sentMessageBody2);
+
+            Message receivedMessage2 = jmsConsumer.receive(30000);
+            String receivedMessageBody2 = receivedMessage2.getBody(String.class);
+
+            if ( !receivedMessageBody2.equals(sentMessageBody2) ||
+                 !receivedMessage2.getJMSCorrelationID().equals("TestCorrelID") ||
+                 !receivedMessage2.getJMSType().equals("NewTestType") ) {
+                throw new TestException("Wrong message received 2:"+receivedMessage2);
+            }
+        }
+    }
+    
     // 118071_2_8_Topic InvalidDestinationRuntimeException - if a client uses
     // this method with an invalid topic
 
     public void testJMSProducerSendTextMessage_InvalidDestinationTopic_B_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
-
-        JMSContext jmsContextTCFBindings = tcfBindings.createContext();
-        JMSProducer producer = jmsContextTCFBindings.createProducer();
-
-        boolean testFailed = false;
-        try {
-            Topic topic1 = null;
-            producer.send(topic1, "This is the message body");
-            testFailed = true;
-        } catch ( InvalidDestinationRuntimeException ex ) {
-            ex.printStackTrace();
-        }
-
-        jmsContextTCFBindings.close();
-
-        if ( testFailed ) {
-            throw new Exception("testJMSProducerSendTextMessage_InvalidDestinationTopic_B_SecOff failed");
-        }
+        testJMSProducerSendTextMessage_InvalidDestinationTopic_SecOff(tcfTCP);
     }
 
     public void testJMSProducerSendTextMessage_InvalidDestinationTopic_TCP_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
-
-        JMSContext jmsContextTCFTCP = tcfTCP.createContext();
-        JMSProducer producer = jmsContextTCFTCP.createProducer();
-
-        boolean testFailed = false;
-        try {
-            Topic topic1 = null;
-            producer.send(topic1, "This is the message body");
-            testFailed = true;
-        } catch ( InvalidDestinationRuntimeException ex ) {
-            ex.printStackTrace();
-        }
-
-        jmsContextTCFTCP.close();
-
-        if ( testFailed ) {
-            throw new Exception("testJMSProducerSendTextMessage_InvalidDestinationTopic_TCP_SecOff failed");
-        }
+        testJMSProducerSendTextMessage_InvalidDestinationTopic_SecOff(tcfTCP);
     }
 
+    private void testJMSProducerSendTextMessage_InvalidDestinationTopic_SecOff(TopicConnectionFactory topicConnectionFactory)
+        throws TestException {
+        try (JMSContext jmsContextTCFBindings = tcfBindings.createContext()) {
+            JMSProducer producer = jmsContextTCFBindings.createProducer();
+
+            try {
+                Topic nullTopic = null;
+                String sentMessageBody = methodName()+" at "+new Date();
+                producer.send(nullTopic, sentMessageBody);
+                throw new TestException("Sent message to null topic without throwing InvalidDestinationRuntimeException, sent:" + sentMessageBody);
+                
+            } catch ( InvalidDestinationRuntimeException ex ) {
+                // Expected
+            }           
+        }
+    }
+    
     // 118071_2_9_Topic If a null value is specified for body then a TextMessage
     // with no body will be sent.
 
     public void testJMSProducerSendTextMessage_NullMessage_Topic_B_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
-
-        JMSContext jmsContextTCFBindings = tcfBindings.createContext();
-        JMSConsumer jmsConsumer = jmsContextTCFBindings.createConsumer(topic1);
-        JMSProducer producer = jmsContextTCFBindings.createProducer();
-
-        String msg = null;
-        producer
-            .setJMSCorrelationID("TestCorrelID")
-            .setJMSType("NewTestType")
-            .send(topic1, msg);
-
-        jmsConsumer.receive(30000);
-
-        boolean testFailed = false;
-        if ( !producer.getJMSCorrelationID().equals("TestCorrelID") ) {
-            testFailed = true;
-        }
-
-        jmsConsumer.close();
-        jmsContextTCFBindings.close();
-
-        if ( testFailed ) {
-            throw new Exception("testJMSProducerSendTextMessage_NullMessage_Topic_B_SecOff failed");
-        }
+        testJMSProducerSendTextMessage_NullMessage_Topic_SecOff(tcfBindings);
     }
 
     public void testJMSProducerSendTextMessage_NullMessage_Topic_TCP_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
-
-        JMSContext jmsContextTCFTCP = tcfTCP.createContext();
-        JMSConsumer jmsConsumer = jmsContextTCFTCP.createConsumer(topic1);
-        JMSProducer producer = jmsContextTCFTCP.createProducer();
-
-        String msg = null;
-        producer
-            .setJMSCorrelationID("TestCorrelID")
-            .setJMSType("NewTestType")
-            .send(topic1, msg);
-
-        jmsConsumer.receive(30000);
-
-        boolean testFailed = false;
-        if ( !producer.getJMSCorrelationID().equals("TestCorrelID") ) {
-            testFailed = true;
-        }
-
-        jmsConsumer.close();
-        jmsContextTCFTCP.close();
-
-        if ( testFailed ) {
-            throw new Exception("testJMSProducerSendTextMessage_NullMessage_Topic_B_SecOff failed");
-        }
+        testJMSProducerSendTextMessage_NullMessage_Topic_SecOff(tcfTCP);
     }
 
+    private void testJMSProducerSendTextMessage_NullMessage_Topic_SecOff(TopicConnectionFactory topicConnectionFactory)
+            throws JMSException, TestException {
+            
+        try (JMSContext jmsContextTCFBindings = topicConnectionFactory.createContext()) {
+            JMSConsumer jmsConsumer = jmsContextTCFBindings.createConsumer(topic1);
+            JMSProducer jmsProducer = jmsContextTCFBindings.createProducer();
+
+            String sentMessageBody = null;
+            jmsProducer.setJMSCorrelationID("TestCorrelID")
+                       .setJMSType("NewTestType")
+                       .send(topic1, sentMessageBody);
+
+            Message receivedMessage = jmsConsumer.receive(30000);
+
+            if (    !(receivedMessage.getBody(String.class) == null) 
+                 || !receivedMessage.getJMSCorrelationID().equals("TestCorrelID") 
+                 || !receivedMessage.getJMSType().equals("NewTestType")) {
+                 throw new TestException("Wrong message received:" + receivedMessage);
+            }
+        }
+    }
+    
     // 118071_2_10_Topic Test with empty string for the body
 
     public void testJMSProducerSendTextMessage_EmptyMessage_Topic_B_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
-
-        JMSContext jmsContextTCFBindings = tcfBindings.createContext();
-        JMSConsumer jmsConsumer = jmsContextTCFBindings.createConsumer(topic1);
-        JMSProducer producer = jmsContextTCFBindings.createProducer();
-
-        producer.send(topic1, "");
-        String recvdMessage = jmsConsumer.receive(30000).getBody(String.class);
-
-        boolean testFailed = false;
-        if ( !recvdMessage.equals("") ) {
-            testFailed = true;
-        }
-
-        jmsConsumer.close();
-        jmsContextTCFBindings.close();
-
-        if ( testFailed ) {
-            throw new Exception("testJMSProducerSendTextMessage_EmptyMessage_Topic_B_SecOff failed");
-        }
+        testJMSProducerSendTextMessage_EmptyMessage_Topic_SecOff(tcfBindings);
     }
 
     public void testJMSProducerSendTextMessage_EmptyMessage_Topic_TCP_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
-
-        JMSContext jmsContextTCFTCP = tcfTCP.createContext();
-        JMSConsumer jmsConsumer = jmsContextTCFTCP.createConsumer(topic1);
-        JMSProducer producer = jmsContextTCFTCP.createProducer();
-
-        producer.send(topic1, "");
-        String recvdMessage = jmsConsumer.receive(30000).getBody(String.class);
-
-        boolean testFailed = false;
-        if ( !recvdMessage.equals("") ) {
-            testFailed = true;
-        }
-
-        jmsConsumer.close();
-        jmsContextTCFTCP.close();
-
-        if ( testFailed ) {
-            throw new Exception("testJMSProducerSendTextMessage_EmptyMessage_Topic_B_SecOff failed");
-        }
+        testJMSProducerSendTextMessage_EmptyMessage_Topic_SecOff(tcfTCP);
     }
 
+    private void testJMSProducerSendTextMessage_EmptyMessage_Topic_SecOff(TopicConnectionFactory topicConnectionFactory)
+            throws JMSException, TestException {
+        
+        try (JMSContext jmsContext = topicConnectionFactory.createContext()) {
+            JMSConsumer jmsConsumer = jmsContext.createConsumer(topic1);
+            JMSProducer jmsProducer = jmsContext.createProducer();
+
+            jmsProducer.send(topic1, "");
+            Message receivedMessage = jmsConsumer.receive(30000);
+            String receivedMessageBody = receivedMessage.getBody(String.class);
+
+            if ( !receivedMessageBody.equals("") ) {
+                 throw new TestException("Wrong message received:"+receivedMessage);
+            }
+        }
+    }
+    
     // 118071_3 JMSProducer send(Destination destination,Map<String,Object> body)
     // 118071_3_1_Queue Send a MapMessage with the specified body to the
     // specified queue, using any send options, message properties and message
@@ -1612,217 +1420,126 @@ public class JMSProducerServlet extends HttpServlet {
 
     public void testJMSProducerSendMapMessage_Topic_B_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
-
-        JMSContext jmsContextTCFBindings = tcfBindings.createContext();
-        JMSConsumer jmsConsumer = jmsContextTCFBindings.createConsumer(topic1);
-
-        MapMessage mapMessage = jmsContextTCFBindings.createMapMessage();
-        String propName = "myPropName";
-        Object val = new Integer(10);
-        mapMessage.setObject(propName, val);
-
-        JMSProducer producer = jmsContextTCFBindings.createProducer();
-
-        producer
-            .setJMSCorrelationID("TestCorrelID")
-            .setJMSType("NewTestType")
-            .send(topic1, mapMessage);
-
-        boolean correctMapBody = jmsConsumer
-            .receive(30000)
-            .getBody(java.util.Map.class)
-            .containsValue(val);
-
-        boolean testFailed = false;
-
-        if ( !correctMapBody ||
-             !producer.getJMSCorrelationID().equals("TestCorrelID") ||
-             !producer.getJMSType().equals("NewTestType") ) {
-            testFailed = true;
-        }
-
-        jmsConsumer.close();
-        jmsContextTCFBindings.close();
-
-        if ( testFailed ) {
-            throw new Exception("testJMSProducerSendMapMessage_Topic_B_SecOff failed");
-        }
+        testJMSProducerSendMapMessage_Topic_SecOff(tcfBindings);
     }
 
     public void testJMSProducerSendMapMessage_Topic_TCP_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
-
-        JMSContext jmsContextTCFTCP = tcfTCP.createContext();
-        JMSConsumer jmsConsumer = jmsContextTCFTCP.createConsumer(topic1);
-
-        MapMessage mapMessage = jmsContextTCFTCP.createMapMessage();
-        String propName = "myPropName";
-        Object val = new Integer(10);
-        mapMessage.setObject(propName, val);
-
-        JMSProducer producer = jmsContextTCFTCP.createProducer();
-
-        producer
-            .setJMSCorrelationID("TestCorrelID")
-            .setJMSType("NewTestType")
-            .send(topic1, mapMessage);
-
-        boolean correctMapBody = jmsConsumer
-            .receive(30000)
-            .getBody(java.util.Map.class)
-            .containsValue(val);
-
-        boolean testFailed = false;
-        if ( !correctMapBody ||
-             !producer.getJMSCorrelationID().equals("TestCorrelID") ||
-             !producer.getJMSType().equals("NewTestType") ) {
-            testFailed = true;
-        }
-
-        jmsConsumer.close();
-        jmsContextTCFTCP.close();
-
-        if ( testFailed ) {
-            throw new Exception("testJMSProducerSendMapMessage_Topic_TCP_SecOff failed");
-        }
+        testJMSProducerSendMapMessage_Topic_SecOff(tcfTCP);
     }
 
+    private void testJMSProducerSendMapMessage_Topic_SecOff(TopicConnectionFactory topicConnectionFactory)
+            throws JMSException, TestException {
+            
+        try (JMSContext jmsContext = topicConnectionFactory.createContext()) {
+            JMSConsumer jmsConsumer = jmsContext.createConsumer(topic1);
+            JMSProducer jmsProducer = jmsContext.createProducer();
+
+            MapMessage sentMessage = jmsContext.createMapMessage();
+            String name = "myName";
+            Object value = new Long(System.currentTimeMillis());
+            sentMessage.setObject(name, value);
+
+            jmsProducer.setJMSCorrelationID("TestCorrelID")
+                       .setJMSType("NewTestType")
+                       .send(topic1, sentMessage);
+
+            MapMessage receivedMessage = (MapMessage) jmsConsumer.receive(30000);
+            if (receivedMessage == null)
+                throw new TestException("No message received, sent:"+sentMessage);  
+            if (   !receivedMessage.getObject(name).equals(value)
+                || !receivedMessage.getJMSCorrelationID().equals("TestCorrelID") 
+                || !receivedMessage.getJMSType().equals("NewTestType") ) {
+                throw new TestException("Wrong message received:"+ receivedMessage);
+            }
+        }
+    }
+    
     // 118071_3_7_Topic InvalidDestinationRuntimeException - if a client uses
     // this method with an invalid queue
 
     public void testJMSProducerSendMapMessageTopic_InvalidDestination_B_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
-
-        JMSContext jmsContextTCFBindings = tcfBindings.createContext();
-        JMSConsumer jmsConsumer = jmsContextTCFBindings.createConsumer(topic1);
-
-        MapMessage mapMessage = jmsContextTCFBindings.createMapMessage();
-        String propName = "myPropName";
-        Object val = new Integer(10);
-        mapMessage.setObject(propName, val);
-
-        JMSProducer producer = jmsContextTCFBindings.createProducer();
-
-        boolean testFailed = false;
-
-        try {
-            producer
-                .setJMSCorrelationID("TestCorrelID")
-                .setJMSType("NewTestType")
-                .send(null, mapMessage);
-            testFailed = true;
-        } catch ( InvalidDestinationRuntimeException ex ) {
-            ex.printStackTrace();
-        }
-
-        jmsConsumer.close();
-        jmsContextTCFBindings.close();
-
-        if ( testFailed ) {
-            throw new Exception("testJMSProducerSendMapMessageTopic_InvalidDestination_TCP_SecOff failed");
-        }
+        testJMSProducerSendMapMessageTopic_InvalidDestination_SecOff(tcfBindings);
     }
 
     public void testJMSProducerSendMapMessageTopic_InvalidDestination_TCP_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
-
-        JMSContext jmsContextTCFTCP = tcfTCP.createContext();
-        JMSConsumer jmsConsumer = jmsContextTCFTCP.createConsumer(topic1);
-
-        MapMessage mapMessage = jmsContextTCFTCP.createMapMessage();
-        String propName = "myPropName";
-        Object val = new Integer(10);
-        mapMessage.setObject(propName, val);
-
-        JMSProducer producer = jmsContextTCFTCP.createProducer();
-
-        boolean testFailed = false;
-        try {
-            producer
-                .setJMSCorrelationID("TestCorrelID")
-                .setJMSType("NewTestType")
-                .send(null, mapMessage);
-            testFailed = true;
-        } catch ( InvalidDestinationRuntimeException ex ) {
-            ex.printStackTrace();
-        }
-
-        jmsConsumer.close();
-        jmsContextTCFTCP.close();
-
-        if ( testFailed ) {
-            throw new Exception("testJMSProducerSendMapMessageTopic_InvalidDestination_TCP_SecOff failed");
-        }
+        testJMSProducerSendMapMessageTopic_InvalidDestination_SecOff(tcfTCP);
     }
 
-    // 118071_3_8_Topic If a null value is specified then a MapMessage with no
-    // map entries will be sent.
+    private void testJMSProducerSendMapMessageTopic_InvalidDestination_SecOff(TopicConnectionFactory topicConnectionFactory)
+            throws JMSException, TestException {
+            
+        try (JMSContext jmsContext = topicConnectionFactory.createContext()) {
+            JMSProducer jmsProducer = jmsContext.createProducer();
 
+            MapMessage sentMessage = jmsContext.createMapMessage();
+            String name = "myName";
+            Object value = new Long(System.currentTimeMillis());
+            sentMessage.setObject(name, value);
+ 
+            try {
+                jmsProducer.setJMSCorrelationID("TestCorrelID")
+                           .setJMSType("NewTestType")
+                           .send(null, sentMessage);
+                // Should not reach here.
+                throw new TestException("Sent message to null topic without throwing InvalidDestinationRuntimeException, sent:" + sentMessage);
+            
+            } catch ( InvalidDestinationRuntimeException ex ) {
+                // Expected
+            }
+        }
+    }
+    
+    /**
+      118071_3_8_Topic If a null value is specified then a MapMessage with a null value is sent. 
+      Note: The JMS specification for JMSMapMesage.setObject() states:
+      <q>This method works only for the objectified primitive object types (Integer, Double, Long ...), 
+      String objects, and byte arrays.</q>
+      null is not a primitive, so this should not work.
+    */
     public void testJMSProducerSendMapMessageTopic_Null_B_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
-
-        JMSContext jmsContextTCFBindings = tcfBindings.createContext();
-        JMSConsumer jmsConsumer = jmsContextTCFBindings.createConsumer(topic1);
-        JMSProducer producer = jmsContextTCFBindings.createProducer();
-
-        MapMessage mapMessage = jmsContextTCFBindings.createMapMessage();
-        String propName = "myPropName";
-        Object val = null;
-        mapMessage.setObject(propName, val);
-
-        producer
-            .setJMSCorrelationID("TestCorrelID")
-            .setJMSType("NewTestType")
-            .setJMSReplyTo(topic1)
-            .send(topic1, mapMessage);
-
-        boolean testFailed = false;
-        if ( !producer.getJMSCorrelationID().equals("TestCorrelID") ||
-             !producer.getJMSType().equals("NewTestType") ) {
-            testFailed = true;
-        }
-
-        jmsConsumer.close();
-        jmsContextTCFBindings.close();
-
-        if ( testFailed ) {
-            throw new Exception("testJMSProducerSendMapMessageTopic_Null_B_SecOff failed");
-        }
+        testJMSProducerSendMapMessageTopic_Null_SecOff(tcfBindings);
     }
 
     public void testJMSProducerSendMapMessageTopic_Null_TCP_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
-
-        JMSContext jmsContextTCFTCP = tcfTCP.createContext();
-        JMSConsumer jmsConsumer = jmsContextTCFTCP.createConsumer(topic1);
-        JMSProducer producer = jmsContextTCFTCP.createProducer();
-
-        MapMessage mapMessage = jmsContextTCFTCP.createMapMessage();
-        String propName = "myPropName";
-        Object val = null;
-        mapMessage.setObject(propName, val);
-
-        producer
-            .setJMSCorrelationID("TestCorrelID")
-            .setJMSType("NewTestType")
-            .setJMSReplyTo(topic1)
-            .send(topic1, mapMessage);
-
-        boolean testFailed = false;
-
-        if ( !producer.getJMSCorrelationID().equals("TestCorrelID") ||
-             !producer.getJMSType().equals("NewTestType") ) {
-            testFailed = true;
-        }
-
-        jmsConsumer.close();
-        jmsContextTCFTCP.close();
-
-        if ( testFailed ) {
-            throw new Exception("testJMSProducerSendMapMessageTopic_Null_TCP_SecOff failed");
-        }
+        testJMSProducerSendMapMessageTopic_Null_SecOff(tcfTCP);
     }
 
+    private void testJMSProducerSendMapMessageTopic_Null_SecOff(TopicConnectionFactory topicConnectionFactory)
+            throws JMSException, TestException {
+            
+        try (JMSContext jmsContext = topicConnectionFactory.createContext()) {
+            JMSConsumer jmsConsumer = jmsContext.createConsumer(topic1);
+            JMSProducer jmsProducer = jmsContext.createProducer();
+
+            MapMessage sentMessage = jmsContext.createMapMessage();
+            String name = "myName";
+            Object value = null;
+            sentMessage.setObject(name, value);
+
+            jmsProducer.setJMSCorrelationID("TestCorrelID")
+                       .setJMSType("NewTestType")
+                       .setJMSReplyTo(topic1)
+                       .send(topic1, sentMessage);
+            
+            MapMessage receivedMessage = (MapMessage) jmsConsumer.receive(30000);
+            if (receivedMessage == null)
+                throw new TestException("No message received, sent:"+sentMessage);  
+            
+            if (   receivedMessage.getBody(Map.class).isEmpty()
+                || !(receivedMessage.getObject(name) == null)           
+                || !receivedMessage.getJMSCorrelationID().equals("TestCorrelID") 
+                || !receivedMessage.getJMSType().equals("NewTestType")
+                || !receivedMessage.getJMSReplyTo().equals(topic1)) {
+                throw new TestException("Wrong message received:" + receivedMessage + " sent:" + sentMessage);
+            }
+        }
+    }
+    
     // 118071_4 JMSProducer send(Destination destination,byte[] body)
     // 118071_4_1_Queue Send a BytesMessage with the specified body to the
     // specified queue, using any send options, message properties and message
@@ -2047,183 +1764,112 @@ public class JMSProducerServlet extends HttpServlet {
 
     public void testJMSProducerSendByteMessage_Topic_B_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
-
-        JMSContext jmsContextTCFBindings = tcfBindings.createContext();
-        JMSConsumer jmsConsumer = jmsContextTCFBindings.createConsumer(topic1);
-        JMSProducer producer = jmsContextTCFBindings.createProducer();
-
-        byte[] content = new byte[] { 127, 0 };
-
-        producer
-            .setJMSCorrelationID("TestCorrelID")
-            .setJMSType("NewTestType")
-            .send(topic1, content);
-
-        String recvdByteBody =
-            Arrays.toString( jmsConsumer.receiveBodyNoWait( byte[].class ) );
-
-        boolean testFailed = false;
-        if ( !recvdByteBody.equals("[127, 0]") ||
-             !producer.getJMSCorrelationID().equals("TestCorrelID") ||
-             !producer.getJMSType().equals("NewTestType") ) {
-            testFailed = true;
-        }
-
-        jmsConsumer.close();
-        jmsContextTCFBindings.close();
-
-        if ( testFailed ) {
-            throw new Exception("testJMSProducerSendByteMessage_Topic_B_SecOff failed");
-        }
+        testJMSProducerSendByteMessage_Topic_SecOff(tcfBindings);
     }
 
     public void testJMSProducerSendByteMessage_Topic_TCP_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        testJMSProducerSendByteMessage_Topic_SecOff(tcfTCP);
+     }
 
-        JMSContext jmsContextTCFTCP = tcfTCP.createContext();
-        JMSConsumer jmsConsumer = jmsContextTCFTCP.createConsumer(topic1);
-        JMSProducer producer = jmsContextTCFTCP.createProducer();
+    private void testJMSProducerSendByteMessage_Topic_SecOff(TopicConnectionFactory topicConnectionFactory)
+            throws JMSException, TestException, InterruptedException {
+           
+        try (JMSContext jmsContext = topicConnectionFactory.createContext()) {
+            JMSConsumer jmsConsumer = jmsContext.createConsumer(topic1);
+            JMSProducer jmsProducer = jmsContext.createProducer();
 
-        byte[] content = new byte[] { 127, 0 };
+            byte[] sentMessageBody = new String(methodName() + " at " + new Date()).getBytes();
+            
+            jmsProducer.setJMSCorrelationID("TestCorrelID")
+                       .setJMSType("NewTestType")
+                       .send(topic1, sentMessageBody);
 
-        producer
-            .setJMSCorrelationID("TestCorrelID")
-            .setJMSType("NewTestType")
-            .send(topic1, content);
-
-        String recvdByteBody =
-            Arrays.toString( jmsConsumer.receiveBodyNoWait( byte[].class ) );
-
-        boolean testFailed = false;
-        if ( !recvdByteBody.equals("[127, 0]") ||
-             !producer.getJMSCorrelationID().equals("TestCorrelID") ||
-             !producer.getJMSType().equals("NewTestType") ) {
-            testFailed = true;
-        }
-
-        jmsConsumer.close();
-        jmsContextTCFTCP.close();
-
-        if ( testFailed ) {
-            throw new Exception("testJMSProducerSendByteMessage_Topic_B_SecOff failed");
+            byte[] receivedMessageBody = jmsConsumer.receiveBodyNoWait(byte[].class);
+            for (int i = 0; i<10 && receivedMessageBody == null; i++) {
+                receivedMessageBody = jmsConsumer.receiveBodyNoWait(byte[].class);
+                Thread.sleep(100);
+            }
+            if (receivedMessageBody == null)
+                throw new TestException("No message received, sent:"+sentMessageBody);             
+            if (!Arrays.equals(receivedMessageBody, sentMessageBody) )   
+                throw new TestException("Wrong message received:" + receivedMessageBody + " sent:" + sentMessageBody);     
+            if (    !jmsProducer.getJMSCorrelationID().equals("TestCorrelID")
+                 || !jmsProducer.getJMSType().equals("NewTestType") ) {
+                throw new TestException("Invalid jmsProducer:"+jmsProducer);
+            }
         }
     }
-
+    
     // 118071_4_7_Topic InvalidDestinationRuntimeException - if a client uses
     // this method with an invalid destination.
 
     public void testJMSProducerSendByteMessage_InvalidDestination_Topic_B_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
-
-        JMSContext jmsContextTCFBindings = tcfBindings.createContext();
-        JMSConsumer jmsConsumer = jmsContextTCFBindings.createConsumer(topic1);
-        JMSProducer producer = jmsContextTCFBindings.createProducer();
-
-        boolean testFailed = false;
-        try {
-            byte[] content = new byte[] { 127, 0 };
-            producer
-                .setJMSCorrelationID("TestCorrelID")
-                .setJMSType("NewTestType").send(null, content);
-            testFailed = true;
-        } catch ( InvalidDestinationRuntimeException ex ) {
-            ex.printStackTrace();
-        }
-
-        jmsConsumer.close();
-        jmsContextTCFBindings.close();
-
-        if ( testFailed ) {
-            throw new Exception("testJMSProducerSendByteMessage_InvalidDestination_Topic_B_SecOff failed");
-        }
+        testJMSProducerSendByteMessage_InvalidDestination_Topic_SecOff(tcfBindings);
     }
 
     public void testJMSProducerSendByteMessage_InvalidDestination_Topic_TCP_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
-
-        JMSContext jmsContextTCFTCP = tcfTCP.createContext();
-        JMSConsumer jmsConsumer = jmsContextTCFTCP.createConsumer(topic1);
-        JMSProducer producer = jmsContextTCFTCP.createProducer();
-
-        boolean testFailed = false;
-        try {
-            byte[] content = new byte[] { 127, 0 };
-            producer
-                .setJMSCorrelationID("TestCorrelID")
-                .setJMSType("NewTestType").send(null, content);
-            testFailed = true;
-        } catch ( InvalidDestinationRuntimeException ex ) {
-            ex.printStackTrace();
-        }
-
-        jmsConsumer.close();
-        jmsContextTCFTCP.close();
-
-        if ( testFailed ) {
-            throw new Exception("testJMSProducerSendByteMessage_InvalidDestination_Topic_TCP_SecOff failed");
-        }
+        testJMSProducerSendByteMessage_InvalidDestination_Topic_SecOff(tcfTCP);
     }
 
+    private void testJMSProducerSendByteMessage_InvalidDestination_Topic_SecOff(TopicConnectionFactory topicConnectionFactory)
+        throws TestException {
+      
+        try (JMSContext jmsContext = topicConnectionFactory.createContext()) {
+            JMSProducer jmsProducer = jmsContext.createProducer();
+
+            byte[] sentMessageBody = new String(methodName() + " at " + new Date()).getBytes();                
+            try {
+                jmsProducer.setJMSCorrelationID("TestCorrelID")
+                        .setJMSType("NewTestType")
+                        .send(null, sentMessageBody);
+                // Should not reach here.
+                throw new TestException("Sent a message to a null destination without throwing InvalidDestinationRuntimeException");
+            
+            } catch ( InvalidDestinationRuntimeException ex ) {
+                // Expected
+            }
+        }
+    }
+    
     // 118071_4_8_Topic If a null value is specified then a BytesMessage with no
     // body will be sent.
 
     public void testJMSProducerSendByteMessage_Null_Topic_B_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
-
-        JMSContext jmsContextTCFBindings = tcfBindings.createContext();
-        JMSConsumer jmsConsumer = jmsContextTCFBindings.createConsumer(topic1);
-        JMSProducer producer = jmsContextTCFBindings.createProducer();
-
-        byte[] content = null;
-        producer.setJMSCorrelationID("TestCorrelID")
-            .setJMSType("NewTestType")
-            .send(topic1, content);
-
-        Message msg = jmsConsumer.receive(30000);
-
-        boolean testFailed = false;
-        if ( (msg.getBody(byte[].class) != null) ||
-             !msg.getJMSCorrelationID().equals("TestCorrelID") ||
-             !msg.getJMSType().equals("NewTestType") ) {
-            testFailed = true;
-        }
-
-        jmsConsumer.close();
-        jmsContextTCFBindings.close();
-
-        if ( testFailed ) {
-            throw new Exception("testJMSProducerSendByteMessage_Null_Topic_B_SecOff failed");
-        }
+        testJMSProducerSendByteMessage_Null_Topic_SecOff(tcfBindings);
     }
 
     public void testJMSProducerSendByteMessage_Null_Topic_TCP_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
-
-        JMSContext jmsContextTCFTCP = tcfTCP.createContext();
-        JMSConsumer jmsConsumer = jmsContextTCFTCP.createConsumer(topic1);
-        JMSProducer producer = jmsContextTCFTCP.createProducer();
-
-        byte[] content = null;
-        producer.setJMSCorrelationID("TestCorrelID")
-            .setJMSType("NewTestType").send(topic1, content);
-
-        Message msg = jmsConsumer.receive(30000);
-
-        boolean testFailed = false;
-        if ( (msg.getBody(byte[].class) != null) ||
-             !msg.getJMSCorrelationID().equals("TestCorrelID") ||
-             !msg.getJMSType().equals("NewTestType") ) {
-            testFailed = true;
-        }
-
-        jmsConsumer.close();
-        jmsContextTCFTCP.close();
-
-        if ( testFailed ) {
-            throw new Exception("testJMSProducerSendByteMessage_Null_Topic_TCP_SecOff failed");
-        }
+        testJMSProducerSendByteMessage_Null_Topic_SecOff(tcfTCP);
     }
 
+    private void testJMSProducerSendByteMessage_Null_Topic_SecOff(TopicConnectionFactory topicConnectionFactory)
+        throws JMSException, TestException {
+          
+        try (JMSContext jmsContext = topicConnectionFactory.createContext()) {
+            JMSConsumer jmsConsumer = jmsContext.createConsumer(topic1);
+            JMSProducer jmsProducer = jmsContext.createProducer();
+
+            byte[] sentMessageBody = null;
+            jmsProducer.setJMSCorrelationID("TestCorrelID")
+                       .setJMSType("NewTestType")
+                       .send(topic1, sentMessageBody);
+
+            Message receivedMessage = jmsConsumer.receive(30000);
+
+            if (receivedMessage == null)                    
+                throw new TestException("No message received, sent:"+sentMessageBody);
+            if (    receivedMessage.getBody(byte[].class) != null 
+                || !receivedMessage.getJMSCorrelationID().equals("TestCorrelID") 
+                || !receivedMessage.getJMSType().equals("NewTestType"))
+                throw new TestException("Wrong message received:"+receivedMessage+" sent:"+sentMessageBody); 
+        }
+    }
+        
     // 118071_5 JMSProducer send(Destination destination,Serializable body)
     // 118071_5_1_Queue Send an ObjectMessage with the specified body to the
     // specified queue using any send options, message properties and message
@@ -2429,176 +2075,118 @@ public class JMSProducerServlet extends HttpServlet {
 
     public void testJMSProducerSendObjectMessage_Topic_B_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
-
-        JMSContext jmsContextTCFBindings = tcfBindings.createContext();
-        JMSConsumer jmsConsumer = jmsContextTCFBindings.createConsumer(topic1);
-        JMSProducer producer = jmsContextTCFBindings.createProducer();
-
-        Object objBody = "This is the Message body.";
-        producer.setJMSCorrelationID("TestCorrelID")
-            .setJMSType("NewTestType")
-            .send(topic1, (Serializable) objBody);
-
-        Object msgRecvd = jmsConsumer.receiveBodyNoWait(Serializable.class);
-
-        boolean testFailed = false;
-        if ( !msgRecvd.equals(objBody) ||
-             !producer.getJMSCorrelationID().equals("TestCorrelID") ||
-             !producer.getJMSType().equals("NewTestType") ) {
-            testFailed = true;
-        }
-
-        jmsConsumer.close();
-        jmsContextTCFBindings.close();
-
-        if ( testFailed ) {
-            throw new Exception("testJMSProducerSendObjectMessage_Topic_B_SecOff failed");
-        }
+        testJMSProducerSendObjectMessage_Topic_SecOff(tcfBindings);   
     }
 
     public void testJMSProducerSendObjectMessage_Topic_TCP_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
-
-        JMSContext jmsContextTCFTCP = tcfTCP.createContext();
-        JMSConsumer jmsConsumer = jmsContextTCFTCP.createConsumer(topic1);
-        JMSProducer producer = jmsContextTCFTCP.createProducer();
-
-        Object objBody = "This is the Message body.";
-        producer.setJMSCorrelationID("TestCorrelID")
-            .setJMSType("NewTestType")
-            .send(topic1, (Serializable) objBody);
-
-        Object msgRecvd = jmsConsumer.receiveBodyNoWait(Serializable.class);
-
-        boolean testFailed = false;
-        if ( !msgRecvd.equals(objBody) ||
-             !producer.getJMSCorrelationID().equals("TestCorrelID") ||
-             !producer.getJMSType().equals("NewTestType") ) {
-            testFailed = true;
-        }
-
-        jmsConsumer.close();
-        jmsContextTCFTCP.close();
-
-        if ( testFailed ) {
-            throw new Exception("testJMSProducerSendObjectMessage_Topic_TCP_SecOff failed");
-        }
+        testJMSProducerSendObjectMessage_Topic_SecOff(tcfTCP);
     }
 
+    private void testJMSProducerSendObjectMessage_Topic_SecOff(TopicConnectionFactory topicConnectionFactory)
+        throws TestException, InterruptedException {
+            
+        try (JMSContext jmsContext = topicConnectionFactory.createContext()) {
+            JMSConsumer jmsConsumer = jmsContext.createConsumer(topic1);
+            JMSProducer jmsProducer = jmsContext.createProducer();
+            
+            Object sentMessageBody = new String(methodName()+" at "+new Date());
+            jmsProducer.setJMSCorrelationID("TestCorrelID")
+                       .setJMSType("NewTestType")
+                       .send(topic1, (Serializable) sentMessageBody);
+            
+            Object receivedMessageBody = null;
+            for (int i = 0; i<10 && receivedMessageBody == null; i++) {
+              receivedMessageBody = jmsConsumer.receiveBodyNoWait(Serializable.class);
+              Thread.sleep(100);
+            }
+
+            if (receivedMessageBody == null)
+                throw new TestException("No message received, sent:"+sentMessageBody); 
+            if (!receivedMessageBody.equals(sentMessageBody))
+                throw new TestException("Wrong message received:"+receivedMessageBody+" sent:"+sentMessageBody);
+            if (   !jmsProducer.getJMSCorrelationID().equals("TestCorrelID")
+                || !jmsProducer.getJMSType().equals("NewTestType") )
+                 throw new TestException("Invalid jmsProducer:"+jmsProducer);
+        }
+    }
+    
     // 118071_5_7_Topic InvalidDestinationRuntimeException - if a client uses
-    // this method with an invalid queue.
+    // this method with an invalid Topic.
 
     public void testJMSProducerSendObjectMessage_InvalidDestination_Topic_B_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
-
-        JMSContext jmsContextTCFBindings = tcfBindings.createContext();
-        JMSConsumer jmsConsumer = jmsContextTCFBindings.createConsumer(topic1);
-        JMSProducer producer = jmsContextTCFBindings.createProducer();
-
-        boolean testFailed = false;
-        try {
-            Object objBody = "This is the Message body.";
-            producer.setJMSCorrelationID("TestCorrelID")
-                .setJMSType("NewTestType")
-                .send(null, (Serializable) objBody);
-            testFailed = true;
-        } catch ( InvalidDestinationRuntimeException ex ) {
-            ex.printStackTrace();
-        }
-
-        jmsConsumer.close();
-        jmsContextTCFBindings.close();
-
-        if ( testFailed ) {
-            throw new Exception("testJMSProducerSendObjectMessage_InvalidDestination_Topic_B_SecOff failed");
-        }
+        testJMSProducerSendObjectMessage_InvalidDestination_Topic_SecOff(tcfBindings);
     }
 
     public void testJMSProducerSendObjectMessage_InvalidDestination_Topic_TCP_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
-
-        JMSContext jmsContextTCFTCP = tcfTCP.createContext();
-        JMSConsumer jmsConsumer = jmsContextTCFTCP.createConsumer(topic1);
-        JMSProducer producer = jmsContextTCFTCP.createProducer();
-
-        boolean testFailed = false;
-        try {
-            Object objBody = "This is the Message body.";
-            producer.setJMSCorrelationID("TestCorrelID")
-                .setJMSType("NewTestType")
-                .send(null, (Serializable) objBody);
-            testFailed = true;
-        } catch ( InvalidDestinationRuntimeException ex ) {
-            ex.printStackTrace();
-        }
-
-        jmsConsumer.close();
-        jmsContextTCFTCP.close();
-
-        if ( testFailed ) {
-            throw new Exception("testJMSProducerSendObjectMessage_InvalidDestination_Topic_TCP_SecOff failed");
-        }
+        testJMSProducerSendObjectMessage_InvalidDestination_Topic_SecOff(tcfTCP); 
     }
 
+    private void testJMSProducerSendObjectMessage_InvalidDestination_Topic_SecOff(TopicConnectionFactory topicConnectionFactory)
+            throws TestException {
+            
+        try (JMSContext jmsContext = topicConnectionFactory.createContext()) {
+            JMSProducer jmsProducer = jmsContext.createProducer();
+
+            try {
+                Object sentMessageBody = methodName() + " at " + new Date();                
+                jmsProducer.setJMSCorrelationID("TestCorrelID")
+                           .setJMSType("NewTestType")
+                           .send(null, (Serializable) sentMessageBody);
+                // Should not reach here.
+                throw new TestException("Sent message to null topic without throwing InvalidDestinationRuntimeException, sent:" + sentMessageBody);
+            
+            } catch ( InvalidDestinationRuntimeException ex ) {
+                // Expected
+            }           
+        }
+    }
+        
     // 118071_5_8_Topic If a null value is specified then an ObjectMessage with
     // no body will be sent.
 
     public void testJMSProducerSendObjectMessage_Null_Topic_B_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
-
-        JMSContext jmsContextTCFBindings = tcfBindings.createContext();
-        JMSConsumer jmsConsumer = jmsContextTCFBindings.createConsumer(topic1);
-        JMSProducer producer = jmsContextTCFBindings.createProducer();
-
-        Object objBody = null;
-        producer.setJMSCorrelationID("TestCorrelID")
-            .setJMSType("NewTestType")
-            .send(topic1, (Serializable) objBody);
-
-        boolean testFailed = false;
-        try {
-            Object msgRecvd = jmsConsumer.receiveBodyNoWait(Serializable.class);
-            testFailed = true;
-        } catch ( MessageFormatRuntimeException ex ) {
-            ex.printStackTrace();
-        }
-
-        jmsConsumer.close();
-        jmsContextTCFBindings.close();
-
-        if ( testFailed ) {
-            throw new Exception("testJMSProducerSendObjectMessage_Null_Topic_B_SecOff failed");
-        }
+        testJMSProducerSendObjectMessage_Null_Topic_SecOff(tcfBindings);
     }
 
     public void testJMSProducerSendObjectMessage_Null_Topic_TCP_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
-
-        JMSContext jmsContextTCFTCP = tcfTCP.createContext();
-        JMSConsumer jmsConsumer = jmsContextTCFTCP.createConsumer(topic2);
-        JMSProducer producer = jmsContextTCFTCP.createProducer();
-
-        Object objBody = null;
-        producer.setJMSCorrelationID("TestCorrelID")
-            .setJMSType("NewTestType")
-            .send(topic2, (Serializable) objBody);
-
-        boolean testFailed = false;
-        try {
-            Object msgRecvd = jmsConsumer.receiveBodyNoWait(Serializable.class);
-            testFailed = true;
-        } catch ( MessageFormatRuntimeException ex ) {
-            ex.printStackTrace();
-        }
-
-        jmsConsumer.close();
-        jmsContextTCFTCP.close();
-
-        if ( testFailed ) {
-            throw new Exception("testJMSProducerSendObjectMessage_Null_Topic_TCF_SecOff failed");
-        }
+        testJMSProducerSendObjectMessage_Null_Topic_SecOff(tcfTCP);
     }
 
+    private void testJMSProducerSendObjectMessage_Null_Topic_SecOff(TopicConnectionFactory topicConnectionFactory)
+        throws TestException, InterruptedException {
+            
+        try (JMSContext jmsContext = topicConnectionFactory.createContext()) {
+            JMSConsumer jmsConsumer = jmsContext.createConsumer(topic1);        
+            JMSProducer jmsProducer = jmsContext.createProducer();
+
+            Serializable sentMessageBody = null;
+            jmsProducer.setJMSCorrelationID("TestCorrelID")
+                       .setJMSType("NewTestType")
+                       .send(topic1, (Serializable) sentMessageBody);
+
+            try {
+                // Repeat attempts to receive the message.
+                Serializable receivedMessageBody = null;
+                for (int i = 0; i<10 && receivedMessageBody == null; i++) {
+                    receivedMessageBody = jmsConsumer.receiveBodyNoWait(Serializable.class);
+                    Thread.sleep(100);
+                }
+                // Should not reach here.
+                // We reach here if we either didn't receive a message after 10 attempts or we received 
+                // the TextMessage with no body, instead of throwing MessageFormatRuntimeException.  
+                throw new TestException("Wrong message received:" + receivedMessageBody+ "sent:"+sentMessageBody);
+            
+            } catch (MessageFormatRuntimeException e) {
+                // Expected
+            }
+        }
+    }
+    
     // 118073_1_1 Clears any message properties set on this JMSProducer
 
     /*

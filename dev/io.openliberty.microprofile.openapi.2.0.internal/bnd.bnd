@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2020, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -42,6 +42,8 @@ Include-Resource: \
 
 -dsannotations-inherit: true
 -dsannotations: io.openliberty.microprofile.openapi20.ApplicationListener,\
+    io.openliberty.microprofile.openapi20.ApplicationRegistry,\
+    io.openliberty.microprofile.openapi20.ApplicationProcessor,\
     io.openliberty.microprofile.openapi20.OLOASFactoryResolverImpl,\
     io.openliberty.microprofile.openapi20.css.CustomCSSProcessor,\
     io.openliberty.microprofile.openapi20.DefaultHostListener
@@ -71,7 +73,9 @@ WS-TraceGroup: MPOPENAPI
     com.ibm.ws.webcontainer;version=latest,\
     com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
     io.openliberty.com.fasterxml.jackson;version=latest,\
-    io.openliberty.microprofile.openapi.internal.common;version=latest
+    io.openliberty.microprofile.openapi.internal.common;version=latest,\
+    com.ibm.ws.classloading;version=latest
+
 
 -testpath: \
     ../build.sharedResources/lib/junit/old/junit.jar;version=file, \

@@ -733,16 +733,18 @@ public final class JAXRSUtils {
         return getConsumeTypes(cm, Collections.singletonList(ALL_TYPES));
     }
 
-     public static List<MediaType> getConsumeTypes(Consumes cm, List<MediaType> defaultTypes) {
-        return cm == null ? defaultTypes : getMediaTypes(cm.value());
+    public static List<MediaType> getConsumeTypes(Consumes cm, List<MediaType> defaultTypes) {
+        return cm == null ? defaultTypes
+                          : getMediaTypes(cm.value());
     }
 
     public static List<MediaType> getProduceTypes(Produces pm) {
         return getProduceTypes(pm, Collections.singletonList(ALL_TYPES));
     }
 
-     public static List<MediaType> getProduceTypes(Produces pm, List<MediaType> defaultTypes) {
-        return pm == null ? defaultTypes : getMediaTypes(pm.value());
+    public static List<MediaType> getProduceTypes(Produces pm, List<MediaType> defaultTypes) {
+        return pm == null ? defaultTypes
+                          : getMediaTypes(pm.value());
     }
 
     public static int compareSortedConsumesMediaTypes(List<MediaType> mts1, List<MediaType> mts2, MediaType ct) {
@@ -795,13 +797,13 @@ public final class JAXRSUtils {
         }
         return size1 == size2 ? 0 : size1 < size2 ? -1 : 1;
     }
-    
+
     public static int compareMethodParameters(Class<?>[] paraList1, Class<?>[] paraList2) {
         int size1 = paraList1.length;
         int size2 = paraList2.length;
         for (int i = 0; i < size1 && i < size2; i++) {
             if (!paraList1[i].equals(paraList2[i])) {
-                // Handling the case when bridge / synthetic methods may be taken 
+                // Handling the case when bridge / synthetic methods may be taken
                 // into account (f.e. when service implements generic interfaces or
                 // extends the generic classes).
                 if (paraList1[i].isAssignableFrom(paraList2[i])) {
@@ -955,28 +957,33 @@ public final class JAXRSUtils {
             contentType = defaultCt == null ? MediaType.APPLICATION_OCTET_STREAM : defaultCt;
         }
 
-        MessageContext mc = new MessageContextImpl(message);
+        final MediaType contentTypeMt = toMediaType(contentType);
+        final MessageContext mc = new MessageContextImpl(message);
+
         MediaType mt = mc.getHttpHeaders().getMediaType();
-        
+        if (mt == null) {
+            mt = contentTypeMt;
+        }
+
         InputStream is;
-        if (mt == null || mt.isCompatible(MediaType.APPLICATION_FORM_URLENCODED_TYPE)) {
+        if (mt.isCompatible(MediaType.APPLICATION_FORM_URLENCODED_TYPE)) {
             is = copyAndGetEntityStream(message);
-        } else { 
+        } else {
             is = message.getContent(InputStream.class);
         }
-        
+
         if (is == null) {
             Reader reader = message.getContent(Reader.class);
             if (reader != null) {
                 is = new ReaderInputStream(reader);
             }
         }
-        
+
         return readFromMessageBody(parameterClass,
                                    parameterType,
                                    parameterAnns,
                                    is,
-                                   toMediaType(contentType),
+                                   contentTypeMt,
                                    ori,
                                    message);
     }
@@ -1108,9 +1115,9 @@ public final class JAXRSUtils {
 
             if (mt == null || mt.isCompatible(MediaType.APPLICATION_FORM_URLENCODED_TYPE)) {
                 InputStream entityStream = copyAndGetEntityStream(m);
-                String enc = HttpUtils.getEncoding(mt, StandardCharsets.UTF_8.name());
+                String enc = HttpUtils.getEncoding(mt, StandardCharsets.UTF_8.name());  //Liberty CXF-7996
                 String body = FormUtils.readBody(entityStream, enc);
-                FormUtils.populateMapFromStringOrHttpRequest(params, m, body, enc, false);
+                FormUtils.populateMapFromStringOrHttpRequest(params, m, body, enc, false); //Liberty CXF-7996
             } else {
                 if ("multipart".equalsIgnoreCase(mt.getType())
                     && MediaType.MULTIPART_FORM_DATA_TYPE.isCompatible(mt)) {
@@ -1133,6 +1140,7 @@ public final class JAXRSUtils {
             }
         }
 
+        //Liberty start CXF-7996
         if (decode) {
             List<String> values = params.get(key);
             if (values != null) {
@@ -1140,6 +1148,7 @@ public final class JAXRSUtils {
                 params.replace(key, values);
             }
         }
+        //Liberty end CXF-7996
 
         if ("".equals(key)) {
             return InjectionUtils.handleBean(pClass, paramAnns, params, ParameterType.FORM, m, false);
@@ -1643,8 +1652,9 @@ public final class JAXRSUtils {
     /**
      * intersect two mime types
      *
-     * @param mimeTypesA
-     * @param mimeTypesB
+     * @param requiredMediaTypes
+     * @param userMediaTypes
+     * @param addRequiredParamsIfPossible
      * @return return a list of intersected mime types
      */
     public static List<MediaType> intersectMimeTypes(List<MediaType> requiredMediaTypes,
@@ -2072,6 +2082,104 @@ public final class JAXRSUtils {
         return new JaxRsRuntimeException(ex);
     }
     
+    
+    /**
+     * Get path URI template, combining base path, class & method & subresource templates 
+     * @param message message instance
+     * @param cri class resource info
+     * @param ori operation resource info
+     * @param subOri operation subresource info
+     * @return the URI template for the method in question
+     */
+    public static String getUriTemplate(Message message, ClassResourceInfo cri, OperationResourceInfo ori, 
+            OperationResourceInfo subOri) {
+        final String template = getUriTemplate(message, cri, ori);
+        final String methodPathTemplate = getUriTemplate(subOri);
+        return combineUriTemplates(template, methodPathTemplate);
+    }
+
+    /**
+     * Get path URI template, combining base path, class & method templates 
+     * @param message message instance
+     * @param cri class resource info
+     * @param ori operation resource info
+     * @return the URI template for the method in question
+     */
+    public static String getUriTemplate(Message message, ClassResourceInfo cri, OperationResourceInfo ori) {
+        final String basePath = (String)message.get(Message.BASE_PATH);
+        final String classPathTemplate = getUriTemplate(cri);
+        final String methodPathTemplate = getUriTemplate(ori);
+
+        // The application path (@ApplicationPath) is incorporated into Message.BASE_PATH,
+        // since it is part of the address.
+        String template = basePath;
+        if (StringUtils.isEmpty(template)) {
+            template = "/";
+        } else if (!template.startsWith("/")) {
+            template = "/" + template;
+        }
+        
+        template = combineUriTemplates(template, classPathTemplate);
+        return combineUriTemplates(template, methodPathTemplate);
+    }
+    
+    /**
+     * Gets the URI template of the operation from its resource info
+     * to assemble final URI template 
+     * @param ori operation resource info
+     * @return URI template
+     */
+    private static String getUriTemplate(OperationResourceInfo ori) {
+        final URITemplate template = ori.getURITemplate();
+        if (template != null) {
+            return template.getValue();
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+     * Goes over sub-resource class resource templates (through parent chain) if necessary
+     * to assemble final URI template 
+     * @param cri root or subresource class resource info
+     * @return URI template chain
+     */
+    private static String getUriTemplate(ClassResourceInfo cri) {
+        final URITemplate template = cri.getURITemplate();
+        if (template != null) {
+            return template.getValue();
+        } else if (cri.getParent() != null) { /* probably subresource */
+            return getUriTemplate(cri.getParent());
+        } else {
+            return null; /* should not happen */
+        }
+    }
+    
+    /**
+     * Combines two URI templates together
+     * @param parent parent URI template
+     * @param child child URI template
+     * @return the URI template combined from the parent and child
+     */
+    private static String combineUriTemplates(final String parent, final String child) {
+        if (StringUtils.isEmpty(child)) {
+            return parent;
+        }
+
+        // The way URI templates are normalized in org.apache.cxf.jaxrs.model.URITemplate:
+        //  - empty or null become "/"
+        //  - "/" is added at the start if not present 
+        if ("/".equals(parent)) {
+            return child;
+        } else if ("/".equals(child)) {
+            return parent;
+        } else if (parent.endsWith("/")) {
+            // Remove only last slash
+            return parent.substring(0, parent.length() - 1) + child; //Liberty change
+        } else {
+            return parent + child;
+        }
+    }
     // copy the input stream so that it is not inadvertently closed
     private static InputStream copyAndGetEntityStream(Message m) {
         LoadingByteArrayOutputStream baos = new LoadingByteArrayOutputStream(); 

@@ -91,8 +91,11 @@ public class ApplicationPrereqMonitor implements ConfigurationListener {
         try {
             configs = this.configurationAdmin.listConfigurations("(" + Constants.SERVICE_PID + "=" + servicePid + ")");
 
-            if (configs == null)
-                throw new IllegalStateException("No configs found matching servicePid=" + servicePid);
+            if (configs == null) {
+                // This is not strictly an error given that we may be processing a pid from a deleted application
+                Tr.debug(tc, "No configs found matching servicePid=" + servicePid);
+                return "PID not found: " + servicePid;
+            }
             if (configs.length > 1)
                 throw new IllegalStateException("Non unique servicePid=" + servicePid + " matched configs=" + Arrays.toString(configs));
 

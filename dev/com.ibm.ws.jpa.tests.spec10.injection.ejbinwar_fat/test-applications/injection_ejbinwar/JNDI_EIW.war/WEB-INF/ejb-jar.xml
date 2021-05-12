@@ -13,18 +13,6 @@
             <ejb-class>com.ibm.ws.jpa.fvt.ejbinwar.ejb.jndi.AnnotatedJNDISLEJB</ejb-class>
             <session-type>Stateless</session-type>
             <transaction-type>Bean</transaction-type>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_DS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
             <persistence-unit-ref>
                 <description>Cleanup Persistence Context</description>
                 <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
@@ -39,18 +27,6 @@
             <ejb-class>com.ibm.ws.jpa.fvt.ejbinwar.ejb.jndi.DDJNDISLEJB</ejb-class>
             <session-type>Stateless</session-type>
             <transaction-type>Bean</transaction-type>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_DS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
             
             <!-- CM TS -->
 		    <persistence-context-ref>
@@ -134,18 +110,6 @@
             <ejb-class>com.ibm.ws.jpa.fvt.ejbinwar.ejb.jndi.AnnotatedJNDISFEJB</ejb-class>
             <session-type>Stateful</session-type>
             <transaction-type>Bean</transaction-type>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_DS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
             <persistence-unit-ref>
                 <description>Cleanup Persistence Context</description>
                 <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
@@ -160,18 +124,6 @@
             <ejb-class>com.ibm.ws.jpa.fvt.ejbinwar.ejb.jndi.DDJNDISFEJB</ejb-class>
             <session-type>Stateful</session-type>
             <transaction-type>Bean</transaction-type>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_DS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
             
             <!-- CM TS -->
             <persistence-context-ref>
@@ -255,18 +207,6 @@
             <ejb-class>com.ibm.ws.jpa.fvt.ejbinwar.ejb.jndi.AnnotatedJNDISFEXEJB</ejb-class>
             <session-type>Stateful</session-type>
             <transaction-type>Bean</transaction-type>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_DS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
             <persistence-unit-ref>
                 <description>Cleanup Persistence Context</description>
                 <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
@@ -281,18 +221,6 @@
             <ejb-class>com.ibm.ws.jpa.fvt.ejbinwar.ejb.jndi.DDJNDISFEXEJB</ejb-class>
             <session-type>Stateful</session-type>
             <transaction-type>Bean</transaction-type>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_DS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
             
             <!-- CM EX -->
             <persistence-context-ref>

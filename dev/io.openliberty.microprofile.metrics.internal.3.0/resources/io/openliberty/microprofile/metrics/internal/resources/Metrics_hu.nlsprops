@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2020 IBM Corporation and others.
+# Copyright (c) 2009, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -131,6 +131,12 @@ session.invalidatedbyTimeout.total.description=A m\u00e9r\u0151sz\u00e1m enged\u
 
 REST.request.description=Az adott RESTful er\u0151forr\u00e1s met\u00f3dus felh\u00edv\u00e1sainak sz\u00e1ma \u00e9s teljes v\u00e1laszideje a kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa \u00f3ta. A m\u00e9r\u0151sz\u00e1m nem fogja r\u00f6gz\u00edteni a REST k\u00e9r\u00e9s eltelt idej\u00e9t \u00e9s sz\u00e1m\u00e1t, ha az lek\u00e9pezetlen kiv\u00e9telt eredm\u00e9nyezett. Nyomon k\u00f6veti tov\u00e1bb\u00e1 a legmagasabb r\u00f6gz\u00edtett id\u0151tartamot az el\u0151z\u0151 befejez\u0151d\u00f6tt teljes percben \u00e9s a legalacsonyabb r\u00f6gz\u00edtett id\u0151tartamot az el\u0151z\u0151 befejez\u0151d\u00f6tt teljes percben.
 REST.request.unmappedException.description=Az ezen RESTful er\u0151forr\u00e1s met\u00f3dusb\u00f3l keletkez\u0151 lek\u00e9pezetlen kiv\u00e9telek teljes sz\u00e1ma a kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa \u00f3ta.
+
+
+requestTiming.requestCount.description=A szervletk\u00e9r\u00e9sek sz\u00e1ma a kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa \u00f3ta.
+requestTiming.activeRequestCount.description=A jelenleg fut\u00f3 szervletk\u00e9r\u00e9sek sz\u00e1ma.
+requestTiming.slowRequestCount.description=A jelenleg fut\u00f3, de lass\u00fa szervletk\u00e9r\u00e9sek sz\u00e1ma.
+requestTiming.hungRequestCount.description=A jelenleg fut\u00f3, de lefagyott szervletk\u00e9r\u00e9sek sz\u00e1ma.
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message
 #-----------------------------------------------------------------------------------------------------------------------------

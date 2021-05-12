@@ -47,7 +47,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
  * of the class, with no comments, on a single line.</li>
  * <li>Call {@link #setLoggerClass(Class)} with a Class<?> reference to the logger class.</li>
  * </ul>
- * CXF provides {@link Log4jLogger} to use log4j instead of java.util.logging.
+ * CXF provides {@link Slf4jLogger} to use slf4j instead of java.util.logging.
  */
 
 public final class LogUtils {

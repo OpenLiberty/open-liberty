@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1137,16 +1137,29 @@ public class BasicTestServlet extends FATDatabaseServlet {
      */
     @Test
     @SkipIfDataSourceProperties({ SYBASE, INFORMIX_JDBC }) // no 4.1 sybase or ifx driver
-    @AllowedFFDC({ "javax.transaction.xa.XAException", "java.lang.NullPointerException", "oracle.jdbc.xa.OracleXAException",
+    @AllowedFFDC({
+                   "javax.resource.ResourceException", // times out before enlistment
+                   "javax.transaction.RollbackException", // times out before enlistment
+                   "javax.transaction.xa.XAException", "java.lang.NullPointerException", "oracle.jdbc.xa.OracleXAException",
                    "org.apache.derby.shared.common.sanity.AssertFailure" })
     public void testTransactionTimeoutAbort() throws Exception {
         Connection conn = xads.getConnection();
         tran.setTransactionTimeout(3);
         tran.begin();
 
-        Statement stmt = conn.createStatement();
-        stmt.execute("select * from " + colorTable);
-        stmt.close();
+        try {
+            Statement stmt = conn.createStatement();
+            stmt.execute("select * from " + colorTable);
+            stmt.close();
+        } catch (SQLException x) {
+            boolean isRollbackException = false;
+            for (Throwable cause = x; cause != null && !isRollbackException; cause = cause.getCause())
+                isRollbackException = cause instanceof RollbackException;
+            if (isRollbackException)
+                ; // transaction timed out before we could enlist in it
+            else
+                throw x;
+        }
 
         System.out.println("Wait up to 2 minutes for transaction to be marked for rollback");
         for (long start = System.nanoTime(); //
@@ -1169,7 +1182,7 @@ public class BasicTestServlet extends FATDatabaseServlet {
         conn = xads.getConnection();
         try {
             tran.begin();
-            stmt = conn.createStatement();
+            Statement stmt = conn.createStatement();
             stmt.execute("select * from " + colorTable);
             stmt.close();
             tran.commit();

@@ -173,14 +173,14 @@
 		<AD id="allowWriteToSecondaryServers" name="%allowWriteToSecondaryServers" description="%allowWriteToSecondaryServers.desc"
 			required="false" type="Boolean" default="false"/>	
 			
-	    <AD id="bindAuthMechanism" name="%bindAuthMechanism" description="%bindAuthMechanism.desc" required="false" type="String" ibm:beta="true">
+	    <AD id="bindAuthMechanism" name="%bindAuthMechanism" description="%bindAuthMechanism.desc" required="false" type="String" default="simple">
 		    <Option label="%bindAuthMechanism.none" value="none" />
 		    <Option label="%bindAuthMechanism.simple" value="simple" />
 		    <Option label="%bindAuthMechanism.GSSAPI" value="GSSAPI" />
 	     </AD>
 
-	    <AD id="krb5Principal" name="%krb5Principal" description="%krb5Principal.desc" type="String" required="false" ibm:beta="true" />
-	    <AD id="krb5TicketCache" name="%krb5TicketCache" description="%krb5TicketCache.desc" type="String" required="false" ibm:type="location(file)" ibm:beta="true"/>
+	    <AD id="krb5Principal" name="%krb5Principal" description="%krb5Principal.desc" type="String" required="false" />
+	    <AD id="krb5TicketCache" name="%krb5TicketCache" description="%krb5TicketCache.desc" type="String" required="false" ibm:type="location(file)" />
 	
 	    <AD name="internal" description="internal use only"
         	id="kerberosService" required="false" type="String" default="*" cardinality="1"

@@ -17,7 +17,25 @@ Bundle-Name: Netty SSL classes as an OSGi bundle
 Bundle-SymbolicName: io.openliberty.io.netty.ssl
 Bundle-Description: Netty SSL classes as an OSGi bundle for OpenLiberty, version ${bVersion}
 
-Import-Package: *
+Import-Package: \
+  !com.google.protobuf*, \
+  !com.jcraft.jzlib,\
+  !com.ning.*,\
+  !com.oracle.svm.core.annotate,\
+  !io.netty.internal.tcnative,\
+  !lzma.*,\
+  !net.jpountz.*,\
+  !org.apache.log4j.*,\
+  !org.apache.logging.*,\
+  !org.apache.commons.logging,\
+  !org.bouncycastle.*,\
+  !org.conscrypt,\
+  !org.eclipse.jetty.*,\
+  !org.jboss.*,\
+  !org.slf4j*,\
+  !reactor.blockhound.*,\
+  !sun.*,\
+  *
 
 Export-Package:\
   io.netty.handler.ssl.*;version=${nettyVersion}; -split-package:=merge-first

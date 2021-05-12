@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2020 IBM Corporation and others.
+# Copyright (c) 2009, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -131,6 +131,12 @@ session.invalidatedbyTimeout.total.description=Po\u010det relac\u00ed, u nich\u0
 
 REST.request.description=Po\u010det vyvol\u00e1n\u00ed a celkov\u00e1 doba odezvy t\u00e9to metody prost\u0159edku RESTful od spu\u0161t\u011bn\u00ed serveru. Metrika nebude zaznamen\u00e1vat uplynulou dobu ani po\u010det po\u017eadavk\u016f REST, pokud v\u00fdsledkem byla nemapovan\u00e1 v\u00fdjimka. Sleduje tak\u00e9 nejvy\u0161\u0161\u00ed a nejni\u017e\u0161\u00ed zaznamenan\u00e9 doby trv\u00e1n\u00ed v p\u0159edchoz\u00edch dokon\u010den\u00fdch cel\u00fdch minut\u00e1ch.
 REST.request.unmappedException.description=Celkov\u00fd po\u010det nemapovan\u00fdch v\u00fdjimek z t\u00e9to metody prost\u0159edku RESTful, kter\u00e9 se vyskytnou od spu\u0161t\u011bn\u00ed serveru.
+
+
+requestTiming.requestCount.description=Po\u010det po\u017eadavk\u016f servletu od spu\u0161t\u011bn\u00ed serveru.
+requestTiming.activeRequestCount.description=Po\u010det aktu\u00e1ln\u011b spu\u0161t\u011bn\u00fdch po\u017eadavk\u016f servletu.
+requestTiming.slowRequestCount.description=Po\u010det po\u017eadavk\u016f servlet\u016f, kter\u00e9 jsou moment\u00e1ln\u011b spu\u0161t\u011bn\u00e9, ale jsou pomal\u00e9.
+requestTiming.hungRequestCount.description=Po\u010det po\u017eadavk\u016f servlet\u016f, kter\u00e9 jsou moment\u00e1ln\u011b spu\u0161t\u011bn\u00e9, ale jsou zablokovan\u00e9.
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message
 #-----------------------------------------------------------------------------------------------------------------------------

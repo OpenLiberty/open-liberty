@@ -35,7 +35,7 @@ create_mappings=Ajout de mappages au descripteur {0}
 
 error=Erreur : 
 
-generate_files=\u00c9criture de la configuration XML de d\u00e9ploiement et de session
+generate_files=Ecriture de la configuration XML de d\u00e9ploiement et de session
 
 generate_source=G\u00e9n\u00e9ration de classes d''impl\u00e9mentation
 

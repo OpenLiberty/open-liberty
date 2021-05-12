@@ -18,10 +18,12 @@ import javax.xml.ws.AsyncHandler;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.Response;
 import javax.xml.ws.WebServiceRef;
+import javax.xml.ws.soap.Addressing;
 
 @Stateless(name = "UseQueryEJBBean")
 public class UserQueryEJB implements UserQueryEJBInterface {
 
+    @Addressing
     @WebServiceRef(value = UserQueryService.class, wsdlLocation = "WEB-INF/wsdl/UserQueryService.wsdl")
     private UserQuery userQuery;
 
@@ -45,6 +47,8 @@ public class UserQueryEJB implements UserQueryEJBInterface {
         if (serverName == null || serverPort == null) {
             throw new Exception("serverName and serverPort can not be null");
         }
+
+        bindingProvider.getRequestContext().put("allowNonMatchingToDefaultSoapAction", true);
         bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
                                                 "http://" + serverName + ":" + serverPort + "/" + endpointPath);
     }

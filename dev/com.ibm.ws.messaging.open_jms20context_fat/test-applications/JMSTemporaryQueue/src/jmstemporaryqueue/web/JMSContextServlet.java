@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2020 IBM Corporation and others.
+ * Copyright (c) 2013, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,12 +14,15 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.Map;
 
 import javax.jms.BytesMessage;
 import javax.jms.JMSConsumer;
 import javax.jms.JMSContext;
+import javax.jms.JMSException;
 import javax.jms.JMSProducer;
 import javax.jms.JMSRuntimeException;
 import javax.jms.MapMessage;
@@ -42,6 +45,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.HeuristicMixedException;
+import javax.transaction.HeuristicRollbackException;
+import javax.transaction.NotSupportedException;
+import javax.transaction.RollbackException;
+import javax.transaction.Status;
+import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
 import com.ibm.websphere.ras.Tr;
@@ -59,12 +68,21 @@ public class JMSContextServlet extends HttpServlet {
     public static Queue queue;
     public static Topic topic;
     public static Topic topic2;
-
-    public void emptyQueue(QueueConnectionFactory qcf, Queue q) throws Exception {
+    
+    /** @return the methodName of the caller. */
+    private static final String methodName() { return new Exception().getStackTrace()[1].getMethodName(); }
+    
+    private final class TestException extends Exception {
+        TestException(String message) {
+            super(new Date() +" "+message);
+        }
+    }
+    
+    public void emptyQueue(QueueConnectionFactory qcf, Queue q) throws JMSException {
         JMSContext context = qcf.createContext();
 
         QueueBrowser qb = context.createBrowser(q);
-        Enumeration e = qb.getEnumeration();
+        Enumeration<?> e = qb.getEnumeration();
 
         JMSConsumer consumer = context.createConsumer(q);
 
@@ -191,11 +209,10 @@ public class JMSContextServlet extends HttpServlet {
 
         Tr.entry(this, tc, test);
         try {
-            getClass()
-                .getMethod(test, HttpServletRequest.class, HttpServletResponse.class)
-                .invoke(this, request, response);
-
             System.out.println(" Starting : " + test);
+            getClass().getMethod(test, HttpServletRequest.class, HttpServletResponse.class)
+                      .invoke(this, request, response);
+          
             out.println(test + " COMPLETED SUCCESSFULLY");
             System.out.println(" Ending : " + test);
             Tr.exit(this, tc, test);
@@ -215,1982 +232,1023 @@ public class JMSContextServlet extends HttpServlet {
         }
     }
 
-    //
+    /*****************************************************************************************************
+     * Publish subscribe tests.                                                                          * 
+     *****************************************************************************************************/
+    
+    public void testReceiveMessageTopicSecOff_B(HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        testReceiveMessageTopicSecOff(tcfBindings);
+    }
 
-    public void testReceiveMessageTopicSecOff_B(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void testReceiveMessageTopicSecOff_TCP(HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        testReceiveMessageTopicSecOff(tcfTCP);
+    }
 
-        boolean testFailed = false;
+    private void testReceiveMessageTopicSecOff(TopicConnectionFactory topicConnectionFactory)
+            throws JMSException, TestException {
+     
+        // Use the default context so that the message is produced and consumed using the 
+        // servlet transaction which is committed after the servlet returns.
+        try (JMSContext jmsContext = topicConnectionFactory.createContext()) {  
+            // Create the consumer first, JMS does not guarantee when the first message will be received
+            // but in practice the subscription will have been made before the message has been sent. 
+            JMSConsumer jmsConsumer = jmsContext.createConsumer(topic);
+            JMSProducer jmsProducer = jmsContext.createProducer();
 
-        try {
-            JMSContext jmsContextTCFBindings = tcfBindings.createContext();
-            JMSConsumer jmsConsumerTCFBindings = jmsContextTCFBindings.createConsumer(topic);
-            JMSProducer jmsProducerTCFBindings = jmsContextTCFBindings.createProducer();
-
-            Message msg = jmsContextTCFBindings.createTextMessage("test");
-            msg.clearBody();
-
-            jmsProducerTCFBindings.send(topic, "");
-            jmsConsumerTCFBindings.receive();
-
-            jmsConsumerTCFBindings.close();
-            jmsContextTCFBindings.close();
-
-        } catch ( Exception mfe ) {
-            mfe.printStackTrace();
-            testFailed = true;
-        }
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveMessageTopicSecOff_B failed");
+            jmsProducer.send(topic, "");
+            // The receive call blocks indefinitely until a message is produced or until the JMSConsumer is closed.
+            TextMessage receivedMessage = (TextMessage) jmsConsumer.receive();
+            if (!receivedMessage.getText().equals(""))
+                throw new TestException("Wrong message received:"+receivedMessage);
         }
     }
 
-    public void testReceiveMessageTopicSecOff_TCP(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void testReceiveMessageTopicTranxSecOff_B(HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        testReceiveMessageTopicTranxSecOff(tcfBindings);
+    }
 
-        boolean testFailed = false;
+    public void testReceiveMessageTopicTranxSecOff_TCP(HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        testReceiveMessageTopicTranxSecOff(tcfTCP);
+    }
 
+    private void testReceiveMessageTopicTranxSecOff(TopicConnectionFactory topicConnectionFactory)
+            throws NamingException, NotSupportedException, SystemException, HeuristicMixedException,
+            HeuristicRollbackException, RollbackException, JMSException, TestException {
+       
+        UserTransaction userTransaction = null;
+        JMSContext jmsContext = null;
         try {
-            JMSContext jmsContextTCFTCP = tcfTCP.createContext();
-            JMSConsumer jmsConsumerTCFTCP = jmsContextTCFTCP.createConsumer(topic);
+            userTransaction = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
+            userTransaction.begin();
 
-            JMSProducer jmsProducerTCFTCP = jmsContextTCFTCP.createProducer();
+            jmsContext = topicConnectionFactory.createContext();
+            JMSConsumer jmsConsumer = jmsContext.createConsumer(topic);
+            JMSProducer jmsProducer = jmsContext.createProducer();
 
-            Message msg = jmsContextTCFTCP.createTextMessage("test");
-            msg.clearBody();
+            TextMessage sentMessage = jmsContext.createTextMessage(methodName()+" at "+new Date());
+            jmsProducer.send(topic, sentMessage);
 
-            jmsProducerTCFTCP.send(topic, "");
-            jmsConsumerTCFTCP.receive();
+            userTransaction.commit();
 
-            jmsConsumerTCFTCP.close();
-            jmsContextTCFTCP.close();
+            userTransaction.begin();
+            TextMessage receivedMessage = (TextMessage) jmsConsumer.receive();
+            userTransaction.commit();
+            if (!receivedMessage.getText().equals(sentMessage.getText()))
+                throw new TestException("Wrong message received:"+receivedMessage+" sent:"+sentMessage);
 
-        } catch ( Exception mfe ) {
-            mfe.printStackTrace();
-            testFailed = true;
-        }
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveMessageTopicSecOff_TCP failed");
+        } finally {
+            // If we reach here in the event of an error, the transaction might not have been completed.
+            if (userTransaction != null && userTransaction.getStatus() == Status.STATUS_ACTIVE)
+                userTransaction.rollback();
+            if (jmsContext != null)
+                jmsContext.close();
         }
     }
 
-    public void testReceiveMessageTopicTranxSecOff_B(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void testReceiveTimeoutMessageTopicSecOff_B(HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        testReceiveTimeoutMessageTopicSecOff(tcfBindings);
+    }
 
-        boolean testFailed = false;
+    public void testReceiveTimeoutMessageTopicSecOff_TCP(HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        testReceiveTimeoutMessageTopicSecOff(tcfTCP);
+    }
 
-        try {
-            UserTransaction ut = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
+    private void testReceiveTimeoutMessageTopicSecOff(TopicConnectionFactory topicConnectionFactory)
+            throws JMSException, TestException {
+        
+        try (JMSContext jmsContext = topicConnectionFactory.createContext()) {
+            JMSConsumer jmsConsumerTCFTCP = jmsContext.createConsumer(topic);
+            JMSProducer jmsProducerTCFTCP = jmsContext.createProducer();
 
-            ut.begin();
-
-            JMSContext jmsContextTCFBindings = tcfBindings.createContext();
-
-            JMSConsumer jmsConsumerTCFBindings = jmsContextTCFBindings.createConsumer(topic);
-
-            JMSProducer jmsProducerTCFBindings = jmsContextTCFBindings.createProducer();
-            Message msg = jmsContextTCFBindings.createTextMessage("testReceiveMessageTopicTranxSecOff_B");
-            jmsProducerTCFBindings.send(topic, msg);
-
-            ut.commit();
-
-            ut.begin();
-            jmsConsumerTCFBindings.receive();
-            ut.commit();
-
-            jmsConsumerTCFBindings.close();
-            jmsContextTCFBindings.close();
-
-        } catch ( Exception mfe ) {
-            mfe.printStackTrace();
-            testFailed = true;
-        }
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveMessageTopicTranxSecOff_B failed");
+            TextMessage sentMessage = jmsContext.createTextMessage(methodName() + " at " + new Date());
+            jmsProducerTCFTCP.send(topic, sentMessage);
+            TextMessage receivedMessage = (TextMessage) jmsConsumerTCFTCP.receive(30000);
+            if (!receivedMessage.getText().equals(sentMessage.getText()))
+                throw new TestException("Wrong message received:" + receivedMessage + " sent:" + sentMessage);
         }
     }
 
-    public void testReceiveMessageTopicTranxSecOff_TCP(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void testReceiveNoWaitMessageTopicSecOff_B(HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        testReceiveNoWaitMessageTopicSecOff(tcfBindings);
+    }
 
-        boolean testFailed = false;
+    public void testReceiveNoWaitMessageTopicSecOff_TCP(HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        testReceiveNoWaitMessageTopicSecOff(tcfTCP);
+    }
 
-        try {
-            UserTransaction ut = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
+    private void testReceiveNoWaitMessageTopicSecOff(TopicConnectionFactory topicConnectionFactory)
+            throws JMSException, TestException {
+        
+        try (JMSContext jmsContext = topicConnectionFactory.createContext()) {
+            JMSConsumer jmsConsumer = jmsContext.createConsumer(topic);
+            JMSProducer jmsProducer = jmsContext.createProducer();
 
-            ut.begin();
-
-            JMSContext jmsContextTCFTCP = tcfTCP.createContext();
-            JMSConsumer jmsConsumerTCFTCP = jmsContextTCFTCP.createConsumer(topic);
-            JMSProducer jmsProducerTCFTCP = jmsContextTCFTCP.createProducer();
-
-            Message msg = jmsContextTCFTCP.createTextMessage("testReceiveMessageTopicTranxSecOff_B");
-            jmsProducerTCFTCP.send(topic, msg);
-
-            ut.commit();
-
-            ut.begin();
-            jmsConsumerTCFTCP.receive();
-            ut.commit();
-
-            jmsConsumerTCFTCP.close();
-            jmsContextTCFTCP.close();
-
-        } catch ( Exception mfe ) {
-            mfe.printStackTrace();
-            testFailed = true;
-        }
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveMessageTopicTranxSecOff_TCP failed");
+            TextMessage sentMessage = jmsContext.createTextMessage(methodName()+" at "+new Date());
+            jmsProducer.send(topic, sentMessage);
+            TextMessage receivedMessage = (TextMessage) jmsConsumer.receiveNoWait();
+            if (!receivedMessage.getText().equals(sentMessage.getText()))
+                throw new TestException("Wrong message received:"+receivedMessage+" sent:"+sentMessage);
         }
     }
 
-    public void testReceiveTimeoutMessageTopicSecOff_B(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void testReceiveNoWaitNullMessageTopicSecOff_B(HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        testReceiveNoWaitNullMessageTopicSecOff(tcfBindings);
+    }
 
-        boolean testFailed = false;
+    public void testReceiveNoWaitNullMessageTopicSecOff_TCP(HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        testReceiveNoWaitNullMessageTopicSecOff(tcfTCP);
+    }
 
-        try {
-            JMSContext jmsContextTCFBindings = tcfBindings.createContext();
-            JMSConsumer jmsConsumerTCFBindings = jmsContextTCFBindings.createConsumer(topic);
-            JMSProducer jmsProducerTCFBindings = jmsContextTCFBindings.createProducer();
+    private void testReceiveNoWaitNullMessageTopicSecOff(TopicConnectionFactory topicConnectionFactory)
+            throws TestException {
+        try (JMSContext jmsContext = topicConnectionFactory.createContext()) {
+            JMSConsumer jmsConsumer = jmsContext.createConsumer(topic);
 
-            Message msg = jmsContextTCFBindings.createTextMessage("test");
-            msg.clearBody();
-
-            jmsProducerTCFBindings.send(topic, "");
-            jmsConsumerTCFBindings.receive(30000);
-
-            jmsConsumerTCFBindings.close();
-            jmsContextTCFBindings.close();
-
-        } catch ( Exception mfe ) {
-            mfe.printStackTrace();
-            testFailed = true;
-        }
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveTimeoutMessageTopicSecOff_B failed");
+            Message receivedMessage = jmsConsumer.receiveNoWait();
+            if (receivedMessage != null)
+                throw new TestException("Wrong message received:"+receivedMessage);
         }
     }
 
-    public void testReceiveTimeoutMessageTopicSecOff_TCP(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void testReceiveBodyTopicSecOff_B(HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        testReceiveBodyTopicSecOff(tcfBindings);
+    }
 
-        boolean testFailed = false;
+    public void testReceiveBodyTopicSecOff_TCPIP(HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        testReceiveBodyTopicSecOff(tcfTCP);
+    }
 
-        try {
-            JMSContext jmsContextTCFTCP = tcfTCP.createContext();
-            JMSConsumer jmsConsumerTCFTCP = jmsContextTCFTCP.createConsumer(topic);
+    private void testReceiveBodyTopicSecOff(TopicConnectionFactory topicConnectionFactory)
+            throws JMSException, TestException {
+        
+        try (JMSContext jmsContext = topicConnectionFactory.createContext()) {
+            JMSConsumer jmsConsumer = jmsContext.createConsumer(topic);
+            JMSProducer jmsProducer = jmsContext.createProducer();
 
-            JMSProducer jmsProducerTCFTCP = jmsContextTCFTCP.createProducer();
-
-            Message msg = jmsContextTCFTCP.createTextMessage("test");
-            msg.clearBody();
-
-            jmsProducerTCFTCP.send(topic, "");
-            jmsConsumerTCFTCP.receive(30000);
-
-            jmsConsumerTCFTCP.close();
-            jmsContextTCFTCP.close();
-
-        } catch ( Exception mfe ) {
-            mfe.printStackTrace();
-            testFailed = true;
-        }
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveTimeoutMessageTopicSecOff_TCP failed");
+            TextMessage sentMessage = jmsContext.createTextMessage(methodName()+" at "+new Date());
+            jmsProducer.send(topic, sentMessage);
+            String receivedMessageBody = jmsConsumer.receiveBody(String.class);
+            if (!receivedMessageBody.equals(sentMessage.getText()))
+                throw new TestException("Wrong message received:"+receivedMessageBody+" sent:"+sentMessage); 
         }
     }
 
-    public void testReceiveNoWaitMessageTopicSecOff_B(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void testReceiveBodyTransactionTopicSecOff_B(HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        testReceiveBodyTransactionTopicSecOff(tcfBindings);
+    }
 
-        boolean testFailed = false;
+    public void testReceiveBodyTransactionTopicSecOff_TCPIP(HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        testReceiveBodyTransactionTopicSecOff(tcfTCP);
+    }
 
+    private void testReceiveBodyTransactionTopicSecOff(TopicConnectionFactory topicConnectionFactory)
+            throws NamingException, NotSupportedException, SystemException, HeuristicMixedException,
+            HeuristicRollbackException, RollbackException, TestException {
+       
+        UserTransaction userTransaction = null;
+        JMSContext jmsContext = null;
         try {
-            JMSContext jmsContextTCFBindings = tcfBindings.createContext();
-            JMSConsumer jmsConsumer = jmsContextTCFBindings.createConsumer(topic);
+            userTransaction = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
+            userTransaction.begin();
 
-            JMSProducer p1 = jmsContextTCFBindings.createProducer();
+            jmsContext = topicConnectionFactory.createContext();
 
-            Message msg = jmsContextTCFBindings.createTextMessage("test");
-            p1.send(topic, msg);
-            jmsConsumer.receiveNoWait();
+            JMSConsumer jmsConsumer = jmsContext.createConsumer(topic);
+            JMSProducer jmsProducer = jmsContext.createProducer();
 
-            jmsConsumer.close();
-            jmsContextTCFBindings.close();
+            String sentMessageBody = methodName()+" at "+new Date();
+            jmsProducer.send(topic, sentMessageBody);
 
-        } catch ( Exception mfe ) {
-            mfe.printStackTrace();
-            testFailed = true;
-        }
+            userTransaction.commit();
 
-        if ( testFailed ) {
-            throw new Exception("testReceiveNoWaitMessageTopicSecOff_B failed");
+            userTransaction.begin();
+            String receivedMessageBody = jmsConsumer.receiveBody(String.class);
+            userTransaction.commit();
+            if (!receivedMessageBody.equals(sentMessageBody))
+                throw new TestException("Wrong message received:"+receivedMessageBody+" sent:"+sentMessageBody); 
+           
+        } finally {
+            if (userTransaction != null && userTransaction.getStatus() == Status.STATUS_ACTIVE)
+                userTransaction.rollback();
+            if (jmsContext != null)
+                jmsContext.close();
+
         }
     }
 
-    public void testReceiveNoWaitMessageTopicSecOff_TCP(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void testReceiveBodyTextMessageTopicSecOff_B(HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        testReceiveBodyTextMessageTopicSecOff(tcfBindings);
+    }
 
-        boolean testFailed = false;
-        try {
-            JMSContext jmsContextTCFTCP = tcfTCP.createContext();
-            JMSConsumer jmsConsumer = jmsContextTCFTCP.createConsumer(topic);
+    public void testReceiveBodyTextMessageTopicSecOff_TCPIP(HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        testReceiveBodyTextMessageTopicSecOff(tcfTCP);
+    }
 
-            JMSProducer p1 = jmsContextTCFTCP.createProducer();
-
-            Message msg = jmsContextTCFTCP.createTextMessage("test");
-            p1.send(topic, msg);
-            jmsConsumer.receiveNoWait();
-
-            jmsConsumer.close();
-            jmsContextTCFTCP.close();
-
-        } catch ( Exception mfe ) {
-            mfe.printStackTrace();
-            testFailed = true;
-        }
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveNoWaitMessageTopicSecOff_TCP failed");
+    private void testReceiveBodyTextMessageTopicSecOff(TopicConnectionFactory topicConnectionFactory) 
+        throws InterruptedException, JMSException, TestException {
+   
+        try (JMSContext jmsContext = topicConnectionFactory.createContext();) {          
+            JMSConsumer jmsConsumer = jmsContext.createConsumer(topic);
+            JMSProducer jmsProducer = jmsContext.createProducer();
+            
+            TextMessage sentMessage = jmsContext.createTextMessage(methodName()+" at "+new Date());
+            jmsProducer.send(topic, sentMessage);
+            String receivedMessageBody = jmsConsumer.receiveBody(String.class);
+            if (!receivedMessageBody.equals(sentMessage.getText()))
+                throw new TestException("Wrong message received:"+receivedMessageBody+" sent:"+sentMessage);
         }
     }
 
-    public void testReceiveNoWaitNullMessageTopicSecOff_B(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void testReceiveBodyObjectMessageTopicSecOff_B(HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        testReceiveBodyObjectMessageTopicSecOff(tcfBindings);
+    }
 
-        boolean testFailed = false;
-        try {
-            JMSContext jmsContextTCFBindings = tcfBindings.createContext();
+    public void testReceiveBodyObjectMessageTopicSecOff_TCPIP(HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        testReceiveBodyObjectMessageTopicSecOff(tcfTCP);
+    }
+    
+    private void testReceiveBodyObjectMessageTopicSecOff(TopicConnectionFactory topicConnectionFactory) 
+        throws JMSException, TestException {
+        
+        try (JMSContext jmsContext = topicConnectionFactory.createContext()) {            
+            JMSConsumer jmsConsumer = jmsContext.createConsumer(topic);
+            JMSProducer jmsProducer = jmsContext.createProducer();
 
-            JMSConsumer jmsConsumer = jmsContextTCFBindings.createConsumer(topic);
-            jmsConsumer.receiveNoWait();
+            Object sentMessageBody = new String(methodName()+" at "+new Date());
+            ObjectMessage sentMessage = jmsContext.createObjectMessage();
+            sentMessage.setObject((Serializable) sentMessageBody);
+            jmsProducer.send(topic, sentMessage);
 
-            jmsConsumer.close();
-            jmsContextTCFBindings.close();
-
-        } catch ( Exception mfe ) {
-            mfe.printStackTrace();
-            testFailed = true;
-        }
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveNoWaitNullMessageTopicSecOff_B failed");
+            Object receivedMessageBody = jmsConsumer.receiveBody(Serializable.class);        
+            if (receivedMessageBody == null)
+                throw new TestException("No message received, sent:"+sentMessage); 
+            if (!receivedMessageBody.equals(sentMessageBody))
+                throw new TestException("Wrong message received:"+receivedMessageBody+" sent:"+sentMessageBody); 
         }
     }
 
-    public void testReceiveNoWaitNullMessageTopicSecOff_TCP(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void testReceiveBodyMapMessageTopicSecOff_B(HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        testReceiveBodyMapMessageTopicSecOff(tcfBindings);
+    }
 
-        boolean testFailed = false;
+    public void testReceiveBodyMapMessageTopicSecOff_TCPIP(HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        testReceiveBodyMapMessageTopicSecOff(tcfTCP);
+    }
 
-        try {
-            JMSContext jmsContextTCFTCP = tcfTCP.createContext();
-            JMSConsumer jmsConsumer = jmsContextTCFTCP.createConsumer(topic);
+    private void testReceiveBodyMapMessageTopicSecOff(TopicConnectionFactory topicConnectionFactory)
+            throws JMSException, Exception {
+        
+        try (JMSContext jmsContext = topicConnectionFactory.createContext()) {
+            JMSConsumer jmsConsumer = jmsContext.createConsumer(topic);
+            JMSProducer jmsProducer = jmsContext.createProducer();
 
-            jmsConsumer.receiveNoWait();
+            MapMessage sentMessage = jmsContext.createMapMessage();
+            sentMessage.setString("Name", "IBM");
+            sentMessage.setString("Team", "WAS");
 
-            jmsConsumer.close();
-            jmsContextTCFTCP.close();
-
-        } catch ( Exception mfe ) {
-            mfe.printStackTrace();
-            testFailed = true;
-        }
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveNoWaitNullMessageTopicSecOff_TCP failed");
+            jmsProducer.send(topic, sentMessage);
+            Map<?, ?> receivedMessageBody = jmsConsumer.receiveBody(Map.class);
+            if (!receivedMessageBody.equals(sentMessage.getBody(Map.class)))
+                throw new TestException("Wrong message received:" + receivedMessageBody + " sent:" + sentMessage);
         }
     }
 
-    public void testReceiveBodyTopicSecOff_B(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void testReceiveBodyByteMessageTopicSecOff_B(HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        testReceiveBodyByteMessageTopicSecOff(tcfBindings);
+    }
 
-        boolean testFailed = false;
+    public void testReceiveBodyByteMessageTopicSecOff_TCPIP(HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        testReceiveBodyByteMessageTopicSecOff(tcfTCP);
+    }
+    
+    private void testReceiveBodyByteMessageTopicSecOff(TopicConnectionFactory topicConnectionFactory)
+            throws JMSException, TestException {
+        
+        try (JMSContext jmsContext = topicConnectionFactory.createContext()) {
+            JMSConsumer jmsConsumer = jmsContext.createConsumer(topic);
+            JMSProducer jmsProducer = jmsContext.createProducer();
 
-        try {
-            JMSContext jmsContextTCFBindings = tcfBindings.createContext();
-            JMSConsumer jmsConsumer = jmsContextTCFBindings.createConsumer(topic);
+            byte[] data = new String(methodName() + " at " + new Date()).getBytes();
+            BytesMessage sentMessage = jmsContext.createBytesMessage();
+            sentMessage.writeBytes(data);
 
-            JMSProducer p1 = jmsContextTCFBindings.createProducer();
-            p1.send(topic, "testing");
-            jmsConsumer.receiveBody(String.class);
-
-            jmsConsumer.close();
-            jmsContextTCFBindings.close();
-
-        } catch ( Exception mfe ) {
-            mfe.printStackTrace();
-            testFailed = true;
-        }
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveBodyTopicSecOff_B failed");
+            jmsProducer.send(topic, sentMessage);
+            byte[] receivedMessageBody = jmsConsumer.receiveBody(byte[].class);
+            if (!Arrays.equals(receivedMessageBody, sentMessage.getBody(byte[].class)))
+                throw new TestException("Wrong message received:" + receivedMessageBody + " sent:" + sentMessage);
         }
     }
 
-    public void testReceiveBodyTopicSecOff_TCPIP(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void testReceiveBodyTimeOutTopicSecOff_B(HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        testReceiveBodyTimeOutTopicSecOff(tcfBindings);
+    }
 
-        boolean testFailed = false;
-        try {
-            JMSContext jmsContextTCFTCP = tcfTCP.createContext();
-            JMSConsumer jmsConsumer = jmsContextTCFTCP.createConsumer(topic);
-
-            JMSProducer p1 = jmsContextTCFTCP.createProducer();
-
-            p1.send(topic, "testing");
-            jmsConsumer.receiveBody(String.class);
-
-            jmsConsumer.close();
-            jmsContextTCFTCP.close();
-
-        } catch ( Exception mfe ) {
-            mfe.printStackTrace();
-            testFailed = true;
-        }
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveBodyTopicSecOff_TCPIP failed");
+    public void testReceiveBodyTimeOutTopicSecOff_TCPIP(HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        testReceiveBodyTimeOutTopicSecOff(tcfTCP);
+    }
+    
+    private void testReceiveBodyTimeOutTopicSecOff(TopicConnectionFactory topicConnectionFactory) throws TestException {
+        
+        try (JMSContext jmsContext = topicConnectionFactory.createContext()) {
+            JMSConsumer jmsConsumer = jmsContext.createConsumer(topic);
+            JMSProducer jmsProducer = jmsContext.createProducer();
+            
+            String sentMessageBody = methodName()+" at "+new Date();
+            jmsProducer.send(topic, sentMessageBody);
+            String receivedMessageBody = jmsConsumer.receiveBody(String.class, 30000);
+            if (!receivedMessageBody.equals(sentMessageBody))
+                throw new TestException("Wrong message received:"+receivedMessageBody+" sent:"+sentMessageBody);
         }
     }
 
-    public void testReceiveBodyTransactionTopicSecOff_B(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void testReceiveBodyTimeOutTransactionTopicSecOff_B(HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        testReceiveBodyTimeOutTransactionTopicSecOff(tcfBindings);
+    }
 
-        boolean testFailed = false;
-
+    public void testReceiveBodyTimeOutTransactionTopicSecOff_TCPIP(HttpServletRequest request,
+            HttpServletResponse response) throws Exception {
+        testReceiveBodyTimeOutTransactionTopicSecOff(tcfTCP);
+    }
+    
+    private void testReceiveBodyTimeOutTransactionTopicSecOff(TopicConnectionFactory topicConnectionFactory)
+            throws NamingException, NotSupportedException, SystemException, HeuristicMixedException,
+            HeuristicRollbackException, RollbackException, TestException {
+        
+        UserTransaction userTransaction = null;
+        JMSContext jmsContext = null;
         try {
-            UserTransaction ut = (UserTransaction)
-                new InitialContext().lookup("java:comp/UserTransaction");
+            userTransaction = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
+            userTransaction.begin();
 
-            ut.begin();
+            jmsContext = topicConnectionFactory.createContext();
+            JMSConsumer jmsConsumer = jmsContext.createConsumer(topic);
+            JMSProducer jmsProducer = jmsContext.createProducer();
+  
+            String sentMessageBody = methodName()+" at "+new Date();
+            jmsProducer.send(topic, sentMessageBody);
+            
+            userTransaction.commit();
 
-            JMSContext jmsContextTCFBindings = tcfBindings.createContext();
-
-            JMSConsumer jmsConsumer = jmsContextTCFBindings.createConsumer(topic);
-            JMSProducer p1 = jmsContextTCFBindings.createProducer();
-
-            p1.send(topic, "testReceiveBodyTransactionTopicSecOff_B");
-
-            ut.commit();
-
-            ut.begin();
-            jmsConsumer.receiveBody(String.class);
-            ut.commit();
-
-            jmsConsumer.close();
-            jmsContextTCFBindings.close();
-
-        } catch ( Exception mfe ) {
-            mfe.printStackTrace();
-            testFailed = true;
-        }
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveBodyTransactionTopicSecOff_B failed");
+            userTransaction.begin();
+            String receivedMessageBody = jmsConsumer.receiveBody(String.class, 30000);
+            userTransaction.commit();           
+            if (!receivedMessageBody.equals(sentMessageBody))
+                throw new TestException("Wrong message received:"+receivedMessageBody+" sent:"+sentMessageBody);
+            
+        } finally {
+            if (userTransaction != null && userTransaction.getStatus() == Status.STATUS_ACTIVE)
+                userTransaction.rollback();
+            if (jmsContext != null)
+                jmsContext.close();
         }
     }
 
-    public void testReceiveBodyTransactionTopicSecOff_TCPIP(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        try {
-            UserTransaction ut = (UserTransaction)
-                new InitialContext().lookup("java:comp/UserTransaction");
-
-            ut.begin();
-
-            JMSContext jmsContextTCFTCP = tcfTCP.createContext();
-
-            JMSConsumer jmsConsumer = jmsContextTCFTCP.createConsumer(topic);
-            JMSProducer p1 = jmsContextTCFTCP.createProducer();
-
-            p1.send(topic, "testReceiveBodyTransactionTopicSecOff_B");
-
-            ut.commit();
-
-            ut.begin();
-            jmsConsumer.receiveBody(String.class);
-            ut.commit();
-
-            jmsConsumer.close();
-            jmsContextTCFTCP.close();
-
-        } catch ( Exception mfe ) {
-            mfe.printStackTrace();
-            testFailed = true;
-        }
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveBodyTransactionTopicSecOff_TCPIP failed");
-        }
+    public void testReceiveBodyTimeOutTextMessageTopicSecOff_B(HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        testReceiveBodytimeOutTextMessageTopicSecOff(tcfBindings);
     }
 
-    public void testReceiveBodyTextMessageTopicSecOff_B(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        try {
-            JMSContext jmsContextTCFBindings = tcfBindings.createContext();
-            JMSConsumer jmsConsumer = jmsContextTCFBindings.createConsumer(topic);
-
-            JMSProducer p1 = jmsContextTCFBindings.createProducer();
-
-            TextMessage m1 = jmsContextTCFBindings.createTextMessage("testReceiveBodyTextMessageTopicSecOff_B");
-            p1.send(topic, m1);
-            jmsConsumer.receiveBody(String.class);
-
-            jmsConsumer.close();
-            jmsContextTCFBindings.close();
-
-        } catch ( Exception mfe ) {
-            mfe.printStackTrace();
-            testFailed = true;
-        }
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveBodyTextMessageTopicSecOff_B failed");
-        }
+    public void testReceiveBodyTimeOutTextMessageTopicSecOff_TCPIP(HttpServletRequest request,
+            HttpServletResponse response) throws Exception {
+        testReceiveBodytimeOutTextMessageTopicSecOff(tcfTCP);
     }
 
-    public void testReceiveBodyTextMessageTopicSecOff_TCPIP(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        try {
-            JMSContext jmsContextTCFTCP = tcfTCP.createContext();
-
-            JMSConsumer jmsConsumer = jmsContextTCFTCP.createConsumer(topic);
-            JMSProducer p1 = jmsContextTCFTCP.createProducer();
-
-            TextMessage m1 = jmsContextTCFTCP.createTextMessage("testReceiveBodyTextMessageTopicSecOff_TCPIP");
-            p1.send(topic, m1);
-            jmsConsumer.receiveBody(String.class);
-
-            jmsConsumer.close();
-            jmsContextTCFTCP.close();
-
-        } catch ( Exception mfe ) {
-            mfe.printStackTrace();
-            testFailed = true;
-        }
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveBodyTextMessageTopicSecOff_TCPIP failed");
-        }
-    }
-
-    public void testReceiveBodyObjectMessageTopicSecOff_B(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        try {
-            JMSContext jmsContextTCFBindings = tcfBindings.createContext();
-            JMSConsumer jmsConsumer = jmsContextTCFBindings.createConsumer(topic);
-
-            JMSProducer p1 = jmsContextTCFBindings.createProducer();
-
-            Object abc = new String("testReceiveBodyObjectMessageTopicSecOff_B");
-            ObjectMessage m1 = jmsContextTCFBindings.createObjectMessage();
-            m1.setObject((Serializable) abc);
-            p1.send(topic, m1);
-
-            Object msg = jmsConsumer.receiveBody(Serializable.class);
-            if ( msg == null ) {
-                testFailed = true;
-            } else if ( !msg.equals(abc) ) {
-                testFailed = true;
-            }
-
-            jmsConsumer.close();
-            jmsContextTCFBindings.close();
-
-        } catch ( Exception mfe ) {
-            mfe.printStackTrace();
-            testFailed = true;
-        }
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveBodyObjectMessageTopicSecOff_B failed");
-        }
-    }
-
-    public void testReceiveBodyObjectMessageTopicSecOff_TCPIP(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        try {
-            JMSContext jmsContextTCFTCP = tcfTCP.createContext();
-
-            JMSConsumer jmsConsumer = jmsContextTCFTCP.createConsumer(topic);
-            JMSProducer p1 = jmsContextTCFTCP.createProducer();
-
-            Object abc = new String("testReceiveBodyObjectMessageTopicSecOff_TCPIP");
-            ObjectMessage m1 = jmsContextTCFTCP.createObjectMessage();
-            m1.setObject((Serializable) abc);
-            p1.send(topic, m1);
-
-            Object msg = jmsConsumer.receiveBody(Serializable.class);
-
-            if ( msg == null ) {
-                testFailed = true;
-            } else if ( !msg.equals(abc) ) {
-                testFailed = true;
-            }
-
-            jmsConsumer.close();
-            jmsContextTCFTCP.close();
-
-        } catch ( Exception mfe ) {
-            mfe.printStackTrace();
-            testFailed = true;
-        }
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveBodyObjectMessageTopicSecOff_TCPIP failed");
-        }
-    }
-
-    public void testReceiveBodyMapMessageTopicSecOff_B(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-        try {
-            JMSContext jmsContextTCFBindings = tcfBindings.createContext();
-
-            JMSConsumer jmsConsumer = jmsContextTCFBindings.createConsumer(topic);
-            JMSProducer p1 = jmsContextTCFBindings.createProducer();
-
-            MapMessage message = jmsContextTCFBindings.createMapMessage();
-            message.setString("Name", "IBM");
-            message.setString("Team", "WAS");
-
-            p1.send(topic, message);
-            jmsConsumer.receiveBody(Map.class);
-
-            jmsConsumer.close();
-            jmsContextTCFBindings.close();
-
-        } catch ( Exception mfe ) {
-            mfe.printStackTrace();
-            testFailed = true;
-        }
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveBodyMapMessageTopicSecOff_B failed");
-        }
-    }
-
-    public void testReceiveBodyMapMessageTopicSecOff_TCPIP(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        try {
-            JMSContext jmsContextTCFTCP = tcfTCP.createContext();
-
-            JMSConsumer jmsConsumer = jmsContextTCFTCP.createConsumer(topic);
-            JMSProducer p1 = jmsContextTCFTCP.createProducer();
-
-            MapMessage message = jmsContextTCFTCP.createMapMessage();
-            message.setString("Name", "IBM");
-            message.setString("Team", "WAS");
-
-            p1.send(topic, message);
-            jmsConsumer.receiveBody(java.util.Map.class);
-
-            jmsConsumer.close();
-            jmsContextTCFTCP.close();
-
-        } catch ( Exception mfe ) {
-            mfe.printStackTrace();
-            testFailed = true;
-        }
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveBodyMapMessageTopicSecOff_TCPIP failed");
-        }
-    }
-
-    public void testReceiveBodyByteMessageTopicSecOff_B(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        try {
-            JMSContext jmsContextTCFBindings = tcfBindings.createContext();
-
-            JMSConsumer jmsConsumer = jmsContextTCFBindings.createConsumer(topic);
-            JMSProducer p1 = jmsContextTCFBindings.createProducer();
-
-            byte[] data = new byte[] { 127, 0 };
-            BytesMessage message = jmsContextTCFBindings.createBytesMessage();
-            message.writeBytes(data);
-
-            p1.send(topic, message);
-            jmsConsumer.receiveBody(byte[].class);
-
-            jmsConsumer.close();
-            jmsContextTCFBindings.close();
-
-        } catch ( Exception mfe ) {
-            mfe.printStackTrace();
-            testFailed = true;
-        }
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveBodyByteMessageTopicSecOff_B failed");
-        }
-    }
-
-    public void testReceiveBodyByteMessageTopicSecOff_TCPIP(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        try {
-            JMSContext jmsContextTCFTCP = tcfTCP.createContext();
-
-            JMSConsumer jmsConsumer = jmsContextTCFTCP.createConsumer(topic);
-            JMSProducer p1 = jmsContextTCFTCP.createProducer();
-
-            byte[] data = new byte[] { 127, 0 };
-            BytesMessage message = jmsContextTCFTCP.createBytesMessage();
-            message.writeBytes(data);
-
-            p1.send(topic, message);
-            jmsConsumer.receiveBody(byte[].class);
-
-            jmsConsumer.close();
-            jmsContextTCFTCP.close();
-
-        } catch ( Exception mfe ) {
-            mfe.printStackTrace();
-            testFailed = true;
-        }
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveBodyByteMessageTopicSecOff_TCPIP failed");
-        }
-    }
-
-    public void testReceiveBodyTimeOutTopicSecOff_B(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        try {
-            JMSContext jmsContextTCFBindings = tcfBindings.createContext();
-
-            JMSConsumer jmsConsumer = jmsContextTCFBindings.createConsumer(topic);
-
-            JMSProducer p1 = jmsContextTCFBindings.createProducer();
-            p1.send(topic, "testing");
-
-            jmsConsumer.receiveBody(String.class, 30000);
-
-            // TODO: Why are these closes be inside of the try/catch block?
-            jmsConsumer.close();
-            jmsContextTCFBindings.close();
-
-        } catch ( Exception mfe ) {
-            mfe.printStackTrace();
-            testFailed = true;
-        }
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveBodyTimeOutTopicSecOff_B failed");
-        }
-    }
-
-    public void testReceiveBodyTimeOutTopicSecOff_TCPIP(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        try {
-            JMSContext jmsContextTCFTCP = tcfTCP.createContext();
-
-            JMSConsumer jmsConsumer = jmsContextTCFTCP.createConsumer(topic);
-
-            JMSProducer p1 = jmsContextTCFTCP.createProducer();
-            p1.send(topic, "testing");
-
-            jmsConsumer.receiveBody(String.class, 30000);
-
-            // TODO: Why are these closes be inside of the try/catch block?
-            jmsConsumer.close();
-            jmsContextTCFTCP.close();
-
-        } catch ( Exception mfe ) {
-            mfe.printStackTrace();
-            testFailed = true;
-        }
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveBodyTimeOutTopicSecOff_TCPIP failed");
-        }
-    }
-
-    public void testReceiveBodyTimeOutTransactionTopicSecOff_B(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        try {
-            UserTransaction ut = (UserTransaction)
-                new InitialContext().lookup("java:comp/UserTransaction");
-
-            ut.begin();
-
-            JMSContext jmsContextTCFBindings = tcfBindings.createContext();
-
-            JMSConsumer jmsConsumer = jmsContextTCFBindings.createConsumer(topic);
-
-            JMSProducer p1 = jmsContextTCFBindings.createProducer();
-            p1.send(topic, "testReceiveBodyTransactionTopicSecOff_B");
-
-            ut.commit();
-
-            ut.begin();
-            jmsConsumer.receiveBody(String.class, 30000);
-            ut.commit();
-
-            // TODO: Why are these closes be inside of the try/catch block?
-            jmsConsumer.close();
-            jmsContextTCFBindings.close();
-
-        } catch ( Exception mfe ) {
-            mfe.printStackTrace();
-            testFailed = true;
-        }
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveBodyTimeOutTransactionTopicSecOff_B failed");
-        }
-    }
-
-    public void testReceiveBodyTimeOutTransactionTopicSecOff_TCPIP(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        try {
-            UserTransaction ut = (UserTransaction)
-                new InitialContext().lookup("java:comp/UserTransaction");
-
-            ut.begin();
-
-            JMSContext jmsContextTCFTCP = tcfTCP.createContext();
-
-            JMSConsumer jmsConsumer = jmsContextTCFTCP.createConsumer(topic);
-
-            JMSProducer p1 = jmsContextTCFTCP.createProducer();
-            p1.send(topic, "testReceiveBodyTransactionTopicSecOff_B");
-
-            ut.commit();
-
-            ut.begin();
-            jmsConsumer.receiveBody(String.class, 30000);
-            ut.commit();
-
-            // TODO: Why are these closes be inside of the try/catch block?
-            jmsConsumer.close();
-            jmsContextTCFTCP.close();
-
-        } catch ( Exception mfe ) {
-            mfe.printStackTrace();
-            testFailed = true;
-        }
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveBodyTimeOutTransactionTopicSecOff_TCPIP failed");
-        }
-    }
-
-    public void testReceiveBodyTimeOutTextMessageTopicSecOff_B(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        try {
-            JMSContext jmsContextTCFBindings = tcfBindings.createContext();
-
-            JMSConsumer jmsConsumer = jmsContextTCFBindings.createConsumer(topic);
-
-            JMSProducer p1 = jmsContextTCFBindings.createProducer();
-            TextMessage m1 = jmsContextTCFBindings.createTextMessage("testReceiveBodyTimeOutTextMessageTopicSecOff_B");
-            p1.send(topic, m1);
-
-            jmsConsumer.receiveBody(String.class, 30000);
-
-            // TODO: Why are these closes be inside of the try/catch block?
-            jmsConsumer.close();
-            jmsContextTCFBindings.close();
-
-        } catch ( Exception mfe ) {
-            mfe.printStackTrace();
-            testFailed = true;
-        }
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveBodyTimeOutTextMessageTopicSecOff_B failed");
-        }
-    }
-
-    public void testReceiveBodyTimeOutTextMessageTopicSecOff_TCPIP(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        try {
-            JMSContext jmsContextTCFTCP = tcfTCP.createContext();
-
-            JMSConsumer jmsConsumer = jmsContextTCFTCP.createConsumer(topic);
-
-            JMSProducer p1 = jmsContextTCFTCP.createProducer();
-            TextMessage m1 = jmsContextTCFTCP.createTextMessage("testReceiveBodyTimeOutTextMessageTopicSecOff_TCPIP");
-            p1.send(topic, m1);
-
-            jmsConsumer.receiveBody(String.class, 30000);
-
-            // TODO: Why are these closes be inside of the try/catch block?
-            jmsConsumer.close();
-            jmsContextTCFTCP.close();
-
-        } catch ( Exception mfe ) {
-            mfe.printStackTrace();
-            testFailed = true;
-        }
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveBodyTimeOutTextMessageTopicSecOff_TCPIP failed");
+    private void testReceiveBodytimeOutTextMessageTopicSecOff(TopicConnectionFactory topicConnectionFactory)
+            throws JMSException, TestException {
+
+        try (JMSContext jmsContext = topicConnectionFactory.createContext();) {
+            JMSConsumer jmsConsumer = jmsContext.createConsumer(topic);
+            JMSProducer jmsProducer = jmsContext.createProducer();
+
+            TextMessage sentMessage = jmsContext.createTextMessage(methodName() + " at " + new Date());
+            jmsProducer.send(topic, sentMessage);
+            String receivedMessageBody = jmsConsumer.receiveBody(String.class, 30000);
+            if (!receivedMessageBody.equals(sentMessage.getText()))
+                throw new TestException("Wrong message received:" + receivedMessageBody + " sent:" + sentMessage);
         }
     }
 
     public void testReceiveBodyTimeOutObjectMessageTopicSecOff_B(
         HttpServletRequest request, HttpServletResponse response) throws Exception {
+        testReceiveBodyTimeOutObjectMessageTopicSecOff(tcfBindings);
+    }
 
-        boolean testFailed = false;
+    public void testReceiveBodyTimeOutObjectMessageTopicSecOff_TCPIP(HttpServletRequest request,
+            HttpServletResponse response) throws Exception {
+        testReceiveBodyTimeOutObjectMessageTopicSecOff(tcfTCP);
+    }
 
-        try {
-            JMSContext jmsContextTCFBindings = tcfBindings.createContext();
+    private void testReceiveBodyTimeOutObjectMessageTopicSecOff(TopicConnectionFactory topicConnectionFactory)
+            throws JMSException, TestException {
 
-            JMSConsumer jmsConsumer = jmsContextTCFBindings.createConsumer(topic);
+        try (JMSContext jmsContext = topicConnectionFactory.createContext()) {
+            JMSConsumer jmsConsumer = jmsContext.createConsumer(topic);
+            JMSProducer jmsProducer = jmsContext.createProducer();
 
-            JMSProducer p1 = jmsContextTCFBindings.createProducer();
-            Object abc = new String("testReceiveBodyTimeOutObjectMessageTopicSecOff_B");
-            ObjectMessage m1 = jmsContextTCFBindings.createObjectMessage();
-            m1.setObject((Serializable) abc);
-            p1.send(topic, m1);
-            Object msg = jmsConsumer.receiveBody(Serializable.class, 30000);
+            Object sentMessageBody = new String(methodName() + " at " + new Date());
+            ObjectMessage sentMessage = jmsContext.createObjectMessage();
+            sentMessage.setObject((Serializable) sentMessageBody);
+            jmsProducer.send(topic, sentMessage);
 
-            if ( (msg == null) || !msg.equals(abc) ) {
-                testFailed = true;
-            }
-
-            // TODO: Why are these closes be inside of the try/catch block?
-            jmsConsumer.close();
-            jmsContextTCFBindings.close();
-
-        } catch ( Exception mfe ) {
-            mfe.printStackTrace();
-            testFailed = true;
-        }
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveBodyTimeOutObjectMessageTopicSecOff_B failed");
+            Object receivedMessageBody = jmsConsumer.receiveBody(Serializable.class, 30000);
+            if (receivedMessageBody == null)
+                throw new TestException("No message received, sent:" + sentMessage);
+            if (!receivedMessageBody.equals(sentMessageBody))
+                throw new TestException("Wrong message received:" + receivedMessageBody + " sent:" + sentMessageBody);
         }
     }
 
-    public void testReceiveBodyTimeOutObjectMessageTopicSecOff_TCPIP(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        try {
-            JMSContext jmsContextTCFTCP = tcfTCP.createContext();
-
-            JMSConsumer jmsConsumer = jmsContextTCFTCP.createConsumer(topic);
-
-            JMSProducer p1 = jmsContextTCFTCP.createProducer();
-            Object abc = new String("testReceiveBodyTimeOutObjectMessageTopicSecOff_TCPIP");
-            ObjectMessage m1 = jmsContextTCFTCP.createObjectMessage();
-            m1.setObject((Serializable) abc);
-            p1.send(topic, m1);
-
-            Object msg = jmsConsumer.receiveBody(Serializable.class, 30000);
-            if ( (msg == null) || !msg.equals(abc) ) {
-                testFailed = true;
-            }
-
-            // TODO: Why are these closes be inside of the try/catch block?
-            jmsConsumer.close();
-            jmsContextTCFTCP.close();
-
-        } catch ( Exception mfe ) {
-            mfe.printStackTrace();
-            testFailed = true;
-        }
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveBodyTimeOutObjectMessageTopicSecOff_TCPIP failed");
-        }
+    public void testReceiveBodyTimeOutMapMessageTopicSecOff_B(HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        testReceiveBodyTimeOutMapMessageTopicSecOff(tcfBindings);
     }
 
-    public void testReceiveBodyTimeOutMapMessageTopicSecOff_B(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        try {
-            JMSContext jmsContextTCFBindings = tcfBindings.createContext();
-
-            JMSConsumer jmsConsumer = jmsContextTCFBindings.createConsumer(topic);
-
-            JMSProducer p1 = jmsContextTCFBindings.createProducer();
-            MapMessage message = jmsContextTCFBindings.createMapMessage();
-            message.setString("Name", "IBM");
-            message.setString("Team", "WAS");
-            p1.send(topic, message);
-
-            jmsConsumer.receiveBody(java.util.Map.class, 30000);
-
-            // TODO: Why are these closes be inside of the try/catch block?
-            jmsConsumer.close();
-            jmsContextTCFBindings.close();
-
-        } catch ( Exception mfe ) {
-            mfe.printStackTrace();
-            testFailed = true;
-        }
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveBodyTimeOutMapMessageTopicSecOff_B failed");
-        }
+    public void testReceiveBodyTimeOutMapMessageTopicSecOff_TCPIP(HttpServletRequest request,
+            HttpServletResponse response) throws Exception {
+        testReceiveBodyTimeOutMapMessageTopicSecOff(tcfTCP);
     }
 
-    public void testReceiveBodyTimeOutMapMessageTopicSecOff_TCPIP(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+    private void testReceiveBodyTimeOutMapMessageTopicSecOff(TopicConnectionFactory topicConnectionFactory)
+            throws JMSException, TestException {
 
-        boolean testFailed = false;
+        try (JMSContext jmsContext = topicConnectionFactory.createContext()) {
+            JMSConsumer jmsConsumer = jmsContext.createConsumer(topic);
+            JMSProducer jmsProducer = jmsContext.createProducer();
 
-        try {
-            JMSContext jmsContextTCFTCP = tcfTCP.createContext();
+            MapMessage sentMessage = jmsContext.createMapMessage();
+            sentMessage.setString("Name", "IBM");
+            sentMessage.setString("Team", "WAS");
 
-            JMSConsumer jmsConsumer = jmsContextTCFTCP.createConsumer(topic);
-
-            JMSProducer p1 = jmsContextTCFTCP.createProducer();
-            MapMessage message = jmsContextTCFTCP.createMapMessage();
-            message.setString("Name", "IBM");
-            message.setString("Team", "WAS");
-            p1.send(topic, message);
-
-            jmsConsumer.receiveBody(java.util.Map.class, 30000);
-
-            // TODO: Why are these closes be inside of the try/catch block?
-            jmsConsumer.close();
-            jmsContextTCFTCP.close();
-
-        } catch ( Exception mfe ) {
-            mfe.printStackTrace();
-            testFailed = true;
-        }
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveBodyTimeOutMapMessageTopicSecOff_TCPIP failed");
+            jmsProducer.send(topic, sentMessage);
+            Map<?, ?> receivedMessageBody = jmsConsumer.receiveBody(Map.class, 30000);
+            if (!receivedMessageBody.equals(sentMessage.getBody(Map.class)))
+                throw new TestException("Wrong message received:" + receivedMessageBody + " sent:" + sentMessage);
         }
     }
 
     public void testReceiveBodyTimeOutByteMessageTopicSecOff_B(
         HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        try {
-            JMSContext jmsContextTCFBindings = tcfBindings.createContext();
-
-            JMSConsumer jmsConsumer = jmsContextTCFBindings.createConsumer(topic);
-
-            JMSProducer p1 = jmsContextTCFBindings.createProducer();
-            byte[] data = new byte[] { 127, 0 };
-            BytesMessage message = jmsContextTCFBindings.createBytesMessage();
-            message.writeBytes(data);
-            p1.send(topic, message);
-
-            jmsConsumer.receiveBody(byte[].class, 30000);
-
-            // TODO: Why are these closes be inside of the try/catch block?
-            jmsConsumer.close();
-            jmsContextTCFBindings.close();
-
-        } catch ( Exception mfe ) {
-            mfe.printStackTrace();
-            testFailed = true;
-        }
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveBodyTimeOutByteMessageTopicSecOff_B failed");
-        }
+        testReceiveBodyTimeOutByteMessageTopicSecOff(tcfBindings);
     }
 
     public void testReceiveBodyTimeOutByteMessageTopicSecOff_TCPIP(
         HttpServletRequest request, HttpServletResponse response) throws Exception {
+        testReceiveBodyTimeOutByteMessageTopicSecOff(tcfTCP);
+    }
+    
+    private void testReceiveBodyTimeOutByteMessageTopicSecOff(TopicConnectionFactory topicConnectionFactory)
+            throws JMSException, TestException {
+        
+        try (JMSContext jmsContext = topicConnectionFactory.createContext()) {
+            JMSConsumer jmsConsumer = jmsContext.createConsumer(topic);
+            JMSProducer jmsProducer = jmsContext.createProducer();
 
-        boolean testFailed = false;
+            byte[] data = new String(methodName() + " at " + new Date()).getBytes();
+            BytesMessage sentMessage = jmsContext.createBytesMessage();
+            sentMessage.writeBytes(data);
 
-        try {
-            JMSContext jmsContextTCFTCP = tcfTCP.createContext();
-
-            JMSConsumer jmsConsumer = jmsContextTCFTCP.createConsumer(topic);
-
-            JMSProducer p1 = jmsContextTCFTCP.createProducer();
-            byte[] data = new byte[] { 127, 0 };
-            BytesMessage message = jmsContextTCFTCP.createBytesMessage();
-            message.writeBytes(data);
-            p1.send(topic, message);
-
-            jmsConsumer.receiveBody(byte[].class, 30000);
-
-            // TODO: Why are these closes be inside of the try/catch block?
-            jmsConsumer.close();
-            jmsContextTCFTCP.close();
-
-        } catch ( Exception mfe ) {
-            mfe.printStackTrace();
-            testFailed = true;
-        }
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveBodyTimeOutByteMessageTopicSecOff_TCPIP failed");
+            jmsProducer.send(topic, sentMessage);
+            byte[] receivedMessageBody = jmsConsumer.receiveBody(byte[].class, 30000);
+            if (!Arrays.equals(receivedMessageBody, sentMessage.getBody(byte[].class)))
+                throw new TestException("Wrong message received:" + receivedMessageBody + " sent:" + sentMessage);
         }
     }
-
-    public void testReceiveBodyNoWaitTopicSecOff_B(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-        try {
-            JMSContext jmsContextTCFBindings = tcfBindings.createContext();
-
-            JMSConsumer jmsConsumer = jmsContextTCFBindings.createConsumer(topic);
-
-            JMSProducer p1 = jmsContextTCFBindings.createProducer();
-            p1.send(topic, "testing");
-
-            jmsConsumer.receiveBodyNoWait(String.class);
-
-            // TODO: Why are these closes be inside of the try/catch block?
-            jmsConsumer.close();
-            jmsContextTCFBindings.close();
-
-        } catch ( Exception mfe ) {
-            mfe.printStackTrace();
-            testFailed = true;
-        }
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveBodyNoWaitTopicSecOff_B failed");
-        }
-
+    
+    public void testReceiveBodyNoWaitTopicSecOff_B(HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        testReceiveBodyNoWaitTopicSecOff(tcfBindings);
     }
 
-    public void testReceiveBodyNoWaitTopicSecOff_TCPIP(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void testReceiveBodyNoWaitTopicSecOff_TCPIP(HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        testReceiveBodyNoWaitTopicSecOff(tcfTCP);
+    }
 
-        boolean testFailed = false;
+    private void testReceiveBodyNoWaitTopicSecOff(TopicConnectionFactory topicConnectionFactory)
+            throws JMSException, InterruptedException, TestException {
 
-        try {
-            JMSContext jmsContextTCFTCP = tcfTCP.createContext();
+        try (JMSContext jmsContext = topicConnectionFactory.createContext()) {
+            JMSConsumer jmsConsumer = jmsContext.createConsumer(topic);
+            JMSProducer jmsProducer = jmsContext.createProducer();
 
-            JMSConsumer jmsConsumer = jmsContextTCFTCP.createConsumer(topic);
+            TextMessage sentMessage = jmsContext.createTextMessage(methodName()+" at "+new Date());
+            jmsProducer.send(topic, sentMessage);
+                  
+            // JMS does not specify when the message is available to be received, 
+            // so repeat attempts to receive the message.
+            String receivedMessageBody = null;
+            for (int i = 0; i<10 &&  receivedMessageBody == null; i++) {
+              receivedMessageBody = jmsConsumer.receiveBodyNoWait(String.class);
+              Thread.sleep(100);
+            }
 
-            JMSProducer p1 = jmsContextTCFTCP.createProducer();
-            p1.send(topic, "testing");
-
-            jmsConsumer.receiveBodyNoWait(String.class);
-
-            // TODO: Why are these closes be inside of the try/catch block?
-            jmsConsumer.close();
-            jmsContextTCFTCP.close();
-
-        } catch ( Exception mfe ) {
-            mfe.printStackTrace();
-            testFailed = true;
-        }
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveBodyNoWaitTopicSecOff_TCPIP failed");
+            if (receivedMessageBody == null)  
+                throw new TestException("No message received sent:"+sentMessage);
+            if (!receivedMessageBody.equals(sentMessage.getText()))
+                throw new TestException("Wrong message received:"+receivedMessageBody+" sent:"+sentMessage); 
         }
     }
 
     public void testReceiveBodyNoWaitTransactionTopicSecOff_B(
         HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        try {
-            UserTransaction ut = (UserTransaction)
-                new InitialContext().lookup("java:comp/UserTransaction");
-
-            ut.begin();
-
-            JMSContext jmsContextTCFBindings = tcfBindings.createContext();
-
-            JMSConsumer jmsConsumer = jmsContextTCFBindings.createConsumer(topic);
-
-            JMSProducer p1 = jmsContextTCFBindings.createProducer();
-            p1.send(topic, "testReceiveBodyNoWaitTransactionTopicSecOff_B");
-
-            ut.commit();
-
-            ut.begin();
-            jmsConsumer.receiveBodyNoWait(String.class);
-            ut.commit();
-
-            // TODO: Why are these closes be inside of the try/catch block?
-            jmsConsumer.close();
-            jmsContextTCFBindings.close();
-
-        } catch ( Exception mfe ) {
-            mfe.printStackTrace();
-            testFailed = true;
-        }
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveBodyNoWaitTransactionTopicSecOff_B failed");
-        }
-
+        testReceiveBodyNoWaitTransactionTopicSecOff(tcfBindings);
     }
 
     public void testReceiveBodyNoWaitTransactionTopicSecOff_TCPIP(
         HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        try {
-            UserTransaction ut = (UserTransaction)
-                new InitialContext().lookup("java:comp/UserTransaction");
-
-            ut.begin();
-
-            JMSContext jmsContextTCFTCP = tcfTCP.createContext();
-
-            JMSConsumer jmsConsumer = jmsContextTCFTCP.createConsumer(topic);
-
-            JMSProducer p1 = jmsContextTCFTCP.createProducer();
-            p1.send(topic, "testReceiveBodyTransactionTopicSecOff_B");
-
-            ut.commit();
-
-            ut.begin();
-            jmsConsumer.receiveBodyNoWait(String.class);
-            ut.commit();
-
-            // TODO: Why are these closes be inside of the try/catch block?
-            jmsConsumer.close();
-            jmsContextTCFTCP.close();
-
-        } catch ( Exception mfe ) {
-            mfe.printStackTrace();
-            testFailed = true;
-        }
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveBodyNoWaitTransactionTopicSecOff_TCPIP failed");
-        }
+        testReceiveBodyNoWaitTransactionTopicSecOff(tcfTCP);
     }
 
-    public void testReceiveBodyNoWaitTextMessageTopicSecOff_B(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
+    private void testReceiveBodyNoWaitTransactionTopicSecOff(TopicConnectionFactory topicConnectionFactory)
+            throws NamingException, NotSupportedException, SystemException, HeuristicMixedException,
+            HeuristicRollbackException, RollbackException, JMSException, InterruptedException, TestException {
+       
+        UserTransaction userTransaction = null;
+        JMSContext jmsContext = null;
         try {
-            JMSContext jmsContextTCFBindings = tcfBindings.createContext();
+            userTransaction = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
+            userTransaction.begin();
 
+            jmsContext = topicConnectionFactory.createContext();
+
+            JMSConsumer jmsConsumer = jmsContext.createConsumer(topic);
+            JMSProducer jmsProducer = jmsContext.createProducer();
+
+            String sentMessageBody = methodName()+" at "+new Date();
+            jmsProducer.send(topic, sentMessageBody);
+
+            userTransaction.commit();
+
+            userTransaction.begin();           
+            String receivedMessageBody = null;
+            for (int i = 0; i<10 &&  receivedMessageBody == null; i++) {
+              receivedMessageBody = jmsConsumer.receiveBodyNoWait(String.class);
+              Thread.sleep(100);
+            }
+            userTransaction.commit();
+            if (!receivedMessageBody.equals(sentMessageBody))
+                throw new TestException("Wrong message received:"+receivedMessageBody+" sent:"+sentMessageBody); 
+           
+        } finally {
+            if (userTransaction != null && userTransaction.getStatus() == Status.STATUS_ACTIVE)
+                userTransaction.rollback();
+            if (jmsContext != null)
+                jmsContext.close();
+
+        }
+    }
+    
+    public void testReceiveBodyNoWaitTextMessageTopicSecOff_B(HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        testReceiveBodyNoWaitTextMessageTopicSecOff(tcfTCP);
+    }
+
+    public void testReceiveBodyNoWaitTextMessageTopicSecOff_TCPIP(HttpServletRequest request,
+            HttpServletResponse response) throws Exception {
+        testReceiveBodyNoWaitTextMessageTopicSecOff(tcfTCP);
+    }
+
+    private void testReceiveBodyNoWaitTextMessageTopicSecOff(TopicConnectionFactory topicConnectionFactory) 
+        throws JMSException, InterruptedException, TestException {
+        
+        try (JMSContext jmsContext = topicConnectionFactory.createContext();) {          
+            JMSConsumer jmsConsumer = jmsContext.createConsumer(topic);
+            JMSProducer jmsProducer = jmsContext.createProducer();
+            
+            TextMessage sentMessage = jmsContext.createTextMessage(methodName()+" at "+new Date());
+            jmsProducer.send(topic, sentMessage);
+            
+            String receivedMessageBody = null;
+            for (int i = 0; i<10 &&  receivedMessageBody == null; i++) {
+              receivedMessageBody = jmsConsumer.receiveBodyNoWait(String.class);
+              Thread.sleep(100);
+            }
+            if (!receivedMessageBody.equals(sentMessage.getText()))
+                throw new TestException("Wrong message received:"+receivedMessageBody+" sent:"+sentMessage);
+        }
+    }
+    
+    public void testReceiveBodyNoWaitObjectMessageTopicSecOff_B(HttpServletRequest request,
+            HttpServletResponse response) throws Exception {
+        testReceiveBodyNoWaitObjectMessageTopicSecOff(tcfBindings);
+    }
+
+    public void testReceiveBodyNoWaitObjectMessageTopicSecOff_TCPIP(HttpServletRequest request,
+            HttpServletResponse response) throws Exception {
+        testReceiveBodyNoWaitObjectMessageTopicSecOff(tcfTCP);
+    }
+        
+    private void testReceiveBodyNoWaitObjectMessageTopicSecOff(TopicConnectionFactory topicConnectionFactory)
+            throws JMSException, InterruptedException, TestException {
+        
+        try (JMSContext jmsContextTCFBindings = topicConnectionFactory.createContext()) {           
             JMSConsumer jmsConsumer = jmsContextTCFBindings.createConsumer(topic);
+            JMSProducer jmsProducer = jmsContextTCFBindings.createProducer();
 
-            JMSProducer p1 = jmsContextTCFBindings.createProducer();
-            TextMessage m1 = jmsContextTCFBindings.createTextMessage("testReceiveBodyTextMessageTopicSecOff_B");
-            p1.send(topic, m1);
+            Object sentMessageBody = new String(methodName()+" at "+new Date());
+            ObjectMessage sentMessage = jmsContextTCFBindings.createObjectMessage();
+            sentMessage.setObject((Serializable) sentMessageBody);
+            jmsProducer.send(topic, sentMessage);
 
-            jmsConsumer.receiveBodyNoWait(String.class);
-
-            // TODO: Why are these closes be inside of the try/catch block?
-            jmsConsumer.close();
-            jmsContextTCFBindings.close();
-
-        } catch ( Exception mfe ) {
-            mfe.printStackTrace();
-            testFailed = true;
-        }
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveBodyNoWaitTextMessageTopicSecOff_B failed");
-        }
-    }
-
-    public void testReceiveBodyNoWaitTextMessageTopicSecOff_TCPIP(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        try {
-            JMSContext jmsContextTCFTCP = tcfTCP.createContext();
-
-            JMSConsumer jmsConsumer = jmsContextTCFTCP.createConsumer(topic);
-
-            JMSProducer p1 = jmsContextTCFTCP.createProducer();
-            TextMessage m1 = jmsContextTCFTCP.createTextMessage("testReceiveBodyTextMessageTopicSecOff_TCPIP");
-            p1.send(topic, m1);
-
-            jmsConsumer.receiveBodyNoWait(String.class);
-
-            // TODO: Why are these closes be inside of the try/catch block?
-            jmsConsumer.close();
-            jmsContextTCFTCP.close();
-
-        } catch ( Exception mfe ) {
-            mfe.printStackTrace();
-            testFailed = true;
-        }
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveBodyNoWaitTextMessageTopicSecOff_TCPIP failed");
-        }
-    }
-
-    public void testReceiveBodyNoWaitObjectMessageTopicSecOff_B(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        try {
-            JMSContext jmsContextTCFBindings = tcfBindings.createContext();
-
-            JMSConsumer jmsConsumer = jmsContextTCFBindings.createConsumer(topic);
-
-            JMSProducer p1 = jmsContextTCFBindings.createProducer();
-
-            Object abc = new String("testReceiveBodyObjectMessageTopicSecOff_B");
-            ObjectMessage m1 = jmsContextTCFBindings.createObjectMessage();
-            m1.setObject((Serializable) abc);
-            p1.send(topic, m1);
-
-            Object msg = jmsConsumer.receiveBodyNoWait(Serializable.class);
-            if ( (msg == null)  || !msg.equals(abc) ) {
-                testFailed = true;
+            Object receivedMessageBody = null;
+            for (int i = 0; i<10 && receivedMessageBody == null; i++) {
+              receivedMessageBody = jmsConsumer.receiveBodyNoWait(Serializable.class);
+              Thread.sleep(100);
             }
 
-            // TODO: Why are these closes be inside of the try/catch block?
-            jmsConsumer.close();
-            jmsContextTCFBindings.close();
-
-        } catch ( Exception mfe ) {
-            mfe.printStackTrace();
-            testFailed = true;
-        }
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveBodyNoWaitObjectMessageTopicSecOff_B failed");
-        }
-    }
-
-    public void testReceiveBodyNoWaitObjectMessageTopicSecOff_TCPIP(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        try {
-            JMSContext jmsContextTCFTCP = tcfTCP.createContext();
-
-            JMSConsumer jmsConsumer = jmsContextTCFTCP.createConsumer(topic);
-
-            JMSProducer p1 = jmsContextTCFTCP.createProducer();
-
-            Object abc = new String("testReceiveBodyObjectMessageTopicSecOff_TCPIP");
-            ObjectMessage m1 = jmsContextTCFTCP.createObjectMessage();
-            m1.setObject((Serializable) abc);
-            p1.send(topic, m1);
-
-            Object msg = jmsConsumer.receiveBodyNoWait(Serializable.class);
-            if ( (msg == null)  || !msg.equals(abc) ) {
-                testFailed = true;
-            }
-
-            // TODO: Why are these closes be inside of the try/catch block?
-            jmsConsumer.close();
-            jmsContextTCFTCP.close();
-
-        } catch ( Exception mfe ) {
-            mfe.printStackTrace();
-            testFailed = true;
-        }
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveBodyNoWaitObjectMessageTopicSecOff_TCPIP failed");
+            if (receivedMessageBody == null)
+                throw new TestException("No message received, sent:"+sentMessage); 
+            if (!receivedMessageBody.equals(sentMessageBody))
+                throw new TestException("Wrong message received:"+receivedMessageBody+" sent:"+sentMessageBody);
         }
     }
 
     public void testReceiveBodyNoWaitMapMessageTopicSecOff_B(
         HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-        try {
-            JMSContext jmsContextTCFBindings = tcfBindings.createContext();
-
-            JMSConsumer jmsConsumer = jmsContextTCFBindings.createConsumer(topic);
-
-            JMSProducer p1 = jmsContextTCFBindings.createProducer();
-            MapMessage message = jmsContextTCFBindings.createMapMessage();
-            message.setString("Name", "IBM");
-            message.setString("Team", "WAS");
-            p1.send(topic, message);
-
-            jmsConsumer.receiveBodyNoWait(java.util.Map.class);
-
-            // TODO: Why are these closes be inside of the try/catch block?
-            jmsConsumer.close();
-            jmsContextTCFBindings.close();
-
-        } catch ( Exception mfe ) {
-            mfe.printStackTrace();
-            testFailed = true;
-        }
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveBodyNoWaitMapMessageTopicSecOff_B failed");
-        }
+        testReceiveBodyNoWaitMapMessageTopicSecOff(tcfBindings);
+        
     }
 
     public void testReceiveBodyNoWaitMapMessageTopicSecOff_TCPIP(
         HttpServletRequest request, HttpServletResponse response) throws Exception {
+        testReceiveBodyNoWaitMapMessageTopicSecOff(tcfTCP);
+    }
 
-        boolean testFailed = false;
+    private void testReceiveBodyNoWaitMapMessageTopicSecOff(TopicConnectionFactory topicConnectionFactory)
+            throws JMSException, InterruptedException, TestException {
+        
+        try (JMSContext jmsContext = topicConnectionFactory.createContext()) {
+            JMSConsumer jmsConsumer = jmsContext.createConsumer(topic);
+            JMSProducer jmsProducer = jmsContext.createProducer();
 
-        try {
-            JMSContext jmsContextTCFTCP = tcfTCP.createContext();
+            MapMessage sentMessage = jmsContext.createMapMessage();
+            sentMessage.setString("Name", "IBM");
+            sentMessage.setString("Team", "WAS");
 
-            JMSConsumer jmsConsumer = jmsContextTCFTCP.createConsumer(topic);
-
-            JMSProducer p1 = jmsContextTCFTCP.createProducer();
-            MapMessage message = jmsContextTCFTCP.createMapMessage();
-            message.setString("Name", "IBM");
-            message.setString("Team", "WAS");
-            p1.send(topic, message);
-
-            jmsConsumer.receiveBodyNoWait(java.util.Map.class);
-
-            // TODO: Why are these closes be inside of the try/catch block?
-            jmsConsumer.close();
-            jmsContextTCFTCP.close();
-
-        } catch ( Exception mfe ) {
-            mfe.printStackTrace();
-            testFailed = true;
+            jmsProducer.send(topic, sentMessage);
+            Map<?, ?> receivedMessageBody = null;
+            for (int i = 0; i<10 && receivedMessageBody == null; i++) {
+              receivedMessageBody = jmsConsumer.receiveBodyNoWait(Map.class);
+              Thread.sleep(100);
+            }
+            
+            if (receivedMessageBody == null)
+                throw new TestException("No message received, sent:"+sentMessage); 
+            if (!receivedMessageBody.equals(sentMessage.getBody(Map.class)))
+                throw new TestException("Wrong message received:" + receivedMessageBody + " sent:" + sentMessage);
         }
+    }
+    
+    public void testReceiveBodyNoWaitByteMessageTopicSecOff_B(HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        testReceiveBodyNoWaitByteMessageTopicSecOff(tcfBindings);
 
-        if ( testFailed ) {
-            throw new Exception("testReceiveBodyNoWaitMapMessageTopicSecOff_TCPIP failed");
+    }
+
+    public void testReceiveBodyNoWaitByteMessageTopicSecOff_TCPIP(HttpServletRequest request,
+            HttpServletResponse response) throws Exception {
+        testReceiveBodyNoWaitByteMessageTopicSecOff(tcfTCP);
+    }
+
+    private void testReceiveBodyNoWaitByteMessageTopicSecOff(TopicConnectionFactory topicConnectionFactory)
+            throws JMSException, InterruptedException, TestException {
+        
+        try (JMSContext jmsContext = topicConnectionFactory.createContext()) {
+            JMSConsumer jmsConsumer = jmsContext.createConsumer(topic);
+            JMSProducer jmsProducer = jmsContext.createProducer();
+
+            byte[] data = new String(methodName() + " at " + new Date()).getBytes();
+            BytesMessage sentMessage = jmsContext.createBytesMessage();
+            sentMessage.writeBytes(data);
+
+            jmsProducer.send(topic, sentMessage);
+            byte[] receivedMessageBody = jmsConsumer.receiveBodyNoWait(byte[].class);
+            for (int i = 0; i<10 && receivedMessageBody == null; i++) {
+              receivedMessageBody = jmsConsumer.receiveBodyNoWait(byte[].class);
+              Thread.sleep(100);
+            }
+            if (receivedMessageBody == null)
+                throw new TestException("No message received, sent:"+sentMessage); 
+            if (!Arrays.equals(receivedMessageBody, sentMessage.getBody(byte[].class)))
+                throw new TestException("Wrong message received:" + receivedMessageBody + " sent:" + sentMessage);
+        }
+    }
+    
+    public void testReceiveBodyMFENoBodyTopicSecOff_B (
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
+        testReceiveBodyMFENoBodyTopicSecOff(tcfBindings);
+    }
+
+    public void testReceiveBodyMFENoBodyTopicSecOff_TCP (
+            HttpServletRequest request, HttpServletResponse response) throws Exception {
+            testReceiveBodyMFENoBodyTopicSecOff(tcfTCP);       
+    }
+    
+    private void testReceiveBodyMFENoBodyTopicSecOff(TopicConnectionFactory topicConnectionFactory)
+            throws TestException {
+        
+        try (JMSContext jmsContext = topicConnectionFactory.createContext()) {
+            JMSConsumer jmsConsumer = jmsContext.createConsumer(topic);
+            JMSProducer jmsProducer = jmsContext.createProducer();
+            
+            TextMessage sentMessage = jmsContext.createTextMessage();
+            jmsProducer.send(topic, sentMessage);
+            try {
+                String receivedMessageBody = jmsConsumer.receiveBody(String.class);
+                // Should not reach here.
+                throw new TestException("Wrong message received:" + receivedMessageBody+ "sent:"+sentMessage);
+
+            } catch (MessageFormatRuntimeException e) {
+                // Expected
+            }
         }
     }
 
-    public void testReceiveBodyNoWaitByteMessageTopicSecOff_B(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void testReceiveBodyMFEUnspecifiedTypeTopicSecOff_B(HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        testReceiveBodyMFEUnspecifiedTypeTopicSecOff(tcfBindings);
+    }
 
-        boolean testFailed = false;
+    public void testReceiveBodyMFEUnspecifiedTypeTopicSecOff_TCP(HttpServletRequest request,
+            HttpServletResponse response) throws Exception {
+        testReceiveBodyMFEUnspecifiedTypeTopicSecOff(tcfTCP);
+    }
+    
+    private void testReceiveBodyMFEUnspecifiedTypeTopicSecOff(TopicConnectionFactory topicConnectionFactory)
+            throws TestException {
+        try (JMSContext jmsContext = topicConnectionFactory.createContext()) {
+            JMSConsumer jmsConsumer = jmsContext.createConsumer(topic);
+            JMSProducer jmsProducer = jmsContext.createProducer();
+            
+            TextMessage sentMessage = jmsContext.createTextMessage();
+            jmsProducer.send(topic, sentMessage);
 
-        try {
-            JMSContext jmsContextTCFBindings = tcfBindings.createContext();
-
-            JMSConsumer jmsConsumer = jmsContextTCFBindings.createConsumer(topic);
-
-            JMSProducer p1 = jmsContextTCFBindings.createProducer();
-
-            byte[] data = new byte[] { 127, 0 };
-            BytesMessage message = jmsContextTCFBindings.createBytesMessage();
-            message.writeBytes(data);
-            p1.send(topic, message);
-
-            jmsConsumer.receiveBodyNoWait(byte[].class);
-
-            // TODO: Why are these closes be inside of the try/catch block?
-            jmsConsumer.close();
-            jmsContextTCFBindings.close();
-
-        } catch ( Exception mfe ) {
-            mfe.printStackTrace();
-            testFailed = true;
-        }
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveBodyNoWaitByteMessageTopicSecOff_B failed");
+            try {
+                byte[] receivedMessageBody = jmsConsumer.receiveBody(byte[].class);
+                // Should not reach here.
+                throw new TestException("Wrong message received:" + receivedMessageBody+ "sent:"+sentMessage);
+            } catch (MessageFormatRuntimeException e) {
+                // Expected
+            }
         }
     }
 
-    public void testReceiveBodyNoWaitByteMessageTopicSecOff_TCPIP(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        try {
-            JMSContext jmsContextTCFTCP = tcfTCP.createContext();
-
-            JMSConsumer jmsConsumer = jmsContextTCFTCP.createConsumer(topic);
-
-            JMSProducer p1 = jmsContextTCFTCP.createProducer();
-            byte[] data = new byte[] { 127, 0 };
-            BytesMessage message = jmsContextTCFTCP.createBytesMessage();
-            message.writeBytes(data);
-            p1.send(topic, message);
-
-            jmsConsumer.receiveBodyNoWait(byte[].class);
-
-            // TODO: Why are these closes be inside of the try/catch block?
-            jmsConsumer.close();
-            jmsContextTCFTCP.close();
-
-        } catch ( Exception mfe ) {
-            mfe.printStackTrace();
-            testFailed = true;
-        }
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveBodyNoWaitByteMessageTopicSecOff_TCPIP failed");
-        }
+    public void testReceiveBodyMFEUnsupportedTypeTopicSecOff_B(HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        testReceiveBodyMFEUnsupportedTypeTopicSecOff(tcfBindings);
     }
 
-    public void testReceiveBodyMFENoBodyTopicSecOff_B(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        JMSContext jmsContextTCFBindings = tcfBindings.createContext();
-
-        JMSConsumer jmsConsumer = jmsContextTCFBindings.createConsumer(topic);
-
-        JMSProducer p1 = jmsContextTCFBindings.createProducer();
-        TextMessage m = jmsContextTCFBindings.createTextMessage();
-        p1.send(topic, m);
-
-        try {
-            jmsConsumer.receiveBody(String.class);
-            testFailed = true;
-        } catch ( MessageFormatRuntimeException e ) {
-            // Expected
-        }
-
-        jmsConsumer.close();
-        jmsContextTCFBindings.close();
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveBodyMFENoBodyTopicSecOff_B failed");
-        }
+    public void testReceiveBodyMFEUnsupportedTypeTopicSecOff_TCP(HttpServletRequest request,
+            HttpServletResponse response) throws Exception {
+        testReceiveBodyMFEUnsupportedTypeTopicSecOff(tcfTCP);
     }
 
-    public void testReceiveBodyMFENoBodyTopicSecOff_TCP(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+    private void testReceiveBodyMFEUnsupportedTypeTopicSecOff(TopicConnectionFactory topicConnectionFactory)
+            throws TestException {
+        try (JMSContext jmsContext = topicConnectionFactory.createContext()) {
+            JMSConsumer jmsConsumer = jmsContext.createConsumer(topic);
+            JMSProducer jmsProducer = jmsContext.createProducer();
 
-        boolean testFailed = false;
+            StreamMessage sentMessage = jmsContext.createStreamMessage();
+            jmsProducer.send(topic, sentMessage);
 
-        JMSContext jmsContextTCFTCP = tcfTCP.createContext();
-
-        JMSConsumer jmsConsumer = jmsContextTCFTCP.createConsumer(topic);
-
-        JMSProducer p1 = jmsContextTCFTCP.createProducer();
-        TextMessage m = jmsContextTCFTCP.createTextMessage();
-        p1.send(topic, m);
-
-        try {
-            jmsConsumer.receiveBody(String.class);
-            testFailed = true;
-        } catch ( MessageFormatRuntimeException e ) {
-            // Expected
-        }
-
-        jmsConsumer.close();
-        jmsContextTCFTCP.close();
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveBodyMFENoBodyTopicSecOff_TCP failed");
-        }
-    }
-
-    public void testReceiveBodyMFEUnspecifiedTypeTopicSecOff_B(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        JMSContext jmsContextTCFBindings = tcfBindings.createContext();
-
-        JMSConsumer jmsConsumer = jmsContextTCFBindings.createConsumer(topic);
-
-        JMSProducer p1 = jmsContextTCFBindings.createProducer();
-        TextMessage m = jmsContextTCFBindings.createTextMessage();
-        p1.send(topic, m);
-
-        try {
-            jmsConsumer.receiveBody(byte[].class);
-            testFailed = true;
-        } catch ( MessageFormatRuntimeException e ) {
-            // Expected
-        }
-
-        jmsConsumer.close();
-        jmsContextTCFBindings.close();
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveBodyMFEUnspecifiedTypeTopicSecOff_B failed");
-        }
-    }
-
-    public void testReceiveBodyMFEUnspecifiedTypeTopicSecOff_TCP(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        JMSContext jmsContextTCFTCP = tcfTCP.createContext();
-
-        JMSConsumer jmsConsumer = jmsContextTCFTCP.createConsumer(topic);
-
-        JMSProducer p1 = jmsContextTCFTCP.createProducer();
-        TextMessage m = jmsContextTCFTCP.createTextMessage();
-        p1.send(topic, m);
-
-        try {
-            jmsConsumer.receiveBody(byte[].class);
-            testFailed = true;
-        } catch ( MessageFormatRuntimeException e ) {
-            // Expected
-        }
-
-        jmsConsumer.close();
-        jmsContextTCFTCP.close();
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveBodyMFEUnspecifiedTypeTopicSecOff_TCP failed");
-        }
-    }
-
-    public void testReceiveBodyMFEUnsupportedTypeTopicSecOff_B(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        JMSContext jmsContextTCFBindings = tcfBindings.createContext();
-
-        JMSConsumer jmsConsumer = jmsContextTCFBindings.createConsumer(topic);
-
-        JMSProducer p1 = jmsContextTCFBindings.createProducer();
-        StreamMessage m = jmsContextTCFBindings.createStreamMessage();
-        p1.send(topic, m);
-
-        try {
-            jmsConsumer.receiveBody(Object.class);
-            testFailed = true;
-        } catch ( MessageFormatRuntimeException e ) {
-            // Expected
-        }
-
-        jmsConsumer.close();
-        jmsContextTCFBindings.close();
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveBodyMFEUnsupportedTypeTopicSecOff_B failed");
-        }
-    }
-
-    public void testReceiveBodyMFEUnsupportedTypeTopicSecOff_TCP(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        JMSContext jmsContextTCFTCP = tcfTCP.createContext();
-
-        JMSConsumer jmsConsumer = jmsContextTCFTCP.createConsumer(topic);
-
-        JMSProducer p1 = jmsContextTCFTCP.createProducer();
-        StreamMessage m = jmsContextTCFTCP.createStreamMessage();
-        p1.send(topic, m);
-
-        try {
-            jmsConsumer.receiveBody(Object.class);
-            testFailed = true;
-        } catch ( MessageFormatRuntimeException e ) {
-            // Expected
-        }
-
-        jmsConsumer.close();
-        jmsContextTCFTCP.close();
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveBodyMFEUnsupportedTypeTopicSecOff_TCP failed");
+            try {
+                Object receivedMessageBody = jmsConsumer.receiveBody(Object.class);
+                // Should not reach here.
+                throw new TestException("Wrong message received:" + receivedMessageBody + "sent:" + sentMessage);
+            } catch (MessageFormatRuntimeException e) {
+                // Expected
+            }
         }
     }
 
     public void testReceiveBodyTimeOutMFENoBodyTopicSecOff_B(
         HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        JMSContext jmsContextTCFBindings = tcfBindings.createContext();
-
-        JMSConsumer jmsConsumer = jmsContextTCFBindings.createConsumer(topic);
-
-        JMSProducer p1 = jmsContextTCFBindings.createProducer();
-        TextMessage m = jmsContextTCFBindings.createTextMessage();
-        p1.send(topic, m);
-
-        try {
-            jmsConsumer.receiveBody(String.class, 30000);
-            testFailed = true;
-        } catch ( MessageFormatRuntimeException e ) {
-            // Expected
-        }
-
-        jmsConsumer.close();
-        jmsContextTCFBindings.close();
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveBodyTimeOutMFENoBodyTopicSecOff_B failed");
-        }
+        testReceiveBodyTimeOutMFENoBodyTopicSecOff(tcfBindings);
     }
 
     public void testReceiveBodyTimeOutMFENoBodyTopicSecOff_TCP(
         HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        JMSContext jmsContextTCFTCP = tcfTCP.createContext();
-
-        JMSConsumer jmsConsumer = jmsContextTCFTCP.createConsumer(topic);
-
-        JMSProducer p1 = jmsContextTCFTCP.createProducer();
-        TextMessage m = jmsContextTCFTCP.createTextMessage();
-        p1.send(topic, m);
-
-        try {
-            jmsConsumer.receiveBody(String.class, 30000);
-            testFailed = true;
-        } catch ( MessageFormatRuntimeException e ) {
-            // Expected
-        }
-
-        jmsConsumer.close();
-        jmsContextTCFTCP.close();
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveBodyTimeOutMFENoBodyTopicSecOff_TCP failed");
-        }
+        testReceiveBodyTimeOutMFENoBodyTopicSecOff(tcfTCP);
     }
 
+    private void testReceiveBodyTimeOutMFENoBodyTopicSecOff(TopicConnectionFactory topicConnectionFactory)
+            throws TestException {
+        
+        try (JMSContext jmsContext = topicConnectionFactory.createContext()) {
+            JMSConsumer jmsConsumer = jmsContext.createConsumer(topic);
+            JMSProducer jmsProducer = jmsContext.createProducer();
+            
+            TextMessage sentMessage = jmsContext.createTextMessage();
+            jmsProducer.send(topic, sentMessage);
+            try {
+                String receivedMessageBody = jmsConsumer.receiveBody(String.class, 30000);
+                // Should not reach here.
+                throw new TestException("Wrong message received:" + receivedMessageBody+ "sent:"+sentMessage);
+
+            } catch (MessageFormatRuntimeException e) {
+                // Expected
+            }
+        }
+    }
+    
     public void testReceiveBodyTimeOutMFEUnspecifiedTypeTopicSecOff_B(
         HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        JMSContext jmsContextTCFBindings = tcfBindings.createContext();
-
-        JMSConsumer jmsConsumer = jmsContextTCFBindings.createConsumer(topic);
-
-        JMSProducer p1 = jmsContextTCFBindings.createProducer();
-        TextMessage m = jmsContextTCFBindings.createTextMessage();
-        p1.send(topic, m);
-
-        try {
-            jmsConsumer.receiveBody(byte[].class, 30000);
-            testFailed = true;
-        } catch ( MessageFormatRuntimeException e ) {
-            // Expected
-        }
-
-        jmsConsumer.close();
-        jmsContextTCFBindings.close();
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveBodyTimeOutMFEUnspecifiedTypeTopicSecOff_B failed");
-        }
+        testReceiveBodyTimeOutMFEUnspecifiedTypeTopicSecOff(tcfBindings);
     }
 
     public void testReceiveBodyTimeOutMFEUnspecifiedTypeTopicSecOff_TCP(
         HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        JMSContext jmsContextTCFTCP = tcfTCP.createContext();
-
-        JMSConsumer jmsConsumer = jmsContextTCFTCP.createConsumer(topic);
-
-        JMSProducer p1 = jmsContextTCFTCP.createProducer();
-        TextMessage m = jmsContextTCFTCP.createTextMessage();
-        p1.send(topic, m);
-
-        try {
-            jmsConsumer.receiveBody(byte[].class, 30000);
-            testFailed = true;
-        } catch ( MessageFormatRuntimeException e ) {
-            // Expected
-        }
-
-        jmsConsumer.close();
-        jmsContextTCFTCP.close();
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveBodyTimeOutMFEUnspecifiedTypeTopicSecOff_TCP failed");
-        }
+        testReceiveBodyTimeOutMFEUnspecifiedTypeTopicSecOff(tcfTCP);
     }
 
+    private void testReceiveBodyTimeOutMFEUnspecifiedTypeTopicSecOff(TopicConnectionFactory topicConnectionFactory)
+            throws TestException {
+        try (JMSContext jmsContext = topicConnectionFactory.createContext()) {
+            JMSConsumer jmsConsumer = jmsContext.createConsumer(topic);
+            JMSProducer jmsProducer = jmsContext.createProducer();
+            
+            TextMessage sentMessage = jmsContext.createTextMessage();
+            jmsProducer.send(topic, sentMessage);
+
+            try {
+                byte[] receivedMessageBody = jmsConsumer.receiveBody(byte[].class, 30000);
+                // Should not reach here.
+                throw new TestException("Wrong message received:" + receivedMessageBody+ "sent:"+sentMessage);
+            } catch (MessageFormatRuntimeException e) {
+                // Expected
+            }
+        }
+    }
+    
     public void testReceiveBodyTimeOutMFEUnsupportedTypeTopicSecOff_B(
         HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        JMSContext jmsContextTCFBindings = tcfBindings.createContext();
-
-        JMSConsumer jmsConsumer = jmsContextTCFBindings.createConsumer(topic);
-
-        JMSProducer p1 = jmsContextTCFBindings.createProducer();
-        StreamMessage m = jmsContextTCFBindings.createStreamMessage();
-        p1.send(topic, m);
-
-        try {
-            jmsConsumer.receiveBody(Object.class, 30000);
-            testFailed = true;
-        } catch ( MessageFormatRuntimeException e ) {
-            // Expected
-        }
-
-        jmsConsumer.close();
-        jmsContextTCFBindings.close();
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveBodyTimeOutMFEUnsupportedTypeTopicSecOff_B failed");
-        }
+        testReceiveBodyTimeOutMFEUnsupportedTypeTopicSecOff(tcfBindings);
     }
 
     public void testReceiveBodyTimeOutMFEUnsupportedTypeTopicSecOff_TCP(
         HttpServletRequest request, HttpServletResponse response) throws Exception {
+        testReceiveBodyTimeOutMFEUnsupportedTypeTopicSecOff(tcfTCP);
+    }
 
-        boolean testFailed = false;
+    private void testReceiveBodyTimeOutMFEUnsupportedTypeTopicSecOff(TopicConnectionFactory topicConnectionFactory)
+            throws TestException {
+        try (JMSContext jmsContext = topicConnectionFactory.createContext()) {
+            JMSConsumer jmsConsumer = jmsContext.createConsumer(topic);
+            JMSProducer jmsProducer = jmsContext.createProducer();
 
-        JMSContext jmsContextTCFTCP = tcfTCP.createContext();
+            StreamMessage sentMessage = jmsContext.createStreamMessage();
+            jmsProducer.send(topic, sentMessage);
 
-        JMSConsumer jmsConsumer = jmsContextTCFTCP.createConsumer(topic);
-
-        JMSProducer p1 = jmsContextTCFTCP.createProducer();
-        StreamMessage m = jmsContextTCFTCP.createStreamMessage();
-        p1.send(topic, m);
-
-        try {
-            jmsConsumer.receiveBody(Object.class, 30000);
-            testFailed = true;
-        } catch ( MessageFormatRuntimeException e ) {
-            // Expected
-        }
-
-        jmsConsumer.close();
-        jmsContextTCFTCP.close();
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveBodyTimeOutMFEUnsupportedTypeTopicSecOff_TCP failed");
+            try {
+                Object receivedMessageBody = jmsConsumer.receiveBody(Object.class, 30000);
+                // Should not reach here.
+                throw new TestException("Wrong message received:" + receivedMessageBody + "sent:" + sentMessage);
+            } catch (MessageFormatRuntimeException e) {
+                // Expected
+            }
         }
     }
 
     public void testReceiveBodyNoWaitMFENoBodyTopicSecOff_B(
         HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        JMSContext jmsContextTCFBindings = tcfBindings.createContext();
-
-        JMSConsumer jmsConsumer = jmsContextTCFBindings.createConsumer(topic);
-
-        JMSProducer p1 = jmsContextTCFBindings.createProducer();
-        TextMessage m = jmsContextTCFBindings.createTextMessage();
-        p1.send(topic, m);
-
-        try {
-            jmsConsumer.receiveBodyNoWait(String.class);
-            testFailed = true;
-        } catch ( MessageFormatRuntimeException e ) {
-            // Expected
-        }
-
-        jmsConsumer.close();
-        jmsContextTCFBindings.close();
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveBodyNoWaitMFENoBodyTopicSecOff_B failed");
-        }
+        testReceiveBodyNoWaitMFENoBodyTopicSecOff(tcfBindings);
     }
 
     public void testReceiveBodyNoWaitMFENoBodyTopicSecOff_TCP(
         HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        Topic topic = (Topic) new InitialContext().lookup("java:comp/env/eis/topic12");
-
-        JMSContext jmsContextTCFTCP = tcfTCP.createContext();
-
-        JMSConsumer jmsConsumer = jmsContextTCFTCP.createConsumer(topic);
-
-        JMSProducer p1 = jmsContextTCFTCP.createProducer();
-        TextMessage m = jmsContextTCFTCP.createTextMessage();
-        p1.send(topic, m);
-
-        String body = "none";
-        try {
-            body = jmsConsumer.receiveBodyNoWait(String.class);
-            testFailed = true;
-        } catch ( MessageFormatRuntimeException e ) {
-            // Expected
-        }
-
-        jmsConsumer.close();
-        jmsContextTCFTCP.close();
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveBodyNoWaitMFENoBodyTopicSecOff_TCP failed body [ " + body + " ]");
-        }
+        testReceiveBodyNoWaitMFENoBodyTopicSecOff(tcfTCP);
     }
 
+    private void testReceiveBodyNoWaitMFENoBodyTopicSecOff(TopicConnectionFactory topicConnectionFactory)
+            throws TestException, InterruptedException {
+        
+        try (JMSContext jmsContext = topicConnectionFactory.createContext()) {
+            JMSConsumer jmsConsumer = jmsContext.createConsumer(topic);
+            JMSProducer jmsProducer = jmsContext.createProducer();
+            
+            TextMessage sentMessage = jmsContext.createTextMessage();
+            jmsProducer.send(topic, sentMessage);
+            try {
+                // Repeat attempts to receive the message.
+                String receivedMessageBody = null;
+                for (int i = 0; i<10 && receivedMessageBody == null; i++) {
+                  receivedMessageBody = jmsConsumer.receiveBodyNoWait(String.class);
+                  Thread.sleep(100);
+                }
+                // Should not reach here.
+                // We reach here if we either didn't receive a message after 10 attempts or we received 
+                // the TextMessage with no body, instead of throwing MessageFormatRuntimeException.  
+                throw new TestException("Wrong message received:" + receivedMessageBody+ "sent:"+sentMessage);
+
+            } catch (MessageFormatRuntimeException e) {
+                // Expected
+            }
+        }
+    }
+    
     public void testReceiveBodyNoWaitMFEUnspecifiedTypeTopicSecOff_B(
         HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        JMSContext jmsContextTCFBindings = tcfBindings.createContext();
-
-        JMSConsumer jmsConsumer = jmsContextTCFBindings.createConsumer(topic);
-        JMSProducer p1 = jmsContextTCFBindings.createProducer();
-
-        TextMessage m = jmsContextTCFBindings.createTextMessage();
-        p1.send(topic, m);
-
-        try {
-            jmsConsumer.receiveBodyNoWait(byte[].class);
-            testFailed = true;
-        } catch ( MessageFormatRuntimeException e ) {
-            // Expected
-        }
-
-        jmsConsumer.close();
-        jmsContextTCFBindings.close();
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveBodyNoWaitMFEUnspecifiedTypeTopicSecOff_B failed");
-        }
+        testReceiveBodyNoWaitMFEUnspecifiedTypeTopicSecOff(tcfBindings);
     }
 
     public void testReceiveBodyNoWaitMFEUnspecifiedTypeTopicSecOff_TCP(
         HttpServletRequest request, HttpServletResponse response) throws Exception {
+        testReceiveBodyNoWaitMFEUnspecifiedTypeTopicSecOff(tcfTCP);
+    }
+    
+    private void testReceiveBodyNoWaitMFEUnspecifiedTypeTopicSecOff(TopicConnectionFactory topicConnectionFactory)
+            throws TestException, InterruptedException {
+        try (JMSContext jmsContext = topicConnectionFactory.createContext()) {
+            JMSConsumer jmsConsumer = jmsContext.createConsumer(topic);
+            JMSProducer jmsProducer = jmsContext.createProducer();
+            
+            TextMessage sentMessage = jmsContext.createTextMessage();
+            jmsProducer.send(topic, sentMessage);
 
-        String failureReason = null;
+            try {   
+                // Repeat attempts to receive the message.
+                byte[] receivedMessageBody = null;
+                for (int i = 0; i<10 && receivedMessageBody == null; i++) {
+                  receivedMessageBody = jmsConsumer.receiveBodyNoWait(byte[].class);
+                  Thread.sleep(100);
+                }
+                // Should not reach here.
+                // We reach here if we either didn't receive a message after 10 attempts or we received 
+                // the TextMessage with no body, instead of throwing MessageFormatRuntimeException.  
+                throw new TestException("Wrong message received:" + receivedMessageBody+ "sent:"+sentMessage);
 
-        Topic topic = (Topic) new InitialContext().lookup("java:comp/env/eis/topic12");
-
-        JMSContext jmsContextTCFTCP = tcfTCP.createContext();
-
-        JMSConsumer jmsConsumer = jmsContextTCFTCP.createConsumer(topic);
-        JMSProducer producer = jmsContextTCFTCP.createProducer();
-
-        TextMessage message = jmsContextTCFTCP.createTextMessage();
-
-        Message m = jmsConsumer.receiveNoWait();
-        if ( m != null ) {
-            failureReason = "Topic was not clear before test.";
-
-        } else {
-            producer.send(topic, message);
-
-            try {
-                jmsConsumer.receiveBodyNoWait(String.class);
-                String error = jmsConsumer.receiveBodyNoWait(String.class);
-                failureReason = "Expected exception was not received";
-            } catch ( MessageFormatRuntimeException e ) {
+            } catch (MessageFormatRuntimeException e) {
                 // Expected
             }
-        }
-
-        jmsConsumer.close();
-        jmsContextTCFTCP.close();
-
-        if ( failureReason != null ) {
-            throw new Exception("testReceiveBodyNoWaitMFEUnspecifiedTypeTopicSecOff_TCP failed: " + failureReason);
         }
     }
 
     public void testReceiveBodyNoWaitMFEUnsupportedTypeTopicSecOff_B(
         HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        JMSContext jmsContextTCFBindings = tcfBindings.createContext();
-
-        JMSConsumer jmsConsumer = jmsContextTCFBindings.createConsumer(topic);
-        JMSProducer p1 = jmsContextTCFBindings.createProducer();
-
-        StreamMessage m = jmsContextTCFBindings.createStreamMessage();
-        p1.send(topic, m);
-
-        try {
-            jmsConsumer.receiveBodyNoWait(Object.class);
-            testFailed = true;
-        } catch ( MessageFormatRuntimeException e ) {
-            // Expected
-        }
-
-        jmsConsumer.close();
-        jmsContextTCFBindings.close();
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveBodyNoWaitMFEUnsupportedTypeTopicSecOff_B failed");
-        }
+        testReceiveBodyNoWaitMFEUnsupportedTypeTopicSecOff(tcfBindings);      
     }
 
     public void testReceiveBodyNoWaitMFEUnsupportedTypeTopicSecOff_TCP(
         HttpServletRequest request, HttpServletResponse response) throws Exception {
+        testReceiveBodyNoWaitMFEUnsupportedTypeTopicSecOff(tcfTCP);
+    }
+    
+    private void testReceiveBodyNoWaitMFEUnsupportedTypeTopicSecOff(TopicConnectionFactory topicConnectionFactory)
+            throws TestException, InterruptedException {
+        try (JMSContext jmsContext = topicConnectionFactory.createContext()) {
+            JMSConsumer jmsConsumer = jmsContext.createConsumer(topic);
+            JMSProducer jmsProducer = jmsContext.createProducer();
 
-        boolean testFailed = false;
+            StreamMessage sentMessage = jmsContext.createStreamMessage();
+            jmsProducer.send(topic, sentMessage);
 
-        JMSContext jmsContextTCFTCP = tcfTCP.createContext();
-
-        JMSConsumer jmsConsumer = jmsContextTCFTCP.createConsumer(topic);
-        JMSProducer p1 = jmsContextTCFTCP.createProducer();
-
-        StreamMessage m = jmsContextTCFTCP.createStreamMessage();
-        p1.send(topic, m);
-
-        try {
-            jmsConsumer.receiveBodyNoWait(Object.class);
-            testFailed = true;
-        } catch ( MessageFormatRuntimeException e ) {
-            // Expected
-        }
-
-        jmsConsumer.close();
-        jmsContextTCFTCP.close();
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveBodyNoWaitMFEUnsupportedTypeTopicSecOff_TCP failed");
+            try {
+                // Repeat attempts to receive the message.
+                Object receivedMessageBody = null;
+                for (int i = 0; i<10 && receivedMessageBody == null; i++) {
+                  receivedMessageBody = jmsConsumer.receiveBodyNoWait(Object.class);
+                  Thread.sleep(100);
+                }
+                // Should not reach here.
+                // We reach here if we either didn't receive a message after 10 attempts or we received 
+                // the TextMessage with no body, instead of throwing MessageFormatRuntimeException.  
+                throw new TestException("Wrong message received:" + receivedMessageBody+ "sent:"+sentMessage);
+            
+            } catch (MessageFormatRuntimeException e) {
+                // Expected
+            }
         }
     }
+
+    /*****************************************************************************************************
+     * Point to Point tests.                                                                             * 
+     *****************************************************************************************************/
 
     public void testStartJMSContextSecOffBinding(
         HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -2365,7 +1423,7 @@ public class JMSContextServlet extends HttpServlet {
             jmsProducerQCFBindings.send(queue, message);
 
             QueueBrowser qb = jmsContextQCFBindings.createBrowser(queue);
-            Enumeration e = qb.getEnumeration();
+            Enumeration<?> e = qb.getEnumeration();
             int numMsgs = 0;
             while ( e.hasMoreElements() ) {
                 TextMessage message1 = (TextMessage) e.nextElement();
@@ -2374,7 +1432,7 @@ public class JMSContextServlet extends HttpServlet {
 
             jmsContextQCFBindings.commit();
             QueueBrowser qb1 = jmsContextQCFBindings.createBrowser(queue);
-            Enumeration e1 = qb1.getEnumeration();
+            Enumeration<?> e1 = qb1.getEnumeration();
             int numMsgs1 = 0;
             while ( e1.hasMoreElements() ) {
                 TextMessage message1 = (TextMessage) e1.nextElement();
@@ -2413,7 +1471,7 @@ public class JMSContextServlet extends HttpServlet {
             jmsProducerQCFTCP.send(queue, message);
 
             QueueBrowser qb = jmsContextQCFTCP.createBrowser(queue);
-            Enumeration e = qb.getEnumeration();
+            Enumeration<?> e = qb.getEnumeration();
             int numMsgs = 0;
             while ( e.hasMoreElements() ) {
                 TextMessage message1 = (TextMessage) e.nextElement();
@@ -2423,7 +1481,7 @@ public class JMSContextServlet extends HttpServlet {
             jmsContextQCFTCP.commit();
 
             QueueBrowser qb1 = jmsContextQCFTCP.createBrowser(queue);
-            Enumeration e1 = qb1.getEnumeration();
+            Enumeration<?> e1 = qb1.getEnumeration();
             int numMsgs1 = 0;
             while ( e1.hasMoreElements() ) {
                 TextMessage message1 = (TextMessage) e1.nextElement();
@@ -2463,7 +1521,7 @@ public class JMSContextServlet extends HttpServlet {
             jmsProducerQCFBindings.send(queue, message);
 
             QueueBrowser qb = jmsContextQCFBindings.createBrowser(queue);
-            Enumeration e = qb.getEnumeration();
+            Enumeration<?> e = qb.getEnumeration();
             int numMsgs = 0;
             while ( e.hasMoreElements() ) {
                 TextMessage message1 = (TextMessage) e.nextElement();
@@ -2498,7 +1556,7 @@ public class JMSContextServlet extends HttpServlet {
             jmsProducerQCFTCP.send(queue, message);
 
             QueueBrowser qb = jmsContextQCFTCP.createBrowser(queue);
-            Enumeration e = qb.getEnumeration();
+            Enumeration<?> e = qb.getEnumeration();
             int numMsgs = 0;
             while ( e.hasMoreElements() ) {
                 TextMessage message1 = (TextMessage) e.nextElement();
@@ -2508,7 +1566,7 @@ public class JMSContextServlet extends HttpServlet {
             jmsContextQCFTCP.commit();
 
             QueueBrowser qb1 = jmsContextQCFTCP.createBrowser(queue);
-            Enumeration e1 = qb1.getEnumeration();
+            Enumeration<?> e1 = qb1.getEnumeration();
             int numMsgs1 = 0;
             while ( e1.hasMoreElements() ) {
                 TextMessage message1 = (TextMessage) e1.nextElement();
@@ -2545,7 +1603,7 @@ public class JMSContextServlet extends HttpServlet {
             jmsContextQCFBindings.commit();
 
             QueueBrowser qb = jmsContextQCFBindings.createBrowser(queue);
-            Enumeration e = qb.getEnumeration();
+            Enumeration<?> e = qb.getEnumeration();
             int numMsgs = 0;
             while ( e.hasMoreElements() ) {
                 TextMessage message1 = (TextMessage) e.nextElement();
@@ -2556,7 +1614,7 @@ public class JMSContextServlet extends HttpServlet {
             TextMessage rmsg = (TextMessage) jmsConsumerQCFBindings.receive(30000);
 
             QueueBrowser qb1 = jmsContextQCFBindings.createBrowser(queue);
-            Enumeration e1 = qb1.getEnumeration();
+            Enumeration<?> e1 = qb1.getEnumeration();
             int numMsgs1 = 0;
             while ( e1.hasMoreElements() ) {
                 TextMessage message1 = (TextMessage) e1.nextElement();
@@ -2566,7 +1624,7 @@ public class JMSContextServlet extends HttpServlet {
             jmsContextQCFBindings.rollback();
 
             QueueBrowser qb2 = jmsContextQCFBindings.createBrowser(queue);
-            Enumeration e2 = qb2.getEnumeration();
+            Enumeration<?> e2 = qb2.getEnumeration();
             int numMsgs2 = 0;
             while ( e2.hasMoreElements() ) {
                 TextMessage message1 = (TextMessage) e2.nextElement();
@@ -2602,7 +1660,7 @@ public class JMSContextServlet extends HttpServlet {
             jmsContextQCFTCP.commit();
 
             QueueBrowser qb = jmsContextQCFTCP.createBrowser(queue);
-            Enumeration e = qb.getEnumeration();
+            Enumeration<?> e = qb.getEnumeration();
             int numMsgs = 0;
             while ( e.hasMoreElements() ) {
                 TextMessage message1 = (TextMessage) e.nextElement();
@@ -2613,7 +1671,7 @@ public class JMSContextServlet extends HttpServlet {
             TextMessage rmsg = (TextMessage) jmsConsumerQCFTCP.receive(30000);
 
             QueueBrowser qb1 = jmsContextQCFTCP.createBrowser(queue);
-            Enumeration e1 = qb1.getEnumeration();
+            Enumeration<?> e1 = qb1.getEnumeration();
             int numMsgs1 = 0;
             while ( e1.hasMoreElements() ) {
                 TextMessage message1 = (TextMessage) e1.nextElement();
@@ -2623,7 +1681,7 @@ public class JMSContextServlet extends HttpServlet {
             jmsContextQCFTCP.rollback();
 
             QueueBrowser qb2 = jmsContextQCFTCP.createBrowser(queue);
-            Enumeration e2 = qb2.getEnumeration();
+            Enumeration<?> e2 = qb2.getEnumeration();
             int numMsgs2 = 0;
             while ( e2.hasMoreElements() ) {
                 TextMessage message1 = (TextMessage) e2.nextElement();

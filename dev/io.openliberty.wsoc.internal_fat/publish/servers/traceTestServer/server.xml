@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2014, 2016 IBM Corporation and others.
+    Copyright (c) 2014, 2021 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -31,7 +31,7 @@
     </featureManager>
    
     
- <logging maxFileSize="50" maxFiles="3" traceFileName="wsocTrace.log" traceSpecification="*=info:com.ibm.ws.webcontainer.*=all:com.ibm.wsspi.webcontainer.*=all:com.ibm.ws.webcontainer31.*=all:ChannelFramework=all:HTTPChannel=all:TCPChannel=all:websockets=all"/> 
+ <logging maxFileSize="50" maxFiles="3" traceFileName="wsocTrace.log" traceSpecification="*=info:com.ibm.ws.webcontainer.*=all:com.ibm.wsspi.webcontainer.*=all:com.ibm.ws.webcontainer31.*=all:ChannelFramework=all:HTTPChannel=all:TCPChannel=all:websockets=all:com.ibm.ws.runtime.update.*=all"/> 
       
     <javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
     <javaPermission className="java.lang.RuntimePermission" name="modifyThread"/>  

@@ -38,7 +38,7 @@ public class InvalidTraceSpecificationTest {
     protected static final String INVALIDTRACEMSG = "";
     protected String invalidTraceSpec1 = "com.ibm.someInvalid.*=all";
     protected String invalidTraceSpec2 = "com.ibm.someMoreInvalid.*=all";
-    private final String validTraceSpec1 = "com.ibm.ws.*=all";
+    private final String validTraceSpec1 = "com.ibm.ws.config.*=all";
     protected static LibertyServer server;
 
     @BeforeClass

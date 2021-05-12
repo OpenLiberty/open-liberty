@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2020 IBM Corporation and others.
+# Copyright (c) 2009, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -140,6 +140,11 @@ grpc.client.receivedMessages.total.description=Die Gesamtzahl der vom Server emp
 grpc.client.responseTime.total.description=Die Gesamtantwortzeit der ausgef\u00fchrten RPCs.
 
 REST.request.description=Die Anzahl der Aufrufe und die Gesamtantwortzeit dieser REST-konformen Ressourcenmethode seit dem Start des Servers.
+
+requestTiming.requestCount.description=Die Anzahl der Servletanforderungen seit dem Serverstart.
+requestTiming.activeRequestCount.description=Die Anzahl der Servletanforderungen, die momentan ausgef\u00fchrt werden.
+requestTiming.slowRequestCount.description=Die Anzahl der Servletanforderungen, die momentan zwar ausgef\u00fchrt werden, deren Ausf\u00fchrung jedoch langsam ist.
+requestTiming.hungRequestCount.description=Die Anzahl der Servletanforderungen, die zwar momentan ausgef\u00fchrt werden, jedoch blockiert sind.
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message
 #-----------------------------------------------------------------------------------------------------------------------------

@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2011 IBM Corporation and others.
+# Copyright (c) 2009, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -127,6 +127,11 @@ session.liveSessions.description=Num\u0103rul de utilizatori care sunt loga\u016
 session.activeSessions.description=Num\u0103rul de sesiuni active concurente. (O sesiune este activ\u0103 dac\u0103 produsul este proceseaz\u0103 curent o cerere care utilizeaz\u0103 acea sesiune de utilizator).
 session.invalidated.total.description=Num\u0103rul de sesiuni care s-au delogat de la activarea acestui indice de m\u0103surare.
 session.invalidatedbyTimeout.total.description=Num\u0103rul de sesiuni care s-au delogat prin timeout de la activarea acestui indice de m\u0103surare.
+
+requestTiming.requestCount.description=Num\u0103rul cererilor de servlet de c\u00e2nd a pornit serverul.
+requestTiming.activeRequestCount.description=Num\u0103rul cererilor de servlet care ruleaz\u0103 curent.
+requestTiming.slowRequestCount.description=Num\u0103rul cererilor de servlet care ruleaz\u0103 curent, dar sunt lente.
+requestTiming.hungRequestCount.description=Num\u0103rul cererilor de servlet care ruleaz\u0103 curent, dar sunt ag\u0103\u0163ate.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message

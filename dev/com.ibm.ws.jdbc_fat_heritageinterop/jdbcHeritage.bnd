@@ -22,6 +22,7 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 WS-TraceGroup: jdbcHeritage
 
 Export-Package:\
+ com.ibm.websphere.appprofile.accessintent,\
  com.ibm.websphere.ce.cm,\
  com.ibm.websphere.rsadapter
 

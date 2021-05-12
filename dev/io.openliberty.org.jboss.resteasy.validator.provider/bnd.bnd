@@ -13,6 +13,8 @@ bVersion=1.0
 
 Bundle-SymbolicName: io.openliberty.org.jboss.resteasy.validator.provider
 
+resteasy-version=4.6.0.Final
+
 src: src
 
 app-resources= \
@@ -28,8 +30,8 @@ Service-Component: \
     properties:="resources=${app-resources}"    
 
 Export-Package: \
-  org.jboss.resteasy.plugins.validation;version=4.5.8.Final;thread-context=true, \
-  org.jboss.resteasy.plugins.validation.i18n;version=4.5.8.Final
+  org.jboss.resteasy.plugins.validation;version=${resteasy-version};thread-context=true, \
+  org.jboss.resteasy.plugins.validation.i18n;version=${resteasy-version}
 
 # Using version=! in order to not have a version attached to the import for packages that were removed
 # from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the
@@ -40,12 +42,11 @@ Import-Package: \
   *
 
 Include-Resource:\
-@${repo;org.jboss.resteasy:resteasy-validator-provider;4.5.8.Final;EXACT}, \
+@${repo;org.jboss.resteasy:resteasy-validator-provider;${resteasy-version};EXACT}, \
 org/jboss/resteasy=${bin}/org/jboss/resteasy
 
 -buildpath: \
-	org.jboss.resteasy:resteasy-cdi;strategy=exact;version=4.5.8.Final,\
-	org.jboss.resteasy:resteasy-validator-provider;strategy=exact;version=4.5.8.Final,\
+	org.jboss.resteasy:resteasy-validator-provider;strategy=exact;version=${resteasy-version},\
 	com.ibm.websphere.javaee.validation.2.0;version=latest,\
 	com.ibm.ws.cdi.interfaces;version=latest,\
 	com.ibm.websphere.javaee.cdi.2.0,\
@@ -53,6 +54,7 @@ org/jboss/resteasy=${bin}/org/jboss/resteasy
 	com.ibm.ws.logging.core,\
 	com.ibm.ws.org.jboss.logging,\
 	io.openliberty.org.jboss.resteasy.common,\
+	io.openliberty.org.jboss.resteasy.server,\
 	com.ibm.ws.com.fasterxml.classmate;version=latest
  
 jakartaeeMe: true

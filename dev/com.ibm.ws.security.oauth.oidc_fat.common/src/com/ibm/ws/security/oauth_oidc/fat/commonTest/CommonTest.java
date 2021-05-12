@@ -24,6 +24,7 @@ import java.net.Socket;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.security.KeyStore;
 import java.security.Security;
@@ -91,6 +92,7 @@ import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 import componenttest.topology.utils.LDAPUtils;
+import org.apache.commons.io.IOUtils;
 
 public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
 
@@ -495,7 +497,7 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
      * Add the newly added server to the list of server references
      *
      * @param server
-     *                   - server reference to add
+     *            - server reference to add
      * @throws Exception
      */
     private static void addToServerRefList(TestServer server) throws Exception {
@@ -515,10 +517,10 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
 
         msgUtils.printMethodName(thisMethod);
         Log.info(thisClass, thisMethod, "Setting up global trust");
-        
+
         /*
          * TODO BEGIN DELETE
-         * 
+         *
          * This block of code was added to support DSA keys until they are replaced
          * in our tests.
          */
@@ -626,7 +628,7 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
      * Sets httpunit options that all the tests need
      *
      * @param providerType
-     *                         - The type of provider that this test instance will use
+     *            - The type of provider that this test instance will use
      */
     private static void initHttpUnitSettings() {
 
@@ -1127,9 +1129,9 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
      * @param headers
      * @param expectations
      * @param settings
-     *                         - optional
+     *            - optional
      * @param skipTestCase
-     *                         - optional
+     *            - optional
      * @return
      * @throws Exception
      */
@@ -1412,6 +1414,9 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
 
         msgUtils.printMethodName(thisMethod);
         msgUtils.printOAuthOidcExpectations(expectations);
+        Log.info(thisClass, thisMethod, "source: " + source);
+        String s = IOUtils.toString(source, StandardCharsets.UTF_8);
+        Log.info(thisClass, thisMethod, "source: " + s);
 
         try {
 
@@ -1437,6 +1442,7 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
                 Log.info(thisClass, thisMethod, "No header fields to add");
             }
 
+            msgUtils.printRequestParts(request, thisMethod, "outgoing " + method + " type request");
             response = wc.getResponse(request);
             msgUtils.printResponseParts(response, thisMethod, "Invoke with Parms and Headers: ");
 
@@ -1840,11 +1846,11 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
      * @return
      * @throws Exception
      *
-     *                       WebResponse response =
-     *                       genericInvokeEndpointWithHttpUrlConn(_testName, connection,
-     *                       null, testSettings.getUserinfoEndpt(), Constants.POSTMETHOD,
-     *                       Constants.INVOKE_USERINFO_ENDPOINT, parms, null,
-     *                       expectations);
+     *             WebResponse response =
+     *             genericInvokeEndpointWithHttpUrlConn(_testName, connection,
+     *             null, testSettings.getUserinfoEndpt(), Constants.POSTMETHOD,
+     *             Constants.INVOKE_USERINFO_ENDPOINT, parms, null,
+     *             expectations);
      **/
     public void genericInvokeEndpointWithHttpUrlConn(String testcase, String response, String url, String method, String action, List<endpointSettings> parms,
                                                      List<endpointSettings> headers, List<validationData> expectations) throws Exception {
@@ -1862,7 +1868,7 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
 
             String updatedUrl = url;
             // Delete doesn't support output - have to build the url with the query string included
-            if (Constants.DELETEMETHOD.equals(method) && builtParms != null) {
+            if ((Constants.DELETEMETHOD.equals(method) || Constants.PUTMETHOD.equals(method)) && builtParms != null) {
                 updatedUrl = url + "?" + builtParms;
             }
             Log.info(thisClass, thisMethod, "Endpoint URL: " + updatedUrl);
@@ -2021,15 +2027,15 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
      * those come from our settings
      *
      * @param testCase
-     *                         - the testcase name for logging purposes
+     *            - the testcase name for logging purposes
      * @param wc
-     *                         - the web converation
+     *            - the web converation
      * @param inResponse
-     *                         - the response from the previous frame
+     *            - the response from the previous frame
      * @param settings
-     *                         - the current test settings - used to set the parms
+     *            - the current test settings - used to set the parms
      * @param expectations
-     *                         - the expectations to be used for validation
+     *            - the expectations to be used for validation
      * @return - the response from the endpoint invocation
      * @throws Exception
      */
@@ -2148,15 +2154,15 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
      * from our settings
      *
      * @param testCase
-     *                         - the testcase name for logging purposes
+     *            - the testcase name for logging purposes
      * @param wc
-     *                         - the web converation
+     *            - the web converation
      * @param inResponse
-     *                         - the response from the previous frame
+     *            - the response from the previous frame
      * @param settings
-     *                         - the current test settings - used to set the parms
+     *            - the current test settings - used to set the parms
      * @param expectations
-     *                         - the expectations to be used for validation
+     *            - the expectations to be used for validation
      * @return - the response from the endpoint invocation
      * @throws Exception
      */
@@ -2208,15 +2214,15 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
      * from our settings
      *
      * @param testCase
-     *                         - the testcase name for logging purposes
+     *            - the testcase name for logging purposes
      * @param wc
-     *                         - the web converation
+     *            - the web converation
      * @param inResponse
-     *                         - the response from the previous frame
+     *            - the response from the previous frame
      * @param settings
-     *                         - the current test settings - used to set the parms
+     *            - the current test settings - used to set the parms
      * @param expectations
-     *                         - the expectations to be used for validation
+     *            - the expectations to be used for validation
      * @return - the response from the endpoint invocation
      * @throws Exception
      */
@@ -2249,15 +2255,15 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
      * from our settings
      *
      * @param testCase
-     *                         - the testcase name for logging purposes
+     *            - the testcase name for logging purposes
      * @param wc
-     *                         - the web converation
+     *            - the web converation
      * @param inResponse
-     *                         - the response from the previous frame
+     *            - the response from the previous frame
      * @param settings
-     *                         - the current test settings - used to set the parms
+     *            - the current test settings - used to set the parms
      * @param expectations
-     *                         - the expectations to be used for validation
+     *            - the expectations to be used for validation
      * @return - the response from the endpoint invocation
      * @throws Exception
      */
@@ -2286,23 +2292,23 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
      * This method requests that the clientId/clientSecret be passed in the header
      *
      * @param testCase
-     *                         - the testCase name
+     *            - the testCase name
      * @param wc
-     *                         - the conversation
+     *            - the conversation
      * @param settings
-     *                         - current testSettings
+     *            - current testSettings
      * @param accessToken
-     *                         - the access_token to use to generate the app-password
+     *            - the access_token to use to generate the app-password
      * @param appName
-     *                         - the app name to register the app-password with
+     *            - the app name to register the app-password with
      * @param usedBy
-     *                         - the client_d that will be allowed to use the tokens created from the app-password created
+     *            - the client_d that will be allowed to use the tokens created from the app-password created
      * @param expectations
-     *                         - the expected results/output from invoking the endpoint
+     *            - the expected results/output from invoking the endpoint
      * @return - returns the response from the invocation (could contain the app-password, or error/failure information
      * @throws Exception
-     *                       - this method should NOT result in an exception - if one is thrown, the calling test case should report an
-     *                       error
+     *             - this method should NOT result in an exception - if one is thrown, the calling test case should report an
+     *             error
      */
     public WebResponse invokeAppPasswordsEndpoint_create(String testCase, WebConversation wc, TestSettings settings, String accessToken, String appName, String usedBy,
                                                          List<validationData> expectations) throws Exception {
@@ -2313,25 +2319,25 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
      * Invoke the app-passwords endpoint method to create an app-password
      *
      * @param testCase
-     *                           - the testCase name
+     *            - the testCase name
      * @param wc
-     *                           - the conversation
+     *            - the conversation
      * @param settings
-     *                           - current testSettings
+     *            - current testSettings
      * @param accessToken
-     *                           - the access_token to use to generate the app-password
+     *            - the access_token to use to generate the app-password
      * @param appName
-     *                           - the app name to register the app-password with
+     *            - the app name to register the app-password with
      * @param usedBy
-     *                           - the client_d that will be allowed to use the tokens created from the app-password created
+     *            - the client_d that will be allowed to use the tokens created from the app-password created
      * @param clientLocation
-     *                           - flag indicating if clientid/clientSecret should be included in the header or as a parameter
+     *            - flag indicating if clientid/clientSecret should be included in the header or as a parameter
      * @param expectations
-     *                           - the expected results/output from invoking the endpoint
+     *            - the expected results/output from invoking the endpoint
      * @return - returns the response from the invocation (could contain the app-password, or error/failure information
      * @throws Exception
-     *                       - this method should NOT result in an exception - if one is thrown, the calling test case should report an
-     *                       error
+     *             - this method should NOT result in an exception - if one is thrown, the calling test case should report an
+     *             error
      */
     public WebResponse invokeAppPasswordsEndpoint_create(String testCase, WebConversation wc, TestSettings settings, String accessToken, String appName, String usedBy,
                                                          String clientLocation, List<validationData> expectations) throws Exception {
@@ -2364,22 +2370,22 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
      * Invoke the app-passwords endpoint method to list all app-passwords
      *
      * @param testCase
-     *                         - the testCase name
+     *            - the testCase name
      * @param wc
-     *                         - the conversation
+     *            - the conversation
      * @param settings
-     *                         - current testSettings
+     *            - current testSettings
      * @param accessToken
-     *                         - the access_token to a) provide authorization and 2) possibly the user_id to list
+     *            - the access_token to a) provide authorization and 2) possibly the user_id to list
      * @param userId
-     *                         - the user id to list app-passwords for
+     *            - the user id to list app-passwords for
      * @param expectations
-     *                         - the expected results/output from invoking the endpoint
+     *            - the expected results/output from invoking the endpoint
      * @return - returns the response from the invocation (could contain the list of app-password info, or error/failure
      *         information
      * @throws Exception
-     *                       - this method should NOT result in an exception - if one is thrown, the calling test case should report an
-     *                       error
+     *             - this method should NOT result in an exception - if one is thrown, the calling test case should report an
+     *             error
      */
     public WebResponse invokeAppPasswordsEndpoint_list(String testCase, WebConversation wc, TestSettings settings, String accessToken, String userId,
                                                        List<validationData> expectations) throws Exception {
@@ -2390,24 +2396,24 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
      * Invoke the app-passwords endpoint method to list all app-passwords
      *
      * @param testCase
-     *                           - the testCase name
+     *            - the testCase name
      * @param wc
-     *                           - the conversation
+     *            - the conversation
      * @param settings
-     *                           - current testSettings
+     *            - current testSettings
      * @param accessToken
-     *                           - the access_token to a) provide authorization and 2) possibly the user_id to list
+     *            - the access_token to a) provide authorization and 2) possibly the user_id to list
      * @param userId
-     *                           - the user id to list app-passwords for
+     *            - the user id to list app-passwords for
      * @param clientLocation
-     *                           - flag indicating if clientid/clientSecret should be included in the header or as a parameter
+     *            - flag indicating if clientid/clientSecret should be included in the header or as a parameter
      * @param expectations
-     *                           - the expected results/output from invoking the endpoint
+     *            - the expected results/output from invoking the endpoint
      * @return - returns the response from the invocation (could contain the list of app-password info, or error/failure
      *         information
      * @throws Exception
-     *                       - this method should NOT result in an exception - if one is thrown, the calling test case should report an
-     *                       error
+     *             - this method should NOT result in an exception - if one is thrown, the calling test case should report an
+     *             error
      */
     public WebResponse invokeAppPasswordsEndpoint_list(String testCase, WebConversation wc, TestSettings settings, String accessToken, String userId, String clientLocation,
                                                        List<validationData> expectations) throws Exception {
@@ -2445,22 +2451,22 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
      * Invoke the app-passwords endpoint method to revoke app-passwords
      *
      * @param testCase
-     *                         - the testCase name
+     *            - the testCase name
      * @param wc
-     *                         - the conversation
+     *            - the conversation
      * @param settings
-     *                         - current testSettings
+     *            - current testSettings
      * @param accessToken
-     *                         - the access_token to a) provide authorization and 2) possibly the user_id to revoke
+     *            - the access_token to a) provide authorization and 2) possibly the user_id to revoke
      * @param userId
-     *                         - the user id to revoke app-passwords for
+     *            - the user id to revoke app-passwords for
      * @param appId
-     *                         - the specific app_id to revoke
+     *            - the specific app_id to revoke
      * @param expectations
-     *                         - the expected results/output from invoking the endpoint
+     *            - the expected results/output from invoking the endpoint
      * @throws Exception
-     *                       - this method should NOT result in an exception - if one is thrown, the calling test case should report an
-     *                       error
+     *             - this method should NOT result in an exception - if one is thrown, the calling test case should report an
+     *             error
      */
     public void invokeAppPasswordsEndpoint_revoke(String testCase, WebConversation wc, TestSettings settings, String accessToken, String userId, String appId,
                                                   List<validationData> expectations) throws Exception {
@@ -2471,24 +2477,24 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
      * Invoke the app-passwords endpoint method to revoke app-passwords
      *
      * @param testCase
-     *                           - the testCase name
+     *            - the testCase name
      * @param wc
-     *                           - the conversation
+     *            - the conversation
      * @param settings
-     *                           - current testSettings
+     *            - current testSettings
      * @param accessToken
-     *                           - the access_token to a) provide authorization and 2) possibly the user_id to revoke
+     *            - the access_token to a) provide authorization and 2) possibly the user_id to revoke
      * @param userId
-     *                           - the user id to revoke app-passwords for
+     *            - the user id to revoke app-passwords for
      * @param appId
-     *                           - the specific app_id to revoke
+     *            - the specific app_id to revoke
      * @param clientLocation
-     *                           - flag indicating if clientid/clientSecret should be included in the header or as a parameter
+     *            - flag indicating if clientid/clientSecret should be included in the header or as a parameter
      * @param expectations
-     *                           - the expected results/output from invoking the endpoint
+     *            - the expected results/output from invoking the endpoint
      * @throws Exception
-     *                       - this method should NOT result in an exception - if one is thrown, the calling test case should report an
-     *                       error
+     *             - this method should NOT result in an exception - if one is thrown, the calling test case should report an
+     *             error
      */
     public void invokeAppPasswordsEndpoint_revoke(String testCase, WebConversation wc, TestSettings settings, String accessToken, String userId, String appId,
                                                   String clientLocation, List<validationData> expectations) throws Exception {
@@ -2546,25 +2552,25 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
      * Invoke the app-tokens endpoint method to create an app-token
      *
      * @param testCase
-     *                           - the testCase name
+     *            - the testCase name
      * @param wc
-     *                           - the conversation
+     *            - the conversation
      * @param settings
-     *                           - current testSettings
+     *            - current testSettings
      * @param accessToken
-     *                           - the access_token to use to generate the app-token
+     *            - the access_token to use to generate the app-token
      * @param appName
-     *                           - the app name to register the app-token with
+     *            - the app name to register the app-token with
      * @param usedBy
-     *                           - used_by value to include in the request. The request parameter will be omitted if this value is null.
+     *            - used_by value to include in the request. The request parameter will be omitted if this value is null.
      * @param clientLocation
-     *                           - flag indicating if clientid/clientSecret should be included in the header or as a parameter
+     *            - flag indicating if clientid/clientSecret should be included in the header or as a parameter
      * @param expectations
-     *                           - the expected results/output from invoking the endpoint
+     *            - the expected results/output from invoking the endpoint
      * @return - returns the response from the invocation (could contain the app-token, or error/failure information
      * @throws Exception
-     *                       - this method should NOT result in an exception - if one is thrown, the calling test case should report an
-     *                       error
+     *             - this method should NOT result in an exception - if one is thrown, the calling test case should report an
+     *             error
      */
     public WebResponse invokeAppTokensEndpoint_create(String testCase, WebConversation wc, TestSettings settings, String accessToken, String appName, String usedBy,
                                                       String clientLocation, List<validationData> expectations) throws Exception {
@@ -2597,22 +2603,22 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
      * Invoke the app-tokens endpoint method to list all app-tokens
      *
      * @param testCase
-     *                         - the testCase name
+     *            - the testCase name
      * @param wc
-     *                         - the conversation
+     *            - the conversation
      * @param settings
-     *                         - current testSettings
+     *            - current testSettings
      * @param accessToken
-     *                         - the access_token to a) provide authorization and 2) possibly the user_id to list
+     *            - the access_token to a) provide authorization and 2) possibly the user_id to list
      * @param userId
-     *                         - the user id to list app-tokens for
+     *            - the user id to list app-tokens for
      * @param expectations
-     *                         - the expected results/output from invoking the endpoint
+     *            - the expected results/output from invoking the endpoint
      * @return - returns the response from the invocation (could contain the list of app-token info, or error/failure
      *         information
      * @throws Exception
-     *                       - this method should NOT result in an exception - if one is thrown, the calling test case should report an
-     *                       error
+     *             - this method should NOT result in an exception - if one is thrown, the calling test case should report an
+     *             error
      */
     public WebResponse invokeAppTokensEndpoint_list(String testCase, WebConversation wc, TestSettings settings, String accessToken, String userId,
                                                     List<validationData> expectations) throws Exception {
@@ -2623,24 +2629,24 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
      * Invoke the app-tokens endpoint method to list all app-tokens
      *
      * @param testCase
-     *                           - the testCase name
+     *            - the testCase name
      * @param wc
-     *                           - the conversation
+     *            - the conversation
      * @param settings
-     *                           - current testSettings
+     *            - current testSettings
      * @param accessToken
-     *                           - the access_token to a) provide authorization and 2) possibly the user_id to list
+     *            - the access_token to a) provide authorization and 2) possibly the user_id to list
      * @param userId
-     *                           - the user id to list app-tokens for
+     *            - the user id to list app-tokens for
      * @param clientLocation
-     *                           - flag indicating if clientid/clientSecret should be included in the header or as a parameter
+     *            - flag indicating if clientid/clientSecret should be included in the header or as a parameter
      * @param expectations
-     *                           - the expected results/output from invoking the endpoint
+     *            - the expected results/output from invoking the endpoint
      * @return - returns the response from the invocation (could contain the list of app-token info, or error/failure
      *         information
      * @throws Exception
-     *                       - this method should NOT result in an exception - if one is thrown, the calling test case should report an
-     *                       error
+     *             - this method should NOT result in an exception - if one is thrown, the calling test case should report an
+     *             error
      */
     public WebResponse invokeAppTokensEndpoint_list(String testCase, WebConversation wc, TestSettings settings, String accessToken, String userId, String clientLocation,
                                                     List<validationData> expectations) throws Exception {
@@ -2677,24 +2683,24 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
      * Invoke the app-tokens endpoint method to revoke app-tokens
      *
      * @param testCase
-     *                         - the testCase name
+     *            - the testCase name
      * @param wc
-     *                         - the conversation
+     *            - the conversation
      * @param settings
-     *                         - current testSettings
+     *            - current testSettings
      * @param accessToken
-     *                         - the access_token to a) provide authorization and 2) possibly the user_id to revoke
+     *            - the access_token to a) provide authorization and 2) possibly the user_id to revoke
      * @param userId
-     *                         - the user id to revoke app-tokens for
+     *            - the user id to revoke app-tokens for
      * @param appId
-     *                         - the specific app_id to revoke
+     *            - the specific app_id to revoke
      * @param expectations
-     *                         - the expected results/output from invoking the endpoint
+     *            - the expected results/output from invoking the endpoint
      * @return - returns the response from the invocation (could be an empty response, or error/failure
      *         information
      * @throws Exception
-     *                       - this method should NOT result in an exception - if one is thrown, the calling test case should report an
-     *                       error
+     *             - this method should NOT result in an exception - if one is thrown, the calling test case should report an
+     *             error
      */
     public void invokeAppTokensEndpoint_revoke(String testCase, WebConversation wc, TestSettings settings, String accessToken, String userId, String tokenId,
                                                List<validationData> expectations) throws Exception {
@@ -2705,26 +2711,26 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
      * Invoke the app-tokens endpoint method to revoke app-tokens
      *
      * @param testCase
-     *                           - the testCase name
+     *            - the testCase name
      * @param wc
-     *                           - the conversation
+     *            - the conversation
      * @param settings
-     *                           - current testSettings
+     *            - current testSettings
      * @param accessToken
-     *                           - the access_token to a) provide authorization and 2) possibly the user_id to revoke
+     *            - the access_token to a) provide authorization and 2) possibly the user_id to revoke
      * @param userId
-     *                           - the user id to revoke app-tokens for
+     *            - the user id to revoke app-tokens for
      * @param appId
-     *                           - the specific app_id to revoke
+     *            - the specific app_id to revoke
      * @param clientLocation
-     *                           - flag indicating if clientid/clientSecret should be included in the header or as a parameter
+     *            - flag indicating if clientid/clientSecret should be included in the header or as a parameter
      * @param expectations
-     *                           - the expected results/output from invoking the endpoint
+     *            - the expected results/output from invoking the endpoint
      * @return - returns the response from the invocation (could be an empty response, or error/failure
      *         information
      * @throws Exception
-     *                       - this method should NOT result in an exception - if one is thrown, the calling test case should report an
-     *                       error
+     *             - this method should NOT result in an exception - if one is thrown, the calling test case should report an
+     *             error
      */
     public void invokeAppTokensEndpoint_revoke(String testCase, WebConversation wc, TestSettings settings, String accessToken, String userId, String tokenId, String clientLocation,
                                                List<validationData> expectations) throws Exception {
@@ -2775,15 +2781,15 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
      * from our settings
      *
      * @param testCase
-     *                         - the testcase name for logging purposes
+     *            - the testcase name for logging purposes
      * @param wc
-     *                         - the web converation
+     *            - the web converation
      * @param inResponse
-     *                         - the response from the previous frame
+     *            - the response from the previous frame
      * @param settings
-     *                         - the current test settings - used to set the parms
+     *            - the current test settings - used to set the parms
      * @param expectations
-     *                         - the expectations to be used for validation
+     *            - the expectations to be used for validation
      * @return - the response from the endpoint invocation
      * @throws Exception
      */
@@ -3234,9 +3240,9 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
             LibertyServer myServer = server.getServer();
             switch (server.getServer().getServerName()) {
                 /******************************************************************
-                 * 
+                 *
                  * com.ibm.ws.security.social_fat.LibertOP servers
-                 * 
+                 *
                  ******************************************************************/
                 case "com.ibm.ws.security.social_fat.LibertyOP.op":
                     JakartaEE9Action.transformApp(Paths.get(myServer.getServerRoot() + File.separatorChar + "dropins" + File.separatorChar + "testmarker.war"));
@@ -3246,11 +3252,11 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
                     JakartaEE9Action.transformApp(Paths.get(myServer.getServerRoot() + File.separatorChar + "dropins" + File.separatorChar + "testmarker.war"));
                     JakartaEE9Action.transformApp(Paths.get(myServer.getServerRoot() + File.separatorChar + "test-apps" + File.separatorChar + "helloworld.war"));
                     break;
-                    
+
                 /******************************************************************
-                 * 
+                 *
                  * com.ibm.ws.security.oidc.client_fat servers
-                 * 
+                 *
                  ******************************************************************/
                 case "com.ibm.ws.security.openidconnect.client-1.0_fat.op":
                     JakartaEE9Action.transformApp(Paths.get(myServer.getServerRoot() + File.separatorChar + "dropins" + File.separatorChar + "testmarker.war"));
@@ -3264,11 +3270,11 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
                     JakartaEE9Action.transformApp(Paths.get(myServer.getServerRoot() + File.separatorChar + "dropins" + File.separatorChar + "testmarker.war"));
                     JakartaEE9Action.transformApp(Paths.get(myServer.getServerRoot() + File.separatorChar + "test-apps" + File.separatorChar + "helloworld.war"));
                     break;
-                    
+
                 /******************************************************************
-                 * 
+                 *
                  * com.ibm.ws.security.oidc.server_fat servers
-                 * 
+                 *
                  ******************************************************************/
                 case "com.ibm.ws.security.openidconnect.server-1.0_fat":
                     JakartaEE9Action.transformApp(Paths.get(myServer.getServerRoot() + File.separatorChar + "dropins" + File.separatorChar + "oAuth20DerbySetup.war"));

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2020, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -25,3 +25,15 @@ KRB5_FILE_NOT_FOUND_CWWKS4345E.useraction=Aseg\u00farese de que la configuraci\u
 KRB5_FILE_FOUND_CWWKS4346I=CWWKS4346I: El componente Kerberos se ha configurado para utilizar un archivo {0} ubicado en {1}
 KRB5_FILE_FOUND_CWWKS4346I.explanation=El archivo configurado se ha ubicado satisfactoriamente.
 KRB5_FILE_FOUND_CWWKS4346I.useraction=No se requiere ninguna acci\u00f3n.
+
+KRB5_LOGIN_FAILED_CACHE_CWWKS4347E=CWWKS4347E: El inicio de sesi\u00f3n de Kerberos ha fallado con el principal de Kerberos {0} y la memoria cach\u00e9 de credenciales (ccache) de Kerberos {1}. No se ha encontrado un t\u00edquet de Kerberos.
+KRB5_LOGIN_FAILED_CACHE_CWWKS4347E.explanation=El principal de Kerberos especificado no es v\u00e1lido o la memoria cach\u00e9 de credenciales (ccache) de Kerberos no es v\u00e1lida o ha caducado.
+KRB5_LOGIN_FAILED_CACHE_CWWKS4347E.useraction=Aseg\u00farese de que se ha especificado un principal de Kerberos v\u00e1lido y de que la memoria cach\u00e9 de credenciales de Kerberos (ccache) sea v\u00e1lida y no haya caducado.
+
+KRB5_LOGIN_FAILED_KEYTAB_CWWKS4348E=CWWKS4348E: El inicio de sesi\u00f3n de Kerberos ha fallado con el principal de Kerberos {0} y el archivo tabla de claves de Kerberos {1}. No se ha encontrado un t\u00edquet de Kerberos.
+KRB5_LOGIN_FAILED_KEYTAB_CWWKS4348E.explanation=El principal de Kerberos especificado o el archivo de tabla de claves de Kerberos no son v\u00e1lidos.
+KRB5_LOGIN_FAILED_KEYTAB_CWWKS4348E.useraction=Aseg\u00farese de que se ha especificado un archivo de tabla de claves de Kerberos v\u00e1lido y de que contiene un principal Kerberos v\u00e1lido.
+		
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB_CWWKS4349E=CWWKS4349E: El inicio de sesi\u00f3n de Kerberos ha fallado con el principal de Kerberos {0} y el archivo tabla de claves de Kerberos predeterminado. No se ha encontrado un t\u00edquet de Kerberos.
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB_CWWKS4349E.explanation=El principal de Kerberos especificado o el archivo de tabla de claves de Kerberos predeterminado no son v\u00e1lidos.
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB_CWWKS4349E.useraction=Aseg\u00farese de que se ha especificado un archivo de tabla de claves de Kerberos v\u00e1lido y de que contiene un principal Kerberos v\u00e1lido.

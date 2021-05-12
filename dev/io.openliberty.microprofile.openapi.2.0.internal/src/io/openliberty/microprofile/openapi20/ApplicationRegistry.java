@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,9 +10,12 @@
  *******************************************************************************/
 package io.openliberty.microprofile.openapi20;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -31,24 +34,20 @@ import io.openliberty.microprofile.openapi20.utils.LoggingUtils;
  *       deployed that contains multiple web modules, an OpenAPI document will only be generated for the first Web
  *       Module that generates an OpenAPI document.
  */
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE, service = ApplicationRegistry.class)
 public class ApplicationRegistry {
 
     private static final TraceComponent tc = Tr.register(ApplicationRegistry.class);
     
-    private static final ApplicationRegistry INSTANCE = new ApplicationRegistry();
-    private Map<String, ApplicationInfo> applications = Collections.synchronizedMap(new HashMap<>());
+    @Reference
+    private ApplicationProcessor applicationProcessor;
+    
+    // Thread safety: access to these fields must be synchronized on this
+    private Map<String, ApplicationInfo> applications = new HashMap<>();
     private ApplicationInfo currentApp = null;
-    private OpenAPIProvider currentProvider = null;
-
-    /**
-     * The getInstance method returns the singleton instance of the ApplicationRegistry
-     * 
-     * @return ApplicationRegistry
-     *             The singleton instance
-     */
-    public static ApplicationRegistry getInstance() {
-        return INSTANCE;
-    }
+    
+    // Thread safety: writes to this field must be synchronized on this
+    private volatile OpenAPIProvider currentProvider = null;
 
     /**
      * The addApplication method is invoked by the {@link ApplicationListener} when it is notified that an application
@@ -59,18 +58,20 @@ public class ApplicationRegistry {
      *           The ApplicationInfo for the application that is starting.
      */
     public void addApplication(ApplicationInfo newAppInfo) {
-        if (LoggingUtils.isEventEnabled(tc)) {
-            Tr.event(tc, "Application Processor: Adding application started: appInfo=" + newAppInfo);
-        }
+        synchronized (this) {
+            if (LoggingUtils.isEventEnabled(tc)) {
+                Tr.event(tc, "Application Processor: Adding application started: appInfo=" + newAppInfo);
+            }
 
-        // Store the app in our collection
-        applications.put(newAppInfo.getName(), newAppInfo);
+            // Store the app in our collection
+            applications.put(newAppInfo.getName(), newAppInfo);
 
-        // Process the application... this will only scan the application if we do not have a current application
-        processApplication(newAppInfo);
+            // Process the application... this will only scan the application if we do not have a current application
+            processApplication(newAppInfo);
 
-        if (LoggingUtils.isEventEnabled(tc)) {
-            Tr.event(tc, "Application Processor: Adding application ended: appInfo=" + newAppInfo);
+            if (LoggingUtils.isEventEnabled(tc)) {
+                Tr.event(tc, "Application Processor: Adding application ended: appInfo=" + newAppInfo);
+            }
         }
     }
     
@@ -83,20 +84,20 @@ public class ApplicationRegistry {
      *           The ApplicationInfo for the application that is stopping.
      */
     public void removeApplication(ApplicationInfo removedAppInfo) {
-        if (LoggingUtils.isEventEnabled(tc)) {
-            Tr.event(tc, "Application Processor: Removing application started: appInfo=" + removedAppInfo);
-        }
-        
-        // Remove the app from our collection
-        applications.remove(removedAppInfo.getName());
-        
-        // Check to see if the application being remove is the currentApp
-        if (currentApp != null && currentApp.getName().equals(removedAppInfo.getName())) {
+        synchronized(this) {
+            if (LoggingUtils.isEventEnabled(tc)) {
+                Tr.event(tc, "Application Processor: Removing application started: appInfo=" + removedAppInfo);
+            }
             
-            // The currentApp is being removed... see if any of the other applications implement a JAX-RS REST API
-            currentApp = null;
-            currentProvider = null;
-            synchronized (applications) {
+            // Remove the app from our collection
+            applications.remove(removedAppInfo.getName());
+            
+            // Check to see if the application being remove is the currentApp
+            if (currentApp != null && currentApp.getName().equals(removedAppInfo.getName())) {
+                
+                // The currentApp is being removed... see if any of the other applications implement a JAX-RS REST API
+                currentApp = null;
+                currentProvider = null;
                 for (ApplicationInfo appInfo : applications.values()) {
                     processApplication(appInfo);
                     if (currentApp != null) {
@@ -104,10 +105,10 @@ public class ApplicationRegistry {
                     }
                 } // FOR
             }
-        }
-        
-        if (LoggingUtils.isEventEnabled(tc)) {
-            Tr.event(tc, "Application Processor: Removing application ended: appInfo=" + removedAppInfo);
+            
+            if (LoggingUtils.isEventEnabled(tc)) {
+                Tr.event(tc, "Application Processor: Removing application ended: appInfo=" + removedAppInfo);
+            }
         }
     }
 
@@ -132,14 +133,11 @@ public class ApplicationRegistry {
     private void processApplication(ApplicationInfo appInfo) {
         // Only scan the application if we do not have a current application
         if (currentApp == null) {
-            currentProvider = ApplicationProcessor.processApplication(appInfo);
+            currentProvider = applicationProcessor.processApplication(appInfo);
             if (currentProvider != null) {
                 currentApp = appInfo;
             }
         }
     }
 
-    private ApplicationRegistry() {
-        // This class is not meant to be instantiated.
-    }
 }

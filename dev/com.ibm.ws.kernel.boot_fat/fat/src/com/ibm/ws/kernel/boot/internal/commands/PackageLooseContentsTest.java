@@ -34,6 +34,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.topology.impl.LibertyServerFactory;
 
 @RunWith(Parameterized.class)
@@ -47,7 +48,7 @@ public class PackageLooseContentsTest extends AbstractLooseConfigTest {
     // Plus:
     //   SkipInvalidEntries.war.xml
     //   EmptyArchive.war.xml
-    
+
     private static final List<Object[]> CONFIGS = new ArrayList<>(5);
     static {
         CONFIGS.add(new Object[] { "DefaultArchive.war.xml", "true" });
@@ -75,7 +76,7 @@ public class PackageLooseContentsTest extends AbstractLooseConfigTest {
         this.moduleLooseConfigPath = null;
         this.moduleArchiveName = config.substring(0, config.lastIndexOf('.'));
         this.moduleExpandedPath = null;
-        
+
         this.verifyApp = Boolean.valueOf(verifyApp);
     }
 
@@ -95,9 +96,9 @@ public class PackageLooseContentsTest extends AbstractLooseConfigTest {
     public void before() throws Exception {
         System.out.println(testName.getMethodName());
 
-        setServer( LibertyServerFactory.getLibertyServer(SERVER_NAME) );
+        setServer(LibertyServerFactory.getLibertyServer(SERVER_NAME));
 
-        String appsPath = getServer().getServerRoot() + '/' + getAppsTargetDir() + '/'; 
+        String appsPath = getServer().getServerRoot() + '/' + getAppsTargetDir() + '/';
         moduleLooseConfigPath = appsPath + moduleLooseConfig;
         moduleExpandedPath = appsPath + "expanded/" + moduleArchiveName;
 
@@ -117,53 +118,52 @@ public class PackageLooseContentsTest extends AbstractLooseConfigTest {
     //
 
     @Test
+    @SkipIfSysProp("os.name=z/OS") // ZipFile verifyContents code cant open pax on Z/OS
     public void testUsr() throws Exception {
         String[] packageCmd = new String[] {
-            "--archive=" + SERVER_NAME,
-            "--include=usr",
-            "--server-root=" + SERVER_ROOT };
+                                             "--archive=" + SERVER_NAME,
+                                             "--include=usr",
+                                             "--server-root=" + SERVER_ROOT };
         String archivePath = packageServer(moduleLooseConfig, SERVER_NAME_ZIP, packageCmd);
         // Because server-root and include=usr are specified,
         // packaging shifts the server folder up one directory.  The
         // 'usr' directory is excised from the path.
         verifyContents(archivePath,
-            SERVER_ROOT, !INCLUDE_USR, SERVER_NAME,
-            moduleArchiveName, verifyApp);
+                       SERVER_ROOT, !INCLUDE_USR, SERVER_NAME,
+                       moduleArchiveName, verifyApp);
     }
 
     @Override
     protected void verifyContents(
-        String archivePath,
-        String serverRoot, boolean includeUsr, String serverName,
-        String moduleName, boolean verifyApp) throws IOException {
+                                  String archivePath,
+                                  String serverRoot, boolean includeUsr, String serverName,
+                                  String moduleName, boolean verifyApp) throws IOException {
 
         String methodName = "verifyContents";
 
         super.verifyContents(archivePath,
-            serverRoot, includeUsr, serverName,
-            moduleName, verifyApp);
+                             serverRoot, includeUsr, serverName,
+                             moduleName, verifyApp);
 
-        if ( !verifyApp ) {
+        if (!verifyApp) {
             return;
         }
 
         String packedPath = serverRoot;
-        if ( includeUsr ) {
+        if (includeUsr) {
             packedPath += "/usr";
         }
-        packedPath +=
-            "/servers/" + serverName + '/' +
-            getAppsTargetDir() + '/' +
-            moduleName;
+        packedPath += "/servers/" + serverName + '/' +
+                      getAppsTargetDir() + '/' +
+                      moduleName;
 
         String unpackedPrefix = serverRoot;
-        if ( includeUsr ) {
+        if (includeUsr) {
             unpackedPrefix += "/usr";
         }
-        unpackedPrefix +=
-            "/servers/" + serverName + '/' +
-            getAppsTargetDir() + "/expanded/" +
-            moduleName + '/';
+        unpackedPrefix += "/servers/" + serverName + '/' +
+                          getAppsTargetDir() + "/expanded/" +
+                          moduleName + '/';
         int unpackedPrefixLen = unpackedPrefix.length();
 
         System.out.println(methodName + ":  Packed archive [ " + packedPath + " ]");
@@ -172,54 +172,51 @@ public class PackageLooseContentsTest extends AbstractLooseConfigTest {
         Map<String, Integer> packedMapping = null;
         Map<String, Integer> unpackedMapping = null;
 
-        try ( ZipFile packageZip = new ZipFile(archivePath) ) {
+        try (ZipFile packageZip = new ZipFile(archivePath)) {
             int unpackedOffset = 0;
 
             String lastEntry = null;
             int lastSlash = -1;
-            
+
             Enumeration<? extends ZipEntry> entries = packageZip.entries();
-            while ( entries.hasMoreElements() ) {
+            while (entries.hasMoreElements()) {
                 ZipEntry entry = entries.nextElement();
                 String entryName = entry.getName();
                 int slash = entryName.lastIndexOf('/');
-                boolean doLog = (
-                    (lastEntry == null) ||
-                    (slash != lastSlash) ||
-                    !entryName.regionMatches(0, lastEntry, 0, lastSlash) );
-                if ( doLog ) {
+                boolean doLog = ((lastEntry == null) ||
+                                 (slash != lastSlash) ||
+                                 !entryName.regionMatches(0, lastEntry, 0, lastSlash));
+                if (doLog) {
                     lastEntry = entryName;
                     lastSlash = slash;
                     System.out.println("Entry [ " + entryName + " ]");
-                }                
+                }
 
-                if ( entryName.equals(packedPath) ) {
-                    if ( packedMapping != null ) {
+                if (entryName.equals(packedPath)) {
+                    if (packedMapping != null) {
                         fail("Archive [ " + archivePath + " ] has duplicates of entry [ " + packedPath + " ]");
                         return;
                         // Never used; added to avoid a compiler null value warning:
-                        // The compiler doesn't know that 'fail' never returns.                        
+                        // The compiler doesn't know that 'fail' never returns.
                     }
                     packedMapping = new HashMap<String, Integer>();
 
-                    try ( InputStream nestedStream = packageZip.getInputStream(entry);
-                          ZipInputStream nestedZipStream = new ZipInputStream(nestedStream); ) {
+                    try (InputStream nestedStream = packageZip.getInputStream(entry);
+                                    ZipInputStream nestedZipStream = new ZipInputStream(nestedStream);) {
 
                         ZipEntry nestedEntry;
-                        for ( int offset = 0;
-                              (nestedEntry = nestedZipStream.getNextEntry()) != null;
-                              offset++ ) { 
-                            packedMapping.put( nestedEntry.getName(), Integer.valueOf(offset) ); 
+                        for (int offset = 0; (nestedEntry = nestedZipStream.getNextEntry()) != null; offset++) {
+                            packedMapping.put(nestedEntry.getName(), Integer.valueOf(offset));
                         }
                     }
 
                 } else {
                     // '<=' is deliberate: We don't want the entry for
                     // the directory of the unpacked archive.
-                    if ( entryName.length() <= unpackedPrefixLen ) {
+                    if (entryName.length() <= unpackedPrefixLen) {
                         // ignore this entry
-                    } else  if ( entryName.startsWith(unpackedPrefix) ) {
-                        if ( unpackedMapping == null ) {
+                    } else if (entryName.startsWith(unpackedPrefix)) {
+                        if (unpackedMapping == null) {
                             unpackedMapping = new HashMap<String, Integer>();
                         }
                         String suffix = entryName.substring(unpackedPrefix.length());
@@ -230,15 +227,15 @@ public class PackageLooseContentsTest extends AbstractLooseConfigTest {
                 }
             }
         }
-        
-        if ( unpackedMapping == null ) {
+
+        if (unpackedMapping == null) {
             fail("Archive [ " + archivePath + " ] has no unpacked module entries [ " + unpackedPrefix + " ]");
             return;
             // Never used; added to avoid a compiler null value warning:
             // The compiler doesn't know that 'fail' never returns.
         }
 
-        if ( packedMapping == null ) {
+        if (packedMapping == null) {
             fail("Archive [ " + archivePath + " ] has no packed module [ " + packedPath + " ]");
             return;
             // Never used; added to avoid a compiler null value warning:
@@ -247,34 +244,34 @@ public class PackageLooseContentsTest extends AbstractLooseConfigTest {
 
         int failures = 0;
 
-        for ( Map.Entry<String, Integer> packedEntry : packedMapping.entrySet() ) {
+        for (Map.Entry<String, Integer> packedEntry : packedMapping.entrySet()) {
             String packedName = packedEntry.getKey();
             Integer packedOffset = packedEntry.getValue();
-            
+
             Integer unpackedOffset = unpackedMapping.get(packedName);
-            
-            if ( unpackedOffset == null ) {
+
+            if (unpackedOffset == null) {
                 System.out.println("Extra packed entry [ " + packedName + " ]");
                 failures++;
             } else {
-                if ( packedOffset.intValue() != unpackedOffset.intValue() ) {
+                if (packedOffset.intValue() != unpackedOffset.intValue()) {
                     System.out.println("Packed entry [ " + packedName + " ] changed offset from [ " + packedOffset.intValue() + " ] to [ " + unpackedOffset.intValue() + " ]");
                     failures++;
                 }
             }
         }
-        
-        for ( String unpackedName : unpackedMapping.keySet() ) {
-            if ( !packedMapping.containsKey(unpackedName) ) {
+
+        for (String unpackedName : unpackedMapping.keySet()) {
+            if (!packedMapping.containsKey(unpackedName)) {
                 System.out.println("Extra unpacked entry [ " + unpackedName + " ]");
                 failures++;
             } else {
                 // The offsets were already verified
             }
         }
-            
-        if ( failures != 0 ) {
-            fail("Archive [ " + archivePath + " ] packed archive [ " + packedPath + " ] has [ " + failures + " ] content errors"); 
+
+        if (failures != 0) {
+            fail("Archive [ " + archivePath + " ] packed archive [ " + packedPath + " ] has [ " + failures + " ] content errors");
         }
     }
 }

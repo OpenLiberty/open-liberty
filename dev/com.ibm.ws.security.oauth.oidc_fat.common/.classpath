@@ -6,6 +6,7 @@
 	<classpathentry kind="src" path="test-applications/helloworld.war/src"/>
 	<classpathentry kind="src" path="test-applications/oauthtaidemo/src"/>
 	<classpathentry kind="src" path="test-applications/testMediator/src"/>
+	<classpathentry kind="src" path="test-applications/testTokenEndpoint/src"/>
 	<classpathentry kind="src" path="test-bundles/com.ibm.ws.security.oauth20.jwt.mediator/src"/>
 	<classpathentry kind="src" path="test-bundles/com.ibm.ws.security.oauth20.token.mapping/src"/>
 	<classpathentry kind="src" path="test-bundles/com.ibm.ws.security.oauth20.tokenintrospectprovider/src"/>

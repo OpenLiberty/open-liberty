@@ -41,8 +41,8 @@ dependencies {
     requiredLibs 'xml-apis:xml-apis:1.4.01'
     mojarra 'org.glassfish:javax.faces:2.3.3',
       'javax.faces:javax.faces-api:2.3'
-    myfaces 'org.apache.myfaces.core:myfaces-api:2.3.8',
-      'org.apache.myfaces.core:myfaces-impl:2.3.8'
+    myfaces 'org.apache.myfaces.core:myfaces-api:2.3.9',
+      'org.apache.myfaces.core:myfaces-impl:2.3.9'
     myfacesLibs 'commons-digester:commons-digester:1.8',
       'commons-collections:commons-collections:3.2.1',
       project(':io.openliberty.org.apache.commons.logging'),

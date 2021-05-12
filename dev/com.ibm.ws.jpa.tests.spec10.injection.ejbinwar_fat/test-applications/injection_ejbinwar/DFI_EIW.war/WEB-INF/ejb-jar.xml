@@ -13,18 +13,6 @@
             <ejb-class>com.ibm.ws.jpa.fvt.ejbinwar.ejb.dfi.noinh.DFIPkgNoInhSLEJB</ejb-class>
             <session-type>Stateless</session-type>
             <transaction-type>Bean</transaction-type>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_DS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
             
             <persistence-context-ref>
 		        <persistence-context-ref-name>jpa/DFIPkgNoInhTestEJB/ovdem_cmts_common_ejb</persistence-context-ref-name>
@@ -143,18 +131,6 @@
             <ejb-class>com.ibm.ws.jpa.fvt.ejbinwar.ejb.dfi.noinh.DFIPriNoInhSLEJB</ejb-class>
             <session-type>Stateless</session-type>
             <transaction-type>Bean</transaction-type>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_DS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
             
             <persistence-context-ref>
                 <persistence-context-ref-name>jpa/DFIPriNoInhTestEJB/ovdem_cmts_common_ejb</persistence-context-ref-name>
@@ -273,18 +249,6 @@
             <ejb-class>com.ibm.ws.jpa.fvt.ejbinwar.ejb.dfi.noinh.DFIProNoInhSLEJB</ejb-class>
             <session-type>Stateless</session-type>
             <transaction-type>Bean</transaction-type>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_DS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
             
             <persistence-context-ref>
                 <persistence-context-ref-name>jpa/DFIProNoInhTestEJB/ovdem_cmts_common_ejb</persistence-context-ref-name>
@@ -403,18 +367,6 @@
             <ejb-class>com.ibm.ws.jpa.fvt.ejbinwar.ejb.dfi.noinh.DFIPubNoInhSLEJB</ejb-class>
             <session-type>Stateless</session-type>
             <transaction-type>Bean</transaction-type>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_DS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
             
             <persistence-context-ref>
                 <persistence-context-ref-name>jpa/DFIPubNoInhTestEJB/ovdem_cmts_common_ejb</persistence-context-ref-name>
@@ -533,18 +485,6 @@
             <ejb-class>com.ibm.ws.jpa.fvt.ejbinwar.ejb.dfi.noinh.DFIPkgNoInhSFEJB</ejb-class>
             <session-type>Stateful</session-type>
             <transaction-type>Bean</transaction-type>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_DS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
             
             <persistence-context-ref>
                 <persistence-context-ref-name>jpa/DFIPkgNoInhTestEJB/ovdem_cmts_common_ejb</persistence-context-ref-name>
@@ -663,18 +603,6 @@
             <ejb-class>com.ibm.ws.jpa.fvt.ejbinwar.ejb.dfi.noinh.DFIPriNoInhSFEJB</ejb-class>
             <session-type>Stateful</session-type>
             <transaction-type>Bean</transaction-type>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_DS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
             
             <persistence-context-ref>
                 <persistence-context-ref-name>jpa/DFIPriNoInhTestEJB/ovdem_cmts_common_ejb</persistence-context-ref-name>
@@ -793,18 +721,6 @@
             <ejb-class>com.ibm.ws.jpa.fvt.ejbinwar.ejb.dfi.noinh.DFIProNoInhSFEJB</ejb-class>
             <session-type>Stateful</session-type>
             <transaction-type>Bean</transaction-type>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_DS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
             
             <persistence-context-ref>
                 <persistence-context-ref-name>jpa/DFIProNoInhTestEJB/ovdem_cmts_common_ejb</persistence-context-ref-name>
@@ -923,18 +839,6 @@
             <ejb-class>com.ibm.ws.jpa.fvt.ejbinwar.ejb.dfi.noinh.DFIPubNoInhSFEJB</ejb-class>
             <session-type>Stateful</session-type>
             <transaction-type>Bean</transaction-type>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_DS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
             
             <persistence-context-ref>
                 <persistence-context-ref-name>jpa/DFIPubNoInhTestEJB/ovdem_cmts_common_ejb</persistence-context-ref-name>
@@ -1052,18 +956,6 @@
             <ejb-class>com.ibm.ws.jpa.fvt.ejbinwar.ejb.dfi.noinh.DFIPkgNoInhSFEXEJB</ejb-class>
             <session-type>Stateful</session-type>
             <transaction-type>Bean</transaction-type>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_DS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
             
             <persistence-context-ref>
                 <persistence-context-ref-name>jpa/DFIPkgNoInhTestEJB/ovdem_cmex_common_ejb</persistence-context-ref-name>
@@ -1116,18 +1008,6 @@
             <ejb-class>com.ibm.ws.jpa.fvt.ejbinwar.ejb.dfi.noinh.DFIPriNoInhSFEXEJB</ejb-class>
             <session-type>Stateful</session-type>
             <transaction-type>Bean</transaction-type>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_DS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
             
             <persistence-context-ref>
                 <persistence-context-ref-name>jpa/DFIPriNoInhTestEJB/ovdem_cmex_common_ejb</persistence-context-ref-name>
@@ -1180,18 +1060,6 @@
             <ejb-class>com.ibm.ws.jpa.fvt.ejbinwar.ejb.dfi.noinh.DFIProNoInhSFEXEJB</ejb-class>
             <session-type>Stateful</session-type>
             <transaction-type>Bean</transaction-type>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_DS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
             
             <persistence-context-ref>
                 <persistence-context-ref-name>jpa/DFIProNoInhTestEJB/ovdem_cmex_common_ejb</persistence-context-ref-name>
@@ -1244,18 +1112,6 @@
             <ejb-class>com.ibm.ws.jpa.fvt.ejbinwar.ejb.dfi.noinh.DFIPubNoInhSFEXEJB</ejb-class>
             <session-type>Stateful</session-type>
             <transaction-type>Bean</transaction-type>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_DS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
             
             <persistence-context-ref>
                 <persistence-context-ref-name>jpa/DFIPubNoInhTestEJB/ovdem_cmex_common_ejb</persistence-context-ref-name>
@@ -1304,18 +1160,6 @@
         <!--  Field Injection, Annotation Injection into SuperClass EJBs -->
         <session>
             <ejb-name>DFIPkgYesInhAnoOvrdTestSLEJB</ejb-name>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_DS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
             <persistence-unit-ref>
                 <description>Cleanup Persistence Context</description>
                 <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
@@ -1324,18 +1168,6 @@
         </session>
         <session>
             <ejb-name>DFIPriYesInhAnoOvrdTestSLEJB</ejb-name>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_DS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
             <persistence-unit-ref>
                 <description>Cleanup Persistence Context</description>
                 <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
@@ -1344,18 +1176,6 @@
         </session>
         <session>
             <ejb-name>DFIProYesInhAnoOvrdTestSLEJB</ejb-name>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_DS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
             <persistence-unit-ref>
                 <description>Cleanup Persistence Context</description>
                 <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
@@ -1364,18 +1184,6 @@
         </session>
         <session>
             <ejb-name>DFIPubYesInhAnoOvrdTestSLEJB</ejb-name>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_DS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
             <persistence-unit-ref>
                 <description>Cleanup Persistence Context</description>
                 <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
@@ -1385,18 +1193,6 @@
         
         <session>
             <ejb-name>DFIPkgYesInhAnoOvrdTestSFEJB</ejb-name>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_DS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
             <persistence-unit-ref>
                 <description>Cleanup Persistence Context</description>
                 <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
@@ -1405,18 +1201,6 @@
         </session>
         <session>
             <ejb-name>DFIPkgYesInhAnoOvrdTestSFEXEJB</ejb-name>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_DS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
             <persistence-unit-ref>
                 <description>Cleanup Persistence Context</description>
                 <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
@@ -1425,18 +1209,6 @@
         </session>
         <session>
             <ejb-name>DFIPriYesInhAnoOvrdTestSFEJB</ejb-name>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_DS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
             <persistence-unit-ref>
                 <description>Cleanup Persistence Context</description>
                 <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
@@ -1445,18 +1217,6 @@
         </session>
          <session>
             <ejb-name>DFIPriYesInhAnoOvrdTestSFEXEJB</ejb-name>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_DS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
             <persistence-unit-ref>
                 <description>Cleanup Persistence Context</description>
                 <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
@@ -1465,18 +1225,6 @@
         </session>
         <session>
             <ejb-name>DFIProYesInhAnoOvrdTestSFEJB</ejb-name>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_DS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
             <persistence-unit-ref>
                 <description>Cleanup Persistence Context</description>
                 <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
@@ -1485,18 +1233,6 @@
         </session>
         <session>
             <ejb-name>DFIProYesInhAnoOvrdTestSFEXEJB</ejb-name>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_DS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
             <persistence-unit-ref>
                 <description>Cleanup Persistence Context</description>
                 <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
@@ -1505,18 +1241,6 @@
         </session>
         <session>
             <ejb-name>DFIPubYesInhAnoOvrdTestSFEJB</ejb-name>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_DS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
             <persistence-unit-ref>
                 <description>Cleanup Persistence Context</description>
                 <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
@@ -1525,18 +1249,6 @@
         </session>
         <session>
             <ejb-name>DFIPubYesInhAnoOvrdTestSFEXEJB</ejb-name>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_DS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
             <persistence-unit-ref>
                 <description>Cleanup Persistence Context</description>
                 <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
@@ -1547,18 +1259,6 @@
         <!--  Field Injection, Annotation Injection into SuperClass EJBs with DD Override -->
         <session>
             <ejb-name>DFIPkgYesInhDDOvrdTestSLEJB</ejb-name>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_DS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
             
             <persistence-context-ref>
 		        <persistence-context-ref-name>jpa/DFIPkgYesInhDDOvrdTestEJB/ovdem_cmts_common_ejb</persistence-context-ref-name>
@@ -1672,18 +1372,6 @@
         
         <session>
             <ejb-name>DFIPriYesInhDDOvrdTestSLEJB</ejb-name>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_DS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
             
             <persistence-context-ref>
                 <persistence-context-ref-name>jpa/DFIPriYesInhDDOvrdTestEJB/ovdem_cmts_common_ejb</persistence-context-ref-name>
@@ -1797,18 +1485,6 @@
 
         <session>
             <ejb-name>DFIProYesInhDDOvrdTestSLEJB</ejb-name>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_DS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
             
             <persistence-context-ref>
                 <persistence-context-ref-name>jpa/DFIProYesInhDDOvrdTestEJB/ovdem_cmts_common_ejb</persistence-context-ref-name>
@@ -1922,18 +1598,6 @@
 
         <session>
             <ejb-name>DFIPubYesInhDDOvrdTestSLEJB</ejb-name>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_DS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
             
             <persistence-context-ref>
                 <persistence-context-ref-name>jpa/DFIPubYesInhDDOvrdTestEJB/ovdem_cmts_common_ejb</persistence-context-ref-name>
@@ -2047,18 +1711,6 @@
         
         <session>
             <ejb-name>DFIPkgYesInhDDOvrdTestSFEJB</ejb-name>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_DS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
             
             <persistence-context-ref>
                 <persistence-context-ref-name>jpa/DFIPkgYesInhDDOvrdTestEJB/ovdem_cmts_common_ejb</persistence-context-ref-name>
@@ -2172,18 +1824,6 @@
         
         <session>
             <ejb-name>DFIPriYesInhDDOvrdTestSFEJB</ejb-name>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_DS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
             
             <persistence-context-ref>
                 <persistence-context-ref-name>jpa/DFIPriYesInhDDOvrdTestEJB/ovdem_cmts_common_ejb</persistence-context-ref-name>
@@ -2297,18 +1937,6 @@
 
         <session>
             <ejb-name>DFIProYesInhDDOvrdTestSFEJB</ejb-name>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_DS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
             
             <persistence-context-ref>
                 <persistence-context-ref-name>jpa/DFIProYesInhDDOvrdTestEJB/ovdem_cmts_common_ejb</persistence-context-ref-name>
@@ -2422,18 +2050,6 @@
 
         <session>
             <ejb-name>DFIPubYesInhDDOvrdTestSFEJB</ejb-name>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_DS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
             
             <persistence-context-ref>
                 <persistence-context-ref-name>jpa/DFIPubYesInhDDOvrdTestEJB/ovdem_cmts_common_ejb</persistence-context-ref-name>
@@ -2547,18 +2163,6 @@
         
         <session>
             <ejb-name>DFIPkgYesInhDDOvrdTestSFEXEJB</ejb-name>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_DS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
             
             <persistence-context-ref>
                 <persistence-context-ref-name>jpa/DFIPkgYesInhDDOvrdTestEJB/ovdem_cmex_common_ejb</persistence-context-ref-name>
@@ -2606,18 +2210,6 @@
         
         <session>
             <ejb-name>DFIPriYesInhDDOvrdTestSFEXEJB</ejb-name>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_DS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
             
             <persistence-context-ref>
                 <persistence-context-ref-name>jpa/DFIPriYesInhDDOvrdTestEJB/ovdem_cmex_common_ejb</persistence-context-ref-name>
@@ -2665,18 +2257,6 @@
 
         <session>
             <ejb-name>DFIProYesInhDDOvrdTestSFEXEJB</ejb-name>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_DS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
             
             <persistence-context-ref>
                 <persistence-context-ref-name>jpa/DFIProYesInhDDOvrdTestEJB/ovdem_cmex_common_ejb</persistence-context-ref-name>
@@ -2724,18 +2304,6 @@
 
         <session>
             <ejb-name>DFIPubYesInhDDOvrdTestSFEXEJB</ejb-name>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_DS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
-            <resource-ref>
-                <res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-                <res-sharing-scope>Shareable</res-sharing-scope>
-            </resource-ref>
             
             <persistence-context-ref>
                 <persistence-context-ref-name>jpa/DFIPubYesInhDDOvrdTestEJB/ovdem_cmex_common_ejb</persistence-context-ref-name>

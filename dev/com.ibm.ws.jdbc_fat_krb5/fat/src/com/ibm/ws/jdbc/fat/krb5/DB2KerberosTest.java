@@ -35,11 +35,13 @@ import com.ibm.ws.jdbc.fat.krb5.containers.DB2KerberosContainer;
 import com.ibm.ws.jdbc.fat.krb5.containers.KerberosContainer;
 import com.ibm.ws.jdbc.fat.krb5.containers.KerberosPlatformRule;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import jdbc.krb5.db2.web.DB2KerberosTestServlet;
@@ -82,6 +84,10 @@ public class DB2KerberosTest extends FATServletClient {
         List<String> jvmOpts = new ArrayList<>();
         jvmOpts.add("-Dsun.security.krb5.debug=true"); // Hotspot/OpenJ9
         jvmOpts.add("-Dcom.ibm.security.krb5.krb5Debug=true"); // IBM JDK
+
+        if (JavaInfo.JAVA_VERSION >= 9) {
+            jvmOpts.add("--illegal-access=permit"); // Java 16 JEPS 396
+        }
         server.setJvmOptions(jvmOpts);
 
         server.startServer();
@@ -121,7 +127,41 @@ public class DB2KerberosTest extends FATServletClient {
     public void testTicketCache() throws Exception {
         String ccPath = Paths.get(server.getServerRoot(), "security", "krb5TicketCache_" + KRB5_USER).toAbsolutePath().toString();
         try {
-            generateTicketCache(ccPath);
+            generateTicketCache(ccPath, false);
+        } catch (UnsupportedOperationException e) {
+            Log.info(c, testName.getMethodName(), "Skipping test because OS does not support 'kinit'");
+            return;
+        }
+
+        ServerConfiguration config = server.getServerConfiguration();
+        final String originalKeytab = config.getKerberos().keytab;
+        try {
+            Log.info(c, testName.getMethodName(), "Changing config to use 'krb5TicketCache' instead of 'keytab'");
+            AuthData krb5Auth = config.getAuthDataElements().getById("krb5Auth");
+            krb5Auth.krb5TicketCache = ccPath;
+            Kerberos kerberos = config.getKerberos();
+            kerberos.keytab = null;
+            updateConfigAndWait(config);
+
+            FATServletClient.runTest(server, APP_NAME + "/DB2KerberosTestServlet", testName);
+        } finally {
+            Log.info(c, testName.getMethodName(), "Restoring original config");
+            config.getKerberos().keytab = originalKeytab;
+            config.getAuthDataElements().getById("krb5Auth").krb5TicketCache = null;
+            updateConfigAndWait(config);
+        }
+    }
+
+    /**
+     * Mimics testTicketCache, but using an expired cache to ensure a LoginException is thrown.
+     */
+    @Test
+    @Mode(TestMode.FULL)
+    @AllowedFFDC({ "javax.resource.ResourceException", "javax.security.auth.login.LoginException" })
+    public void testTicketCacheExpired() throws Exception {
+        String ccPath = Paths.get(server.getServerRoot(), "security", "krb5TicketCacheExpired_" + KRB5_USER).toAbsolutePath().toString();
+        try {
+            generateTicketCache(ccPath, true);
         } catch (UnsupportedOperationException e) {
             Log.info(c, testName.getMethodName(), "Skipping test because OS does not support 'kinit'");
             return;
@@ -169,12 +209,20 @@ public class DB2KerberosTest extends FATServletClient {
         }
     }
 
-    private static void generateTicketCache(String ccPath) throws Exception {
+    /**
+     * Generates a ccache using kinit on the local system.
+     *
+     * @param ccPath  - Location to create the ccache
+     * @param expired - creates the ccache with expired credentials
+     * @throws Exception
+     */
+    private static void generateTicketCache(String ccPath, boolean expired) throws Exception {
         final String m = "generateTicketCache";
         String keytabPath = Paths.get("publish", "servers", "com.ibm.ws.jdbc.fat.krb5", "security", "krb5.keytab").toAbsolutePath().toString();
 
         ProcessBuilder pb = new ProcessBuilder("kinit", "-k", "-t", keytabPath, //
                         "-c", "FILE:" + ccPath, //Some linux kinit installs require FILE:
+                        "-l", expired ? "1" : "604800", //Ticket lifetime, if expired set the minimum of 1s, otherwise 7 days.
                         KRB5_USER + "@" + KerberosContainer.KRB5_REALM);
         pb.environment().put("KRB5_CONFIG", Paths.get(server.getServerRoot(), "security", "krb5.conf").toAbsolutePath().toString());
         pb.redirectErrorStream(true);
@@ -189,8 +237,10 @@ public class DB2KerberosTest extends FATServletClient {
         boolean success = p.waitFor(2, TimeUnit.MINUTES);
         String kinitResult = readInputStream(p.getInputStream());
         Log.info(c, m, "Output from creating ccache with kinit:\n" + kinitResult);
-        if (success) {
+        if (success && kinitResult.length() == 0) { //kinit should return silently if successful
             Log.info(c, m, "Successfully generated a ccache at: " + ccPath);
+            if (expired)
+                TimeUnit.SECONDS.sleep(1); //Wait 1s to ensure ccache credentials are expired
         } else {
             Log.info(c, m, "FAILED to create ccache");
             throw new Exception("Failed to create Kerberos ticket cache. Kinit output was: " + kinitResult);

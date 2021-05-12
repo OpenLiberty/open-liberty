@@ -279,3 +279,7 @@ IDMAP_INVALID_FORMAT.useraction=Aktualizujte hodnotu userIdMap tak, aby odpov\u0
 KRB5_SERVICE_NOT_AVAILABLE=CWIML4521E: Registr LDAP {0} se pokusil sv\u00e1zat se serverem LDAP s pou\u017eit\u00edm pov\u011b\u0159en\u00ed Kerberos pro n\u00e1zev \u010dinitele {1}, ale slu\u017eba Kerberos, kter\u00e1 poskytuje tato pov\u011b\u0159en\u00ed, nen\u00ed k dispozici. Mechanizmus ov\u011b\u0159ov\u00e1n\u00ed vazby: {2}.
 KRB5_SERVICE_NOT_AVAILABLE.explanation=Slu\u017eba Kerberos nebyla k dispozici, kdy\u017e se registr LDAP pokusil sv\u00e1zat se serverem LDAP. Nen\u00ed-li slu\u017eba ov\u011b\u0159ov\u00e1n\u00ed Kerberos k dispozici, nemohou prov\u00e9st ov\u011b\u0159en\u00ed \u017e\u00e1dn\u00ed u\u017eivatel\u00e9.
 KRB5_SERVICE_NOT_AVAILABLE.useraction=Zkontrolujte nastaven\u00ed konfigurace registru LDAP pro atributy bindAuthMechanizm, krb5Principal a krb5TicketCache stejn\u011b jako konfiguraci Kerberos. Restartujte server.
+
+FILTER_MISSING_PERCENT_V=CWIML4523E: Hodnota {0} pro {1} je neplatn\u00e1. Vy\u017eaduje deklaraci hodnoty atributu, kde deklarace hodnoty je =%v. Nap\u0159. {2}.
+FILTER_MISSING_PERCENT_V.explanation=Registr LDAP nahrad\u00ed %v hodnotou, kterou m\u00e1 hledat p\u0159i vyhled\u00e1v\u00e1n\u00ed u\u017eivatel\u016f nebo skupin.
+FILTER_MISSING_PERCENT_V.useraction=Aktualizujte uveden\u00fd filtr, aby zahrnoval deklaraci hodnoty atributu, kter\u00e1 obsahuje =%v v deklaraci hodnoty.

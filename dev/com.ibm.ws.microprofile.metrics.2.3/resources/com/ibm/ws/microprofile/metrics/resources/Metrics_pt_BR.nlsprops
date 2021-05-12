@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2020 IBM Corporation and others.
+# Copyright (c) 2009, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -141,6 +141,11 @@ grpc.client.receivedMessages.total.description=O n\u00famero total de mensagens 
 grpc.client.responseTime.total.description=O tempo total de respostas de RPCs conclu\u00eddos.
 
 REST.request.description=O n\u00famero de chamadas e o tempo total de resposta deste m\u00e9todo de recurso RESTful desde o in\u00edcio do servidor.
+
+requestTiming.requestCount.description=O n\u00famero de solicita\u00e7\u00f5es do servlet desde que o servidor foi iniciado.
+requestTiming.activeRequestCount.description=O n\u00famero de solicita\u00e7\u00f5es do servlet que est\u00e3o em execu\u00e7\u00e3o no momento.
+requestTiming.slowRequestCount.description=O n\u00famero de solicita\u00e7\u00f5es do servlet que est\u00e3o em execu\u00e7\u00e3o no momento, mas que est\u00e3o lentas.
+requestTiming.hungRequestCount.description=O n\u00famero de solicita\u00e7\u00f5es do servlet que est\u00e3o em execu\u00e7\u00e3o no momento, mas que foram interrompidas.
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message
 #-----------------------------------------------------------------------------------------------------------------------------

@@ -45,7 +45,9 @@ import componenttest.rules.repeater.RepeatTests;
                 OidcClientDiscoveryJWTBasicTests.class,
                 // OidcCertificationRPBasicProfileTests.class,
                 OidcClientSameSiteTests.class,
-                OidcClientWasReqURLTests.class
+                OidcClientWasReqURLTests.class,
+//                OidcClientSignatureAlgTests.class,
+//                OidcClientEncryptionTests.class
 })
 /**
  * Purpose: This suite collects and runs all known good test suites.

@@ -23,4 +23,4 @@ Export-Package: \
 -buildpath: \
 	com.ibm.ws.repository;version=latest,\
 	com.ibm.ws.repository.parsers;version=latest,\
-	org.apache.ant:ant;version=1.9.6
+	com.ibm.ws.org.apache.ant;version=latest

@@ -49,6 +49,7 @@ Subsystem-Name: JavaServer Faces 2.3
  com.ibm.ws.org.apache.commons.discovery.0.2, \
  io.openliberty.org.apache.commons.logging, \
  com.ibm.ws.jsf.shared, \
+ io.openliberty.faces.internal, \
  com.ibm.ws.cdi.interfaces, \
  com.ibm.ws.org.apache.commons.digester.1.8, \
  com.ibm.websphere.javaee.websocket.1.1; apiJar=false; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.websocket:javax.websocket-api:1.1", \

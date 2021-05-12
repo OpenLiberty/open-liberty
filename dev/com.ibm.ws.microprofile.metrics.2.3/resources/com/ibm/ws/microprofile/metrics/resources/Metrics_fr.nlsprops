@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2020 IBM Corporation and others.
+# Copyright (c) 2009, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -51,13 +51,13 @@ emptyRegistry.info.CWMMC0004I.useraction=Entrez des m\u00e9triques dans le regis
 
 #An internal error occurred. The exception is {0}.
 internal.error.CWMMC0005E=CWMMC0005E: Une erreur interne s'est produite : {0}
-internal.error.CWMMC0005E.explanation=Le serveur d'application a rencontr\u00e9 une erreur interne.
-internal.error.CWMMC0005E.useraction=Collectez une s\u00e9rie de traces et ouvrez un nouveau signalement de probl\u00e8me concernant votre serveur d'application.
+internal.error.CWMMC0005E.explanation=Le serveur d'applications a rencontr\u00e9 une erreur interne.
+internal.error.CWMMC0005E.useraction=Collectez une s\u00e9rie de traces et ouvrez un nouveau signalement de probl\u00e8me concernant votre serveur d'applications.
 
 #Generic error for internal failures. 
 internal.error.CWMMC0006E=CWMMC0006E: Une erreur interne s'est produite.
-internal.error.CWMMC0006E.explanation=Le serveur d'application a rencontr\u00e9 une erreur interne.
-internal.error.CWMMC0006E.useraction=Collectez une s\u00e9rie de traces et ouvrez un nouveau signalement de probl\u00e8me concernant votre serveur d'application.
+internal.error.CWMMC0006E.explanation=Le serveur d'applications a rencontr\u00e9 une erreur interne.
+internal.error.CWMMC0006E.useraction=Collectez une s\u00e9rie de traces et ouvrez un nouveau signalement de probl\u00e8me concernant votre serveur d'applications.
 
 #Memory usedHeap message
 memory.usedHeap.description=Affiche la quantit\u00e9 de m\u00e9moire dynamique utilis\u00e9e en octets.
@@ -141,6 +141,11 @@ grpc.client.receivedMessages.total.description=Nombre total de messages de flux 
 grpc.client.responseTime.total.description=Temps de r\u00e9ponse total des appels de proc\u00e9dure distante termin\u00e9s.
 
 REST.request.description=Nombre d'appels et temps de r\u00e9ponse total de cette m\u00e9thode de ressource RESTful depuis le d\u00e9marrage du serveur.
+
+requestTiming.requestCount.description=Nombre de demandes de servlet depuis que le serveur a d\u00e9marr\u00e9.
+requestTiming.activeRequestCount.description=Nombre de demandes de servlet en cours d'ex\u00e9cution.
+requestTiming.slowRequestCount.description=Nombre de demandes de servlet en cours d'ex\u00e9cution mais qui sont lentes.
+requestTiming.hungRequestCount.description=Nombre de demandes de servlet en cours d'ex\u00e9cution mais qui sont bloqu\u00e9es.
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message
 #-----------------------------------------------------------------------------------------------------------------------------

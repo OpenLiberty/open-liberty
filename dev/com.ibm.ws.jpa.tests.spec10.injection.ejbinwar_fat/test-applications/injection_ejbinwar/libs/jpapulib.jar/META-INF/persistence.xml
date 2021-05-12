@@ -20,8 +20,8 @@
 	<!-- Commonly named persistence units (for scoping validation) -->
 	
 	<persistence-unit name="COMMON_JTA">
-		<jta-data-source>java:comp/env/jdbc/JPA_DS</jta-data-source>
-		<non-jta-data-source>java:comp/env/jdbc/JPA_NJTADS</non-jta-data-source>
+		<jta-data-source>jdbc/JPA_JTA_DS</jta-data-source>
+        <non-jta-data-source>jdbc/JPA_NJTA_DS</non-jta-data-source>
 		
 		<class>com.ibm.ws.jpa.fvt.injection.entities.core.CoreInjectionEntity</class>
 		<class>com.ibm.ws.jpa.fvt.injection.entities.earlib.EARLIBEntityA</class>
@@ -35,7 +35,7 @@
 	</persistence-unit>
 	
 	<persistence-unit name="COMMON_RL" transaction-type="RESOURCE_LOCAL">
-		<non-jta-data-source>java:comp/env/jdbc/JPA_NJTADS</non-jta-data-source>
+        <non-jta-data-source>jdbc/JPA_NJTA_DS</non-jta-data-source>
 		
 		<class>com.ibm.ws.jpa.fvt.injection.entities.core.CoreInjectionEntity</class>
 		<class>com.ibm.ws.jpa.fvt.injection.entities.earlib.EARLIBEntityA</class>
@@ -48,8 +48,8 @@
 	</persistence-unit>
 	
 	<persistence-unit name="OVRD_COMMON_JTA">
-		<jta-data-source>java:comp/env/jdbc/JPA_DS</jta-data-source>
-		<non-jta-data-source>java:comp/env/jdbc/JPA_NJTADS</non-jta-data-source>
+		<jta-data-source>jdbc/JPA_JTA_DS</jta-data-source>
+        <non-jta-data-source>jdbc/JPA_NJTA_DS</non-jta-data-source>
 		
 		<class>com.ibm.ws.jpa.fvt.injection.entities.core.CoreInjectionEntity</class>
 		<class>com.ibm.ws.jpa.fvt.injection.entities.earlib.EARLIBEntityA</class>
@@ -64,7 +64,7 @@
 	</persistence-unit>
 	
 	<persistence-unit name="OVRD_COMMON_RL" transaction-type="RESOURCE_LOCAL">
-		<non-jta-data-source>java:comp/env/jdbc/JPA_NJTADS</non-jta-data-source>
+        <non-jta-data-source>jdbc/JPA_NJTA_DS</non-jta-data-source>
 		
 		<class>com.ibm.ws.jpa.fvt.injection.entities.core.CoreInjectionEntity</class>
 		<class>com.ibm.ws.jpa.fvt.injection.entities.earlib.EARLIBEntityA</class>
@@ -80,8 +80,8 @@
 	<!-- Uniquely named persistence units -->
 	
 	<persistence-unit name="JPALIB_JTA">
-		<jta-data-source>java:comp/env/jdbc/JPA_DS</jta-data-source>
-		<non-jta-data-source>java:comp/env/jdbc/JPA_NJTADS</non-jta-data-source>
+		<jta-data-source>jdbc/JPA_JTA_DS</jta-data-source>
+        <non-jta-data-source>jdbc/JPA_NJTA_DS</non-jta-data-source>
 		
 		<class>com.ibm.ws.jpa.fvt.injection.entities.core.CoreInjectionEntity</class>
 		<class>com.ibm.ws.jpa.fvt.injection.entities.earlib.EARLIBEntityA</class>
@@ -97,7 +97,7 @@
 	</persistence-unit>
 	
 	<persistence-unit name="JPALIB_RL" transaction-type="RESOURCE_LOCAL">
-		<non-jta-data-source>java:comp/env/jdbc/JPA_NJTADS</non-jta-data-source>
+        <non-jta-data-source>jdbc/JPA_NJTA_DS</non-jta-data-source>
 		
 		<class>com.ibm.ws.jpa.fvt.injection.entities.core.CoreInjectionEntity</class>
 		<class>com.ibm.ws.jpa.fvt.injection.entities.earlib.EARLIBEntityA</class>
@@ -111,8 +111,8 @@
 	</persistence-unit>
 	
 	<persistence-unit name="OVRD_JPALIB_JTA">
-		<jta-data-source>java:comp/env/jdbc/JPA_DS</jta-data-source>
-		<non-jta-data-source>java:comp/env/jdbc/JPA_NJTADS</non-jta-data-source>
+		<jta-data-source>jdbc/JPA_JTA_DS</jta-data-source>
+        <non-jta-data-source>jdbc/JPA_NJTA_DS</non-jta-data-source>
 		
 		<class>com.ibm.ws.jpa.fvt.injection.entities.core.CoreInjectionEntity</class>
 		<class>com.ibm.ws.jpa.fvt.injection.entities.earlib.EARLIBEntityA</class>
@@ -129,7 +129,7 @@
 	</persistence-unit>
 	
 	<persistence-unit name="OVRD_JPALIB_RL" transaction-type="RESOURCE_LOCAL">
-		<non-jta-data-source>java:comp/env/jdbc/JPA_NJTADS</non-jta-data-source>
+        <non-jta-data-source>jdbc/JPA_NJTA_DS</non-jta-data-source>
 		
 		<class>com.ibm.ws.jpa.fvt.injection.entities.core.CoreInjectionEntity</class>
 		<class>com.ibm.ws.jpa.fvt.injection.entities.earlib.EARLIBEntityA</class>

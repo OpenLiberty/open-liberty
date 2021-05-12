@@ -336,12 +336,12 @@
         <AD id="allowQueryParamWithNoEqual"
             name="%allowQueryParamWithNoEqual.name"
             description="%allowQueryParamWithNoEqual.desc"
-            required="false" type="Boolean" default="false" />
+            required="false" type="Boolean" />
         
         <!--com.ibm.ws.webcontainer.-->
         <AD id="setHtmlContentTypeOnError"
-            name="internal"
-            description="internal"
+            name="%setHtmlContentTypeOnError.name"
+            description="%setHtmlContentTypeOnError.desc"
             required="false" type="Boolean" default="true" />
 
         <AD name="internal" description="internal use only"

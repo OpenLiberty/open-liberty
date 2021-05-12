@@ -9,9 +9,6 @@
 	<ldapRegistry id="SUN_LDAP" realm="SampleLdapSUNRealm" host="${ldap.server.13.name}" port="${ldap.server.13.port}"
 		baseDN="dc=rtp,dc=raleigh,dc=ibm,dc=com"
 		ldapType="Sun Java System Directory Server">
-		<failoverServers name="failoverLdapServers">
-      		<server host="${ldap.server.3.name}" port="${ldap.server.3.port}"/>
-       </failoverServers>
 	</ldapRegistry>
    	
    	<ldapRegistry id="AD_LDAP" realm="SampleLdapADRealm" host="${ldap.server.2.name}" port="${ldap.server.2.port}"

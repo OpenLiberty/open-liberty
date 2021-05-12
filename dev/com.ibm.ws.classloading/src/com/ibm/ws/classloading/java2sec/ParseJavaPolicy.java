@@ -18,7 +18,9 @@ import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.io.Reader;
 import java.io.FileReader;
+import java.security.AccessController;
 import java.security.Permission;
+import java.security.PrivilegedAction;
 import java.security.UnresolvedPermission;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,57 +47,101 @@ public class ParseJavaPolicy {
     String keyStoreUrlString;
     String keyStoreType;
     static List<GrantEntry> grants = new ArrayList<GrantEntry>();
+    
+    String javaHome = AccessController.doPrivileged(new PrivilegedAction<String>() {
+        public String run() {
+            return System.getProperty("java.home");
+        }
+    });
+    String javaVersion = AccessController.doPrivileged(new PrivilegedAction<String>() {
+        public String run() {
+            return System.getProperty("java.version");
+        }
+    });
+    String javaSecurityPolicy = AccessController.doPrivileged(new PrivilegedAction<String>() {
+        public String run() {
+            return System.getProperty("java.security.policy");
+        }
+    });
+    String javaVendor = AccessController.doPrivileged(new PrivilegedAction<String>() {
+        public String run() {
+            return System.getProperty("java.vendor");
+        }
+    });
+
 
 
 
     public ParseJavaPolicy(boolean expandProp) throws FileNotFoundException, IOException, ParserException {
 
         // let's find the java.policy file
-        // it should be under <java.home>/jre/lib/security
-        // if we don't find it there, we'll try a level higher (without the jre)
-        // if we don't find it there, we'll return as java.policy not found
+        // if using Open JDK 9 or higher, find it under java.home/conf/security
+        // if not there, look for it under java.home/jre/lib/security
+        // if not there, look for it under java.home/lib/security
+        
+        
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "java.home: " + javaHome + " javaVendor: " + javaVendor + " javaSecurityPolicy: " + javaSecurityPolicy + " javaVersion: " + javaVersion);
+        }
         
         try {
-            file = System.getProperty("java.security.policy");
+            file = javaSecurityPolicy;
             
             if (file == null) {
-                String javaHome = System.getProperty("java.home");
-                if (javaHome != null) {
-                    if (javaHome.endsWith("jre")) {
-                        // let's look under java.home/jre/lib/security
-                        file = javaHome.concat("/lib/security/java.policy");
-                        File fileToCheck = new File(file);
-                        if (!fileToCheck.exists()) {
-                            // if not under java.home/jre/lib/security, let's look under lib/security
-                            String javaHomeWithoutJre = javaHome.substring(0, javaHome.length() - 3);
-                            file = javaHomeWithoutJre.concat("/lib/security/java.policy");
-                            if (!fileToCheck.exists()) {
-                                // if not under lib/security, then return
-                                if (tc.isDebugEnabled()) {
-                                    Tr.debug(tc, "javaHome: " + javaHome + "Could not find java.policy file under either java.home/jre/lib/security or java.home/lib/security");
-                                }
-                                return;
-                            }
-                        }
-                    } else {
-                        // let's look under java.home/lib/security
-                        file = javaHome.concat("/lib/security.java.policy");
-                        File fileToCheck = new File(file);
-                        if (!fileToCheck.exists()) {
-                            // if not under java.home/lib/security,  look under java.home/jre/lib/security
-                            file = javaHome.concat("/jre/lib/security/java.policy");
-                            fileToCheck = new File(file);
-                            if (!fileToCheck.exists()) {
-                                // if not there, return
-                                if (tc.isDebugEnabled()) {
-                                    Tr.debug(tc, "javaHome: " + javaHome + "Could not find java.policy file under either java.home/jre/lib/security or java.home/lib/security");
-                                }
-                                return;
-                            }
-                        }
-                    }
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Did not find java.policy under the location specified by java.security.policy");
                 }
-            } 
+                
+                // first we look at whatever java.security.policy is pointing at
+                // if java.security.policy isn't defined, then we look under java.home
+                
+                if (javaHome != null) {
+                    Integer version = 0;
+                    
+                    // first let's check if this is version 9 or up, where the java.policy file would 
+                    // be under java.home/conf/security
+                    
+                    
+                    String[] versionElements = javaVersion.split("\\D"); // split on non-digits
+
+                    // Pre-JDK 9 the java.version is 1.MAJOR.MINOR
+                    // Post-JDK 9 the java.version is MAJOR.MINOR
+                    int i = Integer.valueOf(versionElements[0]) == 1 ? 1 : 0;
+                    Integer MAJOR = Integer.valueOf(versionElements[i++]);
+
+                    Integer MINOR;
+                    if (i < versionElements.length)
+                        MINOR = Integer.valueOf(versionElements[i++]);
+                    else
+                        MINOR = 0;
+
+                    Integer MICRO;
+                    if (i < versionElements.length)
+                        MICRO = Integer.valueOf(versionElements[i]);
+                    else
+                        MICRO = 0;
+
+                    
+                    if (9 <= MAJOR.intValue()) {
+                            file = javaHome.concat("/conf/security/java.policy");
+                            File fileToCheck = new File(file);
+                            if (!fileToCheck.exists()) {
+                                if (tc.isDebugEnabled()) {
+                                    Tr.debug(tc, "JDK version installed: " + version.intValue() + " but did not find java.home/conf/security/java.policy");
+                                }
+                                // if not there, then let's just check the usual old places
+                                file = wheresJavaPolicy();
+                            }
+                    } else {
+                        // not using 9 or higher, so let's check the usual old places
+                        file = wheresJavaPolicy();
+                    }
+
+                }
+            }
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "File location of java.policy file: " + file);
+            }
             
             if (file != null && file.charAt(0) == '=') {
                 // skip '=' for case where "==" is specified
@@ -140,6 +186,56 @@ public class ParseJavaPolicy {
 
         } 
 
+    }
+    
+    /*
+     * In the fashion of Where's Waldo, let's find our java.policy file
+     * With open jdk version 9 and up, it should be under java.home/conf/security
+     * With earlier versions of the non-open JDK and OpenJDK, it should be under java.home/security 
+     * if java.home points to the jre directory; else it should be under java.home/jre/security
+     */
+    public String wheresJavaPolicy() {
+        String policyLocation = null;
+        if (javaHome.endsWith("jre")) {
+            // let's look under java.home/jre/lib/security
+            policyLocation = javaHome.concat("/lib/security/java.policy");
+            File fileToCheck = new File(policyLocation);
+            if (!fileToCheck.exists()) {
+                // if not under java.home/jre/lib/security, let's look under lib/security
+                String javaHomeWithoutJre = javaHome.substring(0, javaHome.length() - 3);
+                policyLocation = javaHomeWithoutJre.concat("/lib/security/java.policy");
+                if (!fileToCheck.exists()) {
+                    // if not under lib/security, then return
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(tc, "javaHome: " + javaHome + "Could not find java.policy file under either java.home/jre/lib/security or java.home/lib/security");
+                    }
+                } else {
+                    return policyLocation;
+                }
+            } else {
+                return policyLocation;                
+            }
+        } else {
+            // let's look under java.home/lib/security
+            policyLocation = javaHome.concat("/lib/security.java.policy");
+            File fileToCheck = new File(policyLocation);
+            if (!fileToCheck.exists()) {
+                // if not under java.home/lib/security,  look under java.home/jre/lib/security
+                policyLocation = javaHome.concat("/jre/lib/security/java.policy");
+                fileToCheck = new File(policyLocation);
+                if (!fileToCheck.exists()) {
+                    // if not there, return
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(tc, "javaHome: " + javaHome + "Could not find java.policy file under either java.home/jre/lib/security or java.home/lib/security");
+                    }
+                } else {
+                    return policyLocation;
+                }
+            } else {
+                return policyLocation;
+            }
+        }                        
+        return policyLocation;
     }
     
     /*
