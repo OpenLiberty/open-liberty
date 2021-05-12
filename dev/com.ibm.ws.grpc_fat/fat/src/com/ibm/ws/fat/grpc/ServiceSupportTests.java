@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ package com.ibm.ws.fat.grpc;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -90,10 +91,6 @@ public class ServiceSupportTests extends FATServletClient {
         beerServiceBlockingStub = BeerServiceGrpc.newBlockingStub(beerChannel);
     }
 
-    private void stopGrpcService(ManagedChannel channel) {
-        channel.shutdownNow();
-    }
-
     private void startHelloWorldService(String address, int port) {
         LOG.info("startHelloWorldService() : Connecting to helloWorld gRPC service at " + address + ":" + port);
         worldChannel = ManagedChannelBuilder.forAddress(address, port).usePlaintext().build();
@@ -167,7 +164,7 @@ public class ServiceSupportTests extends FATServletClient {
         LOG.info("testSingleWarWithGrpcService() : Stopping the beer service.");
 
         // Stop the grpc service
-        stopGrpcService(beerChannel);
+        GrpcTestUtils.stopGrpcService(beerChannel);
 
         // Stop the grpc application
         LOG.info("testSingleWarWithGrpcService() : Stop the FavoriteBeerService application and remove it from dropins.");
@@ -242,8 +239,8 @@ public class ServiceSupportTests extends FATServletClient {
         assertTrue(greeting.getMessage().contains("Scarlett"));
 
         // Stop the grpc services
-        stopGrpcService(beerChannel);
-        stopGrpcService(worldChannel);
+        GrpcTestUtils.stopGrpcService(beerChannel);
+        GrpcTestUtils.stopGrpcService(worldChannel);
 
         // Stop the grpc applications
         LOG.info("testMultipleGrpcServiceWars() : Stop the FavoriteBeerService and HelloworldService applications and remove them from dropins.");
@@ -316,8 +313,7 @@ public class ServiceSupportTests extends FATServletClient {
         BeerResponse rsp2 = beerServiceBlockingStub.addBeer(newBeer2);
 
         assertTrue(rsp2.getDone());
-
-        stopGrpcService(beerChannel);
+        GrpcTestUtils.stopGrpcService(beerChannel);
 
         // Stop the grpc application
         LOG.info("testSingleWarUpdate() : Stop the FavoriteBeerService application and remove it from dropins.");
@@ -378,7 +374,7 @@ public class ServiceSupportTests extends FATServletClient {
         assertTrue(grpcExcep);
 
         LOG.info("testInvalidService() : Stop service.");
-        stopGrpcService(beerChannel);
+        GrpcTestUtils.stopGrpcService(beerChannel);
 
         assertTrue(grpcServer.removeAndStopDropinsApplications(is));
 
@@ -440,8 +436,7 @@ public class ServiceSupportTests extends FATServletClient {
         BeerResponse rsp = beerServiceBlockingStub.addBeer(newBeer);
 
         assertTrue(rsp.getDone());
-
-        stopGrpcService(beerChannel);
+        GrpcTestUtils.stopGrpcService(beerChannel);
 
         // Stop the grpc applications
         LOG.info("testDuplicateService() : Stop the FavoriteBeerService application and remove it from dropins.");
