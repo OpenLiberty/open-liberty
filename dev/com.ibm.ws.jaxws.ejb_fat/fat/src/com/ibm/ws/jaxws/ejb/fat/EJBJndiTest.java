@@ -251,7 +251,9 @@ public class EJBJndiTest {
 
     protected void runTest(String responseString) throws Exception {
 
-        String testMethod = testName.getMethodName();
+        String testMethod = (((testName.getMethodName()).replace("_jaxws-2.3",
+                                                                 "")).replace("_EE9_FEATURES",
+                                                                              ""));;
 
         String target = null;
         String remoteTestMethod = null;
@@ -266,7 +268,7 @@ public class EJBJndiTest {
         StringBuilder requestURLBuilder = new StringBuilder("http://").append(server.getHostname()).append(":").append(server.getHttpDefaultPort()).append(SERVLET_PATH).append("?type=").append(remoteTestMethod).append("&hostname=").append(server.getHostname()).append("&port=").append(server.getHttpDefaultPort()).append("&target=").append(target);
 
         String requestURL = requestURLBuilder.toString();
-        Log.info(this.getClass(), testName.getMethodName(), "Calling Application with URL=" + requestURL);
+        Log.info(this.getClass(), testMethod, "Calling Application with URL=" + requestURL);
 
         HttpURLConnection con = null;
         try {

@@ -1,6 +1,6 @@
 <server>
     <featureManager>
-        <feature>jsp-2.2</feature>
+        <feature>jsp-2.3</feature>
         <feature>jaxws-2.2</feature>
     </featureManager>
 

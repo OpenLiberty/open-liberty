@@ -26,9 +26,9 @@ tool.project: true
 generate.replacement: false
 
 -buildpath: \
-	commons-io:commons-io;version=2.4, \
+	com.ibm.ws.org.apache.commons.io;version=latest, \
 	commons-lang:commons-lang;version=2.4, \
-	org.apache.ant:ant;version=1.9.6, \
+	com.ibm.ws.org.apache.ant;version=latest, \
 	org.apache.maven:maven-model;version=3.5.0, \
 	javax.json:javax.json-api;version=1.1.2, \
 	org.apache.aries:org.apache.aries.util;version=1.1.3

@@ -15,6 +15,7 @@ import static org.junit.Assert.fail;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -88,7 +89,7 @@ public class JaxrsJsonClientTestServlet extends FATServlet {
     }
 
     @Test
-    public void recieveInvalidJson() throws Exception {
+    public void receiveInvalidJson() throws Exception {
 
         Response response = client.target(URI_CONTEXT_ROOT)
                         .path("badsimpleresource/badresponse")
@@ -100,6 +101,11 @@ public class JaxrsJsonClientTestServlet extends FATServlet {
             response.readEntity(Foo.class);
             fail();
         } catch (ResponseProcessingException e) {
+            exception = true;
+// Adding this catch block as a temporary fix for EE9 until
+// https://issues.redhat.com/projects/RESTEASY/issues/RESTEASY-2727 is addressed.
+        } catch (ProcessingException e) {
+
             exception = true;
         }
     }

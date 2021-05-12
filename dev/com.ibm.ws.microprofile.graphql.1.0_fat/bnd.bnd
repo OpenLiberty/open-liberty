@@ -20,6 +20,7 @@ src: \
   test-applications/graphQLInterfaceApp/src,\
   test-applications/ifaceApp/src,\
   test-applications/ignoreApp/src,\
+  test-applications/jarInWarApp/src,\
   test-applications/metricsApp/src,\
   test-applications/inputFieldsApp/src,\
   test-applications/outputFieldsApp/src,\
@@ -31,7 +32,7 @@ src: \
 fat.project: true
 
 
-tested.features: mpMetrics-2.0
+tested.features: mpMetrics-2.0, mpConfig-2.0, mpMetrics-3.0, mpRestClient-2.0
 
 -buildpath: \
   com.ibm.websphere.javaee.annotation.1.2;version=latest,\

@@ -26,11 +26,11 @@
     <dataSource fat.modify="true" jndiName="jdbc/schedDB" id="TaskStoreDS">
       <jdbcDriver libraryRef="FATJDBCLib"/>
       <!-- properties modified by FATRunner during database rotation. -->
-      <properties createDatabase="create" databaseName="${shared.resource.dir}/data/scheddb"/>
+      <properties createDatabase="create" databaseName="memory:scheddb"/>
     </dataSource>
   </databaseStore>
-
-  <!-- database (always Derby) for the test application -->
+  
+  <!-- database (always Derby embedded) for the test application -->
   <dataSource id="DefaultDataSource">
     <jdbcDriver libraryRef="DerbyJDBCLib"/>
     <properties createDatabase="create" databaseName="memory:testdb"/>

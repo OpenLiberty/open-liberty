@@ -55,8 +55,8 @@ public class MultiSessionTests extends FATServletClient {
         }
 
         // I think we need this for tracing to turn on (as well as changes in bootstrap.properties)
-        H2FATApplicationHelper.addWarToServerDropins(server, "H2TestModule.war", false, "http2.test.war.servlets");
-        H2FATApplicationHelper.addWarToServerDropins(runtimeServer, "H2FATDriver.war", false, "http2.test.driver.war.servlets");
+        H2FATApplicationHelper.addWarToServerDropins(server, "H2TestModule.war", true, "http2.test.war.servlets");
+        H2FATApplicationHelper.addWarToServerDropins(runtimeServer, "H2FATDriver.war", true, "http2.test.driver.war.servlets");
 
         server.startServer(true, true);
         runtimeServer.startServer(true);
@@ -67,8 +67,11 @@ public class MultiSessionTests extends FATServletClient {
         if (LOGGER.isLoggable(Level.INFO)) {
             LOGGER.logp(Level.INFO, CLASS_NAME, "after()", "Stopping servers......");
         }
-        server.stopServer(true);
+        // try for an orderly quiet shutdown
+        Thread.sleep(5000);
         runtimeServer.stopServer(true);
+        Thread.sleep(5000);
+        server.stopServer(true);
     }
 
     public void runStressTest() throws Exception {

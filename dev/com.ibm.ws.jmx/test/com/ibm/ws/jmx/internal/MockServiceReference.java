@@ -43,6 +43,11 @@ public class MockServiceReference<S> implements ServiceReference<S> {
     }
 
     @Override
+    public <A> A adapt(Class<A> arg0) {
+        return null;
+    }
+
+    @Override
     public int compareTo(Object reference) {
         throw new UnsupportedOperationException();
     }
@@ -75,7 +80,7 @@ public class MockServiceReference<S> implements ServiceReference<S> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.osgi.framework.ServiceReference#getProperties()
      */
     @Override

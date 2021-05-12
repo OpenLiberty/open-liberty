@@ -44,7 +44,9 @@ public class BndErrorTest extends FATServletClient {
         @Override
         protected void failed(Throwable e, Description description) {
             try {
-                server.dumpServer("serverDump");
+                System.runFinalization();
+                System.gc();
+                server.serverDump("heap");
             } catch (Exception e1) {
                 System.out.println("Failed to dump server");
                 e1.printStackTrace();
@@ -96,7 +98,7 @@ public class BndErrorTest extends FATServletClient {
 
         assertNotNull("Expected error message was not logged: " + errorText, server.waitForStringInLogUsingMark(errorText));
 
-        if (appStop || RepeatTestFilter.CURRENT_REPEAT_ACTION == "EJBCBOnErr_FAIL") {
+        if (appStop || RepeatTestFilter.isRepeatActionActive("EJBCBOnErr_FAIL")) {
             String message = "CWWKZ0106E:";
             assertNotNull("Application " + appName + " should have been stopped", server.waitForStringInLogUsingMark(message));
         } else {

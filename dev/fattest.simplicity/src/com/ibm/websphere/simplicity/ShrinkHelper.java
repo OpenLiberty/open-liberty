@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2018 IBM Corporation and others.
+ * Copyright (c) 2016, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,9 @@
 package com.ibm.websphere.simplicity;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -21,6 +24,7 @@ import org.jboss.shrinkwrap.api.Filter;
 import org.jboss.shrinkwrap.api.Filters;
 import org.jboss.shrinkwrap.api.GenericArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.api.exporter.ExplodedExporter;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
@@ -43,13 +47,17 @@ public class ShrinkHelper {
 
     public static void cleanAllExportedArchives() {
         for (File exportedArchive : exportedArchives) {
-            Log.info(ShrinkHelper.class, "cleanAllExportedArchives", "Deleting arhive at: " + exportedArchive.getAbsolutePath());
+            Log.info(ShrinkHelper.class, "cleanAllExportedArchives", "Deleting archive at: " + exportedArchive.getAbsolutePath());
             exportedArchive.delete();
         }
         exportedArchives.clear();
     }
 
     public static enum DeployOptions {
+        /**
+         * Don't validate app startup
+         */
+        DISABLE_VALIDATION,
         /**
          * Overwrite the file if it already exists
          */
@@ -94,6 +102,15 @@ public class ShrinkHelper {
         client.copyFileToLibertyClientRoot(localLocation, path, a.getName());
     }
 
+    /**
+     * Export an artifact to wlp/usr/extension/lib and autoFVT/publish/extension/lib
+     */
+    public static void exportUserFeatureArchive(LibertyServer server, Archive<?> a, DeployOptions... options) throws Exception {
+        String localLocation = "usr/extension/lib";
+        exportArtifact(a, "lib/LibertyFATTestFiles", true, shouldOverwrite(options));
+        server.copyFileToLibertyInstallRoot(localLocation, a.getName());
+    }
+
     private static String getTmpLocation(Archive<?> a) {
         String location = "publish/shrinkApps/" + a.getName() + "-" + System.nanoTime();
 
@@ -117,6 +134,10 @@ public class ShrinkHelper {
         return Arrays.asList(options).contains(DeployOptions.SERVER_ONLY);
     }
 
+    private static boolean shouldValidate(DeployOptions[] options) {
+        return !Arrays.asList(options).contains(DeployOptions.DISABLE_VALIDATION);
+    }
+
     /**
      * Writes an application to a a file in the 'publish/servers/<server_name>/apps/' directory
      * with the file name returned by a.getName(), which should include the
@@ -128,6 +149,12 @@ public class ShrinkHelper {
      */
     public static void exportAppToServer(LibertyServer server, Archive<?> a, DeployOptions... options) throws Exception {
         exportToServer(server, "apps", a, options);
+
+        String appName = a.getName();
+        if (shouldValidate(options)) {
+            String installedAppName = (appName.endsWith(".war") || appName.endsWith(".ear")) ? appName.substring(0, appName.length() - 4) : appName;
+            server.addInstalledAppForValidation(installedAppName);
+        }
     }
 
     /**
@@ -161,9 +188,10 @@ public class ShrinkHelper {
         exportToServer(server, "dropins", a, options);
 
         String appName = a.getName();
-        String installedAppName = (appName.endsWith(".war") || appName.endsWith(".ear"))//
-                        ? appName.substring(0, appName.length() - 4) : appName;
-        server.addInstalledAppForValidation(installedAppName);
+        if (shouldValidate(options)) {
+            String installedAppName = (appName.endsWith(".war") || appName.endsWith(".ear")) ? appName.substring(0, appName.length() - 4) : appName;
+            server.addInstalledAppForValidation(installedAppName);
+        }
     }
 
     /**
@@ -242,6 +270,38 @@ public class ShrinkHelper {
     }
 
     /**
+     * Write out an asset as a file to the specified destination directory (relative to autoFVT)
+     *
+     * @param  name                 name of the file to create (must include extension)
+     * @param  a                    asset to write (usually StringAsset)
+     * @param  dest                 location (relative to autoFVT)
+     * @param  printArchiveContents whether or not to log the contents of the archive being exported
+     * @param  overWrite            whether or not to overwrite an existing file with the same name/dest
+     * @return                      the Asset, a
+     * @throws IOException
+     */
+    public static Asset exportStandaloneAsset(String name, Asset a, String dest, boolean printArchiveContents, boolean overWrite) throws IOException {
+        File outputFile = new File(dest, name);
+        if (outputFile.exists() && !overWrite) {
+            Log.info(ShrinkHelper.class, "exportStandaloneAsset", "Not exporting asset because it already exists at " + outputFile.getAbsolutePath());
+            return a;
+        }
+        StringBuilder sb = new StringBuilder();
+        try (InputStream is = a.openStream(); FileOutputStream fos = new FileOutputStream(outputFile)) {
+            byte[] b = new byte[2048];
+            int bytesRead;
+            while ((bytesRead = is.read(b)) > 0) {
+                sb.append(new String(b));
+                fos.write(b);
+            }
+        }
+        if (printArchiveContents) {
+            Log.info(ShrinkHelper.class, "exportStandaloneAsset", name + ":" + System.lineSeparator() + sb.toString());
+        }
+        return a;
+    }
+
+    /**
      * Recursively adds a folder and all of its contents to an archive.
      *
      * @param a   The archive to add the files to
@@ -301,6 +361,26 @@ public class ShrinkHelper {
     }
 
     /**
+     * Builds a WebArchive (WAR) with the default format, does not add resources directory
+     *
+     * @param  appName  The name of the application. The '.war' file extension is assumed
+     * @param  appPath  Absolute path where the appropriate test-applications directory exists.
+     * @param  packages A list of java packages to add to the application.
+     * @return          a WebArchive representing the application created
+     */
+    public static WebArchive buildDefaultAppFromPathNoResources(String appName, String appPath, String... packages) throws Exception {
+        String appArchiveName = appName.endsWith(".war") ? appName : appName + ".war";
+        WebArchive app = ShrinkWrap.create(WebArchive.class, appArchiveName);
+        for (String p : packages) {
+            if (p.endsWith(".*"))
+                app = app.addPackages(true, p.replace(".*", ""));
+            else
+                app = app.addPackages(false, p);
+        }
+        return app;
+    }
+
+    /**
      * Builds a JavaArchive (JAR) with the default format, which assumes all resources are at:
      * 'test-applications/$appName/resources/`
      *
@@ -323,6 +403,25 @@ public class ShrinkHelper {
     }
 
     /**
+     * Builds a JavaArchive (JAR) with the default format, does not add resources directory
+     *
+     * @param  name     The name of the jar. The '.jar' file extension is assumed
+     * @param  packages A list of java packages to add to the application.
+     * @return          a JavaArchive representing the JAR created
+     */
+    public static JavaArchive buildJavaArchiveNoResources(String name, String... packages) throws Exception {
+        String archiveName = name.endsWith(".jar") ? name : name + ".jar";
+        JavaArchive app = ShrinkWrap.create(JavaArchive.class, archiveName);
+        for (String p : packages) {
+            if (p.endsWith(".*"))
+                app = app.addPackages(true, p.replace(".*", ""));
+            else
+                app = app.addPackages(false, p);
+        }
+        return app;
+    }
+
+    /**
      * Invokes {@link #buildDefaultApp(String, String...)}
      * and then exports the resulting application to a Liberty server under the "dropins" directory
      *
@@ -341,16 +440,27 @@ public class ShrinkHelper {
      * Invokes {@link #buildDefaultApp(String, String...)}
      * and then exports the resulting application to a Liberty server under the "apps" directory
      *
+     * @param server        The server to export the application to
+     * @param appName       The name of the application
+     * @param deployOptions options to configure how the application is deployed
+     * @param packages      A list of java packages to add to the application.
+     */
+    public static WebArchive defaultApp(LibertyServer server, String appName, DeployOptions[] deployOptions, String... packages) throws Exception {
+        WebArchive app = buildDefaultApp(appName, packages);
+        exportAppToServer(server, app, deployOptions);
+        return app;
+    }
+
+    /**
+     * Invokes {@link #buildDefaultApp(String, String...)}
+     * and then exports the resulting application to a Liberty server under the "apps" directory
+     *
      * @param server   The server to export the application to
-     * @param appname  The name of the application
+     * @param appName  The name of the application
      * @param packages A list of java packages to add to the application.
      */
     public static WebArchive defaultApp(LibertyServer server, String appName, String... packages) throws Exception {
-        WebArchive app = buildDefaultApp(appName, packages);
-        exportAppToServer(server, app);
-        String installedAppName = (appName.endsWith(".war") || appName.endsWith(".ear"))//
-                        ? appName.substring(0, appName.length() - 4) : appName;
-        server.addInstalledAppForValidation(installedAppName);
+        WebArchive app = defaultApp(server, appName, new DeployOptions[0], packages);
         return app;
     }
 
@@ -366,4 +476,16 @@ public class ShrinkHelper {
         ShrinkHelper.exportToServer(server, "connectors", rar);
         return rar;
     }
+
+    /**
+     * Builds a JAR file based on the the specified packages and test-applications/$userFeatureJarName
+     * and exports it to autoFVT/extension/lib directory and the appropriate wlp/usr/extension/lib
+     * directory on the server.
+     */
+    public static JavaArchive defaultUserFeatureArchive(LibertyServer server, String userFeatureJarName, String... packages) throws Exception {
+        JavaArchive jar = buildJavaArchive(userFeatureJarName, packages);
+        exportUserFeatureArchive(server, jar, DeployOptions.OVERWRITE);
+        return jar;
+    }
+
 }

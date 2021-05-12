@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs20.client;
 
+import java.lang.ref.ReferenceQueue;
+import java.lang.ref.WeakReference;
 import java.net.URI;
 import java.security.AccessController;
 import java.security.PrivilegedExceptionAction;
@@ -61,8 +63,34 @@ import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 /**
  *
  */
-public class JAXRSClientImpl extends ClientImpl {
+public final class JAXRSClientImpl extends ClientImpl {
     private static final TraceComponent tc = Tr.register(JAXRSClientImpl.class);
+
+    private static final ReferenceQueue<JAXRSClientImpl> referenceQueue = new ReferenceQueue<>();
+
+    private static class ClientWeakReference extends WeakReference<JAXRSClientImpl> {
+
+        final String moduleName;
+        volatile boolean wasClosed = false;
+
+        ClientWeakReference(JAXRSClientImpl r, ReferenceQueue<JAXRSClientImpl> queue, String moduleName) {
+            super(r, queue);
+            this.moduleName = moduleName;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == this) {
+                return true;
+            }
+
+            if (obj instanceof ClientWeakReference) {
+                return get() == ((ClientWeakReference) obj).get();
+            }
+
+            return false;
+        }
+    }
 
     protected final AtomicBoolean closed = new AtomicBoolean(false);
     protected Set<WebClient> baseClients = Collections.newSetFromMap(new WeakHashMap<WebClient, Boolean>());
@@ -72,13 +100,13 @@ public class JAXRSClientImpl extends ClientImpl {
     //Before this change, all the WebTarget has same url in a web module share a bus
     //After this change, all the WebTarget has same url in a JAXRSClientImpl share a bus
     private static final Map<String, LibertyApplicationBus> busCache = new ConcurrentHashMap<>();
-    private static final Map<String, List<JAXRSClientImpl>> clientsPerModule = new HashMap<>();
+    private static final Map<String, List<ClientWeakReference>> clientsPerModule = new HashMap<>();
 
     /**
      * @param config
      * @param secConfig
      */
-    public JAXRSClientImpl(Configuration config, TLSConfiguration secConfig) {
+    JAXRSClientImpl(Configuration config, TLSConfiguration secConfig) {
         super(config, secConfig);
         this.secConfig = secConfig;
         /**
@@ -136,7 +164,7 @@ public class JAXRSClientImpl extends ClientImpl {
                     }
                 }
             }
-        } catch (Exception ex) {
+        } catch (Throwable ex) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "<init> failed to find and install declared providers ", ex);
             }
@@ -144,13 +172,43 @@ public class JAXRSClientImpl extends ClientImpl {
 
         String moduleName = getModuleName();
         synchronized (clientsPerModule) {
-            List<JAXRSClientImpl> clients = clientsPerModule.get(moduleName);
+            List<ClientWeakReference> clients = clientsPerModule.get(moduleName);
             if (clients == null) {
                 clients = new ArrayList<>();
                 clientsPerModule.put(moduleName, clients);
             }
-            clients.add(this);
+            clients.add(new ClientWeakReference(this, referenceQueue, moduleName));
         }
+    }
+
+    private static void poll() {
+        ClientWeakReference clientRef;
+        while ((clientRef = (ClientWeakReference) referenceQueue.poll()) != null) {
+            // if closed was called, do not need to remove it since it was already removed.
+            if (!clientRef.wasClosed) {
+                synchronized (clientsPerModule) {
+                    List<ClientWeakReference> clients = clientsPerModule.get(clientRef.moduleName);
+
+                    if (clients != null) { // the only way this isn't null is if the same client was closed twice
+                        clients.remove(clientRef);
+                        if (clients.isEmpty()) {
+                            for (String id : busCache.keySet()) {
+                                if (id.startsWith(clientRef.moduleName) || id.startsWith("unknown:")) {
+                                    busCache.remove(id).shutdown(false);
+                                }
+                            }
+                            clientsPerModule.remove(clientRef.moduleName);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    static Client newClient(Configuration config, TLSConfiguration secConfig) {
+        Client jaxrsClient = new JAXRSClientImpl(config, secConfig);
+        poll();
+        return jaxrsClient;
     }
 
     /**
@@ -242,10 +300,17 @@ public class JAXRSClientImpl extends ClientImpl {
         if (doClose()) {
             String moduleName = getModuleName();
             synchronized (clientsPerModule) {
-                List<JAXRSClientImpl> clients = clientsPerModule.get(moduleName);
+                List<ClientWeakReference> clients = clientsPerModule.get(moduleName);
 
                 if (clients != null) { // the only way this isn't null is if the same client was closed twice
-                    clients.remove(this);
+                    for (int i = 0, size = clients.size(); i < size; ++i) {
+                        ClientWeakReference weakRef = clients.get(i);
+                        if (weakRef.get() == this) {
+                            weakRef.wasClosed = true;
+                            clients.remove(i);
+                            break;
+                        }
+                    }
                     if (clients.isEmpty()) {
                         for (String id : busCache.keySet()) {
                             if (id.startsWith(moduleName) || id.startsWith("unknown:")) {
@@ -257,17 +322,21 @@ public class JAXRSClientImpl extends ClientImpl {
                 }
             }
         }
+        poll();
     }
 
     public static void closeClients(ModuleMetaData mmd) {
         String moduleName = getModuleName(mmd);
-        List<JAXRSClientImpl> clients = null;
+        List<ClientWeakReference> clients = null;
         synchronized (clientsPerModule) {
             clients = clientsPerModule.remove(moduleName);
         }
         if (clients != null) {
-            for (JAXRSClientImpl client : clients) {
-                client.doClose();
+            for (ClientWeakReference client : clients) {
+                JAXRSClientImpl jaxrsClient = client.get();
+                if (jaxrsClient != null) {
+                    jaxrsClient.doClose();
+                }
             }
             synchronized (clientsPerModule) {
                 for (String id : busCache.keySet()) {

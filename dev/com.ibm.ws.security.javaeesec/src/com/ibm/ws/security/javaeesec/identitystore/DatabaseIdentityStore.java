@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -76,7 +76,11 @@ public class DatabaseIdentityStore implements IdentityStore {
          * Get the password hashing implementation.
          */
         Class<? extends PasswordHash> hashAlgorithm = this.idStoreDefinition.getHashAlgorithm();
-        Instance<? extends PasswordHash> p2phi = CDI.current().select(hashAlgorithm);
+        Instance<? extends PasswordHash> p2phi = null;
+        CDI cdi = CDIHelper.getCDI();
+        if (cdi != null) {
+            p2phi = cdi.select(hashAlgorithm);
+        }
         if (p2phi != null) {
             if (p2phi.isUnsatisfied() == false && p2phi.isAmbiguous() == false) {
                 passwordHash = p2phi.get();
@@ -371,7 +375,7 @@ public class DatabaseIdentityStore implements IdentityStore {
         if (evaluateAlways || dataSource == null) {
             String dataSourceLookup = idStoreDefinition.getDataSourceLookup();
             if (dataSourceLookup == null || dataSourceLookup.isEmpty()) {
-                throw new IllegalArgumentException("The 'dataSourceLookup' configuration cannot be " + dataSourceLookup == null ? "null." : "empty.");
+                throw new IllegalArgumentException("The 'dataSourceLookup' configuration cannot be " + ((dataSourceLookup == null) ? "null." : "empty."));
             }
             localDataSource = (DataSource) initialContext.lookup(dataSourceLookup);
 

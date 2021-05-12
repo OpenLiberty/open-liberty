@@ -1,0 +1,45 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.0
+
+Bundle-Name: org.apache.wss4j.wss4j.ws.security
+Bundle-Description: org.apache.wss4j.wss4j.ws.security.common; version=2.3.0
+Bundle-SymbolicName: com.ibm.ws.org.apache.wss4j.ws.security.common.2.3.0
+Bundle-ActivationPolicy: lazy
+
+WS-TraceGroup: WSS4J
+
+Export-Package: \
+ org.apache.wss4j.common.*           
+ 
+# these should be optional only when resolving jars from wlp/dev
+Import-Package: \
+ !com.ibm.security.jgss, \
+ !com.sun.security.jgss, \
+ !org.bouncycastle.asn1, \
+ !org.bouncycastle.asn1.x500, \
+ !org.bouncycastle.asn1.x509, \
+ *
+ 
+DynamicImport-Package: \
+ org.bouncycastle.jce.provider,\
+ org.apache.wss4j.common.crypto,\
+ org.apache.wss4j.common.saml
+ 
+Include-Resource: \
+ @${repo;org.apache.wss4j:wss4j-ws-security-common;2.3.0}!/!META-INF/MANIFEST.MF|META-INF/maven/*,\
+ @${repo;org.apache.wss4j:wss4j-ws-security-common;2.3.0}!/templates/**,\
+ @${repo;org.apache.wss4j:wss4j-ws-security-common;2.3.0}!/schemas/**,\
+ @${repo;org.apache.wss4j:wss4j-ws-security-common;2.3.0}!/*xml, \
+ @${repo;org.apache.wss4j:wss4j-ws-security-common;2.3.0}!/*xml, \
+ @${repo;org.bouncycastle:bcprov-jdk15on;1.61;EXACT}!/!META-INF/MANIFEST.MF|META-INF/maven/*
+

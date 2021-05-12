@@ -161,6 +161,7 @@ public class WebAppErrorReport extends ServletErrorReport     // 96236
         while (rootCause.getCause() != null) {
             rootCause = rootCause.getCause();
         }
+
         if (WCCustomProperties.SERVLET_30_FNF_BEHAVIOR&&rootCause instanceof IncludeFileNotFoundException) {
             r.setErrorCode(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }

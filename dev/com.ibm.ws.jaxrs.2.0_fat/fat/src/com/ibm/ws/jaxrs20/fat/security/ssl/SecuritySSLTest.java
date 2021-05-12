@@ -29,6 +29,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -73,7 +74,9 @@ public class SecuritySSLTest {
     public void testSecuritySSL() throws Exception {
 
         String url = "https://localhost:" + server.getHttpDefaultSecurePort() + "/security/ssltest/ssl/get";
-        assertNotNull(SendHttpsGet(url));
+        String getResult = SendHttpsGet(url);
+        Log.info(this.getClass(), "testSecuritySSL", "The response: " + getResult);
+        assertNotNull(getResult);
 
     }
 
@@ -98,6 +101,7 @@ public class SecuritySSLTest {
             BufferedReader in = new BufferedReader(new InputStreamReader(httpsConn.getInputStream()));
             int code = httpsConn.getResponseCode();
             System.out.println("irisiris:" + code);
+            Log.info(SecuritySSLTest.class, "SendHttpsGet", "The response code : " + code);
 
             String temp = in.readLine();
 

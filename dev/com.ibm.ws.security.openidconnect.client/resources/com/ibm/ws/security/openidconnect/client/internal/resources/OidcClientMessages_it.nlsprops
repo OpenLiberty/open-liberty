@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -282,5 +282,10 @@ CONFIG_AUTHFILTER_NOTUNIQUE.useraction=Rivedere il file server.xml e correggere 
 AUTHFILTER_MULTIPLE_MATCHED=CWWKS1531W: Pi\u00f9 di un filtro di autenticazione del client OpenID Connect corrisponde a una richiesta all''URL [{0}]. I filtri corrispondenti sono [{1}]. Ci\u00f2 pu\u00f2 causare funzionamenti imprevisti.
 AUTHFILTER_MULTIPLE_MATCHED.explanation=Pi\u00f9 di un filtro di autenticazione corrisponde a una richiesta in entrata. Qualsiasi client che utilizzi uno di questi filtri potrebbe elaborare la richiesta, comportando funzionamenti imprevisti.  
 AUTHFILTER_MULTIPLE_MATCHED.useraction=Rivedere il file server.xml e correggere la configurazione.
+
+# do not translate hostname, wasReqURLRedirectDomainNames, and webAppSecurity
+OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE=CWWKS1532E: Una richiesta per [{0}] non \u00e8 valida. Un cookie richiesto con un nome che inizia con WASReqURLOidc ha un valore non corretto. Il nome host [{1}] utilizzato nel cookie non corrisponde al nome registrato nel provider. Viene restituito un codice di risposta 500.
+OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.explanation=\u00c8 stata ricevuta una richiesta che include un cookie con un formato non corretto.
+OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.useraction=Verificare la configurazione del provider OpenID Connect e del client. Il cookie con il formato non corretto pu\u00f2 essere causato dalla modifica del cookie presso l'agent utente con un nome host diverso dal nome host del reindirizzamento registrato con il provider. Se il nome host \u00e8 previsto, aggiungerlo all'attributo wasReqURLRedirectDomainNames dell'elemento webAppSecurity in server.xml.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

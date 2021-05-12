@@ -149,7 +149,7 @@ abstract class ConfigElement {
     }
 
     /**
-     * 
+     *
      * @return If id is null it returns nodeName, or if id is not null, it returns nodeName with id in the end.
      */
     public String getFullId() {
@@ -321,7 +321,8 @@ abstract class ConfigElement {
                 return false;
         }
         return ((children == null && other.children == null) ||
-               (children != null && children.equals(other.children))) &&
+                (children != null && children.equals(other.children)))
+               &&
                ((getId() == null && other.getId() == null) || (getId() != null && getId().equals(other.getId()))) &&
                isTextOnly == other.isTextOnly &&
                ((location == null && other.location == null) || (location != null && location.equals(other.location))) &&
@@ -428,7 +429,7 @@ abstract class ConfigElement {
 
     /**
      * This should match the original XML value. This is intended to be used in messages
-     * 
+     *
      * @return the node name to use as a display name
      */
     protected String getNodeDisplayName() {
@@ -441,22 +442,22 @@ abstract class ConfigElement {
      * of REPLACE/IGNORE. Everything was fine with that as long as you're only dealing with one level of includes. If you
      * had multiple levels, a nested 'REPLACE' or 'MERGE' could replace a top level element even though the nested include's
      * parent was included with 'IGNORE'.
-     * 
+     *
      * So, now we have complicated logic. First we flatten all conflict subtrees in the list of elements using the following rules:
-     * 
+     *
      * 1. If the element preceding the current element in the conflict list is from the same file, merge the current element with
      * the previous element.
-     * 
+     *
      * 2. If the element preceding the current element in the conflict list is the current element's direct parent, we use the merge
      * behavior specified on the element to emerge the previous and current elements.
-     * 
+     *
      * 3. If the preceding element is an ancestor of the current element, we use the merge behavior from the ancestor's child to merge the
      * current element with the preceding element.
-     * 
+     *
      * 4. Otherwise, the two elements are not related, so no flattening is done. We add the current element to the flattened list of elements.
-     * 
+     *
      * After everything has been flattened, we can go through each element in the list and call override.
-     * 
+     *
      * There are probably better ways to handle this, but they would require restructuring the way we parse and store configuration.
      */
     protected void merge(List<? extends ConfigElement> elements) {
@@ -535,7 +536,7 @@ abstract class ConfigElement {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Object#toString()
      */
     @Override

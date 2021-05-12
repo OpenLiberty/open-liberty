@@ -50,7 +50,9 @@ public class BindToJavaGlobalTest extends FATServletClient {
         @Override
         protected void failed(Throwable e, Description description) {
             try {
-                server.dumpServer("serverDump");
+                System.runFinalization();
+                System.gc();
+                server.serverDump("heap");
             } catch (Exception e1) {
                 System.out.println("Failed to dump server");
                 e1.printStackTrace();
@@ -71,6 +73,9 @@ public class BindToJavaGlobalTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        server.deleteAllDropinApplications();
+        server.removeAllInstalledAppsForValidation();
+
         apps.add("ConfigTestsTestApp");
 
         // Use ShrinkHelper to build the ears

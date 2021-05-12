@@ -11,6 +11,8 @@
 
 package com.ibm.ws.grpc.fat.helloworld.service;
 
+import java.util.logging.Logger;
+
 import javax.inject.Inject;
 
 import io.grpc.Context;
@@ -22,6 +24,9 @@ import io.grpc.ServerCallHandler;
 import io.grpc.ServerInterceptor;
 
 public class HelloWorldServerCDIInterceptor implements ServerInterceptor {
+
+    protected static final Class<?> c = HelloWorldServerCDIInterceptor.class;
+    private static final Logger LOG = Logger.getLogger(c.getName());
 
     @Inject
     GreetingCDIBean bean;
@@ -35,7 +40,7 @@ public class HelloWorldServerCDIInterceptor implements ServerInterceptor {
         Context context = Context
                         .current()
                         .withValue(EXAMPLE_CONTEXT_KEY, message);
-        System.out.println("HelloWorldServerCDIInterceptor message: " + message);
+        LOG.info("HelloWorldServerCDIInterceptor message: " + message);
         return Contexts.interceptCall(context, call, headers, next);
     }
 }

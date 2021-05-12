@@ -6,7 +6,7 @@ package com.ibm.test.g3store.grpc;
 /**
  * Protobuf type {@code Creator}
  */
-public  final class Creator extends
+public final class Creator extends
     com.google.protobuf.GeneratedMessageV3 implements
     // @@protoc_insertion_point(message_implements:Creator)
     CreatorOrBuilder {
@@ -100,6 +100,7 @@ private static final long serialVersionUID = 0L;
    * <code>string companyName = 1;</code>
    * @return The companyName.
    */
+  @java.lang.Override
   public java.lang.String getCompanyName() {
     java.lang.Object ref = companyName_;
     if (ref instanceof java.lang.String) {
@@ -116,6 +117,7 @@ private static final long serialVersionUID = 0L;
    * <code>string companyName = 1;</code>
    * @return The bytes for companyName.
    */
+  @java.lang.Override
   public com.google.protobuf.ByteString
       getCompanyNameBytes() {
     java.lang.Object ref = companyName_;
@@ -136,6 +138,7 @@ private static final long serialVersionUID = 0L;
    * <code>string email = 2;</code>
    * @return The email.
    */
+  @java.lang.Override
   public java.lang.String getEmail() {
     java.lang.Object ref = email_;
     if (ref instanceof java.lang.String) {
@@ -152,6 +155,7 @@ private static final long serialVersionUID = 0L;
    * <code>string email = 2;</code>
    * @return The bytes for email.
    */
+  @java.lang.Override
   public com.google.protobuf.ByteString
       getEmailBytes() {
     java.lang.Object ref = email_;

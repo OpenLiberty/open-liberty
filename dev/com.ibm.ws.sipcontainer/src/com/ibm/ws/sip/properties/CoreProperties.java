@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003,2004 IBM Corporation and others.
+ * Copyright (c) 2003, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -672,7 +672,7 @@ public class CoreProperties
 	
 	/**
 	 * Whether the container will save the message arrival time a an attribute of the message or not
-	 * in tWas="message.arrival.time.attribute"
+	 * <p/> in tWAS <code>message.arrival.time.attribute</code>
 	 */
 	public static final String SAVE_MESSAGE_ARRIVAL_TIME_ATTRIBUTE = "msgArrivalTimeAttr";
 	public static final boolean SAVE_MESSAGE_ARRIVAL_TIME_ATTRIBUTE_DEFAULT = false;		
@@ -687,32 +687,36 @@ public class CoreProperties
 	/**
 	 * Indicates whether an incoming request needs to be sent externally to Route header if there is no next application. 
 	 * The default is true that means to route it as according to JSR 289 15.4.1. 
-	 * If this property is set to false, we send an error defined in the "sip.no.route.error.code" CP.
+	 * If this property is set to false, we send an error defined in the <code>sip.no.route.error.code</code> CP.
 	 * PI17820
 	 */
-	public static final String  WAS80_ROUTE_WHEN_NO_APPLICATION = "route.when.no.app";
+	public static final String  WAS80_ROUTE_WHEN_NO_APPLICATION = "routeWhenNoApp";
 	public static final boolean WAS80_ROUTE_WHEN_NO_APPLICATION_DEFAULT = true;
 	
 	/**
 	 * This property sets a response code for session invalidated in underlying state
+	 * <p/> in tWAS <code>session.invalidated.response.code</code>
 	 */
-	public static final String WAS80_SESSION_INVALIDATE_RESPONSE = "session.invalidated.response.code";
+	public static final String WAS80_SESSION_INVALIDATE_RESPONSE = "sessionInvalidatedResponseCode";
 	public static final int WAS80_SESSION_INVALIDATE_RESPONSE_DEFAULT = 408;
 	
 	/**
 	 * Indicates whether 2xx/6xx response will be treated as best response
 	 * (and therefore branch response won't be sent to the application for these responses
 	 * when this property is set to true). 
+	 * <p/> in tWAS <code>treat.2xx.6xx.as.best.response</code>
 	 */
-	public static final String  WAS80_TREAT_2XX_6XX_AS_BEST_RESPONSE = "treat.2xx.6xx.as.best.response";
+	public static final String  WAS80_TREAT_2XX_6XX_AS_BEST_RESPONSE = "treat2xx6xxAsBestResponse";
 	public static final boolean WAS80_TREAT_2XX_6XX_AS_BEST_RESPONSE_DEFAULT = false;
 	
 	/**
 	 * If set to true application can set the display name on system contact header, 
 	 * According to JSR289 this is not allowed although according to 
-	 *  the "spirit" of the JSR this should be allowed
+	 * the "spirit" of the JSR this should be allowed
+	 *  
+	 * <p/> in tWAS <code>allow.setting.system.contact.display.name</code>
 	 */
-	public static final String ALLOW_SETTING_SYSTEM_CONTACT_DISPLAY_NAME = "allow.setting.system.contact.display.name";
+	public static final String ALLOW_SETTING_SYSTEM_CONTACT_DISPLAY_NAME = "allowSettingSystemContactDisplayName";
 	public static final boolean ALLOW_SETTING_SYSTEM_CONTACT_DISPLAY_NAME_DEFAULT = false;
 	
 	/**
@@ -747,6 +751,32 @@ public class CoreProperties
 	 */
 	public static final String ENABLE_SET_OUTBOUND_INTERFACE = "enableSetOutboundIF";
 	public static final boolean ENABLE_SET_OUTBOUND_INTERFACE_DEFAULT = false;
+	
+	/**
+	 * PI76983 
+	 * SetOutBound interface was not working when loopback adapter was used as an outbound interface. 
+	 * Property added because it may change the behavior.
+	 */
+	public static final String ENABLE_SET_LB_OUTBOUND_INTERFACE = "enableSetLBOutboundIF";
+	public static final boolean ENABLE_SET_LB_OUTBOUND_INTERFACE_DEFAULT = false;
+
+	/**
+	 * PI76983 
+	 * 'sent.by.host' custom property should not be used if it's not applied.
+	 */
+	public static final String SKIP_SENT_BY_HOST_CHECK = "skipSentByHostCheck";
+	public static final boolean SKIP_SENT_BY_HOST_CHECK_DEFAULT = false;
+
+	/**
+	 * PI93796 
+	 * Don't add an IBM-PO header to an ACK request when it's sent as a loopback message.
+	 * It should be added later when sending a request over network interface.      
+	 * Property added because it may change the behavior.
+	 * <p/> in tWAS <code>add.ibm-po.loopback.msg</code>
+	 */
+	public static final String ADD_IBM_PO_TO_LOOPBACK_MSG = "addIBMPOLBMsg";
+	public static final boolean ADD_IBM_PO_TO_LOOPBACK_ACK_DEFAULT = true;
+	
 	/**
      * Load default properties and store them in properties.
      * This is the first properties that are loaded and some properties might be overridden later
@@ -862,5 +892,8 @@ public class CoreProperties
 		properties.setBoolean(WAS855_TU_COUNTER_TRANSACTION_FIX, WAS855_TU_COUNTER_TRANSACTION_FIX_DEFAULT, CustPropSource.DEFAULT);
 		properties.setBoolean(WAS855_TU_COUNTER_TRANSACTION_FIX_SYS_OUT, WAS855_TU_COUNTER_TRANSACTION_FIX_SYS_OUT_DEFAULT, CustPropSource.DEFAULT);
 		properties.setBoolean(ENABLE_SET_OUTBOUND_INTERFACE,ENABLE_SET_OUTBOUND_INTERFACE_DEFAULT, CustPropSource.DEFAULT);
-    }
+		properties.setBoolean(ENABLE_SET_LB_OUTBOUND_INTERFACE,ENABLE_SET_LB_OUTBOUND_INTERFACE_DEFAULT, CustPropSource.DEFAULT);
+		properties.setBoolean(SKIP_SENT_BY_HOST_CHECK,SKIP_SENT_BY_HOST_CHECK_DEFAULT, CustPropSource.DEFAULT);
+		properties.setBoolean(ADD_IBM_PO_TO_LOOPBACK_MSG, ADD_IBM_PO_TO_LOOPBACK_ACK_DEFAULT, CustPropSource.DEFAULT);
+   }
 }

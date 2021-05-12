@@ -321,6 +321,11 @@ public class PolicyEngineImpl implements PolicyEngine, BusExtension {
 
     public EffectivePolicy getEffectiveServerRequestPolicy(EndpointInfo ei, 
                                                            BindingOperationInfo boi) {
+        if (boi == null) {
+            LOG.log(Level.FINEST, "BindingOperation is null, no Effective Policy is set on this Endpoint. ");
+            return null;
+        }
+        
         EffectivePolicy effectivePolicy = (EffectivePolicy)boi.getProperty(POLICY_INFO_REQUEST_SERVER);
         if (null == effectivePolicy) {
             EffectivePolicyImpl epi = createOutPolicyInfo();

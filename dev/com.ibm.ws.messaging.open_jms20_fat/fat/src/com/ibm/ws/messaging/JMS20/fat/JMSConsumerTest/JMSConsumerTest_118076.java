@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015,2020 IBM Corporation and others.
+ * Copyright (c) 2015, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,62 +20,37 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.rules.TestRule;
+import org.junit.runner.RunWith;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
+import com.ibm.ws.messaging.JMS20.fat.TestUtils;
+
+@RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class JMSConsumerTest_118076 {
 
-    private static LibertyServer engineServer = LibertyServerFactory.getLibertyServer("LiteSet2Endine");
-    private static LibertyServer clientServer = LibertyServerFactory.getLibertyServer("LiteSet2Client");
+    private static LibertyServer engineServer =
+        LibertyServerFactory.getLibertyServer("JMSConsumerEngine");
+    private static LibertyServer clientServer =
+        LibertyServerFactory.getLibertyServer("JMSConsumerClient");
 
-    private static final int clientPort = engineServer.getHttpDefaultPort();
-    private static final String clientHostName = engineServer.getHostname();
+    private static final int clientPort = clientServer.getHttpDefaultPort();
+    private static final String clientHostName = clientServer.getHostname();
 
-    private static final String CONTEXT_ROOT = "JMSConsumer_118076";
+    private static final String consumerAppName = "JMSConsumer_118076";
+    private static final String consumerContextRoot = "JMSConsumer_118076";
+    private static final String[] consumerPackages = new String[] { "jmsconsumer_118076.web" };
 
     private boolean runInServlet(String test) throws IOException {
-        URL url = new URL(
-            "http://" + clientHostName + ":" +
-            clientPort + "/" +
-            CONTEXT_ROOT + "?test=" + test);
-
-        System.out.println("The Servlet URL is : " + url.toString());
-
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        try {
-            con.setDoInput(true);
-            con.setDoOutput(true);
-            con.setUseCaches(false);
-            con.setRequestMethod("GET");
-            con.connect();
-
-            InputStream is = con.getInputStream();
-            InputStreamReader isr = new InputStreamReader(is);
-            BufferedReader br = new BufferedReader(isr);
-            StringBuilder lines = new StringBuilder();
-            String sep = System.lineSeparator();
-            for ( String line = br.readLine(); line != null; line = br.readLine() ) {
-                lines.append(line).append(sep);
-            }
-            System.out.println(lines);
-
-            if ( lines.indexOf(test + " COMPLETED SUCCESSFULLY") < 0 ) {
-                org.junit.Assert.fail("Missing success message in output. " + lines);
-                return false;
-            } else {
-                return true;
-            }
-
-        } finally {
-            con.disconnect();
-        }
+        return TestUtils.runInServlet(clientHostName, clientPort, consumerContextRoot, test);
     }
 
     @BeforeClass
@@ -83,42 +58,33 @@ public class JMSConsumerTest_118076 {
         engineServer.copyFileToLibertyInstallRoot(
             "lib/features",
             "features/testjmsinternals-1.0.mf");
+        engineServer.setServerConfigurationFile("JMSConsumerEngine.xml");
+        engineServer.startServer("JMSConsumer_118076_Engine.log");
 
-        engineServer.setServerConfigurationFile("JMSContext_Server.xml");
-        engineServer.startServer("JMSConsumer_118076_Server.log");
-        String changedMessageFromLog = engineServer.waitForStringInLog(
-            "CWWKF0011I.*",
-            engineServer.getMatchingLogFile("trace.log") );
-        assertNotNull(
-            "Could not find the upload message in the new file",
-            changedMessageFromLog);
-
-        engineServer.setServerConfigurationFile("JMSContext_Client.xml");
-        engineServer.startServer("JMSConsumer_118076_Client.log");
-        changedMessageFromLog = engineServer.waitForStringInLog(
-            "CWWKF0011I.*",
-            engineServer.getMatchingLogFile("trace.log") );
-        assertNotNull(
-            "Could not find the upload message in the new file",
-            changedMessageFromLog);
+        engineServer.copyFileToLibertyInstallRoot(
+            "lib/features",
+            "features/testjmsinternals-1.0.mf");
+        clientServer.setServerConfigurationFile("JMSConsumerClient.xml");
+        TestUtils.addDropinsWebApp(clientServer, consumerAppName, consumerPackages);
+        clientServer.startServer("JMSConsumer_118076_Client.log");
     }
 
-    @org.junit.AfterClass
+    @AfterClass
     public static void tearDown() {
         try {
-            System.out.println("Stopping client server");
             clientServer.stopServer();
         } catch ( Exception e ) {
             e.printStackTrace();
         }
 
         try {
-            System.out.println("Stopping engine server");
             engineServer.stopServer();
         } catch ( Exception e ) {
             e.printStackTrace();
         }
     }
+
+    //
 
     @Mode(TestMode.FULL)
     @Test

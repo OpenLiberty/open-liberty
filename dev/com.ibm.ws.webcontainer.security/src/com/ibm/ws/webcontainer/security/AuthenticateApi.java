@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -52,6 +52,7 @@ import com.ibm.ws.webcontainer.security.internal.SRTServletRequestUtils;
 import com.ibm.ws.webcontainer.security.internal.SSOAuthenticator;
 import com.ibm.ws.webcontainer.security.internal.TAIChallengeReply;
 import com.ibm.ws.webcontainer.security.internal.WebReply;
+import com.ibm.ws.webcontainer.security.util.SSOAuthFilter;
 import com.ibm.ws.webcontainer.session.IHttpSessionContext;
 import com.ibm.ws.webcontainer.srt.SRTServletRequest;
 import com.ibm.ws.webcontainer.webapp.WebApp;
@@ -71,6 +72,7 @@ public class AuthenticateApi {
     private AuthCacheService authCacheService = null;
     private final CollaboratorUtils collabUtils;
     private AuthenticationService authService = null;
+    private AtomicServiceReference<SSOAuthFilter> ssoAuthFilterRef;
     private ConcurrentServiceReferenceMap<String, WebAuthenticator> webAuthenticatorRefs = null;
     private ConcurrentServiceReferenceMap<String, UnprotectedResourceService> unprotectedResourceServiceRef = null;
     private UnauthenticatedSubjectService unauthenticatedSubjectService;
@@ -83,13 +85,15 @@ public class AuthenticateApi {
                            CollaboratorUtils collabUtils,
                            ConcurrentServiceReferenceMap<String, WebAuthenticator> webAuthenticatorRef,
                            ConcurrentServiceReferenceMap<String, UnprotectedResourceService> unprotectedResourceServiceRef,
-                           UnauthenticatedSubjectService unauthenticatedSubjectService) {
+                           UnauthenticatedSubjectService unauthenticatedSubjectService,
+                           AtomicServiceReference<SSOAuthFilter> ssoAuthFilterRef) {
         this.ssoCookieHelper = ssoCookieHelper;
         this.securityServiceRef = securityServiceRef;
         this.collabUtils = collabUtils;
         this.webAuthenticatorRefs = webAuthenticatorRef;
         this.unprotectedResourceServiceRef = unprotectedResourceServiceRef;
         this.unauthenticatedSubjectService = unauthenticatedSubjectService;
+        this.ssoAuthFilterRef = ssoAuthFilterRef;
 
         // securityService may or may not be available at this point. so if it is available, do the the initialization work,
         // otherwise defer getting authService and authCacheService when it is ready.
@@ -548,7 +552,7 @@ public class AuthenticateApi {
             if (authService == null && securityServiceRef != null) {
                 authService = securityServiceRef.getService().getAuthenticationService();
             }
-            SSOAuthenticator ssoAuthenticator = new SSOAuthenticator(authService, null, null, ssoCookieHelper);
+            SSOAuthenticator ssoAuthenticator = new SSOAuthenticator(authService, null, null, ssoCookieHelper, ssoAuthFilterRef);
             //TODO: We can not call ssoAuthenticator.authenticate because it can not handle multiple tokens.
             //In the next release, authenticate need to handle multiple authentication data. See story
             AuthenticationResult authResult = ssoAuthenticator.handleSSO(req, res);

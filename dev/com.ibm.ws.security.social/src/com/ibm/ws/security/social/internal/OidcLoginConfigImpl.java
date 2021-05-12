@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2018 IBM Corporation and others.
+ * Copyright (c) 2016, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -108,6 +108,8 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
 
     public static final String KEY_INCLUDE_CUSTOM_CACHE_KEY_IN_SUBJECT = "includeCustomCacheKeyInSubject";
     private boolean includeCustomCacheKeyInSubject = true;
+    public static final String KEY_CREATE_SESSION = "createSession";
+    private boolean createSession = false;
 
     public static final String KEY_AUTHZ_PARAM = "authzParameter";
     public static final String KEY_TOKEN_PARAM = "tokenParameter";
@@ -187,6 +189,7 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
         this.realmName = configUtils.getConfigAttribute(props, KEY_realmName);
         this.includeCustomCacheKeyInSubject = configUtils.getBooleanConfigAttribute(props, KEY_INCLUDE_CUSTOM_CACHE_KEY_IN_SUBJECT, this.includeCustomCacheKeyInSubject);
         this.resource = configUtils.getConfigAttribute(props, KEY_resource);
+        this.createSession = configUtils.getBooleanConfigAttribute(props, KEY_CREATE_SESSION, this.createSession);
 
         authzRequestParamMap = populateCustomRequestParameterMap(props, KEY_AUTHZ_PARAM);
         tokenRequestParamMap = populateCustomRequestParameterMap(props, KEY_TOKEN_PARAM);
@@ -466,6 +469,11 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
         return audiences;
     }
 
+    @Override
+    public boolean ignoreAudClaimIfNotConfigured() {
+        return false;
+    }
+
     /** {@inheritDoc} */
     @Override
     public boolean isValidationRequired() { // TODO may need to be set from configuration
@@ -484,14 +492,10 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
     @FFDCIgnore(SocialLoginException.class)
     public String getTrustStoreRef() {
         if (this.sslRefInfo == null) {
-            SocialLoginService service = socialLoginServiceRef.getService();
-            if (service == null) {
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Social login service is not available");
-                }
+            sslRefInfo = initializeSslRefInfo();
+            if (sslRefInfo == null) {
                 return null;
             }
-            sslRefInfo = createSslRefInfoImpl(service);
         }
         try {
             return sslRefInfo.getTrustStoreName();
@@ -500,6 +504,35 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
             e.logErrorMessage();
         }
         return null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    @FFDCIgnore(SocialLoginException.class)
+    public String getKeyStoreRef() {
+        if (this.sslRefInfo == null) {
+            sslRefInfo = initializeSslRefInfo();
+            if (sslRefInfo == null) {
+                return null;
+            }
+        }
+        try {
+            return sslRefInfo.getKeyStoreName();
+        } catch (SocialLoginException e) {
+            // TODO - NLS message?
+        }
+        return null;
+    }
+
+    SslRefInfoImpl initializeSslRefInfo() {
+        SocialLoginService service = socialLoginServiceRef.getService();
+        if (service == null) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Social login service is not available");
+            }
+            return null;
+        }
+        return createSslRefInfoImpl(service);
     }
 
     /** {@inheritDoc} */
@@ -613,7 +646,7 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
     /** {@inheritDoc} */
     @Override
     public boolean createSession() {
-        return false;
+        return createSession;
     }
 
     /** {@inheritDoc} */
@@ -830,6 +863,34 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
             return;
         }
         oidcConfigUtils.populateCustomRequestParameterMap(socialLoginService.getConfigAdmin(), paramMapToPopulate, configuredCustomRequestParams, KEY_PARAM_NAME, KEY_PARAM_VALUE);
+    }
+
+    @Override
+    public List<String> getAMRClaim() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public String getKeyManagementKeyAlias() {
+        return null;
+    }
+
+    @Override
+    public String toString() {
+        StringBuffer sb = new StringBuffer();
+        sb.append("{");
+        sb.append("Id: " + uniqueId);
+        sb.append(" clientId: " + clientId);
+        sb.append(" grantType: " + grantType);
+        sb.append(" responseType: " + responseType);
+        sb.append(" scope: " + scope);
+        sb.append(" redirectToRPHostAndPort: " + redirectToRPHostAndPort);
+        sb.append(" issuerIdentifier: " + getIssuerIdentifier());
+        sb.append(" tokenEndpointUrl: " + tokenEndpoint);
+        sb.append(" userInfoEndpointUrl: " + userInfoEndpoint);
+        sb.append("}");
+        return sb.toString();
     }
 
 }

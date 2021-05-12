@@ -20,11 +20,12 @@ import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import jaxrs21.fat.subresource.SubResourceTestServlet;
 
-@SkipForRepeat("RESTEasy") // blocked on https://issues.redhat.com/browse/RESTEASY-2652
+@SkipForRepeat(JakartaEE9Action.ID) // blocked on https://issues.redhat.com/browse/RESTEASY-2652
 @RunWith(FATRunner.class)
 public class SubResourceTest extends FATServletClient {
                     

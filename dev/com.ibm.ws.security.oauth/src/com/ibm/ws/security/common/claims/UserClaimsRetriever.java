@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -48,14 +48,17 @@ public class UserClaimsRetriever {
     /**
      * @param username
      * @param groupIdentifier
+     * @param cacheKey
      * @return a Map containing the user's claims
      * @throws WSSecurityException
      */
-    public UserClaims getUserClaims(String username, String groupIdentifier) throws WSSecurityException {
+    public UserClaims getUserClaims(String username, String groupIdentifier, String cacheKey) throws WSSecurityException {
         UserClaims userClaims = new UserClaims(username, groupIdentifier);
         String realmName = userRegistry.getRealm();
 
-        String cacheKey = getCacheKey(realmName, username);
+        if (cacheKey == null) {
+            cacheKey = getCacheKey(realmName, username);
+        }
         Subject subject = authCacheService.getSubject(cacheKey);
         if (subject == null) { // If we can not find the user from cache, we get it from RunAsSubject
             subject = WSSubject.getRunAsSubject();

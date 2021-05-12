@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.appmanager-1.0
+WLP-DisableAllFeatures-OnConflict: false
 visibility=protected
 IBM-API-Package: \
  com.ibm.websphere.application; type="ibm-api", \

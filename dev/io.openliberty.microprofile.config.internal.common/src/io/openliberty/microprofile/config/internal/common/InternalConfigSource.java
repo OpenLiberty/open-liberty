@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,27 +16,45 @@ import java.util.Set;
 import org.eclipse.microprofile.config.spi.ConfigSource;
 
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 /**
  *
  */
 public abstract class InternalConfigSource implements ConfigSource {
 
-    private final int ordinal;
-    private final String id;
-
-    @Trivial
-    public InternalConfigSource(int ordinal, String id) {
-        this.ordinal = ordinal;
-        this.id = id;
-    }
+    // Transient to make it easier for subclasses to be serializable
+    private transient int ordinal = Integer.MIN_VALUE;
 
     /** {@inheritDoc} */
     @Override
     @Trivial
+    @FFDCIgnore(NumberFormatException.class)
     public int getOrdinal() {
+        // Cache the ordinal on first lookup to ensure it doesn't change
+        // Potentially having it change would make sorting the config source list a mess
+        if (ordinal == Integer.MIN_VALUE) {
+            String ordinalString = getValue(CONFIG_ORDINAL);
+            if (ordinalString != null) {
+                try {
+                    ordinal = Integer.parseInt(ordinalString);
+                } catch (NumberFormatException e) {
+                    ordinal = getDefaultOrdinal();
+                }
+            } else {
+                ordinal = getDefaultOrdinal();
+            }
+        }
+
         return ordinal;
     }
+
+    /**
+     * The default ordinal if {@code config_ordinal} is not defined in the config source
+     *
+     * @return the default ordinal
+     */
+    protected abstract int getDefaultOrdinal();
 
     /** {@inheritDoc} */
     @Override
@@ -47,16 +65,14 @@ public abstract class InternalConfigSource implements ConfigSource {
         return theValue;
     }
 
-    /** {@inheritDoc} */
-    @Override
-    @Trivial
-    public String getName() {
-        return id;
-    }
-
     @Override
     public String toString() {
-        return getName() + "(" + getOrdinal() + ")";
+        if (ordinal == Integer.MIN_VALUE) {
+            // We could call getOrdinal here, but don't want to mutate state inside toString()
+            return getName() + "(getOrdinal not yet called)";
+        } else {
+            return getName() + "(" + ordinal + ")";
+        }
     }
 
     /** {@inheritDoc} */

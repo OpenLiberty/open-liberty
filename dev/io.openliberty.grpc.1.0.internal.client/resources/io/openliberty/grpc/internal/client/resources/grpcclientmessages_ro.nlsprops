@@ -31,7 +31,3 @@ invalid.keepalive.timeout.useraction=Configura\u0163i o valoare valid\u0103 pent
 invalid.client.inbound.msg.size=CWWKT0304E: maxInboundMessageSize {0} al clientului qRPC nu este valid.  Valorile trebuie s\u0103 fie mai mari ca 0.
 invalid.client.inbound.msg.size.explanation=Valoarea configurat\u0103 pentru maxInboundMessageSize nu este valid\u0103.
 invalid.client.inbound.msg.size.useraction=Configura\u0163i o valoare valid\u0103 pentru maxInboundMessageSize.
-
-invalid.authn.token=CWWKT0305E: Valoarea authnToken de {0} a clientului qRPC nu este valid\u0103.  Valoarea trebuie s\u0103 fie egal\u0103 cu "jwt" sau "oauth".
-invalid.authn.token.explanation=Valoarea configurat\u0103 pentru authnToken nu este valid\u0103.
-invalid.authn.token.useraction=Configura\u0163i o valoare valid\u0103 pentru authnToken.

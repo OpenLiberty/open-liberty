@@ -1,0 +1,10 @@
+<server>
+    <featureManager>
+        <feature>jsp-2.3</feature>
+        <feature>jaxrs-2.0</feature>
+        <feature>usr:RSMessageContextAPITestFeature</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+    
+</server>

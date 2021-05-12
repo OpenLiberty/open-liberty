@@ -28,6 +28,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.jaxrs20.fat.AbstractTest;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -166,12 +167,23 @@ public class ClientTest extends AbstractTest {
 
     /**
      * Test that the client times out if the request is not processed in less
-     * than the readTimeout value
+     * than the readTimeout value - using a CXF-specific property, "http.receive.timeout"
      */
     @Mode(TestMode.FULL)
     @Test
-    public void testReadTimeoutTimeout() throws Exception {
-        this.runTestOnServer(target, "testReadTimeoutTimeout", null, "OK");
+    @SkipForRepeat("EE9_FEATURES") // RESTEasy does not honor CXF properties
+    public void testReadTimeoutTimeout_cxfProp() throws Exception {
+        this.runTestOnServer(target, "testReadTimeoutTimeout_cxfProp", null, "OK");
+    }
+
+    /**
+     * Test that the client times out if the request is not processed in less
+     * than the readTimeout value - using the IBM property, ""com.ibm.ws.jaxrs.client.receive.timeout""
+     */
+    @Mode(TestMode.FULL)
+    @Test
+    public void testReadTimeoutTimeout_ibmProp() throws Exception {
+        this.runTestOnServer(target, "testReadTimeoutTimeout_ibmProp", null, "OK");
     }
 
     /**

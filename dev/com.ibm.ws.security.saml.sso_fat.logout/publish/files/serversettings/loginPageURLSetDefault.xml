@@ -1,0 +1,32 @@
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<server> 
+	<variable name="loginPageURLVar_defaultSP" value="https://localhost:${bvt.prop.HTTP_default.secure}/samlclient/testIDPClient.jsp"/>
+	<variable name="loginPageURLVar_sp_underscore" value="https://localhost:${bvt.prop.HTTP_default.secure}/samlclient/testIDPClient.jsp"/>
+	<variable name="loginPageURLVar_sp1" value="https://localhost:${bvt.prop.HTTP_default.secure}/samlclient/testIDPClient.jsp"/>
+	<variable name="loginPageURLVar_sp13" value="https://localhost:${bvt.prop.HTTP_default.secure}/samlclient/testIDPClient.jsp"/>
+	<variable name="loginPageURLVar_sp1s2" value="https://localhost:${bvt.prop.HTTP_default.secure}/samlclien/testIDPClient.jsp"/>
+	<variable name="loginPageURLVar_sp2" value="https://localhost:${bvt.prop.HTTP_default.secure}/samlclient/testIDPClient.jsp"/>
+	<variable name="loginPageURLVar_sp5" value="https://localhost:${bvt.prop.HTTP_default.secure}/samlclient/testIDPClient.jsp"/>
+	<variable name="loginPageURLVar_sp-dash" value="https://localhost:${bvt.prop.HTTP_default.secure}/samlclient/testIDPClient.jsp"/>
+	<variable name="loginPageURLVar_spShortLifetime" value="https://localhost:${bvt.prop.HTTP_default.secure}/samlclient/testIDPClient.jsp"/>
+	<variable name="loginPageURLVar_customLogout_absExternalURL" value="https://localhost:${bvt.prop.HTTP_default.secure}/samlclient/testIDPClient.jsp"/>
+	<variable name="loginPageURLVar_customLogout_absLocalURL" value="https://localhost:${bvt.prop.HTTP_default.secure}/samlclient/testIDPClient.jsp"/>
+	<variable name="loginPageURLVar_customLogout_emptyString" value="https://localhost:${bvt.prop.HTTP_default.secure}/samlclient/testIDPClient.jsp"/>
+	<variable name="loginPageURLVar_customLogout_invalidRelativePath" value="https://localhost:${bvt.prop.HTTP_default.secure}/samlclient/testIDPClient.jsp"/>
+	<variable name="loginPageURLVar_customLogout_invalidURL" value="https://localhost:${bvt.prop.HTTP_default.secure}/samlclient/testIDPClient.jsp"/>
+	<variable name="loginPageURLVar_customLogout_relativePath" value="https://localhost:${bvt.prop.HTTP_default.secure}/samlclient/testIDPClient.jsp"/>
+	<variable name="loginPageURLVar_customLogout_specialRelativePath" value="https://localhost:${bvt.prop.HTTP_default.secure}/samlclient/testIDPClient.jsp"/>
+	<variable name="loginPageURLVar_server2_sp1" value="https://localhost:${bvt.prop.HTTP_default.secure}/samlclient/testIDPClient.jsp"/>
+	<variable name="loginPageURLVar_server2_sp2" value="https://localhost:${bvt.prop.HTTP_default.secure}/samlclient/testIDPClient.jsp"/>
+</server>

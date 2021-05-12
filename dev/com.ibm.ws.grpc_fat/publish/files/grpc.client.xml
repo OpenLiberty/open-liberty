@@ -8,7 +8,7 @@
     Contributors:
         IBM Corporation - initial API and implementation
  -->
-<server description="FAT configuration for gRPC client with no grpcTarget elements">
+<server description="FAT configuration for gRPC client with no grpcClient elements">
     <featureManager>
         <feature>grpcClient-1.0</feature>
      </featureManager>

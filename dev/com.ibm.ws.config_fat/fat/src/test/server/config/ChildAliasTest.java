@@ -30,6 +30,7 @@ import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -72,7 +73,7 @@ public class ChildAliasTest {
         testServer.copyFileToLibertyInstallRoot("lib", "bundles/test.config.childalias.c.jar");
 
         WebArchive childAliasApp = ShrinkHelper.buildDefaultApp("childalias", "test.server.config.childalias");
-        ShrinkHelper.exportAppToServer(testServer, childAliasApp);
+        ShrinkHelper.exportAppToServer(testServer, childAliasApp, DeployOptions.DISABLE_VALIDATION);
 
         testServer.startServer();
         //make sure the URL is available

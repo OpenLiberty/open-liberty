@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<constraint-mappings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://jboss.org/xml/ns/javax/validation/mapping validation-mapping-1.0.xsd"
+  xmlns="http://jboss.org/xml/ns/javax/validation/mapping">
+  <default-package>com.ibm.ws.clientcontainer.fat.javacolon.ejb</default-package>
+ <!--
+  <bean class="MySimpleInjectionBean" ignore-annotations="true">
+ 
+    <field name="builder">
+      <constraint annotation="javax.validation.constraints.NotNull" />
+    </field>
+
+    <field name="address">
+      <constraint annotation="javax.validation.constraints.NotNull" />
+
+      <constraint annotation="javax.validation.constraints.Size">
+        <element name="min">5</element>
+        <element name="max">80</element>
+      </constraint>
+    </field>
+
+  </bean>
+      -->
+</constraint-mappings>

@@ -1,27 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="fat/src"/>
-	<classpathentry kind="src" path="test-applications/archiveWithBeansXML.jar/src"/>
-	<classpathentry kind="src" path="test-applications/archiveWithNoBeansXML.war/src"/>
-	<classpathentry kind="src" path="test-applications/archiveWithAnnotatedModeBeansXML.jar/src"/>
-	<classpathentry kind="src" path="test-applications/ejbJarInWarNoAnnotations.jar/src"/>
-	<classpathentry kind="src" path="test-applications/ejbJarInWarNoAnnotations.war/src"/>
-	<classpathentry kind="src" path="test-applications/ejbArchiveWithNoAnnotations.jar/src"/>
-	<classpathentry kind="src" path="test-applications/ejbArchiveWithNoAnnotations.war/src"/>
-	<classpathentry kind="src" path="test-applications/explicitBeanArchive.jar/src"/>
-	<classpathentry kind="src" path="test-applications/implicitBeanAnnotatedMode.jar/src"/>
-	<classpathentry kind="src" path="test-applications/implicitBeanNoBeansXml.jar/src"/>
-	<classpathentry kind="src" path="test-applications/archiveWithNoScanBeansXML.jar/src"/>
-	<classpathentry kind="src" path="test-applications/archiveWithNoImplicitBeans.jar/src"/>
-	<classpathentry kind="src" path="test-applications/archiveWithImplicitBeans.jar/src"/>
-	<classpathentry kind="src" path="test-applications/implicitBeanExplicitArchive.jar/src"/>
-	<classpathentry kind="src" path="test-applications/implicitBeanDiscovery.war/src"/>
-	<classpathentry kind="src" path="test-applications/implicitBeanArchive.war/src"/>
-	<classpathentry kind="src" path="test-applications/implicitBeanArchiveDisabled.jar/src"/>
-	<classpathentry kind="src" path="test-applications/implicitBeanArchiveDisabled.war/src"/>
-	<classpathentry kind="src" path="test-applications/implicitEJBInWar.war/src"/>
-	<classpathentry kind="src" path="test-applications/implicitWarApp.war/src"/>
-	<classpathentry kind="src" path="test-applications/utilLib.jar/src"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="output" path="bin"/>

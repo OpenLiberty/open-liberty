@@ -1,0 +1,10 @@
+<server>
+    <featureManager>
+        <feature>jsp-2.3</feature>
+        <feature>usr:TestHandler3Feature3</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
+</server>

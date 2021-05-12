@@ -98,8 +98,10 @@ public class ClientTestServlet extends HttpServlet {
         }
         String entity = null;
         try {
-            entity = r.readEntity(String.class);
-            return "Did not throw expected IllegalStateException";
+            entity = r.readEntity(String.class);            
+            if (entity != null && !entity.equals("")) {
+                return "Did not throw expected IllegalStateException";
+            }
         } catch (IllegalStateException expected) {
             entity = null;
         } catch (Throwable t) {

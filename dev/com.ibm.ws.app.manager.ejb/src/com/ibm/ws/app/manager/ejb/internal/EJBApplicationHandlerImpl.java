@@ -25,6 +25,7 @@ import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.application.handler.ApplicationHandler;
 import com.ibm.wsspi.application.handler.ApplicationInformation;
 import com.ibm.wsspi.application.handler.ApplicationMonitoringInformation;
+import com.ibm.wsspi.application.lifecycle.ApplicationStartBarrier;
 
 @Component(service = ApplicationHandler.class,
            property = { "service.vendor=IBM", "type:String=ejb" })
@@ -86,5 +87,9 @@ public class EJBApplicationHandlerImpl implements ApplicationHandler<DeployedApp
 
         boolean success = deployedApp.uninstallApp();
         return futureMonitor.createFutureWithResult(success);
+    }
+
+    @Reference
+    private void setApplicationStartBarrier(ApplicationStartBarrier applicationStartBarrier) {
     }
 }

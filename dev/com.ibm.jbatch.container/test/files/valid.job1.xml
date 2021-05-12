@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Copyright 2012 International Business Machines Corp.
+  Copyright 2012, 2021 International Business Machines Corp.
   
   See the NOTICE file distributed with this work for additional information
   regarding copyright ownership. Licensed under the Apache License, 
@@ -16,6 +16,7 @@
   limitations under the License.
 -->
 <job id="job1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" version="1.0">
+	<!-- With elemFormDefault = "qualified", <step> & <batchlet> should be NS-qualified, as they are with default NS -->
 	<step id="step1">
 		<batchlet ref="step1Ref" />
 	</step>

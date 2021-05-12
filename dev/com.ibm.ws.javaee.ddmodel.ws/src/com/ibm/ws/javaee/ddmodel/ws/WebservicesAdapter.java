@@ -92,7 +92,7 @@ public final class WebservicesAdapter implements ContainerAdapter<Webservices> {
             if (vers == null) {
                 throw new ParseException(unknownDeploymentDescriptorVersion());
             }
-            if ("1.4".equals(vers) || "1.3".equals(vers) || "1.2".equals(vers) || "1.1".equals(vers)) {
+            if ("2.0".equals(vers) || "1.4".equals(vers) || "1.3".equals(vers) || "1.2".equals(vers) || "1.1".equals(vers)) {
                 return new WebservicesType(getDeploymentDescriptorPath());
             }
             throw new ParseException(invalidDeploymentDescriptorVersion(vers));

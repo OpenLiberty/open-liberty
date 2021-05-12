@@ -18,5 +18,5 @@
  * @version 1.0.16
  */
 @org.osgi.annotation.versioning.Version("1.0.16")
-@javax.xml.bind.annotation.XmlSchema(namespace = "https://xmlns.jakarta.ee/xml/ns/persistence", elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
+@javax.xml.bind.annotation.XmlSchema(namespace = "https://jakarta.ee/xml/ns/persistence", elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
 package com.ibm.ws.jpa.pxml30;

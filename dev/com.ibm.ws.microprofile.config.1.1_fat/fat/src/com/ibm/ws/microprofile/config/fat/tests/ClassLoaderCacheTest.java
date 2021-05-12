@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2016, 2018 IBM Corporation and others.
+* Copyright (c) 2016, 2020 IBM Corporation and others.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -28,14 +28,13 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.microprofile.appConfig.classLoaderCache.test.ClassLoaderCacheTestServlet;
-import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions;
-import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions.Version;
 import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -64,8 +63,9 @@ public class ClassLoaderCacheTest extends FATServletClient {
     public static final String WARB1_NAME = WARB1 + ".war";
     public static final String WARB2_NAME = WARB2 + ".war";
 
+    // Don't repeat against mpConfig > 1.4 since SmallRye Config implementation doesn't have methods for accessing cache for ConfigProviderResolver. e.g. getConfigCacheSize()
     @ClassRule
-    public static RepeatTests r = RepeatConfigActions.repeat("ClassLoaderCacheServer", Version.LATEST, Version.CONFIG12_EE7);
+    public static RepeatTests r = MicroProfileActions.repeat("ClassLoaderCacheServer", MicroProfileActions.MP13, MicroProfileActions.MP33);
 
     @Server("ClassLoaderCacheServer")
     public static LibertyServer server;
@@ -96,7 +96,7 @@ public class ClassLoaderCacheTest extends FATServletClient {
         EnterpriseArchive classLoaderCacheB_ear = ShrinkWrap.create(EnterpriseArchive.class, EARB_NAME)
                                                             .addAsManifestResource(new File("test-applications/" + EARB_NAME + "/resources/META-INF/application.xml"),
                                                                                    "application.xml")
-                                                            .addAsManifestResource(new File("test-applications/" + EARB_NAME + "/resources/META-INF/permissions.xml"),
+                                                            .addAsManifestResource(new File("test-applications/" + EARA_NAME + "/resources/META-INF/permissions.xml"), //shares the same permissions file as EARA
                                                                                    "permissions.xml")
                                                             .addAsModule(classLoaderCacheB1_war).addAsModule(classLoaderCacheB2_war);
 

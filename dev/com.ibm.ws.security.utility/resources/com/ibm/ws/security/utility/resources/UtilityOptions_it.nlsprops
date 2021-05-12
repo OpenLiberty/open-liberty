@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2019 IBM Corporation and others.
+# Copyright (c) 2010, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -146,8 +146,8 @@ sslCert.option-desc.keyType=\tFacoltativo. Per impostazione predefinita, verr\u0
 sslCert.option-key.ext=\ \ \ \ --extInfo=informazioni estensione certificato
 sslCert.option-desc.ext=\tLe informazioni sull''estensione del certificato da aggiungere al certificato.\n\
 \tL''estensione predefinita \u00e8 una voce Nome alternativo soggetto che utilizza\n\
-\til nome host. \
-Questo indicatore segue la stessa sintassi dell''indicatore -ext \n del comando Jave Keytool. Questo indicatore pu\u00f2 essere utilizzato pi\u00f9 volte sul comando \n \ 
+\til nome host. Questo indicatore segue la stessa sintassi dell''indicatore -ext \n\
+\t del comando Jave Keytool. Questo indicatore pu\u00f2 essere utilizzato pi\u00f9 volte sul comando \n \ 
 line.
 
 # -------- CREATE LTPA KEYS OPTIONS --------------------------------------#
@@ -183,3 +183,22 @@ createLTPAKeys.option-desc.password.key=\tSpecifica una chiave da utilizzare dur
 \tfornita al server definendo la variabile \n\
 \twlp.password.encryption.key, il cui valore \u00e8 la chiave. Se questa opzione non\n\
 \tviene fornita, verr\u00e0 utilizzata una chiave predefinita.
+
+# -------- tlsProfiler OPTIONS ------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+tlsProfiler.desc=\tVerificare la compatibilit\u00e0 di host e porta di destinazione con i protocolli TLS e le suite di cifratura disponibili.
+tlsProfiler.usage.options=\t{0} tlsProfiler [opzioni]
+tlsProfiler.required-key.port=\ \ \ \ --port
+tlsProfiler.required-desc.port=\tSpecificare la porta.
+tlsProfiler.required-key.host=\ \ \ \ --host
+tlsProfiler.required-desc.host=\tSpecificare l''host.
+tlsProfiler.option-key.file=\ \ \ \ --file
+tlsProfiler.option-desc.file=\tFacoltativo. Il risultato verr\u00e0 scritto nel file specificato \n\
+\tinvece che nella schermata della console.
+tlsProfiler.option-key.verbose=\ \ \ \ --verbose
+tlsProfiler.option-desc.verbose=\tIncludere informazioni aggiuntive sui protocolli non sicuri.

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,8 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.fat.util.FatLogHandler;
+import com.ibm.ws.fat.wc.tests.WC5GetContextPath;
+import com.ibm.ws.fat.wc.tests.WC5JakartaServletTest;
 import com.ibm.ws.fat.wc.tests.WCAddJspFileTest;
 import com.ibm.ws.fat.wc.tests.WCApplicationMBeanStatusTest;
 import com.ibm.ws.fat.wc.tests.WCContextRootPrecedence;
@@ -25,6 +27,8 @@ import com.ibm.ws.fat.wc.tests.WCGetMappingSlashStarTest;
 import com.ibm.ws.fat.wc.tests.WCGetMappingTest;
 import com.ibm.ws.fat.wc.tests.WCPushBuilderTest;
 import com.ibm.ws.fat.wc.tests.WCSameSiteCookieAttributeTests;
+import com.ibm.ws.fat.wc.tests.WCSendRedirectRelativeURLDefault;
+import com.ibm.ws.fat.wc.tests.WCSendRedirectRelativeURLTrue;
 import com.ibm.ws.fat.wc.tests.WCServerTest;
 import com.ibm.ws.fat.wc.tests.WCServletClarificationTest;
 import com.ibm.ws.fat.wc.tests.WCServletContainerInitializerExceptionTest;
@@ -56,12 +60,9 @@ import componenttest.rules.repeater.RepeatTests;
 @RunWith(Suite.class)
 @SuiteClasses({
                 // Shared Servers
-                WCServerTest.class,
                 WCPushBuilderTest.class,
                 WCServletClarificationTest.class,
                 WCContextRootPrecedence.class,
-                WCGetMappingTest.class,
-                WCEncodingTest.class,
                 WCTrailersTest.class,
                 // TFB:
                 // Locally, WCTrailersTest fails unless I add '-Dglobal.debug.java2.sec=false' to
@@ -70,21 +71,27 @@ import componenttest.rules.repeater.RepeatTests;
                 // I'm still determining if this is purely a local problem.
                 //              WCPushBuilderSecurityTest.class,
                 WCAddJspFileTest.class,
-                WCServletPathForDefaultMappingDefault.class,
-                WCServletPathForDefaultMappingFalse.class,
-                WCGetMappingSlashStarTest.class,
                 WCServletContainerInitializerFilterServletNameMappingTest.class,
                 WCApplicationMBeanStatusTest.class,
                 // @Server Annotations
+                WCEncodingTest.class,
+                WCServerTest.class,
+                WC5JakartaServletTest.class,
+                WCGetMappingTest.class,
                 WCServletContainerInitializerExceptionTest.class,
-                WCSameSiteCookieAttributeTests.class
+                WCSameSiteCookieAttributeTests.class,
+                WCServletPathForDefaultMappingDefault.class,
+                WCServletPathForDefaultMappingFalse.class,
+                WCGetMappingSlashStarTest.class,
+                WCSendRedirectRelativeURLTrue.class,
+                WCSendRedirectRelativeURLDefault.class,
+                WC5GetContextPath.class
 })
+
 public class FATSuite {
 
     @ClassRule
-    public static RepeatTests repeat = RepeatTests
-                    .with(new EmptyAction().fullFATOnly())
-                    .andWith(FeatureReplacementAction.EE9_FEATURES());
+    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly()).andWith(FeatureReplacementAction.EE9_FEATURES());
 
     /**
      * @see {@link FatLogHandler#generateHelpFile()}

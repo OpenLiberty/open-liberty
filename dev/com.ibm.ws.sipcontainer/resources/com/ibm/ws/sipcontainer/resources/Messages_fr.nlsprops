@@ -740,7 +740,7 @@ error.exception.ioeinbody.explanation=Une exception IOException a \u00e9t\u00e9 
 error.exception.ioeinbody.useraction=Aucune action n'est requise.
 
 warn.unsupported.realm=CWSCT0358W: Domaine d''authentification {0} inconnu
-warn.unsupported.realm.explanation=Une demande SIP a \u00e9t\u00e9 re\u00e7ue pour un domaine d'authentification inconnu. 
+warn.unsupported.realm.explanation=Une demande SIP a \u00e9t\u00e9 re\u00e7ue pour un domaine d'authentification inconnu.
 warn.unsupported.realm.useraction=Aucune action n'est requise
 
 info.unhashed.creds=CWSCT0359I: Attributs des donn\u00e9es d'identification hach\u00e9es introuvables.

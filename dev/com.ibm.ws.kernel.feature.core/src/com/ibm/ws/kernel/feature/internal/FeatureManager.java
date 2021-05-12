@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2020 IBM Corporation and others.
+ * Copyright (c) 2009, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -81,6 +82,7 @@ import com.ibm.ws.kernel.feature.AppForceRestart;
 import com.ibm.ws.kernel.feature.FeatureDefinition;
 import com.ibm.ws.kernel.feature.FeatureProvisioner;
 import com.ibm.ws.kernel.feature.ProcessType;
+import com.ibm.ws.kernel.feature.ServerReadyStatus;
 import com.ibm.ws.kernel.feature.ServerStarted;
 import com.ibm.ws.kernel.feature.ServerStartedPhase2;
 import com.ibm.ws.kernel.feature.Visibility;
@@ -151,6 +153,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
 
     private final static String CFG_KEY_ACTIVE_FEATURES = "feature";
 
+    public static final String EE_COMPATIBLE_NAME = "eeCompatible";
     final static String INSTALLED_BUNDLE_CACHE = "platform/feature.bundles.cache";
     final static String FEATURE_DEF_CACHE_FILE = "platform/feature.cache";
     final static String FEATURE_FIX_CACHE_FILE = "feature.fix.cache";
@@ -197,14 +200,19 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
         }
 
         void createNotifications() {
-            appForceRestart = runtimeUpdateManager.createNotification(RuntimeUpdateNotification.APP_FORCE_RESTART);
+            appForceRestart = runtimeUpdateManager.createNotification(RuntimeUpdateNotification.APP_FORCE_RESTART, true);
             featureBundlesResolved = runtimeUpdateManager.createNotification(RuntimeUpdateNotification.FEATURE_BUNDLES_RESOLVED);
         }
 
-        Set<String> getFeaturesWithLowerCaseName() {
+        Set<String> getFeaturesWithLowerCaseName(FeatureRepository featureRepo) {
             Set<String> lcnFeatures = new HashSet<String>();
             for (String feature : features) {
-                lcnFeatures.add(FeatureRepository.lowerFeature(feature));
+                ProvisioningFeatureDefinition f = featureRepo.getFeature(feature);
+                if (f == null || f.getVisibility() == Visibility.PUBLIC) {
+                    lcnFeatures.add(FeatureRepository.lowerFeature(feature));
+                } else {
+                    lcnFeatures.add(feature);
+                }
             }
 
             return lcnFeatures;
@@ -255,6 +263,9 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      */
     protected OnError onError;
 
+    private final String CONFIG_PACKAGE_SERVER_CONFLICT = "package.server.conflict";
+    private Boolean packageServerConflict = Boolean.FALSE;
+
     /** Cache for currently installed features (and for all information we know about features) */
     protected FeatureRepository featureRepository;
 
@@ -286,6 +297,9 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
     private volatile LibertyBootRuntime libertyBoot;
 
     private FrameworkWiring frameworkWiring;
+
+    @Reference
+    private volatile List<ServerReadyStatus> serverReadyChecks;
 
     private static final class KernelFeaturesHolder {
 
@@ -494,7 +508,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * @param locationService
      *                            a location service
      */
-    protected void unsetLocationService(WsLocationAdmin locationService) {}
+    protected void unsetLocationService(WsLocationAdmin locationService) {
+    }
 
     public WsLocationAdmin getLocationService() {
         return locationService;
@@ -526,7 +541,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
     /**
      *
      */
-    protected void unsetRuntimeUpdateManager(RuntimeUpdateManager runtimeUpdateManager) {}
+    protected void unsetRuntimeUpdateManager(RuntimeUpdateManager runtimeUpdateManager) {
+    }
 
     /**
      * Inject a <code>EventAdmin</code> service instance.
@@ -541,7 +557,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * Called to unset intermediate dynamic references or after
      * deactivate. Do nothing.
      */
-    protected void unsetEventAdminService(EventAdmin eventAdminService) {}
+    protected void unsetEventAdminService(EventAdmin eventAdminService) {
+    }
 
     /**
      * Inject a <code>RegionDigraph</code> service instance.
@@ -563,7 +580,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * Called to unset intermediate dynamic references or after
      * deactivate. Do nothing.
      */
-    protected void unsetDigraph(RegionDigraph digraph) {}
+    protected void unsetDigraph(RegionDigraph digraph) {
+    }
 
     /**
      * Inject an <code>ExecutorService</code> service instance.
@@ -582,7 +600,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * @param executorService
      *                            an executor service
      */
-    protected void unsetExecutorService(ExecutorService executorService) {}
+    protected void unsetExecutorService(ExecutorService executorService) {
+    }
 
     /**
      * Declarative Services method for setting the variable registry service implementation reference.
@@ -599,7 +618,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      * Called to unset intermediate dynamic references or after
      * deactivate. Do nothing.
      */
-    protected void unsetVariableRegistry(VariableRegistry variableRegistry) {}
+    protected void unsetVariableRegistry(VariableRegistry variableRegistry) {
+    }
 
     @Override
     public void updated(Dictionary<String, ?> configuration) throws ConfigurationException {
@@ -614,6 +634,10 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
         }
 
         onError = (OnError) configuration.get(OnErrorUtil.CFG_KEY_ON_ERROR);
+        packageServerConflict = (Boolean) configuration.get(CONFIG_PACKAGE_SERVER_CONFLICT);
+        if (packageServerConflict == null) {
+            packageServerConflict = Boolean.FALSE;
+        }
 
         String[] features = (String[]) configuration.get(CFG_KEY_ACTIVE_FEATURES);
         if (features == null) {
@@ -743,12 +767,16 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
                     BundleLifecycleStatus startStatus = setStartLevel(ProvisionerConstants.LEVEL_ACTIVE);
                     checkBundleStatus(startStatus); // FFDC, etc.
 
+                    checkServerReady();
+
                     //register a service that can be looked up for server start.
                     // Need a two phase approach, since ports will be opened for listening on the first phase
-                    bundleContext.registerService(ServerStarted.class, new ServerStarted() {}, null);
+                    bundleContext.registerService(ServerStarted.class, new ServerStarted() {
+                    }, null);
 
                     // components which needed to wait till ports were opened for listening need to wait till Phase2
-                    bundleContext.registerService(ServerStartedPhase2.class, new ServerStartedPhase2() {}, null);
+                    bundleContext.registerService(ServerStartedPhase2.class, new ServerStartedPhase2() {
+                    }, null);
 
                     break;
                 default:
@@ -773,6 +801,10 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
             // Update/progress messages -- AFTER we've written cache files
             writeUpdateMessages(featureChange.provisioningMode, preInstalledFeatures, deletedAutoFeatures, deletedPublicAutoFeatures);
         }
+    }
+
+    private void checkServerReady() {
+        serverReadyChecks.forEach(ServerReadyStatus::check);
     }
 
     public void queryServer(FeatureChange featureChange) throws IllegalStateException {
@@ -1190,7 +1222,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
     private Result resolveFeatures(FeatureChange featureChange) {
         // In 850 we were not case sensitive so we need to stay that way.
         // Use a set to eliminate duplicates.
-        Set<String> newConfiguredFeatures = featureChange.getFeaturesWithLowerCaseName();
+        Set<String> newConfiguredFeatures = featureChange.getFeaturesWithLowerCaseName(featureRepository);
 
         return resolveFeatures(newConfiguredFeatures, new ArrayList<String>(), featureChange.provisioningMode);
     }
@@ -1203,12 +1235,21 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
         Repository restrictedRespository;
         Collection<String> restrictedRepoAccessAttempts = new ArrayList<String>();
         boolean allowMultipleVersions = false;
+        boolean featureListIsComplete = false;
+        boolean currentPackageServerConflict = false;
         if (ProvisioningMode.CONTENT_REQUEST == mode || ProvisioningMode.FEATURES_REQUEST == mode) {
             // allow multiple versions if in minify (TODO strange since we are minifying!)
             // For feature request using the minified approach but that could cause additional singletons to be provisioned.
             allowMultipleVersions = Boolean.getBoolean("internal.minify.ignore.singleton");
+            // For packaging purposes; have an option that just blindly takes
+            // the feature list and uses it without using the resolver.
+            // This feature list may include public, protected, private and auto-features.
+            // No additional feature resolution will be done to pull in additional required features.
+            // The feature list is expected to be complete.
+            featureListIsComplete = Boolean.getBoolean("internal.minify.feature.list.complete");
             // do not restrict any features
             restrictedRespository = featureRepository;
+            currentPackageServerConflict = packageServerConflict;
         } else {
             if (supportedProcessTypes.contains(ProcessType.CLIENT)) {
                 // do not restrict any features while resolving, but ....
@@ -1230,18 +1271,81 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
                 restrictedRespository = temp;
             }
         }
+        Result result;
+        if (featureListIsComplete) {
+            result = createResultFromCompleteList(restrictedRespository, rootFeatures);
+        } else {
+            result = callFeatureResolver(restrictedRespository, kernelFeaturesHolder.getKernelFeatures(), rootFeatures, allowMultipleVersions, currentPackageServerConflict);
+        }
+        restrictedAccessAttempts.addAll(restrictedRepoAccessAttempts);
+        return result;
+    }
+
+    private Result callFeatureResolver(Repository restrictedRespository, Collection<ProvisioningFeatureDefinition> kernelFeatures, Set<String> rootFeatures,
+                                       boolean allowMultipleVersions, boolean currentPackageServerConflict) {
+
+        // short circuit if package server is expecting conflicts
+        if (currentPackageServerConflict) {
+            return featureResolver.resolveFeatures(restrictedRespository, kernelFeatures, rootFeatures, Collections.<String> emptySet(), true);
+        }
         // resolve the features
         // TODO Note that we are just supporting all types at runtime right now.  In the future this may be restricted by the actual running process type
-        Result result = featureResolver.resolveFeatures(restrictedRespository, kernelFeaturesHolder.getKernelFeatures(), rootFeatures, Collections.<String> emptySet(),
+        Result result = featureResolver.resolveFeatures(restrictedRespository, kernelFeatures, rootFeatures, Collections.<String> emptySet(),
                                                         false);
         if (allowMultipleVersions) {
             if (!result.getConflicts().isEmpty()) {
-                result = featureResolver.resolveFeatures(restrictedRespository, kernelFeaturesHolder.getKernelFeatures(), rootFeatures, Collections.<String> emptySet(), true);
+                result = featureResolver.resolveFeatures(restrictedRespository, kernelFeatures, rootFeatures, Collections.<String> emptySet(), true);
             }
         }
-        restrictedAccessAttempts.addAll(restrictedRepoAccessAttempts);
 
         return result;
+    }
+
+    private Result createResultFromCompleteList(Repository repository, Set<String> rootFeatures) {
+        final Set<String> missing = new HashSet<>();
+        final Set<String> resolved = new LinkedHashSet<>();
+
+        for (String featureName : rootFeatures) {
+            ProvisioningFeatureDefinition feature = repository.getFeature(featureName);
+            if (feature == null) {
+                missing.add(featureName);
+            } else {
+                resolved.add(feature.getFeatureName());
+            }
+        }
+
+        return new Result() {
+
+            @Override
+            public boolean hasErrors() {
+                return !getMissing().isEmpty();
+            }
+
+            @Override
+            public Map<String, Chain> getWrongProcessTypes() {
+                return Collections.emptyMap();
+            }
+
+            @Override
+            public Set<String> getResolvedFeatures() {
+                return resolved;
+            }
+
+            @Override
+            public Set<String> getNonPublicRoots() {
+                return Collections.emptySet();
+            }
+
+            @Override
+            public Set<String> getMissing() {
+                return missing;
+            }
+
+            @Override
+            public Map<String, Collection<Chain>> getConflicts() {
+                return Collections.emptyMap();
+            }
+        };
     }
 
     /**
@@ -1265,7 +1369,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
 
         // In 850 we were not case sensitive so we need to stay that way.
         // Use a set to eliminate duplicates.
-        Set<String> newConfiguredFeatures = featureChange.getFeaturesWithLowerCaseName();
+        Set<String> newConfiguredFeatures = featureChange.getFeaturesWithLowerCaseName(featureRepository);
 
         if (newConfiguredFeatures.isEmpty() && featureRepository.emptyFeatures()) {
 
@@ -1624,6 +1728,13 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
         return foundInFeatures;
     }
 
+    static final class ConflictRecord {
+        String conflict;
+        String configured;
+        String chain;
+        String compatibleConflict;
+    }
+
     /**
      * Reports the errors that happened during feature resolution.
      *
@@ -1642,16 +1753,23 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
         }
         for (String missing : result.getMissing()) {
             reportedErrors = true;
+            boolean isRootFeature = rootFeatures.contains(missing);
+            boolean isExtension = missing.indexOf(":") > -1;
+            String altName = featureRepository.matchesAlternate(missing);
             //Check if using Open Liberty before suggesting install util for missing features
             if (!getProductInfoDisplayName().startsWith(PRODUCT_INFO_STRING_OPEN_LIBERTY)) {
-                if (rootFeatures.contains(missing) && missing.indexOf(":") < 0) {
+                if (isRootFeature && !isExtension) {
                     // Only report this message for core features included as root features in the server.xml
                     Tr.error(tc, "UPDATE_MISSING_CORE_FEATURE_ERROR", missing, locationService.getServerName());
                 } else {
                     Tr.error(tc, "UPDATE_MISSING_FEATURE_ERROR", missing);
                 }
             } else {
+                // Not on Open Liberty
                 Tr.error(tc, "UPDATE_MISSING_FEATURE_ERROR", missing);
+            }
+            if (altName != null && isRootFeature && !isExtension) {
+                Tr.error(tc, "MISSING_FEATURE_HAS_ALT_NAME", missing, altName);
             }
             installStatus.addMissingFeature(missing);
         }
@@ -1691,89 +1809,199 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
         sortedConflicts.sort(new ConflictComparator()); // order by importance
         List<Entry<String, String>> reportedConfigured = new ArrayList<Entry<String, String>>(); // pairs of configured features
 
+        boolean disableAllOnConflict = disableAllOnConflict(result);
         for (Entry<String, Collection<Chain>> conflict : sortedConflicts) {
+            final String compatibleFeatureBase = conflict.getKey();
+            final Collection<Chain> inConflictChains = conflict.getValue();
             reportedErrors = true;
             // Attempt to gather two distinct features that are in conflict, here we assume we
             // can find candidate features that are different
-            String conflict1 = null;
-            String configured1 = null;
-            String chain1 = null;
-            String conflict2 = null;
-            String configured2 = null;
-            String chain2 = null;
-            String eeConflict1 = null; // Second to last feature in chain
-            String eeConflict2 = null;
-            for (Chain chain : conflict.getValue()) {
-                List<String> candidates = chain.getCandidates();
-                if (conflict1 == null) {
-                    conflict1 = candidates.get(0);
-                    boolean isEeCompatibleConflict1 = isEeCompatible(conflict1);
-                    if (chain.getChain().isEmpty()) {
-                        // this is a configured root
-                        configured1 = conflict1;
-                        chain1 = conflict1;
-                        if (isEeCompatibleConflict1)
-                            eeConflict1 = conflict1;
-                    } else {
-                        configured1 = chain.getChain().get(0);
-                        chain1 = buildChainString(chain.getChain(), conflict1);
-                        if (isEeCompatibleConflict1)
-                            eeConflict1 = chain.getChain().get(chain.getChain().size() - 1);
-                    }
-                } else if (!!!conflict1.equals(candidates.get(0))) {
-                    conflict2 = candidates.get(0);
-                    boolean isEeCompatibleConflict2 = isEeCompatible(conflict2);
-                    if (chain.getChain().isEmpty()) {
-                        // this is a configured root
-                        configured2 = conflict2;
-                        chain2 = conflict2;
-                        if (isEeCompatibleConflict2)
-                            eeConflict2 = conflict2;
-                    } else {
-                        configured2 = chain.getChain().get(0);
-                        chain2 = buildChainString(chain.getChain(), conflict2);
-                        if (isEeCompatibleConflict2)
-                            eeConflict2 = chain.getChain().get(chain.getChain().size() - 1);
-                    }
+            ConflictRecord conflictRecord1 = null;
+            ConflictRecord conflictRecord2 = null;
+            for (Chain chain : inConflictChains) {
+                if (conflictRecord1 == null) {
+                    conflictRecord1 = getConflictRecord(chain, inConflictChains, compatibleFeatureBase);
+                } else if (!!!conflictRecord1.conflict.equals(chain.getCandidates().get(0))) {
+                    conflictRecord2 = getConflictRecord(chain, inConflictChains, compatibleFeatureBase);
                     break;
                 }
             }
 
             // Report only the most important conflict caused by two configured features
-            if (!!!configuredAlreadyReported(configured1, configured2, reportedConfigured)) {
-                if (isEeCompatible(conflict1)) {
+            if (!!!configuredAlreadyReported(conflictRecord1.configured, conflictRecord2.configured, reportedConfigured)) {
+                if (conflictRecord1.compatibleConflict != null) {
                     final boolean ignoreVersion = true;
-                    if (getEeCompatiblePlatform(conflict1, ignoreVersion).equals(getEeCompatiblePlatform(conflict2, ignoreVersion))) {
-                        // Both conflicting features support "Java EE X" or "Jakarta EE X", exclusively
-                        Tr.error(tc, "UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_SAME_PLATFORM_ERROR", getPreferredEePlatform(eeConflict1),
-                                 getPreferredEePlatform(eeConflict2), getFeatureName(configured1), getFeatureName(configured2), getEeCompatiblePlatform(conflict1, ignoreVersion));
+                    if (getEeCompatiblePlatform(conflictRecord1.conflict, ignoreVersion).equals(getEeCompatiblePlatform(conflictRecord2.conflict, ignoreVersion))) {
+                        // Both conflicting features support the same named programming model (e.g Java EE or Jakarta EE)
+                        if (conflictRecord1.configured.equals(conflictRecord1.compatibleConflict) && conflictRecord2.configured.equals(conflictRecord2.compatibleConflict)) {
+                            Tr.error(tc, "UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_SAME_PLATFORM_ERROR",
+                                     getPreferredEePlatform(conflictRecord1.compatibleConflict, compatibleFeatureBase),
+                                     getPreferredEePlatform(conflictRecord2.compatibleConflict, compatibleFeatureBase),
+                                     getFeatureName(conflictRecord1.configured),
+                                     getFeatureName(conflictRecord2.configured),
+                                     getEeCompatiblePlatform(conflictRecord1.conflict, ignoreVersion));
+                        } else {
+                            // The conflict is indirect
+                            Tr.error(tc, "UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR",
+                                     getPreferredEePlatform(conflictRecord1.compatibleConflict, compatibleFeatureBase),
+                                     getPreferredEePlatform(conflictRecord2.compatibleConflict, compatibleFeatureBase),
+                                     getFeatureName(conflictRecord1.compatibleConflict),
+                                     getFeatureName(conflictRecord2.compatibleConflict),
+                                     getFeatureName(conflictRecord1.configured),
+                                     getFeatureName(conflictRecord2.configured),
+                                     getEeCompatiblePlatform(conflictRecord1.conflict, ignoreVersion));
+                        }
                     } else {
                         // One conflicting feature supports "Jakarta EE X", the other "Java EE X"
-                        Tr.error(tc, "UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_DIFFERENT_PLATFORM_ERROR", getPreferredEePlatform(eeConflict1),
-                                 getPreferredEePlatform(eeConflict2), getFeatureName(eeConflict1), getFeatureName(eeConflict2), getFeatureName(configured1),
-                                 getFeatureName(configured2));
-
+                        Tr.error(tc, "UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_DIFFERENT_PLATFORM_ERROR",
+                                 getPreferredEePlatform(conflictRecord1.compatibleConflict, compatibleFeatureBase),
+                                 getPreferredEePlatform(conflictRecord2.compatibleConflict, compatibleFeatureBase),
+                                 getFeatureName(conflictRecord1.compatibleConflict),
+                                 getFeatureName(conflictRecord2.compatibleConflict),
+                                 getFeatureName(conflictRecord1.configured),
+                                 getFeatureName(conflictRecord2.configured),
+                                 getEeCompatiblePlatform(conflictRecord1.conflict, ignoreVersion),
+                                 getEeCompatiblePlatform(conflictRecord2.conflict, ignoreVersion));
                         // Remove the conflicting features (not necessarily the configured features)
-                        result.getResolvedFeatures().remove(getFeatureName(eeConflict1));
-                        result.getResolvedFeatures().remove(getFeatureName(eeConflict2));
+                        result.getResolvedFeatures().remove(getFeatureName(conflictRecord1.compatibleConflict));
+                        result.getResolvedFeatures().remove(getFeatureName(conflictRecord2.compatibleConflict));
                     }
                 } else {
-                    Tr.error(tc, "UPDATE_CONFLICT_FEATURE_ERROR", getFeatureName(conflict1), getFeatureName(conflict2), getFeatureName(configured1), getFeatureName(configured2));
+                    Tr.error(tc, "UPDATE_CONFLICT_FEATURE_ERROR", getFeatureName(conflictRecord1.conflict), getFeatureName(conflictRecord2.conflict),
+                             getFeatureName(conflictRecord1.configured), getFeatureName(conflictRecord2.configured));
                 }
-                reportedConfigured.add(new SimpleImmutableEntry<String, String>(configured1, configured2));
+                reportedConfigured.add(new SimpleImmutableEntry<String, String>(conflictRecord1.configured, conflictRecord2.configured));
             }
-            String conflictMsg = "Unable to load conflicting versions of features \"" + conflict1 + "\" and \"" + conflict2 +
-                                 "\".  The feature dependency chains that led to the conflict are: " + chain1 + " and " + chain2;
+            String conflictMsg = "Unable to load conflicting versions of features \"" + conflictRecord1.conflict + "\" and \"" + conflictRecord2.conflict +
+                                 "\".  The feature dependency chains that led to the conflict are: " + conflictRecord1.chain + " and " + conflictRecord2.chain;
             IllegalArgumentException ffdcError = new IllegalArgumentException(conflictMsg);
-            FFDCFilter.processException(ffdcError, ME, "reportErrors", new Object[] { conflict.getKey(), conflict.getValue().toString() });
+            FFDCFilter.processException(ffdcError, ME, "reportErrors", new Object[] { conflict.getKey(), inConflictChains.toString() });
             // TODO not really sure if detailed chain information is needed in the status; doesn't appear to need it
-            for (Chain chain : conflict.getValue()) {
+            for (Chain chain : inConflictChains) {
                 installStatus.addConflictFeature(chain.getFeatureRequirement());
             }
+        }
 
+        if (disableAllOnConflict) {
+            // Remove all features on conflicts
+            Set<String> resolved = result.getResolvedFeatures();
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Conflicts found in feature set, no features will be enabled:" + String.valueOf(sortedConflicts));
+            }
+            resolved.clear();
+            Tr.warning(tc, "UPDATE_DISABLED_FEATURES_ON_CONFLICT");
         }
         return reportedErrors;
 
+    }
+
+    private ConflictRecord getConflictRecord(Chain chain, Collection<Chain> inConflict, String compatibleFeatureBase) {
+        List<String> candidates = chain.getCandidates();
+        ConflictRecord result = new ConflictRecord();
+        result.conflict = candidates.get(0);
+        boolean isEeCompatibleConflict = isEeCompatible(result.conflict);
+        if (chain.getChain().isEmpty()) {
+            // this is a configured root
+            result.configured = result.conflict;
+            result.chain = result.conflict;
+            if (isEeCompatibleConflict) {
+                // Note that this case should never happen because the compatible features are private
+                // they should never be allowed to be a configured root feature.
+                result.compatibleConflict = result.conflict;
+            }
+        } else {
+            result.configured = chain.getChain().get(0);
+            if (isEeCompatibleConflict) {
+                // Depending on how the feature resolver processes the included features
+                // it may not report the direct dependency on the compatible feature as the first
+                // conflict.  This may result in a reported chain that has more than one link to the
+                // compatible conflict.
+
+                // Check each level of the chain to see if it has a direct dependency on the compatible feature
+                // and is in conflict with the other chains in conflict.  If so then then use the feature
+                // in this level as the compatible conflict feature.
+                chainCheck: for (String feature : chain.getChain()) {
+                    ProvisioningFeatureDefinition featureDef = featureRepository.getFeature(feature);
+                    for (FeatureResource fr : featureDef.getConstituents(SubsystemContentType.FEATURE_TYPE)) {
+                        if (isCompatibleInConflictWithChains(fr, chain, inConflict, compatibleFeatureBase)) {
+                            // this level is in conflict with the other chains; use it as the compatible conflict.
+                            result.compatibleConflict = feature;
+                            break chainCheck;
+                        }
+                    }
+                }
+                if (result.compatibleConflict == null) {
+                    // fall back to the second to last in chain that has a direct dependency on the compatible feature
+                    result.compatibleConflict = chain.getChain().get(chain.getChain().size() - 1);
+                }
+            }
+            result.chain = buildChainString(chain.getChain(), result.conflict);
+        }
+        return result;
+    }
+
+    private boolean isCompatibleInConflictWithChains(FeatureResource fr, Chain chain, Collection<Chain> inConflict, String compatibleFeatureBase) {
+        if (fr.getSymbolicName().startsWith(compatibleFeatureBase) == false) {
+            // this included feature is not a compatible feature; move on to next
+            return false;
+        }
+
+        List<String> tolerates = fr.getTolerates();
+        for (Chain chainInConflict : inConflict) {
+            // only check against the other chains
+            if (chainInConflict != chain) {
+                List<String> conflictCandidates = chainInConflict.getCandidates();
+                if (conflictCandidates.contains(fr.getSymbolicName())) {
+                    return false;
+                }
+                if (tolerates != null) {
+                    String[] nameAndVersion = FeatureResolverImpl.parseNameAndVersion(fr.getSymbolicName());
+
+                    for (String tolerate : tolerates) {
+                        if (conflictCandidates.contains(nameAndVersion[0] + '-' + tolerate)) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    private boolean disableAllOnConflict(Result result) {
+        Map<String, Collection<Chain>> conflicts = result.getConflicts();
+        if (conflicts.isEmpty()) {
+            return false;
+        }
+        // First check if any features in the resolved feature set want to disable on conflict.
+        // This includes features not involved in the conflict as well as the features in the
+        // chain leading up to the conflict
+        for (String featureName : result.getResolvedFeatures()) {
+            if (shouldDisableOnConflict(featureName)) {
+                return true;
+            }
+        }
+
+        // Once we get here we know that all the features in the resolution set
+        // do not have disable on conflict set to true.
+        // But the feature conflicting feature may want to disable all features on conflict.
+        // In this case we only will disable all if all candidates want to disable for a specific chain
+        // NOTE - This is a bit of a degenerate case.  If a requiring feature only tolerates versions
+        // of a feature that disable on conflict then that feature likely should be disable on conflict also.
+        // In that case the above loop over the resolved features would have returned true already
+        for (Entry<String, Collection<Chain>> conflict : conflicts.entrySet()) {
+            for (Chain chain : conflict.getValue()) {
+                // NOTE - reverse logic here because there is no isEmpty on Optional in Java 8!
+                if (!!!chain.getCandidates().stream().filter((f) -> !!!shouldDisableOnConflict(f)).findFirst().isPresent()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean shouldDisableOnConflict(String featureName) {
+        return featureRepository.disableAllFeaturesOnConflict(featureName);
     }
 
     private String getFeatureName(String symbolicName) {
@@ -1837,14 +2065,14 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
     }
 
     private boolean isEeCompatible(String symbolicName) {
-        return symbolicName != null && symbolicName.lastIndexOf("eeCompatible") >= 0;
+        return symbolicName != null && symbolicName.lastIndexOf(EE_COMPATIBLE_NAME) >= 0;
     }
 
     private static char getEeCompatibleVersion(String symbolicName) {
         return symbolicName.charAt(symbolicName.lastIndexOf("-") + 1);
     }
 
-    private static String getEeCompatiblePlatform(String symbolicName, boolean ignoreVersion) {
+    private String getEeCompatiblePlatform(String symbolicName, boolean ignoreVersion) {
         char charVersion = getEeCompatibleVersion(symbolicName);
         switch (charVersion) {
             case '9':
@@ -1854,14 +2082,24 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
             case '6':
                 return "Java EE" + ((ignoreVersion) ? "" : " " + charVersion);
             default:
-                return "";
+                // TODO this is really just a fall back and for testing
+                // this should come from additional meta-data of the feature
+                // instead of hard-coding in the above cases
+                ProvisioningFeatureDefinition fd = (ProvisioningFeatureDefinition) getFeatureDefinition(symbolicName);
+                if (fd != null) {
+                    String subsystemName = fd.getHeader("Subsystem-Name");
+                    if (subsystemName != null) {
+                        return subsystemName + ((ignoreVersion) ? "" : " " + charVersion);
+                    }
+                }
+                return "Unknown";
         }
     }
 
-    private String getPreferredEePlatform(String symbolicName) {
+    private String getPreferredEePlatform(String symbolicName, String compatibleFeatureBase) {
         ProvisioningFeatureDefinition fdefinition = featureRepository.getFeature(symbolicName);
         for (FeatureResource fr : fdefinition.getConstituents(SubsystemContentType.FEATURE_TYPE)) {
-            if (isEeCompatible(fr.getSymbolicName())) {
+            if (fr.getSymbolicName().startsWith(compatibleFeatureBase)) {
                 return getEeCompatiblePlatform(fr.getSymbolicName(), false); // include ee version
             }
         }

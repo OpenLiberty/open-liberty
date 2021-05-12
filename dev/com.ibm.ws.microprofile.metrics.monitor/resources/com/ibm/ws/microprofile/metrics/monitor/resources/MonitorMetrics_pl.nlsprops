@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2018 IBM Corporation and others.
+# Copyright (c) 2018, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -19,8 +19,9 @@
 # Messages used by MonitorMetrics Impl -  range is 2000-2199
 #-----------------------------------------------------------------------------------------------------------------------------
 FEATURE_REGISTERED=CWPMI2001I: Pomiary monitorowania mo\u017cna pobiera\u0107 za pomoc\u0105 sk\u0142adnika mpMetrics.
-FEATURE_REGISTERED.explanation=Sk\u0142adniki monitor-1.0 i mpMetrics-1.1 s\u0105 w\u0142\u0105czone, a pomiary monitorowania mo\u017cna pobiera\u0107 za pomoc\u0105 sk\u0142adnika mpMetrics.
-FEATURE_REGISTERED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107 u\u017cytkownika. 
+FEATURE_REGISTERED.explanation=Sk\u0142adnik Performance Monitoring i sk\u0142adnik MicroProfile Metrics s\u0105 w\u0142\u0105czone. Pomiary monitorowania mo\u017cna pobiera\u0107 za pomoc\u0105 sk\u0142adnika MicroProfile Metrics.
+FEATURE_REGISTERED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107 u\u017cytkownika.
+
 FEATURE_UNREGISTERED=CWPMI2002I: Wszystkie pomiary monitorowania zosta\u0142y wyrejestrowane ze sk\u0142adnika mpMetrics.
-FEATURE_UNREGISTERED.explanation=Sk\u0142adnik monitor-1.0 i/lub sk\u0142adnik mpMetrics-1.1 zosta\u0142y usuni\u0119te z serwera, a wszystkie pomiary monitorowania zosta\u0142y wyrejestrowane ze sk\u0142adnika mpMetrics.
-FEATURE_UNREGISTERED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107 u\u017cytkownika. 
+FEATURE_UNREGISTERED.explanation=Sk\u0142adnik Performance Monitoring i/lub sk\u0142adnik MicroProfile Metrics zosta\u0142 usuni\u0119ty z serwera. Wszystkie pomiary monitorowania zosta\u0142y wyrejestrowane ze sk\u0142adnika MicroProfile Metrics.
+FEATURE_UNREGISTERED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107 u\u017cytkownika.

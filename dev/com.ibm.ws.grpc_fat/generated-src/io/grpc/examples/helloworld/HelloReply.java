@@ -10,7 +10,7 @@ package io.grpc.examples.helloworld;
  *
  * Protobuf type {@code helloworld.HelloReply}
  */
-public  final class HelloReply extends
+public final class HelloReply extends
     com.google.protobuf.GeneratedMessageV3 implements
     // @@protoc_insertion_point(message_implements:helloworld.HelloReply)
     HelloReplyOrBuilder {
@@ -97,6 +97,7 @@ private static final long serialVersionUID = 0L;
    * <code>string message = 1;</code>
    * @return The message.
    */
+  @java.lang.Override
   public java.lang.String getMessage() {
     java.lang.Object ref = message_;
     if (ref instanceof java.lang.String) {
@@ -113,6 +114,7 @@ private static final long serialVersionUID = 0L;
    * <code>string message = 1;</code>
    * @return The bytes for message.
    */
+  @java.lang.Override
   public com.google.protobuf.ByteString
       getMessageBytes() {
     java.lang.Object ref = message_;

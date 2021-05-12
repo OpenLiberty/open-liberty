@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<web-app id="WebApp_ID" version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+	<display-name>
+	SAML_Demo</display-name>
+	<servlet>
+		<description>
+		</description>
+		<display-name>
+		SimpleTFIMIdP</display-name>
+		<servlet-name>SimpleTFIMIdP</servlet-name>
+		<servlet-class>com.ibm.ws.security.web.saml.sample.SimpleTFIMIdP</servlet-class>
+	</servlet>
+	<servlet>
+		<description>
+		</description>
+		<display-name>
+		SnoopServlet</display-name>
+		<servlet-name>SnoopServlet</servlet-name>
+		<servlet-class>com.ibm.ws.security.web.saml.sample.SnoopServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>SimpleTFIMIdP</servlet-name>
+		<url-pattern>
+		/simpleIdP</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>SimpleTFIMIdP</servlet-name>
+		<url-pattern>demoIdP</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>SimpleTFIMIdP</servlet-name>
+		<url-pattern>/tfimIdP</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>
+		/sniff</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>snoop</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/sniffing</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/snooping</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/ssodemo</url-pattern>
+	</servlet-mapping>
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+		<welcome-file>index.htm</welcome-file>
+		<welcome-file>index.jsp</welcome-file>
+		<welcome-file>default.html</welcome-file>
+		<welcome-file>default.htm</welcome-file>
+		<welcome-file>default.jsp</welcome-file>
+	</welcome-file-list>
+	<security-constraint>
+		<display-name>snoopingConstraint</display-name>
+		<web-resource-collection>
+			<web-resource-name>snoopingCollection</web-resource-name>
+			<url-pattern>/snoop</url-pattern>
+			<url-pattern>/sniff</url-pattern>
+			<url-pattern>/sniffing</url-pattern>
+			<url-pattern>/snooping</url-pattern>
+			<url-pattern>/ssodemo</url-pattern>
+			<http-method>GET</http-method>
+			<http-method>PUT</http-method>
+			<http-method>HEAD</http-method>
+			<http-method>TRACE</http-method>
+			<http-method>POST</http-method>
+			<http-method>DELETE</http-method>
+			<http-method>OPTIONS</http-method>
+		</web-resource-collection>
+		<auth-constraint>
+			<description>
+			Auto generated Authorization Constraint</description>
+			<role-name>snooping</role-name>
+		</auth-constraint>
+	</security-constraint>
+	<security-role>
+		<role-name>snooping</role-name>
+	</security-role>
+</web-app>

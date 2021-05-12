@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	version="2.5">
+
+	<servlet>
+		<servlet-name>AnnotatedJNDIEJBSLServlet</servlet-name>
+		<servlet-class>com.ibm.ws.jpa.fvt.injection.tests.ejb.jndi.AnnotatedJNDIEJBSLServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>AnnotatedJNDIEJBSFServlet</servlet-name>
+		<servlet-class>com.ibm.ws.jpa.fvt.injection.tests.ejb.jndi.AnnotatedJNDIEJBSFServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>AnnotatedJNDIEJBSFExServlet</servlet-name>
+		<servlet-class>com.ibm.ws.jpa.fvt.injection.tests.ejb.jndi.AnnotatedJNDIEJBSFExServlet</servlet-class>
+	</servlet>
+	
+	<servlet>
+		<servlet-name>DeploymentDescriptorJNDIEJBSLServlet</servlet-name>
+		<servlet-class>com.ibm.ws.jpa.fvt.injection.tests.ejb.jndi.DeploymentDescriptorJNDIEJBSLServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>DeploymentDescriptorJNDIEJBSFServlet</servlet-name>
+		<servlet-class>com.ibm.ws.jpa.fvt.injection.tests.ejb.jndi.DeploymentDescriptorJNDIEJBSFServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>DeploymentDescriptorJNDIEJBSFEXServlet</servlet-name>
+		<servlet-class>com.ibm.ws.jpa.fvt.injection.tests.ejb.jndi.DeploymentDescriptorJNDIEJBSFEXServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>AnnotatedJNDIEJBSLServlet</servlet-name>
+		<url-pattern>/AnnotatedJNDIEJBSLServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>AnnotatedJNDIEJBSFServlet</servlet-name>
+		<url-pattern>/AnnotatedJNDIEJBSFServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>AnnotatedJNDIEJBSFExServlet</servlet-name>
+		<url-pattern>/AnnotatedJNDIEJBSFExServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>DeploymentDescriptorJNDIEJBSLServlet</servlet-name>
+		<url-pattern>/DeploymentDescriptorJNDIEJBSLServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>DeploymentDescriptorJNDIEJBSFServlet</servlet-name>
+		<url-pattern>/DeploymentDescriptorJNDIEJBSFServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>DeploymentDescriptorJNDIEJBSFEXServlet</servlet-name>
+		<url-pattern>/DeploymentDescriptorJNDIEJBSFEXServlet</url-pattern>
+	</servlet-mapping>
+	
+	<!-- EJB References -->
+	
+	<!-- JNDI Injection Test EJBs -->
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/jndi/AnnotatedJNDISLEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.injection.ejb.jndi.AnnotatedJNDISLEJBLocal</local>
+        <ejb-link>AnnotatedJNDISLEJB</ejb-link>
+    </ejb-local-ref>
+
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/jndi/DDJNDISLEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.injection.ejb.jndi.DDJNDISLEJBLocal</local>
+        <ejb-link>DDJNDISLEJB</ejb-link>
+    </ejb-local-ref>
+    
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/jndi/AnnotatedJNDISFEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.injection.ejb.jndi.AnnotatedJNDISFEJBLocal</local>
+        <ejb-link>AnnotatedJNDISFEJB</ejb-link>
+    </ejb-local-ref>
+
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/jndi/DDJNDISFEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.injection.ejb.jndi.DDJNDISFEJBLocal</local>
+        <ejb-link>DDJNDISFEJB</ejb-link>
+    </ejb-local-ref>
+    
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/jndi/AnnotatedJNDISFEXEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.injection.ejb.jndi.AnnotatedJNDISFEXEJBLocal</local>
+        <ejb-link>AnnotatedJNDISFEXEJB</ejb-link>
+    </ejb-local-ref>
+
+    <ejb-local-ref>
+        <ejb-ref-name>ejb/jndi/DDJNDISFEXEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.injection.ejb.jndi.DDJNDISFEXEJBLocal</local>
+        <ejb-link>DDJNDISFEXEJB</ejb-link>
+    </ejb-local-ref>
+    
+</web-app>

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.0"
+    xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee web-app_3_0.xsd"
+    id="WebApp_ID">
+
+  <display-name>MsgEndpointWeb</display-name>
+
+  <!-- SERVLET DEFINITIONS -->
+  <servlet id="JMS_MD">
+    <servlet-name>JMS_MDServlet</servlet-name>
+    <display-name>JMS_MDServlet</display-name>
+    <servlet-class>com.ibm.ws.ejbcontainer.fat.msgendpoint.web.JMS_MDServlet</servlet-class>
+    <load-on-startup></load-on-startup>
+  </servlet>
+  
+  <servlet id="JMS_MM">
+    <servlet-name>JMS_MMServlet</servlet-name>
+    <display-name>JMS_MMServlet</display-name>
+    <servlet-class>com.ibm.ws.ejbcontainer.fat.msgendpoint.web.JMS_MMServlet</servlet-class>
+    <load-on-startup></load-on-startup>
+  </servlet>
+  
+  <servlet id="NonJMS_MD">
+    <servlet-name>NonJMS_MDServlet</servlet-name>
+    <display-name>NonJMS_MDServlet</display-name>
+    <servlet-class>com.ibm.ws.ejbcontainer.fat.msgendpoint.web.NonJMS_MDServlet</servlet-class>
+    <load-on-startup></load-on-startup>
+  </servlet>
+  
+  <servlet id="NonJMS_MM">
+    <servlet-name>NonJMS_MMServlet</servlet-name>
+    <display-name>NonJMS_MMServlet</display-name>
+    <servlet-class>com.ibm.ws.ejbcontainer.fat.msgendpoint.web.NonJMS_MMServlet</servlet-class>
+    <load-on-startup></load-on-startup>
+  </servlet>
+  
+  <servlet id="MsgEndpoint_CD">
+    <servlet-name>MsgEndpoint_CDServlet</servlet-name>
+    <display-name>MsgEndpoint_CDServlet</display-name>
+    <servlet-class>com.ibm.ws.ejbcontainer.fat.msgendpoint.web.MsgEndpoint_CDServlet</servlet-class>
+    <load-on-startup></load-on-startup>
+  </servlet>
+  
+  <servlet id="MsgEndpoint_IF">
+    <servlet-name>MsgEndpoint_IFServlet</servlet-name>
+    <display-name>MsgEndpoint_IFServlet</display-name>
+    <servlet-class>com.ibm.ws.ejbcontainer.fat.msgendpoint.web.MsgEndpoint_IFServlet</servlet-class>
+    <load-on-startup></load-on-startup>
+  </servlet>
+  
+  <servlet id="MsgEndpoint_SM">
+    <servlet-name>MsgEndpoint_SMServlet</servlet-name>
+    <display-name>MsgEndpoint_SMServlet</display-name>
+    <servlet-class>com.ibm.ws.ejbcontainer.fat.msgendpoint.web.MsgEndpoint_SMServlet</servlet-class>
+    <load-on-startup></load-on-startup>
+  </servlet>
+  
+  <servlet id="TimerMDBOperations">
+    <servlet-name>TimerMDBOperationsServlet</servlet-name>
+    <display-name>TimerMDBOperationsServlet</display-name>
+    <servlet-class>com.ibm.ws.ejbcontainer.fat.msgendpoint.web.TimerMDBOperationsServlet</servlet-class>
+    <load-on-startup></load-on-startup>
+  </servlet>
+  
+  <servlet id="MsgEndpoint_TX">
+    <servlet-name>MsgEndpoint_TXServlet</servlet-name>
+    <display-name>MsgEndpoint_TXServlet</display-name>
+    <servlet-class>com.ibm.ws.ejbcontainer.fat.msgendpoint.web.MsgEndpoint_TXServlet</servlet-class>
+    <load-on-startup></load-on-startup>
+  </servlet>
+  
+  <servlet id="MsgEndpoint_PC">
+    <servlet-name>MsgEndpoint_PCServlet</servlet-name>
+    <display-name>MsgEndpoint_PCServlet</display-name>
+    <servlet-class>com.ibm.ws.ejbcontainer.fat.msgendpoint.web.MsgEndpoint_PCServlet</servlet-class>
+    <load-on-startup></load-on-startup>
+  </servlet>
+  
+
+  <!-- SERVLET MAPPINGS -->        
+  <servlet-mapping id="ServletMapping_JMS_MD">
+    <servlet-name>JMS_MDServlet</servlet-name>
+    <url-pattern>/JMS_MDServlet</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping id="ServletMapping_JMS_MM">
+    <servlet-name>JMS_MMServlet</servlet-name>
+    <url-pattern>/JMS_MMServlet</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping id="ServletMapping_NonJMS_MD">
+    <servlet-name>NonJMS_MDServlet</servlet-name>
+    <url-pattern>/NonJMS_MDServlet</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping id="ServletMapping_NonJMS_MM">
+    <servlet-name>NonJMS_MMServlet</servlet-name>
+    <url-pattern>/NonJMS_MMServlet</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping id="ServletMapping_MsgEndpoint_CD">
+    <servlet-name>MsgEndpoint_CDServlet</servlet-name>
+    <url-pattern>/MsgEndpoint_CDServlet</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping id="ServletMapping_MsgEndpoint_IF">
+    <servlet-name>MsgEndpoint_IFServlet</servlet-name>
+    <url-pattern>/MsgEndpoint_IFServlet</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping id="ServletMapping_MsgEndpoint_SM">
+    <servlet-name>MsgEndpoint_SMServlet</servlet-name>
+    <url-pattern>/MsgEndpoint_SMServlet</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping id="ServletMapping_TimerMDBOperations">
+    <servlet-name>TimerMDBOperationsServlet</servlet-name>
+    <url-pattern>/TimerMDBOperationsServlet</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping id="ServletMapping_MsgEndpoint_TX">
+    <servlet-name>MsgEndpoint_TXServlet</servlet-name>
+    <url-pattern>/MsgEndpoint_TXServlet</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping id="ServletMapping_MsgEndpoint_PC">
+    <servlet-name>MsgEndpoint_PCServlet</servlet-name>
+    <url-pattern>/MsgEndpoint_PCServlet</url-pattern>
+  </servlet-mapping>
+
+  <resource-env-ref>
+    <resource-env-ref-name>BaseMessageProvider</resource-env-ref-name>
+    <resource-env-ref-type>com.ibm.ws.ejbcontainer.fat.rar.message.FVTBaseMessageProvider</resource-env-ref-type>
+  </resource-env-ref>
+  
+  <resource-env-ref>
+    <resource-env-ref-name>MessageProvider</resource-env-ref-name>
+    <resource-env-ref-type>com.ibm.ws.ejbcontainer.fat.rar.message.FVTMessageProvider</resource-env-ref-type>
+  </resource-env-ref>
+  
+  <resource-env-ref>
+    <resource-env-ref-name>FAT_TRA_DS</resource-env-ref-name>
+    <resource-env-ref-type>javax.sql.DataSource</resource-env-ref-type>
+  </resource-env-ref>
+</web-app>

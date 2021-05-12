@@ -6,7 +6,7 @@ package com.ibm.test.g3store.grpc;
 /**
  * Protobuf type {@code test.g3store.grpc.NameResponse}
  */
-public  final class NameResponse extends
+public final class NameResponse extends
     com.google.protobuf.GeneratedMessageV3 implements
     // @@protoc_insertion_point(message_implements:test.g3store.grpc.NameResponse)
     NameResponseOrBuilder {

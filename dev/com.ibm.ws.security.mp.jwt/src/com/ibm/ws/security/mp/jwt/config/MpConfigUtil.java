@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt.config;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
@@ -20,12 +18,10 @@ import javax.servlet.http.HttpServletRequest;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.security.jwt.config.MpConfigProperties;
 import com.ibm.ws.security.mp.jwt.MpConfigProxyService;
 import com.ibm.ws.security.mp.jwt.TraceConstants;
-import com.ibm.ws.webcontainer.srt.SRTServletRequest;
-import com.ibm.ws.webcontainer.webapp.WebApp;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
-import com.ibm.wsspi.webcontainer.webapp.IWebAppDispatcherContext;
 
 /**
  *
@@ -38,8 +34,8 @@ public class MpConfigUtil {
         this.mpConfigProxyServiceRef = mpConfigProxyServiceRef;
     }
 
-    public Map<String, String> getMpConfig(HttpServletRequest req) {
-        Map<String, String> map = new HashMap<String, String>();
+    public MpConfigProperties getMpConfig(HttpServletRequest req) {
+        MpConfigProperties map = new MpConfigProperties();
         MpConfigProxyService service = mpConfigProxyServiceRef.getService();
         if (service != null) {
             return getMpConfigMap(service, getApplicationClassloader(req), map);
@@ -52,21 +48,11 @@ public class MpConfigUtil {
     }
 
     protected ClassLoader getApplicationClassloader(HttpServletRequest req) {
-        ClassLoader cl = null;
-        //HttpServletRequest req
-        if (req instanceof SRTServletRequest) {
-            SRTServletRequest servletRequest = (SRTServletRequest) req;
-            IWebAppDispatcherContext webAppDispatchContext = servletRequest.getWebAppDispatcherContext();
-            WebApp webApp = webAppDispatchContext.getWebApp();
-            if (webApp != null) {
-                cl = webApp.getClassLoader();
-            }
-        }
-        return cl;
+        return req != null ? req.getServletContext().getClassLoader() : null;
     }
 
     // no null check. make sure that the caller sets non null objects.
-    protected Map<String, String> getMpConfigMap(MpConfigProxyService service, ClassLoader cl, Map<String, String> map) {
+    protected MpConfigProperties getMpConfigMap(MpConfigProxyService service, ClassLoader cl, MpConfigProperties map) {
         Set<String> supportedMpConfigPropNames = service.getSupportedConfigPropertyNames();
         supportedMpConfigPropNames.forEach(s -> getMpConfig(service, cl, s, map));
         return map;
@@ -74,7 +60,7 @@ public class MpConfigUtil {
 
     // no null check other than cl. make sure that the caller sets non null objects.
     @FFDCIgnore({ NoSuchElementException.class })
-    protected Map<String, String> getMpConfig(MpConfigProxyService service, ClassLoader cl, String propertyName, Map<String, String> map) {
+    protected MpConfigProperties getMpConfig(MpConfigProxyService service, ClassLoader cl, String propertyName, MpConfigProperties map) {
         try {
             String value = service.getConfigValue(cl, propertyName, String.class);
             if (value != null) {

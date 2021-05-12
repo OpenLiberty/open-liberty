@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,14 +10,14 @@
  *******************************************************************************/
 package com.ibm.ws.security.jwt.fat.builder.expectations;
 
-import com.ibm.json.java.JSONObject;
+import javax.json.JsonObject;
+
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.Constants;
 import com.ibm.ws.security.fat.common.jwt.expectations.JwtApiExpectation;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 import com.ibm.ws.security.jwt.fat.builder.utils.BuilderHelpers;
 
-@SuppressWarnings("restriction")
 public class JwtTimeClaimExpectation extends JwtApiExpectation {
     public static final TestValidationUtils validationUtils = new TestValidationUtils();
 
@@ -54,14 +54,14 @@ public class JwtTimeClaimExpectation extends JwtApiExpectation {
 
         try {
             Long testWindow = 120000L; // 2 minutes shoulds like a lot, but we do have some 4 minute timeouts, so, this may not be enough
-            JSONObject payload = BuilderHelpers.extractJwtPayload(contentToValidate);
+            JsonObject payload = BuilderHelpers.extractJwtPayload(contentToValidate);
             if (payload == null) {
                 throw new Exception(failureMsg + " Failed to find the payload in the response");
             }
 
             if (Constants.TIME_TYPE.equals(checkType)) {
                 long expectedValue = Long.parseLong(validationValue);
-                long actualValue = (long) payload.get(validationKey);
+                long actualValue = payload.getJsonNumber(validationKey).longValue();
                 Log.info(thisClass, "validate", "Validting that calculated time is appropriate (" + expectedValue + " <= " + actualValue + " <= " + (expectedValue + testWindow) + " (expectedValue + testWindow))");
                 validationUtils.assertTrueAndLog("validateStringNull", "The expected value (" + validationValue + ") for the " + validationKey + " claim is earlier/less than the actual value (" + actualValue + ")", (expectedValue <= actualValue));
                 validationUtils.assertTrueAndLog("validateStringNull", "The actual value (" + actualValue + ") for the " + validationKey + " claim is outside the 2 minute window for the expected value (" + validationValue + ")", (actualValue <= (expectedValue + testWindow)));

@@ -1,8 +1,14 @@
 <server>
 
-  <featureManager>
-    <feature>osgiconsole-1.0</feature>
+  <variable name="onError" value="FAIL"/>
 
+  <!--
+  <logging
+    traceSpecification="*=info:logservice=all:SIBJms*=all:com.ibm.ws.cdi.*=all"
+    maxFileSize="200"/>
+   -->
+
+  <featureManager>
     <feature>jndi-1.0</feature>
     <feature>servlet-3.1</feature>
     <feature>ejbLite-3.2</feature>
@@ -10,17 +16,38 @@
 
     <feature>wasJmsClient-2.0</feature>
     <feature>testjmsinternals-1.0</feature>
+
+    <feature>timedexit-1.0</feature>
   </featureManager>
 
-  <include optional="true" location="../fatTestPorts.xml"/>
+  <!-- Import from 'fatTestPorts.xml' -->
+  <httpEndpoint id="defaultHttpEndpoint"
+      host="*"
+      httpPort="${bvt.prop.HTTP_default}"
+      httpsPort="${bvt.prop.HTTP_default.secure}"/>
 
-  <variable name="onError" value="FAIL"/>
-  
-  <logging 
-    traceSpecification="*=info:logservice=all:SIBJms*=all:com.ibm.ws.cdi.*=all"
-    maxFileSize="200"/>
+  <!-- Import from 'fatTestPorts.xml' -->
+  <iiopEndpoint id="defaultIiopEndpoint" iiopPort="${bvt.prop.IIOP}">
+    <iiopsOptions iiopsPort="${bvt.prop.IIOP.secure}" sslRef="defaultSSLConfig"/>
+  </iiopEndpoint>
 
-  <!-- Point the connection factories to the JMS endpoint defined in the engine configuration. -->
+  <!-- Import from 'fatTestPorts.xml' -->
+  <wasJmsEndpoint host="localhost" wasJmsPort="${bvt.prop.jms}" wasJmsSSLPort="${bvt.prop.jms.ssl}" />
+
+  <!-- Avoid MissingDoPrivDetectionSecurityManager warning CWWKE0921W potential violation warnings -->
+  <javaPermission className="java.net.SocketPermission" name="*" actions="resolve"/>
+
+  <!-- JMS endpoint configuration -->
+
+  <jmsConnectionFactory jndiName="jndi_JMS_BASE_CF" connectionManagerRef="ConMgr9">
+    <properties.wasJms remoteServerAddress="localhost:${bvt.prop.jms.1}:BootstrapBasicMessaging"/> 
+  </jmsConnectionFactory>
+  <connectionManager id="ConMgr9" maxPoolSize="2"/>
+
+  <jmsQueueConnectionFactory jndiName="jndi_JMS_BASE_QCF" connectionManagerRef="ConMgr6">
+    <properties.wasJms remoteServerAddress="localhost:${bvt.prop.jms.1}:BootstrapBasicMessaging"/>
+  </jmsQueueConnectionFactory>
+  <connectionManager id="ConMgr6" maxPoolSize="2"/>
 
   <jmsQueueConnectionFactory jndiName="jndi_JMS_BASE_QCF1" connectionManagerRef="ConMgr1">
     <properties.wasJms remoteServerAddress="localhost:${bvt.prop.jms.1}:BootstrapBasicMessaging"/>
@@ -41,16 +68,6 @@
     <properties.wasJms remoteServerAddress="localhost:${bvt.prop.jms.1}:BootstrapBasicMessaging"/> 
   </jmsTopicConnectionFactory>
   <connectionManager id="ConMgr5" maxPoolSize="2"/>
-
-  <jmsQueueConnectionFactory jndiName="jndi_JMS_BASE_QCF" connectionManagerRef="ConMgr6">
-    <properties.wasJms remoteServerAddress="localhost:${bvt.prop.jms.1}:BootstrapBasicMessaging"/> 
-  </jmsQueueConnectionFactory>
-  <connectionManager id="ConMgr6" maxPoolSize="2"/>
-
-  <jmsQueueConnectionFactory jndiName="jndi_JMS_BASE_CF" connectionManagerRef="ConMgr9">
-    <properties.wasJms remoteServerAddress="localhost:${bvt.prop.jms.1}:BootstrapBasicMessaging"/> 
-  </jmsQueueConnectionFactory>
-  <connectionManager id="ConMgr9" maxPoolSize="2"/>
 
   <jmsQueue jndiName="jndi_INPUT_Q1">
     <properties.wasJms queueName="QUEUE1"/>

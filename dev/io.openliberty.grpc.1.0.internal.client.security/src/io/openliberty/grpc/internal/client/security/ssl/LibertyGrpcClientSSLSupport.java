@@ -24,7 +24,6 @@ import java.util.Map;
 import java.util.Properties;
 
 import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLException;
 import javax.net.ssl.TrustManagerFactory;
 
 import org.osgi.framework.ServiceReference;
@@ -41,17 +40,17 @@ import com.ibm.websphere.ssl.JSSEHelper;
 import com.ibm.ws.ssl.KeyStoreService;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
-import io.grpc.netty.shaded.io.grpc.netty.GrpcSslContexts;
-import io.grpc.netty.shaded.io.netty.handler.ssl.ClientAuth;
-import io.grpc.netty.shaded.io.netty.handler.ssl.SslContext;
-import io.grpc.netty.shaded.io.netty.handler.ssl.SslContextBuilder;
+import io.grpc.netty.GrpcSslContexts;
+import io.netty.handler.ssl.ClientAuth;
+import io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.SslContextBuilder;
 import io.openliberty.grpc.internal.client.GrpcClientMessages;
 import io.openliberty.grpc.internal.client.GrpcSSLService;
 
 @Component(service = {GrpcSSLService.class}, property = { "service.vendor=IBM" })
 public class LibertyGrpcClientSSLSupport implements GrpcSSLService{
 
-	private static final TraceComponent tc = Tr.register(LibertyGrpcClientSSLSupport.class, GrpcClientMessages.GRPC_TRACE_NAME, GrpcClientMessages.GRPC_BUNDLE);
+	private static final TraceComponent tc = Tr.register(LibertyGrpcClientSSLSupport.class, GrpcClientMessages.GRPC_TRACE_NAME, GrpcClientMessages.GRPC_CLIENT_SECURITY_BUNDLE);
 
     static final String KEY_KEYSTORE_SERVICE_REF = "keyStoreService";
     private final AtomicServiceReference<KeyStoreService> keyStoreServiceRef = new AtomicServiceReference<KeyStoreService>(KEY_KEYSTORE_SERVICE_REF);
@@ -90,49 +89,43 @@ public class LibertyGrpcClientSSLSupport implements GrpcSSLService{
 		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 			Tr.debug(tc, "getOutboundClientSSLContext ssl reference ID: {0}", sslRef);
 		}
-		if (sslRef != null) {
-
-			Properties props = getSSLProps(sslRef, host, port);
-			if (props != null) {
-				if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-					Tr.debug(tc, "attempting to build SslContext with props: {0}", props);
+		Properties props = getSSLProps(sslRef, host, port);
+		if (props != null) {
+			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+				Tr.debug(tc, "attempting to build SslContext with props: {0}", props);
+			}
+			try {
+				SslContextBuilder builder = GrpcSslContexts.forClient();
+				
+				TrustManagerFactory trustFactory = getTrustManagerFactory(props);
+				if (trustFactory != null) {
+					builder.trustManager(trustFactory);
 				}
-				try {
-					SslContextBuilder builder = GrpcSslContexts.forClient();
-					
-					TrustManagerFactory trustFactory = getTrustManagerFactory(props);
-					if (trustFactory != null) {
-						builder.trustManager(trustFactory);
-					}
-					
-					KeyManagerFactory keyFactory = getKeyManagerFactory(props);
-					if (keyFactory != null) {
-						builder.keyManager(keyFactory);
-					}
-					
-					String sslProtocol = getSSLProtocol(props);
-					if (sslProtocol != null) {
-						if (!!!(sslProtocol.equals("TLSv1.2") || sslProtocol.equals("TLSv1.3"))) {
-							// TODO: message saying that ssl protocols less than TLSv1.2 are not supported by Netty for HTTP/2 
-							Tr.warning(tc, "invalid.ssl.prop", new Object[] { sslRef, sslProtocol } );
-						}
-						builder.protocols(sslProtocol);
-					}
-					
-					List<String> ciphers = getCiphers(props);
-					if (ciphers != null && !ciphers.isEmpty()) {
-						builder.ciphers(ciphers);
-					}
-					
-					builder.clientAuth(ClientAuth.OPTIONAL);
-					context = builder.build();
-				} catch (SSLException e) {
-					if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-						Tr.debug(tc, "getOutboundClientSSLContext failed to create SslContext due to: {0}", e);
-					}
+				
+				KeyManagerFactory keyFactory = getKeyManagerFactory(props);
+				if (keyFactory != null) {
+					builder.keyManager(keyFactory);
 				}
-			}		
-		}
+				
+				String sslProtocol = getSSLProtocol(props);
+				if (sslProtocol != null) {
+					if (!!!(sslProtocol.equals("TLSv1.2") || sslProtocol.equals("TLSv1.3"))) {
+						Tr.warning(tc, "invalid.ssl.protocol", new Object[] { sslProtocol, getSSLAlias(props) } );
+					}
+					builder.protocols(sslProtocol);
+				}
+				
+				List<String> ciphers = getCiphers(props);
+				if (ciphers != null && !ciphers.isEmpty()) {
+					builder.ciphers(ciphers);
+				}
+				
+				builder.clientAuth(ClientAuth.OPTIONAL);
+				context = builder.build();
+			} catch (Exception e) {
+				Tr.warning(tc, "client.ssl.failed", new Object[] { getSSLAlias(props), e } );
+			}
+		}		
 		return context;
 	}
 
@@ -159,7 +152,7 @@ public class LibertyGrpcClientSSLSupport implements GrpcSSLService{
         	sslProps = AccessController.doPrivileged(new PrivilegedExceptionAction<Properties>() {
 			    @Override
 			    public Properties run() throws Exception {
-			        return helper.getProperties(sslRef, connectionInfo, null);
+			        return helper.getProperties(sslRef, connectionInfo, null, false);
 			    }
 			});
 		} catch (PrivilegedActionException e) {
@@ -169,11 +162,15 @@ public class LibertyGrpcClientSSLSupport implements GrpcSSLService{
 		}
         return sslProps;
     }
-    
-    protected static String getSSLProtocol(Properties props) {
-    	return props.getProperty(Constants.SSLPROP_PROTOCOL);
+
+    protected static String getSSLAlias(Properties props) {
+        return props.getProperty(Constants.SSLPROP_ALIAS);
     }
     
+    protected static String getSSLProtocol(Properties props) {
+        return props.getProperty(Constants.SSLPROP_PROTOCOL);
+    }
+
     protected static List<String> getCiphers(Properties props) {
         String enabledCipherString = props.getProperty(Constants.SSLPROP_ENABLED_CIPHERS);
         if (enabledCipherString != null) {

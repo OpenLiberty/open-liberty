@@ -1,7 +1,7 @@
 package com.ibm.tx.jta.embeddable.config;
 
 /*******************************************************************************
- * Copyright (c) 2010, 2020 IBM Corporation and others.
+ * Copyright (c) 2010, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -56,6 +56,7 @@ public class EmbeddableConfigurationProviderImpl implements ConfigurationProvide
     private static boolean _enableLoggingForHeuristicReporting;
     private static boolean _acceptHeuristicHazard;
     private static boolean _recoverOnStartup;
+    private static boolean _shutdownOnLogFailure = true;
     private static boolean _OnePCOptimization;
     private static boolean _waitForRecovery;
     private static int _totalTranLifetimeTimeout;
@@ -245,6 +246,13 @@ public class EmbeddableConfigurationProviderImpl implements ConfigurationProvide
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "isRecoverOnStartup", _recoverOnStartup);
         return _recoverOnStartup;
+    }
+
+    @Override
+    public boolean isShutdownOnLogFailure() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "isRecoverOnStartup", _shutdownOnLogFailure);
+        return _shutdownOnLogFailure;
     }
 
     @Override
@@ -516,5 +524,10 @@ public class EmbeddableConfigurationProviderImpl implements ConfigurationProvide
     @Override
     public int getStandardTransientErrorRetryAttempts() {
         return 180;
+    }
+
+    @Override
+    public int getLeaseRenewalThreshold() {
+        return 90;
     }
 }

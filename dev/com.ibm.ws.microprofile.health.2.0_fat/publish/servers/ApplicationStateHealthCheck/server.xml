@@ -10,19 +10,6 @@
         <feature>componenttest-1.0</feature>
     </featureManager>
 
-    <library id="kafkaLib">
-        <fileset dir="kafkaLib"/>
-    </library>
-
-     <logging traceSpecification="*=info:HEALTH=all:com.ibm.websphere.org.eclipse.microprofile.health.2.0.*=all=enabled"/>
-
-     <!-- this sections mirrors permissions.xml to apply the permissions to the Kafka client jar in the shared library -->
-    <variable name="kafkaCodebase" value="${server.config.dir}/kafkaLib/kafka-clients-2.3.0.jar"/>
-    <javaPermission codebase="${kafkaCodebase}" className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
-    <javaPermission codebase="${kafkaCodebase}" className="javax.management.MBeanPermission" name="*" actions="*"/>
-    <javaPermission codebase="${kafkaCodebase}" className="javax.management.MBeanTrustPermission" name="register"/>
-    <javaPermission codebase="${kafkaCodebase}" className="java.util.PropertyPermission" name="*" actions="read"/>
-    <javaPermission codebase="${kafkaCodebase}" className="java.net.SocketPermission" name="*" actions="connect"/>
-    <javaPermission codebase="${kafkaCodebase}" className="java.lang.RuntimePermission" name="getClassLoader" actions="*"/>
-    <javaPermission codebase="${kafkaCodebase}" className="java.io.FilePermission" name="*" actions="read"/>
+    <logging traceSpecification="*=info:HEALTH=all:logservice=all=enabled:com.ibm.websphere.org.eclipse.microprofile.health.2.0.*=all=enabled"/>
+    <webContainer deferServletLoad="false"/> 
 </server>

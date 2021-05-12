@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,25 +29,27 @@ import com.ibm.ws.jaxrs20.cdi12.fat.test.ResourceInfoAtStartupTest;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
                AlwaysPassesTest.class,
-               Basic12Test.class,
-               BeanValidation12Test.class,
-               Complex12Test.class,
+               Basic12Test.class,             // Skip for JakartaEE9
+               BeanValidation12Test.class,    // Skip for JakartaEE9
+               Complex12Test.class,           // Skip for JakartaEE9
                ContextAndClientTest.class,
-               ContextandCDI12Test.class,
-               DisableTest.class,
+               ContextandCDI12Test.class,     // Skip for JakartaEE9
+               DisableTest.class,             // Skip for JakartaEE9
                InterceptorTest.class,
-               LifeCycle12Test.class,
-               LifeCycleMismatch12Test.class,
+               LifeCycle12Test.class,         // Skip for JakartaEE9
+               LifeCycleMismatch12Test.class, // Skip for JakartaEE9
                LoadOnStartup12Test.class,
                ResourceInfoAtStartupTest.class
 })
 public class FATSuite {
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(FeatureReplacementAction.EE8_FEATURES().withID("JAXRS-2.1"));
+                    .andWith(FeatureReplacementAction.EE8_FEATURES().withID("JAXRS-2.1"))
+                    .andWith(new JakartaEE9Action());
 }

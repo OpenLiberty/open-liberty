@@ -20,16 +20,17 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.rules.TestRule;
+import org.junit.runner.RunWith;
 
+import componenttest.annotation.SkipForRepeat;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
-/**
- *
- */
+@RunWith(FATRunner.class)
 public class LiteBucketSet2Test {
 
     private static LibertyServer clientServer = LibertyServerFactory.getLibertyServer("LiteSet2Client");
@@ -60,23 +61,19 @@ public class LiteBucketSet2Test {
 
     @BeforeClass
     public static void testConfigFileChange() throws Exception {
+        // Prepare the server which runs the messaging engine.
+
+        engineServer.copyFileToLibertyInstallRoot(
+            "lib/features",
+            "features/testjmsinternals-1.0.mf");
         engineServer.setServerConfigurationFile("Lite2Engine.xml");
 
-        engineServer.startServer("LiteBucketSet2_Engine.log");
-
-        String changedMessageFromLog = engineServer.waitForStringInLog(
-            "CWWKF0011I.*",
-            engineServer.getMatchingLogFile("trace.log") );
-        assertNotNull(
-            "Could not find the upload message in the new file",
-            changedMessageFromLog);
-
-        //
+        // Prepare the server which runs the messaging client and which
+        // runs the test application.
 
         clientServer.copyFileToLibertyInstallRoot(
             "lib/features",
             "features/testjmsinternals-1.0.mf");
-
         clientServer.setServerConfigurationFile("Lite2Client.xml");
 
         TestUtils.addDropinsWebApp(clientServer, CONSUMER_118077_APPNAME, CONSUMER_118077_PACKAGES);
@@ -84,24 +81,23 @@ public class LiteBucketSet2Test {
         TestUtils.addDropinsWebApp(clientServer, CONTEXT_INJECT_APPNAME, CONTEXT_INJECT_PACKAGES);
         TestUtils.addDropinsWebApp(clientServer, PRODUCER_118073_APPNAME, PRODUCER_118073_PACKAGES);
 
-        clientServer.startServer("LiteBucketSet2_Client.log");
+        // Start both servers.  Start the engine first, so that its resources
+        // are available when the client starts.
 
-        changedMessageFromLog = clientServer.waitForStringInLog(
-            "CWWKF0011I.*",
-            clientServer.getMatchingLogFile("trace.log") );
-        assertNotNull(
-            "Could not find the upload message in the new file",
-            changedMessageFromLog);
+        engineServer.startServer("LiteBucketSet2_Engine.log");
+        clientServer.startServer("LiteBucketSet2_Client.log");
     }
 
-    @org.junit.AfterClass
+    @AfterClass
     public static void tearDown() {
+        // Stop the messaging client ...
         try {
             clientServer.stopServer();
         } catch ( Exception e ) {
             e.printStackTrace();
         }
 
+        // ... then stop the messaging engine.
         try {
             engineServer.stopServer();
         } catch ( Exception e ) {

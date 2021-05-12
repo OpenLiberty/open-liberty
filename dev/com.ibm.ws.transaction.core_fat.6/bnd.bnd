@@ -32,7 +32,7 @@ fat.project: true
 tested.features:\
   cdi-2.0,\
   cdi-3.0,\
-  ejbLite-4.0,\
+  enterpriseBeansLite-4.0,\
   jsonp-1.1,\
   jaxrsclient-2.1,\
   jaxrs-2.1,\

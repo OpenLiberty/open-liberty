@@ -11,10 +11,14 @@
 package com.ibm.websphere.microprofile.faulttolerance_fat.tests;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -51,6 +55,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.RepeatTestFilter;
+import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -84,7 +89,7 @@ public class FaultToleranceMainTest extends FATServletClient {
     @Rule
     public AnnotationFilter filter = AnnotationFilter
                     .requireAnnotations(BasicTest.class)
-                    .forAllRepeatsExcept(RepeatFaultTolerance.MP40_FEATURES_ID)
+                    .forAllRepeatsExcept(MicroProfileActions.MP40_ID)
                     .inModes(TestMode.LITE);
 
     @BeforeClass
@@ -155,22 +160,51 @@ public class FaultToleranceMainTest extends FATServletClient {
 
         executor.shutdown();
 
-        // First two tasks should succeed
-        assertThat("Task One", future1.get(TIMEOUT + FUTURE_THRESHOLD, TimeUnit.MILLISECONDS), containsString("Success"));
-        assertThat("Task Two", future2.get(FUTURE_THRESHOLD, TimeUnit.MILLISECONDS), containsString("Success"));
+        // Two of the tasks should succeed, one should fail with a bulkhead exception
+        List<Result> results = new ArrayList<>();
+        results.add(new Result("Task One", future1.get(TIMEOUT + FUTURE_THRESHOLD, TimeUnit.MILLISECONDS)));
+        results.add(new Result("Task Two", future2.get(FUTURE_THRESHOLD, TimeUnit.MILLISECONDS)));
+        results.add(new Result("Task Three", future3.get(TIMEOUT + FUTURE_THRESHOLD, TimeUnit.MILLISECONDS)));
 
-        // Third task should fail with a Bulkhead exception
-        assertThat("Task Three", future3.get(TIMEOUT + FUTURE_THRESHOLD, TimeUnit.MILLISECONDS), containsString("BulkheadException"));
+        List<Result> successes = new ArrayList<>();
+        List<Result> failures = new ArrayList<>();
+        for (Result result : results) {
+            if (result.value.contains("Success")) {
+                successes.add(result);
+            } else if (result.value.contains("BulkheadException")) {
+                failures.add(result);
+            } else {
+                fail("Unexpected failure result: " + result);
+            }
+        }
 
-        if (RepeatFaultTolerance.MP20_FEATURES_ID.equals(RepeatTestFilter.CURRENT_REPEAT_ACTION)) {
+        assertThat("Number of successes", successes, hasSize(2));
+        assertThat("Number of failures", failures, hasSize(1));
+
+        if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP20_ID)) {
             // Check for the correct message for FT 1.x
-            assertThat("Task Three message should have correct code", future3.get(), containsString("CWMFT0001E"));
+            assertThat("Failure message should have correct code", failures.get(0).value, containsString("CWMFT0001E"));
             // Ensure that the message substitution has happened
-            assertThat("Task Three message should be substituted", future3.get(), not(containsString("bulkhead.no.threads.CWMFT0001E")));
+            assertThat("Failure message should be substituted", failures.get(0).value, not(containsString("bulkhead.no.threads.CWMFT0001E")));
         }
     }
 
-    @SkipForRepeat(RepeatFaultTolerance.MP40_FEATURES_ID) // FT 3.0 does not close executors until the application shuts down
+    private static class Result {
+        String name;
+        String value;
+
+        public Result(String name, String value) {
+            this.name = name;
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return name + ": " + value;
+        }
+    }
+
+    @SkipForRepeat(MicroProfileActions.MP40_ID) // FT 3.0 does not close executors until the application shuts down
     @Test
     public void testExecutorsClose() throws Exception {
 

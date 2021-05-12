@@ -1,0 +1,32 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.0
+
+Bundle-Name: joda-time.joda-time
+Bundle-Description: joda-time joda-time; version=2.9.9
+Bundle-SymbolicName: com.ibm.ws.org.joda.time.2.9.9
+
+WS-TraceGroup: WSS4J
+
+Export-Package: \
+ org.joda.time, \
+ org.joda.time.chrono, \
+ org.joda.time.format
+
+Import-Package: \
+ !org.joda.convert
+ 
+Private-Package: org.joda.time.*
+
+Include-Resource: \
+ @${repo;joda-time:joda-time;2.9.9}!/org/joda/time/**/*xml,\
+ @${repo;joda-time:joda-time;2.9.9}!/!(META-INF/MANIFEST.MF|META-INF/maven/*|org/*)

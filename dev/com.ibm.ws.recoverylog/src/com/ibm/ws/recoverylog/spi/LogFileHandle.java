@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2014 IBM Corporation and others.
+ * Copyright (c) 2002, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,15 +15,16 @@ import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.security.AccessController;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import com.ibm.tx.util.logging.FFDCFilter;
-import com.ibm.tx.util.logging.Tr;
-import com.ibm.tx.util.logging.TraceComponent;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.FFDCFilter;
 
 //------------------------------------------------------------------------------
 // Class: LogHandle
@@ -87,69 +88,69 @@ class LogFileHandle
      * with respect to the LogRecord's absolute position in the log ByteBuffer.
      * Internal class used by LogFileHandle only, so
      */
-    private final Comparator _recordComparator = new Comparator()
-    {
-        @Override
-        public int compare(Object obj1, Object obj2)
-        {
-            if (tc.isEntryEnabled())
-                Tr.entry(tc, "compare", new Object[] { obj1, obj2, this });
+  private final Comparator<LogRecord> _recordComparator = new Comparator<LogRecord>()
+  {
+      @Override
+      public int compare(LogRecord obj1, LogRecord obj2)
+      {
+          if (tc.isEntryEnabled())
+              Tr.entry(tc, "compare", new Object[] { obj1, obj2, this });
 
-            final int comparison = ((LogRecord) obj1).absolutePosition() - ((LogRecord) obj2).absolutePosition();
+          final int comparison = obj1.absolutePosition() - obj2.absolutePosition();
 
-            if (tc.isEntryEnabled())
-                Tr.exit(tc, "compare", new Integer(comparison));
-            return comparison;
-        }
+          if (tc.isEntryEnabled())
+              Tr.exit(tc, "compare", comparison);
+          return comparison;
+      }
 
-        @Override
-        public boolean equals(Object obj)
-        {
-            if (tc.isEntryEnabled())
-                Tr.entry(tc, "equals", new Object[] { obj, this });
-            if (tc.isEntryEnabled())
-                Tr.exit(tc, "equals", Boolean.FALSE);
-            return false;
-        }
-    };
+      @Override
+      public boolean equals(Object obj)
+      {
+          if (tc.isEntryEnabled()) {
+              Tr.entry(tc, "equals", new Object[] { obj, this });
+              Tr.exit(tc, "equals", Boolean.FALSE);
+          }
+          return false;
+      }
+  };
 
-    /**
-     * A reference to the log file managed by this LogFileHandle instance.
-     */
-    private RandomAccessFile _file = null;
+  /**
+   * A reference to the log file managed by this LogFileHandle instance.
+   */
+  private RandomAccessFile _file;
 
-    /**
-     * A FileChannel for the _file reference. The file channel is used to create
+  /**
+   * A FileChannel for the _file reference. The file channel is used to create
      * the mapped view of the log file when it is first opened and to re-map
      * the file when the log file is being extended.
      */
-    private FileChannel _fileChannel = null;
+    private FileChannel _fileChannel;
 
     /**
      * A reference to the LogFileHeader which provides an in memory copy of the file header stored
      * in the file managed by this instance of LogFileHandle.
      */
-    private LogFileHeader _logFileHeader = null;
+    private LogFileHeader _logFileHeader;
 
     /**
      * The directory in which the file managed by this instance of LogFileHandle resides.
      */
-    private String _logDirectory = null;
+    private String _logDirectory;
 
     /**
      * The name of file managed by this instance of LogFileHandle.
      */
-    private String _fileName = null;
+    private String _fileName;
 
     /**
      * The name of the current application server
      */
-    private String _serverName = null;
+    private String _serverName;
 
     /**
      * The name of the service that owns the file managed by this instance of LogFileHandle.
      */
-    private String _serviceName = null;
+    private String _serviceName;
 
     /**
      * The version number of the service which created the log file
@@ -159,27 +160,25 @@ class LogFileHandle
     /**
      * The name of the log that owns the file managed by this instance of LogFileHandle.
      */
-    private String _logName = null;
+    private String _logName;
 
     /**
      * The filesize (in kilobytes) of the file managed by this instance of LogFileHandle.
      */
-    private int _fileSize = 0;
+    private int _fileSize;
 
-    /**
-  */
-    FailureScope _failureScope = null;
+    FailureScope _failureScope;
 
     /**
      * Whether of not an exception was thrown during force
      */
-    private volatile boolean _exceptionInForce = false;
+    private volatile boolean _exceptionInForce;
 
     /**
      * Whether or not the header was rewritten following a restart and before writing new log records.
      * Visibility is assured by locks in LogHandle.getWriteableLogRecord
      */
-    private boolean _headerFlushedFollowingRestart = false;
+    private boolean _headerFlushedFollowingRestart;
 
     //------------------------------------------------------------------------------
     // Method: LogFileHandle.LogFileHandle
@@ -196,10 +195,9 @@ class LogFileHandle
      * @param logName The name of the log that owns the file managed by this instance of LogFileHandle.
      * @param fileSize The filesize (in kilobytes) of the file managed by this instance of LogFileHandle.
      */
-    protected LogFileHandle(String logDirectory, String fileName, String serverName, String serviceName, int serviceVersion, String logName, int fileSize, FailureScope fs)
-    {
+    protected LogFileHandle(String logDirectory, String fileName, String serverName, String serviceName, int serviceVersion, String logName, int fileSize, FailureScope fs) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "LogFileHandle", new Object[] { logDirectory, fileName, serverName, serviceName, new Integer(serviceVersion), logName, new Integer(fileSize), fs });
+            Tr.entry(tc, "LogFileHandle", new Object[] { logDirectory, fileName, serverName, serviceName, serviceVersion, logName, fileSize, fs });
 
         _logDirectory = logDirectory;
         _fileName = fileName;
@@ -229,10 +227,9 @@ class LogFileHandle
      * 
      * @return ReadableLogRecord The composite record
      */
-    protected ReadableLogRecord getReadableLogRecord(long expectedSequenceNumber)
-    {
+    protected ReadableLogRecord getReadableLogRecord(long expectedSequenceNumber) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "getReadableLogRecord", new java.lang.Object[] { this, new Long(expectedSequenceNumber) });
+            Tr.entry(tc, "getReadableLogRecord", new java.lang.Object[] { this, expectedSequenceNumber });
 
         if (tc.isDebugEnabled())
             Tr.debug(tc, "Creating readable log record to read from file " + _fileName);
@@ -256,38 +253,30 @@ class LogFileHandle
      *                correctly.
      */
     protected void fileOpen() throws InternalLogException, LogAllocationException,
-                    LogIncompatibleException
-    {
+                    LogIncompatibleException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "fileOpen", this);
 
         final boolean fileColdStarting;
 
         // Open the file, creating it if it does not already exist.
-        try
-        {
-            try
-            {
+        try {
+            try {
                 final File pFile = new File(_logDirectory, _fileName);
 
                 // Determine if the log file exists or is zero bytes long. In either of
                 // these cases, we consider it to be a cold start of the file.
                 fileColdStarting = ((!pFile.exists()) || (pFile.length() == 0));
 
-                if (fileColdStarting)
-                {
+                if (fileColdStarting) {
                     Tr.info(tc, "CWRLS0006_RECOVERY_LOG_CREATE", _logDirectory + File.separator + _fileName);
                 }
 
                 // Open/Create the file.
-                // _fileBuffer = (MappedByteBuffer) AccessController.doPrivileged(
-                _fileBuffer = (MappedByteBuffer) Configuration.getAccessController()
-                                .doPrivileged(
-                                              new java.security.PrivilegedExceptionAction()
-                                              {
+                _fileBuffer = (MappedByteBuffer) AccessController.doPrivileged(
+                                              new java.security.PrivilegedExceptionAction() {
                                                   @Override
-                                                  public java.lang.Object run() throws Exception
-                                                  {
+                                                  public java.lang.Object run() throws Exception {
                                                       if (tc.isEntryEnabled())
                                                           Tr.entry(tc, "run", this);
 
@@ -318,8 +307,7 @@ class LogFileHandle
                                                       boolean noMemoryMappedFiles = Boolean.getBoolean("com.ibm.ws.recoverylog.spi.NoMemoryMappedFiles");
                                                       // If Windows and HA enabled, or z/OS (feature 731093) then we want the default to be non-memory mapped
                                                       if (osName != null
-                                                          && ((Configuration.HAEnabled() && osName.startsWith("windows")) || osName.startsWith("z/os") || osName.startsWith("os/390")))
-                                                      {
+                                                          && ((Configuration.HAEnabled() && osName.startsWith("windows")) || osName.startsWith("z/os") || osName.startsWith("os/390"))) {
                                                           final String propertyValue = System.getProperty("com.ibm.ws.recoverylog.spi.NoMemoryMappedFiles");
                                                           if (propertyValue == null || !(propertyValue.equalsIgnoreCase("false")))
                                                               noMemoryMappedFiles = true;
@@ -329,30 +317,23 @@ class LogFileHandle
 
                                                       Object fileBuffer = null;
 
-                                                      if (!noMemoryMappedFiles)
-                                                      {
-                                                          try
-                                                          {
+                                                      if (!noMemoryMappedFiles) {
+                                                          try {
                                                               fileBuffer = _fileChannel.map(FileChannel.MapMode.READ_WRITE, 0, sizeToMap);
                                                               _isMapped = true;
-                                                          }
-                                                          catch (Throwable t)
-                                                          {
+                                                          } catch (Throwable t) {
                                                               if (tc.isEventEnabled())
                                                                   Tr.event(tc, "Mapping of recovery log file failed. Using non-mapped file.", t);
                                                               if (tc.isEventEnabled())
                                                                   Tr.event(tc, "Resetting file Channel position to '0' from :", _fileChannel.position());
                                                               _fileChannel.position(0); //An Exception in the map method can leave an incorrect position (PM14310)
                                                           }
-                                                      }
-                                                      else
-                                                      {
+                                                      } else {
                                                           if (tc.isEventEnabled())
                                                               Tr.event(tc, "Recovery log has been instructed not to use a mapped-file model.");
                                                       }
 
-                                                      if (fileBuffer == null)
-                                                      {
+                                                      if (fileBuffer == null) {
                                                           // Either we were instructed not to use a mapped buffer or the
                                                           // attempt to use one failed. Allocate a direct byte buffer
                                                           // and read the FileChannel into the buffer.  write()s to the
@@ -361,8 +342,7 @@ class LogFileHandle
 
                                                           final ByteBuffer directByteBuffer = ByteBuffer.allocateDirect(sizeToMap);
 
-                                                          if (fileColdStarting)
-                                                          {
+                                                          if (fileColdStarting) {
                                                               _fileChannel.write(directByteBuffer, 0);
                                                               _fileChannel.force(true);
                                                           }
@@ -382,17 +362,14 @@ class LogFileHandle
                                                       return fileBuffer;
                                                   }
                                               });
-            } catch (java.security.PrivilegedActionException exc)
-            {
+            } catch (java.security.PrivilegedActionException exc) {
                 FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.LogFileHandle.fileOpen", "338", this);
                 throw new LogAllocationException(exc);
-            } catch (Throwable exc)
-            {
+            } catch (Throwable exc) {
                 FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.LogFileHandle.fileOpen", "343", this);
                 throw new InternalLogException(exc);
             }
-        } catch (LogAllocationException exc)
-        {
+        } catch (LogAllocationException exc) {
             FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.LogFileHandle.fileOpen", "351", this);
             _fileBuffer = null;
             if (_file != null)
@@ -400,8 +377,7 @@ class LogFileHandle
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "fileOpen", exc);
             throw exc;
-        } catch (Throwable exc)
-        {
+        } catch (Throwable exc) {
             FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.LogFileHandle.fileOpen", "359", this);
             _fileBuffer = null;
             if (_file != null)
@@ -411,8 +387,7 @@ class LogFileHandle
             throw new InternalLogException(exc);
         }
 
-        if (fileColdStarting)
-        {
+        if (fileColdStarting) {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Log File " + this._fileName + " is cold starting");
 
@@ -420,11 +395,9 @@ class LogFileHandle
             // Write an empty log header into the file to ensure that it can't be confused
             // with a corrupt log file in the event of a crash before we fully initialize 
             // it.
-            try
-            {
+            try {
                 writeFileHeader(false);
-            } catch (InternalLogException exc)
-            {
+            } catch (InternalLogException exc) {
                 FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.LogFileHandle.fileOpen", "388", this);
                 fileClose(); // @255605A
                 _file = null;
@@ -433,8 +406,7 @@ class LogFileHandle
                 if (tc.isEntryEnabled())
                     Tr.exit(tc, "fileOpen", exc);
                 throw exc;
-            } catch (Throwable exc)
-            {
+            } catch (Throwable exc) {
                 FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.LogFileHandle.fileOpen", "396", this);
                 fileClose(); // @255605A
                 _file = null;
@@ -444,9 +416,7 @@ class LogFileHandle
                     Tr.exit(tc, "fileOpen", "InternalLogException");
                 throw new InternalLogException(exc);
             }
-        }
-        else
-        {
+        } else {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Log File " + this._fileName + " is warm starting");
 
@@ -456,22 +426,18 @@ class LogFileHandle
         }
 
         // First check whether invalid. invalid trumps incompatible. 
-        if (!_logFileHeader.valid())
-        {
+        if (!_logFileHeader.valid()) {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Log File " + this._fileName + " is not valid");
-            try
-            {
+            try {
 //        Dont close channel as it will free a lock - wait until file close
 //        _fileChannel.close(); // @255605D
                 _file.close();
-            } catch (java.io.IOException exc)
-            {
+            } catch (java.io.IOException exc) {
                 // The file could not even be closed! There is nothing that can be done in this situation.
                 // Simply allow the LogIncompatibleException exception to be passed back up the stack.
                 FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.LogFileHandle.fileOpen", "423", this);
-            } catch (Throwable exc)
-            {
+            } catch (Throwable exc) {
                 // The file could not even be closed! There is nothing that can be done in this situation.
                 // Simply allow the LogIncompatibleException exception to be passed back up the stack.
                 FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.LogFileHandle.fileOpen", "429", this);
@@ -488,20 +454,16 @@ class LogFileHandle
         }
 
         // If the header incompatible (created by an unsupported version of the RLS) then throw an exception.
-        if (!_logFileHeader.compatible())
-        {
-            try
-            {
+        if (!_logFileHeader.compatible()) {
+            try {
 //        Dont close channel as it will free a lock - wait until file close
 //        _fileChannel.close(); // @255605D
                 _file.close();
-            } catch (java.io.IOException exc)
-            {
+            } catch (java.io.IOException exc) {
                 // The file could not even be closed! There is nothing that can be done in this situation.
                 // Simply allow the LogIncompatibleException exception to be passed back up the stack.
                 FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.LogFileHandle.fileOpen", "423", this);
-            } catch (Throwable exc)
-            {
+            } catch (Throwable exc) {
                 // The file could not even be closed! There is nothing that can be done in this situation.
                 // Simply allow the LogIncompatibleException exception to be passed back up the stack.
                 FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.LogFileHandle.fileOpen", "429", this);
@@ -517,20 +479,16 @@ class LogFileHandle
             throw new LogIncompatibleException();
         }
 
-        if (!serviceCompatible())
-        {
-            try
-            {
+        if (!serviceCompatible()) {
+            try {
 //        Dont close channel as it will free a lock - wait until file close
 //        _fileChannel.close(); // @255605D
                 _file.close();
-            } catch (java.io.IOException exc)
-            {
+            } catch (java.io.IOException exc) {
                 // The file could not even be closed! There is nothing that can be done in this situation.
                 // Simply allow the LogIncompatibleException exception to be passed back up the stack.
                 FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.LogFileHandle.fileOpen", "423", this);
-            } catch (Throwable exc)
-            {
+            } catch (Throwable exc) {
                 // The file could not even be closed! There is nothing that can be done in this situation.
                 // Simply allow the LogIncompatibleException exception to be passed back up the stack.
                 FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.LogFileHandle.fileOpen", "429", this);
@@ -559,8 +517,7 @@ class LogFileHandle
      * 
      * @return boolean true if the file currently exists.
      */
-    protected boolean fileExists()
-    {
+    protected boolean fileExists() {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "fileExists", this);
 
@@ -582,19 +539,15 @@ class LogFileHandle
      * 
      * @exception InternalLogException An unexpected error has occured.
      */
-    void fileClose() throws InternalLogException
-    {
+    void fileClose() throws InternalLogException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "fileClose", this);
 
-        if (_fileChannel != null)
-        {
-            try
-            {
+        if (_fileChannel != null) {
+            try {
                 // Don't close channel as it will free a lock - wait until file close
 
-                if (_outstandingWritableLogRecords.get() == 0 && !_exceptionInForce)
-                {
+                if (_outstandingWritableLogRecords.get() == 0 && !_exceptionInForce) {
                     force(); // make sure all records really are on disk
 
                     // Now we know that there are no gaps in the records and none have failed
@@ -605,8 +558,7 @@ class LogFileHandle
                 }
 
                 _file.close();
-            } catch (Throwable e)
-            {
+            } catch (Throwable e) {
                 FFDCFilter.processException(e, "com.ibm.ws.recoverylog.spi.LogFileHandle.fileClose", "541", this);
                 if (tc.isEntryEnabled())
                     Tr.exit(tc, "fileClose", "InternalLogException");
@@ -636,11 +588,9 @@ class LogFileHandle
      * @param sequenceNumber The newly created record's sequence number
      * @return WriteableLogRecord A new writeable log record of the specified size
      */
-    public WriteableLogRecord getWriteableLogRecord(int recordLength, long sequenceNumber) throws InternalLogException
-    {
+    public WriteableLogRecord getWriteableLogRecord(int recordLength, long sequenceNumber) throws InternalLogException {
 
-        if (!_headerFlushedFollowingRestart)
-        {
+        if (!_headerFlushedFollowingRestart) {
             // ensure header is updated now we start to write records for the first time
             // synchronization is assured through locks in LogHandle.getWriteableLogRecord
             writeFileHeader(true);
@@ -678,27 +628,23 @@ class LogFileHandle
      * 
      * @exception InternalLogException An unexpected error has occured.
      */
-    private void writeFileHeader(boolean maintainPosition) throws InternalLogException
-    {
+    private void writeFileHeader(boolean maintainPosition) throws InternalLogException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "writeFileHeader", new java.lang.Object[] { this, new Boolean(maintainPosition) });
+            Tr.entry(tc, "writeFileHeader", new java.lang.Object[] { this, maintainPosition });
 
         // Build the buffer that forms the major part of the file header and
         // then convert this into a byte array.
-        try
-        {
+        try {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Writing header for log file " + _fileName);
             _logFileHeader.write(_fileBuffer, maintainPosition);
             force();
-        } catch (InternalLogException exc)
-        {
+        } catch (InternalLogException exc) {
             FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.LogFileHandle.writeFileHeader", "706", this);
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "writeFileHeader", exc);
             throw exc;
-        } catch (Throwable exc)
-        {
+        } catch (Throwable exc) {
             FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.LogFileHandle.writeFileHeader", "712", this);
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "writeFileHeader", "InternalLogException");
@@ -722,24 +668,20 @@ class LogFileHandle
      * 
      * @exception InternalLogException An unexpected error has occured.
      */
-    private void writeFileStatus(boolean maintainPosition) throws InternalLogException
-    {
+    private void writeFileStatus(boolean maintainPosition) throws InternalLogException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "writeFileStatus", new java.lang.Object[] { this, new Boolean(maintainPosition) });
+            Tr.entry(tc, "writeFileStatus", new java.lang.Object[] { this, maintainPosition });
 
-        if (_logFileHeader.status() == LogFileHeader.STATUS_INVALID)
-        {
+        if (_logFileHeader.status() == LogFileHeader.STATUS_INVALID) {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "writeFileStatus", "InternalLogException");
             throw new InternalLogException(null);
         }
 
-        try
-        {
+        try {
             int currentFilePointer = 0;
 
-            if (maintainPosition)
-            {
+            if (maintainPosition) {
                 // If the caller wishes the file pointer's current
                 // position to be maintained cache it's position
                 // here so that it can be reset once the header
@@ -753,13 +695,11 @@ class LogFileHandle
             _fileBuffer.putInt(_logFileHeader.status());
             force();
 
-            if (maintainPosition)
-            {
+            if (maintainPosition) {
                 // Reinstate the fileBuffer's pointer to its original position.
                 _fileBuffer.position(currentFilePointer);
             }
-        } catch (Throwable exc)
-        {
+        } catch (Throwable exc) {
             FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.LogFileHandle.writeFileStatus", "797", this);
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "writeFileStatus", "WriteOperationFailedException");
@@ -779,8 +719,7 @@ class LogFileHandle
      * being marked as invalid. This can then be tested later by calling the
      * _logFileHeader.status() method and comparing for STATUS_INVALID.
      */
-    private void readFileHeader()
-    {
+    private void readFileHeader() {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "readFileHeader", this);
 
@@ -791,17 +730,14 @@ class LogFileHandle
 
         // Read the header, ignoring any failures. Failures will be detected later
         // when _logFileHeader.status() method returns STATUS_INVALID.
-        try
-        {
+        try {
             // Ensure that there is sufficient capacity to read the integer header
             // size field before proceeding. If there is not then exit directly. This
             // header will remain marked as inactive.
-            if (_fileBuffer.capacity() >= RLSUtils.INT_SIZE)
-            {
+            if (_fileBuffer.capacity() >= RLSUtils.INT_SIZE) {
                 _logFileHeader.read(_fileBuffer);
             }
-        } catch (Throwable exc)
-        {
+        } catch (Throwable exc) {
             FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.LogFileHandle.readFileHeader", "863", this);
             if (tc.isEventEnabled())
                 Tr.event(tc, "The log header could not be read from the disk due to an unexpected exception");
@@ -816,10 +752,7 @@ class LogFileHandle
     //------------------------------------------------------------------------------
     // Method: LogFileHandle.serviceCompatible
     //------------------------------------------------------------------------------
-    /**
-  */
-    private boolean serviceCompatible()
-    {
+    private boolean serviceCompatible() {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "serviceCompatible");
 
@@ -839,30 +772,22 @@ class LogFileHandle
             (serviceNameFromFile == null) ||
             (logNameFromFile == null) ||
             !(serviceNameFromFile.equals(_serviceName)) ||
-            !(logNameFromFile.equals(_logName)))
-        {
-            if (tc.isEventEnabled())
-                Tr.event(tc, "Client service and recovery log are not compatible");
-            if (tc.isEventEnabled())
-                Tr.event(tc, "Current service name is " + _serviceName);
-            if (tc.isEventEnabled())
-                Tr.event(tc, "Service name from file is " + serviceNameFromFile);
-            if (tc.isEventEnabled())
-                Tr.event(tc, "Current log name is " + _logName);
-            if (tc.isEventEnabled())
-                Tr.event(tc, "Log name from file is " + logNameFromFile);
-            if (tc.isEventEnabled())
-                Tr.event(tc, "Client version number is " + _serviceVersion);
-            if (tc.isEventEnabled())
-                Tr.event(tc, "Version number from file is " + serviceVersionFromFile);
-        }
-        else
-        {
+            !(logNameFromFile.equals(_logName))) {
+          if (tc.isEventEnabled()) {
+              Tr.event(tc, "Client service and recovery log are not compatible");
+              Tr.event(tc, "Current service name is " + _serviceName);
+              Tr.event(tc, "Service name from file is " + serviceNameFromFile);
+              Tr.event(tc, "Current log name is " + _logName);
+              Tr.event(tc, "Log name from file is " + logNameFromFile);
+              Tr.event(tc, "Client version number is " + _serviceVersion);
+              Tr.event(tc, "Version number from file is " + serviceVersionFromFile);
+          }
+        } else {
             serviceCompatible = true;
         }
 
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "serviceCompatible", new Boolean(serviceCompatible));
+            Tr.exit(tc, "serviceCompatible", serviceCompatible);
         return serviceCompatible;
     }
 
@@ -876,12 +801,11 @@ class LogFileHandle
      * @return LogFileHeader The log file header object associated with this LogFileHandle
      *         instance.
      */
-    protected LogFileHeader logFileHeader()
-    {
-        if (tc.isEntryEnabled())
+    protected LogFileHeader logFileHeader() {
+        if (tc.isEntryEnabled()) {
             Tr.entry(tc, "logFileHeader", this);
-        if (tc.isEntryEnabled())
             Tr.exit(tc, "logFileHeader", _logFileHeader);
+        }
         return _logFileHeader;
     }
 
@@ -894,15 +818,13 @@ class LogFileHandle
      * @return byte[] The service data associated with this LogFileHandle instance or
      *         null if none exists.
      */
-    public byte[] getServiceData()
-    {
+    public byte[] getServiceData() {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "getServiceData", this);
 
         byte[] serviceData = null;
 
-        if (_logFileHeader != null)
-        {
+        if (_logFileHeader != null) {
             serviceData = _logFileHeader.getServiceData();
         }
 
@@ -920,26 +842,22 @@ class LogFileHandle
      * 
      * @return long The number of free bytes remaining.
      */
-    public int freeBytes()
-    {
+    public int freeBytes() {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "freeBytes", this);
 
         int freeBytes = 0;
 
-        try
-        {
+        try {
             int currentCursorPosition = _fileBuffer.position();
             int fileLength = _fileBuffer.capacity();
 
             freeBytes = fileLength - currentCursorPosition;
 
-            if (freeBytes < 0)
-            {
+            if (freeBytes < 0) {
                 freeBytes = 0;
             }
-        } catch (Throwable exc)
-        {
+        } catch (Throwable exc) {
             FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.LogFileHandle.freeBytes", "956", this);
             freeBytes = 0;
         }
@@ -962,8 +880,7 @@ class LogFileHandle
      * 
      * @param serviceData The new sercvice data
      */
-    public void setServiceData(byte[] serviceData)
-    {
+    public void setServiceData(byte[] serviceData) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "setServiceData", new java.lang.Object[] { RLSUtils.toHexString(serviceData, RLSUtils.MAX_DISPLAY_BYTES), this });
 
@@ -981,12 +898,11 @@ class LogFileHandle
      * 
      * @return String The name of the file associated with this LogFileHandle instance
      */
-    public String fileName()
-    {
-        if (tc.isEntryEnabled())
+    public String fileName() {
+        if (tc.isEntryEnabled()) {
             Tr.entry(tc, "fileName", this);
-        if (tc.isEntryEnabled())
             Tr.exit(tc, "fileName", _fileName);
+        }
         return _fileName;
     }
 
@@ -1003,25 +919,21 @@ class LogFileHandle
      * 
      * @exception InternalLogException An unexpected error has occured.
      */
-    void keypointStarting(long nextRecordSequenceNumber) throws InternalLogException
-    {
+    void keypointStarting(long nextRecordSequenceNumber) throws InternalLogException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "keypointStarting", new Object[] { new Long(nextRecordSequenceNumber), this });
 
         // Set the header to indicate a keypoint operation. This also marks the header
         // as valid.
         _logFileHeader.keypointStarting(nextRecordSequenceNumber);
-        try
-        {
+        try {
             writeFileHeader(false);
-        } catch (InternalLogException exc)
-        {
+        } catch (InternalLogException exc) {
             FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.LogFileHandle.keypointStarting", "1073", this);
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "keypointStarting", exc);
             throw exc;
-        } catch (Throwable exc)
-        {
+        } catch (Throwable exc) {
             FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.LogFileHandle.keypointStarting", "1079", this);
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "keypointStarting", "InternalLogException");
@@ -1042,23 +954,19 @@ class LogFileHandle
      * 
      * @exception InternalLogException An unexpected error has occured.
      */
-    void keypointComplete() throws InternalLogException
-    {
+    void keypointComplete() throws InternalLogException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "keypointComplete", this);
 
         _logFileHeader.keypointComplete();
-        try
-        {
+        try {
             writeFileStatus(true);
-        } catch (InternalLogException exc)
-        {
+        } catch (InternalLogException exc) {
             FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.LogFileHandle.keypointComplete", "1117", this);
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "keypointComplete", exc);
             throw exc;
-        } catch (Throwable exc)
-        {
+        } catch (Throwable exc) {
             FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.LogFileHandle.keypointComplete", "1123", this);
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "keypointComplete", "InternalLogException");
@@ -1079,23 +987,19 @@ class LogFileHandle
      * 
      * @exception InternalLogException An unexpected error has occured.
      */
-    void becomeInactive() throws InternalLogException
-    {
+    void becomeInactive() throws InternalLogException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "becomeInactive", this);
 
         _logFileHeader.changeStatus(LogFileHeader.STATUS_INACTIVE);
-        try
-        {
+        try {
             writeFileStatus(false);
-        } catch (InternalLogException exc)
-        {
+        } catch (InternalLogException exc) {
             FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.LogFileHandle.becomeInactive", "1161", this);
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "becomeInactive", exc);
             throw exc;
-        } catch (Throwable exc)
-        {
+        } catch (Throwable exc) {
             FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.LogFileHandle.becomeInactive", "1167", this);
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "becomeInactive", "InternalLogException");
@@ -1111,14 +1015,13 @@ class LogFileHandle
     //------------------------------------------------------------------------------
     /**
      * Called by the controlling logic to inform this file handle that it represents
-     * a brand new file that has been selected to recieve the first data written to
+     * a brand new file that has been selected to receive the first data written to
      * the log. This method will only be called during a cold start when there are
      * no existing log files available for recovery. Both file handles that make up
      * the log have been pre-set to INACTIVE state and this method is used to set
      * one (and only one) to ACTIVE state.
      */
-    void becomeActive()
-    {
+    void becomeActive() {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "becomeActive", this);
 
@@ -1140,17 +1043,14 @@ class LogFileHandle
      * @param newFileSize The new file size for the physical log file (in kbytes).
      * @exception LogAllocationException The system was unable to expand the log file.
      */
-    public void fileExtend(int newFileSize) throws LogAllocationException
-    {
+    public void fileExtend(int newFileSize) throws LogAllocationException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "fileExtend", new Object[] { new Integer(newFileSize), this });
 
         final int fileLength = _fileBuffer.capacity();
 
-        if (fileLength < newFileSize)
-        {
-            try
-            {
+        if (fileLength < newFileSize) {
+            try {
                 // Expand the file to the new size ensuring that its pointer
                 // remains in its current position.
                 int originalPosition = _fileBuffer.position();
@@ -1159,12 +1059,9 @@ class LogFileHandle
                 //        Tr.uncondEvent(tc, "Expanding log file to size of " + newFileSize + " bytes.");
                 Tr.event(tc, "Expanding log file to size of " + newFileSize + " bytes.");
 
-                if (_isMapped)
-                {
+                if (_isMapped) {
                     _fileBuffer = _fileChannel.map(FileChannel.MapMode.READ_WRITE, 0, newFileSize);
-                }
-                else
-                {
+                } else {
                     // The file is not mapped.
                     // Allocate a new DirectByteBuffer, copy the old ByteBuffer into the new one,
                     // then write the new ByteBuffer to the FileChannel (automatically expanding it).
@@ -1183,13 +1080,12 @@ class LogFileHandle
 
                 _fileBuffer.position(originalPosition);
                 _fileSize = newFileSize;
-            } catch (Exception exc)
-            {
+            } catch (Exception exc) {
                 FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.LogFileHandle.fileExtend", "1266", this);
-                if (tc.isEntryEnabled())
+                if (tc.isEntryEnabled()) {
                     Tr.event(tc, "Unable to extend file " + _fileName + " to " + newFileSize + " bytes");
-                if (tc.isEntryEnabled())
                     Tr.exit(tc, "fileExtend", "LogAllocationException");
+                }
                 throw new LogAllocationException(exc);
             }
         }
@@ -1206,26 +1102,20 @@ class LogFileHandle
      * Having invoked this method the caller can be certain that any data added
      * to the log as part of a prior log write is now stored persistently on disk.
      */
-    protected void force() throws InternalLogException
-    {
+    protected void force() throws InternalLogException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "force", this);
 
-        try
-        {
-            if (_isMapped)
-            {
+        try {
+            if (_isMapped) {
                 // Note: on Win2K we can get an IOException from this even though it is not declared
                 ((MappedByteBuffer) _fileBuffer).force();
-            }
-            else
-            {
+            } else {
                 // Write the "pending" WritableLogRecords.
                 writePendingToFile();
                 _fileChannel.force(false);
             }
-        } catch (java.io.IOException ioe)
-        {
+        } catch (java.io.IOException ioe) {
             FFDCFilter.processException(ioe, "com.ibm.ws.recoverylog.spi.LogFileHandle.force", "1049", this);
             _exceptionInForce = true;
             if (tc.isEventEnabled())
@@ -1236,8 +1126,7 @@ class LogFileHandle
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "force", "InternalLogException");
             throw new InternalLogException(ioe);
-        } catch (InternalLogException exc)
-        {
+        } catch (InternalLogException exc) {
             FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.LogFileHandle.force", "1056", this);
             _exceptionInForce = true;
             if (tc.isEventEnabled())
@@ -1245,8 +1134,7 @@ class LogFileHandle
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "force", "InternalLogException");
             throw exc;
-        } catch (LogIncompatibleException exc)
-        {
+        } catch (LogIncompatibleException exc) {
             FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.LogFileHandle.force", "1096", this);
             _exceptionInForce = true;
             if (tc.isEventEnabled())
@@ -1260,7 +1148,7 @@ class LogFileHandle
             Tr.exit(tc, "force");
     }
 
-//------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------
     // Method: LogFileHandle.writeLogRecord
     //------------------------------------------------------------------------------
     /**
@@ -1272,15 +1160,12 @@ class LogFileHandle
      * written to the FileChannel and back to disk on the next force().
      * Synchronize the inserts into the pendingWrites list.
      */
-    protected void writeLogRecord(LogRecord logRecord) /* @MD18931A */
-    {
+    protected void writeLogRecord(LogRecord logRecord) /* @MD18931A */ {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "writeLogRecord", logRecord);
 
-        if (!_isMapped)
-        {
-            synchronized (_pendingWriteList)
-            {
+        if (!_isMapped) {
+            synchronized (_pendingWriteList) {
                 // Add the logrecord to the ordered list of "pending writes".
                 // Find where it belongs, then add it.  
                 _pendingWriteList.add(logRecord);
@@ -1302,32 +1187,26 @@ class LogFileHandle
      * Write the pendingWrites list to the FileChannel.
      * This operation is likely immediate followed by a FileChannel.force().
      */
-    private void writePendingToFile() throws java.io.IOException, InternalLogException, LogIncompatibleException
-    {
+    private void writePendingToFile() throws java.io.IOException, InternalLogException, LogIncompatibleException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "writePendingToFile");
 
-        synchronized (_pendingWriteList)
-        {
+        synchronized (_pendingWriteList) {
             LogRecord[] records = (LogRecord[]) _pendingWriteList.toArray(new LogRecord[0]);
 
             // Don't use vectored IO unless we're told to.
-            if (!Boolean.getBoolean("com.ibm.ws.recoverylog.spi.UseVectoredIO"))
-            {
+            if (!Boolean.getBoolean("com.ibm.ws.recoverylog.spi.UseVectoredIO")) {
                 // Put the file header at the front of the list
                 ByteBuffer header = (ByteBuffer) _fileBuffer.duplicate().position(0).limit(_logFileHeader.length());
                 _fileChannel.write(header, 0);
 
                 // Write the remainder of the list
-                for (int i = 0; i < records.length; i++)
-                {
+                for (int i = 0; i < records.length; i++) {
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Performing write at position " + records[i].absolutePosition());
                     _fileChannel.write((ByteBuffer) records[i]._buffer.flip(), records[i].absolutePosition());
                 }
-            }
-            else
-            {
+            } else {
                 // Sort the records into ascending order based on their absolute
                 // position in the file.  We're going to try and keep the disk
                 // moving forward.
@@ -1339,8 +1218,7 @@ class LogFileHandle
                 ByteBuffer[] buffers = new ByteBuffer[records.length + 1];
                 int[] positions = new int[records.length + 1];
 
-                for (int i = 0; i < records.length; i++)
-                {
+                for (int i = 0; i < records.length; i++) {
                     buffers[i + 1] = (ByteBuffer) records[i]._buffer.flip();
                     positions[i + 1] = records[i].absolutePosition();
                 }
@@ -1352,14 +1230,12 @@ class LogFileHandle
                 // Here's where we go through the list and attempt to write
                 // batches of adjacent records using vectored I/O.
                 int idx = 0;
-                while (idx < buffers.length)
-                {
+                while (idx < buffers.length) {
                     int min = idx;
                     int max = idx;
 
                     // Somewhere in the middle
-                    while (max <= (buffers.length - 2))
-                    {
+                    while (max <= (buffers.length - 2)) {
                         if (positions[max + 1] == (positions[max] + buffers[max].remaining()))
                             max++;
                     }
@@ -1389,8 +1265,7 @@ class LogFileHandle
      * good header to an invalid header. This method is called during the initialization
      * and validation of a pair of recovery log files.
      */
-    public void resetHeader(LogFileHandle validFile)
-    {
+    public void resetHeader(LogFileHandle validFile) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "resetHeader");
         _logFileHeader.resetHeader(validFile.logFileHeader());
@@ -1399,8 +1274,7 @@ class LogFileHandle
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "LogFileHandle: " + _serviceName + " " + _logName;
     }
 }

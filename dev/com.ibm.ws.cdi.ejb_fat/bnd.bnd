@@ -15,24 +15,6 @@ bVersion=1.0
 
 src: \
 	fat/src,\
-        test-applications/aroundConstructApp.war/src,\
-	test-applications/ejbConstructorInjection.war/src,\
-	test-applications/ejbDiscovery.war/src,\
-	test-applications/ejbMisc.war/src,\
-	test-applications/ejbScope.war/src,\
-	test-applications/ejbTimer.war/src,\
-	test-applications/injectParameters.war/src,\
-	test-applications/managedBeanApp.war/src,\
-	test-applications/multipleEJBsSingleClass.war/src,\
-	test-applications/multipleWar1.war/src,\
-	test-applications/multipleWar2.war/src,\
-        test-applications/utilLib.jar/src,\
-        test-applications/statefulSessionBeanInjection.jar/src,\
-        test-applications/statefulSessionBeanInjection.war/src,\
-	test-applications/postConstructErrorMessageApp.war/src,\
-        test-applications/multipleWarEmbeddedJar.jar/src
-	
-	
 
 tested.features:\
 	cdi-2.0,\
@@ -41,8 +23,18 @@ tested.features:\
         jpa-2.2,\
         beanValidation-2.0,\
         jaxrs-2.1,\
-        jsf-2.3, \
-        localconnector-1.0
+        jsf-2.3,\
+        localconnector-1.0,\
+        cdi-3.0,\
+        servlet-5.0,\
+        expressionLanguage-4.0,\
+        enterprisebeans-4.0,\
+        managedbeans-2.0,\
+        enterprisebeansremote-4.0,\
+        enterprisebeanshome-4.0,\
+        enterprisebeanslite-4.0,\
+        enterprisebeanspersistenttimer-4.0,\
+        faces-3.0
 	
 test.project: true
 
@@ -54,7 +46,7 @@ test.project: true
 	com.ibm.websphere.security;version=latest,\
 	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
 	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
-	com.ibm.ws.org.apache.commons.logging.1.0.3;version=latest,\
+	io.openliberty.org.apache.commons.logging;version=latest,\
 	com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
 	com.ibm.websphere.javaee.jsf.2.2;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\

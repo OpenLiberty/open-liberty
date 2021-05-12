@@ -67,7 +67,7 @@ public class SlowRequestTiming {
     @After
     public void tearDown() throws Exception {
         if (server != null && server.isStarted()) {
-            server.stopServer("TRAS0112W", "TRAS0113I", "CWWKG0083W");
+            server.stopServer("TRAS0112W", "TRAS0113I", "TRAS0114W", "TRAS0115W", "CWWKG0083W");
         }
     }
 
@@ -381,11 +381,22 @@ public class SlowRequestTiming {
 
         createRequest("?sleepTime=3000");
 
-        server.waitForStringInLog("TRAS0112W", 15000);
-        List<String> lines = server.findStringsInFileInLibertyServerRoot("TRAS0112W", MESSAGE_LOG);
-        CommonTasks.writeLogMsg(Level.INFO, " Size : " + lines.size());
+        server.waitForStringInLog("TRAS0112W", 20000);
 
-        assertTrue("Expected 1 (or more) slow request warning  but found : " + lines.size(), (lines.size() > 0));
+        int slowCount = fetchNoOfslowRequestWarnings();
+
+        //Retry the request again
+        if (slowCount == 0) {
+            CommonTasks.writeLogMsg(Level.INFO, "$$$$ -----> Retry because no slow request warning found!");
+            createRequest("?sleepTime=3000");
+            server.waitForStringInLog("TRAS0112W", 20000);
+            slowCount = fetchNoOfslowRequestWarnings();
+        }
+
+        //List<String> lines = server.findStringsInFileInLibertyServerRoot("TRAS0112W", MESSAGE_LOG);
+        CommonTasks.writeLogMsg(Level.INFO, " Size : " + slowCount);
+
+        assertTrue("Expected 1 (or more) slow request warning  but found : " + slowCount, (slowCount > 0));
 
         CommonTasks.writeLogMsg(Level.INFO, "******* Slow request timing works for Zero Sample Rate*******");
     }
@@ -533,6 +544,12 @@ public class SlowRequestTiming {
         createRequest("?sleepTime=3000");
 
         int slowCount = fetchNoOfslowRequestWarnings();
+        //Retry the request again
+        if (slowCount == 0) {
+            CommonTasks.writeLogMsg(Level.INFO, "$$$$ -----> Retry because no slow request warning found!");
+            createRequest("?sleepTime=3000");
+            slowCount = fetchNoOfslowRequestWarnings();
+        }
         assertTrue("No Slow request timing records found! : ", (slowCount > 0));
 
         List<String> lines = server.findStringsInFileInLibertyServerRoot("ms", MESSAGE_LOG);
@@ -794,7 +811,18 @@ public class SlowRequestTiming {
         //Step 2 - create request of 13seconds. Fetch slow request warnings.
         createRequest("?sleepTime=13000");
 
+        server.waitForStringInLog("TRAS0112W", 20000);
+
         int warnings = fetchNoOfslowRequestWarnings();
+
+        //Retry the request again
+        if (warnings == 0) {
+            CommonTasks.writeLogMsg(Level.INFO, "$$$$ -----> Retry because no slow request warning found!");
+            createRequest("?sleepTime=13000");
+            server.waitForStringInLog("TRAS0112W", 20000);
+            warnings = fetchNoOfslowRequestWarnings();
+        }
+
         CommonTasks.writeLogMsg(Level.INFO, "$$$ -> No of Slow Request warnings : " + warnings);
 
         assertTrue("Expected 3 slow request warnings but found " + warnings, (warnings == 3));

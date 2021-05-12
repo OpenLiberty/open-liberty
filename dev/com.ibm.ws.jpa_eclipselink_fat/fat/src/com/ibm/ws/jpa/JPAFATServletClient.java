@@ -30,6 +30,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.config.Application;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
+import com.ibm.ws.testtooling.database.DatabaseVendor;
 
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -42,6 +43,8 @@ public class JPAFATServletClient extends FATServletClient {
     private static final String dbManagementResourcePath = "test-applications/helpers/DatabaseManagement/resources/";
 
     private static boolean dbMetaAcquired = false;
+    private static String dbMajorVersion = "";
+    private static String dbMinorVersion = "";
     private static String dbProductName = "";
     private static String dbProductVersion = "";
     private static String jdbcDriverVersion = "";
@@ -136,11 +139,13 @@ public class JPAFATServletClient extends FATServletClient {
                 System.out.println("   " + key + " = " + dbProps.getProperty((String) key));
             }
 
-            dbProductName = dbProps.getProperty("dbproduct_name");
-            dbProductVersion = dbProps.getProperty("dbproduct_version");
-            jdbcDriverVersion = dbProps.getProperty("jdbcdriver_version");
-            jdbcURL = dbProps.getProperty("jdbc_url");
-            jdbcUsername = dbProps.getProperty("jdbc_username");
+            dbMajorVersion = dbProps.getProperty("dbmajor_version", "UNKNOWN");
+            dbMinorVersion = dbProps.getProperty("dbminor_version", "UNKNOWN");
+            dbProductName = dbProps.getProperty("dbproduct_name", "UNKNOWN");
+            dbProductVersion = dbProps.getProperty("dbproduct_version", "UNKNOWN");
+            jdbcDriverVersion = dbProps.getProperty("jdbcdriver_version", "UNKNOWN");
+            jdbcURL = dbProps.getProperty("jdbc_url", "UNKNOWN");
+            jdbcUsername = dbProps.getProperty("jdbc_username", "UNKNOWN");
 
             dbVendor = DatabaseVendor.resolveDBProduct(dbProductName);
         } else {
@@ -176,6 +181,14 @@ public class JPAFATServletClient extends FATServletClient {
         return dbMetaAcquired;
     }
 
+    protected String getDbMajorVersion() {
+        return dbMajorVersion;
+    }
+
+    protected String getDbMinorVersion() {
+        return dbMinorVersion;
+    }
+
     protected String getDbProductName() {
         return dbProductName;
     }
@@ -202,6 +215,7 @@ public class JPAFATServletClient extends FATServletClient {
 
     protected static final JavaArchive buildTestAPIJar() throws Exception {
         final JavaArchive testApiJar = ShrinkWrap.create(JavaArchive.class, "TestAPI.jar");
+        testApiJar.addPackage("com.ibm.ws.testtooling.database");
         testApiJar.addPackage("com.ibm.ws.testtooling.msgcli");
         testApiJar.addPackage("com.ibm.ws.testtooling.msgcli.jms");
         testApiJar.addPackage("com.ibm.ws.testtooling.msgcli.msc");

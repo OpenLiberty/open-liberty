@@ -6,7 +6,7 @@ package com.ibm.test.g3store.grpc;
 /**
  * Protobuf type {@code Price}
  */
-public  final class Price extends
+public final class Price extends
     com.google.protobuf.GeneratedMessageV3 implements
     // @@protoc_insertion_point(message_implements:Price)
     PriceOrBuilder {
@@ -98,14 +98,14 @@ private static final long serialVersionUID = 0L;
    * <code>.PurchaseType purchaseType = 1;</code>
    * @return The enum numeric value on the wire for purchaseType.
    */
-  public int getPurchaseTypeValue() {
+  @java.lang.Override public int getPurchaseTypeValue() {
     return purchaseType_;
   }
   /**
    * <code>.PurchaseType purchaseType = 1;</code>
    * @return The purchaseType.
    */
-  public com.ibm.test.g3store.grpc.PurchaseType getPurchaseType() {
+  @java.lang.Override public com.ibm.test.g3store.grpc.PurchaseType getPurchaseType() {
     @SuppressWarnings("deprecation")
     com.ibm.test.g3store.grpc.PurchaseType result = com.ibm.test.g3store.grpc.PurchaseType.valueOf(purchaseType_);
     return result == null ? com.ibm.test.g3store.grpc.PurchaseType.UNRECOGNIZED : result;
@@ -117,6 +117,7 @@ private static final long serialVersionUID = 0L;
    * <code>double sellingPrice = 2;</code>
    * @return The sellingPrice.
    */
+  @java.lang.Override
   public double getSellingPrice() {
     return sellingPrice_;
   }
@@ -446,7 +447,7 @@ private static final long serialVersionUID = 0L;
      * <code>.PurchaseType purchaseType = 1;</code>
      * @return The enum numeric value on the wire for purchaseType.
      */
-    public int getPurchaseTypeValue() {
+    @java.lang.Override public int getPurchaseTypeValue() {
       return purchaseType_;
     }
     /**
@@ -455,6 +456,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder setPurchaseTypeValue(int value) {
+      
       purchaseType_ = value;
       onChanged();
       return this;
@@ -463,6 +465,7 @@ private static final long serialVersionUID = 0L;
      * <code>.PurchaseType purchaseType = 1;</code>
      * @return The purchaseType.
      */
+    @java.lang.Override
     public com.ibm.test.g3store.grpc.PurchaseType getPurchaseType() {
       @SuppressWarnings("deprecation")
       com.ibm.test.g3store.grpc.PurchaseType result = com.ibm.test.g3store.grpc.PurchaseType.valueOf(purchaseType_);
@@ -498,6 +501,7 @@ private static final long serialVersionUID = 0L;
      * <code>double sellingPrice = 2;</code>
      * @return The sellingPrice.
      */
+    @java.lang.Override
     public double getSellingPrice() {
       return sellingPrice_;
     }

@@ -36,7 +36,8 @@ public class HeaderPropagation12Test extends FATServletClient {
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
         .andWith(FATSuite.MP_REST_CLIENT("1.3", SERVER_NAME))
-        .andWith(FATSuite.MP_REST_CLIENT("1.4", SERVER_NAME));
+        .andWith(FATSuite.MP_REST_CLIENT("1.4", SERVER_NAME))
+        .andWith(FATSuite.MP_REST_CLIENT_WITH_CONFIG("2.0", SERVER_NAME));
     
     @Server(SERVER_NAME)
     @TestServlet(servlet = HeaderPropagationTestServlet.class, contextRoot = appName)
@@ -51,6 +52,6 @@ public class HeaderPropagation12Test extends FATServletClient {
 
     @AfterClass
     public static void afterClass() throws Exception {
-        server.stopServer();
+        server.stopServer("CWWKE1102W");  //ignore server quiesce timeouts due to slow test machines
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -55,7 +55,7 @@ public class HttpMethodTests extends H2FATDriverServlet {
         pingFrame.setAckFlag();
         h2Client.addExpectedFrame(pingFrame);
 
-        setupDefaultPreface(h2Client);
+        setupDefaultUpgradedConnection(h2Client);
 
         List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
         firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "CONNECT"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
@@ -106,7 +106,7 @@ public class HttpMethodTests extends H2FATDriverServlet {
         pingFrame.setAckFlag();
         h2Client.addExpectedFrame(pingFrame);
 
-        setupDefaultPreface(h2Client);
+        setupDefaultUpgradedConnection(h2Client);
 
         List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
         firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "CONNECT"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
@@ -155,7 +155,7 @@ public class HttpMethodTests extends H2FATDriverServlet {
         secondFrameHeaders.setHeaderFields(secondHeadersReceived);
         h2Client.addExpectedFrame(secondFrameHeaders);
 
-        setupDefaultPreface(h2Client);
+        setupDefaultUpgradedConnection(h2Client);
 
         List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
         firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "HEAD"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
@@ -187,7 +187,7 @@ public class HttpMethodTests extends H2FATDriverServlet {
         secondFrameHeaders.setHeaderFields(secondHeadersReceived);
         h2Client.addExpectedFrame(secondFrameHeaders);
 
-        setupDefaultPreface(h2Client);
+        setupDefaultUpgradedConnection(h2Client);
 
         List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
         firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "OPTIONS"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
@@ -218,7 +218,7 @@ public class HttpMethodTests extends H2FATDriverServlet {
         secondFrameHeaders.setHeaderFields(secondHeadersReceived);
         h2Client.addExpectedFrame(secondFrameHeaders);
 
-        setupDefaultPreface(h2Client);
+        setupDefaultUpgradedConnection(h2Client);
 
         // set up the first headers to send out
         List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
@@ -250,7 +250,7 @@ public class HttpMethodTests extends H2FATDriverServlet {
         secondFrameHeaders.setHeaderFields(secondHeadersReceived);
         h2Client.addExpectedFrame(secondFrameHeaders);
 
-        setupDefaultPreface(h2Client);
+        setupDefaultUpgradedConnection(h2Client);
 
         // set up the first headers to send out
         List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();

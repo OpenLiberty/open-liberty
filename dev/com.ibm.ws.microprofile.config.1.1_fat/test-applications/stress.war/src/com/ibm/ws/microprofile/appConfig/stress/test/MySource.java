@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2020 IBM Corporation and others.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,13 @@
 package com.ibm.ws.microprofile.appConfig.stress.test;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-public class MySource implements org.eclipse.microprofile.config.spi.ConfigSource {
+import org.eclipse.microprofile.config.spi.ConfigSource;
+
+public class MySource implements ConfigSource {
 
     public ConcurrentMap<String, String> props = new ConcurrentHashMap<String, String>();
     public int ordinal = 700;
@@ -81,5 +84,11 @@ public class MySource implements org.eclipse.microprofile.config.spi.ConfigSourc
     @Override
     public String getName() {
         return id;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Set<String> getPropertyNames() {
+        return getProperties().keySet();
     }
 }

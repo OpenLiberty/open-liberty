@@ -156,7 +156,7 @@ public class InvocationTestServlet extends HttpServlet {
         ClientBuilder cb = ClientBuilder.newBuilder();
         Client c = cb.build();
         WebTarget t = c.target("http://" + serverIP + ":" + serverPort + "/bookstore/bookstore2/asyncget2");
-        Invocation invocation = t.request().buildGet();
+        Invocation invocation = t.request().accept("application/xml").buildGet();
         Future<Book> future = invocation.submit(Book.class);
         Book book;
         try {
@@ -197,7 +197,7 @@ public class InvocationTestServlet extends HttpServlet {
         ClientBuilder cb = ClientBuilder.newBuilder();
         Client c = cb.build();
         WebTarget t = c.target("http://" + serverIP + ":" + serverPort + "/bookstore/bookstore2/asyncget2");
-        Invocation invocation = t.request().buildGet();
+        Invocation invocation = t.request().accept("application/xml").buildGet();
         final Holder<Book> holder = new Holder<Book>();
         InvocationCallback<Book> callback = createCallback(holder);
         Future<Book> future = invocation.submit(callback);

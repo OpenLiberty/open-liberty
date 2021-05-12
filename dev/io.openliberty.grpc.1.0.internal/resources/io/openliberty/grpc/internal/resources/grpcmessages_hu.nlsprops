@@ -26,4 +26,16 @@ invalid.serverinterceptor.useraction=Ellen\u0151rizze a be\u00e1ll\u00edtott elf
 
 invalid.inbound.msg.size=CWWKT0203E: A(z) {0} maxInboundMessageSize nem \u00e9rv\u00e9nyes. A m\u00e9retek csak 0-n\u00e1l nagyobbak lehetnek.
 invalid.inbound.msg.size.explanation=A maxInboundMessageSize be\u00e1ll\u00edtott \u00e9rt\u00e9ke \u00e9rv\u00e9nytelen.
-invalid.inbound.msg.size.useraction=Adjon meg \u00e9rv\u00e9nyes \u00e9rt\u00e9ket a maxInboundMessageSize \u00e9rt\u00e9kek\u00e9nt. 
+invalid.inbound.msg.size.useraction=Adjon meg \u00e9rv\u00e9nyes \u00e9rt\u00e9ket a maxInboundMessageSize \u00e9rt\u00e9kek\u00e9nt.
+
+response.already.committed=CWWKT0204E: A(z) {0} gRPC k\u00e9r\u00e9s nem folytathat\u00f3. A v\u00e1lasz m\u00e1r v\u00e9gleges\u00edt\u00e9sre ker\u00fclt.
+response.already.committed.explanation=A gRPC k\u00e9r\u00e9s \u00e9rv\u00e9nytelen, mert a v\u00e1lasz m\u00e1r a gRPC met\u00f3dusok elindul\u00e1sa el\u0151tt v\u00e9gleges\u00edt\u00e9sre ker\u00fclt.
+response.already.committed.useraction=Elemezze a napl\u00f3kban az adott \u00fczenet el\u0151tt tal\u00e1lhat\u00f3 egy\u00e9b figyelmeztet\u00e9seket vagy hiba\u00fczeneteket is. Ez a hiba egy kor\u00e1bbi biztons\u00e1gi hiba miatt is el\u0151fordulhat.
+
+authentication.error=CWWKT0205E: A gRPC szolg\u00e1ltat\u00e1s k\u00e9r\u00e9se a(z) {0} fel\u00e9 {1} hiteles\u00edt\u00e9si hib\u00e1val meghi\u00fasult.
+authentication.error.explanation=Nem siker\u00fclt hiteles\u00edteni a gRPC k\u00e9r\u00e9st a gRPC met\u00f3dusok elindul\u00e1sa el\u0151tt.
+authentication.error.useraction=Elemezze a napl\u00f3kban az adott \u00fczenet el\u0151tt tal\u00e1lhat\u00f3 egy\u00e9b figyelmeztet\u00e9seket vagy hiba\u00fczeneteket is. Ez a hiba akkor fordulhat el\u0151, ha a k\u00e9r\u00e9ssel nem ker\u00fcltek megad\u00e1sra hiteles\u00edt\u00e9si adatok, vagy ha a megadott hiteles\u00edt\u00e9si adatok \u00e9rv\u00e9nytelenek.
+
+authorization.error=CWWKT0206E: A gRPC szolg\u00e1ltat\u00e1s k\u00e9r\u00e9se a(z) {0} fel\u00e9 {1} enged\u00e9lyez\u00e9si hib\u00e1val meghi\u00fasult.
+authorization.error.explanation=Nem siker\u00fclt enged\u00e9lyezni a gRPC k\u00e9r\u00e9st a gRPC met\u00f3dusok elindul\u00e1sa el\u0151tt.
+authorization.error.useraction=Elemezze a napl\u00f3kban az adott \u00fczenet el\u0151tt tal\u00e1lhat\u00f3 egy\u00e9b figyelmeztet\u00e9seket vagy hiba\u00fczeneteket is. Ez a hiba akkor fordulhat el\u0151, ha a k\u00e9r\u00e9ssel nem ker\u00fcltek megad\u00e1sra hiteles\u00edt\u00e9si adatok, vagy ha a megadott hiteles\u00edt\u00e9si adatok \u00e9rv\u00e9nytelenek.

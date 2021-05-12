@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2019 IBM Corporation and others.
+# Copyright (c) 2010, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -150,8 +150,8 @@ sslCert.option-desc.keyType=\t\uc120\ud0dd\uc0ac\ud56d\uc785\ub2c8\ub2e4. \uae30
 sslCert.option-key.ext=\ \ \ \ --extInfo=certificate extension information
 sslCert.option-desc.ext=\t\uc778\uc99d\uc11c\uc5d0 \ucd94\uac00\ud560 \uc778\uc99d\uc11c \ud655\uc7a5 \uc815\ubcf4\uc785\ub2c8\ub2e4.\n\
 \t\uae30\ubcf8 \ud655\uc7a5\uc740 \ud638\uc2a4\ud2b8 \uc774\ub984\uc744 \uc0ac\uc6a9\ud558\ub294 SAN(Subject Alternative Name) \ud56d\ubaa9\uc785\ub2c8\ub2e4. \n\
-\t\uc774 \ud50c\ub798\uadf8\ub294 Jave Keytool \uba85\ub839 -ext \ud50c\ub798\uadf8\uc640 \uad6c\ubb38\uc774 \ub3d9\uc77c\ud569\ub2c8\ub2e4. \n\
-\uc774 \ud50c\ub798\uadf8\ub294 \uba85\ub839\uc5d0\uc11c \uc5ec\ub7ec \ubc88 \uc0ac\uc6a9\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.\n\
+\t \uc774 \ud50c\ub798\uadf8\ub294 Jave Keytool \uba85\ub839 -ext \ud50c\ub798\uadf8\uc640 \uad6c\ubb38\uc774 \ub3d9\uc77c\ud569\ub2c8\ub2e4. \n\
+\t \uc774 \ud50c\ub798\uadf8\ub294 \uba85\ub839\uc5d0\uc11c \uc5ec\ub7ec \ubc88 \uc0ac\uc6a9\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.\n\
 \ 
 line.
 
@@ -189,3 +189,22 @@ createLTPAKeys.option-desc.password.key=\tAES\ub97c \uc0ac\uc6a9\ud558\uc5ec LTP
 \twlp.password.encryption.key \ubcc0\uc218\ub97c \uc815\uc758\ud558\uc5ec\n\
 \t\uc11c\ubc84\uc5d0 \ud0a4\ub97c \uc81c\uacf5\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4. \uc774 \uc635\uc158\uc774 \uc81c\uacf5\ub418\uc9c0 \uc54a\uc73c\uba74\n\
 \t\uae30\ubcf8 \ud0a4\ub97c \uc0ac\uc6a9\ud569\ub2c8\ub2e4.
+
+# -------- tlsProfiler OPTIONS ------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+tlsProfiler.desc=\t\uc0ac\uc6a9 \uac00\ub2a5\ud55c TLS \ud504\ub85c\ud1a0\ucf5c \ubc0f \uc554\ud638 \uc2a4\uc704\ud2b8\uc640 \ub300\uc0c1 \ud638\uc2a4\ud2b8 \ubc0f \ud3ec\ud2b8\uc758 \ud638\ud658\uc131\uc744 \ud14c\uc2a4\ud2b8\ud569\ub2c8\ub2e4.
+tlsProfiler.usage.options=\t{0} tlsProfiler [\uc635\uc158]
+tlsProfiler.required-key.port=\ \ \ \ --port
+tlsProfiler.required-desc.port=\t\ud3ec\ud2b8\ub97c \uc9c0\uc815\ud569\ub2c8\ub2e4.
+tlsProfiler.required-key.host=\ \ \ \ --host
+tlsProfiler.required-desc.host=\t\ud638\uc2a4\ud2b8\ub97c \uc9c0\uc815\ud569\ub2c8\ub2e4.
+tlsProfiler.option-key.file=\ \ \ \ --file
+tlsProfiler.option-desc.file=\t\uc120\ud0dd\uc0ac\ud56d\uc785\ub2c8\ub2e4. \uacb0\uacfc\ub294 \ucf58\uc194 \ud654\uba74 \ub300\uc2e0 \n\
+\t\uc9c0\uc815\ub41c \ud30c\uc77c\uc5d0 \uc4f0\uc5ec\uc9d1\ub2c8\ub2e4.
+tlsProfiler.option-key.verbose=\ \ \ \ --verbose
+tlsProfiler.option-desc.verbose=\t\uc548\uc804\ud558\uc9c0 \uc54a\uc740 \ud504\ub85c\ud1a0\ucf5c\uc5d0 \ub300\ud55c \ucd94\uac00 \uc815\ubcf4\ub97c \ud3ec\ud568\ud569\ub2c8\ub2e4.

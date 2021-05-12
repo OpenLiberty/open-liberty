@@ -27,11 +27,16 @@ public class EE7FeatureReplacementAction extends FeatureReplacementAction {
                                                  "javaMail-1.5",
                                                  "cdi-1.2",
                                                  "jca-1.7",
+                                                 "jcaInboundSecurity-1.0",
                                                  "jpa-2.1",
+                                                 "jpaContainer-2.1",
+                                                 "batch-1.0",
+                                                 "batchManagement-1.0",
                                                  "beanValidation-1.1",
                                                  "jaxrs-2.0",
                                                  "jaxrsClient-2.0",
                                                  "jsf-2.2",
+                                                 "jsfContainer-2.2",
                                                  "appSecurity-2.0",
                                                  "jsonp-1.0",
                                                  "jsp-2.3",
@@ -49,7 +54,12 @@ public class EE7FeatureReplacementAction extends FeatureReplacementAction {
                                                  "mdb-3.2",
                                                  "componenttest-1.0",
                                                  "txtest-1.0",
-                                                 "websocket-1.1" };
+                                                 "websocket-1.1",
+                                                 "jms-2.0",
+                                                 "wasJmsClient-2.0",
+                                                 "wasJmsServer-1.0",
+                                                 "wasJmsSecurity-1.0",
+                                                 "jaxws-2.2" };
 
     public static final Set<String> EE7_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE7_FEATURES_ARRAY)));
 

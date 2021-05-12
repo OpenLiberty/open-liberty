@@ -78,14 +78,10 @@ import org.xml.sax.InputSource;
 
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+import org.apache.cxf.Bus;
 import org.apache.cxf.common.classloader.ClassLoaderUtils;
 import org.apache.cxf.common.logging.LogUtils;
-import org.apache.cxf.common.util.ASMHelper;
-import org.apache.cxf.common.util.ASMHelper.ClassWriter;
-import org.apache.cxf.common.util.ASMHelper.FieldVisitor;
-import org.apache.cxf.common.util.ASMHelper.Label;
-import org.apache.cxf.common.util.ASMHelper.MethodVisitor;
-import org.apache.cxf.common.util.ASMHelper.Opcodes;
+import org.apache.cxf.common.spi.ClassLoaderService;
 import org.apache.cxf.common.util.CachedClass;
 import org.apache.cxf.common.util.PackageUtils;
 import org.apache.cxf.common.util.ProxyHelper;
@@ -158,7 +154,6 @@ public final class JAXBUtils {
         BUILTIN_DATATYPES_MAP.put("gDay", "javax.xml.datatype.XMLGregorianCalendar");
         BUILTIN_DATATYPES_MAP.put("duration", "javax.xml.datatype.Duration");
         BUILTIN_DATATYPES_MAP.put("NOTATION", "javax.xml.namespace.QName");
-        BUILTIN_DATATYPES_MAP.put("string", "java.lang.String");
 
         HOLDER_TYPES_MAP = new HashMap<>();
         HOLDER_TYPES_MAP.put("int", java.lang.Integer.class);
@@ -307,7 +302,7 @@ public final class JAXBUtils {
                 while (st.hasMoreTokens()) {
                     String token = st.nextToken();
                     if (packageName.length() > 0) {
-                        packageName.insert(0, ".");
+                        packageName.insert(0, '.');
                         packageName.insert(0, normalizePackageNamePart(token));
                     } else {
                         packageName.insert(0, token);
@@ -320,22 +315,21 @@ public final class JAXBUtils {
 
             StringTokenizer st = new StringTokenizer(authority, ".");
             if (st.hasMoreTokens()) {
-                String token = null;
                 while (st.hasMoreTokens()) {
-                    token = st.nextToken();
+                    String token = st.nextToken();
                     if (packageName.length() == 0) {
                         if ("www".equals(token)) {
                             continue;
                         }
                     } else {
-                        packageName.insert(0, ".");
+                        packageName.insert(0, '.');
                     }
                     packageName.insert(0, normalizePackageNamePart(token));
                 }
             }
 
             if (!("http".equalsIgnoreCase(scheme) || "urn".equalsIgnoreCase(scheme))) {
-                packageName.insert(0, ".");
+                packageName.insert(0, '.');
                 packageName.insert(0, normalizePackageNamePart(scheme));
             }
 
@@ -408,10 +402,9 @@ public final class JAXBUtils {
         // algorithm will not change an XML name that is already a legal and
         // conventional (!) Java class, method, or constant identifier
 
-        boolean legalIdentifier = false;
         StringBuilder buf = new StringBuilder(name);
         boolean hasUnderscore = false;
-        legalIdentifier = Character.isJavaIdentifierStart(buf.charAt(0));
+        boolean legalIdentifier = Character.isJavaIdentifierStart(buf.charAt(0));
 
         for (int i = 1; i < name.length() && legalIdentifier; i++) {
             legalIdentifier &= Character.isJavaIdentifierPart(buf.charAt(i));
@@ -512,7 +505,7 @@ public final class JAXBUtils {
         if (null == buf || buf.length() == 0) {
             return false;
         }
-        boolean result = false;
+        final boolean result;
         if (IdentifierType.CONSTANT == type) {
             for (int i = 0; i < buf.length(); i++) {
                 if (Character.isLowerCase(buf.charAt(i))) {
@@ -575,31 +568,23 @@ public final class JAXBUtils {
     }
 
     public static Class<?> getValidClass(Class<?> cls) {
-        if (cls.isEnum()) {
-            return cls;
-        }
-        if (cls.isArray()) {
+        if (cls.isEnum() || cls.isArray()) {
             return cls;
         }
 
-        if (cls == Object.class || cls == String.class
+        if (cls == Object.class || cls == String.class || cls.isPrimitive() || cls.isAnnotation()
             || "javax.xml.ws.Holder".equals(cls.getName())) {
-            cls = null;
-        } else if (cls.isPrimitive() || cls.isAnnotation()) {
-            cls = null;
-        } else if (cls.isInterface()) {
+            return null;
+        } else if (cls.isInterface()
+            || "javax.xml.ws.wsaddressing.W3CEndpointReference".equals(cls.getName())) {
             return cls;
         }
-        if (cls != null) {
-            if ("javax.xml.ws.wsaddressing.W3CEndpointReference".equals(cls.getName())) {
-                return cls;
-            }
-            Constructor<?> cons = ReflectionUtil.getDeclaredConstructor(cls);
+
+        Constructor<?> cons = ReflectionUtil.getDeclaredConstructor(cls);
+        if (cons == null) {
+            cons = ReflectionUtil.getConstructor(cls);
             if (cons == null) {
-                cons = ReflectionUtil.getConstructor(cls);
-            }
-            if (cons == null) {
-                cls = null;
+                return null;
             }
         }
         return cls;
@@ -635,9 +620,10 @@ public final class JAXBUtils {
         return jaxbXjcLoader;
     }
 
-    public static Object setNamespaceMapper(final Map<String, String> nspref,
-                                           Marshaller marshaller) throws PropertyException {
-        Object mapper = createNamespaceWrapper(marshaller.getClass(), nspref);
+    public static Object setNamespaceMapper(Bus bus, final Map<String, String> nspref,
+                                            Marshaller marshaller) throws PropertyException {
+        ClassLoaderService classLoaderService = bus.getExtension(ClassLoaderService.class);
+        Object mapper = classLoaderService.createNamespaceWrapperInstance(marshaller.getClass(), nspref);
         if (mapper != null) {
             if (marshaller.getClass().getName().contains(".internal.")) {
                 marshaller.setProperty("com.sun.xml.internal.bind.namespacePrefixMapper",
@@ -918,9 +904,8 @@ public final class JAXBUtils {
         }
         for (Map.Entry<String, InputStream> entry : packages.entrySet()) {
             if (entry.getValue() != null) {
-                BufferedReader reader = null;
-                try {
-                    reader = new BufferedReader(new InputStreamReader(entry.getValue(), StandardCharsets.UTF_8));
+                try (BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(entry.getValue(), StandardCharsets.UTF_8))) {
                     String pkg = entry.getKey();
                     ClassLoader loader = packageLoaders.get(pkg);
                     if (!StringUtils.isEmpty(pkg)) {
@@ -930,8 +915,8 @@ public final class JAXBUtils {
                     String line = reader.readLine();
                     while (line != null) {
                         line = line.trim();
-                        if (line.indexOf("#") != -1) {
-                            line = line.substring(0, line.indexOf("#"));
+                        if (line.indexOf('#') != -1) {
+                            line = line.substring(0, line.indexOf('#'));
                         }
                         if (!StringUtils.isEmpty(line)) {
                             try {
@@ -943,15 +928,12 @@ public final class JAXBUtils {
                         }
                         line = reader.readLine();
                     }
-                } catch (Exception e) {
+                } catch (IOException e) {
                     // ignore
                 } finally {
                     try {
-                        if (reader != null) {
-                            reader.close();
-                            entry.getValue().close();
-                        }
-                    } catch (Exception e) {
+                        entry.getValue().close();
+                    } catch (IOException e) {
                         // ignore
                     }
                 }
@@ -1105,425 +1087,6 @@ public final class JAXBUtils {
         }
         return false;
     }
-
-    @FFDCIgnore({RuntimeException.class, Throwable.class, Exception.class})
-    private static synchronized Object createNamespaceWrapper(Class<?> mcls, Map<String, String> map) {
-        String postFix = "";
-        if (mcls.getName().contains("eclipse")) {
-            return createEclipseNamespaceMapper(mcls, map);
-        } else if (mcls.getName().contains(".internal")) {
-            postFix = "Internal";
-        } else if (mcls.getName().contains("com.sun")) {
-            postFix = "RI";
-        }
-        ASMHelper helper = new ASMHelper();
-        String className = "org.apache.cxf.jaxb.NamespaceMapper";
-        className += postFix;
-        Class<?> cls = helper.findClass(className, JAXBUtils.class);
-        Throwable t = null;
-        if (cls == null) {
-            try {
-                ClassWriter cw = helper.createClassWriter();
-                if (cw != null) {
-                    cls = createNamespaceWrapperInternal(helper, cw, postFix, mcls);
-                }
-            } catch (RuntimeException ex) {
-                // continue
-                t = ex;
-            }
-        }
-        if (cls == null
-            && (!mcls.getName().contains(".internal.") && mcls.getName().contains("com.sun"))) {
-            try {
-                cls = ClassLoaderUtils.loadClass("org.apache.cxf.common.jaxb.NamespaceMapper",
-                                                 JAXBUtils.class);
-            } catch (Throwable ex2) {
-                // ignore
-                t = ex2;
-            }
-        }
-        if (cls != null) {
-            try {
-                return cls.getConstructor(Map.class).newInstance(map);
-            } catch (Exception e) {
-                // ignore
-                t = e;
-            }
-        }
-        LOG.log(Level.INFO, "Could not create a NamespaceMapper compatible with Marshaller class " + mcls.getName(), t);
-        return null;
-    }
-    /*
-    // This is the "prototype" for the ASM generated class below
-    public static class MapNamespacePrefixMapper2
-        extends org.eclipse.persistence.internal.oxm.record.namespaces.MapNamespacePrefixMapper {
-
-        String[] nsctxt;
-
-        public MapNamespacePrefixMapper2(Map<String, String> foo) {
-            super(foo);
-        }
-        public String[] getPreDeclaredNamespaceUris() {
-            String[] sup = super.getPreDeclaredNamespaceUris();
-            if (nsctxt == null) {
-                return sup;
-            }
-            List<String> s = new ArrayList<>(Arrays.asList(sup));
-            for (int x = 1; x < nsctxt.length; x = x + 2) {
-                s.remove(nsctxt[x]);
-            }
-            return s.toArray(new String[s.size()]);
-        }
-        public void setContextualNamespaceDecls(String[] f) {
-            nsctxt = f;
-        }
-        public String[] getContextualNamespaceDecls() {
-            return nsctxt;
-        }
-    }
-    */
-    //CHECKSTYLE:OFF
-    //bunch of really long ASM based methods that cannot be shortened easily
-    @FFDCIgnore(Throwable.class)
-    private static Object createEclipseNamespaceMapper(Class<?> mcls, Map<String, String> map) {
-        ASMHelper helper = new ASMHelper();
-        String className = "org.apache.cxf.jaxb.EclipseNamespaceMapper";
-        String slashedName = "org/apache/cxf/jaxb/EclipseNamespaceMapper";
-        Class<?> cls = helper.findClass(className, JAXBUtils.class);
-
-        if (cls == null) {
-            ClassWriter cw = helper.createClassWriter();
-            if (cw == null) {
-                return null;
-            }
-            String superName = "org/eclipse/persistence/internal/oxm/record/namespaces/MapNamespacePrefixMapper";
-            FieldVisitor fv;
-            MethodVisitor mv;
-            cw.visit(Opcodes.V1_6,
-                     Opcodes.ACC_PUBLIC + Opcodes.ACC_FINAL + Opcodes.ACC_SUPER,
-                     slashedName, null,
-                     superName, null);
-
-            cw.visitSource("EclipseNamespaceMapper.java", null);
-
-            fv = cw.visitField(Opcodes.ACC_PRIVATE, "nsctxt", "[Ljava/lang/String;", null, null);
-            fv.visitEnd();
-
-
-            mv = cw.visitMethod(Opcodes.ACC_PUBLIC, "<init>", "(Ljava/util/Map;)V",
-                                "(Ljava/util/Map<Ljava/lang/String;Ljava/lang/String;>;)V", null);
-            mv.visitCode();
-            Label l0 = helper.createLabel();
-            mv.visitLabel(l0);
-            mv.visitVarInsn(Opcodes.ALOAD, 0);
-            mv.visitVarInsn(Opcodes.ALOAD, 1);
-            mv.visitMethodInsn(Opcodes.INVOKESPECIAL,
-                               superName, "<init>", "(Ljava/util/Map;)V", false);
-            Label l1 = helper.createLabel();
-            mv.visitLabel(l1);
-            mv.visitInsn(Opcodes.RETURN);
-            Label l2 = helper.createLabel();
-            mv.visitLabel(l2);
-            mv.visitMaxs(2, 2);
-            mv.visitEnd();
-
-
-            mv = cw.visitMethod(Opcodes.ACC_PUBLIC, "setContextualNamespaceDecls", "([Ljava/lang/String;)V",
-                                null, null);
-            mv.visitCode();
-            l0 = helper.createLabel();
-            mv.visitLabel(l0);
-            mv.visitLineNumber(47, l0);
-            mv.visitVarInsn(Opcodes.ALOAD, 0);
-            mv.visitVarInsn(Opcodes.ALOAD, 1);
-            mv.visitFieldInsn(Opcodes.PUTFIELD, slashedName, "nsctxt", "[Ljava/lang/String;");
-            l1 = helper.createLabel();
-            mv.visitLabel(l1);
-            mv.visitLineNumber(48, l1);
-            mv.visitInsn(Opcodes.RETURN);
-            l2 = helper.createLabel();
-            mv.visitLabel(l2);
-            mv.visitLocalVariable("this", "L" + slashedName + ";", null, l0, l2, 0);
-            mv.visitLocalVariable("contextualNamespaceDecls", "[Ljava/lang/String;", null, l0, l2, 1);
-            mv.visitMaxs(2, 2);
-            mv.visitEnd();
-
-            mv = cw.visitMethod(Opcodes.ACC_PUBLIC, "getContextualNamespaceDecls", "()[Ljava/lang/String;", null, null);
-            mv.visitCode();
-            l0 = helper.createLabel();
-            mv.visitLabel(l0);
-            mv.visitLineNumber(51, l0);
-            mv.visitVarInsn(Opcodes.ALOAD, 0);
-            mv.visitFieldInsn(Opcodes.GETFIELD, slashedName, "nsctxt", "[Ljava/lang/String;");
-            mv.visitInsn(Opcodes.ARETURN);
-            l1 = helper.createLabel();
-
-            mv.visitLabel(l1);
-            mv.visitLocalVariable("this", "L" + slashedName + ";", null, l0, l1, 0);
-
-            mv.visitMaxs(1, 1);
-            mv.visitEnd();
-
-
-            mv = cw.visitMethod(Opcodes.ACC_PUBLIC, "getPreDeclaredNamespaceUris", "()[Ljava/lang/String;", null, null);
-            mv.visitCode();
-            l0 = helper.createLabel();
-            mv.visitLabel(l0);
-            mv.visitLineNumber(1036, l0);
-            mv.visitVarInsn(Opcodes.ALOAD, 0);
-            mv.visitMethodInsn(Opcodes.INVOKESPECIAL,
-                               superName,
-                               "getPreDeclaredNamespaceUris", "()[Ljava/lang/String;", false);
-            mv.visitVarInsn(Opcodes.ASTORE, 1);
-            l1 = helper.createLabel();
-            mv.visitLabel(l1);
-            mv.visitLineNumber(1037, l1);
-            mv.visitVarInsn(Opcodes.ALOAD, 0);
-            mv.visitFieldInsn(Opcodes.GETFIELD, slashedName, "nsctxt", "[Ljava/lang/String;");
-            l2 = helper.createLabel();
-            mv.visitJumpInsn(Opcodes.IFNONNULL, l2);
-            Label l3 = helper.createLabel();
-            mv.visitLabel(l3);
-            mv.visitLineNumber(1038, l3);
-            mv.visitVarInsn(Opcodes.ALOAD, 1);
-            mv.visitInsn(Opcodes.ARETURN);
-            mv.visitLabel(l2);
-            mv.visitLineNumber(1040, l2);
-            mv.visitFrame(Opcodes.F_APPEND, 1, new Object[] {"[Ljava/lang/String;"}, 0, null);
-            mv.visitTypeInsn(Opcodes.NEW, "java/util/ArrayList");
-            mv.visitInsn(Opcodes.DUP);
-            mv.visitVarInsn(Opcodes.ALOAD, 1);
-            mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/util/Arrays", "asList",
-                               "([Ljava/lang/Object;)Ljava/util/List;", false);
-            mv.visitMethodInsn(Opcodes.INVOKESPECIAL, "java/util/ArrayList", "<init>", "(Ljava/util/Collection;)V", false);
-            mv.visitVarInsn(Opcodes.ASTORE, 2);
-            Label l4 = helper.createLabel();
-            mv.visitLabel(l4);
-            mv.visitLineNumber(1041, l4);
-            mv.visitInsn(Opcodes.ICONST_1);
-            mv.visitVarInsn(Opcodes.ISTORE, 3);
-            Label l5 = helper.createLabel();
-            mv.visitLabel(l5);
-            Label l6 = helper.createLabel();
-            mv.visitJumpInsn(Opcodes.GOTO, l6);
-            Label l7 = helper.createLabel();
-            mv.visitLabel(l7);
-            mv.visitLineNumber(1042, l7);
-            mv.visitFrame(Opcodes.F_APPEND, 2, new Object[] {"java/util/List", Opcodes.INTEGER}, 0, null);
-            mv.visitVarInsn(Opcodes.ALOAD, 2);
-            mv.visitVarInsn(Opcodes.ALOAD, 0);
-            mv.visitFieldInsn(Opcodes.GETFIELD, slashedName, "nsctxt", "[Ljava/lang/String;");
-            mv.visitVarInsn(Opcodes.ILOAD, 3);
-            mv.visitInsn(Opcodes.AALOAD);
-            mv.visitMethodInsn(Opcodes.INVOKEINTERFACE, "java/util/List", "remove", "(Ljava/lang/Object;)Z", true);
-            mv.visitInsn(Opcodes.POP);
-            Label l8 = helper.createLabel();
-            mv.visitLabel(l8);
-            mv.visitLineNumber(1041, l8);
-            mv.visitIincInsn(3, 2);
-            mv.visitLabel(l6);
-            mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
-            mv.visitVarInsn(Opcodes.ILOAD, 3);
-            mv.visitVarInsn(Opcodes.ALOAD, 0);
-            mv.visitFieldInsn(Opcodes.GETFIELD,
-                              slashedName,
-                              "nsctxt", "[Ljava/lang/String;");
-            mv.visitInsn(Opcodes.ARRAYLENGTH);
-            mv.visitJumpInsn(Opcodes.IF_ICMPLT, l7);
-            Label l9 = helper.createLabel();
-            mv.visitLabel(l9);
-            mv.visitLineNumber(1044, l9);
-            mv.visitVarInsn(Opcodes.ALOAD, 2);
-            mv.visitVarInsn(Opcodes.ALOAD, 2);
-            mv.visitMethodInsn(Opcodes.INVOKEINTERFACE, "java/util/List", "size", "()I", true);
-            mv.visitTypeInsn(Opcodes.ANEWARRAY, "java/lang/String");
-            mv.visitMethodInsn(Opcodes.INVOKEINTERFACE, "java/util/List",
-                               "toArray", "([Ljava/lang/Object;)[Ljava/lang/Object;", true);
-            mv.visitTypeInsn(Opcodes.CHECKCAST, "[Ljava/lang/String;");
-            mv.visitInsn(Opcodes.ARETURN);
-            Label l10 = helper.createLabel();
-            mv.visitLabel(l10);
-            mv.visitLocalVariable("this", "L" + slashedName + ";",
-                                  null, l0, l10, 0);
-            mv.visitLocalVariable("sup", "[Ljava/lang/String;", null, l1, l10, 1);
-            mv.visitLocalVariable("s", "Ljava/util/List;", "Ljava/util/List<Ljava/lang/String;>;", l4, l10, 2);
-            mv.visitLocalVariable("x", "I", null, l5, l9, 3);
-            mv.visitMaxs(3, 4);
-            mv.visitEnd();
-
-            cw.visitEnd();
-
-            byte[] bts = cw.toByteArray();
-            cls = helper.loadClass(className,
-                                   mcls, bts);
-        }
-        try {
-            return cls.getConstructor(Map.class).newInstance(map);
-        } catch (Throwable e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    private static Class<?> createNamespaceWrapperInternal(ASMHelper helper, ClassWriter cw,
-                                                           String postFix, Class<?> ref) {
-        String className = "org.apache.cxf.jaxb.NamespaceMapper" + postFix;
-        boolean useJdkJaxb = isJdkJaxbAvailable() && !"RI".equals(postFix); //Liberty change
-        String superName = "com/sun/xml/"
-            + (useJdkJaxb ? "internal/" : "")
-            + "bind/marshaller/NamespacePrefixMapper";
-        String postFixedName = "org/apache/cxf/jaxb/NamespaceMapper" + postFix;
-
-        FieldVisitor fv;
-        MethodVisitor mv;
-
-        cw.visit(Opcodes.V1_6,
-                 Opcodes.ACC_PUBLIC + Opcodes.ACC_FINAL + Opcodes.ACC_SUPER,
-                 postFixedName, null,
-                 superName, null);
-
-        cw.visitSource("NamespaceMapper.java", null);
-
-        fv = cw.visitField(Opcodes.ACC_PRIVATE + Opcodes.ACC_FINAL,
-                           "nspref", "Ljava/util/Map;",
-                           "Ljava/util/Map<Ljava/lang/String;Ljava/lang/String;>;", null);
-        fv.visitEnd();
-
-        fv = cw.visitField(Opcodes.ACC_PRIVATE, "nsctxt", "[Ljava/lang/String;", null, null);
-        fv.visitEnd();
-
-        fv = cw.visitField(Opcodes.ACC_PRIVATE + Opcodes.ACC_FINAL + Opcodes.ACC_STATIC,
-                           "EMPTY_STRING", "[Ljava/lang/String;", null, null);
-        fv.visitEnd();
-
-        mv = cw.visitMethod(Opcodes.ACC_STATIC, "<clinit>", "()V", null, null);
-        mv.visitCode();
-        Label l0 = helper.createLabel();
-        mv.visitLabel(l0);
-        mv.visitLineNumber(30, l0);
-        mv.visitInsn(Opcodes.ICONST_0);
-        mv.visitTypeInsn(Opcodes.ANEWARRAY, "java/lang/String");
-        mv.visitFieldInsn(Opcodes.PUTSTATIC, postFixedName, "EMPTY_STRING", "[Ljava/lang/String;");
-        mv.visitInsn(Opcodes.RETURN);
-        mv.visitMaxs(1, 0);
-        mv.visitEnd();
-
-        mv = cw.visitMethod(Opcodes.ACC_PUBLIC, "<init>",
-                            "(Ljava/util/Map;)V",
-                            "(Ljava/util/Map<Ljava/lang/String;Ljava/lang/String;>;)V", null);
-        mv.visitCode();
-        l0 = helper.createLabel();
-        mv.visitLabel(l0);
-        mv.visitLineNumber(32, l0);
-        mv.visitVarInsn(Opcodes.ALOAD, 0);
-        mv.visitMethodInsn(Opcodes.INVOKESPECIAL, superName, "<init>", "()V", false);
-        Label l1 = helper.createLabel();
-        mv.visitLabel(l1);
-        mv.visitLineNumber(29, l1);
-        mv.visitVarInsn(Opcodes.ALOAD, 0);
-        mv.visitFieldInsn(Opcodes.GETSTATIC, postFixedName, "EMPTY_STRING", "[Ljava/lang/String;");
-        mv.visitFieldInsn(Opcodes.PUTFIELD, postFixedName, "nsctxt", "[Ljava/lang/String;");
-        Label l2 = helper.createLabel();
-        mv.visitLabel(l2);
-        mv.visitLineNumber(33, l2);
-        mv.visitVarInsn(Opcodes.ALOAD, 0);
-        mv.visitVarInsn(Opcodes.ALOAD, 1);
-        mv.visitFieldInsn(Opcodes.PUTFIELD, postFixedName, "nspref", "Ljava/util/Map;");
-        Label l3 = helper.createLabel();
-        mv.visitLabel(l3);
-        mv.visitLineNumber(34, l3);
-        mv.visitInsn(Opcodes.RETURN);
-        Label l4 = helper.createLabel();
-        mv.visitLabel(l4);
-        mv.visitLocalVariable("this", "L" + postFixedName + ";", null, l0, l4, 0);
-        mv.visitLocalVariable("nspref",
-                              "Ljava/util/Map;", "Ljava/util/Map<Ljava/lang/String;Ljava/lang/String;>;",
-                              l0, l4, 1);
-        mv.visitMaxs(2, 2);
-        mv.visitEnd();
-
-        mv = cw.visitMethod(Opcodes.ACC_PUBLIC, "getPreferredPrefix",
-                            "(Ljava/lang/String;Ljava/lang/String;Z)Ljava/lang/String;",
-                            null, null);
-        mv.visitCode();
-        l0 = helper.createLabel();
-        mv.visitLabel(l0);
-        mv.visitLineNumber(39, l0);
-        mv.visitVarInsn(Opcodes.ALOAD, 0);
-        mv.visitFieldInsn(Opcodes.GETFIELD, postFixedName, "nspref", "Ljava/util/Map;");
-        mv.visitVarInsn(Opcodes.ALOAD, 1);
-        mv.visitMethodInsn(Opcodes.INVOKEINTERFACE, "java/util/Map",
-                           "get", "(Ljava/lang/Object;)Ljava/lang/Object;", true);
-        mv.visitTypeInsn(Opcodes.CHECKCAST, "java/lang/String");
-        mv.visitVarInsn(Opcodes.ASTORE, 4);
-        l1 = helper.createLabel();
-        mv.visitLabel(l1);
-        mv.visitLineNumber(40, l1);
-        mv.visitVarInsn(Opcodes.ALOAD, 4);
-        l2 = helper.createLabel();
-        mv.visitJumpInsn(Opcodes.IFNULL, l2);
-        l3 = helper.createLabel();
-        mv.visitLabel(l3);
-        mv.visitLineNumber(41, l3);
-        mv.visitVarInsn(Opcodes.ALOAD, 4);
-        mv.visitInsn(Opcodes.ARETURN);
-        mv.visitLabel(l2);
-        mv.visitLineNumber(43, l2);
-        mv.visitFrame(Opcodes.F_APPEND, 1, new Object[] {"java/lang/String"}, 0, null);
-        mv.visitVarInsn(Opcodes.ALOAD, 2);
-        mv.visitInsn(Opcodes.ARETURN);
-        l4 = helper.createLabel();
-        mv.visitLabel(l4);
-        mv.visitLocalVariable("this", "L" + postFixedName + ";", null, l0, l4, 0);
-        mv.visitLocalVariable("namespaceUri", "Ljava/lang/String;", null, l0, l4, 1);
-        mv.visitLocalVariable("suggestion", "Ljava/lang/String;", null, l0, l4, 2);
-        mv.visitLocalVariable("requirePrefix", "Z", null, l0, l4, 3);
-        mv.visitLocalVariable("prefix", "Ljava/lang/String;", null, l1, l4, 4);
-        mv.visitMaxs(2, 5);
-        mv.visitEnd();
-
-        mv = cw.visitMethod(Opcodes.ACC_PUBLIC, "setContextualNamespaceDecls", "([Ljava/lang/String;)V", null, null);
-        mv.visitCode();
-        l0 = helper.createLabel();
-        mv.visitLabel(l0);
-        mv.visitLineNumber(47, l0);
-        mv.visitVarInsn(Opcodes.ALOAD, 0);
-        mv.visitVarInsn(Opcodes.ALOAD, 1);
-        mv.visitFieldInsn(Opcodes.PUTFIELD, postFixedName, "nsctxt", "[Ljava/lang/String;");
-        l1 = helper.createLabel();
-        mv.visitLabel(l1);
-        mv.visitLineNumber(48, l1);
-        mv.visitInsn(Opcodes.RETURN);
-        l2 = helper.createLabel();
-        mv.visitLabel(l2);
-        mv.visitLocalVariable("this", "L" + postFixedName + ";", null, l0, l2, 0);
-        mv.visitLocalVariable("contextualNamespaceDecls", "[Ljava/lang/String;", null, l0, l2, 1);
-        mv.visitMaxs(2, 2);
-        mv.visitEnd();
-
-        mv = cw.visitMethod(Opcodes.ACC_PUBLIC, "getContextualNamespaceDecls", "()[Ljava/lang/String;", null, null);
-        mv.visitCode();
-        l0 = helper.createLabel();
-        mv.visitLabel(l0);
-        mv.visitLineNumber(51, l0);
-        mv.visitVarInsn(Opcodes.ALOAD, 0);
-        mv.visitFieldInsn(Opcodes.GETFIELD, postFixedName, "nsctxt", "[Ljava/lang/String;");
-        mv.visitInsn(Opcodes.ARETURN);
-        l1 = helper.createLabel();
-
-        mv.visitLabel(l1);
-        mv.visitLocalVariable("this", "L" + postFixedName + ";", null, l0, l1, 0);
-
-        mv.visitMaxs(1, 1);
-        mv.visitEnd();
-
-        cw.visitEnd();
-
-        byte[] bts = cw.toByteArray();
-        return helper.loadClass(className,
-                                ref, bts);
-    }
-    //CHECKSTYLE:ON
 
     public static JAXBContextProxy createJAXBContextProxy(final JAXBContext ctx) {
         return createJAXBContextProxy(ctx, null, null);

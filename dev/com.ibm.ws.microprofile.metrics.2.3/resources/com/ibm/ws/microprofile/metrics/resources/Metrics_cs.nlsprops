@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2020 IBM Corporation and others.
+# Copyright (c) 2009, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -128,8 +128,24 @@ session.activeSessions.description=Po\u010det soub\u011b\u017en\u011b aktivn\u00
 session.invalidated.total.description=Po\u010det relac\u00ed, u nich\u017e do\u0161lo od povolen\u00ed t\u00e9to metriky k odhl\u00e1\u0161en\u00ed.
 session.invalidatedbyTimeout.total.description=Po\u010det relac\u00ed, u nich\u017e do\u0161lo od povolen\u00ed t\u00e9to metriky k odhl\u00e1\u0161en\u00ed z d\u016fvodu p\u0159ekro\u010den\u00ed \u010dasov\u00e9ho limitu.
 
+grpc.server.rpcStarted.total.description=Celkov\u00fd po\u010det vol\u00e1n\u00ed RPC spu\u0161t\u011bn\u00fdch na serveru.
+grpc.server.rpcCompleted.total.description=Celkov\u00fd po\u010det vol\u00e1n\u00ed RPC dokon\u010den\u00fdch na serveru bez ohledu na \u00fasp\u011bch nebo selh\u00e1n\u00ed.
+grpc.server.sentMessages.total.description=Celkov\u00fd po\u010det zpr\u00e1v s proudem hodnot odeslan\u00fdch serverem.
+grpc.server.receivedMessages.total.description=Celkov\u00fd po\u010det zpr\u00e1v s proudem hodnot p\u0159ijat\u00fdch od klienta.
+grpc.server.responseTime.total.description=Celkov\u00e1 doba odezvy dokon\u010den\u00fdch vol\u00e1n\u00ed RPC.
+
+grpc.client.rpcStarted.total.description=Celkov\u00fd po\u010det vol\u00e1n\u00ed RPC spu\u0161t\u011bn\u00fdch na klientovi.
+grpc.client.rpcCompleted.total.description=Celkov\u00fd po\u010det vol\u00e1n\u00ed RPC dokon\u010den\u00fdch na klientovi bez ohledu na \u00fasp\u011bch nebo selh\u00e1n\u00ed.
+grpc.client.sentMessages.total.description=Celkov\u00fd po\u010det zpr\u00e1v s proudem hodnot odeslan\u00fdch klientem.
+grpc.client.receivedMessages.total.description=Celkov\u00fd po\u010det zpr\u00e1v s proudem hodnot p\u0159ijat\u00fdch od serveru.
+grpc.client.responseTime.total.description=Celkov\u00e1 doba odezvy dokon\u010den\u00fdch vol\u00e1n\u00ed RPC.
 
 REST.request.description=Po\u010det vyvol\u00e1n\u00ed a celkov\u00e1 doba odezvy t\u00e9to metody prost\u0159edku RESTful od spu\u0161t\u011bn\u00ed serveru.
+
+requestTiming.requestCount.description=Po\u010det po\u017eadavk\u016f servletu od spu\u0161t\u011bn\u00ed serveru.
+requestTiming.activeRequestCount.description=Po\u010det aktu\u00e1ln\u011b spu\u0161t\u011bn\u00fdch po\u017eadavk\u016f servletu.
+requestTiming.slowRequestCount.description=Po\u010det po\u017eadavk\u016f servlet\u016f, kter\u00e9 jsou moment\u00e1ln\u011b spu\u0161t\u011bn\u00e9, ale jsou pomal\u00e9.
+requestTiming.hungRequestCount.description=Po\u010det po\u017eadavk\u016f servlet\u016f, kter\u00e9 jsou moment\u00e1ln\u011b spu\u0161t\u011bn\u00e9, ale jsou zablokovan\u00e9.
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message
 #-----------------------------------------------------------------------------------------------------------------------------

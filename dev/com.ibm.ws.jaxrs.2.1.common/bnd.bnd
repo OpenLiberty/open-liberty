@@ -119,7 +119,7 @@ instrument.classesExcludes: com/ibm/ws/jaxrs20/internal/resources/*.class
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   com.ibm.ws.security.authorization.util;version=latest,\
   com.ibm.ws.webservices.handler;version=latest,\
-  com.ibm.ws.concurrent;version=latest,\
+  com.ibm.ws.threading;version=latest,\
   com.ibm.wsspi.org.osgi.service.component.annotations
 
 -testpath: \

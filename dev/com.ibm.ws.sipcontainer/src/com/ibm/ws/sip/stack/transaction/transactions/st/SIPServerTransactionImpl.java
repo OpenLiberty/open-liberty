@@ -138,7 +138,7 @@ public abstract class SIPServerTransactionImpl
 	public void sendResponseToTransport( Response sipResponse )
 		throws SIPTransportException		
 	{
-		// defect 496693, when original request is recieved from loopback
+		// defect 496693, when original request is received from loopback
 		// response should be returned using loopback too. 
 		RequestImpl request = (RequestImpl)getFirstRequest();
 		if (request != null && request.isLoopback()) {

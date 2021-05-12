@@ -13,9 +13,9 @@ package javax.servlet.sip;
 import java.util.EventListener;
 
 /**
- * Implementations of this interface recieve notifications about 
+ * Implementations of this interface receive notifications about
  * invalidated <code>SipApplicationSession</code> objects in the
- * SIP application they are part of. To recieve notification events,
+ * SIP application they are part of. To receive notification events,
  * the implementation class must be configured in the deployment
  * descriptor for the servlet application.
  */

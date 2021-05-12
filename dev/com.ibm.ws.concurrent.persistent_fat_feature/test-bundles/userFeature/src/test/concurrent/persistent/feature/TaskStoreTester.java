@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,8 +18,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import javax.naming.InitialContext;
-import javax.transaction.Status;
-import javax.transaction.UserTransaction;
+
+import jakarta.transaction.Status;
+import jakarta.transaction.UserTransaction;
 
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;

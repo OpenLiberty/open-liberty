@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,6 @@ import static com.ibm.ws.jaxrs20.fat.TestUtils.getHeaderString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -52,13 +51,11 @@ public class JAXRSContinuationsTest {
     public static LibertyServer server;
 
     private static final String CONTEXT_ROOT = "bookcontinuationstore";
-    private static final String cxf = "publish/shared/resources/cxf/";
     private static final String NON_VOID_RETURN_WARNING = "com.ibm.ws.jaxrs20.fat.bookcontinuationstore.BookContinuationStore#getBookDescription_nonVoidReturn method is not a valid JAX-RS AsyncResponse method as it has a non-void response type";
 
     @BeforeClass
     public static void setUp() throws Exception {
         WebArchive app = ShrinkHelper.buildDefaultApp(CONTEXT_ROOT, "com.ibm.ws.jaxrs20.fat.bookcontinuationstore");
-        app.addAsLibraries(new File(cxf).listFiles());
         ShrinkHelper.exportDropinAppToServer(server, app);
         server.addInstalledAppForValidation(CONTEXT_ROOT);
 
@@ -187,7 +184,7 @@ public class JAXRSContinuationsTest {
         }
 
         startSignal.countDown();
-        doneSignal.await(60, TimeUnit.SECONDS);
+        doneSignal.await(600000000, TimeUnit.SECONDS);
         executor.shutdownNow();
         assertEquals("Not all invocations have completed", 0, doneSignal.getCount());
         for (BookWorker w : workers) {

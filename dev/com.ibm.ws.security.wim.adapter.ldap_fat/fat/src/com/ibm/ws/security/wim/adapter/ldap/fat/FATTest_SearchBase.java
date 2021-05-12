@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -154,6 +154,7 @@ public class FATTest_SearchBase {
 
             // set a new mark
             server.setMarkToEndOfLog(server.getDefaultLogFile());
+            server.setTraceMarkToEndOfDefaultTrace();
 
             // Update the server xml
             server.setServerConfigurationFile("/" + serverXML);
@@ -161,9 +162,13 @@ public class FATTest_SearchBase {
             // Wait for CWWKG0017I and CWWKF0008I to appear in logs after we started the config update
             Log.info(c, "setServerConfiguration",
                      "waitForStringInLogUsingMark: CWWKG0017I: The server configuration was successfully updated.");
-            server.waitForStringInLogUsingMark("CWWKG0017I"); //CWWKG0017I: The server configuration was successfully updated in 0.2 seconds.
-            //server.waitForStringInLogUsingLastOffset("CWWKG0017I");
-            //server.waitForStringInLogUsingMark("CWWKF0008I"); //CWWKF0008I: Feature update completed in 3.461 seconds.
+            assertNotNull("Did not find CWWKG0017I message.", server.waitForStringInLogUsingMark("CWWKG0017I")); //CWWKG0017I: The server configuration was successfully updated in 0.2 seconds.
+
+            // We really need to wait until VMMService.updatedConfiguredRepository() finishes so that base entries,
+            // etc. are all updated.
+            Log.info(c, "setServerConfiguration",
+                     "waitForStringInTraceUsingMark: VMMService.*updatedConfiguredRepository Exit");
+            assertNotNull("Did not find updatedConfiguredRepository exit statement.", server.waitForStringInTraceUsingMark("VMMService.*updatedConfiguredRepository Exit"));
 
             serverConfigurationFile = serverXML;
         }

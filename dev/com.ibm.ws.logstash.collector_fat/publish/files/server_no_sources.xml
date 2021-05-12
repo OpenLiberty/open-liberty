@@ -4,30 +4,26 @@
     <!-- Enable features -->
     <featureManager>
         <feature>jsp-2.2</feature>
-	   <feature>logstashCollector-1.0</feature>
-	   <feature>ssl-1.0</feature>
-	   <feature>timedexit-1.0</feature>
+        <feature>logstashCollector-1.0</feature>
+        <feature>ssl-1.0</feature>
+        <feature>timedexit-1.0</feature>
     </featureManager>
 
-    <httpEndpoint id="defaultHttpEndpoint" httpPort="${bvt.prop.HTTP_default}" httpsPort="${bvt.prop.HTTP_default.secure}"/>
+    <httpEndpoint id="defaultHttpEndpoint"
+        httpPort="${bvt.prop.HTTP_default}"
+        httpsPort="${bvt.prop.HTTP_default.secure}" />
 
-	<!-- Automatically expand WAR files and EAR files -->
-	<applicationManager autoExpand="true"/>
-	
-	<logstashCollector port="5043" hostName="localhost"
-		sslRef="testSSLConfig" source="">
-	</logstashCollector> 
+    <!-- Automatically expand WAR files and EAR files -->
+    <applicationManager autoExpand="true" />
 
-   <keyStore password="passw0rd" id="testKeyStore" location="${server.output.dir}/resources/security/keystorelogstash.jks"></keyStore>
+    <logstashCollector port="${LOGSTASH_PORT}" hostName="${LOGSTASH_HOST}" source="">
+    </logstashCollector>
 
-	<ssl keyStoreRef="testKeyStore" id="testSSLConfig"></ssl>
-	<logging traceSpecification="*=info:com.ibm.ws.collector.*=all"
-		traceFileName="trace.log"
-		maxFileSize="100"
-		maxFiles="10"
-		traceFormat="BASIC"
-		consoleLogLevel="INFO"
-	/> 
+    <keyStore id="defaultKeyStore" password="{xor}Lz4sLChvLTs=" />
 
-	
+    <logging
+        traceSpecification="*=info:com.ibm.ws.collector.*=all"
+        traceFileName="trace.log" maxFileSize="100" maxFiles="10"
+        traceFormat="BASIC" consoleLogLevel="INFO" />
+
 </server>

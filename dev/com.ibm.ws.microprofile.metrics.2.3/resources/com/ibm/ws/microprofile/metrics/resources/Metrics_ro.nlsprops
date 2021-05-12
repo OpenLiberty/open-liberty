@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2020 IBM Corporation and others.
+# Copyright (c) 2009, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -128,8 +128,24 @@ session.activeSessions.description=Num\u0103rul de sesiuni active concurente. (O
 session.invalidated.total.description=Num\u0103rul de sesiuni care s-au delogat de la activarea acestui indice de m\u0103surare.
 session.invalidatedbyTimeout.total.description=Num\u0103rul de sesiuni care s-au delogat prin timeout de la activarea acestui indice de m\u0103surare.
 
+grpc.server.rpcStarted.total.description=Num\u0103rul total de RPC-uri pornite pe server.
+grpc.server.rpcCompleted.total.description=Num\u0103rul total de RPC-uri finalizate pe server, indiferent de succes sau e\u015fec.
+grpc.server.sentMessages.total.description=Num\u0103rul total de mesaje stream trimise de c\u0103tre server.
+grpc.server.receivedMessages.total.description=Num\u0103rul total de mesaje stream primite de la client.
+grpc.server.responseTime.total.description=Timpul total de r\u0103spuns al RPC-urilor finalizate.
+
+grpc.client.rpcStarted.total.description=Num\u0103rul total de RPC-uri pornite pe client.
+grpc.client.rpcCompleted.total.description=Num\u0103rul total de RPC-uri finalizate pe client, indiferent de succes sau e\u015fec.
+grpc.client.sentMessages.total.description=Num\u0103rul total de mesaje stream trimise de c\u0103tre client.
+grpc.client.receivedMessages.total.description=Num\u0103rul total de mesaje stream primite de la server.
+grpc.client.responseTime.total.description=Timpul total de r\u0103spuns al RPC-urilor finalizate.
 
 REST.request.description=Num\u0103rul de invoc\u0103ri \u015fi timpul total de r\u0103spuns al acestei metode de resurs\u0103 RESTful de la pornirea serverului.
+
+requestTiming.requestCount.description=Num\u0103rul cererilor de servlet de c\u00e2nd a pornit serverul.
+requestTiming.activeRequestCount.description=Num\u0103rul cererilor de servlet care ruleaz\u0103 curent.
+requestTiming.slowRequestCount.description=Num\u0103rul cererilor de servlet care ruleaz\u0103 curent, dar sunt lente.
+requestTiming.hungRequestCount.description=Num\u0103rul cererilor de servlet care ruleaz\u0103 curent, dar sunt ag\u0103\u0163ate.
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message
 #-----------------------------------------------------------------------------------------------------------------------------

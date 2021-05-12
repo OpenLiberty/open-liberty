@@ -10,6 +10,8 @@
  *******************************************************************************/
 package test.server.transport.http2;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
@@ -52,7 +54,8 @@ public class Http2SecureTests extends FATServletClient {
             LOGGER.logp(Level.INFO, CLASS_NAME, "before()", "Starting servers...");
         }
         H2FATApplicationHelper.addWarToServerDropins(server, "H2TestModule.war", true, "http2.test.war.servlets");
-        server.startServer(true, true);
+        server.startServer(Http2SecureTests.class.getSimpleName() + ".log");
+        assertNotNull("CWWKO0219I.*ssl not received", server.waitForStringInLog("CWWKO0219I.*ssl"));
         client = new SecureHttp2Client();
     }
 
@@ -61,6 +64,8 @@ public class Http2SecureTests extends FATServletClient {
         if (LOGGER.isLoggable(Level.INFO)) {
             LOGGER.logp(Level.INFO, CLASS_NAME, "after()", "Stopping servers......");
         }
+        // try for an orderly quiet shutdown
+        Thread.sleep(5000);
         server.stopServer(true);
     }
 
@@ -68,6 +73,7 @@ public class Http2SecureTests extends FATServletClient {
      * Test Coverage: Client requests a servlet that will generate a push request
      * Test Outcome: Server pushes a resource to the client
      * Note: JDK9+ required here for ALPN
+     *
      * @throws Exception
      */
     @Test
@@ -84,6 +90,7 @@ public class Http2SecureTests extends FATServletClient {
      * Test Coverage: Client makes multiple requests to a servlet that will generate a push request
      * Test Outcome: Server pushes multiple resources to the client
      * Note: JDK9+ required here for ALPN
+     *
      * @throws Exception
      */
     @Test
@@ -102,6 +109,7 @@ public class Http2SecureTests extends FATServletClient {
      * Test Coverage: Client makes a request to a servlet with a simple body
      * Test Outcome: Server responds with the servlet body
      * Note: JDK9+ required here for ALPN
+     *
      * @throws Exception
      */
     @Test
@@ -118,6 +126,7 @@ public class Http2SecureTests extends FATServletClient {
      * Test Coverage: Client makes multiple requests to a servlet with a simple body
      * Test Outcome: Server responds multiple times
      * Note: JDK9+ required here for ALPN
+     *
      * @throws Exception
      */
     @Test

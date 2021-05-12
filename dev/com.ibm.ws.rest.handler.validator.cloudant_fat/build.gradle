@@ -16,17 +16,11 @@ configurations {
 }
 
 dependencies {
-  requiredLibs            'org.testcontainers:testcontainers:1.14.0',
-                          'org.rnorth.duct-tape:duct-tape:1.0.7',
-                          'org.rnorth.visible-assertions:visible-assertions:2.1.2',
-                          'net.java.dev.jna:jna:5.2.0',
-                          'org.slf4j:slf4j-api:1.7.7',
-                          'org.slf4j:slf4j-jdk14:1.7.7'
       cloudant            'com.cloudant:cloudant-client:2.16.0',
       			          'com.cloudant:cloudant-http:2.16.0'
       cloudantOld         'com.cloudant:cloudant-client:2.8.0',
                           'com.cloudant:cloudant-http:2.8.0'
-      cloudantCommonDeps  'commons-io:commons-io:2.6',
+      cloudantCommonDeps  project(':com.ibm.ws.org.apache.commons.io'),
       					  'com.google.code.gson:gson:2.8.0'
 }
 
@@ -47,3 +41,4 @@ addRequiredLibraries.dependsOn copyCloudant
 addRequiredLibraries.dependsOn copyCloudantOld
 
 addRequiredLibraries.dependsOn addJakartaTransformer
+addRequiredLibraries.dependsOn addTestcontainers

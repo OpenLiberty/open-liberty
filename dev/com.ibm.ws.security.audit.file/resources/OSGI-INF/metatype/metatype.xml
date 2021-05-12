@@ -24,9 +24,9 @@
 	<AD id="sign" name="%sign.name" description="%sign.desc" required="false" type="Boolean" default="false"/>
 	<AD id="encrypt" name="%encrypt.name" description="%encrypt.desc" required="false" type="Boolean" default="false"/>
 	<AD id="encryptAlias" name="%encryptAlias.name" description="%encryptAlias.desc" required="false" type="String"/>
-	<AD id="encryptKeyStoreRef" name="%encryptKeyStoreRef.name" description="%encryptKeyStoreRef.desc" type="String" required="false" ibmui:uiReference="com.ibm.ws.ssl.keystore"/>
+	<AD id="encryptKeyStoreRef" name="%encryptKeyStoreRef.name" description="%encryptKeyStoreRef.desc" type="String" required="false" ibm:type="pid" ibm:reference="com.ibm.ws.ssl.keystore"/>
 	<AD id="signingAlias" name="%signingAlias.name" description="%signingAlias.desc" required="false" type="String"/>
-	<AD id="signingKeyStoreRef" name="%signingKeyStoreRef.name" description="%signingKeyStoreRef.desc" type="String" required="false" ibmui:uiReference="com.ibm.ws.ssl.keystore"/>
+	<AD id="signingKeyStoreRef" name="%signingKeyStoreRef.name" description="%signingKeyStoreRef.desc" type="String" required="false" ibm:type="pid" ibm:reference="com.ibm.ws.ssl.keystore"/>
 	<AD id="compact" name="%compact.name" description="%compact.desc" required="false" type="Boolean" default="false"/>
 </OCD>
 

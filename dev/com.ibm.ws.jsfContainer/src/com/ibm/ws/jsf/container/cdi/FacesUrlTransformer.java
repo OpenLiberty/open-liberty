@@ -30,6 +30,8 @@ public class FacesUrlTransformer {
     private static final String HTTPS_PROTOCOL_URL_PREFIX = "https://";
     private static final String QUERY_STRING_DELIMITER = "?";
     private static final String PARAMETER_PAIR_DELIMITER = "&";
+    // in rare cases, semicolon will the delimiter; e.g. when you need to encode "&" as "&amp;"
+    private static final String PARAMETER_PAIR_DELIMITER_ENCODED = ";";
     private static final String PARAMETER_ASSIGNMENT_OPERATOR = "=";
 
     private String url;
@@ -49,7 +51,7 @@ public class FacesUrlTransformer {
         int queryStringIndex = url.indexOf(QUERY_STRING_DELIMITER);
         // if there is no query string or there is a query string but the param is
         // absent, then append it
-        if (queryStringIndex < 0 || url.indexOf(parameterName + PARAMETER_ASSIGNMENT_OPERATOR, queryStringIndex) < 0) {
+        if (queryStringIndex < 0 || isCidParamAbsent(url, parameterName, queryStringIndex)) {
             StringBuilder builder = new StringBuilder(url);
             if (queryStringIndex < 0) {
                 builder.append(QUERY_STRING_DELIMITER);
@@ -64,6 +66,12 @@ public class FacesUrlTransformer {
         } else {
             return url;
         }
+    }
+
+    private static boolean isCidParamAbsent(String url, String parameterName, int queryStringIndex) {
+        return url.indexOf(QUERY_STRING_DELIMITER + parameterName + PARAMETER_ASSIGNMENT_OPERATOR, queryStringIndex) < 0
+            && url.indexOf(PARAMETER_PAIR_DELIMITER + parameterName + PARAMETER_ASSIGNMENT_OPERATOR, queryStringIndex) < 0
+            && url.indexOf(PARAMETER_PAIR_DELIMITER_ENCODED + parameterName + PARAMETER_ASSIGNMENT_OPERATOR, queryStringIndex) < 0;
     }
 
     public String getUrl() {

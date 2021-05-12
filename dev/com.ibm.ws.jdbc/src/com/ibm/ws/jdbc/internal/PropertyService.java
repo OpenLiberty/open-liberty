@@ -11,10 +11,13 @@
 package com.ibm.ws.jdbc.internal;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -39,38 +42,35 @@ public class PropertyService extends Properties {
     /**
      * Vendor properties with type that varies between vendors, that use one of the ibm:type="duration(?)" types
      */
-    public static final List<String> DURATION_MIXED_PROPS = Arrays.asList(
-                                                                           "lockTimeout" // milliseconds for Microsoft; seconds for DB2 i
+    public static final Set<String> DURATION_MIXED_PROPS = Collections.singleton(
+                                                                                 "lockTimeout" // milliseconds for Microsoft; seconds for DB2 i
                                                                            );
 
     /**
-     * Vendor properties of type long that use the ibm:type="duration(ms)" type.
+     * Vendor properties that use the ibm:type="duration(ms)" type.
      */
-    private static final List<String> DURATION_MS_LONG_PROPS = Arrays.asList(
-                                                                             "ifxCPMServiceInterval"
-                                                                             );
-
-    /**
-     * Vendor properties of type int that use the ibm:type="duration(ms)" type.
-     */
-    public static final List<String> DURATION_MS_INT_PROPS = Arrays.asList(
+    private static final Set<String> DURATION_MS_PROPS = new HashSet<>(Arrays.asList(
+                                                                            "ifxCPMServiceInterval",
                                                                             "ifxIFX_SOC_TIMEOUT",
                                                                             "soTimeout"
-                                                                            );
+                                                                            ));
 
     /**
-     * Vendor properties of type int that use the ibm:type="duration(s)" type.
-     * These are supplied to us as Long, but the JDBC driver wants int.
+     * Vendor properties that use the ibm:type="duration(s)" type.
      */
-    public static final List<String> DURATION_S_INT_PROPS = Arrays.asList(
+    public static final Set<String> DURATION_SEC_PROPS = new HashSet<>(Arrays.asList(
                                                                            "abandonedConnectionTimeout",
                                                                            "affinityFailbackInterval",
                                                                            "blockingReadConnectionTimeout",
+                                                                           "cancelSignalTimeout",
                                                                            "commandTimeout",
                                                                            "connectionRetryDelay",
                                                                            "connectionTimeout",
                                                                            "connectionWaitTimeout",
+                                                                           "connectTimeout",
                                                                            "currentLockTimeout",
+                                                                           "ifxCPMAgeLimit",
+                                                                           "ifxCPMMinAgeLimit",
                                                                            "ifxIFX_LOCK_MODE_WAIT",
                                                                            "ifxINFORMIXCONTIME",
                                                                            "inactiveConnectionTimeout",
@@ -82,10 +82,11 @@ public class PropertyService extends Properties {
                                                                            "queryTimeout",
                                                                            "retryIntervalForClientReroute",
                                                                            "secondsToTrustIdleConnection",
+                                                                           "socketTimeout",
                                                                            "soLinger",
                                                                            "timeoutCheckInterval",
                                                                            "timeToLiveConnectionTimeout"
-                                                                           );
+                                                                           ));
 
     /**
      * Factory persistent identifier for general data source properties.
@@ -251,8 +252,8 @@ public class PropertyService extends Properties {
      */
     public static void parseDurationProperties(Map<String, Object> vendorProps, String className, ConnectorService connectorSvc) throws Exception {
 
-        // type=long, unit=milliseconds
-        for (String propName : PropertyService.DURATION_MS_LONG_PROPS) {
+        // unit=milliseconds
+        for (String propName : PropertyService.DURATION_MS_PROPS) {
             Object propValue = vendorProps.remove(propName);
             if (propValue != null)
                 try {
@@ -264,26 +265,13 @@ public class PropertyService extends Properties {
                 }
         }
 
-        // type=int, unit=milliseconds
-        for (String propName : PropertyService.DURATION_MS_INT_PROPS) {
-            Object propValue = vendorProps.remove(propName);
-            if (propValue != null)
-                try {
-                    vendorProps.put(propName, MetatypeUtils.evaluateDuration((String) propValue, TimeUnit.MILLISECONDS).intValue());
-                } catch (Exception x) {
-                    x = connectorSvc.ignoreWarnOrFail(tc, x, x.getClass(), "UNSUPPORTED_VALUE_J2CA8011", propValue, propName, className);
-                    if (x != null)
-                        throw x;
-                }
-        }
-
-        // type=int, unit=seconds
-        for (String propName : PropertyService.DURATION_S_INT_PROPS) {
+        // unit=seconds
+        for (String propName : PropertyService.DURATION_SEC_PROPS) {
             Object propValue = vendorProps.remove(propName);
             if (propValue != null)
                 if (propValue instanceof String)
                     try {
-                        vendorProps.put(propName, MetatypeUtils.evaluateDuration((String) propValue, TimeUnit.SECONDS).intValue());
+                        vendorProps.put(propName, MetatypeUtils.evaluateDuration((String) propValue, TimeUnit.SECONDS));
                     } catch (Exception x) {
                         x = connectorSvc.ignoreWarnOrFail(tc, x, x.getClass(), "UNSUPPORTED_VALUE_J2CA8011", propValue, propName, className);
                         if (x != null)
@@ -294,14 +282,14 @@ public class PropertyService extends Properties {
                     vendorProps.put(propName, propValue);
         }
 
-        // lockTimeout has different type/units between Microsoft and DB2 i
+        // lockTimeout has different units between Microsoft and DB2 i
         Object lockTimeout = vendorProps.remove("lockTimeout");
         if (lockTimeout != null)
             try {
                 if (className.startsWith("com.microsoft"))
                     vendorProps.put("lockTimeout", MetatypeUtils.evaluateDuration((String) lockTimeout, TimeUnit.MILLISECONDS));
                 else
-                    vendorProps.put("lockTimeout", MetatypeUtils.evaluateDuration((String) lockTimeout, TimeUnit.SECONDS).intValue());
+                    vendorProps.put("lockTimeout", MetatypeUtils.evaluateDuration((String) lockTimeout, TimeUnit.SECONDS));
             } catch (Exception x) {
                 x = connectorSvc.ignoreWarnOrFail(tc, x, x.getClass(), "UNSUPPORTED_VALUE_J2CA8011", lockTimeout, "lockTimeout", className);
                 if (x != null)

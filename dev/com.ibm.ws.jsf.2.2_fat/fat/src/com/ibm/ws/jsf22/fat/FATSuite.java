@@ -10,10 +10,6 @@
  */
 package com.ibm.ws.jsf22.fat;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
@@ -51,6 +47,7 @@ import com.ibm.ws.jsf22.fat.tests.JSFHtmlUnit;
 import com.ibm.ws.jsf22.fat.tests.JSFServerTest;
 import com.ibm.ws.jsf22.fat.tests.JSFSimpleHtmlUnit;
 
+import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 
@@ -109,16 +106,12 @@ public class FATSuite {
         FatLogHandler.generateHelpFile();
     }
 
-    static Set<String> removeFeatures = new HashSet<>(Arrays.asList("jsf-2.2", "cdi-1.2", "beanValidation-1.1"));
-    static Set<String> addFeatures = new HashSet<>(Arrays.asList("jsf-2.3", "cdi-2.0", "beanValidation-2.0"));
-
     /**
      * Run the tests again with the jsf-2.3 feature. Tests should be skipped where appropriate
      * using @SkipForRepeat("JSF-2.3").
      */
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(new FeatureReplacementAction(removeFeatures, addFeatures)
-                                    .withID("JSF-2.3")
-                                    .forceAddFeatures(false));
+    public static RepeatTests r = RepeatTests.with(new EmptyAction().fullFATOnly())
+                    .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
+                    .andWith(FeatureReplacementAction.EE9_FEATURES());
 }

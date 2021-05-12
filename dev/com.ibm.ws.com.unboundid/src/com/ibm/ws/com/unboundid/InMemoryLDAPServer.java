@@ -212,6 +212,8 @@ public class InMemoryLDAPServer {
      * Get the port the server is listening to.
      *
      * @return the port this directory server is listening to
+     *
+     * @deprecated This method has been replaced with {@link #getLdapPort()} and {@link #getLdapPort()}.
      */
     @Deprecated
     public int getListenPort() {

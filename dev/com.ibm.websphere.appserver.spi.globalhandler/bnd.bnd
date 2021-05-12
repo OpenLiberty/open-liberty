@@ -25,3 +25,5 @@ publish.wlp.jar.suffix: dev/spi/ibm
 
 -buildpath: \
 	com.ibm.ws.webservices.handler
+
+jakartaeeMe: true

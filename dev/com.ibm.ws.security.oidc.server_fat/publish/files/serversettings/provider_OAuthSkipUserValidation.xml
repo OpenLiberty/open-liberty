@@ -1,0 +1,34 @@
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+	<oauthProvider
+		id="OAuthConfigSampleSkipUserValidation"
+		filter="request-url%=snorking"
+		oauthOnly="true"
+		skipResourceOwnerValidation="true"
+		jwtAccessToken="${oidcCreateJWTToken}"
+	>
+		<autoAuthorizeClient>client05</autoAuthorizeClient>
+		<localStore>
+			<client
+				name="client05"
+				secret="{xor}LDo8LTor"
+				displayname="client05"
+				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/authorize_redirect.jsp"
+				grantTypes="password"
+				scope="openid scope1 scope2"
+				preAuthorizedScope="openid scope1 scope2"
+				enabled="true" />
+		</localStore>
+	</oauthProvider>
+
+</server>

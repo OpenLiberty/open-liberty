@@ -11,8 +11,12 @@
 -include= jar:${fileuri;${repo;org.apache.santuario:xmlsec;1.5.2.ibm}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 -includeresource: \
-   @${repo;org.apache.santuario:xmlsec;1.5.2.ibm}!/!META-INF/maven/*
+   @${repo;org.apache.santuario:xmlsec;1.5.2.ibm;EXACT}!/!META-INF/maven/*,\
+   @${repo;org.apache.santuario:xmlsec;1.5.2.ibm;EXACT}!/META-INF/**, \
+   @${repo;org.apache.santuario:xmlsec;1.5.2.ibm;EXACT}!/templates/**, \
+   @${repo;org.apache.santuario:xmlsec;1.5.2.ibm;EXACT}!/schemas/**, \
+   @${repo;org.apache.santuario:xmlsec;1.5.2.ibm;EXACT}!/*xml
 
--buildpath: org.apache.santuario:xmlsec;version=1.5.2.ibm
+-buildpath: org.apache.santuario:xmlsec;strategy=exact;version=1.5.2.ibm
 
 globalize: false

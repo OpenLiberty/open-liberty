@@ -1,0 +1,50 @@
+#*******************************************************************************
+# Copyright (c) 2017, 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+
+bVersion=1.0
+exportVer=2.3
+
+Bundle-Name:JAXWS Atomic Transaction Extension
+Bundle-Description: JAXWS Extension for WSAT, version ${bVersion}
+Bundle-SymbolicName: com.ibm.ws.jaxws.2.3.wsat
+
+Private-Package: \
+  com.ibm.ws.wsat.policy
+
+Export-Package: \
+ com.ibm.ws.jaxws.wsat;version=${exportVer},\
+ com.ibm.ws.jaxws.wsat.components;version=${exportVer}
+
+Import-Package: \
+   javax.xml.namespace,\
+   org.osgi.framework;version="1.5.0",\
+   org.apache.cxf.*;version="[3.2,4)", \
+   com.ibm.websphere.ras, \
+   com.ibm.websphere.ras.annotation, \
+   com.ibm.ws.ffdc, \
+   *
+
+Service-Component: \
+ com.ibm.ws.jaxws.wsat.components.WSATFeatureService; \
+     modified:='modified'; \
+     immediate:=true; \
+     activate:=activate; \
+     deactivate:=deactivate; \
+     implementation:=com.ibm.ws.jaxws.wsat.components.WSATFeatureService; \
+     featureProvisioner=com.ibm.ws.kernel.feature.FeatureProvisioner;\
+     configuration-policy:=ignore; \
+     properties:="service.vendor=IBM"
+
+-buildpath: \
+	com.ibm.ws.jaxws.2.3.common;version=latest, \
+	com.ibm.ws.jaxws.wsat;version=latest, \
+	com.ibm.ws.kernel.feature;version=latest

@@ -30,7 +30,7 @@ public class SSLSocketFactoryProxy extends javax.net.ssl.SSLSocketFactory {
 
     public SSLSocketFactoryProxy() {
 
-        Class target;
+        Class<?> target;
         try {
             target = Thread.currentThread().getContextClassLoader().loadClass("com.ibm.ws.ssl.protocol.LibertySSLSocketFactory");
             factory = (SSLSocketFactory) target.newInstance();

@@ -6,7 +6,7 @@ package com.ibm.test.g3store.grpc;
 /**
  * Protobuf type {@code test.g3store.grpc.DeleteResponse}
  */
-public  final class DeleteResponse extends
+public final class DeleteResponse extends
     com.google.protobuf.GeneratedMessageV3 implements
     // @@protoc_insertion_point(message_implements:test.g3store.grpc.DeleteResponse)
     DeleteResponseOrBuilder {
@@ -93,6 +93,7 @@ private static final long serialVersionUID = 0L;
    * <code>string result = 1;</code>
    * @return The result.
    */
+  @java.lang.Override
   public java.lang.String getResult() {
     java.lang.Object ref = result_;
     if (ref instanceof java.lang.String) {
@@ -109,6 +110,7 @@ private static final long serialVersionUID = 0L;
    * <code>string result = 1;</code>
    * @return The bytes for result.
    */
+  @java.lang.Override
   public com.google.protobuf.ByteString
       getResultBytes() {
     java.lang.Object ref = result_;

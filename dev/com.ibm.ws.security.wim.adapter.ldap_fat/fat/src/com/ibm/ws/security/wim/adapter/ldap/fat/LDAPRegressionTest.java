@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -85,7 +85,7 @@ public class LDAPRegressionTest {
     public static void teardownClass() throws Exception {
         try {
             if (libertyServer != null) {
-                libertyServer.stopServer();
+                libertyServer.stopServer("CWIML4523E");
             }
         } finally {
             if (ds != null) {
@@ -374,5 +374,33 @@ public class LDAPRegressionTest {
         listResults = VmmServiceServletConnection.convertToList("searchWithExpression", results);
         assertEquals(1, listResults.size());
         assertEquals("uid=Bob (Contractor),o=ibm,c=us", listResults.get(0));
+    }
+
+    /**
+     * Verify that we issue an error and throw an exception when a user filter without a %v is found.
+     */
+    @Test
+    public void testUserFilterWithoutPercentV() throws Exception {
+        ServerConfiguration clone = basicConfiguration.clone();
+        LdapRegistry ldap = createLdapRegistry(clone);
+        ldap.getCustomFilters().setUserFilter("(uid=someuser)");
+
+        updateConfigDynamically(libertyServer, clone);
+
+        assertFalse("Did not find CWIML4523E in log", libertyServer.waitForStringInLogUsingMark("CWIML4523E.*uid=someuser.*userFilter") == null);
+    }
+
+    /**
+     * Verify that we issue an error and throw an exception when a group filter without a %v is found.
+     */
+    @Test
+    public void testGroupFilterWithoutPercentV() throws Exception {
+        ServerConfiguration clone = basicConfiguration.clone();
+        LdapRegistry ldap = createLdapRegistry(clone);
+        ldap.getCustomFilters().setGroupFilter("(cn=somegroup)");
+
+        updateConfigDynamically(libertyServer, clone);
+
+        assertFalse("Did not find CWIML4523E in log", libertyServer.waitForStringInLogUsingMark("CWIML4523E.*cn=somegroup.*groupFilter") == null);
     }
 }

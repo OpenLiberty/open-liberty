@@ -16,6 +16,7 @@ import org.apache.tools.ant.types.Commandline;
 import com.ibm.ws.ras.instrument.internal.main.AbstractInstrumentation;
 import com.ibm.ws.ras.instrument.internal.main.StaticTraceInstrumentation;
 
+@SuppressWarnings("restriction")
 public class InstrumentWithFFDC extends AbstractInstrumentationTask {
 
     protected boolean ffdc = true;

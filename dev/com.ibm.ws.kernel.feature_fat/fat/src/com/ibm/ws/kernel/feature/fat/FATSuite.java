@@ -34,6 +34,9 @@ import org.junit.runners.Suite.SuiteClasses;
                 FeatureAPITest.class,
                 RegionProvisioningTest.class,
                 RemoteServerInclude.class,
+                CompatibleFeatureTest.class,
+                AlternateFeatureNamesTest.class,
+                DisableAllFeaturesOnConflictTest.class,
                 EECompatibilityTest.class
 })
 /**

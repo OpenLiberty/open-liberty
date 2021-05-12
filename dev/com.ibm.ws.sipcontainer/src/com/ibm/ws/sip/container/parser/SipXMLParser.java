@@ -1177,7 +1177,7 @@ public class SipXMLParser implements EntityResolver
     
     /**
      * Retrieve node name without schema prefix. 
-     * We do not recieve any namespace data from the DOM parser, so this is a work around
+     * We do not receive any namespace data from the DOM parser, so this is a work around
      * we just trim all of the namespaces prefixes.
      * 
      * @param n Node

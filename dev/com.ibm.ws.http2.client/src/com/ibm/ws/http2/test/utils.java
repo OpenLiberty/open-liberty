@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,7 @@ import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 
 public class utils {
 
-    public static final int IO_DEFAULT_TIMEOUT = 10000;
+    public static final int IO_DEFAULT_TIMEOUT = 28000;
     public static final int IO_DEFAULT_BUFFER_SIZE = 4090;
 
     public static final byte FRAME_TYPE_DATA = 0x00;

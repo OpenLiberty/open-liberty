@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2019 IBM Corporation and others.
+ * Copyright (c) 2017,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -55,7 +55,7 @@ public interface PolicyExecutor extends ExecutorService {
      * Canceled tasks which have already started might still be in progress when this method returns. How the tasks responds to the interrupt/cancel
      * signal depends on the task implementation.
      *
-     * @param identifier the identifier to match
+     * @param identifier         the identifier to match
      * @param interruptIfRunning indicates whether or not to allow interrupt on cancel
      * @return count of task Futures that were successfully put into the canceled state.
      */
@@ -71,7 +71,7 @@ public interface PolicyExecutor extends ExecutorService {
      * @param num number of tasks to expedite.
      * @return the executor.
      * @throws IllegalArgumentException if value is negative or greater than maximum concurrency.
-     * @throws IllegalStateException if the executor has been shut down.
+     * @throws IllegalStateException    if the executor has been shut down.
      */
     PolicyExecutor expedite(int num);
 
@@ -83,9 +83,17 @@ public interface PolicyExecutor extends ExecutorService {
     String getIdentifier();
 
     /**
-     * Returns the number of tasks from this PolicyExecutor currently running on the global executor.
+     * Returns the configured max concurrency value.
      *
-     * @return the number of running tasks
+     * @return the configured max concurrency value.
+     */
+    int getMaxConcurrency();
+
+    /**
+     * Returns the number of tasks from this PolicyExecutor currently running or about to run on the global executor.
+     * This number might include tasks that do not actually get to start due to cancellation or shutdown within a timing window.
+     *
+     * @return the number of running or about-to-run tasks
      */
     int getRunningTaskCount();
 
@@ -131,6 +139,15 @@ public interface PolicyExecutor extends ExecutorService {
                     TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException;
 
     /**
+     * Indicates if the executor is configured to be unable to run tasks,
+     * and it isn't running any tasks, and hasn't been shut down yet.
+     *
+     * @return true if maximum concurrency is configured to 0, no tasks are running,
+     *         and the executor hasn't been shut down yet, otherwise false.
+     */
+    boolean isSuspended();
+
+    /**
      * Specifies the maximum number of tasks that can be running
      * at any given point in time. The default is Integer.MAX_VALUE.
      * Maximum concurrency can be updated while tasks are in progress. If the maximum concurrency
@@ -140,7 +157,7 @@ public interface PolicyExecutor extends ExecutorService {
      * @param max maximum concurrency.
      * @return the executor.
      * @throws IllegalArgumentException if value is not positive or -1 (which means Integer.MAX_VALUE) or less than the number to expedite.
-     * @throws IllegalStateException if the executor has been shut down.
+     * @throws IllegalStateException    if the executor has been shut down.
      */
     PolicyExecutor maxConcurrency(int max);
 
@@ -173,7 +190,7 @@ public interface PolicyExecutor extends ExecutorService {
      * @param max capacity of the task queue.
      * @return the executor.
      * @throws IllegalArgumentException if value is not positive or -1 (which means Integer.MAX_VALUE).
-     * @throws IllegalStateException if the executor has been shut down.
+     * @throws IllegalStateException    if the executor has been shut down.
      */
     PolicyExecutor maxQueueSize(int max);
 
@@ -188,7 +205,7 @@ public interface PolicyExecutor extends ExecutorService {
      * @param ms maximum number of milliseconds to wait when attempting to enqueue a submitted task.
      * @return the executor.
      * @throws IllegalArgumentException if value is negative.
-     * @throws IllegalStateException if the executor has been shut down.
+     * @throws IllegalStateException    if the executor has been shut down.
      */
     PolicyExecutor maxWaitForEnqueue(long ms);
 
@@ -208,7 +225,7 @@ public interface PolicyExecutor extends ExecutorService {
      * specify a null value for the callback.
      * The callback is automatically unregistered upon shutdown.
      *
-     * @param max threshold for maximum concurrency beyond which the callback should be notified.
+     * @param max      threshold for maximum concurrency beyond which the callback should be notified.
      * @param callback the callback, or null to unregister.
      * @return callback that was replaced or removed by the new registration.
      *         null if no previous callback was in place.
@@ -226,13 +243,13 @@ public interface PolicyExecutor extends ExecutorService {
      * The callback is automatically unregistered upon shutdown.
      *
      * @param maxDelay maximum delay for a task to start, beyond which the callback should be notified.
-     * @param unit unit of time.
+     * @param unit     unit of time.
      * @param callback the callback, or null to unregister.
      * @return callback that was replaced or removed by the new registration.
      *         null if no previous callback was in place.
      * @throws IllegalArgumentException if maxDelay is greater than or equal to the
-     *             maximum number of nanoseconds representable as a long value.
-     * @throws IllegalStateException if the executor has been shut down.
+     *                                      maximum number of nanoseconds representable as a long value.
+     * @throws IllegalStateException    if the executor has been shut down.
      */
     Runnable registerLateStartCallback(long maxDelay, TimeUnit unit, Runnable callback);
 
@@ -247,13 +264,22 @@ public interface PolicyExecutor extends ExecutorService {
      * The callback is automatically unregistered upon shutdown.
      *
      * @param minAvailable threshold for minimum available queue capacity
-     *            below which the callback should be notified.
-     * @param callback the callback, or null to unregister.
+     *                         below which the callback should be notified.
+     * @param callback     the callback, or null to unregister.
      * @return callback that was replaced or removed by the new registration.
      *         null if no previous callback was in place.
      * @throws IllegalStateException if the executor has been shut down.
      */
     Runnable registerQueueSizeCallback(int minAvailable, Runnable callback);
+
+    /**
+     * Registers a one-time callback to be invoked inline when the
+     * policy executor shuts down. This method is intended for optional use
+     * on a newly created policy executor instance.
+     *
+     * @param callback the callback, or null to unregister.
+     */
+    void registerShutdownCallback(Runnable callback);
 
     /**
      * Applies when using the <code>execute</code> or <code>submit</code> methods. Indicates whether or not to run the task on the
@@ -262,7 +288,7 @@ public interface PolicyExecutor extends ExecutorService {
      * instead of running on the caller's thread.
      *
      * @param runIfFull true to indicate that a task which cannot be queued should run on the thread from which submit or execute is invoked;
-     *            false to abort the task in this case.
+     *                      false to abort the task in this case.
      * @return the executor.
      * @throws IllegalStateException if the executor has been shut down.
      */
@@ -278,7 +304,7 @@ public interface PolicyExecutor extends ExecutorService {
      * @param ms number of milliseconds beyond which a task should not start.
      * @return the executor.
      * @throws IllegalArgumentException if value is negative (other than -1) or too large to convert to a nanosecond <code>long</code> value.
-     * @throws IllegalStateException if the executor has been shut down.
+     * @throws IllegalStateException    if the executor has been shut down.
      */
     PolicyExecutor startTimeout(long ms);
 
@@ -291,8 +317,8 @@ public interface PolicyExecutor extends ExecutorService {
      * canceled if it is available at the time when the PolicyTaskFuture is canceled.
      *
      * @param cancellable represents a CompletionStage that the PolicyExecutor should
-     *            automatically cancel upon cancellation of the returned future.
-     * @param task the task to run
+     *                        automatically cancel upon cancellation of the returned future.
+     * @param task        the task to run
      * @return future for the task.
      */
     PolicyTaskFuture<Void> submit(CancellableStage cancellable, Runnable task);

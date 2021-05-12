@@ -27,6 +27,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.config.Application;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
+import com.ibm.ws.testtooling.database.DatabaseVendor;
 
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -112,11 +113,11 @@ public class JPAFATServletClient extends FATServletClient {
             dbProps.load(con.getInputStream());
             System.out.println("Acquired Database Metadata: " + dbProps);
 
-            dbProductName = dbProps.getProperty("dbproduct_name");
-            dbProductVersion = dbProps.getProperty("dbproduct_version");
-            jdbcDriverVersion = dbProps.getProperty("jdbcdriver_version");
-            jdbcURL = dbProps.getProperty("jdbc_url");
-            jdbcUsername = dbProps.getProperty("jdbc_username");
+            dbProductName = dbProps.getProperty("dbproduct_name", "UNKNOWN");
+            dbProductVersion = dbProps.getProperty("dbproduct_version", "UNKNOWN");
+            jdbcDriverVersion = dbProps.getProperty("jdbcdriver_version", "UNKNOWN");
+            jdbcURL = dbProps.getProperty("jdbc_url", "UNKNOWN");
+            jdbcUsername = dbProps.getProperty("jdbc_username", "UNKNOWN");
 
             dbVendor = DatabaseVendor.resolveDBProduct(dbProductName);
         } else {
@@ -178,6 +179,7 @@ public class JPAFATServletClient extends FATServletClient {
 
     protected static final JavaArchive buildTestAPIJar() throws Exception {
         final JavaArchive testApiJar = ShrinkWrap.create(JavaArchive.class, "TestAPI.jar");
+        testApiJar.addPackage("com.ibm.ws.testtooling.database");
         testApiJar.addPackage("com.ibm.ws.testtooling.msgcli");
         testApiJar.addPackage("com.ibm.ws.testtooling.msgcli.jms");
         testApiJar.addPackage("com.ibm.ws.testtooling.msgcli.msc");

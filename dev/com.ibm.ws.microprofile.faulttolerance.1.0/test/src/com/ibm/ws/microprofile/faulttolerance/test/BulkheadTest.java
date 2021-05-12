@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -213,21 +213,39 @@ public class BulkheadTest extends AbstractFTTest {
         Executor<Future<String>> executor = builder.buildAsync(Future.class);
 
         Future<String>[] futures = new Future[10];
+        CountDownLatch isRunningLatch = new CountDownLatch(10);
+        CountDownLatch mayCompleteLatch = new CountDownLatch(1);
+        CountDownLatch completedLatch = new CountDownLatch(10);
         try {
             for (int i = 0; i < 10; i++) {
                 String id = "testAsyncBulkhead" + i;
-                AsyncTestFunction callable = new AsyncTestFunction(Duration.ofMillis(2000), id);
+                AsyncTestFunction callable = new AsyncTestFunction(Duration.ofMillis(10000), isRunningLatch, mayCompleteLatch, completedLatch, id);
                 ExecutionContext context = executor.newExecutionContext(id, (Method) null, id);
                 Future<String> future = executor.execute(callable, context);
                 assertFalse(future.isDone());
                 futures[i] = future;
             }
 
+            // Allow running latch to reach 0 - tasks are ready to begin execution
+            isRunningLatch.await(5000, TimeUnit.MILLISECONDS);
+            assertEquals("all tasks have not started", 0, isRunningLatch.getCount());
+
+            // Check tasks have not executed to completion, as tasks should be in await phase
+            for (int i = 0; i < 10; i++) {
+                assertFalse(futures[i].isDone());
+            }
+
+            // Allow tasks to execute, latch should be 0
+            mayCompleteLatch.countDown();
+
+            // Ensure called tasks have not thrown exceptions
             for (int i = 0; i < 10; i++) {
                 String data = futures[i].get(2300, TimeUnit.MILLISECONDS);
                 assertEquals("testAsyncBulkhead" + i, data);
             }
         } finally {
+            // If any task did not complete, cleanup tasks
+            mayCompleteLatch.countDown();
             for (int i = 0; i < 10; i++) {
                 Future<String> future = futures[i];
                 if (future != null && !future.isDone()) {
@@ -239,6 +257,7 @@ public class BulkheadTest extends AbstractFTTest {
 
     @Test
     public void testAsyncBulkheadQueueFull() throws InterruptedException, ExecutionException, TimeoutException {
+        // Set policy such that only two tasks may be running at a time, with two queued tasks
         BulkheadPolicy bulkhead = FaultToleranceProvider.newBulkheadPolicy();
         bulkhead.setMaxThreads(2);
         bulkhead.setQueueSize(2);
@@ -249,28 +268,47 @@ public class BulkheadTest extends AbstractFTTest {
         Executor<Future<String>> executor = builder.buildAsync(Future.class);
 
         Future<String>[] futures = new Future[5];
+        CountDownLatch isRunningLatch = new CountDownLatch(2);
+        CountDownLatch mayCompleteLatch = new CountDownLatch(1);
+        CountDownLatch completedLatch = new CountDownLatch(4);
         try {
+
+            // Create and add tasks to the executor which do not exceed the bulkhead limit
             for (int i = 0; i < 4; i++) {
                 String id = "testAsyncBulkheadQueueFull" + i;
                 ExecutionContext context = executor.newExecutionContext(id, (Method) null, id);
-                AsyncTestFunction callable = new AsyncTestFunction(Duration.ofMillis(2000), id);
+                AsyncTestFunction callable = new AsyncTestFunction(Duration.ofMillis(10000), isRunningLatch, mayCompleteLatch, completedLatch, id);
                 futures[i] = executor.execute(callable, context);
-                System.out.println(System.currentTimeMillis() + " Test " + context + " - submitted");
-                assertFalse(futures[i].isDone());
-                Thread.sleep(100);
+                System.out.println(System.currentTimeMillis() + " Test " + id + " - submitted");
             }
 
+            // Allow running latch to reach 0 - tasks are ready to begin execution
+            isRunningLatch.await(5000, TimeUnit.MILLISECONDS);
+            assertEquals("all tasks have not started", 0, isRunningLatch.getCount());
+
+            // Non of the tasks are allowed to complete as mayCompleteLatch has not count down
+            // First two tasks should be running, second two should be in queue
+            for (int i = 0; i < 4; i++) {
+                assertFalse("task " + i + " should not be complete", futures[i].isDone());
+            }
+
+            // Create and add a final task
             String id = "testAsyncBulkheadQueueFull4";
             ExecutionContext context = executor.newExecutionContext(id, (Method) null, id);
-            AsyncTestFunction callable = new AsyncTestFunction(Duration.ofMillis(2000), id);
+            AsyncTestFunction callable = new AsyncTestFunction(Duration.ofMillis(10000), isRunningLatch, mayCompleteLatch, completedLatch, id);
+
+            // Final task should be rejected from queue, and throw a Bulkhead exception
             try {
                 futures[4] = executor.execute(callable, context);
                 System.out.println(System.currentTimeMillis() + " Test " + id + " - submitted");
                 fail("Exception not thrown");
             } catch (BulkheadException e) {
-                //expected
+                // Catches the expected BulkheadException
             }
+            // Allow tasks to complete
+            mayCompleteLatch.countDown();
         } finally {
+            // If any task did not complete, cleanup tasks
             for (int i = 0; i < 5; i++) {
                 Future<String> future = futures[i];
                 if (future != null && !future.isDone()) {

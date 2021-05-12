@@ -687,8 +687,8 @@ public final class StaxUtils {
                 writer.writeNamespace(nsPrefix, nsURI);
                 writer.setPrefix(nsPrefix, nsURI);
             }
-            
-            if (nsURI.equals(uri) && nsPrefix.equals(prefix)) {
+
+            if ((uri == null || uri.equals(nsURI)) && nsPrefix.equals(prefix)) {
                 writeElementNS = false;
             }
         }

@@ -11,6 +11,7 @@
 package com.ibm.ws.kernel.boot;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.Iterator;
 import java.util.List;
@@ -21,6 +22,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -50,7 +52,7 @@ public class ServerClasspathTest {
     @BeforeClass
     public static void before() throws Exception {
         JavaArchive archive = ShrinkHelper.buildJavaArchive("checkJvmAppClasspath", "com.ibm.ws.kernel.boot.app.classpath");
-        ShrinkHelper.exportAppToServer(server, archive);
+        ShrinkHelper.exportAppToServer(server, archive, DeployOptions.DISABLE_VALIDATION);
         server.startServer();
     }
 
@@ -61,6 +63,11 @@ public class ServerClasspathTest {
 
     @Test
     public void testJvmAppClasspath() throws Exception {
+
+        // Ensure the application has loaded before starting the test case
+        assertNotNull("The application checkJvmAppClasspath did not appear to have started.",
+                      server.waitForStringInLog("CWWKZ0001I.* checkJvmAppClasspath"));
+
         //TODO: check logs for any packages that are not in the expected packages list
         StringBuilder unexpectedPackages = new StringBuilder();
         List<String> pkgsOnCP = server.findStringsInLogs("AppLoader can load: .*", server.getConsoleLogFile());

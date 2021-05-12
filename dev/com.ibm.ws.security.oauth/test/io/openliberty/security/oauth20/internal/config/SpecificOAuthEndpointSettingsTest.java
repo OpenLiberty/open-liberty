@@ -31,7 +31,9 @@ import test.common.SharedOutputManager;
 @SuppressWarnings("restriction")
 public class SpecificOAuthEndpointSettingsTest extends CommonTestClass {
 
-    private static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("io.openliberty.security.oauth.*=all:com.ibm.ws.security.oauth.*=all");
+    private static String traceString = "io.openliberty.security.oauth.*=all:com.ibm.ws.security.oauth.*";
+
+    private static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace(traceString + "=all");
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -53,6 +55,7 @@ public class SpecificOAuthEndpointSettingsTest extends CommonTestClass {
     public static void tearDownAfterClass() throws Exception {
         outputMgr.dumpStreams();
         outputMgr.restoreStreams();
+        outputMgr.trace(traceString + "=all=disabled");
     }
 
     @Test

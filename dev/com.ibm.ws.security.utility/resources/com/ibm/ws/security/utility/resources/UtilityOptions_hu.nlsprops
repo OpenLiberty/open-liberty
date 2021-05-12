@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2019 IBM Corporation and others.
+# Copyright (c) 2010, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -149,6 +149,7 @@ sslCert.option-key.ext=\ \ \ \ --extInfo=tan\u00fas\u00edtv\u00e1ny kiterjeszt\u
 sslCert.option-desc.ext=\tA tan\u00fas\u00edtv\u00e1nyhoz hozz\u00e1adand\u00f3 tan\u00fas\u00edtv\u00e1ny kiterjeszt\u00e9si inform\u00e1ci\u00f3k.\n\
 \tAz alap\u00e9rtelmezett kiterjeszt\u00e9s egy T\u00e1rgy alternat\u00edv neve bejegyz\u00e9s, amely\n\
 \ta hosztnevet haszn\u00e1lja. Ez a kapcsol\u00f3 a Jave Keytool parancs -ext kapcsol\u00f3j\u00e1nak\n\
+\t \
 szintaxis\u00e1t k\u00f6veti. A kapcsol\u00f3 t\u00f6bbsz\u00f6r is haszn\u00e1lhat\u00f3 a parancshoz\n\
 \ 
 line.
@@ -187,3 +188,22 @@ createLTPAKeys.option-desc.password.key=\tMegad egy, az LTPA kulcs jelsz\u00f3 A
 \tkiszolg\u00e1l\u00f3 sz\u00e1m\u00e1ra a wlp.password.encryption.key meghat\u00e1roz\u00e1s\u00e1val lehet megadni,\n\
 \tamelynek \u00e9rt\u00e9ke a kulcs. Ha ez a param\u00e9ter nincs megadva, akkor\n\
 \taz alap\u00e9rtelmezett kulcs ker\u00fcl felhaszn\u00e1l\u00e1sra.
+
+# -------- tlsProfiler OPTIONS ------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+tlsProfiler.desc=\tTesztelje a c\u00e9l hoszt \u00e9s port kompatibilit\u00e1s\u00e1t az el\u00e9rhet\u0151 TLS protokollokkal \u00e9s rejtjelk\u00e9szletekkel.
+tlsProfiler.usage.options=\t{0} tlsProfiler [param\u00e9terek]
+tlsProfiler.required-key.port=\ \ \ \ --port
+tlsProfiler.required-desc.port=\tMegadja a portot.
+tlsProfiler.required-key.host=\ \ \ \ --host
+tlsProfiler.required-desc.host=\tMegadja a hosztot.
+tlsProfiler.option-key.file=\ \ \ \ --file
+tlsProfiler.option-desc.file=\tNem k\u00f6telez\u0151. Az eredm\u00e9ny a megadott f\u00e1jlba ker\u00fcl ki\u00edr\u00e1sra\n\
+\ta konzolk\u00e9perny\u0151 helyett.
+tlsProfiler.option-key.verbose=\ \ \ \ --verbose
+tlsProfiler.option-desc.verbose=\tTov\u00e1bbi inform\u00e1ci\u00f3k a nem biztons\u00e1gos protokollokr\u00f3l.

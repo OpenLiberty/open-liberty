@@ -14,6 +14,8 @@ bVersion=1.0
 src: \
 	fat/src,\
 	test-applications/basicfat/src,\
+	test-applications/errorMappingApp/src,\
+	test-applications/errorMappingDriver/src,\
 	test-applications/slowdriver/src
 
 fat.project: true

@@ -97,7 +97,7 @@ public class JNDIURLEntry implements ObjectFactory {
         // creating a url should be a protected action
         createURL(jndiName, urlValue);
 
-        Dictionary<String, Object> propertiesForJndiService = new Hashtable<String, Object>();
+        Dictionary<String, Object> propertiesForJndiService = new Hashtable<>();
         propertiesForJndiService.put("osgi.jndi.service.name", jndiName);
         propertiesForJndiService.put(Constants.OBJECTCLASS, Reference.class);
 

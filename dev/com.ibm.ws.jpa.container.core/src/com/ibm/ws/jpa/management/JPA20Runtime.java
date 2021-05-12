@@ -18,6 +18,7 @@ import javax.persistence.EntityManagerFactory;
 import com.ibm.websphere.csi.J2EEName;
 import com.ibm.ws.Transaction.UOWCoordinator;
 import com.ibm.ws.jpa.JPAPuId;
+import com.ibm.ws.jpa.JPAVersion;
 
 public class JPA20Runtime implements JPARuntime {
     @Override

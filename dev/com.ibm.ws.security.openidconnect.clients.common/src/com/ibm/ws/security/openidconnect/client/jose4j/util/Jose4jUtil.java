@@ -145,7 +145,9 @@ public class Jose4jUtil {
                 long storingTime = new Date().getTime();
                 String customCacheKey = oidcClientRequest.getAndSetCustomCacheKeyValue(); //username + tokenStr.toString().hashCode();
                 customProperties.put(ClientConstants.CREDENTIAL_STORING_TIME_MILLISECONDS, Long.valueOf(storingTime));
-                customProperties.put(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY, customCacheKey);
+                if (clientConfig.isIncludeCustomCacheKeyInSubject()) {
+                  customProperties.put(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY, customCacheKey);
+                }
                 customProperties.put(AuthenticationConstants.INTERNAL_ASSERTION_KEY, Boolean.TRUE); // TODO checking?
             }
             Subject subject = null;
@@ -440,7 +442,9 @@ public class Jose4jUtil {
             }
             if (accessToken != null) {
                 customProperties.put(Constants.ACCESS_TOKEN, accessToken);
-                customProperties.put(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY, String.valueOf(accessToken.hashCode()));
+                if (clientConfig.isIncludeCustomCacheKeyInSubject()) {
+                  customProperties.put(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY, String.valueOf(accessToken.hashCode()));
+                }
                 customProperties.put(AuthenticationConstants.INTERNAL_ASSERTION_KEY, Boolean.TRUE);
             }
 

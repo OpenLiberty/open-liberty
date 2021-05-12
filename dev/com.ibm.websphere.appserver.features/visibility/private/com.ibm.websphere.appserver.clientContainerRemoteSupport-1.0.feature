@@ -3,6 +3,7 @@
 # Functionality to support remote client container - primarily assisting in JNDI operations.
 
 symbolicName=com.ibm.websphere.appserver.clientContainerRemoteSupport-1.0
+WLP-DisableAllFeatures-OnConflict: false
 visibility=private
 IBM-API-Package: com.ibm.ws.clientcontainer.remote.common;type="internal"
 -features=com.ibm.websphere.appserver.jndi-1.0, \

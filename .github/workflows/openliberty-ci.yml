@@ -1,0 +1,273 @@
+name: OpenLiberty CI
+
+on:
+  pull_request:
+    branches: 
+    - integration
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths-ignore:
+      - '.gitignore'
+      - '.dockerignore'
+      - '*.md'
+      - '*.adoc'
+      - '*.txt'
+      - '.github/ISSUE_TEMPLATE/**'
+      - '.dependabot/**'
+      - 'cla/**'
+      - 'images/**'
+      - 'logos/**'
+
+env:
+  LANG: en_US.UTF-8
+
+jobs:
+
+  validate: #Perform validation before any other jobs run.  If we fail validation, don't run anything else.
+    name: Validation
+    runs-on: ubuntu-18.04
+    if: |
+      github.event_name == 'pull_request' &&
+      (
+        github.event.pull_request.draft == false && 
+        github.event.pull_request.state != 'closed' && 
+        contains(github.event.pull_request.labels.*.name, 'GitHub Build')
+      )
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 50
+    - name: Validate copyright headers
+      run: .github/workflow-scripts/validate-copyright-headers.sh
+    - name: Validate tests
+      run: .github/workflow-scripts/validate-tests.sh
+
+
+  build: #Main build always done on linix run in parallel to setup and unit-test
+    name: Build Open Liberty
+    needs: validate
+    runs-on: ubuntu-18.04
+    outputs:
+      test-matrix: ${{ steps.gen-params.outputs.test-matrix }}
+      test-os: ${{ steps.gen-params.outputs.test-os }}
+      test-java: ${{ steps.gen-params.outputs.test-java }}
+      modified-categories: ${{ steps.gen-params.outputs.modified-categories }}
+    if: |
+      github.event_name == 'pull_request' &&
+      (
+        github.event.pull_request.draft == false && 
+        github.event.pull_request.state != 'closed' && 
+        contains(github.event.pull_request.labels.*.name, 'GitHub Build')
+      )
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 50
+    - name: Set up Java
+      uses: joschi/setup-jdk@v2
+      with:
+        java-version: 11
+        openjdk_impl: openj9
+    - name: Generate build parameters
+      id: gen-params
+      env:
+        PRBODY: ${{ github.event.pull_request.body }}
+      run: .github/workflow-scripts/generate-params.sh
+    - name: Apply Gradle cache
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.gradle/caches/modules-2
+          !~/.gradle/caches/modules-2/io.openliberty*
+          !~/.gradle/caches/modules-2/com.ibm.w*
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+    - name: Apply Maven cache
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.m2/repository/
+          !~/.m2/repository/io/openliberty
+          !~/.m2/repository/com/ibm/w*
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/*.maven') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
+    - name: Build with Gradle
+      run: .github/workflow-scripts/build.sh
+    - name: Upload liberty image
+      uses: actions/upload-artifact@v2
+      with:
+        name: openliberty-image
+        if-no-files-found: error
+        path: openliberty-image.zip
+    - name: Upload modified categories
+      uses: actions/upload-artifact@v2
+      if: steps.gen-params.outputs.modified-categories == 'true'
+      with:
+        name: modified-categories
+        if-no-files-found: ignore
+        path: |
+          .github/test-categories/MODIFIED_LITE_MODE
+          .github/test-categories/MODIFIED_FULL_MODE*
+    - name: Upload gradle failure output
+      if: failure()
+      uses: actions/upload-artifact@v2
+      with:
+        name: build-failure-gradle.log
+        if-no-files-found: error
+        path: dev/tmp/gradle.log
+
+  unit_tests: #Unit tests always run linux and java 11
+    name: Unit Tests
+    needs: validate
+    runs-on: ubuntu-18.04
+    timeout-minutes: 60
+    if: |
+      github.event_name == 'pull_request' &&
+      (
+        github.event.pull_request.draft == false && 
+        github.event.pull_request.state != 'closed' && 
+        contains(github.event.pull_request.labels.*.name, 'GitHub Build')
+      )
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 50
+    - name: Set up Java
+      uses: joschi/setup-jdk@v2
+      with:
+        java-version: 11
+        openjdk_impl: openj9
+    - name: Apply Gradle cache
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.gradle/caches/modules-2
+          !~/.gradle/caches/modules-2/io.openliberty*
+          !~/.gradle/caches/modules-2/com.ibm.w*
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+    - name: Apply Maven cache
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.m2/repository/
+          !~/.m2/repository/io/openliberty
+          !~/.m2/repository/com/ibm/w*
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/*.maven') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
+    - name: Run unit tests with gradle
+      id: run-unit-tests
+      run: .github/workflow-scripts/run-unit-tests.sh
+    - name: Upload unit test artifact
+      if: steps.run-unit-tests.outputs.status == 'failure'
+      uses: actions/upload-artifact@v2
+      with:
+        name: Unit Test Logs
+        path: dev/cnf/generated/testReports/allUnitTests
+    - name: Upload gradle failure output
+      if: failure()
+      uses: actions/upload-artifact@v2
+      with:
+        name: unit-test-failure-gradle.log
+        if-no-files-found: error
+        path: dev/tmp/gradle.log
+    - name: Analyze junit output
+      if: steps.run-unit-tests.outputs.status == 'failure'
+      uses: KyleAure/junit-report-annotations-action@1.6
+      with:
+        name: Unit test report
+        path: "dev/unit-results/TEST-*.xml"
+        includeSummary: true
+        numFailures: 100 # Truncate number of failures so we don't run out of annoations.
+
+  fat_tests: #Runs parallel jobs for each FAT category. JDK version and OS are dependent on setup
+    name: FAT Tests - ${{matrix.category}}
+    needs: [validate, build]
+    runs-on: ${{ needs.build.outputs.test-os }}
+    if: |
+      github.event_name == 'pull_request' &&
+      (
+        github.event.pull_request.draft == false && 
+        github.event.pull_request.state != 'closed' && 
+        contains(github.event.pull_request.labels.*.name, 'GitHub Build')
+      )
+    strategy:
+      fail-fast: false
+      max-parallel: 19
+      matrix: ${{fromJson(needs.build.outputs.test-matrix)}}
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 50
+    - name: Reclaim disk space
+      run: .github/workflow-scripts/reclaim-disk-space.sh
+    - name: Set up Java
+      uses: joschi/setup-jdk@v2
+      with:
+        java-version: ${{ needs.build.outputs.test-java }}
+        openjdk_impl: openj9
+    - name: Apply Gradle cache
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.gradle/caches/modules-2
+          !~/.gradle/caches/modules-2/io.openliberty*
+          !~/.gradle/caches/modules-2/com.ibm.w*
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+    - name: Apply Maven cache
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.m2/repository/
+          !~/.m2/repository/io/openliberty
+          !~/.m2/repository/com/ibm/w*
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/*.maven') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
+    - name: Download liberty image
+      uses: actions/download-artifact@v2
+      with:
+        name: openliberty-image
+    - name: Download modified categories
+      uses: actions/download-artifact@v2
+      id: modified-categories
+      if: needs.build.outputs.modified-categories == 'true'
+      with:
+        name: modified-categories
+        path: .github/test-categories
+    - name: Run FAT buckets
+      timeout-minutes: 150
+      shell: bash
+      env:
+        CATEGORY: ${{matrix.category}}
+        GH_EVENT_NAME: ${{github.event_name}}
+      run: .github/workflow-scripts/run-fat-build.sh
+    - name: Check for FAT failures
+      id: check-fat-failure
+      shell: bash
+      env:
+        CATEGORY: ${{matrix.category}}
+      run: .github/workflow-scripts/validate-fat-failures.sh
+    - name: Upload failing FAT artifacts
+      if: steps.check-fat-failure.outputs.status == 'failure'
+      uses: aguibert/upload-artifact@v1.0
+      with:
+        name: ${{matrix.category}}
+        path: dev/failing_buckets/*.zip
+        single-archive: "false"
+    - name: Analyze junit output
+      if: steps.check-fat-failure.outputs.status == 'failure'
+      uses: KyleAure/junit-report-annotations-action@1.6
+      with:
+        name: ${{matrix.category}} report
+        path: "dev/fat-results/TEST-*.xml"        
+        includeSummary: false
+        numFailures: 100 # Truncate number of failures so we don't run out of annoations.

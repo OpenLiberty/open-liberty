@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2020 IBM Corporation and others.
+ * Copyright (c) 2013, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import org.apache.commons.httpclient.HttpClient;
@@ -30,26 +29,25 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.fat.util.LoggingTest;
-import com.ibm.ws.fat.util.SharedServer;
 
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.impl.LibertyServer;
 import junit.framework.Assert;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
-public class AsyncReadListenerHttpUnit extends LoggingTest {
+public class AsyncReadListenerHttpUnit {
     private static final Logger LOG = Logger.getLogger(AsyncReadListenerHttpUnit.class.getName());
 
-    @ClassRule
-    public static SharedServer SHARED_SERVER = new SharedServer("servlet31_wcServer");
+    @Server("servlet31_wcServer")
+    public static LibertyServer server;
 
     private static final String LIBERTY_WRITE_LISTENER_FILTER_APP_NAME = "LibertyWriteListenerFilterTest";
     private static final String LIBERTY_READ_LISTENER_FILTER_APP_NAME = "LibertyReadListenerFilterTest";
@@ -62,48 +60,31 @@ public class AsyncReadListenerHttpUnit extends LoggingTest {
     @BeforeClass
     public static void setupClass() throws Exception {
         // Build the war apps and add the dependencies
-        WebArchive LibertyWriteListenerFilterApp = ShrinkHelper.buildDefaultApp(LIBERTY_WRITE_LISTENER_FILTER_APP_NAME + ".war",
+        WebArchive libertyWriteListenerFilterApp = ShrinkHelper.buildDefaultApp(LIBERTY_WRITE_LISTENER_FILTER_APP_NAME + ".war",
                                                                                 "com.ibm.ws.webcontainer.servlet_31_fat.libertywritelistenerfiltertest.war.writeListener");
-        LibertyWriteListenerFilterApp = (WebArchive) ShrinkHelper.addDirectory(LibertyWriteListenerFilterApp, "test-applications/LibertyWriteListenerFilterTest.war/resources");
-        WebArchive LibertyReadListenerFilterApp = ShrinkHelper.buildDefaultApp(LIBERTY_READ_LISTENER_FILTER_APP_NAME + ".war",
+        libertyWriteListenerFilterApp = (WebArchive) ShrinkHelper.addDirectory(libertyWriteListenerFilterApp, "test-applications/LibertyWriteListenerFilterTest.war/resources");
+        WebArchive libertyReadListenerFilterApp = ShrinkHelper.buildDefaultApp(LIBERTY_READ_LISTENER_FILTER_APP_NAME + ".war",
                                                                                "com.ibm.ws.webcontainer.servlet_31_fat.libertyreadlistenerfiltertest.war.readListener");
-        LibertyReadListenerFilterApp = (WebArchive) ShrinkHelper.addDirectory(LibertyReadListenerFilterApp, "test-applications/LibertyReadListenerFilterTest.war/resources");
-        WebArchive LibertyReadWriteListenerApp = ShrinkHelper.buildDefaultApp(LIBERTY_READ_WRITE_LISTENER_APP_NAME + ".war",
+        libertyReadListenerFilterApp = (WebArchive) ShrinkHelper.addDirectory(libertyReadListenerFilterApp, "test-applications/LibertyReadListenerFilterTest.war/resources");
+        WebArchive libertyReadWriteListenerApp = ShrinkHelper.buildDefaultApp(LIBERTY_READ_WRITE_LISTENER_APP_NAME + ".war",
                                                                               "com.ibm.ws.webcontainer.servlet_31_fat.libertyreadwritelistenertest.war.readListener",
                                                                               "com.ibm.ws.webcontainer.servlet_31_fat.libertyreadwritelistenertest.war.writeListener",
                                                                               "com.ibm.ws.webcontainer.servlet_31_fat.libertyreadwritelistenertest.war.upgradeHandler");
-        LibertyReadWriteListenerApp = (WebArchive) ShrinkHelper.addDirectory(LibertyReadWriteListenerApp, "test-applications/LibertyReadWriteListenerTest.war/resources");
-        // Verify if the apps are in the server before trying to deploy them
-        if (SHARED_SERVER.getLibertyServer().isStarted()) {
-            Set<String> appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(LIBERTY_WRITE_LISTENER_FILTER_APP_NAME);
-            LOG.info("addAppToServer : " + LIBERTY_WRITE_LISTENER_FILTER_APP_NAME + " already installed : " + !appInstalled.isEmpty());
+        libertyReadWriteListenerApp = (WebArchive) ShrinkHelper.addDirectory(libertyReadWriteListenerApp, "test-applications/LibertyReadWriteListenerTest.war/resources");
 
-            if (appInstalled.isEmpty())
-                ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), LibertyWriteListenerFilterApp);
+        // Export the applications.
+        ShrinkHelper.exportDropinAppToServer(server, libertyWriteListenerFilterApp);
+        ShrinkHelper.exportDropinAppToServer(server, libertyReadListenerFilterApp);
+        ShrinkHelper.exportDropinAppToServer(server, libertyReadWriteListenerApp);
 
-            appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(LIBERTY_READ_LISTENER_FILTER_APP_NAME);
-            LOG.info("addAppToServer : " + LIBERTY_READ_LISTENER_FILTER_APP_NAME + " already installed : " + !appInstalled.isEmpty());
-
-            if (appInstalled.isEmpty())
-                ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), LibertyReadListenerFilterApp);
-
-            appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(LIBERTY_READ_WRITE_LISTENER_APP_NAME);
-            LOG.info("addAppToServer : " + LIBERTY_READ_WRITE_LISTENER_APP_NAME + " already installed : " + !appInstalled.isEmpty());
-
-            if (appInstalled.isEmpty())
-                ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), LibertyReadWriteListenerApp);
-        }
-        SHARED_SERVER.startIfNotStarted();
-
-        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + LIBERTY_READ_WRITE_LISTENER_APP_NAME);
-        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + LIBERTY_READ_LISTENER_FILTER_APP_NAME);
-        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + LIBERTY_WRITE_LISTENER_FILTER_APP_NAME);
+        // Start the server and use the class name so we can find logs easily.
+        server.startServer(AsyncReadListenerHttpUnit.class.getSimpleName() + ".log");
     }
 
     @AfterClass
     public static void testCleanup() throws Exception {
-        if (SHARED_SERVER.getLibertyServer() != null && SHARED_SERVER.getLibertyServer().isStarted()) {
-            SHARED_SERVER.getLibertyServer().stopServer("SRVE9010E:.*", "SRVE9004E:.*", "SRVE8015E:.*", "SRVE9008E:.*", "SRVE9006E:.*", "SRVE8015E:.*");
+        if (server != null && server.isStarted()) {
+            server.stopServer("SRVE9010E:.*", "SRVE9004E:.*", "SRVE8015E:.*", "SRVE9008E:.*", "SRVE9006E:.*", "SRVE8015E:.*");
         }
     }
 
@@ -119,7 +100,7 @@ public class AsyncReadListenerHttpUnit extends LoggingTest {
         LOG.info("\n [WebContainer | AsyncReadListenerHttpUnit]: test_ReadVariousInputDataSizes_AsyncRL Start");
         LOG.info("\n /************************************************************************************/");
 
-        String URLString = SHARED_SERVER.getServerUrl(true, READ_LISTENER_SERVLET_URL);
+        String URLString = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + READ_LISTENER_SERVLET_URL;
         int[] PostDataSize = { 100, 1024, 10240, 102400, 1024000 };
         URL url = new URL(URLString);
         HttpURLConnection con = null;
@@ -185,7 +166,7 @@ public class AsyncReadListenerHttpUnit extends LoggingTest {
 
         String UrlParameters = "param1=testValue";
         byte[] PostDataBytes = UrlParameters.toString().getBytes("UTF-8");
-        String request = SHARED_SERVER.getServerUrl(true, READ_LISTENER_SERVLET_URL);
+        String request = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + READ_LISTENER_SERVLET_URL;
         StringBuilder sb = new StringBuilder();
         String line = "";
         final String ExpectedData = "OnError method successfully called !!!";
@@ -235,7 +216,7 @@ public class AsyncReadListenerHttpUnit extends LoggingTest {
         LOG.info("\n [WebContainer | AsyncReadListenerHttpUnit]: test_Exception_onSecondReadListener Start");
         LOG.info("\n /************************************************************************************/");
 
-        String request = SHARED_SERVER.getServerUrl(true, READ_LISTENER_SERVLET_URL);
+        String request = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + READ_LISTENER_SERVLET_URL;
         StringBuilder sb = new StringBuilder();
         String line = "";
         final String ExpectedData = "java.lang.IllegalStateException: SRVE9008E: An attempt to set a ReadListener failed because the ReadListener is already set.";
@@ -283,7 +264,7 @@ public class AsyncReadListenerHttpUnit extends LoggingTest {
         LOG.info("\n [WebContainer | AsyncReadListenerHttpUnit]: test_Exception_onNullReadListener Start");
         LOG.info("\n /************************************************************************************/");
 
-        String request = SHARED_SERVER.getServerUrl(true, READ_LISTENER_SERVLET_URL);
+        String request = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + READ_LISTENER_SERVLET_URL;
         StringBuilder sb = new StringBuilder();
         String line = "";
         final String ExpectedData = "SRVE9004E";
@@ -331,7 +312,7 @@ public class AsyncReadListenerHttpUnit extends LoggingTest {
         LOG.info("\n /************************************************************************************/");
 
         final String EXPECTED_DATA = "java.lang.IllegalStateException: SRVE9010E: An attempt to read failed because isReady API returns false";
-        String URLString = SHARED_SERVER.getServerUrl(true, READ_LISTENER_SERVLET_URL);
+        String URLString = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + READ_LISTENER_SERVLET_URL;
         //We don't need a very large post since the size is irrelevant here. We just want to
         //end up triggering isReady returning false
         int PostDataSize = 2000;
@@ -418,7 +399,7 @@ public class AsyncReadListenerHttpUnit extends LoggingTest {
         LOG.info("\n /************************************************************************************/");
 
         final String EXPECTED_DATA = "java.lang.IllegalStateException: SRVE9010E: An attempt to read failed because isReady API returns false";
-        String URLString = SHARED_SERVER.getServerUrl(true, READ_LISTENER_SERVLET_URL);
+        String URLString = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + READ_LISTENER_SERVLET_URL;
         //We don't need a very large post since the size is irrelevant here. We just want to
         //end up triggering isReady returning false
         int PostDataSize = 2000;
@@ -498,7 +479,7 @@ public class AsyncReadListenerHttpUnit extends LoggingTest {
         LOG.info("\n [WebContainer | AsyncReadListenerHttpUnit]: test_HandleException_ThrownByOnDataAvailable Start");
         LOG.info("\n /************************************************************************************/");
 
-        String request = SHARED_SERVER.getServerUrl(true, READ_LISTENER_SERVLET_URL);
+        String request = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + READ_LISTENER_SERVLET_URL;
         StringBuilder sb = new StringBuilder();
         String line = "";
         final String POST_DATA = "testKey=testValue";
@@ -555,7 +536,7 @@ public class AsyncReadListenerHttpUnit extends LoggingTest {
         final String EXPECTED_DATA = PostData + "All Data Read from client before ReadListener invoked!";
         byte[] utf8Bytes = PostData.getBytes("UTF-8");
 
-        String request = SHARED_SERVER.getServerUrl(true, READ_LISTENER_SERVLET_URL);
+        String request = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + READ_LISTENER_SERVLET_URL;
         StringBuilder sb = new StringBuilder();
         String line = "";
         // final String ExpectedData = "java.lang.IllegalStateException";
@@ -608,7 +589,7 @@ public class AsyncReadListenerHttpUnit extends LoggingTest {
         LOG.info("\n /************************************************************************************/");
         try {
             HttpClient HttpClient = new HttpClient();
-            PostMethod post = new PostMethod(SHARED_SERVER.getServerUrl(true, READ_LISTENER__FILTER_SERVLET_URL));
+            PostMethod post = new PostMethod("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + READ_LISTENER__FILTER_SERVLET_URL);
             post.addParameter("testKey", "testValue");
             final String POST_DATA = "testKey=testValue";
 
@@ -641,7 +622,7 @@ public class AsyncReadListenerHttpUnit extends LoggingTest {
         LOG.info("\n [WebContainer | AsyncReadListenerHttpUnit]: test_HandleException_ThrownByOnAllDataRead Start");
         LOG.info("\n /************************************************************************************/");
 
-        String request = SHARED_SERVER.getServerUrl(true, READ_LISTENER_SERVLET_URL);
+        String request = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + READ_LISTENER_SERVLET_URL;
         StringBuilder sb = new StringBuilder();
         String line = "";
         final String POST_DATA = "testKey=testValue";
@@ -696,7 +677,7 @@ public class AsyncReadListenerHttpUnit extends LoggingTest {
         LOG.info("\n [WebContainer | AsyncReadListenerHttpUnit]: test_Exception_setRL_onNonAsyncServlet Start");
         LOG.info("\n /************************************************************************************/");
 
-        String URLString = SHARED_SERVER.getServerUrl(true, READ_LISTENER_SERVLET_FALSE_URL);
+        String URLString = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + READ_LISTENER_SERVLET_FALSE_URL;
 
         URL url = new URL(URLString);
         HttpURLConnection con = null;
@@ -752,7 +733,7 @@ public class AsyncReadListenerHttpUnit extends LoggingTest {
 
         try {
             HttpClient httpClient = new HttpClient();
-            PostMethod post = new PostMethod(SHARED_SERVER.getServerUrl(true, READ_LISTENER_SERVLET_URL));
+            PostMethod post = new PostMethod("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + READ_LISTENER_SERVLET_URL);
             post.addParameter("testKey", "testValue");
             post.setRequestHeader("TestToCall", "test_ReadData_onDataAvailableReturn");
             LOG.info("\n [TestRequestProperty]: test_ReadData_onDataAvailableReturn");
@@ -788,7 +769,7 @@ public class AsyncReadListenerHttpUnit extends LoggingTest {
         LOG.info("\n [WebContainer | AsyncReadListenerHttpUnit]: test_OnReadParameter_WhenRLset Start");
         LOG.info("\n /************************************************************************************/");
 
-        String request = SHARED_SERVER.getServerUrl(true, READ_LISTENER_SERVLET_URL + "?parameter=value");
+        String request = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + READ_LISTENER_SERVLET_URL + "?parameter=value";
         StringBuilder sb = new StringBuilder();
         String line = "";
         final String POST_DATA = "testKey=testValue";
@@ -838,7 +819,7 @@ public class AsyncReadListenerHttpUnit extends LoggingTest {
         LOG.info("\n [WebContainer | AsyncReadListenerHttpUnit]: test_ContextTransferProperly_WhenRLset Start");
         LOG.info("\n /************************************************************************************/");
 
-        String request = SHARED_SERVER.getServerUrl(true, READ_LISTENER_SERVLET_URL);
+        String request = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + READ_LISTENER_SERVLET_URL;
         StringBuilder sb = new StringBuilder();
         String line = "";
         final String ExpectedData = "javax.naming.NameNotFoundException: javax.naming.NameNotFoundException: java:comp/UserTransaction";
@@ -871,10 +852,4 @@ public class AsyncReadListenerHttpUnit extends LoggingTest {
         LOG.info("\n [WebContainer | AsyncReadListenerHttpUnit]: test_ContextTransferProperly_WhenRLset Finish");
         LOG.info("\n /************************************************************************************/");
     }
-
-    @Override
-    protected SharedServer getSharedServer() {
-        return SHARED_SERVER;
-    }
-
 }

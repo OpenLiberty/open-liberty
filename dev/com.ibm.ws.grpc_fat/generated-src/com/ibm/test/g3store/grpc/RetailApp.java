@@ -6,7 +6,7 @@ package com.ibm.test.g3store.grpc;
 /**
  * Protobuf type {@code RetailApp}
  */
-public  final class RetailApp extends
+public final class RetailApp extends
     com.google.protobuf.GeneratedMessageV3 implements
     // @@protoc_insertion_point(message_implements:RetailApp)
     RetailAppOrBuilder {
@@ -153,6 +153,7 @@ private static final long serialVersionUID = 0L;
    * <code>string name = 1;</code>
    * @return The name.
    */
+  @java.lang.Override
   public java.lang.String getName() {
     java.lang.Object ref = name_;
     if (ref instanceof java.lang.String) {
@@ -169,6 +170,7 @@ private static final long serialVersionUID = 0L;
    * <code>string name = 1;</code>
    * @return The bytes for name.
    */
+  @java.lang.Override
   public com.google.protobuf.ByteString
       getNameBytes() {
     java.lang.Object ref = name_;
@@ -189,6 +191,7 @@ private static final long serialVersionUID = 0L;
    * <code>string desc = 2;</code>
    * @return The desc.
    */
+  @java.lang.Override
   public java.lang.String getDesc() {
     java.lang.Object ref = desc_;
     if (ref instanceof java.lang.String) {
@@ -205,6 +208,7 @@ private static final long serialVersionUID = 0L;
    * <code>string desc = 2;</code>
    * @return The bytes for desc.
    */
+  @java.lang.Override
   public com.google.protobuf.ByteString
       getDescBytes() {
     java.lang.Object ref = desc_;
@@ -225,6 +229,7 @@ private static final long serialVersionUID = 0L;
    * <code>string id = 3;</code>
    * @return The id.
    */
+  @java.lang.Override
   public java.lang.String getId() {
     java.lang.Object ref = id_;
     if (ref instanceof java.lang.String) {
@@ -241,6 +246,7 @@ private static final long serialVersionUID = 0L;
    * <code>string id = 3;</code>
    * @return The bytes for id.
    */
+  @java.lang.Override
   public com.google.protobuf.ByteString
       getIdBytes() {
     java.lang.Object ref = id_;
@@ -261,6 +267,7 @@ private static final long serialVersionUID = 0L;
    * <code>bool free = 4;</code>
    * @return The free.
    */
+  @java.lang.Override
   public boolean getFree() {
     return free_;
   }
@@ -271,14 +278,14 @@ private static final long serialVersionUID = 0L;
    * <code>.GenreType genreType = 5;</code>
    * @return The enum numeric value on the wire for genreType.
    */
-  public int getGenreTypeValue() {
+  @java.lang.Override public int getGenreTypeValue() {
     return genreType_;
   }
   /**
    * <code>.GenreType genreType = 5;</code>
    * @return The genreType.
    */
-  public com.ibm.test.g3store.grpc.GenreType getGenreType() {
+  @java.lang.Override public com.ibm.test.g3store.grpc.GenreType getGenreType() {
     @SuppressWarnings("deprecation")
     com.ibm.test.g3store.grpc.GenreType result = com.ibm.test.g3store.grpc.GenreType.valueOf(genreType_);
     return result == null ? com.ibm.test.g3store.grpc.GenreType.UNRECOGNIZED : result;
@@ -290,14 +297,14 @@ private static final long serialVersionUID = 0L;
    * <code>.SecurityType securityType = 6;</code>
    * @return The enum numeric value on the wire for securityType.
    */
-  public int getSecurityTypeValue() {
+  @java.lang.Override public int getSecurityTypeValue() {
     return securityType_;
   }
   /**
    * <code>.SecurityType securityType = 6;</code>
    * @return The securityType.
    */
-  public com.ibm.test.g3store.grpc.SecurityType getSecurityType() {
+  @java.lang.Override public com.ibm.test.g3store.grpc.SecurityType getSecurityType() {
     @SuppressWarnings("deprecation")
     com.ibm.test.g3store.grpc.SecurityType result = com.ibm.test.g3store.grpc.SecurityType.valueOf(securityType_);
     return result == null ? com.ibm.test.g3store.grpc.SecurityType.UNRECOGNIZED : result;
@@ -308,12 +315,14 @@ private static final long serialVersionUID = 0L;
   /**
    * <code>repeated .Price prices = 7;</code>
    */
+  @java.lang.Override
   public java.util.List<com.ibm.test.g3store.grpc.Price> getPricesList() {
     return prices_;
   }
   /**
    * <code>repeated .Price prices = 7;</code>
    */
+  @java.lang.Override
   public java.util.List<? extends com.ibm.test.g3store.grpc.PriceOrBuilder> 
       getPricesOrBuilderList() {
     return prices_;
@@ -321,18 +330,21 @@ private static final long serialVersionUID = 0L;
   /**
    * <code>repeated .Price prices = 7;</code>
    */
+  @java.lang.Override
   public int getPricesCount() {
     return prices_.size();
   }
   /**
    * <code>repeated .Price prices = 7;</code>
    */
+  @java.lang.Override
   public com.ibm.test.g3store.grpc.Price getPrices(int index) {
     return prices_.get(index);
   }
   /**
    * <code>repeated .Price prices = 7;</code>
    */
+  @java.lang.Override
   public com.ibm.test.g3store.grpc.PriceOrBuilder getPricesOrBuilder(
       int index) {
     return prices_.get(index);
@@ -344,6 +356,7 @@ private static final long serialVersionUID = 0L;
    * <code>.Creator creator = 8;</code>
    * @return Whether the creator field is set.
    */
+  @java.lang.Override
   public boolean hasCreator() {
     return creator_ != null;
   }
@@ -351,12 +364,14 @@ private static final long serialVersionUID = 0L;
    * <code>.Creator creator = 8;</code>
    * @return The creator.
    */
+  @java.lang.Override
   public com.ibm.test.g3store.grpc.Creator getCreator() {
     return creator_ == null ? com.ibm.test.g3store.grpc.Creator.getDefaultInstance() : creator_;
   }
   /**
    * <code>.Creator creator = 8;</code>
    */
+  @java.lang.Override
   public com.ibm.test.g3store.grpc.CreatorOrBuilder getCreatorOrBuilder() {
     return getCreator();
   }
@@ -1067,6 +1082,7 @@ private static final long serialVersionUID = 0L;
      * <code>bool free = 4;</code>
      * @return The free.
      */
+    @java.lang.Override
     public boolean getFree() {
       return free_;
     }
@@ -1097,7 +1113,7 @@ private static final long serialVersionUID = 0L;
      * <code>.GenreType genreType = 5;</code>
      * @return The enum numeric value on the wire for genreType.
      */
-    public int getGenreTypeValue() {
+    @java.lang.Override public int getGenreTypeValue() {
       return genreType_;
     }
     /**
@@ -1106,6 +1122,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder setGenreTypeValue(int value) {
+      
       genreType_ = value;
       onChanged();
       return this;
@@ -1114,6 +1131,7 @@ private static final long serialVersionUID = 0L;
      * <code>.GenreType genreType = 5;</code>
      * @return The genreType.
      */
+    @java.lang.Override
     public com.ibm.test.g3store.grpc.GenreType getGenreType() {
       @SuppressWarnings("deprecation")
       com.ibm.test.g3store.grpc.GenreType result = com.ibm.test.g3store.grpc.GenreType.valueOf(genreType_);
@@ -1149,7 +1167,7 @@ private static final long serialVersionUID = 0L;
      * <code>.SecurityType securityType = 6;</code>
      * @return The enum numeric value on the wire for securityType.
      */
-    public int getSecurityTypeValue() {
+    @java.lang.Override public int getSecurityTypeValue() {
       return securityType_;
     }
     /**
@@ -1158,6 +1176,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder setSecurityTypeValue(int value) {
+      
       securityType_ = value;
       onChanged();
       return this;
@@ -1166,6 +1185,7 @@ private static final long serialVersionUID = 0L;
      * <code>.SecurityType securityType = 6;</code>
      * @return The securityType.
      */
+    @java.lang.Override
     public com.ibm.test.g3store.grpc.SecurityType getSecurityType() {
       @SuppressWarnings("deprecation")
       com.ibm.test.g3store.grpc.SecurityType result = com.ibm.test.g3store.grpc.SecurityType.valueOf(securityType_);

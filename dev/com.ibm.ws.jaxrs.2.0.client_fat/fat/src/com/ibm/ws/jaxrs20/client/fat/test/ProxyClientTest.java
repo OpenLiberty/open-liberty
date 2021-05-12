@@ -26,9 +26,11 @@ import com.ibm.ws.jaxrs20.client.fat.proxy.HttpProxyServer;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
+@SkipForRepeat("EE9_FEATURES") // Continue to skip this test for EE9 as com.ibm.ws.jaxrs.client.proxy.* properties are not supported yet
 @RunWith(FATRunner.class)
 public class ProxyClientTest extends AbstractTest {
 

@@ -56,6 +56,7 @@ import com.ibm.websphere.crypto.UnsupportedCryptoAlgorithmException;
 import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.jca.cm.AppDefinedResource;
 import com.ibm.ws.jca.cm.ConnectorService;
@@ -302,6 +303,8 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                                         // Property already has correct non-String type
                                         if (trace && tc.isDebugEnabled())
                                             Tr.debug(tc, "set " + name + " = " + value);
+                                        Class<?> targetType = descriptor.getWriteMethod().getParameterTypes()[0];
+                                        value = coerceType(targetType, value);
                                         descriptor.getWriteMethod().invoke(ds, value);
                                     }
                                 } catch (Throwable x) {
@@ -1105,5 +1108,32 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
         matcher.appendTail(sb);
         
         return sb.toString(); 
+    }
+    
+    @Trivial
+    private static Object coerceType(Class<?> desiredType, Object val) {
+        if (desiredType.isAssignableFrom(val.getClass()))
+            return val;
+        
+        if (val instanceof Number) {
+            Number num = (Number) val;
+            if (desiredType == long.class || desiredType == Long.class)
+                return num.longValue();
+            if (desiredType == int.class || desiredType == Integer.class)
+                return num.intValue();
+            if (desiredType == short.class || desiredType == Short.class)
+                return num.shortValue();
+        }
+        if (val instanceof String) {
+            String str = (String) val;
+            if (desiredType == long.class || desiredType == Long.class)
+                return Long.valueOf(str);
+            if (desiredType == int.class || desiredType == Integer.class)
+                return Integer.valueOf(str);
+            if (desiredType == short.class || desiredType == Short.class)
+                return Short.valueOf(str);
+        }
+        
+        return val;
     }
 }

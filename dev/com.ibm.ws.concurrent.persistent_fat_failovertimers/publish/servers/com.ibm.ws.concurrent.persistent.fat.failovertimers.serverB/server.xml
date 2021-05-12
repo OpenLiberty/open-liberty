@@ -10,11 +10,11 @@
  -->
 <server>
   <featureManager>
-    <feature>componenttest-1.0</feature>
-    <feature>ejbPersistentTimer-3.2</feature>
+    <feature>componenttest-2.0</feature>
+    <feature>enterpriseBeansPersistentTimer-4.0</feature>
     <feature>jdbc-4.2</feature>
     <!-- <feature>osgiConsole-1.0</feature> -->
-    <feature>servlet-4.0</feature>
+    <feature>servlet-5.0</feature>
   </featureManager>
 
   <include location="../fatTestPorts.xml"/> <!-- see overrides under configDropins/overrides/fatSecondaryPorts.xml -->
@@ -28,7 +28,7 @@
   <dataSource id="DefaultDataSource" fat.modify="true">
     <jdbcDriver libraryRef="jdbcLib"/>
     <!-- properties modified by fat-suite during database rotation -->
-    <properties.derby.client createDatabase="create" databaseName="${shared.resource.dir}/data/failovertimersdb" user="dbuser1" password="dbwpd1"/>
+    <properties.derby.client createDatabase="create" databaseName="memory:failovertimersdb" user="dbuser1" password="dbwpd1"/>
   </dataSource>
 
   <library id="jdbcLib">

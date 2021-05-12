@@ -29,6 +29,7 @@ import com.ibm.test.g3store.grpc.RetailApp.Builder;
 import com.ibm.testapp.g3store.exception.HandleExceptionsFromgRPCService;
 import com.ibm.testapp.g3store.exception.InvalidArgException;
 import com.ibm.testapp.g3store.exception.NotFoundException;
+import com.ibm.testapp.g3store.exception.UnauthException;
 import com.ibm.testapp.g3store.restConsumer.model.AppNamewPriceListPOJO;
 import com.ibm.testapp.g3store.restConsumer.model.PriceModel;
 
@@ -49,32 +50,67 @@ public class ConsumerGrpcServiceClientImpl extends ConsumerGrpcServiceClient {
 
     private static Logger log = Logger.getLogger(ConsumerGrpcServiceClientImpl.class.getName());
 
-    private final int deadlineMs = 30 * 1000;
+    private final int deadlineMs = 60 * 1000;
 
     // gRPC client implementation(s)
 
     /**
+     * @param testMethodName
      * @return
      * @throws NotFoundException
+     * @throws UnauthException
      */
-    public List<String> getAllAppNameList() throws NotFoundException {
+    public List<String> getAllAppNameList(String testMethodName) throws NotFoundException, UnauthException {
 
         List<String> nameList = null;
         try {
 
-            if (log.isLoggable(Level.FINE)) {
-                log.fine("Consumer: getAllAppNames: send grpc request");
-            }
-            // get the data back from grpc service
-            NameResponse resp = get_consumerService()
-                            .withDeadlineAfter(deadlineMs, TimeUnit.SECONDS)
-                            .getAllAppNames(Empty.getDefaultInstance());
+            NameResponse resp = null;
+            if (testMethodName.equalsIgnoreCase("testGetAppName_BadServerRoles_grpcClient")) {
 
-            if (log.isLoggable(Level.FINE)) {
-                log.fine("Consumer: getAllAppNames: Received respnse, number of apps = " + resp.getNamesCount());
+                if (log.isLoggable(Level.FINE)) {
+                    log.fine(testMethodName + " ,Consumer: send grpc request to getAppNameSetBadRoles");
+                }
+                // get the data back from grpc service
+                resp = get_consumerService()
+                                .withDeadlineAfter(deadlineMs, TimeUnit.SECONDS)
+                                .getAppNameSetBadRoles(Empty.getDefaultInstance());
+            } else if (testMethodName.equalsIgnoreCase("testGetAppName_CookieAuth_GrpcClient")) {
+                if (log.isLoggable(Level.FINE)) {
+                    log.fine(testMethodName + " ,Consumer: send grpc request to getNameCookieJWTHeader");
+                }
+                // get the data back from grpc service
+                resp = get_consumerService()
+                                .withDeadlineAfter(deadlineMs, TimeUnit.SECONDS)
+                                .getNameCookieJWTHeader(Empty.getDefaultInstance());
+            } else if (testMethodName.equalsIgnoreCase("testGetAppName_BadRole_CookieAuth_GrpcClient")) {
+                if (log.isLoggable(Level.FINE)) {
+                    log.fine(testMethodName + " ,Consumer: send grpc request to getAppSetBadRoleCookieJWTHeader");
+                }
+                // get the data back from grpc service
+                resp = get_consumerService()
+                                .withDeadlineAfter(deadlineMs, TimeUnit.SECONDS)
+                                .getAppSetBadRoleCookieJWTHeader(Empty.getDefaultInstance());
+            } else {
+
+                if (log.isLoggable(Level.FINE)) {
+                    log.fine(testMethodName + " ,Consumer: send grpc request to getAllAppNames");
+                }
+                // get the data back from grpc service
+                resp = get_consumerService()
+                                .withDeadlineAfter(deadlineMs, TimeUnit.SECONDS)
+                                .getAllAppNames(Empty.getDefaultInstance());
             }
 
-            nameList = resp.getNamesList();
+            if (resp != null) {
+                if (log.isLoggable(Level.FINE)) {
+                    log.fine(testMethodName + " ,Consumer: Received response, number of apps = " + resp.getNamesCount());
+                }
+
+                nameList = resp.getNamesList();
+            } else {
+                log.severe(testMethodName + " check the grpc request connection and check the store logs. ");
+            }
 
         } catch (StatusRuntimeException e) {
             if (e.getStatus().getCode() == Status.Code.NOT_FOUND) {
@@ -82,12 +118,35 @@ public class ConsumerGrpcServiceClientImpl extends ConsumerGrpcServiceClient {
                 throw new NotFoundException(e.getMessage());
             }
             if (e.getStatus().getCode() == Status.Code.UNAUTHENTICATED) {
-                e.printStackTrace();
-                throw new NotFoundException(e.getMessage());
+                if ((testMethodName.equalsIgnoreCase("getAppName_NullJWTAuth_GrpcClient")) ||
+                    (testMethodName.equalsIgnoreCase("testGetAppName_BadServerRoles_GrpcClient")) ||
+                    (testMethodName.equalsIgnoreCase("testGetAppName_BadRole_CookieAuth_GrpcClient"))) {
+
+                    /*
+                     * if need to print exception trailers
+                     *
+                     * Set<String> s = e.getTrailers().keys();
+                     * Iterator<String> it = s.iterator();
+                     * while (it.hasNext()) {
+                     * String key = it.next();
+                     *
+                     * log.info("Consumer: getAllAppNames: key= " + key + ", value = " + e.getTrailers().get(Metadata.Key.of(key, Metadata.ASCII_STRING_MARSHALLER)));
+                     * }
+                     */
+
+                    String message = "Expected auth failure.";
+                    log.info(testMethodName + " Consumer: " + message);
+                    e.printStackTrace();
+                    throw new UnauthException(message);
+                } else {
+                    log.severe(testMethodName + " Consumer: An exception is reported on getAllAppNames request, status = " + e.getStatus());
+                    e.printStackTrace();
+                    throw new UnauthException(e.getMessage());
+                }
             }
 
         } catch (Exception e) {
-            log.severe("Consumer: getAllAppNames : An exception is reported on getAllNames request");
+            log.severe(testMethodName + " Consumer : An exception is reported on getAllNames request");
             e.printStackTrace();
         }
 
@@ -97,8 +156,9 @@ public class ConsumerGrpcServiceClientImpl extends ConsumerGrpcServiceClient {
     /**
      * @return
      * @throws NotFoundException
+     * @throws UnauthException
      */
-    public List<String> getAllAppNameList_Auth_CallCred() throws NotFoundException {
+    public List<String> getAllAppNameList_Auth_CallCred() throws NotFoundException, UnauthException {
 
         List<String> nameList = null;
         try {
@@ -123,8 +183,10 @@ public class ConsumerGrpcServiceClientImpl extends ConsumerGrpcServiceClient {
                 throw new NotFoundException(e.getMessage());
             }
             if (e.getStatus().getCode() == Status.Code.UNAUTHENTICATED) {
+                String message = "Expected auth failure.";
+                log.info("Consumer: getAppInfo: " + message);
                 e.printStackTrace();
-                throw new NotFoundException(e.getMessage());
+                throw new UnauthException(message);
             }
 
         } catch (Exception e) {
@@ -137,14 +199,16 @@ public class ConsumerGrpcServiceClientImpl extends ConsumerGrpcServiceClient {
 
     /**
      * @param appName
+     * @param testName
      * @return
+     * @throws UnauthException
      */
-    public String getAppJSONStructure(String appName) throws InvalidArgException {
+    public String getAppJSONStructure(String appName, String testName) throws InvalidArgException, UnauthException {
 
         AppNameRequest appReq = AppNameRequest.newBuilder().setName(appName).build();
 
         if (log.isLoggable(Level.FINE)) {
-            log.finest("Consumer: getAppInfo: appReq for name " + appReq.getName() + " send grpc request.");
+            log.finest("Consumer: getAppInfo: appReq for name " + appReq.getName() + " , testName = " + testName + " send grpc request.");
         }
         // get results from rpc call
         // This is a Unary call
@@ -166,8 +230,23 @@ public class ConsumerGrpcServiceClientImpl extends ConsumerGrpcServiceClient {
                 throw new InvalidArgException(e.getMessage());
             }
             if (e.getStatus().getCode() == Status.Code.UNAUTHENTICATED) {
+                if (log.isLoggable(Level.FINE)) {
+                    log.finest("Consumer: getAppInfo: testName = " + testName + " failed with UNAUTHENTICATED");
+                }
+                if (testName.equalsIgnoreCase("getAppInfo_BadAuth") ||
+                    (testName.equalsIgnoreCase("getAppInfo_Bad_BasicAuth_SC"))) {
+                    String message = "Expected auth failure.";
+                    log.info("Consumer: getAppInfo: " + message);
+                    e.printStackTrace();
+                    throw new UnauthException(message);
+                } else {
+                    log.severe("Consumer: An exception is reported on getAppInfo request, status = " + e.getStatus());
+                    e.printStackTrace();
+                    throw new UnauthException(e.getMessage());
+                }
+            } else {
                 e.printStackTrace();
-                throw new InvalidArgException(e.getMessage());
+                throw e;
             }
         }
 
@@ -258,7 +337,6 @@ public class ConsumerGrpcServiceClientImpl extends ConsumerGrpcServiceClient {
                                         handleException.setNfException(new NotFoundException(t));
                                     }
                                 }
-
                                 latch.countDown();
 
                             }
@@ -268,7 +346,7 @@ public class ConsumerGrpcServiceClientImpl extends ConsumerGrpcServiceClient {
                                 if (log.isLoggable(Level.FINE)) {
                                     log.fine("Consumer: getAppswPrices: completed response from server ");
                                 }
-
+                                latch.countDown();
                             }
 
                         });

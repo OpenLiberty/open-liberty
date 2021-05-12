@@ -365,6 +365,20 @@ PROP_SET_ERROR.useraction=Compruebe que el valor especificado es v\u00e1lido par
 # 8050-8055 deleted
 # 8060 deleted
 # 8065 deleted
+     
+# 8066E
+# {0}         The invalid attribute value
+# {1}         The allowed attribute values
+# Do not translate: identifyException, as
+8066E_IDENTIFY_EXCEPTION_INVALID_TARGET=DSRA8066E: El valor no v\u00e1lido ''{0}'' se ha especificado para el atributo ''as'' en el elemento identifyException. Los valores permitidos son: {1}
+8066E_IDENTIFY_EXCEPTION_INVALID_TARGET.explanation=Se ha especificado un valor no v\u00e1lido para el elemento de configuraci\u00f3n identifyException.
+8066E_IDENTIFY_EXCEPTION_INVALID_TARGET.useraction=Actualice la configuraci\u00f3n para especificar uno de los valores permitidos.
+
+# 8067E
+# Do not translate: errorCode, sqlState, identifyException
+8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE=DSRA8067E: Al menos se debe especificar uno de los atributos 'errorCode' o 'sqlState' en el elemento identifyException.
+8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE.explanation=Se debe especificar uno de los atributos errorCode o sqlState.
+8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE.useraction=Actualice la configuraci\u00f3n para especificar al menos uno de los atributos errorCode o sqlState en el elemento identifyException.
 
 # 8100E      JAVAX_CONN_ERR
 # 
@@ -647,6 +661,10 @@ KERBEROS_NOT_SUPPORTED_WARNING.explanation= El servidor de aplicaciones no tiene
 KERBEROS_NOT_SUPPORTED_WARNING.useraction= Inhabilite Kerberos o utilice un programa de fondo de DB2 con el controlador JDBC DB2 universal.
 
 # 9544-9548 deleted
+
+KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED=DSRA9549E: EL uso del SDK de IBM Java 8 con una base de datos Oracle no est\u00e1 soportado. El controlador JDBC de Oracle solo permite la autenticaci\u00f3n de Kerberos utilizando las API de seguridad predeterminadas disponibles en OpenJDK, OpenJ9 y otros SDK similares.
+KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED.explanation=EL uso del SDK de IBM Java 8 con una base de datos Oracle no est\u00e1 soportado. El controlador JDBC de Oracle solo permite la autenticaci\u00f3n de Kerberos utilizando las API de seguridad predeterminadas disponibles en OpenJDK, OpenJ9 y otros SDK similares.
+KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED.useraction=Inhabilite la autenticaci\u00f3n de Kerberos para el origen de datos Oracle o cambie a otro SDK de Java distinto del SDK de IBM Java 8.
 
 # 9600-9603 deleted 
 # 9900 deleted

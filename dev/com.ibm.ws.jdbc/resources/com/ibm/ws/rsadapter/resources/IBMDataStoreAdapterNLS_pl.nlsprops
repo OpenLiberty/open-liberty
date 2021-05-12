@@ -365,7 +365,19 @@ PROP_SET_ERROR.useraction=Sprawd\u017a, czy okre\u015blona warto\u015b\u0107 jes
 # 8050-8055 deleted
 # 8060 deleted
 # 8065 deleted
-
+     
+# 8066E
+# {0}         The invalid attribute value
+# {1}         The allowed attribute values
+# Do not translate: identifyException, as
+8066E_IDENTIFY_EXCEPTION_INVALID_TARGET=DSRA8066E: Dla atrybutu ''as'' w elemencie identifyException okre\u015blono niepoprawn\u0105 warto\u015b\u0107 ''{0}''. Dozwolone warto\u015bci to: {1}.
+8066E_IDENTIFY_EXCEPTION_INVALID_TARGET.explanation=Okre\u015blono niepoprawn\u0105 warto\u015b\u0107 elementu konfiguracji identifyException.
+8066E_IDENTIFY_EXCEPTION_INVALID_TARGET.useraction=Zmie\u0144 konfiguracj\u0119, aby okre\u015bli\u0107 jedn\u0105 z dozwolonych warto\u015bci.
+# 8067E
+# Do not translate: errorCode, sqlState, identifyException
+8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE=DSRA8067E: W elemencie identifyException musi by\u0107 okre\u015blony co najmniej jeden z atrybut\u00f3w 'errorCode' lub 'sqlState'.
+8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE.explanation=Nale\u017cy okre\u015bli\u0107 jeden z atrybut\u00f3w errorCode lub sqlState.
+8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE.useraction=Zmie\u0144 konfiguracj\u0119 tak, aby okre\u015bla\u0142a co najmniej jeden z atrybut\u00f3w errorCode lub sqlState w elemencie identifyException.
 # 8100E      JAVAX_CONN_ERR
 # 
 # {0}        Type of Connection: XAConnection or PooledConnection.
@@ -648,5 +660,8 @@ KERBEROS_NOT_SUPPORTED_WARNING.useraction= Wy\u0142\u0105cz uwierzytelnianie Ker
 
 # 9544-9548 deleted
 
+KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED=DSRA9549E: Nie mo\u017cna u\u017cywa\u0107 pakietu IBM Java 8 SDK z baz\u0105 danych Oracle. Sterownik JDBC Oracle obs\u0142uguje uwierzytelnianie Kerberos wy\u0142\u0105cznie przy u\u017cyciu domy\u015blnych interfejs\u00f3w API zabezpiecze\u0144 dost\u0119pnych w pakietach OpenJDK, OpenJ9 lub podobnych pakietach SDK.
+KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED.explanation=Nie mo\u017cna u\u017cywa\u0107 pakietu IBM Java 8 SDK z baz\u0105 danych Oracle. Sterownik JDBC Oracle obs\u0142uguje uwierzytelnianie Kerberos wy\u0142\u0105cznie przy u\u017cyciu domy\u015blnych interfejs\u00f3w API zabezpiecze\u0144 dost\u0119pnych w pakietach OpenJDK, OpenJ9 lub podobnych pakietach SDK.
+KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED.useraction=Wy\u0142\u0105cz uwierzytelnianie Kerberos dla \u017ar\u00f3d\u0142a danych Oracle lub skorzystaj z pakietu Java SDK innego ni\u017c IBM Java 8 SDK.
 # 9600-9603 deleted 
 # 9900 deleted

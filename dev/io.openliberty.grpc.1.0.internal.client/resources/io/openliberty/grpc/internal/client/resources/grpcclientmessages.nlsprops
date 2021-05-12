@@ -31,7 +31,3 @@ invalid.keepalive.timeout.useraction=Configure a valid value for the keepAliveTi
 invalid.client.inbound.msg.size=CWWKT0304E: The gRPC client maxInboundMessageSize {0} is not valid. Values must greater than 0.
 invalid.client.inbound.msg.size.explanation=The configured value for the maxInboundMessageSize is not valid.
 invalid.client.inbound.msg.size.useraction=Configure a valid value for the maxInboundMessageSize.
-
-invalid.authn.token=CWWKT0305E: The gRPC client authnToken value "{0}" is not valid. Value must be equal "jwt" or "oauth".
-invalid.authn.token.explanation=The configured value for the authnToken is not valid.
-invalid.authn.token.useraction=Configure a valid value for the authnToken.

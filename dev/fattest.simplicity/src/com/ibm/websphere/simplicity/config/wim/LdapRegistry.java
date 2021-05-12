@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,6 +37,7 @@ public class LdapRegistry extends ConfigElement {
     private String readTimeout;
     private ContextPool contextPool;
     private LdapFilters customFilters;
+    private String derefAliases;
     private LdapFilters domino50Filters;
     private LdapFilters edirectoryFilters;
     private ConfigElementList<FailoverServers> failoverServers;
@@ -67,6 +68,11 @@ public class LdapRegistry extends ConfigElement {
     private Integer searchPageSize; // PRIVATE
     private String certificateMapperId;
     private String timestampFormat;
+    private ConfigElementList<LoginProperty> loginProperties;
+    private String bindAuthMechanism;
+    private String krb5Principal;
+    private String krb5TicketCache;
+    private Boolean allowWriteToSecondaryServers;
 
     /**
      * @return the activedFilters
@@ -132,6 +138,13 @@ public class LdapRegistry extends ConfigElement {
     }
 
     /**
+     * @return the derefAliases
+     */
+    public String getDerefAliases() {
+        return derefAliases;
+    }
+
+    /**
      * @return the readTimeout
      */
     public String getReadTimeout() {
@@ -171,6 +184,13 @@ public class LdapRegistry extends ConfigElement {
      */
     public ConfigElementList<FailoverServers> getFailoverServers() {
         return (failoverServers == null) ? (failoverServers = new ConfigElementList<FailoverServers>()) : failoverServers;
+    }
+
+    /**
+     * @return the loginProperties
+     */
+    public ConfigElementList<LoginProperty> getLoginProperties() {
+        return (loginProperties == null) ? (loginProperties = new ConfigElementList<LoginProperty>()) : loginProperties;
     }
 
     /**
@@ -307,6 +327,13 @@ public class LdapRegistry extends ConfigElement {
     }
 
     /**
+     * @return the allowWriteToSecondaryServers
+     */
+    public Boolean getAllowWriteToSecondaryServers() {
+        return allowWriteToSecondaryServers;
+    }
+
+    /**
      * @return the reuseConnection
      */
     public Boolean getReuseConnection() {
@@ -353,6 +380,27 @@ public class LdapRegistry extends ConfigElement {
      */
     public String getTimestampFormat() {
         return timestampFormat;
+    }
+
+    /**
+     * @return the bindAuthMechanism
+     */
+    public String getBindAuthMechanism() {
+        return bindAuthMechanism;
+    }
+
+    /**
+     * @return the krb5Principal
+     */
+    public String getKrb5Principal() {
+        return krb5Principal;
+    }
+
+    /**
+     * @return the krb5TicketCache
+     */
+    public String getKrb5TicketCache() {
+        return krb5TicketCache;
     }
 
     /**
@@ -422,17 +470,17 @@ public class LdapRegistry extends ConfigElement {
     /**
      * @param connectTimeout the connectTimeout to set
      */
-    @XmlAttribute(name = "")
+    @XmlAttribute(name = "connectTimeout")
     public void setConnectTimeout(String connectTimeout) {
         this.connectTimeout = connectTimeout;
     }
 
     /**
-     * @param connectTimeout the connectTimeout to set
+     * @param derefAliases the derefAliases to set
      */
-    @XmlAttribute(name = "readTimeout")
-    public void setReadTimeout(String readTimeout) {
-        this.readTimeout = readTimeout;
+    @XmlAttribute(name = "derefAliases")
+    public void setDerefAliases(String derefAliases) {
+        this.derefAliases = derefAliases;
     }
 
     /**
@@ -483,6 +531,36 @@ public class LdapRegistry extends ConfigElement {
     public void setFailoverServer(FailoverServers failoverServers) {
         this.failoverServers = new ConfigElementList<FailoverServers>();
         this.failoverServers.add(failoverServers);
+    }
+
+    /**
+     * @param loginProperties the loginProperties to set
+     */
+    @XmlElement(name = "loginProperty")
+    public void setLoginProperties(ConfigElementList<LoginProperty> loginProperties) {
+        this.loginProperties = loginProperties;
+    }
+
+    /**
+     * Convenience method to set the the list of loginProperties list to a single entry.
+     *
+     * @param loginProperties The single instance of {@link LoginProperty} to set.
+     */
+    public void setLoginProperties(LoginProperty loginProperty) {
+        this.loginProperties = new ConfigElementList<LoginProperty>();
+        this.loginProperties.add(loginProperty);
+    }
+
+    /**
+     * Convenience method to add to the list of loginProperties.
+     *
+     * @param loginProperties The instance of {@link LoginProperty} to add.
+     */
+    public void addLoginProperty(LoginProperty loginProperty) {
+        if (loginProperties == null || loginProperties.isEmpty()) {
+            this.loginProperties = new ConfigElementList<LoginProperty>();
+        }
+        this.loginProperties.add(loginProperty);
     }
 
     /**
@@ -590,6 +668,14 @@ public class LdapRegistry extends ConfigElement {
     }
 
     /**
+     * @param readTimeout the readTimeout to set
+     */
+    @XmlAttribute(name = "readTimeout")
+    public void setReadTimeout(String readTimeout) {
+        this.readTimeout = readTimeout;
+    }
+
+    /**
      * @param realm the realm to set
      */
     @XmlAttribute(name = "realm")
@@ -635,6 +721,14 @@ public class LdapRegistry extends ConfigElement {
     @XmlAttribute(name = "returnToPrimaryServer")
     public void setReturnToPrimaryServer(Boolean returnToPrimaryServer) {
         this.returnToPrimaryServer = returnToPrimaryServer;
+    }
+
+    /**
+     * @param allowWriteToSecondaryServers the allowWriteToSecondaryServers to set
+     */
+    @XmlAttribute(name = "allowWriteToSecondaryServers")
+    public void setAllowWriteToSecondaryServers(Boolean allowWriteToSecondaryServers) {
+        this.allowWriteToSecondaryServers = allowWriteToSecondaryServers;
     }
 
     /**
@@ -693,6 +787,30 @@ public class LdapRegistry extends ConfigElement {
         this.timestampFormat = timestampFormat;
     }
 
+    /**
+     * @param bindAuthMechanism the bindAuthMechanism to set
+     */
+    @XmlAttribute(name = "bindAuthMechanism")
+    public void setBindAuthMechanism(String bindAuthMechanism) {
+        this.bindAuthMechanism = bindAuthMechanism;
+    }
+
+    /**
+     * @param krb5PrincipalName the krb5Principal to set
+     */
+    @XmlAttribute(name = "krb5Principal")
+    public void setKrb5Principal(String krb5PrincipalName) {
+        this.krb5Principal = krb5PrincipalName;
+    }
+
+    /**
+     * @param TicketCache the TicketCache to set
+     */
+    @XmlAttribute(name = "krb5TicketCache")
+    public void setKrb5TicketCache(String krb5TicketCache) {
+        this.krb5TicketCache = krb5TicketCache;
+    }
+
     @Override
     public String toString() {
         StringBuffer sb = new StringBuffer();
@@ -700,124 +818,142 @@ public class LdapRegistry extends ConfigElement {
         sb.append(getClass().getSimpleName()).append("{ ");
 
         if (activedFilters != null) {
-            sb.append("activedFilters=\"").append(activedFilters).append("\" ");;
+            sb.append("activedFilters=\"").append(activedFilters).append("\" ");
         }
         if (attributeConfiguration != null) {
-            sb.append("attributeConfiguration=\"").append(attributeConfiguration).append("\" ");;
+            sb.append("attributeConfiguration=\"").append(attributeConfiguration).append("\" ");
         }
         if (baseDN != null) {
-            sb.append("baseDN=\"").append(baseDN).append("\" ");;
+            sb.append("baseDN=\"").append(baseDN).append("\" ");
         }
         if (bindDN != null) {
-            sb.append("bindDN=\"").append(bindDN).append("\" ");;
+            sb.append("bindDN=\"").append(bindDN).append("\" ");
         }
         if (bindPassword != null) {
-            sb.append("bindPassword=\"").append(bindPassword).append("\" ");;
+            sb.append("bindPassword=\"").append(bindPassword).append("\" ");
         }
         if (certificateFilter != null) {
-            sb.append("certificateFilter=\"").append(certificateFilter).append("\" ");;
+            sb.append("certificateFilter=\"").append(certificateFilter).append("\" ");
         }
         if (certificateMapMode != null) {
-            sb.append("certificateMapMode=\"").append(certificateMapMode).append("\" ");;
+            sb.append("certificateMapMode=\"").append(certificateMapMode).append("\" ");
         }
         if (certificateMapperId != null) {
-            sb.append("certificateMapperId=\"").append(certificateMapperId).append("\" ");;
+            sb.append("certificateMapperId=\"").append(certificateMapperId).append("\" ");
         }
         if (connectTimeout != null) {
-            sb.append("connectTimeout=\"").append(connectTimeout).append("\" ");;
+            sb.append("connectTimeout=\"").append(connectTimeout).append("\" ");
         }
         if (readTimeout != null) {
-            sb.append("readTimeout=\"").append(readTimeout).append("\" ");;
+            sb.append("readTimeout=\"").append(readTimeout).append("\" ");
         }
         if (contextPool != null) {
-            sb.append("contextPool=\"").append(contextPool).append("\" ");;
+            sb.append("contextPool=\"").append(contextPool).append("\" ");
         }
         if (customFilters != null) {
-            sb.append("customFilters=\"").append(customFilters).append("\" ");;
+            sb.append("customFilters=\"").append(customFilters).append("\" ");
+        }
+        if (derefAliases != null) {
+            sb.append("derefAliases=\"").append(derefAliases).append("\" ");
         }
         if (domino50Filters != null) {
-            sb.append("domino50Filters=\"").append(domino50Filters).append("\" ");;
+            sb.append("domino50Filters=\"").append(domino50Filters).append("\" ");
         }
         if (edirectoryFilters != null) {
-            sb.append("edirectoryFilters=\"").append(edirectoryFilters).append("\" ");;
+            sb.append("edirectoryFilters=\"").append(edirectoryFilters).append("\" ");
         }
         if (failoverServers != null) {
-            sb.append("failoverServers=\"").append(failoverServers).append("\" ");;
+            sb.append("failoverServers=\"").append(failoverServers).append("\" ");
         }
         if (groupProperties != null) {
-            sb.append("groupConfiguration=\"").append(groupProperties).append("\" ");;
+            sb.append("groupConfiguration=\"").append(groupProperties).append("\" ");
         }
         if (host != null) {
-            sb.append("host=\"").append(host).append("\" ");;
+            sb.append("host=\"").append(host).append("\" ");
         }
         if (idsFilters != null) {
-            sb.append("idsFilters=\"").append(idsFilters).append("\" ");;
+            sb.append("idsFilters=\"").append(idsFilters).append("\" ");
         }
         if (ignoreCase != null) {
-            sb.append("ignoreCase=\"").append(ignoreCase).append("\" ");;
+            sb.append("ignoreCase=\"").append(ignoreCase).append("\" ");
         }
         if (iplanetFilters != null) {
-            sb.append("iplanetFilters=\"").append(iplanetFilters).append("\" ");;
+            sb.append("iplanetFilters=\"").append(iplanetFilters).append("\" ");
         }
         if (jndiOutputEnabled != null) {
-            sb.append("jndiOutputEnabled=\"").append(jndiOutputEnabled).append("\" ");;
+            sb.append("jndiOutputEnabled=\"").append(jndiOutputEnabled).append("\" ");
         }
         if (ldapCache != null) {
-            sb.append("ldapCache=\"").append(ldapCache).append("\" ");;
+            sb.append("ldapCache=\"").append(ldapCache).append("\" ");
         }
         if (ldapEntityTypes != null) {
-            sb.append("ldapEntityTypes=\"").append(ldapEntityTypes).append("\" ");;
+            sb.append("ldapEntityTypes=\"").append(ldapEntityTypes).append("\" ");
         }
         if (ldapType != null) {
-            sb.append("ldapType=\"").append(ldapType).append("\" ");;
+            sb.append("ldapType=\"").append(ldapType).append("\" ");
         }
         if (name != null) {
-            sb.append("name=\"").append(name).append("\" ");;
+            sb.append("name=\"").append(name).append("\" ");
         }
         if (netscapeFilters != null) {
-            sb.append("netscapeFilters=\"").append(netscapeFilters).append("\" ");;
+            sb.append("netscapeFilters=\"").append(netscapeFilters).append("\" ");
         }
         if (port != null) {
-            sb.append("port=\"").append(port).append("\" ");;
+            sb.append("port=\"").append(port).append("\" ");
         }
         if (primaryServerQueryTimeInterval != null) {
-            sb.append("primaryServerQueryTimeInterval=\"").append(primaryServerQueryTimeInterval).append("\" ");;
+            sb.append("primaryServerQueryTimeInterval=\"").append(primaryServerQueryTimeInterval).append("\" ");
         }
         if (realm != null) {
-            sb.append("realm=\"").append(realm).append("\" ");;
+            sb.append("realm=\"").append(realm).append("\" ");
         }
         if (recursiveSearch != null) {
-            sb.append("recursiveSearch=\"").append(recursiveSearch).append("\" ");;
+            sb.append("recursiveSearch=\"").append(recursiveSearch).append("\" ");
         }
         if (referal != null) {
-            sb.append("referal=\"").append(referal).append("\" ");;
+            sb.append("referal=\"").append(referal).append("\" ");
         }
         if (referral != null) {
-            sb.append("referral=\"").append(referral).append("\" ");;
+            sb.append("referral=\"").append(referral).append("\" ");
         }
         if (registryBaseEntries != null) {
-            sb.append("registryBaseEntries=\"").append(registryBaseEntries).append("\" ");;
+            sb.append("registryBaseEntries=\"").append(registryBaseEntries).append("\" ");
         }
         if (returnToPrimaryServer != null) {
-            sb.append("returnToPrimaryServer").append(returnToPrimaryServer).append("\" ");;
+            sb.append("returnToPrimaryServer=\"").append(returnToPrimaryServer).append("\" ");
+        }
+        if (allowWriteToSecondaryServers != null) {
+            sb.append("allowWriteToSecondaryServers=\"").append(allowWriteToSecondaryServers).append("\" ");;
         }
         if (reuseConnection != null) {
-            sb.append("reuseConnection=\"").append(reuseConnection).append("\" ");;
+            sb.append("reuseConnection=\"").append(reuseConnection).append("\" ");
         }
         if (searchTimeout != null) {
-            sb.append("searchTimeout=\"").append(searchTimeout).append("\" ");;
+            sb.append("searchTimeout=\"").append(searchTimeout).append("\" ");
         }
         if (securewayFilters != null) {
-            sb.append("securewayFilters=\"").append(securewayFilters).append("\" ");;
+            sb.append("securewayFilters=\"").append(securewayFilters).append("\" ");
         }
         if (sslEnabled != null) {
-            sb.append("sslEnabled=\"").append(sslEnabled).append("\" ");;
+            sb.append("sslEnabled=\"").append(sslEnabled).append("\" ");
         }
         if (sslRef != null) {
-            sb.append("sslRef=\"").append(sslRef).append("\" ");;
+            sb.append("sslRef=\"").append(sslRef).append("\" ");
         }
         if (timestampFormat != null) {
-            sb.append("timestampFormat=\"").append(timestampFormat).append("\" ");;
+            sb.append("timestampFormat=\"").append(timestampFormat).append("\" ");
+        }
+        if (loginProperties != null) {
+            sb.append("loginProperty=\"").append(loginProperties).append("\" ");
+        }
+        if (bindAuthMechanism != null) {
+            sb.append("bindAuthMechanism=\"").append(bindAuthMechanism).append("\" ");
+        }
+        if (krb5Principal != null) {
+            sb.append("krb5Principal=\"").append(krb5Principal).append("\" ");
+        }
+        if (krb5TicketCache != null) {
+            sb.append("krb5TicketCache=\"").append(krb5TicketCache).append("\" ");
         }
 
         sb.append("}");

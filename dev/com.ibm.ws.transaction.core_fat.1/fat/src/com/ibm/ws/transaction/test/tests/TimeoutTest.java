@@ -47,7 +47,7 @@ public class TimeoutTest extends FATServletClient {
     public static final String APP_NAME = "transaction";
     public static final String SERVLET_NAME = APP_NAME + "/TimeoutServlet";
 
-    @Server("com.ibm.ws.transaction")
+    @Server("com.ibm.ws.transaction.timeout")
     @TestServlet(servlet = TimeoutServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 

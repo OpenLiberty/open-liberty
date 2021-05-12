@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2019 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -81,6 +81,7 @@ import com.ibm.ws.webcontainer.security.metadata.SecurityConstraint;
 import com.ibm.ws.webcontainer.security.metadata.SecurityConstraintCollection;
 import com.ibm.ws.webcontainer.security.metadata.SecurityMetadata;
 import com.ibm.ws.webcontainer.security.metadata.WebResourceCollection;
+import com.ibm.ws.webcontainer.security.util.SSOAuthFilter;
 import com.ibm.ws.webcontainer.security.util.WebConfigUtils;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
@@ -105,6 +106,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
     static final String KEY_SERVICE_ID = "service.id";
     static final String KEY_COMPONENT_NAME = "component.name";
     public static final String KEY_SECURITY_SERVICE = "securityService";
+    public static final String KEY_SSO_SERVICE = "ssoAuthFilter";
     public static final String KEY_TAI_SERVICE = "taiService";
     public static final String KEY_INTERCEPTOR_SERVICE = "interceptorService";
     static final String KEY_JACC_SERVICE = "jaccService";
@@ -117,6 +119,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
     protected final ConcurrentServiceReferenceMap<String, WebAuthenticator> webAuthenticatorRef = new ConcurrentServiceReferenceMap<String, WebAuthenticator>(KEY_WEB_AUTHENTICATOR);
     protected final ConcurrentServiceReferenceMap<String, UnprotectedResourceService> unprotectedResourceServiceRef = new ConcurrentServiceReferenceMap<String, UnprotectedResourceService>(KEY_UNPROTECTED_RESOURCE_SERVICE);
 
+    protected final AtomicServiceReference<SSOAuthFilter> ssoAuthFilterRef = new AtomicServiceReference<SSOAuthFilter>(KEY_SSO_SERVICE);
     protected final AtomicServiceReference<TAIService> taiServiceRef = new AtomicServiceReference<TAIService>(KEY_TAI_SERVICE);
     protected final ConcurrentServiceReferenceMap<String, TrustAssociationInterceptor> interceptorServiceRef = new ConcurrentServiceReferenceMap<String, TrustAssociationInterceptor>(KEY_INTERCEPTOR_SERVICE);
     protected final AtomicServiceReference<SecurityService> securityServiceRef = new AtomicServiceReference<SecurityService>(KEY_SECURITY_SERVICE);
@@ -207,6 +210,14 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
 
     public void unsetSecurityService(ServiceReference<SecurityService> reference) {
         securityServiceRef.unsetReference(reference);
+    }
+
+    public void setSsoAuthFilter(ServiceReference<SSOAuthFilter> reference) {
+        ssoAuthFilterRef.setReference(reference);
+    }
+
+    public void unsetSsoAuthFilter(ServiceReference<SSOAuthFilter> reference) {
+        ssoAuthFilterRef.unsetReference(reference);
     }
 
     public void setTaiService(ServiceReference<TAIService> reference) {
@@ -325,6 +336,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         locationAdminRef.activate(cc);
         securityServiceRef.activate(cc);
         interceptorServiceRef.activate(cc);
+        ssoAuthFilterRef.activate(cc);
         taiServiceRef.activate(cc);
         jaccServiceRef.activate(cc);
         webAuthenticatorRef.activate(cc);
@@ -346,10 +358,10 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         WebSecurityHelperImpl.setWebAppSecurityConfig(webAppSecConfig);
         SSOCookieHelper ssoCookieHelper = webAppSecConfig.createSSOCookieHelper();
         authenticateApi = authenticatorFactory.createAuthenticateApi(ssoCookieHelper, securityServiceRef, collabUtils, webAuthenticatorRef, unprotectedResourceServiceRef,
-                                                                     unauthenticatedSubjectService);
+                                                                     unauthenticatedSubjectService, ssoAuthFilterRef);
         postParameterHelper = new PostParameterHelper(webAppSecConfig);
         providerAuthenticatorProxy = authenticatorFactory.createWebProviderAuthenticatorProxy(securityServiceRef, taiServiceRef, interceptorServiceRef, webAppSecConfig,
-                                                                                              webAuthenticatorRef);
+                                                                                              webAuthenticatorRef, ssoAuthFilterRef);
         authenticatorProxy = authenticatorFactory.createWebAuthenticatorProxy(webAppSecConfig, postParameterHelper, securityServiceRef, providerAuthenticatorProxy);
     }
 
@@ -375,6 +387,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         isActive = false;
         locationAdminRef.deactivate(cc);
         securityServiceRef.deactivate(cc);
+        ssoAuthFilterRef.deactivate(cc);
         taiServiceRef.deactivate(cc);
         interceptorServiceRef.deactivate(cc);
         jaccServiceRef.deactivate(cc);
@@ -462,8 +475,17 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
 
     @Override
     public boolean isCDINeeded() {
-        return WebContainer.getServletContainerSpecLevel() >= WebContainer.SPEC_LEVEL_40 &&
-               provisionerService.getInstalledFeatures().contains("appSecurity-3.0");
+        /*
+         * Tried to future-proof this check by iterating over all the
+         * installed features and finding the version of appSecurity installed,
+         * but that introduced a performance degradation. So for now, checking
+         * for the appSecurity-3.0/4.0 features directly.
+         */
+        if (WebContainer.getServletContainerSpecLevel() < WebContainer.SPEC_LEVEL_40) {
+            return false;
+        }
+        Set<String> features = provisionerService.getInstalledFeatures();
+	return features.contains("appSecurity-3.0") || features.contains("appSecurity-4.0");
     }
 
     /**
@@ -1504,7 +1526,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         if (authenticateApi == null) {
             SSOCookieHelper ssoCookieHelper = webAppSecConfig.createSSOCookieHelper();
             authenticateApi = authenticatorFactory.createAuthenticateApi(ssoCookieHelper, securityServiceRef, collabUtils, webAuthenticatorRef, unprotectedResourceServiceRef,
-                                                                         unauthenticatedSubjectService);
+                                                                         unauthenticatedSubjectService, ssoAuthFilterRef);
         }
         return authenticateApi;
     }

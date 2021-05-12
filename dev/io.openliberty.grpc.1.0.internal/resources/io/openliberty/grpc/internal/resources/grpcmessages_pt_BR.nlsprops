@@ -26,4 +26,16 @@ invalid.serverinterceptor.useraction=Verifique o nome do interceptador configura
 
 invalid.inbound.msg.size=CWWKT0203E: O maxInboundMessageSize {0} n\u00e3o \u00e9 v\u00e1lido. Os tamanhos devem ser maiores que 0.
 invalid.inbound.msg.size.explanation=O valor configurado para o maxInboundMessageSize n\u00e3o \u00e9 v\u00e1lido.
-invalid.inbound.msg.size.useraction=Configure um valor v\u00e1lido para maxInboundMessageSize. 
+invalid.inbound.msg.size.useraction=Configure um valor v\u00e1lido para maxInboundMessageSize.
+
+response.already.committed=CWWKT0204E: A solicita\u00e7\u00e3o gRPC para {0} n\u00e3o pode continuar. A resposta j\u00e1 foi confirmada.
+response.already.committed.explanation=A solicita\u00e7\u00e3o gRPC n\u00e3o \u00e9 v\u00e1lida porque a resposta foi confirmada antes do in\u00edcio dos m\u00e9todos gRPC.
+response.already.committed.useraction=Analise os logs para outros avisos ou mensagens de erro antes desta mensagem. Este erro pode ocorrer devido a um erro de seguran\u00e7a anterior.
+
+authentication.error=CWWKT0205E: A solicita\u00e7\u00e3o de servi\u00e7o gRPC para {0} falhou com o erro de autentica\u00e7\u00e3o {1}.
+authentication.error.explanation=A solicita\u00e7\u00e3o gRPC falhou ao autenticar antes do in\u00edcio dos m\u00e9todos gRPC.
+authentication.error.useraction=Analise os logs para outros avisos ou mensagens de erro antes desta mensagem. Este erro pode ocorrer porque nenhuma credencial foi fornecida com a solicita\u00e7\u00e3o ou porque credenciais inv\u00e1lidas foram fornecidas.
+
+authorization.error=CWWKT0206E: A solicita\u00e7\u00e3o de servi\u00e7o gRPC para {0} falhou com o erro de autoriza\u00e7\u00e3o {1}.
+authorization.error.explanation=A solicita\u00e7\u00e3o gRPC falhou ao autorizar antes do in\u00edcio dos m\u00e9todos gRPC.
+authorization.error.useraction=Analise os logs para outros avisos ou mensagens de erro antes desta mensagem. Este erro pode ocorrer porque nenhuma credencial foi fornecida com a solicita\u00e7\u00e3o ou porque credenciais inv\u00e1lidas foram fornecidas.

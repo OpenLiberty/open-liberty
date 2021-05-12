@@ -1,19 +1,33 @@
 ---
 name: Feature Test Summary
 about: Create a summary of the planned testing for a feature
-title: ''
+title: Feature Test Summary
 labels: Feature Test Summary
 assignees: ''
 
 ---
 
-**1) Describe the test strategy & approach for this feature, and describe how the approach verifies the functions delivered by this feature. The description should include the positive and negative testing done, whether all testing is automated, what manual tests exist (if any) and where the tests are stored (source control). Automated testing is expected for all features with manual testing considered an exception to the rule.**
+## Test Strategy
 
-For any feature, be aware that only FAT tests (not unit or BVT) are executed in our cross platform testing. To ensure cross platform testing ensure you have sufficient FAT coverage to verify the feature.
+**Describe the test strategy & approach for this feature, and describe how the approach verifies the functions delivered by this feature.**
 
-If delivering tests outside of the standard Liberty FAT framework, do the tests push the results into cognitive testing database (if not, consult with the CSI Team who can provide advice and verify if results are being received)?_
+_For any feature, be aware that only FAT tests (not unit or BVT) are executed in our cross platform testing. To ensure cross platform testing ensure you have sufficient FAT coverage to verify the feature._
 
-**2) Collectively as a team you need to assess your confidence in the testing delivered based on the values below.  This should be done as a team and not an individual to ensure more eyes are on it and that pressures to deliver quickly are absorbed by the team as a whole.**
+_If delivering tests outside of the standard Liberty FAT framework, do the tests push the results into cognitive testing database (if not, consult with the CSI Team who can provide advice and verify if results are being received)?_
+
+### List of FAT projects affected
+
+* 
+
+### Test strategy
+
+* What functionality is new or modified by this feature?
+* What are the positive and negative tests for that functionality? (Tell me the specific scenarios you tested. What kind of tests do you have for when everything ends up working (positive tests)? What about tests that verify we fail gracefully when things go wrong (negative tests)? See the [Positive and negative tests](https://github.ibm.com/websphere/WS-CD-Open/wiki/Feature-Review-(Feature-Test-Summary-Process)#positive-and-negative-tests) section of the Feature Test Summary Process wiki for more detail.)
+* What manual tests are there (if any)? (Note: Automated testing is expected for all features with manual testing considered an exception to the rule.)
+
+## Confidence Level
+
+**Collectively as a team you need to assess your confidence in the testing delivered based on the values below.  This should be done as a team and not an individual to ensure more eyes are on it and that pressures to deliver quickly are absorbed by the team as a whole.**
 
 Please indicate your confidence in the testing (up to and including FAT) delivered with this feature by selecting one of these values:
 

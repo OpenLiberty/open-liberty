@@ -12,6 +12,7 @@ package com.ibm.ws.microprofile.faulttolerance20.state.impl;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.faulttolerance.spi.FallbackPolicy;
 import com.ibm.ws.microprofile.faulttolerance20.impl.MethodResult;
 import com.ibm.ws.microprofile.faulttolerance20.impl.SyncExecutionContextImpl;
@@ -27,6 +28,7 @@ public class FallbackStateImpl implements FallbackState {
         this.policy = policy;
     }
 
+    @FFDCIgnore(Throwable.class)
     @SuppressWarnings("unchecked")
     @Override
     public <R> MethodResult<R> runFallback(MethodResult<R> result, SyncExecutionContextImpl executionContext) {

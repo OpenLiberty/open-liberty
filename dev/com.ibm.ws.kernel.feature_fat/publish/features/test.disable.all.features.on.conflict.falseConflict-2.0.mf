@@ -1,0 +1,6 @@
+IBM-Feature-Version: 2
+Subsystem-ManifestVersion: 1
+Subsystem-Type: osgi.subsystem.feature
+Subsystem-Version: 1.0.0
+Subsystem-SymbolicName: falseConflict-2.0; visibility:=public; singleton:=true
+

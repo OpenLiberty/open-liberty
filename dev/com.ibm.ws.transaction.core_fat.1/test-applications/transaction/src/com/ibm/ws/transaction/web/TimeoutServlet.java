@@ -28,6 +28,7 @@ import com.ibm.tx.jta.ut.util.XAResourceFactoryImpl;
 import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.tx.jta.ut.util.XAResourceInfoFactory;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
@@ -38,6 +39,7 @@ public class TimeoutServlet extends FATServlet {
     private static final String filter = "(testfilter=jon)";
 
     @Test
+    @AllowedFFDC(value = { "javax.transaction.RollbackException" })
     public void testTransactionTimeoutWithNonAbortableResource(HttpServletRequest request,
                                                                HttpServletResponse response) throws Exception {
         final ExtendedTransactionManager tm = TransactionManagerFactory
@@ -110,6 +112,7 @@ public class TimeoutServlet extends FATServlet {
     }
 
     @Test
+    @AllowedFFDC(value = { "javax.transaction.RollbackException" })
     public void testTransactionTimeoutWithAbortableResource(HttpServletRequest request,
                                                             HttpServletResponse response) throws Exception {
         final ExtendedTransactionManager tm = TransactionManagerFactory

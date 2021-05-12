@@ -43,7 +43,7 @@ Subsystem-Category: JakartaEE9Application
  com.ibm.websphere.appserver.anno-2.0, \
  io.openliberty.jakarta.annotation-2.0, \
  com.ibm.websphere.appserver.httptransport-1.0, \
- io.openliberty.jakarta.servlet-5.0, \
+ io.openliberty.servlet.api-5.0, \
  com.ibm.websphere.appserver.requestProbes-1.0, \
  com.ibm.websphere.appserver.eeCompatible-9.0, \
  com.ibm.websphere.appserver.servlet-servletSpi1.0, \
@@ -68,7 +68,7 @@ Subsystem-Category: JakartaEE9Application
  bin/pluginUtility; ibm.executable:=true; ibm.file.encoding:=ebcdic, \
  bin/pluginUtility.bat, \
  dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.servlet_1.1-javadoc.zip
-Subsystem-Name: Jakarta Servlets 5.0
+Subsystem-Name: Jakarta Servlet 5.0
 kind=beta
 edition=core
 WLP-Activation-Type: parallel

@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.mpOpenAPI-1.0
+WLP-DisableAllFeatures-OnConflict: false
 visibility=public
 singleton=true
 IBM-ShortName: mpOpenAPI-1.0
@@ -30,21 +31,22 @@ IBM-API-Package: \
 	org.eclipse.microprofile.openapi.models.responses; type="stable",\
 	org.eclipse.microprofile.openapi.models.security; type="stable",\
 	org.eclipse.microprofile.openapi.models.servers; type="stable",\
-	org.eclipse.microprofile.openapi.models.tags; type="stable"
-IBM-SPI-Package: \
-    org.eclipse.microprofile.openapi.spi; type="stable"
+	org.eclipse.microprofile.openapi.models.tags; type="stable",\
+	org.eclipse.microprofile.openapi.spi; type="stable"
 -features=\
  com.ibm.websphere.appserver.org.eclipse.microprofile.openapi-1.0, \
  com.ibm.websphere.appserver.servlet-3.1; ibm.tolerates:=4.0, \
  com.ibm.websphere.appserver.mpConfig-1.2; ibm.tolerates:="1.3, 1.4", \
  com.ibm.websphere.appserver.internal.optional.jaxb-2.2; ibm.tolerates:=2.3,\
  com.ibm.wsspi.appserver.webBundle-1.0,\
- com.ibm.websphere.appserver.jaxrs-2.0; ibm.tolerates:=2.1
+ com.ibm.websphere.appserver.jaxrs-2.0; ibm.tolerates:=2.1, \
+ io.openliberty.mpCompatible-0.0
 -bundles=\
  com.ibm.ws.microprofile.openapi,\
  com.ibm.ws.microprofile.openapi.ui,\
  com.ibm.ws.microprofile.openapi.model,\
- com.ibm.ws.com.fasterxml.jackson.2.9.1
+ io.openliberty.microprofile.openapi.internal.common,\
+ io.openliberty.com.fasterxml.jackson
 kind=ga
 edition=core
 WLP-Activation-Type: parallel

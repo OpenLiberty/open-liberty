@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2019 IBM Corporation and others.
+ * Copyright (c) 2009, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,10 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.http.dispatcher.internal;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -35,6 +33,7 @@ import com.ibm.websphere.event.EventEngine;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.http.channel.internal.HttpConfigConstants;
 import com.ibm.ws.http.internal.EncodingUtilsImpl;
 import com.ibm.ws.http.internal.HttpDateFormatImpl;
 import com.ibm.wsspi.bytebuffer.WsByteBufferPoolManager;
@@ -122,31 +121,26 @@ public class HttpDispatcher {
     /** Property for enabling/disabling the default welcome page */
     private volatile boolean enableWelcomePage = true;
 
-    /** PM97514 - keep original value recieved from config for negotiating between dispatcher & webcontainer settings */
+    /** PM97514 - keep original value received from config for negotiating between dispatcher & webcontainer settings */
     private volatile String[] origHeaderOrigin = null;
-    /** PM97514 - restrict using private headers to specific endpoints */
-    private volatile boolean usePrivateHeaders = true;
-    /** PM97514 - restrict using private headers to specific endpoints */
-    private volatile HashSet<String> restrictPrivateHeaderOrigin = null;
     /** PM97514 - webcontainer trusted attribute */
     private volatile boolean wcTrusted = true;
 
-    /** keep original value recieved from config for negotiating between dispatcher & webcontainer settings */
+    /** keep original value received from config for negotiating between dispatcher & webcontainer settings */
     private volatile String[] origSensitiveHeaderOrigin = null;
-    /** restrict using private headers to specific endpoints */
-    private volatile boolean useSensitivePrivateHeaders = false;
-    private volatile HashSet<String> restrictSensitiveHeaderOrigin = null;
 
-    /** private headers defined as sensitive */
-    private static final HashSet<String> sensitiveHeaderList = new HashSet<String>(Arrays.asList("$WSCC", "$WSRA", "$WSRH", "$WSAT", "$WSRU"));
+    /** keep track of the hosts for which private headers are trusted */
+    private volatile TrustedHeaderOriginLists trustedLists = null;
+
+    /** Web Container property for HSTS header value **/
+    private volatile static String hstsHeader = "noValue";
 
     private static final AtomicInteger updateCount = new AtomicInteger(0);
 
     /**
      * Constructor.
      */
-    public HttpDispatcher() {
-    }
+    public HttpDispatcher() {}
 
     /**
      * DS method to activate this component.
@@ -277,137 +271,88 @@ public class HttpDispatcher {
      *
      * This class uses these internal flags to keep track of private header behavior:
      * wcTrusted - true if any private headers are allowed; false if no private headers are allowed
-     * usePrivateHeaders - true if non-sensitive headers are allowed for some hosts
-     * useSensitivePrivateHeaders - true if sensitive headers are allowed for some hosts
-     * restrictPrivateHeaderOrigin - a list of hosts trusted for private headers; if null, any host is trusted
-     * restrictSensitiveHeaderOrigin - a list of hosts trusted for sensitive headers; if null, no host is trusted
      *
-     * @param trustedPrivateHeaderHosts   String[] of hosts to trust for non-sensitive private headers
+     * The helper class TrustedHeaderOriginLists is used to maintain lists of trusted hosts, and to perform lookups.
+     *
+     * @param trustedPrivateHeaderHosts String[] of hosts to trust for non-sensitive private headers
      * @param trustedSensitiveHeaderHosts String[] of hosts to trust for sensitive private headers
      */
     private synchronized void parseTrustedPrivateHeaderOrigin(String[] trustedPrivateHeaderHosts, String[] trustedSensitiveHeaderHosts) {
         // bump the updated count every time we call this.
         updateCount.incrementAndGet();
 
-        // restore defaults
-        restrictPrivateHeaderOrigin = null;
-        restrictSensitiveHeaderOrigin = null;
-        usePrivateHeaders = true;
-        useSensitivePrivateHeaders = false;
-
         // If trusted=false (non-default), don't allow private headers from any host, regardless of other settings
         if (!wcTrusted) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "webcontainer trusted=false; private headers are not trusted from any host");
             }
-            usePrivateHeaders = false;
             return;
         }
-
-        // Parse trustedHeaderOrigin.  The default value is * (any host)
-        List<String> addrs = new ArrayList<String>();
-        if (trustedPrivateHeaderHosts != null && trustedPrivateHeaderHosts.length > 0) {
-            for (String ipaddr : trustedPrivateHeaderHosts) {
-                if ("none".equalsIgnoreCase(ipaddr)) {
-                    // if "none" is listed, private headers are not trusted on any host.
-                    // however any hosts listed in trustedSensitiveHeaderOrigin can still send private headers
-                    usePrivateHeaders = false;
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "trusted private headers hosts: none");
-                    }
-                    break;
-                } else if ("*".equals(ipaddr)) {
-                    // stop processing, empty the list, fall through to below.
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "trusted private headers hosts: *");
-                    }
-                    addrs.clear();
-                    break;
-                } else {
-                    addrs.add(ipaddr);
-                }
-            }
-        } else {
-            // no trusted header hosts were defined, use defualt - "*"
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "trusted private headers hosts: *");
-            }
-        }
-        if (usePrivateHeaders) {
-            // if IP addresses were listed, only trust private headers from those hosts
-            if (!addrs.isEmpty()) {
-                restrictPrivateHeaderOrigin = new HashSet<String>();
-                for (String s : addrs) {
-                    if (s != null && !s.isEmpty()) {
-                        restrictPrivateHeaderOrigin.add(s.toLowerCase());
-                    }
-                }
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "trusted private headers hosts: " + Arrays.toString(addrs.toArray()));
-                }
-            }
-        }
-        addrs.clear();
-
-        // Parse trustedSensiveHeaderOrigin.  The default value is none (no hosts trusted)
-        if (trustedSensitiveHeaderHosts != null && trustedSensitiveHeaderHosts.length > 0) {
-            for (String ipaddr : trustedSensitiveHeaderHosts) {
-                if ("none".equalsIgnoreCase(ipaddr)) {
-                    // don't trust sensitive private headers from any host
-                    useSensitivePrivateHeaders = false;
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "trusted sensitive private headers hosts: none");
-                    }
-                    return;
-                } else if ("*".equals(ipaddr)) {
-                    // sensitive private headers trusted from any host
-                    addrs.clear();
-                    useSensitivePrivateHeaders = true;
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "trusted sensitive private headers hosts: *");
-                    }
-                    break;
-                } else {
-                    addrs.add(ipaddr);
-                    useSensitivePrivateHeaders = true;
-                }
-            }
-        } else {
-            // no trusted sensitive header hosts were defined, use defualt - "none"
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "trusted sensitive private headers hosts: none");
-            }
-            return;
-        }
-        // if IP addresses were listed, only trust sensitive private headers from those hosts
-        if (!addrs.isEmpty()) {
-            restrictSensitiveHeaderOrigin = new HashSet<String>();
-            for (String s : addrs) {
-                if (s != null && !s.isEmpty()) {
-                    restrictSensitiveHeaderOrigin.add(s.toLowerCase());
-                }
-            }
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "trusted sensitive private headers hosts: " + Arrays.toString(addrs.toArray()));
-            }
-        }
+        // restore defaults
+        trustedLists = new TrustedHeaderOriginLists();
+        trustedLists.parseTrustedPrivateHeaderOrigin(trustedPrivateHeaderHosts, trustedSensitiveHeaderHosts);
     }
 
     /**
+     * Create a InetAddress object from an address string. Returns null if an exception is encountered, or if
+     * the passed address string is null
+     *
+     * @param String address
+     * @return InetAddress
+     */
+    private static InetAddress getInetAddressFromString(String address) {
+        InetAddress remoteAddr = null;
+        if (address != null) {
+            try {
+                remoteAddr = InetAddress.getByName(address);
+            } catch (UnknownHostException e) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "exception encountered creating InetAddress from string=" + address + ": " + e);
+                }
+            }
+        }
+        return remoteAddr;
+    }
+
+    /**
+     * @param hostAddr the remote address to check
      * @return true if private headers should be used (the default is true)
      */
     public static boolean usePrivateHeaders(String hostAddr) {
-        return usePrivateHeaders(hostAddr, null);
+        InetAddress remoteAddr = getInetAddressFromString(hostAddr);
+        return usePrivateHeaders(remoteAddr, null);
     }
 
     /**
+     * @param addr the remote address to check
+     * @param HostName the remote host to check
      * @return true if private headers should be used (the default is true)
      */
+    public static boolean usePrivateHeaders(InetAddress addr) {
+        return usePrivateHeaders(addr, null);
+    }
+
+    /**
+     * @param hostAddr the remote address to check
+     * @param headerName the name of the header to check
+     * @return true if private headers should be used (the default is true when headerName is not sensitive)
+     */
     public static boolean usePrivateHeaders(String hostAddr, String headerName) {
+        InetAddress remoteAddr = getInetAddressFromString(hostAddr);
+        return usePrivateHeaders(remoteAddr, headerName);
+    }
+
+    /**
+     * @param hostAddr the remote address to check
+     * @param hostName the remote host to check
+     * @param headerName the name of the header to check
+     * @return true if private headers should be used (the default is true when headerName is not sensitive)
+     */
+    public static boolean usePrivateHeaders(InetAddress addr, String headerName) {
         HttpDispatcher f = instance.get();
 
         if (f != null) {
-            return f.isTrusted(hostAddr, headerName);
+            return f.isTrusted(addr, headerName);
         }
 
         // we don't know, use the default.
@@ -421,41 +366,13 @@ public class HttpDispatcher {
     /**
      * Check to see if the source host address is one we allow for specification of private headers
      *
-     * This takes into account the hosts defined in trustedHeaderOrigin and trustedSensitiveHeaderOrigin. Note,
-     * trustedSensitiveHeaderOrigin takes precedence over trustedHeaderOrigin; so if trustedHeaderOrigin="none"
-     * while trustedSensitiveHeaderOrigin="*", non-sensitive headers will still be trusted for all hosts.
      *
      * @param hostAddr The source host address
      * @return true if hostAddr is a trusted source of private headers
      */
     public boolean isTrusted(String hostAddr, String headerName) {
-        if (!wcTrusted) {
-            return false;
-        }
-        if (hostAddr == null) {
-            // no host address information passed in; return the default value 
-            return this.usePrivateHeaders;
-        }
-        if (HttpHeaderKeys.isSensitivePrivateHeader(headerName)) {
-            // if this is a sensitive private header, check trustedSensitiveHeaderOrigin values
-            return isTrustedForSensitiveHeaders(hostAddr);
-        }
-        if (!usePrivateHeaders) {
-            // trustedHeaderOrigin list is explicitly set to "none"
-            return isTrustedForSensitiveHeaders(hostAddr);
-        }
-        if (restrictPrivateHeaderOrigin == null) {
-            // trustedHeaderOrigin list is set to "*"
-            return true;
-        } else {
-            // check trustedHeaderOrigin for given host IP
-            boolean trustedOrigin = restrictPrivateHeaderOrigin.contains(hostAddr.toLowerCase());
-            if (!trustedOrigin) {
-                // if hostAddr is not in trustedHeaderOrigin, allow trustedSensitiveHeaderOrigin to override trust
-                trustedOrigin = isTrustedForSensitiveHeaders(hostAddr);
-            }
-            return trustedOrigin;
-        }
+        InetAddress remoteAddr = getInetAddressFromString(hostAddr);
+        return isTrusted(remoteAddr, headerName);
     }
 
     /**
@@ -465,17 +382,39 @@ public class HttpDispatcher {
      * @return true if hostAddr is a trusted source of sensitive private headers
      */
     public boolean isTrustedForSensitiveHeaders(String hostAddr) {
-        if (!useSensitivePrivateHeaders) {
-            // trustedSensitiveHeaderOrigin list is either unset (defaults to "none") or explicitly set to "none"
+        InetAddress remoteAddr = getInetAddressFromString(hostAddr);
+        return isTrustedForSensitiveHeaders(remoteAddr);
+    }
+
+    /**
+     * Check to see if the source host address is one we allow for specification of private headers
+     *
+     * This takes into account the hosts defined in trustedHeaderOrigin and trustedSensitiveHeaderOrigin. Note,
+     * trustedSensitiveHeaderOrigin takes precedence over trustedHeaderOrigin; so if trustedHeaderOrigin="none"
+     * while trustedSensitiveHeaderOrigin="*", non-sensitive headers will still be trusted for all hosts.
+     *
+     * @param addr the remote address to check
+     * @param headerName the name of the header to check
+     * @return true if hostAddr is a trusted source of private headers
+     */
+    public boolean isTrusted(InetAddress addr, String headerName) {
+        if (!wcTrusted) {
             return false;
         }
-        if (restrictSensitiveHeaderOrigin == null) {
-            // trustedSensitiveHeaderOrigin is set to "*"
-            return true;
-        } else {
-            // check trustedSensitiveHeaderOrigin list for given host IP
-            return restrictSensitiveHeaderOrigin.contains(hostAddr.toLowerCase());
+        return trustedLists.isTrusted(addr, HttpHeaderKeys.isSensitivePrivateHeader(headerName));
+    }
+
+    /**
+     * Check to see if the source host address is one we allow for specification of sensitive private headers
+     *
+     * @param addr the remote address to check
+     * @return true if hostAddr is a trusted source of sensitive private headers
+     */
+    public boolean isTrustedForSensitiveHeaders(InetAddress addr) {
+        if (!wcTrusted) {
+            return false;
         }
+        return trustedLists.isTrusted(addr, true);
     }
 
     /**
@@ -709,6 +648,9 @@ public class HttpDispatcher {
      * @see #parseTrustedPrivateHeaderOrigin(String[])
      */
     protected void updatedWebContainer(ServiceReference<VirtualHostListener> ref) {
+
+        boolean configUpdated = false;
+        boolean currentConfigUpdate = false;
         boolean newTrusted = MetatypeUtils.parseBoolean("webContainer", PROP_WC_TRUSTED,
                                                         ref.getProperty(PROP_WC_TRUSTED), true);
 
@@ -718,12 +660,58 @@ public class HttpDispatcher {
             // Check the value of trusted headers..
             parseTrustedPrivateHeaderOrigin(origHeaderOrigin, origSensitiveHeaderOrigin);
             // increment updateCount so listeners know the config has updated
+            configUpdated = true;
+        }
+
+        String hstsPropertyValue = chooseWebContainerProperty(ref,
+                                                              HttpConfigConstants.PROPNAME_HDR_HSTS_SHORTNAME,
+                                                              HttpConfigConstants.PROPNAME_HDR_HSTS_FULLYQUALIFIED);
+
+        if (hstsPropertyValue.isEmpty()) {
+            if (!"noValue".equalsIgnoreCase(hstsHeader)) {
+                hstsHeader = "noValue";
+                configUpdated = true;
+            }
+        } else {
+            currentConfigUpdate = parseHSTSHeader(hstsPropertyValue);
+            if (!configUpdated) {
+                configUpdated = currentConfigUpdate;
+            }
+
+        }
+
+        if (configUpdated) {
             updateCount.getAndIncrement();
         }
+
     }
 
-    protected void unsetWebContainer(ServiceReference<VirtualHostListener> ref) {
+    /**
+     * Web container properties sometimes accept either a short name or a fully qualified
+     * name. This utility method will evaluate the fully qualified name first, and if the value is
+     * null or empty, try the short name instead.
+     *
+     * The value returned will either be a configured value or an empty string.
+     *
+     * @param ref
+     * @param propShortName
+     * @param propFullyQualifiedName
+     * @return
+     */
+    private String chooseWebContainerProperty(ServiceReference<VirtualHostListener> ref, String propShortName, String propFullyQualifiedName) {
+
+        Object currentProperty = ref.getProperty(propFullyQualifiedName);
+        String result = (currentProperty != null) ? ((String) currentProperty) : "";
+
+        if (result.isEmpty()) {
+            currentProperty = ref.getProperty(propShortName);
+            result = (currentProperty != null) ? ((String) currentProperty) : "";
+
+        }
+        return result;
     }
+
+    protected void unsetWebContainer(ServiceReference<VirtualHostListener> ref) {}
 
     /**
      * DS method for setting the Work Classification service reference.
@@ -787,5 +775,177 @@ public class HttpDispatcher {
 
     public static Boolean useIOEForInboundConnectionsBehavior() {
         return useIOExceptionBehavior;
+    }
+
+    /**
+     * Check the configuration to see if the HSTS header is configured to be added to
+     * HTTPS responses when missing from the response.
+     *
+     * The possible values are:
+     * Strict-Transport-Security:"max-age=31536000";
+     * Strict-Transport-Security:"max-age=31536000; includeSubDomains";
+     * Strict-Transport-Security:"max-age=31536000; includeSubDomains; preload";
+     *
+     * The requirements for the directives are as follows:
+     * 1. The order of appearance of directives is not significant.
+     * 2. All directives MUST appear only once in an STS header field.
+     * 3. Directive names are case-insensitive
+     * 4. UAs MUST ignore any STS header field containing directives, or other
+     * header field value data, that does not conform to the syntax defined in
+     * this specification.
+     * 5. If an STS header field contains directive(s) not recognized by the
+     * UA, the UA MUST ignore the unrecognized directives, and if the STS
+     * header field otherwise satisfied the above requirements, the UA MUST
+     * process the recognized directives.
+     *
+     * The max age directive value can be, optionally, quoted:
+     * Strict-Transport-Security: max-age="31536000"
+     *
+     *
+     * @param props
+     */
+    private boolean parseHSTSHeader(String configuredHSTSHeader) {
+
+        boolean hasConfigError = false;
+        boolean configUpdated = false;
+
+        if (!"noValue".equalsIgnoreCase(configuredHSTSHeader)) {
+
+            String parsedHSTSHeader = null;
+
+            String[] tokens = configuredHSTSHeader.split(";");
+            //Identifies if the three possible tokens have been parsed
+            boolean foundMaxAgeToken = false, foundIncludeSubDomains = false, foundPreload = false;
+
+            int parsedMaxAgeValue = -1;
+            boolean shouldQuoteMaxAgeValue = false;
+
+            for (String token : tokens) {
+
+                if (hasConfigError) {
+                    break;
+                }
+
+                if ((TraceComponent.isAnyTracingEnabled()) && (tc.isDebugEnabled())) {
+                    Tr.debug(tc, "HSTS Header Config:", "parsing token found:  [" + token + "]");
+                }
+
+                if (token.toLowerCase().contains("max-age")) {
+                    try {
+                        if (foundMaxAgeToken) {
+                            //Not first time we find this token. Web Container doesn't
+                            //throw error, just picks first one so do the same here.
+                            break;
+                        }
+                        foundMaxAgeToken = true;
+
+                        String[] tok = token.split("=");
+                        if (tok.length == 2) {
+                            tok[1] = tok[1].trim();
+                            if ((tok[1].startsWith("\"")) && (tok[1].endsWith("\""))) {
+                                shouldQuoteMaxAgeValue = true;
+                                tok[1] = tok[1].replace("\"", "");
+                            }
+                            parsedMaxAgeValue = Integer.parseInt(tok[1].trim());
+                            if (parsedMaxAgeValue < 0) {
+                                Tr.warning(tc, "config.hsts.invalid.max.age.value", token);
+                                hasConfigError = true;
+                            }
+                        } else {
+                            Tr.warning(tc, "config.hsts.invalid.max.age.value", token);
+                            hasConfigError = true;
+                        }
+
+                    } catch (NumberFormatException e) {
+
+                        Tr.warning(tc, "config.hsts.invalid.max.age.value", token);
+
+                        hasConfigError = true;
+                        break;
+
+                    }
+                }
+
+                else if ("preload".equalsIgnoreCase(token.trim())) {
+                    if (!foundPreload) {
+                        //Not first time we find this token. Web Container chooses
+                        //first found token, so skip.
+                        foundPreload = true;
+                    }
+
+                }
+
+                else if ("includeSubDomains".equalsIgnoreCase(token.trim())) {
+                    if (!foundIncludeSubDomains) {
+                        foundIncludeSubDomains = true;
+                    }
+
+                }
+
+                else {
+                    //Not-worthy of warning, but log unrecognized token, log that it will be ignored
+                    if ((TraceComponent.isAnyTracingEnabled()) && (tc.isDebugEnabled())) {
+                        Tr.debug(tc, "HSTS Header Config:", "The token [" + token + "] is not a recognized HSTS token. Value is ignored.");
+                    }
+                }
+
+            }
+
+            //Done parsing, if no errors construct the HSTS header
+            if (!hasConfigError) {
+                if (foundMaxAgeToken) {
+
+                    parsedHSTSHeader = (shouldQuoteMaxAgeValue) ? "max-age=" + "\"" + parsedMaxAgeValue + "\"" : "max-age=" + parsedMaxAgeValue;
+
+                } else {
+                    Tr.warning(tc, "config.hsts.missing.max.age", configuredHSTSHeader);
+                    hasConfigError = true;
+                }
+            }
+
+            //If no errors have be found at this point, add the two optional
+            //attributes if present. Then, update the class level hstsHeader
+            //with the new value.
+            if (!hasConfigError) {
+
+                if (foundIncludeSubDomains) {
+                    parsedHSTSHeader = parsedHSTSHeader + "; includeSubDomains";
+                }
+
+                if (foundPreload) {
+                    parsedHSTSHeader = parsedHSTSHeader + "; preload";
+                }
+
+                if (!hstsHeader.equalsIgnoreCase(parsedHSTSHeader)) {
+                    configUpdated = true;
+                    hstsHeader = parsedHSTSHeader;
+                }
+            }
+
+        }
+
+        if (hasConfigError) {
+            if (!"noValue".equalsIgnoreCase(hstsHeader)) {
+                configUpdated = true;
+                hstsHeader = "noValue";
+            }
+        }
+
+        if ((TraceComponent.isAnyTracingEnabled()) && (tc.isDebugEnabled())) {
+            Tr.debug(tc, "HSTS Header Config",
+                     "Successful Parse [" + (!hasConfigError) + "] Value is set to: [" + hstsHeader + "]");
+        }
+        return configUpdated;
+    }
+
+    /**
+     * Specified the configured HSTS header to add on HTTPS responses when the HSTS header is
+     * missing.
+     *
+     * @return
+     */
+    public static String getHSTS() {
+
+        return (("noValue".equalsIgnoreCase(hstsHeader)) ? null : hstsHeader);
     }
 }

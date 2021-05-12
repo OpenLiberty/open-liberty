@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
@@ -51,15 +52,41 @@ public class FeatureReplacementAction implements RepeatTestAction {
     private static final Map<String, String> featuresWithNameChangeOnEE9;
 
     static {
-        Map<String, String> featureNameMapping = new HashMap<String, String>(4);
+        Map<String, String> featureNameMapping = new HashMap<String, String>(20);
         featureNameMapping.put("ejb", "enterpriseBeans");
+        featureNameMapping.put("ejbHome", "enterpriseBeansHome");
+        featureNameMapping.put("ejbLite", "enterpriseBeansLite");
+        featureNameMapping.put("ejbPersistentTimer", "enterpriseBeansPersistentTimer");
         featureNameMapping.put("ejbRemote", "enterpriseBeansRemote");
         featureNameMapping.put("ejbTest", "enterpriseBeansTest");
+        featureNameMapping.put("jacc", "appAuthorization");
+        featureNameMapping.put("jaspic", "appAuthentication");
         featureNameMapping.put("javaee", "jakartaee");
         featureNameMapping.put("javaeeClient", "jakartaeeClient");
+        featureNameMapping.put("javaMail", "mail");
+        featureNameMapping.put("jaxrs", "restfulWS");
+        featureNameMapping.put("jaxb", "xmlBinding");
+        featureNameMapping.put("jaxrsClient", "restfulWSClient");
+        featureNameMapping.put("jaxws", "xmlWS");
+        featureNameMapping.put("jaxwsTest", "xmlwsTest");
         featureNameMapping.put("jca", "connectors");
+        featureNameMapping.put("jcaInboundSecurity", "connectorsInboundSecurity");
+        featureNameMapping.put("jpa", "persistence");
+        featureNameMapping.put("jpaContainer", "persistenceContainer");
         featureNameMapping.put("jmsMdb", "mdb");
+        featureNameMapping.put("jms", "messaging");
+        featureNameMapping.put("wasJmsClient", "messagingClient");
+        featureNameMapping.put("wasJmsServer", "messagingServer");
+        featureNameMapping.put("wasJmsSecurity", "messagingSecurity");
+        featureNameMapping.put("jsf", "faces");
+        featureNameMapping.put("jsfContainer", "facesContainer");
+        featureNameMapping.put("jsp", "pages");
+        featureNameMapping.put("el", "expressionLanguage");
         featuresWithNameChangeOnEE9 = Collections.unmodifiableMap(featureNameMapping);
+    }
+
+    public static EmptyAction NO_REPLACEMENT() {
+        return new EmptyAction();
     }
 
     /**
@@ -89,9 +116,17 @@ public class FeatureReplacementAction implements RepeatTestAction {
     protected String currentID = null;
     private final Set<String> servers = new HashSet<>(Arrays.asList(ALL_SERVERS));
     private final Set<String> clients = new HashSet<>(Arrays.asList(ALL_CLIENTS));
-    private final Set<String> removeFeatures = new HashSet<>();
-    private final Set<String> addFeatures = new HashSet<>();
+    private final Set<String> removeFeatures = new LinkedHashSet<>();
+    private final Set<String> addFeatures = new LinkedHashSet<>();
+    private final Set<String> alwaysAddFeatures = new HashSet<>();
     private TestMode testRunMode = TestMode.LITE;
+    private final Set<String> serverConfigPaths = new HashSet<String>();
+    private boolean calledForServers = false;
+    private boolean calledForServerConfigPaths = false;
+
+    private static final String pathToAutoFVTTestFiles = "lib/LibertyFATTestFiles/";
+    private static final String pathToAutoFVTTestServers = "publish/servers/";
+    private static final String pathToAutoFVTTestClients = "publish/clients/";
 
     public FeatureReplacementAction() {}
 
@@ -104,7 +139,8 @@ public class FeatureReplacementAction implements RepeatTestAction {
      * @param addFeature    the feature to add
      */
     public FeatureReplacementAction(String removeFeature, String addFeature) {
-        this(addFeature);
+        this();
+        addFeature(addFeature);
         removeFeature(removeFeature);
     }
 
@@ -117,7 +153,8 @@ public class FeatureReplacementAction implements RepeatTestAction {
      * @param addFeatures    the features to add
      */
     public FeatureReplacementAction(Set<String> removeFeatures, Set<String> addFeatures) {
-        this(addFeatures);
+        this();
+        addFeatures(addFeatures);
         removeFeatures(removeFeatures);
     }
 
@@ -132,6 +169,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
      * @param addFeatures the features to add
      */
     public FeatureReplacementAction(Set<String> addFeatures) {
+        this();
         addFeatures(addFeatures);
     }
 
@@ -146,6 +184,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
      * @param addFeature the feature to add.
      */
     public FeatureReplacementAction(String addFeature) {
+        this();
         addFeature(addFeature);
     }
 
@@ -156,6 +195,28 @@ public class FeatureReplacementAction implements RepeatTestAction {
      */
     public FeatureReplacementAction addFeatures(Set<String> addFeatures) {
         addFeatures.forEach(this::addFeature);
+        return this;
+    }
+
+    /**
+     * Add features to the set to be added - these features will always be added to the server configuration, even if
+     * {@code forceAddFeatures} is set to false.
+     *
+     * @param alwaysAddedFeatures the features to be added regardless of {@code forceAddFeatures}
+     */
+    public FeatureReplacementAction alwaysAddFeatures(Set<String> alwaysAddedFeatures) {
+        alwaysAddedFeatures.forEach(this::alwaysAddFeature);
+        return this;
+    }
+
+    /**
+     * Add a feature to the set to be added - this features will always be added to the server configuration, even if
+     * {@code forceAddFeatures} is set to false.
+     *
+     * @param alwaysAddedFeature the feature to be added regardless of {@code forceAddFeatures}
+     */
+    public FeatureReplacementAction alwaysAddFeature(String alwaysAddedFeature) {
+        alwaysAddFeatures.add(alwaysAddedFeature);
         return this;
     }
 
@@ -215,14 +276,22 @@ public class FeatureReplacementAction implements RepeatTestAction {
      * Specify a list of server names to include in the feature replace action and any server configuration
      * files under "publish/servers/SERVER_NAME/" will be scanned.
      * By default, all server config files in publish/servers/ and publish/files/ will be scanned for updates.
+     *
+     * Call only one of {@link #forServers(String...)} and {@link #forServerConfigPaths(String...)}. An {@link IllegalStateException} will be thrown if both are called.
      */
     public FeatureReplacementAction forServers(String... serverNames) {
+        if (calledForServerConfigPaths) {
+            throw new IllegalStateException("Use only one of forServers(...) and forServerConfigPaths(...)");
+        }
+
         if (NO_SERVERS.equals(serverNames[0])) {
             servers.clear();
         } else {
             servers.remove(ALL_SERVERS);
             servers.addAll(Arrays.asList(serverNames));
         }
+
+        calledForServers = true;
         return this;
     }
 
@@ -238,6 +307,42 @@ public class FeatureReplacementAction implements RepeatTestAction {
             clients.remove(ALL_CLIENTS);
             clients.addAll(Arrays.asList(clientNames));
         }
+        return this;
+    }
+
+    /**
+     * Overrides the paths to search for server XML files which will be altered by this feature replacement action. The default is "publish/servers" and "publish/files".
+     *
+     * Call only one of {@link #forServers(String...)} and {@link #forServerConfigPaths(String...)}. An {@link IllegalStateException} will be thrown if both are called.
+     *
+     * @param  serverPaths The directories and / or files to search for server XML files.
+     * @return             This {@link FeatureReplacementAction} instance.
+     */
+    public FeatureReplacementAction forServerConfigPaths(String... serverPaths) {
+        if (calledForServers) {
+            throw new IllegalStateException("Use only one of forServers(...) and forServerConfigPaths(...)");
+        }
+
+        Log.info(c, "forServerConfigPaths", "Adding the following server configuration paths: " + Arrays.toString(serverPaths));
+
+        servers.remove(ALL_SERVERS);
+        if (serverPaths != null && serverPaths.length > 0) {
+            for (String path : serverPaths) {
+                if (path.startsWith("publish/files")) {
+                    path = path.replace("publish/files", "lib/LibertyFATTestFiles");
+                }
+
+                File f = new File(path);
+                if (!f.exists()) {
+                    throw new IllegalArgumentException("The path specified in the forServerConfigPaths(...) does not exist: "
+                                                       + f.getAbsolutePath());
+                }
+
+                this.serverConfigPaths.add(path);
+            }
+            calledForServerConfigPaths = true;
+        }
+
         return this;
     }
 
@@ -274,41 +379,68 @@ public class FeatureReplacementAction implements RepeatTestAction {
     @Override
     public void setup() throws Exception {
         final String m = "setup";
-        final String pathToAutoFVTTestFiles = "lib/LibertyFATTestFiles/";
-        final String pathToAutoFVTTestServers = "publish/servers/";
-        final String pathToAutoFVTTestClients = "publish/clients/";
 
         //check that there are actually some features to be added or removed
         assertFalse("No features were set to be added or removed", addFeatures.size() == 0 && removeFeatures.size() == 0);
 
         // Find all of the server configurations to replace features in
         Set<File> serverConfigs = new HashSet<>();
-        File serverFolder = new File(pathToAutoFVTTestServers);
-        File filesFolder = new File(pathToAutoFVTTestFiles);
-        if (servers.contains(ALL_SERVERS)) {
-            // Find all *.xml in this test project
-            serverConfigs.addAll(findFile(filesFolder, ".xml"));
-            servers.remove(ALL_SERVERS);
-            if (serverFolder.exists())
-                for (File f : serverFolder.listFiles())
-                    if (f.isDirectory())
-                        servers.add(f.getName());
-        }
-        for (String serverName : servers) {
-            serverConfigs.addAll(findFile(new File(pathToAutoFVTTestServers + serverName), ".xml"));
+        Set<File> locationsChecked = new HashSet<>(); // Directories we checked for client/server XML files.
+        if (!calledForServerConfigPaths) {
+            Log.info(c, m, "Checking the following servers for server configuration files: " + servers);
+            File serverFolder = new File(pathToAutoFVTTestServers);
+            File filesFolder = new File(pathToAutoFVTTestFiles);
+            locationsChecked.add(serverFolder);
+            locationsChecked.add(filesFolder);
+            if (servers.contains(ALL_SERVERS)) {
+                // Find all *.xml in this test project
+                serverConfigs.addAll(findFile(filesFolder, ".xml"));
+                servers.remove(ALL_SERVERS);
+                if (serverFolder.exists()) {
+                    for (File f : serverFolder.listFiles()) {
+                        if (f.isDirectory()) {
+                            servers.add(f.getName());
+                        }
+                    }
+                }
+            }
+            for (String serverName : servers) {
+                serverConfigs.addAll(findFile(new File(pathToAutoFVTTestServers + serverName), ".xml"));
+            }
+        } else {
+            Log.info(c, m, "Checking the following paths for server configuration files: " + serverConfigPaths);
+            for (String path : serverConfigPaths) {
+                File f = new File(path);
+                if (f.exists()) {
+                    if (f.isDirectory()) {
+                        locationsChecked.add(f); // Only need to add and not the flat file.
+                        serverConfigs.addAll(findFile(f, ".xml"));
+                    } else {
+                        serverConfigs.add(f);
+                    }
+                } else {
+                    throw new IllegalStateException("The specified server configuration path does not exist "
+                                                    + "(it existed when added - possibly deleted?): "
+                                                    + f.getAbsolutePath());
+                }
+            }
         }
 
         // Find all of the client configurations to replace features in
         Set<File> clientConfigs = new HashSet<>();
         File clientFolder = new File(pathToAutoFVTTestClients);
         if (clients.contains(ALL_CLIENTS)) {
+            locationsChecked.add(clientFolder);
             // Find all *.xml in this test project
             clientConfigs.addAll(findFile(clientFolder, ".xml"));
             clients.remove(ALL_CLIENTS);
-            if (clientFolder.exists())
-                for (File f : clientFolder.listFiles())
-                    if (f.isDirectory())
+            if (clientFolder.exists()) {
+                for (File f : clientFolder.listFiles()) {
+                    if (f.isDirectory()) {
                         clients.add(f.getName());
+                    }
+                }
+            }
         }
         for (String clientName : clients) {
             clientConfigs.addAll(findFile(new File(pathToAutoFVTTestServers + clientName), ".xml"));
@@ -318,8 +450,8 @@ public class FeatureReplacementAction implements RepeatTestAction {
         Log.info(c, m, "Replacing features in files: " + serverConfigs.toString() + "  and  " + clientConfigs.toString());
 
         // change all the server.xml files
-        assertTrue("There were no servers/clients (*.xml) in " + serverFolder.getAbsolutePath() + " or " + filesFolder.getAbsolutePath() + " or " + clientFolder.getAbsolutePath()
-                   + ". To use a FeatureReplacementAction, there must be 1 or more servers/clients in any of the above locations.",
+        assertTrue("There were no servers/clients (*.xml) in the following folders."
+                   + ". To use a FeatureReplacementAction, there must be 1 or more servers/clients in any of the following locations: " + locationsChecked,
                    (serverConfigs.size() > 0 || clientConfigs.size() > 0));
 
         Set<File> configurations = new HashSet<>();
@@ -390,6 +522,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
                     }
                 }
             }
+            alwaysAddFeatures.forEach(s -> features.add(s));
             Log.info(c, m, "Resulting features: " + features);
 
             if (isServerConfig) {
@@ -436,14 +569,21 @@ public class FeatureReplacementAction implements RepeatTestAction {
         // "servlet-3.1" ==> "servlet"
         String baseFeature = originalFeature.substring(0, dashOffset + 1);
         // "servlet-4.0".startsWith("servlet-")
+        // If multiple versions of a feature listed in the replacement list, it will take the last
+        // version by looping through all of the features instead of stopping on the first that matches.
+        // The Set is a LinkedHashSet so it will iterate over them in the order that add was called.
+        String replaceFeature = null;
         for (String replacementFeature : replacementFeatures) {
             if (replacementFeature.toLowerCase().startsWith(baseFeature.toLowerCase())) {
-                Log.info(c, methodName, "Replace feature [ " + originalFeature + " ] with [ " + replacementFeature + " ]");
-                return replacementFeature;
+                replaceFeature = replacementFeature;
             }
         }
-        // We need to check that the feature passed is an EE7/EE8 feature which could have a name change on EE9 that doesnt match
-        // the original feature name it replaces. We also check viceversa if the feature is an EE9 feature that involves a name change
+        if (replaceFeature != null) {
+            Log.info(c, methodName, "Replace feature [ " + originalFeature + " ] with [ " + replaceFeature + " ]");
+            return replaceFeature;
+        }
+        // We need to check that the feature passed is an EE7/EE8 feature which could have a name change on EE9 that doesn't match
+        // the original feature name it replaces. We also check vice versa if the feature is an EE9 feature that involves a name change
         // to update from EE9 to EE7/EE8
         Log.info(c, methodName, "No feature replacement found for [ " + originalFeature + " ]. Verifying if feature name was changed on EE9.");
         // Reset base feature to not include the "-"

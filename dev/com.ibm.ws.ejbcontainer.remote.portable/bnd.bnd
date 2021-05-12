@@ -33,6 +33,6 @@ publish.wlp.jar.suffix: clients
 
 -outputmask: ejbRemotePortable.jar
 
-publish.wlp.jar.include: ejbRemotePortable.jar
+publish.wlp.jar.include: ejbRemotePortable.*jar
 
 publish.wlp.jar.rename: false

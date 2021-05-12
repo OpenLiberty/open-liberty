@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,9 +44,12 @@ public class OpentracingRestClientTCKLauncher {
         server.startServer();
     }
 
+    /*
+     * CWWKG0014E - Ignore due to server.xml intermittently missing
+     */
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        server.stopServer("CWWKG0014E", "CWPMI2005W");
     }
 
     @Test

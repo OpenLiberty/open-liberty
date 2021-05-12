@@ -30,6 +30,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
@@ -126,11 +127,13 @@ public class BasicClientTest extends AbstractTest {
     }
 
     @Test
+    @SkipForRepeat("EE9_FEATURES") // Continue to skip this test for EE9 as there is nothing in the spec that requires the preserves = or lack thereof for the query param in the request.  Updated https://github.com/OpenLiberty/open-liberty/issues/12742 
     public void testQueryParam() throws Exception {
         this.runTestOnServer(target, "testQueryParam", null, "OK");
     }
 
     @Test
+    @SkipForRepeat("EE9_FEATURES") // Continue to skip this test for EE9 as there is nothing in the spec that requires the webcontainer to process the query parameters thus the query parameter will not be null.
     public void testQueryParamWebcontainerNoEquals() throws Exception {
         String uri = "http://" + serverRef.getHostname()
                      + ":"

@@ -33,6 +33,7 @@ import com.ibm.websphere.config.ConfigUpdateException;
 import com.ibm.websphere.config.ConfigValidationException;
 import com.ibm.ws.config.xml.internal.ConfigComparator.ComparatorResult;
 import com.ibm.ws.config.xml.internal.ConfigComparator.DeltaType;
+import com.ibm.ws.config.xml.internal.variables.ConfigVariableRegistry;
 import com.ibm.ws.kernel.service.location.internal.VariableRegistryHelper;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 
@@ -45,7 +46,7 @@ public class ConfigComparatorTest {
     static WsLocationAdmin libertyLocation;
     static XMLConfigParser configParser;
     static SharedOutputManager outputMgr;
-    static ConfigVariableRegistry variableRegistry = new ConfigVariableRegistry(new VariableRegistryHelper(), new String[0], null);
+    static ConfigVariableRegistry variableRegistry;
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -81,6 +82,7 @@ public class ConfigComparatorTest {
         libertyLocation = (WsLocationAdmin) SharedLocationManager.getLocationInstance();
 
         configParser = new XMLConfigParser(libertyLocation, variableRegistry);
+        variableRegistry = new ConfigVariableRegistry(new VariableRegistryHelper(), new String[0], null, libertyLocation);
     }
 
     private ServerConfiguration parseServerConfiguration(String xml) throws ConfigParserException, ConfigValidationException {

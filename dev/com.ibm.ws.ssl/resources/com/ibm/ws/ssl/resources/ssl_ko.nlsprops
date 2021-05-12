@@ -28,23 +28,23 @@
 
 # -------------------------------------------------------------------------------------------------
 ssl.init.startinit.CWPKI0001I=CWPKI0001I: SSL \uc11c\ube44\uc2a4\uac00 \uad6c\uc131\uc744 \ucd08\uae30\ud654\ud558\ub294 \uc911\uc785\ub2c8\ub2e4.
-ssl.init.startinit.CWPKI0001I.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+ssl.init.startinit.CWPKI0001I.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uc81c\uacf5 \ubaa9\uc801\uc73c\ub85c\ub9cc \uc0ac\uc6a9\ub429\ub2c8\ub2e4.
 ssl.init.startinit.CWPKI0001I.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 # -------------------------------------------------------------------------------------------------
 ssl.init.startcomplete.CWPKI0002I=CWPKI0002I: SSL \uc11c\ube44\uc2a4 \ucd08\uae30\ud654\uac00 \uc644\ub8cc\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
-ssl.init.startcomplete.CWPKI0002I.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+ssl.init.startcomplete.CWPKI0002I.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uc81c\uacf5 \ubaa9\uc801\uc73c\ub85c\ub9cc \uc0ac\uc6a9\ub429\ub2c8\ub2e4.
 ssl.init.startcomplete.CWPKI0002I.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 # -------------------------------------------------------------------------------------------------
 ssl.init.svcstart.CWPKI0003I=CWPKI0003I: SSL \uc11c\ube44\uc2a4\uac00 \uc2dc\uc791\ud558\ub294 \uc911\uc785\ub2c8\ub2e4.
-ssl.init.svcstart.CWPKI0003I.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+ssl.init.svcstart.CWPKI0003I.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uc81c\uacf5 \ubaa9\uc801\uc73c\ub85c\ub9cc \uc0ac\uc6a9\ub429\ub2c8\ub2e4.
 ssl.init.svcstart.CWPKI0003I.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 # -------------------------------------------------------------------------------------------------
 ssl.init.svcstartcomplete.CWPKI0004I=CWPKI0004I: SSL \uc11c\ube44\uc2a4\uac00 \uc2dc\uc791\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
-ssl.init.svcstartcomplete.CWPKI0004I.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+ssl.init.svcstartcomplete.CWPKI0004I.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uc81c\uacf5 \ubaa9\uc801\uc73c\ub85c\ub9cc \uc0ac\uc6a9\ub429\ub2c8\ub2e4.
 ssl.init.svcstartcomplete.CWPKI0004I.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 # -------------------------------------------------------------------------------------------------
 ssl.init.startfail.CWPKI0005I=CWPKI0005I: SSL \uc11c\ube44\uc2a4 \ucd08\uae30\ud654\uac00 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.
-ssl.init.startfail.CWPKI0005I.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+ssl.init.startfail.CWPKI0005I.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uc81c\uacf5 \ubaa9\uc801\uc73c\ub85c\ub9cc \uc0ac\uc6a9\ub429\ub2c8\ub2e4.
 ssl.init.startfail.CWPKI0005I.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 # -------------------------------------------------------------------------------------------------
 ssl.init.mbeanerror.CWPKI0006E=CWPKI0006E: {0} mBean\uc744 \uc791\uc131 \ub610\ub294 \ub4f1\ub85d\ud558\ub824\ub294 \uc911\uc5d0 \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \uc608\uc678: {1}
@@ -52,11 +52,11 @@ ssl.init.mbeanerror.CWPKI0006E.explanation=mBean\uc744 \uc791\uc131\ud558\uac70\
 ssl.init.mbeanerror.CWPKI0006E.useraction=\uad6c\uc131\uc5d0 \ubb38\uc81c\uc810\uc774 \uc788\uc744 \uc218 \uc788\uc2b5\ub2c8\ub2e4. \uc608\uc678\uc5d0 \uc138\ubd80\uc0ac\ud56d\uc774 \ud3ec\ud568\ub420 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
 # -------------------------------------------------------------------------------------------------
 ssl.init.svcstartfail.CWPKI0007I=CWPKI0007I: SSL \uc11c\ube44\uc2a4\uac00 \uc2dc\uc791\ud558\uc9c0 \ubabb\ud588\uc2b5\ub2c8\ub2e4.
-ssl.init.svcstartfail.CWPKI0007I.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+ssl.init.svcstartfail.CWPKI0007I.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uc81c\uacf5 \ubaa9\uc801\uc73c\ub85c\ub9cc \uc0ac\uc6a9\ub429\ub2c8\ub2e4.
 ssl.init.svcstartfail.CWPKI0007I.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 # -------------------------------------------------------------------------------------------------
 ssl.init.error.CWPKI0008E=CWPKI0008E: SSL \ucd08\uae30\ud654 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \uc608\uc678: {0}
-ssl.init.error.CWPKI0008E.explanation=\ubcf4\uc548 \ucd08\uae30\ud654 \uc911\uc5d0 \uc608\uc0c1\uce58 \uc54a\uc740 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+ssl.init.error.CWPKI0008E.explanation=\ubcf4\uc548 \ucd08\uae30\ud654 \uc911\uc5d0 \uc608\uae30\uce58 \uc54a\uc740 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
 ssl.init.error.CWPKI0008E.useraction=\uc77c\ubc18 \uc624\ub958\uc785\ub2c8\ub2e4. \
 SSL \ucd08\uae30\ud654 \ub610\ub294 \uad6c\uc131 \ubb38\uc81c\uc810\uacfc \uad00\ub828\ub41c \uc774\uc804 \uba54\uc2dc\uc9c0\ub97c \ucc3e\uc544\ubcf4\uc2ed\uc2dc\uc624. \
 SSL=all=enabled \ub514\ubc84\uadf8 \ucd94\uc801\uc744 \uc0ac\uc6a9\ud558\uba74 \ucd94\uac00 \uc815\ubcf4\ub97c \uc0b0\ucd9c\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
@@ -74,7 +74,7 @@ ssl.loadresource.error.CWPKI0011E.explanation=\uc608\uc678\ub85c \uc778\ud574 \u
 ssl.loadresource.error.CWPKI0011E.useraction=\uc790\uc6d0\uacfc \uad00\ub828\ub41c \uad6c\uc131 \ubb38\uc81c\uc810\uc744 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
 # -------------------------------------------------------------------------------------------------
 ssl.fips.enabled.CWPKI0012I=CWPKI0012I: FIPS\uac00 \uc0ac\uc6a9 \uac00\ub2a5\ud569\ub2c8\ub2e4. \uc11c\ubc84\uac00 IBMJCEFIPS \uc81c\uacf5\uc790\ub97c \uc0ac\uc6a9\ud558\uc5ec FIPS \ubaa8\ub4dc\uc5d0\uc11c \uc2e4\ud589 \uc911\uc785\ub2c8\ub2e4.
-ssl.fips.enabled.CWPKI0012I.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+ssl.fips.enabled.CWPKI0012I.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uc81c\uacf5 \ubaa9\uc801\uc73c\ub85c\ub9cc \uc0ac\uc6a9\ub429\ub2c8\ub2e4.
 ssl.fips.enabled.CWPKI0012I.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 #--------------------------------------------------------------------------------------------------
 ssl.checkProviderList.warning.CWPKI0013W=CWPKI0013W: FIPS\uac00 \uc0ac\uc6a9 \uac00\ub2a5\ud558\uc9c0\ub9cc IBMJCEFIPS \uc81c\uacf5\uc790\uac00 java.security \ud30c\uc77c\uc5d0\uc11c \ud65c\uc131\uc774 \uc544\ub2d9\ub2c8\ub2e4. \uc774 \ud30c\uc77c\uc5d0 \uc788\ub294 \uc81c\uacf5\uc790 \ubaa9\ub85d\uc5d0\uc11c IBMJCE \uc81c\uacf5\uc790 \uc55e\uc5d0 IBMJCEFIPS \uc81c\uacf5\uc790\ub97c \ud3ec\ud568\ud558\ub3c4\ub85d \ubcc0\uacbd\ud574\uc57c \ud569\ub2c8\ub2e4.
@@ -82,7 +82,7 @@ ssl.checkProviderList.warning.CWPKI0013W.explanation=\uc11c\ubc84\uac00 FIPS \ub
 ssl.checkProviderList.warning.CWPKI0013W.useraction=\ubaa8\ub4e0 WebSphere Application Server \ud504\ub85c\uc138\uc2a4 \uc720\ud615\uc5d0 FIPS \uc54c\uace0\ub9ac\uc998\uc744 \uc0ac\uc6a9\ud558\ub824\uba74 java.security \ud30c\uc77c\uc758 IBMJCEFIPS \uc81c\uacf5\uc790\uc758 \uc8fc\uc11d \ucc98\ub9ac\ub97c \uc81c\uac70\ud558\uace0 \ubaa9\ub85d\uc5d0\uc11c IBMJCE \uc81c\uacf5\uc790 \uc55e\uc5d0 \uc704\uce58\ud558\ub294\uc9c0 \ud655\uc778\ud558\uace0 \uc81c\uacf5\uc790 \ubaa9\ub85d\uc744 \uc21c\ucc28\uc801\uc73c\ub85c \ub2e4\uc2dc \ubc88\ud638\ub97c \ub9e4\uae30\uc2ed\uc2dc\uc624.
 # -------------------------------------------------------------------------------------------------
 ssl.init.ssldm.init.CWPKI0014I=CWPKI0014I: SSL \ucef4\ud3ec\ub10c\ud2b8\uc758 FFDC \uc9c4\ub2e8 \ubaa8\ub4c8 {0}\uc774(\uac00) \ub4f1\ub85d\ub418\uc5c8\uc74c: {1}
-ssl.init.ssldm.init.CWPKI0014I.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+ssl.init.ssldm.init.CWPKI0014I.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uc81c\uacf5 \ubaa9\uc801\uc73c\ub85c\ub9cc \uc0ac\uc6a9\ub429\ub2c8\ub2e4.
 ssl.init.ssldm.init.CWPKI0014I.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 # -------------------------------------------------------------------------------------------------
 ssl.stop.error.CWPKI0015E=CWPKI0015E: SSL \ucef4\ud3ec\ub10c\ud2b8\ub97c \uc911\uc9c0\ud558\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \uc608\uc678: {0}
@@ -179,7 +179,7 @@ ssl.notification.send.info.CWPKI0037I=CWPKI0037I: \ub9cc\uae30 \ubaa8\ub2c8\ud13
 ssl.notification.send.info.CWPKI0037I.explanation=\uc774\ub294 \uc778\uc99d \ub9cc\uae30\uc5d0 \uad00\ud55c \uc815\ubcf4\uc785\ub2c8\ub2e4.
 ssl.notification.send.info.CWPKI0037I.useraction=\ubcf4\uace0\ub41c \ubb38\uc81c\uc810\uc744 \ud574\uacb0\ud558\ub824\uba74 \uc778\uc99d\uc744 \uad00\ub9ac\ud574\uc57c \ud560 \uc218\ub3c4 \uc788\uc2b5\ub2c8\ub2e4.
 # -------------------------------------------------------------------------------------------------
-ssl.expiration.monitor.start.error.CWPKI0038E=CWPKI0038E: \ub9cc\uae30 \ubaa8\ub2c8\ud130\uac00 \uc2dc\uc791\ud558\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4. \uc624\ub958:  {0}
+ssl.expiration.monitor.start.error.CWPKI0038E=CWPKI0038E: \ub9cc\uae30 \ubaa8\ub2c8\ud130\uac00 \uc2dc\uc791\ud558\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4. \uc624\ub958: {0}
 ssl.expiration.monitor.start.error.CWPKI0038E.explanation=\ub9cc\uae30 \ubaa8\ub2c8\ud130 \uba85\ub839 \ud0dc\uc2a4\ud06c\ub97c \uc2dc\uc791\ud558\ub294 \uc911\uc5d0 \ubb38\uc81c\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
 ssl.expiration.monitor.start.error.CWPKI0038E.useraction=\uc624\ub958\uc5d0 \ub300\ud55c \uc790\uc138\ud55c \uc815\ubcf4\ub97c \uc54c\ub824\uba74 \ub9cc\uae30 \ubaa8\ub2c8\ud130\ub97c \uc9c1\uc811 \uc2dc\uc791\ud558\uc2ed\uc2dc\uc624.
 # -------------------------------------------------------------------------------------------------
@@ -236,13 +236,13 @@ ssl.config.not.using.fips.CWPKI0049W.useraction=FIPS \uc2b9\uc778 \uc554\ud638\u
 ssl.trustmanager.signer.prompt.CWPKI0100I=*** SSL \uc11c\uba85\uc790 \uad50\ud658 \ud504\ub86c\ud504\ud2b8 ***
 ssl.trustmanager.signer.prompt.CWPKI0101I=\ub300\uc0c1 \ud638\uc2a4\ud2b8\uc758 SSL \uc11c\uba85\uc790\uac00 \uc2e0\ub8b0 \uc800\uc7a5\uc18c {0}\uc5d0 \uc5c6\uc2b5\ub2c8\ub2e4.\n\
 \n\
-\uc5ec\uae30 \uc11c\uba85\uc790 \uc815\ubcf4\uac00 \uc788\uc2b5\ub2c8\ub2e4. (\uc694\uc545 \uac12\uc774 \uc11c\ubc84\uc5d0 \ud45c\uc2dc\ub41c \uac12\uacfc \uc77c\uce58\ud558\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.)
-ssl.trustmanager.signer.prompt.CWPKI0102I=  \uc8fc\uc81c DN:
-ssl.trustmanager.signer.prompt.CWPKI0103I=  \ubc1c\ud589\uc790 DN:
-ssl.trustmanager.signer.prompt.CWPKI0104I=  \uc77c\ub828 \ubc88\ud638:
-ssl.trustmanager.signer.prompt.CWPKI0105I=  SHA-1 \uc694\uc57d:
-ssl.trustmanager.signer.prompt.CWPKI0106I=  MD5 \uc694\uc57d:
-ssl.trustmanager.signer.prompt.CWPKI0107I=\uc9c0\uae08 \uc2e0\ub8b0 \uc800\uc7a5\uc18c\uc5d0 \uc11c\uba85\uc790\ub97c \ucd94\uac00\ud558\uc2dc\uaca0\uc2b5\ub2c8\uae4c? (\uc608/\uc544\ub2c8\uc624)
+\uc5ec\uae30 \uc11c\uba85\uc790 \uc815\ubcf4\uac00 \uc788\uc2b5\ub2c8\ub2e4. (\uc694\uc545 \uac12\uc774 \uc11c\ubc84\uc5d0 \ud45c\uc2dc\ub41c \uac12\uacfc \uc77c\uce58\ud558\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.) 
+ssl.trustmanager.signer.prompt.CWPKI0102I=  \uc8fc\uc81c DN:    
+ssl.trustmanager.signer.prompt.CWPKI0103I=  \ubc1c\ud589\uc790 DN:     
+ssl.trustmanager.signer.prompt.CWPKI0104I=  \uc77c\ub828 \ubc88\ud638: 
+ssl.trustmanager.signer.prompt.CWPKI0105I=  SHA-1 \uc694\uc57d:  
+ssl.trustmanager.signer.prompt.CWPKI0106I=  MD5 \uc694\uc57d:    
+ssl.trustmanager.signer.prompt.CWPKI0107I=\uc9c0\uae08 \uc2e0\ub8b0 \uc800\uc7a5\uc18c\uc5d0 \uc11c\uba85\uc790\ub97c \ucd94\uac00\ud558\uc2dc\uaca0\uc2b5\ub2c8\uae4c? (\uc608/\uc544\ub2c8\uc624) 
 # Note to translators: The 2 messages below (ssl.trustmanager.signer.prompt.answer.yes and ssl.trustmanager.signer.prompt.answer.no)
 # should be the first letter of the words that correspond to the answers for "yes" and "no". For example,
 # "y" for "yes" in English, "o" for "oui" in French, etc.
@@ -266,8 +266,8 @@ crypto.key.getkey.error.CWPKI0201E.explanation=\uc9c0\uc815\ub41c \ud0a4 \uc138\
 crypto.key.getkey.error.CWPKI0201E.useraction=KeySet \uad6c\uc131\uc774 \uc62c\ubc14\ub978\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
 # -------------------------------------------------------------------------------------------------
 crypto.key.generate.class.load.error.CWPKI0202E=CWPKI0202E: \ud0a4 \uc138\ud2b8 {1}\uc5d0\uc11c \uad6c\uc131\ub41c {0} \ud0a4 \uc0dd\uc131 \ud074\ub798\uc2a4\ub97c \uc778\uc2a4\ud134\uc2a4\ud654\ud558\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \uba54\uc2dc\uc9c0: {2}
-crypto.key.generate.class.load.error.CWPKI0202E.explanation=\ud0a4 \uc138\ud2b8\uc5d0 \ub300\ud574 \uad6c\uc131\ub41c \ud0a4 \uc0dd\uc131\uc790 \ud074\ub798\uc2a4\ub97c \ub7f0\ud0c0\uc784\uc774 \ucc3e\uc744 \uc218 \uc5c6\uac70\ub098 \ud074\ub798\uc2a4\uac00 com.ibm.websphere.crypto.KeyGenerator \ub610\ub294 com.ibm.websphere.crypto.KeyPairGenerator\ub97c \uad6c\ud604\ud558\uc9c0 \ubabb\ud569\ub2c8\ub2e4.
-crypto.key.generate.class.load.error.CWPKI0202E.useraction=\uad6c\uc131\ub41c \ud0a4 \uc0dd\uc131\uc790 \ud074\ub798\uc2a4\uac00 \ub7f0\ud0c0\uc784 \ud658\uacbd\uc5d0\uc11c \ucc3e\uc744 \uc218 \uc788\ub294 \uc704\uce58\uc5d0 \uc9c0\uc815\ub418\uc5b4 \uc788\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624. \ub7f0\ud0c0\uc784 \ud658\uacbd\uc774 \ucc3e\uc744 \uc218 \uc788\ub3c4\ub85d Information Center\ub97c \ud655\uc778\ud558\uc5ec \uc0ac\uc6a9\uc790 \uc815\uc758 \ud074\ub798\uc2a4\ub97c \uc9c0\uc815\ud558\uc2ed\uc2dc\uc624.
+crypto.key.generate.class.load.error.CWPKI0202E.explanation=\ud0a4 \uc138\ud2b8\uc5d0 \ub300\ud574 \uad6c\uc131\ub41c \ud0a4 \uc0dd\uc131 \ud074\ub798\uc2a4\ub97c \ub7f0\ud0c0\uc784\uc774 \ucc3e\uc744 \uc218 \uc5c6\uac70\ub098 \ud074\ub798\uc2a4\uac00 com.ibm.websphere.crypto.KeyGenerator \ub610\ub294 com.ibm.websphere.crypto.KeyPairGenerator\ub97c \uad6c\ud604\ud558\uc9c0 \ubabb\ud569\ub2c8\ub2e4.
+crypto.key.generate.class.load.error.CWPKI0202E.useraction=\uad6c\uc131\ub41c \ud0a4 \uc0dd\uc131 \ud074\ub798\uc2a4\uac00 \ub7f0\ud0c0\uc784 \ud658\uacbd\uc5d0\uc11c \ucc3e\uc744 \uc218 \uc788\ub294 \uc704\uce58\uc5d0 \uc9c0\uc815\ub418\uc5b4 \uc788\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624. \ub7f0\ud0c0\uc784 \ud658\uacbd\uc774 \ucc3e\uc744 \uc218 \uc788\ub3c4\ub85d Information Center\ub97c \ud655\uc778\ud558\uc5ec \uc0ac\uc6a9\uc790 \uc815\uc758 \ud074\ub798\uc2a4\ub97c \uc9c0\uc815\ud558\uc2ed\uc2dc\uc624.
 # -------------------------------------------------------------------------------------------------
 crypto.key.import.error.CWPKI0203E=CWPKI0203E: KeySet {0}(\uc73c)\ub85c \ud0a4 \uac00\uc838\uc624\uae30 \uc2dc\ub3c4\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4. \uc608\uc678: {1}
 crypto.key.import.error.CWPKI0203E.explanation=\uc785\ub825\uc73c\ub85c \uc804\ub2ec\ub41c \ud0a4\uac00 \uc798\ubabb \ud615\uc131\ub418\uc5c8\uac70\ub098 \ud0a4\ub97c \uc800\uc7a5\ud558\uae30 \uc704\ud574 \ud0a4 \uc800\uc7a5\uc18c\uc5d0 \uc561\uc138\uc2a4\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
@@ -285,11 +285,11 @@ ssl.signer.retrieval.usage.CWPKI0300I=CWPKI0300I: -listRemoteKeyStoreNames \ubc0
 \n\
 \uc0ac\uc6a9\ubc95: retrieveSigners <remoteKeyStoreName> <localKeyStoreName> [options]\n\
 \        options: [-profileName <profileName>] [-remoteAlias <aliasFromRemoteStore>] [-localAlias <storeAsAlias>] [-listRemoteKeyStoreNames] [-listLocalKeyStoreNames] [-autoAcceptBootstrapSigner] [-uploadSigners] [-host <host>] [-port <port>] [-conntype <RMI|SOAP>] [-user <user>] [-password <password>] [-trace] [-logfile <filename>] [-replacelog] [-quiet] [-help]\n
-ssl.signer.retrieval.usage.CWPKI0300I.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+ssl.signer.retrieval.usage.CWPKI0300I.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uc81c\uacf5 \ubaa9\uc801\uc73c\ub85c\ub9cc \uc0ac\uc6a9\ub429\ub2c8\ub2e4.
 ssl.signer.retrieval.usage.CWPKI0300I.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 # -------------------------------------------------------------------------------------------------
 ssl.signer.retrieval.tracemodeon.CWPKI0301I=CWPKI0301I: \ucd94\uc801 \ubaa8\ub4dc\uac00 \ucf1c\uc84c\uc2b5\ub2c8\ub2e4.
-ssl.signer.retrieval.tracemodeon.CWPKI0301I.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+ssl.signer.retrieval.tracemodeon.CWPKI0301I.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uc81c\uacf5 \ubaa9\uc801\uc73c\ub85c\ub9cc \uc0ac\uc6a9\ub429\ub2c8\ub2e4.
 ssl.signer.retrieval.tracemodeon.CWPKI0301I.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 # -------------------------------------------------------------------------------------------------
 ssl.signer.retrieval.logfile.error.CWPKI0302E=CWPKI0302E: \ub2e4\uc74c \uc704\uce58\uc5d0 \uc788\ub294 \ucd94\uc801 \ub85c\uadf8 \ud30c\uc77c\uc5d0 \uc4f8 \uc218 \uc5c6\uc74c: {0}
@@ -297,7 +297,7 @@ ssl.signer.retrieval.logfile.error.CWPKI0302E.explanation=\uc9c0\uc815\ub41c \ub
 ssl.signer.retrieval.logfile.error.CWPKI0302E.useraction=\ub85c\uadf8 \ud30c\uc77c \uacbd\ub85c\ub97c \ubcc0\uacbd\ud558\uac70\ub098 \uc9c0\uc815\ub41c \ud30c\uc77c\uc774 \uc0ac\uc6a9 \uc911\uc774 \uc544\ub2cc\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
 # -------------------------------------------------------------------------------------------------
 ssl.signer.retrieval.logfile.location.CWPKI0303I=CWPKI0303I: \ucd94\uc801\uc774 \ub2e4\uc74c \uc704\uce58\ub85c \ub85c\uadf8\ub418\ub294 \uc911\uc784: {0}
-ssl.signer.retrieval.logfile.location.CWPKI0303I.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+ssl.signer.retrieval.logfile.location.CWPKI0303I.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uc81c\uacf5 \ubaa9\uc801\uc73c\ub85c\ub9cc \uc0ac\uc6a9\ub429\ub2c8\ub2e4.
 ssl.signer.retrieval.logfile.location.CWPKI0303I.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 # -------------------------------------------------------------------------------------------------
 ssl.signer.remote.truststore.not.found.CWPKI0304E=CWPKI0304E: {0}(\uc73c)\ub85c \uc9c0\uc815\ub41c <remoteKeyStoreName>\uc744 \uc11c\ubc84\uc5d0\uc11c \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
@@ -309,19 +309,19 @@ ssl.signer.alias.not.found.CWPKI0305E.explanation=\uc9c0\uc815\ub41c \ubcc4\uba8
 ssl.signer.alias.not.found.CWPKI0305E.useraction=-listRemoteKeyStoreNames \uba85\ub839\uc744 \uc2e4\ud589\ud558\uc5ec \uc774\ub984 \ubaa9\ub85d\uc744 \uac00\uc838\uc624\uc2ed\uc2dc\uc624.
 # -------------------------------------------------------------------------------------------------
 ssl.signer.remote.truststore.list.CWPKI0306I=CWPKI0306I: \ub2e4\uc74c\uacfc \uac19\uc740 \uc6d0\uaca9 \ud0a4 \uc800\uc7a5\uc18c\uac00 \uc9c0\uc815\ub41c \uc11c\ubc84\uc5d0 \uc788\uc74c: {0}
-ssl.signer.remote.truststore.list.CWPKI0306I.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+ssl.signer.remote.truststore.list.CWPKI0306I.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uc81c\uacf5 \ubaa9\uc801\uc73c\ub85c\ub9cc \uc0ac\uc6a9\ub429\ub2c8\ub2e4.
 ssl.signer.remote.truststore.list.CWPKI0306I.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 # -------------------------------------------------------------------------------------------------
 ssl.signer.local.truststore.list.CWPKI0307I=CWPKI0307I: \ub2e4\uc74c\uacfc \uac19\uc740 \ub85c\uceec \ud0a4 \uc800\uc7a5\uc18c\uac00 \uc9c0\uc815\ub41c \ud074\ub77c\uc774\uc5b8\ud2b8\uc5d0 \uc788\uc74c: {0}
-ssl.signer.local.truststore.list.CWPKI0307I.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+ssl.signer.local.truststore.list.CWPKI0307I.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uc81c\uacf5 \ubaa9\uc801\uc73c\ub85c\ub9cc \uc0ac\uc6a9\ub429\ub2c8\ub2e4.
 ssl.signer.local.truststore.list.CWPKI0307I.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 # -------------------------------------------------------------------------------------------------
 ssl.signer.add.to.local.truststore.CWPKI0308I=CWPKI0308I: {0} \uc11c\uba85\uc790 \ubcc4\uba85\uc744 SHA \uc694\uc57d {2}\uc640(\uacfc) \ud568\uaed8 \ub85c\uceec \ud0a4 \uc800\uc7a5\uc18c {1}\uc5d0 \ucd94\uac00 \uc911
-ssl.signer.add.to.local.truststore.CWPKI0308I.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+ssl.signer.add.to.local.truststore.CWPKI0308I.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uc81c\uacf5 \ubaa9\uc801\uc73c\ub85c\ub9cc \uc0ac\uc6a9\ub429\ub2c8\ub2e4.
 ssl.signer.add.to.local.truststore.CWPKI0308I.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 # -------------------------------------------------------------------------------------------------
 ssl.signer.no.signers.added.CWPKI0309I=CWPKI0309I: \uc6d0\uaca9 \ud0a4 \uc800\uc7a5\uc18c\uc758 \ubaa8\ub4e0 \uc11c\uba85\uc790\uac00 \uc774\ubbf8 \ub85c\uceec \ud0a4 \uc800\uc7a5\uc18c\uc5d0 \uc788\uc2b5\ub2c8\ub2e4.
-ssl.signer.no.signers.added.CWPKI0309I.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+ssl.signer.no.signers.added.CWPKI0309I.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uc81c\uacf5 \ubaa9\uc801\uc73c\ub85c\ub9cc \uc0ac\uc6a9\ub429\ub2c8\ub2e4.
 ssl.signer.no.signers.added.CWPKI0309I.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 # -------------------------------------------------------------------------------------------------
 ssl.signer.local.truststore.not.found.CWPKI0310E=CWPKI0310E: {0}(\uc73c)\ub85c \uc9c0\uc815\ub41c <localKeyStoreName>\uc744 \ud074\ub77c\uc774\uc5b8\ud2b8\uc5d0\uc11c \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
@@ -357,7 +357,7 @@ ssl.ca.client.usage.explanation=\uc774 \uc2a4\ud06c\ub9bd\ud2b8\ub97c \uc2e4\ud5
 ssl.ca.client.usage.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 # -------------------------------------------------------------------------------------------------
 ssl.ca.client.tracemodeon=CWPKI0401I: \ucd94\uc801 \ubaa8\ub4dc\uac00 \ucf1c\uc84c\uc2b5\ub2c8\ub2e4.
-ssl.ca.client.tracemodeon.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+ssl.ca.client.tracemodeon.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uc81c\uacf5 \ubaa9\uc801\uc73c\ub85c\ub9cc \uc0ac\uc6a9\ub429\ub2c8\ub2e4.
 ssl.ca.client.tracemodeon.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 # -------------------------------------------------------------------------------------------------
 ssl.ca.client.logfile.error=CWPKI0402E: \ub2e4\uc74c \uc704\uce58\uc5d0 \uc788\ub294 \ucd94\uc801 \ub85c\uadf8 \ud30c\uc77c\uc5d0 \uc4f8 \uc218 \uc5c6\uc74c: {0}
@@ -365,7 +365,7 @@ ssl.ca.client.logfile.error.explanation=\uc9c0\uc815\ub41c \ub85c\uadf8 \ud30c\u
 ssl.ca.client.logfile.error.useraction=\ub85c\uadf8 \ud30c\uc77c \uacbd\ub85c\ub97c \uc62c\ubc14\ub978 \ub85c\uadf8 \ud30c\uc77c\ub85c \ubcc0\uacbd\ud558\uac70\ub098, \uc9c0\uc815\ub41c \ud30c\uc77c\uc774 \uc0ac\uc6a9 \uc911\uc774 \uc544\ub2cc\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
 # -------------------------------------------------------------------------------------------------
 ssl.ca.client.logfile.location=CWPKI0403I: \ucd94\uc801\uc774 \ub2e4\uc74c \uc704\uce58\ub85c \ub85c\uadf8\ub418\ub294 \uc911\uc784: {0}
-ssl.ca.client.logfile.location.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+ssl.ca.client.logfile.location.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uc81c\uacf5 \ubaa9\uc801\uc73c\ub85c\ub9cc \uc0ac\uc6a9\ub429\ub2c8\ub2e4.
 ssl.ca.client.logfile.location.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 # -------------------------------------------------------------------------------------------------
 ssl.ca.client.invalid.option=CWPKI0404W: \ub2e4\uc74c \uc635\uc158\uc740 \uc720\ud6a8\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. {0}
@@ -437,11 +437,11 @@ ssl.ca.client.receive.failed.explanation=CA(Certificate Authority)\uc5d0\uc11c \
 ssl.ca.client.receive.failed.useraction=\ud0a4 \uc800\uc7a5\uc18c \uc800\uc7a5\uacfc \uad00\ub828\ub41c \uc774\uc804 \uc624\ub958 \uba54\uc2dc\uc9c0\ub97c \ud655\uc778\ud558\uace0 \ubc1c\uc0dd\ud558\ub294 \ubb38\uc81c\ub97c \uc815\uc815\ud55c \ud6c4 \uc778\uc99d \uc694\uccad\uc744 \uc7ac\uc2dc\ub3c4\ud558\uc2ed\uc2dc\uc624. 
 # -------------------------------------------------------------------------------------------------
 ssl.ca.client.pkcs10.request.created=CWPKI0421I: \ubcc4\uba85 {0}\uc744(\ub97c) \uc0ac\uc6a9\ud558\uc5ec PKCS10 \uc778\uc99d \uc694\uccad\uc774 \uc791\uc131\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \uc694\uccad\uc774 \ub2e4\uc74c \ud30c\uc77c\uc5d0 \uc800\uc7a5\ub429\ub2c8\ub2e4. {1} 
-ssl.ca.client.pkcs10.request.created.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+ssl.ca.client.pkcs10.request.created.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uc81c\uacf5 \ubaa9\uc801\uc73c\ub85c\ub9cc \uc0ac\uc6a9\ub429\ub2c8\ub2e4.
 ssl.ca.client.pkcs10.request.created.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 # -------------------------------------------------------------------------------------------------
 ssl.ca.client.pkcs10.request.sending=CWPKI0422I: \uc2dc\uc2a4\ud15c\uc774 PKCS10 \uc778\uc99d \uc694\uccad\uc744 \uc0dd\uc131 \uc911\uc785\ub2c8\ub2e4.
-ssl.ca.client.pkcs10.request.sending.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+ssl.ca.client.pkcs10.request.sending.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uc81c\uacf5 \ubaa9\uc801\uc73c\ub85c\ub9cc \uc0ac\uc6a9\ub429\ub2c8\ub2e4.
 ssl.ca.client.pkcs10.request.sending.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 # -------------------------------------------------------------------------------------------------
 ssl.ca.client.pkcs10.request.failed=CWPKI0423E: \ub2e4\uc74c \uc624\ub958 \ub54c\ubb38\uc5d0 PKCS10 \uc778\uc99d \uc694\uccad\uc744 \uc791\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. {0}
@@ -489,7 +489,7 @@ ssl.ca.cmp.impl.tempfile.error.explanation= \ud30c\uc77c \uc2dc\uc2a4\ud15c\uc5d
 ssl.ca.cmp.impl.tempfile.error.useraction= \uc784\uc2dc \ud30c\uc77c\ub85c\uc758 \uacbd\ub85c\uac00 \uc874\uc7ac\ud558\uace0 \uc4f0\uae30 \uac00\ub2a5\ud558\uba70 \uc0ac\uc6a9 \uac00\ub2a5\ud55c \uacf5\uac04\uc774 \uc788\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
 # -------------------------------------------------------------------------------------------------
 ssl.ca.cmp.impl.request.created=CWPKI0455I: CA(Certificate Authority) \uc11c\uba85\ub41c \uc778\uc99d\uc744 \uc694\uccad\ud558\ub294 \uc911\uc785\ub2c8\ub2e4.
-ssl.ca.cmp.impl.request.created.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+ssl.ca.cmp.impl.request.created.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uc81c\uacf5 \ubaa9\uc801\uc73c\ub85c\ub9cc \uc0ac\uc6a9\ub429\ub2c8\ub2e4.
 ssl.ca.cmp.impl.request.created.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 # -------------------------------------------------------------------------------------------------
 ssl.ca.cmp.impl.create.error=CWPKI0456E: \uc778\uc99d \uc694\uccad \uc911\uc5d0 \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. {0}
@@ -509,11 +509,11 @@ ssl.ca.cmp.impl.invalid.certificate.chain.explanation=\uad6c\ud604\uc5d0 \uc0ac\
 ssl.ca.cmp.impl.invalid.certificate.chain.useraction=\uc720\ud6a8\ud55c \uc778\uc99d \uccb4\uc778\uc774 \uad6c\ud604\uc5d0 \uc804\ub2ec\ub418\uace0 \uc788\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
 # -------------------------------------------------------------------------------------------------
 ssl.ca.cmp.impl.revoke.request.created=CWPKI0460I: CA(Certificate Authority) \uc11c\uba85\ub41c \uc778\uc99d\uc744 \ucde8\uc18c\ud558\ub294 \uc911\uc785\ub2c8\ub2e4.
-ssl.ca.cmp.impl.revoke.request.created.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+ssl.ca.cmp.impl.revoke.request.created.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uc81c\uacf5 \ubaa9\uc801\uc73c\ub85c\ub9cc \uc0ac\uc6a9\ub429\ub2c8\ub2e4.
 ssl.ca.cmp.impl.revoke.request.created.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 # -------------------------------------------------------------------------------------------------
 ssl.ca.cmp.impl.action.not.supported=CWPKI0461I: \uc774 \uad6c\ud604\uc5d0\uc11c {0} \uc870\uce58\uac00 \uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
-ssl.ca.cmp.impl.action.not.supported.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+ssl.ca.cmp.impl.action.not.supported.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uc81c\uacf5 \ubaa9\uc801\uc73c\ub85c\ub9cc \uc0ac\uc6a9\ub429\ub2c8\ub2e4.
 ssl.ca.cmp.impl.action.not.supported.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 # -------------------------------------------------------------------------------------------------
 ssl.ca.cmp.impl.revoke.request.processed=CWPKI0462I: \uc778\uc99d \ubcc4\uba85 {0}\uc5d0 \ub300\ud55c \uc778\uc99d \ucde8\uc18c \uc694\uccad\uc774 \uc2dc\uc791\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \uc774\uc720: {1}
@@ -521,7 +521,7 @@ ssl.ca.cmp.impl.revoke.request.processed.explanation=CA(Certificate Authority) \
 ssl.ca.cmp.impl.revoke.request.processed.useraction=\uc778\uc99d\uc774 \ucde8\uc18c\ub418\uc5c8\ub294\uc9c0 \uc678\ubd80 CA(Certificate Authority)\ub97c \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
 # -------------------------------------------------------------------------------------------------
 ssl.ca.cmp.impl.certificate.received=CWPKI0463I: \uc778\uc99d\uc774 \uc218\uc2e0\ub418\uc5b4 {0} \ud0a4 \uc800\uc7a5\uc18c\uc5d0 \ubcc4\uba85 {1}(\uc73c)\ub85c \uc800\uc7a5\ub429\ub2c8\ub2e4.
-ssl.ca.cmp.impl.certificate.received.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+ssl.ca.cmp.impl.certificate.received.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uc81c\uacf5 \ubaa9\uc801\uc73c\ub85c\ub9cc \uc0ac\uc6a9\ub429\ub2c8\ub2e4.
 ssl.ca.cmp.impl.certificate.received.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 # -------------------------------------------------------------------------------------------------
 ssl.ca.cmp.impl.certificate.received.header=*** \uc778\uc99d ***
@@ -540,8 +540,7 @@ ssl.ca.cmp.impl.certificate.received.md5digest=MD5 \uc694\uc57d:
 ################################################################################
 # Range 800-899 reserved for Liberty specific messages
 ################################################################################
-security.addprovider.error=CWPKI0800E: \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \
-IBMJCEFIPS \uc81c\uacf5\uc790 \ucd94\uac00 \uc608\uc678\uac00 \ubc1c\uacac\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \uc608\uc678: {0}
+security.addprovider.error=CWPKI0800E: \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. IBMJCEFIPS \uc81c\uacf5\uc790 \ucd94\uac00 \uc608\uc678\uac00 \ubc1c\uacac\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \uc608\uc678: {0}
 security.addprovider.error.explanation=IBMJCEFIPS \uc554\ud638\ud654 \ubaa8\ub4c8\uc744 \ucd94\uac00\ud558\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \uc11c\ubc84 \ucd08\uae30\ud654\ub294 \uacc4\uc18d\ub418\uc9c0\ub9cc, SSL \uc9c0\uc6d0\uc744 \uc0ac\uc6a9\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
 security.addprovider.error.useraction=CMSG0002
 #--------------------------------------------------------------------------------------------------
@@ -586,15 +585,15 @@ ssl.config.not.used.CWPKI0809W.explanation=\ud0a4 \uc800\uc7a5\uc18c \ud30c\uc77
 ssl.config.not.used.CWPKI0809W.useraction=\ud0a4 \uc800\uc7a5\uc18c \uad6c\uc131\uc73c\ub85c \ubb38\uc81c\uc810\uc744 \uc218\uc815\ud558\uc2ed\uc2dc\uc624.
 #--------------------------------------------------------------------------------------------------
 ssl.keystore.readonly.CWPKI0810I=CWPKI0810I: \ud0a4 \uc800\uc7a5\uc18c {0}\uc774(\uac00) \uc77d\uae30 \uc804\uc6a9\uc774\uba70 \uc778\uc99d\uc11c\uac00 \ud0a4 \uc800\uc7a5\uc18c \ud30c\uc77c\uc5d0 \uae30\ub85d\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc774 \uc5f0\uacb0\uc5d0 \ub300\ud574\uc11c\ub9cc \uc2e0\ub8b0\uac00 \ud5c8\uc6a9\ub429\ub2c8\ub2e4. 
-ssl.keystore.readonly.CWPKI0810I.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+ssl.keystore.readonly.CWPKI0810I.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uc81c\uacf5 \ubaa9\uc801\uc73c\ub85c\ub9cc \uc0ac\uc6a9\ub429\ub2c8\ub2e4.
 ssl.keystore.readonly.CWPKI0810I.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 #--------------------------------------------------------------------------------------------------
 ssl.keystore.modified.CWPKI0811I=CWPKI0811I: \ud0a4 \uc800\uc7a5\uc18c \ud30c\uc77c {0}\uc774(\uac00) \uc218\uc815\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \uc5c5\ub370\uc774\ud2b8\ub41c \ud0a4 \uc800\uc7a5\uc18c \ud30c\uc77c\uc744 \uc0ac\uc6a9\ud560 \uc218 \uc788\ub3c4\ub85d \ud0a4 \uc800\uc7a5\uc18c \ud30c\uc77c\uc774 \ub2e4\uc2dc \ub85c\ub4dc\ub429\ub2c8\ub2e4.
-ssl.keystore.modified.CWPKI0811I.explanation=\uc9c0\uc815\ub41c \ud0a4 \uc800\uc7a5\uc18c \ud30c\uc77c\uc774 \uc218\uc815\ub418\uc5c8\uc73c\uba70 \uc5c5\ub370\uc774\ud2b8\ub41c \ud0a4 \uc800\uc7a5\uc18c \ud30c\uc77c\uc744 \uc0ac\uc6a9\ud558\uc5ec \ub7f0\ud0c0\uc784\uc774 \uc2dc\uc791\ub429\ub2c8\ub2e4.
+ssl.keystore.modified.CWPKI0811I.explanation=\uc9c0\uc815\ub41c \ud0a4 \uc800\uc7a5\uc18c \ud30c\uc77c\uc774 \uc218\uc815\ub418\uc5c8\uc73c\uba70 \uc5c5\ub370\uc774\ud2b8\ub41c \ud0a4 \uc800\uc7a5\uc18c \ud30c\uc77c\uc744 \uc0ac\uc6a9\ud558\uc5ec \ub7f0\ud0c0\uc784\uc774 \uc2dc\uc791\ub429\ub2c8\ub2e4. 
 ssl.keystore.modified.CWPKI0811I.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 #--------------------------------------------------------------------------------------------------
 ssl.key.error.CWPKI0812E=CWPKI0812E: [{1}] \ud0a4 \uc800\uc7a5\uc18c\uc5d0\uc11c [{0}] \ud0a4\ub97c \uac00\uc838\uc624\ub824\uace0 \uc2dc\ub3c4\ud558\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \ud56d\ubaa9\uc774 \ud0a4\uc774\uace0 \ud0a4 \ube44\ubc00\ubc88\ud638\uac00 \uc62c\ubc14\ub978\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624. \ub9ac\ud134\ub41c \uc608\uc678\ub294 [{2}]\uc785\ub2c8\ub2e4.
-ssl.key.error.CWPKI0812E.explanation=\ud0a4 \uc800\uc7a5\uc18c \ud30c\uc77c\uc5d0\uc11c \ud0a4\ub97c \ubcf5\uad6c\ud558\ub824\uace0 \uc2dc\ub3c4\ud558\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \ud0a4\uc5d0 \ubb38\uc81c\uc810\uc5d0 \uc788\uac70\ub098 \ud0a4 \ube44\ubc00\ubc88\ud638\uac00 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc744 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+ssl.key.error.CWPKI0812E.explanation=\ud0a4 \uc800\uc7a5\uc18c \ud30c\uc77c\uc5d0\uc11c \ud0a4\ub97c \ubcf5\uad6c\ud558\ub824\uace0 \uc2dc\ub3c4\ud558\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \ud0a4\uc5d0 \ubb38\uc81c\uc810\uc5d0 \uc788\uac70\ub098 \ud0a4 \ube44\ubc00\ubc88\ud638\uac00 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc744 \uc218 \uc788\uc2b5\ub2c8\ub2e4. 
 ssl.key.error.CWPKI0812E.useraction=\ud0a4 \uc800\uc7a5\uc18c\ub97c \ud655\uc778\ud558\uc5ec \ud0a4 \ud56d\ubaa9\uc774 \uc788\ub294\uc9c0 \ud655\uc778\ud558\uace0 \ud0a4 \ud56d\ubaa9\uc5d0 \uc561\uc138\uc2a4\ud558\uae30 \uc704\ud574 \uc62c\ubc14\ub978 \ube44\ubc00\ubc88\ud638\uac00 \uad6c\uc131\ub418\uc5c8\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
 #--------------------------------------------------------------------------------------------------
 ssl.unrecoverablekey.error.CWPKI0813E=CWPKI0813E: \ud0a4 \uc800\uc7a5\uc18c [{0}]\uc5d0 \ub300\ud55c \ud0a4 \uad00\ub9ac\uc790\ub97c \ucd08\uae30\ud654\ud558\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \uac1c\uc778\uc6a9 \ud0a4 \ube44\ubc00\ubc88\ud638\uac00 \uc62c\ubc14\ub974\uc9c0 \uc54a\uac70\ub098 \ud0a4 \uc800\uc7a5\uc18c\uc5d0 \uc11c\ub85c \ub2e4\ub978 \ube44\ubc00\ubc88\ud638\ub97c \uc0ac\uc6a9\ud558\ub294 \uc5ec\ub7ec \uac1c\uc758 \uac1c\uc778\uc6a9 \ud0a4\uac00 \uc788\uc2b5\ub2c8\ub2e4. \uc774 \ud0a4 \uc800\uc7a5\uc18c\ub294 SSL\uc5d0 \uc0ac\uc6a9\ub420 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \uc608\uc678 \uba54\uc2dc\uc9c0: [{1}].
@@ -623,19 +622,19 @@ ssl.defaultSSLConfig.noSuchKeyStore.CWPKI0818E.useraction=\uad6c\uc131\uc744 \ua
 #--------------------------------------------------------------------------------------------------
 ssl.defaultKeyStore.not.created.CWPKI0819I=CWPKI0819I: <keyStore id="defaultKeyStore"/> \uc694\uc18c\uc5d0 \ube44\ubc00\ubc88\ud638\uac00 \uad6c\uc131\ub418\uc5b4 \uc788\uc9c0 \uc54a\uace0 'keystore_password' \ud658\uacbd \ubcc0\uc218\uac00 \uc124\uc815\ub418\uc5b4 \uc788\uc9c0 \uc54a\uae30 \ub54c\ubb38\uc5d0 \uae30\ubcf8 \ud0a4 \uc800\uc7a5\uc18c\uac00 \uc791\uc131\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. 
 ssl.defaultKeyStore.not.created.CWPKI0819I.explanation=<keyStore id="defaultKeyStore"/> \uc694\uc18c\uc5d0 \ube44\ubc00\ubc88\ud638\uac00 \uad6c\uc131\ub418\uc5b4 \uc788\uc9c0 \uc54a\uace0 'keystore_password' \ud658\uacbd \ubcc0\uc218\uac00 \uc124\uc815\ub418\uc5b4 \uc788\uc9c0 \uc54a\uae30 \ub54c\ubb38\uc5d0 \uae30\ubcf8 \ud0a4 \uc800\uc7a5\uc18c\uac00 \uc791\uc131\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
-ssl.defaultKeyStore.not.created.CWPKI0819I.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc74c
+ssl.defaultKeyStore.not.created.CWPKI0819I.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 #--------------------------------------------------------------------------------------------------
 ssl.defaultKeyStore.env.password.CWPKI0820A=CWPKI0820A: 'keystore_password' \ud658\uacbd \ubcc0\uc218\ub97c \uc0ac\uc6a9\ud558\uc5ec \uae30\ubcf8 \ud0a4 \uc800\uc7a5\uc18c\uac00 \uc791\uc131\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
 ssl.defaultKeyStore.env.password.CWPKI0820A.explanation='keystore_password' \ud658\uacbd \ubcc0\uc218\ub97c \uc0ac\uc6a9\ud558\uc5ec \uae30\ubcf8 \ud0a4 \uc800\uc7a5\uc18c\uac00 \uc791\uc131\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \uc774\ub294 \uc11c\ubc84 \uc791\uc131 \uc911\uc5d0 server.env \ud30c\uc77c\uc5d0 \uc0dd\uc131\ub418\uc5c8\uac70\ub098 \uc11c\ubc84\uac00 \uc2e4\ud589\ub41c \ud658\uacbd\uc5d0\uc11c \ub300\uccb4\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
-ssl.defaultKeyStore.env.password.CWPKI0820A.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc74c
+ssl.defaultKeyStore.env.password.CWPKI0820A.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 #--------------------------------------------------------------------------------------------------
 ssl.defaultKeyStore.loaded.CWPKI0821I=CWPKI0821I: {2} \ud0a4 \uc800\uc7a5\uc18c \uc720\ud615\uc758 {1} \uae30\ubcf8 \ud0a4 \uc800\uc7a5\uc18c\uac00 \ub85c\ub4dc\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
 ssl.defaultKeyStore.loaded.CWPKI0821I.explanation=\uc9c0\uc815\ub41c \uc704\uce58\uc640 \ud0a4 \uc800\uc7a5\uc18c \uc720\ud615\uc73c\ub85c \uae30\ubcf8 \ud0a4 \uc800\uc7a5\uc18c\uac00 \ub85c\ub4dc\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
-ssl.defaultKeyStore.loaded.CWPKI0821I.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc74c
+ssl.defaultKeyStore.loaded.CWPKI0821I.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 #--------------------------------------------------------------------------------------------------
 ssl.defaultKeyStore.loaded.jksAndPKCS12Exist.CWPKI0822W=CWPKI0822W: \ucd5c\uc18c\ud55c\uc758 \uae30\ubcf8 \ud0a4 \uc800\uc7a5\uc18c \uad6c\uc131\uc774 \uc9c0\uc815\ub418\uc5c8\uc73c\uba70 \ud0a4 \uc800\uc7a5\uc18c key.jks \ubc0f key.p12\uac00 \ubaa8\ub450 \uae30\ubcf8 \ud0a4 \uc800\uc7a5\uc18c \uc704\uce58\uc5d0 \uc874\uc7ac\ud569\ub2c8\ub2e4. key.jks\uac00 \uae30\ubcf8 \ud0a4 \uc800\uc7a5\uc18c\ub85c \uc0ac\uc6a9\ub429\ub2c8\ub2e4.
 ssl.defaultKeyStore.loaded.jksAndPKCS12Exist.CWPKI0822W.explanation=\ucd5c\uc18c\ud55c\uc758 \uae30\ubcf8 \ud0a4 \uc800\uc7a5\uc18c \uad6c\uc131\uacfc \uae30\ubcf8 \ud0a4 \uc800\uc7a5\uc18c \uc704\uce58\uc5d0 \uc815\uc758\ub41c key.jks \ud30c\uc77c \ubc0f key.p12 \ud30c\uc77c\uc744 \ubaa8\ub450 \uc0ac\uc6a9\ud558\uc5ec key.jks \ud30c\uc77c\uc774 \uae30\ubcf8 \ud0a4 \uc800\uc7a5\uc18c\ub85c \uc0ac\uc6a9\ub429\ub2c8\ub2e4.
-ssl.defaultKeyStore.loaded.jksAndPKCS12Exist.CWPKI0822W.useraction=key.p12 \ud30c\uc77c\uc744 \uae30\ubcf8 \ud0a4 \uc800\uc7a5\uc18c\ub85c \uc9c0\uc815\ud558\ub824\uba74 key.p12 \uc704\uce58\ub97c \uc9c0\uc815\ud558\ub3c4\ub85d \ud0a4 \uc800\uc7a5\uc18c \uad6c\uc131\uc744 \ubcc0\uacbd\ud558\uac70\ub098 \uad6c\uc131\uc5d0\uc11c key.jks  \ud30c\uc77c\uc744 \uc0ad\uc81c\ud558\uc2ed\uc2dc\uc624. key.jks\ub97c \uae30\ubcf8 \ud0a4 \uc800\uc7a5\uc18c\ub85c \uc0ac\uc6a9\ud558\ub824\uba74 \ubcc0\uacbd\uc774 \ud544\uc694\uc5c6\uc2b5\ub2c8\ub2e4.
+ssl.defaultKeyStore.loaded.jksAndPKCS12Exist.CWPKI0822W.useraction=key.p12 \ud30c\uc77c\uc744 \uae30\ubcf8 \ud0a4 \uc800\uc7a5\uc18c\ub85c \uc9c0\uc815\ud558\ub824\uba74 key.p12 \uc704\uce58\ub97c \uc9c0\uc815\ud558\ub3c4\ub85d \ud0a4 \uc800\uc7a5\uc18c \uad6c\uc131\uc744 \ubcc0\uacbd\ud558\uac70\ub098 \uad6c\uc131\uc5d0\uc11c key.jks \ud30c\uc77c\uc744 \uc0ad\uc81c\ud558\uc2ed\uc2dc\uc624. key.jks\ub97c \uae30\ubcf8 \ud0a4 \uc800\uc7a5\uc18c\ub85c \uc0ac\uc6a9\ud558\ub824\uba74 \ubcc0\uacbd\uc774 \ud544\uc694\uc5c6\uc2b5\ub2c8\ub2e4. 
 #--------------------------------------------------------------------------------------------------
 ssl.client.handshake.error.CWPKI0823E=CWPKI0823E: SSL HANDSHAKE FAILURE: SubjectDN\uc774 {0}\uc778 \uc11c\uba85\uc790\uac00 [{1}] \ud638\uc2a4\ud2b8\uc5d0\uc11c \uc804\uc1a1\ub418\uc5c8\uc2b5\ub2c8\ub2e4. SSL \uad6c\uc131 \ubcc4\uba85 [{3}]\uc5d0 \uc788\ub294 \ub85c\uceec \uc2e0\ub8b0 \uc800\uc7a5\uc18c [{2}]\uc5d0 \uc11c\uba85\uc790\ub97c \ucd94\uac00\ud574\uc57c \ud569\ub2c8\ub2e4. SSL \ud578\ub4dc\uc250\uc774\ud06c \uc608\uc678\uc758 \ud655\uc7a5 \uc624\ub958 \uba54\uc2dc\uc9c0\ub294 [{4}]\uc785\ub2c8\ub2e4.
 ssl.client.handshake.error.CWPKI0823E.explanation=SSL \ud578\ub4dc\uc250\uc774\ud06c \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \ub300\uc0c1 \ud638\uc2a4\ud2b8\uc5d0\uc11c \ud074\ub77c\uc774\uc5b8\ud2b8 \uc2e0\ub8b0 \uc800\uc7a5\uc18c\ub85c \uc11c\uba85\uc790 \ub0b4\ubcf4\ub0b4\uae30/\uac00\uc838\uc624\uae30\ub97c \uc218\ud589\ud574\uc57c \ud569\ub2c8\ub2e4.
@@ -664,4 +663,8 @@ ssl.client.handshake.cacerts.error.CWPKI0828E.useraction=\ud655\uc7a5 \uc624\ub9
 ssl.update.certificate.error=CWPKI0829E: SSL \uc778\uc99d\uc11c \uc5c5\ub370\uc774\ud2b8 \uc624\ub958. {0}
 ssl.update.certificate.error.explanation=SSL \uc778\uc99d\uc11c\ub97c \uc9c0\uc815\ub41c \uc704\uce58\uc5d0\uc11c \uc5c5\ub370\uc774\ud2b8\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
 ssl.update.certificate.error.useraction=\uc11c\ubc84 \ud504\ub85c\uc138\uc2a4\uc5d0\uc11c \ud574\ub2f9 \uc704\uce58\uc5d0 \uc561\uc138\uc2a4\ud560 \uc218 \uc788\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624. \ud0a4 \uc0dd\uc131\uc774\ub098 \ub85c\ub4dc\uc640 \uad00\ub828\ub41c \ucd94\uac00 \uc624\ub958 \uc815\ubcf4\ub294 FFDC \ub85c\uadf8\ub97c \uac80\ud1a0\ud558\uc2ed\uc2dc\uc624.
+# -------------------------------------------------------------------------------------------------
+ssl.certificate.add.CWPKI0830I=CWPKI0830I: {1} \ud658\uacbd \ubcc0\uc218\uc758 {0} SubjectDN\uc744 \uc0ac\uc6a9\ud558\ub294 \uc778\uc99d\uc11c\uac00 {2} \ud0a4 \uc800\uc7a5\uc18c\uc5d0 \ucd94\uac00\ub429\ub2c8\ub2e4.
+ssl.certificate.add.CWPKI0830I.explanation=\uc778\uc99d\uc11c\uac00 \uad6c\uc131\uc758 \ud658\uacbd \ubcc0\uc218\uc5d0\uc11c \uac80\uc0c9\ub418\uc5c8\uc73c\uba70 \ud0a4 \uc800\uc7a5\uc18c \ud30c\uc77c\uc5d0 \ucd94\uac00\ub429\ub2c8\ub2e4.
+ssl.certificate.add.CWPKI0830I.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 # -------------------------------------------------------------------------------------------------

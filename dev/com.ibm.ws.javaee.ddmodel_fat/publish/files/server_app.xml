@@ -1,0 +1,231 @@
+<server>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <httpEndpoint
+        httpPort="${bvt.prop.HTTP_secondary}"
+        httpsPort="${bvt.prop.HTTP_secondary.secure}"
+        virtualHost="fromApp">
+    </httpEndpoint>
+
+    <virtualHost id="fromApp">
+        <hostAlias>*:${bvt.prop.HTTP_secondary}</hostAlias>
+        <hostAlias>*:${bvt.prop.HTTP_secondary.secure}</hostAlias>
+    </virtualHost>
+
+    <javaPermission
+        className="java.io.FilePermission"
+        name="ALL FILES"
+        actions="read,write,delete"/>
+
+    <featureManager>
+        <feature>osgiConsole-1.0</feature>
+
+        <feature>servlet-3.1</feature>
+        <feature>ejb-3.2</feature>
+
+        <feature>libertyinternals-1.0</feature>
+    </featureManager>
+
+    <!-- -->
+
+    <authData id="resRefAuthData" user="foo" password="bar"/>
+
+    <application location="Test.ear">
+
+		<application-bnd>
+			<security-role name="user">
+				<user name="admin"/>
+			</security-role>
+		</application-bnd>
+
+		<application-ext shared-session-context="false"/>
+
+        <!-- The 'web-ext' and 'moduleName="ServletTest" text must be preserved on the same line.
+             This is required for text substitution performed by
+             'DDNonValidTests.testExtraWebExtModuleName()' and
+             'DDNonValidTests.testUnnamedWebExtModuleName()'.
+          -->
+		<web-ext moduleName="ServletTest"
+            enable-file-serving="true"
+			reload-interval="10"
+            default-error-page="somePage"/>
+
+		<web-bnd moduleName="ServletTest">
+			<virtual-host name="default_host"/>
+			<ejb-ref name="ejb/fromConfig" binding-name="ejb/com/ibm/ConfigHome"/>
+		</web-bnd>
+
+		<web-ext
+            moduleName="ServletTestNoBnd"
+            enable-file-serving="true"
+			reload-interval="10"
+            default-error-page="somePage"/>
+
+		<web-bnd moduleName="ServletTestNoBnd">
+		    <virtual-host name="default_host"/>
+			<ejb-ref name="ejb/fromConfig1" binding-name="ejb/com/ibm/ConfigHome"/>
+			<ejb-ref name="ejb/fromConfig2" binding-name="ejb/com/ibm/ConfigHome"/>
+			<ejb-ref name="ejb/fromConfig3" binding-name="ejb/com/ibm/ConfigHome"/>
+			<ejb-ref name="ejb/fromConfig4" binding-name="ejb/com/ibm/ConfigHome"/>
+			<ejb-ref name="ejb/fromConfig5" binding-name="ejb/com/ibm/ConfigHome"/>
+			<ejb-ref name="ejb/fromConfig6" binding-name="ejb/com/ibm/ConfigHome"/>
+			<ejb-ref name="ejb/fromConfig7" binding-name="ejb/com/ibm/ConfigHome"/>
+			<ejb-ref name="ejb/fromConfig8" binding-name="ejb/com/ibm/ConfigHome"/>
+			<ejb-ref name="ejb/fromConfig" binding-name="ejb/com/ibm/ConfigHome"/>
+			<resource-ref name="FuelDS" binding-name="jdbc/FuelDS"/>
+		</web-bnd>
+
+		<webservices-bnd moduleName="ServletTest">
+
+  		    <webservice-endpoint-properties someAttribute="test"/>
+
+			<http-publishing context-root="someContextRoot">
+				<webservice-security>
+					<security-constraint>
+						<web-resource-collection web-resource-name="Resource for EchoInfo">
+							<url-pattern>/EchoInfoService</url-pattern>
+						</web-resource-collection>
+						<auth-constraint role-name="role_1"/>
+						<user-data-constraint transport-guarantee="1"/>
+					</security-constraint>
+					<security-role role-name="role_1"/>
+					<login-config auth-method="BASIC"/>
+				</webservice-security>
+			</http-publishing>
+
+			<webservice-endpoint port-component-name="Hello" address="/hi"/>
+
+			<service-ref name="service/SayHelloPojoService">
+				<port
+                    name="SayHelloPojoPort"
+                    namespace="http://ibm.com/ws/jaxws/transport/security/"
+					username="employee0" password="emp0pwd"/>
+				<properties http.conduit.tlsClientParameters.disableCNCheck="true"/>
+			</service-ref>
+
+			<service-ref name="service/SayHelloStatelessService">
+				<port
+                    name="SayHelloStatelessPort"
+                    namespace="http://ibm.com/ws/jaxws/transport/security/"
+					username="employee0" password="emp0pwd"/>
+				<properties http.conduit.tlsClientParameters.disableCNCheck="true"/>
+			</service-ref>
+
+			<service-ref name="service/SayHelloSingletonService">
+				<port
+                    name="SayHelloSingletonPort"
+                    namespace="http://ibm.com/ws/jaxws/transport/security/"
+					username="employee0" password="emp0pwd"/>
+				<properties http.conduit.tlsClientParameters.disableCNCheck="true"/>
+			</service-ref>
+		</webservices-bnd>
+
+	    <webservices-bnd moduleName="ServletTestNoBnd">
+
+			<webservice-endpoint-properties someAttribute="test"/>
+
+			<http-publishing context-root="someContextRoot">
+				<webservice-security>
+					<security-constraint>
+						<web-resource-collection web-resource-name="Resource for EchoInfo">
+							<url-pattern>/EchoInfoService</url-pattern>
+						</web-resource-collection>
+						<auth-constraint role-name="role_1"/>
+						<user-data-constraint transport-guarantee="1"/>
+					</security-constraint>
+					<security-role role-name="role_1"/>
+					<login-config auth-method="BASIC"/>
+				</webservice-security>
+			</http-publishing>
+
+			<webservice-endpoint port-component-name="Hello" address="/hi"/>
+
+			<service-ref name="service/SayHelloPojoService">
+				<port
+                    name="SayHelloPojoPort"
+                    namespace="http://ibm.com/ws/jaxws/transport/security/"
+					username="employee0" password="emp0pwd"/>
+				<properties http.conduit.tlsClientParameters.disableCNCheck="true"/>
+			</service-ref>
+
+			<service-ref name="service/SayHelloStatelessService">
+				<port
+                    name="SayHelloStatelessPort"
+                    namespace="http://ibm.com/ws/jaxws/transport/security/"
+					username="employee0" password="emp0pwd"/>
+				<properties http.conduit.tlsClientParameters.disableCNCheck="true"/>
+			</service-ref>
+
+			<service-ref name="service/SayHelloSingletonService">
+				<port
+                    name="SayHelloSingletonPort"
+                    namespace="http://ibm.com/ws/jaxws/transport/security/"
+					username="employee0" password="emp0pwd"/>
+				<properties http.conduit.tlsClientParameters.disableCNCheck="true"/>
+			</service-ref>
+		</webservices-bnd>
+
+		<ejb-jar-bnd moduleName="EJBTest">
+			<session name="TestBean">
+				<ejb-ref name="ejb/someEjb" binding-name="java:global/SomeEJB"/>
+				<resource-ref name="jdbc/someResource" binding-name="someResource">
+					<authentication-alias name="resRefAuthData"/>
+				</resource-ref>
+				<resource-ref name="jdbc/someResource2" binding-name="someResource"/>
+				<resource-ref name="jdbc/someResource3" binding-name="someResource"/>
+				<data-source name="jdbc/someDS" binding-name="someDS"/>
+			</session>
+		</ejb-jar-bnd>
+
+		<ejb-jar-ext moduleName="EJBTest">
+			<session name="TestBean">
+				<resource-ref name="jdbc/someResource" isolation-level="TRANSACTION_SERIALIZABLE"/>
+				<resource-ref name="jdbc/someResource2" isolation-level="TRANSACTION_SERIALIZABLE"/>
+				<resource-ref name="jdbc/someResource3" isolation-level="TRANSACTION_SERIALIZABLE"/>
+				<resource-ref name="jdbc/someResource4" isolation-level="TRANSACTION_SERIALIZABLE"/>
+				<time-out value="42"/>
+			</session>
+		</ejb-jar-ext>
+
+		<ejb-jar-bnd moduleName="EJBTestNoBnd">
+			<session name="EJBBndStatefulBean">
+				<ejb-ref
+                    name="ejb/stateless/ambiguous1"
+					binding-name="java:global/BindingSessionBeanApp/BindingSessionBeanEJB/EJBBndAmbiguousBean1"/>
+				<resource-ref
+                    name="jdbc/ejbResRefDefaultIsoDS"
+					binding-name="ejbDataSource"></resource-ref>
+				<resource-ref
+                    name="jdbc/ejbResRefEjbIsoDS"
+					binding-name="ejbDataSource"></resource-ref>
+				<resource-ref
+                    name="jdbc/dupBindingDS"
+                    binding-name="ejbDataSource"></resource-ref>
+				<data-source name="jdbc/dsdOverrideBinding"
+					binding-name="ejbDataSource"/>
+				<env-entry name="boolAnnotationInjectionBinding" value="true"/>
+			</session>
+		</ejb-jar-bnd>
+
+		<ejb-jar-ext moduleName="EJBTestNoBnd">
+			<session name="EJBBndStatefulBean">
+				<resource-ref
+                    name="jdbc/ejbResRefEjbIsoDS"
+					isolation-level="TRANSACTION_READ_UNCOMMITTED"/>
+				<resource-ref
+                    name="jdbc/webResRefEjbIsoDS"
+					isolation-level="TRANSACTION_SERIALIZABLE"/>
+				<resource-ref
+                    name="jdbc/dupBindingDS"
+                    isolation-level="TRANSACTION_READ_UNCOMMITTED"/>
+				<resource-ref
+                    name="jdbc/InjectionInterceptor/bindingDS"
+					isolation-level="TRANSACTION_READ_COMMITTED"/>
+				<time-out value="42"/>
+			</session>
+		</ejb-jar-ext>
+
+    </application>
+
+</server>

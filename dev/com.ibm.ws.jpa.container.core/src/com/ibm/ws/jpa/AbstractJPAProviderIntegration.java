@@ -115,16 +115,20 @@ public abstract class AbstractJPAProviderIntegration implements JPAProviderInteg
     }
 
     @Override
-    public void moduleStarting(ModuleInfo moduleInfo) {}
+    public void moduleStarting(ModuleInfo moduleInfo) {
+    }
 
     @Override
-    public void moduleStarted(ModuleInfo moduleInfo) {}
+    public void moduleStarted(ModuleInfo moduleInfo) {
+    }
 
     @Override
-    public void moduleStopping(ModuleInfo moduleInfo) {}
+    public void moduleStopping(ModuleInfo moduleInfo) {
+    }
 
     @Override
-    public void moduleStopped(ModuleInfo moduleInfo) {}
+    public void moduleStopped(ModuleInfo moduleInfo) {
+    }
 
     /**
      * @see com.ibm.ws.jpa.JPAProviderIntegration#supportsEntityManagerPooling()
@@ -155,9 +159,49 @@ public abstract class AbstractJPAProviderIntegration implements JPAProviderInteg
              * the aggregate function is NULL.
              *
              * Set this property to so that EclipseLink does not return null by default
+             *
+             * JPA 3.0: Do not force this override with JPA 3.0 and later.
              */
-            if (!properties.containsKey("eclipselink.allow-null-max-min")) {
+            if (!properties.containsKey("eclipselink.allow-null-max-min") &&
+                JPAAccessor.getJPAComponent().getJPAVersion().lesserThan(JPAVersion.JPA30)) {
                 props.put("eclipselink.allow-null-max-min", "false");
+            }
+
+            /*
+             * EclipseLink Bug 567891: Case expressions that should return boolean instead
+             * return integer values. The JPA spec is too vague to change this, so we set this
+             * property to be safe for customers.
+             *
+             * Set this property to `false` so that EclipseLink will return the same integer
+             * value it has always returned for CASE expressions and not change behavior
+             *
+             * NOTE: This property is applicable for JPA 21 & JPA 22. JPAVersion > JPA22 has changed
+             * behavior by default
+             */
+            if (!properties.containsKey("eclipselink.sql.allow-convert-result-to-boolean") &&
+                JPAAccessor.getJPAComponent().getJPAVersion().equals(JPAVersion.JPA22)) {
+                props.put("eclipselink.sql.allow-convert-result-to-boolean", "false");
+            }
+            // The property is named differently for EclipseLink 2.6
+            if (!properties.containsKey("eclipselink.allow-result-type-conversion") &&
+                JPAAccessor.getJPAComponent().getJPAVersion().equals(JPAVersion.JPA21)) {
+                props.put("eclipselink.allow-result-type-conversion", "false");
+            }
+
+            /*
+             * EclipseLink Bug 559307: EclipseLink on all versions can dead-lock forever.
+             * This property was added as a new feature in EclipseLink 3.0. However, the property
+             * currently defaults to `true` and causes performance regression.
+             *
+             * Set this property to `false` so that EclipseLink will disable the debug/trace which
+             * reduces performance.
+             *
+             * NOTE: This property is only applicable for JPA 30. TODO: Setting this property can be
+             * removed from here after updating JPA 3.0 to >= EclipseLink 3.0.1
+             */
+            if (!properties.containsKey("eclipselink.concurrency.manager.allow.readlockstacktrace") &&
+                JPAAccessor.getJPAComponent().getJPAVersion().equals(JPAVersion.JPA30)) {
+                props.put("eclipselink.concurrency.manager.allow.readlockstacktrace", "false");
             }
         } else if (PROVIDER_HIBERNATE.equals(providerName)) {
             // Hibernate had vastly outdated built-in knowledge of WebSphere API, until version 5.2.13+ and 5.3+.
@@ -188,7 +232,8 @@ public abstract class AbstractJPAProviderIntegration implements JPAProviderInteg
      * @see com.ibm.ws.jpa.JPAProvider#modifyPersistenceUnitProperties(java.lang.String, java.util.Properties)
      */
     @Override
-    public void updatePersistenceUnitProperties(String providerClassName, Properties props) {}
+    public void updatePersistenceUnitProperties(String providerClassName, Properties props) {
+    }
 
     /**
      * As of Hibernate 5.2.13+ and 5.3+ built-in knowledge of Liberty's transaction integration was delivered as:

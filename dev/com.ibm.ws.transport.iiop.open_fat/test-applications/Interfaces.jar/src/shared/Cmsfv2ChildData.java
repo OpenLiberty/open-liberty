@@ -34,11 +34,6 @@ public class Cmsfv2ChildData extends Cmsfv2ParentData {
         if (!(obj instanceof Cmsfv2ChildData))
             return false;
         Cmsfv2ChildData other = (Cmsfv2ChildData) obj;
-        if (data == null) {
-            if (other.data != null)
-                return false;
-        } else if (!data.equals(other.data))
-            return false;
-        return true;
+        return data.equals(other.data);
     }
 }

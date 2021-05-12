@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,7 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -59,6 +60,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrency.policy.ConcurrencyPolicy;
 import com.ibm.ws.concurrent.ContextualAction;
 import com.ibm.ws.concurrent.WSManagedExecutorService;
+import com.ibm.ws.concurrent.ext.ConcurrencyExtensionProvider;
 import com.ibm.ws.javaee.version.JavaEEVersion;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
@@ -78,13 +80,23 @@ import com.ibm.wsspi.threadcontext.WSContextService;
 @Component(configurationPid = "com.ibm.ws.concurrent.managedExecutorService", configurationPolicy = ConfigurationPolicy.REQUIRE,
            service = { ExecutorService.class, ManagedExecutor.class, ManagedExecutorService.class, //
                        ResourceFactory.class, ApplicationRecycleComponent.class },
-           reference = @Reference(name = "ApplicationRecycleCoordinator", service = ApplicationRecycleCoordinator.class),
-           property = { "creates.objectClass=java.util.concurrent.ExecutorService",
-                        "creates.objectClass=javax.enterprise.concurrent.ManagedExecutorService",
-                        "creates.objectClass=org.eclipse.microprofile.context.ManagedExecutor" })
+           reference = @Reference(name = "ApplicationRecycleCoordinator", service = ApplicationRecycleCoordinator.class))
 public class ManagedExecutorServiceImpl implements ExecutorService, //
                 ManagedExecutor, ManagedExecutorService, CompletionStageExecutor, //
                 ResourceFactory, ApplicationRecycleComponent, WSManagedExecutorService {
+
+    static {
+        // Initialize ForkJoinPool when this class is initialized to avoid it failing later with access
+        // control issues since ForkJoinPool doesn't have doPriv calls for getting some properties
+        AccessController.doPrivileged(new PrivilegedAction<Void>() {
+            @Override
+            public Void run() {
+                ForkJoinPool.commonPool();
+                return null;
+            }
+        });
+    }
+
     private static final TraceComponent tc = Tr.register(ManagedExecutorServiceImpl.class);
 
     /**
@@ -108,6 +120,11 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
      * Names of applications using this ResourceFactory
      */
     private final Set<String> applications = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
+
+    /**
+     * Collects common dependencies, including the ConcurrencyExtensionProvider, if any is available.
+     */
+    private ConcurrencyService concurrencySvc;
 
     /**
      * Privileged action to lazily obtain the context service. Available only on the OSGi code path.
@@ -311,6 +328,7 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
      *
      * @return copy of the completion stage, where dependent stages of the copy uses this managed executor by default.
      */
+    @Override
     @Trivial
     public final <T> CompletableFuture<T> copy(CompletableFuture<T> stage) {
         return (CompletableFuture<T>) copy((CompletionStage<T>) stage);
@@ -321,6 +339,7 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
      *
      * @return copy of the completion stage, where dependent stages of the copy uses this managed executor by default.
      */
+    @Override
     public <T> CompletionStage<T> copy(CompletionStage<T> stage) {
         if (mpContextService == null || !MPContextPropagationVersion.atLeast(MPContextPropagationVersion.V1_1))
             throw new UnsupportedOperationException();
@@ -401,7 +420,11 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
         if (cData != null)
             applications.add(cData.getJ2EEName().getApplication());
 
-        return this;
+        ConcurrencyExtensionProvider provider = concurrencySvc.extensionProvider;
+        if (provider == null)
+            return this;
+        else
+            return provider.provide(this, ref);
     }
 
     @Override
@@ -429,6 +452,11 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
         Set<String> members = new HashSet<String>(applications);
         applications.removeAll(members);
         return members;
+    }
+
+    @Override
+    public PolicyExecutor getLongRunningPolicyExecutor() {
+        return longRunningPolicyExecutorRef.get();
     }
 
     @Override
@@ -493,6 +521,7 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
      *
      * @return the backing instance of MicroProfile ThreadContext.
      */
+    @Override
     public org.eclipse.microprofile.context.ThreadContext getThreadContext() {
         if (mpContextService == null || !MPContextPropagationVersion.atLeast(MPContextPropagationVersion.V1_1))
             throw new UnsupportedOperationException();
@@ -594,6 +623,16 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
     @Reference(policy = ReferencePolicy.DYNAMIC, target = "(id=unbound)")
     protected void setConcurrencyPolicy(ConcurrencyPolicy svc) {
         policyExecutor = svc.getExecutor();
+    }
+
+    /**
+     * Declarative Services method for setting the concurrency service.
+     *
+     * @param svc the service
+     */
+    @Reference(policy = ReferencePolicy.STATIC)
+    protected void setConcurrencyService(ConcurrencyService svc) {
+        concurrencySvc = svc;
     }
 
     /**
@@ -747,6 +786,15 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
      * @param svc the service
      */
     protected void unsetConcurrencyPolicy(ConcurrencyPolicy svc) {
+    }
+
+    /**
+     * Declarative Services method for unsetting the concurrency service
+     *
+     * @param svc the service
+     */
+    protected void unsetConcurrencyService(ConcurrencyService svc) {
+        // As a static dependency, unset of the ConcurrencyService will deactivate this instance
     }
 
     /**

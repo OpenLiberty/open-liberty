@@ -43,6 +43,7 @@ instrument.classesExcludes: com/ibm/ws/app/manager/war/internal/resources/*.clas
 	com.ibm.ws.adaptable.module;version=latest,\
 	com.ibm.ws.app.manager;version=latest,\
 	com.ibm.ws.app.manager.module;version=latest,\
+	com.ibm.ws.app.manager.lifecycle;version=latest,\
     com.ibm.ws.anno;version=latest,\
 	com.ibm.ws.artifact;version=latest,\
 	com.ibm.ws.artifact.zip;version=latest,\

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -49,7 +49,7 @@ public class SecurityContextEJBTest extends JavaEESecTestBase {
     protected static String EJB_SERVLET_NAME = "SecurityContextEJBBaseServlet";
     protected static String EJB_WAR_NAME = "securityContextEJBInWar.war";
     protected static String EJB_EAR_NAME = "securitycontextejbinwar.ear";
-    protected static String EJB_APP_NAME = "securitycontextejbinwar.ear";
+    protected static String EJB_APP_NAME = "securitycontextejbinwar";
 
     protected DefaultHttpClient httpclient;
 
@@ -103,8 +103,8 @@ public class SecurityContextEJBTest extends JavaEESecTestBase {
     protected static void startServer(String config, String appName) throws Exception {
         if (config != null)
             myServer.setServerConfigurationFile(config);
-        myServer.startServer(true);
         myServer.addInstalledAppForValidation(appName);
+        myServer.startServer(true);
         urlBase = "http://" + myServer.getHostname() + ":" + myServer.getHttpDefaultPort();
     }
 

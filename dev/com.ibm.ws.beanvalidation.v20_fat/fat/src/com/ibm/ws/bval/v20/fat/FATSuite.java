@@ -20,7 +20,6 @@ import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                BeanVal20_CDI_EJB_Test.class,
                 BeanVal20Test.class
 })
 public class FATSuite {

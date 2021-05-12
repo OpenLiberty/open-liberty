@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2011 IBM Corporation and others.
+# Copyright (c) 2009, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -127,6 +127,11 @@ session.liveSessions.description=Nombre d'utilisateurs actuellement connect\u00e
 session.activeSessions.description=Nombre de sessions actives simultan\u00e9ment. (Une session est active si le produit est en train de traiter une demande qui utilise cette session utilisateur).
 session.invalidated.total.description=Nombre de sessions d\u00e9connect\u00e9es depuis l'activation de cette m\u00e9trique.
 session.invalidatedbyTimeout.total.description=Nombre de sessions d\u00e9connect\u00e9es suite au d\u00e9passement du d\u00e9lai d'attente depuis l'activation de cette m\u00e9trique.
+
+requestTiming.requestCount.description=Nombre de demandes de servlet depuis que le serveur a d\u00e9marr\u00e9.
+requestTiming.activeRequestCount.description=Nombre de demandes de servlet en cours d'ex\u00e9cution.
+requestTiming.slowRequestCount.description=Nombre de demandes de servlet en cours d'ex\u00e9cution mais qui sont lentes.
+requestTiming.hungRequestCount.description=Nombre de demandes de servlet en cours d'ex\u00e9cution mais qui sont bloqu\u00e9es.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message

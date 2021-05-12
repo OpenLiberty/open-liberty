@@ -58,20 +58,20 @@ public class LibertyJava8WorkaroundRuntimeTransformer implements ClassFileTransf
      */
     private final static boolean isIBMVirtualMachine = System.getProperty("java.vm.name", "unknown").contains("IBM J9");
 
-	/**
-	 * Trace instrumentation force. Due to performance concerns with up-front instrumentation of all 1.8 bytecode classes,
-	 * the decision was made to for now only enable diagnostic instrumentation when a bootstrap.properties variable is set
-	 * to signal that they should be transformed up front.
-	*/
-	private static final boolean isJava8TraceEnabled = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+    /**
+     * Trace instrumentation force. Due to performance concerns with up-front instrumentation of all 1.8 bytecode classes,
+     * the decision was made to for now only enable diagnostic instrumentation when a bootstrap.properties variable is set
+     * to signal that they should be transformed up front.
+    */
+    private static final boolean isJava8TraceEnabled = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
         @Override
         public Boolean run()
         {
-			Boolean prop = Boolean.getBoolean("com.ibm.ws.ras.instrument.instrumentJava8Trace");
+            Boolean prop = Boolean.getBoolean("com.ibm.ws.ras.instrument.instrumentJava8Trace");
             return (prop == null ? false : prop.booleanValue());
         }
     });
-	
+
     /** Issue detailed entry/exit trace for class transforms if this is true. */
     private static final boolean detailedTransformTrace = Boolean.getBoolean("com.ibm.ws.logging.instrumentation.detail.enabled");
 
@@ -86,14 +86,7 @@ public class LibertyJava8WorkaroundRuntimeTransformer implements ClassFileTransf
      * the transformer.
      */
     private static LibertyJava8WorkaroundRuntimeTransformer registeredTransformer = null;
-
-    /**
-     * Indication that hot-code-replace is not available or should not be used.
-     * Class transforms will be done aggressively as classes are defined to the
-     * VM.
-     */
-    private static boolean injectAtTransform = false;
-
+    
     /**
      * Flag that indicates we should attempt to work around an emma
      * instrumentation issue by removing the bad local variable table
@@ -191,7 +184,6 @@ public class LibertyJava8WorkaroundRuntimeTransformer implements ClassFileTransf
      * @param injectAtTransform true if classes should be transformed at definition
      */
     protected static void setInjectAtTransform(boolean injectAtTransform) {
-        LibertyJava8WorkaroundRuntimeTransformer.injectAtTransform = injectAtTransform;
         if (injectAtTransform) {
             addTransformer();
         }

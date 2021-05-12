@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2015 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -132,13 +132,13 @@ public class LoginBridge {
                 if (!this.mappingUtils.isIdentifierTypeProperty(outputAttrName)) {
                     Object value = entity.get(outputAttrName);
                     if (value instanceof List<?>) {
-                        returnValue.append(String.valueOf(((List<?>) value).get(0)));
+                        returnValue.append(BridgeUtils.getStringValue(((List<?>) value).get(0)));
                     } else {
-                        returnValue.append(String.valueOf(value));
+                        returnValue.append(BridgeUtils.getStringValue(value));
                     }
                 } else {
                     // d113681
-                    returnValue.append(String.valueOf(entity.getIdentifier().get(outputAttrName)));
+                    returnValue.append(BridgeUtils.getStringValue(entity.getIdentifier().get(outputAttrName)));
                 }
             }
             // if realm is defined
@@ -231,13 +231,13 @@ public class LoginBridge {
                 if (!this.mappingUtils.isIdentifierTypeProperty(outputAttrName)) {
                     Object value = entity.get(outputAttrName);
                     if (value instanceof List<?>) {
-                        returnValue.append(String.valueOf(((List<?>) value).get(0)));
+                        returnValue.append(BridgeUtils.getStringValue(((List<?>) value).get(0)));
                     } else {
-                        returnValue.append(String.valueOf(value));
+                        returnValue.append(BridgeUtils.getStringValue(value));
                     }
                 } else {
                     // d113681
-                    returnValue.append(String.valueOf(entity.getIdentifier().get(outputAttrName)));
+                    returnValue.append(BridgeUtils.getStringValue(entity.getIdentifier().get(outputAttrName)));
                 }
             }
             // if realm is defined

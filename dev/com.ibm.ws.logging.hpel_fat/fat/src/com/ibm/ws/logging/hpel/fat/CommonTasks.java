@@ -718,7 +718,7 @@ public class CommonTasks {
 //        if (response == null)
 //            writeLogMsg(Level.WARNING, "The response from RasZipper is null");
 //        if (response.getResponseCode() != 200)
-//            writeLogMsg(Level.WARNING, "Unxpected response code from RasZipper. Recieved response code of: "
+//            writeLogMsg(Level.WARNING, "Unxpected response code from RasZipper. Received response code of: "
 //                                       + response.getResponseCode());
 //
 //        // 2. Copy the zip file to the destination

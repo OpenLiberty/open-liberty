@@ -12,7 +12,7 @@
 	<include location="../fatTestPorts.xml" />
 	
   <logging
-    traceSpecification="Transaction=all:wsat=all:ClassLoadingService=all"
+    traceSpecification="Transaction=all:wsat=all"
 		traceFileName="trace.log"
 		maxFileSize="2000"
 		maxFiles="20"

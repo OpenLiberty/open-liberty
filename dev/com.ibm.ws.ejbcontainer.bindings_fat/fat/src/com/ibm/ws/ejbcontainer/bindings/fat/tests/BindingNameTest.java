@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,7 +44,9 @@ public class BindingNameTest extends FATServletClient {
         @Override
         protected void failed(Throwable e, Description description) {
             try {
-                server.dumpServer("serverDump");
+                System.runFinalization();
+                System.gc();
+                server.serverDump("heap");
             } catch (Exception e1) {
                 System.out.println("Failed to dump server");
                 e1.printStackTrace();
@@ -61,6 +63,9 @@ public class BindingNameTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        server.deleteAllDropinApplications();
+        server.removeAllInstalledAppsForValidation();
+
         // Use ShrinkHelper to build the ears
         JavaArchive BindingNameEJB = ShrinkHelper.buildJavaArchive("BindingNameEJB.jar", "com.ibm.ejb3x.BindingName.ejb.");
         ShrinkHelper.addDirectory(BindingNameEJB, "test-applications/BindingNameEJB.jar/resources");
@@ -79,7 +84,7 @@ public class BindingNameTest extends FATServletClient {
     @AfterClass
     public static void cleanUp() throws Exception {
         if (server != null && server.isStarted()) {
-            server.stopServer();
+            server.stopServer("CNTR0338W");
         }
     }
 

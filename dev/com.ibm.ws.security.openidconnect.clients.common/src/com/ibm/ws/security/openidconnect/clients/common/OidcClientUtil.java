@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2018 IBM Corporation and others.
+ * Copyright (c) 2013, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,6 +40,8 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.common.internal.encoder.Base64Coder;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.genericbnf.PasswordNullifier;
 import com.ibm.ws.security.openidconnect.common.Constants;
 import com.ibm.ws.security.openidconnect.token.IDToken;
 import com.ibm.ws.webcontainer.security.ReferrerURLCookieHandler;
@@ -373,6 +375,18 @@ public class OidcClientUtil {
         }
     }
 
+    @FFDCIgnore(Exception.class)
+    public static boolean isReferrerHostValid(HttpServletRequest req, @Sensitive String requestUrl) {
+        try {
+            // Get the redirection domain names from the global security configuration, <webAppSecurity wasReqURLRedirectDomainNames="mydomain"/>
+            ReferrerURLCookieHandler.isReferrerHostValid(PasswordNullifier.nullifyParams(req.getRequestURL().toString()), PasswordNullifier.nullifyParams(requestUrl),
+                    getWebAppSecurityConfig().getWASReqURLRedirectDomainNames());
+            return true;
+        } catch (Exception re) {
+            return false;
+        }
+    }
+
     // for FAT
     public static void setWebAppSecurityConfig(WebAppSecurityConfig webAppSecurityConfig) {
         OidcClientUtil.webAppSecurityConfigRef.set(webAppSecurityConfig);
@@ -419,22 +433,16 @@ public class OidcClientUtil {
         response.addCookie(c);
     }
 
-    /**
-     * @param encodedReqParams
-     * @param clientSecret
-     * @return
-     */
     public static String calculateOidcCodeCookieValue(String encoded, ConvergedClientConfig clientCfg) {
 
         String retVal = new String(encoded);
-        String clientidsecret = clientCfg.toString();
-        if (clientCfg.getClientSecret() != null) {
-            clientidsecret = clientidsecret.concat(clientCfg.getClientSecret());
+        String uniqueSecretValue = clientCfg.getClientSecret();
+        if (uniqueSecretValue == null) {
+            uniqueSecretValue = clientCfg.toString();
         }
 
-        String tmpStr = new String(encoded);
-        tmpStr = tmpStr.concat("_").concat(clientidsecret);
-        retVal = retVal.concat("_").concat(HashUtils.digest(tmpStr)); // digest encoded request params and clientid+client_secret
+        String signatureValue = (new String(encoded)) + "_" + uniqueSecretValue;
+        retVal = retVal + "_" + HashUtils.digest(signatureValue); // digest encoded request params and client_secret/client-specific value
 
         return retVal;
     }

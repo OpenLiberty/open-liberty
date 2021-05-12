@@ -60,7 +60,7 @@ import com.ibm.ws.testtooling.vehicle.resources.TestExecutionResources;
 public class CriteriaQueryTestLogic extends AbstractTestLogic {
 
     public void testCriteriaQuery_byte(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                       Object managedComponentObject) {
+                                       Object managedComponentObject) throws Throwable {
         final String testName = getTestName();
 
         // Verify parameters
@@ -136,18 +136,13 @@ public class CriteriaQueryTestLogic extends AbstractTestLogic {
 //            results.assertEquals( "Assert for the entity fields", findEntity0001.getEntity0001_string01(), "ENTITY0001_STRING01");
 //            results.assertEquals( "Assert for the entity fields", findEntity0001.getEntity0001_string02(), "ENTITY0001_STRING02");
 //            results.assertEquals( "Assert for the entity fields", findEntity0001.getEntity0001_string03(), "ENTITY0001_STRING03");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testName + ": End");
         }
     }
 
     public void testCriteriaQuery_Byte(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                       Object managedComponentObject) {
+                                       Object managedComponentObject) throws Throwable {
         final String testName = getTestName();
 
         // Verify parameters
@@ -195,18 +190,13 @@ public class CriteriaQueryTestLogic extends AbstractTestLogic {
             assertEquals("Entity0002_STRING03", findEntity.getEntity0002_string03());
 
             tx.commitTransaction();
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testName + ": End");
         }
     }
 
     public void testCriteriaQuery_char(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                       Object managedComponentObject) {
+                                       Object managedComponentObject) throws Throwable {
         final String testName = getTestName();
 
         // Verify parameters
@@ -254,18 +244,13 @@ public class CriteriaQueryTestLogic extends AbstractTestLogic {
             assertEquals("Entity0003_STRING03", findEntity.getEntity0003_string03());
 
             tx.commitTransaction();
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testName + ": End");
         }
     }
 
     public void testCriteriaQuery_Character(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                            Object managedComponentObject) {
+                                            Object managedComponentObject) throws Throwable {
         final String testName = getTestName();
 
         // Verify parameters
@@ -313,18 +298,13 @@ public class CriteriaQueryTestLogic extends AbstractTestLogic {
             assertEquals(findEntity.getEntity0004_string03(), "Entity0004_STRING03");
 
             tx.commitTransaction();
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testName + ": End");
         }
     }
 
     public void testCriteriaQuery_String(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                         Object managedComponentObject) {
+                                         Object managedComponentObject) throws Throwable {
         final String testName = getTestName();
 
         // Verify parameters
@@ -372,18 +352,13 @@ public class CriteriaQueryTestLogic extends AbstractTestLogic {
             assertEquals("Entity0005_STRING03", findEntity.getEntity0005_string03());
 
             tx.commitTransaction();
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testName + ": End");
         }
     }
 
     public void testCriteriaQuery_double(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                         Object managedComponentObject) {
+                                         Object managedComponentObject) throws Throwable {
         final String testName = getTestName();
 
         // Verify parameters
@@ -431,18 +406,13 @@ public class CriteriaQueryTestLogic extends AbstractTestLogic {
             assertEquals("Entity0006_STRING03", findEntity.getEntity0006_string03());
 
             tx.commitTransaction();
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testName + ": End");
         }
     }
 
     public void testCriteriaQuery_Double(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                         Object managedComponentObject) {
+                                         Object managedComponentObject) throws Throwable {
         final String testName = getTestName();
 
         // Verify parameters
@@ -490,18 +460,13 @@ public class CriteriaQueryTestLogic extends AbstractTestLogic {
             assertEquals("Entity0007_STRING03", findEntity.getEntity0007_string03());
 
             tx.commitTransaction();
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testName + ": End");
         }
     }
 
     public void testCriteriaQuery_float(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                        Object managedComponentObject) {
+                                        Object managedComponentObject) throws Throwable {
         final String testName = getTestName();
 
         // Verify parameters
@@ -549,18 +514,13 @@ public class CriteriaQueryTestLogic extends AbstractTestLogic {
             assertEquals("Entity0008_STRING03", findEntity.getEntity0008_string03());
 
             tx.commitTransaction();
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testName + ": End");
         }
     }
 
     public void testCriteriaQuery_Float(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                        Object managedComponentObject) {
+                                        Object managedComponentObject) throws Throwable {
         final String testName = getTestName();
 
         // Verify parameters
@@ -608,18 +568,13 @@ public class CriteriaQueryTestLogic extends AbstractTestLogic {
             assertEquals("Entity0009_STRING03", findEntity.getEntity0009_string03());
 
             tx.commitTransaction();
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testName + ": End");
         }
     }
 
     public void testCriteriaQuery_int(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                      Object managedComponentObject) {
+                                      Object managedComponentObject) throws Throwable {
         final String testName = getTestName();
 
         // Verify parameters
@@ -667,18 +622,13 @@ public class CriteriaQueryTestLogic extends AbstractTestLogic {
             assertEquals("Entity0010_STRING03", findEntity.getEntity0010_string03());
 
             tx.commitTransaction();
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testName + ": End");
         }
     }
 
     public void testCriteriaQuery_Integer(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                          Object managedComponentObject) {
+                                          Object managedComponentObject) throws Throwable {
         final String testName = getTestName();
 
         // Verify parameters
@@ -726,18 +676,13 @@ public class CriteriaQueryTestLogic extends AbstractTestLogic {
             assertEquals("Entity0011_STRING03", findEntity.getEntity0011_string03());
 
             tx.commitTransaction();
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testName + ": End");
         }
     }
 
     public void testCriteriaQuery_long(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                       Object managedComponentObject) {
+                                       Object managedComponentObject) throws Throwable {
         final String testName = getTestName();
 
         // Verify parameters
@@ -785,18 +730,13 @@ public class CriteriaQueryTestLogic extends AbstractTestLogic {
             assertEquals("Entity0012_STRING03", findEntity.getEntity0012_string03());
 
             tx.commitTransaction();
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testName + ": End");
         }
     }
 
     public void testCriteriaQuery_Long(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                       Object managedComponentObject) {
+                                       Object managedComponentObject) throws Throwable {
         final String testName = getTestName();
 
         // Verify parameters
@@ -844,18 +784,13 @@ public class CriteriaQueryTestLogic extends AbstractTestLogic {
             assertEquals("Entity0013_STRING03", findEntity.getEntity0013_string03());
 
             tx.commitTransaction();
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testName + ": End");
         }
     }
 
     public void testCriteriaQuery_short(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                        Object managedComponentObject) {
+                                        Object managedComponentObject) throws Throwable {
         final String testName = getTestName();
 
         // Verify parameters
@@ -903,18 +838,13 @@ public class CriteriaQueryTestLogic extends AbstractTestLogic {
             assertEquals("Entity0014_STRING03", findEntity.getEntity0014_string03());
 
             tx.commitTransaction();
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testName + ": End");
         }
     }
 
     public void testCriteriaQuery_Short(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                        Object managedComponentObject) {
+                                        Object managedComponentObject) throws Throwable {
         final String testName = getTestName();
 
         // Verify parameters
@@ -962,18 +892,13 @@ public class CriteriaQueryTestLogic extends AbstractTestLogic {
             assertEquals("Entity0015_STRING03", findEntity.getEntity0015_string03());
 
             tx.commitTransaction();
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testName + ": End");
         }
     }
 
     public void testCriteriaQuery_BigDecimal(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                             Object managedComponentObject) {
+                                             Object managedComponentObject) throws Throwable {
         final String testName = getTestName();
 
         // Verify parameters
@@ -1032,18 +957,13 @@ public class CriteriaQueryTestLogic extends AbstractTestLogic {
             assertEquals("Entity0016_STRING03", findEntity.getEntity0016_string03());
 
             tx.commitTransaction();
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testName + ": End");
         }
     }
 
     public void testCriteriaQuery_BigInteger(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                             Object managedComponentObject) {
+                                             Object managedComponentObject) throws Throwable {
         final String testName = getTestName();
 
         // Verify parameters
@@ -1091,18 +1011,13 @@ public class CriteriaQueryTestLogic extends AbstractTestLogic {
             assertEquals("Entity0017_STRING03", findEntity.getEntity0017_string03());
 
             tx.commitTransaction();
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testName + ": End");
         }
     }
 
     public void testCriteriaQuery_JavaUtilDate(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                               Object managedComponentObject) {
+                                               Object managedComponentObject) throws Throwable {
         final String testName = getTestName();
 
         // Verify parameters
@@ -1150,18 +1065,13 @@ public class CriteriaQueryTestLogic extends AbstractTestLogic {
             assertEquals("Entity0018_STRING03", findEntity.getEntity0018_string03());
 
             tx.commitTransaction();
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testName + ": End");
         }
     }
 
     public void testCriteriaQuery_JavaSqlDate(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                              Object managedComponentObject) {
+                                              Object managedComponentObject) throws Throwable {
         final String testName = getTestName();
 
         // Verify parameters
@@ -1209,11 +1119,6 @@ public class CriteriaQueryTestLogic extends AbstractTestLogic {
             assertEquals("Entity0019_STRING03", findEntity.getEntity0019_string03());
 
             tx.commitTransaction();
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testName + ": End");
         }

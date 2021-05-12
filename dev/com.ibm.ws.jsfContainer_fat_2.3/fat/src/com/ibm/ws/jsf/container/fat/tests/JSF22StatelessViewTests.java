@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,8 @@
 package com.ibm.ws.jsf.container.fat.tests;
 
 import static org.junit.Assert.assertTrue;
+
+import java.io.File;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -31,6 +33,8 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import junit.framework.Assert;
 
+import componenttest.rules.repeater.JakartaEE9Action;
+
 @RunWith(FATRunner.class)
 public class JSF22StatelessViewTests extends FATServletClient {
 
@@ -47,6 +51,9 @@ public class JSF22StatelessViewTests extends FATServletClient {
         mojarraApp = FATSuite.addMojarra(mojarraApp);
         mojarraApp = (WebArchive) ShrinkHelper.addDirectory(mojarraApp, "publish/files/permissions");
         mojarraApp = (WebArchive) ShrinkHelper.addDirectory(mojarraApp, "test-applications/" + MOJARRA_APP + "/resources");
+        //Mojarra 3.0.0-RC3 (and possibily later versions) need a beans.xml for the
+        // JSF22StatelessView_TestViewScopeCDIBeanNotTransient_Mojarra test to pass 
+        mojarraApp.addAsWebInfResource(new File("lib/LibertyFATTestFiles/beans.xml"));
         ShrinkHelper.exportToServer(server, "dropins", mojarraApp);
         server.addInstalledAppForValidation(MOJARRA_APP);
 
@@ -63,7 +70,10 @@ public class JSF22StatelessViewTests extends FATServletClient {
 
     @AfterClass
     public static void testCleanup() throws Exception {
+      // Stop the server
+      if (server != null && server.isStarted()) {
         server.stopServer();
+      }
     }
 
     @Test
@@ -71,7 +81,14 @@ public class JSF22StatelessViewTests extends FATServletClient {
         server.resetLogMarks();
         server.waitForStringInLogUsingMark("Initializing Mojarra .* for context '/" + MOJARRA_APP + "'");
         server.resetLogMarks();
-        server.waitForStringInLogUsingMark("MyFaces CDI support enabled");
+
+        String msgToSearchFor = "MyFaces CDI support enabled";
+
+        if (JakartaEE9Action.isActive()) {
+            msgToSearchFor = "MyFaces Core CDI support enabled";
+        }
+
+        server.waitForStringInLogUsingMark(msgToSearchFor);
     }
 
     @Test

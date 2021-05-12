@@ -12,18 +12,27 @@ package com.ibm.ws.kernel.launch.internal;
 
 import java.io.File;
 import java.net.URL;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.eclipse.osgi.container.Module;
+import org.eclipse.osgi.container.Module.State;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
+import org.osgi.framework.ServiceRegistration;
+import org.osgi.framework.hooks.resolver.ResolverHook;
+import org.osgi.framework.hooks.resolver.ResolverHookFactory;
 import org.osgi.framework.startlevel.BundleStartLevel;
 import org.osgi.framework.startlevel.FrameworkStartLevel;
+import org.osgi.framework.wiring.BundleCapability;
+import org.osgi.framework.wiring.BundleRequirement;
 import org.osgi.framework.wiring.BundleRevision;
+import org.osgi.framework.wiring.FrameworkWiring;
 import org.osgi.util.tracker.ServiceTracker;
 
 import com.ibm.websphere.ras.Tr;
@@ -79,34 +88,38 @@ public class ProvisionerImpl implements Provisioner {
 
         // Obtain/initialize provisioner-related services and resources
         getServices(systemBundleCtx);
+
+        // Install the platform bundles (default start level of kernel,
+        // minimum level of bootstrap)
+        installStatus = installBundles(config);
+        checkInstallStatus(installStatus);
+
         try {
+            // now start the framework after we have made sure regions is installed properly
+            systemBundleCtx.getBundle().start();
+        } catch (BundleException e) {
+            // there is no reason a BundleException should be throws when
+            // starting the framework here
+            throw new RuntimeException(e);
+        }
 
-            // Install the platform bundles (default start level of kernel,
-            // minimum level of bootstrap)
-            installStatus = installBundles(config);
-            checkInstallStatus(installStatus);
+        // Un-publicized boolean switch: if true, we won't start the
+        // initially provisioned bundles: they would have to be started manually from the osgi
+        // console. Also, only start bundles if the framework isn't already stopping
+        // for some other reason..
+        String bundleDebug = config.get("kernel.debug.bundlestart.enabled");
 
-            // Un-publicized boolean switch: if true, we won't start the
-            // initially provisioned bundles: they would have to be started manually from the osgi
-            // console. Also, only start bundles if the framework isn't already stopping
-            // for some other reason..
-            String bundleDebug = config.get("kernel.debug.bundlestart.enabled");
+        // getBundle() will throw IllegalStateException (per spec)
+        // if context is no longer valid (i.e. framework is stoppping.. )
+        if (systemBundleCtx.getBundle() != null && (bundleDebug == null || "false".equals(bundleDebug))) {
+            startStatus = startBundles(installStatus.getBundlesToStart());
+            checkStartStatus(startStatus);
 
-            // getBundle() will throw IllegalStateException (per spec)
-            // if context is no longer valid (i.e. framework is stoppping.. )
-            if (systemBundleCtx.getBundle() != null && (bundleDebug == null || "false".equals(bundleDebug))) {
-                startStatus = startBundles(installStatus.getBundlesToStart());
-                checkStartStatus(startStatus);
-
-                // Update start level through the feature prepare layer.
-                // we'll get errors if any of the bundles we need have issues
-                // starting...
-                startStatus = setFrameworkStartLevel(KernelStartLevel.FEATURE_PREPARE.getLevel());
-                checkStartStatus(startStatus);
-            }
-        } finally {
-            // Cleanup provisioner-related services and resources
-            releaseServices();
+            // Update start level through the feature prepare layer.
+            // we'll get errors if any of the bundles we need have issues
+            // starting...
+            startStatus = setFrameworkStartLevel(KernelStartLevel.FEATURE_PREPARE.getLevel());
+            checkStartStatus(startStatus);
         }
     }
 
@@ -167,15 +180,6 @@ public class ProvisionerImpl implements Provisioner {
 
         serviceTracker = new ServiceTracker<LibertyBootRuntime, LibertyBootRuntime>(context, LibertyBootRuntime.class, null);
         serviceTracker.open();
-    }
-
-    /**
-     * Release services; should be called once provisioning operations are
-     * completed.
-     */
-    protected void releaseServices() {
-        context = null;
-        frameworkStartLevel = null;
     }
 
     /**
@@ -278,6 +282,40 @@ public class ProvisionerImpl implements Provisioner {
                 Module m = bundle.adapt(Module.class);
                 if (m != null) {
                     m.setParallelActivation(true);
+                }
+                if ("com.ibm.ws.org.eclipse.equinox.region".equals(bundle.getSymbolicName()) && m.getState() == State.INSTALLED) {
+                    // force resolution of the region bundle before moving on
+                    final BundleRevision regionRevision = bundle.adapt(BundleRevision.class);
+                    // register a hook that only allows the region bundle to resolve to make sure other bundles
+                    // only resolve after regions is loaded
+                    ServiceRegistration<ResolverHookFactory> hookReg = context.registerService(ResolverHookFactory.class, new ResolverHookFactory() {
+                        @Override
+                        public ResolverHook begin(Collection<BundleRevision> triggers) {
+                            return new ResolverHook() {
+                                @Override
+                                public void filterSingletonCollisions(BundleCapability singleton, Collection<BundleCapability> collisionCandidates) {
+                                }
+
+                                @Override
+                                public void filterResolvable(Collection<BundleRevision> candidates) {
+                                    candidates.retainAll(Collections.singleton(regionRevision));
+                                }
+
+                                @Override
+                                public void filterMatches(BundleRequirement requirement, Collection<BundleCapability> candidates) {
+                                }
+
+                                @Override
+                                public void end() {
+                                }
+                            };
+                        }
+                    }, null);
+                    try {
+                        context.getBundle(Constants.SYSTEM_BUNDLE_LOCATION).adapt(FrameworkWiring.class).resolveBundles(Collections.singleton(bundle));
+                    } finally {
+                        hookReg.unregister();
+                    }
                 }
 
                 setStartLevel(bundle, element, installStatus);

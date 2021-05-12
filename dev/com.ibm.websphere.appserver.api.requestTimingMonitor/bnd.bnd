@@ -1,0 +1,27 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion: 1.0
+
+Bundle-Name: Request Timing Monitoring API
+Bundle-SymbolicName: com.ibm.websphere.appserver.api.requestTimingMonitor
+Bundle-Description: Request Timing Monitor API, version ${bVersion}
+
+Export-Package: com.ibm.websphere.request.timing
+
+Import-Package: com.ibm.websphere.request.timing
+
+-includeresource: {META-INF/maven/com.ibm.websphere.appserver.api/com.ibm.websphere.appserver.api.requestTimingMonitor/pom.xml=com.ibm.websphere.appserver.api.requestTimingMonitor.pom}
+
+publish.wlp.jar.suffix: dev/api/ibm
+
+-buildpath: \
+    com.ibm.ws.request.timing.monitor;version=latest

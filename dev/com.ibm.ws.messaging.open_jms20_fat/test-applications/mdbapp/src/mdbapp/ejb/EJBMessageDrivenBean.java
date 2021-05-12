@@ -10,9 +10,6 @@
  */
 package mdbapp.ejb;
 
-/**
- *
- */
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
@@ -22,12 +19,11 @@ public class EJBMessageDrivenBean implements MessageListener {
 
     @Override
     public void onMessage(Message message) {
-
         try {
             TextMessage msg = (TextMessage) message;
             System.out.println((new StringBuilder()).append(message).toString());
             System.out.println("Message received on EJB MDB: " + msg.getText());
-        } catch (JMSException e) {
+        } catch ( JMSException e ) {
             e.printStackTrace();
         }
     }

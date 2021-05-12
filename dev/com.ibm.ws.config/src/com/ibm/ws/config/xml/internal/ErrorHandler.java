@@ -16,7 +16,7 @@ import com.ibm.wsspi.kernel.service.utils.OnErrorUtil.OnError;
 /**
  *
  */
-enum ErrorHandler {
+public enum ErrorHandler {
 
     INSTANCE;
 
@@ -26,7 +26,8 @@ enum ErrorHandler {
     /**
      * @param onError
      */
-    private ErrorHandler() {}
+    private ErrorHandler() {
+    }
 
     /**
      * @param onError

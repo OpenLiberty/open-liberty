@@ -43,6 +43,7 @@ public class DB2Test extends FATServletClient {
         server.addEnvVar("DB2_DBNAME", db2.getDatabaseName());
         server.addEnvVar("DB2_HOSTNAME", db2.getContainerIpAddress());
         server.addEnvVar("DB2_PORT", String.valueOf(db2.getMappedPort(50000)));
+        server.addEnvVar("DB2_PORT_SECURE", String.valueOf(db2.getMappedPort(50001)));
         server.addEnvVar("DB2_USER", db2.getUsername());
         server.addEnvVar("DB2_PASS", db2.getPassword());
 

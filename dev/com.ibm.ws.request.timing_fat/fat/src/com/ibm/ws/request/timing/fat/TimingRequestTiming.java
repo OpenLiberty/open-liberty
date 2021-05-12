@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,6 +39,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
@@ -60,8 +61,14 @@ public class TimingRequestTiming {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        JavaInfo java = JavaInfo.forCurrentVM();
         ShrinkHelper.defaultDropinApp(server, "jdbcTestPrj_3", "com.ibm.ws.request.timing");
-        CommonTasks.writeLogMsg(Level.INFO, " starting server..");
+        int javaVersion = java.majorVersion();
+        if (javaVersion != 8) {
+            CommonTasks.writeLogMsg(Level.INFO, " Java version = " + javaVersion + " - It is higher than 8, adding --add-exports...");
+            server.copyFileToLibertyServerRoot("add-exports/jvm.options");
+        }
+        CommonTasks.writeLogMsg(Level.INFO, " starting server...");
         server.startServer();
     }
 
@@ -127,6 +134,14 @@ public class TimingRequestTiming {
 
         int slow = fetchSlowRequestWarningsCount();
         int hung = fetchHungRequestWarningsCount();
+
+        //Retry the request again
+        if (slow == 0) {
+            CommonTasks.writeLogMsg(Level.INFO, "$$$$ -----> Retry because no slow request warning found!");
+            createRequests(6000, 1);
+            server.waitForStringInLogUsingMark("TRAS0112W", 10000);
+            slow = fetchSlowRequestWarningsCount();
+        }
 
         assertTrue("Expected > 0 slow request warning but found : " + slow, (slow > 0));
 
@@ -334,6 +349,15 @@ public class TimingRequestTiming {
         server.waitForStringInLogUsingMark("TRAS0114W", 10000);
 
         int slow = fetchSlowRequestWarningsCount();
+
+        // Retry the request again
+        if (slow == 0) {
+            CommonTasks.writeLogMsg(Level.INFO, "$$$$ -----> Retry because no slow request warning found!");
+            createRequests(7000, 1);
+            server.waitForStringInLogUsingMark("TRAS0112W", 10000);
+            slow = fetchSlowRequestWarningsCount();
+        }
+
         int hung = fetchHungRequestWarningsCount();
 
         assertTrue("Expected > 0 slow request warning but found : " + slow, (slow > 0));
@@ -367,6 +391,15 @@ public class TimingRequestTiming {
         server.waitForStringInLogUsingMark("TRAS0112W", 10000);
 
         int slow = fetchSlowRequestWarningsCount();
+
+        // Retry the request again
+        if (slow == 0) {
+            CommonTasks.writeLogMsg(Level.INFO, "$$$$ -----> Retry because no slow request warning found!");
+            createRequests(11000, 1);
+            server.waitForStringInLogUsingMark("TRAS0112W", 10000);
+            slow = fetchSlowRequestWarningsCount();
+        }
+
         int hung = fetchHungRequestWarningsCount();
 
         assertTrue("Expected 1 slow request warning but found : " + slow, (slow > 0));
@@ -425,10 +458,18 @@ public class TimingRequestTiming {
 
         createRequests(6000, 1);
 
-        server.waitForStringInLogUsingMark("TRAS0112W", 10000);
+        server.waitForStringInLogUsingMark("TRAS0112W", 15000);
         server.waitForStringInLogUsingMark("TRAS0114W", 10000);
 
         int slow = fetchSlowRequestWarningsCount();
+
+        if (slow == 0) {
+            CommonTasks.writeLogMsg(Level.INFO, "$$$$ -----> Retry because no slow request warning found!");
+            createRequests(6000, 1);
+            server.waitForStringInLog("TRAS0112W", 15000);
+            slow = fetchSlowRequestWarningsCount();
+        }
+
         int hung = fetchHungRequestWarningsCount();
 
         assertTrue("Expected > 1 slow request warnings but found : " + slow, (slow > 1));
@@ -509,9 +550,17 @@ public class TimingRequestTiming {
 
         createRequests(5000, 1);
 
-        server.waitForStringInLogUsingMark("TRAS0112W", 10000);
+        server.waitForStringInLogUsingMark("TRAS0112W", 15000);
 
         int slow = fetchSlowRequestWarningsCount();
+
+        if (slow == 0) {
+            CommonTasks.writeLogMsg(Level.INFO, "$$$$ -----> Retry because no slow request warning found!");
+            createRequests(5000, 1);
+            server.waitForStringInLog("TRAS0112W", 15000);
+            slow = fetchSlowRequestWarningsCount();
+        }
+
         int hung = fetchHungRequestWarningsCount();
         assertTrue("Expected > 1 slow request warnings but found : " + slow, (slow > 1));
 

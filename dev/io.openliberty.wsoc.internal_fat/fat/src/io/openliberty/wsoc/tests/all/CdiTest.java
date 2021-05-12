@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,13 +14,13 @@ import java.util.logging.Logger;
 
 import org.junit.Assert;
 
-import io.openliberty.wsoc.util.wsoc.WsocTest;
-import io.openliberty.wsoc.util.wsoc.WsocTestContext;
-import io.openliberty.wsoc.util.wsoc.WsocTestRunner;
 import io.openliberty.wsoc.common.Constants;
 import io.openliberty.wsoc.endpoints.client.basic.AnnotatedClientEP;
 import io.openliberty.wsoc.endpoints.client.basic.ProgrammaticClientEP;
 import io.openliberty.wsoc.endpoints.client.context.SimpleClientEP;
+import io.openliberty.wsoc.util.wsoc.WsocTest;
+import io.openliberty.wsoc.util.wsoc.WsocTestContext;
+import io.openliberty.wsoc.util.wsoc.WsocTestRunner;
 
 /**
  *
@@ -42,6 +42,12 @@ public class CdiTest {
 
     public CdiTest(WsocTest test) {
         this.wsocTest = test;
+    }
+
+    public static void resetTests() {
+        sequenceCounter = 0;
+        sequenceCounter12 = 0;
+        sequenceCounter20 = 0;
     }
 
     /*
@@ -90,6 +96,105 @@ public class CdiTest {
         String writeData = "From testCdiInject";
         WsocTestContext testdata = wsocTest.runWsocTest(new SimpleClientEP.WriteAndRead(writeData),
                                                         "/cdi/EPFieldInjectionCDI12", WsocTestRunner.getDefaultConfig(), 1, testTimeout);
+
+        String resultMessage = testdata.getSingleMessage();
+        testdata.reThrowException(); // throw an exception if there was one
+
+        if ((resultMessage.compareTo(successForTestCdiIntject)) != 0) {
+            Assert.fail("test failed with following output: " + resultMessage);
+        }
+
+    }
+
+    /*
+     * ServerEndpoint - @see AnnotatedTxEndpointFieldInjection
+     */
+    public void testCdiTxNeverInjectCDI12() throws Exception {
+
+        int testTimeout = Constants.getLongTimeout();
+        String writeData = "From testCdiInject";
+        WsocTestContext testdata = wsocTest.runWsocTest(new SimpleClientEP.WriteAndRead(writeData),
+                                                        "/cditx/EPTxNeverFieldInjectionCDI12", WsocTestRunner.getDefaultConfig(), 1, testTimeout);
+
+        String resultMessage = testdata.getSingleMessage();
+        testdata.reThrowException(); // throw an exception if there was one
+
+        if ((resultMessage.compareTo(successForTestCdiIntject)) != 0) {
+            Assert.fail("test failed with following output: " + resultMessage);
+        }
+
+    }
+
+    public void testCdiTxRequiredInjectCDI12() throws Exception {
+
+        int testTimeout = Constants.getLongTimeout();
+        String writeData = "From testCdiInject";
+        WsocTestContext testdata = wsocTest.runWsocTest(new SimpleClientEP.WriteAndRead(writeData),
+                                                        "/cditx/EPTxRequiredFieldInjectionCDI12", WsocTestRunner.getDefaultConfig(), 2, testTimeout);
+
+        String resultMessage = testdata.getSingleMessage();
+        testdata.reThrowException(); // throw an exception if there was one
+
+        if ((resultMessage.compareTo(successForTestCdiIntject)) != 0) {
+            Assert.fail("test failed with following output: " + resultMessage);
+        }
+
+    }
+
+    public void testCdiTxMandatoryInjectCDI12() throws Exception {
+
+        int testTimeout = Constants.getLongTimeout();
+        String writeData = "From testCdiInject";
+        WsocTestContext testdata = wsocTest.runWsocTest(new SimpleClientEP.WriteAndRead(writeData),
+                                                        "/cditx/EPTxMandatoryFieldInjectionCDI12", WsocTestRunner.getDefaultConfig(), 2, testTimeout);
+
+        String resultMessage = testdata.getSingleMessage();
+        testdata.reThrowException(); // throw an exception if there was one
+
+        if ((resultMessage.compareTo(successForTestCdiIntject)) != 0) {
+            Assert.fail("test failed with following output: " + resultMessage);
+        }
+
+    }
+
+    public void testCdiTxNotSupportedInjectCDI12() throws Exception {
+
+        int testTimeout = Constants.getLongTimeout();
+        String writeData = "From testCdiInject";
+        WsocTestContext testdata = wsocTest.runWsocTest(new SimpleClientEP.WriteAndRead(writeData),
+                                                        "/cditx/EPTxNotSupportedFieldInjectionCDI12", WsocTestRunner.getDefaultConfig(), 2, testTimeout);
+
+        String resultMessage = testdata.getSingleMessage();
+        testdata.reThrowException(); // throw an exception if there was one
+
+        if ((resultMessage.compareTo(successForTestCdiIntject)) != 0) {
+            Assert.fail("test failed with following output: " + resultMessage);
+        }
+
+    }
+
+    public void testCdiTxRequiresNewInjectCDI12() throws Exception {
+
+        int testTimeout = Constants.getLongTimeout();
+        String writeData = "From testCdiInject";
+        WsocTestContext testdata = wsocTest.runWsocTest(new SimpleClientEP.WriteAndRead(writeData),
+                                                        "/cditx/EPTxRequiresNewFieldInjectionCDI12", WsocTestRunner.getDefaultConfig(), 2, testTimeout);
+
+        String resultMessage = testdata.getSingleMessage();
+        testdata.reThrowException(); // throw an exception if there was one
+
+        if ((resultMessage.compareTo(successForTestCdiIntject)) != 0) {
+            Assert.fail("test failed with following output: " + resultMessage);
+        }
+
+    }
+
+    public void testCdiTxSupportsInjectCDI12() throws Exception {
+
+        int testTimeout = Constants.getLongTimeout();
+        String writeData = "From testCdiInject";
+        WsocTestContext testdata = wsocTest.runWsocTest(new SimpleClientEP.WriteAndRead(writeData),
+                                                        "/cditx/EPTxSupportsFieldInjectionCDI12", WsocTestRunner.getDefaultConfig(), 2, testTimeout);
 
         String resultMessage = testdata.getSingleMessage();
         testdata.reThrowException(); // throw an exception if there was one

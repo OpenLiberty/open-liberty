@@ -16,8 +16,11 @@
  */
 package com.ibm.jbatch.container.jsl;
 
+import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import com.ibm.jbatch.jsl.model.Batchlet;
@@ -42,9 +45,17 @@ import com.ibm.jbatch.jsl.model.helper.TransitionElement;
 
 public class CloneUtility {
 
-    private static ObjectFactory jslFactory = new ObjectFactory();
+    private static final Map<String, ObjectFactory> objectFactoryMap;
+
+    static {
+        HashMap<String, ObjectFactory> map = new HashMap<>();
+        map.put("com.ibm.jbatch.jsl.model.v1", new com.ibm.jbatch.jsl.model.v1.ObjectFactory());
+        map.put("com.ibm.jbatch.jsl.model.v2", new com.ibm.jbatch.jsl.model.v2.ObjectFactory());
+        objectFactoryMap = Collections.unmodifiableMap(map);
+    }
 
     public static Batchlet cloneBatchlet(Batchlet batchlet) {
+        ObjectFactory jslFactory = objectFactoryMap.get(batchlet.getClass().getPackage().getName());
         Batchlet newBatchlet = jslFactory.createBatchlet();
 
         newBatchlet.setRef(batchlet.getRef());
@@ -58,17 +69,19 @@ public class CloneUtility {
             return null;
         }
 
+        ObjectFactory jslFactory = objectFactoryMap.get(jslProps.getClass().getPackage().getName());
         JSLProperties newJSLProps = jslFactory.createJSLProperties();
 
         newJSLProps.setPartition(jslProps.getPartition());;
 
+        List<Property> newPropertyList = (List<Property>) newJSLProps.getPropertyList();
         for (Property jslProp : jslProps.getPropertyList()) {
             Property newProperty = jslFactory.createProperty();
 
             newProperty.setName(jslProp.getName());
             newProperty.setValue(jslProp.getValue());
 
-            newJSLProps.getPropertyList().add(newProperty);
+            newPropertyList.add(newProperty);
         }
 
         return newJSLProps;
@@ -79,6 +92,7 @@ public class CloneUtility {
         newControlElements.clear();
 
         for (TransitionElement controlElement : controlElements) {
+            ObjectFactory jslFactory = objectFactoryMap.get(controlElement.getClass().getPackage().getName());
             if (controlElement instanceof End) {
                 End endElement = (End) controlElement;
                 End newEnd = jslFactory.createEnd();
@@ -120,11 +134,14 @@ public class CloneUtility {
             return null;
         }
 
+        ObjectFactory jslFactory = objectFactoryMap.get(listeners.getClass().getPackage().getName());
         Listeners newListeners = jslFactory.createListeners();
+
+        List<Listener> newListenerList = (List<Listener>) newListeners.getListenerList();
 
         for (Listener listener : listeners.getListenerList()) {
             Listener newListener = jslFactory.createListener();
-            newListeners.getListenerList().add(newListener);
+            newListenerList.add(newListener);
             newListener.setRef(listener.getRef());
             newListener.setProperties(cloneJSLProperties(listener.getProperties()));
         }
@@ -133,6 +150,7 @@ public class CloneUtility {
     }
 
     public static Chunk cloneChunk(Chunk chunk) {
+        ObjectFactory jslFactory = objectFactoryMap.get(chunk.getClass().getPackage().getName());
         Chunk newChunk = jslFactory.createChunk();
 
         newChunk.setItemCount(chunk.getItemCount());
@@ -157,6 +175,7 @@ public class CloneUtility {
             return null;
         }
 
+        ObjectFactory jslFactory = objectFactoryMap.get(checkpointAlgorithm.getClass().getPackage().getName());
         CheckpointAlgorithm newCheckpointAlgorithm = jslFactory.createCheckpointAlgorithm();
         newCheckpointAlgorithm.setRef(checkpointAlgorithm.getRef());
         newCheckpointAlgorithm.setProperties(cloneJSLProperties(checkpointAlgorithm.getProperties()));
@@ -170,6 +189,7 @@ public class CloneUtility {
             return null;
         }
 
+        ObjectFactory jslFactory = objectFactoryMap.get(itemProcessor.getClass().getPackage().getName());
         ItemProcessor newItemProcessor = jslFactory.createItemProcessor();
         newItemProcessor.setRef(itemProcessor.getRef());
         newItemProcessor.setProperties(cloneJSLProperties(itemProcessor.getProperties()));
@@ -182,6 +202,7 @@ public class CloneUtility {
             return null;
         }
 
+        ObjectFactory jslFactory = objectFactoryMap.get(itemReader.getClass().getPackage().getName());
         ItemReader newItemReader = jslFactory.createItemReader();
         newItemReader.setRef(itemReader.getRef());
         newItemReader.setProperties(cloneJSLProperties(itemReader.getProperties()));
@@ -190,6 +211,7 @@ public class CloneUtility {
     }
 
     private static ItemWriter cloneItemWriter(ItemWriter itemWriter) {
+        ObjectFactory jslFactory = objectFactoryMap.get(itemWriter.getClass().getPackage().getName());
         ItemWriter newItemWriter = jslFactory.createItemWriter();
         newItemWriter.setRef(itemWriter.getRef());
         newItemWriter.setProperties(cloneJSLProperties(itemWriter.getProperties()));
@@ -203,14 +225,17 @@ public class CloneUtility {
             return null;
         }
 
+        ObjectFactory jslFactory = objectFactoryMap.get(exceptionClassFilter.getClass().getPackage().getName());
         ExceptionClassFilter newExceptionClassFilter = jslFactory.createExceptionClassFilter();
+        List<ExceptionClassFilter.Include> newIncludeList = (List<ExceptionClassFilter.Include>) newExceptionClassFilter.getIncludeList();
+        List<ExceptionClassFilter.Exclude> newExcludeList = (List<ExceptionClassFilter.Exclude>) newExceptionClassFilter.getExcludeList();
 
         for (ExceptionClassFilter.Include oldInclude : exceptionClassFilter.getIncludeList()) {
-            newExceptionClassFilter.getIncludeList().add(cloneExceptionClassFilterInclude(oldInclude));
+            newIncludeList.add(cloneExceptionClassFilterInclude(oldInclude));
         }
 
         for (ExceptionClassFilter.Exclude oldExclude : exceptionClassFilter.getExcludeList()) {
-            newExceptionClassFilter.getExcludeList().add(cloneExceptionClassFilterExclude(oldExclude));
+            newExcludeList.add(cloneExceptionClassFilterExclude(oldExclude));
         }
 
         return newExceptionClassFilter;
@@ -222,6 +247,7 @@ public class CloneUtility {
             return null;
         }
 
+        ObjectFactory jslFactory = objectFactoryMap.get(include.getClass().getPackage().getName());
         ExceptionClassFilter.Include newInclude = jslFactory.createExceptionClassFilterInclude();
 
         newInclude.setClazz(include.getClazz());
@@ -236,6 +262,7 @@ public class CloneUtility {
             return null;
         }
 
+        ObjectFactory jslFactory = objectFactoryMap.get(exclude.getClass().getPackage().getName());
         ExceptionClassFilter.Exclude newExclude = jslFactory.createExceptionClassFilterExclude();
 
         newExclude.setClazz(exclude.getClazz());
@@ -271,12 +298,13 @@ public class CloneUtility {
      * @param xmlProperties
      * @return
      */
-    public static JSLProperties javaPropsTojslProperties(final Properties javaProps) {
+    public static JSLProperties javaPropsTojslProperties(final ObjectFactory jslFactory, final Properties javaProps) {
 
         JSLProperties newJSLProps = jslFactory.createJSLProperties();
 
         Enumeration<?> keySet = javaProps.propertyNames();
 
+        List<Property> newPropertyList = (List<Property>) newJSLProps.getPropertyList();
         while (keySet.hasMoreElements()) {
             String key = (String) keySet.nextElement();
             String value = javaProps.getProperty(key);
@@ -284,7 +312,7 @@ public class CloneUtility {
             Property newProperty = jslFactory.createProperty();
             newProperty.setName(key);
             newProperty.setValue(value);
-            newJSLProps.getPropertyList().add(newProperty);
+            newPropertyList.add(newProperty);
         }
 
         return newJSLProps;
@@ -296,6 +324,7 @@ public class CloneUtility {
      * @return
      */
     public static Partition cloneRelevantPartitionModel(Partition partition) {
+        ObjectFactory jslFactory = objectFactoryMap.get(partition.getClass().getPackage().getName());
         Partition newPartition = jslFactory.createPartition();
         if (partition.getCollector() != null) {
             // PartitionPlan partitionPlan = jslFactory.createPartitionPlan();
@@ -317,6 +346,7 @@ public class CloneUtility {
             return null;
         }
 
+        ObjectFactory jslFactory = objectFactoryMap.get(collector.getClass().getPackage().getName());
         Collector newCollector = jslFactory.createCollector();
         newCollector.setRef(collector.getRef());
         newCollector.setProperties(cloneJSLProperties(collector.getProperties()));

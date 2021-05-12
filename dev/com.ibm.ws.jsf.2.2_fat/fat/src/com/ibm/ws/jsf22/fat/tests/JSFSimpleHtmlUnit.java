@@ -34,6 +34,7 @@ import com.ibm.ws.jsf22.fat.JSFUtils;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -234,7 +235,7 @@ public class JSFSimpleHtmlUnit {
             // Make a request to a dummy page to ensure that MyFaces initializes if it has not done so already
             URL url = JSFUtils.createHttpUrl(jsfTestServer1, contextRoot, "dummy.jsf");
 
-            String msg = "No context init parameter 'javax.faces.FACELETS_BUFFER_SIZE' found, using default value '1024'";
+            String msg = "No context init parameter '" + (JakartaEE9Action.isActive() ? "jakarta" : "javax") + ".faces.FACELETS_BUFFER_SIZE' found, using default value '1024'";
             // Check the trace.log
             // There should be a match so fail if there is not.
             assertFalse(msg, jsfTestServer1.findStringsInLogs(msg).isEmpty());

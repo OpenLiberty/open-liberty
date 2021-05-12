@@ -10,9 +10,6 @@
 		baseDN="dc=rtp,dc=raleigh,dc=ibm,dc=com"
 		ldapType="Sun Java System Directory Server"
 		searchTimeout="8m">
-		<failoverServers name="failoverLdapServers">
-      		<server host="${ldap.server.3.name}" port="${ldap.server.3.port}"/>
-       </failoverServers>
 	</ldapRegistry>
 
     <federatedRepository>

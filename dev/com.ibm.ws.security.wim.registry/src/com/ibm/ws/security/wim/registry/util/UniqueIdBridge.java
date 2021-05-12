@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2019 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -229,12 +229,12 @@ public class UniqueIdBridge {
                     if (!this.mappingUtils.isIdentifierTypeProperty(outputAttrName)) {
                         Object value = entity.get(outputAttrName);
                         if (value instanceof List<?>) {
-                            returnValue = String.valueOf(((List<?>) value).get(0));
+                            returnValue = BridgeUtils.getStringValue(((List<?>) value).get(0));
                         } else {
-                            returnValue = String.valueOf(value);
+                            returnValue = BridgeUtils.getStringValue(value);
                         }
                     } else {
-                        returnValue = (String) entity.getIdentifier().get(outputAttrName);
+                        returnValue = BridgeUtils.getStringValue(entity.getIdentifier().get(outputAttrName));
                     }
                     // PM50390
                     if (mappingUtils.returnRealmInfoInUniqueUserId && idAndRealm.isRealmDefined()
@@ -377,12 +377,12 @@ public class UniqueIdBridge {
                 if (!this.mappingUtils.isIdentifierTypeProperty(outputAttrName)) {
                     Object value = group.get(outputAttrName);
                     if (value instanceof List<?>) {
-                        returnValue = String.valueOf(((List<?>) value).get(0));
+                        returnValue = BridgeUtils.getStringValue(((List<?>) value).get(0));
                     } else {
-                        returnValue = String.valueOf(value);
+                        returnValue = BridgeUtils.getStringValue(value);
                     }
                 } else {
-                    returnValue = (String) group.getIdentifier().get(outputAttrName);
+                    returnValue = BridgeUtils.getStringValue(group.getIdentifier().get(outputAttrName));
                 }
 
                 // if return attribute is uniqueName and returnValue is not in DN format, default to uniqueId (as this is potentially a customRegistry data)

@@ -21,7 +21,6 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.PortType;
 
 import componenttest.annotation.AllowedFFDC;
-import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -48,9 +47,6 @@ public class Health30TCKLauncher {
     }
 
     @Test
-    // TEMPORARILY Skip the MpHealth-3.0 TCK run for Java 14 for the MpHealth-3.0 RC3 release for beta
-    // Will re-enable once the fix is included in the next RC
-    @MaximumJavaLevel(javaLevel = 11)
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void launchHealth30Tck() throws Exception {
         String protocol = "http";

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2020 IBM Corporation and others.
+ * Copyright (c) 2009, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ package com.ibm.ws.http.dispatcher.internal.channel;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
 import java.nio.charset.Charset;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -47,6 +48,7 @@ import com.ibm.wsspi.http.HttpResponse;
 import com.ibm.wsspi.http.SSLContext;
 import com.ibm.wsspi.http.URLEscapingUtils;
 import com.ibm.wsspi.http.WorkClassifier;
+import com.ibm.wsspi.http.channel.HttpRequestMessage;
 import com.ibm.wsspi.http.channel.HttpResponseMessage;
 import com.ibm.wsspi.http.channel.values.ConnectionValues;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
@@ -99,6 +101,8 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
     private SSLContext sslinfo = null;
     /** Reference to the HTTP channel context object */
     private HttpInboundServiceContextImpl isc = null;
+    /** Reference remote InetAddress object */
+    private InetAddress remoteAddress = null;
     /** Cached local host name */
     private String localCanonicalHostName = null;
     /** Cached local host:port alias */
@@ -147,7 +151,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
     public void close(VirtualConnection conn, Exception e) {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Close called , vc ->" + this.vc);
+            Tr.debug(tc, "Close called , vc ->" + this.vc + " hc: " + this.hashCode());
         }
 
         if (this.vc == null) {
@@ -236,8 +240,14 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
         // don't call close, if the channel has already seen the stop(0) signal, or else this will cause race conditions in the channels below us.
         if (myChannel.getStop0Called() == false) {
-            super.close(conn, e);
-            this.myChannel.decrementActiveConns();
+            try {
+                super.close(conn, e);
+            } finally {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "decrement active connection count");
+                }
+                this.myChannel.decrementActiveConns();
+            }
         }
     }
 
@@ -283,6 +293,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
         super.destroy();
         this.isc = null;
+        this.remoteAddress = null;
         this.request = null;
         this.response = null;
         this.sslinfo = null;
@@ -309,12 +320,14 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
     @FFDCIgnore(Throwable.class)
     public void ready(VirtualConnection inVC) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Received HTTP connection: " + inVC);
+            Tr.debug(tc, "Received HTTP connection: " + inVC + " hc: " + this.hashCode());
+            Tr.debug(tc, "increment active connection count");
         }
 
         this.myChannel.incrementActiveConns();
         init(inVC);
         this.isc = (HttpInboundServiceContextImpl) getDeviceLink().getChannelAccessor();
+        this.remoteAddress = isc.getRemoteAddr();
 
         // if this is an http/2 link, process via that ready
         if (this.getHttpInboundLink2().isDirectHttp2Link(inVC)) {
@@ -599,8 +612,10 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             return;
         }
 
-        HttpResponseMessage rMsg = finalSc.getResponse();
-        setResponseProperties(rMsg, code);
+        HttpRequestMessage rqMsg = finalSc.getRequest();
+        HttpResponseMessage rsMsg = finalSc.getResponse();
+
+        setResponseProperties(rqMsg, rsMsg, code);
 
         HttpOutputStream body = finalResponse.getBody();
 
@@ -672,7 +687,17 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
      * @param rMsg The HttpResponseMessage to set.
      * @param code The StatusCode to return.
      */
-    void setResponseProperties(HttpResponseMessage rMsg, StatusCodes code) {
+    void setResponseProperties(HttpRequestMessage rqMsg, HttpResponseMessage rMsg, StatusCodes code) {
+
+        if (rMsg.getHeader(HttpHeaderKeys.HDR_HSTS).asString() == null) {
+
+            String scheme = rqMsg.getScheme();
+            String htsHeader = ("https".equalsIgnoreCase(scheme)) ? HttpDispatcher.getHSTS() : null;
+            if (htsHeader != null) {
+                rMsg.setHeader(HttpHeaderKeys.HDR_HSTS, htsHeader);
+            }
+        }
+
         rMsg.setStatusCode(code);
         rMsg.setConnection(ConnectionValues.CLOSE);
         rMsg.setCharset(Charset.forName("UTF-8"));
@@ -687,7 +712,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
      * It is the value of the part before ":" in the Host header value, if any,
      * or the resolved server name, or the server IP address.
      *
-     * @param request        the inbound request
+     * @param request the inbound request
      * @param remoteHostAddr the requesting client IP address
      */
     @Override
@@ -718,8 +743,8 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
      * the part after ":" in the Host header value, if any, or the server port
      * where the client connection was accepted on.
      *
-     * @param request        the inbound request
-     * @param localPort      the server port where the client connection was accepted on.
+     * @param request the inbound request
+     * @param localPort the server port where the client connection was accepted on.
      * @param remoteHostAddr the requesting client IP address
      */
     @Override
@@ -771,8 +796,8 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         // We can avoid reprocessing as long as the HttpDispatcher (or WebContainer) configuration
         // hasn't been updated, in which case, we should try again.
         int lastUpdate = HttpDispatcher.getConfigUpdate();
-        if (useHeaders == UsePrivateHeaders.unknown || configUpdate != lastUpdate) {
-            useHeaders = usePrivateHeaders = UsePrivateHeaders.set(HttpDispatcher.usePrivateHeaders(contextRemoteHostAddress()));
+        if ((useHeaders == UsePrivateHeaders.unknown || configUpdate != lastUpdate) && remoteAddress != null) {
+            useHeaders = usePrivateHeaders = UsePrivateHeaders.set(HttpDispatcher.usePrivateHeaders(remoteAddress));
             configUpdate = lastUpdate;
         }
         return useHeaders.asBoolean();
@@ -1258,6 +1283,20 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             return isc.useForwardedHeaders();
         }
         return false;
+    }
+
+    /**
+     * Calls function to set the supress 0 byte chunk flag.
+     */
+    public void setSuppressZeroByteChunk(boolean suppress0ByteChunk) {
+        if (this.isc != null) {
+            this.isc.setSuppress0ByteChunk(suppress0ByteChunk);
+        } else {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Failed to set isc zero byte chunk because isc is null");
+            }
+        }
+
     }
 
 }

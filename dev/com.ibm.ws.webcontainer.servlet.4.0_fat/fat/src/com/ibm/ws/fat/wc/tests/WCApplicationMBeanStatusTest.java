@@ -10,6 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.fat.wc.tests;
 
+import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
+
 import java.util.logging.Logger;
 
 import org.junit.AfterClass;
@@ -23,7 +27,10 @@ import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.wc.WCApplicationHelper;
 
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 
 /**
  *
@@ -42,7 +49,7 @@ public class WCApplicationMBeanStatusTest extends LoggingTest {
     private final static Logger LOG = Logger.getLogger(CLASSNAME);
 
     @ClassRule
-    public static SharedServer SHARED_SERVER = new SharedServer("servlet40_stopAppStartListenerExceptionServer");
+    public static SharedServer SHARED_SERVER;
 
     @Override
     protected SharedServer getSharedServer() {
@@ -61,6 +68,19 @@ public class WCApplicationMBeanStatusTest extends LoggingTest {
     @BeforeClass
     @ExpectedFFDC({ "java.lang.Exception", "java.lang.RuntimeException" })
     public static void setUp() throws Exception {
+        if (componenttest.rules.repeater.JakartaEE9Action.isActive()) {
+            LOG.info("Setup : Prepare EE9 server");
+            if (SHARED_SERVER != null && SHARED_SERVER.getLibertyServer() != null && SHARED_SERVER.getLibertyServer().isStarted()) {
+                SHARED_SERVER.getLibertyServer().stopServer("SRVE0283E:.*", "SRVE0265E:.*");
+                LOG.info("Setup : Prepare EE9, STOP the current server");
+            }
+            SHARED_SERVER = new SharedServer("servlet50_stopAppStartListenerExceptionServer");
+        }
+        else {
+            LOG.info("Setup : Prepare EE8 server");
+            SHARED_SERVER = new SharedServer("servlet40_stopAppStartListenerExceptionServer");
+        }
+
         LOG.info("Setup : add TestBadServletContextListener.war to the server if not already present.");
 
         WCApplicationHelper.addWarToServerDropins(SHARED_SERVER.getLibertyServer(),
@@ -109,6 +129,9 @@ public class WCApplicationMBeanStatusTest extends LoggingTest {
         if (SHARED_SERVER.getLibertyServer() != null && SHARED_SERVER.getLibertyServer().isStarted()) {
             SHARED_SERVER.getLibertyServer().stopServer("SRVE0283E:.*", "SRVE0265E:.*");
         }
+        
+        //Null out the static server to prevent an auto-restart upon repeated tests.
+        SHARED_SERVER = null;
     }
 
     /**
@@ -117,7 +140,8 @@ public class WCApplicationMBeanStatusTest extends LoggingTest {
      *                       The result in logs should be INSTALLED
      */
     @Test
-    public void testAppStatusInstalled() throws Exception {
+    @SkipForRepeat(SkipForRepeat.EE9_FEATURES) 
+    public void test_AppStatusInstalled() throws Exception {
         this.verifyResponse("/TestServlet40/ApplicationMBeanServlet?AppName=TestBadServletContextListener", "PASS: INSTALLED");
     }
 
@@ -127,7 +151,37 @@ public class WCApplicationMBeanStatusTest extends LoggingTest {
      *                       The result in logs should be STARTED
      */
     @Test
-    public void testAppStatusStarted() throws Exception {
+    @SkipForRepeat(SkipForRepeat.EE9_FEATURES) 
+    public void test_AppStatusStarted() throws Exception {
+        this.verifyResponse("/TestServlet40/ApplicationMBeanServlet?AppName=TestServlet40", "PASS: STARTED");
+    }
+
+    
+    /**
+     * Rerun the above 2 tests using the default setting of stopappstartuponlistenerexception which is true in servlet 5
+     * i.e the main difference is the setting of stopappstartuponlistenerexception NOT explicitly set in the server.xml in servlet 5 (or EE9)
+     * TestBadServletContextListener.war should fail to start.
+     * 
+     * Note: though the tests are skipped when running under NO_MODIFICATION (i.e EE8/servlet4), the junit still reports the tests SUCCESS.
+     *        This is due to the junit old framework.
+     *        Example from output.txt during EE8 tests:
+     *        
+     *                  Skipping test method test_AppStatusInstalled_servlet5_default on action NO_MODIFICATION_ACTION
+     *                  Skipping test method test_AppStatusStarted_servlet5_default on action NO_MODIFICATION_ACTION
+     */
+    
+    
+    @Test
+    @Mode(TestMode.FULL)
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION) 
+    public void test_AppStatusInstalled_servlet5_default() throws Exception {
+        this.verifyResponse("/TestServlet40/ApplicationMBeanServlet?AppName=TestBadServletContextListener", "PASS: INSTALLED");
+    }
+    
+    @Test
+    @Mode(TestMode.FULL)
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    public void test_AppStatusStarted_servlet5_default() throws Exception {
         this.verifyResponse("/TestServlet40/ApplicationMBeanServlet?AppName=TestServlet40", "PASS: STARTED");
     }
 

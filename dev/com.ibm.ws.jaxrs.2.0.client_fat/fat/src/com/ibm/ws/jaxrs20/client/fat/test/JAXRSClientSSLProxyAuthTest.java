@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,8 +11,6 @@
 package com.ibm.ws.jaxrs20.client.fat.test;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockserver.integration.ClientAndProxy.startClientAndProxy;
-import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
@@ -26,13 +24,13 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockserver.client.proxy.ProxyClient;
-import org.mockserver.client.server.MockServerClient;
+import org.mockserver.integration.ClientAndServer;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
@@ -45,6 +43,7 @@ import componenttest.topology.impl.LibertyServer;
  * password specified in the actual Client APIs are not logged, even when
  * tracing is enabled.
  */
+@SkipForRepeat("EE9_FEATURES") // Continue to skip this test for EE9 as proxy authority (properties com.ibm.ws.jaxrs.client.proxy.*) is not supported yet
 @RunWith(FATRunner.class)
 public class JAXRSClientSSLProxyAuthTest extends AbstractTest {
 
@@ -57,9 +56,9 @@ public class JAXRSClientSSLProxyAuthTest extends AbstractTest {
     private final static String target = appname + "/ClientTestServlet";
 
     private static int proxyPort;
-    private static int mockServerPort;
-    private static MockServerClient mockServerClient;
-    private static ProxyClient proxyClient;
+    private static int mockPort;
+    private static ClientAndServer proxy;
+    private static ClientAndServer mock;
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -73,9 +72,10 @@ public class JAXRSClientSSLProxyAuthTest extends AbstractTest {
         System.setProperty("javax.net.ssl.trustStorePassword", "passw0rd");
 
         proxyPort = Integer.getInteger("member_3.http");
-        proxyClient = startClientAndProxy(proxyPort);
-        mockServerPort = Integer.getInteger("member_4.http");
-        mockServerClient = startClientAndServer(mockServerPort);
+        proxy = ClientAndServer.startClientAndServer(proxyPort);
+        
+        mockPort = Integer.getInteger("member_4.http");
+        mock = ClientAndServer.startClientAndServer(mockPort);
 
         // Make sure we don't fail because we try to start an
         // already started server
@@ -88,8 +88,8 @@ public class JAXRSClientSSLProxyAuthTest extends AbstractTest {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        proxyClient.stop();
-        mockServerClient.stop();
+        proxy.stop();
+        mock.stop();
         if (server != null) {
             server.stopServer();
         }
@@ -105,7 +105,6 @@ public class JAXRSClientSSLProxyAuthTest extends AbstractTest {
     public void afterTest() {
         serverRef = null;
 
-        proxyClient.dumpToLogAsJava();
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -126,8 +125,7 @@ public class JAXRSClientSSLProxyAuthTest extends AbstractTest {
         assertEquals("Proxy Password value printed in trace output", 0, server.findStringsInLogsAndTraceUsingMark("myPa\\$\\$word").size());
         server.setMarkToEndOfLog(server.getFileFromLibertyServerRoot("logs/trace.log"));
 
-        //TODO Enable after MockServer fix has been delivered
-        //proxyClient.verify(request().withHeader("Proxy-Authorization", "Basic amF4cnNVc2VyOm15UGEkJHdvcmQ=").withSecure(false)); //jaxrsUser:myPa$$word
+        proxy.verify(request().withHeader("Proxy-Authorization", "Basic amF4cnNVc2VyOm15UGEkJHdvcmQ=").withSecure(false)); //jaxrsUser:myPa$$word
     }
 
     @Test
@@ -146,8 +144,7 @@ public class JAXRSClientSSLProxyAuthTest extends AbstractTest {
         assertEquals("Proxy Password value printed in trace output", 0, server.findStringsInLogsAndTraceUsingMark("myPa\\$\\$word").size());
         server.setMarkToEndOfLog(server.getFileFromLibertyServerRoot("logs/trace.log"));
 
-        //TODO Enable after MockServer fix has been delivered
-        //proxyClient.verify(request().withHeader("Proxy-Authorization", "Basic amF4cnNVc2VyOm15UGEkJHdvcmQ=").withSecure(true)); //jaxrsUser:myPa$$word
+        proxy.verify(request().withHeader("Proxy-Authorization", "Basic amF4cnNVc2VyOm15UGEkJHdvcmQ=").withSecure(true)); //jaxrsUser:myPa$$word
     }
 
     @Test
@@ -165,19 +162,18 @@ public class JAXRSClientSSLProxyAuthTest extends AbstractTest {
         assertEquals("Proxy Password value printed in trace output", 0, server.findStringsInLogsAndTraceUsingMark("myPa\\$\\$word").size());
         server.setMarkToEndOfLog(server.getFileFromLibertyServerRoot("logs/trace.log"));
 
-        //TODO Enable after MockServer fix has been delivered
-        //proxyClient.verify(request().withHeader("Proxy-Authorization", "Basic amF4cnNVc2VyMTpteVBhJCR3b3Jk").withSecure(false)); //jaxrsUser1:myPa$$word
+        proxy.verify(request().withHeader("Proxy-Authorization", "Basic amF4cnNVc2VyMTpteVBhJCR3b3Jk").withSecure(false)); //jaxrsUser1:myPa$$word
     }
 
     @Test
     public void testProxyReturnsAuthError_ClientBuilder() throws Exception {
         //Server will respond to any request with 407 to mock a proxy authentication failure
-        mockServerClient.when(request()).respond(response().withStatusCode(407));
+        mock.when(request()).respond(response().withStatusCode(407));
 
         Map<String, String> p = new HashMap<String, String>();
         p.put("param", "helloRochester");
         p.put("proxyhost", "localhost");
-        p.put("proxyport", "" + mockServerPort);
+        p.put("proxyport", "" + mockPort);
         p.put("proxytype", "HTTP");
         p.put("proxyusername", "jaxrsUser");
         p.put("proxypassword", "USE_PASSWORD_FROM_SERVLET");
@@ -222,8 +218,7 @@ public class JAXRSClientSSLProxyAuthTest extends AbstractTest {
         assertEquals("Proxy Password value printed in trace output", 0, server.findStringsInLogsAndTraceUsingMark("myPa\\$\\$word").size());
         server.setMarkToEndOfLog(server.getFileFromLibertyServerRoot("logs/trace.log"));
 
-        //TODO Enable after MockServer fix has been delivered
-        //proxyClient.verify(request().withHeader("Proxy-Authorization", "Basic amF4cnNVc2VyOm15UGEkJHdvcmQ=").withSecure(false)); //jaxrsUser:myPa$$word
+        proxy.verify(request().withHeader("Proxy-Authorization", "Basic amF4cnNVc2VyOm15UGEkJHdvcmQ=").withSecure(false)); //jaxrsUser:myPa$$word
     }
 
     @Test
@@ -242,8 +237,7 @@ public class JAXRSClientSSLProxyAuthTest extends AbstractTest {
         assertEquals("Proxy Password value printed in trace output", 0, server.findStringsInLogsAndTraceUsingMark("myPa\\$\\$word").size());
         server.setMarkToEndOfLog(server.getFileFromLibertyServerRoot("logs/trace.log"));
 
-        //TODO Enable after MockServer fix has been delivered
-        //proxyClient.verify(request().withHeader("Proxy-Authorization", "Basic amF4cnNVc2VyOm15UGEkJHdvcmQ=").withSecure(true)); //jaxrsUser:myPa$$word
+        proxy.verify(request().withHeader("Proxy-Authorization", "Basic amF4cnNVc2VyOm15UGEkJHdvcmQ=").withSecure(true)); //jaxrsUser:myPa$$word
     }
 
     @Test
@@ -261,19 +255,18 @@ public class JAXRSClientSSLProxyAuthTest extends AbstractTest {
         assertEquals("Proxy Password value printed in trace output", 0, server.findStringsInLogsAndTraceUsingMark("myPa\\$\\$word").size());
         server.setMarkToEndOfLog(server.getFileFromLibertyServerRoot("logs/trace.log"));
 
-        //TODO Enable after MockServer fix has been delivered
-        //proxyClient.verify(request().withHeader("Proxy-Authorization", "Basic amF4cnNVc2VyMTpteVBhJCR3b3Jk").withSecure(false)); //jaxrsUser1:myPa$$word
+        proxy.verify(request().withHeader("Proxy-Authorization", "Basic amF4cnNVc2VyMTpteVBhJCR3b3Jk").withSecure(false)); //jaxrsUser1:myPa$$word
     }
 
     @Test
     public void testProxyReturnsAuthError_Client() throws Exception {
         //Server will respond to any request with 407 to mock a proxy authentication failure
-        mockServerClient.when(request()).respond(response().withStatusCode(407));
+        mock.when(request()).respond(response().withStatusCode(407));
 
         Map<String, String> p = new HashMap<String, String>();
         p.put("param", "helloRochester");
         p.put("proxyhost", "localhost");
-        p.put("proxyport", "" + mockServerPort);
+        p.put("proxyport", "" + mockPort);
         p.put("proxytype", "HTTP");
         p.put("proxyusername", "jaxrsUser");
         p.put("proxypassword", "USE_PASSWORD_FROM_SERVLET");
@@ -318,8 +311,7 @@ public class JAXRSClientSSLProxyAuthTest extends AbstractTest {
         assertEquals("Proxy Password value printed in trace output", 0, server.findStringsInLogsAndTraceUsingMark("myPa\\$\\$word").size());
         server.setMarkToEndOfLog(server.getFileFromLibertyServerRoot("logs/trace.log"));
 
-        //TODO Enable after MockServer fix has been delivered
-        //proxyClient.verify(request().withHeader("Proxy-Authorization", "Basic amF4cnNVc2VyOm15UGEkJHdvcmQ=").withSecure(false)); //jaxrsUser:myPa$$word
+        proxy.verify(request().withHeader("Proxy-Authorization", "Basic amF4cnNVc2VyOm15UGEkJHdvcmQ=").withSecure(false)); //jaxrsUser:myPa$$word
     }
 
     @Test
@@ -338,8 +330,7 @@ public class JAXRSClientSSLProxyAuthTest extends AbstractTest {
         assertEquals("Proxy Password value printed in trace output", 0, server.findStringsInLogsAndTraceUsingMark("myPa\\$\\$word").size());
         server.setMarkToEndOfLog(server.getFileFromLibertyServerRoot("logs/trace.log"));
 
-        //TODO Enable after MockServer fix has been delivered
-        //proxyClient.verify(request().withHeader("Proxy-Authorization", "Basic amF4cnNVc2VyOm15UGEkJHdvcmQ=").withSecure(true)); //jaxrsUser:myPa$$word
+        proxy.verify(request().withHeader("Proxy-Authorization", "Basic amF4cnNVc2VyOm15UGEkJHdvcmQ=").withSecure(true)); //jaxrsUser:myPa$$word
     }
 
     @Test
@@ -357,19 +348,18 @@ public class JAXRSClientSSLProxyAuthTest extends AbstractTest {
         assertEquals("Proxy Password value printed in trace output", 0, server.findStringsInLogsAndTraceUsingMark("myPa\\$\\$word").size());
         server.setMarkToEndOfLog(server.getFileFromLibertyServerRoot("logs/trace.log"));
 
-        //TODO Enable after MockServer fix has been delivered
-        //proxyClient.verify(request().withHeader("Proxy-Authorization", "Basic amF4cnNVc2VyMTpteVBhJCR3b3Jk").withSecure(false)); //jaxrsUser1:myPa$$word
+        proxy.verify(request().withHeader("Proxy-Authorization", "Basic amF4cnNVc2VyMTpteVBhJCR3b3Jk").withSecure(false)); //jaxrsUser1:myPa$$word
     }
 
     @Test
     public void testProxyReturnsAuthError_WebTarget() throws Exception {
         //Server will respond to any request with 407 to mock a proxy authentication failure
-        mockServerClient.when(request()).respond(response().withStatusCode(407));
+        mock.when(request()).respond(response().withStatusCode(407));
 
         Map<String, String> p = new HashMap<String, String>();
         p.put("param", "helloRochester");
         p.put("proxyhost", "localhost");
-        p.put("proxyport", "" + mockServerPort);
+        p.put("proxyport", "" + mockPort);
         p.put("proxytype", "HTTP");
         p.put("proxyusername", "jaxrsUser");
         p.put("proxypassword", "USE_PASSWORD_FROM_SERVLET");
@@ -413,8 +403,7 @@ public class JAXRSClientSSLProxyAuthTest extends AbstractTest {
         assertEquals("Proxy Password value printed in trace output", 0, server.findStringsInLogsAndTraceUsingMark("myPa\\$\\$word").size());
         server.setMarkToEndOfLog(server.getFileFromLibertyServerRoot("logs/trace.log"));
 
-        //TODO Enable after MockServer fix has been delivered
-        //proxyClient.verify(request().withHeader("Proxy-Authorization", "Basic amF4cnNVc2VyOm15UGEkJHdvcmQ=").withSecure(false)); //jaxrsUser:myPa$$word
+        proxy.verify(request().withHeader("Proxy-Authorization", "Basic amF4cnNVc2VyOm15UGEkJHdvcmQ=").withSecure(false)); //jaxrsUser:myPa$$word
     }
 
     //@Test
@@ -433,8 +422,7 @@ public class JAXRSClientSSLProxyAuthTest extends AbstractTest {
         assertEquals("Proxy Password value printed in trace output", 0, server.findStringsInLogsAndTraceUsingMark("myPa\\$\\$word").size());
         server.setMarkToEndOfLog(server.getFileFromLibertyServerRoot("logs/trace.log"));
 
-        //TODO Enable after MockServer fix has been delivered
-        //proxyClient.verify(request().withHeader("Proxy-Authorization", "Basic amF4cnNVc2VyOm15UGEkJHdvcmQ=").withSecure(true)); //jaxrsUser:myPa$$word
+        proxy.verify(request().withHeader("Proxy-Authorization", "Basic amF4cnNVc2VyOm15UGEkJHdvcmQ=").withSecure(true)); //jaxrsUser:myPa$$word
     }
 
     //@Test
@@ -452,19 +440,18 @@ public class JAXRSClientSSLProxyAuthTest extends AbstractTest {
         assertEquals("Proxy Password value printed in trace output", 0, server.findStringsInLogsAndTraceUsingMark("myPa\\$\\$word").size());
         server.setMarkToEndOfLog(server.getFileFromLibertyServerRoot("logs/trace.log"));
 
-        //TODO Enable after MockServer fix has been delivered
-        //proxyClient.verify(request().withHeader("Proxy-Authorization", "Basic amF4cnNVc2VyMTpteVBhJCR3b3Jk").withSecure(false)); //jaxrsUser1:myPa$$word
+        proxy.verify(request().withHeader("Proxy-Authorization", "Basic amF4cnNVc2VyMTpteVBhJCR3b3Jk").withSecure(false)); //jaxrsUser1:myPa$$word
     }
 
     //@Test // TODO: Enable after fixing Open-Liberty issue 227
     public void testProxyReturnsAuthError_Builder() throws Exception {
         //Server will respond to any request with 407 to mock a proxy authentication failure
-        mockServerClient.when(request()).respond(response().withStatusCode(407));
+        mock.when(request()).respond(response().withStatusCode(407));
 
         Map<String, String> p = new HashMap<String, String>();
         p.put("param", "helloRochester");
         p.put("proxyhost", "localhost");
-        p.put("proxyport", "" + mockServerPort);
+        p.put("proxyport", "" + mockPort);
         p.put("proxytype", "HTTP");
         p.put("proxyusername", "jaxrsUser");
         p.put("proxypassword", "USE_PASSWORD_FROM_SERVLET");

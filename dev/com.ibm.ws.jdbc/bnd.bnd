@@ -23,6 +23,7 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
 Export-Package: \
     com.ibm.ws.jdbc;provide:=true, \
+    com.ibm.ws.jdbc.heritage, \
     com.ibm.ws.jdbc.osgi; provide:=true, \
     com.ibm.ws.jdbc.timedoperations, \
     com.ibm.ws.rsadapter, \
@@ -111,6 +112,7 @@ instrument.disabled: true
 	com.ibm.ws.tx.embeddable;version=latest,\
 	com.ibm.tx.jta;version=latest,\
 	com.ibm.ws.jca.cm;version=latest,\
+	com.ibm.ws.jdbc.metatype;version=latest,\
 	com.ibm.ws.resource;version=latest,\
 	com.ibm.ws.classloading;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\

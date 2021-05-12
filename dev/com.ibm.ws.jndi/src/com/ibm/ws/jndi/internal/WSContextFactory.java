@@ -73,6 +73,10 @@ public class WSContextFactory implements InitialContextFactory, ObjectFactory, A
         }
     }
 
+    protected void deactivate(ComponentContext cc) {
+        userContext.getBundle(Constants.SYSTEM_BUNDLE_LOCATION).getBundleContext().removeServiceListener(this);
+    }
+
     Object getService(final ServiceReference<?> ref) {
         return cache.computeIfAbsent(ref, (r) -> AccessController.doPrivileged((PrivilegedAction<Object>) () -> userContext.getService(r)));
     }
@@ -119,7 +123,7 @@ public class WSContextFactory implements InitialContextFactory, ObjectFactory, A
         return null;
     }
 
-    static Reference makeReference(WSContext ctx) throws NamingException {
+    static Reference makeReference(WSContext ctx) {
         RefAddr addr = new StringRefAddr("jndi", "" + ctx.myNode.fullName);
         return new Reference(WSContext.class.getName(), addr, WSContextFactory.class.getName(), null);
     }

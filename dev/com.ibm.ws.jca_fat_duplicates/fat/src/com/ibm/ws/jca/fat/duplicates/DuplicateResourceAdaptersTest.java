@@ -55,10 +55,12 @@ public class DuplicateResourceAdaptersTest {
                       server.waitForStringInLog("CWWKF0008I"));
         assertNotNull("Server should report it has started",
                       server.waitForStringInLog("CWWKF0011I"));
+
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
+
         if (server != null)
             server.stopServer("J2CA8815E", "J2CA7002E"); // These messages are from the resource adapters having the same unique id
     }
@@ -66,13 +68,15 @@ public class DuplicateResourceAdaptersTest {
     @Test
     public void testDuplicateResourceAdapterNames_OneShouldInstall() throws Exception {
         // Either "duplicatera" or "DuplicateRA" will start, so only scan for what is common
+        // Note in cases where a slow test system takes a while to install a resource adapter this trace string may not
+        // be logged and instead we will get "J2CA7022W: Resource adapter {} has not installed in 30.x seconds."
         server.waitForStringInLog("J2CA7001I.*uplicate.*");
     }
 
     @Test
     public void testDuplicateResourceAdapterNames_OneShouldNotInstall() throws Exception {
         // The other will show up as a duplicate
-        if (null == server.waitForStringInLog(".*J2CA8815E.*uplicate.*"))
-            throw new Exception("Did not find error for duplicate resource adapter id");
+        assertNotNull("Server should not be able to load resource adapater with the same name",
+                      server.waitForStringInLog(".*J2CA8815E.*uplicate.*"));
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2020 IBM Corporation and others.
+ * Copyright (c) 2003, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -107,7 +107,6 @@ public class DB2JCCHelper extends DB2Helper {
 
     private boolean tightBranchCouplingSupported; 
     private boolean tightBranchCouplingSupportedbyDB; 
-    private transient PrintWriter db2UPw; 
     private transient String traceFile; 
     private transient int configuredTraceLevel; 
     private transient Class<DB2JCCHelper> currClass = DB2JCCHelper.class;
@@ -122,12 +121,9 @@ public class DB2JCCHelper extends DB2Helper {
 
         boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
-        configuredTraceLevel = 0; // value of DB2BaseDataSource.TRACE_NONE
+        dataStoreHelperClassName = "com.ibm.websphere.rsadapter.DB2UniversalDataStoreHelper";
 
-        Collections.addAll(staleErrorCodes,
-                           -4499,
-                           -4498,
-                           -1776);
+        configuredTraceLevel = 0; // value of DB2BaseDataSource.TRACE_NONE
 
         isRRSTransaction = false;
         threadIdentitySupport = AbstractConnectionFactoryService.THREAD_IDENTITY_NOT_ALLOWED;
@@ -214,7 +210,7 @@ public class DB2JCCHelper extends DB2Helper {
             try {
                 final String file = traceDir + traceFile;
                 final boolean append = traceAppend;
-                db2UPw = new PrintWriter(AccessController.doPrivileged(new PrivilegedExceptionAction<FileOutputStream>() {
+                genPw = new PrintWriter(AccessController.doPrivileged(new PrivilegedExceptionAction<FileOutputStream>() {
                     public FileOutputStream run() throws FileNotFoundException {
                         return new FileOutputStream(file, append);
                     }
@@ -231,12 +227,22 @@ public class DB2JCCHelper extends DB2Helper {
                     throw new ResourceException(x);
             }
         } else { // means need to integrate
-            db2UPw = new PrintWriter(new TraceWriter(db2Tc), true);
+            genPw = new PrintWriter(new TraceWriter(db2Tc), true);
         }
+        
+        Collections.addAll(staleConCodes,
+                           -4499,
+                           -4498,
+                           -1776);
     }
 
     @Override
     public void doStatementCleanup(PreparedStatement stmt) throws SQLException {
+        if (dataStoreHelper != null) {
+            doStatementCleanupLegacy(stmt);
+            return;
+        }
+
         try {
             stmt.setCursorName(null);
         } catch (NullPointerException npe) {
@@ -415,12 +421,12 @@ public class DB2JCCHelper extends DB2Helper {
         //not synchronizing here since there will be one helper
         // and most likely the setting will be serially, even if its not,
         // it shouldn't matter here (tracing).
-        if (db2UPw == null) {
-            db2UPw = new PrintWriter(new TraceWriter(db2Tc), true);
+        if (genPw == null) {
+            genPw = new PrintWriter(new TraceWriter(db2Tc), true);
         }
         if (db2Tc.isDebugEnabled())
-            Tr.debug(db2Tc, "returning", db2UPw);
-        return db2UPw;
+            Tr.debug(db2Tc, "returning", genPw);
+        return genPw;
     }
 
     /*

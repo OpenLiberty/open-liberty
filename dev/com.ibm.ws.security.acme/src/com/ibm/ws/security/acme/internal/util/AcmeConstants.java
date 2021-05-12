@@ -100,6 +100,7 @@ public class AcmeConstants {
 	public static final Long SCHEDULER_MS = TimeUnit.HOURS.toMillis(24L);
 	public static final Long SCHEDULER_ERROR_MS = TimeUnit.HOURS.toMillis(1L);
 	
+	public static final String ACME_HISTORY_DIR = "acmeca/";
 	public static final String ACME_HISTORY_FILE = "acmeca-history.txt";
 
 	public static final Integer HTTP_CONNECT_TIMEOUT_DEFAULT = 30000;

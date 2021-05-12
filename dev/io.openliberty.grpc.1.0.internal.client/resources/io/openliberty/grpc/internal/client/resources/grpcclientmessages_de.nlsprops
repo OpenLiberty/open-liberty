@@ -31,7 +31,3 @@ invalid.keepalive.timeout.useraction=Konfigurieren Sie einen g\u00fcltigen Wert 
 invalid.client.inbound.msg.size=CWWKT0304E: maxInboundMessageSize {0} f\u00fcr den gRPC-Client ist nicht g\u00fcltig. Werte m\u00fcssen gr\u00f6\u00dfer als 0 sein.
 invalid.client.inbound.msg.size.explanation=Der konfigurierte Wert f\u00fcr maxInboundMessageSize ist nicht g\u00fcltig.
 invalid.client.inbound.msg.size.useraction=Konfigurieren Sie f\u00fcr maxInboundMessageSize einen g\u00fcltigen Wert.
-
-invalid.authn.token=CWWKT0305E: Der authnToken-Wert "{0}" f\u00fcr den gRPC-Client ist nicht g\u00fcltig. Der Wert muss "jwt" oder "oauth" sein.
-invalid.authn.token.explanation=Der konfigurierte Wert f\u00fcr authnToken ist nicht g\u00fcltig.
-invalid.authn.token.useraction=Konfigurieren Sie einen g\u00fcltigen Wert f\u00fcr authnToken.

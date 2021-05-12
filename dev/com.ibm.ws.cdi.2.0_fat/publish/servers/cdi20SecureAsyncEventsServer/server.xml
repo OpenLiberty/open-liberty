@@ -19,7 +19,7 @@
 		<feature>localConnector-1.0</feature>
 		<feature>appSecurity-3.0</feature>
 		<feature>concurrent-1.0</feature>
-		<feature>ejb-3.2</feature>
+		<feature>ejbLite-3.2</feature>
     </featureManager>
     
     <include location="../fatTestPorts.xml"/>

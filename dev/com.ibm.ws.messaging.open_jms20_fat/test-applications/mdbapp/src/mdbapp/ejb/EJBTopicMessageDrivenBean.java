@@ -15,19 +15,15 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 
-/**
- *
- */
 public class EJBTopicMessageDrivenBean implements MessageListener {
 
     @Override
     public void onMessage(Message message) {
-
         try {
             TextMessage msg = (TextMessage) message;
             System.out.println((new StringBuilder()).append(message).toString());
             System.out.println("Message received on EJB Topic MDB: " + msg.getText());
-        } catch (JMSException e) {
+        } catch ( JMSException e ) {
             e.printStackTrace();
         }
     }

@@ -20,5 +20,6 @@ Export-Package: test.policyexecutor.bundle_fat
 
 -dsannotations: \
   test.policyexecutor.bundle_fat.CompletionStageFactoryProvider,\
+  test.policyexecutor.bundle_fat.LibertyScheduledExecutorProvider,\
   test.policyexecutor.bundle_fat.PolicyExecutorProviderFactory
 

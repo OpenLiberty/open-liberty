@@ -10,7 +10,12 @@
         IBM Corporation - initial API and implementation
  -->
 
-<application id="ClassLoadingApp_ID" version="6" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/application_6.xsd"> 
+<application id="ClassLoadingApp_ID" 
+	version="9" 
+	xmlns="https://jakarta.ee/xml/ns/jakartaee" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee
+		http://java.sun.com/xml/ns/javaee/application_9.xsd"> 
   <module id="fvtweb_ID">
     <web>
       <web-uri>fvtweb.war</web-uri>

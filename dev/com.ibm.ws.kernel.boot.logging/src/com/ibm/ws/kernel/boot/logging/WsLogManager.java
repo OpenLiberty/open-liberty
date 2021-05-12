@@ -25,8 +25,6 @@ import java.util.logging.Logger;
  * instance of WsLogger.
  */
 public class WsLogManager extends LogManager {
-    private static final String CLASS_NAME = WsLogManager.class.getName();
-
     /**
      * Name of the system property indicating that java logging is to be
      * configured by server

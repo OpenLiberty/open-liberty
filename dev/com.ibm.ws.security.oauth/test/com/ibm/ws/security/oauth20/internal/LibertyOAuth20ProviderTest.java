@@ -41,6 +41,8 @@ import org.osgi.service.component.ComponentContext;
 
 import com.google.gson.JsonArray;
 import org.osgi.service.cm.Configuration;
+
+import com.ibm.ws.security.oauth.test.ClientRegistrationHelper;
 import com.ibm.ws.security.oauth20.api.OidcOAuth20ClientProvider;
 import com.ibm.ws.security.oauth20.plugins.OidcBaseClient;
 import com.ibm.ws.security.oauth20.plugins.OidcBaseClientProvider;
@@ -369,6 +371,8 @@ public class LibertyOAuth20ProviderTest {
     public void testLocalStoreConfig() {
         String methodName = "testLocalStoreConfig";
 
+        ClientRegistrationHelper clientRegistrationHelper = new ClientRegistrationHelper(false);
+
         final Dictionary<String, Object> localStoreProps = new Hashtable<String, Object>();
         localStoreProps.put(PROP_NAME_CLIENT, PROP_VALUE_CLIENT);
 
@@ -411,7 +415,7 @@ public class LibertyOAuth20ProviderTest {
             OidcBaseClient expectedOidcBaseClient = getSampleOidcBaseClientObject(getSampleOidcBaseClientProperties());
 
             // Ensure object return matches object seeded
-            AbstractOidcRegistrationBaseTest.assertEqualsOidcBaseClients(expectedOidcBaseClient, retrievedOidcBaseClient);
+            clientRegistrationHelper.assertEqualsOidcBaseClients(expectedOidcBaseClient, retrievedOidcBaseClient);
 
             // Deactivation will invoke removeClients indirectly
             providerForOidcBaseClientTests.deactivate(null, null); // Parameters do nothing in the method, anyways

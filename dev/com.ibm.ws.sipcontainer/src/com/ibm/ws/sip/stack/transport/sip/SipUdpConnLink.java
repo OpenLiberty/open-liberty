@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2009 IBM Corporation and others.
+ * Copyright (c) 2008, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,15 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.sip.stack.transport.sip;
 
-import jain.protocol.ip.sip.ListeningPoint;
-
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 import com.ibm.sip.util.log.Log;
 import com.ibm.sip.util.log.LogMgr;
@@ -37,29 +32,14 @@ import com.ibm.ws.sip.stack.transaction.transport.connections.SipMessageByteBuff
 import com.ibm.ws.sip.stack.transaction.transport.routers.SLSPRouter;
 import com.ibm.ws.sip.stack.transaction.util.ApplicationProperties;
 import com.ibm.ws.sip.stack.util.StackTaskDurationMeasurer;
-import com.ibm.wsspi.anno.info.Info;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
-import com.ibm.wsspi.channelfw.ChannelFramework;
-import com.ibm.wsspi.channelfw.ChannelFrameworkFactory;
-import com.ibm.wsspi.channelfw.ConnectionLink;
-import com.ibm.wsspi.channelfw.ConnectionReadyCallback;
-import com.ibm.wsspi.channelfw.OutboundConnectionLink;
-import com.ibm.wsspi.channelfw.OutboundProtocol;
-import com.ibm.wsspi.channelfw.OutboundVirtualConnection;
-import com.ibm.wsspi.channelfw.VirtualConnection;
-import com.ibm.wsspi.channelfw.VirtualConnectionFactory;
+import com.ibm.wsspi.channelfw.*;
 import com.ibm.wsspi.channelfw.base.OutboundProtocolLink;
 import com.ibm.wsspi.channelfw.exception.ChainException;
 import com.ibm.wsspi.channelfw.exception.ChannelException;
-import com.ibm.wsspi.udpchannel.UDPBuffer;
-import com.ibm.wsspi.udpchannel.UDPConfigConstants;
-import com.ibm.wsspi.udpchannel.UDPContext;
-import com.ibm.wsspi.udpchannel.UDPReadCompletedCallback;
-import com.ibm.wsspi.udpchannel.UDPReadRequestContext;
-import com.ibm.wsspi.udpchannel.UDPRequestContext;
-import com.ibm.wsspi.udpchannel.UDPRequestContextFactory;
-import com.ibm.wsspi.udpchannel.UDPWriteCompletedCallback;
-import com.ibm.wsspi.udpchannel.UDPWriteRequestContext;
+import com.ibm.wsspi.udpchannel.*;
+
+import jain.protocol.ip.sip.ListeningPoint;
 
 //TODO Liberty import com.ibm.ws.management.AdminHelper;
 
@@ -352,7 +332,7 @@ public class SipUdpConnLink extends OutboundProtocolLink implements OutboundProt
 	/**
 	 * establishes the outbound virtual connection
 	 */
-	private void connect() throws IOException {
+	private void connect(MessageContext messageContext) throws IOException {
 		String outboundChainName = m_channel.getOutboundChainName();
 		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 			Tr.debug(this,  tc,"<connect>","outboundChainName = "  + outboundChainName);
@@ -374,10 +354,17 @@ public class SipUdpConnLink extends OutboundProtocolLink implements OutboundProt
 			}
 			setConnectionProperties(vc);
 			OutboundVirtualConnection outboundConnection = (OutboundVirtualConnection)vc;
+			
+			String localHostname = null; 
+			int localPort = 0;
+			// use the selected interface for the outbound connection
+			if (messageContext != null && messageContext.getSipConnection() != null) {
+				localHostname = messageContext.getSipConnection().getSIPListenningConnection().getListeningPoint()
+						.getHost(); // can't use the real port because we're already listening on it
+			}
 			UDPRequestContext connectRequestContext =
-				UDPRequestContextFactory.getRef().createUDPRequestContext(
-					null,  // local side address. can't use the real host:port because we're already listening to it
-					0); // local side port number
+				UDPRequestContextFactory.getRef().createUDPRequestContext( 
+						localHostname, localPort); 
 			
 			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 				Tr.debug(this,  tc,"<connect>","connectAsynch...");
@@ -416,7 +403,7 @@ public class SipUdpConnLink extends OutboundProtocolLink implements OutboundProt
 								" isconnected = " + m_connected);
 		}
 		if (!m_connected) {
-			connect();
+			connect(messageContext);
 		}
 		m_sendThread.queue(messageContext);
 	}

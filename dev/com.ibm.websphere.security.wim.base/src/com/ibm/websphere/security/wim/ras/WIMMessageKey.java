@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2018 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -945,12 +945,12 @@ public interface WIMMessageKey {
     String CAN_NOT_UPDATE_PROPERTY_IN_REPOSITORY = "CAN_NOT_UPDATE_PROPERTY_IN_REPOSITORY";
 
     /**
-     * Account {0} is stored in the file registry in temporary workspace. You must use the "$AdminConfig save" command to save it in the master repository.
+     * Account {0} is stored in the file registry in temporary workspace. You must use the "$AdminConfig save" command to save it in the main repository.
      **/
     String FILE_REGISTRY_ACCOUNT_ADDED = "FILE_REGISTRY_ACCOUNT_ADDED";
 
     /**
-     * The password is changed for {0} in the file registry in temporary workspace. You must use the "$AdminConfig save" command to save it in the master repository.
+     * The password is changed for {0} in the file registry in temporary workspace. You must use the "$AdminConfig save" command to save it in the main repository.
      **/
     String FILE_REGISTRY_ACCOUNT_PASSWORD_CHANGED = "FILE_REGISTRY_ACCOUNT_PASSWORD_CHANGED";
 
@@ -1053,7 +1053,7 @@ public interface WIMMessageKey {
     String CONFIG_NOT_COMPLETE = "CONFIG_NOT_COMPLETE";
 
     /**
-     * The configuration is saved in a temporary workspace. You must use the "$AdminConfig save" command to save it in the master repository.
+     * The configuration is saved in a temporary workspace. You must use the "$AdminConfig save" command to save it in the main repository.
      */
     String CONFIG_SAVED_IN_WORKSPACE = "CONFIG_SAVED_IN_WORKSPACE";
 
@@ -1624,4 +1624,71 @@ public interface WIMMessageKey {
      * CWIMK0011E: The user registry operation could not be completed. A valid user registry or repository was not found.
      */
     String MISSING_REGISTRY_DEFINITION = "MISSING_REGISTRY_DEFINITION";
+
+    /**
+     * The defined userFilter attribute will be ignored since there are loginProperty attributes defined.
+     */
+    String LOGINPROPERTY_OVERRIDE_USERFILTER = "LOGINPROPERTY_OVERRIDE_USERFILTER";
+
+    /**
+     * CWIML4553E: Kerberos login failed using Kerberos principal {0} and Kerberos credential cache (ccache) {1}.
+     */
+    String KRB5_LOGIN_FAILED_CACHE = "KRB5_LOGIN_FAILED_CACHE";
+
+    /**
+     * WIML4554E: Kerberos login failed using Kerberos principal {0} and Kerberos keytab {1}.
+     */
+    String KRB5_LOGIN_FAILED_KEYTAB = "KRB5_LOGIN_FAILED_KEYTAB";
+
+    /**
+     * CWIML4555E: Kerberos login failed using Kerberos principal {0} and the default Kerberos credential cache (ccache).
+     */
+    String KRB5_LOGIN_FAILED_DEFAULT_CACHE = "KRB5_LOGIN_FAILED_DEFAULT_CACHE";
+
+    /**
+     * CWIML4556E: Kerberos login failed using Kerberos principal {0} and the default Kerberos keytab.
+     */
+    String KRB5_LOGIN_FAILED_DEFAULT_KEYTAB = "KRB5_LOGIN_FAILED_DEFAULT_KEYTAB";
+
+    /**
+     * CWIML4557I: LDAPRegistry {0} configured with Kerberos credential cache (ccache) filename {1} and keytab filename {2}, using Kerberos credential cache (ccache) for Kerberos
+     * bind authentication to LDAP server.
+     */
+    String KRB5_TICKETCACHE_USED = "KRB5_TICKETCACHE_USED";
+
+    /**
+     * CWIML4558E: The {0} Kerberos principal name is incorrectly formatted, or the realm name is missing, or a default realm name cannot be found.
+     */
+    String INVALID_KRB5_PRINCIPAL = "INVALID_KRB5_PRINCIPAL";
+
+    /**
+     * CWIML4559E: LDAPRegistry {0} could not read the Kerberos file {1}.
+     */
+    String CANNOT_READ_KRB5_FILE = "CANNOT_READ_KRB5_FILE";
+
+    /**
+     * CWIML4560E: The [{0}] attribute from the {1} element is configured to a file that does not exist at: {2}
+     */
+    String KRB5_FILE_NOT_FOUND = "KRB5_FILE_NOT_FOUND";
+
+    /**
+     * CWIML4561I: The LdapRegistry component is configured to use a {0} file located at {1}
+     */
+    String KRB5_FILE_FOUND = "KRB5_FILE_FOUND";
+
+    /**
+     * CWIML4518W: The {0} {1} value is malformed. The value must be a series of objectclass:attribute or *:attribute pairs, where each pair is separated by a semi-colon.
+     */
+    String IDMAP_INVALID_FORMAT = "IDMAP_INVALID_FORMAT";
+
+    /**
+     * CWIML4521E: The {0} LdapRegistry attempted to bind to the Ldap server using Kerberos credentials for {1} principal name, but the KerberosService
+     * is not available. The bind authentication mechanism is {2}.
+     */
+    String KRB5_SERVICE_NOT_AVAILABLE = "KRB5_SERVICE_NOT_AVAILABLE";
+
+    /**
+     * CWIML4523E: The {0} value for {1} is invalid. It requires an attribute value assertion where the value assertion is =%v. For example, {2}.
+     */
+    String FILTER_MISSING_PERCENT_V = "FILTER_MISSING_PERCENT_V";
 }

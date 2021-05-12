@@ -1,0 +1,36 @@
+<!--
+    Copyright (c) 2020,2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+  <featureManager>
+    <feature>cdi-2.0</feature>
+    <feature>componenttest-1.0</feature>
+    <feature>mpContextPropagation-1.2</feature>
+    <!--<feature>osgiconsole-1.0</feature>-->
+    <feature>servlet-4.0</feature>
+    <feature>usr:workManager-1.0</feature>
+  </featureManager>
+
+  <include location="../fatTestPorts.xml"/>
+
+  <managedExecutorService id="DefaultManagedExecutorService" jndiName="wm/default">
+    <concurrencyPolicy max="2" startTimeout="3s"/>
+  </managedExecutorService>
+
+  <managedScheduledExecutorService jndiName="wm/schedExec">
+    <concurrencyPolicy max="1" maxQueueSize="2"/>
+    <contextService>
+      <classloaderContext/>
+    </contextService>
+  </managedScheduledExecutorService>
+
+  <javaPermission codebase="${server.config.dir}/dropins/WorkTestCDIApp.war" className="java.lang.RuntimePermission" name="getClassLoader"/>
+
+</server>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,7 +51,7 @@ public class MPConfigAccessorImpl implements MPConfigAccessor {
             // an empty String array or a size 1 String array where the element is the empty string.
             // Allow for both possibilities,
             String[] arr = ((String[]) value);
-            if (arr.length == 1 && arr[0].length() == 0) {
+            if (arr.length == 1 && (arr[0].length() == 0 || "None".equals(arr[0]))) {
                 if (defaultValue instanceof Set)
                     value = (T) Collections.EMPTY_SET;
                 else // TODO remove if config annotations are removed

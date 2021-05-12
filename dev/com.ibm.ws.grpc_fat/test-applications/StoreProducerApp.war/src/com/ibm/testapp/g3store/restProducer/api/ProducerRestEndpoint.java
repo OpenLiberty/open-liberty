@@ -10,8 +10,12 @@
  *******************************************************************************/
 package com.ibm.testapp.g3store.restProducer.api;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.RequestScoped;
@@ -61,7 +65,15 @@ import com.ibm.testapp.g3store.restProducer.model.ProducerRestResponse;
 @Path("/producer")
 public class ProducerRestEndpoint extends ProducerGrpcServiceClientImpl {
 
-    private static Logger log = Logger.getLogger(ProducerRestEndpoint.class.getName());
+    public static Logger log = Logger.getLogger(ProducerRestEndpoint.class.getName());
+
+    private static boolean CONCURRENT_TEST_ON = false;
+
+    public ProducerRestEndpoint() {
+        if (CONCURRENT_TEST_ON) {
+            readStreamParmsFromFile();
+        }
+    }
 
     private static String getSysProp(String key) {
         return AccessController.doPrivileged((PrivilegedAction<String>) () -> System.getProperty(key));
@@ -250,47 +262,25 @@ public class ProducerRestEndpoint extends ProducerGrpcServiceClientImpl {
 
     }
 
-    @POST
-    @Path("/streamingA/client")
-    @APIResponses(value = {
-                            @APIResponse(responseCode = "200", description = "Client Stream test finished", content = @Content(mediaType = MediaType.APPLICATION_JSON)) })
-    public Response clientStreamApp() throws Exception {
-        // stuff to call code the will be the grpc client logic
-
-        // Get the input parameters from the REST request
-        // Each parameter value will have to be transferred to the grpc request object
-        log.info("clientStreamApp(): request to run clientStreamApp test received by ProducerRestEndpoint ");
-
-        String authHeader = httpHeaders.getHeaderString("Authorization");
-
-        if (authHeader == null) {
-            // create grpc client
-            startService_AsyncStub(getHost(), getPort());
-        } else {
-            // secure
-        }
-
-        try {
-            String result = grpcClientStreamApp();
-            log.info("clientStreamApp(): request to grpcClientStreamApp() has been completed by ProducerRestEndpoint result: " + result);
-            return Response.ok().entity(result).build();
-
-        } catch (InvalidArgException e) {
-            return Response.ok().entity("failed with exception: " + e.getMessage()).build();
-        }
-
-        finally {
-            // stop this grpc service
-            stopService();
-        }
-    }
+    public static int SERVER_STREAM_MAX_STRESS_CONNECTIONS = 100;
+    public static int SERVER_STREAM_SLEEP_BETWEEN_STARTING_CONNECTIONS_MSEC = 100;
+    public static int SERVER_STREAM_TIMEOUT_WAITING_FOR_TEST_COMPLETE_SEC = 60;
+    public static int SERVER_STREAM_NUMBER_OF_CONCURRENT_CONNECTIONS = 1;
 
     @POST
     @Path("/streamingA/server")
     @APIResponses(value = {
                             @APIResponse(responseCode = "200", description = "Server Stream test finished", content = @Content(mediaType = MediaType.APPLICATION_JSON)) })
     public Response serverStreamApp() throws Exception {
-        // stuff to call code the will be the grpc client logic
+        int numOfConnections = SERVER_STREAM_NUMBER_OF_CONCURRENT_CONNECTIONS;
+        ServerStreamThread[] ta = new ServerStreamThread[SERVER_STREAM_NUMBER_OF_CONCURRENT_CONNECTIONS];
+        int countConnectionsSuccess = 0;
+        int countConnectionsFailed = 0;
+
+        if (numOfConnections > SERVER_STREAM_MAX_STRESS_CONNECTIONS) {
+            numOfConnections = SERVER_STREAM_MAX_STRESS_CONNECTIONS;
+        }
+        stressLatch = new CountDownLatch(numOfConnections);
 
         // Get the input parameters from the REST request
         // Each parameter value will have to be transferred to the grpc request object
@@ -306,9 +296,37 @@ public class ProducerRestEndpoint extends ProducerGrpcServiceClientImpl {
         }
 
         try {
-            String result = grpcServerStreamApp();
-            log.info("serverStreamApp(): request to grpcServerStreamApp() has been completed by ProducerRestEndpoint result: " + result);
-            return Response.ok().entity(result).build();
+            for (int i = 0; i < numOfConnections; i++) {
+                ta[i] = new ServerStreamThread(i);
+                Thread t = new Thread(ta[i]);
+                t.start();
+                if (SERVER_STREAM_SLEEP_BETWEEN_STARTING_CONNECTIONS_MSEC > 0) {
+                    Thread.sleep(SERVER_STREAM_SLEEP_BETWEEN_STARTING_CONNECTIONS_MSEC);
+                }
+            }
+
+            try {
+                stressLatch.await(SERVER_STREAM_TIMEOUT_WAITING_FOR_TEST_COMPLETE_SEC, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+            }
+
+            for (int j = 0; j < numOfConnections; j++) {
+                if (ta[j].getResult().indexOf("success") != -1) {
+                    countConnectionsSuccess++;
+                } else {
+                    countConnectionsFailed++;
+                }
+            }
+
+            log.info("serverStreamApp: Success Count: " + countConnectionsSuccess + " Failed Count: " + countConnectionsFailed);
+
+            String resultString = "NotSet";
+            if (countConnectionsSuccess == numOfConnections) {
+                resultString = "success. number of connections " + countConnectionsSuccess;
+            } else {
+                resultString = "Failed. TotalCount " + numOfConnections + " Worked " + countConnectionsSuccess;
+            }
+            return Response.ok().entity(resultString).build();
 
         } catch (InvalidArgException e) {
             return Response.ok().entity("failed with exception: " + e.getMessage()).build();
@@ -320,6 +338,38 @@ public class ProducerRestEndpoint extends ProducerGrpcServiceClientImpl {
         }
     }
 
+    class ServerStreamThread implements Runnable {
+
+        int id = -1;
+        String result = "NotDone";
+
+        public ServerStreamThread(int in_id) {
+            id = in_id;
+        }
+
+        @Override
+        public void run() {
+            try {
+                log.info("serverStreamThread: " + id + " started at:   " + System.currentTimeMillis());
+                result = grpcServerStreamApp();
+                log.info("serverStreamThread: " + id + " completed at: " + System.currentTimeMillis() + " with result: " + result);
+            } finally {
+                stressLatch.countDown();
+            }
+        }
+
+        public String getResult() {
+            return result;
+        }
+    }
+
+    // ----------------------------------------------------------------------------------------
+
+    public final static int TWOWAY_STREAM_MAX_STRESS_CONNECTIONS = 100;
+    public final static int TWOWAY_STREAM_SLEEP_BETWEEN_STARTING_CONNECTIONS_MSEC = 100;
+    public final static int TWOWAY_STREAM_TIMEOUT_WAITING_FOR_TEST_COMPLETE_SEC = 60;
+    public final static int TWOWAY_STREAM_NUMBER_OF_CONCURRENT_CONNECTIONS = 1;
+
     @POST
     @Path("/streamingA/twoWay")
     @APIResponses(value = {
@@ -327,6 +377,15 @@ public class ProducerRestEndpoint extends ProducerGrpcServiceClientImpl {
     public Response twoWayStreamApp(boolean asyncThread) throws Exception {
 
         log.info("twoWayStreamApp(): request to run twoWayStreamApp test received by ProducerRestEndpoint.  asyncThread:  " + asyncThread);
+        int numOfConnections = TWOWAY_STREAM_NUMBER_OF_CONCURRENT_CONNECTIONS;
+        TwoWayStreamThread[] ta = new TwoWayStreamThread[TWOWAY_STREAM_NUMBER_OF_CONCURRENT_CONNECTIONS];
+        int countConnectionsSuccess = 0;
+        int countConnectionsFailed = 0;
+
+        if (numOfConnections > TWOWAY_STREAM_MAX_STRESS_CONNECTIONS) {
+            numOfConnections = TWOWAY_STREAM_MAX_STRESS_CONNECTIONS;
+        }
+        stressLatch = new CountDownLatch(numOfConnections);
 
         String authHeader = httpHeaders.getHeaderString("Authorization");
         if (authHeader == null) {
@@ -337,9 +396,37 @@ public class ProducerRestEndpoint extends ProducerGrpcServiceClientImpl {
         }
 
         try {
-            String result = grpcTwoWayStreamApp(asyncThread);
-            log.info("serverStreamApp(): request to grpcServerStreamApp() has been completed by ProducerRestEndpoint result: " + result);
-            return Response.ok().entity(result).build();
+            for (int i = 0; i < numOfConnections; i++) {
+                ta[i] = new TwoWayStreamThread(i, asyncThread);
+                Thread t = new Thread(ta[i]);
+                t.start();
+                if (TWOWAY_STREAM_SLEEP_BETWEEN_STARTING_CONNECTIONS_MSEC > 0) {
+                    Thread.sleep(TWOWAY_STREAM_SLEEP_BETWEEN_STARTING_CONNECTIONS_MSEC);
+                }
+            }
+
+            try {
+                stressLatch.await(TWOWAY_STREAM_TIMEOUT_WAITING_FOR_TEST_COMPLETE_SEC, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+            }
+
+            for (int j = 0; j < numOfConnections; j++) {
+                if (ta[j].getResult().indexOf("success") != -1) {
+                    countConnectionsSuccess++;
+                } else {
+                    countConnectionsFailed++;
+                }
+            }
+
+            log.info("twoWayStreamApp: Success Count: " + countConnectionsSuccess + " Failed Count: " + countConnectionsFailed);
+
+            String resultString = "NotSet";
+            if (countConnectionsSuccess == numOfConnections) {
+                resultString = "success. number of connections " + countConnectionsSuccess;
+            } else {
+                resultString = "Failed. TotalCount " + numOfConnections + " Worked " + countConnectionsSuccess;
+            }
+            return Response.ok().entity(resultString).build();
 
         } catch (InvalidArgException e) {
             return Response.ok().entity("failed with exception: " + e.getMessage()).build();
@@ -348,6 +435,195 @@ public class ProducerRestEndpoint extends ProducerGrpcServiceClientImpl {
         finally {
             // stop this grpc service
             stopService();
+        }
+    }
+
+    class TwoWayStreamThread implements Runnable {
+
+        int id = -1;
+        String result = "NotDone";
+        boolean asyncFlag = false;
+
+        public TwoWayStreamThread(int in_id, boolean af) {
+            id = in_id;
+            asyncFlag = af;
+        }
+
+        @Override
+        public void run() {
+            try {
+                log.info("TwoWayStreamThread: " + id + " started at:   " + System.currentTimeMillis());
+                result = grpcTwoWayStreamApp(asyncFlag);
+                log.info("TwoWayStreamThread: " + id + " completed at: " + System.currentTimeMillis() + " with result: " + result);
+            } finally {
+                stressLatch.countDown();
+            }
+        }
+
+        public String getResult() {
+            return result;
+        }
+    }
+
+    // ----------------------------------------------------------------------------------------
+
+    public static int CLIENT_STREAM_MAX_STRESS_CONNECTIONS = 100;
+    public static int CLIENT_STREAM_SLEEP_BETWEEN_STARTING_CONNECTIONS_MSEC = 100;
+    public static int CLIENT_STREAM_TIMEOUT_WAITING_FOR_TEST_COMPLETE_SEC = 60;
+    public static int CLIENT_STREAM_NUMBER_OF_CONCURRENT_CONNECTIONS = 1;
+
+    public static CountDownLatch stressLatch = null;
+
+    @POST
+    @Path("/streamingA/client")
+    @APIResponses(value = {
+                            @APIResponse(responseCode = "200", description = "Client Stream test finished", content = @Content(mediaType = MediaType.APPLICATION_JSON)) })
+    public Response clientStreamApp() throws Exception {
+        int numOfConnections = CLIENT_STREAM_NUMBER_OF_CONCURRENT_CONNECTIONS;
+        ClientStreamThread[] ta = new ClientStreamThread[CLIENT_STREAM_NUMBER_OF_CONCURRENT_CONNECTIONS];
+        int countConnectionsSuccess = 0;
+        int countConnectionsFailed = 0;
+
+        if (numOfConnections > CLIENT_STREAM_MAX_STRESS_CONNECTIONS) {
+            numOfConnections = CLIENT_STREAM_MAX_STRESS_CONNECTIONS;
+        }
+        stressLatch = new CountDownLatch(numOfConnections);
+
+        // stuff to call code the will be the grpc client logic
+
+        // Get the input parameters from the REST request
+        // Each parameter value will have to be transferred to the grpc request object
+        log.info("clientStreamAppStress(): request to run clientStreamAppStress with count: " + numOfConnections);
+
+        String authHeader = httpHeaders.getHeaderString("Authorization");
+
+        if (authHeader == null) {
+            // create grpc client
+            startService_AsyncStub(getHost(), getPort());
+        } else {
+            // secure
+        }
+
+        try {
+            for (int i = 0; i < numOfConnections; i++) {
+                ta[i] = new ClientStreamThread(i);
+                Thread t = new Thread(ta[i]);
+                t.start();
+                if (CLIENT_STREAM_SLEEP_BETWEEN_STARTING_CONNECTIONS_MSEC > 0) {
+                    Thread.sleep(CLIENT_STREAM_SLEEP_BETWEEN_STARTING_CONNECTIONS_MSEC);
+                }
+            }
+
+            try {
+                stressLatch.await(CLIENT_STREAM_TIMEOUT_WAITING_FOR_TEST_COMPLETE_SEC, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+            }
+
+            for (int j = 0; j < numOfConnections; j++) {
+                if (ta[j].getResult().indexOf("success") != -1) {
+                    countConnectionsSuccess++;
+                } else {
+                    countConnectionsFailed++;
+                }
+            }
+
+            log.info("clientStreamApp: Success Count: " + countConnectionsSuccess + " Failed Count: " + countConnectionsFailed);
+
+            if (stressLatch.getCount() != 0) {
+                log.info("clientStreamApp: not all threads completed on time.  outstanding count: " + stressLatch.getCount());
+            }
+
+            String resultString = "NotSet";
+            if (countConnectionsSuccess == numOfConnections) {
+                resultString = "success. number of connections " + countConnectionsSuccess;
+            } else {
+                resultString = "Failed. TotalCount " + numOfConnections + " Worked " + countConnectionsSuccess;
+            }
+            return Response.ok().entity(resultString).build();
+
+        } finally {
+            // stop this grpc service
+            stopService();
+        }
+    }
+
+    class ClientStreamThread implements Runnable {
+
+        int id = -1;
+        String result = "NotDone";
+
+        public ClientStreamThread(int in_id) {
+            id = in_id;
+        }
+
+        @Override
+        public void run() {
+            try {
+                log.info("clientStreamThread: " + id + " started at:   " + System.currentTimeMillis());
+                result = grpcClientStreamApp();
+                log.info("clientStreamThread: " + id + " completed at: " + System.currentTimeMillis() + " with result: " + result);
+            } finally {
+                stressLatch.countDown();
+            }
+        }
+
+        public String getResult() {
+            return result;
+        }
+    }
+
+    @Override
+    public void readStreamParmsFromFile() {
+
+        BufferedReader br = null;
+        FileReader fr = null;
+        String sCurrentLine;
+
+        System.out.println("Reading parms in from: GrpcStreamParms.txt");
+        try {
+            fr = new FileReader("GrpcStreamParms.txt");
+            if (fr == null)
+                return;
+            br = new BufferedReader(fr);
+            if (br == null)
+                return;
+            while ((sCurrentLine = br.readLine()) != null) {
+                if (sCurrentLine.indexOf("SERVER_STREAM_MAX_STRESS_CONNECTIONS") != -1) {
+                    sCurrentLine = br.readLine();
+                    SERVER_STREAM_MAX_STRESS_CONNECTIONS = new Integer(sCurrentLine).intValue();
+                    System.out.println("setting SERVER_STREAM_MAX_STRESS_CONNECTIONS to: " + SERVER_STREAM_MAX_STRESS_CONNECTIONS);
+                } else if (sCurrentLine.indexOf("SERVER_STREAM_SLEEP_BETWEEN_STARTING_CONNECTIONS_MSEC") != -1) {
+                    sCurrentLine = br.readLine();
+                    SERVER_STREAM_SLEEP_BETWEEN_STARTING_CONNECTIONS_MSEC = new Integer(sCurrentLine).intValue();
+                    System.out.println("setting SERVER_STREAM_SLEEP_BETWEEN_STARTING_CONNECTIONS_MSEC to: " + SERVER_STREAM_SLEEP_BETWEEN_STARTING_CONNECTIONS_MSEC);
+                } else if (sCurrentLine.indexOf("SERVER_STREAM_TIMEOUT_WAITING_FOR_TEST_COMPLETE_SEC") != -1) {
+                    sCurrentLine = br.readLine();
+                    SERVER_STREAM_TIMEOUT_WAITING_FOR_TEST_COMPLETE_SEC = new Integer(sCurrentLine).intValue();
+                    System.out.println("setting SERVER_STREAM_TIMEOUT_WAITING_FOR_TEST_COMPLETE_SEC to: " + SERVER_STREAM_TIMEOUT_WAITING_FOR_TEST_COMPLETE_SEC);
+                } else if (sCurrentLine.indexOf("SERVER_STREAM_NUMBER_OF_CONCURRENT_CONNECTIONS") != -1) {
+                    sCurrentLine = br.readLine();
+                    SERVER_STREAM_NUMBER_OF_CONCURRENT_CONNECTIONS = new Integer(sCurrentLine).intValue();
+                    System.out.println("setting SERVER_STREAM_NUMBER_OF_CONCURRENT_CONNECTIONS to: " + SERVER_STREAM_NUMBER_OF_CONCURRENT_CONNECTIONS);
+                } else if (sCurrentLine.indexOf("CLIENT_STREAM_MAX_STRESS_CONNECTIONS") != -1) {
+                    sCurrentLine = br.readLine();
+                    CLIENT_STREAM_MAX_STRESS_CONNECTIONS = new Integer(sCurrentLine).intValue();
+                    System.out.println("setting CLIENT_STREAM_MAX_STRESS_CONNECTIONS to: " + CLIENT_STREAM_MAX_STRESS_CONNECTIONS);
+                } else if (sCurrentLine.indexOf("CLIENT_STREAM_SLEEP_BETWEEN_STARTING_CONNECTIONS_MSEC") != -1) {
+                    sCurrentLine = br.readLine();
+                    CLIENT_STREAM_SLEEP_BETWEEN_STARTING_CONNECTIONS_MSEC = new Integer(sCurrentLine).intValue();
+                    System.out.println("setting CLIENT_STREAM_SLEEP_BETWEEN_STARTING_CONNECTIONS_MSEC to: " + CLIENT_STREAM_SLEEP_BETWEEN_STARTING_CONNECTIONS_MSEC);
+                } else if (sCurrentLine.indexOf("CLIENT_STREAM_TIMEOUT_WAITING_FOR_TEST_COMPLETE_SEC") != -1) {
+                    sCurrentLine = br.readLine();
+                    CLIENT_STREAM_TIMEOUT_WAITING_FOR_TEST_COMPLETE_SEC = new Integer(sCurrentLine).intValue();
+                    System.out.println("setting CLIENT_STREAM_TIMEOUT_WAITING_FOR_TEST_COMPLETE_SEC to: " + CLIENT_STREAM_TIMEOUT_WAITING_FOR_TEST_COMPLETE_SEC);
+                } else if (sCurrentLine.indexOf("CLIENT_STREAM_NUMBER_OF_CONCURRENT_CONNECTIONS") != -1) {
+                    sCurrentLine = br.readLine();
+                    CLIENT_STREAM_NUMBER_OF_CONCURRENT_CONNECTIONS = new Integer(sCurrentLine).intValue();
+                    System.out.println("setting CLIENT_STREAM_NUMBER_OF_CONCURRENT_CONNECTIONS to: " + CLIENT_STREAM_NUMBER_OF_CONCURRENT_CONNECTIONS);
+                }
+            }
+        } catch (Exception x) {
+            System.out.println("Error caught while reading GrpcStreamParms.txt: " + x);
         }
     }
 

@@ -133,7 +133,7 @@ public class AuthenticateApiTest {
             }
         });
 
-        AuthenticateApi authApi = new AuthenticateApi(ssoCookieHelper, securityServiceRef, null, null, new ConcurrentServiceReferenceMap<String, UnprotectedResourceService>("unprotectedResourceService"), unauthSubjectService);
+        AuthenticateApi authApi = new AuthenticateApi(ssoCookieHelper, securityServiceRef, null, null, new ConcurrentServiceReferenceMap<String, UnprotectedResourceService>("unprotectedResourceService"), unauthSubjectService, null);
         authApi.logout(req, resp, config);
     }
 
@@ -175,7 +175,7 @@ public class AuthenticateApiTest {
             }
         });
 
-        AuthenticateApi authApi = new AuthenticateApi(ssoCookieHelper, securityServiceRef, null, null, new ConcurrentServiceReferenceMap<String, UnprotectedResourceService>("unprotectedResourceService"), unauthSubjectService);
+        AuthenticateApi authApi = new AuthenticateApi(ssoCookieHelper, securityServiceRef, null, null, new ConcurrentServiceReferenceMap<String, UnprotectedResourceService>("unprotectedResourceService"), unauthSubjectService, null);
         authApi.logout(req, resp, config);
     }
 
@@ -216,7 +216,7 @@ public class AuthenticateApiTest {
             }
         });
 
-        AuthenticateApi authApi = new AuthenticateApi(ssoCookieHelper, securityServiceRef, null, null, new ConcurrentServiceReferenceMap<String, UnprotectedResourceService>("unprotectedResourceService"), unauthSubjectService);
+        AuthenticateApi authApi = new AuthenticateApi(ssoCookieHelper, securityServiceRef, null, null, new ConcurrentServiceReferenceMap<String, UnprotectedResourceService>("unprotectedResourceService"), unauthSubjectService, null);
         authApi.throwExceptionIfAlreadyAuthenticate(req, resp, config, null);
         assertEquals("The caller subject must be null", subjectManager.getCallerSubject(), null);
     }
@@ -242,7 +242,7 @@ public class AuthenticateApiTest {
             }
         });
 
-        AuthenticateApi authApi = new AuthenticateApi(ssoCookieHelper, securityServiceRef, null, null, new ConcurrentServiceReferenceMap<String, UnprotectedResourceService>("unprotectedResourceService"), unauthSubjectService);
+        AuthenticateApi authApi = new AuthenticateApi(ssoCookieHelper, securityServiceRef, null, null, new ConcurrentServiceReferenceMap<String, UnprotectedResourceService>("unprotectedResourceService"), unauthSubjectService, null);
 
         try {
             authApi.throwExceptionIfAlreadyAuthenticate(req, resp, config, null);
@@ -276,7 +276,7 @@ public class AuthenticateApiTest {
 
         });
 
-        AuthenticateApi authApi = new AuthenticateApi(ssoCookieHelper, securityServiceRef, null, null, new ConcurrentServiceReferenceMap<String, UnprotectedResourceService>("unprotectedResourceService"), unauthSubjectService);
+        AuthenticateApi authApi = new AuthenticateApi(ssoCookieHelper, securityServiceRef, null, null, new ConcurrentServiceReferenceMap<String, UnprotectedResourceService>("unprotectedResourceService"), unauthSubjectService, null);
         authApi.postProgrammaticAuthenticate(req, resp, authResult);
         assertEquals("The caller subject must be equals to the loginSubject subject.", loginSubject, subjectManager.getCallerSubject());
         assertEquals("The invocation subject must be equals to the loginSubject subject.", loginSubject, subjectManager.getInvocationSubject());
@@ -305,7 +305,7 @@ public class AuthenticateApiTest {
             }
         });
 
-        AuthenticateApi authApi = new AuthenticateApi(ssoCookieHelper, securityServiceRef, null, null, new ConcurrentServiceReferenceMap<String, UnprotectedResourceService>("unprotectedResourceService"), unauthSubjectService);
+        AuthenticateApi authApi = new AuthenticateApi(ssoCookieHelper, securityServiceRef, null, null, new ConcurrentServiceReferenceMap<String, UnprotectedResourceService>("unprotectedResourceService"), unauthSubjectService, null);
         authApi.postProgrammaticAuthenticate(req, resp, authResult);
         assertSame("The caller subject must be equals to the loginSubject subject.", loginSubject, subjectManager.getCallerSubject());
         assertEquals("The invocation subject must be equals to the loginSubject subject.", loginSubject, subjectManager.getInvocationSubject());
@@ -346,7 +346,7 @@ public class AuthenticateApiTest {
             }
         });
 
-        AuthenticateApi authApi = new AuthenticateApi(ssoCookieHelper, securityServiceRef, null, null, new ConcurrentServiceReferenceMap<String, UnprotectedResourceService>("unprotectedResourceService"), unauthSubjectService);
+        AuthenticateApi authApi = new AuthenticateApi(ssoCookieHelper, securityServiceRef, null, null, new ConcurrentServiceReferenceMap<String, UnprotectedResourceService>("unprotectedResourceService"), unauthSubjectService, null);
         BasicAuthAuthenticator basicAuthAuthenticator = new BasicAuthAuthenticator(authnService, userRegistry, ssoCookieHelper, config);
         try {
             authApi.login(req, resp, user, password, config, basicAuthAuthenticator);
@@ -390,7 +390,7 @@ public class AuthenticateApiTest {
             }
         });
 
-        AuthenticateApi authApi = new AuthenticateApi(ssoCookieHelper, securityServiceRef, null, null, new ConcurrentServiceReferenceMap<String, UnprotectedResourceService>("unprotectedResourceService"), unauthSubjectService);
+        AuthenticateApi authApi = new AuthenticateApi(ssoCookieHelper, securityServiceRef, null, null, new ConcurrentServiceReferenceMap<String, UnprotectedResourceService>("unprotectedResourceService"), unauthSubjectService, null);
         BasicAuthAuthenticator basicAuthAuthenticator = new BasicAuthAuthenticator(authnService, userRegistry, ssoCookieHelper, config);
         authApi.login(req, resp, user, password, config, basicAuthAuthenticator);
         assertNull(subjectManager.getCallerSubject());
@@ -433,7 +433,7 @@ public class AuthenticateApiTest {
             }
         });
 
-        AuthenticateApi authApi = new AuthenticateApi(ssoCookieHelper, securityServiceRef, null, null, new ConcurrentServiceReferenceMap<String, UnprotectedResourceService>("unprotectedResourceService"), unauthSubjectService);
+        AuthenticateApi authApi = new AuthenticateApi(ssoCookieHelper, securityServiceRef, null, null, new ConcurrentServiceReferenceMap<String, UnprotectedResourceService>("unprotectedResourceService"), unauthSubjectService, null);
         BasicAuthAuthenticator basicAuthAuthenticator = new BasicAuthAuthenticator(authnService, userRegistry, ssoCookieHelper, config);
         authApi.login(req, resp, user, password, config, basicAuthAuthenticator);
         assertEquals(subject, subjectManager.getCallerSubject());
@@ -480,7 +480,7 @@ public class AuthenticateApiTest {
             }
         });
 
-        AuthenticateApi authApi = new AuthenticateApi(ssoCookieHelper, securityServiceRef, cu, null, new ConcurrentServiceReferenceMap<String, UnprotectedResourceService>("unprotectedResourceService"), unauthSubjectService);
+        AuthenticateApi authApi = new AuthenticateApi(ssoCookieHelper, securityServiceRef, cu, null, new ConcurrentServiceReferenceMap<String, UnprotectedResourceService>("unprotectedResourceService"), unauthSubjectService, null);
         BasicAuthAuthenticator basicAuthAuthenticator = new BasicAuthAuthenticator(authnService, userRegistry, ssoCookieHelper, config);
 
         try {
@@ -535,7 +535,7 @@ public class AuthenticateApiTest {
             }
         });
 
-        AuthenticateApi authApi = new AuthenticateApi(ssoCookieHelper, securityServiceRef, cu, null, new ConcurrentServiceReferenceMap<String, UnprotectedResourceService>("unprotectedResourceService"), unauthSubjectService);
+        AuthenticateApi authApi = new AuthenticateApi(ssoCookieHelper, securityServiceRef, cu, null, new ConcurrentServiceReferenceMap<String, UnprotectedResourceService>("unprotectedResourceService"), unauthSubjectService, null);
         BasicAuthAuthenticator basicAuthAuthenticator = new BasicAuthAuthenticator(authnService, userRegistry, ssoCookieHelper, config);
 
         try {

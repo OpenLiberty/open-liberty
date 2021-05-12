@@ -20,12 +20,12 @@ import java.util.zip.ZipFile;
 import org.junit.Rule;
 import org.junit.Test;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.ws.install.repository.FeatureAsset;
 import com.ibm.ws.install.repository.RepositoryException;
 import com.ibm.ws.install.repository.RepositoryFactory;
 import com.ibm.ws.install.repository.internal.ZipRepository;
+
+import test.common.SharedOutputManager;
 
 /**
  *
@@ -33,7 +33,7 @@ import com.ibm.ws.install.repository.internal.ZipRepository;
 public class ZipRepositoryTest {
 
     @Rule
-    public SharedOutputManager outputMgr = SharedOutputManager.getInstance();
+    public static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("*=all");
 
     @Test
     public void testValidIndexFile() {

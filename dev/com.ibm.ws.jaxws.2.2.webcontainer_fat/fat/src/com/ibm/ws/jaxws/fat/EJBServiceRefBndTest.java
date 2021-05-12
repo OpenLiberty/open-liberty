@@ -35,15 +35,20 @@ import com.ibm.ws.jaxws.fat.util.ExplodedShrinkHelper;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.HttpUtils;
 
+/*
+ * This test is responsible for testing whether or not and EJB endpoint will have it's HTTPConduit configuration applied to the client as set in the
+ * ibm-ws-bnd.xml file. The test application requires access to CXF internals
+ * so a jaxwsTest-2.3 feature is added to the Liberty image in order to expose those APIs.
+ */
 @RunWith(FATRunner.class)
 public class EJBServiceRefBndTest {
+
     private static final int CONN_TIMEOUT = 5;
 
     @Server("EJBServiceRefBndTestServer")
-    public static LibertyServer server = LibertyServerFactory.getLibertyServer("EJBServiceRefBndTestServer");
+    public static LibertyServer server;
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -64,11 +69,19 @@ public class EJBServiceRefBndTest {
         ExplodedShrinkHelper.explodedArchiveToDestination(server, ear, "dropins");
 
         server.copyFileToLibertyInstallRoot("lib/features", "EJBServiceRefBndTest/jaxwsTest-2.2.mf");
+
+        server.copyFileToLibertyInstallRoot("lib/features", "EJBServiceRefBndTest/jaxwsTest-2.3.mf");
+
+        server.copyFileToLibertyInstallRoot("lib/features", "EJBServiceRefBndTest/xmlwsTest-3.0.mf");
     }
 
     @AfterClass
     public static void cleanup() throws Exception {
         server.deleteFileFromLibertyInstallRoot("lib/features/jaxwsTest-2.2.mf");
+
+        server.deleteFileFromLibertyInstallRoot("lib/features/jaxwsTest-2.3.mf");
+
+        server.deleteFileFromLibertyInstallRoot("lib/features/xmlwsTest-3.0.mf");
     }
 
     @Before

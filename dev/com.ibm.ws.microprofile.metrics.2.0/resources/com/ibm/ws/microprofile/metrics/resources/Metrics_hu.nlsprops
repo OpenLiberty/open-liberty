@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2011 IBM Corporation and others.
+# Copyright (c) 2009, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -127,6 +127,11 @@ session.liveSessions.description=A jelenleg bejelentkezett felhaszn\u00e1l\u00f3
 session.activeSessions.description=A jelenleg akt\u00edv munkamenetek sz\u00e1ma. (Egy munkamenet akkor akt\u00edv, ha a term\u00e9k jelenleg feldolgoz egy k\u00e9r\u00e9st, amely az adott felhaszn\u00e1l\u00f3i munkamenetet haszn\u00e1lja).
 session.invalidated.total.description=A m\u00e9r\u0151sz\u00e1m enged\u00e9lyez\u00e9se \u00f3ta kijelentkezett munkamenetek sz\u00e1ma.
 session.invalidatedbyTimeout.total.description=A m\u00e9r\u0151sz\u00e1m enged\u00e9lyez\u00e9se \u00f3ta id\u0151t\u00fall\u00e9p\u00e9s miatt kijelentkeztetett munkamenetek sz\u00e1ma.
+
+requestTiming.requestCount.description=A szervletk\u00e9r\u00e9sek sz\u00e1ma a kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa \u00f3ta.
+requestTiming.activeRequestCount.description=A jelenleg fut\u00f3 szervletk\u00e9r\u00e9sek sz\u00e1ma.
+requestTiming.slowRequestCount.description=A jelenleg fut\u00f3, de lass\u00fa szervletk\u00e9r\u00e9sek sz\u00e1ma.
+requestTiming.hungRequestCount.description=A jelenleg fut\u00f3, de lefagyott szervletk\u00e9r\u00e9sek sz\u00e1ma.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message

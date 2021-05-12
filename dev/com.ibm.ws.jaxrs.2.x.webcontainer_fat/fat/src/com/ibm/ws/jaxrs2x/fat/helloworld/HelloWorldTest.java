@@ -15,14 +15,12 @@ package com.ibm.ws.jaxrs2x.fat.helloworld;
 import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -40,22 +38,11 @@ public class HelloWorldTest {
     public static LibertyServer server;
 
     private static final String hellowar = "helloworld";
-    
-    private static final String databind = "publish/shared/resources/jackson2x/";
-    private static final String jacksonwar = "jackson";
-
 
     @BeforeClass
     public static void setup() throws Exception {
 
-        ShrinkHelper.defaultDropinApp(server, hellowar, "com.ibm.ws.jaxrs2x.fat.helloworld");
-        
-        WebArchive app = ShrinkHelper.buildDefaultApp(jacksonwar, "com.ibm.ws.jaxrs.fat.jackson",
-                        "com.ibm.ws.jaxrs.fat.jackson.internal");
-        app.addAsLibraries(new File(databind).listFiles());
-        ShrinkHelper.exportAppToServer(server, app);
-        server.addInstalledAppForValidation(jacksonwar);
-        
+        ShrinkHelper.defaultApp(server, hellowar, "com.ibm.ws.jaxrs2x.fat.helloworld");
         // Make sure we don't fail because we try to start an
         // already started server
         try {
@@ -63,7 +50,6 @@ public class HelloWorldTest {
         } catch (Exception e) {
             System.out.println(e.toString());
         }
-
     }
 
     @AfterClass
@@ -124,5 +110,4 @@ public class HelloWorldTest {
             con.disconnect();
         }
     }
-
 }

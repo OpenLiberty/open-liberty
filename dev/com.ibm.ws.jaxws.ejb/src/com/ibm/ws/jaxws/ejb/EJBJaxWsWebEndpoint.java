@@ -20,8 +20,8 @@ import javax.xml.ws.Binding;
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.binding.soap.SoapMessage;
-import org.apache.cxf.frontend.MethodDispatcher;
 import org.apache.cxf.interceptor.Interceptor;
+import org.apache.cxf.jaxws.JAXWSMethodDispatcher;
 import org.apache.cxf.jaxws.handler.logical.LogicalHandlerInInterceptor;
 import org.apache.cxf.jaxws.handler.soap.SOAPHandlerInterceptor;
 import org.apache.cxf.jaxws.support.JaxWsEndpointImpl;
@@ -36,6 +36,7 @@ import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ejbcontainer.osgi.EJBContainer;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jaxws.endpoint.AbstractJaxWsWebEndpoint;
 import com.ibm.ws.jaxws.endpoint.JaxWsPublisherContext;
 import com.ibm.ws.jaxws.metadata.EndpointInfo;
@@ -91,6 +92,8 @@ public class EJBJaxWsWebEndpoint extends AbstractJaxWsWebEndpoint {
         serviceFactory.setFeatures(jaxWsServerFactory.getFeatures());
         serviceFactory.create();
 
+        Service service = serviceFactory.create();
+
         jaxWsServerFactory.setBus(serverBus);
         jaxWsServerFactory.setAddress(endpointInfo.getAddress(0));
         jaxWsServerFactory.setStart(false);
@@ -115,9 +118,14 @@ public class EJBJaxWsWebEndpoint extends AbstractJaxWsWebEndpoint {
             inInterceptors.add(ejbPreInvokeInterceptor);
             outInterceptors.add(new EJBPostInvokeInterceptor());
         } else {
-            Service service = serviceFactory.getService();
+            if (service == null) {
+                service = serviceFactory.getService();
+            }
             org.apache.cxf.service.model.EndpointInfo cxfEndpointInfo = service.getEndpointInfo(endpointInfo.getWsdlPort());
-            MethodDispatcher methodDispatcher = (MethodDispatcher) service.get(MethodDispatcher.class.getName());
+
+            String methodDispatcherClassName = getMethodDispatcherClassNameFromClassLoader();
+
+            JAXWSMethodDispatcher methodDispatcher = (JAXWSMethodDispatcher) service.get(methodDispatcherClassName);
             List<Method> methods = new ArrayList<Method>(cxfEndpointInfo.getBinding().getOperations().size());
             for (BindingOperationInfo bindingOperationInfo : cxfEndpointInfo.getBinding().getOperations()) {
                 Method method = methodDispatcher.getMethod(bindingOperationInfo);
@@ -148,6 +156,31 @@ public class EJBJaxWsWebEndpoint extends AbstractJaxWsWebEndpoint {
 
         this.destination = (AbstractHTTPDestination) server.getDestination();
 
+    }
+
+    /*
+     * TODO: Investigate a better way to check versions for jaxws-2.2/jaxws-2.3.
+     * Because of a package name change in CXF for the MethodDispatcher class, we need to look up what class name to use
+     * in order to keep the EJBJaxWsWebEndpoint common between jaxws-2.2 and jaxws-2.3
+     */
+    @FFDCIgnore(ClassNotFoundException.class)
+    private String getMethodDispatcherClassNameFromClassLoader() {
+        Class<?> MethodDispatcherClass = null;
+        try {
+            MethodDispatcherClass = Class.forName("org.apache.cxf.frontend.MethodDispatcher");
+        } catch (ClassNotFoundException e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Unable to load org.apache.cxf.frontend.MethodDispatcher");
+            }
+            try {
+                MethodDispatcherClass = Class.forName("org.apache.cxf.service.invoker.MethodDispatcher");
+            } catch (ClassNotFoundException e1) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Unable to load org.apache.cxf.service.invoker.MethodDispatcher ");
+                }
+            }
+        }
+        return MethodDispatcherClass.getName();
     }
 
     /**

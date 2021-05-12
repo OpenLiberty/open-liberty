@@ -34,9 +34,11 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
+@SkipForRepeat("EE9_FEATURES") // Continue to skip this test for EE9 as com.ibm.ws.jaxrs.client.ltpa.handler is not supported 
 @RunWith(FATRunner.class)
 public class JAXRSClientLtpaTest extends AbstractTest {
 
@@ -74,7 +76,7 @@ public class JAXRSClientLtpaTest extends AbstractTest {
                       serverServer.waitForStringInLog("CWWKF0011I"));
 
         // wait for LTPA key to be available to avoid CWWKS4000E
-        assertNotNull("CWWKS4105I.* not recieved on serverServer",
+        assertNotNull("CWWKS4105I.* not received on serverServer",
                       serverServer.waitForStringInLog("CWWKS4105I.*"));
         
         // Pause for the smarter planet message
@@ -82,7 +84,7 @@ public class JAXRSClientLtpaTest extends AbstractTest {
                       clientServer.waitForStringInLog("CWWKF0011I"));
 
         // wait for LTPA key to be available to avoid CWWKS4000E
-        assertNotNull("CWWKS4105I.* not recieved on clientServer",
+        assertNotNull("CWWKS4105I.* not received on clientServer",
                       clientServer.waitForStringInLog("CWWKS4105I.*"));        
     }
 

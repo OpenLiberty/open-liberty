@@ -676,6 +676,10 @@ error.root.must.be.server=CWWKG0105E: Dokument konfiguracji {0} musi zaczyna\u01
 error.root.must.be.server.explanation=Konfiguracja musi by\u0107 zawarta w elemencie server albo w elemencie client. 
 error.root.must.be.server.useraction=Dodaj element server lub client na poziomie g\u0142\u00f3wnym pliku konfiguracyjnego. 
 
+error.bad.variable.file=CWWKG0106E: Nie mo\u017cna odczyta\u0107 pliku {0}. 
+error.bad.variable.file.explanation=Nie mo\u017cna za\u0142adowa\u0107 pliku jako zmiennej, poniewa\u017c nie mo\u017cna go odczyta\u0107. 
+error.bad.variable.file.useraction=Sprawd\u017a, czy plik zawiera tre\u015b\u0107 tekstow\u0105, i sprawd\u017a uprawnienia do tego pliku w systemie operacyjnym.
+
 # Non-TR message
 error.invalidOCDRef=B\u0141\u0104D: to\u017csamo\u015b\u0107 PID metatypu \
 [{0}] okre\u015bla nieistniej\u0105cy identyfikator definicji klasy obiektu [{1}]

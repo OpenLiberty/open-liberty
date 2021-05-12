@@ -56,8 +56,8 @@ public class Http2FullTracingTests extends FATServletClient {
             LOGGER.logp(Level.INFO, CLASS_NAME, "before()", "Starting servers...");
         }
 
-        H2FATApplicationHelper.addWarToServerDropins(server, "H2TestModule.war", false, "http2.test.war.servlets");
-        H2FATApplicationHelper.addWarToServerDropins(runtimeServer, "H2FATDriver.war", false, "http2.test.driver.war.servlets");
+        H2FATApplicationHelper.addWarToServerDropins(server, "H2TestModule.war", true, "http2.test.war.servlets");
+        H2FATApplicationHelper.addWarToServerDropins(runtimeServer, "H2FATDriver.war", true, "http2.test.driver.war.servlets");
 
         server.startServer(true, true);
         runtimeServer.startServer(true, true);
@@ -68,8 +68,11 @@ public class Http2FullTracingTests extends FATServletClient {
         if (LOGGER.isLoggable(Level.INFO)) {
             LOGGER.logp(Level.INFO, CLASS_NAME, "after()", "Stopping servers......");
         }
-        server.stopServer(true);
+        // try for an orderly quiet shutdown
+        Thread.sleep(5000);
         runtimeServer.stopServer(true);
+        Thread.sleep(5000);
+        server.stopServer(true);
     }
 
     private void runTest(String servletPath, String testName) throws Exception {

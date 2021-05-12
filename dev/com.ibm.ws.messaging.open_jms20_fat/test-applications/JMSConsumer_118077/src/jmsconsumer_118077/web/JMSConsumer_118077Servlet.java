@@ -47,6 +47,11 @@ import com.ibm.websphere.ras.TraceComponent;
 @SuppressWarnings("serial")
 public class JMSConsumer_118077Servlet extends HttpServlet {
 
+    // JMSQueueConnectionFactory "java:comp/env/jndi_JMS_BASE_QCF"
+    // JMSQueueConnectionFactory "java:comp/env/jndi_JMS_BASE_QCF1"
+    // Queue "java:comp/env/jndi_INPUT_Q1"
+    // UserTransaction "java:comp/UserTransaction"
+
     public void emptyQueue(QueueConnectionFactory qcf, Queue q) throws Exception {
         JMSContext context = qcf.createContext();
 
@@ -74,27 +79,38 @@ public class JMSConsumer_118077Servlet extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
+        System.out.println("JMSConsumer_118077Servlet.init ENTRY");
+
         super.init();
 
         try {
             jmsQCFBindings = (QueueConnectionFactory)
                 new InitialContext().lookup("java:comp/env/jndi_JMS_BASE_QCF");
-            jmsQCFTCP = (QueueConnectionFactory)
-                new InitialContext().lookup("java:comp/env/jndi_JMS_BASE_QCF1");
-            jmsQueue = (Queue)
-                new InitialContext() .lookup("java:comp/env/jndi_INPUT_Q");
         } catch ( NamingException e ) {
             e.printStackTrace();
         }
+        System.out.println("Queue connection factory 'java:comp/env/jndi_JMS_BASE_QCF':\n" + jmsQCFBindings);
 
-        if ( jmsQCFBindings == null ) {
-            System.out.println("Null queue connection factory 'java:comp/env/jndi_JMS_BASE_QCF'");
+        try {
+            jmsQCFTCP = (QueueConnectionFactory)
+                new InitialContext().lookup("java:comp/env/jndi_JMS_BASE_QCF1");
+        } catch ( NamingException e ) {
+            e.printStackTrace();
         }
-        if ( jmsQCFTCP  == null ) {
-            System.out.println("Null queue connection factory 'java:comp/env/jndi_JMS_BASE_QCF1'");
+        System.out.println("Queue connection factory 'java:comp/env/jndi_JMS_BASE_QCF1':\n" + jmsQCFTCP);
+
+        try {
+            jmsQueue = (Queue)
+                new InitialContext().lookup("java:comp/env/jndi_INPUT_Q1");
+        } catch ( NamingException e ) {
+            e.printStackTrace();
         }
-        if ( jmsQueue == null ) {
-            System.out.println("Null queue 'java:comp/env/jndi_INPUT_Q'");
+        System.out.println("Queue 'java:comp/env/jndi_INPUT_Q1':\n" + jmsQueue);
+
+        System.out.println("JMSConsumer_118077Servlet.init RETURN");
+
+        if ( (jmsQCFBindings == null) || (jmsQCFTCP == null) || (jmsQueue == null) ) {
+            throw new ServletException("Failed JMS initialization");
         }
     }
 
@@ -160,18 +176,21 @@ public class JMSConsumer_118077Servlet extends HttpServlet {
 
         JMSContext jmsContext = jmsQCFBindings.createContext();
         emptyQueue(jmsQCFBindings, jmsQueue);
-        TextMessage message = jmsContext
-                        .createTextMessage("testReceive_B_SecOff");
-        jmsContext.createProducer().send(jmsQueue, message);
-        JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
-        TextMessage message1 = (TextMessage) jmsConsumer.receive();
-        System.out.println("Received message: " + message1.getText());
 
-        jmsContext.close();
+        String msgOutText = "testReceive_B_SecOff";
+        TextMessage msgOut = jmsContext.createTextMessage(msgOutText);
+        jmsContext.createProducer().send(jmsQueue, msgOut);
+
+        JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
+        TextMessage msgIn = (TextMessage) jmsConsumer.receive();
 
         boolean failedTest = false;
-        if (!(message1 != null && message1.getText().equals("testReceive_B_SecOff")))
+        if ( (msgIn == null) ||
+             (msgIn.getText() == null) || !msgIn.getText().equals(msgOutText) ) {
             failedTest = true;
+        }
+
+        jmsContext.close();
 
         if ( failedTest ) {
             throw new Exception("testReceive_B_SecOff failed: Expected message was not received");
@@ -181,19 +200,23 @@ public class JMSConsumer_118077Servlet extends HttpServlet {
     public void testReceive_TcpIp_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        boolean failedTest = false;
         JMSContext jmsContext = jmsQCFTCP.createContext();
         emptyQueue(jmsQCFTCP, jmsQueue);
-        TextMessage message = jmsContext
-                        .createTextMessage("testReceive_TcpIp_SecOff");
-        jmsContext.createProducer().send(jmsQueue, message);
+
+        String msgOutText = "testReceive_TcpIp_SecOff";
+        TextMessage msgOut = jmsContext.createTextMessage(msgOutText);
+        jmsContext.createProducer().send(jmsQueue, msgOut);
+
         JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
-        TextMessage message1 = (TextMessage) jmsConsumer.receive();
-        System.out.println("Received message: " + message1.getText());
+        TextMessage msgIn = (TextMessage) jmsConsumer.receive();
+
+        boolean failedTest = false;
+        if ( (msgIn == null) ||
+             (msgIn.getText() == null) || !msgIn.getText().equals(msgOutText) ) {
+            failedTest = true;
+        }
 
         jmsContext.close();
-        if (!(message1 != null && message1.getText().equals("testReceive_TcpIp_SecOff")))
-            failedTest = true;
 
         if ( failedTest ) {
             throw new Exception("testReceive_TcpIp_SecOff failed: Expected message was not received");
@@ -203,18 +226,21 @@ public class JMSConsumer_118077Servlet extends HttpServlet {
     public void testReceiveBody_B_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        boolean failedTest = false;
         JMSContext jmsContext = jmsQCFBindings.createContext();
         emptyQueue(jmsQCFBindings, jmsQueue);
-        jmsContext.createProducer().send(jmsQueue, "testReceiveBody_B_SecOff");
-        JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
-        String message1 = jmsConsumer.receiveBody(String.class);
 
-        System.out.println("Received message: " + message1);
+        String msgOutText = "testReceiveBody_B_SecOff";
+        jmsContext.createProducer().send(jmsQueue, msgOutText);
+
+        JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
+        String msgIn = jmsConsumer.receiveBody(String.class);
+
+        boolean failedTest = false;
+        if ( (msgIn == null) || !msgIn.equals(msgOutText) ) {
+            failedTest = true;
+        }
 
         jmsContext.close();
-        if (!(message1 != null && message1.equals("testReceiveBody_B_SecOff")))
-            failedTest = true;
 
         if ( failedTest ) {
             throw new Exception("testReceiveBody_B_SecOff failed: Expected message was not received");
@@ -224,16 +250,21 @@ public class JMSConsumer_118077Servlet extends HttpServlet {
     public void testReceiveBody_TcpIp_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        boolean failedTest = false;
         JMSContext jmsContext = jmsQCFTCP.createContext();
         emptyQueue(jmsQCFTCP, jmsQueue);
-        jmsContext.createProducer().send(jmsQueue, "testReceiveBody_TcpIp_SecOff");
+
+        String msgOutText = "testReceiveBody_TcpIp_SecOff";
+        jmsContext.createProducer().send(jmsQueue, msgOutText);
+
         JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
-        String message1 = jmsConsumer.receiveBody(String.class);
+        String msgIn = jmsConsumer.receiveBody(String.class);
+
+        boolean failedTest = false;
+        if ( (msgIn == null) || !msgIn.equals(msgOutText) ) {
+            failedTest = true;
+        }
 
         jmsContext.close();
-        if (!(message1 != null && message1.equals("testReceiveBody_TcpIp_SecOff")))
-            failedTest = true;
 
         if ( failedTest ) {
             throw new Exception("testReceiveBody_TcpIp_SecOff failed: Expected message was not received");
@@ -243,17 +274,22 @@ public class JMSConsumer_118077Servlet extends HttpServlet {
     public void testReceiveBodyTextMsg_B_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        boolean failedTest = false;
         JMSContext jmsContext = jmsQCFBindings.createContext();
         emptyQueue(jmsQCFBindings, jmsQueue);
-        TextMessage message = jmsContext.createTextMessage("testReceiveBodyTextMsg_B_SecOff");
-        jmsContext.createProducer().send(jmsQueue, message);
+
+        String msgOutText = "testReceiveBodyTextMsg_B_SecOff";
+        TextMessage msgOut = jmsContext.createTextMessage(msgOutText);
+        jmsContext.createProducer().send(jmsQueue, msgOut);
+
         JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
-        String message1 = jmsConsumer.receiveBody(String.class);
-        System.out.println("Received message: " + message1);
-        jmsContext.close();
-        if (!(message1 != null && message1.equals("testReceiveBodyTextMsg_B_SecOff")))
+        String msgIn = jmsConsumer.receiveBody(String.class);
+
+        boolean failedTest = false;
+        if ( (msgIn == null) || !msgIn.equals(msgOutText) ) {
             failedTest = true;
+        }
+
+        jmsContext.close();
 
         if ( failedTest ) {
             throw new Exception("testReceiveBodyTextMsg_B_SecOff failed: Expected message was not received");
@@ -263,17 +299,22 @@ public class JMSConsumer_118077Servlet extends HttpServlet {
     public void testReceiveBodyTextMsg_TcpIp_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        boolean failedTest = false;
         JMSContext jmsContext = jmsQCFTCP.createContext();
         emptyQueue(jmsQCFTCP, jmsQueue);
-        TextMessage message = jmsContext.createTextMessage("testReceiveBodyTextMsg_TcpIp_SecOff");
-        jmsContext.createProducer().send(jmsQueue, message);
+
+        String msgOutText = "testReceiveBodyTextMsg_TcpIp_SecOff";
+        TextMessage msgOut = jmsContext.createTextMessage(msgOutText);
+        jmsContext.createProducer().send(jmsQueue, msgOut);
+
         JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
-        String message1 = jmsConsumer.receiveBody(String.class);
+        String msgIn = jmsConsumer.receiveBody(String.class);
+
+        boolean failedTest = false;
+        if ( (msgIn == null) || !msgIn.equals(msgOutText) ) {
+            failedTest = true;
+        }
 
         jmsContext.close();
-        if (!(message1 != null && message1.equals("testReceiveBodyTextMsg_TcpIp_SecOff")))
-            failedTest = true;
 
         if ( failedTest ) {
             throw new Exception("testReceiveBodyTextMsg_TcpIp_SecOff failed: Expected message was not received");
@@ -283,19 +324,23 @@ public class JMSConsumer_118077Servlet extends HttpServlet {
     public void testReceiveBodyByteMsg_B_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        boolean failedTest = false;
         JMSContext jmsContext = jmsQCFBindings.createContext();
         emptyQueue(jmsQCFBindings, jmsQueue);
-        byte[] data = new byte[] { 127, 0 };
-        BytesMessage message = jmsContext.createBytesMessage();
-        message.writeBytes(data);
-        jmsContext.createProducer().send(jmsQueue, message);
+
+        byte[] msgOutBytes = new byte[] { 127, 0 };
+        BytesMessage msgOut = jmsContext.createBytesMessage();
+        msgOut.writeBytes(msgOutBytes);
+        jmsContext.createProducer().send(jmsQueue, msgOut);
+
         JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
-        byte[] message1 = jmsConsumer.receiveBody(byte[].class);
+        byte[] msgIn = jmsConsumer.receiveBody(byte[].class);
+
+        boolean failedTest = false;
+        if ( (msgIn == null) || !Arrays.equals(msgIn, msgOutBytes) ) {
+            failedTest = true;
+        }
 
         jmsContext.close();
-        if (!(message1 != null && Arrays.toString(message1).contains("127, 0")))
-            failedTest = true;
 
         if ( failedTest ) {
             throw new Exception("testReceiveBodyByteMsg_B_SecOff failed: Expected message was not received");
@@ -305,19 +350,24 @@ public class JMSConsumer_118077Servlet extends HttpServlet {
     public void testReceiveBodyByteMsg_TcpIp_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        boolean failedTest = false;
         JMSContext jmsContext = jmsQCFTCP.createContext();
         emptyQueue(jmsQCFTCP, jmsQueue);
-        byte[] data = new byte[] { 126, 1 };
-        BytesMessage message = jmsContext.createBytesMessage();
-        message.writeBytes(data);
-        jmsContext.createProducer().send(jmsQueue, message);
+
+        byte[] msgOutBytes = new byte[] { 126, 1 };
+        BytesMessage msgOut = jmsContext.createBytesMessage();
+        msgOut.writeBytes(msgOutBytes);
+        jmsContext.createProducer().send(jmsQueue, msgOut);
+
         JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
-        byte[] message1 = jmsConsumer.receiveBody(byte[].class);
+        byte[] msgIn = jmsConsumer.receiveBody(byte[].class);
+
+        boolean failedTest = false;
+
+        if ( (msgIn == null) || !Arrays.equals(msgIn, msgOutBytes) ) {
+            failedTest = true;
+        }
 
         jmsContext.close();
-        if (!(message1 != null && Arrays.toString(message1).contains("126, 1")))
-            failedTest = true;
 
         if ( failedTest ) {
             throw new Exception("testReceiveBodyByteMsg_TcpIp_SecOff failed: Expected message was not received");
@@ -327,19 +377,34 @@ public class JMSConsumer_118077Servlet extends HttpServlet {
     public void testReceiveBodyMapMsg_B_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        boolean failedTest = false;
         JMSContext jmsContext = jmsQCFBindings.createContext();
         emptyQueue(jmsQCFBindings, jmsQueue);
-        MapMessage message = jmsContext.createMapMessage();
-        message.setString("Name", "testReceiveBodyMapMsg_B_SecOff");
-        message.setString("Security", "off");
-        jmsContext.createProducer().send(jmsQueue, message);
+
+        MapMessage msgOut = jmsContext.createMapMessage();
+        String nameOut = "testReceiveBodyMapMsg_B_SecOff";
+        msgOut.setString("Name", nameOut);
+        String secOut = "off";
+        msgOut.setString("Security", secOut);
+        jmsContext.createProducer().send(jmsQueue, msgOut);
+
         JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
-        java.util.Map message1 = jmsConsumer.receiveBody(java.util.Map.class);
-        System.out.println("Received message is : " + message1);
-        jmsContext.close();
-        if (!(message1 != null && message1.get("Name").equals("testReceiveBodyMapMsg_B_SecOff") && message1.get("Security").equals("off")))
+        Map msgIn = jmsConsumer.receiveBody(Map.class);
+
+        boolean failedTest = false;
+        if ( msgIn == null ) {
             failedTest = true;
+        } else {
+            Object nameIn = msgIn.get("Name");
+            if ( (nameIn == null) || !nameIn.equals(nameOut) ) {
+                failedTest = true;
+            }
+            Object secIn = msgIn.get("Security");
+            if ( (secIn == null) || !secIn.equals(secOut) ) {
+                failedTest = true;
+            }
+        }
+
+        jmsContext.close();
 
         if ( failedTest ) {
             throw new Exception("testReceiveBodyMapMsg_B_SecOff failed: Expected message was not received");
@@ -349,19 +414,34 @@ public class JMSConsumer_118077Servlet extends HttpServlet {
     public void testReceiveBodyMapMsg_TcpIp_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        boolean failedTest = false;
         JMSContext jmsContext = jmsQCFTCP.createContext();
         emptyQueue(jmsQCFTCP, jmsQueue);
-        MapMessage message = jmsContext.createMapMessage();
-        message.setString("Name", "testReceiveBodyMapMsg_TcpIp_SecOff");
-        message.setString("Security", "off");
-        jmsContext.createProducer().send(jmsQueue, message);
+
+        MapMessage msgOut = jmsContext.createMapMessage();
+        String nameOut = "testReceiveBodyMapMsg_TcpIp_SecOff";
+        msgOut.setString("Name", "testReceiveBodyMapMsg_TcpIp_SecOff");
+        String secOut = "off";
+        msgOut.setString("Security", "off");
+        jmsContext.createProducer().send(jmsQueue, msgOut);
+
         JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
-        java.util.Map message1 = jmsConsumer.receiveBody(java.util.Map.class);
-        System.out.println("Reeived message is : " + message1);
-        jmsContext.close();
-        if (!(message1 != null && message1.get("Name").equals("testReceiveBodyMapMsg_TcpIp_SecOff") && message1.get("Security").equals("off")))
+        Map msgIn = jmsConsumer.receiveBody(Map.class);
+
+        boolean failedTest = false;
+        if ( msgIn == null ) {
             failedTest = true;
+        } else {
+            Object nameIn = msgIn.get("Name");
+            if ( (nameIn == null) || !nameIn.equals(nameOut) ) {
+                failedTest = true;
+            }
+            Object secIn = msgIn.get("Security");
+            if ( (secIn == null) || !secIn.equals(secOut) ) {
+                failedTest = true;
+            }
+        }
+
+        jmsContext.close();
 
         if ( failedTest ) {
             throw new Exception("testReceiveBodyMapMsg_TcpIp_SecOff failed: Expected message was not received");
@@ -371,19 +451,23 @@ public class JMSConsumer_118077Servlet extends HttpServlet {
     public void testReceiveBodyObjectMsg_B_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        boolean failedTest = false;
         JMSContext jmsContext = jmsQCFBindings.createContext();
         emptyQueue(jmsQCFBindings, jmsQueue);
-        Object abc = new String("testReceiveBodyObjectMsg_B_SecOff");
-        ObjectMessage message = jmsContext.createObjectMessage();
-        message.setObject((Serializable) abc);
-        jmsContext.createProducer().send(jmsQueue, message);
+
+        Object msgOutText = "testReceiveBodyObjectMsg_B_SecOff";
+        ObjectMessage msgOut = jmsContext.createObjectMessage();
+        msgOut.setObject((Serializable) msgOutText);
+        jmsContext.createProducer().send(jmsQueue, msgOut);
+
         JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
-        Object message1 = jmsConsumer.receiveBody(Serializable.class);
+        Object msgIn = jmsConsumer.receiveBody(Serializable.class);
+
+        boolean failedTest = false;
+        if ( (msgIn == null) || !msgIn.equals(msgOutText) ) {
+            failedTest = true;
+        }
 
         jmsContext.close();
-        if (!(message1 != null && message1.equals(abc)))
-            failedTest = true;
 
         if ( failedTest ) {
             throw new Exception("testReceiveBodyObjectMsg_B_SecOff failed: Expected message was not received");
@@ -393,19 +477,23 @@ public class JMSConsumer_118077Servlet extends HttpServlet {
     public void testReceiveBodyObjectMsg_TcpIp_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        boolean failedTest = false;
         JMSContext jmsContext = jmsQCFTCP.createContext();
         emptyQueue(jmsQCFTCP, jmsQueue);
-        Object abc = new String("testReceiveBodyObjectMsg_TcpIp_SecOff");
-        ObjectMessage message = jmsContext.createObjectMessage();
-        message.setObject((Serializable) abc);
-        jmsContext.createProducer().send(jmsQueue, message);
+
+        Object msgOutText = new String("testReceiveBodyObjectMsg_TcpIp_SecOff");
+        ObjectMessage msgOut = jmsContext.createObjectMessage();
+        msgOut.setObject((Serializable) msgOutText);
+        jmsContext.createProducer().send(jmsQueue, msgOut);
+
         JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
-        Object message1 = jmsConsumer.receiveBody(Serializable.class);
+        Object msgIn = jmsConsumer.receiveBody(Serializable.class);
+
+        boolean failedTest = false;
+        if ( (msgIn == null) || !msgIn.equals(msgOutText) ) {
+            failedTest = true;
+        }
 
         jmsContext.close();
-        if (!(message1 != null && message1.equals(abc)))
-            failedTest = true;
 
         if ( failedTest ) {
             throw new Exception("testReceiveBodyObjectMsg_TcpIp_SecOff failed: Expected message was not received");
@@ -415,17 +503,22 @@ public class JMSConsumer_118077Servlet extends HttpServlet {
     public void testReceiveBodyTimeOutTextMsg_B_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        boolean failedTest = false;
         JMSContext jmsContext = jmsQCFBindings.createContext();
         emptyQueue(jmsQCFBindings, jmsQueue);
-        TextMessage message = jmsContext.createTextMessage("testReceiveBodyTimeOutTextMsg_B_SecOff");
-        jmsContext.createProducer().send(jmsQueue, message);
+
+        String msgOutText = "testReceiveBodyTimeOutTextMsg_B_SecOff";
+        TextMessage msgOut = jmsContext.createTextMessage(msgOutText);
+        jmsContext.createProducer().send(jmsQueue, msgOut);
+
         JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
-        String message1 = jmsConsumer.receiveBody(String.class, 30000);
+        String msgIn = jmsConsumer.receiveBody(String.class, 30000);
 
         jmsContext.close();
-        if (!(message1 != null && message1.equals("testReceiveBodyTimeOutTextMsg_B_SecOff")))
+
+        boolean failedTest = false;
+        if ( (msgIn == null) || !msgIn.equals(msgOutText) ) {
             failedTest = true;
+        }
 
         if ( failedTest ) {
             throw new Exception("testReceiveBodyTimeOutTextMsg_B_SecOff failed: Expected message was not received");
@@ -435,17 +528,22 @@ public class JMSConsumer_118077Servlet extends HttpServlet {
     public void testReceiveBodyTimeOutTextMsg_TcpIp_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        boolean failedTest = false;
         JMSContext jmsContext = jmsQCFTCP.createContext();
         emptyQueue(jmsQCFTCP, jmsQueue);
-        TextMessage message = jmsContext.createTextMessage("testReceiveBodyTimeOutTextMsg_TcpIp_SecOff");
-        jmsContext.createProducer().send(jmsQueue, message);
+
+        String msgOutText = "testReceiveBodyTimeOutTextMsg_TcpIp_SecOff";
+        TextMessage msgOut = jmsContext.createTextMessage(msgOutText);
+        jmsContext.createProducer().send(jmsQueue, msgOut);
+
         JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
-        String message1 = jmsConsumer.receiveBody(String.class, 30000);
+        String msgIn = jmsConsumer.receiveBody(String.class, 30000);
+
+        boolean failedTest = false;
+        if ( (msgIn == null) || !msgIn.equals(msgOutText) ) {
+            failedTest = true;
+        }
 
         jmsContext.close();
-        if (!(message1 != null && message1.equals("testReceiveBodyTimeOutTextMsg_TcpIp_SecOff")))
-            failedTest = true;
 
         if ( failedTest ) {
             throw new Exception("testReceiveBodyTimeOutTextMsg_TcpIp_SecOff failed: Expected message was not received");
@@ -455,19 +553,23 @@ public class JMSConsumer_118077Servlet extends HttpServlet {
     public void testReceiveBodyTimeOutByteMsg_B_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        boolean failedTest = false;
         JMSContext jmsContext = jmsQCFBindings.createContext();
         emptyQueue(jmsQCFBindings, jmsQueue);
-        byte[] data = new byte[] { 125, 2 };
-        BytesMessage message = jmsContext.createBytesMessage();
-        message.writeBytes(data);
-        jmsContext.createProducer().send(jmsQueue, message);
+
+        byte[] msgOutBytes = new byte[] { 125, 2 };
+        BytesMessage msgOut = jmsContext.createBytesMessage();
+        msgOut.writeBytes(msgOutBytes);
+        jmsContext.createProducer().send(jmsQueue, msgOut);
+
         JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
-        byte[] message1 = jmsConsumer.receiveBody(byte[].class, 30000);
+        byte[] msgIn = jmsConsumer.receiveBody(byte[].class, 30000);
+
+        boolean failedTest = false;
+        if ( (msgIn == null) || !Arrays.equals(msgIn, msgOutBytes) ) {
+            failedTest = true;
+        }
 
         jmsContext.close();
-        if (!(message1 != null && Arrays.toString(message1).contains("125, 2")))
-            failedTest = true;
 
         if ( failedTest ) {
             throw new Exception("testReceiveBodyTimeOutByteMsg_B_SecOff failed: Expected message was not received");
@@ -477,19 +579,23 @@ public class JMSConsumer_118077Servlet extends HttpServlet {
     public void testReceiveBodyTimeOutByteMsg_TcpIp_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        boolean failedTest = false;
         JMSContext jmsContext = jmsQCFTCP.createContext();
         emptyQueue(jmsQCFTCP, jmsQueue);
-        byte[] data = new byte[] { 124, 3 };
-        BytesMessage message = jmsContext.createBytesMessage();
-        message.writeBytes(data);
-        jmsContext.createProducer().send(jmsQueue, message);
+
+        byte[] msgOutBytes = new byte[] { 124, 3 };
+        BytesMessage msgOut = jmsContext.createBytesMessage();
+        msgOut.writeBytes(msgOutBytes);
+        jmsContext.createProducer().send(jmsQueue, msgOut);
+
         JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
-        byte[] message1 = jmsConsumer.receiveBody(byte[].class, 30000);
+        byte[] msgIn = jmsConsumer.receiveBody(byte[].class, 30000);
+
+        boolean failedTest = false;
+        if ( (msgIn == null) || !Arrays.equals(msgIn, msgOutBytes) ) {
+            failedTest = true;
+        }
 
         jmsContext.close();
-        if (!(message1 != null && Arrays.toString(message1).contains("124, 3")))
-            failedTest = true;
 
         if ( failedTest ) {
             throw new Exception("testReceiveBodyTimeOutByteMsg_TcpIp_SecOff failed: Expected message was not received");
@@ -499,19 +605,34 @@ public class JMSConsumer_118077Servlet extends HttpServlet {
     public void testReceiveBodyTimeOutMapMsg_B_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        boolean failedTest = false;
         JMSContext jmsContext = jmsQCFBindings.createContext();
         emptyQueue(jmsQCFBindings, jmsQueue);
-        MapMessage message = jmsContext.createMapMessage();
-        message.setString("Name", "testReceiveBodyTimeOutMapMsg_B_SecOff");
-        message.setString("Security", "off");
-        jmsContext.createProducer().send(jmsQueue, message);
+
+        MapMessage msgOut = jmsContext.createMapMessage();
+        String nameOut = "testReceiveBodyTimeOutMapMsg_B_SecOff";
+        msgOut.setString("Name", nameOut);
+        String secOut = "off";
+        msgOut.setString("Security", secOut);
+        jmsContext.createProducer().send(jmsQueue, msgOut);
+
         JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
-        java.util.Map message1 = jmsConsumer.receiveBody(java.util.Map.class, 30000);
-        System.out.println("Reeived message is : " + message1);
-        jmsContext.close();
-        if (!(message1 != null && message1.get("Name").equals("testReceiveBodyTimeOutMapMsg_B_SecOff") && message1.get("Security").equals("off")))
+        Map msgIn = jmsConsumer.receiveBody(Map.class, 30000);
+
+        boolean failedTest = false;
+        if ( msgIn == null ) {
             failedTest = true;
+        } else {
+            Object nameIn = msgIn.get("Name");
+            if ( (nameIn == null) || !nameIn.equals(nameOut) ) {
+                failedTest = true;
+            }
+            Object secIn = msgIn.get("Security");
+            if ( (secIn == null) || !secIn.equals(secOut) ) {
+                failedTest = true;
+            }
+        }
+
+        jmsContext.close();
 
         if ( failedTest ) {
             throw new Exception("testReceiveBodyTimeOutMapMsg_B_SecOff failed: Expected message was not received");
@@ -521,19 +642,34 @@ public class JMSConsumer_118077Servlet extends HttpServlet {
     public void testReceiveBodyTimeOutMapMsg_TcpIp_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        boolean failedTest = false;
         JMSContext jmsContext = jmsQCFTCP.createContext();
         emptyQueue(jmsQCFTCP, jmsQueue);
-        MapMessage message = jmsContext.createMapMessage();
-        message.setString("Name", "testReceiveBodyTimeOutMapMsg_TcpIp_SecOff");
-        message.setString("Security", "off");
-        jmsContext.createProducer().send(jmsQueue, message);
+
+        MapMessage msgOut = jmsContext.createMapMessage();
+        String nameOut = "testReceiveBodyTimeOutMapMsg_TcpIp_SecOff";
+        msgOut.setString("Name", nameOut);
+        String secOut = "off";
+        msgOut.setString("Security", secOut);
+        jmsContext.createProducer().send(jmsQueue, msgOut);
+
         JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
-        java.util.Map message1 = jmsConsumer.receiveBody(java.util.Map.class, 30000);
-        System.out.println("Reeived message is : " + message1);
-        jmsContext.close();
-        if (!(message1 != null && message1.get("Name").equals("testReceiveBodyTimeOutMapMsg_TcpIp_SecOff") && message1.get("Security").equals("off")))
+        Map msgIn = jmsConsumer.receiveBody(Map.class, 30000);
+
+        boolean failedTest = false;
+        if ( msgIn == null ) {
             failedTest = true;
+        } else {
+            Object nameIn = msgIn.get("Name");
+            if ( (nameIn == null) || !nameIn.equals(nameOut) ) {
+                failedTest = true;
+            }
+            Object secIn = msgIn.get("Security");
+            if ( (secIn == null) || !secIn.equals(secOut) ) {
+                failedTest = true;
+            }
+        }
+
+        jmsContext.close();
 
         if ( failedTest ) {
             throw new Exception("testReceiveBodyTimeOutMapMsg_TcpIp_SecOff failed: Expected message was not received");
@@ -543,19 +679,23 @@ public class JMSConsumer_118077Servlet extends HttpServlet {
     public void testReceiveBodyTimeOutObjectMsg_B_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        boolean failedTest = false;
         JMSContext jmsContext = jmsQCFBindings.createContext();
         emptyQueue(jmsQCFBindings, jmsQueue);
-        Object abc = new String("testReceiveBodyTimeOutObjectMsg_B_SecOff");
-        ObjectMessage message = jmsContext.createObjectMessage();
-        message.setObject((Serializable) abc);
-        jmsContext.createProducer().send(jmsQueue, message);
+
+        Object msgOutText = new String("testReceiveBodyTimeOutObjectMsg_B_SecOff");
+        ObjectMessage msgOut = jmsContext.createObjectMessage();
+        msgOut.setObject((Serializable) msgOutText);
+        jmsContext.createProducer().send(jmsQueue, msgOut);
+
         JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
-        Object message1 = jmsConsumer.receiveBody(Serializable.class, 30000);
+        Object msgIn = jmsConsumer.receiveBody(Serializable.class, 30000);
+
+        boolean failedTest = false;
+        if ( (msgIn == null) || !msgIn.equals(msgOutText) ) {
+            failedTest = true;
+        }
 
         jmsContext.close();
-        if (!(message1 != null && message1.equals(abc)))
-            failedTest = true;
 
         if ( failedTest ) {
             throw new Exception("testReceiveBodyTimeOutObjectMsg_B_SecOff failed: Expected message was not received");
@@ -565,19 +705,23 @@ public class JMSConsumer_118077Servlet extends HttpServlet {
     public void testReceiveBodyTimeOutObjectMsg_TcpIp_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        boolean failedTest = false;
         JMSContext jmsContext = jmsQCFTCP.createContext();
         emptyQueue(jmsQCFBindings, jmsQueue);
-        Object abc = new String("testReceiveBodyTimeOutObjectMsg_TcpIp_SecOff");
-        ObjectMessage message = jmsContext.createObjectMessage();
-        message.setObject((Serializable) abc);
-        jmsContext.createProducer().send(jmsQueue, message);
+
+        Object msgOutText = new String("testReceiveBodyTimeOutObjectMsg_TcpIp_SecOff");
+        ObjectMessage msgOut = jmsContext.createObjectMessage();
+        msgOut.setObject((Serializable) msgOutText);
+        jmsContext.createProducer().send(jmsQueue, msgOut);
+
         JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
-        Object message1 = jmsConsumer.receiveBody(Serializable.class, 30000);
+        Object msgIn = jmsConsumer.receiveBody(Serializable.class, 30000);
+
+        boolean failedTest = false;
+        if ( (msgIn == null) || !msgIn.equals(msgOutText) ) {
+            failedTest = true;
+        }
 
         jmsContext.close();
-        if (!(message1 != null && message1.equals(abc)))
-            failedTest = true;
 
         if ( failedTest ) {
             throw new Exception("testReceiveBodyTimeOutObjectMsg_TcpIp_SecOff failed: Expected message was not received");
@@ -587,17 +731,22 @@ public class JMSConsumer_118077Servlet extends HttpServlet {
     public void testReceiveBodyNoWaitTextMsg_B_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        boolean failedTest = false;
         JMSContext jmsContext = jmsQCFBindings.createContext();
         emptyQueue(jmsQCFBindings, jmsQueue);
-        TextMessage message = jmsContext.createTextMessage("testReceiveBodyNoWaitTextMsg_B_SecOff");
-        jmsContext.createProducer().send(jmsQueue, message);
+
+        String msgOutText = "testReceiveBodyNoWaitTextMsg_B_SecOff";
+        TextMessage msgOut = jmsContext.createTextMessage(msgOutText);
+        jmsContext.createProducer().send(jmsQueue, msgOut);
+
         JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
-        String message1 = jmsConsumer.receiveBodyNoWait(String.class);
+        String msgIn = jmsConsumer.receiveBodyNoWait(String.class);
+
+        boolean failedTest = false;
+        if ( (msgIn == null) || !msgIn.equals(msgOutText) ) {
+            failedTest = true;
+        }
 
         jmsContext.close();
-        if (!(message1 != null && message1.equals("testReceiveBodyNoWaitTextMsg_B_SecOff")))
-            failedTest = true;
 
         if ( failedTest ) {
             throw new Exception("testReceiveBodyNoWaitTextMsg_B_SecOff failed: Expected message was not received");
@@ -607,17 +756,22 @@ public class JMSConsumer_118077Servlet extends HttpServlet {
     public void testReceiveBodyNoWaitTextMsg_TcpIp_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        boolean failedTest = false;
         JMSContext jmsContext = jmsQCFTCP.createContext();
         emptyQueue(jmsQCFTCP, jmsQueue);
-        TextMessage message = jmsContext.createTextMessage("testReceiveBodyNoWaitTextMsg_TcpIp_SecOff");
-        jmsContext.createProducer().send(jmsQueue, message);
+
+        String msgOutText = "testReceiveBodyNoWaitTextMsg_TcpIp_SecOff";
+        TextMessage msgOut = jmsContext.createTextMessage(msgOutText);
+        jmsContext.createProducer().send(jmsQueue, msgOut);
+
         JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
-        String message1 = jmsConsumer.receiveBodyNoWait(String.class);
+        String msgIn = jmsConsumer.receiveBodyNoWait(String.class);
+
+        boolean failedTest = false;
+        if ( (msgIn == null) || !msgIn.equals(msgOutText) ) {
+            failedTest = true;
+        }
 
         jmsContext.close();
-        if (!(message1 != null && message1.equals("testReceiveBodyNoWaitTextMsg_TcpIp_SecOff")))
-            failedTest = true;
 
         if ( failedTest ) {
             throw new Exception("testReceiveBodyNoWaitTextMsg_TcpIp_SecOff failed: Expected message was not received");
@@ -627,19 +781,23 @@ public class JMSConsumer_118077Servlet extends HttpServlet {
     public void testReceiveBodyNoWaitByteMsg_B_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        boolean failedTest = false;
         JMSContext jmsContext = jmsQCFBindings.createContext();
         emptyQueue(jmsQCFBindings, jmsQueue);
-        byte[] data = new byte[] { 123, 4 };
-        BytesMessage message = jmsContext.createBytesMessage();
-        message.writeBytes(data);
-        jmsContext.createProducer().send(jmsQueue, message);
+
+        byte[] msgOutBytes = new byte[] { 123, 4 };
+        BytesMessage msgOut = jmsContext.createBytesMessage();
+        msgOut.writeBytes(msgOutBytes);
+        jmsContext.createProducer().send(jmsQueue, msgOut);
+
         JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
-        byte[] message1 = jmsConsumer.receiveBodyNoWait(byte[].class);
+        byte[] msgIn = jmsConsumer.receiveBodyNoWait(byte[].class);
+
+        boolean failedTest = false;
+        if ( (msgIn == null) || !Arrays.equals(msgIn, msgOutBytes) ) {
+            failedTest = true;
+        }
 
         jmsContext.close();
-        if (!(message1 != null && Arrays.toString(message1).contains("123, 4")))
-            failedTest = true;
 
         if ( failedTest ) {
             throw new Exception("testReceiveBodyNoWaitByteMsg_B_SecOff failed: Expected message was not received");
@@ -649,19 +807,23 @@ public class JMSConsumer_118077Servlet extends HttpServlet {
     public void testReceiveBodyNoWaitByteMsg_TcpIp_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        boolean failedTest = false;
         JMSContext jmsContext = jmsQCFTCP.createContext();
         emptyQueue(jmsQCFTCP, jmsQueue);
-        byte[] data = new byte[] { 122, 5 };
-        BytesMessage message = jmsContext.createBytesMessage();
-        message.writeBytes(data);
-        jmsContext.createProducer().send(jmsQueue, message);
+
+        byte[] msgOutBytes = new byte[] { 122, 5 };
+        BytesMessage msgOut = jmsContext.createBytesMessage();
+        msgOut.writeBytes(msgOutBytes);
+        jmsContext.createProducer().send(jmsQueue, msgOut);
+
         JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
-        byte[] message1 = jmsConsumer.receiveBodyNoWait(byte[].class);
+        byte[] msgIn = jmsConsumer.receiveBodyNoWait(byte[].class);
+
+        boolean failedTest = false;
+        if ( (msgIn == null) || !Arrays.equals(msgIn, msgOutBytes) ) {
+            failedTest = true;
+        }
 
         jmsContext.close();
-        if (!(message1 != null && Arrays.toString(message1).contains("122, 5")))
-            failedTest = true;
 
         if ( failedTest ) {
             throw new Exception("testReceiveBodyNoWaitByteMsg_TcpIp_SecOff failed: Expected message was not received");
@@ -671,19 +833,34 @@ public class JMSConsumer_118077Servlet extends HttpServlet {
     public void testReceiveBodyNoWaitMapMsg_B_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        boolean failedTest = false;
         JMSContext jmsContext = jmsQCFBindings.createContext();
         emptyQueue(jmsQCFBindings, jmsQueue);
-        MapMessage message = jmsContext.createMapMessage();
-        message.setString("Name", "testReceiveBodyNoWaitMapMsg_B_SecOff");
-        message.setString("Security", "off");
-        jmsContext.createProducer().send(jmsQueue, message);
+
+        MapMessage msgOut = jmsContext.createMapMessage();
+        String nameOut = "testReceiveBodyNoWaitMapMsg_B_SecOff";
+        msgOut.setString("Name", nameOut);
+        String secOut = "off";
+        msgOut.setString("Security", secOut);
+        jmsContext.createProducer().send(jmsQueue, msgOut);
+
         JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
-        java.util.Map message1 = jmsConsumer.receiveBody(java.util.Map.class, 30000);
-        System.out.println("Reeived message is : " + message1);
-        jmsContext.close();
-        if (!(message1 != null && message1.get("Name").equals("testReceiveBodyNoWaitMapMsg_B_SecOff") && message1.get("Security").equals("off")))
+        Map msgIn = jmsConsumer.receiveBody(Map.class, 30000);
+
+        boolean failedTest = false;
+        if ( msgIn == null ) {
             failedTest = true;
+        } else {
+            Object nameIn = msgIn.get("Name");
+            if ( (nameIn == null) || !nameIn.equals(nameOut) ) {
+                failedTest = true;
+            }
+            Object secIn = msgIn.get("Security");
+            if ( (secIn == null) || !secIn.equals(secOut) ) {
+                failedTest = true;
+            }
+        }
+
+        jmsContext.close();
 
         if ( failedTest ) {
             throw new Exception("testReceiveBodyNoWaitMapMsg_B_SecOff failed: Expected message was not received");
@@ -693,19 +870,25 @@ public class JMSConsumer_118077Servlet extends HttpServlet {
     public void testReceiveBodyNoWaitMapMsg_TcpIp_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        boolean failedTest = false;
         JMSContext jmsContext = jmsQCFTCP.createContext();
         emptyQueue(jmsQCFTCP, jmsQueue);
-        MapMessage message = jmsContext.createMapMessage();
-        message.setString("Name", "testReceiveBodyNoWaitMapMsg_TcpIp_SecOff");
-        message.setString("Security", "off");
-        jmsContext.createProducer().send(jmsQueue, message);
+
+        MapMessage msgOut = jmsContext.createMapMessage();
+        msgOut.setString("Name", "testReceiveBodyNoWaitMapMsg_TcpIp_SecOff");
+        msgOut.setString("Security", "off");
+        jmsContext.createProducer().send(jmsQueue, msgOut);
+
         JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
-        java.util.Map message1 = jmsConsumer.receiveBody(java.util.Map.class, 30000);
-        System.out.println("Reeived message is : " + message1);
-        jmsContext.close();
-        if (!(message1 != null && message1.get("Name").equals("testReceiveBodyNoWaitMapMsg_TcpIp_SecOff") && message1.get("Security").equals("off")))
+        Map msgIn = jmsConsumer.receiveBody(Map.class, 30000);
+
+        boolean failedTest = false;
+        if ( (msgIn == null) ||
+             !msgIn.get("Name").equals("testReceiveBodyNoWaitMapMsg_TcpIp_SecOff") ||
+             !msgIn.get("Security").equals("off") ) {
             failedTest = true;
+        }
+
+        jmsContext.close();
 
         if ( failedTest ) {
             throw new Exception("testReceiveBodyNoWaitMapMsg_TcpIp_SecOff failed: Expected message was not received");
@@ -715,19 +898,23 @@ public class JMSConsumer_118077Servlet extends HttpServlet {
     public void testReceiveBodyNoWaitObjectMsg_B_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        boolean failedTest = false;
         JMSContext jmsContext = jmsQCFBindings.createContext();
         emptyQueue(jmsQCFBindings, jmsQueue);
-        Object abc = new String("testReceiveBodyNoWaitObjectMsg_B_SecOff");
-        ObjectMessage message = jmsContext.createObjectMessage();
-        message.setObject((Serializable) abc);
-        jmsContext.createProducer().send(jmsQueue, message);
+
+        Object msgOutText = new String("testReceiveBodyNoWaitObjectMsg_B_SecOff");
+        ObjectMessage msgOut = jmsContext.createObjectMessage();
+        msgOut.setObject((Serializable) msgOutText);
+        jmsContext.createProducer().send(jmsQueue, msgOut);
+
         JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
-        Object message1 = jmsConsumer.receiveBodyNoWait(Serializable.class);
+        Object msgIn = jmsConsumer.receiveBodyNoWait(Serializable.class);
+
+        boolean failedTest = false;
+        if ( (msgIn == null) || !msgIn.equals(msgOutText) ) {
+            failedTest = true;
+        }
 
         jmsContext.close();
-        if (!(message1 != null && message1.equals(abc)))
-            failedTest = true;
 
         if ( failedTest ) {
             throw new Exception("testReceiveBodyNoWaitObjectMsg_B_SecOff failed: Expected message was not received");
@@ -737,19 +924,23 @@ public class JMSConsumer_118077Servlet extends HttpServlet {
     public void testReceiveBodyNoWaitObjectMsg_TcpIp_SecOff(
         HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        boolean failedTest = false;
         JMSContext jmsContext = jmsQCFTCP.createContext();
         emptyQueue(jmsQCFTCP, jmsQueue);
-        Object abc = new String("testReceiveBodyNoWaitObjectMsg_TcpIp_SecOff");
-        ObjectMessage message = jmsContext.createObjectMessage();
-        message.setObject((Serializable) abc);
-        jmsContext.createProducer().send(jmsQueue, message);
+
+        Object msgOutText = new String("testReceiveBodyNoWaitObjectMsg_TcpIp_SecOff");
+        ObjectMessage msgOut = jmsContext.createObjectMessage();
+        msgOut.setObject((Serializable) msgOutText);
+        jmsContext.createProducer().send(jmsQueue, msgOut);
+
         JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
-        Object message1 = jmsConsumer.receiveBodyNoWait(Serializable.class);
+        Object msgIn = jmsConsumer.receiveBodyNoWait(Serializable.class);
+
+        boolean failedTest = false;
+        if ( (msgIn == null) || !msgIn.equals(msgOutText) ) {
+            failedTest = true;
+        }
 
         jmsContext.close();
-        if (!(message1 != null && message1.equals(abc)))
-            failedTest = true;
 
         if ( failedTest ) {
             throw new Exception("testReceiveBodyNoWaitObjectMsg_TcpIp_SecOff failed: Expected message was not received");
@@ -766,28 +957,25 @@ public class JMSConsumer_118077Servlet extends HttpServlet {
         int numMsgs = 0;
         QueueBrowser qb = jmsContext.createBrowser(jmsQueue);
         Enumeration e = qb.getEnumeration();
-        while (e.hasMoreElements()) {
+        while ( e.hasMoreElements() ) {
             TextMessage message = (TextMessage) e.nextElement();
             numMsgs++;
         }
 
-        boolean failedTest = false;
+        String failure = null;
         if ( numMsgs == 0 ) {
-            try {
-                TextMessage message = (TextMessage) jmsConsumer.receiveNoWait();
-                failedTest = true;
-            } catch ( NullPointerException ex ) {
-                ex.printStackTrace();
+            TextMessage message = (TextMessage) jmsConsumer.receiveNoWait();
+            if ( message != null ) {
+                failure = "Null message expected; received [ " + message + " ]";
             }
         } else {
-            System.out.println("Queue was not empty");
-            failedTest = true;
+            failure = "The queue was not empty";
         }
 
         jmsContext.close();
 
-        if ( failedTest ) {
-            throw new Exception("testReceiveNoWaitFromEmptyQueue_B_SecOff failed: Expected exception was not received");
+        if ( failure != null ) {
+            throw new Exception("testReceiveNoWaitFromEmptyQueue_B_SecOff failed: " + failure);
         }
     }
 
@@ -806,23 +994,20 @@ public class JMSConsumer_118077Servlet extends HttpServlet {
             numMsgs++;
         }
 
-        boolean failedTest = false;
+        String failure = null;
         if ( numMsgs == 0 ) {
-            try {
-                TextMessage message = (TextMessage) jmsConsumer.receiveNoWait();
-                failedTest = true;
-            } catch ( NullPointerException ex ) {
-                ex.printStackTrace();
+            TextMessage message = (TextMessage) jmsConsumer.receiveNoWait();
+            if ( message != null ) {
+                failure = "Null message expected; received [ " + message + " ]";
             }
         } else {
-            System.out.println("Queue was not empty");
-            failedTest = true;
+            failure = "The queue was not empty";
         }
 
         jmsContext.close();
 
-        if ( failedTest ) {
-            throw new Exception("testReceiveNoWaitFromEmptyQueue_TcpIp_SecOff failed: Expected exception was not received");
+        if ( failure != null ) {
+            throw new Exception("testReceiveNoWaitFromEmptyQueue_TcpIp_SecOff failed: " + failure);
         }
     }
 
@@ -832,8 +1017,8 @@ public class JMSConsumer_118077Servlet extends HttpServlet {
         JMSContext jmsContext = jmsQCFBindings.createContext();
         emptyQueue(jmsQCFBindings, jmsQueue);
 
-        TextMessage m = jmsContext.createTextMessage();
-        jmsContext.createProducer().send(jmsQueue, m);
+        TextMessage msgOut = jmsContext.createTextMessage();
+        jmsContext.createProducer().send(jmsQueue, msgOut);
 
         JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
 
@@ -1315,7 +1500,6 @@ public class JMSConsumer_118077Servlet extends HttpServlet {
         JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
 
         int numMsgs = 0;
-
         QueueBrowser qb = jmsContext.createBrowser(jmsQueue);
         Enumeration e = qb.getEnumeration();
         while ( e.hasMoreElements() ) {
@@ -1323,23 +1507,20 @@ public class JMSConsumer_118077Servlet extends HttpServlet {
             numMsgs++;
         }
 
-        boolean failedTest = false;
+        String failure = null;
         if ( numMsgs == 0 ) {
-            try {
-                String message = jmsConsumer.receiveBody(String.class, 100);
-                failedTest = true;
-            } catch ( NullPointerException ex ) {
-                ex.printStackTrace();
+            String message = jmsConsumer.receiveBody(String.class, 100);
+            if ( message != null ) {
+                failure = "Null message expected; received [ " + message + " ]";
             }
         } else {
-            System.out.println("Queue was not empty");
-            failedTest = true;
+            failure = "The queue was not empty";
         }
 
         jmsContext.close();
 
-        if ( failedTest ) {
-            throw new Exception("testReceiveBodyAfterTimeout_B_SecOff failed: Expected exception was not received");
+        if ( failure != null ) {
+            throw new Exception("testReceiveBodyAfterTimeout_B_SecOff failed: " + failure);
         }
     }
 
@@ -1352,7 +1533,6 @@ public class JMSConsumer_118077Servlet extends HttpServlet {
         JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
 
         int numMsgs = 0;
-
         QueueBrowser qb = jmsContext.createBrowser(jmsQueue);
         Enumeration e = qb.getEnumeration();
         while ( e.hasMoreElements() ) {
@@ -1360,23 +1540,20 @@ public class JMSConsumer_118077Servlet extends HttpServlet {
             numMsgs++;
         }
 
-        boolean failedTest = false;
+        String failure = null;
         if ( numMsgs == 0 ) {
-            try {
-                String message = jmsConsumer.receiveBody(String.class, 100);
-                failedTest = true;
-            } catch ( NullPointerException ex ) {
-                ex.printStackTrace();
+            String message = jmsConsumer.receiveBody(String.class, 100);
+            if ( message != null ) {
+                failure = "Null message expected; received [ " + message + " ]";
             }
         } else {
-            System.out.println("Queue was not empty");
-            failedTest = true;
+            failure = "The queue was not empty";
         }
 
         jmsContext.close();
 
-        if ( failedTest ) {
-            throw new Exception("testReceiveBodyAfterTimeout_TcpIp_SecOff failed: Expected exception was not received");
+        if ( failure != null ) {
+            throw new Exception("testReceiveBodyAfterTimeout_TcpIp_SecOff failed: " + failure);
         }
     }
 
@@ -1389,7 +1566,6 @@ public class JMSConsumer_118077Servlet extends HttpServlet {
         JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
 
         int numMsgs = 0;
-
         QueueBrowser qb = jmsContext.createBrowser(jmsQueue);
         Enumeration e = qb.getEnumeration();
         while ( e.hasMoreElements() ) {
@@ -1397,23 +1573,20 @@ public class JMSConsumer_118077Servlet extends HttpServlet {
             numMsgs++;
         }
 
-        boolean failedTest = false;
+        String failure = null;
         if ( numMsgs == 0 ) {
-            try {
-                String message = jmsConsumer.receiveBodyNoWait(String.class);
-                failedTest = true;
-            } catch ( NullPointerException ex ) {
-                ex.printStackTrace();
+            String message = jmsConsumer.receiveBodyNoWait(String.class);
+            if ( message != null ) {
+                failure = "Null message expected; received [ " + message + " ]";
             }
         } else {
-            System.out.println("Queue was not empty");
-            failedTest = true;
+            failure = "The queue was not empty";
         }
 
         jmsContext.close();
 
-        if ( !failedTest ) {
-            throw new Exception("testReceiveBodyNoWaitFromEmptyQueue_B_SecOff failed: Expected exception was not received");
+        if ( failure != null ) {
+            throw new Exception("testReceiveBodyNoWaitFromEmptyQueue_B_SecOff failed: " + failure);
         }
     }
 
@@ -1426,31 +1599,27 @@ public class JMSConsumer_118077Servlet extends HttpServlet {
         JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
 
         int numMsgs = 0;
-
         QueueBrowser qb = jmsContext.createBrowser(jmsQueue);
         Enumeration e = qb.getEnumeration();
-        while (e.hasMoreElements()) {
+        while ( e.hasMoreElements() ) {
             TextMessage message = (TextMessage) e.nextElement();
             numMsgs++;
         }
 
-        boolean failedTest = false;
+        String failure = null;
         if ( numMsgs == 0 ) {
-            try {
-                String message = jmsConsumer.receiveBodyNoWait(String.class);
-                failedTest = true;
-            } catch ( NullPointerException ex ) {
-                ex.printStackTrace();
+            String message = jmsConsumer.receiveBodyNoWait(String.class);
+            if ( message != null ) {
+                failure = "Null message expected; received [ " + message + " ]";
             }
         } else {
-            System.out.println("Queue was not empty");
-            failedTest = true;
+            failure = "The queue was not empty";
         }
 
         jmsContext.close();
 
-        if ( failedTest ) {
-            throw new Exception("testReceiveBodyNoWaitFromEmptyQueue_TcpIp_SecOff failed: Expected exception was not received");
+        if ( failure != null ) {
+            throw new Exception("testReceiveBodyNoWaitFromEmptyQueue_TcpIp_SecOff failed: " + failure);
         }
     }
 
@@ -1462,12 +1631,15 @@ public class JMSConsumer_118077Servlet extends HttpServlet {
         JMSProducer jmsProducer = jmsContext.createProducer();
         JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
 
-        TextMessage m = jmsContext.createTextMessage("testReceiveWithTimeOut_B_SecOff");
-        jmsProducer.send(jmsQueue, m);
-        TextMessage message = (TextMessage) jmsConsumer.receive(100);
+        String msgOutText = "testReceiveWithTimeOut_B_SecOff";
+        TextMessage msgOut = jmsContext.createTextMessage(msgOutText);
+        jmsProducer.send(jmsQueue, msgOut);
+
+        TextMessage msgIn = (TextMessage) jmsConsumer.receive(100);
 
         boolean failedTest = false;
-        if ( (message == null) || !message.getText().equals("testReceiveWithTimeOut_B_SecOff") ) {
+        if ( (msgIn == null) ||
+             (msgIn.getText() == null) || !msgIn.getText().equals(msgOutText) ) {
             failedTest = true;
         }
 
@@ -1486,12 +1658,15 @@ public class JMSConsumer_118077Servlet extends HttpServlet {
         JMSProducer jmsProducer = jmsContext.createProducer();
         JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
 
-        TextMessage m = jmsContext.createTextMessage("testReceiveWithTimeOut_B_SecOff");
-        jmsProducer.send(jmsQueue, m);
-        TextMessage message = (TextMessage) jmsConsumer.receive(100);
+        String msgOutText = "testReceiveWithTimeOut_B_SecOff";
+        TextMessage msgOut = jmsContext.createTextMessage(msgOutText);
+        jmsProducer.send(jmsQueue, msgOut);
+
+        TextMessage msgIn = (TextMessage) jmsConsumer.receive(100);
 
         boolean failedTest = false;
-        if ( (message == null) || !message.getText().equals("testReceiveWithTimeOut_B_SecOff") ) {
+        if ( (msgIn == null) ||
+             (msgIn.getText() == null) || !msgIn.getText().equals(msgOutText) ) {
             failedTest = true;
         }
 
@@ -1510,12 +1685,15 @@ public class JMSConsumer_118077Servlet extends HttpServlet {
         JMSProducer jmsProducer = jmsContext.createProducer();
         JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
 
-        TextMessage m = jmsContext.createTextMessage("testReceiveNoWait_B_SecOff");
-        jmsProducer.send(jmsQueue, m);
-        TextMessage message = (TextMessage) jmsConsumer.receiveNoWait();
+        String msgOutText = "testReceiveNoWait_B_SecOff";
+        TextMessage msgOut = jmsContext.createTextMessage(msgOutText);
+        jmsProducer.send(jmsQueue, msgOut);
+
+        TextMessage msgIn = (TextMessage) jmsConsumer.receiveNoWait();
 
         boolean failedTest = false;
-        if ( (message == null) || !message.getText().equals("testReceiveNoWait_B_SecOff") ) {
+        if ( (msgIn == null) ||
+             (msgIn.getText() == null) || !msgIn.getText().equals(msgOutText) ) {
             failedTest = true;
         }
 
@@ -1534,12 +1712,15 @@ public class JMSConsumer_118077Servlet extends HttpServlet {
         JMSProducer jmsProducer = jmsContext.createProducer();
         JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
 
-        TextMessage m = jmsContext.createTextMessage("testReceiveNoWait_TcpIp_SecOff");
-        jmsProducer.send(jmsQueue, m);
-        TextMessage message = (TextMessage) jmsConsumer.receiveNoWait();
+        String msgOutText = "testReceiveNoWait_TcpIp_SecOff";
+        TextMessage msgOut = jmsContext.createTextMessage(msgOutText);
+        jmsProducer.send(jmsQueue, msgOut);
+
+        TextMessage msgIn = (TextMessage) jmsConsumer.receiveNoWait();
 
         boolean failedTest = false;
-        if ( (message == null) || !message.getText().equals("testReceiveNoWait_TcpIp_SecOff") ) {
+        if ( (msgIn == null) ||
+             (msgIn.getText() == null) || !msgIn.getText().equals(msgOutText) ) {
             failedTest = true;
         }
 
@@ -1558,13 +1739,11 @@ public class JMSConsumer_118077Servlet extends HttpServlet {
         JMSProducer jmsProducer = jmsContext.createProducer();
         JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
 
+        String message = jmsConsumer.receiveBodyNoWait(String.class);
+
         boolean failedTest = false;
-        try {
-            String message = jmsConsumer.receiveBodyNoWait(String.class);
-            message.length();
+        if ( message != null ) {
             failedTest = true;
-        } catch ( NullPointerException ex ) {
-            ex.printStackTrace();
         }
 
         jmsContext.close();
@@ -1582,13 +1761,10 @@ public class JMSConsumer_118077Servlet extends HttpServlet {
         JMSProducer jmsProducer = jmsContext.createProducer();
         JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
 
+        String message = jmsConsumer.receiveBodyNoWait(String.class);
         boolean failedTest = false;
-        try {
-            String message = jmsConsumer.receiveBodyNoWait(String.class);
-            message.length();
+        if ( message != null ) {
             failedTest = true;
-        } catch ( NullPointerException ex ) {
-            ex.printStackTrace();
         }
 
         jmsContext.close();
@@ -2088,32 +2264,31 @@ public class JMSConsumer_118077Servlet extends HttpServlet {
         JMSContext jmsContext = jmsQCFBindings.createContext();
         emptyQueue(jmsQCFBindings, jmsQueue);
 
-        BytesMessage bMsg = jmsContext.createBytesMessage();
-
         boolean failedTest = false;
 
-        bMsg.writeByte((byte) 55);
-        bMsg.writeInt(10);
+        BytesMessage msgOut = jmsContext.createBytesMessage();
+        msgOut.writeByte((byte) 55);
+        msgOut.writeInt(10);
         try {
-            bMsg.getBody(StringBuffer.class);
+            msgOut.getBody(StringBuffer.class);
+            failedTest = true;
         } catch ( MessageFormatException ex ) {
             ex.printStackTrace();
-            failedTest = true;
         }
+        jmsContext.createProducer().send(jmsQueue, msgOut);
 
-        jmsContext.createProducer().send(jmsQueue, bMsg);
-        BytesMessage recMsg = (BytesMessage) jmsContext
+        BytesMessage msgIn = (BytesMessage) jmsContext
             .createConsumer(jmsQueue)
             .receive(1000);
         try {
-            recMsg.getBody(StringBuffer.class);
+            msgIn.getBody(StringBuffer.class);
+            failedTest = true;
         } catch ( MessageFormatException ex ) {
             ex.printStackTrace();
-            failedTest = true;
         }
 
         if ( failedTest ) {
-            throw new Exception("testBytesMessage failed: Unexpected exception seen");
+            throw new Exception("testBytesMessage failed: Expected exception not seen");
         }
     }
 
@@ -2125,27 +2300,29 @@ public class JMSConsumer_118077Servlet extends HttpServlet {
 
         boolean failedTest = false;
 
-        BytesMessage bMsg = jmsContext.createBytesMessage();
-        bMsg.writeByte((byte) 55);
-        bMsg.writeInt(10);
+        BytesMessage msgOut = jmsContext.createBytesMessage();
+        msgOut.writeByte((byte) 55);
+        msgOut.writeInt(10);
         try {
-            bMsg.getBody(StringBuffer.class);
+            msgOut.getBody(StringBuffer.class);
+            failedTest = true;
         } catch ( MessageFormatException ex ) {
             ex.printStackTrace();
-            failedTest = true;
         }
 
-        jmsContext.createProducer().send(jmsQueue, bMsg);
-        BytesMessage recMsg = (BytesMessage) jmsContext.createConsumer(jmsQueue).receive(1000);
+        jmsContext.createProducer().send(jmsQueue, msgOut);
+        BytesMessage msgIn = (BytesMessage) jmsContext
+            .createConsumer(jmsQueue)
+            .receive(1000);
         try {
-            recMsg.getBody(StringBuffer.class);
+            msgIn.getBody(StringBuffer.class);
+            failedTest = true;
         } catch ( MessageFormatException ex ) {
             ex.printStackTrace();
-            failedTest = true;
         }
 
         if ( failedTest ) {
-            throw new Exception("testBytesMessage failed: Unexpected exception seen");
+            throw new Exception("testBytesMessage failed: Expected exception not seen");
         }
     }
 

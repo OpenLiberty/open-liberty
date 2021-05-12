@@ -104,9 +104,13 @@ public class JAXRS21ClientTestServlet extends HttpServlet {
             try {
                 res = c.target("http://" + serverIP + ":" + serverPort + "/" + moduleName + "/JAXRS21TimeoutClientTest/BasicResource").path("echo").path(param.get("param")).request()
                         .get(String.class);
-            } catch (Exception e) {
-                e.printStackTrace();
-                res = "[Timeout Error]:" + e.toString();
+            } catch (Exception expected) {
+                expected.printStackTrace();
+                if (expected.toString().contains("SocketTimeoutException")) {
+                    res = "[Timeout Error]:" + "SocketTimeoutException";
+                } else {
+                    res = "[Timeout Error]:" + expected.toString();
+                }
             }
         } catch (NumberFormatException e) {
             e.printStackTrace();
@@ -136,12 +140,12 @@ public class JAXRS21ClientTestServlet extends HttpServlet {
             c = cb.build();
             long startTime = System.currentTimeMillis();
             try {
-                res = c.target("http://" + "10.255.255.1" + "/" + moduleName + "/JAXRS21TimeoutClientTest/BasicResource").path("echo").path(param.get("param")).request()
+                res = c.target("http://" + "192.168.0.0" + "/" + moduleName + "/JAXRS21TimeoutClientTest/BasicResource").path("echo").path(param.get("param")).request()
                         .get(String.class);
             } catch (Exception e2) {
                 e2.printStackTrace();
                 long timeElapsed = System.currentTimeMillis() - startTime;
-                long fudgeFactorTime = 2000;
+                long fudgeFactorTime = 4000;
                 if (timeElapsed - fudgeFactorTime < longTimeout && timeElapsed + fudgeFactorTime > longTimeout) {
                     res = "[Basic Resource]:testTimeoutNonRoutable";
                 } else {

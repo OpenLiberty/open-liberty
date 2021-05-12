@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.appSecurity-3.0
+WLP-DisableAllFeatures-OnConflict: false
 visibility=public
 IBM-API-Package: javax.security.enterprise; type="spec", \
  javax.security.enterprise.authentication.mechanism.http; type="spec", \

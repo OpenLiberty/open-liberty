@@ -1,0 +1,11 @@
+<server>
+
+	<application
+		type="war"
+		id="samlwsstemplates"
+		name="samlwsstemplates"
+		location="${server.config.dir}/test-apps/samlwsstemplates.war"
+	>
+	</application>
+
+</server>

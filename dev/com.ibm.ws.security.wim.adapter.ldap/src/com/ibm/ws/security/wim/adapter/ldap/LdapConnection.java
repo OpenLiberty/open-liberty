@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2019 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_BIND_PA
 import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_CACHE_SIZE;
 import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_CACHE_TIME_OUT;
 import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_CONNECT_TIMEOUT;
+import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_DEREFALIASES;
 import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_ENABLED;
 import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_HOST;
 import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_INIT_POOL_SIZE;
@@ -72,14 +73,18 @@ import javax.naming.ldap.LdapName;
 import javax.naming.ldap.PagedResultsControl;
 import javax.naming.ldap.PagedResultsResponseControl;
 
+import org.osgi.service.cm.ConfigurationAdmin;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.websphere.security.wim.ConfigConstants;
 import com.ibm.websphere.security.wim.ras.WIMMessageHelper;
 import com.ibm.websphere.security.wim.ras.WIMMessageKey;
 import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
 import com.ibm.ws.config.xml.internal.nester.Nester;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.security.kerberos.auth.KerberosService;
 import com.ibm.ws.security.wim.FactoryManager;
 import com.ibm.ws.security.wim.adapter.ldap.context.ContextManager;
 import com.ibm.ws.security.wim.adapter.ldap.context.ContextManager.InitializeResult;
@@ -198,6 +203,11 @@ public class LdapConnection {
     /** ContextManager to use for managing LDAP contexts. */
     private ContextManager iContextManager;
 
+    /** The KerberosService for use when bindAuthMechanism is GSSAPI (Kerberos), also loads the keytab/config if configured in the <kerberos> element */
+    private KerberosService kerberosService = null;
+
+    private ConfigurationAdmin configAdmin = null;
+
     /**
      * Returns a hash key for the name|filter|cons tuple used in the search
      * query-results cache.
@@ -295,9 +305,12 @@ public class LdapConnection {
      * Construct a new {@link LdapConnection} instance.
      *
      * @param ldapConfigMgr The {@link LdapConfigManager} to get configuration from.
+     * @param ks            The {@link KerberosService} to get KRB5 configuration from (can be null).
      */
-    public LdapConnection(LdapConfigManager ldapConfigMgr) {
+    public LdapConnection(LdapConfigManager ldapConfigMgr, KerberosService ks, ConfigurationAdmin configAdminRef) {
         iLdapConfigMgr = ldapConfigMgr;
+        kerberosService = ks;
+        configAdmin = configAdminRef;
     }
 
     /**
@@ -391,14 +404,24 @@ public class LdapConnection {
                 iContextManager.addFailoverServer((String) server.get(CONFIG_PROP_HOST), (Integer) server.get(CONFIG_PROP_PORT));
             }
         }
-        iContextManager.setWriteToSecondary(Boolean.getBoolean((String) configProps.get(CONFIG_PROP_ALLOW_WRITE_TO_SECONDARY_SERVERS)));
+        iContextManager.setWriteToSecondary((Boolean) configProps.get(CONFIG_PROP_ALLOW_WRITE_TO_SECONDARY_SERVERS));
         iContextManager.setReturnToPrimary((Boolean) configProps.get(CONFIG_PROP_RETURN_TO_PRIMARY_SERVER));
         iContextManager.setQueryInterval((Integer) configProps.get(CONFIG_PROP_PRIMARY_SERVER_QUERY_TIME_INTERVAL) * 60);
 
-        /*
-         * Set the simple authentication credentials.
-         */
-        iContextManager.setSimpleCredentials((String) configProps.get(CONFIG_PROP_BIND_DN), (SerializableProtectedString) configProps.get(CONFIG_PROP_BIND_PASSWORD));
+        String bindAuthMech = ((String) configProps.get(ConfigConstants.CONFIG_PROP_BIND_AUTH_MECH));
+        if (bindAuthMech != null) {
+            iContextManager.setBindAuthMechanism(bindAuthMech);
+        }
+
+        if (bindAuthMech == null || !bindAuthMech.equals(ConfigConstants.CONFIG_BIND_AUTH_KRB5)) {
+            /*
+             * Set the simple authentication credentials.
+             */
+            iContextManager.setSimpleCredentials((String) configProps.get(CONFIG_PROP_BIND_DN), (SerializableProtectedString) configProps.get(CONFIG_PROP_BIND_PASSWORD));
+        } else {
+            iContextManager.setKerberosCredentials(iReposId, kerberosService, (String) configProps.get(ConfigConstants.CONFIG_PROP_KRB5_PRINCIPAL),
+                                                   (String) configProps.get(ConfigConstants.CONFIG_PROP_KRB5_TICKET_CACHE), configAdmin);
+        }
 
         /*
          * Set the connection timeout.
@@ -424,6 +447,11 @@ public class LdapConnection {
         String referral = (String) configProps.get(CONFIG_PROP_REFERRAL);
         referral = referal != null ? referal : referral;
         iContextManager.setReferral(referral.toLowerCase());
+
+        /*
+         * Set alias dereferencing handling.
+         */
+        iContextManager.setDerefAliases((String) configProps.get(CONFIG_PROP_DEREFALIASES));
 
         /*
          * Set binary attribute names.
@@ -511,6 +539,9 @@ public class LdapConnection {
         InitializeResult result = iContextManager.initialize();
         if (result == InitializeResult.MISSING_PASSWORD) {
             String msg = Tr.formatMessage(tc, WIMMessageKey.MISSING_INI_PROPERTY, WIMMessageHelper.generateMsgParms(CONFIG_PROP_BIND_PASSWORD));
+            throw new MissingInitPropertyException(WIMMessageKey.MISSING_INI_PROPERTY, msg);
+        } else if (result == InitializeResult.MISSING_KRB5_PRINCIPAL_NAME) {
+            String msg = Tr.formatMessage(tc, WIMMessageKey.MISSING_INI_PROPERTY, WIMMessageHelper.generateMsgParms(ConfigConstants.CONFIG_PROP_KRB5_PRINCIPAL));
             throw new MissingInitPropertyException(WIMMessageKey.MISSING_INI_PROPERTY, msg);
         }
     }
@@ -677,6 +708,30 @@ public class LdapConnection {
         return iAttrsCache;
     }
 
+    /**
+     * Clear both the searchResults and attributes caches. This can be a big
+     * performance hit to populate so only use when we need to clear to prevent
+     * stale access to users/groups/attributes.
+     *
+     */
+    public void clearCaches() {
+        try {
+            if (iSearchResultsCache != null) {
+                iSearchResultsCache.clear();
+            }
+            if (iAttrsCache != null) {
+                iAttrsCache.clear();
+            }
+        } catch (Exception e) {
+            /*
+             * Unlikely to still hit an NPE here, but shouldn't be a fatal error if we couldn't clear a cache
+             * that doesn't exist
+             */
+            if (tc.isEventEnabled()) {
+                Tr.event(tc, "clearCaches Unexpected exception occurred while clearing the search and attributes cache", e);
+            }
+        }
+    }
     /**
      * Method to invalidate the specified entry from the attributes cache. One or all
      * parameters can be set in a single call. If all parameters are null, then this
@@ -851,10 +906,13 @@ public class LdapConnection {
                         String[] rdnAttrValues = new String[rdnWIMProps.length];
                         for (int i = 0; i < rdnAttrs.length; i++) {
                             String[] rdnAttr = rdnAttrs[i];
-                            boolean isRDN = true;
+                            boolean isRDN = false;
                             for (int j = 0; j < rdnAttr.length; j++) {
-                                if (!rdnAttr[j].equalsIgnoreCase(rdnName[j])) {
-                                    isRDN = false;
+                                for (int k = 0; k < rdnName.length; k++) {
+                                    if (rdnAttr[j].equalsIgnoreCase(rdnName[k])) {
+                                        isRDN = true;
+                                        break;
+                                    }
                                 }
                             }
                             if (isRDN) {
@@ -2163,7 +2221,7 @@ public class LdapConnection {
      */
     public void modifyAttributes(String name, ModificationItem[] mods) throws NamingException, WIMException {
         TimedDirContext ctx = iContextManager.getDirContext();
-        // checkWritePermission(ctx); TODO Why are we not checking for permission here?
+        iContextManager.checkWritePermission(ctx);
         try {
             try {
                 ctx.modifyAttributes(new LdapName(name), mods);
@@ -2312,5 +2370,15 @@ public class LdapConnection {
      */
     public ContextManager getContextManager() {
         return this.iContextManager;
+    }
+
+    /**
+     * Pass along the updated KerberosService
+     *
+     * @param ks
+     */
+    protected void updateKerberosService(KerberosService ks) {
+        kerberosService = ks;
+        iContextManager.updateKerberosService(ks, this);
     }
 }

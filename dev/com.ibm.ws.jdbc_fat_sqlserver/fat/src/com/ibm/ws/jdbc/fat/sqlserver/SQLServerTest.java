@@ -10,19 +10,14 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.sqlserver;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
+import static com.ibm.ws.jdbc.fat.sqlserver.FATSuite.sqlserver;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.runner.RunWith;
-import org.testcontainers.containers.JdbcDatabaseContainer;
-import org.testcontainers.containers.JdbcDatabaseContainer.NoDriverFoundException;
-import org.testcontainers.containers.MSSQLServerContainer;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
@@ -43,15 +38,9 @@ public class SQLServerTest extends FATServletClient {
     @TestServlet(servlet = SQLServerTestServlet.class, path = APP_NAME + '/' + SERVLET_NAME)
     public static LibertyServer server;
 
-    @ClassRule
-    public static MSSQLServerContainer<?> sqlserver = FATSuite.sqlserver;
-
     @BeforeClass
     public static void setUp() throws Exception {
-        String dbName = "test";
-        initDatabase(sqlserver, dbName);
-
-        server.addEnvVar("DBNAME", dbName);
+        server.addEnvVar("DBNAME", FATSuite.DB_NAME);
         server.addEnvVar("HOST", sqlserver.getContainerIpAddress());
         server.addEnvVar("PORT", Integer.toString(sqlserver.getFirstMappedPort()));
         server.addEnvVar("USER", sqlserver.getUsername());
@@ -61,25 +50,6 @@ public class SQLServerTest extends FATServletClient {
         ShrinkHelper.defaultApp(server, APP_NAME, "web");
 
         server.startServer();
-
-        runTest(server, APP_NAME + '/' + SERVLET_NAME, "initDatabase");
-    }
-
-    //Helper method
-    private static void initDatabase(JdbcDatabaseContainer<?> cont, String dbName) throws NoDriverFoundException, SQLException {
-        // Create Database
-        try (Connection conn = cont.createConnection("")) {
-            Statement stmt = conn.createStatement();
-            stmt.execute("CREATE DATABASE [" + dbName + "];");
-            stmt.close();
-        }
-
-        //Setup distributed connection.
-        try (Connection conn = cont.createConnection("")) {
-            Statement stmt = conn.createStatement();
-            stmt.execute("EXEC sp_sqljdbc_xa_install");
-            stmt.close();
-        }
     }
 
     @AfterClass

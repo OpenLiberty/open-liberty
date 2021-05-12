@@ -53,8 +53,8 @@ public class CXFRxInvokerTestServlet extends HttpServlet {
     private static final long serialVersionUID = 2880606295862546001L;
     private static final long TIMEOUT = 5000;
     private static final long SLEEP = 20000;
-    private static final int basicTimeout = 15;
-    private static final int complexTimeout = 20;
+    private static final int basicTimeout = 30;
+    private static final int complexTimeout = 35;
     private static final int messageTimeout = 70;
     private static final int zTimeout = 70;
 
@@ -64,6 +64,15 @@ public class CXFRxInvokerTestServlet extends HttpServlet {
             return true;
         }
         return false;
+    }
+
+    private static final boolean isRestful30() {
+        try {
+            jakarta.ws.rs.core.Application app = new jakarta.ws.rs.core.Application();
+            return true;
+        } catch (NoClassDefFoundError ignore) {
+            return false;
+        }
     }
 
     @Override
@@ -149,8 +158,8 @@ public class CXFRxInvokerTestServlet extends HttpServlet {
         });
 
         try {
-            if (!(countDownLatch.await(basicTimeout, TimeUnit.SECONDS))) {
-                throw new RuntimeException("testObservableRxInvoker_get1: Response took too long. Waited " + basicTimeout);
+            if (!(countDownLatch.await(complexTimeout, TimeUnit.SECONDS))) {
+                throw new RuntimeException("testObservableRxInvoker_get1: Response took too long. Waited " + complexTimeout);
             }
         } catch (InterruptedException ex) {
             ex.printStackTrace();
@@ -1079,7 +1088,8 @@ public class CXFRxInvokerTestServlet extends HttpServlet {
         String serverIP = param.get("serverIP");
         String serverPort = param.get("serverPort");
         ClientBuilder cb = ClientBuilder.newBuilder();
-        cb.property("com.ibm.ws.jaxrs.client.receive.timeout", TIMEOUT);
+//        cb.property("com.ibm.ws.jaxrs.client.receive.timeout", TIMEOUT);
+        cb.readTimeout(TIMEOUT, TimeUnit.MILLISECONDS);
         Client c = cb.build();
         c.register(ObservableRxInvokerProvider.class);
         WebTarget t = c.target("http://" + serverIP + ":" + serverPort + "/jaxrs21bookstore/JAXRS21bookstore2/" + SLEEP);
@@ -1126,7 +1136,8 @@ public class CXFRxInvokerTestServlet extends HttpServlet {
         String serverIP = param.get("serverIP");
         String serverPort = param.get("serverPort");
         ClientBuilder cb = ClientBuilder.newBuilder();
-        cb.property("com.ibm.ws.jaxrs.client.receive.timeout", TIMEOUT);
+//        cb.property("com.ibm.ws.jaxrs.client.receive.timeout", TIMEOUT);
+        cb.readTimeout(TIMEOUT, TimeUnit.MILLISECONDS);
         Client c = cb.build();
         c.register(FlowableRxInvokerProvider.class);
         WebTarget t = c.target("http://" + serverIP + ":" + serverPort + "/jaxrs21bookstore/JAXRS21bookstore2/" + SLEEP);
@@ -1177,8 +1188,14 @@ public class CXFRxInvokerTestServlet extends HttpServlet {
             target = "http://localhost:23/blah";
         }
 
+        if (isRestful30()) {
+            timeout = timeout * 2;
+            System.out.println("testObservableRxInvoker_getConnectionTimeout with timeout " + timeout);
+        }
+
         ClientBuilder cb = ClientBuilder.newBuilder();
-        cb.property("com.ibm.ws.jaxrs.client.connection.timeout", TIMEOUT);
+//        cb.property("com.ibm.ws.jaxrs.client.connection.timeout", TIMEOUT);
+        cb.connectTimeout(TIMEOUT, TimeUnit.MILLISECONDS);
         Client c = cb.build();
         c.register(ObservableRxInvokerProvider.class);
         WebTarget t = c.target(target);
@@ -1234,8 +1251,14 @@ public class CXFRxInvokerTestServlet extends HttpServlet {
             target = "http://localhost:23/blah";
         }
 
+        if (isRestful30()) {
+            timeout = timeout * 2;
+            System.out.println("testFlowableRxInvoker_getConnectionTimeout with timeout " + timeout);
+        }
+
         ClientBuilder cb = ClientBuilder.newBuilder();
-        cb.property("com.ibm.ws.jaxrs.client.connection.timeout", TIMEOUT);
+//        cb.property("com.ibm.ws.jaxrs.client.connection.timeout", TIMEOUT);
+        cb.connectTimeout(TIMEOUT, TimeUnit.MILLISECONDS);
         Client c = cb.build();
         c.register(FlowableRxInvokerProvider.class);
         WebTarget t = c.target(target);
@@ -1287,7 +1310,8 @@ public class CXFRxInvokerTestServlet extends HttpServlet {
         String serverIP = param.get("serverIP");
         String serverPort = param.get("serverPort");
         ClientBuilder cb = ClientBuilder.newBuilder();
-        cb.property("com.ibm.ws.jaxrs.client.receive.timeout", TIMEOUT);
+//        cb.property("com.ibm.ws.jaxrs.client.receive.timeout", TIMEOUT);
+        cb.readTimeout(TIMEOUT, TimeUnit.MILLISECONDS);
         Client c = cb.build();
         c.register(ObservableRxInvokerProvider.class);
         WebTarget t = c.target("http://" + serverIP + ":" + serverPort + "/jaxrs21bookstore/JAXRS21bookstore2/post/" + SLEEP);
@@ -1334,7 +1358,8 @@ public class CXFRxInvokerTestServlet extends HttpServlet {
         String serverIP = param.get("serverIP");
         String serverPort = param.get("serverPort");
         ClientBuilder cb = ClientBuilder.newBuilder();
-        cb.property("com.ibm.ws.jaxrs.client.receive.timeout", TIMEOUT);
+//        cb.property("com.ibm.ws.jaxrs.client.receive.timeout", TIMEOUT);
+        cb.readTimeout(TIMEOUT, TimeUnit.MILLISECONDS);
         Client c = cb.build();
         c.register(FlowableRxInvokerProvider.class);
         WebTarget t = c.target("http://" + serverIP + ":" + serverPort + "/jaxrs21bookstore/JAXRS21bookstore2/post/" + SLEEP);
@@ -1385,8 +1410,14 @@ public class CXFRxInvokerTestServlet extends HttpServlet {
             target = "http://localhost:23/blah";
         }
 
+        if (isRestful30()) {
+            timeout = timeout * 2;
+            System.out.println("testObservableRxInvoker_postConnectionTimeout with timeout " + timeout);
+        }
+
         ClientBuilder cb = ClientBuilder.newBuilder();
-        cb.property("com.ibm.ws.jaxrs.client.connection.timeout", TIMEOUT);
+//        cb.property("com.ibm.ws.jaxrs.client.connection.timeout", TIMEOUT);
+        cb.connectTimeout(TIMEOUT, TimeUnit.MILLISECONDS);
         Client c = cb.build();
         c.register(ObservableRxInvokerProvider.class);
         WebTarget t = c.target(target);
@@ -1442,8 +1473,14 @@ public class CXFRxInvokerTestServlet extends HttpServlet {
             target = "http://localhost:23/blah";
         }
 
+        if (isRestful30()) {
+            timeout = timeout * 2;
+            System.out.println("testFlowableRxInvoker_postConnectionTimeout with timeout " + timeout);
+        }
+
         ClientBuilder cb = ClientBuilder.newBuilder();
-        cb.property("com.ibm.ws.jaxrs.client.connection.timeout", TIMEOUT);
+//        cb.property("com.ibm.ws.jaxrs.client.connection.timeout", TIMEOUT);
+        cb.connectTimeout(TIMEOUT, TimeUnit.MILLISECONDS);
         Client c = cb.build();
         c.register(FlowableRxInvokerProvider.class);
         WebTarget t = c.target(target);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 package com.ibm.ws.cdi12.fat.tests;
 
 import static componenttest.rules.repeater.EERepeatTests.EEVersion.EE7;
+import static componenttest.rules.repeater.EERepeatTests.EEVersion.EE9;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
@@ -61,7 +62,7 @@ public class EJBVisibilityTests extends FATServletClient {
     public static final String SERVER_NAME = "cdi12EJBServer";
 
     @ClassRule
-    public static RepeatTests r = EERepeatTests.with(SERVER_NAME, EE7); //need to run this against EE9, when features are ready
+    public static RepeatTests r = EERepeatTests.with(SERVER_NAME, EE7, EE9);
 
     public static final String MASKED_CLASS_APP_NAME = "maskedClassWeb";
 

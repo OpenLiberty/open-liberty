@@ -31,9 +31,12 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 
+@SkipForRepeat(JakartaEE9Action.ID) // currently broken due to @Context constructor injection failing when using CDI
 @RunWith(FATRunner.class)
 public class JAXRS21SecuritySSLTest {
 
@@ -63,7 +66,7 @@ public class JAXRS21SecuritySSLTest {
                       server.waitForStringInLog("CWWKF0011I"));
 
         // wait for LTPA key to be available to avoid CWWKS4000E
-        assertNotNull("CWWKS4105I.* not recieved on server",
+        assertNotNull("CWWKS4105I.* not received on server",
                       server.waitForStringInLog("CWWKS4105I.*"));
     }
 

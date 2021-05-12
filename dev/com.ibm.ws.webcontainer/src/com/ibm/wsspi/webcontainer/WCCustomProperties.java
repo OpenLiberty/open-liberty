@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2020 IBM Corporation and others.
+ * Copyright (c) 1997, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -316,6 +316,12 @@ public class WCCustomProperties {
     //20.0.0.8
     public static boolean DECODE_URL_PLUS_SIGN;
 
+    //21.0.0.1
+    public static boolean REDIRECT_TO_RELATIVE_URL;
+
+    //21.0.0.4
+    public static boolean SET_HTML_CONTENT_TYPE_ON_ERROR; 
+
     static {
         setCustomPropertyVariables(); //initializes all the variables
     }
@@ -407,7 +413,8 @@ public class WCCustomProperties {
         WCCustomProperties.FullyQualifiedPropertiesMap.put("servletdestroywaittime", "com.ibm.ws.webcontainer.servletdestroywaittime");
         WCCustomProperties.FullyQualifiedPropertiesMap.put("servletpathfordefaultmapping", "com.ibm.ws.webcontainer.servletpathfordefaultmapping");     //4666
         WCCustomProperties.FullyQualifiedPropertiesMap.put("getrealpathreturnsqualifiedPath", "com.ibm.ws.webcontainer.getrealpathreturnsqualifiedPath");
-
+        WCCustomProperties.FullyQualifiedPropertiesMap.put("redirecttorelativeurl", "com.ibm.ws.webcontainer.redirecttorelativeurl");
+        WCCustomProperties.FullyQualifiedPropertiesMap.put("sethtmlcontenttypeonerror", "com.ibm.ws.webcontainer.sethtmlcontenttypeonerror"); //PH34054
     }
 
     //some properties require "com.ibm.ws.webcontainer." on the front
@@ -426,6 +433,7 @@ public class WCCustomProperties {
             Tr.entry(tc, "setCustomProperties");
         }
 
+        customProps = WebContainer.getWebContainerProperties();
         String ky;
         String propertyKey;
 
@@ -494,7 +502,8 @@ public class WCCustomProperties {
     }
 
     public static void setCustomPropertyVariables() {
- 
+        String methodName = "setCustomPropertyVariables";
+        
         DO_NOT_SERVE_BY_CLASSNAME = customProps.getProperty("com.ibm.ws.webcontainer.donotservebyclassname");
         SUPPRESS_WSEP_HEADER = (Boolean.valueOf(customProps.getProperty("com.ibm.ws.webcontainer.suppresserrorpageodrheader"))).booleanValue();
         REDIRECT_CONTEXT_ROOT = Boolean.valueOf(customProps.getProperty("com.ibm.ws.webcontainer.redirectcontextroot")).booleanValue();
@@ -618,7 +627,6 @@ public class WCCustomProperties {
         
         //Start 7.0.0.19
         IFMODIFIEDSINCE_NEWER_THAN_FILEMODIFIED_TIMESTAMP = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.modifiedsincelaterthanfiletimestamp", "false")).booleanValue(); //PM36341
-        ALLOW_QUERY_PARAM_WITH_NO_EQUAL = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.allowqueryparamwithnoequal")).booleanValue(); //PM35450
         //End 7.0.0.19
 
         //Begin 8.0
@@ -642,14 +650,7 @@ public class WCCustomProperties {
         TOLERATE_SYMBOLIC_LINKS = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.toleratesymboliclinks")).booleanValue();
 
         X_POWERED_BY = WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.xpoweredby");
-
-        // Set DISABLE_X_POWERED_BY to true by default for Servlet 5.0 +
-        if(com.ibm.ws.webcontainer.osgi.WebContainer.getServletContainerSpecLevel() >= com.ibm.ws.webcontainer.osgi.WebContainer.SPEC_LEVEL_50) {
-            DISABLE_X_POWERED_BY = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.disablexpoweredby","true")).booleanValue();
-        } else {
-            DISABLE_X_POWERED_BY = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.disablexpoweredby","false")).booleanValue();
-        }
-
+        
         DISABLE_SCI_FOR_PRE_V8_APPS = Boolean.valueOf(
                                                       WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.disableservletcontainerinitializersonprev8apps")).booleanValue();
 
@@ -713,7 +714,7 @@ public class WCCustomProperties {
         HTTPS_INDICATOR_HEADER = WebContainer.getWebContainerProperties().getProperty("httpsindicatorheader"); //PM70260
         if ((HTTPS_INDICATOR_HEADER != null) && HTTPS_INDICATOR_HEADER.trim().equals("")) HTTPS_INDICATOR_HEADER = null; // Eliminate String manipulation/compare on mainline path, getHeader does not accept empty str.
         
-        ENABLE_TRACE_REQUESTS = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("enableTraceRequests", "false")).booleanValue();  //71479
+        ENABLE_TRACE_REQUESTS = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("enabletracerequests", "false")).booleanValue();  //71479
                 
         //Start 8.5.0.2
         REMOVE_ATTRIBUTE_FOR_NULL_OBJECT = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.removeattributefornullobject", "true")).booleanValue(); //PM71991    
@@ -749,7 +750,7 @@ public class WCCustomProperties {
         EMPTY_SERVLET_MAPPINGS =  Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.emptyservletmappings")).booleanValue(); //PI23529
         SERVLET31_PRIVATE_BUFFERSIZE_FOR_LARGE_POST_DATA = Integer.valueOf(customProps.getProperty("servlet31.private.buffersizeforlargepostdata", (new Integer(Integer.MAX_VALUE/16)).toString())).intValue();
         if (SERVLET31_PRIVATE_BUFFERSIZE_FOR_LARGE_POST_DATA < 1) SERVLET31_PRIVATE_BUFFERSIZE_FOR_LARGE_POST_DATA = Integer.MAX_VALUE/16;
-        
+       
         //Start 8.5.5.5 CD
         DEFER_SERVLET_REQUEST_LISTENER_DESTROY_ON_ERROR =  Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.deferservletrequestlistenerdestroyonerror")).booleanValue(); //PI26908
         
@@ -772,7 +773,6 @@ public class WCCustomProperties {
         ENABLE_POST_ONLY_J_SECURITY_CHECK = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.enablepostonlyjsecuritycheck")).booleanValue();      //PI60797
         
         // Start 8.5.5.11
-        STOP_APP_STARTUP_ON_LISTENER_EXCEPTION = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.stopappstartuponlistenerexception" , "false")).booleanValue(); //PI58875
         INVOKE_FLUSH_AFTER_SERVICE_FOR_STATIC_FILE_RESPONSE_WRAPPER = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.invokeflushafterserviceforstaticfileresponsewrapper" , "true")).booleanValue(); //PI63193
         ENCODE_DISPATCHED_REQUEST_URI = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.encodedispatchedrequesturi", "false")).booleanValue(); //PI67942
         
@@ -799,12 +799,37 @@ public class WCCustomProperties {
         // 19.0.0.8
         GET_REAL_PATH_RETURNS_QUALIFIED_PATH = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.getrealpathreturnsqualifiedpath", "true")).booleanValue();
         
-        // 20.0.0.8
-        DECODE_URL_PLUS_SIGN = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.decodeurlplussign", "true")).booleanValue();
+        //21.0.0.1
+        REDIRECT_TO_RELATIVE_URL = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.redirecttorelativeurl", "false")).booleanValue();
+
+        //21.0.0.4
+        SET_HTML_CONTENT_TYPE_ON_ERROR = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.sethtmlcontenttypeonerror", "true")).booleanValue();
+
+        //Default for Servlet 5.0 +
+        if(com.ibm.ws.webcontainer.osgi.WebContainer.getServletContainerSpecLevel() >= com.ibm.ws.webcontainer.osgi.WebContainer.SPEC_LEVEL_50) {
+            DISABLE_X_POWERED_BY = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.disablexpoweredby","true")).booleanValue();
+            STOP_APP_STARTUP_ON_LISTENER_EXCEPTION = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.stopappstartuponlistenerexception" , "true")).booleanValue();
+            DECODE_URL_PLUS_SIGN = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.decodeurlplussign", "false")).booleanValue(); 
+            ALLOW_QUERY_PARAM_WITH_NO_EQUAL = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.allowqueryparamwithnoequal", "true")).booleanValue();
+        } else {
+            DISABLE_X_POWERED_BY = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.disablexpoweredby","false")).booleanValue();
+            STOP_APP_STARTUP_ON_LISTENER_EXCEPTION = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.stopappstartuponlistenerexception" , "false")).booleanValue();
+            DECODE_URL_PLUS_SIGN = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.decodeurlplussign", "true")).booleanValue();
+            ALLOW_QUERY_PARAM_WITH_NO_EQUAL = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.allowqueryparamwithnoequal", "false")).booleanValue();
+        }
+        
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, methodName, "DISABLE_X_POWERED_BY [" + DISABLE_X_POWERED_BY + "], " +
+                                     "STOP_APP_STARTUP_ON_LISTENER_EXCEPTION ["+ STOP_APP_STARTUP_ON_LISTENER_EXCEPTION + "], " +
+                                     "DECODE_URL_PLUS_SIGN [" + DECODE_URL_PLUS_SIGN + "], " +
+                                     "ALLOW_QUERY_PARAM_WITH_NO_EQUAL [" + ALLOW_QUERY_PARAM_WITH_NO_EQUAL + "]");
+        }
     }
 
     private static void setCustomizedDefaultValues(){
-        Tr.debug(tc, "Customized default values: ");
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Customized default values: ");
+        }
 
         //18.0.0.4 SERVLET_PATH_FOR_DEFAULT_MAPPING has highest priority.  If not present AND ENABLE_DEFAULT_SERVLET_REQUEST_PATH_ELEMENTS is true, set SERVLET_PATH_FOR_DEFAULT_MAPPING
         if (SERVLET_PATH_FOR_DEFAULT_MAPPING == null || SERVLET_PATH_FOR_DEFAULT_MAPPING.isEmpty()){
@@ -813,7 +838,9 @@ public class WCCustomProperties {
             else
                 SERVLET_PATH_FOR_DEFAULT_MAPPING = ((com.ibm.ws.webcontainer.osgi.WebContainer.getServletContainerSpecLevel() >= com.ibm.ws.webcontainer.osgi.WebContainer.SPEC_LEVEL_40) ? "true" : "false" );
 
-            Tr.debug(tc, "servletpathfordefaultmapping = " + SERVLET_PATH_FOR_DEFAULT_MAPPING);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "servletpathfordefaultmapping = " + SERVLET_PATH_FOR_DEFAULT_MAPPING);
+            }
         }
     }
 

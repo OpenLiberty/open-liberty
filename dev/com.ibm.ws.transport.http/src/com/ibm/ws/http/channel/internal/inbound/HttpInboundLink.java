@@ -11,6 +11,7 @@
 package com.ibm.ws.http.channel.internal.inbound;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -360,18 +361,6 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "processRequest return from handleNewRequest()");
-                }
-
-                if (isGrpc) {
-                    // null checks should not be needed, but one intermittent build break suggested otherwise.
-                    HttpInboundServiceContextImpl contextImpl = this.myInterface;
-                    if (contextImpl != null) {
-                        HttpInboundLink link = contextImpl.getLink();
-                        if (link != null) {
-                            // if the grpc flag is set, then link is really a LinkWrap
-                            ((H2HttpInboundLinkWrap) link).countDownFirstReadLatch();
-                        }
-                    }
                 }
 
                 return;
@@ -1052,10 +1041,7 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
         if (buffer.remaining() >= 24) {
             byte[] arr = new byte[24];
             buffer.get(arr);
-            String bufferString = new String(arr, 0, 24);
-            if (bufferString != null && !bufferString.isEmpty() && bufferString.startsWith(HttpConstants.HTTP2PrefaceString)) {
-                hasMagicString = true;
-            }
+            hasMagicString = Arrays.equals(arr, HttpConstants.HTTP2PrefaceBytes);
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003 IBM Corporation and others.
+ * Copyright (c) 2003, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,24 +10,12 @@
  *******************************************************************************/
 package com.ibm.ws.sip.container.servlets;
 
-import jain.protocol.ip.sip.header.ContactHeader;
-
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
-import javax.servlet.sip.Address;
-import javax.servlet.sip.B2buaHelper;
-import javax.servlet.sip.ServletParseException;
-import javax.servlet.sip.SipServletMessage;
-import javax.servlet.sip.SipServletRequest;
-import javax.servlet.sip.SipServletResponse;
-import javax.servlet.sip.SipSession;
-import javax.servlet.sip.TooManyHopsException;
-import javax.servlet.sip.UAMode;
+import javax.servlet.sip.*;
 import javax.servlet.sip.SipSession.State;
 
 import com.ibm.sip.util.log.Log;
@@ -35,6 +23,8 @@ import com.ibm.sip.util.log.LogMgr;
 import com.ibm.ws.sip.container.properties.PropertiesStore;
 import com.ibm.ws.sip.container.tu.TransactionUserWrapper;
 import com.ibm.ws.sip.properties.CoreProperties;
+
+import jain.protocol.ip.sip.header.ContactHeader;
 
 /**
  * Helper class providing support for B2BUA applications. 
@@ -294,6 +284,7 @@ public class B2buaHelperImpl implements B2buaHelper {
 		
 		TransactionUserWrapper derivedTU = tuToUseForUpdate.createDerivedTU(null,
 				"B2BuaHelperImpl - createResponse to original request");
+		derivedTU.getTuImpl().resetRemoteCseq();
 		tuToUseForUpdate = derivedTU;
 		
 		SipServletRequest origRequest = tuToUseForUpdate.getSipMessage();
@@ -836,7 +827,10 @@ public class B2buaHelperImpl implements B2buaHelper {
 		 * as usual. "
 		 * (throw exception, ignore ?)
 		 */
-		SipServletRequest req = createOutgoingRequest(origRequest);
+		OutgoingSipServletRequest req = createOutgoingRequest(origRequest);
+		// Noam: marking new TU as b2b, this will cause incoming messages to be added to the pending
+		// messages.
+		req.getTransactionUser().setIsB2bua(true);
 		
 		if (c_logger.isTraceEntryExitEnabled()) {
 			c_logger.traceExit(B2buaHelperImpl.class.getName(), "createRequest",

@@ -10,7 +10,7 @@
  *******************************************************************************/
 
 @Version("1.0.0")
-@TraceOptions(traceGroup = "rest.config", messageBundle = "com.ibm.ws.rest.handler.config.openapi.resources.CWWKOMessages")
+@TraceOptions(traceGroup = "rest.config")
 package com.ibm.ws.rest.handler.config.openapi;
 
 import org.osgi.annotation.versioning.Version;

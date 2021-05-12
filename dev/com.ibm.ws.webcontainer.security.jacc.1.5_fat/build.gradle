@@ -12,8 +12,8 @@
 dependencies {
   requiredLibs 'org.apache.httpcomponents:httpclient:4.1.2',
                'org.apache.httpcomponents:httpcore:4.1.2',
-               'commons-codec:commons-codec:1.4',
-               'commons-logging:commons-logging:1.1.1',
+               project(':io.openliberty.org.apache.commons.codec'),
+               project(':io.openliberty.org.apache.commons.logging'),
                project(':com.ibm.websphere.javaee.servlet.3.0'),
                project(':com.ibm.ws.security.audit_fat.common.tooling'),
                project(':com.ibm.ws.webcontainer.security_test.servlets'),
@@ -386,9 +386,9 @@ assemble {
  **
  ******************************************************************
  ******************************************************************/
-autoFVT.dependsOn ':com.ibm.ws.security.authorization.jacc.testprovider:jar'
-autoFVT.dependsOn ':com.ibm.ws.security.registry_test.custom:jar'
-autoFVT.dependsOn ':com.ibm.ws.org.apache.directory.server:jar' // Probably don't need.
+autoFVT.dependsOn ':com.ibm.ws.security.authorization.jacc.testprovider:assemble'
+autoFVT.dependsOn ':com.ibm.ws.security.registry_test.custom:assemble'
+autoFVT.dependsOn ':com.ibm.ws.org.apache.directory.server:assemble' // Probably don't need.
 autoFVT.doLast {
 
   /*

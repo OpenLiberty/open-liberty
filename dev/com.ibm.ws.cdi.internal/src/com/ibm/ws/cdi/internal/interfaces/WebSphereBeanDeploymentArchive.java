@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2016 IBM Corporation and others.
+ * Copyright (c) 2015, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -285,5 +285,17 @@ public interface WebSphereBeanDeploymentArchive extends BeanDeploymentArchive {
      * @return the the EEModuleDescriptorID
      */
     String getEEModuleDescriptorId();
+
+    /**
+     * Get hold of the class names for extensions registered via the SPI
+     *
+     * @return a set of extension class names. 
+     */
+    Set<String> getSPIExtensionClassNames();
+
+    /**
+     * Register the extensions in this BDA that were aquired via the SPI.
+     */
+    void setSPIExtensionClassNames(Set<String> spiExtensionsClassNames);
 
 }

@@ -1,6 +1,6 @@
 <server>
     <featureManager>
-        <feature>servlet-3.1</feature>
+        <feature>servlet-4.0</feature>
         <feature>jdbc-4.0</feature>
         <feature>mpMetrics-3.0</feature>
         <feature>monitor-1.0</feature>

@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+
+<ejb-jar
+  xmlns="http://java.sun.com/xml/ns/javaee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd"
+  version="3.1"
+>
+  <enterprise-beans>
+ 
+     <session>
+     
+        <ejb-name>Bad5Bean</ejb-name>
+        <ejb-class>com.ibm.bnd.lookupoverride.shared.Bad5Bean</ejb-class>
+        <session-type>Stateless</session-type>
+       
+        <ejb-local-ref>
+           <ejb-ref-name>bad5combo</ejb-ref-name>
+           <lookup-name>ejblocal:SLT2</lookup-name>
+        </ejb-local-ref>
+       
+     </session>
+
+       
+     <session>
+        <ejb-name>TargetBean</ejb-name>
+        <ejb-class>com.ibm.bnd.lookupoverride.shared.TargetBean</ejb-class>
+        <session-type>Stateless</session-type>
+     </session>
+   
+  </enterprise-beans>
+  
+  
+  <interceptors>
+     <interceptor>
+     
+        <interceptor-class>com.ibm.bnd.lookupoverride.shared.PostConstructInterceptor</interceptor-class>
+        <post-construct>
+  	       <lifecycle-callback-method>postConstruct</lifecycle-callback-method>
+        </post-construct>
+     
+        <ejb-local-ref>
+           <ejb-ref-name>bad5combo</ejb-ref-name>
+           <ejb-link>SLT</ejb-link>
+        </ejb-local-ref>
+        
+     </interceptor>
+  </interceptors>
+ 
+
+  <assembly-descriptor>
+    <interceptor-binding>
+      <ejb-name>Bad5Bean</ejb-name>
+      <interceptor-class>com.ibm.bnd.lookupoverride.shared.PostConstructInterceptor</interceptor-class>
+    </interceptor-binding>
+  </assembly-descriptor>
+
+  
+
+  
+</ejb-jar>

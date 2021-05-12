@@ -14,7 +14,7 @@
                    localization="OSGI-INF/l10n/metatype">
     
     <OCD id="com.ibm.ws.security.kerberos.auth.KerberosService" name="%kerberos" description="%kerberos.desc" 
-    	  ibm:alias="kerberos" ibm:beta="true">
+    	  ibm:alias="kerberos">
     	  
     	<AD id="keytab"     name="%keytab"     description="%keytab.desc"     type="String" ibm:type="location(file)" required="false"/>
     	<AD id="configFile" name="%configFile" description="%configFile.desc" type="String" ibm:type="location(file)" required="false"/>

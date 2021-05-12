@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,28 +11,36 @@
 
 package com.ibm.ws.jpa;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
+import com.ibm.ws.jpa.spec10.query.TestSVLLoopAnoQuery_Web;
+import com.ibm.ws.jpa.spec10.query.TestSVLLoopXMLQuery_Web;
+import com.ibm.ws.jpa.spec10.query.TestSVLQuery_Bulkupdate_Web;
+import com.ibm.ws.jpa.spec10.query.TestSVLQuery_Web;
+import com.ibm.ws.jpa.spec10.query.olgh.TestOLGH14137_EJB;
+import com.ibm.ws.jpa.spec10.query.olgh.TestOLGH14137_Web;
+import com.ibm.ws.jpa.spec10.query.olgh.TestOLGH8014_EJB;
+import com.ibm.ws.jpa.spec10.query.olgh.TestOLGH8014_Web;
+
+import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.database.container.DatabaseContainerFactory;
-import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 
 @RunWith(Suite.class)
 @SuiteClasses({
                 TestOLGH8014_EJB.class,
                 TestOLGH8014_Web.class,
-                TestOLGH8294_EJB.class,
-                TestOLGH8294_Web.class,
+                TestOLGH14137_EJB.class,
+                TestOLGH14137_Web.class,
                 TestSVLQuery_Web.class,
                 TestSVLQuery_Bulkupdate_Web.class,
                 TestSVLLoopAnoQuery_Web.class,
+                TestSVLLoopXMLQuery_Web.class,
                 componenttest.custom.junit.runner.AlwaysPassesTest.class
 })
 public class FATSuite {
@@ -40,20 +48,14 @@ public class FATSuite {
                                                 "permission java.lang.RuntimePermission \"accessClassInPackage.com.sun.xml.internal.bind\";",
                                                 "permission java.lang.RuntimePermission \"accessDeclaredMembers\";" };
 
-    static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
-
-    @BeforeClass
-    public static void beforeSuite() throws Exception {
-        //Allows local tests to switch between using a local docker client, to using a remote docker client.
-        ExternalTestServiceDockerClientStrategy.clearTestcontainersConfig();
-
-        testContainer.start();
+    //Required to ensure we calculate the correct strategy each run even when
+    //switching between local and remote docker hosts.
+    static {
+        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
     }
 
-    @AfterClass
-    public static void afterSuite() {
-        testContainer.stop();
-    }
+    @ClassRule
+    public static JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
 
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()

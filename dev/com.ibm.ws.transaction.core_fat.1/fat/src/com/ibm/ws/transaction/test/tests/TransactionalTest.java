@@ -51,7 +51,7 @@ public class TransactionalTest extends FATServletClient {
         // set. And, the ejb-4.0 feature is not yet available. Enable jdbc-4.2 to enable transactions-2.0
         // The following sets the appropriate features for the EE9 repeatable tests.
         if (JakartaEE9Action.isActive()) {
-            server.changeFeatures(Arrays.asList("jdbc-4.2", "cdi-3.0", "ejbLite-4.0", "txtest-2.0", "servlet-5.0", "componenttest-2.0", "osgiconsole-1.0", "jndi-1.0"));
+            server.changeFeatures(Arrays.asList("jdbc-4.2", "cdi-3.0", "enterpriseBeansLite-4.0", "txtest-2.0", "servlet-5.0", "componenttest-2.0", "osgiconsole-1.0", "jndi-1.0"));
         }
 
         server.setServerStartTimeout(300000);

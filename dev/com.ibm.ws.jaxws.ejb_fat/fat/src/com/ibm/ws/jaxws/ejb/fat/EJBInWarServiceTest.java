@@ -118,9 +118,14 @@ public class EJBInWarServiceTest {
     }
 
     protected void runTest(String responseString) throws ProtocolException, MalformedURLException, IOException {
-        StringBuilder sBuilder = new StringBuilder("http://").append(server.getHostname()).append(":").append(server.getHttpDefaultPort()).append(SERVLET_PATH).append("?testMethod=").append(testName.getMethodName()).append("&hostName=").append(server.getHostname());
+        // Strip the Test Rerun id's out of the method name
+        String testMethod = ((testName.getMethodName()).replace("_jaxws-2.3",
+                                                                "")).replace("_EE9_FEATURES",
+                                                                             "");
+
+        StringBuilder sBuilder = new StringBuilder("http://").append(server.getHostname()).append(":").append(server.getHttpDefaultPort()).append(SERVLET_PATH).append("?testMethod=").append(testMethod).append("&hostName=").append(server.getHostname());
         String urlStr = sBuilder.toString();
-        Log.info(this.getClass(), testName.getMethodName(), "Calling Application with URL=" + urlStr);
+        Log.info(this.getClass(), testMethod, "Calling Application with URL=" + urlStr);
 
         HttpURLConnection con = HttpUtils.getHttpConnection(new URL(urlStr), HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT);
         BufferedReader br = HttpUtils.getConnectionStream(con);

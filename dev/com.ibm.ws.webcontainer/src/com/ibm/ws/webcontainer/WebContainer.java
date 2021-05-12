@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.text.MessageFormat;
@@ -224,8 +225,9 @@ public abstract class WebContainer extends BaseContainer {
         _initialized = true;
 
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) //306998.15
-            logger.logp(Level.FINE, CLASS_NAME, "initialize", "Web Container invocationCache -->" + invocationCacheSize);
+            logger.logp(Level.FINE, CLASS_NAME, "initialize", "Web Container invocationCache --> [" + invocationCacheSize+ "]");
 
+        webConProperties = new Properties();
     }
 
     /**
@@ -821,7 +823,7 @@ public abstract class WebContainer extends BaseContainer {
             if (decode) {
                 // URLs have been decoded with UTF-8 but not yet URLDecoded
                 //reqURI = URLDecoder.decode(reqURI, encoding); // encoding should be UTF-8
-                String isoURI = new String(reqURI.getBytes(encoding), ISO);
+                String isoURI = new String(reqURI.getBytes(encoding), StandardCharsets.ISO_8859_1);
                 hreq.setAttribute("com.ibm.websphere.servlet.uri_non_decoded", isoURI);
                 if (isTraceOn && logger.isLoggable(Level.FINE)) //306998.15 
                 {
@@ -923,7 +925,7 @@ public abstract class WebContainer extends BaseContainer {
                     }
                     // end 272738    Duplicate CacheServletWrappers when url-rewriting is enabled    WAS.webcontainer: rewritten to handle jsessionid.
 
-                    currDispatchContext.setQueryString(((SRTServletRequest) hreq).getQueryString());
+                    currDispatchContext.setQueryString(hreq.getQueryString());
                     hreq.setValuesIfMultiReadofPostdataEnabled(); //MultiRead
                     if (vhost != null) {
                         vhost.addSecureRedirect(hreq, vhostKey);

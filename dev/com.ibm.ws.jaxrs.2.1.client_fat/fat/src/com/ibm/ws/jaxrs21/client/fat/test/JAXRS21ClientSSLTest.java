@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,10 +26,12 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
+//@SkipForRepeat("EE9_FEATURES") // currently broken due to multiple issues
 public class JAXRS21ClientSSLTest extends JAXRS21AbstractTest {
     @Server("jaxrs21.client.JAXRS21ClientSSLTest")
     public static LibertyServer server;
@@ -57,6 +59,10 @@ public class JAXRS21ClientSSLTest extends JAXRS21AbstractTest {
         // Pause for the smarter planet message
         assertNotNull("The smarter planet message did not get printed on server",
                       server.waitForStringInLog("CWWKF0011I"));
+
+        // wait for the tcp channel to start
+        assertNotNull("TCP Channel not started",
+                      server.waitForStringInLog("CWWKO0219I"));
     }
 
     @AfterClass
@@ -83,6 +89,7 @@ public class JAXRS21ClientSSLTest extends JAXRS21AbstractTest {
     }
 
     @Test
+    @SkipForRepeat("EE9_FEATURES") // Currently, RESTEasy only allows SSLContext to be set from ClientBuilder
     public void testClientBasicSSL_Client() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         p.put("param", "alex");
@@ -90,6 +97,7 @@ public class JAXRS21ClientSSLTest extends JAXRS21AbstractTest {
     }
 
     @Test
+    @SkipForRepeat("EE9_FEATURES") // Currently, RESTEasy only allows SSLContext to be set from ClientBuilder
     public void testClientBasicSSL_WebTarget() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         p.put("param", "alex");
@@ -104,6 +112,7 @@ public class JAXRS21ClientSSLTest extends JAXRS21AbstractTest {
     }
 
     @Test
+    @SkipForRepeat("EE9_FEATURES") // Needs more investigation, but also runs into the same issue with SSLContext only being set from ClientBuilder
     public void testClientBasicSSL_CustomizedSSLContext() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         p.put("param", "alex");

@@ -1,19 +1,6 @@
 package com.ibm.ws.grpc.fat.streaming.service;
 
 import static io.grpc.MethodDescriptor.generateFullMethodName;
-import static io.grpc.stub.ClientCalls.asyncBidiStreamingCall;
-import static io.grpc.stub.ClientCalls.asyncClientStreamingCall;
-import static io.grpc.stub.ClientCalls.asyncServerStreamingCall;
-import static io.grpc.stub.ClientCalls.asyncUnaryCall;
-import static io.grpc.stub.ClientCalls.blockingServerStreamingCall;
-import static io.grpc.stub.ClientCalls.blockingUnaryCall;
-import static io.grpc.stub.ClientCalls.futureUnaryCall;
-import static io.grpc.stub.ServerCalls.asyncBidiStreamingCall;
-import static io.grpc.stub.ServerCalls.asyncClientStreamingCall;
-import static io.grpc.stub.ServerCalls.asyncServerStreamingCall;
-import static io.grpc.stub.ServerCalls.asyncUnaryCall;
-import static io.grpc.stub.ServerCalls.asyncUnimplementedStreamingCall;
-import static io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall;
 
 /**
  * <pre>
@@ -21,7 +8,7 @@ import static io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall;
  * </pre>
  */
 @javax.annotation.Generated(
-    value = "by gRPC proto compiler (version 1.28.1)",
+    value = "by gRPC proto compiler (version 1.36.1)",
     comments = "Source: Streaming.proto")
 public final class StreamingServiceGrpc {
 
@@ -178,42 +165,42 @@ public final class StreamingServiceGrpc {
      */
     public io.grpc.stub.StreamObserver<com.ibm.ws.grpc.fat.streaming.service.StreamRequest> clientStream(
         io.grpc.stub.StreamObserver<com.ibm.ws.grpc.fat.streaming.service.StreamReply> responseObserver) {
-      return asyncUnimplementedStreamingCall(getClientStreamMethod(), responseObserver);
+      return io.grpc.stub.ServerCalls.asyncUnimplementedStreamingCall(getClientStreamMethod(), responseObserver);
     }
 
     /**
      */
     public void serverStream(com.ibm.ws.grpc.fat.streaming.service.StreamRequest request,
         io.grpc.stub.StreamObserver<com.ibm.ws.grpc.fat.streaming.service.StreamReply> responseObserver) {
-      asyncUnimplementedUnaryCall(getServerStreamMethod(), responseObserver);
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getServerStreamMethod(), responseObserver);
     }
 
     /**
      */
     public void hello(com.ibm.ws.grpc.fat.streaming.service.StreamRequest request,
         io.grpc.stub.StreamObserver<com.ibm.ws.grpc.fat.streaming.service.StreamReply> responseObserver) {
-      asyncUnimplementedUnaryCall(getHelloMethod(), responseObserver);
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getHelloMethod(), responseObserver);
     }
 
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
             getClientStreamMethod(),
-            asyncClientStreamingCall(
+            io.grpc.stub.ServerCalls.asyncClientStreamingCall(
               new MethodHandlers<
                 com.ibm.ws.grpc.fat.streaming.service.StreamRequest,
                 com.ibm.ws.grpc.fat.streaming.service.StreamReply>(
                   this, METHODID_CLIENT_STREAM)))
           .addMethod(
             getServerStreamMethod(),
-            asyncServerStreamingCall(
+            io.grpc.stub.ServerCalls.asyncServerStreamingCall(
               new MethodHandlers<
                 com.ibm.ws.grpc.fat.streaming.service.StreamRequest,
                 com.ibm.ws.grpc.fat.streaming.service.StreamReply>(
                   this, METHODID_SERVER_STREAM)))
           .addMethod(
             getHelloMethod(),
-            asyncUnaryCall(
+            io.grpc.stub.ServerCalls.asyncUnaryCall(
               new MethodHandlers<
                 com.ibm.ws.grpc.fat.streaming.service.StreamRequest,
                 com.ibm.ws.grpc.fat.streaming.service.StreamReply>(
@@ -243,7 +230,7 @@ public final class StreamingServiceGrpc {
      */
     public io.grpc.stub.StreamObserver<com.ibm.ws.grpc.fat.streaming.service.StreamRequest> clientStream(
         io.grpc.stub.StreamObserver<com.ibm.ws.grpc.fat.streaming.service.StreamReply> responseObserver) {
-      return asyncClientStreamingCall(
+      return io.grpc.stub.ClientCalls.asyncClientStreamingCall(
           getChannel().newCall(getClientStreamMethod(), getCallOptions()), responseObserver);
     }
 
@@ -251,7 +238,7 @@ public final class StreamingServiceGrpc {
      */
     public void serverStream(com.ibm.ws.grpc.fat.streaming.service.StreamRequest request,
         io.grpc.stub.StreamObserver<com.ibm.ws.grpc.fat.streaming.service.StreamReply> responseObserver) {
-      asyncServerStreamingCall(
+      io.grpc.stub.ClientCalls.asyncServerStreamingCall(
           getChannel().newCall(getServerStreamMethod(), getCallOptions()), request, responseObserver);
     }
 
@@ -259,7 +246,7 @@ public final class StreamingServiceGrpc {
      */
     public void hello(com.ibm.ws.grpc.fat.streaming.service.StreamRequest request,
         io.grpc.stub.StreamObserver<com.ibm.ws.grpc.fat.streaming.service.StreamReply> responseObserver) {
-      asyncUnaryCall(
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getHelloMethod(), getCallOptions()), request, responseObserver);
     }
   }
@@ -285,14 +272,14 @@ public final class StreamingServiceGrpc {
      */
     public java.util.Iterator<com.ibm.ws.grpc.fat.streaming.service.StreamReply> serverStream(
         com.ibm.ws.grpc.fat.streaming.service.StreamRequest request) {
-      return blockingServerStreamingCall(
+      return io.grpc.stub.ClientCalls.blockingServerStreamingCall(
           getChannel(), getServerStreamMethod(), getCallOptions(), request);
     }
 
     /**
      */
     public com.ibm.ws.grpc.fat.streaming.service.StreamReply hello(com.ibm.ws.grpc.fat.streaming.service.StreamRequest request) {
-      return blockingUnaryCall(
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getHelloMethod(), getCallOptions(), request);
     }
   }
@@ -318,7 +305,7 @@ public final class StreamingServiceGrpc {
      */
     public com.google.common.util.concurrent.ListenableFuture<com.ibm.ws.grpc.fat.streaming.service.StreamReply> hello(
         com.ibm.ws.grpc.fat.streaming.service.StreamRequest request) {
-      return futureUnaryCall(
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getHelloMethod(), getCallOptions()), request);
     }
   }

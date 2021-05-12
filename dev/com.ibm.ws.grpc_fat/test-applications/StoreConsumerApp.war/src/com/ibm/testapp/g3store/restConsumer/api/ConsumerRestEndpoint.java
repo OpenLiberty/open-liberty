@@ -40,6 +40,7 @@ import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement
 import com.ibm.testapp.g3store.exception.HandleExceptionsFromgRPCService;
 import com.ibm.testapp.g3store.exception.InvalidArgException;
 import com.ibm.testapp.g3store.exception.NotFoundException;
+import com.ibm.testapp.g3store.exception.UnauthException;
 import com.ibm.testapp.g3store.grpcConsumer.api.ConsumerGrpcServiceClientImpl;
 import com.ibm.testapp.g3store.restConsumer.model.AppListWithPricesPOJO;
 import com.ibm.testapp.g3store.restConsumer.model.AppNameList;
@@ -68,14 +69,14 @@ public class ConsumerRestEndpoint extends ConsumerGrpcServiceClientImpl {
 
     /**
      * The Authorization header with JWT token
-     * will be propagated using grpcTarget for this API.
+     * will be propagated using grpcClient for this API.
      *
      * Only uncomment RolesAllowed here if need to test security for RestEndpoint.
      *
      * @return
      */
     @GET
-    @Path("/appNames")
+    @Path("/appNames/{testMethodName}")
 //    @RolesAllowed({ "Administrator", "students" })
 //    @SecurityRequirement(name = "JWTAuthorization")
     @APIResponses(value = {
@@ -83,9 +84,10 @@ public class ConsumerRestEndpoint extends ConsumerGrpcServiceClientImpl {
                             @APIResponse(responseCode = "404", description = "Not Found — The requested resources does not exist.", content = @Content(mediaType = "text/plain")),
                             @APIResponse(responseCode = "200", description = "The list of app names are returned.",
                                          content = @Content(mediaType = "application/json", schema = @Schema(type = SchemaType.OBJECT, implementation = AppNameList.class))) })
-    public Response getAllAppNames() {
+    public Response getAllAppNames(@Parameter(name = "testMethodName", description = "test name", required = true,
+                                              in = ParameterIn.PATH) @PathParam("testMethodName") String testMethodName) {
 
-        String m = "getAllAppNames";
+        String m = testMethodName;
 
         log.info(m + ": Received request to get all available AppNames");
 
@@ -94,13 +96,20 @@ public class ConsumerRestEndpoint extends ConsumerGrpcServiceClientImpl {
             log.finest(m + ": this authHeader will be added to grpc request = " + authHeader);
         }
 
-        // Authorization header will be passed with grpcTarget
+        if (m.equalsIgnoreCase("testGetAppName_CookieAuth_GrpcClient")) {
+            String cookieHeader = httpHeaders.getRequestHeaders().getFirst(HttpHeaders.COOKIE);
+            if (log.isLoggable(Level.FINE)) {
+                log.finest(m + ": this cookie Header will be added to grpc request = " + cookieHeader);
+            }
+        }
+
+        // Authorization header will be passed with grpcClient
         // connect to gRPC service running in Store server
         startService_BlockingStub(ConsumerUtils.getStoreServerHost(), ConsumerUtils.getStoreServerPort());
 
         try {
             // call the gRPC API and get Result
-            List<String> nameList = getAllAppNameList();
+            List<String> nameList = getAllAppNameList(m);
 
             log.info(m + ": request to get appName has been completed by ConsumerRestEndpoint ");
             // respond as JSON
@@ -108,6 +117,15 @@ public class ConsumerRestEndpoint extends ConsumerGrpcServiceClientImpl {
 
         } catch (NotFoundException e) {
             return Response.status(Status.NOT_FOUND).build();
+        } catch (UnauthException e) {
+
+            if ((testMethodName.equalsIgnoreCase("getAppName_NullJWTAuth_GrpcClient")) ||
+                (testMethodName.equalsIgnoreCase("testGetAppName_BadServerRoles_GrpcClient")) ||
+                (testMethodName.equalsIgnoreCase("testGetAppName_BadRole_CookieAuth_GrpcClient"))) {
+                return Response.status(Status.OK).entity(e.getMessage()).build();
+            } else {
+                return Response.status(Status.UNAUTHORIZED).build();
+            }
         } finally {
             // shurdown the gRPC connection
             stopService();
@@ -153,6 +171,8 @@ public class ConsumerRestEndpoint extends ConsumerGrpcServiceClientImpl {
 
         } catch (NotFoundException e) {
             return Response.status(Status.NOT_FOUND).build();
+        } catch (UnauthException e) {
+            return Response.status(Status.UNAUTHORIZED).build();
         } finally {
             // shurdown the gRPC connection
             stopService();
@@ -161,7 +181,7 @@ public class ConsumerRestEndpoint extends ConsumerGrpcServiceClientImpl {
 
     /**
      * The Authorization header with Basic
-     * will be propagated using grpcTarget for this API.
+     * will be propagated using grpcClient for this API.
      *
      * This will also test the security for this RESTEndpoint.
      *
@@ -195,11 +215,13 @@ public class ConsumerRestEndpoint extends ConsumerGrpcServiceClientImpl {
         // call the gRPC API
         String appInfo_JSONString = null;
         try {
-            appInfo_JSONString = getAppJSONStructure(appName);
+            appInfo_JSONString = getAppJSONStructure(appName, m);
 
             log.info(m + ": request to get appInfo has been completed by ConsumerRestEndpoint " + appInfo_JSONString);
         } catch (InvalidArgException e) {
             return Response.status(Status.BAD_REQUEST).build();
+        } catch (UnauthException e) {
+            return Response.status(Status.UNAUTHORIZED).build();
         } finally {
             // shurdown the gRPC connection
             stopService();
@@ -212,7 +234,7 @@ public class ConsumerRestEndpoint extends ConsumerGrpcServiceClientImpl {
 
     /**
      * The Authorization header with Bad Basic Auth values
-     * will be propagated using grpcTarget for this API.
+     * will be propagated using grpcClient for this API.
      * Test if correct grpc return code are sent from the server.
      *
      *
@@ -244,11 +266,13 @@ public class ConsumerRestEndpoint extends ConsumerGrpcServiceClientImpl {
         // call the gRPC API
         String appInfo_JSONString = null;
         try {
-            appInfo_JSONString = getAppJSONStructure(appName);
+            appInfo_JSONString = getAppJSONStructure(appName, m);
 
             log.info(m + ": request to get appInfo has been completed by ConsumerRestEndpoint " + appInfo_JSONString);
         } catch (InvalidArgException e) {
             return Response.status(Status.BAD_REQUEST).build();
+        } catch (UnauthException e) {
+            return Response.status(Status.OK).entity(e.getMessage()).build();
         } finally {
             // shurdown the gRPC connection
             stopService();

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003 IBM Corporation and others.
+ * Copyright (c) 2003, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -922,35 +922,7 @@ public class OutgoingSipServletRequest extends SipServletRequestImpl
 	        }
 
 	        else if (ibmPOHeader == null) {
-	        	int ibmPOIndex = SipConstants.OUTBOUND_INTERFACE_NOT_DEFINED;
-	        	if (tu != null) {
-	        		//  Compare the From headers of the original message and this current message.    
-	        		//  If they are the same, use the "outbound interface" associated w/ the proxy branch.
-	        		boolean isSenderOriginator = true;
-	        		
-	        		ProxyBranchImpl proxyBranch = tu.getBranch();
-	        		if (proxyBranch != null) {
-	        			isSenderOriginator = isSameSender(tu.getBranch().getOriginalRequest(), req);
-	        			if (isSenderOriginator) {
-        					ibmPOIndex = proxyBranch.getPreferedOutboundIface(getTransport());
-        					if (c_logger.isTraceDebugEnabled())
-        						c_logger.traceDebug(this, "setupParametersBeforeSent", "using proxy IBM-PO =  " + ibmPOIndex);
-        				}
-	        				
-	        		}
-
-	        		//  If the ibmPOIndex hasn't been set already, use the "outbound interface" of the tu.
-	        		if (ibmPOIndex == SipConstants.OUTBOUND_INTERFACE_NOT_DEFINED) {
-	        			if (isSenderOriginator) {
-		        			ibmPOIndex = tu.getPreferedOutboundIface(getTransport());
-	        			} else {
-		        			ibmPOIndex = tu.getOriginatorPreferedOutboundIface(getTransport());
-	        			}
-	        			if (c_logger.isTraceDebugEnabled()) {
-	        				c_logger.traceDebug(this, "setupParametersBeforeSent", "using tu IBM-PO =  " + ibmPOIndex);
-	        			}
-	        		}
-	        	}
+	        	int ibmPOIndex = getPreferedOutboundIface();
 
 	        	// Set the ibmPOIndex in the message. 
 	        	if (ibmPOIndex != SipConstants.OUTBOUND_INTERFACE_NOT_DEFINED) {
@@ -960,6 +932,15 @@ public class OutgoingSipServletRequest extends SipServletRequestImpl
 	        		SipProxyInfo.getInstance().addPreferedOutboundHeader(this, ibmPOIndex);
 	        	}
 	        }
+	        // PI93796
+    		boolean isAddIBMPO = PropertiesStore.getInstance().getProperties().getBoolean(
+    				CoreProperties.ADD_IBM_PO_TO_LOOPBACK_MSG);
+    		if (tu != null && isLoopBack && !isAddIBMPO) {
+        		if (c_logger.isTraceDebugEnabled()) {
+        			c_logger.traceDebug(this, "setupParametersBeforeSent", "removing IBM-PO from the loopback message");
+        		}
+        		removeHeader(SipProxyInfo.PEREFERED_OUTBOUND_HDR_NAME);
+    		}
         }
         catch (SipParseException e)
         {
@@ -1209,7 +1190,17 @@ public class OutgoingSipServletRequest extends SipServletRequestImpl
     
         ViaHeader viaHeader;
         TransactionUserWrapper tUser = getTransactionUser();
-		int index = (null == tUser) ? SipConstants.OUTBOUND_INTERFACE_NOT_DEFINED : tUser.getPreferedOutboundIface(transport);
+        int index = SipConstants.OUTBOUND_INTERFACE_NOT_DEFINED;
+        
+		boolean outboundEnable = PropertiesStore.getInstance().getProperties().getBoolean(CoreProperties.ENABLE_SET_OUTBOUND_INTERFACE);
+		
+		if (outboundEnable) {
+			index = getPreferedOutboundIface();
+		}
+		else {
+			index = (null == tUser) ? SipConstants.OUTBOUND_INTERFACE_NOT_DEFINED : tUser.getPreferedOutboundIface(transport);
+		}
+		
 		if (index < 0) {
 			viaHeader = 
 					getHeadersFactory().createViaHeader(lPoint.getPort(), lPoint.getSentBy());
@@ -1247,6 +1238,48 @@ public class OutgoingSipServletRequest extends SipServletRequestImpl
             createViaBranchBasedOnIncomingRequest(viaHeader, tUser);
         }
         getRequest().addHeader(viaHeader, true);
+    }
+    
+    protected int getPreferedOutboundIface() {
+    	// The following code checks to see if a proxy branch exists.   If so, it checks to see
+		// what direction the message is flowing, and then uses the correct outbound interface
+		// for that particular connection.
+		TransactionUserWrapper tu = getTransactionUser();
+    	int outboundIface = SipConstants.OUTBOUND_INTERFACE_NOT_DEFINED;
+    	if (tu != null) {
+    		//  Compare the From headers of the original message and this current message.    
+    		//  If they are the same, use the "outbound interface" associated w/ the proxy branch.
+    		boolean isSenderOriginator = true;
+    		Request req = getRequest();
+    		
+    		ProxyBranchImpl proxyBranch = tu.getBranch();
+    		if (proxyBranch != null) {
+    			isSenderOriginator = isSameSender(tu.getBranch().getOriginalRequest(), req);
+    			if (isSenderOriginator) {
+					outboundIface = proxyBranch.getPreferedOutboundIface(getTransport());
+					if (c_logger.isTraceDebugEnabled())
+						c_logger.traceDebug(this, "getPreferedOutboundIface", "using proxy outbound interface =  " + outboundIface);
+				}
+    				
+    		}
+
+    		//  use the "outbound interface" of the tu.
+    		if (outboundIface == SipConstants.OUTBOUND_INTERFACE_NOT_DEFINED) {
+    			if (isSenderOriginator) {
+        			outboundIface = tu.getPreferedOutboundIface(getTransport());
+    			} else {
+        			outboundIface = tu.getOriginatorPreferedOutboundIface(getTransport());
+    			}
+    			if (c_logger.isTraceDebugEnabled()) {
+    				c_logger.traceDebug(this, "getPreferedOutboundIface", "using tu outbound interface =  " + outboundIface);
+    			}
+    		}
+    	}
+    	
+		if (c_logger.isTraceDebugEnabled()) {
+			c_logger.traceDebug(this, "getPreferedOutboundIface", "outbound interface: " + outboundIface);
+		}
+    	return outboundIface;
     }
     
     /**
@@ -1344,7 +1377,7 @@ public class OutgoingSipServletRequest extends SipServletRequestImpl
 		} catch (Exception e) {
 			if (c_logger.isTraceDebugEnabled()) {
 				c_logger.traceDebug(this, "setProvider",
-						"The following Exception has occurred", e);
+						"The following Exception has occurred: ", e);
 			}
 		}
 	}

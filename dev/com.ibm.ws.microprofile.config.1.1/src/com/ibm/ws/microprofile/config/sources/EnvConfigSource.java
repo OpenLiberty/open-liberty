@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,13 +30,6 @@ public class EnvConfigSource extends InternalConfigSource implements StaticConfi
 
     private static final TraceComponent tc = Tr.register(EnvConfigSource.class);
 
-    /**
-     * @param ordinal
-     */
-    public EnvConfigSource() {
-        super(getEnvOrdinal(), Tr.formatMessage(tc, "environment.variables.config.source"));
-    }
-
     /** {@inheritDoc} */
     @Override
     public ConcurrentMap<String, String> getProperties() {
@@ -52,26 +45,18 @@ public class EnvConfigSource extends InternalConfigSource implements StaticConfi
         return new ConcurrentHashMap<>(props);
     }
 
+    /** {@inheritDoc} */
+    @Override
     @Trivial
-    public static int getEnvOrdinal() {
-        String ordinalProp = getOrdinalEnvVar();
-        int ordinal = ConfigConstants.ORDINAL_ENVIRONMENT_VARIABLES;
-        if (ordinalProp != null) {
-            ordinal = Integer.parseInt(ordinalProp);
-        }
-        return ordinal;
+    public String getName() {
+        return Tr.formatMessage(tc, "environment.variables.config.source");
     }
 
+    /** {@inheritDoc} */
+    @Override
     @Trivial
-    private static String getOrdinalEnvVar() {
-        String prop = AccessController.doPrivileged(new PrivilegedAction<String>() {
-            @Override
-            @Trivial
-            public String run() {
-                return System.getenv(ConfigConstants.ORDINAL_PROPERTY);
-            }
-        });
-        return prop;
+    protected int getDefaultOrdinal() {
+        return ConfigConstants.ORDINAL_ENVIRONMENT_VARIABLES;
     }
 
     @Override

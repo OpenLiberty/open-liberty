@@ -29,6 +29,8 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -45,13 +47,14 @@ import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.ws.webcontainer.osgi.webapp.WebApp;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
-import com.ibm.wsspi.injectionengine.InjectionException;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
 import io.grpc.BindableService;
+import io.grpc.ServerInterceptor;
 import io.grpc.servlet.GrpcServlet;
 import io.openliberty.grpc.internal.GrpcManagedObjectProvider;
 import io.openliberty.grpc.internal.GrpcMessages;
+import io.openliberty.grpc.server.monitor.GrpcMonitoringServerInterceptorService;
 
 @Component(service = { ApplicationStateListener.class,
 		ServletContainerInitializer.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true)
@@ -64,13 +67,15 @@ public class GrpcServerComponent implements ServletContainerInitializer, Applica
 	};
 
 	private static boolean useSecurity = false;
-	/** Indicates whether the monitor feature is enabled */
-	private static boolean monitoringEnabled = false;
 
 	private final String FEATUREPROVISIONER_REFERENCE_NAME = "featureProvisioner";
+	private final String GRPC_MONITOR_NAME = "GrpcMonitoringServerInterceptorService";
 
 	private final AtomicServiceReference<FeatureProvisioner> _featureProvisioner = new AtomicServiceReference<FeatureProvisioner>(
 			FEATUREPROVISIONER_REFERENCE_NAME);
+
+	private static GrpcMonitoringServerInterceptorService monitorService = null;
+
 
 	@Activate
 	protected void activate(ComponentContext cc) {
@@ -89,6 +94,26 @@ public class GrpcServerComponent implements ServletContainerInitializer, Applica
 
 	protected void unsetFeatureProvisioner(FeatureProvisioner featureProvisioner) {
 	}
+
+	@Reference(name = "GRPC_MONITOR_NAME", service = GrpcMonitoringServerInterceptorService.class,
+	        cardinality = ReferenceCardinality.OPTIONAL,
+	        policy = ReferencePolicy.DYNAMIC,
+	        policyOption = ReferencePolicyOption.GREEDY)
+	 protected void setMonitoringService(GrpcMonitoringServerInterceptorService service) {
+	     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+	         Tr.debug(this, tc, "setMonitoringService");
+	     }
+	     monitorService = service;
+	 }
+
+	 protected void unsetMonitoringService(GrpcMonitoringServerInterceptorService service) {
+	     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+	         Tr.debug(this, tc, "unsetMonitoringService");
+	     }
+	     if (monitorService == service) {
+	         monitorService = null;
+	     }
+	 }
 
 	/**
 	 * Search for all implementors of io.grpc.BindableService and register them with
@@ -118,7 +143,10 @@ public class GrpcServerComponent implements ServletContainerInitializer, Applica
 						}
 						if (!grpcServiceClasses.isEmpty()) {
 							// keep track of the current application so that we can restart it if <grpcService/> is updated
-					        ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+							ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+							if (cmd != null) {
+							 currentApp.setAppName(cmd.getJ2EEName().getApplication());
+							}
 							// register URL mappings for each gRPC service we've registered
 							for (BindableService service : grpcServiceClasses.values()) {
 								String serviceName = service.bindService().getServiceDescriptor().getName();
@@ -132,14 +160,27 @@ public class GrpcServerComponent implements ServletContainerInitializer, Applica
 
 								String urlPattern = "/" + serviceName + "/*";
 								servletRegistration.addMapping(urlPattern);
+								
+								
+								/*
+								 * If response needs to be wrapped, enable this code to add wrapper Filter
+								 * 
+								FilterRegistration.Dynamic filterRegistration = ((WebApp) sc).addFilter("grpcFilter",
+										new GrpcResponseFilter());
+								if (filterRegistration == null) { 
+									// it may be already added if multiple services
+									//get from config
+									filterRegistration = ((WebApp) sc).getFilterConfig("grpcFilter");	
+								}
+								filterRegistration.setAsyncSupported(true);		
+								filterRegistration.addMappingForUrlPatterns(null, true, urlPattern);
+								*/
+
 								// keep track of this service name -> application path mapping
 								currentApp.addServiceName(serviceName, sc.getContextPath(), service.getClass());
 								
 								Tr.info(tc, "service.available", cmd.getJ2EEName().getApplication(), urlPattern);
 							}
-					        if (cmd != null) {
-					            currentApp.setAppName(cmd.getJ2EEName().getApplication());
-					        }
 							return;
 						}
 					}
@@ -215,7 +256,6 @@ public class GrpcServerComponent implements ServletContainerInitializer, Applica
 	@Override
 	public void applicationStarting(ApplicationInfo appInfo) throws StateChangeException {
 		setSecurityEnabled();
-		setMonitoringEnabled();
 		initGrpcServices(appInfo);
 	}
 
@@ -258,18 +298,14 @@ public class GrpcServerComponent implements ServletContainerInitializer, Applica
 	}
 
 	/**
-	 * Set the indication whether the monitor feature is enabled 
+	 * @param appName 
+	 * @param serviceName 
+	 * @return a GrpcMonitoringServerInterceptorService if monitoring is enabled
 	 */
-	private void setMonitoringEnabled() {
-		Set<String> currentFeatureSet = _featureProvisioner.getService().getInstalledFeatures();
-		monitoringEnabled = currentFeatureSet.contains("monitor-1.0");
-	}
-	
-	/**
-	 * @return <code>true</code> if the monitor feature is enabled,
-	 * 	<code>false</code> otherwise
-	 */
-	public static boolean isMonitoringEnabled() {
-		return monitoringEnabled;
+	public static ServerInterceptor getMonitoringServerInterceptor(String serviceName, String appName) {
+		if (monitorService != null) {
+			return monitorService.createInterceptor(serviceName, appName);
+		}
+		return null;
 	}
 }

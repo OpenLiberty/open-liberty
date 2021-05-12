@@ -19,10 +19,13 @@ src: \
 
 fat.project: true
 
-# Not 100% sure what this means, just put it in to have the test pass.
 tested.features: \
     cdi-2.0,\
-    servlet-4.0
+    servlet-4.0,\
+    servlet-5.0,\
+    xmlBinding-3.0,\
+    batch-2.0,\
+    cdi-3.0
 
 # Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
 #      or binaries from Artifactory (e.g. commons-logging:commons-logging)

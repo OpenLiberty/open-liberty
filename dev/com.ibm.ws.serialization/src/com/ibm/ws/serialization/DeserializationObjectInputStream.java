@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2019 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -61,6 +61,22 @@ public class DeserializationObjectInputStream extends ObjectInputStream {
             // SerializationService.createObjectInputStream.
             return classLoader.loadClass(name);
         } catch (ClassNotFoundException e) {
+            if (name != null) {
+                String retryName;
+                if (name.startsWith("javax."))
+                    retryName = "jakarta." + name.substring(6);
+                else if (name.startsWith("jakarta."))
+                    retryName = "javax." + name.substring(8);
+                else
+                    retryName = null;
+                if (retryName != null)
+                    try {
+                        return classLoader.loadClass(retryName);
+                    } catch (ClassNotFoundException x) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                            Tr.debug(tc, "unable to load " + retryName, x);
+                    }
+            }
             // Some JVMs have poor error handling for ClassNotFoundException in
             // ObjectInputStream, so add some extra trace.
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

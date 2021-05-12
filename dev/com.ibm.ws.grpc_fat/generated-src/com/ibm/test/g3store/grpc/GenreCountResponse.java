@@ -10,7 +10,7 @@ package com.ibm.test.g3store.grpc;
  *
  * Protobuf type {@code test.g3store.grpc.GenreCountResponse}
  */
-public  final class GenreCountResponse extends
+public final class GenreCountResponse extends
     com.google.protobuf.GeneratedMessageV3 implements
     // @@protoc_insertion_point(message_implements:test.g3store.grpc.GenreCountResponse)
     GenreCountResponseOrBuilder {
@@ -103,12 +103,14 @@ private static final long serialVersionUID = 0L;
   /**
    * <code>repeated .test.g3store.grpc.GenreCounts totalGenreCounts = 1;</code>
    */
+  @java.lang.Override
   public java.util.List<com.ibm.test.g3store.grpc.GenreCounts> getTotalGenreCountsList() {
     return totalGenreCounts_;
   }
   /**
    * <code>repeated .test.g3store.grpc.GenreCounts totalGenreCounts = 1;</code>
    */
+  @java.lang.Override
   public java.util.List<? extends com.ibm.test.g3store.grpc.GenreCountsOrBuilder> 
       getTotalGenreCountsOrBuilderList() {
     return totalGenreCounts_;
@@ -116,18 +118,21 @@ private static final long serialVersionUID = 0L;
   /**
    * <code>repeated .test.g3store.grpc.GenreCounts totalGenreCounts = 1;</code>
    */
+  @java.lang.Override
   public int getTotalGenreCountsCount() {
     return totalGenreCounts_.size();
   }
   /**
    * <code>repeated .test.g3store.grpc.GenreCounts totalGenreCounts = 1;</code>
    */
+  @java.lang.Override
   public com.ibm.test.g3store.grpc.GenreCounts getTotalGenreCounts(int index) {
     return totalGenreCounts_.get(index);
   }
   /**
    * <code>repeated .test.g3store.grpc.GenreCounts totalGenreCounts = 1;</code>
    */
+  @java.lang.Override
   public com.ibm.test.g3store.grpc.GenreCountsOrBuilder getTotalGenreCountsOrBuilder(
       int index) {
     return totalGenreCounts_.get(index);

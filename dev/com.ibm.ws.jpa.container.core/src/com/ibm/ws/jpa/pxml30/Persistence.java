@@ -51,8 +51,8 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  *                   &lt;element name="jar-file" type="{http://www.w3.org/2001/XMLSchema}string" maxOccurs="unbounded" minOccurs="0"/>
  *                   &lt;element name="class" type="{http://www.w3.org/2001/XMLSchema}string" maxOccurs="unbounded" minOccurs="0"/>
  *                   &lt;element name="exclude-unlisted-classes" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/>
- *                   &lt;element name="shared-cache-mode" type="{http://xmlns.jakarta.ee/xml/ns/persistence}persistence-unit-caching-type" minOccurs="0"/>
- *                   &lt;element name="validation-mode" type="{http://xmlns.jakarta.ee/xml/ns/persistence}persistence-unit-validation-mode-type" minOccurs="0"/>
+ *                   &lt;element name="shared-cache-mode" type="{https://jakarta.ee/xml/ns/persistence}persistence-unit-caching-type" minOccurs="0"/>
+ *                   &lt;element name="validation-mode" type="{https://jakarta.ee/xml/ns/persistence}persistence-unit-validation-mode-type" minOccurs="0"/>
  *                   &lt;element name="properties" minOccurs="0">
  *                     &lt;complexType>
  *                       &lt;complexContent>
@@ -75,13 +75,13 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  *                   &lt;/element>
  *                 &lt;/sequence>
  *                 &lt;attribute name="name" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
- *                 &lt;attribute name="transaction-type" type="{http://xmlns.jakarta.ee/xml/ns/persistence}persistence-unit-transaction-type" />
+ *                 &lt;attribute name="transaction-type" type="{https://jakarta.ee/xml/ns/persistence}persistence-unit-transaction-type" />
  *               &lt;/restriction>
  *             &lt;/complexContent>
  *           &lt;/complexType>
  *         &lt;/element>
  *       &lt;/sequence>
- *       &lt;attribute name="version" use="required" type="{http://xmlns.jakarta.ee/xml/ns/persistence}versionType" fixed="2.2" />
+ *       &lt;attribute name="version" use="required" type="{https://jakarta.ee/xml/ns/persistence}versionType" fixed="2.2" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -93,7 +93,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlType(name = "", propOrder = {
                                   "persistenceUnit"
 })
-@XmlRootElement(name = "persistence", namespace = "https://xmlns.jakarta.ee/xml/ns/persistence")
+@XmlRootElement(name = "persistence", namespace = "https://jakarta.ee/xml/ns/persistence")
 public class Persistence {
 
     @XmlElement(name = "persistence-unit", required = true)
@@ -184,8 +184,8 @@ public class Persistence {
      *         &lt;element name="jar-file" type="{http://www.w3.org/2001/XMLSchema}string" maxOccurs="unbounded" minOccurs="0"/>
      *         &lt;element name="class" type="{http://www.w3.org/2001/XMLSchema}string" maxOccurs="unbounded" minOccurs="0"/>
      *         &lt;element name="exclude-unlisted-classes" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/>
-     *         &lt;element name="shared-cache-mode" type="{http://xmlns.jakarta.ee/xml/ns/persistence}persistence-unit-caching-type" minOccurs="0"/>
-     *         &lt;element name="validation-mode" type="{http://xmlns.jakarta.ee/xml/ns/persistence}persistence-unit-validation-mode-type" minOccurs="0"/>
+     *         &lt;element name="shared-cache-mode" type="{https://jakarta.ee/xml/ns/persistence}persistence-unit-caching-type" minOccurs="0"/>
+     *         &lt;element name="validation-mode" type="{https://jakarta.ee/xml/ns/persistence}persistence-unit-validation-mode-type" minOccurs="0"/>
      *         &lt;element name="properties" minOccurs="0">
      *           &lt;complexType>
      *             &lt;complexContent>
@@ -208,7 +208,7 @@ public class Persistence {
      *         &lt;/element>
      *       &lt;/sequence>
      *       &lt;attribute name="name" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
-     *       &lt;attribute name="transaction-type" type="{http://xmlns.jakarta.ee/xml/ns/persistence}persistence-unit-transaction-type" />
+     *       &lt;attribute name="transaction-type" type="{https://jakarta.ee/xml/ns/persistence}persistence-unit-transaction-type" />
      *     &lt;/restriction>
      *   &lt;/complexContent>
      * &lt;/complexType>

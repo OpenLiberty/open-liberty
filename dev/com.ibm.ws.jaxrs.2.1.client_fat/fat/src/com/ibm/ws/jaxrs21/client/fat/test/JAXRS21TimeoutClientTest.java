@@ -75,7 +75,7 @@ public class JAXRS21TimeoutClientTest extends JAXRS21AbstractTest {
         Map<String, String> p = new HashMap<String, String>();
         p.put("param", "timeoutWork");
         p.put("timeout", "1000"); // Return time specified on server side is 2000
-        this.runTestOnServer(target, "testTimeout", p, "[Timeout Error]:javax.ws.rs.ProcessingException: java.net.SocketTimeoutException: SocketTimeoutException");
+        this.runTestOnServer(target, "testTimeout", p, "[Timeout Error]:SocketTimeoutException");
     }
 
     @Test

@@ -53,7 +53,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.microprofile.metrics.impl.ConcurrentGaugeImpl;
 import com.ibm.ws.microprofile.metrics.impl.CounterImpl;
 import com.ibm.ws.microprofile.metrics.impl.ExponentiallyDecayingReservoir;
-import com.ibm.ws.microprofile.metrics.impl.HistogramImpl;
 import com.ibm.ws.microprofile.metrics.impl.MeterImpl;
 
 /**
@@ -1066,7 +1065,7 @@ public class MetricRegistry30Impl implements MetricRegistry {
         MetricBuilder30<Histogram> HISTOGRAMS = new MetricBuilder30<Histogram>() {
             @Override
             public Histogram newMetric() {
-                return new HistogramImpl(new ExponentiallyDecayingReservoir());
+                return new Histogram30Impl(new ExponentiallyDecayingReservoir());
             }
 
             @Override

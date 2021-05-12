@@ -1,7 +1,7 @@
 var messages = {
     WELCOME_SECTION: "Section Bienvenue",
     WELCOME_SECTION_CONTENT: "Contenu de la section Bienvenue",
-    WELCOME_MESSAGE: "Bienvenue ",
+    WELCOME_MESSAGE: "Bienvenue dans",
     WELCOME_IBM_OPEN_SOURCE: "Un projet IBM open source",
     WELCOME_LIGHTWEIGHT: "Infrastructure ouverte simple pour une génération et une exécution de microservices Java natifs du cloud rapides et efficaces. ",
     UFO: "OVNI et faisceau lumineux ",

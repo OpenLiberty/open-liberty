@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 
 package com.ibm.ws.sib.processor.impl;
 
+import java.io.IOException;
 import java.security.cert.Certificate;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -107,6 +108,7 @@ import com.ibm.ws.sib.trm.links.mql.MQLinkManager;
 import com.ibm.ws.sib.trm.topology.RoutingManager;
 import com.ibm.ws.sib.trm.topology.TopologyListener;
 import com.ibm.ws.sib.utils.SIBUuid8;
+import com.ibm.ws.sib.utils.ras.FormattedWriter;
 import com.ibm.ws.sib.utils.ras.SibTr;
 import com.ibm.ws.util.ObjectPool;
 import com.ibm.ws.util.ThreadPool;
@@ -269,7 +271,14 @@ public final class MessageProcessor implements JsEngineComponent,
     HashSet _localistySet = new HashSet();
 
     // Security code changes for Liberty: Sharath Start
-    private final RuntimeSecurityService runtimeSecurityService = RuntimeSecurityService.SINGLETON_INSTANCE;
+    private RuntimeSecurityService runtimeSecurityService;
+    /**
+     * @return the runtimeSecurityService
+     */
+    public final RuntimeSecurityService getRuntimeSecurityService() {
+        return runtimeSecurityService;
+    }
+
     private Authentication _authentication;
     private Authorization _authorization;
 
@@ -369,10 +378,8 @@ public final class MessageProcessor implements JsEngineComponent,
     protected SICoreConnection createConnection(Subject subject,
                                                 boolean system, Map connectionProperties)
                     throws SIResourceException {
-        if (TraceComponent.isAnyTracingEnabled()
-            && tc.isEntryEnabled())
-            SibTr.entry(tc, "createConnection", new Object[] {
-                                                              Boolean.valueOf(system), connectionProperties });
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.entry(tc, "createConnection", new Object[] {Boolean.valueOf(system), connectionProperties });
 
         try {
             if (runtimeSecurityService.isUnauthenticated(subject)) {
@@ -1340,6 +1347,7 @@ public final class MessageProcessor implements JsEngineComponent,
         _accessChecker = new AccessChecker(this);
 
         // Security Code changes for Liberty: Sharath Start
+        runtimeSecurityService = _engine.getRuntimeSecurityservice();
         _authentication = runtimeSecurityService.getAuthenticationInstance();
         _authorization = runtimeSecurityService.getAuthorizationInstance();
         // Security Code changes for Liberty: Sharath End
@@ -3837,4 +3845,44 @@ public final class MessageProcessor implements JsEngineComponent,
     }
     // Security Changes for Liberty Messaging: Sharath End
 
+    /**
+     * Write a formatted dump of the MessageProcessor state.
+     * @param writer to contain the dump.
+     * @param arg controlling the dump
+     */
+    public void dump(FormattedWriter writer, String arg) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.entry(this, tc, "dump");
+
+        try {
+            writer.startTag(this.getClass().getSimpleName());
+            writer.indent();
+
+            writer.newLine();
+            writer.startTag("Connections");
+            writer.indent();
+            for (SICoreConnection siCoreConnection : getConnections().values()) {
+                writer.newLine();
+                writer.write("<siCoreConnection");
+                writer.write(siCoreConnection.toString());
+                writer.write(" />");
+            }
+
+            writer.outdent();
+            writer.newLine();
+            writer.endTag("Connections");
+
+            writer.outdent();
+            writer.newLine();
+            writer.endTag(this.getClass().getSimpleName());
+
+        } catch (IOException exception) {
+            // No FFDC Code Needed
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
+                SibTr.event(this, tc, "Exception caught writing MessageProcessor dump!", exception);
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.exit(this, tc, "dump");
+    }
 }

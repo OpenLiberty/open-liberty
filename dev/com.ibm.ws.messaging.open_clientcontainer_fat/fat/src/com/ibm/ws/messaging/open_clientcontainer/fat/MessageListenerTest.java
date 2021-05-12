@@ -1,5 +1,5 @@
 /* ============================================================================
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,14 +30,16 @@ import componenttest.custom.junit.runner.FATRunner;
 @AllowedFFDC({ "com.ibm.ws.sib.jfapchannel.JFapConnectionBrokenException" })
 public class MessageListenerTest extends FATBase {
   static {
-    client_ = LibertyClientFactory.getLibertyClient("com.ibm.ws.open_clientcontainer.fat.MessageListenerContainer");
-    server_ = LibertyServerFactory.getLibertyServer("com.ibm.ws.open_clientcontainer.fat.Server");
+    client_ = null;
+    server_ = null;
   }
 
   @BeforeClass
   public static void beforeClass() throws Exception {
     try {
       Util.TRACE_ENTRY();
+      client_ = LibertyClientFactory.getLibertyClient("com.ibm.ws.open_clientcontainer.fat.MessageListenerContainer");
+      server_ = LibertyServerFactory.getLibertyServer("com.ibm.ws.open_clientcontainer.fat.Server");
       deployApplication("MessageListener");
       start();
     } finally {
@@ -50,6 +52,7 @@ public class MessageListenerTest extends FATBase {
     try {
       Util.TRACE_ENTRY();
       server_.stopServer();
+      undeployApplication("MessageListener");
     } finally {
       Util.TRACE_EXIT();
     }

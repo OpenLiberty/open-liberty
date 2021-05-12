@@ -10,5 +10,6 @@
 
   <!--  Required to read the remote server's port system property 
   <javaPermission className="java.util.PropertyPermission"  name="*" actions="read" /> -->
+  <javaPermission className="javax.net.ssl.SSLPermission" name="*" actions="setHostnameVerifier" />
 
 </server>

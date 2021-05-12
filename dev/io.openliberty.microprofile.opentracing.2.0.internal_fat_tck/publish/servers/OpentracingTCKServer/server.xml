@@ -20,6 +20,6 @@
         className="java.security.AllPermission" name="*" actions="*" />
 
     <logging
-        traceSpecification="*=info:io.openliberty.opentracing*=all:io.openliberty.microprofile.opentracing*=all"
+        traceSpecification="*=info:io.openliberty.opentracing*=all:io.openliberty.microprofile.opentracing*=all:com.ibm.ws.runtime.update.*=all"
         maxFileSize="100" maxFiles="1" />
 </server>

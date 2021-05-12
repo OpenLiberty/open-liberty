@@ -1,19 +1,6 @@
 package com.ibm.test.g3store.grpc;
 
 import static io.grpc.MethodDescriptor.generateFullMethodName;
-import static io.grpc.stub.ClientCalls.asyncBidiStreamingCall;
-import static io.grpc.stub.ClientCalls.asyncClientStreamingCall;
-import static io.grpc.stub.ClientCalls.asyncServerStreamingCall;
-import static io.grpc.stub.ClientCalls.asyncUnaryCall;
-import static io.grpc.stub.ClientCalls.blockingServerStreamingCall;
-import static io.grpc.stub.ClientCalls.blockingUnaryCall;
-import static io.grpc.stub.ClientCalls.futureUnaryCall;
-import static io.grpc.stub.ServerCalls.asyncBidiStreamingCall;
-import static io.grpc.stub.ServerCalls.asyncClientStreamingCall;
-import static io.grpc.stub.ServerCalls.asyncServerStreamingCall;
-import static io.grpc.stub.ServerCalls.asyncUnaryCall;
-import static io.grpc.stub.ServerCalls.asyncUnimplementedStreamingCall;
-import static io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall;
 
 /**
  * <pre>
@@ -21,7 +8,7 @@ import static io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall;
  * </pre>
  */
 @javax.annotation.Generated(
-    value = "by gRPC proto compiler (version 1.28.1)",
+    value = "by gRPC proto compiler (version 1.36.1)",
     comments = "Source: ConsumerStore.proto")
 public final class AppConsumerServiceGrpc {
 
@@ -247,6 +234,99 @@ public final class AppConsumerServiceGrpc {
     return getGetAllAppNamesAuthHeaderViaClientInterceptorMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<com.google.protobuf.Empty,
+      com.ibm.test.g3store.grpc.NameResponse> getGetAppNameSetBadRolesMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "getAppNameSetBadRoles",
+      requestType = com.google.protobuf.Empty.class,
+      responseType = com.ibm.test.g3store.grpc.NameResponse.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.google.protobuf.Empty,
+      com.ibm.test.g3store.grpc.NameResponse> getGetAppNameSetBadRolesMethod() {
+    io.grpc.MethodDescriptor<com.google.protobuf.Empty, com.ibm.test.g3store.grpc.NameResponse> getGetAppNameSetBadRolesMethod;
+    if ((getGetAppNameSetBadRolesMethod = AppConsumerServiceGrpc.getGetAppNameSetBadRolesMethod) == null) {
+      synchronized (AppConsumerServiceGrpc.class) {
+        if ((getGetAppNameSetBadRolesMethod = AppConsumerServiceGrpc.getGetAppNameSetBadRolesMethod) == null) {
+          AppConsumerServiceGrpc.getGetAppNameSetBadRolesMethod = getGetAppNameSetBadRolesMethod =
+              io.grpc.MethodDescriptor.<com.google.protobuf.Empty, com.ibm.test.g3store.grpc.NameResponse>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "getAppNameSetBadRoles"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.google.protobuf.Empty.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.ibm.test.g3store.grpc.NameResponse.getDefaultInstance()))
+              .setSchemaDescriptor(new AppConsumerServiceMethodDescriptorSupplier("getAppNameSetBadRoles"))
+              .build();
+        }
+      }
+    }
+    return getGetAppNameSetBadRolesMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<com.google.protobuf.Empty,
+      com.ibm.test.g3store.grpc.NameResponse> getGetNameCookieJWTHeaderMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "getNameCookieJWTHeader",
+      requestType = com.google.protobuf.Empty.class,
+      responseType = com.ibm.test.g3store.grpc.NameResponse.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.google.protobuf.Empty,
+      com.ibm.test.g3store.grpc.NameResponse> getGetNameCookieJWTHeaderMethod() {
+    io.grpc.MethodDescriptor<com.google.protobuf.Empty, com.ibm.test.g3store.grpc.NameResponse> getGetNameCookieJWTHeaderMethod;
+    if ((getGetNameCookieJWTHeaderMethod = AppConsumerServiceGrpc.getGetNameCookieJWTHeaderMethod) == null) {
+      synchronized (AppConsumerServiceGrpc.class) {
+        if ((getGetNameCookieJWTHeaderMethod = AppConsumerServiceGrpc.getGetNameCookieJWTHeaderMethod) == null) {
+          AppConsumerServiceGrpc.getGetNameCookieJWTHeaderMethod = getGetNameCookieJWTHeaderMethod =
+              io.grpc.MethodDescriptor.<com.google.protobuf.Empty, com.ibm.test.g3store.grpc.NameResponse>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "getNameCookieJWTHeader"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.google.protobuf.Empty.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.ibm.test.g3store.grpc.NameResponse.getDefaultInstance()))
+              .setSchemaDescriptor(new AppConsumerServiceMethodDescriptorSupplier("getNameCookieJWTHeader"))
+              .build();
+        }
+      }
+    }
+    return getGetNameCookieJWTHeaderMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<com.google.protobuf.Empty,
+      com.ibm.test.g3store.grpc.NameResponse> getGetAppSetBadRoleCookieJWTHeaderMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "getAppSetBadRoleCookieJWTHeader",
+      requestType = com.google.protobuf.Empty.class,
+      responseType = com.ibm.test.g3store.grpc.NameResponse.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.google.protobuf.Empty,
+      com.ibm.test.g3store.grpc.NameResponse> getGetAppSetBadRoleCookieJWTHeaderMethod() {
+    io.grpc.MethodDescriptor<com.google.protobuf.Empty, com.ibm.test.g3store.grpc.NameResponse> getGetAppSetBadRoleCookieJWTHeaderMethod;
+    if ((getGetAppSetBadRoleCookieJWTHeaderMethod = AppConsumerServiceGrpc.getGetAppSetBadRoleCookieJWTHeaderMethod) == null) {
+      synchronized (AppConsumerServiceGrpc.class) {
+        if ((getGetAppSetBadRoleCookieJWTHeaderMethod = AppConsumerServiceGrpc.getGetAppSetBadRoleCookieJWTHeaderMethod) == null) {
+          AppConsumerServiceGrpc.getGetAppSetBadRoleCookieJWTHeaderMethod = getGetAppSetBadRoleCookieJWTHeaderMethod =
+              io.grpc.MethodDescriptor.<com.google.protobuf.Empty, com.ibm.test.g3store.grpc.NameResponse>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "getAppSetBadRoleCookieJWTHeader"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.google.protobuf.Empty.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.ibm.test.g3store.grpc.NameResponse.getDefaultInstance()))
+              .setSchemaDescriptor(new AppConsumerServiceMethodDescriptorSupplier("getAppSetBadRoleCookieJWTHeader"))
+              .build();
+        }
+      }
+    }
+    return getGetAppSetBadRoleCookieJWTHeaderMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -305,7 +385,7 @@ public final class AppConsumerServiceGrpc {
      */
     public void getAllAppNames(com.google.protobuf.Empty request,
         io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.NameResponse> responseObserver) {
-      asyncUnimplementedUnaryCall(getGetAllAppNamesMethod(), responseObserver);
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetAllAppNamesMethod(), responseObserver);
     }
 
     /**
@@ -315,7 +395,7 @@ public final class AppConsumerServiceGrpc {
      */
     public void getAppInfo(com.ibm.test.g3store.grpc.AppNameRequest request,
         io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.RetailAppResponse> responseObserver) {
-      asyncUnimplementedUnaryCall(getGetAppInfoMethod(), responseObserver);
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetAppInfoMethod(), responseObserver);
     }
 
     /**
@@ -325,7 +405,7 @@ public final class AppConsumerServiceGrpc {
      */
     public io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.GenreRequest> getCount(
         io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.GenreCountResponse> responseObserver) {
-      return asyncUnimplementedStreamingCall(getGetCountMethod(), responseObserver);
+      return io.grpc.stub.ServerCalls.asyncUnimplementedStreamingCall(getGetCountMethod(), responseObserver);
     }
 
     /**
@@ -335,7 +415,7 @@ public final class AppConsumerServiceGrpc {
      */
     public io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.AppNameRequest> getPrices(
         io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.PriceResponse> responseObserver) {
-      return asyncUnimplementedStreamingCall(getGetPricesMethod(), responseObserver);
+      return io.grpc.stub.ServerCalls.asyncUnimplementedStreamingCall(getGetPricesMethod(), responseObserver);
     }
 
     /**
@@ -345,7 +425,7 @@ public final class AppConsumerServiceGrpc {
      */
     public void purchaseRetailApp(com.ibm.test.g3store.grpc.PurchaseRequest request,
         io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.RetailAppResponse> responseObserver) {
-      asyncUnimplementedUnaryCall(getPurchaseRetailAppMethod(), responseObserver);
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getPurchaseRetailAppMethod(), responseObserver);
     }
 
     /**
@@ -355,7 +435,7 @@ public final class AppConsumerServiceGrpc {
      */
     public void getAllAppNamesAuthHeaderViaCallCred(com.google.protobuf.Empty request,
         io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.NameResponse> responseObserver) {
-      asyncUnimplementedUnaryCall(getGetAllAppNamesAuthHeaderViaCallCredMethod(), responseObserver);
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetAllAppNamesAuthHeaderViaCallCredMethod(), responseObserver);
     }
 
     /**
@@ -365,60 +445,108 @@ public final class AppConsumerServiceGrpc {
      */
     public void getAllAppNamesAuthHeaderViaClientInterceptor(com.google.protobuf.Empty request,
         io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.NameResponse> responseObserver) {
-      asyncUnimplementedUnaryCall(getGetAllAppNamesAuthHeaderViaClientInterceptorMethod(), responseObserver);
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetAllAppNamesAuthHeaderViaClientInterceptorMethod(), responseObserver);
+    }
+
+    /**
+     */
+    public void getAppNameSetBadRoles(com.google.protobuf.Empty request,
+        io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.NameResponse> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetAppNameSetBadRolesMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
+     * List all app names where JWT token is propagated as Cookie header
+     * </pre>
+     */
+    public void getNameCookieJWTHeader(com.google.protobuf.Empty request,
+        io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.NameResponse> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetNameCookieJWTHeaderMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
+     * List all app names where JWT token is propagated as Cookie header but bad role
+     * </pre>
+     */
+    public void getAppSetBadRoleCookieJWTHeader(com.google.protobuf.Empty request,
+        io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.NameResponse> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetAppSetBadRoleCookieJWTHeaderMethod(), responseObserver);
     }
 
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
             getGetAllAppNamesMethod(),
-            asyncUnaryCall(
+            io.grpc.stub.ServerCalls.asyncUnaryCall(
               new MethodHandlers<
                 com.google.protobuf.Empty,
                 com.ibm.test.g3store.grpc.NameResponse>(
                   this, METHODID_GET_ALL_APP_NAMES)))
           .addMethod(
             getGetAppInfoMethod(),
-            asyncUnaryCall(
+            io.grpc.stub.ServerCalls.asyncUnaryCall(
               new MethodHandlers<
                 com.ibm.test.g3store.grpc.AppNameRequest,
                 com.ibm.test.g3store.grpc.RetailAppResponse>(
                   this, METHODID_GET_APP_INFO)))
           .addMethod(
             getGetCountMethod(),
-            asyncClientStreamingCall(
+            io.grpc.stub.ServerCalls.asyncClientStreamingCall(
               new MethodHandlers<
                 com.ibm.test.g3store.grpc.GenreRequest,
                 com.ibm.test.g3store.grpc.GenreCountResponse>(
                   this, METHODID_GET_COUNT)))
           .addMethod(
             getGetPricesMethod(),
-            asyncBidiStreamingCall(
+            io.grpc.stub.ServerCalls.asyncBidiStreamingCall(
               new MethodHandlers<
                 com.ibm.test.g3store.grpc.AppNameRequest,
                 com.ibm.test.g3store.grpc.PriceResponse>(
                   this, METHODID_GET_PRICES)))
           .addMethod(
             getPurchaseRetailAppMethod(),
-            asyncUnaryCall(
+            io.grpc.stub.ServerCalls.asyncUnaryCall(
               new MethodHandlers<
                 com.ibm.test.g3store.grpc.PurchaseRequest,
                 com.ibm.test.g3store.grpc.RetailAppResponse>(
                   this, METHODID_PURCHASE_RETAIL_APP)))
           .addMethod(
             getGetAllAppNamesAuthHeaderViaCallCredMethod(),
-            asyncUnaryCall(
+            io.grpc.stub.ServerCalls.asyncUnaryCall(
               new MethodHandlers<
                 com.google.protobuf.Empty,
                 com.ibm.test.g3store.grpc.NameResponse>(
                   this, METHODID_GET_ALL_APP_NAMES_AUTH_HEADER_VIA_CALL_CRED)))
           .addMethod(
             getGetAllAppNamesAuthHeaderViaClientInterceptorMethod(),
-            asyncUnaryCall(
+            io.grpc.stub.ServerCalls.asyncUnaryCall(
               new MethodHandlers<
                 com.google.protobuf.Empty,
                 com.ibm.test.g3store.grpc.NameResponse>(
                   this, METHODID_GET_ALL_APP_NAMES_AUTH_HEADER_VIA_CLIENT_INTERCEPTOR)))
+          .addMethod(
+            getGetAppNameSetBadRolesMethod(),
+            io.grpc.stub.ServerCalls.asyncUnaryCall(
+              new MethodHandlers<
+                com.google.protobuf.Empty,
+                com.ibm.test.g3store.grpc.NameResponse>(
+                  this, METHODID_GET_APP_NAME_SET_BAD_ROLES)))
+          .addMethod(
+            getGetNameCookieJWTHeaderMethod(),
+            io.grpc.stub.ServerCalls.asyncUnaryCall(
+              new MethodHandlers<
+                com.google.protobuf.Empty,
+                com.ibm.test.g3store.grpc.NameResponse>(
+                  this, METHODID_GET_NAME_COOKIE_JWTHEADER)))
+          .addMethod(
+            getGetAppSetBadRoleCookieJWTHeaderMethod(),
+            io.grpc.stub.ServerCalls.asyncUnaryCall(
+              new MethodHandlers<
+                com.google.protobuf.Empty,
+                com.ibm.test.g3store.grpc.NameResponse>(
+                  this, METHODID_GET_APP_SET_BAD_ROLE_COOKIE_JWTHEADER)))
           .build();
     }
   }
@@ -447,7 +575,7 @@ public final class AppConsumerServiceGrpc {
      */
     public void getAllAppNames(com.google.protobuf.Empty request,
         io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.NameResponse> responseObserver) {
-      asyncUnaryCall(
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getGetAllAppNamesMethod(), getCallOptions()), request, responseObserver);
     }
 
@@ -458,7 +586,7 @@ public final class AppConsumerServiceGrpc {
      */
     public void getAppInfo(com.ibm.test.g3store.grpc.AppNameRequest request,
         io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.RetailAppResponse> responseObserver) {
-      asyncUnaryCall(
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getGetAppInfoMethod(), getCallOptions()), request, responseObserver);
     }
 
@@ -469,7 +597,7 @@ public final class AppConsumerServiceGrpc {
      */
     public io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.GenreRequest> getCount(
         io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.GenreCountResponse> responseObserver) {
-      return asyncClientStreamingCall(
+      return io.grpc.stub.ClientCalls.asyncClientStreamingCall(
           getChannel().newCall(getGetCountMethod(), getCallOptions()), responseObserver);
     }
 
@@ -480,7 +608,7 @@ public final class AppConsumerServiceGrpc {
      */
     public io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.AppNameRequest> getPrices(
         io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.PriceResponse> responseObserver) {
-      return asyncBidiStreamingCall(
+      return io.grpc.stub.ClientCalls.asyncBidiStreamingCall(
           getChannel().newCall(getGetPricesMethod(), getCallOptions()), responseObserver);
     }
 
@@ -491,7 +619,7 @@ public final class AppConsumerServiceGrpc {
      */
     public void purchaseRetailApp(com.ibm.test.g3store.grpc.PurchaseRequest request,
         io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.RetailAppResponse> responseObserver) {
-      asyncUnaryCall(
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getPurchaseRetailAppMethod(), getCallOptions()), request, responseObserver);
     }
 
@@ -502,7 +630,7 @@ public final class AppConsumerServiceGrpc {
      */
     public void getAllAppNamesAuthHeaderViaCallCred(com.google.protobuf.Empty request,
         io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.NameResponse> responseObserver) {
-      asyncUnaryCall(
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getGetAllAppNamesAuthHeaderViaCallCredMethod(), getCallOptions()), request, responseObserver);
     }
 
@@ -513,8 +641,38 @@ public final class AppConsumerServiceGrpc {
      */
     public void getAllAppNamesAuthHeaderViaClientInterceptor(com.google.protobuf.Empty request,
         io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.NameResponse> responseObserver) {
-      asyncUnaryCall(
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getGetAllAppNamesAuthHeaderViaClientInterceptorMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     */
+    public void getAppNameSetBadRoles(com.google.protobuf.Empty request,
+        io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.NameResponse> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getGetAppNameSetBadRolesMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
+     * List all app names where JWT token is propagated as Cookie header
+     * </pre>
+     */
+    public void getNameCookieJWTHeader(com.google.protobuf.Empty request,
+        io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.NameResponse> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getGetNameCookieJWTHeaderMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
+     * List all app names where JWT token is propagated as Cookie header but bad role
+     * </pre>
+     */
+    public void getAppSetBadRoleCookieJWTHeader(com.google.protobuf.Empty request,
+        io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.NameResponse> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getGetAppSetBadRoleCookieJWTHeaderMethod(), getCallOptions()), request, responseObserver);
     }
   }
 
@@ -541,7 +699,7 @@ public final class AppConsumerServiceGrpc {
      * </pre>
      */
     public com.ibm.test.g3store.grpc.NameResponse getAllAppNames(com.google.protobuf.Empty request) {
-      return blockingUnaryCall(
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getGetAllAppNamesMethod(), getCallOptions(), request);
     }
 
@@ -551,7 +709,7 @@ public final class AppConsumerServiceGrpc {
      * </pre>
      */
     public com.ibm.test.g3store.grpc.RetailAppResponse getAppInfo(com.ibm.test.g3store.grpc.AppNameRequest request) {
-      return blockingUnaryCall(
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getGetAppInfoMethod(), getCallOptions(), request);
     }
 
@@ -561,7 +719,7 @@ public final class AppConsumerServiceGrpc {
      * </pre>
      */
     public com.ibm.test.g3store.grpc.RetailAppResponse purchaseRetailApp(com.ibm.test.g3store.grpc.PurchaseRequest request) {
-      return blockingUnaryCall(
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getPurchaseRetailAppMethod(), getCallOptions(), request);
     }
 
@@ -571,7 +729,7 @@ public final class AppConsumerServiceGrpc {
      * </pre>
      */
     public com.ibm.test.g3store.grpc.NameResponse getAllAppNamesAuthHeaderViaCallCred(com.google.protobuf.Empty request) {
-      return blockingUnaryCall(
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getGetAllAppNamesAuthHeaderViaCallCredMethod(), getCallOptions(), request);
     }
 
@@ -581,8 +739,35 @@ public final class AppConsumerServiceGrpc {
      * </pre>
      */
     public com.ibm.test.g3store.grpc.NameResponse getAllAppNamesAuthHeaderViaClientInterceptor(com.google.protobuf.Empty request) {
-      return blockingUnaryCall(
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getGetAllAppNamesAuthHeaderViaClientInterceptorMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public com.ibm.test.g3store.grpc.NameResponse getAppNameSetBadRoles(com.google.protobuf.Empty request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getGetAppNameSetBadRolesMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * List all app names where JWT token is propagated as Cookie header
+     * </pre>
+     */
+    public com.ibm.test.g3store.grpc.NameResponse getNameCookieJWTHeader(com.google.protobuf.Empty request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getGetNameCookieJWTHeaderMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * List all app names where JWT token is propagated as Cookie header but bad role
+     * </pre>
+     */
+    public com.ibm.test.g3store.grpc.NameResponse getAppSetBadRoleCookieJWTHeader(com.google.protobuf.Empty request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getGetAppSetBadRoleCookieJWTHeaderMethod(), getCallOptions(), request);
     }
   }
 
@@ -610,7 +795,7 @@ public final class AppConsumerServiceGrpc {
      */
     public com.google.common.util.concurrent.ListenableFuture<com.ibm.test.g3store.grpc.NameResponse> getAllAppNames(
         com.google.protobuf.Empty request) {
-      return futureUnaryCall(
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getGetAllAppNamesMethod(), getCallOptions()), request);
     }
 
@@ -621,7 +806,7 @@ public final class AppConsumerServiceGrpc {
      */
     public com.google.common.util.concurrent.ListenableFuture<com.ibm.test.g3store.grpc.RetailAppResponse> getAppInfo(
         com.ibm.test.g3store.grpc.AppNameRequest request) {
-      return futureUnaryCall(
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getGetAppInfoMethod(), getCallOptions()), request);
     }
 
@@ -632,7 +817,7 @@ public final class AppConsumerServiceGrpc {
      */
     public com.google.common.util.concurrent.ListenableFuture<com.ibm.test.g3store.grpc.RetailAppResponse> purchaseRetailApp(
         com.ibm.test.g3store.grpc.PurchaseRequest request) {
-      return futureUnaryCall(
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getPurchaseRetailAppMethod(), getCallOptions()), request);
     }
 
@@ -643,7 +828,7 @@ public final class AppConsumerServiceGrpc {
      */
     public com.google.common.util.concurrent.ListenableFuture<com.ibm.test.g3store.grpc.NameResponse> getAllAppNamesAuthHeaderViaCallCred(
         com.google.protobuf.Empty request) {
-      return futureUnaryCall(
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getGetAllAppNamesAuthHeaderViaCallCredMethod(), getCallOptions()), request);
     }
 
@@ -654,8 +839,38 @@ public final class AppConsumerServiceGrpc {
      */
     public com.google.common.util.concurrent.ListenableFuture<com.ibm.test.g3store.grpc.NameResponse> getAllAppNamesAuthHeaderViaClientInterceptor(
         com.google.protobuf.Empty request) {
-      return futureUnaryCall(
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getGetAllAppNamesAuthHeaderViaClientInterceptorMethod(), getCallOptions()), request);
+    }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.ibm.test.g3store.grpc.NameResponse> getAppNameSetBadRoles(
+        com.google.protobuf.Empty request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getGetAppNameSetBadRolesMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
+     * List all app names where JWT token is propagated as Cookie header
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.ibm.test.g3store.grpc.NameResponse> getNameCookieJWTHeader(
+        com.google.protobuf.Empty request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getGetNameCookieJWTHeaderMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
+     * List all app names where JWT token is propagated as Cookie header but bad role
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.ibm.test.g3store.grpc.NameResponse> getAppSetBadRoleCookieJWTHeader(
+        com.google.protobuf.Empty request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getGetAppSetBadRoleCookieJWTHeaderMethod(), getCallOptions()), request);
     }
   }
 
@@ -664,8 +879,11 @@ public final class AppConsumerServiceGrpc {
   private static final int METHODID_PURCHASE_RETAIL_APP = 2;
   private static final int METHODID_GET_ALL_APP_NAMES_AUTH_HEADER_VIA_CALL_CRED = 3;
   private static final int METHODID_GET_ALL_APP_NAMES_AUTH_HEADER_VIA_CLIENT_INTERCEPTOR = 4;
-  private static final int METHODID_GET_COUNT = 5;
-  private static final int METHODID_GET_PRICES = 6;
+  private static final int METHODID_GET_APP_NAME_SET_BAD_ROLES = 5;
+  private static final int METHODID_GET_NAME_COOKIE_JWTHEADER = 6;
+  private static final int METHODID_GET_APP_SET_BAD_ROLE_COOKIE_JWTHEADER = 7;
+  private static final int METHODID_GET_COUNT = 8;
+  private static final int METHODID_GET_PRICES = 9;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -702,6 +920,18 @@ public final class AppConsumerServiceGrpc {
           break;
         case METHODID_GET_ALL_APP_NAMES_AUTH_HEADER_VIA_CLIENT_INTERCEPTOR:
           serviceImpl.getAllAppNamesAuthHeaderViaClientInterceptor((com.google.protobuf.Empty) request,
+              (io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.NameResponse>) responseObserver);
+          break;
+        case METHODID_GET_APP_NAME_SET_BAD_ROLES:
+          serviceImpl.getAppNameSetBadRoles((com.google.protobuf.Empty) request,
+              (io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.NameResponse>) responseObserver);
+          break;
+        case METHODID_GET_NAME_COOKIE_JWTHEADER:
+          serviceImpl.getNameCookieJWTHeader((com.google.protobuf.Empty) request,
+              (io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.NameResponse>) responseObserver);
+          break;
+        case METHODID_GET_APP_SET_BAD_ROLE_COOKIE_JWTHEADER:
+          serviceImpl.getAppSetBadRoleCookieJWTHeader((com.google.protobuf.Empty) request,
               (io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.NameResponse>) responseObserver);
           break;
         default:
@@ -778,6 +1008,9 @@ public final class AppConsumerServiceGrpc {
               .addMethod(getPurchaseRetailAppMethod())
               .addMethod(getGetAllAppNamesAuthHeaderViaCallCredMethod())
               .addMethod(getGetAllAppNamesAuthHeaderViaClientInterceptorMethod())
+              .addMethod(getGetAppNameSetBadRolesMethod())
+              .addMethod(getGetNameCookieJWTHeaderMethod())
+              .addMethod(getGetAppSetBadRoleCookieJWTHeaderMethod())
               .build();
         }
       }

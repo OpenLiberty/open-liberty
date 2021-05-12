@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,13 +10,14 @@
  *******************************************************************************/
 package componenttest.rules.repeater;
 
-import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -59,35 +60,45 @@ public class JakartaEE9Action extends FeatureReplacementAction {
                                                  "jakartaeeClient-9.0",
                                                  "componenttest-2.0", // replaces "componenttest-1.0"
                                                  "txtest-2.0",
+                                                 "appAuthentication-2.0",
+                                                 "appAuthorization-2.0",
                                                  "appSecurity-4.0",
+                                                 "batch-2.0",
+                                                 "batchManagement-2.0",
                                                  "beanValidation-3.0",
                                                  "cdi-3.0",
                                                  "concurrent-2.0",
                                                  "connectors-2.0",
-                                                 "ejbHome-4.0",
-                                                 "ejbLite-4.0",
-                                                 "ejbPersistentTimer-4.0",
-                                                 "el-4.0",
+                                                 "connectorsInboundSecurity-2.0",
+                                                 "expressionLanguage-4.0",
                                                  "enterpriseBeans-4.0",
+                                                 "enterpriseBeansHome-4.0",
+                                                 "enterpriseBeansLite-4.0",
+                                                 "enterpriseBeansPersistentTimer-4.0",
                                                  "enterpriseBeansRemote-4.0",
                                                  "enterpriseBeansTest-2.0",
-                                                 "jacc-2.0",
-                                                 "jaspic-2.0",
-                                                 "javaMail-2.0",
-                                                 "jaxb-3.0",
-                                                 "jaxrs-3.0",
-                                                 "jaxrsClient-3.0",
-                                                 "jpa-3.0",
+                                                 "mail-2.0",
+                                                 "persistence-3.0",
+                                                 "persistenceContainer-3.0",
                                                  "jsonp-2.0",
                                                  "jsonb-2.0",
                                                  "jsonpContainer-2.0",
                                                  "jsonbContainer-2.0",
-                                                 "jsf-3.0",
-                                                 "jsp-3.0",
+                                                 "faces-3.0",
+                                                 "facesContainer-3.0",
+                                                 "pages-3.0",
                                                  "managedBeans-2.0",
                                                  "mdb-4.0",
+                                                 "messaging-3.0",
+                                                 "messagingClient-3.0",
+                                                 "messagingServer-3.0",
+                                                 "messagingSecurity-3.0",
+                                                 "restfulWS-3.0",
+                                                 "restfulWSClient-3.0",
                                                  "servlet-5.0",
-                                                 "websocket-2.0"
+                                                 "websocket-2.0",
+                                                 "xmlBinding-3.0",
+                                                 "xmlWS-3.0"
     };
 
     public static final Set<String> EE9_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE9_FEATURES_ARRAY)));
@@ -177,7 +188,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
     }
 
     public static boolean isActive() {
-        return ID.equals(RepeatTestFilter.CURRENT_REPEAT_ACTION);
+        return RepeatTestFilter.isRepeatActionActive(ID);
     }
 
     /**
@@ -210,11 +221,16 @@ public class JakartaEE9Action extends FeatureReplacementAction {
         final String m = "transformApp";
         Log.info(c, m, "Transforming app: " + appPath);
 
-        // Capture stdout/stderr streams
-        final PrintStream originalOut = System.out;
-        final PrintStream originalErr = System.err;
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        PrintStream ps = new PrintStream(baos);
+        // Setup file output stream and only keep if we fail
+        FileOutputStream fos = null;
+        File outputLog = new File("results/transformer_" + appPath.getFileName() + ".log");
+        try {
+            fos = new FileOutputStream(outputLog);
+        } catch (FileNotFoundException e1) {
+            e1.printStackTrace();
+        }
+
+        PrintStream ps = new PrintStream(fos);
         System.setOut(ps);
         System.setErr(ps);
 
@@ -265,7 +281,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
             args[0] = appPath.toAbsolutePath().toString(); // input
             args[1] = outputPath.toAbsolutePath().toString(); // output
 
-            args[2] = "-v"; // verbose
+            args[2] = "-q"; // quiet output
 
             // override jakarta default properties, which are
             // packaged in the transformer jar
@@ -290,29 +306,41 @@ public class JakartaEE9Action extends FeatureReplacementAction {
             if (outputPath.toFile().exists()) {
                 if (backupPath != null) {
                     Path backupAppPath = backupPath.resolve(appPath.getFileName());
-                    if (!Files.exists(backupAppPath)) {
-                        Files.createFile(backupAppPath);
-                    }
-                    // move original to backup
-                    Files.move(appPath, backupAppPath, StandardCopyOption.REPLACE_EXISTING);
-                    // rename jakarta app to the original filename
-                    Files.move(outputPath, appPath);
+
+                    /*
+                     * Move original to backup.
+                     *
+                     * Don't use Files.move, b/c it can lead to:
+                     *
+                     * java.nio.file.FileSystemException: The process cannot access the
+                     * file because it is being used by another process.
+                     */
+                    FileUtils.copyDirectory(appPath.toFile(), backupAppPath.toFile());
+                    FileUtils.recursiveDelete(appPath.toFile());
+
+                    /*
+                     * Rename jakarta app to the original filename
+                     */
+                    FileUtils.copyDirectory(outputPath.toFile(), appPath.toFile());
+                    FileUtils.recursiveDelete(outputPath.toFile());
                 }
             } else {
                 throw new RuntimeException("Jakarta transformer failed for: " + appPath);
+            }
+            //At this point the transformer was successful, delete output
+            if (outputLog.exists()) {
+                outputLog.delete();
             }
         } catch (Exception e) {
             Log.info(c, m, "Unable to transform app at path: " + appPath);
             Log.error(c, m, e);
             throw new RuntimeException(e);
         } finally {
-            System.setOut(originalOut);
-            System.setErr(originalErr);
-            Log.info(c, m, baos.toString());
             try {
-                baos.close();
-            } catch (IOException ignore) {
+                fos.close();
+            } catch (IOException e) {
             }
+            Log.info(c, m, "Transforming complete app: " + outputPath);
         }
     }
 }

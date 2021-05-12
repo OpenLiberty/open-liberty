@@ -67,6 +67,7 @@ instrument.classesExcludes: com/ibm/ws/security/jaspi/internal/resources/*.class
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.ws.security;version=latest,\
 	com.ibm.ws.security.authentication;version=latest,\
+	com.ibm.ws.security.credentials;version=latest,\
 	com.ibm.ws.webcontainer.security;version=latest,\
 	com.ibm.websphere.appserver.spi.kernel.service,\
 	com.ibm.ws.security.token;version=latest,\
@@ -85,3 +86,4 @@ instrument.classesExcludes: com/ibm/ws/security/jaspi/internal/resources/*.class
 	com.ibm.ws.kernel.boot;version=latest, \
 	com.ibm.ws.container.service;version=latest, \
 	com.ibm.ws.security.registry;version=latest
+

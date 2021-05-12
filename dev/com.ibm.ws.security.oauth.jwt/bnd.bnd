@@ -84,4 +84,4 @@ instrument.classesExcludes: com/ibm/ws/security/oauth20/jwt/resources/JwtServerM
     com.ibm.ws.com.google.gson.2.2.4;version=latest, \
     com.ibm.ws.org.slf4j.api.1.7.7;version=latest, \
     com.ibm.ws.org.slf4j.jdk14.1.7.7;version=latest, \
-    com.ibm.ws.org.apache.commons.codec;version=latest
+    io.openliberty.org.apache.commons.codec;version=latest

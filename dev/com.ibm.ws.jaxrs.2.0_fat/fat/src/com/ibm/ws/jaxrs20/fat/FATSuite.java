@@ -41,15 +41,19 @@ import com.ibm.ws.jaxrs20.fat.jacksonJsonIgnore.JacksonJsonIgnoreTest;
 import com.ibm.ws.jaxrs20.fat.json.UTF8Test;
 import com.ibm.ws.jaxrs20.fat.link.LinkHeaderTest;
 import com.ibm.ws.jaxrs20.fat.managedbeans.ManagedBeansTest;
+import com.ibm.ws.jaxrs20.fat.multipart.MultipartTest;
+import com.ibm.ws.jaxrs20.fat.options.OptionsTest;
 import com.ibm.ws.jaxrs20.fat.paramconverter.ParamConverterTest;
 import com.ibm.ws.jaxrs20.fat.params.ParamsTest;
 import com.ibm.ws.jaxrs20.fat.providercache.ProviderCacheTest;
 import com.ibm.ws.jaxrs20.fat.readerwriterprovider.ReaderWriterProvidersTest;
 import com.ibm.ws.jaxrs20.fat.resourcealgorithm.SearchPolicyTest;
+import com.ibm.ws.jaxrs20.fat.resourceinfo.ResourceInfoTest;
 import com.ibm.ws.jaxrs20.fat.response.ResponseAPITest;
 import com.ibm.ws.jaxrs20.fat.restmetrics.RestMetricsTest;
 import com.ibm.ws.jaxrs20.fat.security.annotations.SecurityAnnotationsTest;
 import com.ibm.ws.jaxrs20.fat.security.ssl.SecuritySSLTest;
+import com.ibm.ws.jaxrs20.fat.securitycontext.CustomSecurityContextTest;
 import com.ibm.ws.jaxrs20.fat.securitycontext.SecurityContextTest;
 import com.ibm.ws.jaxrs20.fat.service.scope.ServiceScopeTest;
 import com.ibm.ws.jaxrs20.fat.servletcoexist.JAXRSServletCoexistTest;
@@ -60,10 +64,10 @@ import com.ibm.ws.jaxrs20.fat.thirdpartyjerseywithinjection.JerseyInjectionTest;
 import com.ibm.ws.jaxrs20.fat.uriInfo.UriInfoTest;
 import com.ibm.ws.jaxrs20.fat.wadl.WADLTest;
 import com.ibm.ws.jaxrs20.fat.webcontainer.JAXRSWebContainerTest;
-import com.ibm.ws.jaxrs20.fat.options.OptionsTest;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
@@ -74,6 +78,7 @@ import componenttest.rules.repeater.RepeatTests;
                 CheckFeature12Test.class,
                 ClientTest.class,
                 ContextTest.class,
+                CustomSecurityContextTest.class,
                 DepartmentTest.class,
                 ExceptionMappersTest.class,
                 ExceptionMappingWithOTTest.class,
@@ -96,12 +101,14 @@ import componenttest.rules.repeater.RepeatTests;
                 JerseyTest.class,
                 JerseyInjectionTest.class,
                 LinkHeaderTest.class,
+                MultipartTest.class,
                 ManagedBeansTest.class,
                 OptionsTest.class,
                 ParamConverterTest.class,
                 ParamsTest.class,
                 ProviderCacheTest.class,
                 ReaderWriterProvidersTest.class,
+                ResourceInfoTest.class,
                 ResponseAPITest.class,
                 RestMetricsTest.class,
                 SameClassAsProviderAndResourceTest.class,
@@ -121,5 +128,6 @@ import componenttest.rules.repeater.RepeatTests;
 public class FATSuite {
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(FeatureReplacementAction.EE8_FEATURES().withID("JAXRS-2.1"));
+                    .andWith(FeatureReplacementAction.EE8_FEATURES().withID("JAXRS-2.1"))
+                    .andWith(new JakartaEE9Action().alwaysAddFeature("jsonb-2.0"));
 }

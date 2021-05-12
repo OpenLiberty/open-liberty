@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2020 IBM Corporation and others.
+ * Copyright (c) 2009, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.net.UnknownHostException;
 import java.nio.channels.FileChannel;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.security.AccessController;
@@ -159,7 +160,7 @@ public class PluginGenerator {
     private File cachedFile;
 
     private static final boolean CHANGE_TRANSFORMER;
-    
+
     static {
         if (!JavaInfo.vendor().equals(Vendor.IBM)) {
             CHANGE_TRANSFORMER = false;
@@ -197,18 +198,13 @@ public class PluginGenerator {
 
         if (cachedFile.exists()) {
             try {
-                
+
                 PluginConfigQuickPeek quickPeek = new PluginConfigQuickPeek(new FileInputStream(cachedFile));
                 previousConfigHash = quickPeek.getHashValue();
             } catch (Exception e) {
                 // Do nothing we are just trying to avoid doing xml serialization twice.
             }
         }
-    }
-
-    /** Wrapped method for getting the bundle context: required for test */
-    protected BundleContext getBundleContext() {
-        return FrameworkUtil.getBundle(PluginGenerator.class).getBundleContext();
     }
 
     private boolean isBundleUninstalled() {
@@ -245,11 +241,11 @@ public class PluginGenerator {
             return;
         }
 
-        if(getBundleContext() == null){
+        if(context == null){
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
                 Tr.exit(tc, "generateXML", "Error creating plugin config xml: BundleContext is null");
             }
-            return; 
+            return;
         }
 
         utilityRequest = utilityReq;
@@ -363,8 +359,15 @@ public class PluginGenerator {
             esiProp5.setAttribute("Value", root);
             rootElement.appendChild(esiProp5);
 
-            // Reference to http endpoint the plugin should use
-            HttpEndpointInfo httpEndpointInfo = new HttpEndpointInfo(context, output, pcd.httpEndpointPid);
+            HttpEndpointInfo httpEndpointInfo;
+            try {
+                httpEndpointInfo = new HttpEndpointInfo(context, output, pcd.httpEndpointPid);
+            } catch(IllegalStateException e) { //  BundleContext is no longer valid
+                if(!this.isBundleUninstalled()){
+                    throw e; // Missing for some other reason
+                }
+                return;
+            }
 
             // Map of virtual host name to the list of alias data being collected...
             Map<String, List<VHostData>> vhostAliasData = new HashMap<String, List<VHostData>>();
@@ -476,6 +479,11 @@ public class PluginGenerator {
                 bServersElem = output.createElement("BackupServers");
             }
 
+            // check to see if the server is shutting down; if it is, bail out. A final exit message will be logged in the finally().
+            if (pcd == null || FrameworkState.isStopping() || container.isServerStopping()) {
+                return;
+            }
+
             if (!httpEndpointInfo.isValid()) {
                 // We couldn't find a matching endpoint -- there will be bits missing from
                 // the generated plugin config as a result
@@ -487,10 +495,18 @@ public class PluginGenerator {
                 // As of 8.5.5.2, we will use only one endpoint, so that a single plugin configuration
                 // will contain only one server definition (which is good because there was only one server id.. )
 
-                buildServerTransportData(appServerName, serverID, httpEndpointInfo, scd.clusterServers, pcd.IPv6Preferred);
+                if (!buildServerTransportData(appServerName, serverID, httpEndpointInfo, scd.clusterServers, pcd.IPv6Preferred, container)) {
+                    // the server is currently shutting down. A final exit message will be logged in the finally().
+                    return;
+                }
 
                 // create a server element for each server in the cluster
                 for (ServerData sd : scd.clusterServers) {
+                    // check to see if the server is shutting down; if it is, bail out. A final exit message will be logged in the finally().
+                    if (pcd == null || FrameworkState.isStopping() || container.isServerStopping()) {
+                        return;
+                    }
+
                     // get the server data
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Adding the Server definition " + sd.nodeName + "_" + sd.serverName);
@@ -529,7 +545,7 @@ public class PluginGenerator {
                         for (TransportData currentTransport : sd.transports) {
                             Element tElem = output.createElement("Transport");
                             String hostname = currentTransport.host;
-                            
+
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                                 Tr.debug(tc, "Adding the Transport definition " + hostname);
                             }
@@ -744,6 +760,11 @@ public class PluginGenerator {
             // The <RequestMetrics> and the sub elements <filters> are not processed yet
             // bunch of PMI stuff?
 
+            // check to see if the server is shutting down; if it is, bail out. A final exit message will be logged in the finally().
+            if (pcd == null || FrameworkState.isStopping() || container.isServerStopping()) {
+                return;
+            }
+
             // create the plugin config output file
             // Location of plugin-cfg.xml is the server.output.dir/logs/state for implicit requests, server.output.dir for direct mbean requests
 
@@ -789,7 +810,7 @@ public class PluginGenerator {
                 try {
                     if (!cachedFile.exists() || writeFile) {
                         fOutputStream = new FileOutputStream(cachedFile);
-                        pluginCfgWriter = new BufferedWriter(new OutputStreamWriter(fOutputStream, "ISO-8859-1"));
+                        pluginCfgWriter = new BufferedWriter(new OutputStreamWriter(fOutputStream, StandardCharsets.ISO_8859_1));
 
                         // Write the plugin config file
                         // Create a style sheet to indent the output
@@ -807,9 +828,9 @@ public class PluginGenerator {
                         serializer.transform(new DOMSource(output), new StreamResult(pluginCfgWriter));
                     }
                 } catch(IOException e){
-                    //path to the cachedFile is broken when bundle was uninstalled 
-                    if(!this.isBundleUninstalled()){ 
-                        throw e; // Missing for some other reason 
+                    //path to the cachedFile is broken when bundle was uninstalled
+                    if(!this.isBundleUninstalled()){
+                        throw e; // Missing for some other reason
                     }
                 } finally {
                     if (pluginCfgWriter != null) {
@@ -821,11 +842,11 @@ public class PluginGenerator {
                     try {
                         copyFile(cachedFile, outFile.asFile());
                     } catch (IOException e){
-                        //cachedFile no longer exists if the bundle was uninstalled 
+                        //cachedFile no longer exists if the bundle was uninstalled
                         if(!this.isBundleUninstalled()){
-                            throw e; // Missing for some other reason 
+                            throw e; // Missing for some other reason
                         }
-                    }    
+                    }
                 }
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -839,19 +860,27 @@ public class PluginGenerator {
             }
         } finally {
             try {
-
+                // check to see if the server is shutting down; if it is, bail out
+                if (pcd == null || FrameworkState.isStopping() || container.isServerStopping()) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                        Tr.exit(tc, "generateXML", ((FrameworkState.isStopping() || container.isServerStopping()) ? "Server is stopping" : "pcd is null"));
+                    }
+                    return;
+                }
+                
                 // Verify that the temp plugin file exists
                 if (!outFile.exists()) {
                     throw new FileNotFoundException("File " + outFile.asFile().getAbsolutePath() + " could not be found");
                 }
                 // Construct the actual plugin file path
                 File pluginFile = new File(outFile.asFile().getParentFile(), pcd.PluginConfigFileName);
+                
 
                 if (pluginFile.exists()) {
                     FileUtils.forceDelete(pluginFile);
                 }
 
-                outFile.asFile().renameTo(pluginFile);
+                Files.move(outFile.asFile().toPath(), pluginFile.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
 
                 // tell the user where the file is - quietly for implicit requests
                 String fullFilePath = pluginFile.getAbsolutePath();
@@ -869,9 +898,9 @@ public class PluginGenerator {
             Tr.exit(tc, "generateXML");
         }
     }
-    
+
     @FFDCIgnore(IOException.class)
-    public static void copyFile(File in, File out) 
+    public static void copyFile(File in, File out)
                     throws IOException
                 {
                     FileChannel inChannel = new
@@ -881,7 +910,7 @@ public class PluginGenerator {
                     try {
                         inChannel.transferTo(0, inChannel.size(),
                                 outChannel);
-                    } 
+                    }
                     catch (IOException e) {
                         throw e;
                     }
@@ -972,7 +1001,7 @@ public class PluginGenerator {
     /**
      * Check to see if the current config has the same information as the previously
      * written config. If this config has no new information, return false.
-     * 
+     *
      * @param newConfig the current config information document to be compared
      * @return true if there is new or updated config information
      */
@@ -1316,11 +1345,23 @@ public class PluginGenerator {
         return Arrays.asList(property);
     }
 
-    void buildServerTransportData(String appServerName,
+    /**
+     * 
+     * @param appServerName
+     * @param serverID
+     * @param httpEndpointInfo
+     * @param serverDataList
+     * @param preferIPv6
+     * @param container
+     * @return false if server shutdown is detected 
+     * @throws Exception
+     */
+    boolean buildServerTransportData(String appServerName,
                                   String serverID,
                                   HttpEndpointInfo httpEndpointInfo,
                                   List<ServerData> serverDataList,
-                                  boolean preferIPv6) throws Exception {
+                                  boolean preferIPv6,
+                                  WebContainer container) throws Exception {
 
         String defaultHostName = (String) httpEndpointInfo.getProperty("_defaultHostName");
 
@@ -1344,6 +1385,11 @@ public class PluginGenerator {
 
         sd.nodeName = GeneratePluginConfig.DEFAULT_NODE_NAME;
 
+        // check to see if the server is shutting down; if it is, bail out. A final exit message will be logged in the caller.
+        if (pcd == null || FrameworkState.isStopping() || container.isServerStopping()) {
+            return false;
+        }
+
         // hostName is returned in lower case
         sd.hostName = tryDetermineHostName(host, defaultHostName, preferIPv6);
         if (!(utilityRequest) && sd.hostName.equals("localhost"))
@@ -1353,6 +1399,8 @@ public class PluginGenerator {
             sd.addTransportData(sd.hostName, httpPort, false);
         if (httpsPort > 0)
             sd.addTransportData(sd.hostName, httpsPort, true);
+
+        return true;
     }
 
     private static String appendWildCardString(String rootURI) {
@@ -1372,7 +1420,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
         /**
          * An exception indicating that the parsing should stop. This is usually
          * triggered when the top-level element has been found.
-         * 
+         *
          */
         private class StopParsingException extends SAXException {
                 /**
@@ -1418,7 +1466,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see org.xml.sax.ext.LexicalHandler#comment(char[], int, int)
          */
         public final void comment(final char[] ch, final int start, final int length) {
@@ -1427,9 +1475,9 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
 
         /**
          * Creates a new SAX parser for use within this instance.
-         * 
+         *
          * @return The newly created parser.
-         * 
+         *
          * @throws ParserConfigurationException
          *             If a parser of the given configuration cannot be created.
          * @throws SAXException
@@ -1461,7 +1509,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see org.xml.sax.ext.LexicalHandler#endCDATA()
          */
         public final void endCDATA() {
@@ -1470,7 +1518,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see org.xml.sax.ext.LexicalHandler#endDTD()
          */
         public final void endDTD() {
@@ -1479,7 +1527,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see org.xml.sax.ext.LexicalHandler#endEntity(java.lang.String)
          */
         public final void endEntity(final String name) {
@@ -1505,7 +1553,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
          * Resolve external entity definitions to an empty string. This is to speed
          * up processing of files with external DTDs. Not resolving the contents of
          * the DTD is ok, as only the System ID of the DTD declaration is used.
-         * 
+         *
          * @see org.xml.sax.helpers.DefaultHandler#resolveEntity(java.lang.String,
          *      java.lang.String)
          */
@@ -1516,7 +1564,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see org.xml.sax.ext.LexicalHandler#startCDATA()
          */
         public final void startCDATA() {
@@ -1525,7 +1573,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see org.xml.sax.ext.LexicalHandler#startDTD(java.lang.String,
          *      java.lang.String, java.lang.String)
          */
@@ -1535,7 +1583,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see org.xml.sax.ContentHandler#startElement(java.lang.String,
          *      java.lang.String, java.lang.String, org.xml.sax.Attributes)
          */
@@ -1551,7 +1599,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see org.xml.sax.ext.LexicalHandler#startEntity(java.lang.String)
          */
         public final void startEntity(final String name) {
@@ -1562,7 +1610,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
          * @return
          */
         public int getHashValue() {
-            
+
             String hash = attributesFound.getValue("ConfigHash");
             if (hash != null)
                 return new Integer(hash);
@@ -1571,7 +1619,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
 
 }
 
-    
+
     protected class PluginConfigQuickPeek  {
 
             private static final int UNSET = -2;
@@ -1579,7 +1627,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
             private static final int UNKNOWN = -1;
 
             private XMLRootHandler handler = null;
-            
+
             private int hash = UNSET;
 
             public PluginConfigQuickPeek(InputStream in) {
@@ -1604,13 +1652,13 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
 
             /**
              * Returns the hash value
-             * 
+             *
              * @return
              */
             public int getHashValue() {
                     if (hash == UNSET) {
                             hash = handler.getHashValue();
-                                                     
+
                             if (hash == UNSET) {
                                     hash = UNKNOWN;
                             }
@@ -1623,7 +1671,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
                     this.hash = hashValue;
             }
 
-            
+
 
     }
 
@@ -1865,7 +1913,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
             if (config.get("ESIEnableToPassCookies") != null) {
                 ESIEnableToPassCookies = (Boolean) config.get("ESIEnableToPassCookies");
             } // PI76699 End
-                
+
             TrustedProxyEnable = (Boolean) config.get("trustedProxyEnable");
             String proxyList = (String) config.get("trustedProxyGroup");
             if (proxyList != null) {
@@ -2042,7 +2090,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
 
     /**
      * Returns a File.pathSeparator if the input String does not end in / or \\
-     * 
+     *
      * @param input - The String to test
      * @return A String containing a File.pathSeparator if the input String doesn't end in / or \\
      */

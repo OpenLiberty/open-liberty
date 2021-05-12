@@ -1,0 +1,8 @@
+{
+    "feature-deps": [
+        "servlet-4.0",
+        "servlet-5.0",
+        "servlet-3.1",
+        "componenttest-1.0"
+    ]
+}

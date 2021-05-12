@@ -21,14 +21,15 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.ws.install.InstallConstants.ExistsAction;
 import com.ibm.ws.install.internal.InstallKernelImpl;
+
+import test.common.SharedOutputManager;
 
 /**
  *
@@ -36,18 +37,19 @@ import com.ibm.ws.install.internal.InstallKernelImpl;
 public class InstallKernelTest {
 
     @Rule
-    public SharedOutputManager outputMgr = SharedOutputManager.getInstance();
+    public static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("*=all");
 
     private static File imageDir;
     private static String orginialTmpDir;
 
     /**
      * Capture stdout/stderr output to the manager.
-     * 
+     *
      * @throws Exception
      */
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
+        outputMgr.captureStreams();
         imageDir = new File("build/unittest/wlpDirs/developers/wlp").getAbsoluteFile();
         System.out.println("setUpBeforeClass() imageDir set to " + imageDir);
         if (imageDir == null || !imageDir.exists())
@@ -69,6 +71,11 @@ public class InstallKernelTest {
         orginialTmpDir = System.getProperty("java.io.tmpdir");
         System.out.println("setUpBeforeClass() java.io.tmpdir set to " + System.getProperty("java.io.tmpdir"));
 
+    }
+
+    @AfterClass
+    public static void tearDownAfterClass() throws Exception {
+        outputMgr.restoreStreams();
     }
 
     private InstallEventListener ieListener;

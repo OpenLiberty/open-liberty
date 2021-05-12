@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -467,8 +467,24 @@ public class AcmeFatUtils {
 	 *            The server to check.
 	 */
 	public static final void waitForSslToCreateKeystore(LibertyServer server) {
-		assertNotNull("ACME did not create a new certificate.",
-				server.waitForStringInLog("CWPKI0803A: SSL certificate created"));
+		/*
+		 * Temporary extra debug for RTC bug 277292
+		 */
+		if (server.waitForStringInLog("CWPKI0803A: SSL certificate created") == null) {
+			Log.info(AcmeFatUtils.class, "waitForSslToCreateKeystore",
+					"SSL Cert not created -- requesting javacore to see if RTC bug 277292 was recreated.");
+			try {
+				server.javadumpThreads();
+			} catch (Exception e) {
+				Log.error(AcmeFatUtils.class, "waitForSslToCreateKeystore", e,
+						"Tried to request a java thread dump, but it failed.");
+			}
+			junit.framework.Assert.fail(
+					"ACME did not create a new certificate. Issued javacore. Check if RTC bug 277292 was recreated.");
+		}
+
+		// assertNotNull("ACME did not create a new certificate.",
+		// server.waitForStringInLog("CWPKI0803A: SSL certificate created"));
 	}
 
 	/**
@@ -867,7 +883,7 @@ public class AcmeFatUtils {
 				"Checking os.name: " + os + " java.vendor: " + javaVendor + " java.version: " + javaVersion);
 		if (os.startsWith("win") && (javaVendor.contains("openjdk") || javaVendor.contains(("oracle")))
 				&& (javaVersion.equals("11.0.5") || javaVersion.equals("14.0.1") || javaVersion.equals("11")
-						|| javaVersion.equals("1.8.0_181"))) {
+						|| javaVersion.equals("1.8.0_181") || javaVersion.equals("15") || javaVersion.equals("16"))) {
 			/*
 			 * On Windows with OpenJDK 11.0.5 (and others), we sometimes get an exception
 			 * deleting the Acme related files.

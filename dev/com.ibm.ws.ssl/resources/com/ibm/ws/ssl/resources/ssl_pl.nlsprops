@@ -608,6 +608,7 @@ ssl.create.certificate.error=CWPKI0804E: Podczas tworzenia certyfikatu SSL wyst\
 ssl.create.certificate.error.explanation=W podanym po\u0142o\u017ceniu nie mo\u017cna utworzy\u0107 certyfikatu SSL.
 ssl.create.certificate.error.useraction=Upewnij si\u0119, czy to \
 po\u0142o\u017cenie jest dost\u0119pne dla procesu serwera. Przejrzyj dzienniki FFDC w poszukiwaniu informacji o innych b\u0142\u0119dach zwi\u0105zanych z generowaniem lub \u0142adowaniem kluczy.
+
 # Messages for the CWPKI0804E message descriptor {0}.
 ssl.create.certificate.error.reason1=Nie mo\u017cna utworzy\u0107 pliku kluczy SSL: {0}
 ssl.create.certificate.error.reason2=B\u0142\u0105d: {0}.
@@ -661,11 +662,11 @@ ssl.unrecoverablekey.error.CWPKI0813E.explanation=Wyst\u0105pi\u0142 b\u0142\u01
 ssl.unrecoverablekey.error.CWPKI0813E.useraction=Przed u\u017cyciem magazynu kluczy na potrzeby po\u0142\u0105cze\u0144 SSL sprawd\u017a, czy has\u0142o klucza prywatnego jest poprawne, a magazyn kluczy nie zawiera wielu kluczy z r\u00f3\u017cnymi has\u0142ami.
 #--------------------------------------------------------------------------------------------------
 ssl.hwkeystore.load.error.CWPKI0814E=CWPKI0814E: Wyst\u0105pi\u0142 \
-b\u0142\u0105d podczas inicjowania sprz\u0119towego magazynu kluczy [{0}]. Sprawd\u017a plik \
+b\u0142\u0105d podczas inicjowania sprz\u0119towego magazynu kluczy [{0}].  Sprawd\u017a plik \
 konfiguracyjny {1} sprz\u0119tu, aby upewni\u0107 si\u0119, \u017ce atrybuty zosta\u0142y poprawnie \
-ustawione. Wyj\u0105tek zwr\u00f3cony przez dostawc\u0119: {2}.
+ustawione.  Wyj\u0105tek zwr\u00f3cony przez dostawc\u0119: {2}.
 ssl.hwkeystore.load.error.CWPKI0814E.explanation=Wyst\u0105pi\u0142 \
-problem z konfiguracj\u0105 sprz\u0119tu, kt\u00f3ry uniemo\u017cliwia u\u017cycie magazynu kluczy. Je\u015bli \
+problem z konfiguracj\u0105 sprz\u0119tu, kt\u00f3ry uniemo\u017cliwia u\u017cycie magazynu kluczy.  Je\u015bli \
 istnieje konfiguracja SSL odwo\u0142uj\u0105ca si\u0119 do tego magazynu kluczy, nie b\u0119dzie \
 mo\u017cna jej u\u017cywa\u0107.
 ssl.hwkeystore.load.error.CWPKI0814E.useraction=Sprawd\u017a, \
@@ -732,5 +733,9 @@ ssl.client.handshake.cacerts.error.CWPKI0828E.useraction=Przejrzyj rozszerzony k
 ssl.update.certificate.error=CWPKI0829E: Podczas aktualizowania certyfikatu SSL wyst\u0105pi\u0142 b\u0142\u0105d. {0}
 ssl.update.certificate.error.explanation=W podanym po\u0142o\u017ceniu nie mo\u017cna zaktualizowa\u0107 certyfikatu SSL.
 ssl.update.certificate.error.useraction=Upewnij si\u0119, czy to \
-po\u0142o\u017cenie jest dost\u0119pne dla procesu serwera. Przejrzyj dzienniki FFDC w poszukiwaniu informacji o innych b\u0142\u0119dach zwi\u0105zanych z generowaniem lub \u0142adowaniem kluczy.
+po\u0142o\u017cenie jest dost\u0119pne dla procesu serwera.  Przejrzyj dzienniki FFDC w poszukiwaniu informacji o innych b\u0142\u0119dach zwi\u0105zanych z generowaniem lub \u0142adowaniem kluczy.
+# -------------------------------------------------------------------------------------------------
+ssl.certificate.add.CWPKI0830I=CWPKI0830I: Certyfikat z nazw\u0105 SubjectDN {0} ze zmiennej \u015brodowiskowej {1} jest dodawany do magazynu kluczy {2}.
+ssl.certificate.add.CWPKI0830I.explanation=Certyfikat zosta\u0142 pobrany ze zmiennej \u015brodowiskowej w konfiguracji i jest dodawany do pliku magazynu kluczy.
+ssl.certificate.add.CWPKI0830I.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 # -------------------------------------------------------------------------------------------------

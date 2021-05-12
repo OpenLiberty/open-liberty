@@ -16,9 +16,11 @@
  */
 package com.ibm.jbatch.container.modelresolver.impl;
 
+import java.util.List;
 import java.util.Properties;
 
 import com.ibm.jbatch.jsl.model.ItemProcessor;
+import com.ibm.jbatch.jsl.model.Property;
 
 
 public class ItemProcessorPropertyResolverImpl extends AbstractPropertyResolver<ItemProcessor> {
@@ -38,7 +40,7 @@ public class ItemProcessorPropertyResolverImpl extends AbstractPropertyResolver<
 
         // Resolve all the properties defined for this artifact
         if (processor.getProperties() != null) {
-            this.resolveElementProperties(processor.getProperties().getPropertyList(), submittedProps, parentProps);
+            this.resolveElementProperties((List<Property>) processor.getProperties().getPropertyList(), submittedProps, parentProps);
         }
 
         return processor;

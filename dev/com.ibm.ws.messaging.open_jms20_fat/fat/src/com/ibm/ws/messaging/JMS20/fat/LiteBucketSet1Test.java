@@ -17,7 +17,9 @@ import static org.junit.Assert.assertTrue;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.rules.TestRule;
+import org.junit.runner.RunWith;
+
+import componenttest.custom.junit.runner.FATRunner;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -25,9 +27,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
-/**
- *
- */
+@RunWith(FATRunner.class)
 public class LiteBucketSet1Test {
 
     private static LibertyServer clientServer = LibertyServerFactory.getLibertyServer("LiteSet1Client");
@@ -69,10 +69,9 @@ public class LiteBucketSet1Test {
         clientServer.startServer("LiteBucketSet1_Client.log");
     }
 
-    @org.junit.AfterClass
+    @AfterClass
     public static void tearDown() {
         // Stop the messaging client ...
-
         try {
             clientServer.stopServer();
         } catch (Exception e) {

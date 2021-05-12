@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.javaeesec.JavaEESecConstants;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
@@ -127,8 +128,13 @@ public class CustomFormAuthenticationMechanism implements HttpAuthenticationMech
         return status;
     }
 
+    @FFDCIgnore(IllegalStateException.class)
     protected CDI getCDI() {
-        return CDI.current();
+        try {
+            return CDI.current();
+        } catch (IllegalStateException e) {
+            return null;
+        }
     }
 
 }

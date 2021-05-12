@@ -365,6 +365,20 @@ PROP_SET_ERROR.useraction=Ov\u011b\u0159te, \u017ee je zadan\u00e1 hodnota pro p
 # 8050-8055 deleted
 # 8060 deleted
 # 8065 deleted
+     
+# 8066E
+# {0}         The invalid attribute value
+# {1}         The allowed attribute values
+# Do not translate: identifyException, as
+8066E_IDENTIFY_EXCEPTION_INVALID_TARGET=DSRA8066E: Byla zad\u00e1na neplatn\u00e1 hodnota ''{0}'' pro atribut ''as'' u prvku identifyException. Povolen\u00e9 hodnoty jsou:{1}
+8066E_IDENTIFY_EXCEPTION_INVALID_TARGET.explanation=Pro prvek konfigurace identificException byla zad\u00e1na neplatn\u00e1 hodnota.
+8066E_IDENTIFY_EXCEPTION_INVALID_TARGET.useraction=Aktualizujte konfiguraci tak, aby ur\u010dovala jednu z povolen\u00fdch hodnot.
+
+# 8067E
+# Do not translate: errorCode, sqlState, identifyException
+8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE=DSRA8067E: V prvku identifyException mus\u00ed b\u00fdt uveden alespo\u0148 jeden z atribut\u016f 'errorCode' nebo 'sqlState'.
+8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE.explanation=Mus\u00ed b\u00fdt zad\u00e1n jeden z atribut\u016f errorCode nebo sqlState.
+8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE.useraction=Aktualizujte konfiguraci tak, aby ur\u010dovala alespo\u0148 jeden z atribut\u016f errorCode nebo sqlState v prvku identifyException.
 
 # 8100E      JAVAX_CONN_ERR
 # 
@@ -647,6 +661,10 @@ KERBEROS_NOT_SUPPORTED_WARNING.explanation= Aplika\u010dn\u00ed server nepodporu
 KERBEROS_NOT_SUPPORTED_WARNING.useraction= Zaka\u017ete ov\u011b\u0159ov\u00e1n\u00ed Kerberos nebo pou\u017eijte datab\u00e1zi DB2 typu back-end s ovlada\u010dem DB2 Universal JDBC Driver.
 
 # 9544-9548 deleted
+
+KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED=DSRA9549E: Pou\u017eit\u00ed sady IBM Java 8 SDK s datab\u00e1z\u00ed Oracle nen\u00ed podporov\u00e1no. Ovlada\u010d Oracle JDBC podporuje ov\u011b\u0159en\u00ed Kerberos pomoc\u00ed v\u00fdchoz\u00edch rozhran\u00ed API zabezpe\u010den\u00ed, kter\u00e1 jsou k dispozici v sad\u011b OpenJDK, OpenJ9 nebo v jin\u00fdch podobn\u00fdch sad\u00e1ch SDK.
+KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED.explanation=Pou\u017eit\u00ed sady IBM Java 8 SDK s datab\u00e1z\u00ed Oracle nen\u00ed podporov\u00e1no. Ovlada\u010d Oracle JDBC podporuje ov\u011b\u0159en\u00ed Kerberos pomoc\u00ed v\u00fdchoz\u00edch rozhran\u00ed API zabezpe\u010den\u00ed, kter\u00e1 jsou k dispozici v sad\u011b OpenJDK, OpenJ9 nebo v jin\u00fdch podobn\u00fdch sad\u00e1ch SDK.
+KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED.useraction=Zaka\u017ete ov\u011b\u0159en\u00ed Kerberos pro zdroj dat Oracle nebo se p\u0159epn\u011bte na jinou sadu Java SDK krom\u011b sady IBM Java 8 SDK.
 
 # 9600-9603 deleted 
 # 9900 deleted

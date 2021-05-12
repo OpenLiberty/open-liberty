@@ -1,0 +1,5 @@
+# Temporary - Currently still in BETA. If we copy over, we'll override existing jvm.options which has the beta flag.
+-Dcom.ibm.ws.beta.edition=true
+# for dump action: com.ibm.ws.kernel.boot.internal.commands.HotSpotJavaDumperImpl$VirtualMachine.remoteDataDump(HotSpotJavaDumperImpl.java:342)
+--add-exports
+jdk.attach/sun.tools.attach=ALL-UNNAMED

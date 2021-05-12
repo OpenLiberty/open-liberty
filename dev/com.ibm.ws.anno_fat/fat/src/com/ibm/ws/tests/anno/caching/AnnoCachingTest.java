@@ -19,9 +19,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
@@ -190,6 +193,10 @@ public abstract class AnnoCachingTest extends LoggingTest {
 
     protected static String getServerRoot() throws Exception {
         return getLibertyServer().getServerRoot();
+    }
+    
+    protected static String getTempDir() throws Exception {
+        return getLibertyServer().getServerRoot() + "/temp/annoTest";
     }
     
     public static String getAppsPath() throws Exception {
@@ -393,12 +400,69 @@ public abstract class AnnoCachingTest extends LoggingTest {
 
         LOG.info("useAlternateExpandedWebXml: RETURN: " + sourceName);
     }
+  
+	/**
+	 * Copies one entry in a zip to another entry in the same zip.
+	 * Like copyFile, but inside a zip.
+	 * 
+	 * @param sourceEntry location of entry to copy
+	 * @param destinationEntry location of entry to replace in zip (full path from root of zip)
+	 * @param zipLocationOnDisk  location on disk of zip file.
+	 */
+    public static void copyEntryWithinZip(String sourceEntry, 
+    		                          String destinationEntry,
+    		                          String zipLocationOnDisk) throws IOException {
 
-    public static void displayExpandedWebXml() throws Exception {
+    	LOG.info("sourceEntry: " + sourceEntry);
+    	LOG.info("destinationEntry:  " + destinationEntry);
+    	LOG.info("zipLocationOnDisk:  " + zipLocationOnDisk);
+
+    	Path zipFilePath = Paths.get(zipLocationOnDisk);
+    	try( FileSystem fs = FileSystems.newFileSystem(zipFilePath, null) ){
+    	  	Path sourcePath = fs.getPath(sourceEntry);
+    		Path destPath = fs.getPath(destinationEntry);
+    		
+    		Files.copy(sourcePath, destPath, StandardCopyOption.REPLACE_EXISTING);
+    	}
+    }
+    
+	/**
+	 * Renames one entry in a zip.  Actually copies the entry then deletes the original.
+	 * 
+	 * @param sourceEntry location of entry to copy
+	 * @param destinationEntry location of entry to replace in zip (full path from root of zip)
+	 * @param zipLocationOnDisk  location on disk of zip file.
+	 */
+    public static void renameEntryInZip(String sourceEntry, 
+    		                            String destinationEntry,
+    		                            String zipLocationOnDisk) throws IOException {
+
+    	LOG.info("sourceEntry: " + sourceEntry);
+    	LOG.info("destinationEntry:  " + destinationEntry);
+    	LOG.info("zipLocationOnDisk:  " + zipLocationOnDisk); 
+
+    	Path zipFilePath = Paths.get(zipLocationOnDisk);
+    	try( FileSystem fs = FileSystems.newFileSystem(zipFilePath, null) ){
+    	  	Path sourcePath = fs.getPath(sourceEntry);
+    		Path destPath = fs.getPath(destinationEntry);
+    		
+    		Files.copy(sourcePath, destPath, StandardCopyOption.REPLACE_EXISTING);
+    		Files.delete(sourcePath);
+    		
+    	}
+    }
+
+    public static void displayWebXmlFromExpandedApp(String altWebXml) throws Exception {
         String webDirPath = getExpandedApplicationPath() + "/TestServlet40.war/WEB-INF";
         File webDir = new File(webDirPath);
-        File webFile = new File(webDir, "web.xml");
-
+        File webFile;
+        
+        if (altWebXml != null) {
+        	webFile = new File(webDir, "web.xml");
+        } else {
+        	webFile = new File(webDir, altWebXml);
+        }
+        
         Utils.display("TestServlet40.war descriptor", webFile);
     }
     
@@ -540,84 +604,106 @@ public abstract class AnnoCachingTest extends LoggingTest {
         LOG.info("Move updated application [ " + updatedAbsPath + " ] to [ " + origAbsPath + " ]");
         updatedFile.renameTo(origFile);
     }
+    
+    /**
+     * Replaces the application ear under the serverRoot/apps directory from an expanded (unzipped) application.
+     * 
+     * @param expandedEarPath  location of expanded EAR to be zipped
+     * @throws Exception
+     */
+    public static void replaceEarFromExpandedEar(String expandedEarPath, String earPath) throws Exception {
+    	String methodName = "replaceEarInAppsDir";
+    	LOG.info(methodName + ": ENTER: " + expandedEarPath + ", " + earPath) ;
+
+    	// Zip to a temporary zip first.  
+    	String tempEarAbsPath = ( new File(getTempDir())).getAbsolutePath() + "/" + getEarName();
+    	File tempEarFile = new File(tempEarAbsPath);   
+       	LOG.info(methodName + ": Zipping updated application [ " + expandedEarPath + " ] to [ " + tempEarAbsPath + "]");
+    	zip(new File(expandedEarPath), tempEarFile);
+
+    	// Delete the ear which will be replaced
+    	File earFile = new File(earPath);
+    	String earAbsPath = earFile.getAbsolutePath();
+    	LOG.info(methodName + ": Deleteing original application [ " + earAbsPath + " ]");
+    	earFile.delete();
+
+    	// Replace Ear from temp
+    	LOG.info(methodName + ": Move updated application [ " + tempEarAbsPath + " ] to [ " + earAbsPath + " ]");
+    	boolean succeeded = tempEarFile.renameTo(earFile);
+    	if (!succeeded) {
+    		throw new IOException();
+    	}
+    	LOG.info(methodName + ": EXIT ");
+    }
 
     public static void unzip(File sourceArchive, String destPath) throws IOException {
         String destDirPath = destPath;
-        LOG.info("unzipping [ " + sourceArchive + " ] to [" + destDirPath + " ]" );
+        File destDir = new File(destDirPath);
         
-        byte[] buffer = new byte[1024];
+        LOG.info("unzip [ " + sourceArchive + " ] to [" + destDirPath + " ]" );
+        
+        if (sourceArchive.isDirectory()) {
+        	LOG.info("sourceArchive is a directory - will copy directory" );
+        	FileUtils.copyDirectory(sourceArchive, new File(destPath));
+        	return;
+        }
+        
+        byte[] buffer = new byte[32768];
         ZipInputStream zis = new ZipInputStream(new FileInputStream(sourceArchive));
         ZipEntry zipEntry = zis.getNextEntry();
                
         while(zipEntry != null) {
-            
-            String entryName = zipEntry.getName();
-            LOG.info("entryName [ " + entryName + " ]" );
-            
-            File outFile = new File(destDirPath + entryName);
-            FileOutputStream fos = new FileOutputStream(outFile);
-            int len;
-            while ((len = zis.read(buffer)) > 0) {
-                fos.write(buffer, 0, len);
-            }
-            fos.close();
-            zipEntry = zis.getNextEntry();
+
+        	String entryName = zipEntry.getName();
+        	LOG.info("entryName [ " + entryName + " ]" );
+        	File outFile = new File(destDir + File.separator + entryName);
+
+        	//check zip Slip vulnerability
+        	String destDirCanonicalPath = destDir.getCanonicalPath();
+        	String outFileCanonicalPath = outFile.getCanonicalPath();
+        	if (!outFileCanonicalPath.startsWith(destDirCanonicalPath + File.separator)) {
+        		throw new IOException("Entry is outside of the target dir: " + zipEntry.getName());
+        	}
+
+        	if (zipEntry.isDirectory()) {
+        		outFile.mkdirs();
+
+        	} else {
+        		new File(outFile.getParent()).mkdirs();
+        		FileOutputStream fos = new FileOutputStream(outFile);
+        		
+            	LOG.info("Unzipping to " + outFile.getAbsolutePath());
+            	
+        		int len;
+        		while ((len = zis.read(buffer)) > 0) {
+        			fos.write(buffer, 0, len);
+        		}
+        		fos.close();
+        	}
+        	
+        	zipEntry = zis.getNextEntry();
         }
         zis.closeEntry();
         zis.close();
     }  
+       
+    public static void expandEarToTemp(String earPath, String tempExpandedEarPath, boolean deleteIfExists) throws Exception {
+        mkDir(tempExpandedEarPath, deleteIfExists);
+        
+        File earFile = new File(earPath);
+        
+        unzip(earFile, tempExpandedEarPath);
+    }
     
-//    public static void unzip(String zipFileName, String destPath){
-//
-//        byte[] buffer = new byte[1024];
-//
-//        try {
-//            LOG.info("Unzipping  [ " + zipFileName + " ]" );
-//            
-//            File destDir  = new File(destPath);
-//            if ( !destDir.exists() ) {
-//                mkDir(destPath);
-//            }
-//
-//            ZipInputStream zis = new ZipInputStream( new FileInputStream(zipFileName) );
-//            ZipEntry entry = zis.getNextEntry();
-//
-//            while ( entry != null ) {
-//
-//                String entryName = entry.getName();
-//                File newFile = new File( destPath + File.separator + entryName );
-//                
-//                String parentPath = newFile.getParent();
-//                
-//                if (entryName.toUpperCase().endsWith(".WAR")) {
-//                    
-//                    unzip(destPath + File.separator + entryName);
-//                
-//                }                
-//
-//                LOG.info("unzipping entry [ " + newFile.getAbsoluteFile() + "]");;
-//
-//                //create all directories that don't exist
-//                new File(newFile.getParent()).mkdirs();
-//
-//                FileOutputStream fos = new FileOutputStream(newFile);             
-//
-//                int len;
-//                while ((len = zis.read(buffer)) > 0) {
-//                    fos.write(buffer, 0, len);
-//                }
-//
-//                fos.close();   
-//                entry = zis.getNextEntry();
-//            }
-//
-//            zis.closeEntry();
-//            zis.close();
-//
-//        }catch(IOException ex){
-//            ex.printStackTrace(); 
-//        }
-//    }    
+    public static void makeBackupCopyOfEar(String earPath, String backupEarPath) throws IOException {
+    	
+        File earFile = new File(earPath);
+        File backupEarFile = new File(backupEarPath);
+        if (backupEarFile.exists()) {
+        	backupEarFile.delete();
+        }
+        FileUtils.copyFile(earFile, backupEarFile);
+    }    
 
     public static void zipWarInExpandedApp(SharedServer sharedServer, String parentPath, String warName) throws IOException {
         String warPath = parentPath + "/" + warName;

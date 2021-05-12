@@ -25,6 +25,7 @@ Export-Package: \
 	com.ibm.websphere.cpi,\
 	com.ibm.websphere.cpmi,\
 	com.ibm.websphere.csi;-split-package:=merge-last,\
+	com.ibm.websphere.ejbcontainer,\
 	com.ibm.ws.ejb.portable
 
 instrument.disabled: true

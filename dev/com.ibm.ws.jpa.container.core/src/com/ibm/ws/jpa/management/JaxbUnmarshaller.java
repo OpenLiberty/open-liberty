@@ -58,7 +58,7 @@ final class JaxbUnmarshaller extends DefaultHandler {
 
     private static final String PERSISTENCE_NAMESPACE_URI = "http://java.sun.com/xml/ns/persistence"; // d656864
     private static final String JCP_PERSISTENCE_NAMESPACE_URI = "http://xmlns.jcp.org/xml/ns/persistence";
-    private static final String JAKARTA_PERSISTENCE_NAMESPACE_URI = "https://xmlns.jakarta.ee/xml/ns/persistence";
+    private static final String JAKARTA_PERSISTENCE_NAMESPACE_URI = "https://jakarta.ee/xml/ns/persistence";
 
     private static final String PERSISTENCE_LOCAL_NAME = "persistence"; // d656864
     private static final String VERSION_ATTRIBUTE_NAME = "version"; // d656864

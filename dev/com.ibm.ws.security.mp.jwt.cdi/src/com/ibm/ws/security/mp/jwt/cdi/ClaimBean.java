@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,7 @@ import javax.enterprise.inject.spi.PassivationCapable;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
+import javax.json.JsonReaderFactory;
 import javax.json.JsonValue;
 
 import org.eclipse.microprofile.jwt.Claim;
@@ -46,6 +47,8 @@ import com.ibm.websphere.ras.TraceComponent;
 public class ClaimBean<T> implements Bean<T>, PassivationCapable {
 
     private static final TraceComponent tc = Tr.register(ClaimBean.class);
+
+    private static final JsonReaderFactory readerFactory = Json.createReaderFactory(null);
 
     private final Class<T> beanClass;
     private Type beanType;
@@ -124,7 +127,7 @@ public class ClaimBean<T> implements Bean<T>, PassivationCapable {
         }
 
         T instance = null;
-        CDI<Object> cdi = CDI.current();
+        CDI<Object> cdi = CDI.current(); //No check for IllegalStateException as throwing it is correct if we cannot create a bean.
         BeanManager beanManager = cdi.getBeanManager();
 
         if (beanType instanceof ParameterizedType) {
@@ -203,13 +206,17 @@ public class ClaimBean<T> implements Bean<T>, PassivationCapable {
 
             @Override
             public U getValue() {
-                U value = null;
-                Instance<JsonWebToken> jsonWebTokenInstance = CDI.current().select(JsonWebToken.class);
+                try {
+                    U value = null;
+                    Instance<JsonWebToken> jsonWebTokenInstance = CDI.current().select(JsonWebToken.class);
 
-                if (jsonWebTokenInstance != null && jsonWebTokenInstance.isAmbiguous() == false && jsonWebTokenInstance.isUnsatisfied() == false) {
-                    value = (U) Optional.ofNullable(getPlainValue(wrappedClass, jsonWebTokenInstance.get()));
+                    if (jsonWebTokenInstance != null && jsonWebTokenInstance.isAmbiguous() == false && jsonWebTokenInstance.isUnsatisfied() == false) {
+                        value = (U) Optional.ofNullable(getPlainValue(wrappedClass, jsonWebTokenInstance.get()));
+                    }
+                    return value;
+                } catch (IllegalStateException e) {
+                    return null;
                 }
-                return value;
             }
         };
 
@@ -241,13 +248,17 @@ public class ClaimBean<T> implements Bean<T>, PassivationCapable {
 
             @Override
             public U getValue() {
-                U value = null;
-                Instance<JsonWebToken> jsonWebTokenInstance = CDI.current().select(JsonWebToken.class);
+                try {
+                    U value = null;
+                    Instance<JsonWebToken> jsonWebTokenInstance = CDI.current().select(JsonWebToken.class);
 
-                if (jsonWebTokenInstance != null && jsonWebTokenInstance.isAmbiguous() == false && jsonWebTokenInstance.isUnsatisfied() == false) {
-                    value = getPlainValue(returnClass, jsonWebTokenInstance.get());
+                    if (jsonWebTokenInstance != null && jsonWebTokenInstance.isAmbiguous() == false && jsonWebTokenInstance.isUnsatisfied() == false) {
+                        value = getPlainValue(returnClass, jsonWebTokenInstance.get());
+                    }
+                    return value;
+                } catch (IllegalStateException e) {
+                    return null;
                 }
-                return value;
             }
         };
 
@@ -270,7 +281,7 @@ public class ClaimBean<T> implements Bean<T>, PassivationCapable {
 
     private JsonValue getJsonValue(JsonWebToken jsonWebToken) {
         String jsonWebTokenAsString = jsonWebToken.toString();
-        JsonReader reader = Json.createReader(new StringReader(jsonWebTokenAsString));
+        JsonReader reader = readerFactory.createReader(new StringReader(jsonWebTokenAsString));
         JsonObject jsonObject = reader.readObject();
         return jsonObject.get(claimName);
     }
@@ -296,14 +307,18 @@ public class ClaimBean<T> implements Bean<T>, PassivationCapable {
 
                 @Override
                 public Object getValue() {
-                    Object value = null;
-                    Instance<JsonWebToken> jsonWebTokenInstance = CDI.current().select(JsonWebToken.class);
+                    try {
+                        Object value = null;
+                        Instance<JsonWebToken> jsonWebTokenInstance = CDI.current().select(JsonWebToken.class);
 
-                    if (jsonWebTokenInstance != null && jsonWebTokenInstance.isAmbiguous() == false && jsonWebTokenInstance.isUnsatisfied() == false) {
-                        value = jsonWebTokenInstance.get().getClaim(claimName);
+                        if (jsonWebTokenInstance != null && jsonWebTokenInstance.isAmbiguous() == false && jsonWebTokenInstance.isUnsatisfied() == false) {
+                            value = jsonWebTokenInstance.get().getClaim(claimName);
+                        }
+
+                        return value;
+                    } catch (IllegalStateException e) {
+                        return null;
                     }
-
-                    return value;
                 }
             };
         } else {

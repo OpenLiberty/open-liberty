@@ -41,6 +41,7 @@ import com.ibm.ws.security.javaeesec.CDIHelper;
 import com.ibm.ws.security.javaeesec.JavaEESecConstants;
 import com.ibm.ws.security.javaeesec.properties.ModulePropertiesProvider;
 import com.ibm.ws.security.javaeesec.properties.ModulePropertiesUtils;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.AuthenticationResult;
 import com.ibm.ws.webcontainer.security.CookieHelper;
@@ -478,8 +479,13 @@ public class LoginToContinueInterceptor {
     }
 
     @SuppressWarnings("rawtypes")
+    @FFDCIgnore(IllegalStateException.class)
     protected CDI getCDI() {
-        return CDI.current();
+        try {
+            return CDI.current();
+        } catch (IllegalStateException e) {
+            return null;
+        }
     }
 
     protected void setMPP(ModulePropertiesProvider mpp) {

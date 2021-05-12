@@ -85,6 +85,6 @@ public class InjectionXMLTest {
 
     @AfterClass
     public static void afterClass() throws Exception {
-        server.stopServer("CNTR0168W", "CNTR0020E", "CWNEN0061E", "CWNEN0009E", "CNTR4006E");
+        server.stopServer("CNTR0168W", "CNTR0020E", "CWNEN0061E", "CWNEN0009E", "CNTR4006E", "CNTR0338W");
     }
 }

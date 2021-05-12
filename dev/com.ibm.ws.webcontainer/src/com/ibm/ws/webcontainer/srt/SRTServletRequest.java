@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2008 IBM Corporation and others.
+ * Copyright (c) 1997, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -105,7 +105,7 @@ import com.ibm.wsspi.webcontainer.webapp.IWebAppDispatcherContext;
 
 
 @SuppressWarnings("unchecked")
-public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, IServletRequest, IPrivateRequestAttributes, IInputStreamObserver, ServletRequestExtended, HttpInputStreamObserver
+public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, IServletRequest, IPrivateRequestAttributes, IInputStreamObserver, ServletRequestExtended, HttpInputStreamObserver, ISRTServletRequest
 {
     // Class level objects
     // =========================
@@ -3472,18 +3472,17 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
         }
         IResponse iResponse = getResponse().getIResponse();
         getResponse().closeResponseOutput(true);  // WAS is false
-        // start added WAS merge
-        finishAndDestroyConnectionContext();
 
-        //wait until after the finishConnection is called to release the channel link.
-        //you may need to read in the remaining bits from the input stream
+        //start added WAS merge
+        //verify that releaseChannel() has not already been invoked before doing so
         WebContainerRequestState reqState = WebContainerRequestState.getInstance(true);
         if (! reqState.isCompleted()) {
             iResponse.releaseChannel();
-            if (reqState.getCurrentThreadsIExtendedRequest()==this) {
-                WebContainerRequestState.getInstance(true).setCompleted(true);
-            }    
+            WebContainerRequestState.getInstance(true).setCompleted(true);
         }
+
+        //now that the channel has been released it's safe to clean up the req/res
+        finishAndDestroyConnectionContext();
 
         if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {
             logger.exiting(CLASS_NAME,"closeResponseOutput");

@@ -370,6 +370,20 @@ PROP_SET_ERROR.useraction=\u8acb\u78ba\u8a8d\u6307\u5b9a\u7684\u503c\u5c0d\u5167
 # 8050-8055 deleted
 # 8060 deleted
 # 8065 deleted
+     
+# 8066E
+# {0}         The invalid attribute value
+# {1}         The allowed attribute values
+# Do not translate: identifyException, as
+8066E_IDENTIFY_EXCEPTION_INVALID_TARGET=DSRA8066E: \u6307\u5b9a\u7d66 identifyException \u5143\u7d20\u4e0a ''as'' \u5c6c\u6027\u7684\u503c ''{0}'' \u7121\u6548\u3002\u5141\u8a31\u7684\u503c\u70ba\uff1a{1}
+8066E_IDENTIFY_EXCEPTION_INVALID_TARGET.explanation=\u6307\u5b9a\u7d66 identifyException \u914d\u7f6e\u5143\u7d20\u7684\u503c\u7121\u6548\u3002
+8066E_IDENTIFY_EXCEPTION_INVALID_TARGET.useraction=\u8acb\u66f4\u65b0\u914d\u7f6e\uff0c\u4ee5\u6307\u5b9a\u5176\u4e2d\u4e00\u500b\u63a5\u53d7\u7684\u503c\u3002
+
+# 8067E
+# Do not translate: errorCode, sqlState, identifyException
+8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE=DSRA8067E: \u5728 identifyException \u5143\u7d20\u4e0a\uff0c\u5fc5\u9808\u81f3\u5c11\u6307\u5b9a 'errorCode' \u6216 'sqlState' \u5c6c\u6027\u4e2d\u7684\u4e00\u500b\u3002
+8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE.explanation=\u5fc5\u9808\u6307\u5b9a errorCode \u6216 sqlState \u5c6c\u6027\u4e2d\u7684\u4e00\u500b\u3002
+8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE.useraction=\u8acb\u66f4\u65b0\u914d\u7f6e\uff0c\u4ee5\u5728 identifyException \u5143\u7d20\u4e0a\u81f3\u5c11\u6307\u5b9a errorCode \u6216 sqlState \u5c6c\u6027\u4e2d\u7684\u4e00\u500b\u3002
 
 # 8100E      JAVAX_CONN_ERR
 # 
@@ -653,6 +667,10 @@ KERBEROS_NOT_SUPPORTED_WARNING.explanation= \u61c9\u7528\u7a0b\u5f0f\u4f3a\u670d
 KERBEROS_NOT_SUPPORTED_WARNING.useraction= \u8acb\u505c\u7528 Kerberos\uff0c\u6216\u642d\u914d DB2 Universal JDBC \u9a45\u52d5\u7a0b\u5f0f\u4f86\u4f7f\u7528 DB2 \u5f8c\u7aef\u7cfb\u7d71\u3002
 
 # 9544-9548 deleted
+
+KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED=DSRA9549E: \u4e0d\u652f\u63f4\u5c07 IBM Java 8 SDK \u8207 Oracle \u8cc7\u6599\u5eab\u642d\u914d\u4f7f\u7528\u3002Oracle JDBC \u9a45\u52d5\u7a0b\u5f0f\u50c5\u652f\u63f4\u4f7f\u7528 OpenJDK\u3001OpenJ9 \u6216\u5176\u4ed6\u985e\u4f3c SDK \u4e2d\u63d0\u4f9b\u7684\u9810\u8a2d\u5b89\u5168 API \u9032\u884c\u7684 Kerberos \u9451\u5225\u3002
+KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED.explanation=\u4e0d\u652f\u63f4\u5c07 IBM Java 8 SDK \u8207 Oracle \u8cc7\u6599\u5eab\u642d\u914d\u4f7f\u7528\u3002Oracle JDBC \u9a45\u52d5\u7a0b\u5f0f\u50c5\u652f\u63f4\u4f7f\u7528 OpenJDK\u3001OpenJ9 \u6216\u5176\u4ed6\u985e\u4f3c SDK \u4e2d\u63d0\u4f9b\u7684\u9810\u8a2d\u5b89\u5168 API \u9032\u884c\u7684 Kerberos \u9451\u5225\u3002
+KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED.useraction=\u505c\u7528 Oracle \u8cc7\u6599\u4f86\u6e90\u7684 Kerberos \u9451\u5225\uff0c\u6216\u8005\u5207\u63db\u81f3 IBM Java 8 SDK \u65c1\u908a\u7684\u4e0d\u540c Java SDK\u3002
 
 # 9600-9603 deleted 
 # 9900 deleted

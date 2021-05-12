@@ -27,3 +27,15 @@ invalid.serverinterceptor.useraction=Verifique el nombre del interceptor configu
 invalid.inbound.msg.size=CWWKT0203E: El valor maxInboundMessageSize {0} no es v\u00e1lido. Los tama\u00f1os deben ser mayores que 0.
 invalid.inbound.msg.size.explanation=El valor configurado de maxInboundMessageSize no es v\u00e1lido.
 invalid.inbound.msg.size.useraction=Configure un valor v\u00e1lido para maxInboundMessageSize.
+
+response.already.committed=CWWKT0204E: La solicitud gRPC para {0} no puede continuar. La respuesta ya se hab\u00eda confirmado.
+response.already.committed.explanation=La solicitud gRPC no es v\u00e1lida porque la respuesta se ha confirmado antes de que se iniciaran los m\u00e9todos gRPC.
+response.already.committed.useraction=Analice los registros para otros avisos o mensajes de error antes de este mensaje. Es posible que este error se produzca debido a un error de seguridad anterior.
+
+authentication.error=CWWKT0205E: La solicitud de servicio gRPC para {0} ha fallado con el error de autenticaci\u00f3n {1}.
+authentication.error.explanation=La solicitud gRPC no se ha podido autenticar antes de que se iniciaran los m\u00e9todos gRPC.
+authentication.error.useraction=Analice los registros para otros avisos o mensajes de error antes de este mensaje. Es posible que este error se produzca porque no se han proporcionado credenciales con la solicitud o porque se han proporcionado credenciales que no son v\u00e1lidas.
+
+authorization.error=CWWKT0206E: La solicitud de servicio gRPC de {0} ha fallado con el error de autorizaci\u00f3n {1}.
+authorization.error.explanation=La solicitud gRPC no se ha podido autorizar antes de que se iniciaran los m\u00e9todos gRPC.
+authorization.error.useraction=Analice los registros para otros avisos o mensajes de error antes de este mensaje. Es posible que este error se produzca porque no se han proporcionado credenciales con la solicitud o porque se han proporcionado credenciales que no son v\u00e1lidas.

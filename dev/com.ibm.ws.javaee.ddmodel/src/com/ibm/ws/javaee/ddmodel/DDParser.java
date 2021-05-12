@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -368,10 +368,21 @@ public abstract class DDParser {
         this(ddRootContainer, ddEntry, null);
     }
 
-    public DDParser(Container ddRootContainer, Entry ddEntry, Class<?> crossComponentDocumentType) throws ParseException {
-        rootContainer = ddRootContainer;
-        adaptableEntry = ddEntry;
-        ddEntryPath = adaptableEntry.getPath();
+    /**
+     * Construct a parser for a specified container and container entry.  The container entry contains
+     * descriptor text which is to be parsed.
+     * 
+     * @param rootContainer The root container containing the entry which is to be parsed.
+     * @param adaptableEntry The container entry which is to be parsed.
+     * @param crossComponentDocumentType Unknown.
+     *
+     * @throws ParseException Thrown in case of a parse error.  Not currently thrown.
+     *    Declared for future use.
+     */
+    public DDParser(Container rootContainer, Entry adaptableEntry, Class<?> crossComponentDocumentType) throws ParseException {
+        this.rootContainer = rootContainer;
+        this.adaptableEntry = adaptableEntry;
+        this.ddEntryPath = adaptableEntry.getPath();
         this.crossComponentDocumentType = crossComponentDocumentType;
     }
 
@@ -455,6 +466,7 @@ public abstract class DDParser {
         return xsr.getNamespaceURI(prefix);
     }
 
+    // TODO: Need to rewrite this!
     @Trivial
     public String getAttributeValue(String namespaceURI, String localName) {
         boolean checkNS = namespaceURI != null;
@@ -855,12 +867,12 @@ public abstract class DDParser {
         return Tr.formatMessage(tc, "unknown.deployment.descriptor.version", ddEntryPath);
     }
 
-    protected String invalidDeploymentDescriptorNamespace(String version) {
-        return Tr.formatMessage(tc, "invalid.deployment.descriptor.namespace", ddEntryPath, getLineNumber(), namespace, version);
+    protected String invalidDeploymentDescriptorNamespace(String useVersion) {
+        return Tr.formatMessage(tc, "invalid.deployment.descriptor.namespace", ddEntryPath, getLineNumber(), namespace, useVersion);
     }
 
-    protected String invalidDeploymentDescriptorVersion(String version) {
-        return Tr.formatMessage(tc, "invalid.deployment.descriptor.version", ddEntryPath, getLineNumber(), version);
+    protected String invalidDeploymentDescriptorVersion(String useVersion) {
+        return Tr.formatMessage(tc, "invalid.deployment.descriptor.version", ddEntryPath, getLineNumber(), useVersion);
     }
 
     protected String missingDeploymentDescriptorNamespace() {

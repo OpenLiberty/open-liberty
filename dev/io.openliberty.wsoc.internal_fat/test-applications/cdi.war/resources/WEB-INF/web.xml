@@ -15,6 +15,7 @@
 	<servlet>
         <servlet-name>ClientTestServletCDI</servlet-name>
  	    <servlet-class>cdi.war.ClientTestServletCDI</servlet-class>
+ 	    <load-on-startup>1</load-on-startup>
     </servlet>
 
     <servlet-mapping>
@@ -25,6 +26,7 @@
       <servlet>
         <servlet-name>SingleRequestTestRunner</servlet-name>
  	    <servlet-class>io.openliberty.wsoc.common.SingleRequestClientTestRunner</servlet-class>
+        <load-on-startup>1</load-on-startup>
     </servlet>
 
     <servlet-mapping>

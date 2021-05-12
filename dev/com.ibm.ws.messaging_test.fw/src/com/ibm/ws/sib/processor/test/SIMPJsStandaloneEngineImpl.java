@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,6 +29,7 @@ import java.util.Vector;
 
 import com.ibm.websphere.sib.Reliability;
 import com.ibm.websphere.sib.exception.SIException;
+import com.ibm.ws.messaging.security.RuntimeSecurityService;
 import com.ibm.ws.sib.admin.BaseDestinationDefinition;
 import com.ibm.ws.sib.admin.ControllableRegistrationService;
 import com.ibm.ws.sib.admin.DestinationAliasDefinition;
@@ -1621,6 +1622,11 @@ public class SIMPJsStandaloneEngineImpl implements SIMPJsStandaloneEngine {
     public void setMEUUID(SIBUuid8 uuid) {
         // TODO Auto-generated method stub
 
+    }
+
+    @Override
+    public RuntimeSecurityService getRuntimeSecurityservice() {
+        return null;
     }
 
 }

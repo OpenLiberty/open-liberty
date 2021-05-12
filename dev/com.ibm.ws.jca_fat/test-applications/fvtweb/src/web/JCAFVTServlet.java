@@ -10,12 +10,17 @@
  *******************************************************************************/
 package web;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
+
 import java.lang.management.ManagementFactory;
-import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
@@ -33,24 +38,18 @@ import javax.management.MBeanServer;
 import javax.management.ObjectInstance;
 import javax.management.ObjectName;
 import javax.naming.InitialContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
 
+import componenttest.app.FATServlet;
 import web.mdb.FVTMessageDrivenBean;
 import web.mdb.bindings.FVTMessageDrivenBeanBinding;
 
-public class JCAFVTServlet extends HttpServlet {
-    private static final long serialVersionUID = 7709282314904580334L;
+@SuppressWarnings("serial")
+public class JCAFVTServlet extends FATServlet {
 
     private static String MBEAN_TYPE = "com.ibm.ws.jca.cm.mbean.ConnectionManagerMBean";
-
-    /**
-     * Message written to servlet to indicate that is has been successfully invoked.
-     */
-    public static final String SUCCESS_MESSAGE = "COMPLETED SUCCESSFULLY";
 
     /**
      * This state is used by certain tests to determine whether a Servlet instance,
@@ -58,26 +57,11 @@ public class JCAFVTServlet extends HttpServlet {
      */
     private String state = "NEW";
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String test = request.getParameter("test");
-        PrintWriter out = response.getWriter();
-        out.println("Starting " + test + "<br>");
-        System.out.println("-----> " + test + " starting");
-        try {
-            getClass().getMethod(test, HttpServletRequest.class, HttpServletResponse.class).invoke(this, request, response);
-            System.out.println("<----- " + test + " successful");
-            out.println(test + " COMPLETED SUCCESSFULLY");
-        } catch (Throwable x) {
-            if (x instanceof InvocationTargetException)
-                x = x.getCause();
-            System.out.println("<----- " + test + " failed:");
-            x.printStackTrace(System.out);
-            out.println("<pre>ERROR in " + test + ":");
-            x.printStackTrace(out);
-            out.println("</pre>");
-        }
-    }
+    /**
+     * This is a place for test methods to attempt to stash JMS connections across servlet requests
+     * in order to test whether the HandleList closes them.
+     */
+    private final static Map<String, CompletableFuture<Connection>> unfinishedWork = new HashMap<>();
 
     public void requireNewServletInstance(HttpServletRequest request, HttpServletResponse response) throws Throwable {
         if (!"NEW".equals(state))
@@ -817,6 +801,65 @@ public class JCAFVTServlet extends HttpServlet {
         }
         conn1.close();
 
+    }
+
+    /**
+     * Attempt to leave a JMS connection open across a servlet request so that it can be used later.
+     * Obtain the connection from a JMS connection factory whose connection manager has the HandleList disabled.
+     */
+    public void testSaveUnsharableConnectionForLater_HandleListDisabled(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        ConnectionFactory cf = (ConnectionFactory) new InitialContext().lookup("jms/cf6");
+        Connection con = cf.createConnection();
+        Object previous = unfinishedWork.put("testSaveUnsharableConnectionForLater_HandleListDisabled", CompletableFuture.completedFuture(con));
+        assertNull(previous); // only permit this method to be invoked once
+    }
+
+    /**
+     * Attempt to leave a JMS connection open across a servlet request so that it can be used later.
+     * Obtain the connection from a JMS connection factory whose connection manager has the HandleList enabled.
+     */
+    public void testSaveUnsharableConnectionForLater_HandleListEnabled(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        ConnectionFactory cf = (ConnectionFactory) new InitialContext().lookup("java:comp/env/jms/cf1-unshareable");
+        Connection con = cf.createConnection();
+        Object previous = unfinishedWork.put("testSaveUnsharableConnectionForLater_HandleListEnabled", CompletableFuture.completedFuture(con));
+        assertNull(previous); // only permit this method to be invoked once
+    }
+
+    /**
+     * Attempt to use a JMS connection that was left open across a previous servlet request.
+     * With the HandleList disabled, this should be possible.
+     */
+    public void testUseUnsharableConnectionFromPreviousRequest_HandleListDisabled(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        CompletableFuture<Connection> stage1 = unfinishedWork.get("testSaveUnsharableConnectionForLater_HandleListDisabled");
+        CompletableFuture<String> stage2 = stage1.thenApply(con -> {
+            try {
+                String clientId = con.getClientID();
+                Session session = con.createSession(true, Session.AUTO_ACKNOWLEDGE);
+                session.close();
+                con.close();
+                return clientId;
+            } catch (JMSException x) {
+                throw new CompletionException(x);
+            }
+        });
+        assertEquals("defaultClientID", stage2.join());
+    }
+
+    /**
+     * Attempt to use a JMS connection that was left open across a previous servlet request.
+     * With the HandleList enabled, this shouldn't be possible.
+     */
+    public void testUseUnsharableConnectionFromPreviousRequest_HandleListEnabled(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        CompletableFuture<Connection> stage = unfinishedWork.get("testSaveUnsharableConnectionForLater_HandleListEnabled");
+        Connection con = stage.join();
+        try {
+            Session session = con.createSession(true, Session.AUTO_ACKNOWLEDGE);
+            fail("HandleList should have closed the connection handle. Instead, we got a session: " + session);
+        } catch (javax.jms.IllegalStateException x) {
+            // pass, connection is closed
+        } finally {
+            con.close();
+        }
     }
 
     private ObjectInstance getMBeanObjectInstance(String jndiName) throws Exception {

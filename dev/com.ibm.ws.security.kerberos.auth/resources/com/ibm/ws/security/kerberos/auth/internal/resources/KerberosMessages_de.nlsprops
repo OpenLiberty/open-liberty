@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2020, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -25,3 +25,15 @@ KRB5_FILE_NOT_FOUND_CWWKS4345E.useraction=Stellen Sie sicher, dass die Konfigura
 KRB5_FILE_FOUND_CWWKS4346I=CWWKS4346I: Die Kerberos-Komponente ist f\u00fcr die Verwendung einer {0}-Datei konfiguriert, die sich an der folgenden Position befindet: {1}
 KRB5_FILE_FOUND_CWWKS4346I.explanation=Die konfigurierte Datei wurde erfolgreich lokalisiert.
 KRB5_FILE_FOUND_CWWKS4346I.useraction=Es ist keine Aktion erforderlich.
+
+KRB5_LOGIN_FAILED_CACHE_CWWKS4347E=CWWKS4347E: Die Kerberos-Anmeldung mit dem Kerberos-Principal {0} und dem Kerberos-Berechtigungsnachweis-Cache (ccache) {1} ist fehlgeschlagen. Es wurde kein Kerberos-Ticket gefunden.
+KRB5_LOGIN_FAILED_CACHE_CWWKS4347E.explanation=Entweder ist der angegebene Kerberos-Principal ung\u00fcltig oder der Kerberos-Berechtigungsnachweis-Cache (ccache) ist ung\u00fcltig oder abgelaufen.
+KRB5_LOGIN_FAILED_CACHE_CWWKS4347E.useraction=Stellen Sie sicher, dass ein g\u00fcltiger Kerberos-Principal angegeben wird und dass der Kerberos-Berechtigungsnachweiscache (ccache) g\u00fcltig ist und nicht abgelaufen ist.
+
+KRB5_LOGIN_FAILED_KEYTAB_CWWKS4348E=CWWKS4348E: Die Kerberos-Anmeldung mit dem Kerberos-Principal {0} und der Kerberos-Chiffrierschl\u00fcsseldatei {1} ist fehlgeschlagen. Es wurde kein Kerberos-Ticket gefunden.
+KRB5_LOGIN_FAILED_KEYTAB_CWWKS4348E.explanation=Der angegebene Kerberos-Principal oder die Kerberos-Chiffrierschl\u00fcsseldatei ist nicht g\u00fcltig.
+KRB5_LOGIN_FAILED_KEYTAB_CWWKS4348E.useraction=Stellen Sie sicher, dass eine g\u00fcltige Kerberos-Chiffrierschl\u00fcsseldatei angegeben ist, und dass sie einen g\u00fcltigen Kerberos-Principal enth\u00e4lt.
+		
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB_CWWKS4349E=CWWKS4349E: Die Kerberos-Anmeldung mit dem Kerberos-Principal {0} und dem der Kerberos-Standardchiffrierschl\u00fcsseldatei ist fehlgeschlagen. Es wurde kein Kerberos-Ticket gefunden.
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB_CWWKS4349E.explanation=Der angegebene Kerberos-Principal oder die Kerberos-Standardchiffrierschl\u00fcsseldatei ist nicht g\u00fcltig.
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB_CWWKS4349E.useraction=Stellen Sie sicher, dass eine g\u00fcltige Kerberos-Chiffrierschl\u00fcsseldatei angegeben ist, und dass sie einen g\u00fcltigen Kerberos-Principal enth\u00e4lt.

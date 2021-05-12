@@ -12,6 +12,5 @@
 addRequiredLibraries {
 	dependsOn copyJdbcDrivers
 	dependsOn copyDatabaseRotationDrivers
-	dependsOn copyFattestDatabases
 }
 

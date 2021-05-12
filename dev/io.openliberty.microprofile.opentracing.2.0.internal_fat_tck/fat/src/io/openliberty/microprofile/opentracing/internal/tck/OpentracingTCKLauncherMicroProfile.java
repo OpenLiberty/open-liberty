@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,14 +37,17 @@ public class OpentracingTCKLauncherMicroProfile {
         server.startServer();
     }
 
+    /*
+     * CWWKG0014E - Ignore due to server.xml intermittently missing
+     */
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer("CWMOT0009W");
+        server.stopServer("CWMOT0009W", "CWWKG0014E", "CWPMI2005W");
     }
 
     @Test
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
-    public void launchOpentracingTck() throws Exception {
+    public void launchOpentracingTckMP() throws Exception {
         // Use default tck-suite.xml
         
         MvnUtils.runTCKMvnCmd(server, "io.openliberty.opentracing.2.0.internal_fat", this.getClass() + ":launchOpentracingRestClientTck", "tck-and-rest-client-tck.xml", Collections.emptyMap(), Collections.emptySet());

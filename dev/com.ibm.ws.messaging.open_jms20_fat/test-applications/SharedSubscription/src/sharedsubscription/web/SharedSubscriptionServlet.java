@@ -14,7 +14,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.InvocationTargetException;
+import java.net.MalformedURLException;
+import java.net.URLDecoder;
 import java.util.Enumeration;
+import java.util.Set;
 
 import javax.jms.InvalidDestinationException;
 import javax.jms.InvalidDestinationRuntimeException;
@@ -35,8 +38,14 @@ import javax.jms.TopicConnectionFactory;
 import javax.jms.TopicSession;
 import javax.management.InstanceNotFoundException;
 import javax.management.MBeanServer;
+import javax.management.MalformedObjectNameException;
+import javax.management.ObjectInstance;
 import javax.management.ObjectName;
 import javax.management.openmbean.CompositeData;
+import javax.management.remote.JMXServiceURL;
+import javax.management.remote.JMXConnector;
+import javax.management.remote.JMXConnectorFactory;
+import javax.management.MBeanServerConnection;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
@@ -49,106 +58,238 @@ import com.ibm.websphere.ras.TraceComponent;
 
 @SuppressWarnings("serial")
 public class SharedSubscriptionServlet extends HttpServlet {
-    public static final String JMXMessage = "This is MessagingMBeanServlet.";
 
-    public final static String MBEAN_TYPE_ME = "WEMMessagingEngine";
+    public static QueueConnectionFactory qcfBindings;
+    public static TopicConnectionFactory tcfBindings;
+    public static TopicConnectionFactory tcfTCP;
 
-    public static boolean sessionValue = false;
-    public static boolean connectionStart = false;
-    public static boolean flag = false;
-    public static boolean compFlag = false;
-    public static boolean exp = false;
-    public static QueueConnectionFactory QCFBindings;
-    public static QueueConnectionFactory QCFTCP;
-
-    public static TopicConnectionFactory TCFBindings;
-    public static TopicConnectionFactory TCFTCP;
-
-    public static boolean exceptionFlag;
     public static Queue queue;
-    public static Queue queue1;
-    public static Queue queue2;
-    public static Queue queue3;
-    public static Topic topic;
+
     public static Topic topic1;
-    public static Topic topic2;
-    public static Topic expiryTopic;
+    public static Topic topic2_Expiry;
+    public static Topic topic3;
 
     @Override
     public void init() throws ServletException {
-        // TODO Auto-generated method stub
-
         super.init();
+
         try {
-
-            QCFBindings = getQCFBindings();
-            TCFBindings = getTCFBindings();
-            QCFTCP = getQCFTCP();
-            TCFTCP = getTCFTCP();
-            queue = (Queue) new InitialContext()
-                            .lookup("java:comp/env/jndi_INPUT_Q");
-
-            queue1 = (Queue) new InitialContext()
-                            .lookup("java:comp/env/jndi_INPUT_Q1");
-
-            queue2 = (Queue) new InitialContext()
-                            .lookup("java:comp/env/jndi_INPUT_Q2");
-
-            queue3 = (Queue) new InitialContext()
-                            .lookup("java:comp/env/jndi_INPUT_Q3");
-
-            topic = (Topic) new InitialContext()
-                            .lookup("java:comp/env/eis/topic1");
-
-            expiryTopic = (Topic) new InitialContext()
-                            .lookup("java:comp/env/eis/topic2");
-
-            topic1 = (Topic) new InitialContext()
-                            .lookup("java:comp/env/eis/topic3");
-
-            topic2 = (Topic) new InitialContext()
-                            .lookup("java:comp/env/eis/topic4");
-
-        } catch (NamingException e) {
-            // TODO Auto-generated catch block
+            qcfBindings = (QueueConnectionFactory)
+                new InitialContext().lookup("java:comp/env/jndi_JMS_BASE_QCF");
+        } catch ( NamingException e ) {
             e.printStackTrace();
         }
+        System.out.println("Queue connection factory 'java:comp/env/jndi_JMS_BASE_QCF':\n" + qcfBindings);
 
+        try {
+            tcfBindings = (TopicConnectionFactory)
+                new InitialContext().lookup("java:comp/env/eis/tcf");
+        } catch ( NamingException e ) {
+            e.printStackTrace();
+        }
+        System.out.println("Topic connection factory 'java:comp/env/eis/tcf':\n" + tcfBindings);
+
+        try {
+            tcfTCP = (TopicConnectionFactory)
+                new InitialContext().lookup("java:comp/env/eis/tcf1");
+        } catch ( NamingException e ) {
+            e.printStackTrace();
+        }
+        System.out.println("Topic connection factory 'java:comp/env/eis/tcf1':\n" + tcfTCP);
+
+        try {
+            queue = (Queue) new InitialContext().lookup("java:comp/env/jndi_INPUT_Q");
+        } catch ( NamingException e ) {
+            e.printStackTrace();
+        }
+        System.out.println("Queue 'java:comp/env/jndi_INPUT_Q':\n" + queue);
+
+        try {
+            topic1 = (Topic) new InitialContext().lookup("java:comp/env/eis/topic1");
+        } catch ( NamingException e ) {
+            e.printStackTrace();
+        }
+        System.out.println("Topic 'java:comp/env/eis/topic1':\n" + topic1);
+
+        try {
+            topic2_Expiry = (Topic) new InitialContext().lookup("java:comp/env/eis/topic2");
+            // has property 'timeToLive="100"'
+        } catch ( NamingException e ) {
+            e.printStackTrace();
+        }
+        System.out.println("Topic 'java:comp/env/eis/topic3':\n" + topic2_Expiry);
+
+        try {
+            topic3 = (Topic) new InitialContext().lookup("java:comp/env/eis/topic3");
+        } catch ( NamingException e ) {
+            e.printStackTrace();
+        }
+        System.out.println("Topic 'java:comp/env/eis/topic3':\n" + topic3);
+
+        if ( (qcfBindings == null) || (tcfBindings == null) || (tcfTCP == null) ||
+             (queue == null) ||
+             (topic1 == null) || (topic2_Expiry == null) || (topic3 == null) ) {
+            throw new ServletException("Failed JMS initialization");
+        }
     }
 
-    @Override
-    protected void doGet(HttpServletRequest request,
-                         HttpServletResponse response) throws ServletException, IOException {
+    //
+
+    private String test;
+
+    private String getTest() {
+        return test;
+    }
+
+    private void setTest(String test) {
+        this.test = test;
+    }
+
+    // Read from the engine server at 'logs/state/com.ibm.ws.jmx.local.address'.
+    private String localAddress;
+
+    private String getLocalAddress() {
+        return localAddress;
+    }
+
+    private void setLocalAddress(String localAddress) {
+        this.localAddress = localAddress;
+    }
+
+    private JMXConnector openLocalConnector() throws MalformedURLException, IOException {
+        JMXServiceURL localConnectorURL = new JMXServiceURL( getLocalAddress() ); // throws MalformedURLException
+        System.out.println("JMX Service URL [ " + localConnectorURL + " ]");
+        // System.out.println("  Protocol [ " + localConnectorURL.getProtocol() + " ]");
+        // System.out.println("  Port     [ " + localConnectorURL.getPort() + " ]");
+        // System.out.println("  Host     [ " + localConnectorURL.getHost() + " ]");
+
+        // String localURLPath = localConnectorURL.getURLPath();
+        // System.out.println("  Path     [ " + localURLPath + " ]");
+		
+        JMXConnector localConnector = JMXConnectorFactory.connect(localConnectorURL); // throws IOException
+        System.out.println("JMX Connector [ " + localConnector + " ]");
+        // System.out.println("JMX Connector ID [ " + localConnector.getConnectionId() + " ]");
+
+        return localConnector;
+    }
+
+    private void closeLocalConnector(JMXConnector localConnector) throws IOException {
+        localConnector.close(); // throws IOException
+    }
+
+    //
+
+    // Expected JMS MBeans:
+    //
+    // WebSphere:feature=wasJmsServer,type=MessagingEngine,name=*
+    // WebSphere:feature=wasJmsServer,type=Queue,name=*
+    // WebSphere:feature=wasJmsServer,type=Subscriber,name=*
+    // WebSphere:feature=wasJmsServer,type=Topic,name=*
+
+    private void displayJMSMBeans(MBeanServerConnection localEngine) throws IOException {
+        System.out.println("JMS MBeans [ " + getTest() + " ]");
+
+        // List all; do not filter the results
+        Set<ObjectInstance> mbeans = localEngine.queryMBeans(null, null); // throws IOException
+
+        // [ com.ibm.ws.sib.admin.internal.JsQueue ] [ 1295428529 ]
+        // [ WebSphere:feature=wasJmsServer,type=Queue,name=_PSIMP.TDRECEIVER_0DF1DC7B8ADD27AF ]
+
+        for ( ObjectInstance mbean : mbeans ) {
+            String mbeanPrintString = mbean.toString();
+            if ( !mbeanPrintString.contains("feature=wasJmsServer") ) {
+                continue;
+            }
+            System.out.println("[ " + mbean.getClassName() + " ] [ " + mbean.hashCode() + " ] [ " + mbean.getObjectName() + " ]");
+            System.out.println("  [ " + mbeanPrintString + " ]");
+        }
+    }
+
+    private CompositeData[] listSubscriptions(String nameText) throws Exception {
+
+        JMXConnector localConnector =
+            openLocalConnector(); // throws MalformedURLException, IOException
+
+        try {
+            MBeanServerConnection localEngine = localConnector.getMBeanServerConnection(); // throws IOException
+
+            displayJMSMBeans(localEngine); // throws IOException
+
+            ObjectName name = new ObjectName(nameText); // throws MalformedObjectNameException
+
+            return (CompositeData[]) localEngine.invoke(name, "listSubscriptions", null, null);
+            // throws InstanceNotFoundException, MBeanException, ReflectionException, IOException
+
+        } finally {
+            closeLocalConnector(localConnector); // throws IOException
+        }
+    }
+
+    // MBeanServerConnection JMXConnector.getMBeanServerConnection(); // throws IOException
+    // MBeanServerConnection.queryMBeans(...) // throws IOException
+    // MBeanServerConnection.queryNames(...) // throws IOException
+
+    //
+
+    /**
+     * Handle a GET request to this servlet: Invoke the test method specified as
+     * request paramater "test".
+     *
+     * The test method throws an exception when it fails.  If no exception
+     * is thrown by the test method, indicate success through the response
+     * output.  If an exception is thrown, omit the success indication.
+     * Instead, display an error indication and display the exception stack
+     * to the response output.
+     *
+     * @param request The HTTP request which is being processed.
+     * @param response The HTTP response which is being processed.
+     *
+     * @throws ServletException Thrown in case of a servlet processing error.
+     * @throws IOException Thrown in case of an input/output error.
+     */
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+
         String test = request.getParameter("test");
+        setTest(test);
+
+        // Read from the engine server at 'logs/state/com.ibm.ws.jmx.local.address'.
+        String decodedLocalAddress = request.getParameter("localAddress");
+        setLocalAddress(decodedLocalAddress);
+
         PrintWriter out = response.getWriter();
         out.println("Starting " + test + "<br>");
-        final TraceComponent tc = Tr.register(SharedSubscriptionServlet.class); // injection
-        // engine
-        // doesn't
-        // like
-        // this
-        // at
-        // the
-        // class
-        // level
+
+        // The injection engine doesn't like this at the class level.
+        TraceComponent tc = Tr.register( getClass() );
+
         Tr.entry(this, tc, test);
         try {
-            getClass().getMethod(test, HttpServletRequest.class,
-                                 HttpServletResponse.class).invoke(this, request, response);
             System.out.println(" Starting : " + test);
+            getClass()
+                .getMethod(test, HttpServletRequest.class, HttpServletResponse.class)
+                .invoke(this, request, response);
             out.println(test + " COMPLETED SUCCESSFULLY");
             System.out.println(" Ending : " + test);
             Tr.exit(this, tc, test);
-        } catch (Throwable x) {
-            if (x instanceof InvocationTargetException)
-                x = x.getCause();
-            Tr.exit(this, tc, test, x);
-            out.println("<pre>ERROR in " + test + ":");
-            System.out.println(" Ending : " + test);
-            x.printStackTrace(out);
+
+        } catch ( Throwable e ) {
+            if ( e instanceof InvocationTargetException ) {
+                e = e.getCause();
+            }
+
+            out.println("<pre>ERROR in " + test + ":<br>");
+            e.printStackTrace(out);
             out.println("</pre>");
+
+            System.out.println(" Ending : " + test);
+            System.out.println("ERROR in " + test + ":");
+            e.printStackTrace(System.out);
+            Tr.exit(this, tc, test, e);
         }
     }
+
+    //
 
     // 129623_1 JMSConsumer createSharedDurableConsumer(Topic topic,String name)
     // 129623_1_1 Creates a shared durable subscription on the specified topic
@@ -156,99 +297,98 @@ public class SharedSubscriptionServlet extends HttpServlet {
     // subscription. This method creates the durable subscription without a
     // message selector.
 
+    // testCreateSharedDurableExpiry_B_SecOff
+    //   testCreateSharedDurableConsumer_create_B_SecOff
+    //   testCreateSharedDurableConsumer_create_Expiry_B_SecOff
+    //   testCreateSharedDurableConsumer_consume_B_SecOff
+    //   testCreateSharedDurableConsumer_consume_Expiry_B_SecOff
+
     public void testCreateSharedDurableConsumer_create_B_SecOff(
-                                                                HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
+        HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        JMSContext jmsContextSender = TCFBindings.createContext();
+        JMSContext jmsContextSender = tcfBindings.createContext();
 
-        JMSContext jmsContextReceiver = TCFBindings.createContext();
-
-        JMSConsumer jmsConsumer = jmsContextReceiver
-                        .createSharedDurableConsumer(topic, "SUBID");
-
+        JMSContext jmsContextReceiver = tcfBindings.createContext();
+        JMSConsumer jmsConsumer = jmsContextReceiver.createSharedDurableConsumer(topic1, "SUBID_B_D_NE");
         JMSProducer jmsProducer = jmsContextSender.createProducer();
 
-        TextMessage tmsg = jmsContextSender
-                        .createTextMessage("This is a test message");
+        TextMessage tmsg = jmsContextSender.createTextMessage("This is a test message");
+        jmsProducer.send(topic1, tmsg);
 
-        jmsProducer.send(topic, tmsg);
+        System.out.println("testCreateSharedDurableExpiry_B_SecOff (send, non-durable, non-expiring):");
+        System.out.println("Topic [ " + topic1 + " ] Topic ID [ " + "SUBID_B_D_NE" + " ]");
+        System.out.println("Send [ " + tmsg + " ]");
+
+        jmsConsumer.close();
+        jmsContextReceiver.close();
 
         jmsContextSender.close();
-
     }
 
     public void testCreateSharedDurableConsumer_consume_B_SecOff(
-                                                                 HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
+        HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        exceptionFlag = false;
-
-        JMSContext jmsContextReceiver = TCFBindings.createContext();
-        JMSConsumer jmsConsumer = jmsContextReceiver
-                        .createSharedDurableConsumer(topic, "SUBID");
-
+        JMSContext jmsContextReceiver = tcfBindings.createContext();
+        JMSConsumer jmsConsumer = jmsContextReceiver.createSharedDurableConsumer(topic1, "SUBID_B_D_NE");
         TextMessage tmsg = (TextMessage) jmsConsumer.receive(30000);
 
-        if (!(tmsg != null))
-            exceptionFlag = true;
-
-        if (exceptionFlag)
-            throw new WrongException("testCreateSharedDurableExpiry_B_SecOff failed");
+        System.out.println("testCreateSharedDurableExpiry_B_SecOff (receive, durable, non-expiring):");
+        System.out.println("Topic [ " + topic1 + " ] Topic ID [ " + "SUBID_B_D_NE" + " ]");
+        System.out.println("Receive [ " + tmsg + " ] (should not be null)");
 
         jmsConsumer.close();
-
-        jmsContextReceiver.unsubscribe("SUBID");
-
+        jmsContextReceiver.unsubscribe("SUBID_B_D_NE");
         jmsContextReceiver.close();
 
+        if ( tmsg == null ) {
+            throw new Exception("testCreateSharedDurableConsumer_consume_B_SecOff failed (null message)");
+        }
     }
+
+    // testCreateSharedDurableExpiry_TCP_SecOff
 
     public void testCreateSharedDurableConsumer_create_TCP_SecOff(
-                                                                  HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
+        HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        JMSContext jmsContextSender = TCFTCP.createContext();
+        JMSContext jmsContextSender = tcfTCP.createContext();
 
-        JMSContext jmsContextReceiver = TCFTCP.createContext();
-
-        JMSConsumer jmsConsumer = jmsContextReceiver
-                        .createSharedDurableConsumer(topic, "SUBID");
+        JMSContext jmsContextReceiver = tcfTCP.createContext();
+        JMSConsumer jmsConsumer = jmsContextReceiver.createSharedDurableConsumer(topic1, "SUBID_TCP_D_NE");
 
         JMSProducer jmsProducer = jmsContextSender.createProducer();
+        TextMessage tmsg = jmsContextSender.createTextMessage("This is a test message");
+        jmsProducer.send(topic1, tmsg);
 
-        TextMessage tmsg = jmsContextSender
-                        .createTextMessage("This is a test message");
-
-        jmsProducer.send(topic, tmsg);
-
-        jmsContextSender.close();
-
-    }
-
-    public void testCreateSharedDurableConsumer_consume_TCP_SecOff(
-                                                                   HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
-
-        exceptionFlag = false;
-
-        JMSContext jmsContextReceiver = TCFTCP.createContext();
-        JMSConsumer jmsConsumer = jmsContextReceiver
-                        .createSharedDurableConsumer(topic, "SUBID");
-
-        TextMessage tmsg = (TextMessage) jmsConsumer.receive(30000);
-
-        if (!(tmsg != null))
-            exceptionFlag = true;
-
-        if (exceptionFlag)
-            throw new WrongException("testCreateSharedDurableExpiry_TCP_SecOff failed");
+        System.out.println("testCreateSharedDurableExpiry_TCP_SecOff (send, durable, non-expiring):");
+        System.out.println("Topic [ " + topic1 + " ] Topic ID [ " + "SUBID_TCP_D_NE" + " ]");
+        System.out.println("Send [ " + tmsg + " ]");
 
         jmsConsumer.close();
-
-        jmsContextReceiver.unsubscribe("SUBID");
-
         jmsContextReceiver.close();
+
+        jmsContextSender.close();
+    }
+
+    // testCreateSharedDurableExpiry_TCP_SecOff
+
+    public void testCreateSharedDurableConsumer_consume_TCP_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Throwable {
+
+        JMSContext jmsContextReceiver = tcfTCP.createContext();
+        JMSConsumer jmsConsumer = jmsContextReceiver.createSharedDurableConsumer(topic1, "SUBID_TCP_D_NE");
+        TextMessage tmsg = (TextMessage) jmsConsumer.receive(30000);
+
+        System.out.println("testCreateSharedDurableExpiry_TCP_SecOff (receive, durable, non-expiring):");
+        System.out.println("Topic [ " + topic1 + " ] Topic ID [ " + "SUBID_TCP_D_NE" + " ]");
+        System.out.println("Receive [ " + tmsg + " ] (should not be null)");
+
+        jmsConsumer.close();
+        jmsContextReceiver.unsubscribe("SUBID_TCP_D_NE");
+        jmsContextReceiver.close();
+
+        if ( tmsg == null ) {
+            throw new Exception("testCreateSharedDurableExpiry_TCP_SecOff failed");
+        }
     }
 
     // 129623_1_3 The JMS provider retains a record of this durable subscription
@@ -256,314 +396,328 @@ public class SharedSubscriptionServlet extends HttpServlet {
     // until they are delivered to, and acknowledged by, a consumer on this
     // durable subscription or until they have expired.
 
+    // testCreateSharedDurableExpiry_B_SecOff
+
     public void testCreateSharedDurableConsumer_create_Expiry_B_SecOff(
-                                                                       HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
+        HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        JMSContext jmsContextSender = TCFBindings.createContext();
-        JMSContext jmsContextReceiver = TCFBindings.createContext();
+        JMSContext jmsContextSender = tcfBindings.createContext();
 
-        JMSConsumer jmsConsumer = jmsContextReceiver
-                        .createSharedDurableConsumer(expiryTopic, "EXPID");
+        JMSContext jmsContextReceiver = tcfBindings.createContext();
+        JMSConsumer jmsConsumer = jmsContextReceiver.createSharedDurableConsumer(topic2_Expiry, "EXPID_B_D_E");
 
         JMSProducer jmsProducer = jmsContextSender.createProducer();
+        TextMessage tmsg = jmsContextSender.createTextMessage("This is a test message");
+        jmsProducer.send(topic2_Expiry, tmsg);
 
-        TextMessage tmsg = jmsContextSender
-                        .createTextMessage("This is a test message");
+        System.out.println("testCreateSharedDurableExpiry_B_SecOff (send, durable, expiring):");
+        System.out.println("Topic [ " + topic2_Expiry + " ] Topic ID [ " + "EXPID_B_D_E" + " ]");
+        System.out.println("Send [ " + tmsg + " ]");
 
-        jmsProducer.send(expiryTopic, tmsg);
+        jmsConsumer.close();
+        jmsContextReceiver.close();
 
         jmsContextSender.close();
-
     }
+
+    // testCreateSharedDurableExpiry_B_SecOff
 
     public void testCreateSharedDurableConsumer_consume_Expiry_B_SecOff(
-                                                                        HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
-        exceptionFlag = false;
-        JMSContext jmsContextReceiver = TCFBindings.createContext();
-        JMSConsumer jmsConsumer = jmsContextReceiver
-                        .createSharedDurableConsumer(topic, "EXPID");
+        HttpServletRequest request, HttpServletResponse response) throws Throwable {
+
+        // The topic timeToLive is set to 200ms;
+        // wait twice that long to force the message to expire.
+        Thread.currentThread().sleep(2 * 200);
+
+        JMSContext jmsContextReceiver = tcfBindings.createContext();
+        JMSConsumer jmsConsumer = jmsContextReceiver.createSharedDurableConsumer(topic2_Expiry, "EXPID_B_D_E");
 
         TextMessage tmsg = (TextMessage) jmsConsumer.receive(30000);
-        System.out.println("Message Received is :" + tmsg);
-        if (!(tmsg == null))
-            exceptionFlag = true;
-        if (exceptionFlag)
-            throw new WrongException("testCreateSharedDurableExpiry_B_SecOff failed");
-        jmsConsumer.close();
-        jmsContextReceiver.unsubscribe("EXPID");
 
+        System.out.println("testCreateSharedDurableExpiry_B_SecOff (receive, durable, expiring):");
+        System.out.println("Topic [ " + topic2_Expiry + " ] Topic ID [ " + "EXPID_B_D_E" + " ]");
+        System.out.println("Receive [ " + tmsg + " ] (should be null / expired)");
+
+        jmsConsumer.close();
+        jmsContextReceiver.unsubscribe("EXPID_B_D_E");
         jmsContextReceiver.close();
 
+        if ( tmsg != null ) {
+            throw new Exception("testCreateSharedDurableConsumer_consume_Expiry_B_SecOff failed");
+        }
     }
+
+    // testCreateSharedDurableExpiry_TCP_SecOff 
 
     public void testCreateSharedDurableConsumer_create_Expiry_TCP_SecOff(
-                                                                         HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
+        HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        JMSContext jmsContextSender = TCFTCP.createContext();
-        JMSContext jmsContextReceiver = TCFTCP.createContext();
+        JMSContext jmsContextSender = tcfTCP.createContext();
 
-        JMSConsumer jmsConsumer = jmsContextReceiver
-                        .createSharedDurableConsumer(expiryTopic, "EXPID");
+        JMSContext jmsContextReceiver = tcfTCP.createContext();
+        JMSConsumer jmsConsumer = jmsContextReceiver.createSharedDurableConsumer(topic2_Expiry, "EXPID_TCP_D_E");
 
         JMSProducer jmsProducer = jmsContextSender.createProducer();
+        TextMessage tmsg = jmsContextSender.createTextMessage("This is a test message");
+        jmsProducer.send(topic2_Expiry, tmsg);
 
-        TextMessage tmsg = jmsContextSender
-                        .createTextMessage("This is a test message");
+        System.out.println("testCreateSharedDurableExpiry_B_SecOff (send, durable, expiring):");
+        System.out.println("Topic [ " + topic2_Expiry + " ] Topic ID [ " + "EXPID_TCP_D_E" + " ]");
+        System.out.println("Send [ " + tmsg + " ]");
 
-        jmsProducer.send(expiryTopic, tmsg);
+        jmsConsumer.close();
+        jmsContextReceiver.close();
 
         jmsContextSender.close();
-
     }
 
-    public void testCreateSharedDurableConsumer_consume_Expiry_TCP_SecOff(
-                                                                          HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
+    // testCreateSharedDurableExpiry_TCP_SecOff
 
-        exceptionFlag = false;
-        JMSContext jmsContextReceiver = TCFTCP.createContext();
-        JMSConsumer jmsConsumer = jmsContextReceiver
-                        .createSharedDurableConsumer(expiryTopic, "EXPID");
+    public void testCreateSharedDurableConsumer_consume_Expiry_TCP_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Throwable {
+
+        // The topic timeToLive is set to 200ms;
+        // wait twice that long to force the message to expire.
+        Thread.currentThread().sleep(2 * 200);
+
+        JMSContext jmsContextReceiver = tcfTCP.createContext();
+        JMSConsumer jmsConsumer = jmsContextReceiver.createSharedDurableConsumer(topic2_Expiry, "EXPID_TCP_D_E");
 
         TextMessage tmsg = (TextMessage) jmsConsumer.receive(30000);
 
-        if (!(tmsg == null))
-            exceptionFlag = true;
-        if (exceptionFlag)
-            throw new WrongException("testCreateSharedDurableExpiry_TCP_SecOff failed");
-        jmsConsumer.close();
-        jmsContextReceiver.unsubscribe("EXPID");
+        System.out.println("testCreateSharedDurableExpiry_B_SecOff (receive, durable, expiring):");
+        System.out.println("Topic [ " + topic2_Expiry + " ] Topic ID [ " + "EXPID_TCP_D_E" + " ]");
+        System.out.println("Receive [ " + tmsg + " ] (should be null / expired)");
 
+        jmsConsumer.close();
+        jmsContextReceiver.unsubscribe("EXPID_TCP_D_E");
         jmsContextReceiver.close();
 
+        if ( tmsg != null ) {
+            throw new Exception("testCreateSharedDurableConsumer_consume_Expiry_TCP_SecOff failed");
+        }
     }
 
     // 129623_1_4 A durable subscription will continue to accumulate messages
     // until it is deleted using the unsubscribe method.
 
     public void testCreateSharedDurableConsumer_unsubscribe_B_SecOff(
-                                                                     HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
-        exceptionFlag = false;
-        JMSContext jmsContextTCFBindings = TCFBindings.createContext();
+        HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        JMSConsumer jmsConsumer = jmsContextTCFBindings.createSharedDurableConsumer(topic, "DURATEST");
+        JMSContext jmsContextTCFBindings = tcfBindings.createContext();
 
+        JMSConsumer jmsConsumer = jmsContextTCFBindings.createSharedDurableConsumer(topic1, "DURATEST1");
         JMSProducer jmsProducer = jmsContextTCFBindings.createProducer();
 
-        TextMessage tmsg = jmsContextTCFBindings
-                        .createTextMessage("This is a test message");
+        try {
+            TextMessage msgOut = jmsContextTCFBindings.createTextMessage("This is a test message");
+            jmsProducer.send(topic1, msgOut);
+            TextMessage msgIn = (TextMessage) jmsConsumer.receive(30000);
 
-        jmsProducer.send(topic, tmsg);
+        } finally {
+            jmsConsumer.close();
+            jmsContextTCFBindings.unsubscribe("DURATEST1");
+        }
 
-        tmsg = (TextMessage) jmsConsumer.receive(30000);
+        boolean testFailed = false;
 
-        jmsConsumer.close();
-
-        jmsContextTCFBindings.unsubscribe("DURATEST");
-
-        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-
-        final ObjectName name = new ObjectName(
-                        "WebSphere:feature=wasJmsServer,type=Subscriber,name=clientID##DURATEST");
-        System.out.println("initialized MBeanServer and Object");
-        System.out.println("object created");
+        JMXConnector localConnector =
+            openLocalConnector(); // throws MalformedURLException, IOException
 
         try {
-            String obn = (String) mbs.getAttribute(name, "Id");
+            MBeanServerConnection localEngine =
+                localConnector.getMBeanServerConnection(); // throws IOException
 
-        } catch (InstanceNotFoundException ex) {
+            ObjectName name = new ObjectName(
+                "WebSphere" +
+                ":feature=wasJmsServer" +
+                ",type=Subscriber" +
+                ",name=clientID##DURATEST1"); // throws MalformedObjectNameException
+            String obn = (String) localEngine.getAttribute(name, "Id");
+            testFailed = true;
+
+        } catch ( InstanceNotFoundException ex ) {
             ex.printStackTrace();
-            exceptionFlag = true;
+
+        } finally {
+            closeLocalConnector(localConnector); // throws IOException
         }
-        if (!(exceptionFlag))
-            throw new WrongException("testCreateSharedDurableConsumer_unsubscribe_B_SecOff failed");
 
         jmsContextTCFBindings.close();
 
+        if ( testFailed ) {
+            throw new Exception("testCreateSharedDurableConsumer_unsubscribe_B_SecOff failed");
+        }
     }
 
     public void testCreateSharedDurableConsumer_unsubscribe_TCP_SecOff(
-                                                                       HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
-        exceptionFlag = false;
-        JMSContext jmsContextTCFTCP = TCFTCP.createContext();
+        HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        JMSConsumer jmsConsumer = jmsContextTCFTCP.createSharedDurableConsumer(topic, "DURATEST");
+        JMSContext jmsContextTCFTCP = tcfTCP.createContext();
 
+        JMSConsumer jmsConsumer = jmsContextTCFTCP.createSharedDurableConsumer(topic1, "DURATEST2");
         JMSProducer jmsProducer = jmsContextTCFTCP.createProducer();
 
-        TextMessage tmsg = jmsContextTCFTCP
-                        .createTextMessage("This is a test message");
-
-        jmsProducer.send(topic, tmsg);
-
-        tmsg = (TextMessage) jmsConsumer.receive(30000);
-
-        jmsConsumer.close();
-
-        jmsContextTCFTCP.unsubscribe("DURATEST");
-
-        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-
-        final ObjectName name = new ObjectName(
-                        "WebSphere:feature=wasJmsServer,type=Subscriber,name=clientID##DURATEST");
-        System.out.println("initialized MBeanServer and Object");
-        System.out.println("object created");
-
         try {
-            String obn = (String) mbs.getAttribute(name, "Id");
-
-        } catch (InstanceNotFoundException ex) {
-            ex.printStackTrace();
-            exceptionFlag = true;
+            TextMessage msgOut = jmsContextTCFTCP.createTextMessage("This is a test message");
+            jmsProducer.send(topic1, msgOut);
+            TextMessage msgIn = (TextMessage) jmsConsumer.receive(30000);
+        } finally {
+            jmsConsumer.close();
+            jmsContextTCFTCP.unsubscribe("DURATEST2");
         }
 
-        if (!(exceptionFlag))
-            throw new WrongException("testCreateSharedDurableConsumer_unsubscribe_TCP_SecOff failed");
+        boolean testFailed = false;
+
+        JMXConnector localConnector =
+            openLocalConnector(); // throws MalformedURLException, IOException
+
+        try {
+            MBeanServerConnection localEngine =
+                localConnector.getMBeanServerConnection(); // throws IOException
+
+            ObjectName name = new ObjectName(
+                "WebSphere" +
+                ":feature=wasJmsServer" +
+                ",type=Subscriber" +
+                ",name=clientID##DURATEST2"); // throws MalformedObjectNameException
+
+            String obn = (String) localEngine.getAttribute(name, "Id");
+            testFailed = true;
+
+        } catch ( InstanceNotFoundException ex ) {
+            ex.printStackTrace();
+
+        } finally {
+            closeLocalConnector(localConnector); // throws IOException
+        }
 
         jmsContextTCFTCP.close();
+
+        if ( testFailed ) {
+            throw new Exception("testCreateSharedDurableConsumer_unsubscribe_TCP_SecOff failed");
+        }
     }
 
-    /*
-     * // 129623_1_5 Any durable subscription created using this method will be
-     * // shared. This means that multiple active (i.e. not closed) consumers on
-     * // the subscription may exist at the same time. The term "consumer" here
-     * // means a JMSConsumer object in any client.
-     * // 129623_1_6 A shared durable subscription is identified by a name
-     * // specified by the client and by the client identifier (which may be
-     * // unset). An application which subsequently wishes to create a consumer on
-     * // that shared durable subscription must use the same client identifier.
-     * 
-     * public void testBasicMDBTopic(HttpServletRequest request,
-     * HttpServletResponse response) throws Throwable {
-     * 
-     * TopicConnectionFactory cf1 = (TopicConnectionFactory) new InitialContext()
-     * .lookup("java:comp/env/jms/FAT_TCF");
-     * 
-     * int msgs = 3;
-     * 
-     * Topic topic = (Topic) new InitialContext()
-     * .lookup("java:comp/env/jms/FAT_TOPIC");
-     * 
-     * JMSContext jmsCont = cf1.createContext();
-     * JMSProducer publisher = jmsCont.createProducer();
-     * 
-     * for (int i = 0; i < msgs; i++) {
-     * publisher.send(topic, "testBasicMDBTopic:" + i);
-     * }
-     * 
-     * System.out.println("Published  messages ");
-     * 
-     * jmsCont.close();
-     * 
-     * }
-     * 
-     * public void testBasicMDBTopic_TCP(HttpServletRequest request,
-     * HttpServletResponse response) throws Throwable {
-     * 
-     * TopicConnectionFactory cf1 = (TopicConnectionFactory) new InitialContext()
-     * .lookup("java:comp/env/jms/FAT_COMMS_TCF");
-     * 
-     * int msgs = 3;
-     * 
-     * Topic topic = (Topic) new InitialContext()
-     * .lookup("java:comp/env/jms/FAT_TOPIC");
-     * 
-     * JMSContext jmsCont = cf1.createContext();
-     * JMSProducer publisher = jmsCont.createProducer();
-     * 
-     * for (int i = 0; i < msgs; i++) {
-     * publisher.send(topic, "testBasicMDBTopic:" + i);
-     * }
-     * 
-     * System.out.println("Published  messages ");
-     * 
-     * jmsCont.close();
-     * 
-     * }
-     */
+    // 129623_1_5 Any durable subscription created using this method will be
+    // shared. This means that multiple active (i.e. not closed) consumers on
+    // the subscription may exist at the same time. The term "consumer" here
+    // means a JMSConsumer object in any client.
+    // 129623_1_6 A shared durable subscription is identified by a name
+    // specified by the client and by the client identifier (which may be
+    // unset). An application which subsequently wishes to create a consumer on
+    // that shared durable subscription must use the same client identifier.
+
+    public void testBasicMDBTopic(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        TopicConnectionFactory fatTCF = (TopicConnectionFactory)
+            new InitialContext().lookup("java:comp/env/jms/FAT_TCF");
+        Topic fatTopic = (Topic)
+            new InitialContext().lookup("java:comp/env/jms/FAT_TOPIC");
+
+        JMSContext jmsContext = fatTCF.createContext();
+        JMSProducer jmsPublisher = jmsContext.createProducer();
+
+        int numMsgs = 10;
+        for ( int msgNo = 0; msgNo < numMsgs; msgNo++ ) {
+            jmsPublisher.send(fatTopic, "testBasicMDBTopic:" + msgNo);
+        }
+
+        jmsContext.close();
+    }
+
+    public void testBasicMDBTopic_TCP(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        TopicConnectionFactory fatTCF = (TopicConnectionFactory)
+            new InitialContext().lookup("java:comp/env/jms/FAT_COMMS_TCF");
+        Topic fatTopic = (Topic)
+            new InitialContext().lookup("java:comp/env/jms/FAT_TOPIC");
+
+        JMSContext jmsContext = fatTCF.createContext();
+        JMSProducer jmsPublisher = jmsContext.createProducer();
+
+        int numMsgs = 10;
+        for ( int msgNo = 0; msgNo < numMsgs; msgNo++ ) {
+            jmsPublisher.send(fatTopic, "testBasicMDBTopic:" + msgNo);
+        }
+
+        jmsContext.close();
+     }
+
     // 129623_1_7 If a shared durable subscription already exists with the same
     // name and client identifier (if set), and the same topic and message
     // selector has been specified, then this method creates a JMSConsumer on
     // the existing shared durable subscription.
 
     public void testCreateSharedDurableConsumer_2Subscribers_B_SecOff(
-                                                                      HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
+        HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        exceptionFlag = false;
+        JMSContext jmsContextTCFBindings = tcfBindings.createContext();
 
-        JMSContext jmsContextTCFBindings = TCFBindings.createContext();
+        JMSConsumer jmsConsumer = jmsContextTCFBindings.createSharedDurableConsumer(topic1, "PUBSUBTEST");
+        JMSConsumer jmsConsumerCopy = null;
 
-        JMSConsumer jmsConsumer = jmsContextTCFBindings.createSharedDurableConsumer(topic, "PUBSUBTEST");
+        CompositeData[] obn = null;
+        try {
+            JMSProducer jmsProducer = jmsContextTCFBindings.createProducer();
 
-        JMSProducer jmsProducer = jmsContextTCFBindings.createProducer();
+            TextMessage msgOut = jmsContextTCFBindings.createTextMessage("This is a test message");
+            jmsProducer.send(topic1, msgOut);
+            TextMessage msgIn = (TextMessage) jmsConsumer.receive(30000);
 
-        TextMessage tmsg = jmsContextTCFBindings.createTextMessage("This is a test message");
+            jmsConsumerCopy = jmsContextTCFBindings.createSharedDurableConsumer(topic1, "PUBSUBTEST");
 
-        jmsProducer.send(topic, tmsg);
+            obn = listSubscriptions("WebSphere:feature=wasJmsServer,type=Topic,name=NewTopic1");
+            // throws MalformedURLException, IOException
 
-        tmsg = (TextMessage) jmsConsumer.receive(30000);
+        } finally {
+            if ( jmsConsumerCopy != null ) {
+                jmsConsumerCopy.close();
+            }
+            jmsConsumer.close();
+            jmsContextTCFBindings.unsubscribe("PUBSUBTEST");
+            jmsContextTCFBindings.close();
+        }
 
-        JMSConsumer jmsConsumerCopy = jmsContextTCFBindings.createSharedDurableConsumer(topic, "PUBSUBTEST");
-
-        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-
-        final ObjectName name = new ObjectName(
-                        "WebSphere:feature=wasJmsServer,type=Topic,name=NewTopic1");
-
-        javax.management.openmbean.CompositeData[] obn = (CompositeData[]) mbs
-                        .invoke(name, "listSubscriptions", null, null);
-
-        if (!(obn.length == 1))
-            exceptionFlag = true;
-
-        if (exceptionFlag)
-            throw new WrongException("testCreateSharedDurableConsumer_2Subscribers_B_SecOff failed");
-
-        jmsConsumer.close();
-        jmsConsumerCopy.close();
-        jmsContextTCFBindings.unsubscribe("PUBSUBTEST");
-        jmsContextTCFBindings.close();
-
+        if ( obn.length != 1 ) {
+            throw new Exception("testCreateSharedDurableConsumer_2Subscribers_B_SecOff failed");
+        }
     }
 
     public void testCreateSharedDurableConsumer_2Subscribers_TCP_SecOff(
-                                                                        HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
+        HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        exceptionFlag = false;
+        JMSContext jmsContextTCFTCP = tcfTCP.createContext();
 
-        JMSContext jmsContextTCFTCP = TCFTCP.createContext();
-
-        JMSConsumer jmsConsumer = jmsContextTCFTCP.createSharedDurableConsumer(topic, "PUBSUBTEST");
-
+        JMSConsumer jmsConsumer = jmsContextTCFTCP.createSharedDurableConsumer(topic1, "PUBSUBTEST");
         JMSProducer jmsProducer = jmsContextTCFTCP.createProducer();
+        JMSConsumer jmsConsumerCopy = null;
+        TextMessage msgIn2 = null;
 
-        TextMessage tmsg = jmsContextTCFTCP.createTextMessage("This is a test message");
+        try {
+            TextMessage msgOut = jmsContextTCFTCP.createTextMessage("This is a test message");
+            jmsProducer.send(topic1, msgOut);
 
-        jmsProducer.send(topic, tmsg);
+            TextMessage msgIn1 = (TextMessage) jmsConsumer.receive(30000);
 
-        tmsg = (TextMessage) jmsConsumer.receive(30000);
+            jmsConsumerCopy = jmsContextTCFTCP.createSharedDurableConsumer(topic1, "PUBSUBTEST");
+            jmsProducer.send(topic1, msgIn1);
+            msgIn2 = (TextMessage) jmsConsumerCopy.receive(30000);
 
-        JMSConsumer jmsConsumerCopy = jmsContextTCFTCP.createSharedDurableConsumer(topic, "PUBSUBTEST");
-        jmsProducer.send(topic, tmsg);
-        tmsg = (TextMessage) jmsConsumerCopy.receive(30000);
+        } finally {
+            if ( jmsConsumerCopy != null ) {
+                jmsConsumerCopy.close();
+            }
+            jmsConsumer.close();
+            jmsContextTCFTCP.unsubscribe("PUBSUBTEST");
+            jmsContextTCFTCP.close();
+        }
 
-        if (!(tmsg != null))
-            exceptionFlag = true;
-
-        if (exceptionFlag)
-            throw new WrongException("testCreateSharedDurableConsumer_2Subscribers_TCP_SecOff failed");
-
-        jmsConsumer.close();
-        jmsConsumerCopy.close();
-        jmsContextTCFTCP.unsubscribe("PUBSUBTEST");
-        jmsContextTCFTCP.close();
+        if ( msgIn2 == null ) {
+            throw new Exception("testCreateSharedDurableConsumer_2Subscribers_TCP_SecOff failed");
+        }
     }
 
     // 129623_1_8 If a shared durable subscription already exists with the same
@@ -573,93 +727,70 @@ public class SharedSubscriptionServlet extends HttpServlet {
     // (deleting) the old one and creating a new one.
 
     public void testCreateSharedDurableConsumer_2SubscribersDiffTopic_B_SecOff(
-                                                                               HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
+        HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        exceptionFlag = false;
+        JMSContext jmsContextTCFBindings = tcfBindings.createContext();
 
-        JMSContext jmsContextTCFBindings = TCFBindings.createContext();
-
-        JMSConsumer jmsConsumer = jmsContextTCFBindings.createSharedDurableConsumer(topic1, "DURATEST123");
-
+        JMSConsumer jmsConsumer = jmsContextTCFBindings.createSharedDurableConsumer(topic1, "DURATEST123_B");
         JMSProducer jmsProducer = jmsContextTCFBindings.createProducer();
 
-        TextMessage tmsg = jmsContextTCFBindings
-                        .createTextMessage("This is a test message");
+        try {
+            TextMessage msgOut = jmsContextTCFBindings.createTextMessage("This is a test message");
+            jmsProducer.send(topic1, msgOut);
+            TextMessage msgIn = (TextMessage) jmsConsumer.receive(30000);
+        } finally {
+            jmsConsumer.close();
+        }
 
-        jmsProducer.send(topic1, tmsg);
+        JMSConsumer jmsConsumer2 =
+            jmsContextTCFBindings.createSharedDurableConsumer(topic1, "DURATEST123_B");
 
-        tmsg = (TextMessage) jmsConsumer.receive(30000);
-        System.out.println("Message Received is :" + tmsg);
+        CompositeData[] obn = null;
+        try {
+            obn = listSubscriptions("WebSphere:feature=wasJmsServer,type=Topic,name=NewTopic1");
 
-        jmsConsumer.close();
+        } finally {
+            jmsConsumer2.close();
+            jmsContextTCFBindings.unsubscribe("DURATEST123_B");
+            jmsContextTCFBindings.close();
+        }
 
-        JMSConsumer jmsConsumer2 = jmsContextTCFBindings.createSharedDurableConsumer(
-                                                                                     topic2, "DURATEST123");
-
-        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-
-        final ObjectName name = new ObjectName(
-                        "WebSphere:feature=wasJmsServer,type=Topic,name=NewTopic4");
-
-        javax.management.openmbean.CompositeData[] obn = (CompositeData[]) mbs
-                        .invoke(name, "listSubscriptions", null, null);
-
-        if (!(obn.length == 1))
-            exceptionFlag = true;
-
-        if (exceptionFlag)
-            throw new WrongException("testCreateSharedDurableConsumer_2SubscribersDiffTopic_B_SecOff failed");
-
-        jmsConsumer2.close();
-        jmsContextTCFBindings.unsubscribe("DURATEST123");
-
+        if ( obn.length != 1 ) {
+            throw new Exception("testCreateSharedDurableConsumer_2SubscribersDiffTopic_B_SecOff failed");
+        }
     }
 
     public void testCreateSharedDurableConsumer_2SubscribersDiffTopic_TCP_SecOff(
-                                                                                 HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
-        try
-        {
-            exceptionFlag = false;
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-            JMSContext jmsContextTCFTCP = TCFTCP.createContext();
+        JMSContext jmsContextTCFTCP = tcfTCP.createContext();
 
-            JMSConsumer jmsConsumer = jmsContextTCFTCP.createSharedDurableConsumer(topic1, "DURATEST123");
+        JMSConsumer jmsConsumer1 = jmsContextTCFTCP.createSharedDurableConsumer(topic1, "DURATEST123_TCP");
+        JMSProducer jmsProducer = jmsContextTCFTCP.createProducer();
+        TextMessage msgIn1;
+        try {
+            TextMessage msgOut = jmsContextTCFTCP.createTextMessage("This is a test message");
+            jmsProducer.send(topic1, msgOut);
+            msgIn1 = (TextMessage) jmsConsumer1.receive(30000);
+        } finally {
+            jmsConsumer1.close();
+        }
 
-            JMSProducer jmsProducer = jmsContextTCFTCP.createProducer();
+        Thread.sleep(30000);
 
-            TextMessage tmsg = jmsContextTCFTCP
-                            .createTextMessage("This is a test message");
-
-            jmsProducer.send(topic1, tmsg);
-
-            tmsg = (TextMessage) jmsConsumer.receive(30000);
-            System.out.println("Message Received is :" + tmsg);
-
-            jmsConsumer.close();
-
-            Thread.sleep(30000);
-
-            JMSConsumer jmsConsumer2 = jmsContextTCFTCP.createSharedDurableConsumer(
-                                                                                    topic2, "DURATEST123");
-            jmsProducer.send(topic2, tmsg);
-            tmsg = (TextMessage) jmsConsumer2.receive(30000);
-            System.out.println("Message Received is :" + tmsg);
-
-            if (!(tmsg != null))
-                exceptionFlag = true;
-
-            if (exceptionFlag)
-                throw new WrongException("testCreateSharedDurableConsumer_2SubscribersDiffTopic_B_SecOff failed");
-
+        JMSConsumer jmsConsumer2 = jmsContextTCFTCP.createSharedDurableConsumer(topic1, "DURATEST123_TCP");
+        TextMessage msgIn2;
+        try {
+            jmsProducer.send(topic1, msgIn1);
+            msgIn2 = (TextMessage) jmsConsumer2.receive(30000);
+        } finally {
             jmsConsumer2.close();
-            System.out.println("before unscribe");
-            jmsContextTCFTCP.unsubscribe("DURATEST123");
-        } catch (Exception e)
-        {
-            e.printStackTrace();
-            throw e;
+            jmsContextTCFTCP.unsubscribe("DURATEST123_TCP");
+            jmsContextTCFTCP.close();
+        }
+
+        if ( msgIn2 == null ) {
+            throw new Exception("testCreateSharedDurableConsumer_2SubscribersDiffTopic_TCB_SecOff failed");
         }
     }
 
@@ -669,80 +800,71 @@ public class SharedSubscriptionServlet extends HttpServlet {
     // the durable subscription, then a JMSRuntimeException will be thrown.
 
     public void testCreateSharedDurableConsumer_JRException_B_SecOff(
-                                                                     HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
+        HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        exceptionFlag = false;
+        JMSContext jmsContextTCFBindings = tcfBindings.createContext();
 
-        JMSContext jmsContextTCFBindings = TCFBindings.createContext();
+        JMSConsumer jmsConsumer1 = jmsContextTCFBindings.createSharedDurableConsumer(topic1, "DURATEST456_B");
 
-        JMSConsumer jmsConsumer = jmsContextTCFBindings.createSharedDurableConsumer(
-                                                                                    topic, "DURATEST456");
-
-        JMSProducer jmsProducer = jmsContextTCFBindings.createProducer();
-
-        TextMessage tmsg = jmsContextTCFBindings
-                        .createTextMessage("This is a test message");
-
-        jmsProducer.send(topic, tmsg);
-
-        tmsg = (TextMessage) jmsConsumer.receive(30000);
+        boolean testFailed = false;
 
         try {
+            JMSProducer jmsProducer = jmsContextTCFBindings.createProducer();
+            TextMessage msgOut = jmsContextTCFBindings.createTextMessage("This is a test message");
+            jmsProducer.send(topic1, msgOut);
+            TextMessage msgIn = (TextMessage) jmsConsumer1.receive(30000);
 
-            JMSConsumer jmsConsumer1 = jmsContextTCFBindings
-                            .createSharedDurableConsumer(topic1, "DURATEST456");
-        } catch (JMSRuntimeException ex) {
-            ex.printStackTrace();
-            exceptionFlag = true;
+            try {
+                JMSConsumer jmsConsumer2 = jmsContextTCFBindings.createSharedDurableConsumer(topic3, "DURATEST456_B");
+                testFailed = true;
+            } catch ( JMSRuntimeException ex ) {
+                ex.printStackTrace();
+            }
 
+        } finally {
+            jmsConsumer1.close();
+            jmsContextTCFBindings.unsubscribe("DURATEST456_B");
+            jmsContextTCFBindings.close();
         }
 
-        if (!(exceptionFlag))
-            throw new WrongException("testCreateSharedDurableConsumer_JRException_B_SecOff failed");
-
-        jmsConsumer.close();
-        jmsContextTCFBindings.unsubscribe("DURATEST456");
-        jmsContextTCFBindings.close();
-
+        if ( testFailed ) {
+            throw new Exception("testCreateSharedDurableConsumer_JRException_B_SecOff failed");
+        }
     }
 
     public void testCreateSharedDurableConsumer_JRException_TCP_SecOff(
-                                                                       HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
+        HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        exceptionFlag = false;
+        JMSContext jmsContextTCFTCP = tcfTCP.createContext();
 
-        JMSContext jmsContextTCFTCP = TCFTCP.createContext();
+        JMSConsumer jmsConsumer = jmsContextTCFTCP.createSharedDurableConsumer(topic1, "DURATEST456_TCP");
 
-        JMSConsumer jmsConsumer = jmsContextTCFTCP.createSharedDurableConsumer(topic, "DURATEST456");
-
-        JMSProducer jmsProducer = jmsContextTCFTCP.createProducer();
-
-        TextMessage tmsg = jmsContextTCFTCP
-                        .createTextMessage("This is a test message");
-
-        jmsProducer.send(topic, tmsg);
-
-        tmsg = (TextMessage) jmsConsumer.receive(30000);
+        boolean testFailed = false;
 
         try {
+            JMSProducer jmsProducer = jmsContextTCFTCP.createProducer();
+            TextMessage msgOut = jmsContextTCFTCP.createTextMessage("This is a test message");
+            jmsProducer.send(topic1, msgOut);
 
-            JMSConsumer jmsConsumer1 = jmsContextTCFTCP
-                            .createSharedDurableConsumer(topic1, "DURATEST456");
-        } catch (JMSRuntimeException ex) {
-            ex.printStackTrace();
-            exceptionFlag = true;
+            TextMessage msgIn = (TextMessage) jmsConsumer.receive(30000);
 
+            try {
+                JMSConsumer jmsConsumer1 =
+                    jmsContextTCFTCP.createSharedDurableConsumer(topic3, "DURATEST456_TCP");
+                testFailed = true;
+            } catch ( JMSRuntimeException ex ) {
+                ex.printStackTrace();
+            }
+
+        } finally {
+            jmsConsumer.close();
+            jmsContextTCFTCP.unsubscribe("DURATEST456_TCP");
+            jmsContextTCFTCP.close();
         }
 
-        if (!(exceptionFlag))
-            throw new WrongException("testCreateSharedDurableConsumer_JRException_TCP_SecOff failed");
-
-        jmsConsumer.close();
-        jmsContextTCFTCP.unsubscribe("DURATEST456");
-        jmsContextTCFTCP.close();
-
+        if ( testFailed ) {
+            throw new Exception("testCreateSharedDurableConsumer_JRException_TCP_SecOff failed");
+        }
     }
 
     // 129623_1_10 A shared durable subscription and an unshared durable
@@ -751,829 +873,635 @@ public class SharedSubscriptionServlet extends HttpServlet {
     // client identifier (if set) then a JMSRuntimeException is thrown.
 
     public void testCreateSharedDurableUndurableConsumer_JRException_B_SecOff(
-                                                                              HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
+        HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        exceptionFlag = false;
-        JMSContext jmsContextTCFBindings = TCFBindings.createContext();
+        JMSContext jmsContextTCFBindings = tcfBindings.createContext();
 
-        JMSConsumer jmsConsumer = jmsContextTCFBindings.createDurableConsumer(topic1,
-                                                                              "DURATESTPS");
+        JMSConsumer jmsConsumer = jmsContextTCFBindings.createDurableConsumer(topic1, "DURATESTPS_B");
 
-        JMSProducer jmsProducer = jmsContextTCFBindings.createProducer();
-
-        TextMessage tmsg = jmsContextTCFBindings
-                        .createTextMessage("This is a test message");
-
-        jmsProducer.send(topic1, tmsg);
-
-        tmsg = (TextMessage) jmsConsumer.receive(30000);
+        boolean testFailed = false;
 
         try {
+            JMSProducer jmsProducer = jmsContextTCFBindings.createProducer();
+            TextMessage msgOut = jmsContextTCFBindings.createTextMessage("This is a test message");
+            jmsProducer.send(topic1, msgOut);
+            TextMessage msgIn = (TextMessage) jmsConsumer.receive(30000);
 
-            JMSConsumer jmsConsumer1 = jmsContextTCFBindings.createSharedDurableConsumer(
-                                                                                         topic1, "DURATESTPS");
-        } catch (JMSRuntimeException ex) {
-            ex.printStackTrace();
-            exceptionFlag = true;
+            try {
+                JMSConsumer jmsConsumer1 =
+                    jmsContextTCFBindings.createSharedDurableConsumer(topic1, "DURATESTPS_B");
+                testFailed = true;
+            } catch ( JMSRuntimeException ex ) {
+                ex.printStackTrace();
+            }
 
+        } finally {
+            jmsConsumer.close();
+            jmsContextTCFBindings.unsubscribe("DURATESTPS_B");
+            jmsContextTCFBindings.close();
         }
 
-        if (!(exceptionFlag))
-            throw new WrongException("testCreateSharedDurableUndurableConsumer_JRException_B_SecOff failed");
-
-        jmsConsumer.close();
-        jmsContextTCFBindings.unsubscribe("DURATESTPS");
-        jmsContextTCFBindings.close();
-
+        if ( testFailed ) {
+            throw new Exception("testCreateSharedDurableUndurableConsumer_JRException_B_SecOff failed");
+        }
     }
 
     public void testCreateSharedDurableUndurableConsumer_JRException_TCP_SecOff(
-                                                                                HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
+        HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        exceptionFlag = false;
-        JMSContext jmsContextTCFTCP = TCFTCP.createContext();
+        JMSContext jmsContextTCFTCP = tcfTCP.createContext();
 
-        JMSConsumer jmsConsumer = jmsContextTCFTCP.createDurableConsumer(topic1,
-                                                                         "DURATESTPS");
+        JMSConsumer jmsConsumer = jmsContextTCFTCP.createDurableConsumer(topic1, "DURATESTPS_TCP");
 
         JMSProducer jmsProducer = jmsContextTCFTCP.createProducer();
+        TextMessage msgOut = jmsContextTCFTCP.createTextMessage("This is a test message");
+        jmsProducer.send(topic1, msgOut);
 
-        TextMessage tmsg = jmsContextTCFTCP
-                        .createTextMessage("This is a test message");
+        TextMessage msgIn = (TextMessage) jmsConsumer.receive(30000);
 
-        jmsProducer.send(topic1, tmsg);
-
-        tmsg = (TextMessage) jmsConsumer.receive(30000);
-
+        boolean testFailed = false;
         try {
-
-            JMSConsumer jmsConsumer1 = jmsContextTCFTCP.createSharedDurableConsumer(
-                                                                                    topic1, "DURATESTPS");
-        } catch (JMSRuntimeException ex) {
+            JMSConsumer jmsConsumer1 =
+                jmsContextTCFTCP.createSharedDurableConsumer(topic1, "DURATESTPS_TCP");
+            testFailed = true;
+        } catch ( JMSRuntimeException ex ) {
             ex.printStackTrace();
-            exceptionFlag = true;
 
         }
-
-        if (!(exceptionFlag))
-            throw new WrongException("testCreateSharedDurableUndurableConsumer_JRException_TCP_SecOff failed");
 
         jmsConsumer.close();
-        jmsContextTCFTCP.unsubscribe("DURATESTPS");
+        jmsContextTCFTCP.unsubscribe("DURATESTPS_TCP");
         jmsContextTCFTCP.close();
 
+        if ( testFailed ) {
+            throw new Exception("testCreateSharedDurableUndurableConsumer_JRException_TCP_SecOff failed");
+        }
     }
 
-    // 129623_1_12 InvalidDestinationRuntimeException - if an invalid topic is
-    // specified.
+    // 129623_1_12 InvalidDestinationRuntimeException - if an invalid topic is specified.
 
     public void testCreateSharedDurableConsumer_InvalidDestination_B_SecOff(
-                                                                            HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
+        HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        exceptionFlag = false;
+        JMSContext jmsContextTCFBindings = tcfBindings.createContext();
 
-        JMSContext jmsContextTCFBindings = TCFBindings.createContext();
-
+        boolean testFailed = false;
         try {
-
-            JMSConsumer jmsConsumer = jmsContextTCFBindings
-                            .createSharedDurableConsumer(null, "DURATEST10");
-
-        } catch (InvalidDestinationRuntimeException ex) {
+            JMSConsumer jmsConsumer =
+                jmsContextTCFBindings.createSharedDurableConsumer(null, "DURATEST3");
+            testFailed = true;
+        } catch ( InvalidDestinationRuntimeException ex ) {
             ex.printStackTrace();
-            exceptionFlag = true;
-
         }
-
-        if (!(exceptionFlag))
-            throw new WrongException("testCreateSharedDurableConsumer_InvalidDestination_B_SecOff failed");
 
         jmsContextTCFBindings.close();
 
+        if ( testFailed ) {
+            throw new Exception("testCreateSharedDurableConsumer_InvalidDestination_B_SecOff failed");
+        }
     }
 
     public void testCreateSharedDurableConsumer_InvalidDestination_TCP_SecOff(
-                                                                              HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
+        HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        exceptionFlag = false;
+        JMSContext jmsContextTCFTCP = tcfTCP.createContext();
 
-        JMSContext jmsContextTCFTCP = TCFTCP.createContext();
-
+        boolean testFailed = false;
         try {
-
-            JMSConsumer jmsConsumer = jmsContextTCFTCP
-                            .createSharedDurableConsumer(null, "DURATEST10");
-
-        } catch (InvalidDestinationRuntimeException ex) {
+            JMSConsumer jmsConsumer =
+                jmsContextTCFTCP.createSharedDurableConsumer(null, "DURATEST4");
+            testFailed = true;
+        } catch ( InvalidDestinationRuntimeException ex ) {
             ex.printStackTrace();
-            exceptionFlag = true;
-
         }
-
-        if (!(exceptionFlag))
-            throw new WrongException("testCreateSharedDurableConsumer_InvalidDestination_TCP_SecOff failed");
 
         jmsContextTCFTCP.close();
 
+        if ( testFailed ) {
+            throw new Exception("testCreateSharedDurableConsumer_InvalidDestination_TCP_SecOff failed");
+        }
     }
 
     // 129623_1_13 Case where name is null and empty string
 
     public void testCreateSharedDurableConsumer_Null_B_SecOff(
-                                                              HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
+        HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        exceptionFlag = false;
-        boolean val1 = false;
-        boolean val2 = false;
-        JMSContext jmsContextTCFBindings = TCFBindings.createContext();
+        JMSContext jmsContextTCFBindings = tcfBindings.createContext();
+
+        boolean testFailed = false;
 
         try {
-
-            JMSConsumer jmsConsumer = jmsContextTCFBindings
-                            .createSharedDurableConsumer(topic, null);
-
-        } catch (JMSRuntimeException ex) {
+            JMSConsumer jmsConsumer =
+                jmsContextTCFBindings.createSharedDurableConsumer(topic1, null);
+            testFailed = true;
+        } catch ( JMSRuntimeException ex ) {
             ex.printStackTrace();
-            val1 = true;
         }
 
         try {
-            JMSConsumer jmsConsumer = jmsContextTCFBindings
-                            .createSharedDurableConsumer(topic, "");
-
-        } catch (JMSRuntimeException ex) {
+            JMSConsumer jmsConsumer =
+                jmsContextTCFBindings.createSharedDurableConsumer(topic1, "");
+            testFailed = true;
+        } catch ( JMSRuntimeException ex ) {
             ex.printStackTrace();
-            val2 = true;
-
         }
-
-        if (!(val1 == true && val2 == true))
-            exceptionFlag = true;
-
-        if (exceptionFlag)
-            throw new WrongException("testCreateSharedDurableConsumer_Null_B_SecOff failed");
 
         jmsContextTCFBindings.close();
 
+        if ( testFailed ) {
+            throw new Exception("testCreateSharedDurableConsumer_Null_B_SecOff failed");
+        }
     }
 
     public void testCreateSharedDurableConsumer_Null_TCP_SecOff(
-                                                                HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
+        HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        exceptionFlag = false;
-        boolean val1 = false;
-        boolean val2 = false;
-        JMSContext jmsContextTCFTCP = TCFTCP.createContext();
+        JMSContext jmsContextTCFTCP = tcfTCP.createContext();
+
+        boolean testFailed = false;
 
         try {
-
-            JMSConsumer jmsConsumer = jmsContextTCFTCP
-                            .createSharedDurableConsumer(topic, null);
-
-        } catch (JMSRuntimeException ex) {
+            JMSConsumer jmsConsumer =
+                jmsContextTCFTCP.createSharedDurableConsumer(topic1, null);
+            testFailed = true;
+        } catch ( JMSRuntimeException ex ) {
             ex.printStackTrace();
-            val1 = true;
         }
 
         try {
-            JMSConsumer jmsConsumer = jmsContextTCFTCP
-                            .createSharedDurableConsumer(topic, "");
-
-        } catch (JMSRuntimeException ex) {
+            JMSConsumer jmsConsumer =
+                jmsContextTCFTCP.createSharedDurableConsumer(topic1, "");
+            testFailed = true;
+        } catch ( JMSRuntimeException ex ) {
             ex.printStackTrace();
-            val2 = true;
-
         }
-
-        if (!(val1 == true && val2 == true))
-            exceptionFlag = true;
-
-        if (exceptionFlag)
-            throw new WrongException("testCreateSharedDurableConsumer_Null_TCP_SecOff failed");
 
         jmsContextTCFTCP.close();
 
+        if ( testFailed ) {
+            throw new Exception("testCreateSharedDurableConsumer_Null_TCP_SecOff failed");
+        }
     }
 
     // 129626_1 JMSConsumer createSharedConsumer(Topic topic,String sharedSubscriptionName)
-    // 129626_1_1 Creates a shared non-durable subscription with the specified name on the specified topic (if one does not already exist) and creates a consumer on that
-    //subscription. This method creates the non-durable subscription without a message selector.
-    //129626_1_4 Non-durable subscription is not persisted and will be deleted (together with any undelivered messages associated with it) when there are no consumers on it. The
-    //term "consumer" here means a MessageConsumer or JMSConsumer object in any client.
+    // 129626_1_1 Creates a shared non-durable subscription with the specified name on the
+    // specified topic (if one does not already exist) and creates a consumer on that
+    // subscription. This method creates the non-durable subscription without a message selector.
+    // 129626_1_4 Non-durable subscription is not persisted and will be deleted (together with
+    // any undelivered messages associated with it) when there are no consumers on it. The
+    // term "consumer" here means a MessageConsumer or JMSConsumer object in any client.
 
     public void testCreateSharedNonDurableConsumer_create_B_SecOff(
-                                                                   HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
+        HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        JMSContext jmsContextSender = TCFBindings.createContext();
-
-        JMSContext jmsContextReceiver = TCFBindings.createContext();
-
-        JMSConsumer jmsConsumer = jmsContextReceiver
-                        .createSharedConsumer(topic, "SUBID");
+        JMSContext jmsContextSender = tcfBindings.createContext();
+        JMSContext jmsContextReceiver = tcfBindings.createContext();
+        JMSConsumer jmsConsumer = jmsContextReceiver.createSharedConsumer(topic1, "SUBID_B_ND_NE");
 
         JMSProducer jmsProducer = jmsContextSender.createProducer();
+        TextMessage msgOut = jmsContextSender.createTextMessage("This is a test message");
+        jmsProducer.send(topic1, msgOut);
 
-        TextMessage tmsg = jmsContextSender
-                        .createTextMessage("This is a test message");
-
-        jmsProducer.send(topic, tmsg);
-
+        jmsConsumer.close();
+        jmsContextReceiver.close();
         jmsContextSender.close();
-
     }
 
     public void testCreateSharedNonDurableConsumer_create_TCP_SecOff(
-                                                                     HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
+        HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        JMSContext jmsContextSender = TCFTCP.createContext();
-
-        JMSContext jmsContextReceiver = TCFTCP.createContext();
-
-        JMSConsumer jmsConsumer = jmsContextReceiver
-                        .createSharedConsumer(topic, "SUBID");
+        JMSContext jmsContextSender = tcfTCP.createContext();
+        JMSContext jmsContextReceiver = tcfTCP.createContext();
+        JMSConsumer jmsConsumer = jmsContextReceiver.createSharedConsumer(topic1, "SUBID_TCP_ND_NE");
 
         JMSProducer jmsProducer = jmsContextSender.createProducer();
+        TextMessage msgOut = jmsContextSender.createTextMessage("This is a test message");
+        jmsProducer.send(topic1, msgOut);
 
-        TextMessage tmsg = jmsContextSender
-                        .createTextMessage("This is a test message");
-
-        jmsProducer.send(topic, tmsg);
-
+        jmsConsumer.close();
+        jmsContextReceiver.close();
         jmsContextSender.close();
-
     }
 
     public void testCreateSharedNonDurableConsumer_consume_B_SecOff(
-                                                                    HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
+        HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        exceptionFlag = false;
-        JMSContext jmsContextReceiver = TCFBindings.createContext();
-        JMSConsumer jmsConsumer = jmsContextReceiver
-                        .createSharedConsumer(topic, "SUBID");
+        JMSContext jmsContextReceiver = tcfBindings.createContext();
+        JMSConsumer jmsConsumer = jmsContextReceiver.createSharedConsumer(topic1, "SUBID_B_ND_NE");
+        TextMessage msgOut = (TextMessage) jmsConsumer.receive(30000);
 
-        TextMessage tmsg = (TextMessage) jmsConsumer.receive(30000);
-
-        if (!(tmsg == null))
-            exceptionFlag = true;
+        boolean testFailed = false;
+        if ( msgOut != null ) {
+            testFailed = true;
+        }
 
         jmsConsumer.close();
-
-        // jmsContextReceiver.unsubscribe("SUBID");
-
         jmsContextReceiver.close();
 
+        if ( testFailed ) {
+            throw new Exception("testCreateSharedNonDurableConsumer_consume_B_SecOff failed");
+        }
     }
 
     public void testCreateSharedNonDurableConsumer_consume_TCP_SecOff(
-                                                                      HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
+        HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        exceptionFlag = false;
-        JMSContext jmsContextReceiver = TCFTCP.createContext();
-        JMSConsumer jmsConsumer = jmsContextReceiver
-                        .createSharedConsumer(topic, "SUBID");
+        JMSContext jmsContextReceiver = tcfTCP.createContext();
 
-        TextMessage tmsg = (TextMessage) jmsConsumer.receive(30000);
+        JMSConsumer jmsConsumer = jmsContextReceiver.createSharedConsumer(topic1, "SUBID_TCP_ND_NE");
+        TextMessage msgIn = (TextMessage) jmsConsumer.receive(30000);
 
-        if (!(tmsg == null))
-            exceptionFlag = true;
+        boolean testFailed = false;
+        if ( msgIn != null ) {
+            testFailed = true;
+        }
 
         jmsConsumer.close();
-
-        // jmsContextReceiver.unsubscribe("SUBID");
-
         jmsContextReceiver.close();
 
+        if ( testFailed ) {
+            throw new Exception("testCreateSharedNonDurableConsumer_consume_TCP_SecOff failed");
+        }
     }
 
-    // 129626_1_2 If a shared non-durable subscription already exists with the same name and client identifier (if set), and the same topic and message selector has been
-    //specified, then this method creates a JMSConsumer on the existing subscription.
+    // 129626_1_2 If a shared non-durable subscription already exists with the same name
+    // and client identifier (if set), and the same topic and message selector has been
+    // specified, then this method creates a JMSConsumer on the existing subscription.
 
     public void testCreateSharedNonDurableConsumer_2Subscribers_B_SecOff(
-                                                                         HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
+        HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        exceptionFlag = false;
-        JMSContext jmsContextTCFBindings = TCFBindings.createContext();
+        JMSContext jmsContextTCFBindings = tcfBindings.createContext();
 
-        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+        CompositeData[] obn1 = listSubscriptions("WebSphere:feature=wasJmsServer,type=Topic,name=NewTopic1");
 
-        final ObjectName name = new ObjectName(
-                        "WebSphere:feature=wasJmsServer,type=Topic,name=NewTopic1");
-
-        javax.management.openmbean.CompositeData[] obn = (CompositeData[]) mbs
-                        .invoke(name, "listSubscriptions", null, null);
-
-        int beforeLength = obn.length;
-
-        JMSConsumer jmsConsumer = jmsContextTCFBindings.createSharedConsumer(topic,
-                                                                             "TEST1");
-
+        JMSConsumer jmsConsumer1 = jmsContextTCFBindings.createSharedConsumer(topic1, "TEST1");
         JMSProducer jmsProducer = jmsContextTCFBindings.createProducer();
+        TextMessage msgOut = jmsContextTCFBindings.createTextMessage("This is a test message");
+        jmsProducer.send(topic1, msgOut);
+        TextMessage msgIn = (TextMessage) jmsConsumer1.receive(30000);
 
-        TextMessage tmsg = jmsContextTCFBindings
-                        .createTextMessage("This is a test message");
+        JMSConsumer jmsConsumer2 = jmsContextTCFBindings.createSharedConsumer(topic1, "TEST1");
 
-        jmsProducer.send(topic, tmsg);
+        CompositeData[] obn2 = listSubscriptions("WebSphere:feature=wasJmsServer,type=Topic,name=NewTopic1");
 
-        tmsg = (TextMessage) jmsConsumer.receive(30000);
+        boolean testFailed = false;
+        int added = Math.abs(obn2.length - obn1.length);
+        if ( added != 1 ) {
+            testFailed = true;
+        }
 
-        JMSConsumer jmsConsumer2 = jmsContextTCFBindings.createSharedConsumer(
-                                                                              topic, "TEST1");
-
-        MBeanServer mbs1 = ManagementFactory.getPlatformMBeanServer();
-
-        final ObjectName name1 = new ObjectName(
-                        "WebSphere:feature=wasJmsServer,type=Topic,name=NewTopic1");
-
-        javax.management.openmbean.CompositeData[] obn1 = (CompositeData[]) mbs
-                        .invoke(name, "listSubscriptions", null, null);
-        int afterLength = 0;
-        if (beforeLength > obn1.length)
-
-            afterLength = beforeLength - obn1.length;
-
-        else
-
-            afterLength = obn1.length - beforeLength;
-
-        if (!(afterLength == 1))
-            exceptionFlag = true;
-
-        System.out.println("obn.length:" + obn.length);
-
-        if (exceptionFlag)
-            throw new WrongException("testCreateSharedNonDurableConsumer_2Subscribers_B_SecOff failed");
-        jmsConsumer.close();
+        jmsConsumer1.close();
         jmsConsumer2.close();
-        // jmsContextTCFBindings.unsubscribe("DURATEST");
         jmsContextTCFBindings.close();
 
+        if ( testFailed ) {
+            throw new Exception("testCreateSharedNonDurableConsumer_2Subscribers_B_SecOff failed");
+        }
     }
 
     public void testCreateSharedNonDurableConsumer_2Subscribers_TCP_SecOff(
-                                                                           HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
+        HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        exceptionFlag = false;
-        JMSContext jmsContextTCFTCP = TCFTCP.createContext();
+        JMSContext jmsContextTCFTCP = tcfTCP.createContext();
 
-        JMSConsumer jmsConsumer = jmsContextTCFTCP.createSharedConsumer(topic,
-                                                                        "DURATEST");
-
+        JMSConsumer jmsConsumer1 = jmsContextTCFTCP.createSharedConsumer(topic1, "DURATEST5");
         JMSProducer jmsProducer = jmsContextTCFTCP.createProducer();
+        TextMessage msgOut = jmsContextTCFTCP.createTextMessage("This is a test message");
+        jmsProducer.send(topic1, msgOut);
+        TextMessage msgIn1 = (TextMessage) jmsConsumer1.receive(30000);
 
-        TextMessage tmsg = jmsContextTCFTCP
-                        .createTextMessage("This is a test message");
+        JMSConsumer jmsConsumer2 = jmsContextTCFTCP.createSharedConsumer(topic1, "DURATEST5");
+        jmsProducer.send(topic1, msgIn1);
+        TextMessage msgIn2 = (TextMessage) jmsConsumer2.receive(30000);
 
-        jmsProducer.send(topic, tmsg);
-
-        tmsg = (TextMessage) jmsConsumer.receive(30000);
-
-        JMSConsumer jmsConsumer2 = jmsContextTCFTCP.createSharedConsumer(
-                                                                         topic, "DURATEST");
-        jmsProducer.send(topic, tmsg);
-
-        tmsg = (TextMessage) jmsConsumer2.receive(30000);
-
-        if (!(tmsg != null))
-            exceptionFlag = true;
-
-        if (exceptionFlag)
-            throw new WrongException("testCreateSharedNonDurableConsumer_2Subscribers_TCP_SecOff failed");
-        jmsConsumer.close();
-        jmsConsumer2.close();
-        // jmsContextTCFTCP.unsubscribe("DURATEST");
-        jmsContextTCFTCP.close();
-    }
-
-    /*
-     * // 129626_1_3 A non-durable shared subscription is used by a client which needs to be able to share the work of receiving messages from a topic subscription amongst multiple
-     * consumers. A non-durable shared subscription may therefore have more than one consumer. Each message from the subscription will be delivered to only one of the consumers on
-     * that subscription
-     * 
-     * public void testBasicMDBTopicNonDurable(HttpServletRequest request,
-     * HttpServletResponse response) throws Throwable {
-     * 
-     * TopicConnectionFactory cf1 = (TopicConnectionFactory) new InitialContext()
-     * .lookup("java:comp/env/jms/FAT_TCF");
-     * 
-     * int msgs = 3;
-     * 
-     * Topic topic = (Topic) new InitialContext()
-     * .lookup("java:comp/env/jms/FAT_TOPIC");
-     * 
-     * JMSContext jmsCont = cf1.createContext();
-     * JMSProducer publisher = jmsCont.createProducer();
-     * 
-     * for (int i = 0; i < msgs; i++) {
-     * publisher.send(topic, "testBasicMDBTopic:" + i);
-     * }
-     * 
-     * System.out.println("Published  messages ");
-     * 
-     * }
-     * 
-     * public void testBasicMDBTopicNonDurable_TCP(HttpServletRequest request,
-     * HttpServletResponse response) throws Throwable {
-     * 
-     * TopicConnectionFactory cf1 = (TopicConnectionFactory) new InitialContext()
-     * .lookup("java:comp/env/jms/FAT_COMMS_TCF");
-     * 
-     * int msgs = 3;
-     * 
-     * Topic topic = (Topic) new InitialContext()
-     * .lookup("java:comp/env/jms/FAT_TOPIC");
-     * 
-     * JMSContext jmsCont = cf1.createContext();
-     * JMSProducer publisher = jmsCont.createProducer();
-     * 
-     * for (int i = 0; i < msgs; i++) {
-     * publisher.send(topic, "testBasicMDBTopic:" + i);
-     * }
-     * 
-     * System.out.println("Published  messages ");
-     * 
-     * }
-     */
-    // 129626_1_6 If a shared non-durable subscription already exists with the same name and client identifier (if set) but a different topic or message selector value has been
-    //specified, and there is a consumer already active (i.e. not closed) on the subscription, then a JMSRuntimeException will be thrown.
-    public void testCreateSharedNonDurableConsumer_JRException_B_SecOff(
-                                                                        HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
-
-        exceptionFlag = false;
-
-        JMSContext jmsContextTCFBindings = TCFBindings.createContext();
-
-        JMSConsumer jmsConsumer = jmsContextTCFBindings.createSharedConsumer(
-                                                                             topic, "DURATEST1");
-
-        JMSProducer jmsProducer = jmsContextTCFBindings.createProducer();
-
-        TextMessage tmsg = jmsContextTCFBindings
-                        .createTextMessage("This is a test message");
-
-        jmsProducer.send(topic, tmsg);
-
-        tmsg = (TextMessage) jmsConsumer.receive(30000);
-
-        try {
-
-            JMSConsumer jmsConsumer1 = jmsContextTCFBindings
-                            .createSharedConsumer(topic1, "DURATEST1");
-        } catch (JMSRuntimeException ex) {
-            ex.printStackTrace();
-            exceptionFlag = true;
+        boolean testFailed = false;
+        if ( msgIn2 == null ) {
+            testFailed = true;
         }
 
-        if (!(exceptionFlag))
-            throw new WrongException("testCreateSharedNonDurableConsumer_JRException_B_SecOff failed");
+        jmsConsumer1.close();
+        jmsConsumer2.close();
+        jmsContextTCFTCP.close();
 
-        jmsConsumer.close();
+        if ( testFailed )  {
+            throw new Exception("testCreateSharedNonDurableConsumer_2Subscribers_TCP_SecOff failed");
+        }
+    }
 
+    // 129626_1_3 A non-durable shared subscription is used by a client which needs
+    // to be able to share the work of receiving messages from a topic subscription
+    // amongst multiple consumers. A non-durable shared subscription may therefore
+    // have more than one consumer. Each message from the subscription will be
+    // delivered to only one of the consumers on that subscription.
+
+    public void testBasicMDBTopicNonDurable(
+        HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        TopicConnectionFactory fatTCF = (TopicConnectionFactory)
+            new InitialContext().lookup("java:comp/env/jms/FAT_TCF");
+        Topic fatTopic = (Topic)
+            new InitialContext().lookup("java:comp/env/jms/FAT_TOPIC");
+        JMSContext jmsContext = fatTCF.createContext();
+        JMSProducer jmsPublisher = jmsContext.createProducer();
+
+        int numMsgs = 10;
+        for ( int msgNo = 0; msgNo < numMsgs; msgNo++ ) {
+            jmsPublisher.send(fatTopic, "testBasicMDBTopic:" + msgNo);
+        }
+
+        Thread.sleep(1000);
+        jmsContext.close();
+    }
+
+    public void testBasicMDBTopicNonDurable_TCP(
+         HttpServletRequest request, HttpServletResponse response) throws Exception {
+    
+        TopicConnectionFactory fatTCF = (TopicConnectionFactory)
+            new InitialContext().lookup("java:comp/env/jms/FAT_TCF");
+        Topic fatTopic = (Topic)
+            new InitialContext().lookup("java:comp/env/jms/FAT_TOPIC");
+        JMSContext jmsContext = fatTCF.createContext();
+        JMSProducer jmsPublisher = jmsContext.createProducer();
+    
+        int numMsgs = 10;
+        for ( int msgNo = 0; msgNo < numMsgs; msgNo++ ) {
+            jmsPublisher.send(fatTopic, "testBasicMDBTopic:" + msgNo);
+        }
+
+        Thread.sleep(1000);
+        jmsContext.close();
+    }
+
+    // 129626_1_6 If a shared non-durable subscription already exists with the
+    // same name and client identifier (if set) but a different topic or message
+    // selector value has been specified, and there is a consumer already active
+    // (i.e. not closed) on the subscription, then a JMSRuntimeException will be thrown.
+
+    public void testCreateSharedNonDurableConsumer_JRException_B_SecOff(
+        HttpServletRequest request, HttpServletResponse response) throws Throwable {
+
+        JMSContext jmsContextTCFBindings = tcfBindings.createContext();
+
+        JMSConsumer jmsConsumer1 = jmsContextTCFBindings.createSharedConsumer(topic1, "DURATEST1_B");
+        JMSProducer jmsProducer = jmsContextTCFBindings.createProducer();
+        TextMessage msgOut = jmsContextTCFBindings.createTextMessage("This is a test message");
+        jmsProducer.send(topic1, msgOut);
+        TextMessage msgIn = (TextMessage) jmsConsumer1.receive(30000);
+
+        boolean testFailed = false;
+        try {
+            JMSConsumer jmsConsumer2 = jmsContextTCFBindings.createSharedConsumer(topic3, "DURATEST1_B");
+            testFailed = true;
+        } catch ( JMSRuntimeException ex ) {
+            ex.printStackTrace();
+        }
+
+        jmsConsumer1.close();
+        jmsContextTCFBindings.close();
+
+        if ( testFailed ) {
+            throw new Exception("testCreateSharedNonDurableConsumer_JRException_B_SecOff failed");
+        }
     }
 
     public void testCreateSharedNonDurableConsumer_JRException_TCP_SecOff(
-                                                                          HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
+        HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        exceptionFlag = false;
+        JMSContext jmsContextTCFTCP = tcfTCP.createContext();
 
-        JMSContext jmsContextTCFTCP = TCFTCP.createContext();
-
-        JMSConsumer jmsConsumer = jmsContextTCFTCP.createSharedConsumer(
-                                                                        topic, "DURATEST1");
-
+        JMSConsumer jmsConsumer1 = jmsContextTCFTCP.createSharedConsumer(topic1, "DURATEST1_TCP");
         JMSProducer jmsProducer = jmsContextTCFTCP.createProducer();
+        TextMessage msgOut = jmsContextTCFTCP.createTextMessage("This is a test message");
+        jmsProducer.send(topic1, msgOut);
+        TextMessage msgIn = (TextMessage) jmsConsumer1.receive(30000);
 
-        TextMessage tmsg = jmsContextTCFTCP
-                        .createTextMessage("This is a test message");
-
-        jmsProducer.send(topic, tmsg);
-
-        tmsg = (TextMessage) jmsConsumer.receive(30000);
-
+        boolean testFailed = false;
         try {
-
-            JMSConsumer jmsConsumer1 = jmsContextTCFTCP
-                            .createSharedConsumer(topic1, "DURATEST1");
-        } catch (JMSRuntimeException ex) {
+            JMSConsumer jmsConsumer2 = jmsContextTCFTCP.createSharedConsumer(topic3, "DURATEST1_TCP");
+            testFailed = true;
+        } catch ( JMSRuntimeException ex ) {
             ex.printStackTrace();
-            exceptionFlag = true;
         }
 
-        if (!(exceptionFlag))
-            throw new WrongException("testCreateSharedNonDurableConsumer_JRException_B_SecOff failed");
-
-        jmsConsumer.close();
+        jmsConsumer1.close();
         jmsContextTCFTCP.close();
+
+        if ( testFailed ) {
+            throw new Exception("testCreateSharedNonDurableConsumer_JRException_B_SecOff failed");
+        }
     }
 
-    //129626_1_7 There is no restriction on durable subscriptions and shared non-durable subscriptions having the same name and clientId (which may be unset). Such subscriptions
-    //would be completely separate.
+    // 129626_1_7 There is no restriction on durable subscriptions and shared non-durable
+    // subscriptions having the same name and clientId (which may be unset). Such subscriptions
+    // would be completely separate.
 
     public void testCreateSharedNonDurableConsumer_coexist_B_SecOff(
-                                                                    HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
+        HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        exceptionFlag = false;
+        JMSContext jmsContextTCFBindings = tcfBindings.createContext();
 
-        JMSContext jmsContextTCFBindings = TCFBindings.createContext();
+        JMSConsumer jmsConsumer1 = jmsContextTCFBindings.createSharedConsumer(topic1, "DURATEST6");
+        JMSConsumer jmsConsumer2 = null;
 
-        JMSConsumer jmsConsumer = jmsContextTCFBindings.createSharedConsumer(
-                                                                             topic, "DURATEST1");
-        JMSProducer jmsProducer = jmsContextTCFBindings.createProducer();
+        TextMessage msgIn1;
+        TextMessage msgIn2;
 
-        TextMessage tmsg = jmsContextTCFBindings
-                        .createTextMessage("This is a test message");
+        try {
+            JMSProducer jmsProducer1 = jmsContextTCFBindings.createProducer();
+            TextMessage msgOut1 = jmsContextTCFBindings.createTextMessage("This is a test message");
+            jmsProducer1.send(topic1, msgOut1);
+            msgIn1 = (TextMessage) jmsConsumer1.receive(30000);
 
-        jmsProducer.send(topic, tmsg);
+            jmsConsumer2 = jmsContextTCFBindings.createDurableConsumer(topic1, "DURATEST6");
+            JMSProducer jmsProducer2 = jmsContextTCFBindings.createProducer();
+            TextMessage msgOut2 = jmsContextTCFBindings.createTextMessage("This is a test message");
+            jmsProducer2.send(topic1, msgOut2);
+            msgIn2 = (TextMessage) jmsConsumer2.receive(30000);
 
-        tmsg = (TextMessage) jmsConsumer.receive(30000);
+        } finally {
+            if ( jmsConsumer2 != null ) {
+                jmsConsumer2.close();
+            }
+            jmsConsumer1.close();
+            jmsContextTCFBindings.unsubscribe("DURATEST6");
+            jmsContextTCFBindings.close();
+        }
 
-        JMSConsumer jmsConsumer1 = jmsContextTCFBindings.createDurableConsumer(
-                                                                               topic, "DURATEST1");
-        jmsProducer = jmsContextTCFBindings.createProducer();
-
-        TextMessage tmsg1 = jmsContextTCFBindings
-                        .createTextMessage("This is a test message");
-
-        jmsProducer.send(topic, tmsg1);
-
-        tmsg1 = (TextMessage) jmsConsumer.receive(30000);
-
-        if (!(tmsg != null && tmsg1 != null))
-            exceptionFlag = true;
-
-        if (exceptionFlag)
-            throw new WrongException("testCreateSharedNonDurableConsumer_coexist_B_SecOff failed");
-
-        jmsConsumer.close();
-        jmsConsumer1.close();
-        jmsContextTCFBindings.unsubscribe("DURATEST1");
-        jmsContextTCFBindings.close();
-
+        if ( (msgIn1 == null) || (msgIn2 == null) ) {
+            throw new Exception("testCreateSharedNonDurableConsumer_coexist_B_SecOff failed");
+        }
     }
 
     public void testCreateSharedNonDurableConsumer_coexist_TCP_SecOff(
-                                                                      HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
-        exceptionFlag = false;
+        HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        JMSContext jmsContextTCFBindings = TCFBindings.createContext();
+        JMSContext jmsContextTCFBindings = tcfBindings.createContext();
 
-        JMSConsumer jmsConsumer = jmsContextTCFBindings.createSharedConsumer(
-                                                                             topic, "DURATEST1");
-        JMSProducer jmsProducer = jmsContextTCFBindings.createProducer();
+        JMSConsumer jmsConsumer1 = jmsContextTCFBindings.createSharedConsumer(topic1, "DURATEST7");
+        JMSConsumer jmsConsumer2 = null;
 
-        TextMessage tmsg = jmsContextTCFBindings
-                        .createTextMessage("This is a test message");
+        TextMessage msgIn1;
+        TextMessage msgIn2;
 
-        jmsProducer.send(topic, tmsg);
+        try {
+            JMSProducer jmsProducer1 = jmsContextTCFBindings.createProducer();
+            TextMessage msgOut1 = jmsContextTCFBindings.createTextMessage("This is a test message");
+            jmsProducer1.send(topic1, msgOut1);
+            msgIn1 = (TextMessage) jmsConsumer1.receive(30000);
 
-        tmsg = (TextMessage) jmsConsumer.receive(30000);
+            jmsConsumer2 = jmsContextTCFBindings.createDurableConsumer(topic1, "DURATEST7");
+            JMSProducer jmsProducer2 = jmsContextTCFBindings.createProducer();
+            TextMessage msgOut2 = jmsContextTCFBindings.createTextMessage("This is a test message");
+            jmsProducer2.send(topic1, msgOut2);
+            msgIn2 = (TextMessage) jmsConsumer2.receive(30000);
 
-        JMSConsumer jmsConsumer1 = jmsContextTCFBindings.createDurableConsumer(
-                                                                               topic, "DURATEST1");
-        jmsProducer = jmsContextTCFBindings.createProducer();
+        } finally {
+            if ( jmsConsumer2 != null ) {
+                jmsConsumer2.close();
+            }
+            jmsConsumer1.close();
+            jmsContextTCFBindings.unsubscribe("DURATEST7");
+            jmsContextTCFBindings.close();
+        }
 
-        TextMessage tmsg1 = jmsContextTCFBindings
-                        .createTextMessage("This is a test message");
-
-        jmsProducer.send(topic, tmsg1);
-
-        tmsg1 = (TextMessage) jmsConsumer.receive(30000);
-
-        if (!(tmsg != null && tmsg1 != null))
-            exceptionFlag = true;
-
-        if (exceptionFlag)
-            throw new WrongException("testCreateSharedNonDurableConsumer_coexist_TCP_SecOff failed");
-
-        jmsConsumer.close();
-        jmsConsumer1.close();
-
-        jmsContextTCFBindings.unsubscribe("DURATEST1");
-        jmsContextTCFBindings.close();
+        if ( (msgIn1 == null) || (msgIn2 == null) ) {
+            throw new Exception("testCreateSharedNonDurableConsumer_coexist_TCP_SecOff failed");
+        }
     }
 
     // 129626_1_9 InvalidDestinationRuntimeException - if an invalid topic is specified.
     public void testCreateSharedNonDurableConsumer_InvalidDestination_B_SecOff(
-                                                                               HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
+        HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        exceptionFlag = false;
-        JMSContext jmsContextTCFBindings = TCFBindings.createContext();
+        JMSContext jmsContextTCFBindings = tcfBindings.createContext();
 
+        boolean testFailed = false;
         try {
-
-            JMSConsumer jmsConsumer = jmsContextTCFBindings
-                            .createSharedConsumer(null, "DURATEST1");
-
-        } catch (InvalidDestinationRuntimeException ex) {
+            JMSConsumer jmsConsumer =
+                jmsContextTCFBindings.createSharedConsumer(null, "DURATEST8");
+            testFailed = true;
+        } catch ( InvalidDestinationRuntimeException ex ) {
             ex.printStackTrace();
-            exceptionFlag = true;
         }
 
-        if (!(exceptionFlag))
-            throw new WrongException("testCreateSharedNonDurableConsumer_InvalidDestination_B_SecOff failed");
-
         jmsContextTCFBindings.close();
+
+        if ( testFailed ) {
+            throw new Exception("testCreateSharedNonDurableConsumer_InvalidDestination_B_SecOff failed");
+        }
     }
 
     public void testCreateSharedNonDurableConsumer_InvalidDestination_TCP_SecOff(
-                                                                                 HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
+        HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        exceptionFlag = false;
-        JMSContext jmsContextTCFTCP = TCFTCP.createContext();
+        JMSContext jmsContextTCFTCP = tcfTCP.createContext();
 
+        boolean testFailed = false;
         try {
-
-            JMSConsumer jmsConsumer = jmsContextTCFTCP
-                            .createSharedConsumer(null, "DURATEST1");
-
-        } catch (InvalidDestinationRuntimeException ex) {
+            JMSConsumer jmsConsumer =
+                jmsContextTCFTCP.createSharedConsumer(null, "DURATEST9");
+            testFailed = true;
+        } catch ( InvalidDestinationRuntimeException ex ) {
             ex.printStackTrace();
-            exceptionFlag = true;
         }
-
-        if (!(exceptionFlag))
-            throw new WrongException("testCreateSharedNonDurableConsumer_InvalidDestination_TCP_SecOff failed");
 
         jmsContextTCFTCP.close();
 
+        if ( testFailed ) {
+            throw new Exception("testCreateSharedNonDurableConsumer_InvalidDestination_TCP_SecOff failed");
+        }
     }
 
-    //Defect 174691
+    // Defect 174691
 
     public void testCreateSharedConsumer_Qsession_B_SecOff(
-                                                           HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
-        exceptionFlag = false;
+        HttpServletRequest request, HttpServletResponse response) throws Throwable {
 
-        boolean flag1 = false;
-        boolean flag2 = false;
-        boolean flag3 = false;
-        boolean flag4 = false;
-        boolean flag5 = false;
-        boolean flag6 = false;
-        boolean flag7 = false;
-
-        QueueConnection qconn = QCFBindings.createQueueConnection();
+        QueueConnection qconn = qcfBindings.createQueueConnection();
         qconn.start();
         QueueSession qsession = qconn.createQueueSession(false, QueueSession.AUTO_ACKNOWLEDGE);
 
+        boolean testFailed = false;
+
         try {
-            qsession.createSharedConsumer(topic, "SUBID");
-        } catch (javax.jms.IllegalStateException ex) {
+            qsession.createSharedConsumer(topic1, "SUBID_B_QS");
+            testFailed = true;
+        } catch ( javax.jms.IllegalStateException ex ) {
             ex.printStackTrace();
-            flag1 = true;
         }
         try {
-            qsession.createDurableSubscriber(topic, "SUBID");
-        } catch (javax.jms.IllegalStateException ex) {
+            qsession.createDurableSubscriber(topic1, "SUBID_B_QS");
+            testFailed = true;
+        } catch ( javax.jms.IllegalStateException ex ) {
             ex.printStackTrace();
-            flag2 = true;
         }
 
         try {
-            qsession.createDurableConsumer(topic, "SUBID");
-        } catch (javax.jms.IllegalStateException ex) {
+            qsession.createDurableConsumer(topic1, "SUBID_B_QS");
+            testFailed = true;
+        } catch ( javax.jms.IllegalStateException ex ) {
             ex.printStackTrace();
-            flag3 = true;
         }
 
         try {
-            qsession.createSharedDurableConsumer(topic, "SUBID");
-        } catch (javax.jms.IllegalStateException ex) {
+            qsession.createSharedDurableConsumer(topic1, "SUBID_B_QS");
+            testFailed = true;
+        } catch ( javax.jms.IllegalStateException ex ) {
             ex.printStackTrace();
-            flag4 = true;
         }
 
         try {
             qsession.createTemporaryTopic();
-        } catch (javax.jms.IllegalStateException ex) {
+            testFailed = true;
+        } catch ( javax.jms.IllegalStateException ex ) {
             ex.printStackTrace();
-            flag5 = true;
         }
 
         try {
             qsession.createTopic("JustCreated");
-        } catch (javax.jms.IllegalStateException ex) {
+            testFailed = true;
+        } catch ( javax.jms.IllegalStateException ex ) {
             ex.printStackTrace();
-            flag6 = true;
         }
 
         try {
-            qsession.unsubscribe("SUBID");
-        } catch (javax.jms.IllegalStateException ex) {
+            qsession.unsubscribe("SUBID_B_QS");
+            testFailed = true;
+        } catch ( javax.jms.IllegalStateException ex ) {
             ex.printStackTrace();
-            flag7 = true;
         }
 
-        if (flag1 == true && flag2 == true && flag3 == true && flag4 == true && flag5 == true && flag6 == true && flag7 == true)
-            exceptionFlag = true;
-
         qconn.close();
-        if (!(exceptionFlag))
-            throw new WrongException("testCreateSharedConsumer_InvalidDestination_TCP_SecOff failed");
 
+        if ( testFailed ) {
+            throw new Exception("testCreateSharedConsumer_InvalidDestination_TCP_SecOff failed");
+        }
     }
 
-    //Defect 174713
+    // Defect 174713
     public void testUnsubscribeInvalidSID_Tsession_B_SecOff(
-                                                            HttpServletRequest request, HttpServletResponse response)
-                    throws Throwable {
-        exceptionFlag = false;
-        TopicConnectionFactory tcf = (TopicConnectionFactory) new InitialContext()
-                        .lookup("java:comp/env/eis/tcf2");
+        HttpServletRequest request, HttpServletResponse response) throws Throwable {
+
+        TopicConnectionFactory tcf = (TopicConnectionFactory)
+            new InitialContext().lookup("java:comp/env/eis/tcf2");
         TopicConnection tconn = tcf.createTopicConnection();
         tconn.start();
         TopicSession tsession = tconn.createTopicSession(false, TopicSession.AUTO_ACKNOWLEDGE);
 
+        boolean testFailed = false;
         try {
             tsession.unsubscribe("DummySID");
-        } catch (InvalidDestinationException ex) {
+            testFailed = true;
+        } catch ( InvalidDestinationException ex ) {
             ex.printStackTrace();
-            exceptionFlag = true;
         }
 
         tconn.close();
-        if (!(exceptionFlag))
-            throw new WrongException("testUnsubscribeInvalidSID_Tsession_B_SecOff failed");
 
-    }
-
-    public int getMessageCount(QueueBrowser qb) throws JMSException {
-
-        Enumeration e = qb.getEnumeration();
-
-        int numMsgs = 0;
-        // count number of messages
-        while (e.hasMoreElements()) {
-            e.nextElement();
-            numMsgs++;
-        }
-
-        return numMsgs;
-    }
-
-    public static QueueConnectionFactory getQCFBindings()
-                    throws NamingException {
-
-        QueueConnectionFactory cf1 = (QueueConnectionFactory) new InitialContext()
-                        .lookup("java:comp/env/jndi_JMS_BASE_QCF");
-
-        return cf1;
-
-    }
-
-    public static QueueConnectionFactory getQCFTCP() throws NamingException {
-
-        QueueConnectionFactory cf1 = (QueueConnectionFactory) new InitialContext()
-                        .lookup("java:comp/env/jndi_JMS_BASE_QCF1");
-
-        return cf1;
-
-    }
-
-    public static TopicConnectionFactory getTCFBindings()
-                    throws NamingException {
-
-        TopicConnectionFactory tcf1 = (TopicConnectionFactory) new InitialContext()
-                        .lookup("java:comp/env/eis/tcf");
-
-        return tcf1;
-
-    }
-
-    public static TopicConnectionFactory getTCFTCP() throws NamingException {
-
-        TopicConnectionFactory tcf1 = (TopicConnectionFactory) new InitialContext()
-                        .lookup("java:comp/env/eis/tcf1");
-
-        return tcf1;
-
-    }
-
-    public class WrongException extends Exception {
-        String str;
-
-        public WrongException(String str) {
-            this.str = str;
-            System.out.println(" <ERROR> " + str + " </ERROR>");
+        if ( testFailed ) {
+            throw new Exception("testUnsubscribeInvalidSID_Tsession_B_SecOff failed");
         }
     }
-
 }

@@ -53,7 +53,7 @@
         <propertiesNotSupported name="businessAddress"/>
         <propertiesNotSupported name="sn"/>
       </attributeConfiguration>
-      <loginProperty>mail</loginProperty>
+      <loginProperty name="mail"/>
       <contextPool enabled="true" initialSize="1" maxSize="0" timeout="0ms"
           waitTime="3000ms" preferredSize="3"/>
       <ldapCache>
@@ -75,7 +75,7 @@
     </federatedRepository>
     
     <sslDefault sslRef="DefaultSSLSettings" />
-	<ssl id="LDAPSSLSettings" keyStoreRef="LDAPKeyStore" trustStoreRef="LDAPTrustStore" sslProtocol="TLSv1"/>
+	<ssl id="LDAPSSLSettings" keyStoreRef="LDAPKeyStore" trustStoreRef="LDAPTrustStore" />
 	<!-- keyStore id="LDAPKeyStore" location="${server.config.dir}/key.p12" type="PKCS12" password="{xor}CDo9Hgw=" />
 	<keyStore id="LDAPTrustStore" location="${server.config.dir}/trust.p12" type="PKCS12" password="{xor}CDo9Hgw=" /-->
 

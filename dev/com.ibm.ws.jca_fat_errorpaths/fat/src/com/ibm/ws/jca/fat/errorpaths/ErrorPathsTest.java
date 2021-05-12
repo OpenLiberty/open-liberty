@@ -18,6 +18,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -27,6 +28,7 @@ import componenttest.topology.utils.FATServletClient;
  * General tests that don't involve updating configuration while the server is running.
  */
 @RunWith(FATRunner.class)
+@AllowedFFDC
 public class ErrorPathsTest extends FATServletClient {
 
     @Server("com.ibm.ws.jca.fat.errorpaths")

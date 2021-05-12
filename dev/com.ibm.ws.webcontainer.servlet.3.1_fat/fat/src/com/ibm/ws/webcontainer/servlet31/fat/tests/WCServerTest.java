@@ -12,6 +12,7 @@ package com.ibm.ws.webcontainer.servlet31.fat.tests;
 
 import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
 
 import java.io.File;
 import java.io.FileReader;
@@ -223,7 +224,7 @@ public class WCServerTest extends LoggingTest {
      */
     @Test
     @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
-    public void testServlet31() throws Exception {
+    public void test_Servlet31() throws Exception {
         WebResponse response = this.verifyResponse("/TestServlet31/MyServlet", "Hello World");
 
         // verify the X-Powered-By Response header
@@ -232,7 +233,7 @@ public class WCServerTest extends LoggingTest {
     }
 
     @Test
-    public void testProgrammaticallyAddedServlet() throws Exception {
+    public void test_ProgrammaticallyAddedServlet() throws Exception {
         // 130998: This tests that the servlet that was programmatically
         // added with a different servlet name in "MyServletContextListener"
         // was created and is accessible.
@@ -240,7 +241,7 @@ public class WCServerTest extends LoggingTest {
     }
 
     @Test
-    public void testMetadataCompleteHandlesTypesServlet() throws Exception {
+    public void test_MetadataCompleteHandlesTypesServlet() throws Exception {
         WebBrowser wb = createWebBrowserForTestCase();
         this.verifyResponse(wb, "/TestMetadataComplete/DisplayInits",
                             new String[] { "ParentServletInitializer: com.ibm.ws.webcontainer.servlet_31_fat.testmetadatacomplete.war.servlets.DisplayInits",
@@ -251,7 +252,7 @@ public class WCServerTest extends LoggingTest {
     //This isn't duplicating testMetadataCompleteHandlesTypesServlet since we want granularity on the functions.
     //This is for excluded JARs only, the one above is for general SCI function.
     @Test
-    public void testMetadataCompleteExcludedHandlesTypesServlet() throws Exception {
+    public void test_MetadataCompleteExcludedHandlesTypesServlet() throws Exception {
         WebBrowser wb = createWebBrowserForTestCase();
 
         String[] expected = new String[] {};
@@ -269,44 +270,44 @@ public class WCServerTest extends LoggingTest {
      *                       if validation fails, or if an unexpected error occurs
      */
     @Test
-    public void testSessionIdListenerChangeServlet() throws Exception {
+    public void test_SessionIdListenerChangeServlet() throws Exception {
         // Make sure the test framework knows that SRVE9014E is expected
 
-        testSessionIdListener("/TestServlet31/SessionIdListenerChangeServlet");
+        test_SessionIdListener("/TestServlet31/SessionIdListenerChangeServlet");
     }
 
     /**
-     * Perform the same test as "testSessionIdListenerChangeServlet" except for this time the HttpSessionIdListener is
+     * Perform the same test as "test_SessionIdListenerChangeServlet" except for this time the HttpSessionIdListener is
      * registered in the web.xml and not via the @WebListener annotation. The SessionIdListener application is used
      * for this test.
      *
      * @throws Exception
      */
     @Test
-    public void testSessionIdListenerRegisteredWebXml() throws Exception {
+    public void test_SessionIdListenerRegisteredWebXml() throws Exception {
         // Make sure the test framework knows that SRVE9014E is expected
 
-        testSessionIdListener("/SessionIdListener/SessionIdListenerChangeServlet");
+        test_SessionIdListener("/SessionIdListener/SessionIdListenerChangeServlet");
     }
 
     /**
-     * Perform the same test as "testSessionIdListenerChangeServlet" except for this time the HttpSessionIdListener is
+     * Perform the same test as "test_SessionIdListenerChangeServlet" except for this time the HttpSessionIdListener is
      * registered via a ServletContextListener using the ServletContext.addListener API. The SessionIdListenerAddListener
      * application is used for this test.
      *
      * @throws Exception
      */
     @Test
-    public void testSessionIdListenerServletContextAddListener() throws Exception {
+    public void test_SessionIdListenerServletContextAddListener() throws Exception {
         // Make sure the test framework knows that SRVE9014E is expected
 
-        testSessionIdListener("/SessionIdListenerAddListener/SessionIdListenerChangeServlet");
+        test_SessionIdListener("/SessionIdListenerAddListener/SessionIdListenerChangeServlet");
     }
 
     /*
      * Common test code for HttpSessionIdListener tests.
      */
-    private void testSessionIdListener(String url) throws Exception {
+    private void test_SessionIdListener(String url) throws Exception {
         this.verifyResponse(url, "Expected IllegalStateException");
         WebBrowser wb = createWebBrowserForTestCase();
         WebResponse wr = this.verifyResponse(wb, url + "?getSessionFirst=true",
@@ -319,7 +320,7 @@ public class WCServerTest extends LoggingTest {
     }
 
     @Test
-    public void testRequestedSessionId() throws Exception {
+    public void test_RequestedSessionId() throws Exception {
         WebBrowser wb = createWebBrowserForTestCase();
         this.verifyResponse(wb, "/TestServlet31/SessionIdTest;jsessionid=mysessionid",
                             new String[] { "Requested session id was mysessionid",
@@ -327,7 +328,7 @@ public class WCServerTest extends LoggingTest {
     }
 
     @Test
-    public void testGetServerInfo() throws Exception {
+    public void test_GetServerInfo() throws Exception {
         WebBrowser wb = createWebBrowserForTestCase();
 
         String v = System.getProperty("version", "");
@@ -351,7 +352,7 @@ public class WCServerTest extends LoggingTest {
      *                       if validation fails, or if an unexpected error occurs
      */
     @Test
-    public void testResponseReset() throws Exception {
+    public void test_ResponseReset() throws Exception {
         WebBrowser wb = createWebBrowserForTestCase();
         String url = "/TestServlet31/ResponseReset?firstType=pWriter&secondType=pWriter";
         WebResponse wr = this.verifyResponse(wb, url, "SUCCESS");
@@ -381,7 +382,7 @@ public class WCServerTest extends LoggingTest {
      */
     @Test
     @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
-    public void testServletContextMinorMajorVersion() throws Exception {
+    public void test_ServletContextMinorMajorVersion() throws Exception {
         this.verifyResponse("/TestServlet31/MyServlet?TestMajorMinorVersion=true",
                             "majorVersion: 3");
         this.verifyResponse("/TestServlet31/MyServlet?TestMajorMinorVersion=true",
@@ -396,7 +397,7 @@ public class WCServerTest extends LoggingTest {
     @Test
     @Mode(TestMode.FULL)
     @ExpectedFFDC({ "com.ibm.wsspi.adaptable.module.UnableToAdaptException", "com.ibm.ws.container.service.metadata.MetaDataException" })
-    public void testServletMapping() throws Exception {
+    public void test_ServletMapping() throws Exception {
 
         LibertyServer wlp = SHARED_SERVER.getLibertyServer();
         wlp.setMarkToEndOfLog();
@@ -436,7 +437,7 @@ public class WCServerTest extends LoggingTest {
      * @throws Exception
      */
     @Test
-    public void testServletContextAddListener() throws Exception {
+    public void test_ServletContextAddListener() throws Exception {
 
         // Make sure the test framework knows that SRVE8015E is expected
 
@@ -458,7 +459,7 @@ public class WCServerTest extends LoggingTest {
      * @throws Exception
      */
     @Test
-    public void testProgrammaticListenerAddition() throws Exception {
+    public void test_ProgrammaticListenerAddition() throws Exception {
 
         // Drive a request to the SimpleTestServlet to initialize the application
         this.verifyResponse("/TestProgrammaticListenerAddition/SimpleTestServlet", "Hello World");
@@ -481,7 +482,7 @@ public class WCServerTest extends LoggingTest {
      * exception is thrown in this scenario.
      */
     @Test
-    public void testServletContextCreateListenerBadListener() throws Exception {
+    public void test_ServletContextCreateListenerBadListener() throws Exception {
 
         // Make sure the test framework knows that SRVE9014E is expected
 
@@ -503,12 +504,24 @@ public class WCServerTest extends LoggingTest {
     }
 
     /**
+     * Servlet 5.0: decodeUrlPlusSign = "false" by default.
+     * Only run in EE 9 (i.e skip 3.1 NO_MODIFICATION, and 4.0 EE8_FEATURES)
+     */
+    @Test
+    @Mode(TestMode.FULL)
+    @SkipForRepeat({ NO_MODIFICATION, EE8_FEATURES })
+    public void test_DecodeUrlPlusSignDefault_Servlet5() throws Exception {
+        this.verifyResponse("/TestServlet31/plus+sign.html", "This file has a plus sign in the name");
+    }
+
+    /**
      * This test case verifies a plus in a URL is decoded to a space when default
      * decodeUrlPlusSign = "true" is in effect.
      */
     @Test
     @Mode(TestMode.FULL)
-    public void testDecodeUrlPlusSignDefault() throws Exception {
+    @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
+    public void test_DecodeUrlPlusSignDefault() throws Exception {
         this.verifyResponse("/TestServlet31/noplus+sign.html", "This file has a space in the name");
     }
 
@@ -516,10 +529,15 @@ public class WCServerTest extends LoggingTest {
      * This test case verifies that WC property decodeUrlPlusSign="false" leaves "+" undecoded.
      * For servlet-3.1 and servlet-4.0, the default for decodeUrlPlusSign has been true,
      * which decodes "+" to blank.
+     *
+     * For servlet-5.0, default decodeUrlPlusSign="false". This test explicitly set it to "true"
+     * which decode "+" to a space/blank
      */
     @Test
     @Mode(TestMode.FULL)
-    public void testDecodeUrlPlusSign() throws Exception {
+    public void test_DecodeUrlPlusSign() throws Exception {
+        boolean isEE9 = componenttest.rules.repeater.JakartaEE9Action.isActive();
+
         LibertyServer wlp = SHARED_SERVER.getLibertyServer();
         wlp.saveServerConfiguration();
 
@@ -528,7 +546,15 @@ public class WCServerTest extends LoggingTest {
 
         // Set the decodeUrlPlusSign property to false.
         WebContainerElement webContainer = configuration.getWebContainer();
-        webContainer.setDecodeurlplussign(false);
+
+        if (isEE9) {
+            webContainer.setDecodeurlplussign(true);
+            LOG.info("Setting decodeUrlPlusSign to true");
+        } else {
+            webContainer.setDecodeurlplussign(false);
+            LOG.info("Setting decodeUrlPlusSign to false");
+        }
+
         wlp.setMarkToEndOfLog();
         wlp.updateServerConfiguration(configuration);
         wlp.waitForConfigUpdateInLogUsingMark(null);
@@ -536,7 +562,10 @@ public class WCServerTest extends LoggingTest {
         LOG.info("Server configuration updated to: " + configuration);
 
         try {
-            this.verifyResponse("/TestServlet31/plus+sign.html", "This file has a plus sign in the name");
+            if (isEE9)
+                this.verifyResponse("/TestServlet31/noplus+sign.html", "This file has a space in the name");
+            else
+                this.verifyResponse("/TestServlet31/plus+sign.html", "This file has a plus sign in the name");
         } finally {
             // Reset the server.xml.
             wlp.setMarkToEndOfLog();

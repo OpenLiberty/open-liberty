@@ -21,13 +21,8 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet("/TraceURL")
 public class TraceServlet extends HttpServlet {
-    /*
-     * @Override
-     * public void init(ServletConfig config) throws ServletException
-     * {
-     * ServletContext sc = getServletContext();
-     * }
-     */
+
+    private static final long serialVersionUID = 1L;
 
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
@@ -42,7 +37,7 @@ public class TraceServlet extends HttpServlet {
         String loggerName = "com.ibm.logs.TraceServlet";
         java.util.logging.Logger logger = java.util.logging.Logger.getLogger(loggerName);
         //Log the trace message
-        logger.logp(java.util.logging.Level.FINE, loggerName, "Method.Info", "com.ibm.ws.logstash.collector_fat TEST JUL TRACE" + id);
+        logger.logp(java.util.logging.Level.FINE, loggerName, "Method.Info", "TEST JUL TRACE" + id);
 
         PrintWriter out;
         res.setContentType("text/html");

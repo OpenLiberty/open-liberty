@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1998, 2006 IBM Corporation and others.
+ * Copyright (c) 1998, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,8 +31,7 @@ import javax.rmi.PortableRemoteObject;
  * (e.g. can not use com.ibm.websphere.ras package since it does not exist in other
  * vendors implementation).
  */
-public class EJBMetaDataImpl implements EJBMetaData, Serializable
-{
+public class EJBMetaDataImpl implements EJBMetaData, Serializable {
     private static final long serialVersionUID = 4092588565014573628L;
 
     static final boolean DEBUG_ON = false;
@@ -49,10 +48,10 @@ public class EJBMetaDataImpl implements EJBMetaData, Serializable
     // [ eyecatcher ][ platform ][ version id ]
     //     byte[4]       short       short                 instance fields
     //
-    // This class, and the other six, overide the default implementation of the
+    // This class, and the other six, override the default implementation of the
     // Serializable methods 'writeObject' and 'readObject'. The implementations
     // of these methods in each of the seven identified byvalue classes read
-    // and write the buffer contents as mapped above for thier respective
+    // and write the buffer contents as mapped above for their respective
     // classes.
     //
     // header information
@@ -73,10 +72,9 @@ public class EJBMetaDataImpl implements EJBMetaData, Serializable
 
     /**
      * Stub to EJBHome object. Note, the stub is not written to
-     * output stream, which is why it is made transient. When
-     * readObject is called, it will use the HomeHandle that is
-     * written to output stream to get the stub to EJBHome object.
-     * See readObject method for more information.
+     * output stream, which is why it is made transient. The
+     * HomeHandle is written to the output stream and used to
+     * obtain the EJBHome after readObject has occurred.
      */
     private transient EJBHome ivEjbHome;
 
@@ -96,20 +94,20 @@ public class EJBMetaDataImpl implements EJBMetaData, Serializable
     /**
      * Bean's Class object.
      */
-    private transient Class ivBeanClass;
+    private transient Class<?> ivBeanClass;
 
     // Bean class name 184994
-    private transient String ivBeanClassName;//184994
+    private transient String ivBeanClassName; // 184994
 
     /**
      * Home interface class.
      */
-    private transient Class ivHomeClass;
+    private transient Class<?> ivHomeClass;
 
     /**
      * Remote interface class.
      */
-    private transient Class ivRemoteClass;
+    private transient Class<?> ivRemoteClass;
 
     /**
      * Set to boolean true if a SessionBean.
@@ -124,50 +122,39 @@ public class EJBMetaDataImpl implements EJBMetaData, Serializable
     /**
      * Primary key class name if an EntityBean. Otherwise, null.
      */
-    private transient Class ivPKClass;
+    private transient Class<?> ivPKClass;
 
     /**
      * Construct a new instance.
      *
-     * @param beanType must be one of the following constants
-     *            defined by this class: STATEFUL_SESSION, STATELESS_SESSION,
-     *            or NON_SESSION_BEAN.
-     * @param ejbHomeStub is a stub to EJBHome object for this bean.
-     * @param beanClass is the Class object for the bean.
-     * @param homeClass is the Class object of the home interface.
-     * @param remoteClass is the Class object of the remote interface.
+     * @param beanType        must be one of the following constants
+     *                            defined by this class: STATEFUL_SESSION, STATELESS_SESSION,
+     *                            or NON_SESSION_BEAN.
+     * @param ejbHomeStub     is a stub to EJBHome object for this bean.
+     * @param beanClass       is the Class object for the bean.
+     * @param homeClass       is the Class object of the home interface.
+     * @param remoteClass     is the Class object of the remote interface.
      * @param primaryKeyClass is the Class object of the primary key
-     *            when beanType is NON_SESSION_BEAN. When beantype is
-     *            STATEFUL_SESSION or STATELESS_SESSION, this parameter
-     *            is ignored.
+     *                            when beanType is NON_SESSION_BEAN. When beantype is
+     *                            STATEFUL_SESSION or STATELESS_SESSION, this parameter
+     *                            is ignored.
      */
-    public EJBMetaDataImpl(int beanType
-                           , EJBHome ejbHomeStub
-                           , Class beanClass
-                           , Class homeClass
-                           , Class remoteClass
-                           , Class primaryKeyClass)
-    {
+    public EJBMetaDataImpl(int beanType, EJBHome ejbHomeStub, Class<?> beanClass, Class<?> homeClass, Class<?> remoteClass, Class<?> primaryKeyClass) {
         ivEjbHome = ejbHomeStub;
         ivHomeHandle = new HomeHandleImpl(ejbHomeStub);
         ivBeanClass = beanClass;
-        ivBeanClassName = ivBeanClass.getName();//184994
+        ivBeanClassName = ivBeanClass.getName(); // 184994
         ivHomeClass = homeClass;
         ivRemoteClass = remoteClass;
         ivPKClass = null;
 
-        if (beanType == EJBMetaDataImpl.STATEFUL_SESSION)
-        {
+        if (beanType == EJBMetaDataImpl.STATEFUL_SESSION) {
             ivSession = true;
             ivStatelessSession = false;
-        }
-        else if (beanType == EJBMetaDataImpl.STATELESS_SESSION)
-        {
+        } else if (beanType == EJBMetaDataImpl.STATELESS_SESSION) {
             ivSession = true;
             ivStatelessSession = true;
-        }
-        else
-        {
+        } else {
             ivSession = false;
             ivStatelessSession = false;
             ivPKClass = primaryKeyClass;
@@ -178,26 +165,44 @@ public class EJBMetaDataImpl implements EJBMetaData, Serializable
      * Obtain the home interface bean reference of the enterprise
      * bean associated with this meta data instance.
      */
-    public EJBHome getEJBHome()
-    {
+    @Override
+    public EJBHome getEJBHome() {
+        if (ivEjbHome == null && ivHomeHandle != null) {
+            try {
+                EJBHome ejbHomeStub = ivHomeHandle.getEJBHome();
+                if (DEBUG_ON) {
+                    System.out.println("EJBMetaDataImpl.getEJBHome: got EJBHome, doing narrow");
+                }
+
+                ivEjbHome = (EJBHome) PortableRemoteObject.narrow(ejbHomeStub, ivHomeClass);
+                if (DEBUG_ON) {
+                    System.out.println("EJBMetaDataImpl.getEJBHome narrowed");
+                }
+            } catch (IOException e) {
+                // FFDCFilter.processException(e, CLASS_NAME + ".getEJBHome", "221", this);
+                if (DEBUG_ON) {
+                    System.out.println("***ERROR**** EJBMetaDataImpl.getEJBHome caught unexpected exception");
+                    e.printStackTrace();
+                }
+            }
+        }
         return ivEjbHome;
     }
 
     /**
      * Obtain the Class object for the home interface.
      */
-    public Class getHomeInterfaceClass()
-    {
+    @Override
+    public Class<?> getHomeInterfaceClass() {
         return ivHomeClass;
     }
 
     /**
      * Obtain the Class object for the primary key interface.
      */
-    public Class getPrimaryKeyClass()
-    {
-        if (ivPKClass == null)
-        {
+    @Override
+    public Class<?> getPrimaryKeyClass() {
+        if (ivPKClass == null) {
             throw new EJBException("Session beans do not have a primary key class");
         }
         return ivPKClass;
@@ -206,73 +211,65 @@ public class EJBMetaDataImpl implements EJBMetaData, Serializable
     /**
      * Obtain the Class object for the remote interface.
      */
-    public Class getRemoteInterfaceClass()
-    {
+    @Override
+    public Class<?> getRemoteInterfaceClass() {
         return ivRemoteClass;
     }
 
     /**
      * Obtain the Class object for the enterprise bean this
-     * bean meta data is assoicated with.
+     * bean meta data is associated with.
      */
-    public String getBeanClassName()
-    {
-        return ivBeanClassName;//184994
-
+    public String getBeanClassName() {
+        return ivBeanClassName; // 184994
     }
 
     /**
      * Returns boolean true if bean is a SessionBean. Otherwise false.
      */
-    public boolean isSession()
-    {
+    @Override
+    public boolean isSession() {
         return ivSession;
     }
 
     /**
      * Returns boolean true if bean is a stateless SessionBean. Otherwise false.
      */
-    public boolean isStatelessSession()
-    {
+    @Override
+    public boolean isStatelessSession() {
         return ivStatelessSession;
     }
 
     /**
      * We will implement the readObject method for this
-     * object to controll the demarshalling.
+     * object to control the demarshalling.
      *
      * Note, this is overriding the default implementation of
      * the Serializable interface.
      *
      * @see java.io.Serializable
      */
-    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException
-    {
-        try
-        {
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        try {
             in.defaultReadObject();
 
             // p113380 - start of change
             // Read in eye catcher.
             byte[] ec = new byte[EYECATCHER_LENGTH];
 
-            //d164415 start
+            // d164415 start
             int bytesRead = 0;
-            for (int offset = 0; offset < EYECATCHER_LENGTH; offset += bytesRead)
-            {
+            for (int offset = 0; offset < EYECATCHER_LENGTH; offset += bytesRead) {
                 bytesRead = in.read(ec, offset, EYECATCHER_LENGTH - offset);
-                if (bytesRead == -1)
-                {
+                if (bytesRead == -1) {
                     throw new IOException("end of input stream while reading eye catcher");
                 }
             }
-            //d164415 end
+            // d164415 end
 
             // Validate that the eyecatcher matches
-            for (int i = 0; i < EYECATCHER_LENGTH; i++)
-            {
-                if (EYECATCHER[i] != ec[i])
-                {
+            for (int i = 0; i < EYECATCHER_LENGTH; i++) {
+                if (EYECATCHER[i] != ec[i]) {
                     String eyeCatcherString = new String(ec);
                     throw new IOException("Invalid eye catcher '" + eyeCatcherString + "' in EJBMetaData input stream");
                 }
@@ -284,85 +281,60 @@ public class EJBMetaDataImpl implements EJBMetaData, Serializable
             // p113380 - end of change
 
             // Read in the common data
-            if (DEBUG_ON)
-            {
+            if (DEBUG_ON) {
                 System.out.println("EJBMetaDataImpl.readObject entry");
             }
 
             ivSession = in.readBoolean();
-            if (DEBUG_ON)
-            {
+            if (DEBUG_ON) {
                 System.out.println("EJBMetaDataImpl.readObject: ivSession = " + ivSession);
             }
 
             ivStatelessSession = in.readBoolean();
-            if (DEBUG_ON)
-            {
+            if (DEBUG_ON) {
                 System.out.println("EJBMetaDataImpl.readObject: ivStatelessSession = " + ivStatelessSession);
             }
 
-            ClassLoader loader = (ClassLoader) AccessController.doPrivileged( // 363037
-            new PrivilegedAction() {
-                public java.lang.Object run() {
+            ClassLoader loader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+                @Override
+                public ClassLoader run() {
                     return Thread.currentThread().getContextClassLoader();
                 }
-            }
-                            );
+            });
 
-            ivBeanClassName = in.readUTF();//184994
-            if (DEBUG_ON)
-            {
-                System.out.println("EJBMetaDataImpl.readObject: ivBeanClass is " + ivBeanClassName);//184994
+            ivBeanClassName = in.readUTF(); // 184994
+            if (DEBUG_ON) {
+                System.out.println("EJBMetaDataImpl.readObject: ivBeanClass is " + ivBeanClassName); // 184994
             }
 
             ivHomeClass = loader.loadClass(in.readUTF());
-            if (DEBUG_ON)
-            {
+            if (DEBUG_ON) {
                 System.out.println("EJBMetaDataImpl.readObject: ivHomeClass is " + ivHomeClass);
             }
 
             ivRemoteClass = loader.loadClass(in.readUTF());
-            if (ivSession == false)
-            {
+            if (ivSession == false) {
                 ivPKClass = loader.loadClass(in.readUTF());
-                if (DEBUG_ON)
-                {
+                if (DEBUG_ON) {
                     System.out.println("EJBMetaDataImpl.readObject loading PKEY class");
                     System.out.println("EJBMetaDataImpl.readObject: ivPKClass is " + ivPKClass);
                 }
             }
 
             ivHomeHandle = (HomeHandle) in.readObject();
-            if (DEBUG_ON)
-            {
+            if (DEBUG_ON) {
                 System.out.println("EJBMetaDataImpl.readObject: read HomeHandle");
             }
-
-            EJBHome ejbHomeStub = ivHomeHandle.getEJBHome();
-            if (DEBUG_ON)
-            {
-                System.out.println("EJBMetaDataImpl.readObject: got EJBHome, doing narrow");
-            }
-
-            ivEjbHome = (EJBHome) PortableRemoteObject.narrow(ejbHomeStub, ivHomeClass);
-            if (DEBUG_ON)
-            {
-                System.out.println("EJBMetaDataImpl.readObject normal exit");
-            }
-        } catch (IOException e)
-        {
+        } catch (IOException e) {
             // FFDCFilter.processException(e, CLASS_NAME + ".readObject", "346", this);
-            if (DEBUG_ON)
-            {
+            if (DEBUG_ON) {
                 System.out.println("***ERROR**** EJBMetaDataImpl.readObject caught unexpected exception");
                 e.printStackTrace();
             }
             throw e;
-        } catch (ClassNotFoundException e)
-        {
+        } catch (ClassNotFoundException e) {
             // FFDCFilter.processException(e, CLASS_NAME + ".readObject", "356", this);
-            if (DEBUG_ON)
-            {
+            if (DEBUG_ON) {
                 System.out.println("***ERROR**** EJBMetaDataImpl.readObject caught unexpected exception");
                 e.printStackTrace();
             }
@@ -371,17 +343,15 @@ public class EJBMetaDataImpl implements EJBMetaData, Serializable
     }
 
     /**
-     * We will implement writeObject in order to controll
+     * We will implement writeObject in order to control
      * the marshalling for this object.
      * Note, this is overriding the default implementation of
      * the Serializable interface.
      *
      * @see java.io.Serializable
      */
-    private void writeObject(ObjectOutputStream out) throws IOException
-    {
-        try
-        {
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        try {
             out.defaultWriteObject();
 
             // p113380 - start of change
@@ -392,60 +362,49 @@ public class EJBMetaDataImpl implements EJBMetaData, Serializable
             // p113380 - end of change
 
             // write out the common data
-            if (DEBUG_ON)
-            {
+            if (DEBUG_ON) {
                 System.out.println("EJBMetaDataImpl.writeObject: ivSession = " + ivSession);
             }
             out.writeBoolean(ivSession);
 
-            if (DEBUG_ON)
-            {
+            if (DEBUG_ON) {
                 System.out.println("EJBMetaDataImpl.writeObject: ivStatelessSession = " + ivStatelessSession);
             }
             out.writeBoolean(ivStatelessSession);
 
-            if (DEBUG_ON)
-            {
-                System.out.println("EJBMetaDataImpl.writeObject: ivBeanClass is " + ivBeanClassName);//184994
+            if (DEBUG_ON) {
+                System.out.println("EJBMetaDataImpl.writeObject: ivBeanClass is " + ivBeanClassName); // 184994
             }
-            out.writeUTF(ivBeanClassName);//184994
+            out.writeUTF(ivBeanClassName); // 184994
 
-            if (DEBUG_ON)
-            {
+            if (DEBUG_ON) {
                 System.out.println("EJBMetaDataImpl.writeObject: ivHomeClass is " + ivHomeClass.getName());
             }
             out.writeUTF(ivHomeClass.getName());
 
-            if (DEBUG_ON)
-            {
+            if (DEBUG_ON) {
                 System.out.println("EJBMetaDataImpl.writeObject: ivRemoteClass is " + ivRemoteClass.getName());
             }
             out.writeUTF(ivRemoteClass.getName());
 
-            if (ivSession == false)
-            {
-                if (DEBUG_ON)
-                {
+            if (ivSession == false) {
+                if (DEBUG_ON) {
                     System.out.println("EJBMetaDataImpl.writeObject: ivPKClass is " + ivPKClass.getName());
                 }
                 out.writeUTF(ivPKClass.getName());
             }
 
-            if (DEBUG_ON)
-            {
+            if (DEBUG_ON) {
                 System.out.println("EJBMetaDataImpl.writeObject: writing HomeHandle");
             }
             out.writeObject(ivHomeHandle);
 
-            if (DEBUG_ON)
-            {
+            if (DEBUG_ON) {
                 System.out.println("EJBMetaDataImpl.writeObject normal exit");
             }
-        } catch (IOException e)
-        {
+        } catch (IOException e) {
             // FFDCFilter.processException(e, CLASS_NAME + ".writeObject", "439", this);
-            if (DEBUG_ON)
-            {
+            if (DEBUG_ON) {
                 System.out.println("***ERROR**** EJBMetaDataImpl.readObject caught unexpected exception");
                 e.printStackTrace();
             }

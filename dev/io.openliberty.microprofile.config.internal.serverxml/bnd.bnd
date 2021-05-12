@@ -30,6 +30,9 @@ Include-Resource: \
 
 WS-TraceGroup: APPCONFIG
 
+-dsannotations: \
+        io.openliberty.microprofile.config.internal.serverxml.AppPropertiesTrackingComponent, \
+        io.openliberty.microprofile.config.internal.serverxml.AppPropertiesComponent
 
 -buildpath: \
 	com.ibm.websphere.org.eclipse.microprofile.config.1.1;version=latest, \

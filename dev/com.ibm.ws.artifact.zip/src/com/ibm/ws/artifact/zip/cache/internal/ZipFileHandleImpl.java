@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012,2019 IBM Corporation and others.
+ * Copyright (c) 2012,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -88,7 +88,10 @@ public class ZipFileHandleImpl implements ZipFileHandle {
 
     //
 
-    private final Integer zipFileLock = new Integer(0);
+    private static class ZipFileLock {
+        // EMPTY
+    }
+    private final ZipFileLock zipFileLock = new ZipFileLock();
     private ZipFile zipFile;
     private int openCount;
 
@@ -155,9 +158,13 @@ public class ZipFileHandleImpl implements ZipFileHandle {
     public ZipFile open() throws IOException {
         String methodName = "open";
 
+        boolean isDebugEnabled = TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled();
+        ZipFile retVal;
         synchronized( zipFileLock ) {
             if ( zipFile == null ) {
-                debug(methodName, "Opening");
+                if (isDebugEnabled) {
+                    debug(methodName, "Opening");
+                }
                 if ( zipFileReaper == null ) {
                     zipFile = ZipFileUtils.openZipFile(file); // throws IOException
                 } else {
@@ -165,11 +172,15 @@ public class ZipFileHandleImpl implements ZipFileHandle {
                 }
             }
 
+            retVal = zipFile;
             openCount++;
-            debug(methodName, "Opened");
-
-            return zipFile;
         }
+
+        if (isDebugEnabled) {
+           debug(methodName, "Opened");
+        }
+
+        return retVal;
     }
 
     @Override
@@ -179,9 +190,12 @@ public class ZipFileHandleImpl implements ZipFileHandle {
 
         boolean extraClose;
 
+        boolean isDebugEnabled = TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled();
         synchronized ( zipFileLock ) {
             if ( !(extraClose = (openCount == 0)) ) {
-                debug(methodName, "Closing");
+                if (isDebugEnabled) {
+                    debug(methodName, "Closing");
+                }
 
                 openCount = openCount - 1;
 
@@ -199,26 +213,24 @@ public class ZipFileHandleImpl implements ZipFileHandle {
                         zipFileReaper.close(path);
                     }
                 }
-
-                debug(methodName, "Closed");
             }
         }
+        if (isDebugEnabled) {
+            if (!extraClose) {
+                debug(methodName, "Closed");
+            } else {
+                debug(methodName, "Extra close");
 
-        if ( extraClose && tc.isDebugEnabled() ) {
-            debug(methodName, "Extra close");
+                Exception e = new Exception();
+                ByteArrayOutputStream stackStream = new ByteArrayOutputStream();
+                PrintStream stackPrintStream = new PrintStream(stackStream);
+                e.printStackTrace(stackPrintStream);
 
-            Exception e = new Exception();
-            ByteArrayOutputStream stackStream = new ByteArrayOutputStream();
-            PrintStream stackPrintStream = new PrintStream(stackStream);
-            e.printStackTrace(stackPrintStream);
-
-            Tr.debug( tc, stackStream.toString() );
+                Tr.debug(tc, stackStream.toString());
+            }
         }
     }
 
-    //
-
-    private final Integer zipEntriesLock = new Integer(1);
     private final Map<String, byte[]> zipEntries;
 
     {
@@ -289,9 +301,9 @@ public class ZipFileHandleImpl implements ZipFileHandle {
 
         if ( zipEntry.isDirectory() ) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
-                debug(methodName, "Entry [ " + entryName + " ] [ null ] (Not using cache: Directory entry)");
+                debug(methodName, "Entry [ " + entryName + " ] [ empty stream ] (Not using cache: Directory entry)");
             }
-            return null;
+            return EMPTY_STREAM;
         }
 
         long entrySize = zipEntry.getSize();
@@ -352,7 +364,7 @@ public class ZipFileHandleImpl implements ZipFileHandle {
         // reads could create large delays.
 
         byte[] entryBytes;
-        synchronized( zipEntriesLock ) {
+        synchronized( zipEntries ) {
             entryBytes = zipEntries.get(entryCacheKey);
         }
 
@@ -364,7 +376,7 @@ public class ZipFileHandleImpl implements ZipFileHandle {
                 inputStream.close(); // throws IOException
             }
 
-            synchronized( zipEntriesLock ) {
+            synchronized( zipEntries ) {
                 zipEntries.put(entryCacheKey, entryBytes);
             }
         }

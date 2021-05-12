@@ -27,6 +27,6 @@ var messages = {
     HEADER_UPDATE_AVAILABLE: "Aggiornamento disponibile: ",
     HEADER_DOWNLOAD_LINK: "Fare clic per scaricare {0}", // Product name
     HEADER_UPDATE_AVAILABLE_DOWNLOAD_LINK: "Aggiornamento disponibile. Fare clic per scaricare {0}", // Product name
-    UPDATE_BANNER_CLOSE_BUTTON: "Chiudi banner di aggiornamento",
+    UPDATE_BANNER_CLOSE_BUTTON: "Chiudi Aggiorna banner",
     CONTEXT_ROOT_NOT_FOUND: "Root di contesto non trovata."
 };

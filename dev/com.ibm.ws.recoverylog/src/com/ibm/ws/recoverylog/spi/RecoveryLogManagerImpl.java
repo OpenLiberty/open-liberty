@@ -13,9 +13,9 @@ package com.ibm.ws.recoverylog.spi;
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
 
-import com.ibm.tx.util.logging.FFDCFilter;
-import com.ibm.tx.util.logging.Tr;
-import com.ibm.tx.util.logging.TraceComponent;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.FFDCFilter;
 
 //------------------------------------------------------------------------------
 // Class: RecoveryLogManagerImpl
@@ -38,7 +38,7 @@ public class RecoveryLogManagerImpl implements RecoveryLogManager {
      * WebSphere RAS TraceComponent registration.
      */
     private static final TraceComponent tc = Tr.register(RecoveryLogManagerImpl.class,
-                                                         TraceConstants.TRACE_GROUP, null);
+                                                         TraceConstants.TRACE_GROUP, TraceConstants.NLS_FILE);
 
     /**
      * The name of the client service that owns the RecoveryLogManager instance.
@@ -182,20 +182,19 @@ public class RecoveryLogManagerImpl implements RecoveryLogManager {
     @Override
     public synchronized RecoveryLog getRecoveryLog(FailureScope failureScope, LogProperties logProperties) throws InvalidLogPropertiesException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "getRecoveryLog", new java.lang.Object[] { failureScope, logProperties, this });
+            Tr.entry(tc, "getRecoveryLog", new Object[] { failureScope, logProperties, this });
         /* 5@PK01151D */
         // If we're on Z, we can have a ZLogProperties (System Logger) based
         // recovery log.  Otherwise, FileLogProperties and CustomLogProperties are the only supported types.
         if (logProperties instanceof StreamLogProperties) {
             // final PlatformHelper ph = PlatformHelperFactory.getPlatformHelper();
             // if (ph.isZOS() == false)
-            if (Configuration.isZOS() == false) {
-                if (tc.isEventEnabled())
-                    Tr.event(tc, "Unable to create stream based recovery log on non-ZOS platform"); /* @LIDB2561.1A */
-                if (tc.isEntryEnabled())
-                    Tr.exit(tc, "getRecoveryLog");
-                throw new InvalidLogPropertiesException();
-            }
+            if (tc.isEventEnabled())
+                Tr.event(tc, "Unable to create stream based recovery log on non-ZOS platform"); /* @LIDB2561.1A */
+            if (tc.isEntryEnabled())
+                Tr.exit(tc, "getRecoveryLog");
+            throw new InvalidLogPropertiesException();
+
         } else if (!(logProperties instanceof FileLogProperties || logProperties instanceof CustomLogProperties)) {
             if (tc.isEventEnabled())
                 Tr.event(tc, "Unable to create non-file based or non-Custom recovery log");
@@ -305,12 +304,9 @@ public class RecoveryLogManagerImpl implements RecoveryLogManager {
                     // log.
                     multiScopeLogsByServerName = _multiScopeRecoveryLogs.get(logIdentifier); /* @253893C */
 
-                    if (multiScopeLogsByServerName != null) /* @253893A */
-                    { /* @253893A */
+                    if (multiScopeLogsByServerName != null) /* @253893A */ {
                         multiScopeRecoveryLog = multiScopeLogsByServerName.get(serverName); /* @253893A */
-                    } /* @253893A */
-                    else /* @253893A */
-                    { /* @253893A */
+                    } else { /* @253893A */
                         multiScopeLogsByServerName = new HashMap<String, MultiScopeLog>(); /* @253893A */
                         _multiScopeRecoveryLogs.put(logIdentifier, multiScopeLogsByServerName); /* @253893A */
                     } /* @253893A */
@@ -401,7 +397,7 @@ public class RecoveryLogManagerImpl implements RecoveryLogManager {
                                             int leaseLength, LogProperties logProperties) throws InvalidLogPropertiesException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "getLeaseLog",
-                     new java.lang.Object[] { localRecoveryIdentity, recoveryGroup, leaseCheckInterval, leaseCheckStrategy, leaseLength, logProperties, this });
+                     new Object[] { localRecoveryIdentity, recoveryGroup, leaseCheckInterval, leaseCheckStrategy, leaseLength, logProperties, this });
 
         SharedServerLeaseLog leaseLog = null;
         CustomLogProperties customLogProperties = null;

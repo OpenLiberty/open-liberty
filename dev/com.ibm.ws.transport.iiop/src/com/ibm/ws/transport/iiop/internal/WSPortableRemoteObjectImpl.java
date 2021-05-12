@@ -59,20 +59,7 @@ public class WSPortableRemoteObjectImpl extends PortableRemoteObjectImpl {
             return super.narrow(narrowFrom, narrowTo);
         }
 
-        Object stubObject;
-        try {
-            stubObject = stubClass.newInstance();
-        } catch (Throwable t) {
-            // This will fail if the stub class is "invalid" (missing default
-            // constructor, non-public default constructor, logic in the
-            // constructor that throws, etc.).
-            ClassCastException e = new ClassCastException(narrowTo.getName());
-            e.initCause(t);
-            throw e;
-        }
-
-        // This will fail if the loaded class does not actually extend Stub.
-        Stub stub = (Stub) stubObject;
+        Stub stub = newStub(stubClass, narrowTo);
 
         try {
             stub._set_delegate(((ObjectImpl) narrowFrom)._get_delegate());
@@ -86,6 +73,19 @@ public class WSPortableRemoteObjectImpl extends PortableRemoteObjectImpl {
         // interface, but the context class loader loaded a stub that
         // implemented a different version of the interface.
         return narrowTo.cast(stub);
+    }
+
+    @SuppressWarnings("deprecation")
+    private static Stub newStub(Class<?> stubClass, Class<?> narrowTo) {
+        try {
+            // The cast will fail if the loaded class does not actually extend Stub.
+            return (Stub)stubClass.newInstance();
+        } catch (Throwable t) {
+            // This will fail if the stub class is "invalid" (missing default
+            // constructor, non-public default constructor, logic in the
+            // constructor that throws, etc.).
+            throw  (ClassCastException)(new ClassCastException(narrowTo.getName()).initCause(t));
+        }
     }
 
     @FFDCIgnore(ClassNotFoundException.class)

@@ -11,7 +11,7 @@
 
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
-smallryeGraphQLVersion=1.0.7
+smallryeGraphQLVersion=1.0.9
 
 Bundle-Name: SmallRye GraphQL and GraphQL Servlet Implementation
 Bundle-SymbolicName: com.ibm.ws.io.smallrye.graphql
@@ -19,6 +19,9 @@ Bundle-Description: SmallRye implementation of MicroProfile GraphQL
 
 Import-Package: \
   graphql.util,\
+  org.eclipse.microprofile.config;version="[1.0,2.1)",\
+  org.eclipse.microprofile.config.inject;version="[1.0,2.1)",\
+  org.eclipse.microprofile.config.spi;version="[1.0,2.1)",\
   !io.smallrye.metrics,\
   !io.opentracing,\
   !io.smallrye.common.annotation,\
@@ -68,8 +71,7 @@ src: src/
 
 app-resources= \
   META-INF/services/io.smallrye.graphql.spi.LookupService | \
-  META-INF/services/io.smallrye.graphql.client.typesafe.api.GraphQlClientBuilder | \
-  META-INF/services/javax.enterprise.inject.spi.Extension
+  META-INF/services/io.smallrye.graphql.client.typesafe.api.GraphQlClientBuilder
 
 Service-Component: \
   com.ibm.ws.io.smallrye.graphql.ResourceProvider; \
@@ -88,6 +90,7 @@ Service-Component: \
   com.ibm.websphere.javaee.annotation.1.3;version=latest, \
   com.ibm.websphere.javaee.cdi.2.0;version=latest,\
   com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
+  com.ibm.websphere.javaee.jsonp.1.1;version=latest,\
   com.ibm.websphere.javaee.servlet.4.0;version=latest,\
   com.ibm.websphere.org.eclipse.microprofile.config.1.4;version=latest,\
   com.ibm.websphere.org.eclipse.microprofile.graphql.1.0;version=latest,\

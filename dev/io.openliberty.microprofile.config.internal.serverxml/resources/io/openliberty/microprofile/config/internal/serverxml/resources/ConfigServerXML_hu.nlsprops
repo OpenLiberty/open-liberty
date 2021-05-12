@@ -37,6 +37,15 @@ failed.to.schedule.cache.invalidation.CWMCG0301E=CWMCG0301E: A MicroProfile konf
 failed.to.schedule.cache.invalidation.CWMCG0301E.explanation=A MicroProfile konfigur\u00e1ci\u00f3ban t\u00f6rt\u00e9nt v\u00e1ltoz\u00e1sok lehet, hogy az alkalmaz\u00e1sban nem t\u00fckr\u00f6z\u0151dnek.
 failed.to.schedule.cache.invalidation.CWMCG0301E.useraction=A kiszolg\u00e1l\u00f3 message.log f\u00e1jlj\u00e1t \u00e9s FFDC napl\u00f3it \u00e1ttekintve azonos\u00edtsa be a probl\u00e9m\u00e1t.
 
+# Server XML Application Properties Config Source
+server.xml.appproperties.config.source=Kiszolg\u00e1l\u00f3 XML alkalmaz\u00e1stulajdons\u00e1gok konfigur\u00e1ci\u00f3s forr\u00e1sa
+
+# Server XML Variables Config Source
+server.xml.variables.config.source=Kiszolg\u00e1l\u00f3 XML v\u00e1ltoz\u00f3inak konfigur\u00e1ci\u00f3s forr\u00e1sa
+
+# Server XML Default Variables Config Source
+server.xml.default.variables.config.source=Kiszolg\u00e1l\u00f3 XML alap\u00e9rtelmezett v\u00e1ltoz\u00f3inak konfigur\u00e1ci\u00f3s forr\u00e1sa
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Config 2.0 error message
 #-----------------------------------------------------------------------------------------------------------------------------

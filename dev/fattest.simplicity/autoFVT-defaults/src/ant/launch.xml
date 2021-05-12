@@ -182,6 +182,27 @@
 			</not>
 		</condition>
 
+		<!-- boolean for Java15+.  The assumption is that at this point forward (Java 15), we will only be building using LTS 
+		     or interium versions of Java -->
+		<condition property="is.java15.orHigher" value="true">
+			<not>
+				<or>
+					<equals arg1="11" arg2="${java.specification.version}"/>
+					<equals arg1="1.7" arg2="${java.specification.version}"/>
+					<equals arg1="1.8" arg2="${java.specification.version}"/>
+				</or>
+		    </not>
+		</condition>
+		
+		<!-- In Java 16, the default enforcement of strong encapsulation (part of JPMS, which was introduced in Java 9) has changed from 
+			     illegal-access=permit to illegal-access=deny.  This causes many of our FATs that use reflection to fail.  
+			     This change sets up a gated property (illegal.access.permit) so that any builds that take place on Java 15+ use 
+			     illegal-access=permit, but older versions will be skipped -->
+		<condition property="illegal.access.permit" value="--illegal-access=permit">
+			<istrue value="${is.java15.orHigher}"/>
+		</condition>
+		<property name="illegal.access.permit" value=""/>
+		
 		<!-- Replace LDAP ports of all 3 Apache DS instance in configuration with updated ports from port selector and kill any apache ds related processes -->
 		<replaceLdapPorts />
 		<iff if="unix.mac.environment">
@@ -292,6 +313,13 @@
 
 		<!-- Load all env vars into env.* properties -->
 		<property environment="env" />
+		
+        <condition property="fat.test.artifactory.download.server"
+                   value="${artifactory.download.server}"
+                   else="${env.artifactory.download.server}">
+          <isset property="artifactory.download.server" />
+        </condition>
+		<property name="fat.test.artifactory.download.token" value="${artifactory.download.token}"/>
 
 		<tstamp>
 			<format property="today.day" pattern="EEEE" />
@@ -371,7 +399,7 @@
 			</else>
 		</iff>
 		<echo message="Launching FAT with zos extra vmargs: ${zos.extra.vmargs}" />
-
+		
 		<!-- START coverage properties -->
 		<property name="exec.data.file" location="${dir.log.coverage}/jacoco.exec" />
 		<property name="jacocoant.file" location="${junit_jar}/jacoco-0.7.6.201602180812/lib/jacocoant.jar" />
@@ -385,7 +413,7 @@
 		<echo>jacocoagent.file: ${jacocoagent.file}</echo>
 
 		<mkdir dir="${build.tmp.dir}" />
-
+		
 		<!-- Note that users can override framework.maxheap from personal build -->
 		<property name="framework.maxheap" value="-Xmx1024m" />
 		<echo>framework.maxheap=${framework.maxheap}</echo>
@@ -481,6 +509,7 @@
 					<jvmarg value="${framework.debug.embed.jvmarg1}" />
 					<jvmarg line="${extra.vmargs}" />
 					<jvmarg line="${zos.extra.vmargs}" />
+					<jvmarg line="${illegal.access.permit}" />
 				</junit>
 			</sequential>
 			<finally>

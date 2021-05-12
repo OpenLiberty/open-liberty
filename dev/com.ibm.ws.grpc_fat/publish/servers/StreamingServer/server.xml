@@ -12,7 +12,10 @@
     <featureManager>
         <feature>grpc-1.0</feature>
         <feature>grpcClient-1.0</feature>
+        <feature>mpMetrics-2.3</feature>
     </featureManager>
+
+    <mpMetrics authentication = "false"/>
 
     <include location="../fatTestPorts.xml"/>
 

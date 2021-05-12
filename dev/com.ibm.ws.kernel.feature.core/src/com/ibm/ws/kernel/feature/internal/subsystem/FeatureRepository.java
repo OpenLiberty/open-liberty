@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -66,7 +67,7 @@ import com.ibm.wsspi.kernel.service.location.WsResource;
  */
 public final class FeatureRepository implements FeatureResolver.Repository {
     private static final TraceComponent tc = Tr.register(FeatureRepository.class);
-    private static final int FEATURE_CACHE_VERSION = 1;
+    private static final int FEATURE_CACHE_VERSION = 3;
     private static final String EMPTY = "";
 
     /**
@@ -98,6 +99,9 @@ public final class FeatureRepository implements FeatureResolver.Repository {
     /** Map of public features to short names */
     private final Map<String, String> publicFeatureNameToSymbolicName = new HashMap<String, String>();
 
+    /** Map of public feature alternate name to correct feature name */
+    private final Map<String, String> alternateFeatureNameToPublicName = new HashMap<String, String>();
+
     private final ConcurrentMap<String, LibertyFeatureServiceFactory> featureServiceFactories = new ConcurrentHashMap<String, LibertyFeatureServiceFactory>();
 
     /** PROVISIONING:Map of symbolic name to autoFeature */
@@ -116,6 +120,24 @@ public final class FeatureRepository implements FeatureResolver.Repository {
     public FeatureRepository(WsResource res, BundleContext bundleContext) {
         cacheRes = res;
         this.bundleContext = bundleContext;
+    }
+
+    /**
+     * Use to check if a feature name is a commonly used alternate to an existing feature name
+     *
+     * @param featureName
+     * @return The existing feature name or null if no match
+     */
+    public String matchesAlternate(String featureName) {
+        return alternateFeatureNameToPublicName.get(lowerFeature(featureName));
+    }
+
+    public boolean disableAllFeaturesOnConflict(String featureName) {
+        SubsystemFeatureDefinitionImpl feature = (SubsystemFeatureDefinitionImpl) getFeature(featureName);
+        if (feature != null) {
+            return feature.getImmutableAttributes().disableOnConflict;
+        }
+        return false;
     }
 
     /**
@@ -363,6 +385,7 @@ public final class FeatureRepository implements FeatureResolver.Repository {
         out.writeBoolean(iAttr.hasApiPackages);
         out.writeBoolean(iAttr.hasSpiPackages);
         out.writeBoolean(iAttr.isSingleton);
+        out.writeBoolean(iAttr.disableOnConflict);
 
         out.writeInt(iAttr.processTypes.size());
         for (ProcessType type : iAttr.processTypes) {
@@ -370,6 +393,11 @@ public final class FeatureRepository implements FeatureResolver.Repository {
         }
 
         out.writeUTF(iAttr.activationType.toString());
+
+        out.writeInt(iAttr.alternateNames.size());
+        for (String s : iAttr.alternateNames) {
+            out.writeUTF(s);
+        }
 
         // these attributes can be large so lets avoid the arbitrary limit of 65535 chars of writeUTF
         if (iAttr.isAutoFeature) {
@@ -403,7 +431,7 @@ public final class FeatureRepository implements FeatureResolver.Repository {
             // this is a long string
             byte[] data = new byte[in.readInt()];
             in.readFully(data);
-            return new String(data, "UTF-8");
+            return new String(data, StandardCharsets.UTF_8);
         } else {
             // normal string
             return in.readUTF();
@@ -435,6 +463,7 @@ public final class FeatureRepository implements FeatureResolver.Repository {
         boolean hasApiPackages = in.readBoolean();
         boolean hasSpiPackages = in.readBoolean();
         boolean isSingleton = in.readBoolean();
+        boolean disableOnConflict = in.readBoolean();
 
         int processTypeNum = in.readInt();
         EnumSet<ProcessType> processTypes = EnumSet.noneOf(ProcessType.class);
@@ -442,8 +471,14 @@ public final class FeatureRepository implements FeatureResolver.Repository {
             processTypes.add(valueOf(in.readUTF(), ProcessType.SERVER));
         }
         ActivationType activationType = valueOf(in.readUTF(), ActivationType.SEQUENTIAL);
-        return new ImmutableAttributes(repositoryType, symbolicName, shortName, featureVersion, visibility, appRestart, version, featureFile, lastModified, fileSize, isAutoFeature,
-                                       hasApiServices, hasApiPackages, hasSpiPackages, isSingleton, processTypes, activationType);
+        int altNamesCount = in.readInt();
+        List<String> altNames = new ArrayList<>(altNamesCount);
+        for (int x = 0; x < altNamesCount; x++) {
+            altNames.add(in.readUTF());
+        }
+        return new ImmutableAttributes(repositoryType, symbolicName, shortName, altNames, featureVersion, visibility, appRestart,
+                                       version, featureFile, lastModified, fileSize, isAutoFeature, hasApiServices, hasApiPackages,
+                                       hasSpiPackages, isSingleton, disableOnConflict, processTypes, activationType);
     }
 
     /**
@@ -560,12 +595,17 @@ public final class FeatureRepository implements FeatureResolver.Repository {
                && f.length() == bf.length;
     }
 
+    // Remove milliseconds from timestamp values to address inconsistencies in container file systems
+    long reduceTimestampPrecision(long value) {
+        return (value / 1000) * 1000;
+    }
+
     boolean isCachedEntryValid(File f, SubsystemFeatureDefinitionImpl def) {
         if (def != null) {
             ImmutableAttributes cachedAttr = def.getImmutableAttributes();
 
             // See if the file has changed: if it has, we need to start over
-            if (cachedAttr.lastModified == f.lastModified()) {
+            if (reduceTimestampPrecision(cachedAttr.lastModified) == reduceTimestampPrecision(f.lastModified())) {
                 if (cachedAttr.length == f.length())
                     return true;
             }
@@ -620,6 +660,12 @@ public final class FeatureRepository implements FeatureResolver.Repository {
                 publicFeatureNameToSymbolicName.put(lowerFeature(cachedAttr.featureName), cachedAttr.symbolicName);
             if (def.getVisibility() == Visibility.PUBLIC)
                 publicFeatureNameToSymbolicName.put(lowerFeature(cachedAttr.symbolicName), cachedAttr.symbolicName);
+
+            // populate mapping from known, commonly used alternative names to allow hints when the wrong feature
+            // name is specified in a server config.
+            for (String s : cachedAttr.alternateNames) {
+                alternateFeatureNameToPublicName.put(s, cachedAttr.featureName);
+            }
 
             // If this is an auto-feature, add it to that collection
             // we're going with the bold assertion that

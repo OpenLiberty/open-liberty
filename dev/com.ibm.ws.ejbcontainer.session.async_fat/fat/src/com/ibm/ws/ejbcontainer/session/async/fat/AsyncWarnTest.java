@@ -28,6 +28,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -123,18 +124,18 @@ public class AsyncWarnTest extends FATServletClient {
         AsyncWarnTest.addAsModule(AsyncWarnTestWar).addAsModule(AsyncWarnTestBean);
         AsyncWarnTest = (EnterpriseArchive) ShrinkHelper.addDirectory(AsyncWarnTest, "test-applications/AsyncWarnTest.ear/resources/");
 
-        ShrinkHelper.exportAppToServer(server, AsyncInLocalIf1BeanApp);
-        ShrinkHelper.exportAppToServer(server, AsyncInLocalIf2BeanApp);
-        ShrinkHelper.exportAppToServer(server, AsyncInLocalIf3BeanApp);
-        ShrinkHelper.exportAppToServer(server, AsyncInRemoteIf1BeanApp);
-        ShrinkHelper.exportAppToServer(server, AsyncInRemoteIf2BeanApp);
-        ShrinkHelper.exportAppToServer(server, AsyncInRemoteIf3BeanApp);
-        ShrinkHelper.exportAppToServer(server, AsyncNotInLocalIf1BeanApp);
-        ShrinkHelper.exportAppToServer(server, AsyncNotInLocalIf2BeanApp);
-        ShrinkHelper.exportAppToServer(server, AsyncNotInLocalIf3BeanApp);
-        ShrinkHelper.exportAppToServer(server, AsyncNotInRemoteIf1BeanApp);
-        ShrinkHelper.exportAppToServer(server, AsyncNotInRemoteIf2BeanApp);
-        ShrinkHelper.exportAppToServer(server, AsyncNotInRemoteIf3BeanApp);
+        ShrinkHelper.exportAppToServer(server, AsyncInLocalIf1BeanApp, DeployOptions.DISABLE_VALIDATION);
+        ShrinkHelper.exportAppToServer(server, AsyncInLocalIf2BeanApp, DeployOptions.DISABLE_VALIDATION);
+        ShrinkHelper.exportAppToServer(server, AsyncInLocalIf3BeanApp, DeployOptions.DISABLE_VALIDATION);
+        ShrinkHelper.exportAppToServer(server, AsyncInRemoteIf1BeanApp, DeployOptions.DISABLE_VALIDATION);
+        ShrinkHelper.exportAppToServer(server, AsyncInRemoteIf2BeanApp, DeployOptions.DISABLE_VALIDATION);
+        ShrinkHelper.exportAppToServer(server, AsyncInRemoteIf3BeanApp, DeployOptions.DISABLE_VALIDATION);
+        ShrinkHelper.exportAppToServer(server, AsyncNotInLocalIf1BeanApp, DeployOptions.DISABLE_VALIDATION);
+        ShrinkHelper.exportAppToServer(server, AsyncNotInLocalIf2BeanApp, DeployOptions.DISABLE_VALIDATION);
+        ShrinkHelper.exportAppToServer(server, AsyncNotInLocalIf3BeanApp, DeployOptions.DISABLE_VALIDATION);
+        ShrinkHelper.exportAppToServer(server, AsyncNotInRemoteIf1BeanApp, DeployOptions.DISABLE_VALIDATION);
+        ShrinkHelper.exportAppToServer(server, AsyncNotInRemoteIf2BeanApp, DeployOptions.DISABLE_VALIDATION);
+        ShrinkHelper.exportAppToServer(server, AsyncNotInRemoteIf3BeanApp, DeployOptions.DISABLE_VALIDATION);
         ShrinkHelper.exportDropinAppToServer(server, AsyncWarnTest);
 
         ShrinkHelper.exportToServer(server, "lib/global", AsyncAWarnIntf);

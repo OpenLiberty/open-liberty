@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2011 IBM Corporation and others.
+# Copyright (c) 2009, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -127,6 +127,11 @@ session.liveSessions.description=\ud604\uc7ac \ub85c\uadf8\uc778\ud55c \uc0ac\uc
 session.activeSessions.description=\ub3d9\uc2dc \ud65c\uc131(active) \uc138\uc158 \uc218 (\uc81c\ud488\uc5d0\uc11c \ud604\uc7ac \ud574\ub2f9 \uc0ac\uc6a9\uc790 \uc138\uc158\uc744 \uc0ac\uc6a9\ud558\ub294 \uc694\uccad\uc744 \ucc98\ub9ac\ud558\uace0 \uc788\ub294 \uacbd\uc6b0 \uc138\uc158\uc774 \ud65c\uc131\ud654\ub428)\uc785\ub2c8\ub2e4.
 session.invalidated.total.description=\uc774 \uba54\ud2b8\ub9ad\uc774 \uc0ac\uc6a9\uc73c\ub85c \uc124\uc815\ub41c \uc774\ud6c4 \ub85c\uadf8\uc544\uc6c3\ud55c \uc138\uc158 \uc218\uc785\ub2c8\ub2e4.
 session.invalidatedbyTimeout.total.description=\uc774 \uba54\ud2b8\ub9ad\uc774 \uc0ac\uc6a9\uc73c\ub85c \uc124\uc815\ub41c \uc774\ud6c4 \uc81c\ud55c\uc2dc\uac04 \ucd08\uacfc\ub85c \ub85c\uadf8\uc544\uc6c3\ud55c \uc138\uc158 \uc218\uc785\ub2c8\ub2e4.
+
+requestTiming.requestCount.description=\uc11c\ubc84\uac00 \uc2dc\uc791\ub41c \ud6c4 \uc11c\ube14\ub9bf \uc694\uccad \uc218\uc785\ub2c8\ub2e4.
+requestTiming.activeRequestCount.description=\ud604\uc7ac \uc2e4\ud589 \uc911\uc778 \uc11c\ube14\ub9bf \uc694\uccad \uc218\uc785\ub2c8\ub2e4.
+requestTiming.slowRequestCount.description=\ud604\uc7ac \uc2e4\ud589 \uc911\uc774\uc9c0\ub9cc \ub290\ub9b0 \uc11c\ube14\ub9bf \uc694\uccad \uc218\uc785\ub2c8\ub2e4.
+requestTiming.hungRequestCount.description=\ud604\uc7ac \uc2e4\ud589 \uc911\uc774\uc9c0\ub9cc \uc815\uc9c0\ub41c \uc11c\ube14\ub9bf \uc694\uccad \uc218\uc785\ub2c8\ub2e4.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message

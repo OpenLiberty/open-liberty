@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.jsf-2.3
+WLP-DisableAllFeatures-OnConflict: false
 visibility=public
 singleton=true
 IBM-App-ForceRestart: install, \
@@ -46,8 +47,9 @@ Subsystem-Name: JavaServer Faces 2.3
  com.ibm.ws.org.apache.commons.beanutils.1.9.4, \
  com.ibm.ws.org.apache.commons.collections, \
  com.ibm.ws.org.apache.commons.discovery.0.2, \
- com.ibm.ws.org.apache.commons.logging.1.0.3, \
+ io.openliberty.org.apache.commons.logging, \
  com.ibm.ws.jsf.shared, \
+ io.openliberty.faces.internal, \
  com.ibm.ws.cdi.interfaces, \
  com.ibm.ws.org.apache.commons.digester.1.8, \
  com.ibm.websphere.javaee.websocket.1.1; apiJar=false; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.websocket:javax.websocket-api:1.1", \

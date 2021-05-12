@@ -44,6 +44,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -176,20 +177,27 @@ public class JSF23GeneralTests {
                        output.equals("jsf.js"));
 
             output = page.getElementById("out2").getTextContent();
+
+            String expected = "javax.faces";
+
+            if(JakartaEE9Action.isActive()){
+              expected = "jakarta.faces";
+            }
+
             assertTrue("The value of javax.faces.application.ResourceHandler.JSF_SCRIPT_LIBRARY_NAME was incorrect: " + output,
-                       output.equals("javax.faces"));
+                       output.equals(expected));
 
             output = page.getElementById("out3").getTextContent();
             assertTrue("The value of javax.faces.component.behavior.ClientBehaviorContext.BEHAVIOR_SOURCE_PARAM_NAME was incorrect: " + output,
-                       output.equals("javax.faces.source"));
+                       output.equals(expected + ".source"));
 
             output = page.getElementById("out4").getTextContent();
             assertTrue("The value of javax.faces.component.behavior.ClientBehaviorContext.BEHAVIOR_EVENT_PARAM_NAME was incorrect: " + output,
-                       output.equals("javax.faces.behavior.event"));
+                       output.equals(expected +".behavior.event"));
 
             output = page.getElementById("out5").getTextContent();
             assertTrue("The value of javax.faces.context.PartialViewContext.PARTIAL_EVENT_PARAM_NAME was incorrect: " + output,
-                       output.equals("javax.faces.partial.event"));
+                       output.equals(expected +".partial.event"));
         }
     }
 

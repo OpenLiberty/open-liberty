@@ -25,6 +25,7 @@ import com.ibm.ws.config.admin.ConfigID;
 import com.ibm.ws.config.xml.internal.MetaTypeRegistry.RegistryEntry;
 import com.ibm.ws.config.xml.internal.metatype.ExtendedAttributeDefinition;
 import com.ibm.ws.config.xml.internal.metatype.ExtendedObjectClassDefinition;
+import com.ibm.ws.config.xml.internal.variables.ConfigVariableRegistry;
 
 class ConfigValidator {
 

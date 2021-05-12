@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2020 IBM Corporation and others.
+# Copyright (c) 2002, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -156,7 +156,7 @@ compression.duplicateTypeAddRemove.useraction=F\u00fcgen Sie nicht denselben Inh
 
 compression.duplicateOverwriteAndAdd=CWWKT0032W: Es wurde versucht, die Standardkonfiguration f\u00fcr die Komprimierung zu \u00fcberschreiben, und die Option zum Hinzuf\u00fcgen (+) wurde f\u00fcr andere Inhaltstypen verwendet. Es wird stattdessen die Standardkonfiguration {0} verwendet.
 compression.duplicateOverwriteAndAdd.explanation=Die Konfiguration versucht, den Standardwert zu \u00fcberschreiben, w\u00e4hrend gleichzeitig auch die Option zum Hinzuf\u00fcgen (+) verwendet wird. Die Option zum Hinzuf\u00fcgen darf nicht verwendet werden, wenn Sie Standardwert \u00fcberschreiben.
-compression.duplicateOverwriteAndAdd.useraction=Wenn die Standardkonfiguration \u00fcberschrieben werden muss, verwenden Sie nicht die Option zum Hinzuf\u00fcgen (+). F\u00fcgen Sie weitere gew\u00fcnschte Inhaltstypen mithilfe der Option zum Hinzfu\u00fcgen (+) hinzu, wenn die Standardkonfiguration nicht \u00fcberschrieben werden muss.
+compression.duplicateOverwriteAndAdd.useraction=Wenn die Standardkonfiguration \u00fcberschrieben werden muss, verwenden Sie nicht die Option zum Hinzuf\u00fcgen (+). F\u00fcgen Sie weitere gew\u00fcnschte Inhaltstypen mithilfe der Option zum Hinzuf\u00fcgen (+) hinzu, wenn die Standardkonfiguration nicht \u00fcberschrieben werden muss.
 
 compression.unsupportedAlgorithm=CWWKT0033W: Es wurde versucht, {0} als bevorzugten Algorithmus f\u00fcr den Server zu konfigurieren. Zu den unterst\u00fctzten Werten geh\u00f6ren gzip, x-gzip, zlib, deflate, identity und none. Die Standardkonfiguration {1} wird stattdessen verwendet.
 compression.unsupportedAlgorithm.explanation=Die Konfiguration versucht, einen nicht unterst\u00fctzten Algorithmus als bevorzugten Algorithmus f\u00fcr die Komprimierung zu verwenden. 
@@ -166,7 +166,7 @@ decompression.tolerance.reached=CWWKT0034E: Der HTTP-Kanal hat versucht, einen H
 decompression.tolerance.reached.explanation=Die maximale Anzahl der Dekomprimierungszyklen wurde erreicht, sodass eine h\u00f6herer Dekomprimierungsfaktor als der konfigurierte Grenzwert erzielt wurde. Der Dekomprimierungsgrenzwert wird \u00fcber das http-Option-Attribut decompressionRatioLimit definiert.
 decompression.tolerance.reached.useraction=Wenn diese Ausnahme bei einem g\u00fcltigen Anforderungshauptteil auftritt, rekonfigurieren Sie die httpOption-Attribute decompressionTolerance und decompressionRatioLimit, um die entsprechenden Dekomprimierungsergebnisse zu erhalten.
 
-cookies.samesite.duplicateName=CWWKT0035W: Ein doppelter Cookiename oder doppeltes Muster [{0}] wurde in der SameSite-Konfiguration [{1}] gefunden. Der Cookiename [{0}] bzw. das Muster wird f\u00fcr alle Konfigurationslisten ignoriert. Alle Cookienamen oder Muster, die in den Konfigurationen ''lax'', ''none'' und ''strict'' enthalten sind, k\u00f6nnen nur in einer einzigen dieser drei Konfigurationen definiert sein.
+cookies.samesite.duplicateName=CWWKT0035W: Ein doppelter Cookiename oder doppeltes Muster [{0}] wurde in der SameSite-Konfiguration [{1}] gefunden. Der Cookiename [{0}] bzw. das Muster wird f\u00fcr alle Konfigurationslisten ignoriert. Alle Cookienamen oder Muster, die in den Konfigurationen ''Lax'', ''None'' und ''Strict'' enthalten sind, k\u00f6nnen nur in einer einzigen dieser drei Konfigurationen definiert sein.
 cookies.samesite.duplicateName.explanation=Der angegebene Wert wurde bereits in der Konfiguration gefunden und einem SameSite-Wert zugeordnet.
 cookies.samesite.duplicateName.useraction=Stellen Sie sicher, dass Cookienamen und Muster in den Konfigurationslisten 'Lax', 'None' und 'Strict' eindeutig sind.
 
@@ -174,6 +174,22 @@ cookies.samesite.unsupportedWildcard=CWWKT0036W: Es wurde eine nicht unterst\u00
 cookies.samesite.unsupportedWildcard.explanation=Die festgestellte Verwendung des Platzhalterzeichens (*) wird nicht unterst\u00fctzt. Die Unterst\u00fctzung gilt f\u00fcr ein einzelnes Platzhalterzeichen (*), das als eigenst\u00e4ndiger Wert oder im Anschluss einer beliebigen Anzahl von Cookienamenspr\u00e4fixen verwendet wird.
 cookies.samesite.unsupportedWildcard.useraction=Stellen Sie sicher, dass nur ein einziges Platzhalterzeichen (*) gem\u00e4\u00df dem Muster in den Listen f\u00fcr 'Lax', 'None' und 'Strict' verwendet wird. Au\u00dferdem wir die Verwendung dieses Zeichens nur unter den folgenden beiden Bedingungen unterst\u00fctzt: als eigenst\u00e4ndiger Wert oder im Anschluss an Cookienamenspr\u00e4fixen.
 
-cookies.samesite.knownDuplicateName=CWWKT0037W: Ein Cookiename oder Muster [{0}], das als Duplikat markiert wurde, wurde in der SameSite-Konfiguration [{1}] gefunden. Der Cookiename bzw. das Muster [{0}] wird ignoriert. Alle Cookienamen oder Muster, die in den Konfigurationen ''lax'', ''none'' und ''strict'' enthalten sind, k\u00f6nnen nur in einer einzigen dieser drei Konfigurationen definiert sein.
+cookies.samesite.knownDuplicateName=CWWKT0037W: Ein Cookiename oder Muster [{0}], das als Duplikat markiert wurde, wurde in der SameSite-Konfiguration [{1}] gefunden. Der Cookiename bzw. das Muster [{0}] wird ignoriert. Alle Cookienamen oder Muster, die in den Konfigurationen ''Lax'', ''None'' und ''Strict'' enthalten sind, k\u00f6nnen nur in einer einzigen dieser drei Konfigurationen definiert sein.
 cookies.samesite.knownDuplicateName.explanation=Der angegebene Wert wurde bereits in der Konfiguration gefunden und einem SameSite-Wert zugeordnet.
 cookies.samesite.knownDuplicateName.useraction=Stellen Sie sicher, dass Cookienamen und Muster in den Konfigurationslisten 'Lax', 'None' und 'Strict' eindeutig sind.
+
+trusted.header.origin.invalid.value=CWWKT0038W: Der konfigurierte trustedHeaderOrigin-Wert [{0}] ist ung\u00fcltig und kann nicht verwendet werden.
+trusted.header.origin.invalid.value.explanation=Sie m\u00fcssen eine vollst\u00e4ndige IP-Adresse oder einen korrekt formatierten Hostnamen angeben.
+trusted.header.origin.invalid.value.useraction=Stellen Sie sicher, dass konfigurierte IP-Adressen einen Wert f\u00fcr jedes Segment enthalten und dass Hostnamen keine ung\u00fcltigen Zeichen enthalten.
+
+trusted.sensitive.header.origin.invalid.value=CWWKT0039W: Der konfigurierte trustedSensitiveHeaderOrigin-Wert [{0}] ist ung\u00fcltig und kann nicht verwendet werden.
+trusted.sensitive.header.origin.invalid.value.explanation=Sie m\u00fcssen eine vollst\u00e4ndige IP-Adresse oder einen korrekt formatierten Hostnamen angeben.
+trusted.sensitive.header.origin.invalid.value.useraction=Stellen Sie sicher, dass konfigurierte IP-Adressen einen Wert f\u00fcr jedes Segment enthalten und dass Hostnamen keine ung\u00fcltigen Zeichen enthalten.
+
+config.hsts.invalid.max.age.value=CWWKT0040W: Der konfigurierte Wert [{0}] f\u00fcr die Anweisung max-age ist ung\u00fcltig und kann nicht verwendet werden. Der Wert f\u00fcr die Anweisung max-age muss eine nicht negative ganze Zahl sein.
+config.hsts.invalid.max.age.value.explanation=Der Wert f\u00fcr die Anweisung max-age darf keine negative ganze Zahl sein.
+config.hsts.invalid.max.age.value.useraction=Stellen Sie sicher, dass die konfigurierte Anweisung max-age einen Wert enth\u00e4lt, der eine nicht negative ganze Zahl ist.
+
+config.hsts.missing.max.age=CWWKT0041W: Es wurde versucht, [{0}] als Strict-Transport-Security-Header zu konfigurieren. Diese Konfiguration enth\u00e4lt nicht die obligatorische Anweisung max-age. Eine Konfiguration, die keine Anweisung max-age enth\u00e4lt, ist nicht g\u00fcltig und kann nicht verwendet werden.
+config.hsts.missing.max.age.explanation=Die angegeben Konfiguration muss eine Anweisung max-age mit einer nicht negativen ganzen Zahl enthalten.
+config.hsts.missing.max.age.useraction=Stellen Sie sicher, dass die Konfiguration eine Anweisung max-age mit einer nicht negativen ganzen Zahl enth\u00e4lt.

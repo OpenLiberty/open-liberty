@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2019 IBM Corporation and others.
+# Copyright (c) 2010, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -150,6 +150,7 @@ sslCert.option-key.ext=\ \ \ \ --extInfo=\u8bc1\u4e66\u6269\u5c55\u4fe1\u606f
 sslCert.option-desc.ext=\t\u8981\u6dfb\u52a0\u81f3\u8bc1\u4e66\u7684\u8bc1\u4e66\u6269\u5c55\u4fe1\u606f\u3002\n\
 \t\u7f3a\u7701\u6269\u5c55\u662f\u4f7f\u7528\u4e3b\u673a\u540d\u7684\u201c\u4e3b\u4f53\u96c6\u5907\u7528\u540d\u79f0\u201d\u6761\u76ee\u3002\n\
 \t\u6b64\u6807\u5fd7\u4e0e Jave Keytool \u547d\u4ee4 -ext \u6807\u5fd7\u9075\u5faa\u76f8\u540c\u8bed\u6cd5\u3002\n\
+\t \
 \u5728\u8be5\u547d\u4ee4\u4e2d\u53ef\u4ee5\u591a\u6b21\u4f7f\u7528\u6b64\u6807\u5fd7\n\
 \ 
 line.
@@ -188,3 +189,22 @@ createLTPAKeys.option-desc.password.key=\t\u6307\u5b9a\u4f7f\u7528 AES \u5bf9 LT
 \twlp.password.encryption.key\uff08\u8be5\u53d8\u91cf\u7684\u503c\u4e3a\u5bc6\u94a5\uff09\u6765\n\
 \t\u5c06\u5bc6\u94a5\u63d0\u4f9b\u7ed9\u670d\u52a1\u5668\u3002\u5982\u679c\u672a\u63d0\u4f9b\u6b64\u9009\u9879\uff0c\u90a3\u4e48\u5c06\u4f7f\u7528\n\
 \t\u7f3a\u7701\u5bc6\u94a5\u3002
+
+# -------- tlsProfiler OPTIONS ------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+tlsProfiler.desc=\t\u6d4b\u8bd5\u76ee\u6807\u4e3b\u673a\u548c\u7aef\u53e3\u4e0e\u53ef\u7528\u7684 TLS \u534f\u8bae\u548c\u5bc6\u7801\u5957\u4ef6\u7684\u517c\u5bb9\u6027\u3002
+tlsProfiler.usage.options=\t{0} tlsProfiler [\u9009\u9879]
+tlsProfiler.required-key.port=\ \ \ \ --port
+tlsProfiler.required-desc.port=\t\u6307\u5b9a\u7aef\u53e3\u3002
+tlsProfiler.required-key.host=\ \ \ \ --host
+tlsProfiler.required-desc.host=\t\u6307\u5b9a\u4e3b\u673a\u3002
+tlsProfiler.option-key.file=\ \ \ \ --file
+tlsProfiler.option-desc.file=\t\u53ef\u9009\u3002\u7ed3\u679c\u5c06\u5199\u5165\u5230\u6240\u6307\u5b9a\u7684\u6587\u4ef6\uff0c\n\
+\t\u800c\u4e0d\u662f\u63a7\u5236\u53f0\u5c4f\u5e55\u3002
+tlsProfiler.option-key.verbose=\ \ \ \ --verbose
+tlsProfiler.option-desc.verbose=\t\u5305\u62ec\u6709\u5173\u4e0d\u5b89\u5168\u534f\u8bae\u7684\u5176\u4ed6\u4fe1\u606f\u3002

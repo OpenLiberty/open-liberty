@@ -115,8 +115,9 @@ public class AcmeCertCheckerTask implements Runnable {
 		
 		if (FrameworkState.isStopping()) {
 			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-				Tr.debug(tc, "Server is marked as stopping, cert checker returning.");
+				Tr.debug(tc, "Server is marked as stopping, cert checker will stop itself.");
 			}
+			stop();
 			return;
 		}
 

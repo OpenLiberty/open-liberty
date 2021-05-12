@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2020 IBM Corporation and others.
+ * Copyright (c) 1997, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -378,12 +378,6 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
             // the HA framework provides more support for Network Paritioning, we can remove this logic.
             if (clientIdentifier == ClientId.RLCI_TRANSACTIONSERVICE) {
                 Configuration.txRecoveryAgent(recoveryAgent);
-
-                // Also set the isSnapshotSafe flag - we've used the transaction
-                // service admin console to configure this custom property,
-                // although it's really a RLS specific property.   Here, we extract
-                // it from the Tx Recovery Agent and update the RLS configuration
-                Configuration.setSnapshotSafe(recoveryAgent.isSnapshotSafe());
             }
         }
 
@@ -570,7 +564,6 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
             while (registeredRecoveryAgentsArrayIterator.hasNext()) {
                 // Extract the next RecoveryAgent object
                 final RecoveryAgent recoveryAgent = (RecoveryAgent) registeredRecoveryAgentsArrayIterator.next();
-                recoveryAgent.prepareForRecovery(failureScope);
 
                 // Prepare the maps for the recovery event.
                 addInitializationRecord(recoveryAgent, failureScope);
@@ -624,6 +617,8 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
                         HeartbeatLog heartbeatLog = recoveryAgent.getHeartbeatLog(failureScope);
 
                         if (heartbeatLog != null) {
+                            // Set the ThreadLocal to show that this is the thread that will replay the recovery logs
+                            recoveryAgent.setReplayThread();
                             if (currentFailureScope.equals(failureScope)) {
                                 if (tc.isDebugEnabled())
                                     Tr.debug(tc, "LOCAL RECOVERY, claim local logs");
@@ -664,7 +659,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
                         try {
                             _outstandingInitializationRecords.wait();
                         } catch (InterruptedException exc) {
-                            // This exception is recieved if another thread interrupts this thread by calling this threads
+                            // This exception is received if another thread interrupts this thread by calling this threads
                             // Thread.interrupt method. The RecoveryDirectorImpl class does not use this mechanism for
                             // breaking out of the wait call - it uses notifyAll to wake up all waiting threads. This
                             // exception should never be generated. If for some reason it is called then ignore it and
@@ -752,7 +747,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
                         try {
                             _outstandingTerminationRecords.wait();
                         } catch (InterruptedException exc) {
-                            // This exception is recieved if another thread interrupts this thread by calling this threads
+                            // This exception is received if another thread interrupts this thread by calling this threads
                             // Thread.interrupt method. The RecoveryDirectorImpl class does not use this mechanism for
                             // breaking out of the wait call - it uses notifyAll to wake up all waiting threads. This
                             // exception should never be generated. If for some reason it is called then ignore it and
@@ -1733,10 +1728,6 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
                 LeaseInfo leaseInfo = new LeaseInfo();
                 if (recoveryAgent.claimPeerLeaseForRecovery(peerRecoveryIdentity, myRecoveryIdentity, leaseInfo)) {
 
-                    // drive directInitialization(**retrieved scope**);
-                    Tr.audit(tc, "WTRN0108I: " +
-                                 "PEER RECOVER server with recovery identity " + peerRecoveryIdentity);
-                    //String peerServerName = "Cell\\Node\\cloud002";
                     FileFailureScope peerFFS = new FileFailureScope(peerRecoveryIdentity, leaseInfo);
 
                     directInitialization(peerFFS);

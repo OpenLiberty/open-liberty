@@ -28,8 +28,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 @RunWith(Suite.class)
 @SuiteClasses({
     OpentracingTCKLauncher.class,
-// Temporary comment this out until MicroProfile-4.0 is available
-//    OpentracingTCKLauncherMicroProfile.class,
+    OpentracingTCKLauncherMicroProfile.class,
     OpentracingRestClientTCKLauncher.class
 })
 public class FATSuite {

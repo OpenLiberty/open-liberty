@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -58,9 +58,7 @@ public class JavaEE8Test extends FATServletClient {
         earApp = (EnterpriseArchive) ShrinkHelper.addDirectory(earApp, "test-applications/javaee8Ear/resources/");
         ShrinkHelper.exportDropinAppToServer(server, earApp);
 
-        String consoleName = JavaEE8Test.class.getSimpleName();
-        if (RepeatTestFilter.CURRENT_REPEAT_ACTION != null)
-            consoleName += '_' + RepeatTestFilter.CURRENT_REPEAT_ACTION;
+        String consoleName = JavaEE8Test.class.getSimpleName() + RepeatTestFilter.getRepeatActionsAsString();
         server.startServer(consoleName + ".log");
     }
 

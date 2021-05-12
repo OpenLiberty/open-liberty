@@ -13,10 +13,14 @@ bVersion=1.0
 
 src: \
 	fat/src,\
-	test-applications/jdbcTestPrj_3/src,\
-	test-applications/TestWebApp/src
+	test-applications/jdbcTestPrj_3/src
 
 fat.project: true
+
+tested.features: \
+	servlet-5.0,\
+	pages-3.0,\
+	expressionLanguage-4.0
 
 -buildpath: \
 	com.ibm.ws.request.timing;version=latest,\

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,8 +45,8 @@ public interface WsLocationConstants {
                     LOC_SHARED_APPS_DIR = "shared.app.dir",
                     LOC_SHARED_CONFIG_DIR = "shared.config.dir",
                     LOC_SHARED_RESC_DIR = "shared.resource.dir",
-                    LOC_SERVER_UUID = "wlp.server.uuid";
-
+                    LOC_SERVER_UUID = "wlp.server.uuid",
+                    LOC_SERVICE_BINDING_ROOT = "wlp.svc.binding.root";
     /**
      * Pre-constructed symbols for user-configured locations;
      * includes trailing slash.
@@ -64,5 +64,7 @@ public interface WsLocationConstants {
                     SYMBOL_SHARED_APPS_DIR = "${shared.app.dir}/",
                     SYMBOL_SHARED_CONFIG_DIR = "${shared.config.dir}/",
                     SYMBOL_SHARED_RESC_DIR = "${shared.resource.dir}/",
-                    SYMBOL_TMP_DIR = "${tmp}/";
+                    SYMBOL_TMP_DIR = "${tmp}/",
+                    SYMBOL_SERVICE_BINDING_ROOT = "${wlp.svc.binding.root}/";
+
 }

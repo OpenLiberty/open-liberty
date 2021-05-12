@@ -1117,7 +1117,8 @@ public class AcmeClient {
 				cause = e;
 			}
 
-			throw new AcmeCaException(Tr.formatMessage(tc, "CWPKI2028E", acmeConfig.getDirectoryURI()), cause);
+			throw new AcmeCaException(
+					Tr.formatMessage(tc, "CWPKI2028E", acmeConfig.getDirectoryURI(), cause.getMessage()), cause);
 		}
 	}
 

@@ -78,7 +78,6 @@ public class StackFinder extends SecurityManager {
      * 
      * @return Class<Object>
      */
-    @SuppressWarnings( { "unchecked" })
     public Class<Object> getCaller(String name) {
         // Try walking the stack until we find the class with the name passed in
         Class<Object> aClass = matchCaller(name);

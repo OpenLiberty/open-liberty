@@ -27,6 +27,7 @@ import java.util.Properties;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
+import org.testcontainers.DockerClientFactory;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.output.OutputFrame;
@@ -49,7 +50,8 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
     public static final String KRB5_KDC = "kerberos";
     public static final String KRB5_PASS = "password";
 
-    private static final String IMAGE = "aguibert/krb5-server:1.1";
+    // NOTE: If this is ever updated, don't forget to push to docker hub, but DO NOT overwrite existing versions
+    private static final String IMAGE = "aguibert/krb5-server:1.2";
     private static final Path reuseCache = Paths.get("..", "..", "cache", "krb5.properties");
 
     private boolean reused;
@@ -72,6 +74,7 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
         withEnv("KRB5_REALM", KRB5_REALM);
         withEnv("KRB5_KDC", "localhost");
         withEnv("KRB5_PASS", KRB5_PASS);
+
         withLogConsumer(KerberosContainer::log);
         waitingFor(new LogMessageWaitStrategy()
                         .withRegEx("^.*KERB SETUP COMPLETE.*$")
@@ -95,6 +98,10 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
 
     @Override
     public void start() {
+        String dockerHostIp = DockerClientFactory.instance().dockerHostIpAddress();
+        withEnv("EXTERNAL_HOSTNAME", dockerHostIp);
+        Log.info(c, "start", "Using EXTERNAL_HOSTNAME=" + dockerHostIp);
+
         if (hasCachedContainers()) {
             // If this is a local run and a cache file exists, that means a DB2 container is already running
             // and we can just read the host/port from the cache file
@@ -183,6 +190,7 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
                       "[domain_realm]\n" +
                       "        ." + KRB5_REALM.toLowerCase() + " = " + KRB5_REALM.toUpperCase() + "\n" +
                       "        " + KRB5_REALM.toLowerCase() + " = " + KRB5_REALM.toUpperCase() + "\n";
+        outputPath.getParent().toFile().mkdirs();
         Files.write(outputPath, conf.getBytes(StandardCharsets.UTF_8));
     }
 

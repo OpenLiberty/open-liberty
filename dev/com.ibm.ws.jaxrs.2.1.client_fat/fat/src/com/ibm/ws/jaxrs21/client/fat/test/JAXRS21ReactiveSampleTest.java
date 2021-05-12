@@ -71,7 +71,7 @@ public class JAXRS21ReactiveSampleTest extends JAXRS21AbstractTest {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        server.stopServer("SRVE9967W");
     }
 
     @Before

@@ -23,8 +23,12 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.RemoteFile;
+
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -46,6 +50,14 @@ public class SessionCacheTwoServerTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        if (JakartaEE9Action.isActive()) {
+            RemoteFile originalResourceDir = LibertyFileManager.getLibertyFile(serverA.getMachine(), serverA.getInstallRoot() + "/usr/shared/resources/infinispan");
+            RemoteFile jakartaResourceDir = LibertyFileManager.getLibertyFile(serverA.getMachine(), serverA.getInstallRoot() + "/usr/shared/resources/infinispan-jakarta");
+
+            /* transform any test resources to jakartaee-9 equivalents */
+            ResourceTransformationHelper.transformResourcestoEE9(originalResourceDir, jakartaResourceDir, serverA, serverB);
+        }
+
         appA = new SessionCacheApp(serverA, true, "session.cache.infinispan.web"); // no HttpSessionListeners are registered by this app
         appB = new SessionCacheApp(serverB, true, "session.cache.infinispan.web", "session.cache.infinispan.web.cdi", "session.cache.infinispan.web.listener1");
         serverB.useSecondaryHTTPPort();

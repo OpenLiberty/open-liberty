@@ -37,10 +37,12 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE,
+@Component(service = WebSphereCDIExtension.class,
+		configurationPolicy = ConfigurationPolicy.IGNORE,
 immediate = true,
 property = { "api.classes=org.eclipse.microprofile.graphql.GraphQLApi",
              "bean.defining.annotations=org.eclipse.microprofile.graphql.GraphQLApi",
+             "application.bdas.visible=true",
              "service.vendor=IBM" })
 public class GraphQLExtension implements Extension, WebSphereCDIExtension {
     private static final Logger LOG = Logger.getLogger(GraphQLExtension.class.getName());

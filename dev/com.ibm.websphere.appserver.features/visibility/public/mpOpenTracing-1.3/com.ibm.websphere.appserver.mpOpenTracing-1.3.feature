@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.mpOpenTracing-1.3
+WLP-DisableAllFeatures-OnConflict: false
 visibility=public
 singleton=true
 IBM-App-ForceRestart: install, \
@@ -11,7 +12,8 @@ IBM-API-Package: \
 -features=\
   com.ibm.websphere.appserver.opentracing-1.3, \
   com.ibm.websphere.appserver.org.eclipse.microprofile.opentracing-1.3, \
-  com.ibm.websphere.appserver.mpConfig-1.3; ibm.tolerates:=1.4
+  com.ibm.websphere.appserver.mpConfig-1.3; ibm.tolerates:=1.4, \
+  io.openliberty.mpCompatible-0.0
 -bundles=\
   com.ibm.ws.microprofile.opentracing.1.3
 kind=ga

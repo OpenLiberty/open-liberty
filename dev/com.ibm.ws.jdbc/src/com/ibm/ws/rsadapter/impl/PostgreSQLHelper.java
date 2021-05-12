@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,8 +36,6 @@ public class PostgreSQLHelper extends DatabaseHelper {
     @SuppressWarnings("deprecation")
     private transient com.ibm.ejs.ras.TraceComponent jdbcTC = com.ibm.ejs.ras.Tr.register("com.ibm.ws.postgresql.logwriter", "WAS.database", null);
 
-    private transient PrintWriter jdbcTraceWriter;
-    
     private Class<?> Autosave;
     private Class<?> LargeObjectManager;
     private Class<?> BaseConnection;
@@ -109,9 +107,9 @@ public class PostgreSQLHelper extends DatabaseHelper {
 
     @Override
     public PrintWriter getPrintWriter() throws ResourceException {
-        if (jdbcTraceWriter == null)
-            jdbcTraceWriter = new PrintWriter(new TraceWriter(jdbcTC), true);
-        return jdbcTraceWriter;
+        if (genPw == null)
+            genPw = new PrintWriter(new TraceWriter(jdbcTC), true);
+        return genPw;
     }
 
     @Override
@@ -128,17 +126,9 @@ public class PostgreSQLHelper extends DatabaseHelper {
     public boolean shouldTraceBeDisabled(WSRdbManagedConnectionImpl mc) {
         return TraceComponent.isAnyTracingEnabled() && !jdbcTC.isDebugEnabled() && mc.mcf.loggingEnabled;
     }
-
-    // may want to consider this if we ever support Kerberos with PostgreSQL
-//    /**
-//     * Indicates if the JDBC driver supports propagating the GSS credential for kerberos
-//     * to the JDBC driver by obtaining the connection within Subject.doAs.
-//     * 
-//     * @return true if version 4.0 or higher, or if we don't know the version (because a connection hasn't been established yet).
-//     */
-//    @Override
-//    public boolean supportsSubjectDoAsForKerberos() {
-//        return driverMajorVersion >= 4 // JavaKerberos feature added in version 4.0 of JDBC driver.
-//               || driverMajorVersion == 0; // Unknown version, so allow it to be attempted.
-//    }
+    
+    @Override
+    public boolean supportsSubjectDoAsForKerberos() {
+        return true;
+    }
 }

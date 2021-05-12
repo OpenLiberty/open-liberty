@@ -8,7 +8,6 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-
 configurations {
   derby40
 }
@@ -20,6 +19,12 @@ dependencies {
 }
 
 File serverDir = new File(autoFvtDir, 'publish/servers/com.ibm.ws.jdbc.fat.v41')
+
+task addDerbyToErrorMapServer(type: Copy) {
+  from configurations.derby
+  into file("$autoFvtDir/publish/servers/com.ibm.ws.jdbc.fat.v41.errorMap/derby")
+  rename 'derby-.*.jar', 'derby.jar'
+}
 
 task addDerbyToServerDir(type: Copy) {
   from configurations.derby
@@ -36,5 +41,6 @@ task addDerby40ToServerDir(type: Copy) {
 addRequiredLibraries {
   dependsOn addDerbyToServerDir
   dependsOn addDerby40ToServerDir
+  dependsOn addDerbyToErrorMapServer
   dependsOn addJakartaTransformer
 }

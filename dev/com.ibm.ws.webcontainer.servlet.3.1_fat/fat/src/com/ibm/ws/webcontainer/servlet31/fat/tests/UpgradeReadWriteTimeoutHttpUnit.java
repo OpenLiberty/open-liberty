@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,36 +20,35 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.URL;
 import java.util.logging.Logger;
-import java.util.Set;
 
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.fat.util.LoggingTest;
-import com.ibm.ws.fat.util.SharedServer;
 
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.impl.LibertyServer;
 
 /**
  * The Servlet 3.1 test bucket class to test out the custom properties added for Servlet 3.1
  */
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
-public class UpgradeReadWriteTimeoutHttpUnit extends LoggingTest {
+public class UpgradeReadWriteTimeoutHttpUnit {
 
     private static final Logger LOG = Logger.getLogger(UpgradeReadWriteTimeoutHttpUnit.class.getName());
 
     private static final String LIBERTY_READ_WRITE_LISTENER_APP_NAME = "LibertyReadWriteListenerTest";
 
-    @ClassRule
-    public static SharedServer SHARED_SERVER_READ_WRITE_UPGRADE_TIMEOUT = new SharedServer("servlet31_wcServerReadWriteUpgradeTimeoutTests");
+    @Server("servlet31_wcServerReadWriteUpgradeTimeoutTests")
+    public static LibertyServer readWriteUpgradeTimeoutServer;
+
     private static final String UPGRADE_HANDLER_SERVLET_URL = "/LibertyReadWriteListenerTest/UpgradeHandlerTestServlet";
 
     /*
@@ -65,22 +64,18 @@ public class UpgradeReadWriteTimeoutHttpUnit extends LoggingTest {
                                                                               "com.ibm.ws.webcontainer.servlet_31_fat.libertyreadwritelistenertest.war.writeListener",
                                                                               "com.ibm.ws.webcontainer.servlet_31_fat.libertyreadwritelistenertest.war.upgradeHandler");
         LibertyReadWriteListenerApp = (WebArchive) ShrinkHelper.addDirectory(LibertyReadWriteListenerApp, "test-applications/LibertyReadWriteListenerTest.war/resources");
-        // Verify if the apps are in the server before trying to deploy them
-        if (SHARED_SERVER_READ_WRITE_UPGRADE_TIMEOUT.getLibertyServer().isStarted()) {
-            Set<String> appInstalled = SHARED_SERVER_READ_WRITE_UPGRADE_TIMEOUT.getLibertyServer().getInstalledAppNames(LIBERTY_READ_WRITE_LISTENER_APP_NAME);
-            LOG.info("addAppToServer : " + LIBERTY_READ_WRITE_LISTENER_APP_NAME + " already installed : " + !appInstalled.isEmpty());
 
-            if (appInstalled.isEmpty())
-            ShrinkHelper.exportDropinAppToServer(SHARED_SERVER_READ_WRITE_UPGRADE_TIMEOUT.getLibertyServer(), LibertyReadWriteListenerApp);
-        }
-        SHARED_SERVER_READ_WRITE_UPGRADE_TIMEOUT.startIfNotStarted();
-        SHARED_SERVER_READ_WRITE_UPGRADE_TIMEOUT.getLibertyServer().waitForStringInLog("CWWKZ0001I.* LibertyReadWriteListenerTest");
+        // Export the application.
+        ShrinkHelper.exportDropinAppToServer(readWriteUpgradeTimeoutServer, LibertyReadWriteListenerApp);
+
+        // Start the server and use the class name so we can find logs easily.
+        readWriteUpgradeTimeoutServer.startServer(UpgradeReadWriteTimeoutHttpUnit.class.getSimpleName() + ".log");
     }
 
     @AfterClass
     public static void testCleanup() throws Exception {
-        if (SHARED_SERVER_READ_WRITE_UPGRADE_TIMEOUT.getLibertyServer() != null && SHARED_SERVER_READ_WRITE_UPGRADE_TIMEOUT.getLibertyServer().isStarted()) {
-            SHARED_SERVER_READ_WRITE_UPGRADE_TIMEOUT.getLibertyServer().stopServer(null);
+        if (readWriteUpgradeTimeoutServer != null && readWriteUpgradeTimeoutServer.isStarted()) {
+            readWriteUpgradeTimeoutServer.stopServer();
         }
     }
 
@@ -89,7 +84,7 @@ public class UpgradeReadWriteTimeoutHttpUnit extends LoggingTest {
 
         try {
 
-            String URLString = SHARED_SERVER_READ_WRITE_UPGRADE_TIMEOUT.getServerUrl(true, UPGRADE_HANDLER_SERVLET_URL);
+            String URLString = "http://" + readWriteUpgradeTimeoutServer.getHostname() + ":" + readWriteUpgradeTimeoutServer.getHttpDefaultPort() + UPGRADE_HANDLER_SERVLET_URL;
             URL url = new URL(URLString);
             BufferedWriter output = null;
             BufferedReader input = null;
@@ -169,8 +164,8 @@ public class UpgradeReadWriteTimeoutHttpUnit extends LoggingTest {
 
         try {
 
-            SHARED_SERVER_READ_WRITE_UPGRADE_TIMEOUT.getLibertyServer().setMarkToEndOfLog();
-            String URLString = SHARED_SERVER_READ_WRITE_UPGRADE_TIMEOUT.getServerUrl(true, UPGRADE_HANDLER_SERVLET_URL);
+            readWriteUpgradeTimeoutServer.setMarkToEndOfLog();
+            String URLString = "http://" + readWriteUpgradeTimeoutServer.getHostname() + ":" + readWriteUpgradeTimeoutServer.getHttpDefaultPort() + UPGRADE_HANDLER_SERVLET_URL;
             URL url = new URL(URLString);
             BufferedWriter output = null;
             BufferedReader input = null;
@@ -210,7 +205,7 @@ public class UpgradeReadWriteTimeoutHttpUnit extends LoggingTest {
             //is the TCP receive buffers should get full and eventually trigger an async write
             //at the server side.
 
-            String stringInLogs = SHARED_SERVER_READ_WRITE_UPGRADE_TIMEOUT.getLibertyServer()
+            String stringInLogs = readWriteUpgradeTimeoutServer
                             .waitForStringInLogUsingMark("test_Timeout_UpgradeWL : Timeout occurred during the test",
                                                          15000);
 
@@ -223,15 +218,5 @@ public class UpgradeReadWriteTimeoutHttpUnit extends LoggingTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.fat.util.LoggingTest#getSharedServer()
-     */
-    @Override
-    protected SharedServer getSharedServer() {
-        return SHARED_SERVER_READ_WRITE_UPGRADE_TIMEOUT;
     }
 }

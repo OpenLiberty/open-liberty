@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1998, 2016 IBM Corporation and others.
+ * Copyright (c) 1998, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,7 +34,6 @@ import com.ibm.websphere.cpi.Persister;
 import com.ibm.websphere.csi.ActivitySessionAttribute;
 import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.csi.TransactionAttribute;
-import com.ibm.websphere.ejbcontainer.LightweightLocal;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ejbcontainer.CallbackKind;
@@ -1362,9 +1361,9 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl imple
      * @param interfaceName the name of the interface that needs to be matched
      * @return the index of the found matching Local Business interface
      * @throws EJBConfigurationException if none of the Local Business
-     *             interfaces implement the specified target interface
-     * @throws ClassNotFoundException if the interface name passed in could
-     *             not be loaded
+     *                                       interfaces implement the specified target interface
+     * @throws ClassNotFoundException    if the interface name passed in could
+     *                                       not be loaded
      **/
     // d449434
     public int getSupportingLocalBusinessInterfaceIndex(String interfaceName) throws ClassNotFoundException, EJBConfigurationException {
@@ -1484,9 +1483,9 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl imple
      * @param interfaceName the name of the interface that needs to be matched
      * @return the index of the found matching Local Business interface
      * @throws EJBConfigurationException if none of the Local Business
-     *             interfaces implement the specified target interface
-     * @throws ClassNotFoundException if the interface name passed in could
-     *             not be loaded
+     *                                       interfaces implement the specified target interface
+     * @throws ClassNotFoundException    if the interface name passed in could
+     *                                       not be loaded
      **/
     // d449434
     public int getSupportingRemoteBusinessInterfaceIndex(String interfaceName) throws ClassNotFoundException, EJBConfigurationException {
@@ -2369,32 +2368,14 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl imple
         // -----------------------------------------------------------------------
         if (isLightweight) {
 
-            // -------------------------------------------------------------------------
-            // A special check for temporary WPS hack, allowing SLSBs to be Lightweight.
-            // As a performance fix for WPS, SLSBs may be Lightweight.  This is only
-            // enabled by an undocumented EJB environment variable.  It cannot be
-            // enabled by a WCCM config switch, nor by inheriting the Lightweight
-            // interface.  The latter is flagged as an error here.  The former can
-            // not happen since we do not support this in the WCCM model for SLSBs.
-            //                                                                   PK21246
-            // -------------------------------------------------------------------------
-            if (type == InternalConstants.TYPE_STATELESS_SESSION &&
-                (LightweightLocal.class).isAssignableFrom(enterpriseBeanAbstractClass)) {
-                Tr.error(tc, "INVALID_LIGHTWEIGHT_IMPL_CNTR0119E",
-                         new Object[] { j2eeName, "1" });
-                throw new EJBConfigurationException("Only Entity EJBs may implement " +
-                                                    "the LightweightLocal interface : " +
-                                                    j2eeName);
-            }
-
             // LightweightLocal support has the following restrictions:
             //  - must be an Entity bean
             //  - must be an EJB 2.0 bean (and CMP 2.x or later)
             //  - must contain a local interface
             //  - might be a WPS hacked SLSB (ie. see above check)   PK21246
-            else if (type != InternalConstants.TYPE_CONTAINER_MANAGED_ENTITY &&
-                     type != InternalConstants.TYPE_BEAN_MANAGED_ENTITY &&
-                     type != InternalConstants.TYPE_STATELESS_SESSION) {
+            if (type != InternalConstants.TYPE_CONTAINER_MANAGED_ENTITY &&
+                type != InternalConstants.TYPE_BEAN_MANAGED_ENTITY &&
+                type != InternalConstants.TYPE_STATELESS_SESSION) {
                 Tr.error(tc, "INVALID_LIGHTWEIGHT_IMPL_CNTR0119E",
                          new Object[] { j2eeName, "1" });
                 throw new EJBConfigurationException("Only Entity EJBs may implement " +

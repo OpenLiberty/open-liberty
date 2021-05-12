@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ejb-jar PUBLIC "-//Sun Microsystems, Inc.//DTD Enterprise JavaBeans 2.0//EN" "http://java.sun.com/dtd/ejb-jar_2_0.dtd">
+
+   <ejb-jar id="ejb-jar_ID">
+      <display-name>EJB2X-AmbiguousName</display-name>
+      <enterprise-beans>
+         <session id="Ambiguous">
+            <ejb-name>AmbiguousName</ejb-name>
+            <home>com.ibm.ambiguous.ejb.AmbiguousNameRemoteHome</home>
+            <remote>com.ibm.ambiguous.ejb.AmbiguousRemoteName</remote>
+            <local-home>com.ibm.ambiguous.ejb.AmbiguousNameHome</local-home>
+            <local>com.ibm.ambiguous.ejb.AmbiguousName</local>
+            <ejb-class>com.ibm.ambiguous.ejb.AmbiguousNameBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         <session id="AmbiguousOther">
+            <ejb-name>AmbiguousOtherName</ejb-name>
+            <home>com.ibm.ambiguous.ejb.AmbiguousOtherNameRemoteHome</home>
+            <remote>com.ibm.ambiguous.ejb.AmbiguousOtherRemoteName</remote>
+            <local-home>com.ibm.ambiguous.ejb.AmbiguousOtherNameHome</local-home>
+            <local>com.ibm.ambiguous.ejb.AmbiguousOtherName</local>
+            <ejb-class>com.ibm.ambiguous.ejb.AmbiguousOtherNameBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+      </enterprise-beans>
+   </ejb-jar>

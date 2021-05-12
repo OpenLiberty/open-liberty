@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.mongodb-2.0
+WLP-DisableAllFeatures-OnConflict: false
 visibility=public
 IBM-ShortName: mongodb-2.0
 Subsystem-Name: MongoDB Integration 2.0

@@ -13,6 +13,7 @@ package com.ibm.websphere.microprofile.faulttolerance_fat.suite;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.function.BooleanSupplier;
@@ -49,13 +50,13 @@ public class AnnotationFilter implements TestRule {
 
     public AnnotationFilter forRepeats(String... repeatIds) {
         HashSet<String> repeatIdSet = new HashSet<>(Arrays.asList(repeatIds));
-        predicates.add(() -> repeatIdSet.contains(RepeatTestFilter.CURRENT_REPEAT_ACTION));
+        predicates.add(() -> !Collections.disjoint(repeatIdSet, RepeatTestFilter.getRepeatActions()));
         return this;
     }
 
     public AnnotationFilter forAllRepeatsExcept(String... repeatIds) {
         HashSet<String> repeatIdSet = new HashSet<>(Arrays.asList(repeatIds));
-        predicates.add(() -> !repeatIdSet.contains(RepeatTestFilter.CURRENT_REPEAT_ACTION));
+        predicates.add(() -> Collections.disjoint(repeatIdSet, RepeatTestFilter.getRepeatActions()));
         return this;
     }
 

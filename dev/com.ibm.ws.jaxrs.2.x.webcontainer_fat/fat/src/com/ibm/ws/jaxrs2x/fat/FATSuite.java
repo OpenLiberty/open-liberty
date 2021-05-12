@@ -20,13 +20,12 @@ import com.ibm.ws.jaxrs2x.fat.helloworld.HelloWorldTest;
 import com.ibm.ws.jaxrs2x.fat.jsonp.JaxRsJsonPTest;
 import com.ibm.ws.jaxrs2x.fat.multipart.MultipartTest;
 
-import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-               AlwaysPassesTest.class,
                HelloWorldTest.class,
                MultipartTest.class,
                JaxRsJsonPTest.class
@@ -34,6 +33,7 @@ import componenttest.rules.repeater.RepeatTests;
 public class FATSuite {
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(FeatureReplacementAction.EE8_FEATURES().withID("JAXRS-2.1"));
+                    .andWith(FeatureReplacementAction.EE8_FEATURES().withID("JAXRS-2.1"))
+                    .andWith(new JakartaEE9Action());
 
 }

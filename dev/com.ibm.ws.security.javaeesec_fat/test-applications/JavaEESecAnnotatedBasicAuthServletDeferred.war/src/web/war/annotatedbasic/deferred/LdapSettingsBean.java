@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -158,6 +158,19 @@ public class LdapSettingsBean {
         return result;
     }
 
+    public Integer getMaxResults() throws IOException {
+        refreshConfiguration();
+
+        String prop = getProperty("maxResults");
+        Integer result = null;
+        if (prop != null) {
+            result = Integer.valueOf(prop);
+        }
+
+        System.out.println(CLASS_NAME + ".getMaxResults() returns: " + result);
+        return result;
+    }
+
     public Integer getPriority() throws IOException {
         refreshConfiguration();
 
@@ -216,7 +229,14 @@ public class LdapSettingsBean {
 
     private void refreshConfiguration() throws IOException {
         props = new Properties();
-        props.load(new FileReader("LdapSettingsBean.props"));
+        FileReader fr = new FileReader("LdapSettingsBean.props");
+        try {
+            props.load(fr);
+        } finally {
+            if (fr != null) {
+                fr.close();
+            }
+        }
     }
 
     /**

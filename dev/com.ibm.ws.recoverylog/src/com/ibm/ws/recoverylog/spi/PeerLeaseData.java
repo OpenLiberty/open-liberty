@@ -11,8 +11,9 @@
 package com.ibm.ws.recoverylog.spi;
 
 import com.ibm.tx.TranConstants;
-import com.ibm.tx.util.logging.Tr;
-import com.ibm.tx.util.logging.TraceComponent;
+import com.ibm.tx.util.Utils;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 
 /**
  *
@@ -23,10 +24,9 @@ public class PeerLeaseData {
     private final long _leaseTime;
     private final int _leaseTimeout;
 
-    public PeerLeaseData(String recoveryIdentity, long leaseTime, int leaseTimeout)
-    {
+    public PeerLeaseData(String recoveryIdentity, long leaseTime, int leaseTimeout) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "PeerLeaseData", new Object[] { recoveryIdentity, leaseTime, leaseTimeout });
+            Tr.entry(tc, "PeerLeaseData", new Object[] { recoveryIdentity, Utils.traceTime(leaseTime), leaseTimeout });
         this._recoveryIdentity = recoveryIdentity;
         this._leaseTime = leaseTime;
         this._leaseTimeout = leaseTimeout;
@@ -35,13 +35,9 @@ public class PeerLeaseData {
             Tr.exit(tc, "PeerLeaseData");
     }
 
-    public String getRecoveryIdentity()
-    {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "getRecoveryIdentity");
-
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "getRecoveryIdentity", _recoveryIdentity);
+    public String getRecoveryIdentity() {
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "getRecoveryIdentity", _recoveryIdentity);
         return _recoveryIdentity;
     }
 
@@ -49,34 +45,31 @@ public class PeerLeaseData {
      * @return the _leaseTime
      */
     public long getLeaseTime() {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "getLeaseTime");
-
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "getLeaseTime", _leaseTime);
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "getLeaseTime", Utils.traceTime(_leaseTime));
         return _leaseTime;
     }
 
     /**
      * Has the peer expired?
      */
-    public boolean isExpired()
-    {
+    public boolean isExpired() {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "isExpired");
+            Tr.entry(tc, "isExpired", new Object[] { _leaseTimeout });
         boolean expired = false;
         long curTime = System.currentTimeMillis();
-        //TODO:
-        if (curTime - _leaseTime > _leaseTimeout * 1000) //  30 seconds default for timeout
-        {
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Lease has EXPIRED for " + _recoveryIdentity + ", currenttime: " + curTime + ", storedTime: " + _leaseTime);
+
+        if (curTime - _leaseTime > _leaseTimeout * 1000) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Lease has EXPIRED for " + _recoveryIdentity + ", currenttime: " + Utils.traceTime(curTime) + ", storedTime: " + Utils.traceTime(_leaseTime) + " ("
+                             + (curTime - _leaseTime) / 1000 + "s)");
+            }
             expired = true;
-        }
-        else
-        {
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Lease has not expired for " + _recoveryIdentity + ", currenttime: " + curTime + ", storedTime: " + _leaseTime);
+        } else {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Lease has not expired for " + _recoveryIdentity + ", currenttime: " + Utils.traceTime(curTime) + ", storedTime: " + Utils.traceTime(_leaseTime) + " ("
+                             + (curTime - _leaseTime) / 1000 + "s)");
+            }
         }
 
         if (tc.isEntryEnabled())

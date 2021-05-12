@@ -17,7 +17,7 @@ src: \
 fat.project: true
 
 tested.features: \
-	jacc-1.5, el-4.0, appsecurity-4.0, servlet-5.0, cdi-3.0, ejblite-4.0, jacc-2.0
+	jacc-1.5, expressionLanguage-4.0, appsecurity-4.0, servlet-5.0, cdi-3.0, enterpriseBeansLite-4.0, appAuthorization-2.0
 
 -buildpath: \
     com.ibm.json4j;version=latest,\
@@ -27,4 +27,6 @@ tested.features: \
     com.ibm.ws.security.audit_fat.common.tooling;version=latest,\
     com.ibm.ws.security.authorization.jacc.testprovider;version=latest,\
     com.ibm.ws.webcontainer.security_test.servlets;version=latest,\
-	fattest.simplicity;version=latest
+    fattest.simplicity;version=latest,\
+    io.openliberty.org.apache.commons.logging;version=latest,\
+    io.openliberty.org.apache.commons.codec;version=latest

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -88,7 +88,7 @@ public class OIDCGrantTypeHandlerRefreshImplTest {
     public void testConstructor() {
         final String methodName = "testConstructor";
         try {
-            OIDCGrantTypeHandlerRefreshImpl oidcGrantTypeHandlerRefreshImpl = new OIDCGrantTypeHandlerRefreshImpl();
+            OIDCGrantTypeHandlerRefreshImpl oidcGrantTypeHandlerRefreshImpl = new OIDCGrantTypeHandlerRefreshImpl(oauth20ConfigProvider);
             assertNotNull("Can not instantiate an oidcGrantTypehandlerRefreshImpl", oidcGrantTypeHandlerRefreshImpl);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(methodName, t);
@@ -180,7 +180,7 @@ public class OIDCGrantTypeHandlerRefreshImplTest {
                 }
             });
 
-            OIDCGrantTypeHandlerRefreshImpl oidcGrantTypehandlerRefreshImpl = new OIDCGrantTypeHandlerRefreshImpl();
+            OIDCGrantTypeHandlerRefreshImpl oidcGrantTypehandlerRefreshImpl = new OIDCGrantTypeHandlerRefreshImpl(oauth20ConfigProvider);
             List<OAuth20Token> listOAuth20Token = oidcGrantTypehandlerRefreshImpl.buildTokensGrantType(attributeList, oauth20TokenFactory, tokens);
             assertTrue("It ought to have 2 tokens: access_token, refresh_token ", listOAuth20Token.size() == 2);
         } catch (Throwable t) {

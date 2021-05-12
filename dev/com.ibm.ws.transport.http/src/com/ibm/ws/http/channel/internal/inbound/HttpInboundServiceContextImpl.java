@@ -85,6 +85,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
     private String forwardedRemoteAddress = null;
     private String forwardedProto = null;
     private String forwardedHost = null;
+    private boolean suppress0ByteChunk = false;
 
     /**
      * Constructor for an HTTP inbound service context object.
@@ -168,6 +169,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         this.forwardedProto = null;
         this.forwardedRemoteAddress = null;
         this.forwardedRemotePort = -1;
+        this.suppress0ByteChunk = false;
 
         if (getHttpConfig().runningOnZOS()) {
             // @311734 - clean the statemap of the final write mark
@@ -1549,58 +1551,32 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
     @Override
     public VirtualConnection getRequestBodyBuffer(InterChannelCallback callback, boolean bForce) throws BodyCompleteException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.entry(tc, "getRequestBodyBuffer(async)");
+            Tr.entry(tc, "getRequestBodyBuffer(async) hc: " + this.hashCode());
         }
-        if (!headersParsed()) {
-            // request message must have the headers parsed prior to attempting
-            // to read a body (this is a completely invalid state in the channel
-            // above)
-            IOException ioe = new IOException("Request not read yet");
-            FFDCFilter.processException(ioe, CLASS_NAME + ".getRequestBodyBuffer", "1511");
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Attempt to read a body without headers");
-            }
-            callback.error(getVC(), ioe);
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                Tr.exit(tc, "getRequestBodyBuffer(async): no hdrs yet");
-            }
-            return null;
-        }
+        boolean isError = false;
 
-        // check to see if a read is even necessary
-        if (!isIncomingBodyValid() || incomingBuffersReady()) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                Tr.exit(tc, "getRequestBodyBuffer(async): read not needed");
-            }
-            if (bForce) {
-                callback.complete(getVC());
-                return null;
-            }
-            return getVC();
-        }
-
-        if (isBodyComplete()) {
-            // throw new BodyCompleteException("No more body to read");
-            // instead of throwing an exception, just return the VC as though
-            // data is immediately ready and the caller will switch to their
-            // sync block and then get a null buffer back
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                Tr.exit(tc, "getRequestBodyBuffer(async): body complete");
-            }
-            if (bForce) {
-                callback.complete(getVC());
-                return null;
-            }
-            return getVC();
-        }
-
-        setAppReadCallback(callback);
-        setForceAsync(bForce);
-        setMultiRead(false);
         try {
-            if (!readBodyBuffer(getRequestImpl(), true)) {
+            if (!headersParsed()) {
+                // request message must have the headers parsed prior to attempting
+                // to read a body (this is a completely invalid state in the channel
+                // above)
+                IOException ioe = new IOException("Request not read yet");
+                FFDCFilter.processException(ioe, CLASS_NAME + ".getRequestBodyBuffer", "1511");
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Attempt to read a body without headers");
+                }
+                callback.error(getVC(), ioe);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                    Tr.exit(tc, "getRequestBodyBuffer(async): read finished");
+                    Tr.exit(tc, "getRequestBodyBuffer(async): no hdrs yet");
+                }
+                isError = true;
+                return null;
+            }
+
+            // check to see if a read is even necessary
+            if (!isIncomingBodyValid() || incomingBuffersReady()) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                    Tr.exit(tc, "getRequestBodyBuffer(async): read not needed");
                 }
                 if (bForce) {
                     callback.complete(getVC());
@@ -1608,19 +1584,66 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
                 }
                 return getVC();
             }
-        } catch (IOException ioe) {
-            // no FFDC required
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                Tr.exit(tc, "getRequestBodyBuffer(async): exception: " + ioe);
-            }
-            callback.error(getVC(), ioe);
-            return null;
-        }
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.exit(tc, "getRequestBodyBuffer(async): null");
+            if (isBodyComplete()) {
+                // throw new BodyCompleteException("No more body to read");
+                // instead of throwing an exception, just return the VC as though
+                // data is immediately ready and the caller will switch to their
+                // sync block and then get a null buffer back
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                    Tr.exit(tc, "getRequestBodyBuffer(async): body complete");
+                }
+                if (bForce) {
+                    callback.complete(getVC());
+                    return null;
+                }
+                return getVC();
+            }
+
+            setAppReadCallback(callback);
+            setForceAsync(bForce);
+            setMultiRead(false);
+            try {
+                if (!readBodyBuffer(getRequestImpl(), true)) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                        Tr.exit(tc, "getRequestBodyBuffer(async): read finished");
+                    }
+                    if (bForce) {
+                        callback.complete(getVC());
+                        return null;
+                    }
+                    return getVC();
+                }
+            } catch (IOException ioe) {
+                // no FFDC required
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                    Tr.exit(tc, "getRequestBodyBuffer(async): exception: " + ioe);
+                }
+                isError = true;
+                callback.error(getVC(), ioe);
+                return null;
+            }
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                Tr.exit(tc, "getRequestBodyBuffer(async): null");
+            }
+            return null;
+        } finally {
+            countDownFirstReadLatch(isError);
         }
-        return null;
+    }
+
+    public void countDownFirstReadLatch(boolean force) {
+        if (this.myLink instanceof H2HttpInboundLinkWrap) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "countDownFirstReadLatch. count down. force: " + force + " HISCI hc: " + this.hashCode());
+            }
+            ((H2HttpInboundLinkWrap) myLink).countDownFirstReadLatch(force);
+        } else {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, " can not count down countDownFirstReadLatch. HISCI hc: " + this.hashCode());
+            }
+        }
     }
 
     /**
@@ -2110,5 +2133,16 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
             Tr.debug(tc, "Has HTTP/2 been enabled on this port: " + isHTTP2Enabled);
         }
         return isHTTP2Enabled;
+    }
+
+    /**
+     * @param suppress0ByteChunk
+     */
+    public void setSuppress0ByteChunk(boolean suppress0ByteChunk) {
+        this.suppress0ByteChunk = suppress0ByteChunk;
+    }
+
+    public boolean getSuppress0ByteChunk() {
+        return this.suppress0ByteChunk;
     }
 }

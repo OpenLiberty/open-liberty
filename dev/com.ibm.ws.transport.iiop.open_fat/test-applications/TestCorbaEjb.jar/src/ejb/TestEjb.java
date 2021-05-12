@@ -20,8 +20,6 @@ import shared.TestRemote;
 @Stateless
 @Remote
 public class TestEjb implements TestRemote {
-    private static final long serialVersionUID = 1L;
-
     public TestEjb() {}
 
     @Override

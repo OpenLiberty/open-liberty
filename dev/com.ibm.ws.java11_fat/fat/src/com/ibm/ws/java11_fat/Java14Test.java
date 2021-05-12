@@ -17,6 +17,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -26,6 +27,7 @@ import componenttest.topology.utils.HttpUtils;
 
 @RunWith(FATRunner.class)
 @MinimumJavaLevel(javaLevel = 14)
+@MaximumJavaLevel(javaLevel = 14)
 public class Java14Test extends FATServletClient {
 
     private static final String APP_NAME = "java14-app";

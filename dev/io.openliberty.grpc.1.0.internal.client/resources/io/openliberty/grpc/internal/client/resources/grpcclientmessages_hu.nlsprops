@@ -31,6 +31,3 @@ invalid.keepalive.timeout.useraction=Adjon meg \u00e9rv\u00e9nyes \u00e9rt\u00e9
 invalid.client.inbound.msg.size=CWWKT0304E: A gRPC \u00fcgyf\u00e9l {0} maxInboundMessageSize \u00e9rt\u00e9ke nem \u00e9rv\u00e9nyes. Az \u00e9rt\u00e9kek csak 0-n\u00e1l nagyobbak lehetnek.
 invalid.client.inbound.msg.size.explanation=A maxInboundMessageSize be\u00e1ll\u00edtott \u00e9rt\u00e9ke \u00e9rv\u00e9nytelen.
 invalid.client.inbound.msg.size.useraction=Adjon meg \u00e9rv\u00e9nyes \u00e9rt\u00e9ket a maxInboundMessageSize \u00e9rt\u00e9kek\u00e9nt. 
-invalid.authn.token=CWWKT0305E: A gRPC \u00fcgyf\u00e9l "{0}" authnToken \u00e9rt\u00e9ke nem \u00e9rv\u00e9nyes. Az \u00e9rt\u00e9k csak "jwt" vagy "oauth" lehet.
-invalid.authn.token.explanation=Az authnToken be\u00e1ll\u00edtott \u00e9rt\u00e9ke \u00e9rv\u00e9nytelen.
-invalid.authn.token.useraction=Adjon meg \u00e9rv\u00e9nyes \u00e9rt\u00e9ket az authnToken \u00e9rt\u00e9kek\u00e9nt.

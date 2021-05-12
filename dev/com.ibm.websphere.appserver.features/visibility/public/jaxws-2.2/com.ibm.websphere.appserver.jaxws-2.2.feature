@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.jaxws-2.2
+WLP-DisableAllFeatures-OnConflict: false
 visibility=public
 singleton=true
 IBM-App-ForceRestart: uninstall, \
@@ -37,7 +38,7 @@ Subsystem-Name: Java Web Services 2.2
  com.ibm.websphere.appserver.injection-1.0, \
  com.ibm.websphere.appserver.internal.optional.jaxws-2.2, \
  com.ibm.websphere.appserver.javax.mail-1.5; ibm.tolerates:=1.6, \
- com.ibm.websphere.appserver.javax.servlet-3.0; ibm.tolerates:="3.1, 4.0"; apiJar=false, \
+ io.openliberty.servlet.api-3.0; ibm.tolerates:="3.1, 4.0"; apiJar=false, \
  com.ibm.websphere.appserver.jaxb-2.2
 -bundles=\
  com.ibm.websphere.javaee.jaxws.2.2; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.xml.ws:jaxws-api:2.2.12", \
@@ -65,6 +66,8 @@ Subsystem-Name: Java Web Services 2.2
  com.ibm.ws.org.apache.xml.resolver.1.2, \
  com.ibm.ws.org.jvnet.mimepull; require-java:="9", \
  com.ibm.ws.prereq.wsdl4j.1.6.2, \
+ com.ibm.ws.javaee.ddmodel.ws, \
+ com.ibm.ws.webservices.javaee.common
 
 -files=\
  bin/jaxws/tools/ws-wsgen.jar, \

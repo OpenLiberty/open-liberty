@@ -2,7 +2,7 @@
 symbolicName=io.openliberty.jsonb-2.0
 visibility=public
 IBM-ShortName: jsonb-2.0
-Subsystem-Name: JavaScript Object Notation Binding 2.0
+Subsystem-Name: Jakarta JSON Binding 2.0
 IBM-API-Package: jakarta.json.bind; type="spec", \
  jakarta.json.bind.adapter; type="spec", \
  jakarta.json.bind.annotation; type="spec", \

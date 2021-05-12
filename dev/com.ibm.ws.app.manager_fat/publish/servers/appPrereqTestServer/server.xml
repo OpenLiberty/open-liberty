@@ -1,0 +1,17 @@
+<server description="default server">
+
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+	   <feature>servlet-4.0</feature>
+    </featureManager>
+    
+    <!-- Automatically expand WAR files and EAR files -->
+    <applicationManager autoExpand="true"/>
+     
+    <application id="snoop" name="snoop" location="snoop.war"/>
+    
+    <webContainer deferServletLoad="false"/>
+    
+    <com.ibm.wsspi.application.lifecycle.ApplicationPrereq id="simple test prereq"/>
+</server>

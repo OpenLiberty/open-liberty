@@ -22,10 +22,14 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
@@ -40,6 +44,22 @@ import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
 public class EjbLinkTest extends FATServletClient {
+
+    @Rule
+    public TestWatcher watchman = new TestWatcher() {
+        @Override
+        protected void failed(Throwable e, Description description) {
+            try {
+                System.runFinalization();
+                System.gc();
+                server.serverDump("heap");
+            } catch (Exception e1) {
+                System.out.println("Failed to dump server");
+                e1.printStackTrace();
+            }
+        }
+    };
+
     private static Class<?> c = EjbLinkTest.class;
 
     private static LibertyClient client = LibertyClientFactory.getLibertyClient("com.ibm.ws.ejbcontainer.remote.client.fat.clientInjection");
@@ -80,8 +100,8 @@ public class EjbLinkTest extends FATServletClient {
         EjbLinkTest.addAsModule(EjbLinkClient);
         EjbLinkTest = (EnterpriseArchive) ShrinkHelper.addDirectory(EjbLinkTest, "test-applications/EjbLinkTest.ear/resources");
 
-        ShrinkHelper.exportDropinAppToServer(server, EjbLinkTest);
-        ShrinkHelper.exportToClient(client, "dropins", EjbLinkTest);
+        ShrinkHelper.exportDropinAppToServer(server, EjbLinkTest, DeployOptions.SERVER_ONLY);
+        ShrinkHelper.exportToClient(client, "dropins", EjbLinkTest, DeployOptions.SERVER_ONLY);
 
         // Start the server and wait for application to start
         server.startServer();
@@ -89,6 +109,7 @@ public class EjbLinkTest extends FATServletClient {
         // verify the appSecurity-2.0 feature is ready
         assertNotNull("Security service did not report it was ready", server.waitForStringInLogUsingMark("CWWKS0008I"));
         assertNotNull("LTPA configuration did not report it was ready", server.waitForStringInLogUsingMark("CWWKS4105I"));
+        server.setMarkToEndOfLog();
 
         //#################### InitTxRecoveryLogApp.ear (Automatically initializes transaction recovery logs)
         JavaArchive InitTxRecoveryLogEJBJar = ShrinkHelper.buildJavaArchive("InitTxRecoveryLogEJB.jar", "com.ibm.ws.ejbcontainer.init.recovery.ejb.");
@@ -98,9 +119,11 @@ public class EjbLinkTest extends FATServletClient {
 
         // Only after the server has started and appSecurity-2.0 feature is ready,
         // then allow the @Startup InitTxRecoveryLog bean to start.
-        ShrinkHelper.exportDropinAppToServer(server, InitTxRecoveryLogApp);
+        ShrinkHelper.exportDropinAppToServer(server, InitTxRecoveryLogApp, DeployOptions.SERVER_ONLY);
 
-        client.addIgnoreErrors("CWWKC0105W");
+        // CWNEN1001E - testStyle1BeanInJarAndWarFromClient; ambiguous, cannot lookup
+        // CWNEN0030E - testStyle1BeanInJarAndWarFromClient; ambiguous, cannot lookup
+        client.addIgnoreErrors("CWWKC0105W", "CWNEN1001E", "CWNEN0030E");
         client.startClient();
     }
 
@@ -405,6 +428,86 @@ public class EjbLinkTest extends FATServletClient {
 
     @Test
     public void findBeanFromWar2Jar() throws Exception {
+        check();
+    }
+
+    @Test
+    public void testStyle1OtherJarXMLFromClient() throws Exception {
+        check();
+    }
+
+    @Test
+    public void testStyle2OtherJarXMLFromClient() throws Exception {
+        check();
+    }
+
+    @Test
+    public void testStyle3OtherJarXMLFromClient() throws Exception {
+        check();
+    }
+
+    @Test
+    public void testStyle1OtherJarAnnFromClient() throws Exception {
+        check();
+    }
+
+    @Test
+    public void testStyle2OtherJarAnnFromClient() throws Exception {
+        check();
+    }
+
+    @Test
+    public void testStyle3OtherJarAnnFromClient() throws Exception {
+        check();
+    }
+
+    @Test
+    public void testStyle1OtherWarXMLFromClient() throws Exception {
+        check();
+    }
+
+    @Test
+    public void testStyle2OtherWarXMLFromClient() throws Exception {
+        check();
+    }
+
+    @Test
+    public void testStyle3OtherWarXMLFromClient() throws Exception {
+        check();
+    }
+
+    @Test
+    public void testStyle1OtherWarAnnFromClient() throws Exception {
+        check();
+    }
+
+    @Test
+    public void testStyle2OtherWarAnnFromClient() throws Exception {
+        check();
+    }
+
+    @Test
+    public void testStyle3OtherWarAnnFromClient() throws Exception {
+        check();
+    }
+
+    @Test
+    public void testStyle1BeanInJarAndWarFromClient() throws Exception {
+        check();
+    }
+
+    @Test
+    public void findBeanFromClientInJar() throws Exception {
+        check();
+    }
+
+    @Test
+    public void findBeanFromClientInWar() throws Exception {
+        check();
+    }
+
+    @Test
+    public void find2xBeanFromClientInJar() throws Exception {
         check();
     }
 

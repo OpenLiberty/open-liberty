@@ -21,8 +21,6 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.microprofile.appConfig.dynamicSources.test.DynamicSourcesTestServlet;
-import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions;
-import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions.Version;
 import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
 
 import componenttest.annotation.Server;
@@ -30,6 +28,7 @@ import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -47,8 +46,9 @@ public class DynamicSourcesTest extends FATServletClient {
     @TestServlet(servlet = DynamicSourcesTestServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
+    // Don't repeat against mpConfig > 1.4 since polling behaviour changed.
     @ClassRule
-    public static RepeatTests r = RepeatConfigActions.repeat("DynamicSourcesServer", Version.CONFIG11_EE8);
+    public static RepeatTests r = MicroProfileActions.repeat("DynamicSourcesServer", MicroProfileActions.MP12, MicroProfileActions.MP20);
 
     @BeforeClass
     public static void setUp() throws Exception {

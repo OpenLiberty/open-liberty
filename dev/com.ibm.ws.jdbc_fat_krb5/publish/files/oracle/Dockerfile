@@ -1,4 +1,4 @@
-FROM kyleaure/oracle-18.4.0-xe-prebuilt
+FROM kyleaure/oracle-18.4.0-xe-prebuilt:2.0
 
 # Update and install Kerberos (server head)
 RUN yum update -y
@@ -25,7 +25,5 @@ RUN /opt/oracle/scripts/setup/2oracle.sh
 
 RUN rm /opt/oracle/scripts/setup/1kerberos.sh
 RUN rm /opt/oracle/scripts/setup/2oracle.sh 
-
-# currently tagged as aguibert/krb5-oracle:1.0
-
  
+# Currently tagged in DockerHub as: kyleaure/krb5-oracle:2.0

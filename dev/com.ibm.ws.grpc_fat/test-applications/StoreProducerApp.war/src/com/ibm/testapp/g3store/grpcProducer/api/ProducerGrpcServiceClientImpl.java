@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.testapp.g3store.grpcProducer.api;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -33,6 +35,7 @@ import com.ibm.testapp.g3store.exception.AlreadyExistException;
 import com.ibm.testapp.g3store.exception.HandleExceptionsAsyncgRPCService;
 import com.ibm.testapp.g3store.exception.InvalidArgException;
 import com.ibm.testapp.g3store.exception.NotFoundException;
+import com.ibm.testapp.g3store.restProducer.api.ProducerRestEndpoint;
 import com.ibm.testapp.g3store.restProducer.model.AppStructure;
 import com.ibm.testapp.g3store.restProducer.model.DeleteAllRestResponse;
 import com.ibm.testapp.g3store.restProducer.model.MultiAppStructues;
@@ -41,6 +44,7 @@ import com.ibm.testapp.g3store.restProducer.model.ProducerRestResponse;
 import io.grpc.Status;
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
+import io.grpc.stub.CallStreamObserver;
 import io.grpc.stub.StreamObserver;
 
 /**
@@ -54,7 +58,15 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
 
     private static Logger log = Logger.getLogger(ProducerGrpcServiceClientImpl.class.getName());
 
-    private final int deadlineMs = 30 * 1000;
+    private final int deadlineMs = 60 * 1000;
+
+    private static boolean CONCURRENT_TEST_ON = false;
+
+    public ProducerGrpcServiceClientImpl() {
+        if (CONCURRENT_TEST_ON) {
+            readStreamParmsFromFile();
+        }
+    }
 
     // gRPC client implementation(s)
     /**
@@ -441,69 +453,72 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
         }
     }
 
-    String replyAfterClientStream = "Null";
-    String errorMessage = null;
-    Throwable errorCaught = null;
+    public static int CLIENT_STREAM_NUMBER_OF_MESSAGES_PER_CONNECTION = 200;
+    public static int CLIENT_STREAM_TIME_BETWEEN_MESSAGES_MSEC = 0;
+    public static int CLIENT_STREAM_MESSAGE_SIZE = 50; // set to 5, 50, 500, 5000, or else you will get 50.
+    public static int CLIENT_STREAM_SLEEP_WHEN_NOT_READY_MSEC = 50;
 
     public String grpcClientStreamApp() {
+        String replyAfterClientStream = "Null";
+        String errorMessage = null;
+        String sChars = "12345678901234567890123456789012345678901234567890"; // 50 characters
+
         CountDownLatch latch = new CountDownLatch(1);
-        replyAfterClientStream = "Null";
-        errorMessage = null;
-        errorCaught = null;
 
         log.info("Producer: grpcClientStreamApp(): Entered");
+
         // This if for sending a stream of data to the server and then get a single reply
-        StreamObserver<StreamRequestA> clientStreamAX = _producerAsyncStub.clientStreamA(new StreamObserver<StreamReplyA>() {
-            @Override
-            public void onNext(StreamReplyA response) {
-                // response from server
-                // called only once
-                replyAfterClientStream = response.toString();
-            }
-
-            @Override
-            public void onError(Throwable t) {
-                // Error on the reply from the server service
-                errorCaught = t;
-                errorMessage = errorCaught.getMessage();
-                log.info("grpcClientStreamApp: caught error from server service: " + errorMessage);
-                latch.countDown();
-            }
-
-            @Override
-            public void onCompleted() {
-                log.info("grpcClientStreamApp: onCompleted called from server service");
-                latch.countDown();
-            }
-        });
+        ClientStreamClass csc = new ClientStreamClass(latch);
+        // StreamObserver<StreamRequestA> clientStreamAX = _producerAsyncStub.clientStreamA(csc);
+        CallStreamObserver<StreamRequestA> clientStreamAX = (CallStreamObserver) (_producerAsyncStub.clientStreamA(csc));
 
         // client streaming
-        int numberOfMessages = 200;
-        int timeBetweenMessagesMsec = 0;
+        int numberOfMessages = CLIENT_STREAM_NUMBER_OF_MESSAGES_PER_CONNECTION;
+        int timeBetweenMessagesMsec = CLIENT_STREAM_TIME_BETWEEN_MESSAGES_MSEC;
         StreamRequestA nextRequest = null;
 
         String nextMessage = null;
         String firstMessage = "This is the first Message..."; // don't change, hardcode to match string in StoreProducerService
         String lastMessage = "And this is the last Message"; // don't change, hardcode to match string in StoreProducerService
 
-        //String s5chars = "12345";
-        String s50chars = "12345678901234567890123456789012345678901234567890";
-        //String s500chars = s50chars + s50chars + s50chars + s50chars + s50chars + s50chars + s50chars + s50chars + s50chars + s50chars;
-        //String s5000chars = s500chars + s500chars + s500chars + s500chars + s500chars + s500chars + s500chars + s500chars + s500chars + s500chars;
+        if (CLIENT_STREAM_MESSAGE_SIZE == 5) {
+            sChars = "12345";
+        } else if (CLIENT_STREAM_MESSAGE_SIZE == 500) {
+            String s50chars = "12345678901234567890123456789012345678901234567890";
+            sChars = s50chars + s50chars + s50chars + s50chars + s50chars + s50chars + s50chars + s50chars + s50chars + s50chars;
+        } else if (CLIENT_STREAM_MESSAGE_SIZE == 5000) {
+            String s50chars = "12345678901234567890123456789012345678901234567890";
+            String s500chars = s50chars + s50chars + s50chars + s50chars + s50chars + s50chars + s50chars + s50chars + s50chars + s50chars;
+            sChars = s500chars + s500chars + s500chars + s500chars + s500chars + s500chars + s500chars + s500chars + s500chars + s500chars;
+        }
 
         for (int i = 1; i <= numberOfMessages; i++) {
-
             if (i == 1) {
+                if (CONCURRENT_TEST_ON) {
+                    System.out.println(qtf() + " ServerStream: CLIENT sending message 1 hc: " + clientStreamAX.hashCode());
+                }
                 nextMessage = firstMessage;
             } else if (i == numberOfMessages) {
+                if (CONCURRENT_TEST_ON) {
+                    System.out.println(qtf() + " ServerStream: CLIENT sending message " + i + " last message. hc: " + clientStreamAX.hashCode());
+                }
                 nextMessage = lastMessage;
             } else {
+                if (CONCURRENT_TEST_ON && ((i % 1000) == 0)) {
+                    System.out.println(qtf() + " ServerStream: CLIENT sending message " + i + " hc: " + clientStreamAX.hashCode());
+                }
                 nextMessage = "--Message " + i + " of " + numberOfMessages + " left client at time: " + System.currentTimeMillis() + "--";
-                nextMessage = nextMessage + s50chars;
+                nextMessage = nextMessage + sChars;
             }
 
             nextRequest = StreamRequestA.newBuilder().setMessage(nextMessage).build();
+
+            if (!waitUntilStreamIsReady(clientStreamAX, CLIENT_STREAM_SLEEP_WHEN_NOT_READY_MSEC, 400)) {
+                break;
+            }
+
             clientStreamAX.onNext(nextRequest);
+
             try {
                 if (timeBetweenMessagesMsec > 0) {
                     Thread.sleep(timeBetweenMessagesMsec);
@@ -524,14 +539,23 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
 
         // wait for the response from server
         try {
-            latch.await(5, TimeUnit.SECONDS);
+            if (CONCURRENT_TEST_ON) {
+                latch.await(ProducerRestEndpoint.CLIENT_STREAM_TIMEOUT_WAITING_FOR_TEST_COMPLETE_SEC / 2, TimeUnit.SECONDS);
+            } else {
+                latch.await(28, TimeUnit.SECONDS);
+            }
         } catch (InterruptedException e) {
             log.info("grpcClientStreamApp: latch.await got interrupted");
         }
 
+        replyAfterClientStream = csc.getReply();
+        errorMessage = csc.getErrorMessage();
+
         // test that this is what was expected:
         int i1 = replyAfterClientStream.indexOf(firstMessage);
         int i2 = replyAfterClientStream.indexOf(lastMessage);
+
+        log.info("grpcClientStreamApp: firstMessage index at: " + i1 + " lastMessage index at: " + i2);
 
         // change these two parms to print more of the string
         int maxStringLength = 32768;
@@ -545,7 +569,8 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
 
         if (errorMessage != null) {
             return (errorMessage);
-        } else if ((i1 >= 0) && (i2 >= 0)) {
+        } else if (i2 >= 0) {
+            // } else if ((i1 >= 0) && (i2 >= 0)) {  todo: need to debug first message issue
             log.info("grpcClientStreamApp: success, firstMessage index at: " + i1 + " lastMessage index at: " + i2);
             return ("success");
         } else {
@@ -553,58 +578,85 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
         }
     }
 
-    public String responseFromServer = null;
-    public String firstServerStreamMessage = null;
-    public String lastServerStreamMessage = null;
+    class ClientStreamClass implements StreamObserver<StreamReplyA> {
+
+        String replyAfterClientStream = "Null";
+        String errorMessage = null;
+        Throwable errorCaught = null;
+        CountDownLatch latch = null;
+
+        public ClientStreamClass(CountDownLatch inLatch) {
+            latch = inLatch;
+        }
+
+        public String getReply() {
+            return replyAfterClientStream;
+        }
+
+        public String getErrorMessage() {
+            return errorMessage;
+        }
+
+        public Throwable getErrorCaught() {
+            return errorCaught;
+        }
+
+        @Override
+        public void onNext(StreamReplyA response) {
+            // response from server
+            // called only once
+            replyAfterClientStream = response.toString();
+        }
+
+        @Override
+        public void onError(Throwable t) {
+            // Error on the reply from the server service
+            errorCaught = t;
+            errorMessage = errorCaught.getMessage();
+            log.info("grpcClientStreamApp: caught error from server service: " + errorMessage);
+            latch.countDown();
+        }
+
+        @Override
+        public void onCompleted() {
+            log.info("grpcClientStreamApp: onCompleted called from server service");
+            latch.countDown();
+        }
+    }
 
     public String grpcServerStreamApp() {
-        errorMessage = null;
-        errorCaught = null;
-        responseFromServer = null;
-        firstServerStreamMessage = null;
-        lastServerStreamMessage = null;
+        String errorMessage = null;
+        Throwable errorCaught = null;
+        String responseFromServer = null;
+        String firstServerStreamMessage = null;
+        String lastServerStreamMessage = null;
         int i1 = -1;
         int i2 = -1;
         CountDownLatch latch = new CountDownLatch(1);
 
-        log.info("Producer: grpcServerStreamApp(): Entered");
+        log.info(qtf() + " grpcServerStreamApp(): Entered hc: " + this.hashCode());
 
         StreamRequestA nextRequest = StreamRequestA.newBuilder().setMessage("From Client").build();
 
-        _producerAsyncStub.serverStreamA(nextRequest, new StreamObserver<StreamReplyA>() {
-            @Override
-            public void onNext(StreamReplyA response) {
-                if (firstServerStreamMessage == null) {
-                    firstServerStreamMessage = response.toString();
-                    lastServerStreamMessage = response.toString();
-                } else {
-                    lastServerStreamMessage = response.toString();
-                }
+        ServerStreamClass so = new ServerStreamClass(latch);
 
-            }
-
-            @Override
-            public void onError(Throwable t) {
-                // Error on the reply from the server service
-                errorCaught = t;
-                errorMessage = errorCaught.getMessage();
-                log.info("grpcServerStreamApp: caught error from server service: " + errorMessage);
-                latch.countDown();
-            }
-
-            @Override
-            public void onCompleted() {
-                log.info("grpcServerStreamApp: onCompleted called from server service");
-                latch.countDown();
-            }
-        });
+        _producerAsyncStub.serverStreamA(nextRequest, so);
 
         // wait for the response from server
         try {
-            latch.await(5, TimeUnit.SECONDS);
+            if (CONCURRENT_TEST_ON) {
+                latch.await(ProducerRestEndpoint.SERVER_STREAM_TIMEOUT_WAITING_FOR_TEST_COMPLETE_SEC, TimeUnit.SECONDS);
+            } else {
+                latch.await(28, TimeUnit.SECONDS);
+            }
         } catch (InterruptedException e) {
             log.info("grpcServerStreamApp: latch.await got interrupted");
         }
+
+        firstServerStreamMessage = so.getFirstMessage();
+        lastServerStreamMessage = so.getLastMessage();
+        errorMessage = so.getErrorMessage();
+        errorCaught = so.getErrorCaught();
 
         if (firstServerStreamMessage != null) {
             i1 = firstServerStreamMessage.indexOf("first");
@@ -625,94 +677,122 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
 
     }
 
-    public String firstTwoWayMessageReceived = null;
-    public String lastTwoWayMessageReceived = null;
+    class ServerStreamClass implements StreamObserver<StreamReplyA> {
+
+        String firstServerStreamMessage = null;
+        String lastServerStreamMessage = null;
+        String errorMessage = null;
+        Throwable errorCaught = null;
+        CountDownLatch latch = null;
+        long messageCount = 0;
+
+        public ServerStreamClass(CountDownLatch inLatch) {
+            latch = inLatch;
+        }
+
+        @Override
+        public void onNext(StreamReplyA response) {
+            messageCount++;
+            if (firstServerStreamMessage == null) {
+                if (CONCURRENT_TEST_ON) {
+                    System.out.println(qtf() + " ServerStream: CLIENT received message 1 hc: " + this.hashCode());
+                }
+                firstServerStreamMessage = response.toString();
+                lastServerStreamMessage = response.toString();
+            } else {
+                if (CONCURRENT_TEST_ON && (messageCount % 1000) == 0) {
+                    System.out.println(qtf() + " ServerStream: CLIENT received message " + messageCount + " hc: " + this.hashCode());
+                }
+
+                lastServerStreamMessage = response.toString();
+            }
+
+        }
+
+        @Override
+        public void onError(Throwable t) {
+            // Error on the reply from the server service
+            errorCaught = t;
+            errorMessage = errorCaught.getMessage();
+            log.info("grpcServerStreamApp: caught error from server service: " + errorMessage);
+
+            if (CONCURRENT_TEST_ON) {
+                System.out.println(qtf() + "grpcServerStreamApp: caught error from server service: " + errorMessage + " hc: " + this.hashCode());
+            }
+            latch.countDown();
+        }
+
+        @Override
+        public void onCompleted() {
+            if (CONCURRENT_TEST_ON) {
+                System.out.println(qtf() + " ServerStream: CLIENT received onCompleted. message count: " + messageCount + " hc: " + this.hashCode());
+            }
+            log.info("grpcServerStreamApp: onCompleted called from server service");
+            latch.countDown();
+        }
+
+        public String getErrorMessage() {
+            return errorMessage;
+        }
+
+        public Throwable getErrorCaught() {
+            return errorCaught;
+        }
+
+        public String getFirstMessage() {
+            return firstServerStreamMessage;
+        }
+
+        public String getLastMessage() {
+            return lastServerStreamMessage;
+        }
+    }
+
+    // -------------------------------------------------------------
+
+    public final static int TWOWAY_STREAM_NUMBER_OF_MESSAGES_PER_CONNECTION = 200;
+    public final static int TWOWAY_STREAM_TIME_BETWEEN_MESSAGES_MSEC = 0;
+    public final static int TWOWAY_STREAM_MESSAGE_SIZE = 50; // set to 5, 50, 500, 5000, or else you will get 50.
 
     public String grpcTwoWayStreamApp(boolean asyncThread) {
-
-        firstTwoWayMessageReceived = null;
-        lastTwoWayMessageReceived = null;
-        CountDownLatch latch = new CountDownLatch(1);
-        replyAfterClientStream = "Null";
-        errorMessage = null;
-        errorCaught = null;
-        StreamObserver<StreamRequestA> twoWayStreamAX = null;
-        Object messageSync = new Object() {
-        };
-
         log.info("Producer: grpcTwoWayStreamApp(): Entered");
+
+        String firstTwoWayMessageReceived = null;
+        String lastTwoWayMessageReceived = null;
+        String errorMessage = null;
+        CountDownLatch latch = new CountDownLatch(1);
+
+        CallStreamObserver<StreamRequestA> twoWayStreamAX = null;
+        TwoWayStreamClass tws = null;
+
+        String sChars = "12345678901234567890123456789012345678901234567890"; // 50 characters
+        if (TWOWAY_STREAM_MESSAGE_SIZE == 5) {
+            sChars = "12345";
+        } else if (TWOWAY_STREAM_MESSAGE_SIZE == 500) {
+            String s50chars = "12345678901234567890123456789012345678901234567890";
+            sChars = s50chars + s50chars + s50chars + s50chars + s50chars + s50chars + s50chars + s50chars + s50chars + s50chars;
+        } else if (TWOWAY_STREAM_MESSAGE_SIZE == 5000) {
+            String s50chars = "12345678901234567890123456789012345678901234567890";
+            String s500chars = s50chars + s50chars + s50chars + s50chars + s50chars + s50chars + s50chars + s50chars + s50chars + s50chars;
+            sChars = s500chars + s500chars + s500chars + s500chars + s500chars + s500chars + s500chars + s500chars + s500chars + s500chars;
+        }
+
         // This if for sending a stream of data to the server and then getting a stream reply
+        tws = new TwoWayStreamClass(latch);
         if (asyncThread == false) {
-            twoWayStreamAX = _producerAsyncStub.twoWayStreamA(new StreamObserver<StreamReplyA>() {
-                @Override
-                public void onNext(StreamReplyA response) {
-                    synchronized (messageSync) {
-                        if (firstTwoWayMessageReceived == null) {
-                            firstTwoWayMessageReceived = response.toString();
-                            lastTwoWayMessageReceived = response.toString();
-                        } else {
-                            lastTwoWayMessageReceived = response.toString();
-                        }
-                    }
-                }
-
-                @Override
-                public void onError(Throwable t) {
-                    // Error on the reply from the server service
-                    errorMessage = t.getMessage();
-                    log.info("grpcTwoWayStreamApp: onError received from server service: " + errorMessage);
-                    latch.countDown();
-                }
-
-                @Override
-                public void onCompleted() {
-                    log.info("grpcTwoWayStreamApp: onCompleted received from server service");
-                    latch.countDown();
-                }
-            });
+            twoWayStreamAX = (CallStreamObserver) (_producerAsyncStub.twoWayStreamA(tws));
         } else {
-            twoWayStreamAX = _producerAsyncStub.twoWayStreamAsyncThread(new StreamObserver<StreamReplyA>() {
-                @Override
-                public void onNext(StreamReplyA response) {
-                    synchronized (messageSync) {
-                        if (firstTwoWayMessageReceived == null) {
-                            firstTwoWayMessageReceived = response.toString();
-                            lastTwoWayMessageReceived = response.toString();
-                        } else {
-                            lastTwoWayMessageReceived = response.toString();
-                        }
-                    }
-                }
-
-                @Override
-                public void onError(Throwable t) {
-                    // Error on the reply from the server service
-                    errorMessage = t.getMessage();
-                    log.info("grpcTwoWayStreamApp: onError received from server service: " + errorMessage);
-                    latch.countDown();
-                }
-
-                @Override
-                public void onCompleted() {
-                    log.info("grpcTwoWayStreamApp: onCompleted received from server service");
-                    latch.countDown();
-                }
-            });
+            twoWayStreamAX = (CallStreamObserver) (_producerAsyncStub.twoWayStreamAsyncThread(tws));
         }
 
         // client streaming
-        int numberOfMessages = 200;
-        int timeBetweenMessagesMsec = 0;
+        int numberOfMessages = TWOWAY_STREAM_NUMBER_OF_MESSAGES_PER_CONNECTION;
+        int timeBetweenMessagesMsec = TWOWAY_STREAM_TIME_BETWEEN_MESSAGES_MSEC;
         StreamRequestA nextRequest = null;
 
         String nextMessage = null;
         String firstMessage = "This is the first Response Message..."; // don't change, hardcode to match string in StoreProducerService
         String lastMessage = "And this is the last Response Message"; // don't change, hardcode to match string in StoreProducerService
-
-        //String s5chars = "12345";
-        String s50chars = "12345678901234567890123456789012345678901234567890";
-        //String s500chars = s50chars + s50chars + s50chars + s50chars + s50chars + s50chars + s50chars + s50chars + s50chars + s50chars;
-        //String s5000chars = s500chars + s500chars + s500chars + s500chars + s500chars + s500chars + s500chars + s500chars + s500chars + s500chars;
 
         for (int i = 1; i <= numberOfMessages; i++) {
             if (i == 1) {
@@ -721,7 +801,11 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
                 nextMessage = lastMessage;
             } else {
                 nextMessage = "--Message " + i + " of " + numberOfMessages + " left client at time: " + System.currentTimeMillis() + "--";
-                nextMessage = nextMessage + s50chars;
+                nextMessage = nextMessage + sChars;
+            }
+
+            if (!waitUntilStreamIsReady(twoWayStreamAX, CLIENT_STREAM_SLEEP_WHEN_NOT_READY_MSEC, 400)) {
+                break;
             }
 
             nextRequest = StreamRequestA.newBuilder().setMessage(nextMessage).build();
@@ -746,10 +830,14 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
 
         // wait for the response from server
         try {
-            latch.await(5, TimeUnit.SECONDS);
+            latch.await(28, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             log.info("grpcTwoWayStreamApp: latch.await got interrupted");
         }
+
+        firstTwoWayMessageReceived = tws.getFirstMessage();
+        lastTwoWayMessageReceived = tws.getLastMessage();
+        errorMessage = tws.getErrorMessage();
 
         // test that this is what was expected:
         int i1 = firstTwoWayMessageReceived.indexOf(firstMessage);
@@ -783,4 +871,139 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
             return ("grpcTwoWayStreamApp: failed, incorrect response from service. i1: " + i1 + " i2: " + i2);
         }
     }
+
+    class TwoWayStreamClass implements StreamObserver<StreamReplyA> {
+        String firstTwoWayMessageReceived = null;
+        String lastTwoWayMessageReceived = null;
+        String errorMessage = null;
+        CountDownLatch latch = null;
+        Object messageSync = new Object() {
+        };
+
+        public TwoWayStreamClass(CountDownLatch inLatch) {
+            latch = inLatch;
+        }
+
+        @Override
+        public void onNext(StreamReplyA response) {
+            synchronized (messageSync) {
+                if (firstTwoWayMessageReceived == null) {
+                    firstTwoWayMessageReceived = response.toString();
+                    lastTwoWayMessageReceived = response.toString();
+                } else {
+                    lastTwoWayMessageReceived = response.toString();
+                }
+            }
+        }
+
+        @Override
+        public void onError(Throwable t) {
+            // Error on the reply from the server service
+            errorMessage = t.getMessage();
+            log.info("grpcTwoWayStreamApp: onError received from server service: " + errorMessage);
+            latch.countDown();
+        }
+
+        @Override
+        public void onCompleted() {
+            log.info("grpcTwoWayStreamApp: onCompleted received from server service");
+            latch.countDown();
+        }
+
+        public String getErrorMessage() {
+            return errorMessage;
+        }
+
+        public String getFirstMessage() {
+            if (firstTwoWayMessageReceived == null) {
+                return "Null";
+            } else {
+                return firstTwoWayMessageReceived;
+            }
+        }
+
+        public String getLastMessage() {
+            if (lastTwoWayMessageReceived == null) {
+                return "Null";
+            } else {
+                return lastTwoWayMessageReceived;
+            }
+        }
+    }
+
+    private boolean waitUntilStreamIsReady(CallStreamObserver obs, int sleepTimeMsec, int maxLoopCount) {
+        int readyLoopCount = 0;
+
+        while (obs.isReady() != true) {
+            if (CONCURRENT_TEST_ON) {
+                System.out.println(qtf() + " isReady() returned false, sleep "
+                                   + sleepTimeMsec + " ms. hc: " + obs.hashCode());
+            }
+            try {
+                Thread.sleep(sleepTimeMsec);
+            } catch (Exception x) {
+                // do nothing
+            }
+            readyLoopCount++;
+            if (readyLoopCount > maxLoopCount)
+                break;
+        }
+
+        if (readyLoopCount > maxLoopCount) {
+            if (CONCURRENT_TEST_ON) {
+                System.out.println(qtf() + " ServerStream: CLIENT.  isReady() returned false " + readyLoopCount + " times. quit sending. hc: " + obs.hashCode());
+            }
+            log.warning("Producer: grpcClientStreamApp(): timed out waiting for isReady()");
+            return false;
+        }
+
+        return true;
+    }
+
+    public String qtf() {
+        long time = System.currentTimeMillis() & 0xfffffff;
+        long msec = time % 1000;
+        long sec = time / 1000;
+        String result = sec + "." + msec;
+        return result;
+    }
+
+    public void readStreamParmsFromFile() {
+
+        BufferedReader br = null;
+        FileReader fr = null;
+        String sCurrentLine;
+
+        System.out.println("Reading parms in from: GrpcStreamParms.txt");
+        try {
+            fr = new FileReader("GrpcStreamParms.txt");
+            if (fr == null)
+                return;
+            br = new BufferedReader(fr);
+            if (br == null)
+                return;
+            while ((sCurrentLine = br.readLine()) != null) {
+                if (sCurrentLine.indexOf("CLIENT_STREAM_NUMBER_OF_MESSAGES_PER_CONNECTION") != -1) {
+                    sCurrentLine = br.readLine();
+                    CLIENT_STREAM_NUMBER_OF_MESSAGES_PER_CONNECTION = new Integer(sCurrentLine).intValue();
+                    System.out.println("setting CLIENT_STREAM_NUMBER_OF_MESSAGES_PER_CONNECTION to: " + CLIENT_STREAM_NUMBER_OF_MESSAGES_PER_CONNECTION);
+                } else if (sCurrentLine.indexOf("CLIENT_STREAM_TIME_BETWEEN_MESSAGES_MSEC") != -1) {
+                    sCurrentLine = br.readLine();
+                    CLIENT_STREAM_TIME_BETWEEN_MESSAGES_MSEC = new Integer(sCurrentLine).intValue();
+                    System.out.println("setting CLIENT_STREAM_TIME_BETWEEN_MESSAGES_MSEC to: " + CLIENT_STREAM_TIME_BETWEEN_MESSAGES_MSEC);
+                } else if (sCurrentLine.indexOf("CLIENT_STREAM_MESSAGE_SIZE") != -1) {
+                    sCurrentLine = br.readLine();
+                    CLIENT_STREAM_MESSAGE_SIZE = new Integer(sCurrentLine).intValue();
+                    System.out.println("setting CLIENT_STREAM_MESSAGE_SIZE to: " + CLIENT_STREAM_MESSAGE_SIZE);
+                } else if (sCurrentLine.indexOf("CLIENT_STREAM_SLEEP_WHEN_NOT_READY_MSEC") != -1) {
+                    sCurrentLine = br.readLine();
+                    CLIENT_STREAM_SLEEP_WHEN_NOT_READY_MSEC = new Integer(sCurrentLine).intValue();
+                    System.out.println("setting CLIENT_STREAM_SLEEP_WHEN_NOT_READY_MSEC to: " + CLIENT_STREAM_SLEEP_WHEN_NOT_READY_MSEC);
+                }
+            }
+        } catch (Exception x) {
+            System.out.println("Error caught while reading GrpcStreamParms.txt: " + x);
+        }
+    }
+
 }

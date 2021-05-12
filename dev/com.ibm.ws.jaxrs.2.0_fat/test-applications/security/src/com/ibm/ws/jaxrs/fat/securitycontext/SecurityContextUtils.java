@@ -18,6 +18,7 @@ final public class SecurityContextUtils {
 
     public static SecurityContextInfo securityContextToJSON(SecurityContext secContext) {
         if (secContext == null) {
+            System.out.println("SecurityContextUtils.securityContextToJSON return null");
             return null;
         }
         SecurityContextInfo secInfo = new SecurityContextInfo();
@@ -28,6 +29,7 @@ final public class SecurityContextUtils {
         secInfo.setUserInRoleAdmin(secContext.isUserInRole("admin"));
         secInfo.setUserInRoleNull(secContext.isUserInRole(null));
         secInfo.setUserInRoleUser(secContext.isUserInRole("user"));
+        System.out.println("SecurityContextUtils.securityContextToJSON return secInfo " + secInfo);
         return secInfo;
     }
 }

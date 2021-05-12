@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,8 +9,6 @@
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt11.fat;
-
-import java.util.Arrays;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -24,13 +22,13 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
 import com.ibm.ws.security.fat.common.jwt.JwtTokenForTest;
+import com.ibm.ws.security.fat.common.mp.jwt.MPJwt11FatConstants;
+import com.ibm.ws.security.fat.common.mp.jwt.sharedTests.MPJwtMPConfigTests;
+import com.ibm.ws.security.fat.common.mp.jwt.utils.MPJwt11AppSetupUtils;
 import com.ibm.ws.security.fat.common.servers.ServerBootstrapUtils;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
-import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
 import com.ibm.ws.security.mp.jwt11.fat.actions.AuthHeaderPrefixRepeatActions;
-import com.ibm.ws.security.mp.jwt11.fat.utils.CommonMpJwtFat;
-import com.ibm.ws.security.mp.jwt11.fat.utils.MpJwtMessageConstants;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -41,16 +39,16 @@ import componenttest.topology.impl.LibertyServer;
 
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-public class MPJwtBasicTests extends CommonMpJwtFat {
+public class MPJwtBasicTests extends MPJwtMPConfigTests {
 
     protected static Class<?> thisClass = MPJwtBasicTests.class;
     protected static ServerBootstrapUtils bootstrapUtils = new ServerBootstrapUtils();
 
-    // disable repeat for simple testing
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(AuthHeaderPrefixRepeatActions.asBearerType());
-//                    .andWith(AuthHeaderPrefixRepeatActions.asTokenType())
-//                    .andWith(AuthHeaderPrefixRepeatActions.asMiscType());
+    public static RepeatTests r = RepeatTests
+                    .with(AuthHeaderPrefixRepeatActions.asBearerType())
+                    .andWith(AuthHeaderPrefixRepeatActions.asTokenType())
+                    .andWith(AuthHeaderPrefixRepeatActions.asMiscType());
 
     @Server("com.ibm.ws.security.mp.jwt.1.1.fat")
     public static LibertyServer resourceServer;
@@ -60,8 +58,10 @@ public class MPJwtBasicTests extends CommonMpJwtFat {
 
     private final TestValidationUtils validationUtils = new TestValidationUtils();
 
-    String defaultUser = MpJwtFatConstants.TESTUSER;
-    String defaultPassword = MpJwtFatConstants.TESTUSERPWD;
+    String defaultUser = MPJwt11FatConstants.TESTUSER;
+    String defaultPassword = MPJwt11FatConstants.TESTUSERPWD;
+
+    protected final static MPJwt11AppSetupUtils setupUtils = new MPJwt11AppSetupUtils();
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -73,16 +73,15 @@ public class MPJwtBasicTests extends CommonMpJwtFat {
     }
 
     protected static void setUpAndStartRSServerForTests(LibertyServer server, String configFile) throws Exception {
-        bootstrapUtils.writeBootstrapProperty(server, MpJwtFatConstants.BOOTSTRAP_PROP_FAT_SERVER_HOSTNAME, SecurityFatHttpUtils.getServerHostName());
-        bootstrapUtils.writeBootstrapProperty(server, MpJwtFatConstants.BOOTSTRAP_PROP_FAT_SERVER_HOSTIP, SecurityFatHttpUtils.getServerHostIp());
+        bootstrapUtils.writeBootstrapProperty(server, MPJwt11FatConstants.BOOTSTRAP_PROP_FAT_SERVER_HOSTNAME, SecurityFatHttpUtils.getServerHostName());
+        bootstrapUtils.writeBootstrapProperty(server, MPJwt11FatConstants.BOOTSTRAP_PROP_FAT_SERVER_HOSTIP, SecurityFatHttpUtils.getServerHostIp());
         bootstrapUtils.writeBootstrapProperty(server, "mpJwt_keyName", "rsacert");
         bootstrapUtils.writeBootstrapProperty(server, "mpJwt_jwksUri", "");
         bootstrapUtils.writeBootstrapProperty(server, "mpJwt_authHeaderPrefix", FATSuite.authHeaderPrefix + " ");
-        deployRSServerApiTestApps(server);
-        serverTracker.addServer(server);
-        server.startServerUsingExpandedConfiguration(configFile, commonStartMsgs);
-        SecurityFatHttpUtils.saveServerPorts(server, MpJwtFatConstants.BVT_SERVER_1_PORT_NAME_ROOT);
-        server.addIgnoredErrors(Arrays.asList(MpJwtMessageConstants.CWWKW1001W_CDI_RESOURCE_SCOPE_MISMATCH));
+        setupUtils.deployMicroProfileApp(server);
+        skipRestoreServerTracker.addServer(server);
+        startRSServerForMPTests(server, configFile);
+
     }
 
     /***************************************************** Tests ****************************************************/
@@ -92,7 +91,7 @@ public class MPJwtBasicTests extends CommonMpJwtFat {
     @Test
     public void MPJwtBasicTests_mainPath_usingSecurityContext_RequestScoped() throws Exception {
 
-        testMainPath(MpJwtFatConstants.MPJWT_APP_SEC_CONTEXT_REQUEST_SCOPE, MpJwtFatConstants.MPJWT_APP_CLASS_SEC_CONTEXT_REQUEST_SCOPE);
+        testMainPath(MPJwt11FatConstants.MPJWT_APP_SEC_CONTEXT_REQUEST_SCOPE, MPJwt11FatConstants.MPJWT_APP_CLASS_SEC_CONTEXT_REQUEST_SCOPE);
 
     }
 
@@ -100,7 +99,7 @@ public class MPJwtBasicTests extends CommonMpJwtFat {
     @Test
     public void MPJwtBasicTests_mainPath_usingSecurityContext_ApplicationScoped() throws Exception {
 
-        testMainPath(MpJwtFatConstants.MPJWT_APP_SEC_CONTEXT_APP_SCOPE, MpJwtFatConstants.MPJWT_APP_CLASS_SEC_CONTEXT_APP_SCOPE);
+        testMainPath(MPJwt11FatConstants.MPJWT_APP_SEC_CONTEXT_APP_SCOPE, MPJwt11FatConstants.MPJWT_APP_CLASS_SEC_CONTEXT_APP_SCOPE);
 
     }
 
@@ -108,7 +107,7 @@ public class MPJwtBasicTests extends CommonMpJwtFat {
     @Test
     public void MPJwtBasicTests_mainPath_usingSecurityContext_SessionScoped() throws Exception {
 
-        testMainPath(MpJwtFatConstants.MPJWT_APP_SEC_CONTEXT_SESSION_SCOPE, MpJwtFatConstants.MPJWT_APP_CLASS_SEC_CONTEXT_SESSION_SCOPE);
+        testMainPath(MPJwt11FatConstants.MPJWT_APP_SEC_CONTEXT_SESSION_SCOPE, MPJwt11FatConstants.MPJWT_APP_CLASS_SEC_CONTEXT_SESSION_SCOPE);
 
     }
 
@@ -116,7 +115,7 @@ public class MPJwtBasicTests extends CommonMpJwtFat {
     @Test
     public void MPJwtBasicTests_mainPath_usingSecurityContext_NotScoped() throws Exception {
 
-        testMainPath(MpJwtFatConstants.MPJWT_APP_SEC_CONTEXT_NO_SCOPE, MpJwtFatConstants.MPJWT_APP_CLASS_SEC_CONTEXT_NO_SCOPE);
+        testMainPath(MPJwt11FatConstants.MPJWT_APP_SEC_CONTEXT_NO_SCOPE, MPJwt11FatConstants.MPJWT_APP_CLASS_SEC_CONTEXT_NO_SCOPE);
 
     }
 
@@ -125,7 +124,7 @@ public class MPJwtBasicTests extends CommonMpJwtFat {
     @Test
     public void MPJwtBasicTests_mainPath_usingInjection_RequestScoped() throws Exception {
 
-        testMainPath(MpJwtFatConstants.MPJWT_APP_TOKEN_INJECT_REQUEST_SCOPE, MpJwtFatConstants.MPJWT_APP_CLASS_TOKEN_INJECT_REQUEST_SCOPE);
+        testMainPath(MPJwt11FatConstants.MPJWT_APP_TOKEN_INJECT_REQUEST_SCOPE, MPJwt11FatConstants.MPJWT_APP_CLASS_TOKEN_INJECT_REQUEST_SCOPE);
 
     }
 
@@ -140,7 +139,7 @@ public class MPJwtBasicTests extends CommonMpJwtFat {
     @Test
     public void MPJwtBasicTests_mainPath_usingInjection_ApplicationScoped() throws Exception {
 
-        testMainPath(MpJwtFatConstants.MPJWT_APP_TOKEN_INJECT_APP_SCOPE, MpJwtFatConstants.MPJWT_APP_CLASS_TOKEN_INJECT_APP_SCOPE);
+        testMainPath(MPJwt11FatConstants.MPJWT_APP_TOKEN_INJECT_APP_SCOPE, MPJwt11FatConstants.MPJWT_APP_CLASS_TOKEN_INJECT_APP_SCOPE);
 
     }
 
@@ -148,7 +147,7 @@ public class MPJwtBasicTests extends CommonMpJwtFat {
     @Test
     public void MPJwtBasicTests_mainPath_usingInjection_SessionScoped() throws Exception {
 
-        testMainPath(MpJwtFatConstants.MPJWT_APP_TOKEN_INJECT_SESSION_SCOPE, MpJwtFatConstants.MPJWT_APP_CLASS_TOKEN_INJECT_SESSION_SCOPE);
+        testMainPath(MPJwt11FatConstants.MPJWT_APP_TOKEN_INJECT_SESSION_SCOPE, MPJwt11FatConstants.MPJWT_APP_CLASS_TOKEN_INJECT_SESSION_SCOPE);
 
     }
 
@@ -156,7 +155,7 @@ public class MPJwtBasicTests extends CommonMpJwtFat {
     @Test
     public void MPJwtBasicTests_mainPath_usingInjection_NotScoped() throws Exception {
 
-        testMainPath(MpJwtFatConstants.MPJWT_APP_TOKEN_INJECT_NO_SCOPE, MpJwtFatConstants.MPJWT_APP_CLASS_TOKEN_INJECT_NO_SCOPE);
+        testMainPath(MPJwt11FatConstants.MPJWT_APP_TOKEN_INJECT_NO_SCOPE, MPJwt11FatConstants.MPJWT_APP_CLASS_TOKEN_INJECT_NO_SCOPE);
 
     }
 
@@ -178,7 +177,7 @@ public class MPJwtBasicTests extends CommonMpJwtFat {
     @Test
     public void MPJwtBasicTests_mainPath_usingClaimInjection_RequestScoped() throws Exception {
 
-        testMainPath(MpJwtFatConstants.MPJWT_APP_CLAIM_INJECT_REQUEST_SCOPE, MpJwtFatConstants.MPJWT_APP_CLASS_CLAIM_INJECT_REQUEST_SCOPE);
+        testMainPath(MPJwt11FatConstants.MPJWT_APP_CLAIM_INJECT_REQUEST_SCOPE, MPJwt11FatConstants.MPJWT_APP_CLASS_CLAIM_INJECT_REQUEST_SCOPE);
 
     }
 
@@ -186,7 +185,7 @@ public class MPJwtBasicTests extends CommonMpJwtFat {
     @Test
     public void MPJwtBasicTests_mainPath_usingClaimInjection_NotScoped() throws Exception {
 
-        testMainPath(MpJwtFatConstants.MPJWT_APP_CLAIM_INJECT_NO_SCOPE, MpJwtFatConstants.MPJWT_APP_CLASS_CLAIM_INJECT_NO_SCOPE);
+        testMainPath(MPJwt11FatConstants.MPJWT_APP_CLAIM_INJECT_NO_SCOPE, MPJwt11FatConstants.MPJWT_APP_CLASS_CLAIM_INJECT_NO_SCOPE);
 
     }
 
@@ -194,7 +193,7 @@ public class MPJwtBasicTests extends CommonMpJwtFat {
     @Test
     public void MPJwtBasicTests_mainPath_usingClaimInjection_ApplicationScope_Instance() throws Exception {
 
-        testMainPath(MpJwtFatConstants.MPJWT_APP_CLAIM_INJECT_APP_SCOPE, MpJwtFatConstants.MPJWT_APP_CLASS_CLAIM_INJECT_APP_SCOPE);
+        testMainPath(MPJwt11FatConstants.MPJWT_APP_CLAIM_INJECT_APP_SCOPE, MPJwt11FatConstants.MPJWT_APP_CLASS_CLAIM_INJECT_APP_SCOPE);
 
     }
 
@@ -202,7 +201,7 @@ public class MPJwtBasicTests extends CommonMpJwtFat {
     @Test
     public void MPJwtBasicTests_mainPath_usingClaimInjection_SessionScope_Instance() throws Exception {
 
-        testMainPath(MpJwtFatConstants.MPJWT_APP_CLAIM_INJECT_SESSION_SCOPE, MpJwtFatConstants.MPJWT_APP_CLASS_CLAIM_INJECT_SESSION_SCOPE);
+        testMainPath(MPJwt11FatConstants.MPJWT_APP_CLAIM_INJECT_SESSION_SCOPE, MPJwt11FatConstants.MPJWT_APP_CLASS_CLAIM_INJECT_SESSION_SCOPE);
 
     }
 
@@ -216,10 +215,10 @@ public class MPJwtBasicTests extends CommonMpJwtFat {
     @Mode(TestMode.LITE)
     @Test
     public void testLogoutReuseCache() throws Exception {
-        String app = MpJwtFatConstants.MPJWT_APP_SEC_CONTEXT_APP_SCOPE;
+        String app = MPJwt11FatConstants.MPJWT_APP_SEC_CONTEXT_APP_SCOPE;
         String token = actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer);
-        String testUrl = buildAppUrl(resourceServer, MpJwtFatConstants.MICROPROFILE_SERVLET, app) + "/logout";
-        testUrl = SecurityFatHttpUtils.getServerUrlBase(resourceServer) + MpJwtFatConstants.MICROPROFILE_SERVLET + "/rest/" + app + "/logout";
+        String testUrl = buildAppUrl(resourceServer, MPJwt11FatConstants.MICROPROFILE_SERVLET, app) + "/logout";
+        testUrl = SecurityFatHttpUtils.getServerUrlBase(resourceServer) + MPJwt11FatConstants.MICROPROFILE_SERVLET + "/rest/" + app + "/logout";
 
         JwtTokenForTest jwtTokenTools = new JwtTokenForTest(token); // ?????
         WebClient webClient = actions.createWebClient();
@@ -230,11 +229,15 @@ public class MPJwtBasicTests extends CommonMpJwtFat {
 
         // now try it again and we should get a 401
         response = actions.invokeUrlWithAuthorizationHeaderToken(_testName, webClient, testUrl, FATSuite.authHeaderPrefix, token, HttpMethod.GET, null);
+        // sleep so that any test that follows will get a uniq token - if tokens are created too quickly, we'll create identical tokens - the cache cleanup for
+        // this logout will end up deleting the token actually created for the next test
+        Thread.sleep(1 * 1000);
         int rc = response.getWebResponse().getStatusCode();
         Assert.assertTrue("expected 401 but got " + rc, rc == 401);
         expectations = new Expectations();
         expectations.addExpectation(new ServerMessageExpectation(resourceServer, "CWWKS5527E"));
         validationUtils.validateResult(response, expectations);
+        actions.destroyWebClient(webClient);
 
     }
 
@@ -281,7 +284,7 @@ public class MPJwtBasicTests extends CommonMpJwtFat {
 
         JwtTokenForTest jwtTokenTools = new JwtTokenForTest(builtToken);
 
-        String testUrl = buildAppUrl(resourceServer, MpJwtFatConstants.MICROPROFILE_SERVLET, app);
+        String testUrl = buildAppUrl(resourceServer, MPJwt11FatConstants.MICROPROFILE_SERVLET, app);
 
         WebClient webClient = actions.createWebClient();
 
@@ -290,6 +293,8 @@ public class MPJwtBasicTests extends CommonMpJwtFat {
 
         Expectations expectations = goodTestExpectations(jwtTokenTools, testUrl, className);
         validationUtils.validateResult(response, expectations);
+
+        actions.destroyWebClient(webClient);
     }
 
 }

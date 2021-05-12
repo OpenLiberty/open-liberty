@@ -71,7 +71,7 @@ public class SecurityServletConfiguratorHelper implements ServletConfiguratorHel
     public static final String USER_DATA_CONSTRAINT_KEY = "user-data-constraint";
     public static final String DENY_UNCOVERED_HTTP_METHODS_KEY = "deny-uncovered-http-methods";
     protected static final String SYNC_TO_OS_THREAD_ENV_ENTRY_KEY = "com.ibm.websphere.security.SyncToOSThread";
-    private static final String ROLES_ALLOWED = "javax.annotation.security.RolesAllowed";
+    private static final String ROLES_ALLOWED = RolesAllowed.class.getName();
     private static final TraceComponent tc = Tr.register(SecurityServletConfiguratorHelper.class);
 
     private ServletConfigurator configurator;

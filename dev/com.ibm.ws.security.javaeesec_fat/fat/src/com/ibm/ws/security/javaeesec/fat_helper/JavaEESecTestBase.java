@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2018 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,6 +44,7 @@ import org.apache.http.util.EntityUtils;
 
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 
 public class JavaEESecTestBase {
@@ -526,7 +527,11 @@ public class JavaEESecTestBase {
         nvps.add(new BasicNameValuePair("form:j_id_e", "Login"));
         nvps.add(new BasicNameValuePair("form_SUBMIT", "1"));
         if (viewState != null) {
-            nvps.add(new BasicNameValuePair("javax.faces.ViewState", viewState));
+            if (JakartaEE9Action.isActive()) {
+                nvps.add(new BasicNameValuePair("jakarta.faces.ViewState", viewState));
+            } else {
+                nvps.add(new BasicNameValuePair("javax.faces.ViewState", viewState));
+            }
         }
         postMethod.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
 
@@ -876,5 +881,57 @@ public class JavaEESecTestBase {
         assertTrue("The Path parameter must be set.", cookieHeaderString.contains("Path=/"));
         assertEquals("The Secure parameter must" + (secure == true ? "" : " not" + " be set."), secure, cookieHeaderString.contains("Secure"));
         assertEquals("The HttpOnly parameter must" + (httpOnly == true ? "" : " not" + " be set."), httpOnly, cookieHeaderString.contains("HttpOnly"));
+    }
+
+    /**
+     * Assert that the regular expression string is present or NOT present in the server's logs.
+     * 
+     * @param regexp The regular expression string to search for.
+     * @throws Exception If there was an error checking the log or trace files.
+     */
+    public void assertStringsInLogsUsingMark(String regexp) throws Exception {
+        assertStringsInLogsUsingMark(regexp, true);
+    }
+
+    /**
+     * Assert that the regular expression string is present or NOT present in the server's logs.
+     * 
+     * @param regexp The regular expression string to search for.
+     * @param isPresent If true, check that the string is present. If false, check that it is NOT present.
+     * @throws Exception If there was an error checking the log or trace files.
+     */
+    public void assertStringsInLogsUsingMark(String regexp, boolean isPresent) throws Exception {
+        List<String> results = server.findStringsInLogsUsingMark(regexp, server.getDefaultLogFile());
+        if (isPresent) {
+            assertFalse("Did not find '" + regexp + "' in trace.", results.isEmpty());
+        } else {
+            assertTrue("Found '" + regexp + "' in trace: " + results, results.isEmpty());
+        }
+    }
+
+    /**
+     * Assert that the regular expression string is present in the server's logs or trace
+     * 
+     * @param regexp The regular expression string to search for.
+     * @throws Exception If there was an error checking the log or trace files.
+     */
+    public void assertStringsInLogsAndTraceUsingMark(String regexp) throws Exception {
+        assertStringsInLogsAndTraceUsingMark(regexp, true);
+    }
+
+    /**
+     * Assert that the regular expression string is present or NOT present in the server's logs or trace.
+     * 
+     * @param regexp The regular expression string to search for.
+     * @param isPresent If true, check that the string is present. If false, check that it is NOT present.
+     * @throws Exception If there was an error checking the log or trace files.
+     */
+    public void assertStringsInLogsAndTraceUsingMark(String regexp, boolean isPresent) throws Exception {
+        List<String> results = server.findStringsInLogsAndTraceUsingMark(regexp);
+        if (isPresent) {
+            assertFalse("Did not find '" + regexp + "' in trace.", results.isEmpty());
+        } else {
+            assertTrue("Found '" + regexp + "' in trace: " + results, results.isEmpty());
+        }
     }
 }

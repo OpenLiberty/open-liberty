@@ -635,11 +635,18 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
         return rawContainer;
     }
 
+    private static final Object thinUtilLock = new Object() {
+    };
+
     private static void thinSpringApp(LibIndexCache libIndexCache, File springAppFile, File thinSpringAppFile, long lastModified) throws IOException, NoSuchAlgorithmException {
         File parent = libIndexCache.getLibIndexParent();
         File workarea = libIndexCache.getLibIndexWorkarea();
         try (SpringBootThinUtil springBootThinUtil = new SpringBootThinUtil(springAppFile, thinSpringAppFile, workarea, parent)) {
-            springBootThinUtil.execute();
+            // to avoid any collisions while thinning we only allow a single thread to
+            // execute the thin utility
+            synchronized (thinUtilLock) {
+                springBootThinUtil.execute();
+            }
         }
         thinSpringAppFile.setLastModified(lastModified);
     }

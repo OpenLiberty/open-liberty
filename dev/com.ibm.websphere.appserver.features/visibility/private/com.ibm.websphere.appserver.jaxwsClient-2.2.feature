@@ -1,6 +1,8 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.jaxwsClient-2.2
+WLP-DisableAllFeatures-OnConflict: false
 visibility=private
+singleton=true
 IBM-App-ForceRestart: uninstall, \
  install
 IBM-Process-Types: client

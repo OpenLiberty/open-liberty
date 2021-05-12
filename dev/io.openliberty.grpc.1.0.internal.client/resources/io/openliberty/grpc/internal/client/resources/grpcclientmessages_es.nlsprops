@@ -31,7 +31,3 @@ invalid.keepalive.timeout.useraction=Configure un valor v\u00e1lido para keepAli
 invalid.client.inbound.msg.size=CWWKT0304E: El valor maxInboundMessageSize {0} del cliente GRPC no es v\u00e1lido. Los valores deben ser mayores que 0.
 invalid.client.inbound.msg.size.explanation=El valor configurado de maxInboundMessageSize no es v\u00e1lido.
 invalid.client.inbound.msg.size.useraction=Configure un valor v\u00e1lido para maxInboundMessageSize.
-
-invalid.authn.token=CWWKT0305E: El valor authnToken "{0}" del cliente GRPC no es v\u00e1lido. El valor debe ser "jwt" o "oauth".
-invalid.authn.token.explanation=El valor configurado para authnToken no es v\u00e1lido.
-invalid.authn.token.useraction=Configure un valor v\u00e1lido para authnToken.

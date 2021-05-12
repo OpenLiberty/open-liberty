@@ -10,7 +10,7 @@
  *******************************************************************************/
 package io.openliberty.grpc.internal.client;
 
-import io.grpc.netty.shaded.io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.SslContext;
 
 public interface GrpcSSLService {
 

@@ -19,8 +19,6 @@
 
 package org.apache.cxf.jaxrs.utils;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -96,7 +94,9 @@ import org.apache.cxf.common.util.ReflectionUtil;
 import org.apache.cxf.common.util.StringUtils;
 import org.apache.cxf.helpers.DOMUtils;
 import org.apache.cxf.helpers.IOUtils;
+import org.apache.cxf.helpers.LoadingByteArrayOutputStream;
 import org.apache.cxf.interceptor.Fault;
+import org.apache.cxf.io.CacheAndWriteOutputStream;
 import org.apache.cxf.io.ReaderInputStream;
 import org.apache.cxf.jaxrs.JAXRSServiceImpl;
 import org.apache.cxf.jaxrs.ext.ContextProvider;
@@ -105,6 +105,7 @@ import org.apache.cxf.jaxrs.ext.MessageContext;
 import org.apache.cxf.jaxrs.ext.MessageContextImpl;
 import org.apache.cxf.jaxrs.ext.ProtocolHeaders;
 import org.apache.cxf.jaxrs.ext.ProtocolHeadersImpl;
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.MultipartBody;
 import org.apache.cxf.jaxrs.impl.AsyncResponseImpl;
 import org.apache.cxf.jaxrs.impl.ContainerRequestContextImpl;
@@ -143,15 +144,16 @@ import org.apache.cxf.jaxrs.provider.ServerProviderFactory;
 import org.apache.cxf.jaxrs.utils.multipart.AttachmentUtils;
 import org.apache.cxf.message.Exchange;
 import org.apache.cxf.message.Message;
-import org.apache.cxf.message.MessageImpl;
 import org.apache.cxf.message.MessageUtils;
 import org.apache.cxf.phase.PhaseInterceptorChain;
 import org.apache.cxf.service.Service;
 
+import com.ibm.websphere.jaxrs20.multipart.IAttachment;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jaxrs20.JaxRsRuntimeException;
+import com.ibm.ws.jaxrs20.multipart.impl.AttachmentImpl;
 
 public final class JAXRSUtils {
 
@@ -281,6 +283,7 @@ public final class JAXRSUtils {
         injectParameters(ori, ori.getClassResourceInfo(), requestObject, message);
     }
 
+    @SuppressWarnings("unchecked")
     public static void injectParameters(OperationResourceInfo ori,
                                         BeanResourceInfo bri,
                                         Object requestObject,
@@ -293,10 +296,7 @@ public final class JAXRSUtils {
             }
         }
         // Param methods
-        @SuppressWarnings("unchecked")
-        //Liberty code change start
-        MultivaluedMap<String, String> values = (MultivaluedMap<String, String>)((MessageImpl) message).getTemplateParameters();
-        //Liberty code change end
+        MultivaluedMap<String, String> values = (MultivaluedMap<String, String>) message.get(URITemplate.TEMPLATE_PARAMETERS);
         for (Method m : bri.getParameterMethods()) {
             Parameter p = ResourceUtils.getParameter(0, m.getAnnotations(),
                                                      m.getParameterTypes()[0]);
@@ -546,9 +546,7 @@ public final class JAXRSUtils {
         }
         Map.Entry<ClassResourceInfo, MultivaluedMap<String, String>> firstCri = matchedResources.entrySet().iterator().next();
         String name = firstCri.getKey().isRoot() ? "NO_OP_EXC" : "NO_SUBRESOURCE_METHOD_FOUND";
-        //Liberty code change start
-        org.apache.cxf.common.i18n.Message errorMsg = new org.apache.cxf.common.i18n.Message(name, BUNDLE, ((MessageImpl) message).getRequestUri(), getCurrentPath(firstCri.getValue()), httpMethod, mediaTypeToString(requestType), convertTypesToString(acceptContentTypes));
-        //Liberty code change end
+        org.apache.cxf.common.i18n.Message errorMsg = new org.apache.cxf.common.i18n.Message(name, BUNDLE, message.get(Message.REQUEST_URI), getCurrentPath(firstCri.getValue()), httpMethod, mediaTypeToString(requestType), convertTypesToString(acceptContentTypes));
         if (!"OPTIONS".equalsIgnoreCase(httpMethod)) {
             Level logLevel = getExceptionLogLevel(message, ClientErrorException.class);
             if (logLevel != null && logLevel.intValue() >= Level.WARNING.intValue()) {
@@ -735,16 +733,18 @@ public final class JAXRSUtils {
         return getConsumeTypes(cm, Collections.singletonList(ALL_TYPES));
     }
 
-     public static List<MediaType> getConsumeTypes(Consumes cm, List<MediaType> defaultTypes) {
-        return cm == null ? defaultTypes : getMediaTypes(cm.value());
+    public static List<MediaType> getConsumeTypes(Consumes cm, List<MediaType> defaultTypes) {
+        return cm == null ? defaultTypes
+                          : getMediaTypes(cm.value());
     }
 
     public static List<MediaType> getProduceTypes(Produces pm) {
         return getProduceTypes(pm, Collections.singletonList(ALL_TYPES));
     }
 
-     public static List<MediaType> getProduceTypes(Produces pm, List<MediaType> defaultTypes) {
-        return pm == null ? defaultTypes : getMediaTypes(pm.value());
+    public static List<MediaType> getProduceTypes(Produces pm, List<MediaType> defaultTypes) {
+        return pm == null ? defaultTypes
+                          : getMediaTypes(pm.value());
     }
 
     public static int compareSortedConsumesMediaTypes(List<MediaType> mts1, List<MediaType> mts2, MediaType ct) {
@@ -797,14 +797,25 @@ public final class JAXRSUtils {
         }
         return size1 == size2 ? 0 : size1 < size2 ? -1 : 1;
     }
-    
-    public static int compareMethodParameters(Class<?>[] para1, Class<?>[] para2) {
-        int size1 = para1.length;
-        int size2 = para2.length;
+
+    public static int compareMethodParameters(Class<?>[] paraList1, Class<?>[] paraList2) {
+        int size1 = paraList1.length;
+        int size2 = paraList2.length;
         for (int i = 0; i < size1 && i < size2; i++) {
-            int result = para1[i].getName().compareTo(para2[i].getName());
-            if (result != 0) {
-                return result;
+            if (!paraList1[i].equals(paraList2[i])) {
+                // Handling the case when bridge / synthetic methods may be taken
+                // into account (f.e. when service implements generic interfaces or
+                // extends the generic classes).
+                if (paraList1[i].isAssignableFrom(paraList2[i])) {
+                    return 1;
+                } else if (paraList2[i].isAssignableFrom(paraList1[i])) {
+                    return -1;
+                } else {
+                    int result = paraList1[i].getName().compareTo(paraList2[i].getName());
+                    if (result != 0) {
+                        return result;
+                    }
+                }
             }
         }
         return size1 == size2 ? 0 : size1 < size2 ? -1 : 1;
@@ -946,30 +957,33 @@ public final class JAXRSUtils {
             contentType = defaultCt == null ? MediaType.APPLICATION_OCTET_STREAM : defaultCt;
         }
 
-        // Liberty Change Start
-        MessageContext mc = new MessageContextImpl(message);
+        final MediaType contentTypeMt = toMediaType(contentType);
+        final MessageContext mc = new MessageContextImpl(message);
+
         MediaType mt = mc.getHttpHeaders().getMediaType();
-        
+        if (mt == null) {
+            mt = contentTypeMt;
+        }
+
         InputStream is;
-        if (mt == null || mt.isCompatible(MediaType.APPLICATION_FORM_URLENCODED_TYPE)) {
+        if (mt.isCompatible(MediaType.APPLICATION_FORM_URLENCODED_TYPE)) {
             is = copyAndGetEntityStream(message);
-        } else { 
+        } else {
             is = message.getContent(InputStream.class);
         }
-        
+
         if (is == null) {
             Reader reader = message.getContent(Reader.class);
             if (reader != null) {
                 is = new ReaderInputStream(reader);
             }
         }
-        // Liberty Change End
-        
+
         return readFromMessageBody(parameterClass,
                                    parameterType,
                                    parameterAnns,
                                    is,
-                                   toMediaType(contentType),
+                                   contentTypeMt,
                                    ori,
                                    message);
     }
@@ -1053,10 +1067,8 @@ public final class JAXRSUtils {
                                              Annotation[] paramAnns,
                                              String defaultValue,
                                              boolean decode) {
-        //Liberty code change start
-        List<PathSegment> segments = JAXRSUtils.getPathSegments((String) ((MessageImpl) m).getRequestUri(), decode);
-        //Liberty code change end
-
+        List<PathSegment> segments = JAXRSUtils.getPathSegments(
+                                                                (String) m.get(Message.REQUEST_URI), decode);
         if (!segments.isEmpty()) {
             MultivaluedMap<String, String> params = new MetadataMap<>();
             for (PathSegment ps : segments) {
@@ -1102,14 +1114,23 @@ public final class JAXRSUtils {
             m.put(FormUtils.FORM_PARAM_MAP, params);
 
             if (mt == null || mt.isCompatible(MediaType.APPLICATION_FORM_URLENCODED_TYPE)) {
-                InputStream entityStream = copyAndGetEntityStream(m); // Liberty change
-                String enc = HttpUtils.getEncoding(mt, StandardCharsets.UTF_8.name());
-                String body = FormUtils.readBody(entityStream, enc); // Liberty change
-                FormUtils.populateMapFromStringOrHttpRequest(params, m, body, enc, false);
+                InputStream entityStream = copyAndGetEntityStream(m);
+                String enc = HttpUtils.getEncoding(mt, StandardCharsets.UTF_8.name());  //Liberty CXF-7996
+                String body = FormUtils.readBody(entityStream, enc);
+                FormUtils.populateMapFromStringOrHttpRequest(params, m, body, enc, false); //Liberty CXF-7996
             } else {
                 if ("multipart".equalsIgnoreCase(mt.getType())
                     && MediaType.MULTIPART_FORM_DATA_TYPE.isCompatible(mt)) {
                     MultipartBody body = AttachmentUtils.getMultipartBody(mc);
+                    // Liberty change start
+                    if (IAttachment.class.equals(pClass)) {
+                        for (Attachment att : body.getAllAttachments()) {
+                            if (key.equals(att.getContentDisposition().getParameter("name"))) {
+                                return new AttachmentImpl(att);
+                            }
+                        }
+                    }
+                    //Liberty change end
                     FormUtils.populateMapFromMultipart(params, body, m, decode);
                 } else {
                     org.apache.cxf.common.i18n.Message errorMsg = new org.apache.cxf.common.i18n.Message("WRONG_FORM_MEDIA_TYPE", BUNDLE, mt.toString());
@@ -1119,6 +1140,7 @@ public final class JAXRSUtils {
             }
         }
 
+        //Liberty start CXF-7996
         if (decode) {
             List<String> values = params.get(key);
             if (values != null) {
@@ -1126,6 +1148,7 @@ public final class JAXRSUtils {
                 params.replace(key, values);
             }
         }
+        //Liberty end CXF-7996
 
         if ("".equals(key)) {
             return InjectionUtils.handleBean(pClass, paramAnns, params, ParameterType.FORM, m, false);
@@ -1221,9 +1244,7 @@ public final class JAXRSUtils {
     public static Message getContextMessage(Message m) {
 
         Message contextMessage = m.getExchange() != null ? m.getExchange().getInMessage() : m;
-        //Liberty code change start
-        if (contextMessage == null && !PropertyUtils.isTrue(((MessageImpl) m).getInboundMessage())) {
-            //Liberty code change end
+        if (contextMessage == null && !PropertyUtils.isTrue(m.get(Message.INBOUND_MESSAGE))) {
             contextMessage = m;
         }
         return contextMessage;
@@ -1274,14 +1295,12 @@ public final class JAXRSUtils {
         return clazz.cast(o);
     }
 
+    @SuppressWarnings("unchecked")
     private static UriInfo createUriInfo(Message m) {
         if (MessageUtils.isRequestor(m)) {
             m = m.getExchange() != null ? m.getExchange().getOutMessage() : m;
         }
-        @SuppressWarnings("unchecked")
-        //Liberty code change start
-        MultivaluedMap<String, String> templateParams = (MultivaluedMap<String, String>)((MessageImpl) m).getTemplateParameters();
-        //Liberty code change end
+        MultivaluedMap<String, String> templateParams = (MultivaluedMap<String, String>) m.get(URITemplate.TEMPLATE_PARAMETERS);
         return new UriInfoImpl(m, templateParams);
     }
 
@@ -1399,8 +1418,10 @@ public final class JAXRSUtils {
                     value = index < part.length() ? part.substring(index + 1) : "";
                 }
                 if (valueIsCollection) {
-                    for (String s : value.split(",")) {
-                        addStructuredPartToMap(queries, sep, name, s, decode, decodePlus);
+                    if (value != null) {
+                        for (String s : value.split(",")) {
+                            addStructuredPartToMap(queries, sep, name, s, decode, decodePlus);
+                        }
                     }
                 } else {
                     addStructuredPartToMap(queries, sep, name, value, decode, decodePlus);
@@ -1495,8 +1516,10 @@ public final class JAXRSUtils {
         @SuppressWarnings("rawtypes")
         final Class cls = targetTypeClass;
         // Liberty change start
+        Message prevM = currentMessage.get();
         try {
-            return AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
+            currentMessage.set(m);
+            Object o = AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
                 @Override
                 public Object run() throws IOException, WebApplicationException {
                     return provider.readFrom(
@@ -1504,6 +1527,7 @@ public final class JAXRSUtils {
                                              new HttpHeadersImpl(m).getRequestHeaders(), is);
                 }
             });
+            return o;
         } catch (PrivilegedActionException e) {
             Exception e1 = e.getException();
             if (e1 instanceof IOException) {
@@ -1513,6 +1537,8 @@ public final class JAXRSUtils {
         } catch (JsonbException e) { // JsonBProvider throws a RuntimeException
             // return HTTP 400 instead of 500
             throw new BadRequestException(e);
+        } finally {
+            currentMessage.set(prevM);
         }
         // Liberty change end
     }
@@ -1527,7 +1553,12 @@ public final class JAXRSUtils {
                                         final MultivaluedMap<String, Object> httpHeaders,
                                         Message message) throws WebApplicationException, IOException {
 
-        final OutputStream entityStream = message.getContent(OutputStream.class);
+        OutputStream entityStream = message.getContent(OutputStream.class);
+        if (entity.getClass().getName().equals(
+                "org.apache.cxf.jaxrs.reactivestreams.server.StreamingAsyncSubscriber$StreamingResponseImpl")) {
+            //cache the OutputStream when it's reactive response
+            entityStream = new CacheAndWriteOutputStream(entityStream);
+        }
         if (writers.size() > 1) {
             WriterInterceptor first = writers.remove(0);
             WriterInterceptorContext context = new WriterInterceptorContextImpl(entity, type, genericType, annotations, entityStream, message, writers);
@@ -1543,13 +1574,14 @@ public final class JAXRSUtils {
             }
             HttpUtils.convertHeaderValuesToString(httpHeaders, true);
             // Liberty change start
+            final OutputStream fEntityStream = entityStream;
             try {
                 AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
                     @Override
                     public Boolean run() throws IOException, WebApplicationException {
                         writer.writeTo(entity, type, genericType, annotations, mediaType,
                                        httpHeaders,
-                                       entityStream);
+                                       fEntityStream);
                         return Boolean.TRUE;
                     }
                 });
@@ -1620,8 +1652,9 @@ public final class JAXRSUtils {
     /**
      * intersect two mime types
      *
-     * @param mimeTypesA
-     * @param mimeTypesB
+     * @param requiredMediaTypes
+     * @param userMediaTypes
+     * @param addRequiredParamsIfPossible
      * @return return a list of intersected mime types
      */
     public static List<MediaType> intersectMimeTypes(List<MediaType> requiredMediaTypes,
@@ -1991,10 +2024,14 @@ public final class JAXRSUtils {
         }
         return response;
     }
-
+    
+    //Liberty change start
+    private static ThreadLocal<Message> currentMessage = new ThreadLocal<>();
     public static Message getCurrentMessage() {
-        return PhaseInterceptorChain.getCurrentMessage();
+        Message m = currentMessage.get();
+        return m != null ? m : PhaseInterceptorChain.getCurrentMessage();
     }
+    //Liberty change end
 
     public static ClassResourceInfo getRootResource(Message m) {
         return (ClassResourceInfo) m.getExchange().get(JAXRSUtils.ROOT_RESOURCE_CLASS);
@@ -2003,12 +2040,10 @@ public final class JAXRSUtils {
     public static void pushOntoStack(OperationResourceInfo ori,
                                      MultivaluedMap<String, String> params,
                                      Message msg) {
-        //Liberty code change start
-        OperationResourceInfoStack stack = (OperationResourceInfoStack) ((MessageImpl) msg).getOperationResourceInfoStack();
+        OperationResourceInfoStack stack = msg.get(OperationResourceInfoStack.class);
         if (stack == null) {
             stack = new OperationResourceInfoStack();
-            ((MessageImpl) msg).setOperationResourceInfoStack(stack);
-            //Liberty code change end
+            msg.put(OperationResourceInfoStack.class, stack);
         }
 
         List<String> values = null;
@@ -2047,23 +2082,113 @@ public final class JAXRSUtils {
         return new JaxRsRuntimeException(ex);
     }
     
-    // Liberty change start
+    
+    /**
+     * Get path URI template, combining base path, class & method & subresource templates 
+     * @param message message instance
+     * @param cri class resource info
+     * @param ori operation resource info
+     * @param subOri operation subresource info
+     * @return the URI template for the method in question
+     */
+    public static String getUriTemplate(Message message, ClassResourceInfo cri, OperationResourceInfo ori, 
+            OperationResourceInfo subOri) {
+        final String template = getUriTemplate(message, cri, ori);
+        final String methodPathTemplate = getUriTemplate(subOri);
+        return combineUriTemplates(template, methodPathTemplate);
+    }
+
+    /**
+     * Get path URI template, combining base path, class & method templates 
+     * @param message message instance
+     * @param cri class resource info
+     * @param ori operation resource info
+     * @return the URI template for the method in question
+     */
+    public static String getUriTemplate(Message message, ClassResourceInfo cri, OperationResourceInfo ori) {
+        final String basePath = (String)message.get(Message.BASE_PATH);
+        final String classPathTemplate = getUriTemplate(cri);
+        final String methodPathTemplate = getUriTemplate(ori);
+
+        // The application path (@ApplicationPath) is incorporated into Message.BASE_PATH,
+        // since it is part of the address.
+        String template = basePath;
+        if (StringUtils.isEmpty(template)) {
+            template = "/";
+        } else if (!template.startsWith("/")) {
+            template = "/" + template;
+        }
+        
+        template = combineUriTemplates(template, classPathTemplate);
+        return combineUriTemplates(template, methodPathTemplate);
+    }
+    
+    /**
+     * Gets the URI template of the operation from its resource info
+     * to assemble final URI template 
+     * @param ori operation resource info
+     * @return URI template
+     */
+    private static String getUriTemplate(OperationResourceInfo ori) {
+        final URITemplate template = ori.getURITemplate();
+        if (template != null) {
+            return template.getValue();
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+     * Goes over sub-resource class resource templates (through parent chain) if necessary
+     * to assemble final URI template 
+     * @param cri root or subresource class resource info
+     * @return URI template chain
+     */
+    private static String getUriTemplate(ClassResourceInfo cri) {
+        final URITemplate template = cri.getURITemplate();
+        if (template != null) {
+            return template.getValue();
+        } else if (cri.getParent() != null) { /* probably subresource */
+            return getUriTemplate(cri.getParent());
+        } else {
+            return null; /* should not happen */
+        }
+    }
+    
+    /**
+     * Combines two URI templates together
+     * @param parent parent URI template
+     * @param child child URI template
+     * @return the URI template combined from the parent and child
+     */
+    private static String combineUriTemplates(final String parent, final String child) {
+        if (StringUtils.isEmpty(child)) {
+            return parent;
+        }
+
+        // The way URI templates are normalized in org.apache.cxf.jaxrs.model.URITemplate:
+        //  - empty or null become "/"
+        //  - "/" is added at the start if not present 
+        if ("/".equals(parent)) {
+            return child;
+        } else if ("/".equals(child)) {
+            return parent;
+        } else if (parent.endsWith("/")) {
+            // Remove only last slash
+            return parent.substring(0, parent.length() - 1) + child; //Liberty change
+        } else {
+            return parent + child;
+        }
+    }
     // copy the input stream so that it is not inadvertently closed
     private static InputStream copyAndGetEntityStream(Message m) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        InputStream origInputStream = m.getContent(InputStream.class);
-        try {
-            IOUtils.copy(origInputStream, baos);
+        LoadingByteArrayOutputStream baos = new LoadingByteArrayOutputStream(); 
+        try (InputStream in = m.getContent(InputStream.class)) {
+            IOUtils.copy(in, baos);
         } catch (IOException e) {
             throw ExceptionUtils.toInternalServerErrorException(e, null);
-        } finally {
-            try {
-                origInputStream.close();
-            } catch (Throwable t) { /* AutoFFDC */ }
         }
-        final byte[] copiedBytes = baos.toByteArray();
-        m.setContent(InputStream.class, new ByteArrayInputStream(copiedBytes));
-        return new ByteArrayInputStream(copiedBytes);
+        m.setContent(InputStream.class, baos.createInputStream());
+        return baos.createInputStream();
     }
-    // Liberty change end
 }

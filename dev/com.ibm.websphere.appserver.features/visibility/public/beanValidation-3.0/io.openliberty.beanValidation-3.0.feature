@@ -3,7 +3,7 @@ symbolicName=io.openliberty.beanValidation-3.0
 visibility=public
 singleton=true
 IBM-ShortName: beanValidation-3.0
-Subsystem-Name: Bean Validation 3.0
+Subsystem-Name: Jakarta Bean Validation 3.0
 IBM-App-ForceRestart: install, uninstall
 IBM-API-Package: \
   jakarta.validation; type="spec", \
@@ -20,7 +20,7 @@ IBM-API-Package: \
   com.ibm.websphere.appserver.eeCompatible-9.0, \
   com.ibm.websphere.appserver.transaction-2.0, \
   io.openliberty.beanValidationCore-2.0, \
-  io.openliberty.el-4.0, \
+  io.openliberty.expressionLanguage-4.0, \
   io.openliberty.jakarta.cdi-3.0, \
   io.openliberty.jakarta.interceptor-2.0, \
   io.openliberty.jakarta.validation-3.0

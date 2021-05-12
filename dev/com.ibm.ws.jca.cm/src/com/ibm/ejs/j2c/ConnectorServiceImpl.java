@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 
+import com.ibm.tx.jta.embeddable.EmbeddableTransactionManagerFactory;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.classloading.ClassLoaderIdentifierService;
@@ -60,6 +61,11 @@ public class ConnectorServiceImpl extends ConnectorService {
     final AtomicServiceReference<ExecutorService> execSvcRef = new AtomicServiceReference<ExecutorService>("executor");
 
     /**
+     * Indicates if heritage/legacy behavior is enabled.
+     */
+    boolean isHeritageEnabled;
+
+    /**
      * Scheduled executor service for non-deferrable alarms.
      */
     final AtomicServiceReference<ScheduledExecutorService> nonDeferrableSchedXSvcRef = new AtomicServiceReference<ScheduledExecutorService>("nonDeferrableScheduledExecutor");
@@ -94,6 +100,10 @@ public class ConnectorServiceImpl extends ConnectorService {
         nonDeferrableSchedXSvcRef.activate(context);
         rrsXAResFactorySvcRef.activate(context);
         variableRegistrySvcRef.activate(context);
+
+        isHeritageEnabled = Boolean.TRUE.equals(context.getProperties().get("enableHeritageBehavior"));
+
+        EmbeddableTransactionManagerFactory.getUOWCurrent().registerLTCCallback(ConnectionHandleManager.ltcHandleCollaborator); // TODO is there a way to unregister?
     }
 
     /**
@@ -160,11 +170,11 @@ public class ConnectorServiceImpl extends ConnectorService {
      * This is copied from Tim's code in tWAS and updated slightly to
      * override with the Liberty ignore/warn/fail setting.
      *
-     * @param tc the TraceComponent from where the message originates
-     * @param throwable an already created Throwable object, which can be used if the desired action is fail.
+     * @param tc                    the TraceComponent from where the message originates
+     * @param throwable             an already created Throwable object, which can be used if the desired action is fail.
      * @param exceptionClassToRaise the class of the Throwable object to return
-     * @param msgKey the NLS message key
-     * @param objs list of objects to substitute in the NLS message
+     * @param msgKey                the NLS message key
+     * @param objs                  list of objects to substitute in the NLS message
      * @return either null or the Throwable object
      */
     @Override
@@ -200,6 +210,11 @@ public class ConnectorServiceImpl extends ConnectorService {
         }
 
         return null;
+    }
+
+    @Override
+    public final boolean isHeritageEnabled() {
+        return isHeritageEnabled;
     }
 
     /**

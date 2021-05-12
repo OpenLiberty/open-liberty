@@ -1,0 +1,221 @@
+<?xml version="1.0"?>
+
+<ejb-jar
+  xmlns="http://java.sun.com/xml/ns/javaee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd"
+  version="3.1"
+>
+  <enterprise-beans>
+ 
+     <session>
+     
+      <ejb-name>LookupNameBndDriverBean</ejb-name>
+      <ejb-class>com.ibm.bnd.lookupoverride.driver.ejb.LookupNameBndDriverBean</ejb-class>
+       
+    
+<!-- test 3 -->
+      <ejb-local-ref>
+         <ejb-ref-name>SLT3</ejb-ref-name>
+         <local>com.ibm.bnd.lookupoverride.driver.ejb.SimpleLookupTarget</local>
+         <lookup-name>ejblocal:bogus</lookup-name>
+      </ejb-local-ref>
+        
+       
+<!-- test 3.5  -->
+      <ejb-ref>
+         <ejb-ref-name>SLT3Remote</ejb-ref-name>
+         <remote>com.ibm.bnd.lookupoverride.driver.ejb.SimpleLookupTarget</remote>
+         <lookup-name>bogus</lookup-name>
+      </ejb-ref>
+       
+    
+<!-- test 8 -->
+      <ejb-local-ref>
+         <ejb-ref-name>SLT8</ejb-ref-name>
+         <local>com.ibm.bnd.lookupoverride.driver.ejb.SimpleLookupTarget</local>
+         <lookup-name>ejblocal:SLT2</lookup-name>
+      </ejb-local-ref>      
+
+     
+<!-- test 10 -->
+      <ejb-local-ref>
+         <ejb-ref-name>SLT10</ejb-ref-name>
+         <local>com.ibm.bnd.lookupoverride.driver.ejb.SimpleLookupTarget</local>
+         <lookup-name>ejblocal:SLT</lookup-name>
+      </ejb-local-ref>  
+             
+       
+<!-- test 11 -->       
+      <ejb-local-ref>
+         <ejb-ref-name>SLT11</ejb-ref-name>
+         <ejb-link>SimpleLookupTargetBean2</ejb-link>
+      </ejb-local-ref>
+
+
+<!-- 
+R0 - For verifying this annotation causes 22 to be injected or looked up:
+@Resource(name="EnvEntry_Integer")
+
+R20 - Also for verifying this annotation causes an Exception to be thrown:
+@Resource(name="EnvEntry_Integer_nameWithLookup", lookup="EnvEntry_IntegerAlternate")
+(cannot specify both name and lookup for an env-entry)
+ -->
+       <env-entry>
+         <description>Used for variation R0</description>
+         <env-entry-name>EnvEntry_Integer</env-entry-name>
+         <env-entry-type>java.lang.Integer</env-entry-type>
+         <env-entry-value>22</env-entry-value>
+       </env-entry>
+       
+       <env-entry>
+         <description>Used for variations R0 and R20</description>
+         <env-entry-name>EnvEntry_IntegerAlternate</env-entry-name>
+         <env-entry-type>java.lang.Integer</env-entry-type>
+         <env-entry-value>333</env-entry-value>
+       </env-entry>
+
+
+<!-- Not sure this is needed, since the Integer will be bound programmatically
+R1 - For verifying this annotation causes xx to be injected or looked up:
+@Resource(name="EnvEntry_IntegerBound", lookup="envEntryIntegerBound") Integer ivEnvEntry_IntegerBound;
+
+       <env-entry>
+         <description>Used for variation R1</description>
+         <env-entry-name>EnvEntry_IntegerBound</env-entry-name>
+         <env-entry-type>java.lang.Integer</env-entry-type>
+       </env-entry>
+-->
+     
+     
+     
+<!-- 
+R3 - For verifying this annotation injects the correct DataSource :
+@Resource(name="ResourceRef_DataSource_Lookup", lookup="jdbc/DefaultEJBTimerDataSource")
+-->
+      <resource-ref>
+         <res-ref-name>ResourceRef_DataSource_Lookup</res-ref-name>
+         <res-type>javax.sql.DataSource</res-type>
+      </resource-ref>
+    
+    
+    
+<!-- 
+R4 - For verifying this annotation injects the correct message destination :
+@Resource(name="MessageDestinationRef_RequestQueueLookup", lookup="jms/RequestQueue") 
+-->
+      <resource-ref>
+         <res-ref-name>jms/WSTestQCF</res-ref-name>
+         <res-type>javax.jms.QueueConnectionFactory</res-type>
+         <res-auth>Application</res-auth>
+         <res-sharing-scope>Shareable</res-sharing-scope>
+         <injection-target>
+            <injection-target-class>com.ibm.bnd.lookupoverride.driver.ejb.LookupNameBndDriverBean</injection-target-class>
+            <injection-target-name>queueConnectionFactory</injection-target-name>
+         </injection-target>
+      </resource-ref>
+      
+      <message-destination-ref>
+         <message-destination-ref-name>MessageDestinationRef_RequestQueueLookup</message-destination-ref-name>
+         <message-destination-type>javax.jms.Queue</message-destination-type>
+         <message-destination-usage>Produces</message-destination-usage>
+
+<!-- not needed with annotation
+         <injection-target>
+            <injection-target-class>com.ibm.bnd.lookupoverride.driver.ejb.LookupNameBndDriverBean</injection-target-class>
+            <injection-target-name>ivMessageDestinationRef_RequestQueueLookup</injection-target-name>
+         </injection-target>
+-->
+      </message-destination-ref>
+
+
+ 
+<!--
+R8 - For verifying this annotation injects the correct DataSource :
+@Resource(name="ResourceRef_DataSource_BindingNameOverLookupName")
+Note: also need corresponding resource-ref in ibm-ejb-jar-bnd.xml
+-->
+      <resource-ref>
+         <res-ref-name>ResourceRef_DataSource_BindingNameOverLookupName</res-ref-name>
+         <lookup-name>eis/bogusDataSource</lookup-name>
+         <res-type>javax.sql.DataSource</res-type>
+      </resource-ref>
+
+
+
+<!--
+R9 - For verifying this annotation injects the correct String :
+@Resource(name="ResourceEnvRef_Queue_BindingNameOverLookupName")
+Note: also need corresponding resource-ref in ibm-ejb-jar-bnd.xml
+-->
+      <resource-env-ref>
+         <resource-env-ref-name>ResourceEnvRef_Queue_BindingNameOverLookupName</resource-env-ref-name>
+         <lookup-name>"bogusResourceEnvRef"</lookup-name>
+         <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
+      </resource-env-ref> 
+         
+
+     
+<!-- 
+R10 - For verifying this annotation injects the correct message destination :
+@Resource(name="MessageDestinationRef_BindingNameOverLookupName") 
+-->
+      
+      <message-destination-ref>
+         <message-destination-ref-name>MessageDestinationRef_BindingNameOverLookupName</message-destination-ref-name>
+         <lookup-name>bogusMessageDest</lookup-name>
+         <message-destination-type>javax.jms.Queue</message-destination-type>
+         <message-destination-usage>Produces</message-destination-usage>
+      </message-destination-ref>
+
+       
+       
+<!-- 
+R11 - For verifying this annotation injects the correct datasource :
+@Resource(name="ResourceRef_DataSource_LookupNameOverLookup", lookup="eis/BogusDataSource")
+
+Note: Must NOT have corresponding resource-ref in ibm-ejb-jar-bnd.xml
+-->
+      <resource-ref>
+         <res-ref-name>ResourceRef_DataSource_LookupNameOverLookup</res-ref-name>
+         <lookup-name>jdbc/TestDataSource</lookup-name>
+         <res-type>javax.sql.DataSource</res-type>
+      </resource-ref>
+
+       
+       
+<!-- 
+R12 - For verifying this annotation injects the correct String :
+@Resource(name="ResourceEnvRef_Queue_LookupNameOverLookup", lookup="bogusEnvref")
+
+Note: Must NOT have corresponding resource-env-ref in ibm-ejb-jar-bnd.xml
+-->
+      <resource-env-ref>
+         <resource-env-ref-name>ResourceEnvRef_Queue_LookupNameOverLookup</resource-env-ref-name>
+         <lookup-name>Jetstream/jms/ResponseQueue</lookup-name>
+         <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
+      </resource-env-ref>
+
+       
+       
+<!-- 
+R13 - For verifying this annotation injects the correct String :
+@Resource(name="MessageDestinationRef_LookupNameOverLookup", lookup="destref/bogus")
+
+Note: Must NOT have corresponding resource-ref in ibm-ejb-jar-bnd.xml
+-->
+      <message-destination-ref>
+         <message-destination-ref-name>MessageDestinationRef_LookupNameOverLookup</message-destination-ref-name>
+         <lookup-name>Jetstream/jms/RequestQueue</lookup-name>
+         <message-destination-type>javax.jms.Queue</message-destination-type>
+         <message-destination-usage>Produces</message-destination-usage>
+      </message-destination-ref>
+      
+         
+           
+             
+    </session>
+   
+  </enterprise-beans>
+
+</ejb-jar>

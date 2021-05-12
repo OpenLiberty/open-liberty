@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.os.packaging.fat;
 
 import static org.junit.Assert.assertFalse;
@@ -64,41 +74,6 @@ public abstract class InstallUtilityToolTest {
             logger.info("OpenLiberty did not install successfully");
         }
 
-//        File sharedDir = new File("/var/lib/openliberty/usr/shared");
-//        File serverFile = new File(installRoot + "/server.env");
-//        String[] param1s = {"/var/lib/openliberty/usr/shared"};
-//        ProgramOutput po1 = runCommand("createShared", "sudo mkdir", param1s);
-//        boolean sharedExists = sharedDir.exists();
-//        if (sharedExists) {
-//            logger.info("directory was created successfully");
-//        }
-//         else {
-//
-//            logger.info("failed trying to create the directory");
-//        }
-//        String[] param2s = {installRoot +  "/server.env"};
-//        ProgramOutput po2 = runCommand("createServerFile",echo, param2s);
-//        boolean serverEnvExists = serverFile.exists();
-//        if (serverEnvExists) {
-//            logger.info("file was created successfully");
-//        }
-//         else {
-//            logger.info("failed trying to create the file");
-//        }
-//        String[] param6s = {installRoot +  "/server.env /var/lib/openliberty/usr/shared"};
-//        ProgramOutput po6 = runCommand("moveServerFile", "sudo mv", param6s);
-//        String[] param3s = { "-R", "openliberty:openliberty", "/var/lib/openliberty/usr/shared" };
-//        ProgramOutput po3 = runCommand("sharedPerm", "sudo chown", param3s);
-//        String[] param4s = { "-R", "openliberty:openliberty", "/var/lib/openliberty/usr/shared/server.env" };
-//        ProgramOutput po4= runCommand("serverPerm", "sudo chown", param4s);
-//        String[] param5s = {"ls -l","/var/lib/openliberty/usr/shared"};
-//        ProgramOutput po5= runCommand("listFilesInShared", "sudo", param5s);
-//        String output = po5.getStdout();
-//        logger.info(output);
-//	String[] param7s = {javaHome+ "/bin/java"};
-//        ProgramOutput po7= runCommand("listFilesInJava", "ls -l", param7s);
-//        String output2 = po7.getStdout();
-//        logger.info(output2);
         String[] param8s = { "chmod", "-R", "a+X", "/home" };
         ProgramOutput po8 = runCommand("changeJavaPerm", "sudo", param8s);
         String[] param9s = { javaHome + "/bin/java" };
@@ -134,8 +109,6 @@ public abstract class InstallUtilityToolTest {
             ProgramOutput po4 = runCommand(METHOD_NAME, "sudo", param4);
         }
 
-        // check for pid file if server was started
-//       if ( (serviceCommand == "start")||(serviceCommand == "restart") ) {
         File pidFile = new File("/var/run/openliberty/" + serverName + ".pid");
         if (pidFile.exists()) {
             Log.info(c, METHOD_NAME, "server pid file exists");
@@ -144,8 +117,6 @@ public abstract class InstallUtilityToolTest {
         } else {
             Log.info(c, METHOD_NAME, "server pid file does not exist");
         }
-
-//       }
         return po1;
     }
 

@@ -15,6 +15,17 @@ Bundle-Name: WAS Security OAuth 2.0
 Bundle-SymbolicName: com.ibm.ws.security.oauth.2.0
 Bundle-Description: WAS Security OAuth 2.0, version=${bVersion}
 
+#
+# Generate an Jakarta EE compliant JAR for the bundle.
+#
+jakartaeeMe: true
+#jakartaee.transform.jar.name=io.openliberty.security.oauth.internal.2.0.jar
+#JakartaEE-Bundle-Name: Liberty Security OAuth 2.0
+#JakartaEE-Bundle-Symbolic-Name: io.openliberty.security.oauth.internal.2.0
+#JakartaEE-Bundle-Description: Liberty Security OAuth 2.0, version=${bVersion}
+#JakartaEE-Bundle-Version: 
+
+
 Web-ContextPath: /oauth2
 WS-TraceGroup: \
   OAUTH20
@@ -32,11 +43,10 @@ instrument.classesExcludes: \
 # Append ";provide:=true" if this bundle also provides an implementation
 # for the exported API.
 
-# 240526 remove from exports: com.ibm.websphere.security.openidconnect.token
-
 Export-Package: \
  com.ibm.websphere.security.oauth20, \
  com.ibm.websphere.security.oauth20.store, \
+ com.ibm.websphere.security.openidconnect.token, \
  com.ibm.wsspi.security.oauth20, \
  com.ibm.wsspi.security.openidconnect, \
  !com.ibm.ws.security.oauth20.internal.resources, \
@@ -57,7 +67,6 @@ Import-Package: \
 	 *
 
 Private-Package: \
- com.ibm.websphere.security.openidconnect.token, \
  com.ibm.ws.config.xml.internal.nester, \
  com.ibm.ws.security.oauth20.internal.resources, \
  com.ibm.ws.security.oauth20.internal.tai.resources
@@ -156,7 +165,7 @@ Include-Resource.zh: ${if;${include.zh};com/ibm/ws/security/oauth20/resources/Pr
 	com.ibm.ws.logging.core,\
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.ws.org.jose4j;version=latest,\
-	com.ibm.ws.org.apache.commons.codec;version=latest,\
+	io.openliberty.org.apache.commons.codec;version=latest,\
 	com.ibm.ws.org.json.simple.1.1.1;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.resource;version=latest,\

@@ -33,19 +33,19 @@ ssl.init.startinit.CWPKI0001I.useraction=Nu este necesar\u0103 nici o ac\u0163iu
 # -------------------------------------------------------------------------------------------------
 ssl.init.startcomplete.CWPKI0002I=CWPKI0002I: Ini\u0163ializarea serviciului SSl s-a finalizat cu succes.
 ssl.init.startcomplete.CWPKI0002I.explanation=Acest mesaj este pur informativ.
-ssl.init.startcomplete.CWPKI0002I.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+ssl.init.startcomplete.CWPKI0002I.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
 # -------------------------------------------------------------------------------------------------
 ssl.init.svcstart.CWPKI0003I=CWPKI0003I: Serviciul SSL porne\u015fte.
 ssl.init.svcstart.CWPKI0003I.explanation=Acest mesaj este pur informativ.
-ssl.init.svcstart.CWPKI0003I.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+ssl.init.svcstart.CWPKI0003I.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
 # -------------------------------------------------------------------------------------------------
 ssl.init.svcstartcomplete.CWPKI0004I=CWPKI0004I: Serviciul SSL a pornit cu succes.
 ssl.init.svcstartcomplete.CWPKI0004I.explanation=Acest mesaj este pur informativ.
-ssl.init.svcstartcomplete.CWPKI0004I.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+ssl.init.svcstartcomplete.CWPKI0004I.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
 # -------------------------------------------------------------------------------------------------
 ssl.init.startfail.CWPKI0005I=CWPKI0005I: Ini\u0163ializarea serviciului SSL nu a avut succes.
 ssl.init.startfail.CWPKI0005I.explanation=Acest mesaj este pur informativ.
-ssl.init.startfail.CWPKI0005I.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+ssl.init.startfail.CWPKI0005I.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
 # -------------------------------------------------------------------------------------------------
 ssl.init.mbeanerror.CWPKI0006E=CWPKI0006E: A ap\u0103rut o excep\u0163ie \u00een timp ce se \u00eencerca crearea sau \u00eenregistrarea mBean-ului {0}. Excep\u0163ie: {1}
 ssl.init.mbeanerror.CWPKI0006E.explanation=O excep\u0163ie nea\u015fteptat\u0103 a survenit la \u00eencercarea de creare sau \u00eenregistrare a unui mBean.
@@ -116,7 +116,7 @@ ssl.load.keymanager.error.CWPKI0021E.explanation=A ap\u0103rut o eroare de \u00e
 ssl.load.keymanager.error.CWPKI0021E.useraction=Asigura\u0163i-v\u0103 c\u0103 clasa se afl\u0103 \u00een mediu.
 # -------------------------------------------------------------------------------------------------
 ssl.client.handshake.error.CWPKI0022E=CWPKI0022E: SSL HANDSHAKE FAILURE:  Un semnatar cu SubjectDN {0} a fost trimis de la gazda \u0163int\u0103.  E posibil s\u0103 fie necesar ca semnatarul s\u0103 fie ad\u0103ugat la depozitul de \u00eencredere local {1}, localizat \u00een pseudonimul de configura\u0163ie SSL {2}.  Mesajul de eroare extins de la excep\u0163ia dialogului de confirmare SSL este: {3}
-ssl.client.handshake.error.CWPKI0022E.explanation=O eroare a survenit \u00een timpul dialogului de confirmare SSL.  Ar putea fi necesar un export/import semnatar de la gazda destina\u0163ie la TrustStore client.
+ssl.client.handshake.error.CWPKI0022E.explanation=A survenit o eroare \u00een timpul dialogului de confirmare SSL.  Ar putea fi necesar un export/import semnatar de la gazda destina\u0163ie la TrustStore client.
 ssl.client.handshake.error.CWPKI0022E.useraction=Revede\u0163i mesajul extins al erorii de la managerul de \u00eencrederi pentru determinarea schimb\u0103rii necesare \u00eentre configura\u0163ia SSL destina\u0163ie \u015fi configura\u0163ia SSL a clientului.
 # -------------------------------------------------------------------------------------------------
 ssl.client.alias.not.found.CWPKI0023E=CWPKI0023E: Aliasul de certificat {0} specificat de atributul clientKeyAlias fie nu este g\u0103sit \u00een KeyStore {1}, fie este invalid.
@@ -192,7 +192,7 @@ ssl.handshake.failure.info.CWPKI0040I.explanation=Semnatarul SSL al serverului t
 ssl.handshake.failure.info.CWPKI0040I.useraction=Fie rula\u0163i utilitarul retrieveSigners, fie activa\u0163i prompul de schimb al semnatarilor.
 # -------------------------------------------------------------------------------------------------
 ssl.default.password.in.use.CWPKI0041W=CWPKI0041W: Unul sau mai multe depozite de chei utilizear\u0103 parola implicit\u0103.
-ssl.default.password.in.use.CWPKI0041W.explanation=C\u00e2nd serverul porne\u015fte prima dat\u0103 ca server de aplica\u0163ii independent sau \u00eentr-o configura\u0163ie de Implementare re\u0163ea, fiecare server creeaz\u0103 un depozit de chei \u015fi depozit de \u00eencrederi pentru configura\u0163ia SSL (Secure Sockets Layer) implicit\u0103. C\u00e2nd serverul creeaz\u0103 aceste fi\u015fiere, implicit folose\u015fte WeBAS pentru parol\u0103.
+ssl.default.password.in.use.CWPKI0041W.explanation=C\u00e2nd serverul porne\u015fte prima dat\u0103 ca server de aplica\u0163ii independent sau \u00eentr-o configura\u0163ie Network Deployment, fiecare server creeaz\u0103 un depozit de chei \u015fi depozit de \u00eencrederi pentru configura\u0163ia SSL (Secure Sockets Layer) implicit\u0103. C\u00e2nd serverul creeaz\u0103 aceste fi\u015fiere, implicit folose\u015fte WeBAS pentru parol\u0103.
 ssl.default.password.in.use.CWPKI0041W.useraction=Nu utiliza\u0163i parola implicit\u0103 \u00een produc\u0163ie. Modifica\u0163i parola implicit\u0103 pentru depozitul de chei \u015fi depozitul de \u00eencrederi, edit\u00e2nd fi\u015fierul ssl.client.props. C\u00e2nd modifica\u0163i parolele \u00een fi\u015fierul ssl.client.props, trebuie s\u0103 folosi\u0163i utilitarul PropFilePasswordEncoder pentru a recodifica parolele noi.
 # -------------------------------------------------------------------------------------------------
 ssl.error.issue.CWPKI0042E=CWPKI0042E: A ap\u0103rut o excep\u0163ie \u00een timp ce se memora un certificat \u00een depozitul de chei al certificatelor emise. Excep\u0163ie: {0}
@@ -286,11 +286,11 @@ ssl.signer.retrieval.usage.CWPKI0300I=CWPKI0300I: Utiliza\u0163i op\u0163iunile 
 Utilizare: retrieveSigners <remoteKeyStoreName> <localKeyStoreName> [options]\n\
 \        op\u0163iuni: [-profileName <profileName>] [-remoteAlias <aliasFromRemoteStore>] [-localAlias <storeAsAlias>] [-listRemoteKeyStoreNames] [-listLocalKeyStoreNames] [-autoAcceptBootstrapSigner] [-uploadSigners] [-host <host>] [-port <port>] [-conntype <RMI|SOAP>] [-user <user>] [-password <password>] [-trace] [-logfile <filename>] [-replacelog] [-quiet] [-help]\n
 ssl.signer.retrieval.usage.CWPKI0300I.explanation=Acest mesaj este pur informativ.
-ssl.signer.retrieval.usage.CWPKI0300I.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+ssl.signer.retrieval.usage.CWPKI0300I.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
 # -------------------------------------------------------------------------------------------------
 ssl.signer.retrieval.tracemodeon.CWPKI0301I=CWPKI0301I: Modul de urm\u0103rire este activat.
 ssl.signer.retrieval.tracemodeon.CWPKI0301I.explanation=Acest mesaj este pur informativ.
-ssl.signer.retrieval.tracemodeon.CWPKI0301I.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+ssl.signer.retrieval.tracemodeon.CWPKI0301I.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
 # -------------------------------------------------------------------------------------------------
 ssl.signer.retrieval.logfile.error.CWPKI0302E=CWPKI0302E: Sistemul nu poate scrie \u00een fi\u015fierul istoric de urm\u0103rire \u00een urm\u0103toarea loca\u0163ie: {0}
 ssl.signer.retrieval.logfile.error.CWPKI0302E.explanation=Este o problem\u0103 la scrierea \u00een fi\u015fierul istoric specificat.
@@ -298,7 +298,7 @@ ssl.signer.retrieval.logfile.error.CWPKI0302E.useraction=Modifica\u0163i calea f
 # -------------------------------------------------------------------------------------------------
 ssl.signer.retrieval.logfile.location.CWPKI0303I=CWPKI0303I: Urm\u0103rirea este \u00eenregistrat\u0103 \u00een urm\u0103toarea loca\u0163ie: {0}
 ssl.signer.retrieval.logfile.location.CWPKI0303I.explanation=Acest mesaj este pur informativ.
-ssl.signer.retrieval.logfile.location.CWPKI0303I.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+ssl.signer.retrieval.logfile.location.CWPKI0303I.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
 # -------------------------------------------------------------------------------------------------
 ssl.signer.remote.truststore.not.found.CWPKI0304E=CWPKI0304E: <remoteKeyStoreName> specificat ca {0} nu a fost g\u0103sit pe server.
 ssl.signer.remote.truststore.not.found.CWPKI0304E.explanation=Nu se g\u0103se\u015fte depozitul de chei la distan\u0163\u0103.  
@@ -310,19 +310,19 @@ ssl.signer.alias.not.found.CWPKI0305E.useraction=Lansa\u0163i comanda -listRemot
 # -------------------------------------------------------------------------------------------------
 ssl.signer.remote.truststore.list.CWPKI0306I=CWPKI0306I: Urm\u0103toarele depozite de chei de la distan\u0163\u0103 exist\u0103 pe serverul specificat: {0}
 ssl.signer.remote.truststore.list.CWPKI0306I.explanation=Acest mesaj este pur informativ.
-ssl.signer.remote.truststore.list.CWPKI0306I.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+ssl.signer.remote.truststore.list.CWPKI0306I.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
 # -------------------------------------------------------------------------------------------------
 ssl.signer.local.truststore.list.CWPKI0307I=CWPKI0307I: Urm\u0103toarele depozite de chei locale exist\u0103 pe client: {0}
 ssl.signer.local.truststore.list.CWPKI0307I.explanation=Acest mesaj este pur informativ.
-ssl.signer.local.truststore.list.CWPKI0307I.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+ssl.signer.local.truststore.list.CWPKI0307I.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
 # -------------------------------------------------------------------------------------------------
 ssl.signer.add.to.local.truststore.CWPKI0308I=CWPKI0308I: Sistemul adaug\u0103 aliasul semnatar {0} la depozitul de chei local {1} cu urm\u0103torul digest SHA: {2}
 ssl.signer.add.to.local.truststore.CWPKI0308I.explanation=Acest mesaj este pur informativ.
-ssl.signer.add.to.local.truststore.CWPKI0308I.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+ssl.signer.add.to.local.truststore.CWPKI0308I.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
 # -------------------------------------------------------------------------------------------------
 ssl.signer.no.signers.added.CWPKI0309I=CWPKI0309I: To\u0163i semnatarii din depozitul de chei la distan\u0163\u0103 exist\u0103 deja \u00een depozitul de chei local.
 ssl.signer.no.signers.added.CWPKI0309I.explanation=Acest mesaj este pur informativ.
-ssl.signer.no.signers.added.CWPKI0309I.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+ssl.signer.no.signers.added.CWPKI0309I.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
 # -------------------------------------------------------------------------------------------------
 ssl.signer.local.truststore.not.found.CWPKI0310E=CWPKI0310E: <localKeyStoreName> specificat ca {0} nu a fost g\u0103sit pe client.
 ssl.signer.local.truststore.not.found.CWPKI0310E.explanation=Nu se g\u0103se\u015fte depozitul de chei local.  
@@ -354,11 +354,11 @@ ssl.no.properties.error.CWPKI0315E.useraction=Verifica\u0163i dac\u0103 fi\u015f
 # -------------------------------------------------------------------------------------------------
 ssl.ca.client.usage=CWPKI0400I: 
 ssl.ca.client.usage.explanation=Informa\u0163iile de utilizare a parametrilor pentru executarea acestui script.
-ssl.ca.client.usage.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+ssl.ca.client.usage.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
 # -------------------------------------------------------------------------------------------------
 ssl.ca.client.tracemodeon=CWPKI0401I: Modul urm\u0103rire este pornit.
 ssl.ca.client.tracemodeon.explanation=Acest mesaj este pur informativ.
-ssl.ca.client.tracemodeon.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+ssl.ca.client.tracemodeon.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
 # -------------------------------------------------------------------------------------------------
 ssl.ca.client.logfile.error=CWPKI0402E: Sistemul nu poate scrie \u00een fi\u015fierul istoric de urm\u0103rire \u00een urm\u0103toarea loca\u0163ie: {0}
 ssl.ca.client.logfile.error.explanation=Este o problem\u0103 la scrierea \u00een fi\u015fierul istoric specificat.
@@ -366,7 +366,7 @@ ssl.ca.client.logfile.error.useraction=Modifica\u0163i calea fi\u015fierului ist
 # -------------------------------------------------------------------------------------------------
 ssl.ca.client.logfile.location=CWPKI0403I: Urm\u0103rirea este \u00eenregistrat\u0103 \u00een urm\u0103toarea loca\u0163ie: {0}
 ssl.ca.client.logfile.location.explanation=Acest mesaj este pur informativ.
-ssl.ca.client.logfile.location.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+ssl.ca.client.logfile.location.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
 # -------------------------------------------------------------------------------------------------
 ssl.ca.client.invalid.option=CWPKI0404W: Urm\u0103toarea op\u0163iune nu este valid\u0103: {0}
 ssl.ca.client.invalid.option.explanation=Op\u0163iunea specificat\u0103 nu este corect\u0103.
@@ -386,11 +386,11 @@ ssl.ca.client.custom.class.invalid.useraction=Verifica\u0163i dac\u0103 clasa pe
 # -------------------------------------------------------------------------------------------------
 ssl.ca.client.not.personal.cert=CWPKI0408E: Certificatul {0} nu este un certificat personal.
 ssl.ca.client.not.personal.cert.explanation=Certificatul specificat nu este un certificat personal. 
-ssl.ca.client.not.personal.cert.useraction=Rerula\u0163i comanda cu un nume alias de certificat personal.
+ssl.ca.client.not.personal.cert.useraction=Rula\u0163i din nou comanda, cu un nume alias de certificat personal.
 # -------------------------------------------------------------------------------------------------
 ssl.ca.client.cert.does.not.exist=CWPKI0409E: Aliasul de certificat {0} nu exist\u0103 \u00een depozitul de chei {1}.
 ssl.ca.client.cert.does.not.exist.explanation=Sistemul nu a putut primi certificatul de la Autoritatea de certificare (CA) pentru c\u0103 cheile publice nu se potrivesc.
-ssl.ca.client.cert.does.not.exist.useraction=Rerula\u0163i comanda prin utilizarea unui certificat extras de la o Autoritate de certificare (CA) care a fost generat cu cererea de certificat care provine de la acest alias specificat \u00een acest depozit de chei.
+ssl.ca.client.cert.does.not.exist.useraction=Rula\u0163i din nou comanda utiliz\u00e2nd un certificat extras de la o Autoritate de certificare (CA) care a fost generat cu cererea de certificat care provine de la acest alias specificat \u00een acest depozit de chei.
 # -------------------------------------------------------------------------------------------------
 ssl.ca.client.keystore.not.found=CWPKI0410E: Depozitul de chei local specificat ca aliasul {0} nu a fost g\u0103sit pe client.
 ssl.ca.client.keystore.not.found.explanation=Depozitul de chei local nu este g\u0103sit.  
@@ -406,27 +406,27 @@ ssl.ca.client.request.out.of.band.useraction=Rula\u0163i queryCertificate \u015f
 # -------------------------------------------------------------------------------------------------
 ssl.ca.client.invalid.option.type=CWPKI0413E: Furniza\u0163i valoarea {0} pentru {1}.
 ssl.ca.client.invalid.option.type.explanation=Valoarea furnizat\u0103 nu este de tipul corect.
-ssl.ca.client.invalid.option.type.useraction=Verifica\u0163i ajutorul de utilizare \u015fi re\u00eencerca\u0163i dup\u0103 ce a\u0163i corectat tipul valorii.
+ssl.ca.client.invalid.option.type.useraction=Consulta\u0163i ajutorul pentru utilizare \u015fi re\u00eencerca\u0163i dup\u0103 ce a\u0163i corectat tipul valorii.
 # -------------------------------------------------------------------------------------------------
 ssl.ca.client.invalid.option.value=CWPKI0414E: Op\u0163iunea {0} este necesar\u0103 cu o valoare. 
-ssl.ca.client.invalid.option.value.explanation=O valoare adecvat\u0103 nu a fost furnizat\u0103 pe linia de comand\u0103.
+ssl.ca.client.invalid.option.value.explanation=Nu a fost furnizat\u0103 o valoare adecvat\u0103 pentru linia de comand\u0103.
 ssl.ca.client.invalid.option.value.useraction=Verifica\u0163i ajutorul de utilizare, apoi re\u00eencerca\u0163i dup\u0103 ce corecta\u0163i op\u0163iunea.
 # -------------------------------------------------------------------------------------------------
 ssl.ca.client.error.init=CWPKI0415E: Eroarea urm\u0103toare a survenit la ini\u0163ializarea implement\u0103rii Autorit\u0103\u0163ii de certificare (CA): {0}
-ssl.ca.client.error.init.explanation= O eroare a survenit \u00een timpul ini\u0163ializ\u0103rii implement\u0103rii Autorit\u0103\u0163ii de certificare (CA).
-ssl.ca.client.error.init.useraction= Verifica\u0163i mesajul asociat erorii.
+ssl.ca.client.error.init.explanation= A survenit o eroare \u00een timpul ini\u0163ializ\u0103rii implement\u0103rii Autorit\u0103\u0163ii de certificare (CA).
+ssl.ca.client.error.init.useraction= Consulta\u0163i mesajul de eroare asociat.
 # -------------------------------------------------------------------------------------------------
 ssl.ca.client.error.create=CWPKI0416E: Urm\u0103toarea eroare a survenit la crearea unui certificat semnat de Autoritate de certificare (CA): {0}
-ssl.ca.client.error.create.explanation= O eroare a survenit \u00een timpul \u00eencerc\u0103rii de creare a unui certificat semnat de Autoritatea de certificare (CA).
-ssl.ca.client.error.create.useraction= Verifica\u0163i mesajul asociat erorii.
+ssl.ca.client.error.create.explanation= A survenit o eroare \u00een timpul \u00eencerc\u0103rii de creare a unui certificat semnat de Autoritatea de certificare (CA).
+ssl.ca.client.error.create.useraction= Consulta\u0163i mesajul de eroare asociat.
 # -------------------------------------------------------------------------------------------------
 ssl.ca.client.error.revoke=CWPKI0417E: Urm\u0103toarea eroare a survenit \u00een timpul revoc\u0103rii unui certificat semnat de Autoritatea de certificare (CA): {0}
-ssl.ca.client.error.revoke.explanation=O eroare a survenit la \u00eencercarea de revocarea a unui certificat semnat de Autoritatea de certificare (CA).
+ssl.ca.client.error.revoke.explanation=A survenit o eroare la \u00eencercarea de revocarea a unui certificat semnat de Autoritatea de certificare (CA).
 ssl.ca.client.error.revoke.useraction=Verifica\u0163i mesajul asociat erorii.
 # -------------------------------------------------------------------------------------------------
 ssl.ca.client.error.query=CWPKI0418E: Urm\u0103toarea eroare a survenit \u00een timpul interog\u0103rii Autorit\u0103\u0163ii de certificare (CA) pentru un certificat semnat: {0}
-ssl.ca.client.error.query.explanation=O eroare a survenit la \u00eencercarea de interogare a Autorit\u0103\u0163ii de certificare (CA) pentru un certificat semnat.
-ssl.ca.client.error.query.useraction=Verifica\u0163i mesajul asociat erorii.
+ssl.ca.client.error.query.explanation=A survenit o eroare la \u00eencercarea de interogare a Autorit\u0103\u0163ii de certificare (CA) pentru un certificat semnat.
+ssl.ca.client.error.query.useraction=Consulta\u0163i mesajul de eroare asociat.
 # -------------------------------------------------------------------------------------------------
 ssl.ca.client.keystore.readonly=CWPKI0419E: Sistemul nu a putut primi certificatul pentru c\u0103 depozitul de chei specificat este numai-citire.
 ssl.ca.client.keystore.readonly.explanation=Sistemul \u00eencearc\u0103 s\u0103 scrie un certificat primit \u00eentr-un depozit de chei numai-citire.
@@ -438,11 +438,11 @@ ssl.ca.client.receive.failed.useraction=Verifica\u0163i mesajele de eroare anter
 # -------------------------------------------------------------------------------------------------
 ssl.ca.client.pkcs10.request.created=CWPKI0421I: O cerere de certificat PKCS10 cu aliasul {0} a fost creat\u0103 cu succes.  Cererea este stocat\u0103 \u00een urm\u0103torul fi\u015fier: {1} 
 ssl.ca.client.pkcs10.request.created.explanation=Acest mesaj este pur informativ.
-ssl.ca.client.pkcs10.request.created.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+ssl.ca.client.pkcs10.request.created.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
 # -------------------------------------------------------------------------------------------------
 ssl.ca.client.pkcs10.request.sending=CWPKI0422I: Sistemul genereaz\u0103 o cerere de certificat PKCS10.
 ssl.ca.client.pkcs10.request.sending.explanation=Acest mesaj este pur informativ.
-ssl.ca.client.pkcs10.request.sending.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+ssl.ca.client.pkcs10.request.sending.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
 # -------------------------------------------------------------------------------------------------
 ssl.ca.client.pkcs10.request.failed=CWPKI0423E: Cererea de certificat PKCS10 nu a putut fi creat\u0103 din cauza urm\u0103toarei erori: {0}
 ssl.ca.client.pkcs10.request.failed.explanation=Cererea de certificat PKCS10 nu a putut fi creat\u0103 din cauza erorii specificate.
@@ -490,7 +490,7 @@ ssl.ca.cmp.impl.tempfile.error.useraction= Asigura\u0163i-v\u0103 c\u0103 exist\
 # -------------------------------------------------------------------------------------------------
 ssl.ca.cmp.impl.request.created=CWPKI0455I: Cerere de certificat semnat de Autoritatea de certificare (CA).
 ssl.ca.cmp.impl.request.created.explanation=Acest mesaj este pur informativ.
-ssl.ca.cmp.impl.request.created.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+ssl.ca.cmp.impl.request.created.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
 # -------------------------------------------------------------------------------------------------
 ssl.ca.cmp.impl.create.error=CWPKI0456E: A ap\u0103rut o excep\u0163ie la cererea certificatului: {0}
 ssl.ca.cmp.impl.create.error.explanation=Eroarea specificat\u0103 a ap\u0103rut la cererea certificatului.
@@ -510,11 +510,11 @@ ssl.ca.cmp.impl.invalid.certificate.chain.useraction=Verifica\u0163i c\u0103 se 
 # -------------------------------------------------------------------------------------------------
 ssl.ca.cmp.impl.revoke.request.created=CWPKI0460I: Revocare a unui certificat semnat de Autoritatea de certificare (CA).
 ssl.ca.cmp.impl.revoke.request.created.explanation=Acest mesaj este pur informativ.
-ssl.ca.cmp.impl.revoke.request.created.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+ssl.ca.cmp.impl.revoke.request.created.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
 # -------------------------------------------------------------------------------------------------
 ssl.ca.cmp.impl.action.not.supported=CWPKI0461I: Ac\u0163iunea {0} nu este suportat\u0103 de aceast\u0103 implementare.
 ssl.ca.cmp.impl.action.not.supported.explanation=Acest mesaj este pur informativ.
-ssl.ca.cmp.impl.action.not.supported.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+ssl.ca.cmp.impl.action.not.supported.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
 # -------------------------------------------------------------------------------------------------
 ssl.ca.cmp.impl.revoke.request.processed=CWPKI0462I: S-a ini\u0163iat o cerere de revocare a certificatului pentru aliasul de certificat {0}. Motiv: {1}
 ssl.ca.cmp.impl.revoke.request.processed.explanation=O cerere de revocare a unui certificat semnat de Autoritatea de certificare (CA) a fost emis\u0103.
@@ -522,7 +522,7 @@ ssl.ca.cmp.impl.revoke.request.processed.useraction=Verifica\u0163i cu Autoritat
 # -------------------------------------------------------------------------------------------------
 ssl.ca.cmp.impl.certificate.received=CWPKI0463I: Certificatul a fost primit \u015fi memorat \u00een depozitul de chei {0} ca aliasul {1}.
 ssl.ca.cmp.impl.certificate.received.explanation=Acest mesaj este pur informativ.
-ssl.ca.cmp.impl.certificate.received.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+ssl.ca.cmp.impl.certificate.received.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
 # -------------------------------------------------------------------------------------------------
 ssl.ca.cmp.impl.certificate.received.header=*** CERTIFICAT ***
 ssl.ca.cmp.impl.certificate.received.subject=Posesor:
@@ -558,7 +558,7 @@ ssl.create.certificate.end.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
 #--------------------------------------------------------------------------------------------------
 ssl.create.certificate.error=CWPKI0804E: Eroare crea\u0163ie certificat SSL. {0}
 ssl.create.certificate.error.explanation=Certificatul SSL nu a putut fi creat \u00een loca\u0163ia specificat\u0103.
-ssl.create.certificate.error.useraction=Asigura\u0163i-v\u0103 c\u0103 loca\u0163ie este accesibil\u0103 procesului de server. Examina\u0163i istoricele FFDC pentru erori suplimentare care sunt asociate cu generarea sau \u00eenc\u0103rcarea cheilor.
+ssl.create.certificate.error.useraction=Asigura\u0163i-v\u0103 c\u0103 loca\u0163ie este accesibil\u0103 procesului de server. Examina\u0163i istoricele FFDC pentru erori suplimentare care sunt asociate cu generarea \u015fi \u00eenc\u0103rcarea cheilor.
 
 # Messages for the CWPKI0804E message descriptor {0}.
 ssl.create.certificate.error.reason1=Nu poate s\u0103 creeze fi\u015fierul cheie SSL: {0}
@@ -601,7 +601,7 @@ ssl.unrecoverablekey.error.CWPKI0813E.explanation=A fost o eroare c\u00e2nd se \
 ssl.unrecoverablekey.error.CWPKI0813E.useraction=Asigura\u0163i-v\u0103 c\u0103 parola cheii private este corect\u0103 \u015fi depozitul de chei nu are chei multiple cu parole diferite \u00eenainte de a folosi depozitul de chei pentru conexiuni SSL.
 #--------------------------------------------------------------------------------------------------
 ssl.hwkeystore.load.error.CWPKI0814E=CWPKI0814E: A ap\u0103rut o eroare \u00een timp ce se ini\u0163ializa depozit de chei hardware [{0}].  Verifica\u0163i fi\u015fierul de configura\u0163ie hardware {1} pentru a v\u0103 asigura c\u0103 atributele sunt setate corect.  Excep\u0163ia returnat\u0103 de la furnizor este: [{2}].
-ssl.hwkeystore.load.error.CWPKI0814E.explanation=E ceva gre\u015fit \u00een configura\u0163ia hardware care \u00eempiedic\u0103 depozitul de chei s\u0103 devin\u0103 de neutilizat. Dac\u0103 exist\u0103 o configura\u0163ie SSL care se refer\u0103 la acest depozit de chei, acesta nu va putea fi folosit.
+ssl.hwkeystore.load.error.CWPKI0814E.explanation=E ceva gre\u015fit \u00een configura\u0163ia hardware care \u00eempiedic\u0103 depozitul de chei s\u0103 devin\u0103 de neutilizat.  Dac\u0103 exist\u0103 o configura\u0163ie SSL care se refer\u0103 la acest depozit de chei, acesta nu va putea fi folosit.
 ssl.hwkeystore.load.error.CWPKI0814E.useraction=Asigura\u0163i-v\u0103 c\u0103 fi\u015fierul de configura\u0163ie hardware con\u0163ine atributele necesare, numele \u015fi biblioteca. Asigura\u0163i-v\u0103 c\u0103 alte atribute din fi\u015fierul de configura\u0163ie urm\u0103resc specifica\u0163ia dispozitivului hardware.
 #--------------------------------------------------------------------------------------------------
 ssl.dynamicSelection.conflict.CWPKI0815W=CWPKI0815W: Mai mult de un element OutboundConnection specific\u0103 gazda [{0}] \u015fi portul [{1}] ca filtru. Va fi utilizat elementul OutboundConnection configurat pe elementul SSL [{2}].
@@ -657,10 +657,14 @@ ssl.using.cacerts.CWPKI0827I.explanation=Depozitul de \u00eencrederi implicit \u
 ssl.using.cacerts.CWPKI0827I.useraction=Nicio ac\u0163iune nu este necesar\u0103.
 # -------------------------------------------------------------------------------------------------
 ssl.client.handshake.cacerts.error.CWPKI0828E=CWPKI0828E: Atributul trustDefaultCerts este activat, dar \u00eencrederea nu a fost stabilit\u0103 utiliz\u00e2nd depozitul de \u00eencrederi implicit. Mesajul extins al erorii de la excep\u0163ia dialogului de confirmare SSL este: {0}.
-ssl.client.handshake.cacerts.error.CWPKI0828E.explanation=Depozitul de \u00eencrederi implicit nu este configurat corespunz\u0103tor pentru stabilirea \u00eencrederii. 
+ssl.client.handshake.cacerts.error.CWPKI0828E.explanation=Depozitul de \u00eencrederi implicit nu este configurat corespunz\u0103tor pentru stabilirea \u00eencrederii.  
 ssl.client.handshake.cacerts.error.CWPKI0828E.useraction=Examina\u0163i mesajul de eroare extins pentru a determina ce s\u0103 modifica\u0163i \u00een configura\u0163ie.
 # -------------------------------------------------------------------------------------------------
-ssl.update.certificate.error=CWPKI0829E: Eroare de actualizare certificat SSL. ''{0}''
-ssl.update.certificate.error.explanation=Certificatul SSL nu a putut fi actualizat la loca\u0163ia specificat\u0103.
-ssl.update.certificate.error.useraction=Asigura\u0163i-v\u0103 c\u0103 loca\u0163ie este accesibil\u0103 procesului de server.  Examina\u0163i istoricele FFDC pentru erori suplimentare care sunt asociate cu generarea sau \u00eenc\u0103rcarea cheilor.
+ssl.update.certificate.error=CWPKI0829E: Eroare actualizare certificat SSL. ''{0}''
+ssl.update.certificate.error.explanation=Certificatul SSL nu poate fi actualizat la loca\u0163ia specificat\u0103.
+ssl.update.certificate.error.useraction=Asigura\u0163i-v\u0103 c\u0103 loca\u0163ie este accesibil\u0103 procesului de server.  Examina\u0163i istoricele FFDC pentru erori suplimentare care sunt asociate cu generarea \u015fi \u00eenc\u0103rcarea cheilor.
+# -------------------------------------------------------------------------------------------------
+ssl.certificate.add.CWPKI0830I=CWPKI0830I: Certificatul cu SubjectDN {0} de la variabila de mediu {1} este ad\u0103ugat la depozitul de chei {2}.
+ssl.certificate.add.CWPKI0830I.explanation=Un certificat a fost extras dintr-o variabil\u0103 de mediu din configura\u0163ie \u015fi este ad\u0103ugat la fi\u015fierul depozit de chei.
+ssl.certificate.add.CWPKI0830I.useraction=Nicio ac\u0163iune necesar\u0103.
 # -------------------------------------------------------------------------------------------------

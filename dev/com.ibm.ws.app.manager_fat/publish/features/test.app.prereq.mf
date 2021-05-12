@@ -1,0 +1,9 @@
+Subsystem-ManifestVersion: 1
+Subsystem-SymbolicName: test.app.prereq;visibility:=public
+Subsystem-Version: 1.0.0
+Subsystem-Content: 
+ com.ibm.websphere.appserver.appmanager-1.0; type="osgi.subsystem.feature",
+ test.app.prereq
+Subsystem-Type: osgi.subsystem.feature
+IBM-Feature-Version: 2
+

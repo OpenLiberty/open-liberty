@@ -175,7 +175,7 @@ public class LibertyJaxWsImplementorInfo extends JaxWsImplementorInfo {
     public AddressingFeature getAddressingFeature() {
         AddressingFeatureInfo featureInfo = endpointInfo.getAddressingFeatureInfo();
         if (null != featureInfo) {
-            // @TJJ commenting out this check as JAX-WS 2.2 is the default in CXF 3.3
+            // Commenting out this check as JAX-WS 2.2 is the default in CXF 3.3
             // and this code as been deprecated
             //if (ProviderImpl.isJaxWs22()) {
             try {

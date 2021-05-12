@@ -1,0 +1,59 @@
+#*******************************************************************************
+# Copyright (c) 2021 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-SymbolicName: io.openliberty.restfulWS.internal.globalhandler
+
+jakartaeeMe: true
+
+src: src, resources
+
+#-cdiannotations:
+
+-dsannotations: \
+  io.openliberty.restfulWS.internal.globalhandler.RESTfulWSHandlerImpl
+
+-dsannotations-inherit: true
+
+app-resources= \
+  META-INF/services/jakarta.ws.rs.ext.Providers
+
+
+Service-Component: \
+  io.openliberty.restfulWS.internal.globalhandler.ResourceProvider; \
+    implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
+    provide:=com.ibm.wsspi.classloading.ResourceProvider; \
+    configuration-policy:=optional; \
+    properties:="resources=${app-resources}"
+
+Export-Package: io.openliberty.restfulWS.internal.globalhandler;thread-context=true
+ 
+
+Include-Resource:\
+  io/openliberty=${bin}/io/openliberty, \
+  META-INF=resources/META-INF
+
+-buildpath: \
+  io.openliberty.org.jboss.resteasy.common;version=latest,\
+  com.ibm.websphere.javaee.jaxrs.2.1, \
+  com.ibm.websphere.javaee.servlet.4.0, \
+  com.ibm.websphere.org.osgi.core;version=latest, \
+  com.ibm.websphere.org.osgi.service.component;version=latest, \
+  com.ibm.ws.adaptable.module;version=latest, \
+  com.ibm.ws.anno;version=latest, \
+  com.ibm.ws.container.service;version=latest,\
+  com.ibm.ws.logging.core, \
+  com.ibm.ws.org.jboss.logging, \
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+  com.ibm.ws.webcontainer;version=latest, \
+  com.ibm.ws.webservices.handler;version=latest, \
+  com.ibm.wsspi.org.osgi.service.component.annotations;version=latest

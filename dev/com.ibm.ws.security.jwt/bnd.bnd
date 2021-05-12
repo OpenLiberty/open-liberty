@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017,2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -14,6 +14,16 @@ bVersion=1.0
 Bundle-Name: WebSphere Security JWT Builder and Consumer
 Bundle-SymbolicName: com.ibm.ws.security.jwt
 Bundle-Description: WebSphere Security JWT Builder and Consumer, version=${bVersion}
+
+#
+# Generate an Jakarta EE compliant JAR for the bundle.
+#
+jakartaeeMe: true
+#jakartaee.transform.jar.name=io.openliberty.security.jwt.internal.jar
+#JakartaEE-Bundle-Name: Liberty Security JWT Builder and Consumer
+#JakartaEE-Bundle-Symbolic-Name: io.openliberty.security.jwt.internal
+#JakartaEE-Bundle-Description: Liberty Security JWT Builder and Consumer, version=${bVersion} 
+#JakartaEE-Bundle-Version: 
 
 Web-ContextPath: /jwt
 WS-TraceGroup: \
@@ -67,7 +77,8 @@ Import-Package: \
     com.ibm.websphere.ssl;version="[1.0.0, 2.0)";resolution:=optional, \
     com.ibm.ws.ssl;version="[1.0.0, 2.0)";resolution:=optional, \
     com.ibm.ws.security.wim;version="[1.0.0, 2.0)";resolution:=optional, \
-    com.ibm.wsspi.security.wim.model;version="[1.0.0, 2.0)";resolution:=optional
+    com.ibm.wsspi.security.wim.model;version="[1.0.0, 2.0)";resolution:=optional, \
+    com.ibm.ws.kernel.productinfo
 
 Private-Package: \
     com.ibm.ws.security.jwt.internal.*, \
@@ -106,7 +117,7 @@ instrument.classesExcludes: com/ibm/ws/security/jwt/internal/resources/*.class
     com.ibm.ws.webcontainer.security;version=latest, \
     com.ibm.ws.crypto.passwordutil;version=latest, \
     com.ibm.ws.org.joda.time.1.6.2;version=latest, \
-    com.ibm.ws.org.apache.commons.codec;version=latest, \
+    io.openliberty.org.apache.commons.codec;version=latest, \
     com.ibm.ws.config;version=latest, \
     com.ibm.ws.org.jose4j;version=latest, \
     com.ibm.ws.security.common;version=latest, \
@@ -116,11 +127,11 @@ instrument.classesExcludes: com/ibm/ws/security/jwt/internal/resources/*.class
     com.ibm.ws.ssl;version=latest, \
     com.ibm.websphere.javaee.servlet.3.0;version=latest, \
     com.ibm.websphere.javaee.jaxrs.2.0;version=latest, \
-    org.apache.httpcomponents:httpclient;version=4.5.5, \
-    org.apache.httpcomponents:httpcore;version=4.4.9, \
+    com.ibm.ws.org.apache.httpcomponents;version=latest, \
     com.ibm.ws.com.google.gson.2.2.4;version=latest, \
     com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
-    com.ibm.json4j;version=latest
+    com.ibm.json4j;version=latest, \
+    com.ibm.ws.kernel.boot.core;version=latest
 
 -testpath: \
     ../build.sharedResources/lib/junit/old/junit.jar;version=file, \
@@ -133,4 +144,5 @@ instrument.classesExcludes: com/ibm/ws/security/jwt/internal/resources/*.class
     com.ibm.ws.org.objenesis:objenesis;version=1.0, \
     com.ibm.ws.kernel.boot;version=latest, \
     com.ibm.ws.org.jose4j;version=latest, \
-    com.ibm.ws.org.slf4j.api.1.7.7;version=latest
+    com.ibm.ws.org.slf4j.api.1.7.7;version=latest, \
+    com.ibm.ws.security.test.common;version=latest

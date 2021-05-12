@@ -81,7 +81,7 @@ public abstract class SingleThreadedStepControllerImpl extends BaseStepControlle
 		if ( isPartitionedStep() ) {
 			Collector collector = getStep().getPartition().getCollector();
 			if (collector != null) {
-				List<Property> propList = (collector.getProperties() == null) ? null : collector.getProperties().getPropertyList();
+				List<Property> propList = (collector.getProperties() == null) ? null : (List<Property>) collector.getProperties().getPropertyList();
 				/**
 				 * Inject job flow, split, and step contexts into partition
 				 * artifacts like collectors and listeners some of these

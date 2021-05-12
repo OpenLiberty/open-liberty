@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CancellationException;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -67,7 +68,6 @@ import org.apache.cxf.jaxrs.utils.InjectionUtils;
 import org.apache.cxf.jaxrs.utils.JAXRSUtils;
 import org.apache.cxf.message.Exchange;
 import org.apache.cxf.message.Message;
-import org.apache.cxf.message.MessageImpl;
 import org.apache.cxf.message.MessageContentsList;
 import org.apache.cxf.service.invoker.AbstractInvoker;
 
@@ -118,9 +118,7 @@ public class JAXRSInvoker extends AbstractInvoker {
             return handleFault(ex, inMessage);
         } finally {
             boolean suspended = isSuspended(exchange);
-            //Liberty code change start
-            if (suspended || exchange.isOneWay() || ((MessageImpl) inMessage).getThreadContextSwitched() != null) {
-                //Liberty code change end
+            if (suspended || exchange.isOneWay() || inMessage.get(Message.THREAD_CONTEXT_SWITCHED) != null) {
                 ServerProviderFactory.clearThreadLocalProxies(inMessage);
             }
             if (suspended || isServiceObjectRequestScope(inMessage)) {
@@ -138,7 +136,14 @@ public class JAXRSInvoker extends AbstractInvoker {
     private Object handleAsyncResponse(Exchange exchange, AsyncResponseImpl ar) {
         Object asyncObj = ar.getResponseObject();
         if (asyncObj instanceof Throwable) {
-            return handleAsyncFault(exchange, ar, (Throwable)asyncObj);
+            final Throwable throwable = (Throwable)asyncObj;
+            Throwable cause = throwable;
+
+            if (throwable instanceof CompletionException) {
+                cause = throwable.getCause();
+            }
+
+            return handleAsyncFault(exchange, ar, (cause != null) ? cause : throwable);
         }
         setResponseContentTypeIfNeeded(exchange.getInMessage(), asyncObj);
         return new MessageContentsList(asyncObj);
@@ -203,9 +208,7 @@ public class JAXRSInvoker extends AbstractInvoker {
                     .setThreadContextClassloader(resourceObject.getClass().getClassLoader());
             }
             if (!ori.isSubResourceLocator()) {
-                //Liberty code change start
-                asyncResponse = (AsyncResponseImpl)((MessageImpl) inMessage).getAsyncResponse();
-                //Liberty code change end
+                asyncResponse = (AsyncResponseImpl)inMessage.get(AsyncResponse.class);
             }
             result = invoke(exchange, resourceObject, methodToInvoke, params);
             if (asyncResponse == null && !ori.isSubResourceLocator()) {
@@ -238,10 +241,8 @@ public class JAXRSInvoker extends AbstractInvoker {
             try {
                 MultivaluedMap<String, String> values = getTemplateValues(inMessage);
                 String subResourcePath = values.getFirst(URITemplate.FINAL_MATCH_GROUP);
-                //Liberty code change start
-                String httpMethod = (String)((MessageImpl) inMessage).getHttpRequestMethod();
-                String contentType = (String)((MessageImpl) inMessage).getContentType();
-                //Liberty code change end
+                String httpMethod = (String)inMessage.get(Message.HTTP_REQUEST_METHOD);
+                String contentType = (String)inMessage.get(Message.CONTENT_TYPE);
                 if (contentType == null) {
                     contentType = "*/*";
                 }
@@ -278,9 +279,8 @@ public class JAXRSInvoker extends AbstractInvoker {
                                                          contentType,
                                                          acceptContentType);
                 exchange.put(OperationResourceInfo.class, subOri);
-                //Liberty code change start
-                ((MessageImpl) inMessage).setTemplateParameters(values);
-                //Liberty code change end
+                inMessage.put(URITemplate.TEMPLATE_PARAMETERS, values);
+                inMessage.put(URITemplate.URI_TEMPLATE, JAXRSUtils.getUriTemplate(inMessage, subCri, ori, subOri));
 
                 if (!subOri.isSubResourceLocator()
                     && JAXRSUtils.runContainerRequestFilters(providerFactory,
@@ -304,10 +304,8 @@ public class JAXRSInvoker extends AbstractInvoker {
                 return new MessageContentsList(resp);
             } catch (WebApplicationException ex) {
                 Response excResponse;
-                //Liberty code change start
                 if (JAXRSUtils.noResourceMethodForOptions(ex.getResponse(),
-                        (String)((MessageImpl) inMessage).getHttpRequestMethod())) {
-                    //Liberty code change end
+                        (String)inMessage.get(Message.HTTP_REQUEST_METHOD))) {
                     excResponse = JAXRSUtils.createResponse(Collections.singletonList(subCri),
                                                             null, null, 200, true);
                 } else {
@@ -437,10 +435,8 @@ public class JAXRSInvoker extends AbstractInvoker {
     @SuppressWarnings("unchecked")
     protected MultivaluedMap<String, String> getTemplateValues(Message msg) {
         MultivaluedMap<String, String> values = new MetadataMap<>();
-        //Liberty code change start
         MultivaluedMap<String, String> oldValues =
-            (MultivaluedMap<String, String>)((MessageImpl) msg).getTemplateParameters();
-        //Liberty code change end
+            (MultivaluedMap<String, String>)msg.get(URITemplate.TEMPLATE_PARAMETERS);
         if (oldValues != null) {
             values.putAll(oldValues);
         }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2018 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,7 +22,9 @@ package com.ibm.ws.security.jaspi;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
+import java.security.AccessController;
 import java.security.Principal;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
@@ -40,6 +42,7 @@ import javax.security.auth.message.callback.PasswordValidationCallback;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.security.CustomRegistryException;
 import com.ibm.websphere.security.EntryNotFoundException;
 import com.ibm.websphere.security.PasswordCheckFailedException;
@@ -47,6 +50,7 @@ import com.ibm.websphere.security.UserRegistry;
 import com.ibm.websphere.security.WSSecurityException;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.authentication.AuthenticationConstants;
+import com.ibm.ws.security.authentication.principals.WSPrincipal;
 import com.ibm.ws.security.authentication.utility.SubjectHelper;
 import com.ibm.ws.webcontainer.security.JaspiService;
 import com.ibm.wsspi.security.registry.RegistryHelper;
@@ -154,6 +158,13 @@ public class JaspiCallbackHandler implements CallbackHandler {
                 securityName = userPrincipal.getName();
                 addCommonAttributes(realm, securityName, credData);
                 credData.put("com.ibm.wsspi.security.cred.jaspi.principal", userPrincipal);
+
+                // In the case that the end user has created their own custom implementation Principal
+                // make sure to add that custom principal into the Principals list
+                if (!(callback.getPrincipal() instanceof WSPrincipal)) {
+                    AccessController.doPrivileged(new AddPrincipalPrivAction(callback));
+                }
+
             } else {
                 securityName = userName;
                 addCommonAttributes(realm, securityName, credData);
@@ -354,5 +365,23 @@ public class JaspiCallbackHandler implements CallbackHandler {
         }
         return registry;
     }
+
+    /*
+     * A non-anonymous class for the privledged actions is needed to avoid an ACE.
+     */
+    @Trivial
+    private class AddPrincipalPrivAction implements PrivilegedAction<Void> {
+        CallerPrincipalCallback callback;
+
+        AddPrincipalPrivAction(CallerPrincipalCallback callback) {
+            this.callback = callback;
+        }
+
+        @Override
+        public Void run() {
+            callback.getSubject().getPrincipals().add(callback.getPrincipal());
+            return null;
+        }
+    };
 
 }

@@ -8,9 +8,10 @@ IBM-API-Package: jakarta.json.bind; type="spec", \
  jakarta.json.bind.serializer; type="spec", \
  jakarta.json.bind.spi; type="spec"
 IBM-ShortName: jsonbContainer-2.0
-Subsystem-Name: JavaScript Object Notation Binding 2.0 via Bells
+Subsystem-Name: Jakarta JSON Binding 2.0 Container
 -features=io.openliberty.jsonbImpl-2.0.0, \
  com.ibm.websphere.appserver.eeCompatible-9.0
 -bundles=com.ibm.ws.jsonb.service
-kind=noship
-edition=full
+kind=beta
+edition=core
+WLP-Activation-Type: parallel

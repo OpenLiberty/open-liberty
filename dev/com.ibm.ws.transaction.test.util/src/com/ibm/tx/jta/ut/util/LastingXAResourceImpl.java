@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,20 +42,29 @@ public class LastingXAResourceImpl extends XAResourceImpl {
     protected static boolean _attemptedFileInit;
 
     public static boolean STORE_STATE_IN_DATABASE = true;
-
+    public static boolean INTERRUPT_IN_RECOVERY = false;
     private static dbStore _dbStore = null;
 
     static {
         stateKeeper = new LastingStateKeeperImpl();
     }
-
-    public LastingXAResourceImpl() throws Exception {
+  
+    public static LastingXAResourceImpl getLastingXAResourceImpl() {
+        return new LastingXAResourceImpl();
+    }
+    
+    public LastingXAResourceImpl() {
         super();
 
         if (STORE_STATE_IN_DATABASE) {
             if (_dbStore == null) {
-                _dbStore = new dbStore();
-                _dbStore.clear();
+                try {
+					_dbStore = new dbStore();
+	                _dbStore.clear();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
             }
         } else if (!_attemptedFileInit) {
             // Storing state data in a file
@@ -116,6 +125,14 @@ public class LastingXAResourceImpl extends XAResourceImpl {
             _recoveredResourceCount++;
             if (DEBUG_OUTPUT)
                 System.out.println("recover resource count is " + _recoveredResourceCount);
+
+            // If the INTERRUPT_IN_RECOVERY flag has been set, simulate the re-acquisition
+            // of its logs by the home server
+            if(INTERRUPT_IN_RECOVERY)
+            {
+            	dbStore.updateLogOwnership();
+            }
+
             if (_recoveredResourceCount >= _numberloadedResources) {
                 if (DEBUG_OUTPUT)
                     System.out.println("recover: Final call to recover");
@@ -272,7 +289,7 @@ public class LastingXAResourceImpl extends XAResourceImpl {
 
                 rsBasic = stmtBasic.executeQuery("SELECT RESOURCE_ID, DATA" +
                                                  " FROM WAS_XA_RESOURCES");
-                // Now process through the peers we need to handle
+                // Now process through the rows we need to handle
                 while (rsBasic.next()) {
                     final int resId = rsBasic.getInt(1);
                     final byte[] data = rsBasic.getBytes(2);
@@ -280,16 +297,25 @@ public class LastingXAResourceImpl extends XAResourceImpl {
                         System.out.println("Resource Table: read rid: " + resId);
                         System.out.println("Resource Table: read data: " + data);
                     }
-                    ObjectInputStream objectIn = null;
-                    if (data != null)
-                        objectIn = new ObjectInputStream(new ByteArrayInputStream(data));
-                    final XAResourceData xares = (XAResourceData) objectIn.readObject();
+                    
+                    // Test for presence of special key
+                    if(resId == -99) {
+                        if (DEBUG_OUTPUT)
+                        	System.out.println("getXAResources found special interrupt key");
+                    	INTERRUPT_IN_RECOVERY = true;
+                    } else {
 
-                    _resources.put(resId, xares);
-                    if (resId >= _nextKey.get()) {
-                        _nextKey.set(resId + 1);
+                    	ObjectInputStream objectIn = null;
+                    	if (data != null)
+                    		objectIn = new ObjectInputStream(new ByteArrayInputStream(data));
+                    	final XAResourceData xares = (XAResourceData) objectIn.readObject();
+
+                    	_resources.put(resId, xares);
+                    	if (resId >= _nextKey.get()) {
+                    		_nextKey.set(resId + 1);
+                    	}
+                    	resourceCount++;
                     }
-                    resourceCount++;
                 }
                 if (DEBUG_OUTPUT)
                     System.out.println("getXAResources Loaded " + resourceCount + " resources");
@@ -312,6 +338,66 @@ public class LastingXAResourceImpl extends XAResourceImpl {
                 }
             }
             return resourceCount;
+        }
+
+        /**
+         * Used to simulate the acquisition of the cloud001 logs by the "home server"
+         */
+        public static void updateLogOwnership() {
+            Connection con1 = null;
+            Statement stmtBasic = null;
+
+            try {
+                // Do the lookups on the DS
+                if (_theDS == null)
+                    _theDS = lookupDataSource();
+
+                // Get connection to database via datasource
+                con1 = _theDS.getConnection();
+                if (DEBUG_OUTPUT)
+                    new Throwable("updateLogOwnership Got connection: " + con1).printStackTrace();;
+
+                // Statement used to update log ownership
+                Statement stmt = con1.createStatement();
+
+                try {
+                    System.out.println("updateLogOwnership: sel-for-update against partner log table");
+                    String selForUpdateString = "SELECT SERVER_NAME" +
+                                                " FROM WAS_PARTNER_LOGcloud001" +
+                                                " WHERE RU_ID = -1 FOR UPDATE OF SERVER_NAME";
+                    ResultSet rs = stmt.executeQuery(selForUpdateString);
+                    while (rs.next()) {
+                        String owner = rs.getString("SERVER_NAME");
+                        System.out.println("updateLogOwnership: owner is - " + owner);
+                    }
+                    rs.close();
+                    String updateString = "UPDATE " + "WAS_PARTNER_LOGcloud001" +
+                                    " SET SERVER_NAME = 'cloud001'" +
+                                   " WHERE RU_ID = -1";
+                    stmt.executeUpdate(updateString);
+                } catch (SQLException x) {
+                    System.out.println("updateLogOwnership: caught exception - " + x);
+                }
+
+                System.out.println("updateLogOwnership: commit changes to database");
+                con1.commit();
+            } catch (Exception ex) {
+                System.out.println("updateLogOwnership: caught exception " + ex);
+            } finally {
+                try {
+                    if (stmtBasic != null)
+                        stmtBasic.close();
+                    if (con1 != null) {
+                        con1.commit();
+                        con1.close();
+                    }
+                } catch (SQLException e) {
+                    // TODO Auto-generated catch block
+                    // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
+                    // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
+                    e.printStackTrace();
+                }
+            }
         }
 
         public void clear() {
@@ -414,6 +500,19 @@ public class LastingXAResourceImpl extends XAResourceImpl {
                     if (DEBUG_OUTPUT)
                         System.out.println("putXAResources Inserted row with return: " + ret);
                 }
+                
+                // If there are recoverable resources and the INTERRUPT_IN_RECOVERY flag has been set,
+                // then store a special key in the table
+                if(_resources.size() > 0 && INTERRUPT_IN_RECOVERY)
+                {
+                	if (DEBUG_OUTPUT)
+                		System.out.println("putXAResources insert special interrupt key");
+                    insertStatement.setInt(1, -99);
+                    insertStatement.setBytes(2, null);
+                    int ret = insertStatement.executeUpdate();
+                    if (DEBUG_OUTPUT)
+                        System.out.println("putXAResources Inserted row with return: " + ret);
+                }
 
             } catch (Exception e) {
                 System.out.println("putXAResources, Exception thrown when inserting data: " + e);
@@ -439,16 +538,17 @@ public class LastingXAResourceImpl extends XAResourceImpl {
         private static DataSource lookupDataSource() throws Exception {
             // Do the lookups on the DS
             final InitialContext ctx = new InitialContext();
-            System.out.println("NYTRACE: Context is: " + ctx.toString());
+            System.out.println("Context is: " + ctx.toString());
             DataSource ds = null;
             try {
                 ds = (DataSource) ctx.lookup("java:comp/env/jdbc/tranlogDataSource");
             } catch (javax.naming.NamingException nex) {
                 // try alternate lookup
-                System.out.println("NYTRACE: Try alternate lookup");
+                System.out.println("Try alternate lookup");
                 ds = (DataSource) ctx.lookup("jdbc/tranlogDataSource");
             }
-            System.out.println("NYTRACE: GOT DATASOURCE: " + ds);
+            if (DEBUG_OUTPUT)
+            	System.out.println("TEST UTIL VERSION, GOT DATASOURCE: " + ds);
             // Do the lookups on the DS
 //            if (DEBUG_OUTPUT)
 //                System.out.println("INITIALISE DATASOURCE");

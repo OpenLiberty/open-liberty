@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2018 IBM Corporation and others.
+ * Copyright (c) 2015, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -97,6 +97,7 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
     private final Set<String> additionalBeanDefiningAnnotations = new HashSet<String>();
 
     private final Set<String> extensionClassNames = new HashSet<String>();
+    private final Set<String> spiExtensionClassNames = new HashSet<String>();
 
     private final ServiceRegistry weldServiceRegistry;
     private final String id;
@@ -786,6 +787,8 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
      */
     @Override
     public void addEjbDescriptor(EjbDescriptor<?> ejbDescriptor) {
+        Tr.entry(tc, "addEjbDescriptor. Adding EjbDescriptor: " + ejbDescriptor + " with ejbName: " + ejbDescriptor.getEjbName() + " to bda: " + getHumanReadableName());
+
         if (getBeanDiscoveryMode() != BeanDiscoveryMode.NONE) {
             this.ejbDescriptors.add(ejbDescriptor);
             Class<?> beanClass = ejbDescriptor.getBeanClass();
@@ -1011,6 +1014,17 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
      */
     public Collection<String> getKnownClasses() {
         return getAllClazzes();
+    }
+
+    @Override
+    public Set<String> getSPIExtensionClassNames() {
+        return spiExtensionClassNames;
+    }
+
+    @Override
+    public void setSPIExtensionClassNames(Set<String> spiExtensionsClassNames) {
+        this.spiExtensionClassNames.clear();
+        this.spiExtensionClassNames.addAll(spiExtensionsClassNames);
     }
 
     private static ClassLoader getContextClassLoader() {

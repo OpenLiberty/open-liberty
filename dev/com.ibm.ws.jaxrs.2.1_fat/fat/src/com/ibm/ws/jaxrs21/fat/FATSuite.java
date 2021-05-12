@@ -23,6 +23,7 @@ import com.ibm.ws.jaxrs21.fat.uriInfo.UriInfoTest;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
@@ -37,5 +38,5 @@ import componenttest.rules.repeater.RepeatTests;
 public class FATSuite {
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-        .andWith(new FeatureReplacementAction("jaxrs-2.1", "jaxrs-2.2").withID("RESTEasy"));
+        .andWith(new JakartaEE9Action());
 }

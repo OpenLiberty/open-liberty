@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,6 +36,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
@@ -50,7 +51,7 @@ import componenttest.topology.utils.HttpUtils;
 @RunWith(FATRunner.class)
 public class DelayAppStartupHealthCheckTest {
 
-    private static final String[] EXPECTED_FAILURES = { "CWWKE1102W", "CWWKE1105W", "CWMH0052W", "CWMH0053W", "CWMMH0052W", "CWMMH0053W" };
+    private static final String[] EXPECTED_FAILURES = { "CWWKE1102W", "CWWKE1105W", "CWMH0052W", "CWMH0053W", "CWMMH0052W", "CWMMH0053W", "CWWKE1106W", "CWWKE1107W" };
 
     public static final String APP_NAME = "DelayedHealthCheckApp";
     private static final String MESSAGE_LOG = "logs/messages.log";
@@ -81,7 +82,8 @@ public class DelayAppStartupHealthCheckTest {
         log("deployApplicatonIntoDropins", "Deploying the Delayed App into the dropins directory.");
 
         WebArchive app = ShrinkHelper.buildDefaultApp(APP_NAME, "com.ibm.ws.microprofile.health20.delayed.health.check.app");
-        ShrinkHelper.exportAppToServer(server1, app);
+        //This test expects to hit the server before the app is started so we disable validation to prevent the test framework waiting for the app to start.
+        ShrinkHelper.exportAppToServer(server1, app, DeployOptions.DISABLE_VALIDATION);
 
         if (!server1.isStarted())
             server1.startServer();
@@ -124,8 +126,11 @@ public class DelayAppStartupHealthCheckTest {
         boolean first_time = true;
         boolean app_ready = false;
         boolean repeat = true;
+        boolean runTest = true;
 
         while (repeat) {
+            Assume.assumeTrue(runTest); // Skip the test, if runTest is false.
+
             num_of_attempts += 1;
 
             // Need to ensure the server is not finish starting when readiness endpoint is hit so start the server on a separate thread
@@ -173,7 +178,8 @@ public class DelayAppStartupHealthCheckTest {
                                 log("testReadinessEndpointOnServerStart",
                                     message + " Skipping test case due to multiple failed attempts in hitting the readiness endpoint faster than the server can start.");
                                 startServerThread.join();
-                                Assume.assumeTrue(false); // Skip the test
+                                runTest = false; // Skip the test.
+                                break;
                             }
 
                             log("testReadinessEndpointOnServerStart", message + " At this point the test will be re-run. Number of current attempts ---> " + num_of_attempts);
@@ -183,11 +189,22 @@ public class DelayAppStartupHealthCheckTest {
                         }
                     } else {
                         if (responseCode == 200) {
+                            log("testReadinessEndpointOnServerStart", "The /health/ready endpoint response code was 200.");
                             app_ready = true;
                             repeat = false;
                             startServerThread.join();
                         } else if (System.currentTimeMillis() - start_time > time_out) {
-                            throw new TimeoutException("Timed out waiting for server and app to be ready. Timeout set to " + time_out + "ms.");
+                            List<String> lines = server1.findStringsInFileInLibertyServerRoot("Exiting init function - Thread.sleep completed.", MESSAGE_LOG);
+
+                            if (lines.size() == 0) {
+                                log("testReadinessEndpointOnServerStart", "waiting for DelayedServlet sleep to finish.");
+                                server1.waitForStringInLog("Exiting init function - Thread.sleep completed.");
+                                log("testReadinessEndpointOnServerStart", "DelayedServlet sleep finished.");
+                            }
+                            else {
+                                log("testReadinessEndpointOnServerStart", "DelayedServlet sleep finished but timeout still reached.");
+                                throw new TimeoutException("Timed out waiting for server and app to be ready. Timeout set to " + time_out + "ms.");
+                            }
                         }
                     }
 

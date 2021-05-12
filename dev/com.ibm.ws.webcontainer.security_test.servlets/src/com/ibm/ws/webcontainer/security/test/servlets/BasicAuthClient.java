@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -114,7 +115,8 @@ public class BasicAuthClient extends ServletClientImpl {
      * {@inheritDoc}
      */
     @Override
-    protected void hookResetClientState() {}
+    protected void hookResetClientState() {
+    }
 
     /**
      * {@inheritDoc}
@@ -127,6 +129,23 @@ public class BasicAuthClient extends ServletClientImpl {
         try {
             HttpGet getMethod = new HttpGet(url);
             return executeAndProcessGetMethod(getMethod, expectedStatusCode, null);
+        } catch (Exception e) {
+            failWithMessage("Caught unexpected exception: " + e);
+            return null;
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String access(String url, int expectedStatusCode, String... dumpSSOCookieName) {
+        logger.info("access: url=" + url +
+                    " expectedStatusCode=" + expectedStatusCode);
+
+        try {
+            HttpGet getMethod = new HttpGet(url);
+            return executeAndProcessGetMethod(getMethod, expectedStatusCode, null, true, false, dumpSSOCookieName);
         } catch (Exception e) {
             failWithMessage("Caught unexpected exception: " + e);
             return null;
@@ -153,6 +172,30 @@ public class BasicAuthClient extends ServletClientImpl {
                 failWithMessage("Caught unexpected exception: " + e);
                 return null;
             }
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String accessWithException(String url, Class<?>[] expectedExceptions) {
+        logger.info("access: url=" + url +
+                    " expectedException=" + Arrays.toString(expectedExceptions));
+
+        try {
+            HttpGet getMethod = new HttpGet(url);
+            executeAndProcessGetMethod(getMethod, null, null);
+            failWithMessage("Didn't catch expected exception: " + Arrays.toString(expectedExceptions));
+            return null;
+        } catch (Exception e) {
+            for (int i = 0; i < expectedExceptions.length; i++) {
+                if (e.getClass().equals(expectedExceptions[i])) {
+                    return e.getMessage();
+                }
+            }
+            failWithMessage("Caught unexpected exception: " + e);
+            return null;
         }
     }
 
@@ -241,10 +284,17 @@ public class BasicAuthClient extends ServletClientImpl {
 
     @Override
     public String accessWithHeaders(String url, int expectedStatusCode, Map<String, String> headers, Boolean ignoreErrorContent, Boolean handleSSOCookie) {
-        return accessWithHeaders(url, expectedStatusCode, headers, ignoreErrorContent, false, handleSSOCookie);
+        return accessWithHeaders(url, expectedStatusCode, headers, ignoreErrorContent, handleSSOCookie, null);
     }
 
-    public String accessWithHeaders(String url, int expectedStatusCode, Map<String, String> headers, Boolean ignoreErrorContent, Boolean dumpAuthHeader, Boolean handleSSOCookie) {
+    @Override
+    public String accessWithHeaders(String url, int expectedStatusCode, Map<String, String> headers, Boolean ignoreErrorContent, Boolean handleSSOCookie,
+                                    String... dumpSSOCookieNames) {
+        return accessWithHeaders(url, expectedStatusCode, headers, ignoreErrorContent, false, handleSSOCookie, dumpSSOCookieNames);
+    }
+
+    public String accessWithHeaders(String url, int expectedStatusCode, Map<String, String> headers, Boolean ignoreErrorContent, Boolean dumpAuthHeader, Boolean handleSSOCookie,
+                                    String... dumpSSOCookieNames) {
         logger.info("accessWithHeaders: url=" + url + " expectedStatusCode=" + expectedStatusCode);
 
         try {
@@ -260,7 +310,7 @@ public class BasicAuthClient extends ServletClientImpl {
                 headerStringBuilder = headerStringBuilder.delete(headerStringBuilder.lastIndexOf(","), headerStringBuilder.length()).append("]");
                 logger.info("accessWithHeaders: headers=" + headerStringBuilder.toString());
             }
-            return executeAndProcessGetMethod(getMethod, expectedStatusCode, handleSSOCookie, ignoreErrorContent, dumpAuthHeader);
+            return executeAndProcessGetMethod(getMethod, expectedStatusCode, handleSSOCookie, ignoreErrorContent, dumpAuthHeader, dumpSSOCookieNames);
         } catch (Exception e) {
             failWithMessage("Caught unexpected exception: " + e);
             return null;
@@ -310,13 +360,24 @@ public class BasicAuthClient extends ServletClientImpl {
      */
     private String executeAndProcessGetMethod(HttpGet getMethod, Integer expectedStatusCode, Boolean handleSSOCookie, Boolean ignoreErrorContent,
                                               Boolean dumpAuthHeader) throws IOException {
+        return executeAndProcessGetMethod(getMethod, expectedStatusCode, handleSSOCookie, ignoreErrorContent, false, null);
+    }
+
+    private String executeAndProcessGetMethod(HttpGet getMethod, Integer expectedStatusCode, Boolean handleSSOCookie, Boolean ignoreErrorContent,
+                                              Boolean dumpAuthHeader, String... dumpSSOCookieName) throws IOException {
+        String parametersStr = String.format("Parameters:{getMethod: %s, expectedStatusCode: %s, handleSSOCookie: %s, ignoreErrorContent: %s, dumpAuthHeader: %s, dumpSSOCookieName: %s}",
+                                             getMethod, expectedStatusCode, handleSSOCookie, ignoreErrorContent, dumpAuthHeader, Arrays.toString(dumpSSOCookieName));
+
+        logger.info(parametersStr);
+
         HttpResponse response = client.execute(getMethod);
         String content = getEntityContent(response);
         int statusCode = response.getStatusLine().getStatusCode();
         if (retryMode) {
-            if (statusCode == 404 && (expectedStatusCode == null || expectedStatusCode != 404)) {
+            if ((statusCode == 404 && (expectedStatusCode == null || expectedStatusCode != 404)) ||
+                (statusCode == 401 && (expectedStatusCode == 403))) {
                 try {
-                    Thread.sleep(30000);
+                    Thread.sleep(60000);
                 } catch (InterruptedException e) {
                 }
                 logger.info("Retry servlet access ");
@@ -325,6 +386,7 @@ public class BasicAuthClient extends ServletClientImpl {
                 statusCode = response.getStatusLine().getStatusCode();
             }
         }
+
         if (expectedStatusCode == null) {
             return null;
         }
@@ -338,7 +400,7 @@ public class BasicAuthClient extends ServletClientImpl {
         } else if (ignoreErrorContent) {
             content = null;
         }
-        if (handleSSOCookie != null) {
+        if (handleSSOCookie != null && dumpSSOCookieName == null) {
             if (handleSSOCookie && expectedStatusCode != 401) {
                 setSSOCookieForLastLogin(response);
             } else {
@@ -348,7 +410,33 @@ public class BasicAuthClient extends ServletClientImpl {
         if (dumpAuthHeader) {
             getAuthHeader(response);
         }
+        if (dumpSSOCookieName == null) {
+            return content;
+        }
+
+        // add cookies to content
+        StringBuffer contentBuf = new StringBuffer();
+        contentBuf.append(content);
+        for (String cookieName : dumpSSOCookieName) {
+            contentBuf.append(getCookieFromResponse(response, cookieName));
+        }
+        content = contentBuf.toString();
+
         return content;
+    }
+
+    /**
+     * @param response
+     * @param content
+     * @return
+     */
+    private String getCookieFromResponse(HttpResponse response, String cookieName) {
+        String cookieValue = getSSOCookie(response, cookieName);
+
+        String CookieMessage = "Response Cookie: " + cookieName + "=" + ((cookieValue != null) ? cookieValue : "Null");
+        logger.info("\n" + CookieMessage);
+
+        return CookieMessage;
     }
 
     /**

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2019 IBM Corporation and others.
+ * Copyright (c) 2009, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
+import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.servlet.annotation.WebServlet;
 
@@ -92,9 +93,8 @@ public class NoInterfaceBindingSingletonServlet extends NoInterfaceBindingAbstra
     public void testUniqueNoInterfaceDefaultBindings_NoInterfaceBindingSingleton() throws Exception {
         String beanName = BasicNoInterfaceSGBean.class.getSimpleName();
         String beanInterface = BasicNoInterfaceSGBean.class.getName();
-        // NOTE: old lookup does not work, JNDI issue raised: #9099
-        //ivContext = (Context) new InitialContext().lookup("");
-        ivContext = new InitialContext();
+
+        ivContext = (Context) new InitialContext().lookup("");
 
         // Lookup short default of basic No-Interface bean - should find
         BasicNoInterfaceSGBean bbean = (BasicNoInterfaceSGBean) ivContext.lookup("ejblocal:" + beanInterface);

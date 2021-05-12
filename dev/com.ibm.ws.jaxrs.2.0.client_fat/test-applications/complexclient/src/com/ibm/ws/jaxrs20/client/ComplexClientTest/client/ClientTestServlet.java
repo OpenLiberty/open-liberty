@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,9 +11,7 @@
 package com.ibm.ws.jaxrs20.client.ComplexClientTest.client;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
@@ -21,9 +19,11 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -86,7 +86,7 @@ public class ClientTestServlet extends HttpServlet {
             Method testM = this.getClass().getDeclaredMethod(testMethod, new Class[] { Map.class, StringBuilder.class });
             Map<String, String> m = new HashMap<String, String>();
 
-            Iterator itr = req.getParameterMap().keySet().iterator();
+            Iterator<String> itr = req.getParameterMap().keySet().iterator();
 
             while (itr.hasNext()) {
                 String key = (String) itr.next();
@@ -115,13 +115,14 @@ public class ClientTestServlet extends HttpServlet {
         ClientBuilder cb = ClientBuilder.newBuilder();
         cb.property("inherit1", "cb");
         Client c = cb.build();
-        String result1 = c.getConfiguration().getProperties().toString();
+        boolean cbValue1  = c.getConfiguration().getProperties().containsValue("cb");
         c.property("inherit2", "c");
         WebTarget t1 = c.target("http://" + serverIP + ":" + serverPort + "/" + moduleName + "/ComplexClientTest/ComplexResource");
         String res1 = t1.path("echo1").path("test").request().get(String.class);
-        String result2 = t1.getConfiguration().getProperties().toString();
+        boolean cbValue2  = t1.getConfiguration().getProperties().containsValue("cb");
+        boolean cValue  = t1.getConfiguration().getProperties().containsValue("c");
         c.close();
-        ret.append(result1 + "," + result2 + "," + res1);
+        ret.append(cbValue1 + "," + cbValue2 + "," + cValue + "," + res1);
     }
 
     public void testClientProviderInherit(Map<String, String> param, StringBuilder ret) {
@@ -156,9 +157,10 @@ public class ClientTestServlet extends HttpServlet {
         c.close();
         c = ClientBuilder.newClient(config1);
         c.property("clientproperty2", "somevalue2");
-        String result = c.getConfiguration().getProperties().toString();
+        boolean cValue1  = c.getConfiguration().getProperties().containsValue("somevalue1");
+        boolean cValue2  = c.getConfiguration().getProperties().containsValue("somevalue2");
         c.close();
-        ret.append(result);
+        ret.append(cValue1 + "," + cValue2);
     }
 
     public void testNewClientWithConfig(Map<String, String> param, StringBuilder ret) {
@@ -169,9 +171,10 @@ public class ClientTestServlet extends HttpServlet {
         ClientBuilder cb = ClientBuilder.newBuilder().withConfig(config1);
         c = cb.build();
         c.property("clientproperty4", "somevalue4");
-        String result = c.getConfiguration().getProperties().toString();
+        boolean cValue1  = c.getConfiguration().getProperties().containsValue("somevalue3");
+        boolean cValue2  = c.getConfiguration().getProperties().containsValue("somevalue4");
         c.close();
-        ret.append(result);
+        ret.append(cValue1 + "," + cValue2);
     }
 
     public void testNewClientHostnameVerifier(Map<String, String> param, StringBuilder ret) {
@@ -190,7 +193,6 @@ public class ClientTestServlet extends HttpServlet {
     }
 
     public void testNewClientSslContext(Map<String, String> param, StringBuilder ret) throws NoSuchAlgorithmException {
-        SSLContext.getInstance("SSL");
         SSLContext ssl = SSLContext.getDefault();
         ClientBuilder cb = ClientBuilder.newBuilder().sslContext(ssl);
         Client c = cb.build();
@@ -298,10 +300,10 @@ public class ClientTestServlet extends HttpServlet {
         Client c = cb.build();
         WebTarget t1 = c.target("http://" + serverIP + ":" + serverPort + "/" + moduleName + "/ComplexClientTest/ComplexResource").register(ClientRequestFilter1.class);
         WebTarget t2 = c.target("http://" + serverIP + ":" + serverPort + "/" + moduleName + "/ComplexClientTest/ComplexResource").register(ClientRequestFilter2.class);
-        t1.path("echo1").path("test1").request().get(String.class);
-        String result1 = c.getConfiguration().getProperties().toString();
-        t2.path("echo2").path("test2").request().get(String.class);
-        String result2 = c.getConfiguration().getProperties().toString();
+        t1.path("echo1").path("test1").request().accept("*/*").get(String.class);
+        String result1 = c.getConfiguration().getProperties().entrySet().toString();
+        t2.path("echo2").path("test2").request().accept("*/*").get(String.class);
+        String result2 = c.getConfiguration().getProperties().entrySet().toString();
         c.close();
         ret.append(result1 + "," + result2);
     }
@@ -315,8 +317,8 @@ public class ClientTestServlet extends HttpServlet {
         c.register(ClientResponseFilter1.class, 200);
         WebTarget t1 = c.target("http://" + serverIP + ":" + serverPort + "/" + moduleName + "/ComplexClientTest/ComplexResource");
         WebTarget t2 = c.target("http://" + serverIP + ":" + serverPort + "/" + moduleName + "/ComplexClientTest/ComplexResource").register(ClientResponseFilter2.class, 100);
-        Response res1 = t1.path("echo1").path("test1").request().get(Response.class);
-        Response res2 = t2.path("echo2").path("test2").request().get(Response.class);
+        Response res1 = t1.path("echo1").path("test1").request().accept("*/*").get(Response.class);
+        Response res2 = t2.path("echo2").path("test2").request().accept("*/*").get(Response.class);
         System.out.println("config: " + c.getConfiguration().getProperties());
         c.close();
         ret.append(res1.getStatus() + "," + res2.getStatus());
@@ -331,15 +333,22 @@ public class ClientTestServlet extends HttpServlet {
         c.register(ClientResponseFilter1.class);
         WebTarget t1 = c.target("http://" + serverIP + ":" + serverPort + "/" + moduleName + "/ComplexClientTest/ComplexResource").register(ClientRequestFilter1.class);
         Response res1 = t1.path("echo1").path("test1").request().get(Response.class);
-        String result1 = c.getConfiguration().getProperties().toString();
+        String result1 = getProperties(c.getConfiguration());
         c = cb.build();
         WebTarget t2 = c.target("http://" + serverIP + ":" + serverPort + "/" + moduleName + "/ComplexClientTest/ComplexResource").register(ClientResponseFilter2.class).register(ClientRequestFilter2.class);
         Response res2 = t2.path("echo2").path("test2").request().get(Response.class);
-        String result2 = c.getConfiguration().getProperties().toString();
+        String result2 = getProperties(c.getConfiguration());
         c.close();
         ret.append(res1.getStatus() + "," + result1 + "," + res2.getStatus() + "," + result2);
     }
 
+    private String getProperties(Configuration c) {
+        Set<String> props = new HashSet<>();
+        for (String propName : c.getPropertyNames()) {
+            props.add(propName + "=" + c.getProperty(propName));
+        }
+        return "{" + String.join(",", props) + "}";
+    }
     public void testClientResponseProcessingException(Map<String, String> param, StringBuilder ret) {
         // Don't run the test in 2.1, Jackson throws and exception, jsonb doesn't
         boolean jaxrs21 = true;
@@ -526,6 +535,7 @@ public class ClientTestServlet extends HttpServlet {
                 String uri = ctx.getUri().toASCIIString();
                 Link.Builder builder = Link.fromMethod(Resource.class,
                                                        "consumesAppJson").rel(linkName);
+                builder.baseUri(uri);
                 Link link = builder.build();
                 System.out.println("filter invoke: Link build");
                 Response response = Response.ok(uri).links(link).build();
@@ -542,6 +552,7 @@ public class ClientTestServlet extends HttpServlet {
         result = entity.contains("resource/get") + ",";
 
         // Phase 2, use the link, check the correctness
+        System.out.println("Phase 2, use the link, check the correctness");
         Link link = response.getLink(linkName);
         response = client.invocation(link).post(null);
         entity = response.readEntity(String.class);
@@ -591,16 +602,6 @@ public class ClientTestServlet extends HttpServlet {
         Response response = target.request().post(Entity.entity(entity, MediaType.TEXT_PLAIN_TYPE));
 
         ret.append(response.readEntity(String.class)).append(filterInvocationCount.get());
-    }
-
-    private byte[] readInputStreamBytes(InputStream entityStream) throws IOException {
-        final ByteArrayOutputStream result = new ByteArrayOutputStream();
-        byte[] buffer = new byte[1024];
-        int length;
-        while ((length = entityStream.read(buffer)) != -1) {
-                result.write(buffer, 0, length);
-        }
-        return result.toByteArray();
     }
 
     public void testTargetTemplateVariable(Map<String, String> param, StringBuilder ret) throws Exception {

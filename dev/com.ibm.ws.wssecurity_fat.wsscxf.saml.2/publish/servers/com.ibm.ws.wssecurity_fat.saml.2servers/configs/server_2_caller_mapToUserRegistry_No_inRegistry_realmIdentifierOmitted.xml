@@ -1,0 +1,10 @@
+<server>
+	<include location="imports/samlcaller_cxf_features.xml" />
+	<include location="imports/BasicRegistry_withoutIDPUsers.xml" />
+	<include location="imports/misc2.xml" />
+	<include location="imports/goodSSLSettings.xml" />
+	<include location="imports/samlcallertoken_testApp.xml" />
+	<include
+		location="imports/securityProviderWithCaller_mapToUserRegistry_No_realmIdentifierOmitted.xml" />
+
+</server>

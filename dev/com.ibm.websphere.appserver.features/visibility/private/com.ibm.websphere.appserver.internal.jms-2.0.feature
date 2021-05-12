@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.internal.jms-2.0
+WLP-DisableAllFeatures-OnConflict: false
 singleton=true
 IBM-App-ForceRestart: uninstall
 IBM-API-Package: javax.jms; version="2.0"; type="spec"

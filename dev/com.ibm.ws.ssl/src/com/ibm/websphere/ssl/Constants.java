@@ -69,6 +69,7 @@ public class Constants {
     public static final String SSLPROP_SKIP_DEFAULT_TM_WHEN_CUSTOM_TM_DEFINED = "com.ibm.ssl.skipDefaultTrustManagerWhenCustomDefined";
     public static final String SSLPROP_HOSTNAME_VERIFICATION = "com.ibm.ws.ssl.verifyHostname";
     public static final String SSLPROP_USE_DEFAULTCERTS = "com.ibm.ws.ssl.trustDefaultCerts";
+    public static final String SSLPROP_ENFORCE_CIPHER_ORDER = "com.ibm.ws.ssl.enforceCipherOrder";
 
     public static final String SSLPROP_AUTOACCEPT_SERVER_CERT = "com.ibm.ssl.autoaccept.server.certificates";
     public static final String SSLPROP_AUTOSTORE_SERVER_CERT = "com.ibm.ssl.autostore.server.certificates";
@@ -390,7 +391,8 @@ public class Constants {
                 /** Security Level "high" will pare it down even more. */
                 for (int i = 0; i < supportedCiphers.length; i++) {
                     if ((supportedCiphers[i].indexOf("128_") != -1
-                         || supportedCiphers[i].indexOf("256_") != -1)
+                         || supportedCiphers[i].indexOf("256_") != -1
+                         || supportedCiphers[i].indexOf("CHACHA20_POLY1305_") != -1)
                         && supportedCiphers[i].indexOf("_anon_") == -1
                         && supportedCiphers[i].indexOf("_NULL_") == -1
                         && supportedCiphers[i].indexOf("_KRB5_") == -1

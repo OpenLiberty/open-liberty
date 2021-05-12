@@ -16,6 +16,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -130,13 +131,15 @@ public class GraphQLServletContainerInitializer implements ServletContainerIniti
 
         	@Override
             public Optional<List<String>> getHideErrorMessageList() {
-                return Optional.ofNullable(ConfigFacade.getOptionalValue(ConfigKey.EXCEPTION_BLACK_LIST, List.class)
+                return Optional.ofNullable(ConfigFacade.getOptionalValue(ConfigKey.EXCEPTION_BLACK_LIST, String.class)
+                		                               .map(s -> Arrays.asList(s.split(",")))
                                                        .orElse(null));
             }
 
         	@Override
             public Optional<List<String>> getShowErrorMessageList() {
-                return Optional.ofNullable(ConfigFacade.getOptionalValue(ConfigKey.EXCEPTION_WHITE_LIST, List.class)
+                return Optional.ofNullable(ConfigFacade.getOptionalValue(ConfigKey.EXCEPTION_WHITE_LIST, String.class)
+                		                               .map(s -> Arrays.asList(s.split(",")))
                                                        .orElse(null));
             }
 
@@ -155,6 +158,15 @@ public class GraphQLServletContainerInitializer implements ServletContainerIniti
                     return false;
                 }
             }
+
+        	@SuppressWarnings("unchecked")
+			@Override
+        	public <T> T getConfigValue(String key, Class<T> type, T defaultValue) {
+        		if ("smallrye.graphql.metrics.enabled".equals(key)) {
+        			return (T) Boolean.TRUE;
+        		}
+        		return super.getConfigValue(key, type, defaultValue);
+        	}
         };
         diagBag.config = config;
         
@@ -172,7 +184,7 @@ public class GraphQLServletContainerInitializer implements ServletContainerIniti
                 return;
             }
             diagBag.modelSchema = schema;
-            graphQLSchema = Bootstrap.bootstrap(schema, config);
+            graphQLSchema = Bootstrap.bootstrap(schema, config).getGraphQLSchema();
         } catch (Throwable t) {
             Tr.error(tc, "ERROR_GENERATING_SCHEMA_CWMGQ0001E", ctx.getServletContextName());
             throw new ServletException(t);

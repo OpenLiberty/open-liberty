@@ -29,20 +29,15 @@ Import-Package: !sun.*,\
   javax.annotation;version=!,\
   !com.ibm.websphere.monitor.jmx,\
   *
-  
-# Use dynamic import of monitor packages to support indepndent/dynamic enablement of monitor feature
-DynamicImport-Package: com.ibm.websphere.monitor.meters;version="1.0.0", \
- com.ibm.websphere.monitor.jmx;version="1.0.0", \
- com.ibm.wsspi.request.probe.bci, \
- com.ibm.wsspi.probeExtension, \
- io.openliberty.grpc.internal.monitor
 
 Export-Package: \
   io.grpc.servlet,\
   io.openliberty.grpc.internal,\
   io.openliberty.grpc.internal.config,\
   io.openliberty.grpc.internal.resources,\
-  io.openliberty.grpc.internal.servlet
+  io.openliberty.grpc.internal.servlet,\
+  io.openliberty.grpc.internal.security, \
+  io.openliberty.grpc.server.monitor
 
 Include-Resource: \
   OSGI-INF=resources/OSGI-INF, \
@@ -57,6 +52,7 @@ Include-Resource: \
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
   com.ibm.ws.injection.core;version=latest,\
+  com.ibm.ws.channelfw;version=latest,\
   com.ibm.ws.kernel.boot;version=latest,\
   com.ibm.ws.kernel.service;version=latest,\
   com.ibm.ws.kernel.feature;version=latest,\
@@ -69,9 +65,10 @@ Include-Resource: \
   com.ibm.ws.webcontainer,\
   com.ibm.ws.managedobject,\
   com.google.code.findbugs:jsr305;version=3.0.2,\
-  com.google.guava:guava;version=27.0.1,\
+  com.google.guava:guava;version=30.1,\
   com.ibm.ws.security.authorization.util,\
   io.openliberty.grpc.1.0.internal.common;version=latest,\
+  io.openliberty.io.grpc.1.0;version=latest,\
   org.osgi.service.component.annotations;version=latest
 
 -testpath: \

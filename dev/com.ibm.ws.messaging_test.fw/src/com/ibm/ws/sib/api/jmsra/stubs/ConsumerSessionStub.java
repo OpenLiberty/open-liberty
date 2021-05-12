@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,12 +10,14 @@
  *******************************************************************************/
 package com.ibm.ws.sib.api.jmsra.stubs;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
 import com.ibm.websphere.sib.SIDestinationAddress;
 import com.ibm.websphere.sib.exception.SIIncorrectCallException;
 import com.ibm.websphere.sib.exception.SIResourceException;
+import com.ibm.ws.sib.utils.ras.FormattedWriter;
 import com.ibm.wsspi.sib.core.OrderingContext;
 import com.ibm.wsspi.sib.core.SIBusMessage;
 import com.ibm.wsspi.sib.core.AsynchConsumerCallback;
@@ -246,4 +248,29 @@ public class ConsumerSessionStub implements ConsumerSession {
 	  // Do nothing
 	}
     
+	  public void dump(FormattedWriter writer) {
+
+	      try {
+	          writer.newLine();
+	          writer.startTag(this.getClass().getSimpleName());
+	          writer.indent();
+
+	          writer.newLine();
+	          writer.taggedValue("toString", toString());
+	          writer.newLine();
+	          writer.taggedValue("DestinationAddress", getDestinationAddress());
+
+	          writer.outdent();
+	          writer.newLine();
+	          writer.endTag(this.getClass().getSimpleName());
+
+	       } catch (Throwable t) {
+	           // No FFDC Code Needed
+	           try {
+	               if (writer != null) writer.write("\nUnable to dump " + this + " " + t);
+	           } catch (IOException e) {
+	               e.printStackTrace();
+	           }
+	      }
+	  }
 }

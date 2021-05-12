@@ -15,9 +15,13 @@ Bundle-Name: WebSphere EJB Container API
 Bundle-Description: WebSphere EJB Container API, version ${bVersion}
 Bundle-SymbolicName: com.ibm.websphere.appserver.api.ejbcontainer
 
-Import-Package: com.ibm.websphere.ejbcontainer.mbean
+Import-Package: \
+	com.ibm.websphere.ejbcontainer.mbean,\
+	com.ibm.websphere.ejbcontainer
 
-Export-Package: com.ibm.websphere.ejbcontainer.mbean
+Export-Package: \
+	com.ibm.websphere.ejbcontainer.mbean,\
+	com.ibm.websphere.ejbcontainer
 
 -includeresource: {META-INF/maven/com.ibm.websphere.appserver.api/com.ibm.websphere.appserver.api.ejbcontainer/pom.xml=com.ibm.websphere.appserver.api.ejbcontainer.pom}
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2017 IBM Corporation and others.
+ * Copyright (c) 2003, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,6 +34,7 @@ import com.ibm.websphere.csi.TransactionAttribute;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ejb.portable.Constants;
+import com.ibm.ws.ejbcontainer.runtime.AbstractEJBRuntime;
 import com.ibm.ws.ejbcontainer.runtime.EJBRuntime;
 import com.ibm.ws.ejbcontainer.util.ParsedScheduleExpression;
 import com.ibm.ws.ejbcontainer.util.ScheduleExpressionParser;
@@ -134,7 +135,7 @@ public abstract class PersistentTimerTaskHandler implements Runnable, Serializab
      * Common constructor for all persistent timer types.
      *
      * @param j2eeName identity of the timer bean that is the target of the associated task.
-     * @param info the user data associated with this timer
+     * @param info     the user data associated with this timer
      *
      * @throws IOException if the serializable user object cannot be serialized.
      **/
@@ -149,11 +150,11 @@ public abstract class PersistentTimerTaskHandler implements Runnable, Serializab
     /**
      * Constructor for expiration based persistent timers.
      *
-     * @param j2eeName identity of the Timer bean that is the target of the associated task.
-     * @param info the user data associated with this timer
+     * @param j2eeName   identity of the Timer bean that is the target of the associated task.
+     * @param info       the user data associated with this timer
      * @param expiration The point in time at which the timer must expire.
-     * @param interval The number of milliseconds that must elapse between timer expiration notifications.
-     *            A negative value indicates this is a single-action timer.
+     * @param interval   The number of milliseconds that must elapse between timer expiration notifications.
+     *                       A negative value indicates this is a single-action timer.
      *
      * @throws IOException if the serializable user object cannot be serialized.
      **/
@@ -171,8 +172,8 @@ public abstract class PersistentTimerTaskHandler implements Runnable, Serializab
     /**
      * Constructor for calendar based persistent timers (not automatic).
      *
-     * @param j2eeName identity of the Timer bean that is the target of the associated task.
-     * @param info the user data associated with this timer; may be null
+     * @param j2eeName       identity of the Timer bean that is the target of the associated task.
+     * @param info           the user data associated with this timer; may be null
      * @param parsedSchedule the parsed schedule expression for calendar-based timers; must be non-null
      *
      * @throws IOException if the serializable user object cannot be serialized.
@@ -190,12 +191,12 @@ public abstract class PersistentTimerTaskHandler implements Runnable, Serializab
     /**
      * Constructor for automatic calendar based persistent timers.
      *
-     * @param j2eeName identity of the Timer bean that is the target of the associated task.
-     * @param info the user data associated with this timer; may be null
+     * @param j2eeName       identity of the Timer bean that is the target of the associated task.
+     * @param info           the user data associated with this timer; may be null
      * @param parsedSchedule the parsed schedule expression for calendar-based timers; must be non-null
-     * @param methodId timeout callback method identifier; must be a non-zero value
-     * @param methodame timeout callback method name; used for validation
-     * @param className timeout callback class name; used for validation (null if defined in XML)
+     * @param methodId       timeout callback method identifier; must be a non-zero value
+     * @param methodame      timeout callback method name; used for validation
+     * @param className      timeout callback class name; used for validation (null if defined in XML)
      *
      * @throws IOException if the serializable user object cannot be serialized.
      **/
@@ -270,12 +271,25 @@ public abstract class PersistentTimerTaskHandler implements Runnable, Serializab
                                    " method, but an incompatible change was made to the application since the server created the timer.");
         }
 
+        AbstractEJBRuntime ejbRuntime = (AbstractEJBRuntime) home.container.getEJBRuntime();
+
         // Create a Timer associated with this running Task, so it may be
         // passed on the ejbTimeout invocation. Will cache this taskHandler on the timer.
-        PersistentTimer timer = createTimer(home.container.getEJBRuntime());
+        PersistentTimer timer = createTimer(ejbRuntime);
 
         // Get the TimedObjectWrapper from the pool to execute the method.
         timedObject = home.getTimedObjectWrapper(home.ivStatelessId); // set for singleton, stateless, and mdb
+
+        // Don't bother running the timer if the server is stopping; ensure attempt to run fails
+        if (ejbRuntime.isStopping()) {
+            EJBMethodInfoImpl methodInfo = timedObject.methodInfos[methodId];
+            EJBException failure = new EJBException("Timeout method " + methodInfo.getBeanClassName() + "." + methodInfo.getMethodName()
+                                                    + " will not be invoked because server is stopping");
+            // Don't log error or ffdc since this is normal; but throw exception to ensure db not updated with success
+            if (isTraceOn && tc.isEntryEnabled())
+                Tr.exit(tc, "run: " + failure);
+            throw failure;
+        }
 
         // Invoke ejbTimeout on the wrapper.  No need to handle exceptions,
         // as the wrapper will have already handled/mapped any exceptions
@@ -482,7 +496,7 @@ public abstract class PersistentTimerTaskHandler implements Runnable, Serializab
      * @return the application specified information.
      *
      * @throws TimerServiceException if the application specified information
-     *             object could not be deserialized.
+     *                                   object could not be deserialized.
      */
     public Serializable getUserInfo() throws TimerServiceException {
         if (userInfoBytes == null) {
@@ -538,7 +552,7 @@ public abstract class PersistentTimerTaskHandler implements Runnable, Serializab
      * to occur after the specified last execution time. <p>
      *
      * @param lastExecution last time the timeout callback was scheduled to expire
-     * @param the date/time in which the timer task was created.
+     * @param the           date/time in which the timer task was created.
      */
     public abstract Date getNextTimeout(Date lastExecution, Date timerCreationTime);
 

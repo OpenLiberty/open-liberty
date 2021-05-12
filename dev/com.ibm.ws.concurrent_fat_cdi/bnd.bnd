@@ -23,4 +23,9 @@ fat.project: true
 	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
 	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
-	com.ibm.websphere.javaee.transaction.1.2;version=latest
+	com.ibm.websphere.javaee.transaction.1.2;version=latest,\
+	io.openliberty.jakarta.annotation.2.0;version=latest,\
+	io.openliberty.jakarta.cdi.3.0;version=latest,\
+	io.openliberty.jakarta.concurrency.2.0;version=latest,\
+	io.openliberty.jakarta.servlet.5.0;version=latest,\
+	io.openliberty.jakarta.transaction.2.0;version=latest

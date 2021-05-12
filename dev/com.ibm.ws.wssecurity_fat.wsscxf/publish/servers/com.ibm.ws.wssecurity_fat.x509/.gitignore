@@ -1,0 +1,7 @@
+/dropins/
+key.jks
+sslClientDefault.jks
+sslServerTrust.jks
+x509ClientDefault.jks
+x509ServerDefault.jks
+/*.jceks

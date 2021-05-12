@@ -10,11 +10,11 @@
  *******************************************************************************/
 package ra;
 
-import javax.jms.Queue;
-import javax.resource.ResourceException;
-import javax.resource.spi.ActivationSpec;
-import javax.resource.spi.InvalidPropertyException;
-import javax.resource.spi.ResourceAdapter;
+import jakarta.jms.Queue;
+import jakarta.resource.ResourceException;
+import jakarta.resource.spi.ActivationSpec;
+import jakarta.resource.spi.InvalidPropertyException;
+import jakarta.resource.spi.ResourceAdapter;
 
 public class DummyActivationSpec implements ActivationSpec {
 
@@ -100,5 +100,4 @@ public class DummyActivationSpec implements ActivationSpec {
     public void setDestinationType(String destinationType) {
         this.destinationType = destinationType;
     }
-
 }

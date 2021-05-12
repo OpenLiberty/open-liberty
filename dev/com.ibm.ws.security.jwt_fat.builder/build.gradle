@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,12 +14,15 @@ dependencies {
   requiredLibs project(':com.ibm.ws.security.fat.common.jwt'),
 	project(':com.ibm.ws.org.jose4j'),
      project(':com.ibm.ws.com.unboundid'),
-	  'commons-logging:commons-logging:1.1.3',
-      'org.apache.httpcomponents:httpclient:4.5.4',
-      'org.apache.httpcomponents:httpcore:4.4.9',
-      'net.sourceforge.htmlunit:htmlunit:2.27',
-      'net.sourceforge.htmlunit:htmlunit-core-js:2.27',
-      'net.sourceforge.cssparser:cssparser:0.9.23',
+	  project(':io.openliberty.org.apache.commons.logging'),
+      project(':com.ibm.ws.org.apache.httpcomponents'),
+      'net.sourceforge.htmlunit:htmlunit:2.44.0',
+      'net.sourceforge.htmlunit:neko-htmlunit:2.44.0',
+      'net.sourceforge.htmlunit:webdriver:2.6',
+      'org.seleniumhq.webdriver:webdriver-common:0.9.7376',
+      'org.brotli:dec:0.1.2',
+      'net.sourceforge.htmlunit:htmlunit-core-js:2.44.0',
+      'net.sourceforge.htmlunit:htmlunit-cssparser:1.6.0',
       'org.apache.commons:commons-lang3:3.8',
       'org.eclipse.jetty:jetty-websocket:8.2.0.v20160908',
       'org.eclipse.jetty.websocket:websocket-api:9.4.5.v20170502',
@@ -27,20 +30,28 @@ dependencies {
       'org.eclipse.jetty.websocket:websocket-client:9.4.5.v20170502',
       'org.eclipse.jetty:jetty-util:9.4.7.RC0',
       'org.eclipse.birt.runtime:org.w3c.css.sac:1.3.1.v200903091627',
-      'commons-codec:commons-codec:1.6',
+      project(':io.openliberty.org.apache.commons.codec'),
       'xml-apis:xml-apis:1.4.01',
       'xerces:xercesImpl:2.11.0',
+      'xalan:xalan:2.7.2',
+      project(':com.ibm.ws.org.apache.commons.io'),
       'org.slf4j:slf4j-api:1.7.7',
       'com.unboundid:unboundid-ldapsdk:4.0.9'
       
 }
+
+addRequiredLibraries.dependsOn addJakartaTransformer
 
 /*
  * This is where all application ZIP and WARs will be built.
  */
 def appBuildDir = "${buildDir}/test-applications"
 
-task jwtbuilderclient(type: War, dependsOn: classes) {
+task jwtbuilderclient(type: War) {
+  dependsOn classes
+  dependsOn ':com.ibm.ws.security.fat.common:assemble'
+  dependsOn ':com.ibm.ws.security.fat.common.jwt:assemble'
+
   def appName = "jwtbuilderclient"
   destinationDir file("${appBuildDir}")
   archiveName "${appName}.war"
@@ -58,7 +69,7 @@ task jwtbuilderclient(type: War, dependsOn: classes) {
   }
   /* copy needed files from jwt common fat into our app */
   from(zipTree("../com.ibm.ws.security.fat.common/build/libs/com.ibm.ws.security.fat.common.jar")) {
-    include 'com/ibm/ws/security/fat/common/Constants.class'
+    include 'com/ibm/ws/security/fat/common/Constants.class', 'com/ibm/ws/security/fat/common/utils/KeyTools.class'
     into "WEB-INF/classes"
   }
   /* copy needed files from jwt common fat into our app */
@@ -66,19 +77,20 @@ task jwtbuilderclient(type: War, dependsOn: classes) {
     include 'com/ibm/ws/security/fat/common/jwt/JwtConstants.class', 'com/ibm/ws/security/fat/common/jwt/utils/JWTApiApplicationUtils.class'
     into "WEB-INF/classes"
   }  
-  /* end of jose4j copy */  
+   /* start of jose4j copy */  
   /* copy contents of the jose4j jar into our test app - we don't have another way to get to the jar */
   from(zipTree("../com.ibm.ws.org.jose4j/build/libs/com.ibm.ws.org.jose4j.jar")) {
     into "WEB-INF/classes"
   }
-  /* end of jose4j copy */  
-     
+  /* end of jose4j copy */    
 }
 
 assemble {
-  dependsOn \
-    jwtbuilderclient
+  dependsOn jwtbuilderclient
 }
+
+autoFVT.dependsOn ':com.ibm.ws.security.fat.common:assemble'
+autoFVT.dependsOn ':com.ibm.ws.security.fat.common.jwt:assemble'
 
 autoFVT.doLast {
 
@@ -106,6 +118,11 @@ autoFVT.doLast {
    	/* Copy all shared key/trust stores from the common security FAT */
     copy { 
      from project(':com.ibm.ws.security.fat.common').file('publish/shared/securityKeys')
+     into new File(autoFvtDir, 'publish/servers/' + server + '/')
+    }
+    /* Copy all shared key/trust stores from the common security JWT FAT */
+    copy { 
+     from project(':com.ibm.ws.security.fat.common.jwt').file('publish/shared/securityKeys')
      into new File(autoFvtDir, 'publish/servers/' + server + '/')
     }
   	/* Copy all shared key/trust stores from this project

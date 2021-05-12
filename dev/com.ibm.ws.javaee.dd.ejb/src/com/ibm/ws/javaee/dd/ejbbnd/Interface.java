@@ -13,13 +13,11 @@ package com.ibm.ws.javaee.dd.ejbbnd;
 import com.ibm.ws.javaee.ddmetadata.annotation.DDAttribute;
 import com.ibm.ws.javaee.ddmetadata.annotation.DDAttributeType;
 import com.ibm.ws.javaee.ddmetadata.annotation.DDIdAttribute;
-import com.ibm.ws.javaee.ddmetadata.annotation.LibertyNotInUse;
 
 /**
  * Represents &lt;interface>.
  */
 @DDIdAttribute
-@LibertyNotInUse
 public interface Interface {
 
     /**

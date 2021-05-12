@@ -27,3 +27,15 @@ invalid.serverinterceptor.useraction=Sprawd\u017a skonfigurowan\u0105 nazw\u0119
 invalid.inbound.msg.size=CWWKT0203E: Maksymalna wielko\u015b\u0107 maxInboundMessageSize {0} jest niepoprawna. Wielko\u015bci musz\u0105 by\u0107 wi\u0119ksze od 0.
 invalid.inbound.msg.size.explanation=Skonfigurowana warto\u015b\u0107 maxInboundMessageSize jest niepoprawna.
 invalid.inbound.msg.size.useraction=Skonfiguruj poprawn\u0105 warto\u015b\u0107 maxInboundMessageSize.
+
+response.already.committed=CWWKT0204E: Nie mo\u017cna kontynuowa\u0107 obs\u0142ugi \u017c\u0105dania gRPC dla {0}. Odpowied\u017a zosta\u0142a ju\u017c zatwierdzona.
+response.already.committed.explanation=\u017b\u0105danie gRPC jest nieprawid\u0142owe, poniewa\u017c odpowied\u017a zosta\u0142a zatwierdzona przed uruchomieniem metod gRPC.
+response.already.committed.useraction=Przeanalizuj dzienniki, zwracaj\u0105c uwag\u0119 na inne ostrze\u017cenia lub komunikaty o b\u0142\u0119dach poprzedzaj\u0105ce niniejszy komunikat. Ten b\u0142\u0105d m\u00f3g\u0142 wyst\u0105pi\u0107 z powodu wcze\u015bniejszego b\u0142\u0119du zabezpiecze\u0144.
+
+authentication.error=CWWKT0205E: \u017b\u0105danie us\u0142ugi gRPC dla {0} nie powiod\u0142o si\u0119. Wyst\u0105pi\u0142 b\u0142\u0105d uwierzytelniania {1}.
+authentication.error.explanation=Uwierzytelnienie \u017c\u0105dania gRPC nie powiod\u0142o si\u0119 przed uruchomieniem metod gRPC.
+authentication.error.useraction=Przeanalizuj dzienniki, zwracaj\u0105c uwag\u0119 na inne ostrze\u017cenia lub komunikaty o b\u0142\u0119dach poprzedzaj\u0105ce niniejszy komunikat. Ten b\u0142\u0105d m\u00f3g\u0142 wyst\u0105pi\u0107 z powodu braku referencji w \u017c\u0105daniu lub podania nieprawid\u0142owych referencji.
+
+authorization.error=CWWKT0206E: \u017b\u0105danie us\u0142ugi gRPC dla {0} nie powiod\u0142o si\u0119. Wyst\u0105pi\u0142 b\u0142\u0105d autoryzacji {1}.
+authorization.error.explanation=Autoryzacja \u017c\u0105dania gRPC nie powiod\u0142o si\u0119 przed uruchomieniem metod gRPC.
+authorization.error.useraction=Przeanalizuj dzienniki, zwracaj\u0105c uwag\u0119 na inne ostrze\u017cenia lub komunikaty o b\u0142\u0119dach poprzedzaj\u0105ce niniejszy komunikat. Ten b\u0142\u0105d m\u00f3g\u0142 wyst\u0105pi\u0107 z powodu braku referencji w \u017c\u0105daniu lub podania nieprawid\u0142owych referencji.

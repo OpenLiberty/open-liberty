@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,7 +23,7 @@ public class SlowRequest extends QueueableRequest {
 	
 	private final boolean includeContextInfo;
 
-	public SlowRequest(RequestContext requestContext, long delay, long slowRequestThreshold, boolean includeContextInfo, boolean interruptRequest){
+	public SlowRequest(RequestContext requestContext, long delay, long slowRequestThreshold, boolean includeContextInfo, boolean interruptRequest, boolean enableThreadDumps){
 		super(requestContext, delay);
 		this.slowRequestThreshold = slowRequestThreshold;
 		slowRequestIterationsReq = RequestTimingConstants.SLOW_REQUEST_ITERATIONS_REQ;

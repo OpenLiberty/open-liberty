@@ -26,6 +26,7 @@ import org.testcontainers.containers.Db2Container;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.output.OutputFrame;
 import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
+import org.testcontainers.utility.DockerImageName;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jdbc.fat.krb5.FATSuite;
@@ -36,13 +37,17 @@ public class DB2KerberosContainer extends Db2Container {
 
     private static final Class<?> c = DB2KerberosContainer.class;
     private static final Path reuseCache = Paths.get("..", "..", "cache", "db2.properties");
+    // NOTE: If this is ever updated, don't forget to push to docker hub, but DO NOT overwrite existing versions
+    private static final String IMAGE = "aguibert/krb5-db2:1.0";
+    private static final DockerImageName db2Image = DockerImageName.parse(IMAGE)
+                    .asCompatibleSubstituteFor("ibmcom/db2");
 
     private boolean reused = false;
     private String reused_hostname;
     private int reused_port;
 
     public DB2KerberosContainer(Network network) {
-        super("aguibert/krb5-db2:1.0");
+        super(db2Image);
         withNetwork(network);
     }
 
@@ -55,7 +60,7 @@ public class DB2KerberosContainer extends Db2Container {
         withEnv("DB2_KRB5_PRINCIPAL", "db2srvc@EXAMPLE.COM");
         waitingFor(new LogMessageWaitStrategy()
                         .withRegEx("^.*SETUP SCRIPT COMPLETE.*$")
-                        .withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 3 : 25)));
+                        .withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 10 : 25)));
         withLogConsumer(DB2KerberosContainer::log);
         withReuse(true);
     }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@ package com.ibm.ws.microprofile.appConfig.cdi.test;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.microprofile.config.spi.ConfigSource;
 
@@ -28,6 +29,9 @@ public class DiscoveredConfigSource extends HashMap<String, String> implements C
         put("NULL_KEY", null);
         put("PIZZA_KEY", "cheese"); //this resolve resolves to a null value as the size portion is missing
         put("PIZZA_GOOD_KEY", "ham;9"); //this is the right pizza key
+        put("DUPLICATE_CONVERTERS_KEY_1", "input");
+        put("DUPLICATE_CONVERTERS_KEY_2", "input");
+        put("DUPLICATE_CONVERTERS_KEY_3", "input");
     }
 
     /** {@inheritDoc} */
@@ -52,6 +56,12 @@ public class DiscoveredConfigSource extends HashMap<String, String> implements C
     @Override
     public String getName() {
         return "DiscoveredConfigSource";
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Set<String> getPropertyNames() {
+        return getProperties().keySet();
     }
 
 }

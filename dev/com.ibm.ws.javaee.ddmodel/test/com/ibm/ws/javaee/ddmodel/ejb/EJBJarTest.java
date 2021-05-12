@@ -230,6 +230,7 @@ public class EJBJarTest extends EJBJarTestBase {
     @Test
     public void testError_001() throws Exception {
         try {
+            @SuppressWarnings("unused")
             List<EnterpriseBean> beans = parse(
                                                "<!DOCTYPE ejb-jar PUBLIC \"-//Sun Microsystems, Inc.//DTD Enterprise JavaBeans 1.1//EN\" \"http://java.sun.com/j2ee/dtds/ejb-jar_1_1.dtd\">"
                                                +

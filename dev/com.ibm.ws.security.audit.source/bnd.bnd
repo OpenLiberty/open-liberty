@@ -18,6 +18,8 @@ Bundle-SymbolicName: com.ibm.ws.security.audit.source
 Bundle-Description: Security Audit: Security Audit Source; version=${bVersion}
 WS-TraceGroup: audit
 
+jakartaeeMe: true
+
 Export-Package: \
 	com.ibm.ws.security.audit.event,\
 	com.ibm.ws.security.audit.pipeline

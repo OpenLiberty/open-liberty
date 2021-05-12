@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,7 @@ package io.openliberty.microprofile.config.internal.serverxml;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 
 import org.eclipse.microprofile.config.spi.ConfigSource;
@@ -20,6 +20,7 @@ import org.osgi.framework.BundleContext;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.config.xml.ConfigVariables;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
@@ -34,37 +35,32 @@ import io.openliberty.microprofile.config.internal.common.InternalConfigSource;
 public class ServerXMLVariableConfigSource extends InternalConfigSource implements ConfigSource {
 
     private static final TraceComponent tc = Tr.register(ServerXMLVariableConfigSource.class);
-    private final ConfigAction configAction = new ConfigAction();
+    private final GetServerXMLVariablesAction getServerXMLVariablesAction = new GetServerXMLVariablesAction();
     private BundleContext bundleContext;
     private ConfigVariables configVariables;
 
-    public ServerXMLVariableConfigSource() {
-        this(ServerXMLConstants.SERVER_XML_VARIABLE_ORDINAL, Tr.formatMessage(tc, "server.xml.variables.config.source"));
+    /** {@inheritDoc} */
+    @Override
+    @Trivial
+    public String getName() {
+        return Tr.formatMessage(tc, "server.xml.variables.config.source");
     }
 
-    protected ServerXMLVariableConfigSource(int ordinal, String id) {
-        super(ordinal, id);
+    /** {@inheritDoc} */
+    @Override
+    @Trivial
+    protected int getDefaultOrdinal() {
+        return ServerXMLConstants.SERVER_XML_VARIABLE_ORDINAL;
     }
 
     /** {@inheritDoc} */
     @Override
     public Map<String, String> getProperties() {
-
-        Map<String, String> props = new HashMap<>();
-
-        Map<String, String> serverXMLVariables = null;
-
         if (System.getSecurityManager() == null) {
-            serverXMLVariables = getServerXMLVariables();
+            return getServerXMLVariables();
         } else {
-            serverXMLVariables = AccessController.doPrivileged(configAction);
+            return AccessController.doPrivileged(getServerXMLVariablesAction);
         }
-
-        if (serverXMLVariables != null) {
-            props.putAll(serverXMLVariables);
-        }
-
-        return props;
     }
 
     private BundleContext getBundleContext() {
@@ -89,7 +85,7 @@ public class ServerXMLVariableConfigSource extends InternalConfigSource implemen
         return this.configVariables;
     }
 
-    private class ConfigAction implements PrivilegedAction<Map<String, String>> {
+    private class GetServerXMLVariablesAction implements PrivilegedAction<Map<String, String>> {
         /** {@inheritDoc} */
         @Override
         public Map<String, String> run() {
@@ -99,10 +95,12 @@ public class ServerXMLVariableConfigSource extends InternalConfigSource implemen
     }
 
     protected Map<String, String> getServerXMLVariables() {
-        Map<String, String> props = new HashMap<>();
+        Map<String, String> props;
         ConfigVariables configVariables = getConfigVariables();
         if (configVariables != null) {//configVariables could be null if not inside an OSGi framework (e.g. unit test) or if framework is shutting down
             props = OSGiConfigUtils.getVariablesFromServerXML(configVariables);
+        } else {
+            props = Collections.emptyMap();
         }
         return props;
     }

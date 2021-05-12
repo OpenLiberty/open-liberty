@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs20.client.fat.test;
 
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -35,9 +34,9 @@ public class ComplexClientTest extends AbstractTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        WebArchive app = ShrinkHelper.defaultDropinApp(server, appname,
-                                                       "com.ibm.ws.jaxrs20.client.ComplexClientTest.client",
-                                                       "com.ibm.ws.jaxrs20.client.ComplexClientTest.service");
+        ShrinkHelper.defaultDropinApp(server, appname,
+                                      "com.ibm.ws.jaxrs20.client.ComplexClientTest.client",
+                                      "com.ibm.ws.jaxrs20.client.ComplexClientTest.service");
 
         // Make sure we don't fail because we try to start an
         // already started server
@@ -67,7 +66,7 @@ public class ComplexClientTest extends AbstractTest {
 
     @Test
     public void complexTestClientPropertyInherit() throws Exception {
-        this.runTestOnServer(target, "testClientPropertyInherit", null, "{inherit1=cb},{inherit2=c, inherit1=cb},ECHO1:test");
+        this.runTestOnServer(target, "testClientPropertyInherit", null, "true,true,true,ECHO1:test");
     }
 
     @Test
@@ -77,19 +76,20 @@ public class ComplexClientTest extends AbstractTest {
 
     @Test
     public void complexTestNewClientBuilder() throws Exception {
-        this.runTestOnServer(target, "testNewClientBuilder", null, "com.ibm.ws");
+        this.runTestOnServer(target, "testNewClientBuilder", null, "com.ibm.ws"/*CXF*/,
+                             "io.openliberty.org.jboss.resteasy.common.client"/*RESTEasy*/);
     }
 
     @Test
     public void complexTestNewClient() throws Exception {
-        this.runTestOnServer(target, "testNewClient", null, "clientproperty2=somevalue2");
-        this.runTestOnServer(target, "testNewClient", null, "clientproperty1=somevalue1");
+        this.runTestOnServer(target, "testNewClient", null, "true,true");
+        this.runTestOnServer(target, "testNewClient", null, "true,true");
     }
 
     @Test
     public void complexTestNewClientWithConfig() throws Exception {
-        this.runTestOnServer(target, "testNewClientWithConfig", null, "clientproperty3=somevalue3");
-        this.runTestOnServer(target, "testNewClientWithConfig", null, "clientproperty4=somevalue4");
+        this.runTestOnServer(target, "testNewClientWithConfig", null, "true,true");
+        this.runTestOnServer(target, "testNewClientWithConfig", null, "true,true");
     }
 
     @Test
@@ -124,7 +124,7 @@ public class ComplexClientTest extends AbstractTest {
 
     @Test
     public void complexTestNew2WebTargetsRequestFilter() throws Exception {
-        this.runTestOnServer(target, "testNew2WebTargetsRequestFilter", null, "{filter1=GET},{filter1=GET, filter2=*/*}");
+        this.runTestOnServer(target, "testNew2WebTargetsRequestFilter", null, "[filter1=GET],[filter1=GET, filter2=*/*]");
     }
 
     @Test
@@ -134,7 +134,8 @@ public class ComplexClientTest extends AbstractTest {
 
     @Test
     public void complexTestNew2MixFilter() throws Exception {
-        this.runTestOnServer(target, "testNew2MixFilter", null, "222,{filter1=GET},223,{filter2=null}");
+        this.runTestOnServer(target, "testNew2MixFilter", null, "222,{filter1=GET},223,{filter2=null}", // CXF
+                             "222,{filter1=GET},223,{filter2=*/*}"); //RESTEasy - defaults to "*/*" if no Accept header set by client
     }
 
     @Test

@@ -31,7 +31,7 @@ public class ExampleLogic extends AbstractTestLogic {
     }
 
     public void template(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                         Object managedComponentObject) {
+                         Object managedComponentObject) throws Throwable {
         final String testName = getTestName();
 
         // Verify parameters
@@ -70,11 +70,6 @@ public class ExampleLogic extends AbstractTestLogic {
             EntityManager em = jpaResource.getEm();
             TransactionJacket tj = jpaResource.getTj();
 
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testName + ": End");
         }

@@ -30,6 +30,14 @@ src: \
 	
 test.project: true
 
+tested.features: \
+	cdi-2.0,\
+	servlet-4.0,\
+	jsf-2.3,\
+	servlet-5.0,\
+	faces-3.0,\
+	cdi-3.0
+
 -buildpath: \
 	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
@@ -38,7 +46,7 @@ test.project: true
 	com.ibm.websphere.security;version=latest,\
 	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
 	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
-	com.ibm.ws.org.apache.commons.logging.1.0.3;version=latest,\
+	io.openliberty.org.apache.commons.logging;version=latest,\
 	com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
 	com.ibm.websphere.javaee.jsf.2.2;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\

@@ -48,7 +48,7 @@ public class AutoBindNode {
     void addLastEntry(Object entry) {
         if (multiple == null) {
             if (!single.equals(entry)) {
-                multiple = new LinkedList<Object>();
+                multiple = new LinkedList<>();
                 multiple.addLast(single);
                 multiple.addLast(entry);
             }

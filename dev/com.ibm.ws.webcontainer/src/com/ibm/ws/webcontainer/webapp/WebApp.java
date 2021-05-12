@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2020 IBM Corporation and others.
+ * Copyright (c) 1997, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -99,6 +99,7 @@ import com.ibm.websphere.servlet.event.ServletErrorEvent;
 import com.ibm.websphere.servlet.event.ServletErrorListener;
 import com.ibm.websphere.servlet.event.ServletInvocationListener;
 import com.ibm.websphere.servlet.event.ServletListener;
+import com.ibm.websphere.servlet.request.extended.IRequestExtended;
 import com.ibm.websphere.webcontainer.async.AsyncRequestDispatcher;
 import com.ibm.ws.container.Container;
 import com.ibm.ws.container.DeployedModule;
@@ -108,6 +109,7 @@ import com.ibm.ws.container.service.annotations.WebAnnotations;
 import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink;
 import com.ibm.ws.managedobject.ManagedObject;
 import com.ibm.ws.session.SessionCookieConfigImpl;
 import com.ibm.ws.session.utils.IDGeneratorImpl;
@@ -141,6 +143,7 @@ import com.ibm.ws.webcontainer.servlet.ServletWrapper;
 import com.ibm.ws.webcontainer.servlet.exception.NoTargetForURIException;
 import com.ibm.ws.webcontainer.session.IHttpSessionContext;
 import com.ibm.ws.webcontainer.spiadapter.collaborator.IInvocationCollaborator;
+import com.ibm.ws.webcontainer.srt.SRTServletRequest;
 import com.ibm.ws.webcontainer.util.DocumentRootUtils;
 import com.ibm.ws.webcontainer.util.EmptyEnumeration;
 import com.ibm.ws.webcontainer.util.IteratorEnumerator;
@@ -150,6 +153,7 @@ import com.ibm.wsspi.adaptable.module.Entry;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
 import com.ibm.wsspi.http.HttpInboundConnection;
+import com.ibm.wsspi.http.ee7.HttpInboundConnectionExtended;
 import com.ibm.wsspi.injectionengine.InjectionException;
 import com.ibm.wsspi.webcontainer.ClosedConnectionException;
 import com.ibm.wsspi.webcontainer.RequestProcessor;
@@ -1237,10 +1241,10 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
         }
     }
     
-    // Begin 299205, Collaborator added in extension processor recieves no
+    // Begin 299205, Collaborator added in extension processor receives no
     // events
     protected void commonInitializationStart(WebAppConfiguration config, DeployedModule moduleConfig) throws Throwable {
-        // End 299205, Collaborator added in extension processor recieves no
+        // End 299205, Collaborator added in extension processor receives no
         // events
         WebGroupConfiguration webGroupCfg = ((WebGroup) parent).getConfiguration();
         isServlet23 = webGroupCfg.isServlet2_3();
@@ -4035,7 +4039,7 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
             destroyListeners(new ArrayList[] { servletContextListeners, servletContextLAttrListeners, servletRequestListeners,
                                               servletRequestLAttrListeners, sessionListeners, sessionIdListeners, sessionAttrListeners, sessionActivationListeners, sessionBindingListeners });
 
-            // Begin 299205, Collaborator added in extension processor recieves no
+            // Begin 299205, Collaborator added in extension processor receives no
             // events
             finishDestroyCleanup();
 
@@ -4077,7 +4081,7 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
         attributes.clear();
     }
 
-    // End 299205, Collaborator added in extension processor recieves no events
+    // End 299205, Collaborator added in extension processor receives no events
 
     /**
      * Method sendError.
@@ -4095,8 +4099,24 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
         WebContainerRequestState reqState = WebContainerRequestState.getInstance(true);   //PI80786
 
         // PK82794
-        if (WCCustomProperties.SUPPRESS_LAST_ZERO_BYTE_PACKAGE)
-            reqState.setAttribute("com.ibm.ws.webcontainer.suppresslastzerobytepackage", "true");
+        if (WCCustomProperties.SUPPRESS_LAST_ZERO_BYTE_PACKAGE) {
+           // reqState.setAttribute("com.ibm.ws.webcontainer.suppresslastzerobytepackage", "true");
+            if (req instanceof IExtendedRequest) {
+                IExtendedRequest srtReq = (IExtendedRequest) req;
+                IRequestExtended iReq = (IRequestExtended)srtReq.getIRequest();
+                if (iReq != null) {
+                    HttpInboundConnection httpInboundConnection = iReq.getHttpInboundConnection();
+                    HttpInboundConnectionExtended extendedConnection= (HttpInboundConnectionExtended) httpInboundConnection;
+                    if(extendedConnection!=null) {
+                        HttpDispatcherLink dispatcherLink=(HttpDispatcherLink) extendedConnection.getHttpDispatcherLink();
+			if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+				logger.logp(Level.FINE, CLASS_NAME, "sendError", "Setting SuppressZeroByteChunk");
+			}
+                        dispatcherLink.setSuppressZeroByteChunk(true);
+                        }
+                }
+            }
+        }
         // PK82794
 
         if (!res.isCommitted())
@@ -4176,23 +4196,27 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
             // set the response status
             res.setStatus(error.getErrorCode());
 
-            // We have to determine the charset to use with the error page
-            String clientEncoding = req.getCharacterEncoding();
-            // PK21127 start
-            if (clientEncoding != null && !EncodingUtils.isCharsetSupported(clientEncoding)) {
-                // charset not supported, continue with the logic to determine
-                // the encoding
-                clientEncoding = null;
-            }
-            // PK21127 end
-            if (clientEncoding == null)
-                clientEncoding = com.ibm.wsspi.webcontainer.util.EncodingUtils.getEncodingFromLocale(req.getLocale());
-            if (clientEncoding == null)
-                clientEncoding = System.getProperty("default.client.encoding");
-            if (clientEncoding == null)
-                clientEncoding = "ISO-8859-1";
+            if(WCCustomProperties.SET_HTML_CONTENT_TYPE_ON_ERROR){
+                // We have to determine the charset to use with the error page
+                String clientEncoding = req.getCharacterEncoding();
+                // PK21127 start
+                if (clientEncoding != null && !EncodingUtils.isCharsetSupported(clientEncoding)) {
+                    // charset not supported, continue with the logic to determine
+                    // the encoding
+                    clientEncoding = null;
+                }
 
-            res.setContentType("text/html;charset=" + clientEncoding);
+                // PK21127 end
+                if (clientEncoding == null)
+                    clientEncoding = com.ibm.wsspi.webcontainer.util.EncodingUtils.getEncodingFromLocale(req.getLocale());
+                if (clientEncoding == null)
+                    clientEncoding = System.getProperty("default.client.encoding");
+                if (clientEncoding == null)
+                    clientEncoding = "ISO-8859-1";
+
+                res.setContentType("text/html;charset=" + clientEncoding);
+            }
+
         } catch (IllegalStateException ise) {
             // failed to set status code.
             // This could be caused by:

@@ -31,7 +31,3 @@ invalid.keepalive.timeout.useraction=Skonfiguruj poprawn\u0105 warto\u015b\u0107
 invalid.client.inbound.msg.size=CWWKT0304E: Maksymalna wielko\u015b\u0107 maxInboundMessageSize {0} klienta gRPC jest niepoprawna. Warto\u015bci musz\u0105 by\u0107 wi\u0119ksze od 0.
 invalid.client.inbound.msg.size.explanation=Skonfigurowana warto\u015b\u0107 maxInboundMessageSize jest niepoprawna.
 invalid.client.inbound.msg.size.useraction=Skonfiguruj poprawn\u0105 warto\u015b\u0107 maxInboundMessageSize.
-
-invalid.authn.token=CWWKT0305E: Warto\u015b\u0107 authnToken "{0}" klienta gRPC jest niepoprawna. Warto\u015b\u0107 musi by\u0107 r\u00f3wna "jwt" lub "oauth".
-invalid.authn.token.explanation=Skonfigurowana warto\u015b\u0107 authnToken jest niepoprawna.
-invalid.authn.token.useraction=Skonfiguruj poprawn\u0105 warto\u015b\u0107 authnToken.

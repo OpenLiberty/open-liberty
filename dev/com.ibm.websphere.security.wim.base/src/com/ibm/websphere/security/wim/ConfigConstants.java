@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -388,7 +388,7 @@ public interface ConfigConstants {
     String CONFIG_PROP_AUTHENTICATION = "authentication";
     String CONFIG_PROP_REFERAL = "referal";
     String CONFIG_PROP_REFERRAL = "referral";
-    String CONFIG_PROP_DEREFALIASES = "derefAlias";
+    String CONFIG_PROP_DEREFALIASES = "derefAliases";
     String CONFIG_PROP_SSL_CONFIGURATION = "sslConfiguration";
     String CONFIG_PROP_CONNECTION_POOL = "connectionPool";
 
@@ -716,4 +716,23 @@ public interface ConfigConstants {
      * Custom property if set indicates to VMM that it needs encode certain characters while creating search expression.
      */
     String CONFIG_CUSTOM_PROP_USE_ENCODING_IN_SEARCH_EXPRESSION = "useEncodingInSearchExpression";
+
+    // String constants for bind authentication types
+    String CONFIG_PROP_BIND_AUTH_MECH = "bindAuthMechanism";
+    String CONFIG_BIND_AUTH_KRB5 = "GSSAPI"; // Upper case required for setting on Context.SECURITY_AUTHENTICATION
+    String MESSAGE_KERBEROS = " (Kerberos)";
+
+    /**
+     * List of supported bindAuthMechanism types. If a constant is added or removed,
+     * then this list should be updated too.
+     */
+    String[] CONFIG_BIND_AUTH_TYPES = {
+                                        CONFIG_AUTHENTICATION_TYPE_NONE,
+                                        CONFIG_AUTHENTICATION_TYPE_SIMPLE,
+                                        CONFIG_BIND_AUTH_KRB5
+    };
+
+    String CONFIG_PROP_KRB5_AUTH = "krb5Authentication";
+    String CONFIG_PROP_KRB5_PRINCIPAL = "krb5Principal";
+    String CONFIG_PROP_KRB5_TICKET_CACHE = "krb5TicketCache";
 }

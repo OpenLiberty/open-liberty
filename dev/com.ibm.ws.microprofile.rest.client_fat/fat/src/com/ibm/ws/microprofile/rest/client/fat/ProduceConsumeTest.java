@@ -40,7 +40,8 @@ public class ProduceConsumeTest extends FATServletClient {
     public static RepeatTests r = RepeatTests.withoutModification()
         .andWith(FATSuite.MP_REST_CLIENT(FeatureReplacementAction.EE8_FEATURES(), "1.2", SERVER_NAME))
         .andWith(FATSuite.MP_REST_CLIENT(FeatureReplacementAction.EE8_FEATURES(), "1.3", SERVER_NAME))
-        .andWith(FATSuite.MP_REST_CLIENT(FeatureReplacementAction.EE8_FEATURES(), "1.4", SERVER_NAME));
+        .andWith(FATSuite.MP_REST_CLIENT(FeatureReplacementAction.EE8_FEATURES(), "1.4", SERVER_NAME))
+        .andWith(FATSuite.MP_REST_CLIENT(FeatureReplacementAction.EE8_FEATURES(), "2.0", SERVER_NAME));
 
     @Server(SERVER_NAME)
     @TestServlet(servlet = ProduceConsumeTestServlet.class, contextRoot = appName)
@@ -50,10 +51,11 @@ public class ProduceConsumeTest extends FATServletClient {
     public static void setUp() throws Exception {
         ShrinkHelper.defaultDropinApp(server, appName, "mpRestClient11.produceConsume");
         server.startServer();
+        server.waitForStringInLog("CWWKO0219I.*ssl"); // CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl has been started and is now listening for requests on host *  (IPv6) port 8020.
     }
 
     @AfterClass
     public static void afterClass() throws Exception {
-        server.stopServer(/*"CWWKF0033E"*/); //ignore this error for mismatch with jsonb-1.0 and Java EE 7
+        server.stopServer("CWWKE1102W");  //ignore server quiesce timeouts due to slow test machines
     }
 }

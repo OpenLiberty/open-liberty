@@ -11,6 +11,8 @@
 package com.ibm.ws.classloading.java2sec;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.AccessController;
@@ -21,6 +23,8 @@ import java.security.PermissionCollection;
 import java.security.Permissions;
 import java.security.Policy;
 import java.security.PrivilegedAction;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.security.ProtectionDomain;
 import java.security.SecurityPermission;
 import java.security.UnresolvedPermission;
@@ -105,6 +109,13 @@ public class PermissionManager implements PermissionsCombiner {
     private ArrayList<Permission> restrictablePermissions = new ArrayList<Permission>();
 
     /**
+     * The list of granted permissions to all codeBases from the java.policy file
+     */
+    private ArrayList<Permission> javaAllCodeBasePermissions = new ArrayList<Permission>();
+    
+    private static boolean expandProps = true;
+
+    /**
      * The list of permissions granted in the server.xml
      */
     private ArrayList<Permission> grantedPermissions = new ArrayList<Permission>();
@@ -121,6 +132,8 @@ public class PermissionManager implements PermissionsCombiner {
     private static final String SERVER_XML = "server.xml";
 
     private static final String CLIENT_XML = "client.xml";
+    
+    private static final String JAVA_POLICY = "java.policy";
     
     private static String os_name = System.getProperty("os.name");
     private static String os_version = System.getProperty("os.version");
@@ -221,6 +234,60 @@ public class PermissionManager implements PermissionsCombiner {
     // @FFDCIgnore({ IllegalAccessException.class, InstantiationException.class, ClassNotFoundException.class, IllegalArgumentException.class,
     // 	InvocationTargetException.class, NoSuchMethodException.class, SecurityException.class})
     private void initializePermissions() {
+        
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "Processing java.policy file");
+        }
+        
+        ParseJavaPolicy pjp = null;
+        
+        try {
+            pjp = new ParseJavaPolicy(expandProps);
+        } catch (Exception e) {
+            Tr.error(tc, "Error reading java.policy file: " + e.getMessage());
+            return;
+        }
+        
+        List grants = pjp.getJavaPolicyGrants();
+        Enumeration<GrantEntry> enm = Collections.enumeration(grants);
+        while(enm.hasMoreElements()){
+            GrantEntry ge = enm.nextElement();
+            if (ge.codeBase != null) {
+                ge.codeBase = normalize(ge.codeBase);
+                Iterator it = ge.getPermissions();
+                while (it.hasNext()) {
+                    // Create the permission object
+                    PermissionEntry pe = (PermissionEntry)it.next();
+                    Permission perm = createPermissionObject(pe.getPermissionType(), pe.getName(), pe.getAction(), 
+                                                             pe.getSignatures(), null, null, JAVA_POLICY);
+                    setCodeBasePermission(ge.getCodeBase(), perm);
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(tc, "java.policy, added to codebase = " + ge.getCodeBase() + " perm = " + perm.toString());
+                    }
+                }
+            } else {
+                Iterator it = ge.getPermissions();
+                while (it.hasNext()) {
+                    // Create the permission object
+                    PermissionEntry pe = (PermissionEntry)it.next();
+                    Permission perm = createPermissionObject(pe.getPermissionType(), pe.getName(), pe.getAction(), 
+                                                             pe.getSignatures(), null, null, JAVA_POLICY);
+                    javaAllCodeBasePermissions.add(perm);
+                }               
+            }
+        }
+        
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "Permissions gathered from java.policy for all codebases: ");
+            Iterator it = javaAllCodeBasePermissions.iterator();
+            while (it.hasNext()) {
+                Permission p = (Permission)it.next();
+                Tr.debug(tc, "    javaAllCodeBasePermission = " + p.toString());
+            }
+           
+        }
+        
+        
         // Set the default restrictable permissions
         int count = 0;
         if (tc.isDebugEnabled()) {
@@ -289,12 +356,15 @@ public class PermissionManager implements PermissionsCombiner {
 
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "restrictablePermissions : " + restrictablePermissions);
-                    Tr.debug(tc, "grantedPermissions : " + grantedPermissions);
+                    Tr.debug(tc, "grantedPermissions from server.xml or client.xml : " + grantedPermissions);
                 }
             }
         }
-
+        addJavaPolicyPermissions(javaAllCodeBasePermissions);
         setSharedLibraryPermission();
+        
+        // Effective policy:
+        
     }
 
     private String normalize(String codebase) {
@@ -305,6 +375,25 @@ public class PermissionManager implements PermissionsCombiner {
         return codebase;
     }
 
+    private void addJavaPolicyPermissions(List javaAllCodeBasePermissions) {
+        ArrayList<Permission> permissions = null;
+        
+        for (String codeBase : codeBasePermissionMap.keySet()) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "codeBase = " + codeBase);
+                
+            }
+            Iterator it = javaAllCodeBasePermissions.iterator();
+            permissions = new ArrayList<Permission>();
+            permissions = codeBasePermissionMap.get(codeBase);
+            while (it.hasNext()) {
+                Permission p = (Permission)it.next();                
+                permissions.add(p);
+                codeBasePermissionMap.put(codeBase, permissions);
+            }
+        }
+    }
+    
     private void setCodeBasePermission(String codeBase, Permission permission) {
         ArrayList<Permission> permissions = null;
 
@@ -321,6 +410,10 @@ public class PermissionManager implements PermissionsCombiner {
     private void setSharedLibraryPermission() {
         Map<String, ProtectionDomain> protectionDomainMap = new HashMap<String, ProtectionDomain>();
 
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "Setting the final protection domain: ");
+        }
+        
         for (String codeBase : codeBasePermissionMap.keySet()) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "codeBase = " + codeBase);
@@ -333,14 +426,25 @@ public class PermissionManager implements PermissionsCombiner {
                 }
             }
             
+            if (codeBase.startsWith("/")) {
+                String truncatedCodeBase = codeBase.substring(1, codeBase.length());
+                CodeSource codeSource = createCodeSource(truncatedCodeBase);
+                ProtectionDomain protectionDomain = createProtectionDomain(codeSource, permissions);
+                
+            }
+
             CodeSource codeSource = createCodeSource(codeBase);
             ProtectionDomain protectionDomain = createProtectionDomain(codeSource, permissions);
             protectionDomainMap.put(codeBase, protectionDomain);
         }
 
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "protectionDomainMap.size = " + protectionDomainMap.size());
+            Tr.debug(tc, "   protectionDomainMap.size = " + protectionDomainMap.size());
+            for (Map.Entry<String, ProtectionDomain> entry : protectionDomainMap.entrySet()) {
+                Tr.debug(tc, "         Key (codeBase)= " + entry.getKey() + ", Value (protectionDomain) = " + entry.getValue());
+            }
         }
+        
 
         if (classLoadingService != null) {
             classLoadingService.setSharedLibraryProtectionDomains(protectionDomainMap);
@@ -350,12 +454,19 @@ public class PermissionManager implements PermissionsCombiner {
     private CodeSource createCodeSource(String codeBase) {
         Certificate[] certs = null;
         CodeSource codeSource = null;
+        String filePrefix = "file:";
         try {
             //if (codeBase != null) {
             //    codeBase = codeBase.replace(":/", "/");
             //}
             
-            codeSource = new CodeSource(new URL("wsjar:file:/" + codeBase), certs);
+            if (codeBase.startsWith(filePrefix)) {
+                codeBase = codeBase.substring(filePrefix.length());
+            }
+            
+            //codeSource = new CodeSource(new URL("wsjar:file:/" + codeBase), certs);
+
+            codeSource = new CodeSource(new URL("file:/" + codeBase), certs);
         } catch (MalformedURLException e) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Unable to create code source for protection domain");
@@ -604,9 +715,11 @@ public class PermissionManager implements PermissionsCombiner {
         }
         
         if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "Effective permissions from static policy: ");
             for (int i = 0; i < effectivePermissions.size(); i++)
             {
                     Permission element = effectivePermissions.get(i);
+                    Tr.debug(tc, "CodeBase: " + codeBase + " Original codeBase: " + original_codeBase + " Permission: " + element.toString());
             }
         }
 
@@ -624,7 +737,14 @@ public class PermissionManager implements PermissionsCombiner {
         String codeBase = codesource.getLocation().getPath(); // TODO: This should be using the CodeSource itself to compare with existing code sources
         ArrayList<Permission> permissions = getEffectivePermissions(staticPolicyPermissions, codeBase);
 
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "***********   Effective combined permissions: **********");
+        }
+
         for (Permission permission : permissions) {
+            if (tc.isDebugEnabled()) {
+                 Tr.debug(tc, "         CodeBase: " + codeBase + " Permission: " + permission.toString());
+            }
             effectivePermissions.add(permission);
         }
 
@@ -691,6 +811,12 @@ public class PermissionManager implements PermissionsCombiner {
 
             }
         }
+        
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "Effective permissions from permissions.xml for codeBase: : " + codeBase);
+            Tr.debug(tc, permissionXMLPermissionMap.get(codeBase).toString());
+        }
+
     }
 
     /**
@@ -717,6 +843,12 @@ public class PermissionManager implements PermissionsCombiner {
     
     private void RecursiveArchiveFind(File dir, String individualArchive, String codeBase, ArrayList<Permission> permissions) {
         File [] files = dir.listFiles();
+        if (files == null) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Directory, " + dir + " does not exist or threw an IO exception while listing it's files - skipping");
+            }
+            return;
+        }
 
         // for every file in the current directory, see if it matches any of the individual archive files
         for (File file : files) {
@@ -763,19 +895,54 @@ public class PermissionManager implements PermissionsCombiner {
         }
     }
     
-    
-    private void RecursiveFind(File dir, String fileName, String codeBase, ArrayList<Permission> permissions)  
+
+    private void RecursiveFind(File dir, String fileName, String codeBase, ArrayList<Permission> permissions)
     { 
-        
-        // take the archive referenced by fileName apart to its individual archives
         ZipFile z = null;
-        if (!codeBase.contains("expanded")) {
-            try {
-                z = new ZipFile(codeBase);
-               
-            } catch (java.io.IOException ioe) {
-                // should never get here
+        File tempFile = new File(codeBase);
+        
+        // fileName comes in empty if the path contains a slash on the end (file or directory)
+        if(fileName == null || fileName.trim().equals("")) {
+            if (codeBase.endsWith("/")) {
+                String trimmedFileName = codeBase.substring(0,codeBase.length() - 1);
+                fileName = trimmedFileName.substring(trimmedFileName.lastIndexOf("/"), trimmedFileName.length());
+            } else {
+                fileName = codeBase;
             }
+            
+        }
+       
+        // Take the archive referenced by fileName apart to its individual archives
+        // Only do this if the codeBase is NOT an expanded app (ie directory)
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "codebase: " + codeBase + " tempFile: " + tempFile + " fileName: " + fileName);
+            Tr.debug(tc, "   is " + tempFile + " a directory: " + tempFile.isDirectory());
+            Tr.debug(tc, "      " + fileName + " ends with ear? " + fileName.endsWith(".ear"));
+            Tr.debug(tc, "      " + fileName + " ends with war? " + fileName.endsWith(".war"));
+        }
+       
+        if (codeBase != null && !codeBase.contains("expanded") && (!tempFile.isDirectory() && (fileName.endsWith(".ear") || fileName.endsWith(".war")))) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc,"        codebase: " + codeBase + " will expanded recursively to ensure all sub-modules get the right permissions");
+            }
+            try {
+                z = (ZipFile) AccessController.doPrivileged(new PrivilegedExceptionAction() {
+                    public ZipFile run() {
+                        try {
+                           return new ZipFile(codeBase);
+                        } catch (IOException ioe) {
+                            return null;                             
+                        }
+                    }
+                });
+                //z = new ZipFile(codeBase);
+            } catch (PrivilegedActionException e) {
+                // e.getException() should be an instance of FileNotFoundException,
+                // as only "checked" exceptions will be "wrapped" in a
+                // PrivilegedActionException.
+                //throw (FileNotFoundException) e.getException();
+              }
+
             ZipEntry ze = null;
             if (z != null) {
                 Enumeration <? extends ZipEntry> zenum = z.entries();
@@ -786,11 +953,9 @@ public class PermissionManager implements PermissionsCombiner {
                     }
                     String individualArchive = ze.getName();
                     RecursiveArchiveFind(dir, individualArchive, codeBase, permissions);
-                    
                 }         
             }    
         }
-
     } 
 
 }

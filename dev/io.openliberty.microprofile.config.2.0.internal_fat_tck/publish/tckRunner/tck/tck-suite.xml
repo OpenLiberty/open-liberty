@@ -11,26 +11,25 @@
 <suite name="microprofile-config-2.0-tck" verbose="2"
     configfailurepolicy="continue">
     <test name="tck-package-org.eclipse.microprofile.config20.tck">
-        <method-selectors>
-            <method-selector>
-                <script language="beanshell">
-                     <![CDATA[
-                     // ConfigProviderTest
-                     !method.getName().startsWith("testInjectedConfigSerializable") &&
-                     
-                     // EmptyValuesTest
-                     !method.getName().startsWith("testEmptyStringValues") &&
-                     !method.getName().startsWith("testEmptyStringProgrammaticLookup") &&
-                     !method.getName().startsWith("testEmptyStringPropertyFromConfigFile") &&
-                     
-                     // ConfigProviderTest
-                     // Currently fails due to a bug: https://github.com/eclipse/microprofile-config/issues/563
-                     // This test should be added back to the test set when the TCK version is upated to incllude the fix
-                     !method.getName().startsWith("testEnvironmentConfigSource")
-                ]]>
-                </script>
-            </method-selector>
-        </method-selectors>
+		<method-selectors>
+			<method-selector>
+				<script language="beanshell">
+					<!-- ConfigProviderTest.testEnvironmentConfigSource() looks for a Config Property called "path". -->
+					<!-- On some Windows machines, the Property can be called "Path", and hence the value isn't found. -->
+					<!-- Therefore this test is skipped on Windows machines. -->
+					<!-- Relates to: https://github.com/eclipse/microprofile-config/issues/664 -->
+					<![CDATA[
+					String os = System.getProperty("os.name");
+					if (os.contains("Windows")){
+					    return !method.getName().startsWith("testEnvironmentConfigSource");
+					}else{
+					    return true;
+					}
+					]]>
+				</script>
+			</method-selector>
+		</method-selectors>
+		
         <packages>
             <package name="org.eclipse.microprofile.config.tck.*"></package>
         </packages>

@@ -72,3 +72,5 @@ instrument.disabled: true
 	com.ibm.ws.ejbcontainer.mdb;version=latest,\
 	com.ibm.ws.kernel.service;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+
+jakartaeeMe: true

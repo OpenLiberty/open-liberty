@@ -12,8 +12,10 @@ package io.openliberty.grpc.internal.client;
 
 public interface GrpcClientMessages {
 	
-    /** RAS trace bundle for the GRPC channel */
+    /** RAS trace bundle for the GRPC client channel */
     String GRPC_BUNDLE = "io.openliberty.grpc.internal.client.resources.grpcclientmessages";
+    /** RAS trace bundle for the GRPC client security channel */
+    String GRPC_CLIENT_SECURITY_BUNDLE = "io.openliberty.grpc.internal.client.security.resources.grpcclientsecuritymessages";
     /** RAS trace name for the GRPC channel */
     String GRPC_TRACE_NAME = "GRPC";
 

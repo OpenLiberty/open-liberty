@@ -11,6 +11,7 @@
 package com.ibm.ws.grpc.fat.beer.service;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -27,7 +28,10 @@ import io.grpc.stub.StreamObserver;
  */
 @WebServlet(urlPatterns = { "/beer" }, asyncSupported = true)
 public class BeerServlet extends HttpServlet {
+
+    protected static final Class<?> c = BeerServlet.class;
     private static final long serialVersionUID = 1L;
+    private static final Logger LOG = Logger.getLogger(c.getName());
 
     private static Beer beerList[];
     private static int numBeers;
@@ -44,18 +48,18 @@ public class BeerServlet extends HttpServlet {
         @Override
         public void addBeer(Beer newBeer, StreamObserver<BeerResponse> responseObserver) {
             boolean notFound = true;
-            System.out.println("Entered addBeer, current number of beers is " + numBeers);
+            LOG.info("Entered addBeer, current number of beers is " + numBeers);
             // Lame test, only 20 beers allowed
             if (numBeers < 20) {
                 int i = 0;
                 while (i < numBeers && notFound) {
-                    System.out.println("In while, beer is " + beerList[i].getBeerName());
+                    LOG.info("In while, beer is " + beerList[i].getBeerName());
                     if (beerList[i].getBeerName().equals(newBeer.getBeerName())) {
                         notFound = false;
                     }
                     i++;
                 }
-                System.out.println("Out of while, beer not found is " + notFound);
+                LOG.info("Out of while, beer not found is " + notFound);
                 if (notFound) {
                     beerList[i] = newBeer;
                     numBeers++;

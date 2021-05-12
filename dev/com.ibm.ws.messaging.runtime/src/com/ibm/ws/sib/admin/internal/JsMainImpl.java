@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.audit.context.AuditManager;
 import com.ibm.websphere.sib.exception.SINotSupportedException;
 import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.ws.messaging.security.RuntimeSecurityService;
 import com.ibm.ws.sib.admin.AliasDestination;
 import com.ibm.ws.sib.admin.BaseDestination;
 import com.ibm.ws.sib.admin.BaseDestinationDefinition;
@@ -49,7 +50,7 @@ import com.ibm.ws.sib.utils.ras.SibTr;
  * The main sib service class that is responsible for initailizing starting
  * stopping and destroying messaging runtime service
  */
-public class JsMainImpl implements JsMain {
+public final class JsMainImpl implements JsMain {
 
     private static final String CLASS_NAME = "com.ibm.ws.sib.admin.internal.JsMainImpl";
 
@@ -63,6 +64,14 @@ public class JsMainImpl implements JsMain {
     ArrayList services;
     BundleContext bContext;
     ServiceRegistration<MessagingEngineMBean> mbeanServiceReg;
+    private final RuntimeSecurityService runtimeSecurityService;
+
+    /**
+     * @return the runtimeSecurityService
+     */
+    public final RuntimeSecurityService getRuntimeSecurityService() {
+        return runtimeSecurityService;
+    }
 
     private boolean _serverStarted = false;
 
@@ -119,48 +128,19 @@ public class JsMainImpl implements JsMain {
     }
 
     // Constructor for liberty release
-    public JsMainImpl() {
-
-        String thisMethodName = "<init>";
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.entry(tc, thisMethodName, services);
-        }
-
-        constructorCode();
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.exit(tc, thisMethodName);
-        }
-    }
-
-    // Constructor for liberty release
-    public JsMainImpl(BundleContext bContext) {
-        this();
+    public JsMainImpl(BundleContext bContext, RuntimeSecurityService runtimeSecurityService) {
+        String methodName = "JSMainImpl";
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) 
+            SibTr.entry(tc, methodName, new Object[] {this, bContext, runtimeSecurityService, services});
+        
         this.bContext = bContext;
-        String thisMethodName = "<init>(BundleContext)";
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.entry(tc, thisMethodName, services);
-        }
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.exit(tc, thisMethodName);
-        }
-    }
-
-    protected void constructorCode() {
-
-        String thisMethodName = CLASS_NAME + ".constructorCode()";
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.entry(tc, thisMethodName, this);
-        }
-
+        this.runtimeSecurityService = runtimeSecurityService; 
+        
         com.ibm.ws.sib.admin.JsAdminService adminService = JsMainAdminComponentImpl.getJsAdminService();
         adminService.setAdminMain(this);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.exit(tc, thisMethodName);
+            SibTr.exit(tc, methodName);
         }
     }
 

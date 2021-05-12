@@ -294,6 +294,57 @@ public class ConfigTest extends FATServletClient {
     }
 
     /**
+     * Update the autoCloseConnections attribute of a connectionManager element while the server is running.
+     * Verify that the updated value is honored.
+     */
+    @Test
+    public void testConfigChangeAutoCloseConnections() throws Throwable {
+        String method = "testConfigChangeAutoCloseConnections";
+        Log.info(c, method, "Executing " + method);
+
+        // Locate the connectionManager that we will be reconfiguring
+        ServerConfiguration config = server.getServerConfiguration();
+        ConnectionManager conMgr1 = null;
+        for (ConnectionManager connectionManager : config.getConnectionManagers())
+            if ("conMgr1".equals(connectionManager.getId()))
+                conMgr1 = connectionManager;
+        // Fail if we cannot find it
+        if (conMgr1 == null) {
+            System.out.println("Failure during " + method + " with the following config:");
+            System.out.println(config);
+            fail("Did not find connectionManager with id=conMgr1");
+        }
+
+        // First verify the default behavior
+        runTest(basicfat, "testConfigChangeAutoCloseConnectionsLeakConnection");
+        runTest(basicfat, "testConfigChangeAutoCloseConnectionsConnectionClosed");
+
+        conMgr1.setAutoCloseConnections("false");
+        try {
+            updateServerConfig(config, EMPTY_EXPR_LIST);
+            runTest(basicfat, "testConfigChangeAutoCloseConnectionsLeakConnection");
+            runTest(basicfat, "testConfigChangeAutoCloseConnectionsConnectionNotClosed");
+        } catch (Throwable x) {
+            System.out.println("Failure during " + method + " with the following config:");
+            System.out.println(config);
+            throw x;
+        }
+
+        conMgr1.setAutoCloseConnections("true");
+        try {
+            updateServerConfig(config, EMPTY_EXPR_LIST);
+            runTest(basicfat, "testConfigChangeAutoCloseConnectionsLeakConnection");
+            runTest(basicfat, "testConfigChangeAutoCloseConnectionsConnectionClosed");
+        } catch (Throwable x) {
+            System.out.println("Failure during " + method + " with the following config:");
+            System.out.println(config);
+            throw x;
+        }
+
+        cleanUpExprs = EMPTY_EXPR_LIST;
+    }
+
+    /**
      * Update the data source configuration
      * from commitOrRollbackOnCleanup unspecified,
      * to commitOrRollbackOnCleanup=commit

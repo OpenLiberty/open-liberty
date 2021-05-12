@@ -11,7 +11,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-
 src: \
 	fat/src,\
 	test-applications/cloudantapp/src,\
@@ -21,11 +20,16 @@ src: \
 
 fat.project: true
 
+# Uncomment to use remote docker host to simulate continuous build behavior.
+#fat.test.use.remote.docker: true
+
 -buildpath: \
     com.ibm.websphere.javaee.servlet.3.1;version=latest,\
     com.ibm.websphere.javaee.transaction.1.1;version=latest,\
     com.cloudant:cloudant-client;version=2.16.0,\
-    org.rnorth.duct-tape:duct-tape;version=1.0.7,\
-    org.testcontainers:database-commons;version=1.14.0,\
-    org.testcontainers:testcontainers;version=1.14.0,\
-    org.slf4j:slf4j-api;version=1.7.7
+    org.rnorth.duct-tape:duct-tape;version=1.0.8,\
+    com.github.docker-java:docker-java-api;version=3.2.7,\
+    org.testcontainers:database-commons;version=1.15.1,\
+    org.testcontainers:testcontainers;version=1.15.1,\
+    org.slf4j:slf4j-api;version=1.7.7,\
+    io.openliberty.org.apache.commons.codec;version=latest

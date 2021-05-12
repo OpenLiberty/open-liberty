@@ -21,5 +21,11 @@
       <class-name>java.lang.RuntimePermission</class-name>
       <name>accessClassInPackage.com.ibm.oti.shared</name>
    </permission>
+   
+   <permission>
+       <class-name>javax.security.auth.PrivateCredentialPermission</class-name>
+       <name>* * "*"</name>
+       <actions>read</actions>
+   </permission>
 
 </permissions>

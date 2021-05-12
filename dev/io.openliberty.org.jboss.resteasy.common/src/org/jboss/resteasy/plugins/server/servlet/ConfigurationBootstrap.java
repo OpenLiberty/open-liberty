@@ -236,7 +236,8 @@ public abstract class ConfigurationBootstrap implements ResteasyConfiguration
       }
 
       // Liberty Change: TODO: revert this back when we sort out the config via web fragments.
-      String injectorFactoryClass = "org.jboss.resteasy.cdi.CdiInjectorFactory"; // getParameter("resteasy.injector.factory");
+      //String injectorFactoryClass = "org.jboss.resteasy.cdi.CdiInjectorFactory"; // getParameter("resteasy.injector.factory");
+      String injectorFactoryClass = "io.openliberty.org.jboss.resteasy.common.cdi.LibertyFallbackInjectorFactory";
       if (injectorFactoryClass != null)
       {
          deployment.setInjectorFactoryClass(injectorFactoryClass);
@@ -348,26 +349,28 @@ public abstract class ConfigurationBootstrap implements ResteasyConfiguration
 
    public String getParameter(String name)
    {
-      String propName = null;
-      if (System.getSecurityManager() == null) {
-         propName = ResteasyConfigProvider.getConfig()
-                 .getOptionalValue(name, String.class)
-                 .orElse(null);
+      String propName = getInitParameter(name);
+      if (propName == null) {
+          if (System.getSecurityManager() == null) {
+              propName = ResteasyConfigProvider.getConfig()
+                              .getOptionalValue(name, String.class)
+                              .orElse(null);
 
-      } else {
+          } else {
 
-         try {
-            propName = AccessController.doPrivileged(new PrivilegedExceptionAction<String>() {
-               @Override
-               public String run() throws Exception {
-                  return ResteasyConfigProvider.getConfig()
-                          .getOptionalValue(name, String.class)
-                          .orElse(null);
-               }
-            });
-         } catch (PrivilegedActionException pae) {
-            throw new RuntimeException(pae);
-         }
+              try {
+                  propName = AccessController.doPrivileged(new PrivilegedExceptionAction<String>() {
+                      @Override
+                      public String run() throws Exception {
+                          return ResteasyConfigProvider.getConfig()
+                                          .getOptionalValue(name, String.class)
+                                          .orElse(null);
+                      }
+                  });
+              } catch (PrivilegedActionException pae) {
+                  throw new RuntimeException(pae);
+              }
+          }
       }
       return propName;
    }

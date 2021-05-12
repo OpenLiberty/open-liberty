@@ -28,12 +28,11 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 public final class ApplicationAdapter implements ContainerAdapter<Application> {
 
     private ServiceReference<JavaEEVersion> versionRef;
+    // TODO: Why is this volatile?
     private volatile Version platformVersion = JavaEEVersion.DEFAULT_VERSION;
 
     public synchronized void setVersion(ServiceReference<JavaEEVersion> referenceRef) {
         this.versionRef = referenceRef;
-
-        String versionText = (String) referenceRef.getProperty("version");
         this.platformVersion = Version.parseVersion((String) referenceRef.getProperty("version"));
     }
 

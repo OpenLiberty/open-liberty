@@ -28,6 +28,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
@@ -63,10 +64,10 @@ public class DefaultOverallReadinessStatusUpAppStartupTest {
         log("setupClass", testName + " - Deploying the Delayed App into the apps directory and starting the server.");
 
         WebArchive app = ShrinkHelper.buildDefaultApp(APP_NAME, "io.openliberty.microprofile.health30.delayed.health.check.app");
-        ShrinkHelper.exportAppToServer(server, app);
+        ShrinkHelper.exportAppToServer(server, app, DeployOptions.DISABLE_VALIDATION);
 
         if (!server.isStarted())
-            server.startServer();
+            server.startServer(false, false);
 
         server.waitForStringInLog("CWWKT0016I: Web application available.*DelayedHealthCheckApp*");
     }

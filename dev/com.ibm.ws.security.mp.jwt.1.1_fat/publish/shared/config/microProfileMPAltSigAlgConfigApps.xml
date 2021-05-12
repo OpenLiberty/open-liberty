@@ -1,0 +1,549 @@
+<server>
+
+	<application
+		type="war"
+		id="microProfileGoodRS256PublicKeyInMP-ConfigInMETA-INF"
+		name="microProfileGoodRS256PublicKeyInMP-ConfigInMETA-INF"
+		location="${server.config.dir}/apps/microProfileGoodRS256PublicKeyInMP-ConfigInMETA-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+		
+	<application
+		type="war"
+		id="microProfileGoodRS384PublicKeyInMP-ConfigInMETA-INF"
+		name="microProfileGoodRS384PublicKeyInMP-ConfigInMETA-INF"
+		location="${server.config.dir}/apps/microProfileGoodRS384PublicKeyInMP-ConfigInMETA-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+
+	<application
+		type="war"
+		id="microProfileGoodRS512PublicKeyInMP-ConfigInMETA-INF"
+		name="microProfileGoodRS512PublicKeyInMP-ConfigInMETA-INF"
+		location="${server.config.dir}/apps/microProfileGoodRS512PublicKeyInMP-ConfigInMETA-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+	
+	<application
+		type="war"
+		id="microProfileGoodES256PublicKeyInMP-ConfigInMETA-INF"
+		name="microProfileGoodES256PublicKeyInMP-ConfigInMETA-INF"
+		location="${server.config.dir}/apps/microProfileGoodES256PublicKeyInMP-ConfigInMETA-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+		
+	<application
+		type="war"
+		id="microProfileGoodES384PublicKeyInMP-ConfigInMETA-INF"
+		name="microProfileGoodES384PublicKeyInMP-ConfigInMETA-INF"
+		location="${server.config.dir}/apps/microProfileGoodES384PublicKeyInMP-ConfigInMETA-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+
+	<application
+		type="war"
+		id="microProfileGoodES512PublicKeyInMP-ConfigInMETA-INF"
+		name="microProfileGoodES512PublicKeyInMP-ConfigInMETA-INF"
+		location="${server.config.dir}/apps/microProfileGoodES512PublicKeyInMP-ConfigInMETA-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+
+<!--   PS ALGs do not delete
+	<application
+		type="war"
+		id="microProfileGoodPS256PublicKeyInMP-ConfigInMETA-INF"
+		name="microProfileGoodPS256PublicKeyInMP-ConfigInMETA-INF"
+		location="${server.config.dir}/apps/microProfileGoodPS256PublicKeyInMP-ConfigInMETA-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+		
+	<application
+		type="war"
+		id="microProfileGoodPS384PublicKeyInMP-ConfigInMETA-INF"
+		name="microProfileGoodPS384PublicKeyInMP-ConfigInMETA-INF"
+		location="${server.config.dir}/apps/microProfileGoodPS384PublicKeyInMP-ConfigInMETA-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+
+	<application
+		type="war"
+		id="microProfileGoodPS512PublicKeyInMP-ConfigInMETA-INF"
+		name="microProfileGoodPS512PublicKeyInMP-ConfigInMETA-INF"
+		location="${server.config.dir}/apps/microProfileGoodPS512PublicKeyInMP-ConfigInMETA-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+-->
+
+	<application
+		type="war"
+		id="microProfileGoodRS256PublicKeyInMP-ConfigUnderWEB-INF"
+		name="microProfileGoodRS256PublicKeyInMP-ConfigUnderWEB-INF"
+		location="${server.config.dir}/apps/microProfileGoodRS256PublicKeyInMP-ConfigUnderWEB-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+	
+	<application
+		type="war"
+		id="microProfileGoodRS384PublicKeyInMP-ConfigUnderWEB-INF"
+		name="microProfileGoodRS384PublicKeyInMP-ConfigUnderWEB-INF"
+		location="${server.config.dir}/apps/microProfileGoodRS384PublicKeyInMP-ConfigUnderWEB-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+	
+	<application
+		type="war"
+		id="microProfileGoodRS512PublicKeyInMP-ConfigUnderWEB-INF"
+		name="microProfileGoodRS512PublicKeyInMP-ConfigUnderWEB-INF"
+		location="${server.config.dir}/apps/microProfileGoodRS512PublicKeyInMP-ConfigUnderWEB-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+	
+	<application
+		type="war"
+		id="microProfileGoodES256PublicKeyInMP-ConfigUnderWEB-INF"
+		name="microProfileGoodES256PublicKeyInMP-ConfigUnderWEB-INF"
+		location="${server.config.dir}/apps/microProfileGoodES256PublicKeyInMP-ConfigUnderWEB-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+	
+	<application
+		type="war"
+		id="microProfileGoodES384PublicKeyInMP-ConfigUnderWEB-INF"
+		name="microProfileGoodES384PublicKeyInMP-ConfigUnderWEB-INF"
+		location="${server.config.dir}/apps/microProfileGoodES384PublicKeyInMP-ConfigUnderWEB-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+	
+	<application
+		type="war"
+		id="microProfileGoodES512PublicKeyInMP-ConfigUnderWEB-INF"
+		name="microProfileGoodES512PublicKeyInMP-ConfigUnderWEB-INF"
+		location="${server.config.dir}/apps/microProfileGoodES512PublicKeyInMP-ConfigUnderWEB-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+
+<!--  PS Algs 	
+	<application
+		type="war"
+		id="microProfileGoodPS256PublicKeyInMP-ConfigUnderWEB-INF"
+		name="microProfileGoodPS256PublicKeyInMP-ConfigUnderWEB-INF"
+		location="${server.config.dir}/apps/microProfileGoodPS256PublicKeyInMP-ConfigUnderWEB-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+	
+	<application
+		type="war"
+		id="microProfileGoodPS384PublicKeyInMP-ConfigUnderWEB-INF"
+		name="microProfileGoodPS384PublicKeyInMP-ConfigUnderWEB-INF"
+		location="${server.config.dir}/apps/microProfileGoodPS384PublicKeyInMP-ConfigUnderWEB-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+	
+	<application
+		type="war"
+		id="microProfileGoodPS512PublicKeyInMP-ConfigUnderWEB-INF"
+		name="microProfileGoodPS512PublicKeyInMP-ConfigUnderWEB-INF"
+		location="${server.config.dir}/apps/microProfileGoodPS512PublicKeyInMP-ConfigUnderWEB-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+-->	
+
+
+	<application
+		type="war"
+		id="microProfileGoodRelativeES512KeyLocationInMP-ConfigInMETA-INF"
+		name="microProfileGoodRelativeES512KeyLocationInMP-ConfigInMETA-INF"
+		location="${server.config.dir}/apps/microProfileGoodRelativeES512KeyLocationInMP-ConfigInMETA-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+
+	<application
+		type="war"
+		id="microProfileGoodRelativeRS256KeyLocationInMP-ConfigUnderWEB-INF"
+		name="microProfileGoodRelativeRS256KeyLocationInMP-ConfigUnderWEB-INF"
+		location="${server.config.dir}/apps/microProfileGoodRelativeRS256KeyLocationInMP-ConfigUnderWEB-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+
+<!--  PS 
+	<application
+		type="war"
+		id="microProfileGoodRelativePS384KeyLocationInMP-ConfigUnderWEB-INF"
+		name="microProfileGoodRelativePS384KeyLocationInMP-ConfigUnderWEB-INF"
+		location="${server.config.dir}/apps/microProfileGoodRelativePS384KeyLocationInMP-ConfigUnderWEB-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+-->
+	<application
+		type="war"
+		id="microProfileGoodFileRS256KeyLocationInMP-ConfigInMETA-INF"
+		name="microProfileGoodFileRS256KeyLocationInMP-ConfigInMETA-INF"
+		location="${server.config.dir}/apps/microProfileGoodFileRS256KeyLocationInMP-ConfigInMETA-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+<!--  PS
+	<application
+		type="war"
+		id="microProfileGoodFilePS384KeyLocationInMP-ConfigInMETA-INF"
+		name="microProfileGoodFilePS384KeyLocationInMP-ConfigInMETA-INF"
+		location="${server.config.dir}/apps/microProfileGoodFilePS384KeyLocationInMP-ConfigInMETA-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+-->
+	<application
+		type="war"
+		id="microProfileGoodFileES512KeyLocationInMP-ConfigUnderWEB-INF"
+		name="microProfileGoodFileES512KeyLocationInMP-ConfigUnderWEB-INF"
+		location="${server.config.dir}/apps/microProfileGoodFileES512KeyLocationInMP-ConfigUnderWEB-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+
+	<application
+		type="war"
+		id="microProfileGoodUrlRS384KeyLocationInMP-ConfigInMETA-INF"
+		name="microProfileGoodUrlRS384KeyLocationInMP-ConfigInMETA-INF"
+		location="${server.config.dir}/apps/microProfileGoodUrlRS384KeyLocationInMP-ConfigInMETA-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+
+	<application
+		type="war"
+		id="microProfileGoodUrlES256KeyLocationInMP-ConfigUnderWEB-INF"
+		name="microProfileGoodUrlES256KeyLocationInMP-ConfigUnderWEB-INF"
+		location="${server.config.dir}/apps/microProfileGoodUrlES256KeyLocationInMP-ConfigUnderWEB-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+<!--  PS	
+	<application
+		type="war"
+		id="microProfileGoodUrlPS512KeyLocationInMP-ConfigUnderWEB-INF"
+		name="microProfileGoodUrlPS512KeyLocationInMP-ConfigUnderWEB-INF"
+		location="${server.config.dir}/apps/microProfileGoodUrlPS512KeyLocationInMP-ConfigUnderWEB-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>	
+
+	<application
+		type="war"
+		id="microProfileGoodJwksuriPS256KeyLocationInMP-ConfigInMETA-INF"
+		name="microProfileGoodJwksuriPS256KeyLocationInMP-ConfigInMETA-INF"
+		location="${server.config.dir}/apps/microProfileGoodJwksuriPS256KeyLocationInMP-ConfigInMETA-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+-->
+	<application
+		type="war"
+		id="microProfileGoodJwksuriRS512KeyLocationInMP-ConfigInMETA-INF"
+		name="microProfileGoodJwksuriRS512KeyLocationInMP-ConfigInMETA-INF"
+		location="${server.config.dir}/apps/microProfileGoodJwksuriRS512KeyLocationInMP-ConfigInMETA-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+
+	<application
+		type="war"
+		id="microProfileGoodJwksuriES384KeyLocationInMP-ConfigUnderWEB-INF"
+		name="microProfileGoodJwksuriES384KeyLocationInMP-ConfigUnderWEB-INF"
+		location="${server.config.dir}/apps/microProfileGoodJwksuriES384KeyLocationInMP-ConfigUnderWEB-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+
+</server>    

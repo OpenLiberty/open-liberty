@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -47,11 +46,11 @@ public class PathParamTest extends AbstractTest {
 
     @BeforeClass
     public static void setup() throws Exception {
-        WebArchive app = ShrinkHelper.defaultDropinApp(server, moduleName,
-                                                       "com.ibm.ws.jaxrs20.client.fat.pathparam.bigdouble",
-                                                       "com.ibm.ws.jaxrs20.client.fat.pathparam.biglong",
-                                                       "com.ibm.ws.jaxrs20.client.fat.pathparam.smallshort",
-                                                       "com.ibm.ws.jaxrs20.client.fat.pathparam.string");
+        ShrinkHelper.defaultDropinApp(server, moduleName,
+                                      "com.ibm.ws.jaxrs20.client.fat.pathparam.bigdouble",
+                                      "com.ibm.ws.jaxrs20.client.fat.pathparam.biglong",
+                                      "com.ibm.ws.jaxrs20.client.fat.pathparam.smallshort",
+                                      "com.ibm.ws.jaxrs20.client.fat.pathparam.string");
 
         // Make sure we don't fail because we try to start an
         // already started server
@@ -65,7 +64,7 @@ public class PathParamTest extends AbstractTest {
     @AfterClass
     public static void tearDown() throws Exception {
         if (server != null) {
-            server.stopServer();
+            server.stopServer("CWWKE1102W");  //ignore server quiesce timeouts due to slow test machines
         }
     }
 

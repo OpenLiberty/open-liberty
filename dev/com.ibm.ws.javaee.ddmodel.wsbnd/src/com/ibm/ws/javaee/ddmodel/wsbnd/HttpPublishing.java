@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,22 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.javaee.ddmodel.wsbnd;
 
-/**
- *
- */
 public interface HttpPublishing {
+    String CONTEXT_ROOT_ATTRIBUTE_NAME = "context-root";
+    String WEBSERVICE_SECURITY_ELEMENT_NAME = "webservice-security";
 
-    public static String CONTEXT_ROOT_ATTRIBUTE_NAME = "context-root";
-
-    public static String WEBSERVICE_SECURITY_ELEMENT_NAME = "webservice-security";
-
-    /**
-     * @return context-root="..." attribute value
-     */
-    public String getContextRoot();
-
-    /**
-     * @return &lt;webservice-security>, or null if unspecified
-     */
-    public WebserviceSecurity getWebserviceSecurity();
+    String getContextRoot();
+    WebserviceSecurity getWebserviceSecurity();
 }

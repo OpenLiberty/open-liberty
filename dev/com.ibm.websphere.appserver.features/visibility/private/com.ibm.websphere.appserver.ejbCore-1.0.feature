@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.ejbCore-1.0
+WLP-DisableAllFeatures-OnConflict: false
 IBM-API-Package: javax.ejb; type="spec", \
  javax.ejb.embeddable; type="spec", \
  javax.ejb.spi; type="spec"

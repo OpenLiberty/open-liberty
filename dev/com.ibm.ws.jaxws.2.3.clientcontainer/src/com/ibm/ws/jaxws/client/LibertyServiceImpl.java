@@ -30,8 +30,12 @@ import org.apache.cxf.Bus;
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.interceptor.Fault;
+import org.apache.cxf.interceptor.Interceptor;
+import org.apache.cxf.interceptor.LoggingInInterceptor;
+import org.apache.cxf.interceptor.LoggingOutInterceptor;
 import org.apache.cxf.jaxws.DispatchImpl;
 import org.apache.cxf.jaxws.ServiceImpl;
+import org.apache.cxf.message.Message;
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
 
 import com.ibm.websphere.ras.Tr;
@@ -42,6 +46,7 @@ import com.ibm.ws.jaxws.metadata.PortComponentRefInfo;
 import com.ibm.ws.jaxws.metadata.WebServiceFeatureInfo;
 import com.ibm.ws.jaxws.metadata.WebServiceRefInfo;
 import com.ibm.ws.jaxws.security.JaxWsSecurityConfigurationService;
+import com.ibm.ws.jaxws23.client.security.LibertyJaxWsClientSecurityOutInterceptor;
 
 /**
  * All the Web Service ports and dispatches are created via the class
@@ -100,6 +105,9 @@ public class LibertyServiceImpl extends ServiceImpl {
             features = getWebServiceFeaturesOnPortComponentRef(serviceEndpointInterface);
         }
 
+        /*
+         * TODO: Fix StackOverFlowError when enabling org.apache.cxf.*=all trace string
+         */
         T clientProxy = super.createPort(portName, epr, serviceEndpointInterface, features);
 
         Client client = ClientProxy.getClient(clientProxy);
@@ -123,7 +131,7 @@ public class LibertyServiceImpl extends ServiceImpl {
 
     /**
      * Add the LibertyCustomizeBindingOutInterceptor in the out interceptor chain.
-     *
+     * 
      * @param client
      * @param portName
      */
@@ -144,17 +152,18 @@ public class LibertyServiceImpl extends ServiceImpl {
                 requestContext.putAll(portProps);
             }
 
-//            Commented out to be solved later by replacing LoggingFeature (cxf/rt/features/logging)
-//            if (null != wsrProps && Boolean.valueOf(wsrProps.get(JaxWsConstants.ENABLE_lOGGINGINOUTINTERCEPTOR))) {
-//                List<Interceptor<? extends Message>> inInterceptors = client.getInInterceptors();
-//                inInterceptors.add(new LoggingInInterceptor());
-//                List<Interceptor<? extends Message>> outInterceptors = client.getOutInterceptors();
-//                outInterceptors.add(new LoggingOutInterceptor());
-//            }
+            if (null != wsrProps && Boolean.valueOf(wsrProps.get(JaxWsConstants.ENABLE_lOGGINGINOUTINTERCEPTOR))) {
+                List<Interceptor<? extends Message>> inInterceptors = client.getInInterceptors();
+                inInterceptors.add(new LoggingInInterceptor());
+                List<Interceptor<? extends Message>> outInterceptors = client.getOutInterceptors();
+                outInterceptors.add(new LoggingOutInterceptor());
+            }
         }
 
         Set<ConfigProperties> configPropsSet = servicePropertiesMap.get(portName);
         client.getOutInterceptors().add(new LibertyCustomizeBindingOutInterceptor(wsrInfo, securityConfigService, configPropsSet));
+
+        client.getOutInterceptors().add(new LibertyJaxWsClientSecurityOutInterceptor(wsrInfo, securityConfigService, configPropsSet, client.getEndpoint().getEndpointInfo()));
         //need to add an interceptor to clean up HTTPTransportActivator.sorted & props via calling HTTPTransportActivator. deleted(String)
         //Memory Leak fix for 130985
         client.getOutInterceptors().add(new LibertyCustomizeBindingOutEndingInterceptor(wsrInfo));
@@ -220,7 +229,7 @@ public class LibertyServiceImpl extends ServiceImpl {
 
     /**
      * merge the serviceRef properties and port properties, and update the merged properties in the configAdmin service.
-     *
+     * 
      * @param configAdmin
      * @param serviceRefProps
      * @param portProps
@@ -267,10 +276,10 @@ public class LibertyServiceImpl extends ServiceImpl {
 
     /**
      * Extract the properties according to the property prefix.
-     *
+     * 
      * @param propertyPrefix
      * @param properties
-     * @param removeProps    if is true, will remove the properties that have be extracted.
+     * @param removeProps if is true, will remove the properties that have be extracted.
      * @return
      */
     protected Map<String, String> extract(String propertyPrefix, Map<String, String> properties, boolean removeProps) {
@@ -297,7 +306,7 @@ public class LibertyServiceImpl extends ServiceImpl {
 
     /**
      * Extract the properties according to the property prefix, will remove the extracted properties from original properties.
-     *
+     * 
      * @param propertyPrefix
      * @param properties
      * @return

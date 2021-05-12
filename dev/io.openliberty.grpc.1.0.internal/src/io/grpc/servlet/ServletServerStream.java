@@ -25,7 +25,7 @@ import static java.util.logging.Level.FINEST;
 import static java.util.logging.Level.WARNING;
 
 import com.google.common.io.BaseEncoding;
-import com.google.common.util.concurrent.MoreExecutors;
+import com.ibm.websphere.channelfw.osgi.CHFWBundle;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
 
@@ -46,8 +46,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 import javax.annotation.Nullable;
@@ -88,9 +86,13 @@ final class ServletServerStream extends AbstractServerStream {
     // race condition that led to a NPE on the first request.  We should fix this upstream.
     this.writer = new AsyncServletOutputStreamWriter(
             asyncCtx, resp.getOutputStream(), transportState, logId);
-    resp.getOutputStream().setWriteListener(new GrpcWriteListener());
   }
 
+  public void setWriteListener() throws IOException {
+	      resp.getOutputStream().setWriteListener(new GrpcWriteListener());
+  }
+
+  
   @Override
   protected ServletTransportState transportState() {
     return transportState;
@@ -140,7 +142,7 @@ final class ServletServerStream extends AbstractServerStream {
   final class ServletTransportState extends TransportState {
 
     private final SerializingExecutor transportThreadExecutor =
-        new SerializingExecutor(MoreExecutors.directExecutor());
+        new SerializingExecutor(CHFWBundle.getExecutorService());
 
     private ServletTransportState(
         int maxMessageSize, StatsTraceContext statsTraceCtx, TransportTracer transportTracer) {

@@ -1,0 +1,118 @@
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+	<authFilter id="myAuthFilter">
+		<requestUrl
+			id="myRequestUrla"
+			urlPattern="/SimpleServlet"
+			matchType="contains" />
+		<requestUrl
+			id="myRequestUrlb"
+			urlPattern="/SimpleServlet_"
+			matchType="notContain" />
+	</authFilter>
+
+	<openidConnectClient
+		id="goodRPConfig"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		signatureAlgorithm="${oidcSignAlg}"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+		jwkEndpointUrl="${oidcJWKValidationURL}"
+		authFilterRef="myAuthFilter"
+		accessTokenInLtpaCookie="true"
+	>
+	</openidConnectClient>
+
+	<authFilter id="RPTokenInLTPA_false_filter">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/SimpleServlet_RPTokenInLTPA_false"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="RPTokenInLTPA_false"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		signatureAlgorithm="${oidcSignAlg}"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+		jwkEndpointUrl="${oidcJWKValidationURL}"
+		authFilterRef="RPTokenInLTPA_false_filter"
+		accessTokenInLtpaCookie="false"
+	>
+	</openidConnectClient>
+
+	<authFilter id="RPDisableLtpaCookie_true_filter">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/SimpleServlet_RPDisableLtpaCookie_true"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="RPDisableLtpaCookie_true"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		signatureAlgorithm="${oidcSignAlg}"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+		jwkEndpointUrl="${oidcJWKValidationURL}"
+		authFilterRef="RPDisableLtpaCookie_true_filter"
+		accessTokenInLtpaCookie="true"
+		disableLtpaCookie="true"
+	>
+	</openidConnectClient>
+
+	<authFilter id="introspectTokens_false_rp_filter">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/SimpleServlet_introspectTokens_false_rp"
+			matchType="contains" />
+	</authFilter>
+	
+	<openidConnectClient
+		id="introspectTokens_false_rp"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		signatureAlgorithm="${oidcSignAlg}"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/NoIntroSpectOIDC/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/NoIntroSpectOIDC/token"
+		jwkEndpointUrl="${oidcJWKValidationURL_NoIntroSpectOIDC}"
+		authFilterRef="introspectTokens_false_rp_filter"
+		accessTokenInLtpaCookie="true"
+	>
+	</openidConnectClient>
+
+</server>

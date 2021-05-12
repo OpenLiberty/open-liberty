@@ -23,6 +23,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -581,7 +582,8 @@ public class CompletionStageRxInvokerTestServlet extends HttpServlet {
         String serverIP = param.get("serverIP");
         String serverPort = param.get("serverPort");
         ClientBuilder cb = ClientBuilder.newBuilder();
-        cb.property("com.ibm.ws.jaxrs.client.receive.timeout", TIMEOUT);
+//        cb.property("com.ibm.ws.jaxrs.client.receive.timeout", TIMEOUT);
+        cb.readTimeout(TIMEOUT, TimeUnit.MILLISECONDS);
         Client c = cb.build();
         WebTarget t = c.target("http://" + serverIP + ":" + serverPort + "/jaxrs21bookstore/JAXRS21bookstore2/" + SLEEP);
         Builder builder = t.request();
@@ -625,7 +627,8 @@ public class CompletionStageRxInvokerTestServlet extends HttpServlet {
         }
 
         ClientBuilder cb = ClientBuilder.newBuilder();
-        cb.property("com.ibm.ws.jaxrs.client.connection.timeout", TIMEOUT);
+//        cb.property("com.ibm.ws.jaxrs.client.connection.timeout", TIMEOUT);
+        cb.connectTimeout(TIMEOUT, TimeUnit.MILLISECONDS);
         Client c = cb.build();
         WebTarget t = c.target(target);
         Builder builder = t.request();
@@ -664,7 +667,8 @@ public class CompletionStageRxInvokerTestServlet extends HttpServlet {
         String serverIP = param.get("serverIP");
         String serverPort = param.get("serverPort");
         ClientBuilder cb = ClientBuilder.newBuilder();
-        cb.property("com.ibm.ws.jaxrs.client.receive.timeout", TIMEOUT);
+//        cb.property("com.ibm.ws.jaxrs.client.receive.timeout", TIMEOUT);
+        cb.readTimeout(TIMEOUT, TimeUnit.MILLISECONDS);
         Client c = cb.build();
         WebTarget t = c.target("http://" + serverIP + ":" + serverPort + "/jaxrs21bookstore/JAXRS21bookstore2/post/" + SLEEP);
         Builder builder = t.request();
@@ -708,7 +712,8 @@ public class CompletionStageRxInvokerTestServlet extends HttpServlet {
         }
 
         ClientBuilder cb = ClientBuilder.newBuilder();
-        cb.property("com.ibm.ws.jaxrs.client.connection.timeout", TIMEOUT);
+//        cb.property("com.ibm.ws.jaxrs.client.connection.timeout", TIMEOUT);
+        cb.connectTimeout(TIMEOUT, TimeUnit.MILLISECONDS);
         Client c = cb.build();
         WebTarget t = c.target(target);
         Builder builder = t.request();

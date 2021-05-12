@@ -395,10 +395,11 @@ public class DeploymentDescriptorParser {
             String JCA15NamespaceURI = "http://java.sun.com/xml/ns/j2ee";
             String JCA16NamespaceURI = "http://java.sun.com/xml/ns/javaee";
             String JCA17NamespaceURI = "http://xmlns.jcp.org/xml/ns/javaee";
+            String Connectors20NamespaceURI = "https://jakarta.ee/xml/ns/jakartaee";
             namespaceURI = namespaceURI.trim().toLowerCase().intern(); // on zOS it is required that Namespace URIs are interned
             //Convert the older namespaces as we need to process for multiple namespaces with the same objects.
-            if (namespaceURI.equals(JCA15NamespaceURI) || namespaceURI.equals(JCA16NamespaceURI)) {
-                super.startElement(JCA17NamespaceURI, localName, qualifiedName, attributes);
+            if (namespaceURI.equals(JCA15NamespaceURI) || namespaceURI.equals(JCA16NamespaceURI) || namespaceURI.contentEquals(JCA17NamespaceURI)) {
+                super.startElement(Connectors20NamespaceURI, localName, qualifiedName, attributes);
             } else {
                 super.startElement(namespaceURI, localName, qualifiedName, attributes);
             }

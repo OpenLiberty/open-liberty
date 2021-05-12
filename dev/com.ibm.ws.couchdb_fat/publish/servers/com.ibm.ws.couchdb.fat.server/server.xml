@@ -23,22 +23,23 @@
         <classloader commonLibraryRef="couchdb-lib" />
     </application>
 
-    <variable name="EktorpCodebase" value="${server.config.dir}/couchdb/org.ektorp-1.4.1.jar"/>
+    <variable name="EktorpCodebase" value="${server.config.dir}/couchdb/org.ektorp-1.5.0.jar"/>
 
     <!-- Needed for commons-logging-1.1.1.jar -->
     <javaPermission codebase="${EktorpCodebase}" className="java.util.PropertyPermission" name="org.apache.commons.logging.*" actions="read"/>
     <javaPermission codebase="${EktorpCodebase}" className="java.lang.RuntimePermission" name="getClassLoader"/>
 
-    <!-- Needed for jackson-databind-2.2.3.jar & org.ektorp-1.4.1.jar -->
+    <!-- Needed for jackson-databind-2.11.2.jar & org.ektorp-1.5.0.jar -->
     <javaPermission codebase="${EktorpCodebase}" className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
 
-    <!-- Needed for httpclient-4.3.1.jar -->
+    <!-- Needed for httpclient-4.5.13.jar -->
     <javaPermission codebase="${EktorpCodebase}" className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
 
-    <!-- Needed for org.ektorp-1.4.1.jar -->
+    <!-- Needed for org.ektorp-1.5.0.jar -->
     <javaPermission codebase="${EktorpCodebase}" className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
 
-    <!-- Needed for jackson-core-2.2.3.jar -->
+    <!-- Needed for jackson-core-2.11.2.jar -->
     <javaPermission codebase="${EktorpCodebase}" className="java.util.PropertyPermission" name="line.separator" actions="read"/>
+    <javaPermission codebase="${EktorpCodebase}" className="java.util.PropertyPermission" name="com.fasterxml.jackson.*" actions="read"/>
 
 </server>

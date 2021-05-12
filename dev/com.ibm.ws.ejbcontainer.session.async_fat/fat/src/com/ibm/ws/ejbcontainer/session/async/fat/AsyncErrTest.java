@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.SkipForRepeat;
@@ -74,7 +75,7 @@ public class AsyncErrTest extends FATServletClient {
         AsyncErrTest.addAsModule(AsyncErrTestWar);
 
         ShrinkHelper.exportDropinAppToServer(server, AsyncErr1BeanApp);
-        ShrinkHelper.exportAppToServer(server, AsyncErr2BeanApp);
+        ShrinkHelper.exportAppToServer(server, AsyncErr2BeanApp, DeployOptions.DISABLE_VALIDATION);
         ShrinkHelper.exportDropinAppToServer(server, AsyncXMLErr1BeanApp);
         ShrinkHelper.exportDropinAppToServer(server, AsyncXMLErr2BeanApp);
         ShrinkHelper.exportDropinAppToServer(server, AsyncXMLErr3BeanApp);

@@ -5,7 +5,7 @@ IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature
  osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.servlet-5.0))"
 -bundles=com.ibm.ws.cdi.2.0.web.jakarta, \
  com.ibm.ws.cdi.web.jakarta
--features=io.openliberty.jakarta.jsp-3.0; apiJar=false
+-features=io.openliberty.jakarta.pages-3.0; apiJar=false
 IBM-Install-Policy: when-satisfied
 kind=beta
 edition=core

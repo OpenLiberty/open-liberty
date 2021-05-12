@@ -14,36 +14,30 @@ package com.ibm.ws.fat.grpc;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
-import java.net.URL;
 import java.util.Collections;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlForm;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
-import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
-public class HelloWorldTlsTest extends FATServletClient {
+public class HelloWorldTlsTest extends HelloWorldBasicTest {
 
     protected static final Class<?> c = HelloWorldTlsTest.class;
 
@@ -56,8 +50,11 @@ public class HelloWorldTlsTest extends FATServletClient {
     public static LibertyServer helloWorldTlsServer;
 
     private static final Set<String> clientAppName = Collections.singleton("HelloWorldClient");
+    private static final String TLS_DEFAULT = "grpc.server.tls.default.xml";
     private static final String TLS_MUTUAL_AUTH = "grpc.server.tls.mutual.auth.xml";
     private static final String TLS_INVALID_CLIENT_TRUST_STORE = "grpc.server.tls.invalid.trust.xml";
+    private static final String TLS_OUTBOUND_FILTER = "grpc.server.tls.outbound.xml";
+    private static String serverConfigurationFile = TLS_DEFAULT;
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -74,13 +71,26 @@ public class HelloWorldTlsTest extends FATServletClient {
                                       "io.grpc.examples.helloworld");
 
         helloWorldTlsServer.startServer(HelloWorldTlsTest.class.getSimpleName() + ".log");
-        assertNotNull("CWWKO0219I.*ssl not recieved", helloWorldTlsServer.waitForStringInLog("CWWKO0219I.*ssl"));
+        assertNotNull("CWWKO0219I.*ssl not received", helloWorldTlsServer.waitForStringInLog("CWWKO0219I.*ssl"));
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        // SRVE0777E for testHelloWorldWithTlsInvalidClientTrustStore case
-        helloWorldTlsServer.stopServer("SRVE0777E");
+        // SRVE0777E: for testHelloWorldWithTlsInvalidClientTrustStore case
+        // CWWKO0801E: for testHelloWorldWithTlsInvalidClientTrustStore case
+        //     Unable to initialize SSL connection. Unauthorized access was denied or security settings have expired.
+        //     Exception is javax.net.ssl.SSLHandshakeException: Received fatal alert: certificate_unknown
+        helloWorldTlsServer.stopServer("SRVE0777E", "CWWKO0801E");
+    }
+
+    @Before
+    public void preTest() {
+        serverRef = helloWorldTlsServer;
+    }
+
+    @After
+    public void afterTest() {
+        serverRef = null;
     }
 
     /**
@@ -90,9 +100,11 @@ public class HelloWorldTlsTest extends FATServletClient {
      * @throws Exception
      */
     @Test
+    @MinimumJavaLevel(javaLevel = 9)
     public void testHelloWorldWithTls() throws Exception {
-        checkJavaVersion();
-        testHelloWorldTlsCommon();
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(helloWorldTlsServer, serverConfigurationFile, TLS_DEFAULT, clientAppName, LOG);
+        String response = runHelloWorldTlsTest();
+        assertTrue("the gRPC request did not complete correctly", response.contains("us3r2"));
     }
 
     /**
@@ -102,11 +114,11 @@ public class HelloWorldTlsTest extends FATServletClient {
      * @throws Exception
      */
     @Test
+    @MinimumJavaLevel(javaLevel = 9)
     public void testHelloWorldWithTlsMutualAuth() throws Exception {
-        checkJavaVersion();
-        // set the new server.xml and wait for the SSL port to come up
-        GrpcTestUtils.setServerConfiguration(helloWorldTlsServer, null, TLS_MUTUAL_AUTH, clientAppName, LOG);
-        testHelloWorldTlsCommon();
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(helloWorldTlsServer, serverConfigurationFile, TLS_MUTUAL_AUTH, clientAppName, LOG);
+        String response = runHelloWorldTlsTest();
+        assertTrue("the gRPC request did not complete correctly", response.contains("us3r2"));
     }
 
     /**
@@ -116,114 +128,39 @@ public class HelloWorldTlsTest extends FATServletClient {
      * @throws Exception
      */
     @Test
-    @ExpectedFFDC("io.grpc.StatusRuntimeException")
+    @MinimumJavaLevel(javaLevel = 9)
+    @AllowedFFDC("io.grpc.StatusRuntimeException")
     public void testHelloWorldWithTlsInvalidClientTrustStore() throws Exception {
-        checkJavaVersion();
-        // set the new server.xml and wait for the SSL port to come up
-        GrpcTestUtils.setServerConfiguration(helloWorldTlsServer, null, TLS_INVALID_CLIENT_TRUST_STORE, clientAppName, LOG);
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(helloWorldTlsServer, serverConfigurationFile, TLS_INVALID_CLIENT_TRUST_STORE, clientAppName, LOG);
+        // grpc.server.tls.invalid.trust.xml will cause the ssl channel to get restarted; we need to wait for it to come back up
+        assertNotNull("CWWKO0219I.*ssl not received", helloWorldTlsServer.waitForStringInLog("CWWKO0219I.*ssl"));
         Exception clientException = null;
 
-        String contextRoot = "HelloWorldClient";
-        try (WebClient webClient = new WebClient()) {
-
-            // Construct the URL for the test
-            URL url = GrpcTestUtils.createHttpUrl(helloWorldTlsServer, contextRoot, "grpcClient");
-
-            HtmlPage page = (HtmlPage) webClient.getPage(url);
-
-            // Log the page for debugging if necessary in the future.
-            Log.info(c, name.getMethodName(), page.asText());
-            Log.info(c, name.getMethodName(), page.asXml());
-
-            assertTrue("the servlet was not loaded correctly",
-                       page.asText().contains("gRPC helloworld client example"));
-
-            HtmlForm form = page.getFormByName("form1");
-
-            // set a name, which we'll expect the RPC to return
-            HtmlTextInput inputText = (HtmlTextInput) form.getInputByName("user");
-            inputText.setValueAttribute("us3r2");
-
-            // set the port
-            HtmlTextInput inputPort = (HtmlTextInput) form.getInputByName("port");
-            inputPort.setValueAttribute(String.valueOf(helloWorldTlsServer.getHttpDefaultSecurePort()));
-
-            // set the hostname
-            HtmlTextInput inputHost = (HtmlTextInput) form.getInputByName("address");
-            inputHost.setValueAttribute(helloWorldTlsServer.getHostname());
-
-            // enable TLS
-            HtmlTextInput inputTls = (HtmlTextInput) form.getInputByName("useTls");
-            inputTls.setValueAttribute("true");
-
-            String serverRoot = helloWorldTlsServer.getServerRoot();
-            HtmlTextInput serverPath = (HtmlTextInput) form.getInputByName("serverPath");
-            serverPath.setValueAttribute(serverRoot);
-
-            // submit, and execute the RPC
-            HtmlSubmitInput submitButton = form.getInputByName("submit");
-            page = submitButton.click();
-
+        try {
+            runHelloWorldTlsTest();
         } catch (Exception e) {
             clientException = e;
             Log.info(c, name.getMethodName(), "exception caught: " + e);
         }
         assertTrue("An error is expected for this case", clientException != null);
+
+        // test cleanup: restore a "good" server.xml so that we don't need to wait for the ssl channel restart in another test case
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(helloWorldTlsServer, serverConfigurationFile, TLS_OUTBOUND_FILTER, clientAppName, LOG);
+        assertNotNull("CWWKO0219I.*ssl not received", helloWorldTlsServer.waitForStringInLog("CWWKO0219I.*ssl"));
     }
 
-    private void testHelloWorldTlsCommon() throws Exception {
-        String contextRoot = "HelloWorldClient";
-        try (WebClient webClient = new WebClient()) {
+    /**
+     * testHelloWorld() with TLS and outbound filter enabled.
+     * This test will only be performed if the native JDK 9+ ALPN provider is available.
+     *
+     * @throws Exception
+     */
+    @Test
+    @MinimumJavaLevel(javaLevel = 9)
+    public void testHelloWorldWithTlsFilter() throws Exception {
+        serverConfigurationFile = GrpcTestUtils.setServerConfiguration(helloWorldTlsServer, serverConfigurationFile, TLS_OUTBOUND_FILTER, clientAppName, LOG);
 
-            // Construct the URL for the test
-            URL url = GrpcTestUtils.createHttpUrl(helloWorldTlsServer, contextRoot, "grpcClient");
-
-            HtmlPage page = (HtmlPage) webClient.getPage(url);
-
-            // Log the page for debugging if necessary in the future.
-            Log.info(c, name.getMethodName(), page.asText());
-            Log.info(c, name.getMethodName(), page.asXml());
-
-            assertTrue("the servlet was not loaded correctly",
-                       page.asText().contains("gRPC helloworld client example"));
-
-            HtmlForm form = page.getFormByName("form1");
-
-            // set a name, which we'll expect the RPC to return
-            HtmlTextInput inputText = (HtmlTextInput) form.getInputByName("user");
-            inputText.setValueAttribute("us3r2");
-
-            // set the port
-            HtmlTextInput inputPort = (HtmlTextInput) form.getInputByName("port");
-            inputPort.setValueAttribute(String.valueOf(helloWorldTlsServer.getHttpDefaultSecurePort()));
-
-            // set the hostname
-            HtmlTextInput inputHost = (HtmlTextInput) form.getInputByName("address");
-            inputHost.setValueAttribute(helloWorldTlsServer.getHostname());
-
-            // enable TLS
-            HtmlTextInput inputTls = (HtmlTextInput) form.getInputByName("useTls");
-            inputTls.setValueAttribute("true");
-
-            String serverRoot = helloWorldTlsServer.getServerRoot();
-            HtmlTextInput serverPath = (HtmlTextInput) form.getInputByName("serverPath");
-            serverPath.setValueAttribute(serverRoot);
-
-            // submit, and execute the RPC
-            HtmlSubmitInput submitButton = form.getInputByName("submit");
-            page = submitButton.click();
-
-            // Log the page for debugging if necessary in the future.
-            Log.info(c, name.getMethodName(), page.asText());
-            assertTrue("the gRPC request did not complete correctly", page.asText().contains("us3r2"));
-        }
-    }
-
-    private void checkJavaVersion() throws IOException {
-        if (JavaInfo.forServer(helloWorldTlsServer).majorVersion() < 9) {
-            Log.info(c, name.getMethodName(), "IBM JDK8 ALPN is not yet supported by the netty grpc client;"
-                                              + " this test will be skipped until that support is added");
-            return;
-        }
+        String response = runHelloWorldTlsTest();
+        assertTrue("the gRPC request did not complete correctly", response.contains("us3r2"));
     }
 }

@@ -36,29 +36,28 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import jakarta.annotation.Resource;
-import jakarta.enterprise.concurrent.ContextService;
-import jakarta.enterprise.concurrent.ManagedExecutorService;
-import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
-import jakarta.servlet.ServletConfig;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.transaction.Status;
-import jakarta.transaction.SystemException;
-import jakarta.transaction.TransactionManager;
-import jakarta.transaction.UserTransaction;
-
+import javax.annotation.Resource;
+import javax.enterprise.concurrent.ContextService;
+import javax.enterprise.concurrent.ManagedExecutorService;
+import javax.enterprise.concurrent.ManagedScheduledExecutorService;
 import javax.naming.InitialContext;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
+import javax.transaction.Status;
+import javax.transaction.SystemException;
+import javax.transaction.Transaction;
+import javax.transaction.TransactionManager;
+import javax.transaction.UserTransaction;
 
 import org.eclipse.microprofile.context.ManagedExecutor;
 import org.eclipse.microprofile.context.ThreadContext;
 import org.junit.Test;
 
-import com.ibm.tx.jta.ExtendedTransactionManager;
 import com.ibm.tx.jta.TransactionManagerFactory;
 
 import componenttest.annotation.AllowedFFDC;
@@ -181,6 +180,125 @@ public class MPConcurrentTxTestServlet extends HttpServlet {
     }
 
     /**
+     * testDisabledHandleListLeavesConnectionOpenAfterContextualTask - When HandleList is disabled,
+     * unshared connections that are created within a contextual task remain open after it completes.
+     */
+    @Test
+    public void testDisabledHandleListLeavesConnectionOpenAfterContextualTask() throws Exception {
+        Callable<Connection> insertRenvilleCounty = txContextUnchanged.contextualCallable(() -> {
+            Connection con = onePhaseDataSource_unsharable.getConnection();
+            con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Renville', 15730)");
+            return con;
+        });
+
+        tx.begin();
+        try (Connection con = insertRenvilleCounty.call()) {
+            // Connection must remain open and continue to be usable,
+            con.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Redwood', 16059)");
+        } finally {
+            tx.commit();
+        }
+
+        // Verify that both updates committed
+        try (Connection con = onePhaseDataSource_unsharable.getConnection(); Statement st = con.createStatement()) {
+            ResultSet result = st.executeQuery("SELECT SUM(POPULATION) FROM MNCOUNTIES WHERE NAME='Renville' OR NAME='Redwood'");
+            assertTrue(result.next());
+            assertEquals(31789, result.getInt(1));
+        }
+    }
+
+    /**
+     * testDisabledHandleListLeavesConnectionOpenAfterManagedExecutorTask - When HandleList is disabled,
+     * unshared connections that are created within a managed executor completion stage/task remain open
+     * after it completes.
+     */
+    @Test
+    public void testDisabledHandleListLeavesConnectionOpenAfterManagedExecutorTask() throws Exception {
+        try (Connection con1 = onePhaseDataSource_unsharable.getConnection()) {
+            CompletableFuture<Connection> stage2 = txExecutor
+                            .completedFuture("testDisabledHandleListLeavesConnectionOpenAfterManagedExecutorTask")
+                            .thenApply(s -> {
+                                try {
+                                    return onePhaseDataSource_unsharable.getConnection();
+                                } catch (SQLException x) {
+                                    throw new CompletionException(x);
+                                }
+                            });
+            Connection con2 = stage2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            // Connection must remain open and be usable after the managed task because HandleList is disabled.
+            con2.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Stevens', 9726)");
+            con2.close();
+            assertFalse(con1.isClosed());
+        }
+    }
+
+    /**
+     * testHandleListClosesConnectionLeakedAcrossContextualTask - When HandleList is enabled, it automatically detects
+     * and closes an unshared connection that is leaked across the end of a contextual task.
+     */
+    @Test
+    public void testHandleListClosesConnectionLeakedAcrossContextualTask() throws Exception {
+        // HandleList pseudo-context must be cleared regardless. It is not a configurable context type.
+        ThreadContext contextualizer = ThreadContext.builder()
+                        .propagated(ThreadContext.NONE)
+                        .cleared(ThreadContext.NONE)
+                        .unchanged(ThreadContext.ALL_REMAINING)
+                        .build();
+
+        Callable<Connection> insertWilkinCounty = contextualizer.contextualCallable(() -> {
+            Connection con2 = defaultDataSource_unsharable.getConnection();
+            con2.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Wilkin', 6576)");
+            return con2;
+        });
+
+        tx.begin();
+        try (Connection con1 = defaultDataSource_unsharable.getConnection()) {
+            con1.createStatement().executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Watonwan', 11211)");
+            Connection con2 = insertWilkinCounty.call();
+            assertFalse(con1.isClosed());
+            assertTrue(con2.isClosed());
+        } finally {
+            tx.commit();
+        }
+
+        // Verify that both updates committed
+        try (Connection con = defaultDataSource_unsharable.getConnection(); Statement st = con.createStatement()) {
+            ResultSet result = st.executeQuery("SELECT SUM(POPULATION) FROM MNCOUNTIES WHERE NAME='Watonwan' OR NAME='Wilkin'");
+            assertTrue(result.next());
+            assertEquals(17787, result.getInt(1));
+        }
+    }
+
+    /**
+     * testHandleListClosesConnectionLeakedAcrossManagedExecutorTask - When HandleList is enabled, it automatically detects
+     * and closes an unshared connection that is leaked across the end of a managed executor completion stage/task.
+     */
+    @Test
+    public void testHandleListClosesConnectionLeakedAcrossManagedExecutorTask() throws Exception {
+        // HandleList pseudo-context must be cleared regardless. It is not a configurable context type.
+        ManagedExecutor executor = ManagedExecutor.builder()
+                        .cleared(ThreadContext.NONE)
+                        .propagated(ThreadContext.ALL_REMAINING)
+                        .build();
+        try (Connection con1 = defaultDataSource_unsharable.getConnection()) {
+            CompletableFuture<Connection> stage2 = executor
+                            .completedFuture("testHandleListClosesConnectionLeakedAcrossManagedExecutorTask")
+                            .thenApply(s -> {
+                                try {
+                                    return defaultDataSource_unsharable.getConnection();
+                                } catch (SQLException x) {
+                                    throw new CompletionException(x);
+                                }
+                            });
+            Connection con2 = stage2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            assertFalse(con1.isClosed());
+            assertTrue(con2.isClosed());
+        } finally {
+            executor.shutdownNow();
+        }
+    }
+
+    /**
      * When the mpContextPropagation-1.0 feature is enabled in combination with the concurrent-2.0 feature,
      * The OpenLiberty implementation of jakarta.enterprise.concurrent.ContextService is also an implementation of
      * org.eclipse.microprofile.context.ThreadContext
@@ -245,7 +363,7 @@ public class MPConcurrentTxTestServlet extends HttpServlet {
         // scenario with successful commit
         tx.begin();
         try {
-            jakarta.transaction.Transaction tranToPropagate = tm.getTransaction();
+            Transaction tranToPropagate = tm.getTransaction();
 
             Connection con = defaultDataSource.getConnection();
             Statement st = con.createStatement();
@@ -253,7 +371,7 @@ public class MPConcurrentTxTestServlet extends HttpServlet {
 
             CompletableFuture<Integer> stage = CompletableFuture.supplyAsync(() -> {
                 try {
-                    jakarta.transaction.Transaction tranToRestore = tm.suspend();
+                    Transaction tranToRestore = tm.suspend();
                     tm.resume(tranToPropagate);
                     try (Connection con2 = defaultDataSource.getConnection(); Statement st2 = con2.createStatement()) {
                         return st2.executeUpdate("INSERT INTO IACOUNTIES VALUES ('Dubuque', 96571)");
@@ -289,7 +407,7 @@ public class MPConcurrentTxTestServlet extends HttpServlet {
         // scenario with rollback
         tx.begin();
         try {
-            jakarta.transaction.Transaction tranToPropagate = tm.getTransaction();
+            Transaction tranToPropagate = tm.getTransaction();
 
             Connection con = defaultDataSource.getConnection();
             Statement st = con.createStatement();
@@ -297,7 +415,7 @@ public class MPConcurrentTxTestServlet extends HttpServlet {
 
             CompletableFuture<Integer> stage = CompletableFuture.supplyAsync(() -> {
                 try {
-                    jakarta.transaction.Transaction tranToRestore = tm.suspend();
+                    Transaction tranToRestore = tm.suspend();
                     tm.resume(tranToPropagate);
                     try (Connection con2 = defaultDataSource.getConnection(); Statement st2 = con2.createStatement()) {
                         return st2.executeUpdate("INSERT INTO IACOUNTIES VALUES ('Story', 95888)");

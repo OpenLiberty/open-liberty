@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import java.security.KeyStoreException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
+import java.util.Dictionary;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -25,6 +26,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
 import org.osgi.framework.ServiceReference;
+import org.osgi.service.cm.Configuration;
+import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.ComponentException;
 import org.osgi.service.component.annotations.Activate;
@@ -44,6 +47,7 @@ import com.ibm.websphere.security.audit.AuditEvent;
 import com.ibm.websphere.security.audit.InvalidConfigurationException;
 import com.ibm.ws.common.internal.encoder.Base64Coder;
 import com.ibm.ws.config.xml.internal.nester.Nester;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.logging.collector.LogFieldConstants;
 import com.ibm.ws.logging.data.GenericData;
 import com.ibm.ws.logging.data.KeyValuePair;
@@ -84,6 +88,10 @@ public class AuditFileHandler implements SynchronousHandler {
     static final String KEY_KEYSTORE_SERVICE_REF = "keyStoreService";
     private final AtomicServiceReference<KeyStoreService> keyStoreServiceRef = new AtomicServiceReference<KeyStoreService>(KEY_KEYSTORE_SERVICE_REF);
 
+    public static final String KEY_CONFIGURATION_ADMIN = "configurationAdmin";
+    private final AtomicServiceReference<ConfigurationAdmin> configAdminRef = new AtomicServiceReference<ConfigurationAdmin>(KEY_CONFIGURATION_ADMIN);
+    private static final Object KEY_ID = "id";
+
     private volatile Future<?> handlerTaskRef = null;
 
     private volatile BufferManager bufferMgr = null;
@@ -107,8 +115,10 @@ public class AuditFileHandler implements SynchronousHandler {
     private boolean sign = false;
     private String encryptAlias = null;
     private String signerAlias = null;
-    private String encryptKeyStoreRef = null;
-    private String signerKeyStoreRef = null;
+    private final String encryptKeyStoreRef = null;
+    private String encryptKeyStoreId = null;
+    private final String signerKeyStoreRef = null;
+    private String signerKeyStoreId = null;
     private String wrapBehavior = null;
     private String logDirectory = null;
     private Integer maxFiles = -1;
@@ -199,12 +209,16 @@ public class AuditFileHandler implements SynchronousHandler {
     private static Object syncObject = new Object();
     private static Object syncSeqNum = new Object();
 
+    private String bundleLocation;
+
     @Activate
     protected void activate(ComponentContext cc) throws KeyStoreException, AuditEncryptionException, AuditSigningException {
         Tr.info(tc, "AUDIT_FILEHANDLER_STARTING");
         locationAdminRef.activate(cc);
         executorSrvcRef.activate(cc);
         auditServiceRef.activate(cc);
+        configAdminRef.activate(cc);
+        this.bundleLocation = cc.getBundleContext().getBundle().getLocation();
 
         Map<String, Object> configuration = (Map) cc.getProperties();
         thisConfiguration = configuration;
@@ -255,6 +269,7 @@ public class AuditFileHandler implements SynchronousHandler {
             executorSrvcRef.deactivate(cc);
             auditServiceRef.deactivate(cc);
             keyStoreServiceRef.deactivate(cc);
+            configAdminRef.deactivate(cc);
             cc.disableComponent((String) configuration.get(org.osgi.framework.Constants.SERVICE_PID));
             Tr.info(tc, "AUDIT_FILEHANDLER_STOPPED");
             throw new ComponentException("Caught invalidConfigurationException");
@@ -290,6 +305,9 @@ public class AuditFileHandler implements SynchronousHandler {
         auditServiceRef.deactivate(cc);
         if (getEncrypt() || getSign())
             keyStoreServiceRef.deactivate(cc);
+        configAdminRef.deactivate(cc);
+        this.bundleLocation = null;
+
         auditLog.close();
         //auditLogConduit.removeSyncHandler(this);
         Tr.info(tc, "AUDIT_FILEHANDLER_STOPPED");
@@ -330,6 +348,15 @@ public class AuditFileHandler implements SynchronousHandler {
 
     protected void unsetKeyStoreService(ServiceReference<KeyStoreService> reference) {
         keyStoreServiceRef.unsetReference(reference);
+    }
+
+    @Reference(name = KEY_CONFIGURATION_ADMIN, service = ConfigurationAdmin.class)
+    protected void setConfigurationAdmin(ServiceReference<ConfigurationAdmin> ref) {
+        configAdminRef.setReference(ref);
+    }
+
+    protected void unsetConfigurationAdmin(ServiceReference<ConfigurationAdmin> ref) {
+        configAdminRef.unsetReference(ref);
     }
 
     /** {@inheritDoc} */
@@ -598,22 +625,24 @@ public class AuditFileHandler implements SynchronousHandler {
 
     /** {@inheritDoc} */
     public void setEncryptKeyStoreRef(Object value) {
-        this.encryptKeyStoreRef = (String) value;
+        String id = getKeyStoreId((String) value);
+        this.encryptKeyStoreId = id;
     }
 
     /** {@inheritDoc} */
     public String getEncryptKeyStoreRef() {
-        return this.encryptKeyStoreRef;
+        return this.encryptKeyStoreId;
     }
 
     /** {@inheritDoc} */
     public void setSignerKeyStoreRef(Object value) {
-        this.signerKeyStoreRef = (String) value;
+        String id = getKeyStoreId((String) value);
+        this.signerKeyStoreId = id;
     }
 
     /** {@inheritDoc} */
     public String getSignerKeyStoreRef() {
-        return this.signerKeyStoreRef;
+        return this.signerKeyStoreId;
     }
 
     /** {@inheritDoc} */
@@ -626,13 +655,14 @@ public class AuditFileHandler implements SynchronousHandler {
         return this.events;
     }
 
+    @FFDCIgnore(KeyStoreException.class)
     public void setSignerKeys() throws KeyStoreException, AuditSigningException {
         KeyStoreService service = null;
         int retries = 0;
         if (getSign().booleanValue()) {
             service = keyStoreServiceRef.getService();
             try {
-                signerKeyStoreLocation = service.getKeyStoreLocation(signerKeyStoreRef);
+                signerKeyStoreLocation = service.getKeyStoreLocation(signerKeyStoreId);
             } catch (KeyStoreException e) {
                 retries++;
                 try {
@@ -642,7 +672,7 @@ public class AuditFileHandler implements SynchronousHandler {
                 }
                 if (retries < 6) {
                     try {
-                        signerKeyStoreLocation = service.getKeyStoreLocation(signerKeyStoreRef);
+                        signerKeyStoreLocation = service.getKeyStoreLocation(signerKeyStoreId);
                     } catch (KeyStoreException ee) {
                         // ignore it until we've exhausted our retries
                     }
@@ -655,7 +685,7 @@ public class AuditFileHandler implements SynchronousHandler {
         }
 
         try {
-            as = new AuditSigningImpl(signerKeyStoreRef, signerKeyStoreLocation, null, null, null, signerAlias);
+            as = new AuditSigningImpl(signerKeyStoreId, signerKeyStoreLocation, null, null, null, signerAlias);
 
         } catch (AuditSigningException ase) {
             Tr.error(tc, "FAILURE_INITIALIZING_SIGNING_CONFIGURATION", new Object[] { ase.getMessage() });
@@ -675,9 +705,9 @@ public class AuditFileHandler implements SynchronousHandler {
         }
 
         try {
-            signerCert = service.getX509CertificateFromKeyStore(signerKeyStoreRef, signerAlias);
+            signerCert = service.getX509CertificateFromKeyStore(signerKeyStoreId, signerAlias);
             publicSignerKey = signerCert.getPublicKey();
-            privateSignerKey = service.getPrivateKeyFromKeyStore(signerKeyStoreRef, signerAlias, null);
+            privateSignerKey = service.getPrivateKeyFromKeyStore(signerKeyStoreId, signerAlias, null);
             encryptedSignerSharedKey = as.encryptSharedKey(signedSharedKey, publicSignerKey);
         } catch (java.io.IOException ioe) {
             Tr.error(tc, "security.audit.keystore.open.error", new Object[] { ioe });
@@ -688,12 +718,12 @@ public class AuditFileHandler implements SynchronousHandler {
         } catch (CertificateException ce) {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Exception with certificate.", ce.getMessage());
-            Tr.error(tc, "INCORRECT_AUDIT_SIGNING_CONFIGURATION", new Object[] { signerAlias, signerKeyStoreRef });
+            Tr.error(tc, "INCORRECT_AUDIT_SIGNING_CONFIGURATION", new Object[] { signerAlias, signerKeyStoreId });
             throw new AuditSigningException(ce.getMessage());
         } catch (KeyStoreException ke) {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Exception with keystore.", ke.getMessage());
-            Tr.error(tc, "INCORRECT_AUDIT_ENCRYPTION_CONFIGURATION", new Object[] { signerAlias, signerKeyStoreRef });
+            Tr.error(tc, "INCORRECT_AUDIT_ENCRYPTION_CONFIGURATION", new Object[] { signerAlias, signerKeyStoreId });
             throw new AuditSigningException(ke.getMessage());
         } catch (java.lang.Exception e) {
             Tr.error(tc, "security.audit.retrieve.signer.error", new Object[] { e });
@@ -706,6 +736,7 @@ public class AuditFileHandler implements SynchronousHandler {
 
     }
 
+    @FFDCIgnore(KeyStoreException.class)
     public void setEncryptionKeys() throws KeyStoreException, AuditEncryptionException {
 
         final int MAX_RETRIES = 10;
@@ -715,7 +746,8 @@ public class AuditFileHandler implements SynchronousHandler {
 
             for (int retries = 0; retries < MAX_RETRIES; retries++) {
                 try {
-                    encryptKeyStoreLocation = service.getKeyStoreLocation(encryptKeyStoreRef);
+
+                    encryptKeyStoreLocation = service.getKeyStoreLocation(encryptKeyStoreId);
                     break;
 
                 } catch (KeyStoreException e) {
@@ -736,7 +768,7 @@ public class AuditFileHandler implements SynchronousHandler {
         }
 
         try {
-            ae = new AuditEncryptionImpl(encryptKeyStoreRef, encryptKeyStoreLocation, null, null, null, encryptAlias);
+            ae = new AuditEncryptionImpl(encryptKeyStoreId, encryptKeyStoreLocation, null, null, null, encryptAlias);
         } catch (AuditEncryptionException aee) {
             Tr.error(tc, "FAILURE_INITIALIZING_ENCRYPTION_CONFIGURATION", new Object[] { aee.getMessage() });
             throw new AuditEncryptionException(aee);
@@ -754,7 +786,7 @@ public class AuditFileHandler implements SynchronousHandler {
         sharedKeyAlias = ae.generateAliasForSharedKey();
 
         try {
-            cert = service.getX509CertificateFromKeyStore(encryptKeyStoreRef, encryptAlias);
+            cert = service.getX509CertificateFromKeyStore(encryptKeyStoreId, encryptAlias);
             publicKey = cert.getPublicKey();
             encryptedSharedKey = ae.encryptSharedKey(sharedKey, publicKey);
 
@@ -766,12 +798,12 @@ public class AuditFileHandler implements SynchronousHandler {
         } catch (CertificateException ce) {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Exception with certificate.", ce.getMessage());
-            Tr.error(tc, "INCORRECT_AUDIT_ENCRYPTION_CONFIGURATION", new Object[] { encryptAlias, encryptKeyStoreRef });
+            Tr.error(tc, "INCORRECT_AUDIT_ENCRYPTION_CONFIGURATION", new Object[] { encryptAlias, encryptKeyStoreId });
             throw new AuditEncryptionException(ce.getMessage());
         } catch (KeyStoreException ke) {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Exception with keystore.", ke.getMessage());
-            Tr.error(tc, "INCORRECT_AUDIT_ENCRYPTION_CONFIGURATION", new Object[] { encryptAlias, encryptKeyStoreRef });
+            Tr.error(tc, "INCORRECT_AUDIT_ENCRYPTION_CONFIGURATION", new Object[] { encryptAlias, encryptKeyStoreId });
             throw new AuditEncryptionException(ke.getMessage());
         }
     }
@@ -955,7 +987,7 @@ public class AuditFileHandler implements SynchronousHandler {
                                             if (tc.isDebugEnabled())
                                                 Tr.debug(tc, "maxFileSize: " + max);
 
-                                            if ((currentFileSize + total_to_add_length) >= max) {
+                                            if ((currentFileSize + total_to_add_length + 2) >= max) {
                                                 if (tc.isDebugEnabled())
                                                     Tr.debug(tc, "adding padding to roll into new log");
                                                 byte[] padding = new byte[(int) (max - currentFileSize)];
@@ -990,7 +1022,7 @@ public class AuditFileHandler implements SynchronousHandler {
                                             if (tc.isDebugEnabled())
                                                 Tr.debug(tc, "maxFileSize: " + max);
 
-                                            if ((currentFileSize + total_to_add_length) >= max) {
+                                            if ((currentFileSize + total_to_add_length + 2) >= max) {
                                                 if (tc.isDebugEnabled())
                                                     Tr.debug(tc, "adding padding to roll into new log");
                                                 byte[] padding = new byte[(int) (max - currentFileSize)];
@@ -1047,7 +1079,7 @@ public class AuditFileHandler implements SynchronousHandler {
                                         if (tc.isDebugEnabled())
                                             Tr.debug(tc, "maxFileSize: " + max);
 
-                                        if ((currentFileSize + total_to_add_length) >= max) {
+                                        if ((currentFileSize + total_to_add_length + 2) >= max) {
                                             if (tc.isDebugEnabled())
                                                 Tr.debug(tc, "adding padding to roll into new log");
                                             byte[] padding = new byte[(int) (max - currentFileSize)];
@@ -1077,6 +1109,29 @@ public class AuditFileHandler implements SynchronousHandler {
 
             }
         }
+    }
+
+    private String getKeyStoreId(String keyStoreRef) {
+        if (keyStoreRef == null || keyStoreRef.isEmpty())
+            return null;
+        Configuration config = null;
+        ConfigurationAdmin configAdmin = configAdminRef.getService();
+        try {
+            if (configAdmin != null)
+                config = configAdmin.getConfiguration(keyStoreRef, bundleLocation);
+        } catch (IOException e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Invalid authFilterRef configuration", e.getMessage());
+            }
+            return null;
+        }
+        if (config == null)
+            return null;
+        Dictionary<String, Object> props = config.getProperties();
+        if (props == null)
+            return null;
+        String id = (String) props.get(KEY_ID);
+        return id;
     }
 
 }

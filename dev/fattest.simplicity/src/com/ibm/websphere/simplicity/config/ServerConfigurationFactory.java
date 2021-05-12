@@ -80,13 +80,13 @@ public class ServerConfigurationFactory {
     /**
      * Expresses a server configuration in an XML document.
      *
-     * @param sourceConfig
-     *            the configuration you want to marshal
-     * @param targetFile
-     *            the location where you want to marshal state information.
-     *            parent directories will be created automatically
+     * @param  sourceConfig
+     *                          the configuration you want to marshal
+     * @param  targetFile
+     *                          the location where you want to marshal state information.
+     *                          parent directories will be created automatically
      * @throws Exception
-     *             if generation fails
+     *                          if generation fails
      */
     public void marshal(ServerConfiguration sourceConfig, File targetFile) throws Exception {
         if (targetFile == null) {
@@ -99,13 +99,13 @@ public class ServerConfigurationFactory {
     /**
      * Expresses a server configuration in an XML document.
      *
-     * @param sourceConfig
-     *            the configuration you want to marshal
-     * @param outputStream
-     *            the stream where you want to marshal state information. the
-     *            stream will be closed before this method returns.
+     * @param  sourceConfig
+     *                          the configuration you want to marshal
+     * @param  outputStream
+     *                          the stream where you want to marshal state information. the
+     *                          stream will be closed before this method returns.
      * @throws Exception
-     *             if generation fails
+     *                          if generation fails
      */
     public void marshal(ServerConfiguration sourceConfig, OutputStream outputStream) throws Exception {
         if (outputStream == null) {
@@ -121,12 +121,12 @@ public class ServerConfigurationFactory {
     /**
      * Converts a server configuration XML file into a series of Java objects.
      *
-     * @param inputStream
-     *            a server configuration XML file as a stream
-     * @return a Java object representation of the server configuration, or null
-     *         if the input stream is null
+     * @param  inputStream
+     *                         a server configuration XML file as a stream
+     * @return             a Java object representation of the server configuration, or null
+     *                     if the input stream is null
      * @throws Exception
-     *             if the XML can't be parsed
+     *                         if the XML can't be parsed
      */
     public ServerConfiguration unmarshal(InputStream inputStream) throws Exception {
         if (inputStream == null) {
@@ -142,10 +142,10 @@ public class ServerConfigurationFactory {
     /**
      * Tests server configuration factory; prints server.xml for easy debug
      *
-     * @param args
-     *            nothing
+     * @param  args
+     *                       nothing
      * @throws Exception
-     *             if any test fails
+     *                       if any test fails
      */
     public static void main(String[] args) throws Exception {
         File serverConfig = File.createTempFile("server", ".xml");
@@ -154,7 +154,7 @@ public class ServerConfigurationFactory {
             throw new Exception("Failed to create tmp file");
         }
 
-        Integer expectedInvalidationTimeout = Integer.valueOf(120);
+        String expectedInvalidationTimeout = "120";
         String expectedCreateDatabase = "create";
 
         ServerConfiguration server = new ServerConfiguration();
@@ -216,7 +216,7 @@ public class ServerConfigurationFactory {
 
         ServerConfiguration unmarshalled = scf.unmarshal(new FileInputStream(serverConfig));
         scf.marshaller.marshal(unmarshalled, System.out); // call private variable to avoid calling System.out!
-        Integer actualInvalidationTimeout = unmarshalled.getHttpSession().getInvalidationTimeout();
+        Integer actualInvalidationTimeout = Integer.valueOf(unmarshalled.getHttpSession().getInvalidationTimeout());
         String actualCreateDatabase = unmarshalled.getDataSources().get(0).getProperties_derby_embedded().get(0).getCreateDatabase();
         if (!expectedInvalidationTimeout.equals(actualInvalidationTimeout)) {
             throw new Exception("Expected invalidation timeout does not match actual invalidation timeout.  Expected: " + expectedInvalidationTimeout + " Actual: "

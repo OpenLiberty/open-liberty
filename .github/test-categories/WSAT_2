@@ -1,0 +1,10 @@
+com.ibm.ws.wsat.recovery_fat.lps
+com.ibm.ws.wsat.recovery_fat.multi
+com.ibm.ws.wsat.recovery_fat.single
+com.ibm.ws.wsat_fat.assertion
+com.ibm.ws.wsat_fat.db
+com.ibm.ws.wsat_fat.db_optional
+com.ibm.ws.wsat_fat.dbs
+com.ibm.ws.wsat_fat.dbs_optional
+com.ibm.ws.wsat_fat.multi
+com.ibm.ws.wsat_fat.ssl

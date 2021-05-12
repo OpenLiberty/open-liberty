@@ -125,7 +125,7 @@
 		 <AD id="sharedKey" name="internal" description="internal use only" required="false" type="String" ibm:type="password" />
          <AD id="includeCustomCacheKeyInSubject" name="internal" description="internal use only"  required="false" type="Boolean" default="true"/>
          <AD id="allowCustomCacheKey" name="%allowCustomCacheKey" description="%allowCustomCacheKey.desc" required="false" type="Boolean" default="true"/>
-         <AD id="clockSkew" name="internal" description="internal use only" required="false" type="String" default="300s" ibm:type="duration" />        
+         <AD id="clockSkew" name="%clockSkew" description="%clockSkew.desc" required="false" type="String" default="300s" ibm:type="duration" />
 
          <AD id="authContextClassReference" name="internal" description="internal use only" required="false" type="String" ibm:type="token" />
          <AD id="authFilterRef" name="%authFilterRef" description="%authFilterRef.desc" ibm:type="pid" ibm:reference="com.ibm.ws.security.authentication.filter" required="false" type="String"  />

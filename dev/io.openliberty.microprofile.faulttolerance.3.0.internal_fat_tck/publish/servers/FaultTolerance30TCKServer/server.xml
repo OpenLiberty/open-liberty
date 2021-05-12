@@ -14,7 +14,7 @@
         <feature>mpFaultTolerance-3.0</feature>
         <feature>cdi-2.0</feature>
         <feature>servlet-4.0</feature>
-        <feature>mpConfig-1.4</feature>
+        <feature>mpConfig-2.0</feature>
         <feature>mpMetrics-3.0</feature>
         <feature>localConnector-1.0</feature>
         <feature>arquillian-support-1.0</feature>

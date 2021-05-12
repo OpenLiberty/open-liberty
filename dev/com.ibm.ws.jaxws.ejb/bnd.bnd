@@ -16,6 +16,8 @@ Bundle-Name: JAX-WS EJB
 Bundle-SymbolicName: com.ibm.ws.jaxws.ejb
 Bundle-Description: IBM JAX-WS EJB support; version=${bVersion}
 
+exportVer=2.2
+
 Service-Component: \
   com.ibm.ws.jaxws.ejb.EJBInWarJaxWsModuleInfoBuilderExtension; \
      implementation:=com.ibm.ws.jaxws.ejb.EJBInWarJaxWsModuleInfoBuilderExtension; \
@@ -58,8 +60,10 @@ Export-Package: \
 Import-Package: \
    !com.ibm.ws.jaxws.ejb, \
    javax.xml.ws.*;version="[2.2,3)", \
-   org.apache.cxf.*;version="[2.6.2,2.6.3)", \
+   org.apache.cxf.*;version="[2.6.2,3)", \
    javax.xml.soap;version=!,\
+   com.ibm.ws.jaxws;version="[2.0,2.4)", \
+   com.ibm.ws.jaxws.*;version="[2.0,2.4)", \
    *
 
 Private-Package:\

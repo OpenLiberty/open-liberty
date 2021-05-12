@@ -23,7 +23,7 @@
         <AD id="port"
             name="%lra.coordinator.port.name"
             description="%lra.coordinator.port.desc"
-            required="false" type="Integer" default="8080" />
+            required="false" type="Integer" default="9080" />
 
         <AD id="host"
             name="%lra.coordinator.host.name"
@@ -33,7 +33,7 @@
         <AD id="path"
             name="%lra.coordinator.path.name"
             description="%lra.coordinator.path.desc"
-            required="false" type="String" default="lra-coordinator" />
+            required="false" type="String" default="lrac/lra-coordinator" />
             
     </OCD>
 

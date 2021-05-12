@@ -43,6 +43,9 @@ public class OracleKerberosTestServlet extends FATServlet {
     @Resource(lookup = "jdbc/krb/basic")
     DataSource krb5DataSource;
 
+    @Resource(lookup = "jdbc/krb/userpass")
+    DataSource krb5UPDataSource;
+
     @Resource(lookup = "jdbc/krb/xa")
     DataSource krb5XADataSource;
 
@@ -52,23 +55,66 @@ public class OracleKerberosTestServlet extends FATServlet {
     @Resource(lookup = "jdbc/krb/DataSource")
     DataSource krb5RegularDs;
 
+    /**
+     * Getting a connection too soon after the initial ticket is obtained can cause intermittent
+     * issues where we getConnection() fails with: Oracle Error ORA-12631
+     * These timing issues can be reproduced in a standalone JDBC program, which indicates that
+     * we aren't doing anything wrong in the Liberty code, and instead this is due a Oracle driver
+     * or DB issue which would require an Oracle support contract to investigate further
+     */
+    private static Connection getConnectionWithRetry(DataSource ds) throws SQLException {
+        SQLException firstEx = null;
+        for (int attempt = 0; attempt < 5; attempt++) {
+            try {
+                return ds.getConnection();
+            } catch (Throwable e) {
+                //Get the underlying SQLException
+                SQLException found = null;
+                for (Throwable t = e; t.getCause() != null; t = t.getCause()) {
+                    if (t instanceof SQLException && t.getClass() == SQLException.class) {
+                        found = (SQLException) t;
+                        break;
+                    }
+                }
+                //If nested SQLException was not found throw original
+                if (found == null)
+                    throw e;
+                //Keep track of the first SQLException we found
+                if (firstEx == null)
+                    firstEx = found;
+                //Check to see if we failed with ORA-12631 if so attempt again
+                if (found.getMessage() != null && found.getMessage().contains("ORA-12631")) {
+                    System.out.println("getConnection attempt " + attempt + " failed with ORA-12631");
+                    waitFor(3000);
+                    continue;
+                } else {
+                    throw e;
+                }
+            }
+        }
+        //After 5 attempts, throw the first SQLException we stored
+        throw firstEx;
+    }
+
+    private static void waitFor(int ms) {
+        try {
+            Thread.sleep(ms);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try {
-            // Getting a connection too soon after the initial ticket is obtained can cause intermittent
-            // issues where we getConnection() fails with: Oracle Error ORA-12631
-            // These timing issues can be reproduced in a standalone JDBC program, which indicates that
-            // we aren't doing anything wrong in the Liberty code, and instead this is due a Oracle driver
-            // or DB issue which would require an Oracle support contract to investigate further
-            Thread.sleep(750);
-        } catch (InterruptedException e) {
-        }
+        // see getConnectionWithRetry for reasoning behind wait
+        waitFor(750);
         super.doGet(request, response);
     }
 
     @Test
+    @AllowedFFDC
     public void testNonKerberosConnection() throws Exception {
-        try (Connection con = noKrb5.getConnection()) {
+        try (Connection con = getConnectionWithRetry(noKrb5)) {
             con.createStatement().execute("SELECT 1 FROM DUAL");
         }
     }
@@ -77,8 +123,20 @@ public class OracleKerberosTestServlet extends FATServlet {
      * Get a connection from a javax.sql.ConnectionPoolDataSource
      */
     @Test
+    @AllowedFFDC
     public void testKerberosBasicConnection() throws Exception {
-        try (Connection con = krb5DataSource.getConnection()) {
+        try (Connection con = getConnectionWithRetry(krb5DataSource)) {
+            con.createStatement().execute("SELECT 1 FROM DUAL");
+        }
+    }
+
+    /**
+     * Get a connection using a password in server.xml
+     * Config updates are done in OracleKerberosTest.java
+     */
+    public void testKerberosUsingPassword() throws Exception {
+
+        try (Connection con = getConnectionWithRetry(krb5UPDataSource)) {
             con.createStatement().execute("SELECT 1 FROM DUAL");
         }
     }
@@ -87,8 +145,9 @@ public class OracleKerberosTestServlet extends FATServlet {
      * Get a connection from a javax.sql.XADataSource
      */
     @Test
+    @AllowedFFDC
     public void testKerberosXAConnection() throws Exception {
-        try (Connection con = krb5XADataSource.getConnection()) {
+        try (Connection con = getConnectionWithRetry(krb5XADataSource)) {
             con.createStatement().execute("SELECT 1 FROM DUAL");
         }
     }
@@ -97,8 +156,9 @@ public class OracleKerberosTestServlet extends FATServlet {
      * Get a connection from a javax.sql.DataSource
      */
     @Test
+    @AllowedFFDC
     public void testKerberosRegularConnection() throws Exception {
-        try (Connection con = krb5RegularDs.getConnection()) {
+        try (Connection con = getConnectionWithRetry(krb5RegularDs)) {
             con.createStatement().execute("SELECT 1 FROM DUAL");
         }
     }
@@ -123,20 +183,21 @@ public class OracleKerberosTestServlet extends FATServlet {
 
     /**
      * Get two connection handles from the same datasource.
-     * Ensure that both connection handles share the same managed connection (i.e. phyiscal connection)
+     * Ensure that both connection handles share the same managed connection (i.e. physical connection)
      * to prove that Subject reuse is working
      */
     @Test
+    @AllowedFFDC
     public void testConnectionReuse() throws Exception {
         String managedConn1 = null;
         String managedConn2 = null;
 
-        try (Connection conn = krb5DataSource.getConnection()) {
+        try (Connection conn = getConnectionWithRetry(krb5DataSource)) {
             managedConn1 = getManagedConnectionID(conn);
             System.out.println("Managed connection 1 is: " + managedConn1);
         }
 
-        try (Connection conn = krb5DataSource.getConnection()) {
+        try (Connection conn = getConnectionWithRetry(krb5DataSource)) {
             managedConn2 = getManagedConnectionID(conn);
             System.out.println("Managed connection 2 is: " + managedConn2);
         }

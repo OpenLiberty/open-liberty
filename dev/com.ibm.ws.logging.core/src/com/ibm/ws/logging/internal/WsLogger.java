@@ -34,9 +34,7 @@ import com.ibm.ws.kernel.boot.logging.WsLogManager;
  * WebSphere extension of a Java Logger object. This uses the deprecated RAS
  * level due to not having Class information to register, only names.
  */
-@SuppressWarnings("deprecation")
 public class WsLogger extends Logger implements TraceStateChangeListener {
-    private static final TraceComponent tc = Tr.register(WsLogger.class,NLSConstants.GROUP, NLSConstants.LOGGING_NLS);
 
     //
     // ResourceBundle cached with this WsLogger

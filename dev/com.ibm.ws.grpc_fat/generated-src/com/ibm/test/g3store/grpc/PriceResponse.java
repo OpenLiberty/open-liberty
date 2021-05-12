@@ -10,7 +10,7 @@ package com.ibm.test.g3store.grpc;
  *
  * Protobuf type {@code test.g3store.grpc.PriceResponse}
  */
-public  final class PriceResponse extends
+public final class PriceResponse extends
     com.google.protobuf.GeneratedMessageV3 implements
     // @@protoc_insertion_point(message_implements:test.g3store.grpc.PriceResponse)
     PriceResponseOrBuilder {
@@ -111,6 +111,7 @@ private static final long serialVersionUID = 0L;
    * <code>string name = 1;</code>
    * @return The name.
    */
+  @java.lang.Override
   public java.lang.String getName() {
     java.lang.Object ref = name_;
     if (ref instanceof java.lang.String) {
@@ -127,6 +128,7 @@ private static final long serialVersionUID = 0L;
    * <code>string name = 1;</code>
    * @return The bytes for name.
    */
+  @java.lang.Override
   public com.google.protobuf.ByteString
       getNameBytes() {
     java.lang.Object ref = name_;
@@ -146,12 +148,14 @@ private static final long serialVersionUID = 0L;
   /**
    * <code>repeated .Price prices = 2;</code>
    */
+  @java.lang.Override
   public java.util.List<com.ibm.test.g3store.grpc.Price> getPricesList() {
     return prices_;
   }
   /**
    * <code>repeated .Price prices = 2;</code>
    */
+  @java.lang.Override
   public java.util.List<? extends com.ibm.test.g3store.grpc.PriceOrBuilder> 
       getPricesOrBuilderList() {
     return prices_;
@@ -159,18 +163,21 @@ private static final long serialVersionUID = 0L;
   /**
    * <code>repeated .Price prices = 2;</code>
    */
+  @java.lang.Override
   public int getPricesCount() {
     return prices_.size();
   }
   /**
    * <code>repeated .Price prices = 2;</code>
    */
+  @java.lang.Override
   public com.ibm.test.g3store.grpc.Price getPrices(int index) {
     return prices_.get(index);
   }
   /**
    * <code>repeated .Price prices = 2;</code>
    */
+  @java.lang.Override
   public com.ibm.test.g3store.grpc.PriceOrBuilder getPricesOrBuilder(
       int index) {
     return prices_.get(index);

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<webservices-bnd xmlns="http://websphere.ibm.com/xml/ns/javaee" 
+					  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+					  xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ws-bnd_1_0.xsd" version="1.0">
+  <service-ref name="service/TestService" component-name="EchoBean">
+  	<properties http.conduit.client.ConnectionTimeout="1739" http.conduit.client.ChunkingThreshold="2317" />
+  </service-ref>
+  
+  <service-ref name="service/TestService">
+  	<properties http.conduit.client.ConnectionTimeout="1122" http.conduit.client.ChunkingThreshold="3344" />
+  </service-ref>
+</webservices-bnd>

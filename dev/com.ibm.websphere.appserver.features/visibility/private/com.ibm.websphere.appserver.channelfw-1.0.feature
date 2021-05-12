@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.channelfw-1.0
+WLP-DisableAllFeatures-OnConflict: false
 IBM-API-Package: com.ibm.websphere.endpoint; type="ibm-api"
 IBM-Process-Types: server, \
  client

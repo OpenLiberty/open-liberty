@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2020 IBM Corporation and others.
+ * Copyright (c) 2007, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -525,6 +525,11 @@ public class SSLConfigManager {
         Boolean useDefaultCerts = (Boolean) map.get("trustDefaultCerts");
         if (null != useDefaultCerts) {
             sslprops.setProperty(Constants.SSLPROP_USE_DEFAULTCERTS, useDefaultCerts.toString());
+        }
+
+        Boolean enforceCipherOrder = (Boolean) map.get("enforceCipherOrder");
+        if (null != enforceCipherOrder) {
+            sslprops.setProperty(Constants.SSLPROP_ENFORCE_CIPHER_ORDER, enforceCipherOrder.toString());
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -1371,8 +1376,7 @@ public class SSLConfigManager {
         try {
 
             if (cipherString != null) {
-
-                ciphers = cipherString.split("\\s");
+                ciphers = cipherString.split("\\s+");
             } else {
                 String securityLevel = props.getProperty(Constants.SSLPROP_SECURITY_LEVEL);
                 if (tc.isDebugEnabled())
@@ -1387,8 +1391,10 @@ public class SSLConfigManager {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Exception setting ciphers in SSL Socket Factory.", new Object[] { e });
         }
+
         if (tc.isEntryEnabled())
             Tr.exit(tc, "getCipherList");
+
         return ciphers;
     }
 

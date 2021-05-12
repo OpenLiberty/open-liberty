@@ -39,6 +39,14 @@ import com.ibm.websphere.ras.TraceComponent;
 @SuppressWarnings("serial")
 public class JMSConsumer_118076Servlet extends HttpServlet {
 
+    // JMSConnectionFactory "java:comp/env/jndi_JMS_BASE_CF"
+    // JMSQueueConnectionFactory "java:comp/env/jndi_JMS_BASE_QCF"
+    // JMSQueueConnectionFactory"java:comp/env/jndi_JMS_BASE_QCF1"
+    // JMSTopicConnectionFactory "java:comp/env/eis/tcf"
+    //
+    // Queue "java:comp/env/jndi_INPUT_Q1"
+    // Topic "java:comp/env/eis/topic2"
+
     private static QueueConnectionFactory jmsQCFBindings;
     private static QueueConnectionFactory jmsQCFTCP;
     private static Queue jmsQueue;
@@ -46,30 +54,45 @@ public class JMSConsumer_118076Servlet extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
+        System.out.println("JMSConsumer_118076Servlet.init ENTRY");
+
         super.init();
 
         try {
             jmsQCFBindings = (QueueConnectionFactory)
                 new InitialContext().lookup("java:comp/env/jndi_JMS_BASE_QCF");
+        } catch ( NamingException e ) {
+            e.printStackTrace();
+        }
+        System.out.println("Queue connection factory 'java:comp/env/jndi_JMS_BASE_QCF':\n" + jmsQCFBindings);
+
+        try {
             jmsQCFTCP = (QueueConnectionFactory)
                 new InitialContext().lookup("java:comp/env/jndi_JMS_BASE_QCF1");
-            jmsQueue = (Queue) new InitialContext().lookup("java:comp/env/jndi_INPUT_Q");
+        } catch ( NamingException e ) {
+            e.printStackTrace();
+        }
+        System.out.println("Queue connection factory 'java:comp/env/jndi_JMS_BASE_QCF1':\n" + jmsQCFTCP);
+
+        try {
+            jmsQueue = (Queue) new InitialContext().lookup("java:comp/env/jndi_INPUT_Q1");
+        } catch ( NamingException e ) {
+            e.printStackTrace();
+        }
+        System.out.println("Queue 'java:comp/env/jndi_INPUT_Q1':\n" + jmsQueue);
+
+        try {
             jmsTopic = (Topic) new InitialContext().lookup("java:comp/env/eis/topic2");
         } catch ( NamingException e ) {
             e.printStackTrace();
         }
+        System.out.println("Topic 'java:comp/env/eis/topic2':\n" + jmsTopic);
 
-        if ( jmsQCFBindings == null ) {
-            System.out.println("Null queue connection factory 'java:comp/env/jndi_JMS_BASE_QCF'");
-        }
-        if ( jmsQCFTCP == null ) {
-            System.out.println("Null queue connection factory 'java:comp/env/jndi_JMS_BASE_QCF1'");
-        }
-        if ( jmsQueue == null ) {
-            System.out.println("Null queue 'java:comp/env/jndi_INPUT_Q'");
-        }
-        if ( jmsTopic == null ) {
-            System.out.println("Null topic 'java:comp/env/eis/topic2'");
+        System.out.println("JMSConsumer_118076Servlet.init RETURN");
+
+        if ( (jmsQCFBindings == null) || (jmsQCFTCP == null) ||
+             (jmsQueue == null) || (jmsTopic == null) ) {
+            throw new ServletException("Failed JMS initialization");
         }
     }
 

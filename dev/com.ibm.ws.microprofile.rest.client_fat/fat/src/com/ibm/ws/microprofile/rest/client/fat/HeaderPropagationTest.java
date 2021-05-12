@@ -38,7 +38,8 @@ public class HeaderPropagationTest extends FATServletClient {
         .andWith(FATSuite.MP_REST_CLIENT("1.1", SERVER_NAME))
         .andWith(FATSuite.MP_REST_CLIENT(FeatureReplacementAction.EE8_FEATURES(), "1.2", SERVER_NAME))
         .andWith(FATSuite.MP_REST_CLIENT(FeatureReplacementAction.EE8_FEATURES(),"1.3", SERVER_NAME))
-        .andWith(FATSuite.MP_REST_CLIENT(FeatureReplacementAction.EE8_FEATURES(),"1.4", SERVER_NAME));
+        .andWith(FATSuite.MP_REST_CLIENT(FeatureReplacementAction.EE8_FEATURES(),"1.4", SERVER_NAME))
+        .andWith(FATSuite.MP_REST_CLIENT(FeatureReplacementAction.EE8_FEATURES(),"2.0", SERVER_NAME));
 
     private static final String appName = "headerPropagationApp";
 
@@ -55,6 +56,6 @@ public class HeaderPropagationTest extends FATServletClient {
 
     @AfterClass
     public static void afterClass() throws Exception {
-        server.stopServer();
+        server.stopServer("CWWKE1102W");  //ignore server quiesce timeouts due to slow test machines
     }
 }

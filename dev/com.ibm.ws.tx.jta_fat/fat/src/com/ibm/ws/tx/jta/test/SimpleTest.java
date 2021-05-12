@@ -67,7 +67,7 @@ public class SimpleTest extends FATServletClient {
         // feature set, the following sets the appropriate features for each repeatable test.
         if (JakartaEE9Action.isActive()) {
             server.changeFeatures(Arrays.asList("txjtafat-2.0", "servlet-5.0", "componenttest-2.0", "osgiconsole-1.0"));
-        } else if (EE8FeatureReplacementAction.ID.equals(RepeatTestFilter.CURRENT_REPEAT_ACTION)) { // e.g. isActive()
+        } else if (RepeatTestFilter.isRepeatActionActive(EE8FeatureReplacementAction.ID)) { // e.g. isActive()
             server.changeFeatures(Arrays.asList("txjtafat-1.2", "servlet-4.0", "componenttest-1.0", "osgiconsole-1.0"));
         } else {
             server.changeFeatures(Arrays.asList("txjtafat-1.2", "servlet-3.1", "componenttest-1.0", "osgiconsole-1.0"));

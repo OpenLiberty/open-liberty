@@ -1,18 +1,19 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.client.web;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
 import java.util.Map;
 import java.util.Set;
 
@@ -30,6 +31,7 @@ import com.google.gson.JsonObject;
 import com.ibm.oauth.core.api.error.oauth20.OAuth20Exception;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.common.internal.encoder.Base64Coder;
 import com.ibm.ws.security.oauth20.web.WebUtils;
 import com.ibm.ws.security.openidconnect.client.internal.OidcClientConfigImpl;
@@ -64,8 +66,8 @@ public class OidcRedirectServlet extends HttpServlet {
 
     /**
      * @param activatedOidcClientImpl
-     *            the activatedOidcClientImpl to set
-     *            (called by the oidcClientImpl on activation)
+     *                                    the activatedOidcClientImpl to set
+     *                                    (called by the oidcClientImpl on activation)
      */
     public static void setActivatedOidcClientImpl(OidcClientImpl activatedOidcClientImpl) {
         OidcRedirectServlet.activatedOidcClientImpl = activatedOidcClientImpl;
@@ -143,6 +145,13 @@ public class OidcRedirectServlet extends HttpServlet {
             return;
         }
 
+        if (isRedirectionUrlValid(request, requestUrl) == false) {
+            String errorMsg = Tr.formatMessage(tc, "OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE", request.getRequestURL(), (new URL(requestUrl)).getHost()); // CWWKS152XE
+            Tr.error(tc, errorMsg);
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR); //will cause PublicFacingErrorServlet to run
+            return;
+        }
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "requestURL is not null or empty");
         }
@@ -165,6 +174,10 @@ public class OidcRedirectServlet extends HttpServlet {
         } else {
             sendError(request, response);
         }
+    }
+
+    public boolean isRedirectionUrlValid(HttpServletRequest request, @Sensitive String requestUrl) {
+        return OidcClientUtil.isReferrerHostValid(request, requestUrl);
     }
 
     // todo: converge w social in oidcutils class?

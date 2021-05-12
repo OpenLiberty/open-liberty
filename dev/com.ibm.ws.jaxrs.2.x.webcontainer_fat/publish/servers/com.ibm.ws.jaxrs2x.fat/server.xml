@@ -5,9 +5,7 @@
         <feature>json-1.0</feature>
     </featureManager>
     
-    <application type="war" id="jackson" name="jackson" location="jackson.war">
-        <classloader apiTypeVisibility="spec,ibm-api,third-party"/>
-    </application>
+    <application type="war" id="helloworld" name="helloworld" location="helloworld.war"/>
 
   	<include location="../fatTestPorts.xml"/>
   	<javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read"/>

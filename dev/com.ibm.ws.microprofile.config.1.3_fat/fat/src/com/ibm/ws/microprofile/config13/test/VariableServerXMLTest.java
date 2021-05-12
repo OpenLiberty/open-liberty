@@ -29,14 +29,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions;
-import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions.Version;
 import com.ibm.ws.microprofile.config.interfaces.ConfigConstants;
 import com.ibm.ws.microprofile.config13.variableServerXML.web.VariableServerXMLServlet;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -64,7 +63,7 @@ public class VariableServerXMLTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatConfigActions.repeat("ServerXMLVariableServer", Version.LATEST, Version.CONFIG13_EE8);
+    public static RepeatTests r = MicroProfileActions.repeat("ServerXMLVariableServer", MicroProfileActions.LATEST, MicroProfileActions.MP20);
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -88,9 +87,9 @@ public class VariableServerXMLTest extends FATServletClient {
      * @param filename
      * @throws Exception
      */
-    private static void copyConfigFileToLibertyServerRoot(String filename) throws Exception {
+    private static void copyConfigFileToLibertyServerRoot(String srcFile, String destFile) throws Exception {
         server.setMarkToEndOfLog();
-        server.copyFileToLibertyServerRoot(filename);
+        server.setServerConfigurationFile(srcFile, destFile);
 
         server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), false);
 
@@ -99,7 +98,7 @@ public class VariableServerXMLTest extends FATServletClient {
 
     @Before
     public void resetConfigFile() throws Exception {
-        copyConfigFileToLibertyServerRoot("original/variableServerXMLApp.xml");
+        copyConfigFileToLibertyServerRoot("original/variableServerXMLApp.xml", "variableServerXMLApp.xml");
     }
 
     @Test
@@ -109,7 +108,7 @@ public class VariableServerXMLTest extends FATServletClient {
         test(server, "/variableServerXMLApp/ServerXMLVariableServlet?testMethod=varPropertiesBeforeTest");
 
         //update the config
-        copyConfigFileToLibertyServerRoot("refreshVariables/variableServerXMLApp.xml");
+        copyConfigFileToLibertyServerRoot("refreshVariables/variableServerXMLApp.xml", "variableServerXMLApp.xml");
 
         // run the "after" test to check the value of the variable after the server.xml is updated
         test(server, "/variableServerXMLApp/ServerXMLVariableServlet?testMethod=varPropertiesAfterTest");
@@ -122,7 +121,7 @@ public class VariableServerXMLTest extends FATServletClient {
         test(server, "/variableServerXMLApp/ServerXMLVariableServlet?testMethod=appPropertiesBeforeTest");
 
         //update the config
-        copyConfigFileToLibertyServerRoot("refreshAppProperties/variableServerXMLApp.xml");
+        copyConfigFileToLibertyServerRoot("refreshAppProperties/variableServerXMLApp.xml", "variableServerXMLApp.xml");
 
         // run the "after" test to check the value of the variable after the server.xml is updated
         test(server, "/variableServerXMLApp/ServerXMLVariableServlet?testMethod=appPropertiesAfterTest");

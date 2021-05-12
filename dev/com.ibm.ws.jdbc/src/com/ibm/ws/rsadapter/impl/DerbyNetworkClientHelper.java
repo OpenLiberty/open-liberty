@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2001, 2017 IBM Corporation and others.
+ * Copyright (c) 2001, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,8 +41,6 @@ public class DerbyNetworkClientHelper extends DerbyHelper {
         TRACE_FILE_DIR = "traceDirectory",
         TRACE_FILE_APPEND = "traceFileAppend";
 
-    // move the derbyTc to the super class
-    private transient PrintWriter derbyNSPw; 
     private transient String traceFile; 	
     boolean traceAppend = false; 
     String traceDir = null; 
@@ -55,8 +53,9 @@ public class DerbyNetworkClientHelper extends DerbyHelper {
     DerbyNetworkClientHelper(WSManagedConnectionFactoryImpl mcf) {
         super(mcf);
 
-        Collections.addAll(staleErrorCodes,
-                           -4499);
+        dataStoreHelperClassName = "com.ibm.websphere.rsadapter.DerbyNetworkServerDataStoreHelper";
+
+        mcf.doesStatementCacheIsoLevel = true;
 
         Properties props = mcf.dsConfig.get().vendorProps;
         // we are not reading the tracelevel since we don't set the trace on the connection as we do with dB2, 
@@ -95,7 +94,7 @@ public class DerbyNetworkClientHelper extends DerbyHelper {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) 
                 Tr.debug(this, tc, "Derby network server JDBC trace was configured to go to a file, Thus no integration with WAS trace.  File name is: ", traceDir + traceFile); 
 
-            derbyNSPw = AccessController.doPrivileged(new PrivilegedAction<PrintWriter>() {
+            genPw = AccessController.doPrivileged(new PrivilegedAction<PrintWriter>() {
                 public PrintWriter run() {
                     try {
                         return new PrintWriter(new FileOutputStream(traceDir + traceFile, traceAppend), true); 
@@ -109,16 +108,20 @@ public class DerbyNetworkClientHelper extends DerbyHelper {
             });
         }
         else { // means need to integrate
-            derbyNSPw = new PrintWriter(new TraceWriter(derbyTc), true);
+            genPw = new PrintWriter(new TraceWriter(derbyTc), true);
         }
-    }
-
-    public boolean doesStatementCacheIsoLevel() {
-        return true;
+        
+        Collections.addAll(staleConCodes,
+                           -4499);
     }
 
     @Override
     public void doStatementCleanup(PreparedStatement stmt) throws SQLException {
+        if (dataStoreHelper != null) {
+            doStatementCleanupLegacy(stmt);
+            return;
+        }
+
         // setCursorName not supported in network server
         stmt.setFetchDirection(ResultSet.FETCH_FORWARD);
         stmt.setMaxFieldSize(0);
@@ -148,11 +151,11 @@ public class DerbyNetworkClientHelper extends DerbyHelper {
         // first the retruned value from the externalhelper.getPrintWriter
         // then, based on the tracewriter.
 
-        if (derbyNSPw == null) {
-            derbyNSPw = new java.io.PrintWriter(new TraceWriter(derbyTc), true);
+        if (genPw == null) {
+            genPw = new java.io.PrintWriter(new TraceWriter(derbyTc), true);
         }
-        Tr.debug(derbyTc, "returning", derbyNSPw);
-        return derbyNSPw;
+        Tr.debug(derbyTc, "returning", genPw);
+        return genPw;
     }
 
     @Override

@@ -22,12 +22,12 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 
-import com.ibm.wsspi.logging.Introspector;
+import com.ibm.wsspi.logging.SensitiveIntrospector;
 
 /**
  * This introspection lists the Configurations registered with ConfigAdmin
  */
-public class ConfigAdminIntrospection implements Introspector {
+public class ConfigAdminIntrospection extends SensitiveIntrospector {
     private ConfigurationAdmin configAdmin;
 
     protected void setConfigAdmin(ConfigurationAdmin configAdmin) {
@@ -93,11 +93,11 @@ public class ConfigAdminIntrospection implements Introspector {
                                         pw.append(", ");
                                     }
                                 }
-                                pw.append(String.valueOf(Array.get(value, i)));
+                                pw.append(getObscuredValue(key, Array.get(value, i)));
                             }
                             pw.append("]");
                         } else {
-                            pw.append(String.valueOf(value));
+                            pw.append(getObscuredValue(key, value));
                         }
                         pw.println();
                     }
@@ -106,4 +106,5 @@ public class ConfigAdminIntrospection implements Introspector {
             }
         }
     }
+
 }

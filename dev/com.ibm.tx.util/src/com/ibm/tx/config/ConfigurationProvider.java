@@ -218,11 +218,15 @@ public interface ConfigurationProvider {
 
     public String getRecoveryGroup();
 
+    public boolean isShutdownOnLogFailure();
+
     public String getLeaseCheckStrategy();
 
     public int getLeaseCheckInterval();
 
     public int getLeaseLength();
+
+    public int getLeaseRenewalThreshold();
 
     /**
      * Sets the applId of the server.

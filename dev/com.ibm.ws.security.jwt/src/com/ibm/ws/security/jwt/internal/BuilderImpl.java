@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.security.auth.Subject;
+
+import org.jose4j.jwe.ContentEncryptionAlgorithmIdentifiers;
+import org.jose4j.jwe.KeyManagementAlgorithmIdentifiers;
 import org.jose4j.lang.JoseException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
@@ -34,6 +38,8 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.security.auth.WSSubject;
+import com.ibm.websphere.security.cred.WSCredential;
 import com.ibm.websphere.security.jwt.Builder;
 import com.ibm.websphere.security.jwt.Claims;
 import com.ibm.websphere.security.jwt.InvalidBuilderException;
@@ -74,11 +80,19 @@ public class BuilderImpl implements Builder {
     private Key privateKey;
     private String configId;
 
+    // JWE fields
+    private String keyManagementAlg;
+    private Key keyManagementKey;
+    private String contentEncryptionAlg;
+
     private final KeyAlgorithmChecker keyAlgChecker = new KeyAlgorithmChecker();
 
     private final static String DEFAULT_ID = "defaultJWT";
     private final static String KEY_JWT_SERVICE = "jwtConfig";
     private static final String CFG_KEY_ID = "id";
+
+    public static final String DEFAULT_KEY_MANAGEMENT_ALGORITHM = KeyManagementAlgorithmIdentifiers.RSA_OAEP;
+    public static final String DEFAULT_CONTENT_ENCRYPTION_ALGORITHM = ContentEncryptionAlgorithmIdentifiers.AES_256_GCM;
 
     private final Object initlock = new Object() {
     };
@@ -120,33 +134,33 @@ public class BuilderImpl implements Builder {
         // getClaims().put(Claims.ISSUER, issuer);
         String issuer = IssuerUtils.getIssuerUrl(jwtConfig);// jwtConfig.getIssuerUrl();
         if (issuer != null) {
-            getClaims().put(Claims.ISSUER, issuer);
+            claims.put(Claims.ISSUER, issuer);
         }
         // token type
-        getClaims().put(Claims.TOKEN_TYPE, "Bearer");
+        claims.put(Claims.TOKEN_TYPE, "Bearer");
 
         // long valid = jwtConfig.getValidTime();//
         // getProperty(JwtUtils.CFG_KEY_VALID);
         // long exp = JwtUtils.calculate(valid);
         long exp = -2;
-        getClaims().put(Claims.EXPIRATION, Long.valueOf(exp));
+        claims.put(Claims.EXPIRATION, Long.valueOf(exp));
 
         long iat = -2;
-        getClaims().put(Claims.ISSUED_AT, Long.valueOf(iat));
+        claims.put(Claims.ISSUED_AT, Long.valueOf(iat));
 
         boolean isJti = jwtConfig.getJti();// getProperty(JwtUtils.CFG_KEY_JTI);
         if (isJti) {
             String jti = JwtUtils.getRandom(16);
-            getClaims().put(Claims.ID, jti);
+            claims.put(Claims.ID, jti);
         }
         List<String> aud = jwtConfig.getAudiences();// getProperty(AUDIENCE);
 
         if (aud != null) {
-            getClaims().put(Claims.AUDIENCE, aud);
+            claims.put(Claims.AUDIENCE, aud);
         }
         String scope = jwtConfig.getScope();
         if (scope != null) {
-            getClaims().put(JwtUtils.SCOPE, scope);
+            claims.put(JwtUtils.SCOPE, scope);
         }
         // if (jwtConfig.getClaims() != null) {
         // Iterator<String> claimsIt = jwtConfig.getClaims().iterator();
@@ -163,6 +177,14 @@ public class BuilderImpl implements Builder {
             sharedKey = jwtConfig.getSharedKey();
         }
 
+        List<String> amrAttr = jwtConfig.getAMRAttributes();// getProperty(amrAttributes);
+        if (amrAttr != null) {
+            try {
+                checkAmrAttrInSubject(amrAttr);
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+            }
+        }
     }
 
     private JwtConfig getTheServiceConfig(String builderConfigId) {
@@ -487,6 +509,35 @@ public class BuilderImpl implements Builder {
                 Constants.SIGNATURE_ALG_HS512;
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.websphere.security.jwt.Builder#encryptWith(java.lang.String, java.security.Key, java.lang.String)
+     */
+    @Override
+    public Builder encryptWith(String keyManagementAlg, Key keyManagementKey, String contentEncryptionAlg) throws KeyException {
+        if (keyManagementKey == null) {
+            String err = Tr.formatMessage(tc, "KEY_MANAGEMENT_KEY_MISSING", new Object[] { configId });
+            throw new KeyException(err);
+        }
+        if (keyManagementAlg == null || keyManagementAlg.isEmpty()) {
+            keyManagementAlg = DEFAULT_KEY_MANAGEMENT_ALGORITHM;
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Null or empty key management algorithm provided; defaulting to " + keyManagementAlg);
+            }
+        }
+        if (contentEncryptionAlg == null || contentEncryptionAlg.isEmpty()) {
+            contentEncryptionAlg = DEFAULT_CONTENT_ENCRYPTION_ALGORITHM;
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Null or empty content encryption algorithm provided; defaulting to " + contentEncryptionAlg);
+            }
+        }
+        this.keyManagementAlg = keyManagementAlg;
+        this.keyManagementKey = keyManagementKey;
+        this.contentEncryptionAlg = contentEncryptionAlg;
+        return this;
+    }
+
     // add claims with the given name and value
     /*
      * (non-Javadoc)
@@ -797,6 +848,18 @@ public class BuilderImpl implements Builder {
         return alg;
     }
 
+    public String getKeyManagementAlg() {
+        return keyManagementAlg;
+    }
+
+    public Key getKeyManagementKey() {
+        return keyManagementKey;
+    }
+
+    public String getContentEncryptionAlg() {
+        return contentEncryptionAlg;
+    }
+
     private boolean isValidClaim(String key, Object value) throws InvalidClaimException {
         String err = null;
         if (JwtUtils.isNullEmpty(key)) {
@@ -843,6 +906,43 @@ public class BuilderImpl implements Builder {
             // JsonElement jsonElem = entry.getValue();
         }
         return this;
+    }
+
+    /**
+     * Checks the attributes provided exists in the subject, if so add it to the
+     * claims as "amr" values
+     *
+     * @param amrAttr
+     * @throws Exception
+     */
+    private void checkAmrAttrInSubject(List<String> amrAttr) throws Exception {
+        Subject subj = WSSubject.getRunAsSubject();
+        List<Object> amrValues = new ArrayList<Object>();
+        if (subj != null) {
+            WSCredential wscred = getWSCredential(subj);
+            for (String attr : amrAttr) {
+                Object subjValue = wscred != null ? wscred.get(attr) : null;
+                if (subjValue != null) {
+                    amrValues.add(subjValue);
+                }
+            }
+        }
+        if (amrValues.size() > 0) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Builder Claims Key: amr: [" + amrValues + "]");
+            }
+            claims.put("amr", amrValues);
+        }
+    }
+
+    private WSCredential getWSCredential(Subject subject) {
+        WSCredential wsCredential = null;
+        Set<WSCredential> wsCredentials = subject.getPublicCredentials(WSCredential.class);
+        Iterator<WSCredential> wsCredentialsIterator = wsCredentials.iterator();
+        if (wsCredentialsIterator.hasNext()) {
+            wsCredential = wsCredentialsIterator.next();
+        }
+        return wsCredential;
     }
 
 }

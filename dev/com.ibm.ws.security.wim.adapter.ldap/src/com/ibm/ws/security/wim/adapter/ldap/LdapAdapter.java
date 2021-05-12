@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,6 +51,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.naming.InvalidNameException;
 import javax.naming.NameAlreadyBoundException;
@@ -72,6 +73,8 @@ import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 import javax.security.auth.Subject;
 
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -81,6 +84,7 @@ import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -93,6 +97,7 @@ import com.ibm.websphere.security.wim.Service;
 import com.ibm.websphere.security.wim.ras.WIMMessageHelper;
 import com.ibm.websphere.security.wim.ras.WIMMessageKey;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.security.kerberos.auth.KerberosService;
 import com.ibm.ws.security.wim.BaseRepository;
 import com.ibm.ws.security.wim.ConfiguredRepository;
 import com.ibm.ws.security.wim.adapter.ldap.change.ChangeHandlerFactory;
@@ -110,6 +115,7 @@ import com.ibm.ws.security.wim.xpath.ldap.util.LdapXPathTranslateHelper;
 import com.ibm.ws.security.wim.xpath.mapping.datatype.PropertyNode;
 import com.ibm.ws.security.wim.xpath.mapping.datatype.XPathNode;
 import com.ibm.ws.ssl.optional.SSLSupportOptional;
+import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.security.wim.SchemaConstants;
 import com.ibm.wsspi.security.wim.exception.AuthenticationNotSupportedException;
 import com.ibm.wsspi.security.wim.exception.CertificateMapFailedException;
@@ -207,22 +213,85 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
      */
     private final AtomicReference<X509CertificateMapper> iCertificateMapperRef = new AtomicReference<X509CertificateMapper>();
 
+    private static final String KERB_SERVICE = "kerberosService";
+
+    private KerberosService kerberosService = null;
+
+    /**
+     * Config updates are not as well ordered as we would like. Peek at the Kerberos config to see if we should create the context pool or not.
+     */
+    private final AtomicServiceReference<ConfigurationAdmin> configAdminRef = new AtomicServiceReference<ConfigurationAdmin>("configAdmin");
+
+    /**
+     * Read/write lock to protect against changing the underlying configuration while requests are in flight.
+     *
+     * Configuration changes will be blocked while requests are in flight.
+     */
+    private final ReentrantReadWriteLock configReadWriteLock = new ReentrantReadWriteLock();
+
+    /**
+     * Set the KerberosService reference, Load the general Kerberos configuration so we can use the KerberosService and
+     * load the keytab/config attributes, if needed.
+     *
+     * @param ref
+     */
+    @Reference(name = KERB_SERVICE, service = KerberosService.class, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
+    protected void setKerberosService(KerberosService ref) {
+        kerberosService = ref;
+    }
+
+    /**
+     * Unset the KerberosService reference
+     *
+     * @param ref
+     */
+    protected void unsetKerberosService(KerberosService ref) {
+        if (kerberosService == ref) {
+            kerberosService = null;
+        }
+    }
+
+    /**
+     * Called when KerberosService configuration is modified. Push the modify down
+     * to ContextManager to recycle the context pool.
+     *
+     * @param ref
+     */
+    protected void updatedKerberosService(KerberosService ref) {
+        kerberosService = ref;
+        if (iLdapConn != null) {
+            iLdapConn.updateKerberosService(ref);
+        }
+    }
+
     @Activate
     protected void activated(Map<String, Object> properties, ComponentContext cc) throws WIMException {
-        super.activate(properties, cc);
-        initialize(properties);
+        getConfigWriteLock();
+        try {
+            super.activate(properties, cc);
+            configAdminRef.activate(cc);
+            initialize(properties);
+        } finally {
+            releaseConfigWriteLock();
+        }
     }
 
     @Modified
     protected void modified(Map<String, Object> properties) throws WIMException {
-        super.modify(properties);
-        initialize(properties);
+        getConfigWriteLock();
+        try {
+            super.modify(properties);
+            initialize(properties);
+        } finally {
+            releaseConfigWriteLock();
+        }
     }
 
     @Override
     @Deactivate
     protected void deactivate(int reason, ComponentContext cc) {
         super.deactivate(reason, cc);
+        configAdminRef.deactivate(cc);
     }
 
     /**
@@ -243,7 +312,7 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
         iLdapConfigMgr = new LdapConfigManager();
         iLdapConfigMgr.initialize(configProps);
 
-        iLdapConn = new LdapConnection(iLdapConfigMgr);
+        iLdapConn = new LdapConnection(iLdapConfigMgr, kerberosService, configAdminRef.getService());
         iLdapConn.initialize(configProps);
 
         isActiveDirectory = iLdapConfigMgr.isActiveDirectory();
@@ -259,7 +328,16 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
      */
     @Override
     public Root get(Root root) throws WIMException {
-        final String METHODNAME = "get";
+        getConfigReadLock();
+        try {
+            return getImpl(root);
+        } finally {
+            releaseConfigReadLock();
+        }
+    }
+
+    private Root getImpl(Root root) throws WIMException {
+        final String METHODNAME = "getImpl";
         Root outRoot = new Root();
 
         Map<String, Control> ctrlMap = ControlsHelper.getControlMap(root);
@@ -474,8 +552,17 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
      * @param root The incoming Root object.
      */
     @Override
-    @FFDCIgnore({ EntityNotFoundException.class, InvalidNameException.class, NamingException.class })
     public Root login(Root root) throws WIMException {
+        getConfigReadLock();
+        try {
+            return loginImpl(root);
+        } finally {
+            releaseConfigReadLock();
+        }
+    }
+
+    @FFDCIgnore({ EntityNotFoundException.class, InvalidNameException.class, NamingException.class })
+    private Root loginImpl(Root root) throws WIMException {
         List<Entity> entities = root.getEntities();
         LoginAccount inAccount = (LoginAccount) entities.get(0);
         String qName = inAccount.getTypeName();
@@ -534,27 +621,31 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
             }
 
             String searchExpr = "@xsi:type=" + quote + qName + quote + " and "
-                                + SchemaConstants.PROP_PRINCIPAL_NAME + "=" + quote + principalName + quote;
+                            + SchemaConstants.PROP_PRINCIPAL_NAME + "=" + quote + principalName + quote;
 
             loginCtrl.setExpression(searchExpr);
             srchCtrl = getLdapSearchControl(loginCtrl, false, false);
             String[] searchBases = srchCtrl.getBases();
-            String sFilter = srchCtrl.getFilter();
+            String sFilter = null;
 
-            if (iLdapConfigMgr.getUseEncodingInSearchExpression() != null)
-                sFilter = LdapHelper.encodeAttribute(sFilter, iLdapConfigMgr.getUseEncodingInSearchExpression());
-
-            //Check is input principalName is DN, if it is DN use the same for login otherwise use userFilter
-            String principalNameDN = null;
-            try {
-                principalNameDN = new LdapName(principalName).toString();
-            } catch (InvalidNameException e) {
-                e.getMessage();
+            if (!iLdapConfigMgr.loginPropertyDefined()) {
+                //Check is input principalName is DN, if it is DN use the same for login otherwise use userFilter
+                String principalNameDN = null;
+                try {
+                    principalNameDN = new LdapName(principalName).toString();
+                } catch (InvalidNameException e) {
+                }
+                Filter userFilter = iLdapConfigMgr.getUserFilter();
+                if (principalNameDN == null && userFilter != null) {
+                    sFilter = userFilter.prepare(principalName);
+                    sFilter = setAttributeNamesInFilter(sFilter, SchemaConstants.DO_PERSON_ACCOUNT);
+                }
             }
-            Filter userFilter = iLdapConfigMgr.getUserFilter();
-            if (principalNameDN == null && userFilter != null) {
-                sFilter = userFilter.prepare(principalName);
-                sFilter = setAttributeNamesInFilter(sFilter, SchemaConstants.DO_PERSON_ACCOUNT);
+            if (sFilter == null) {
+                sFilter = srchCtrl.getFilter();
+                if (iLdapConfigMgr.getUseEncodingInSearchExpression() != null) {
+                    sFilter = LdapHelper.encodeAttribute(sFilter, iLdapConfigMgr.getUseEncodingInSearchExpression());
+                }
             }
 
             int countLimit = srchCtrl.getCountLimit();
@@ -645,8 +736,17 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
      * @param root The incoming Root object.
      */
     @Override
-    @FFDCIgnore(InvalidNameException.class)
     public Root search(Root root) throws WIMException {
+        getConfigReadLock();
+        try {
+            return searchImpl(root);
+        } finally {
+            releaseConfigReadLock();
+        }
+    }
+
+    @FFDCIgnore(InvalidNameException.class)
+    private Root searchImpl(Root root) throws WIMException {
         final String METHODNAME = "search";
         boolean bFirstChangeSearchCall = false;
 
@@ -1467,8 +1567,10 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
                     while (groups.hasMore()) {
                         if (entity != null) {
                             String groupDN = String.valueOf(groups.next());
-                            LdapEntry grpEntry = iLdapConn.getEntityByIdentifier(groupDN, null, null, iLdapConfigMgr.getGroupTypes(), propNames, false, false);
-                            createEntityFromLdapEntry(entity, SchemaConstants.DO_GROUP, grpEntry, supportedProps);
+                            if (LdapHelper.isUnderBases(groupDN, bases)) {
+                                LdapEntry grpEntry = iLdapConn.getEntityByIdentifier(groupDN, null, null, iLdapConfigMgr.getGroupTypes(), propNames, false, false);
+                                createEntityFromLdapEntry(entity, SchemaConstants.DO_GROUP, grpEntry, supportedProps);
+                            }
                         }
                     }
                 } catch (NamingException e) {
@@ -1722,7 +1824,7 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
                                     //grpEntry = iLdapConn.getEntityByIdentifier(grpDn, null, null, groupTypes, supportedProps,nested, false);
                                 } catch (EntityNotFoundException e) {
                                     if (tc.isDebugEnabled()) {
-                                        Tr.debug(tc, METHODNAME + " Group " + grpDn + " is not found and ingored.");
+                                        Tr.debug(tc, METHODNAME + " Group " + grpDn + " is not found and ignored.");
                                     }
                                     continue;
                                 }
@@ -2207,8 +2309,16 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
                         String dn = (String) enu.next();
                         //Remove spaces from DN. if DN contain space like in dn, cn=g1-10, ou=users,dc=rtp,dc=raleigh,dc=ibm,dc=com
                         dn = LdapHelper.getValidDN(dn);
-                        if (iLdapConfigMgr.isDummyMember(dn) || !LdapHelper.isUnderBases(dn, bases)
-                            || !startWithSameRDN(dn, mbrTypes, nested)) {
+
+                        Boolean isDummyMember = null, isUnderBases = null, startsWithSameRDN = null;
+                        if ((isDummyMember = iLdapConfigMgr.isDummyMember(dn))
+                            || !(isUnderBases = LdapHelper.isUnderBases(dn, bases))
+                            || !(startsWithSameRDN = startWithSameRDN(dn, mbrTypes, nested))) {
+
+                            if (tc.isDebugEnabled()) {
+                                Tr.debug(tc, METHODNAME + " Excluding group member {0}. isDummyMember? {1}, isUnderBases? {2}, startsWithSameRDN? {3}",
+                                         new Object[] { dn, isDummyMember, isUnderBases, startsWithSameRDN });
+                            }
                             continue;
                         }
                         LdapEntry mbrEntity = null;
@@ -2345,6 +2455,10 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
 
     @Trivial
     private boolean startWithSameRDN(String dn, List<String> mbrTypes, boolean nested) {
+        if (dn == null) {
+            return false;
+        }
+
         dn = dn.toLowerCase();
         boolean containGrp = false;
         for (int i = 0; i < mbrTypes.size(); i++) {
@@ -3071,6 +3185,15 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
      */
     @Override
     public Root delete(Root root) throws WIMException {
+        getConfigReadLock();
+        try {
+            return deleteImpl(root);
+        } finally {
+            releaseConfigReadLock();
+        }
+    }
+
+    private Root deleteImpl(Root root) throws WIMException {
         Map<String, Control> ctrlMap = ControlsHelper.getControlMap(root);
 
         DeleteControl deleteCtrl = (DeleteControl) ctrlMap.get(SchemaConstants.DO_DELETE_CONTROL);
@@ -3265,6 +3388,15 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
 
     @Override
     public Root create(Root root) throws WIMException {
+        getConfigReadLock();
+        try {
+            return createImpl(root);
+        } finally {
+            releaseConfigReadLock();
+        }
+    }
+
+    private Root createImpl(Root root) throws WIMException {
         // Only create first entity
         Entity entity = root.getEntities().get(0);
         String typeName = entity.getTypeName();
@@ -4028,5 +4160,54 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
 
     protected void unsetCertificateMapper(X509CertificateMapper mapper) {
         iCertificateMapperRef.compareAndSet(mapper, null);
+    }
+
+    /**
+     * Set the reference for the ConfigurationAdmin service
+     *
+     * @param reference
+     */
+    @Reference(name = "configAdmin")
+    protected void setConfigurationAdmin(ServiceReference<ConfigurationAdmin> reference) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "setConfigAdminRef", reference);
+        configAdminRef.setReference(reference);
+    }
+
+    /**
+     * Unset the reference for the ConfigurationAdmin service.
+     *
+     * @param reference
+     */
+    protected void unsetConfigurationAdmin(ServiceReference<ConfigurationAdmin> reference) {
+        configAdminRef.unsetReference(reference);
+    }
+
+    /**
+     * Get the configuration read lock.
+     */
+    private void getConfigReadLock() {
+        configReadWriteLock.readLock().lock();
+    }
+
+    /**
+     * Release the configuration read lock.
+     */
+    private void releaseConfigReadLock() {
+        configReadWriteLock.readLock().unlock();
+    }
+
+    /**
+     * Get the configuration write lock.
+     */
+    private void getConfigWriteLock() {
+        configReadWriteLock.writeLock().lock();
+    }
+
+    /**
+     * Release the configuration write lock.
+     */
+    private void releaseConfigWriteLock() {
+        configReadWriteLock.writeLock().unlock();
     }
 }

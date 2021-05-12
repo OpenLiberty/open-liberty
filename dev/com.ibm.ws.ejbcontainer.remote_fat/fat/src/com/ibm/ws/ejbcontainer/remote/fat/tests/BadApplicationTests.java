@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.ejbcontainer.remote.enventry.web.EnvEntryServlet;
 
 import componenttest.annotation.ExpectedFFDC;
@@ -74,7 +75,7 @@ public class BadApplicationTests extends AbstractTest {
         EnterpriseArchive AppExcExtendsThrowableErrBean = ShrinkWrap.create(EnterpriseArchive.class, "AppExcExtendsThrowableErrBean.ear");
         AppExcExtendsThrowableErrBean.addAsModule(AppExcExtendsThrowableErrBeanJar);
 
-        ShrinkHelper.exportAppToServer(server, AppExcExtendsThrowableErrBean);
+        ShrinkHelper.exportAppToServer(server, AppExcExtendsThrowableErrBean, DeployOptions.DISABLE_VALIDATION);
 
         //#################### EnvEntryShared.jar
         JavaArchive EnvEntrySharedJar = ShrinkHelper.buildJavaArchive("EnvEntryShared.jar", "com.ibm.ws.ejbcontainer.remote.enventry.shared.");
@@ -148,8 +149,9 @@ public class BadApplicationTests extends AbstractTest {
         // CWNEN0064E - testE4xEnvEntryExistingNonEnumNonClass, testE4aEnvEntryExistingNonEnumNonClass
         // CWWKZ0002E - testApplicationExceptionExtendsThrowable, testApplicationExceptionExtendsThrowableEE8
         // CWWKZ0106E - testApplicationExceptionExtendsThrowable, testApplicationExceptionExtendsThrowableEE8
+        // CNTR0338W - Ambiguous binding warning
         server.stopServer("CNTR0075E", "CNTR0190E", "CNTR4002E", "CNTR4006E", "CNTR5107E", "CWNEN0009E", "CWNEN0011E", "CWNEN0021W", "CWNEN0063E", "CWNEN0064E", "CWWKZ0002E",
-                          "CWWKZ0106E");
+                          "CWWKZ0106E", "CNTR0338W");
     }
 
     // For C2, constant for the bogus class name, which should appear somewhere in the error message:

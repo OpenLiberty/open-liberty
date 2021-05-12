@@ -13,7 +13,9 @@ package com.ibm.ws.microprofile.faulttolerance_fat.cdi;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.util.concurrent.Future;
@@ -96,6 +98,26 @@ public class FallbackServlet extends FATServlet {
         Connection connection = future.get();
         assertThat("Result data", connection.getData(), equalTo("fallbackAsync"));
         assertThat("Call count", bean.getConnectCountD(), equalTo(3));
+    }
+
+    @Test
+    public void testFallbackMethodThrowingException() {
+        try {
+            bean.fallbackMethodThrowsException();
+            fail("No Exception thrown");
+        } catch (RuntimeException e) {
+            assertEquals("FallbackBean.exceptionalFallbackMethod", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testFallbackHandlerThrowingException() {
+        try {
+            bean.fallbackHandlerThrowsException();
+            fail("No exception thrown");
+        } catch (RuntimeException e) {
+            assertEquals("ExceptionalHandler.handle", e.getMessage());
+        }
     }
 
 }

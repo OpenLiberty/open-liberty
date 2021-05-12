@@ -1,6 +1,8 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.jaxrs.common-2.1
+WLP-DisableAllFeatures-OnConflict: false
 visibility=private
+singleton=true
 IBM-App-ForceRestart: uninstall, \
  install
 -features=\
@@ -26,7 +28,6 @@ IBM-App-ForceRestart: uninstall, \
   com.ibm.ws.org.apache.cxf.cxf.rt.rs.client.3.2, \
   com.ibm.ws.org.apache.cxf.cxf.rt.rs.service.description.3.2, \
   com.ibm.ws.org.apache.cxf.cxf.rt.rs.sse.3.2, \
-  com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.hc.3.2, \
   com.ibm.ws.security.authorization.util
 -jars=com.ibm.ws.org.apache.cxf.cxf.tools.common.3.2, \
   com.ibm.ws.org.apache.cxf.cxf.tools.wadlto.jaxrs.3.2, \

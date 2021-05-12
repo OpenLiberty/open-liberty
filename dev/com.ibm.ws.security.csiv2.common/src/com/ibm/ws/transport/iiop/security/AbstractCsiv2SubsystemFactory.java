@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.transport.iiop.security;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -18,6 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -39,6 +39,7 @@ import com.ibm.ws.transport.iiop.security.config.ssl.yoko.SocketFactory;
 import com.ibm.ws.transport.iiop.spi.IIOPEndpoint;
 import com.ibm.ws.transport.iiop.spi.ReadyListener;
 import com.ibm.ws.transport.iiop.spi.SubsystemFactory;
+import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 import com.ibm.wsspi.ssl.SSLSupport;
 
 /**
@@ -68,7 +69,7 @@ public abstract class AbstractCsiv2SubsystemFactory extends SubsystemFactory {
     private ScheduledExecutorService executor;
     protected String defaultAlias;
     private Collection<String> sslRefs = Collections.emptyList();
-    private final List<ReadyRegistration> regs = new ArrayList<ReadyRegistration>();
+    private final CopyOnWriteArrayList<ReadyRegistration> regs = new CopyOnWriteArrayList<ReadyRegistration>();
 
     @Reference
     protected void setRegister(Register providerRegistry) {
@@ -175,6 +176,10 @@ public abstract class AbstractCsiv2SubsystemFactory extends SubsystemFactory {
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Known ssl configurations: {0}", sslRefs);
+        }
+        // If we are stopping lets skip this message
+        if (FrameworkState.isStopping()) {
+            return;
         }
         Tr.error(tc, "SSL_SERVICE_NOT_STARTED", missing, listener.listenerId(), TIMEOUT_SECONDS);
     }

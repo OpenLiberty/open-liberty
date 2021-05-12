@@ -17,8 +17,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -135,7 +133,9 @@ public class PackageProcessor implements ArchiveProcessor {
         mf.getMainAttributes().putValue("Extract-Installer", "false");
 
         File newMani = new File(workAreaTmpDir, "MANIFEST.usrinclude.tmp");
-        mf.write(new FileOutputStream(newMani));
+        try (FileOutputStream out = new FileOutputStream(newMani)) {
+            mf.write(out);
+        }
 
         return newMani;
     }
@@ -180,29 +180,11 @@ public class PackageProcessor implements ArchiveProcessor {
         }
 
         File newMani = new File(workAreaTmpDir, "MANIFEST.usrinclude.tmp");
-        mf.write(new FileOutputStream(newMani));
+        try (FileOutputStream out = new FileOutputStream(newMani)) {
+            mf.write(out);
+        }
 
         return newMani;
-    }
-
-    private Archive createArchive(final File file) throws IOException {
-
-        if (System.getSecurityManager() == null) {
-            return ArchiveFactory.create(file);
-        } else {
-            try {
-                return AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Archive>() {
-
-                    @Override
-                    public Archive run() throws IOException {
-                        return ArchiveFactory.create(file);
-                    }
-                });
-            } catch (PrivilegedActionException e) {
-                e.printStackTrace();
-                throw (IOException) e.getException();
-            }
-        }
     }
 
     public ReturnCode execute(boolean runtimeOnly) {
@@ -748,6 +730,7 @@ public class PackageProcessor implements ArchiveProcessor {
     // include option values
     public enum IncludeOption {
         ALL("all"), USR("usr"), MINIFY("minify"), WLP("wlp"), RUNNABLE("runnable");
+
         private final String value;
 
         private IncludeOption(String value) {

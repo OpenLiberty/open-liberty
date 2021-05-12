@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2018 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -142,8 +142,13 @@ public class LdapEntity {
     }
 
     public boolean startWithSameRDN(String dn) {
+        if (dn == null) {
+            return false;
+        }
+
         dn = dn.toLowerCase();
         String[][] rdnAttrs = iRDNAttrs != null ? iRDNAttrs : iWIMRDNAttrs;
+
         for (int i = 0; i < rdnAttrs.length; i++) {
             String[] attrs = rdnAttrs[i];
             for (int j = 0; j < attrs.length; j++) {
@@ -372,11 +377,19 @@ public class LdapEntity {
         iWIMRDNProps = rdnProps;
         if (iRDNAttrs != null) {
             if (iRDNAttrs.length != iWIMRDNAttrs.length) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "setRDNProperties: Setting to translate RDNs for {0}. iRDNAttrs ({1}) does not equal iWIMRDNAttrs ({2}).",
+                             new Object[] { iQEntityType, Arrays.deepToString(iRDNAttrs), Arrays.deepToString(iWIMRDNAttrs) });
+                }
                 iTranslatedRDN = true;
                 return;
             }
             for (int i = 0; i < iRDNAttrs.length; i++) {
                 if (!Arrays.equals(iRDNAttrs[i], iWIMRDNAttrs[i])) {
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(tc, "setRDNProperties: Setting to translate RDNs for {0}. iRDNAttrs ({1}) does not equal iWIMRDNAttrs ({2}).",
+                                 new Object[] { iQEntityType, Arrays.deepToString(iRDNAttrs), Arrays.deepToString(iWIMRDNAttrs) });
+                    }
                     iTranslatedRDN = true;
                     return;
                 }
@@ -384,6 +397,10 @@ public class LdapEntity {
         } else {
             for (int i = 0; i < iWIMRDNAttrs.length; i++) {
                 if (!Arrays.equals(iWIMRDNAttrs[i], iWIMRDNProps[i])) {
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(tc, "setRDNProperties: Setting to translate RDNs for {0}. iWIMRDNAttrs ({1}) does not equal iWIMRDNProps ({2}).",
+                                 new Object[] { iQEntityType, Arrays.deepToString(iWIMRDNAttrs), Arrays.deepToString(iWIMRDNProps) });
+                    }
                     iTranslatedRDN = true;
                     return;
                 }
@@ -395,7 +412,7 @@ public class LdapEntity {
      * Sets the RDN attribute types of this member type.
      * RDN attribute types will be converted to lower case.
      *
-     * @param The RDN attribute types of this member type.
+     * @param The RDN attribute types of this member type. This should be the configuration from the server.xml.
      */
     public void setRDNAttributes(List<Map<String, Object>> rdnAttrList) throws MissingInitPropertyException {
         int size = rdnAttrList.size();
@@ -460,47 +477,47 @@ public class LdapEntity {
         sb.append(this.getClass().getName()).append(":{");
         sb.append("EntityType=").append(iQEntityType);
         if (iExtId != null) {
-            sb.append(", ExternalID=").append(iExtId);
+            sb.append(", iExtId=").append(iExtId);
         }
         if (iAttrs != null && !iAttrs.isEmpty()) {
-            sb.append(", Attributes=").append(iAttrs);
+            sb.append(", iAttrs=").append(iAttrs);
         }
         if (iAttrToPropMap != null && !iAttrToPropMap.isEmpty()) {
-            sb.append(", AttributeToPropertyMap=").append(iAttrToPropMap);
+            sb.append(", iAttrToPropMap=").append(iAttrToPropMap);
         }
         if (iProps != null && !iProps.isEmpty()) {
-            sb.append(", Properties=").append(iProps);
+            sb.append(", iProps=").append(iProps);
         }
         if (iPropToAttrMap != null && !iPropToAttrMap.isEmpty()) {
-            sb.append(", PropertyToAttributeMap=").append(iPropToAttrMap);
+            sb.append(", iPropToAttrMap=").append(iPropToAttrMap);
         }
         if (iObjectClassAttrs != null && iObjectClassAttrs.length != 0) {
-            sb.append(", ObjectClassAttributes=").append(Arrays.toString(iObjectClassAttrs));
+            sb.append(", iObjectClassAttrs=").append(Arrays.toString(iObjectClassAttrs));
         }
         if (iObjectClasses != null && !iObjectClasses.isEmpty()) {
-            sb.append(", ObjectClasses=").append(iObjectClasses);
+            sb.append(", iObjectClasses=").append(iObjectClasses);
         }
 
         sb.append(", iSearchBaseConfigured=").append(iSearchBaseConfigured);
         if (iSearchBaseList != null && !iSearchBaseList.isEmpty()) {
-            sb.append(", SearchBases=").append(iSearchBaseList);
+            sb.append(", iSearchBaseList=").append(iSearchBaseList);
         }
         if (iSearchFilter != null) {
-            sb.append(", SearchFilter=").append(iSearchFilter);
+            sb.append(", iSearchFilter=").append(iSearchFilter);
         }
 
         sb.append(", iTranslatedRDN=").append(iTranslatedRDN);
         if (iRDNAttrs != null && iRDNAttrs.length != 0) {
-            sb.append(", RDNAttributes=").append(Arrays.deepToString(iRDNAttrs));
+            sb.append(", iRDNAttrs=").append(Arrays.deepToString(iRDNAttrs));
         }
         if (iRDNObjectClass != null && iRDNObjectClass.length != 0) {
-            sb.append(", RDNObjectClass=").append(Arrays.deepToString(iRDNObjectClass));
+            sb.append(", iRDNObjectClass=").append(Arrays.deepToString(iRDNObjectClass));
         }
         if (iWIMRDNAttrs != null && iWIMRDNAttrs.length != 0) {
-            sb.append(", WIMRDNAttrs=").append(Arrays.deepToString(iWIMRDNAttrs));
+            sb.append(", iWIMRDNAttrs=").append(Arrays.deepToString(iWIMRDNAttrs));
         }
         if (iWIMRDNProps != null && iWIMRDNProps.length != 0) {
-            sb.append(", WIMRDNProps=").append(Arrays.deepToString(iWIMRDNProps));
+            sb.append(", iWIMRDNProps=").append(Arrays.deepToString(iWIMRDNProps));
         }
         sb.append("}");
         return sb.toString();

@@ -87,6 +87,12 @@ public class EJBRemoteBeanFactory extends EJBNamingInstancer implements ObjectFa
 
         // Get the EJBBinding Object and initialize it
         EJBBinding binding = ref.getReferenceBinding();
+
+        if (binding != null && binding.isAmbiguousReference) {
+            String bindingName = ref.getBindingName();
+            throwAmbiguousEJBReferenceException(binding, bindingName);
+        }
+
         return initializeEJB(binding, binding.homeRecord.getJ2EEName().toString());
     }
 }

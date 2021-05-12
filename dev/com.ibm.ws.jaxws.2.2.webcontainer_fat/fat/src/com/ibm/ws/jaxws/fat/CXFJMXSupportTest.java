@@ -46,7 +46,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jaxws.jmx.test.fat.util.ClientConnector;
 
 import componenttest.annotation.Server;
@@ -94,10 +93,12 @@ public class CXFJMXSupportTest {
             }
 
             @Override
-            public void checkClientTrusted(X509Certificate[] certs, String authType) {}
+            public void checkClientTrusted(X509Certificate[] certs, String authType) {
+            }
 
             @Override
-            public void checkServerTrusted(X509Certificate[] certs, String authType) {}
+            public void checkServerTrusted(X509Certificate[] certs, String authType) {
+            }
         } };
 
         SSLContext sc = SSLContext.getInstance("SSL");
@@ -124,8 +125,6 @@ public class CXFJMXSupportTest {
         server.waitForStringInLog("CWPKI0803A.*");
         //Check to see if Rest service is up
         server.waitForStringInLog("CWWKX0103I.*");
-
-        Log.info(thisClass, thisMethod, "@TJJ before constructing Client");
 
         ClientConnector cc = new ClientConnector(server.getServerRoot(), server.getHostname(), server.getHttpDefaultSecurePort());
         mbsc = cc.getMBeanServer();

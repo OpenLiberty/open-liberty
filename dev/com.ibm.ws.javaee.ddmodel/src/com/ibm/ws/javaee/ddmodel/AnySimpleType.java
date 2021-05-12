@@ -20,7 +20,6 @@ import com.ibm.ws.javaee.ddmodel.DDParser.ParseException;
 import com.ibm.wsspi.kernel.service.utils.MetatypeUtils;
 
 public abstract class AnySimpleType implements ParsableElement {
-
     public static class ListType extends ParsableList<AnySimpleType> {
         @Override
         public AnySimpleType newInstance(DDParser parser) {

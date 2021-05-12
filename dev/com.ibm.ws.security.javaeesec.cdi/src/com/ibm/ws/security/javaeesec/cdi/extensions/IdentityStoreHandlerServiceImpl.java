@@ -25,6 +25,7 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 
 import com.ibm.ws.security.authentication.IdentityStoreHandlerService;
 import com.ibm.ws.security.authentication.AuthenticationException;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.javaeesec.cdi.beans.Utils;
 import com.ibm.ws.security.javaeesec.properties.ModulePropertiesUtils;
 
@@ -111,8 +112,13 @@ public class IdentityStoreHandlerServiceImpl implements IdentityStoreHandlerServ
     }
 
     @SuppressWarnings("rawtypes")
+    @FFDCIgnore(IllegalStateException.class)
     protected CDI getCDI() {
-        return CDI.current();
+        try {
+            return CDI.current();
+        } catch (IllegalStateException e) {
+            return null;
+        }
     }
 
     protected ModulePropertiesUtils getModulePropertiesUtils() {
