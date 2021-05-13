@@ -122,9 +122,9 @@ io.smallrye.common:smallrye-common-classloader:1.6.0
 io.smallrye.common:smallrye-common-constraint:1.6.0
 io.smallrye.common:smallrye-common-expression:1.6.0
 io.smallrye.common:smallrye-common-function:1.6.0
-io.smallrye.config:smallrye-config-common:2.2.0
-io.smallrye.config:smallrye-config-core:2.2.0
-io.smallrye.config:smallrye-config:2.2.0
+io.smallrye.config:smallrye-config-common:2.3.0
+io.smallrye.config:smallrye-config-core:2.3.0
+io.smallrye.config:smallrye-config:2.3.0
 io.smallrye:smallrye-graphql-client-api:1.0.9
 io.smallrye:smallrye-graphql-client:1.0.9
 io.smallrye:smallrye-graphql-schema-model:1.0.9

@@ -86,8 +86,8 @@ public class ConvertersTestServlet extends FATServlet {
             CustomType p1 = c.getValue("aKey", CustomType.class);
             fail("FAILED: IllegalArgumentException not thrown");
         } catch (IllegalArgumentException e) {
-            TestUtils.assertEquals("SRCFG00039: The config property aKey with the config value \"aValue\" threw an Exception whilst being converted", e.getMessage());
-            TestUtils.assertEquals("Converter throwing intentional exception", e.getCause().getMessage());
+            TestUtils.assertEquals("SRCFG00039: The config property aKey with the config value \"aValue\" threw an Exception whilst being converted Converter throwing intentional exception",
+                                   e.getMessage());
         }
     }
 

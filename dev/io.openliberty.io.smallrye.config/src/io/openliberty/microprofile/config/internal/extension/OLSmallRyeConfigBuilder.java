@@ -21,21 +21,12 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import io.openliberty.microprofile.config.internal.serverxml.AppPropertyConfigSource;
 import io.openliberty.microprofile.config.internal.serverxml.ServerXMLDefaultVariableConfigSource;
 import io.openliberty.microprofile.config.internal.serverxml.ServerXMLVariableConfigSource;
-import io.smallrye.config.ProfileConfigSourceInterceptor;
 import io.smallrye.config.SmallRyeConfig;
 import io.smallrye.config.SmallRyeConfigBuilder;
 
 public class OLSmallRyeConfigBuilder extends SmallRyeConfigBuilder {
 
     private static final TraceComponent tc = Tr.register(OLSmallRyeConfigBuilder.class);
-
-    public OLSmallRyeConfigBuilder() {
-        super();
-        //I have no idea why this property would default to true in the SmallRye code
-        //With it set to true, you get a validation error on hundreds of properties
-        //At the moment, I don't really understand what it is for
-        withValidateUnknown(false);
-    }
 
     @Override
     protected List<ConfigSource> getDefaultSources() {
@@ -54,8 +45,8 @@ public class OLSmallRyeConfigBuilder extends SmallRyeConfigBuilder {
     public SmallRyeConfig build() {
         SmallRyeConfig config = super.build();
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            // Note: SMALLRYE_PROFILE gets internally mapped to also pick up the standard Config.PROFILE
-            String profileName = config.getRawValue(ProfileConfigSourceInterceptor.SMALLRYE_PROFILE);
+            // Note: SMALLRYE_CONFIG_PROFILE gets internally mapped to also pick up the standard Config.PROFILE
+            String profileName = config.getRawValue(SmallRyeConfig.SMALLRYE_CONFIG_PROFILE);
             Tr.event(this, tc, "Config created with profile: " + profileName, config);
         }
         return config;
