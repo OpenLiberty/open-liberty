@@ -31,16 +31,11 @@ tested.features: servlet-5.0,concurrent-2.0,jdbc-4.2
 
 -buildpath: \
 	fattest.simplicity;version=latest,\
-    com.github.docker-java:docker-java-api;version=latest,\
 	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
 	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
 	com.ibm.ws.concurrent.persistent;version=latest,\
-	org.testcontainers:database-commons;version=1.15.1,\
-	org.testcontainers:jdbc;version=1.15.1,\
-	org.testcontainers:testcontainers;version=1.15.1,\
-	org.rnorth.duct-tape:duct-tape;version=1.0.8,\
-	org.slf4j:slf4j-api;version=1.7.7
+	io.openliberty.org.testcontainers;version=latest
 	
 -sub: *.bnd

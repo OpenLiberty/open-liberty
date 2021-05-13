@@ -27,12 +27,8 @@ tested.features:\
 
 -buildpath: \
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
-	com.github.docker-java:docker-java-api;version=3.2.7,\
 	io.openliberty.com.fasterxml.jackson;version=2.11.2,\
 	io.openliberty.org.apache.commons.codec;version=latest,\
 	io.openliberty.org.apache.commons.logging;version=latest,\
 	org.ektorp:org.ektorp;version=1.5.0,\
-	org.rnorth.duct-tape:duct-tape;version=1.0.8,\
-	org.testcontainers:database-commons;version=1.15.1,\
-	org.testcontainers:testcontainers;version=1.15.1,\
-	org.slf4j:slf4j-api;version=1.7.7
+	io.openliberty.org.testcontainers;version=latest
