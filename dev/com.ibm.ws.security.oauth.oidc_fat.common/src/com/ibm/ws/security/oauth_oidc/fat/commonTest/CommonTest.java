@@ -23,7 +23,6 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.security.KeyStore;
@@ -33,7 +32,6 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +48,7 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -66,12 +65,12 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.util.Cookie;
 import com.gargoylesoftware.htmlunit.util.NameValuePair;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.security.fat.common.utils.AutomationTools;
 import com.ibm.ws.security.fat.common.CommonIOTools;
-import com.ibm.ws.security.fat.common.servers.ServerBootstrapUtils;
 import com.ibm.ws.security.fat.common.ShibbolethHelpers;
 import com.ibm.ws.security.fat.common.TestHelpers;
 import com.ibm.ws.security.fat.common.apps.AppConstants;
+import com.ibm.ws.security.fat.common.servers.ServerBootstrapUtils;
+import com.ibm.ws.security.fat.common.utils.AutomationTools;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.EndpointSettings.endpointSettings;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.ValidationData.validationData;
 import com.meterware.httpunit.GetMethodWebRequest;
@@ -90,9 +89,7 @@ import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.HttpUtils;
 import componenttest.topology.utils.LDAPUtils;
-import org.apache.commons.io.IOUtils;
 
 public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
 
@@ -1795,18 +1792,25 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
 
     }
 
+    /**
+     * Remove the mongoDB props file used by the CustomStoreSample and stop the locally started MongoDB server.
+     *
+     * @param server
+     * @param cumulativeException
+     * @param exceptionNum
+     * @return
+     */
     private static boolean mongoDBTeardownCleanup(TestServer server, Exception cumulativeException, int exceptionNum) {
         try {
-
-            Log.info(thisClass, "mongoDBTeardownCleanup", "cleanupMongoDBEntries");
-            MongoDBUtils.cleanupMongoDBEntries(server.getHttpString(), server.getHttpDefaultPort());
-
             try {
                 Log.info(thisClass, "mongoDBTeardownCleanup", "delete mongo props file " + MONGO_PROPS_FILE);
                 server.getServer().deleteFileFromLibertyServerRoot(MONGO_PROPS_FILE);
             } catch (Exception e) {
                 Log.info(thisClass, "mongoDBTeardownCleanup", "Exception removing MONGO_PROPS_FILE. If this is a Derby test, ignore this message." + e);
             }
+
+            MongoDBUtils.stopMongoDB();
+
             return true;
 
         } catch (Exception e) {
@@ -3207,17 +3211,9 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
     private static void setupMongoDBConfig(TestServer aTestServer, String httpString, Integer defaultPort) {
         String methodName = "setupMongoDBConfig";
         Log.info(thisClass, methodName, "Setup for mongoDB");
-        String mongoTableUid = "defaultUID";
         try {
-            mongoTableUid = "_" + InetAddress.getLocalHost().getHostName() + "_" + new Random(System.currentTimeMillis()).nextLong();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-            mongoTableUid = "localhost-" + System.nanoTime();
-        }
-
-        try {
-            MongoDBUtils.startMongoDB(aTestServer.getServer(), MONGO_PROPS_FILE, mongoTableUid);
-            MongoDBUtils.setupMongoDBEntries(httpString, defaultPort, mongoTableUid);
+            MongoDBUtils.startMongoDB(aTestServer.getServer(), MONGO_PROPS_FILE);
+            MongoDBUtils.setupMongoDBEntries(httpString, defaultPort);
         } catch (Exception e) {
             Log.error(thisClass, methodName, e, "Exception setting up MongoDB, CustomStore tests may fail.");
 

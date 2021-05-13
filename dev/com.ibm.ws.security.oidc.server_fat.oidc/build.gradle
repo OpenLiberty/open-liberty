@@ -34,7 +34,9 @@ dependencies {
                 project(':com.ibm.ws.crypto.passwordutil'),
                 fileTree("${project(':com.ibm.ws.security.oauth.oidc_fat.common').buildDir}/collectedJars") { include '*.jar' },
                 'jtidy:jtidy:4aug2000r7-dev',
-                'rhino:js:1.6R5'
+                'rhino:js:1.6R5',
+                'de.flapdoodle.embed:de.flapdoodle.embed.mongo:3.0.0',
+                'org.apache.commons:commons-compress:1.20'
                 
   /*
    * Previously we had an uber jar named htmlunit-2.20-OSGi.jar. It appears to have contained all of
