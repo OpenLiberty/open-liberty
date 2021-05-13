@@ -84,7 +84,6 @@ import com.ibm.websphere.security.wim.ras.WIMMessageKey;
 import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
 import com.ibm.ws.config.xml.internal.nester.Nester;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.kerberos.auth.KerberosService;
 import com.ibm.ws.security.wim.FactoryManager;
 import com.ibm.ws.security.wim.adapter.ldap.context.ContextManager;
@@ -375,54 +374,6 @@ public class LdapConnection {
         initializeCaches(configProps);
     }
 
-    // Flag tells us if the message for a call to a beta method has been issued
-    // Can be removed when bindAuthMechanism/KRB5 is GA
-    private static boolean issuedBetaMessage = false;
-
-    /**
-     * Beta fence check -- can be removed when bindAuthMechanism/KRB5 is GA
-     *
-     * To run with FATs, create a jvm.options file in your server directory and add the following argument: -Dcom.ibm.ws.beta.edition=true
-     *
-     * @throws UnsupportedOperationException
-     */
-    private static void betaFenceCheck() throws UnsupportedOperationException {
-        // Not running beta edition, throw exception
-        if (!ProductInfo.getBetaEdition()) {
-            throw new UnsupportedOperationException("The bindAuthMechanism attribute is beta and is not available.");
-        } else {
-            // Running beta exception, issue message if we haven't already issued one for this class
-            if (!issuedBetaMessage) {
-                Tr.info(tc, "BETA: A beta attribute, bindAuthMechanism, has been set for LdapRegistry for the first time.");
-                issuedBetaMessage = !issuedBetaMessage;
-            }
-        }
-    }
-
-    // Flag tells us if the message for a call to a beta method has been issued
-    // Can be removed when bindAuthMechanism/KRB5 is GA
-    private static boolean issuedBetaMessageKrb5 = false;
-
-    /**
-     * Beta fence check -- can be removed when bindAuthMechanism/KRB5 is GA
-     *
-     * To run with FATs, create a jvm.options file in your server directory and add the following argument: -Dcom.ibm.ws.beta.edition=true
-     *
-     * @throws UnsupportedOperationException
-     */
-    private static void betaFenceCheckKrb5() throws UnsupportedOperationException {
-        // Not running beta edition, throw exception
-        if (!ProductInfo.getBetaEdition()) {
-            throw new UnsupportedOperationException("The krb5Principal and krb5TicketCache attributes are beta and are not available.");
-        } else {
-            // Running beta exception, issue message if we haven't already issued one for this class
-            if (!issuedBetaMessageKrb5) {
-                Tr.info(tc, "BETA: Beta attributes, krb5Principal and krb5TicketCache, have been set for LdapRegistry for the first time.");
-                issuedBetaMessageKrb5 = !issuedBetaMessageKrb5;
-            }
-        }
-    }
-
     /**
      * Initialize the {@link ContextManager} to manage LDAP connections.
      *
@@ -459,10 +410,6 @@ public class LdapConnection {
 
         String bindAuthMech = ((String) configProps.get(ConfigConstants.CONFIG_PROP_BIND_AUTH_MECH));
         if (bindAuthMech != null) {
-            /*
-             * Beta fence check -- will fail unless beta edition is enabled.
-             */
-            betaFenceCheck();
             iContextManager.setBindAuthMechanism(bindAuthMech);
         }
 
@@ -472,8 +419,6 @@ public class LdapConnection {
              */
             iContextManager.setSimpleCredentials((String) configProps.get(CONFIG_PROP_BIND_DN), (SerializableProtectedString) configProps.get(CONFIG_PROP_BIND_PASSWORD));
         } else {
-            betaFenceCheckKrb5();
-
             iContextManager.setKerberosCredentials(iReposId, kerberosService, (String) configProps.get(ConfigConstants.CONFIG_PROP_KRB5_PRINCIPAL),
                                                    (String) configProps.get(ConfigConstants.CONFIG_PROP_KRB5_TICKET_CACHE), configAdmin);
         }

@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2011 IBM Corporation and others.
+# Copyright (c) 2009, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -127,6 +127,11 @@ session.liveSessions.description=O n\u00famero de usu\u00e1rios conectados atual
 session.activeSessions.description=O n\u00famero de sess\u00f5es ativas simult\u00e2neas. (Uma sess\u00e3o estar\u00e1 ativa se o produto estiver processando atualmente uma solicita\u00e7\u00e3o que usa essa sess\u00e3o do usu\u00e1rio).
 session.invalidated.total.description=O n\u00famero de sess\u00f5es que efetuaram logout desde que essa m\u00e9trica foi ativada.
 session.invalidatedbyTimeout.total.description=O n\u00famero de sess\u00f5es que efetuaram logout por tempo limite desde que essa m\u00e9trica foi ativada.
+
+requestTiming.requestCount.description=O n\u00famero de solicita\u00e7\u00f5es do servlet desde que o servidor foi iniciado.
+requestTiming.activeRequestCount.description=O n\u00famero de solicita\u00e7\u00f5es do servlet que est\u00e3o em execu\u00e7\u00e3o no momento.
+requestTiming.slowRequestCount.description=O n\u00famero de solicita\u00e7\u00f5es do servlet que est\u00e3o em execu\u00e7\u00e3o no momento, mas que est\u00e3o lentas.
+requestTiming.hungRequestCount.description=O n\u00famero de solicita\u00e7\u00f5es do servlet que est\u00e3o em execu\u00e7\u00e3o no momento, mas que foram interrompidas.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message

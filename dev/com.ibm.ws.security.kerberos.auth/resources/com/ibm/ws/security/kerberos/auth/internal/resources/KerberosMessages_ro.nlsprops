@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2020, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -25,3 +25,15 @@ KRB5_FILE_NOT_FOUND_CWWKS4345E.useraction=Asigura\u0163i-v\u0103 c\u0103 configu
 KRB5_FILE_FOUND_CWWKS4346I=CWWKS4346I: Componenta Kerberos este configurat\u0103 s\u0103 foloseasc\u0103 un fi\u015fier {0} aflat la {1}
 KRB5_FILE_FOUND_CWWKS4346I.explanation=Fi\u015fierul configurat a fost localizat cu succes.
 KRB5_FILE_FOUND_CWWKS4346I.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+KRB5_LOGIN_FAILED_CACHE_CWWKS4347E=CWWKS4347E: Logarea Kerberos cu principalul Kerberos {0} \u015fi cu cache-ul de acredit\u0103ri Kerberos {1} (ccache) a e\u015fuat. Nu a fost g\u0103sit un tichet Kerberos.
+KRB5_LOGIN_FAILED_CACHE_CWWKS4347E.explanation=Fie principalul Kerberos este invalid, fie cache-ul de acredit\u0103ri Kerberos (ccache) este invalid sau expirat.
+KRB5_LOGIN_FAILED_CACHE_CWWKS4347E.useraction=Asigura\u0163i-v\u0103 c\u0103 este specificat un principal Kerberos valid \u015fi c\u0103 cache-ul de acredit\u0103ri Kerberos (ccache) este valid \u015fi nu a expirat.
+
+KRB5_LOGIN_FAILED_KEYTAB_CWWKS4348E=CWWKS4348E: Logarea Kerberos a e\u015fuat cu principalul Kerberos {0} \u015fi fi\u015fierul tabel\u0103 de chei Kerberos {1}. Nu a fost g\u0103sit un tichet Kerberos.
+KRB5_LOGIN_FAILED_KEYTAB_CWWKS4348E.explanation=Fie principalul Kerberos specificat, fie fi\u015fierul tabel\u0103 de chei Kerberos nu este valid.
+KRB5_LOGIN_FAILED_KEYTAB_CWWKS4348E.useraction=Asigura\u0163i-v\u0103 c\u0103 este specificat un fi\u015fier tabel\u0103 de chei Kerberos valid \u015fi c\u0103 acesta con\u0163ine un principal Kerberos valid.
+		
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB_CWWKS4349E=CWWKS4349E: Logarea Kerberos a e\u015fuat cu principalul Kerberos {0} \u015fi fi\u015fierul tabel\u0103 de chei Kerberos implicit. Nu a fost g\u0103sit un tichet Kerberos.
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB_CWWKS4349E.explanation=Fie principalul Kerberos specificat, fie fi\u015fierul tabel\u0103 de chei Kerberos implicit este invalid.
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB_CWWKS4349E.useraction=Asigura\u0163i-v\u0103 c\u0103 este specificat un fi\u015fier tabel\u0103 de chei Kerberos valid \u015fi c\u0103 acesta con\u0163ine un principal Kerberos valid.

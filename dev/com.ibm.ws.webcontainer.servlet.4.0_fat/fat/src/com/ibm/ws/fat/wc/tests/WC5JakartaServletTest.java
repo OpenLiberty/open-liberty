@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -79,6 +79,33 @@ public class WC5JakartaServletTest {
     public void testSimple_Servlet50() throws Exception {
         String expectedResponse = "END OF SNOOP 5. TEST PASS";
         String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + APP_NAME + "/snoop5";
+
+        LOG.info("url: " + url);
+        LOG.info("expectedResponse: " + expectedResponse);
+
+        HttpGet getMethod = new HttpGet(url);
+
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text:");
+                LOG.info("\n" + responseText);
+
+                assertTrue("The response did not contain the following String: " + expectedResponse, responseText.contains(expectedResponse));
+            }
+        }
+    }
+
+    /**
+     * 
+     * Ensure query param with no equals is registered as an empty string for servlet 5.0.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testNoEqualsQueryParameter() throws Exception {
+        String expectedResponse = "SUCCESS!";
+        String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + APP_NAME + "/query?test";
 
         LOG.info("url: " + url);
         LOG.info("expectedResponse: " + expectedResponse);

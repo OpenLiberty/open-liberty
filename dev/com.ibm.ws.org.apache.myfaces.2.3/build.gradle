@@ -17,7 +17,7 @@ configurations {
 }
 
 dependencies {
-    sourceJar 'org.apache.myfaces.core:myfaces-impl:2.3.8:sources'
+    sourceJar 'org.apache.myfaces.core:myfaces-impl:2.3.9:sources'
 }
 
 task copySource(type: Copy) {

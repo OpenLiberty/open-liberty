@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.fat.common;
 
@@ -143,9 +143,32 @@ public class Constants {
 
     /* Signature contants */
     public static final String SIGALG_NONE = "none";
-    public static final String SIGALG_RS256 = "RS256";
     public static final String SIGALG_HS256 = "HS256";
-    
+    public static final String SIGALG_HS384 = "HS384";
+    public static final String SIGALG_HS512 = "HS512";
+
+    public static final String SIGALG_RS256 = "RS256";
+    public static final String SIGALG_RS384 = "RS384";
+    public static final String SIGALG_RS512 = "RS512";
+
+    public static final String SIGALG_ES256 = "ES256";
+    public static final String SIGALG_ES384 = "ES384";
+    public static final String SIGALG_ES512 = "ES512";
+
+    public static final String SIGALG_PS256 = "PS256";
+    public static final String SIGALG_PS384 = "PS384";
+    public static final String SIGALG_PS512 = "PS512";
+
+    public static final String ENCRYPT_RS256 = "RS256";
+    public static final String ENCRYPT_RS384 = "RS384";
+    public static final String ENCRYPT_RS512 = "RS512";
+    public static final String[] ALL_TEST_SIGALGS = { SIGALG_HS256, SIGALG_HS384, SIGALG_HS512,
+            SIGALG_RS256, SIGALG_RS384, SIGALG_RS512,
+            SIGALG_ES256, SIGALG_ES384, SIGALG_ES512 };
+    public static final String[] ALL_TEST_HSSIGALGS = { SIGALG_HS256, SIGALG_HS384, SIGALG_HS512 };
+    public static final String[] ALL_TEST_RSSIGALGS = { SIGALG_RS256, SIGALG_RS384, SIGALG_RS512 };
+    public static final String[] ALL_TEST_ESSIGALGS = { SIGALG_ES256, SIGALG_ES384, SIGALG_ES512 };
+
     public static final String SUCCESSFUL_LOGOUT_MSG = "You have successfully logged out";
 
     public static final String SNOOP = "snoop";
@@ -190,7 +213,6 @@ public class Constants {
     public static final String RESPONSE_HEADER_CACHE_CONTROL = "Cache-Control";
     public static final String RESPONSE_HEADER_PRAGMA = "Pragma";
 
-    
     /* ****************** test apps ************************* */
     public static final String TESTMARKER_START_APP = "testmarker";
 

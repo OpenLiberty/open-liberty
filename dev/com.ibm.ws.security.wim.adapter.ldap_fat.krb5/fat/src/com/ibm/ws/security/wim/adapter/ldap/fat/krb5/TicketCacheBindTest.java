@@ -48,7 +48,7 @@ public class TicketCacheBindTest extends CommonBindTest {
 
     @BeforeClass
     public static void setStopMessages() {
-        stopStrings = new String[] { "CWIML4507E", "CWIML4513E", "CWIML4515E", "CWIML4520E", "CWIML4529E", "CWIML0004E", "CWWKE0701E", "CWWKS3005E" };
+        stopStrings = new String[] { "CWIML4507E", "CWIML4513E", "CWIML4515E", "CWIML4520E", "CWIML4529E", "CWIML0004E", "CWWKE0701E", "CWWKS3005E", "CWIML4512E" };
     }
 
     /**
@@ -186,7 +186,12 @@ public class TicketCacheBindTest extends CommonBindTest {
         Log.info(c, testName.getMethodName(), "Login expected to fail, config has a bad principalName");
         loginUserShouldFail();
 
-        assertFalse("Expected to find Kerberos bind failure: CWIML4507E", server.findStringsInLogsAndTraceUsingMark("CWIML4507E").isEmpty());
+        boolean foundBadPrincipalName = !server.findStringsInLogsAndTraceUsingMark("CWIML4512E").isEmpty();
+        boolean foundNoUser = !server.findStringsInLogsAndTraceUsingMark("CWIML4507E").isEmpty();
+
+        assertTrue("Expected to find Kerberos bind failure: Either `CWIML4512E` or `CWIML4507E`",
+                   foundBadPrincipalName || foundNoUser);
+
     }
 
     /**
@@ -254,7 +259,7 @@ public class TicketCacheBindTest extends CommonBindTest {
         newServer.getLdapRegistries().add(ldap);
         updateConfigDynamically(server, newServer);
 
-        bodySwapToKeytab(ldap, kerb);
+        bodySwapToKeytab(ldap, kerb, newServer);
     }
 
     /**
@@ -276,7 +281,7 @@ public class TicketCacheBindTest extends CommonBindTest {
         newServer.getLdapRegistries().add(ldap);
         updateConfigDynamically(server, newServer);
 
-        bodySwapToKeytab(ldap, kerb);
+        bodySwapToKeytab(ldap, kerb, newServer);
     }
 
     /**
@@ -286,21 +291,24 @@ public class TicketCacheBindTest extends CommonBindTest {
      * @param kerb
      * @throws Exception
      */
-    private void bodySwapToKeytab(LdapRegistry ldap, Kerberos kerb) throws Exception {
+    private void bodySwapToKeytab(LdapRegistry ldap, Kerberos kerb, ServerConfiguration newServer) throws Exception {
         loginUser();
 
         Log.info(c, testName.getMethodName(), "Add valid keytab, should be successful");
         kerb.keytab = keytabFile;
+        updateConfigDynamically(server, newServer);
 
         loginUser();
 
         Log.info(c, testName.getMethodName(), "Change the ticketCache to a bad config, login should be successful because we'll use the keytab");
         ldap.setKrb5TicketCache("badCache.cc");
+        updateConfigDynamically(server, newServer);
 
         loginUser();
 
         Log.info(c, testName.getMethodName(), "Remove the bad ticketCache, login should be successful because we'll use the keytab");
         ldap.setKrb5TicketCache(null);
+        updateConfigDynamically(server, newServer);
 
         loginUser();
     }

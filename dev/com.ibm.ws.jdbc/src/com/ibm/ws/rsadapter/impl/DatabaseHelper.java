@@ -53,7 +53,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.jca.adapter.WSConnectionManager;
 import com.ibm.ws.jca.cm.AbstractConnectionFactoryService;
-import com.ibm.ws.jdbc.heritage.GenericDataStoreHelper;
 import com.ibm.ws.resource.ResourceRefInfo;
 import com.ibm.ws.rsadapter.AdapterUtil;
 import com.ibm.ws.rsadapter.DSConfig;
@@ -192,12 +191,11 @@ public class DatabaseHelper {
     /**
      * Creates a legacy DataStoreHelper and populates or overrides some default values from it.
      *
-     * @return legacy DataStoreHelper.
      * @throws PrivilegedActionException if an error occurs.
      * @throws ResourceException if an error occurs.
      * @throws ClassNotFoundException if unable to load a data store helper class.
      */
-    GenericDataStoreHelper createDataStoreHelper() throws PrivilegedActionException, ResourceException, ClassNotFoundException {
+    final void createDataStoreHelper() throws PrivilegedActionException, ResourceException, ClassNotFoundException {
         DSConfig config = mcf.dsConfig.get();
         Properties helperProps = new Properties();
         Object value;
@@ -317,8 +315,6 @@ public class DatabaseHelper {
 
             return h;
         });
-
-        return (GenericDataStoreHelper) dataStoreHelper;
     }
 
     /**

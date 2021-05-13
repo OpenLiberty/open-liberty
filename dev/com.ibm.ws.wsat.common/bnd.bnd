@@ -10,7 +10,8 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 WS-TraceGroup: WSAT
 
 Import-Package: \
-  javax.xml.ws.*;version=!,\
+  javax.xml.ws.*;version="[2.2,3)", \
+  org.apache.cxf.*;version="[2.6.2,2.6.3)", \
   *
 
 Export-Package: \

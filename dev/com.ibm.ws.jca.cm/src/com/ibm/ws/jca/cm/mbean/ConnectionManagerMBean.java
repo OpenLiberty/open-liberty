@@ -21,12 +21,12 @@ import javax.management.MBeanException;
  *
  * <p>Important: the mbean instance is not available until the connection factory or data source is first used.</p>
  *
- * <p>The object name has the form <code>WebSphere:service=com.ibm.ws.jca.cm.mbean.ConnectionManagerMBean,*</code>
+ * <p>The object name has the form <code>WebSphere:type=com.ibm.ws.jca.cm.mbean.ConnectionManagerMBean,*</code>
  * where additional attributes can be included to narrow down the connection manager instance.</p>
  *
  * Object name examples:
  * <ul>
- * <li><code>WebSphere:service=com.ibm.ws.jca.cm.mbean.ConnectionManagerMBean,jndiName=jdbc/db2,*</code>
+ * <li><code>WebSphere:type=com.ibm.ws.jca.cm.mbean.ConnectionManagerMBean,jndiName=jdbc/db2,*</code>
  * <br>corresponds to a connection manager instance used by a data source with a server configuration-defined JNDI name. For example,
  * <code>
  * <br>&#60;dataSource jndiName="jdbc/db2">
@@ -35,7 +35,7 @@ import javax.management.MBeanException;
  * <br>&#60;/dataSource>
  * </code>
  * </li>
- * <li><code>WebSphere:service=com.ibm.ws.jca.cm.mbean.ConnectionManagerMBean,jndiName=eis/cf2,*</code>
+ * <li><code>WebSphere:type=com.ibm.ws.jca.cm.mbean.ConnectionManagerMBean,jndiName=eis/cf2,*</code>
  * <br>corresponds to a connection manager instance used by a connection factory with a server configuration-defined JNDI name. For example,
  * <code>
  * <br>&#60;connectionFactory jndiName="eis/cf2">
@@ -44,7 +44,7 @@ import javax.management.MBeanException;
  * <br>&#60;/connectionFactory>
  * </code>
  * </li>
- * <li><code>WebSphere:service=com.ibm.ws.jca.cm.mbean.ConnectionManagerMBean,name=jmsConnectionFactory[cf1]/connectionManager[default-0],*</code>
+ * <li><code>WebSphere:type=com.ibm.ws.jca.cm.mbean.ConnectionManagerMBean,name=jmsConnectionFactory[cf1]/connectionManager[default-0],*</code>
  * <br>corresponds to a connection manager instance explicitly configured in server configuration as a nested element. For example,
  * <code>
  * <br>&#60;jmsConnectionFactory id="cf1">
@@ -53,7 +53,7 @@ import javax.management.MBeanException;
  * <br>&#60;/jmsConnectionFactory>
  * </code>
  * </li>
- * <li><code>WebSphere:service=com.ibm.ws.jca.cm.mbean.ConnectionManagerMBean,name=databaseStore[dbstore1]/dataSource[default-0]/connectionManager[default-0],*</code>
+ * <li><code>WebSphere:type=com.ibm.ws.jca.cm.mbean.ConnectionManagerMBean,name=databaseStore[dbstore1]/dataSource[default-0]/connectionManager[default-0],*</code>
  * <br>corresponds to a connection manager instance explicitly configured in server configuration as a nested element. For example,
  * <code>
  * <br>&#60;databaseStore id="dbstore1">
@@ -64,7 +64,7 @@ import javax.management.MBeanException;
  * <br>&#60;/databaseStore>
  * </code>
  * </li>
- * <li><code>WebSphere:service=com.ibm.ws.jca.cm.mbean.ConnectionManagerMBean,name=dataSource[ds1]/connectionManager,*</code>
+ * <li><code>WebSphere:type=com.ibm.ws.jca.cm.mbean.ConnectionManagerMBean,name=dataSource[ds1]/connectionManager,*</code>
  * <br>corresponds to a connection manager instance implicit from configuration of dataSource in server configuration. For example,
  * <code>
  * <br>&#60;dataSource id="ds1">
@@ -72,11 +72,11 @@ import javax.management.MBeanException;
  * <br>&#60;/dataSource>
  * </code>
  * </li>
- * <li><code>WebSphere:service=com.ibm.ws.jca.cm.mbean.ConnectionManagerMBean,jndiName=java.comp/env/jdbc/ds3,application=MyApp,module=myweb,component=MyTestServlet,*</code>
+ * <li><code>WebSphere:type=com.ibm.ws.jca.cm.mbean.ConnectionManagerMBean,jndiName=java.comp/env/jdbc/ds3,application=MyApp,module=myweb,component=MyTestServlet,*</code>
  * <br>corresponds to a connection manager instance implicitly created for data source java:comp/env/jdbc/ds3, which is defined in MyTestServlet in web module myweb in application
  * MyApp. It should be noted that the : character from the JNDI name is replaced by the . character because : is not valid in an object name.
  * </li>
- * <li><code>WebSphere:service=com.ibm.ws.jca.cm.mbean.ConnectionManagerMBean,jndiName=java.app/env/jdbc/ds4,application=MyApp,*</code>
+ * <li><code>WebSphere:type=com.ibm.ws.jca.cm.mbean.ConnectionManagerMBean,jndiName=java.app/env/jdbc/ds4,application=MyApp,*</code>
  * <br>corresponds to a connection manager instance implicitly created for data source java:app/env/jdbc/ds4, which is defined in application MyApp.
  * It should be noted that the : character from the JNDI name is replaced by the . character because : is not valid in an object name.
  * </li>

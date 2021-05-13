@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2020 IBM Corporation and others.
+# Copyright (c) 2009, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -131,6 +131,12 @@ session.invalidatedbyTimeout.total.description=Nombre de sessions d\u00e9connect
 
 REST.request.description=Nombre d'appels et temps de r\u00e9ponse total de cette m\u00e9thode de ressource RESTful depuis le d\u00e9marrage du serveur. La m\u00e9trique n'enregistre pas le temps \u00e9coul\u00e9 ni le comptage d'une demande REST si celle-ci a g\u00e9n\u00e9r\u00e9 une exception non mapp\u00e9e. Elle effectue le suivi de la dur\u00e9e la plus longue enregistr\u00e9e et de la dur\u00e9e la plus courte enregistr\u00e9e au cours de la minute compl\u00e8te pr\u00e9c\u00e9dente.
 REST.request.unmappedException.description=Nombre total d'exceptions non mapp\u00e9es \u00e9mises par cette m\u00e9thode de ressource RESTful depuis le d\u00e9marrage du serveur.
+
+
+requestTiming.requestCount.description=Nombre de demandes de servlet depuis que le serveur a d\u00e9marr\u00e9.
+requestTiming.activeRequestCount.description=Nombre de demandes de servlet en cours d'ex\u00e9cution.
+requestTiming.slowRequestCount.description=Nombre de demandes de servlet en cours d'ex\u00e9cution mais qui sont lentes.
+requestTiming.hungRequestCount.description=Nombre de demandes de servlet en cours d'ex\u00e9cution mais qui sont bloqu\u00e9es.
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message
 #-----------------------------------------------------------------------------------------------------------------------------

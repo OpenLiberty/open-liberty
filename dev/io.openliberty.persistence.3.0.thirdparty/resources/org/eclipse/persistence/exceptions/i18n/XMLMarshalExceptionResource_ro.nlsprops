@@ -67,9 +67,9 @@
 
 25021=Clasa {0} invalid\u0103 pentru SwaRef. Trebuie s\u0103 fie javax.activation.DataHandler.
 
-25022=Nu se poate marshal Imaginea. Nu este nici un encoder disponibil pentru mimeType {0}.
+25022=Nu se poate realiza marshal pentru Imagine. Nu este disponibil niciun codor pentru mimeType {0}.
 
-25023=Nu a fost g\u0103sit un descriptor \u00een timpul unmarshalling elementului mapat la atributul {0}.
+25023=Nu a fost g\u0103sit un descriptor \u00een timp ce se realiza unmarshalling pentru elementul mapat la atributul {0}.
 
 25024=A survenit o eroare la instan\u0163ierea clasei UnmappedContentHandler {0}.
 

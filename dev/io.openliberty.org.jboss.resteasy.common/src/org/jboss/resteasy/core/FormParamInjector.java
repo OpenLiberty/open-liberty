@@ -47,21 +47,22 @@ import java.util.List;
 public class FormParamInjector extends StringParameterInjector implements ValueInjector
 {
    private boolean encode;
-   private final ResteasyProviderFactory factory;
-   private final Annotation[] annotations;
+   private final ResteasyProviderFactory factory; // Liberty change
+   private final Annotation[] annotations; // Liberty change
 
    public FormParamInjector(final Class type, final Type genericType, final AccessibleObject target, final String header, final String defaultValue, final boolean encode, final Annotation[] annotations, final ResteasyProviderFactory factory)
    {
       super(type, genericType, header, FormParam.class, defaultValue, target, annotations, factory);
       this.encode = encode;
-      this.factory = factory;
-      this.annotations = annotations;
+      this.factory = factory; //Liberty change
+      this.annotations = annotations; //Liberty change
    }
 
    @SuppressWarnings({ "unchecked", "rawtypes", "serial" })
    @Override
    public Object inject(HttpRequest request, HttpResponse response, boolean unwrapAsync)
    {
+	  // Liberty change start
       MultivaluedMap<String, String> formParams = request.getFormParameters(); 
       MultivaluedMap<String, String> decodedFormParams = request.getDecodedFormParameters();
       MediaType mediaType = request.getHttpHeaders().getMediaType();
@@ -81,6 +82,7 @@ public class FormParamInjector extends StringParameterInjector implements ValueI
           }
       }
       List<String> list = decodedFormParams.get(paramName);
+      // Liberty change end
       if (list != null && encode)
       {
          List<String> encodedList = new ArrayList<String>();

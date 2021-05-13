@@ -99,7 +99,7 @@ cant_refresh_not_managed_object=Nie mo\u017cna od\u015bwie\u017cy\u0107 obiektu 
 
 create_insertion_failed=Wstawienie utworzenia nie powiod\u0142o si\u0119.
 
-criteria_no_constructor_found=Wyst\u0105pi\u0142 wyj\u0105tek podczas wyszukiwania konstruktora w klasie {0} przy u\u017cyciu typ\u00f3w kryteri\u00f3w wyboru jako argument\u00f3w. Je\u015bli ten interfejs CriteriaQuery nie mia\u0142 by\u0107 zapytaniem o konstruktor, upewnij si\u0119, \u017ce wyb\u00f3r jest zgodny z typem zwracanym.
+criteria_no_constructor_found=Wyst\u0105pi\u0142 wyj\u0105tek podczas wyszukiwania konstruktora w klasie {0} przy u\u017cyciu typ\u00f3w kryteri\u00f3w wyboru jako argument\u00f3w.  Je\u015bli ten interfejs CriteriaQuery nie mia\u0142 by\u0107 zapytaniem o konstruktor, upewnij si\u0119, \u017ce wyb\u00f3r jest zgodny z typem zwracanym.
 
 directory_not_exist=Katalog {0} nie istnieje.
 

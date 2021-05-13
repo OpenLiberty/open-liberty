@@ -15,3 +15,5 @@
 -Dhttps.proxyPort=34567
 -Dhttps.proxyHost=1.2.3.4
 
+# beta fence for additional sigalg & encryption testing
+#-Dcom.ibm.ws.beta.edition=true

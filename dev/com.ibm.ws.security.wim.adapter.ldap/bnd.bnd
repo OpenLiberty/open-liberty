@@ -56,8 +56,7 @@ instrument.classesExcludes: com/ibm/ws/security/wim/adapter/ldap/resources/*.cla
 	com.ibm.wsspi.org.osgi.service.metatype.annotations;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
 	com.ibm.ws.security.kerberos.auth;version=latest, \
-	com.ibm.ws.security;version=latest,\
-	com.ibm.ws.kernel.boot.core;version=latest
+	com.ibm.ws.security;version=latest
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
 	com.ibm.ws.junit.extensions;version=latest, \

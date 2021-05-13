@@ -18,9 +18,7 @@ Bundle-SymbolicName: io.openliberty.io.netty
 Bundle-Description: Netty as an OSGi bundle for OpenLiberty, version ${bVersion}
 
 Import-Package: \
-  !com.google.protobuf.nano,\
-  !com.google.code.gson,\
-  !org.checkerframework,\
+  !com.google.protobuf*, \
   !com.jcraft.jzlib,\
   !com.ning.*,\
   !com.oracle.svm.core.annotate,\
@@ -29,14 +27,16 @@ Import-Package: \
   !net.jpountz.*,\
   !org.apache.log4j.*,\
   !org.apache.logging.*,\
+  !org.apache.commons.logging,\
   !org.bouncycastle.*,\
   !org.conscrypt,\
   !org.eclipse.jetty.*,\
   !org.jboss.*,\
+  !org.slf4j*,\
   !reactor.blockhound.*,\
   !sun.*,\
-  javax.annotation;version=!,\
   *
+
 
 Export-Package: \
   !io.netty.handler.ssl.*,\

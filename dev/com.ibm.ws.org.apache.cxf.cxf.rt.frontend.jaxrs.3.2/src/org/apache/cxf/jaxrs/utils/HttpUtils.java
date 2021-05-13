@@ -89,19 +89,19 @@ public final class HttpUtils {
 
     private static final Pattern ENCODE_PATTERN = Pattern.compile("%[0-9a-fA-F][0-9a-fA-F]");
     private static final String CHARSET_PARAMETER = "charset";
-
     private static final String DOUBLE_QUOTE = "\"";
 
     // there are more of such characters, ex, '*' but '*' is not affected by UrlEncode
     private static final String PATH_RESERVED_CHARACTERS = "=@/:!$&\'(),;~";
     private static final String QUERY_RESERVED_CHARACTERS = "?/,";
-
+    
     private static final Set<String> KNOWN_HTTP_VERBS_WITH_NO_REQUEST_CONTENT =
         new HashSet<>(Arrays.asList(new String[]{"GET", "HEAD", "OPTIONS", "TRACE"}));
     private static final Set<String> KNOWN_HTTP_VERBS_WITH_NO_RESPONSE_CONTENT =
         new HashSet<>(Arrays.asList(new String[]{"HEAD", "OPTIONS"}));
 
-    private HttpUtils() {}
+    private HttpUtils() {
+    }
 
     public static String urlDecode(String value, String enc) {
         return UrlUtils.urlDecode(value, enc);
@@ -233,18 +233,18 @@ public final class HttpUtils {
 
     @SuppressWarnings("unchecked")
     public static HeaderDelegate<Object> getHeaderDelegate(RuntimeDelegate rd, Object o) {
-        return rd == null ? null : (HeaderDelegate<Object>) rd.createHeaderDelegate(o.getClass());
+        return rd == null ? null : (HeaderDelegate<Object>)rd.createHeaderDelegate(o.getClass());
     }
 
     @SuppressWarnings("unchecked")
     public static <T> MultivaluedMap<String, T> getModifiableStringHeaders(Message m) {
         MultivaluedMap<String, Object> headers = getModifiableHeaders(m);
         convertHeaderValuesToString(headers, false);
-        return (MultivaluedMap<String, T>) headers;
+        return (MultivaluedMap<String, T>)headers;
     }
 
     public static MultivaluedMap<String, Object> getModifiableHeaders(Message m) {
-        Map<String, List<Object>> headers = CastUtils.cast((Map<?, ?>) m.get(Message.PROTOCOL_HEADERS));
+        Map<String, List<Object>> headers = CastUtils.cast((Map<?, ?>)m.get(Message.PROTOCOL_HEADERS));
         return new MetadataMap<String, Object>(headers, false, false, true);
     }
 
@@ -348,7 +348,7 @@ public final class HttpUtils {
             }
             sb.append(value);
             if (i + 1 < values.size()) {
-                sb.append(",");
+                sb.append(',');
             }
         }
         return sb.toString();
@@ -368,12 +368,13 @@ public final class HttpUtils {
 
     public static URI toAbsoluteUri(String relativePath, Message message) {
         String base = BaseUrlHelper.getBaseURL(
-                                               (HttpServletRequest) message.get(AbstractHTTPDestination.HTTP_REQUEST));
+            (HttpServletRequest)message.get(AbstractHTTPDestination.HTTP_REQUEST));
         return URI.create(base + relativePath);
     }
 
     public static URI toAbsoluteUri(URI u, Message message) {
-        HttpServletRequest request = (HttpServletRequest) message.get(AbstractHTTPDestination.HTTP_REQUEST);
+        HttpServletRequest request =
+            (HttpServletRequest)message.get(AbstractHTTPDestination.HTTP_REQUEST);
         boolean absolute = u.isAbsolute();
         StringBuilder uriBuf = new StringBuilder();
         if (request != null && (!absolute || isLocalHostOrAnyIpAddress(u, uriBuf, message))) {
@@ -390,6 +391,7 @@ public final class HttpUtils {
                 }
             }
 
+
             int port = localAddressUsed ? request.getLocalPort() : request.getServerPort();
             if (port != DEFAULT_HTTP_PORT) {
                 serverAndPort += ":" + port;
@@ -399,7 +401,8 @@ public final class HttpUtils {
                 u = URI.create(base + u.toString());
             } else {
                 int originalPort = u.getPort();
-                String hostValue = uriBuf.toString().contains(ANY_IP_ADDRESS_SCHEME) ? ANY_IP_ADDRESS : LOCAL_HOST_IP_ADDRESS;
+                String hostValue = uriBuf.toString().contains(ANY_IP_ADDRESS_SCHEME)
+                    ? ANY_IP_ADDRESS : LOCAL_HOST_IP_ADDRESS;
                 String replaceValue = originalPort == -1 ? hostValue : hostValue + ":" + originalPort;
                 u = URI.create(u.toString().replace(replaceValue, serverAndPort));
             }
@@ -410,7 +413,7 @@ public final class HttpUtils {
     private static boolean isLocalHostOrAnyIpAddress(URI u, StringBuilder uriStringBuffer, Message m) {
         String uriString = u.toString();
         boolean result = uriString.contains(LOCAL_HOST_IP_ADDRESS_SCHEME) && replaceLoopBackAddress(m)
-                         || uriString.contains(ANY_IP_ADDRESS_SCHEME);
+            || uriString.contains(ANY_IP_ADDRESS_SCHEME);
         uriStringBuffer.append(uriString);
         return result;
     }
@@ -426,9 +429,10 @@ public final class HttpUtils {
         m.put(Message.REQUEST_URI, requestURI);
     }
 
+
     public static String getPathToMatch(Message m, boolean addSlash) {
         String var = addSlash ? REQUEST_PATH_TO_MATCH_SLASH : REQUEST_PATH_TO_MATCH;
-        String pathToMatch = (String) m.get(var);
+        String pathToMatch = (String)m.get(var);
         if (pathToMatch != null) {
             return pathToMatch;
         }
@@ -451,7 +455,7 @@ public final class HttpUtils {
     }
 
     public static String getProtocolHeader(Message m, String name, String defaultValue, boolean setOnMessage) {
-        String value = (String) m.get(name);
+        String value = (String)m.get(name);
         if (value == null) {
             value = new HttpHeadersImpl(m).getRequestHeaders().getFirst(name);
             if (value != null && setOnMessage) {
@@ -602,7 +606,7 @@ public final class HttpUtils {
             ind = 0;
         }
         if (ind == 0) {
-            path = path.substring(ind + address.length());
+            path = path.substring(address.length());
         }
         if (addSlash && !path.startsWith("/")) {
             path = "/" + path;

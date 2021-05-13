@@ -8,18 +8,18 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.apache.cxf:cxf-rt-frontend-jaxrs;3.4.1.20201006}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;${repo;org.apache.cxf:cxf-rt-frontend-jaxrs;3.4.3}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 
 -includeresource: \
-   @${repo;org.apache.cxf:cxf-rt-frontend-jaxrs;3.4.1.20201006;EXACT}!/!META-INF/*,\
+   @${repo;org.apache.cxf:cxf-rt-frontend-jaxrs;3.4.3;EXACT}!/!META-INF/*,\
    com/ibm/ws=${bin}/com/ibm/ws,\
    org/apache/cxf=${bin}/org/apache/cxf
 
 -buildpath: \
   com.ibm.websphere.javaee.annotation.1.2;version=latest,\
   com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
-  org.apache.cxf:cxf-rt-frontend-jaxrs;strategy=exact;version=3.4.1.20201006,\
+  org.apache.cxf:cxf-rt-frontend-jaxrs;strategy=exact;version=3.4.3,\
   com.ibm.websphere.javaee.jaxrs.2.1;version=latest,\
   com.ibm.websphere.javaee.jsonb.1.0,\
   com.ibm.websphere.javaee.jsonp.1.1,\
@@ -31,7 +31,6 @@
   com.ibm.ws.container.service;version=latest,\
   com.ibm.ws.injection.core,\
   com.ibm.ws.javaee.dd.common;version=latest,\
-  com.ibm.ws.kernel.boot.core;version=latest,\
   com.ibm.ws.kernel.service,\
   com.ibm.ws.logging.core,\
   com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\

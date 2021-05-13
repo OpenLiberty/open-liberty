@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CancellationException;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -135,7 +136,14 @@ public class JAXRSInvoker extends AbstractInvoker {
     private Object handleAsyncResponse(Exchange exchange, AsyncResponseImpl ar) {
         Object asyncObj = ar.getResponseObject();
         if (asyncObj instanceof Throwable) {
-            return handleAsyncFault(exchange, ar, (Throwable)asyncObj);
+            final Throwable throwable = (Throwable)asyncObj;
+            Throwable cause = throwable;
+
+            if (throwable instanceof CompletionException) {
+                cause = throwable.getCause();
+            }
+
+            return handleAsyncFault(exchange, ar, (cause != null) ? cause : throwable);
         }
         setResponseContentTypeIfNeeded(exchange.getInMessage(), asyncObj);
         return new MessageContentsList(asyncObj);
@@ -272,6 +280,7 @@ public class JAXRSInvoker extends AbstractInvoker {
                                                          acceptContentType);
                 exchange.put(OperationResourceInfo.class, subOri);
                 inMessage.put(URITemplate.TEMPLATE_PARAMETERS, values);
+                inMessage.put(URITemplate.URI_TEMPLATE, JAXRSUtils.getUriTemplate(inMessage, subCri, ori, subOri));
 
                 if (!subOri.isSubResourceLocator()
                     && JAXRSUtils.runContainerRequestFilters(providerFactory,

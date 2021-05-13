@@ -14,8 +14,7 @@ Subsystem-Name: Password Utilities 1.0
  io.openliberty.passwordUtilities1.0.internal.ee-6.0; ibm.tolerates:="9.0"
 -jars=\
  com.ibm.websphere.appserver.api.passwordUtil; location:=dev/api/ibm/, \
- com.ibm.websphere.appserver.api.authData; location:=dev/api/ibm/, \
- io.openliberty.authData; location:=dev/api/ibm/
+ com.ibm.websphere.appserver.api.authData; location:=dev/api/ibm/
 -files=\
  dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.passwordUtil_1.0-javadoc.zip
 kind=ga

@@ -2413,9 +2413,8 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                                 && ((com.ibm.ejs.j2c.MCWrapper) mcwl[j]).abortMC()) {
                                 // The MCW aborted the connection sucessfully
                             } else {
-                                //Use getManagedConnectionWithoutStateCheck since we do not intend to use the connection.
-                                if (mcwl[j].getManagedConnectionWithoutStateCheck() instanceof WSManagedConnection) {
-                                    ((WSManagedConnection) mcwl[j].getManagedConnectionWithoutStateCheck()).markStale();
+                                if (mcwl[j].getManagedConnection() instanceof WSManagedConnection) {
+                                    ((WSManagedConnection) mcwl[j].getManagedConnection()).markStale();
                                 }
                                 this.totalConnectionCount.decrementAndGet();
                             }

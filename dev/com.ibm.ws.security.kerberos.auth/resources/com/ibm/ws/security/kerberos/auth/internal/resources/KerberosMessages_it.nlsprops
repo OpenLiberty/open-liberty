@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2020, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -25,3 +25,15 @@ KRB5_FILE_NOT_FOUND_CWWKS4345E.useraction=Assicurarsi che la configurazione punt
 KRB5_FILE_FOUND_CWWKS4346I=CWWKS4346I: Il componente Kerberos \u00e8 configurato per utilizzare un file {0} ubicato in {1}
 KRB5_FILE_FOUND_CWWKS4346I.explanation=Il file configurato \u00e8 stato individuato correttamente.
 KRB5_FILE_FOUND_CWWKS4346I.useraction=Nessuna azione richiesta.
+
+KRB5_LOGIN_FAILED_CACHE_CWWKS4347E=CWWKS4347E: Login Kerberos non riuscito con il principal Kerberos {0} e la cache delle credenziali Kerberos (ccache) {1}. Non \u00e8 stato trovato un ticket Kerberos.
+KRB5_LOGIN_FAILED_CACHE_CWWKS4347E.explanation=Il principal Kerberos specificato non \u00e8 valido oppure la cache delle credenziali Kerberos (ccache) non \u00e8 valida o \u00e8 scaduta.
+KRB5_LOGIN_FAILED_CACHE_CWWKS4347E.useraction=Assicurarsi che sia specificato un principal Kerberos valido e che la cache delle credenziali (ccache) Kerberos sia valida e non scaduta.
+
+KRB5_LOGIN_FAILED_KEYTAB_CWWKS4348E=CWWKS4348E: Il login Kerberos non \u00e8 riuscito con il principal Kerberos {0} e il file keytab Kerberos {1}. Non \u00e8 stato trovato un ticket Kerberos.
+KRB5_LOGIN_FAILED_KEYTAB_CWWKS4348E.explanation=Il principal Kerberos specificato o il file keytab Kerberos non \u00e8 valido.
+KRB5_LOGIN_FAILED_KEYTAB_CWWKS4348E.useraction=Assicurarsi che sia specificato un file keytab Kerberos valido e che contenga un principal Kerberos valido.
+		
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB_CWWKS4349E=CWWKS4349E: Login Kerberos non riuscito con il principal Kerberos {0} e il file keytab Kerberos predefinito. Non \u00e8 stato trovato un ticket Kerberos.
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB_CWWKS4349E.explanation=Il principal Kerberos specificato o il file keytab Kerberos predefinito non \u00e8 valido.
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB_CWWKS4349E.useraction=Assicurarsi che sia specificato un file keytab Kerberos valido e che contenga un principal Kerberos valido.

@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2020 IBM Corporation and others.
+# Copyright (c) 2009, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -131,6 +131,12 @@ session.invalidatedbyTimeout.total.description=\uc774 \uba54\ud2b8\ub9ad\uc774 \
 
 REST.request.description=\uc11c\ubc84\uac00 \uc2dc\uc791\ub41c \uc774\ud6c4 \uc774 RESTful \uc790\uc6d0 \uba54\uc18c\ub4dc\uc5d0 \ub300\ud55c \ud638\ucd9c \ud69f\uc218 \ubc0f \ucd1d \uc751\ub2f5 \uc2dc\uac04\uc785\ub2c8\ub2e4. \ub9f5\ud551\ub418\uc9c0 \uc54a\uc740 \uc608\uc678\uac00 \uacb0\uacfc\ub85c \uc0b0\ucd9c\ub41c \uacbd\uc6b0 \uba54\ud2b8\ub9ad\uc740 REST \uc694\uccad\uc758 \uc218 \ub610\ub294 \uacbd\uacfc \uc2dc\uac04\uc744 \uae30\ub85d\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \ub610\ud55c \uc774\uc804\uc758 \uc644\ub8cc\ub41c \uc804\uccb4 \uc2dc\uac04(\ubd84) \ub0b4\uc758 \ucd5c\uc0c1\uc704 \uae30\ub85d\ub41c \uc9c0\uc18d \uc2dc\uac04 \ubc0f \uc774\uc804\uc758 \uc644\ub8cc\ub41c \uc804\uccb4 \uc2dc\uac04(\ubd84) \ub0b4\uc758 \ucd5c\ud558\uc704 \uae30\ub85d\ub41c \uc9c0\uc18d \uc2dc\uac04\uc744 \ucd94\uc801\ud569\ub2c8\ub2e4.
 REST.request.unmappedException.description=\uc11c\ubc84\uac00 \uc2dc\uc791\ub41c \uc774\ud6c4 \uc774 RESTful \uc790\uc6d0 \uba54\uc18c\ub4dc\uc5d0\uc11c \ubc1c\uc0dd\ud55c \ub9f5\ud551\ub418\uc9c0 \uc54a\uc740 \uc608\uc678\uc758 \ucd1d \uc218\uc785\ub2c8\ub2e4.
+
+
+requestTiming.requestCount.description=\uc11c\ubc84\uac00 \uc2dc\uc791\ub41c \ud6c4 \uc11c\ube14\ub9bf \uc694\uccad \uc218\uc785\ub2c8\ub2e4.
+requestTiming.activeRequestCount.description=\ud604\uc7ac \uc2e4\ud589 \uc911\uc778 \uc11c\ube14\ub9bf \uc694\uccad \uc218\uc785\ub2c8\ub2e4.
+requestTiming.slowRequestCount.description=\ud604\uc7ac \uc2e4\ud589 \uc911\uc774\uc9c0\ub9cc \ub290\ub9b0 \uc11c\ube14\ub9bf \uc694\uccad \uc218\uc785\ub2c8\ub2e4.
+requestTiming.hungRequestCount.description=\ud604\uc7ac \uc2e4\ud589 \uc911\uc774\uc9c0\ub9cc \uc815\uc9c0\ub41c \uc11c\ube14\ub9bf \uc694\uccad \uc218\uc785\ub2c8\ub2e4.
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message
 #-----------------------------------------------------------------------------------------------------------------------------

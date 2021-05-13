@@ -1,2 +1,1 @@
-# TODO: Delete this file when moving to GA
--Dcom.ibm.ws.beta.edition=true
+-Dorg.jboss.resteasy.plugins.providers.multipart.memoryThreshold=2048

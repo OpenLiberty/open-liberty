@@ -77,7 +77,8 @@ public class CapturedOutputHolder extends BaseTraceService {
         PrintStream trSysErr = systemErr.getOriginalStream();
 
         if (sysOut != trSysOut) {
-            throw new ConcurrentModificationException("Someone else has reset or cached System.out");
+            throw new ConcurrentModificationException("Someone else has reset or cached System.out. Current System.out value: " + System.out + " and current original stream: "
+                                                      + systemOut.getOriginalStream());
         }
         if (sysErr != trSysErr) {
             throw new ConcurrentModificationException("Someone else has reset or cached System.err");
@@ -184,8 +185,8 @@ public class CapturedOutputHolder extends BaseTraceService {
      * If there is an exception writing to the stream, return null to disable subsequent
      * writes.
      *
-     * @param holder LogHolder : system err or system out
-     * @param txt Text to be logged
+     * @param holder         LogHolder : system err or system out
+     * @param txt            Text to be logged
      * @param capturedStream stream holding captured data
      * @return capturedStream if all is well, null if an exception occurred writing to the stream
      */

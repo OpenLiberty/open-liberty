@@ -32,6 +32,7 @@ import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -70,7 +71,25 @@ public class RequestTimingMetricsTest {
         ShrinkHelper.defaultDropinApp(server, "RequestTimingWebApp", "com.ibm.ws.request.timing.app");
         totalRequestCount = new AtomicInteger();
         activeServletRequest = 1;
+
+        JavaInfo java = JavaInfo.forCurrentVM();
+        int javaMajorVersion = java.majorVersion();
+        if (javaMajorVersion != 8) {
+            Log.info(c, "setUp", " Java version = " + javaMajorVersion + " - It is higher than 8, adding --add-exports...");
+            server.copyFileToLibertyServerRoot("add-exports/jvm.options");
+        }
+
         server.startServer();
+
+        //Wait until server has started
+        String logMsg = server.waitForStringInLogUsingMark("CWWKF0011I");
+
+        Log.info(c, "setUp", logMsg);
+        Assert.assertNotNull("No CWWKF0011I was found.", logMsg);
+
+        //Validate that we have registered the RequestTiming MBean
+        Assert.assertNotNull("RequestTiming Mbean not registered",
+                             server.waitForStringInTraceUsingMark("Monitoring MXBean WebSphere:type=RequestTimingStats"));
     }
 
     /**
@@ -95,20 +114,6 @@ public class RequestTimingMetricsTest {
     public void testBasic() throws Exception {
         String testName = "testBasic";
         Log.info(c, testName, "Entry");
-
-        //Metrics Monitor Bundle has started - using default timeout
-        String logMsg = server.waitForStringInLogUsingMark("CWPMI2003I");
-        Log.info(c, testName, logMsg);
-        Assert.assertNotNull("No CWPMI2003I was found.", logMsg);
-
-        //Wait until server has started
-        logMsg = server.waitForStringInLogUsingMark("CWWKF0011I");
-        Log.info(c, testName, logMsg);
-        Assert.assertNotNull("No CWWKF0011I was found.", logMsg);
-
-        //Validate that we have registered the RequestTiming MBean
-        Assert.assertNotNull("RequestTiming Mbean not registered",
-                             server.waitForStringInTraceUsingMark("Monitoring MXBean WebSphere:type=RequestTimingStats"));
 
         /*
          * The call to /metrics counts as an active request. And the total is 1.

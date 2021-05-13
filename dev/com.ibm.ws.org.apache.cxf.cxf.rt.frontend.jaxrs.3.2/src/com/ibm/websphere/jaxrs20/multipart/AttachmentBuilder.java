@@ -22,7 +22,6 @@ import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 
 
 import com.ibm.ws.jaxrs20.multipart.impl.AttachmentImpl;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 /**
  * The {@code AttachmentBuilder} class is used to create instances of {@link IAttachment} for sending
@@ -82,11 +81,7 @@ public class AttachmentBuilder {
      * @return this builder
      * @throws IllegalArgumentException if the {@code fieldName} is {@code null}
      */
-    @Deprecated //TODO: remove for GA
     public static AttachmentBuilder newBuilder(String fieldName) {
-        if (!ProductInfo.getBetaEdition()) {
-            throw new UnsupportedOperationException("AttachmentBuilder API is currently only available in Beta");
-        }
         if (fieldName == null) {
             throw new IllegalArgumentException("fieldName must be non-null");
         }

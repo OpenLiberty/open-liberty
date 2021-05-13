@@ -10,7 +10,7 @@
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/rejar.props
 bVersion=1.0
-cxfVersion=3.4.1
+cxfVersion=3.4.3
 
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.3.2
 
@@ -61,6 +61,7 @@ Import-Package: \
   org.apache.cxf.common.i18n;version="[3.2.4,4.0)", \
   org.apache.cxf.common.injection;version="[3.2.4,4.0)", \
   org.apache.cxf.common.logging;version="[3.2.4,4.0)", \
+  org.apache.cxf.common.spi;version="[3.2.4,4.0)", \
   org.apache.cxf.common.util;version="[3.2.4,4.0)", \
   org.apache.cxf.common.xmlschema;version="[3.2.4,4.0)", \
   org.apache.cxf.configuration;version="[3.2.4,4.0)", \
@@ -92,4 +93,4 @@ Import-Package: \
   *
 
 Export-Package: \
-  org.apache.cxf.binding.soap.*;version=3.4.1;-split-package:=merge-last
+  org.apache.cxf.binding.soap.*;version=3.4.3;-split-package:=merge-last

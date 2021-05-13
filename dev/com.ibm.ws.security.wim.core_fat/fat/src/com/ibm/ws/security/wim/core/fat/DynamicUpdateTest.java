@@ -98,7 +98,7 @@ public class DynamicUpdateTest {
         Log.info(c, "tearDown", "Stopping the server...");
 
         try {
-            server.stopServer("CWIML1018E", "CWIML4538E");
+            server.stopServer("CWIML1018E", "CWIML4538E", "CWWKG0027W");
         } finally {
             server.removeInstalledAppForValidation("userRegistry");
             server.deleteFileFromLibertyInstallRoot("lib/features/internalfeatures/securitylibertyinternals-1.0.mf");

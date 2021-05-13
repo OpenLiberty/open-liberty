@@ -209,9 +209,9 @@ extra_ejb_select=Un objet ejbSelect abstrait est d\u00e9fini dans la classe de b
 
 extra_finder=Un outil de recherche est d\u00e9fini dans la ou les interfaces [{0}] mais l''outil de recherche correspondant [{1}{2}] n''est pas d\u00e9clar\u00e9 dans ejb-jar.xml.
 
-failed_command_propagation=Erreur : \u00c9chec de la tentative de propagation de la commande \u00e0 {0}; raison : {1}
+failed_command_propagation=Erreur : Echec de la tentative de propagation de la commande \u00e0 {0}; raison : {1}
 
-failed_to_find_mbean_server=\u00c9chec de localisation du serveur MBean : {0}
+failed_to_find_mbean_server=Echec de localisation du serveur MBean : {0}
 
 failed_to_propogate_to=CacheSynchronization : Echec de propagation {0}.  {1}
 
@@ -267,7 +267,7 @@ jaxb_metadata_warning_invalid_type_level_xml_java_type_adapter=Un objet XmlJavaT
 
 jaxb_metadata_warning_no_classes_to_process=Il n''y a pas de classe \u00e0 traiter pour le package [{0}].
 
-jmx_mbean_runtime_services_failed_toget_initial_context=\u00c9chec d''obtention de InitialContext pour l''enregistrement MBean : {0}
+jmx_mbean_runtime_services_failed_toget_initial_context=Echec d''obtention de InitialContext pour l''enregistrement MBean : {0}
 
 jmx_mbean_runtime_services_get_executethreadruntime_object_failed=La version de WebLogic ne prend pas en charge executeThreadRuntime - utilisation de ClassLoader : {0}
 
@@ -281,7 +281,7 @@ jmx_mbean_runtime_services_identity_map_invalidated=La mappe d''identit\u00e9 [{
 
 jmx_mbean_runtime_services_identity_map_non_existent=La mappe d''identit\u00e9 [{0}] n''existe pas.
 
-jmx_mbean_runtime_services_mbeanserver_lookup_failed=\u00c9chec d''obtention de InitialContext pour l''enregistrement MBean : {0}
+jmx_mbean_runtime_services_mbeanserver_lookup_failed=Echec d''obtention de InitialContext pour l''enregistrement MBean : {0}
 
 jmx_mbean_runtime_services_no_classes_in_session=Aucune classe dans la session.
 
@@ -551,7 +551,7 @@ metamodel_type_collection_empty=La collection des types de m\u00e9tamod\u00e8le 
 
 metamodel_type_collection_empty_during_lookup=La collection de types de m\u00e9tamod\u00e8le [{1}] est vide. Les classe de mod\u00e8le n''ont peut-\u00eatre pas \u00e9t\u00e9 d\u00e9tect\u00e9es lors de la recherche l''entit\u00e9 pour Java SE et certaines unit\u00e9s de persistance g\u00e9r\u00e9es par conteneur Java EE.  V\u00e9rifiez que vos classes d''entit\u00e9 sont r\u00e9f\u00e9renc\u00e9es dans persistence.xml \u00e0 l''aide d''\u00e9l\u00e9ments <class> ou d''un \u00e9l\u00e9ment <exclude-unlisted-classes>false</exclude-unlisted-classes> global.  La recherche sur [{0}] retournera null.
 
-migration_failed=\u00c9chec de la migration.
+migration_failed=Echec de la migration.
 
 migration_input_dir_not_valid=Le r\u00e9pertoire d''entr\u00e9e ({0}) que vous avez d\u00e9fini n''est pas valide
 

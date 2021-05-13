@@ -106,9 +106,6 @@ public class HDDataStoreHelper extends GenericDataStoreHelper {
     @Override
     public boolean doConnectionCleanupPerCloseConnection(Connection con, boolean isCMP, Object unused) throws SQLException {
         ((HDConnection) con).cleanupCount.incrementAndGet();
-        try (CallableStatement stmt = con.prepareCall("CALL SYSCS_UTIL.SYSCS_SET_STATISTICS_TIMING(0)")) {
-            stmt.execute();
-        }
         return true;
     }
 
@@ -125,9 +122,6 @@ public class HDDataStoreHelper extends GenericDataStoreHelper {
     @Override
     public boolean doConnectionSetupPerGetConnection(Connection con, boolean isCMP, Object props) throws SQLException {
         ((HDConnection) con).setupCount.incrementAndGet();
-        try (CallableStatement stmt = con.prepareCall("CALL SYSCS_UTIL.SYSCS_SET_STATISTICS_TIMING(1)")) {
-            stmt.execute();
-        }
         return true;
     }
 

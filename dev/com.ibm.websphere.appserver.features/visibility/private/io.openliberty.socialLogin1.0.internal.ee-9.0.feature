@@ -6,7 +6,7 @@ visibility = private
   com.ibm.websphere.appserver.servlet-5.0, \
   io.openliberty.jsonp-2.0
 -bundles=\
-  io.openliberty.security.social,\
+  io.openliberty.security.social.internal,\
   io.openliberty.security.openidconnect.internal.clients.common
-kind=noship
-edition=full
+kind=beta
+edition=core

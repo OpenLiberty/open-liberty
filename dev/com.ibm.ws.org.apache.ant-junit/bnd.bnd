@@ -1,0 +1,25 @@
+#*******************************************************************************
+# Copyright (c) 2021 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= jar:${fileuri;${repo;org.apache.ant:ant-junit;1.10.10}}!/META-INF/MANIFEST.MF,bnd.overrides
+
+Export-Package: org.apache.tools.ant.taskdefs.optional.junit;version="1.10.10", \
+                org.apache.tools.ant.taskdefs.optional.junit.xsl;version="1.10.10"
+
+-includeresource: \
+	@${repo;org.apache.ant:ant-junit;1.10.10}!/!META-INF/MANIFEST.MF
+
+instrument.disabled: true
+
+publish.wlp.jar.disabled: true
+
+-buildpath: \
+	org.apache.ant:ant-junit;version=1.10.10, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

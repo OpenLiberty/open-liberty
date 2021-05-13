@@ -433,6 +433,7 @@ public class WCCustomProperties {
             Tr.entry(tc, "setCustomProperties");
         }
 
+        customProps = WebContainer.getWebContainerProperties();
         String ky;
         String propertyKey;
 
@@ -626,7 +627,6 @@ public class WCCustomProperties {
         
         //Start 7.0.0.19
         IFMODIFIEDSINCE_NEWER_THAN_FILEMODIFIED_TIMESTAMP = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.modifiedsincelaterthanfiletimestamp", "false")).booleanValue(); //PM36341
-        ALLOW_QUERY_PARAM_WITH_NO_EQUAL = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.allowqueryparamwithnoequal")).booleanValue(); //PM35450
         //End 7.0.0.19
 
         //Begin 8.0
@@ -810,14 +810,19 @@ public class WCCustomProperties {
             DISABLE_X_POWERED_BY = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.disablexpoweredby","true")).booleanValue();
             STOP_APP_STARTUP_ON_LISTENER_EXCEPTION = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.stopappstartuponlistenerexception" , "true")).booleanValue();
             DECODE_URL_PLUS_SIGN = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.decodeurlplussign", "false")).booleanValue(); 
+            ALLOW_QUERY_PARAM_WITH_NO_EQUAL = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.allowqueryparamwithnoequal", "true")).booleanValue();
         } else {
             DISABLE_X_POWERED_BY = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.disablexpoweredby","false")).booleanValue();
             STOP_APP_STARTUP_ON_LISTENER_EXCEPTION = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.stopappstartuponlistenerexception" , "false")).booleanValue();
             DECODE_URL_PLUS_SIGN = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.decodeurlplussign", "true")).booleanValue();
+            ALLOW_QUERY_PARAM_WITH_NO_EQUAL = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.allowqueryparamwithnoequal", "false")).booleanValue();
         }
         
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, methodName, "DISABLE_X_POWERED_BY [" + DISABLE_X_POWERED_BY + "], STOP_APP_STARTUP_ON_LISTENER_EXCEPTION ["+ STOP_APP_STARTUP_ON_LISTENER_EXCEPTION + "], DECODE_URL_PLUS_SIGN [" + DECODE_URL_PLUS_SIGN + "]");
+            Tr.debug(tc, methodName, "DISABLE_X_POWERED_BY [" + DISABLE_X_POWERED_BY + "], " +
+                                     "STOP_APP_STARTUP_ON_LISTENER_EXCEPTION ["+ STOP_APP_STARTUP_ON_LISTENER_EXCEPTION + "], " +
+                                     "DECODE_URL_PLUS_SIGN [" + DECODE_URL_PLUS_SIGN + "], " +
+                                     "ALLOW_QUERY_PARAM_WITH_NO_EQUAL [" + ALLOW_QUERY_PARAM_WITH_NO_EQUAL + "]");
         }
     }
 

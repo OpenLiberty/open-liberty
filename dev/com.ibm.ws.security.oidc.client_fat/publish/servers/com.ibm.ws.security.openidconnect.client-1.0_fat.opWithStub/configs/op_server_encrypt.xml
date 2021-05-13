@@ -1,0 +1,542 @@
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+ 
+<server>
+
+    <featureManager>
+        <feature>timedexit-1.0</feature>
+        <feature>oauth-2.0</feature>
+        <feature>openidConnectServer-1.0</feature>
+        <feature>ssl-1.0</feature>
+        <feature>osgiconsole-1.0</feature>
+       	<feature>jaxrs-2.0</feature>
+		<feature>jsonp-1.0</feature> <!-- needed for the TokenEndpointServlet -->
+	    <feature>jwt-1.0</feature>
+        <feature>timedexit-1.0</feature>
+    </featureManager>
+    
+	<include location="${server.config.dir}/imports/goodBasicRegistry.xml" />
+
+	<include location="${server.config.dir}/imports/goodSSLSettings.xml" />
+
+	<include location="${server.config.dir}/imports/miscNoSslSettings.xml" />
+
+	<include location="${server.config.dir}/imports/oauthRoles_1.xml" />
+
+	<include location="${server.config.dir}/imports/op_fatTestPorts.xml" />
+	
+	<include location="${server.config.dir}/imports/tokenEndpointApplication.xml" />
+
+    <keyStore
+         id="trust_allSigAlg"
+         password="Liberty"
+         type="PKCS12"
+         location="${server.config.dir}/allAlgTrustStore.p12" />
+
+    <keyStore
+         id="key_allSigAlg"
+         password="Liberty"
+         type="PKCS12"
+         location="${server.config.dir}/allAlgKeyStore.p12" />
+
+	<openidConnectProvider
+		id="OidcConfigSample"
+		scope="myScopeSample"
+		jwkEnabled="${oidcJWKEnabled}"
+		signatureAlgorithm="${oidcSignAlg}"
+		oauthProviderRef="OAuthConfigSample" />
+
+	<oauthProvider
+		id="OAuthConfigSample"
+		filter="request-url%=SimpleServlet;request-url!=snooping"
+		httpsRequired="false"
+		allowPublicClients="false"
+		oauthOnly="true"
+		autoAuthorize="true"
+		jwtAccessToken="true"
+	>
+
+		<autoAuthorizeClient>client01</autoAuthorizeClient>
+
+        
+		<localStore>
+			<client
+				name="client01"
+				secret="{xor}LDo8LTor"
+				displayname="client01"
+				redirect="http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignHS256EncryptRS256,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignHS256EncryptRS384,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignHS256EncryptRS512,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignHS384EncryptRS256,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignHS384EncryptRS384,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignHS384EncryptRS512,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignHS512EncryptRS256,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignHS512EncryptRS384,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignHS512EncryptRS512,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignRS256EncryptRS256,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignRS256EncryptRS384,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignRS256EncryptRS512,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignRS384EncryptRS256,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignRS384EncryptRS384,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignRS384EncryptRS512,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignRS512EncryptRS256,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignRS512EncryptRS384,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignRS512EncryptRS512,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignES256EncryptRS256,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignES256EncryptRS384,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignES256EncryptRS512,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignES384EncryptRS256,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignES384EncryptRS384,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignES384EncryptRS512,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignES512EncryptRS256,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignES512EncryptRS384,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignES512EncryptRS512,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/invalidKeyManagementKeyAlias,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/nonExistantKeyManagementKeyAlias,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/omittedKeyManagementKeyAlias,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignRS256Encryptnone,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignRS384Encryptnone,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignRS512Encryptnone,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignRS256EncryptShortRS256,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignRS256EncryptPublicRS256,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/RP_trustStoreRefOmitted,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/RP_sslRefOmitted"
+				scope="ALL_SCOPES"
+				enabled="true" />
+				
+		</localStore>
+
+	</oauthProvider>
+<!--
+	<jwtBuilder 
+		id="RS256Builder"
+		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		signatureAlgorithm="RS256"
+		audiences="client01"
+		keyStoreRef="key_allSigAlg"
+        keyAlias="rs256"
+        trustStoreRef="trust_allSigAlg"
+		keyManagementKeyAlgorithm="RSA-OAEP"
+		keyManagementKeyAlias="rs256"
+        contentEncryptionAlgorithm="A256GCM" />
+		/>
+	
+	<jwtBuilder 
+		id="RS384Builder"
+		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		signatureAlgorithm="RS384"
+		audiences="client01"
+		keyStoreRef="key_allSigAlg"
+        keyAlias="rs384"
+        trustStoreRef="trust_allSigAlg"
+		keyManagementKeyAlgorithm="RSA-OAEP"
+		keyManagementKeyAlias="rs384"
+        contentEncryptionAlgorithm="A256GCM" />
+		/>		
+
+	<jwtBuilder 
+		id="RS512Builder"
+		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		signatureAlgorithm="RS512"
+		audiences="client01"
+		keyStoreRef="key_allSigAlg"
+        keyAlias="rs512"
+        trustStoreRef="trust_allSigAlg"
+		keyManagementKeyAlgorithm="RSA-OAEP"
+		keyManagementKeyAlias="rs512"
+        contentEncryptionAlgorithm="A256GCM" />
+		/>
+-->
+
+	<!-- SignRS256EncryptRS256Builder would be the same as RS256Builder :) -->
+	<jwtBuilder 
+		id="SignRS256EncryptRS256Builder"
+		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		signatureAlgorithm="RS256"
+		audiences="client01"
+		keyStoreRef="key_allSigAlg"
+        keyAlias="rs256"
+        trustStoreRef="trust_allSigAlg"
+		keyManagementKeyAlgorithm="RSA-OAEP"
+		keyManagementKeyAlias="rs256"
+        contentEncryptionAlgorithm="A256GCM" />
+		/>
+	<jwtBuilder 
+		id="SignRS256EncryptShortRS256Builder"
+		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		signatureAlgorithm="RS256"
+		audiences="client01"
+		keyStoreRef="key_allSigAlg"
+        keyAlias="rs256"
+        trustStoreRef="trust_allSigAlg"
+		keyManagementKeyAlgorithm="RSA-OAEP"
+		keyManagementKeyAlias="short_RS256"
+        contentEncryptionAlgorithm="A256GCM" />
+		/>		
+	<jwtBuilder 
+		id="SignRS384EncryptRS256Builder"
+		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		signatureAlgorithm="RS384"
+		audiences="client01"
+		keyStoreRef="key_allSigAlg"
+        keyAlias="rs384"
+        trustStoreRef="trust_allSigAlg"
+		keyManagementKeyAlgorithm="RSA-OAEP"
+		keyManagementKeyAlias="rs256"
+        contentEncryptionAlgorithm="A256GCM" />
+		/>
+		
+	<jwtBuilder 
+		id="SignRS512EncryptRS256Builder"
+		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		signatureAlgorithm="RS512"
+		audiences="client01"
+		keyStoreRef="key_allSigAlg"
+        keyAlias="rs512"
+        trustStoreRef="trust_allSigAlg"
+		keyManagementKeyAlgorithm="RSA-OAEP"
+		keyManagementKeyAlias="rs256"
+        contentEncryptionAlgorithm="A256GCM" />
+		/>										
+				
+	<jwtBuilder 
+		id="SignES256EncryptRS256Builder"
+		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		signatureAlgorithm="ES256"
+		audiences="client01"
+		keyStoreRef="key_allSigAlg"
+        keyAlias="es256"
+        trustStoreRef="trust_allSigAlg"
+		keyManagementKeyAlgorithm="RSA-OAEP"
+		keyManagementKeyAlias="rs256"
+        contentEncryptionAlgorithm="A256GCM" />
+		/>
+		
+	<jwtBuilder 
+		id="SignES384EncryptRS256Builder"
+		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		signatureAlgorithm="ES384"
+		audiences="client01"
+		keyStoreRef="key_allSigAlg"
+        keyAlias="es384"
+        trustStoreRef="trust_allSigAlg"
+		keyManagementKeyAlgorithm="RSA-OAEP"
+		keyManagementKeyAlias="rs256"
+        contentEncryptionAlgorithm="A256GCM" />
+		/>
+		
+	<jwtBuilder 
+		id="SignES512EncryptRS256Builder"
+		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		signatureAlgorithm="ES512"
+		audiences="client01"
+		keyStoreRef="key_allSigAlg"
+        keyAlias="es512"
+        trustStoreRef="trust_allSigAlg"
+		keyManagementKeyAlgorithm="RSA-OAEP"
+		keyManagementKeyAlias="rs256"
+        contentEncryptionAlgorithm="A256GCM" />
+		/>										
+		
+	<jwtBuilder 
+		id="SignHS256EncryptRS256Builder"
+		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		audiences="client01"
+		signatureAlgorithm="HS256"
+		sharedKey="secret"
+        trustStoreRef="trust_allSigAlg"
+		keyManagementKeyAlgorithm="RSA-OAEP"
+		keyManagementKeyAlias="rs256"
+        contentEncryptionAlgorithm="A256GCM" />
+		/>
+		
+	<jwtBuilder 
+		id="SignHS384EncryptRS256Builder"
+		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		audiences="client01"
+		signatureAlgorithm="HS384"
+		sharedKey="secret"
+        trustStoreRef="trust_allSigAlg"
+		keyManagementKeyAlgorithm="RSA-OAEP"
+		keyManagementKeyAlias="rs256"
+        contentEncryptionAlgorithm="A256GCM" />
+		/>
+		
+	<jwtBuilder 
+		id="SignHS512EncryptRS256Builder"
+		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		audiences="client01"
+		signatureAlgorithm="HS512"
+		sharedKey="secret"
+        trustStoreRef="trust_allSigAlg"
+		keyManagementKeyAlgorithm="RSA-OAEP"
+		keyManagementKeyAlias="rs256"
+        contentEncryptionAlgorithm="A256GCM" />
+		/>								
+
+	<jwtBuilder 
+		id="SignRS256EncryptRS384Builder"
+		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		signatureAlgorithm="RS256"
+		audiences="client01"
+		keyStoreRef="key_allSigAlg"
+        keyAlias="rs256"
+        trustStoreRef="trust_allSigAlg"
+		keyManagementKeyAlgorithm="RSA-OAEP"
+		keyManagementKeyAlias="rs384"
+        contentEncryptionAlgorithm="A256GCM" />
+		/>
+	<jwtBuilder 
+		id="SignRS384EncryptRS384Builder"
+		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		signatureAlgorithm="RS384"
+		audiences="client01"
+		keyStoreRef="key_allSigAlg"
+        keyAlias="rs384"
+        trustStoreRef="trust_allSigAlg"
+		keyManagementKeyAlgorithm="RSA-OAEP"
+		keyManagementKeyAlias="rs384"
+        contentEncryptionAlgorithm="A256GCM" />
+		/>
+		
+	<jwtBuilder 
+		id="SignRS512EncryptRS384Builder"
+		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		signatureAlgorithm="RS512"
+		audiences="client01"
+		keyStoreRef="key_allSigAlg"
+        keyAlias="rs512"
+        trustStoreRef="trust_allSigAlg"
+		keyManagementKeyAlgorithm="RSA-OAEP"
+		keyManagementKeyAlias="rs384"
+        contentEncryptionAlgorithm="A256GCM" />
+		/>										
+				
+	<jwtBuilder 
+		id="SignES256EncryptRS384Builder"
+		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		signatureAlgorithm="ES256"
+		audiences="client01"
+		keyStoreRef="key_allSigAlg"
+        keyAlias="es256"
+        trustStoreRef="trust_allSigAlg"
+		keyManagementKeyAlgorithm="RSA-OAEP"
+		keyManagementKeyAlias="rs384"
+        contentEncryptionAlgorithm="A256GCM" />
+		/>
+		
+	<jwtBuilder 
+		id="SignES384EncryptRS384Builder"
+		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		signatureAlgorithm="ES384"
+		audiences="client01"
+		keyStoreRef="key_allSigAlg"
+        keyAlias="es384"
+        trustStoreRef="trust_allSigAlg"
+		keyManagementKeyAlgorithm="RSA-OAEP"
+		keyManagementKeyAlias="rs384"
+        contentEncryptionAlgorithm="A256GCM" />
+		/>
+		
+	<jwtBuilder 
+		id="SignES512EncryptRS384Builder"
+		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		signatureAlgorithm="ES512"
+		audiences="client01"
+		keyStoreRef="key_allSigAlg"
+        keyAlias="es512"
+        trustStoreRef="trust_allSigAlg"
+		keyManagementKeyAlgorithm="RSA-OAEP"
+		keyManagementKeyAlias="rs384"
+        contentEncryptionAlgorithm="A256GCM" />
+		/>										
+		
+	<jwtBuilder 
+		id="SignHS256EncryptRS384Builder"
+		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		audiences="client01"
+		signatureAlgorithm="HS256"
+		sharedKey="secret"
+        trustStoreRef="trust_allSigAlg"
+		keyManagementKeyAlgorithm="RSA-OAEP"
+		keyManagementKeyAlias="rs384"
+        contentEncryptionAlgorithm="A256GCM" />
+		/>
+		
+	<jwtBuilder 
+		id="SignHS384EncryptRS384Builder"
+		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		audiences="client01"
+		signatureAlgorithm="HS384"
+		sharedKey="secret"
+        trustStoreRef="trust_allSigAlg"
+		keyManagementKeyAlgorithm="RSA-OAEP"
+		keyManagementKeyAlias="rs384"
+        contentEncryptionAlgorithm="A256GCM" />
+		/>
+		
+	<jwtBuilder 
+		id="SignHS512EncryptRS384Builder"
+		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		audiences="client01"
+		signatureAlgorithm="HS512"
+		sharedKey="secret"
+        trustStoreRef="trust_allSigAlg"
+		keyManagementKeyAlgorithm="RSA-OAEP"
+		keyManagementKeyAlias="rs384"
+        contentEncryptionAlgorithm="A256GCM" />
+		/>								
+		
+	<jwtBuilder 
+		id="SignRS256EncryptRS512Builder"
+		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		signatureAlgorithm="RS256"
+		audiences="client01"
+		keyStoreRef="key_allSigAlg"
+        keyAlias="rs256"
+        trustStoreRef="trust_allSigAlg"
+		keyManagementKeyAlgorithm="RSA-OAEP"
+		keyManagementKeyAlias="rs512"
+        contentEncryptionAlgorithm="A256GCM" />
+		/>
+	<jwtBuilder 
+		id="SignRS384EncryptRS512Builder"
+		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		signatureAlgorithm="RS384"
+		audiences="client01"
+		keyStoreRef="key_allSigAlg"
+        keyAlias="rs384"
+        trustStoreRef="trust_allSigAlg"
+		keyManagementKeyAlgorithm="RSA-OAEP"
+		keyManagementKeyAlias="rs512"
+        contentEncryptionAlgorithm="A256GCM" />
+		/>
+		
+	<jwtBuilder 
+		id="SignRS512EncryptRS512Builder"
+		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		signatureAlgorithm="RS512"
+		audiences="client01"
+		keyStoreRef="key_allSigAlg"
+        keyAlias="rs512"
+        trustStoreRef="trust_allSigAlg"
+		keyManagementKeyAlgorithm="RSA-OAEP"
+		keyManagementKeyAlias="rs512"
+        contentEncryptionAlgorithm="A256GCM" />
+		/>										
+				
+	<jwtBuilder 
+		id="SignES256EncryptRS512Builder"
+		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		signatureAlgorithm="ES256"
+		audiences="client01"
+		keyStoreRef="key_allSigAlg"
+        keyAlias="es256"
+        trustStoreRef="trust_allSigAlg"
+		keyManagementKeyAlgorithm="RSA-OAEP"
+		keyManagementKeyAlias="rs512"
+        contentEncryptionAlgorithm="A256GCM" />
+		/>
+		
+	<jwtBuilder 
+		id="SignES384EncryptRS512Builder"
+		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		signatureAlgorithm="ES384"
+		audiences="client01"
+		keyStoreRef="key_allSigAlg"
+        keyAlias="es384"
+        trustStoreRef="trust_allSigAlg"
+		keyManagementKeyAlgorithm="RSA-OAEP"
+		keyManagementKeyAlias="rs512"
+        contentEncryptionAlgorithm="A256GCM" />
+		/>
+		
+	<jwtBuilder 
+		id="SignES512EncryptRS512Builder"
+		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		signatureAlgorithm="ES512"
+		audiences="client01"
+		keyStoreRef="key_allSigAlg"
+        keyAlias="es512"
+        trustStoreRef="trust_allSigAlg"
+		keyManagementKeyAlgorithm="RSA-OAEP"
+		keyManagementKeyAlias="rs512"
+        contentEncryptionAlgorithm="A256GCM" />
+		/>										
+		
+	<jwtBuilder 
+		id="SignHS256EncryptRS512Builder"
+		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		audiences="client01"
+		signatureAlgorithm="HS256"
+		sharedKey="secret"
+        trustStoreRef="trust_allSigAlg"
+		keyManagementKeyAlgorithm="RSA-OAEP"
+		keyManagementKeyAlias="rs512"
+        contentEncryptionAlgorithm="A256GCM" />
+		/>
+		
+	<jwtBuilder 
+		id="SignHS384EncryptRS512Builder"
+		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		audiences="client01"
+		signatureAlgorithm="HS384"
+		sharedKey="secret"
+        trustStoreRef="trust_allSigAlg"
+		keyManagementKeyAlgorithm="RSA-OAEP"
+		keyManagementKeyAlias="rs512"
+        contentEncryptionAlgorithm="A256GCM" />
+		/>
+		
+	<jwtBuilder 
+		id="SignHS512EncryptRS512Builder"
+		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		audiences="client01"
+		signatureAlgorithm="HS512"
+		sharedKey="secret"
+        trustStoreRef="trust_allSigAlg"
+		keyManagementKeyAlgorithm="RSA-OAEP"
+		keyManagementKeyAlias="rs512"
+        contentEncryptionAlgorithm="A256GCM" />
+		/>		
+								
+	<jwtBuilder 
+		id="SignRS256EncryptnoneBuilder"
+		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		signatureAlgorithm="RS256"
+		audiences="client01"
+		keyStoreRef="key_allSigAlg"
+        keyAlias="rs256"
+        trustStoreRef="trust_allSigAlg" />
+		/>		
+		
+	<jwtBuilder 
+		id="SignRS384EncryptnoneBuilder"
+		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		signatureAlgorithm="RS384"
+		audiences="client01"
+		keyStoreRef="key_allSigAlg"
+        keyAlias="rs384"
+        trustStoreRef="trust_allSigAlg" />
+		/>	
+		
+	<jwtBuilder 
+		id="SignRS512EncryptnoneBuilder"
+		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		signatureAlgorithm="RS512"
+		audiences="client01"
+		keyStoreRef="key_allSigAlg"
+        keyAlias="rs512"
+        trustStoreRef="trust_allSigAlg" />
+		/>	
+										
+</server>
+

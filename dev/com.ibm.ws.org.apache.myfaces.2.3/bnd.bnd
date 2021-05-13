@@ -16,7 +16,7 @@ Bundle-SymbolicName: com.ibm.ws.org.apache.myfaces.2.3
 Bundle-Description: WAS JSF 2.3, version ${bVersion}
 WLP-ServerName: IBM WebSphere Application Server
 WLP-ServerVersion: ${liberty.beta.version}
-Implementation-Version: 2.3.8
+Implementation-Version: 2.3.9
 
 app-resources= \
   META-INF/services/org.apache.myfaces.config.annotation.LifecycleProviderFactory | \
@@ -26,35 +26,11 @@ app-resources= \
   META-INF/services/org.apache.myfaces.spi.FaceletConfigResourceProvider | \
   META-INF/services/javax.faces.application.ApplicationFactory
 
-
 Service-Component: \
-  com.ibm.ws.jsf_2_3; \
-    implementation:=com.ibm.ws.jsf.extprocessor.JSFExtensionFactory; \
-    provide:='com.ibm.wsspi.webcontainer.extension.ExtensionFactory'; \
-    serializationService=com.ibm.ws.serialization.SerializationService; \
-    classLoadingService=com.ibm.wsspi.classloading.ClassLoadingService;\
-    cdiJSFInitializerService=com.ibm.ws.jsf.shared.cdi.CDIJSFInitializer; \
-    greedy:="cdiJSFInitializerService"; \
-    optional:="cdiJSFInitializerService"; \
-    properties:="service.vendor=IBM", \
   com.ibm.ws.jsf_2_3.taglib; \
-    implementation:=com.ibm.ws.jsf.extprocessor.JSFGlobalTagLibConfig; \
+    implementation:=com.ibm.ws.jsf.taglibconfig.JSFGlobalTagLibConfig; \
     provide:='com.ibm.wsspi.jsp.taglib.config.GlobalTagLibConfig'; \
     properties:="service.vendor=IBM", \
-  com.ibm.ws.myfaces.initializer; \
-    implementation:=com.ibm.ws.jsf.ee.WASMyFacesContainerInitializer; \
-    provide:=javax.servlet.ServletContainerInitializer; \
-    properties:="service.vendor=IBM,service.ranking:Integer=101", \
-  com.ibm.ws.jsf_2_3.injection.class.list.collaborator; \
-    implementation:=com.ibm.ws.jsf.shared.util.JSFInjectionClassListCollaborator ; \
-    provide:='com.ibm.wsspi.webcontainer.collaborator.WebAppInjectionClassListCollaborator'; \
-    immediate:=true; \
-    properties:="service.vendor=IBM", \
-  com.ibm.ws.org.apache.myfaces_2_3_${replace;${bVersion};\\.;_}.ResourceProvider; \
-    implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
-    provide:=com.ibm.wsspi.classloading.ResourceProvider; \
-    configuration-policy:=ignore; \
-    properties:="resources=${app-resources}", \
   com.ibm.ws.jsf_2_3.cdiextension; \
     implementation:=com.ibm.ws.jsf.shared.ext.CdiExtension; \
     provide:='com.ibm.ws.cdi.extension.WebSphereCDIExtension'; \
@@ -67,6 +43,15 @@ Service-Component: \
     provide:=com.ibm.ws.javaee.version.FacesVersion; \
     properties:="version:Integer=23"
 
+# Not used directly, so these packages needs to be dynamically imported
+DynamicImport-Package: \
+  com.ibm.ws.jsf.cdi, \
+  com.ibm.ws.jsf.config.annotion,\
+  com.ibm.ws.jsf.config.resource,\
+  com.ibm.ws.jsf.ee, \
+  com.ibm.ws.jsf.spi.impl, \
+  com.ibm.ws.jsf.extprocessor
+
 -fixupmessages.missingexport: "Used bundle version * for exported package";is:=ignore
 
 instrument.ffdc: false
@@ -74,7 +59,7 @@ instrument.classesExcludes: \
   org/**/*.class
 
 Include-Resource: \
-  @${repo;org.apache.myfaces.core.impl;2.3.8;EXACT}!/META-INF/**, \
+  @${repo;org.apache.myfaces.core.impl;2.3.9;EXACT}!/META-INF/**, \
   @${repo;com.ibm.websphere.javaee.jsf.2.3}!/META-INF/resources/**, \
   @${repo;com.ibm.websphere.javaee.jsf.2.3}!/META-INF/internal-resources/**, \
   META-INF=@src/META-INF
@@ -89,11 +74,7 @@ Export-Package: \
   !org.apache.myfaces.shared.renderkit, \
   !org.apache.myfaces.shared.renderkit.html, \
   !org.apache.myfaces.shared.renderkit.html.util, \
-  com.ibm.ws.jsf.cdi, \
-  com.ibm.ws.jsf.config.*;thread-context=true, \
-  com.ibm.ws.jsf.ee, \
-  com.ibm.ws.jsf.spi.*, \
-  com.ibm.ws.jsf.extprocessor, \
+  com.ibm.ws.jsf.taglibconfig, \
   org.apache.myfaces.application;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.application.viewstate;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.cdi.model;thread-context=true;version=${Implementation-Version}, \
@@ -167,4 +148,5 @@ Import-Package: \
   com.ibm.websphere.appserver.spi.kernel.service,\
   com.ibm.websphere.org.osgi.core;version=latest,\
   com.ibm.websphere.org.osgi.service.component;version=latest,\
-  com.ibm.ws.org.osgi.annotation.versioning;version=latest
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+  io.openliberty.faces.internal;version=latest

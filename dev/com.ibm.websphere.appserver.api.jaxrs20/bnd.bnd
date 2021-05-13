@@ -22,7 +22,6 @@ Import-Package: \
   com.ibm.websphere.monitor.jmx;resolution:=optional, \
   com.ibm.websphere.ras, \
   com.ibm.ws.jaxrs20.multipart.impl;resolution:=optional, \
-  com.ibm.ws.kernel.productinfo, \
   javax.activation, \
   javax.ws.rs, \
   javax.ws.rs.client, \

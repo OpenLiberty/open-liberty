@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2020 IBM Corporation and others.
+# Copyright (c) 2009, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -141,6 +141,11 @@ grpc.client.receivedMessages.total.description=A kiszolg\u00e1l\u00f3r\u00f3l fo
 grpc.client.responseTime.total.description=A befejezett t\u00e1voli elj\u00e1r\u00e1sh\u00edv\u00e1sok (RPC) teljes v\u00e1laszideje.
 
 REST.request.description=Az adott RESTful er\u0151forr\u00e1s met\u00f3dus felh\u00edv\u00e1sainak sz\u00e1ma \u00e9s teljes v\u00e1laszideje a kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa \u00f3ta.
+
+requestTiming.requestCount.description=A szervletk\u00e9r\u00e9sek sz\u00e1ma a kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa \u00f3ta.
+requestTiming.activeRequestCount.description=A jelenleg fut\u00f3 szervletk\u00e9r\u00e9sek sz\u00e1ma.
+requestTiming.slowRequestCount.description=A jelenleg fut\u00f3, de lass\u00fa szervletk\u00e9r\u00e9sek sz\u00e1ma.
+requestTiming.hungRequestCount.description=A jelenleg fut\u00f3, de lefagyott szervletk\u00e9r\u00e9sek sz\u00e1ma.
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message
 #-----------------------------------------------------------------------------------------------------------------------------

@@ -8,7 +8,7 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.apache.cxf:cxf-rt-rs-mp-client;3.4.1.20201029}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;${repo;org.apache.cxf:cxf-rt-rs-mp-client;3.4.3}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 
 # include under -includeresource after we've overridden something...
@@ -17,12 +17,12 @@
 
 
 -includeresource: \
-  @${repo;org.apache.cxf:cxf-rt-rs-mp-client;3.4.1.20201029;EXACT}!/!META-INF/MANIFEST.MF,\
+  @${repo;org.apache.cxf:cxf-rt-rs-mp-client;3.4.3;EXACT}!/!META-INF/MANIFEST.MF,\
   org/apache/cxf=${bin}/org/apache/cxf
 
 
 -buildpath: \
-  org.apache.cxf:cxf-rt-rs-mp-client;strategy=exact;version=3.4.1.20201029,\
+  org.apache.cxf:cxf-rt-rs-mp-client;strategy=exact;version=3.4.3,\
   com.ibm.websphere.javaee.jaxrs.2.1;version=latest,\
   com.ibm.websphere.javaee.cdi.1.2;version=latest,\
   com.ibm.websphere.javaee.annotation.1.3;version=latest,\

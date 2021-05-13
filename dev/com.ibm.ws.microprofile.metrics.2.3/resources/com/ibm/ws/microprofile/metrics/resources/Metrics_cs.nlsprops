@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2020 IBM Corporation and others.
+# Copyright (c) 2009, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -141,6 +141,11 @@ grpc.client.receivedMessages.total.description=Celkov\u00fd po\u010det zpr\u00e1
 grpc.client.responseTime.total.description=Celkov\u00e1 doba odezvy dokon\u010den\u00fdch vol\u00e1n\u00ed RPC.
 
 REST.request.description=Po\u010det vyvol\u00e1n\u00ed a celkov\u00e1 doba odezvy t\u00e9to metody prost\u0159edku RESTful od spu\u0161t\u011bn\u00ed serveru.
+
+requestTiming.requestCount.description=Po\u010det po\u017eadavk\u016f servletu od spu\u0161t\u011bn\u00ed serveru.
+requestTiming.activeRequestCount.description=Po\u010det aktu\u00e1ln\u011b spu\u0161t\u011bn\u00fdch po\u017eadavk\u016f servletu.
+requestTiming.slowRequestCount.description=Po\u010det po\u017eadavk\u016f servlet\u016f, kter\u00e9 jsou moment\u00e1ln\u011b spu\u0161t\u011bn\u00e9, ale jsou pomal\u00e9.
+requestTiming.hungRequestCount.description=Po\u010det po\u017eadavk\u016f servlet\u016f, kter\u00e9 jsou moment\u00e1ln\u011b spu\u0161t\u011bn\u00e9, ale jsou zablokovan\u00e9.
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message
 #-----------------------------------------------------------------------------------------------------------------------------

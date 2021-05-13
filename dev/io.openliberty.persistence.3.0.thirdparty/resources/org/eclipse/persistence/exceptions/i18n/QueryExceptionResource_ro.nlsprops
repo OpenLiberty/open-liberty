@@ -179,7 +179,7 @@
 
 6093=Expresie de tip invalid \u00een [{0}].  Clasa nu are un descriptor, sau descriptorul nu utilizeaz\u0103 mo\u015ftenirea sau utilizeaz\u0103 un ClassExtractor pentru mo\u015ftenire
 
-6094=Numele parametrului [{0}] \u00een criteriile de selec\u0163ie ale interog\u0103rii nu se potrive\u015fte cu nici un nume de parametru definit \u00een interogare.
+6094=Numele parametrului [{0}] \u00een criteriile de selec\u0163ie ale interog\u0103rii nu se potrive\u015fte cu niciun nume de parametru definit \u00een interogare.
 
 6095=Este necesar\u0103 metoda de clonare public\u0103.
 
@@ -337,7 +337,7 @@
 
 6173=Pool-ul de conexiune [{0}] a e\u015fuat s\u0103 fac\u0103 preluarea la defect, toate serverele sunt nefunc\u0163ionale.
 
-6174=Nu a fost furnizat\u0103 nici o valoare pentru proprietatea sesiunii [{0}]. Excep\u0163ia este posibil\u0103 atunci c\u00e2nd utiliza\u0163i criterii suplimentare sau coloane discriminator chiria\u015f f\u0103r\u0103 specificarea propriet\u0103\u0163ii contextuale asociate. Aceste propriet\u0103\u0163i trebuiesc setate prin propriet\u0103\u0163ile unit\u0103\u0163ii EntityManager, EntityManagerFactory sau persisten\u0163\u0103. Dac\u0103 se utilizeaz\u0103 EclipseLink nativ, aceste propriet\u0103\u0163i ar trebui setate direct \u00een sesiune.
+6174=Nu a fost furnizat\u0103 nicio valoare pentru proprietatea sesiunii [{0}]. Excep\u0163ia este posibil\u0103 atunci c\u00e2nd utiliza\u0163i criterii suplimentare sau coloane discriminator chiria\u015f f\u0103r\u0103 specificarea propriet\u0103\u0163ii contextuale asociate. Aceste propriet\u0103\u0163i trebuiesc setate prin propriet\u0103\u0163ile unit\u0103\u0163ii EntityManager, EntityManagerFactory sau persisten\u0163\u0103. Dac\u0103 se utilizeaz\u0103 EclipseLink nativ, aceste propriet\u0103\u0163i ar trebui setate direct \u00een sesiune.
 
 6175=Interog\u0103rile SQL native au fost dezactivate. Acest lucru este f\u0103cut fie prin setarea propriet\u0103\u0163ii unit\u0103\u0163ii de persisten\u0163\u0103 "eclipselink.jdbc.allow-native-sql-queries" pe false, fie av\u00e2nd cel pu\u0163in o entitate multi-chiria\u015f definit\u0103 \u00een unitatea dumneavoastr\u0103 de persisten\u0163\u0103. Verifica\u0163i specifica\u0163iile unit\u0103\u0163ii dumneavoastr\u0103 de persisten\u0163\u0103. Pentru a permite interog\u0103ri sql native, seta\u0163i aceast\u0103 proprietate pe true. Alternativ, interog\u0103rile individuale pot ocoli aceast\u0103 setare prin setarea indiciului de interogare "eclipselink.jdbc.allow-native-sql-query" pe true.
 

@@ -740,7 +740,7 @@ error.exception.ioeinbody.explanation=\u00c8 stata rilevata un'eccezione IOExcep
 error.exception.ioeinbody.useraction=Non \u00e8 richiesta alcuna azione.
 
 warn.unsupported.realm=CWSCT0358W: Realm di autenticazione sconosciuto {0}
-warn.unsupported.realm.explanation=\u00c8 stata ricevuta una richiesta SIP per un realm di autenticazione sconosciuto 
+warn.unsupported.realm.explanation=\u00c8 stata ricevuta una richiesta SIP per un realm di autenticazione sconosciuto
 warn.unsupported.realm.useraction=Non \u00e8 richiesta alcuna azione
 
 info.unhashed.creds=CWSCT0359I: Attributi credenziali hash non trovati.

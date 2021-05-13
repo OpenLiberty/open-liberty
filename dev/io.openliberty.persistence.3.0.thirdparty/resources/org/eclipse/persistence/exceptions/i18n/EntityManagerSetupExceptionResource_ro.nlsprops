@@ -79,7 +79,7 @@
 
 28026=org.eclipse.persistence.jpa.osgi.PersistenceProvider nu suport\u0103 implementarea containerului (createContainerEntityManagerFactory).  Utiliza\u0163i \u00een schimb org.eclipse.persistence.jpa.PersistenceProvider.
 
-28027=A fost f\u0103cut\u0103 o \u00eencercare de utilizare a PersistenceUnit [{0}], dar nu este disponibil nici un bundle care s\u0103 defineasc\u0103 acea unitate de persisten\u0163\u0103.
+28027=A fost f\u0103cut\u0103 o \u00eencercare de utilizare a PersistenceUnit [{0}], dar nu este disponibil niciun bundle care s\u0103 defineasc\u0103 acea unitate de persisten\u0163\u0103.
 
 28028=E\u015fuare la instan\u0163ierea instan\u0163ei de clas\u0103 [{0}] pentru proprietatea unit\u0103\u0163ii de persisten\u0163\u0103 [{1}], asigur\u0103 faptul c\u0103 este definit corect constructorul.
 
