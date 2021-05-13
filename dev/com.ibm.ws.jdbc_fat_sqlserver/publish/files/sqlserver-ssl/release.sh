@@ -21,6 +21,22 @@ docker login || (echo "Unable to login to DockerHub" && exit 1)
 #This script assumes it is in the same directory as the Dockerfile
 docker build -t "$SIGNITURE" .
 
+#Extract keystore
+CONTAINER="tmp-container"
+SECURITY_DIR=../../servers/com.ibm.ws.jdbc.fat.sqlserver.ssl/security/
+PASSWORD="WalletPasswd123"
+
+rm -rf $SECURITY_DIR && mkdir -p $SECURITY_DIR
+
+docker create --name $CONTAINER $SIGNITURE
+docker cp $CONTAINER:/etc/ssl/certs/mssql.pem $SECURITY_DIR
+docker cp $CONTAINER:/etc/ssl/mssql.key $SECURITY_DIR
+docker rm $CONTAINER
+
+keytool -importcert -file $SECURITY_DIR/mssql.pem -alias server -keystore $SECURITY_DIR/truststore.p12 -storepass  $PASSWORD -storetype PKCS12
+keytool -list -v -keystore $SECURITY_DIR/truststore.p12 -storepass $PASSWORD
+rm $SECURITY_DIR/mssql.pem $SECURITY_DIR/mssql.key
+
 #Push image to DockerHub
 docker push "$SIGNITURE"
 

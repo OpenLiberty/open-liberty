@@ -10,19 +10,20 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.sqlserver;
 
-import static com.ibm.ws.jdbc.fat.sqlserver.FATSuite.sqlserver;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
+import org.testcontainers.containers.MSSQLServerContainer;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
+import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -38,8 +39,15 @@ public class SQLServerTest extends FATServletClient {
     @TestServlet(servlet = SQLServerTestServlet.class, path = APP_NAME + '/' + SERVLET_NAME)
     public static LibertyServer server;
 
+    @ClassRule
+    public static MSSQLServerContainer<?> sqlserver = new MSSQLServerContainer<>("mcr.microsoft.com/mssql/server:2019-CU10-ubuntu-16.04") //
+                    .withLogConsumer(new SimpleLogConsumer(FATSuite.class, "sqlserver")) //
+                    .acceptLicense();
+
     @BeforeClass
     public static void setUp() throws Exception {
+        FATSuite.setupDatabase(sqlserver);
+
         server.addEnvVar("DBNAME", FATSuite.DB_NAME);
         server.addEnvVar("HOST", sqlserver.getContainerIpAddress());
         server.addEnvVar("PORT", Integer.toString(sqlserver.getFirstMappedPort()));
