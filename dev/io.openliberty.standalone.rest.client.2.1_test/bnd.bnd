@@ -1,0 +1,26 @@
+#*******************************************************************************
+# Copyright (c) 2021 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/liberty-release.props
+
+-nobundles=true
+
+test.project: true
+
+-testpath: \
+ io.openliberty.standalone.rest.client.2.1,\
+ org.mock-server:mockserver-client-java;version=5.11.2,\
+ org.mock-server:mockserver-core;version=5.11.2,\
+ org.mock-server:mockserver-junit-rule;version=5.11.2,\
+ org.mock-server:mockserver-netty;version=5.11.2,\
+ org.mock-server:mockserver-logging;version=3.10.7,\
+ org.junit.jupiter:junit-jupiter-api;strategy=exact;version=5.7.1,\
+ org.junit.jupiter:junit-jupiter-engine;strategy=exact;version=5.7.1,\
+ org.mock-server:mockserver-junit-jupiter;strategy=exact;version=5.11.2
