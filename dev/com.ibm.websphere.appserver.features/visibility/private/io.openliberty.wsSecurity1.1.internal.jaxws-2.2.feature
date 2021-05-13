@@ -1,5 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=com.ibm.websphere.appserver.wsSecurity1.1.internal.jaxws-2.2
+symbolicName=io.openliberty.wsSecurity1.1.internal.jaxws-2.2
 WLP-DisableAllFeatures-OnConflict: false
 visibility=private
 singleton=true
