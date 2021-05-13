@@ -70,6 +70,7 @@ public class FeatureUtility {
     private ProgressBar progressBar;
     private Map<String, String> featureToExt;
     private final static String OPEN_LIBERTY_PRODUCT_ID = "io.openliberty";
+    private final static String WEBSPHERE_LIBERTY_GROUP_ID = "com.ibm.websphere.appserver.features";
     private final static String BETA_EDITION = "EARLY_ACCESS";
     private static String to;
 
