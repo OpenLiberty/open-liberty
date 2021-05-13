@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.transaction.test;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.sql.Connection;
 import java.sql.Statement;
 
@@ -116,7 +118,7 @@ public class SSLRecoveryTest extends FATServletClient {
         serverLibertySSL.startServer();
 
         // Server appears to have started ok
-        serverLibertySSL.waitForStringInTrace("Setting state from RECOVERING to ACTIVE");
+        assertNotNull(serverLibertySSL.getServerName() + " did not recover", serverLibertySSL.waitForStringInTrace("Performed recovery for " + serverLibertySSL.getServerName()));
         Log.info(this.getClass(), method, "calling checkRec" + id);
         try {
             sb = runTestWithResponse(serverLibertySSL, APP_NAME + "/SSLRecoveryServlet", "checkRec" + id);

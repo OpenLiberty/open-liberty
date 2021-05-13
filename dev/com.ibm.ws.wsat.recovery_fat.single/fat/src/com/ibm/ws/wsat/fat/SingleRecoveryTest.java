@@ -319,7 +319,7 @@ public class SingleRecoveryTest {
 		System.out.println("Start server return code: " + po.getReturnCode());
 
 		// Server appears to have started ok
-		server.waitForStringInTrace("Setting state from RECOVERING to ACTIVE");
+		server.waitForStringInTrace("Performed recovery for "+server.getServerName());
 
 		if (id.equals("37") || id.equals("38") || id.equals("39")
 				|| id.equals("40") || id.equals("45")) {
