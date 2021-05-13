@@ -29,27 +29,25 @@ public class ThrowableClassFileTransformer implements ClassFileTransformer {
 	public final static String THROWABLE_CLASS_NAME = "java/lang/Throwable";
 	
 	@Override
-	public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain,
-	                        byte[] classfileBuffer) throws IllegalClassFormatException {
+	public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException {
 		byte[] ba = null;
 		
 		if(!className.equals(THROWABLE_CLASS_NAME)) return ba;
 		
-	    try {
-	        ba = transformClassIfThrowable(classfileBuffer, className);;
-	    } catch (Exception e) {
-	
-	        throw e;
-	    }
-	    return ba;
+		try {
+			ba = transformClassIfThrowable(classfileBuffer, className);
+		} catch (Exception e) {
+			throw e;
+		}
+		return ba;
 	}
 	
 	@SuppressWarnings("static-access")
 	private byte[] transformClassIfThrowable(byte[] cBuffer, String nameOfClass) {
-	    ClassReader reader = new ClassReader(cBuffer);
-	    ClassWriter writer = new ClassWriter(reader, ClassWriter.COMPUTE_FRAMES);
-	    ClassVisitor visitor = new ThrowableClassAdapter(writer);
-	    reader.accept(visitor, reader.SKIP_FRAMES);
-	    return writer.toByteArray();
+		ClassReader reader = new ClassReader(cBuffer);
+		ClassWriter writer = new ClassWriter(reader, ClassWriter.COMPUTE_FRAMES);
+		ClassVisitor visitor = new ThrowableClassAdapter(writer);
+		reader.accept(visitor, reader.SKIP_FRAMES);
+		return writer.toByteArray();
 	}
 }
