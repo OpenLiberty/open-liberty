@@ -10,8 +10,6 @@
  *******************************************************************************/
 package io.openliberty.checkpoint.internal;
 
-import java.io.File;
-
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.service.component.annotations.Activate;
@@ -33,14 +31,14 @@ public class CheckpointApplications implements ServerReadyStatus {
     @Activate
     public CheckpointApplications(@Reference Checkpoint checkpoint, BundleContext bc) {
         this.checkpoint = checkpoint;
-        this.doCheckpoint = "applications".equals(bc.getProperty("io.openliberty.checkpoint"));
+        this.doCheckpoint = "applications".equals(bc.getProperty(Checkpoint.CHECKPOINT_PROPERTY_NAME));
     }
 
     @Override
     public void check() {
         if (doCheckpoint) {
             try {
-                checkpoint.snapshot(Phase.APPLICATIONS, new File("snapshot"));
+                checkpoint.snapshot(Phase.APPLICATIONS);
             } catch (SnapshotFailed e) {
             }
         }

@@ -17,7 +17,7 @@ Bundle-Description: Open Liberty Checkoint Support, version ${bVersion}
 Bundle-SymbolicName: io.openliberty.checkpoint
 Private-Package: io.openliberty.checkpoint.internal
 Export-Package: io.openliberty.checkpoint.internal.criu
-Import-Package: org.apache.felix.service.command; resolution:=optional, *
+Import-Package: org.apache.felix.service.command;version="[1.0,2)";resolution:=optional,*
 
 -buildpath: \
     com.ibm.websphere.org.osgi.core, \

@@ -40,6 +40,8 @@ import io.openliberty.checkpoint.spi.SnapshotHookFactory;
                                   policyOption = ReferencePolicyOption.GREEDY),
            property = { "osgi.command.function=snapshot", "osgi.command.scope=criu" })
 public class CheckpointImpl implements Checkpoint {
+    private static final String SNAPSHOT_DIR_NAME = "snapshot";
+
     private final ComponentContext cc;
 
     @Reference(cardinality = ReferenceCardinality.OPTIONAL, policyOption = ReferencePolicyOption.GREEDY)
@@ -56,11 +58,30 @@ public class CheckpointImpl implements Checkpoint {
         this.criu = criu;
     }
 
-    @Override
+    /**
+     * Perform a snapshot for the specified phase. The result of the
+     * snapshot will be stored in the specified directory.
+     * Before the snapshot is taken the registered {@link SnapshotHookFactory#create(Phase)}
+     * methods are called to obtain the {@link SnapshotHook} instances which will participate
+     * in the prepare and restore steps for the snapshot process.
+     * Each snapshot hook instance will their {@link SnapshotHook#prepare(Phase)}
+     * methods are called before the snapshot is taken. After the snapshot
+     * is taken each snapshot hook instance will have their {@link SnapshotHook#restore(Phase)}
+     * methods called.
+     *
+     * @param phase the phase to take the snapshot
+     * @throws SnapshotFailed if the snapshot fails
+     */
     @Descriptor("Take a snapshot")
     public void snapshot(@Parameter(names = "-p", absentValue = "") @Descriptor("The phase to snapshot") Phase phase,
                          @Descriptor("Directory to store the snapshot") File directory) throws SnapshotFailed {
         doSnapshot(phase, directory);
+    }
+
+    @Override
+    @Descriptor("Take a snapshot")
+    public void snapshot(Phase phase) throws SnapshotFailed {
+        doSnapshot(phase, getSnapshotDir());
     }
 
     private void doSnapshot(Phase phase, File directory) throws SnapshotFailed {
@@ -151,4 +172,9 @@ public class CheckpointImpl implements Checkpoint {
     private static SnapshotFailed failedRestore(Exception cause) {
         return new SnapshotFailed(Type.RESTORE_ABORT, "Failed to restore from snapshot.", cause);
     }
+
+    public File getSnapshotDir() {
+        return new File(cc.getBundleContext().getDataFile(""), SNAPSHOT_DIR_NAME);
+    }
+
 }

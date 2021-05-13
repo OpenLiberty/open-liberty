@@ -10,7 +10,6 @@
  *******************************************************************************/
 package io.openliberty.checkpoint.internal;
 
-import java.io.File;
 import java.util.concurrent.Future;
 
 import org.osgi.framework.BundleContext;
@@ -47,7 +46,7 @@ public class CheckpointFeatures implements RuntimeUpdateListener {
                 public void successfulCompletion(Future<Boolean> future, Boolean result) {
                     if (result) {
                         try {
-                            checkpoint.snapshot(Phase.FEATURES, new File("snapshot"));
+                            checkpoint.snapshot(Phase.FEATURES);
                         } catch (SnapshotFailed e) {
                         }
                     }
