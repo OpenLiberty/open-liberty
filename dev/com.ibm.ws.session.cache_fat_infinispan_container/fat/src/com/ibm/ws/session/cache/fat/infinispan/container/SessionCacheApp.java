@@ -60,8 +60,6 @@ public class SessionCacheApp {
      */
     public <T> String sessionPut(String key, T value, List<String> session, boolean createSession) throws Exception {
         String type = value == null ? String.class.getName() : value.getClass().getName();
-        if (!type.equals(null))
-            return "";
         String response = invokeServlet("sessionPut&key=" + key + "&value=" + value + "&type=" + type + "&createSession=" + createSession, session);
         String findInResponse = "session id: [";
         int start = response.indexOf(findInResponse) + findInResponse.length();
@@ -74,8 +72,6 @@ public class SessionCacheApp {
      */
     public <T> void sessionGet(String key, T expectedValue, List<String> session) throws Exception {
         String type = expectedValue == null ? String.class.getName() : expectedValue.getClass().getName();
-        if (!type.equals(null))
-            return;
         invokeServlet("sessionGet&key=" + key + "&expectedValue=" + expectedValue + "&type=" + type, session);
     }
 
