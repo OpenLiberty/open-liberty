@@ -15,18 +15,23 @@ import org.osgi.annotation.versioning.ProviderType;
 
 @ProviderType
 public class SnapshotFailed extends Exception {
-	private static final long serialVersionUID = -669718085413549145L;
-	public enum Type {
-		PREPARE_ABORT,
-		SNAPSHOT_FAILED,
-		RESTORE_ABORT;
-	}
-	private final Type type;
-	public SnapshotFailed(Type type, String msg, Exception cause) {
-		super(msg, cause);
-		this.type = type;
-	}
-	public Type getType() {
-		return type;
-	}
+    private static final long serialVersionUID = -669718085413549145L;
+
+    public enum Type {
+        UNSUPPORTED,
+        PREPARE_ABORT,
+        SNAPSHOT_FAILED,
+        RESTORE_ABORT;
+    }
+
+    private final Type type;
+
+    public SnapshotFailed(Type type, String msg, Exception cause) {
+        super(msg, cause);
+        this.type = type;
+    }
+
+    public Type getType() {
+        return type;
+    }
 }

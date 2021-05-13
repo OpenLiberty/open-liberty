@@ -10,7 +10,8 @@
  *******************************************************************************/
 package io.openliberty.checkpoint.spi;
 
-import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.osgi.annotation.versioning.ProviderType;
 
@@ -19,13 +20,44 @@ import org.osgi.annotation.versioning.ProviderType;
  * Service used to perform CRIU checkpoint operations.
  */
 public interface Checkpoint {
+
+    public static final String CHECKPOINT_PROPERTY_NAME = "io.openliberty.checkpoint";
+
     /**
      * Phase which a snapshot is being taken.
      *
      */
     public enum Phase {
         FEATURES,
-        APPLICATIONS
+        APPLICATIONS;
+
+        static Map<String, Phase> phases;
+        static {
+            phases = new HashMap<String, Phase>();
+            for (Phase p : Phase.values()) {
+                phases.put(p.toString(), p);
+            }
+        }
+
+        /**
+         * Convert a String to a Phase
+         *
+         * @param p The string value
+         * @return The matching phase or null if there is no match. String comparison
+         *         is case insensitive.
+         */
+        public static Phase getPhase(String p) {
+            return phases.get(p.trim().toUpperCase());
+        }
+    }
+
+    /**
+     * Asserts that this platform supports checkpoint. Depending on implementation may
+     * call out to native library support.
+     *
+     * @throws SnapshotFailed if support for snapshot functionality not available.
+     */
+    default void checkpointSupported() throws SnapshotFailed {
     }
 
     /**
@@ -38,10 +70,11 @@ public interface Checkpoint {
      * methods are called before the snapshot is taken. After the snapshot
      * is taken each snapshot hook instance will have their {@link SnapshotHook#restore(Phase)}
      * methods called.
+     * Asserts that this platform supports checkpoint. Depending on implementation may
+     * call out to native library support.
      *
-     * @param phase     the phase to take the snapshot
-     * @param directory the directory to store the snapshot
+     * @param phase the phase to take the snapshot
      * @throws SnapshotFailed if the snapshot fails
      */
-    void snapshot(Phase phase, File directory) throws SnapshotFailed;
+    void snapshot(Phase phase) throws SnapshotFailed;
 }

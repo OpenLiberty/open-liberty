@@ -708,6 +708,10 @@ warning.earlyRelease=CWWKE0953W: This version of {0} is an unsupported early rel
 warning.earlyRelease.explanation=New features that are not fully tested are made available in early releases to elicit feedback before they are included in a supported release.
 warning.earlyRelease.useraction=Do not use an early release version on production systems, since early release versions are not supported.
 
+error.invalidPhaseName=CWWKE0954E: An unknown checkpoint phase was specified. The phase must be one of {0}.
+error.invalidPhaseName.explanation=An unknown phase was passed in as the value of the checkpoint option.
+error.invalidPhaseName.useraction=Reissue the command using one of the listed phases.
+
 info.serverStarting=Starting server {0}.
 info.serverStarted=Server {0} started.
 info.serverStartedWithPID=Server {0} started with process ID {1}.

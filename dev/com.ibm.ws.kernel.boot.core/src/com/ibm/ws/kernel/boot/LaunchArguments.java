@@ -21,6 +21,8 @@ import java.util.Map;
 
 import com.ibm.ws.kernel.boot.internal.BootstrapConstants;
 
+import io.openliberty.checkpoint.spi.Checkpoint;
+
 /**
  *
  */
@@ -179,6 +181,16 @@ public class LaunchArguments {
                         // special handling for clean: it needs to over-ride a system property
                         initProps.put(BootstrapConstants.INITPROP_OSGI_CLEAN, BootstrapConstants.OSGI_CLEAN_VALUE);
                         System.clearProperty(BootstrapConstants.INITPROP_OSGI_CLEAN);
+                    } else if (argToLower.startsWith("--checkpoint=")) {
+                        String phase = argToLower.substring("--checkpoint=".length());
+                        if (Checkpoint.Phase.getPhase(phase) == null) {
+                            System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("error.invalidPhase"), phase));
+                            System.out.println();
+                            returnValue = ReturnCode.BAD_ARGUMENT;
+                        } else {
+                            initProps.put(Checkpoint.CHECKPOINT_PROPERTY_NAME, phase);
+                            System.clearProperty(Checkpoint.CHECKPOINT_PROPERTY_NAME);
+                        }
                     } else if (isClient && argToLower.equals("--autoacceptsigner")) {
                         initProps.put(BootstrapConstants.AUTO_ACCEPT_SIGNER, "true");
                     } else {

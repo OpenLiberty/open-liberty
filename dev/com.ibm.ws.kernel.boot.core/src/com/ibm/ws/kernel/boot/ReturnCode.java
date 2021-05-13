@@ -68,6 +68,7 @@ public enum ReturnCode implements ExitCode {
     JAVADUMP_ACTION(-10, "javadump.log"),
     CREATE_ACTION(-11, "create.log"),
     LIST_ACTION(-12),
+    CHECKPOINT_ACTION(-13),
     INVALID(13),
     PACKAGE_WLP_ACTION(-15, "package.log"),
     PAUSE_ACTION(-16),
