@@ -20,6 +20,7 @@ import org.junit.runner.RunWith;
 
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.security.fat.common.TestHelpers;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.RSCommonTestTools;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.ValidationData.validationData;
@@ -113,12 +114,12 @@ public class LibertyOP_ErrorConfigTests_oidc_usingSocialDiscoveryConfig extends 
         // the reconfig will try to start the discovery service again and appropriate error messages can be checked in the test. No need to verify results here.
 
         Log.info(thisClass, "setupBeforeFirstTest", "Single time test setup - Accessing social resource to perform initial discovery.");
-        WebClient webClient = getWebClient();
+        WebClient webClient = TestHelpers.getWebClient(); // can't use the static method, so handle one off creation/deletion in this setup
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_oidcLogin1");
         List<validationData> expectations = null;
         invokeSocialResource(_testName, webClient, updatedSocialTestSettings, expectations);
-
+        TestHelpers.destroyWebClient(webClient);
     }
 
 }

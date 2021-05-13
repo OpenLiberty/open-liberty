@@ -113,7 +113,7 @@ public class LibertyOP_BasicConfigTests_oidc_usingSocialConfig extends Social_Ba
     @Test
     public void Social_BasicConfigTests_hostNameVerificationEnabledTrue() throws Exception {
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_hostNameVerificationEnabledTrue");
@@ -152,7 +152,7 @@ public class LibertyOP_BasicConfigTests_oidc_usingSocialConfig extends Social_Ba
     @Test
     public void Social_BasicConfigTests_fowardLoginParameter() throws Exception {
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_forwardLoginParameter?login_hint=bob@example.com");

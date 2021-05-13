@@ -84,7 +84,7 @@ public class SameSiteTests extends SocialCommonTest {
 
     public void mainPathTest(SameSiteTestExpectations.TestServerExpectations testExpectation, SocialTestSettings settings, String subTestPrefix) throws Exception {
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         Log.info(thisClass, "main", "redirect enabled: " + webClient.getOptions().isRedirectEnabled());
 
