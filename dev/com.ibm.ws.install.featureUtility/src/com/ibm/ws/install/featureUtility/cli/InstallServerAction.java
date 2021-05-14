@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,6 +31,7 @@ import com.ibm.ws.install.featureUtility.FeatureUtilityExecutor;
 import com.ibm.ws.install.internal.InstallLogUtils;
 import com.ibm.ws.install.internal.InstallUtils;
 import com.ibm.ws.install.internal.ProgressBar;
+import com.ibm.ws.install.internal.InstallLogUtils.Messages;
 import com.ibm.ws.install.internal.asset.ServerAsset;
 import com.ibm.ws.kernel.boot.ReturnCode;
 import com.ibm.ws.kernel.boot.cmdline.ActionHandler;
@@ -52,9 +54,12 @@ public class InstallServerAction implements ActionHandler {
         private List<String> featureNames;
         private String fromDir;
         private String toDir;
+        private String featuresBom;
+        private List<String> additionalJsons;
         private Boolean noCache;
         private Boolean acceptLicense;
         private ProgressBar progressBar;
+        private Map<String, String> featureToExt;
 
 
         @Override public ExitCode handleTask(PrintStream stdout, PrintStream stderr, Arguments args) {
@@ -91,9 +96,21 @@ public class InstallServerAction implements ActionHandler {
                 
                 this.acceptLicense = args.getOption("acceptlicense") != null;
                 
+                this.featuresBom = args.getOption("featuresbom");
+                this.additionalJsons = new ArrayList<String>();
+                try {
+					if (featuresBom != null && checkValidCoord(featuresBom)) {
+						additionalJsons.add(bomCoordToJsonCoord(featuresBom));
+					}
+				} catch (InstallException e1) {
+					logger.log(Level.SEVERE, e1.getMessage(), e1);
+                    return FeatureUtilityExecutor.returnCode(e1.getRc());
+				}
+                
                 this.toDir = args.getOption("to");
 
                 this.progressBar = ProgressBar.getInstance();
+                this.featureToExt = new HashMap<String, String>();
 
                 HashMap<String, Double> methodMap = new HashMap<>();
                 // initialize feature utility and install kernel map
@@ -125,6 +142,26 @@ public class InstallServerAction implements ActionHandler {
                 }
 
         }
+        
+        private String bomCoordToJsonCoord(String bomCoordinate) {
+			String[] coordSplit = bomCoordinate.split(":");
+			String groupId = coordSplit[0];
+			String artifactId = "features";
+			String version = coordSplit[2];
+			return String.format("%s:%s:%s", groupId, artifactId, version);
+		}
+
+
+		private boolean checkValidCoord(String bomCoordinate) throws InstallException {
+        	boolean result = false;
+			if(bomCoordinate.split(":").length == 3) {
+				result = true;
+			} else {
+				throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_INVALID_FEATURE_BOM_COORDINATE", featuresBom));
+			}
+			return result;
+		}
+        
         private ReturnCode serverInit(String fileName) throws InstallException, IOException {
 
                 File serverXML = (fileName.toLowerCase().endsWith(InstallUtils.SERVER_XML)) ? new File(fileName)
@@ -200,32 +237,23 @@ public class InstallServerAction implements ActionHandler {
                 List<String> userFeatures = new ArrayList<>();
                 // find all user features in server.xml
                 for(String asset : assetIds){
-                        if(asset.startsWith("usr:")){
-                                userFeatures.add(asset.substring("usr:".length()));
-                        } else {
-                                features.add(asset);
-                        }
+                	if(asset.contains(":")){
+                		String[] assetSplit = asset.split(":");
+                		featureToExt.put(assetSplit[1], assetSplit[0]);
+                    	featureNames.add(assetSplit[1]);
+                	} else {
+                		featureToExt.put(asset, "");
+                		featureNames.add(asset);
+                	}
                 }
-                if(!userFeatures.isEmpty()){
-                        logger.info(InstallLogUtils.Messages.INSTALL_KERNEL_MESSAGES.getMessage("MSG_USER_FEATURE_SERVER_XML", userFeatures.toString()));
-
-                        // remove any user features before installation.
-                        for(String feature : features){
-                                if(!userFeatures.contains(feature)){
-                                    featureNames.add(feature);
-                                }
-                        }
-                } else {
-                        featureNames.addAll(features);
-                }
-
                 return ReturnCode.OK;
         }
 
         private ExitCode install() {
                 try {
                         featureUtility = new FeatureUtility.FeatureUtilityBuilder().setFromDir(fromDir)
-                                        .setFeaturesToInstall(featureNames).setNoCache(noCache).setlicenseAccepted(acceptLicense).build();
+                                        .setFeaturesToInstall(featureNames).setNoCache(noCache).setlicenseAccepted(acceptLicense).setAdditionalJsons(additionalJsons).build();
+                        featureUtility.setFeatureToExt(featureToExt);
                         featureUtility.installFeatures();
                 } catch (InstallException e) {
                         logger.log(Level.SEVERE, e.getMessage(), e);
