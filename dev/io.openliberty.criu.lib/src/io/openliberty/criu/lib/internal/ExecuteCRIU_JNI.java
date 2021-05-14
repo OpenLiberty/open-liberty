@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.checkpoint.internal;
+package io.openliberty.criu.lib.internal;
 
 import java.io.File;
 import java.io.IOException;

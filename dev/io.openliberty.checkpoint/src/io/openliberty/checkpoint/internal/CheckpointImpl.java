@@ -42,7 +42,7 @@ import io.openliberty.checkpoint.spi.SnapshotHookFactory;
 public class CheckpointImpl implements Checkpoint {
     private final ComponentContext cc;
 
-    @Reference(policyOption = ReferencePolicyOption.GREEDY)
+    @Reference(cardinality = ReferenceCardinality.OPTIONAL, policyOption = ReferencePolicyOption.GREEDY)
     private volatile ExecuteCRIU criu;
 
     @Activate
@@ -69,7 +69,12 @@ public class CheckpointImpl implements Checkpoint {
         List<SnapshotHook> snapshotHooks = getHooks(factories, phase);
         prepare(snapshotHooks);
         try {
-            criu.dump(directory);
+            ExecuteCRIU currentCriu = criu;
+            if (currentCriu == null) {
+                throw new SnapshotFailed(Type.SNAPSHOT_FAILED, "The criu command is not available.", null);
+            } else {
+                currentCriu.dump(directory);
+            }
         } catch (Exception e) {
             abortPrepare(snapshotHooks, e);
             throw new SnapshotFailed(Type.SNAPSHOT_FAILED, "Failed to create snapshot.", e);
