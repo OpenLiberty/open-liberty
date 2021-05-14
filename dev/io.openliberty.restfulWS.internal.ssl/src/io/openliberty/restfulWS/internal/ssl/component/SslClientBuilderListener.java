@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -57,12 +57,11 @@ public class SslClientBuilderListener implements ClientBuilderListener {
     @Override
     public void building(ClientBuilder clientBuilder) {
         Object sslRef = clientBuilder.getConfiguration().getProperty(SSL_REFKEY);
-        if (sslRef != null) {
-            try {
-                clientBuilder.sslContext(getSSLContext(toString(sslRef)));
-            } catch (SSLException ex) {
-                throw new IllegalStateException(ex);
-            }
+        try {
+            SSLContext sslContext = getSSLContext(toString(sslRef));
+            clientBuilder.sslContext( sslContext );
+        } catch (SSLException ex) {
+            throw new IllegalStateException(ex);
         }
     }
 
@@ -85,7 +84,7 @@ public class SslClientBuilderListener implements ClientBuilderListener {
             if (cause instanceof Error) {
                 throw (Error) cause;
             }
-            throw new SSLException((Exception)cause);
+            throw new SSLException((Exception) cause);
         }
     }
 
@@ -96,6 +95,6 @@ public class SslClientBuilderListener implements ClientBuilderListener {
         if (o instanceof String) {
             return (String) o;
         }
-        return o == null ? "null" : o.toString();
+        return o == null ? null : o.toString();
     }
 }
