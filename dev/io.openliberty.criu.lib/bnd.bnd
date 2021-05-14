@@ -16,4 +16,11 @@
    @${repo;org.openjdk.criu:criu-jar;1.0;EXACT}!/!META-INF/maven/*
 
 -buildpath: \
-	org.openjdk.criu:criu-jar;strategy=exact;version=1.0
+    org.openjdk.criu:criu-jar;strategy=exact;version=1.0, \
+    io.openliberty.checkpoint;version=latest, \
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+    com.ibm.wsspi.org.osgi.service.component;version=latest, \
+    com.ibm.wsspi.org.osgi.service.component.annotations;version=latest
+
+-dsannotations: \
+    io.openliberty.criu.lib.internal.ExecuteCRIU_JNI, \
