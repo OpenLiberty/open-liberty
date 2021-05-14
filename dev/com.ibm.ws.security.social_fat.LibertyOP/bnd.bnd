@@ -17,7 +17,7 @@ src: \
 fat.project: true
 
 tested.features: oauth-2.0, securitylibertyinternals-1.0, openidconnectserver-1.0, jsp-2.3, jwt-1.0, sociallogin-1.0, jaxrs-2.0, el-3.0, \
-                 restfulwsclient-3.0, restfulws-3.0
+                 restfulwsclient-3.0, restfulws-3.0, appsecurity-4.0, expressionlanguage-4.0, pages-3.0
 
 -buildpath: \
     com.ibm.json4j;version=latest,\
