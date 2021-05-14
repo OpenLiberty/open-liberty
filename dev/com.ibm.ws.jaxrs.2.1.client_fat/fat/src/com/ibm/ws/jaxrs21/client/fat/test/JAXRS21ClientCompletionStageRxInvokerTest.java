@@ -194,28 +194,80 @@ public class JAXRS21ClientCompletionStageRxInvokerTest extends JAXRS21AbstractTe
     }
 
     @Test
-    public void testCompletionStageRxInvoker_getReceiveTimeout() throws Exception {
+    public void testCompletionStageRxInvoker_getCbReceiveTimeout() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
-        this.runTestOnServer(completionStageRxInvokerTarget, "testCompletionStageRxInvoker_getReceiveTimeout", p, "Timeout as expected");
+        this.runTestOnServer(completionStageRxInvokerTarget, "testCompletionStageRxInvoker_getCbReceiveTimeout", p, "Timeout as expected");
+    }
+
+    @Test
+    public void testCompletionStageRxInvoker_getIbmReceiveTimeout() throws Exception {
+        Map<String, String> p = new HashMap<String, String>();
+        this.runTestOnServer(completionStageRxInvokerTarget, "testCompletionStageRxInvoker_getIbmReceiveTimeout", p, "Timeout as expected");
+    }
+
+    @Test
+    public void testCompletionStageRxInvoker_getIbmOverridesCbReceiveTimeout() throws Exception {
+        Map<String, String> p = new HashMap<String, String>();
+        this.runTestOnServer(completionStageRxInvokerTarget, "testCompletionStageRxInvoker_getIbmOverridesCbReceiveTimeout", p, "Timeout as expected");
     }
 
     @Test
     @SkipForRepeat("EE9_FEATURES") // Skip this test for EE9 as this test is failing intermittently with EE9.  See issue https://github.com/OpenLiberty/open-liberty/issues/16651
-    public void testCompletionStageRxInvoker_getConnectionTimeout() throws Exception {
+    public void testCompletionStageRxInvoker_getCbConnectionTimeout() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
-        this.runTestOnServer(completionStageRxInvokerTarget, "testCompletionStageRxInvoker_getConnectionTimeout", p, "Timeout as expected");
-    }
-
-    @Test
-    public void testCompletionStageRxInvoker_postReceiveTimeout() throws Exception {
-        Map<String, String> p = new HashMap<String, String>();
-        this.runTestOnServer(completionStageRxInvokerTarget, "testCompletionStageRxInvoker_postReceiveTimeout", p, "Timeout as expected");
+        this.runTestOnServer(completionStageRxInvokerTarget, "testCompletionStageRxInvoker_getCbConnectionTimeout", p, "Timeout as expected");
     }
 
     @Test
     @SkipForRepeat("EE9_FEATURES") // Skip this test for EE9 as this test is failing intermittently with EE9.  See issue https://github.com/OpenLiberty/open-liberty/issues/16651
-    public void testCompletionStageRxInvoker_postConnectionTimeout() throws Exception {
+    public void testCompletionStageRxInvoker_getIbmConnectionTimeout() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
-        this.runTestOnServer(completionStageRxInvokerTarget, "testCompletionStageRxInvoker_postConnectionTimeout", p, "Timeout as expected");
+        this.runTestOnServer(completionStageRxInvokerTarget, "testCompletionStageRxInvoker_getIbmConnectionTimeout", p, "Timeout as expected");
+    }
+
+    @Test
+    @SkipForRepeat("EE9_FEATURES") // Skip this test for EE9 as this test is failing intermittently with EE9.  See issue https://github.com/OpenLiberty/open-liberty/issues/16651
+    public void testCompletionStageRxInvoker_getIbmOverridesCbConnectionTimeout() throws Exception {
+        Map<String, String> p = new HashMap<String, String>();
+        this.runTestOnServer(completionStageRxInvokerTarget, "testCompletionStageRxInvoker_getIbmOverridesCbConnectionTimeout", p, "Timeout as expected");
+    }
+
+    @Test
+    public void testCompletionStageRxInvoker_postCbReceiveTimeout() throws Exception {
+        Map<String, String> p = new HashMap<String, String>();
+        this.runTestOnServer(completionStageRxInvokerTarget, "testCompletionStageRxInvoker_postCbReceiveTimeout", p, "Timeout as expected");
+    }
+
+    @Test
+    public void testCompletionStageRxInvoker_postIbmReceiveTimeout() throws Exception {
+        Map<String, String> p = new HashMap<String, String>();
+        this.runTestOnServer(completionStageRxInvokerTarget, "testCompletionStageRxInvoker_postIbmReceiveTimeout", p, "Timeout as expected");
+    }
+
+    @Test
+    public void testCompletionStageRxInvoker_postIbmOverridesCbReceiveTimeout() throws Exception {
+        Map<String, String> p = new HashMap<String, String>();
+        this.runTestOnServer(completionStageRxInvokerTarget, "testCompletionStageRxInvoker_postIbmOverridesCbReceiveTimeout", p, "Timeout as expected");
+    }
+
+    @Test
+    @SkipForRepeat("EE9_FEATURES") // Skip this test for EE9 as this test is failing intermittently with EE9.  See issue https://github.com/OpenLiberty/open-liberty/issues/16651
+    public void testCompletionStageRxInvoker_postCbConnectionTimeout() throws Exception {
+        Map<String, String> p = new HashMap<String, String>();
+        this.runTestOnServer(completionStageRxInvokerTarget, "testCompletionStageRxInvoker_postCbConnectionTimeout", p, "Timeout as expected");
+    }
+
+    @Test
+    @SkipForRepeat("EE9_FEATURES") // Skip this test for EE9 as this test is failing intermittently with EE9.  See issue https://github.com/OpenLiberty/open-liberty/issues/16651
+    public void testCompletionStageRxInvoker_postIbmConnectionTimeout() throws Exception {
+        Map<String, String> p = new HashMap<String, String>();
+        this.runTestOnServer(completionStageRxInvokerTarget, "testCompletionStageRxInvoker_postIbmConnectionTimeout", p, "Timeout as expected");
+    }
+
+    @Test
+    @SkipForRepeat("EE9_FEATURES") // Skip this test for EE9 as this test is failing intermittently with EE9.  See issue https://github.com/OpenLiberty/open-liberty/issues/16651
+    public void testCompletionStageRxInvoker_postIbmOverridesCbConnectionTimeout() throws Exception {
+        Map<String, String> p = new HashMap<String, String>();
+        this.runTestOnServer(completionStageRxInvokerTarget, "testCompletionStageRxInvoker_postIbmOverridesCbConnectionTimeout", p, "Timeout as expected");
     }
 }
