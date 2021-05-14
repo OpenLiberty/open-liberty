@@ -7,8 +7,8 @@ IBM-API-Package: jakarta.json; type="spec", \
  jakarta.json.spi; type="spec"
 IBM-ShortName: jsonp-2.0
 Subsystem-Name: Jakarta JSON Processing 2.0
--features=io.openliberty.jsonpInternal-2.0, \
- com.ibm.websphere.appserver.eeCompatible-9.0
+-features=com.ibm.websphere.appserver.eeCompatible-9.0, \
+  io.openliberty.jsonpInternal-2.0
 kind=beta
 edition=core
 WLP-Activation-Type: parallel

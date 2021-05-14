@@ -8,10 +8,9 @@ IBM-App-ForceRestart: install, uninstall
 IBM-API-Package: \
   org.eclipse.microprofile.context; type="stable", \
   org.eclipse.microprofile.context.spi; type="stable"
--features=\
-  com.ibm.websphere.appserver.concurrent-1.0, \
+-features=io.openliberty.mpCompatible-4.0, \
   com.ibm.websphere.appserver.org.eclipse.microprofile.contextpropagation-1.2, \
-  io.openliberty.mpCompatible-4.0
+  com.ibm.websphere.appserver.concurrent-1.0
 -bundles=\
   com.ibm.ws.microprofile.contextpropagation.1.0
 kind=ga

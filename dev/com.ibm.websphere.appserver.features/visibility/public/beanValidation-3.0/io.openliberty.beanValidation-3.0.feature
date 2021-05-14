@@ -16,14 +16,13 @@ IBM-API-Package: \
   jakarta.validation.spi; type="spec",\
   jakarta.validation.valueextraction; type="spec",\
   com.ibm.ws.beanvalidation.accessor; type="internal"
--features=\
-  com.ibm.websphere.appserver.eeCompatible-9.0, \
-  com.ibm.websphere.appserver.transaction-2.0, \
-  io.openliberty.beanValidationCore-2.0, \
-  io.openliberty.expressionLanguage-4.0, \
-  io.openliberty.jakarta.cdi-3.0, \
+-features=com.ibm.websphere.appserver.eeCompatible-9.0, \
+  io.openliberty.jakarta.validation-3.0, \
   io.openliberty.jakarta.interceptor-2.0, \
-  io.openliberty.jakarta.validation-3.0
+  io.openliberty.beanValidationCore-2.0, \
+  com.ibm.websphere.appserver.transaction-2.0, \
+  io.openliberty.expressionLanguage-4.0, \
+  io.openliberty.jakarta.cdi-3.0
 -bundles=\
   com.ibm.ws.beanvalidation.v20.jakarta, \
   com.ibm.ws.org.jboss.logging, \
