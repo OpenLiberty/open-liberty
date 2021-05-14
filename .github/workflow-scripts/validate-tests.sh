@@ -20,7 +20,7 @@ sort -o $TEMP_COMPAR_DIR/expected $TEMP_COMPAR_DIR/expected
 #Collect actual fats that exist in file system
 for dir in $DEV_DIR/*_fat*/
 do 
-    dirName=$(basename -- "$dir")  # Strip /home/etc/...
+    dirName=$(basename -- $dir)  # Strip /home/etc/...
     echo $dirName >> $TEMP_COMPAR_DIR/actual
 done
 sort -o $TEMP_COMPAR_DIR/actual $TEMP_COMPAR_DIR/actual

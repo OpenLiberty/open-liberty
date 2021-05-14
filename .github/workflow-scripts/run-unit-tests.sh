@@ -14,7 +14,7 @@ cd dev
 chmod +x gradlew
 
 # global variables
-OUTPUT_FILE=tmp/gradle.log && mkdir -p -- "$(dirname -- "$OUTPUT_FILE")" && touch -- "$OUTPUT_FILE"
+OUTPUT_FILE=tmp/gradle.log && mkdir -p -- $(dirname -- $OUTPUT_FILE) && touch -- $OUTPUT_FILE
 UNIT_DIR=$PWD/unit-results/ && mkdir -p $UNIT_DIR
 
 # Redirect stdout to log file that will get archived if build fails
