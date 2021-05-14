@@ -10,7 +10,7 @@
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/rejar.props
 
-bVersion=1.0
+bVersion=2.0
 
 Bundle-SymbolicName: io.openliberty.io.smallrye.config; singleton:=true
 
@@ -40,7 +40,7 @@ Private-Package: \
 	io.openliberty.microprofile.config.internal.extension
 
 Export-Package: \
-        io.smallrye.config.*;version="2.3.0"
+        io.smallrye.config.*;version="3.0.0"
 
 -buildpath: \
   io.openliberty.io.smallrye.common;version=latest, \
