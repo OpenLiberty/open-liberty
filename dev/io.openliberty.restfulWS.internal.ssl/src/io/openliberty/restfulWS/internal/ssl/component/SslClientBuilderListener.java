@@ -13,6 +13,7 @@ package io.openliberty.restfulWS.internal.ssl.component;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import javax.net.ssl.SSLContext;
@@ -58,20 +59,22 @@ public class SslClientBuilderListener implements ClientBuilderListener {
     public void building(ClientBuilder clientBuilder) {
         Object sslRef = clientBuilder.getConfiguration().getProperty(SSL_REFKEY);
         try {
-            SSLContext sslContext = getSSLContext(toString(sslRef));
-            clientBuilder.sslContext( sslContext );
+            getSSLContext(toString(sslRef)).ifPresent(clientBuilder::sslContext);
         } catch (SSLException ex) {
             throw new IllegalStateException(ex);
         }
     }
 
-    private SSLContext getSSLContext(String sslRef) throws SSLException {
+    private Optional<SSLContext> getSSLContext(String sslRef) throws SSLException {
+        if (jsseHelper == null) {
+            return Optional.empty();
+        }
         if (null == System.getSecurityManager()) {
-            return jsseHelper.getSSLContext(sslRef, null, null);
+            return Optional.of(jsseHelper.getSSLContext(sslRef, null, null));
         }
         try {
-            return AccessController.doPrivileged((PrivilegedExceptionAction<SSLContext>) () -> {
-                return jsseHelper.getSSLContext(sslRef, null, null);
+            return AccessController.doPrivileged((PrivilegedExceptionAction<Optional<SSLContext>>) () -> {
+                return Optional.of(jsseHelper.getSSLContext(sslRef, null, null));
             });
         } catch (PrivilegedActionException pae) {
             Throwable cause = pae.getCause();
