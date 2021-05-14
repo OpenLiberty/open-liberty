@@ -8,9 +8,11 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= \
- jar:${fileuri;${repo;org.openjdk.criu:criu-jar;1.0;EXACT}}!/META-INF/MANIFEST.MF,\
+-include= ~../cnf/resources/bnd/bundle.props, \
+ jar:${fileuri;${repo;org.openjdk.criu:criu-jar;1.0;EXACT}}!/META-INF/MANIFEST.MF, \
  bnd.overrides
+
+Import-Package: *
 
 -includeresource: \
    @${repo;org.openjdk.criu:criu-jar;1.0;EXACT}!/!META-INF/maven/*
@@ -23,4 +25,6 @@
     com.ibm.wsspi.org.osgi.service.component.annotations;version=latest
 
 -dsannotations: \
-    io.openliberty.criu.lib.internal.ExecuteCRIU_JNI, \
+    io.openliberty.criu.lib.internal.ExecuteCRIU_JNI
+
+-privatepackage: io.openliberty.criu.lib.internal
