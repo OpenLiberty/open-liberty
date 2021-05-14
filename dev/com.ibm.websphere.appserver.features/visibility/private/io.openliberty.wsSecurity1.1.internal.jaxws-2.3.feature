@@ -1,11 +1,11 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=io.openliberty.wsSecurity1.1.internal.jaxws-2.3
-WLP-DisableAllFeatures-OnConflict: true
-WLP-Activation-Type: parallel
 visibility=private
 singleton=true
 -features=\
- com.ibm.websphere.appserver.wss4j-2.3
+ com.ibm.websphere.appserver.jaxws-2.3, \
+ com.ibm.websphere.appserver.wss4j-2.3, \
+ com.ibm.websphere.appserver.httpcommons-1.0
 -bundles=\
  com.ibm.ws.org.joda.time.2.9.9, \
  com.ibm.ws.org.cryptacular.cryptacular.1.2.4, \
