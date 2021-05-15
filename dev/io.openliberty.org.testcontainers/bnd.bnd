@@ -18,7 +18,7 @@ Bundle-Description: FAT Testcontainer Bundle; version=${bVersion}
 Export-Package: \
 	org.testcontainers.*;version="1.15.3",\
 	com.github.*;version="3.2.8",\
-	org.rnoth.*;version="1.0.8",\
+	org.rnorth.*;version="1.0.8",\
 	org.slf4j.*;version="1.7.30"
 
 test.project: true

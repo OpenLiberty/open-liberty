@@ -41,6 +41,4 @@ fat.bucket.db.type: Derby
     com.ibm.websphere.javaee.transaction.1.2;version=latest,\
     com.ibm.websphere.javaee.validation.2.0;version=latest,\
     io.openliberty.jakarta.persistence.3.0;version=latest,\
-    io.openliberty.org.testcontainers;version=latest,\
-    org.rnorth.duct-tape:duct-tape;version=latest,\
-    org.slf4j:slf4j-api;version=latest
+    io.openliberty.org.testcontainers;version=latest
