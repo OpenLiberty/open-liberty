@@ -70,6 +70,7 @@ public class JAXRSClientSSLProxyAuthTest extends AbstractTest {
         System.setProperty("javax.net.ssl.keyStorePassword", "passw0rd");
         System.setProperty("javax.net.ssl.trustStore", "publish/servers/jaxrs20.client.ProxyAuthTest/resources/security/trust.jks");
         System.setProperty("javax.net.ssl.trustStorePassword", "passw0rd");
+        System.setProperty("mockserver.useBouncyCastleForKeyAndCertificateGeneration", "true");
 
         proxyPort = Integer.getInteger("member_3.http");
         proxy = ClientAndServer.startClientAndServer(proxyPort);
