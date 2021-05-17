@@ -38,7 +38,7 @@ dependencies {
    requiredLibs project(':com.ibm.ws.security.fat.common')            
 }
 
-
+addRequiredLibraries.dependsOn addJakartaTransformer
 
 /*
  * This is where all application ZIP and WARs will be built.

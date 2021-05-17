@@ -14,14 +14,18 @@
 task copyTokenMapping (dependsOn: [':com.ibm.ws.security.oauth.oidc_fat.common:assemble']) {
   doLast {
     copy { 
-      from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').buildDir, 'com.ibm.ws.security.oauth20.token.mapping.jar')
+      from project(':com.ibm.ws.security.oauth.oidc_fat.common').buildDir
       into new File(autoFvtDir, 'publish/bundles')
+      include 'com.ibm.ws.security.oauth20.token.mapping.jar', 'com.ibm.ws.security.oauth20.token.mapping.jakarta.jar' 
       rename 'com.ibm.ws.security.oauth20.token.mapping.jar', 'com.ibm.ws.security.oauth20.token.mapping_1.0.jar'
+      rename 'com.ibm.ws.security.oauth20.token.mapping.jakarta.jar', 'com.ibm.ws.security.oauth20.token.mapping_2.0.jar'
     }
 
     copy { 
-      from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, 'publish/test-features/oauth20TokenMapping-1.0.mf')
+      from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, 'publish/test-features')
+      include 'oauth20TokenMapping-1.0.mf', 'oauth20TokenMapping-2.0.mf'
       into new File(autoFvtDir, 'publish/features')
     }
+    
   }
 }

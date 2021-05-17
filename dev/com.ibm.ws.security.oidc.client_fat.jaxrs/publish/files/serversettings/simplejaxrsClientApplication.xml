@@ -29,5 +29,7 @@
 		</application-bnd>
 	</application>
 	<javaPermission className="javax.security.auth.AuthPermission" name="wssecurity.getRunAsSubject" />
+	<javaPermission className="java.util.PropertyPermission" actions="read" name="*"/>
+	<javaPermission className="java.lang.RuntimePermission" name="getenv.resteasy.original.webapplicationexception.behavior"/>
 
 </server>    

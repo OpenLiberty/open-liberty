@@ -19,11 +19,11 @@ import org.junit.Test;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.CommonTest;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
-import com.ibm.ws.security.oauth_oidc.fat.commonTest.MessageConstants;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestSettings;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.ValidationData.validationData;
 import com.meterware.httpunit.WebConversation;
 
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
@@ -44,16 +44,16 @@ public class JaxRSClientAPITests extends CommonTest {
     public static String test_FinalAction = Constants.LOGIN_USER;
     protected static String hostName = "localhost";
     public static final String MSG_USER_NOT_IN_REG = "CWWKS1106A";
-    private static final Boolean contextWillNotBeSet = false;
-    private static final Boolean contextWillBeSet = true;
+    protected static final Boolean contextWillNotBeSet = false;
+    protected static final Boolean contextWillBeSet = true;
 
     String errMsg0x704 = "CertPathBuilderException";
 
     /**
      * Add additional checks for output from the other new API's
-     * 
+     *
      */
-    private List<validationData> setRSOauthExpectationsWithAPIChecks(String testCase, String finalAction, TestSettings settings, Boolean contextWillBeSet) throws Exception {
+    protected List<validationData> setRSOauthExpectationsWithAPIChecks(String testCase, String finalAction, TestSettings settings, Boolean contextWillBeSet) throws Exception {
 
         String bearer, scopes = null;
         List<validationData> expectations = vData.addSuccessStatusCodes(null);
@@ -82,9 +82,9 @@ public class JaxRSClientAPITests extends CommonTest {
 
     /**
      * Add additional checks for output from the other new API's
-     * 
+     *
      */
-    private List<validationData> setRSOauth401Expectations(String finalAction) throws Exception {
+    protected List<validationData> setRSOauth401Expectations(String finalAction) throws Exception {
 
         List<validationData> expectations = vData.addSuccessStatusCodes(null, finalAction);
         expectations = vData.addResponseStatusExpectation(expectations, finalAction, Constants.INTERNAL_SERVER_ERROR_STATUS);
@@ -93,7 +93,7 @@ public class JaxRSClientAPITests extends CommonTest {
         return expectations;
     }
 
-    private TestSettings updateMap(TestSettings settings, String theKey, String theValue) throws Exception {
+    protected TestSettings updateMap(TestSettings settings, String theKey, String theValue) throws Exception {
         //Map<String, String> map = new HashMap <String,String> ();
 
         Map<String, String> currentMap = settings.getRequestParms();
@@ -209,9 +209,10 @@ public class JaxRSClientAPITests extends CommonTest {
 
     }
 
+    @SkipForRepeat(SkipForRepeat.EE9_FEATURES) // 17160 - EE9 client properties not supported yet
     @Mode(TestMode.LITE)
     @Test
-    public void APIOidcJaxRSClientTests_jaxrsClientProperty_string_true() throws Exception {
+    public void APIOidcJaxRSClientTests_jaxrsOAuthClientProperty_string_true() throws Exception {
 
         WebConversation wc = new WebConversation();
 
@@ -225,9 +226,10 @@ public class JaxRSClientAPITests extends CommonTest {
 
     }
 
+    @SkipForRepeat(SkipForRepeat.EE9_FEATURES) // 17160 - EE9 client properties not supported yet
     @Mode(TestMode.LITE)
     @Test
-    public void APIOidcJaxRSClientTests_jaxrsClientProperty_boolean_true() throws Exception {
+    public void APIOidcJaxRSClientTests_jaxrsOAuthClientProperty_boolean_true() throws Exception {
 
         WebConversation wc = new WebConversation();
 
@@ -241,9 +243,10 @@ public class JaxRSClientAPITests extends CommonTest {
 
     }
 
+    @SkipForRepeat(SkipForRepeat.EE9_FEATURES) // 17160 - EE9 client properties not supported yet
     @Mode(TestMode.LITE)
     @Test
-    public void APIOidcJaxRSClientTests_jaxrsClientProperty_string_false() throws Exception {
+    public void APIOidcJaxRSClientTests_jaxrsOAuthClientProperty_string_false() throws Exception {
 
         WebConversation wc = new WebConversation();
 
@@ -258,15 +261,98 @@ public class JaxRSClientAPITests extends CommonTest {
 
     }
 
+    @SkipForRepeat(SkipForRepeat.EE9_FEATURES) // 17160 - EE9 client properties not supported yet
     @Mode(TestMode.LITE)
     @Test
-    public void APIOidcJaxRSClientTests_jaxrsClientProperty_boolean_false() throws Exception {
+    public void APIOidcJaxRSClientTests_jaxrsOAuthClientProperty_boolean_false() throws Exception {
 
         WebConversation wc = new WebConversation();
 
         TestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.setScope("openid profile");
         updateMap(updatedTestSettings, Constants.WHERE, Constants.PROPAGATE_TOKEN_BOOLEAN_FALSE);
+
+        List<validationData> expectations = setRSOauth401Expectations(test_FinalAction);
+        // issue 3710 // expectations = validationTools.addMessageExpectation(genericTestServer, expectations, test_FinalAction, Constants.MESSAGES_LOG, Constants.STRING_MATCHES, "Did not find message in logs saying a propagation token was missing.", MessageConstants.CWWKS1726E_MISSING_PROPAGATION_TOKEN);
+
+        genericRP(_testName, wc, updatedTestSettings, test_GOOD_LOGIN_ACTIONS, expectations);
+
+    }
+
+    @SkipForRepeat(SkipForRepeat.EE9_FEATURES) // 17160 - EE9 client properties not supported yet
+    @Mode(TestMode.LITE)
+    @Test
+    public void APIOidcJaxRSClientTests_jaxrsJWTClientProperty_string_true() throws Exception {
+
+        WebConversation wc = new WebConversation();
+
+        TestSettings updatedTestSettings = testSettings.copyTestSettings();
+        updatedTestSettings.setScope("openid profile");
+        updateMap(updatedTestSettings, Constants.WHERE, Constants.PROPAGATE_JWT_TOKEN_STRING_TRUE);
+
+        List<validationData> expectations = null;
+        // we should not have access if we pass an opaque token
+        if (updatedTestSettings.getRsTokenType().equals(Constants.ACCESS_TOKEN_KEY)) {
+            expectations = setRSOauth401Expectations(test_FinalAction);
+        } else {
+            expectations = setRSOauthExpectationsWithAPIChecks(_testName, test_FinalAction, updatedTestSettings, contextWillBeSet);
+        }
+
+        genericRP(_testName, wc, updatedTestSettings, test_GOOD_LOGIN_ACTIONS, expectations);
+
+    }
+
+    @SkipForRepeat(SkipForRepeat.EE9_FEATURES) // 17160 - EE9 client properties not supported yet
+    @Mode(TestMode.LITE)
+    @Test
+    public void APIOidcJaxRSClientTests_jaxrsJWTClientProperty_boolean_true() throws Exception {
+
+        WebConversation wc = new WebConversation();
+
+        TestSettings updatedTestSettings = testSettings.copyTestSettings();
+        updatedTestSettings.setScope("openid profile");
+        updateMap(updatedTestSettings, Constants.WHERE, Constants.PROPAGATE_JWT_TOKEN_BOOLEAN_TRUE);
+
+        List<validationData> expectations = null;
+        // we should not have access if we pass an opaque token
+        if (updatedTestSettings.getRsTokenType().equals(Constants.ACCESS_TOKEN_KEY)) {
+            expectations = setRSOauth401Expectations(test_FinalAction);
+        } else {
+            expectations = setRSOauthExpectationsWithAPIChecks(_testName, test_FinalAction, updatedTestSettings, contextWillBeSet);
+        }
+
+        genericRP(_testName, wc, updatedTestSettings, test_GOOD_LOGIN_ACTIONS, expectations);
+
+    }
+
+    @SkipForRepeat(SkipForRepeat.EE9_FEATURES) // 17160 - EE9 client properties not supported yet
+    @Mode(TestMode.LITE)
+    @Test
+    public void APIOidcJaxRSClientTests_jaxrsJWTClientProperty_string_false() throws Exception {
+
+        WebConversation wc = new WebConversation();
+
+        TestSettings updatedTestSettings = testSettings.copyTestSettings();
+        updatedTestSettings.setScope("openid profile");
+        updateMap(updatedTestSettings, Constants.WHERE, Constants.PROPAGATE_JWT_TOKEN_STRING_FALSE);
+
+        List<validationData> expectations = setRSOauth401Expectations(test_FinalAction);
+        // issue 3710 // expectations = validationTools.addMessageExpectation(genericTestServer, expectations, test_FinalAction, Constants.MESSAGES_LOG, Constants.STRING_MATCHES, "Did not find message in logs saying a propagation token was missing.", MessageConstants.CWWKS1726E_MISSING_PROPAGATION_TOKEN);
+
+        genericRP(_testName, wc, updatedTestSettings, test_GOOD_LOGIN_ACTIONS, expectations);
+
+    }
+
+    @SkipForRepeat(SkipForRepeat.EE9_FEATURES) // 17160 - EE9 client properties not supported yet
+    @Mode(TestMode.LITE)
+    @Test
+    public void APIOidcJaxRSClientTests_jaxrsJWTClientProperty_boolean_false() throws Exception {
+
+        WebConversation wc = new WebConversation();
+
+        TestSettings updatedTestSettings = testSettings.copyTestSettings();
+        updatedTestSettings.setScope("openid profile");
+        updateMap(updatedTestSettings, Constants.WHERE, Constants.PROPAGATE_JWT_TOKEN_BOOLEAN_FALSE);
 
         List<validationData> expectations = setRSOauth401Expectations(test_FinalAction);
         // issue 3710 // expectations = validationTools.addMessageExpectation(genericTestServer, expectations, test_FinalAction, Constants.MESSAGES_LOG, Constants.STRING_MATCHES, "Did not find message in logs saying a propagation token was missing.", MessageConstants.CWWKS1726E_MISSING_PROPAGATION_TOKEN);

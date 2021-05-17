@@ -33,5 +33,6 @@
 	<javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="java.util.Hashtable" principalType="*" principalName="*" actions="read"/>
 	<javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="com.ibm.ws.security.openidconnect.client.jose4j.OidcTokenImpl" principalType="*" principalName="*" actions="read"/>
 	<javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="com.ibm.ws.security.token.internal.SingleSignonTokenImpl" principalType="com.ibm.ws.security.authentication.principals.WSPrincipal" principalName="*" actions="read"/>
-
+	<javaPermission className="java.util.PropertyPermission" actions="read" name="*"/>
+	<javaPermission className="java.lang.RuntimePermission" name="getenv.resteasy.original.webapplicationexception.behavior"/>
 </server>    

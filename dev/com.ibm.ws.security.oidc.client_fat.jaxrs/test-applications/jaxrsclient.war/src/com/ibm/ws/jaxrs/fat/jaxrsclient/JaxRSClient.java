@@ -17,7 +17,6 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Set;
 
-
 import javax.security.auth.Subject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -35,6 +34,7 @@ import com.ibm.websphere.security.auth.WSSubject;
 import com.ibm.websphere.security.jwt.JwtHeaderInjecter;
 import com.ibm.websphere.security.openidconnect.PropagationHelper;
 import com.ibm.websphere.security.openidconnect.token.IdToken;
+import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
 
 /**
  * Servlet implementation class CxfSamlSvcClient
@@ -194,21 +194,39 @@ public class JaxRSClient extends HttpServlet {
         try {
             String localResponse = null;
             Client client = ClientBuilder.newClient();
-            if (where.equals("propagate_token_string_true")) {
-                System.out.println("Set the propagation handler property - string true");
-                client.property("com.ibm.ws.jaxrs.client.oauth.sendToken", "true");
-            }
-            if (where.equals("propagate_token_string_false")) {
-                System.out.println("Set the propagation handler property - string false");
-                client.property("com.ibm.ws.jaxrs.client.oauth.sendToken", "false");
-            }
-            if (where.equals("propagate_token_boolean_true")) {
-                System.out.println("Set the propagation handler property - boolean true");
-                client.property("com.ibm.ws.jaxrs.client.oauth.sendToken", true);
-            }
-            if (where.equals("propagate_token_boolean_false")) {
-                System.out.println("Set the propagation handler property - boolean false");
-                client.property("com.ibm.ws.jaxrs.client.oauth.sendToken", false);
+            switch (where) {
+                case Constants.PROPAGATE_TOKEN_STRING_TRUE:
+                    System.out.println("Set the propagation handler property (" + Constants.OAUTH_HANDLER + ") - string true");
+                    client.property(Constants.OAUTH_HANDLER, "true");
+                    break;
+                case Constants.PROPAGATE_TOKEN_STRING_FALSE:
+                    System.out.println("Set the propagation handler property (" + Constants.OAUTH_HANDLER + ") - string false");
+                    client.property(Constants.OAUTH_HANDLER, "false");
+                    break;
+                case Constants.PROPAGATE_TOKEN_BOOLEAN_TRUE:
+                    System.out.println("Set the propagation handler property (" + Constants.OAUTH_HANDLER + ") - boolean true");
+                    client.property(Constants.OAUTH_HANDLER, true);
+                    break;
+                case Constants.PROPAGATE_TOKEN_BOOLEAN_FALSE:
+                    System.out.println("Set the propagation handler property (" + Constants.OAUTH_HANDLER + ") - boolean false");
+                    client.property(Constants.OAUTH_HANDLER, false);
+                    break;
+                case Constants.PROPAGATE_JWT_TOKEN_STRING_TRUE:
+                    System.out.println("Set the propagation handler property (" + Constants.JWT_HANDLER + ") - string true");
+                    client.property(Constants.JWT_HANDLER, "true");
+                    break;
+                case Constants.PROPAGATE_JWT_TOKEN_STRING_FALSE:
+                    System.out.println("Set the propagation handler property (" + Constants.JWT_HANDLER + ") - string false");
+                    client.property(Constants.JWT_HANDLER, "false");
+                    break;
+                case Constants.PROPAGATE_JWT_TOKEN_BOOLEAN_TRUE:
+                    System.out.println("Set the propagation handler property (" + Constants.JWT_HANDLER + ") - boolean true");
+                    client.property(Constants.JWT_HANDLER, true);
+                    break;
+                case Constants.PROPAGATE_JWT_TOKEN_BOOLEAN_FALSE:
+                    System.out.println("Set the propagation handler property (" + Constants.JWT_HANDLER + ") - boolean false");
+                    client.property(Constants.JWT_HANDLER, false);
+                    break;
             }
 
             //String beforeJwtFromSubject = jwtFromSubject;
@@ -284,7 +302,7 @@ public class JaxRSClient extends HttpServlet {
 //                            }
 //                        }
 //                    }
-                    
+
                     if (beforeIssuedJwtFromSubject == null && afterIssuedJwtFromSubject == null) {
                         pw.println("RP's Issued JWT in subject is the same before and after the Injecter was invoked.");
                         pw.println("RP's Issued JWT in subject check: passed");
@@ -329,7 +347,7 @@ public class JaxRSClient extends HttpServlet {
                 //                }
             } else {
                 System.out.println("Not using injection");
-                if (where.contains("propagate_token")) {
+                if (where.contains("propagate_token") || where.contains("propagate_jwt_token")) {
                     WebTarget myResource = client.target(appToCall).queryParam("targetApp", appToCall).queryParam("where", where).queryParam("tokenContent", tokenContent).queryParam("contextSet", contextSet);
                     localResponse = myResource.request(MediaType.TEXT_PLAIN).get(String.class);
                 } else {
@@ -363,7 +381,7 @@ public class JaxRSClient extends HttpServlet {
                         pw.println("RP and RS Issued JWT's DO NOT match");
                     }
                 } else {
-                	pw.println("RP and RS Issued JWT's DO NOT match");
+                    pw.println("RP and RS Issued JWT's DO NOT match");
                 }
 //                } else if(beforeJwtFromSubject != null) {
 //                	if (localResponse.contains(beforeJwtFromSubject)) {
@@ -515,14 +533,14 @@ public class JaxRSClient extends HttpServlet {
                     tokenTypeFromSubject = getAValue(theChosenOne, "token_type");
                     scopesFromSubject = getAValue(theChosenOne, "scope");
                     IdToken tmpIdToken = null;
-                    
+
                     Set credset = runAsSubject.getPrivateCredentials();
                     Iterator it = credset.iterator();
-                    while(it.hasNext()){
+                    while (it.hasNext()) {
                         Object o = it.next();
-                        System.out.println("*** private credential object: " + o.getClass().getName() + " "+ o);
+                        System.out.println("*** private credential object: " + o.getClass().getName() + " " + o);
                     }
-                    
+
                     Set<IdToken> privateIdTokens = runAsSubject.getPrivateCredentials(IdToken.class);
                     System.out.println("*** size of id token set is " + privateIdTokens.size());
                     for (IdToken idTokenTmp : privateIdTokens) {

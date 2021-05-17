@@ -10,6 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.client.fat.jaxrs;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -21,6 +25,9 @@ import com.ibm.ws.security.openidconnect.client.fat.jaxrs.IBM.OidcJaxRSClientDis
 import com.ibm.ws.security.openidconnect.client.fat.jaxrs.IBM.OidcJaxRSClientReAuthnTests;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
+import componenttest.rules.repeater.EmptyAction;
+import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -36,5 +43,30 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
  * Purpose: This suite collects and runs all known good test suites.
  */
 public class FATSuite {
+
+    public static String repeatFlag = null;
+
+    private static final Set<String> REMOVE = new HashSet<String>();
+    private static final Set<String> INSERT = new HashSet<String>();
+
+    static {
+        /*
+         * List of testing features that need to be removed and replaced.
+         */
+        REMOVE.add("oauth20TokenMapping-1.0");
+
+        INSERT.add("oauth20TokenMapping-2.0");
+    }
+
+    /*
+     * Run EE9 tests in only FULL mode and run EE7/EE8 tests only in LITE mode.
+     *
+     * This was done to increase coverage of EE9 while not adding a large amount of test runtime.
+     *
+     */
+    /* always add servlet-5.0 to enable EE9 in the op which had no feature versions to swap out to enable EE9 */
+    @ClassRule
+    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().liteFATOnly())
+                    .andWith(new JakartaEE9Action().removeFeatures(REMOVE).addFeatures(INSERT).alwaysAddFeature("servlet-5.0").fullFATOnly());
 
 }
