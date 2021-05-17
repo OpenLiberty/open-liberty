@@ -233,6 +233,7 @@ public class CustomStoreSample implements OAuthStore {
 
     @Override
     public void create(OAuthClient oauthClient) throws OAuthStoreException {
+        System.out.println("CustomStoreSample entering create on OauthClient for " + oauthClient.getClientId());
         for (int i = 0; i < RETRY_COUNT; i++) {
             try {
                 DBCollection col = getClientCollection();
@@ -263,13 +264,23 @@ public class CustomStoreSample implements OAuthStore {
 
     @Override
     public void create(OAuthToken oauthToken) throws OAuthStoreException {
-        try {
-            DBCollection col = getTokenCollection();
-            col.insert(createTokenDBObjectHelper(oauthToken));
+        System.out.println("CustomStoreSample entering create on OauthToken for " + oauthToken.getClientId());
+        for (int i = 0; i < RETRY_COUNT; i++) {
+            try {
+                DBCollection col = getTokenCollection();
+                col.insert(createTokenDBObjectHelper(oauthToken));
 
-            System.out.println("CustomStoreSample create Token " + oauthToken.getTokenString());
-        } catch (Exception e) {
-            throw new OAuthStoreException("Failed to process create on OAuthToken " + oauthToken.getClientId(), e);
+                System.out.println("CustomStoreSample create Token " + oauthToken.getTokenString());
+            } catch (Exception e) {
+                if (i < RETRY_COUNT && isNetworkFailure(e)) {
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e1) {
+                    }
+                } else {
+                    throw new OAuthStoreException("Failed to process create on OAuthToken " + oauthToken.getClientId(), e);
+                }
+            }
         }
     }
 
