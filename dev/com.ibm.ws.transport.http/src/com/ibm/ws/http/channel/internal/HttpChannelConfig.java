@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2020 IBM Corporation and others.
+ * Copyright (c) 2004, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -53,7 +53,7 @@ public class HttpChannelConfig {
     private static final int TIMEOUT_MODIFIER = 1000;
 
     /** Maximum persistent requests to allow on a single socket */
-    private int maxPersistRequest = 100;
+    private int maxPersistRequest = -1;
     /** Default HTTP version to put into an outgoing HTTP message */
     private VersionValues outgoingHttpVersion = VersionValues.V11;
     /** Flag on whether to allocate direct or indirect byte buffers. */
