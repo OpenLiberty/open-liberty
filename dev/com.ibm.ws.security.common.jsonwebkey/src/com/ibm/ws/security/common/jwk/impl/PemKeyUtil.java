@@ -62,6 +62,9 @@ public class PemKeyUtil {
     }
 
     public static PublicKey getPublicKey(String pkcs8pem) throws Exception {
+        if (pkcs8pem == null) {
+            return null;
+        }
         KeyType keyType = getKeyType(pkcs8pem);
         String pemKey = removeDelimiter(pkcs8pem);
         byte[] encodedKey = Base64.decodeBase64(pemKey);
@@ -70,6 +73,9 @@ public class PemKeyUtil {
 
     @Sensitive
     public static PrivateKey getPrivateKey(@Sensitive String pkcs8pem) throws Exception {
+        if (pkcs8pem == null) {
+            return null;
+        }
         KeyType keyType = getKeyType(pkcs8pem);
         String pemKey = removeDelimiter(pkcs8pem);
         byte[] encodedKey = Base64.decodeBase64(pemKey);
@@ -96,6 +102,9 @@ public class PemKeyUtil {
     }
 
     private static String removeDelimiter(@Sensitive String pem) {
+        if (pem == null) {
+            return pem;
+        }
         pem = pem.replaceAll(BEGIN_PUBLIC, "");
         pem = pem.replaceAll(END_PUBLIC, "");
         pem = pem.replaceAll(BEGIN_PRIVATE, "");

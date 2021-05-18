@@ -224,7 +224,7 @@ public class JwKRetriever {
         if (keyText != null) {
             key = jwkSet.getKeyBySetIdAndKeyText(setId, keyText, keyType);
         }
-        if (key == null) {
+        if (key == null && kid != null) {
             key = jwkSet.getKeyBySetId(setId, keyType);
         }
         return key;
@@ -520,7 +520,7 @@ public class JwKRetriever {
 
     @Sensitive
     @FFDCIgnore(Exception.class)
-    private JWK parsePEMFormat(@Sensitive String keyText, String signatureAlgorithm) {
+    JWK parsePEMFormat(@Sensitive String keyText, String signatureAlgorithm) {
         Jose4jRsaJWK jwk = null;
         try {
             KeyType keyType = PemKeyUtil.getKeyType(keyText);
@@ -543,6 +543,9 @@ public class JwKRetriever {
 
     JWK parsePublicKeyJwk(String keyText, String signatureAlgorithm) throws Exception {
         PublicKey pubKey = PemKeyUtil.getPublicKey(keyText);
+        if (pubKey == null) {
+            return null;
+        }
         if (keyAlgChecker.isESAlgorithm(signatureAlgorithm)) {
             return getEcJwkPublicKey(pubKey, signatureAlgorithm);
         } else {
@@ -553,6 +556,9 @@ public class JwKRetriever {
     @Sensitive
     JWK parsePrivateKeyJwk(@Sensitive String keyText, String signatureAlgorithm) throws Exception {
         PrivateKey privateKey = PemKeyUtil.getPrivateKey(keyText);
+        if (privateKey == null) {
+            return null;
+        }
         if (keyAlgChecker.isESAlgorithm(signatureAlgorithm)) {
             return getEcJwkPrivateKey(privateKey, signatureAlgorithm);
         } else {
@@ -624,7 +630,7 @@ public class JwKRetriever {
     }
 
     @Sensitive
-    private JWK parseJwkFormat(@Sensitive JSONObject jsonObject, String signatureAlgorithm) {
+    JWK parseJwkFormat(@Sensitive JSONObject jsonObject, String signatureAlgorithm) {
         JWK jwk = null;
 
         Object ktyEntry = jsonObject.get("kty");
@@ -646,7 +652,7 @@ public class JwKRetriever {
     }
 
     @Sensitive
-    private Set<JWK> parseJwksFormat(@Sensitive JSONObject jsonObject, String signatureAlgorithm) {
+    Set<JWK> parseJwksFormat(@Sensitive JSONObject jsonObject, String signatureAlgorithm) {
         Set<JWK> jwks = Collections.emptySet();
         JSONArray keys = new JSONArray();
         Object keysEntry = jsonObject.get(JWKS);
