@@ -10,6 +10,7 @@
  *******************************************************************************/
 package web.ssl;
 
+import static componenttest.annotation.SkipIfSysProp.OS_ZOS;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 
@@ -25,6 +26,7 @@ import javax.sql.DataSource;
 
 import org.junit.Test;
 
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
@@ -70,6 +72,13 @@ public class SQLServerTestSSLServlet extends FATServlet {
     }
 
     @Test
+    /*
+     * Keystore is PKCS12 and was created using openjdk.
+     * Our z/OS test systems use IBM JDK and will fail with
+     * java.io.IOException: Invalid keystore format
+     * since the keystore provider is SUN instead of IBMJCE
+     */
+    @SkipIfSysProp(OS_ZOS)
     public void testConnectionWithSSLSecure() throws Exception {
         try (Connection con = getConnectionWithRetry(secureDs); Statement stmt = con.createStatement()) {
             stmt.executeUpdate("INSERT INTO MYTABLE VALUES (1, 'one')");

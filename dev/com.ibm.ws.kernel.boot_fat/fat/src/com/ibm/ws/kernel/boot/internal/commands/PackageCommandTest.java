@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.kernel.boot.internal.commands;
 
+import static componenttest.annotation.SkipIfSysProp.OS_ZOS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
@@ -145,7 +146,7 @@ public class PackageCommandTest {
      * Packages --include=minify,runnable jar and verifies correct content.
      */
     @Test
-    @SkipIfSysProp("os.name=z/OS") // Jar not supported on Z/OS
+    @SkipIfSysProp(OS_ZOS) // Jar not supported on Z/OS
     public void testRunnable() throws Exception {
         String serverName = bootstrapFatServerName;
         LibertyServer server = bootstrapFatServer;
@@ -192,7 +193,7 @@ public class PackageCommandTest {
 //     * the resulting jar files does NOT contain the self-extract files.
 //     */
 //    @Test
-//    @SkipIfSysProp("os.name=z/OS") // Jar not supported on Z/OS
+//    @SkipIfSysProp(OS_ZOS) // Jar not supported on Z/OS
 //    public void testPackageJarArchiveWithIncludeEqualsUsr() throws Exception {
 //        LibertyServer server = bootstrapFatServer;
 //
@@ -484,7 +485,7 @@ public class PackageCommandTest {
      * that a .jar archive is created by default.
      */
     @Test
-    @SkipIfSysProp("os.name=z/OS") // Jar not supported on Z/OS
+    @SkipIfSysProp(OS_ZOS) // Jar not supported on Z/OS
     public void testRunnable_DefaultToJar() throws Exception {
         LibertyServer server = rootFatServer;
 
@@ -553,7 +554,7 @@ public class PackageCommandTest {
      * error is returned.
      */
     @Test
-    @SkipIfSysProp("os.name=z/OS") // Jar not supported on Z/OS
+    @SkipIfSysProp(OS_ZOS) // Jar not supported on Z/OS
     public void testUsr_Error_Jar() throws Exception {
         LibertyServer server = rootFatServer;
 

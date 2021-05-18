@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.kernel.boot.internal.commands;
 
+import static componenttest.annotation.SkipIfSysProp.OS_ZOS;
 import static org.junit.Assert.fail;
 
 import java.io.File;
@@ -118,7 +119,7 @@ public class PackageLooseContentsTest extends AbstractLooseConfigTest {
     //
 
     @Test
-    @SkipIfSysProp("os.name=z/OS") // ZipFile verifyContents code cant open pax on Z/OS
+    @SkipIfSysProp(OS_ZOS) // ZipFile verifyContents code cant open pax on Z/OS
     public void testUsr() throws Exception {
         String[] packageCmd = new String[] {
                                              "--archive=" + SERVER_NAME,
