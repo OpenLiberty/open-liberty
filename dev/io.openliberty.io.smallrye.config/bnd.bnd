@@ -10,7 +10,7 @@
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/rejar.props
 
-bVersion=2.0
+bVersion=1.0
 
 Bundle-SymbolicName: io.openliberty.io.smallrye.config; singleton:=true
 
