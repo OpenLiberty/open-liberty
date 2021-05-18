@@ -236,7 +236,7 @@ public class ClientTestServlet extends HttpServlet {
         }
 
         if (rxMethodsFound) {
-            System.out.println("Adding reactive method functions");
+            System.out.println("ClientTestServlet.testMemoryLeak_ClientStandalone Adding reactive method functions");
             functions.add(new CompletionStageRxInvokerFunction());
         }
 
@@ -254,7 +254,19 @@ public class ClientTestServlet extends HttpServlet {
     }
 
     private void memoryLeakTest(Function<Client, ?> testFunction, Map<String, List<?>> clientsPerModule, StringBuilder ret, boolean useNewClientToPoll) {
-        int startingStoredClients = clientsPerModule == null ? 0 : getStoredClientCount(clientsPerModule); 
+        
+        System.out.println("ClientTestServlet.memoryLeakTest entry");
+        System.out.println("    testFunction " + testFunction);
+        if (clientsPerModule == null) {
+            System.out.println("    clientsPerModule null " );
+        } else {
+            System.out.println("    clientsPerModule " + clientsPerModule.entrySet());
+        }        
+        System.out.println("    ret " + ret);
+        System.out.println("    useNewClientToPoll " + useNewClientToPoll);
+        
+        int startingStoredClients = clientsPerModule == null ? 0 : getStoredClientCount(clientsPerModule);
+        System.out.println("ClientTestServlet.memoryLeakTest startingStoredClients " + startingStoredClients);
         ClientBuilder cb = ClientBuilder.newBuilder();
         Client c = cb.build();
 
@@ -276,6 +288,7 @@ public class ClientTestServlet extends HttpServlet {
             // because the memoryLeakObject should still have a reference to it
             if (weakRef.get() == null) {
                 ret.append("Expected JAXRSClientImpl reference still existing was not detected. " + memoryLeakObject);
+                System.out.println("ClientTestServlet.memoryLeakTest exit " + ret);
                 return;
             }
             weakRef2 = new WeakReference<>(memoryLeakObject);
@@ -288,11 +301,13 @@ public class ClientTestServlet extends HttpServlet {
         // At this point the Client object should be garbage collected..
         if (weakRef.get() != null) {
             ret.append("Expected Client to be garbage collected.");
+            System.out.println("ClientTestServlet.memoryLeakTest exit " + ret);
             return;
         }
 
         if (weakRef2 != null && weakRef2.get() != null) {
             ret.append("Expected object that references the Client to be garbage collected. " + weakRef2.get());
+            System.out.println("ClientTestServlet.memoryLeakTest exit " + ret);
             return;
         }
 
@@ -315,6 +330,8 @@ public class ClientTestServlet extends HttpServlet {
         if (useNewClientToPoll) {
             c.close();
         }
+        
+        System.out.println("ClientTestServlet.memoryLeakTest exit " + ret);
     }
 
     private int getStoredClientCount(Map<String, List<?>> clientsPerModule) {
@@ -327,11 +344,11 @@ public class ClientTestServlet extends HttpServlet {
     
     private void doGarbageCollectCheck(WeakReference<Client> weakRef, boolean nullExpected) {
         for (int i = 0; i < 10; ++i) {
-            System.out.println("calling system gc");
+            System.out.println("ClientTestServlet.doGarbageCollectCheck calling system gc i " + i);
             System.gc();
             // give the GC some time to actually do its thing
             try {
-                Thread.sleep(100);
+                Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
