@@ -28,7 +28,9 @@ app-resources= \
 -cdiannotations:
 
 -dsannotations: \
-  io.openliberty.org.jboss.resteasy.common.client.JAXRSClientConfig
+  io.openliberty.org.jboss.resteasy.common.client.JAXRSClientConfig,\
+  io.openliberty.org.jboss.resteasy.common.client.JAXRSAppSecurity,\
+  io.openliberty.restfulWS.client.security.OAuthPropagationHelper
 
 Service-Component: \
   io.openliberty.org.jboss.resteasy.client.clientbuilder; \
@@ -44,6 +46,7 @@ Service-Component: \
 
 Export-Package: \
   com.ibm.websphere.jaxrs20.multipart;thread-local=true, \
+  com.ibm.ws.jaxrs20.client, \
   com.ibm.ws.jaxrs20.providers.api, \
   com.ibm.ws.resteasy.cdi.component;version=${resteasy-version};thread-context=true, \
   io.openliberty.restfulWS.client, \
@@ -119,7 +122,11 @@ Import-Package: \
   !javax.mail, \
   !javax.mail.internet, \
   !javax.mail.util, \
+  !com.ibm.websphere.security, \
+  !com.ibm.websphere.security.auth, \
+  !com.ibm.websphere.security.web, \
   !com.sun.xml.bind.marshaller, \
+  !org.apache.cxf.*, \
   !org.apache.james.mime4j.*, \
   !org.jboss.resteasy.plugins.providers.jaxb, \
   !org.jboss.resteasy.plugins.providers.validator, \
@@ -129,6 +136,9 @@ Import-Package: \
 DynamicImport-Package: \
   javax.json.bind, \
   javax.json.bind.spi, \
+  com.ibm.websphere.security, \
+  com.ibm.websphere.security.auth, \
+  com.ibm.websphere.security.web, \
   com.sun.xml.bind.marshaller, \
   org.jboss.resteasy.plugins.providers.jaxb, \
   org.jboss.resteasy.plugins.providers.validator, \
@@ -139,8 +149,8 @@ DynamicImport-Package: \
 Private-Package: \
   org.apache.james.*
   
-  instrument.ffdc: false
-  instrument.disabled: false
+instrument.ffdc: false
+instrument.disabled: false
 
 
 Include-Resource:\
@@ -192,9 +202,12 @@ Include-Resource:\
 	com.ibm.ws.org.jboss.logging,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.webcontainer;version=latest,\
+	com.ibm.ws.webcontainer.security;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	javax.activation:activation;version=1.1,\
-	com.ibm.websphere.org.osgi.core;version=latest
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.appserver.api.basics,\
+	com.ibm.ws.kernel.service
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file,\
