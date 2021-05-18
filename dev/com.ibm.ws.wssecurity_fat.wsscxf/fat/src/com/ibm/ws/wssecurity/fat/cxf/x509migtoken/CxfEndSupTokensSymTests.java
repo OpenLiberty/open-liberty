@@ -101,7 +101,10 @@ public class CxfEndSupTokensSymTests extends CommonTests {
     @Test
     //@AllowedFFDC("javax.net.ssl.SSLException")
     //4/2021
-    @AllowedFFDC(value = { "javax.net.ssl.SSLException", "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
+    //@AllowedFFDC(value = { "javax.net.ssl.SSLException", "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
+    //5/2021 added PrivilegedActionExc, NoSuchMethodExc as a result of java11 and ee8
+    @AllowedFFDC(value = { "javax.net.ssl.SSLException", "java.net.MalformedURLException", "java.lang.ClassNotFoundException", "java.security.PrivilegedActionException",
+                           "java.lang.NoSuchMethodException" })
     public void testCXFEndSupTokens4() throws Exception {
 
         String thisMethod = "testCXFEndSupTokens4";

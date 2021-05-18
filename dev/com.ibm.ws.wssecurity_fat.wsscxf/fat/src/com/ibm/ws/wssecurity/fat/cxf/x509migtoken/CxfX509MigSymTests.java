@@ -301,7 +301,10 @@ public class CxfX509MigSymTests {
     @Test
     //@AllowedFFDC(value = { "java.lang.Exception" })
     //4/2021
-    @AllowedFFDC(value = { "java.lang.Exception", "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
+    //@AllowedFFDC(value = { "java.lang.Exception", "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
+    //5/2021 added PrivilegedActionExc, NoSuchMethodExc as a result of java11 and ee8
+    @AllowedFFDC(value = { "java.lang.Exception", "java.net.MalformedURLException", "java.lang.ClassNotFoundException", "java.security.PrivilegedActionException",
+                           "java.lang.NoSuchMethodException" })
     public void testCxfX509KeyIdMigSymService() throws Exception {
 
         String thisMethod = "testCxfX509KeyIdMigSymService";

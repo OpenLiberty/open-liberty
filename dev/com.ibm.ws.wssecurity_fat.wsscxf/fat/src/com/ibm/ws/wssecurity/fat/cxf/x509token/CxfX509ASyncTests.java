@@ -29,9 +29,9 @@ import com.ibm.ws.wssecurity.fat.utils.common.CommonTests;
 import com.ibm.ws.wssecurity.fat.utils.common.PrepCommonSetup;
 import com.ibm.ws.wssecurity.fat.utils.common.UpdateWSDLPortNum;
 
+//5/2021
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
-//Added 11/2020
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -105,7 +105,11 @@ public class CxfX509ASyncTests extends CommonTests {
     //2/2021 this test failed with EE8, see https://github.com/OpenLiberty/open-liberty/issues/16071
     @Test
     //skip EE7 test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    //@SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    //5/2021 added PrivilegedActionExc, NoSuchMethodExc as a result of java11 and ee8
+    //added ClassNotFound to see if it resolves 16071
+    @AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException", "java.security.PrivilegedActionException",
+                           "java.lang.NoSuchMethodException" })
     public void testCxfAsyncInvokeNonBlocking() throws Exception {
 
         genericTest(

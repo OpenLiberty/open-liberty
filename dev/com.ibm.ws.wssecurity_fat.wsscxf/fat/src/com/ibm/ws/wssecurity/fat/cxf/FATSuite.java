@@ -51,7 +51,7 @@ import com.ibm.ws.wssecurity.fat.cxf.x509token.CxfX509OverRideTests;
 import com.ibm.ws.wssecurity.fat.cxf.x509token.CxfX509SigTests;
 import com.ibm.ws.wssecurity.fat.cxf.x509token.CxfX509StrTypeTests;
 
-import componenttest.rules.repeater.EmptyAction;
+//import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 
@@ -102,17 +102,15 @@ import componenttest.rules.repeater.RepeatTests;
                 // without the annotation in the test class file
                 // The first 7 tests are run as LITE FAT bucket, where no mode annotation is specified in the test class
 
-                // Orig from CL as commented out:
-                // but attempted in OL with failure "The signature or decryption was invalid
-                // (Unsupported key identification:...)"
-                // CxfEndSupTokensSym2Tests.class,
+// Orig from CL as commented out:
+// but attempted in OL with failure "The signature or decryption was invalid
+// (Unsupported key identification:...)"
+// CxfEndSupTokensSym2Tests.class,
 
-                // Orig from CL as commented out: but not sure why test class name is used here
-                // although CL has CxfX509MustUnderstandTests.java
-                // CxfMustUnderstandTests.class,
-                // CxfX509MustUnderstandTests.class,
-
-
+// Orig from CL as commented out: but not sure why test class name is used here
+// although CL has CxfX509MustUnderstandTests.java
+// CxfMustUnderstandTests.class,
+// CxfX509MustUnderstandTests.class,
 
 })
 /**
@@ -122,13 +120,13 @@ import componenttest.rules.repeater.RepeatTests;
 public class FATSuite {
 
     //The following repeats run Lite only for local testing
-    //@ClassRule
-    //public static RepeatTests r = RepeatTests.withoutModification().andWith(FeatureReplacementAction.EE8_FEATURES().removeFeature("jsp-2.2").removeFeature("jaxws-2.2").removeFeature("servlet-3.1").removeFeature("usr:wsseccbh-1.0").addFeature("jsp-2.3").addFeature("jaxws-2.3").addFeature("servlet-4.0").addFeature("usr:wsseccbh-2.0"));
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification().andWith(FeatureReplacementAction.EE8_FEATURES().removeFeature("jsp-2.2").removeFeature("jaxws-2.2").removeFeature("servlet-3.1").removeFeature("usr:wsseccbh-1.0").addFeature("jsp-2.3").addFeature("jaxws-2.3").addFeature("servlet-4.0").addFeature("usr:wsseccbh-2.0"));
 
     //The following repeats run both Full and Lite buckets.
     //To run Full only single test class locally,  using the command option "-Dfat.test.class.name";
     //To run Full only entire bucket locally, comment out the Lite bucket above
-    @ClassRule
-    public static RepeatTests r = RepeatTests.with(new EmptyAction().fullFATOnly()).andWith(FeatureReplacementAction.EE8_FEATURES().removeFeature("jsp-2.2").removeFeature("jaxws-2.2").removeFeature("servlet-3.1").removeFeature("usr:wsseccbh-1.0").addFeature("jsp-2.3").addFeature("jaxws-2.3").addFeature("servlet-4.0").addFeature("usr:wsseccbh-2.0"));
+    //@ClassRule
+    // public static RepeatTests r = RepeatTests.with(new EmptyAction().fullFATOnly()).andWith(FeatureReplacementAction.EE8_FEATURES().removeFeature("jsp-2.2").removeFeature("jaxws-2.2").removeFeature("servlet-3.1").removeFeature("usr:wsseccbh-1.0").addFeature("jsp-2.3").addFeature("jaxws-2.3").addFeature("servlet-4.0").addFeature("usr:wsseccbh-2.0"));
 
 }

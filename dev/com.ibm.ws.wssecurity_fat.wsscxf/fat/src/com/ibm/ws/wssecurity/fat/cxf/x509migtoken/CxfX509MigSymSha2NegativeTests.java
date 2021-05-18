@@ -163,8 +163,12 @@ public class CxfX509MigSymSha2NegativeTests {
     //2/2021
     //@AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.lang.Exception", "org.apache.wss4j.common.ext.WSSecurityException" })
     //4/2021
+    //@AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.lang.Exception", "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException",
+    //                       "java.lang.ClassNotFoundException" })
+    //5/2021 added PrivilegedActionExc, NoSuchMethodExc as a result of java11 and ee8
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.lang.Exception", "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException",
-                           "java.lang.ClassNotFoundException" })
+                           "java.lang.ClassNotFoundException", "java.security.PrivilegedActionException",
+                           "java.lang.NoSuchMethodException" })
     public void testCxfX509KeyIdMigSymServiceSha1ToSha512() throws Exception {
 
         String thisMethod = "testCxfX509KeyIdMigSymService";

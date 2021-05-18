@@ -128,7 +128,10 @@ public class CxfSha2SigTests extends CommonTests {
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
     //4/2021
-    @AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
+    //@AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
+    //5/2021 added PrivilegedActionExc, NoSuchMethodExc as a result of java11 and ee8
+    @AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException", "java.security.PrivilegedActionException",
+                           "java.lang.NoSuchMethodException" })
     public void testCxfSha2SignSoapBodyEE8Only() throws Exception {
 
         String thisMethod = "testCxfSha2SignSoapBody";
