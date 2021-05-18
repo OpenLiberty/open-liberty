@@ -754,9 +754,6 @@ public class WCCustomProperties {
         EMPTY_SERVLET_MAPPINGS =  Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.emptyservletmappings")).booleanValue(); //PI23529
         SERVLET31_PRIVATE_BUFFERSIZE_FOR_LARGE_POST_DATA = Integer.valueOf(customProps.getProperty("servlet31.private.buffersizeforlargepostdata", (new Integer(Integer.MAX_VALUE/16)).toString())).intValue();
         if (SERVLET31_PRIVATE_BUFFERSIZE_FOR_LARGE_POST_DATA < 1) SERVLET31_PRIVATE_BUFFERSIZE_FOR_LARGE_POST_DATA = Integer.MAX_VALUE/16;
-       
-        //Start 8.5.5.5 CD
-        DEFER_SERVLET_REQUEST_LISTENER_DESTROY_ON_ERROR =  Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.deferservletrequestlistenerdestroyonerror")).booleanValue(); //PI26908
         
         // Start 8.5.5.6 CD
         ALLOW_EXPRESSION_FACTORY_PER_APP = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.jsp.allowexpressionfactoryperapp")).booleanValue(); // PI31922
@@ -818,6 +815,9 @@ public class WCCustomProperties {
             EXCLUDE_ALL_HANDLED_TYPES_CLASSES = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.excludeallhandledtypesclasses", "true")).booleanValue();
             //21.0.0.10
             ENABLE_POST_ONLY_J_SECURITY_CHECK = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.enablepostonlyjsecuritycheck", "true")).booleanValue(); //18368
+            //21.0.0.11
+            DEFER_SERVLET_REQUEST_LISTENER_DESTROY_ON_ERROR =  Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.deferservletrequestlistenerdestroyonerror", "true")).booleanValue(); //PI26908
+
         } else {
             DISABLE_X_POWERED_BY = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.disablexpoweredby","false")).booleanValue();
             STOP_APP_STARTUP_ON_LISTENER_EXCEPTION = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.stopappstartuponlistenerexception" , "false")).booleanValue();
@@ -826,6 +826,9 @@ public class WCCustomProperties {
             //21.0.0.6
             EXCLUDE_ALL_HANDLED_TYPES_CLASSES = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.excludeallhandledtypesclasses", "false")).booleanValue();
             ENABLE_POST_ONLY_J_SECURITY_CHECK = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.enablepostonlyjsecuritycheck", "false")).booleanValue(); 
+
+            DEFER_SERVLET_REQUEST_LISTENER_DESTROY_ON_ERROR =  Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.deferservletrequestlistenerdestroyonerror", "false")).booleanValue(); //PI26908
+
         }
         
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -834,7 +837,9 @@ public class WCCustomProperties {
                                      "DECODE_URL_PLUS_SIGN [" + DECODE_URL_PLUS_SIGN + "], " +
                                      "ALLOW_QUERY_PARAM_WITH_NO_EQUAL [" + ALLOW_QUERY_PARAM_WITH_NO_EQUAL + "], " +
                                      "EXCLUDE_ALL_HANDLED_TYPES_CLASSES [" + EXCLUDE_ALL_HANDLED_TYPES_CLASSES + "], " +
-                                     "ENABLE_POST_ONLY_J_SECURITY_CHECK [" + ENABLE_POST_ONLY_J_SECURITY_CHECK + "]");
+                                     "ENABLE_POST_ONLY_J_SECURITY_CHECK [" + ENABLE_POST_ONLY_J_SECURITY_CHECK + "], " + 
+                                     "DEFER_SERVLET_REQUEST_LISTENER_DESTROY_ON_ERROR [" + DEFER_SERVLET_REQUEST_LISTENER_DESTROY_ON_ERROR + "], " +
+                                     "ALLOW_QUERY_PARAM_WITH_NO_EQUAL [" + ALLOW_QUERY_PARAM_WITH_NO_EQUAL + "]");
         }
     }
 
