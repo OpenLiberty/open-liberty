@@ -40,7 +40,7 @@ public class ServerReadyCheckpoint implements ServerReadyStatus {
     public void check() {
         if (doCheckpoint) {
             try {
-                checkpoint.snapshot(Phase.FEATURE, new File("ready"));
+                checkpoint.snapshot(Phase.FEATURE, new File("snapshot"));
             } catch (SnapshotFailed e) {
 
             }
