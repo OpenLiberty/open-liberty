@@ -153,7 +153,10 @@ public class CxfPasswordDigestTests extends CommonTests {
      */
 
     //4/2021
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
+    //@AllowedFFDC(value = { "java.net.MalformedURLException" })
+    //5/2021 added PrivilegedActionExc, NoSuchMethodExc as a result of java11 and ee8
+    @AllowedFFDC(value = { "java.net.MalformedURLException", "java.security.PrivilegedActionException",
+                           "java.lang.NoSuchMethodException" })
     @Test
     public void testPWDigestCXFSvcClientSpecifyUserSSL() throws Exception {
 

@@ -185,7 +185,9 @@ public class CxfSampleTests {
     }
 
     //4/2021 added allowed ffdc to run with EE8
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
+    //@AllowedFFDC(value = { "java.net.MalformedURLException" })
+    //5/2021 added PrivilegedActionExc, NoSuchMethodExc as a result of java11 and ee8
+    @AllowedFFDC(value = { "java.net.MalformedURLException", "java.security.PrivilegedActionException", "java.lang.NoSuchMethodException" })
     @Test
     public void testEchoService() throws Exception {
         String thisMethod = "testEchoService";

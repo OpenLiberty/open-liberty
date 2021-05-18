@@ -121,7 +121,10 @@ public class CxfSSLUNTNonceTimeOutTests extends SSLTestCommon {
     //2/2021
     //@AllowedFFDC("java.util.MissingResourceException") //@AV999
     //4/2021
-    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.lang.ClassNotFoundException" })
+    //@AllowedFFDC(value = { "java.util.MissingResourceException", "java.lang.ClassNotFoundException" })
+    //5/2021 added PrivilegedActionExc, NoSuchMethodExc as a result of java11 and ee8
+    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.lang.ClassNotFoundException", "java.security.PrivilegedActionException",
+                           "java.lang.NoSuchMethodException" })
     public void testCxfUntHardcodedReplayOneAndMoreMinutesSSL() throws Exception {
 
         //reconfigAndRestartServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_customize.xml");
