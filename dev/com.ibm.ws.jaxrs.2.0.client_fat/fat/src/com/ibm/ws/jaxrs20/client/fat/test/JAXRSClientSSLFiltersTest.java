@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -81,24 +81,10 @@ public class JAXRSClientSSLFiltersTest extends AbstractTest {
     }
 
     @Test
-    public void testClientBasicSSLFilters_ClientBuilder() throws Exception {
+    public void testClientBasicSSLDefaultFilters() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         p.put("param", "alex");
-        this.runTestOnServer(target, "testClientBasicSSLDefault_ClientBuilder", p, "[Basic Resource]:alex");
-    }
-
-    @Test
-    public void testClientBasicSSLFilters_Client() throws Exception {
-        Map<String, String> p = new HashMap<String, String>();
-        p.put("param", "alex");
-        this.runTestOnServer(target, "testClientBasicSSLDefault_Client", p, "[Basic Resource]:alex");
-    }
-
-    @Test
-    public void testClientBasicSSLFilters_WebTarget() throws Exception {
-        Map<String, String> p = new HashMap<String, String>();
-        p.put("param", "alex");
-        this.runTestOnServer(target, "testClientBasicSSLDefault_WebTarget", p, "[Basic Resource]:alex");
+        this.runTestOnServer(target, "testClientBasicSSLDefault", p, "[Basic Resource]:alex");
     }
 
 //    @Test
