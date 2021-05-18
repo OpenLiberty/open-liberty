@@ -36,7 +36,7 @@
   com.ibm.ws.org.apache.cxf.cxf.rt.rs.client.3.2;version=latest,\
   com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.3.2;version=latest,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-  com.ibm.ws.org.reactivestreams.reactive-streams.1.0,\
+  com.ibm.websphere.org.reactivestreams.reactive-streams.1.0,\
   com.ibm.ws.jaxrs.2.0.common;version=latest,\
   com.ibm.ws.jaxrs.2.0.client;version=latest,\
   com.ibm.ws.logging.core;version=latest

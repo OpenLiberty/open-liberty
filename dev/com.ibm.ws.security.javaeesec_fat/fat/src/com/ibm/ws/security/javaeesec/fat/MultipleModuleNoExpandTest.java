@@ -10,7 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.javaeesec.fat;
 
-import static org.junit.Assume.assumeTrue;
+import static com.ibm.ws.security.javaeesec.fat_helper.JavaEESecTestBase.assumeNotWindowsEe9;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -40,7 +40,6 @@ import com.ibm.ws.security.javaeesec.fat_helper.WCApplicationHelper;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -591,20 +590,5 @@ public class MultipleModuleNoExpandTest extends JavaEESecTestBase {
             verifyNotInGroups(response, invalidRealm); // make sure that there is no realm name from the second IdentityStore.
         }
         verifyGroups(response, groups);
-    }
-
-    /**
-     * Assume we are not on Windows and running the EE9 repeat action. There is an issue with
-     * the Jakarta transformer where the application fails to be transformed b/c the application
-     * directory cannot be deleted due to a "The process cannot access the file because it is
-     * being used by another process" error. I assume that either the transformer or the server
-     * is not releasing the handle to the directory, but I have not yet been able to figure it
-     * out.
-     */
-    private static void assumeNotWindowsEe9() {
-        if (JakartaEE9Action.isActive() && System.getProperty("os.name").toLowerCase().startsWith("win")) {
-            Log.info(logClass, "assumeNotWindowsEe9", "Skipping EE9 repeat action on Windows.");
-            assumeTrue(false);
-        }
     }
 }

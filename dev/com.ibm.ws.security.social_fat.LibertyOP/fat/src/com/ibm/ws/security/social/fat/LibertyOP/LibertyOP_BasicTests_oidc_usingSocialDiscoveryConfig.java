@@ -101,7 +101,7 @@ public class LibertyOP_BasicTests_oidc_usingSocialDiscoveryConfig extends Social
     @Test
     public void Social_BasicTests_MainPath_withMinimalDiscoveryConfig() throws Exception {
         genericTestServer.reconfigServer("server_LibertyOP_minimalConfig_oidc_usingSocialDiscoveryConfig.xml", _testName);
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         List<validationData> expectations = setGoodSocialExpectations(socialSettings, doNotAddJWTTokenValidation);
         genericSocial(_testName, webClient, inovke_social_login_actions, socialSettings, expectations);

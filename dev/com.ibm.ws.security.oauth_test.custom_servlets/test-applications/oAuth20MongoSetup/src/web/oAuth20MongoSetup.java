@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,8 +15,6 @@ import java.io.PrintWriter;
 import java.net.UnknownHostException;
 import java.sql.SQLException;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -33,7 +31,6 @@ import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
-import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 
 @WebServlet(name = "oAuth20MongoSetup", urlPatterns = { "/oAuth20MongoSetup" })
@@ -77,10 +74,7 @@ public class oAuth20MongoSetup extends HttpServlet {
     final static String ENABLED = "ENABLED";
     final static String METADATA = "METADATA";
 
-    String uid = "defaultUID";
-
     // must match strings used in MongoDBUtils
-    final static String UID_WEB = "uid";
     final static String PORT = "port";
     final static String DROP_TABLE = "cleanup";
     final static String DROP_DB = "dropDB";
@@ -91,10 +85,8 @@ public class oAuth20MongoSetup extends HttpServlet {
     final static String PROVIDER_ID = "provider";
     final static String COMP_ID = "compID";
     final static String DB_NAME = "dbName";
-    final static String DB_USER = "dbUser";
     final static String DB_HOST = "dbHost";
     final static String DB_PORT = "dbPort";
-    final static String DB_PWD = "dbPwd";
     final static String SALT = "checkSalt";
     final static String ALGORITHM = "checkAlgorithm";
     final static String ITERATION = "checkIteration";
@@ -126,13 +118,9 @@ public class oAuth20MongoSetup extends HttpServlet {
             String getAlgorithm = request.getParameter(ALGORITHM);
             String getIteration = request.getParameter(ITERATION);
 
-            connect(request.getParameter(DB_NAME), request.getParameter(DB_USER), request.getParameter(DB_HOST),
-                    request.getParameter(DB_PORT), request.getParameter(DB_PWD));
+            connect(request.getParameter(DB_NAME), request.getParameter(DB_HOST),
+                    request.getParameter(DB_PORT));
 
-            String u = request.getParameter(UID_WEB);
-            if (u != null) {
-                uid = u;
-            }
             String clearClients = request.getParameter(CLEAR_CLIENTS);
             if (clearClients != null) {
                 clearAllClients();
@@ -243,7 +231,7 @@ public class oAuth20MongoSetup extends HttpServlet {
         System.out.println(CLASS_NAME + "Create on OauthClient: " + clientID + " " + compId);
 
         try {
-            DBCollection col = mongoDB.getCollection(OAUTHCLIENT + uid);
+            DBCollection col = mongoDB.getCollection(OAUTHCLIENT);
             BasicDBObject d = new BasicDBObject(CLIENTID, clientID);
 
             d.append(PROVIDERID, compId);
@@ -271,7 +259,7 @@ public class oAuth20MongoSetup extends HttpServlet {
     private void queryTableMongo() throws Exception {
         System.out.println("oAuth20MongoSetup queryTable, double check setup on " + mongoDB.getName());
 
-        DBCollection col = mongoDB.getCollection(OAUTHCLIENT + uid);
+        DBCollection col = mongoDB.getCollection(OAUTHCLIENT);
         System.out.println("oAuth20MongoSetup Collection " + col.getName());
 
         DBCursor cursor = col.find();
@@ -290,7 +278,7 @@ public class oAuth20MongoSetup extends HttpServlet {
 
     private String getSecretType(String clientId, String providerId) throws Exception {
 
-        DBCollection col = mongoDB.getCollection(OAUTHCLIENT + uid);
+        DBCollection col = mongoDB.getCollection(OAUTHCLIENT);
 
         BasicDBObject d = new BasicDBObject(CLIENTID, clientId);
         d.append(PROVIDERID, providerId == null ? DEFAULT_COMPID : providerId);
@@ -321,7 +309,7 @@ public class oAuth20MongoSetup extends HttpServlet {
 
     private String getAlgorithm(String clientId, String providerId) throws Exception {
 
-        DBCollection col = mongoDB.getCollection(OAUTHCLIENT + uid);
+        DBCollection col = mongoDB.getCollection(OAUTHCLIENT);
 
         BasicDBObject d = new BasicDBObject(CLIENTID, clientId);
         d.append(PROVIDERID, providerId == null ? DEFAULT_COMPID : providerId);
@@ -346,7 +334,7 @@ public class oAuth20MongoSetup extends HttpServlet {
 
     private String getIteration(String clientId, String providerId) throws Exception {
 
-        DBCollection col = mongoDB.getCollection(OAUTHCLIENT + uid);
+        DBCollection col = mongoDB.getCollection(OAUTHCLIENT);
 
         BasicDBObject d = new BasicDBObject(CLIENTID, clientId);
         d.append(PROVIDERID, providerId == null ? DEFAULT_COMPID : providerId);
@@ -371,7 +359,7 @@ public class oAuth20MongoSetup extends HttpServlet {
 
     private String getSalt(String clientId, String providerId) throws Exception {
 
-        DBCollection col = mongoDB.getCollection(OAUTHCLIENT + uid);
+        DBCollection col = mongoDB.getCollection(OAUTHCLIENT);
 
         BasicDBObject d = new BasicDBObject(CLIENTID, clientId);
         d.append(PROVIDERID, providerId == null ? DEFAULT_COMPID : providerId);
@@ -399,16 +387,17 @@ public class oAuth20MongoSetup extends HttpServlet {
      *
      */
     private void dropClientConfigTableMongo() {
-        mongoDB.getCollection(OAUTHCLIENT + uid).drop();
-        System.out.println("oAuth20MongoSetup Dropped " + OAUTHCLIENT + uid);
+        mongoDB.getCollection(OAUTHCLIENT).drop();
+        System.out.println("oAuth20MongoSetup Dropped " + OAUTHCLIENT);
     }
 
     private void checkAndDrop() throws SQLException {
         try {
             // Having some troubles with mystery timeouts on z/OS. Added DB tuning on the connect method and extra trace here
             System.out.println("oAuth20MongoSetup Starting checkAndDrop -- running collectionExists and, if needed, dropDatabase");
-            if (mongoDB.collectionExists(OAUTHCLIENT + uid) || mongoDB.collectionExists(OAUTHCONSENT + uid)
-                || mongoDB.collectionExists(OAUTHTOKEN + uid)) {
+
+            if (mongoDB.collectionExists(OAUTHCLIENT) || mongoDB.collectionExists(OAUTHCONSENT)
+                || mongoDB.collectionExists(OAUTHTOKEN)) {
                 System.out.println("oAuth20MongoSetup Drop databases for cleanup before test start");
                 dropDatabase();
             }
@@ -421,30 +410,15 @@ public class oAuth20MongoSetup extends HttpServlet {
 
     private void dropDatabase() throws SQLException {
         String name = mongoDB.getName();
-        mongoDB.getCollection(OAUTHCLIENT + uid).drop();
-        mongoDB.getCollection(OAUTHCONSENT + uid).drop();
-        mongoDB.getCollection(OAUTHTOKEN + uid).drop();
-
-        // just in case, clean up generic tables
-        if (mongoDB.collectionExists(OAUTHCLIENT)) {
-            mongoDB.getCollection(OAUTHCLIENT).drop();
-            mongoDB.getCollection(OAUTHCONSENT).drop();
-            mongoDB.getCollection(OAUTHTOKEN).drop();
-            System.out.println("oAuth20MongoSetup Dropped collections for " + OAUTHCLIENT);
-        }
-
-        if (mongoDB.collectionExists(OAUTHCLIENT + "defaultUID")) {
-            mongoDB.getCollection(OAUTHCLIENT + "defaultUID").drop();
-            mongoDB.getCollection(OAUTHCONSENT + "defaultUID").drop();
-            mongoDB.getCollection(OAUTHTOKEN + "defaultUID").drop();
-            System.out.println("oAuth20MongoSetup Dropped collections for " + OAUTHCLIENT + "defaultUID");
-        }
+        mongoDB.getCollection(OAUTHCLIENT).drop();
+        mongoDB.getCollection(OAUTHCONSENT).drop();
+        mongoDB.getCollection(OAUTHTOKEN).drop();
 
         System.out.println(
-                           "oAuth20MongoSetup Dropped collections in  mongoDB database " + name + ". Table uid was " + uid);
+                           "oAuth20MongoSetup Dropped collections in  mongoDB database " + name);
 
-        System.out.println("oAuth20MongoSetup Collection dropped for " + OAUTHCLIENT + uid + ": "
-                           + !mongoDB.collectionExists(OAUTHCLIENT + uid));
+        System.out.println("oAuth20MongoSetup Collection dropped for " + OAUTHCLIENT + ": "
+                           + !mongoDB.collectionExists(OAUTHCLIENT));
     }
 
     /**
@@ -453,11 +427,11 @@ public class oAuth20MongoSetup extends HttpServlet {
      */
     private void createCacheTableMongo(DB ds) {
 
-        mongoDB.getCollection(OAUTHCLIENT + uid);
-        mongoDB.getCollection(OAUTHCONSENT + uid);
-        mongoDB.getCollection(OAUTHTOKEN + uid);
+        mongoDB.getCollection(OAUTHCLIENT);
+        mongoDB.getCollection(OAUTHCONSENT);
+        mongoDB.getCollection(OAUTHTOKEN);
 
-        System.out.println("oAuth20MongoSetup created tables with uid " + uid);
+        System.out.println("oAuth20MongoSetup created tables");
     }
 
     private JSONObject buildClientMetaData(String clientId, String redirectUri, String introspectTokens) throws Exception {
@@ -514,7 +488,7 @@ public class oAuth20MongoSetup extends HttpServlet {
 
         String redirectUri = "http://localhost:" + port + "/oauthclient/redirect.jsp";
         try {
-            DBCollection col = mongoDB.getCollection(OAUTHCLIENT + uid);
+            DBCollection col = mongoDB.getCollection(OAUTHCLIENT);
             BasicDBObject d = new BasicDBObject(CLIENTID, clientID);
 
             d.append(PROVIDERID, providerID);
@@ -572,19 +546,16 @@ public class oAuth20MongoSetup extends HttpServlet {
 
     }
 
-    private void connect(String dbName, String dbUser, String dbHost, String dbPort, String dbPwd) {
+    private void connect(String dbName, String dbHost, String dbPort) {
         MongoClient mongoClient = null;
         try {
-            System.out.println("oAuth20MongoSetup connecting to the " + dbName + " database at " + dbHost + ":" + dbPort
-                               + " using table modifier " + uid);
-            List<MongoCredential> credentials = Collections.emptyList();
-            MongoCredential credential = MongoCredential.createCredential(dbUser, dbName, dbPwd.toCharArray());
-            credentials = Collections.singletonList(credential);
+            System.out.println("oAuth20MongoSetup connecting to the " + dbName + " database at " + dbHost + ":" + dbPort);
+
             MongoClientOptions.Builder optionsBuilder = new MongoClientOptions.Builder().connectTimeout(10000);
             optionsBuilder.socketTimeout(10000);
             optionsBuilder.socketKeepAlive(true);
             MongoClientOptions clientOptions = optionsBuilder.build();
-            mongoClient = new MongoClient(new ServerAddress(dbHost, Integer.parseInt(dbPort)), credentials, clientOptions);
+            mongoClient = new MongoClient(new ServerAddress(dbHost, Integer.parseInt(dbPort)), null, clientOptions);
             mongoDB = mongoClient.getDB(dbName);
             System.out.println("oAuth20MongoSetup connected to the database");
 
@@ -599,7 +570,7 @@ public class oAuth20MongoSetup extends HttpServlet {
     private void clearAllClients() throws Exception {
         System.out.println("clearAllClients: ");
         try {
-            DBCollection col = mongoDB.getCollection(OAUTHCLIENT + uid);
+            DBCollection col = mongoDB.getCollection(OAUTHCLIENT);
             System.out.println("oAuth20MongoSetup Collection " + col.getName());
 
             col.remove(new BasicDBObject());

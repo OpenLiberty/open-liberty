@@ -7,10 +7,9 @@ singleton=true
 IBM-API-Package: \
   com.ibm.websphere.concurrent.persistent; type="ibm-api", \
   com.ibm.websphere.concurrent.persistent.mbean; type="ibm-api"
--features=\
+-features=com.ibm.websphere.appserver.transaction-1.2; ibm.tolerates:="2.0", \
   com.ibm.websphere.appserver.appmanager-1.0, \
-  com.ibm.websphere.appserver.transaction-1.2; ibm.tolerates:="2.0", \
-  io.openliberty.persistentExecutor.internal.ee-7.0; ibm.tolerates:="9.0", \
-  com.ibm.websphere.appserver.jdbc-4.1; ibm.tolerates:="4.2, 4.3"
+  com.ibm.websphere.appserver.jdbc-4.1; ibm.tolerates:="4.2,4.3", \
+  io.openliberty.persistentExecutor.internal.ee-7.0; ibm.tolerates:="9.0"
 kind=noship
 edition=full

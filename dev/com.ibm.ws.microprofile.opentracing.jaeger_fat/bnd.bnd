@@ -52,4 +52,4 @@ tested.features: jaeger-1.0
 	io.jaegertracing:jaeger-tracerresolver;version=0.34.0,\
 	org.apache.thrift:libthrift;version=0.11.0,\
 	org.slf4j:slf4j-simple;version=1.7.30,\
-	org.slf4j:slf4j-api;version=1.7.26
+	org.slf4j:slf4j-api;version=1.7.30

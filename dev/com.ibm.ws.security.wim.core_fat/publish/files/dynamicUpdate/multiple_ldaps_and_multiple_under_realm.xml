@@ -10,9 +10,9 @@
 	<ldapRegistry id="TDS_LDAP" realm="SampleLdapIDSRealm" host="${ldap.server.1.name}" port="${ldap.server.1.port}" ignoreCase="true"
 		baseDN="o=ibm,c=us"
 		ldapType="IBM Tivoli Directory Server"
-		searchTimeout="8m">
+		searchTimeout="8m" connectTimeout="30s">
 		<failoverServers name="failoverLdapServers">
-			<server host="${ldap.server.4.name}" port="${ldap.server.4.port}"/>
+			<server host="${ldap.server.5.name}" port="${ldap.server.5.port}"/>
        	</failoverServers>
 	</ldapRegistry>
 	
@@ -20,7 +20,7 @@
 		bindDN="cn=testuser,cn=users,dc=secfvt2,dc=austin,dc=ibm,dc=com"
 		bindPassword="testuserpwd"
 		ldapType="Microsoft Active Directory"
-		searchTimeout="8m" >
+		searchTimeout="8m" connectTimeout="30s">
 		<failoverServers name="failoverLdapServers">
       		<server host="${ldap.server.6.name}" port="${ldap.server.6.port}"/>
        	</failoverServers>

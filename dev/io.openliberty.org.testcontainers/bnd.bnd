@@ -1,0 +1,43 @@
+#*******************************************************************************
+# Copyright (c) 2021 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion: 1.0
+
+Bundle-Name: FAT Testcontainer Bundle
+Bundle-SymbolicName: io.openliberty.org.testcontainers
+Bundle-Description: FAT Testcontainer Bundle; version=${bVersion}
+
+Export-Package: \
+	org.testcontainers.*;version="1.15.3",\
+	com.github.*;version="3.2.8",\
+	org.rnorth.*;version="1.0.8",\
+	org.slf4j.*;version="1.7.30"
+
+test.project: true
+
+-buildpath: \
+	org.testcontainers:testcontainers;version=1.15.3,\
+	org.testcontainers:database-commons;version=1.15.3,\
+	org.testcontainers:jdbc;version=1.15.3,\
+	org.testcontainers:db2;version=1.15.3,\
+	org.testcontainers:kafka;version=1.15.3,\
+	org.testcontainers:mssqlserver;version=1.15.3,\
+	org.testcontainers:oracle-xe;version=1.15.3,\
+	org.testcontainers:postgresql;version=1.15.3,\
+	com.github.docker-java:docker-java-api;version=3.2.8,\
+	com.github.docker-java:docker-java-transport;version=3.2.8,\
+	com.github.docker-java:docker-java-transport-zerodep;version=3.2.8,\
+	org.rnorth.duct-tape:duct-tape;version=1.0.8,\
+	org.slf4j:slf4j-api;version=1.7.30,\
+	org.slf4j:slf4j-simple;version=1.7.30
+	
+	
+

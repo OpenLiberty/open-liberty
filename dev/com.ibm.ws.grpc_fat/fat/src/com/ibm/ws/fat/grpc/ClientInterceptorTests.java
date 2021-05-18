@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -107,7 +107,7 @@ public class ClientInterceptorTests extends FATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         Exception excep = null;
-        worldChannel.shutdownNow();
+        GrpcTestUtils.stopGrpcService(worldChannel);
 
         try {
             if (grpcClient != null && grpcClient.isStarted()) {

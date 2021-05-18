@@ -5,9 +5,9 @@ visibility=public
 IBM-API-Package: com.ibm.websphere.messaging.mbean; type="ibm-api"
 IBM-ShortName: wasJmsServer-1.0
 Subsystem-Name: Message Server 1.0
--features=com.ibm.websphere.appserver.transaction-1.1; ibm.tolerates:=1.2, \
- com.ibm.websphere.appserver.appLifecycle-1.0, \
- com.ibm.websphere.appserver.channelfw-1.0
+-features=com.ibm.websphere.appserver.appLifecycle-1.0, \
+  com.ibm.websphere.appserver.channelfw-1.0, \
+  com.ibm.websphere.appserver.transaction-1.1; ibm.tolerates:="1.2"
 -bundles=com.ibm.ws.messaging.comms.server, \
  com.ibm.ws.messaging.msgstore, \
  com.ibm.ws.messaging.common, \

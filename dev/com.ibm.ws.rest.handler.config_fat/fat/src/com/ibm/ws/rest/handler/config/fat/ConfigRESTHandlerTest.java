@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2019 IBM Corporation and others.
+ * Copyright (c) 2017,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -898,7 +898,7 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         assertEquals(err, "defaultHttpOptions", httpOptionsRef.getString("uid"));
         assertEquals(err, "defaultHttpOptions", httpOptionsRef.getString("id"));
         assertTrue(err, httpOptionsRef.getBoolean("keepAliveEnabled"));
-        assertEquals(err, 100, httpOptionsRef.getInt("maxKeepAliveRequests"));
+        assertEquals(err, -1, httpOptionsRef.getInt("maxKeepAliveRequests"));
         assertEquals(err, 30, httpOptionsRef.getInt("persistTimeout"));
         assertEquals(err, 60, httpOptionsRef.getInt("readTimeout"));
         assertFalse(err, httpOptionsRef.getBoolean("removeServerHeader"));

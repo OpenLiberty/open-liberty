@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -101,7 +101,7 @@ public class ServiceConfigTests extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        worldChannel.shutdownNow();
+        GrpcTestUtils.stopGrpcService(worldChannel);
         // The testInvalidMaxInboundMessageSize() test generates this log message, don't flag it as an error
         // CWWKT0203E: The maxInboundMessageSize -1 is not valid. Sizes must greater than 0.
         grpcServer.stopServer("CWWKT0203E");
@@ -296,7 +296,7 @@ public class ServiceConfigTests extends FATServletClient {
         }
 
         // Stop only the FavoriteBeerService grpc application
-        beerChannel.shutdownNow();
+        GrpcTestUtils.stopGrpcService(beerChannel);
         LOG.info("ServiceConfigTests : testSingleWarWithGrpcService() : Stop the FavoriteBeerService application and remove it from dropins.");
         grpcServer.removeAndStopDropinsApplications("FavoriteBeerService.war");
 
@@ -395,7 +395,7 @@ public class ServiceConfigTests extends FATServletClient {
         assertTrue(test1Passed && rsp.getDone());
 
         // Stop only the FavoriteBeerService grpc application and remove the app from dropins
-        beerChannel.shutdownNow();
+        GrpcTestUtils.stopGrpcService(beerChannel);
         grpcServer.removeAndStopDropinsApplications("FavoriteBeerService.war");
         // removeAndStop above actually just renames the file, so really delete so the next tests have a clean slate
         grpcServer.deleteFileFromLibertyServerRoot("/FavoriteBeerService");

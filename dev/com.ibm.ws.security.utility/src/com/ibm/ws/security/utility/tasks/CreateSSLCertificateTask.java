@@ -193,7 +193,7 @@ public class CreateSSLCertificateTask extends BaseCommandTask {
             if (serverName != null) {
                 stdout.println(getMessage("sslCert.serverXML", serverName, subjectDN));
                 xmlSnippet = "    <featureManager>" + NL +
-                             "        <feature>ssl-1.0</feature>" + NL +
+                             "        <feature>transportSecurity-1.0</feature>" + NL +
                              "    </featureManager>" + NL +
                              "    <keyStore id=\"defaultKeyStore\" password=\"" + encodedPassword + "\" />" + NL;
 

@@ -13,6 +13,7 @@ package com.ibm.ws.transaction.test.tests;
 import org.junit.Test;
 
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
@@ -24,16 +25,19 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 public abstract class DualServerDynamicCoreTest2 extends DualServerDynamicTestBase {
 
     @Test
+    @SkipForRepeat({ SkipForRepeat.EE8_FEATURES, SkipForRepeat.NO_MODIFICATION })
     public void dynamicCloudRecovery009() throws Exception {
         dynamicTest(server1, server2, 9, 2);
     }
 
     @Test
+    @SkipForRepeat({ SkipForRepeat.EE9_FEATURES, SkipForRepeat.NO_MODIFICATION })
     public void dynamicCloudRecovery010() throws Exception {
         dynamicTest(server1, server2, 10, 2);
     }
 
     @Test
+    @SkipForRepeat({ SkipForRepeat.EE8_FEATURES, SkipForRepeat.EE9_FEATURES })
     @ExpectedFFDC(value = { "javax.transaction.xa.XAException" })
     public void dynamicCloudRecovery011() throws Exception {
         dynamicTest(server1, server2, 11, 2);
@@ -46,18 +50,21 @@ public abstract class DualServerDynamicCoreTest2 extends DualServerDynamicTestBa
     }
 
     @Test
+    @SkipForRepeat({ SkipForRepeat.EE8_FEATURES, SkipForRepeat.NO_MODIFICATION })
     @ExpectedFFDC(value = { "javax.transaction.xa.XAException" })
     public void dynamicCloudRecovery013() throws Exception {
         dynamicTest(server1, server2, 13, 2);
     }
 
     @Test
+    @SkipForRepeat({ SkipForRepeat.EE9_FEATURES, SkipForRepeat.NO_MODIFICATION })
     @ExpectedFFDC(value = { "javax.transaction.xa.XAException" })
     public void dynamicCloudRecovery014() throws Exception {
         dynamicTest(server1, server2, 14, 2);
     }
 
     @Test
+    @SkipForRepeat({ SkipForRepeat.EE8_FEATURES, SkipForRepeat.EE9_FEATURES })
     @ExpectedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
     public void dynamicCloudRecovery015() throws Exception {
         dynamicTest(server1, server2, 15, 3);
@@ -70,18 +77,21 @@ public abstract class DualServerDynamicCoreTest2 extends DualServerDynamicTestBa
     }
 
     @Test
+    @SkipForRepeat({ SkipForRepeat.EE8_FEATURES, SkipForRepeat.NO_MODIFICATION })
     @ExpectedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
     public void dynamicCloudRecovery017() throws Exception {
         dynamicTest(server1, server2, 17, 3);
     }
 
     @Test
+    @SkipForRepeat({ SkipForRepeat.EE9_FEATURES, SkipForRepeat.NO_MODIFICATION })
     @ExpectedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
     public void dynamicCloudRecovery018() throws Exception {
         dynamicTest(server1, server2, 18, 3);
     }
 
     @Test
+    @SkipForRepeat({ SkipForRepeat.EE8_FEATURES, SkipForRepeat.EE9_FEATURES })
     public void dynamicCloudRecovery047() throws Exception {
         dynamicTest(server1, server2, 47, 4);
     }
@@ -92,11 +102,13 @@ public abstract class DualServerDynamicCoreTest2 extends DualServerDynamicTestBa
     }
 
     @Test
+    @SkipForRepeat({ SkipForRepeat.EE8_FEATURES, SkipForRepeat.NO_MODIFICATION })
     public void dynamicCloudRecovery050() throws Exception {
         dynamicTest(server1, server2, 50, 10);
     }
 
     @Test
+    @SkipForRepeat({ SkipForRepeat.EE9_FEATURES, SkipForRepeat.NO_MODIFICATION })
     public void dynamicCloudRecovery051() throws Exception {
         dynamicTest(server1, server2, 51, 10);
     }
@@ -106,5 +118,4 @@ public abstract class DualServerDynamicCoreTest2 extends DualServerDynamicTestBa
     public void dynamicCloudRecovery090() throws Exception {
         dynamicTest(server1, server2, 90, 3);
     }
-
 }

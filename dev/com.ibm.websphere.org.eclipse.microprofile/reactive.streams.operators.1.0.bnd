@@ -15,7 +15,7 @@ bVersion=1.0
 Bundle-SymbolicName: com.ibm.websphere.org.eclipse.microprofile.reactive.streams.operators.1.0; singleton:=true
 
 Import-Package: \
-  org.reactivestreams; version="[1.0,1.1)", \
+  org.reactivestreams; version="[1.1,1.2)", \
   com.ibm.ws.microprofile.reactive.streams.operators.spi.impl;version="1.0";resolution:=optional, \
   *
   

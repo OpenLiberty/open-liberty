@@ -2,10 +2,9 @@
 symbolicName = io.openliberty.openidConnectServer1.0.internal.ee-9.0
 singleton=true
 visibility = private
--features=\
-  io.openliberty.jakarta.cdi-3.0; apiJar=false, \
+-features=com.ibm.websphere.appserver.servlet-5.0, \
   io.openliberty.pages-3.0, \
-  com.ibm.websphere.appserver.servlet-5.0
+  io.openliberty.jakarta.cdi-3.0; apiJar=false
 -bundles=\
   io.openliberty.security.common.internal, \
   io.openliberty.security.openidconnect.internal.clients.common, \

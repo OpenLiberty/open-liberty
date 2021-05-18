@@ -12,5 +12,5 @@
 dependencies {
   requiredLibs project(':io.openliberty.org.apache.commons.logging')
   requiredLibs project(':io.openliberty.org.apache.commons.codec')
-  requiredLibs 'org.reactivestreams:reactive-streams:1.0.2'
+  requiredLibs project(':com.ibm.websphere.org.reactivestreams.reactive-streams.1.0')
 }

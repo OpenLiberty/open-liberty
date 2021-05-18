@@ -42,5 +42,6 @@
   javax.activation:activation;version=1.1
 
 -testpath: \
-	../build.sharedResources/lib/junit/old/junit.jar;version=file
+	../build.sharedResources/lib/junit/old/junit.jar;version=file,\
+	com.ibm.ws.org.glassfish.json.1.1
   

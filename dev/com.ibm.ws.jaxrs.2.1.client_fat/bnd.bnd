@@ -66,7 +66,7 @@ tested.features: \
 	org.mock-server:mockserver-client-java;version=3.10.7,\
 	org.mock-server:mockserver-core;version=3.10.7.IBM20191022,\
 	org.mock-server:mockserver-netty;version=3.10.7,\
-	org.reactivestreams:reactive-streams;version=1.0.3,\
+	com.ibm.websphere.org.reactivestreams.reactive-streams.1.0;version=latest,\
 	io.openliberty.com.fasterxml.jackson;version=latest,\
 	io.openliberty.com.fasterxml.jackson.jaxrs;version=latest,\
 	io.openliberty.jakarta.restfulWS.3.0,\

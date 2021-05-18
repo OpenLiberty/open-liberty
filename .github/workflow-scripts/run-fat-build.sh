@@ -83,8 +83,8 @@ do
   #Run fat
   ./gradlew :$FAT_BUCKET:buildandrun $FAT_ARGS &> $OUTPUT_FILE || BUCKET_PASSED=false
 
-  OUTPUT_DIR=$FAT_BUCKET/build/libs/autoFVT/output
-  RESULTS_DIR=$FAT_BUCKET/build/libs/autoFVT/results
+  OUTPUT_DIR=$FAT_BUCKET/build/libs/autoFVT/output && mkdir -p -- "$(dirname -- "$OUTPUT_DIR")"
+  RESULTS_DIR=$FAT_BUCKET/build/libs/autoFVT/results && mkdir -p -- "$(dirname -- "$RESULTS_DIR")"
 
   # Create a file to mark whether a bucket failed or passed
   if $BUCKET_PASSED; then
@@ -98,8 +98,7 @@ do
   fi
   
   # Collect all junit files in a central location
-  FAT_RESULTS=$PWD/fat-results
-  mkdir $FAT_RESULTS
+  FAT_RESULTS=$PWD/fat-results && mkdir -p -- "$(dirname -- "$FAT_RESULTS")"
   echo "Collecing fat results in $FAT_RESULTS"
   for f in $RESULTS_DIR/junit/TEST-com.*.xml $RESULTS_DIR/junit/TEST-io.*.xml $RESULTS_DIR/junit/TEST-wlp.*.xml; do 
       cp $f $FAT_RESULTS &> /dev/null #ignore cases where literal globs are evaluated
