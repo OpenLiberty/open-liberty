@@ -567,6 +567,65 @@ public class PackageCommandTest {
 
     }
 
+    private static final List<String> IconFeatures;
+    static {
+        IconFeatures = new ArrayList<String>(2);
+        IconFeatures.add("openidConnectServer-1.0");
+        IconFeatures.add("adminCenter-1.0");
+    }
+
+    /**
+     * Verify minified server content includes all types of icons used by admin features.
+     */
+    @Test
+    @SkipIfSysProp("os.name=z/OS") // Jar not supported on Z/OS
+    public void testMinify_IncludesAdminIcons() throws Exception {
+        LibertyServer server = bootstrapFatServer;
+        String serverPath = bootstrapFatServerPath;
+
+        // '--include=minify' requires that the 'lib/extract' folder exists.
+        assumeSelfExtractExists(rootFatServer);
+
+        try (ServerFeatures serverFeatures = new ServerFeatures(server, IconFeatures)) {
+            String initialFeatures = collectFeatures(server, "initial");
+
+            String packageName = server.getServerName() + ".jar";
+            String packagePath = bootstrapFatServerPath + '/' + packageName;
+            String[] packageCmd = {
+                                    "--archive=" + packageName,
+                                    "--include=minify"
+            };
+            verifyPackage(server, packageCmd, packageName, packagePath);
+
+            try (ZipFile zipFile = new ZipFile(packagePath)) {
+                boolean foundIconEntry = false;
+                boolean foundEndpointIconsEntry = false;
+                Enumeration<? extends ZipEntry> en = zipFile.entries();
+                while ((!foundIconEntry || !foundEndpointIconsEntry) && en.hasMoreElements()) {
+                    ZipEntry entry = en.nextElement();
+                    String entryName = entry.getName();
+
+                    if (!foundIconEntry) {
+                        foundIconEntry = entryName.contains("lib/features/icons/com.ibm.websphere.appserver.adminCenter.tool.explore-1.0/OSGI-INF/explore_142x142.png");
+                    }
+                    if (!foundEndpointIconsEntry) {
+                        foundEndpointIconsEntry = entryName.contains("lib/features/icons/com.ibm.websphere.appserver.openidConnectServer-1.0/clientManagement/OSGI-INF/clientManagement_78.png");
+                    }
+                }
+                if (!foundIconEntry) {
+                    fail("Package [ " + packagePath + " ] missing [ lib/features/icons/com.ibm.websphere.appserver.adminCenter.tool.explore-1.0/OSGI-INF/explore_142x142.png ]");
+                }
+                if (!foundEndpointIconsEntry) {
+                    fail("Package [ " + packagePath
+                         + " ] missing [ lib/features/icons/com.ibm.websphere.appserver.openidConnectServer-1.0/clientManagement/OSGI-INF/clientManagement_78.png ]");
+                }
+            }
+
+            String finalFeatures = collectFeatures(server, "final");
+            assertEquals("Server [ " + serverPath + " ] features were changed", initialFeatures, finalFeatures);
+        }
+    }
+
     /**
      * Verify the embedded server instance launched by the package command does
      * not corrupt the feature cache of the packaged (target) server.
