@@ -381,7 +381,7 @@ public class EcJwkTest {
         String jwksString = jwkProvider.getJwkSetString();
         JWKSet jwkset = new JWKSet();
 
-        boolean bJwk = jwkRetriever.parseJwk(jwksString, null, jwkset, "ES256");
+        boolean bJwk = jwkRetriever.parseJwk(jwksString, null, "ES256");
         assertTrue("No EC JWk was parsing", bJwk);
         List<JWK> jwks = jwkset.getJWKs();
         int iCnt = 0;

@@ -209,7 +209,7 @@ public class JwKRetriever {
     }
 
     @Sensitive
-    private Key getJwkFromJWKSet(@Sensitive String setId, String kid, String x5t, String use, @Sensitive String keyText, JwkKeyType keyType) {
+    Key getJwkFromJWKSet(@Sensitive String setId, String kid, String x5t, String use, @Sensitive String keyText, JwkKeyType keyType) {
         Key key = null;
         if (kid != null) {
             key = jwkSet.getKeyBySetIdAndKid(setId, kid, keyType);
@@ -276,7 +276,7 @@ public class JwKRetriever {
                         is = getInputStream(jwkFile, fileSystemCacheSelector, location, classLoadingCacheSelector);
                         if (is != null) {
                             keyString = getKeyAsString(is);
-                            parseJwk(keyString, null, jwkSet, sigAlg); // also adds entry to cache.
+                            parseJwk(keyString, null, sigAlg); // also adds entry to cache.
                             key = getJwkFromJWKSet(locationUsed, kid, x5t, use, keyString, keyType);
                         }
                     } finally {
@@ -363,7 +363,7 @@ public class JwKRetriever {
             synchronized (jwkSet) {
                 Key key = getJwkFromJWKSet(keyText, kid, x5t, use, keyText, keyType);
                 if (key == null) {
-                    parseJwk(keyText, null, jwkSet, sigAlg);
+                    parseJwk(keyText, null, sigAlg);
                     key = getJwkFromJWKSet(keyText, kid, x5t, use, keyText, keyType);
                 }
                 return key;
@@ -438,7 +438,7 @@ public class JwKRetriever {
             }
             HttpClient client = createHTTPClient(sslSocketFactory, locationUsed, hostNameVerificationEnabled, useSystemPropertiesForHttpClientConnections);
             jsonString = getHTTPRequestAsString(client, locationUsed);
-            boolean bJwk = parseJwk(jsonString, null, jwkSet, sigAlg);
+            boolean bJwk = parseJwk(jsonString, null, sigAlg);
 
             if (!bJwk) {
                 // can not get back any JWK from OP
@@ -466,20 +466,20 @@ public class JwKRetriever {
     }
 
     // separate to be an independent method for unit tests
-    public boolean parseJwk(@Sensitive String keyText, FileInputStream inputStream, JWKSet jwkset, String signatureAlgorithm) {
+    public boolean parseJwk(@Sensitive String keyText, FileInputStream inputStream, String signatureAlgorithm) {
         boolean bJwk = false;
 
         if (keyText != null) {
-            bJwk = parseKeyText(keyText, locationUsed, jwkset, signatureAlgorithm);
+            bJwk = parseKeyText(keyText, locationUsed, signatureAlgorithm);
         } else if (inputStream != null) {
             String keyAsString = getKeyAsString(inputStream);
-            bJwk = parseKeyText(keyAsString, locationUsed, jwkset, signatureAlgorithm);
+            bJwk = parseKeyText(keyAsString, locationUsed, signatureAlgorithm);
         }
 
         return bJwk;
     }
 
-    protected boolean parseKeyText(@Sensitive String keyText, String location, JWKSet jwkset, String signatureAlgorithm) {
+    protected boolean parseKeyText(@Sensitive String keyText, String location, String signatureAlgorithm) {
         Set<JWK> jwks = new HashSet<JWK>();
         JWK jwk = null;
 

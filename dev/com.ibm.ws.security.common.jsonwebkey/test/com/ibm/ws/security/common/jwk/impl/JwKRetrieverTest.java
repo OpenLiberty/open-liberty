@@ -197,10 +197,9 @@ public class JwKRetrieverTest extends CommonTestClass {
 
         String keyText = null;
         String location = null;
-        JWKSet jwkset = null;
         String signatureAlgorithm = null;
 
-        boolean result = jwkRetriever.parseKeyText(keyText, location, jwkset, signatureAlgorithm);
+        boolean result = jwkRetriever.parseKeyText(keyText, location, signatureAlgorithm);
         assertFalse("Should have failed to parse key text, but did not.", result);
     }
 
@@ -211,10 +210,9 @@ public class JwKRetrieverTest extends CommonTestClass {
 
         String keyText = "";
         String location = null;
-        JWKSet jwkset = null;
         String signatureAlgorithm = null;
 
-        boolean result = jwkRetriever.parseKeyText(keyText, location, jwkset, signatureAlgorithm);
+        boolean result = jwkRetriever.parseKeyText(keyText, location, signatureAlgorithm);
         assertFalse("Should have failed to parse key text, but did not.", result);
     }
 
@@ -225,10 +223,9 @@ public class JwKRetrieverTest extends CommonTestClass {
 
         String keyText = "{\"entry1\":\"value1\"}";
         String location = null;
-        JWKSet jwkset = null;
         String signatureAlgorithm = null;
 
-        boolean result = jwkRetriever.parseKeyText(keyText, location, jwkset, signatureAlgorithm);
+        boolean result = jwkRetriever.parseKeyText(keyText, location, signatureAlgorithm);
         assertFalse("Should have failed to parse key text, but did not.", result);
     }
 
@@ -239,10 +236,9 @@ public class JwKRetrieverTest extends CommonTestClass {
 
         String keyText = "{\"kty\":1}";
         String location = null;
-        JWKSet jwkset = null;
         String signatureAlgorithm = null;
 
-        boolean result = jwkRetriever.parseKeyText(keyText, location, jwkset, signatureAlgorithm);
+        boolean result = jwkRetriever.parseKeyText(keyText, location, signatureAlgorithm);
         assertFalse("Should have failed to parse key text, but did not.", result);
     }
 
@@ -254,10 +250,9 @@ public class JwKRetrieverTest extends CommonTestClass {
         String kty = "some unknown value";
         String keyText = "{\"kty\":\"" + kty + "\"}";
         String location = null;
-        JWKSet jwkset = null;
         String signatureAlgorithm = null;
 
-        boolean result = jwkRetriever.parseKeyText(keyText, location, jwkset, signatureAlgorithm);
+        boolean result = jwkRetriever.parseKeyText(keyText, location, signatureAlgorithm);
         assertFalse("Should have failed to parse key text, but did not.", result);
     }
 
@@ -269,11 +264,10 @@ public class JwKRetrieverTest extends CommonTestClass {
         String kty = "RSA";
         String keyText = "{\"kty\":\"" + kty + "\"}";
         String location = null;
-        JWKSet jwkset = null;
         String signatureAlgorithm = null;
 
         // TODO - figure out how to fix this
-        boolean result = jwkRetriever.parseKeyText(keyText, location, jwkset, signatureAlgorithm);
+        boolean result = jwkRetriever.parseKeyText(keyText, location, signatureAlgorithm);
         assertTrue("Should have successfully parsed key text, but did not.", result);
     }
 
@@ -285,10 +279,9 @@ public class JwKRetrieverTest extends CommonTestClass {
         String kty = "EC";
         String keyText = "{\"kty\":\"" + kty + "\"}";
         String location = null;
-        JWKSet jwkset = null;
         String signatureAlgorithm = null;
 
-        boolean result = jwkRetriever.parseKeyText(keyText, location, jwkset, signatureAlgorithm);
+        boolean result = jwkRetriever.parseKeyText(keyText, location, signatureAlgorithm);
         assertFalse("Should have failed to parse key text, but did not.", result);
     }
 
@@ -300,10 +293,9 @@ public class JwKRetrieverTest extends CommonTestClass {
         String kty = "EC";
         String keyText = "{\"kty\":\"" + kty + "\"}";
         String location = null;
-        JWKSet jwkset = null;
         String signatureAlgorithm = "RSA256";
 
-        boolean result = jwkRetriever.parseKeyText(keyText, location, jwkset, signatureAlgorithm);
+        boolean result = jwkRetriever.parseKeyText(keyText, location, signatureAlgorithm);
         assertFalse("Should have failed to parse key text, but did not.", result);
     }
 
@@ -315,11 +307,10 @@ public class JwKRetrieverTest extends CommonTestClass {
         String kty = "EC";
         String keyText = "{\"kty\":\"" + kty + "\"}";
         String location = null;
-        JWKSet jwkset = null;
         String signatureAlgorithm = "ES512";
 
         // TODO - figure out how to fix this
-        boolean result = jwkRetriever.parseKeyText(keyText, location, jwkset, signatureAlgorithm);
+        boolean result = jwkRetriever.parseKeyText(keyText, location, signatureAlgorithm);
         assertTrue("Should have successfully parsed key text, but did not.", result);
     }
 
