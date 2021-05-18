@@ -29,7 +29,7 @@ public class CDICurrentTestServlet extends FATServlet {
     private static final long serialVersionUID = 1L;
 
     private static Boolean wasCDICurrentFound = null;
-    private static Boolean wasCDICurrentFoundViaMOE = null;
+    private static volatile Boolean wasCDICurrentFoundViaMES = null;
 
     @Resource
     ManagedExecutorService managedExecutorService;
@@ -57,14 +57,14 @@ public class CDICurrentTestServlet extends FATServlet {
 
         assertNotNull(CDI.current()); //Test outside a new thread just for completeness.
 
-        managedExecutorService.submit(new callCDICurrent());
+        managedExecutorService.submit(new CallCDICurrent());
 
-        int i = 10;
+        int i = 40;
 
         while (i > 0) {
             i--;
-            if (wasCDICurrentFoundViaMOE != null) {
-                assertTrue("CDI.current returned null when called in a new Thread", wasCDICurrentFoundViaMOE);
+            if (wasCDICurrentFoundViaMES != null) {
+                assertTrue("CDI.current returned null when called in a new Thread", wasCDICurrentFoundViaMES);
                 return;
             }
             Thread.sleep(5);
@@ -74,16 +74,16 @@ public class CDICurrentTestServlet extends FATServlet {
     }
 
 
-    public class callCDICurrent implements Runnable {
+    public class CallCDICurrent implements Runnable {
  
         @Override
         public void run() {
             CDI cdi = CDI.current();
-            System.out.println("GREP MOE + " + CDI.current());
+            System.out.println("GREP MOE + " + cdi);
             if (cdi != null) {
-                CDICurrentTestServlet.wasCDICurrentFoundViaMOE = true;
+                CDICurrentTestServlet.wasCDICurrentFoundViaMES = true;
             } else {
-                CDICurrentTestServlet.wasCDICurrentFoundViaMOE = false;
+                CDICurrentTestServlet.wasCDICurrentFoundViaMES = false;
             }
         }
     }
