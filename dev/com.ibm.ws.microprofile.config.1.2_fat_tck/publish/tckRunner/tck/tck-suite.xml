@@ -8,9 +8,35 @@
 -->
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
-<suite name="microprofile-config-1.2-tck" verbose="2"
-    configfailurepolicy="continue">
+<suite name="microprofile-config-1.2-tck" verbose="2" configfailurepolicy="continue">
     <test name="tck-package-org.eclipse.microprofile.config12.tck">
+        <method-selectors>
+            <method-selector>
+                <script language="beanshell">
+                    <![CDATA[
+                    // org.eclipse.microprofile.config.tck.ConverterTest and ArrayConverterTest
+                    if(method.getName().startsWith("testURLConverter") ||
+                       method.getName().startsWith("testUrlLookupProgrammatically") ||
+                       method.getName().startsWith("testUrlArrayInjection") ||
+                       method.getName().startsWith("testURLListInjection") ||
+                       method.getName().startsWith("testURLSetInjection")
+                       ){
+                        // Tests unreliable in 1.x TCK due to URL.equals() performing DNS resolution. See: https://github.com/eclipse/microprofile-config/issues/549
+                        return false;
+                    }
+                    
+                    // org.eclipse.microprofile.config.tck.ConfigProviderTest
+                    String os = System.getProperty("os.name");
+                    if (os.contains("Windows") && method.getName().startsWith("testEnvironmentConfigSource")){
+                        // Test unreliable in 1.x TCK on Windows due to inconsistent path variable name. See https://github.com/eclipse/microprofile-config/issues/664
+                        return false;
+                    }
+                    
+                    return true;
+                    ]]>
+                </script>
+            </method-selector>
+        </method-selectors>
         <packages>
             <package name="org.eclipse.microprofile.config.tck.*"></package>
         </packages>
