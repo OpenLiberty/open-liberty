@@ -92,5 +92,8 @@
 	<javaPermission
 		codebase="${server.config.dir}/mongoDB/mongo-java-driver.jar"
 		className="java.security.AllPermission" />
+    <javaPermission
+		codebase="${server.config.dir}/apps/oAuth20MongoSetup.war"
+		className="java.security.AllPermission" />
 
 </server>
