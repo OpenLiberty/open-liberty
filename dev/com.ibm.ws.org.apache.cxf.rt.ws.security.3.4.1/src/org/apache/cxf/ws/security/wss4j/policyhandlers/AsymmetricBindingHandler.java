@@ -87,7 +87,6 @@ import org.opensaml.saml.common.SAMLVersion;
 /**
  *
  */
-//No Liberty Change, but needed to recompile due to Liberty change in MessageImpl.
 public class AsymmetricBindingHandler extends AbstractBindingBuilder {
 
     private static final Logger LOG = LogUtils.getL7dLogger(AsymmetricBindingHandler.class);

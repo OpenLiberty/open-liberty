@@ -128,8 +128,8 @@ public class Saml20PropagationCallbackHandler implements CallbackHandler {
 
                 // using the parser pool from openSaml
                 net.shibboleth.utilities.java.support.xml.ParserPool parserPool;
-                //StaticBasicParserPool ppMgr = (StaticBasicParserPool) Configuration.getParserPool();
-                parserPool = XMLObjectProviderRegistrySupport.getParserPool();//v3
+                //StaticBasicParserPool ppMgr = (StaticBasicParserPool) Configuration.getParserPool(); //@AV999
+                parserPool = XMLObjectProviderRegistrySupport.getParserPool();
                 //ParserPool pp = Configuration.//Configuration.getParserPool();
                 DocumentBuilder builder = parserPool.getBuilder();
 

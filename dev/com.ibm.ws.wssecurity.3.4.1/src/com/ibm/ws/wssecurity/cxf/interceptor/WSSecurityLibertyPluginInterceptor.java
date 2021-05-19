@@ -13,7 +13,6 @@ package com.ibm.ws.wssecurity.cxf.interceptor;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -21,8 +20,6 @@ import java.util.Set;
 import org.apache.cxf.binding.soap.SoapMessage;
 import org.apache.cxf.binding.soap.interceptor.AbstractSoapInterceptor;
 import org.apache.cxf.interceptor.Fault;
-import org.apache.cxf.interceptor.Interceptor;
-import org.apache.cxf.message.Message;
 import org.apache.cxf.message.MessageUtils;
 import org.apache.cxf.phase.Phase;
 import org.apache.cxf.ws.security.SecurityConstants;
@@ -41,17 +38,15 @@ import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
 
 public class WSSecurityLibertyPluginInterceptor extends AbstractSoapInterceptor {
 
-    private static final Map<String, Object> providerConfigMap = Collections.synchronizedMap(new HashMap<String, Object>());
+    final static Map<String, Object> providerConfigMap = Collections.synchronizedMap(new HashMap<String, Object>());
     //new HashMap<String, Object>();
-    private static final Map<String, Object> clientConfigMap = Collections.synchronizedMap(new HashMap<String, Object>());
+    final static Map<String, Object> clientConfigMap = Collections.synchronizedMap(new HashMap<String, Object>());
     //new HashMap<String, Object>();
     private static final TraceComponent tc = Tr.register(WSSecurityLibertyPluginInterceptor.class,
                                                          WSSecurityConstants.TR_GROUP, WSSecurityConstants.TR_RESOURCE_BUNDLE);
 
     private static final String SIGNATURE_METHOD = "signatureAlgorithm";
-    private static Map<String, Object> samlTokenConfigMap = null; //unmodifiableMap
-    private static boolean signatureConfigChanged = false;
-    private static boolean clientSignatureConfigChanged = false;
+    static Map<String, Object> samlTokenConfigMap = null; //unmodifiableMap
 
     public WSSecurityLibertyPluginInterceptor() {
         super(Phase.PRE_PROTOCOL);
@@ -60,7 +55,7 @@ public class WSSecurityLibertyPluginInterceptor extends AbstractSoapInterceptor 
     }
 
     public static void setBindingsConfiguration(Map<String, Object> map) {
-        signatureConfigChanged = true;
+
         if (map != null) {
             if (!providerConfigMap.isEmpty()) {
                 providerConfigMap.clear();
@@ -69,10 +64,11 @@ public class WSSecurityLibertyPluginInterceptor extends AbstractSoapInterceptor 
         } else {
             providerConfigMap.clear();
         }
+
     }
 
     public static void setClientBindingsConfiguration(Map<String, Object> map) {
-        clientSignatureConfigChanged = true;
+
         if (map != null) {
             if (!clientConfigMap.isEmpty()) {
                 clientConfigMap.clear();
@@ -81,6 +77,7 @@ public class WSSecurityLibertyPluginInterceptor extends AbstractSoapInterceptor 
         } else {
             clientConfigMap.clear();
         }
+
     }
 
     /**
@@ -106,7 +103,7 @@ public class WSSecurityLibertyPluginInterceptor extends AbstractSoapInterceptor 
 
         if (isReq) { //client -
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "client side message = ", message);
+                Tr.debug(tc, "outgoing message = ", message);
             }
             //checkConfigMap(clientConfigMap);
             Set<String> client_config_keys = clientConfigMap.keySet();
@@ -134,11 +131,6 @@ public class WSSecurityLibertyPluginInterceptor extends AbstractSoapInterceptor 
                             Properties sigProps = new Properties();
                             sigProps.putAll(sigPropsMap);
                             message.setContextualProperty(key, sigProps);
-                            if (clientSignatureConfigChanged) {
-                                //message.setContextualProperty(WSSecurityConstants.CXF_SIG_CRYPTO, null);
-                                message.setContextualProperty(WSSecurityConstants.SEC_SIG_CRYPTO, null);
-                                clientSignatureConfigChanged = false;
-                            }
                             //message.setContextualProperty(WSSecurityConstants.CXF_SIG_CRYPTO, Utils.getCrypto(sigProps)); //@2020 TODO
                             SignatureAlgorithms.setAlgorithm(message, (String) tempMap.get(SIGNATURE_METHOD));
                         }
@@ -181,7 +173,7 @@ public class WSSecurityLibertyPluginInterceptor extends AbstractSoapInterceptor 
 
         } else { //provider
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "provider side message = ", message);
+                Tr.debug(tc, "@AV999 incoming message = ", message);
             }
             // Handle UserNameTokenValidator
             Object validator =
@@ -195,16 +187,6 @@ public class WSSecurityLibertyPluginInterceptor extends AbstractSoapInterceptor 
             if (validator == null) {
                 // override SamlTokenValidator
                 message.put(SecurityConstants.SAML2_TOKEN_VALIDATOR, new WssSamlAssertionValidator(samlTokenConfigMap));
-                if (samlTokenConfigMap != null) {
-                    String[] restrictions = (String[]) samlTokenConfigMap.get(WSSecurityConstants.KEY_audienceRestrictions);
-                    if (restrictions == null || restrictions.length < 1) {
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "set audience restriction validation to false");
-                        }
-                        message.put(SecurityConstants.AUDIENCE_RESTRICTION_VALIDATION, false); //v3
-                    }
-                }
-                
             }
 
             Set<String> provider_config_keys = providerConfigMap.keySet();
@@ -223,11 +205,6 @@ public class WSSecurityLibertyPluginInterceptor extends AbstractSoapInterceptor 
                         Properties sigProps = new Properties();
                         sigProps.putAll(sigPropsMap);
                         message.setContextualProperty(key, sigProps);
-                        if (signatureConfigChanged) {
-                            //message.setContextualProperty(WSSecurityConstants.CXF_SIG_CRYPTO, null);
-                            message.setContextualProperty(WSSecurityConstants.SEC_SIG_CRYPTO, null);
-                            signatureConfigChanged = false;
-                        }
                         //message.setContextualProperty(WSSecurityConstants.CXF_SIG_CRYPTO, Utils.getCrypto(sigProps)); //@2020 TODO
                         SignatureAlgorithms.setAlgorithm(message, (String) tempMap.get(SIGNATURE_METHOD));
                     }

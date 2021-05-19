@@ -304,8 +304,7 @@ public class UsernameTokenValidator implements Validator {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, e.getMessage());
             }
-            //new Exception(e,WSSecurityException.FAILED_AUTHENTICATION_ERR)
-            WSSecurityException wsse = new WSSecurityException(WSSecurityException.ErrorCode.FAILED_AUTHENTICATION/*, e*/);
+            throw new WSSecurityException(WSSecurityException.ErrorCode.FAILED_AUTHENTICATION, e);
         } catch (UnsupportedCallbackException e) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, e.getMessage());
@@ -397,9 +396,9 @@ public class UsernameTokenValidator implements Validator {
         int futureTimeToLive = 300;
         if (wssConfig != null) {
             //timeStampTTL = wssConfig.getTimeStampTTL(); //@2020
-            timeStampTTL = data.getUtTTL(); //v3 TODO
+            timeStampTTL = data.getUtTTL(); //@AV999 TODO
             //futureTimeToLive = wssConfig.getTimeStampFutureTTL(); //@2020
-            futureTimeToLive = data.getUtFutureTTL(); //v3 TODO
+            futureTimeToLive = data.getUtFutureTTL(); //TODO
         }
 
         boolean isValid = verifyCreated(created, timeStampTTL, futureTimeToLive);
