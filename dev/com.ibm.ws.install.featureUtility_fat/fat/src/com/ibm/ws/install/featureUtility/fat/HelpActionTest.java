@@ -139,7 +139,21 @@ public class HelpActionTest extends  FeatureUtilityToolTest {
 
         Log.exiting(c, METHOD_NAME);
     }
+    
+	@Test
+	public void testUnknownAction() throws Exception {
+		final String METHOD_NAME = "testUnknownAction";
+		Log.entering(c, METHOD_NAME);
 
+		// Run the command.
+		String[] parms = { "invalidAction" }; // purposefully broken action
+		ProgramOutput po = runFeatureUtility(METHOD_NAME, parms);
+
+		// Validation.
+		String validationMessage = "Unknown action: " + parms[0];
+		assertEquals("Exit code should be 20", 20, po.getReturnCode());
+		assertTrue("Should contain '" + validationMessage + "'", po.getStdout().contains(validationMessage));
+	}
 
 
 }

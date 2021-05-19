@@ -18,7 +18,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
 
-                InstallFeatureTest.class, InstallServerTest.class
+		InstallFeatureTest.class, InstallServerTest.class, HelpActionTest.class
 
 })
 public class FATSuite {
