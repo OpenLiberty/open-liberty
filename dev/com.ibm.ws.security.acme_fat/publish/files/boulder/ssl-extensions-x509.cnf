@@ -1,0 +1,13 @@
+[v3_ca]
+basicConstraints = critical, CA:TRUE, pathlen:0
+nameConstraints = excluded;DNS:.mil,excluded;IP:0.0.0.0/0.0.0.0,excluded;IP:0:0:0:0:0:0:0:0/0:0:0:0:0:0:0:0
+keyUsage = critical, digitalSignature, cRLSign, keyCertSign
+authorityInfoAccess = OCSP;URI:http://isrg.trustid.ocsp.identrust.com,caIssuers;URI:http://apps.identrust.com/roots/dstrootcax3.p7c
+authorityKeyIdentifier = keyid
+certificatePolicies = 2.23.140.1.2.1, @polsect
+crlDistributionPoints = URI:http://crl.identrust.com/DSTROOTCAX3CRL.crl
+subjectKeyIdentifier = hash
+
+[polsect]
+policyIdentifier = 1.3.6.1.4.1.44947.1.1.1
+CPS.1 = "http://cps.root-x1.letsencrypt.org"

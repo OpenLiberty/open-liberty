@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,8 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.Map.Entry;
 
@@ -56,6 +58,23 @@ public class PebbleContainer extends CAContainer {
 			.withCommand("pebble-challtestsrv").withExposedPorts(DNS_PORT, CHALL_MANAGEMENT_PORT).withNetwork(network)
 			.withLogConsumer(o -> System.out.print("[CHL] " + o.getUtf8String()));
 
+	/*
+	 * Local JSON file that contains the Pebble configuration. The location of this file is dependent on whether
+	 * you're running stand-alone through the 'runPebble' Gradle task or you are running Pebble via FVT.
+	 */
+	private static final File PEBBLE_CONFIG_JSON_FILE;
+	
+	static {
+		/*
+		 * Support running in FVT and running stand-alone.
+		 */
+		if (Files.exists(Paths.get("lib/LibertyFATTestFiles/pebble-config.json"))) {
+			PEBBLE_CONFIG_JSON_FILE = new File("lib/LibertyFATTestFiles/pebble-config.json");
+		} else {
+			PEBBLE_CONFIG_JSON_FILE = new File("com.ibm.ws.security.acme_fat/publish/files/pebble-config.json");
+		}
+	}
+	
 	/**
 	 * Log the output from this testcontainer.
 	 * 
@@ -80,7 +99,7 @@ public class PebbleContainer extends CAContainer {
 		super(new ImageFromDockerfile()
 				.withDockerfileFromBuilder(builder -> builder.from("letsencrypt/pebble")
 						.copy("pebble-config.json", "/test/config/pebble-config.json").build())
-				.withFileFromFile("pebble-config.json", new File("lib/LibertyFATTestFiles/pebble-config.json")), 5002,
+				.withFileFromFile("pebble-config.json", PEBBLE_CONFIG_JSON_FILE), 5002,
 				14000, 15000);
 		challtestsrv.withStartupAttempts(20);
 		challtestsrv.withStartupTimeout(Duration.ofSeconds(60));
