@@ -519,7 +519,7 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-codec-socks</artifactId>
-      <version>4.1.62.Final</version>
+      <version>4.1.65.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
@@ -1539,12 +1539,12 @@
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-el-api</artifactId>
-      <version>10.0.2</version>
+      <version>10.0.6</version>
     </dependency>
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-jasper-el</artifactId>
-      <version>10.0.2</version>
+      <version>10.0.6</version>
     </dependency>
     <dependency>
       <groupId>org.apache.wink</groupId>
