@@ -15,7 +15,7 @@
 ##############################
 
 # global variables
-OUTPUT_FILE=tmp/GenerateCategories.out && mkdir -p -- "$(dirname -- "$OUTPUT_FILE")" && touch -- "$OUTPUT_FILE"
+OUTPUT_FILE=tmp/GenerateCategories.out && mkdir -p -- $(dirname -- $OUTPUT_FILE) && touch -- $OUTPUT_FILE
 
 # Save off PR Summary
 echo $PRBODY >> .github/pull_request_body.txt
