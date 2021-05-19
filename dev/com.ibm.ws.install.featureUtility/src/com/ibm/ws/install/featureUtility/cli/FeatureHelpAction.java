@@ -156,6 +156,7 @@ public class FeatureHelpAction implements ActionHandler {
 
     @Override
     public ExitCode handleTask(PrintStream stdout, PrintStream stderr, Arguments args) {
+    	ReturnCode retCode = ReturnCode.OK;
         String actionName = args.getAction();
         if (actionName == null) {
             stdout.println(getScriptUsage());
@@ -169,10 +170,11 @@ public class FeatureHelpAction implements ActionHandler {
                 stderr.println();
                 stderr.println(getHelpPart("task.unknown", args.getPositionalArguments().get(0)));
                 stdout.println(getScriptUsage());
+                retCode = ReturnCode.BAD_ARGUMENT;
             }
 
         }
-        return ReturnCode.OK;
+        return retCode;
     }
 
 
