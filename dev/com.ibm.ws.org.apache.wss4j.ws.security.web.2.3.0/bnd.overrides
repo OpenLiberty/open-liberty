@@ -19,7 +19,7 @@ Bundle-ActivationPolicy: lazy
 WS-TraceGroup: WSS4J
 
 Export-Package: \
- org.apache.wss4j.*           
+ org.apache.wss4j.web.*
  
 Import-Package: \
  javax.servlet, \

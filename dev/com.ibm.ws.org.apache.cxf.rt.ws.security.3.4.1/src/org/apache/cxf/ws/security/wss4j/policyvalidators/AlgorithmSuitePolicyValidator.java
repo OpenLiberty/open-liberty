@@ -48,6 +48,7 @@ import org.apache.xml.security.transforms.Transforms;
  * Validate results corresponding to the processing of a Signature, EncryptedKey or
  * EncryptedData structure against an AlgorithmSuite policy.
  */
+//No Liberty Change, but needed to recompile due to Liberty change in MessageImpl.
 public class AlgorithmSuitePolicyValidator extends AbstractSecurityPolicyValidator {
 
     /**
