@@ -11,12 +11,16 @@
 package com.ibm.ws.jaxrs.fat.beanparam;
 
 import javax.ws.rs.BeanParam;
+import javax.ws.rs.CookieParam;
 import javax.ws.rs.FormParam;
 
 public class BeanParamEntity {
 
     @FormParam("form")
     public String form;
+
+    @CookieParam("cookie")
+    public String cookie;
 
     @BeanParam
     public InnerBeanParamEntity inner;

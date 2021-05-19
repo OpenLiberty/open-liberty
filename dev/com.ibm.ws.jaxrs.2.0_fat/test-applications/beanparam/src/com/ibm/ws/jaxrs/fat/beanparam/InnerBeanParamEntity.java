@@ -10,10 +10,14 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs.fat.beanparam;
 
+import javax.ws.rs.CookieParam;
 import javax.ws.rs.FormParam;
 
 public class InnerBeanParamEntity {
 
     @FormParam("innerForm")
     public String innerForm;
+
+    @CookieParam("innerCookie")
+    public String innerCookie;
 }
