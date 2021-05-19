@@ -724,8 +724,9 @@ public class JMSProducerServlet extends HttpServlet {
             jmsProducer.send(topic1, sentMessage);
 
             TextMessage receivedMessage = (TextMessage) jmsConsumer.receive(30000);
+            if (receivedMessage == null)                    
+                throw new TestException("No message received, sent:"+sentMessage);
             String receivedMessageText = receivedMessage.getText();
-
             if ( !receivedMessageText.equals("") ) {
                 throw new TestException("Wrong message received:"+receivedMessage+" sent:"+sentMessage);
             }
@@ -1024,12 +1025,14 @@ public class JMSProducerServlet extends HttpServlet {
                        .send(topic1, sentMessageBody1);
 
             Message receivedMessage1 = jmsConsumer.receive(30000);
+            if (receivedMessage1 == null)                    
+                throw new TestException("No message received, sent:"+sentMessageBody1);
             String receivedMessageBody1 = receivedMessage1.getBody(String.class);
 
             if ( !receivedMessageBody1.equals(sentMessageBody1) ||
                  !receivedMessage1.getJMSCorrelationID().equals("TestCorrelID") ||
                  !receivedMessage1.getJMSType().equals("NewTestType") ) {
-                throw new TestException("Wrong message received 1:"+receivedMessage1);
+                throw new TestException("Wrong message received 1:"+receivedMessage1+" sent:"+sentMessageBody1);
             }
             
             // Repeat, to establish that the producer correlationId and message type have not changed.
@@ -1038,12 +1041,14 @@ public class JMSProducerServlet extends HttpServlet {
             jmsProducer.send(topic1, sentMessageBody2);
 
             Message receivedMessage2 = jmsConsumer.receive(30000);
+            if (receivedMessage2 == null)                    
+                throw new TestException("No message received, sent:"+sentMessageBody2);
             String receivedMessageBody2 = receivedMessage2.getBody(String.class);
 
             if ( !receivedMessageBody2.equals(sentMessageBody2) ||
                  !receivedMessage2.getJMSCorrelationID().equals("TestCorrelID") ||
                  !receivedMessage2.getJMSType().equals("NewTestType") ) {
-                throw new TestException("Wrong message received 2:"+receivedMessage2);
+                throw new TestException("Wrong message received 2:"+receivedMessage2+" sent:"+sentMessageBody2);
             }
         }
     }
@@ -1104,11 +1109,12 @@ public class JMSProducerServlet extends HttpServlet {
                        .send(topic1, sentMessageBody);
 
             Message receivedMessage = jmsConsumer.receive(30000);
-
+            if (receivedMessage == null)                    
+                throw new TestException("No message received, sent:"+sentMessageBody);
             if (    !(receivedMessage.getBody(String.class) == null) 
                  || !receivedMessage.getJMSCorrelationID().equals("TestCorrelID") 
                  || !receivedMessage.getJMSType().equals("NewTestType")) {
-                 throw new TestException("Wrong message received:" + receivedMessage);
+                 throw new TestException("Wrong message received:" + receivedMessage+" sent:"+sentMessageBody);
             }
         }
     }
@@ -1134,6 +1140,8 @@ public class JMSProducerServlet extends HttpServlet {
 
             jmsProducer.send(topic1, "");
             Message receivedMessage = jmsConsumer.receive(30000);
+            if (receivedMessage == null)                    
+                throw new TestException("No message received, sent:\"\"");
             String receivedMessageBody = receivedMessage.getBody(String.class);
 
             if ( !receivedMessageBody.equals("") ) {
@@ -1785,7 +1793,7 @@ public class JMSProducerServlet extends HttpServlet {
                        .setJMSType("NewTestType")
                        .send(topic1, sentMessageBody);
 
-            byte[] receivedMessageBody = jmsConsumer.receiveBodyNoWait(byte[].class);
+            byte[] receivedMessageBody = null;
             for (int i = 0; i<10 && receivedMessageBody == null; i++) {
                 receivedMessageBody = jmsConsumer.receiveBodyNoWait(byte[].class);
                 Thread.sleep(100);
