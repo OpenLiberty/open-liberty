@@ -211,9 +211,6 @@ public class DatabaseHelper {
         if ((value = config.vendorProps.get("informixAllowNewLine")) != null)
             helperProps.put("informixAllowNewLine", value.toString());
 
-        if ((value = config.vendorProps.get("informixLockModeWait")) != null)
-            helperProps.put("informixLockModeWait", value.toString());
-
         if ((value = config.vendorProps.get("longDataCacheSize")) != null)
             helperProps.put("longDataCacheSize", value.toString());
 
