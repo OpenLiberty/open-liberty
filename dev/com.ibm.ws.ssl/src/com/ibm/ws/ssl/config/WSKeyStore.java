@@ -881,10 +881,11 @@ public class WSKeyStore extends Properties {
                                 DefaultSSLCertificateCreator certCreator = null;
                                 try {
                                     String serverName = cfgSvc.getServerName();
-                                    List<String> san = null;
-                                    if (genKeyHostName != null) {
-                                        san = createCertSANInfo(genKeyHostName);
-                                    }
+                                    List<String> san = new ArrayList<String>();
+                                    String sanString = createCertSANInfo(genKeyHostName);
+                                    if (sanString != null)
+                                        san.add(sanString);
+
                                     // Call Certificate factory to go create the certificate
                                     certCreator = DefaultSSLCertificateFactory.getDefaultSSLCertificateCreator();
                                     certCreator.createDefaultSSLCertificate(keyStoreLocation, password, type, provider, DefaultSSLCertificateCreator.DEFAULT_VALIDITY,
@@ -1015,9 +1016,9 @@ public class WSKeyStore extends Properties {
     /**
      * Get the key store wrapped by this object.
      *
-     * @param reinitialize       Reinitialize the keystore?
+     * @param reinitialize Reinitialize the keystore?
      * @param createIfNotPresent Create the keystore if not present?
-     * @param clone              Return a clone of the keystore?
+     * @param clone Return a clone of the keystore?
      * @return The keystore instance.
      * @throws Exception
      */
@@ -1340,9 +1341,9 @@ public class WSKeyStore extends Properties {
      * @param alias
      * @param cert
      * @throws KeyStoreException
-     *                               - if the store is read only or not found
+     *             - if the store is read only or not found
      * @throws KeyException
-     *                               - if an error happens updating the store with the cert
+     *             - if an error happens updating the store with the cert
      */
     public void setCertificateEntry(String alias, Certificate cert) throws KeyStoreException, KeyException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
@@ -1429,9 +1430,9 @@ public class WSKeyStore extends Properties {
      * @param password
      * @param chain
      * @throws KeyStoreException
-     *                               - if the store is read only or not found
+     *             - if the store is read only or not found
      * @throws KeyException
-     *                               - if an error happens updating the store with the cert
+     *             - if an error happens updating the store with the cert
      */
     @Sensitive
     public void setKeyEntry(String alias, Key key, Certificate[] chain) throws KeyStoreException, KeyException {
@@ -1603,11 +1604,11 @@ public class WSKeyStore extends Properties {
 
         try {
             for (int i = 0; i < certs.size(); i++) {
-                X509Certificate cert = (X509Certificate)certs.get(i);
+                X509Certificate cert = (X509Certificate) certs.get(i);
                 String subject = cert.getSubjectX500Principal().getName();
                 String envKey = "cert_" + name;
-                Tr.info(tc, "ssl.certificate.add.CWPKI0830I",new Object[] {subject, envKey, name});
-                
+                Tr.info(tc, "ssl.certificate.add.CWPKI0830I", new Object[] { subject, envKey, name });
+
                 // add the certificate to the keystore with an alias format: envcert-[index]-cert_[keystorename]
                 String alias = "envcert-" + String.valueOf(i) + "-" + key;
                 setCertificateEntryNoStore(alias.toLowerCase(), cert);
@@ -1626,9 +1627,9 @@ public class WSKeyStore extends Properties {
      *
      * @param cert
      * @throws KeyStoreException
-     *                               - if the store is read only or not found
+     *             - if the store is read only or not found
      * @throws KeyException
-     *                               - if an error happens updating the store with the cert
+     *             - if an error happens updating the store with the cert
      */
     private void setCertificateEntryNoStore(String alias, Certificate cert) throws KeyStoreException, KeyException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
@@ -1684,20 +1685,33 @@ public class WSKeyStore extends Properties {
         return cannonicalLocation;
     }
 
-    private List<String> createCertSANInfo(String hostname) {
+    private String createCertSANInfo(String hostname) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(tc, "createCertSANInfo: " + hostname);
-        ArrayList<String> ext = new ArrayList<String>();
+        ArrayList<String> san = new ArrayList<String>();
+        String buildSanString = null;
+        String sanTag = "SAN=";
 
-        InetAddress addr;
         try {
-            addr = InetAddress.getByName(hostname);
-            if (addr != null && addr.toString().startsWith("/"))
-                ext.add("SAN=ip:" + hostname);
-            else {
-                // If the hostname start with a digit keytool will not create a SAN with the value
-                if (!Character.isDigit(hostname.charAt(0)))
-                    ext.add("SAN=dns:" + hostname);
+            if (hostname != null && !hostname.isEmpty()) {
+                if (hostname.equals("localhost")) {
+                    String host = InetAddress.getLocalHost().getCanonicalHostName();
+                    if (!Character.isDigit(host.charAt(0)))
+                        san.add("dns:" + host);
+                }
+                InetAddress addr;
+                addr = InetAddress.getByName(hostname);
+                if (addr != null && addr.toString().startsWith("/"))
+                    san.add("ip:" + hostname);
+                else {
+                    // If the hostname start with a digit keytool will not create a SAN with the value
+                    if (!Character.isDigit(hostname.charAt(0)))
+                        san.add("dns:" + hostname);
+                }
+            } else {
+                String host = InetAddress.getLocalHost().getCanonicalHostName();
+                if (!Character.isDigit(host.charAt(0)))
+                    san.add("dns:" + host);
             }
         } catch (UnknownHostException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -1705,9 +1719,21 @@ public class WSKeyStore extends Properties {
             }
             // return null, do not set a SAN if there is a failure here
         }
+
+        if (!san.isEmpty()) {
+            for (String sanEntry : san) {
+                System.out.println("sanEntry is " + sanEntry);
+                if (buildSanString != null)
+                    buildSanString = buildSanString + "," + sanEntry;
+                else
+                    buildSanString = sanTag + sanEntry;
+            }
+        }
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.exit(tc, "createCertSANInfo: " + ext);
-        return (ext);
+            Tr.exit(tc, "createCertSANInfo: " + buildSanString);
+        return (buildSanString);
+
     }
 
     /**
