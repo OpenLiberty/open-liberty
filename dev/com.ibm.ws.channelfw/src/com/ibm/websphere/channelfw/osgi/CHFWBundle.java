@@ -126,6 +126,9 @@ public class CHFWBundle implements ServerQuiesceListener {
      */
     @Activate
     protected void activate(ComponentContext context, Map<String, Object> config) {
+        System.out.println(" ### Gordon ### ");
+        System.err.println(" ### Gordon ### ");
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(this, tc, "Activating ", config);
         }

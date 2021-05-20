@@ -82,9 +82,9 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
      * Constructor.
      */
     public WsByteBufferImpl() {
-        // if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-        // Tr.event(tc, "Created " + this);
-        // }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+          Tr.event(tc, "Created " + this);
+        }
     }
 
     /**

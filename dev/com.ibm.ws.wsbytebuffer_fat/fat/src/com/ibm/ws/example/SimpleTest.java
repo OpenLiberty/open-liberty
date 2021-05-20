@@ -71,6 +71,7 @@ public class SimpleTest extends FATServletClient {
     }
 
     @Test
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
     public void verifyArtifactoryDependency() throws Exception {
         // Confirm that the example Artifactory dependency was download and is available on the classpath
         org.apache.commons.logging.Log.class.getName();
