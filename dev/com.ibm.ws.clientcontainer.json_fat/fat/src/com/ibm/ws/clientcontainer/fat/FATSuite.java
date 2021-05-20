@@ -14,9 +14,13 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.RepeatTests;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
@@ -31,6 +35,11 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 public class FATSuite {
     public static EnterpriseArchive jsonbAppClientApp;
     public static EnterpriseArchive jsonpAppClientApp;
+
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification()
+                    .andWith(FeatureReplacementAction.EE8_FEATURES())
+                    .andWith(new JakartaEE9Action());
     
     @BeforeClass
     public static void setupApps() throws Exception {
