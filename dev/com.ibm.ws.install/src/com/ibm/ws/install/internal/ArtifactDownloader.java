@@ -220,7 +220,7 @@ public class ArtifactDownloader {
     private boolean checksumIsAvailable(String urlLocation, String checksumFormat) {
         boolean result = true;
         try {
-            ArtifactDownloaderUtils.getMasterChecksum(urlLocation, checksumFormat);
+            ArtifactDownloaderUtils.getPrimaryChecksum(urlLocation, checksumFormat);
         } catch (IOException e) {
             result = false;
         }
@@ -237,7 +237,7 @@ public class ArtifactDownloader {
         }
         String checksumOrigin;
         try {
-            checksumOrigin = ArtifactDownloaderUtils.getMasterChecksum(urlLocation, checksumFormat);
+            checksumOrigin = ArtifactDownloaderUtils.getPrimaryChecksum(urlLocation, checksumFormat);
         } catch (IOException e) {
             return true;
         }

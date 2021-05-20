@@ -54,14 +54,14 @@ public class TypeContainer {
     private final CopyOnWriteArrayList<StampedValue> typeCache = new CopyOnWriteArrayList<StampedValue>();
 
     /**
-     * Reference to the externally managed master version used as the dirty flag
+     * Reference to the externally managed primary version used as the dirty flag
      */
-    private final AtomicInteger masterVersion;
+    private final AtomicInteger primaryVersion;
 
     public TypeContainer(String key, CompositeConfig config, AtomicInteger version) {
         this.key = key;
         this.config = config;
-        this.masterVersion = version;
+        this.primaryVersion = version;
     }
 
     /**
@@ -102,11 +102,11 @@ public class TypeContainer {
     }
 
     /**
-     * Get the master version's value
+     * Get the primary version's value
      *
      * @return
      */
-    int getMasterVersion() {
-        return masterVersion.get();
+    int getPrimaryVersion() {
+        return primaryVersion.get();
     }
 }

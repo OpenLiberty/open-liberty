@@ -15,7 +15,7 @@ import java.io.PrintStream;
 import com.ibm.ws.jbatch.utility.utils.ConsoleWrapper;
 
 /**
- * Defines the access point for all child tasks so the master task controller
+ * Defines the access point for all child tasks so the main task controller
  * can query and invoke the available tasks.
  */
 public interface JBatchUtilityTask {

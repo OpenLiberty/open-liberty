@@ -68,13 +68,13 @@ public abstract class BuzzHash
                 {
                     if (j >= 64 && thisChar == chars[j - 64])
                     {
-                        thisChar ^= mix_master[thisChar & 0xff];
+                        thisChar ^= mix_primary[thisChar & 0xff];
                     }
                     j -= 64;
                 }
                 // d183360 Ends
             }
-            h = ((h << 1) | (h >>> 63)) ^ mix_master[thisChar & 0xff];
+            h = ((h << 1) | (h >>> 63)) ^ mix_primary[thisChar & 0xff];
             // d179573 Ends
         }
         return h;
@@ -132,7 +132,7 @@ public abstract class BuzzHash
     // 'buzHash' algorithm.
 
     private static long initial_hash = 0xe12398c6d9ae3b8aL;
-    private static long mix_master[/* 0:255 */] = {
+    private static long mix_primary[/* 0:255 */] = {
                                                    /* 000 */0x4476081a7043a46fL, 0x45768b8a6e7eac19L, 0xebd556c1cf055952L,
                                                    /*     */0x72ed2da1bf010101L, 0x3ff2030b128e8a64L,
                                                    /* 005 */0xcbc330238adcfef2L, 0x737807fe42e20c6cL, 0x74dabaedb1095c58L,

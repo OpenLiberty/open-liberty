@@ -141,25 +141,25 @@ public abstract class AbstractOidcEndpointServices {
             query = AMPERSAND + query;
         }
 
-        int masterNdx = 0;
-        while (masterNdx < query.length()) {
+        int mainNdx = 0;
+        while (mainNdx < query.length()) {
             /*
              * The first character is always '&' - bump past that
              */
-            masterNdx++;
+            mainNdx++;
 
             // Get the next name=value parameter pair, which ends with '&' or is last.
             String parm = EMPTY_STRING;
-            int startNdx = masterNdx;
+            int startNdx = mainNdx;
             int endNdx = query.indexOf(AMPERSAND, startNdx);
 
             if (endNdx == -1) {
                 // If there is no '&' then we're at the end of the line
                 parm = query.substring(startNdx);
-                masterNdx = query.length();
+                mainNdx = query.length();
             } else {
                 parm = query.substring(startNdx, endNdx);
-                masterNdx = endNdx;
+                mainNdx = endNdx;
             }
             loadParmInMap(parm, map, decode);
         }
