@@ -1,0 +1,397 @@
+###############################################################################
+# Copyright (c) 2021 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.saml.sso-2.0/resources/com/ibm/ws/security/saml/sso20/internal/resources/SamlSso20Messages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security SAML Web SSO 20 Authentication Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# HTML title of the default post logout page
+POST_LOGOUT_PAGE_TITLE=Pojedyncze wylogowanie SAML (SLO) \u2013 strona po wylogowaniu
+
+# Text that is displayed to an end user if logout completed successfully
+POST_LOGOUT_PAGE_SUCCESS_TEXT=Wylogowanie powiod\u0142o si\u0119.
+
+# Text that is displayed to an end user if logout did not complete successfully
+POST_LOGOUT_PAGE_FAILURE_TEXT=Wylogowanie mo\u017ce nie by\u0107 ca\u0142kowite. Zamknij przegl\u0105dark\u0119, aby ca\u0142kowicie zako\u0144czy\u0107 sesj\u0119.
+
+#Message prefix block: CWWKS5000 - CWWKS5099
+SAML20_CONFIG_PROCESSED=CWWKS5000I: Konfiguracja pojedynczego logowania SAML Web SSO 2.0 [{0}] zosta\u0142a pomy\u015blnie przetworzona.
+SAML20_CONFIG_PROCESSED.explanation=Konfiguracja pojedynczego logowania SAML Web SSO 2.0 zosta\u0142a pomy\u015blnie przetworzona.
+SAML20_CONFIG_PROCESSED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+SAML20_CONFIG_MODIFIED=CWWKS5001I: Konfiguracja pojedynczego logowania SAML Web SSO 2.0 [{0}] zosta\u0142a pomy\u015blnie przetworzona.
+SAML20_CONFIG_MODIFIED.explanation=Konfiguracja pojedynczego logowania SAML Web SSO 2.0 zosta\u0142a pomy\u015blnie przetworzona.
+SAML20_CONFIG_MODIFIED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+SAML20_ENDPOINT_SERVICE_ACTIVATED=CWWKS5002I: Us\u0142uga punktu ko\u0144cowego pojedynczego logowania SAML Web SSO 2.0 zosta\u0142a aktywowana.
+SAML20_ENDPOINT_SERVICE_ACTIVATED.explanation=Us\u0142uga punktu ko\u0144cowego pojedynczego logowania SAML Web SSO 2.0 zosta\u0142a aktywowana.
+SAML20_ENDPOINT_SERVICE_ACTIVATED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# web RequestFilter
+SAML20_INVALID_ACS_URL=CWWKS5003E: \u017b\u0105dany punkt ko\u0144cowy [{0}] nie jest obs\u0142ugiwany u tego dostawcy us\u0142ugi pojedynczego logowania SAML Web SSO. 
+SAML20_INVALID_ACS_URL.explanation=Wskazany adres URL nie jest poprawnym punktem ko\u0144cowym dostawcy us\u0142ug. Mo\u017ce to by\u0107 spowodowane przez niepoprawn\u0105 konfiguracj\u0119 dostawcy us\u0142ug. 
+SAML20_INVALID_ACS_URL.useraction=Upewnij si\u0119, \u017ce dostawca us\u0142ug jest poprawnie skonfigurowany.
+
+ 
+# web EndpointServices 
+SAML20_NO_SUCH_ACS_PROVIDER=CWWKS5004E: Identyfikator dostawcy us\u0142ug [{0}] w \u017c\u0105daniu nie jest skonfigurowany u tego dostawcy us\u0142ugi pojedynczego logowania SAML Web SSO lub nie jest w\u0142\u0105czony.
+SAML20_NO_SUCH_ACS_PROVIDER.explanation=Wskazany identyfikator dostawcy us\u0142ug nie jest skonfigurowany w pliku server.xml lub nie jest w\u0142\u0105czony. 
+SAML20_NO_SUCH_ACS_PROVIDER.useraction=Sprawd\u017a w pliku server.xml, czy identyfikator dostawcy jest skonfigurowany i czy wszystkie jego ustawienia s\u0105 poprawne.
+
+
+# Do not translate "id"
+SAML20_SP_ID_ATTRIBUTE_EMPTY=CWWKS5006E: Dostawca us\u0142ug funkcji pojedynczego logowania SAML Web SSO 2.0 zosta\u0142 skonfigurowany z pustym atrybutem identyfikatora. Atrybut identyfikatora dla dostawc\u00f3w us\u0142ug funkcji pojedynczego logowania SAML Web SSO nie mo\u017ce by\u0107 pusty.
+SAML20_SP_ID_ATTRIBUTE_EMPTY.explanation=Atrybut identyfikatora dla dostawc\u00f3w us\u0142ug funkcji pojedynczego logowania SAML Web SSO jednoznacznie identyfikuje ka\u017cdego dostawc\u0119 us\u0142ug. Atrybut identyfikatora jest u\u017cywany do tworzenia informacji wymaganych dla w\u0142a\u015bciwego dzia\u0142ania funkcji pojedynczego logowania SAML Web SSO, takich jak generowanie poprawnych adres\u00f3w URL dostawcy us\u0142ug.
+SAML20_SP_ID_ATTRIBUTE_EMPTY.useraction=Sprawd\u017a plik server.xml, aby upewni\u0107 si\u0119, \u017ce wszyscy dostawcy us\u0142ug pojedynczego logowania SAML Web SSO zostali skonfigurowani z niepust\u0105 warto\u015bci\u0105 atrybutu identyfikatora.
+
+SAML20_SERVER_INTERNAL_LOG_ERROR=CWWKS5007E: Wyst\u0105pi\u0142 wewn\u0119trzny b\u0142\u0105d serwera podczas przetwarzania \u017c\u0105dania pojedynczego logowania SAML Web SSO [{0}]. Przyczyna:[{1}], stos wywo\u0142a\u0144: [{2}].
+SAML20_SERVER_INTERNAL_LOG_ERROR.explanation=Podczas przetwarzania \u017c\u0105dania SAML Web SSO wyst\u0105pi\u0142 wewn\u0119trzny b\u0142\u0105d serwera. 
+SAML20_SERVER_INTERNAL_LOG_ERROR.useraction=Sprawd\u017a b\u0142\u0119dy w plikach dziennika serwera i upewnij si\u0119, \u017ce konfiguracja jest poprawna. Je\u015bli problem \
+b\u0119dzie si\u0119 powtarza\u0142, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie \
+WWW wsparcia dla serwera WebSphere Application Server: \
+http://www.ibm.com/software/webservers/appserv/was/support.
+
+SAML20_SP_BAD_SAML_RESPONSE_ERROR=CWWKS5008E: Odpowied\u017a SAML od dostawcy to\u017csamo\u015bci [{0}] ma kod statusu inny ni\u017c powodzenie.  Kod statusu: [{1}]. Komunikat o statusie:[{2}].
+SAML20_SP_BAD_SAML_RESPONSE_ERROR.explanation=Dostawca to\u017csamo\u015bci ma prawdopodobnie problem z wys\u0142aniem odpowiedzi SAML. Przyczyna b\u0142\u0119du jest wy\u015bwietlana w komunikacie.
+SAML20_SP_BAD_SAML_RESPONSE_ERROR.useraction=Sprawd\u017a kod statusu oraz komunikaty opcjonalne i upewnij si\u0119, \u017ce dostawca to\u017csamo\u015bci oraz dostawca us\u0142ug s\u0105 poprawnie skonfigurowani.
+
+SAML20_SP_NO_ASSERTION_ERROR=CWWKS5009E: Odpowied\u017a SAML od dostawcy to\u017csamo\u015bci [{0}] nie zawiera asercji.
+SAML20_SP_NO_ASSERTION_ERROR.explanation=Odpowied\u017a SAML wys\u0142ana przez wskazanego dostawc\u0119 to\u017csamo\u015bci musi zawiera\u0107 asercj\u0119.   Odpowied\u017a SAML otrzymana od dostawcy to\u017csamo\u015bci nie zawiera asercji.  Taka sytuacja nie jest dozwolona.
+SAML20_SP_NO_ASSERTION_ERROR.useraction=Upewnij si\u0119, \u017ce dostawca to\u017csamo\u015bci jest poprawnie skonfigurowany, a u\u017cytkownik jest poprawnie zalogowany do dostawcy to\u017csamo\u015bci.
+
+SAML20_SP_BAD_VERSION_ERROR=CWWKS5010E: Odpowied\u017a SAML zawiera wersj\u0119 asercji SAML [{0}], kt\u00f3ra nie jest obs\u0142ugiwana przez \u015brodowisko wykonawcze. Wymagana jest wersja 2.0.
+SAML20_SP_BAD_VERSION_ERROR.explanation=Odpowied\u017a SAML zawiera wersj\u0119 asercji, kt\u00f3ra nie jest obs\u0142ugiwana przez dostawc\u0119 us\u0142ug. Obs\u0142ugiwana warto\u015b\u0107 zosta\u0142a wymieniona w komunikacie.
+SAML20_SP_BAD_VERSION_ERROR.useraction=Upewnij si\u0119, \u017ce dostawca to\u017csamo\u015bci jest skonfigurowany na potrzeby asercji w wersji 2.0.
+
+SAML20_RESPONSE_BAD_ISSUE_TIME=CWWKS5011E: Warto\u015b\u0107 IssueInstant [{0}] w odpowiedzi SAML jest spoza zakresu. Bie\u017c\u0105cy czas: \
+[{1}]. Bie\u017c\u0105ce ustawienie przesuni\u0119cia zegara wynosi {2} s.
+SAML20_RESPONSE_BAD_ISSUE_TIME.explanation=Odpowied\u017a SAML zosta\u0142a wys\u0142ana poza dopuszczalnym przedzia\u0142em czasu.  Mo\u017cliw\u0105 przyczyn\u0105 b\u0142\u0119du jest brak synchronizacji zegara odbiorcy z zegarem \
+tw\u00f3rcy asercji.
+SAML20_RESPONSE_BAD_ISSUE_TIME.useraction=Upewnij si\u0119, \u017ce data i godzina w systemie dostawcy to\u017csamo\u015bci s\u0105 zsynchronizowane z dostawc\u0105 us\u0142ugi pojedynczego logowania SAML Web SSO lub zwi\u0119ksz przesuni\u0119cie zegara.
+
+SAML20_RESPONSE_BAD_DESTINATION=CWWKS5012E: Miejsce docelowe [{0}] w odpowiedzi SAML jest niepoprawne. Oczekiwane miejsce docelowe to [{1}].
+SAML20_RESPONSE_BAD_DESTINATION.explanation=Miejsce docelowe w odpowiedzi SAML musi by\u0107 zgodne z adresem URL dostawcy us\u0142ug.
+SAML20_RESPONSE_BAD_DESTINATION.useraction=Skontaktuj si\u0119 z administratorem dostawcy to\u017csamo\u015bci, aby upewni\u0107 si\u0119, \u017ce dostawca to\u017csamo\u015bci jest skonfigurowany poprawnie.    
+
+RS_EMPTY_SAML_ASSERTION=CWWKS5013E: Nag\u0142\u00f3wek o nazwie \
+[{0}] musi zawiera\u0107 poprawn\u0105 asercj\u0119 SAML, ale nie istnieje w \u017c\u0105daniu HTTP lub \
+asercja SAML to pusty \u0142a\u0144cuch.
+RS_EMPTY_SAML_ASSERTION.explanation=Poprawna asercja \
+SAML musi by\u0107 ustawiona na wskazany nag\u0142\u00f3wek w \u017c\u0105daniu HTTP. 
+RS_EMPTY_SAML_ASSERTION.useraction=Upewnij si\u0119, \u017ce \
+konfiguracja rsSaml okre\u015bla poprawny element headerName oraz \u017ce poprawna \
+asercja SAML jest ustawiona na ten okre\u015blony nag\u0142\u00f3wek w \u017c\u0105daniu HTTP.
+
+# 0=URL specified in the config, 1=Name of configuration attribute, 2=ID of the SAML configuration element
+SAML20_POST_LOGOUT_URL_NOT_VALID=CWWKS5014W: Adres URL [{0}] podany jako warto\u015b\u0107 atrybutu [{1}] w konfiguracji [{2}] nie jest poprawny. Zostanie u\u017cyta domy\u015blna strona po wylogowaniu.
+SAML20_POST_LOGOUT_URL_NOT_VALID.explanation=Warto\u015b\u0107 niestandardowego adresu URL strony po wylogowaniu jest niepoprawna, dlatego nie mo\u017cna jej wy\u015bwietli\u0107. Prawdopodobnie ta warto\u015b\u0107 zawiera znaki, kt\u00f3re nie s\u0105 poprawne w \u015bcie\u017ckach URI, takie jak spacje lub znaki fragmentaryczne.
+SAML20_POST_LOGOUT_URL_NOT_VALID.useraction=Upewnij si\u0119, \u017ce warto\u015b\u0107 niestandardowego adresu URL strony po wylogowaniu zawiera tylko znaki, kt\u00f3rych mo\u017cna u\u017cywa\u0107 w \u015bcie\u017ckach URI.
+
+SAML20_CONFIG_DEACTIVATED=CWWKS5016I: Konfiguracja pojedynczego logowania SAML Web SSO 2.0 [{0}] zosta\u0142a pomy\u015blnie zdezaktywowana.
+SAML20_CONFIG_DEACTIVATED.explanation=Konfiguracja pojedynczego logowania SAML Web SSO 2.0 zosta\u0142a pomy\u015blnie zdezaktywowana.
+SAML20_CONFIG_DEACTIVATED.useraction=Nie jest wymagana \u017cadna \
+czynno\u015b\u0107.
+
+# CWWKS5017E removed (using SAML20_DECODE_SAML_RESPONSE_FAILURE_LOG/CWWKS5018E instead)
+# {0} = Error message text
+# {1} = Error class
+SAML20_DECODE_SAML_RESPONSE_FAILURE_LOG=CWWKS5018E: Nie mo\u017cna zdekodowa\u0107 ani przeanalizowa\u0107 odpowiedzi SAML. [{1}:{0}].
+SAML20_DECODE_SAML_RESPONSE_FAILURE_LOG.explanation=Dostawca us\u0142ug nie mo\u017ce zdekodowa\u0107 lub przeanalizowa\u0107 komunikatu odpowiedzi SAML. Przyczynami tego b\u0142\u0119du mog\u0105 by\u0107 niepoprawne kodowanie przez dostawc\u0119 to\u017csamo\u015bci, niepoprawny schemat lub b\u0142\u0105d komunikacyjny.
+SAML20_DECODE_SAML_RESPONSE_FAILURE_LOG.useraction=Skontaktuj si\u0119 z administratorem dostawcy to\u017csamo\u015bci SAML.
+
+SAML20_NO_IDP_METADATA_FOR_ISSUER=CWWKS5021E: Plik metadanych dostawcy to\u017csamo\u015bci [{1}] nie zawiera wystawcy [{0}] dla asercji SAML o identyfikatorze [{2}].
+SAML20_NO_IDP_METADATA_FOR_ISSUER.explanation=Wskazane metadane nie istniej\u0105 w konfiguracji. Nie mo\u017cna sprawdzi\u0107 poprawno\u015bci asercji SAML bez metadanych. 
+SAML20_NO_IDP_METADATA_FOR_ISSUER.useraction=Upewnij si\u0119, \u017ce plik metadanych dostawcy to\u017csamo\u015bci zawiera instancj\u0119 wskazanego wystawcy.
+
+SAML20_IDP_METADATA_PARSE_ERROR=CWWKS5023E: Plik metadanych dostawcy to\u017csamo\u015bci [{0}] u dostawcy us\u0142ug [{1}] jest niepoprawny. Przyczyna b\u0142\u0119du: [{2}]
+SAML20_IDP_METADATA_PARSE_ERROR.explanation=Nie mo\u017cna przetworzy\u0107 wskazanego pliku metadanych. Przyczyna b\u0142\u0119du jest wy\u015bwietlana w komunikacie.
+SAML20_IDP_METADATA_PARSE_ERROR.useraction=Upewnij si\u0119, \u017ce plik metadanych ma poprawny format XML i przestrze\u0144 nazw.  Sprawd\u017a te\u017c czynno\u015b\u0107 u\u017cytkownika zwi\u0105zan\u0105 z przyczyn\u0105 wymienion\u0105 w komunikacie.
+
+# {2} = Cause of the error
+SAML20_NO_IDP_METADATA_ERROR=CWWKS5025E: Plik metadanych dostawcy to\u017csamo\u015bci [{0}] u dostawcy us\u0142ug [{1}] nie istnieje lub nie mo\u017cna uzyska\u0107 do niego dost\u0119pu. [{2}]  
+SAML20_NO_IDP_METADATA_ERROR.explanation=Wskazany plik metadanych dostawcy to\u017csamo\u015bci nie istnieje lub nie mo\u017cna uzyska\u0107 do niego dost\u0119pu. 
+SAML20_NO_IDP_METADATA_ERROR.useraction=Upewnij si\u0119, \u017ce plik metadanych dostawcy to\u017csamo\u015bci istnieje i jest dost\u0119pny.
+
+SAML20_NO_SAML_RESPONSE=CWWKS5028E: Dostawca to\u017csamo\u015bci nie odpowiada z u\u017cyciem komunikatu odpowiedzi SAML. 
+SAML20_NO_SAML_RESPONSE.explanation=Dostawca to\u017csamo\u015bci musi odpowiedzie\u0107 z u\u017cyciem komunikatu odpowiedzi SAML. 
+SAML20_NO_SAML_RESPONSE.useraction=Upewnij si\u0119, \u017ce dostawca to\u017csamo\u015bci jest poprawnie skonfigurowany.
+
+SAML20_POTENTIAL_REPLAY_ATTACK=CWWKS5029E: Stan przekazywania [{0}] w odpowiedzi od dostawcy to\u017csamo\u015bci nie zosta\u0142 rozpoznany.
+SAML20_POTENTIAL_REPLAY_ATTACK.explanation=Wyst\u0105pi\u0142a jedna z nast\u0119puj\u0105cych przyczyn:\n\
+1) Odpowied\u017a SAML zosta\u0142a wykorzystana wi\u0119cej ni\u017c jeden raz.\n\
+2) Oczekiwanie na odpowied\u017a od dostawcy to\u017csamo\u015bci trwa\u0142o zbyt d\u0142ugo i stan przekazywania zosta\u0142 usuni\u0119ty z dostawcy us\u0142ug.\n\
+3) Dostawca to\u017csamo\u015bci zmieni\u0142 wys\u0142any do niego stan przekazywania. 
+SAML20_POTENTIAL_REPLAY_ATTACK.useraction=Upewnij si\u0119, \u017ce dostawca to\u017csamo\u015bci wysy\u0142a odpowiedzi tylko raz, odpowiedzi s\u0105 wysy\u0142ane w odpowiednim czasie i nie jest zmieniany stan przekazywania.
+
+SAML20_CACHED_DATA_NOT_FOUND=CWWKS5033E: Nie znaleziono asercji SAML z kluczem pami\u0119ci podr\u0119cznej [{0}].
+SAML20_CACHED_DATA_NOT_FOUND.explanation=Nie mo\u017cna uzyska\u0107 dost\u0119pu do zabezpieczonego zasobu, poniewa\u017c wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. By\u0107 mo\u017ce uzyskano ju\u017c dost\u0119p do danych zapisanych w pami\u0119ci podr\u0119cznej lub dane te zosta\u0142y usuni\u0119te.  
+SAML20_CACHED_DATA_NOT_FOUND.useraction=Dodatkowe informacje s\u0105 zawarte w plikach dziennik\u00f3w serwera.
+
+ACCESS_FILE_INFO_ERROR=CWWKS5036E: Nie za\u0142adowano pliku [{0}]. [{1}] 
+ACCESS_FILE_INFO_ERROR.explanation=Wskazany plik nie istnieje lub jest niedost\u0119pny.  Przyczyna b\u0142\u0119du jest wy\u015bwietlana w komunikacie.
+ACCESS_FILE_INFO_ERROR.useraction=Upewnij si\u0119, \u017ce plik istnieje, a aplikacja ma do niego dost\u0119p.  Sprawd\u017a te\u017c przyczyn\u0119 b\u0142\u0119du w opisie czynno\u015bci u\u017cytkownika.
+
+SAML20_IDP_METADATA_FILE_CHANGED=CWWKS5038I: Plik metadanych dostawcy to\u017csamo\u015bci [{1}] dla dostawcy us\u0142ug [{0}] zosta\u0142 zmodyfikowany.
+SAML20_IDP_METADATA_FILE_CHANGED.explanation=Plik metadanych dostawcy to\u017csamo\u015bci zosta\u0142 zaktualizowany nowymi danymi konfiguracyjnymi dotycz\u0105cymi dostawcy to\u017csamo\u015bci. Dostawca us\u0142ug za\u0142aduje plik ponownie.
+SAML20_IDP_METADATA_FILE_CHANGED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+SAML20_SP_UNSOLICITED_WITH_IN_RESPONSE_TO=CWWKS5040E: Atrybut InResponseTo [{0}] nie jest dozwolony w niezamawianej odpowiedzi SAML.
+SAML20_SP_UNSOLICITED_WITH_IN_RESPONSE_TO.explanation=Niezamawiana odpowied\u017a SAML zawiera atrybut InResponseTo.  Taka sytuacja nie jest dozwolona.
+SAML20_SP_UNSOLICITED_WITH_IN_RESPONSE_TO.useraction=Skontaktuj si\u0119 z administratorem dostawcy to\u017csamo\u015bci, aby upewni\u0107 si\u0119, \u017ce dostawca to\u017csamo\u015bci jest skonfigurowany poprawnie.
+
+SAML20_NO_PROTECTED_RESOURCE_ENDPOINT_ERR=CWWKS5041E: Oczekiwany parametr RelayState nie zosta\u0142 do\u0142\u0105czony do komunikatu odpowiedzi SAML od dostawcy to\u017csamo\u015bci.
+SAML20_NO_PROTECTED_RESOURCE_ENDPOINT_ERR.explanation= Parametr RelayState jest parametrem protoko\u0142u SAML s\u0142u\u017c\u0105cym do identyfikowania konkretnego zasobu, do kt\u00f3rego u\u017cytkownik / agent u\u017cytkownika uzyska dost\u0119p po zalogowaniu. W przypadku braku tych informacji dostawca us\u0142ug nie wie, gdzie nale\u017cy przekierowa\u0107 u\u017cytkownika / agenta u\u017cytkownika.
+SAML20_NO_PROTECTED_RESOURCE_ENDPOINT_ERR.useraction=Skontaktuj si\u0119 z administratorem dostawcy to\u017csamo\u015bci, aby upewni\u0107 si\u0119, \u017ce dostawca to\u017csamo\u015bci jest skonfigurowany poprawnie i mo\u017ce do\u0142\u0105cza\u0107 parametr RelayState do odpowiedzi SAML.
+
+SAML20_NO_ISSUER_ERR=CWWKS5044E: Element Issuer w asercji SAML ma atrybut Format [{1}], kt\u00f3ry nie jest obs\u0142ugiwany. Format nale\u017cy pomin\u0105\u0107 lub ustawi\u0107 na warto\u015b\u0107 [{0}].
+SAML20_NO_ISSUER_ERR.explanation=Asercja SAML zawiera element Issuer z atrybutem Format o nieobs\u0142ugiwanej warto\u015bci.  Atrybut Format nale\u017cy pomin\u0105\u0107 lub ustawi\u0107 na obs\u0142ugiwan\u0105 warto\u015b\u0107.
+SAML20_NO_ISSUER_ERR.useraction=Skontaktuj si\u0119 z administratorem dostawcy to\u017csamo\u015bci, aby upewni\u0107 si\u0119, \u017ce dostawca to\u017csamo\u015bci jest skonfigurowany poprawnie.
+
+SAML20_INCORRECT_ISSUER_ERR=CWWKS5045E: Warto\u015b\u0107 elementu Issuer [{0}] w asercji SAML jest niepoprawna.
+SAML20_INCORRECT_ISSUER_ERR.explanation=Asercja SAML musi zawiera\u0107 element Issuer, kt\u00f3ry jest zgodny z wystawc\u0105 zdefiniowanym w pliku metadanych dostawcy to\u017csamo\u015bci.  Wystawca w asercji SAML jest niezgodny z wystawc\u0105 w pliku metadanych.
+SAML20_INCORRECT_ISSUER_ERR.useraction=Skontaktuj si\u0119 z administratorem dostawcy to\u017csamo\u015bci, aby upewni\u0107 si\u0119, \u017ce dostawca to\u017csamo\u015bci jest skonfigurowany poprawnie.
+
+SAML20_SIGNATURE_NOT_VERIFIED_ERR=CWWKS5046E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas sprawdzania podpisu komunikatu odpowiedzi SAML.
+SAML20_SIGNATURE_NOT_VERIFIED_ERR.explanation=Komunikat odpowiedzi SAML zawiera podpis, ale \u015brodowisko wykonawcze nie mo\u017ce go sprawdzi\u0107 z powodu b\u0142\u0119du wewn\u0119trznego. 
+SAML20_SIGNATURE_NOT_VERIFIED_ERR.useraction=Upewnij si\u0119, \u017ce metadane dostawcy to\u017csamo\u015bci s\u0105 aktualne.
+
+SAML20_ASSERTION_SIGNATURE_NOT_VERIFIED_ERR=CWWKS5048E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas sprawdzania podpisu asercji SAML.
+SAML20_ASSERTION_SIGNATURE_NOT_VERIFIED_ERR.explanation=Asercja SAML zawiera podpis, ale \u015brodowisko wykonawcze nie mo\u017ce go sprawdzi\u0107 z powodu b\u0142\u0119du wewn\u0119trznego.
+SAML20_ASSERTION_SIGNATURE_NOT_VERIFIED_ERR.useraction=Upewnij si\u0119, \u017ce metadane dostawcy to\u017csamo\u015bci s\u0105 aktualne.
+
+# {0} = Message text for cause of the failure
+SAML20_ASSERTION_SIGNATURE_FAIL_ERR=CWWKS5049E: Podpis asercji SAML nie jest zaufany lub jest niepoprawny. [{0}]
+SAML20_ASSERTION_SIGNATURE_FAIL_ERR.explanation=Asercja SAML zawiera podpis, kt\u00f3ry nie jest poprawny lub zosta\u0142 z\u0142o\u017cony z u\u017cyciem niezaufanego certyfikatu osoby podpisuj\u0105cej.  Przyczyna b\u0142\u0119du jest wy\u015bwietlana w komunikacie.
+SAML20_ASSERTION_SIGNATURE_FAIL_ERR.useraction=Mo\u017ce to by\u0107 b\u0142\u0105d konfiguracji. Upewnij si\u0119, \u017ce metadane dostawcy to\u017csamo\u015bci zosta\u0142y poprawnie zaktualizowane i skonfigurowane.  Sprawd\u017a te\u017c czynno\u015b\u0107 u\u017cytkownika zwi\u0105zan\u0105 z przyczyn\u0105 b\u0142\u0119du wy\u015bwietlanego w komunikacie.
+
+# Example: {0} = Subject
+SAML20_ELEMENT_ERR=CWWKS5050E: Asercja SAML nie zawiera elementu [{0}].  Element [{0}] jest wymagany.  
+SAML20_ELEMENT_ERR.explanation=W asercji SAML brakuje elementu wymaganego przez \u015brodowisko wykonawcze.
+SAML20_ELEMENT_ERR.useraction=Wymagany element nale\u017cy doda\u0107 do asercji SAML.  Skontaktuj si\u0119 z administratorem dostawcy to\u017csamo\u015bci, aby upewni\u0107 si\u0119, \u017ce dostawca to\u017csamo\u015bci jest skonfigurowany poprawnie.
+
+SAML20_SUBJECT_NOTBEFORE_ERR=CWWKS5051E: Asercja SAML zawiera element SubjectConfirmationData z atrybutem NotBefore.  Ten warunek jest niedozwolony.
+SAML20_SUBJECT_NOTBEFORE_ERR.explanation=Element SubjectConfirmationData w asercji SAML nie mo\u017ce zawiera\u0107 atrybutu NotBefore.
+SAML20_SUBJECT_NOTBEFORE_ERR.useraction=Skontaktuj si\u0119 z administratorem dostawcy to\u017csamo\u015bci, aby upewni\u0107 si\u0119, \u017ce dostawca to\u017csamo\u015bci jest skonfigurowany poprawnie.
+
+# Examples:
+# {0} = NotOnOrAfter
+# {1} = SubjectConfirmationData
+SAML20_ELEMENT_ATTR_ERR=CWWKS5052E: Atrybut [{0}] w elemencie [{1}] asercji SAML jest nieobecny lub pusty.  Ten warunek jest niedozwolony.
+SAML20_ELEMENT_ATTR_ERR.explanation=Asercja SAML zawiera element, kt\u00f3ry nie ma atrybutu wymaganego przez \u015brodowisko wykonawcze.
+SAML20_ELEMENT_ATTR_ERR.useraction=Wymagany atrybut nale\u017cy doda\u0107 do asercji SAML.  Skontaktuj si\u0119 z administratorem dostawcy to\u017csamo\u015bci, aby upewni\u0107 si\u0119, \u017ce dostawca to\u017csamo\u015bci jest skonfigurowany poprawnie.
+
+SAML20_SUBJECT_NOTONAFTER_ERR=CWWKS5053E: Atrybut NotOnOrAfter [{0}] w elemencie SubjectConfirmationData jest spoza zakresu.  Bie\u017c\u0105cy czas: \
+[{1}]. Bie\u017c\u0105ce ustawienie przesuni\u0119cia zegara wynosi {2} s.
+SAML20_SUBJECT_NOTONAFTER_ERR.explanation=Asercja SAML zosta\u0142a odebrana o godzinie, kt\u00f3ra jest taka sama lub p\u00f3\u017aniejsza ni\u017c ustawienie NotOnOrAfter w elemencie SubjectConfirmationData w asercji.  Taka sytuacja nie jest dozwolona. Mo\u017cliw\u0105 przyczyn\u0105 b\u0142\u0119du jest brak synchronizacji zegara odbiorcy z zegarem tw\u00f3rcy asercji.
+SAML20_SUBJECT_NOTONAFTER_ERR.useraction=Zsynchronizuj zegary dostawcy us\u0142ug i dostawcy to\u017csamo\u015bci SAML lub zwi\u0119ksz ustawienie przesuni\u0119cia zegara.
+
+SAML20_SUBJECT_NO_REC_MATCH_ERR=CWWKS5055E: Odbiorca [{0}] w asercji SAML jest niezgodny z adresem URL us\u0142ugi AssertionConsumerService (ACS): [{1}].
+SAML20_SUBJECT_NO_REC_MATCH_ERR.explanation=Atrybut Recipient w elemencie SubjectConfirmationData nale\u017cy ustawi\u0107 na adres URL us\u0142ugi ACS.
+SAML20_SUBJECT_NO_REC_MATCH_ERR.useraction=Skontaktuj si\u0119 z administratorem dostawcy to\u017csamo\u015bci, aby upewni\u0107 si\u0119, \u017ce dostawca to\u017csamo\u015bci jest skonfigurowany poprawnie.
+
+SAML20_SUBJECT_NOBEFORE_ERR=CWWKS5057E: Atrybut NotBefore [{0}] jest poza zakresem. Bie\u017c\u0105cy czas: \
+[{1}]. Bie\u017c\u0105ce ustawienie przesuni\u0119cia zegara wynosi {2} s.
+SAML20_SUBJECT_NOBEFORE_ERR.explanation=Asercja SAML zosta\u0142a odebrana o godzinie, kt\u00f3ra jest wcze\u015bniejsza ni\u017c ustawienie NotBefore w asercji.  Taka sytuacja nie jest dozwolona. Mo\u017cliw\u0105 przyczyn\u0105 b\u0142\u0119du jest brak synchronizacji zegara odbiorcy z zegarem \
+tw\u00f3rcy asercji.
+SAML20_SUBJECT_NOBEFORE_ERR.useraction=Zsynchronizuj zegary dostawcy us\u0142ug i dostawcy to\u017csamo\u015bci SAML lub zwi\u0119ksz ustawienie przesuni\u0119cia zegara.
+
+SAML20_SUBJECT_NOAFTER_ERR=CWWKS5058E: Warunek NotOnOrAfter [{0}] jest poza zakresem. Bie\u017c\u0105cy czas: \
+[{1}]. Bie\u017c\u0105ce ustawienie przesuni\u0119cia zegara: \
+{2} min.
+SAML20_SUBJECT_NOAFTER_ERR.explanation=Asercja SAML zosta\u0142a odebrana o godzinie, kt\u00f3ra jest taka sama lub p\u00f3\u017aniejsza ni\u017c ustawienie NotOnOrAfter w asercji.  Taka sytuacja nie jest dozwolona. Mo\u017cliwe przyczyny b\u0142\u0119du: brak synchronizacji zegara odbiorcy z zegarem tw\u00f3rcy asercji lub asercja zosta\u0142a uzyskana i ponownie wys\u0142ana przez nieautoryzowan\u0105 \
+aplikacj\u0119.
+SAML20_SUBJECT_NOAFTER_ERR.useraction=Zsynchronizuj zegary dostawcy us\u0142ug i dostawcy to\u017csamo\u015bci SAML lub zwi\u0119ksz ustawienie przesuni\u0119cia zegara.
+
+SAML20_CONDITION_UNKNOWN_ERR=CWWKS5059E: Element Conditions w asercji SAML zawiera atrybut [{0}], kt\u00f3ry nie jest obs\u0142ugiwany.
+SAML20_CONDITION_UNKNOWN_ERR.explanation=Element Conditions w asercji SAML zawiera atrybut, kt\u00f3ry nie jest obs\u0142ugiwany przez \u015brodowisko wykonawcze.  Taka sytuacja nie jest dozwolona.
+SAML20_CONDITION_UNKNOWN_ERR.useraction=Skontaktuj si\u0119 z administratorem dostawcy to\u017csamo\u015bci, aby upewni\u0107 si\u0119, \u017ce dostawca to\u017csamo\u015bci jest skonfigurowany poprawnie.
+
+SAML20_AUDIENCE_UNKNOWN_ERR=CWWKS5060E: Warto\u015b\u0107 [{0}] elementu Audience w asercji SAML jest niepoprawna. Oczekiwan\u0105 warto\u015bci\u0105 elementu Audience jest [{1}].
+SAML20_AUDIENCE_UNKNOWN_ERR.explanation=Warto\u015b\u0107 elementu Audience musi by\u0107 ustawiona na warto\u015b\u0107 elementu EntityID dostawcy us\u0142ug.
+SAML20_AUDIENCE_UNKNOWN_ERR.useraction=Skontaktuj si\u0119 z administratorem dostawcy to\u017csamo\u015bci, aby upewni\u0107 si\u0119, \u017ce dostawca to\u017csamo\u015bci jest skonfigurowany poprawnie.
+
+SAML20_SESSION_ERR=CWWKS5062E: Atrybut SessionNotOnOrAfter [{0}] jest poza zakresem. Bie\u017c\u0105cy czas: \
+[{1}]. Bie\u017c\u0105ce ustawienie przesuni\u0119cia zegara wynosi {2} s.
+SAML20_SESSION_ERR.explanation=Asercja SAML zosta\u0142a odebrana o godzinie, kt\u00f3ra jest taka sama lub p\u00f3\u017aniejsza ni\u017c ustawienie SessionNotOnOrAfter w elemencie AuthnStatement w asercji.  Taka sytuacja nie jest dozwolona. Mo\u017cliwe przyczyny b\u0142\u0119du: brak synchronizacji zegara odbiorcy z zegarem tw\u00f3rcy asercji lub asercja zosta\u0142a uzyskana i ponownie wys\u0142ana przez nieautoryzowan\u0105 \
+aplikacj\u0119.
+SAML20_SESSION_ERR.useraction=Zsynchronizuj zegary dostawcy us\u0142ug i dostawcy to\u017csamo\u015bci SAML lub zwi\u0119ksz ustawienie przesuni\u0119cia zegara.
+
+SAML20_AUTHENTICATION_FAIL=CWWKS5063E: Wyj\u0105tek SAML: dostawca us\u0142ug SAML nie przetworzy\u0142 \u017c\u0105dania uwierzytelniania.
+SAML20_AUTHENTICATION_FAIL.explanation=Proces uwierzytelniania nie powi\u00f3d\u0142 si\u0119, poniewa\u017c przed tym komunikatem wyst\u0105pi\u0142 inny b\u0142\u0105d.
+SAML20_AUTHENTICATION_FAIL.useraction=Zapoznaj si\u0119 z czynno\u015bci\u0105 u\u017cytkownika dla b\u0142\u0119du, kt\u00f3ry zosta\u0142 wy\u015bwietlony przed \
+tym komunikatem. 
+
+SAML20_NO_BEARER_FOUND=CWWKSS5065E: atrybut Method [{0}] elementu SubjectConfirmationData w asercji SAML nie jest obs\u0142ugiwany.  Obs\u0142ugiwana warto\u015b\u0107 to ["urn:oasis:names:tc:SAML:2.0:cm:bearer"].
+SAML20_NO_BEARER_FOUND.explanation= Asercja musi zawiera\u0107 metod\u0119 potwierdzenia podmiotu urn:oasis:names:tc:SAML:2.0:cm:bearer.
+SAML20_NO_BEARER_FOUND.useraction=Skontaktuj si\u0119 z administratorem dostawcy to\u017csamo\u015bci, aby upewni\u0107 si\u0119, \u017ce dostawca to\u017csamo\u015bci jest skonfigurowany poprawnie.
+
+SAML20_NO_INRESPONSETO=CWWKS5067E: Odpowied\u017a SAML [{0}] zawiera atrybut InResponseTo [{1}], kt\u00f3ra jest niepoprawna. Oczekiwana warto\u015b\u0107 atrybutu InResponseTo to [{2}].
+SAML20_NO_INRESPONSETO.explanation=Wskazana odpowied\u017a SAML zawiera niepoprawn\u0105 warto\u015b\u0107 atrybutu InResponseTo.   
+SAML20_NO_INRESPONSETO.useraction=Skontaktuj si\u0119 z administratorem dostawcy to\u017csamo\u015bci, aby upewni\u0107 si\u0119, \u017ce dostawca to\u017csamo\u015bci jest skonfigurowany poprawnie i mo\u017ce emitowa\u0107 poprawn\u0105 warto\u015b\u0107 atrybutu InResponseTo.
+
+# similar to the tWas messages
+# Example: {0} = realm
+SAML20_ATTRIBUTE_ERR=CWWKS5068E: Asercja SAML nie zawiera elementu [{0}].  Element [{0}] jest wymagany.  
+SAML20_ATTRIBUTE_ERR.explanation=W asercji SAML brakuje atrybutu wymaganego przez \u015brodowisko wykonawcze.
+SAML20_ATTRIBUTE_ERR.useraction=Wymagany atrybut nale\u017cy doda\u0107 do asercji SAML.  Skontaktuj si\u0119 z administratorem dostawcy to\u017csamo\u015bci, aby sprawdzi\u0107, czy dostawca to\u017csamo\u015bci jest poprawnie skonfigurowany, lub skonfiguruj dostawc\u0119 us\u0142ug lub modu\u0142 TAI tak, aby zdefiniowa\u0107 warto\u015b\u0107 atrybutu.
+
+SAML20_USER_CANNOT_AUTHENTICATED=CWWKS5072E: Uwierzytelnianie nie powiod\u0142o si\u0119 dla identyfikatora u\u017cytkownika [{0}].
+SAML20_USER_CANNOT_AUTHENTICATED.explanation=Wskazany u\u017cytkownik nie znajduje si\u0119 w rejestrze u\u017cytkownik\u00f3w lub konfiguracja jest niepoprawna.
+SAML20_USER_CANNOT_AUTHENTICATED.useraction=Upewnij si\u0119, \u017ce u\u017cytkownik jest skonfigurowany w rejestrze u\u017cytkownik\u00f3w, oraz skonfiguruj poprawnie dostawc\u0119 to\u017csamo\u015bci i dostawc\u0119 us\u0142ug.
+
+SAML20_NO_PRIVATE_KEY=CWWKS5073E: Dostawca us\u0142ug [{0}] nie mo\u017ce znale\u017a\u0107 klucza prywatnego w magazynie kluczy [{1}].
+SAML20_NO_PRIVATE_KEY.explanation=Podany magazyn kluczy nie zawiera wymaganego klucza prywatnego.
+SAML20_NO_PRIVATE_KEY.useraction=Upewnij si\u0119, \u017ce skonfigurowany magazyn kluczy zawiera wymagane klucze, lub zmie\u0144 konfiguracj\u0119, podaj\u0105c inny magazyn kluczy.
+
+SAML20_NO_CERT=CWWKS5074E: Dostawca us\u0142ug [{0}] nie mo\u017ce znale\u017a\u0107 certyfikatu w magazynie kluczy [{1}].
+SAML20_NO_CERT.explanation=Podany magazyn kluczy nie zawiera wymaganego certyfikatu podpisu.
+SAML20_NO_CERT.useraction=Upewnij si\u0119, \u017ce skonfigurowany magazyn kluczy zawiera wymagany certyfikat, lub zmie\u0144 konfiguracj\u0119, podaj\u0105c inny magazyn kluczy.
+
+SAML20_AUTH_FILTER_NOT_EXISTING=CWWKS5075E: \u015arodowisko wykonawcze dostawcy us\u0142ug [{1}] nie mo\u017ce znale\u017a\u0107 elementu authFilter wskazanego przez element authFilterRef [{0}]. Popraw konfiguracj\u0119.
+SAML20_AUTH_FILTER_NOT_EXISTING.explanation=Element authFilter okre\u015blony przez element authFilterRef w konfiguracji SAML WebSSO nie istnieje.
+SAML20_AUTH_FILTER_NOT_EXISTING.useraction=Upewnij si\u0119, \u017ce wymagana konfiguracja elementu authFilter istnieje na serwerze, lub usu\u0144 element authFilterRef z konfiguracji SAML WebSSO.
+
+SAML20_CANNOT_RESOLVE_ASSERTION=CWWKS5076E: Us\u0142uga UserCredentialResolver nie mo\u017ce rozstrzygn\u0105\u0107 asercji SAML i zg\u0142asza wyj\u0105tek UserIdentityException z komunikatem [{0}].
+SAML20_CANNOT_RESOLVE_ASSERTION.explanation=Us\u0142uga UserCredentialResolver udost\u0119pniana przez sk\u0142adnik u\u017cytkownika nie mo\u017ce poprawnie odwzorowa\u0107 asercji SAML i zg\u0142asza wyj\u0105tek UserIdentityException.
+SAML20_CANNOT_RESOLVE_ASSERTION.useraction=Je\u015bli wyj\u0105tek UserIdentityException nie jest oczekiwany, upewnij si\u0119, \u017ce us\u0142uga UserCredentialResolver jest poprawnie skonfigurowana.
+
+SAML20_MULTI_SPECIFIC_SP=CWWKS5077E: \u015arodowisko wykonawcze nie mo\u017ce wybra\u0107 dostawcy us\u0142ug z listy dostawc\u00f3w us\u0142ug [{1}] w celu przetworzenia \u017c\u0105dania [{0}]. 
+SAML20_MULTI_SPECIFIC_SP.explanation=\u017b\u0105danie nie powinno spe\u0142nia\u0107 kryteri\u00f3w filtru w przypadku wi\u0119cej ni\u017c jednego elementu authFilter. Powinno ono spe\u0142nia\u0107 warunki tylko jednego elementu authFilter, aby \u015brodowisko wykonawcze mog\u0142o wybra\u0107 poprawnego dostawc\u0119 us\u0142ug do przetworzenia.
+SAML20_MULTI_SPECIFIC_SP.useraction=Sprawd\u017a konfiguracj\u0119 serwera i dostosuj elementy authFilter, aby zosta\u0142y spe\u0142nione warunki jednego elementu authFilter i aby \u017c\u0105danie zosta\u0142o przetworzone przez dostawc\u0119 us\u0142ug, kt\u00f3ry odwo\u0142uje si\u0119 do elementu authFilter.
+
+OSGI_SERVICE_ERROR=CWWKS5078E: Us\u0142uga OSGi {0} nie jest dost\u0119pna.
+OSGI_SERVICE_ERROR.explanation=Okre\u015blona us\u0142uga OSGi nie jest dost\u0119pna.
+OSGI_SERVICE_ERROR.useraction=Zrestartuj serwer z opcj\u0105 clean.
+
+SAML20_NO_IDP_URL_ERROR=CWWKS5079E: Dostawca us\u0142ug [{1}] nie mo\u017ce znale\u017a\u0107 adresu URL dostawcy to\u017csamo\u015bci przy u\u017cyciu pliku metadanych [{0}].  
+SAML20_NO_IDP_URL_ERROR.explanation=Brak informacji o adresie URL w pliku metadanych dostawcy to\u017csamo\u015bci.
+SAML20_NO_IDP_URL_ERROR.useraction=Upewnij si\u0119, \u017ce zawarto\u015b\u0107 pliku metadanych dostawcy to\u017csamo\u015bci jest poprawna.
+
+SAML20_NO_IDP_URL_OR_METADATA=CWWKS5080E: Dostawca us\u0142ug [{0}] nie mo\u017ce znale\u017a\u0107 adresu URL dostawcy to\u017csamo\u015bci, poniewa\u017c brak elementu idpMetadata w konfiguracji SAML WebSSO.  
+SAML20_NO_IDP_URL_OR_METADATA.explanation=Dostawca us\u0142ug nie ma informacji dotycz\u0105cych metadanych dostawcy to\u017csamo\u015bci. Mo\u017ce by\u0107 to spowodowane jedn\u0105 z nast\u0119puj\u0105cych przyczyn: atrybut idpMetadata nie jest ustawiony poprawnie lub plik podany w atrybucie nie istnieje.
+SAML20_NO_IDP_URL_OR_METADATA.useraction=Upewnij si\u0119, \u017ce istnieje plik przywo\u0142ywany przez atrybut idpMetadata (o ile ustawiono ten atrybut).
+
+SAML20_AUTHN_REQUEST_EXPIRED=CWWKS5081E: Dostawca us\u0142ug nie mo\u017ce przetworzy\u0107 odpowiedzi SAML, poniewa\u017c \u017c\u0105danie SAML utraci\u0142o wa\u017cno\u015b\u0107. Dostawca us\u0142ug nie otrzyma\u0142 odpowiedzi SAML od dostawcy to\u017csamo\u015bci w oczekiwanym przedziale czasu. \u017b\u0105danie SAML zosta\u0142o utworzone o godzinie [{0}]. Poniewa\u017c atrybut konfiguracji authnRequestTime jest ustawiony na warto\u015b\u0107 [{1}] min., \u017c\u0105danie utraci\u0142o wa\u017cno\u015b\u0107 o godzinie [{2}], a bie\u017c\u0105ca godzina to [{3}].
+SAML20_AUTHN_REQUEST_EXPIRED.explanation=By\u0107 mo\u017ce dostawca to\u017csamo\u015bci nie przetworzy\u0142 \u017c\u0105dania SAML w odpowiednim czasie. Sprawd\u017a dzienniki dostawcy to\u017csamo\u015bci, aby upewni\u0107 si\u0119, \u017ce dostawca to\u017csamo\u015bci dzia\u0142a poprawnie.
+SAML20_AUTHN_REQUEST_EXPIRED.useraction=Wy\u015blij \u017c\u0105danie ponownie, a tak\u017ce zwi\u0119ksz warto\u015b\u0107 atrybutu authnRequestTime, aby upewni\u0107 si\u0119, \u017ce dostawca to\u017csamo\u015bci ma wystarczaj\u0105co du\u017co czasu na przetworzenie \u017c\u0105dania SAML.
+
+SAML20_RESPONSE_REPLAY=CWWKS5082E: Dostawca us\u0142ug nie mo\u017ce przetworzy\u0107 odpowiedzi SAML, poniewa\u017c asercja SAML o identyfikatorze [{0}] zosta\u0142a ju\u017c przetworzona.
+SAML20_RESPONSE_REPLAY.explanation=Odpowied\u017a SAML od dostawcy to\u017csamo\u015bci zawiera asercj\u0119 SAML, kt\u00f3ra zosta\u0142a ju\u017c do\u0142\u0105czona do poprzedniej odpowiedzi SAML.
+SAML20_RESPONSE_REPLAY.useraction=Upewnij si\u0119, \u017ce dostawca to\u017csamo\u015bci nie generuje zduplikowanych identyfikator\u00f3w asercji SAML ani nie wysy\u0142a tej samej asercji SAML wi\u0119cej ni\u017c raz.
+
+#do not translate httpsRequired
+SAML20_EP_PROTOCOL_NOT_HTTPS=CWWKS5083E: Dostawca us\u0142ug wymaga protoko\u0142u SSL (HTTPS), ale w adresie URL \u017c\u0105dania [{0}] u\u017cyto protoko\u0142u HTTP. Zaktualizuj konfiguracj\u0119 tak, aby atrybut [httpsRequired] by\u0142 zgodny ze schematem adresu URL \u017c\u0105dania.
+SAML20_EP_PROTOCOL_NOT_HTTPS.explanation=Dostawca us\u0142ug SAML WebSSO wymaga, aby \u017c\u0105danie SAML WebSSO u\u017cywa\u0142o protoko\u0142u HTTPS, ale w adresie URL \u017c\u0105dania u\u017cyto protoko\u0142u HTTP.
+SAML20_EP_PROTOCOL_NOT_HTTPS.useraction=Wykonaj jedn\u0105 z nast\u0119puj\u0105cych czynno\u015bci: 1) Upewnij si\u0119, \u017ce dostawca us\u0142ug SAML WebSSO obs\u0142uguje \
+protok\u00f3\u0142 SSL. 2) Je\u015bli dostawca us\u0142ug SAML WebSSO nie obs\u0142uguje protoko\u0142u SSL, \
+ustaw atrybut httpsRequired w konfiguracji dostawcy us\u0142ug SAML WebSSO na warto\u015b\u0107 false.
+
+#do not translate httpsRequired
+SAML20_IDP_PROTOCOL_NOT_HTTPS=CWWKS5084E: Dostawca us\u0142ug wymaga protoko\u0142u SSL (HTTPS), ale w adresie URL dostawcy to\u017csamo\u015bci [{0}] u\u017cyto protoko\u0142u HTTP. Zaktualizuj konfiguracj\u0119 tak, aby atrybut [httpsRequired] by\u0142 zgodny ze schematem adresu URL dostawcy to\u017csamo\u015bci.
+SAML20_IDP_PROTOCOL_NOT_HTTPS.explanation=Dostawca us\u0142ug SAML WebSSO wymaga komunikacji z u\u017cyciem protoko\u0142u SSL, ale w adresie URL dostawcy to\u017csamo\u015bci u\u017cyto protoko\u0142u HTTP.
+SAML20_IDP_PROTOCOL_NOT_HTTPS.useraction=Wykonaj jedn\u0105 z nast\u0119puj\u0105cych czynno\u015bci: 1) Upewnij si\u0119, \u017ce dostawca to\u017csamo\u015bci SAML WebSSO obs\u0142uguje \
+protok\u00f3\u0142 SSL. 2) Je\u015bli dostawca to\u017csamo\u015bci SAML WebSSO nie obs\u0142uguje protoko\u0142u SSL, \
+ustaw atrybut httpsRequired w konfiguracji dostawcy us\u0142ug SAML WebSSO na warto\u015b\u0107 false.
+
+RS_SAML_RESPONSE_NOT_SUPPORTED=CWWKS5085E: Odpowied\u017a \
+SAML w tre\u015bci nag\u0142\u00f3wka [{0}] \u017c\u0105dania HTTP nie jest obs\u0142ugiwana.
+RS_SAML_RESPONSE_NOT_SUPPORTED.explanation=Dla tre\u015bci \
+wskazanego nag\u0142\u00f3wka w \u017c\u0105daniu HTML jest obs\u0142ugiwana tylko asercja SAML. 
+RS_SAML_RESPONSE_NOT_SUPPORTED.useraction=Upewnij si\u0119, \u017ce w tre\u015bci wskazanego nag\u0142\u00f3wka znajduje si\u0119 asercja SAML.
+
+# Message prefix block: CWWKS5200 - CWWKS5209
+RS_SAML_SERVER_INTERNAL_LOG_ERROR=CWWKS5201E: Wyst\u0105pi\u0142 \
+wewn\u0119trzny b\u0142\u0105d serwera podczas przetwarzania pojedynczego logowania SAML Web \
+SSO na potrzeby propagacji danych przychodz\u0105cych [{0}]. Przyczyna:[{1}], stos wywo\u0142a\u0144: [{2}].
+RS_SAML_SERVER_INTERNAL_LOG_ERROR.explanation=Podczas \
+przetwarzania \u017c\u0105dania propagacji danych przychodz\u0105cych pojedynczego logowania \
+SAML Web SSO wyst\u0105pi\u0142 wewn\u0119trzny b\u0142\u0105d serwera. 
+RS_SAML_SERVER_INTERNAL_LOG_ERROR.useraction=Sprawd\u017a b\u0142\u0119dy w plikach dziennika serwera i upewnij si\u0119, \u017ce konfiguracja jest poprawna. Je\u015bli problem b\u0119dzie si\u0119 powtarza\u0142, zapoznaj si\u0119 z informacjami na temat \
+okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application \
+Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+RS_SAML_TRUSTED_ISSUERS_ERROR=CWWKS5205E: Element \
+trustedIssuers [{0}] zdefiniowany w konfiguracji pkixTrustEngine nie jest \
+u\u017cywany przez sk\u0142adnik SAML Web SSO na potrzeby propagacji danych \
+przychodz\u0105cych [{1}] i zostanie zignorowany.
+RS_SAML_TRUSTED_ISSUERS_ERROR.explanation=Element \
+trustedIssuers w konfiguracji pkixTrustEngine jest u\u017cywany jedynie przez \
+sk\u0142adnik SAML Web SSO. Jest on ignorowany w sk\u0142adniku SAML Web SSO na potrzeby \
+propagacji danych przychodz\u0105cych. 
+RS_SAML_TRUSTED_ISSUERS_ERROR.useraction=Usu\u0144 element \
+trustedIssuers z konfiguracji pkixTrustEngine.
+
+# 0=Boolean value (i.e. "true" or "false"), 1=Configuration attribute names, 2=Configuration ID
+SAML_CONFIG_IGNORE_ATTRIBUTES=CWWKS5207W: Atrybut inboundPropagation jest ustawiony na warto\u015b\u0107 [{0}] w konfiguracji sk\u0142adnika samlWebSso20 [{2}]. Atrybuty [{1}] zostan\u0105 zignorowane podczas przetwarzania.
+SAML_CONFIG_IGNORE_ATTRIBUTES.explanation=Konfiguracja sk\u0142adnika samlWebSso20 jest ustawiona na przetwarzanie albo propagacji danych przychodz\u0105cych znacznika SAML, albo sk\u0142adnika SAML Web SSO, ale nie obu. Wymienione atrybuty s\u0105 ignorowane podczas obs\u0142ugi \u017c\u0105da\u0144 WWW przy u\u017cyciu okre\u015blonej konfiguracji SAML.
+SAML_CONFIG_IGNORE_ATTRIBUTES.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+SAML_BAD_INBOUND_SAML_TOKEN=CWWKS5208E: Asercja SAML \
+danych przychodz\u0105cych jest niepoprawna [{0}].
+SAML_BAD_INBOUND_SAML_TOKEN.explanation=Asercja SAML \
+zawarta w nag\u0142\u00f3wku \u017c\u0105dania HTTP jest niepoprawna i nie mo\u017ce zosta\u0107 poprawnie \
+przeanalizowana.
+SAML_BAD_INBOUND_SAML_TOKEN.useraction=Upewnij si\u0119, \u017ce \
+poprawna asercja SAML jest prawid\u0142owo generowana.
+
+# Message prefix block: CWWKS5210 - CWWKS5299
+
+# 0=Exception message from the error encountered
+ERROR_HANDLING_LOGOUT_REQUEST=CWWKS5210E: Us\u0142uga pojedynczego wylogowania SAML napotka\u0142a b\u0142\u0105d podczas przetwarzania \u017c\u0105dania wylogowania. {0}
+ERROR_HANDLING_LOGOUT_REQUEST.explanation=Us\u0142uga napotka\u0142a b\u0142\u0105d podczas przetwarzania \u017c\u0105dania w postaci \u017c\u0105dania punktu ko\u0144cowego wylogowania, odpowiedzi wylogowania z dostawcy to\u017csamo\u015bci lub \u017c\u0105dania wylogowania z dostawcy to\u017csamo\u015bci. Komunikat zawiera informacje na temat typu \u017c\u0105dania i wi\u0119cej szczeg\u00f3\u0142\u00f3w na temat b\u0142\u0119du.
+ERROR_HANDLING_LOGOUT_REQUEST.useraction=Zapoznaj si\u0119 z czynno\u015bci\u0105 u\u017cytkownika dotycz\u0105c\u0105 b\u0142\u0119du wy\u015bwietlonego w tym komunikacie. Sprawd\u017a dzienniki serwera pod k\u0105tem dodatkowych komunikat\u00f3w o b\u0142\u0119dach.
+
+LOGOUT_CANNOT_FIND_SAML_SSO_SERVICE=CWWKS5211E: Us\u0142uga pojedynczego wylogowania SAML nie mo\u017ce przetworzy\u0107 \u017c\u0105dania, poniewa\u017c nie mo\u017ce znale\u017a\u0107 dostawcy SAML (SP) podanego w \u017c\u0105daniu.
+LOGOUT_CANNOT_FIND_SAML_SSO_SERVICE.explanation=Us\u0142uga pojedynczego wylogowania SAML nie mo\u017ce znale\u017a\u0107 us\u0142ugi pojedynczego logowania dla dostawcy SAML (SP) podanego w \u017c\u0105daniu. Mo\u017cliwe, \u017ce dostawca ten jest wy\u0142\u0105czony lub nie istnieje w konfiguracji serwera.
+LOGOUT_CANNOT_FIND_SAML_SSO_SERVICE.useraction=Upewnij si\u0119, \u017ce dostawca SAML (SP) zgodny z podan\u0105 nazw\u0105 dostawcy jest skonfigurowany i w\u0142\u0105czony. Sprawd\u017a dzienniki serwera pod k\u0105tem dodatkowych komunikat\u00f3w o b\u0142\u0119dach.
+
+LOGOUT_REQUEST_MISSING_SSO_REQUEST=CWWKS5212E: Us\u0142uga pojedynczego wylogowania SAML nie mo\u017ce przetworzy\u0107 \u017c\u0105dania, poniewa\u017c nie mo\u017ce znale\u017a\u0107 informacji o \u017c\u0105daniu pojedynczego logowania SAML.
+LOGOUT_REQUEST_MISSING_SSO_REQUEST.explanation=Aby mo\u017cliwe by\u0142o przetworzenie \u017c\u0105dania pojedynczego wylogowania SAML, nale\u017cy do\u0142\u0105czy\u0107 informacje o pojedynczym logowaniu SAML. Mo\u017cliwe, \u017ce dostawca SAML (SP) nie jest skonfigurowany lub nie jest on skonfigurowany do obs\u0142ugi \u017c\u0105dania.
+LOGOUT_REQUEST_MISSING_SSO_REQUEST.useraction=Upewnij si\u0119, \u017ce skonfigurowano co najmniej jednego dostawc\u0119 SAML (SP) lub co najmniej jednego dostawc\u0119 na potrzeby przetworzenia tego \u017c\u0105dania.
+
+POST_LOGOUT_PAGE_MISSING_MESSAGE_CONTEXT=CWWKS5213E: Us\u0142uga pojedynczego wylogowania SAML nie mo\u017ce wy\u015bwietli\u0107 strony po wylogowaniu, poniewa\u017c brakuje informacji o komunikacie SAML.
+POST_LOGOUT_PAGE_MISSING_MESSAGE_CONTEXT.explanation=Us\u0142uga pojedynczego logowania SAML (SSO) mog\u0142a napotka\u0107 b\u0142\u0105d podczas wysy\u0142ania \u017c\u0105dania wylogowania lub podczas przetwarzania odpowiedzi wylogowania SAML.
+POST_LOGOUT_PAGE_MISSING_MESSAGE_CONTEXT.useraction=Sprawd\u017a dzienniki serwera pod k\u0105tem dodatkowych komunikat\u00f3w o b\u0142\u0119dach. Upewnij si\u0119, \u017ce us\u0142uga pojedynczego logowania SAML nie napotka\u0142a \u017cadnych innych b\u0142\u0119d\u00f3w.
+
+# do not translate HTTP-POST, SingleLogoutService
+SAML20_SLOENDPOINT_NOT_IN_METADATA=CWWKS5214E: Us\u0142uga pojedynczego wylogowania SAML dla dostawcy {0} nie mo\u017ce uzyska\u0107 adresu URL punktu ko\u0144cowego us\u0142ugi pojedynczego wylogowania dla dostawcy to\u017csamo\u015bci (IdP) z metadanych dostawcy to\u017csamo\u015bci.
+SAML20_SLOENDPOINT_NOT_IN_METADATA.explanation=Nie mo\u017cna uzyska\u0107 adresu URL punktu ko\u0144cowego us\u0142ugi pojedynczego wylogowania dostawcy to\u017csamo\u015bci (IdP) z metadanych dostawcy to\u017csamo\u015bci.
+SAML20_SLOENDPOINT_NOT_IN_METADATA.useraction=Sprawd\u017a, czy metadane dostawcy to\u017csamo\u015bci zawieraj\u0105 wpis SingleLogoutService z powi\u0105zaniem HTTP-POST i po\u0142o\u017ceniem okre\u015blaj\u0105cym poprawny adres URL.
+
+LOGOUT_CANNOT_PERFORM_SLO=CWWKS5215E: Us\u0142uga \
+wylogowywania nie mo\u017ce zako\u0144czy\u0107 pojedynczego wylogowania SAML, poniewa\u017c nie \
+mo\u017ce znale\u017a\u0107 jednego unikalnego dostawcy us\u0142ug. Jednak sesja zabezpiecze\u0144 \
+u\u017cytkownika w dostawcach us\u0142ug zosta\u0142a usuni\u0119ta. Dost\u0119pni dostawcy us\u0142ug to \
+[{0}].
+LOGOUT_CANNOT_PERFORM_SLO.explanation=Na serwerze \
+Liberty istnieje wiele skonfigurowanych instancji dostawcy us\u0142ug. Serwer \
+Liberty nie mo\u017ce znale\u017a\u0107 jednego unikalnego dostawcy us\u0142ug w celu zainicjowania \
+pojedynczego wylogowania SAML. Usuwana jest tylko sesja zabezpiecze\u0144 \
+u\u017cytkownika w dostawcach us\u0142ug.
+LOGOUT_CANNOT_PERFORM_SLO.useraction=Upewnij si\u0119, \u017ce aplikacja \
+wylogowania jest powi\u0105zana tylko z jednym dostawc\u0105 us\u0142ug. Na przyk\u0142ad jeden \
+dostawca us\u0142ug na aplikacj\u0119.
+
+LOGOUT_CANNOT_FIND_SAMLTOKEN=CWWKS5218E: Us\u0142uga wylogowywania \
+nie mo\u017ce zako\u0144czy\u0107 pojedynczego wylogowania SAML, poniewa\u017c nie mo\u017ce znale\u017a\u0107 \
+sesji zabezpiecze\u0144 u\u017cytkownika.
+LOGOUT_CANNOT_FIND_SAMLTOKEN.explanation=Dostawca us\u0142ug nie \
+mo\u017ce znale\u017a\u0107 sesji zabezpiecze\u0144 u\u017cytkownika w celu utworzenia komunikatu \
+\u017c\u0105dania pojedynczego wylogowania SAML. U\u017cytkownik zosta\u0142 wylogowany z dostawcy \
+us\u0142ug, ale mo\u017ce nadal mie\u0107 aktywn\u0105 sesj\u0119 zabezpiecze\u0144 w dostawcy to\u017csamo\u015bci.
+LOGOUT_CANNOT_FIND_SAMLTOKEN.useraction=Rozwa\u017c \
+zaimplementowanie wylogowania inicjowanego przez dostawc\u0119 to\u017csamo\u015bci i \
+przekieruj u\u017cytkownika do dostawcy to\u017csamo\u015bci w celu wylogowania, zw\u0142aszcza \
+je\u015bli wylogowanie dostawcy us\u0142ug ko\u0144czy si\u0119 niepowodzeniem lub jest \
+niezako\u0144czone. 

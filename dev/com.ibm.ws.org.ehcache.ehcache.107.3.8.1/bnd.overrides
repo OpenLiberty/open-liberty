@@ -21,12 +21,14 @@ Export-Package: \
   org.ehcache;version=3.8.1, \
   org.ehcache.config;version=3.8.1, \
   org.ehcache.config.*;version=3.8.1, \
-  org.ehcache.expiry;version=3.8.1
+  org.ehcache.expiry;version=3.8.1, \
+  org.ehcache.xml;version=3.8.1
 
 Private-Package: \
  org.ehcache.*
 
 Import-Package: \
+ javax.cache.*;resolution:=optional,\
  javax.management,\
  javax.management.openmbean,\
  javax.naming,\
@@ -37,8 +39,14 @@ Import-Package: \
  org.osgi.framework, \
  org.slf4j,\
  org.xml.sax,\
- org.xml.sax.helpers
-   
+ org.xml.sax.helpers,\
+ !sun.misc,\
+ *
+ 
+DynamicImport-Package: \
+  org.apache.cxf.ws.security.tokenstore, \
+  org.apache.wss4j.common.cache   
+
 Include-Resource: \
  @${repo;org.ehcache.modules:ehcache-107;3.8.1}!/!META-INF/MANIFEST.MF|META-INF/maven/*
 

@@ -22,16 +22,11 @@ Export-Package: \
   org.apache.cxf.rt.security.*;version="3.4.1"
 
 Import-Package:  \
+  !com.ctc.wstx.*,\
+  !net.sf.ehcache.*,\
   org.apache.cxf.*; version="[3.2.4,4.0.0)", \
   com.ibm.websphere.ras, \
   com.ibm.websphere.ras.annotation, \
   com.ibm.ws.ffdc, \
   *
-
-Include-Resource: \
-  @${repo;org.apache.cxf:cxf-rt-security;3.4.1;EXACT}!/!META-INF/MANIFEST.MF, \
-  @${repo;org.apache.cxf:cxf-rt-security;3.4.1;EXACT}!/META-INF/DEPENDENCIES, \
-  @${repo;org.apache.cxf:cxf-rt-security;3.4.1;EXACT}!/META-INF/LICENSE, \
-  @${repo;org.apache.cxf:cxf-rt-security;3.4.1;EXACT}!/META-INF/NOTICE, \
-  @${repo;org.apache.cxf:cxf-rt-security;3.4.1;EXACT}!/META-INF/cxf/*
 

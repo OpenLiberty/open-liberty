@@ -15,4 +15,5 @@
    org/apache/wss4j=${bin}/org/apache/wss4j
 -buildpath: org.apache.wss4j:wss4j-ws-security-common;version=2.3.0, \
    com.ibm.ws.org.slf4j.api.1.7.7;version=latest, \
-   com.ibm.ws.org.apache.santuario.xmlsec.2.2.0;version=latest
+   com.ibm.ws.org.apache.santuario.xmlsec.2.2.0;version=latest, \
+   com.ibm.websphere.appserver.spi.logging;version=latest
