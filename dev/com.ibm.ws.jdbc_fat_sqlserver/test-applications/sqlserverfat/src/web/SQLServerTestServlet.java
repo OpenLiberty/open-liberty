@@ -265,6 +265,9 @@ public class SQLServerTestServlet extends FATServlet {
             } catch (RollbackException x) {
                 System.out.println("tran.commit() threw a RollbackException as expected.");
                 x.printStackTrace(System.out);
+            } finally {
+                //Restore default transaction timeout
+                tran.setTransactionTimeout(0);
             }
         }
 
