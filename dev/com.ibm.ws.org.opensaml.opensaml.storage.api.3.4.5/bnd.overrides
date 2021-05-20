@@ -22,13 +22,8 @@ Export-Package: \
   org.opensaml.storage.*;version="3.4.5"
   
 Import-Package: \
- com.google.common.base; version="[27.0.0,28.0.0)", \
+ com.google.common.base; version="[27.0.0,31.0.0)", \
  *
  
 Include-Resource: \
  @${repo;org.opensaml:opensaml-storage-api;3.4.5}!/!META-INF/MANIFEST.MF|META-INF/maven/*
- 
-Archiver-Version:
-Build-Jdk:
-Built-By:
-Main-Class:
