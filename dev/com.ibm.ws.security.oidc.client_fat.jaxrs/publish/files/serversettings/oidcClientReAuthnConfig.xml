@@ -1,0 +1,458 @@
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+
+	<!-- -->
+
+
+	<authFilter id="rp_accessTokenShortLifetime_reAuthnTrue_noCushion_Filter">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="SimpleJaxRSClient/accessTokenShortLifetime_reAuthnTrue_noCushion"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="rp_accessTokenShortLifetime_reAuthnTrue_noCushion"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		reAuthnOnAccessTokenExpire="true"
+		reAuthnCushion="0s"
+		disableLtpaCookie="true"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_AccessTokenShortLifetime/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_AccessTokenShortLifetime/token"
+		jwkEndpointUrl="${oidcJWKValidationURL_PT_ShortLifetime}"
+		signatureAlgorithm="${oidcSignAlg}"
+		authFilterRef="rp_accessTokenShortLifetime_reAuthnTrue_noCushion_Filter" />
+
+
+	<authFilter id="rp_idTokenShortLifetime_reAuthnTrue_noCushion_Filter">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="SimpleJaxRSClient/idTokenShortLifetime_reAuthnTrue_noCushion"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="rp_idTokenShortLifetime_reAuthnTrue_noCushion"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		reAuthnOnAccessTokenExpire="true"
+		reAuthnCushion="0s"
+		disableLtpaCookie="true"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_IDTokenShortLifetime/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_IDTokenShortLifetime/token"
+		jwkEndpointUrl="${oidcJWKValidationURL_ID_ShortLifetime}"
+		signatureAlgorithm="${oidcSignAlg}"
+		authFilterRef="rp_idTokenShortLifetime_reAuthnTrue_noCushion_Filter" />
+
+
+	<authFilter id="rp_bothShortLifetime_reAuthnTrue_noCushion_Filter">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="SimpleJaxRSClient/bothShortLifetime_reAuthnTrue_noCushion"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="rp_bothShortLifetime_reAuthnTrue_noCushion"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		reAuthnOnAccessTokenExpire="true"
+		reAuthnCushion="0s"
+		disableLtpaCookie="true"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_BothShortLifetime/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_BothShortLifetime/token"
+		jwkEndpointUrl="${oidcJWKValidationURL_Both_ShortLifetime}"
+		signatureAlgorithm="${oidcSignAlg}"
+		authFilterRef="rp_bothShortLifetime_reAuthnTrue_noCushion_Filter" />
+
+
+	<!-- -->
+
+	<authFilter id="rp_accessTokenShortLifetime_reAuthnFalse_noCushion_Filter">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="SimpleJaxRSClient/accessTokenShortLifetime_reAuthnFalse_noCushion"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="rp_accessTokenShortLifetime_reAuthnFalse_noCushion"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		reAuthnOnAccessTokenExpire="false"
+		reAuthnCushion="0s"
+		disableLtpaCookie="true"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_AccessTokenShortLifetime/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_AccessTokenShortLifetime/token"
+		jwkEndpointUrl="${oidcJWKValidationURL_PT_ShortLifetime}"
+		signatureAlgorithm="${oidcSignAlg}"
+		authFilterRef="rp_accessTokenShortLifetime_reAuthnFalse_noCushion_Filter" />
+
+
+	<authFilter id="rp_idTokenShortLifetime_reAuthnFalse_noCushion_Filter">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="SimpleJaxRSClient/idTokenShortLifetime_reAuthnFalse_noCushion"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="rp_idTokenShortLifetime_reAuthnFalse_noCushion"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		reAuthnOnAccessTokenExpire="false"
+		reAuthnCushion="0s"
+		disableLtpaCookie="true"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_IDTokenShortLifetime/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_IDTokenShortLifetime/token"
+		jwkEndpointUrl="${oidcJWKValidationURL_ID_ShortLifetime}"
+		signatureAlgorithm="${oidcSignAlg}"
+		authFilterRef="rp_idTokenShortLifetime_reAuthnFalse_noCushion_Filter" />
+
+
+	<authFilter id="rp_bothShortLifetime_reAuthnFalse_noCushion_Filter">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="SimpleJaxRSClient/bothShortLifetime_reAuthnFalse_noCushion"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="rp_bothShortLifetime_reAuthnFalse_noCushion"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		reAuthnOnAccessTokenExpire="false"
+		reAuthnCushion="0s"
+		disableLtpaCookie="true"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_BothShortLifetime/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_BothShortLifetime/token"
+		jwkEndpointUrl="${oidcJWKValidationURL_Both_ShortLifetime}"
+		signatureAlgorithm="${oidcSignAlg}"
+		authFilterRef="rp_bothShortLifetime_reAuthnFalse_noCushion_Filter" />
+
+
+	<!-- -->
+
+	<authFilter
+		id="rp_accessTokenShortLifetime_reAuthnTrue_withCushion_Filter"
+	>
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="SimpleJaxRSClient/accessTokenShortLifetime_reAuthnTrue_withCushion"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="rp_accessTokenShortLifetime_reAuthnTrue_withCushion"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		reAuthnOnAccessTokenExpire="true"
+		reAuthnCushion="30s"
+		disableLtpaCookie="true"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_AccessTokenShortLifetime/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_AccessTokenShortLifetime/token"
+		jwkEndpointUrl="${oidcJWKValidationURL_PT_ShortLifetime}"
+		signatureAlgorithm="${oidcSignAlg}"
+		authFilterRef="rp_accessTokenShortLifetime_reAuthnTrue_withCushion_Filter" />
+
+
+	<authFilter id="rp_idTokenShortLifetime_reAuthnTrue_withCushion_Filter">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="SimpleJaxRSClient/idTokenShortLifetime_reAuthnTrue_withCushion"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="rp_idTokenShortLifetime_reAuthnTrue_withCushion"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		reAuthnOnAccessTokenExpire="true"
+		reAuthnCushion="30s"
+		disableLtpaCookie="true"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_IDTokenShortLifetime/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_IDTokenShortLifetime/token"
+		jwkEndpointUrl="${oidcJWKValidationURL_ID_ShortLifetime}"
+		signatureAlgorithm="${oidcSignAlg}"
+		authFilterRef="rp_idTokenShortLifetime_reAuthnTrue_withCushion_Filter" />
+
+
+	<authFilter id="rp_bothShortLifetime_reAuthnTrue_withCushion_Filter">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="SimpleJaxRSClient/bothShortLifetime_reAuthnTrue_withCushion"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="rp_bothShortLifetime_reAuthnTrue_withCushion"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		reAuthnOnAccessTokenExpire="true"
+		reAuthnCushion="30s"
+		disableLtpaCookie="true"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_BothShortLifetime/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_BothShortLifetime/token"
+		jwkEndpointUrl="${oidcJWKValidationURL_Both_ShortLifetime}"
+		signatureAlgorithm="${oidcSignAlg}"
+		authFilterRef="rp_bothShortLifetime_reAuthnTrue_withCushion_Filter" />
+
+
+	<!-- -->
+
+	<authFilter
+		id="rp_accessTokenShortLifetime_reAuthnFalse_withCushion_Filter"
+	>
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="SimpleJaxRSClient/accessTokenShortLifetime_reAuthnFalse_withCushion"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="rp_accessTokenShortLifetime_reAuthnFalse_withCushion"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		reAuthnOnAccessTokenExpire="false"
+		reAuthnCushion="30s"
+		disableLtpaCookie="true"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_AccessTokenShortLifetime/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_AccessTokenShortLifetime/token"
+		jwkEndpointUrl="${oidcJWKValidationURL_PT_ShortLifetime}"
+		signatureAlgorithm="${oidcSignAlg}"
+		authFilterRef="rp_accessTokenShortLifetime_reAuthnFalse_withCushion_Filter" />
+
+
+	<authFilter id="rp_idTokenShortLifetime_reAuthnFalse_withCushion_Filter">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="SimpleJaxRSClient/idTokenShortLifetime_reAuthnFalse_withCushion"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="rp_idTokenShortLifetime_reAuthnFalse_withCushion"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		reAuthnOnAccessTokenExpire="false"
+		reAuthnCushion="30s"
+		disableLtpaCookie="true"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_IDTokenShortLifetime/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_IDTokenShortLifetime/token"
+		jwkEndpointUrl="${oidcJWKValidationURL_ID_ShortLifetime}"
+		signatureAlgorithm="${oidcSignAlg}"
+		authFilterRef="rp_idTokenShortLifetime_reAuthnFalse_withCushion_Filter" />
+
+
+	<authFilter id="rp_bothShortLifetime_reAuthnFalse_withCushion_Filter">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="SimpleJaxRSClient/bothShortLifetime_reAuthnFalse_withCushion"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="rp_bothShortLifetime_reAuthnFalse_withCushion"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		reAuthnOnAccessTokenExpire="false"
+		reAuthnCushion="30s"
+		disableLtpaCookie="true"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_BothShortLifetime/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_BothShortLifetime/token"
+		jwkEndpointUrl="${oidcJWKValidationURL_Both_ShortLifetime}"
+		signatureAlgorithm="${oidcSignAlg}"
+		authFilterRef="rp_bothShortLifetime_reAuthnFalse_withCushion_Filter" />
+
+
+
+	<!-- -->
+
+	<authFilter id="rp_bothLongLifetime_reAuthnTrue_noCushion_Filter">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="SimpleJaxRSClient/bothLongLifetime_reAuthnTrue_noCushion"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="rp_bothLongLifetime_reAuthnTrue_noCushion"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		reAuthnOnAccessTokenExpire="true"
+		reAuthnCushion="0s"
+		disableLtpaCookie="true"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_BothLongLifetime/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_BothLongLifetime/token"
+		jwkEndpointUrl="${oidcJWKValidationURL_Both_LongLifetime}"
+		signatureAlgorithm="${oidcSignAlg}"
+		authFilterRef="rp_bothLongLifetime_reAuthnTrue_noCushion_Filter" />
+
+	<authFilter id="rp_bothLongLifetime_reAuthnFalse_noCushion_Filter">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="SimpleJaxRSClient/bothLongLifetime_reAuthnFalse_noCushion"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="rp_bothLongLifetime_reAuthnFalse_noCushion"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		reAuthnOnAccessTokenExpire="false"
+		reAuthnCushion="0s"
+		disableLtpaCookie="true"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_BothLongLifetime/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_BothLongLifetime/token"
+		jwkEndpointUrl="${oidcJWKValidationURL_Both_LongLifetime}"
+		signatureAlgorithm="${oidcSignAlg}"
+		authFilterRef="rp_bothLongLifetime_reAuthnFalse_noCushion_Filter" />
+
+	<authFilter id="rp_bothLongLifetime_reAuthnTrue_withCushion_Filter">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="SimpleJaxRSClient/bothLongLifetime_reAuthnTrue_withCushion"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="rp_bothLongLifetime_reAuthnTrue_withCushion"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		reAuthnOnAccessTokenExpire="true"
+		reAuthnCushion="10s"
+		disableLtpaCookie="true"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_BothLongLifetime/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_BothLongLifetime/token"
+		jwkEndpointUrl="${oidcJWKValidationURL_Both_LongLifetime}"
+		signatureAlgorithm="${oidcSignAlg}"
+		authFilterRef="rp_bothLongLifetime_reAuthnTrue_withCushion_Filter" />
+
+	<authFilter id="rp_bothLongLifetime_reAuthnFalse_withCushion_Filter">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="SimpleJaxRSClient/bothLongLifetime_reAuthnFalse_withCushion"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="rp_bothLongLifetime_reAuthnFalse_withCushion"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		reAuthnOnAccessTokenExpire="false"
+		reAuthnCushion="10s"
+		disableLtpaCookie="true"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_BothLongLifetime/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_BothLongLifetime/token"
+		jwkEndpointUrl="${oidcJWKValidationURL_Both_LongLifetime}"
+		signatureAlgorithm="${oidcSignAlg}"
+		authFilterRef="rp_bothLongLifetime_reAuthnFalse_withCushion_Filter" />
+
+
+
+	<!-- -->
+
+	<authFilter
+		id="rp_disableLtpaCookieFalse_bothShortLifetime_reAuthnTrue_withCushion_Filter"
+	>
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="SimpleJaxRSClient/disableLtpaCookieFalse_bothShortLifetime_reAuthnTrue_withCushion"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="rp_disableLtpaCookieFalse_bothShortLifetime_reAuthnTrue_withCushion"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		httpsRequired="false"
+		reAuthnOnAccessTokenExpire="true"
+		reAuthnCushion="30s"
+		disableLtpaCookie="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_BothShortLifetime/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_BothShortLifetime/token"
+		jwkEndpointUrl="${oidcJWKValidationURL_Both_ShortLifetime}"
+		signatureAlgorithm="${oidcSignAlg}"
+		authFilterRef="rp_disableLtpaCookieFalse_bothShortLifetime_reAuthnTrue_withCushion_Filter" />
+
+
+
+</server>
