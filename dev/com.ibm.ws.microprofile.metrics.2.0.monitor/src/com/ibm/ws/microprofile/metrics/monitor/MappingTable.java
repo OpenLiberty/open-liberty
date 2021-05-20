@@ -17,8 +17,6 @@ import java.util.Set;
 import org.eclipse.microprofile.metrics.MetricType;
 import org.eclipse.microprofile.metrics.MetricUnits;
 
-import com.ibm.ws.kernel.productinfo.ProductInfo;
-
 public class MappingTable {
 	
 	public static final int METRIC_NAME = 0;
@@ -40,14 +38,11 @@ public class MappingTable {
 	public static final String COUNTER = MetricType.COUNTER.toString().toUpperCase();
 	public static final String GAUGE = MetricType.GAUGE.toString().toUpperCase();
 	
-	private static boolean isBeta = false;
-
 	private static MappingTable singleton = null;
 
 	private Map<String, String[][]> mappingTable = new HashMap<String, String[][]>();
 
 	public static MappingTable getInstance() {
-		betaFenceCheck();
 		if (singleton == null)
 			singleton = new MappingTable();
 		return singleton;
@@ -61,7 +56,7 @@ public class MappingTable {
 			{ "requestTiming.slowRequestCount", "Slow Request Count", "requestTiming.slowRequestCount.description", GAUGE, MetricUnits.NONE, "SlowRequestCount", null, null },
 			{ "requestTiming.hungRequestCount", "Hung Request Count", "requestTiming.hungRequestCount.description", GAUGE, MetricUnits.NONE, "HungRequestCount", null, null }
 		};
-		if (isBeta) mappingTable.put("WebSphere:type=RequestTimingStats,name=*", requestTimeTable);
+		mappingTable.put("WebSphere:type=RequestTimingStats,name=*", requestTimeTable);
 		
 		String[][] threadPoolTable = new String[][] {
 			{ "threadpool.activeThreads", "Active Threads", "threadpool.activeThreads.description", GAUGE, MetricUnits.NONE, "ActiveThreads", null, THREADPOOL_TAG_NAME },
@@ -146,14 +141,5 @@ public class MappingTable {
 
 	public Set<String> getKeys() {
 		return mappingTable.keySet();
-	}
-
-	private static void betaFenceCheck() {
-		/*
-		 * If this is a BETA, flip  the beta flag to true.
-		 */
-		if (ProductInfo.getBetaEdition() && !isBeta) {
-			isBeta = !isBeta;
-		}
 	}
 }
