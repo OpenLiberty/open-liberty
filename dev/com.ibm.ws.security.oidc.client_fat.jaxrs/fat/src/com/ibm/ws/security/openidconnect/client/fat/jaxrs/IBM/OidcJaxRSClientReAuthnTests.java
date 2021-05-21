@@ -24,7 +24,6 @@ import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestSettings;
 import com.ibm.ws.security.openidconnect.client.fat.jaxrs.CommonTests.JaxRSClientReAuthnTests;
 
 import componenttest.annotation.AllowedFFDC;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -36,9 +35,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  *
  **/
 @AllowedFFDC({ "org.apache.http.NoHttpResponseException" })
-// when 17160 is complete, switch the mode back to FULL and remove the EE9 skip rule
-@Mode(TestMode.LITE) // 17160 - EE9 client properties not supported yet - so none of the tests in this class will run - switch back to full when 17160 is implemented
-@SkipForRepeat(SkipForRepeat.EE9_FEATURES) // 17160 - EE9 client properties not supported yet - so none of the tests in this class will run - switch back to full when 17160 is implemented
+@Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class OidcJaxRSClientReAuthnTests extends JaxRSClientReAuthnTests {
 
