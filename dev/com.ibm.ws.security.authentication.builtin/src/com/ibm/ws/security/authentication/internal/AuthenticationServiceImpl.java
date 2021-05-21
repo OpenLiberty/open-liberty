@@ -442,16 +442,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             subject = authCacheService.getSubject(customCacheKey);
         }
         //We do not create look up key for hashtable userid/pwd or userid only
-//        String userid = (String) hashtableAuthData.get(AttributeNameConstants.WSCREDENTIAL_USERID);
-//        String password = (String) hashtableAuthData.get(AttributeNameConstants.WSCREDENTIAL_PASSWORD);
-//
-//        String lookupKey;
-//        if (password != null) {
-//            lookupKey = BasicAuthCacheKeyProvider.createLookupKey(getRealm(), userid, password);
-//        } else {
-//            lookupKey = BasicAuthCacheKeyProvider.createLookupKey(getRealm(), userid);
-//        }
-//        authCacheService.getSubject(lookupKey);
+        String userid = (String) hashtableAuthData.get(AttributeNameConstants.WSCREDENTIAL_USERID);
+        String password = (String) hashtableAuthData.get(AttributeNameConstants.WSCREDENTIAL_PASSWORD);
+
+        String lookupKey;
+        if (password != null) {
+            lookupKey = BasicAuthCacheKeyProvider.createLookupKey(getRealm(), userid, password);
+        } else {
+            lookupKey = BasicAuthCacheKeyProvider.createLookupKey(getRealm(), userid);
+        }
+        subject = authCacheService.getSubject(lookupKey);
+
         return subject;
     }
 
