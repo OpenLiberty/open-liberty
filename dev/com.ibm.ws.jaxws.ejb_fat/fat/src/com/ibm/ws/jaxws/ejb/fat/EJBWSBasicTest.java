@@ -103,7 +103,7 @@ public class EJBWSBasicTest {
     }
 
     @Mode(TestMode.FULL)
-    // @Test
+    @Test
     public void testListUsers() throws Exception {
         runTest("PASS");
     }
