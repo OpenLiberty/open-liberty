@@ -29,14 +29,16 @@ public interface SnapshotHook {
      * will then have their {@link #abortPrepare(Exception)}
      * method called.
      */
-    void prepare();
+    default void prepare() {
+    };
 
     /**
      * Abort the prepare for snapshot.
      *
      * @param cause the exception that caused the abort
      */
-    void abortPrepare(Exception cause);
+    default void abortPrepare(Exception cause) {
+    };
 
     /**
      * Restore the state after a snapshot. If the hook
@@ -45,12 +47,14 @@ public interface SnapshotHook {
      * will then have their {@link #abortRestore(Exception)}
      * method called.
      */
-    void restore();
+    default void restore() {
+    };
 
     /**
      * Abort the restore from snapshot.
      *
      * @param cause the exception the caused the abort
      */
-    void abortRestore(Exception cause);
+    default void abortRestore(Exception cause) {
+    };
 }
