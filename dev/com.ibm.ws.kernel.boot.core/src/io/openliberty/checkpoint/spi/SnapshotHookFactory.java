@@ -19,6 +19,7 @@ import io.openliberty.checkpoint.spi.Checkpoint.Phase;
  * @see Checkpoint#snapshot(Phase, java.io.File)
  * @see SnapshotHook
  */
+@FunctionalInterface
 public interface SnapshotHookFactory {
     /**
      * Creates a snapshot hook for the specified phase.
