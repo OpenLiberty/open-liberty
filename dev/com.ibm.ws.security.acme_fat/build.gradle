@@ -10,8 +10,8 @@
  *******************************************************************************/
 
 configurations {
-    runPebble { extendsFrom runtime }
-    runBoulder { extendsFrom runtime }
+    runPebble  { extendsFrom testcontainers }
+    runBoulder { extendsFrom testcontainers }
 }
 
 dependencies {
@@ -22,15 +22,10 @@ dependencies {
                project(':com.ibm.ws.security.acme'),
                project(':com.ibm.ws.crypto.certificateutil')
                
-  runPebble    'net.java.dev.jna:jna:5.2.0',
-               'org.rnorth.visible-assertions:visible-assertions:2.1.2',
-               'org.apache.commons:commons-compress:1.20',
-               project(':io.openliberty.org.apache.commons.logging')
+  runPebble    project(':io.openliberty.org.apache.commons.logging')
                
-  runBoulder   'net.java.dev.jna:jna:5.2.0',
-               'org.rnorth.visible-assertions:visible-assertions:2.1.2',
-               'org.apache.commons:commons-compress:1.20',
-               project(':io.openliberty.org.apache.commons.logging')
+  runBoulder   project(':io.openliberty.org.apache.commons.logging')
+  
 }
 
 addRequiredLibraries.dependsOn addTestcontainers
@@ -57,19 +52,33 @@ tasks.withType(JavaExec) {
 }
 
 task runPebble(type: JavaExec) {
+    dependsOn(autoFVT)
+    
     group = "Execution"
     description = "Start a Pebble ACME CA server with a mock DNS server."
     
     workingDir = 'build/libs/autoFVT'
     classpath = files(sourceSets.main.runtimeClasspath, configurations.runPebble)
     main = "com.ibm.ws.security.acme.docker.pebble.PebbleDriver"
+    
+    /*
+     * Don't fail looking up private artifactory in ArtifactoryImageNameSubstitutor.
+     */
+    systemProperty "fat.test.use.remote.docker", "false"
 }
 
 task runBoulder(type: JavaExec) {
+    dependsOn(autoFVT)
+
     group = "Execution"
     description = "Start a Boulder ACME CA server with a mock DNS server."
     
     workingDir = 'build/libs/autoFVT'
     classpath = files(sourceSets.main.runtimeClasspath, configurations.runBoulder)
     main = "com.ibm.ws.security.acme.docker.boulder.BoulderDriver"
+    
+    /*
+     * Don't fail looking up private artifactory in ArtifactoryImageNameSubstitutor.
+     */
+    systemProperty "fat.test.use.remote.docker", "false"
 }

@@ -20,10 +20,12 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Scanner;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -33,6 +35,7 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.config.AcmeCA.AcmeRevocationChecker;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
@@ -870,29 +873,51 @@ public class AcmeValidityAndRenewTest {
 			server.setMarkToEndOfLog();
 
 			startingCertificateChain = AcmeFatUtils.assertAndGetServerCertificate(server, caContainer);
+			
+			boolean runBadDNSTest = true;
+			
+			Log.info(this.getClass(), testName.getMethodName(),
+					"OS check: " + server.getMachine().getOperatingSystem());
+			
+			if (server.getMachine().getOperatingSystem() == OperatingSystem.LINUX) {
+				String content = new Scanner(new File("/etc/os-release")).useDelimiter("\\Z").next();
+				Log.info(this.getClass(), testName.getMethodName(),
+						"Checking Linux type to see if we should run the bad DNS test: " + content);
 
-			/*
-			 * Add a bad DNS record we should hit an error on the cert checker.
-			 *
-			 */
-			caContainer.addDnsARecord("domain1.com", "127.0.0.1");
+				if (content.toLowerCase().contains("suse")) {
+					Log.info(this.getClass(), testName.getMethodName(),
+							"Linux type is SUSE, will not run the bad DNS test, as it seems the DNS cache doesn't clear in a test friendly timely manner.");
+					runBadDNSTest = false;
+				}
+			}
 
-			/*
-			 * DNS info can be cached, give more time for cache to expire
-			 */
-			assertNotNull("Should log message that the certificate renew failed",
-					server.waitForStringInLogUsingMark("CWPKI2065W", TIME_BUFFER_BEFORE_EXPIRE * 12));
+			Log.info(this.getClass(), testName.getMethodName(),
+					"runBadDNSTest is " + runBadDNSTest);
+			
+			if (runBadDNSTest) {
+				/*
+				 * Add a bad DNS record we should hit an error on the cert checker.
+				 *
+				 */
+				caContainer.addDnsARecord("domain1.com", "127.0.0.1");
 
-			/*
-			 * Clear the bad DNS record and the cert checker should recover and fetch a new
-			 * cert
-			 *
-			 */
-			caContainer.clearDnsARecord(DOMAINS1[0]);
+				/*
+				 * DNS info can be cached, give more time for cache to expire
+				 */
+				assertNotNull("Should log message that the certificate renew failed",
+						server.waitForStringInLogUsingMark("CWPKI2065W", TIME_BUFFER_BEFORE_EXPIRE * 12));
 
-			assertNotNull("Should log message that the certificate was renewed after restarting the challenge server",
-					server.waitForStringInLogUsingMark("CWPKI2007I", (configuration.getAcmeCA().getRenewCertMin() * 6)));
-			AcmeFatUtils.waitForNewCert(server, caContainer, startingCertificateChain, TIME_BUFFER_BEFORE_EXPIRE);
+				/*
+				 * Clear the bad DNS record and the cert checker should recover and fetch a new
+				 * cert
+				 *
+				 */
+				caContainer.clearDnsARecord(DOMAINS1[0]);
+
+				assertNotNull("Should log message that the certificate was renewed after restarting the challenge server",
+						server.waitForStringInLogUsingMark("CWPKI2007I", (configuration.getAcmeCA().getRenewCertMin() * 6)));
+				AcmeFatUtils.waitForNewCert(server, caContainer, startingCertificateChain, TIME_BUFFER_BEFORE_EXPIRE);
+			}
 
 		} finally {
 			Log.info(this.getClass(), testName.getMethodName(), "TEST Shutdown.");

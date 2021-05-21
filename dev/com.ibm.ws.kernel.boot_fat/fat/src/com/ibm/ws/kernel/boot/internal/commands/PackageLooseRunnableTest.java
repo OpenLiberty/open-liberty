@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.kernel.boot.internal.commands;
 
+import static componenttest.annotation.SkipIfSysProp.OS_ZOS;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,7 +31,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.FileUtils;
 
 @RunWith(Parameterized.class)
-@SkipIfSysProp("os.name=z/OS") // Jar not supported on Z/OS
+@SkipIfSysProp(OS_ZOS) // Jar not supported on Z/OS
 public class PackageLooseRunnableTest extends AbstractLooseConfigTest {
     private static final String MODULE_NAME = "DefaultArchive.war";
     private static final String MODULE_NAME_LOOSE = "DefaultArchive.war.xml";

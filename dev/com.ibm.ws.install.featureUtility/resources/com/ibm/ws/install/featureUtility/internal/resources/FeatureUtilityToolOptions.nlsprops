@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020 IBM Corporation and others.
+# Copyright (c) 2010, 2020, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -56,6 +56,14 @@ installFeature.option-desc.--to=\
 \tthis option is not specified, the feature is installed as a user     \n\
 \tfeature.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--featuresBom=\
+\ \ \ \ --featuresBom=Maven coordinate
+installFeature.option-desc.--featuresBom=\
+\tSpecify the Maven coordinate for the features BOM file. This option  \n\
+\tallows for the installation of user features from the configured     \n\
+\tmaven repository. Ensure that the repository also contains the       \n\
+\tassociated features JSON file in the same groupId as the BOM.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.--from=\
 \ \ \ \ --from=filePath
 installFeature.option-desc.--from=\
@@ -85,6 +93,14 @@ installServerFeatures.option-key.name...=\
 \ \ \ \ name ...
 installServerFeatures.option-desc.name...=\
 \tThe name of an existing server in the same Liberty environment.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--featuresBom=\
+\ \ \ \ --featuresBom=Maven coordinate
+installServerFeatures.option-desc.--featuresBom=\
+\tSpecify the Maven coordinate for the features BOM file. This option  \n\
+\tallows for the installation of user features from the configured     \n\
+\tmaven repository. Ensure that the repository also contains the       \n\
+\tassociated features JSON file in the same groupId as the BOM.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.--from=\
 \ \ \ \ --from=filePath
@@ -123,6 +139,6 @@ viewSettings.option-key.--viewValidationMessages=\
 \ \ \ \ --viewValidationMessages
 viewSettings.option-desc.--viewValidationMessages=\
 \tUse this option to display the detailed messages from the            \n\
-\tvalidation of the configured featureUtility.properties file.           \n\
+\tvalidation of the configured featureUtility.properties file.         \n\
 \tEach message contains an error code, the line number where the error \n\
 \twas found, and the cause of the error.

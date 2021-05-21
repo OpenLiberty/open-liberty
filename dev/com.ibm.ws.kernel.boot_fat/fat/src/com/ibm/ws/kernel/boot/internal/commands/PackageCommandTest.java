@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.kernel.boot.internal.commands;
 
+import static componenttest.annotation.SkipIfSysProp.OS_ZOS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
@@ -145,7 +146,7 @@ public class PackageCommandTest {
      * Packages --include=minify,runnable jar and verifies correct content.
      */
     @Test
-    @SkipIfSysProp("os.name=z/OS") // Jar not supported on Z/OS
+    @SkipIfSysProp(OS_ZOS) // Jar not supported on Z/OS
     public void testRunnable() throws Exception {
         String serverName = bootstrapFatServerName;
         LibertyServer server = bootstrapFatServer;
@@ -192,7 +193,7 @@ public class PackageCommandTest {
 //     * the resulting jar files does NOT contain the self-extract files.
 //     */
 //    @Test
-//    @SkipIfSysProp("os.name=z/OS") // Jar not supported on Z/OS
+//    @SkipIfSysProp(OS_ZOS) // Jar not supported on Z/OS
 //    public void testPackageJarArchiveWithIncludeEqualsUsr() throws Exception {
 //        LibertyServer server = bootstrapFatServer;
 //
@@ -484,7 +485,7 @@ public class PackageCommandTest {
      * that a .jar archive is created by default.
      */
     @Test
-    @SkipIfSysProp("os.name=z/OS") // Jar not supported on Z/OS
+    @SkipIfSysProp(OS_ZOS) // Jar not supported on Z/OS
     public void testRunnable_DefaultToJar() throws Exception {
         LibertyServer server = rootFatServer;
 
@@ -553,7 +554,7 @@ public class PackageCommandTest {
      * error is returned.
      */
     @Test
-    @SkipIfSysProp("os.name=z/OS") // Jar not supported on Z/OS
+    @SkipIfSysProp(OS_ZOS) // Jar not supported on Z/OS
     public void testUsr_Error_Jar() throws Exception {
         LibertyServer server = rootFatServer;
 
@@ -565,6 +566,65 @@ public class PackageCommandTest {
         };
         verifyPackageError(server, packageCmd, "CWWKE0951E");
 
+    }
+
+    private static final List<String> IconFeatures;
+    static {
+        IconFeatures = new ArrayList<String>(2);
+        IconFeatures.add("openidConnectServer-1.0");
+        IconFeatures.add("adminCenter-1.0");
+    }
+
+    /**
+     * Verify minified server content includes all types of icons used by admin features.
+     */
+    @Test
+    @SkipIfSysProp("os.name=z/OS") // Jar not supported on Z/OS
+    public void testMinify_IncludesAdminIcons() throws Exception {
+        LibertyServer server = bootstrapFatServer;
+        String serverPath = bootstrapFatServerPath;
+
+        // '--include=minify' requires that the 'lib/extract' folder exists.
+        assumeSelfExtractExists(rootFatServer);
+
+        try (ServerFeatures serverFeatures = new ServerFeatures(server, IconFeatures)) {
+            String initialFeatures = collectFeatures(server, "initial");
+
+            String packageName = server.getServerName() + ".jar";
+            String packagePath = bootstrapFatServerPath + '/' + packageName;
+            String[] packageCmd = {
+                                    "--archive=" + packageName,
+                                    "--include=minify"
+            };
+            verifyPackage(server, packageCmd, packageName, packagePath);
+
+            try (ZipFile zipFile = new ZipFile(packagePath)) {
+                boolean foundIconEntry = false;
+                boolean foundEndpointIconsEntry = false;
+                Enumeration<? extends ZipEntry> en = zipFile.entries();
+                while ((!foundIconEntry || !foundEndpointIconsEntry) && en.hasMoreElements()) {
+                    ZipEntry entry = en.nextElement();
+                    String entryName = entry.getName();
+
+                    if (!foundIconEntry) {
+                        foundIconEntry = entryName.contains("lib/features/icons/com.ibm.websphere.appserver.adminCenter.tool.explore-1.0/OSGI-INF/explore_142x142.png");
+                    }
+                    if (!foundEndpointIconsEntry) {
+                        foundEndpointIconsEntry = entryName.contains("lib/features/icons/com.ibm.websphere.appserver.openidConnectServer-1.0/clientManagement/OSGI-INF/clientManagement_78.png");
+                    }
+                }
+                if (!foundIconEntry) {
+                    fail("Package [ " + packagePath + " ] missing [ lib/features/icons/com.ibm.websphere.appserver.adminCenter.tool.explore-1.0/OSGI-INF/explore_142x142.png ]");
+                }
+                if (!foundEndpointIconsEntry) {
+                    fail("Package [ " + packagePath
+                         + " ] missing [ lib/features/icons/com.ibm.websphere.appserver.openidConnectServer-1.0/clientManagement/OSGI-INF/clientManagement_78.png ]");
+                }
+            }
+
+            String finalFeatures = collectFeatures(server, "final");
+            assertEquals("Server [ " + serverPath + " ] features were changed", initialFeatures, finalFeatures);
+        }
     }
 
     /**

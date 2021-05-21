@@ -82,6 +82,13 @@ public class FATSuite {
             }
         }
         action = action.removeFeatures(featuresToRemove);
+        if (!isLatest(featureName, version)) {
+            action.fullFATOnly();
+        }
         return action;
+    }
+
+    private static boolean isLatest(String featureName, String version) {
+        return "mpRestClient".equals(featureName) && "2.0".equals(version);
     }
 }

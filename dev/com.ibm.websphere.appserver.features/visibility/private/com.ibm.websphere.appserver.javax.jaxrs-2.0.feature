@@ -6,8 +6,7 @@ singleton=true
 IBM-App-ForceRestart: uninstall, \
  install
 Subsystem-Name: Java RESTful Services API 2.0
--features=\
-  io.openliberty.servlet.api-3.1, \
+-features=io.openliberty.servlet.api-3.1, \
   com.ibm.websphere.appserver.javax.annotation-1.2; apiJar=false, \
   com.ibm.websphere.appserver.eeCompatible-7.0
 -bundles=\

@@ -13,7 +13,7 @@ cd dev
 chmod +x gradlew
 
 # global variables
-OUTPUT_FILE=tmp/gradle.log && mkdir -p -- "$(dirname -- "$OUTPUT_FILE")" && touch -- "$OUTPUT_FILE"
+OUTPUT_FILE=tmp/gradle.log && mkdir -p -- $(dirname -- $OUTPUT_FILE) && touch -- $OUTPUT_FILE
 
 echo "::group::Building Liberty.  This will take approx. 30 minutes"
 

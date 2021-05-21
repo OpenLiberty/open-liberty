@@ -14,7 +14,6 @@ bVersion=1.0
 Bundle-Name: org.apache.santuario.xmlsec
 Bundle-Description: org.apache.santuario xmlsec; version=2.2.0
 Bundle-SymbolicName: com.ibm.ws.org.apache.santuario.xmlsec.2.2.0
-Bundle-ActivationPolicy: lazy
 
 WS-TraceGroup: XMLSEC
 
@@ -28,13 +27,9 @@ Import-Package: \
  org.apache.xml.dtm*;resolution:=optional, \
  org.apache.xml.utils*;resolution:=optional,\
  org.apache.xpath*;resolution:=optional, \
+ org.apache.xml.security.*;version="2.2.0", \
  *
- 
-Include-Resource: \
- @${repo;org.apache.santuario:xmlsec;2.2.0;EXACT}!/META-INF/**, \
- @${repo;org.apache.santuario:xmlsec;2.2.0;EXACT}!/templates/**, \
- @${repo;org.apache.santuario:xmlsec;2.2.0;EXACT}!/schemas/**, \
- @${repo;org.apache.santuario:xmlsec;2.2.0;EXACT}!/*xml
+
 
 DynamicImport-Package:
 

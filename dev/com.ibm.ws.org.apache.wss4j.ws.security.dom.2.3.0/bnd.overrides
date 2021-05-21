@@ -14,13 +14,22 @@ bVersion=1.0
 Bundle-Name: org.apache.wss4j.wss4j.ws.security.dom
 Bundle-Description: org.apache.wss4j.wss4j.ws.security.dom; version=2.3.0
 Bundle-SymbolicName: com.ibm.ws.org.apache.wss4j.ws.security.dom.2.3.0
-Bundle-ActivationPolicy: lazy
+#Bundle-ActivationPolicy: lazy
 
 WS-TraceGroup: WSS4J
 
 Export-Package: \
- org.apache.wss4j.*           
+ org.apache.wss4j.dom.*
  
+Import-Package: \
+ !com.sun.security.jgss,\
+ !com.ibm.security.jgss, \
+ !org.bouncycastle.asn1,\
+ !org.bouncycastle.asn1.x500, \
+ !org.bouncycastle.asn1.x509, \
+ com.sun.xml.messaging.saaj.soap;resolution:=optional, \
+ *
+
 Include-Resource: \
  @${repo;org.apache.wss4j:wss4j-ws-security-dom;2.3.0}!/!META-INF/MANIFEST.MF|META-INF/maven/*
 

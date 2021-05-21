@@ -1,0 +1,137 @@
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+	<openidConnectProvider
+		id="OidcConfigSample_AccessTokenShortLifetime"
+		oauthProviderRef="OAuthConfigSample_AccessTokenShortLifetime"
+		httpsRequired="false"
+		jwkEnabled="${oidcJWKEnabled}"
+		signatureAlgorithm="${oidcSignAlg}" />
+
+	<oauthProvider
+		id="OAuthConfigSample_AccessTokenShortLifetime"
+		filter="request-url%=helloworld_accessTokenShortLifetime"
+		oauthOnly="true"
+		httpsRequired="false"
+		accessTokenLifetime="15s"
+		autoAuthorize="true"
+		jwtAccessToken="${oidcCreateJWTToken}"
+	>
+		<autoAuthorizeClient>client01</autoAuthorizeClient>
+
+		<localStore>
+			<client
+				name="client01"
+				secret="{xor}LDo8LTor"
+				displayname="client01"
+				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp,http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/rp_accessTokenShortLifetime_reAuthnTrue_noCushion,http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/rp_accessTokenShortLifetime_reAuthnFalse_noCushion,http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/rp_accessTokenShortLifetime_reAuthnTrue_withCushion,http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/rp_accessTokenShortLifetime_reAuthnFalse_withCushion"
+				scope="ALL_SCOPES"
+				enabled="true"
+				introspectTokens="true" />
+		</localStore>
+	</oauthProvider>
+
+	<openidConnectProvider
+		id="OidcConfigSample_IDTokenShortLifetime"
+		oauthProviderRef="OAuthConfigSample_IDTokenShortLifetime"
+		httpsRequired="false"
+		idTokenLifetime="15s"
+		jwkEnabled="${oidcJWKEnabled}"
+		signatureAlgorithm="${oidcSignAlg}" />
+
+	<oauthProvider
+		id="OAuthConfigSample_IDTokenShortLifetime"
+		filter="request-url%=helloworld_idTokenShortLifetime"
+		oauthOnly="true"
+		httpsRequired="false"
+		autoAuthorize="true"
+		jwtAccessToken="${oidcCreateJWTToken}"
+	>
+		<autoAuthorizeClient>client01</autoAuthorizeClient>
+
+		<localStore>
+			<client
+				name="client01"
+				secret="{xor}LDo8LTor"
+				displayname="client01"
+				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp,http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/rp_idTokenShortLifetime_reAuthnTrue_noCushion,http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/rp_idTokenShortLifetime_reAuthnFalse_noCushion,http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/rp_idTokenShortLifetime_reAuthnTrue_withCushion,http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/rp_idTokenShortLifetime_reAuthnFalse_withCushion"
+				scope="ALL_SCOPES"
+				enabled="true"
+				introspectTokens="true" />
+		</localStore>
+	</oauthProvider>
+
+	<openidConnectProvider
+		id="OidcConfigSample_BothShortLifetime"
+		oauthProviderRef="OAuthConfigSample_BothShortLifetime"
+		httpsRequired="false"
+		idTokenLifetime="15s"
+		jwkEnabled="${oidcJWKEnabled}"
+		signatureAlgorithm="${oidcSignAlg}" />
+
+	<oauthProvider
+		id="OAuthConfigSample_BothShortLifetime"
+		filter="request-url%=helloworld_bothShortLifetime"
+		oauthOnly="true"
+		httpsRequired="false"
+		accessTokenLifetime="15s"
+		autoAuthorize="true"
+		jwtAccessToken="${oidcCreateJWTToken}"
+	>
+		<autoAuthorizeClient>client01</autoAuthorizeClient>
+
+		<localStore>
+			<client
+				name="client01"
+				secret="{xor}LDo8LTor"
+				displayname="client01"
+				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp,http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/rp_bothShortLifetime_reAuthnTrue_noCushion,http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/rp_bothShortLifetime_reAuthnFalse_noCushion,http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/rp_bothShortLifetime_reAuthnTrue_withCushion,http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/rp_bothShortLifetime_reAuthnFalse_withCushion,http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/rp_disableLtpaCookieFalse_bothShortLifetime_reAuthnTrue_withCushion"
+				scope="ALL_SCOPES"
+				enabled="true"
+				introspectTokens="true" />
+		</localStore>
+	</oauthProvider>
+
+
+
+
+
+	<openidConnectProvider
+		id="OidcConfigSample_BothLongLifetime"
+		oauthProviderRef="OAuthConfigSample_BothLongLifetime"
+		httpsRequired="false"
+		jwkEnabled="${oidcJWKEnabled}"
+		signatureAlgorithm="${oidcSignAlg}" />
+
+	<oauthProvider
+		id="OAuthConfigSample_BothLongLifetime"
+		filter="request-url%=helloworld_bothLongLifetime"
+		oauthOnly="true"
+		httpsRequired="false"
+		autoAuthorize="true"
+		jwtAccessToken="${oidcCreateJWTToken}"
+	>
+		<autoAuthorizeClient>client01</autoAuthorizeClient>
+
+		<localStore>
+			<client
+				name="client01"
+				secret="{xor}LDo8LTor"
+				displayname="client01"
+				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp,http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/rp_bothLongLifetime_reAuthnTrue_noCushion,http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/rp_bothLongLifetime_reAuthnFalse_noCushion,http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/rp_bothLongLifetime_reAuthnTrue_withCushion,http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/rp_bothLongLifetime_reAuthnFalse_withCushion"
+				scope="ALL_SCOPES"
+				enabled="true"
+				introspectTokens="true" />
+		</localStore>
+	</oauthProvider>
+
+</server>

@@ -7,9 +7,8 @@ visibility = protected
 -bundles= \
  com.ibm.ws.eba.wab.integrator
 
--features= \
- com.ibm.websphere.appserver.servlet-3.0; ibm.tolerates:="3.1,4.0,5.0", \
- io.openliberty.webBundle.internal.ee-6.0; ibm.tolerates:="9.0"
+-features=com.ibm.websphere.appserver.servlet-3.0; ibm.tolerates:="3.1,4.0,5.0", \
+  io.openliberty.webBundle.internal.ee-6.0; ibm.tolerates:="9.0"
 
 -jars= \
  com.ibm.websphere.appserver.spi.wab.configure; location:=dev/spi/ibm/

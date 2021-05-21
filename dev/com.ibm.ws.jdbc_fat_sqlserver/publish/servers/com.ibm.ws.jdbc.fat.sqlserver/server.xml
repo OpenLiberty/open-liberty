@@ -14,7 +14,6 @@
     <feature>concurrent-1.0</feature>
     <feature>jdbc-4.1</feature>
     <feature>servlet-3.1</feature>
-    <feature>transportSecurity-1.0</feature>
   </featureManager>
     
   <include location="../fatTestPorts.xml"/>
@@ -29,7 +28,7 @@
   
  <!-- Anonymously named jar used to prevent JDBCDriver auto-detection -->
   <library id="SQLServerLibAnon">
-    <fileset dir="${shared.resource.dir}/sqlserver" includes="anomyous.jar"/>
+    <fileset dir="${shared.resource.dir}/anon" includes="anomyous.jar"/>
   </library>
     
   <dataSource id="DefaultDataSource" enableBranchCouplingExtension="true"><!-- TODO remove attribute once GA -->
@@ -38,13 +37,6 @@
       databaseName="${env.DBNAME}" serverName="${env.HOST}" portNumber="${env.PORT}"/>
     <containerAuthData user="${env.USER}" password="${env.PASSWORD}"/>
     <recoveryAuthData user="${env.USER}" password="${env.PASSWORD}"/>
-  </dataSource>
-  
-  <dataSource jndiName="jdbc/sqlserver-ssl">
-    <jdbcDriver libraryRef="SQLServerLibAnon"/>
-    <properties.microsoft.sqlserver databaseName="${env.DBNAME}" serverName="${env.HOST}" portNumber="${env.PORT}"
-                encrypt="true" trustServerCertificate="true"/>
-    <containerAuthData user="${env.USER}" password="${env.PASSWORD}"/>
   </dataSource>
 
   <dataSource jndiName="jdbc/ss" isolationLevel="TRANSACTION_SNAPSHOT">
@@ -74,7 +66,7 @@
   </dataSource>
 
   <javaPermission codebase="${server.config.dir}/apps/sqlserverfat.war" className="java.security.AllPermission"/>
-  <javaPermission codebase="${shared.resource.dir}/sqlserver/anomyous.jar" className="java.security.AllPermission"/>
+  <javaPermission codebase="${shared.resource.dir}/anon/anomyous.jar" className="java.security.AllPermission"/>
  
   <!-- SQLServer JDBC test requirement -->
   <javaPermission className="java.util.PropertyPermission" name="java.specification.version" actions="read"/>

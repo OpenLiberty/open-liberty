@@ -14,7 +14,7 @@ WLP-AlsoKnownAs: el-4.0
 Subsystem-Version: 4.0.0
 Subsystem-Name: Jakarta Expression Language 4.0
 -features=io.openliberty.jakarta.expressionLanguage-4.0, \
- com.ibm.websphere.appserver.eeCompatible-9.0
+  com.ibm.websphere.appserver.eeCompatible-9.0
 -bundles=io.openliberty.org.apache.jasper.expressionLanguage.4.0
 kind=beta
 edition=core

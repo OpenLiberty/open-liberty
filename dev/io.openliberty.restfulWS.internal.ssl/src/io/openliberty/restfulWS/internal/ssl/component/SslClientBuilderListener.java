@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ package io.openliberty.restfulWS.internal.ssl.component;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import javax.net.ssl.SSLContext;
@@ -57,22 +58,23 @@ public class SslClientBuilderListener implements ClientBuilderListener {
     @Override
     public void building(ClientBuilder clientBuilder) {
         Object sslRef = clientBuilder.getConfiguration().getProperty(SSL_REFKEY);
-        if (sslRef != null) {
-            try {
-                clientBuilder.sslContext(getSSLContext(toString(sslRef)));
-            } catch (SSLException ex) {
-                throw new IllegalStateException(ex);
-            }
+        try {
+            getSSLContext(toString(sslRef)).ifPresent(clientBuilder::sslContext);
+        } catch (SSLException ex) {
+            throw new IllegalStateException(ex);
         }
     }
 
-    private SSLContext getSSLContext(String sslRef) throws SSLException {
+    private Optional<SSLContext> getSSLContext(String sslRef) throws SSLException {
+        if (jsseHelper == null) {
+            return Optional.empty();
+        }
         if (null == System.getSecurityManager()) {
-            return jsseHelper.getSSLContext(sslRef, null, null);
+            return Optional.of(jsseHelper.getSSLContext(sslRef, null, null));
         }
         try {
-            return AccessController.doPrivileged((PrivilegedExceptionAction<SSLContext>) () -> {
-                return jsseHelper.getSSLContext(sslRef, null, null);
+            return AccessController.doPrivileged((PrivilegedExceptionAction<Optional<SSLContext>>) () -> {
+                return Optional.of(jsseHelper.getSSLContext(sslRef, null, null));
             });
         } catch (PrivilegedActionException pae) {
             Throwable cause = pae.getCause();
@@ -85,7 +87,7 @@ public class SslClientBuilderListener implements ClientBuilderListener {
             if (cause instanceof Error) {
                 throw (Error) cause;
             }
-            throw new SSLException((Exception)cause);
+            throw new SSLException((Exception) cause);
         }
     }
 
@@ -96,6 +98,6 @@ public class SslClientBuilderListener implements ClientBuilderListener {
         if (o instanceof String) {
             return (String) o;
         }
-        return o == null ? "null" : o.toString();
+        return o == null ? null : o.toString();
     }
 }

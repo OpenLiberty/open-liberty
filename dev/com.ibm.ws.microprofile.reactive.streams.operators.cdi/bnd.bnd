@@ -26,7 +26,7 @@ Import-Package: \
   org.eclipse.microprofile.reactive.streams.operators.spi; version="[1.0,1.1)",\
   org.eclipse.microprofile.reactive.streams.operators; version="[1.0,1.1)",\
   io.smallrye.reactive.streams; version="[1.0,1.1)",\
-  org.reactivestreams;version="[1.0,2)",\
+  org.reactivestreams;version="[1.1,2)",\
   *
 
 Private-Package: \

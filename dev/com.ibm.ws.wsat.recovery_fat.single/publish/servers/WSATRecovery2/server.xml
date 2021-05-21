@@ -16,6 +16,7 @@
       recoverOnStartup="true"
       waitForRecovery="false"
       heuristicRetryInterval="10"
+      heuristicRetryLimit="10"
       totalTranLifetimeTimeout="120s"
       clientInactivityTimeout="15s"
   />

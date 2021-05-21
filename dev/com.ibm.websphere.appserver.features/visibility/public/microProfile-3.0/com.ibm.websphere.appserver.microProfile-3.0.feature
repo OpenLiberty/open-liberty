@@ -8,22 +8,21 @@ IBM-App-ForceRestart: install, \
 IBM-ShortName: microProfile-3.0
 Subsystem-Version: 7.0.0
 Subsystem-Name: MicroProfile 3.0
--features=\
-  com.ibm.websphere.appserver.servlet-4.0, \
-  com.ibm.websphere.appserver.javax.annotation-1.3, \
-  com.ibm.websphere.appserver.cdi-2.0, \
-  com.ibm.websphere.appserver.jaxrs-2.1, \
-  com.ibm.websphere.appserver.jaxrsClient-2.1, \
-  com.ibm.websphere.appserver.jsonb-1.0, \
+-features=com.ibm.websphere.appserver.mpConfig-1.3, \
+  io.openliberty.mpCompatible-0.0, \
   com.ibm.websphere.appserver.jsonp-1.1, \
-  com.ibm.websphere.appserver.mpConfig-1.3, \
-  com.ibm.websphere.appserver.mpFaultTolerance-2.0, \
-  com.ibm.websphere.appserver.mpHealth-2.0, \
   com.ibm.websphere.appserver.mpJwt-1.1, \
+  com.ibm.websphere.appserver.jaxrsClient-2.1, \
+  com.ibm.websphere.appserver.mpRestClient-1.3, \
+  com.ibm.websphere.appserver.cdi-2.0, \
   com.ibm.websphere.appserver.mpMetrics-2.0, \
   com.ibm.websphere.appserver.mpOpenAPI-1.1, \
-  com.ibm.websphere.appserver.mpOpenTracing-1.3, \
-  com.ibm.websphere.appserver.mpRestClient-1.3, \
-  io.openliberty.mpCompatible-0.0
+  com.ibm.websphere.appserver.jsonb-1.0, \
+  com.ibm.websphere.appserver.javax.annotation-1.3, \
+  com.ibm.websphere.appserver.mpFaultTolerance-2.0, \
+  com.ibm.websphere.appserver.servlet-4.0, \
+  com.ibm.websphere.appserver.jaxrs-2.1, \
+  com.ibm.websphere.appserver.mpHealth-2.0, \
+  com.ibm.websphere.appserver.mpOpenTracing-1.3
 kind=ga
 edition=core

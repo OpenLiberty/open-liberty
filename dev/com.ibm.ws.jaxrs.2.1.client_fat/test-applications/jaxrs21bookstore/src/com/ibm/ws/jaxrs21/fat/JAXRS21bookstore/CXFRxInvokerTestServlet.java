@@ -1078,7 +1078,7 @@ public class CXFRxInvokerTestServlet extends HttpServlet {
         c.close();
     }
 
-    public void testObservableRxInvoker_getReceiveTimeout(Map<String, String> param, StringBuilder ret) {
+    public void testObservableRxInvoker_getCbReceiveTimeout(Map<String, String> param, StringBuilder ret) {
         long timeout = messageTimeout;
 
         if (isZOS()) {
@@ -1088,7 +1088,6 @@ public class CXFRxInvokerTestServlet extends HttpServlet {
         String serverIP = param.get("serverIP");
         String serverPort = param.get("serverPort");
         ClientBuilder cb = ClientBuilder.newBuilder();
-//        cb.property("com.ibm.ws.jaxrs.client.receive.timeout", TIMEOUT);
         cb.readTimeout(TIMEOUT, TimeUnit.MILLISECONDS);
         Client c = cb.build();
         c.register(ObservableRxInvokerProvider.class);
@@ -1114,19 +1113,19 @@ public class CXFRxInvokerTestServlet extends HttpServlet {
 
         try {
             if (!(countDownLatch.await(timeout, TimeUnit.SECONDS))) {
-                throw new RuntimeException("testObservableRxInvoker_getReceiveTimeout: Response took too long. Waited " + timeout);
+                throw new RuntimeException("testObservableRxInvoker_getCbReceiveTimeout: Response took too long. Waited " + timeout);
             }
         } catch (InterruptedException ex) {
             ex.printStackTrace();
         }
 
         long elapsed = System.currentTimeMillis() - startTime;
-        System.out.println("testObservableRxInvoker_getReceiveTimeout with TIMEOUT " + TIMEOUT + " OnError elapsed time " + elapsed);
+        System.out.println("testObservableRxInvoker_getCbReceiveTimeout with TIMEOUT " + TIMEOUT + " OnError elapsed time " + elapsed);
 
         c.close();
     }
 
-    public void testFlowableRxInvoker_getReceiveTimeout(Map<String, String> param, StringBuilder ret) {
+    public void testObservableRxInvoker_getIbmReceiveTimeout(Map<String, String> param, StringBuilder ret) {
         long timeout = messageTimeout;
 
         if (isZOS()) {
@@ -1136,7 +1135,53 @@ public class CXFRxInvokerTestServlet extends HttpServlet {
         String serverIP = param.get("serverIP");
         String serverPort = param.get("serverPort");
         ClientBuilder cb = ClientBuilder.newBuilder();
-//        cb.property("com.ibm.ws.jaxrs.client.receive.timeout", TIMEOUT);
+        cb.property("com.ibm.ws.jaxrs.client.receive.timeout", TIMEOUT);
+        Client c = cb.build();
+        c.register(ObservableRxInvokerProvider.class);
+        WebTarget t = c.target("http://" + serverIP + ":" + serverPort + "/jaxrs21bookstore/JAXRS21bookstore2/" + SLEEP);
+        Builder builder = t.request();
+        Observable<Response> observable = builder.rx(ObservableRxInvoker.class).get(Response.class);
+        long startTime = System.currentTimeMillis();
+
+        final Holder<Response> holder = new Holder<Response>();
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        observable.subscribe(v -> {
+            holder.value = v; // OnNext
+        }, throwable -> {
+            if (throwable.getMessage().contains("SocketTimeoutException")) { // OnError
+                ret.append("Timeout as expected");
+            } else {
+                ret.append("throwable");
+                throwable.printStackTrace();
+            }
+            countDownLatch.countDown();
+        }, () -> ret.append("OnCompleted") // OnCompleted
+        );
+
+        try {
+            if (!(countDownLatch.await(timeout, TimeUnit.SECONDS))) {
+                throw new RuntimeException("testObservableRxInvoker_getIbmReceiveTimeout: Response took too long. Waited " + timeout);
+            }
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
+
+        long elapsed = System.currentTimeMillis() - startTime;
+        System.out.println("testObservableRxInvoker_getIbmReceiveTimeout with TIMEOUT " + TIMEOUT + " OnError elapsed time " + elapsed);
+
+        c.close();
+    }
+
+    public void testFlowableRxInvoker_getCbReceiveTimeout(Map<String, String> param, StringBuilder ret) {
+        long timeout = messageTimeout;
+
+        if (isZOS()) {
+            timeout = zTimeout;
+        }
+
+        String serverIP = param.get("serverIP");
+        String serverPort = param.get("serverPort");
+        ClientBuilder cb = ClientBuilder.newBuilder();
         cb.readTimeout(TIMEOUT, TimeUnit.MILLISECONDS);
         Client c = cb.build();
         c.register(FlowableRxInvokerProvider.class);
@@ -1162,19 +1207,66 @@ public class CXFRxInvokerTestServlet extends HttpServlet {
 
         try {
             if (!(countDownLatch.await(timeout, TimeUnit.SECONDS))) {
-                throw new RuntimeException("testFlowableRxInvoker_getReceiveTimeout: Response took too long. Waited " + timeout);
+                throw new RuntimeException("testFlowableRxInvoker_getCbReceiveTimeout: Response took too long. Waited " + timeout);
             }
         } catch (InterruptedException ex) {
             ex.printStackTrace();
         }
 
         long elapsed = System.currentTimeMillis() - startTime;
-        System.out.println("testFlowableRxInvoker_getReceiveTimeout with TIMEOUT " + TIMEOUT + " OnError elapsed time " + elapsed);
+        System.out.println("testFlowableRxInvoker_getCbReceiveTimeout with TIMEOUT " + TIMEOUT + " OnError elapsed time " + elapsed);
 
         c.close();
     }
 
-    public void testObservableRxInvoker_getConnectionTimeout(Map<String, String> param, StringBuilder ret) {
+    public void testFlowableRxInvoker_getIbmReceiveTimeout(Map<String, String> param, StringBuilder ret) {
+        long timeout = messageTimeout;
+
+        if (isZOS()) {
+            timeout = zTimeout;
+        }
+
+        String serverIP = param.get("serverIP");
+        String serverPort = param.get("serverPort");
+        ClientBuilder cb = ClientBuilder.newBuilder();
+        cb.property("com.ibm.ws.jaxrs.client.receive.timeout", TIMEOUT);
+        Client c = cb.build();
+        c.register(FlowableRxInvokerProvider.class);
+        WebTarget t = c.target("http://" + serverIP + ":" + serverPort + "/jaxrs21bookstore/JAXRS21bookstore2/" + SLEEP);
+        Builder builder = t.request();
+        Flowable<Response> flowable = builder.rx(FlowableRxInvoker.class).get(Response.class);
+        long startTime = System.currentTimeMillis();
+
+        final Holder<Response> holder = new Holder<Response>();
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        flowable.subscribe(v -> {
+            holder.value = v; // OnNext
+        }, throwable -> {
+            if (throwable.getMessage().contains("SocketTimeoutException")) { // OnError
+                ret.append("Timeout as expected");
+            } else {
+                ret.append("throwable");
+                throwable.printStackTrace();
+            }
+            countDownLatch.countDown();
+        }, () -> ret.append("OnCompleted") // OnCompleted
+        );
+
+        try {
+            if (!(countDownLatch.await(timeout, TimeUnit.SECONDS))) {
+                throw new RuntimeException("testFlowableRxInvoker_getIbmReceiveTimeout: Response took too long. Waited " + timeout);
+            }
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
+
+        long elapsed = System.currentTimeMillis() - startTime;
+        System.out.println("testFlowableRxInvoker_getIbmReceiveTimeout with TIMEOUT " + TIMEOUT + " OnError elapsed time " + elapsed);
+
+        c.close();
+    }
+
+    public void testObservableRxInvoker_getCbConnectionTimeout(Map<String, String> param, StringBuilder ret) {
         String target = null;
         long timeout = messageTimeout;
 
@@ -1190,11 +1282,10 @@ public class CXFRxInvokerTestServlet extends HttpServlet {
 
         if (isRestful30()) {
             timeout = timeout * 2;
-            System.out.println("testObservableRxInvoker_getConnectionTimeout with timeout " + timeout);
+            System.out.println("testObservableRxInvoker_getCbConnectionTimeout with timeout " + timeout);
         }
 
         ClientBuilder cb = ClientBuilder.newBuilder();
-//        cb.property("com.ibm.ws.jaxrs.client.connection.timeout", TIMEOUT);
         cb.connectTimeout(TIMEOUT, TimeUnit.MILLISECONDS);
         Client c = cb.build();
         c.register(ObservableRxInvokerProvider.class);
@@ -1204,7 +1295,7 @@ public class CXFRxInvokerTestServlet extends HttpServlet {
         long startTime = System.currentTimeMillis();
         Observable<Response> observable = observableRxInvoker.get();
         long elapsed = System.currentTimeMillis() - startTime;
-        System.out.println("testObservableRxInvoker_getConnectionTimeout with TIMEOUT " + TIMEOUT + " observableRxInvoker.get elapsed time " + elapsed);
+        System.out.println("testObservableRxInvoker_getCbConnectionTimeout with TIMEOUT " + TIMEOUT + " observableRxInvoker.get elapsed time " + elapsed);
         long startTime2 = System.currentTimeMillis();
 
         final Holder<Response> holder = new Holder<Response>();
@@ -1225,19 +1316,19 @@ public class CXFRxInvokerTestServlet extends HttpServlet {
 
         try {
             if (!(countDownLatch.await(timeout, TimeUnit.SECONDS))) {
-                throw new RuntimeException("testObservableRxInvoker_getConnectionTimeout: Response took too long. Waited " + timeout);
+                throw new RuntimeException("testObservableRxInvoker_getCbConnectionTimeout: Response took too long. Waited " + timeout);
             }
         } catch (InterruptedException ex) {
             ex.printStackTrace();
         }
 
         long elapsed2 = System.currentTimeMillis() - startTime2;
-        System.out.println("testObservableRxInvoker_getConnectionTimeout with TIMEOUT " + TIMEOUT + " OnError elapsed2 time " + elapsed2);
+        System.out.println("testObservableRxInvoker_getCbConnectionTimeout with TIMEOUT " + TIMEOUT + " OnError elapsed2 time " + elapsed2);
 
         c.close();
     }
 
-    public void testFlowableRxInvoker_getConnectionTimeout(Map<String, String> param, StringBuilder ret) {
+    public void testObservableRxInvoker_getIbmConnectionTimeout(Map<String, String> param, StringBuilder ret) {
         String target = null;
         long timeout = messageTimeout;
 
@@ -1253,11 +1344,72 @@ public class CXFRxInvokerTestServlet extends HttpServlet {
 
         if (isRestful30()) {
             timeout = timeout * 2;
-            System.out.println("testFlowableRxInvoker_getConnectionTimeout with timeout " + timeout);
+            System.out.println("testObservableRxInvoker_getIbmConnectionTimeout with timeout " + timeout);
         }
 
         ClientBuilder cb = ClientBuilder.newBuilder();
-//        cb.property("com.ibm.ws.jaxrs.client.connection.timeout", TIMEOUT);
+        cb.property("com.ibm.ws.jaxrs.client.connection.timeout", TIMEOUT);
+        Client c = cb.build();
+        c.register(ObservableRxInvokerProvider.class);
+        WebTarget t = c.target(target);
+        Builder builder = t.request();
+        ObservableRxInvoker observableRxInvoker = builder.rx(ObservableRxInvoker.class);
+        long startTime = System.currentTimeMillis();
+        Observable<Response> observable = observableRxInvoker.get();
+        long elapsed = System.currentTimeMillis() - startTime;
+        System.out.println("testObservableRxInvoker_getIbmConnectionTimeout with TIMEOUT " + TIMEOUT + " observableRxInvoker.get elapsed time " + elapsed);
+        long startTime2 = System.currentTimeMillis();
+
+        final Holder<Response> holder = new Holder<Response>();
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        observable.subscribe(v -> {
+            holder.value = v; // OnNext
+        }, throwable -> {
+            if (throwable.getCause().toString().contains("ConnectException") || // OnError
+            throwable.getCause().toString().contains("SocketTimeoutException")) {
+                ret.append("Timeout as expected");
+            } else {
+                ret.append("throwable");
+                throwable.printStackTrace();
+            }
+            countDownLatch.countDown();
+        }, () -> ret.append("OnCompleted") // OnCompleted
+        );
+
+        try {
+            if (!(countDownLatch.await(timeout, TimeUnit.SECONDS))) {
+                throw new RuntimeException("testObservableRxInvoker_getIbmConnectionTimeout: Response took too long. Waited " + timeout);
+            }
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
+
+        long elapsed2 = System.currentTimeMillis() - startTime2;
+        System.out.println("testObservableRxInvoker_getIbmConnectionTimeout with TIMEOUT " + TIMEOUT + " OnError elapsed2 time " + elapsed2);
+
+        c.close();
+    }
+
+    public void testFlowableRxInvoker_getCbConnectionTimeout(Map<String, String> param, StringBuilder ret) {
+        String target = null;
+        long timeout = messageTimeout;
+
+        if (isZOS()) {
+            // https://stackoverflow.com/a/904609/6575578
+            target = "http://example.com:81";
+            timeout = zTimeout;
+        } else {
+            // Connect to telnet port - which should be disabled on all non-Z test machines - so we should expect a
+            // timeout
+            target = "http://localhost:23/blah";
+        }
+
+        if (isRestful30()) {
+            timeout = timeout * 2;
+            System.out.println("testFlowableRxInvoker_getCbConnectionTimeout with timeout " + timeout);
+        }
+
+        ClientBuilder cb = ClientBuilder.newBuilder();
         cb.connectTimeout(TIMEOUT, TimeUnit.MILLISECONDS);
         Client c = cb.build();
         c.register(FlowableRxInvokerProvider.class);
@@ -1267,7 +1419,7 @@ public class CXFRxInvokerTestServlet extends HttpServlet {
         long startTime = System.currentTimeMillis();
         Flowable<Response> flowable = flowableRxInvoker.get();
         long elapsed = System.currentTimeMillis() - startTime;
-        System.out.println("testFlowableRxInvoker_getConnectionTimeout with TIMEOUT " + TIMEOUT + " flowableRxInvoker.get elapsed time " + elapsed);
+        System.out.println("testFlowableRxInvoker_getCbConnectionTimeout with TIMEOUT " + TIMEOUT + " flowableRxInvoker.get elapsed time " + elapsed);
         long startTime2 = System.currentTimeMillis();
 
         final Holder<Response> holder = new Holder<Response>();
@@ -1288,19 +1440,81 @@ public class CXFRxInvokerTestServlet extends HttpServlet {
 
         try {
             if (!(countDownLatch.await(timeout, TimeUnit.SECONDS))) {
-                throw new RuntimeException("testFlowableRxInvoker_getConnectionTimeout: Response took too long. Waited " + timeout);
+                throw new RuntimeException("testFlowableRxInvoker_getCbConnectionTimeout: Response took too long. Waited " + timeout);
             }
         } catch (InterruptedException ex) {
             ex.printStackTrace();
         }
 
         long elapsed2 = System.currentTimeMillis() - startTime2;
-        System.out.println("testFlowableRxInvoker_getConnectionTimeout with TIMEOUT " + TIMEOUT + " OnError elapsed2 time " + elapsed2);
+        System.out.println("testFlowableRxInvoker_getCbConnectionTimeout with TIMEOUT " + TIMEOUT + " OnError elapsed2 time " + elapsed2);
 
         c.close();
     }
 
-    public void testObservableRxInvoker_postReceiveTimeout(Map<String, String> param, StringBuilder ret) {
+    public void testFlowableRxInvoker_getIbmConnectionTimeout(Map<String, String> param, StringBuilder ret) {
+        String target = null;
+        long timeout = messageTimeout;
+
+        if (isZOS()) {
+            // https://stackoverflow.com/a/904609/6575578
+            target = "http://example.com:81";
+            timeout = zTimeout;
+        } else {
+            // Connect to telnet port - which should be disabled on all non-Z test machines - so we should expect a
+            // timeout
+            target = "http://localhost:23/blah";
+        }
+
+        if (isRestful30()) {
+            timeout = timeout * 2;
+            System.out.println("testFlowableRxInvoker_getIbmConnectionTimeout with timeout " + timeout);
+        }
+
+        ClientBuilder cb = ClientBuilder.newBuilder();
+        cb.property("com.ibm.ws.jaxrs.client.connection.timeout", TIMEOUT);
+        Client c = cb.build();
+        c.register(FlowableRxInvokerProvider.class);
+        WebTarget t = c.target(target);
+        Builder builder = t.request();
+        FlowableRxInvoker flowableRxInvoker = builder.rx(FlowableRxInvoker.class);
+        long startTime = System.currentTimeMillis();
+        Flowable<Response> flowable = flowableRxInvoker.get();
+        long elapsed = System.currentTimeMillis() - startTime;
+        System.out.println("testFlowableRxInvoker_getIbmConnectionTimeout with TIMEOUT " + TIMEOUT + " flowableRxInvoker.get elapsed time " + elapsed);
+        long startTime2 = System.currentTimeMillis();
+
+        final Holder<Response> holder = new Holder<Response>();
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        flowable.subscribe(v -> {
+            holder.value = v; // OnNext
+        }, throwable -> {
+            if (throwable.getCause().toString().contains("ConnectException") || // OnError
+            throwable.getCause().toString().contains("SocketTimeoutException")) {
+                ret.append("Timeout as expected");
+            } else {
+                ret.append("throwable");
+                throwable.printStackTrace();
+            }
+            countDownLatch.countDown();
+        }, () -> ret.append("OnCompleted") // OnCompleted
+        );
+
+        try {
+            if (!(countDownLatch.await(timeout, TimeUnit.SECONDS))) {
+                throw new RuntimeException("testFlowableRxInvoker_getIbmConnectionTimeout: Response took too long. Waited " + timeout);
+            }
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
+
+        long elapsed2 = System.currentTimeMillis() - startTime2;
+        System.out.println("testFlowableRxInvoker_getIbmConnectionTimeout with TIMEOUT " + TIMEOUT + " OnError elapsed2 time " + elapsed2);
+
+        c.close();
+    }
+
+    public void testObservableRxInvoker_postCbReceiveTimeout(Map<String, String> param, StringBuilder ret) {
         long timeout = messageTimeout;
 
         if (isZOS()) {
@@ -1310,7 +1524,6 @@ public class CXFRxInvokerTestServlet extends HttpServlet {
         String serverIP = param.get("serverIP");
         String serverPort = param.get("serverPort");
         ClientBuilder cb = ClientBuilder.newBuilder();
-//        cb.property("com.ibm.ws.jaxrs.client.receive.timeout", TIMEOUT);
         cb.readTimeout(TIMEOUT, TimeUnit.MILLISECONDS);
         Client c = cb.build();
         c.register(ObservableRxInvokerProvider.class);
@@ -1336,19 +1549,19 @@ public class CXFRxInvokerTestServlet extends HttpServlet {
 
         try {
             if (!(countDownLatch.await(timeout, TimeUnit.SECONDS))) {
-                throw new RuntimeException("testObservableRxInvoker_postReceiveTimeout: Response took too long. Waited " + timeout);
+                throw new RuntimeException("testObservableRxInvoker_postCbReceiveTimeout: Response took too long. Waited " + timeout);
             }
         } catch (InterruptedException ex) {
             ex.printStackTrace();
         }
 
         long elapsed = System.currentTimeMillis() - startTime;
-        System.out.println("testObservableRxInvoker_postReceiveTimeout with TIMEOUT " + TIMEOUT + " OnError elapsed time " + elapsed);
+        System.out.println("testObservableRxInvoker_postCbReceiveTimeout with TIMEOUT " + TIMEOUT + " OnError elapsed time " + elapsed);
 
         c.close();
     }
 
-    public void testFlowableRxInvoker_postReceiveTimeout(Map<String, String> param, StringBuilder ret) {
+    public void testObservableRxInvoker_postIbmReceiveTimeout(Map<String, String> param, StringBuilder ret) {
         long timeout = messageTimeout;
 
         if (isZOS()) {
@@ -1358,7 +1571,53 @@ public class CXFRxInvokerTestServlet extends HttpServlet {
         String serverIP = param.get("serverIP");
         String serverPort = param.get("serverPort");
         ClientBuilder cb = ClientBuilder.newBuilder();
-//        cb.property("com.ibm.ws.jaxrs.client.receive.timeout", TIMEOUT);
+        cb.property("com.ibm.ws.jaxrs.client.receive.timeout", TIMEOUT);
+        Client c = cb.build();
+        c.register(ObservableRxInvokerProvider.class);
+        WebTarget t = c.target("http://" + serverIP + ":" + serverPort + "/jaxrs21bookstore/JAXRS21bookstore2/post/" + SLEEP);
+        Builder builder = t.request();
+        Observable<Response> observable = builder.rx(ObservableRxInvoker.class).post(Entity.xml(Long.toString(SLEEP)));
+        long startTime = System.currentTimeMillis();
+
+        final Holder<Response> holder = new Holder<Response>();
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        observable.subscribe(v -> {
+            holder.value = v; // OnNext
+        }, throwable -> {
+            if (throwable.getMessage().contains("SocketTimeoutException")) { // OnError
+                ret.append("Timeout as expected");
+            } else {
+                ret.append("throwable");
+                throwable.printStackTrace();
+            }
+            countDownLatch.countDown();
+        }, () -> ret.append("OnCompleted") // OnCompleted
+        );
+
+        try {
+            if (!(countDownLatch.await(timeout, TimeUnit.SECONDS))) {
+                throw new RuntimeException("testObservableRxInvoker_postIbmReceiveTimeout: Response took too long. Waited " + timeout);
+            }
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
+
+        long elapsed = System.currentTimeMillis() - startTime;
+        System.out.println("testObservableRxInvoker_postIbmReceiveTimeout with TIMEOUT " + TIMEOUT + " OnError elapsed time " + elapsed);
+
+        c.close();
+    }
+
+    public void testFlowableRxInvoker_postCbReceiveTimeout(Map<String, String> param, StringBuilder ret) {
+        long timeout = messageTimeout;
+
+        if (isZOS()) {
+            timeout = zTimeout;
+        }
+
+        String serverIP = param.get("serverIP");
+        String serverPort = param.get("serverPort");
+        ClientBuilder cb = ClientBuilder.newBuilder();
         cb.readTimeout(TIMEOUT, TimeUnit.MILLISECONDS);
         Client c = cb.build();
         c.register(FlowableRxInvokerProvider.class);
@@ -1384,19 +1643,66 @@ public class CXFRxInvokerTestServlet extends HttpServlet {
 
         try {
             if (!(countDownLatch.await(timeout, TimeUnit.SECONDS))) {
-                throw new RuntimeException("testFlowableRxInvoker_postReceiveTimeout: Response took too long. Waited " + timeout);
+                throw new RuntimeException("testFlowableRxInvoker_postCbReceiveTimeout: Response took too long. Waited " + timeout);
             }
         } catch (InterruptedException ex) {
             ex.printStackTrace();
         }
 
         long elapsed = System.currentTimeMillis() - startTime;
-        System.out.println("testFlowableRxInvoker_postReceiveTimeout with TIMEOUT " + TIMEOUT + " OnError elapsed time " + elapsed);
+        System.out.println("testFlowableRxInvoker_postCbReceiveTimeout with TIMEOUT " + TIMEOUT + " OnError elapsed time " + elapsed);
 
         c.close();
     }
 
-    public void testObservableRxInvoker_postConnectionTimeout(Map<String, String> param, StringBuilder ret) {
+    public void testFlowableRxInvoker_postIbmReceiveTimeout(Map<String, String> param, StringBuilder ret) {
+        long timeout = messageTimeout;
+
+        if (isZOS()) {
+            timeout = zTimeout;
+        }
+
+        String serverIP = param.get("serverIP");
+        String serverPort = param.get("serverPort");
+        ClientBuilder cb = ClientBuilder.newBuilder();
+        cb.property("com.ibm.ws.jaxrs.client.receive.timeout", TIMEOUT);
+        Client c = cb.build();
+        c.register(FlowableRxInvokerProvider.class);
+        WebTarget t = c.target("http://" + serverIP + ":" + serverPort + "/jaxrs21bookstore/JAXRS21bookstore2/post/" + SLEEP);
+        Builder builder = t.request();
+        Flowable<Response> flowable = builder.rx(FlowableRxInvoker.class).post(Entity.xml(Long.toString(SLEEP)));
+        long startTime = System.currentTimeMillis();
+
+        final Holder<Response> holder = new Holder<Response>();
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        flowable.subscribe(v -> {
+            holder.value = v; // OnNext
+        }, throwable -> {
+            if (throwable.getMessage().contains("SocketTimeoutException")) { // OnError
+                ret.append("Timeout as expected");
+            } else {
+                ret.append("throwable");
+                throwable.printStackTrace();
+            }
+            countDownLatch.countDown();
+        }, () -> ret.append("OnCompleted") // OnCompleted
+        );
+
+        try {
+            if (!(countDownLatch.await(timeout, TimeUnit.SECONDS))) {
+                throw new RuntimeException("testFlowableRxInvoker_postIbmReceiveTimeout: Response took too long. Waited " + timeout);
+            }
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
+
+        long elapsed = System.currentTimeMillis() - startTime;
+        System.out.println("testFlowableRxInvoker_postIbmReceiveTimeout with TIMEOUT " + TIMEOUT + " OnError elapsed time " + elapsed);
+
+        c.close();
+    }
+
+    public void testObservableRxInvoker_postCbConnectionTimeout(Map<String, String> param, StringBuilder ret) {
         String target = null;
         long timeout = messageTimeout;
 
@@ -1412,11 +1718,10 @@ public class CXFRxInvokerTestServlet extends HttpServlet {
 
         if (isRestful30()) {
             timeout = timeout * 2;
-            System.out.println("testObservableRxInvoker_postConnectionTimeout with timeout " + timeout);
+            System.out.println("testObservableRxInvoker_postCbConnectionTimeout with timeout " + timeout);
         }
 
         ClientBuilder cb = ClientBuilder.newBuilder();
-//        cb.property("com.ibm.ws.jaxrs.client.connection.timeout", TIMEOUT);
         cb.connectTimeout(TIMEOUT, TimeUnit.MILLISECONDS);
         Client c = cb.build();
         c.register(ObservableRxInvokerProvider.class);
@@ -1426,7 +1731,7 @@ public class CXFRxInvokerTestServlet extends HttpServlet {
         long startTime = System.currentTimeMillis();
         Observable<Response> observable = observableRxInvoker.post(Entity.xml(Long.toString(SLEEP)));
         long elapsed = System.currentTimeMillis() - startTime;
-        System.out.println("testObservableRxInvoker_postConnectionTimeout with TIMEOUT " + TIMEOUT + " observableRxInvoker.post elapsed time " + elapsed);
+        System.out.println("testObservableRxInvoker_postCbConnectionTimeout with TIMEOUT " + TIMEOUT + " observableRxInvoker.post elapsed time " + elapsed);
         long startTime2 = System.currentTimeMillis();
 
         final Holder<Response> holder = new Holder<Response>();
@@ -1447,19 +1752,19 @@ public class CXFRxInvokerTestServlet extends HttpServlet {
 
         try {
             if (!(countDownLatch.await(timeout, TimeUnit.SECONDS))) {
-                throw new RuntimeException("testObservableRxInvoker_postConnectionTimeout: Response took too long. Waited " + timeout);
+                throw new RuntimeException("testObservableRxInvoker_postCbConnectionTimeout: Response took too long. Waited " + timeout);
             }
         } catch (InterruptedException ex) {
             ex.printStackTrace();
         }
 
         long elapsed2 = System.currentTimeMillis() - startTime2;
-        System.out.println("testObservableRxInvoker_postConnectionTimeout with TIMEOUT " + TIMEOUT + " OnError elapsed2 time " + elapsed2);
+        System.out.println("testObservableRxInvoker_postCbConnectionTimeout with TIMEOUT " + TIMEOUT + " OnError elapsed2 time " + elapsed2);
 
         c.close();
     }
 
-    public void testFlowableRxInvoker_postConnectionTimeout(Map<String, String> param, StringBuilder ret) {
+    public void testObservableRxInvoker_postIbmConnectionTimeout(Map<String, String> param, StringBuilder ret) {
         String target = null;
         long timeout = messageTimeout;
 
@@ -1475,11 +1780,72 @@ public class CXFRxInvokerTestServlet extends HttpServlet {
 
         if (isRestful30()) {
             timeout = timeout * 2;
-            System.out.println("testFlowableRxInvoker_postConnectionTimeout with timeout " + timeout);
+            System.out.println("testObservableRxInvoker_postIbmConnectionTimeout with timeout " + timeout);
         }
 
         ClientBuilder cb = ClientBuilder.newBuilder();
-//        cb.property("com.ibm.ws.jaxrs.client.connection.timeout", TIMEOUT);
+        cb.property("com.ibm.ws.jaxrs.client.connection.timeout", TIMEOUT);
+        Client c = cb.build();
+        c.register(ObservableRxInvokerProvider.class);
+        WebTarget t = c.target(target);
+        Builder builder = t.request();
+        ObservableRxInvoker observableRxInvoker = builder.rx(ObservableRxInvoker.class);
+        long startTime = System.currentTimeMillis();
+        Observable<Response> observable = observableRxInvoker.post(Entity.xml(Long.toString(SLEEP)));
+        long elapsed = System.currentTimeMillis() - startTime;
+        System.out.println("testObservableRxInvoker_postIbmConnectionTimeout with TIMEOUT " + TIMEOUT + " observableRxInvoker.post elapsed time " + elapsed);
+        long startTime2 = System.currentTimeMillis();
+
+        final Holder<Response> holder = new Holder<Response>();
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        observable.subscribe(v -> {
+            holder.value = v; // OnNext
+        }, throwable -> {
+            if (throwable.getCause().toString().contains("ConnectException") || // OnError
+            throwable.getCause().toString().contains("SocketTimeoutException")) {
+                ret.append("Timeout as expected");
+            } else {
+                ret.append("throwable");
+                throwable.printStackTrace();
+            }
+            countDownLatch.countDown();
+        }, () -> ret.append("OnCompleted") // OnCompleted
+        );
+
+        try {
+            if (!(countDownLatch.await(timeout, TimeUnit.SECONDS))) {
+                throw new RuntimeException("testObservableRxInvoker_postIbmConnectionTimeout: Response took too long. Waited " + timeout);
+            }
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
+
+        long elapsed2 = System.currentTimeMillis() - startTime2;
+        System.out.println("testObservableRxInvoker_postIbmConnectionTimeout with TIMEOUT " + TIMEOUT + " OnError elapsed2 time " + elapsed2);
+
+        c.close();
+    }
+
+    public void testFlowableRxInvoker_postCbConnectionTimeout(Map<String, String> param, StringBuilder ret) {
+        String target = null;
+        long timeout = messageTimeout;
+
+        if (isZOS()) {
+            // https://stackoverflow.com/a/904609/6575578
+            target = "http://example.com:81";
+            timeout = zTimeout;
+        } else {
+            // Connect to telnet port - which should be disabled on all non-Z test machines - so we should expect a
+            // timeout
+            target = "http://localhost:23/blah";
+        }
+
+        if (isRestful30()) {
+            timeout = timeout * 2;
+            System.out.println("testFlowableRxInvoker_postCbConnectionTimeout with timeout " + timeout);
+        }
+
+        ClientBuilder cb = ClientBuilder.newBuilder();
         cb.connectTimeout(TIMEOUT, TimeUnit.MILLISECONDS);
         Client c = cb.build();
         c.register(FlowableRxInvokerProvider.class);
@@ -1489,7 +1855,7 @@ public class CXFRxInvokerTestServlet extends HttpServlet {
         long startTime = System.currentTimeMillis();
         Flowable<Response> flowable = flowableRxInvoker.post(Entity.xml(Long.toString(SLEEP)));
         long elapsed = System.currentTimeMillis() - startTime;
-        System.out.println("testFlowableRxInvoker_postConnectionTimeout with TIMEOUT " + TIMEOUT + " flowableRxInvoker.post elapsed time " + elapsed);
+        System.out.println("testFlowableRxInvoker_postCbConnectionTimeout with TIMEOUT " + TIMEOUT + " flowableRxInvoker.post elapsed time " + elapsed);
         long startTime2 = System.currentTimeMillis();
 
         final Holder<Response> holder = new Holder<Response>();
@@ -1510,14 +1876,76 @@ public class CXFRxInvokerTestServlet extends HttpServlet {
 
         try {
             if (!(countDownLatch.await(timeout, TimeUnit.SECONDS))) {
-                throw new RuntimeException("testFlowableRxInvoker_postConnectionTimeout: Response took too long. Waited " + timeout);
+                throw new RuntimeException("testFlowableRxInvoker_postCbConnectionTimeout: Response took too long. Waited " + timeout);
             }
         } catch (InterruptedException ex) {
             ex.printStackTrace();
         }
 
         long elapsed2 = System.currentTimeMillis() - startTime2;
-        System.out.println("testFlowableRxInvoker_postConnectionTimeout with TIMEOUT " + TIMEOUT + " OnError elapsed2 time " + elapsed2);
+        System.out.println("testFlowableRxInvoker_postCbConnectionTimeout with TIMEOUT " + TIMEOUT + " OnError elapsed2 time " + elapsed2);
+
+        c.close();
+    }
+
+    public void testFlowableRxInvoker_postIbmConnectionTimeout(Map<String, String> param, StringBuilder ret) {
+        String target = null;
+        long timeout = messageTimeout;
+
+        if (isZOS()) {
+            // https://stackoverflow.com/a/904609/6575578
+            target = "http://example.com:81";
+            timeout = zTimeout;
+        } else {
+            // Connect to telnet port - which should be disabled on all non-Z test machines - so we should expect a
+            // timeout
+            target = "http://localhost:23/blah";
+        }
+
+        if (isRestful30()) {
+            timeout = timeout * 2;
+            System.out.println("testFlowableRxInvoker_postIbmConnectionTimeout with timeout " + timeout);
+        }
+
+        ClientBuilder cb = ClientBuilder.newBuilder();
+        cb.property("com.ibm.ws.jaxrs.client.connection.timeout", TIMEOUT);
+        Client c = cb.build();
+        c.register(FlowableRxInvokerProvider.class);
+        WebTarget t = c.target(target);
+        Builder builder = t.request();
+        FlowableRxInvoker flowableRxInvoker = builder.rx(FlowableRxInvoker.class);
+        long startTime = System.currentTimeMillis();
+        Flowable<Response> flowable = flowableRxInvoker.post(Entity.xml(Long.toString(SLEEP)));
+        long elapsed = System.currentTimeMillis() - startTime;
+        System.out.println("testFlowableRxInvoker_postIbmConnectionTimeout with TIMEOUT " + TIMEOUT + " flowableRxInvoker.post elapsed time " + elapsed);
+        long startTime2 = System.currentTimeMillis();
+
+        final Holder<Response> holder = new Holder<Response>();
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        flowable.subscribe(v -> {
+            holder.value = v; // OnNext
+        }, throwable -> {
+            if (throwable.getCause().toString().contains("ConnectException") || // OnError
+            throwable.getCause().toString().contains("SocketTimeoutException")) {
+                ret.append("Timeout as expected");
+            } else {
+                ret.append("throwable");
+                throwable.printStackTrace();
+            }
+            countDownLatch.countDown();
+        }, () -> ret.append("OnCompleted") // OnCompleted
+        );
+
+        try {
+            if (!(countDownLatch.await(timeout, TimeUnit.SECONDS))) {
+                throw new RuntimeException("testFlowableRxInvoker_postIbmConnectionTimeout: Response took too long. Waited " + timeout);
+            }
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
+
+        long elapsed2 = System.currentTimeMillis() - startTime2;
+        System.out.println("testFlowableRxInvoker_postIbmConnectionTimeout with TIMEOUT " + TIMEOUT + " OnError elapsed2 time " + elapsed2);
 
         c.close();
     }

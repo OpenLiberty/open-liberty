@@ -29,10 +29,6 @@ tested.features: cdi-3.0
 	com.ibm.tx.jta;version=latest,\
 	com.ibm.websphere.javaee.transaction.1.2;version=latest,\
 	fattest.simplicity;version=latest,\
-	org.testcontainers:database-commons;version=1.15.1,\
-	org.testcontainers:jdbc;version=1.15.1,\
-	org.testcontainers:testcontainers;version=1.15.1,\
-	org.rnorth.duct-tape:duct-tape;version=1.0.8,\
-	org.slf4j:slf4j-api;version=1.7.7,\
+	io.openliberty.org.testcontainers;version=latest,\
 	com.ibm.ws.transaction.test.util;version=latest,\
 	com.ibm.ws.transaction.DerbyHADB_fat;version=latest

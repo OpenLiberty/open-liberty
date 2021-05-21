@@ -31,7 +31,7 @@ Require-Capability: osgi.contract;
 instrument.ffdc: false
 
 -buildpath: \
-    org.apache.tomcat:tomcat-jasper-el;version=10.0.2,\
+    org.apache.tomcat:tomcat-jasper-el;version=10.0.6,\
     io.openliberty.jakarta.expressionLanguage.4.0;version=latest,\
     com.ibm.websphere.appserver.spi.logging;version=latest, \
     com.ibm.ws.org.osgi.annotation.versioning;version=latest

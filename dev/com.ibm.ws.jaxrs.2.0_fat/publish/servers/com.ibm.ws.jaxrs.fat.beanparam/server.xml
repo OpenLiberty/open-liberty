@@ -3,9 +3,7 @@
         <feature>componenttest-1.0</feature>
         <feature>jaxrs-2.0</feature>
     </featureManager>
-    
-    <!-- the following property is the webcontainer property that we do not want to have to rely on -->
-    <!-- <webContainer enablemultireadofpostdata="true" /> -->
+
   	<include location="../fatTestPorts.xml"/>
   	<javaPermission className="java.util.PropertyPermission" name="bvt.prop.HTTP_default" actions="read"/>
 </server>

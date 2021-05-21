@@ -78,28 +78,29 @@ for FAT_BUCKET in $FAT_BUCKETS
 do
   echo "::group:: Run $FAT_BUCKET with FAT_ARGS=$FAT_ARGS"
   BUCKET_PASSED=true
-  OUTPUT_FILE=tmp/$FAT_BUCKET/gradle.log && mkdir -p -- "$(dirname -- "$OUTPUT_FILE")" && touch -- "$OUTPUT_FILE"
+  OUTPUT_FILE=tmp/$FAT_BUCKET/gradle.log && mkdir -p -- $(dirname -- $OUTPUT_FILE) && touch -- $OUTPUT_FILE
+  OUTPUT_DIR=$FAT_BUCKET/build/libs/autoFVT/output
+  RESULTS_DIR=$FAT_BUCKET/build/libs/autoFVT/results
 
   #Run fat
   ./gradlew :$FAT_BUCKET:buildandrun $FAT_ARGS &> $OUTPUT_FILE || BUCKET_PASSED=false
 
-  OUTPUT_DIR=$FAT_BUCKET/build/libs/autoFVT/output
-  RESULTS_DIR=$FAT_BUCKET/build/libs/autoFVT/results
+   [ ! -d $OUTPUT_DIR  ] && mkdir -p -- $OUTPUT_DIR
+   [ ! -d $RESULTS_DIR ] && mkdir -p -- $RESULTS_DIR
 
   # Create a file to mark whether a bucket failed or passed
   if $BUCKET_PASSED; then
-    echo "The bucket $FAT_BUCKET passed.";
-    touch "$OUTPUT_DIR/passed.log";
+    echo "The bucket $FAT_BUCKET passed."
+    touch $OUTPUT_DIR/passed.log
     rm -rf tmp/
   else
     echo "$FAT_BUCKET failed."
-    touch "$OUTPUT_DIR/fail.log";
+    touch $OUTPUT_DIR/fail.log
     mv $OUTPUT_FILE $OUTPUT_DIR
   fi
   
   # Collect all junit files in a central location
-  FAT_RESULTS=$PWD/fat-results
-  mkdir $FAT_RESULTS
+  FAT_RESULTS=$PWD/fat-results/ && mkdir -p -- $FAT_RESULTS
   echo "Collecing fat results in $FAT_RESULTS"
   for f in $RESULTS_DIR/junit/TEST-com.*.xml $RESULTS_DIR/junit/TEST-io.*.xml $RESULTS_DIR/junit/TEST-wlp.*.xml; do 
       cp $f $FAT_RESULTS &> /dev/null #ignore cases where literal globs are evaluated

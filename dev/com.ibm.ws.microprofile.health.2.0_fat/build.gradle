@@ -25,7 +25,6 @@ dependencies {
   kafkaClient 'org.slf4j:slf4j-jdk14:1.7.7'
   requiredLibs "org.testcontainers:kafka:${testcontainersVersion}"
   requiredLibs 'org.testng:testng:6.14.3'
-  requiredLibs 'org.reactivestreams:reactive-streams-tck:1.0.2'
   requiredLibs project(':com.ibm.websphere.org.reactivestreams.reactive-streams.1.0')
   requiredLibs project(':com.ibm.ws.microprofile.reactive.messaging.kafka')
   requiredLibs project(':com.ibm.ws.microprofile.reactive.messaging.kafka.adapter')

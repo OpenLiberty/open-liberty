@@ -3,7 +3,11 @@
     <include location="../fatTestPorts.xml"/>
 
     <featureManager>
-        <feature>webProfile-7.0</feature>
+        <feature>cdi-1.2</feature>
+        <feature>componentTest-1.0</feature>
+        <feature>localConnector-1.0</feature>
+        <feature>jaxb-2.2</feature>
+        <feature>servlet-3.1</feature>
     </featureManager>
 
 </server>

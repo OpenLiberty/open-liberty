@@ -33,12 +33,4 @@ tested.features: \
     com.ibm.websphere.javaee.servlet.3.1;version=latest,\
     com.ibm.websphere.javaee.transaction.1.1;version=latest,\
     com.ibm.db2.jcc;version=1.4.0,\
-    com.github.docker-java:docker-java-api;version=3.2.7,\
-    org.rnorth.duct-tape:duct-tape;version=1.0.8,\
-    org.testcontainers:database-commons;version=1.15.1,\
-    org.testcontainers:jdbc;version=1.15.1,\
-    org.testcontainers:db2;version=1.15.1,\
-    org.testcontainers:oracle-xe;version=1.15.1,\
-    org.testcontainers:postgresql;version=1.15.1,\
-    org.testcontainers:testcontainers;version=1.15.1,\
-    org.slf4j:slf4j-api;version=1.7.7
+    io.openliberty.org.testcontainers;version=latest

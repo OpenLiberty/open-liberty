@@ -9,6 +9,8 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 apply from: '../wlp-gradle/subprojects/fat.gradle'
+
+addRequiredLibraries.dependsOn addJakartaTransformer
 	
 dependencies {
   requiredLibs project(':io.openliberty.org.apache.commons.logging'), project(':io.openliberty.org.apache.commons.codec')

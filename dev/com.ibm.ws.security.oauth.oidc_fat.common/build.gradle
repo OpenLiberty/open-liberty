@@ -22,6 +22,8 @@ dependencies {
      * for eash of retrieval by other projects.
      */
     collectedDeps 'org.mongodb:mongo-java-driver:2.13.3',
+                  'de.flapdoodle.embed:de.flapdoodle.embed.mongo:3.0.0',
+                  'org.apache.commons:commons-compress:1.20',
                   project(':io.openliberty.org.apache.commons.codec'),
                   project(':io.openliberty.org.apache.commons.logging'),
                   project(':com.ibm.json4j'),
@@ -38,7 +40,7 @@ dependencies {
    requiredLibs project(':com.ibm.ws.security.fat.common')            
 }
 
-
+addRequiredLibraries.dependsOn addJakartaTransformer
 
 /*
  * This is where all application ZIP and WARs will be built.

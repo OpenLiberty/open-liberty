@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.kernel.boot.internal.commands;
 
+import static componenttest.annotation.SkipIfSysProp.OS_ZOS;
 import static org.junit.Assert.fail;
 
 import java.io.File;
@@ -38,6 +39,13 @@ import componenttest.annotation.SkipIfSysProp;
 import componenttest.topology.impl.LibertyServerFactory;
 
 @RunWith(Parameterized.class)
+/*
+ * ZipFile verifyContents code cant open pax on Z/OS
+ * Need to skip test class as @SkipIfSysProp will target the
+ * method name, but the parameterized runner will spawn tests
+ * with names such as testUsr[1] therefore the test will run.
+ */
+@SkipIfSysProp(OS_ZOS)
 public class PackageLooseContentsTest extends AbstractLooseConfigTest {
 
     // The full list of available configurations is:
@@ -118,7 +126,6 @@ public class PackageLooseContentsTest extends AbstractLooseConfigTest {
     //
 
     @Test
-    @SkipIfSysProp("os.name=z/OS") // ZipFile verifyContents code cant open pax on Z/OS
     public void testUsr() throws Exception {
         String[] packageCmd = new String[] {
                                              "--archive=" + SERVER_NAME,

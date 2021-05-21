@@ -16,9 +16,8 @@ IBM-API-Package: javax.servlet.sip.annotation;  type="spec", \
  com.ibm.websphere.sip;  type="ibm-api"
 IBM-ShortName: sipServlet-1.1
 Subsystem-Name: SIP Servlet 1.1
--features=\
-  com.ibm.websphere.appserver.servlet-3.1; ibm.tolerates:="3.0,4.0", \
-  com.ibm.websphere.appserver.channelfw-1.0
+-features=com.ibm.websphere.appserver.channelfw-1.0, \
+  com.ibm.websphere.appserver.servlet-3.1; ibm.tolerates:="3.0,4.0"
 -bundles=\
   com.ibm.websphere.javaee.jaxb.2.2; apiJar=false; require-java:="9"; location:="dev/api/spec/,lib/",\
   com.ibm.websphere.javaee.jaxws.2.2; apiJar=false; require-java:="9"; location:="dev/api/spec/,lib/",\

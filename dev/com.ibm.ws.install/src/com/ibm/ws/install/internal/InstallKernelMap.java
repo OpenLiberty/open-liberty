@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -141,6 +141,10 @@ public class InstallKernelMap implements Map {
     private static final String REQ_OL_JSON_COORD = "req.ol.json.coord";
     private static final String JSON_PROVIDED = "json.provided";
     private static final String IS_OPEN_LIBERTY = "is.open.liberty";
+    private static final String GENERATE_JSON = "generate.json";
+    private static final String GENERATE_JSON_GROUP_ID_MAP = "generate.json.group.id.map";
+    private static final String TARGET_JSON_DIR = "target.json.dir";
+    private static final String LOCALLY_PRESENT_JSONS = "locally.present.jsons";
 
     //Headers in Manifest File
     private static final String SHORTNAME_HEADER_NAME = "IBM-ShortName";
@@ -328,6 +332,8 @@ public class InstallKernelMap implements Map {
             return cleanupUpgrade();
         } else if (IS_OPEN_LIBERTY.equals(key)) {
             return isOpenLiberty();
+        } else if (GENERATE_JSON.equals(key)) {
+            return generateJson();
         }
         return data.get(key);
     }
@@ -418,6 +424,12 @@ public class InstallKernelMap implements Map {
             } else {
                 throw new IllegalArgumentException();
             }
+        } else if (TARGET_JSON_DIR.equals(key)) {
+            if (value instanceof File) {
+                data.put(TARGET_JSON_DIR, value);
+            } else {
+                throw new IllegalArgumentException();
+            }
         } else if (REPOSITORIES_PROPERTIES.equals(key)) {
             if (value instanceof File) {
                 data.put(REPOSITORIES_PROPERTIES, value);
@@ -473,6 +485,12 @@ public class InstallKernelMap implements Map {
         } else if (JSON_PROVIDED.equals(key)) {
             if (value instanceof Boolean) {
                 data.put(JSON_PROVIDED, value);
+            } else {
+                throw new IllegalArgumentException();
+            }
+        } else if (GENERATE_JSON.equals(key)) {
+            if (value instanceof Boolean) {
+                data.put(GENERATE_JSON, value);
             } else {
                 throw new IllegalArgumentException();
             }
@@ -555,6 +573,12 @@ public class InstallKernelMap implements Map {
         } else if (DOWNLOAD_LOCATION.equals(key)) {
             if (value instanceof String) {
                 data.put(DOWNLOAD_LOCATION, value);
+            } else {
+                throw new IllegalArgumentException();
+            }
+        } else if (GENERATE_JSON_GROUP_ID_MAP.equals(key)) {
+            if (value instanceof Map) {
+                data.put(GENERATE_JSON_GROUP_ID_MAP, value);
             } else {
                 throw new IllegalArgumentException();
             }
@@ -657,6 +681,12 @@ public class InstallKernelMap implements Map {
         } else if (INDIVIDUAL_ESAS.equals(key)) {
             if (value instanceof List) {
                 data.put(INDIVIDUAL_ESAS, value);
+            } else {
+                throw new IllegalArgumentException();
+            }
+        } else if (LOCALLY_PRESENT_JSONS.equals(key)) {
+            if (value instanceof List) {
+                data.put(LOCALLY_PRESENT_JSONS, value);
             } else {
                 throw new IllegalArgumentException();
             }
@@ -811,6 +841,7 @@ public class InstallKernelMap implements Map {
         RepositoryResolver resolver = null;
         Collection<String> featuresResolved = new ArrayList<String>();
         boolean isOpenLiberty = false;
+        openLibertyVersion = getLibertyVersion();
         try {
             for (ProductInfo productInfo : ProductInfo.getAllProductInfo().values()) {
                 productDefinitions.add(new ProductInfoProductDefinition(productInfo));
@@ -833,7 +864,6 @@ public class InstallKernelMap implements Map {
                 RepositoryConnection repo = new SingleFileRepositoryConnection(jsonRepo);
                 repoList.add(repo);
             }
-
             ManifestFileProcessor m_ManifestFileProcessor = new ManifestFileProcessor();
             Collection<ProvisioningFeatureDefinition> installedFeatures = m_ManifestFileProcessor.getFeatureDefinitions().values();
 
@@ -888,6 +918,12 @@ public class InstallKernelMap implements Map {
             if (isOpenLiberty && isFeatureUtility && isJsonProvided) {
                 if (upgradeRequired()) {
                     upgradeOL();
+                    String fromRepo = getDownloadDir((String) data.get(FROM_REPO));
+                    String jsonPath = fromRepo + "/" + WEBSPHERE_LIBERTY_GROUP_ID.replace(".", "/") + "/features/" + openLibertyVersion + "/features-" + openLibertyVersion
+                                      + ".json";
+                    File websphereJson = new File(jsonPath);
+                    RepositoryConnection repo = new SingleFileRepositoryConnection(websphereJson);
+                    repoList.add(repo);
                     for (ProductInfo productInfo : ProductInfo.getAllProductInfo().values()) {
                         productDefinitions.add(new ProductInfoProductDefinition(productInfo));
                     }
@@ -1407,7 +1443,31 @@ public class InstallKernelMap implements Map {
     private File generateJsonFromIndividualESAs(Path jsonDirectory, Map<String, String> shortNameMap) throws IOException, RepositoryException, InstallException {
         String dir = jsonDirectory.toString();
         List<File> esas = (List<File>) data.get(INDIVIDUAL_ESAS);
-        File singleJson = new File(dir + "/SingleJson.json");
+        File singleJson = new File(dir + File.separator + "SingleJson.json");
+
+        return createJson(singleJson, shortNameMap, esas);
+
+    }
+
+    /**
+     * generate a JSON from provided individual ESA files
+     *
+     * @param jsonDirectory path
+     * @param shortNameMap  contains features parsed from individual esa files
+     * @return singleJson file
+     * @throws IOException
+     * @throws RepositoryException
+     * @throws InstallException
+     */
+    private File generateJsonFromESAList(Path jsonDirectory, Map<String, String> shortNameMap, List<File> esas) throws IOException, RepositoryException, InstallException {
+        String dir = jsonDirectory.toString();
+        File singleJson = new File(dir + File.separator + "SingleJson.json");
+
+        return createJson(singleJson, shortNameMap, esas);
+
+    }
+
+    private File createJson(File singleJson, Map<String, String> shortNameMap, List<File> esas) throws InstallException, RepositoryException {
 
         for (File esa : esas) {
             try {
@@ -1423,7 +1483,7 @@ public class InstallKernelMap implements Map {
                 try {
                     mySingleFileRepo = SingleFileRepositoryConnection.createEmptyRepository(singleJson);
                 } catch (IOException e) {
-                    throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_SINGLE_REPO_CONNECTION_FAILED", dir,
+                    throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_SINGLE_REPO_CONNECTION_FAILED", singleJson.toString(),
                                                                                               esa.getAbsolutePath()));
                 }
             }
@@ -1433,13 +1493,13 @@ public class InstallKernelMap implements Map {
             resource.setRepositoryConnection(mySingleFileRepo);
 
             // Overload the Maven coordinates field with the file path, since the ESA should be installed from that path
-            resource.setMavenCoordinates(esa.getAbsolutePath());
+            Map<File, String> fileToGroupIdMap = (Map<File, String>) data.get(GENERATE_JSON_GROUP_ID_MAP);
+            resource.setMavenCoordinates(ArtifactDownloaderUtils.getMavenCoordFromPath(esa.getAbsolutePath(), fileToGroupIdMap.get(esa)));
 
             resource.uploadToMassive(new AddThenDeleteStrategy());
         }
 
         return singleJson;
-
     }
 
     @SuppressWarnings("unchecked")
@@ -1447,9 +1507,8 @@ public class InstallKernelMap implements Map {
         String fromRepo = getDownloadDir((String) data.get(FROM_REPO));
         File rootDir = new File(fromRepo);
         Collection<String> resolvedFeatures = (List<String>) data.get(DOWNLOAD_ARTIFACT_LIST);
-        String openLibertyVersion = getLibertyVersion();
 
-        Map<String, List> artifactsMap = fetchArtifactsFromLocalRepository(rootDir, resolvedFeatures, openLibertyVersion, ".esa");
+        Map<String, List> artifactsMap = fetchArtifactsFromLocalRepository(rootDir, resolvedFeatures, ".esa");
         List<File> foundFeatures = artifactsMap.get("foundArtifacts");
         List<String> missingFeatures = artifactsMap.get("missingArtifacts");
         if (foundFeatures.size() != resolvedFeatures.size() && !missingFeatures.isEmpty()) {
@@ -1478,13 +1537,12 @@ public class InstallKernelMap implements Map {
      * The missing artifact indexees can be accessed using key: missingArtifactIndexes
      * TODO maybe make this return an object
      *
-     * @param rootDir            the local maven repository
-     * @param artifacts          a list of artifacts in the form groupId:artifactId:version or esa file
-     * @param openLibertyVersion open liberty runtime version
-     * @param extension          file extension
+     * @param rootDir   the local maven repository
+     * @param artifacts a list of artifacts in the form groupId:artifactId:version or esa file
+     * @param extension file extension
      * @return a map containing the found and not found artifacts.
      */
-    private Map<String, List> fetchArtifactsFromLocalRepository(File rootDir, Collection<String> artifacts, String openLibertyVersion, String extension) {
+    private Map<String, List> fetchArtifactsFromLocalRepository(File rootDir, Collection<String> artifacts, String extension) {
         List<String> artifactsClone = new ArrayList<>(artifacts);
         List<File> foundArtifacts = new ArrayList<>();
         List<Integer> missingArtifactIndexes = new ArrayList<>();
@@ -1497,16 +1555,18 @@ public class InstallKernelMap implements Map {
             if (isValidEsa(artifact)) {
                 artifactPath = Paths.get(artifact);
             } else {
-                String groupId = artifact.split(":")[0];
-                String artifactName = artifact.split(":")[1];
+                String[] coord = artifact.split(":");
+                String groupId = coord[0];
+                String artifactName = coord[1];
+                String version = coord[2];
                 File groupDir = new File(rootDir, groupId.replace(".", "/"));
                 if (!groupDir.exists()) {
                     missingArtifactIndexes.add(index);
                     continue;
                 }
 
-                String artifactFileName = artifactName + "-" + openLibertyVersion + extension;
-                artifactPath = Paths.get(groupDir.getAbsolutePath().toString(), artifactName, openLibertyVersion, artifactFileName);
+                String artifactFileName = artifactName + "-" + version + extension;
+                artifactPath = Paths.get(groupDir.getAbsolutePath().toString(), artifactName, version, artifactFileName);
             }
 
             if (Files.isRegularFile(artifactPath)) {
@@ -1590,20 +1650,24 @@ public class InstallKernelMap implements Map {
     public List<File> getLocalJsonFiles(Set<String> jsonsRequired) throws InstallException {
         String fromRepo = getDownloadDir((String) data.get(DOWNLOAD_LOCATION));
         File fromDir = new File(fromRepo);
-        String openLibertyVersion = getLibertyVersion();
-        String artifactId = "features";
         List<File> jsons = new ArrayList<>();
-        for (String json : jsonsRequired) {
-            String mavenCoordinateDirectory = json.replace(".", "/") + "/" + artifactId + "/" + openLibertyVersion + "/";
-            String jsonFilePath = mavenCoordinateDirectory + "features-" + openLibertyVersion + ".json";
-            File openLibertyJson = new File(fromDir, jsonFilePath);
+        List<String> foundJsons = new ArrayList<String>();
+        for (String jsonCoord : jsonsRequired) {
+            String[] coords = jsonCoord.split(":");
+            String groupId = coords[0];
+            String artifactId = coords[1];
+            String version = coords[2];
+            String mavenCoordinateDirectory = groupId.replace(".", "/") + "/" + artifactId + "/" + version + "/";
+            String jsonFilePath = mavenCoordinateDirectory + "features-" + version + ".json";
+            File foundJson = new File(fromDir, jsonFilePath);
 
-            if (openLibertyJson.exists()) {
-                jsons.add(openLibertyJson);
+            if (foundJson.exists()) {
+                jsons.add(foundJson);
+                foundJsons.add(jsonCoord);
             }
 
         }
-
+        this.put(LOCALLY_PRESENT_JSONS, foundJsons);
         return jsons;
 
     }
@@ -1616,19 +1680,13 @@ public class InstallKernelMap implements Map {
      */
     @SuppressWarnings("unchecked")
     public List<File> getJsonsFromMavenCentral(Set<String> jsonsRequired) throws InstallException {
-        String openLibertyVersion = getLibertyVersion();
         // get open liberty json
         List<File> result = new ArrayList<File>();
         List<String> jsonsNotFound = new ArrayList<>();
         this.put(DOWNLOAD_FILETYPE, "json");
         boolean singleArtifactInstall = true;
         this.put(DOWNLOAD_INDIVIDUAL_ARTIFACT, singleArtifactInstall);
-
-        String artifactId = "features";
-        for (String jsonGroupId : jsonsRequired) {
-            String jsonCoord = jsonGroupId + ":" + artifactId + ":" + openLibertyVersion;
-
-            // TODO TODO TODO TODO TODO TODO TODO clean this spaghetti code
+        for (String jsonCoord : jsonsRequired) {
             this.put(DOWNLOAD_ARTIFACT_SINGLE, jsonCoord);
             this.put(DOWNLOAD_ARTIFACT_LIST, jsonCoord);
 
@@ -1637,8 +1695,6 @@ public class InstallKernelMap implements Map {
                 fine("action.exception.stacktrace: " + this.get("action.error.stacktrace"));
                 String exceptionMessage = (String) this.get("action.error.message");
                 throw new InstallException(exceptionMessage);
-                // convert to json exception msg
-//                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_MAVEN_JSON_NOT_FOUND", jsonGroupId));
             }
             if (downloaded == null) {
                 fine("Could not download this json with maven coordinate: " + jsonCoord);
@@ -1656,19 +1712,8 @@ public class InstallKernelMap implements Map {
                     result.add((File) downloaded);
                 }
             }
-            // TODO TODO TODO TODO TODO TODO TODO
 
         }
-
-//        String OLJsonCoord = "io.openliberty.features:features:" + openLibertyVersion;
-//        data.put("download.artifact.list", OLJsonCoord);
-//        File OL = (File) this.get("download.result");
-
-        // for debugging purposes (closed liberty json)
-//        String CLJsonCoord = "com.ibm.websphere.appserver.features:features:" + openLibertyVersion;
-//        data.put("download.artifact.list", CLJsonCoord);
-//        File CL = (File) this.get("download.result");
-//        result.add(CL);
         fine("Downloaded the following json files from remote: " + result);
 
         if (!jsonsNotFound.isEmpty()) {
@@ -1890,9 +1935,8 @@ public class InstallKernelMap implements Map {
         Collection<String> upgradeFileObjects = new ArrayList<String>();
 
         upgradeFileObjects.add(licenseCoord);
-        String openLibertyVersion = getLibertyVersion();
 
-        Map<String, List> artifactsMap = fetchArtifactsFromLocalRepository(rootDir, upgradeFileObjects, openLibertyVersion, ".zip");
+        Map<String, List> artifactsMap = fetchArtifactsFromLocalRepository(rootDir, upgradeFileObjects, ".zip");
         fine("missing license files: " + artifactsMap.get("missingArtifacts").toString());
         fine("found license files: " + artifactsMap.get("foundArtifacts").toString());
 
@@ -2074,8 +2118,32 @@ public class InstallKernelMap implements Map {
      * @throws RepositoryException
      * @throws IOException
      */
-    public void generateJson(Path targetJsonDir, Map<String, String> shortNameMap) throws IOException, RepositoryException, InstallException {
-        generateJsonFromIndividualESAs(targetJsonDir, shortNameMap);
+    private File generateJson() {
+        Map<String, String> shortNameMap = new HashMap<String, String>();
+        File targetJsonDir = (File) data.get(TARGET_JSON_DIR);
+        File result = null;
+        try {
+            result = generateJsonFromIndividualESAs(targetJsonDir.toPath(), shortNameMap);
+        } catch (IOException e) {
+            data.put(ACTION_RESULT, ERROR);
+            data.put(ACTION_ERROR_MESSAGE, e.getMessage());
+            data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
+        } catch (RepositoryException e) {
+            data.put(ACTION_RESULT, ERROR);
+            data.put(ACTION_ERROR_MESSAGE, e.getMessage());
+            data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
+        } catch (InstallException e) {
+            data.put(ACTION_RESULT, ERROR);
+            data.put(ACTION_ERROR_MESSAGE, e.getMessage());
+            data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
+        }
+        return result;
+    }
+
+    public File generateJson(File targetJsonDir, List<File> esas) throws IOException, RepositoryException, InstallException {
+        Map<String, String> shortNameMap = new HashMap<String, String>();
+        File result = generateJsonFromESAList(targetJsonDir.toPath(), shortNameMap, esas);
+        return result;
     }
 
 }
