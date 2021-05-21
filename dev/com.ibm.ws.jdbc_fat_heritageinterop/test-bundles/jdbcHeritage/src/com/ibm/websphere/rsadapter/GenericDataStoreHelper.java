@@ -34,13 +34,12 @@ import javax.transaction.xa.XAException;
 import com.ibm.websphere.appprofile.accessintent.AccessIntent;
 import com.ibm.websphere.ce.cm.DuplicateKeyException;
 import com.ibm.websphere.ce.cm.StaleConnectionException;
-import com.ibm.ws.jdbc.heritage.DataStoreHelperMetaData;
 
 /**
  * Simulates the legacy GenericDataStoreHelper, which is selected for the test JDBC driver
  * in the absence of heritage helperClass configuration.
  */
-public class GenericDataStoreHelper extends com.ibm.ws.jdbc.heritage.GenericDataStoreHelper implements DataStoreHelperMetaData {
+public class GenericDataStoreHelper {
     private final int defaultQueryTimeout;
 
     private AtomicReference<?> dsConfigRef;
@@ -64,35 +63,28 @@ public class GenericDataStoreHelper extends com.ibm.ws.jdbc.heritage.GenericData
         defaultQueryTimeout = value == null || value.length() <= 0 ? 0 : Integer.parseInt(value);
     }
 
-    @Override
     public boolean doConnectionCleanup(Connection con) throws SQLException {
         return false;
     }
 
-    @Override
     public boolean doConnectionCleanupPerCloseConnection(Connection con, boolean isCMP, Object unused) throws SQLException {
         return false;
     }
 
-    @Override
     public void doConnectionSetup(Connection con) throws SQLException {
     }
 
-    @Override
     public boolean doConnectionSetupPerGetConnection(Connection con, boolean isCMP, Object props) throws SQLException {
         return false;
     }
 
-    @Override
     public void doConnectionSetupPerTransaction(Subject subject, String user, Connection con, boolean reauthRequired, Object props) throws SQLException {
     }
 
-    @Override
     public boolean doesStatementCacheIsoLevel() {
         return false;
     }
 
-    @Override
     public void doStatementCleanup(PreparedStatement stmt) throws SQLException {
         stmt.setCursorName(null);
         stmt.setFetchDirection(ResultSet.FETCH_FORWARD);
@@ -105,33 +97,22 @@ public class GenericDataStoreHelper extends com.ibm.ws.jdbc.heritage.GenericData
         stmt.setQueryTimeout(queryTimeout);
     }
 
-    // TODO remove
-    @Override
-    public int getIsolationLevel() {
-        return getIsolationLevel(null);
-    }
-
-    // TODO @Override
     public int getIsolationLevel(AccessIntent unused) {
         return Connection.TRANSACTION_READ_COMMITTED;
     }
 
-    @Override
-    public DataStoreHelperMetaData getMetaData() {
+    public GenericDataStoreHelper getMetaData() {
         return this;
     }
 
-    @Override
     public PrintWriter getPrintWriter() {
         return null;
     }
 
-    @Override
     public String getXAExceptionContents(XAException x) {
         return "cause: " + x.getCause();
     }
 
-    @Override
     public boolean isConnectionError(SQLException x) {
         return x instanceof SQLRecoverableException
                || x instanceof SQLNonTransientConnectionException
@@ -139,7 +120,6 @@ public class GenericDataStoreHelper extends com.ibm.ws.jdbc.heritage.GenericData
                || mapException(x) instanceof StaleConnectionException;
     }
 
-    @Override
     public boolean isUnsupported(SQLException x) {
         String sqlState = x.getSQLState();
         int errorCode = x.getErrorCode();
@@ -149,7 +129,6 @@ public class GenericDataStoreHelper extends com.ibm.ws.jdbc.heritage.GenericData
                || sqlState != null && sqlState.startsWith("HYC00");
     }
 
-    @Override
     public SQLException mapException(SQLException x) {
         String sqlState = x.getSQLState();
         int errorCode = x.getErrorCode();
@@ -186,7 +165,6 @@ public class GenericDataStoreHelper extends com.ibm.ws.jdbc.heritage.GenericData
         }
     }
 
-    @Override
     public int modifyXAFlag(int xaStartFlags) {
         return xaStartFlags;
     }
@@ -201,43 +179,35 @@ public class GenericDataStoreHelper extends com.ibm.ws.jdbc.heritage.GenericData
         }
     }
 
-    @Override
     public void setConfig(Object configRef) {
         dsConfigRef = (AtomicReference<?>) configRef;
     }
 
     @SuppressWarnings("unchecked")
-    @Override
     public void setUserDefinedMap(@SuppressWarnings("rawtypes") Map map) {
         exceptionIdentificationOverrides = map;
     }
 
-    @Override
     public boolean supportsGetCatalog() {
         return true;
     }
 
-    @Override
     public boolean supportsGetNetworkTimeout() {
         return true;
     }
 
-    @Override
     public boolean supportsGetSchema() {
         return true;
     }
 
-    @Override
     public boolean supportsGetTypeMap() {
         return true;
     }
 
-    @Override
     public boolean supportsIsReadOnly() {
         return true;
     }
 
-    @Override
     public boolean supportsUOWDetection() {
         return false;
     }
