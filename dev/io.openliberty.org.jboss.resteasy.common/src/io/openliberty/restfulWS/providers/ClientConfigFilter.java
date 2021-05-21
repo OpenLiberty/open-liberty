@@ -35,19 +35,19 @@ public class ClientConfigFilter implements ClientRequestFilter {
             Tr.entry(tc, "filter", crc);
         }
 
-        if ("true".equals(crc.getProperty(JAXRSClientConstants.LTPA_HANDLER))) {
+        if (isTrue(crc.getProperty(JAXRSClientConstants.LTPA_HANDLER))) {
             LtpaHandler.configClientLtpaHandler(crc);
         }
-        if ("true".equals(crc.getProperty(JAXRSClientConstants.MPJWT_HANDLER))) {
+        if (isTrue(crc.getProperty(JAXRSClientConstants.MPJWT_HANDLER))) {
             OAuthHandler.handleMpJwtToken(crc);
         }
-        if ("true".equals(crc.getProperty(JAXRSClientConstants.JWT_HANDLER))) {
+        if (isTrue(crc.getProperty(JAXRSClientConstants.JWT_HANDLER))) {
             OAuthHandler.handleJwtToken(crc);
         }
-        if ("true".equals(crc.getProperty(JAXRSClientConstants.OAUTH_HANDLER))) {
+        if (isTrue(crc.getProperty(JAXRSClientConstants.OAUTH_HANDLER))) {
             OAuthHandler.handleOAuthToken(crc);
         }
-        if ("true".equals(crc.getProperty(JAXRSClientConstants.SAML_HANDLER))) {
+        if (isTrue(crc.getProperty(JAXRSClientConstants.SAML_HANDLER))) {
             SamlPropagationHandler.configClientSAMLHandler(crc);
         }
 
@@ -56,4 +56,7 @@ public class ClientConfigFilter implements ClientRequestFilter {
         }
     }
 
+    private static boolean isTrue(Object o) {
+        return Boolean.TRUE.equals(o) || "true".equals(o);
+    }
 }
