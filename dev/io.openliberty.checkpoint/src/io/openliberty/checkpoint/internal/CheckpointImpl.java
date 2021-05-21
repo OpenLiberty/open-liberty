@@ -65,7 +65,7 @@ public class CheckpointImpl implements Checkpoint {
 
     private void doSnapshot(Phase phase, File directory) throws SnapshotFailed {
         System.out.println("Go save the world");
-        Object[] factories = cc.locateServices("hooksFactories");
+        Object[] factories = cc.locateServices("hookFactories");
         List<SnapshotHook> snapshotHooks = getHooks(factories, phase);
         prepare(snapshotHooks);
         try {
