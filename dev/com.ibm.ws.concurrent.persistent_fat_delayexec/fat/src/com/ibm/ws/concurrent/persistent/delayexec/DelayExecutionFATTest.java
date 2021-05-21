@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2015, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,8 +36,10 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.annotation.AllowedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 
+@AllowedFFDC // various FFDCs can occur when task execution overlaps a config update
 @RunWith(FATRunner.class)
 public class DelayExecutionFATTest {
 
@@ -418,13 +420,15 @@ public class DelayExecutionFATTest {
      * a 1 minute delay of waiting in its futures related to the Notifications sent out.
      * 
      * The CWWKE1102W message is observed when the quiesce server command stumbles with hung activities.
-     * *
+     *
+     * The CWWKC1501W message indicates a task failed (in this case due to overlapping a config update)
+     * and will be retried.
      * 
      * @throws Exception LibertyServer Exceptions
      */
     public void recycleServer(String logName) throws Exception {
         if (server.isStarted()) {
-            server.stopServer(true, SERVER_QUIESCE_WAIT_MESSAGE_REGX, CONFIG_TIMEOUT_MESSAGE_REGX);
+            server.stopServer(true, SERVER_QUIESCE_WAIT_MESSAGE_REGX, CONFIG_TIMEOUT_MESSAGE_REGX, "CWWKC1501W");
         }
         server.updateServerConfiguration(originalConfig);
         server.startServer(logName);
