@@ -10,7 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.kernel.service.location.internal;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
+import java.nio.file.Files;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.naming.spi.InitialContextFactoryBuilder;
 import javax.naming.spi.NamingManager;
@@ -27,7 +31,13 @@ import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.kernel.pseudo.internal.PseudoContextFactory;
 import com.ibm.wsspi.kernel.service.location.VariableRegistry;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
+import com.ibm.wsspi.kernel.service.location.WsResource;
+import com.ibm.wsspi.kernel.service.location.WsResource.Type;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
+import com.ibm.wsspi.kernel.service.utils.TimestampUtils;
+
+import io.openliberty.checkpoint.spi.SnapshotHook;
+import io.openliberty.checkpoint.spi.SnapshotHookFactory;
 
 public class Activator implements BundleActivator {
     private static final TraceComponent tc = Tr.register(Activator.class);
@@ -66,6 +76,31 @@ public class Activator implements BundleActivator {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(tc, "Failed to install initialContextFactoryBuilder because it was already installed", ex);
             }
+            context.registerService(SnapshotHookFactory.class, (p) -> {
+                return new SnapshotHook() {
+                    @Override
+                    public void restore() {
+                        long restoreTime = 0;
+                        WsResource restoreTimeResource = locServiceImpl.getServerWorkareaResource("restoreTime");
+                        if (restoreTimeResource.isType(Type.FILE)) {
+                            try {
+                                List<String> restoreStartTimeEnv = Files.readAllLines(restoreTimeResource.asFile().toPath());
+                                System.out.println("restore time: " + restoreStartTimeEnv);
+                                if (!restoreStartTimeEnv.isEmpty()) {
+                                    long startTimeInMillis = Long.parseLong(restoreStartTimeEnv.get(0));
+                                    long currentTime = System.currentTimeMillis();
+                                    System.out.println("current time: " + currentTime);
+                                    restoreTime = currentTime - startTimeInMillis;
+                                }
+                            } catch (NumberFormatException e) {
+                            } catch (IOException e) {
+                            }
+                        }
+                        long startTimeNano = System.nanoTime() - TimeUnit.MILLISECONDS.toNanos(restoreTime);
+                        TimestampUtils.resetStartTime(startTimeNano);
+                    }
+                };
+            }, null);
         } catch (Exception t) {
             Tr.audit(tc, "frameworkShutdown");
 

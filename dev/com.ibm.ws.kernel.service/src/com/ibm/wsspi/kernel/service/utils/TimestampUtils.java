@@ -27,7 +27,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
  */
 public class TimestampUtils {
     protected final static long startTime;
-    protected final static long startTimeNano;
+    private static long startTimeNano;
 
     static {
         long start = OsgiPropertyUtils.getLong("kernel.launch.time", 0);
@@ -121,6 +121,10 @@ public class TimestampUtils {
      */
     static String getElapsedTimeAsStringFromMilliInterval(long elapsedTime) {
         return String.format("%.3f", elapsedTime / 1000.0);
+    }
+
+    public static void resetStartTime(Long newStartTime) {
+        startTimeNano = newStartTime;
     }
 
     /**
