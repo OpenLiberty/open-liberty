@@ -94,7 +94,7 @@ public class TicketCacheBindLongRunTest extends CommonBindTest {
      * @throws Exception
      */
     @Test
-    @CheckForLeakedPasswords({ LdapKerberosUtils.BIND_PASSWORD, ApacheDSandKDC.vmmUser1pwd })
+    @CheckForLeakedPasswords({ LdapKerberosUtils.BIND_PASSWORD, LdapApacheDSandKDC.vmmUser1pwd })
     public void dynamimcUpdateLoop() throws Exception {
         int numUpdates = 30;
 
@@ -120,7 +120,7 @@ public class TicketCacheBindLongRunTest extends CommonBindTest {
      * @throws Exception
      */
     @Test
-    @CheckForLeakedPasswords({ LdapKerberosUtils.BIND_PASSWORD, ApacheDSandKDC.vmmUser1pwd })
+    @CheckForLeakedPasswords({ LdapKerberosUtils.BIND_PASSWORD, LdapApacheDSandKDC.vmmUser1pwd })
     public void serverRestartLoop() throws Exception {
         int numUpdates = 5;
 

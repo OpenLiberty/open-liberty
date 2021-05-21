@@ -44,11 +44,11 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                  */
 
 })
-public class FATSuite extends ApacheDSandKDC {
+public class FATSuite extends LdapApacheDSandKDC {
     /*
      * The ApacheDS Directory Service, Ldap and KDC are started globally in ApacheDSandKDC (beforeClass and afterClass).
      *
-     * ApacheDS trace will appear in output.txt. To enable more ApacheDS trace, see the setup method in ApacheDSandKDC.
+     * ApacheDS trace will appear in output.txt. To enable more ApacheDS trace, see the setupService method in ApacheDSandKDC.
      *
      */
 
