@@ -68,7 +68,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
             // Expecting query parameter binding to not be set
             {
                 System.out.println("testCOALESCE_ForceBindJPQLParameters Test #001");
-                SQLListener.getAndClear();
+                SQLListener.getAndClearSQLList();
                 String query01Str = "SELECT 1 FROM SimpleEntityOLGH8294 s WHERE ABS(COALESCE(s.itemInteger1, ?1)) >= ?2";
                 Query query = em.createQuery(query01Str);
                 query.setParameter(1, 0);
@@ -78,7 +78,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                 Assert.assertNotNull(resultList);
                 Assert.assertEquals("Expecting 40 entries in the result list", 40, resultList.size());
 
-                List<String> sql = SQLListener.getAndClear();
+                List<String> sql = SQLListener.getAndClearSQLList();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
                 if (isDerby || isDB2) {
                     String expected = "SELECT 1 FROM SIMPLEENTITYOLGH8294 WHERE (ABS(COALESCE(ITEM_INTEGER1, ?)) >= ?)";
@@ -93,7 +93,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
             // Expecting query parameter binding to not be set
             {
                 System.out.println("testCOALESCE_ForceBindJPQLParameters Test #002");
-                SQLListener.getAndClear();
+                SQLListener.getAndClearSQLList();
                 String query01Str = "SELECT 1 FROM SimpleEntityOLGH8294 s WHERE ABS(COALESCE(s.itemInteger1, 0)) >= 99";
                 Query query = em.createQuery(query01Str);
 
@@ -101,7 +101,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                 Assert.assertNotNull(resultList);
                 Assert.assertEquals("Expecting 40 entries in the result list", 40, resultList.size());
 
-                List<String> sql = SQLListener.getAndClear();
+                List<String> sql = SQLListener.getAndClearSQLList();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
                 if (isDerby || isDB2) {
                     String expected = "SELECT 1 FROM SIMPLEENTITYOLGH8294 WHERE (ABS(COALESCE(ITEM_INTEGER1, 0)) >= 99)";
@@ -116,7 +116,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
             // Expecting query parameter binding to not be set
             {
                 System.out.println("testCOALESCE_ForceBindJPQLParameters Test #003");
-                SQLListener.getAndClear();
+                SQLListener.getAndClearSQLList();
                 String query01Str = "SELECT 1 FROM SimpleEntityOLGH8294 s WHERE ABS(COALESCE(?1, ?2)) >= ?3";
                 Query query = em.createQuery(query01Str);
                 query.setParameter(1, new Integer(1));
@@ -133,7 +133,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                         Assert.fail("Query did not throw expected Exception on derby and db2 platforms.");
                     }
 
-                    List<String> sql = SQLListener.getAndClear();
+                    List<String> sql = SQLListener.getAndClearSQLList();
                     Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
                 } catch (Throwable t) {
                     // If all Arguments of COALESCE are untyped parameters, this is expected to fail for DB2/z and DB2 LUW
@@ -199,7 +199,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
             // Expecting query parameter binding to not be set
             {
                 System.out.println("testABS_ForceBindJPQLParameters Test #001");
-                SQLListener.getAndClear();
+                SQLListener.getAndClearSQLList();
                 String query01Str = "SELECT 2, COUNT(ABS(?1)) FROM SimpleEntityOLGH8294 s WHERE s.itemInteger1 = ABS(?1)";
                 Query query = em.createQuery(query01Str);
                 query.setParameter(1, -102);
@@ -215,7 +215,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                         Assert.fail("Query did not throw expected Exception on DB2 on Z platform.");
                     }
 
-                    List<String> sql = SQLListener.getAndClear();
+                    List<String> sql = SQLListener.getAndClearSQLList();
                     Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
                     if (isDerby || isDB2) {
                         String expected = "SELECT 2, COUNT(ABS(?)) FROM SIMPLEENTITYOLGH8294 WHERE (ITEM_INTEGER1 = ABS(?))";
@@ -238,14 +238,14 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
             // Expecting query parameter binding to not be set
             {
                 System.out.println("testABS_ForceBindJPQLParameters Test #002");
-                SQLListener.getAndClear();
+                SQLListener.getAndClearSQLList();
                 String queryStr = "SELECT 2, COUNT(ABS(-3)) FROM SimpleEntityOLGH8294 s WHERE s.itemInteger1 = ABS(-3)";
                 Query query = em.createQuery(queryStr);
 
                 final List<?> resultList = query.getResultList();
                 Assert.assertNotNull(resultList);
 
-                List<String> sql = SQLListener.getAndClear();
+                List<String> sql = SQLListener.getAndClearSQLList();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
                 if (isDerby || isDB2) {
                     String expected = "SELECT 2, COUNT(ABS(-3)) FROM SIMPLEENTITYOLGH8294 WHERE (ITEM_INTEGER1 = ABS(-3))";
@@ -303,7 +303,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
             // Test string CONCAT with untyped parameter and literal
             {
                 System.out.println("testCONCAT_ForceBindJPQLParameters Test #001");
-                SQLListener.getAndClear();
+                SQLListener.getAndClearSQLList();
                 String queryStr = "SELECT 2 FROM SimpleEntityOLGH8294 s " +
                                   "WHERE s.itemString1 = TRIM(CONCAT(?1 , '-')) " +
                                   "AND s.itemString1 = TRIM(CONCAT(?2 , '-'))";
@@ -316,7 +316,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                 System.out.println("resultList size = " + resultList.size());
                 Assert.assertEquals("Expecting 0 entries in the result list", 0, resultList.size());
 
-                List<String> sql = SQLListener.getAndClear();
+                List<String> sql = SQLListener.getAndClearSQLList();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
                 if (isDerby || isDB2) {
                     String expected = "SELECT 2 FROM SIMPLEENTITYOLGH8294 WHERE ((ITEM_STRING1 = TRIM(VARCHAR(? || '-'))) AND (ITEM_STRING1 = TRIM(VARCHAR(? || '-'))))";
@@ -331,7 +331,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
             // Expect failure with derby/db2
             {
                 System.out.println("testCONCAT_ForceBindJPQLParameters Test #002");
-                SQLListener.getAndClear();
+                SQLListener.getAndClearSQLList();
                 String queryStr = "SELECT 2 FROM SimpleEntityOLGH8294 s WHERE " +
                                   " s.itemString1 = TRIM(CONCAT(?1 , ?1)) " +
                                   " AND s.itemString1 = TRIM(CONCAT(?2 , ?2))";
@@ -347,7 +347,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
 
                     Assert.assertNotNull(resultList);
 
-                    List<String> sql = SQLListener.getAndClear();
+                    List<String> sql = SQLListener.getAndClearSQLList();
                     Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
 
                     if (isDB2) {
@@ -414,7 +414,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
             // Test string parameter in sub query
             {
                 System.out.println("testEXISTS_ForceBindJPQLParameters Test #001");
-                SQLListener.getAndClear();
+                SQLListener.getAndClearSQLList();
                 String queryStr = "SELECT s FROM SimpleEntityOLGH8294 s " +
                                   "WHERE s.itemString1 = ?1  AND " +
                                   "EXISTS (SELECT 1 FROM SimpleEntityOLGH8294 e WHERE s.itemInteger1 = ?2 )";;
@@ -427,7 +427,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                 System.out.println("resultList size = " + resultList.size());
 //                Assert.assertEquals("Expecting 1 entries in the result list", 1, resultList.size());
 
-                List<String> sql = SQLListener.getAndClear();
+                List<String> sql = SQLListener.getAndClearSQLList();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
                 if (isDerby || isDB2) {
                     String expected = "SELECT t0.KEY_CHAR, t0.ITEM_BOOLEAN1, t0.ITEM_DATE1, t0.ITEM_INTEGER1, t0.ITEM_STRING1 FROM SIMPLEENTITYOLGH8294 t0 WHERE ((t0.ITEM_STRING1 = ?) AND EXISTS (SELECT 1 FROM SIMPLEENTITYOLGH8294 t1 WHERE (t0.ITEM_INTEGER1 = ?)) )";
@@ -441,7 +441,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
             // Test string literal in sub query
             {
                 System.out.println("testEXISTS_ForceBindJPQLParameters Test #002");
-                SQLListener.getAndClear();
+                SQLListener.getAndClearSQLList();
                 String queryStr = "SELECT s FROM SimpleEntityOLGH8294 s WHERE " +
                                   " s.itemString1 = 'Test' " +
                                   " AND EXISTS (SELECT 1 FROM SimpleEntityOLGH8294 e WHERE s.itemInteger1 = 33 )";
@@ -450,7 +450,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                 final List<?> resultList = query.getResultList();
                 Assert.assertNotNull(resultList);
 
-                List<String> sql = SQLListener.getAndClear();
+                List<String> sql = SQLListener.getAndClearSQLList();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
                 if (isDerby || isDB2) {
                     String expected = "SELECT t0.KEY_CHAR, t0.ITEM_BOOLEAN1, t0.ITEM_DATE1, t0.ITEM_INTEGER1, t0.ITEM_STRING1 FROM SIMPLEENTITYOLGH8294 t0 WHERE ((t0.ITEM_STRING1 = 'Test') AND EXISTS (SELECT 1 FROM SIMPLEENTITYOLGH8294 t1 WHERE (t0.ITEM_INTEGER1 = 33)) )";
@@ -507,7 +507,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
             // Test numerical expression with untyped parameters + typed parameters
             {
                 System.out.println("testNUMERICALEXPRESSION_ForceBindJPQLParameters Test #001");
-                SQLListener.getAndClear();
+                SQLListener.getAndClearSQLList();
                 String queryStr = "SELECT (s.itemInteger1 + ?4) FROM SimpleEntityOLGH8294 s " +
                                   "WHERE (s.itemInteger1 + ?4) > 1";
                 Query query = em.createQuery(queryStr);
@@ -518,7 +518,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                 System.out.println("resultList size = " + resultList.size());
                 Assert.assertEquals("Expecting 40 entries in the result list", 40, resultList.size());
 
-                List<String> sql = SQLListener.getAndClear();
+                List<String> sql = SQLListener.getAndClearSQLList();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
                 if (isDerby || isDB2) {
                     String expected = "SELECT (ITEM_INTEGER1 + ?) FROM SIMPLEENTITYOLGH8294 WHERE ((ITEM_INTEGER1 + ?) > 1)";
@@ -532,7 +532,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
             // Test numerical expression with parameters
             {
                 System.out.println("testNUMERICALEXPRESSION_ForceBindJPQLParameters Test #002");
-                SQLListener.getAndClear();
+                SQLListener.getAndClearSQLList();
                 String queryStr = "SELECT (?3 + ?4) FROM SimpleEntityOLGH8294 s WHERE (?3 + ?4) > 1 ";
                 Query query = em.createQuery(queryStr);
                 query.setParameter(3, 2);
@@ -542,7 +542,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                     final List<?> resultList = query.getResultList();
                     Assert.assertNotNull(resultList);
 
-                    List<String> sql = SQLListener.getAndClear();
+                    List<String> sql = SQLListener.getAndClearSQLList();
                     Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
 
                     System.out.println("resultList size = " + resultList.size());
@@ -566,7 +566,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
             // Test numerical expression with literals
             {
                 System.out.println("testNUMERICALEXPRESSION_ForceBindJPQLParameters Test #003");
-                SQLListener.getAndClear();
+                SQLListener.getAndClearSQLList();
                 String queryStr = "SELECT (s.itemInteger1 + 4) FROM SimpleEntityOLGH8294 s " +
                                   "WHERE ABS(s.itemInteger1 + 4) > 1";
                 Query query = em.createQuery(queryStr);
@@ -576,7 +576,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                 System.out.println("resultList size = " + resultList.size());
                 Assert.assertEquals("Expecting 40 entries in the result list", 40, resultList.size());
 
-                List<String> sql = SQLListener.getAndClear();
+                List<String> sql = SQLListener.getAndClearSQLList();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
                 if (isDerby || isDB2) {
                     String expected = "SELECT (ITEM_INTEGER1 + 4) FROM SIMPLEENTITYOLGH8294 WHERE (ABS((ITEM_INTEGER1 + 4)) > 1)";
@@ -634,7 +634,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
             // Test all the operands of an IN predicate
             {
                 System.out.println("testIN_ForceBindJPQLParameters Test #001");
-                SQLListener.getAndClear();
+                SQLListener.getAndClearSQLList();
                 String queryStr = "SELECT 2 FROM SimpleEntityOLGH8294 s " +
                                   "WHERE ?1 IN (?2, ?3, ?4)";
                 Query query = em.createQuery(queryStr);
@@ -655,7 +655,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                     System.out.println("resultList size = " + resultList.size());
                     Assert.assertEquals("Expecting 40 entries in the result list", 40, resultList.size());
 
-                    List<String> sql = SQLListener.getAndClear();
+                    List<String> sql = SQLListener.getAndClearSQLList();
                     Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
 
                     if (isDB2) {
@@ -679,7 +679,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
             // Test the first and second operands of an IN predicate
             {
                 System.out.println("testIN_ForceBindJPQLParameters Test #002");
-                SQLListener.getAndClear();
+                SQLListener.getAndClearSQLList();
                 String queryStr = "SELECT 2 FROM SimpleEntityOLGH8294 s WHERE ?1 IN (?2, 'b', 'c')";
                 Query query = em.createQuery(queryStr);
                 query.setParameter(1, "a");
@@ -690,7 +690,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                 System.out.println("resultList size = " + resultList.size());
                 Assert.assertEquals("Expecting 40 entries in the result list", 40, resultList.size());
 
-                List<String> sql = SQLListener.getAndClear();
+                List<String> sql = SQLListener.getAndClearSQLList();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
                 if (isDerby || isDB2) {
                     String expected = "SELECT 2 FROM SIMPLEENTITYOLGH8294 WHERE (? IN (?, 'b', 'c'))";
@@ -704,7 +704,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
             // Test the first operand of an IN predicate and zero or more operands of the IN list except for the first operand of the IN list
             {
                 System.out.println("testIN_ForceBindJPQLParameters Test #003");
-                SQLListener.getAndClear();
+                SQLListener.getAndClearSQLList();
                 String queryStr = "SELECT 2 FROM SimpleEntityOLGH8294 s " +
                                   "WHERE ?1 IN (5, ?2, 6)";
                 Query query = em.createQuery(queryStr);
@@ -716,7 +716,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                 System.out.println("resultList size = " + resultList.size());
                 Assert.assertEquals("Expecting 40 entries in the result list", 40, resultList.size());
 
-                List<String> sql = SQLListener.getAndClear();
+                List<String> sql = SQLListener.getAndClearSQLList();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
                 if (isDerby || isDB2) {
                     String expected = "SELECT 2 FROM SIMPLEENTITYOLGH8294 WHERE (? IN (5, ?, 6))";
@@ -730,7 +730,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
             // Test any or all operands of the IN list of the IN predicate and the first operand of the IN predicate is not an untyped parameter marker            {
             {
                 System.out.println("testIN_ForceBindJPQLParameters Test #004");
-                SQLListener.getAndClear();
+                SQLListener.getAndClearSQLList();
                 String queryStr = "SELECT 2 FROM SimpleEntityOLGH8294 s " +
                                   "WHERE s.itemString1 IN (?1, 'b', ?2)";
                 Query query = em.createQuery(queryStr);
@@ -742,7 +742,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                 System.out.println("resultList size = " + resultList.size());
                 Assert.assertEquals("Expecting 0 entries in the result list", 0, resultList.size());
 
-                List<String> sql = SQLListener.getAndClear();
+                List<String> sql = SQLListener.getAndClearSQLList();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
                 if (isDerby || isDB2) {
                     String expected = "SELECT 2 FROM SIMPLEENTITYOLGH8294 WHERE (ITEM_STRING1 IN (?, 'b', ?))";
@@ -802,7 +802,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
             // is not an untyped parameter marker
             {
                 System.out.println("testLIKE_ForceBindJPQLParameters Test #001");
-                SQLListener.getAndClear();
+                SQLListener.getAndClearSQLList();
                 String queryStr = "SELECT 1 FROM SimpleEntityOLGH8294 s " +
                                   "WHERE ?1 LIKE ?2 ESCAPE '_'";
                 Query query = em.createQuery(queryStr);
@@ -814,7 +814,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                 System.out.println("resultList size = " + resultList.size());
                 Assert.assertEquals("Expecting 40 entries in the result list", 40, resultList.size());
 
-                List<String> sql = SQLListener.getAndClear();
+                List<String> sql = SQLListener.getAndClearSQLList();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
                 if (isDerby || isDB2) {
                     String expected = "SELECT 1 FROM SIMPLEENTITYOLGH8294 WHERE ? LIKE ? ESCAPE '_'";
@@ -830,7 +830,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
             // is not an untyped parameter marker
             {
                 System.out.println("testLIKE_ForceBindJPQLParameters Test #002");
-                SQLListener.getAndClear();
+                SQLListener.getAndClearSQLList();
                 String queryStr = "SELECT 1 FROM SimpleEntityOLGH8294 s " +
                                   "WHERE s.itemString1 LIKE ?2";
                 Query query = em.createQuery(queryStr);
@@ -841,7 +841,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                 System.out.println("resultList size = " + resultList.size());
                 Assert.assertEquals("Expecting 0 entries in the result list", 0, resultList.size());
 
-                List<String> sql = SQLListener.getAndClear();
+                List<String> sql = SQLListener.getAndClearSQLList();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
                 if (isDerby || isDB2) {
                     String expected = "SELECT 1 FROM SIMPLEENTITYOLGH8294 WHERE ITEM_STRING1 LIKE ?";
@@ -898,7 +898,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
             // Test untyped parameter is first argument of SUBSTRING
             {
                 System.out.println("testSUBSTR_ForceBindJPQLParameters Test #001");
-                SQLListener.getAndClear();
+                SQLListener.getAndClearSQLList();
                 String queryStr = "SELECT 1 FROM SimpleEntityOLGH8294 s " +
                                   "WHERE TRIM(s.itemString1) = TRIM(SUBSTRING(?1, 1, 5))";
                 Query query = em.createQuery(queryStr);
@@ -909,7 +909,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                 System.out.println("resultList size = " + resultList.size());
                 Assert.assertEquals("Expecting 0 entries in the result list", 0, resultList.size());
 
-                List<String> sql = SQLListener.getAndClear();
+                List<String> sql = SQLListener.getAndClearSQLList();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
                 if (isDerby || isDB2) {
                     String expected = "SELECT 1 FROM SIMPLEENTITYOLGH8294 WHERE (TRIM(ITEM_STRING1) = TRIM(SUBSTR(?, 1, 5)))";
@@ -923,7 +923,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
             // Test untyped parameter is first & second argument of SUBSTRING
             {
                 System.out.println("testSUBSTR_ForceBindJPQLParameters Test #002");
-                SQLListener.getAndClear();
+                SQLListener.getAndClearSQLList();
                 String queryStr = "SELECT 1 FROM SimpleEntityOLGH8294 s " +
                                   "WHERE TRIM(s.itemString1) = TRIM(SUBSTRING(?1, ?2, 5))";
                 Query query = em.createQuery(queryStr);
@@ -935,7 +935,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                 System.out.println("resultList size = " + resultList.size());
                 Assert.assertEquals("Expecting 0 entries in the result list", 0, resultList.size());
 
-                List<String> sql = SQLListener.getAndClear();
+                List<String> sql = SQLListener.getAndClearSQLList();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
                 if (isDerby || isDB2) {
                     String expected = "SELECT 1 FROM SIMPLEENTITYOLGH8294 WHERE (TRIM(ITEM_STRING1) = TRIM(SUBSTR(?, ?, 5)))";
@@ -949,7 +949,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
             // Test untyped parameter is all arguments of SUBSTRING
             {
                 System.out.println("testSUBSTR_ForceBindJPQLParameters Test #003");
-                SQLListener.getAndClear();
+                SQLListener.getAndClearSQLList();
                 String queryStr = "SELECT 1 FROM SimpleEntityOLGH8294 s " +
                                   "WHERE s.itemString1 = SUBSTRING(?1, ?2, ?3)";
                 Query query = em.createQuery(queryStr);
@@ -962,7 +962,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                 System.out.println("resultList size = " + resultList.size());
                 Assert.assertEquals("Expecting 0 entries in the result list", 0, resultList.size());
 
-                List<String> sql = SQLListener.getAndClear();
+                List<String> sql = SQLListener.getAndClearSQLList();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
                 if (isDerby || isDB2) {
                     String expected = "SELECT 1 FROM SIMPLEENTITYOLGH8294 WHERE (ITEM_STRING1 = SUBSTR(?, ?, ?))";
@@ -976,7 +976,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
             // Test SUBSTRING function with IN expression
             {
                 System.out.println("testSUBSTR_ForceBindJPQLParameters Test #004");
-                SQLListener.getAndClear();
+                SQLListener.getAndClearSQLList();
                 String queryStr = "SELECT 1 FROM SimpleEntityOLGH8294 s " +
                                   "WHERE SUBSTRING(s.itemString1, 1, ?1) NOT IN (?2, ?3, ?4, ?5)";
                 Query query = em.createQuery(queryStr);
@@ -991,7 +991,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                 System.out.println("resultList size = " + resultList.size());
                 Assert.assertEquals("Expecting 40 entries in the result list", 40, resultList.size());
 
-                List<String> sql = SQLListener.getAndClear();
+                List<String> sql = SQLListener.getAndClearSQLList();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
                 if (isDerby || isDB2) {
                     String expected = "SELECT 1 FROM SIMPLEENTITYOLGH8294 WHERE (SUBSTR(ITEM_STRING1, 1, ?) NOT IN (?, ?, ?, ?))";

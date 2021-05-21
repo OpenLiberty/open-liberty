@@ -68,7 +68,7 @@ public class JPATestOLGH16588Logic extends AbstractTestLogic {
             EntityManager em = jpaResource.getEm();
             em.clear();
 
-            SQLListener.getAndClear();
+            SQLListener.getAndClearSQLList();
             /*
              * ContactInfo.previousAddresses should end up being an AggregateCollectionMapping
              */
@@ -78,7 +78,7 @@ public class JPATestOLGH16588Logic extends AbstractTestLogic {
             final List<?> resultList = queryEmbed.getResultList();
             Assert.assertNotNull(resultList);
 
-            List<String> sql = SQLListener.getAndClear();
+            List<String> sql = SQLListener.getAndClearSQLList();
             Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
             if (isDerby || isDB2) {
                 String expected = "SELECT t0.CITY FROM PREV_ADDRESSES t0, SPECEMPLOYEEOLGH16588 t1 WHERE ((t1.ZIPCODE = ?) AND (t0.SpecEmployeeOLGH16588_ID = t1.ID))";
@@ -134,7 +134,7 @@ public class JPATestOLGH16588Logic extends AbstractTestLogic {
             EntityManager em = jpaResource.getEm();
             em.clear();
 
-            SQLListener.getAndClear();
+            SQLListener.getAndClearSQLList();
 
             // According to the JPA Spec, section 4.4.4, the following two queries are equivalent
             Query queryEmbed = em.createQuery("SELECT p.vendor FROM SpecEmployeeOLGH16588 e JOIN e.contactInfo.phones p WHERE e.contactInfo.primaryAddress.zipcode = ?1");
@@ -143,7 +143,7 @@ public class JPATestOLGH16588Logic extends AbstractTestLogic {
             List<?> resultList = queryEmbed.getResultList();
             Assert.assertNotNull(resultList);
 
-            List<String> sql = SQLListener.getAndClear();
+            List<String> sql = SQLListener.getAndClearSQLList();
 
             Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
             if (isDerby || isDB2) {
@@ -157,7 +157,7 @@ public class JPATestOLGH16588Logic extends AbstractTestLogic {
             resultList = queryEmbed.getResultList();
             Assert.assertNotNull(resultList);
 
-            sql = SQLListener.getAndClear();
+            sql = SQLListener.getAndClearSQLList();
 
             Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
             if (isDerby || isDB2) {
@@ -214,7 +214,7 @@ public class JPATestOLGH16588Logic extends AbstractTestLogic {
             EntityManager em = jpaResource.getEm();
             em.clear();
 
-            SQLListener.getAndClear();
+            SQLListener.getAndClearSQLList();
 
             // Test to make sure that moving around the dot notation for nested embeddables is valid and doesn't change the query
             Query queryEmbed = em.createQuery("SELECT c.primaryAddress.city FROM SpecEmployeeOLGH16588 e JOIN e.contactInfo c WHERE e.contactInfo.primaryAddress.zipcode = ?1");
@@ -223,7 +223,7 @@ public class JPATestOLGH16588Logic extends AbstractTestLogic {
             List<?> resultList = queryEmbed.getResultList();
             Assert.assertNotNull(resultList);
 
-            List<String> sql = SQLListener.getAndClear();
+            List<String> sql = SQLListener.getAndClearSQLList();
 
             Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
             if (isDerby || isDB2) {
@@ -237,7 +237,7 @@ public class JPATestOLGH16588Logic extends AbstractTestLogic {
             resultList = queryEmbed.getResultList();
             Assert.assertNotNull(resultList);
 
-            sql = SQLListener.getAndClear();
+            sql = SQLListener.getAndClearSQLList();
 
             Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
             if (isDerby || isDB2) {
