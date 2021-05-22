@@ -1,0 +1,5 @@
+com.ibm.ws.jpa.tests.spec10.callback_fat
+com.ibm.ws.jpa.tests.spec10.entitymanager_fat
+com.ibm.ws.jpa.tests.spec10.inheritance_fat
+com.ibm.ws.jpa.tests.spec10.issues_fat
+
