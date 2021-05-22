@@ -10,13 +10,15 @@
  *******************************************************************************/
 package com.ibm.ws.cdi.extension.spi.test.app;
 
-import com.ibm.ws.cdi.extension.spi.test.bundle.annotations.NewBDATwo;
+import javax.inject.Inject;
 
-@NewBDATwo
-public class CustomBDABeanTwo {
+import com.ibm.ws.cdi.misplaced.spi.test.bundle.annotations.NewBDA;
+
+@NewBDA
+public class MissPlacedBean {
 
     public String toString() {
-        return "A Bean with an annotation registered via getBeanDefiningAnnotationClasses was successfully injected into a different bean with an annotation registered via getBeanDefiningAnnotationClasses";
+        return "A bean created by an annotation defined by the SPI in a different bundle, injected into a bean created by an annotation defined by the spi in the same bundle, intercepted by two interceptors defined by the SPI one from each bundle";
     }
 
 }

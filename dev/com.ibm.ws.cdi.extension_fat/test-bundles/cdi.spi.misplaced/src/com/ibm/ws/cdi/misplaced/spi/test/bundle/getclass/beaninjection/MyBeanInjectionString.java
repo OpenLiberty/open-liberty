@@ -8,15 +8,20 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.cdi.extension.spi.test.app;
+package com.ibm.ws.cdi.misplaced.spi.test.bundle.getclass.beaninjection;
 
-import com.ibm.ws.cdi.extension.spi.test.bundle.annotations.NewBDATwo;
+import javax.enterprise.context.RequestScoped;
 
-@NewBDATwo
-public class CustomBDABeanTwo {
+import com.ibm.ws.cdi.misplaced.spi.test.bundle.getclass.interceptor.Intercept;
 
+@RequestScoped
+public class MyBeanInjectionString {
+
+    String s = "Injection of a normal scoped class that was registered via getBeanClasses";
+
+    @Override
+    @Intercept
     public String toString() {
-        return "A Bean with an annotation registered via getBeanDefiningAnnotationClasses was successfully injected into a different bean with an annotation registered via getBeanDefiningAnnotationClasses";
+        return s;
     }
-
 }

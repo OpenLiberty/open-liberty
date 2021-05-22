@@ -1,0 +1,28 @@
+#*******************************************************************************
+# Copyright (c) 2021 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0.0
+
+Bundle-Name:  Misplaced Beans To Test CDI SPI 
+Bundle-SymbolicName: cdi.spi.misplaced
+Bundle-Description: This bundle has extra beans to test the cdi extension spi; version=${bVersion}
+
+Import-Package: \
+  javax.enterprise.*; version="[1.1.0,2.1.0)",\
+  javax.validation.*; version="[1.1.0,2.1.0)",\
+  *
+
+Export-Package: \
+  com.ibm.ws.cdi.misplaced.spi.test.bundle.annotations;version=1.0.0,\
+  com.ibm.ws.cdi.misplaced.spi.test.bundle.extension;version=1.0.0,\
+  com.ibm.ws.cdi.misplaced.spi.test.bundle.getclass.beaninjection;version=1.0.0,\
+  com.ibm.ws.cdi.misplaced.spi.test.bundle.getclass.interceptor;version=1.0.0,\
+  com.ibm.ws.cdi.misplaced.spi.test.bundle.getclass.producer;version=1.0.0

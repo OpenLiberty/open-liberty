@@ -26,45 +26,20 @@ import com.ibm.ws.cdi.extension.spi.test.bundle.extension.MyExtensionString;
 import com.ibm.ws.cdi.extension.spi.test.bundle.getclass.beaninjection.MyBeanInjectionString;
 import com.ibm.ws.cdi.extension.spi.test.bundle.getclass.producer.MyProducedString;
 
-@WebServlet("/")
-public class TestServlet extends HttpServlet {
+@WebServlet("/CrossWire")
+public class CrossWireTestServlet extends HttpServlet {
 
     @Inject
-    MyExtensionString extensionString;
-
-    @Inject
-    MyProducedString classString;
-
-    @Inject
-    MyBeanInjectionString beanInjectedString;
-
-    @Inject
-    AppBean appBean;
-
-    @Inject
-    CustomBDABean customBDABean;
+    OuterBean outerBean;
 
     private static final long serialVersionUID = 1L;
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 
-        String unregString = "";
-        try {
-            UnregisteredBean ub = javax.enterprise.inject.spi.CDI.current().select(UnregisteredBean.class).get();
-            unregString = "Found unregistered bean";
-        } catch (UnsatisfiedResolutionException e) {
-            unregString = "Could not find unregistered bean";
-        }
-
         PrintWriter pw = response.getWriter();
         pw.println("Test Results:");
-        pw.println(extensionString.toString());
-        pw.println(beanInjectedString.toString());
-        pw.println(classString.toString());
-        pw.println(unregString);
-        pw.println(appBean.toString());
-        pw.println(customBDABean.toString());
+        pw.println(outerBean.toString());
 
     }
 }
