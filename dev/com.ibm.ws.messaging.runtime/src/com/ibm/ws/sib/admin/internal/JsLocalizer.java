@@ -231,12 +231,12 @@ public class JsLocalizer {
 
         // Get the MainEntry object for this LPP. If it doesn't exist create one.
 
-        MainEntry MainEntry = mainMap.get(destName);
+        MainEntry mainEntry = mainMap.get(destName);
 
-        if (MainEntry == null) {
-            MainEntry = new MainEntry();
-            MainEntry.setDestinationLocalization(ld);
-            mainMap.put(destName, MainEntry);
+        if (mainEntry == null) {
+            mainEntry = new MainEntry();
+            mainEntry.setDestinationLocalization(ld);
+            mainMap.put(destName, mainEntry);
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
@@ -252,7 +252,7 @@ public class JsLocalizer {
      * 
      * @param lp
      *            Localization point to add.
-     * @return MainEntry the mainMap entry
+     * @return mainEntry the mainMap entry
      */
     private MainEntry updateLpMaps(LWMConfig lp) {
 
@@ -269,18 +269,18 @@ public class JsLocalizer {
         LocalizationEntry lEntry = new LocalizationEntry(ld);
         lpMap.put(lpName, lEntry);
         String destName = lpName.substring(0, lpName.indexOf("@"));
-        MainEntry MainEntry = mainMap.get(destName);
+        MainEntry mainEntry = mainMap.get(destName);
 
-        if (MainEntry == null) {
-            MainEntry = new MainEntry();
+        if (mainEntry == null) {
+            mainEntry = new MainEntry();
         }
-            MainEntry.setDestinationLocalization(ld);
-            mainMap.put(destName, MainEntry);
+            mainEntry.setDestinationLocalization(ld);
+            mainMap.put(destName, mainEntry);
         
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             SibTr.exit(tc, "updateLpMaps", lpMap);
         }
-        return MainEntry;
+        return mainEntry;
     }
 
     /**
@@ -706,10 +706,10 @@ public class JsLocalizer {
         }
 
         lpMap.remove(destName + "@" + _me.getName());
-        MainEntry MainEntry = mainMap.get(destName);
+        MainEntry mainEntry = mainMap.get(destName);
         
         // Remove destination localization
-        MainEntry.setDestinationLocalization(null);
+        mainEntry.setDestinationLocalization(null);
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             SibTr.exit(tc, thisMethodName);
         }
@@ -727,9 +727,9 @@ public class JsLocalizer {
             LocalizationDefinition dld = (LocalizationDefinition) iter.next();
             String destLPName = dld.getName();
             String destinationName = destLPName.substring(0, destLPName.indexOf("@"));
-            MainEntry MainEntry = new MainEntry();
-            MainEntry.setDestinationLocalization(dld);
-            mainMap.put(destinationName, MainEntry);
+            MainEntry mainEntry = new MainEntry();
+            mainEntry.setDestinationLocalization(dld);
+            mainMap.put(destinationName, mainEntry);
             String key = destinationName + "@" + this._me.getName();
             if (lpMap.containsKey(key)) {
                 lpMap.remove(key);
