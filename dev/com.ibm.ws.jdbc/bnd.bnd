@@ -21,6 +21,9 @@ WS-TraceGroup: RRA
 
 IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
+# for split package
+Require-Bundle: com.ibm.ws.jca.cm
+
 Export-Package: \
     com.ibm.ws.jdbc;provide:=true, \
     com.ibm.ws.jdbc.osgi; provide:=true, \
@@ -28,13 +31,14 @@ Export-Package: \
     com.ibm.ws.rsadapter, \
     com.ibm.ws.rsadapter.jdbc, \
     com.ibm.ws.rsadapter.impl, \
+    com.ibm.websphere.ce.j2c;-split-package:=merge-last, \
     com.ibm.websphere.ce.cm
 
 Import-Package: \
     com.ibm.ws.jca.adapter, \
     com.ibm.ws.jca.cm, \
     com.ibm.ws.util;version="[1.0,2)", \
-    !*.internal.*, !com.ibm.ws.j2c, !com.ibm.ws.security.jaas.common, *
+    !*.internal.*, !com.ibm.ws.j2c, !com.ibm.ws.security.jaas.common, !com.ibm.websphere.ce.j2c, *
 
 Private-Package: \
     com.ibm.ejs.cm.logger, \

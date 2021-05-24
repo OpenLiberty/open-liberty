@@ -24,6 +24,7 @@ Export-Package: \
     com.ibm.ws.jca.adapter, \
     com.ibm.ws.jca.cm, \
     com.ibm.ws.jca.cm.mbean, \
+	com.ibm.websphere.ce.j2c;-split-package:=merge-last, \
     com.ibm.wsspi.zos.tx \
 
 Import-Package: \
@@ -35,7 +36,6 @@ Import-Package: \
 Private-Package: \
     com.ibm.ejs.cm.logger, \
     com.ibm.ejs.j2c, \
-	com.ibm.websphere.ce.j2c, \
 	com.ibm.websphere.j2c, \
 	com.ibm.ws.j2c, \
 	com.ibm.ws.j2c.poolmanager, \

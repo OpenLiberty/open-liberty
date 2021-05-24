@@ -133,6 +133,16 @@ public class JDBCHeritageTestServlet extends FATServlet {
         });
     }
 
+    @Test
+    public void testLoadClassFromCMBundle() throws Exception {
+        Class.forName("com.ibm.websphere.ce.j2c.ConnectionWaitTimeoutException");
+    }
+
+    @Test
+    public void testLoadClassFromJDBCBundle() throws Exception {
+        Class.forName("com.ibm.websphere.ce.j2c.MyTestException");
+    }
+
     /**
      * Verifies that when an authorization error occurs, only the connection on which the
      * error occurred is removed from the pool.
