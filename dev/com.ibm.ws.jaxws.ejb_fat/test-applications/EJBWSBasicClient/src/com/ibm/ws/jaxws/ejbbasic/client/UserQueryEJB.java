@@ -48,7 +48,7 @@ public class UserQueryEJB implements UserQueryEJBInterface {
             throw new Exception("serverName and serverPort can not be null");
         }
 
-        bindingProvider.getRequestContext().put("allowNonMatchingToDefaultSoapAction", true);
+        //bindingProvider.getRequestContext().put("allowNonMatchingToDefaultSoapAction", true);
         bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
                                                 "http://" + serverName + ":" + serverPort + "/" + endpointPath);
     }
