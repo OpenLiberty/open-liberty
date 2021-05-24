@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,10 +16,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.ibm.websphere.simplicity.config.HttpEndpoint;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.security.fat.common.servers.ServerBootstrapUtils;
 import com.ibm.ws.security.fat.common.Utils;
 import com.ibm.ws.security.fat.common.apps.AppConstants;
+import com.ibm.ws.security.fat.common.servers.ServerBootstrapUtils;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.ValidationData.validationData;
 
 import componenttest.topology.impl.LibertyServerWrapper;
@@ -140,7 +142,7 @@ public class TestServer extends com.ibm.ws.security.fat.common.TestServer {
 
             String searchResult = server.waitForStringInLogUsingMark(expectedValue, server.getMatchingLogFile(logName));
             msgUtils.assertTrueAndLog(thisMethod, expected.getPrintMsg() + " Was expecting to find [" + expectedValue + "] in " + logName + ", but did not find it there!",
-                    searchResult != null);
+                                      searchResult != null);
             Log.info(thisClass, thisMethod, "Found message: " + expectedValue);
 
         } catch (Exception e) {
@@ -212,9 +214,9 @@ public class TestServer extends com.ibm.ws.security.fat.common.TestServer {
      **/
     boolean isInvalidSSLConfigTest(String testName) {
         if (testName != null &&
-                ((testName.equals("skip")) ||
-                        (testName.equals("OidcClientTestLDAPRegistryHttpsRequiredNoSSLConfig")) ||
-                        (testName.equals("OidcClientTestLDAPRegistryHttpsRequiredInvalidSSLConfig")))) {
+            ((testName.equals("skip")) ||
+             (testName.equals("OidcClientTestLDAPRegistryHttpsRequiredNoSSLConfig")) ||
+             (testName.equals("OidcClientTestLDAPRegistryHttpsRequiredInvalidSSLConfig")))) {
             return true;
         }
         return false;
@@ -273,32 +275,37 @@ public class TestServer extends com.ibm.ws.security.fat.common.TestServer {
 
     @Override
     public Integer getHttpDefaultPort() {
-        if (SERVER_TYPE_OP.equals(thisServerType)) {
-            return Integer.getInteger(Constants.SYS_PROP_PORT_OP_HTTP_DEFAULT);
-        } else {
-            if (SERVER_TYPE_RP.equals(thisServerType)) {
-                return Integer.getInteger(Constants.SYS_PROP_PORT_RP_HTTP_DEFAULT);
-            } else {
-                if (Constants.IDP_SERVER_TYPE.equals(thisServerType)) {
-                    return Integer.getInteger(Constants.SYS_PROP_PORT_IDP_HTTP_DEFAULT);
-                }
-            }
+
+        try {
+            Log.info(thisClass, "getHttpDefaultPort", "ServerName: " + server.getServerName());
+
+            ServerConfiguration serverConfig = server.getServerConfiguration();
+            HttpEndpoint serverEndpoints = serverConfig.getHttpEndpoints().getById("defaultHttpEndpoint");
+            String port = serverEndpoints.getHttpPort().replace("${bvt.prop.", "").replace("}", "");
+            Integer portNum = Integer.getInteger(port);
+            return portNum;
+
+        } catch (Exception e) {
+            Log.error(thisClass, "failed getting port - will use the default", e);
         }
         return server.getHttpDefaultPort();
     }
 
     @Override
     public Integer getHttpDefaultSecurePort() {
-        if (SERVER_TYPE_OP.equals(thisServerType)) {
-            return Integer.getInteger(Constants.SYS_PROP_PORT_OP_HTTPS_DEFAULT);
-        } else {
-            if (SERVER_TYPE_RP.equals(thisServerType)) {
-                return Integer.getInteger(Constants.SYS_PROP_PORT_RP_HTTPS_DEFAULT);
-            } else {
-                if (Constants.IDP_SERVER_TYPE.equals(thisServerType)) {
-                    return Integer.getInteger(Constants.SYS_PROP_PORT_IDP_HTTPS_DEFAULT);
-                }
-            }
+
+        try {
+
+            Log.info(thisClass, "getHttpDefaultPort", "ServerName: " + server.getServerName());
+
+            ServerConfiguration serverConfig = server.getServerConfiguration();
+            HttpEndpoint serverEndpoints = serverConfig.getHttpEndpoints().getById("defaultHttpEndpoint");
+            String port = serverEndpoints.getHttpsPort().replace("${bvt.prop.", "").replace("}", "");
+            Integer portNum = Integer.getInteger(port);
+            return portNum;
+
+        } catch (Exception e) {
+            Log.error(thisClass, "failed getting port - will use the default", e);
         }
         return server.getHttpDefaultSecurePort();
     }

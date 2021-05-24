@@ -11,6 +11,11 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
+#
+# Need to transform the test feature bundles.
+#
+jakartaeeMe: true
+
 src: \
     src, \
     common-classes/src, \
@@ -72,8 +77,12 @@ test.project: true
 	net.sourceforge.htmlunit:htmlunit;version='2.44.0',\
 	com.ibm.ws.security.jwt;version=latest,\
 	org.apache.commons.io;version='2.6.0',\
-	javax.ws.rs:javax.ws.rs-api;version=2.0
-	
+	javax.ws.rs:javax.ws.rs-api;version='2.0',\
+	de.flapdoodle.embed.mongo;version='3.0.0',\
+	de.flapdoodle.embed.process;version='3.0.1',\
+	org.slf4j:slf4j-jdk14;version=latest,\
+	com.ibm.ws.org.slf4j.api.1.7.7
+    
 -testpath: \
     cglib:cglib-nodep;version=3.3.0, \
     com.ibm.websphere.javaee.jsonp.1.1;version=latest, \

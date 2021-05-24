@@ -30,7 +30,6 @@ fat.project: true
     com.ibm.ws.webcontainer.security;version=latest,\
     com.ibm.ws.security.oauth.oidc_fat.common;version=latest,\
     com.ibm.websphere.javaee.jsonp.1.0;version=latest,\
-    com.ibm.ws.mongo_fat;version=latest,\
     com.ibm.ws.security.fat.common;version=latest, \
     org.apache.httpcomponents:httpclient;version=4.5.7, \
     org.apache.httpcomponents:httpcore;version=4.4.13, \
@@ -42,4 +41,8 @@ fat.project: true
     com.ibm.ws.security.oauth.oidc_fat.common;version=latest, \
     com.ibm.ws.security.oauth_test.servlets;version=latest, \
     net.sf.jtidy:jtidy;version=9.3.8, \
-    com.ibm.ws.com.meterware.httpunit.1.6.2;version=latest
+    com.ibm.ws.com.meterware.httpunit.1.6.2;version=latest,\
+    de.flapdoodle.embed.mongo;version='3.0.0',\
+	de.flapdoodle.embed.process;version='3.0.1',\
+	org.slf4j:slf4j-jdk14;version=latest,\
+	com.ibm.ws.org.slf4j.api.1.7.7

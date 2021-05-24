@@ -14,6 +14,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
@@ -22,6 +23,9 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.RepeatTests;
 
 
 @RunWith(Suite.class)
@@ -33,6 +37,10 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
  * Purpose: This suite collects and runs all known good test suites.
  */
 public class FATSuite {
+
+	@ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification()
+                    .andWith(new JakartaEE9Action());
 
 	public static EnterpriseArchive apacheBvalConfigApp;
 	public static EnterpriseArchive beanValidationApp;

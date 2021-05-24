@@ -26,6 +26,7 @@ src: \
 	test-applications/multipleWarEmbeddedJar.jar/src,\
 	test-applications/multipleWarNoBeans.war/src,\
 	test-bundles/cdi.helloworld.extension/src, \
+	test-bundles/cdi.spi.misplaced/src, \
 	test-bundles/cdi.spi.extension/src, \
 	test-bundles/cdi.spi.constructor.fail.extension/src, \
 	test-applications/observeProcessProducerMethod.war/src, \

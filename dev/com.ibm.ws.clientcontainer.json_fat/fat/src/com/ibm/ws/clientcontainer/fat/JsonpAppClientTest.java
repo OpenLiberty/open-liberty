@@ -34,9 +34,9 @@ public class JsonpAppClientTest {
     @Rule
     public TestName name = new TestName();
 
-    @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification() // run once with pre-configured feature set
-                                             .andWith(FeatureReplacementAction.EE8_FEATURES());
+    //@ClassRule
+    //public static RepeatTests r = RepeatTests.withoutModification() // run once with pre-configured feature set
+                                           //  .andWith(FeatureReplacementAction.EE8_FEATURES());
     private void assertClientAppMessage(String msg) {
         assertNotNull("FAIL: Did not receive" + msg + " message", client.waitForStringInCopiedLog(msg));          
     }

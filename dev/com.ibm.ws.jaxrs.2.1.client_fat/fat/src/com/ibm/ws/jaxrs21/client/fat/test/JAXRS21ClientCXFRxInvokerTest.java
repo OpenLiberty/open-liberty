@@ -188,54 +188,106 @@ public class JAXRS21ClientCXFRxInvokerTest extends JAXRS21AbstractTest {
     }
 
     @Test
-    public void testObservableRxInvoker_getReceiveTimeout() throws Exception {
+    public void testObservableRxInvoker_getCbReceiveTimeout() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
-        this.runTestOnServer(cxfRxInvokerTarget, "testObservableRxInvoker_getReceiveTimeout", p, "Timeout as expected");
+        this.runTestOnServer(cxfRxInvokerTarget, "testObservableRxInvoker_getCbReceiveTimeout", p, "Timeout as expected");
     }
 
     @Test
-    public void testFlowableRxInvoker_getReceiveTimeout() throws Exception {
+    public void testObservableRxInvoker_getIbmReceiveTimeout() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
-        this.runTestOnServer(cxfRxInvokerTarget, "testFlowableRxInvoker_getReceiveTimeout", p, "Timeout as expected");
+        this.runTestOnServer(cxfRxInvokerTarget, "testObservableRxInvoker_getIbmReceiveTimeout", p, "Timeout as expected");
     }
 
     @Test
-    @SkipForRepeat("EE9_FEATURES") // Skip this test for EE9 as this test is failing intermittently with EE9.  See issue  https://github.com/OpenLiberty/open-liberty/issues/16648
-    public void testObservableRxInvoker_getConnectionTimeout() throws Exception {
+    public void testFlowableRxInvoker_getCbReceiveTimeout() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
-        this.runTestOnServer(cxfRxInvokerTarget, "testObservableRxInvoker_getConnectionTimeout", p, "Timeout as expected");
+        this.runTestOnServer(cxfRxInvokerTarget, "testFlowableRxInvoker_getCbReceiveTimeout", p, "Timeout as expected");
     }
 
     @Test
-    @SkipForRepeat("EE9_FEATURES") // Skip this test for EE9 as this test is failing intermittently with EE9.  See issue  https://github.com/OpenLiberty/open-liberty/issues/16648
-    public void testFlowableRxInvoker_getConnectionTimeout() throws Exception {
+    public void testFlowableRxInvoker_getIbmReceiveTimeout() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
-        this.runTestOnServer(cxfRxInvokerTarget, "testFlowableRxInvoker_getConnectionTimeout", p, "Timeout as expected");
-    }
-
-    @Test
-    public void testObservableRxInvoker_postReceiveTimeout() throws Exception {
-        Map<String, String> p = new HashMap<String, String>();
-        this.runTestOnServer(cxfRxInvokerTarget, "testObservableRxInvoker_postReceiveTimeout", p, "Timeout as expected");
-    }
-
-    @Test
-    public void testFlowableRxInvoker_postReceiveTimeout() throws Exception {
-        Map<String, String> p = new HashMap<String, String>();
-        this.runTestOnServer(cxfRxInvokerTarget, "testFlowableRxInvoker_postReceiveTimeout", p, "Timeout as expected");
+        this.runTestOnServer(cxfRxInvokerTarget, "testFlowableRxInvoker_getIbmReceiveTimeout", p, "Timeout as expected");
     }
 
     @Test
     @SkipForRepeat("EE9_FEATURES") // Skip this test for EE9 as this test is failing intermittently with EE9.  See issue  https://github.com/OpenLiberty/open-liberty/issues/16648
-    public void testObservableRxInvoker_postConnectionTimeout() throws Exception {
+    public void testObservableRxInvoker_getCbConnectionTimeout() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
-        this.runTestOnServer(cxfRxInvokerTarget, "testObservableRxInvoker_postConnectionTimeout", p, "Timeout as expected");
+        this.runTestOnServer(cxfRxInvokerTarget, "testObservableRxInvoker_getCbConnectionTimeout", p, "Timeout as expected");
     }
 
     @Test
     @SkipForRepeat("EE9_FEATURES") // Skip this test for EE9 as this test is failing intermittently with EE9.  See issue  https://github.com/OpenLiberty/open-liberty/issues/16648
-    public void testFlowableRxInvoker_postConnectionTimeout() throws Exception {
+    public void testObservableRxInvoker_getIbmConnectionTimeout() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
-        this.runTestOnServer(cxfRxInvokerTarget, "testFlowableRxInvoker_postConnectionTimeout", p, "Timeout as expected");
+        this.runTestOnServer(cxfRxInvokerTarget, "testObservableRxInvoker_getIbmConnectionTimeout", p, "Timeout as expected");
+    }
+
+    @Test
+    @SkipForRepeat("EE9_FEATURES") // Skip this test for EE9 as this test is failing intermittently with EE9.  See issue  https://github.com/OpenLiberty/open-liberty/issues/16648
+    public void testFlowableRxInvoker_getCbConnectionTimeout() throws Exception {
+        Map<String, String> p = new HashMap<String, String>();
+        this.runTestOnServer(cxfRxInvokerTarget, "testFlowableRxInvoker_getCbConnectionTimeout", p, "Timeout as expected");
+    }
+
+    @Test
+    @SkipForRepeat("EE9_FEATURES") // Skip this test for EE9 as this test is failing intermittently with EE9.  See issue  https://github.com/OpenLiberty/open-liberty/issues/16648
+    public void testFlowableRxInvoker_getIbmConnectionTimeout() throws Exception {
+        Map<String, String> p = new HashMap<String, String>();
+        this.runTestOnServer(cxfRxInvokerTarget, "testFlowableRxInvoker_getIbmConnectionTimeout", p, "Timeout as expected");
+    }
+
+    @Test
+    public void testObservableRxInvoker_postCbReceiveTimeout() throws Exception {
+        Map<String, String> p = new HashMap<String, String>();
+        this.runTestOnServer(cxfRxInvokerTarget, "testObservableRxInvoker_postCbReceiveTimeout", p, "Timeout as expected");
+    }
+
+    @Test
+    public void testObservableRxInvoker_postIbmReceiveTimeout() throws Exception {
+        Map<String, String> p = new HashMap<String, String>();
+        this.runTestOnServer(cxfRxInvokerTarget, "testObservableRxInvoker_postIbmReceiveTimeout", p, "Timeout as expected");
+    }
+
+    @Test
+    public void testFlowableRxInvoker_postCbReceiveTimeout() throws Exception {
+        Map<String, String> p = new HashMap<String, String>();
+        this.runTestOnServer(cxfRxInvokerTarget, "testFlowableRxInvoker_postCbReceiveTimeout", p, "Timeout as expected");
+    }
+
+    @Test
+    public void testFlowableRxInvoker_postIbmReceiveTimeout() throws Exception {
+        Map<String, String> p = new HashMap<String, String>();
+        this.runTestOnServer(cxfRxInvokerTarget, "testFlowableRxInvoker_postIbmReceiveTimeout", p, "Timeout as expected");
+    }
+
+    @Test
+    @SkipForRepeat("EE9_FEATURES") // Skip this test for EE9 as this test is failing intermittently with EE9.  See issue  https://github.com/OpenLiberty/open-liberty/issues/16648
+    public void testObservableRxInvoker_postCbConnectionTimeout() throws Exception {
+        Map<String, String> p = new HashMap<String, String>();
+        this.runTestOnServer(cxfRxInvokerTarget, "testObservableRxInvoker_postCbConnectionTimeout", p, "Timeout as expected");
+    }
+
+    @Test
+    @SkipForRepeat("EE9_FEATURES") // Skip this test for EE9 as this test is failing intermittently with EE9.  See issue  https://github.com/OpenLiberty/open-liberty/issues/16648
+    public void testObservableRxInvoker_postIbmConnectionTimeout() throws Exception {
+        Map<String, String> p = new HashMap<String, String>();
+        this.runTestOnServer(cxfRxInvokerTarget, "testObservableRxInvoker_postIbmConnectionTimeout", p, "Timeout as expected");
+    }
+
+    @Test
+    @SkipForRepeat("EE9_FEATURES") // Skip this test for EE9 as this test is failing intermittently with EE9.  See issue  https://github.com/OpenLiberty/open-liberty/issues/16648
+    public void testFlowableRxInvoker_postCbConnectionTimeout() throws Exception {
+        Map<String, String> p = new HashMap<String, String>();
+        this.runTestOnServer(cxfRxInvokerTarget, "testFlowableRxInvoker_postCbConnectionTimeout", p, "Timeout as expected");
+    }
+
+    @Test
+    @SkipForRepeat("EE9_FEATURES") // Skip this test for EE9 as this test is failing intermittently with EE9.  See issue  https://github.com/OpenLiberty/open-liberty/issues/16648
+    public void testFlowableRxInvoker_postIbmConnectionTimeout() throws Exception {
+        Map<String, String> p = new HashMap<String, String>();
+        this.runTestOnServer(cxfRxInvokerTarget, "testFlowableRxInvoker_postIbmConnectionTimeout", p, "Timeout as expected");
     }
 }

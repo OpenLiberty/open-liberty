@@ -35,6 +35,8 @@ public class CDI12ExtensionSPITest {
     public static final String SERVER_NAME = "cdi12SPIExtensionServer";
     public static final String INSTALL_USERBUNDLE_JAVAX = "cdi.spi.extension";
     public static final String INSTALL_USERBUNDLE_JAKARTA = "cdi.spi.extension-jakarta";
+    public static final String INSTALL_MISPLACED_USERBUNDLE_JAVAX = "cdi.spi.misplaced";
+    public static final String INSTALL_MISPLACED_USERBUNDLE_JAKARTA = "cdi.spi.misplaced-jakarta";
     public static final String INSTALL_USERFEATURE_JAVAX = "cdi.spi.extension-1.0";
     public static final String INSTALL_USERFEATURE_JAKARTA = "cdi.spi.extension-3.0";
 
@@ -49,9 +51,11 @@ public class CDI12ExtensionSPITest {
         System.out.println("Intall the user feature bundle... cdi.spi.extension");
         if (RepeatTestFilter.isRepeatActionActive("EE9_FEATURES")) {
             server.installUserBundle(INSTALL_USERBUNDLE_JAKARTA);
+            server.installUserBundle(INSTALL_MISPLACED_USERBUNDLE_JAKARTA);
             server.installUserFeature(INSTALL_USERFEATURE_JAKARTA);
         } else {
             server.installUserBundle(INSTALL_USERBUNDLE_JAVAX);
+            server.installUserBundle(INSTALL_MISPLACED_USERBUNDLE_JAVAX);
             server.installUserFeature(INSTALL_USERFEATURE_JAVAX);
         }
         ShrinkHelper.exportDropinAppToServer(server, ClassSPIExtension);
@@ -62,7 +66,30 @@ public class CDI12ExtensionSPITest {
     @Test
     public void testExtensionSPI() throws Exception {
         HttpUtils.findStringInUrl(server, "/SPIExtension/",
-                       new String[] { "Extension injection", "bean injection", "Intercepted bean injection", "Could not find unregistered bean", "Intercepted application bean", "CustomBDABeanTwo"  });
+                       new String[] { "Injection from a producer registered in a CDI extension that was registered through the SPI"
+                                      , "Injection of a normal scoped class that was registered via getBeanClasses"
+                                      , "An Interceptor registered via getBeanClasses in the SPI intercepted a normal scoped class registered via getBeanClasses"
+                                      , "Could not find unregistered bean"
+                                      , "An Interceptor registered via getBeanClasses in the SPI intercepted a normal scoped class in the application WAR"
+                                      , "A Bean with an annotation registered via getBeanDefiningAnnotationClasses was successfully injected into a different bean with an annotation registered via getBeanDefiningAnnotationClasses"  });
+    }
+
+    @Test
+    public void testExtensionSPIInDifferentBundle() throws Exception {
+        HttpUtils.findStringInUrl(server, "/SPIExtension/misplaced",
+                       new String[] { "Injection of a normal scoped class that was registered via getBeanClasses"
+                                      , "An Interceptor registered via getBeanClasses in the SPI intercepted a normal scoped class registered via getBeanClasses"
+                                      , "Could not find bean registered via an extension when both the bean and the extension are in a different bundle to the SPI impl class"
+                                      , "An Interceptor registered via getBeanClasses in the SPI intercepted a normal scoped class in the application WAR"
+                                      , "A Bean with an annotation registered via getBeanDefiningAnnotationClasses was successfully injected into a different bean with an annotation registered via getBeanDefiningAnnotationClasses"  });
+    }
+
+    @Test
+    public void testExtensionSPICrossWiredBundle() throws Exception {
+        HttpUtils.findStringInUrl(server, "/SPIExtension/CrossWire",
+                       new String[] { "A bean created by an annotation defined by the SPI in a different bundle, injected into a bean created by an annotation defined by the spi in the same bundle, intercepted by two interceptors defined by the SPI one from each bundle"
+                                      , "WELL PLACED INTERCEPTOR"
+                                      , "MISSPLACED INTERCEPTOR"});
     }
 
     @AfterClass

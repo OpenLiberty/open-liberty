@@ -1,0 +1,279 @@
+/*******************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+apply from: '../com.ibm.ws.security.oauth.oidc_fat.common/OAuthOidcCommon.gradle'
+
+repositories {
+  if (isUsingArtifactory) {
+    maven {
+      credentials {
+        username userProps.getProperty("artifactory.download.user")
+        password userProps.getProperty("artifactory.download.token")
+      }
+      url ("https://" + gradle.userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-maven-remote")
+    }
+  } else {
+    mavenCentral()
+  }
+}
+
+dependencies {
+   requiredLibs project(':com.ibm.ws.security.fat.common'),
+                project(':com.ibm.ws.security.fat.common.jwt'),
+                project(':com.ibm.ws.security.oauth.oidc_fat.common'),
+                project(':com.ibm.ws.com.meterware.httpunit.1.7'),
+                'jtidy:jtidy:4aug2000r7-dev',
+                'rhino:js:1.5R4.1' // See NOTE below
+
+  // NOTE: More current js versions have a bug that prevents multiple redirects - this causes
+  // a couple of our tests to fail.
+                
+  /*
+   * Previously we had an uber jar named htmlunit-2.20-OSGi.jar. It appears to have contained all of
+   * the runtime dependencies for htmlunit. Instead of generating an uber jar, we'll add the dependencies
+   * here. The uber jar also was configured to be an OSGi bundle, but it is not necessary for this bucket.
+   */ 
+  requiredLibs project(':com.ibm.ws.org.apache.commons.io'),        // htmlunit-2.44.0 --> 2.8.0
+               project(':com.ibm.ws.org.apache.commons.lang3'),     // htmlunit-2.44.0 --> 3.11
+               'net.sourceforge.htmlunit:htmlunit-core-js:2.44.0',
+               'net.sourceforge.htmlunit:htmlunit-cssparser:1.6.0',
+               'net.sourceforge.htmlunit:neko-htmlunit:2.44.0',
+               'org.apache.httpcomponents:httpmime:4.5.12',
+               'org.brotli:dec:0.1.2',
+               'xalan:xalan:2.7.2',
+               'xerces:xercesImpl:2.11.0',
+               'httpunit:httpunit:1.7'
+}
+
+addRequiredLibraries.dependsOn addJakartaTransformer
+
+/*
+ * This is where all application ZIP and WARs will be built.
+ */
+def appBuildDir = "${buildDir}/test-application"
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** jaxrsclient.zip
+ **
+ ******************************************************************
+ ******************************************************************/
+task jaxrscliemt_ZIP (type: Zip, dependsOn: classes) { 
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'jaxrsclient.zip'
+
+  from (new File(projectDir, 'test-applications/jaxrsclient.war/resources')) {
+    include 'WEB-INF/**'
+  }
+  from (new File(projectDir, 'build/classes/java/main')) {
+    include 'com/ibm/ws/jaxrs/fat/jaxrsclient/JaxRSClient.class'
+    into 'WEB-INF/classes'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** simplejaxrsclient.zip
+ **
+ ******************************************************************
+ ******************************************************************/
+task simplejaxrscliemt_ZIP (type: Zip, dependsOn: classes) { 
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'simplejaxrsclient.zip'
+
+  from (new File(projectDir, 'test-applications/simplejaxrsclient.war/resources')) {
+    include 'WEB-INF/**'
+  }
+  from (new File(projectDir, 'build/classes/java/main')) {
+    include 'com/ibm/ws/jaxrs/fat/jaxrsclient/SimpleJaxRSClient.class'
+    into 'WEB-INF/classes'
+  }
+}
+/******************************************************************
+ ******************************************************************
+ **
+ ** Copy feature bundles and applications to specific servers.
+ **
+ ******************************************************************
+ ******************************************************************/
+assemble.dependsOn jaxrscliemt_ZIP
+assemble.dependsOn simplejaxrscliemt_ZIP
+autoFVT.dependsOn ':com.ibm.ws.security.fat.common:assemble'
+autoFVT.dependsOn ':com.ibm.ws.security.fat.common.jwt:assemble'
+autoFVT.dependsOn ':com.ibm.ws.security.oauth.oidc_fat.common:assemble'
+autoFVT.dependsOn copyTokenMapping
+autoFVT.doLast {
+
+  /*
+   * Copy the local ApacheDS LDAP instances. 
+   */
+  copy {
+    from project(':com.ibm.ws.org.apache.directory.server').projectDir
+    into autoFvtDir
+    include 'apacheds-2.0.0-M15/**'
+  }
+  
+  /*
+   * Copy common artifacts to test servers.
+   */
+  def servers = [
+    'com.ibm.ws.security.openidconnect.client-1.0_fat.jaxrs.op',
+    'com.ibm.ws.security.openidconnect.client-1.0_fat.jaxrs.opWithStub',
+    'com.ibm.ws.security.openidconnect.client-1.0_fat.jaxrs.rp',
+    'com.ibm.ws.security.openidconnect.client-1.0_fat.jaxrs.rs',
+    'com.ibm.ws.security.openidconnect.client-1.0_fat.jaxrs.rpd',
+    'com.ibm.ws.security.openidconnect.client-1.0_fat.jaxrs.rsd'
+  ]
+
+  servers.each { server ->
+    copy { 
+      from new File(projectDir, 'publish/files/serversettings/')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/imports')
+      include '*.xml'
+    }
+    
+    copy { 
+      from new File(project(':com.ibm.ws.security.fat.common').buildDir, 'test-application/testmarker.war')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
+    }
+
+  	/* copy shared key/trust stores from the common security fat project */
+    copy { 
+     from project(':com.ibm.ws.security.fat.common').file('publish/shared/securityKeys')
+     into new File(autoFvtDir, 'publish/servers/' + server + '/')
+     include 'allAlgKeyStore.p12'
+     include 'allAlgTrustStore.p12'
+    }
+    
+    copy {
+      from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, "/securitykeys")
+      into new File(autoFvtDir, 'publish/servers/' + server)
+      include 'commonKeyStore.jks'
+      include 'commonBasicKeyStore.jks'
+      include 'commonTrustStore.jks'
+      include 'commonBadTrustStore.jks'
+    }
+  }
+  
+  /*
+   * Copy formlogin application to designated test servers.
+   */
+  servers = [
+    'com.ibm.ws.security.openidconnect.client-1.0_fat.jaxrs.rp',
+    'com.ibm.ws.security.openidconnect.client-1.0_fat.jaxrs.rpd'
+  ]
+  servers.each { server ->
+    copy {
+      from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').buildDir, 'test-application/formlogin.zip')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/test-apps')
+      rename 'formlogin.zip', 'formlogin.war'
+    }
+    println "autoFvtDir: " + autoFvtDir
+    copy {
+      from new File(appBuildDir, 'simplejaxrsclient.zip')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/test-apps')
+      rename 'simplejaxrsclient.zip', 'simplejaxrsclient.war'
+    }
+    copy {
+      from new File(appBuildDir, 'jaxrsclient.zip')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/test-apps')
+       rename 'jaxrsclient.zip', 'jaxrsclient.war'
+    }
+    
+  }
+
+  servers = [
+    'com.ibm.ws.security.openidconnect.client-1.0_fat.jaxrs.op',
+    'com.ibm.ws.security.openidconnect.client-1.0_fat.jaxrs.opWithStub',
+    'com.ibm.ws.security.openidconnect.client-1.0_fat.jaxrs.rp',
+    'com.ibm.ws.security.openidconnect.client-1.0_fat.jaxrs.rpd'
+  ]
+  servers.each { server ->
+    copy {
+      from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').buildDir, 'test-application/oauthclient.zip')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
+      rename 'oauthclient.zip', 'oauthclient.war'
+    }
+/*    copy {
+      from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').buildDir, 'test-application/oauthtaidemo.zip')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
+      rename 'oauthtaidemo.zip', 'oauthtaidemo.ear'
+    }
+*/        
+  }
+
+  /*
+   * Copy helloworld application and the associated keystore to the applicable test server.
+   */
+  servers = [
+    'com.ibm.ws.security.openidconnect.client-1.0_fat.jaxrs.rp',
+    'com.ibm.ws.security.openidconnect.client-1.0_fat.jaxrs.rpd',
+    'com.ibm.ws.security.openidconnect.client-1.0_fat.jaxrs.rs',
+    'com.ibm.ws.security.openidconnect.client-1.0_fat.jaxrs.rsd'
+  ]
+  servers.each { server ->
+    copy {
+		from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').buildDir, 'test-application/helloworld.war.zip')
+    	into new File(autoFvtDir, 'publish/servers/' + server + '/test-apps')
+   	 	rename 'helloworld.war.zip', 'helloworld.war'
+  	}
+  	/* copy shared key/trust stores from the common security fat project */
+  	copy { 
+   		from project(':com.ibm.ws.security.fat.common').file('publish/shared/securityKeys')
+   		into new File(autoFvtDir, 'publish/' + server + '/')
+   		include 'allAlgKeyStore.p12'
+   		include 'allAlgTrustStore.p12'
+ 	 }
+ 	 copy {
+    	from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, "/securitykeys")
+    	into new File(autoFvtDir, 'publish/servers/' + server + '/')
+    	include 'commonKeyStore.jks'
+  	}
+  	copy { 
+    	from project(':com.ibm.ws.security.fat.common.jwt').file('publish/shared/securityKeys')
+    	into new File(autoFvtDir, 'publish/servers/' + server + '/')
+    	include '*.pem'
+  	}  	
+
+  }
+   /*
+   * Copy TokenEndpointServlet application and the associated keystore to the applicable test server.
+   */
+  copy {
+    from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').buildDir, 'test-application/testTokenEndpoint.zip')
+    into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.openidconnect.client-1.0_fat.jaxrs.opWithStub/test-apps')
+    rename 'testTokenEndpoint.zip', 'testTokenEndpoint.war'
+  }
+  /*
+  * Copy the pem files that are needed to use with the TokenEndpointServlet
+  */
+       	/* copy shared key/trust stores from the common jwt security fat project */
+    copy { 
+      from project(':com.ibm.ws.security.fat.common.jwt').file('publish/shared/securityKeys')
+      into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.openidconnect.client-1.0_fat.jaxrs.opWithStub')
+      include '*.pem'
+    }
+     
+  /*
+   * Copy some other testing artifacts to the root autofvt directory.
+   */
+    copy {
+      from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, "/securitykeys")
+      into new File(autoFvtDir, 'securitykeys')
+      include 'commonSslClientDefault.jks'
+    }
+    copy {
+      from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, 'testFiles')
+      into new File(autoFvtDir, 'testFiles')
+      include '**'
+    }
+}

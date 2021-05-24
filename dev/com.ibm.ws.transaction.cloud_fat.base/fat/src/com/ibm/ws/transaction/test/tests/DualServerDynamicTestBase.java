@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019,2020 IBM Corporation and others.
+ * Copyright (c) 2019,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -137,7 +137,7 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
             Log.info(this.getClass(), method, "checkRec" + testSuffix + " returned: " + sb);
 
             // Bounce first server to clear log
-            server1.stopServer((String[]) null);
+            server1.stopServer("CWWKN0005W"); // LastingXAResourceImpl handles CWWKN0005W
             server1.startServerAndValidate(false, true, true);
 
             // Check log was cleared

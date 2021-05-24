@@ -41,7 +41,9 @@ dependencies {
   requiredLibs 'org.mock-server:mockserver-client-java:5.11.2',
     'org.mock-server:mockserver-core:5.11.2',
     'org.mock-server:mockserver-logging:5.3.0',
-    'org.mock-server:mockserver-netty:5.11.2'
+    'org.mock-server:mockserver-netty:5.11.2',
+    'org.bouncycastle:bcprov-jdk15on:1.61',
+    'org.bouncycastle:bcpkix-jdk15on:1.61'
 }
 
 task addThirdPartyJerseyClient(type: Copy) {

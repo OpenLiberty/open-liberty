@@ -14,13 +14,14 @@ bVersion=1.0
 Bundle-Name: org.apache.wss4j.wss4j.ws.security
 Bundle-Description: org.apache.wss4j.wss4j.ws.security.common; version=2.3.0
 Bundle-SymbolicName: com.ibm.ws.org.apache.wss4j.ws.security.common.2.3.0
-Bundle-ActivationPolicy: lazy
+
 
 WS-TraceGroup: WSS4J
 
 Export-Package: \
- org.apache.wss4j.common.*           
- 
+ org.apache.wss4j.common.*, \
+ org.apache.wss4j.common.cache;version=2.3.0
+  
 # these should be optional only when resolving jars from wlp/dev
 Import-Package: \
  !com.ibm.security.jgss, \
@@ -28,6 +29,9 @@ Import-Package: \
  !org.bouncycastle.asn1, \
  !org.bouncycastle.asn1.x500, \
  !org.bouncycastle.asn1.x509, \
+ com.ibm.websphere.ras, \
+ com.ibm.websphere.ras.annotation, \
+ com.ibm.ws.ffdc, \
  *
  
 DynamicImport-Package: \
@@ -40,6 +44,4 @@ Include-Resource: \
  @${repo;org.apache.wss4j:wss4j-ws-security-common;2.3.0}!/templates/**,\
  @${repo;org.apache.wss4j:wss4j-ws-security-common;2.3.0}!/schemas/**,\
  @${repo;org.apache.wss4j:wss4j-ws-security-common;2.3.0}!/*xml, \
- @${repo;org.apache.wss4j:wss4j-ws-security-common;2.3.0}!/*xml, \
  @${repo;org.bouncycastle:bcprov-jdk15on;1.61;EXACT}!/!META-INF/MANIFEST.MF|META-INF/maven/*
-

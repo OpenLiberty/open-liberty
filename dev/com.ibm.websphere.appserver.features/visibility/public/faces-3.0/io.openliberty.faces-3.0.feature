@@ -35,15 +35,15 @@ IBM-API-Package: jakarta.faces; type="spec", \
 IBM-ShortName: faces-3.0
 WLP-AlsoKnownAs: jsf-3.0
 Subsystem-Name: Jakarta Server Faces 3.0
--features=io.openliberty.jakarta.cdi-3.0, \
- io.openliberty.servlet.api-5.0, \
- io.openliberty.jakarta.websocket-2.0, \
- io.openliberty.jakarta.validation-3.0, \
- io.openliberty.jakarta.faces-3.0, \
- io.openliberty.pages-3.0, \
- io.openliberty.jakarta.xmlBinding-3.0, \
- io.openliberty.facesProvider-3.0.0.MyFaces, \
- com.ibm.websphere.appserver.eeCompatible-9.0
+-features=io.openliberty.jakarta.websocket-2.0, \
+  io.openliberty.servlet.api-5.0, \
+  io.openliberty.jakarta.xmlBinding-3.0, \
+  io.openliberty.facesProvider-3.0.0.MyFaces, \
+  com.ibm.websphere.appserver.eeCompatible-9.0, \
+  io.openliberty.jakarta.validation-3.0, \
+  io.openliberty.pages-3.0, \
+  io.openliberty.jakarta.cdi-3.0, \
+  io.openliberty.jakarta.faces-3.0
 -bundles=io.openliberty.org.apache.myfaces.3.0, \
  com.ibm.ws.org.apache.commons.beanutils.1.9.4, \
  com.ibm.ws.org.apache.commons.collections, \

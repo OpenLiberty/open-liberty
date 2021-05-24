@@ -262,12 +262,14 @@ public class JAXRS21ClientJerseyRxInvokerTest extends JAXRS21AbstractTest {
     }
 
     @Test
+    @SkipForRepeat("EE9_FEATURES") // Skip this test for EE9 as this test is failing intermittently with EE9.  See issue  https://github.com/OpenLiberty/open-liberty/issues/16648
     public void testRxObservableInvoker_postConnectionTimeout() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         this.runTestOnServer(jerseyRxInvokerTarget, "testRxObservableInvoker_postConnectionTimeout", p, "Timeout as expected");
     }
 
     @Test
+    @SkipForRepeat("EE9_FEATURES") // Skip this test for EE9 as this test is failing intermittently with EE9.  See issue  https://github.com/OpenLiberty/open-liberty/issues/16648
     public void testRxFlowableInvoker_postConnectionTimeout() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         this.runTestOnServer(jerseyRxInvokerTarget, "testRxFlowableInvoker_postConnectionTimeout", p, "Timeout as expected");

@@ -1,0 +1,3 @@
+com.ibm.ws.security.oidc.client_fat
+com.ibm.ws.security.oidc.client_fat.jaxrs
+com.ibm.ws.security.oidc.server_fat.oidc

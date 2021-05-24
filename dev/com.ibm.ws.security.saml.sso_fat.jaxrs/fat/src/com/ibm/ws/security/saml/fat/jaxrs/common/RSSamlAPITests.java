@@ -220,7 +220,7 @@ public class RSSamlAPITests extends SAMLCommonTest {
      * @throws Exception
      */
     @Mode(TestMode.LITE)
-    @SkipForRepeat(SkipForRepeat.EE9_FEATURES) // TODO - figure out if we can re-enable
+    @SkipForRepeat(SkipForRepeat.EE9_FEATURES) // 17160 - EE9 clie properties not supported yet
     @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.ws.message.decoder.MessageDecodingException", "org.opensaml.xml.parse.XMLParserException" })
     @Test
     public void RSSamlAPITests_useJaxRSCLientServlet_runtimePropagateToken_setStringTrue() throws Exception {
@@ -257,7 +257,7 @@ public class RSSamlAPITests extends SAMLCommonTest {
      * @throws Exception
      */
     @Mode(TestMode.LITE)
-    @SkipForRepeat(SkipForRepeat.EE9_FEATURES) // TODO - figure out if we can re-enable
+    @SkipForRepeat(SkipForRepeat.EE9_FEATURES) // 17160 - EE9 clie properties not supported yet
     @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.ws.message.decoder.MessageDecodingException", "org.opensaml.xml.parse.XMLParserException" })
     @Test
     public void RSSamlAPITests_useJaxRSCLientServlet_runtimePropagateToken_setBooleanTrue() throws Exception {
@@ -292,6 +292,7 @@ public class RSSamlAPITests extends SAMLCommonTest {
      * @throws Exception
      */
     @Mode(TestMode.LITE)
+    @SkipForRepeat(SkipForRepeat.EE9_FEATURES) // 17160 - EE9 clie properties not supported yet
     @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.ws.message.decoder.MessageDecodingException", "org.opensaml.xml.parse.XMLParserException" })
     @Test
     public void RSSamlAPITests_useJaxRSCLientServlet_runtimePropagateToken_setStringFalse() throws Exception {
@@ -324,6 +325,7 @@ public class RSSamlAPITests extends SAMLCommonTest {
      * @throws Exception
      */
     @Mode(TestMode.LITE)
+    @SkipForRepeat(SkipForRepeat.EE9_FEATURES) // 17160 - EE9 clie properties not supported yet
     @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.ws.message.decoder.MessageDecodingException", "org.opensaml.xml.parse.XMLParserException" })
     @Test
     public void RSSamlAPITests_useJaxRSCLientServlet_runtimePropagateToken_setBooleanFalse() throws Exception {

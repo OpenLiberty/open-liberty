@@ -159,6 +159,7 @@ import org.apache.wss4j.policy.model.X509Token.TokenType;
 /**
  *
  */
+//No Liberty Change, but needed to recompile due to Liberty change in MessageImpl.
 public abstract class AbstractBindingBuilder extends AbstractCommonBindingHandler {
     public static final String CRYPTO_CACHE = "ws-security.crypto.cache";
     protected static final Logger LOG = LogUtils.getL7dLogger(AbstractBindingBuilder.class);

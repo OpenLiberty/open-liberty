@@ -54,8 +54,8 @@ public class FATSuite {
                     .andWith(FeatureReplacementAction.EE9_FEATURES());
 
     public static final String MOJARRA_API_IMP = "publish/files/mojarra/javax.faces-2.3.3.jar";
-    public static final String MYFACES_API = "publish/files/myfaces/myfaces-api-2.3.8.jar";
-    public static final String MYFACES_IMP = "publish/files/myfaces/myfaces-impl-2.3.8.jar";
+    public static final String MYFACES_API = "publish/files/myfaces/myfaces-api-2.3.9.jar";
+    public static final String MYFACES_IMP = "publish/files/myfaces/myfaces-impl-2.3.9.jar";
     // For ErrorPathsTest#testBadImplVersion_MyFaces Test
     public static final String MYFACES_API_30 = "publish/files/myfaces30/myfaces-api-3.0.0.jar";
 

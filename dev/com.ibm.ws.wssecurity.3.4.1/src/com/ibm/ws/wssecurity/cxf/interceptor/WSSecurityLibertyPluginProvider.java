@@ -16,6 +16,7 @@ import java.util.Collection;
 import javax.xml.namespace.QName;
 
 import org.apache.cxf.ws.policy.AbstractPolicyInterceptorProvider;
+import org.apache.wss4j.policy.SP11Constants;
 import org.apache.wss4j.policy.SP12Constants;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -37,6 +38,13 @@ public class WSSecurityLibertyPluginProvider extends AbstractPolicyInterceptorPr
         ASSERTION_TYPES.add(SP12Constants.TRANSPORT_BINDING);
         ASSERTION_TYPES.add(SP12Constants.ASYMMETRIC_BINDING);
         ASSERTION_TYPES.add(SP12Constants.SYMMETRIC_BINDING);
+        //v3
+        ASSERTION_TYPES.add(SP12Constants.SIGNED_PARTS);
+
+        ASSERTION_TYPES.add(SP11Constants.TRANSPORT_BINDING);
+        ASSERTION_TYPES.add(SP11Constants.ASYMMETRIC_BINDING);
+        ASSERTION_TYPES.add(SP11Constants.SYMMETRIC_BINDING);
+        ASSERTION_TYPES.add(SP11Constants.SIGNED_PARTS);
     }
 
     public WSSecurityLibertyPluginProvider() {

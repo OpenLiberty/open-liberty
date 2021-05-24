@@ -15,7 +15,7 @@
 // Global vars
 ext.autoFvtDir = new File(project.buildDir, 'autoFVT')
 
-ext.testcontainersVersion = '1.15.1'
+ext.testcontainersVersion = '1.15.3'
 
 // Local vars
 File publishDir = new File(autoFvtDir, 'publish')
@@ -74,15 +74,15 @@ dependencies {
 
   testcontainers "org.testcontainers:testcontainers:${testcontainersVersion}",
        'com.fasterxml.jackson.core:jackson-annotations:2.10.3',
-       'com.github.docker-java:docker-java-api:3.2.7',
-       'com.github.docker-java:docker-java-transport:3.2.7',
-       'com.github.docker-java:docker-java-transport-zerodep:3.2.7',
-       'net.java.dev.jna:jna:5.5.0',
+       'com.github.docker-java:docker-java-api:3.2.8',
+       'com.github.docker-java:docker-java-transport:3.2.8',
+       'com.github.docker-java:docker-java-transport-zerodep:3.2.8',
+       'net.java.dev.jna:jna:5.8.0',
        'org.apache.commons:commons-compress:1.20',
        'org.rnorth.duct-tape:duct-tape:1.0.8',
        'org.rnorth.visible-assertions:visible-assertions:2.1.2',
-       'org.slf4j:slf4j-api:1.7.26',
-       'org.slf4j:slf4j-jdk14:1.7.7'
+       'org.slf4j:slf4j-api:1.7.30',
+       'org.slf4j:slf4j-jdk14:1.7.30'
 }
 
 task addTestcontainers(type: Copy) {

@@ -37,7 +37,7 @@ configurations.jersey {
 dependencies {
  reactivex 'io.reactivex:rxjava:1.3.8',
     'io.reactivex.rxjava2:rxjava:2.2.2',
-    'org.reactivestreams:reactive-streams:1.0.3'
+    project(':com.ibm.websphere.org.reactivestreams.reactive-streams.1.0')
  cxf 'org.apache.cxf:cxf-rt-rs-extension-reactivestreams:3.3.6',
     'org.apache.cxf:cxf-rt-rs-extension-rx2:3.3.6'
  jersey 'org.glassfish.jersey.core:jersey-client:2.30.1',
@@ -80,7 +80,7 @@ dependencies {
   mockserver 'org.bouncycastle:bcprov-jdk15on:1.56'
   mockserver 'org.bouncycastle:bcmail-jdk15on:1.56'
   mockserver 'org.bouncycastle:bcpkix-jdk15on:1.56'
-  mockserver 'org.reactivestreams:reactive-streams:1.0.3'
+  mockserver project(':com.ibm.websphere.org.reactivestreams.reactive-streams.1.0')
   mockserver 'org.skyscreamer:jsonassert:1.2.3'   
 }
 task addReactivex(type: Copy) {

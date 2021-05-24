@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2019 IBM Corporation and others.
+ * Copyright (c) 2010, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,6 +37,7 @@ import com.ibm.ws.kernel.boot.internal.KernelResolver;
 import com.ibm.ws.kernel.boot.internal.KernelUtils;
 import com.ibm.ws.kernel.boot.internal.PasswordGenerator;
 import com.ibm.ws.kernel.boot.internal.ServerLock;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 public class BootstrapConfig {
     /** ${} */
@@ -130,6 +131,8 @@ public class BootstrapConfig {
             });
         } catch (Exception ex) {
         }
+
+        ProductInfo.setBetaEditionJVMProperty();
 
         bootstrapLib = fbootstrapLib;
 

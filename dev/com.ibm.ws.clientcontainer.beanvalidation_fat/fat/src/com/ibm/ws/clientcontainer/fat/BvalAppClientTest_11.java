@@ -17,11 +17,13 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyClientFactory;
+import componenttest.annotation.SkipForRepeat;
 
 @RunWith(FATRunner.class)
 public class BvalAppClientTest_11 extends AbstractAppClientTest {
     
 	@Test
+	@SkipForRepeat(SkipForRepeat.EE9_FEATURES)
 	public void testApacheBvalConfig_11_AppClient() throws Exception {
 		String testClientName = "com.ibm.ws.clientcontainer.beanvalidation.fat.ApacheBvalConfig_11";
 		client = LibertyClientFactory.getLibertyClient(testClientName);
@@ -34,6 +36,7 @@ public class BvalAppClientTest_11 extends AbstractAppClientTest {
 	}
 	
 	@Test
+	@SkipForRepeat(SkipForRepeat.EE9_FEATURES)
 	public void testBeanvalidation_11_AppClient() throws Exception {
 		String testClientName = "com.ibm.ws.clientcontainer.beanvalidation.fat.beanvalidation_11";
 		client = LibertyClientFactory.getLibertyClient(testClientName);
@@ -47,6 +50,7 @@ public class BvalAppClientTest_11 extends AbstractAppClientTest {
 	}
 	
 	@Test
+	@SkipForRepeat(SkipForRepeat.EE9_FEATURES)
 	public void testBeanValidationCDI_11_AppClient() throws Exception {
 		String testClientName = "com.ibm.ws.clientcontainer.beanvalidation.fat.BeanValidationCDI_11";
 		client = LibertyClientFactory.getLibertyClient(testClientName);
@@ -60,6 +64,7 @@ public class BvalAppClientTest_11 extends AbstractAppClientTest {
 	}
 	
 	@Test
+	@SkipForRepeat(SkipForRepeat.EE9_FEATURES)
 	public void testDefaultbeanvalidation_11_AppClient() throws Exception {
 		String testClientName = "com.ibm.ws.clientcontainer.beanvalidation.fat.defaultbeanvalidation_11";
 		client = LibertyClientFactory.getLibertyClient(testClientName);
@@ -73,6 +78,7 @@ public class BvalAppClientTest_11 extends AbstractAppClientTest {
 	}
 	
 	@Test
+	@SkipForRepeat(SkipForRepeat.EE9_FEATURES)
 	public void testDefaultBeanValidationCDI_11_AppClient() throws Exception {
 		String testClientName = "com.ibm.ws.clientcontainer.beanvalidation.fat.DefaultBeanValidationCDI_11";
 		client = LibertyClientFactory.getLibertyClient(testClientName);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,8 +37,8 @@ public class FeatureUtilityProperties {
     private final static Set<String> DEFINED_OPTIONS= new HashSet<>(Arrays.asList("proxyHost", "proxyPort", "proxyUser", "proxyPassword", "featureLocalRepo"));
     private static Map<String, String> definedVariables = new HashMap<>();
     private static List<MavenRepository> repositoryList = new ArrayList<>();
-    private static List<String> additionalJsonsList = new ArrayList<>();
-    private final static String jsonCoordQualifier = ".json.coordinate";
+    private static List<String> bomIdList = new ArrayList<>();
+    private final static String bomIdQualifier = ".featuresbom";
     private static boolean didFileParse;
 
     static {
@@ -56,12 +56,12 @@ public class FeatureUtilityProperties {
         return repositoryList;
     }
     
-    public static List<String> getAdditionalJsons(){
-        return additionalJsonsList;
+    public static List<String> getBomIds(){
+        return bomIdList;
     }
     
-    public static boolean additionalJsonsRequired() {
-    	return !getAdditionalJsons().isEmpty();
+    public static boolean bomIdsRequired() {
+    	return !getBomIds().isEmpty();
     }
 
     public static boolean canConstructHttpProxy(){
@@ -144,8 +144,8 @@ public class FeatureUtilityProperties {
             if(DEFINED_OPTIONS.contains(key.toString())){
                 definedVariables.putIfAbsent(key.toString(), value.toString()); // only write the first proxy variables we see
             } else {
-            	if (key.toLowerCase().contains(jsonCoordQualifier)) {
-            		additionalJsonsList.add(value);
+            	if (key.toLowerCase().contains(bomIdQualifier)) {
+            		bomIdList.add(value);
             	} else {
             		String [] split = key.toString().split("\\.");
                     if(split.length < 2){ // invalid key

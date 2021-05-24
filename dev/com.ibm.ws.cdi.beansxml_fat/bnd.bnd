@@ -14,48 +14,19 @@ bVersion=1.0
 # Define the bundle for this FAT
 
 src: \
-	fat/src,\
-        test-applications/afterTypeDiscoveryApp.war/src,\
-        test-applications/aroundConstructApp.war/src,\
-        test-applications/beanDiscoveryModeNone.war/src,\
-        test-applications/classExclusion.war/src,\
-        test-applications/ejbDiscovery.war/src,\
-        test-applications/ejbMisc.war/src,\
-        test-applications/ejbScope.war/src,\
-        test-applications/ejbTimer.war/src,\
-        test-applications/multipleBeansXml.war/src,\
-        test-applications/invalidBeansXml.war/src,\
-        test-applications/multipleEJBsSingleClass.war/src,\
-        test-applications/multipleWar1.war/src,\
-        test-applications/multipleWar2.war/src,\
-        test-applications/multipleWarEmbeddedJar.jar/src,\
-        test-applications/postConstructErrorMessageApp.war/src,\
-        test-applications/TestVetoedAlternative.war/src,\
-        test-applications/TestVetoedAlternative.jar/src,\
-        test-applications/userSAXParserFactory.war/src,\
-        test-applications/webBeansBeansXmlInterceptors.war/src,\
-        test-applications/webBeansBeansXmlDecorators.war/src,\
-        test-applications/utilLib.jar/src
-        
-	
-	
+	fat/src
+
 
 tested.features:\
 	cdi-2.0,\
         servlet-4.0,\
-        jdbc-4.2,\
-        jpa-2.2,\
-        beanValidation-2.0,\
-        jaxrs-2.1,\
-        jsf-2.3,\
-        restfulwsclient-3.0,\
-        restfulws-3.0,\
-        jsonp-2.0
+        cdi-3.0,\
+        servlet-5.0
+                
 	
 test.project: true
 
 -buildpath: \
-	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
 	com.ibm.ws.security;version=latest,\
@@ -64,14 +35,7 @@ test.project: true
 	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
 	io.openliberty.org.apache.commons.logging;version=latest,\
 	com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
-	com.ibm.websphere.javaee.jsf.2.2;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
-	com.ibm.websphere.javaee.jms.2.0;version=latest,\
-	com.ibm.websphere.javaee.connector.1.7;version=latest,\
-	com.ibm.websphere.javaee.validation.1.1;version=latest,\
-	com.ibm.websphere.javaee.el.3.0;version=latest,\
-	com.ibm.websphere.javaee.jsp.2.3;version=latest,\
-	com.ibm.websphere.javaee.websocket.1.1;version=latest,\
 	com.ibm.ws.cdi.interfaces;version=latest

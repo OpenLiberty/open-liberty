@@ -19,14 +19,9 @@ src: \
         test-applications/appClientSecurity.jar/src,\
 	test-applications/HelloAppClient.jar/src
 	
-tested.features:\
-	cdi-2.0,\
-        servlet-4.0,\
-        jdbc-4.2,\
-        jpa-2.2,\
-        beanValidation-2.0,\
-        jaxrs-2.1,\
-        jsf-2.3
+
+tested.features: \
+  jakartaeeClient-9.0
 	
 	
 test.project: true

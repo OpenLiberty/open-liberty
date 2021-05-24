@@ -11,10 +11,9 @@ WLP-AlsoKnownAs: jaspic-2.0
 IBM-SPI-Package: \
   com.ibm.wsspi.security.jaspi; type="ibm-spi"
 Subsystem-Name: Jakarta Authentication 2.0
--features=\
+-features=io.openliberty.xmlBinding-3.0, \
   io.openliberty.appSecurity-4.0, \
   io.openliberty.jakarta.authentication-2.0, \
-  io.openliberty.xmlBinding-3.0, \
   com.ibm.websphere.appserver.servlet-5.0, \
   com.ibm.websphere.appserver.eeCompatible-9.0
 -bundles=\

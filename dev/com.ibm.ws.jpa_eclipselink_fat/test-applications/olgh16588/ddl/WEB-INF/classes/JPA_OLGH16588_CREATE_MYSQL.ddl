@@ -1,4 +1,3 @@
--- EclipseLink
 CREATE TABLE ${schemaname}.PREV_ADDRESSES (SpecEmployeeOLGH16588_ID INTEGER, city VARCHAR(255), state VARCHAR(255), street VARCHAR(255), zipcode VARCHAR(255)) ENGINE = innodb;
 CREATE TABLE ${schemaname}.SpecEmployeeOLGH16588 (id INTEGER NOT NULL, city VARCHAR(255), state VARCHAR(255), street VARCHAR(255), zipcode VARCHAR(255), PRIMARY KEY (id)) ENGINE = innodb;
 CREATE TABLE ${schemaname}.SpecEmployeeOLGH16588_SpecPhoneOLGH16588 (SpecEmployeeOLGH16588_ID INTEGER, phones_ID INTEGER) ENGINE = innodb;

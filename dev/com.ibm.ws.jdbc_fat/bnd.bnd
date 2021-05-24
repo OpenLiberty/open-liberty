@@ -32,8 +32,6 @@ fat.test.databases: true
 
 -buildpath: \
 	fattest.simplicity;version=latest,\
-	org.slf4j:slf4j-api;version=1.7.7,\
-    com.github.docker-java:docker-java-api;version=latest,\
 	com.ibm.ws.componenttest,\
 	com.ibm.websphere.javaee.annotation.1.1,\
 	com.ibm.websphere.javaee.transaction.1.1,\
@@ -42,6 +40,4 @@ fat.test.databases: true
 	com.ibm.websphere.appserver.api.security,\
 	com.ibm.websphere.appserver.api.securityClient,\
 	org.apache.derby:derby;version=10.11.1.1,\
-	org.testcontainers:database-commons;version=1.15.1,\
-	org.testcontainers:jdbc;version=1.15.1,\
-	org.testcontainers:testcontainers;version=1.15.1
+	io.openliberty.org.testcontainers;version=latest

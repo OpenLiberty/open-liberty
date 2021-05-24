@@ -67,7 +67,6 @@ public class JMSContextServlet extends HttpServlet {
 
     public static Queue queue;
     public static Topic topic;
-    public static Topic topic2;
     
     /** @return the methodName of the caller. */
     private static final String methodName() { return new Exception().getStackTrace()[1].getMethodName(); }
@@ -147,13 +146,6 @@ public class JMSContextServlet extends HttpServlet {
         }
         System.out.println("Topic 'eis/topic1':\n" + topic);
 
-        try {
-            topic2 = (Topic) new InitialContext().lookup("eis/topic2");
-        } catch ( NamingException e ) {
-            e.printStackTrace();
-        }
-        System.out.println("Topic 'eis/topic2':\n" + topic2);
-
         if ( qcfBindings == null ) {
             throw new ServletException("Null 'qcfBindings'");
         }
@@ -173,9 +165,6 @@ public class JMSContextServlet extends HttpServlet {
         }
         if ( topic == null ) {
             throw new ServletException("Null 'topic'");
-        }
-        if ( topic2 == null ) {
-            throw new ServletException("Null 'topic2'");
         }
     }
 
@@ -297,6 +286,8 @@ public class JMSContextServlet extends HttpServlet {
             userTransaction.begin();
             TextMessage receivedMessage = (TextMessage) jmsConsumer.receive();
             userTransaction.commit();
+            if (receivedMessage == null)                    
+                throw new TestException("No message received, sent:"+sentMessage);
             if (!receivedMessage.getText().equals(sentMessage.getText()))
                 throw new TestException("Wrong message received:"+receivedMessage+" sent:"+sentMessage);
 
@@ -329,6 +320,8 @@ public class JMSContextServlet extends HttpServlet {
             TextMessage sentMessage = jmsContext.createTextMessage(methodName() + " at " + new Date());
             jmsProducerTCFTCP.send(topic, sentMessage);
             TextMessage receivedMessage = (TextMessage) jmsConsumerTCFTCP.receive(30000);
+            if (receivedMessage == null)                    
+                throw new TestException("No message received, sent:"+sentMessage);
             if (!receivedMessage.getText().equals(sentMessage.getText()))
                 throw new TestException("Wrong message received:" + receivedMessage + " sent:" + sentMessage);
         }
@@ -345,7 +338,7 @@ public class JMSContextServlet extends HttpServlet {
     }
 
     private void testReceiveNoWaitMessageTopicSecOff(TopicConnectionFactory topicConnectionFactory)
-            throws JMSException, TestException {
+            throws JMSException, TestException, InterruptedException {
         
         try (JMSContext jmsContext = topicConnectionFactory.createContext()) {
             JMSConsumer jmsConsumer = jmsContext.createConsumer(topic);
@@ -353,7 +346,17 @@ public class JMSContextServlet extends HttpServlet {
 
             TextMessage sentMessage = jmsContext.createTextMessage(methodName()+" at "+new Date());
             jmsProducer.send(topic, sentMessage);
-            TextMessage receivedMessage = (TextMessage) jmsConsumer.receiveNoWait();
+            
+            // JMS does not specify when the message is available to be received, 
+            // so repeat attempts to receive the message.
+            TextMessage receivedMessage = null;
+            for (int i = 0; i<10 &&  receivedMessage == null; i++) {
+              receivedMessage = (TextMessage) jmsConsumer.receiveNoWait();
+              Thread.sleep(100);
+            }
+            
+            if (receivedMessage == null)                    
+                throw new TestException("No message received, sent:"+sentMessage);
             if (!receivedMessage.getText().equals(sentMessage.getText()))
                 throw new TestException("Wrong message received:"+receivedMessage+" sent:"+sentMessage);
         }
@@ -370,11 +373,17 @@ public class JMSContextServlet extends HttpServlet {
     }
 
     private void testReceiveNoWaitNullMessageTopicSecOff(TopicConnectionFactory topicConnectionFactory)
-            throws TestException {
+            throws TestException, InterruptedException {
+        
         try (JMSContext jmsContext = topicConnectionFactory.createContext()) {
             JMSConsumer jmsConsumer = jmsContext.createConsumer(topic);
 
-            Message receivedMessage = jmsConsumer.receiveNoWait();
+            Message receivedMessage = null;
+            for (int i = 0; i<10 &&  receivedMessage == null; i++) {
+              receivedMessage = jmsConsumer.receiveNoWait();
+              Thread.sleep(100);
+            }
+            
             if (receivedMessage != null)
                 throw new TestException("Wrong message received:"+receivedMessage);
         }
@@ -438,6 +447,8 @@ public class JMSContextServlet extends HttpServlet {
             userTransaction.begin();
             String receivedMessageBody = jmsConsumer.receiveBody(String.class);
             userTransaction.commit();
+            if (receivedMessageBody == null)                    
+                throw new TestException("No message received, sent:"+sentMessageBody);
             if (!receivedMessageBody.equals(sentMessageBody))
                 throw new TestException("Wrong message received:"+receivedMessageBody+" sent:"+sentMessageBody); 
            
@@ -470,6 +481,8 @@ public class JMSContextServlet extends HttpServlet {
             TextMessage sentMessage = jmsContext.createTextMessage(methodName()+" at "+new Date());
             jmsProducer.send(topic, sentMessage);
             String receivedMessageBody = jmsConsumer.receiveBody(String.class);
+            if (receivedMessageBody == null)                    
+                throw new TestException("No message received, sent:"+sentMessage);
             if (!receivedMessageBody.equals(sentMessage.getText()))
                 throw new TestException("Wrong message received:"+receivedMessageBody+" sent:"+sentMessage);
         }
@@ -528,6 +541,8 @@ public class JMSContextServlet extends HttpServlet {
 
             jmsProducer.send(topic, sentMessage);
             Map<?, ?> receivedMessageBody = jmsConsumer.receiveBody(Map.class);
+            if (receivedMessageBody == null)                    
+                throw new TestException("No message received, sent:"+sentMessage);
             if (!receivedMessageBody.equals(sentMessage.getBody(Map.class)))
                 throw new TestException("Wrong message received:" + receivedMessageBody + " sent:" + sentMessage);
         }
@@ -556,6 +571,8 @@ public class JMSContextServlet extends HttpServlet {
 
             jmsProducer.send(topic, sentMessage);
             byte[] receivedMessageBody = jmsConsumer.receiveBody(byte[].class);
+            if (receivedMessageBody == null)                    
+                throw new TestException("No message received, sent:"+sentMessage);
             if (!Arrays.equals(receivedMessageBody, sentMessage.getBody(byte[].class)))
                 throw new TestException("Wrong message received:" + receivedMessageBody + " sent:" + sentMessage);
         }
@@ -616,7 +633,9 @@ public class JMSContextServlet extends HttpServlet {
 
             userTransaction.begin();
             String receivedMessageBody = jmsConsumer.receiveBody(String.class, 30000);
-            userTransaction.commit();           
+            userTransaction.commit();   
+            if (receivedMessageBody == null)                    
+                throw new TestException("No message received, sent:"+sentMessageBody);
             if (!receivedMessageBody.equals(sentMessageBody))
                 throw new TestException("Wrong message received:"+receivedMessageBody+" sent:"+sentMessageBody);
             
@@ -706,6 +725,8 @@ public class JMSContextServlet extends HttpServlet {
 
             jmsProducer.send(topic, sentMessage);
             Map<?, ?> receivedMessageBody = jmsConsumer.receiveBody(Map.class, 30000);
+            if (receivedMessageBody == null)                    
+                throw new TestException("No message received, sent:"+sentMessage);
             if (!receivedMessageBody.equals(sentMessage.getBody(Map.class)))
                 throw new TestException("Wrong message received:" + receivedMessageBody + " sent:" + sentMessage);
         }
@@ -734,6 +755,8 @@ public class JMSContextServlet extends HttpServlet {
 
             jmsProducer.send(topic, sentMessage);
             byte[] receivedMessageBody = jmsConsumer.receiveBody(byte[].class, 30000);
+            if (receivedMessageBody == null)                    
+                throw new TestException("No message received, sent:"+sentMessage);
             if (!Arrays.equals(receivedMessageBody, sentMessage.getBody(byte[].class)))
                 throw new TestException("Wrong message received:" + receivedMessageBody + " sent:" + sentMessage);
         }
@@ -811,6 +834,8 @@ public class JMSContextServlet extends HttpServlet {
               Thread.sleep(100);
             }
             userTransaction.commit();
+            if (receivedMessageBody == null)                    
+                throw new TestException("No message received, sent:"+sentMessageBody);
             if (!receivedMessageBody.equals(sentMessageBody))
                 throw new TestException("Wrong message received:"+receivedMessageBody+" sent:"+sentMessageBody); 
            
@@ -848,6 +873,8 @@ public class JMSContextServlet extends HttpServlet {
               receivedMessageBody = jmsConsumer.receiveBodyNoWait(String.class);
               Thread.sleep(100);
             }
+            if (receivedMessageBody == null)                    
+                throw new TestException("No message received, sent:"+sentMessage);
             if (!receivedMessageBody.equals(sentMessage.getText()))
                 throw new TestException("Wrong message received:"+receivedMessageBody+" sent:"+sentMessage);
         }

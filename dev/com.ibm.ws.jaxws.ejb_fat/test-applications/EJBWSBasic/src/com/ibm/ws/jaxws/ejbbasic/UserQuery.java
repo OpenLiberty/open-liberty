@@ -19,12 +19,10 @@ import javax.xml.ws.soap.Addressing;
 @Addressing(enabled = true, required = true)
 public class UserQuery {
 
-    @javax.xml.ws.Action(input = "http://ejbbasic.jaxws.ws.ibm.com/UserQuery/getUser")
     public User getUser(String userName) throws UserNotFoundException {
         return StaticUserRepository.getUser(userName);
     }
 
-    @javax.xml.ws.Action(input = "http://ejbbasic.jaxws.ws.ibm.com/UserQuery/listUser")
     public User[] listUsers() {
         return StaticUserRepository.listUsers();
     }

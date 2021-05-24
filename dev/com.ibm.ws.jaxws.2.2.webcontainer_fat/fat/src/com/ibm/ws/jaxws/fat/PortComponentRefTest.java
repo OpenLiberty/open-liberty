@@ -57,7 +57,9 @@ public class PortComponentRefTest {
 
         // Replace the service's wsdl port address with the real URL,
         // because the client's <port-component-link> will find and use it so that it doesn't need explicitly specify the wsdl location in service-ref.
-        TestUtils.replaceServerFileString(server, "dropins/testPortComponentRefWeb.war/wsdl/HelloService.wsdl", "#BASE_URL#", getBaseURL());
+        TestUtils.replaceServerFileString(server, "dropins/testPortComponentRefWeb.war/w"
+                                                  + "sdl/HelloService.wsdl",
+                                          "#BASE_URL#", getBaseURL());
         TestUtils.replaceServerFileString(server, "dropins/testPortComponentRefEJBinWeb.war/wsdl/HelloService.wsdl", "#BASE_URL#", getBaseURL());
         TestUtils.replaceServerFileString(server, "resources/testPortComponentRefApplicationEJB.jar/META-INF/wsdl/HelloService.wsdl", "#BASE_URL#", getBaseURL());
 

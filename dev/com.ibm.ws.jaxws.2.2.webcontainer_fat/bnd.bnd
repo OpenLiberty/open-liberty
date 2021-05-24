@@ -24,6 +24,8 @@ src: \
   test-applications/helloEJBServer/src,\
   test-applications/helloServer/src,\
   test-applications/httpConduitProperties/src,\
+  test-applications/POJOServiceSecurity/src,\
+  test-applications/POJOServiceSecurityClient/src,\
   test-applications/pureCXF/src,\
   test-applications/pureCXFWSDLFirst/src,\
   test-applications/sharedLib/src,\

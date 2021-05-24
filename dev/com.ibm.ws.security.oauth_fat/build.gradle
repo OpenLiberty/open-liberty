@@ -36,7 +36,9 @@ dependencies {
                   project(':com.ibm.ws.com.meterware.httpunit.1.6.2'),     // 1.7 causes refresh token failures
                   files('lib/jsse.jar'),
                   'rhino:js:1.6R5',
-                  project(':com.ibm.ws.mongo_fat')
+                  'de.flapdoodle.embed:de.flapdoodle.embed.mongo:3.0.0',
+                  'de.flapdoodle.embed:de.flapdoodle.embed.process:3.0.1',
+                  'org.apache.commons:commons-compress:1.20'
 }
 
 addRequiredLibraries.dependsOn addJakartaTransformer

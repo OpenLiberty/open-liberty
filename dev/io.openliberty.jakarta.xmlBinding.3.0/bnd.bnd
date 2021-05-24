@@ -31,16 +31,13 @@ DynamicImport-Package: \
 #Bundle-Activator: org.apache.geronimo.osgi.locator.Activator
 
 Include-Resource:\
-  @${repo;jakarta.xml.bind:jakarta.xml.bind-api;3.0.0;EXACT}!/!META-INF/maven/*, \
-  jakarta/xml/bind=${bin}/jakarta/xml/bind
-# @${repo;org.apache.geronimo.specs:geronimo-jaxb_2.2_spec;1.0.1}!/org/apache/geronimo/osgi/locator/*, \
-# @${repo;org.apache.geronimo.specs:geronimo-jaxb_2.2_spec;1.0.1}!/javax/xml/bind/ContextFinder.class, \
-# @${repo;org.apache.geronimo.specs:geronimo-jaxb_2.2_spec;1.0.1}!/javax/xml/bind/JAXBContext.class, \
-# @${repo;org.apache.geronimo.specs:geronimo-jaxb_2.2_spec;1.0.1}!/javax/xml/bind/JAXBContext$1.class
+  @${repo;jakarta.xml.bind:jakarta.xml.bind-api;3.0.1;EXACT}!/!(META-INF/maven/*|module-info.class)
+
+Multi-Release: true
 
 instrument.disabled: true
 
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-	jakarta.xml.bind:jakarta.xml.bind-api;strategy=exact;version=3.0.0
+	jakarta.xml.bind:jakarta.xml.bind-api;strategy=exact;version=3.0.1

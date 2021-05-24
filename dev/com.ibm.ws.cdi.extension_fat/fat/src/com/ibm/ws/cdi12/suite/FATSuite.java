@@ -50,7 +50,8 @@ public class FATSuite {
     private static final String[] PATHS_TO_BUNDLES = {
         "publish/bundles/cdi.helloworld.extension.jar", 
         "publish/bundles/cdi.spi.constructor.fail.extension.jar", 
-        "publish/bundles/cdi.spi.extension.jar" 
+        "publish/bundles/cdi.spi.extension.jar", 
+        "publish/bundles/cdi.spi.misplaced.jar" 
     };
 
     @ClassRule

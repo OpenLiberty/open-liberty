@@ -10,9 +10,9 @@
 	<ldapRegistry id="LDAP" realm="SampleLdapIDSRealm" host="${ldap.server.1.name}" port="${ldap.server.1.port}" ignoreCase="true"
 		baseDN="o=ibm,c=us"
 		ldapType="IBM Tivoli Directory Server"
-		searchTimeout="8m">
+		searchTimeout="8m" connectTimeout="30s">
 		<failoverServers name="failoverLdapServers">
-			<server host="${ldap.server.4.name}" port="${ldap.server.4.port}"/>
+			<server host="${ldap.server.5.name}" port="${ldap.server.5.port}"/>
        	</failoverServers>
 	</ldapRegistry>
     

@@ -16,7 +16,7 @@ import com.ibm.ws.cdi.extension.spi.test.bundle.annotations.NewBDATwo;
 public class CustomBDABeanTwo {
 
     public String toString() {
-        return "CustomBDABeanTwo";
+        return "A Bean with an annotation registered via getBeanDefiningAnnotationClasses was successfully injected into a different bean with an annotation registered via getBeanDefiningAnnotationClasses";
     }
 
 }

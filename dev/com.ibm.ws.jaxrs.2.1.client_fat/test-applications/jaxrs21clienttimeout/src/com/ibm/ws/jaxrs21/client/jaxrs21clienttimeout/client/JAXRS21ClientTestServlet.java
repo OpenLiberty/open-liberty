@@ -15,6 +15,7 @@ import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -35,6 +36,8 @@ public class JAXRS21ClientTestServlet extends HttpServlet {
     private static final long serialVersionUID = 7188707949976646396L;
 
     private static final String moduleName = "jaxrs21clienttimeout";
+
+    private static final boolean isWindows = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("win");
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -146,6 +149,9 @@ public class JAXRS21ClientTestServlet extends HttpServlet {
                 e2.printStackTrace();
                 long timeElapsed = System.currentTimeMillis() - startTime;
                 long fudgeFactorTime = 4000;
+                if (isWindows) {
+                    fudgeFactorTime = 8000;
+                }
                 if (timeElapsed - fudgeFactorTime < longTimeout && timeElapsed + fudgeFactorTime > longTimeout) {
                     res = "[Basic Resource]:testTimeoutNonRoutable";
                 } else {

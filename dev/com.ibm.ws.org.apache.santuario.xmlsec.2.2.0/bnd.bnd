@@ -11,7 +11,12 @@
 -include= jar:${fileuri;${repo;org.apache.santuario:xmlsec;2.2.0;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 -includeresource: \
-   @${repo;org.apache.santuario:xmlsec;2.2.0;EXACT}!/!META-INF/maven/*
+   @${repo;org.apache.santuario:xmlsec;2.2.0;EXACT}!/!META-INF/maven/*,\
+   @${repo;org.apache.santuario:xmlsec;2.2.0;EXACT}!/META-INF/**, \
+   @${repo;org.apache.santuario:xmlsec;2.2.0;EXACT}!/templates/**, \
+   @${repo;org.apache.santuario:xmlsec;2.2.0;EXACT}!/schemas/**, \
+   @${repo;org.apache.santuario:xmlsec;2.2.0;EXACT}!/*xml, \
+   org/apache/xml/security/resource/xmlsecurity_en.nlsprops=resources/org/apache/xml/security/resource/xmlsecurity_en.nlsprops
 
 -buildpath: org.apache.santuario:xmlsec;strategy=exact;version=2.2.0
 

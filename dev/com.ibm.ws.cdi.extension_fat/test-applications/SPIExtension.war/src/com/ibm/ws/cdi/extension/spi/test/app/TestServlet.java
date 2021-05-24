@@ -50,7 +50,6 @@ public class TestServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 
         String unregString = "";
-
         try {
             UnregisteredBean ub = javax.enterprise.inject.spi.CDI.current().select(UnregisteredBean.class).get();
             unregString = "Found unregistered bean";

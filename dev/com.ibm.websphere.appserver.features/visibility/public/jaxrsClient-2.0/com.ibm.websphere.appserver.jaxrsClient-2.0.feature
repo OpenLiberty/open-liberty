@@ -8,7 +8,7 @@ IBM-App-ForceRestart: uninstall, \
 IBM-ShortName: jaxrsClient-2.0
 Subsystem-Name: Java RESTful Services Client 2.0
 -features=com.ibm.websphere.appserver.jaxrs.common-2.0, \
- com.ibm.websphere.appserver.eeCompatible-7.0
+  com.ibm.websphere.appserver.eeCompatible-7.0
 -bundles=com.ibm.ws.jaxrs.2.0.client, \
  com.ibm.ws.cxf.client
 kind=ga

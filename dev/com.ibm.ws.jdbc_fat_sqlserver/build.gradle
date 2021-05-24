@@ -24,9 +24,17 @@ dependencies {
 task copySharedSqlServerAnon(type: Copy) {
   shouldRunAfter jar
   from configurations.sqlserver
-  into new File(autoFvtDir, 'publish/shared/resources/sqlserver')
+  into new File(autoFvtDir, 'publish/shared/resources/anon')
   rename 'mssql-jdbc.*.jar', 'anomyous.jar'
 }
 
+task copySharedSQLServer(type: Copy) {
+  shouldRunAfter jar
+  from configurations.sqlserver
+  into new File(autoFvtDir, 'publish/shared/resources/sqlserver')
+  rename 'mssql-jdbc.*.jar', 'mssql-jdbc.jar'
+}
+
+addRequiredLibraries.dependsOn copySharedSQLServer
 addRequiredLibraries.dependsOn copySharedSqlServerAnon
 addRequiredLibraries.dependsOn addTestcontainers

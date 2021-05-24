@@ -67,9 +67,6 @@ public class AppClientTest {
         String featuresMessage = client.waitForStringInCopiedLog("CWWKF0034I", 0);
         assertNotNull("Did not receive features loaded message", featuresMessage);
 
-        String cdiFeature = RepeatTestFilter.isRepeatActionActive(EmptyAction.ID) ? "cdi-1.2" : "cdi-2.0";
-        assertTrue(cdiFeature + " was not among the loaded features", featuresMessage.contains(cdiFeature));
-
         assertNotNull("Did not receive app started message",
                       client.waitForStringInCopiedLog("Client App Start", 0));
 

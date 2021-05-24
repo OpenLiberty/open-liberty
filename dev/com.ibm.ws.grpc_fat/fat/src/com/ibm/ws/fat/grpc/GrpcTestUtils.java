@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,11 +12,15 @@ package com.ibm.ws.fat.grpc;
 
 import java.net.URL;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import com.ibm.websphere.simplicity.RemoteFile;
 
+import org.junit.Assert;
+
 import componenttest.topology.impl.LibertyServer;
+import io.grpc.ManagedChannel;
 
 /**
  * Utilities for grpc_fat. Taken from com.ibm.ws.jsf23.fat.JSFUtils
@@ -24,6 +28,10 @@ import componenttest.topology.impl.LibertyServer;
 public class GrpcTestUtils {
 
     protected static final Class<?> c = GrpcTestUtils.class;
+
+    private static final Logger LOG = Logger.getLogger(c.getName());
+
+    private static final int CHANNEL_SHUTDOWN_TIMEOUT = 2 * 1000; // 2 seconds
 
     /**
      * Construct a URL for a test case so a request can be made.
@@ -119,6 +127,26 @@ public class GrpcTestUtils {
             } else {
                 server.waitForStringInLog("CWWKG001[7-8]I");
             }
+        }
+    }
+
+    /**
+     * Terminate a channel and wait for it to stop; if the stop does not complete within 
+     * CHANNEL_SHUTDOWN_TIMEOUT then an Assert failure will be thrown
+     *
+     * @param channel
+     */
+    public static void stopGrpcService(ManagedChannel channel) {
+        channel.shutdownNow();
+        boolean terminated = false;
+        try {
+            terminated = channel.awaitTermination(CHANNEL_SHUTDOWN_TIMEOUT, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            LOG.info("stopGrpcService() : awaitTermination() for chanel " + channel + " was interrupted: " + e);
+        }
+        Assert.assertTrue("channel termination failed for " + channel, terminated);
+        if (terminated) {
+            LOG.info("stopGrpcService(): " + channel + " has been closed");
         }
     }
 }

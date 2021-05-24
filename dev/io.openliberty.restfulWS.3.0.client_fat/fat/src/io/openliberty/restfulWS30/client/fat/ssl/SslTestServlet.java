@@ -20,7 +20,6 @@ import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.Response;
 
-
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
@@ -48,24 +47,14 @@ public class SslTestServlet extends FATServlet {
     }
 
     @Test
-    public void testSSLRequestFailsWhenNoContextSpecified() throws Exception {
+    public void testUsesDefaultSSLConfigWhenNoContextSpecified() throws Exception {
         ClientBuilder builder = ClientBuilder.newBuilder();
         Client client = builder.build();
         WebTarget target = client.target("https://localhost:" + PORT + "/ssl/hello/secure");
         try {
-            target.request().get();
-            fail("Did not throw expected SSL Exception");
-        } catch (final Throwable t) {
-            Throwable t2 = t;
-            while (t2 != null) {
-                t2.printStackTrace();
-                if (t2.getClass().getName().contains("ssl")) {
-                    return;
-                }
-                t2 = t2.getCause();
-            }
-            //t2.printStackTrace();
-            fail("Threw an exception, but not related to SSL");
+            Response response = target.request().get();
+            assertEquals(200, response.getStatus());
+            assertEquals("Hello secure world!", response.readEntity(String.class));
         } finally {
             client.close();
         }

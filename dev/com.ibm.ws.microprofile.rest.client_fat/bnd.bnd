@@ -46,4 +46,4 @@ tested.features=mpRestClient-1.2,jdbc-4.2,appSecurity-3.0,mpRestClient-1.3,mpRes
   com.ibm.ws.cdi.interfaces;version=latest,\
   com.ibm.websphere.javaee.jsonp.1.0;version=latest,\
   com.ibm.websphere.javaee.jsonb.1.0;version=latest,\
-  com.ibm.ws.org.reactivestreams.reactive-streams.1.0
+  com.ibm.websphere.org.reactivestreams.reactive-streams.1.0

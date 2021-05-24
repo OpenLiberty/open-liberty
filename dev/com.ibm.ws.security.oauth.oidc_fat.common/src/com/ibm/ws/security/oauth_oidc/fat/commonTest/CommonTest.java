@@ -23,7 +23,6 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.security.KeyStore;
@@ -33,7 +32,6 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +48,7 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -65,13 +64,15 @@ import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.util.Cookie;
 import com.gargoylesoftware.htmlunit.util.NameValuePair;
+import com.ibm.websphere.simplicity.Machine;
+import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.security.fat.common.utils.AutomationTools;
 import com.ibm.ws.security.fat.common.CommonIOTools;
-import com.ibm.ws.security.fat.common.servers.ServerBootstrapUtils;
 import com.ibm.ws.security.fat.common.ShibbolethHelpers;
 import com.ibm.ws.security.fat.common.TestHelpers;
 import com.ibm.ws.security.fat.common.apps.AppConstants;
+import com.ibm.ws.security.fat.common.servers.ServerBootstrapUtils;
+import com.ibm.ws.security.fat.common.utils.AutomationTools;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.EndpointSettings.endpointSettings;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.ValidationData.validationData;
 import com.meterware.httpunit.GetMethodWebRequest;
@@ -90,9 +91,8 @@ import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.HttpUtils;
 import componenttest.topology.utils.LDAPUtils;
-import org.apache.commons.io.IOUtils;
+import componenttest.topology.utils.LibertyServerUtils;
 
 public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
 
@@ -1776,18 +1776,25 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
 
     }
 
+    /**
+     * Remove the mongoDB props file used by the CustomStoreSample and stop the locally started MongoDB server.
+     *
+     * @param server
+     * @param cumulativeException
+     * @param exceptionNum
+     * @return
+     */
     private static boolean mongoDBTeardownCleanup(TestServer server, Exception cumulativeException, int exceptionNum) {
         try {
-
-            Log.info(thisClass, "mongoDBTeardownCleanup", "cleanupMongoDBEntries");
-            MongoDBUtils.cleanupMongoDBEntries(server.getHttpString(), server.getHttpDefaultPort());
-
             try {
                 Log.info(thisClass, "mongoDBTeardownCleanup", "delete mongo props file " + MONGO_PROPS_FILE);
                 server.getServer().deleteFileFromLibertyServerRoot(MONGO_PROPS_FILE);
             } catch (Exception e) {
                 Log.info(thisClass, "mongoDBTeardownCleanup", "Exception removing MONGO_PROPS_FILE. If this is a Derby test, ignore this message." + e);
             }
+
+            MongoDBUtils.stopMongoDB();
+
             return true;
 
         } catch (Exception e) {
@@ -3188,17 +3195,9 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
     private static void setupMongoDBConfig(TestServer aTestServer, String httpString, Integer defaultPort) {
         String methodName = "setupMongoDBConfig";
         Log.info(thisClass, methodName, "Setup for mongoDB");
-        String mongoTableUid = "defaultUID";
         try {
-            mongoTableUid = "_" + InetAddress.getLocalHost().getHostName() + "_" + new Random(System.currentTimeMillis()).nextLong();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-            mongoTableUid = "localhost-" + System.nanoTime();
-        }
-
-        try {
-            MongoDBUtils.startMongoDB(aTestServer.getServer(), MONGO_PROPS_FILE, mongoTableUid);
-            MongoDBUtils.setupMongoDBEntries(httpString, defaultPort, mongoTableUid);
+            MongoDBUtils.startMongoDB(aTestServer.getServer(), MONGO_PROPS_FILE);
+            MongoDBUtils.setupMongoDBEntries(httpString, defaultPort);
         } catch (Exception e) {
             Log.error(thisClass, methodName, e, "Exception setting up MongoDB, CustomStore tests may fail.");
 
@@ -3211,6 +3210,29 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
         testSettings.setHashed(true);
     }
 
+    private static void transformAppsInDefaultDirs(TestServer server, String appDirName) {
+
+        LibertyServer myServer = server.getServer();
+        Machine machine = myServer.getMachine();
+
+        Log.info(thisClass, "transformAppsInDefaultDirs", "Processing " + appDirName + " for serverName: " + myServer.getServerName());
+        RemoteFile appDir = new RemoteFile(machine, LibertyServerUtils.makeJavaCompatible(myServer.getServerRoot() + File.separatorChar + appDirName, machine));
+
+        RemoteFile[] list = null;
+        try {
+            if (appDir.isDirectory()) {
+                list = appDir.list(false);
+            }
+        } catch (Exception e) {
+            Log.error(thisClass, "transformAppsInDefaultDirs", e);
+        }
+        if (list != null) {
+            for (RemoteFile app : list) {
+                JakartaEE9Action.transformApp(Paths.get(app.getAbsolutePath()));
+            }
+        }
+    }
+
     /**
      * JakartaEE9 transform applications for a specified server.
      *
@@ -3218,64 +3240,10 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
      */
     private static void transformApps(TestServer server) {
         if (JakartaEE9Action.isActive()) {
-            LibertyServer myServer = server.getServer();
-            switch (server.getServer().getServerName()) {
-                /******************************************************************
-                 *
-                 * com.ibm.ws.security.social_fat.LibertOP servers
-                 *
-                 ******************************************************************/
-                case "com.ibm.ws.security.social_fat.LibertyOP.op":
-                    JakartaEE9Action.transformApp(Paths.get(myServer.getServerRoot() + File.separatorChar + "dropins" + File.separatorChar + "testmarker.war"));
-                    break;
-                case "com.ibm.ws.security.social_fat.LibertyOP.social":
-                case "com.ibm.ws.security.social_fat.LibertyOP.socialDisc":
-                    JakartaEE9Action.transformApp(Paths.get(myServer.getServerRoot() + File.separatorChar + "dropins" + File.separatorChar + "testmarker.war"));
-                    JakartaEE9Action.transformApp(Paths.get(myServer.getServerRoot() + File.separatorChar + "test-apps" + File.separatorChar + "helloworld.war"));
-                    break;
 
-                /******************************************************************
-                 *
-                 * com.ibm.ws.security.oidc.client_fat servers
-                 *
-                 ******************************************************************/
-                case "com.ibm.ws.security.openidconnect.client-1.0_fat.op":
-                    JakartaEE9Action.transformApp(Paths.get(myServer.getServerRoot() + File.separatorChar + "dropins" + File.separatorChar + "testmarker.war"));
-                    break;
-                case "com.ibm.ws.security.openidconnect.client-1.0_fat.rp":
-                case "com.ibm.ws.security.openidconnect.client-1.0_fat.rpd":
-                    JakartaEE9Action.transformApp(Paths.get(myServer.getServerRoot() + File.separatorChar + "dropins" + File.separatorChar + "testmarker.war"));
-                    JakartaEE9Action.transformApp(Paths.get(myServer.getServerRoot() + File.separatorChar + "test-apps" + File.separatorChar + "formlogin.war"));
-                    break;
-                case "com.ibm.ws.security.openidconnect.client-1.0_fat.rs":
-                    JakartaEE9Action.transformApp(Paths.get(myServer.getServerRoot() + File.separatorChar + "dropins" + File.separatorChar + "testmarker.war"));
-                    JakartaEE9Action.transformApp(Paths.get(myServer.getServerRoot() + File.separatorChar + "test-apps" + File.separatorChar + "helloworld.war"));
-                    break;
+            transformAppsInDefaultDirs(server, "dropins");
+            transformAppsInDefaultDirs(server, "test-apps");
 
-                /******************************************************************
-                 *
-                 * com.ibm.ws.security.oidc.server_fat servers
-                 *
-                 ******************************************************************/
-                case "com.ibm.ws.security.openidconnect.server-1.0_fat":
-                    JakartaEE9Action.transformApp(Paths.get(myServer.getServerRoot() + File.separatorChar + "dropins" + File.separatorChar + "oAuth20DerbySetup.war"));
-                    JakartaEE9Action.transformApp(Paths.get(myServer.getServerRoot() + File.separatorChar + "dropins" + File.separatorChar + "oauthclient.war"));
-                    JakartaEE9Action.transformApp(Paths.get(myServer.getServerRoot() + File.separatorChar + "dropins" + File.separatorChar + "oauthtaidemo.ear"));
-                    JakartaEE9Action.transformApp(Paths.get(myServer.getServerRoot() + File.separatorChar + "dropins" + File.separatorChar + "testmarker.war"));
-                    JakartaEE9Action.transformApp(Paths.get(myServer.getServerRoot() + File.separatorChar + "test-apps" + File.separatorChar + "oAuth20MongoSetup.war"));
-                    JakartaEE9Action.transformApp(Paths.get(myServer.getServerRoot() + File.separatorChar + "test-apps" + File.separatorChar + "testMediator.jar"));
-                    break;
-                case "com.ibm.ws.security.openidconnect.server-1.0_fat.cert":
-                case "com.ibm.ws.security.openidconnect.server-1.0_fat.cert_required":
-                case "com.ibm.ws.security.openidconnect.server-1.0_fat.pwdTest":
-                case "com.ibm.ws.security.openidconnect.server-1.0_fat.tai":
-                    JakartaEE9Action.transformApp(Paths.get(myServer.getServerRoot() + File.separatorChar + "dropins" + File.separatorChar + "oAuth20DerbySetup.war"));
-                    JakartaEE9Action.transformApp(Paths.get(myServer.getServerRoot() + File.separatorChar + "dropins" + File.separatorChar + "oauthclient.war"));
-                    JakartaEE9Action.transformApp(Paths.get(myServer.getServerRoot() + File.separatorChar + "dropins" + File.separatorChar + "oauthtaidemo.ear"));
-                    JakartaEE9Action.transformApp(Paths.get(myServer.getServerRoot() + File.separatorChar + "dropins" + File.separatorChar + "testmarker.war"));
-                    JakartaEE9Action.transformApp(Paths.get(myServer.getServerRoot() + File.separatorChar + "test-apps" + File.separatorChar + "oAuth20MongoSetup.war"));
-                    break;
-            }
         }
     }
 }

@@ -32,7 +32,6 @@ tested.features: jdbc-4.0, beanvalidation-1.1, jpa-2.0, el-3.0, persistence-3.0,
 -buildpath: \
     com.ibm.ws.jpa_testframework;version=latest,\
     fattest.simplicity;version=latest,\
-    com.github.docker-java:docker-java-api;version=latest,\
     com.ibm.websphere.javaee.annotation.1.1;version=latest,\
     com.ibm.websphere.javaee.cdi.2.0;version=latest,\
     com.ibm.websphere.javaee.ejb.3.2;version=latest,\
@@ -41,8 +40,4 @@ tested.features: jdbc-4.0, beanvalidation-1.1, jpa-2.0, el-3.0, persistence-3.0,
     com.ibm.websphere.javaee.persistence.2.1;version=latest,\
     com.ibm.websphere.javaee.transaction.1.2;version=latest,\
     com.ibm.websphere.javaee.validation.2.0;version=latest,\
-    org.testcontainers:database-commons;version=latest,\
-    org.testcontainers:jdbc;version=latest,\
-    org.testcontainers:testcontainers;version=latest,\
-    org.rnorth.duct-tape:duct-tape;version=latest,\
-    org.slf4j:slf4j-api;version=latest
+	io.openliberty.org.testcontainers;version=latest

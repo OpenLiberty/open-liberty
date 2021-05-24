@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.wss4j.common.ext.WSSecurityException;
+import org.apache.wss4j.common.ext.WSSecurityException.ErrorCode;
 import org.apache.wss4j.dom.handler.RequestData;
 import org.apache.wss4j.common.saml.SamlAssertionWrapper;
 import org.apache.wss4j.dom.validate.Credential;
@@ -24,6 +25,7 @@ import org.opensaml.saml.common.SAMLVersion;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.sso.common.SsoService;
+import com.ibm.ws.wssecurity.WSSecurityPolicyException;
 import com.ibm.ws.wssecurity.internal.WSSecurityConstants;
 import com.ibm.ws.wssecurity.token.TokenUtils;
 
@@ -39,7 +41,7 @@ public class WssSamlAssertionValidator extends org.apache.wss4j.dom.validate.Sam
                                                          WSSecurityConstants.TR_GROUP,
                                                          WSSecurityConstants.TR_RESOURCE_BUNDLE);
 
-    List<String> audienceRestrictions = null; // if no restructions, set this to null
+    List<String> audienceRestrictions = new ArrayList<String>();//null; // if no restructions, set this to null
     int iFutureTTL = 5 * 60; // 5 minutes 
     int ttl = 60 * 30; // 30 Minutes
 
@@ -66,7 +68,7 @@ public class WssSamlAssertionValidator extends org.apache.wss4j.dom.validate.Sam
 
             String[] restrictions = (String[]) configMap.get(WSSecurityConstants.KEY_audienceRestrictions);
             if (restrictions == null) {
-                audienceRestrictions = null; // no restrictions
+                //audienceRestrictions = new ArrayList<String>();//null; // no restrictions
             } else {
                 audienceRestrictions = new ArrayList<String>();
                 for (int iI = 0; iI < restrictions.length; iI++) {
@@ -101,6 +103,7 @@ public class WssSamlAssertionValidator extends org.apache.wss4j.dom.validate.Sam
         data.setAudienceRestrictions(audienceRestrictions);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, " audienceRestriction:" + audienceRestrictions);
+            Tr.debug(tc, " audienceRestriction:" + audienceRestrictions.isEmpty());
         }
         return super.validate(credential, data);
     }

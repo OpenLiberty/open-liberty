@@ -9,8 +9,8 @@ IBM-API-Package: jakarta.json.bind; type="spec", \
  jakarta.json.bind.config; type="spec", \
  jakarta.json.bind.serializer; type="spec", \
  jakarta.json.bind.spi; type="spec"
--features=io.openliberty.jsonbInternal-2.0, \
- com.ibm.websphere.appserver.eeCompatible-9.0
+-features=com.ibm.websphere.appserver.eeCompatible-9.0, \
+  io.openliberty.jsonbInternal-2.0
 -bundles=com.ibm.ws.jsonb.service
 kind=beta
 edition=core
