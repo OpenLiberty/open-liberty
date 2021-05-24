@@ -38,8 +38,6 @@ import com.ibm.websphere.appprofile.accessintent.AccessIntent;
 import com.ibm.websphere.ce.cm.DuplicateKeyException;
 import com.ibm.websphere.ce.cm.StaleConnectionException;
 import com.ibm.websphere.ce.cm.StaleStatementException;
-import com.ibm.ws.jdbc.heritage.DataStoreHelperMetaData;
-import com.ibm.ws.jdbc.heritage.GenericDataStoreHelper;
 
 import test.jdbc.heritage.driver.HDConnection;
 import test.jdbc.heritage.driver.HDDataSource;
@@ -49,7 +47,7 @@ import test.jdbc.heritage.driver.HeritageDBDoesNotImplementItException;
 /**
  * Data store helper for the test JDBC driver.
  */
-public class HDDataStoreHelper extends GenericDataStoreHelper {
+public class HDDataStoreHelper {
     private final HDDataStoreHelperMetaData metadata = new HDDataStoreHelperMetaData();
 
     private final int defaultQueryTimeout;
@@ -97,19 +95,16 @@ public class HDDataStoreHelper extends GenericDataStoreHelper {
             throw new UnsupportedOperationException("This DataStoreHelper doesn't work with Informix. Found informixLockModeWait: " + informixLockModeWait);
     }
 
-    @Override
     public boolean doConnectionCleanup(Connection con) throws SQLException {
         ((HDConnection) con).setClientInfoKeys(); // defaults
         return false;
     }
 
-    @Override
     public boolean doConnectionCleanupPerCloseConnection(Connection con, boolean isCMP, Object unused) throws SQLException {
         ((HDConnection) con).cleanupCount.incrementAndGet();
         return true;
     }
 
-    @Override
     public void doConnectionSetup(Connection con) throws SQLException {
         ((HDConnection) con).setExceptionIdentificationOverrides(exceptionIdentificationOverrides);
 
@@ -119,13 +114,11 @@ public class HDDataStoreHelper extends GenericDataStoreHelper {
         }
     }
 
-    @Override
     public boolean doConnectionSetupPerGetConnection(Connection con, boolean isCMP, Object props) throws SQLException {
         ((HDConnection) con).setupCount.incrementAndGet();
         return true;
     }
 
-    @Override
     public void doConnectionSetupPerTransaction(Subject subject, String user, Connection con, boolean reauthRequired, Object props) throws SQLException {
         AtomicInteger count = ((HDConnection) con).transactionCount;
         boolean first = Boolean.parseBoolean(((Properties) props).getProperty("FIRST_TIME_CALLED"));
@@ -135,7 +128,6 @@ public class HDDataStoreHelper extends GenericDataStoreHelper {
             count.incrementAndGet();
     }
 
-    @Override
     public void doStatementCleanup(PreparedStatement stmt) throws SQLException {
         stmt.setCursorName(null);
         stmt.setFetchDirection(ResultSet.FETCH_FORWARD);
@@ -148,34 +140,23 @@ public class HDDataStoreHelper extends GenericDataStoreHelper {
         stmt.setQueryTimeout(queryTimeout);
     }
 
-    // TODO remove
-    @Override
-    public int getIsolationLevel() {
-        return getIsolationLevel(null);
-    }
-
-    // TODO @Override
     public int getIsolationLevel(AccessIntent unused) {
         return Connection.TRANSACTION_SERIALIZABLE;
     }
 
-    @Override
-    public DataStoreHelperMetaData getMetaData() {
+    public HDDataStoreHelperMetaData getMetaData() {
         return metadata;
     }
 
-    @Override
     public PrintWriter getPrintWriter() {
         // Redirects to System.out instead of OpenLiberty trace, which will cause output to go into message.log where the test can scan for it
         return new PrintWriter(new OutputStreamWriter(System.out));
     }
 
-    @Override
     public String getXAExceptionContents(XAException x) {
         return x.getClass().getName() + "(error code " + x.errorCode + "): " + x.getMessage() + " caused by " + x.getCause();
     }
 
-    @Override
     public boolean isConnectionError(SQLException x) {
         return x instanceof SQLRecoverableException
                || x instanceof SQLNonTransientConnectionException
@@ -183,14 +164,12 @@ public class HDDataStoreHelper extends GenericDataStoreHelper {
                || mapException(x) instanceof StaleConnectionException;
     }
 
-    @Override
     public boolean isUnsupported(SQLException x) {
         return x instanceof SQLFeatureNotSupportedException
                || x instanceof HeritageDBDoesNotImplementItException
                || x instanceof HeritageDBFeatureUnavailableException;
     }
 
-    @Override
     public SQLException mapException(SQLException x) {
         String sqlState = x.getSQLState();
         int errorCode = x.getErrorCode();
@@ -227,7 +206,6 @@ public class HDDataStoreHelper extends GenericDataStoreHelper {
         }
     }
 
-    @Override
     public int modifyXAFlag(int xaStartFlags) {
         return xaStartFlags |= HeritageDBConnection.LOOSELY_COUPLED_TRANSACTION_BRANCHES;
     }
@@ -242,13 +220,11 @@ public class HDDataStoreHelper extends GenericDataStoreHelper {
         }
     }
 
-    @Override
     public void setConfig(Object configRef) {
         dsConfigRef = (AtomicReference<?>) configRef;
     }
 
     @SuppressWarnings("unchecked")
-    @Override
     public void setUserDefinedMap(@SuppressWarnings("rawtypes") Map map) {
         exceptionIdentificationOverrides = map;
     }

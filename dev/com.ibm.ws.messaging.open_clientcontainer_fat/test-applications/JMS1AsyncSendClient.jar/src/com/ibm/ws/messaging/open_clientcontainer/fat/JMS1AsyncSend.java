@@ -1,5 +1,5 @@
 /* ============================================================================
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,8 @@ package com.ibm.ws.messaging.open_clientcontainer.fat;
 import java.util.Properties;
 import java.util.Enumeration;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Level;
+
 import javax.jms.Connection;
 import javax.jms.DeliveryMode;
 import javax.jms.InvalidDestinationException;
@@ -137,6 +139,7 @@ public class JMS1AsyncSend extends ClientMain {
 
   @ClientTest
   public void testJMS1AsyncSendException() throws JMSException {
+    Util.setLevel(Level.FINEST);
     boolean exceptionCaught = false;
     QueueSession session = queueConnection_.createQueueSession(false, javax.jms.Session.AUTO_ACKNOWLEDGE);
 
@@ -151,6 +154,7 @@ public class JMS1AsyncSend extends ClientMain {
     } else {
       reportFailure("Expected exception not raised without notification.");
     }
+    Util.setLevel(Level.INFO);
   }
 
   @ClientTest

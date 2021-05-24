@@ -136,6 +136,7 @@ Import-Package: \
 
 DynamicImport-Package: \
   com.ctc.wstx.*,\
+  com.sun.xml.messaging.saaj.*,\
   javax.xml.ws,\
   org.apache.cxf.bus,\
   org.apache.cxf.*
