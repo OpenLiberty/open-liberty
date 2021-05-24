@@ -76,7 +76,7 @@ public class ApacheDSandKDC {
 
     private static final Class<?> c = ApacheDSandKDC.class;
 
-    private static boolean FAT_TEST_LOCALRUN = Boolean.getBoolean("fat.test.localrun");
+    protected static boolean FAT_TEST_LOCALRUN = Boolean.getBoolean("fat.test.localrun");
 
     public static String BASE_DN = LdapKerberosUtils.BASE_DN; // default, override in extending class
 
@@ -126,7 +126,7 @@ public class ApacheDSandKDC {
 
     protected static DirectoryService directoryService;
     private static LdapServer ldapServer;
-    private static KdcServer kdcServer;
+    protected static KdcServer kdcServer;
 
     private static void startLdapServer() throws Exception {
         DirectoryServiceFactory dsf = new DefaultDirectoryServiceFactory();
@@ -631,20 +631,9 @@ public class ApacheDSandKDC {
             keyTabTemp.deleteOnExit();
         }
 
-        KerberosTime timeStamp = new KerberosTime();
-        int principalType = 1; // KRB5_NT_PRINCIPAL
-
         Keytab keytab = Keytab.getInstance();
 
-        List<KeytabEntry> entries = new ArrayList<KeytabEntry>();
-
-        for (Map.Entry<EncryptionType, EncryptionKey> keyEntry : KerberosKeyFactory.getKerberosKeys(
-                                                                                                    bindPrincipalName, bindPassword)
-                        .entrySet()) {
-            final EncryptionKey key = keyEntry.getValue();
-            final byte keyVersion = (byte) key.getKeyVersion();
-            entries.add(new KeytabEntry(bindPrincipalName, principalType, timeStamp, keyVersion, key));
-        }
+        List<KeytabEntry> entries = addKerberosKeysToKeytab(bindPrincipalName, bindPassword);
 
         keytab.setEntries(entries);
         keytab.write(keyTabTemp);
@@ -653,17 +642,46 @@ public class ApacheDSandKDC {
 
         Log.info(c, "createKeyTabFile", "Created keytab: " + keytabFile);
         Log.info(c, "createKeyTabFile", "Keytab actual contents: " + FileUtils.readFile(keytabFile));
+    }
+
+    /**
+     * @param entries
+     */
+    protected static List<KeytabEntry> addKerberosKeysToKeytab(String principalName, String principalPwd) {
+        List<KeytabEntry> entries = new ArrayList<KeytabEntry>();
+        KerberosTime timeStamp = new KerberosTime();
+
+        addKerberosKeys(principalName, principalPwd, entries, timeStamp);
+
         // KeytabEntry doesn't have a nice toString
         for (KeytabEntry key : entries) {
             StringBuffer strBuf = new StringBuffer();
             strBuf.append(" PrincipalName: " + key.getPrincipalName());
-            strBuf.append(" PrincipalType: " + key.getPrincipalType());
+            //strBuf.append(" PrincipalType: " + key.getPrincipalType());
             strBuf.append(" Key: " + key.getKey());
             strBuf.append(" KeyVersion: " + key.getKeyVersion());
-            strBuf.append(" TimeStamp: " + key.getTimeStamp());
+            //strBuf.append(" TimeStamp: " + key.getTimeStamp());
 
-            Log.info(c, "createKeyTabFile", "Keytab entry: " + strBuf.toString());
+            Log.info(c, "addKerberosKeysToKeytab", "Keytab entry: " + strBuf.toString());
         }
 
+        return entries;
+    }
+
+    /**
+     * @param principalName
+     * @param principalPwd
+     * @param entries
+     */
+    private static void addKerberosKeys(String principalName, String principalPwd, List<KeytabEntry> entries, KerberosTime timeStamp) {
+        int principalType = 1; // KRB5_NT_PRINCIPAL
+
+        for (Map.Entry<EncryptionType, EncryptionKey> keyEntry : KerberosKeyFactory.getKerberosKeys(
+                                                                                                    principalName, principalPwd)
+                        .entrySet()) {
+            final EncryptionKey key = keyEntry.getValue();
+            final byte keyVersion = (byte) key.getKeyVersion();
+            entries.add(new KeytabEntry(principalName, principalType, timeStamp, keyVersion, key));
+        }
     }
 }

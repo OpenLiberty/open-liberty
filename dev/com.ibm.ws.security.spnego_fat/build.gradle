@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,9 +12,10 @@
 dependencies {
   requiredLibs 'org.apache.httpcomponents:httpclient:4.1.2',
                'org.apache.httpcomponents:httpcore:4.1.2',
+               'org.slf4j:slf4j-jdk14:1.7.7',
+               project(':com.ibm.ws.security.spnego.fat.common'),
                project(':io.openliberty.org.apache.commons.codec'),
-               project(':io.openliberty.org.apache.commons.logging'),
-               project(':com.ibm.ws.security.spnego.fat.common')
+               project(':io.openliberty.org.apache.commons.logging')          
 }
 
 addRequiredLibraries.dependsOn addJakartaTransformer
