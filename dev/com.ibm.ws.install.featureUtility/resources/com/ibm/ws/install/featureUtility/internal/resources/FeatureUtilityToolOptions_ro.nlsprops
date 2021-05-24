@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020 IBM Corporation and others.
+# Copyright (c) 2010, 2020, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -44,9 +44,15 @@ installFeature.option-desc.name...=\tUna sau mai multe caracteristici care sunt 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.--to=\ \ \ \ --to=[usr|extension]
 installFeature.option-desc.--to=\tSpecifica\u0163i unde s\u0103 se instaleze caracteristica. Caracteristica poate fi instalat\u0103\n\
-\t\u00een orice loca\u0163ie extensie de produs configurat, sau drept caracteristic\u0103 de utilizator. Dac\u0103  \n\
+\t\u00een orice loca\u0163ie de extensie de produs configurat\u0103 sau drept caracteristic\u0103 de utilizator. Dac\u0103  \n\
 \taceast\u0103 op\u0163iune nu este specificat\u0103, caracteristica este instalat\u0103 ca o caracteristic\u0103 de   \n\
 \tutilizator.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--featuresBom=\ \ \ \ --featuresBom=coordonat\u0103 Maven
+installFeature.option-desc.--featuresBom=\tSpecifica\u0163i coordonata Maven pentru fi\u015fierul de caracteristici BOM. Aceast\u0103  \n\
+\top\u0163iune permite instalarea caracteristicilor de utilizator din magazia     \n\
+\tMaven configurat\u0103. Asigura\u0163i-v\u0103 c\u0103 magazia con\u0163ine \u015fi fi\u015fierul JSON cu      \n\
+\tcaracteristicile asociate din acela\u015fi groupId ca BOM.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.--from=\ \ \ \ --from=filePath
 installFeature.option-desc.--from=\tUtiliza\u0163i aceast\u0103 op\u0163iune pentru a specifica calea unei magazii \n\
@@ -66,6 +72,12 @@ installServerFeatures.desc=\tInstala\u0163i caracteristicile necesare pentru un 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.name...=\ \ \ \ nume ...
 installServerFeatures.option-desc.name...=\tNumele unui server existent din acela\u015fi mediu Liberty.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--featuresBom=\ \ \ \ --featuresBom=coordonat\u0103 Maven
+installServerFeatures.option-desc.--featuresBom=\tSpecifica\u0163i coordonata Maven pentru fi\u015fierul de caracteristici BOM. Aceast\u0103  \n\
+\top\u0163iune permite instalarea caracteristicilor de utilizator din magazia     \n\
+\tMaven configurat\u0103. Asigura\u0163i-v\u0103 c\u0103 magazia con\u0163ine \u015fi fi\u015fierul JSON cu      \n\
+\tcaracteristicile asociate din acela\u015fi groupId ca BOM.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.--from=\ \ \ \ --from=filePath
 installServerFeatures.option-desc.--from=\tUtiliza\u0163i aceast\u0103 op\u0163iune pentru a specifica calea unei magazii \n\
@@ -90,6 +102,6 @@ viewSettings.desc=\tVizualizarea set\u0103rilor proxy-ului \u015fi ale magaziilo
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 viewSettings.option-key.--viewValidationMessages=\ \ \ \ --viewValidationMessages
 viewSettings.option-desc.--viewValidationMessages=\tUtiliza\u0163i aceast\u0103 op\u0163iune pentru a afi\u015fa mesajele detaliate de la \n\
-\tvalidarea fi\u015fierului featureUtility.properties configurat.           \n\
+\tvalidarea fi\u015fierului featureUtility.properties configurat.         \n\
 \tFiecare mesaj con\u0163ine un cod de eroare, num\u0103rul liniei unde a fost g\u0103sit\u0103 eroarea \n\
 \t\u015fi cauza erorii.

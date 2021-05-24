@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020 IBM Corporation and others.
+# Copyright (c) 2010, 2020, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -48,6 +48,12 @@ installFeature.option-desc.--to=\tOkre\u015bl po\u0142o\u017cenie dla instalacji
 \tta opcja nie b\u0119dzie okre\u015blona, sk\u0142adnik zostanie zainstalowany jako sk\u0142adnik \n\
 \tu\u017cytkownika.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--featuresBom=\ \ \ \ --featuresBom=wsp\u00f3\u0142rz\u0119dna Maven
+installFeature.option-desc.--featuresBom=\tOkre\u015bla wsp\u00f3\u0142rz\u0119dn\u0105 Maven do pliku BOM sk\u0142adnik\u00f3w. Ta opcja  \n\
+\tumo\u017cliwia zainstalowanie sk\u0142adnik\u00f3w u\u017cytkownika ze    \n\
+\tskonfigurowanego repozytorium Maven. Repozytorium musi te\u017c     \n\
+\tzawiera\u0107 powi\u0105zany plik sk\u0142adnik\u00f3w JSON o tym samym groupId, co BOM.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.--from=\ \ \ \ --from=\u015bcie\u017cka_do_pliku
 installFeature.option-desc.--from=\tTa opcja s\u0142u\u017cy do okre\u015blenia \u015bcie\u017cki do pliku \n\
 \trepozytorium artefakt\u00f3w Maven jako \u017ar\u00f3d\u0142a, z kt\u00f3rego komenda featureUtility b\u0119dzie instalowa\u0142a zasoby aplikacyjne.
@@ -66,6 +72,12 @@ installServerFeatures.desc=\tZainstaluj sk\u0142adniki wymagane dla serwera o po
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.name...=\ \ \ \ nazwa...
 installServerFeatures.option-desc.name...=\tNazwa istniej\u0105cego serwera w tym samym \u015brodowisku Liberty.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--featuresBom=\ \ \ \ --featuresBom=wsp\u00f3\u0142rz\u0119dna Maven
+installServerFeatures.option-desc.--featuresBom=\tOkre\u015bla wsp\u00f3\u0142rz\u0119dn\u0105 Maven do pliku BOM sk\u0142adnik\u00f3w. Ta opcja  \n\
+\tumo\u017cliwia zainstalowanie sk\u0142adnik\u00f3w u\u017cytkownika ze    \n\
+\tskonfigurowanego repozytorium Maven. Repozytorium musi te\u017c     \n\
+\tzawiera\u0107 powi\u0105zany plik sk\u0142adnik\u00f3w JSON o tym samym groupId, co BOM.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.--from=\ \ \ \ --from=\u015bcie\u017cka_do_pliku
 installServerFeatures.option-desc.--from=\tTa opcja s\u0142u\u017cy do okre\u015blenia \u015bcie\u017cki do pliku \n\
@@ -90,6 +102,6 @@ viewSettings.desc=\tWy\u015bwietlanie ustawie\u0144 repozytori\u00f3w i serwera 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 viewSettings.option-key.--viewValidationMessages=\ \ \ \ --viewValidationMessages
 viewSettings.option-desc.--viewValidationMessages=\tU\u017cyj tej opcji, aby wy\u015bwietli\u0107 szczeg\u00f3\u0142owe komunikaty            \n\
-\tze sprawdzania poprawno\u015bci skonfigurowanego pliku featureUtility.properties.           \n\
+\tze sprawdzania poprawno\u015bci skonfigurowanego pliku featureUtility.properties.         \n\
 \tKa\u017cdy komunikat zawiera kod b\u0142\u0119du, numer wiersza, w kt\u00f3rym znaleziono \n\
 \tb\u0142\u0105d, oraz przyczyn\u0119 b\u0142\u0119du.

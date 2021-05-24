@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020 IBM Corporation and others.
+# Copyright (c) 2010, 2020, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -36,17 +36,23 @@ installFeature.option-key.name...=\ \ \ \ \uc774\ub984 ...
 installFeature.option-desc.name...=\t\uacf5\ubc31\uc73c\ub85c \uad6c\ubd84\ub418\ub294 \ud558\ub098 \uc774\uc0c1\uc758 \uae30\ub2a5\uc785\ub2c8\ub2e4. \uae30\ub2a5\uc758 \uacbd\uc6b0, \n\
 \t\uae30\ub2a5 \ub2e8\ucd95\uba85 \ub610\ub294 Maven coordinate\ub97c \uc9c0\uc815\ud558\uc2ed\uc2dc\uc624. Maven coordinate\ub97c \n\
 \t\uc9c0\uc815\ud558\ub294 \uacbd\uc6b0 \ucd5c\uc18c\ud55c \uadf8\ub8f9 ID\uc640 \uc544\ud2f0\ud329\ud2b8 ID\uac00 \ud3ec\ud568\ub418\uc5b4\uc57c \ud569\ub2c8\ub2e4       \n\
-\t(\uc608: io.openliberty.features:mpHealth-2.0).                       \n\
+\t(\uc608: io.openliberty.features:mpHealth-2.0).                     \n\
 \t                                                                      \n\
 \t\ubc84\uc804 \ubc0f \ud328\ud0a4\uc9d5\uc774 \uc9c0\uc815\ub418\uc9c0 \uc54a\uc740 \uacbd\uc6b0 \ubc84\uc804\uc758 \uae30\ubcf8\uac12\uc740 \ud604\uc7ac \ub7f0\ud0c0\uc784      \n\
-\t\ubc84\uc804\uc774\uace0 \ud328\ud0a4\uc9d5 \uc720\ud615\uc758 \uae30\ubcf8\uac12\uc740 ESA\uc785\ub2c8\ub2e4.                        \n\
+\t\ubc84\uc804\uc774\uace0 \ud328\ud0a4\uc9d5 \uc720\ud615\uc758 \uae30\ubcf8\uac12\uc740 ESA\uc785\ub2c8\ub2e4.                      \n\
 \t
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.--to=\ \ \ \ --to=[usr|extension]
 installFeature.option-desc.--to=\t\uae30\ub2a5\uc744 \uc124\uce58\ud560 \uc704\uce58\ub97c \uc9c0\uc815\ud558\uc2ed\uc2dc\uc624. \uae30\ub2a5\uc740 \uad6c\uc131\ub41c \ubaa8\ub4e0 \uc81c\ud488 \ud655\uc7a5 \uc704\uce58\uc5d0 \uc124\uce58\ud558\uac70\ub098\n\
 \t\uc0ac\uc6a9\uc790 \uae30\ub2a5\uc73c\ub85c \uc124\uce58\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4. \uc774 \uc635\uc158\uc774 \uc9c0\uc815\ub418\uc9c0 \uc54a\uc740 \uacbd\uc6b0,    \n\
-\t\uae30\ub2a5\uc740 \uc0ac\uc6a9\uc790 \uae30\ub2a5\uc73c\ub85c \uc124\uce58\ub429\ub2c8\ub2e4.                                \n\
+\t\uae30\ub2a5\uc740 \uc0ac\uc6a9\uc790 \uae30\ub2a5\uc73c\ub85c \uc124\uce58\ub429\ub2c8\ub2e4.                              \n\
 \t
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--featuresBom=\ \ \ \ --featuresBom=Maven coordinate
+installFeature.option-desc.--featuresBom=\t\uae30\ub2a5 BOM \ud30c\uc77c\uc758 Maven coordinate\ub97c \uc9c0\uc815\ud558\uc2ed\uc2dc\uc624. \uc774 \uc635\uc158\uc740 \n\
+\t\uad6c\uc131\ub41c maven \uc800\uc7a5\uc18c\uc758 \uc0ac\uc6a9\uc790 \uae30\ub2a5\uc744 \uc124\uce58\ud558\ub3c4\ub85d      \n\
+\t\ud5c8\uc6a9\ud569\ub2c8\ub2e4. \uc800\uc7a5\uc18c\uc5d0 BOM\uacfc \ub3d9\uc77c\ud55c \uadf8\ub8f9 ID\uc758 \uc5f0\uad00\ub41c \uae30\ub2a5 JSON \ud30c\uc77c\uc774       \n\
+\t\uc788\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.--from=\ \ \ \ --from=filePath
 installFeature.option-desc.--from=\t\uc790\uc0b0\uc744 \uc124\uce58\ud560 featureUtility\uc758 \uc18c\uc2a4\ub85c\uc11c \n\
@@ -66,6 +72,12 @@ installServerFeatures.desc=\t\uc774\ub984 \uc9c0\uc815\ub41c \uc11c\ubc84\uc758 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.name...=\ \ \ \ \uc774\ub984 ...
 installServerFeatures.option-desc.name...=\t\ub3d9\uc77c\ud55c Liberty \ud658\uacbd\uc5d0\uc11c \uae30\uc874 \uc11c\ubc84\uc758 \uc774\ub984\uc785\ub2c8\ub2e4.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--featuresBom=\ \ \ \ --featuresBom=Maven coordinate
+installServerFeatures.option-desc.--featuresBom=\t\uae30\ub2a5 BOM \ud30c\uc77c\uc758 Maven coordinate\ub97c \uc9c0\uc815\ud558\uc2ed\uc2dc\uc624. \uc774 \uc635\uc158\uc740 \n\
+\t\uad6c\uc131\ub41c maven \uc800\uc7a5\uc18c\uc758 \uc0ac\uc6a9\uc790 \uae30\ub2a5\uc744 \uc124\uce58\ud558\ub3c4\ub85d      \n\
+\t\ud5c8\uc6a9\ud569\ub2c8\ub2e4. \uc800\uc7a5\uc18c\uc5d0 BOM\uacfc \ub3d9\uc77c\ud55c \uadf8\ub8f9 ID\uc758 \uc5f0\uad00\ub41c \uae30\ub2a5 JSON \ud30c\uc77c\uc774       \n\
+\t\uc788\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.--from=\ \ \ \ --from=filePath
 installServerFeatures.option-desc.--from=\t\uc790\uc0b0\uc744 \uc124\uce58\ud560 featureUtility\uc758 \uc18c\uc2a4\ub85c\uc11c \n\
