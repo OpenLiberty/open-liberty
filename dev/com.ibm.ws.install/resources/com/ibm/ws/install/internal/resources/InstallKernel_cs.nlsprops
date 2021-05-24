@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020 IBM Corporation and others.
+# Copyright (c) 2010, 2020, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -885,5 +885,9 @@ TOOL_DOWNLOAD_FEATURES_OK.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1
 MAPBASED_ERROR_UNSUPPORTED_FILE=CWWKF1502E: Soubor {0} nelze nainstalovat, proto\u017ee se jedn\u00e1 o nepodporovan\u00fd typ souboru. Podporov\u00e1na je pouze instalace ze soubor\u016f ESA.
 MAPBASED_ERROR_UNSUPPORTED_FILE.explanation=Soubor nebyl nainstalov\u00e1n, proto\u017ee se jednalo o nepodporovan\u00fd typ souboru.
 MAPBASED_ERROR_UNSUPPORTED_FILE.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_INVALID_FEATURE_BOM_COORDINATE=CWWKF1503E: Form\u00e1t sou\u0159adnice BOM Maven funkc\u00ed {0} nen\u00ed platn\u00fd. Ujist\u011bte se, \u017ee sou\u0159adnice je ve form\u00e1tu groupId:artifactId:version.
+ERROR_INVALID_FEATURE_BOM_COORDINATE.explanation=Form\u00e1t sou\u0159adnice BOM Maven funkc\u00ed nen\u00ed platn\u00fd.
+ERROR_INVALID_FEATURE_BOM_COORDINATE.useraction=P\u0159eform\u00e1tujte sou\u0159adnici BOM Maven funkc\u00ed tak, aby odpov\u00eddala form\u00e1tu groupId:artifactId:version.
 
 MSG_STABILIZING_FEATUREMANAGER=Tato akce featureManager je stabilizov\u00e1na. M\u00edsto toho pou\u017eijte p\u0159\u00edkaz installUtility {0}. P\u0159\u00edkaz installUtility je doporu\u010den\u00fd pro instalaci a akce souvisej\u00edc\u00ed s \u00falo\u017ei\u0161t\u011bm.
