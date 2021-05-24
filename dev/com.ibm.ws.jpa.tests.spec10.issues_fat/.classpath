@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="fat/src"/>
-	<classpathentry kind="src" path="test-applications/olgh10310/src"/>
 	<classpathentry kind="src" path="test-applications/olgh11795/src"/>
 	<classpathentry kind="src" path="test-applications/helpers/DatabaseManagement/src"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>

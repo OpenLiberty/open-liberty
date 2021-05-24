@@ -1,9 +1,9 @@
 com.ibm.ws.jpa.tests.spec10.callback_fat
+com.ibm.ws.jpa.tests.spec10.embeddable_fat
 com.ibm.ws.jpa.tests.spec10.entitymanager_fat
 com.ibm.ws.jpa.tests.spec10.inheritance_fat
 com.ibm.ws.jpa.tests.spec10.relationships.manyXmany_fat
 com.ibm.ws.jpa.tests.spec10.relationships.manyXone_fat
 com.ibm.ws.jpa.tests.spec10.relationships.oneXmany_fat
 com.ibm.ws.jpa.tests.spec10.relationships.oneXone_fat
-com.ibm.ws.jpa.tests.spec10.issues_fat
 

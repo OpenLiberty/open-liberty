@@ -1,0 +1,551 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm orm_2_0.xsd" version="2.0">
+
+    <entity class="com.ibm.ws.jpa.embeddable.basic.model.XMLJPAEmbeddableBasicEntity">
+        <table name="XMLRootEmBT"/>
+        <attributes>
+            <id name="id" />
+            <element-collection name="collectionLobPropertyAccessEmbed" fetch="EAGER">
+                <order-column name="valueOrderColumn" />
+                <collection-table name="XMLEntColLobPAE">
+                    <join-column name="parent_id" />
+                </collection-table>
+            </element-collection>
+            <element-collection name="listIntegerEmbedOrderColumn" fetch="EAGER">
+                <order-column name="valueOrderColumn" />
+                <collection-table name="XMLEntListIntegerE">
+                    <join-column name="parent_id" />
+                </collection-table>
+            </element-collection>
+            <element-collection name="listIntegerAttributeOverridesEmbedOrderColumn" fetch="EAGER">
+                <order-column name="valueOrderColumn" />
+                <attribute-override name="notIntegerValue">
+                    <column name="integerValueAttributeOverride" />
+                </attribute-override>
+                <collection-table name="XMLEntListIntegerAOE">
+                    <join-column name="parent_id" />
+                </collection-table>
+            </element-collection>
+            <element-collection name="listIntegerPropertyAccessEmbedOrderColumn" fetch="EAGER">
+                <order-column name="valueOrderColumn" />
+                <collection-table name="XMLEntListIntegerPAE">
+                    <join-column name="parent_id" />
+                </collection-table>
+            </element-collection>
+            <element-collection name="listEnumeratedPropertyAccessEmbedOrderColumn" fetch="EAGER">
+                <order-column name="valueOrderColumn" />
+                <collection-table name="XMLEntListEnumPAEOrderColumn">
+                    <join-column name="parent_id" />
+                </collection-table>
+            </element-collection>
+            <element-collection name="listEnumeratedPropertyAccessEmbedOrderBy" fetch="EAGER">
+                <order-by>enumeratedOrdinalValuePA</order-by>
+                <collection-table name="XMLEntListEnumPAEOrderBy">
+                    <join-column name="parent_id" />
+                </collection-table>
+            </element-collection>
+            <element-collection name="listTemporalPropertyAccessEmbedOrderColumn" fetch="EAGER">
+                <order-column name="valueOrderColumn" />
+                <collection-table name="XMLListTemporalPAE">
+                    <join-column name="parent_id" />
+                </collection-table>
+            </element-collection>
+            <element-collection name="setIntegerPropertyAccessEmbed" fetch="EAGER">
+                <collection-table name="XMLSetIntegerPAE">
+                    <join-column name="parent_id" />
+                </collection-table>
+            </element-collection>
+
+            <!-- Required for EclipseLink -->
+            <!-- <element-collection name="mapKeyIntegerValueIntegerPropertyAccessEmbed" fetch="EAGER">
+                <map-key-column name="mykey" />
+                <attribute-override name="integerValuePropertyAccessColumn">
+                    <column name="value" />
+                </attribute-override>
+                <collection-table name="XMLMapIntegerIntegerPAE">
+                    <join-column name="parent_id" />
+                </collection-table>
+            </element-collection> -->
+            <!-- Required for OpenJPA -->
+            <!-- <element-collection name="mapKeyIntegerValueIntegerPropertyAccessEmbed" fetch="EAGER">
+                <map-key-column name="mykey" />
+                <attribute-override name="value.integerValuePropertyAccessColumn">
+                    <column name="value" />
+                </attribute-override>
+                <collection-table name="XMLMapIntegerIntegerPAE">
+                    <join-column name="parent_id" />
+                </collection-table>
+            </element-collection> -->
+
+            <element-collection name="mapKeyIntegerValueTemporalPropertyAccessEmbed" fetch="EAGER">
+                <!-- <order-column name="valueOrderColumn" /> -->
+                <map-key-column name="mykey" />
+                <collection-table name="XMLMapIntegerTemporalPAE">
+                    <join-column name="parent_id" />
+                </collection-table>
+            </element-collection>
+            <element-collection name="mapKeyTemporalValueTemporalPropertyAccessEmbed" fetch="EAGER">
+                <!-- <order-column name="valueOrderColumn" /> -->
+                <map-key-temporal>DATE</map-key-temporal>
+                <map-key-column name="mykey" />
+                <collection-table name="XMLMapDateTemporalPAE">
+                    <join-column name="parent_id" />
+                </collection-table>
+            </element-collection>
+
+            <!-- Required for EclipseLink -->
+            <!-- <element-collection name="mapKeyEnumeratedValueEnumeratedPropertyAccessEmbed" fetch="EAGER">
+                <map-key-enumerated>STRING</map-key-enumerated>
+                <map-key-column name="mykey" />
+                <attribute-override name="enumeratedStringValuePA">
+                    <column name="valueString" />
+                </attribute-override>
+                <attribute-override name="enumeratedOrdinalValuePA">
+                    <column name="valueOrdinal" />
+                </attribute-override>
+                <collection-table name="XMLMapEnumPAEEnumPAE">
+                    <join-column name="parent_id" />
+                </collection-table>
+            </element-collection> -->
+            <!-- Required for OpenJPA -->
+            <!-- <element-collection name="mapKeyEnumeratedValueEnumeratedPropertyAccessEmbed" fetch="EAGER">
+                <map-key-enumerated>STRING</map-key-enumerated>
+                <map-key-column name="mykey" />
+                <attribute-override name="value.enumeratedStringValuePA">
+                    <column name="valueString" />
+                </attribute-override>
+                <attribute-override name="value.enumeratedOrdinalValuePA">
+                    <column name="valueOrdinal" />
+                </attribute-override>
+                <collection-table name="XMLMapEnumPAEEnumPAE">
+                    <join-column name="parent_id" />
+                </collection-table>
+            </element-collection> -->
+
+            <!-- Required for EclipseLink -->
+            <!-- <element-collection name="mapKeyIntegerEmbedValueIntegerEmbed" fetch="EAGER">
+                <map-key-class class="com.ibm.ws.jpa.embeddable.basic.model.XMLIntegerEmbed"/>
+                <map-key-attribute-override name="integerValue">
+                    <column name="mykey" />
+                </map-key-attribute-override>
+                <attribute-override name="integerValue">
+                    <column name="value" />
+                </attribute-override>
+                <collection-table name="XMLMapIntegerEIntegerE">
+                    <join-column name="parent_id" />
+                </collection-table>
+            </element-collection> -->
+            <!-- Required for OpenJPA -->
+            <!-- <element-collection name="mapKeyIntegerEmbedValueIntegerEmbed" fetch="EAGER">
+                <attribute-override name="key.integerValue">
+                    <column name="mykey" />
+                </attribute-override>
+                <attribute-override name="value.integerValue">
+                    <column name="value" />
+                </attribute-override>
+                <collection-table name="XMLMapIntegerEIntegerE">
+                    <join-column name="parent_id" />
+                </collection-table>
+            </element-collection> -->
+
+            <!-- Required for EclipseLink -->
+            <!-- <element-collection name="mapKeyLobEmbedValueLobEmbed" fetch="EAGER">
+                <map-key-class class="com.ibm.ws.jpa.embeddable.basic.model.XMLLobPropertyAccessEmbed"/>
+                <map-key-attribute-override name="clobValuePA">
+                    <column name="mykey" />
+                </map-key-attribute-override>
+                <attribute-override name="clobValuePA">
+                    <column name="value" />
+                </attribute-override>
+                <collection-table name="XMLMapLobPAELobPAE">
+                    <join-column name="parent_id" />
+                </collection-table>
+            </element-collection> -->
+            <!-- Required for OpenJPA -->
+            <!-- <element-collection name="mapKeyLobEmbedValueLobEmbed" fetch="EAGER">
+                <attribute-override name="key.clobValuePA">
+                    <column name="mykey" />
+                </attribute-override>
+                <attribute-override name="value.clobValuePA">
+                    <column name="value" />
+                </attribute-override>
+                <collection-table name="XMLMapLobPAELobPAE">
+                    <join-column name="parent_id" />
+                </collection-table>
+            </element-collection> -->
+
+            <embedded name="integerEmbed" />
+            <embedded name="integerAttributeOverridesEmbed">
+                <attribute-override name="notIntegerValue">
+                    <column name="integerValueAttributeOverride" />
+                </attribute-override>
+            </embedded>
+            <embedded name="integerFieldAccessEmbed" />
+            <embedded name="enumeratedFieldAccessEmbed" />
+            <embedded name="temporalFieldAccessEmbed" />
+            <embedded name="lobFieldAccessEmbed" />
+            <embedded name="integerTransientEmbed" />
+            <embedded name="integerPropertyAccessEmbed" />
+            <embedded name="enumeratedPropertyAccessEmbed" />
+            <embedded name="temporalPropertyAccessEmbed" />
+            <embedded name="lobPropertyAccessEmbed" />
+            <embedded name="collectionIntegerEmbed" />
+            <embedded name="collectionEnumeratedEmbed" />
+            <embedded name="collectionTemporalEmbed" />
+            <embedded name="collectionLobEmbed" />
+            <embedded name="listIntegerOrderColumnEmbed" />
+            <embedded name="listIntegerOrderByEmbed" />
+            <embedded name="listEnumeratedEmbed" />
+            <embedded name="listTemporalEmbed" />
+            <embedded name="listLobEmbed" />
+            <embedded name="setIntegerEmbed" />
+            <embedded name="setEnumeratedEmbed" />
+            <embedded name="setTemporalEmbed" />
+            <embedded name="setLobEmbed" />
+            <embedded name="mapKeyIntegerEmbed" />
+            <embedded name="mapKeyIntegerValueTemporalEmbed" />
+            <embedded name="mapKeyEnumeratedValueEnumeratedEmbed" />
+            <embedded name="mapKeyTemporalValueTemporalEmbed" />
+            <embedded name="mapKeyEnumeratedValueLobEmbed" />
+        </attributes>
+    </entity>
+
+    <embeddable class="com.ibm.ws.jpa.embeddable.basic.model.XMLIntegerEmbed">
+    </embeddable>
+
+    <embeddable class="com.ibm.ws.jpa.embeddable.basic.model.XMLIntegerAttributeOverridesEmbed">
+        <attributes>
+            <basic name="notIntegerValue">
+                <column name="doesNotExist" />
+            </basic>
+        </attributes>
+    </embeddable>
+
+    <embeddable class="com.ibm.ws.jpa.embeddable.basic.model.XMLIntegerFieldAccessEmbed"
+        access="FIELD">
+        <attributes>
+            <basic name="integerValueFieldAccessColumn">
+                <column name="integerValueFAColumn" />
+            </basic>
+        </attributes>
+    </embeddable>
+
+    <embeddable class="com.ibm.ws.jpa.embeddable.basic.model.XMLEnumeratedFieldAccessEmbed"
+        access="FIELD">
+        <attributes>
+            <basic name="enumeratedStringValueFA">
+                <enumerated>STRING</enumerated>
+            </basic>
+            <basic name="enumeratedOrdinalValueFA">
+                <enumerated>ORDINAL</enumerated>
+            </basic>
+        </attributes>
+    </embeddable>
+
+    <embeddable class="com.ibm.ws.jpa.embeddable.basic.model.XMLTemporalFieldAccessEmbed" access="FIELD">
+        <attributes>
+            <basic name="temporalValueFA">
+                <temporal>DATE</temporal>
+            </basic>
+        </attributes>
+    </embeddable>
+
+    <embeddable class="com.ibm.ws.jpa.embeddable.basic.model.XMLLobFieldAccessEmbed" access="FIELD">
+        <attributes>
+            <basic name="clobValueFA">
+                <lob />
+            </basic>
+        </attributes>
+    </embeddable>
+
+    <embeddable class="com.ibm.ws.jpa.embeddable.basic.model.XMLIntegerTransientEmbed">
+        <attributes>
+            <transient name="transientValue" />
+        </attributes>
+    </embeddable>
+
+    <embeddable class="com.ibm.ws.jpa.embeddable.basic.model.XMLIntegerPropertyAccessEmbed"
+        access="PROPERTY">
+        <attributes>
+            <basic name="integerValuePropertyAccessColumn">
+                <column name="integerValuePAColumn" />
+            </basic>
+        </attributes>
+    </embeddable>
+
+    <embeddable class="com.ibm.ws.jpa.embeddable.basic.model.XMLEnumeratedPropertyAccessEmbed"
+        access="PROPERTY">
+        <attributes>
+            <basic name="enumeratedStringValuePA">
+                <enumerated>STRING</enumerated>
+            </basic>
+            <basic name="enumeratedOrdinalValuePA">
+                <enumerated>ORDINAL</enumerated>
+            </basic>
+        </attributes>
+    </embeddable>
+
+    <embeddable class="com.ibm.ws.jpa.embeddable.basic.model.XMLTemporalPropertyAccessEmbed"
+        access="PROPERTY">
+        <attributes>
+            <basic name="temporalValuePA">
+                <temporal>DATE</temporal>
+            </basic>
+        </attributes>
+    </embeddable>
+
+    <embeddable class="com.ibm.ws.jpa.embeddable.basic.model.XMLLobPropertyAccessEmbed" access="PROPERTY">
+        <attributes>
+            <basic name="clobValuePA">
+                <lob />
+            </basic>
+        </attributes>
+    </embeddable>
+
+    <embeddable class="com.ibm.ws.jpa.embeddable.basic.model.XMLCollectionIntegerEmbed" access="FIELD">
+        <attributes>
+            <element-collection name="collectionInteger" fetch="EAGER">
+                <order-column name="valueOrderColumn" />
+                <column name="value" />
+                <collection-table name="XMLColInt">
+                    <join-column name="parent_id" />
+                </collection-table>
+            </element-collection>
+        </attributes>
+    </embeddable>
+
+    <embeddable class="com.ibm.ws.jpa.embeddable.basic.model.XMLCollectionEnumeratedEmbed" access="FIELD">
+        <attributes>
+            <element-collection name="collectionEnumerated" fetch="EAGER">
+                <order-column name="valueOrderColumn" />
+                <column name="value" />
+                <enumerated>STRING</enumerated>
+                <collection-table name="XMLColEnum">
+                    <join-column name="parent_id" />
+                </collection-table>
+            </element-collection>
+        </attributes>
+    </embeddable>
+
+    <embeddable class="com.ibm.ws.jpa.embeddable.basic.model.XMLCollectionTemporalEmbed"
+        access="FIELD">
+        <attributes>
+            <element-collection name="collectionDate" fetch="EAGER">
+                <order-column name="valueOrderColumn" />
+                <column name="value" />
+                <temporal>DATE</temporal>
+                <collection-table name="XMLColDate">
+                    <join-column name="parent_id" />
+                </collection-table>
+            </element-collection>
+        </attributes>
+    </embeddable>
+
+    <embeddable class="com.ibm.ws.jpa.embeddable.basic.model.XMLCollectionLobEmbed"
+        access="FIELD">
+        <attributes>
+            <element-collection name="collectionLob" fetch="EAGER">
+                <order-column name="valueOrderColumn" />
+                <column name="value" />
+                <lob />
+                <collection-table name="XMLColLob">
+                    <join-column name="parent_id" />
+                </collection-table>
+            </element-collection>
+        </attributes>
+    </embeddable>
+
+    <embeddable class="com.ibm.ws.jpa.embeddable.basic.model.XMLListIntegerOrderColumnEmbed"
+        access="FIELD">
+        <attributes>
+            <element-collection name="notListIntegerOrderColumn" fetch="EAGER">
+                <order-column name="valueOrderColumn" />
+                <column name="value" />
+                <collection-table name="XMLListIntOrderColumn">
+                    <join-column name="parent_id" />
+                </collection-table>
+            </element-collection>
+        </attributes>
+    </embeddable>
+
+    <embeddable class="com.ibm.ws.jpa.embeddable.basic.model.XMLListIntegerOrderByEmbed" access="FIELD">
+        <attributes>
+            <element-collection name="notListIntegerOrderBy" fetch="EAGER">
+                <order-by>DESC</order-by>
+                <column name="value" />
+                <collection-table name="XMLListIntOrderBy">
+                    <join-column name="parent_id" />
+                </collection-table>
+            </element-collection>
+        </attributes>
+    </embeddable>
+
+    <embeddable class="com.ibm.ws.jpa.embeddable.basic.model.XMLListEnumeratedEmbed" access="FIELD">
+        <attributes>
+            <element-collection name="listEnumerated" fetch="EAGER">
+                <order-column name="valueOrderColumn" />
+                <column name="value" />
+                <enumerated>STRING</enumerated>
+                <collection-table name="XMLListEnum">
+                    <join-column name="parent_id" />
+                </collection-table>
+            </element-collection>
+        </attributes>
+    </embeddable>
+
+    <embeddable class="com.ibm.ws.jpa.embeddable.basic.model.XMLListTemporalEmbed"
+        access="FIELD">
+        <attributes>
+            <element-collection name="listDate" fetch="EAGER">
+                <order-column name="valueOrderColumn" />
+                <column name="value" />
+                <temporal>DATE</temporal>
+                <collection-table name="XMLListDate">
+                    <join-column name="parent_id" />
+                </collection-table>
+            </element-collection>
+        </attributes>
+    </embeddable>
+
+    <embeddable class="com.ibm.ws.jpa.embeddable.basic.model.XMLListLobEmbed"
+        access="FIELD">
+        <attributes>
+            <element-collection name="listLob" fetch="EAGER">
+                <order-column name="valueOrderColumn" />
+                <column name="value" />
+                <lob />
+                <collection-table name="XMLListLob">
+                    <join-column name="parent_id" />
+                </collection-table>
+            </element-collection>
+        </attributes>
+    </embeddable>
+
+    <embeddable class="com.ibm.ws.jpa.embeddable.basic.model.XMLSetIntegerEmbed" access="FIELD">
+        <attributes>
+            <element-collection name="notSetInteger" fetch="EAGER">
+                <column name="value" />
+                <collection-table name="XMLSetInt">
+                    <join-column name="parent_id" />
+                </collection-table>
+            </element-collection>
+        </attributes>
+    </embeddable>
+
+    <embeddable class="com.ibm.ws.jpa.embeddable.basic.model.XMLSetEnumeratedEmbed" access="FIELD">
+        <attributes>
+            <element-collection name="setEnumerated" fetch="EAGER">
+                <column name="value" />
+                <enumerated>STRING</enumerated>
+                <collection-table name="XMLSetEnum">
+                    <join-column name="parent_id" />
+                </collection-table>
+            </element-collection>
+        </attributes>
+    </embeddable>
+
+    <embeddable class="com.ibm.ws.jpa.embeddable.basic.model.XMLSetTemporalEmbed" access="FIELD">
+        <attributes>
+            <element-collection name="setDate" fetch="EAGER">
+                <column name="value" />
+                <temporal>DATE</temporal>
+                <collection-table name="XMLSetDate">
+                    <join-column name="parent_id" />
+                </collection-table>
+            </element-collection>
+        </attributes>
+    </embeddable>
+
+    <embeddable class="com.ibm.ws.jpa.embeddable.basic.model.XMLSetLobEmbed" access="FIELD">
+        <attributes>
+            <element-collection name="setLob" fetch="EAGER">
+                <column name="value" />
+                <lob />
+                <collection-table name="XMLSetLob">
+                    <join-column name="parent_id" />
+                </collection-table>
+            </element-collection>
+        </attributes>
+    </embeddable>
+
+    <embeddable class="com.ibm.ws.jpa.embeddable.basic.model.XMLMapKeyIntegerEmbed" access="FIELD">
+        <attributes>
+            <element-collection name="notMapKeyInteger" fetch="EAGER">
+                <map-key-column name="mykey" />
+                <column name="value" />
+                <collection-table name="XMLMapIntInt">
+                    <join-column name="parent_id" />
+                </collection-table>
+            </element-collection>
+        </attributes>
+    </embeddable>
+
+    <embeddable class="com.ibm.ws.jpa.embeddable.basic.model.XMLMapKeyIntegerValueTemporalEmbed" access="FIELD">
+        <attributes>
+            <element-collection name="mapKeyIntegerValueTemporal" fetch="EAGER">
+                <map-key-column name="mykey" />
+                <column name="value" />
+                <temporal>DATE</temporal>
+                <collection-table name="XMLMapIntDate">
+                    <join-column name="parent_id" />
+                </collection-table>
+            </element-collection>
+        </attributes>
+    </embeddable>
+
+    <embeddable class="com.ibm.ws.jpa.embeddable.basic.model.XMLMapKeyEnumeratedValueEnumeratedEmbed" access="FIELD">
+        <attributes>
+            <element-collection name="mapKeyEnumeratedValueEnumerated" fetch="EAGER">
+                <map-key-enumerated>STRING</map-key-enumerated>
+                <map-key-column name="mykey" />
+                <column name="value" />
+                <enumerated>STRING</enumerated>
+                <collection-table name="XMLMapEnumEnum">
+                    <join-column name="parent_id" />
+                </collection-table>
+            </element-collection>
+        </attributes>
+    </embeddable>
+
+    <embeddable class="com.ibm.ws.jpa.embeddable.basic.model.XMLMapKeyTemporalValueTemporalEmbed" access="FIELD">
+        <attributes>
+            <element-collection name="mapKeyTemporalValueTemporal" fetch="EAGER">
+                <map-key-temporal>DATE</map-key-temporal>
+                <map-key-column name="mykey" />
+                <column name="value" />
+                <temporal>DATE</temporal>
+                <collection-table name="XMLMapDateDate">
+                    <join-column name="parent_id" />
+                </collection-table>
+            </element-collection>
+        </attributes>
+    </embeddable>
+
+    <embeddable class="com.ibm.ws.jpa.embeddable.basic.model.XMLMapKeyEnumeratedValueLobEmbed" access="FIELD">
+        <attributes>
+            <element-collection name="mapKeyEnumeratedValueLob" fetch="EAGER">
+                <map-key-enumerated>STRING</map-key-enumerated>
+                <map-key-column name="mykey" />
+                <column name="value" />
+                <lob />
+                <collection-table name="XMLMapEnumLob">
+                    <join-column name="parent_id" />
+                </collection-table>
+            </element-collection>
+        </attributes>
+    </embeddable>
+
+</entity-mappings>
