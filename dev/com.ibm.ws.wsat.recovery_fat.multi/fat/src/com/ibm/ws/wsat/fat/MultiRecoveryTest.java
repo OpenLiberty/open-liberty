@@ -480,18 +480,19 @@ public class MultiRecoveryTest {
         }
         Log.info(this.getClass(), method, "callSetupServlet(" + id + ") returned: " + result);
 
-        final String str = "Setting state from RECOVERING to ACTIVE";
+        final String str = "Performed recovery for ";
+        final String failMsg = " did not perform recovery";
         //restart server in three modes
         if(startServer.equals("server1")){
         		startServers(server);
-                assertNotNull(server.waitForStringInTrace(str));
+                assertNotNull(server.getServerName()+failMsg, server.waitForStringInTrace(str+server.getServerName()));
         } else if(startServer.equals("server2")){
         		startServers(server2);
-                assertNotNull(server2.waitForStringInTrace(str));
+                assertNotNull(server2.getServerName()+failMsg, server2.waitForStringInTrace(str+server2.getServerName()));
         } else if(startServer.equals("both")){
         		startServers(server, server2);
-                assertNotNull(server.waitForStringInTrace(str));
-                assertNotNull(server2.waitForStringInTrace(str));
+                assertNotNull(server.getServerName()+failMsg, server.waitForStringInTrace(str+server.getServerName()));
+                assertNotNull(server2.getServerName()+failMsg, server2.waitForStringInTrace(str+server2.getServerName()));
         }
 
 		try {
