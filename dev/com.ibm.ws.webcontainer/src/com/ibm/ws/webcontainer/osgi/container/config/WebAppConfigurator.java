@@ -252,8 +252,15 @@ public class WebAppConfigurator implements ServletConfigurator {
         if ( !(webExt instanceof WebExtComponentImpl) ) {
             return null;
         }
-       
-        return webExt.getContextRoot();
+        
+        String contextRoot = webExt.getContextRoot();
+
+        // ensure context root is prefixed with "/"
+        if ((contextRoot != null) && (contextRoot.length() > 0) && (contextRoot.charAt(0) != '/')) {
+            contextRoot = "/" + contextRoot;
+        }
+
+        return contextRoot;
     }
     
     /**
