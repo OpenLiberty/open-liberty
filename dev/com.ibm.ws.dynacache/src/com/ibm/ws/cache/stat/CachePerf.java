@@ -13,7 +13,7 @@ package com.ibm.ws.cache.stat;
 
 public interface CachePerf {
 
-    // Master internal set of constants for cause
+    // Primary internal set of constants for cause
    public static final int UNSET    = 0;
    public static final int DIRECT   = 1;
    public static final int LRU      = 2;
@@ -24,7 +24,7 @@ public interface CachePerf {
    public static final int DISK_GARBAGE_COLLECTOR = 7; // 321649
    public static final int DISK_OVERFLOW          = 8; // 321649
 
-   // Master internal set of constants for source
+   // Primary internal set of constants for source
    public static final int MEMORY = 1;
    public static final int REMOTE = 2;
    public static final int DISK   = 3;

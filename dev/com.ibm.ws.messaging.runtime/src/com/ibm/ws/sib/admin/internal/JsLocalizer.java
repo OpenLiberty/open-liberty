@@ -67,7 +67,7 @@ public class JsLocalizer {
     // Map of all destination/mediation localization pairs, keyed by the UUID of
     // the target SIBDestination.
 
-    private final HashMap<String, MasterEntry> masterMap = new HashMap();
+    private final HashMap<String, MainEntry> mainMap = new HashMap();
 
     // Map of all SIBDestination LocalizationEntry objects keyed by UUID, for which a
     // localization exists. (Note: destinations only, not MQ links)
@@ -80,7 +80,7 @@ public class JsLocalizer {
     public ArrayList<DestinationDefinition> updatedDestDefList = new ArrayList<DestinationDefinition>();
     public ArrayList<LocalizationDefinition> updatedLocDefList = new ArrayList<LocalizationDefinition>();
 
-    private class MasterEntry {
+    private class MainEntry {
 
         private LocalizationDefinition _dld = null;
 
@@ -163,7 +163,7 @@ public class JsLocalizer {
             _mpAdmin = ((SIMPAdmin) _me.getMessageProcessor()).getAdministrator();
         }
 
-        Set s = masterMap.entrySet();
+        Set s = mainMap.entrySet();
         Iterator _i = s.iterator();
         boolean valid;
 
@@ -172,7 +172,7 @@ public class JsLocalizer {
             valid = true;
             Map.Entry mapEntry = (Map.Entry) _i.next();
             String destinationName = (String) mapEntry.getKey();
-            MasterEntry m = masterMap.get(destinationName);
+            MainEntry m = mainMap.get(destinationName);
 
             try {
                 dd = (DestinationDefinition) _me.getSIBDestination(_me.getBusName(), destinationName);
@@ -193,7 +193,7 @@ public class JsLocalizer {
                         SibTr.error(tc, "LOCALIZATION_EXCEPTION_SIAS0113", new Object[]{dd.getName()});
                     }
                     // newly added code for updated the dd and dld returned by runtime code
-                    // in the lpMap and masterMap
+                    // in the lpMap and mainMap
                     updatedDestDefList.add(dd);
                     updatedLocDefList.add(dld);
                     _i.remove();
@@ -229,14 +229,14 @@ public class JsLocalizer {
         lpMap.put(lpIdentifier, new LocalizationEntry(ld));
         String destName = lpIdentifier.substring(0, lpIdentifier.indexOf("@"));
 
-        // Get the MasterEntry object for this LPP. If it doesn't exist create one.
+        // Get the MainEntry object for this LPP. If it doesn't exist create one.
 
-        MasterEntry masterEntry = masterMap.get(destName);
+        MainEntry mainEntry = mainMap.get(destName);
 
-        if (masterEntry == null) {
-            masterEntry = new MasterEntry();
-            masterEntry.setDestinationLocalization(ld);
-            masterMap.put(destName, masterEntry);
+        if (mainEntry == null) {
+            mainEntry = new MainEntry();
+            mainEntry.setDestinationLocalization(ld);
+            mainMap.put(destName, mainEntry);
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
@@ -252,9 +252,9 @@ public class JsLocalizer {
      * 
      * @param lp
      *            Localization point to add.
-     * @return masterEntry the masterMap entry
+     * @return mainEntry the mainMap entry
      */
-    private MasterEntry updateLpMaps(LWMConfig lp) {
+    private MainEntry updateLpMaps(LWMConfig lp) {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             SibTr.entry(tc, "updateLpMaps", lp);
@@ -269,18 +269,18 @@ public class JsLocalizer {
         LocalizationEntry lEntry = new LocalizationEntry(ld);
         lpMap.put(lpName, lEntry);
         String destName = lpName.substring(0, lpName.indexOf("@"));
-        MasterEntry masterEntry = masterMap.get(destName);
+        MainEntry mainEntry = mainMap.get(destName);
 
-        if (masterEntry == null) {
-            masterEntry = new MasterEntry();
+        if (mainEntry == null) {
+            mainEntry = new MainEntry();
         }
-            masterEntry.setDestinationLocalization(ld);
-            masterMap.put(destName, masterEntry);
+            mainEntry.setDestinationLocalization(ld);
+            mainMap.put(destName, mainEntry);
         
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             SibTr.exit(tc, "updateLpMaps", lpMap);
         }
-        return masterEntry;
+        return mainEntry;
     }
 
     /**
@@ -309,9 +309,9 @@ public class JsLocalizer {
             LocalizationEntry lEntry = new LocalizationEntry(ld);
             lpMap.put(ld.getName(), lEntry);
 
-            MasterEntry newMasterEntry = new MasterEntry();
-            newMasterEntry.setDestinationLocalization(ld);
-            masterMap.put(dd.getName(), newMasterEntry);
+            MainEntry newMainEntry = new MainEntry();
+            newMainEntry.setDestinationLocalization(ld);
+            mainMap.put(dd.getName(), newMainEntry);
             valid = true;
         } catch (Exception e) {
             SibTr.error(tc, "LOCALIZATION_EXCEPTION_SIAS0113", e);
@@ -361,10 +361,10 @@ public class JsLocalizer {
         boolean valid = true;
         DestinationDefinition dd = null;
         DestinationAliasDefinition dAliasDef=null;
-        String key = getMasterMapKey(lp);
+        String key = getMainMapKey(lp);
 
-        // Update localization point in master map entry and lpMap
-        MasterEntry m = updateLpMaps(lp);
+        // Update localization point in main map entry and lpMap
+        MainEntry m = updateLpMaps(lp);
 
         if (m == null) {
             String reason = CLASS_NAME + ".alterLocalizationPoint(): Entry for name " + key + " not found in cache";
@@ -473,7 +473,7 @@ public class JsLocalizer {
 //            SibTr.entry(tc, thisMethodName, lp);
 //        }
 //
-//        String mastermapKey = getMasterMapKey(lp);
+//        String mainmapKey = getMainMapKey(lp);
 //        String lpUuid = null;
 //        if (JsWccmRCSUtils.instanceOfSIBMQLocalizationPointProxy(lp)) {
 //            lpUuid = lp.getString(CT_SIBMQLocalizationPointProxy.UUID_NAME, CT_SIBMQLocalizationPointProxy.UUID_DEFAULT);
@@ -481,7 +481,7 @@ public class JsLocalizer {
 //            lpUuid = lp.getString(CT_SIBLocalizationPoint.UUID_NAME, CT_SIBLocalizationPoint.UUID_DEFAULT);
 //        }
 //
-//        unlocalize(mastermapKey, lpUuid);
+//        unlocalize(mainmapKey, lpUuid);
 //
 //        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
 //            SibTr.exit(tc, thisMethodName);
@@ -495,7 +495,7 @@ public class JsLocalizer {
      * @return the identifier of the destination associated with the supplied
      *         localization point proxy.
      */
-    private String getMasterMapKey(LWMConfig lp) {
+    private String getMainMapKey(LWMConfig lp) {
 
         String key = null;
         String lpIdentifier = ((SIBLocalizationPoint) lp).getIdentifier();
@@ -549,7 +549,7 @@ public class JsLocalizer {
             while (i.hasNext()) {
 
                 String key = (String) i.next();
-                MasterEntry m = masterMap.get(key);
+                MainEntry m = mainMap.get(key);
 
                 try {
 
@@ -605,7 +605,7 @@ public class JsLocalizer {
             while (i.hasNext()) {
 
                 String key = (String) i.next();
-                MasterEntry m = masterMap.get(key);
+                MainEntry m = mainMap.get(key);
 
                 try {
 
@@ -692,7 +692,7 @@ public class JsLocalizer {
     }
 
     /**
-     * @param masterMapKey
+     * @param mainMapKey
      * @param lpUuid
      * @throws SIBExceptionBase
      * @throws SIException
@@ -706,10 +706,10 @@ public class JsLocalizer {
         }
 
         lpMap.remove(destName + "@" + _me.getName());
-        MasterEntry masterEntry = masterMap.get(destName);
+        MainEntry mainEntry = mainMap.get(destName);
         
         // Remove destination localization
-        masterEntry.setDestinationLocalization(null);
+        mainEntry.setDestinationLocalization(null);
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             SibTr.exit(tc, thisMethodName);
         }
@@ -727,9 +727,9 @@ public class JsLocalizer {
             LocalizationDefinition dld = (LocalizationDefinition) iter.next();
             String destLPName = dld.getName();
             String destinationName = destLPName.substring(0, destLPName.indexOf("@"));
-            MasterEntry masterEntry = new MasterEntry();
-            masterEntry.setDestinationLocalization(dld);
-            masterMap.put(destinationName, masterEntry);
+            MainEntry mainEntry = new MainEntry();
+            mainEntry.setDestinationLocalization(dld);
+            mainMap.put(destinationName, mainEntry);
             String key = destinationName + "@" + this._me.getName();
             if (lpMap.containsKey(key)) {
                 lpMap.remove(key);

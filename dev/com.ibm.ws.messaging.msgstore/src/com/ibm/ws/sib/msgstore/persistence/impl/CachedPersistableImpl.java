@@ -30,16 +30,16 @@ public abstract class CachedPersistableImpl implements Tuple
 {
     private static final String LINE_SEPARATOR = System.lineSeparator();
 
-    private final Tuple _masterPersistable;
+    private final Tuple _primaryPersistable;
 
-    public CachedPersistableImpl(Persistable masterPersistable)
+    public CachedPersistableImpl(Persistable primaryPersistable)
     {
-        _masterPersistable = (Tuple) masterPersistable;
+        _primaryPersistable = (Tuple) primaryPersistable;
     }
 
     public Persistable getPersistable()
     {
-        return _masterPersistable;
+        return _primaryPersistable;
     }
 
     /*
@@ -50,7 +50,7 @@ public abstract class CachedPersistableImpl implements Tuple
     @Override
     public void persistableOperationBegun() throws SevereMessageStoreException
     {
-        _masterPersistable.persistableOperationBegun();
+        _primaryPersistable.persistableOperationBegun();
     }
 
     /*
@@ -61,7 +61,7 @@ public abstract class CachedPersistableImpl implements Tuple
     @Override
     public void persistableOperationCompleted() throws SevereMessageStoreException
     {
-        _masterPersistable.persistableOperationCompleted();
+        _primaryPersistable.persistableOperationCompleted();
     }
 
     /*
@@ -72,7 +72,7 @@ public abstract class CachedPersistableImpl implements Tuple
     @Override
     public void persistableOperationCancelled() throws SevereMessageStoreException
     {
-        _masterPersistable.persistableOperationCancelled();
+        _primaryPersistable.persistableOperationCancelled();
     }
 
     /*
@@ -83,14 +83,14 @@ public abstract class CachedPersistableImpl implements Tuple
     @Override
     public boolean persistableRepresentationWasCreated()
     {
-        return _masterPersistable.persistableRepresentationWasCreated();
+        return _primaryPersistable.persistableRepresentationWasCreated();
     }
 
     // Defect 496154
     @Override
     public int persistableOperationsOutstanding()
     {
-        return _masterPersistable.persistableOperationsOutstanding();
+        return _primaryPersistable.persistableOperationsOutstanding();
     }
 
     /*
@@ -101,7 +101,7 @@ public abstract class CachedPersistableImpl implements Tuple
     @Override
     public boolean requiresPersistence()
     {
-        return _masterPersistable.requiresPersistence();
+        return _primaryPersistable.requiresPersistence();
     }
 
     /*
@@ -112,7 +112,7 @@ public abstract class CachedPersistableImpl implements Tuple
     @Override
     public void setLogicallyDeleted(boolean logicallyDeleted)
     {
-        _masterPersistable.setLogicallyDeleted(logicallyDeleted);
+        _primaryPersistable.setLogicallyDeleted(logicallyDeleted);
     }
 
     /*
@@ -123,7 +123,7 @@ public abstract class CachedPersistableImpl implements Tuple
     @Override
     public void setPersistentTranId(PersistentTranId xid)
     {
-        _masterPersistable.setPersistentTranId(xid);
+        _primaryPersistable.setPersistentTranId(xid);
     }
 
     /*
@@ -134,7 +134,7 @@ public abstract class CachedPersistableImpl implements Tuple
     @Override
     public void setPermanentTableId(int permanentTableId)
     {
-        _masterPersistable.setPermanentTableId(permanentTableId);
+        _primaryPersistable.setPermanentTableId(permanentTableId);
     }
 
     /*
@@ -145,7 +145,7 @@ public abstract class CachedPersistableImpl implements Tuple
     @Override
     public int getPermanentTableId()
     {
-        return _masterPersistable.getPermanentTableId();
+        return _primaryPersistable.getPermanentTableId();
     }
 
     /*
@@ -156,7 +156,7 @@ public abstract class CachedPersistableImpl implements Tuple
     @Override
     public void setTemporaryTableId(int temporaryTableId)
     {
-        _masterPersistable.setTemporaryTableId(temporaryTableId);
+        _primaryPersistable.setTemporaryTableId(temporaryTableId);
     }
 
     /*
@@ -167,7 +167,7 @@ public abstract class CachedPersistableImpl implements Tuple
     @Override
     public int getTemporaryTableId()
     {
-        return _masterPersistable.getTemporaryTableId();
+        return _primaryPersistable.getTemporaryTableId();
     }
 
     /*
@@ -178,7 +178,7 @@ public abstract class CachedPersistableImpl implements Tuple
     @Override
     public void setItemClassId(int itemClassId)
     {
-        _masterPersistable.setItemClassId(itemClassId);
+        _primaryPersistable.setItemClassId(itemClassId);
     }
 
     /*
@@ -189,7 +189,7 @@ public abstract class CachedPersistableImpl implements Tuple
     @Override
     public int getItemClassId()
     {
-        return _masterPersistable.getItemClassId();
+        return _primaryPersistable.getItemClassId();
     }
 
     /*
@@ -200,7 +200,7 @@ public abstract class CachedPersistableImpl implements Tuple
     @Override
     public void setCanExpireSilently(boolean canExpireSilently)
     {
-        _masterPersistable.setCanExpireSilently(canExpireSilently);
+        _primaryPersistable.setCanExpireSilently(canExpireSilently);
     }
 
     /*
@@ -211,7 +211,7 @@ public abstract class CachedPersistableImpl implements Tuple
     @Override
     public boolean getCanExpireSilently()
     {
-        return _masterPersistable.getCanExpireSilently();
+        return _primaryPersistable.getCanExpireSilently();
     }
 
     /*
@@ -222,7 +222,7 @@ public abstract class CachedPersistableImpl implements Tuple
     @Override
     public void setLockID(long lockID)
     {
-        _masterPersistable.setLockID(lockID);
+        _primaryPersistable.setLockID(lockID);
     }
 
     /*
@@ -233,7 +233,7 @@ public abstract class CachedPersistableImpl implements Tuple
     @Override
     public long getLockID()
     {
-        return _masterPersistable.getLockID();
+        return _primaryPersistable.getLockID();
     }
 
     /*
@@ -244,7 +244,7 @@ public abstract class CachedPersistableImpl implements Tuple
     @Override
     public void setItemClassName(String classname)
     {
-        _masterPersistable.setItemClassName(classname);
+        _primaryPersistable.setItemClassName(classname);
     }
 
     /*
@@ -255,7 +255,7 @@ public abstract class CachedPersistableImpl implements Tuple
     @Override
     public String getItemClassName()
     {
-        return _masterPersistable.getItemClassName();
+        return _primaryPersistable.getItemClassName();
     }
 
     /*
@@ -266,7 +266,7 @@ public abstract class CachedPersistableImpl implements Tuple
     @Override
     public void setAbstractItemLink(AbstractItemLink link)
     {
-        _masterPersistable.setAbstractItemLink(link);
+        _primaryPersistable.setAbstractItemLink(link);
     }
 
     /*
@@ -278,7 +278,7 @@ public abstract class CachedPersistableImpl implements Tuple
     @Override
     public List<DataSlice> getData() throws PersistentDataEncodingException, SevereMessageStoreException
     {
-        return _masterPersistable.getData();
+        return _primaryPersistable.getData();
     }
 
     /*
@@ -289,7 +289,7 @@ public abstract class CachedPersistableImpl implements Tuple
     @Override
     public void setPersistentSize(int persistentDataSize)
     {
-        _masterPersistable.setPersistentSize(persistentDataSize);
+        _primaryPersistable.setPersistentSize(persistentDataSize);
     }
 
     /*
@@ -300,7 +300,7 @@ public abstract class CachedPersistableImpl implements Tuple
     @Override
     public int getPersistentSize()
     {
-        return _masterPersistable.getPersistentSize();
+        return _primaryPersistable.getPersistentSize();
     }
 
     /*
@@ -311,7 +311,7 @@ public abstract class CachedPersistableImpl implements Tuple
     @Override
     public void setInMemoryByteSize(int byteSize)
     {
-        _masterPersistable.setInMemoryByteSize(byteSize);
+        _primaryPersistable.setInMemoryByteSize(byteSize);
     }
 
     /*
@@ -322,7 +322,7 @@ public abstract class CachedPersistableImpl implements Tuple
     @Override
     public int getInMemoryByteSize()
     {
-        return _masterPersistable.getInMemoryByteSize();
+        return _primaryPersistable.getInMemoryByteSize();
     }
 
     /*
@@ -333,7 +333,7 @@ public abstract class CachedPersistableImpl implements Tuple
     @Override
     public long getUniqueId()
     {
-        return _masterPersistable.getUniqueId();
+        return _primaryPersistable.getUniqueId();
     }
 
     /*
@@ -344,7 +344,7 @@ public abstract class CachedPersistableImpl implements Tuple
     @Override
     public long getContainingStreamId()
     {
-        return _masterPersistable.getContainingStreamId();
+        return _primaryPersistable.getContainingStreamId();
     }
 
     /*
@@ -355,19 +355,19 @@ public abstract class CachedPersistableImpl implements Tuple
     @Override
     public void setPriority(int priority)
     {
-        _masterPersistable.setPriority(priority);
+        _primaryPersistable.setPriority(priority);
     }
 
     @Override
     public void setRedeliveredCount(int redeliveredCount)
     {
-        _masterPersistable.setRedeliveredCount(redeliveredCount);
+        _primaryPersistable.setRedeliveredCount(redeliveredCount);
     }
 
     @Override
     public int getRedeliveredCount()
     {
-        return _masterPersistable.getRedeliveredCount();
+        return _primaryPersistable.getRedeliveredCount();
     }
 
     /*
@@ -378,7 +378,7 @@ public abstract class CachedPersistableImpl implements Tuple
     @Override
     public int getPriority()
     {
-        return _masterPersistable.getPriority();
+        return _primaryPersistable.getPriority();
     }
 
     /*
@@ -389,7 +389,7 @@ public abstract class CachedPersistableImpl implements Tuple
     @Override
     public void setSequence(long sequence)
     {
-        _masterPersistable.setSequence(sequence);
+        _primaryPersistable.setSequence(sequence);
     }
 
     /*
@@ -400,7 +400,7 @@ public abstract class CachedPersistableImpl implements Tuple
     @Override
     public long getSequence()
     {
-        return _masterPersistable.getSequence();
+        return _primaryPersistable.getSequence();
     }
 
     /*
@@ -411,7 +411,7 @@ public abstract class CachedPersistableImpl implements Tuple
     @Override
     public void setReferredID(long referredID)
     {
-        _masterPersistable.setReferredID(referredID);
+        _primaryPersistable.setReferredID(referredID);
     }
 
     /*
@@ -422,7 +422,7 @@ public abstract class CachedPersistableImpl implements Tuple
     @Override
     public long getReferredID()
     {
-        return _masterPersistable.getReferredID();
+        return _primaryPersistable.getReferredID();
     }
 
     /*
@@ -433,7 +433,7 @@ public abstract class CachedPersistableImpl implements Tuple
     @Override
     public void setStorageStrategy(int storageStrategy)
     {
-        _masterPersistable.setStorageStrategy(storageStrategy);
+        _primaryPersistable.setStorageStrategy(storageStrategy);
     }
 
     /*
@@ -444,7 +444,7 @@ public abstract class CachedPersistableImpl implements Tuple
     @Override
     public int getStorageStrategy()
     {
-        return _masterPersistable.getStorageStrategy();
+        return _primaryPersistable.getStorageStrategy();
     }
 
     /*
@@ -455,7 +455,7 @@ public abstract class CachedPersistableImpl implements Tuple
     @Override
     public TupleTypeEnum getTupleType()
     {
-        return _masterPersistable.getTupleType();
+        return _primaryPersistable.getTupleType();
     }
 
     /*
@@ -466,7 +466,7 @@ public abstract class CachedPersistableImpl implements Tuple
     @Override
     public void setExpiryTime(long expiryTime)
     {
-        _masterPersistable.setExpiryTime(expiryTime);
+        _primaryPersistable.setExpiryTime(expiryTime);
     }
 
     /*
@@ -477,7 +477,7 @@ public abstract class CachedPersistableImpl implements Tuple
     @Override
     public long getExpiryTime()
     {
-        return _masterPersistable.getExpiryTime();
+        return _primaryPersistable.getExpiryTime();
     }
 
     /*
@@ -487,7 +487,7 @@ public abstract class CachedPersistableImpl implements Tuple
      */
     @Override
     public void setDeliveryDelayTime(long deliveryDelayTime) {
-        _masterPersistable.setDeliveryDelayTime(deliveryDelayTime);
+        _primaryPersistable.setDeliveryDelayTime(deliveryDelayTime);
 
     }
 
@@ -498,7 +498,7 @@ public abstract class CachedPersistableImpl implements Tuple
      */
     @Override
     public long getDeliveryDelayTime() {
-        return _masterPersistable.getDeliveryDelayTime();
+        return _primaryPersistable.getDeliveryDelayTime();
     }
 
     /* (non-Javadoc)
@@ -506,7 +506,7 @@ public abstract class CachedPersistableImpl implements Tuple
      */
     @Override
     public boolean getDeliveryDelayTimeIsSuspect() {
-    	 return _masterPersistable.getDeliveryDelayTimeIsSuspect();
+    	 return _primaryPersistable.getDeliveryDelayTimeIsSuspect();
     }
     
     /*
@@ -517,7 +517,7 @@ public abstract class CachedPersistableImpl implements Tuple
     @Override
     public PersistentTranId getPersistentTranId()
     {
-        return _masterPersistable.getPersistentTranId();
+        return _primaryPersistable.getPersistentTranId();
     }
 
     /*
@@ -528,7 +528,7 @@ public abstract class CachedPersistableImpl implements Tuple
     @Override
     public boolean isLogicallyDeleted()
     {
-        return _masterPersistable.isLogicallyDeleted();
+        return _primaryPersistable.isLogicallyDeleted();
     }
 
     /*
@@ -539,7 +539,7 @@ public abstract class CachedPersistableImpl implements Tuple
     @Override
     public Persistable createPersistable(long uniqueID, TupleTypeEnum tupleType)
     {
-        return _masterPersistable.createPersistable(uniqueID, tupleType);
+        return _primaryPersistable.createPersistable(uniqueID, tupleType);
     }
 
     /*
@@ -550,7 +550,7 @@ public abstract class CachedPersistableImpl implements Tuple
     @Override
     public void setContainingStream(Persistable containingStream)
     {
-        _masterPersistable.setContainingStream(containingStream);
+        _primaryPersistable.setContainingStream(containingStream);
     }
 
     /*
@@ -561,7 +561,7 @@ public abstract class CachedPersistableImpl implements Tuple
     @Override
     public Persistable getContainingStream()
     {
-        return _masterPersistable.getContainingStream();
+        return _primaryPersistable.getContainingStream();
     }
 
     // Defect 463642 
@@ -574,7 +574,7 @@ public abstract class CachedPersistableImpl implements Tuple
     @Override
     public void setWasSpillingAtAddition(boolean wasSpilling)
     {
-        _masterPersistable.setWasSpillingAtAddition(wasSpilling);
+        _primaryPersistable.setWasSpillingAtAddition(wasSpilling);
     }
 
     /*
@@ -585,7 +585,7 @@ public abstract class CachedPersistableImpl implements Tuple
     @Override
     public void xmlWrite(FormattedWriter writer) throws IOException
     {
-        _masterPersistable.xmlWrite(writer);
+        _primaryPersistable.xmlWrite(writer);
     }
 
     /*

@@ -88,8 +88,8 @@ public class SibDiagnosticModule extends DiagnosticModule
       return ClassUtil.getSccsId(_className);
     }
   }*/
-  /** Have we registered the master diagnostic module? */
-  private static boolean _registeredMasterDiagnosticModule = false;
+  /** Have we registered the main diagnostic module? */
+  private static boolean _registeredMainDiagnosticModule = false;
 
   /** The list of packages we register as the global SIB packages */
   private static final String[] SIB_PACKAGE_LIST = { "com.ibm.ws.sib", "com.ibm.wsspi.sib", "com.ibm.websphere.sib" };
@@ -129,11 +129,11 @@ public class SibDiagnosticModule extends DiagnosticModule
 
     synchronized(SibDiagnosticModule.class)
     {
-      if (!_registeredMasterDiagnosticModule)
+      if (!_registeredMainDiagnosticModule)
       {
-        SibDiagnosticModule masterModule = new SibDiagnosticModule();
-        masterModule.registerModule(SIB_PACKAGE_LIST);
-        _registeredMasterDiagnosticModule = true;
+        SibDiagnosticModule mainModule = new SibDiagnosticModule();
+        mainModule.registerModule(SIB_PACKAGE_LIST);
+        _registeredMainDiagnosticModule = true;
       }
     }
 

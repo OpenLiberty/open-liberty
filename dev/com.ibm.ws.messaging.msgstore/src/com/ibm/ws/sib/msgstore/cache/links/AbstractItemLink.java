@@ -762,7 +762,7 @@ public abstract class AbstractItemLink extends Link implements Membership, Prior
                             // We restored it so the persistent representation is stable
                             _persistentRepresentationIsStable = true;
 
-                            // Re-initialise the master flag for controlling strong and weak references
+                            // Re-initialise the primary flag for controlling strong and weak references
                             _itemIsDiscardableIfPersistentRepresentationStable = false;
 
                             _createSoftReference(item);

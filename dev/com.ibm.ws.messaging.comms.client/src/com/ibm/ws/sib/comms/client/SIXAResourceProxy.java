@@ -180,7 +180,7 @@ public class SIXAResourceProxy extends BaseSIXAResourceProxy
       
       // Now decide whether to do the end() or not. If this resource was joined to another one then
       // we perform the end now only if there are no more joined resources and if end() has been
-      // called on the master XAResource.
+      // called on the primary XAResource.
       boolean performEndNow = false;
       if (joinedResource != null)
       {
