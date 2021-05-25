@@ -502,6 +502,24 @@ public class JDBCHeritageTestServlet extends FATServlet {
     }
 
     /**
+     * Verifies that API classes can be loaded from the mock heritage API bundle fragment.
+     */
+    @Test
+    public void testLoadClassesFromHeritageBundle() throws Exception {
+        Class.forName("com.ibm.websphere.ce.cm.PortableSQLException");
+        Class.forName("com.ibm.websphere.rsadapter.GenericDataStoreHelper");
+        Class.forName("com.ibm.websphere.appprofile.accessintent.AccessIntent");
+    }
+
+    /**
+     * Verifies that the ConnectionWaitTimeoutException class can be loaded from the com.ibm.ws.jdbc bundle
+     */
+    @Test
+    public void testLoadClassFromJDBCBundle() throws Exception {
+        Class.forName("com.ibm.websphere.ce.cm.ConnectionWaitTimeoutException");
+    }
+
+    /**
      * Verify that the data store helper is invoked to map and replace exceptions.
      */
     @Test
