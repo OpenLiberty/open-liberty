@@ -96,6 +96,8 @@
 
 	<javaPermission codebase="${wlp.user.dir}/shared/security.custom.store_1.0.jar"
 		className="java.security.AllPermission" />
-		
+    <javaPermission
+		codebase="${server.config.dir}/apps/oAuth20MongoSetup.war"
+		className="java.security.AllPermission" />	
 
 </server>

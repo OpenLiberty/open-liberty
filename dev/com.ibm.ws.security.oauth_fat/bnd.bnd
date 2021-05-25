@@ -30,6 +30,7 @@ fat.project: true
     com.ibm.ws.webcontainer.security;version=latest,\
     com.ibm.ws.security.oauth.oidc_fat.common;version=latest,\
     com.ibm.websphere.javaee.jsonp.1.0;version=latest,\
+    com.ibm.ws.mongo_fat;version=latest,\
     com.ibm.ws.security.fat.common;version=latest, \
     org.apache.httpcomponents:httpclient;version=4.5.7, \
     org.apache.httpcomponents:httpcore;version=4.4.13, \
