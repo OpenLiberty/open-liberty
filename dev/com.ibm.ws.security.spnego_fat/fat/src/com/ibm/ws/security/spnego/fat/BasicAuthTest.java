@@ -40,7 +40,8 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
 @RunWith(FATRunner.class)
-@Mode(TestMode.FULL)
+//@Mode(TestMode.FULL)
+@Mode(TestMode.QUARANTINE)
 @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
 public class BasicAuthTest extends CommonTest {
 
