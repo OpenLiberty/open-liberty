@@ -48,4 +48,7 @@ public class JwtConstants extends Constants {
 
     public static final String BOOTSTRAP_PROP_ENCRYPTION_SETTING = "fat.server.encryption.setting";
 
+    public static final String JWT_SIMPLE_BUILDER_SERVLET = "jwtbuilder";
+    public static final String JWT_SIMPLE_BUILDER_ENDPOINT = JWT_SIMPLE_BUILDER_SERVLET + "/build";
+
 }
