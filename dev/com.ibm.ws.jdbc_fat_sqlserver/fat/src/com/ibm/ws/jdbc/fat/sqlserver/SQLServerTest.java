@@ -46,7 +46,7 @@ public class SQLServerTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        FATSuite.setupDatabase(sqlserver);
+        FATSuite.setupDatabase(sqlserver, false);
 
         server.addEnvVar("DBNAME", FATSuite.DB_NAME);
         server.addEnvVar("HOST", sqlserver.getContainerIpAddress());
