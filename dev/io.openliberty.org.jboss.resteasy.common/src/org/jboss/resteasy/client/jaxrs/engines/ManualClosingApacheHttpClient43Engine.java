@@ -24,7 +24,7 @@ import org.jboss.resteasy.client.jaxrs.i18n.Messages;
 import org.jboss.resteasy.client.jaxrs.internal.ClientInvocation;
 import org.jboss.resteasy.client.jaxrs.internal.ClientResponse;
 import org.jboss.resteasy.client.jaxrs.internal.FinalizedClientResponse;
-import org.jboss.resteasy.spi.config.ConfigurationFactory;
+import org.jboss.resteasy.microprofile.config.ResteasyConfigProvider;
 import org.jboss.resteasy.util.CaseInsensitiveMap;
 
 import javax.net.ssl.HostnameVerifier;
@@ -58,20 +58,19 @@ public class ManualClosingApacheHttpClient43Engine implements ApacheHttpClientEn
     * Used to build temp file prefix.
     */
    private static final String processId;
-
+   //Liberty Change:  Add doPriv  
    static
    {
       try {
          processId = AccessController.doPrivileged(new PrivilegedExceptionAction<String>() {
             @Override
-            public String run() throws Exception
-            {        return ManagementFactory.getRuntimeMXBean().getName().replaceAll("[^0-9a-zA-Z]", "");        }
-
-
+            public String run() throws Exception {
+               return ManagementFactory.getRuntimeMXBean().getName().replaceAll("[^0-9a-zA-Z]", "");
+            }
          });
-      } catch (PrivilegedActionException pae)
-      {      throw new RuntimeException(pae);    }
-
+      } catch (PrivilegedActionException pae) {
+         throw new RuntimeException(pae);
+      }
    }
 
    protected final HttpClient httpClient;
@@ -123,39 +122,56 @@ public class ManualClosingApacheHttpClient43Engine implements ApacheHttpClientEn
 
    public ManualClosingApacheHttpClient43Engine()
    {
-      this.httpClient = createDefaultHttpClient();
-      this.allowClosingHttpClient = true;
+      this(null, null, true, null);
    }
 
    public ManualClosingApacheHttpClient43Engine(final HttpHost defaultProxy)
    {
-      this.defaultProxy = defaultProxy;
-      this.httpClient = createDefaultHttpClient();
-      this.allowClosingHttpClient = true;
+      this(null, null, true, defaultProxy);
    }
 
    public ManualClosingApacheHttpClient43Engine(final HttpClient httpClient)
    {
-      this.httpClient = httpClient;
-      this.allowClosingHttpClient = true;
+      this(httpClient, null, true, null);
    }
 
    public ManualClosingApacheHttpClient43Engine(final HttpClient httpClient, final boolean closeHttpClient)
    {
-      if (closeHttpClient && !(httpClient instanceof CloseableHttpClient))
-      {
-         throw new IllegalArgumentException(
-               "httpClient must be a CloseableHttpClient instance in order for allowing engine to close it!");
-      }
-      this.httpClient = httpClient;
-      this.allowClosingHttpClient = closeHttpClient;
+      this(httpClient, null, closeHttpClient, null);
    }
 
    public ManualClosingApacheHttpClient43Engine(final HttpClient httpClient, final HttpContextProvider httpContextProvider)
    {
+      this(httpClient, httpContextProvider, true, null);
+   }
+
+   private ManualClosingApacheHttpClient43Engine(HttpClient httpClient, final HttpContextProvider httpContextProvider, final boolean closeHttpClient, HttpHost defaultProxy)
+   {
+       if (httpClient == null) {
+           httpClient = createDefaultHttpClient();
+       }
+       if (closeHttpClient && !(httpClient instanceof CloseableHttpClient))
+       {
+          throw new IllegalArgumentException(
+                "httpClient must be a CloseableHttpClient instance in order for allowing engine to close it!");
+       }
       this.httpClient = httpClient;
       this.httpContextProvider = httpContextProvider;
-      this.allowClosingHttpClient = true;
+      this.allowClosingHttpClient = closeHttpClient;
+      this.defaultProxy = defaultProxy;
+      
+      try {
+          int threshold = Integer.parseInt(
+              ResteasyConfigProvider.getConfig()
+                                    .getOptionalValue("org.jboss.resteasy.client.jaxrs.engines.fileUploadInMemoryThreshold", String.class)
+                                    .orElse("1"));
+          if (threshold > -1) {
+              this.fileUploadInMemoryThresholdLimit = threshold;
+          }
+          LogMessages.LOGGER.debugf("Negative threshold, %s, specified. Using default value", threshold);
+      } catch (Exception e) {
+          LogMessages.LOGGER.debug("Exception caught parsing memory threshold. Using default value.", e);
+      }
    }
 
    /**
@@ -763,11 +779,11 @@ public class ManualClosingApacheHttpClient43Engine implements ApacheHttpClientEn
    // https://github.com/resteasy/Resteasy/pull/2778
    private static File getTempDir() {
        if (System.getSecurityManager() == null) {
-          final Optional<String> value = ConfigurationFactory.getInstance().getConfiguration().getOptionalValue("java.io.tmpdir", String.class);
+          final Optional<String> value = ResteasyConfigProvider.getConfig().getOptionalValue("java.io.tmpdir", String.class);
           return value.map(File::new).orElseGet(() -> new File(System.getProperty("java.io.tmpdir")));
        }
        return AccessController.doPrivileged((PrivilegedAction<File>) () -> {
-          final Optional<String> value = ConfigurationFactory.getInstance().getConfiguration().getOptionalValue("java.io.tmpdir", String.class);
+          final Optional<String> value = ResteasyConfigProvider.getConfig().getOptionalValue("java.io.tmpdir", String.class);
           return value.map(File::new).orElseGet(() -> new File(System.getProperty("java.io.tmpdir")));
        });
     }
