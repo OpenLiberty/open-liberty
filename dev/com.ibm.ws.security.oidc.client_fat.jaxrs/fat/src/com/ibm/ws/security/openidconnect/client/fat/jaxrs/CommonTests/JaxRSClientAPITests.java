@@ -23,7 +23,6 @@ import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestSettings;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.ValidationData.validationData;
 import com.meterware.httpunit.WebConversation;
 
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
@@ -62,21 +61,29 @@ public class JaxRSClientAPITests extends CommonTest {
             bearer = "Bearer";
             scopes = settings.getScope();
             if (scopes.contains("openid")) {
-                expectations = vData.addExpectation(expectations, finalAction, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_CONTAIN, "Did not see a valid ID Token in the ouptut", null, "JaxRSClient-getIdToken: null");
+                expectations = vData.addExpectation(expectations, finalAction, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_CONTAIN,
+                                                    "Did not see a valid ID Token in the ouptut", null, "JaxRSClient-getIdToken: null");
             } else {
-                expectations = vData.addExpectation(expectations, finalAction, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Received an ID Token and should NOT have", null, "JaxRSClient-getIdToken: null");
+                expectations = vData.addExpectation(expectations, finalAction, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Received an ID Token and should NOT have", null,
+                                                    "JaxRSClient-getIdToken: null");
             }
         } else {
             bearer = "null";
             scopes = "null";
-            expectations = vData.addExpectation(expectations, finalAction, testRPServer, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Did not see a message that all of the subject values were null", null, "All values in subject are null as they should be");
-            expectations = vData.addExpectation(expectations, finalAction, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_CONTAIN, "Got to the target App on the RS server and should not have...", null, "formlogin/SimpleServlet");
+            expectations = vData.addExpectation(expectations, finalAction, testRPServer, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS,
+                                                "Did not see a message that all of the subject values were null", null, "All values in subject are null as they should be");
+            expectations = vData.addExpectation(expectations, finalAction, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_CONTAIN,
+                                                "Got to the target App on the RS server and should not have...", null, "formlogin/SimpleServlet");
         }
-        expectations = vData.addExpectation(expectations, finalAction, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not see the Access Token Type set to Bearer printed in the app output", null, "JaxRSClient-getAccessTokenType: " + bearer);
+        expectations = vData.addExpectation(expectations, finalAction, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS,
+                                            "Did not see the Access Token Type set to Bearer printed in the app output", null, "JaxRSClient-getAccessTokenType: " + bearer);
         //		expectations = vData.addExpectation(expectations, finalAction, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not see the Access Token Expiration Time printed in the app output", null, "JaxRSClient-getAccessTokenExpirationTime: 0") ;
-        expectations = vData.addExpectation(expectations, finalAction, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not see the Access Token printed in the app output", null, "JaxRSClient-getAccessToken: ");
-        expectations = vData.addExpectation(expectations, finalAction, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not see the Access Token Scopes printed in the app output", null, "JaxRSClient-getScopes: " + scopes);
-        expectations = vData.addExpectation(expectations, finalAction, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not see the Access Token IDToken printed in the app output", null, "JaxRSClient-getIdToken: ");
+        expectations = vData.addExpectation(expectations, finalAction, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not see the Access Token printed in the app output",
+                                            null, "JaxRSClient-getAccessToken: ");
+        expectations = vData.addExpectation(expectations, finalAction, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS,
+                                            "Did not see the Access Token Scopes printed in the app output", null, "JaxRSClient-getScopes: " + scopes);
+        expectations = vData.addExpectation(expectations, finalAction, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS,
+                                            "Did not see the Access Token IDToken printed in the app output", null, "JaxRSClient-getIdToken: ");
         return expectations;
     }
 
@@ -88,8 +95,10 @@ public class JaxRSClientAPITests extends CommonTest {
 
         List<validationData> expectations = vData.addSuccessStatusCodes(null, finalAction);
         expectations = vData.addResponseStatusExpectation(expectations, finalAction, Constants.INTERNAL_SERVER_ERROR_STATUS);
-        expectations = vData.addExpectation(expectations, finalAction, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not see response code 401 in the output", null, Constants.HTTP_UNAUTHORIZED_EXCEPTION);
-        expectations = vData.addExpectation(expectations, finalAction, testRPServer, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Did not see response code 401 in the output", null, Constants.HTTP_UNAUTHORIZED_EXCEPTION);
+        expectations = vData.addExpectation(expectations, finalAction, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not see response code 401 in the output", null,
+                                            Constants.HTTP_UNAUTHORIZED_EXCEPTION);
+        expectations = vData.addExpectation(expectations, finalAction, testRPServer, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS,
+                                            "Did not see response code 401 in the output", null, Constants.HTTP_UNAUTHORIZED_EXCEPTION);
         return expectations;
     }
 
@@ -209,7 +218,6 @@ public class JaxRSClientAPITests extends CommonTest {
 
     }
 
-    @SkipForRepeat(SkipForRepeat.EE9_FEATURES) // 17160 - EE9 client properties not supported yet
     @Mode(TestMode.LITE)
     @Test
     public void APIOidcJaxRSClientTests_jaxrsOAuthClientProperty_string_true() throws Exception {
@@ -226,7 +234,6 @@ public class JaxRSClientAPITests extends CommonTest {
 
     }
 
-    @SkipForRepeat(SkipForRepeat.EE9_FEATURES) // 17160 - EE9 client properties not supported yet
     @Mode(TestMode.LITE)
     @Test
     public void APIOidcJaxRSClientTests_jaxrsOAuthClientProperty_boolean_true() throws Exception {
@@ -243,7 +250,6 @@ public class JaxRSClientAPITests extends CommonTest {
 
     }
 
-    @SkipForRepeat(SkipForRepeat.EE9_FEATURES) // 17160 - EE9 client properties not supported yet
     @Mode(TestMode.LITE)
     @Test
     public void APIOidcJaxRSClientTests_jaxrsOAuthClientProperty_string_false() throws Exception {
@@ -261,7 +267,6 @@ public class JaxRSClientAPITests extends CommonTest {
 
     }
 
-    @SkipForRepeat(SkipForRepeat.EE9_FEATURES) // 17160 - EE9 client properties not supported yet
     @Mode(TestMode.LITE)
     @Test
     public void APIOidcJaxRSClientTests_jaxrsOAuthClientProperty_boolean_false() throws Exception {
@@ -279,7 +284,6 @@ public class JaxRSClientAPITests extends CommonTest {
 
     }
 
-    @SkipForRepeat(SkipForRepeat.EE9_FEATURES) // 17160 - EE9 client properties not supported yet
     @Mode(TestMode.LITE)
     @Test
     public void APIOidcJaxRSClientTests_jaxrsJWTClientProperty_string_true() throws Exception {
@@ -302,7 +306,6 @@ public class JaxRSClientAPITests extends CommonTest {
 
     }
 
-    @SkipForRepeat(SkipForRepeat.EE9_FEATURES) // 17160 - EE9 client properties not supported yet
     @Mode(TestMode.LITE)
     @Test
     public void APIOidcJaxRSClientTests_jaxrsJWTClientProperty_boolean_true() throws Exception {
@@ -325,7 +328,6 @@ public class JaxRSClientAPITests extends CommonTest {
 
     }
 
-    @SkipForRepeat(SkipForRepeat.EE9_FEATURES) // 17160 - EE9 client properties not supported yet
     @Mode(TestMode.LITE)
     @Test
     public void APIOidcJaxRSClientTests_jaxrsJWTClientProperty_string_false() throws Exception {
@@ -343,7 +345,6 @@ public class JaxRSClientAPITests extends CommonTest {
 
     }
 
-    @SkipForRepeat(SkipForRepeat.EE9_FEATURES) // 17160 - EE9 client properties not supported yet
     @Mode(TestMode.LITE)
     @Test
     public void APIOidcJaxRSClientTests_jaxrsJWTClientProperty_boolean_false() throws Exception {
