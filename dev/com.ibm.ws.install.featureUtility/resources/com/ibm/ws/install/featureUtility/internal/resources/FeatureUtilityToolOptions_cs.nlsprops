@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020 IBM Corporation and others.
+# Copyright (c) 2010, 2020, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -48,6 +48,12 @@ installFeature.option-desc.--to=\tUr\u010dete, kam m\u00e1 b\u00fdt funkce nains
 \tnen\u00ed tato volba ur\u010dena, je funkce nainstalov\u00e1na jako     \n\
 \tu\u017eivatelsk\u00e1 funkce.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--featuresBom=\ \ \ \ Sou\u0159adnice --featuresBom=Maven
+installFeature.option-desc.--featuresBom=\tZadejte sou\u0159adnici Maven pro soubor BOM funkc\u00ed. Tato volba \n\
+\tumo\u017e\u0148uje instalaci u\u017eivatelsk\u00fdch funkc\u00ed z nakonfigurovan\u00e9ho     \n\
+\t\u00falo\u017ei\u0161t\u011b maven. Ujist\u011bte se, \u017ee \u00falo\u017ei\u0161t\u011b rovn\u011b\u017e obsahuje        \n\
+\tp\u0159idru\u017een\u00e9 funkce souboru JSON ve stejn\u00e9m groupId jako BOM.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.--from=\ \ \ \ --from=filePath
 installFeature.option-desc.--from=\tPomoc\u00ed t\u00e9to volby m\u016f\u017eete ur\u010dit cestu k souboru \u00falo\u017ei\u0161t\u011b artefaktu \n\
 \tMaven jako zdroj pro featureUtility pro instalaci aktiv.
@@ -66,6 +72,12 @@ installServerFeatures.desc=\tNainstalujte po\u017eadovan\u00e9 funkce pro pojmen
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.name...=\ \ \ \ name ...
 installServerFeatures.option-desc.name...=\tN\u00e1zev existuj\u00edc\u00edho serveru ve stejn\u00e9m prost\u0159ed\u00ed Liberty.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--featuresBom=\ \ \ \ Sou\u0159adnice --featuresBom=Maven
+installServerFeatures.option-desc.--featuresBom=\tZadejte sou\u0159adnici Maven pro soubor BOM funkc\u00ed. Tato volba \n\
+\tumo\u017e\u0148uje instalaci u\u017eivatelsk\u00fdch funkc\u00ed z nakonfigurovan\u00e9ho     \n\
+\t\u00falo\u017ei\u0161t\u011b maven. Ujist\u011bte se, \u017ee \u00falo\u017ei\u0161t\u011b rovn\u011b\u017e obsahuje        \n\
+\tp\u0159idru\u017een\u00e9 funkce souboru JSON ve stejn\u00e9m groupId jako BOM.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.--from=\ \ \ \ --from=filePath
 installServerFeatures.option-desc.--from=\tPomoc\u00ed t\u00e9to volby m\u016f\u017eete ur\u010dit cestu k souboru \u00falo\u017ei\u0161t\u011b artefaktu \n\
@@ -90,6 +102,6 @@ viewSettings.desc=\tZobrazte \u00falo\u017ei\u0161t\u011b a nastaven\u00ed serve
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 viewSettings.option-key.--viewValidationMessages=\ \ \ \ --viewValidationMessages
 viewSettings.option-desc.--viewValidationMessages=\tPomoc\u00ed t\u00e9to volby m\u016f\u017eete zobrazit podrobn\u00e9 zpr\u00e1vy z \n\
-\tov\u011b\u0159en\u00ed platnosti nakonfigurovan\u00e9ho souboru featureUtility.properties.    \n\
+\tov\u011b\u0159en\u00ed platnosti nakonfigurovan\u00e9ho souboru featureUtility.properties.         \n\
 \tKa\u017ed\u00e1 zpr\u00e1va obsahuje k\u00f3d chyby, \u010d\u00edslo \u0159\u00e1dku, kde se tato chyba \n\
 \tvyskytla a jej\u00ed p\u0159\u00ed\u010dinu.

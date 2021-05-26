@@ -86,10 +86,6 @@ public class RequestTimingMetricsTest {
 
         Log.info(c, "setUp", logMsg);
         Assert.assertNotNull("No CWWKF0011I was found.", logMsg);
-
-        //Validate that we have registered the RequestTiming MBean
-        Assert.assertNotNull("RequestTiming Mbean not registered",
-                             server.waitForStringInTraceUsingMark("Monitoring MXBean WebSphere:type=RequestTimingStats"));
     }
 
     /**

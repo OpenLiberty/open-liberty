@@ -470,9 +470,9 @@ public class OptimizedSIXAResourceProxy extends BaseSIXAResourceProxy implements
       }
 
       // Below is some logic to unjoin from a resource. The comms implementation of TMJOIN places
-      // the first XAResource that starts a transaction as the 'master' XAResource. Therefore if
+      // the first XAResource that starts a transaction as the 'primary' XAResource. Therefore if
       // any XAResources join up with it then they effectively become 'co-opted' XAResources to the
-      // first. As the XAResources can be ended in any order, we must ensure that we if the master
+      // first. As the XAResources can be ended in any order, we must ensure that we if the primary
       // is ended first then ending the last co-opted resource causes the end to actually occur.
 
       boolean performEndNow;
@@ -484,8 +484,8 @@ public class OptimizedSIXAResourceProxy extends BaseSIXAResourceProxy implements
 
          if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, "JoinedResource.endHasBeenCalled: " +
                                                         joinedResource.endHasBeenCalled);
-         // The answer we care about here is whether the master XA Resource has any further joined
-         // resources. We also should only perform the end now if the master XA Resource has also
+         // The answer we care about here is whether the primary XA Resource has any further joined
+         // resources. We also should only perform the end now if the primary XA Resource has also
          // been ended.
          performEndNow = (!joinedResource.hasJoinedResources()) &&
                          joinedResource.endHasBeenCalled;
@@ -520,7 +520,7 @@ public class OptimizedSIXAResourceProxy extends BaseSIXAResourceProxy implements
             // Record whether a transaction was ever created on the server
             // If it was _not_ then this information makes completing the
             // transaction a no-op. Again, if this is a co-opted resource,
-            // defer the real answer to the master XAResource.
+            // defer the real answer to the primary XAResource.
             if (joinedResource != null) info.serverTransactionCreated = joinedResource.serverUowCreated;
             else                        info.serverTransactionCreated = serverUowCreated;
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, "serverTransactionCreated", ""+info.serverTransactionCreated);

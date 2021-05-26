@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020 IBM Corporation and others.
+# Copyright (c) 2010, 2020, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -285,6 +285,7 @@ ERROR_UNABLE_RUN_EXTRACTOR.useraction=\u8acb\u53c3\u95b1 WebSphere Application S
 ERROR_FAILED_TO_GET_ASSET_LICENSE=CWWKF1265E: \u7121\u6cd5\u53d6\u5f97\u8cc7\u7522 {0} \u7684\u6388\u6b0a\u3002\u8acb\u9a57\u8b49\u6307\u5b9a\u7684\u8cc7\u7522\u540d\u7a31\u6709\u6548\uff0c\u4e14\u5132\u5b58\u5eab\u53ef\u4f9b\u5b58\u53d6
 ERROR_FAILED_TO_GET_ASSET_LICENSE.explanation=\u64f7\u53d6\u6307\u5b9a\u7684\u8cc7\u7522\u6388\u6b0a\u6642\u767c\u751f\u932f\u8aa4\u3002
 ERROR_FAILED_TO_GET_ASSET_LICENSE.useraction=\u8acb\u78ba\u5b9a\u6307\u5b9a\u7684\u8cc7\u7522\u540d\u7a31\u6709\u6548\uff0c\u4e14\u5132\u5b58\u5eab\u53ef\u4f9b\u5b58\u53d6\u3002
+
 ERROR_UNABLE_TO_FIND_SERVER_XML=CWWKF1266E: \u5728 {0} \u76ee\u9304\u4e2d\u627e\u4e0d\u5230 server.xml \u6a94\uff0c\u8acb\u78ba\u5b9a\u6a94\u6848\u5df2\u5b58\u5728\u4e14\u53ef\u4f9b\u5b58\u53d6\u3002
 ERROR_UNABLE_TO_FIND_SERVER_XML.explanation=\u5728\u4f3a\u670d\u5668\u76ee\u9304\u4e2d\u627e\u4e0d\u5230\u6307\u5b9a\u4f3a\u670d\u5668\u7684 server.xml \u6a94\u3002
 ERROR_UNABLE_TO_FIND_SERVER_XML.useraction=\u8acb\u78ba\u5b9a\u8a72\u6a94\u6848\u5b58\u5728\uff0c\u4e14\u53ef\u4f9b\u5b58\u53d6\u3002
@@ -796,6 +797,7 @@ ERROR_FAILED_TO_CONNECT_MAVEN.useraction=\u8acb\u78ba\u5b9a\u7cfb\u7d71\u53ef\u4
 ERROR_CHECKSUM_FAILED_MAVEN=CWWKF1391E: \u53ef\u7528\u7684\u7e3d\u548c\u6aa2\u67e5\u7121\u6cd5\u5c0d {0} \u6a94\u6848\u9032\u884c\u9a57\u8b49\u3002
 ERROR_CHECKSUM_FAILED_MAVEN.explanation=\u5df2\u4e0b\u8f09\u8cc7\u7522\u7684\u7e3d\u548c\u6aa2\u67e5\u4e0d\u6b63\u78ba\u3002\u5df2\u4e0b\u8f09\u8cc7\u7522\u7684\u5167\u5bb9\u8207\u5132\u5b58\u5eab\u4e2d\u7684\u5167\u5bb9\u4e0d\u540c\uff0c\u56e0\u6b64\u7121\u6cd5\u5b89\u88dd\u8a72\u8cc7\u7522\u3002
 ERROR_CHECKSUM_FAILED_MAVEN.useraction=\u8acb\u91cd\u65b0\u57f7\u884c\u6307\u4ee4\u3002
+
 ERROR_INVALID_MAVEN_CREDENTIALS=CWWKF1392E: \u5c0d {0} \u5132\u5b58\u5eab\u63d0\u4f9b\u7684\u7684\u8a8d\u8b49\u4e0d\u6b63\u78ba\u3002
 ERROR_INVALID_MAVEN_CREDENTIALS.explanation=FEATURE_REPO_USER \u548c FEATURE_REPO_PASSWORD \u8a8d\u8b49\u7121\u6cd5\u63a5\u53d7\u5df2\u914d\u7f6e\u4e4b\u5132\u5b58\u5eab\u7684\u9451\u5225\u3002
 ERROR_INVALID_MAVEN_CREDENTIALS.useraction=\u8acb\u5c0d\u5df2\u914d\u7f6e\u7684\u5132\u5b58\u5eab\u63d0\u4f9b\u6b63\u78ba\u7684\u8a8d\u8b49\u3002
@@ -872,7 +874,7 @@ ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY.useraction=\u8acb\u5b89\u88dd\u8a7
 
 ERROR_BETA_EDITION_NOT_SUPPORTED=CWWKF1411E: \u6e2c\u8a66\u7248\u4e0d\u652f\u63f4\u5b89\u88dd\u6216\u66f4\u65b0\u7279\u6027\u3002
 ERROR_BETA_EDITION_NOT_SUPPORTED.explanation=\u5df2\u5b89\u88dd\u7684\u7522\u54c1\u4e0d\u652f\u63f4\u5b89\u88dd\u6216\u66f4\u65b0\u7279\u6027\u3002
-ERROR_BETA_EDITION_NOT_SUPPORTED.useraction=\u4e0d\u9700\u63a1\u53d6\u4efb\u4f55\u52d5\u4f5c\u3002
+ERROR_BETA_EDITION_NOT_SUPPORTED.useraction=\u4e0d\u9700\u8981\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
 
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: \u5df2\u9806\u5229\u4e0b\u8f09\u7279\u6027\u3002
 TOOL_DOWNLOAD_FEATURE_OK.explanation=\u5df2\u4e0b\u8f09\u7279\u6027\u3002
@@ -885,5 +887,9 @@ TOOL_DOWNLOAD_FEATURES_OK.useraction=\u4e0d\u9700\u63a1\u53d6\u4efb\u4f55\u52d5\
 MAPBASED_ERROR_UNSUPPORTED_FILE=CWWKF1502E: \u7121\u6cd5\u5b89\u88dd {0} \u6a94\uff0c\u56e0\u70ba\u5b83\u662f\u4e0d\u652f\u63f4\u7684\u6a94\u6848\u985e\u578b\u3002\u53ea\u652f\u63f4\u5f9e ESA \u6a94\u6848\u5b89\u88dd\u3002
 MAPBASED_ERROR_UNSUPPORTED_FILE.explanation=\u672a\u5b89\u88dd\u6a94\u6848\uff0c\u56e0\u70ba\u4e0d\u652f\u63f4\u6240\u63d0\u4f9b\u7684\u6a94\u6848\u985e\u578b\u3002
 MAPBASED_ERROR_UNSUPPORTED_FILE.useraction=\u8acb\u53c3\u95b1 WebSphere Application Server \u652f\u63f4\u4e2d\u5fc3\u7db2\u9801\u4e0a\u7684\u554f\u984c\u5224\u65b7\u8cc7\u8a0a\uff0c\u7db2\u5740\u70ba\uff1ahttp://www.ibm.com/software/webservers/appserv/was/support\u3002
+
+ERROR_INVALID_FEATURE_BOM_COORDINATE=CWWKF1503E: {0} \u7279\u6027 BOM Maven \u5ea7\u6a19\u7684\u683c\u5f0f\u7121\u6548\u3002\u8acb\u78ba\u4fdd\u5ea7\u6a19\u683c\u5f0f\u70ba\uff1agroupId:artifactId:version\u3002
+ERROR_INVALID_FEATURE_BOM_COORDINATE.explanation=\u7279\u6027 BOM Maven \u5ea7\u6a19\u683c\u5f0f\u7121\u6548\u3002
+ERROR_INVALID_FEATURE_BOM_COORDINATE.useraction=\u8acb\u91cd\u65b0\u683c\u5f0f\u5316\u7279\u6027 BOM Maven \u5ea7\u6a19\uff0c\u4ee5\u9069\u5408 groupId:artifactId:version \u683c\u5f0f\u3002
 
 MSG_STABILIZING_FEATUREMANAGER=\u6b64 featureManager \u52d5\u4f5c\u5df2\u7d93\u5f88\u7a69\u5b9a\u3002\u8acb\u6539\u7528 installUtility {0}\u3002\u5efa\u8b70\u4f7f\u7528 installUtility \u6307\u4ee4\uff0c\u4f86\u9032\u884c\u5b89\u88dd\u548c\u5132\u5b58\u5eab\u76f8\u95dc\u52d5\u4f5c\u3002

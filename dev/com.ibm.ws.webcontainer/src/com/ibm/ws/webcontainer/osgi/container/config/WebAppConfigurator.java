@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2019 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -252,8 +252,15 @@ public class WebAppConfigurator implements ServletConfigurator {
         if ( !(webExt instanceof WebExtComponentImpl) ) {
             return null;
         }
-       
-        return webExt.getContextRoot();
+        
+        String contextRoot = webExt.getContextRoot();
+
+        // ensure context root is prefixed with "/"
+        if ((contextRoot != null) && (contextRoot.length() > 0) && (contextRoot.charAt(0) != '/')) {
+            contextRoot = "/" + contextRoot;
+        }
+
+        return contextRoot;
     }
     
     /**

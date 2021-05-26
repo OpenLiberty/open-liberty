@@ -35,6 +35,7 @@ public class FATSuite {
 
         // Install internal feature that allows access to DataStoreHelper as though it were API
         server.copyFileToLibertyInstallRoot("lib/features", "internalFeatures/dataStoreHelper-1.0.mf");
+        server.copyFileToLibertyInstallRoot("lib", "bundles/jdbcHeritageApi.jar");
     }
 
     /**
@@ -47,5 +48,6 @@ public class FATSuite {
 
         // Remove the internal feature
         server.deleteFileFromLibertyInstallRoot("lib/features/dataStoreHelper-1.0.mf");
+        server.deleteFileFromLibertyInstallRoot("lib/jdbcHeritageApi.jar");
     }
 }

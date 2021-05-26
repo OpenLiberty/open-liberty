@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020 IBM Corporation and others.
+# Copyright (c) 2010, 2020, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -885,5 +885,9 @@ TOOL_DOWNLOAD_FEATURES_OK.useraction=Nie jest wymagana \u017cadna czynno\u015b\u
 MAPBASED_ERROR_UNSUPPORTED_FILE=CWWKF1502E: Nie mo\u017cna zainstalowa\u0107 pliku {0}, poniewa\u017c jest to nieobs\u0142ugiwany typ pliku. Obs\u0142ugiwane jest tylko instalowanie z plik\u00f3w ESA.
 MAPBASED_ERROR_UNSUPPORTED_FILE.explanation=Plik nie zosta\u0142 zainstalowany, poniewa\u017c podano nieobs\u0142ugiwany typ pliku.
 MAPBASED_ERROR_UNSUPPORTED_FILE.useraction=Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_INVALID_FEATURE_BOM_COORDINATE=CWWKF1503E: Format wsp\u00f3\u0142rz\u0119dnej Maven w BOM sk\u0142adnik\u00f3w {0} jest niepoprawny. Wsp\u00f3\u0142rz\u0119dna musi mie\u0107 format groupId:artifactId:wersja.
+ERROR_INVALID_FEATURE_BOM_COORDINATE.explanation=Format wsp\u00f3\u0142rz\u0119dnej Maven w BOM sk\u0142adnik\u00f3w jest niepoprawny.
+ERROR_INVALID_FEATURE_BOM_COORDINATE.useraction=Zmie\u0144 format wsp\u00f3\u0142rz\u0119dnej Maven w BOM sk\u0142adnik\u00f3w na groupId:artifactId:wersja.
 
 MSG_STABILIZING_FEATUREMANAGER=To dzia\u0142anie featureManager jest ustabilizowane. U\u017cyj zamiast niego komendy installUtility {0}. Komenda installUtility jest zalecana w przypadku dzia\u0142a\u0144 instalacji i dzia\u0142a\u0144 dotycz\u0105cych repozytorium.

@@ -106,7 +106,7 @@ public class MsgDestEncodingUtilsImpl implements MessageDestEncodingUtils
   private static final byte TTL_NOT_SET    = 0x00; // 0000 0000
   private static final byte TTL_SET        = 0x01; // 0000 0001
 
-  // The Master Map for all the property encoding information.
+  // The Primary Map for all the property encoding information.
   // This contains one entry per supported property & is keyed by the 'long'
   // property name.
   // This map is keyed by the 'long' property name.
@@ -480,7 +480,7 @@ public class MsgDestEncodingUtilsImpl implements MessageDestEncodingUtils
     String longName  = propCoder.getLongName();
     String shortName = propCoder.getShortName();
 
-    // Create the PropertyEntry which holds all the information we could possibly want, & put it in the Master Poperty Map
+    // Create the PropertyEntry which holds all the information we could possibly want, & put it in the Primary Poperty Map
     PropertyEntry propEntry = new PropertyEntry(intValue, type, defaultVal, propCoder);
     propertyMap.put(longName, propEntry);
 

@@ -11,8 +11,11 @@
 
 package com.ibm.ws.security.openidconnect.client.fat.IBM;
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -53,6 +56,14 @@ public class OidcClientWasReqURLTests extends CommonTest {
     private static final String otherHost = "ibm.com";
     private static final String badHost = "abc";
 
+    private static final String simpleString = "Test Value";
+    private static final String complexString = "Value;newCookie=Attack;<tag>Hi</tag>";
+    private static final String specialChars1 = "! * ' ( ) ; : @ & = + $ , / ? % # [ ]";
+    private static final String specialChars2 = "! * ' \" ( ) ; : @ & = + $ , / ? % # [ ]";
+    private static final String scriptString1 = "<script>echo \"hiThere\";</script>";
+    private static final String scriptString2 = "<script>echo \"hi there\";</script>";
+    private static final String scriptString3 = "<script>echo+\"hi there\";</script>";
+
     //
     public enum ExpectedResult {
         SUCCESS, INVALID_COOKIE, EXCEPTION, MISSING_COOKIE
@@ -76,11 +87,11 @@ public class OidcClientWasReqURLTests extends CommonTest {
 
         // Start the OIDC OP server
         testOPServer = commonSetUp("com.ibm.ws.security.openidconnect.client-1.0_fat.op", opServerConfig, Constants.OIDC_OP, Constants.NO_EXTRA_APPS,
-                Constants.DO_NOT_USE_DERBY, Constants.NO_EXTRA_MSGS, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true, tokenType, certType);
+                                   Constants.DO_NOT_USE_DERBY, Constants.NO_EXTRA_MSGS, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true, tokenType, certType);
 
         //Start the OIDC RP server and setup default values
         testRPServer = commonSetUp("com.ibm.ws.security.openidconnect.client-1.0_fat.rp", "rp_server_wasReqUrl_notSet.xml", Constants.OIDC_RP, apps, Constants.DO_NOT_USE_DERBY,
-                Constants.NO_EXTRA_MSGS, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true, tokenType, certType);
+                                   Constants.NO_EXTRA_MSGS, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true, tokenType, certType);
 
         // speed up the tests by not restoring the config between tests - each test will config the server that it needs (cut the time in half)
         testRPServer.setRestoreServerBetweenTests(false);
@@ -406,6 +417,336 @@ public class OidcClientWasReqURLTests extends CommonTest {
     }
 
     /**
+     * test with: webAppSecurity wasReqURLRedirectDomainNames set to the test machines host name
+     * Do NOT replace the hostname within WasReqURLOidc...
+     * Pass along an extra parm that is NOT encoded.
+     *
+     * Expected results: The login will succeed, and we should be able to successfully invoke the protected app.
+     * - make sure that the parm value gets to the app as expected
+     *
+     * @throws Exception
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void OidcClientWasReqURLTests_wasReqUrl_setToLocalHostName_doNotUpdateCookie_passClearTextParm_simple() throws Exception {
+
+        String parmValue = simpleString;
+        Map<String, String> parms = new HashMap<String, String>();
+        parms.put("testParm", parmValue);
+        testSettings.setRequestParms(parms);
+
+        // test that the parm value gets the servlet in its original form
+        List<validationData> extraExpectations = vData.addExpectation(null, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS,
+                                                                      "Passed Parm value was incorrect.", null, "Param: testParm with value: " + parmValue);
+
+        testWasReqURLOidc_cookie(null, "rp_server_wasReqUrl_setToLocalHostName.xml", ExpectedResult.SUCCESS, extraExpectations);
+    }
+
+    /**
+     * test with: webAppSecurity wasReqURLRedirectDomainNames set to the test machines host name
+     * Do NOT replace the hostname within WasReqURLOidc...
+     * Pass along an extra parm that is NOT encoded.
+     *
+     * Expected results: The login will succeed, and we should be able to successfully invoke the protected app.
+     * - make sure that the parm value gets to the app as expected
+     *
+     * @throws Exception
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void OidcClientWasReqURLTests_wasReqUrl_setToLocalHostName_doNotUpdateCookie_passClearTextParm_complex1() throws Exception {
+
+        String parmValue = complexString;
+        Map<String, String> parms = new HashMap<String, String>();
+        parms.put("testParm", parmValue);
+        testSettings.setRequestParms(parms);
+
+        // test that the parm value gets the servlet in its original form
+        List<validationData> extraExpectations = vData.addExpectation(null, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS,
+                                                                      "Passed Parm value was incorrect.", null, "Param: testParm with value: " + parmValue);
+        // make sure that we don't end up with any new cookies
+        extraExpectations = vData.addExpectation(extraExpectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_CONTAIN,
+                                                 "Found a cookie that should not have been created.", null, "cookie: newCookie");
+        extraExpectations = vData.addExpectation(extraExpectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_CONTAIN,
+                                                 "Found a cookie that should not have been created.", null, "cookie: Attack");
+
+        testWasReqURLOidc_cookie(null, "rp_server_wasReqUrl_setToLocalHostName.xml", ExpectedResult.SUCCESS, extraExpectations);
+    }
+
+    @Mode(TestMode.LITE)
+    @Test
+    public void OidcClientWasReqURLTests_wasReqUrl_setToLocalHostName_doNotUpdateCookie_passClearTextParm_complex2() throws Exception {
+
+        String parmValue = specialChars1;
+        String parmSearchValue = parmValue.replace("'", "\'");
+
+        Map<String, String> parms = new HashMap<String, String>();
+        parms.put("testParm", parmValue);
+        testSettings.setRequestParms(parms);
+
+        // test that the parm value gets the servlet in its original form
+        List<validationData> extraExpectations = vData.addExpectation(null, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS,
+                                                                      "Passed Parm value was incorrect.", null, "Param: testParm with value: " + parmSearchValue);
+        // make sure that we don't end up with any new cookies
+        extraExpectations = vData.addExpectation(extraExpectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_CONTAIN,
+                                                 "Found a cookie that should not have been created.", null, "cookie: newCookie");
+        extraExpectations = vData.addExpectation(extraExpectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_CONTAIN,
+                                                 "Found a cookie that should not have been created.", null, "cookie: Attack");
+
+        testWasReqURLOidc_cookie(null, "rp_server_wasReqUrl_setToLocalHostName.xml", ExpectedResult.SUCCESS, extraExpectations);
+    }
+
+    @Mode(TestMode.LITE)
+    @Test
+    public void OidcClientWasReqURLTests_wasReqUrl_setToLocalHostName_doNotUpdateCookie_passClearTextParm_complex3() throws Exception {
+
+        String parmValue = specialChars2;
+        String parmSearchValue = parmValue.replace("'", "\'");
+
+        Map<String, String> parms = new HashMap<String, String>();
+        parms.put("testParm", parmValue);
+        testSettings.setRequestParms(parms);
+
+        // test that the parm value gets the servlet in its original form
+        List<validationData> extraExpectations = vData.addExpectation(null, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS,
+                                                                      "Passed Parm value was incorrect.", null, "Param: testParm with value: " + parmSearchValue);
+        // make sure that we don't end up with any new cookies
+        extraExpectations = vData.addExpectation(extraExpectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_CONTAIN,
+                                                 "Found a cookie that should not have been created.", null, "cookie: newCookie");
+        extraExpectations = vData.addExpectation(extraExpectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_CONTAIN,
+                                                 "Found a cookie that should not have been created.", null, "cookie: Attack");
+
+        testWasReqURLOidc_cookie(null, "rp_server_wasReqUrl_setToLocalHostName.xml", ExpectedResult.SUCCESS, extraExpectations);
+    }
+
+    @Mode(TestMode.LITE)
+    @Test
+    public void OidcClientWasReqURLTests_wasReqUrl_setToLocalHostName_doNotUpdateCookie_passClearTextParm_complex4() throws Exception {
+
+        String parmValue = scriptString1;
+        Map<String, String> parms = new HashMap<String, String>();
+        parms.put("testParm", parmValue);
+        testSettings.setRequestParms(parms);
+
+        // test that the parm value gets the servlet in its original form
+        List<validationData> extraExpectations = vData.addExpectation(null, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS,
+                                                                      "Passed Parm value was incorrect.", null, "Param: testParm with value: " + parmValue);
+        // make sure that we don't end up with any new cookies
+        extraExpectations = vData.addExpectation(extraExpectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_CONTAIN,
+                                                 "Found a cookie that should not have been created.", null, "cookie: newCookie");
+        extraExpectations = vData.addExpectation(extraExpectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_CONTAIN,
+                                                 "Found a cookie that should not have been created.", null, "cookie: Attack");
+
+        testWasReqURLOidc_cookie(null, "rp_server_wasReqUrl_setToLocalHostName.xml", ExpectedResult.SUCCESS, extraExpectations);
+    }
+
+    @Mode(TestMode.LITE)
+    @Test
+    public void OidcClientWasReqURLTests_wasReqUrl_setToLocalHostName_doNotUpdateCookie_passClearTextParm_complex5() throws Exception {
+
+        String parmValue = scriptString2;
+        Map<String, String> parms = new HashMap<String, String>();
+        parms.put("testParm", parmValue);
+        testSettings.setRequestParms(parms);
+
+        // test that the parm value gets the servlet in its original form
+        List<validationData> extraExpectations = vData.addExpectation(null, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS,
+                                                                      "Passed Parm value was incorrect.", null, "Param: testParm with value: " + parmValue);
+        // make sure that we don't end up with any new cookies
+        extraExpectations = vData.addExpectation(extraExpectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_CONTAIN,
+                                                 "Found a cookie that should not have been created.", null, "cookie: newCookie");
+        extraExpectations = vData.addExpectation(extraExpectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_CONTAIN,
+                                                 "Found a cookie that should not have been created.", null, "cookie: Attack");
+
+        testWasReqURLOidc_cookie(null, "rp_server_wasReqUrl_setToLocalHostName.xml", ExpectedResult.SUCCESS, extraExpectations);
+    }
+
+    @Mode(TestMode.LITE)
+    @Test
+    public void OidcClientWasReqURLTests_wasReqUrl_setToLocalHostName_doNotUpdateCookie_passClearTextParm_complex6() throws Exception {
+
+        String parmValue = scriptString3;
+        Map<String, String> parms = new HashMap<String, String>();
+        parms.put("testParm", parmValue);
+        testSettings.setRequestParms(parms);
+
+        // test that the parm value gets the servlet in its original form
+        List<validationData> extraExpectations = vData.addExpectation(null, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS,
+                                                                      "Passed Parm value was incorrect.", null, "Param: testParm with value: " + parmValue);
+        // make sure that we don't end up with any new cookies
+        extraExpectations = vData.addExpectation(extraExpectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_CONTAIN,
+                                                 "Found a cookie that should not have been created.", null, "cookie: newCookie");
+        extraExpectations = vData.addExpectation(extraExpectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_CONTAIN,
+                                                 "Found a cookie that should not have been created.", null, "cookie: Attack");
+
+        testWasReqURLOidc_cookie(null, "rp_server_wasReqUrl_setToLocalHostName.xml", ExpectedResult.SUCCESS, extraExpectations);
+    }
+
+    /**
+     * test with: webAppSecurity wasReqURLRedirectDomainNames set to the test machines host name
+     * Do NOT replace the hostname within WasReqURLOidc...
+     * Pass along an extra parm that is encoded.
+     *
+     * Expected results: The login will succeed, and we should be able to successfully invoke the protected app.
+     * - make sure that the parm value gets to the app as expected
+     *
+     * @throws Exception
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void OidcClientWasReqURLTests_wasReqUrl_setToLocalHostName_doNotUpdateCookie_passEncodedParm_simple() throws Exception {
+
+        String parmValue = simpleString;
+        String parmSearchValue = parmValue.replace(" ", "+");
+
+        Map<String, String> parms = new HashMap<String, String>();
+        parms.put("testParm", URLEncoder.encode(parmValue, "UTF-8"));
+        testSettings.setRequestParms(parms);
+
+        // test that the parm value gets the servlet in its original form
+        List<validationData> extraExpectations = vData.addExpectation(null, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS,
+                                                                      "Passed Parm value was incorrect.", null, "Param: testParm with value: " + parmSearchValue);
+
+        testWasReqURLOidc_cookie(null, "rp_server_wasReqUrl_setToLocalHostName.xml", ExpectedResult.SUCCESS, extraExpectations);
+    }
+
+    /**
+     * test with: webAppSecurity wasReqURLRedirectDomainNames set to the test machines host name
+     * Do NOT replace the hostname within WasReqURLOidc...
+     * Pass along an extra parm that is encoded.
+     *
+     * Expected results: The login will succeed, and we should be able to successfully invoke the protected app.
+     * - make sure that the parm value gets to the app as expected
+     *
+     * @throws Exception
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void OidcClientWasReqURLTests_wasReqUrl_setToLocalHostName_doNotUpdateCookie_passEncodedParm_complex1() throws Exception {
+
+        String parmValue = URLEncoder.encode(complexString, "UTF-8");
+        Map<String, String> parms = new HashMap<String, String>();
+        parms.put("testParm", parmValue);
+        testSettings.setRequestParms(parms);
+
+        // test that the parm value gets the servlet in its original form (htmulinit ends up doubly encoding, so, expected the encoded value for the parm)
+        List<validationData> extraExpectations = vData.addExpectation(null, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS,
+                                                                      "Passed Parm value was incorrect.", null, "Param: testParm with value: " + parmValue);
+        // make sure that we don't end up with any new cookies
+        extraExpectations = vData.addExpectation(extraExpectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_CONTAIN,
+                                                 "Found a cookie that should not have been created.", null, "cookie: newCookie");
+        extraExpectations = vData.addExpectation(extraExpectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_CONTAIN,
+                                                 "Found a cookie that should not have been created.", null, "cookie: Attack");
+
+        testWasReqURLOidc_cookie(null, "rp_server_wasReqUrl_setToLocalHostName.xml", ExpectedResult.SUCCESS, extraExpectations);
+    }
+
+    @Mode(TestMode.LITE)
+    @Test
+    public void OidcClientWasReqURLTests_wasReqUrl_setToLocalHostName_doNotUpdateCookie_passEncodedParm_complex2() throws Exception {
+
+        String parmValue = URLEncoder.encode(specialChars1, "UTF-8");
+        Map<String, String> parms = new HashMap<String, String>();
+        parms.put("testParm", parmValue);
+        testSettings.setRequestParms(parms);
+
+        // test that the parm value gets the servlet in its original form (htmulinit ends up doubly encoding, so, expected the encoded value for the parm)
+        List<validationData> extraExpectations = vData.addExpectation(null, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS,
+                                                                      "Passed Parm value was incorrect.", null, "Param: testParm with value: " + parmValue);
+        // make sure that we don't end up with any new cookies
+        extraExpectations = vData.addExpectation(extraExpectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_CONTAIN,
+                                                 "Found a cookie that should not have been created.", null, "cookie: newCookie");
+        extraExpectations = vData.addExpectation(extraExpectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_CONTAIN,
+                                                 "Found a cookie that should not have been created.", null, "cookie: Attack");
+
+        testWasReqURLOidc_cookie(null, "rp_server_wasReqUrl_setToLocalHostName.xml", ExpectedResult.SUCCESS, extraExpectations);
+    }
+
+    @Mode(TestMode.LITE)
+    @Test
+    public void OidcClientWasReqURLTests_wasReqUrl_setToLocalHostName_doNotUpdateCookie_passEncodedParm_complex3() throws Exception {
+
+        String parmValue = URLEncoder.encode(specialChars2, "UTF-8");
+        Map<String, String> parms = new HashMap<String, String>();
+        parms.put("testParm", parmValue);
+        testSettings.setRequestParms(parms);
+
+        // test that the parm value gets the servlet in its original form (htmulinit ends up doubly encoding, so, expected the encoded value for the parm)
+        List<validationData> extraExpectations = vData.addExpectation(null, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS,
+                                                                      "Passed Parm value was incorrect.", null, "Param: testParm with value: " + parmValue);
+        // make sure that we don't end up with any new cookies
+        extraExpectations = vData.addExpectation(extraExpectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_CONTAIN,
+                                                 "Found a cookie that should not have been created.", null, "cookie: newCookie");
+        extraExpectations = vData.addExpectation(extraExpectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_CONTAIN,
+                                                 "Found a cookie that should not have been created.", null, "cookie: Attack");
+
+        testWasReqURLOidc_cookie(null, "rp_server_wasReqUrl_setToLocalHostName.xml", ExpectedResult.SUCCESS, extraExpectations);
+    }
+
+    @Mode(TestMode.LITE)
+    @Test
+    public void OidcClientWasReqURLTests_wasReqUrl_setToLocalHostName_doNotUpdateCookie_passEncodedParm_complex4() throws Exception {
+
+        String parmValue = URLEncoder.encode(scriptString1, "UTF-8");
+        Map<String, String> parms = new HashMap<String, String>();
+        parms.put("testParm", parmValue);
+        testSettings.setRequestParms(parms);
+
+        // test that the parm value gets the servlet in its original form (htmulinit ends up doubly encoding, so, expected the encoded value for the parm)
+        List<validationData> extraExpectations = vData.addExpectation(null, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS,
+                                                                      "Passed Parm value was incorrect.", null, "Param: testParm with value: " + parmValue);
+        // make sure that we don't end up with any new cookies
+        extraExpectations = vData.addExpectation(extraExpectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_CONTAIN,
+                                                 "Found a cookie that should not have been created.", null, "cookie: newCookie");
+        extraExpectations = vData.addExpectation(extraExpectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_CONTAIN,
+                                                 "Found a cookie that should not have been created.", null, "cookie: Attack");
+
+        testWasReqURLOidc_cookie(null, "rp_server_wasReqUrl_setToLocalHostName.xml", ExpectedResult.SUCCESS, extraExpectations);
+    }
+
+    @Mode(TestMode.LITE)
+    @Test
+    public void OidcClientWasReqURLTests_wasReqUrl_setToLocalHostName_doNotUpdateCookie_passEncodedParm_complex5() throws Exception {
+
+        String parmValue = URLEncoder.encode(scriptString2, "UTF-8");
+        Map<String, String> parms = new HashMap<String, String>();
+        parms.put("testParm", parmValue);
+        testSettings.setRequestParms(parms);
+
+        // test that the parm value gets the servlet in its original form (htmulinit ends up doubly encoding, so, expected the encoded value for the parm)
+        List<validationData> extraExpectations = vData.addExpectation(null, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS,
+                                                                      "Passed Parm value was incorrect.", null, "Param: testParm with value: " + parmValue);
+        // make sure that we don't end up with any new cookies
+        extraExpectations = vData.addExpectation(extraExpectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_CONTAIN,
+                                                 "Found a cookie that should not have been created.", null, "cookie: newCookie");
+        extraExpectations = vData.addExpectation(extraExpectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_CONTAIN,
+                                                 "Found a cookie that should not have been created.", null, "cookie: Attack");
+
+        testWasReqURLOidc_cookie(null, "rp_server_wasReqUrl_setToLocalHostName.xml", ExpectedResult.SUCCESS, extraExpectations);
+    }
+
+    @Mode(TestMode.LITE)
+    @Test
+    public void OidcClientWasReqURLTests_wasReqUrl_setToLocalHostName_doNotUpdateCookie_passEncodedParm_complex6() throws Exception {
+
+        String parmValue = URLEncoder.encode(scriptString3, "UTF-8");
+        Map<String, String> parms = new HashMap<String, String>();
+        parms.put("testParm", parmValue);
+        testSettings.setRequestParms(parms);
+
+        // test that the parm value gets the servlet in its original form (htmulinit ends up doubly encoding, so, expected the encoded value for the parm)
+        List<validationData> extraExpectations = vData.addExpectation(null, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS,
+                                                                      "Passed Parm value was incorrect.", null, "Param: testParm with value: " + parmValue);
+        // make sure that we don't end up with any new cookies
+        extraExpectations = vData.addExpectation(extraExpectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_CONTAIN,
+                                                 "Found a cookie that should not have been created.", null, "cookie: newCookie");
+        extraExpectations = vData.addExpectation(extraExpectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_CONTAIN,
+                                                 "Found a cookie that should not have been created.", null, "cookie: Attack");
+
+        testWasReqURLOidc_cookie(null, "rp_server_wasReqUrl_setToLocalHostName.xml", ExpectedResult.SUCCESS, extraExpectations);
+    }
+
+    /**
      * Common test method that will reconfigure the RP server so that the test can use the "webAppSecurity
      * wasReqURLRedirectDomainNames" value
      * that the test requires.
@@ -423,38 +764,53 @@ public class OidcClientWasReqURLTests extends CommonTest {
      * @throws Exception
      */
     public void testWasReqURLOidc_cookie(String updatedHost, String rpServerConfig, ExpectedResult expectedResult) throws Exception {
+        testWasReqURLOidc_cookie(updatedHost, rpServerConfig, expectedResult, null);
+
+    }
+
+    public void testWasReqURLOidc_cookie(String updatedHost, String rpServerConfig, ExpectedResult expectedResult, List<validationData> extraExpectations) throws Exception {
 
         // Reconfigure OP server with Basic registry
         // Reconfigure RP server with Basic registry
         ClientTestHelpers.reconfigServers(_testName, Constants.JUNIT_REPORTING, opServerConfig, rpServerConfig);
 
-        List<validationData> expectations = vData.addExpectation(null, Constants.GET_LOGIN_PAGE, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS,
-                "Did Not get the OpenID Connect login page.", null, Constants.LOGIN_PROMPT);
+        List<validationData> expectations = vData.addExpectation(extraExpectations, Constants.GET_LOGIN_PAGE, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS,
+                                                                 "Did Not get the OpenID Connect login page.", null, Constants.LOGIN_PROMPT);
 
         switch (expectedResult) {
-        case SUCCESS:
-            expectations = vData.addSuccessStatusCodes();
-            expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_MATCHES, "Did not receive " + Constants.IDToken_STR + " in the response.", null, Constants.IDToken_STR);
-            break;
-        case INVALID_COOKIE:
-            expectations = vData.addSuccessStatusCodesForActions(Constants.LOGIN_USER, Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT);
-            expectations = vData.addResponseStatusExpectation(expectations, Constants.LOGIN_USER, Constants.INTERNAL_SERVER_ERROR_STATUS);
-            expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not receive error message " + MessageConstants.CWOAU0073E_FRONT_END_ERROR + " in the response", null, MessageConstants.CWOAU0073E_FRONT_END_ERROR);
-            expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Server log did not contain an error message about the missing WASReqURLOidc cookie.", MessageConstants.CWWKS1532E_MALFORMED_URL_IN_COOKIE + ".*" + updatedHost + ".*");
+            case SUCCESS:
+                expectations = vData.addSuccessStatusCodes(expectations);
+                expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_MATCHES,
+                                                    "Did not receive " + Constants.IDToken_STR + " in the response.", null, Constants.IDToken_STR);
+                break;
+            case INVALID_COOKIE:
+                expectations = vData.addSuccessStatusCodesForActions(expectations, Constants.LOGIN_USER, Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT);
+                expectations = vData.addResponseStatusExpectation(expectations, Constants.LOGIN_USER, Constants.INTERNAL_SERVER_ERROR_STATUS);
+                expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS,
+                                                    "Did not receive error message " + MessageConstants.CWOAU0073E_FRONT_END_ERROR + " in the response", null,
+                                                    MessageConstants.CWOAU0073E_FRONT_END_ERROR);
+                expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS,
+                                                                     "Server log did not contain an error message about the missing WASReqURLOidc cookie.",
+                                                                     MessageConstants.CWWKS1532E_MALFORMED_URL_IN_COOKIE + ".*" + updatedHost + ".*");
 
-            break;
-        case EXCEPTION:
-            expectations = vData.addSuccessStatusCodesForActions(Constants.LOGIN_USER, Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT);
-            expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.EXCEPTION_MESSAGE, Constants.STRING_CONTAINS, "Did NOT get expected exception", null, "timed out");
-            break;
-        case MISSING_COOKIE:
-            expectations = vData.addSuccessStatusCodesForActions(Constants.LOGIN_USER, Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT);
-            expectations = vData.addResponseStatusExpectation(expectations, Constants.LOGIN_USER, Constants.INTERNAL_SERVER_ERROR_STATUS);
-            expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not receive error message " + MessageConstants.CWOAU0073E_FRONT_END_ERROR + " in the response", null, MessageConstants.CWOAU0073E_FRONT_END_ERROR);
-            expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Server log did not contain an error message about the missing WASReqURLOidc cookie.", MessageConstants.CWWKS1520E_MISSING_SAMESITE_COOKIE);
-            break;
-        default:
-            break;
+                break;
+            case EXCEPTION:
+                expectations = vData.addSuccessStatusCodesForActions(expectations, Constants.LOGIN_USER, Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT);
+                expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.EXCEPTION_MESSAGE, Constants.STRING_CONTAINS, "Did NOT get expected exception",
+                                                    null, "timed out");
+                break;
+            case MISSING_COOKIE:
+                expectations = vData.addSuccessStatusCodesForActions(expectations, Constants.LOGIN_USER, Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT);
+                expectations = vData.addResponseStatusExpectation(expectations, Constants.LOGIN_USER, Constants.INTERNAL_SERVER_ERROR_STATUS);
+                expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS,
+                                                    "Did not receive error message " + MessageConstants.CWOAU0073E_FRONT_END_ERROR + " in the response", null,
+                                                    MessageConstants.CWOAU0073E_FRONT_END_ERROR);
+                expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS,
+                                                                     "Server log did not contain an error message about the missing WASReqURLOidc cookie.",
+                                                                     MessageConstants.CWWKS1520E_MISSING_SAMESITE_COOKIE);
+                break;
+            default:
+                break;
         }
 
         WebConversation wc = new WebConversation();

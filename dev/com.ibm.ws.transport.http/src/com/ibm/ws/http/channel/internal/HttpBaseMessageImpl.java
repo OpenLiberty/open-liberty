@@ -2349,9 +2349,9 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
 
         super.preMarshallMessage();
         /**
-         * Only if the cookies in storage(master list of all headers) have been
+         * Only if the cookies in storage(primary list of all headers) have been
          * modified do we reserialize/transform before marshalling otherwise we
-         * leave the master list untouched. After marshalling the cache is
+         * leave the primary list untouched. After marshalling the cache is
          * flushed
          */
         marshallCookieCache(this.cookieCache);

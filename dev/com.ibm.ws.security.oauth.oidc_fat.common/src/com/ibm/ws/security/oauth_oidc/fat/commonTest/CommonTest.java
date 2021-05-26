@@ -23,6 +23,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.security.KeyStore;
@@ -1793,7 +1794,7 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
                 Log.info(thisClass, "mongoDBTeardownCleanup", "Exception removing MONGO_PROPS_FILE. If this is a Derby test, ignore this message." + e);
             }
 
-            MongoDBUtils.stopMongoDB();
+            MongoDBUtils.stopMongoDB(server.getHttpString(), server.getHttpDefaultPort());
 
             return true;
 
@@ -3195,9 +3196,17 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
     private static void setupMongoDBConfig(TestServer aTestServer, String httpString, Integer defaultPort) {
         String methodName = "setupMongoDBConfig";
         Log.info(thisClass, methodName, "Setup for mongoDB");
+        String mongoTableUid = "defaultUID";
         try {
-            MongoDBUtils.startMongoDB(aTestServer.getServer(), MONGO_PROPS_FILE);
-            MongoDBUtils.setupMongoDBEntries(httpString, defaultPort);
+            mongoTableUid = "_" + InetAddress.getLocalHost().getHostName() + "_" + new Random(System.currentTimeMillis()).nextLong();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+            mongoTableUid = "localhost-" + System.nanoTime();
+        }
+
+        try {
+            MongoDBUtils.startMongoDB(aTestServer.getServer(), MONGO_PROPS_FILE, mongoTableUid);
+            MongoDBUtils.setupMongoDBEntries(httpString, defaultPort, mongoTableUid);
         } catch (Exception e) {
             Log.error(thisClass, methodName, e, "Exception setting up MongoDB, CustomStore tests may fail.");
 

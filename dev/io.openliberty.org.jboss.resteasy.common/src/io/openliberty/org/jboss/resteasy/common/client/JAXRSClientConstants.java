@@ -12,8 +12,6 @@ package io.openliberty.org.jboss.resteasy.common.client;
 
 public class JAXRSClientConstants {
 
-    public final static String TR_GROUP = "com.ibm.ws.jaxrs20.client";
-    public final static String TR_RESOURCE_BUNDLE = "com.ibm.ws.jaxrs20.client.internal.resources.JAXRSClientMessages";
     public final static String SSL_REFKEY = "com.ibm.ws.jaxrs.client.ssl.config";
     public final static String CONNECTION_TIMEOUT = "com.ibm.ws.jaxrs.client.connection.timeout";
     public final static String RECEIVE_TIMEOUT = "com.ibm.ws.jaxrs.client.receive.timeout";
@@ -32,5 +30,6 @@ public class JAXRSClientConstants {
     public static final String MPJWT_HANDLER = "com.ibm.ws.jaxrs.client.mpjwt.sendToken";
     public static final String DISABLE_CN_CHECK = "com.ibm.ws.jaxrs.client.disableCNCheck";
     public final static String SAML_HANDLER = "com.ibm.ws.jaxrs.client.saml.sendToken";
+    public final static String AUTO_FOLLOW_REDIRECTS = "io.openliberty.rest.client.autoFollowRedirects";
 
 }

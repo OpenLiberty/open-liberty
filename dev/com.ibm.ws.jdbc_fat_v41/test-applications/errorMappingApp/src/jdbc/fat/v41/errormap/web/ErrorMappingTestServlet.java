@@ -43,27 +43,33 @@ public class ErrorMappingTestServlet extends FATServlet {
     @Resource
     UserTransaction tx;
 
-    @Resource(lookup = "jdbc/errorMap")
-    DataSource ds;
+    /**
+     * Verifies that SQL state 08888 does not indicate StaleConnection (for config update tests)
+     */
+    public void testIdentify08888NotStale() throws Exception {
+        assertNotStale("jdbc/errorMap", "08888", null);
+    }
 
-    @Resource(lookup = "jdbc/removeMapping")
-    DataSource removeMapping;
+    /**
+     * Verifies that SQL state 08888 indicates StaleConnection (for config update tests)
+     */
+    public void testIdentify08888Stale() throws Exception {
+        assertStale("jdbc/errorMap", "08888", null);
+    }
 
-    @Resource(lookup = "jdbc/noMappings")
-    DataSource noMappings;
-
-    @Resource(lookup = "jdbc/manyMappings")
-    DataSource manyMappings;
-
-    @Resource(lookup = "jdbc/stateAndCode")
-    DataSource stateAndCode;
+    /**
+     * Verifies that error code 1234 does not indicate StaleConnection (for config update tests)
+     */
+    public void testIdentify1234NotStale() throws Exception {
+        assertNotStale("jdbc/errorMap", null, 1234);
+    }
 
     /**
      * Verify that once a connection goes stale (as indicated by server.xml config)
      * it is removed from the connection pool.
      */
     @Test
-    public void testStaleConnection() throws Exception {
+    public void testIdentify1234Stale() throws Exception {
         assertStale("jdbc/errorMap", null, 1234);
     }
 

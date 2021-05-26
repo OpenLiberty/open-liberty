@@ -53,7 +53,7 @@ public abstract class AbstractObjectStore
     // Set to false if the store is too full to allow allocation of new ManagedObjects.
     protected transient boolean allocationAllowed = true;
 
-    // A table of the master copies of the Queue Manager objects currently known
+    // A table of the primary copies of the Queue Manager objects currently known
     // to be in virtual machine memory, indexed by storedObjectIdentifier.
     // We can only drop them from this table if no other reference to them is made bacuse we might be asked for the
     // definitive copy of the token. If they are dropped from this table they are lost.

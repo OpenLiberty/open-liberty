@@ -7,17 +7,20 @@ assignees: ''
 
 ---
 ## Description of the high level feature, including any external spec links:  
+The description needs to be detailed enough such that it can be [prioritized on the backlog](https://github.com/orgs/OpenLiberty/projects/2) and implemented by the development team.
 <br/><br/><br/>  
 
 
 ##
-#### Before proceeding to any items below (active development), this feature must be prioritized on the backlog, and have either the "Design Approved" or "No Design Approved" labels.  Follow the Feature and UFO Approval Process.
+#### Before proceeding to any items below (active development), this feature must be [prioritized on the backlog](https://github.com/orgs/OpenLiberty/projects/2), and have been socialized (e.g., UFO Review).  Follow the Feature and UFO Approval Process.
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-## When complete & mandatory, add links to the UFO (Upcoming Feature Overview) document, FTS (Feature Test Summary), and blogs post issues(s):
+## When complete & mandatory, add links to the UFO (Upcoming Feature Overview) document, FTS (Feature Test Summary), blogs post issues(s), and [Aha](https://cloud-platform.ideas.aha.io/) (externally raised RFEs):
 - UFO:
 - FTS:
 - Beta Blog Post (if applicable):
 - Blog Post: 
+- Aha: 
+   - Also, add a comment into the Aha idea linking to this issue.
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ## List of Steps to complete or get approvals / sign-offs for Onboarding to the Liberty release (GM date)

@@ -13,7 +13,7 @@ package com.ibm.ws.kernel.boot.cmdline;
 import java.io.PrintStream;
 
 /**
- * Defines the access point for all child tasks so the master task controller
+ * Defines the access point for all child tasks so the main task controller
  * can query and invoke the available tasks.
  */
 public interface ActionHandler {

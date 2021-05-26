@@ -19,7 +19,9 @@ import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 
 import com.ibm.websphere.security.oauth20.store.OAuthClient;
 import com.ibm.websphere.security.oauth20.store.OAuthConsent;
@@ -33,6 +35,7 @@ import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
+import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import com.mongodb.WriteResult;
 
@@ -50,6 +53,7 @@ public class CustomStoreSample implements OAuthStore {
     private String dbUser = "user";
     private String dbPwd = "password";
     private int dbPort = 27017;
+    String uid = "defaultUID";
 
     private DB db = null;
     private DBCollection clientCollection = null;
@@ -87,8 +91,21 @@ public class CustomStoreSample implements OAuthStore {
 
     private final static int RETRY_COUNT = 3;
 
+    boolean runRemote = true;
+
     public CustomStoreSample() {
         System.out.println("CustomStoreSample init");
+
+        /*
+         * Local mongoDB does not run on z/OS, use remote
+         */
+        //String os = System.getProperty("os.name").toLowerCase();
+        if (runRemote) {
+            System.out.println("CustomStoreSample will connect to remote mongoDB server.");
+            //isZOS = true;
+        } else {
+            System.out.println("CustomStoreSample will connect to local mongoDB server.");
+        }
     }
 
     /**
@@ -105,16 +122,20 @@ public class CustomStoreSample implements OAuthStore {
 
             MongoClient mongoClient = null;
             try {
-                System.out.println("CustomStoreSample connecting to the " + dbName + " database at " + dbHost + ":"
-                                   + dbPort);
-                MongoClientOptions.Builder optionsBuilder = new MongoClientOptions.Builder().connectTimeout(30000);
-                optionsBuilder.socketTimeout(10000);
-                optionsBuilder.socketKeepAlive(true);
-                optionsBuilder.maxWaitTime(30000);
-                MongoClientOptions clientOptions = optionsBuilder.build();
-                mongoClient = new MongoClient(new ServerAddress(dbHost, dbPort), null, clientOptions);
-                db = mongoClient.getDB(dbName);
-                System.out.println("CustomStoreSample connected to the database");
+                if (runRemote) {
+                    connectToZOS(mongoClient);
+                } else {
+                    System.out.println("CustomStoreSample connecting to the " + dbName + " database at " + dbHost + ":"
+                                       + dbPort);
+                    MongoClientOptions.Builder optionsBuilder = new MongoClientOptions.Builder().connectTimeout(30000);
+                    optionsBuilder.socketTimeout(10000);
+                    optionsBuilder.socketKeepAlive(true);
+                    optionsBuilder.maxWaitTime(30000);
+                    MongoClientOptions clientOptions = optionsBuilder.build();
+                    mongoClient = new MongoClient(new ServerAddress(dbHost, dbPort), null, clientOptions);
+                    db = mongoClient.getDB(dbName);
+                    System.out.println("CustomStoreSample connected to the database");
+                }
 
                 // for test purposes, double check the starting state of the database
                 DBCollection col = getClientCollection();
@@ -204,6 +225,9 @@ public class CustomStoreSample implements OAuthStore {
                             dbPort = Integer.parseInt(prop[1]);
                         } else if (prop[0].equals("USER")) {
                             dbUser = prop[1];
+                        } else if (prop[0].equals("UID")) {
+                            uid = prop[1];
+                            System.out.println("CustomStoreSample Table mod is " + uid);
                         } else {
                             System.out.println("CustomStoreSample Unexpected property in " + MONGO_PROPS_FILE + ": " + prop[0]);
                         }
@@ -620,5 +644,25 @@ public class CustomStoreSample implements OAuthStore {
             }
         }
         return false;
+    }
+
+    private void connectToZOS(MongoClient mongoClient) throws UnknownHostException {
+
+        System.out.println("CustomStoreSample connectToZOS connecting to the " + dbName + " database at " + dbHost + ":"
+                           + dbPort + " using table modifier " + uid);
+        List<MongoCredential> credentials = Collections.emptyList();
+        MongoCredential credential = MongoCredential.createCredential(dbUser, dbName, dbPwd.toCharArray());
+        credentials = Collections.singletonList(credential);
+        MongoClientOptions.Builder optionsBuilder = new MongoClientOptions.Builder().connectTimeout(30000);
+        optionsBuilder.socketTimeout(10000);
+        optionsBuilder.socketKeepAlive(true);
+        optionsBuilder.maxWaitTime(30000);
+        MongoClientOptions clientOptions = optionsBuilder.build();
+        mongoClient = new MongoClient(new ServerAddress(dbHost, dbPort), credentials, clientOptions);
+        db = mongoClient.getDB(dbName);
+        System.out.println("CustomStoreSample connected to the database at " + dbHost);
+        OAUTHCLIENT = OAUTHCLIENT + uid;
+        OAUTHTOKEN = OAUTHTOKEN + uid;
+        OAUTHCONSENT = OAUTHCONSENT + uid;
     }
 }

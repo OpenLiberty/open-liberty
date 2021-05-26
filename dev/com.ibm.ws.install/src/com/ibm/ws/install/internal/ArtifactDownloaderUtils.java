@@ -158,7 +158,7 @@ public class ArtifactDownloaderUtils {
         return result;
     }
 
-    public static String getMasterChecksum(String url, String format) throws IOException {
+    public static String getPrimaryChecksum(String url, String format) throws IOException {
         URL urlLocation = new URL(url + "." + format.toLowerCase());
         return getChecksumFromURL(urlLocation);
     }

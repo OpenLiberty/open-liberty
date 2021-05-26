@@ -15,6 +15,8 @@ import java.io.PrintWriter;
 import java.net.UnknownHostException;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -31,6 +33,7 @@ import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
+import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 
 @WebServlet(name = "oAuth20MongoSetup", urlPatterns = { "/oAuth20MongoSetup" })
@@ -44,9 +47,13 @@ public class oAuth20MongoSetup extends HttpServlet {
 
     // Collection types
     // Do not change these unless the CustomStoreSample is also changing
-    final static String OAUTHCLIENT = "OauthClient";
-    final static String OAUTHTOKEN = "OauthToken";
-    final static String OAUTHCONSENT = "OauthConsent";
+    final static String OAUTHCLIENT_BASE = "OauthClient";
+    final static String OAUTHTOKEN_BASE = "OauthToken";
+    final static String OAUTHCONSENT_BASE = "OauthConsent";
+
+    static String OAUTHCLIENT = OAUTHCLIENT_BASE;
+    static String OAUTHTOKEN = OAUTHTOKEN_BASE;
+    static String OAUTHCONSENT = OAUTHCONSENT_BASE;
 
     // Database keys
     // Do not change these unless the CustomStoreSample is also changing
@@ -74,7 +81,10 @@ public class oAuth20MongoSetup extends HttpServlet {
     final static String ENABLED = "ENABLED";
     final static String METADATA = "METADATA";
 
+    String uid = "defaultUID";
+
     // must match strings used in MongoDBUtils
+    final static String UID_WEB = "uid";
     final static String PORT = "port";
     final static String DROP_TABLE = "cleanup";
     final static String DROP_DB = "dropDB";
@@ -85,8 +95,10 @@ public class oAuth20MongoSetup extends HttpServlet {
     final static String PROVIDER_ID = "provider";
     final static String COMP_ID = "compID";
     final static String DB_NAME = "dbName";
+    final static String DB_USER = "dbUser";
     final static String DB_HOST = "dbHost";
     final static String DB_PORT = "dbPort";
+    final static String DB_PWD = "dbPwd";
     final static String SALT = "checkSalt";
     final static String ALGORITHM = "checkAlgorithm";
     final static String ITERATION = "checkIteration";
@@ -99,6 +111,8 @@ public class oAuth20MongoSetup extends HttpServlet {
     public static final String HASH_LENGTH = "hash_len"; // must match constants in OidcBaseClient
 
     protected DB mongoDB;
+
+    private static boolean runRemote = true;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -118,8 +132,26 @@ public class oAuth20MongoSetup extends HttpServlet {
             String getAlgorithm = request.getParameter(ALGORITHM);
             String getIteration = request.getParameter(ITERATION);
 
-            connect(request.getParameter(DB_NAME), request.getParameter(DB_HOST),
-                    request.getParameter(DB_PORT));
+            connect(request.getParameter(DB_NAME), request.getParameter(DB_USER), request.getParameter(DB_HOST),
+                    request.getParameter(DB_PORT), request.getParameter(DB_PWD));
+
+            String u = request.getParameter(UID_WEB);
+            if (u != null) {
+                uid = u;
+            }
+
+            if (runRemote) {
+                if (uid == null) {
+                    String msg = "oAuth20MongoSetup Running remote mongoDB, but the table UID was not provided to make a unique DB for this test. uid is "
+                                 + uid;
+                    System.out.println(msg);
+                    throw new ServletException(msg);
+                }
+
+                OAUTHCLIENT = OAUTHCLIENT_BASE + uid;
+                OAUTHTOKEN = OAUTHTOKEN_BASE + uid;
+                OAUTHCONSENT = OAUTHCONSENT_BASE + uid;
+            }
 
             String clearClients = request.getParameter(CLEAR_CLIENTS);
             if (clearClients != null) {
@@ -285,7 +317,8 @@ public class oAuth20MongoSetup extends HttpServlet {
         DBObject dbo = col.findOne(d);
 
         if (dbo == null) {
-            System.out.println("getSecretType: Could not find client " + clientId + " providerId " + providerId);
+            System.out.println("getSecretType: Could not find client " + clientId + " providerId " + providerId + " from " + OAUTHCLIENT);
+            queryTableMongo();
             return "null_client";
         }
 
@@ -413,6 +446,21 @@ public class oAuth20MongoSetup extends HttpServlet {
         mongoDB.getCollection(OAUTHCLIENT).drop();
         mongoDB.getCollection(OAUTHCONSENT).drop();
         mongoDB.getCollection(OAUTHTOKEN).drop();
+
+        // just in case, clean up generic tables
+        if (mongoDB.collectionExists(OAUTHCLIENT_BASE)) {
+            mongoDB.getCollection(OAUTHCLIENT_BASE).drop();
+            mongoDB.getCollection(OAUTHCONSENT_BASE).drop();
+            mongoDB.getCollection(OAUTHTOKEN_BASE).drop();
+            System.out.println("oAuth20MongoSetup Dropped collections for " + OAUTHCLIENT_BASE);
+        }
+
+        if (mongoDB.collectionExists(OAUTHCLIENT_BASE + "defaultUID")) {
+            mongoDB.getCollection(OAUTHCLIENT_BASE + "defaultUID").drop();
+            mongoDB.getCollection(OAUTHCONSENT_BASE + "defaultUID").drop();
+            mongoDB.getCollection(OAUTHTOKEN_BASE + "defaultUID").drop();
+            System.out.println("oAuth20MongoSetup Dropped collections for " + OAUTHCLIENT_BASE + "defaultUID");
+        }
 
         System.out.println(
                            "oAuth20MongoSetup Dropped collections in  mongoDB database " + name);
@@ -546,7 +594,11 @@ public class oAuth20MongoSetup extends HttpServlet {
 
     }
 
-    private void connect(String dbName, String dbHost, String dbPort) {
+    private void connect(String dbName, String dbUser, String dbHost, String dbPort, String dbPwd) {
+        if (runRemote) {
+            connectToRemote(dbName, dbUser, dbHost, dbPort, dbPwd);
+            return;
+        }
         MongoClient mongoClient = null;
         try {
             System.out.println("oAuth20MongoSetup connecting to the " + dbName + " database at " + dbHost + ":" + dbPort);
@@ -556,6 +608,38 @@ public class oAuth20MongoSetup extends HttpServlet {
             optionsBuilder.socketKeepAlive(true);
             MongoClientOptions clientOptions = optionsBuilder.build();
             mongoClient = new MongoClient(new ServerAddress(dbHost, Integer.parseInt(dbPort)), null, clientOptions);
+            mongoDB = mongoClient.getDB(dbName);
+            System.out.println("oAuth20MongoSetup connected to the database");
+
+        } catch (UnknownHostException e) {
+            System.out.println("oAuth20MongoSetup failed connecting to the database " + e);
+            e.printStackTrace();
+            throw new IllegalStateException("oAuth20MongoSetup Database is not connected at " + dbHost + ":" + dbPort
+                                            + ", cannot process requests. Failure is " + e, e);
+        }
+    }
+
+    /**
+     * Added back in to support running on z/OS only
+     *
+     * @param dbName
+     * @param dbUser
+     * @param dbHost
+     * @param dbPort
+     * @param dbPwd
+     */
+    private void connectToRemote(String dbName, String dbUser, String dbHost, String dbPort, String dbPwd) {
+        MongoClient mongoClient = null;
+        try {
+            System.out.println("oAuth20MongoSetup connecting to the remote " + dbName + " database at " + dbHost + ":" + dbPort);
+            List<MongoCredential> credentials = Collections.emptyList();
+            MongoCredential credential = MongoCredential.createCredential(dbUser, dbName, dbPwd.toCharArray());
+            credentials = Collections.singletonList(credential);
+            MongoClientOptions.Builder optionsBuilder = new MongoClientOptions.Builder().connectTimeout(10000);
+            optionsBuilder.socketTimeout(10000);
+            optionsBuilder.socketKeepAlive(true);
+            MongoClientOptions clientOptions = optionsBuilder.build();
+            mongoClient = new MongoClient(new ServerAddress(dbHost, Integer.parseInt(dbPort)), credentials, clientOptions);
             mongoDB = mongoClient.getDB(dbName);
             System.out.println("oAuth20MongoSetup connected to the database");
 
