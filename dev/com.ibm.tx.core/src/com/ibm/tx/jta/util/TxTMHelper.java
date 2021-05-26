@@ -732,14 +732,16 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
         } else {
             if (cp != null && cp.isSQLRecoveryLog())
                 _requireDataSourceActive = true;
-
+            boolean isDataSourceFactorySet = false;
+            if (cp != null && cp.isDataSourceFactorySet())
+                isDataSourceFactorySet = true;
             // Trace the set of flags that determine whether we can start recovery now.
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "_requireRecoveryLogFactory: " + _requireDataSourceActive +
                              ", _waitForRecovery: " + _waitForRecovery +
                              ", _tmsReady: " + _tmsReady +
                              ", _recoveryLogServiceReady: " + _recoveryLogServiceReady +
-                             //                        ", _dataSourceFactoryReady: " + _dataSourceFactoryReady +
+                             ", _dataSourceFactorySet: " + isDataSourceFactorySet +
                              ", _recoveryLogFactoryReady: " + _recoveryLogFactoryReady);
 
             if (!_requireDataSourceActive) {
@@ -750,7 +752,7 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
                     recoverNow = _tmsReady && _recoveryLogServiceReady;
             } else {
                 // If logging to a database then we need the full set of services in place before we can start recovery
-                recoverNow = _tmsReady && _xaResourceFactoryReady && _recoveryLogServiceReady && _recoveryLogFactoryReady; // FOR NOW && _dataSourceFactoryReady;
+                recoverNow = _tmsReady && _xaResourceFactoryReady && _recoveryLogServiceReady && _recoveryLogFactoryReady && isDataSourceFactorySet;
             }
         }
 
