@@ -25,24 +25,23 @@ import io.openliberty.checkpoint.spi.Checkpoint.Phase;
 import io.openliberty.checkpoint.spi.SnapshotFailed;
 
 @Component(property = Constants.SERVICE_RANKING + ":Integer=-10000")
-public class ServerReadyCheckpoint implements ServerReadyStatus {
+public class CheckpointApplications implements ServerReadyStatus {
 
     private final Checkpoint checkpoint;
     private final boolean doCheckpoint;
 
     @Activate
-    public ServerReadyCheckpoint(@Reference Checkpoint checkpoint, BundleContext bc) {
+    public CheckpointApplications(@Reference Checkpoint checkpoint, BundleContext bc) {
         this.checkpoint = checkpoint;
-        this.doCheckpoint = "feature".equals(bc.getProperty("io.openliberty.checkpoint"));
+        this.doCheckpoint = "applications".equals(bc.getProperty("io.openliberty.checkpoint"));
     }
 
     @Override
     public void check() {
         if (doCheckpoint) {
             try {
-                checkpoint.snapshot(Phase.FEATURE, new File("snapshot"));
+                checkpoint.snapshot(Phase.APPLICATIONS, new File("snapshot"));
             } catch (SnapshotFailed e) {
-
             }
         }
     }

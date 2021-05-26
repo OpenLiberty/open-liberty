@@ -24,9 +24,8 @@ public interface Checkpoint {
      *
      */
     public enum Phase {
-        FEATURE,
-        APP,
-        SERVER
+        FEATURES,
+        APPLICATIONS
     }
 
     /**

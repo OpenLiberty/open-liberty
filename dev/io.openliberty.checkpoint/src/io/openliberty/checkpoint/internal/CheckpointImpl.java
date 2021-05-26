@@ -58,13 +58,13 @@ public class CheckpointImpl implements Checkpoint {
 
     @Override
     @Descriptor("Take a snapshot")
-    public void snapshot(@Parameter(names = "-p", absentValue = "server") @Descriptor("The phase to snapshot") Phase phase,
+    public void snapshot(@Parameter(names = "-p", absentValue = "") @Descriptor("The phase to snapshot") Phase phase,
                          @Descriptor("Directory to store the snapshot") File directory) throws SnapshotFailed {
         doSnapshot(phase, directory);
     }
 
     private void doSnapshot(Phase phase, File directory) throws SnapshotFailed {
-        System.out.println("Go save the world");
+        directory.mkdirs();
         Object[] factories = cc.locateServices("hookFactories");
         List<SnapshotHook> snapshotHooks = getHooks(factories, phase);
         prepare(snapshotHooks);
@@ -80,7 +80,6 @@ public class CheckpointImpl implements Checkpoint {
             throw new SnapshotFailed(Type.SNAPSHOT_FAILED, "Failed to create snapshot.", e);
         }
         restore(phase, snapshotHooks);
-        System.out.println("Restored the world");
     }
 
     List<SnapshotHook> getHooks(Object[] factories, Phase phase) {
