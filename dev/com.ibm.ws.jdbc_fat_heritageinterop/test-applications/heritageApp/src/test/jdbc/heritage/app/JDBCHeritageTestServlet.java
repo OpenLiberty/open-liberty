@@ -24,6 +24,7 @@ import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -43,6 +44,7 @@ import javax.transaction.UserTransaction;
 import org.junit.Test;
 
 import com.ibm.websphere.ce.cm.DuplicateKeyException;
+import com.ibm.websphere.ce.cm.ObjectClosedException;
 import com.ibm.websphere.ce.cm.StaleConnectionException;
 
 import componenttest.app.FATServlet;
@@ -536,6 +538,69 @@ public class JDBCHeritageTestServlet extends FATServlet {
 
             // user-defined exception indicates stale:
             assertTrue(con.isClosed());
+        }
+    }
+
+    /**
+     * Verify that ObjectClosedException is raised when attempting operations on a closed JDBC artifact.
+     */
+    @Test
+    public void testObjectClosedException() throws Exception {
+        Connection con = defaultDataSource.getConnection();
+        DatabaseMetaData metadata;
+        try {
+            metadata = con.getMetaData();
+            Statement st = con.createStatement();
+            ResultSet result = st.executeQuery("VALUES ('testObjectClosedException')");
+            st.close();
+
+            try {
+                result.next();
+                fail("ReultSet should be closed.");
+            } catch (ObjectClosedException x) {
+                // expected
+            }
+
+            try {
+                st.executeQuery("VALUES 'testObjectClosedException II'");
+                fail("Statement should be closed.");
+            } catch (ObjectClosedException x) {
+                // expected
+            }
+
+            PreparedStatement ps = con.prepareStatement("VALUES ('testObjectClosedException III')");
+            ps.close();
+            try {
+                ps.executeQuery();
+                fail("PreparedStatement should be closed.");
+            } catch (ObjectClosedException x) {
+                // expected
+            }
+
+            CallableStatement cs = con.prepareCall("VALUES ('testObjectClosedException IV')");
+            cs.close();
+            try {
+                cs.clearParameters();
+                fail("CallableStatement should be closed.");
+            } catch (ObjectClosedException x) {
+                // expected
+            }
+        } finally {
+            con.close();
+        }
+
+        try {
+            con.setAutoCommit(false);
+            fail("Connection should be closed.");
+        } catch (ObjectClosedException x) {
+            // expected
+        }
+
+        try {
+            metadata.getSchemas();
+            fail("Connection should be closed.");
+        } catch (ObjectClosedException x) {
+            // expected
         }
     }
 
