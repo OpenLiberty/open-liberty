@@ -40,9 +40,11 @@ Before Development Starts or 8 weeks before Onboarding
 
 ##
 #### Before proceeding to any items below (active development), this feature MUST be [prioritized on the backlog](https://github.com/orgs/OpenLiberty/projects/2), and have been socialized (e.g., UFO Review).  Follow the Feature and UFO Approval Process.
+##
+
+## **Development**
 When active development has begun 
 - [ ] Add the "In Progress" label to this issue.
-##
 
 ## **Beta**
 If your feature, or portions of it, are going to be included in a beta  
