@@ -68,7 +68,7 @@ public abstract class FeatureUtilityToolTest {
         unzipDestination = installRoot + "/../featureUtility_fat_wlp/";
 
         // zip up installRoot
-        minifiedRoot = exportWlp(installRoot, installRoot + "/../temp/wlp.zip", installRoot + "/../featureUtility_fat_wlp/");
+        minifiedRoot = exportWlp(installRoot, installRoot + "/../temp/wlp.zip", installRoot + "/../featureUtility_fat_wlp");
         Log.info(c, methodName, "minified root: " + minifiedRoot);
 
         if(!new File(minifiedRoot).exists()){

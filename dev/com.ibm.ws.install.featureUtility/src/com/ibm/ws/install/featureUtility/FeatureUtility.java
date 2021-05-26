@@ -73,6 +73,7 @@ public class FeatureUtility {
     private final static String WEBSPHERE_LIBERTY_GROUP_ID = "com.ibm.websphere.appserver.features";
     private final static String BETA_EDITION = "EARLY_ACCESS";
     private static String to;
+    private boolean isInstallServerFeature = false;
 
 
     private FeatureUtility(FeatureUtilityBuilder builder) throws IOException, InstallException {
@@ -135,7 +136,7 @@ public class FeatureUtility {
         overrideEnvMapWithProperties();
         
         fine("additional jsons: " + additionalJsons);
-        if (!additionalJsons.isEmpty() && additionalJsons != null) {
+        if (additionalJsons != null && !additionalJsons.isEmpty()) {
         	jsonsRequired.addAll(additionalJsons);
         	map.put("json.provided", true);
         }
@@ -168,6 +169,10 @@ public class FeatureUtility {
     
     public void setFeatureToExt(Map<String, String> featureToExt) {
     	this.featureToExt = featureToExt;
+    }
+    
+    public void setIsInstallServerFeature(boolean isInstallServerFeature) {
+    	this.isInstallServerFeature = isInstallServerFeature;
     }
 
     /**
@@ -437,6 +442,7 @@ public class FeatureUtility {
         if (fromDir != null) {
         	map.put("from.repo", fromDir.toString());
         }
+        map.put("is.install.server.feature", isInstallServerFeature);
         Collection<String> resolvedFeatures = (Collection<String>) map.get("action.result");
         checkResolvedFeatures(resolvedFeatures);
         boolean upgraded = (boolean) map.get("upgrade.complete");

@@ -254,6 +254,7 @@ public class InstallServerAction implements ActionHandler {
                         featureUtility = new FeatureUtility.FeatureUtilityBuilder().setFromDir(fromDir)
                                         .setFeaturesToInstall(featureNames).setNoCache(noCache).setlicenseAccepted(acceptLicense).setAdditionalJsons(additionalJsons).build();
                         featureUtility.setFeatureToExt(featureToExt);
+                        featureUtility.setIsInstallServerFeature(true);
                         featureUtility.installFeatures();
                 } catch (InstallException e) {
                         logger.log(Level.SEVERE, e.getMessage(), e);

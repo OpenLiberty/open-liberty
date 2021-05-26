@@ -105,6 +105,46 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 //        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.jsp-2.3", fileLists);
         Log.exiting(c, METHOD_NAME);
     }
+    
+    /**
+     * Test the install of jsp-2.2, jsp-2.3 from maven central.
+     * Multi-version is not supported with installServerFeature as it cannot be installed to same resource. 
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testMultiVersionFeatures() throws Exception {
+        final String METHOD_NAME = "testMultiVersionFeatures";
+        Log.entering(c, METHOD_NAME);
+        replaceWlpProperties("20.0.0.4");
+        copyFileToMinifiedRoot("etc", "../../publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
+
+        copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/features/20.0.0.4",
+                "../../publish/repo/com/ibm/websphere/appserver/features/features/20.0.0.4/features-20.0.0.4.json");
+
+        copyFileToMinifiedRoot("repo/io/openliberty/features/features/20.0.0.4",
+                "../../publish/repo/io/openliberty/features/features/20.0.0.4/features-20.0.0.4.json");
+
+        copyFileToMinifiedRoot("repo/io/openliberty/features/jsp-2.3/20.0.0.4",
+                "../../publish/repo/io/openliberty/features/jsp-2.3/20.0.0.4/jsp-2.3-20.0.0.4.esa");
+        
+        copyFileToMinifiedRoot("repo/io/openliberty/features/jsp-2.2/20.0.0.4",
+                "../../publish/repo/io/openliberty/features/jsp-2.2/20.0.0.4/jsp-2.2-20.0.0.4.esa");
+
+
+
+        writeToProps(minifiedRoot+ "/etc/featureUtility.properties", "featureLocalRepo", minifiedRoot + "/repo/");
+
+        String[] param1s = { "installFeature", "jsp-2.2", "jsp-2.3", "--verbose"};
+        ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
+        assertEquals("Exit code should be 0",0, po.getReturnCode());
+        String output = po.getStdout();
+        assertTrue("Should contain jsp-2.2", output.contains("jsp-2.2"));
+        assertTrue("Should contain jsp-2.3", output.contains("jsp-2.3"));
+
+//        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.jsp-2.3", fileLists);
+        Log.exiting(c, METHOD_NAME);
+    }
 
     /**
      * Test the installation of features cdi-1.2 and jsf-2.2 together, which should also install the autofeature cdi1.2-jsf2.2.

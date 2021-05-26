@@ -168,6 +168,27 @@ public class InstallServerTest extends FeatureUtilityToolTest {
         Log.exiting(c, METHOD_NAME);
     }
 
+    /**
+     * Test the install of jsp-2.2, jsp-2.3 from maven central.
+     * Multi-version is not supported with installServerFeature as it cannot be installed to same resource. 
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testInvalidMultiVersionFeatures() throws Exception {
+        final String METHOD_NAME = "testInvalidMultiVersionFeatures";
+        Log.entering(c, METHOD_NAME);
+
+        copyFileToMinifiedRoot("usr/servers/serverX", "../../publish/tmp/multiVersionServerXml/server.xml");
+        String[] param1s = { "installServerFeatures", "serverX", "--verbose"};
+        ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
+        assertEquals("Exit code should be 21",21, po.getReturnCode());
+        String output = po.getStdout();
+        assertTrue("Should contain CWWKF1405E", output.contains("CWWKF1405E"));
+
+//        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.jsp-2.3", fileLists);
+        Log.exiting(c, METHOD_NAME);
+    }
 
 
 }
