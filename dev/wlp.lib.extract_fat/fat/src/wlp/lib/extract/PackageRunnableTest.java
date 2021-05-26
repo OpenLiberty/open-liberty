@@ -14,10 +14,13 @@ import static org.junit.Assert.*;
 import static org.junit.Assume.*;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -78,27 +81,14 @@ public class PackageRunnableTest {
     @Before
     public void setup() throws Exception {
         String method = "setup";
-        int timeout = 0;
 
-        // Sanity check to make sure the manifest.mf that is used by package exists before starting the
-        // test case(s).
-        while (timeout <= 10) {
-            File manifest = new File(server.getInstallRoot(), "lib/extract/META-INF/MANIFEST.MF");
-            if (!manifest.exists()) {
-                Log.info(c, method, "Manifest did not exist. Sleeping - " + timeout + " seconds elapsed.");
-                Thread.sleep(1000);
-            } else {
-                Log.info(c, method, "Manifest was found in " + server.getInstallRoot() + "/lib/extract/META-INF/MANIFEST.MF with size = " + manifest.length());
-                break;
-            }
-            timeout++;
-        }
+        // Verify that /lib/extract exits, and the manifest.mf is valid
+        validateWLPLibExtractAndManifest();
 
+        // Save off the output directory so we can save a copy of the .jar if its bad
         outputAutoFVTDirectory = new File("output/servers/", serverName);
         Log.info(c, method, "outputAutoFVTDirectory: " + outputAutoFVTDirectory.getAbsolutePath());
 
-        // Create the /lib/extract folder if it does not exist so that the package tests will execute.
-        Log.info(c, method, "Was the /lib/extract folder created manually for this test case execution : " + createWLPLibExtract());
     }
 
     @BeforeClass
@@ -143,9 +133,6 @@ public class PackageRunnableTest {
         }
 
         Log.info(c, method, "stdout for package cmd is: \n" + stdout);
-
-        // Validate the package was successful.  If not, log off the manifest.mf contents.
-        boolean rc = validatePackageManifestExists();
 
         executeTheJar(extractDirectory1, false, true, false);
         checkDirStructure(extractDirectory1, true);
@@ -368,7 +355,7 @@ public class PackageRunnableTest {
                 if (je.getName().equals("META-INF/MANIFEST.MF")) {
 
                     Log.info(c, method, "=== Start dumping contents of manifest file ===");
-                    readJarEntryContent(jarFile, je);
+                    Log.info(c, method, readJarEntryContent(jarFile, je));
                     manifestFound = true;
                     Log.info(c, method, "=== End dumping contents of manifest file ===");
                 }
@@ -592,15 +579,23 @@ public class PackageRunnableTest {
      * @param jf
      * @param je
      */
-    private void readJarEntryContent(JarFile jf, JarEntry je) throws IOException {
+    private static String readJarEntryContent(JarFile jf, JarEntry je) throws IOException {
         InputStream is = jf.getInputStream(je);
         InputStreamReader isr = new InputStreamReader(is);
         BufferedReader r = new BufferedReader(isr);
+        StringBuffer sb = new StringBuffer();
         String line;
-        while ((line = r.readLine()) != null) {
-            Log.info(c, "readJarEntryContent", line);
+        try {
+            while ((line = r.readLine()) != null) {
+                sb.append(line + "\n");
+            }
+        } finally {
+            r.close();
+            isr.close();
+            is.close();
         }
-        r.close();
+
+        return sb.toString();
     }
 
     /**
@@ -640,51 +635,70 @@ public class PackageRunnableTest {
     }
 
     /**
-     * Verifies that the package manifest exists, and logs the manifest.mf contents if found.
-     *
-     * @return
-     * @throws IOException
-     */
-    private boolean validatePackageManifestExists() throws IOException {
-
-        // log the contents of the runnable jar's manifest.mf
-        JarFile jarFile = new JarFile(runnableJar.getAbsolutePath());
-        boolean manifestFound = false;
-
-        for (Enumeration<JarEntry> e = jarFile.entries(); e.hasMoreElements();) {
-            JarEntry je = e.nextElement();
-            if (je.getName().equals("META-INF/MANIFEST.MF")) {
-                Log.info(c, "validatePackage", "=== Start dumping contents of manifest.mf file ===");
-                readJarEntryContent(jarFile, je);
-                manifestFound = true;
-                Log.info(c, "validatePackage", "=== End dumping contents of manifest.mf file ===");
-            }
-        }
-
-        return manifestFound;
-    }
-
-    /**
      * As of today, the FAT environment's installation of WLP does not include lib/extract directory.
      * The package command requires that the lib/extract directory exists, as this directory
      * contains a required manifest, self extractable classes, etc. Copy the wlp.lib.extract.jar
-     * contents to wlp/lib/extract folder.
+     * contents to wlp/lib/extract folder. Also, verifies that if the lib/extract directory does exist,
+     * it contains an up to date meta-inf/manifest.mf file else one is built.
      *
-     * @return false if /lib/extract exists, else true if it is created
+     * @return false if /lib/extract exists, else true if it is created or if the manifest is re-written.
      *
      * @throws Exception
      */
-    private static boolean createWLPLibExtract() throws Exception {
+    private static boolean validateWLPLibExtractAndManifest() throws Exception {
+
+        String manifest = null;
+        String method = "createWLPLibExtract";
+        boolean manifestFound = false;
+        JarFile libExtractJar = new JarFile("lib/LibertyFATTestFiles/wlp.lib.extract.jar");
+
         try {
+            // Check if /lib/extract exists
             server.getFileFromLibertyInstallRoot("lib/extract");
-            return false;
+
+            File manifestFile = new File(server.getInstallRoot(), "lib/extract/META-INF/MANIFEST.MF");
+
+            // Check that the manifest.mf is the correct size
+            for (Enumeration<JarEntry> entries = libExtractJar.entries(); (entries.hasMoreElements() && !manifestFound);) {
+                JarEntry entry = entries.nextElement();
+
+                if (entry.getName().equals("META-INF/MANIFEST.MF")) {
+                    manifestFound = true;
+                    manifest = readJarEntryContent(libExtractJar, entry);
+                    // Compare file system manifest vs jar manifest
+                    if (manifestFile.length() != manifest.length()) {
+                        Log.info(c, method, "File system manifest.mf size was not correct. MANIFEST.MF on file system size = " + manifestFile.length()
+                                            + " MANIFEST.MF in wlp.lib.extract.jar size = " + manifest.length());
+                        if (manifestFile.exists()) {
+                            dumpFileToLog(manifestFile);
+                        } else {
+                            Log.info(c, method, "File " + server.getInstallRoot() + "lib/extract/META-INF/MANIFEST.MF did not exist!");
+                        }
+
+                        // Delete old manifest and write out a new manifest
+                        manifestFile.delete();
+                        manifestFile.createNewFile();
+                        BufferedWriter writer = new BufferedWriter(new FileWriter(manifestFile));
+                        writer.write(manifest);
+                        writer.close();
+
+                        libExtractJar.close();
+                        return true;
+                    } else {
+                        Log.info(c, method, "/lib/extract existed and MANIFEST.MF was the correct size");
+                        libExtractJar.close();
+                        return false;
+                    }
+                }
+            }
         } catch (FileNotFoundException ex) {
             //expected - the directory does not exist - so proceed.
+            Log.info(c, method, "The /lib/extract/ folder did not exist, creating it from /lib/LibertyFATTestFiles/wlp.lib.extract.jar.");
         }
+
+        // Build the /lib/extract structure since it didnt exist
         RemoteFile libExtractDir = LibertyFileManager.createRemoteFile(server.getMachine(), server.getInstallRoot() + "/lib/extract");
         libExtractDir.mkdirs();
-
-        JarFile libExtractJar = new JarFile("lib/LibertyFATTestFiles/wlp.lib.extract.jar");
 
         for (Enumeration<JarEntry> entries = libExtractJar.entries(); entries.hasMoreElements();) {
             JarEntry entry = entries.nextElement();
@@ -706,6 +720,8 @@ public class PackageRunnableTest {
                 writeFile(libExtractJar, entry, libExtractFile);
             }
         }
+        libExtractJar.close();
+
         return true;
     }
 
@@ -727,6 +743,28 @@ public class PackageRunnableTest {
                     fos.write(buffer, 0, read);
                 }
             }
+        }
+    }
+
+    /**
+     * Writes a file out to the output log
+     *
+     * @param f
+     * @throws FileNotFoundException
+     * @throws IOException
+     */
+    private static void dumpFileToLog(File f) throws FileNotFoundException, IOException {
+        BufferedReader reader = null;
+        String method = "dumpFileToLog";
+        try {
+            reader = new BufferedReader(new FileReader(f));
+            String s = null;
+            Log.info(c, method, "\t Contents of " + f.getAbsolutePath() + " : ");
+            while ((s = reader.readLine()) != null) {
+                Log.info(c, method, "\t\t" + s);
+            }
+        } finally {
+            reader.close();
         }
     }
 
