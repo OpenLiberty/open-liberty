@@ -9,22 +9,22 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props, \
- jar:${fileuri;${repo;org.openjdk.criu:criu-jar;1.0;EXACT}}!/META-INF/MANIFEST.MF, \
+ jar:${fileuri;${repo;com.ibm.ws.org.openjdk:jigawatts;1.0;EXACT}}!/META-INF/MANIFEST.MF, \
  bnd.overrides
 
 Import-Package: *
 
 -includeresource: \
-   @${repo;org.openjdk.criu:criu-jar;1.0;EXACT}!/!META-INF/maven/*
+   @${repo;com.ibm.ws.org.openjdk:jigawatts;1.0;EXACT}!/!META-INF/maven/*
 
 -buildpath: \
-    org.openjdk.criu:criu-jar;strategy=exact;version=1.0, \
+    com.ibm.ws.org.openjdk:jigawatts;strategy=exact;version=1.0, \
     io.openliberty.checkpoint;version=latest, \
     com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
     com.ibm.wsspi.org.osgi.service.component;version=latest, \
     com.ibm.wsspi.org.osgi.service.component.annotations;version=latest
 
 -dsannotations: \
-    io.openliberty.criu.lib.internal.ExecuteCRIU_JNI
+    io.openliberty.jigawatts.internal.ExecuteCRIU_JNI
 
--privatepackage: io.openliberty.criu.lib.internal
+-privatepackage: io.openliberty.jigawatts.internal

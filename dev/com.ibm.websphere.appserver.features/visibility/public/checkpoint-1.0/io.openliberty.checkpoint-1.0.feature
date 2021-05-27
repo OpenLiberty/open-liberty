@@ -6,7 +6,7 @@ IBM-ShortName: checkpoint-1.0
 IBM-Process-Types: server
 Subsystem-Name: Checkpoint and Restore Support 1.0
 -bundles=io.openliberty.checkpoint,\
- io.openliberty.criu.lib
+ io.openliberty.jigawatts
 kind=noship
 edition=full
 WLP-Activation-Type: parallel

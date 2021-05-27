@@ -8,12 +8,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.criu.lib.internal;
+package io.openliberty.jigawatts.internal;
 
 import java.io.File;
 import java.io.IOException;
 
-import org.checkpoint.CheckpointRestore;
+import org.openjdk.jigawatts.Jigawatts;
 import org.osgi.service.component.annotations.Component;
 
 import io.openliberty.checkpoint.internal.criu.ExecuteCRIU;
@@ -24,7 +24,7 @@ public class ExecuteCRIU_JNI implements ExecuteCRIU {
 
     @Override
     public void dump(File directory) throws IOException {
-        CheckpointRestore.saveTheWorld(directory.getAbsolutePath());
+        Jigawatts.saveTheWorld(directory.getAbsolutePath());
     }
 
 }
