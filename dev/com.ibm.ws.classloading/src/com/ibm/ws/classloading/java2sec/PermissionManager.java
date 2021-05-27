@@ -812,10 +812,6 @@ public class PermissionManager implements PermissionsCombiner {
             }
         }
         
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "Effective permissions from permissions.xml for codeBase: : " + codeBase);
-            Tr.debug(tc, permissionXMLPermissionMap.get(codeBase).toString());
-        }
 
     }
 
