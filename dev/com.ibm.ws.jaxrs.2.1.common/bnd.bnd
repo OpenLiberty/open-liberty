@@ -25,8 +25,7 @@ WS-TraceGroup: JAXRS
 Export-Package: \
   com.ibm.websphere.jaxrs.providers.json4j;version=1.1.0,\
   com.ibm.ws.jaxrs20.clientconfig,\
-  com.ibm.ws.jaxrs20.providers.api,\
-  com.ibm.ws.jaxrs21.sse
+  com.ibm.ws.jaxrs20.providers.api
 
 # Using version=! in order to not have a version attached to the import for packages that were removed
 # from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the 

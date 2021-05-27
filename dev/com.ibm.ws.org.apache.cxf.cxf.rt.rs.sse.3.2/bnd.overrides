@@ -4,7 +4,7 @@ bVersion=1.0
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.rs.sse.3.2
 
 
-exportVer=3.3.0
+exportVer=3.4.3
 
 Import-Package: \
   !org.atmosphere.*,\
@@ -16,3 +16,11 @@ Export-Package: \
   org.apache.cxf.jaxrs.sse;version=${exportVer},\
   org.apache.cxf.jaxrs.sse.cdi;version=${exportVer},\
   org.apache.cxf.jaxrs.sse.client;version=${exportVer};thread-context=true
+
+Service-Component: \
+  org.apache.cxf.jaxrs.sse.sseFeature; \
+    configuration-policy:=ignore; \
+    immediate:=true;\
+    implementation:=org.apache.cxf.jaxrs.sse.SseFeature; \
+    provide:=org.apache.cxf.feature.Feature; \
+    properties:="service.vendor=IBM"

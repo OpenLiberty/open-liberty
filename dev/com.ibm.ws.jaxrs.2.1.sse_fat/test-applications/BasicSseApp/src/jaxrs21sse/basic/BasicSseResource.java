@@ -59,6 +59,8 @@ public class BasicSseResource extends Application {
                 try (SseEventSink sink = eventSink) {
                     for (int i = 0; i < eventData.length; i++) {
                         System.out.println("BasicSseResource.send3PlainEvents() sending: " + eventData[i]);
+                        System.out.println("BasicSseResource.send3PlainEvents() sink = " + sink);
+                        System.out.println("BasicSseResource.send3PlainEvents() sse = " + sse);
                         sink.send(sse.newEvent(eventData[i]));
                         try {
                             Thread.sleep(200);

@@ -98,7 +98,7 @@ public class BasicSseTestServlet extends FATServlet {
                                     executionLatch.countDown();
                                 }
                             });
-
+            System.out.println("calling open() on: " + source);
             source.open();
             System.out.println("client source open");
             assertTrue("Completion listener runnable was not executed", executionLatch.await(30, TimeUnit.SECONDS));
@@ -378,7 +378,7 @@ public class BasicSseTestServlet extends FATServlet {
     }
 
     public void testErrorSse(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-
+        System.out.println("Jim... testErrorSse");
         final List<JaxbObject> receivedEvents = new ArrayList<>();
         final List<Throwable> errors = new ArrayList<>();
         final CountDownLatch executionLatch = new CountDownLatch(1);
@@ -407,6 +407,7 @@ public class BasicSseTestServlet extends FATServlet {
                                 public void accept(Throwable t) {
                                     System.out.println("new error: " + t);
                                     errors.add(t);
+                                    executionLatch.countDown();
                                 }
                             },
                             new Runnable() {
@@ -427,7 +428,7 @@ public class BasicSseTestServlet extends FATServlet {
             }
 
             System.out.println("client source open");
-            assertTrue("Completion listener runnable was not executed", executionLatch.await(30, TimeUnit.SECONDS));
+            assertTrue("Error listener runnable was not executed", executionLatch.await(30, TimeUnit.SECONDS));
 
         } catch (InterruptedException e) {
             // falls through

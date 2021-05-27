@@ -59,12 +59,16 @@ public class Resource extends Application {
     @GET
     @Produces(MediaType.SERVER_SENT_EVENTS)
     public void register(@Context Sse sse, @Context SseEventSink sink) {
+        System.out.println("Jim...register - registering new sink: " + sink.getClass().getName());
+        System.out.println("Jim...register - broadcaster.register: " + broadcaster.getClass().getName());
+        System.out.println("Jim...register - sse: " + sse.getClass().getName());
         _log.info("register - registering new sink: " + sink);
         try {
             broadcaster.register(sink);
             int numClients = registeredClients.incrementAndGet();
             _log.info("register - new sink registered(total " + numClients + ")");
             sink.send(sse.newEvent("Welcome"));
+            System.out.println("Jim...register - back from sink.send");
         } catch (Throwable t) {
             t.printStackTrace();
         }
