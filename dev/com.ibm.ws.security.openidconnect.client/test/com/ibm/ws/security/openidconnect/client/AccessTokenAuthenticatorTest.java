@@ -329,7 +329,7 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
                 will(returnValue(false));
                 allowing(clientConfig).getAccessTokenCacheEnabled();
                 will(returnValue(false));
-                one(clientConfig).getValidationMethod();
+                allowing(clientConfig).getValidationMethod();
                 will(returnValue(ClientConstants.VALIDATION_USERINFO));
                 one(clientConfig).isHostNameVerificationEnabled();
                 will(returnValue(true));
@@ -369,7 +369,7 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
                 will(returnValue(false));
                 one(clientConfig).getAccessTokenCacheEnabled();
                 will(returnValue(false));
-                exactly(2).of(clientConfig).getValidationMethod();
+                allowing(clientConfig).getValidationMethod();
                 will(returnValue(ClientConstants.VALIDATION_USERINFO));
                 one(clientConfig).isHostNameVerificationEnabled();
                 will(returnValue(false));
@@ -407,7 +407,7 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
                 will(returnValue(false));
                 allowing(clientConfig).getAccessTokenCacheEnabled();
                 will(returnValue(false));
-                one(clientConfig).getValidationMethod();
+                allowing(clientConfig).getValidationMethod();
                 will(returnValue(ClientConstants.VALIDATION_INTROSPECT));
                 allowing(clientConfig).getInboundPropagation();
                 will(returnValue("required"));
@@ -462,7 +462,7 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
                 will(returnValue(false));
                 allowing(clientConfig).getAccessTokenCacheEnabled();
                 will(returnValue(false));
-                one(clientConfig).getValidationMethod();
+                allowing(clientConfig).getValidationMethod();
                 will(returnValue(ClientConstants.VALIDATION_INTROSPECT));
                 one(clientConfig).getClientSecret();
                 will(returnValue("client_secret"));
@@ -514,7 +514,7 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
                 will(returnValue(true));
                 one(clientConfig).getTokenReuse();
                 will(returnValue(false));
-                one(clientConfig).getValidationMethod();
+                allowing(clientConfig).getValidationMethod();
                 will(returnValue(ClientConstants.VALIDATION_INTROSPECT));
                 one(clientConfig).getClientSecret();
                 will(returnValue("client_secret"));
@@ -573,7 +573,7 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
                 will(returnValue(false));
                 allowing(clientConfig).getAccessTokenCacheEnabled();
                 will(returnValue(false));
-                exactly(3).of(clientConfig).getValidationMethod();
+                allowing(clientConfig).getValidationMethod();
                 will(returnValue(ClientConstants.VALIDATION_INTROSPECT));
                 one(clientConfig).getClientSecret();
                 will(returnValue(null));
@@ -612,11 +612,11 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
 
                 one(clientConfig).getAccessTokenInLtpaCookie();
                 will(returnValue(false));
+                one(clientConfig).getTokenReuse();
+                will(returnValue(true));
                 one(clientConfig).getAccessTokenCacheEnabled();
                 will(returnValue(false));
-                one(clientConfig).getTokenReuse();
-                will(returnValue(false));
-                exactly(2).of(clientConfig).getValidationMethod();
+                allowing(clientConfig).getValidationMethod();
                 will(returnValue(ClientConstants.VALIDATION_INTROSPECT));
                 one(clientConfig).getClientSecret();
                 will(returnValue(null));
@@ -651,7 +651,7 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
                 will(returnValue(false));
                 one(clientConfig).getAccessTokenCacheEnabled();
                 will(returnValue(false));
-                one(clientConfig).getValidationMethod();
+                allowing(clientConfig).getValidationMethod();
                 will(returnValue(INVALID_VALIDATION));
                 one(clientConfig).getTokenEndpointUrl();
                 will(returnValue(HTTPS_URL));
