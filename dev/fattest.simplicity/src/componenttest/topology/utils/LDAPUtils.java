@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2020 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -135,6 +135,7 @@ public class LDAPUtils {
 
     /** Did we fail to find the physical LDAP servers in Consul? */
     private static boolean CONSUL_LOOKUP_FAILED = false;
+
     static {
 
         /*
@@ -145,24 +146,26 @@ public class LDAPUtils {
         /*
          * Get the remote LDAP configuration from Consul
          */
-        try {
-            initializeRemoteLdapServers();
-        } catch (Exception e) {
-            /*
-             * Failed to get all the remote LDAP servers, so fail back to local LDAP.
-             */
-            String os = System.getProperty("os.name").toLowerCase();
-            if (os.startsWith("z/os")) {
-                Log.error(c, "<clinit>", e, "*******REMOTE LDAP FAILED ON Z/OS RUN ******* Any remote Ldap tests trying to run local will fail.");
-            }
+        if (!uselocalLDAP) {
+            try {
+                initializeRemoteLdapServers();
+            } catch (Exception e) {
+                /*
+                 * Failed to get all the remote LDAP servers, so fail back to local LDAP.
+                 */
+                String os = System.getProperty("os.name").toLowerCase();
+                if (os.startsWith("z/os")) {
+                    Log.error(c, "<clinit>", e, "*******REMOTE LDAP FAILED ON Z/OS RUN ******* Any remote Ldap tests trying to run local will fail.");
+                }
 
-            Log.error(c, "<clinit>", e, "Failed setting up remote LDAP servers. Failing back to local LDAP servers. " +
-                                        "To run against the remote LDAP servers, ensure that the tests are being run " +
-                                        "on the IBM network, that you have added your global IBM GHE access token " +
-                                        "(global.ghe.access.token) to the user.build.properties file in your home directory " +
-                                        "and that you are a member of the 'websphere' organization in IBM GHE.");
-            CONSUL_LOOKUP_FAILED = true;
-            uselocalLDAP = true;
+                Log.error(c, "<clinit>", e, "Failed setting up remote LDAP servers. Failing back to local LDAP servers. " +
+                                            "To run against the remote LDAP servers, ensure that the tests are being run " +
+                                            "on the IBM network, that you have added your global IBM GHE access token " +
+                                            "(global.ghe.access.token) to the user.build.properties file in your home directory " +
+                                            "and that you are a member of the 'websphere' organization in IBM GHE.");
+                CONSUL_LOOKUP_FAILED = true;
+                uselocalLDAP = true;
+            }
         }
 
         USE_LOCAL_LDAP_SERVER = uselocalLDAP;
@@ -529,11 +532,11 @@ public class LDAPUtils {
     /**
      * Get a list of LDAP services from Consul.
      *
-     * @param count The number of services requested. If unable to get unique 'count' instances,
-     * the returned List will contain duplicate entries.
-     * @param service The service to return.
-     * @return A list of services returned. This list may return duplicates if unable to return enough
-     * unique service instances.
+     * @param  count   The number of services requested. If unable to get unique 'count' instances,
+     *                     the returned List will contain duplicate entries.
+     * @param  service The service to return.
+     * @return         A list of services returned. This list may return duplicates if unable to return enough
+     *                 unique service instances.
      */
     private static List<ExternalTestService> getLdapServices(int count, String service) throws Exception {
 
@@ -610,8 +613,8 @@ public class LDAPUtils {
      * <li>ldap.server.13.port - the port of the thirteen LDAP server</li>
      * </ul>
      *
-     * @param server
-     * server for which bootstrap properties file needs updating with LDAP server host/ports
+     * @param  server
+     *                       server for which bootstrap properties file needs updating with LDAP server host/ports
      * @throws Exception
      */
     public static void addLDAPVariables(LibertyServer server) throws Exception {
@@ -621,8 +624,8 @@ public class LDAPUtils {
     /**
      * Adds LDAP variables for various servers and ports to the bootstrap.properties file for use in server.xml.
      *
-     * @param server
-     * @param isInMemoryAllowed If false, physical LDAP servers and ports will be used as the property values.
+     * @param  server
+     * @param  isInMemoryAllowed If false, physical LDAP servers and ports will be used as the property values.
      * @throws Exception
      */
     public static void addLDAPVariables(LibertyServer server, boolean isInMemoryAllowed) throws Exception {
@@ -722,7 +725,7 @@ public class LDAPUtils {
     /**
      * Set the server bootstrap properties for a specified LDAP server.
      *
-     * @param serverNumber The LDAP server number.
+     * @param serverNumber      The LDAP server number.
      * @param props
      * @param isInMemoryAllowed
      */
@@ -744,10 +747,10 @@ public class LDAPUtils {
     /**
      * Set a property value in the Properties instance if the value is not null.
      *
-     * @param props The Properties instance.
-     * @param key The key for the value.
-     * @param value The value to set.
-     * @return The previous value if it was set, null if it was not set.
+     * @param  props The Properties instance.
+     * @param  key   The key for the value.
+     * @param  value The value to set.
+     * @return       The previous value if it was set, null if it was not set.
      */
     private static Object setProp(Properties props, String key, String value) {
         // java.util.Properties does not allow null values, so only set the prop if value is non-null
