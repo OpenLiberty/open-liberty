@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.microprofile.internal.test.suite;
+package io.openliberty.microprofile5.internal.test.suite;
 
 import static org.junit.Assert.fail;
 
@@ -23,7 +23,6 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -32,18 +31,14 @@ import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
-import io.openliberty.microprofile.internal.test.helloworld.HelloWorldApplication;
-import io.openliberty.microprofile.internal.test.helloworld.basic.BasicHelloWorldBean;
+import io.openliberty.microprofile5.internal.test.helloworld.HelloWorldApplication;
+import io.openliberty.microprofile5.internal.test.helloworld.basic.BasicHelloWorldBean;
 
 @RunWith(FATRunner.class)
 public class BasicJAXRSCDITest {
 
-    private static final String SERVER_NAME = "MPServer";
-
-    @ClassRule
-    public static RepeatTests r = MPRepeatUtils.getMPRepeat(SERVER_NAME);
+    private static final String SERVER_NAME = "MP5Server";
 
     @Server(SERVER_NAME)
     public static LibertyServer server;
@@ -66,12 +61,12 @@ public class BasicJAXRSCDITest {
     @AfterClass
     public static void tearDown() throws Exception {
         if (server != null) {
-            server.stopServer("CWMOT0010W"); //CWMOT0010W: OpenTracing cannot track JAX-RS requests because an OpentracingTracerFactory class was not provided or client libraries for tracing backend are not in the class path.
+            server.stopServer();
         }
     }
 
     @Test
-    public void testBasicJAXRSCDI() throws IOException {
+    public void testSimple() throws IOException {
         runGetMethod(200, "/helloworld/helloworld", MESSAGE);
     }
 
