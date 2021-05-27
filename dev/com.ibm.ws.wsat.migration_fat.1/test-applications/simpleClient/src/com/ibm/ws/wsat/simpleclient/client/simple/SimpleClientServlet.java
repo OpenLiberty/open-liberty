@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -626,6 +626,7 @@ public class SimpleClientServlet extends HttpServlet {
 
 	private String callWebservice(String BASE_URL, String[] XAResouces, int expectedDirection, int sleepTimeServer, boolean clearXAResource)
 			throws MalformedURLException {
+		final int timeout = 300 * 1000;
 		URL wsdlLocation = new URL(BASE_URL
 				+ "/simpleServer/WSATSimpleService?wsdl");
 		WSATSimpleService service = new WSATSimpleService(wsdlLocation);
@@ -633,8 +634,10 @@ public class SimpleClientServlet extends HttpServlet {
 		BindingProvider bind = (BindingProvider) proxy;
 		bind.getRequestContext().put("javax.xml.ws.service.endpoint.address",
 				BASE_URL + "/simpleServer/WSATSimpleService");
-		bind.getRequestContext().put("com.sun.xml.ws.connect.timeout", 1000 * 150);
-		bind.getRequestContext().put("com.sun.xml.ws.request.timeout", 1000 * 150);
+		bind.getRequestContext().put("com.sun.xml.ws.connect.timeout", timeout);
+		bind.getRequestContext().put("com.sun.xml.ws.request.timeout", timeout);
+		bind.getRequestContext().put("javax.xml.ws.client.connectionTimeout", timeout);
+		bind.getRequestContext().put("javax.xml.ws.client.receiveTimeout", timeout);
 		String response = "";
 		System.out.println("Set expectedDirection in callWebservice: " + expectedDirection);
 		System.out.println("XAResouces.length in callWebservice: " + XAResouces.length);
