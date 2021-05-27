@@ -11,10 +11,12 @@
 package com.ibm.ws.jdbc.fat.sqlserver;
 
 import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
+import static org.junit.Assume.assumeTrue;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.MSSQLServerContainer;
 import org.testcontainers.utility.DockerImageName;
@@ -26,6 +28,7 @@ import componenttest.annotation.TestServlet;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
+import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import web.ssl.SQLServerTestSSLServlet;
@@ -51,7 +54,7 @@ public class SQLServerSSLTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        FATSuite.setupDatabase(sqlserver);
+        FATSuite.setupDatabase(sqlserver, true);
 
         server.addEnvVar("DBNAME", FATSuite.DB_NAME);
         server.addEnvVar("HOST", sqlserver.getContainerIpAddress());
@@ -73,4 +76,22 @@ public class SQLServerSSLTest extends FATServletClient {
         }
     }
 
+    @Test
+    public void testConnectionWithSSLSecure() throws Exception {
+        /*
+         * Keystore is PKCS12 and was created using openjdk.
+         * Our z/OS and SOE test systems use IBM JDK and will fail with
+         * java.io.IOException: Invalid keystore format
+         * since the keystore provider is SUN instead of IBMJCE.
+         * Skip this test if JDK Vendor is IBM
+         */
+        assumeTrue(JavaInfo.forCurrentVM().vendor() != JavaInfo.Vendor.IBM);
+        /*
+         * On MAC OS the IBM JDK reports a vendor of SUN_ORACLE.
+         * Ensure this test is skipped in that instance as well.
+         */
+        assumeTrue(System.getProperty("os.name").contains("Mac OS") && //
+                   (JavaInfo.forCurrentVM().vendor() != JavaInfo.Vendor.SUN_ORACLE));
+        runTest(server, APP_NAME + '/' + SERVLET_NAME, getTestMethodSimpleName());
+    }
 }
