@@ -12,6 +12,7 @@
 // Define G:A:V coordinates of each dependency
 dependencies {
   requiredLibs project(':io.openliberty.org.apache.commons.logging')
+  requiredLibs project(':io.openliberty.org.testcontainers')
 }
 
 File sharedDir = new File(autoFvtDir, 'publish/shared/resources')
@@ -24,5 +25,4 @@ task addDerbyToSharedDir(type: Copy) {
 
 addRequiredLibraries.dependsOn addDerbyToSharedDir
 addRequiredLibraries.dependsOn copyJdbcDrivers
-addRequiredLibraries.dependsOn copyDatabaseRotationDrivers
 addRequiredLibraries.dependsOn addJakartaTransformer

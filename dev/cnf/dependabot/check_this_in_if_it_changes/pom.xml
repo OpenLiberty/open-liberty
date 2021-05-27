@@ -68,6 +68,11 @@
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+      <version>2.12.3</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
       <version>2.11.2</version>
     </dependency>
@@ -905,6 +910,11 @@
       <groupId>jtidy</groupId>
       <artifactId>jtidy</artifactId>
       <version>4aug2000r7-dev</version>
+    </dependency>
+    <dependency>
+      <groupId>net.java.dev.jna</groupId>
+      <artifactId>jna</artifactId>
+      <version>5.8.0</version>
     </dependency>
     <dependency>
       <groupId>net.minidev</groupId>
@@ -2857,6 +2867,11 @@
       <version>1.0.8</version>
     </dependency>
     <dependency>
+      <groupId>org.rnorth.visible-assertions</groupId>
+      <artifactId>visible-assertions</artifactId>
+      <version>2.1.2</version>
+    </dependency>
+    <dependency>
       <groupId>org.seleniumhq.webdriver</groupId>
       <artifactId>webdriver-common</artifactId>
       <version>0.9.7376</version>
@@ -3194,6 +3209,11 @@
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>postgresql</artifactId>
+      <version>1.15.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>selenium</artifactId>
       <version>1.15.3</version>
     </dependency>
     <dependency>

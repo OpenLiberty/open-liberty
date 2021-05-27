@@ -9,6 +9,7 @@ com.cloudant:cloudant-http:2.16.0
 com.cloudant:cloudant-http:2.8.0
 com.fasterxml.jackson.core:jackson-annotations:2.10.3
 com.fasterxml.jackson.core:jackson-annotations:2.11.2
+com.fasterxml.jackson.core:jackson-annotations:2.12.3
 com.fasterxml.jackson.core:jackson-core:2.11.2
 com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.11.2
 com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.2
@@ -177,6 +178,7 @@ javax:javaee-api:7.0
 joda-time:joda-time:1.6.2
 joda-time:joda-time:2.9.9
 jtidy:jtidy:4aug2000r7-dev
+net.java.dev.jna:jna:5.8.0
 net.minidev:json-smart:1.3.1
 net.sf.ehcache:ehcache-core:2.5.2
 net.shibboleth.utilities:java-support:7.5.1
@@ -567,6 +569,7 @@ org.reactivestreams:reactive-streams-examples:1.0.3
 org.reactivestreams:reactive-streams-tck:1.0.3
 org.reactivestreams:reactive-streams:1.0.3
 org.rnorth.duct-tape:duct-tape:1.0.8
+org.rnorth.visible-assertions:visible-assertions:2.1.2
 org.seleniumhq.webdriver:webdriver-common:0.9.7376
 org.slf4j:slf4j-api:1.7.30
 org.slf4j:slf4j-simple:1.7.30
@@ -635,6 +638,7 @@ org.testcontainers:kafka:1.15.3
 org.testcontainers:mssqlserver:1.15.3
 org.testcontainers:oracle-xe:1.15.3
 org.testcontainers:postgresql:1.15.3
+org.testcontainers:selenium:1.15.3
 org.testcontainers:testcontainers:1.15.3
 org.testng:testng:6.14.3
 org.yaml:snakeyaml:1.27

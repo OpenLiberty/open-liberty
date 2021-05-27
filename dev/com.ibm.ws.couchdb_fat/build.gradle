@@ -23,6 +23,8 @@ dependencies {
           'org.ektorp:org.ektorp:1.5.0',
           'org.slf4j:slf4j-api:1.7.7',
           'org.slf4j:slf4j-jdk14:1.7.7'
+          
+  requiredLibs project(':io.openliberty.org.testcontainers')
 }
 
 task copyCouchDB(type: Copy) {
@@ -32,4 +34,3 @@ task copyCouchDB(type: Copy) {
 }
 
  addRequiredLibraries.dependsOn copyCouchDB
- addRequiredLibraries.dependsOn addTestcontainers

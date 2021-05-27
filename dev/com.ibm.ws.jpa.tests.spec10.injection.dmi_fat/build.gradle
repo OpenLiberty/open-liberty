@@ -29,6 +29,7 @@ dependencies {
   
   jpaFatTools project(':com.ibm.ws.jpa_testframework')
   requiredLibs project(":com.ibm.ws.jpa.tests.spec10.injection.common")
+  requiredLibs project(':io.openliberty.org.testcontainers')
 }
 
 task addhibernateJPA22(type: Copy) {
@@ -88,7 +89,6 @@ task copyCommonFiles {
 
 addRequiredLibraries {
   dependsOn copyJdbcDrivers
-  dependsOn copyDatabaseRotationDrivers
   dependsOn addhibernateJPA22
   dependsOn addJakartaTransformer
   dependsOn addJPAFATTools
