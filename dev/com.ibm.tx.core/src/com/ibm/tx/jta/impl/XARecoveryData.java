@@ -1,7 +1,7 @@
 package com.ibm.tx.jta.impl;
 
 /*******************************************************************************
- * Copyright (c) 2002, 2020 IBM Corporation and others.
+ * Copyright (c) 2002, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,13 +26,13 @@ import com.ibm.tx.TranConstants;
 import com.ibm.tx.config.ConfigurationProviderManager;
 import com.ibm.tx.jta.XAResourceFactory;
 import com.ibm.tx.jta.XAResourceNotAvailableException;
-import com.ibm.tx.util.logging.FFDCFilter;
-import com.ibm.tx.util.logging.Tr;
-import com.ibm.tx.util.logging.TraceComponent;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.Transaction.JTA.JTAResource;
 import com.ibm.ws.Transaction.JTA.Util;
 import com.ibm.ws.Transaction.JTA.XAReturnCodeHelper;
 import com.ibm.ws.Transaction.JTA.XARminst;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.recoverylog.spi.RecoverableUnit;
 import com.ibm.ws.recoverylog.spi.RecoverableUnitSection;
 import com.ibm.ws.recoverylog.spi.RecoveryLog;
@@ -633,8 +633,8 @@ public class XARecoveryData extends PartnerLogData {
      * their bqual. Assumes that all Xids are XidImpls.
      *
      * @param xidList A list of XidImpls.
-     * @param cruuid The cruuid to filter.
-     * @param epoch The epoch number to filter.
+     * @param cruuid  The cruuid to filter.
+     * @param epoch   The epoch number to filter.
      * @return An ArrayList of XidImpl objects.
      */
     protected ArrayList filterXidsByCruuidAndEpoch(ArrayList xidList,
@@ -680,7 +680,7 @@ public class XARecoveryData extends PartnerLogData {
      * service, and tries to match the given javax.transaction.xa.Xid
      * with one of them.
      *
-     * @param ourXid The javax.transaction.xa.Xid we are trying to match.
+     * @param ourXid    The javax.transaction.xa.Xid we are trying to match.
      * @param knownXids The array of Xids that are possible matches.
      * @return true if we find a match, false if not.
      */

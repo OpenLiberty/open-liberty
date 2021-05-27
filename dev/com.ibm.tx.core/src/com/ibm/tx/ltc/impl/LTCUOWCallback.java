@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 IBM Corporation and others.
+ * Copyright (c) 2009, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,15 +8,14 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-
 package com.ibm.tx.ltc.impl;
 
 import com.ibm.tx.TranConstants;
-import com.ibm.tx.util.logging.FFDCFilter;
-import com.ibm.tx.util.logging.Tr;
-import com.ibm.tx.util.logging.TraceComponent;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
 import com.ibm.ws.LocalTransaction.LocalTransactionCurrent;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.uow.UOWScope;
 import com.ibm.ws.uow.UOWScopeCallback;
 import com.ibm.ws.uow.UOWScopeLTCAware;
@@ -116,7 +115,7 @@ public class LTCUOWCallback implements UOWScopeCallback // Defect 130321
 
             // Reset the thread level data each time through so we can detect
             // that LTC was ended and what its boundary was on the post begin
-            // callback. 
+            // callback.
             // RTC 174266: set the context to null in all cases where the ltc is not null.
             _beginContext.set(null);
 
@@ -181,14 +180,11 @@ public class LTCUOWCallback implements UOWScopeCallback // Defect 130321
             if (ltcCompleted != null) {
                 final byte ltcData = ltcCompleted.byteValue();
 
-                final boolean asScoped = (LocalTranCoordImpl.BOUNDARY_ACTIVITYSESSION.byteValue() ==
-                                (ltcData & LocalTranCoordImpl.LTC_BOUNDARY_BIT));
+                final boolean asScoped = (LocalTranCoordImpl.BOUNDARY_ACTIVITYSESSION.byteValue() == (ltcData & LocalTranCoordImpl.LTC_BOUNDARY_BIT));
 
-                final boolean unresActionIsCommit =
-                                ((ltcData & LocalTranCoordImpl.LTC_UNRESOLVED_ACTION_BIT) == LocalTranCoordImpl.LTC_UNRESOLVED_ACTION_BIT);
+                final boolean unresActionIsCommit = ((ltcData & LocalTranCoordImpl.LTC_UNRESOLVED_ACTION_BIT) == LocalTranCoordImpl.LTC_UNRESOLVED_ACTION_BIT);
 
-                final boolean resolverIsCAB =
-                                ((ltcData & LocalTranCoordImpl.LTC_RESOLVER_BIT) == LocalTranCoordImpl.LTC_RESOLVER_BIT);
+                final boolean resolverIsCAB = ((ltcData & LocalTranCoordImpl.LTC_RESOLVER_BIT) == LocalTranCoordImpl.LTC_RESOLVER_BIT);
 
                 if ((ltcData & LocalTranCoordImpl.LTC_SHAREABLE_BIT) == LocalTranCoordImpl.LTC_SHAREABLE_BIT)
                     _ltCurrent.beginShareable(asScoped, unresActionIsCommit, resolverIsCAB);
@@ -260,14 +256,11 @@ public class LTCUOWCallback implements UOWScopeCallback // Defect 130321
         if (completedLTCBoundary != null) {
             final byte ltcData = completedLTCBoundary.byteValue();
 
-            final boolean asScoped = (LocalTranCoordImpl.BOUNDARY_ACTIVITYSESSION.byteValue() ==
-                            (ltcData & LocalTranCoordImpl.LTC_BOUNDARY_BIT));
+            final boolean asScoped = (LocalTranCoordImpl.BOUNDARY_ACTIVITYSESSION.byteValue() == (ltcData & LocalTranCoordImpl.LTC_BOUNDARY_BIT));
 
-            final boolean unresActionIsCommit =
-                            ((ltcData & LocalTranCoordImpl.LTC_UNRESOLVED_ACTION_BIT) == LocalTranCoordImpl.LTC_UNRESOLVED_ACTION_BIT);
+            final boolean unresActionIsCommit = ((ltcData & LocalTranCoordImpl.LTC_UNRESOLVED_ACTION_BIT) == LocalTranCoordImpl.LTC_UNRESOLVED_ACTION_BIT);
 
-            final boolean resolverIsCAB =
-                            ((ltcData & LocalTranCoordImpl.LTC_RESOLVER_BIT) == LocalTranCoordImpl.LTC_RESOLVER_BIT);
+            final boolean resolverIsCAB = ((ltcData & LocalTranCoordImpl.LTC_RESOLVER_BIT) == LocalTranCoordImpl.LTC_RESOLVER_BIT);
 
             if ((ltcData & LocalTranCoordImpl.LTC_SHAREABLE_BIT) == LocalTranCoordImpl.LTC_SHAREABLE_BIT)
                 _ltCurrent.beginShareable(asScoped, unresActionIsCommit, resolverIsCAB);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2016 IBM Corporation and others.
+ * Copyright (c) 2003, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,11 +11,11 @@
 
 package com.ibm.ws.recoverylog.spi;
 
-import com.ibm.tx.util.logging.Tr;
-import com.ibm.tx.util.logging.TraceComponent;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 
 public class RecoveryLogImpl implements DistributedRecoveryLog {
-    private static final TraceComponent tc = Tr.register(RecoveryLogImpl.class, TraceConstants.TRACE_GROUP, null);
+    private static final TraceComponent tc = Tr.register(RecoveryLogImpl.class, TraceConstants.TRACE_GROUP, TraceConstants.NLS_FILE);
 
     private final MultiScopeLog _recoveryLog;
     private final FailureScope _failureScope;
@@ -28,7 +28,7 @@ public class RecoveryLogImpl implements DistributedRecoveryLog {
      * specify the FailureScope for recovery log being created.
      * </p>
      *
-     * @param recoveryLog MultiScopeLog delegate
+     * @param recoveryLog  MultiScopeLog delegate
      * @param failureScope FailureScope criteria used to filter the delegates
      */
     public RecoveryLogImpl(MultiScopeLog recoveryLog, FailureScope failureScope) {
@@ -176,7 +176,7 @@ public class RecoveryLogImpl implements DistributedRecoveryLog {
     @Override
     public void removeRecoverableUnit(long identity) throws LogClosedException, InvalidRecoverableUnitException, InternalLogException, LogIncompatibleException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "removeRecoverableUnit", new Object[] { new Long(identity), this });
+            Tr.entry(tc, "removeRecoverableUnit", identity, this);
 
         _recoveryLog.removeRecoverableUnit(identity);
 
@@ -190,7 +190,7 @@ public class RecoveryLogImpl implements DistributedRecoveryLog {
     @Override
     public RecoverableUnit lookupRecoverableUnit(long identity) throws LogClosedException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "lookupRecoverableUnit", new Object[] { new Long(identity), this });
+            Tr.entry(tc, "lookupRecoverableUnit", identity, this);
 
         RecoverableUnit runit = _recoveryLog.lookupRecoverableUnit(identity);
 

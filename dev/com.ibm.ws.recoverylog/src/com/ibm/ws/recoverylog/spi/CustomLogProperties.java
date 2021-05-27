@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2013 IBM Corporation and others.
+ * Copyright (c) 2010, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,8 +12,8 @@ package com.ibm.ws.recoverylog.spi;
 
 import java.util.Properties;
 
-import com.ibm.tx.util.logging.Tr;
-import com.ibm.tx.util.logging.TraceComponent;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.wsspi.resource.ResourceFactory;
 
 //------------------------------------------------------------------------------
@@ -31,6 +31,7 @@ import com.ibm.wsspi.resource.ResourceFactory;
  * by its extension id and consists of a set of properties
  * </p>
  */
+@SuppressWarnings("serial")
 public class CustomLogProperties implements LogProperties {
     /**
      * WebSphere RAS TraceComponent registration
@@ -100,14 +101,11 @@ public class CustomLogProperties implements LogProperties {
      * </p>
      *
      * @param logIdentifier The unique RLI value.
-     * @param logName The unique RLN value.
+     * @param logName       The unique RLN value.
      */
     public CustomLogProperties(int logIdentifier, String logName, String pluginId, Properties props) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "CustomLogProperties", new java.lang.Object[] { new Integer(logIdentifier),
-                                                                         logName,
-                                                                         pluginId,
-                                                                         props });
+            Tr.entry(tc, "CustomLogProperties", logIdentifier, logName, pluginId, props);
 
         // Cache the supplied information.
         _logIdentifier = logIdentifier;
@@ -133,7 +131,7 @@ public class CustomLogProperties implements LogProperties {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "logIdentifier", this);
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "logIdentifier", new Integer(_logIdentifier));
+            Tr.exit(tc, "logIdentifier", _logIdentifier);
         return _logIdentifier;
     }
 
@@ -179,18 +177,14 @@ public class CustomLogProperties implements LogProperties {
      * @return Properties custom properties associated with this log implementation
      */
     public Properties properties() {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "propertis", this);
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "properties", _props);
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "propertis", this, _props);
         return _props;
     }
 
     protected int logType() {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "logType", this);
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "logType", new Integer(_logType));
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "logType", this, _logType);
         return _logType;
     }
 
