@@ -15,7 +15,7 @@ src: \
 	fat/src,\
 	test-applications/heritageApp/src,\
 	test-applications/heritageDriver/src,\
-	test-bundles/jdbcHeritageApi/src
+	test-bundles/jdbcHeritage/src
 
 fat.project: true
 
