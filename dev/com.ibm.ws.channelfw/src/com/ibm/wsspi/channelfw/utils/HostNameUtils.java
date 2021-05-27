@@ -49,7 +49,7 @@ public class HostNameUtils {
 
     private static final boolean PREFER_IPV6 = Boolean.getBoolean("java.net.preferIPv6Addresses");
 
-    private static final int HOSTNAME_LOOKUP_TIMEOUT_WARNING_MS = 5000;
+    protected static final int HOSTNAME_LOOKUP_TIMEOUT_WARNING_MS = 5000;
 
     /**
      * Try to determine the hostname of this server, one that is suitable for use in
@@ -327,7 +327,7 @@ public class HostNameUtils {
      * @param runnable PrivilegedAction<T>
      * @return T the result of the PrivilegedAction<T>, or null if the runnable could not complete
      */
-    private static <T> T doPrivilegedWithTimeoutWarning(PrivilegedAction<T> runnable) {
+    protected static <T> T doPrivilegedWithTimeoutWarning(PrivilegedAction<T> runnable) {
         Callable<T> doPrivCall = new Callable<T>() {
             @Override
             public T call() throws Exception {
@@ -344,7 +344,7 @@ public class HostNameUtils {
                 } catch (TimeoutException tex) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "hostname lookup has taken longer than " + HOSTNAME_LOOKUP_TIMEOUT_WARNING_MS
-                                    + " - something might be wrong with the network configuration. Continuing to wait.");
+                                    + " ms - something might be wrong with the network configuration. Continuing to wait.");
                     }
                 } catch (InterruptedException iex) {
                     // interrupted; log a message but continue waiting for lookup completion
