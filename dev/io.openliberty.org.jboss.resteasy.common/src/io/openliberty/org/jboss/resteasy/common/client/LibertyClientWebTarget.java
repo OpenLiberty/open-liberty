@@ -14,8 +14,6 @@ import java.net.URI;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
@@ -76,6 +74,8 @@ public class LibertyClientWebTarget extends ClientWebTarget {
             // incomplete url encountered from uriBuilder.build, we can't act on it
         }
 
+        JAXRSClientConstants.mapProperties(configuration);
+        
         // for timeouts and proxy settings, update ClientBuilder
         Long timeout = toLong(configuration, JAXRSClientConstants.CONNECTION_TIMEOUT);
         if (timeout != null) {
