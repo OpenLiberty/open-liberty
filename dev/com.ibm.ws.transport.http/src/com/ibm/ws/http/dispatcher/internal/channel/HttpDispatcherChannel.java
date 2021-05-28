@@ -54,7 +54,7 @@ public class HttpDispatcherChannel implements InboundChannel, Discriminator {
 
     /**
      * Constructor.
-     * 
+     *
      * @param config
      * @param factory
      */
@@ -119,7 +119,7 @@ public class HttpDispatcherChannel implements InboundChannel, Discriminator {
     protected void decrementActiveConns() {
         int count = this.activeConnections.decrementAndGet();
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Decrement active, current=" + count);
+            Tr.debug(tc, "Decrement active, current=" + count + " quiescing: " + this.quiescing);
         }
         if (0 == count && this.quiescing) {
             signalNoConnections();
@@ -164,6 +164,9 @@ public class HttpDispatcherChannel implements InboundChannel, Discriminator {
      * final chain stop instead of waiting the full quiesce timeout length.
      */
     private void signalNoConnections() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.event(tc, "Entering signalNoConnections");
+        }
         EventEngine events = HttpDispatcher.getEventService();
         if (null == events) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
@@ -185,11 +188,14 @@ public class HttpDispatcherChannel implements InboundChannel, Discriminator {
     @Override
     public void stop(long millisec) throws ChannelException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(tc, "Stop channel: " + this + " time=" + millisec);
+            Tr.event(tc, "Stop channel: " + this + " time=" + millisec + " number of active conns is: " + this.activeConnections.get());
         }
         if (0L < millisec) {
             this.quiescing = true;
             if (0 == this.activeConnections.get()) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(tc, "About to call signalNoConnections: " + this + " time=" + millisec);
+                }
                 // no current connections, notify the final stop can happen now
                 signalNoConnections();
             }
@@ -255,7 +261,7 @@ public class HttpDispatcherChannel implements InboundChannel, Discriminator {
 
     /**
      * Access the Dispatcher configuration information.
-     * 
+     *
      * @return HttpDispatcherConfig
      */
     @Trivial

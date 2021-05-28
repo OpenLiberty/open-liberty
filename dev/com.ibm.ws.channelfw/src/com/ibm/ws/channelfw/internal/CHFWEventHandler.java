@@ -42,7 +42,7 @@ public class CHFWEventHandler implements EventHandler {
 
     /**
      * Activate this component.
-     * 
+     *
      * @param context
      */
     protected void activate(ComponentContext context) {
@@ -51,7 +51,7 @@ public class CHFWEventHandler implements EventHandler {
 
     /**
      * Deactivate this component.
-     * 
+     *
      * @param context
      */
     protected void deactivate(ComponentContext context) {
@@ -65,6 +65,10 @@ public class CHFWEventHandler implements EventHandler {
      */
     @Override
     public void handleEvent(Event event) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.event(tc, "Handle event; event=" + event.getTopic());
+            Thread.currentThread().dumpStack();
+        }
         String topic = event.getTopic();
         if (topic.equalsIgnoreCase(ChannelFramework.EVENT_STOPCHAIN.getName())) {
             String chainName = event.getProperty(ChannelFramework.EVENT_CHAINNAME, String.class);
@@ -83,18 +87,19 @@ public class CHFWEventHandler implements EventHandler {
 
     /**
      * Stop the explicit chain provided.
-     * 
+     *
      * @param name
      * @param event
      */
     private void stopChain(String name, Event event) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "Stop chain event; chain=" + name);
+            Thread.currentThread().dumpStack();
         }
         ChannelFramework cf = ChannelFrameworkFactory.getChannelFramework();
         try {
             if (cf.isChainRunning(name)) {
-                // stop the chain now.. 
+                // stop the chain now..
                 cf.stopChain(name, 0L);
             }
         } catch (Exception e) {
@@ -107,20 +112,25 @@ public class CHFWEventHandler implements EventHandler {
 
     /**
      * Stop chains using the provided channel.
-     * 
+     *
      * @param name
      * @param event
      */
     private void stopChannel(String name, Event event) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "Stop chain event; channel=" + name);
+            Thread.currentThread().dumpStack();
         }
         ChannelFramework cf = ChannelFrameworkFactory.getChannelFramework();
         try {
             ChainData[] chains = cf.getAllChains(name);
             for (ChainData chain : chains) {
+
                 if (cf.isChainRunning(chain)) {
-                    // stop the chain now.. 
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                        Tr.event(tc, "Chain running; channel=" + name);
+                    }
+                    // stop the chain now..
                     cf.stopChain(chain, 0);
                 }
             }
