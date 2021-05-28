@@ -461,7 +461,6 @@ public class PolicyAnnotationListener implements FactoryBeanListener {
 
     private Element loadRemotePolicy(String uri, String defName) {
         ExtendedURIResolver resolver = new ExtendedURIResolver();
-        // InputSource src = resolver.resolve(uri, "classpath:"); Liberty change: line removed
         // Liberty change: try/catch block below added
         InputSource src = null;
         try {

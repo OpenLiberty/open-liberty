@@ -84,11 +84,10 @@ public class Fault extends UncheckedException {
 
     public Fault(Throwable t) {
         super(t);
-        // Liberty change:
-        if (super.getMessage() != null) {// Liberty change: line added
-            message = super.getMessage();// Liberty change: line added
+        if (super.getMessage() != null) {// Liberty change: start
+            message = super.getMessage();
         } else {
-            message = getMessage(t); // Liberty change: line added
+            message = getMessage(t);    // Liberty change: end 
         }
         code = FAULT_CODE_SERVER;
     }

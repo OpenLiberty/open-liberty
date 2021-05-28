@@ -34,7 +34,7 @@ import org.apache.cxf.message.Attachment;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 
-@Trivial  // Liberty change: line added
+@Trivial  // Liberty change: line added 
 public class LazyAttachmentCollection
     implements Collection<Attachment> {
     private AttachmentDeserializer deserializer;
@@ -54,7 +54,7 @@ public class LazyAttachmentCollection
     private void loadAll() {
         try {
             Attachment a = deserializer.readNext();
-            int count = 0; 
+            int count = 0;
             while (a != null) {
                 attachments.add(a);
                 // Apache CXF does not restrict the number of message attachments
@@ -93,7 +93,6 @@ public class LazyAttachmentCollection
     public Iterator<Attachment> iterator() {
         return new Iterator<Attachment>() {
             int current;
-            // boolean removed; Liberty change: line removed
 
             public boolean hasNext() {
                 if (attachments.size() > current) {
@@ -116,16 +115,11 @@ public class LazyAttachmentCollection
             public Attachment next() {
                 Attachment a = attachments.get(current);
                 current++;
-                // removed = false; Liberty change: line removed
                 return a;
             }
 
             public void remove() {
-                // if (removed) { Liberty change: if block is removed
-                //     throw new IllegalStateException();
-                // }
-                attachments.remove(--current);  //Liberty change: --current replaced by current
-                // removed = true;  Liberty change: line removed
+                attachments.remove(--current);
             }
 
         };

@@ -227,7 +227,7 @@ public class MessageImpl extends StringMapImpl implements Message {
             contextCache = null;
         }
     }
-    // Access modifier of the method below is increased to public from default
+    // Liberty change: Access modifier of the method below is increased to public from default
     public void setContextualProperty(String key, Object v) {
         if (contextCache != null && !containsKey(key)) {
             contextCache.put(key, v);

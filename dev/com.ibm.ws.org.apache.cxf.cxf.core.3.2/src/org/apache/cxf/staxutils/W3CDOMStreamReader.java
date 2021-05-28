@@ -36,12 +36,9 @@ import org.w3c.dom.ProcessingInstruction;
 import org.w3c.dom.Text;
 import org.w3c.dom.TypeInfo;
 
-import com.ibm.websphere.ras.annotation.Trivial;
-
 import org.apache.cxf.helpers.DOMUtils;
 
 public class W3CDOMStreamReader extends AbstractDOMStreamReader<Node, Node> {
-
     private Node content;
 
     private Document document;
@@ -88,7 +85,12 @@ public class W3CDOMStreamReader extends AbstractDOMStreamReader<Node, Node> {
         return document;
     }
     public String getSystemId() {
-        return sysId == null ? document.getDocumentURI() : sysId;
+        try {
+            return sysId == null ? document.getDocumentURI() : sysId;
+        } catch (Throwable ex) {
+            //ignore, probably not DOM level 3
+        }
+        return sysId;
     }
     /**
      * Find name spaces declaration in atrributes and move them to separate
@@ -403,7 +405,7 @@ public class W3CDOMStreamReader extends AbstractDOMStreamReader<Node, Node> {
             if (o instanceof Location) {
                 return (Location)o;
             }
-        } catch (Throwable ex) {  // Liberty change: Throwable is replaced with Exception
+        } catch (Throwable ex) {
             //ignore, probably not DOM level 3
         }
         return super.getLocation();

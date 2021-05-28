@@ -113,7 +113,6 @@ public class PolicyVerificationInInterceptor extends AbstractPolicyInterceptor {
             }
         }
         try {
-            // List<List<Assertion>> usedAlternatives = aim.checkEffectivePolicy(effectivePolicy.getPolicy());  Liberty change: line removed
             // Liberty change: 7 lines below are added
             List<List<Assertion>> usedAlternatives = null;
             if (ignoreUnsupportedPolicy) {

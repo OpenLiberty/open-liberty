@@ -160,9 +160,7 @@ public class ServiceImpl extends ServiceDelegate {
 
         if (url != null) {
             try {
-                // Liberty change: log line below is added
-                //LOG.log(Level.FINE, "Calling initializePorts for service: " + serviceName + " and WSDL: " + wsdlURL);
-                LOG.log(Level.INFO, "Calling initializePorts for service: " + serviceName + " and WSDL: " + wsdlURL);
+                LOG.log(Level.FINE, "Calling initializePorts for service: " + serviceName + " and WSDL: " + wsdlURL);
                 initializePorts();
             } catch (ServiceConstructionException e) {
                 throw new WebServiceException(e);
@@ -286,7 +284,7 @@ public class ServiceImpl extends ServiceDelegate {
         //When the dispatch is created from EPR, the EPR's address will be set in portInfo
         PortInfoImpl portInfo = getPortInfo(portName);
         if (portInfo != null
-            && portInfo.getAddress() != null 
+            && portInfo.getAddress() != null
             && !portInfo.getAddress().equals(ei.getAddress())) {
             ei.setAddress(portInfo.getAddress());
         }
@@ -513,8 +511,7 @@ public class ServiceImpl extends ServiceDelegate {
 
             }
         });
-     // Liberty Change End
-         proxyFac.create();
+        proxyFac.create();
 
         // Configure the Service
         Service service = serviceFactory.getService();

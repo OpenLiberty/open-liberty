@@ -12,8 +12,6 @@
 
 cxfVersion=3.4.3
 
-cxfVersion=3.4.1
-
 -includeresource: \
    @${repo;org.apache.cxf:cxf-rt-ws-policy;${cxfVersion};EXACT}!/!*-INF/*, \
    META-INF/cxf=resources/META-INF/cxf, \

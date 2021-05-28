@@ -20,14 +20,12 @@
 package org.apache.cxf.message;
 
 import java.lang.reflect.Method;
+import java.net.HttpURLConnection;
 import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 import org.w3c.dom.Node;
-
-import com.ibm.websphere.ras.annotation.Sensitive;
-import com.ibm.websphere.ras.annotation.Trivial;
 
 import org.apache.cxf.common.logging.LogUtils;
 import org.apache.cxf.common.util.PropertyUtils;
@@ -45,7 +43,6 @@ public final class MessageUtils {
     /**
      * Prevents instantiation.
      */
-    @Trivial  // Liberty change: line added
     private MessageUtils() {
     }
 
@@ -55,13 +52,12 @@ public final class MessageUtils {
      * @param message the current Message
      * @return true if the message direction is outbound
      */
-    public static boolean isOutbound(@Sensitive Message message) {  // Liberty change: sensitive annotation is added to parameter
-        LOG.entering("MessageUtils", "isOutbound"); // Liberty change: line added
+    public static boolean isOutbound(Message message) {
         if (message == null) {
             return false;
         }
+
         Exchange exchange = message.getExchange();
-        LOG.exiting("MessageUtils", "isOutbound"); // Liberty change: line added
         return exchange != null
                && (message == exchange.getOutMessage() || message == exchange.getOutFaultMessage());
     }
@@ -72,7 +68,6 @@ public final class MessageUtils {
      * @param message the current Message
      * @return true if the message is a fault
      */
-    @Trivial  // Liberty change: line added
     public static boolean isFault(Message message) {
         return message != null
                && message.getExchange() != null
@@ -87,7 +82,6 @@ public final class MessageUtils {
      * @param message the fault message
      * @return the FaultMode
      */
-    @Trivial  // Liberty change: line added
     public static FaultMode getFaultMode(Message message) {
         if (message != null
             && message.getExchange() != null
@@ -107,7 +101,7 @@ public final class MessageUtils {
      * @param message the current Message
      * @return true if the current messaging role is that of requestor
      */
-    public static boolean isRequestor(@Sensitive Message message) { // Liberty change: @Sensitive is added to first parameter
+    public static boolean isRequestor(Message message) {
         if (message != null) {
             Boolean requestor = (Boolean) message.get(Message.REQUESTOR_ROLE);
             return requestor != null && requestor;
@@ -121,9 +115,7 @@ public final class MessageUtils {
      * @param message the current message
      * @return true if the current messags is a partial response
      */
-    public static boolean isPartialResponse(@Sensitive Message message) { // Liberty change: @Sensitive is added to first parameter
-        LOG.entering("MessageUtils", "isPartialResponse");  // Liberty change: line added
-        LOG.exiting("MessageUtils", "isPartialResponse");   // Liberty change: line added
+    public static boolean isPartialResponse(Message message) {
         return message != null && Boolean.TRUE.equals(message.get(Message.PARTIAL_RESPONSE_MESSAGE));
     }
 
@@ -134,7 +126,6 @@ public final class MessageUtils {
      * @param message the current message
      * @return true if the current messags is a partial empty response
      */
-    @Trivial  // Liberty change: line added
     public static boolean isEmptyPartialResponse(Message message) {
         return message != null && Boolean.TRUE.equals(message.get(Message.EMPTY_PARTIAL_RESPONSE_MESSAGE));
     }
@@ -143,29 +134,26 @@ public final class MessageUtils {
      * Returns true if a value is either the String "true" (regardless of case)  or Boolean.TRUE.
      * @param value
      * @return true if value is either the String "true" or Boolean.TRUE
+     * @deprecated replaced by {@link #PropertyUtils#isTrue(Object)}
      */
     @Deprecated
-    @Trivial  // Liberty change: line added
     public static boolean isTrue(Object value) {
         return PropertyUtils.isTrue(value);
     }
 
-    public static boolean getContextualBoolean(@Sensitive Message m, String key) {  // Liberty change: @Sensitive is added to first parameter
+    public static boolean getContextualBoolean(Message m, String key) {
         return getContextualBoolean(m, key, false);
     }
     public static boolean getContextualBoolean(Message m, String key, boolean defaultValue) {
         if (m != null) {
-            LOG.entering("MessageUtils", "getContextualBoolean"); // Liberty change: line added
             Object o = m.getContextualProperty(key);
             if (o != null) {
                 return PropertyUtils.isTrue(o);
             }
         }
-        LOG.exiting("MessageUtils", "getContextualBoolean"); // Liberty change: line added
         return defaultValue;
     }
 
-    @Trivial  // Liberty change: line added
     public static int getContextualInteger(Message m, String key, int defaultValue) {
         if (m != null) {
             Object o = m.getContextualProperty(key);
@@ -197,7 +185,6 @@ public final class MessageUtils {
     /**
      * Returns true if the underlying content format is a W3C DOM or a SAAJ message.
      */
-    @Trivial  // Liberty change: line added
     public static boolean isDOMPresent(Message m) {
         return m != null && m.getContent(Node.class) != null;
         /*
@@ -210,6 +197,21 @@ public final class MessageUtils {
         */
     }
 
+    // JAX-RS is using this native CXF 3.x method
+    public static Optional<Method> getTargetMethod(Message m) {
+        Method method;
+        BindingOperationInfo bop = m.getExchange().getBindingOperationInfo();
+        if (bop != null) {
+            MethodDispatcher md = (MethodDispatcher) m.getExchange().getService().get(MethodDispatcher.class.getName());
+            method = md.getMethod(bop);
+        } else {
+            // See please JAXRSInInterceptor#RESOURCE_METHOD for the reference
+            method = (Method) m.get("org.apache.cxf.resource.method");
+        }
+        return Optional.ofNullable(method);
+    }
+
+    // Liberty change: method below is added
     public static Method getTargetMethod(Message m, Supplier<RuntimeException> exceptionSupplier) {
         BindingOperationInfo bop = m.getExchange().getBindingOperationInfo();
         if (bop != null) {
@@ -222,17 +224,54 @@ public final class MessageUtils {
         }
         throw exceptionSupplier.get();
     }
-    
-    // JAX-RS is using this native CXF 3.x method
-    public static Optional<Method> getTargetMethod(Message m) {
-        Method method;
-        BindingOperationInfo bop = m.getExchange().getBindingOperationInfo();
-        if (bop != null) {
-            MethodDispatcher md = (MethodDispatcher) m.getExchange().getService().get(MethodDispatcher.class.getName());
-            method = md.getMethod(bop);
-        } else {
-            method = (Method) m.get("org.apache.cxf.resource.method");
+
+    /**
+     * Gets the response code from the message and tries to deduct one if it
+     * is not set yet.
+     * @param message message to get response code from
+     * @return response code (or deducted value assuming success)
+     */
+    public static int getReponseCodeFromMessage(Message message) {
+        Integer i = (Integer)message.get(Message.RESPONSE_CODE);
+        if (i != null) {
+            return i.intValue();
         }
-        return Optional.ofNullable(method);
+        int code = hasNoResponseContent(message) ? HttpURLConnection.HTTP_ACCEPTED : HttpURLConnection.HTTP_OK;
+        // put the code in the message so that others can get it
+        message.put(Message.RESPONSE_CODE, code);
+        return code;
     }
+
+    /**
+     * Determines if the current message has no response content.
+     * The message has no response content if either:
+     *  - the request is oneway and the current message is no partial
+     *    response or an empty partial response.
+     *  - the request is not oneway but the current message is an empty partial
+     *    response.
+     * @param message
+     * @return
+     */
+    public static boolean hasNoResponseContent(Message message) {
+        final boolean ow = isOneWay(message);
+        final boolean pr = MessageUtils.isPartialResponse(message);
+        final boolean epr = MessageUtils.isEmptyPartialResponse(message);
+
+        //REVISIT may need to provide an option to choose other behavior?
+        // old behavior not suppressing any responses  => ow && !pr
+        // suppress empty responses for oneway calls   => ow && (!pr || epr)
+        // suppress additionally empty responses for decoupled twoway calls =>
+        return (ow && !pr) || epr;
+    }
+
+    /**
+     * Checks if the message is oneway or not
+     * @param message the message under consideration
+     * @return true if the message has been marked as oneway
+     */
+    public static boolean isOneWay(Message message) {
+        final Exchange ex = message.getExchange();
+        return ex != null && ex.isOneWay();
+    }
+
 }

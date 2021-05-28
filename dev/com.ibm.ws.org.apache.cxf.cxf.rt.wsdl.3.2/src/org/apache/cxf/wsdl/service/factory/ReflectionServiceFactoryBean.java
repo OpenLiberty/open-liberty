@@ -144,11 +144,6 @@ public class ReflectionServiceFactoryBean extends org.apache.cxf.service.factory
     public static final String METHOD_ANNOTATIONS = "method.return.annotations";
     public static final String PARAM_ANNOTATION = "parameter.annotations";
     private static final Logger LOG = LogUtils.getL7dLogger(ReflectionServiceFactoryBean.class);
-/*  Liberty change: 2 private field below are removed
-    private static final boolean DO_VALIDATE = SystemPropertyAction.getProperty("cxf.validateServiceSchemas", "false")
-            .equals("true");
-
-    private static Class<? extends DataBinding> defaultDatabindingClass;  Liberty change: end */
 
     protected String wsdlURL;
 
@@ -163,15 +158,7 @@ public class ReflectionServiceFactoryBean extends org.apache.cxf.service.factory
     private QName serviceName;
     private Invoker invoker;
     private Executor executor;
-    private List<String> ignoredClasses = new ArrayList<>(); /*
-    (Arrays.asList( Liberty change: List population is moved to
-            "java.lang.Object",
-            "java.lang.Throwable",
-            "org.omg.CORBA_2_3.portable.ObjectImpl",
-            "org.omg.CORBA.portable.ObjectImpl",
-            "javax.ejb.EJBObject",
-            "javax.rmi.CORBA.Stub"
-        )); */
+    private List<String> ignoredClasses = new ArrayList<>();
     private List<Method> ignoredMethods = new ArrayList<>();
     private MethodDispatcher methodDispatcher = new SimpleMethodDispatcher();
     private Boolean wrappedStyle;
@@ -228,9 +215,6 @@ public class ReflectionServiceFactoryBean extends org.apache.cxf.service.factory
             obj = "org.apache.cxf.jaxb.JAXBDataBinding";
         } // Liberty change: end
         try {
-/*            if (obj == null && cls == null) {
-                cls = getJAXBClass();
-            } */
             if (obj instanceof String) {
                 cls = ClassLoaderUtils.loadClass(obj.toString(), getClass(), DataBinding.class);
             } else if (obj instanceof Class) {
@@ -247,15 +231,6 @@ public class ReflectionServiceFactoryBean extends org.apache.cxf.service.factory
             throw new ServiceConstructionException(e);
         }
     }
-/*  Liberty change: method below is removed
-    private static synchronized Class<? extends DataBinding> getJAXBClass() throws ClassNotFoundException {
-        if (defaultDatabindingClass == null) {
-            defaultDatabindingClass = ClassLoaderUtils.loadClass("org.apache.cxf.jaxb.JAXBDataBinding",
-                                                                 ReflectionServiceFactoryBean.class,
-                                                                 DataBinding.class);
-        }
-        return defaultDatabindingClass;
-    } */
 
     public void reset() {
         if (!dataBindingSet) {
@@ -287,7 +262,7 @@ public class ReflectionServiceFactoryBean extends org.apache.cxf.service.factory
             getService().setDataBinding(getDataBinding());
         }
 
-        MethodDispatcher m = getMethodDispatcher(); // Liberty change: line added
+        MethodDispatcher m = getMethodDispatcher(); // Liberty change:
         getService().put(MethodDispatcher.class.getName(), m);  // Liberty change: getMethodDispatcher() is replaced by m
         createEndpoints();
 
@@ -535,14 +510,12 @@ public class ReflectionServiceFactoryBean extends org.apache.cxf.service.factory
     }
 
     protected void initializeServiceModel() {
-      String wsdlurl = getWsdlURL();  // Liberty change: line added
+      String wsdlurl = getWsdlURL();  // Liberty change:
         if (isFromWsdl()) {
             buildServiceFromWSDL(wsdlurl); // Liberty change: getWsdlURL() method is replaced by wsdlurl
         } else if (getServiceClass() != null) {
             buildServiceFromClass();
-        } //else {  Liberty change: else block is removed
-        //     throw new ServiceConstructionException(new Message("NO_WSDL_NO_SERVICE_CLASS_PROVIDED", LOG, getWsdlURL()));
-        // }
+        }
 
         if (isValidate()) {
             validateServiceModel();
@@ -792,8 +765,8 @@ public class ReflectionServiceFactoryBean extends org.apache.cxf.service.factory
         setIndexes(o.getInput());
         sendEvent(Event.OPERATIONINFO_IN_MESSAGE_SET, origOp, method, origOp.getInput());
         // Initialize return type
-        Class<?> paramType = method.getReturnType();      // Liberty change: line added
-        Type genericType = method.getGenericReturnType(); // Liberty change: line added
+        Class<?> paramType = method.getReturnType();      // Liberty change:
+        Type genericType = method.getGenericReturnType(); // Liberty change:
         if (o.hasOutput()
             // Liberty change: method.getReturnType() and method.getGenericReturnType() are replaced by paramType and  genericType below
             && !initializeParameter(o, method, -1, method.getReturnType(), method.getGenericReturnType())) {
@@ -846,15 +819,6 @@ public class ReflectionServiceFactoryBean extends org.apache.cxf.service.factory
             if (part == null && isHeader && o.isUnwrapped()) {
                 part = ((UnwrappedOperationInfo)o).getWrappedOperation().getInput().getMessagePart(name);
                 boolean add = true;
-                /* Liberty change: if block below is removed
-                if (part == null) {
-                    QName name2 = this.getInParameterName(o, method, i);
-                    part = o.getInput().getMessagePart(name2);
-                    if (part != null) {
-                        add = false;
-                        name = name2;
-                    }
-                } Liberty change: end */
                 if (part != null) {
                     //header part in wsdl, need to get this mapped in to the unwrapped form
                     if (paraAnnos != null) {
@@ -868,10 +832,6 @@ public class ReflectionServiceFactoryBean extends org.apache.cxf.service.factory
                         inf.setConcreteName(part.getConcreteName());
                         inf.setXmlSchema(part.getXmlSchema());
                         part = inf;
-                        /* Liberty change: if block below is removed
-                        if (paraAnnos != null) {
-                            part.setProperty(PARAM_ANNOTATION, paraAnnos);
-                        } Liberty change: end */
                     }
                     part.setProperty(HEADER, Boolean.TRUE);
                 }
@@ -897,14 +857,6 @@ public class ReflectionServiceFactoryBean extends org.apache.cxf.service.factory
         } else if (isIn && isOut) {
             QName name = getInPartName(o, method, i);
             part = o.getInput().getMessagePart(name);
-            /* Liberty change: if block below is removed
-            if (part == null && isHeader && o.isUnwrapped()) {
-                QName name2 = this.getInParameterName(o, method, i);
-                part = o.getInput().getMessagePart(name2);
-                if (part != null) {
-                    name = name2;
-                }
-            } Liberty change: end */
             if (part == null && this.isFromWsdl()) {
                 part = o.getInput().getMessagePartByIndex(i);
             }
@@ -968,10 +920,7 @@ public class ReflectionServiceFactoryBean extends org.apache.cxf.service.factory
 
             QName name = getFaultName(o.getInterface(), o, exClass, beanClass);
 
-            // for (Entry<FaultInfo, List<MessagePartInfo>> entry : mpiMap.entrySet()) {  Liberty change: line removed
-            for (FaultInfo fi : o.getFaults()) {  // Liberty change: line added
-                // FaultInfo fi = entry.getKey(); Liberty change: line removed
-                // List<MessagePartInfo> mpis = entry.getValue(); Liberty change: line removed
+            for (FaultInfo fi : o.getFaults()) {  // Liberty change:
                 List<MessagePartInfo> mpis = fi.getMessageParts();
                 if (mpis.size() != 1) {
                     Message message = new Message("NO_FAULT_PART", LOG, fi.getFaultName());
@@ -1377,15 +1326,14 @@ public class ReflectionServiceFactoryBean extends org.apache.cxf.service.factory
         for (MessagePartInfo mpi : unwrappedMessage.getMessageParts()) {
             el = new XmlSchemaElement(schema, Boolean.TRUE.equals(mpi.getProperty(HEADER)));
             // We hope that we can't have parts that different only in namespace.
-            el.setName(mpi.getName().getLocalPart()); // Liberty change: line added
+            el.setName(mpi.getName().getLocalPart()); // Liberty change:
             Map<Class<?>, Boolean> jaxbAnnoMap = getJaxbAnnoMap(mpi);
             if (mpi.isElement()) {
                 addImport(schema, mpi.getElementQName().getNamespaceURI());
-                el.setName(null);   // Liberty change: line added
+                el.setName(null);   // Liberty change:
                 XmlSchemaUtils.setElementRefName(el, mpi.getElementQName());
             } else {
                 // We hope that we can't have parts that different only in namespace.
-                // el.setName(mpi.getName().getLocalPart());  Liberty change: line removed
                 if (mpi.getTypeQName() != null && !jaxbAnnoMap.containsKey(XmlList.class)) {
                     el.setSchemaTypeName(mpi.getTypeQName());
                     addImport(schema, mpi.getTypeQName().getNamespaceURI());
@@ -2512,8 +2460,7 @@ public class ReflectionServiceFactoryBean extends org.apache.cxf.service.factory
     public void setWsdlURL(String wsdlURL) {
         // create a unique string so if its an interned string (like
         // from an annotation), caches will clear
-        // this.wsdlURL = new String(wsdlURL);  Liberty change: line removed
-        this.wsdlURL = wsdlURL.toString();  // Liberty change: line added
+        this.wsdlURL = wsdlURL.toString();  // Liberty change:
     }
 
     public void setWsdlURL(URL wsdlURL) {
@@ -2641,7 +2588,6 @@ public class ReflectionServiceFactoryBean extends org.apache.cxf.service.factory
     }
 
     private boolean isValidate() {
-        // return validate || DO_VALIDATE Liberty change: line removed
         return validate || SystemPropertyAction.getProperty("cxf.validateServiceSchemas", "false").equals("true");  // Liberty change: line is added
     }
 

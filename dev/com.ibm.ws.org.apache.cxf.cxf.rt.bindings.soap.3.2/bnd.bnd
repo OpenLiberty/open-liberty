@@ -12,10 +12,8 @@
 
 cxfVersion=3.4.3
 
-cxfVersion=3.4.1
-
 -includeresource: \
-   @${repo;org.apache.cxf:cxf-rt-bindings-soap;${cxfVersion}}!/!META-INF/*,\
+   @${repo;org.apache.cxf:cxf-rt-bindings-soap;${cxfVersion};EXACT}!/!META-INF/*,\
    org/apache/cxf=${bin}/org/apache/cxf,\
    META-INF=resources/META-INF
 

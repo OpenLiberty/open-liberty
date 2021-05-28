@@ -340,9 +340,6 @@ public class EndpointImpl extends javax.xml.ws.Endpoint
                 EndpointInfo endpointInfo = serv.getEndpoint().getEndpointInfo();
                 if (endpointInfo.getAddress() == null || !endpointInfo.getAddress().contains(addr)) {
                     endpointInfo.setAddress(addr);
-                // Liberty change: 2 lines below are removed
-                // }
-                // if (publishedEndpointUrl != null) { // Liberty change: end
                     endpointInfo.setProperty(WSDLGetUtils.PUBLISHED_ENDPOINT_URL, publishedEndpointUrl);
                 }
                 if (publishedEndpointUrl != null && wsdlLocation != null) {

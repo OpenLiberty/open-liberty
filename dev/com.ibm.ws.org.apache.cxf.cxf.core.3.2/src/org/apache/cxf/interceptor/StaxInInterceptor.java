@@ -149,7 +149,6 @@ public class StaxInInterceptor extends AbstractPhaseInterceptor<Message> {
                     }
                 }
             }
-            // xreader = StaxUtils.configureReader(xreader, message);   Liberty change: line is removed
         } catch (XMLStreamException e) {
             throw new Fault(new org.apache.cxf.common.i18n.Message("STREAM_CREATE_EXC",
                                                                    LOG,

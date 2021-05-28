@@ -48,6 +48,7 @@ import org.apache.cxf.configuration.jsse.TLSClientParameters;
  * This HttpsURLConnectionFactory implements the HttpURLConnectionFactory
  * for using the given SSL Policy to configure TLS connections for "https:"
  * URLs.
+ * Liberty change: lastTlsHash is removed
  */
 public class HttpsURLConnectionFactory {
 

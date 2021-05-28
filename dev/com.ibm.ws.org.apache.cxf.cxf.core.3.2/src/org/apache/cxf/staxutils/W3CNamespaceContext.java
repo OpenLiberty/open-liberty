@@ -65,14 +65,6 @@ public class W3CNamespaceContext implements NamespaceContext {
         if (e == null) {
             return null;
         }
-/*      Liberty change: if block below is removed
-        // check the outside namespace URI
-        if (outNamespaceContext != null) {
-            String result = outNamespaceContext.getNamespaceURI(name);
-            if (result != null) {
-                return result;
-            }
-        } Liberty change: end */
 
         Attr attr = e.getAttributeNode(name);
         if (attr == null) {
@@ -95,14 +87,6 @@ public class W3CNamespaceContext implements NamespaceContext {
         if (e == null) {
             return null;
         }
-        /*      Liberty change: if block below is removed
-        // check the outside namespace URI
-        if (outNamespaceContext != null) {
-            String result = outNamespaceContext.getPrefix(uri);
-            if (result != null) {
-                return result;
-            }
-        } Liberty change: end */
 
         NamedNodeMap attributes = e.getAttributes();
         if (attributes != null) {

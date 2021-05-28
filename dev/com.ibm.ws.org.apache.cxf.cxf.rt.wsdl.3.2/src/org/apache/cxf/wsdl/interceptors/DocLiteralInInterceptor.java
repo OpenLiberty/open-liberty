@@ -162,7 +162,6 @@ public class DocLiteralInInterceptor extends AbstractInDatabindingInterceptor {
 
                 if (xmlReader == null || !StaxUtils.toNextElement(xmlReader)) {
                     // empty input
-                    // getBindingOperationForEmptyBody(operations, ep, exchange); Liberty change: removed line
                     // Liberty change: 11 lines added below (for loop)
                     // TO DO : check duplicate operation with no input
                     for (OperationInfo op : operations) {
@@ -216,7 +215,6 @@ public class DocLiteralInInterceptor extends AbstractInDatabindingInterceptor {
                         // webservice provider does not need to ensure size
                         parameters.add(o);
                     } else {
-                        // parameters.put(p, o); Liberty change: removed line
                         parameters = this.checkValidSoap(parameters, p, o); // Liberty change: added line
                     }
 
@@ -249,22 +247,6 @@ public class DocLiteralInInterceptor extends AbstractInDatabindingInterceptor {
         }
         return parameters;
     } // Liberty change: end
-
-    /* Liberty change: getBindingOperationForEmptyBody method below is removed
-    private void getBindingOperationForEmptyBody(Collection<OperationInfo> operations, Endpoint ep, Exchange exchange) {
-        // TO DO : check duplicate operation with no input and also check if the action matches
-        for (OperationInfo op : operations) {
-            MessageInfo bmsg = op.getInput();
-            int bPartsNum = bmsg.getMessagePartsNumber();
-            if (bPartsNum == 0
-                || (bPartsNum == 1
-                    && Constants.XSD_ANYTYPE.equals(bmsg.getFirstMessagePart().getTypeQName()))) {
-                BindingOperationInfo boi = ep.getEndpointInfo().getBinding().getOperation(op);
-                exchange.put(BindingOperationInfo.class, boi);
-                exchange.setOneWay(op.isOneWay());
-            }
-        }
-    }  Liberty change: end */
 
     private BindingOperationInfo getBindingOperationInfo(DepthXMLStreamReader xmlReader, Exchange exchange,
                                                          BindingOperationInfo bop, boolean client) {

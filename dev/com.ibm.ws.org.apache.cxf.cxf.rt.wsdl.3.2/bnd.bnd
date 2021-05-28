@@ -13,8 +13,6 @@
 instrument.classesIncludes: org/cxf/apache/**/*.class
 cxfVersion=3.4.3
 
-cxfVersion=3.4.1
-
 -includeresource: \
    @${repo;org.apache.cxf:cxf-rt-wsdl;${cxfVersion};EXACT}!/!*-INF/*, \
    META-INF/cxf=resources/META-INF/cxf, \

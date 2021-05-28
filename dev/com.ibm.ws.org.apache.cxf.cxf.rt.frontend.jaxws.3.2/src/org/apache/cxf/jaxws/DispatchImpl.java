@@ -302,7 +302,7 @@ public class DispatchImpl<T> implements Dispatch<T>, BindingProvider {  // Liber
             }
             QName opName = (QName)getRequestContext().get(MessageContext.WSDL_OPERATION);
             boolean findDispatchOp = Boolean.TRUE.equals(getRequestContext().get("find.dispatch.operation")); // Liberty change: added line
-            // boolean hasOpName; Liberty change: removed line
+
             if (opName == null) {
                 opName = isOneWay ? INVOKE_ONEWAY_QNAME : INVOKE_QNAME;
             } else {
@@ -312,33 +312,11 @@ public class DispatchImpl<T> implements Dispatch<T>, BindingProvider {  // Liber
                     addInvokeOperation(opName, isOneWay);
                 }
             }
-/*          Liberty change: removed 7 lines below
-            Holder<T> holder = new Holder<>(obj);
-            opName = calculateOpName(holder, opName, hasOpName);
-            Object[] ret = client.invokeWrapped(opName, holder.value);
-            if (isOneWay || ret == null || ret.length == 0) {
-                return null;
-            }
-            return (T)ret[0]; Liberty change: end */
-/*      Liberty change: the 2 catch blocks below are moved to the end of
-        calculateOpName method that is merged in to this method
-        } catch (IllegalEmptyResponseException ie) {
-            return null;
-        } catch (Exception ex) {
-            throw mapException(ex);
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    private QName calculateOpName(Holder<T> holder, QName opName, boolean hasOpName) throws XMLStreamException {
-        boolean findDispatchOp = Boolean.TRUE.equals(getRequestContext().get("find.dispatch.operation"));
-Liberty change: end */
 
             //CXF-2836 : find the operation for the dispatched object
             // if findDispatchOp is already true, skip the addressing feature lookup.
             // if the addressing feature is enabled, set findDispatchOp to true
             if (!findDispatchOp) {
-            // Source createdSource = null; Liberty change: removed line
             Map<String, QName> payloadOPMap = createPayloadEleOpNameMap(
                     client.getEndpoint().getBinding().getBindingInfo());  // Liberty change: hasOpName parameter is removed
             if (findDispatchOp && !payloadOPMap.isEmpty()) {
@@ -365,37 +343,14 @@ Liberty change: end */
                 }
 
                 if (payloadElementName != null) {
-  /*                  if (hasOpName) {  Liberty change: 11 lines below are removed
-                        // Verify the payload element against the given operation name.
-                        // This allows graceful handling of non-standard WSDL definitions
-                        // where different operations have the same payload element.
-                    QName expectedElementName = payloadOPMap.get(opName.toString());
-                        if (expectedElementName == null || !expectedElementName.toString().equals(
-                                payloadElementName.toString())) {
-                            // Verification of the provided operation name failed.
-                            // Resolve the operation name from the payload element.
-                            hasOpName = false;
-                            payloadOPMap = createPayloadEleOpNameMap(
-                                    client.getEndpoint().getBinding().getBindingInfo(), hasOpName);
-                        }
-                    } Liberty change: end */
                     QName dispatchedOpName = payloadOPMap.get(payloadElementName);  // Liberty change: null is replaced by payloadOPMap.get(payloadElementName)
-/*                    if (!hasOpName) { Liberty change: 3 lines below are removed
-                        dispatchedOpName = payloadOPMap.get(payloadElementName.toString());
-                    } Liberty change: end */
                     if (null != dispatchedOpName) {
                         BindingOperationInfo bop = client.getEndpoint().getBinding().getBindingInfo().getOperation(opName); // Liberty change: added line
                         BindingOperationInfo dbop = client.getEndpoint().getBinding().getBindingInfo().getOperation(dispatchedOpName);
-/*                        if (dbop != null) { Liberty change: if clause removed
-                            opName = dispatchedOpName;
-                        } Liberty change: end */
                     }
                 }
+              }
             }
-          }
-/*            if (createdSource != null) {  Liberty change: if clause removed
-                holder.value = (T)createdSource;
-            } Liberty change: end */
             // Liberty change: below 5 lines are added
             Object ret[] = client.invokeWrapped(opName, createdSource == null ? obj : createdSource);
             if (isOneWay || ret == null || ret.length == 0) {
@@ -427,23 +382,17 @@ Liberty change: end */
 
         Response<T> ret = new JaxwsResponseCallback<>(callback);
         try {
-            // boolean hasOpName; Liberty change: removed variable
-
             QName opName = (QName)getRequestContext().get(MessageContext.WSDL_OPERATION);
+
             if (opName == null) {
-                // hasOpName = false; Liberty change: removed variable
                 opName = INVOKE_QNAME;
             } else {
-                // hasOpName = true; Liberty change: removed variable
                 BindingOperationInfo bop = client.getEndpoint().getBinding()
                     .getBindingInfo().getOperation(opName);
                 if (bop == null) {
                     addInvokeOperation(opName, false);
                 }
             }
-
-            // Holder<T> holder = new Holder<>(obj);  Liberty change: removed line
-            // opName = calculateOpName(holder, opName, hasOpName);  Liberty change: removed variable
 
             client.invokeWrapped(callback,
                                  opName,
@@ -560,15 +509,7 @@ Liberty change: end */
                     // if doc
                     if (bop.getOperationInfo().getInput() != null
                         && bop.getOperationInfo().getInput().getMessagePartsNumber() > 0) {
-                        QName qn = bop.getOperationInfo().getInput().getMessagePartByIndex(0)
-                            .getElementQName();
-                        /* Liberty change: 6 lines below are removed
-                        QName op = bop.getOperationInfo().getName();
-                        if (reverseMapping) {
-                            payloadElementMap.put(op.toString(), qn);
-                        } else {
-                            payloadElementMap.put(qn.toString(), op);
-                        } Liberty change: end */
+                        QName qn = bop.getOperationInfo().getInput().getMessagePartByIndex(0).getElementQName();
                         payloadElementMap.put(qn.toString(), bop.getOperationInfo().getName()); //Liberty change: added line
                     }
                 } else if ("rpc".equals(operationStyle)) {
@@ -580,8 +521,4 @@ Liberty change: end */
         }
         return payloadElementMap;
     }
-    /* Liberty change: removed method below
-    public void close() throws IOException {
-        client.destroy();
-    } Liberty change: */
 }
