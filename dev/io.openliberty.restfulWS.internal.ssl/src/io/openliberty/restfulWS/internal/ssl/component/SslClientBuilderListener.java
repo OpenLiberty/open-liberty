@@ -31,11 +31,11 @@ import com.ibm.websphere.ssl.JSSEHelper;
 import com.ibm.websphere.ssl.SSLException;
 import com.ibm.wsspi.ssl.SSLSupport;
 
+import io.openliberty.org.jboss.resteasy.common.client.JAXRSClientConstants;
 import io.openliberty.restfulWS.client.ClientBuilderListener;
 
 @Component(property = { "service.vendor=IBM" })
 public class SslClientBuilderListener implements ClientBuilderListener {
-    private final static String SSL_REFKEY = "com.ibm.ws.jaxrs.client.ssl.config";
 
     private JSSEHelper jsseHelper;
 
@@ -57,7 +57,7 @@ public class SslClientBuilderListener implements ClientBuilderListener {
 
     @Override
     public void building(ClientBuilder clientBuilder) {
-        Object sslRef = clientBuilder.getConfiguration().getProperty(SSL_REFKEY);
+        Object sslRef = clientBuilder.getConfiguration().getProperty(JAXRSClientConstants.SSL_REFKEY);
         try {
             getSSLContext(toString(sslRef)).ifPresent(clientBuilder::sslContext);
         } catch (SSLException ex) {
