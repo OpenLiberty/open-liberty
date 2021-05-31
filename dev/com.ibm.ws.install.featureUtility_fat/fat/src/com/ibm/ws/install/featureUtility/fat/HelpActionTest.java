@@ -151,7 +151,7 @@ public class HelpActionTest extends  FeatureUtilityToolTest {
 
 		// Validation.
 		String validationMessage = "Unknown action: " + parms[0];
-		assertEquals("Exit code should be 20", 20, po.getReturnCode());
+		assertEquals("Exit code should be 0", 0, po.getReturnCode());
 		assertTrue("Should contain '" + validationMessage + "'", po.getStdout().contains(validationMessage));
 	}
 

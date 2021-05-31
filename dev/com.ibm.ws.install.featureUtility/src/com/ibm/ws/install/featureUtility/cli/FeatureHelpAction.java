@@ -170,7 +170,6 @@ public class FeatureHelpAction implements ActionHandler {
                 stderr.println();
                 stderr.println(getHelpPart("task.unknown", args.getPositionalArguments().get(0)));
                 stdout.println(getScriptUsage());
-                retCode = ReturnCode.BAD_ARGUMENT;
             }
 
         }
