@@ -70,7 +70,7 @@ public class CXFExtensionBundleListener implements SynchronousBundleListener {
     
     protected void register(final Bundle bundle) {
 
-        if (bundle.getSymbolicName().contains("jaxrs") || bundle.getSymbolicName().contains("3.2")) {
+        if (bundle.getSymbolicName().contains("jaxrs")) {
             LOG.fine("register: Skipping jaxrs bundle...");
             return;
         }
