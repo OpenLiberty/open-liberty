@@ -35,6 +35,9 @@ import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
+//05/2021
+import componenttest.annotation.AllowedFFDC;
+
 //Added 11/2020
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -152,6 +155,8 @@ public class CxfX509ObjectTests {
 
     //4/2021 this test expects to fail with EE8 "java.lang.ClassNotFoundException: org.apache.wss4j.common.crypto.CryptoFactory"
     //Aruna is aware of the cause from feature definition API packages; waiting for the next stage of update to fix it
+    //05/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
     @Test
     public void testCxfX509Service() throws Exception {
 

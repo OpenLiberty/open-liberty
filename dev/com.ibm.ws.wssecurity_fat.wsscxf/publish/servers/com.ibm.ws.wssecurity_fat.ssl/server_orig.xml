@@ -1,7 +1,7 @@
 <server>
 	<featureManager>
 		<feature>ssl-1.0</feature>
-		<feature>servlet-3.0</feature>
+		<feature>servlet-3.1</feature>
 		<feature>appSecurity-2.0</feature>
 		<feature>jsp-2.2</feature>
 		<feature>jaxws-2.2</feature>

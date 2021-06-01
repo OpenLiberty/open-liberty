@@ -590,8 +590,7 @@ public class CxfCallerX509AsymTests {
                        untID,
                        untPassword,
                        errMsgVersion,
-                       null; //2/2021
-                       errMsgVersionInX509);//2/2021
+                       null); //2/2021
                        
 
         return;
