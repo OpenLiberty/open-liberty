@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ws.wssecurity.fat.cxf.samltoken2.TwoServerTests;
+package com.ibm.ws.wssecurity.fat.cxf.samltoken3.TwoServerTests;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +26,7 @@ import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTestHelpers;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLMessageConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLTestSettings;
-import com.ibm.ws.wssecurity.fat.cxf.samltoken2.common.CxfSAMLCallerTests;
+import com.ibm.ws.wssecurity.fat.cxf.samltoken3.common.CxfSAMLCallerTests;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
@@ -291,12 +291,12 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * These tests will modify the configuration and then check for the appropriate values in the subject.
      */
 
-    /******* mapToUserRegistry = Group *******/
+    
+    /******* mapToUserRegistry = No *******/
     /********** identifiers are Good **********/
-
     /*
      * config settings:
-     * mapToUserRegistry = Group
+     * mapToUserRegistry = No
      * is User in the Registry = true
      * userIdentifier = valid value
      * userUniqueIdentifier = valid value
@@ -306,20 +306,21 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * Expected/checked values:
      * Realm: IDP server's realm
      * User: test_userIdentifier
-     * Group: An IPD group
+     * Group: IPD Server groups
      */
+    
     //1/26/2021 comment out
     //@Mode(TestMode.LITE)
     @Test
-    public void testCxfCaller_mapToUserRegistry_Group_inRegistry_identifiersGood() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_No_inRegistry_identifiersGood() throws Exception {
 
-        generalPositiveTest("server_2_caller_mapToUserRegistry_Group_inRegistry_identifiersGood.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultIDPGroups);
+        generalPositiveTest("server_2_caller_mapToUserRegistry_No_inRegistry_identifiersGood.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultIDPGroups);
 
     }
 
     /*
      * config settings:
-     * mapToUserRegistry = Group
+     * mapToUserRegistry = No
      * is User in the Registry = False
      * userIdentifier = valid value
      * userUniqueIdentifier = valid value
@@ -329,61 +330,19 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * Expected/checked values:
      * Realm: Default IDP server's realm
      * User: test_userIdentifier
-     * Group: Default IDP Group
+     * Group: Default IDP Groups
      */
     @Test
-    public void testCxfCaller_mapToUserRegistry_Group_notInRegistry_identifiersGood() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_No_notInRegistry_identifiersGood() throws Exception {
 
-        generalPositiveTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_identifiersGood.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultIDPIdentifierGroup);
-
-    }
-
-    /*
-     * config settings:
-     * mapToUserRegistry = Group
-     * is Group1 in the Registry = False
-     * userIdentifier = valid value
-     * userUniqueIdentifier = valid value
-     * groupIdentfier = valid value
-     * realmIdentifier = valid value
-     *
-     * Expected/checked values:
-     * Realm: Default IDP server's realm
-     * User: test_userIdentifier
-     * Group: Default IDP Group
-     */
-    @Test
-    public void testCxfCaller_mapToUserRegistry_Group_groupNotInRegistry_identifiersGood() throws Exception {
-
-        generalPositiveTest("server_2_caller_mapToUserRegistry_Group_groupNotInRegistry_identifiersGood.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
-
-    }
-
-    /*
-     * config settings:
-     * mapToUserRegistry = Group
-     * is Group1 in the Registry = False
-     * userIdentifier = valid value
-     * userUniqueIdentifier = valid value
-     * groupIdentfier = valid value
-     * realmIdentifier = valid value
-     *
-     * Expected/checked values:
-     * Realm: Default IDP server's realm
-     * User: test_userIdentifier
-     * Group: Default IDP Group
-     */
-    @Test
-    public void testCxfCaller_mapToUserRegistry_Group_group2InRegistry_identifiersGood() throws Exception {
-
-        generalPositiveTest("server_2_caller_mapToUserRegistry_Group_group2InRegistry_identifiersGood.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
+        generalPositiveTest("server_2_caller_mapToUserRegistry_No_notInRegistry_identifiersGood.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultIDPGroups);
 
     }
 
     /********** identifiers are Omitted **********/
     /*
      * config settings:
-     * mapToUserRegistry = Group
+     * mapToUserRegistry = No
      * is User in the Registry = true
      * userIdentifier = omitted
      * userUniqueIdentifier = omitted
@@ -396,15 +355,15 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * Group: null
      */
     @Test
-    public void testCxfCaller_mapToUserRegistry_Group_inRegistry_identifiersOmitted() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_No_inRegistry_identifiersOmitted() throws Exception {
 
-        generalPositiveTest("server_2_caller_mapToUserRegistry_Group_inRegistry_identifiersOmitted.xml", defaultServerCfgRealm, defaultIDPUser, defaultNullGroup);
+        generalPositiveTest("server_2_caller_mapToUserRegistry_No_inRegistry_identifiersOmitted.xml", defaultServerCfgRealm, defaultIDPUser, defaultNullGroup);
 
     }
 
     /*
      * config settings:
-     * mapToUserRegistry = Group
+     * mapToUserRegistry = No
      * is User in the Registry = False
      * userIdentifier = Omitted
      * userUniqueIdentifier = Omitted
@@ -412,21 +371,42 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * realmIdentifier = Omitted
      *
      * Expected/checked values:
-     * Realm: Configured server's realm
+     * Realm: Local server's configured realm
      * User: testuser
      * Group: null
      */
     @Test
-    public void testCxfCaller_mapToUserRegistry_Group_notInRegistry_identifiersOmitted() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_No_notInRegistry_identifiersOmitted() throws Exception {
 
-        generalPositiveTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_identifiersOmitted.xml", defaultServerCfgRealm, defaultIDPUser, defaultNullGroup);
+        generalPositiveTest("server_2_caller_mapToUserRegistry_No_notInRegistry_identifiersOmitted.xml", defaultServerCfgRealm, defaultIDPUser, defaultNullGroup);
 
     }
 
     /*
      * config settings:
-     * mapToUserRegistry = Group
+     * mapToUserRegistry = No
      * is User in the Registry = true
+     * userIdentifier = valid value
+     * userUniqueIdentifier = valid value
+     * groupIdentfier = Omitted
+     * realmIdentifier = valid value
+     *
+     * Expected/checked values:
+     * Realm: IDP server's realm
+     * User: test_userIdentifier
+     * Group: null
+     */
+    @Test
+    public void testCxfCaller_mapToUserRegistry_No_inRegistry_groupIdentifierOmitted() throws Exception {
+
+        generalPositiveTest("server_2_caller_mapToUserRegistry_No_inRegistry_groupIdentifierOmitted.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
+
+    }
+
+    /*
+     * config settings:
+     * mapToUserRegistry = No
+     * is User in the Registry = False
      * userIdentifier = valid value
      * userUniqueIdentifier = valid value
      * groupIdentfier = omitted
@@ -437,58 +417,37 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * User: test_userIdentifier
      * Group: null
      */
-
     @Test
-    public void testCxfCaller_mapToUserRegistry_Group_inRegistry_groupIdentifierOmitted() throws Exception {
-        generalPositiveTest("server_2_caller_mapToUserRegistry_Group_inRegistry_groupIdentifierOmitted.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
+    public void testCxfCaller_mapToUserRegistry_No_notInRegistry_groupIdentifierOmitted() throws Exception {
+
+        generalPositiveTest("server_2_caller_mapToUserRegistry_No_notInRegistry_groupIdentifierOmitted.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
 
     }
 
     /*
      * config settings:
-     * mapToUserRegistry = Group
-     * is User in the Registry = False
-     * userIdentifier = valid value
-     * userUniqueIdentifier = valid value
-     * groupIdentfier = Omitted
-     * realmIdentifier = valid value
-     *
-     * Expected/checked values:
-     * Realm: IDP server's realm
-     * User: test_userIdentifier
-     * Group: null
-     */
-    @Test
-    public void testCxfCaller_mapToUserRegistry_Group_notInRegistry_groupIdentifierOmitted() throws Exception {
-
-        generalPositiveTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_groupIdentifierOmitted.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
-
-    }
-
-    /*
-     * config settings:
-     * mapToUserRegistry = Group
+     * mapToUserRegistry = No
      * is User in the Registry = true
      * userIdentifier = valid value
      * userUniqueIdentifier = valid value
      * groupIdentfier = valid value
-     * realmIdentifier = omitted
+     * realmIdentifier = realm
      *
      * Expected/checked values:
-     * Realm: Local server's realm
+     * Realm: Local configured server realm realm
      * User: test_userIdentifier
-     * Group: Local server's group
+     * Group: Local server's groups
      */
     @Test
-    public void testCxfCaller_mapToUserRegistry_Group_inRegistry_realmIdentifierOmitted() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_No_inRegistry_realmIdentifierOmitted() throws Exception {
 
-        generalPositiveTest("server_2_caller_mapToUserRegistry_Group_inRegistry_realmIdentifierOmitted.xml", defaultLocalRealm, defaultIDPIdentifierUser, defaultLocalGroups);
+        generalPositiveTest("server_2_caller_mapToUserRegistry_No_inRegistry_realmIdentifierOmitted.xml", defaultServerCfgRealm, defaultIDPIdentifierUser, defaultServerCfgGroups);
 
     }
 
     /*
      * config settings:
-     * mapToUserRegistry = Group
+     * mapToUserRegistry = No
      * is User in the Registry = False
      * userIdentifier = valid value
      * userUniqueIdentifier = valid value
@@ -496,22 +455,22 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * realmIdentifier = Omitted
      *
      * Expected/checked values:
-     * Realm: Local server's realm
+     * Realm: Local server's configured realm
      * User: test_userIdentifier
-     * Group: null
+     * Group: Hybrid Group
      */
     @Test
-    public void testCxfCaller_mapToUserRegistry_Group_notInRegistry_realmIdentifierOmitted() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_No_notInRegistry_realmIdentifierOmitted() throws Exception {
 
-        generalPositiveTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_realmIdentifierOmitted.xml", defaultLocalRealm, defaultIDPIdentifierUser, defaultLocalGroups);
+        generalPositiveTest("server_2_caller_mapToUserRegistry_No_notInRegistry_realmIdentifierOmitted.xml", defaultServerCfgRealm, defaultIDPIdentifierUser, defaultServerCfgGroups);
 
     }
 
     /*
      * config settings:
-     * mapToUserRegistry = Group
+     * mapToUserRegistry = No
      * is User in the Registry = true
-     * userIdentifier = omitted
+     * userIdentifier = Omitted
      * userUniqueIdentifier = valid value
      * groupIdentfier = valid value
      * realmIdentifier = valid value
@@ -522,15 +481,15 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * Group: An IPD group
      */
     @Test
-    public void testCxfCaller_mapToUserRegistry_Group_inRegistry_userIdentifierOmitted() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_No_inRegistry_userIdentifierOmitted() throws Exception {
 
-        generalPositiveTest("server_2_caller_mapToUserRegistry_Group_inRegistry_userIdentifierOmitted.xml", defaultIDPIdentifierRealm, defaultIDPUser, defaultIDPGroups);
+        generalPositiveTest("server_2_caller_mapToUserRegistry_No_inRegistry_userIdentifierOmitted.xml", defaultIDPIdentifierRealm, defaultIDPUser, defaultIDPIdentifierGroup);
 
     }
 
     /*
      * config settings:
-     * mapToUserRegistry = Group
+     * mapToUserRegistry = No
      * is User in the Registry = False
      * userIdentifier = Omitted
      * userUniqueIdentifier = valid value
@@ -540,18 +499,18 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * Expected/checked values:
      * Realm: IDP server's realm
      * User: testuser
-     * Group: Default IDP Group
+     * Group: Default IDP Groups
      */
     @Test
-    public void testCxfCaller_mapToUserRegistry_Group_notInRegistry_userIdentifierOmitted() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_No_notInRegistry_userIdentifierOmitted() throws Exception {
 
-        generalPositiveTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_userIdentifierOmitted.xml", defaultIDPIdentifierRealm, defaultIDPUser, defaultIDPGroups);
+        generalPositiveTest("server_2_caller_mapToUserRegistry_No_notInRegistry_userIdentifierOmitted.xml", defaultIDPIdentifierRealm, defaultIDPUser, defaultIDPIdentifierGroup);
 
     }
 
     /*
      * config settings:
-     * mapToUserRegistry = Group
+     * mapToUserRegistry = No
      * is User in the Registry = true
      * userIdentifier = valid value
      * userUniqueIdentifier = Omitted
@@ -564,15 +523,430 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * Group: An IPD group
      */
     @Test
-    public void testCxfCaller_mapToUserRegistry_Group_inRegistry_userUniqueIdentifierOmitted() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_No_inRegistry_userUniqueIdentifierOmitted() throws Exception {
 
-        generalPositiveTest("server_2_caller_mapToUserRegistry_Group_inRegistry_userUniqueIdentifierOmitted.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultIDPGroups);
+        generalPositiveTest("server_2_caller_mapToUserRegistry_No_inRegistry_userUniqueIdentifierOmitted.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultIDPGroups);
 
     }
 
     /*
      * config settings:
-     * mapToUserRegistry = Group
+     * mapToUserRegistry = No
+     * is User in the Registry = False
+     * userIdentifier = Omitted
+     * userUniqueIdentifier = valid value
+     * groupIdentfier = valid value
+     * realmIdentifier = valid value
+     *
+     * Expected/checked values:
+     * Realm: IDP server's realm
+     * User: test_userIdentifier
+     * Group: Default IDP Groups
+     */
+    @Test
+    public void testCxfCaller_mapToUserRegistry_No_notInRegistry_userUniqueIdentifierOmitted() throws Exception {
+
+        generalPositiveTest("server_2_caller_mapToUserRegistry_No_notInRegistry_userUniqueIdentifierOmitted.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultIDPGroups);
+
+    }
+
+    /********** identifiers are Bad **********/
+    /*
+     * config settings:
+     * mapToUserRegistry = No
+     * is User in the Registry = True
+     * userIdentifier = valid value
+     * userUniqueIdentifier = valid value
+     * groupIdentfier = BAD value
+     * realmIdentifier = valid value
+     *
+     * Expected/checked values:
+     * Realm: Local server's realm
+     * User: test_userIdentifier
+     * Group: Local user's Groups
+     */
+    @Test
+    public void testCxfCaller_mapToUserRegistry_No_inRegistry_groupIdentifierBad() throws Exception {
+
+        generalPositiveTest("server_2_caller_mapToUserRegistry_No_inRegistry_groupIdentifierBad.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
+
+    }
+
+    /*
+     * config settings:
+     * mapToUserRegistry = No
+     * is User in the Registry = False
+     * userIdentifier = valid value
+     * userUniqueIdentifier = valid value
+     * groupIdentfier = BAD value
+     * realmIdentifier = valid value
+     *
+     * Expected/checked values:
+     * Realm: Default IDP server's realm
+     * User: test_userIdentifier
+     * Group: null
+     */
+    @Test
+    public void testCxfCaller_mapToUserRegistry_No_notInRegistry_groupIdentifierBad() throws Exception {
+
+        generalPositiveTest("server_2_caller_mapToUserRegistry_No_notInRegistry_groupIdentifierBad.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
+
+    }
+
+    /*
+     * config settings:
+     * mapToUserRegistry = No
+     * is User in the Registry = True
+     * userIdentifier = valid value
+     * userUniqueIdentifier = valid value
+     * groupIdentfier = valid value
+     * realmIdentifier = BAD value
+     *
+     * Expected/checked values:
+     * Bad Attribute exception - looking for realmIdentifier in the message
+     */
+    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" })
+    @Test
+    public void testCxfCaller_mapToUserRegistry_No_inRegistry_realmIdentifierBad() throws Exception {
+
+        badAttrValueTest("server_2_caller_mapToUserRegistry_No_inRegistry_realmIdentifierBad.xml", realmIdentifierString);
+
+    }
+
+    /*
+     * config settings:
+     * mapToUserRegistry = No
+     * is User in the Registry = False
+     * userIdentifier = valid value
+     * userUniqueIdentifier = valid value
+     * groupIdentfier = valid value
+     * realmIdentifier = BAD value
+     *
+     * Expected/checked values:
+     * Bad Attribute exception - looking for realmIdentifier in the message
+     */
+    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" })
+    @Test
+    public void testCxfCaller_mapToUserRegistry_No_notInRegistry_realmIdentifierBad() throws Exception {
+
+        badAttrValueTest("server_2_caller_mapToUserRegistry_No_notInRegistry_realmIdentifierBad.xml", realmIdentifierString);
+
+    }
+
+    /*
+     * config settings:
+     * mapToUserRegistry = No
+     * is User in the Registry = True
+     * userIdentifier = BAD value
+     * userUniqueIdentifier = valid value
+     * groupIdentfier = valid value
+     * realmIdentifier = valid value
+     *
+     * Expected/checked values:
+     * Bad Attribute exception - looking for userIdentifier in the message
+     */
+    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" })
+    @Test
+    public void testCxfCaller_mapToUserRegistry_No_inRegistry_userIdentifierBad() throws Exception {
+
+        badAttrValueTest("server_2_caller_mapToUserRegistry_No_inRegistry_userIdentifierBad.xml", userIdentifierString);
+
+    }
+
+    /*
+     * config settings:
+     * mapToUserRegistry = No
+     * is User in the Registry = False
+     * userIdentifier = BAD value
+     * userUniqueIdentifier = valid value
+     * groupIdentfier = valid value
+     * realmIdentifier = valid value
+     *
+     * Expected/checked values:
+     * Bad Attribute exception - looking for userIdentifier in the message
+     */
+    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" })
+    @Test
+    public void testCxfCaller_mapToUserRegistry_No_notInRegistry_userIdentifierBad() throws Exception {
+
+        badAttrValueTest("server_2_caller_mapToUserRegistry_No_notInRegistry_userIdentifierBad.xml", userIdentifierString);
+
+    }
+
+    /*
+     * config settings:
+     * mapToUserRegistry = No
+     * is User in the Registry = True
+     * userIdentifier = valid value
+     * userUniqueIdentifier = BAD value
+     * groupIdentfier = valid value
+     * realmIdentifier = valid value
+     *
+     * Expected/checked values:
+     * Bad Attribute exception - looking for userUniqueIdentifier in the message
+     */
+    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" })
+    @Test
+    public void testCxfCaller_mapToUserRegistry_No_inRegistry_userUniqueIdentifierBad() throws Exception {
+
+        badAttrValueTest("server_2_caller_mapToUserRegistry_No_inRegistry_userUniqueIdentifierBad.xml", userUniqueIdentifierString);
+
+    }
+
+    /*
+     * config settings:
+     * mapToUserRegistry = No
+     * is User in the Registry = False
+     * userIdentifier = valid value
+     * userUniqueIdentifier = BAD value
+     * groupIdentfier = valid value
+     * realmIdentifier = valid value
+     *
+     * Expected/checked values:
+     * Bad Attribute exception - looking for userUniqueIdentifier in the message
+     */
+    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" })
+    @Test
+    public void testCxfCaller_mapToUserRegistry_No_notInRegistry_userUniqueIdentifierBad() throws Exception {
+
+        badAttrValueTest("server_2_caller_mapToUserRegistry_No_notInRegistry_userUniqueIdentifierBad.xml", userUniqueIdentifierString);
+
+    }
+
+    /******* mapToUserRegistry = User *******/
+    /********** identifiers are Good **********/
+    /*
+     * config settings:
+     * mapToUserRegistry = User
+     * is User in the Registry = true
+     * userIdentifier = valid value
+     * userUniqueIdentifier = valid value
+     * groupIdentfier = valid value
+     * realmIdentifier = valid value
+     *
+     * Expected/checked values:
+     * Realm: Local server's realm
+     * User: test_userIdentifier
+     * Group: Local user's group
+     */
+    //1/26/2021 comment out
+    //@Mode(TestMode.LITE)
+    @Test
+    public void testCxfCaller_mapToUserRegistry_User_inRegistry_identifiersGood() throws Exception {
+
+        generalPositiveTest("server_2_caller_mapToUserRegistry_User_inRegistry_identifiersGood.xml", defaultLocalRealm, defaultIDPIdentifierUser, defaultLocalGroups);
+
+    }
+
+    /*
+     * config settings:
+     * mapToUserRegistry = User
+     * is User in the Registry = False
+     * userIdentifier = valid value
+     * userUniqueIdentifier = valid value
+     * groupIdentfier = valid value
+     * realmIdentifier = valid value
+     *
+     * Expected/checked values:
+     * EntryNotFoundException expectd
+     */
+    @ExpectedFFDC(value = { "com.ibm.ws.security.registry.EntryNotFoundException", "org.apache.ws.security.WSSecurityException" })
+    @Test
+    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_identifiersGood() throws Exception {
+
+        notfoundExceptionTest("server_2_caller_mapToUserRegistry_User_notInRegistry_identifiersGood.xml");
+
+    }
+
+    /********** identifiers are Omitted **********/
+    /*
+     * config settings:
+     * mapToUserRegistry = User
+     * is User in the Registry = true
+     * userIdentifier = omitted
+     * userUniqueIdentifier = omitted
+     * groupIdentfier = omitted
+     * realmIdentifier = omitted
+     *
+     * Expected/checked values:
+     * Realm: Local server's realm
+     * User: testuser
+     * Group: Local user's group
+     */
+    @Test
+    public void testCxfCaller_mapToUserRegistry_User_inRegistry_identifiersOmitted() throws Exception {
+
+        generalPositiveTest("server_2_caller_mapToUserRegistry_User_inRegistry_identifiersOmitted.xml", defaultLocalRealm, defaultIDPUser, defaultNullGroup);
+
+    }
+
+    /*
+     * config settings:
+     * mapToUserRegistry = User
+     * is User in the Registry = False
+     * userIdentifier = Omitted
+     * userUniqueIdentifier = Omitted
+     * groupIdentfier = Omitted
+     * realmIdentifier = Omitted
+     *
+     * Expected/checked values:
+     * EntryNotFoundException expected
+     */
+    @ExpectedFFDC(value = { "com.ibm.ws.security.registry.EntryNotFoundException", "org.apache.ws.security.WSSecurityException" })
+    @Test
+    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_identifiersOmitted() throws Exception {
+
+        notfoundExceptionTest("server_2_caller_mapToUserRegistry_User_notInRegistry_identifiersOmitted.xml");
+
+    }
+
+    /*
+     * config settings:
+     * mapToUserRegistry = User
+     * is User in the Registry = true
+     * userIdentifier = valid value
+     * userUniqueIdentifier = valid value
+     * groupIdentfier = Omitted
+     * realmIdentifier = valid value
+     *
+     * Expected/checked values:
+     * Realm: Local server's realm
+     * User: test_userIdentifier
+     * Group: Local server's group
+     */
+    @Test
+    public void testCxfCaller_mapToUserRegistry_User_inRegistry_groupIdentifierOmitted() throws Exception {
+
+        generalPositiveTest("server_2_caller_mapToUserRegistry_User_inRegistry_groupIdentifierOmitted.xml", defaultLocalRealm, defaultIDPIdentifierUser, defaultNullGroup);
+
+    }
+
+    /*
+     * config settings:
+     * mapToUserRegistry = User
+     * is User in the Registry = False
+     * userIdentifier = valid value
+     * userUniqueIdentifier = valid value
+     * groupIdentfier = Omitted
+     * realmIdentifier = valid value
+     *
+     * Expected/checked values:
+     * EntryNotFoundException expected
+     */
+    @ExpectedFFDC(value = { "com.ibm.ws.security.registry.EntryNotFoundException", "org.apache.ws.security.WSSecurityException" })
+    @Test
+    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_groupIdentifierOmitted() throws Exception {
+
+        notfoundExceptionTest("server_2_caller_mapToUserRegistry_User_notInRegistry_groupIdentifierOmitted.xml");
+
+    }
+
+    /*
+     * config settings:
+     * mapToUserRegistry = User
+     * is User in the Registry = true
+     * userIdentifier = valid value
+     * userUniqueIdentifier = valid value
+     * groupIdentfier = valid value
+     * realmIdentifier = Omitted
+     *
+     * Expected/checked values:
+     * Realm: Local server's realm
+     * User: test_userIdentifier
+     * Group: Local server's group
+     */
+    @Test
+    public void testCxfCaller_mapToUserRegistry_User_inRegistry_realmIdentifierOmitted() throws Exception {
+
+        generalPositiveTest("server_2_caller_mapToUserRegistry_User_inRegistry_realmIdentifierOmitted.xml", defaultLocalRealm, defaultIDPIdentifierUser, defaultNullGroup);
+
+    }
+
+    /*
+     * config settings:
+     * mapToUserRegistry = User
+     * is User in the Registry = False
+     * userIdentifier = valid value
+     * userUniqueIdentifier = valid value
+     * groupIdentfier = valid value
+     * realmIdentifier = Omitted
+     *
+     * Expected/checked values:
+     * EntryNotFoundException expected
+     */
+    @ExpectedFFDC(value = { "com.ibm.ws.security.registry.EntryNotFoundException", "org.apache.ws.security.WSSecurityException" })
+    @Test
+    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_realmIdentifierOmitted() throws Exception {
+
+        notfoundExceptionTest("server_2_caller_mapToUserRegistry_User_notInRegistry_realmIdentifierOmitted.xml");
+
+    }
+
+    /*
+     * config settings:
+     * mapToUserRegistry = User
+     * is User in the Registry = true
+     * userIdentifier = Omitted
+     * userUniqueIdentifier = valid value
+     * groupIdentfier = valid value
+     * realmIdentifier = valid value
+     *
+     * Expected/checked values:
+     * Realm: Local server's realm
+     * User: testuser
+     * Group: Local Server's group
+     */
+    @Test
+    public void testCxfCaller_mapToUserRegistry_User_inRegistry_userIdentifierOmitted() throws Exception {
+
+        generalPositiveTest("server_2_caller_mapToUserRegistry_User_inRegistry_userIdentifierOmitted.xml", defaultLocalRealm, defaultLocalUser, defaultLocalGroups);
+
+    }
+
+    /*
+     * config settings:
+     * mapToUserRegistry = User
+     * is User in the Registry = False
+     * userIdentifier = Omitted
+     * userUniqueIdentifier = valid value
+     * groupIdentfier = valid value
+     * realmIdentifier = valid value
+     *
+     * Expected/checked values:
+     * EntryNotFoundException expected
+     */
+    @ExpectedFFDC(value = { "com.ibm.ws.security.registry.EntryNotFoundException", "org.apache.ws.security.WSSecurityException" })
+    @Test
+    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_userIdentifierOmitted() throws Exception {
+
+        notfoundExceptionTest("server_2_caller_mapToUserRegistry_User_notInRegistry_userIdentifierOmitted.xml");
+
+    }
+
+    /*
+     * config settings:
+     * mapToUserRegistry = User
+     * is User in the Registry = true
+     * userIdentifier = valid value
+     * userUniqueIdentifier = Omitted
+     * groupIdentfier = valid value
+     * realmIdentifier = valid value
+     *
+     * Expected/checked values:
+     * Realm: Local server's realm
+     * User: test_userIdentifier
+     * Group: Local Server's group
+     */
+    @Test
+    public void testCxfCaller_mapToUserRegistry_User_inRegistry_userUniqueIdentifierOmitted() throws Exception {
+
+        generalPositiveTest("server_2_caller_mapToUserRegistry_User_inRegistry_userUniqueIdentifierOmitted.xml", defaultLocalRealm, defaultIDPIdentifierUser, defaultNullGroup);
+
+    }
+
+    /*
+     * config settings:
+     * mapToUserRegistry = User
      * is User in the Registry = False
      * userIdentifier = valid value
      * userUniqueIdentifier = Omitted
@@ -580,21 +954,20 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * realmIdentifier = valid value
      *
      * Expected/checked values:
-     * Realm: IDP server's realm
-     * User: test_userIdentifier
-     * Group: Default IDP Group
+     * EntryNotFoundException expected
      */
+    @ExpectedFFDC(value = { "com.ibm.ws.security.registry.EntryNotFoundException", "org.apache.ws.security.WSSecurityException" })
     @Test
-    public void testCxfCaller_mapToUserRegistry_Group_notInRegistry_userUniqueIdentifierOmitted() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_userUniqueIdentifierOmitted() throws Exception {
 
-        generalPositiveTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_userUniqueIdentifierOmitted.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultIDPGroups);
+        notfoundExceptionTest("server_2_caller_mapToUserRegistry_User_notInRegistry_userUniqueIdentifierOmitted.xml");
 
     }
 
     /********** identifiers are Bad **********/
     /*
      * config settings:
-     * mapToUserRegistry = Group
+     * mapToUserRegistry = User
      * is User in the Registry = true
      * userIdentifier = valid value
      * userUniqueIdentifier = valid value
@@ -607,15 +980,15 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * Group: Local Server groups
      */
     @Test
-    public void testCxfCaller_mapToUserRegistry_Group_inRegistry_groupIdentifierBad() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_User_inRegistry_groupIdentifierBad() throws Exception {
 
-        generalPositiveTest("server_2_caller_mapToUserRegistry_Group_inRegistry_groupIdentifierBad.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
+        generalPositiveTest("server_2_caller_mapToUserRegistry_User_inRegistry_groupIdentifierBad.xml", defaultLocalRealm, defaultIDPIdentifierUser, defaultNullGroup);
 
     }
 
     /*
      * config settings:
-     * mapToUserRegistry = Group
+     * mapToUserRegistry = User
      * is User in the Registry = False
      * userIdentifier = valid value
      * userUniqueIdentifier = valid value
@@ -623,40 +996,40 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * realmIdentifier = valid value
      *
      * Expected/checked values:
-     * Realm: IDP server's realm
+     * EntryNotFoundException expected
+     */
+    @ExpectedFFDC(value = { "com.ibm.ws.security.registry.EntryNotFoundException", "org.apache.ws.security.WSSecurityException" })
+    @Test
+    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_groupIdentifierBad() throws Exception {
+
+        notfoundExceptionTest("server_2_caller_mapToUserRegistry_User_notInRegistry_groupIdentifierBad.xml");
+
+    }
+
+    /*
+     * config settings:
+     * mapToUserRegistry = User
+     * is User in the Registry = true
+     * userIdentifier = valid value
+     * userUniqueIdentifier = valid value
+     * groupIdentfier = valid value
+     * realmIdentifier = valid value
+     *
+     * Expected/checked values:
+     * Realm: Local server's realm
      * User: test_userIdentifier
-     * Group: null
+     * Group: Local Server groups
      */
     @Test
-    public void testCxfCaller_mapToUserRegistry_Group_notInRegistry_groupIdentifierBad() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_User_inRegistry_realmIdentifierBad() throws Exception {
 
-        generalPositiveTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_groupIdentifierBad.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
+        generalPositiveTest("server_2_caller_mapToUserRegistry_User_inRegistry_realmIdentifierBad.xml", defaultLocalRealm, defaultIDPIdentifierUser, defaultLocalGroups);
 
     }
 
     /*
      * config settings:
-     * mapToUserRegistry = Group
-     * is User in the Registry = true
-     * userIdentifier = valid value
-     * userUniqueIdentifier = valid value
-     * groupIdentfier = valid value
-     * realmIdentifier = BAD value
-     *
-     * Expected/checked values:
-     * Bad Attribute exception - looking for realmIdentifier in the message
-     */
-    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" })
-    @Test
-    public void testCxfCaller_mapToUserRegistry_Group_inRegistry_realmIdentifierBad() throws Exception {
-
-        badAttrValueTest("server_2_caller_mapToUserRegistry_Group_inRegistry_realmIdentifierBad.xml", realmIdentifierString);
-
-    }
-
-    /*
-     * config settings:
-     * mapToUserRegistry = Group
+     * mapToUserRegistry = User
      * is User in the Registry = False
      * userIdentifier = valid value
      * userUniqueIdentifier = valid value
@@ -664,19 +1037,19 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * realmIdentifier = BAD value
      *
      * Expected/checked values:
-     * Bad Attribute exception - looking for realmIdentifier in the message
+     * EntryNotFoundException expected
      */
-    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" })
+    @ExpectedFFDC(value = { "com.ibm.ws.security.registry.EntryNotFoundException", "org.apache.ws.security.WSSecurityException" })
     @Test
-    public void testCxfCaller_mapToUserRegistry_Group_notInRegistry_realmIdentifierBad() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_realmIdentifierBad() throws Exception {
 
-        badAttrValueTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_realmIdentifierBad.xml", realmIdentifierString);
+        notfoundExceptionTest("server_2_caller_mapToUserRegistry_User_notInRegistry_realmIdentifierBad.xml");
 
     }
 
     /*
      * config settings:
-     * mapToUserRegistry = Group
+     * mapToUserRegistry = User
      * is User in the Registry = true
      * userIdentifier = BAD value
      * userUniqueIdentifier = valid value
@@ -688,15 +1061,15 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      */
     @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" })
     @Test
-    public void testCxfCaller_mapToUserRegistry_Group_inRegistry_userIdentifierBad() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_User_inRegistry_userIdentifierBad() throws Exception {
 
-        badAttrValueTest("server_2_caller_mapToUserRegistry_Group_inRegistry_userIdentifierBad.xml", userIdentifierString);
+        badAttrValueTest("server_2_caller_mapToUserRegistry_User_inRegistry_userIdentifierBad.xml", userIdentifierString);
 
     }
 
     /*
      * config settings:
-     * mapToUserRegistry = Group
+     * mapToUserRegistry = User
      * is User in the Registry = False
      * userIdentifier = BAD value
      * userUniqueIdentifier = valid value
@@ -708,15 +1081,15 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      */
     @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" })
     @Test
-    public void testCxfCaller_mapToUserRegistry_Group_notInRegistry_userIdentifierBad() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_userIdentifierBad() throws Exception {
 
-        badAttrValueTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_userIdentifierBad.xml", userIdentifierString);
+        badAttrValueTest("server_2_caller_mapToUserRegistry_User_notInRegistry_userIdentifierBad.xml", userIdentifierString);
 
     }
 
     /*
      * config settings:
-     * mapToUserRegistry = Group
+     * mapToUserRegistry = User
      * is User in the Registry = true
      * userIdentifier = valid value
      * userUniqueIdentifier = BAD value
@@ -724,19 +1097,20 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * realmIdentifier = valid value
      *
      * Expected/checked values:
-     * Bad Attribute exception - looking for userUniqueIdentifier in the message
+     * Realm: Local server's realm
+     * User: test_userIdentifier
+     * Group: Local Server groups
      */
-    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" })
     @Test
-    public void testCxfCaller_mapToUserRegistry_Group_inRegistry_userUniqueIdentifierBad() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_User_inRegistry_userUniqueIdentifierBad() throws Exception {
 
-        badAttrValueTest("server_2_caller_mapToUserRegistry_Group_inRegistry_userUniqueIdentifierBad.xml", userUniqueIdentifierString);
+        generalPositiveTest("server_2_caller_mapToUserRegistry_User_inRegistry_userUniqueIdentifierBad.xml", defaultLocalRealm, defaultIDPIdentifierUser, defaultLocalGroups);
 
     }
 
     /*
      * config settings:
-     * mapToUserRegistry = Group
+     * mapToUserRegistry = User
      * is User in the Registry = False
      * userIdentifier = valid value
      * userUniqueIdentifier = BAD value
@@ -744,13 +1118,13 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * realmIdentifier = valid value
      *
      * Expected/checked values:
-     * Bad Attribute exception - looking for userUniqueIdentifier in the message
+     * EntryNotFoundException expected
      */
-    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" })
+    @ExpectedFFDC(value = { "com.ibm.ws.security.registry.EntryNotFoundException", "org.apache.ws.security.WSSecurityException" })
     @Test
-    public void testCxfCaller_mapToUserRegistry_Group_notInRegistry_userUniqueIdentifierBad() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_userUniqueIdentifierBad() throws Exception {
 
-        badAttrValueTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_userUniqueIdentifierBad.xml", userUniqueIdentifierString);
+        notfoundExceptionTest("server_2_caller_mapToUserRegistry_User_notInRegistry_userUniqueIdentifierBad.xml");
 
     }
 
