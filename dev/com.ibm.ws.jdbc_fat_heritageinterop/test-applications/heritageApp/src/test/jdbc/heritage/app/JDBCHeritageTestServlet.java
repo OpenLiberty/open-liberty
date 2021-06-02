@@ -19,6 +19,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
@@ -500,6 +501,25 @@ public class JDBCHeritageTestServlet extends FATServlet {
         // Must not reuse the same connection from the connection pool
         try (Connection con = defaultDataSource_unsharable_loosely_coupled.getConnection("user-of-testIsConnectionError", "password-of-user-of-testIsConnectionError")) {
             assertNotSame(connImpl, connImpl(con));
+        }
+    }
+
+    /**
+     * Verifies that the type of sharing indicated by the isShareable legacy operation
+     * is consistent with the resource reference.
+     */
+    @Test
+    public void testIsShareable() throws Exception {
+        Method isShareable;
+
+        try (Connection con = defaultDataSource.getConnection()) {
+            isShareable = con.getClass().getMethod("isShareable");
+
+            assertTrue((Boolean) isShareable.invoke(con));
+        }
+
+        try (Connection con = dsWithHelperDefaulted.getConnection()) {
+            assertFalse((Boolean) isShareable.invoke(con));
         }
     }
 

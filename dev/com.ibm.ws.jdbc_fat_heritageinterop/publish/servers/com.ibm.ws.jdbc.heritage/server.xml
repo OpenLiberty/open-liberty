@@ -51,6 +51,7 @@
   </dataSource>
 
   <dataSource jndiName="jdbc/helperDefaulted" containerAuthDataRef="dbAuth" type="javax.sql.DataSource">
+    <connectionManager enableSharingForDirectLookups="false"/>
     <jdbcDriver libraryRef="JDBCLib" javax.sql.DataSource="test.jdbc.heritage.driver.HDDataSource"/>
     <properties databaseName="memory:testdb" createDatabase="create"
                 supportsNetworkTimeout="false" supportsSchema="false" supportsTypeMap="false"/>
