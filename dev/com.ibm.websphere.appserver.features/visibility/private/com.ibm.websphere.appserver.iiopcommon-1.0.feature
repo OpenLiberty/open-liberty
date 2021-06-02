@@ -56,7 +56,8 @@ IBM-API-Package: javax.rmi; type="spec", \
  org.omg.TimeBase; type="spec"
 IBM-Process-Types: server, \
  client
--features=com.ibm.websphere.appserver.channelfw-1.0
+-features=com.ibm.websphere.appserver.channelfw-1.0, \
+ com.ibm.websphere.appserver.appLifecycle-1.0
 -bundles=com.ibm.ws.org.apache.yoko.corba.spec.1.5, \
  com.ibm.ws.org.apache.yoko.osgi.1.5, \
  com.ibm.ws.org.apache.servicemix.bundles.bcel.5.2, \
