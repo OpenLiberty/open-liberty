@@ -194,15 +194,14 @@ public class DelayAppStartupHealthCheckTest {
                             repeat = false;
                             startServerThread.join();
                         } else if (System.currentTimeMillis() - start_time > time_out) {
-                            List<String> lines = server1.findStringsInFileInLibertyServerRoot("Exiting init function - Thread.sleep completed.", MESSAGE_LOG);
-
+                            List<String> lines = server1.findStringsInFileInLibertyServerRoot("(CWWKZ0001I: Application DelayedHealthCheckApp started)+", MESSAGE_LOG);
                             if (lines.size() == 0) {
-                                log("testReadinessEndpointOnServerStart", "waiting for DelayedServlet sleep to finish.");
-                                server1.waitForStringInLog("Exiting init function - Thread.sleep completed.");
-                                log("testReadinessEndpointOnServerStart", "DelayedServlet sleep finished.");
-                            }
-                            else {
-                                log("testReadinessEndpointOnServerStart", "DelayedServlet sleep finished but timeout still reached.");
+                                log("testReadinessEndpointOnServerStart", "Waiting for Application to start.");
+                                String line = server1.waitForStringInLog("(CWWKZ0001I: Application DelayedHealthCheckApp started)+");
+                                log("testReadinessEndpointOnServerStart", "Application started. Line Found : " + line);
+                                assertNotNull("The CWWKZ0001I Application started message did not appear in messages.log", line);
+                            } else {
+                                log("testReadinessEndpointOnServerStart", "Application started but timeout still reached.");
                                 throw new TimeoutException("Timed out waiting for server and app to be ready. Timeout set to " + time_out + "ms.");
                             }
                         }
