@@ -17,8 +17,13 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.wssecurity.fat.cxf.samltoken3.TwoServerTests.CxfSAMLCaller2ServerTests;
 
+import componenttest.custom.junit.runner.AlwaysPassesTest;
+
 @RunWith(Suite.class)
 @SuiteClasses({
+
+        //Lite - need at least 1 test
+        AlwaysPassesTest.class,
 
         //Full
         CxfSAMLCaller2ServerTests.class
