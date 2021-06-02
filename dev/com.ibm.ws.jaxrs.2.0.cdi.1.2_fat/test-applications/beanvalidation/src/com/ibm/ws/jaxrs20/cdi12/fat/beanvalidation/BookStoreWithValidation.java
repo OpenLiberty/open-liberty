@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs20.cdi12.fat.beanvalidation;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.GET;
@@ -19,28 +20,16 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 @Path("/singleton/")
+@ApplicationScoped
 public class BookStoreWithValidation {
-    @NotNull
-    private String id;
 
-    @QueryParam("id")
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getId() {
-        return this.id;
-    }
-
-    @NotNull
     @Inject
     SimpleBean simpleBean;
 
     @GET
     @Path("book")
-    @NotNull
     @Produces(MediaType.TEXT_PLAIN)
-    public String book() {
-        return simpleBean.getMessage();
+    public String book(@NotNull @QueryParam("id") String id) {
+        return simpleBean.getMessage() + " " + id;
     }
 }
