@@ -55,8 +55,9 @@ import com.ibm.wsspi.ssl.SSLSupport;
 public class Jose4jUtil {
 
     private static final TraceComponent tc = Tr.register(Jose4jUtil.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
-    private static final String SIGNATURE_ALG_HS256 = "HS256";
-    private static final String SIGNATURE_ALG_RS256 = "RS256";
+    private static final String SIGNATURE_ALG_HS = "HS";
+    private static final String SIGNATURE_ALG_RS = "RS";
+    private static final String SIGNATURE_ALG_ES = "ES";
     private static final String SIGNATURE_ALG_NONE = "none";
     private final SSLSupport sslSupport;
     private static final JtiNonceCache jtiCache = new JtiNonceCache(); // Jose4jUil has only one instance
@@ -91,10 +92,13 @@ public class Jose4jUtil {
         String refreshToken = tokens.get(Constants.REFRESH_TOKEN);
         String clientId = clientConfig.getClientId();
         try {
-            if (tokenStr == null) {
+            if (tokenStr == null || tokenStr.isEmpty()) {
                 // This is for ID Token only
                 Tr.error(tc, "OIDC_CLIENT_IDTOKEN_REQUEST_FAILURE", new Object[] { clientId, clientConfig.getTokenEndpointUrl() });
                 return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
+            }
+            if (JweHelper.isJwe(tokenStr)) {
+                tokenStr = JweHelper.extractJwsFromJweToken(tokenStr, clientConfig, null);
             }
 
             JwtContext jwtContext = parseJwtWithoutValidation(tokenStr, clientConfig);
@@ -199,17 +203,13 @@ public class Jose4jUtil {
 
     //Just parse without validation for now
     protected static JwtContext parseJwtWithoutValidation(String jwtString, ConvergedClientConfig clientConfig) throws Exception {
-        String jwtStringToProcess = jwtString;
-        if (JweHelper.isJwe(jwtString)) {
-            jwtStringToProcess = JweHelper.extractJwsFromJweToken(jwtString, clientConfig, null);
-        }
         JwtConsumer firstPassJwtConsumer = new JwtConsumerBuilder()
                 .setSkipAllValidators()
                 .setDisableRequireSignature()
                 .setSkipSignatureVerification()
                 .build();
 
-        return firstPassJwtConsumer.process(jwtStringToProcess);
+        return firstPassJwtConsumer.process(jwtString);
     }
 
     @FFDCIgnore({ Exception.class })
@@ -269,10 +269,13 @@ public class Jose4jUtil {
     protected Key getVerifyKey(ConvergedClientConfig clientConfig, String kid, String x5t) throws Exception {
         Key keyValue = null;
         String signatureAlgorithm = clientConfig.getSignatureAlgorithm();
-        if (SIGNATURE_ALG_HS256.equals(signatureAlgorithm)) {
+        if (signatureAlgorithm == null) {
+            return keyValue;
+        }
+        if (signatureAlgorithm.startsWith(SIGNATURE_ALG_HS)) {
             //keyValue = Base64Coder.getBytes(clientConfig.getSharedKey());
             keyValue = new HmacKey(clientConfig.getSharedKey().getBytes(ClientConstants.CHARSET));
-        } else if (SIGNATURE_ALG_RS256.equals(signatureAlgorithm)) {
+        } else if (signatureAlgorithm.startsWith(SIGNATURE_ALG_RS) || signatureAlgorithm.startsWith(SIGNATURE_ALG_ES)) {
             if (clientConfig.getJwkEndpointUrl() != null || clientConfig.getJsonWebKey() != null) {
                 JwKRetriever retriever = createJwkRetriever(clientConfig);
                 keyValue = retriever.getPublicKeyFromJwk(kid, x5t, "sig", clientConfig.getUseSystemPropertiesForHttpClientConnections());
@@ -328,7 +331,9 @@ public class Jose4jUtil {
         String refreshToken = null;
         String clientId = clientConfig.getClientId();
         try {
-
+            if (JweHelper.isJwe(jwtString)) {
+                jwtString = JweHelper.extractJwsFromJweToken(jwtString, clientConfig, null);
+            }
             JwtContext jwtContext = parseJwtWithoutValidation(jwtString, clientConfig);
             JwtClaims jwtClaims = parseJwtWithValidation(clientConfig, jwtString, jwtContext, oidcClientRequest);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

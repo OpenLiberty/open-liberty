@@ -58,6 +58,8 @@ import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.websphere.ssl.Constants;
 import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.config.CommonConfigUtils;
@@ -1931,6 +1933,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
         return keyStoreName;
     }
 
+    @Trivial
     @FFDCIgnore(Exception.class)
     Properties getSslConfigProperties(String sslRef) {
         SSLSupport sslSupportService = sslSupportRef.getService();
@@ -1939,13 +1942,14 @@ public class OidcClientConfigImpl implements OidcClientConfig {
         }
         Properties sslConfigProps;
         try {
-            sslConfigProps = (Properties) AccessController.doPrivileged(
-                    new PrivilegedExceptionAction<Object>() {
-                        @Override
-                        public Object run() throws Exception {
-                            return sslSupportService.getJSSEHelper().getProperties(sslRef);
-                        }
-                    });
+            final Map<String, Object> connectionInfo = new HashMap<String, Object>();
+            connectionInfo.put(Constants.CONNECTION_INFO_DIRECTION, Constants.DIRECTION_INBOUND);
+            sslConfigProps = (Properties) AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
+                @Override
+                public Object run() throws Exception {
+                    return sslSupportService.getJSSEHelper().getProperties(sslRef, connectionInfo, null, true);
+                }
+            });
         } catch (Exception e) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Caught exception getting SSL properties: " + e);
