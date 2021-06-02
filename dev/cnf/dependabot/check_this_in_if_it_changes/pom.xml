@@ -279,12 +279,12 @@
     <dependency>
       <groupId>com.sun.istack</groupId>
       <artifactId>istack-commons-runtime</artifactId>
-      <version>4.0.0-M3</version>
+      <version>4.0.1</version>
     </dependency>
     <dependency>
       <groupId>com.sun.istack</groupId>
       <artifactId>istack-commons-tools</artifactId>
-      <version>4.0.0-M3</version>
+      <version>4.0.1</version>
     </dependency>
     <dependency>
       <groupId>com.sun.mail</groupId>
@@ -294,12 +294,12 @@
     <dependency>
       <groupId>com.sun.xml.bind.external</groupId>
       <artifactId>relaxng-datatype</artifactId>
-      <version>3.0.0-M4</version>
+      <version>3.0.1</version>
     </dependency>
     <dependency>
       <groupId>com.sun.xml.bind.external</groupId>
       <artifactId>rngom</artifactId>
-      <version>3.0.0-M3</version>
+      <version>3.0.1</version>
     </dependency>
     <dependency>
       <groupId>com.sun.xml.bind</groupId>

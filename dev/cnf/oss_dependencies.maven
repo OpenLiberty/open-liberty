@@ -51,11 +51,11 @@ com.sebastian-daschner:jaxrs-analyzer:0.9
 com.sun.activation:jakarta.activation:2.0.0
 com.sun.faces:jsf-api:2.2.14
 com.sun.faces:jsf-impl:2.2.14
-com.sun.istack:istack-commons-runtime:4.0.0-M3
-com.sun.istack:istack-commons-tools:4.0.0-M3
+com.sun.istack:istack-commons-runtime:4.0.1
+com.sun.istack:istack-commons-tools:4.0.1
 com.sun.mail:jakarta.mail:2.0.0
-com.sun.xml.bind.external:relaxng-datatype:3.0.0-M4
-com.sun.xml.bind.external:rngom:3.0.0-M3
+com.sun.xml.bind.external:relaxng-datatype:3.0.1
+com.sun.xml.bind.external:rngom:3.0.1
 com.sun.xml.bind:jaxb-impl:2.2.10
 com.sun.xml.bind:jaxb-impl:2.3.0.1
 com.sun.xml.bind:jaxb-jxc:2.2.10
