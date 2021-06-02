@@ -127,21 +127,6 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
     private ConcurrencyService concurrencySvc;
 
     /**
-     * Privileged action to lazily obtain the context service. Available only on the OSGi code path.
-     */
-    private final PrivilegedAction<WSContextService> contextSvcAccessor = new PrivilegedAction<WSContextService>() {
-        @Override
-        @Trivial
-        public WSContextService run() {
-            try {
-                return contextSvcRef.getServiceWithException();
-            } catch (IllegalStateException x) {
-                throw new RejectedExecutionException(x);
-            }
-        }
-    };
-
-    /**
      * Reference to the context service for this managed executor service. Available only on the OSGi code path.
      */
     private final AtomicServiceReference<WSContextService> contextSvcRef = new AtomicServiceReference<WSContextService>("ContextService");
@@ -192,17 +177,6 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
      * Executor that runs tasks against the general concurrency policy for this managed executor.
      */
     volatile PolicyExecutor policyExecutor;
-
-    /**
-     * Privileged action to lazily obtain the transaction context provider.
-     */
-    private final PrivilegedAction<ThreadContextProvider> tranContextProviderAccessor = new PrivilegedAction<ThreadContextProvider>() {
-        @Override
-        @Trivial
-        public ThreadContextProvider run() {
-            return tranContextProviderRef.getService();
-        }
-    };
 
     /**
      * Reference to the transaction context provider.
@@ -444,7 +418,14 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
 
     @Override
     public WSContextService getContextService() {
-        return mpContextService == null ? AccessController.doPrivileged(contextSvcAccessor) : mpContextService;
+        if (mpContextService == null)
+            try {
+                return contextSvcRef.getServiceWithException(); // doPriv is covered by AtomicServiceReference
+            } catch (IllegalStateException x) {
+                throw new RejectedExecutionException(x);
+            }
+        else
+            return mpContextService;
     }
 
     @Override
@@ -766,7 +747,7 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
     @SuppressWarnings("deprecation")
     ThreadContext suspendTransaction() {
         Map<String, String> XPROPS_SUSPEND_TRAN = eeVersion < 9 ? JAVAX_SUSPEND_TRAN : JAKARTA_SUSPEND_TRAN;
-        ThreadContextProvider tranContextProvider = AccessController.doPrivileged(tranContextProviderAccessor);
+        ThreadContextProvider tranContextProvider = tranContextProviderRef.getService(); // doPriv is covered by AtomicServiceReference
         ThreadContext suspendedTranSnapshot = tranContextProvider == null ? null : tranContextProvider.captureThreadContext(XPROPS_SUSPEND_TRAN, null);
         if (suspendedTranSnapshot != null)
             suspendedTranSnapshot.taskStarting();
@@ -777,7 +758,7 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
     @Trivial
     public String toString() {
         String s = name.get();
-        return s.startsWith("ManagedExecutor@") ? s : ("ManagedExecutor@" + Integer.toHexString(hashCode()) + ' ' + s);
+        return s != null && s.startsWith("ManagedExecutor@") ? s : ("ManagedExecutor@" + Integer.toHexString(hashCode()) + ' ' + s);
     }
 
     /**
