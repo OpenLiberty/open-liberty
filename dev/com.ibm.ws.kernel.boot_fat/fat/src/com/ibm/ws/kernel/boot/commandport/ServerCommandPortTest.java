@@ -61,9 +61,9 @@ public class ServerCommandPortTest {
     public void testServerCommandPortDisabled() throws Exception {
         LibertyServer server = commandPortDisabledServer;
         JavaInfo java = JavaInfo.forCurrentVM();
-        if (java.majorVersion() != 8) {
-            server.copyFileToLibertyServerRoot("illegalAccess/jvm.options");
-        }
+//        if (java.majorVersion() != 8) {
+//            server.copyFileToLibertyServerRoot("illegalAccess/jvm.options");
+//        }
 
         // server should start, but with a warning message that we can't actually tell if it completed starting
         // because the command port is disabled
@@ -141,9 +141,9 @@ public class ServerCommandPortTest {
         LibertyServer server = commandPortEnabledServer;
 
         JavaInfo java = JavaInfo.forCurrentVM();
-        if (java.majorVersion() != 8) {
-            server.copyFileToLibertyServerRoot("illegalAccess/jvm.options");
-        }
+//        if (java.majorVersion() != 8) {
+//            server.copyFileToLibertyServerRoot("illegalAccess/jvm.options");
+//        }
 
         String output = server.startServer().getStdout();
         assertTrue(output.contains("Server " + server.getServerName() + " started"));

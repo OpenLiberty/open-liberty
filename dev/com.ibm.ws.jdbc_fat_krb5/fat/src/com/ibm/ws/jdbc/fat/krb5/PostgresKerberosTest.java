@@ -30,7 +30,6 @@ import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
-import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import jdbc.krb5.pg.web.PgKerberosTestServlet;
@@ -78,9 +77,9 @@ public class PostgresKerberosTest extends FATServletClient {
         jvmOpts.add("-Dsun.security.krb5.debug=true"); // Hotspot/OpenJ9
         jvmOpts.add("-Dcom.ibm.security.krb5.krb5Debug=true"); // IBM JDK
 
-        if (JavaInfo.JAVA_VERSION >= 9) {
-            jvmOpts.add("--illegal-access=permit"); // Java 16 JEPS 396
-        }
+//        if (JavaInfo.JAVA_VERSION >= 9) {
+//            jvmOpts.add("--illegal-access=permit"); // Java 16 JEPS 396
+//        }
         server.setJvmOptions(jvmOpts);
 
         server.startServer();
