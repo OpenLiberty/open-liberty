@@ -15,6 +15,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
@@ -161,6 +162,18 @@ public class JAXRSClientSSLTestNoLibertySSLCfg extends AbstractTest {
                 break;
             }
         }
+
+        if (line.contains("InvocationTargetException")) { 
+            BufferedReader errBr =  HttpUtils.getErrorStream(con);           
+            
+            String exception = "";
+            String aLine;
+            while ((aLine = errBr.readLine()) != null) {
+                exception = exception + aLine;
+            }
+            Log.info(this.getClass(), testMethod, "Test failed with an InvocationTargetException " + exception);
+        }
+        
         assertTrue("Real response is " + line + " and the expected response is one of " + String.join(" | ", expectedResponses),  foundExpectedResponse);
     }
 }
