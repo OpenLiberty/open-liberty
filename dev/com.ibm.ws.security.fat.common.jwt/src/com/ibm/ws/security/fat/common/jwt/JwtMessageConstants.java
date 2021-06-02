@@ -63,6 +63,7 @@ public class JwtMessageConstants extends com.ibm.ws.security.fat.common.MessageC
     public static final String CWWKS6063E_JWS_REQUIRED_BUT_TOKEN_NOT_JWS = "CWWKS6063E";
     public static final String CWWKS6064E_JWE_REQUIRED_BUT_TOKEN_NOT_JWE = "CWWKS6064E";
     public static final String CWWKS6065E_JWE_DOES_NOT_CONTAIN_JWS = "CWWKS6065E";
+    public static final String CWWKS6066E_JWE_DECRYPTION_KEY_MISSING = "CWWKS6066E";
 
     public static final String CWPKI0812E_CANT_FIND_KEY = "CWPKI0812E";
 
