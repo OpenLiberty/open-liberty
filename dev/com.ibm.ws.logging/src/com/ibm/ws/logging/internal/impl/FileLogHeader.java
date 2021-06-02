@@ -28,7 +28,7 @@ public class FileLogHeader {
     }
 
     private void process(Processor processor) {
-        if (!isJSON) {
+        if (!isJSON || trace) {
             processor.println(BaseTraceFormatter.banner);
         }
         processor.print(header);
@@ -41,7 +41,7 @@ public class FileLogHeader {
             }
         }
 
-        if (!isJSON) {
+        if (!isJSON || trace) {
             processor.println(BaseTraceFormatter.banner);
         }
     }
