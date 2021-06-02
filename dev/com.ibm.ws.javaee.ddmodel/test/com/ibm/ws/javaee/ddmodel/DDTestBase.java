@@ -10,11 +10,14 @@
  *******************************************************************************/
 package com.ibm.ws.javaee.ddmodel;
 
+import static org.junit.Assert.fail;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import org.jmock.Expectations;
 import org.jmock.Mockery;
+import org.junit.Assert;
 
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
@@ -115,6 +118,27 @@ public class DDTestBase {
         } catch (UnableToAdaptException e) {
             Throwable cause = e.getCause();
             throw cause instanceof Exception ? (Exception) cause : e;
+        }
+    }
+    
+    protected void verifyMessage(Exception e, String requiredText, String altText) {
+        System.out.println("Exception [ " + e.getClass() + " ]");
+        System.out.println("Message [ " + e.getMessage() + " ]");
+        System.out.println("Required text [ " + requiredText + " ]");
+        System.out.println("Alternate text [ " + altText + " ]");
+        e.printStackTrace(System.out);
+
+        String msg = e.getMessage();
+        if ( !msg.contains(requiredText) &&
+             ((altText == null) || !msg.contains(altText)) ) {
+
+            String assertMsg;
+            if ( altText == null ) {
+                assertMsg = "Text [ " + requiredText + " ] absent from [ " + msg + " ]";            
+            } else {
+                assertMsg = "Text [ " + requiredText + " ] (or [ " + altText + " ]) absent from [ " + msg + " ]";            
+            }
+            Assert.fail(assertMsg);
         }
     }
 }
