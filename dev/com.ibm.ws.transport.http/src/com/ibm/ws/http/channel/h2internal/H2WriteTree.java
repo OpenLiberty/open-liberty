@@ -356,6 +356,9 @@ public class H2WriteTree implements H2WorkQInterface {
 
         @Override
         public void run() {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                Tr.entry(tc, "Write Q run entry, qStatus: " + qStatus + " qSync: " + qSync);
+            }
 
             try {
                 while (true) {
@@ -415,6 +418,10 @@ public class H2WriteTree implements H2WorkQInterface {
                 // add debug
                 // something went really wrong, log and leave
                 qStatus = Q_STATUS.FINISHED;
+            } finally {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                    Tr.exit(tc, "Write Q run exit, qStatus: " + qStatus + " qSync: " + qSync);
+                }
             }
         }
     }
