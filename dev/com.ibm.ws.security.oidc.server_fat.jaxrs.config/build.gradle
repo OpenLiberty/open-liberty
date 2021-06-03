@@ -105,12 +105,6 @@ autoFVT.doLast {
     }
 
     copy {
-      from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').buildDir, "test-application/testMediator.zip")
-      into new File(autoFvtDir, 'publish/servers/' + server + '/test-apps')
-      rename 'testMediator.zip', 'testMediator.jar'
-    }
-
-    copy {
       from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').buildDir, 'test-application/oauthtaidemo.ear')
       into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
     }
