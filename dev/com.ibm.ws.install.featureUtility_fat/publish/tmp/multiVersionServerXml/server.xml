@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server description="new server">
+
+    <!-- Enable features -->
+    <featureManager>
+	   <feature>jsp-2.2</feature>
+	   <feature>jsp-2.3</feature>
+    </featureManager>
+</server>
+

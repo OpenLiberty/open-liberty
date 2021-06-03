@@ -77,10 +77,10 @@ Include-Resource: \
   @${repo;org.glassfish.jaxb:jaxb-xjc;3.0.1}!/!(META-INF/maven/*|module-info.class), \
   @${repo;org.glassfish.jaxb:txw2;3.0.1}!/!(META-INF/maven/*|module-info.class), \
   @${repo;org.glassfish.jaxb:xsom;3.0.1}!/!(META-INF/maven/*|module-info.class), \
-  @${repo;com.sun.xml.bind.external:relaxng-datatype;3.0.0}!/!META-INF/maven/*, \
-  @${repo;com.sun.xml.bind.external:rngom;3.0.0}!/!META-INF/maven/*, \
-  @${repo;com.sun.istack:istack-commons-runtime;4.0.0}!/!META-INF/maven/*, \
-  @${repo;com.sun.istack:istack-commons-tools;4.0.0}!/!META-INF/maven/*, \
+  @${repo;com.sun.xml.bind.external:relaxng-datatype;3.0.1}!/!(META-INF/maven/*|module-info.class), \
+  @${repo;com.sun.xml.bind.external:rngom;3.0.1}!/!(META-INF/maven/*|module-info.class), \
+  @${repo;com.sun.istack:istack-commons-runtime;4.0.1}!/!(META-INF/maven/*|module-info.class), \
+  @${repo;com.sun.istack:istack-commons-tools;4.0.1}!/!(META-INF/maven/*|module-info.class), \
   META-INF/services/jakarta.xml.bind.JAXBContext=resources/META-INF/services/jakarta.xml.bind.JAXBContext, \
   META-INF/services/jakarta.xml.bind.JAXBContextFactory=resources/META-INF/services/jakarta.xml.bind.JAXBContextFactory
 
@@ -104,8 +104,8 @@ instrument.disabled: true
 	org.glassfish.jaxb:jaxb-runtime;version=3.0.1, \
 	org.glassfish.jaxb:jaxb-xjc;version=3.0.1, \
 	org.glassfish.jaxb:xsom;version=3.0.1, \
-	com.sun.xml.bind.external:relaxng-datatype;version=3.0.0, \
-    com.sun.xml.bind.external:rngom;version=3.0.0, \
-    com.sun.istack:istack-commons-runtime;version=4.0.0, \
-    com.sun.istack:istack-commons-tools;version=4.0.0, \
+	com.sun.xml.bind.external:relaxng-datatype;version=3.0.1, \
+    com.sun.xml.bind.external:rngom;version=3.0.1, \
+    com.sun.istack:istack-commons-runtime;version=4.0.1, \
+    com.sun.istack:istack-commons-tools;version=4.0.1, \
     com.ibm.ws.org.apache.ant;strategy=exact;version=latest

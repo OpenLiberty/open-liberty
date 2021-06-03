@@ -116,9 +116,6 @@ public class CDIEJBManagedObjectFactoryImpl<T> extends AbstractManagedObjectFact
                 Tr.debug(tc, "Looking for EJB Bean: " + this.ejbName);
             }
 
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Looking for EJB Bean: " + this.ejbName);
-            }
             WebSphereBeanDeploymentArchive bda = super.getCurrentBeanDeploymentArchive();
             WeldManager beanManager = null;
             if (bda != null) {

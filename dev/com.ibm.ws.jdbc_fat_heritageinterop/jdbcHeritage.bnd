@@ -21,15 +21,6 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
 WS-TraceGroup: jdbcHeritage
 
-Export-Package:\
- com.ibm.websphere.appprofile.accessintent,\
- com.ibm.websphere.ce.cm,\
- com.ibm.websphere.rsadapter
-
-Import-Package: *
-
-Private-Package: test.jdbc.heritage.bundle.*
-
 Include-Resource:\
  OSGI-INF/metatype/metatype.xml=test-bundles/jdbcHeritage/resources/OSGI-INF/metatype/metatype.xml,\
  OSGI-INF/wlp/defaultInstances.xml=test-bundles/jdbcHeritage/resources/OSGI-INF/wlp/defaultInstances.xml

@@ -11,8 +11,13 @@
 package com.ibm.ws.jaxrs20.client.fat.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockserver.model.Header.header;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
+import static org.mockserver.model.NottableString.not;
+import static org.mockserver.model.NottableString.string;
+import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,6 +29,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockserver.configuration.ConfigurationProperties;
 import org.mockserver.integration.ClientAndServer;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -36,14 +42,13 @@ import componenttest.topology.impl.LibertyServer;
 
 /**
  * These tests are used to determine whether a JAX-RS 2.0 client can reach a
- * remote enpoint when using an authenticating proxy server.
+ * remote endpoint when using an authenticating proxy server.
  *
  * Note that the password used in the servlet will be different than what is
  * passed in here - this is so that the test case can check that the
  * password specified in the actual Client APIs are not logged, even when
  * tracing is enabled.
  */
-@SkipForRepeat("EE9_FEATURES") // Continue to skip this test for EE9 as proxy authority (properties com.ibm.ws.jaxrs.client.proxy.*) is not supported yet
 @RunWith(FATRunner.class)
 public class JAXRSClientSSLProxyAuthTest extends AbstractTest {
 
@@ -56,27 +61,27 @@ public class JAXRSClientSSLProxyAuthTest extends AbstractTest {
     private final static String target = appname + "/ClientTestServlet";
 
     private static int proxyPort;
-    private static int mockPort;
     private static ClientAndServer proxy;
-    private static ClientAndServer mock;
 
     @BeforeClass
     public static void setup() throws Exception {
-        WebArchive app = ShrinkHelper.defaultDropinApp(server, appname,
-                                                       "com.ibm.ws.jaxrs20.client.jaxrsclientproxyauth.client",
+        ShrinkHelper.defaultDropinApp(server, appname, "com.ibm.ws.jaxrs20.client.jaxrsclientproxyauth.client",
                                                        "com.ibm.ws.jaxrs20.client.jaxrsclientproxyauth.service");
 
         System.setProperty("javax.net.ssl.keyStore", "publish/servers/jaxrs20.client.ProxyAuthTest/resources/security/key.jks");
         System.setProperty("javax.net.ssl.keyStorePassword", "passw0rd");
         System.setProperty("javax.net.ssl.trustStore", "publish/servers/jaxrs20.client.ProxyAuthTest/resources/security/trust.jks");
         System.setProperty("javax.net.ssl.trustStorePassword", "passw0rd");
-        System.setProperty("mockserver.useBouncyCastleForKeyAndCertificateGeneration", "true");
 
+        ConfigurationProperties.useBouncyCastleForKeyAndCertificateGeneration(true);
+        ConfigurationProperties.forwardProxyTLSX509CertificatesTrustManagerType("ANY");
+        ConfigurationProperties.proxyAuthenticationUsername("jaxrsUser");
+        ConfigurationProperties.proxyAuthenticationPassword("myPa$$word");
+        ConfigurationProperties.proxyAuthenticationRealm("foo");
+        ConfigurationProperties.attemptToProxyIfNoMatchingExpectation(true);
+        
         proxyPort = Integer.getInteger("member_3.http");
         proxy = ClientAndServer.startClientAndServer(proxyPort);
-        
-        mockPort = Integer.getInteger("member_4.http");
-        mock = ClientAndServer.startClientAndServer(mockPort);
 
         // Make sure we don't fail because we try to start an
         // already started server
@@ -90,7 +95,6 @@ public class JAXRSClientSSLProxyAuthTest extends AbstractTest {
     @AfterClass
     public static void tearDown() throws Exception {
         proxy.stop();
-        mock.stop();
         if (server != null) {
             server.stopServer();
         }
@@ -104,15 +108,13 @@ public class JAXRSClientSSLProxyAuthTest extends AbstractTest {
 
     @After
     public void afterTest() {
+        Log.info(c, "afterTest", "Proxy Server log messages: " + proxy.retrieveLogMessages(request()));
+        proxy.reset();
         serverRef = null;
-
     }
 
-    /////////////////////////////////////////////////////////////////////////
-    // Test when configuring the proxy options using the ClientBuilder object
-
     @Test
-    public void testTunnelThroughProxyToHTTPEndpoint_ClientBuilder() throws Exception {
+    public void testTunnelThroughProxyToHTTPEndpoint() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         p.put("param", "helloRochester");
         p.put("proxyhost", "localhost");
@@ -126,11 +128,12 @@ public class JAXRSClientSSLProxyAuthTest extends AbstractTest {
         assertEquals("Proxy Password value printed in trace output", 0, server.findStringsInLogsAndTraceUsingMark("myPa\\$\\$word").size());
         server.setMarkToEndOfLog(server.getFileFromLibertyServerRoot("logs/trace.log"));
 
-        proxy.verify(request().withHeader("Proxy-Authorization", "Basic amF4cnNVc2VyOm15UGEkJHdvcmQ=").withSecure(false)); //jaxrsUser:myPa$$word
+        assertTrue(proxy.retrieveLogMessages(request()).contains("received request"));
     }
 
+    @SkipForRepeat(NO_MODIFICATION) // jaxrs-2.0 currently does not implement HTTPS-based proxy authentication
     @Test
-    public void testTunnelThroughProxyToHTTPSEndpoint_ClientBuilder() throws Exception {
+    public void testTunnelThroughProxyToHTTPSEndpoint() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         p.put("param", "helloRochester");
         p.put("proxyhost", "localhost");
@@ -145,11 +148,11 @@ public class JAXRSClientSSLProxyAuthTest extends AbstractTest {
         assertEquals("Proxy Password value printed in trace output", 0, server.findStringsInLogsAndTraceUsingMark("myPa\\$\\$word").size());
         server.setMarkToEndOfLog(server.getFileFromLibertyServerRoot("logs/trace.log"));
 
-        proxy.verify(request().withHeader("Proxy-Authorization", "Basic amF4cnNVc2VyOm15UGEkJHdvcmQ=").withSecure(true)); //jaxrsUser:myPa$$word
+        assertTrue(proxy.retrieveLogMessages(request()).contains("received request"));
     }
 
     @Test
-    public void testTunnelThroughProxyToHTTPEndpointInvalidUsername_ClientBuilder() throws Exception {
+    public void testTunnelThroughProxyToHTTPEndpointInvalidUsername() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         p.put("param", "helloRochester");
         p.put("proxyhost", "localhost");
@@ -158,7 +161,14 @@ public class JAXRSClientSSLProxyAuthTest extends AbstractTest {
         p.put("proxyusername", "jaxrsUser1");
         p.put("proxypassword", "USE_PASSWORD_FROM_SERVLET");
 
-        this.runTestOnServer(target, "testProxyToHTTP_ClientBuilder", p, "[Basic Resource]:helloRochester");
+        proxy.when(request().withHeader(header(not("Proxy-Authorization"))))
+             .respond(response().withStatusCode(407).withHeader("Proxy-Authenticate", "Basic realm=\"foo\""));
+        proxy.when(request().withHeader(header(string("Proxy-Authorization"), not("amF4cnNVc2VyOm15UGEkJHdvcmQ="))))
+             .respond(response().withStatusCode(407).withHeader("Proxy-Authenticate", "Basic realm=\"foo\""));
+        
+        this.runTestOnServer(target, "testProxyToHTTP_ClientBuilder", p, 
+                             "[Proxy Error]:javax.ws.rs.ClientErrorException: HTTP 407 Proxy Authentication Required", // <= EE8
+                             "[Proxy Error]:jakarta.ws.rs.ClientErrorException: HTTP 407 Proxy Authentication Required"); // EE9
 
         assertEquals("Proxy Password value printed in trace output", 0, server.findStringsInLogsAndTraceUsingMark("myPa\\$\\$word").size());
         server.setMarkToEndOfLog(server.getFileFromLibertyServerRoot("logs/trace.log"));
@@ -167,26 +177,28 @@ public class JAXRSClientSSLProxyAuthTest extends AbstractTest {
     }
 
     @Test
-    public void testProxyReturnsAuthError_ClientBuilder() throws Exception {
+    public void testProxyReturnsAuthError() throws Exception {
         //Server will respond to any request with 407 to mock a proxy authentication failure
-        mock.when(request()).respond(response().withStatusCode(407));
+        proxy.when(request()).respond(response().withStatusCode(407));
 
         Map<String, String> p = new HashMap<String, String>();
         p.put("param", "helloRochester");
         p.put("proxyhost", "localhost");
-        p.put("proxyport", "" + mockPort);
+        p.put("proxyport", "" + proxyPort);
         p.put("proxytype", "HTTP");
         p.put("proxyusername", "jaxrsUser");
         p.put("proxypassword", "USE_PASSWORD_FROM_SERVLET");
 
-        this.runTestOnServer(target, "testProxyToHTTP_ClientBuilder", p, "[Proxy Error]:javax.ws.rs.ClientErrorException: HTTP 407 Proxy Authentication Required");
+        this.runTestOnServer(target, "testProxyToHTTP_ClientBuilder", p,
+                             "[Proxy Error]:javax.ws.rs.ClientErrorException: HTTP 407 Proxy Authentication Required", // <= EE8
+                             "[Proxy Error]:jakarta.ws.rs.ClientErrorException: HTTP 407 Proxy Authentication Required"); //EE9
 
         assertEquals("Proxy Password value printed in trace output", 0, server.findStringsInLogsAndTraceUsingMark("myPa\\$\\$word").size());
         server.setMarkToEndOfLog(server.getFileFromLibertyServerRoot("logs/trace.log"));
     }
 
     @Test
-    public void testTunnelThroughProxyToHTTPEndpointTimeout_ClientBuilder() throws Exception {
+    public void testTunnelThroughProxyToHTTPEndpointTimeout() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         p.put("param", "helloRochester");
         p.put("proxyhost", "localhost");
@@ -196,286 +208,9 @@ public class JAXRSClientSSLProxyAuthTest extends AbstractTest {
         p.put("proxypassword", "USE_PASSWORD_FROM_SERVLET");
         p.put("timeout", "1000");
 
-        this.runTestOnServer(target, "testProxyToHTTPTimeout_ClientBuilder", p, "[Proxy Error]:javax.ws.rs.ProcessingException: java.net.SocketTimeoutException: ");
-
-        assertEquals("Proxy Password value printed in trace output", 0, server.findStringsInLogsAndTraceUsingMark("myPa\\$\\$word").size());
-        server.setMarkToEndOfLog(server.getFileFromLibertyServerRoot("logs/trace.log"));
-    }
-
-    //////////////////////////////////////////////////////////////////
-    // Test when configuring the proxy options using the Client object
-    @Test
-    public void testTunnelThroughProxyToHTTPEndpoint_Client() throws Exception {
-        Map<String, String> p = new HashMap<String, String>();
-        p.put("param", "helloRochester");
-        p.put("proxyhost", "localhost");
-        p.put("proxyport", "" + proxyPort);
-        p.put("proxytype", "HTTP");
-        p.put("proxyusername", "jaxrsUser");
-        p.put("proxypassword", "USE_PASSWORD_FROM_SERVLET");
-
-        this.runTestOnServer(target, "testProxyToHTTP_Client", p, "[Basic Resource]:helloRochester");
-
-        assertEquals("Proxy Password value printed in trace output", 0, server.findStringsInLogsAndTraceUsingMark("myPa\\$\\$word").size());
-        server.setMarkToEndOfLog(server.getFileFromLibertyServerRoot("logs/trace.log"));
-
-        proxy.verify(request().withHeader("Proxy-Authorization", "Basic amF4cnNVc2VyOm15UGEkJHdvcmQ=").withSecure(false)); //jaxrsUser:myPa$$word
-    }
-
-    @Test
-    public void testTunnelThroughProxyToHTTPSEndpoint_Client() throws Exception {
-        Map<String, String> p = new HashMap<String, String>();
-        p.put("param", "helloRochester");
-        p.put("proxyhost", "localhost");
-        p.put("proxyport", "" + proxyPort);
-        p.put("proxytype", "HTTP");
-        p.put("proxyusername", "jaxrsUser");
-        p.put("proxypassword", "USE_PASSWORD_FROM_SERVLET");
-        p.put("secPort", "" + server.getHttpDefaultSecurePort());
-
-        this.runTestOnServer(target, "testProxyToHTTPS_Client", p, "[Basic Resource]:helloRochester");
-
-        assertEquals("Proxy Password value printed in trace output", 0, server.findStringsInLogsAndTraceUsingMark("myPa\\$\\$word").size());
-        server.setMarkToEndOfLog(server.getFileFromLibertyServerRoot("logs/trace.log"));
-
-        proxy.verify(request().withHeader("Proxy-Authorization", "Basic amF4cnNVc2VyOm15UGEkJHdvcmQ=").withSecure(true)); //jaxrsUser:myPa$$word
-    }
-
-    @Test
-    public void testTunnelThroughProxyToHTTPEndpointInvalidUsername_Client() throws Exception {
-        Map<String, String> p = new HashMap<String, String>();
-        p.put("param", "helloRochester");
-        p.put("proxyhost", "localhost");
-        p.put("proxyport", "" + proxyPort);
-        p.put("proxytype", "HTTP");
-        p.put("proxyusername", "jaxrsUser1");
-        p.put("proxypassword", "USE_PASSWORD_FROM_SERVLET");
-
-        this.runTestOnServer(target, "testProxyToHTTP_Client", p, "[Basic Resource]:helloRochester");
-
-        assertEquals("Proxy Password value printed in trace output", 0, server.findStringsInLogsAndTraceUsingMark("myPa\\$\\$word").size());
-        server.setMarkToEndOfLog(server.getFileFromLibertyServerRoot("logs/trace.log"));
-
-        proxy.verify(request().withHeader("Proxy-Authorization", "Basic amF4cnNVc2VyMTpteVBhJCR3b3Jk").withSecure(false)); //jaxrsUser1:myPa$$word
-    }
-
-    @Test
-    public void testProxyReturnsAuthError_Client() throws Exception {
-        //Server will respond to any request with 407 to mock a proxy authentication failure
-        mock.when(request()).respond(response().withStatusCode(407));
-
-        Map<String, String> p = new HashMap<String, String>();
-        p.put("param", "helloRochester");
-        p.put("proxyhost", "localhost");
-        p.put("proxyport", "" + mockPort);
-        p.put("proxytype", "HTTP");
-        p.put("proxyusername", "jaxrsUser");
-        p.put("proxypassword", "USE_PASSWORD_FROM_SERVLET");
-
-        this.runTestOnServer(target, "testProxyToHTTP_Client", p, "[Proxy Error]:javax.ws.rs.ClientErrorException: HTTP 407 Proxy Authentication Required");
-
-        assertEquals("Proxy Password value printed in trace output", 0, server.findStringsInLogsAndTraceUsingMark("myPa\\$\\$word").size());
-        server.setMarkToEndOfLog(server.getFileFromLibertyServerRoot("logs/trace.log"));
-    }
-
-    @Test
-    public void testTunnelThroughProxyToHTTPEndpointTimeout_Client() throws Exception {
-        Map<String, String> p = new HashMap<String, String>();
-        p.put("param", "helloRochester");
-        p.put("proxyhost", "localhost");
-        p.put("proxyport", "" + proxyPort);
-        p.put("proxytype", "HTTP");
-        p.put("proxyusername", "jaxrsUser");
-        p.put("proxypassword", "USE_PASSWORD_FROM_SERVLET");
-        p.put("timeout", "1000");
-
-        this.runTestOnServer(target, "testProxyToHTTPTimeout_Client", p, "[Proxy Error]:javax.ws.rs.ProcessingException: java.net.SocketTimeoutException: ");
-
-        assertEquals("Proxy Password value printed in trace output", 0, server.findStringsInLogsAndTraceUsingMark("myPa\\$\\$word").size());
-        server.setMarkToEndOfLog(server.getFileFromLibertyServerRoot("logs/trace.log"));
-    }
-
-    /////////////////////////////////////////////////////////////////////
-    // Test when configuring the proxy options using the WebTarget object
-    @Test
-    public void testTunnelThroughProxyToHTTPEndpoint_WebTarget() throws Exception {
-        Map<String, String> p = new HashMap<String, String>();
-        p.put("param", "helloRochester");
-        p.put("proxyhost", "localhost");
-        p.put("proxyport", "" + proxyPort);
-        p.put("proxytype", "HTTP");
-        p.put("proxyusername", "jaxrsUser");
-        p.put("proxypassword", "USE_PASSWORD_FROM_SERVLET");
-
-        this.runTestOnServer(target, "testProxyToHTTP_WebTarget", p, "[Basic Resource]:helloRochester");
-
-        assertEquals("Proxy Password value printed in trace output", 0, server.findStringsInLogsAndTraceUsingMark("myPa\\$\\$word").size());
-        server.setMarkToEndOfLog(server.getFileFromLibertyServerRoot("logs/trace.log"));
-
-        proxy.verify(request().withHeader("Proxy-Authorization", "Basic amF4cnNVc2VyOm15UGEkJHdvcmQ=").withSecure(false)); //jaxrsUser:myPa$$word
-    }
-
-    @Test
-    public void testTunnelThroughProxyToHTTPSEndpoint_WebTarget() throws Exception {
-        Map<String, String> p = new HashMap<String, String>();
-        p.put("param", "helloRochester");
-        p.put("proxyhost", "localhost");
-        p.put("proxyport", "" + proxyPort);
-        p.put("proxytype", "HTTP");
-        p.put("proxyusername", "jaxrsUser");
-        p.put("proxypassword", "USE_PASSWORD_FROM_SERVLET");
-        p.put("secPort", "" + server.getHttpDefaultSecurePort());
-
-        this.runTestOnServer(target, "testProxyToHTTPS_WebTarget", p, "[Basic Resource]:helloRochester");
-
-        assertEquals("Proxy Password value printed in trace output", 0, server.findStringsInLogsAndTraceUsingMark("myPa\\$\\$word").size());
-        server.setMarkToEndOfLog(server.getFileFromLibertyServerRoot("logs/trace.log"));
-
-        proxy.verify(request().withHeader("Proxy-Authorization", "Basic amF4cnNVc2VyOm15UGEkJHdvcmQ=").withSecure(true)); //jaxrsUser:myPa$$word
-    }
-
-    @Test
-    public void testTunnelThroughProxyToHTTPEndpointInvalidUsername_WebTarget() throws Exception {
-        Map<String, String> p = new HashMap<String, String>();
-        p.put("param", "helloRochester");
-        p.put("proxyhost", "localhost");
-        p.put("proxyport", "" + proxyPort);
-        p.put("proxytype", "HTTP");
-        p.put("proxyusername", "jaxrsUser1");
-        p.put("proxypassword", "USE_PASSWORD_FROM_SERVLET");
-
-        this.runTestOnServer(target, "testProxyToHTTP_WebTarget", p, "[Basic Resource]:helloRochester");
-
-        assertEquals("Proxy Password value printed in trace output", 0, server.findStringsInLogsAndTraceUsingMark("myPa\\$\\$word").size());
-        server.setMarkToEndOfLog(server.getFileFromLibertyServerRoot("logs/trace.log"));
-
-        proxy.verify(request().withHeader("Proxy-Authorization", "Basic amF4cnNVc2VyMTpteVBhJCR3b3Jk").withSecure(false)); //jaxrsUser1:myPa$$word
-    }
-
-    @Test
-    public void testProxyReturnsAuthError_WebTarget() throws Exception {
-        //Server will respond to any request with 407 to mock a proxy authentication failure
-        mock.when(request()).respond(response().withStatusCode(407));
-
-        Map<String, String> p = new HashMap<String, String>();
-        p.put("param", "helloRochester");
-        p.put("proxyhost", "localhost");
-        p.put("proxyport", "" + mockPort);
-        p.put("proxytype", "HTTP");
-        p.put("proxyusername", "jaxrsUser");
-        p.put("proxypassword", "USE_PASSWORD_FROM_SERVLET");
-
-        this.runTestOnServer(target, "testProxyToHTTP_WebTarget", p, "[Proxy Error]:javax.ws.rs.ClientErrorException: HTTP 407 Proxy Authentication Required");
-
-        assertEquals("Proxy Password value printed in trace output", 0, server.findStringsInLogsAndTraceUsingMark("myPa\\$\\$word").size());
-    }
-
-    @Test
-    public void testTunnelThroughProxyToHTTPEndpointTimeout_WebTarget() throws Exception {
-        Map<String, String> p = new HashMap<String, String>();
-        p.put("param", "helloRochester");
-        p.put("proxyhost", "localhost");
-        p.put("proxyport", "" + proxyPort);
-        p.put("proxytype", "HTTP");
-        p.put("proxyusername", "jaxrsUser");
-        p.put("proxypassword", "USE_PASSWORD_FROM_SERVLET");
-        p.put("timeout", "1000");
-
-        this.runTestOnServer(target, "testProxyToHTTPTimeout_WebTarget", p, "[Proxy Error]:javax.ws.rs.ProcessingException: java.net.SocketTimeoutException: ");
-
-        assertEquals("Proxy Password value printed in trace output", 0, server.findStringsInLogsAndTraceUsingMark("myPa\\$\\$word").size());
-        server.setMarkToEndOfLog(server.getFileFromLibertyServerRoot("logs/trace.log"));
-    }
-
-    //////////////////////////////////////////////////////////////////////////////
-    // Test when configuring the proxy options using the Invocation.Builder object
-    @Test
-    public void testTunnelThroughProxyToHTTPEndpoint_Builder() throws Exception {
-        Map<String, String> p = new HashMap<String, String>();
-        p.put("param", "helloRochester");
-        p.put("proxyhost", "localhost");
-        p.put("proxyport", "" + proxyPort);
-        p.put("proxytype", "HTTP");
-        p.put("proxyusername", "jaxrsUser");
-        p.put("proxypassword", "USE_PASSWORD_FROM_SERVLET");
-
-        this.runTestOnServer(target, "testProxyToHTTP_Builder", p, "[Basic Resource]:helloRochester");
-
-        assertEquals("Proxy Password value printed in trace output", 0, server.findStringsInLogsAndTraceUsingMark("myPa\\$\\$word").size());
-        server.setMarkToEndOfLog(server.getFileFromLibertyServerRoot("logs/trace.log"));
-
-        proxy.verify(request().withHeader("Proxy-Authorization", "Basic amF4cnNVc2VyOm15UGEkJHdvcmQ=").withSecure(false)); //jaxrsUser:myPa$$word
-    }
-
-    //@Test
-    public void testTunnelThroughProxyToHTTPSEndpoint_Builder() throws Exception {
-        Map<String, String> p = new HashMap<String, String>();
-        p.put("param", "helloRochester");
-        p.put("proxyhost", "localhost");
-        p.put("proxyport", "" + proxyPort);
-        p.put("proxytype", "HTTP");
-        p.put("proxyusername", "jaxrsUser");
-        p.put("proxypassword", "USE_PASSWORD_FROM_SERVLET");
-        p.put("secPort", "" + server.getHttpDefaultSecurePort());
-
-        this.runTestOnServer(target, "testProxyToHTTPS_Builder", p, "[Basic Resource]:helloRochester");
-
-        assertEquals("Proxy Password value printed in trace output", 0, server.findStringsInLogsAndTraceUsingMark("myPa\\$\\$word").size());
-        server.setMarkToEndOfLog(server.getFileFromLibertyServerRoot("logs/trace.log"));
-
-        proxy.verify(request().withHeader("Proxy-Authorization", "Basic amF4cnNVc2VyOm15UGEkJHdvcmQ=").withSecure(true)); //jaxrsUser:myPa$$word
-    }
-
-    //@Test
-    public void testTunnelThroughProxyToHTTPEndpointInvalidUsername_Builder() throws Exception {
-        Map<String, String> p = new HashMap<String, String>();
-        p.put("param", "helloRochester");
-        p.put("proxyhost", "localhost");
-        p.put("proxyport", "" + proxyPort);
-        p.put("proxytype", "HTTP");
-        p.put("proxyusername", "jaxrsUser1");
-        p.put("proxypassword", "USE_PASSWORD_FROM_SERVLET");
-
-        this.runTestOnServer(target, "testProxyToHTTP_Builder", p, "[Basic Resource]:helloRochester");
-
-        assertEquals("Proxy Password value printed in trace output", 0, server.findStringsInLogsAndTraceUsingMark("myPa\\$\\$word").size());
-        server.setMarkToEndOfLog(server.getFileFromLibertyServerRoot("logs/trace.log"));
-
-        proxy.verify(request().withHeader("Proxy-Authorization", "Basic amF4cnNVc2VyMTpteVBhJCR3b3Jk").withSecure(false)); //jaxrsUser1:myPa$$word
-    }
-
-    //@Test // TODO: Enable after fixing Open-Liberty issue 227
-    public void testProxyReturnsAuthError_Builder() throws Exception {
-        //Server will respond to any request with 407 to mock a proxy authentication failure
-        mock.when(request()).respond(response().withStatusCode(407));
-
-        Map<String, String> p = new HashMap<String, String>();
-        p.put("param", "helloRochester");
-        p.put("proxyhost", "localhost");
-        p.put("proxyport", "" + mockPort);
-        p.put("proxytype", "HTTP");
-        p.put("proxyusername", "jaxrsUser");
-        p.put("proxypassword", "USE_PASSWORD_FROM_SERVLET");
-
-        this.runTestOnServer(target, "testProxyToHTTP_Builder", p, "[Proxy Error]:javax.ws.rs.ClientErrorException: HTTP 407 Proxy Authentication Required");
-
-        assertEquals("Proxy Password value printed in trace output", 0, server.findStringsInLogsAndTraceUsingMark("myPa\\$\\$word").size());
-        server.setMarkToEndOfLog(server.getFileFromLibertyServerRoot("logs/trace.log"));
-    }
-
-    //@Test // TODO: decide should timeouts be allowed to be configured in the Invocation.Builder?
-    // if so, we need to implement that functionality, then uncomment this test
-    public void testTunnelThroughProxyToHTTPEndpointTimeout_Builder() throws Exception {
-        Map<String, String> p = new HashMap<String, String>();
-        p.put("param", "helloRochester");
-        p.put("proxyhost", "localhost");
-        p.put("proxyport", "" + proxyPort);
-        p.put("proxytype", "HTTP");
-        p.put("proxyusername", "jaxrsUser");
-        p.put("proxypassword", "USE_PASSWORD_FROM_SERVLET");
-        p.put("timeout", "1000");
-
-        this.runTestOnServer(target, "testProxyToHTTPTimeout_Builder", p, "[Proxy Error]:javax.ws.rs.ProcessingException: java.net.SocketTimeoutException: ");
+        this.runTestOnServer(target, "testProxyToHTTPTimeout_ClientBuilder", p,
+                             "[Proxy Error]:javax.ws.rs.ProcessingException: java.net.SocketTimeoutException: ", // <= EE8
+                             "[Proxy Error]:jakarta.ws.rs.ProcessingException: RESTEASY004655: Unable to invoke request"); // EE9
 
         assertEquals("Proxy Password value printed in trace output", 0, server.findStringsInLogsAndTraceUsingMark("myPa\\$\\$word").size());
         server.setMarkToEndOfLog(server.getFileFromLibertyServerRoot("logs/trace.log"));
