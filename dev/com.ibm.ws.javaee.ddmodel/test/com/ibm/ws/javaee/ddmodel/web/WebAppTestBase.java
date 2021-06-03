@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2018 IBM Corporation and others.
+ * Copyright (c) 2013, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -91,6 +91,57 @@ public class WebAppTestBase extends DDTestBase {
                ">";
     }
 
+    // noSchemaWebApp30()
+    // noSchemaInstanceWebApp30()
+    // noSchemaLocationWebApp30()
+    // noVersionWebApp30()
+    // noIDWebApp30()
+
+    protected static String noSchemaWebApp30() {
+        return "<web-app" +
+               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+               " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd\"" +
+               " version=\"3.0\"" +
+               " id=\"WebApp_ID\"" +
+               ">";
+    }    
+    
+    protected static String noSchemaInstanceWebApp30() {
+        return "<web-app" +
+               " xmlns=\"http://java.sun.com/xml/ns/javaee\"" +
+               " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd\"" +
+               " version=\"3.0\"" +
+               " id=\"WebApp_ID\"" +
+               ">";
+    }
+
+    protected static String noSchemaLocationWebApp30() {
+        return "<web-app" +
+               " xmlns=\"http://java.sun.com/xml/ns/javaee\"" +
+               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+               " version=\"3.0\"" +
+               " id=\"WebApp_ID\"" +
+               ">";
+    }
+
+    protected static String noVersionWebApp30() {
+        return "<web-app" +
+               " xmlns=\"http://java.sun.com/xml/ns/javaee\"" +
+               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+               " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd\"" +
+               " id=\"WebApp_ID\"" +
+               ">";
+    }
+    
+    protected static String noIDWebApp30() {
+        return "<web-app" +
+               " xmlns=\"http://java.sun.com/xml/ns/javaee\"" +
+               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+               " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd\"" +
+               " version=\"3.0\"" +
+               ">";
+    }
+    
     protected static String webApp31() {
         return "<web-app" +
                " xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"" +
@@ -113,5 +164,26 @@ public class WebAppTestBase extends DDTestBase {
 
     protected static String webAppTail() {
         return "</web-app>";
+    }
+    
+    protected static String webApp(int version) {
+        return webApp(version, "");
+    }
+
+    protected static String webApp(int version, String nestedText) {
+        String head;
+        if ( version == WebApp.VERSION_2_4 ) {
+            head = webApp24();
+        } else if ( version == WebApp.VERSION_3_0 ) {
+            head = webApp30();
+        } else if ( version == WebApp.VERSION_3_1 ) {
+            head = webApp31();
+        } else if ( version == WebApp.VERSION_4_0 ) {
+            head = webApp40();
+        } else {
+            throw new IllegalArgumentException("Unexpected WebVersion [ " + version + " ]");
+        }
+
+        return head + nestedText + webAppTail();
     }
 }
