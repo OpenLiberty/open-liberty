@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2020, 2021 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -41,6 +41,8 @@ import com.ibm.websphere.jsonsupport.JSONSettings;
 import com.ibm.websphere.jsonsupport.JSONSettings.Include;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+
+import io.openliberty.microprofile.health.internal.common.HealthCheckConstants;
 
 public class HealthCheck30HttpResponseBuilder {
 

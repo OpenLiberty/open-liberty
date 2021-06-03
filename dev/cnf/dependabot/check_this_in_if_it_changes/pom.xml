@@ -1877,6 +1877,11 @@
       <version>3.0</version>
     </dependency>
     <dependency>
+      <groupId>org.eclipse.microprofile.health</groupId>
+      <artifactId>microprofile-health-api</artifactId>
+      <version>3.1-RC2</version>
+    </dependency>
+    <dependency>
       <groupId>org.eclipse.microprofile.jwt</groupId>
       <artifactId>microprofile-jwt-auth-api</artifactId>
       <version>1.0</version>
