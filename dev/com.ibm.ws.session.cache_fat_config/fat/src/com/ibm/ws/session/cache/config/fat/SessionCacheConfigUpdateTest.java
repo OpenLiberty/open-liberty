@@ -67,8 +67,8 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(savedConfig);
 
-        Log.info(SessionCacheConfigUpdateTest.class, "cleanUpPerTest", "wait 2 seconds");
-        TimeUnit.SECONDS.sleep(2);
+        Log.info(SessionCacheConfigUpdateTest.class, "cleanUpPerTest", "wait 5 seconds");
+        TimeUnit.SECONDS.sleep(5);
         server.waitForConfigUpdateInLogUsingMark(APP_NAMES, cleanupList);
         cleanupList = EMPTY_RECYCLE_LIST;
 
