@@ -71,6 +71,20 @@ public class WebAppTestBase extends DDTestBase {
         }
     }
 
+    protected static String webApp22() {    
+        return "<!DOCTYPE web-app PUBLIC" +
+               " \"-//Sun Microsystems, Inc.// DTD WebApplication 2.2//EN\"" +
+               " \"http://java.sun.com/j2ee/dtds/web-app_2.2.dtd\"" +
+               ">";    
+    }
+
+    protected static String webApp23() {
+        return "<!DOCTYPE web-app PUBLIC" +
+               " \"-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN\"" +
+               " \"http://java.sun.com/dtd/web-app_2_3.dtd\" +"
+               + ">";
+    }
+
     protected static String webApp24() {
         return "<web-app" +
                " xmlns=\"http://java.sun.com/xml/ns/j2ee\"" +
@@ -81,6 +95,15 @@ public class WebAppTestBase extends DDTestBase {
                ">";
     }
 
+    protected static String webApp25() {
+        return "<web-app xmlns=\"http://java.sun.com/xml/ns/javaee\"" +
+               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+               " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd\"" +
+               " version=\"2.5\"" +
+               " id=\"WebApp_ID\"" +
+               ">";
+    }
+    
     protected static String webApp30() {
         return "<web-app" +
                " xmlns=\"http://java.sun.com/xml/ns/javaee\"" +
@@ -90,12 +113,6 @@ public class WebAppTestBase extends DDTestBase {
                " id=\"WebApp_ID\"" +
                ">";
     }
-
-    // noSchemaWebApp30()
-    // noSchemaInstanceWebApp30()
-    // noSchemaLocationWebApp30()
-    // noVersionWebApp30()
-    // noIDWebApp30()
 
     protected static String noSchemaWebApp30() {
         return "<web-app" +
@@ -172,8 +189,16 @@ public class WebAppTestBase extends DDTestBase {
 
     protected static String webApp(int version, String nestedText) {
         String head;
-        if ( version == WebApp.VERSION_2_4 ) {
+        if ( version == WebApp.VERSION_2_2 ) {
+            head = webApp22() + "\n" + 
+                   "<web-app>\n";
+        } else if ( version == WebApp.VERSION_2_3 ) {
+            head = webApp23() + "\n" + 
+                   "<web-app>\n";
+        } else if ( version == WebApp.VERSION_2_4 ) {
             head = webApp24();
+        } else if ( version == WebApp.VERSION_2_5 ) {
+            head = webApp25();
         } else if ( version == WebApp.VERSION_3_0 ) {
             head = webApp30();
         } else if ( version == WebApp.VERSION_3_1 ) {
@@ -184,6 +209,6 @@ public class WebAppTestBase extends DDTestBase {
             throw new IllegalArgumentException("Unexpected WebVersion [ " + version + " ]");
         }
 
-        return head + nestedText + webAppTail();
+        return head + "\n" + nestedText + "\n" + webAppTail();
     }
 }

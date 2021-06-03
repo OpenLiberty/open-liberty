@@ -52,6 +52,18 @@ public class WebAppTest extends WebAppTestBase {
     
     // Servlet 3.0 cases ...
 
+    @Test(expected = DDParser.ParseException.class)    
+    public void testEE6Web22() throws Exception {
+        @SuppressWarnings("unused")        
+        WebApp webApp = parse( webApp(WebApp.VERSION_2_2) );
+    }
+
+    @Test(expected = DDParser.ParseException.class)    
+    public void testEE6Web23() throws Exception {
+        @SuppressWarnings("unused")        
+        WebApp webApp = parse( webApp(WebApp.VERSION_2_3) );
+    }
+
     @Test
     public void testEE6Web24() throws Exception {
         @SuppressWarnings("unused")        
