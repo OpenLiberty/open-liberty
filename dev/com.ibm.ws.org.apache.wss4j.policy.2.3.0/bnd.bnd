@@ -10,5 +10,11 @@
 #*******************************************************************************
 -include= jar:${fileuri;${repo;org.apache.wss4j:wss4j-policy;2.3.0}}!/META-INF/MANIFEST.MF,bnd.overrides
 
+-includeresource: \
+ @${repo;org.apache.wss4j:wss4j-policy;2.3.0}!/!META-INF/MANIFEST.MF,\
+ @${repo;org.apache.wss4j:wss4j-policy;2.3.0}!/templates/**,\
+ @${repo;org.apache.wss4j:wss4j-policy;2.3.0}!/schemas/**,\
+ @${repo;org.apache.wss4j:wss4j-policy;2.3.0}!/*xml
+
 -buildpath: org.apache.wss4j:wss4j-policy;version=2.3.0, \
             com.ibm.ws.org.apache.neethi.3.1.1;version=latest
