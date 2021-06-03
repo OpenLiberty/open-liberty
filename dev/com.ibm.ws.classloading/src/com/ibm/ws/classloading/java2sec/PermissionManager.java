@@ -846,6 +846,8 @@ public class PermissionManager implements PermissionsCombiner {
             return;
         }
 
+	if (files == null) 
+            return;
         // for every file in the current directory, see if it matches any of the individual archive files
         for (File file : files) {
             if (file.isFile()) {
