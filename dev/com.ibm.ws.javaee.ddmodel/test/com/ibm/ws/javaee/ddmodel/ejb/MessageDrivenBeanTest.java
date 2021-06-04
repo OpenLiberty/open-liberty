@@ -30,23 +30,23 @@ public class MessageDrivenBeanTest extends EJBJarTestBase {
 
     @Test
     public void testMessageDrivenBeanMethods() throws Exception {
-        List<EnterpriseBean> beans = getEJBJar(EJBJarTest.ejbJar20() +
-                                               "<enterprise-beans>" +
-                                               "<message-driven>" +
-                                               "<ejb-name>ejbName0</ejb-name>" +
-                                               "</message-driven>" +
+        List<EnterpriseBean> beans = parse(
+            ejbJar20( "<enterprise-beans>" +
+                          "<message-driven>" +
+                              "<ejb-name>ejbName0</ejb-name>" +
+                          "</message-driven>" +
 
-                                               "<message-driven>" +
-                                               "<ejb-name>ejbName1</ejb-name>" +
-                                               "<ejb-class>ejbClass1</ejb-class>" +
-                                               "<mapped-name>mappedName1</mapped-name>" +
-                                               "<messaging-type>messagingType1</messaging-type>" +
-                                               "<message-destination-type>messageDestinationType0</message-destination-type>" +
-                                               "<message-destination-link>messageDestinationLink0</message-destination-link>" +
-                                               "</message-driven>" +
+                          "<message-driven>" +
+                              "<ejb-name>ejbName1</ejb-name>" +
+                              "<ejb-class>ejbClass1</ejb-class>" +
+                              "<mapped-name>mappedName1</mapped-name>" +
+                              "<messaging-type>messagingType1</messaging-type>" +
+                              "<message-destination-type>messageDestinationType0</message-destination-type>" +
+                              "<message-destination-link>messageDestinationLink0</message-destination-link>" +
+                          "</message-driven>" +
 
-                                               "</enterprise-beans>" +
-                                               "</ejb-jar>").getEnterpriseBeans();
+                      "</enterprise-beans>"),
+            EJBJar.VERSION_4_0).getEnterpriseBeans();
 
         Assert.assertEquals(2, beans.size());
 
@@ -70,31 +70,31 @@ public class MessageDrivenBeanTest extends EJBJarTestBase {
 
     @Test
     public void testMessageDrivenActivationConfig() throws Exception {
-        List<EnterpriseBean> beans = getEJBJar(EJBJarTest.ejbJar21() +
-                                               "<enterprise-beans>" +
-                                               "<message-driven>" +
-                                               "<ejb-name>ejbName0</ejb-name>" +
-                                               "</message-driven>" +
+        List<EnterpriseBean> beans = parse(
+            ejbJar21( "<enterprise-beans>" +
+                          "<message-driven>" +
+                              "<ejb-name>ejbName0</ejb-name>" +
+                          "</message-driven>" +
 
-                                               "<message-driven>" +
-                                               "<ejb-name>ejbName1</ejb-name>" +
-                                               "<activation-config>" +
-                                               "<activation-config-property>" +
-                                               "<activation-config-property-name>name0</activation-config-property-name>" +
-                                               "<activation-config-property-value>value0</activation-config-property-value>" +
-                                               "</activation-config-property>" +
-                                               "<activation-config-property>" +
-                                               "<activation-config-property-name>name1</activation-config-property-name>" +
-                                               "<activation-config-property-value>value1</activation-config-property-value>" +
-                                               "</activation-config-property>" +
-                                               "<activation-config-property>" +
-                                               "<activation-config-property-name>name2</activation-config-property-name>" +
-                                               "<activation-config-property-value>value2</activation-config-property-value>" +
-                                               "</activation-config-property>" +
-                                               "</activation-config>" +
-                                               "</message-driven>" +
-                                               "</enterprise-beans>" +
-                                               "</ejb-jar>").getEnterpriseBeans();
+                          "<message-driven>" +
+                              "<ejb-name>ejbName1</ejb-name>" +
+                              "<activation-config>" +
+                                  "<activation-config-property>" +
+                                      "<activation-config-property-name>name0</activation-config-property-name>" +
+                                      "<activation-config-property-value>value0</activation-config-property-value>" +
+                                  "</activation-config-property>" +
+                                  "<activation-config-property>" +
+                                      "<activation-config-property-name>name1</activation-config-property-name>" +
+                                      "<activation-config-property-value>value1</activation-config-property-value>" +
+                                  "</activation-config-property>" +
+                                  "<activation-config-property>" +
+                                      "<activation-config-property-name>name2</activation-config-property-name>" +
+                                      "<activation-config-property-value>value2</activation-config-property-value>" +
+                                  "</activation-config-property>" +
+                              "</activation-config>" +
+                          "</message-driven>" +
+                      "</enterprise-beans>"),
+                EJBJar.VERSION_4_0).getEnterpriseBeans();
 
         MessageDriven bean0 = (MessageDriven) beans.get(0);
         Assert.assertEquals(EnterpriseBean.KIND_MESSAGE_DRIVEN, bean0.getKindValue());
@@ -113,19 +113,20 @@ public class MessageDrivenBeanTest extends EJBJarTestBase {
 
     @Test
     public void testMessageDrivenActivationConfigEJB20() throws Exception {
-        List<EnterpriseBean> beans = getEJBJar(EJBJarTest.ejbJar20() +
-                                               "<enterprise-beans>" +
-                                               "<message-driven>" +
-                                               "<ejb-name>ejbName0</ejb-name>" +
-                                               "<message-selector>messageSelector0</message-selector>" +
-                                               "<acknowledge-mode>Auto-acknowledge</acknowledge-mode>" +
-                                               "<message-driven-destination id=\"tid\">" +
-                                               "<destination-type>javax.jms.Queue</destination-type>" +
-                                               "<subscription-durability>Durable</subscription-durability>" +
-                                               "</message-driven-destination>" +
-                                               "</message-driven>" +
-                                               "</enterprise-beans>" +
-                                               "</ejb-jar>", EJBJar.VERSION_3_2).getEnterpriseBeans();
+        List<EnterpriseBean> beans = parse(
+            ejbJar20( "<enterprise-beans>" +
+                          "<message-driven>" +
+                              "<ejb-name>ejbName0</ejb-name>" +
+                              "<message-selector>messageSelector0</message-selector>" +
+                              "<acknowledge-mode>Auto-acknowledge</acknowledge-mode>" +
+                              "<message-driven-destination id=\"tid\">" +
+                                  "<destination-type>javax.jms.Queue</destination-type>" +
+                                  "<subscription-durability>Durable</subscription-durability>" +
+                              "</message-driven-destination>" +
+                          "</message-driven>" +
+                      "</enterprise-beans>"),
+            EJBJar.VERSION_3_2).getEnterpriseBeans();
+
         MessageDriven bean0 = (MessageDriven) beans.get(0);
         ActivationConfig actCon0 = bean0.getActivationConfigValue();
         List<ActivationConfigProperty> actConProps = actCon0.getConfigProperties();
@@ -142,19 +143,20 @@ public class MessageDrivenBeanTest extends EJBJarTestBase {
 
     @Test
     public void testMessageDrivenActivationConfigEJB20v40() throws Exception {
-        List<EnterpriseBean> beans = getEJBJar(EJBJarTest.ejbJar20() +
-                                               "<enterprise-beans>" +
-                                               "<message-driven>" +
-                                               "<ejb-name>ejbName0</ejb-name>" +
-                                               "<message-selector>messageSelector0</message-selector>" +
-                                               "<acknowledge-mode>Auto-acknowledge</acknowledge-mode>" +
-                                               "<message-driven-destination id=\"tid\">" +
-                                               "<destination-type>jakarta.jms.Queue</destination-type>" +
-                                               "<subscription-durability>Durable</subscription-durability>" +
-                                               "</message-driven-destination>" +
-                                               "</message-driven>" +
-                                               "</enterprise-beans>" +
-                                               "</ejb-jar>", EJBJar.VERSION_4_0).getEnterpriseBeans();
+        List<EnterpriseBean> beans = parse(
+            ejbJar20( "<enterprise-beans>" +
+                          "<message-driven>" +
+                              "<ejb-name>ejbName0</ejb-name>" +
+                              "<message-selector>messageSelector0</message-selector>" +
+                              "<acknowledge-mode>Auto-acknowledge</acknowledge-mode>" +
+                              "<message-driven-destination id=\"tid\">" +
+                                  "<destination-type>jakarta.jms.Queue</destination-type>" +
+                                  "<subscription-durability>Durable</subscription-durability>" +
+                              "</message-driven-destination>" +
+                          "</message-driven>" +
+                      "</enterprise-beans>"),
+            EJBJar.VERSION_4_0).getEnterpriseBeans();
+
         MessageDriven bean0 = (MessageDriven) beans.get(0);
         ActivationConfig actCon0 = bean0.getActivationConfigValue();
         List<ActivationConfigProperty> actConProps = actCon0.getConfigProperties();
@@ -171,19 +173,20 @@ public class MessageDrivenBeanTest extends EJBJarTestBase {
 
     @Test(expected = DDParser.ParseException.class)
     public void testMessageDrivenActivationConfigEJB20Exception() throws Exception {
-        List<EnterpriseBean> beans = getEJBJar(EJBJarTest.ejbJar20() +
-                                               "<enterprise-beans>" +
-                                               "<message-driven>" +
-                                               "<ejb-name>ejbName0</ejb-name>" +
-                                               "<message-selector>messageSelector0</message-selector>" +
-                                               "<acknowledge-mode>Auto-acknowledge</acknowledge-mode>" +
-                                               "<message-driven-destination id=\"tid\">" +
-                                               "<destination-type>javax.jms.Queue</destination-type>" +
-                                               "<subscription-durability>Durable</subscription-durability>" +
-                                               "</message-driven-destination>" +
-                                               "</message-driven>" +
-                                               "</enterprise-beans>" +
-                                               "</ejb-jar>", EJBJar.VERSION_4_0).getEnterpriseBeans();
+        List<EnterpriseBean> beans = parse(
+            ejbJar20( "<enterprise-beans>" +
+                          "<message-driven>" +
+                              "<ejb-name>ejbName0</ejb-name>" +
+                              "<message-selector>messageSelector0</message-selector>" +
+                              "<acknowledge-mode>Auto-acknowledge</acknowledge-mode>" +
+                              "<message-driven-destination id=\"tid\">" +
+                                  "<destination-type>javax.jms.Queue</destination-type>" +
+                                  "<subscription-durability>Durable</subscription-durability>" +
+                              "</message-driven-destination>" +
+                          "</message-driven>" +
+                      "</enterprise-beans>"),
+            EJBJar.VERSION_4_0).getEnterpriseBeans();
+
         MessageDriven bean0 = (MessageDriven) beans.get(0);
         ActivationConfig actCon0 = bean0.getActivationConfigValue();
         List<ActivationConfigProperty> actConProps = actCon0.getConfigProperties();
@@ -201,34 +204,34 @@ public class MessageDrivenBeanTest extends EJBJarTestBase {
 
     @Test
     public void testMessageDrivenTimeOutServiceBean() throws Exception {
-        List<EnterpriseBean> beans = getEJBJar(EJBJarTest.ejbJar20() +
-                                               "<enterprise-beans>" +
-                                               "<message-driven>" +
-                                               "<ejb-name>ejbName0</ejb-name>" +
-                                               "</message-driven>" +
+        List<EnterpriseBean> beans = parse(
+            ejbJar20( "<enterprise-beans>" +
+                          "<message-driven>" +
+                              "<ejb-name>ejbName0</ejb-name>" +
+                          "</message-driven>" +
 
-                                               "<message-driven>" +
-                                               "<ejb-name>ejbName1</ejb-name>" +
-                                               "<timeout-method>" +
-                                               "<method-name>methodName0</method-name>" +
-                                               "<method-params>" +
-                                               "<method-param>methParam0</method-param>" +
-                                               "<method-param>methParam1</method-param>" +
-                                               "<method-param>methParam2</method-param>" +
-                                               "</method-params>" +
-                                               "</timeout-method>" +
+                          "<message-driven>" +
+                              "<ejb-name>ejbName1</ejb-name>" +
 
-                                               "<timer>" +
-                                               "<start>start0</start>" +
-                                               "<end>end0</end>" +
-                                               "<timeout-method>" +
-                                               "<method-name>timerTimeoutMethod0</method-name>" +
-                                               "</timeout-method>" +
-                                               "</timer>" +
+                              "<timeout-method>" +
+                                  "<method-name>methodName0</method-name>" +
+                                  "<method-params>" +
+                                      "<method-param>methParam0</method-param>" +
+                                      "<method-param>methParam1</method-param>" +
+                                      "<method-param>methParam2</method-param>" +
+                                  "</method-params>" +
+                              "</timeout-method>" +
 
-                                               "</message-driven>" +
-                                               "</enterprise-beans>" +
-                                               "</ejb-jar>").getEnterpriseBeans();
+                              "<timer>" +
+                                  "<start>start0</start>" +
+                                  "<end>end0</end>" +
+                                  "<timeout-method>" +
+                                      "<method-name>timerTimeoutMethod0</method-name>" +
+                                  "</timeout-method>" +
+                              "</timer>" +
+                          "</message-driven>" +
+                      "</enterprise-beans>"),
+            EJBJar.VERSION_4_0).getEnterpriseBeans();
 
         MessageDriven bean0 = (MessageDriven) beans.get(0);
         Assert.assertEquals(EnterpriseBean.KIND_MESSAGE_DRIVEN, bean0.getKindValue());
@@ -250,23 +253,24 @@ public class MessageDrivenBeanTest extends EJBJarTestBase {
 
     @Test
     public void testMessageDrivenTransactionalBean() throws Exception {
-        List<EnterpriseBean> beans = getEJBJar(EJBJarTest.ejbJar20() +
-                                               "<enterprise-beans>" +
-                                               "<message-driven>" +
-                                               "<ejb-name>ejbName0</ejb-name>" +
-                                               "</message-driven>" +
+        List<EnterpriseBean> beans = parse(
+            ejbJar20( "<enterprise-beans>" +
+                          "<message-driven>" +
+                              "<ejb-name>ejbName0</ejb-name>" +
+                          "</message-driven>" +
+                          
+                          "<message-driven>" +
+                              "<ejb-name>ejbName1</ejb-name>" +
+                              "<transaction-type>Bean</transaction-type>" +
+                          "</message-driven>" +
+                          
+                          "<message-driven>" +
+                              "<ejb-name>ejbName2</ejb-name>" +
+                              "<transaction-type>Container</transaction-type>" +
+                          "</message-driven>" +
+                      "</enterprise-beans>"),
+            EJBJar.VERSION_4_0).getEnterpriseBeans();
 
-                                               "<message-driven>" +
-                                               "<ejb-name>ejbName1</ejb-name>" +
-                                               "<transaction-type>Bean</transaction-type>" +
-                                               "</message-driven>" +
-
-                                               "<message-driven>" +
-                                               "<ejb-name>ejbName2</ejb-name>" +
-                                               "<transaction-type>Container</transaction-type>" +
-                                               "</message-driven>" +
-                                               "</enterprise-beans>" +
-                                               "</ejb-jar>").getEnterpriseBeans();
         MessageDriven mdb0 = (MessageDriven) beans.get(0);
         MessageDriven mdb1 = (MessageDriven) beans.get(1);
         MessageDriven mdb2 = (MessageDriven) beans.get(2);
@@ -278,28 +282,29 @@ public class MessageDrivenBeanTest extends EJBJarTestBase {
 
     @Test
     public void testMessageDrivenMethodInterceptorBean() throws Exception {
-        List<EnterpriseBean> beans = getEJBJar(EJBJarTest.ejbJar20() +
-                                               "<enterprise-beans>" +
-                                               "<message-driven>" +
-                                               "<ejb-name>ejbName0</ejb-name>" +
-                                               "</message-driven>" +
-
-                                               "<message-driven>" +
-                                               "<ejb-name>ejbName1</ejb-name>" +
-                                               "<around-invoke>" +
-                                               "<method-name>aroundInvokeMethodName0</method-name>" +
-                                               "<class>aroundInvokeClass0</class>" +
-                                               "</around-invoke>" +
-                                               "<around-invoke>" +
-                                               "<method-name>aroundInvokeMethodName1</method-name>" +
-                                               "</around-invoke>" +
-                                               "<around-timeout>" +
-                                               "<method-name>aroundTimeoutMethodName0</method-name>" +
-                                               "<class>aroundTimeoutClass0</class>" +
-                                               "</around-timeout>" +
-                                               "</message-driven>" +
-                                               "</enterprise-beans>" +
-                                               "</ejb-jar>").getEnterpriseBeans();
+        List<EnterpriseBean> beans = parse(
+            ejbJar20( "<enterprise-beans>" +
+                          "<message-driven>" +
+                              "<ejb-name>ejbName0</ejb-name>" +
+                          "</message-driven>" +
+                          
+                          "<message-driven>" +
+                              "<ejb-name>ejbName1</ejb-name>" +
+                              "<around-invoke>" +
+                                  "<method-name>aroundInvokeMethodName0</method-name>" +
+                                  "<class>aroundInvokeClass0</class>" +
+                              "</around-invoke>" +
+                              "<around-invoke>" +
+                                  "<method-name>aroundInvokeMethodName1</method-name>" +
+                              "</around-invoke>" +
+                              "<around-timeout>" +
+                                  "<method-name>aroundTimeoutMethodName0</method-name>" +
+                                  "<class>aroundTimeoutClass0</class>" +
+                              "</around-timeout>" +
+                          "</message-driven>" +
+                      "</enterprise-beans>"),
+            EJBJar.VERSION_4_0).getEnterpriseBeans();
+        
         MessageDriven mdb0 = (MessageDriven) beans.get(0);
         MessageDriven mdb1 = (MessageDriven) beans.get(1);
         Assert.assertEquals(true, mdb0.getAroundInvoke().isEmpty());
@@ -316,5 +321,4 @@ public class MessageDrivenBeanTest extends EJBJarTestBase {
         Assert.assertEquals("aroundTimeoutClass0", intCallback2.getClassName());
         Assert.assertEquals("aroundTimeoutMethodName0", intCallback2.getMethodName());
     }
-
 }

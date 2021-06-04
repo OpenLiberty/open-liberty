@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2019 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,19 +30,233 @@ import com.ibm.ws.javaee.ddmodel.DDParser;
 
 public class AssemblyDescriptorTest extends EJBJarTestBase {
 
-    String securityRole = "<security-role>" +
-                          "<role-name>roleName0</role-name>" +
-                          "</security-role>" +
-                          "<security-role>" +
-                          "<role-name>roleName1</role-name>" +
-                          "</security-role>" +
-                          "<security-role>" +
-                          "<role-name>roleName2</role-name>" +
-                          "</security-role>";
+    protected static final String method0 =
+        "<method>" +
+            "<method-name>methodName0</method-name>" +
+            "<ejb-name>ejbName0</ejb-name>" +
+            //"<method-intf></method-intf>" + // UNSPECIFIED
+            "<method-params>" +
+                "<method-param>methodParm0</method-param>" +
+                "<method-param>methodParm1</method-param>" +
+                "<method-param>methodParm2</method-param>" +
+            "</method-params>" +
+        "</method>";
+
+    protected static final String method1 =
+        "<method>" +
+            "<method-name>methodName1</method-name>" +
+            "<ejb-name>ejbName1</ejb-name>" +
+            "<method-intf>Home</method-intf>" +
+            "<method-params/>" +
+        "</method>";
+
+    protected static final String method2 =
+        "<method>" +
+            "<method-name>methodName2</method-name>" +
+            "<method-intf>Local</method-intf>" +
+        "</method>";
+
+    protected static final String method3 =
+        "<method>" +
+            "<method-name>methodName3</method-name>" +
+            "<method-intf>LocalHome</method-intf>" +
+        "</method>";
+
+    protected static final String method4 =
+        "<method>" +
+            "<method-name>methodName4</method-name>" +
+            "<method-intf>MessageEndpoint</method-intf>" +
+        "</method>";
+
+    protected static final String method5 =
+        "<method>" +
+            "<method-name>methodName5</method-name>" +
+            "<method-intf>Remote</method-intf>" +
+        "</method>";
+
+    protected static final String method6 =
+        "<method>" +
+            "<method-name>methodName6</method-name>" +
+            "<method-intf>ServiceEndpoint</method-intf>" +
+        "</method>";
+
+    protected static final String method7 =
+        "<method>" +
+            "<method-name>methodName7</method-name>" +
+            "<method-intf>Timer</method-intf>" +
+        "</method>";
+    
+    protected static final String methodPermission0 =
+        "<method-permission>" +
+            "<unchecked/>" +
+            method0 +
+            method1 +
+            method2 +
+            method3 +
+            method4 +
+            method5 +
+            method6 +
+            method7 +
+        "</method-permission>";
+
+    protected static final String methodPermission1 =
+        "<method-permission>" +
+            // "<unchecked/>" +  // has role-names so not unchecked
+            "<role-name>roleName0</role-name>" +
+            "<role-name>roleName1</role-name>" +
+            "<role-name>roleName2</role-name>" +
+        "</method-permission>";
+
+    protected static final String containerTransactions =
+        "<container-transaction>" +
+            method0 +
+            method1 +
+            method2 +
+            "<trans-attribute>NotSupported</trans-attribute>" +
+        "</container-transaction>" +
+
+        "<container-transaction>" +
+            method3 +
+            method4 +
+            method5 +
+            method6 +
+            "<trans-attribute>Supports</trans-attribute>" +
+        "</container-transaction>" +
+
+        "<container-transaction>" +
+            "<trans-attribute>Required</trans-attribute>" +
+        "</container-transaction>" +
+
+        "<container-transaction>" +
+            "<trans-attribute>RequiresNew</trans-attribute>" +
+        "</container-transaction>" +
+
+        "<container-transaction>" +
+            "<trans-attribute>Mandatory</trans-attribute>" +
+        "</container-transaction>" +
+
+        "<container-transaction>" +
+            "<trans-attribute>Never</trans-attribute>" +
+        "</container-transaction>";
+    
+    private static final String securityRoles =
+        "<security-role>" +
+            "<role-name>roleName0</role-name>" +
+        "</security-role>" +
+
+        "<security-role>" +
+            "<role-name>roleName1</role-name>" +
+        "</security-role>" +
+
+        "<security-role>" +
+            "<role-name>roleName2</role-name>" +
+        "</security-role>";
+
+    protected static final String assemblyDescriptorXML =
+        "<assembly-descriptor>" +
+            securityRoles +
+            methodPermission0 +
+            methodPermission1 +
+            containerTransactions +
+        "</assembly-descriptor>";
+
+    protected static final String interceptorBinding0 =
+        "<interceptor-binding>" +
+            "<ejb-name>ejbName0</ejb-name>" +
+            "<interceptor-class>interceptorClass0</interceptor-class>" +
+            "<interceptor-class>interceptorClass1</interceptor-class>" +
+            "<exclude-default-interceptors>true</exclude-default-interceptors>" +
+            "<exclude-class-interceptors>true</exclude-class-interceptors>" +
+            "<method>" +
+                "<method-name>namedMethod0</method-name>" +
+            "</method>" +
+        "</interceptor-binding>";
+
+    protected static final String interceptorBinding1 =
+        "<interceptor-binding>" +
+            "<ejb-name>ejbName1</ejb-name>" +
+            "<interceptor-order>" +
+                "<interceptor-class>com.ibm.className0</interceptor-class>" +
+                "<interceptor-class>com.ibm.className1</interceptor-class>" +
+                "<interceptor-class>com.ibm.className2</interceptor-class>" +
+            "</interceptor-order>" +
+            "<exclude-default-interceptors>false</exclude-default-interceptors>" +
+            "<exclude-class-interceptors>false</exclude-class-interceptors>" +
+        "</interceptor-binding>";
+
+    protected static final String interceptorBinding2 =
+        "<interceptor-binding>" +
+            "<ejb-name>ejbName2</ejb-name>" +
+        "</interceptor-binding>";
+
+    protected static final String interceptorBinding =
+        "<assembly-descriptor>" +
+            interceptorBinding0 +
+            interceptorBinding1 +
+            interceptorBinding2 +
+        "</assembly-descriptor>";
+
+    protected static final String messageDestination =
+        "<assembly-descriptor>" +
+            "<message-destination>" +
+                "<message-destination-name>messageDestinationName0</message-destination-name>" +
+                "<mapped-name>mappedName0</mapped-name>" +
+                "<lookup-name>lookupName0</lookup-name>" +
+            "</message-destination>" +
+
+            "<message-destination>" +
+                "<message-destination-name>messageDestinationName1</message-destination-name>" +
+                "<mapped-name>mappedName1</mapped-name>" +
+            "</message-destination>" +
+
+            "<message-destination>" +
+                "<message-destination-name>messageDestinationName2</message-destination-name>" +
+                "<lookup-name>lookupName2</lookup-name>" +
+            "</message-destination>" +
+        "</assembly-descriptor>";
+
+    protected static final String excludeList =
+        "<assembly-descriptor>" +
+            "<exclude-list>" +
+                method0 +
+                method1 +
+                method2 +
+            "</exclude-list>" +
+        "</assembly-descriptor>";
+
+    protected static final String applicationException =
+        "<assembly-descriptor>" +
+            "<application-exception>" +
+                "<exception-class>exceptionClass0</exception-class>" +
+                "<rollback>true</rollback>" +
+                "<inherited>true</inherited>" +
+            "</application-exception>" +
+
+            "<application-exception>" +
+                "<exception-class>exceptionClass1</exception-class>" +
+                "<rollback>false</rollback>" +
+                "<inherited>false</inherited>" +
+            "</application-exception>" +
+
+            "<application-exception>" +
+                "<exception-class>exceptionClass2</exception-class>" +
+            "</application-exception>" +
+        "</assembly-descriptor>";
+
+    //
+    
+    AssemblyDescriptor getAssemblyDescriptor(String adXML) throws Exception {
+        EJBJar ejbJar = parse( ejbJar11(adXML), EJBJar.VERSION_4_0);
+        return ejbJar.getAssemblyDescriptor();
+    }
+
+    //
 
     @Test
     public void testAssemblyDescriptorSecurityRole() throws Exception {
-        AssemblyDescriptor assemblyDescriptor = getAssemblyDescriptor();
+        AssemblyDescriptor assemblyDescriptor =
+            getAssemblyDescriptor(assemblyDescriptorXML);
+
         Assert.assertNotNull(assemblyDescriptor);
         List<SecurityRole> secRoleList = assemblyDescriptor.getSecurityRoles();
         Assert.assertEquals("roleName0", secRoleList.get(0).getRoleName());
@@ -50,52 +264,6 @@ public class AssemblyDescriptorTest extends EJBJarTestBase {
         Assert.assertEquals("roleName2", secRoleList.get(2).getRoleName());
     }
 
-    String method0 = "<method>" +
-                     "<method-name>methodName0</method-name>" +
-                     "<ejb-name>ejbName0</ejb-name>" +
-                     //"<method-intf></method-intf>" +  UNSPECIFIED
-                     "<method-params>" +
-                     "<method-param>methodParm0</method-param>" +
-                     "<method-param>methodParm1</method-param>" +
-                     "<method-param>methodParm2</method-param>" +
-                     "</method-params>" +
-                     "</method>";
-
-    String method1 = "<method>" +
-                     "<method-name>methodName1</method-name>" +
-                     "<ejb-name>ejbName1</ejb-name>" +
-                     "<method-intf>Home</method-intf>" +
-                     "<method-params/>" +
-                     "</method>";
-
-    String method2 = "<method>" +
-                     "<method-name>methodName2</method-name>" +
-                     "<method-intf>Local</method-intf>" +
-                     "</method>";
-
-    String method3 = "<method>" +
-                     "<method-name>methodName3</method-name>" +
-                     "<method-intf>LocalHome</method-intf>" +
-                     "</method>";
-
-    String method4 = "<method>" +
-                     "<method-name>methodName4</method-name>" +
-                     "<method-intf>MessageEndpoint</method-intf>" +
-                     "</method>";
-    String method5 = "<method>" +
-                     "<method-name>methodName5</method-name>" +
-                     "<method-intf>Remote</method-intf>" +
-                     "</method>";
-
-    String method6 = "<method>" +
-                     "<method-name>methodName6</method-name>" +
-                     "<method-intf>ServiceEndpoint</method-intf>" +
-                     "</method>";
-
-    String method7 = "<method>" +
-                     "<method-name>methodName7</method-name>" +
-                     "<method-intf>Timer</method-intf>" +
-                     "</method>";
 
     void testMethod0(Method method0) {
         Assert.assertEquals(Method.INTERFACE_TYPE_UNSPECIFIED, method0.getInterfaceTypeValue());
@@ -106,21 +274,11 @@ public class AssemblyDescriptorTest extends EJBJarTestBase {
         Assert.assertEquals("methodParm2", method0.getMethodParamList().get(2));
     }
 
-    String methodPermission0 = "<method-permission>" +
-                               "<unchecked/>" +
-                               method0 +
-                               method1 +
-                               method2 +
-                               method3 +
-                               method4 +
-                               method5 +
-                               method6 +
-                               method7 +
-                               "</method-permission>";
-
     @Test
     public void testAssemblyDescriptorMethodPermission0() throws Exception {
-        AssemblyDescriptor assemblyDescriptor = getAssemblyDescriptor();
+        AssemblyDescriptor assemblyDescriptor =
+            getAssemblyDescriptor(assemblyDescriptorXML);
+
         List<MethodPermission> methPermList = assemblyDescriptor.getMethodPermissions();
         MethodPermission methPerm0 = methPermList.get(0);
         Assert.assertEquals(true, methPerm0.isUnchecked());
@@ -145,16 +303,11 @@ public class AssemblyDescriptorTest extends EJBJarTestBase {
         Assert.assertEquals(Method.INTERFACE_TYPE_TIMER, methodList.get(7).getInterfaceTypeValue());
     }
 
-    String methodPermission1 = "<method-permission>" +
-                               //"<unchecked/>" +  //has role-names so not unchecked
-                               "<role-name>roleName0</role-name>" +
-                               "<role-name>roleName1</role-name>" +
-                               "<role-name>roleName2</role-name>" +
-                               "</method-permission>";
-
     @Test
     public void testAssemblyDescriptorMethodPermission1() throws Exception {
-        AssemblyDescriptor assemblyDescriptor = getAssemblyDescriptor();
+        AssemblyDescriptor assemblyDescriptor =
+            getAssemblyDescriptor(assemblyDescriptorXML);
+
         List<MethodPermission> methPermList = assemblyDescriptor.getMethodPermissions();
         MethodPermission methPerm1 = methPermList.get(1);
         Assert.assertEquals(false, methPerm1.isUnchecked());
@@ -172,40 +325,12 @@ public class AssemblyDescriptorTest extends EJBJarTestBase {
      * <li>{@link #TRANS_ATTRIBUTE_MANDATORY} - Mandatory
      * <li>{@link #TRANS_ATTRIBUTE_NEVER} - Never
      **/
-    String containerTransactions = "<container-transaction>" +
-                                   method0 +
-                                   method1 +
-                                   method2 +
-                                   "<trans-attribute>NotSupported</trans-attribute>" +
-                                   "</container-transaction>" +
-
-                                   "<container-transaction>" +
-                                   method3 +
-                                   method4 +
-                                   method5 +
-                                   method6 +
-                                   "<trans-attribute>Supports</trans-attribute>" +
-                                   "</container-transaction>" +
-
-                                   "<container-transaction>" +
-                                   "<trans-attribute>Required</trans-attribute>" +
-                                   "</container-transaction>" +
-
-                                   "<container-transaction>" +
-                                   "<trans-attribute>RequiresNew</trans-attribute>" +
-                                   "</container-transaction>" +
-
-                                   "<container-transaction>" +
-                                   "<trans-attribute>Mandatory</trans-attribute>" +
-                                   "</container-transaction>" +
-
-                                   "<container-transaction>" +
-                                   "<trans-attribute>Never</trans-attribute>" +
-                                   "</container-transaction>";
 
     @Test
     public void testAssemblyDescriptorContainerTransactions() throws Exception {
-        AssemblyDescriptor assemblyDescriptor = getAssemblyDescriptor();
+        AssemblyDescriptor assemblyDescriptor =
+            getAssemblyDescriptor(assemblyDescriptorXML);
+
         List<ContainerTransaction> contTransList = assemblyDescriptor.getContainerTransactions();
         Assert.assertEquals(ContainerTransaction.TRANS_ATTRIBUTE_NOT_SUPPORTED, contTransList.get(0).getTransAttributeTypeValue());
         Assert.assertEquals(ContainerTransaction.TRANS_ATTRIBUTE_SUPPORTS, contTransList.get(1).getTransAttributeTypeValue());
@@ -220,40 +345,6 @@ public class AssemblyDescriptorTest extends EJBJarTestBase {
         testMethod0(methodList.get(0));
         Assert.assertEquals(4, contTransList.get(1).getMethodElements().size());
     }
-
-    String interceptorBinding0 = "<interceptor-binding>" +
-                                 "<ejb-name>ejbName0</ejb-name>" +
-                                 "<interceptor-class>interceptorClass0</interceptor-class>" +
-                                 "<interceptor-class>interceptorClass1</interceptor-class>" +
-                                 "<exclude-default-interceptors>true</exclude-default-interceptors>" +
-                                 "<exclude-class-interceptors>true</exclude-class-interceptors>" +
-                                 "<method>" +
-                                 "<method-name>namedMethod0</method-name>" +
-                                 "</method>" +
-                                 "</interceptor-binding>";
-
-    String interceptorBinding1 = "<interceptor-binding>" +
-                                 "<ejb-name>ejbName1</ejb-name>" +
-                                 "<interceptor-order>" +
-                                 "<interceptor-class>com.ibm.className0</interceptor-class>" +
-                                 "<interceptor-class>com.ibm.className1</interceptor-class>" +
-                                 "<interceptor-class>com.ibm.className2</interceptor-class>" +
-                                 "</interceptor-order>" +
-                                 "<exclude-default-interceptors>false</exclude-default-interceptors>" +
-                                 "<exclude-class-interceptors>false</exclude-class-interceptors>" +
-                                 "</interceptor-binding>";
-
-    String interceptorBinding2 = "<interceptor-binding>" +
-                                 "<ejb-name>ejbName2</ejb-name>" +
-                                 "</interceptor-binding>";
-
-    String interceptorBinding = EJBJarTest.ejbJar30() +
-                                "<assembly-descriptor>" +
-                                interceptorBinding0 +
-                                interceptorBinding1 +
-                                interceptorBinding2 +
-                                "</assembly-descriptor>" +
-                                "</ejb-jar>";
 
     @Test
     public void testInterceptorBinding() throws Exception {
@@ -293,24 +384,6 @@ public class AssemblyDescriptorTest extends EJBJarTestBase {
         Assert.assertEquals(false, intBind2.isExcludeClassInterceptors());
     }
 
-    String messageDestination = EJBJarTest.ejbJar21() +
-                                "<assembly-descriptor>" +
-                                "<message-destination>" +
-                                "<message-destination-name>messageDestinationName0</message-destination-name>" +
-                                "<mapped-name>mappedName0</mapped-name>" +
-                                "<lookup-name>lookupName0</lookup-name>" +
-                                "</message-destination>" +
-                                "<message-destination>" +
-                                "<message-destination-name>messageDestinationName1</message-destination-name>" +
-                                "<mapped-name>mappedName1</mapped-name>" +
-                                "</message-destination>" +
-                                "<message-destination>" +
-                                "<message-destination-name>messageDestinationName2</message-destination-name>" +
-                                "<lookup-name>lookupName2</lookup-name>" +
-                                "</message-destination>" +
-                                "</assembly-descriptor>" +
-                                "</ejb-jar>";
-
     @Test
     public void testMessageDestination() throws Exception {
         AssemblyDescriptor assemblyDescriptor = getAssemblyDescriptor(messageDestination);
@@ -331,16 +404,6 @@ public class AssemblyDescriptorTest extends EJBJarTestBase {
         Assert.assertEquals("lookupName2", methDest2.getLookupName());
     }
 
-    String excludeList = EJBJarTest.ejbJar20() +
-                         "<assembly-descriptor>" +
-                         "<exclude-list>" +
-                         method0 +
-                         method1 +
-                         method2 +
-                         "</exclude-list>" +
-                         "</assembly-descriptor>" +
-                         "</ejb-jar>";
-
     @Test
     public void testExcludeList() throws Exception {
         AssemblyDescriptor assemblyDescriptor = getAssemblyDescriptor(excludeList);
@@ -351,26 +414,6 @@ public class AssemblyDescriptorTest extends EJBJarTestBase {
         Assert.assertEquals("methodName1", methodList.get(1).getMethodName());
         Assert.assertEquals("methodName2", methodList.get(2).getMethodName());
     }
-
-    String applicationException = EJBJarTest.ejbJar30() +
-                                  "<assembly-descriptor>" +
-                                  "<application-exception>" +
-                                  "<exception-class>exceptionClass0</exception-class>" +
-                                  "<rollback>true</rollback>" +
-                                  "<inherited>true</inherited>" +
-                                  "</application-exception>" +
-
-                                  "<application-exception>" +
-                                  "<exception-class>exceptionClass1</exception-class>" +
-                                  "<rollback>false</rollback>" +
-                                  "<inherited>false</inherited>" +
-                                  "</application-exception>" +
-
-                                  "<application-exception>" +
-                                  "<exception-class>exceptionClass2</exception-class>" +
-                                  "</application-exception>" +
-                                  "</assembly-descriptor>" +
-                                  "</ejb-jar>";
 
     @Test
     public void testApplicationException() throws Exception {
@@ -398,27 +441,9 @@ public class AssemblyDescriptorTest extends EJBJarTestBase {
         Assert.assertEquals(false, appEx2.isSetInherited());
     }
 
-    String assemblyDescriptor = EJBJarTest.ejbJar11() +
-                                "<assembly-descriptor>" +
-                                securityRole +
-                                methodPermission0 +
-                                methodPermission1 +
-                                containerTransactions +
-                                "</assembly-descriptor>" +
-                                "</ejb-jar>";
-
-    AssemblyDescriptor getAssemblyDescriptor() throws Exception {
-        return getAssemblyDescriptor(assemblyDescriptor);
-    }
-
-    AssemblyDescriptor getAssemblyDescriptor(String stringBean) throws Exception {
-        EJBJar ejbJar = getEJBJar(stringBean);
-        return ejbJar.getAssemblyDescriptor();
-    }
-
     @Test
     public void testMethodIntfLifecycleCallback() throws Exception {
-        EJBJar ejbJar = parse(ejbJar32() +
+        EJBJar ejbJar = parse(ejbJar32Head("") +
                               "<assembly-descriptor>" +
                               "  <container-transaction>" +
                               "    <method>" +
@@ -429,14 +454,14 @@ public class AssemblyDescriptorTest extends EJBJarTestBase {
                               "    <trans-attribute>Required</trans-attribute>" +
                               "  </container-transaction>" +
                               "</assembly-descriptor>" +
-                              "</ejb-jar>");
+                              "</ejb-jar>", EJBJar.VERSION_4_0);
         Assert.assertEquals(Method.INTERFACE_TYPE_LIFECYCLE_CALLBACK,
                             ejbJar.getAssemblyDescriptor().getContainerTransactions().get(0).getMethodElements().get(0).getInterfaceTypeValue());
     }
 
     @Test(expected = DDParser.ParseException.class)
     public void testMethodIntfLifecycleCallbackEJB31() throws Exception {
-        parse(ejbJar31() +
+        parse(ejbJar31Head("") +
               "<assembly-descriptor>" +
               "  <container-transaction>" +
               "    <method>" +
@@ -447,27 +472,29 @@ public class AssemblyDescriptorTest extends EJBJarTestBase {
               "    <trans-attribute>Required</trans-attribute>" +
               "  </container-transaction>" +
               "</assembly-descriptor>" +
-              "</ejb-jar>");
+              "</ejb-jar>", EJBJar.VERSION_4_0);
     }
 
     @Test
     public void testMethodIntfErrorEJB31() throws Exception {
         try {
-            parse(ejbJar31() +
-                  "<assembly-descriptor>" +
-                  "  <container-transaction>" +
-                  "    <method>" +
-                  "      <ejb-name>ejb0</ejb-name>" +
-                  "      <method-intf>Invalid</method-intf>" +
-                  "      <method-name>method0</method-name>" +
-                  "    </method>" +
-                  "    <trans-attribute>Required</trans-attribute>" +
-                  "  </container-transaction>" +
-                  "</assembly-descriptor>" +
-                  "</ejb-jar>");
+            parse( ejbJar31(
+                       "",
+                       "<assembly-descriptor>" +
+                           "<container-transaction>" +
+                               "<method>" +
+                                   "<ejb-name>ejb0</ejb-name>" +
+                                   "<method-intf>Invalid</method-intf>" +
+                                   "<method-name>method0</method-name>" +
+                               "</method>" +
+                               "<trans-attribute>Required</trans-attribute>" +
+                           "</container-transaction>" +
+                        "</assembly-descriptor>"),
+                   EJBJar.VERSION_4_0);
             Assert.fail("expected ParseException");
-        } catch (DDParser.ParseException ex) {
-            if (ex.getMessage().contains("LifecycleCallback")) {
+
+        } catch ( DDParser.ParseException ex ) {
+            if ( ex.getMessage().contains("LifecycleCallback") ) {
                 throw ex;
             }
         }
@@ -476,21 +503,25 @@ public class AssemblyDescriptorTest extends EJBJarTestBase {
     @Test
     public void testMethodIntfErrorEJB32() throws Exception {
         try {
-            parse(ejbJar32() +
-                  "<assembly-descriptor>" +
-                  "  <container-transaction>" +
-                  "    <method>" +
-                  "      <ejb-name>ejb0</ejb-name>" +
-                  "      <method-intf>Invalid</method-intf>" +
-                  "      <method-name>method0</method-name>" +
-                  "    </method>" +
-                  "    <trans-attribute>Required</trans-attribute>" +
-                  "  </container-transaction>" +
-                  "</assembly-descriptor>" +
-                  "</ejb-jar>");
+            parse( ejbJar32(
+                       "",
+                       "<assembly-descriptor>" +
+                           "<container-transaction>" +
+                               "<method>" +
+                                   "<ejb-name>ejb0</ejb-name>" +
+                                   "<method-intf>Invalid</method-intf>" +
+                                   "<method-name>method0</method-name>" +
+                               "</method>" +
+                               "<trans-attribute>Required</trans-attribute>" +
+                           "</container-transaction>" +
+                        "</assembly-descriptor>"),
+                   EJBJar.VERSION_4_0);
+
             Assert.fail("expected ParseException");
-        } catch (DDParser.ParseException ex) {
-            if (!ex.getMessage().contains("LifecycleCallback")) {
+
+        } catch ( DDParser.ParseException ex ) {
+            // "invalid.enum.value"
+            if ( !ex.getMessage().contains("LifecycleCallback") ) {
                 throw ex;
             }
         }

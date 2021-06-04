@@ -28,35 +28,36 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 
 /**
  * test the ejb-jar.xml parser
+ *
  * -concentrate on the pristine path where the ejb-jar.xml file is well formed
  * -testing entity and relationships is optional
  * -testing error handling is secondary
  *
  * -Error handling philosophy:
- * As determined by Glann marcy and Brett Kail, the easiest thing to do at this point is to change the parser to return a "sensible default",
- * but if not possible, unwind by discarding objects until something valid is returned (e.g., EJBRelation.getRelationshipRoles()
- * should be discarded if only one <ejb-relation/> is specified).
- * If we can match the defaults used by WCCM (by looking at WCCMBASE/ws/code/jst.j2ee.core.mofj2ee), that would be ideal.
  *
+ * As determined by Glann marcy and Brett Kail, the easiest thing to do at
+ * this point is to change the parser to return a "sensible default",
+ * but if not possible, unwind by discarding objects until something
+ * valid is returned (e.g., EJBRelation.getRelationshipRoles() should be
+ * discarded if only one <ejb-relation/> is specified).
+ *
+ * If we can match the defaults used by WCCM (by looking at
+ * WCCMBASE/ws/code/jst.j2ee.core.mofj2ee), that would be ideal.
  */
 
 public class EJBJarTestBase {
-    private final Mockery mockery = new Mockery();
-    private int mockId;
+    private static final Mockery mockery = new Mockery();
+    private static volatile int mockId;
 
-    EJBJar parse(final String xml) throws Exception {
-        return parse(xml, EJBJar.VERSION_4_0);
-    }
-
-    EJBJar parse(final String xml, final int maxVersion) throws Exception {
+    protected static EJBJar parse(String xml, int maxVersion) throws Exception {
         EJBJarEntryAdapter adapter = new EJBJarEntryAdapter();
         @SuppressWarnings("unchecked")
-        final ServiceReference<EJBJarDDParserVersion> versionRef = mockery.mock(ServiceReference.class, "sr" + mockId++);
-        final Container root = mockery.mock(Container.class, "root" + mockId++);
-        final Entry entry = mockery.mock(Entry.class, "entry" + mockId++);
-        final OverlayContainer rootOverlay = mockery.mock(OverlayContainer.class, "rootOverlay" + mockId++);
-        final ArtifactEntry artifactEntry = mockery.mock(ArtifactEntry.class, "artifactContainer" + mockId++);
-        final NonPersistentCache nonPC = mockery.mock(NonPersistentCache.class, "nonPC" + mockId++);
+        ServiceReference<EJBJarDDParserVersion> versionRef = mockery.mock(ServiceReference.class, "sr" + mockId++);
+        Container root = mockery.mock(Container.class, "root" + mockId++);
+        Entry entry = mockery.mock(Entry.class, "entry" + mockId++);
+        OverlayContainer rootOverlay = mockery.mock(OverlayContainer.class, "rootOverlay" + mockId++);
+        ArtifactEntry artifactEntry = mockery.mock(ArtifactEntry.class, "artifactContainer" + mockId++);
+        NonPersistentCache nonPC = mockery.mock(NonPersistentCache.class, "nonPC" + mockId++);
 
         mockery.checking(new Expectations() {
             {
@@ -84,33 +85,32 @@ public class EJBJarTestBase {
         });
 
         adapter.setVersion(versionRef);
+
         try {
             return adapter.adapt(root, rootOverlay, artifactEntry, entry);
-        } catch (UnableToAdaptException e) {
+
+        } catch ( UnableToAdaptException e ) {
             Throwable cause = e.getCause();
-            throw cause instanceof Exception ? (Exception) cause : e;
+            throw ( (cause instanceof Exception) ? (Exception) cause : e );
         }
     }
 
-    public EJBJar getEJBJar(String jarString, int maxVersion) throws Exception {
-        return parse(jarString, maxVersion);
-    }
+    //
 
-    public EJBJar getEJBJar(String jarString) throws Exception {
-        return parse(jarString);
-    }
-
-    static final String ejbJar11() {
-        return "<!DOCTYPE ejb-jar PUBLIC \"-//Sun Microsystems, Inc.//DTD Enterprise JavaBeans 1.1//EN\" \"http://java.sun.com/j2ee/dtds/ejb-jar_1_1.dtd\">" +
+    protected static String ejbJar11Head() {
+        return "<!DOCTYPE ejb-jar PUBLIC" +
+               " \"-//Sun Microsystems, Inc.//DTD Enterprise JavaBeans 1.1//EN\"" +
+               " \"http://java.sun.com/j2ee/dtds/ejb-jar_1_1.dtd\">" +
                "<ejb-jar>";
     }
 
-    static final String ejbJar20() {
-        return "<!DOCTYPE ejb-jar PUBLIC \"-//Sun Microsystems, Inc.//DTD Enterprise JavaBeans 2.0//EN\" \"http://java.sun.com/dtd/ejb-jar_2_0.dtd\">" +
+    protected static String ejbJar20Head() {
+        return "<!DOCTYPE ejb-jar PUBLIC \"-//Sun Microsystems, Inc.//DTD Enterprise JavaBeans 2.0//EN\"" +
+               " \"http://java.sun.com/dtd/ejb-jar_2_0.dtd\">" +
                "<ejb-jar>";
     }
 
-    static final String ejbJar21() {
+    protected static String ejbJar21Head() {
         return "<ejb-jar" +
                " xmlns=\"http://java.sun.com/xml/ns/j2ee\"" +
                " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
@@ -119,7 +119,7 @@ public class EJBJarTestBase {
                ">";
     }
 
-    static final String ejbJar30(String attrs) {
+    protected static String ejbJar30Head(String attrs) {
         return "<ejb-jar" +
                " xmlns=\"http://java.sun.com/xml/ns/javaee\"" +
                " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
@@ -129,11 +129,7 @@ public class EJBJarTestBase {
                ">";
     }
 
-    static String ejbJar30() {
-        return ejbJar30("");
-    }
-
-    static final String ejbJar31(String attrs) {
+    protected static String ejbJar31Head(String attrs) {
         return "<ejb-jar" +
                " xmlns=\"http://java.sun.com/xml/ns/javaee\"" +
                " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
@@ -143,11 +139,7 @@ public class EJBJarTestBase {
                ">";
     }
 
-    static String ejbJar31() {
-        return ejbJar31("");
-    }
-
-    static final String ejbJar32(String attrs) {
+    protected static String ejbJar32Head(String attrs) {
         return "<ejb-jar" +
                " xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"" +
                " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
@@ -157,11 +149,7 @@ public class EJBJarTestBase {
                ">";
     }
 
-    static String ejbJar32() {
-        return ejbJar32("");
-    }
-
-    static final String ejbJar40(String attrs) {
+    protected static String ejbJar40Head(String attrs) {
         return "<ejb-jar" +
                " xmlns=\"https://jakarta.ee/xml/ns/jakartaee\"" +
                " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
@@ -170,9 +158,62 @@ public class EJBJarTestBase {
                " " + attrs +
                ">";
     }
-
-    static String ejbJar40() {
-        return ejbJar40("");
+    
+    protected static String ejbJarTail() {
+        return "</ejb-jar>";
+    }
+    
+    //
+    
+    protected static String ejbJar11(String text) {
+        return ejbJar11Head() + text + ejbJarTail();
     }
 
+    protected static String ejbJar20(String text) {
+        return ejbJar20Head() + text + ejbJarTail();        
+    }
+    
+    protected static String ejbJar21(String text) {
+        return ejbJar21Head() + text + ejbJarTail();        
+    }
+
+    protected static String ejbJar30(String attrs, String text) {
+        return ejbJar30Head(attrs) + text + ejbJarTail();        
+    }
+
+    protected static String ejbJar31(String attrs, String text) {
+        return ejbJar31Head(attrs) + text + ejbJarTail();
+    }
+
+    protected static String ejbJar32(String attrs, String text) {
+        return ejbJar32Head(attrs) + text + ejbJarTail();
+    }
+    
+    protected static String ejbJar40(String attrs, String text) {
+        return ejbJar40Head(attrs) + text + ejbJarTail();
+    }
+
+    protected static String ejbJar(int version, String attrs, String text) {
+        String head;
+
+        if ( version == EJBJar.VERSION_1_1 ) {
+            head = ejbJar11Head();
+        } else if ( version == EJBJar.VERSION_2_0 ) {
+            head = ejbJar20Head();
+        } else if ( version == EJBJar.VERSION_2_1 ) {
+            head = ejbJar21Head();
+        } else if ( version == EJBJar.VERSION_3_0 ) {
+            head = ejbJar30Head(attrs);
+        } else if ( version == EJBJar.VERSION_3_1 ) {
+            head = ejbJar31Head(attrs);
+        } else if ( version == EJBJar.VERSION_3_2 ) {
+            head = ejbJar32Head(attrs);
+        } else if ( version == EJBJar.VERSION_4_0 ) {
+            head = ejbJar40Head(attrs);
+        } else {
+            throw new IllegalArgumentException("Unknown EJBJar version [ " + version + " ]");
+        }
+        
+        return head + text + ejbJarTail();
+    }
 }

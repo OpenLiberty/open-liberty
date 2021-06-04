@@ -65,6 +65,18 @@ public interface EJBJar extends ModuleDeploymentDescriptor {
      */
     int VERSION_4_0 = 40;
 
+    int[] VERSIONS = {
+        VERSION_1_1,
+        VERSION_2_0, VERSION_2_1,
+        VERSION_3_0, VERSION_3_1, VERSION_3_2,
+        VERSION_4_0
+    };
+    
+    int[] ANNOTATION_ENABLED_VERSIONS = {
+        VERSION_3_0, VERSION_3_1, VERSION_3_2,
+        VERSION_4_0
+    };
+    
     /**
      * @return the version
      *         <ul>

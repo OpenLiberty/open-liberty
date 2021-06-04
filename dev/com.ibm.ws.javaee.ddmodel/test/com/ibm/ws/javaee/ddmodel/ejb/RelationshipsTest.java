@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,55 +22,51 @@ import com.ibm.ws.javaee.dd.ejb.EJBRelationshipRole;
 import com.ibm.ws.javaee.dd.ejb.Relationships;
 
 public class RelationshipsTest extends EJBJarTestBase {
+    protected static final String relationships =
+        "<relationships>" +
+            "<ejb-relation>" +
+                "<ejb-relation-name>EjbRelationName</ejb-relation-name>" +
+                "<ejb-relationship-role>" +
+                    "<ejb-relationship-role-name>HorseRoleName</ejb-relationship-role-name>" +
+                    "<multiplicity>One</multiplicity>" +
+                    "<relationship-role-source>" +
+                        "<ejb-name>HorseEJBName</ejb-name>" +
+                    "</relationship-role-source>" +
+                    "<cmr-field>" +
+                        "<cmr-field-name>HorseCMRFieldName</cmr-field-name>" +
+                    "</cmr-field>" +
+                "</ejb-relationship-role>" +
 
-    String relationships = EJBJarTest.ejbJar20() +
-                           "<relationships>" +
-                           "<ejb-relation>" +
-                           "<ejb-relation-name>EjbRelationName</ejb-relation-name>" +
+                "<ejb-relationship-role>" +
+                    "<ejb-relationship-role-name>RiderRoleName</ejb-relationship-role-name>" +
+                    "<multiplicity>Many</multiplicity>" +
+                    "<cascade-delete/>" +
+                    "<relationship-role-source>" +
+                        "<ejb-name>RiderEJBName</ejb-name>" +
+                    "</relationship-role-source>" +
+                    "<cmr-field>" +
+                        "<cmr-field-name>RiderCMRFieldName</cmr-field-name>" +
+                        "<cmr-field-type>java.util.Collection</cmr-field-type>" +
+                    "</cmr-field>" +
+                "</ejb-relationship-role>" +
 
-                           "<ejb-relationship-role>" +
-                           "<ejb-relationship-role-name>HorseRoleName</ejb-relationship-role-name>" +
-                           "<multiplicity>One</multiplicity>" +
-                           "<relationship-role-source>" +
-                           "<ejb-name>HorseEJBName</ejb-name>" +
-                           "</relationship-role-source>" +
-                           "<cmr-field>" +
-                           "<cmr-field-name>HorseCMRFieldName</cmr-field-name>" +
-                           "</cmr-field>" +
-                           "</ejb-relationship-role>" +
-
-                           "<ejb-relationship-role>" +
-                           "<ejb-relationship-role-name>RiderRoleName</ejb-relationship-role-name>" +
-                           "<multiplicity>Many</multiplicity>" +
-                           "<cascade-delete/>" +
-                           "<relationship-role-source>" +
-                           "<ejb-name>RiderEJBName</ejb-name>" +
-                           "</relationship-role-source>" +
-                           "<cmr-field>" +
-                           "<cmr-field-name>RiderCMRFieldName</cmr-field-name>" +
-                           "<cmr-field-type>java.util.Collection</cmr-field-type>" +
-                           "</cmr-field>" +
-                           "</ejb-relationship-role>" +
-
-                           "<ejb-relationship-role>" +
-                           "<ejb-relationship-role-name>SaddleRoleName</ejb-relationship-role-name>" +
-                           "<multiplicity>Many</multiplicity>" +
-                           "<relationship-role-source>" +
-                           "<ejb-name>SaddleEJBName</ejb-name>" +
-                           "</relationship-role-source>" +
-                           "<cmr-field>" +
-                           "<cmr-field-name>SaddleCMRFieldName</cmr-field-name>" +
-                           "<cmr-field-type>java.util.Set</cmr-field-type>" +
-                           "</cmr-field>" +
-                           "</ejb-relationship-role>" +
-
-                           "</ejb-relation>" +
-                           "</relationships>" +
-                           "</ejb-jar>";
+                "<ejb-relationship-role>" +
+                    "<ejb-relationship-role-name>SaddleRoleName</ejb-relationship-role-name>" +
+                    "<multiplicity>Many</multiplicity>" +
+                    "<relationship-role-source>" +
+                        "<ejb-name>SaddleEJBName</ejb-name>" +
+                    "</relationship-role-source>" +
+                    "<cmr-field>" +
+                        "<cmr-field-name>SaddleCMRFieldName</cmr-field-name>" +
+                        "<cmr-field-type>java.util.Set</cmr-field-type>" +
+                    "</cmr-field>" +
+                "</ejb-relationship-role>" +
+            "</ejb-relation>" +
+        "</relationships>";
 
     @Test
     public void testRelationships() throws Exception {
-        EJBJar ejbJar = getEJBJar(relationships);
+        EJBJar ejbJar = parse( ejbJar20(relationships), EJBJar.VERSION_4_0 );
         Relationships relationships = ejbJar.getRelationshipList();
 
         List<EJBRelation> ejbRelationList = relationships.getEjbRelations();
@@ -108,5 +104,4 @@ public class RelationshipsTest extends EJBJarTestBase {
         Assert.assertEquals(CMRField.TYPE_JAVA_UTIL_COLLECTION, cmrField1.getTypeValue());
         Assert.assertEquals(CMRField.TYPE_JAVA_UTIL_SET, cmrField2.getTypeValue());
     }
-
 }
