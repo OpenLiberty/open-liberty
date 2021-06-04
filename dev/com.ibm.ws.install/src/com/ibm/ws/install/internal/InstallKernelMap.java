@@ -1178,33 +1178,33 @@ public class InstallKernelMap implements Map {
         data.put(ACTION_ERROR_MESSAGE, null);
         data.put(ACTION_EXCEPTION_STACKTRACE, null);
 
-        ArtifactDownloader artifactDownloader = new ArtifactDownloader();
-        String fromRepo = (String) data.get(FROM_REPO);
-        Boolean cleanupNeeded = (Boolean) data.get(CLEANUP_NEEDED);
-        String downloadDir;
-        if (cleanupNeeded != null && cleanupNeeded) {
-            fine("Using temp location: " + TEMP_DIRECTORY);
-            data.put(CLEANUP_TEMP_LOCATION, TEMP_DIRECTORY);
-            downloadDir = TEMP_DIRECTORY;
-        } else {
-            downloadDir = getDownloadDir((String) data.get(DOWNLOAD_LOCATION));
-        }
-        String artifact = (String) this.get(DOWNLOAD_ARTIFACT_SINGLE);
-        String filetype = (String) this.get(DOWNLOAD_FILETYPE);
-        MavenRepository repo = getMavenRepo(fromRepo);
-        try {
-            artifactDownloader.setEnvMap(envMap);
-            artifactDownloader.synthesizeAndDownload(artifact, filetype, downloadDir, repo, true);
-            // data.put(DOWNLOAD_LOCATION, null);
-        } catch (InstallException e) {
-            this.put(ACTION_RESULT, ERROR);
-            this.put(ACTION_ERROR_MESSAGE, e.getMessage());
-            this.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
-            return null;
-        }
+        try (ArtifactDownloader artifactDownloader = new ArtifactDownloader()) {
+            String fromRepo = (String) data.get(FROM_REPO);
+            Boolean cleanupNeeded = (Boolean) data.get(CLEANUP_NEEDED);
+            String downloadDir;
+            if (cleanupNeeded != null && cleanupNeeded) {
+                fine("Using temp location: " + TEMP_DIRECTORY);
+                data.put(CLEANUP_TEMP_LOCATION, TEMP_DIRECTORY);
+                downloadDir = TEMP_DIRECTORY;
+            } else {
+                downloadDir = getDownloadDir((String) data.get(DOWNLOAD_LOCATION));
+            }
+            String artifact = (String) this.get(DOWNLOAD_ARTIFACT_SINGLE);
+            String filetype = (String) this.get(DOWNLOAD_FILETYPE);
+            MavenRepository repo = getMavenRepo(fromRepo);
+            try {
+                artifactDownloader.setEnvMap(envMap);
+                artifactDownloader.synthesizeAndDownload(artifact, filetype, downloadDir, repo, true);
+                // data.put(DOWNLOAD_LOCATION, null);
+            } catch (InstallException e) {
+                this.put(ACTION_RESULT, ERROR);
+                this.put(ACTION_ERROR_MESSAGE, e.getMessage());
+                this.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
+                return null;
+            }
 
-        return artifactDownloader.getDownloadedFiles();
-
+            return artifactDownloader.getDownloadedFiles();
+        }
     }
 
     /**
@@ -1324,33 +1324,33 @@ public class InstallKernelMap implements Map {
         data.put(ACTION_ERROR_MESSAGE, null);
         data.put(ACTION_EXCEPTION_STACKTRACE, null);
 
-        ArtifactDownloader artifactDownloader = new ArtifactDownloader();
-        String featureList = (String) data.get(DOWNLOAD_ARTIFACT_LIST);
-        String filetype = (String) data.get(DOWNLOAD_FILETYPE);
+        try (ArtifactDownloader artifactDownloader = new ArtifactDownloader()) {
+            String featureList = (String) data.get(DOWNLOAD_ARTIFACT_LIST);
+            String filetype = (String) data.get(DOWNLOAD_FILETYPE);
 
-        String fromRepo = (String) data.get(FROM_REPO);
-        Boolean cleanupNeeded = (Boolean) data.get(CLEANUP_NEEDED);
-        String downloadDir;
-        if (cleanupNeeded != null && cleanupNeeded) {
-            fine("Using temp location: " + TEMP_DIRECTORY);
-            data.put(CLEANUP_TEMP_LOCATION, TEMP_DIRECTORY);
-            downloadDir = TEMP_DIRECTORY;
-        } else {
-            downloadDir = getDownloadDir((String) data.get(DOWNLOAD_LOCATION));
+            String fromRepo = (String) data.get(FROM_REPO);
+            Boolean cleanupNeeded = (Boolean) data.get(CLEANUP_NEEDED);
+            String downloadDir;
+            if (cleanupNeeded != null && cleanupNeeded) {
+                fine("Using temp location: " + TEMP_DIRECTORY);
+                data.put(CLEANUP_TEMP_LOCATION, TEMP_DIRECTORY);
+                downloadDir = TEMP_DIRECTORY;
+            } else {
+                downloadDir = getDownloadDir((String) data.get(DOWNLOAD_LOCATION));
+            }
+            MavenRepository repo = getMavenRepo(fromRepo);
+            try {
+                artifactDownloader.setEnvMap(envMap);
+                artifactDownloader.synthesizeAndDownload(featureList, filetype, downloadDir, repo, true);
+            } catch (InstallException e) {
+                data.put(ACTION_RESULT, ERROR);
+                data.put(ACTION_ERROR_MESSAGE, e.getMessage());
+                data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
+                return null;
+            }
+
+            return artifactDownloader.getDownloadedFiles().get(0);
         }
-        MavenRepository repo = getMavenRepo(fromRepo);
-        try {
-            artifactDownloader.setEnvMap(envMap);
-            artifactDownloader.synthesizeAndDownload(featureList, filetype, downloadDir, repo, true);
-        } catch (InstallException e) {
-            data.put(ACTION_RESULT, ERROR);
-            data.put(ACTION_ERROR_MESSAGE, e.getMessage());
-            data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
-            return null;
-        }
-
-        return artifactDownloader.getDownloadedFiles().get(0);
-
     }
 
     @SuppressWarnings("unchecked")
