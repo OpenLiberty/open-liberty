@@ -28,6 +28,9 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
+import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
+import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
+
 import io.openliberty.checkpoint.internal.criu.ExecuteCRIU;
 import io.openliberty.checkpoint.spi.Checkpoint;
 import io.openliberty.checkpoint.spi.SnapshotFailed;
@@ -40,9 +43,10 @@ import io.openliberty.checkpoint.spi.SnapshotHookFactory;
                                   policyOption = ReferencePolicyOption.GREEDY),
            property = { "osgi.command.function=snapshot", "osgi.command.scope=criu" })
 public class CheckpointImpl implements Checkpoint {
-    private static final String SNAPSHOT_DIR_NAME = "snapshot";
-
     private final ComponentContext cc;
+
+    @Reference
+    WsLocationAdmin locAdmin;
 
     @Reference(cardinality = ReferenceCardinality.OPTIONAL, policyOption = ReferencePolicyOption.GREEDY)
     private volatile ExecuteCRIU criu;
@@ -81,7 +85,8 @@ public class CheckpointImpl implements Checkpoint {
     @Override
     @Descriptor("Take a snapshot")
     public void snapshot(Phase phase) throws SnapshotFailed {
-        doSnapshot(phase, getSnapshotDir());
+        doSnapshot(phase,
+                   locAdmin.resolveResource(WsLocationConstants.SYMBOL_SERVER_WORKAREA_DIR + "snapshot").asFile());
     }
 
     private void doSnapshot(Phase phase, File directory) throws SnapshotFailed {
@@ -172,9 +177,4 @@ public class CheckpointImpl implements Checkpoint {
     private static SnapshotFailed failedRestore(Exception cause) {
         return new SnapshotFailed(Type.RESTORE_ABORT, "Failed to restore from snapshot.", cause);
     }
-
-    public File getSnapshotDir() {
-        return new File(cc.getBundleContext().getDataFile(""), SNAPSHOT_DIR_NAME);
-    }
-
 }
