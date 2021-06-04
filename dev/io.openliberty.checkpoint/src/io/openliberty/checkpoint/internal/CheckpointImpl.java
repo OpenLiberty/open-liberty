@@ -73,9 +73,11 @@ public class CheckpointImpl implements Checkpoint {
      * is taken each snapshot hook instance will have their {@link SnapshotHook#restore(Phase)}
      * methods called.
      *
+     * @deprecated Provided to support debugging from osgi console.
      * @param phase the phase to take the snapshot
      * @throws SnapshotFailed if the snapshot fails
      */
+    @Deprecated
     @Descriptor("Take a snapshot")
     public void snapshot(@Parameter(names = "-p", absentValue = "") @Descriptor("The phase to snapshot") Phase phase,
                          @Descriptor("Directory to store the snapshot") File directory) throws SnapshotFailed {

@@ -184,7 +184,7 @@ public class LaunchArguments {
                     } else if (argToLower.startsWith("--checkpoint=")) {
                         String phase = argToLower.substring("--checkpoint=".length());
                         if (Checkpoint.Phase.getPhase(phase) == null) {
-                            System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("error.invalidPhase"), phase));
+                            System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("error.invalidPhaseName"), phase));
                             System.out.println();
                             returnValue = ReturnCode.BAD_ARGUMENT;
                         } else {
