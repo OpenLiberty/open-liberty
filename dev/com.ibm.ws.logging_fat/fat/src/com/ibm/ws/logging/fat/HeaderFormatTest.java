@@ -76,7 +76,7 @@ public class HeaderFormatTest {
         assertFalse("There is no json header in console.log", hasNoJSONHeader);
         /* Check that the trace log does not contain json */
         hasNoJSONHeader = checkStringsNotInLog(JSON_MESSAGES, traceLogFile);
-        assertTrue("There is no json header in trace.log", hasNoJSONHeader);
+        assertTrue("There a json header in trace.log", hasNoJSONHeader);
     }
 
     /*
@@ -101,7 +101,7 @@ public class HeaderFormatTest {
         assertTrue("There is a json header in console.log", hasNoJSON);
         /* Check that the console log does not contain json */
         hasNoJSON = checkStringsNotInLog(JSON_MESSAGES, traceLogFile);
-        assertTrue("There is no json header in trace.log", hasNoJSON);
+        assertTrue("There a json header in trace.log", hasNoJSON);
 
     }
 
