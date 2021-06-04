@@ -52,6 +52,9 @@ public class WebAppTest extends WebAppTestBase {
     
     // Servlet 3.0 cases ...
 
+    // TODO: We don't support the two DD cases, Servlet 2.2
+    //       and Servlet 2.3.  Should we?
+
     @Test(expected = DDParser.ParseException.class)    
     public void testEE6Web22() throws Exception {
         @SuppressWarnings("unused")        
@@ -86,6 +89,12 @@ public class WebAppTest extends WebAppTestBase {
     public void testEE6Web40() throws Exception {
         @SuppressWarnings("unused")        
         WebApp webApp = parse( webApp(WebApp.VERSION_4_0) );
+    }
+    
+    @Test(expected = IllegalArgumentException.class)    
+    public void testEE6Web50() throws Exception {
+        @SuppressWarnings("unused")        
+        WebApp webApp = parse( webApp(WebApp.VERSION_5_0), WebApp.VERSION_3_0 );        
     }
     
     // Servlet 3.0 specific cases ...
@@ -231,6 +240,12 @@ public class WebAppTest extends WebAppTestBase {
         WebApp webApp = parse( webApp(WebApp.VERSION_4_0), WebApp.VERSION_3_1 );
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testEE7Web50() throws Exception {
+        @SuppressWarnings("unused")        
+        WebApp webApp = parse( webApp(WebApp.VERSION_5_0), WebApp.VERSION_3_1 );        
+    }
+    
     // The prohibition against having more than one absolute ordering element
     // was added in JavaEE7.
     //
@@ -299,4 +314,42 @@ public class WebAppTest extends WebAppTestBase {
         @SuppressWarnings("unused")        
         WebApp webApp = parse( webApp(WebApp.VERSION_4_0), WebApp.VERSION_4_0 );        
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testEE8Web50() throws Exception {
+        @SuppressWarnings("unused")        
+        WebApp webApp = parse( webApp(WebApp.VERSION_5_0), WebApp.VERSION_4_0 );        
+    }
+    
+    // Servlet 5.0 cases ...
+
+    @Test
+    public void testJakarta9Web24() throws Exception {
+        @SuppressWarnings("unused")        
+        WebApp webApp = parse( webApp(WebApp.VERSION_2_4), WebApp.VERSION_4_0 );        
+    }
+
+    @Test
+    public void testJakarta9Web30() throws Exception {
+        @SuppressWarnings("unused")        
+        WebApp webApp = parse( webApp(WebApp.VERSION_3_0), WebApp.VERSION_5_0 );        
+    }
+
+    @Test
+    public void testJakarta9Web31() throws Exception {
+        @SuppressWarnings("unused")        
+        WebApp webApp = parse( webApp(WebApp.VERSION_3_1), WebApp.VERSION_5_0 );        
+    }
+
+    @Test
+    public void testJakarta9Web40() throws Exception {
+        @SuppressWarnings("unused")        
+        WebApp webApp = parse( webApp(WebApp.VERSION_4_0), WebApp.VERSION_5_0 );        
+    }    
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testJakarta9Web50() throws Exception {
+        @SuppressWarnings("unused")        
+        WebApp webApp = parse( webApp(WebApp.VERSION_5_0), WebApp.VERSION_5_0 );        
+    }        
 }

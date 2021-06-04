@@ -21,44 +21,42 @@ import com.ibm.ws.javaee.version.JavaEEVersion;
  * Application deployment descriptor parse tests.
  */
 public class AppTest extends AppTestBase {
-    public static final Version[] TEST_VERSIONS = new Version[] {
-                                                                  JavaEEVersion.VERSION_6_0,
-                                                                  JavaEEVersion.VERSION_7_0,
-                                                                  JavaEEVersion.VERSION_8_0,
-                                                                  JavaEEVersion.VERSION_9_0
+    public static final Version[] TEST_VERSIONS = {
+        JavaEEVersion.VERSION_6_0,
+        JavaEEVersion.VERSION_7_0,
+        JavaEEVersion.VERSION_8_0,
+        JavaEEVersion.VERSION_9_0
     };
 
     public static final int CMP_LT = -1;
     public static final int CMP_GT = +1;
-    public static final int CMP_EQ = 0;
+    public static final int CMP_EQ =  0;
 
     public static int asCmp(int cmpResult) {
-        return ((cmpResult < 0) ? CMP_LT : ((cmpResult > 0) ? CMP_GT : CMP_EQ));
+        return ( (cmpResult < 0) ? CMP_LT : ((cmpResult > 0) ? CMP_GT : CMP_EQ) );
     }
 
-    public static int[][] COMPARE_VERSION_RESULTS = new int[][] {
-                                                                  { CMP_EQ, CMP_LT, CMP_LT, CMP_LT },
-                                                                  { CMP_GT, CMP_EQ, CMP_LT, CMP_LT },
-                                                                  { CMP_GT, CMP_GT, CMP_EQ, CMP_LT },
-                                                                  { CMP_GT, CMP_GT, CMP_GT, CMP_EQ }
-    };
+    public static int[][] COMPARE_VERSION_RESULTS =
+        { { CMP_EQ, CMP_LT, CMP_LT, CMP_LT },
+          { CMP_GT, CMP_EQ, CMP_LT, CMP_LT },
+          { CMP_GT, CMP_GT, CMP_EQ, CMP_LT },
+          { CMP_GT, CMP_GT, CMP_GT, CMP_EQ } };
 
     @Test
     public void testCompareVersions() throws Exception {
-        for (int v1No = 0; v1No < TEST_VERSIONS.length; v1No++) {
+        for ( int v1No = 0; v1No < TEST_VERSIONS.length; v1No++ ) {
             Version v1 = TEST_VERSIONS[v1No];
-            for (int v2No = 0; v2No < TEST_VERSIONS.length; v2No++) {
+            for ( int v2No = 0; v2No < TEST_VERSIONS.length; v2No++ ) {
                 Version v2 = TEST_VERSIONS[v2No];
 
                 int expectedCmp = COMPARE_VERSION_RESULTS[v1No][v2No];
                 int actualCmp = asCmp(v1.compareTo(v2));
 
                 boolean matchCmp = (expectedCmp == actualCmp);
-                if (!matchCmp) {
-                    Assert.assertEquals(
-                                        "Version [ " + v1 + " ] compared with [ " + v2 + " ]." +
-                                        "  Expecting [ " + Integer.toString(expectedCmp) + " ]" +
-                                        " but received [ " + Integer.toString(actualCmp) + " ]",
+                if ( !matchCmp ) {
+                    Assert.assertEquals( "Version [ " + v1 + " ] compared with [ " + v2 + " ]." +
+                                        " Expected [ " + expectedCmp + " ]; " +
+                                        " received [ " + actualCmp + " ]",
                                         expectedCmp, actualCmp);
                 }
             }
