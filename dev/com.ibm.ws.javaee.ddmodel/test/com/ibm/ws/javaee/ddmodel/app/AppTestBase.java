@@ -28,27 +28,23 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 
 public class AppTestBase extends DDTestBase {
 
-    protected Application parse(String xml) throws Exception {
-        return parse(xml, JavaEEVersion.VERSION_6_0);
-    }
-
-    protected Application parse(final String xml, Version platformVersion) throws Exception {
-        final String versionText = platformVersion.toString();
+    protected Application parse(String xml, Version platformVersion) throws Exception {
+        String versionText = platformVersion.toString();
 
         // Mock up data structures needed to perform parsing:
 
         // Mock up the parameters to 'ApplicationAdapter.adapt':
-        final Container root = mockery.mock(Container.class, "root" + mockId++);
-        final OverlayContainer rootOverlay = mockery.mock(OverlayContainer.class, "rootOverlay" + mockId++);
-        final ArtifactContainer artifactContainer = mockery.mock(ArtifactContainer.class, "artifactContainer" + mockId++);
-        final Container containerToAdapt = mockery.mock(Container.class, "containerToAdapt" + mockId++);
+        Container root = mockery.mock(Container.class, "root" + mockId++);
+        OverlayContainer rootOverlay = mockery.mock(OverlayContainer.class, "rootOverlay" + mockId++);
+        ArtifactContainer artifactContainer = mockery.mock(ArtifactContainer.class, "artifactContainer" + mockId++);
+        Container containerToAdapt = mockery.mock(Container.class, "containerToAdapt" + mockId++);
 
         // Mock up the entry for the application descriptor:
-        final Entry entry = mockery.mock(Entry.class, "entry" + mockId++);
+        Entry entry = mockery.mock(Entry.class, "entry" + mockId++);
 
         // Mock up the JavaEEVersion reference, which carries the application feature version:
         @SuppressWarnings("unchecked")
-        final ServiceReference<JavaEEVersion> versionRef = mockery.mock(ServiceReference.class, "sr" + mockId++);
+        ServiceReference<JavaEEVersion> versionRef = mockery.mock(ServiceReference.class, "sr" + mockId++);
 
         // Teach the mock objects their expectations.  These are determined by
         // examination of the application adapter code.
@@ -108,14 +104,14 @@ public class AppTestBase extends DDTestBase {
 
     // 1.2 and 1.3 are DD based:
 
-    protected static String app12() {
+    protected static String app12Head() {
         return "<!DOCTYPE application PUBLIC" +
                " \"-//Sun Microsystems, Inc.//DTD J2EE Application 1.2//EN\"" +
                " \"http://java.sun.com/j2ee/dtds/application_1_2.dtd\">" +
                "<application>";
     }
 
-    protected static String app13() {
+    protected static String app13Head() {
         return "<!DOCTYPE application PUBLIC" +
                " \"-//Sun Microsystems, Inc.//DTD J2EE Application 1.3//EN\"" +
                " \"http://java.sun.com/j2ee/dtds/application_1_3.dtd\">" +
@@ -124,7 +120,7 @@ public class AppTestBase extends DDTestBase {
 
     // 1.4, 5.0. 6.0, 7.0, and 8.0 are schema based:
 
-    protected static String app14() {
+    protected static String app14Head() {
         return "<application" +
                " xmlns=\"http://java.sun.com/xml/ns/j2ee\"" +
                " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
@@ -135,7 +131,7 @@ public class AppTestBase extends DDTestBase {
                ">";
     }
 
-    protected static String app50() {
+    protected static String app50Head() {
         return "<application" +
                " xmlns=\"http://java.sun.com/xml/ns/javaee\"" +
                " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
@@ -146,7 +142,7 @@ public class AppTestBase extends DDTestBase {
                ">";
     }
 
-    protected static String app60() {
+    protected static String app60Head() {
         return "<application" +
                " xmlns=\"http://java.sun.com/xml/ns/javaee\"" +
                " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
@@ -157,7 +153,7 @@ public class AppTestBase extends DDTestBase {
                ">";
     }
 
-    protected static String app70() {
+    protected static String app70Head() {
         return "<application" +
                " xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"" +
                " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
@@ -168,7 +164,7 @@ public class AppTestBase extends DDTestBase {
                ">";
     }
 
-    protected static String app80() {
+    protected static String app80Head() {
         return "<application" +
                " xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"" +
                " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
@@ -179,7 +175,7 @@ public class AppTestBase extends DDTestBase {
                ">";
     }
 
-    protected static String app90() {
+    protected static String app90Head() {
         return "<application" +
                " xmlns=\"https://jakarta.ee/xml/ns/jakartaee\"" +
                " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
@@ -193,4 +189,72 @@ public class AppTestBase extends DDTestBase {
     protected static String appTail() {
         return "</application>";
     }
+
+    //
+
+    protected static String app12(String text) {
+        return app12Head() + text + appTail();
+    }
+    
+    protected static String app13(String text) {
+        return app13Head() + text + appTail();
+    }
+    
+    protected static String app14(String text) {
+        return app14Head() + text + appTail();
+    }
+    
+    protected static String app50(String text) {
+        return app50Head() + text + appTail();
+    }
+    
+    protected static String app60(String text) {
+        return app60Head() + text + appTail();
+    }
+    
+    protected static String app70(String text) {
+        return app70Head() + text + appTail();
+    }
+    
+    protected static String app80(String text) {
+        return app80Head() + text + appTail();
+    }
+    
+    protected static String app90(String text) {
+        return app90Head() + text + appTail();
+    }
+
+    //
+
+    protected static String app12() {
+        return app12("");
+    }
+    
+    protected static String app13() {
+        return app13("");
+    }
+    
+    protected static String app14() {
+        return app14("");
+    }
+    
+    protected static String app50() {
+        return app50("");
+    }
+    
+    protected static String app60() {
+        return app60("");
+    }
+    
+    protected static String app70() {
+        return app70("");
+    }
+    
+    protected static String app80() {
+        return app80("");
+    }
+    
+    protected static String app90() {
+        return app90("");
+    }    
 }
