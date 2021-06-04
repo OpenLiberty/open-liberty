@@ -1146,30 +1146,31 @@ public class InstallKernelMap implements Map {
         data.put(ACTION_ERROR_MESSAGE, null);
         data.put(ACTION_EXCEPTION_STACKTRACE, null);
 
-        ArtifactDownloader artifactDownloader = new ArtifactDownloader();
-        String fromRepo = (String) data.get(FROM_REPO);
-        Boolean cleanupNeeded = (Boolean) data.get(CLEANUP_NEEDED);
-        String downloadDir;
-        if (cleanupNeeded != null && cleanupNeeded) {
-            fine("Using temp location: " + TEMP_DIRECTORY);
-            data.put(CLEANUP_TEMP_LOCATION, TEMP_DIRECTORY);
-            downloadDir = TEMP_DIRECTORY;
-        } else {
-            downloadDir = getDownloadDir((String) data.get(DOWNLOAD_LOCATION));
-        }
-        MavenRepository repo = getMavenRepo(fromRepo);
+        try (ArtifactDownloader artifactDownloader = new ArtifactDownloader()) {
+            String fromRepo = (String) data.get(FROM_REPO);
+            Boolean cleanupNeeded = (Boolean) data.get(CLEANUP_NEEDED);
+            String downloadDir;
+            if (cleanupNeeded != null && cleanupNeeded) {
+                fine("Using temp location: " + TEMP_DIRECTORY);
+                data.put(CLEANUP_TEMP_LOCATION, TEMP_DIRECTORY);
+                downloadDir = TEMP_DIRECTORY;
+            } else {
+                downloadDir = getDownloadDir((String) data.get(DOWNLOAD_LOCATION));
+            }
+            MavenRepository repo = getMavenRepo(fromRepo);
 
-        try {
-            artifactDownloader.setEnvMap(envMap);
-            artifactDownloader.synthesizeAndDownloadFeatures(featureList, downloadDir, repo);
-        } catch (InstallException e) {
-            data.put(ACTION_RESULT, ERROR);
-            data.put(ACTION_ERROR_MESSAGE, e.getMessage());
-            data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
-            return null;
-        }
+            try {
+                artifactDownloader.setEnvMap(envMap);
+                artifactDownloader.synthesizeAndDownloadFeatures(featureList, downloadDir, repo);
+            } catch (InstallException e) {
+                data.put(ACTION_RESULT, ERROR);
+                data.put(ACTION_ERROR_MESSAGE, e.getMessage());
+                data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
+                return null;
+            }
 
-        return artifactDownloader.getDownloadedEsas();
+            return artifactDownloader.getDownloadedEsas();
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -1203,6 +1204,7 @@ public class InstallKernelMap implements Map {
         }
 
         return artifactDownloader.getDownloadedFiles();
+
     }
 
     /**
@@ -1348,6 +1350,7 @@ public class InstallKernelMap implements Map {
         }
 
         return artifactDownloader.getDownloadedFiles().get(0);
+
     }
 
     @SuppressWarnings("unchecked")

@@ -67,10 +67,11 @@ public class ArtifactDownloader implements AutoCloseable {
     private final static String DEFAULT_THREAD_NUM = "8";
 
     ArtifactDownloader() {
-        downloadedFiles = new ArrayList<File>();
-        progressBar = ProgressBar.getInstance();
-        envMap = null;
-        executor = Executors.newFixedThreadPool(Integer.parseInt(num_threads));
+        this.downloadedFiles = new ArrayList<File>();
+        this.progressBar = ProgressBar.getInstance();
+        this.envMap = null;
+        this.executor = Executors.newFixedThreadPool(Integer.parseInt(num_threads));
+
     }
 
     private Future<String> submitDownloadRequest(String coords, String fileType, String dLocation, MavenRepository repository) {
