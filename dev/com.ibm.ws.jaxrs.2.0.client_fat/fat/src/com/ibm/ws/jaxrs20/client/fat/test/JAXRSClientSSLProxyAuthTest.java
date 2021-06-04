@@ -17,7 +17,7 @@ import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 import static org.mockserver.model.NottableString.not;
 import static org.mockserver.model.NottableString.string;
-import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;;
+import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
 
 import java.util.HashMap;
 import java.util.Map;
