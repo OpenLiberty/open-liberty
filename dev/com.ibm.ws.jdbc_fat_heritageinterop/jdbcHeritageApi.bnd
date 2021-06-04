@@ -1,0 +1,31 @@
+#*******************************************************************************
+# Copyright (c) 2021 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+# For more information, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
+
+Bundle-Name: JDBC heritage API simulation bundle
+Bundle-SymbolicName: jdbcHeritageApi
+Bundle-Description: Test bundle that simulates providing heritage API
+
+WS-TraceGroup: jdbcHeritage
+
+Fragment-Host: com.ibm.ws.jdbc
+
+Export-Package:\
+ com.ibm.websphere.appprofile.accessintent,\
+ com.ibm.websphere.rsadapter
+
+Import-Package: *
+
+Private-Package:\
+ com.ibm.websphere.ce.cm

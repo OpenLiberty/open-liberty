@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2020 IBM Corporation and others.
+    Copyright (c) 2020, 2021 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -36,9 +36,7 @@
 
 	<include location="../fatTestPorts.xml" />
 
-	<keyStore
-		id="defaultKeyStore"
-		password="keyspass" />
+	<include location="${server.config.dir}/imports/goodSSLSettings.xml" />
 
 	<oauth-roles>
 		<authenticated>
@@ -86,10 +84,7 @@
 
 	<httpSession cookieHttpOnly="false" />
 
-	<javaPermission
-		className="java.net.SocketPermission"
-		name="*"
-		actions="connect,resolve" />
+	<include location="${server.config.dir}/imports/java2Permissions.xml" />
 
 	<javaPermission codebase="${wlp.user.dir}/shared/mongo-java-driver.jar"
 		className="java.security.AllPermission" />

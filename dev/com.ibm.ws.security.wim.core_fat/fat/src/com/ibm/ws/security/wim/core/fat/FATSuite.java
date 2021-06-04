@@ -15,10 +15,16 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+
+import com.ibm.ws.com.unboundid.InMemoryADLDAPServer;
+import com.ibm.ws.com.unboundid.InMemoryLDAPServer;
+import com.ibm.ws.com.unboundid.InMemoryTDSLDAPServer;
 
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.JakartaEE9Action;
@@ -37,9 +43,11 @@ import componenttest.topology.impl.LibertyServer;
 /**
  * Purpose: This suite collects and runs all known good test suites.
  */
-public class FATSuite extends CommonLocalLDAPServerSuite {
+public class FATSuite {
 
-    /*
+    private static InMemoryLDAPServer tdsLdapServer, adLdapServer;
+
+    /**
      * Repeat tests for Jakarta EE 9.
      *
      * Wee need to replace appSecurity-1.0 with appSecurity-4.0. The appSecurity-3.0 and 4.0 features
@@ -48,6 +56,26 @@ public class FATSuite extends CommonLocalLDAPServerSuite {
     @ClassRule
     public static RepeatTests repeat = RepeatTests.with(new EmptyAction())
                     .andWith(new JakartaEE9Action().addFeature("appSecurity-4.0").removeFeature("appSecurity-1.0").alwaysAddFeature("ldapRegistry-3.0"));
+
+    @BeforeClass
+    public static void setup() throws Exception {
+        /*
+         * Force the tests to use local LDAP server and start up the TDS and AD LDAP instances.
+         */
+        System.setProperty("fat.test.really.use.local.ldap", "true"); // Force local LDAP.
+        tdsLdapServer = new InMemoryTDSLDAPServer(InMemoryTDSLDAPServer.getWellKnownLdapPort(), InMemoryTDSLDAPServer.getWellKnownLdapsPort());
+        adLdapServer = new InMemoryADLDAPServer(InMemoryADLDAPServer.getWellKnownLdapPort(), InMemoryADLDAPServer.getWellKnownLdapsPort());
+    }
+
+    @AfterClass
+    public static void teardown() {
+        if (tdsLdapServer != null) {
+            tdsLdapServer.shutDown();
+        }
+        if (adLdapServer != null) {
+            adLdapServer.shutDown();
+        }
+    }
 
     /**
      * JakartaEE9 transform a list of applications. The applications must exist at '<server>/<appPath>'.

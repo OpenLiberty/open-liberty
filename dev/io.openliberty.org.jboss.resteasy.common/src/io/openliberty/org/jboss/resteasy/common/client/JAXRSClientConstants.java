@@ -10,6 +10,13 @@
  *******************************************************************************/
 package io.openliberty.org.jboss.resteasy.common.client;
 
+import java.util.Map;
+
+import javax.ws.rs.core.Configuration;
+
+import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
+import org.jboss.resteasy.client.jaxrs.internal.ClientConfiguration;
+
 public class JAXRSClientConstants {
 
     public final static String SSL_REFKEY = "com.ibm.ws.jaxrs.client.ssl.config";
@@ -19,6 +26,7 @@ public class JAXRSClientConstants {
     public final static String PROXY_HOST = "com.ibm.ws.jaxrs.client.proxy.host";
     public final static String PROXY_PORT = "com.ibm.ws.jaxrs.client.proxy.port";
     public final static String PROXY_TYPE = "com.ibm.ws.jaxrs.client.proxy.type";
+    public final static String PROXY_SCHEME = "com.ibm.ws.jaxrs.client.proxy.scheme";
     public final static String PROXY_AUTH_TYPE = "com.ibm.ws.jaxrs.client.proxy.authType";
     public final static String PROXY_AUTH_TYPE_DEFAULT = "Basic";
     public final static String PROXY_USERNAME = "com.ibm.ws.jaxrs.client.proxy.username";
@@ -32,4 +40,17 @@ public class JAXRSClientConstants {
     public final static String SAML_HANDLER = "com.ibm.ws.jaxrs.client.saml.sendToken";
     public final static String AUTO_FOLLOW_REDIRECTS = "io.openliberty.rest.client.autoFollowRedirects";
 
+    public static void mapProperties(ClientConfiguration c) {
+        Map<String,Object> props = c.getMutableProperties();
+        map(props, PROXY_HOST, ResteasyClientBuilder.PROPERTY_PROXY_HOST);
+        map(props, PROXY_PORT, ResteasyClientBuilder.PROPERTY_PROXY_PORT);
+        map(props, PROXY_SCHEME, ResteasyClientBuilder.PROPERTY_PROXY_SCHEME);
+    }
+
+    private static void map(Map<String, Object> props, String origKey, String newKey) {
+        Object o = props.get(origKey);
+        if (o != null) {
+            props.put(newKey, o);
+        }
+    }
 }

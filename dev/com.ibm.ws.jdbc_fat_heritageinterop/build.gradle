@@ -21,6 +21,13 @@ task copyFeatureBundle_jdbcHeritage(type: Copy) {
   include 'jdbcHeritage.jar'
 }
 
+task copyFeatureBundle_jdbcHeritageApi(type: Copy) {
+  from buildDir
+  into new File(autoFvtDir, 'lib/LibertyFATTestFiles/bundles')
+  include 'jdbcHeritageApi.jar'
+}
+
 autoFVT {
   dependsOn copyFeatureBundle_jdbcHeritage
+  dependsOn copyFeatureBundle_jdbcHeritageApi
 }

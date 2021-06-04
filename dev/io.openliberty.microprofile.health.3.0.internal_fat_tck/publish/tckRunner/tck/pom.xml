@@ -127,6 +127,12 @@
             <artifactId>jackson-datatype-jdk8</artifactId>
             <version>2.9.8</version>
         </dependency>
+        
+        <dependency>
+            <groupId>com.github.fge</groupId>
+            <artifactId>btf</artifactId>
+            <version>1.2</version>
+        </dependency>
     </dependencies>
 
     <build>

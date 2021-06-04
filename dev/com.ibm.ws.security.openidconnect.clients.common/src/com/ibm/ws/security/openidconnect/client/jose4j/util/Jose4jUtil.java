@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2020 IBM Corporation and others.
+ * Copyright (c) 2016, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -241,7 +241,7 @@ public class Jose4jUtil {
                 caughtException = e;
             }
 
-            if (key == null) {
+            if (key == null && !SIGNATURE_ALG_NONE.equals(clientConfig.getSignatureAlgorithm())) {
                 Object[] objs = new Object[] { clientConfig.getSignatureAlgorithm(), "" };
                 if (caughtException != null) {
                     objs = new Object[] { clientConfig.getSignatureAlgorithm(), caughtException.getLocalizedMessage() };
@@ -280,8 +280,7 @@ public class Jose4jUtil {
                 keyValue = clientConfig.getPublicKey();
             }
         } else if (SIGNATURE_ALG_NONE.equals(signatureAlgorithm)) {
-            keyValue = new HmacKey(clientConfig.getSharedKey().getBytes(ClientConstants.CHARSET)); // TODO: need to look at the token to figure out which key to get from config
-            // TODO : getAlgFromToken(tokenStr);
+            keyValue = null;
         }
         return keyValue;
     }

@@ -145,6 +145,7 @@ public class InstallKernelMap implements Map {
     private static final String GENERATE_JSON_GROUP_ID_MAP = "generate.json.group.id.map";
     private static final String TARGET_JSON_DIR = "target.json.dir";
     private static final String LOCALLY_PRESENT_JSONS = "locally.present.jsons";
+    private static final String IS_INSTALL_SERVER_FEATURE = "is.install.server.feature";
 
     //Headers in Manifest File
     private static final String SHORTNAME_HEADER_NAME = "IBM-ShortName";
@@ -305,6 +306,12 @@ public class InstallKernelMap implements Map {
                 return false;
             } else {
                 return data.get(IS_FEATURE_UTILITY);
+            }
+        } else if (IS_INSTALL_SERVER_FEATURE.equals(key)) {
+            if (data.get(IS_INSTALL_SERVER_FEATURE) == null) {
+                return false;
+            } else {
+                return data.get(IS_INSTALL_SERVER_FEATURE);
             }
         } else if (JSON_PROVIDED.equals(key)) {
             if (data.get(JSON_PROVIDED) == null) {
@@ -503,6 +510,12 @@ public class InstallKernelMap implements Map {
         } else if (TO_EXTENSION.equals(key)) {
             if (value instanceof String) {
                 data.put(TO_EXTENSION, value);
+            } else {
+                throw new IllegalArgumentException();
+            }
+        } else if (IS_INSTALL_SERVER_FEATURE.equals(key)) {
+            if (value instanceof Boolean) {
+                data.put(IS_INSTALL_SERVER_FEATURE, value);
             } else {
                 throw new IllegalArgumentException();
             }
@@ -869,6 +882,7 @@ public class InstallKernelMap implements Map {
 
             int alreadyInstalled = 0;
             Collection<String> featureToInstall = (Collection<String>) data.get(FEATURES_TO_RESOLVE);
+
             if (data.get(INSTALL_INDIVIDUAL_ESAS) != null) {
                 try {
                     if (data.get(INSTALL_INDIVIDUAL_ESAS).equals(Boolean.TRUE)) {
@@ -931,7 +945,12 @@ public class InstallKernelMap implements Map {
                 }
             }
             resolver = new RepositoryResolver(productDefinitions, installedFeatures, Collections.<IFixInfo> emptySet(), repoList);
-            resolveResult = resolver.resolveAsSet((Collection<String>) data.get(FEATURES_TO_RESOLVE));
+            boolean isInstallServerFeature = (Boolean) this.get(IS_INSTALL_SERVER_FEATURE);
+            if (!isInstallServerFeature) {
+                resolveResult = resolver.resolve((Collection<String>) data.get(FEATURES_TO_RESOLVE));
+            } else {
+                resolveResult = resolver.resolveAsSet((Collection<String>) data.get(FEATURES_TO_RESOLVE));
+            }
             ResolveDirector.resolveAutoFeatures(resolveResult, new RepositoryResolver(productDefinitions, installedFeatures, Collections.<IFixInfo> emptySet(), repoList));
 
             if (!resolveResult.isEmpty()) {

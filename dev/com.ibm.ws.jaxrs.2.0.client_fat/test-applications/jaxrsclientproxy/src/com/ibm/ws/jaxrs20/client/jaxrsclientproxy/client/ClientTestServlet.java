@@ -101,6 +101,7 @@ public class ClientTestServlet extends HttpServlet {
                             .get(String.class);
         } catch (Exception e) {
             res = "[Proxy Error]:" + e.toString();
+            e.printStackTrace();
         } finally {
             c.close();
             ret.append(res);
