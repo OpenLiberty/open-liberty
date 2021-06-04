@@ -1035,7 +1035,7 @@ public class GenericOidcClientTests extends CommonTest {
 
         // Reconfigure OP server with basic SSL settings
         // Reconfigure RP server with basic SSL settings
-        ClientTestHelpers.reconfigServers(_testName, Constants.JUNIT_REPORTING, "op_server_basic_sig_alg_none.xml", "rp_server_sig_alg_hs256.xml");
+        ClientTestHelpers.reconfigServers(_testName, Constants.JUNIT_REPORTING, "op_server_basic_sig_alg_none_withSecret.xml", "rp_server_sig_alg_hs256.xml");
 
         TestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.setScope("openid profile");
@@ -1069,7 +1069,7 @@ public class GenericOidcClientTests extends CommonTest {
         //        // Reconfigure OP server with basic SSL settings
         //        // Reconfigure RP server with basic SSL settings
 
-        ClientTestHelpers.reconfigServers(_testName, Constants.JUNIT_REPORTING, "op_server_basic_sig_alg_hs256.xml", "rp_server_sig_alg_none.xml");
+        ClientTestHelpers.reconfigServers(_testName, Constants.JUNIT_REPORTING, "op_server_basic_sig_alg_hs256.xml", "rp_server_sig_alg_none_withSecret.xml");
 
         TestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.setScope("openid profile");
