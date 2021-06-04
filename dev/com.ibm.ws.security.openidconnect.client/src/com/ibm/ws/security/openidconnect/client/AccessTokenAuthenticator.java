@@ -38,6 +38,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ssl.JSSEHelper;
 import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.security.common.structures.SingleTableCache;
 import com.ibm.ws.security.openidconnect.client.internal.TraceConstants;
 import com.ibm.ws.security.openidconnect.client.jose4j.util.Jose4jUtil;
 import com.ibm.ws.security.openidconnect.clients.common.ClientConstants;
@@ -102,9 +103,7 @@ public class AccessTokenAuthenticator {
         if (accessToken == null) {
             accessToken = getBearerAccessTokenToken(req, clientConfig);
         }
-
         if (accessToken == null) {
-
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "access token in the request as attribute: ", accessToken);
             }
@@ -112,7 +111,11 @@ public class AccessTokenAuthenticator {
             // logging an error produced spurious log messages if the token was missing but fallbacks were available.
             oidcClientRequest.setRsFailMsg("", "suppress_CWWKS1704W"); // suppress later warning message if token is just missing.
             return oidcResult;
+        }
 
+        ProviderAuthenticationResult cachedResult = getCachedTokenAuthenticationResult(clientConfig, accessToken);
+        if (cachedResult != null) {
+            return cachedResult;
         }
 
         String validationMethod = clientConfig.getValidationMethod();
@@ -160,6 +163,8 @@ public class AccessTokenAuthenticator {
             oidcResult = fixSubject(oidcResult); // replace IdToken Object if needed
             // this is authenticated by the access_token
             req.setAttribute(OidcClient.PROPAGATION_TOKEN_AUTHENTICATED, Boolean.TRUE);
+
+            cacheTokenAuthenticationResult(clientConfig, accessToken, oidcResult);
         }
 
         if (tc.isDebugEnabled()) {
@@ -167,6 +172,34 @@ public class AccessTokenAuthenticator {
             Tr.debug(tc, "Token is owned by '" + oidcResult.getUserName() + "'");
         }
         return oidcResult;
+    }
+
+    ProviderAuthenticationResult getCachedTokenAuthenticationResult(OidcClientConfig clientConfig, String token) {
+        if (!clientConfig.getTokenReuse()) {
+            return null;
+        }
+        SingleTableCache cache = clientConfig.getCache();
+        ProviderAuthenticationResult result = (ProviderAuthenticationResult) cache.get(token);
+        if (result != null) {
+            Subject newSubject = recreateSubject(result.getSubject());
+            return new ProviderAuthenticationResult(result.getStatus(), result.getHttpStatusCode(), result.getUserName(), newSubject, result.getCustomProperties(), result.getRedirectUrl());
+        }
+        return null;
+    }
+
+    Subject recreateSubject(Subject cachedSubject) {
+        Subject newSubject = new Subject();
+        if (cachedSubject != null) {
+            newSubject.getPrincipals().addAll(cachedSubject.getPrincipals());
+            newSubject.getPublicCredentials().addAll(cachedSubject.getPublicCredentials());
+            newSubject.getPrivateCredentials().addAll(cachedSubject.getPrivateCredentials());
+        }
+        return newSubject;
+    }
+
+    void cacheTokenAuthenticationResult(OidcClientConfig clientConfig, String token, ProviderAuthenticationResult result) {
+        SingleTableCache cache = clientConfig.getCache();
+        cache.put(token, result);
     }
 
     @FFDCIgnore({ Exception.class })

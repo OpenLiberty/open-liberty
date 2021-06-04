@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.client;
 
@@ -52,6 +52,7 @@ import com.ibm.websphere.ssl.SSLConfig;
 import com.ibm.websphere.ssl.SSLConfigChangeListener;
 import com.ibm.websphere.ssl.SSLConfigurationNotAvailableException;
 import com.ibm.websphere.ssl.SSLException;
+import com.ibm.ws.security.common.structures.SingleTableCache;
 import com.ibm.ws.security.openidconnect.clients.common.ClientConstants;
 import com.ibm.ws.security.openidconnect.clients.common.MockOidcClientRequest;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig;
@@ -246,6 +247,7 @@ public class AccessTokenAuthenticatorTest {
 
     @Test
     public void testAuthenticate_UserinfoValidation_GoodOidcResult() throws javax.net.ssl.SSLException {
+        SingleTableCache cache = getCache();
         final Long currentDate = Calendar.getInstance().getTimeInMillis() / 1000;
         final InputStream input = new ByteArrayInputStream(getJSONObjectString(true, currentDate, currentDate).getBytes());
         final BasicHttpEntity entity = new BasicHttpEntity();
@@ -257,6 +259,8 @@ public class AccessTokenAuthenticatorTest {
                 will(returnValue(BEARER));
                 one(req).setAttribute(OidcClient.PROPAGATION_TOKEN_AUTHENTICATED, Boolean.TRUE);
                 one(clientConfig).getAccessTokenInLtpaCookie();
+                will(returnValue(false));
+                one(clientConfig).getTokenReuse();
                 will(returnValue(false));
                 allowing(clientConfig).getValidationMethod();
                 will(returnValue(ClientConstants.VALIDATION_USERINFO));
@@ -274,7 +278,8 @@ public class AccessTokenAuthenticatorTest {
 
                 one(statusLine).getStatusCode();
                 will(returnValue(HttpServletResponse.SC_OK));
-
+                one(clientConfig).getCache();
+                will(returnValue(cache));
             }
         });
 
@@ -287,6 +292,11 @@ public class AccessTokenAuthenticatorTest {
 
         // verify that subject fixup was called
         assertTrue("fixSubject was not called as expected ", ((FakeAccessTokenAuthenticator) sslTokenAuth).fixSubjectCalled);
+
+        // Verify that the result was cached
+        ProviderAuthenticationResult cachedResult = (ProviderAuthenticationResult) cache.get(ACCESS_TOKEN);
+        assertNotNull("Cached authentication result should not have been null but was.", cachedResult);
+        assertEquals("Cached result did not match the result originally returned from the authenticate method.", oidcResult, cachedResult);
     }
 
     @Test
@@ -303,6 +313,8 @@ public class AccessTokenAuthenticatorTest {
                 will(returnValue(BEARER));
 
                 one(clientConfig).getAccessTokenInLtpaCookie();
+                will(returnValue(false));
+                one(clientConfig).getTokenReuse();
                 will(returnValue(false));
                 one(clientConfig).getValidationMethod();
                 will(returnValue(ClientConstants.VALIDATION_USERINFO));
@@ -340,6 +352,8 @@ public class AccessTokenAuthenticatorTest {
 
                 one(clientConfig).getAccessTokenInLtpaCookie();
                 will(returnValue(false));
+                one(clientConfig).getTokenReuse();
+                will(returnValue(false));
                 exactly(2).of(clientConfig).getValidationMethod();
                 will(returnValue(ClientConstants.VALIDATION_USERINFO));
                 one(clientConfig).isHostNameVerificationEnabled();
@@ -372,6 +386,8 @@ public class AccessTokenAuthenticatorTest {
                 will(returnValue(BEARER));
 
                 one(clientConfig).getAccessTokenInLtpaCookie();
+                will(returnValue(false));
+                one(clientConfig).getTokenReuse();
                 will(returnValue(false));
                 one(clientConfig).getValidationMethod();
                 will(returnValue(ClientConstants.VALIDATION_INTROSPECT));
@@ -410,6 +426,7 @@ public class AccessTokenAuthenticatorTest {
 
     @Test
     public void testAuthenticate_IntrospectTokenValidation_disableIssChecking_no_issclaim() {
+        SingleTableCache cache = getCache();
         final Long currentDate = Calendar.getInstance().getTimeInMillis() / 1000;
         final InputStream input = new ByteArrayInputStream(getJSONObjectString(true, currentDate, currentDate).getBytes());
         final BasicHttpEntity entity = new BasicHttpEntity();
@@ -422,6 +439,8 @@ public class AccessTokenAuthenticatorTest {
                 one(req).setAttribute(OidcClient.PROPAGATION_TOKEN_AUTHENTICATED, Boolean.TRUE);
 
                 one(clientConfig).getAccessTokenInLtpaCookie();
+                will(returnValue(false));
+                one(clientConfig).getTokenReuse();
                 will(returnValue(false));
                 one(clientConfig).getValidationMethod();
                 will(returnValue(ClientConstants.VALIDATION_INTROSPECT));
@@ -443,6 +462,8 @@ public class AccessTokenAuthenticatorTest {
 
                 one(statusLine).getStatusCode();
                 will(returnValue(HttpServletResponse.SC_OK));
+                one(clientConfig).getCache();
+                will(returnValue(cache));
             }
         });
 
@@ -453,10 +474,15 @@ public class AccessTokenAuthenticatorTest {
         assertEquals("Unexpected status code, expected:" + HttpServletResponse.SC_OK + " but received:" + oidcResult.getHttpStatusCode() + ".",
                 HttpServletResponse.SC_OK, oidcResult.getHttpStatusCode());
 
+        // Verify that the result was cached
+        ProviderAuthenticationResult cachedResult = (ProviderAuthenticationResult) cache.get(ACCESS_TOKEN);
+        assertNotNull("Cached authentication result should not have been null but was.", cachedResult);
+        assertEquals("Cached result did not match the result originally returned from the authenticate method.", oidcResult, cachedResult);
     }
 
     @Test
     public void testAuthenticate_IntrospectTokenValidation_GoodOidcResult() {
+        SingleTableCache cache = getCache();
         final Long currentDate = Calendar.getInstance().getTimeInMillis() / 1000;
         final InputStream input = new ByteArrayInputStream(getJSONObjectString(true, currentDate, currentDate, GOOD_ISSUER).getBytes());
         final BasicHttpEntity entity = new BasicHttpEntity();
@@ -469,6 +495,8 @@ public class AccessTokenAuthenticatorTest {
                 one(req).setAttribute(OidcClient.PROPAGATION_TOKEN_AUTHENTICATED, Boolean.TRUE);
 
                 one(clientConfig).getAccessTokenInLtpaCookie();
+                will(returnValue(false));
+                one(clientConfig).getTokenReuse();
                 will(returnValue(false));
                 one(clientConfig).getValidationMethod();
                 will(returnValue(ClientConstants.VALIDATION_INTROSPECT));
@@ -492,6 +520,8 @@ public class AccessTokenAuthenticatorTest {
 
                 one(statusLine).getStatusCode();
                 will(returnValue(HttpServletResponse.SC_OK));
+                one(clientConfig).getCache();
+                will(returnValue(cache));
             }
         });
 
@@ -501,6 +531,11 @@ public class AccessTokenAuthenticatorTest {
                 AuthResult.SUCCESS, oidcResult.getStatus());
         assertEquals("Unexpected status code, expected:" + HttpServletResponse.SC_OK + " but received:" + oidcResult.getHttpStatusCode() + ".",
                 HttpServletResponse.SC_OK, oidcResult.getHttpStatusCode());
+
+        // Verify that the result was cached
+        ProviderAuthenticationResult cachedResult = (ProviderAuthenticationResult) cache.get(ACCESS_TOKEN);
+        assertNotNull("Cached authentication result should not have been null but was.", cachedResult);
+        assertEquals("Cached result did not match the result originally returned from the authenticate method.", oidcResult, cachedResult);
     }
 
     @Test
@@ -516,6 +551,8 @@ public class AccessTokenAuthenticatorTest {
                 will(returnValue(BEARER));
 
                 one(clientConfig).getAccessTokenInLtpaCookie();
+                will(returnValue(false));
+                one(clientConfig).getTokenReuse();
                 will(returnValue(false));
                 exactly(3).of(clientConfig).getValidationMethod();
                 will(returnValue(ClientConstants.VALIDATION_INTROSPECT));
@@ -556,6 +593,8 @@ public class AccessTokenAuthenticatorTest {
 
                 one(clientConfig).getAccessTokenInLtpaCookie();
                 will(returnValue(false));
+                one(clientConfig).getTokenReuse();
+                will(returnValue(false));
                 exactly(2).of(clientConfig).getValidationMethod();
                 will(returnValue(ClientConstants.VALIDATION_INTROSPECT));
                 one(clientConfig).getClientSecret();
@@ -586,6 +625,8 @@ public class AccessTokenAuthenticatorTest {
                 will(returnValue(BEARER));
 
                 one(clientConfig).getAccessTokenInLtpaCookie();
+                will(returnValue(false));
+                one(clientConfig).getTokenReuse();
                 will(returnValue(false));
                 one(clientConfig).getValidationMethod();
                 will(returnValue(INVALID_VALIDATION));
@@ -653,6 +694,8 @@ public class AccessTokenAuthenticatorTest {
 
                 one(clientConfig).getAccessTokenInLtpaCookie();
                 will(returnValue(false));
+                one(clientConfig).getTokenReuse();
+                will(returnValue(false));
                 one(clientConfig).getValidationMethod();
                 will(returnValue(ClientConstants.VALIDATION_INTROSPECT));
 
@@ -667,6 +710,163 @@ public class AccessTokenAuthenticatorTest {
                 AuthResult.SEND_401, oidcResult.getStatus());
         assertEquals("Unexpected status code, expected:" + HttpServletResponse.SC_UNAUTHORIZED + " but received:" + oidcResult.getHttpStatusCode() + ".",
                 HttpServletResponse.SC_UNAUTHORIZED, oidcResult.getHttpStatusCode());
+    }
+
+    @Test
+    public void testAuthenticate_resultAlreadyCached() {
+        SingleTableCache cache = getCache();
+        ProviderAuthenticationResult cachedResult = new ProviderAuthenticationResult(AuthResult.SUCCESS, HttpServletResponse.SC_OK);
+        cache.put(ACCESS_TOKEN, cachedResult);
+
+        mockery.checking(new Expectations() {
+            {
+                one(req).getHeader(Authorization_Header);
+                will(returnValue(BEARER));
+                one(clientConfig).getAccessTokenInLtpaCookie();
+                will(returnValue(false));
+                one(clientConfig).getTokenReuse();
+                will(returnValue(true));
+                one(clientConfig).getCache();
+                will(returnValue(cache));
+            }
+        });
+
+        ProviderAuthenticationResult oidcResult = sslTokenAuth.authenticate(req, res, clientConfig, new MockOidcClientRequest(referrerURLCookieHandler));
+
+        assertEquals("Unexpected status, expected:" + AuthResult.SUCCESS + " but received:" + oidcResult.getStatus() + ".",
+                AuthResult.SUCCESS, oidcResult.getStatus());
+        assertEquals("Unexpected status code, expected:" + HttpServletResponse.SC_OK + " but received:" + oidcResult.getHttpStatusCode() + ".",
+                HttpServletResponse.SC_OK, oidcResult.getHttpStatusCode());
+    }
+
+    @Test
+    public void test_getCachedTokenAuthenticationResult_tokenReuse_false() {
+        mockery.checking(new Expectations() {
+            {
+                one(clientConfig).getTokenReuse();
+                will(returnValue(false));
+            }
+        });
+
+        ProviderAuthenticationResult result = sslTokenAuth.getCachedTokenAuthenticationResult(clientConfig, ACCESS_TOKEN);
+        assertNull("Result should have been null but wasn't.", result);
+    }
+
+    @Test
+    public void test_getCachedTokenAuthenticationResult_cacheEmpty() {
+        SingleTableCache cache = getCache();
+        mockery.checking(new Expectations() {
+            {
+                one(clientConfig).getTokenReuse();
+                will(returnValue(true));
+                one(clientConfig).getCache();
+                will(returnValue(cache));
+            }
+        });
+
+        ProviderAuthenticationResult result = sslTokenAuth.getCachedTokenAuthenticationResult(clientConfig, ACCESS_TOKEN);
+        assertNull("Result should have been null but wasn't.", result);
+    }
+
+    @Test
+    public void test_getCachedTokenAuthenticationResult_nothingCachedForToken() {
+        SingleTableCache cache = getCache();
+        ProviderAuthenticationResult cachedResult = new ProviderAuthenticationResult(AuthResult.SUCCESS, HttpServletResponse.SC_OK);
+        cache.put("someToken", cachedResult);
+        mockery.checking(new Expectations() {
+            {
+                one(clientConfig).getTokenReuse();
+                will(returnValue(true));
+                one(clientConfig).getCache();
+                will(returnValue(cache));
+            }
+        });
+
+        ProviderAuthenticationResult result = sslTokenAuth.getCachedTokenAuthenticationResult(clientConfig, ACCESS_TOKEN);
+        assertNull("Result should have been null but wasn't.", result);
+    }
+
+    @Test
+    public void test_getCachedTokenAuthenticationResult_resultAlreadyCached() {
+        SingleTableCache cache = getCache();
+        // Set unique result values just so we can check against them
+        ProviderAuthenticationResult cachedResult = new ProviderAuthenticationResult(AuthResult.OAUTH_CHALLENGE, HttpServletResponse.SC_EXPECTATION_FAILED);
+        cache.put(ACCESS_TOKEN, cachedResult);
+        mockery.checking(new Expectations() {
+            {
+                one(clientConfig).getTokenReuse();
+                will(returnValue(true));
+                one(clientConfig).getCache();
+                will(returnValue(cache));
+            }
+        });
+
+        ProviderAuthenticationResult result = sslTokenAuth.getCachedTokenAuthenticationResult(clientConfig, ACCESS_TOKEN);
+        assertNotNull("Result should not have been null but was.", result);
+        assertEquals("Cached result did not match expected object.", cachedResult.getStatus(), result.getStatus());
+        assertEquals("Cached result did not match expected object.", cachedResult.getHttpStatusCode(), result.getHttpStatusCode());
+    }
+
+    @Test
+    public void test_cacheTokenAuthenticationResult_emptyCache() {
+        SingleTableCache cache = getCache();
+        mockery.checking(new Expectations() {
+            {
+                one(clientConfig).getCache();
+                will(returnValue(cache));
+            }
+        });
+
+        ProviderAuthenticationResult resultToCache = new ProviderAuthenticationResult(AuthResult.OAUTH_CHALLENGE, HttpServletResponse.SC_EXPECTATION_FAILED);
+        sslTokenAuth.cacheTokenAuthenticationResult(clientConfig, ACCESS_TOKEN, resultToCache);
+
+        ProviderAuthenticationResult cachedResult = (ProviderAuthenticationResult) cache.get(ACCESS_TOKEN);
+        assertNotNull("Result should not have been null but was.", cachedResult);
+        assertEquals("Cached result did not match expected object.", resultToCache.getStatus(), cachedResult.getStatus());
+        assertEquals("Cached result did not match expected object.", resultToCache.getHttpStatusCode(), cachedResult.getHttpStatusCode());
+    }
+
+    @Test
+    public void test_cacheTokenAuthenticationResult_nonEmptyCache_newResult() {
+        SingleTableCache cache = getCache();
+        // Create an existing cache entry for a different key
+        ProviderAuthenticationResult cachedResult = new ProviderAuthenticationResult(AuthResult.RETURN, HttpServletResponse.SC_CONFLICT);
+        cache.put("otherEntry", cachedResult);
+        mockery.checking(new Expectations() {
+            {
+                one(clientConfig).getCache();
+                will(returnValue(cache));
+            }
+        });
+
+        ProviderAuthenticationResult resultToCache = new ProviderAuthenticationResult(AuthResult.SUCCESS, HttpServletResponse.SC_OK);
+        sslTokenAuth.cacheTokenAuthenticationResult(clientConfig, ACCESS_TOKEN, resultToCache);
+
+        ProviderAuthenticationResult newCachedResult = (ProviderAuthenticationResult) cache.get(ACCESS_TOKEN);
+        assertNotNull("Result should not have been null but was.", newCachedResult);
+        assertEquals("Cached result did not match expected object.", resultToCache.getStatus(), newCachedResult.getStatus());
+        assertEquals("Cached result did not match expected object.", resultToCache.getHttpStatusCode(), newCachedResult.getHttpStatusCode());
+    }
+
+    @Test
+    public void test_cacheTokenAuthenticationResult_entryAlreadyExists() {
+        SingleTableCache cache = getCache();
+        ProviderAuthenticationResult cachedResult = new ProviderAuthenticationResult(AuthResult.RETURN, HttpServletResponse.SC_CONFLICT);
+        cache.put(ACCESS_TOKEN, cachedResult);
+        mockery.checking(new Expectations() {
+            {
+                one(clientConfig).getCache();
+                will(returnValue(cache));
+            }
+        });
+
+        ProviderAuthenticationResult resultToCache = new ProviderAuthenticationResult(AuthResult.SUCCESS, HttpServletResponse.SC_OK);
+        sslTokenAuth.cacheTokenAuthenticationResult(clientConfig, ACCESS_TOKEN, resultToCache);
+
+        ProviderAuthenticationResult newCachedResult = (ProviderAuthenticationResult) cache.get(ACCESS_TOKEN);
+        assertNotNull("Result should not have been null but was.", newCachedResult);
+        assertEquals("Cached result did not match expected object.", resultToCache.getStatus(), newCachedResult.getStatus());
+        assertEquals("Cached result did not match expected object.", resultToCache.getHttpStatusCode(), newCachedResult.getHttpStatusCode());
     }
 
     @Test
@@ -998,6 +1198,10 @@ public class AccessTokenAuthenticatorTest {
     private String getJSONObjectString(Boolean active, Long expDate, Long issueAtDate, String issuer, Long notBeforeTime) {
         return "{\"user\":\"user1\" , \"active\":" + active + " , \"exp\":" + expDate + " , \"iat\":" + issueAtDate + " , \"iss\":\"" + issuer + "\" , \"nbf\":" + notBeforeTime
                 + "}";
+    }
+
+    private SingleTableCache getCache() {
+        return new SingleTableCache(1000 * 60);
     }
 
     final class FakeAccessTokenAuthenticator extends AccessTokenAuthenticator {

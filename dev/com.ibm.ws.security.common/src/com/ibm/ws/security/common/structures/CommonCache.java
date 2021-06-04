@@ -10,9 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.security.common.structures;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 import com.ibm.websphere.ras.annotation.Sensitive;
 
 public abstract class CommonCache {
@@ -26,11 +23,6 @@ public abstract class CommonCache {
      * Default cache timeout.
      */
     protected long timeoutInMilliSeconds = 5 * 60 * 1000;
-
-    /**
-     * Timer to schedule the eviction task.
-     */
-    protected Timer timer;
 
     public int size() {
         return this.entryLimit;
@@ -62,30 +54,6 @@ public abstract class CommonCache {
         if (newTimeoutInMillis > 0) {
             this.timeoutInMilliSeconds = newTimeoutInMillis;
         }
-        timer.cancel();
-        scheduleEvictionTask(timeoutInMilliSeconds);
-    }
-
-    protected void scheduleEvictionTask(long timeoutInMilliSeconds) {
-        EvictionTask evictionTask = new EvictionTask();
-        timer = new Timer(true);
-        long period = timeoutInMilliSeconds;
-        long delay = period;
-        timer.schedule(evictionTask, delay, period);
-    }
-
-    /**
-     * Implementation of the eviction strategy.
-     */
-    abstract protected void evictStaleEntries();
-
-    private class EvictionTask extends TimerTask {
-        /** {@inheritDoc} */
-        @Override
-        public void run() {
-            evictStaleEntries();
-        }
-
     }
 
 }

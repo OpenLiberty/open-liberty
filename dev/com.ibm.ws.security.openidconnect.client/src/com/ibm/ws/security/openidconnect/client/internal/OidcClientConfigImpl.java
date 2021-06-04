@@ -65,6 +65,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.config.CommonConfigUtils;
 import com.ibm.ws.security.common.config.DiscoveryConfigUtils;
 import com.ibm.ws.security.common.jwk.impl.JWKSet;
+import com.ibm.ws.security.common.structures.SingleTableCache;
 import com.ibm.ws.security.jwt.config.ConsumerUtils;
 import com.ibm.ws.security.jwt.utils.JwtUtils;
 import com.ibm.ws.security.openidconnect.clients.common.ClientConstants;
@@ -287,6 +288,9 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     private final ConfigUtils oidcConfigUtils = new ConfigUtils(configAdminRef);
     private final DiscoveryConfigUtils discoveryUtils = new DiscoveryConfigUtils();
     private ConsumerUtils consumerUtils = null;
+
+    long timeoutInMilliseconds = 1000 * 60 * 5;
+    private SingleTableCache cache = new SingleTableCache(500, timeoutInMilliseconds);
 
     private boolean useSystemPropertiesForHttpClientConnections = false;
     private boolean tokenReuse = false;
@@ -1990,6 +1994,11 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     public List<String> getAMRClaim() {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public SingleTableCache getCache() {
+        return cache;
     }
 
 }

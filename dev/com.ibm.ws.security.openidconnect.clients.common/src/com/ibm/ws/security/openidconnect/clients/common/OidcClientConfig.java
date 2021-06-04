@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.clients.common;
 
+import com.ibm.ws.security.common.structures.SingleTableCache;
+
 public interface OidcClientConfig extends ConvergedClientConfig {
 
     public static final String ID_TOKEN_ONLY = "ID_TOKEN_ONLY";
@@ -80,5 +82,7 @@ public interface OidcClientConfig extends ConvergedClientConfig {
     public boolean requireExpClaimForIntrospection();
 
     public boolean requireIatClaimForIntrospection();
+
+    public SingleTableCache getCache();
 
 }

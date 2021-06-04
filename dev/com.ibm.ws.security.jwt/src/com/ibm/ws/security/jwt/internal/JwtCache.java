@@ -16,11 +16,13 @@ import java.util.Map.Entry;
 
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.MalformedClaimException;
+import org.jose4j.jwt.NumericDate;
 import org.jose4j.jwt.consumer.JwtContext;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.security.common.structures.CacheEntry;
 import com.ibm.ws.security.common.structures.SingleTableCache;
 import com.ibm.ws.security.jwt.config.JwtConsumerConfig;
 
@@ -44,9 +46,20 @@ public class JwtCache extends SingleTableCache {
     protected synchronized void evictStaleEntries() {
         List<String> keysToRemove = new ArrayList<String>();
         for (Entry<String, Object> entry : lookupTable.entrySet()) {
-            JwtContext jwtContext = (JwtContext) entry.getValue();
+            String key = entry.getKey();
+            Object cacheEntry = entry.getValue();
+            if (cacheEntry == null) {
+                keysToRemove.add(key);
+                continue;
+            }
+            CacheEntry cachEntryValue = (CacheEntry) cacheEntry;
+            if (cachEntryValue.isExpired(timeoutInMilliSeconds)) {
+                keysToRemove.add(key);
+                continue;
+            }
+            JwtContext jwtContext = (JwtContext) cachEntryValue.getValue();
             if (isJwtExpired(jwtContext)) {
-                keysToRemove.add(entry.getKey());
+                keysToRemove.add(key);
             }
         }
         for (String keyToRemove : keysToRemove) {
@@ -62,7 +75,11 @@ public class JwtCache extends SingleTableCache {
         }
         long jwtExp = 0;
         try {
-            jwtExp = jwtClaims.getExpirationTime().getValueInMillis();
+            NumericDate expirationTime = jwtClaims.getExpirationTime();
+            if (expirationTime == null) {
+                return true;
+            }
+            jwtExp = expirationTime.getValueInMillis();
         } catch (MalformedClaimException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Caught exception getting expiration time for JWT: " + e);
