@@ -1074,6 +1074,8 @@ public class GenericOidcClientTests extends CommonTest {
         TestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.setScope("openid profile");
         updatedTestSettings.setSignatureAlg(Constants.SIGALG_HS256);
+        updatedTestSettings.setNonce(Constants.EXIST_WITH_ANY_VALUE);
+        updatedTestSettings.setState(Constants.EXIST_WITH_ANY_VALUE);
 
         List<validationData> expectations = vData.addSuccessStatusCodes(null);
         expectations = validationTools.addIdTokenStringValidation(vData, expectations, test_FinalAction, Constants.RESPONSE_FULL, Constants.IDToken_STR);
