@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.server.fat.jaxrs.config.OIDC;
 
@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.junit.Assume;
 import org.junit.BeforeClass;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
@@ -22,6 +23,7 @@ import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestServer;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestSettings;
 import com.ibm.ws.security.openidconnect.server.fat.jaxrs.config.CommonTests.MapToUserRegistryNoRegIntrospect2ServerTests;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServerWrapper;
@@ -29,6 +31,7 @@ import componenttest.topology.utils.LDAPUtils;
 
 @LibertyServerWrapper
 @Mode(TestMode.FULL)
+@RunWith(FATRunner.class)
 public class OIDCMapToUserRegistryNoRegIntrospect2ServerTests extends MapToUserRegistryNoRegIntrospect2ServerTests {
 
     private static final Class<?> thisClass = OIDCMapToUserRegistryNoRegIntrospect2ServerTests.class;

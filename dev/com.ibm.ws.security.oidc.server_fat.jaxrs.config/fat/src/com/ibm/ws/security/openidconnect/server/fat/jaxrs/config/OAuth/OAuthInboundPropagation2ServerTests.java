@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.junit.Assume;
 import org.junit.BeforeClass;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
@@ -22,6 +23,7 @@ import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestServer;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestSettings;
 import com.ibm.ws.security.openidconnect.server.fat.jaxrs.config.CommonTests.InboundPropagation2ServerTests;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServerWrapper;
@@ -29,6 +31,7 @@ import componenttest.topology.utils.LDAPUtils;
 
 @LibertyServerWrapper
 @Mode(TestMode.FULL)
+@RunWith(FATRunner.class)
 public class OAuthInboundPropagation2ServerTests extends InboundPropagation2ServerTests {
 
     private static final Class<?> thisClass = OAuthInboundPropagation2ServerTests.class;

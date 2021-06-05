@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.server.fat.jaxrs.config.noOP;
 
@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
@@ -23,12 +24,18 @@ import com.ibm.ws.security.oauth_oidc.fat.commonTest.MessageConstants;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestServer;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestSettings;
 
+import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
+
 /**
  * Test class for general JAXRS OAuth tests
  *
  * @author chrisc
  *
  */
+@Mode(TestMode.FULL)
+@RunWith(FATRunner.class)
 public class NoOPAudiences1ServerTests extends MangleJWTTestTools {
 
     private static final Class<?> thisClass = NoOPAudiences1ServerTests.class;

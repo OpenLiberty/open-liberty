@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.server.fat.jaxrs.config.OIDC;
 
@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.BeforeClass;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
@@ -22,24 +23,25 @@ import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestServer;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestSettings;
 import com.ibm.ws.security.openidconnect.server.fat.jaxrs.config.CommonTests.InboundPropagation2ServerTests;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServerWrapper;
 
 @LibertyServerWrapper
 @Mode(TestMode.FULL)
+@RunWith(FATRunner.class)
 public class OIDCInboundPropagation2ServerTests extends InboundPropagation2ServerTests {
 
     private static final Class<?> thisClass = OIDCInboundPropagation2ServerTests.class;
-    
 
     @BeforeClass
     public static void setupBeforeTest() throws Exception {
-    	isTestingOIDC = true;
+        isTestingOIDC = true;
 
         msgUtils.printClassName(thisClass.toString());
         Log.info(thisClass, "setupBeforeTest", "Prep for test");
-        // add any additional messages that you want the "start" to wait for 
+        // add any additional messages that you want the "start" to wait for
         // we should wait for any providers that this test requires
         List<String> extraMsgs = new ArrayList<String>();
         extraMsgs.add("CWWKS1631I.*");
@@ -56,7 +58,7 @@ public class OIDCInboundPropagation2ServerTests extends InboundPropagation2Serve
         extraApps2.add(Constants.HELLOWORLD_SERVLET);
 
         String[] propagationTokenTypes = rsTools.chooseTokenSettings(Constants.OIDC_OP);
-        String tokenType = propagationTokenTypes[0];       
+        String tokenType = propagationTokenTypes[0];
         String certType = propagationTokenTypes[1];
 
         testSettings = new TestSettings();
