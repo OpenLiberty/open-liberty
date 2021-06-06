@@ -12,6 +12,7 @@ package com.ibm.ws.javaee.ddmodel.ejb;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.Arrays;
 
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -47,22 +48,70 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 
 public class EJBJarTestBase {
     private static final Mockery mockery = new Mockery();
-    private static volatile int mockId;
+    private static int mockId;
 
-    protected static EJBJar parse(String xml, int maxVersion) throws Exception {
-        EJBJarEntryAdapter adapter = new EJBJarEntryAdapter();
+    /**
+     * Generate a new unique ID for various mock objects.
+     * 
+     * @return A unique ID.
+     */
+    private synchronized static int generateId() {
+        return mockId++;
+    }
+    
+    /**
+     * Parse XML text as an EJB deployment descriptor using
+     * the rules for the specified maximum schema version.
+     * Answer the parsed root descriptor element.
+     * 
+     * The parse may be expected to fail, in which case, the
+     * captured exception must have one of the specified
+     * expected messages.  Answer null if parsing fails and
+     * an expected message is received.  Thrown an exception
+     * if parsing is expected to fail but does not.
+     *
+     * Parsing assigns names to container artifacts using
+     * a unique ID.  See {@link #generateId()}.
+     *
+     * @param xmlText XML text which is to be parsed.
+     * @param maxSchemaVersion The maximum schema version to
+     *     use to parse the descriptor.
+     * @param expectedMessages Error text which is expected.
+     * 
+     * @return The parsed root EJB descriptor element, or null
+     *     if an expected exception is thrown.
+     *
+     * @throws Exception Thrown if parsing fails with an
+     *     unexpected exception, or if parsing succeeds when
+     *     an exception is expected.
+     */
+    protected static EJBJar parse(
+        String xmlText,
+        int maxSchemaVersion,
+        String... expectedMessages) throws Exception {
+
         @SuppressWarnings("unchecked")
-        ServiceReference<EJBJarDDParserVersion> versionRef = mockery.mock(ServiceReference.class, "sr" + mockId++);
-        Container root = mockery.mock(Container.class, "root" + mockId++);
-        Entry entry = mockery.mock(Entry.class, "entry" + mockId++);
-        OverlayContainer rootOverlay = mockery.mock(OverlayContainer.class, "rootOverlay" + mockId++);
-        ArtifactEntry artifactEntry = mockery.mock(ArtifactEntry.class, "artifactContainer" + mockId++);
-        NonPersistentCache nonPC = mockery.mock(NonPersistentCache.class, "nonPC" + mockId++);
+        ServiceReference<EJBJarDDParserVersion> versionRef =
+            mockery.mock(ServiceReference.class, "sr" + generateId());
+
+        OverlayContainer rootOverlay = mockery.mock(OverlayContainer.class, "rootOverlay" + generateId());
+        ArtifactEntry artifactEntry = mockery.mock(ArtifactEntry.class, "artifactContainer" + generateId());
+
+        Container root = mockery.mock(Container.class, "root" + generateId());
+        Entry entry = mockery.mock(Entry.class, "entry" + generateId());
+
+        NonPersistentCache nonPC = mockery.mock(NonPersistentCache.class, "nonPC" + generateId());
 
         mockery.checking(new Expectations() {
             {
+                allowing(versionRef).getProperty(EJBJarDDParserVersion.VERSION);
+                will(returnValue(maxSchemaVersion));
+
+                allowing(rootOverlay).getFromNonPersistentCache(with(any(String.class)), with(EJBJar.class));
+                will(returnValue(null));
+                allowing(rootOverlay).addToNonPersistentCache(with(any(String.class)), with(EJBJar.class), with(any(EJBJar.class)));
                 allowing(artifactEntry).getPath();
-                will(returnValue("META-INF/ejb-jar.xml"));
+                will(returnValue("/META-INF/ejb-jar.xml"));
 
                 allowing(root).adapt(NonPersistentCache.class);
                 will(returnValue(nonPC));
@@ -70,29 +119,45 @@ public class EJBJarTestBase {
                 will(returnValue(null));
 
                 allowing(entry).getPath();
-                will(returnValue("META-INF/ejb-jar.xml"));
-
+                will(returnValue("/META-INF/ejb-jar.xml"));
                 allowing(entry).adapt(InputStream.class);
-                will(returnValue(new ByteArrayInputStream(xml.getBytes("UTF-8"))));
-
-                allowing(rootOverlay).getFromNonPersistentCache(with(any(String.class)), with(EJBJar.class));
-                will(returnValue(null));
-                allowing(rootOverlay).addToNonPersistentCache(with(any(String.class)), with(EJBJar.class), with(any(EJBJar.class)));
-
-                allowing(versionRef).getProperty(EJBJarDDParserVersion.VERSION);
-                will(returnValue(maxVersion));
+                will(returnValue(new ByteArrayInputStream(xmlText.getBytes("UTF-8"))));
             }
         });
 
+        EJBJarEntryAdapter adapter = new EJBJarEntryAdapter();
         adapter.setVersion(versionRef);
-
+        
+        EJBJar ejbJar;
+        Exception boundException;
         try {
-            return adapter.adapt(root, rootOverlay, artifactEntry, entry);
+            ejbJar = adapter.adapt(root, rootOverlay, artifactEntry, entry);
+            if ( (expectedMessages != null) && (expectedMessages.length != 0) ) {
+                return null;
+                // throw new Exception("Expected exception text [ " + Arrays.toString(expectedMessages) + " ]");
+            }
+            return ejbJar;
 
         } catch ( UnableToAdaptException e ) {
             Throwable cause = e.getCause();
-            throw ( (cause instanceof Exception) ? (Exception) cause : e );
+            if ( cause instanceof Exception ) {
+                boundException = (Exception) cause;
+            } else {
+                boundException = e;
+            }
         }
+
+        if ( (expectedMessages != null) && (expectedMessages.length != 0) ) {
+            String message = boundException.getMessage();
+            if ( message != null ) {
+                for ( String expected : expectedMessages ) {
+                    if ( message.contains(expected) ) {
+                        return null;
+                    }
+                }
+            }
+        }
+        throw boundException;
     }
 
     //

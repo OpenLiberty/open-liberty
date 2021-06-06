@@ -26,7 +26,6 @@ import com.ibm.ws.javaee.dd.ejb.ExcludeList;
 import com.ibm.ws.javaee.dd.ejb.InterceptorBinding;
 import com.ibm.ws.javaee.dd.ejb.Method;
 import com.ibm.ws.javaee.dd.ejb.MethodPermission;
-import com.ibm.ws.javaee.ddmodel.DDParser;
 
 public class AssemblyDescriptorTest extends EJBJarTestBase {
 
@@ -160,6 +159,30 @@ public class AssemblyDescriptorTest extends EJBJarTestBase {
             containerTransactions +
         "</assembly-descriptor>";
 
+    protected static final String lifecycleCallbackXML =
+        "<assembly-descriptor>" +
+            "<container-transaction>" +
+                "<method>" +
+                    "<ejb-name>ejb0</ejb-name>" +
+                    "<method-intf>LifecycleCallback</method-intf>" +
+                    "<method-name>method0</method-name>" +
+                "</method>" +
+                "<trans-attribute>Required</trans-attribute>" +
+            "</container-transaction>" +
+        "</assembly-descriptor>";
+    
+    protected static final String invalidMethodIntfXML =
+        "<assembly-descriptor>" +
+            "<container-transaction>" +
+                "<method>" +
+                    "<ejb-name>ejb0</ejb-name>" +
+                    "<method-intf>Invalid</method-intf>" +
+                    "<method-name>method0</method-name>" +
+                "</method>" +
+                "<trans-attribute>Required</trans-attribute>" +
+            "</container-transaction>" +
+        "</assembly-descriptor>";    
+    
     protected static final String interceptorBinding0 =
         "<interceptor-binding>" +
             "<ejb-name>ejbName0</ejb-name>" +
@@ -246,7 +269,7 @@ public class AssemblyDescriptorTest extends EJBJarTestBase {
     //
     
     AssemblyDescriptor getAssemblyDescriptor(String adXML) throws Exception {
-        EJBJar ejbJar = parse( ejbJar11(adXML), EJBJar.VERSION_4_0);
+        EJBJar ejbJar = parse( ejbJar11(adXML), EJBJar.VERSION_4_0 );
         return ejbJar.getAssemblyDescriptor();
     }
 
@@ -264,9 +287,10 @@ public class AssemblyDescriptorTest extends EJBJarTestBase {
         Assert.assertEquals("roleName2", secRoleList.get(2).getRoleName());
     }
 
-
     void testMethod0(Method method0) {
-        Assert.assertEquals(Method.INTERFACE_TYPE_UNSPECIFIED, method0.getInterfaceTypeValue());
+        Assert.assertEquals(
+                Method.INTERFACE_TYPE_UNSPECIFIED,
+                method0.getInterfaceTypeValue());
         Assert.assertEquals("ejbName0", method0.getEnterpriseBeanName());
         Assert.assertEquals("methodName0", method0.getMethodName());
         Assert.assertEquals("methodParm0", method0.getMethodParamList().get(0));
@@ -296,11 +320,21 @@ public class AssemblyDescriptorTest extends EJBJarTestBase {
         Assert.assertEquals(Method.INTERFACE_TYPE_LOCAL, method2.getInterfaceTypeValue());
         Assert.assertNull(method2.getMethodParamList());
 
-        Assert.assertEquals(Method.INTERFACE_TYPE_LOCAL_HOME, methodList.get(3).getInterfaceTypeValue());
-        Assert.assertEquals(Method.INTERFACE_TYPE_MESSAGE_ENDPOINT, methodList.get(4).getInterfaceTypeValue());
-        Assert.assertEquals(Method.INTERFACE_TYPE_REMOTE, methodList.get(5).getInterfaceTypeValue());
-        Assert.assertEquals(Method.INTERFACE_TYPE_SERVICE_ENDPOINT, methodList.get(6).getInterfaceTypeValue());
-        Assert.assertEquals(Method.INTERFACE_TYPE_TIMER, methodList.get(7).getInterfaceTypeValue());
+        Assert.assertEquals(
+                Method.INTERFACE_TYPE_LOCAL_HOME,
+                methodList.get(3).getInterfaceTypeValue());
+        Assert.assertEquals(
+                Method.INTERFACE_TYPE_MESSAGE_ENDPOINT,
+                methodList.get(4).getInterfaceTypeValue());
+        Assert.assertEquals(
+                Method.INTERFACE_TYPE_REMOTE,
+                methodList.get(5).getInterfaceTypeValue());
+        Assert.assertEquals(
+                Method.INTERFACE_TYPE_SERVICE_ENDPOINT,
+                methodList.get(6).getInterfaceTypeValue());
+        Assert.assertEquals(
+                Method.INTERFACE_TYPE_TIMER,
+                methodList.get(7).getInterfaceTypeValue());
     }
 
     @Test
@@ -317,33 +351,37 @@ public class AssemblyDescriptorTest extends EJBJarTestBase {
         Assert.assertEquals("roleName2", roleNamesList.get(2));
     }
 
-    /**
-     * <li>{@link #TRANS_ATTRIBUTE_NOT_SUPPORTED} - NotSupported
-     * <li>{@link #TRANS_ATTRIBUTE_SUPPORTS} - Supports
-     * <li>{@link #TRANS_ATTRIBUTE_REQUIRED} - Required
-     * <li>{@link #TRANS_ATTRIBUTE_REQUIRES_NEW} - RequiresNew
-     * <li>{@link #TRANS_ATTRIBUTE_MANDATORY} - Mandatory
-     * <li>{@link #TRANS_ATTRIBUTE_NEVER} - Never
-     **/
-
     @Test
     public void testAssemblyDescriptorContainerTransactions() throws Exception {
-        AssemblyDescriptor assemblyDescriptor =
-            getAssemblyDescriptor(assemblyDescriptorXML);
+        AssemblyDescriptor assemblyDescriptor = getAssemblyDescriptor(assemblyDescriptorXML);
 
-        List<ContainerTransaction> contTransList = assemblyDescriptor.getContainerTransactions();
-        Assert.assertEquals(ContainerTransaction.TRANS_ATTRIBUTE_NOT_SUPPORTED, contTransList.get(0).getTransAttributeTypeValue());
-        Assert.assertEquals(ContainerTransaction.TRANS_ATTRIBUTE_SUPPORTS, contTransList.get(1).getTransAttributeTypeValue());
-        Assert.assertEquals(ContainerTransaction.TRANS_ATTRIBUTE_REQUIRED, contTransList.get(2).getTransAttributeTypeValue());
-        Assert.assertEquals(ContainerTransaction.TRANS_ATTRIBUTE_REQUIRES_NEW, contTransList.get(3).getTransAttributeTypeValue());
-        Assert.assertEquals(ContainerTransaction.TRANS_ATTRIBUTE_MANDATORY, contTransList.get(4).getTransAttributeTypeValue());
-        Assert.assertEquals(ContainerTransaction.TRANS_ATTRIBUTE_NEVER, contTransList.get(5).getTransAttributeTypeValue());
+        List<ContainerTransaction> contTrans =
+                assemblyDescriptor.getContainerTransactions();
 
-        ContainerTransaction contTrans0 = contTransList.get(0);
+        Assert.assertEquals(
+                ContainerTransaction.TRANS_ATTRIBUTE_NOT_SUPPORTED,
+                contTrans.get(0).getTransAttributeTypeValue());
+        Assert.assertEquals(
+                ContainerTransaction.TRANS_ATTRIBUTE_SUPPORTS,
+                contTrans.get(1).getTransAttributeTypeValue());
+        Assert.assertEquals(
+                ContainerTransaction.TRANS_ATTRIBUTE_REQUIRED,
+                contTrans.get(2).getTransAttributeTypeValue());
+        Assert.assertEquals(
+                ContainerTransaction.TRANS_ATTRIBUTE_REQUIRES_NEW,
+                contTrans.get(3).getTransAttributeTypeValue());
+        Assert.assertEquals(
+                ContainerTransaction.TRANS_ATTRIBUTE_MANDATORY,
+                contTrans.get(4).getTransAttributeTypeValue());
+        Assert.assertEquals(
+                ContainerTransaction.TRANS_ATTRIBUTE_NEVER,
+                contTrans.get(5).getTransAttributeTypeValue());
+
+        ContainerTransaction contTrans0 = contTrans.get(0);
         List<Method> methodList = contTrans0.getMethodElements();
         Assert.assertEquals(3, methodList.size());
         testMethod0(methodList.get(0));
-        Assert.assertEquals(4, contTransList.get(1).getMethodElements().size());
+        Assert.assertEquals(4, contTrans.get(1).getMethodElements().size());
     }
 
     @Test
@@ -443,87 +481,31 @@ public class AssemblyDescriptorTest extends EJBJarTestBase {
 
     @Test
     public void testMethodIntfLifecycleCallback() throws Exception {
-        EJBJar ejbJar = parse(ejbJar32Head("") +
-                              "<assembly-descriptor>" +
-                              "  <container-transaction>" +
-                              "    <method>" +
-                              "      <ejb-name>ejb0</ejb-name>" +
-                              "      <method-intf>LifecycleCallback</method-intf>" +
-                              "      <method-name>method0</method-name>" +
-                              "    </method>" +
-                              "    <trans-attribute>Required</trans-attribute>" +
-                              "  </container-transaction>" +
-                              "</assembly-descriptor>" +
-                              "</ejb-jar>", EJBJar.VERSION_4_0);
+        EJBJar ejbJar = parse( ejbJar32( "", lifecycleCallbackXML),
+                               EJBJar.VERSION_4_0 );
+
         Assert.assertEquals(Method.INTERFACE_TYPE_LIFECYCLE_CALLBACK,
                             ejbJar.getAssemblyDescriptor().getContainerTransactions().get(0).getMethodElements().get(0).getInterfaceTypeValue());
     }
 
-    @Test(expected = DDParser.ParseException.class)
+    @Test
     public void testMethodIntfLifecycleCallbackEJB31() throws Exception {
-        parse(ejbJar31Head("") +
-              "<assembly-descriptor>" +
-              "  <container-transaction>" +
-              "    <method>" +
-              "      <ejb-name>ejb0</ejb-name>" +
-              "      <method-intf>LifecycleCallback</method-intf>" +
-              "      <method-name>method0</method-name>" +
-              "    </method>" +
-              "    <trans-attribute>Required</trans-attribute>" +
-              "  </container-transaction>" +
-              "</assembly-descriptor>" +
-              "</ejb-jar>", EJBJar.VERSION_4_0);
+        parse( ejbJar31("", lifecycleCallbackXML),
+                EJBJar.VERSION_4_0,
+                "CWWKC2273E", "invalid.enum.value" );
     }
 
     @Test
     public void testMethodIntfErrorEJB31() throws Exception {
-        try {
-            parse( ejbJar31(
-                       "",
-                       "<assembly-descriptor>" +
-                           "<container-transaction>" +
-                               "<method>" +
-                                   "<ejb-name>ejb0</ejb-name>" +
-                                   "<method-intf>Invalid</method-intf>" +
-                                   "<method-name>method0</method-name>" +
-                               "</method>" +
-                               "<trans-attribute>Required</trans-attribute>" +
-                           "</container-transaction>" +
-                        "</assembly-descriptor>"),
-                   EJBJar.VERSION_4_0);
-            Assert.fail("expected ParseException");
-
-        } catch ( DDParser.ParseException ex ) {
-            if ( ex.getMessage().contains("LifecycleCallback") ) {
-                throw ex;
-            }
-        }
+        parse( ejbJar31("", invalidMethodIntfXML),
+               EJBJar.VERSION_4_0,
+               "CWWKC2273E", "invalid.enum.value" );                   
     }
 
     @Test
     public void testMethodIntfErrorEJB32() throws Exception {
-        try {
-            parse( ejbJar32(
-                       "",
-                       "<assembly-descriptor>" +
-                           "<container-transaction>" +
-                               "<method>" +
-                                   "<ejb-name>ejb0</ejb-name>" +
-                                   "<method-intf>Invalid</method-intf>" +
-                                   "<method-name>method0</method-name>" +
-                               "</method>" +
-                               "<trans-attribute>Required</trans-attribute>" +
-                           "</container-transaction>" +
-                        "</assembly-descriptor>"),
-                   EJBJar.VERSION_4_0);
-
-            Assert.fail("expected ParseException");
-
-        } catch ( DDParser.ParseException ex ) {
-            // "invalid.enum.value"
-            if ( !ex.getMessage().contains("LifecycleCallback") ) {
-                throw ex;
-            }
-        }
+        parse( ejbJar32("",  invalidMethodIntfXML),
+               EJBJar.VERSION_4_0,
+               "CWWKC2273E", "invalid.enum.value" );
     }
 }

@@ -21,28 +21,93 @@ import com.ibm.ws.javaee.dd.common.DescriptionGroup;
 import com.ibm.ws.javaee.dd.common.DisplayName;
 import com.ibm.ws.javaee.dd.common.Icon;
 import com.ibm.ws.javaee.dd.ejb.EJBJar;
-import com.ibm.ws.javaee.ddmodel.DDParser;
 
 public class EJBJarTest extends EJBJarTestBase {
+    protected static final String invalidRootElement =
+        "<!DOCTYPE ejb-jar PUBLIC" +
+            " \"-//Sun Microsystems, Inc.//DTD Enterprise JavaBeans 1.1//EN\" \"http://java.sun.com/j2ee/dtds/ejb-jar_1_1.dtd\">" +
+        "<ejb-NOT-jar>" +
+            "<enterprise-beans>" +
+                "<session>" +
+                    "<ejb-name>TestSession1</ejb-name>" +
+                    "<local>com.ibm.example.Test1</local>" +
+                "</session>" +
+            "</enterprise-beans>" +
+        "</ejb-NOT-jar>";
 
+    protected static final String iconsXML =
+        "<icon>" +
+            "<small-icon>MySmallIcon0</small-icon>" +
+            "<large-icon>MyLargeIcon0</large-icon>" +
+        "</icon>" +
+            
+        "<icon>" +
+            "<small-icon>MySmallIcon1</small-icon>" +
+        "</icon>" +
+
+        "<icon xml:lang=\"fr\">" +
+            "<large-icon> LargeIconWithLang </large-icon>" +
+        "</icon>" +
+
+        "<enterprise-beans>" +
+            "<session>" +
+                "<ejb-name>TestSession</ejb-name>" +
+            "</session>" +
+        "</enterprise-beans>";
+
+    protected static final String displayNamesXML =
+        "<display-name>DisplayName0</display-name>" +
+        "<display-name>DisplayName1</display-name>" +
+        "<display-name xml:lang=\"en\">" +
+            "DisplayName2" +
+        "</display-name>" +
+        "<enterprise-beans>" +
+            "<session>" +
+                "<ejb-name>TestSession</ejb-name>" +
+            "</session>" +
+        "</enterprise-beans>";
+
+    protected static final String descriptionGroupXML =
+        "<description>d0</description>" +
+        "<description xml:lang=\"en\">d1</description>" +
+        "<display-name>dn0</display-name>" +
+        "<display-name xml:lang=\"en\">dn1</display-name>" +
+        "<icon/>" +
+        "<icon xml:lang=\"en\">" +
+            "<small-icon>si</small-icon>" +
+            "<large-icon>li</large-icon>" +
+        "</icon>";
+
+    //
+    
     @Test
     public void testGetVersionID() throws Exception {
-        for ( int version : EJBJar.VERSIONS ) {
-            EJBJar ejbJar = parse( ejbJar(version, "", ""), EJBJar.VERSION_4_0 );
-            Assert.assertEquals( version, ejbJar.getVersionID() );
+        String[] unsupportedSchemaMessages =
+            { "CWWKC2262E", "invalid.deployment.descriptor.namespace" };        
+
+        for ( int schemaVersion : EJBJar.VERSIONS ) {
+            for ( int maxSchemaVersion : EJBJar.VERSIONS ) {
+                String[] expectedMessages;
+                if ( (schemaVersion == EJBJar.VERSION_1_1) ||
+                     (schemaVersion == EJBJar.VERSION_2_0)) {
+                    // The maximum specification version is not checked
+                    // for the two supported DTD versions.
+                    expectedMessages = null;
+                } else if ( schemaVersion > maxSchemaVersion ) {
+                    expectedMessages = unsupportedSchemaMessages;
+                } else {
+                    expectedMessages = null;
+                }
+
+                EJBJar ejbJar = parse(
+                    ejbJar(schemaVersion, "", ""),
+                    maxSchemaVersion, expectedMessages );
+
+                if ( schemaVersion <= maxSchemaVersion ) {
+                    Assert.assertEquals( schemaVersion, ejbJar.getVersionID() );
+                }
+            }
         }
-    }
-
-    // Tests that we get ParseException if ejb-jar.xml version is above feature level version
-
-    @Test(expected = DDParser.ParseException.class)
-    public void testMaxVersion31() throws Exception {
-        parse( ejbJar32("", ""), EJBJar.VERSION_3_1 );
-    }
-
-    @Test(expected = DDParser.ParseException.class)
-    public void testMaxVersion32() throws Exception {
-        parse( ejbJar40("", ""), EJBJar.VERSION_3_2 );
     }
 
     @Test
@@ -50,7 +115,6 @@ public class EJBJarTest extends EJBJarTestBase {
         Assert.assertNull(
             parse( ejbJar31("", ""), EJBJar.VERSION_4_0)
                 .getModuleName() );
-
         Assert.assertEquals("test",
             parse(ejbJar31("", "<module-name>test</module-name>"), EJBJar.VERSION_4_0)
                 .getModuleName());
@@ -102,19 +166,7 @@ public class EJBJarTest extends EJBJarTestBase {
         Assert.assertEquals(Collections.emptyList(), dg0.getDisplayNames());
         Assert.assertEquals(Collections.emptyList(), dg0.getIcons());
 
-        DescriptionGroup dg1 = parse(
-            ejbJar30(
-                "",
-                "<description>d0</description>" +
-                    "<description xml:lang=\"en\">d1</description>" +
-                    "<display-name>dn0</display-name>" +
-                    "<display-name xml:lang=\"en\">dn1</display-name>" +
-                    "<icon/>" +
-                    "<icon xml:lang=\"en\">" +
-                        "<small-icon>si</small-icon>" +
-                        "<large-icon>li</large-icon>" +
-                    "</icon>"),
-            EJBJar.VERSION_4_0);
+        DescriptionGroup dg1 = parse( ejbJar30("", descriptionGroupXML), EJBJar.VERSION_4_0 );
 
         List<Description> ds = dg1.getDescriptions();
         Assert.assertEquals(ds.toString(), 2, ds.size());
@@ -161,19 +213,16 @@ public class EJBJarTest extends EJBJarTestBase {
                 .getEnterpriseBeans().size() );
     }
 
-    //see InterceptorTest
     @Test
     public void testGetInterceptors() throws Exception {
         Assert.assertNull(
             parse(ejbJar30("", ""), EJBJar.VERSION_4_0)
                 .getInterceptors());
-
         Assert.assertNotNull(
             parse(ejbJar30("", "<interceptors/>"), EJBJar.VERSION_4_0)
                 .getInterceptors() );
     }
 
-    //see AssemblyDescriptorTest
     @Test
     public void testGetAssemblyDescriptor() throws Exception {
         Assert.assertNull(
@@ -185,14 +234,11 @@ public class EJBJarTest extends EJBJarTestBase {
                 .getAssemblyDescriptor() );
     }
 
-    //see RelationshipsTest
-
     @Test
     public void testRelationships() throws Exception {
         Assert.assertNull(
             parse(ejbJar21(""), EJBJar.VERSION_4_0)
                 .getRelationshipList() );
-        
         Assert.assertNotNull(
             parse( ejbJar21("<relationships></relationships>"), EJBJar.VERSION_4_0)
                 .getRelationshipList() );
@@ -204,23 +250,15 @@ public class EJBJarTest extends EJBJarTestBase {
             parse(ejbJar11(""), EJBJar.VERSION_4_0)
                 .getEjbClientJar() );
 
-        Assert.assertEquals("client.jar", parse(ejbJar11("<ejb-client-jar>client.jar</ejb-client-jar>"), EJBJar.VERSION_4_0).getEjbClientJar());
+        Assert.assertEquals("client.jar",
+            parse(ejbJar11("<ejb-client-jar>client.jar</ejb-client-jar>"), EJBJar.VERSION_4_0)
+                .getEjbClientJar());
     }
 
     @Test
     public void testDisplayNames() throws Exception {
-        List<DisplayName> displayNameList = parse(
-            ejbJar11( "<display-name>DisplayName0</display-name>" +
-                      "<display-name>DisplayName1</display-name>" +
-                      "<display-name xml:lang=\"en\">" +
-                          "DisplayName2" +
-                      "</display-name>" +
-                      "<enterprise-beans>" +
-                          "<session>" +
-                              "<ejb-name>TestSession</ejb-name>" +
-                          "</session>" +
-                        "</enterprise-beans>"),
-            EJBJar.VERSION_4_0).getDisplayNames();
+        List<DisplayName> displayNameList =
+            parse(ejbJar11( displayNamesXML), EJBJar.VERSION_4_0).getDisplayNames();
 
         Assert.assertEquals(3, displayNameList.size());
         Assert.assertEquals("DisplayName0", displayNameList.get(0).getValue());
@@ -232,30 +270,8 @@ public class EJBJarTest extends EJBJarTestBase {
 
     @Test
     public void testIcons() throws Exception {
-        List<Icon> iconList = parse(
-            ejbJar11( "<icon>" +
-                          "<small-icon>MySmallIcon0</small-icon>" +
-                          "<large-icon>" +
-                              "MyLargeIcon0" +
-                          "</large-icon>" +
-                      "</icon>" +
-
-                      "<icon>" +
-                          "<small-icon>" +
-                              "MySmallIcon1" +
-                          "</small-icon>" +
-                      "</icon>" +
-
-                      "<icon xml:lang=\"fr\">" +
-                          "<large-icon> LargeIconWithLang </large-icon>" +
-                      "</icon>" +
-
-                      "<enterprise-beans>" +
-                          "<session>" +
-                              "<ejb-name>TestSession</ejb-name>" +
-                          "</session>" +
-                      "</enterprise-beans>"),
-            EJBJar.VERSION_4_0).getIcons();
+        List<Icon> iconList =
+            parse( ejbJar11(iconsXML), EJBJar.VERSION_4_0 ).getIcons();
 
         Assert.assertEquals(3, iconList.size());
         Assert.assertEquals("MySmallIcon0", iconList.get(0).getSmallIcon());
@@ -269,29 +285,18 @@ public class EJBJarTest extends EJBJarTestBase {
         Assert.assertEquals("fr", iconList.get(2).getLang());
     }
 
-    //TODO test exceptions
     @Test
-    public void testError_001() throws Exception {
+    public void testInvalidRootElement() throws Exception {
         try {
-            parse( "<!DOCTYPE ejb-jar PUBLIC" +
-                   " \"-//Sun Microsystems, Inc.//DTD Enterprise JavaBeans 1.1//EN\" \"http://java.sun.com/j2ee/dtds/ejb-jar_1_1.dtd\">" +
-                   "<ejb-NOT-jar>" + //invalid root name
-                       "<enterprise-beans>" +
-                           "<session>" +
-                               "<ejb-name>TestSession1</ejb-name>" +
-                               "<local>com.ibm.example.Test1</local>" +
-                           "</session>" +
-                       "</enterprise-beans>" +
-                   "</ejb-NOT-jar>",
-                   EJBJar.VERSION_4_0);
-
-        } catch ( Exception pe ) {
-            // "invalid.root.element"
-            String msg = pe.getMessage();
-            Assert.assertTrue("Not expected exception. Got: " + pe.getMessage(),
-                              msg.contains("CWWKC2252") &&
-                              msg.contains("ejb-NOT-jar") &&
-                              msg.contains("ejb-jar.xml"));
+            parse(invalidRootElement, EJBJar.VERSION_4_0);
+            Assert.fail("Expected parse exception did not occur");
+        } catch ( Exception e ) {
+            String msg = e.getMessage();
+            Assert.assertTrue("Unexpected exception [ " + e.getMessage() + " ]",
+                    msg.contains("invalid.root.element") ||
+                    (msg.contains("CWWKC2252") &&
+                     msg.contains("ejb-NOT-jar") &&
+                     msg.contains("ejb-jar.xml")));
         }
     }
 }
