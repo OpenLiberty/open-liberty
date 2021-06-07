@@ -812,10 +812,6 @@ public class PermissionManager implements PermissionsCombiner {
             }
         }
         
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "Effective permissions from permissions.xml for codeBase: : " + codeBase);
-            Tr.debug(tc, permissionXMLPermissionMap.get(codeBase).toString());
-        }
 
     }
 
@@ -850,6 +846,8 @@ public class PermissionManager implements PermissionsCombiner {
             return;
         }
 
+	if (files == null) 
+            return;
         // for every file in the current directory, see if it matches any of the individual archive files
         for (File file : files) {
             if (file.isFile()) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -68,7 +68,7 @@ public class WSATCoordinator extends WSATEndpoint {
 
     public EndpointReferenceType getEndpointReference(String partId) {
         EndpointReferenceType epr = EndpointReferenceUtils.duplicate(getEndpointReference());
-        // duplicate doesn't seem to copy the ReferenceParams?, so add 
+        // duplicate doesn't seem to copy the ReferenceParams?, so add
         // back the originals plus our new participant id.
         ReferenceParametersType refs = new ReferenceParametersType();
         for (Object ref : getEndpointReference().getReferenceParameters().getAny()) {
@@ -95,6 +95,9 @@ public class WSATCoordinator extends WSATEndpoint {
 
     @Override
     public int hashCode() {
-        return globalId.hashCode();
+        if (globalId != null)
+            return globalId.hashCode();
+
+        return 0;
     }
 }

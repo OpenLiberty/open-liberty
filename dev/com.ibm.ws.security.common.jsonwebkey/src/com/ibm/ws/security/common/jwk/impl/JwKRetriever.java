@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2020 IBM Corporation and others.
+ * Copyright (c) 2016, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -210,6 +210,7 @@ public class JwKRetriever {
 
     @Sensitive
     private Key getJwkFromJWKSet(@Sensitive String setId, String kid, String x5t, String use, @Sensitive String keyText, JwkKeyType keyType) {
+        boolean isKeyIdentifierUsed = (kid != null || x5t != null || use != null);
         Key key = null;
         if (kid != null) {
             key = jwkSet.getKeyBySetIdAndKid(setId, kid, keyType);
@@ -224,7 +225,7 @@ public class JwKRetriever {
         if (keyText != null) {
             key = jwkSet.getKeyBySetIdAndKeyText(setId, keyText, keyType);
         }
-        if (key == null) {
+        if (key == null && !isKeyIdentifierUsed) {
             key = jwkSet.getKeyBySetId(setId, keyType);
         }
         return key;

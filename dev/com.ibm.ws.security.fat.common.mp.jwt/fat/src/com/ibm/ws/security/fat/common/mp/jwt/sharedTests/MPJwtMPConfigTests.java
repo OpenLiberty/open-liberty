@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -140,7 +140,11 @@ public class MPJwtMPConfigTests extends CommonMpJwtFat {
      * @throws Exception
      */
     protected static void setUpAndStartRSServerForApiTests(LibertyServer rs_server, LibertyServer builderServer, String configFile, boolean jwkEnabled) throws Exception {
-        setupBootstrapPropertiesForMPTests(rs_server, "\"" + SecurityFatHttpUtils.getServerSecureUrlBase(builderServer) + "jwt/ibm/api/defaultJWT/jwk\"", jwkEnabled);
+        setUpAndStartRSServerForApiTests(rs_server, builderServer, configFile, jwkEnabled, "defaultJWT");
+    }
+
+    protected static void setUpAndStartRSServerForApiTests(LibertyServer rs_server, LibertyServer builderServer, String configFile, boolean jwkEnabled, String builderId) throws Exception {
+        setupBootstrapPropertiesForMPTests(rs_server, "\"" + SecurityFatHttpUtils.getServerSecureUrlBase(builderServer) + "jwt/ibm/api/" + builderId + "/jwk\"", jwkEnabled);
 
         bootstrapUtils.writeBootstrapProperty(rs_server, "mpJwt_authHeaderPrefix", MPJwt11FatConstants.TOKEN_TYPE_BEARER + " ");
 

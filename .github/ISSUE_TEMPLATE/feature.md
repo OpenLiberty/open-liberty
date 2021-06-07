@@ -11,8 +11,6 @@ The description needs to be detailed enough such that it can be [prioritized on 
 <br/><br/><br/>  
 
 
-##
-#### Before proceeding to any items below (active development), this feature must be [prioritized on the backlog](https://github.com/orgs/OpenLiberty/projects/2), and have been socialized (e.g., UFO Review).  Follow the Feature and UFO Approval Process.
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ## When complete & mandatory, add links to the UFO (Upcoming Feature Overview) document, FTS (Feature Test Summary), blogs post issues(s), and [Aha](https://cloud-platform.ideas.aha.io/) (externally raised RFEs):
 - UFO:
@@ -39,6 +37,14 @@ Before Development Starts or 8 weeks before Onboarding
 - [ ] SVT Requirements identified. (Epic owner / Feature owner with SVT focal point)
 - [ ] ID Requirements identified ([Documenting Open Liberty](https://github.com/OpenLiberty/open-liberty/wiki/Documenting-Open-Liberty)). (Epic owner / Feature owner with ID focal point)
 - [ ] Create a child task of this epic entitled "Feature Test Summary" via [this template](https://github.com/OpenLiberty/open-liberty/issues/new?assignees=&labels=Feature+Test+Summary&template=feature_test_summary.md&title=). Add the link in above.
+
+##
+#### Before proceeding to any items below (active development), this feature MUST be [prioritized on the backlog](https://github.com/orgs/OpenLiberty/projects/2), and have been socialized (e.g., UFO Review).  Follow the Feature and UFO Approval Process.
+##
+
+## **Development**
+When active development has begun 
+- [ ] Add the "In Progress" label to this issue.
 
 ## **Beta**
 If your feature, or portions of it, are going to be included in a beta  

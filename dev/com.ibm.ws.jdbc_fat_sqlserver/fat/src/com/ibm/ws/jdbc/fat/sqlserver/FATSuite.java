@@ -46,11 +46,19 @@ public class FATSuite {
      *
      * @throws SQLException
      */
-    public static void setupDatabase(MSSQLServerContainer<?> sqlserver) throws SQLException {
+    public static void setupDatabase(MSSQLServerContainer<?> sqlserver, boolean ssl) throws SQLException {
+        /*
+         * IBM JDK will return TLSv1 when SSLContext.getInstance(TLS) is called.
+         * Force driver to use TLSv1.2 for this setup step.
+         * See documentation here: https://github.com/microsoft/mssql-jdbc/wiki/SSLProtocol
+         */
+        if (ssl) {
+            sqlserver.withUrlParam("SSLProtocol", "TLSv1.2");
+        }
 
         //Setup database and settings
-        Log.info(FATSuite.class, "setup", "Attempting to setup database with name: " + DB_NAME + "."
-                                          + " With connection URL: " + sqlserver.getJdbcUrl());
+        Log.info(FATSuite.class, "setupDatabase", "Attempting to setup database with name: " + DB_NAME + "."
+                                                  + " With connection URL: " + sqlserver.getJdbcUrl());
         try (Connection conn = sqlserver.createConnection(""); Statement stmt = conn.createStatement()) {
             stmt.execute("CREATE DATABASE [" + DB_NAME + "];");
             stmt.execute("EXEC sp_sqljdbc_xa_install");
@@ -59,7 +67,7 @@ public class FATSuite {
 
         //Create test table
         sqlserver.withUrlParam("databaseName", DB_NAME);
-        Log.info(FATSuite.class, "setup", "Attempting to setup database table with name: " + TABLE_NAME + "."
+        Log.info(FATSuite.class, "setupDatabase", "Attempting to setup database table with name: " + TABLE_NAME + "."
                                           + " With connection URL: " + sqlserver.getJdbcUrl());
         try (Connection conn = sqlserver.createConnection(""); Statement stmt = conn.createStatement()) {
             // Create tables

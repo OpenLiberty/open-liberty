@@ -203,4 +203,33 @@ autoFVT.doLast {
       rename 'com.ibm.ws.security.oauth_fat.jar', 'testLib.jar'
     }
   }
+  
+  servers = [
+    'com.ibm.ws.security.oauth-2.0.consentform.fat',
+	'com.ibm.ws.security.oauth-2.0.customstore.bell.fat',
+	'com.ibm.ws.security.oauth-2.0.customstore.fat',
+	'com.ibm.ws.security.oauth-2.0.customstore.xor.fat',
+	'com.ibm.ws.security.oauth-2.0.customstore2.bell.fat',
+	'com.ibm.ws.security.oauth-2.0.customstore2.fat',
+	'com.ibm.ws.security.oauth-2.0.customstore3.bell.fat',
+	'com.ibm.ws.security.oauth-2.0.customstore3.fat',
+	'com.ibm.ws.security.oauth-2.0.derby.fat',
+	'com.ibm.ws.security.oauth-2.0.derby.xor.fat',
+	'com.ibm.ws.security.oauth-2.0.derby2.fat',
+	'com.ibm.ws.security.oauth-2.0.derby3.fat',
+	'com.ibm.ws.security.oauth-2.0.fat',
+	'com.ibm.ws.security.oauth-2.0.loginform.fat'
+  ]
+  servers.each { server ->
+    copy { 
+      from new File(projectDir, 'publish/files/serversettings/')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/imports')
+      include '*.xml'
+    }
+    copy { 
+      from new File(projectDir, 'securitykeys/')
+      into new File(autoFvtDir, 'publish/servers/' + server)
+      include 'oauthTest*Store.p12'
+    }  }
+  
 }

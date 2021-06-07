@@ -8,5 +8,5 @@ visibility = private
   com.ibm.websphere.appserver.eeCompatible-9.0
 -bundles=\
   io.openliberty.security.wim.internal.base
-kind=noship
-edition=full
+kind=beta
+edition=core

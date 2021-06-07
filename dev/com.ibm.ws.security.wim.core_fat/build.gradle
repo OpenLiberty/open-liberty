@@ -22,15 +22,6 @@ addRequiredLibraries.dependsOn addJakartaTransformer
 
 autoFVT.doLast {
   /*
-   * Copy the local ApacheDS LDAP instances. 
-   */
-  copy {
-    from project(':com.ibm.ws.org.apache.directory.server').projectDir
-    into autoFvtDir
-    include 'apacheds-2.0.0-M15/**'
-  }
-  
-    /*
    * Copy sample CustomRepository user feature to this test bucket.
    */
   copy { 
