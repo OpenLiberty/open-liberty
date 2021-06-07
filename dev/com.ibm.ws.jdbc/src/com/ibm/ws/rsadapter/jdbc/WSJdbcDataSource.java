@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2020 IBM Corporation and others.
+ * Copyright (c) 1997, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,14 +21,15 @@ import java.util.logging.Logger;
 import javax.resource.ResourceException;
 import javax.resource.spi.ConnectionRequestInfo;
 import javax.sql.DataSource;
+import javax.sql.XADataSource;
 
 import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.rsadapter.JDBCConnectionSpec;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.FFDCSelfIntrospectable;
 import com.ibm.ws.jca.adapter.WSConnectionManager;
-import com.ibm.ws.jdbc.WSDataSource;
 import com.ibm.ws.resource.ResourceRefConfig;
 import com.ibm.ws.resource.ResourceRefConfigFactory;
 import com.ibm.ws.resource.ResourceRefInfo;
@@ -44,7 +45,9 @@ import com.ibm.wsspi.resource.ResourceFactory;
 /**
  * This class wraps a JDBC DataSource. It is used as a Connection Factory.
  */
-public class WSJdbcDataSource extends WSJdbcWrapper implements DataSource, FFDCSelfIntrospectable, WSDataSource {
+public class WSJdbcDataSource extends WSJdbcWrapper implements DataSource,
+    FFDCSelfIntrospectable, com.ibm.ws.jdbc.WSDataSource, com.ibm.websphere.rsadapter.WSDataSource {
+
     private static final TraceComponent tc =
                     Tr.register(
                                 WSJdbcDataSource.class,
@@ -171,6 +174,46 @@ public class WSJdbcDataSource extends WSJdbcWrapper implements DataSource, FFDCS
         if (isTraceOn && tc.isEntryEnabled()) 
             Tr.exit(this, tc, "getConnection", c);
         return c;
+    }
+
+    /**
+     * Requests a connection that matches the JDBCConnectionSpec.
+     *
+     * @param connSpec requested connection attributes.
+     * @return the Connection
+     * @throws SQLException if an error occurs while obtaining a Connection.
+     */
+    public Connection getConnection(JDBCConnectionSpec connSpec) throws SQLException {
+        final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
+
+        if (isTraceOn && tc.isDebugEnabled())
+            Tr.debug(this, tc, "getConnection", connSpec);
+
+        // Get the isolation level from the resource reference, or if that is not specified, use the
+        // configured isolationLevel value, otherwise use a default that we choose for the database.
+        int isolationLevelForCRI = connSpec.getTransactionIsolation();
+        if (isolationLevelForCRI == Connection.TRANSACTION_NONE)
+            isolationLevelForCRI = getDefaultIsolationLevel();
+
+        @SuppressWarnings("unchecked")
+        WSConnectionRequestInfoImpl _connInf = new WSConnectionRequestInfoImpl(
+                        connSpec.getUserName(),
+                        connSpec.getPassword(),
+                        isolationLevelForCRI,
+                        connSpec.getCatalog(),
+                        connSpec.isReadOnly(),
+                        null, // sharding key
+                        null, // super sharding key
+                        connSpec.getTypeMap(),
+                        connSpec.getHoldability(),
+                        connSpec.getSchema(),
+                        connSpec.getNetworkTimeout(),
+                        mcf.instanceID,
+                        mcf.getHelper().isIsolationLevelSwitchingSupport());
+
+        _connInf.markAsChangable();
+
+        return getConnection(_connInf);
     }
 
     public final Connection getConnection(String user, String pwd)
@@ -330,6 +373,16 @@ public class WSJdbcDataSource extends WSJdbcWrapper implements DataSource, FFDCS
         if (isTraceOn && tc.isEntryEnabled())
             Tr.exit(this, tc, "invokeOperation: " + method.getName(), result); 
         return result;
+    }
+
+    /**
+     * Legacy operation that indicates if the underlying data source is an XADataSource,
+     * capable of two phase commit.
+     *
+     * @return true if an XADataSource, otherwise false.
+     */
+    public final boolean isXADataSource() {
+        return XADataSource.class.equals(mcf.type);
     }
 
     /**

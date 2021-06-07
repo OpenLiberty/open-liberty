@@ -14,10 +14,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import javax.sql.DataSource;
-import javax.sql.XAConnection;
-import javax.sql.XADataSource;
 
-public class HDDataSource extends org.apache.derby.jdbc.EmbeddedDataSource implements XADataSource, DataSource {
+public class HDDataSource extends org.apache.derby.jdbc.EmbeddedDataSource implements DataSource {
     private static final long serialVersionUID = 1L;
 
     String driverType;
@@ -36,16 +34,6 @@ public class HDDataSource extends org.apache.derby.jdbc.EmbeddedDataSource imple
 
     @Override
     public Connection getConnection(String username, String password) throws SQLException {
-        return new HDConnection(this, super.getConnection(username, password));
-    }
-
-    @Override
-    public XAConnection getXAConnection() throws SQLException {
-        return new HDConnection(this, super.getConnection());
-    }
-
-    @Override
-    public XAConnection getXAConnection(String username, String password) throws SQLException {
         return new HDConnection(this, super.getConnection(username, password));
     }
 

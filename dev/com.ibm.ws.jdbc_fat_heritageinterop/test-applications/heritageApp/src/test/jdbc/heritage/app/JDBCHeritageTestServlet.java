@@ -19,6 +19,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
@@ -46,7 +47,10 @@ import org.junit.Test;
 import com.ibm.websphere.ce.cm.DuplicateKeyException;
 import com.ibm.websphere.ce.cm.ObjectClosedException;
 import com.ibm.websphere.ce.cm.StaleConnectionException;
+import com.ibm.websphere.rsadapter.JDBCConnectionSpec;
+import com.ibm.websphere.rsadapter.WSDataSource;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.app.FATServlet;
 import test.jdbc.heritage.driver.HeritageDBConnection;
 import test.jdbc.heritage.driver.helper.HeritageDBDuplicateKeyException;
@@ -64,6 +68,12 @@ public class JDBCHeritageTestServlet extends FATServlet {
 
     @Resource(name = "java:comp/jdbc/env/unsharable-ds-xa-tightly-coupled", shareable = false)
     private DataSource defaultDataSource_unsharable_tightly_coupled;
+
+    @Resource(lookup = "jdbc/one-phase", shareable = true)
+    private DataSource dsOnePhaseSharable;
+
+    @Resource(lookup = "jdbc/one-phase", shareable = false)
+    private DataSource dsOnePhaseUnsharable;
 
     @Resource(lookup = "jdbc/helperDefaulted", shareable = false)
     private DataSource dsWithHelperDefaulted;
@@ -504,6 +514,39 @@ public class JDBCHeritageTestServlet extends FATServlet {
     }
 
     /**
+     * Verifies that the type of sharing indicated by the isShareable legacy operation
+     * is consistent with the resource reference.
+     */
+    @Test
+    public void testIsShareable() throws Exception {
+        Method isShareable;
+
+        try (Connection con = defaultDataSource.getConnection()) {
+            isShareable = con.getClass().getMethod("isShareable");
+
+            assertTrue((Boolean) isShareable.invoke(con));
+        }
+
+        try (Connection con = dsWithHelperDefaulted.getConnection()) {
+            assertFalse((Boolean) isShareable.invoke(con));
+        }
+    }
+
+    /**
+     * Verifies that the isXADataSource legacy operation returns the correct value
+     * based on the dataSource configuration.
+     */
+    @Test
+    public void testIsXADataSource() throws Exception {
+        assertTrue(((WSDataSource) defaultDataSource).isXADataSource());
+        assertTrue(((WSDataSource) defaultDataSource_unsharable_loosely_coupled).isXADataSource());
+        assertTrue(((WSDataSource) defaultDataSource_unsharable_tightly_coupled).isXADataSource());
+        assertFalse(((WSDataSource) dsOnePhaseSharable).isXADataSource());
+        assertFalse(((WSDataSource) dsOnePhaseUnsharable).isXADataSource());
+        assertFalse(((WSDataSource) dsWithHelperDefaulted).isXADataSource());
+    }
+
+    /**
      * Verifies that API classes can be loaded from the mock heritage API bundle fragment.
      */
     @Test
@@ -556,6 +599,59 @@ public class JDBCHeritageTestServlet extends FATServlet {
 
             // user-defined exception indicates stale:
             assertTrue(con.isClosed());
+        }
+    }
+
+    /**
+     * Verify that WSDataSource.getConnection(conspec) can be used to match and share a connection
+     * based on its isolation level.
+     */
+    @AllowedFFDC({
+                   "java.lang.IllegalStateException", // test attempts to enlist multiple one-phase resources to prove that sharing does not occur
+                   "java.sql.SQLException", // test attempts to enlist multiple one-phase resources to prove that sharing does not occur
+                   "javax.resource.ResourceException" // test attempts to enlist multiple one-phase resources to prove that sharing does not occur
+    })
+    @SuppressWarnings("restriction")
+    @Test
+    public void testMatchCurrentIsolationLevel() throws Exception {
+        tx.begin();
+        try (Connection con1 = dsOnePhaseSharable.getConnection()) {
+            // normal connection request defaults to isolationLevel from the dataSource,
+            assertEquals(Connection.TRANSACTION_READ_COMMITTED, con1.getTransactionIsolation());
+
+            con1.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+            con1.createStatement().executeUpdate("INSERT INTO MYTABLE VALUES (13, 'testMatchCurrentIsolationLevel')");
+
+            // connection can be shared based on its current state,
+            WSDataSource wsds = (WSDataSource) dsOnePhaseSharable;
+            JDBCConnectionSpec req2 = new ConnectionRequest();
+            req2.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+            Connection con2 = wsds.getConnection(req2);
+            assertEquals(Connection.TRANSACTION_SERIALIZABLE, con2.getTransactionIsolation());
+            int numUpdates = con2.createStatement().executeUpdate("UPDATE MYTABLE SET STRVAL='XIII' where ID=13");
+            assertEquals(1, numUpdates);
+
+            // connection cannot be shared based on a non-matching request
+            JDBCConnectionSpec req3 = new ConnectionRequest();
+            req3.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+            Connection con3 = wsds.getConnection(req3);
+            try {
+                con3.createStatement().executeUpdate("INSERT INTO MYTABLE VALUES (14, 'testMatchCurrentIsolationLevel')");
+                fail("3rd connection request should not share and thus be unable to enlist in second transactional resource.");
+            } catch (SQLException x) {
+                boolean multiple1PCResources = false;
+                for (Throwable cause = x.getCause(); cause != null && !multiple1PCResources; cause = cause.getCause())
+                    multiple1PCResources |= cause instanceof IllegalStateException;
+                if (multiple1PCResources) // expected
+                    tx.setRollbackOnly();
+                else
+                    throw x;
+            }
+        } finally {
+            if (tx.getStatus() == Status.STATUS_ACTIVE)
+                tx.commit();
+            else
+                tx.rollback();
         }
     }
 

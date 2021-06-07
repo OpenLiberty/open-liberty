@@ -64,7 +64,9 @@ public class HeritageJDBCTest extends FATServletClient {
             List<String> found = server.findStringsInLogs(".*==> Connection.*.prepareStatement\\(\"VALUES \\('testDefaultQueryTimeout', SQRT\\(196\\)\\)\", 1003, 1007\\).*");
             assertTrue(found.toString(), found.size() == 1);
         } finally {
-            server.stopServer();
+            server.stopServer("J2CA0030E", // test attempts to enlist multiple one-phase resources to prove that sharing does not occur
+                              "WTRN0062E" // test attempts to enlist multiple one-phase resources to prove that sharing does not occur
+            );
         }
     }
 }
