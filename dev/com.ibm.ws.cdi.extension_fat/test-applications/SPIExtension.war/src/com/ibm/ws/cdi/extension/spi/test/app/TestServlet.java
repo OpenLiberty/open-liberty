@@ -57,12 +57,21 @@ public class TestServlet extends HttpServlet {
             unregString = "Could not find unregistered bean";
         }
 
+        String unregBDAString = "";
+        try {
+            UnregisteredBDABean ub = javax.enterprise.inject.spi.CDI.current().select(UnregisteredBDABean.class).get();
+            unregBDAString = ub.toString();
+        } catch (UnsatisfiedResolutionException e) {
+            unregBDAString = "Could not find unregistered BDA bean";
+        }
+
         PrintWriter pw = response.getWriter();
         pw.println("Test Results:");
         pw.println(extensionString.toString());
         pw.println(beanInjectedString.toString());
         pw.println(classString.toString());
         pw.println(unregString);
+        pw.println(unregBDAString);
         pw.println(appBean.toString());
         pw.println(customBDABean.toString());
 
