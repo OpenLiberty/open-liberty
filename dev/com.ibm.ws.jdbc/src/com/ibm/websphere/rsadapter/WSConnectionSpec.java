@@ -41,11 +41,9 @@ public interface WSConnectionSpec {
   Map getTypeMap();
 
   /**
-   * <p>Get the cursor holdability value. If the JDBC driver doesn't support cursor holdability 
-   * feature, 0 is returned.</p>
+   * <p>Get the cursor holdability value. 0 indicates to use the JDBC driver's default.</p>
    * 
-   * @return the cursor holdability. 0 If the JDBC driver doesn't support cursor holdability 
-   * feature.
+   * @return the cursor holdability.
    */
   int getHoldability();
 
@@ -115,9 +113,9 @@ public interface WSConnectionSpec {
   void setUserName(String userName);
 
   /**
-   * Set the cursor holdability value. A value of 0 indicates to use the database default. 
-   * If the JDBC driver doesn't support cursor holdability feature, you can set the holdability 
-   * value to 0.
+   * Sets the cursor holdability value. A value of 0 indicates to use the JDBC driver's default.
+   * If the JDBC driver doesn't support setting the cursor holdability via the JDBC
+   * spec-defined mechanism, you can set the holdability value to 0.
    *
    * @param holdability the cursor holdability
    */
