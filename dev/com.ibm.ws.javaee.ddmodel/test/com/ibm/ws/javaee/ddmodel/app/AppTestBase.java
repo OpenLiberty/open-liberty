@@ -82,7 +82,6 @@ public class AppTestBase extends DDTestBase {
         // Parse using the mock data structures:
 
         ApplicationAdapter adapter = new ApplicationAdapter();
-
         adapter.setVersion(versionRef);
 
         try {

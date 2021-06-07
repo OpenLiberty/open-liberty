@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.javaee.ddmodel.managedbean;
 
-import static org.junit.Assert.fail;
-
 import java.util.List;
 
 import org.junit.Assert;
@@ -125,38 +123,17 @@ public class ManagedBeanBndTest extends DDTestBase {
 
     protected boolean isWarModule = false;
     
-    private ManagedBeanBnd parseBnd(String xml) throws Exception {
-        return parseBnd(xml, null, null);
-    }
+    private ManagedBeanBnd parseBnd(String xmlText, String ... messages) throws Exception {
+        String bndPath =
+            isWarModule ? ManagedBeanBndAdapter.XML_BND_IN_WEB_MOD_NAME
+                        : ManagedBeanBndAdapter.XML_BND_IN_EJB_MOD_NAME;
+        WebModuleInfo moduleInfo =
+            isWarModule ? mockery.mock(WebModuleInfo.class, "webModuleInfo" + mockId++)
+                        : null;
 
-    private ManagedBeanBnd parseBnd(
-        String xmlText, String expectedMessage, String altMessage) throws Exception {
-        try {
-            String bndPath =
-                isWarModule ? ManagedBeanBndAdapter.XML_BND_IN_WEB_MOD_NAME
-                            : ManagedBeanBndAdapter.XML_BND_IN_EJB_MOD_NAME;
-            WebModuleInfo moduleInfo =
-                isWarModule ? mockery.mock(WebModuleInfo.class, "webModuleInfo" + mockId++)
-                            : null;
-
-            ManagedBeanBnd managedBeanBnd =
-                parse( xmlText, new ManagedBeanBndAdapter(), bndPath,
-                       null, null,
-                       WebModuleInfo.class, moduleInfo );
-
-            if ( expectedMessage != null ) {
-                fail("Exception [ " + expectedMessage + " ] was expected");
-            }
-
-            return managedBeanBnd;
-
-        } catch ( Exception e ) {
-            if ( expectedMessage == null ) {
-                throw e;
-            }
-            verifyMessage(e, expectedMessage, altMessage);
-            return null;
-        }
+        return parse( xmlText, new ManagedBeanBndAdapter(), bndPath,
+                      null, null,
+                      WebModuleInfo.class, moduleInfo, messages );
     }
 
     // Parse helpers ...
