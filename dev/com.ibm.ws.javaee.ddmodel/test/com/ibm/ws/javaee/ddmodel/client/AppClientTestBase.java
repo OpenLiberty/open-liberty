@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@ package com.ibm.ws.javaee.ddmodel.client;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.Arrays;
 
 import org.jmock.Expectations;
 import org.osgi.framework.ServiceReference;
@@ -26,74 +27,100 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 
 public class AppClientTestBase extends DDTestBase {
 
-    protected ApplicationClient parse(String xml) throws Exception {
-        return parse(xml, ApplicationClient.VERSION_6);
-    }
+    protected ApplicationClient parse(
+        String xml,
+        int maxVersion,
+        String... expectedMessages) throws Exception {
 
-    protected ApplicationClient parse(final String xml, final int maxVersion) throws Exception {
-        ApplicationClientEntryAdapter adapter = new ApplicationClientEntryAdapter();
-        final Container root = mockery.mock(Container.class, "root" + mockId++);
-        final OverlayContainer rootOverlay = mockery.mock(OverlayContainer.class, "rootOverlay" + mockId++);
-        final ArtifactEntry artifactEntry = mockery.mock(ArtifactEntry.class, "artifactEntry" + mockId++);
-        final Entry entry = mockery.mock(Entry.class, "entry" + mockId++);
+        OverlayContainer rootOverlay = mockery.mock(OverlayContainer.class, "rootOverlay" + mockId++);
+        ArtifactEntry artifactEntry = mockery.mock(ArtifactEntry.class, "artifactEntry" + mockId++);
+
+        Container root = mockery.mock(Container.class, "root" + mockId++);
+        Entry entry = mockery.mock(Entry.class, "entry" + mockId++);
+
         @SuppressWarnings("unchecked")
-        final ServiceReference<ApplicationClientDDParserVersion> versionRef =
+        ServiceReference<ApplicationClientDDParserVersion> versionRef =
             mockery.mock(ServiceReference.class, "sr" + mockId++);
 
         mockery.checking(new Expectations() {
             {
-                allowing(artifactEntry).getPath();
-                will(returnValue('/' + ApplicationClient.DD_NAME));
-
+                allowing(rootOverlay).addToNonPersistentCache(with(any(String.class)), with(any(Class.class)), with(any(Object.class)));
                 allowing(rootOverlay).getFromNonPersistentCache(with(any(String.class)), with(any(Class.class)));
                 will(returnValue(null));
 
-                allowing(entry).getPath();
+                allowing(artifactEntry).getPath();
                 will(returnValue('/' + ApplicationClient.DD_NAME));
 
+                allowing(entry).getPath();
+                will(returnValue('/' + ApplicationClient.DD_NAME));
                 allowing(entry).adapt(InputStream.class);
                 will(returnValue(new ByteArrayInputStream(xml.getBytes("UTF-8"))));
-
-                allowing(rootOverlay).addToNonPersistentCache(with(any(String.class)), with(any(Class.class)), with(any(Object.class)));
 
                 allowing(versionRef).getProperty(ApplicationClientDDParserVersion.VERSION);
                 will(returnValue(maxVersion));
             }
         });
 
+        ApplicationClientEntryAdapter adapter = new ApplicationClientEntryAdapter();
         adapter.setVersion(versionRef);
 
+        Exception boundException;
+
         try {
-            return adapter.adapt(root, rootOverlay, artifactEntry, entry);
-        } catch (UnableToAdaptException e) {
+            ApplicationClient appClient = adapter.adapt(root, rootOverlay, artifactEntry, entry);
+            if ( (expectedMessages != null) && (expectedMessages.length != 0) ) {
+                throw new Exception("Expected exception text [ " + Arrays.toString(expectedMessages) + " ]");
+            }
+            return appClient;
+
+        } catch ( UnableToAdaptException e ) {
             Throwable cause = e.getCause();
-            throw cause instanceof Exception ? (Exception) cause : e;
+            if ( cause instanceof Exception ) {
+                boundException = (Exception) cause;
+            } else {
+                boundException = e;
+            }
         }
+
+        if ( (expectedMessages != null) && (expectedMessages.length != 0) ) {
+            String message = boundException.getMessage();
+            if ( message != null ) {
+                for ( String expected : expectedMessages ) {
+                    if ( message.contains(expected) ) {
+                        return null;
+                    }
+                }
+            }
+        }
+        throw boundException;
     }
 
     // 1.2
     // 1.3
+    //
     // 1.4, http://java.sun.com/xml/ns/j2ee
     // 5,   http://java.sun.com/xml/ns/javaee
     // 6,   http://java.sun.com/xml/ns/javaee
     // 7,   http://xmlns.jcp.org/xml/ns/javaee
     // 8,   http://xmlns.jcp.org/xml/ns/javaee
-
-    protected static String appClient12() {
+    //
+    // 9,   https://jakarta.ee/xml/ns/jakartaee    
+    
+    protected static String appClientHead12() {
         return "<!DOCTYPE application-client PUBLIC" +
                " \"-//Sun Microsystems, Inc.//DTD J2EE Application Client 1.2//EN\"" + 
                " \"http://java.sun.com/j2ee/dtds/application_client_1_2.dtd\">" +
                "<application-client>";
     }
 
-    protected static String appClient13() {
+    protected static String appClientHead13() {
         return "<!DOCTYPE application-client PUBLIC" +
                 " \"-//Sun Microsystems, Inc.//DTD J2EE Application Client 1.3//EN\"" + 
                 " \"http://java.sun.com/j2ee/dtds/application_client_1_3.dtd\">" +
                 "<application-client>";
     }
 
-    protected static String appClient14() {
+    protected static String appClientHead14() {
         return "<application-client" +
                " xmlns=\"http://java.sun.com/xml/ns/j2ee\"" +
                " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
@@ -104,7 +131,7 @@ public class AppClientTestBase extends DDTestBase {
                ">";
     }
 
-    protected static String appClient50() {
+    protected static String appClientHead50() {
         return "<application-client" +
                 " xmlns=\"http://java.sun.com/xml/ns/javaee\"" +
                 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
@@ -115,7 +142,7 @@ public class AppClientTestBase extends DDTestBase {
                 ">";
     }
 
-    protected static String appClient60() {
+    protected static String appClientHead60() {
         return "<application-client" +
                 " xmlns=\"http://java.sun.com/xml/ns/javaee\"" +
                 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
@@ -126,7 +153,7 @@ public class AppClientTestBase extends DDTestBase {
                 ">";
     }
 
-    protected static String appClient70() {
+    protected static String appClientHead70() {
         return "<application-client" +
                 " xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"" +
                 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
@@ -137,7 +164,7 @@ public class AppClientTestBase extends DDTestBase {
                 ">";
     }    
 
-    protected static String appClient80() {
+    protected static String appClientHead80() {
         return "<application-client" +
                 " xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"" +
                 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
@@ -148,7 +175,7 @@ public class AppClientTestBase extends DDTestBase {
                 ">";
     }
 
-    protected static String appClient90() {
+    protected static String appClientHead90() {
         return "<application-client" +
                 " xmlns=\"https://jakarta.ee/xml/ns/jakartaee\"" +
                 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
@@ -161,5 +188,30 @@ public class AppClientTestBase extends DDTestBase {
 
     protected static String appClientTail() {
         return "</application-client>";
-   }
+    }
+    
+    protected static String appClientXML(int version, String enclosed) {
+        String head;
+        if ( version == ApplicationClient.VERSION_1_2 ) {
+            head = appClientHead12();
+        } else if ( version == ApplicationClient.VERSION_1_3) {
+            head = appClientHead13();
+        } else if ( version == ApplicationClient.VERSION_1_4 ) {
+            head = appClientHead14();
+        } else if ( version == ApplicationClient.VERSION_5) {
+            head = appClientHead50();
+        } else if ( version == ApplicationClient.VERSION_6 ) {
+            head = appClientHead60();            
+        } else if ( version == ApplicationClient.VERSION_7 ) {
+            head = appClientHead70();            
+        } else if ( version == ApplicationClient.VERSION_8 ) {
+            head = appClientHead80();
+        } else if ( version == ApplicationClient.VERSION_9 ) {
+            head = appClientHead90();
+        } else {
+            throw new IllegalArgumentException("Unsupported application client version [ " + version + " ]");
+        }
+
+        return head + enclosed + appClientTail();
+    }
 }

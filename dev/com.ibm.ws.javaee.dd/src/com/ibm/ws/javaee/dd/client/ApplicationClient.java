@@ -86,6 +86,15 @@ public interface ApplicationClient extends ModuleDeploymentDescriptor, Deploymen
      */
     int VERSION_9 = 90;
 
+    public int[] VERSIONS = {
+            // DTD versions
+            VERSION_1_2, VERSION_1_3,
+            // javax schema versions
+            VERSION_1_4, VERSION_5, VERSION_6, VERSION_7, VERSION_8,
+            // jakarta schema versions
+            VERSION_9,
+    };
+
     /**
      * @return the version
      *         <ul>
