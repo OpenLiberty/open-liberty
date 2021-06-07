@@ -769,7 +769,9 @@ public class CxfPasswordDigestTests extends CommonTests {
 
     }
 
-    @Override
+    //6/2021 The @Override caused " error: method does not override or implement a method from a supertype"
+    //Commented out for now
+    //@Override
     //2/2021 Orig:
     //public void genericTest(String thisMethod, String useThisUrl, String securePort, String id, String theWsdl, String verifyMsg, String failMsg) throws Exception {
     //    genericTest(thisMethod, useThisUrl, securePort, id, theWsdl, null, verifyMsg, failMsg);

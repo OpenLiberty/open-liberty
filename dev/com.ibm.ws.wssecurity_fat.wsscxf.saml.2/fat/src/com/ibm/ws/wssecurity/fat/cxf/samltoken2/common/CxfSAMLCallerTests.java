@@ -126,7 +126,8 @@ public class CxfSAMLCallerTests extends SAMLCommonTest {
         
         // Added to fix hostname mismatch to Common Name on the server certificate. This change ignore this check  
         // If set to true, the client will accept connections to any host, regardless of whether they have valid certificates or not.
-        webClient.getOptions().setUseInsecureSSL(true); 
+        //6/2021 not needed now; the above SAMLCommonTestHelpers contains the same setting:
+        //webClient.getOptions().setUseInsecureSSL(true); 
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
@@ -142,7 +143,9 @@ public class CxfSAMLCallerTests extends SAMLCommonTest {
     //3/2021 to run with EE8
     //scenario 2
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.lang.ClassNotFoundException", "java.net.MalformedURLException" }) //@AV999
+    //@AllowedFFDC(value = { "java.util.MissingResourceException", "java.lang.ClassNotFoundException", "java.net.MalformedURLException" }) //@AV999
+    //6/2021
+    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.lang.ClassNotFoundException", "java.net.MalformedURLException", "java.security.PrivilegedActionException", "java.lang.NoSuchMethodException" })
     @Test
     public void testCxfCallerHttpsPolicyEE8Only() throws Exception {
         if (testSAMLServer2 == null) {
@@ -165,7 +168,8 @@ public class CxfSAMLCallerTests extends SAMLCommonTest {
         
         // Added to fix hostname mismatch to Common Name on the server certificate. This change ignore this check  
         // If set to true, the client will accept connections to any host, regardless of whether they have valid certificates or not.
-        webClient.getOptions().setUseInsecureSSL(true); 
+        //6/2021 not needed now; the above SAMLCommonTestHelpers contains the same setting:
+        //webClient.getOptions().setUseInsecureSSL(true); 
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
@@ -208,7 +212,8 @@ public class CxfSAMLCallerTests extends SAMLCommonTest {
 
         // Added to fix hostname mismatch to Common Name on the server certificate. This change ignore this check
         // If set to true, the client will accept connections to any host, regardless of whether they have valid certificates or not.
-        webClient.getOptions().setUseInsecureSSL(true); 
+        //6/2021 not needed now; the above SAMLCommonTestHelpers contains the same setting:
+        //webClient.getOptions().setUseInsecureSSL(true); 
      
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);

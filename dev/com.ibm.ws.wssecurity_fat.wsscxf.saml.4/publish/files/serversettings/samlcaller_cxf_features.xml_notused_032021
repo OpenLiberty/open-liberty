@@ -1,0 +1,19 @@
+<server>
+
+	<featureManager>
+		<feature>ssl-1.0</feature>
+		<feature>jdbc-4.0</feature>
+		<feature>jsp-2.2</feature>
+		<feature>jndi-1.0</feature>
+		<feature>jaxws-2.2</feature>
+		<feature>appSecurity-2.0</feature>
+		<!-- 1/26/2021 -->
+		<!-- <feature>servlet-3.0</feature>-->
+		<feature>servlet-3.1</feature>
+		<feature>wsSecuritySaml-1.1</feature>
+		<feature>samlWeb-2.0</feature>
+		<feature>usr:wsseccbh-1.0</feature>
+		<feature>securitylibertyinternals-1.0</feature>
+	</featureManager>
+
+</server>

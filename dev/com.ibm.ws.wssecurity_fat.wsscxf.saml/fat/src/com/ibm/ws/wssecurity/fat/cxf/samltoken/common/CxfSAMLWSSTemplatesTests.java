@@ -74,7 +74,10 @@ public class CxfSAMLWSSTemplatesTests extends SAMLCommonTest {
     
     //3/2021 to run with EE8
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    @AllowedFFDC(value = { "java.lang.Exception", "java.util.MissingResourceException", "java.lang.ClassNotFoundException", "java.net.MalformedURLException" }) //@AV999
+    //@AllowedFFDC(value = { "java.lang.Exception", "java.util.MissingResourceException", "java.lang.ClassNotFoundException", "java.net.MalformedURLException" }) //@AV999
+    //6/2021
+    @AllowedFFDC(value = { "java.lang.Exception", "java.util.MissingResourceException", "java.lang.ClassNotFoundException", "java.net.MalformedURLException", "java.security.PrivilegedActionException", "java.lang.NoSuchMethodException"
+ })
     @Test
     public void CxfSAMLWSSTemplatesTests_Saml20TokenOverSSLEE8Only() throws Exception {
 
@@ -264,7 +267,8 @@ public class CxfSAMLWSSTemplatesTests extends SAMLCommonTest {
     //server_2_in_1_AsymSignEnc_wss4j.xml, server_2_wsstemplate_AsymSignEnc_wss4j.xml, server_1_AsymSignEnc_wss4j.xml can be used
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
     @AllowedFFDC(value = { "java.lang.Exception", "java.net.MalformedURLException" })
-    @Test
+    //6/2021 comment out the test temporarily; see https://github.com/OpenLiberty/open-liberty/issues/17588
+    //@Test 
     public void CxfSAMLWSSTemplatesTests_AsymmetricX509MutualAuthenticationWithSaml_omitInitiatorTokenEE8Only() throws Exception {
 
         if (testSAMLServer2 == null) {
@@ -343,7 +347,8 @@ public class CxfSAMLWSSTemplatesTests extends SAMLCommonTest {
     //3/2021 to run with EE8, then server_2_in_1_AsymSignEnc_wss4j.xml, server_2_wsstemplate_AsymSignEnc_wss4j.xml, server_1_AsymSignEnc_wss4j.xml can be used
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
     @AllowedFFDC(value = { "java.lang.Exception", "java.net.MalformedURLException" })
-    @Test
+    //6/2021 comment out the test temporarily; see https://github.com/OpenLiberty/open-liberty/issues/17588
+    //@Test
     public void CxfSAMLWSSTemplatesTests_AsymmetricX509MutualAuthenticationWithSaml_omitRecipientTokenEE8Only() throws Exception {
 
         if (testSAMLServer2 == null) {
@@ -458,7 +463,8 @@ public class CxfSAMLWSSTemplatesTests extends SAMLCommonTest {
     //3/2021 to run with EE8
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
     @AllowedFFDC(value = { "java.lang.Exception", "java.net.MalformedURLException" }) //@AV999
-    @Test
+    //6/2021 comment out the test temporarily; see https://github.com/OpenLiberty/open-liberty/issues/17588
+    //@Test
     public void CxfSAMLWSSTemplatesTests_X509SymmetricForMessageAndSamlForClient_omitProtectionPolicyEE8Only() throws Exception {
 
     	//3/2021

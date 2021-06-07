@@ -25,7 +25,7 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLMessageConstants;
-import com.ibm.ws.wssecurity.fat.cxf.samltoken.common.CxfSAMLBasicTests;
+//orig: import com.ibm.ws.wssecurity.fat.cxf.samltoken1.common.CxfSAMLBasicTests;
 import com.ibm.ws.wssecurity.fat.cxf.samltoken.common.CxfSAMLWSSTemplatesTests;
 
 import componenttest.custom.junit.runner.FATRunner;
@@ -55,7 +55,11 @@ import componenttest.topology.utils.HttpUtils;
 @RunWith(FATRunner.class)
 public class CxfSAMLWSSTemplates1ServerTests extends CxfSAMLWSSTemplatesTests {
 
-    private static final Class<?> thisClass = CxfSAMLBasicTests.class;
+    //orig: 
+	//private static final Class<?> thisClass = CxfSAMLBasicTests.class;
+    //6/2021
+	private static final Class<?> thisClass = CxfSAMLWSSTemplates1ServerTests.class;
+	
     //	protected static String audienceRestrictError = "put real message here" ;
     //	protected static String clockSkewError = "put real message here" ;
     //	protected static String wantAssertionsSignedError = "put real message here" ;
