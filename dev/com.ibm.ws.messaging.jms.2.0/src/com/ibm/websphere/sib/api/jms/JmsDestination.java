@@ -65,6 +65,7 @@ public interface JmsDestination extends Destination, Serializable, Referenceable
    * @see javax.jms.MessageProducer
    */
   public void setDeliveryMode(String deliveryMode) throws JMSException;
+  public void setDeliveryModeDefault(String deliveryMode) throws JMSException;
 
   /**
    * Get the deliveryMode.<p>
@@ -72,6 +73,7 @@ public interface JmsDestination extends Destination, Serializable, Referenceable
    * @return a String representing the deliveryMode.
    */
   public String getDeliveryMode();
+  public String getDeliveryModeDefault();
 
   /**
    * Set the timeToLive (in milliseconds) to be used for all messages sent
@@ -94,6 +96,7 @@ public interface JmsDestination extends Destination, Serializable, Referenceable
    * @throws JMSException if the value provided is not valid.
    */
   public void setTimeToLive(Long timeToLive) throws JMSException;
+  public void setTimeToLiveDefault(Long timeToLive) throws JMSException;
 
   /**
    * Get the timeToLive that will be used for all messages sent using
@@ -103,6 +106,7 @@ public interface JmsDestination extends Destination, Serializable, Referenceable
    * @return Long The timeToLive for message sent using this destination.
    */
   public Long getTimeToLive();
+  public Long getTimeToLiveDefault();
 
   /**
    * Set the priority to be used for all messages sent using this Destination.<p>
@@ -120,6 +124,7 @@ public interface JmsDestination extends Destination, Serializable, Referenceable
    * @throws JMSException If the value provided is not valid.
    */
   public void setPriority(Integer priority) throws JMSException;
+  public void setPriorityDefault(Integer priority) throws JMSException;
 
   /**
    * Get the priority.
@@ -127,6 +132,7 @@ public interface JmsDestination extends Destination, Serializable, Referenceable
    * @see JmsDestination#setPriority
    */
   public Integer getPriority();
+  public Integer getPriorityDefault();
 
   /**
    * Set the required value for ReadAhead on all consumers created using
