@@ -30,7 +30,6 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.jpa.fvt.relationships.manyXone.tests.web.TestManyXOneBidirectionalServlet;
 import com.ibm.ws.jpa.fvt.relationships.manyXone.tests.web.TestManyXOneCompoundPKServlet;
 import com.ibm.ws.jpa.fvt.relationships.manyXone.tests.web.TestManyXOneUnidirectionalServlet;
-import com.ibm.ws.jpa.tests.spec10.relationships.manyXone.FATSuite;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -70,11 +69,11 @@ public class Relationships_ManyXOne_Web extends JPAFATServletClient {
     })
     public static LibertyServer server;
 
-    public static final JdbcDatabaseContainer<?> testContainer = FATSuite.testContainer;
+    public static final JdbcDatabaseContainer<?> testContainer = AbstractFATSuite.testContainer;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        PrivHelper.generateCustomPolicy(server, FATSuite.JAXB_PERMS);
+        PrivHelper.generateCustomPolicy(server, AbstractFATSuite.JAXB_PERMS);
         bannerStart(Relationships_ManyXOne_Web.class);
         timestart = System.currentTimeMillis();
 
