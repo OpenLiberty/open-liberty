@@ -27,7 +27,6 @@ import com.ibm.ws.javaee.dd.common.wsclient.ServiceRef;
 import com.ibm.ws.javaee.dd.ejb.EJBJar;
 import com.ibm.ws.javaee.dd.ejb.Interceptor;
 import com.ibm.ws.javaee.dd.ejb.Interceptors;
-import com.ibm.ws.javaee.ddmodel.DDParser;
 
 public class InterceptorTest extends EJBJarTestBase {
 
@@ -332,8 +331,10 @@ public class InterceptorTest extends EJBJarTestBase {
         Assert.assertEquals("aroundConstructMethod21", callback21.getMethodName());
     }
 
-    @Test(expected = DDParser.ParseException.class)
+    @Test
     public void testAroundConstructEJB31() throws Exception {
-        parse( ejbJar31( "", interceptorsAroundConstruct31XML), EJBJar.VERSION_4_0);
+        parse( ejbJar31("", interceptorsAroundConstruct31XML),
+               EJBJar.VERSION_4_0,
+               "CWWKC2259E", "unexpected.child.element" );
     }
 }

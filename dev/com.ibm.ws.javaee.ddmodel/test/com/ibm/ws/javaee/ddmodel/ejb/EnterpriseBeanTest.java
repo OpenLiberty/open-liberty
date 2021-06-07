@@ -23,39 +23,42 @@ import com.ibm.ws.javaee.dd.ejb.SecurityIdentity;
 
 public class EnterpriseBeanTest extends EJBJarTestBase {
 
+    protected static final String ejb0XML =
+            "<enterprise-beans>" +
+                "<session>" +
+                    "<ejb-name>TestSession</ejb-name>" +
+                    "<security-identity>" +
+                        "<use-caller-identity></use-caller-identity>" +
+                    "</security-identity>" +
+                    "<security-role-ref>" +
+                        "<role-name>roleName0</role-name>" +
+                    "</security-role-ref>" +
+                    "<security-role-ref>" +
+                        "<role-name>roleName1</role-name>" +
+                    "</security-role-ref>" +
+                    "<security-role-ref>" +
+                        "<role-name>roleName2</role-name>" +
+                    "</security-role-ref>" +
+                "</session>" +
+
+                "<entity>" +
+                    "<ejb-name>TestEntity</ejb-name>" +
+                    "<security-identity>" +
+                        "<run-as>" +
+                            "<role-name>runAsRoleName</role-name>" +
+                        "</run-as>" +
+                    "</security-identity>" +
+                    "<security-role-ref>" +
+                        "<role-name>secroleRefRoleName</role-name>" +
+                    "</security-role-ref>" +
+                "</entity>" +
+            "</enterprise-beans>";
+    
     @Test
     public void testEnterpriseBeanSecurity() throws Exception {
-        List<EnterpriseBean> beans = parse(
-            ejbJar20( "<enterprise-beans>" +
-                          "<session>" +
-                              "<ejb-name>TestSession</ejb-name>" +
-                              "<security-identity>" +
-                                  "<use-caller-identity></use-caller-identity>" +
-                              "</security-identity>" +
-                              "<security-role-ref>" +
-                                  "<role-name>roleName0</role-name>" +
-                              "</security-role-ref>" +
-                              "<security-role-ref>" +
-                                  "<role-name>roleName1</role-name>" +
-                              "</security-role-ref>" +
-                              "<security-role-ref>" +
-                                  "<role-name>roleName2</role-name>" +
-                              "</security-role-ref>" +
-                          "</session>" +
-
-                          "<entity>" +
-                              "<ejb-name>TestEntity</ejb-name>" +
-                              "<security-identity>" +
-                                  "<run-as>" +
-                                      "<role-name>runAsRoleName</role-name>" +
-                                  "</run-as>" +
-                              "</security-identity>" +
-                              "<security-role-ref>" +
-                                  "<role-name>secroleRefRoleName</role-name>" +
-                              "</security-role-ref>" +
-                          "</entity>" +
-                      "</enterprise-beans>"),
-            EJBJar.VERSION_4_0).getEnterpriseBeans();
+        List<EnterpriseBean> beans =
+            parse(ejbJar20(ejb0XML), EJBJar.VERSION_4_0)
+                .getEnterpriseBeans();
 
         Assert.assertEquals(2, beans.size());
 
@@ -78,28 +81,30 @@ public class EnterpriseBeanTest extends EJBJarTestBase {
         Assert.assertEquals("runAsRoleName", runAs.getRoleName());
     }
 
+    protected static final String ejb1XML =    
+            "<enterprise-beans>" +
+                "<session>" +
+                    "<ejb-name>TestSession</ejb-name>" +
+                "</session>" +
+
+                "<entity>" +
+                    "<ejb-name>TestEntity</ejb-name>" +
+                    "<ejb-class>TestEntity.ejb.class.name</ejb-class>" +
+                    "<mapped-name>TestEntity.ejb.mapped.name</mapped-name>" +
+                "</entity>" +
+
+                "<message-driven>" +
+                    "<ejb-name>TestMessageDriven</ejb-name>" +
+                    "<ejb-class>TestMessageDriven.ejb.class.name</ejb-class>" +
+                    "<mapped-name>TestMessageDriven.ejb.mapped.name</mapped-name>" +
+                "</message-driven>" +
+            "</enterprise-beans>";
+    
     @Test
     public void testEnterpriseBean() throws Exception {
-        List<EnterpriseBean> beans = parse(
-            ejbJar11( "<enterprise-beans>" +
-                          "<session>" +
-                              "<ejb-name>TestSession</ejb-name>" +
-                          "</session>" +
-
-                          "<entity>" +
-                              "<ejb-name>TestEntity</ejb-name>" +
-                              "<ejb-class>TestEntity.ejb.class.name</ejb-class>" +
-                              "<mapped-name>TestEntity.ejb.mapped.name</mapped-name>" +
-                          "</entity>" +
-
-                          "<message-driven>" +
-                              "<ejb-name>TestMessageDriven</ejb-name>" +
-                              "<ejb-class>TestMessageDriven.ejb.class.name</ejb-class>" +
-                              "<mapped-name>TestMessageDriven.ejb.mapped.name</mapped-name>" +
-                          "</message-driven>" +
-
-                      "</enterprise-beans>"),
-            EJBJar.VERSION_4_0).getEnterpriseBeans();
+        List<EnterpriseBean> beans =
+            parse(ejbJar11(ejb1XML), EJBJar.VERSION_4_0)
+                .getEnterpriseBeans();
 
         Assert.assertEquals(3, beans.size());
 

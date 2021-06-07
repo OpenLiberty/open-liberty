@@ -133,8 +133,7 @@ public class EJBJarTestBase {
         try {
             ejbJar = adapter.adapt(root, rootOverlay, artifactEntry, entry);
             if ( (expectedMessages != null) && (expectedMessages.length != 0) ) {
-                return null;
-                // throw new Exception("Expected exception text [ " + Arrays.toString(expectedMessages) + " ]");
+                throw new Exception("Expected exception text [ " + Arrays.toString(expectedMessages) + " ]");
             }
             return ejbJar;
 

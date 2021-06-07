@@ -37,21 +37,38 @@ import com.ibm.ws.javaee.dd.ejb.TransactionalBean;
 import com.ibm.ws.javaee.ddmodel.DDParser;
 
 public class SessionBeanTest extends EJBJarTestBase {
+    protected static final String sessionBeansXML =
+            "<enterprise-beans>" +
+                "<session>" +
+                    "<ejb-name>TestSession0</ejb-name>" +
+                "</session>" +
+                "<session>" +
+                    "<ejb-name>TestSession1</ejb-name>" +
+                    "<ejb-class>TestSession1.ejb.class.name</ejb-class>" +
+                    "<mapped-name>TestSession1.ejb.mapped.name</mapped-name>" +
+                    "</session>" +
+            "</enterprise-beans>";
 
+    protected static final String descriptionGroupXML =
+            "<enterprise-beans>" +
+                "<session/>" +
+                "<session>" +
+                    "<description>d0</description>" +
+                    "<description xml:lang=\"en\">d1</description>" +
+                    "<display-name>dn0</display-name>" +
+                    "<display-name xml:lang=\"en\">dn1</display-name>" +
+                    "<icon/>" +
+                    "<icon xml:lang=\"en\">" +
+                        "<small-icon>si</small-icon>" +
+                        "<large-icon>li</large-icon>" +
+                    "</icon>" +
+                "</session>" +
+            "</enterprise-beans>";
+    
     @Test
     public void testSession() throws Exception {
-        List<EnterpriseBean> beans = parse(EJBJarTest.ejbJar11Head() +
-                                               "<enterprise-beans>" +
-                                               "<session>" +
-                                               "<ejb-name>TestSession0</ejb-name>" +
-                                               "</session>" +
-                                               "<session>" +
-                                               "<ejb-name>TestSession1</ejb-name>" +
-                                               "<ejb-class>TestSession1.ejb.class.name</ejb-class>" +
-                                               "<mapped-name>TestSession1.ejb.mapped.name</mapped-name>" +
-                                               "</session>" +
-                                               "</enterprise-beans>" +
-                                               "</ejb-jar>", EJBJar.VERSION_4_0).getEnterpriseBeans();
+        List<EnterpriseBean> beans = parse(
+            EJBJarTest.ejbJar11(sessionBeansXML), EJBJar.VERSION_4_0).getEnterpriseBeans();
         Assert.assertEquals(2, beans.size());
         Session session0 = (Session) beans.get(0);
         Assert.assertEquals("TestSession0", session0.getName());
@@ -65,22 +82,7 @@ public class SessionBeanTest extends EJBJarTestBase {
 
     @Test
     public void testDescriptionGroup() throws Exception {
-        EJBJar ejbJar = parse(ejbJar30Head("") +
-                              "<enterprise-beans>" +
-                              "<session/>" +
-                              "<session>" +
-                              "<description>d0</description>" +
-                              "<description xml:lang=\"en\">d1</description>" +
-                              "<display-name>dn0</display-name>" +
-                              "<display-name xml:lang=\"en\">dn1</display-name>" +
-                              "<icon/>" +
-                              "<icon xml:lang=\"en\">" +
-                              "<small-icon>si</small-icon>" +
-                              "<large-icon>li</large-icon>" +
-                              "</icon>" +
-                              "</session>" +
-                              "</enterprise-beans>" +
-                              "</ejb-jar>", EJBJar.VERSION_4_0);
+        EJBJar ejbJar = parse(ejbJar30("", descriptionGroupXML), EJBJar.VERSION_4_0);
         List<EnterpriseBean> ebs = ejbJar.getEnterpriseBeans();
 
         DescriptionGroup dg = ebs.get(0);
@@ -113,16 +115,17 @@ public class SessionBeanTest extends EJBJarTestBase {
         Assert.assertEquals("li", icons.get(1).getLargeIcon());
     }
 
+    protected static final String iconsXML =
+            "<enterprise-beans>" +
+                "<session>" +
+                    "<small-icon>si</small-icon>" +
+                    "<large-icon>li</large-icon>" +
+                "</session>" +
+            "</enterprise-beans>";
+
     @Test
     public void testIconEE13() throws Exception {
-        EJBJar ejbJar = parse(ejbJar20Head() +
-                              "<enterprise-beans>" +
-                              "<session>" +
-                              "<small-icon>si</small-icon>" +
-                              "<large-icon>li</large-icon>" +
-                              "</session>" +
-                              "</enterprise-beans>" +
-                              "</ejb-jar>", EJBJar.VERSION_4_0);
+        EJBJar ejbJar = parse(ejbJar20(iconsXML), EJBJar.VERSION_4_0);
         List<Icon> icons = ejbJar.getEnterpriseBeans().get(0).getIcons();
         Assert.assertEquals(icons.toString(), 1, icons.size());
         Assert.assertNull(icons.get(0).getLang());
@@ -130,21 +133,22 @@ public class SessionBeanTest extends EJBJarTestBase {
         Assert.assertEquals("li", icons.get(0).getLargeIcon());
     }
 
+    protected static final String sessionLocalXML =
+            "<enterprise-beans>" +
+                "<session>" +
+                    "<ejb-name>TestSession0</ejb-name>" +
+                "</session>" +
+                "<session>" +
+                    "<ejb-name>TestSession1</ejb-name>" +
+                    "<business-local>com.ibm.example.Test0</business-local>" +
+                    "<business-local>com.ibm.example.Test1</business-local>" +
+                    "<business-local>com.ibm.example.Test2</business-local>" +
+                "</session>" +
+            "</enterprise-beans>";
+
     @Test
     public void testSessionGetBusinessLocal() throws Exception {
-        List<EnterpriseBean> beans = parse(EJBJarTest.ejbJar11Head() +
-                                               "<enterprise-beans>" +
-                                               "<session>" +
-                                               "<ejb-name>TestSession0</ejb-name>" +
-                                               "</session>" +
-                                               "<session>" +
-                                               "<ejb-name>TestSession1</ejb-name>" +
-                                               "<business-local>com.ibm.example.Test0</business-local>" +
-                                               "<business-local>com.ibm.example.Test1</business-local>" +
-                                               "<business-local>com.ibm.example.Test2</business-local>" +
-                                               "</session>" +
-                                               "</enterprise-beans>" +
-                                               "</ejb-jar>", EJBJar.VERSION_4_0).getEnterpriseBeans();
+        List<EnterpriseBean> beans = parse(EJBJarTest.ejbJar11(sessionLocalXML), EJBJar.VERSION_4_0).getEnterpriseBeans();
         Assert.assertEquals(2, beans.size());
         Session session0 = (Session) beans.get(0);
         Assert.assertEquals(0, session0.getLocalBusinessInterfaceNames().size());
@@ -152,20 +156,21 @@ public class SessionBeanTest extends EJBJarTestBase {
         Assert.assertEquals(Arrays.asList("com.ibm.example.Test0", "com.ibm.example.Test1", "com.ibm.example.Test2"), session1.getLocalBusinessInterfaceNames());
     }
 
+    protected static final String sessionRemoteXML =
+            "<enterprise-beans>" +
+                "<session>" +
+                    "<ejb-name>TestSession0</ejb-name>" +
+                "</session>" +
+                "<session>" +
+                    "<ejb-name>TestSession1</ejb-name>" +
+                    "<business-remote>com.ibm.example.Test1</business-remote>" +
+                    "<business-remote>com.ibm.example.Test2</business-remote>" +
+                "</session>" +
+            "</enterprise-beans>";
+
     @Test
     public void testSessionGetBusinessRemote() throws Exception {
-        List<EnterpriseBean> beans = parse(EJBJarTest.ejbJar11Head() +
-                                               "<enterprise-beans>" +
-                                               "<session>" +
-                                               "<ejb-name>TestSession0</ejb-name>" +
-                                               "</session>" +
-                                               "<session>" +
-                                               "<ejb-name>TestSession1</ejb-name>" +
-                                               "<business-remote>com.ibm.example.Test1</business-remote>" +
-                                               "<business-remote>com.ibm.example.Test2</business-remote>" +
-                                               "</session>" +
-                                               "</enterprise-beans>" +
-                                               "</ejb-jar>", EJBJar.VERSION_4_0).getEnterpriseBeans();
+        List<EnterpriseBean> beans = parse(EJBJarTest.ejbJar11(sessionRemoteXML), EJBJar.VERSION_4_0).getEnterpriseBeans();
         Assert.assertEquals(2, beans.size());
         Session session0 = (Session) beans.get(0);
         Assert.assertEquals(0, session0.getRemoteBusinessInterfaceNames().size());
@@ -173,71 +178,68 @@ public class SessionBeanTest extends EJBJarTestBase {
         Assert.assertEquals(Arrays.asList("com.ibm.example.Test1", "com.ibm.example.Test2"), session1.getRemoteBusinessInterfaceNames());
     }
 
+    protected static final String sessionIsLocalXML =
+            "<enterprise-beans>" +
+                "<session>" +
+                    "<ejb-name>TestSession0</ejb-name>" +
+                    "<local-bean></local-bean>" +
+                "</session>" +
+                "<session>" +
+                    "<ejb-name>TestSession1</ejb-name>" +
+                    // "<local-bean></local-bean>" +
+                "</session>" +
+            "</enterprise-beans>";
+
     @Test
     public void testSessionIsLocalBean() throws Exception {
-        List<EnterpriseBean> beans = parse(EJBJarTest.ejbJar11Head() +
-                                               "<enterprise-beans>" +
-                                               "<session>" +
-                                               "<ejb-name>TestSession0</ejb-name>" +
-                                               "<local-bean></local-bean>" +
-                                               "</session>" +
-                                               "<session>" +
-                                               "<ejb-name>TestSession1</ejb-name>" +
-                                               //"<local-bean></local-bean>" +
-                                               "</session>" +
-                                               "</enterprise-beans>" +
-                                               "</ejb-jar>", EJBJar.VERSION_4_0).getEnterpriseBeans();
+        List<EnterpriseBean> beans = parse(EJBJarTest.ejbJar11(sessionIsLocalXML), EJBJar.VERSION_4_0).getEnterpriseBeans();
         Session session0 = (Session) beans.get(0);
         Assert.assertTrue(session0.isLocalBean());
         Session session1 = (Session) beans.get(1);
         Assert.assertFalse(session1.isLocalBean());
     }
 
+    protected static final String sessionServiceEndpointXML =
+            "<enterprise-beans>" +
+                "<session>" +
+                    "<ejb-name>TestSession0</ejb-name>" +
+                    "<service-endpoint>serviceEndpoint0</service-endpoint>" +
+                "</session>" +
+            "</enterprise-beans>";
+
     @Test
     public void testSessionGetServiceEndpointInterfaceName() throws Exception {
-        List<EnterpriseBean> beans = parse(EJBJarTest.ejbJar11Head() +
-                                               "<enterprise-beans>" +
-                                               "<session>" +
-                                               "<ejb-name>TestSession0</ejb-name>" +
-                                               "<service-endpoint>serviceEndpoint0</service-endpoint>" +
-                                               "</session>" +
-                                               "</enterprise-beans>" +
-                                               "</ejb-jar>", EJBJar.VERSION_4_0).getEnterpriseBeans();
+        List<EnterpriseBean> beans = parse(EJBJarTest.ejbJar11(sessionServiceEndpointXML), EJBJar.VERSION_4_0).getEnterpriseBeans();
         Session session0 = (Session) beans.get(0);
         Assert.assertEquals("serviceEndpoint0", session0.getServiceEndpointInterfaceName());
     }
 
-    /**
-     * @return &lt;session-type>
-     *         <ul>
-     *         <li>{@link #SESSION_TYPE_UNSPECIFIED} if unspecified
-     *         <li>{@link #SESSION_TYPE_SINGLETON} - Singleton
-     *         <li>{@link #SESSION_TYPE_STATEFUL} - Stateful
-     *         <li>{@link #SESSION_TYPE_STATELESS} - Stateless
-     *         </ul>
-     */
+    protected static final String sessionSessionTypeXML =
+            "<enterprise-beans>" +
+            "<session>" +
+            "<ejb-name>TestSession0</ejb-name>" +
+            //"<session-type></session-type>" + //unspecified
+            "</session>" +
+            "<session>" +
+            "<ejb-name>TestSession1</ejb-name>" +
+            "<session-type>Singleton</session-type>" +
+            "</session>" +
+            "<session>" +
+            "<ejb-name>TestSession2</ejb-name>" +
+            "<session-type>Stateful</session-type>" +
+            "</session>" +
+            "<session>" +
+            "<ejb-name>TestSession3</ejb-name>" +
+            "<session-type>Stateless</session-type>" +
+            "</session>" +
+            "</enterprise-beans>";
+
     @Test
     public void testSessionGetSessionTypeValue() throws Exception {
-        List<EnterpriseBean> beans = parse(EJBJarTest.ejbJar11Head() +
-                                               "<enterprise-beans>" +
-                                               "<session>" +
-                                               "<ejb-name>TestSession0</ejb-name>" +
-                                               //"<session-type></session-type>" + //unspecified
-                                               "</session>" +
-                                               "<session>" +
-                                               "<ejb-name>TestSession1</ejb-name>" +
-                                               "<session-type>Singleton</session-type>" +
-                                               "</session>" +
-                                               "<session>" +
-                                               "<ejb-name>TestSession2</ejb-name>" +
-                                               "<session-type>Stateful</session-type>" +
-                                               "</session>" +
-                                               "<session>" +
-                                               "<ejb-name>TestSession3</ejb-name>" +
-                                               "<session-type>Stateless</session-type>" +
-                                               "</session>" +
-                                               "</enterprise-beans>" +
-                                               "</ejb-jar>", EJBJar.VERSION_4_0).getEnterpriseBeans();
+        List<EnterpriseBean> beans =
+            parse(EJBJarTest.ejbJar11(sessionSessionTypeXML), EJBJar.VERSION_4_0)
+                .getEnterpriseBeans();
+
         Session session0 = (Session) beans.get(0);
         Session session1 = (Session) beans.get(1);
         Session session2 = (Session) beans.get(2);
@@ -248,35 +250,38 @@ public class SessionBeanTest extends EJBJarTestBase {
         Assert.assertEquals(Session.SESSION_TYPE_STATELESS, session3.getSessionTypeValue());
     }
 
+    protected static final String sessionStatefulXML =
+            "<enterprise-beans>" +
+                "<session>" +
+                    "<ejb-name>TestSession0</ejb-name>" +
+                "</session>" +
+
+                "<session>" +
+                    "<ejb-name>TestSession1</ejb-name>" +
+                    "<stateful-timeout>" +
+                        "<timeout>" +
+                            Long.MAX_VALUE +
+                        "</timeout>" +
+                    "</stateful-timeout>" +
+                "</session>" +
+
+                "<session>" +
+                    "<ejb-name>TestSession2</ejb-name>" +
+                    "<stateful-timeout>" +
+                        "<timeout>" +
+                            "2147483647" +
+                        "</timeout>" +
+                        "<unit>Days</unit>" +
+                    "</stateful-timeout>" +
+                "</session>" +
+            "</enterprise-beans>";
+
     @Test
     public void testSessionGetStatefulTimeout() throws Exception {
-        List<EnterpriseBean> beans = parse(EJBJarTest.ejbJar11Head() +
-                                               "<enterprise-beans>" +
-                                               "<session>" +
-                                               "<ejb-name>TestSession0</ejb-name>" +
-                                               "</session>" +
+        List<EnterpriseBean> beans = parse(
+            EJBJarTest.ejbJar11(sessionStatefulXML), EJBJar.VERSION_4_0)
+                .getEnterpriseBeans();
 
-                                               "<session>" +
-                                               "<ejb-name>TestSession1</ejb-name>" +
-                                               "<stateful-timeout>" +
-                                               "<timeout>" +
-                                               Long.MAX_VALUE +
-                                               "</timeout>" +
-                                               "</stateful-timeout>" +
-                                               "</session>" +
-
-                                               "<session>" +
-                                               "<ejb-name>TestSession2</ejb-name>" +
-                                               "<stateful-timeout>" +
-                                               "<timeout>" +
-                                               "2147483647" +
-                                               "</timeout>" +
-                                               "<unit>Days</unit>" +
-                                               "</stateful-timeout>" +
-                                               "</session>" +
-
-                                               "</enterprise-beans>" +
-                                               "</ejb-jar>", EJBJar.VERSION_4_0).getEnterpriseBeans();
         Session session0 = (Session) beans.get(0);
         Session session1 = (Session) beans.get(1);
         Session session2 = (Session) beans.get(2);
@@ -286,25 +291,29 @@ public class SessionBeanTest extends EJBJarTestBase {
         Assert.assertEquals(TimeUnit.DAYS, session2.getStatefulTimeout().getUnitValue());
     }
 
+    protected static final String sessionInitOnStartupXML =
+            "<enterprise-beans>" +
+                "<session>" +
+                    "<ejb-name>TestSession0</ejb-name>" +
+                    "<init-on-startup>true</init-on-startup>" +
+                "</session>" +
+
+                "<session>" +
+                    "<ejb-name>TestSession1</ejb-name>" +
+                    "<init-on-startup>false</init-on-startup>" +
+                "</session>" +
+
+                "<session>" +
+                    "<ejb-name>TestSession2</ejb-name>" +
+                "</session>" +
+            "</enterprise-beans>";
+    
     @Test
     public void testSessionInitOnStartup() throws Exception {
-        List<EnterpriseBean> beans = parse(EJBJarTest.ejbJar11Head() +
-                                               "<enterprise-beans>" +
-                                               "<session>" +
-                                               "<ejb-name>TestSession0</ejb-name>" +
-                                               "<init-on-startup>true</init-on-startup>" +
-                                               "</session>" +
+        List<EnterpriseBean> beans = parse(
+            EJBJarTest.ejbJar11(sessionInitOnStartupXML), EJBJar.VERSION_4_0)
+                .getEnterpriseBeans();
 
-                                               "<session>" +
-                                               "<ejb-name>TestSession1</ejb-name>" +
-                                               "<init-on-startup>false</init-on-startup>" +
-                                               "</session>" +
-
-                                               "<session>" +
-                                               "<ejb-name>TestSession2</ejb-name>" +
-                                               "</session>" +
-                                               "</enterprise-beans>" +
-                                               "</ejb-jar>", EJBJar.VERSION_4_0).getEnterpriseBeans();
         Session session0 = (Session) beans.get(0);
         Session session1 = (Session) beans.get(1);
         Session session2 = (Session) beans.get(2);
@@ -317,31 +326,27 @@ public class SessionBeanTest extends EJBJarTestBase {
         Assert.assertEquals(false, session2.isInitOnStartup());
     }
 
-    /**
-     * @return &lt;concurrency-management-type>
-     *         <ul>
-     *         <li>{@link #CONCURRENCY_MANAGEMENT_TYPE_UNSPECIFIED} if unspecified
-     *         <li>{@link #CONCURRENCY_MANAGEMENT_TYPE_BEAN} - Bean
-     *         <li>{@link #CONCURRENCY_MANAGEMENT_TYPE_CONTAINER} - Container
-     *         </ul>
-     */
+    protected static final String sessionConcurrencyManagementXML =
+        "<enterprise-beans>" +
+            "<session>" +
+                "<ejb-name>TestSession0</ejb-name>" +
+            "</session>" +
+            "<session>" +
+                "<ejb-name>TestSession1</ejb-name>" +
+                "<concurrency-management-type>Bean</concurrency-management-type>" +
+            "</session>" +
+            "<session>" +
+                "<ejb-name>TestSession2</ejb-name>" +
+                "<concurrency-management-type>Container</concurrency-management-type>" +
+            "</session>" +
+        "</enterprise-beans>";
+
     @Test
     public void testSessionConcurrencyManagement() throws Exception {
-        List<EnterpriseBean> beans = parse(EJBJarTest.ejbJar11Head() +
-                                               "<enterprise-beans>" +
-                                               "<session>" +
-                                               "<ejb-name>TestSession0</ejb-name>" +
-                                               "</session>" +
-                                               "<session>" +
-                                               "<ejb-name>TestSession1</ejb-name>" +
-                                               "<concurrency-management-type>Bean</concurrency-management-type>" +
-                                               "</session>" +
-                                               "<session>" +
-                                               "<ejb-name>TestSession2</ejb-name>" +
-                                               "<concurrency-management-type>Container</concurrency-management-type>" +
-                                               "</session>" +
-                                               "</enterprise-beans>" +
-                                               "</ejb-jar>", EJBJar.VERSION_4_0).getEnterpriseBeans();
+        List<EnterpriseBean> beans = parse(
+            EJBJarTest.ejbJar11(sessionConcurrencyManagementXML), EJBJar.VERSION_4_0)
+                .getEnterpriseBeans();
+
         Session session0 = (Session) beans.get(0);
         Session session1 = (Session) beans.get(1);
         Session session2 = (Session) beans.get(2);
@@ -350,62 +355,56 @@ public class SessionBeanTest extends EJBJarTestBase {
         Assert.assertEquals(Session.CONCURRENCY_MANAGEMENT_TYPE_CONTAINER, session2.getConcurrencyManagementTypeValue());
     }
 
-    /**
-     * @return &lt;concurrency-management-type>
-     *         <ul>
-     *         <li>{@link #CONCURRENCY_MANAGEMENT_TYPE_UNSPECIFIED} if unspecified
-     *         <li>{@link #CONCURRENCY_MANAGEMENT_TYPE_BEAN} - Bean
-     *         <li>{@link #CONCURRENCY_MANAGEMENT_TYPE_CONTAINER} - Container
-     *         </ul>
-     */
+    protected static final String sessionConcurrentMethodsXML =
+            "<enterprise-beans>" +
+                "<session>" +
+                    "<ejb-name>TestSession0</ejb-name>" +
+                    "<concurrent-method>" +
+                        "<method>" +
+                            "<method-name>methodName0</method-name>" +
+                        "</method>" +
+                        "<access-timeout>" +
+                            "<timeout>42</timeout>" +
+                            "<unit>Seconds</unit>" +
+                        "</access-timeout>" +
+                    "</concurrent-method>" +
 
+                    "<concurrent-method>" +
+                        "<method>" +
+                            "<method-name>methodName1</method-name>" +
+                            "<method-params>" +
+                                "<method-param>meth0param0</method-param>" +
+                                "<method-param>meth0param1</method-param>" +
+                                "<method-param>meth0param2</method-param>" +
+                            "</method-params>" +
+                        "</method>" +
+                        "<lock>Read</lock>" +
+                    "</concurrent-method>" +
+
+                    "<concurrent-method>" +
+                        "<method>" +
+                            "<method-name>methodName2</method-name>" +
+                            "<method-params>" +
+                            "</method-params>" +
+                        "</method>" +
+                        "<lock>Write</lock>" +
+                    "</concurrent-method>" +
+
+                    "<concurrent-method>" +
+                        "<method>" +
+                            "<method-name>methodName3</method-name>" +
+                        "</method>" +
+                        // "<lock></lock>" +
+                    "</concurrent-method>" +
+                "</session>" +
+            "</enterprise-beans>";            
+            
     @Test
     public void testSessionGetConcurrentMethods() throws Exception {
-        List<EnterpriseBean> beans = parse(EJBJarTest.ejbJar11Head() +
-                                               "<enterprise-beans>" +
-                                               "<session>" +
-                                               "<ejb-name>TestSession0</ejb-name>" +
-                                               "<concurrent-method>" +
-                                               "<method>" +
-                                               "<method-name>methodName0</method-name>" +
-                                               "</method>" +
-                                               "<access-timeout>" +
-                                               "<timeout>42</timeout>" +
-                                               "<unit>Seconds</unit>" +
-                                               "</access-timeout>" +
-                                               "</concurrent-method>" +
+        List<EnterpriseBean> beans = parse(
+            EJBJarTest.ejbJar11(sessionConcurrentMethodsXML), EJBJar.VERSION_4_0)
+                .getEnterpriseBeans();
 
-                                               "<concurrent-method>" +
-                                               "<method>" +
-                                               "<method-name>methodName1</method-name>" +
-                                               "<method-params>" +
-                                               "<method-param>meth0param0</method-param>" +
-                                               "<method-param>meth0param1</method-param>" +
-                                               "<method-param>meth0param2</method-param>" +
-                                               "</method-params>" +
-                                               "</method>" +
-                                               "<lock>Read</lock>" +
-                                               "</concurrent-method>" +
-
-                                               "<concurrent-method>" +
-                                               "<method>" +
-                                               "<method-name>methodName2</method-name>" +
-                                               "<method-params>" +
-                                               "</method-params>" +
-                                               "</method>" +
-                                               "<lock>Write</lock>" +
-                                               "</concurrent-method>" +
-
-                                               "<concurrent-method>" +
-                                               "<method>" +
-                                               "<method-name>methodName3</method-name>" +
-                                               "</method>" +
-                                               //"<lock></lock>" +
-                                               "</concurrent-method>" +
-
-                                               "</session>" +
-                                               "</enterprise-beans>" +
-                                               "</ejb-jar>", EJBJar.VERSION_4_0).getEnterpriseBeans();
         Session session0 = (Session) beans.get(0);
         ConcurrentMethod concurMeth0 = session0.getConcurrentMethods().get(0);
         ConcurrentMethod concurMeth1 = session0.getConcurrentMethods().get(1);
@@ -429,30 +428,34 @@ public class SessionBeanTest extends EJBJarTestBase {
         Assert.assertEquals(ConcurrentMethod.LOCK_TYPE_UNSPECIFIED, concurMeth3.getLockTypeValue());
     }
 
+    protected static final String sessionDependsOnXML =
+            "<enterprise-beans>" +
+                "<session>" +
+                    "<ejb-name>ejbName0</ejb-name>" +
+                "</session>" +
+
+                "<session>" +
+                    "<ejb-name>ejbName1</ejb-name>" +
+                    "<depends-on>" +
+                    "</depends-on>" +
+                "</session>" +
+
+                "<session>" +
+                    "<ejb-name>ejbName2</ejb-name>" +
+                    "<depends-on>" +
+                        "<ejb-name>ejbName0</ejb-name>" +
+                        "<ejb-name>ejbName1</ejb-name>" +
+                        "<ejb-name>ejbName2</ejb-name>" +
+                    "</depends-on>" +
+                "</session>" +
+            "</enterprise-beans>";
+
     @Test
     public void testSessionDependsOn() throws Exception {
-        List<EnterpriseBean> beans = parse(EJBJarTest.ejbJar11Head() +
-                                               "<enterprise-beans>" +
-                                               "<session>" +
-                                               "<ejb-name>ejbName0</ejb-name>" +
-                                               "</session>" +
+        List<EnterpriseBean> beans = parse(
+            EJBJarTest.ejbJar11(sessionDependsOnXML), EJBJar.VERSION_4_0)
+                .getEnterpriseBeans();
 
-                                               "<session>" +
-                                               "<ejb-name>ejbName1</ejb-name>" +
-                                               "<depends-on>" +
-                                               "</depends-on>" +
-                                               "</session>" +
-
-                                               "<session>" +
-                                               "<ejb-name>ejbName2</ejb-name>" +
-                                               "<depends-on>" +
-                                               "<ejb-name>ejbName0</ejb-name>" +
-                                               "<ejb-name>ejbName1</ejb-name>" +
-                                               "<ejb-name>ejbName2</ejb-name>" +
-                                               "</depends-on>" +
-                                               "</session>" +
-                                               "</enterprise-beans>" +
-                                               "</ejb-jar>", EJBJar.VERSION_4_0).getEnterpriseBeans();
         Session session0 = (Session) beans.get(0);
         Session session1 = (Session) beans.get(1);
         Session session2 = (Session) beans.get(2);
@@ -461,27 +464,31 @@ public class SessionBeanTest extends EJBJarTestBase {
         Assert.assertEquals(Arrays.asList("ejbName0", "ejbName1", "ejbName2"), session2.getDependsOn().getEjbName());
     }
 
+    protected static final String sessionInitMethodXML =
+            "<enterprise-beans>" +
+                "<session>" +
+                    "<ejb-name>ejbName0</ejb-name>" +
+                "</session>" +
+
+                "<session>" +
+                    "<ejb-name>ejbName1</ejb-name>" +
+                    "<init-method>" +
+                        "<create-method>" +
+                            "<method-name>createMethod0</method-name>" +
+                        "</create-method>" +
+                        "<bean-method>" +
+                            "<method-name>beanMethod0</method-name>" +
+                        "</bean-method>" +
+                    "</init-method>" +
+                "</session>" +
+            "</enterprise-beans>";
+
     @Test
     public void testSessionInitMethod() throws Exception {
-        List<EnterpriseBean> beans = parse(EJBJarTest.ejbJar11Head() +
-                                               "<enterprise-beans>" +
-                                               "<session>" +
-                                               "<ejb-name>ejbName0</ejb-name>" +
-                                               "</session>" +
+        List<EnterpriseBean> beans = parse(
+            EJBJarTest.ejbJar11(sessionInitMethodXML), EJBJar.VERSION_4_0)
+                .getEnterpriseBeans();
 
-                                               "<session>" +
-                                               "<ejb-name>ejbName1</ejb-name>" +
-                                               "<init-method>" +
-                                               "<create-method>" +
-                                               "<method-name>createMethod0</method-name>" +
-                                               "</create-method>" +
-                                               "<bean-method>" +
-                                               "<method-name>beanMethod0</method-name>" +
-                                               "</bean-method>" +
-                                               "</init-method>" +
-                                               "</session>" +
-                                               "</enterprise-beans>" +
-                                               "</ejb-jar>", EJBJar.VERSION_4_0).getEnterpriseBeans();
         Session session0 = (Session) beans.get(0);
         Session session1 = (Session) beans.get(1);
         Assert.assertEquals(true, session0.getInitMethod().isEmpty());
@@ -491,43 +498,46 @@ public class SessionBeanTest extends EJBJarTestBase {
         Assert.assertEquals("beanMethod0", initMeth0.getBeanMethod().getMethodName());
     }
 
+    protected static final String sessionRemoveMethodXML =
+            "<enterprise-beans>" +
+                "<session>" +
+                    "<ejb-name>ejbName0</ejb-name>" +
+                "</session>" +
+
+                "<session>" +
+                    "<ejb-name>ejbName1</ejb-name>" +
+                    "<remove-method>" +
+                        "<bean-method>" +
+                            "<method-name>beanMethod0</method-name>" +
+                        "</bean-method>" +
+                        "<retain-if-exception>true</retain-if-exception>" +
+                    "</remove-method>" +
+
+                    "<remove-method>" +
+                        "<bean-method>" +
+                            "<method-name>beanMethod1</method-name>" +
+                            "<method-params/>" +
+                        "</bean-method>" +
+                        "<retain-if-exception>false</retain-if-exception>" +
+                    "</remove-method>" +
+
+                    "<remove-method>" +
+                        "<bean-method>" +
+                            "<method-name>beanMethod2</method-name>" +
+                            "<method-params>" +
+                                "<method-param>int</method-param>" +
+                            "</method-params>" +
+                        "</bean-method>" +
+                    "</remove-method>" +
+                "</session>" +
+            "</enterprise-beans>";
+
     @Test
     public void testSessionRemoveMethod() throws Exception {
-        List<EnterpriseBean> beans = parse(EJBJarTest.ejbJar11Head() +
-                                               "<enterprise-beans>" +
-                                               "<session>" +
-                                               "<ejb-name>ejbName0</ejb-name>" +
-                                               "</session>" +
+        List<EnterpriseBean> beans = parse(
+            EJBJarTest.ejbJar11(sessionRemoveMethodXML), EJBJar.VERSION_4_0)
+                .getEnterpriseBeans();
 
-                                               "<session>" +
-                                               "<ejb-name>ejbName1</ejb-name>" +
-                                               "<remove-method>" +
-                                               "<bean-method>" +
-                                               "<method-name>beanMethod0</method-name>" +
-                                               "</bean-method>" +
-                                               "<retain-if-exception>true</retain-if-exception>" +
-                                               "</remove-method>" +
-
-                                               "<remove-method>" +
-                                               "<bean-method>" +
-                                               "<method-name>beanMethod1</method-name>" +
-                                               "<method-params/>" +
-                                               "</bean-method>" +
-                                               "<retain-if-exception>false</retain-if-exception>" +
-                                               "</remove-method>" +
-
-                                               "<remove-method>" +
-                                               "<bean-method>" +
-                                               "<method-name>beanMethod2</method-name>" +
-                                               "<method-params>" +
-                                               "<method-param>int</method-param>" +
-                                               "</method-params>" +
-                                               "</bean-method>" +
-                                               "</remove-method>" +
-
-                                               "</session>" +
-                                               "</enterprise-beans>" +
-                                               "</ejb-jar>", EJBJar.VERSION_4_0).getEnterpriseBeans();
         Session session0 = (Session) beans.get(0);
         Session session1 = (Session) beans.get(1);
         Assert.assertEquals(true, session0.getRemoveMethod().isEmpty());
@@ -550,27 +560,31 @@ public class SessionBeanTest extends EJBJarTestBase {
         Assert.assertEquals(false, remMeth2.isRetainIfException());
     }
 
+    protected static final String sessionAsynchMethodXML =
+            "<enterprise-beans>" +
+                "<session>" +
+                    "<ejb-name>ejbName0</ejb-name>" +
+                "</session>" +
+
+                "<session>" +
+                    "<ejb-name>ejbName1</ejb-name>" +
+                    "<async-method>" +
+                        "<method-name>asyncMethod0</method-name>" +
+                        "<method-params>" +
+                            "<method-param>meth0param0</method-param>" +
+                            "<method-param>meth0param1</method-param>" +
+                            "<method-param>meth0param2</method-param>" +
+                        "</method-params>" +
+                    "</async-method>" +
+                "</session>" +
+            "</enterprise-beans>";
+            
     @Test
     public void testSessionAsynchMethod() throws Exception {
-        List<EnterpriseBean> beans = parse(EJBJarTest.ejbJar11Head() +
-                                               "<enterprise-beans>" +
-                                               "<session>" +
-                                               "<ejb-name>ejbName0</ejb-name>" +
-                                               "</session>" +
+        List<EnterpriseBean> beans = parse(
+            EJBJarTest.ejbJar11(sessionAsynchMethodXML), EJBJar.VERSION_4_0)
+                .getEnterpriseBeans();
 
-                                               "<session>" +
-                                               "<ejb-name>ejbName1</ejb-name>" +
-                                               "<async-method>" +
-                                               "<method-name>asyncMethod0</method-name>" +
-                                               "<method-params>" +
-                                               "<method-param>meth0param0</method-param>" +
-                                               "<method-param>meth0param1</method-param>" +
-                                               "<method-param>meth0param2</method-param>" +
-                                               "</method-params>" +
-                                               "</async-method>" +
-                                               "</session>" +
-                                               "</enterprise-beans>" +
-                                               "</ejb-jar>", EJBJar.VERSION_4_0).getEnterpriseBeans();
         Session session0 = (Session) beans.get(0);
         Session session1 = (Session) beans.get(1);
         Assert.assertEquals(true, session0.getAsyncMethods().isEmpty());
@@ -580,31 +594,34 @@ public class SessionBeanTest extends EJBJarTestBase {
         Assert.assertEquals(Arrays.asList("meth0param0", "meth0param1", "meth0param2"), asynchMeth0.getMethodParamList());
     }
 
+    protected static final String sessionBeforeAndAfterXML =
+            "<enterprise-beans>" +
+                    "<session>" +
+                        "<ejb-name>ejbName0</ejb-name>" +
+                        "<after-begin-method>" +
+                            "<method-name>afterBegin0</method-name>" +
+                        "</after-begin-method>" +
+
+                        "<before-completion-method>" +
+                            "<method-name>beforeCompletion0</method-name>" +
+                        "</before-completion-method>" +
+
+                        "<after-completion-method>" +
+                            "<method-name>afterCompletion0</method-name>" +
+                        "</after-completion-method>" +
+                    "</session>" +
+
+                    "<session>" +
+                        "<ejb-name>ejbName1</ejb-name>" +
+                    "</session>" +
+            "</enterprise-beans>";
+            
     @Test
     public void testSessionBeforeAndAfter() throws Exception {
-        List<EnterpriseBean> beans = parse(EJBJarTest.ejbJar11Head() +
-                                               "<enterprise-beans>" +
-                                               "<session>" +
-                                               "<ejb-name>ejbName0</ejb-name>" +
-                                               "<after-begin-method>" +
-                                               "<method-name>afterBegin0</method-name>" +
-                                               "</after-begin-method>" +
+        List<EnterpriseBean> beans = parse(
+            EJBJarTest.ejbJar11(sessionBeforeAndAfterXML), EJBJar.VERSION_4_0)
+                .getEnterpriseBeans();
 
-                                               "<before-completion-method>" +
-                                               "<method-name>beforeCompletion0</method-name>" +
-                                               "</before-completion-method>" +
-
-                                               "<after-completion-method>" +
-                                               "<method-name>afterCompletion0</method-name>" +
-                                               "</after-completion-method>" +
-                                               "</session>" +
-
-                                               "<session>" +
-                                               "<ejb-name>ejbName1</ejb-name>" +
-                                               "</session>" +
-
-                                               "</enterprise-beans>" +
-                                               "</ejb-jar>", EJBJar.VERSION_4_0).getEnterpriseBeans();
         Session session0 = (Session) beans.get(0);
         Assert.assertEquals("afterBegin0", session0.getAfterBeginMethod().getMethodName());
         Assert.assertEquals("beforeCompletion0", session0.getBeforeCompletionMethod().getMethodName());
@@ -616,22 +633,27 @@ public class SessionBeanTest extends EJBJarTestBase {
         Assert.assertEquals(null, session1.getAfterCompletionMethod());
     }
 
+    protected static final String sessionComponentViewableXML =
+            "<enterprise-beans>" +
+                "<session>" +
+                    "<ejb-name>ejbName0</ejb-name>" +
+                "</session>" +
+
+                "<session>" +
+                    "<ejb-name>ejbName1</ejb-name>" +
+                    "<home>com.ibm.example.home1</home>" +
+                    "<remote>com.ibm.example.remote1</remote>" +
+                    "<local-home>com.ibm.example.localHome1</local-home>" +
+                    "<local>com.ibm.example.local1</local>" +
+                "</session>" +
+            "</enterprise-beans>";
+            
     @Test
     public void testSessionComponentViewableBean() throws Exception {
-        List<EnterpriseBean> beans = parse(EJBJarTest.ejbJar11Head() +
-                                               "<enterprise-beans>" +
-                                               "<session>" +
-                                               "<ejb-name>ejbName0</ejb-name>" +
-                                               "</session>" +
-                                               "<session>" +
-                                               "<ejb-name>ejbName1</ejb-name>" +
-                                               "<home>com.ibm.example.home1</home>" +
-                                               "<remote>com.ibm.example.remote1</remote>" +
-                                               "<local-home>com.ibm.example.localHome1</local-home>" +
-                                               "<local>com.ibm.example.local1</local>" +
-                                               "</session>" +
-                                               "</enterprise-beans>" +
-                                               "</ejb-jar>", EJBJar.VERSION_4_0).getEnterpriseBeans();
+        List<EnterpriseBean> beans = parse(
+            EJBJarTest.ejbJar11(sessionComponentViewableXML), EJBJar.VERSION_4_0)
+                .getEnterpriseBeans();
+
         Assert.assertEquals(2, beans.size());
         Session session0 = (Session) beans.get(0);
         Session session1 = (Session) beans.get(1);
@@ -647,35 +669,39 @@ public class SessionBeanTest extends EJBJarTestBase {
         Assert.assertEquals("com.ibm.example.local1", session1.getLocalInterfaceName());
     }
 
+    protected static final String sessionTimer0XML =
+            "<enterprise-beans>" +
+                "<session>" +
+                    "<ejb-name>ejbName0</ejb-name>" +
+                "</session>" +
+
+                "<session>" +
+                    "<ejb-name>ejbName1</ejb-name>" +
+                    "<timeout-method>" +
+                        "<method-name>timeoutMethod1</method-name>" +
+                    "</timeout-method>" +
+                    "<timer>" +
+                    "</timer>" +
+                    "<timer>" +
+                        "<schedule>" +
+                            "<second>second0</second>" +
+                            "<minute>minute0</minute>" +
+                            "<hour>hour0</hour>" +
+                            "<day-of-month>dayOfMonth0</day-of-month>" +
+                            "<month>month0</month>" +
+                            "<day-of-week>dayOfWeek0</day-of-week>" +
+                            "<year>year0</year>" +
+                        "</schedule>" +
+                    "</timer>" +
+                "</session>" +
+            "</enterprise-beans>";
+
     @Test
     public void testSessionTimerSchedule() throws Exception {
-        List<EnterpriseBean> beans = parse(EJBJarTest.ejbJar11Head() +
-                                               "<enterprise-beans>" +
-                                               "<session>" +
-                                               "<ejb-name>ejbName0</ejb-name>" +
-                                               "</session>" +
+        List<EnterpriseBean> beans = parse(
+            EJBJarTest.ejbJar11(sessionTimer0XML), EJBJar.VERSION_4_0)
+                .getEnterpriseBeans();
 
-                                               "<session>" +
-                                               "<ejb-name>ejbName1</ejb-name>" +
-                                               "<timeout-method>" +
-                                               "<method-name>timeoutMethod1</method-name>" +
-                                               "</timeout-method>" +
-                                               "<timer>" +
-                                               "</timer>" +
-                                               "<timer>" +
-                                               "<schedule>" +
-                                               "<second>second0</second>" +
-                                               "<minute>minute0</minute>" +
-                                               "<hour>hour0</hour>" +
-                                               "<day-of-month>dayOfMonth0</day-of-month>" +
-                                               "<month>month0</month>" +
-                                               "<day-of-week>dayOfWeek0</day-of-week>" +
-                                               "<year>year0</year>" +
-                                               "</schedule>" +
-                                               "</timer>" +
-                                               "</session>" +
-                                               "</enterprise-beans>" +
-                                               "</ejb-jar>", EJBJar.VERSION_4_0).getEnterpriseBeans();
         Assert.assertEquals(2, beans.size());
         Session session0 = (Session) beans.get(0);
         Session session1 = (Session) beans.get(1);
@@ -702,39 +728,41 @@ public class SessionBeanTest extends EJBJarTestBase {
         Assert.assertEquals("year0", timerSched.getYear());
     }
 
+    protected static final String sessionTimer1XML =
+            "<enterprise-beans>" +
+                "<session>" +
+                    "<ejb-name>ejbName0</ejb-name>" +
+                "</session>" +
+
+                "<session>" +
+                    "<ejb-name>ejbName1</ejb-name>" +
+                    "<timeout-method>" +
+                        "<method-name>timeoutMethod1</method-name>" +
+                    "</timeout-method>" +
+                    "<timer>" +
+                        "<start>start0</start>" +
+                        "<end>end0</end>" +
+                        "<timeout-method>" +
+                            "<method-name>timerTimeoutMethod1</method-name>" +
+                        "</timeout-method>" +
+                        "<persistent>true</persistent>" +
+                        "<timezone>timeZone1</timezone>" +
+                        "<info>info1</info>" +
+                    "</timer>" +
+                    "<timer>" +
+                    "</timer>" +
+                    "<timer>" +
+                        "<persistent>false</persistent>" +
+                    "</timer>" +
+                "</session>" +
+            "</enterprise-beans>";
+            
     @Test
     public void testSessionTimer() throws Exception {
-        List<EnterpriseBean> beans = parse(EJBJarTest.ejbJar11Head() +
-                                               "<enterprise-beans>" +
-                                               "<session>" +
-                                               "<ejb-name>ejbName0</ejb-name>" +
-                                               "</session>" +
+        List<EnterpriseBean> beans = parse(
+            EJBJarTest.ejbJar11(sessionTimer1XML), EJBJar.VERSION_4_0)
+                .getEnterpriseBeans();
 
-                                               "<session>" +
-                                               "<ejb-name>ejbName1</ejb-name>" +
-                                               "<timeout-method>" +
-                                               "<method-name>timeoutMethod1</method-name>" +
-                                               "</timeout-method>" +
-                                               "<timer>" +
-                                               "<start>start0</start>" +
-                                               "<end>end0</end>" +
-                                               "<timeout-method>" +
-                                               "<method-name>timerTimeoutMethod1</method-name>" +
-                                               "</timeout-method>" +
-                                               "<persistent>true</persistent>" +
-                                               "<timezone>timeZone1</timezone>" +
-                                               "<info>info1</info>" +
-                                               "</timer>" +
-
-                                               "<timer>" +
-                                               "</timer>" +
-
-                                               "<timer>" +
-                                               "<persistent>false</persistent>" +
-                                               "</timer>" +
-                                               "</session>" +
-                                               "</enterprise-beans>" +
-                                               "</ejb-jar>", EJBJar.VERSION_4_0).getEnterpriseBeans();
         Assert.assertEquals(2, beans.size());
         Session session0 = (Session) beans.get(0);
         Session session1 = (Session) beans.get(1);
@@ -763,25 +791,29 @@ public class SessionBeanTest extends EJBJarTestBase {
         Assert.assertEquals(false, timer2.isPersistent());
     }
 
+    protected static final String sessionTransactionXML =
+            "<enterprise-beans>" +
+                "<session>" +
+                    "<ejb-name>ejbName0</ejb-name>" +
+                "</session>" +
+
+                "<session>" +
+                    "<ejb-name>ejbName1</ejb-name>" +
+                    "<transaction-type>Bean</transaction-type>" +
+                "</session>" +
+
+                "<session>" +
+                    "<ejb-name>ejbName2</ejb-name>" +
+                    "<transaction-type>Container</transaction-type>" +
+                "</session>" +
+            "</enterprise-beans>";
+
     @Test
     public void testSessionTransactionalBean() throws Exception {
-        List<EnterpriseBean> beans = parse(EJBJarTest.ejbJar11Head() +
-                                               "<enterprise-beans>" +
-                                               "<session>" +
-                                               "<ejb-name>ejbName0</ejb-name>" +
-                                               "</session>" +
+        List<EnterpriseBean> beans = parse(
+            EJBJarTest.ejbJar11(sessionTransactionXML), EJBJar.VERSION_4_0)
+                .getEnterpriseBeans();
 
-                                               "<session>" +
-                                               "<ejb-name>ejbName1</ejb-name>" +
-                                               "<transaction-type>Bean</transaction-type>" +
-                                               "</session>" +
-
-                                               "<session>" +
-                                               "<ejb-name>ejbName2</ejb-name>" +
-                                               "<transaction-type>Container</transaction-type>" +
-                                               "</session>" +
-                                               "</enterprise-beans>" +
-                                               "</ejb-jar>", EJBJar.VERSION_4_0).getEnterpriseBeans();
         Session session0 = (Session) beans.get(0);
         Session session1 = (Session) beans.get(1);
         Session session2 = (Session) beans.get(2);
@@ -791,24 +823,27 @@ public class SessionBeanTest extends EJBJarTestBase {
         Assert.assertEquals(TransactionalBean.TRANSACTION_TYPE_CONTAINER, session2.getTransactionTypeValue());
     }
 
+    protected static final String sessionPassivationXML =
+            "<enterprise-beans>" +
+                "<session>" +
+                    "<ejb-name>ejbName0</ejb-name>" +
+                "</session>" +
+
+                "<session>" +
+                    "<ejb-name>ejbName1</ejb-name>" +
+                    "<passivation-capable>false</passivation-capable>" +
+                "</session>" +
+
+                "<session>" +
+                    "<passivation-capable>true</passivation-capable>" +
+                "</session>" +
+            "</enterprise-beans>";
+
     @Test
     public void testSessionPassivationCapable() throws Exception {
-        List<EnterpriseBean> beans = parse(EJBJarTest.ejbJar32Head("") +
-                                               "<enterprise-beans>" +
-                                               "<session>" +
-                                               "<ejb-name>ejbName0</ejb-name>" +
-                                               "</session>" +
-
-                                               "<session>" +
-                                               "<ejb-name>ejbName1</ejb-name>" +
-                                               "<passivation-capable>false</passivation-capable>" +
-                                               "</session>" +
-
-                                               "<session>" +
-                                               "<passivation-capable>true</passivation-capable>" +
-                                               "</session>" +
-                                               "</enterprise-beans>" +
-                                               "</ejb-jar>", EJBJar.VERSION_4_0).getEnterpriseBeans();
+        List<EnterpriseBean> beans = parse(
+            EJBJarTest.ejbJar32("", sessionPassivationXML), EJBJar.VERSION_4_0)
+                .getEnterpriseBeans();
 
         Session session0 = (Session) beans.get(0);
         Assert.assertFalse(session0.isSetPassivationCapable());
@@ -824,19 +859,19 @@ public class SessionBeanTest extends EJBJarTestBase {
 
     @Test(expected = DDParser.ParseException.class)
     public void testPassivationCapableEJB31() throws Exception {
-        parse(EJBJarTest.ejbJar31Head("") +
+        parse(EJBJarTest.ejbJar31("",
                   "<enterprise-beans>" +
                   "<session>" +
                   "<ejb-name>ejbName1</ejb-name>" +
                   "<passivation-capable>false</passivation-capable>" +
                   "</session>" +
-                  "</enterprise-beans>" +
-                  "</ejb-jar>", EJBJar.VERSION_4_0);
+                  "</enterprise-beans>"),
+                  EJBJar.VERSION_4_0);
     }
 
     @Test
     public void testSessionSessionInterceptor() throws Exception {
-        List<EnterpriseBean> beans = parse(EJBJarTest.ejbJar11Head() +
+        List<EnterpriseBean> beans = parse(EJBJarTest.ejbJar11(
                                                "<enterprise-beans>" +
                                                "<session>" +
                                                "<ejb-name>ejbName0</ejb-name>" +
@@ -868,8 +903,9 @@ public class SessionBeanTest extends EJBJarTestBase {
                                                "<class>aroundTimeoutClass0</class>" +
                                                "</around-timeout>" +
                                                "</session>" +
-                                               "</enterprise-beans>" +
-                                               "</ejb-jar>", EJBJar.VERSION_4_0).getEnterpriseBeans();
+                                               "</enterprise-beans>"),
+                EJBJar.VERSION_4_0).getEnterpriseBeans();
+
         Session session0 = (Session) beans.get(0);
         Session session1 = (Session) beans.get(1);
         Session session2 = (Session) beans.get(2);

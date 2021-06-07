@@ -87,23 +87,38 @@ public class EJBJarTest extends EJBJarTestBase {
 
         for ( int schemaVersion : EJBJar.VERSIONS ) {
             for ( int maxSchemaVersion : EJBJar.VERSIONS ) {
+                // The EJB parser uses a maximum schema
+                // version of "max(version, EJBJAR.VERSION_3_1)".
+                // Adjust the message expectations accordingly.
+                //
+                // See:
+                // com.ibm.ws.javaee.ddmodel.ejb.EJBJarDDParser
+
+                int effectiveMax;
+                if ( maxSchemaVersion < EJBJar.VERSION_3_1 ) {
+                    effectiveMax = EJBJar.VERSION_3_1;
+                } else {
+                    effectiveMax = maxSchemaVersion;
+                }
+
                 String[] expectedMessages;
-                if ( (schemaVersion == EJBJar.VERSION_1_1) ||
-                     (schemaVersion == EJBJar.VERSION_2_0)) {
-                    // The maximum specification version is not checked
-                    // for the two supported DTD versions.
-                    expectedMessages = null;
-                } else if ( schemaVersion > maxSchemaVersion ) {
+                if ( schemaVersion > effectiveMax ) {
                     expectedMessages = unsupportedSchemaMessages;
                 } else {
                     expectedMessages = null;
                 }
 
+                // System.out.println("Schema [ " + schemaVersion + " ]");
+                // System.out.println("Maximum [ " + effectiveMax + " ] [ " + maxSchemaVersion + " ]");
+                // if ( expectedMessages != null ) {
+                //     System.out.println("Messages [ " + Arrays.toString(expectedMessages) + " ]");
+                // }
+
                 EJBJar ejbJar = parse(
                     ejbJar(schemaVersion, "", ""),
                     maxSchemaVersion, expectedMessages );
 
-                if ( schemaVersion <= maxSchemaVersion ) {
+                if ( schemaVersion <= effectiveMax ) {
                     Assert.assertEquals( schemaVersion, ejbJar.getVersionID() );
                 }
             }
