@@ -36,7 +36,6 @@ import com.ibm.ws.jpa.fvt.relationships.oneXmany.tests.ejb.TestOneXManyCompoundP
 import com.ibm.ws.jpa.fvt.relationships.oneXmany.tests.ejb.TestOneXManyUnidirectional_EJB_SFEX_Servlet;
 import com.ibm.ws.jpa.fvt.relationships.oneXmany.tests.ejb.TestOneXManyUnidirectional_EJB_SF_Servlet;
 import com.ibm.ws.jpa.fvt.relationships.oneXmany.tests.ejb.TestOneXManyUnidirectional_EJB_SL_Servlet;
-import com.ibm.ws.jpa.tests.spec10.relationships.oneXmany.FATSuite;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -82,11 +81,11 @@ public class Relationships_OneXMany_EJB extends JPAFATServletClient {
     })
     public static LibertyServer server;
 
-    public static final JdbcDatabaseContainer<?> testContainer = FATSuite.testContainer;
+    public static final JdbcDatabaseContainer<?> testContainer = AbstractFATSuite.testContainer;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        PrivHelper.generateCustomPolicy(server, FATSuite.JAXB_PERMS);
+        PrivHelper.generateCustomPolicy(server, AbstractFATSuite.JAXB_PERMS);
         bannerStart(Relationships_OneXMany_EJB.class);
         timestart = System.currentTimeMillis();
 
