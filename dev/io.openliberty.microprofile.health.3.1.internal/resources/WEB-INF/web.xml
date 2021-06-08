@@ -59,7 +59,7 @@
   
   <servlet-mapping>
     <servlet-name>HealthCheckStartupServlet</servlet-name>
-    <url-pattern>/start</url-pattern>
+    <url-pattern>/started</url-pattern>
   </servlet-mapping>
 
 </web-app>
