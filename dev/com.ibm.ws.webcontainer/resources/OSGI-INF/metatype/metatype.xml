@@ -348,7 +348,7 @@
         <AD id="excludeAllHandledTypesClasses"
             name="%excludeAllHandledTypesClasses.name"
             description="%excludeAllHandledTypesClasses.desc"
-            required="false" type="Boolean" default="false" />
+            required="false" type="Boolean" />
 
         <AD name="internal" description="internal use only"
             id="extensionFactory" required="true" type="String" cardinality="100"
