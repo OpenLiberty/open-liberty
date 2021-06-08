@@ -199,9 +199,18 @@ public class CDIEJBManagedObjectFactoryImpl<T> extends AbstractManagedObjectFact
 
             if (bean == null) {
                 //The bean can be null if it's Vetoed. 
-                if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
-                    Tr.warning(tc, "Found the following EjbDescriptor " + this.ejbDescriptor + " for ejbName " + this.ejbName + " but it did not produce a bean or produced the wrong bean");
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Found the following EjbDescriptor " + firstDescriptor + " for ejbName " + this.ejbName + " but it did not produce a bean or produced the wrong bean. It will be used anyway as this is expected in some circumstances");
                 }
+
+                //Use the firstDescriptor to match the old behaviour. Since the bean is null it will have gone looking for other descriptors.
+                if (firstDescriptor != null) {
+                    this.ejbDescriptor = firstDescriptor;
+                    this.ejbBeanManager = firstBeanManager;
+                    this.ejbBDA = firstBDA;
+                }
+
+                //Output the others we found in the trace, it might come in handy.
                 if (! partialMatchDescriptors.isEmpty()) {
                     String listStr = "[";
                     for (EjbDescriptor<T> desc : partialMatchDescriptors) {
@@ -209,8 +218,8 @@ public class CDIEJBManagedObjectFactoryImpl<T> extends AbstractManagedObjectFact
                     }
                     listStr = listStr.substring(0, listStr.length() - 1);
                     listStr += "]";
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
-                        Tr.warning(tc, "Found the following EjbDescriptors but they produced the wrong bean " + listStr);
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "We also found the following EjbDescriptors but they produced the wrong bean " + listStr);
                     }
                 }
             } else {
