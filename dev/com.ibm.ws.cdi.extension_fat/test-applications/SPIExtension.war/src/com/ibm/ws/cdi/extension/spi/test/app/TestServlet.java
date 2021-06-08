@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import javax.enterprise.inject.UnsatisfiedResolutionException;
+import javax.enterprise.inject.spi.CDI;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -51,7 +52,7 @@ public class TestServlet extends HttpServlet {
 
         String unregString = "";
         try {
-            UnregisteredBean ub = javax.enterprise.inject.spi.CDI.current().select(UnregisteredBean.class).get();
+            UnregisteredBean ub = CDI.current().select(UnregisteredBean.class).get();
             unregString = "Found unregistered bean";
         } catch (UnsatisfiedResolutionException e) {
             unregString = "Could not find unregistered bean";
@@ -59,7 +60,7 @@ public class TestServlet extends HttpServlet {
 
         String unregBDAString = "";
         try {
-            UnregisteredBDABean ub = javax.enterprise.inject.spi.CDI.current().select(UnregisteredBDABean.class).get();
+            UnregisteredBDABean ub = CDI.current().select(UnregisteredBDABean.class).get();
             unregBDAString = ub.toString();
         } catch (UnsatisfiedResolutionException e) {
             unregBDAString = "Could not find unregistered BDA bean";

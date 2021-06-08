@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import javax.enterprise.inject.UnsatisfiedResolutionException;
+import javax.enterprise.inject.spi.CDI;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -48,7 +49,7 @@ public class MisplacedTestServlet extends HttpServlet {
         String unregString = "";
         try {
             //This will fail because while the extension will run as expected and add MyExtensionString to the BDA, it will be filtered out later because it cannot be found in the bundle.
-            MyExtensionString ub = javax.enterprise.inject.spi.CDI.current().select(MyExtensionString.class).get();
+            MyExtensionString ub = CDI.current().select(MyExtensionString.class).get();
             unregString = "Bean registered via an extension when both the bean and the extension are in a different bundle to the SPI impl class. This is unexpected";
         } catch (UnsatisfiedResolutionException e) {
             unregString = "Could not find bean registered via an extension when both the bean and the extension are in a different bundle to the SPI impl class";
