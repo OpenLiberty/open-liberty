@@ -13,13 +13,6 @@
 	<include location="${server.config.dir}/imports/BasicRegistry_ssl_required.xml" />
 	<include location="${server.config.dir}/imports/misc.xml" />
 	<include location="${server.config.dir}/imports/provider_OAuthConfigSample.xml" />
-
-	<javaPermission
-		className="java.io.FilePermission"
-		name="ALL FILES"
-		actions="read" />
-	<javaPermission
-		className="java.lang.RuntimePermission"
-		name="setFactory" />
+	<include location="${server.config.dir}/imports/certRequiredJavaPermissions.xml" />
 
 </server>
