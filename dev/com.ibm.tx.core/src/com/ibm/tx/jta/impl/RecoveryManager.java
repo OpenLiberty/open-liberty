@@ -12,6 +12,9 @@ package com.ibm.tx.jta.impl;
  *******************************************************************************/
 
 import java.io.IOException;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -693,6 +696,7 @@ public class RecoveryManager implements Runnable {
             Tr.entry(tc, "deleteServerLease", new Object[] { this, recoveryIdentity });
         try {
             if (_leaseLog != null) {
+                _leaseLog.releasePeerLease(recoveryIdentity);
                 _leaseLog.deleteServerLease(recoveryIdentity);
             }
         } catch (Exception e) {
@@ -1570,8 +1574,29 @@ public class RecoveryManager implements Runnable {
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "Server with identity " + _localRecoveryIdentity + " has recovered the logs of server " + _failureScopeController.serverName());
                         deleteServerLease(_failureScopeController.serverName());
-                    }
 
+                        boolean retainPeerLogs = false;
+                        try {
+                            retainPeerLogs = AccessController.doPrivileged(
+                                                                           new PrivilegedExceptionAction<Boolean>() {
+                                                                               @Override
+                                                                               public Boolean run() {
+                                                                                   return Boolean.getBoolean("com.ibm.ws.recoverylog.disablepeerlogdeletion");
+                                                                               }
+                                                                           });
+                        } catch (PrivilegedActionException e) {
+                            FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RecoveryManager", "1588");
+                            if (tc.isDebugEnabled())
+                                Tr.debug(tc, "Exception disabling peer log deletion", e);
+                        }
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Should peer recovery logs be retained ", retainPeerLogs);
+                        if (!retainPeerLogs) {
+                            // Delete the peer recovery logs.
+                            _tranLog.delete();
+                            _xaLog.delete();
+                        }
+                    }
                 } else /* @PK31789A */
                 { /* @PK31789A */
                     // Ensure all end-tran records processed before we delete partners
