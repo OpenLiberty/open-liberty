@@ -210,7 +210,7 @@ public class CDIEJBManagedObjectFactoryImpl<T> extends AbstractManagedObjectFact
                     this.ejbBDA = firstBDA;
                 }
 
-                //Output the other we found too in trace, it might come in handly.
+                //Output the others we found in the trace, it might come in handy.
                 if (! partialMatchDescriptors.isEmpty()) {
                     String listStr = "[";
                     for (EjbDescriptor<T> desc : partialMatchDescriptors) {
