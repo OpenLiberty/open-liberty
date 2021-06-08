@@ -170,8 +170,20 @@ public class RepeatTests extends ExternalResource {
                     // Note: If the user has requested this specific action, we ignore the isEnabled() flag
                     return action.getID().equals(repeatOnly);
                 } else { // repeatAny != null
-                    // Note: If the user has requested any of the active actions, we ignore isEnabled() flag.
-                    return RepeatTestFilter.isRepeatActionActive(repeatAny);
+                    boolean repeatNotAny = false;
+                    if (repeatAny.startsWith("!")) {
+                        repeatNotAny = true;
+                        repeatAny = repeatAny.substring(1, repeatAny.length());
+                    }
+
+                    if (repeatNotAny) {
+                        // Note: If the user has requested an action NOT be any of the 
+						//       active actions, we ignore isEnabled() flag.
+                        return !RepeatTestFilter.isRepeatActionActive(repeatAny);
+                    } else {
+                        // Note: If the user has requested any of the active actions, we ignore isEnabled() flag.
+                        return RepeatTestFilter.isRepeatActionActive(repeatAny);
+                    }
                 }
             }
         }
