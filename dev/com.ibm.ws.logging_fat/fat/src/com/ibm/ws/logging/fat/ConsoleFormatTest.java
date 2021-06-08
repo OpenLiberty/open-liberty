@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -59,6 +59,7 @@ public class ConsoleFormatTest {
     private static final String DEV_FORMAT = "dev";
     private static final String SIMPLE_FORMAT = "simple";
     private static final String DEPRECATED_BASIC_FORMAT = "basic";
+    private static final String TBASIC_FORMAT = "tbasic";
     private static final String INVALID_CONSOLE_FORMAT = "simples";
 
     private static final String SERVER_NAME = "com.ibm.ws.logging.consoleformat";
@@ -66,6 +67,8 @@ public class ConsoleFormatTest {
 
     private static final String DEV_FORMAT_REGEX_PATTERN = "([A-Z]{3,}   )"; // Matches with line that has [<LOG_LEVEL>   ] in the beginning. e.g. [AUDIT   ]
     private static final String SIMPLE_FORMAT_REGEX_PATTERN = "(\\[\\d{1,4}.*)"; // Matches with line that [23/02/20 ... ] in the beginning.
+    private static final String TBASIC_FORMAT_REGEX_PATTERN = "([a-zA-Z0-9- ]{8} [aA-zZ ]{13} [aA-zZ]{1}\\s{3})";
+    private static final String TBASIC_FORMAT_REGEX_PATTERN_CLASS = "([a-zA-Z0-9- ]{8} [aA-zZ ]{13} [aA-zZ]{1}\\s{1}[a-zA-Z0-9-]{1})";
     private static final String ISO_8601_REGEX_PATTERN = "(\\d{4})\\-(\\d{2})\\-(\\d{2})T(\\d{2})\\:(\\d{2})\\:(\\d{2})\\.(\\d{3})[+-](\\d{4})"; //ISO 8601 Format : yyyy-MM-dd'T'HH:mm:ss.SSSZ
     private static final String INTERNAL_CLASSES_REGEXP = "at \\[internal classes\\]";
 
@@ -83,6 +86,7 @@ public class ConsoleFormatTest {
     public static void setUp() throws Exception {
         ShrinkHelper.defaultDropinApp(server, "logger-servlet", "com.ibm.ws.logging.fat.logger.servlet");
         ShrinkHelper.defaultDropinApp(server, "broken-servlet", "com.ibm.ws.logging.fat.broken.servlet");
+        ShrinkHelper.defaultDropinApp(server, "tbasic-servlet", "com.ibm.ws.logging.fat.tbasic.servlet");
         server.startServer();
 
         // Preserve the original server configuration
@@ -187,7 +191,27 @@ public class ConsoleFormatTest {
         Log.info(c, "testDeprecatedBasicConsoleFormat", "The default dev console formatted line : " + line);
 
         // Verify if the console log is back to the default dev format, by getting the latest message.
-        assertTrue("The console.log file was not formatted to the default dev format.", isStringinDevFormat(line));
+        assertTrue("The console.log file was not formatted to the default dev format." + line, isStringinDevFormat(line));
+    }
+
+    /*
+     * This test sets the "consoleFormat" attribute to the deprecated basic console format and verifies if the appropriate warning message is displayed
+     * and checks that the default format is applied.
+     */
+    @Test
+    public void testTBasicConsoleFormat() throws Exception {
+        // Retrieve the consoleLogFile RemoteFile
+        RemoteFile consoleLogFile = server.getConsoleLogFile();
+
+        // Set the consoleFormat="tbasic" and traceSpec=off in server.xml
+        setServerConfiguration(server, TBASIC_FORMAT, false, false, consoleLogFile);
+
+        // Verify if the server was successfully updated again.
+        String line = server.waitForStringInLogUsingMark("CWWKG0017I", consoleLogFile);
+        Log.info(c, "testTBasicConsoleFormat", "The tbasic console formatted line : " + line);
+
+        // Verify if the console log is using the tbasic format, by getting the latest message.
+        assertTrue("The console.log file was not formatted to the tbasic format.", isStringinTBasicFormat(line, TBASIC_FORMAT_REGEX_PATTERN));
     }
 
     /*
@@ -304,6 +328,29 @@ public class ConsoleFormatTest {
         Log.info(c, "testSimpleConsoleFormatWithSysOutSysErrMsgs", "The SystemErr message in simple format : " + line);
         assertNotNull("The SystemErr message did not appear in the console.log file", line);
         assertTrue("The SystemErr message is not in the simple console format.", isStringinSimpleFormat(line));
+
+    }
+
+    /*
+     * This test sets consoleFormat=tbasic and verifies if the method and class names are included.
+     */
+    @Test
+    public void testTBasicFormatWithClassMessage() throws Exception {
+        // Retrieve the consoleLogFile RemoteFile
+        RemoteFile consoleLogFile = server.getConsoleLogFile();
+
+        // Set the consoleFormat="tbasic", traceSpec=off, isoDateFormat=false in server.xml
+        setServerConfiguration(server, TBASIC_FORMAT, false, false, consoleLogFile);
+
+        // Run application to generate Audit messages including the method and class name using logger.logp
+        hitWebPage("tbasic-servlet", "TBasicServlet", false, null);
+
+        // Verify the Audit message
+        String line = server.waitForStringInLog(" helloMethod ", consoleLogFile);
+        Log.info(c, "testTBasicFormatWithClassMessage", "The SystemOut message in tBasic format : " + line);
+        assertNotNull("Message HELLO0001W did not appear in console.log", line);
+        assertTrue("The message is not in the TBASIC console format.", isStringinTBasicFormat(line, TBASIC_FORMAT_REGEX_PATTERN_CLASS));
+        assertTrue("The message is not in the TBASIC console format.", line.contains("com.ibm.ws.logging.fat.tbasic.servlet.TBasicServlet"));
 
     }
 
@@ -494,6 +541,10 @@ public class ConsoleFormatTest {
 
     private static boolean isStringinSimpleFormat(String text) {
         return Pattern.compile(SIMPLE_FORMAT_REGEX_PATTERN).matcher(text).find();
+    }
+
+    private static boolean isStringinTBasicFormat(String text, String regex) {
+        return Pattern.compile(regex).matcher(text).find();
     }
 
     private void setInBootstrapPropertiesFile(LibertyServer libertyServer, RemoteFile bootstrapFile, String key, String value) throws Exception {

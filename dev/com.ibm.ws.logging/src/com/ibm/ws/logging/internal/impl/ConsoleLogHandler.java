@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -101,7 +101,7 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
          */
         if ((format.equals(LoggingConstants.JSON_FORMAT) || !eventSourceName.equals(CollectorConstants.MESSAGES_SOURCE))
             && (!((format.equals(LoggingConstants.DEFAULT_CONSOLE_FORMAT) || format.equals(LoggingConstants.DEFAULT_MESSAGE_FORMAT)
-                   || format.equals(LoggingConstants.DEPRECATED_DEFAULT_FORMAT))
+                   || format.equals(LoggingConstants.DEPRECATED_DEFAULT_FORMAT) || format.equals(LoggingConstants.TBASIC_CONSOLE_FORMAT))
                   && eventSourceName.equals(CollectorConstants.TRACE_SOURCE) && isTraceStdout))) {
 
             //First retrieve a cached JSON  message if possible, if not, format it and store it.
@@ -140,7 +140,7 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
             }
 
         } else if ((format.equals(LoggingConstants.DEFAULT_CONSOLE_FORMAT) || format.equals(LoggingConstants.DEFAULT_MESSAGE_FORMAT)
-                    || format.equals(LoggingConstants.DEPRECATED_DEFAULT_FORMAT))
+                    || format.equals(LoggingConstants.DEPRECATED_DEFAULT_FORMAT) || format.equals(LoggingConstants.TBASIC_CONSOLE_FORMAT))
                    && basicFormatter != null) {
             //if traceFilename=stdout write everything to console.log in trace format
             String logLevel = ((LogTraceData) event).getLoglevel();
@@ -157,7 +157,13 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
                         isStderr = true;
                     }
                 }
-                messageOutput = format.equals(LoggingConstants.DEFAULT_MESSAGE_FORMAT) ? basicFormatter.messageLogFormat(genData) : basicFormatter.formatStreamOutput(genData);
+
+                if (format.equals(LoggingConstants.DEFAULT_MESSAGE_FORMAT))
+                    messageOutput = basicFormatter.messageLogFormat(genData);
+                else if (format.equals(LoggingConstants.TBASIC_CONSOLE_FORMAT) && basicFormatter.betaFenceCheck())
+                    messageOutput = basicFormatter.messageLogFormatTBasic(genData);
+                else
+                    messageOutput = basicFormatter.formatStreamOutput(genData);
 
                 //Null return values means we are suppressing a stack trace.. and we don't want to write a 'null' so we return.
                 if (messageOutput == null)
@@ -170,7 +176,12 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
                     isStderr = true;
                 }
 
-                messageOutput = format.equals(LoggingConstants.DEFAULT_MESSAGE_FORMAT) ? basicFormatter.messageLogFormat(genData) : basicFormatter.consoleLogFormat(genData);
+                if (format.equals(LoggingConstants.DEFAULT_MESSAGE_FORMAT))
+                    messageOutput = basicFormatter.messageLogFormat(genData);
+                else if (format.equals(LoggingConstants.TBASIC_CONSOLE_FORMAT) && basicFormatter.betaFenceCheck())
+                    messageOutput = basicFormatter.messageLogFormatTBasic(genData);
+                else
+                    messageOutput = basicFormatter.consoleLogFormat(genData);
             }
         }
 
@@ -217,7 +228,7 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
 
     /**
      * Set BaseTraceFormatter passed from BaseTraceService
-     * This Formatter is used to format the dev, simple, or basic (deprecated) log events
+     * This Formatter is used to format the dev, simple, tbasic or basic (deprecated) log events
      * that pass through
      *
      * @param formatter the BaseTraceFormatter to use
@@ -236,9 +247,9 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
     }
 
     /**
-     * The format to set (i.e. DEV, SIMPLE, or JSON)
+     * The format to set (i.e. DEV, SIMPLE, TBASIC or JSON)
      *
-     * @param format the format to set (i.e. DEV, SIMPLE, or JSON)
+     * @param format the format to set (i.e. DEV, SIMPLE, TBASIC or JSON)
      */
     public void setFormat(String format) {
         this.format = format;
