@@ -1680,7 +1680,7 @@ public class BaseTraceService implements TrService {
         }
 
         public static int getByteArrayOutputThreshold() {
-            int BYTE_ARRAY_OUTPUT_THRESHOLD_BASE_CASE = 256000;
+            int BYTE_ARRAY_OUTPUT_THRESHOLD_BASE_CASE = 256 * 1024; //256 KiloBytes
             if ((System.getenv("STACKTRACE_BYTE_ARRAY_THRESHOLD") != null)) {
                 return Integer.valueOf(System.getenv("STACKTRACE_BYTE_ARRAY_THRESHOLD"));
             }
