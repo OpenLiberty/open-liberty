@@ -19,6 +19,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Base64;
 
 import com.ibm.websphere.jsonsupport.JSONMarshallException;
 import com.ibm.websphere.ras.Tr;
@@ -137,6 +138,18 @@ public class Toolbox implements IToolbox {
     }
 
     /**
+     * The user id in previous releases is not encrypted because it is sensitive.
+     * However, encryption is now done on the user id to avoid path traversal attack through
+     * the id and to provide an unique string.
+     *
+     * @param userId user id
+     * @return The encrypted user id
+     */
+    public static String getEncodedUserId(String userId) {
+        return Base64.getUrlEncoder().encodeToString(userId.getBytes());
+    }
+
+    /**
      * Sets the catalog instance.
      * Must be called if deserialized by Jackson.
      * 
@@ -163,7 +176,7 @@ public class Toolbox implements IToolbox {
     @Trivial
     private synchronized void setOwnerId(final String userId) {
         this.ownerId = userId;
-        this.persistedName = PERSIST_NAME + "-" + userId;
+        this.persistedName = PERSIST_NAME + "-" + getEncodedUserId(userId);
     }
 
     /** {@inheritDoc} */
