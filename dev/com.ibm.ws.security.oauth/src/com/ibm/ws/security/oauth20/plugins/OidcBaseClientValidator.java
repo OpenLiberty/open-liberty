@@ -121,7 +121,7 @@ public class OidcBaseClientValidator {
         detectIllegalCharacters(client.getFunctionalUserGroupIds());
     }
 
-    void detectNonVSCHARCharacters(String s, String parameterName) throws OidcServerException {
+    void detectNonVSCHARCharacters(@Sensitive String s, String parameterName) throws OidcServerException {
         if (s == null || s.length() == 0) {
             return;
         }
@@ -133,7 +133,7 @@ public class OidcBaseClientValidator {
         }
     }
 
-    String getIllegalChars(String input, String regexAllowableChars) {
+    String getIllegalChars(@Sensitive String input, String regexAllowableChars) {
         if (input == null || input.length() == 0) {
             return null;
         }
