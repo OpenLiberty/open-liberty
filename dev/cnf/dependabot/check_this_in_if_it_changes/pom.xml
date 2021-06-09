@@ -1099,12 +1099,12 @@
     <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-frontend-jaxrs</artifactId>
-      <version>3.1.18</version>
+      <version>3.4.4</version>
     </dependency>
     <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-frontend-jaxrs</artifactId>
-      <version>3.4.3</version>
+      <version>3.4.4</version>
     </dependency>
     <dependency>
       <groupId>org.apache.cxf</groupId>
