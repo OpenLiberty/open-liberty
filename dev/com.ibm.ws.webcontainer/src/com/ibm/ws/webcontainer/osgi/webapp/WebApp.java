@@ -1066,15 +1066,13 @@ public class WebApp extends com.ibm.ws.webcontainer.webapp.WebApp implements Com
  
       //check if excluded because the subclasses includes this... and could be more than we want
       //might need to exclude something else like javax.* or java*
-      if (targetClassName.startsWith("java")) {
-        if ((targetClassName.charAt(4) == '.') || (targetClassName.startsWith("javax."))) {
+      if (targetClassName.startsWith("java.") || targetClassName.startsWith("javax.")) {
             if ( enableTrace ) { 
                 logger.logp(Level.FINE, CLASS_NAME, methodName,
                             "Internal class, {0}, is not added to the ServletContainerInitializers in the application: {1}",
                             new Object[] { targetClassName, this.config.getDisplayName() });
             }
             return;
-        }
       }
 
       try {
