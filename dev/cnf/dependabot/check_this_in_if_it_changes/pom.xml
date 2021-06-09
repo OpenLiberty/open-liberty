@@ -647,16 +647,6 @@
       <version>1.0.9</version>
     </dependency>
     <dependency>
-      <groupId>io.smallrye</groupId>
-      <artifactId>smallrye-open-api-core</artifactId>
-      <version>2.1.1</version>
-    </dependency>
-    <dependency>
-      <groupId>io.smallrye</groupId>
-      <artifactId>smallrye-open-api-jaxrs</artifactId>
-      <version>2.1.1</version>
-    </dependency>
-    <dependency>
       <groupId>jakarta.activation</groupId>
       <artifactId>jakarta.activation-api</artifactId>
       <version>2.0.0</version>
@@ -2492,11 +2482,6 @@
       <version>4.0.0.Final</version>
     </dependency>
     <dependency>
-      <groupId>org.jboss</groupId>
-      <artifactId>jandex</artifactId>
-      <version>2.1.2.Final</version>
-    </dependency>
-    <dependency>
       <groupId>org.jmock</groupId>
       <artifactId>jmock-junit4</artifactId>
       <version>2.5.1</version>
@@ -3174,7 +3159,7 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-websocket</artifactId>
-      <version>5.0.8.RELEASE</version>
+      <version>5.3.8</version>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
@@ -3470,6 +3455,16 @@
       <groupId>io.smallrye</groupId>
       <artifactId>smallrye-graphql</artifactId>
       <version>1.0.9</version>
+    </dependency>
+    <dependency>
+      <groupId>io.smallrye</groupId>
+      <artifactId>smallrye-open-api-core</artifactId>
+      <version>2.1.5</version>
+    </dependency>
+    <dependency>
+      <groupId>io.smallrye</groupId>
+      <artifactId>smallrye-open-api-jaxrs</artifactId>
+      <version>2.1.5</version>
     </dependency>
     <dependency>
       <groupId>javax.activation</groupId>
@@ -3825,6 +3820,11 @@
       <groupId>org.jboss.logging</groupId>
       <artifactId>jboss-logging</artifactId>
       <version>3.3.2.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss</groupId>
+      <artifactId>jandex</artifactId>
+      <version>2.3.0.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jvnet.mimepull</groupId>
