@@ -69,12 +69,16 @@ public class HeaderFormatTest {
         //retrieve log files
         RemoteFile consoleLogFile = server.getConsoleLogFile();
         RemoteFile messagesLogFile = server.getDefaultLogFile();
+        RemoteFile traceLogFile = server.getDefaultTraceFile();
         /* Check that the messages log does not contain Basic header */
         boolean hasNoBasic = checkStringsNotInLog(BASIC_MESSSAGE, messagesLogFile);
         assertTrue("There is a basic header in messages.log", hasNoBasic);
         /* Check that the console log does not contain basic header */
         boolean hasNoJSONHeader = checkStringsNotInLog(JSON_CONSOLE, consoleLogFile);
         assertFalse("There is no json header in console.log", hasNoJSONHeader);
+        /* Check that the trace log does not contain json */
+        hasNoJSONHeader = checkStringsNotInLog(JSON_MESSAGES, traceLogFile);
+        assertTrue("There a json header in trace.log", hasNoJSONHeader);
     }
 
     /*
@@ -90,12 +94,17 @@ public class HeaderFormatTest {
         //retrieve log files
         RemoteFile consoleLogFile = server.getConsoleLogFile();
         RemoteFile messagesLogFile = server.getDefaultLogFile();
+        RemoteFile traceLogFile = server.getDefaultTraceFile();
         /* Check that the messages log does not contain json */
         boolean hasNoJSON = checkStringsNotInLog(JSON_MESSAGES, messagesLogFile);
         assertTrue("There is a json header in messages.log", hasNoJSON);
         /* Check that the console log does contain json */
         hasNoJSON = checkStringsNotInLog(JSON_MESSAGES, consoleLogFile);
         assertTrue("There is a json header in console.log", hasNoJSON);
+        /* Check that the console log does not contain json */
+        hasNoJSON = checkStringsNotInLog(JSON_MESSAGES, traceLogFile);
+        assertTrue("There a json header in trace.log", hasNoJSON);
+
     }
 
     /*
