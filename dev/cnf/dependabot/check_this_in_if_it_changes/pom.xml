@@ -1769,17 +1769,17 @@
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-util</artifactId>
-      <version>9.2.2.v20140723</version>
+      <version>11.0.4</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-util</artifactId>
-      <version>9.4.39.v20210325</version>
+      <version>11.0.4</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-util</artifactId>
-      <version>9.4.7.RC0</version>
+      <version>11.0.4</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
