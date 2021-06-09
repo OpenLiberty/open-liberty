@@ -16,8 +16,8 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.HashMap;
 
-import com.ibm.tx.util.logging.Tr;
-import com.ibm.tx.util.logging.TraceComponent;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 
 //------------------------------------------------------------------------------
 //Class: RLSAccessFile
@@ -48,7 +48,7 @@ public class RLSAccessFile extends RandomAccessFile {
     /**
      * Map of open RandomAccessFiles
      */
-    private static HashMap _accessFiles = new HashMap();
+    private static HashMap<File, RLSAccessFile> _accessFiles = new HashMap<File, RLSAccessFile>();
 
     /**
      * Open use count of the file
@@ -94,7 +94,7 @@ public class RLSAccessFile extends RandomAccessFile {
         synchronized (RLSAccessFile.class) {
             _useCount--;
             if (tc.isDebugEnabled())
-                Tr.debug(tc, "remaining file use count", new Integer(_useCount));
+                Tr.debug(tc, "remaining file use count", _useCount);
 
             // Check for 0 usage and close the actual file.
             // One needs to be aware that close() can be called both directly by the user on
@@ -114,10 +114,7 @@ public class RLSAccessFile extends RandomAccessFile {
             if (_useCount == 0) {
                 super.close();
                 // Outer lock is now on class, so no need to lock here (d347231)
-                //          synchronized(RLSAccessFile.class)
-                //          {
                 _accessFiles.remove(_file);
-                //          }
             }
         }
 
@@ -145,14 +142,14 @@ public class RLSAccessFile extends RandomAccessFile {
         // a non-mapped file.  We always open each file with the same mode, ie "rw".  Assume the
         // caller passes in a suitable File reference which will match for equality as required.
         // An alternative is to use canonical names if this needs to be more generalized.
-        RLSAccessFile raf = (RLSAccessFile) _accessFiles.get(file);
+        RLSAccessFile raf = _accessFiles.get(file);
         if (raf == null) {
             raf = new RLSAccessFile(file, "rw");
             _accessFiles.put(file, raf);
         } else {
             raf._useCount++;
             if (tc.isDebugEnabled())
-                Tr.debug(tc, "total file use count", new Integer(raf._useCount));
+                Tr.debug(tc, "total file use count", raf._useCount);
         }
         if (tc.isEntryEnabled())
             Tr.exit(tc, "getRLSAccessFile", raf);

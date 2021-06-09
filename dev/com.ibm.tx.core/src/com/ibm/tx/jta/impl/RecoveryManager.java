@@ -28,14 +28,14 @@ import com.ibm.tx.jta.TransactionManagerFactory;
 import com.ibm.tx.jta.util.TxTMHelper;
 import com.ibm.tx.util.TMHelper;
 import com.ibm.tx.util.Utils;
-import com.ibm.tx.util.logging.FFDCFilter;
-import com.ibm.tx.util.logging.Tr;
-import com.ibm.tx.util.logging.TraceComponent;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.Transaction.JTA.FailureScopeLifeCycle;
 import com.ibm.ws.Transaction.JTA.FailureScopeLifeCycleHelper;
 import com.ibm.ws.Transaction.JTA.JTAResource;
 import com.ibm.ws.Transaction.JTA.Util;
 import com.ibm.ws.Transaction.JTS.Configuration;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.recoverylog.spi.DistributedRecoveryLog;
 import com.ibm.ws.recoverylog.spi.FailureScope;
 import com.ibm.ws.recoverylog.spi.InternalLogException;
@@ -693,7 +693,7 @@ public class RecoveryManager implements Runnable {
      */
     public void deleteServerLease(String recoveryIdentity) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "deleteServerLease", new Object[] { this, recoveryIdentity });
+            Tr.entry(tc, "deleteServerLease", this, recoveryIdentity);
         try {
             if (_leaseLog != null) {
                 _leaseLog.releasePeerLease(recoveryIdentity);

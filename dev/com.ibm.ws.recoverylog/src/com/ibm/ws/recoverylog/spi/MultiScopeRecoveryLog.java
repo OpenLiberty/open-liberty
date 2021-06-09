@@ -18,9 +18,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import com.ibm.tx.util.logging.FFDCFilter;
-import com.ibm.tx.util.logging.Tr;
-import com.ibm.tx.util.logging.TraceComponent;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.recoverylog.utils.DirUtils;
 import com.ibm.ws.recoverylog.utils.RecoverableUnitIdTable;
 
@@ -1441,7 +1441,7 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
 
         // No need to access this inside a sync block as the caller is required to
         // hold off from changing the underlying structures whilst the cursor is open.
-        final Iterator iterator = _recoverableUnits.values().iterator();
+        final Iterator<RecoverableUnit> iterator = _recoverableUnits.values().iterator();
 
         while (iterator.hasNext()) {
             final RecoverableUnitImpl recoverableUnit = (RecoverableUnitImpl) iterator.next();
@@ -1477,7 +1477,7 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
     @Override
     public RecoverableUnit lookupRecoverableUnit(long identity) throws LogClosedException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "lookupRecoverableUnit", new Object[] { new Long(identity), this });
+            Tr.entry(tc, "lookupRecoverableUnit", identity, this);
 
         RecoverableUnit runit = getRecoverableUnit(identity);
 
@@ -1711,7 +1711,7 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
             }
 
             try {
-                final Iterator recoverableUnits = _recoverableUnits.values().iterator();
+                final Iterator<RecoverableUnit> recoverableUnits = _recoverableUnits.values().iterator();
 
                 while (recoverableUnits.hasNext()) {
                     final RecoverableUnitImpl recoverableUnit = (RecoverableUnitImpl) recoverableUnits.next();

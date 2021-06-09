@@ -14,8 +14,8 @@ package com.ibm.ws.recoverylog.spi;
 import java.io.File;
 import java.util.Stack;
 
-import com.ibm.tx.util.logging.Tr;
-import com.ibm.tx.util.logging.TraceComponent;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 
 //------------------------------------------------------------------------------
 // Class: RLSUtils
@@ -25,7 +25,7 @@ import com.ibm.tx.util.logging.TraceComponent;
  */
 public class RLSUtils {
     private static final TraceComponent tc = Tr.register(RLSUtils.class,
-                                                         TraceConstants.TRACE_GROUP, null);
+                                                         TraceConstants.TRACE_GROUP, TraceConstants.NLS_FILE);
 
     /**
      * Lookup string that allows character digit lookup by index value.
@@ -97,7 +97,7 @@ public class RLSUtils {
      * Converts a byte array into a printable hex string.
      *
      * @param byteSource The byte array source.
-     * @param bytes The number of bytes to display.
+     * @param bytes      The number of bytes to display.
      *
      * @return String printable hex string or "null"
      */
@@ -164,7 +164,7 @@ public class RLSUtils {
                 if (tc.isEventEnabled())
                     Tr.event(tc, "Creating directory tree", requiredDirectoryTree);
 
-                Stack pathStack = new Stack();
+                Stack<File> pathStack = new Stack<File>();
 
                 while (target != null) {
                     pathStack.push(target);
@@ -172,7 +172,7 @@ public class RLSUtils {
                 }
 
                 while (!pathStack.empty() && exists) {
-                    target = (File) pathStack.pop();
+                    target = pathStack.pop();
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Checking path to " + target.getAbsolutePath());
 
@@ -228,7 +228,7 @@ public class RLSUtils {
         }
 
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "createDirectoryTree", new Boolean(exists));
+            Tr.exit(tc, "createDirectoryTree", exists);
         return exists;
     }
 
@@ -254,8 +254,7 @@ public class RLSUtils {
         }
 
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "deleteDirectoryTree", new Boolean(deleted));
+            Tr.exit(tc, "deleteDirectoryTree", deleted);
         return deleted;
-
     }
 }
