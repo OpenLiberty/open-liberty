@@ -1728,7 +1728,7 @@ public class BaseTraceService implements TrService {
     }
 
     /**
-     * This method is accessed via reflection by the com.ibm.ws.logging.internal.osgi.stackjoiner.ThrowableInfo class
+     * This method is accessed via reflection by the com.ibm.ws.logging.internal.osgi.stackjoiner.MethodProxy class
      * It will be called on any Throwable.printStackTrace(PrintStream) invocation.
      *
      * @param t              reference to the current Throwable object calling printStackTrace
