@@ -25,7 +25,8 @@ Import-Package: \
 	*
 
 Private-Package: \
-	com.ibm.ws.microprofile.metrics.resources
+	com.ibm.ws.microprofile.metrics.resources,\
+	com.ibm.ws.microprofile.metrics.monitor.resources
     
 Include-Resource: \
 	OSGI-INF=resources/OSGI-INF

@@ -24,7 +24,8 @@ Import-Package: \
 
 Export-Package: io.openliberty.microprofile.metrics.internal.monitor
 
-Private-Package: io.openliberty.microprofile.metrics.internal.monitor.resources
+Private-Package: \
+   com.ibm.ws.microprofile.metrics.monitor.resources
 
 WS-TraceGroup: METRICS
 
@@ -46,4 +47,5 @@ Service-Component: \
 	com.ibm.ws.anno;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
 	com.ibm.ws.jaxrs.defaultexceptionmapper;version=latest, \
-	com.ibm.websphere.javaee.jaxrs.2.0;version=latest
+	com.ibm.websphere.javaee.jaxrs.2.0;version=latest,\
+	com.ibm.ws.microprofile.metrics.common;version=latest
