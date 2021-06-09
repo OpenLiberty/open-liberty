@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,7 @@
  *
  */
 @org.osgi.annotation.versioning.Version("1.0")
-@TraceOptions(traceGroup = "METRICS", messageBundle = "io.openliberty.microprofile.metrics.internal.cdi.resources.MetricsCDI")
+@TraceOptions(traceGroup = "METRICS", messageBundle = "com.ibm.ws.microprofile.metrics.cdi.resources.MetricsCDI")
 package io.openliberty.microprofile.metrics.internal.cdi30.interceptors;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;
