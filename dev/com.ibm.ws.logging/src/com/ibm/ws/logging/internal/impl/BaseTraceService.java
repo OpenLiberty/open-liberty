@@ -1659,9 +1659,11 @@ public class BaseTraceService implements TrService {
         }
 
         public void reset() {
-            if (threadLocal.get().size() > BYTE_ARRAY_OUTPUT_BUFFER_SIZE)
+            if (threadLocal.get().size() > BYTE_ARRAY_OUTPUT_BUFFER_SIZE) {
                 threadLocal.remove();
-            threadLocal.get().reset();
+            } else {
+                threadLocal.get().reset();
+            }
         }
 
         @Override
