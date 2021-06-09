@@ -33,6 +33,7 @@ import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.authentication.AuthenticationConstants;
 import com.ibm.ws.security.common.jwk.impl.JwKRetriever;
 import com.ibm.ws.security.jwt.utils.JweHelper;
@@ -61,6 +62,8 @@ public class Jose4jUtil {
     private static final String SIGNATURE_ALG_NONE = "none";
     private final SSLSupport sslSupport;
     private static final JtiNonceCache jtiCache = new JtiNonceCache(); // Jose4jUil has only one instance
+
+    private static boolean issuedBetaMessage = false;
 
     // set org.jose4j.jws.default-allow-none to true to behave the same as old jwt
     // allow signatureAlgorithme as none
@@ -97,7 +100,7 @@ public class Jose4jUtil {
                 Tr.error(tc, "OIDC_CLIENT_IDTOKEN_REQUEST_FAILURE", new Object[] { clientId, clientConfig.getTokenEndpointUrl() });
                 return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
             }
-            if (JweHelper.isJwe(tokenStr)) {
+            if (JweHelper.isJwe(tokenStr) && isRunningBetaMode()) {
                 tokenStr = JweHelper.extractJwsFromJweToken(tokenStr, clientConfig, null);
             }
 
@@ -184,6 +187,19 @@ public class Jose4jUtil {
         }
 
         return oidcResult;
+    }
+
+    boolean isRunningBetaMode() {
+        if (!ProductInfo.getBetaEdition()) {
+            return false;
+        } else {
+            // Running beta exception, issue message if we haven't already issued one for this class
+            if (!issuedBetaMessage) {
+                Tr.info(tc, "BETA: A beta method has been invoked for the class " + this.getClass().getName() + " for the first time.");
+                issuedBetaMessage = !issuedBetaMessage;
+            }
+            return true;
+        }
     }
 
     String getIdToken(Map<String, String> tokens, ConvergedClientConfig clientConfig) {
@@ -331,7 +347,7 @@ public class Jose4jUtil {
         String refreshToken = null;
         String clientId = clientConfig.getClientId();
         try {
-            if (JweHelper.isJwe(jwtString)) {
+            if (JweHelper.isJwe(jwtString) && isRunningBetaMode()) {
                 jwtString = JweHelper.extractJwsFromJweToken(jwtString, clientConfig, null);
             }
             JwtContext jwtContext = parseJwtWithoutValidation(jwtString, clientConfig);
