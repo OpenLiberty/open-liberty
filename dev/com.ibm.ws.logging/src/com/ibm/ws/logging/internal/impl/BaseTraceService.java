@@ -13,6 +13,7 @@ package com.ibm.ws.logging.internal.impl;
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -241,6 +242,8 @@ public class BaseTraceService implements TrService {
             return new StackTraceFlags();
         }
     };
+
+    public final static int BYTE_ARRAY_OUTPUT_BUFFER_THRESHOLD = ThreadLocalByteArrayOutputStream.getByteArrayOutputThreshold();
 
     /**
      * Called from Tr.getDelegate when BaseTraceService delegate is created
@@ -1582,9 +1585,10 @@ public class BaseTraceService implements TrService {
      * will be invoked on the BaseTraceService to trace the string with
      * the appropriate trace component.
      */
-    public static class TrOutputStream extends ByteArrayOutputStream {
+    public static class TrOutputStream extends ThreadLocalByteArrayOutputStream {
         final SystemLogHolder holder;
         final BaseTraceService service;
+
         public static ThreadLocal<Boolean> isPrinting = new ThreadLocal<Boolean>() {
             @Override
             protected Boolean initialValue() {
@@ -1611,7 +1615,7 @@ public class BaseTraceService implements TrService {
              * This helps us ignore flush requests that the JDK automatically creates in the middle of printing large (>8k) strings.
              * We want the whole String to be flushed in one shot for benefit of downstream event consumers.
              */
-            if (isPrinting.get() || isPrintingStackTrace.get())
+            if ((super.threadLocal.get().size() < BYTE_ARRAY_OUTPUT_BUFFER_THRESHOLD) && (isPrinting.get() || isPrintingStackTrace.get()))
                 return;
 
             super.flush();
@@ -1637,6 +1641,52 @@ public class BaseTraceService implements TrService {
 
             service.echo(holder, logRecord);
         }
+    }
+
+    public static class ThreadLocalByteArrayOutputStream extends OutputStream {
+        private final static int BYTE_ARRAY_OUTPUT_BUFFER_SIZE = 128;
+        private final ThreadLocal<ByteArrayOutputStream> threadLocal = new ThreadLocal<ByteArrayOutputStream>() {
+            @Override
+            protected ByteArrayOutputStream initialValue() {
+                return new ByteArrayOutputStream(BYTE_ARRAY_OUTPUT_BUFFER_SIZE);
+            }
+        };
+
+        @Override
+        public void write(int b) throws IOException {
+            threadLocal.get().write(b);
+
+        }
+
+        public void reset() {
+            if (threadLocal.get().size() > BYTE_ARRAY_OUTPUT_BUFFER_SIZE)
+                threadLocal.remove();
+            threadLocal.get().reset();
+        }
+
+        @Override
+        public void flush() throws IOException {
+            threadLocal.get().flush();
+        }
+
+        @Override
+        public void close() throws IOException {
+            threadLocal.get().close();
+        }
+
+        @Override
+        public String toString() {
+            return threadLocal.get().toString();
+        }
+
+        public static int getByteArrayOutputThreshold() {
+            int BYTE_ARRAY_OUTPUT_THRESHOLD_BASE_CASE = 256000;
+            if ((System.getenv("STACKTRACE_BYTE_ARRAY_THRESHOLD") != null)) {
+                return Integer.valueOf(System.getenv("STACKTRACE_BYTE_ARRAY_THRESHOLD"));
+            }
+            return BYTE_ARRAY_OUTPUT_THRESHOLD_BASE_CASE;
+        }
+
     }
 
     /**
