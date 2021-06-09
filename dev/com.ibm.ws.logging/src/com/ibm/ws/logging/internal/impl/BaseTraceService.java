@@ -1679,11 +1679,19 @@ public class BaseTraceService implements TrService {
             return threadLocal.get().toString();
         }
 
-        public static int getByteArrayOutputThreshold() {
+        private static int getByteArrayOutputThreshold() {
             int BYTE_ARRAY_OUTPUT_THRESHOLD_BASE_CASE = 256 * 1024; //256 KiloBytes
-            if ((System.getenv("STACKTRACE_BYTE_ARRAY_THRESHOLD") != null)) {
-                return Integer.valueOf(System.getenv("STACKTRACE_BYTE_ARRAY_THRESHOLD"));
+
+            try {
+                if ((System.getenv("STACKTRACE_BYTE_ARRAY_THRESHOLD") != null)) {
+                    int byteArrayOutputStreamThreshold = Integer.valueOf(System.getenv("STACKTRACE_BYTE_ARRAY_THRESHOLD"));
+
+                    if (byteArrayOutputStreamThreshold >= 0)
+                        return byteArrayOutputStreamThreshold;
+                }
+            } catch (Exception e) {
             }
+
             return BYTE_ARRAY_OUTPUT_THRESHOLD_BASE_CASE;
         }
 
