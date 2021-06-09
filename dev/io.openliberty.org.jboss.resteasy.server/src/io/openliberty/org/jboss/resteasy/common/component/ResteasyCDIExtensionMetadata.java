@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,44 +10,61 @@
  *******************************************************************************/
 package io.openliberty.org.jboss.resteasy.common.component;
 
+import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.Extension;
-
-import org.jboss.resteasy.cdi.ResteasyCdiExtension;
+import javax.annotation.ManagedBean;
+import javax.ws.rs.core.Application;
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.Path;
+import javax.ws.rs.ext.Provider;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Reference;
+
+import com.ibm.ws.cdi.CDIService;
 
 import io.openliberty.cdi.spi.CDIExtensionMetadata;
+import io.openliberty.org.jboss.resteasy.common.cdi.LibertyCdiInjectorFactory;
 
 @Component(service = CDIExtensionMetadata.class,
     configurationPolicy = ConfigurationPolicy.IGNORE,
-    immediate = true,
-    property = { "api.classes=" +
-                    "javax.ws.rs.Path;" +
-                    "javax.ws.rs.core.Application;" +
-                    "javax.ws.rs.ext.Provider",
-                 "bean.defining.annotations=" +
-                    "javax.ws.rs.Path;" +
-                    "javax.ws.rs.core.Application;" +
-                    "javax.ws.rs.ApplicationPath;" +
-                    "javax.ws.rs.ext.Provider",
-                 "service.vendor=IBM" })
+    immediate = true)
 public class ResteasyCDIExtensionMetadata implements CDIExtensionMetadata {
-    
-    // TODO
-    // This class is currently "unhooked", meaning that it is not listed in -dsannotations in the bnd file.
-    // This is because the CDIExtensionMetadata SPI doesn't currently support bean.defining.annotations.
-    // Until bean.defining.annotations is supported, we have to use the "old" WebSphereCDIExtension API.
-    // When bean.defining.annotations is suppoerted, we will need to delete LibertyResteasyCdiExtension
-    // and replace it's -dsannotations with this class in the bnd file (and delete this comment).
     
     @Override
     public Set<Class<? extends Extension>> getExtensions() {
         Set<Class<? extends Extension>> extensions = new HashSet<Class<? extends Extension>>();
-        extensions.add(ResteasyCdiExtension.class);
+        extensions.add(LibertyResteasyCdiExtension.class);
         return extensions;
+    }
+    
+    @Override
+    public Set<Class<? extends Annotation>> getBeanDefiningAnnotationClasses() {
+        Set<Class<? extends Annotation>> BDAs = new HashSet<Class<? extends Annotation>>();
+        BDAs.add(Path.class);
+        BDAs.add(Provider.class);
+        BDAs.add(ManagedBean.class);
+        BDAs.add(ApplicationPath.class);
+        return BDAs;
+    }
+    
+    @Override
+    public Set<Class<?>> getBeanClasses() {
+        Set<Class<?>> BDAs = new HashSet<Class<?>>();
+        BDAs.add(Application.class);
+        return BDAs;
+    }
+    
+    @Reference
+    protected void setCdiService(CDIService cdiService) {
+        LibertyCdiInjectorFactory.cdiService = cdiService;
+    }
+
+    protected void unsetCdiService(CDIService cdiService) {
+        LibertyCdiInjectorFactory.cdiService = null;
     }
 }
