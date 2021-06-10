@@ -16,6 +16,8 @@ Bundle-Description: Security Authorization Utility for Liberty components, versi
 Bundle-SymbolicName: com.ibm.ws.security.authorization.util
 Bundle-ActivationPolicy: lazy
 
+jakartaeeMe: true
+
 WS-TraceGroup: \
   Authorization
 
