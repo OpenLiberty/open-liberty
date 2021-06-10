@@ -16,6 +16,8 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.kernel.feature.ServerReadyStatus;
 
 import io.openliberty.checkpoint.spi.Checkpoint;
@@ -25,6 +27,8 @@ import io.openliberty.checkpoint.spi.SnapshotFailed;
 @Component(property = Constants.SERVICE_RANKING + ":Integer=-10000")
 public class CheckpointApplications implements ServerReadyStatus {
 
+    @SuppressWarnings("unused")
+    private static final TraceComponent tc = Tr.register(CheckpointApplications.class);
     private final Checkpoint checkpoint;
     private final boolean doCheckpoint;
 
