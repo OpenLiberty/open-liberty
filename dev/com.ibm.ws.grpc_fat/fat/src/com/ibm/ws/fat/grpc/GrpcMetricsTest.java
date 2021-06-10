@@ -32,11 +32,13 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
+@SkipForRepeat(SkipForRepeat.EE9_FEATURES)
 @RunWith(FATRunner.class)
 public class GrpcMetricsTest extends FATServletClient {
 

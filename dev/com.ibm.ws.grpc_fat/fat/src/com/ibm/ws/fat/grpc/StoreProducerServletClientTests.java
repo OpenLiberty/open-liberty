@@ -26,6 +26,7 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -37,6 +38,8 @@ import componenttest.topology.utils.FATServletClient;
  * @author anupag
  *
  */
+
+@SkipForRepeat(SkipForRepeat.EE9_FEATURES)
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class StoreProducerServletClientTests extends FATServletClient {
