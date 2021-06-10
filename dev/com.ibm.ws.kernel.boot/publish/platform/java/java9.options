@@ -46,4 +46,5 @@ java.base/java.security=ALL-UNNAMED
 # for java -jar execution on command line (java.net.URLClassLoader)
 --add-opens
 java.base/java.net=ALL-UNNAMED
-
+# for testing only to focus on FAT tests
+--illegal-access=permit
