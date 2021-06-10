@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,16 +16,19 @@ import java.util.List;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.CommonTest;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.EndpointSettings.endpointSettings;
+import com.ibm.ws.security.oauth_oidc.fat.commonTest.MessageConstants;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestSettings;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.ValidationData.validationData;
 import com.ibm.ws.security.openidconnect.client.fat.CommonTests.GenericOidcClientTests;
 import com.meterware.httpunit.WebConversation;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
@@ -47,6 +50,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  **/
 
 @Mode(TestMode.FULL)
+@RunWith(FATRunner.class)
 public class OidcClientSignatureAlgTests extends CommonTest {
 
     public static Class<?> thisClass = GenericOidcClientTests.class;
@@ -136,7 +140,7 @@ public class OidcClientSignatureAlgTests extends CommonTest {
         updatedTestSettings.setScope("openid profile");
         //updatedTestSettings.addRequestParms();
         updatedTestSettings.setTestURL(testSettings.getTestURL().replace("SimpleServlet", "simple/" + sigAlgForRP));
-        updatedTestSettings.setSignatureAlg(sigAlgForBuilder);
+        updatedTestSettings.setSignatureAlg(adjustSigAlg(sigAlgForBuilder));
 
         List<validationData> expectations = null;
         // if the signature alg in the build matches what's in the RP, the test should succeed - validate status codes and token content
@@ -149,11 +153,22 @@ public class OidcClientSignatureAlgTests extends CommonTest {
             expectations = validationTools.addDefaultIDTokenExpectations(expectations, _testName, eSettings.getProviderType(), test_FinalAction, updatedTestSettings);
             expectations = validationTools.addDefaultGeneralResponseExpectations(expectations, _testName, eSettings.getProviderType(), test_FinalAction, updatedTestSettings);
         } else {
-            // create negative expectations when signature algorithms don't match
-            expectations = validationTools.add401Responses(Constants.LOGIN_USER);
-            // TODO - re-enable when support is added for the othr sig algorithms
-            //            expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, testRPServer, Constants.MESSAGES_LOG, Constants.STRING_MATCHES, "Client messages.log should contain a message indicating that there is a signature mismatch", null, MessageConstants.CWWKS1761E_SIG_ALG_MISMATCH + ".*client01.*" + sigAlgForRP + ".*" + sigAlgForBuilder + ".*");
-            //            expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, testRPServer, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Client messages.log should contain a message indicating that there is a signature mismatch", null, MessageConstants.CWWKS1706E_CLIENT_FAILED_TO_VALIDATE_ID_TOKEN);
+            // validate that we get the correct error message(s) for tests that use the same sig alg, but have mis-matched keys
+            if (sigAlgForBuilder.contains(sigAlgForRP)) {
+                expectations = validationTools.add401Responses(Constants.LOGIN_USER);
+                expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_MATCHES,
+                                                                     "Client messages.log should contain a message indicating that there is a signature mismatch",
+                                                                     MessageConstants.CWWKS1756E_OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR + ".*client01.*" + sigAlgForRP + ".*");
+            } else {
+                // create negative expectations when signature algorithms don't match
+                expectations = validationTools.add401Responses(Constants.LOGIN_USER);
+                expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_MATCHES,
+                                                                     "Client messages.log should contain a message indicating that there is a signature mismatch",
+                                                                     MessageConstants.CWWKS1761E_SIG_ALG_MISMATCH + ".*client01.*" + sigAlgForRP + ".*" + sigAlgForBuilder + ".*");
+                expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS,
+                                                                     "Client messages.log should contain a message indicating that there is a signature mismatch",
+                                                                     MessageConstants.CWWKS1706E_CLIENT_FAILED_TO_VALIDATE_ID_TOKEN);
+            }
         }
         List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "builderId", sigAlgForBuilder + "Builder");
 
@@ -169,6 +184,14 @@ public class OidcClientSignatureAlgTests extends CommonTest {
 
     }
 
+    private String adjustSigAlg(String rawAlg) {
+
+        if (rawAlg != null) {
+            return rawAlg.replace("short_", "").replace("diff_", "");
+        }
+        return rawAlg;
+    }
+
     /******************************* tests *******************************/
     /************** jwt builder/rp using the same algorithm **************/
     /**
@@ -176,7 +199,6 @@ public class OidcClientSignatureAlgTests extends CommonTest {
      *
      * @throws Exception
      */
-    @Mode(TestMode.LITE)
     @Test
     public void OidcClientSignatureAlgTests_SignTokenHS256_RPVerifyHS256() throws Exception {
 
@@ -189,6 +211,7 @@ public class OidcClientSignatureAlgTests extends CommonTest {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void OidcClientSignatureAlgTests_SignTokenHS384_RPVerifyHS384() throws Exception {
 
@@ -249,6 +272,7 @@ public class OidcClientSignatureAlgTests extends CommonTest {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void OidcClientSignatureAlgTests_SignTokenES256_RPVerifyES256() throws Exception {
 
@@ -323,6 +347,7 @@ public class OidcClientSignatureAlgTests extends CommonTest {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void OidcClientSignatureAlgTests_SignTokenNotWithHS512_RPVerifyHS512() throws Exception {
 
@@ -374,6 +399,7 @@ public class OidcClientSignatureAlgTests extends CommonTest {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void OidcClientSignatureAlgTests_SignTokenNotWithRS512_RPVerifyRS512() throws Exception {
 
@@ -437,4 +463,117 @@ public class OidcClientSignatureAlgTests extends CommonTest {
 
     }
 
+    /*********** jwt builder/rp using the different same alg, but different keys ************/
+    /* Show that we can't validate the token if the signature algorithms match, but either */
+    /* the shared key or the public/private keys don't match */
+    /****************************************************************************************/
+    /**
+     * Test shows that the RP can not consume a JWT signed with sigAlg HS256, but a different key
+     *
+     * @throws Exception
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void OidcClientSignatureAlgTests_SignTokenHS256_RPVerifyHS256_keyMismatch() throws Exception {
+
+        genericSigAlgTest("diff_" + Constants.SIGALG_HS256, Constants.SIGALG_HS256);
+
+    }
+
+    /**
+     * Test shows that the RP can not consume a JWT signed with sigAlg HS384, but a different key
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientSignatureAlgTests_SignTokenHS384_RPVerifyHS384_keyMismatch() throws Exception {
+
+        genericSigAlgTest("diff_" + Constants.SIGALG_HS384, Constants.SIGALG_HS384);
+
+    }
+
+    /**
+     * Test shows that the RP can not consume a JWT signed with sigAlg HS512, but a different key
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientSignatureAlgTests_SignTokenHS512_RPVerifyHS512_keyMismatch() throws Exception {
+
+        genericSigAlgTest("diff_" + Constants.SIGALG_HS512, Constants.SIGALG_HS512);
+
+    }
+
+    /**
+     * Test shows that the RP can not consume a JWT signed with sigAlg RS256, but a different key
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientSignatureAlgTests_SignTokenRS256_RPVerifyRS256_keyMismatch() throws Exception {
+
+        genericSigAlgTest("short_" + Constants.SIGALG_RS256, Constants.SIGALG_RS256);
+
+    }
+
+    /**
+     * Test shows that the RP can not consume a JWT signed with sigAlg RS384, but a different key
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientSignatureAlgTests_SignTokenRS384_RPVerifyRS384_keyMismatch() throws Exception {
+
+        genericSigAlgTest("short_" + Constants.SIGALG_RS384, Constants.SIGALG_RS384);
+
+    }
+
+    /**
+     * Test shows that the RP can not consume a JWT signed with sigAlg RS512, but a different key
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientSignatureAlgTests_SignTokenRS512_RPVerifyRS512_keyMismatch() throws Exception {
+
+        genericSigAlgTest("short_" + Constants.SIGALG_RS512, Constants.SIGALG_RS512);
+
+    }
+
+    /**
+     * Test shows that the RP can not consume a JWT signed with sigAlg ES256, but a different key
+     *
+     * @throws Exception
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void OidcClientSignatureAlgTests_SignTokenES256_RPVerifyES256_keyMismatch() throws Exception {
+
+        genericSigAlgTest("short_" + Constants.SIGALG_ES256, Constants.SIGALG_ES256);
+
+    }
+
+    /**
+     * Test shows that the RP can not consume a JWT signed with sigAlg ES384, but a different key
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientSignatureAlgTests_SignTokenES384_RPVerifyES384_keyMismatch() throws Exception {
+
+        genericSigAlgTest("short_" + Constants.SIGALG_ES384, Constants.SIGALG_ES384);
+
+    }
+
+    /**
+     * Test shows that the RP can not consume a JWT signed with sigAlg ES512, but a different key
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientSignatureAlgTests_SignTokenES512_RPVerifyES512_keyMismatch() throws Exception {
+
+        genericSigAlgTest("short_" + Constants.SIGALG_ES512, Constants.SIGALG_ES512);
+
+    }
 }
