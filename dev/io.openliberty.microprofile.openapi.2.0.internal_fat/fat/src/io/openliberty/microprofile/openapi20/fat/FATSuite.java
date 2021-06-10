@@ -16,12 +16,16 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import io.openliberty.microprofile.openapi20.fat.cache.CacheTest;
 import io.openliberty.microprofile.openapi20.fat.deployments.DeploymentTest;
+import io.openliberty.microprofile.openapi20.fat.deployments.MergeConfigTest;
+import io.openliberty.microprofile.openapi20.fat.deployments.MergeTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
     ApplicationProcessorTest.class,
     CacheTest.class,
-    DeploymentTest.class
+    DeploymentTest.class,
+    MergeConfigTest.class,
+    MergeTest.class
 })
 public class FATSuite {
 }

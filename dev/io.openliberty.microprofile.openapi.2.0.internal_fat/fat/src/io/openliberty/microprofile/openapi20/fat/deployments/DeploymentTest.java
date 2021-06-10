@@ -51,7 +51,7 @@ public class DeploymentTest {
 
     @Server("OpenAPITestServer")
     public static LibertyServer server;
-    
+
     /**
      * Add configuration to only scan the test resource class
      * <p>
@@ -182,36 +182,35 @@ public class DeploymentTest {
         assertOpenApiDoc();
         assertCache(war, CacheUsed.CACHE_NOT_USED, CacheWritten.CACHE_NOT_WRITTEN);
     }
-    
+
     @Test
     public void testLooseWarWithLib() throws Exception {
         copyLoosePackage(server, "looseFiles/warClasses", DeploymentTestResource.class.getPackage().getName());
         copyLoosePackage(server, "looseFiles/libClasses", DeploymentTestResource2.class.getPackage().getName());
         deployLooseApp("looseWar.war.xml", "war");
-        
+
         String response = new HttpRequest(server, "/looseWar.war/test").run(String.class);
         assertEquals("Failed to call test resource", "OK", response);
         String response2 = new HttpRequest(server, "/looseWar.war/test2").run(String.class);
         assertEquals("Failed to call test resource", "OK", response2);
 
-        
         String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
         JsonNode openapiNode = OpenAPITestUtil.readYamlTree(doc);
         OpenAPITestUtil.checkPaths(openapiNode, 2, "/test", "/test2");
+        assertServerContextRoot(openapiNode, "looseWar.war");
     }
-    
+
     private void copyLoosePackage(LibertyServer server, String looseDir, String packageName) throws Exception {
         String packageDir = packageName.replace('.', '/');
         RemoteFile remoteDirClasses = LibertyFileManager.createRemoteFile(server.getMachine(), server.getServerRoot() + "/" + looseDir + "/" + packageDir);
-//        RemoteFile remoteDirClasses = server.getFileFromLibertyServerRoot(looseDir + "/" + packageDir);
         LocalFile localDirClasses = new LocalFile(LibertyServerUtils.makeJavaCompatible("build/classes/" + packageDir));
         localDirClasses.copyToDest(remoteDirClasses, true, true);
     }
 
     private Application getConfig(Archive<?> archive) {
         Application appConfig = new Application();
-        appConfig.setId("testApp");
         appConfig.setLocation(archive.getName());
+        appConfig.setId(getName(archive));
         if (archive instanceof WebArchive) {
             appConfig.setType("war");
         } else if (archive instanceof EnterpriseArchive) {
@@ -222,14 +221,22 @@ public class DeploymentTest {
     }
 
     private void assertRest() throws Exception {
-        String response = new HttpRequest(server, "/testWar/test").run(String.class);
-        assertEquals("Failed to call test resource", "OK", response);
+        assertRest("/testWar/test");
+    }
+
+    private void assertRest(String path) throws Exception {
+        String response = new HttpRequest(server, path).run(String.class);
+        assertEquals("Failed to call test resource at " + path, "OK", response);
     }
 
     private void assertOpenApiDoc() throws Exception {
         String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
         JsonNode openapiNode = OpenAPITestUtil.readYamlTree(doc);
         OpenAPITestUtil.checkPaths(openapiNode, 1, "/test");
+    }
+
+    private void assertServerContextRoot(JsonNode model, String contextRoot) {
+        OpenAPITestUtil.checkServer(model, OpenAPITestUtil.getServerURLs(server, server.getHttpDefaultPort(), server.getHttpDefaultSecurePort(), contextRoot));
     }
 
     /**
@@ -296,10 +303,10 @@ public class DeploymentTest {
         server.updateServerConfiguration(config);
         server.waitForConfigUpdateInLogUsingMark(Collections.singleton(getName(archive)));
     }
-    
+
     private void deployLooseApp(String fileName, String type) throws Exception {
         server.copyFileToLibertyServerRoot("apps", fileName);
-        
+
         server.setMarkToEndOfLog();
         ServerConfiguration config = server.getServerConfiguration();
         Application appConfig = new Application();
@@ -314,7 +321,7 @@ public class DeploymentTest {
     private String getName(Archive<?> archive) {
         return getName(archive.getName());
     }
-    
+
     private String getName(String fileName) {
         int lastDot = fileName.lastIndexOf('.');
         if (lastDot != -1) {
