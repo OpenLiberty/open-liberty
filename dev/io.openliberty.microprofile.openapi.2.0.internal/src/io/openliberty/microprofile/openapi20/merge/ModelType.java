@@ -113,6 +113,16 @@ public enum ModelType {
     public List<ModelType.ModelParameter> getParameters() {
         return parameters;
     }
+    
+    /**
+     * Test whether an object is an instance of this model type
+     * 
+     * @param object the object to test
+     * @return {@code true} if {@code object} is an instance of the interface associated with this model type, {@code false} otherwise
+     */
+    public boolean isInstance(Object object) {
+        return clazz.isInstance(object);
+    }
 
     /**
      * Represents a getter/setter pair on a model type
