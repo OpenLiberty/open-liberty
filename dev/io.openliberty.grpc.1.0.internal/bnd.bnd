@@ -16,6 +16,8 @@ Bundle-Name: Liberty gRPC
 Bundle-SymbolicName: io.openliberty.grpc.1.0.internal
 Bundle-Description: Libery gRPC, version ${bVersion}
 
+jakartaeeMe: true
+
 -dsannotations: \
   io.openliberty.grpc.internal.servlet.GrpcServerComponent,\
   io.openliberty.grpc.internal.config.GrpcServiceConfigImpl
