@@ -82,6 +82,8 @@ public class FeatureReplacementAction implements RepeatTestAction {
         featureNameMapping.put("jsfContainer", "facesContainer");
         featureNameMapping.put("jsp", "pages");
         featureNameMapping.put("el", "expressionLanguage");
+        featureNameMapping.put("grpc", "jakartaGrpc");
+        featureNameMapping.put("grpcClient", "jakartaGrpcClient");
         featuresWithNameChangeOnEE9 = Collections.unmodifiableMap(featureNameMapping);
     }
 

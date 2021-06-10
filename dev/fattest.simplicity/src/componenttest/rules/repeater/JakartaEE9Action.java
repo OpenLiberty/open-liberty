@@ -98,7 +98,9 @@ public class JakartaEE9Action extends FeatureReplacementAction {
                                                  "servlet-5.0",
                                                  "websocket-2.0",
                                                  "xmlBinding-3.0",
-                                                 "xmlWS-3.0"
+                                                 "xmlWS-3.0",
+                                                 "jakartaGrpc-1.0",
+                                                 "jakartaGrpcClient-1.0",
     };
 
     public static final Set<String> EE9_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE9_FEATURES_ARRAY)));
