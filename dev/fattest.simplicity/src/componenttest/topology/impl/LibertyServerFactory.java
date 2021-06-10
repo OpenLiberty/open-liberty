@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -49,7 +49,7 @@ public class LibertyServerFactory {
     /**
      * This method will return a newly created LibertyServer instance with the specified server name
      *
-     * @return A stopped Liberty Server instance
+     * @return           A stopped Liberty Server instance
      * @throws Exception
      */
     public static LibertyServer getLibertyServer(String serverName) {
@@ -59,9 +59,9 @@ public class LibertyServerFactory {
     /**
      * This method will return a newly created LibertyServer instance with the specified server name
      *
-     * @param serverName The name of the server
-     * @param testClassName The name of the class to associate with the server.
-     * @return A stopped Liberty Server instance
+     * @param  serverName    The name of the server
+     * @param  testClassName The name of the class to associate with the server.
+     * @return               A stopped Liberty Server instance
      */
     public static LibertyServer getLibertyServer(String serverName, Class<?> testClass) {
         return getLibertyServer(serverName, null, true, false, false, testClass.getCanonicalName());
@@ -72,7 +72,7 @@ public class LibertyServerFactory {
      * Note if the ignoreCache parameter is set to false, then the returned LibertyServer instance may
      * not be newly-created.
      *
-     * @return A stopped Liberty Server instance
+     * @return           A stopped Liberty Server instance
      * @throws Exception
      */
     public static LibertyServer getLibertyServer(String serverName, Bootstrap bootstrap, boolean ignoreCache) {
@@ -263,7 +263,7 @@ public class LibertyServerFactory {
     /**
      * This method will return a newly created LibertyServer instance with the specified server name
      *
-     * @return A started Liberty Server instance
+     * @return           A started Liberty Server instance
      * @throws Exception
      */
     public static LibertyServer getStartedLibertyServer(String serverName) {
@@ -282,11 +282,12 @@ public class LibertyServerFactory {
      * server XML, that includes fatTestPorts.xml and the sample server.xml. The bootstrap.properties will be exchanged with a default properties file that includes the
      * "../testports.properties" file and the sample properties file. The server will then be added to the list of known servers and returned.
      *
-     * @param serverName The name of the server to install, must be matched by a local file named serverName.jar in the lib/LibertyFATTestFiles folder (populated from publish/files
-     *            in a FAT test project)
-     * @param bootstrap The bootstrap to use on the server
-     * @param ignoreCache <code>false</code> if we should load a cached server if available
-     * @return The server
+     * @param  serverName  The name of the server to install, must be matched by a local file named serverName.jar in the lib/LibertyFATTestFiles folder (populated from
+     *                         publish/files
+     *                         in a FAT test project)
+     * @param  bootstrap   The bootstrap to use on the server
+     * @param  ignoreCache <code>false</code> if we should load a cached server if available
+     * @return             The server
      *
      */
     public static LibertyServer installSampleServer(String serverName, Bootstrap bootstrap, boolean ignoreCache) {
@@ -307,7 +308,7 @@ public class LibertyServerFactory {
      * This will happen in the case of FATSuite being the entry point with
      * multiple test classes.
      *
-     * @param testClassName, the name of the test class for which servers should be tidied
+     * @param  testClassName, the name of the test class for which servers should be tidied
      * @throws Exception
      */
     public static void tidyAllKnownServers(String testClassName) throws Exception {
@@ -343,7 +344,7 @@ public class LibertyServerFactory {
      * This method should not be ran by the user, it is ran by the JUnit runner at the end of each test
      * to recover the servers.
      *
-     * @param testClassName the name of the FAT test class to recover known servers for
+     * @param  testClassName the name of the FAT test class to recover known servers for
      * @throws Exception
      */
     public static void recoverAllServers(String testClassName) throws Exception {
@@ -405,35 +406,35 @@ public class LibertyServerFactory {
     }
 
     private static void addAppsToVerificationList(RemoteFile[] files, LibertyServer ls) throws Exception {
+        for (RemoteFile f : files) {
+            addAppsToVerificationList(f.getName(), ls);
+        }
+    }
+
+    public static void addAppsToVerificationList(String fileName, LibertyServer ls) throws Exception {
         try {
-            for (RemoteFile f : files) {
-                try {
-                    String onlyAppName = f.getName();
-                    if (onlyAppName.endsWith(".xml")) {
-                        onlyAppName = onlyAppName.substring(0, onlyAppName.length() - 4);
-                    }
-                    if (onlyAppName.endsWith(".ear") || onlyAppName.endsWith(".eba") || onlyAppName.endsWith(".war") ||
-                        onlyAppName.endsWith(".jar") || onlyAppName.endsWith(".rar") || onlyAppName.endsWith(".zip") ||
-                        onlyAppName.endsWith(".esa")) {
-                        onlyAppName = onlyAppName.substring(0, onlyAppName.length() - 4);
-                    }
-                    if (onlyAppName.endsWith(".js")) {
-                        onlyAppName = onlyAppName.substring(0, onlyAppName.length() - 3);
-                    }
-                    if (onlyAppName.endsWith(".jsar")) {
-                        onlyAppName = onlyAppName.substring(0, onlyAppName.length() - 5);
-                    }
-                    Log.info(c, "addAppsToVerificationList", "Adding " + onlyAppName + " to the startup verification list for server " + ls.getServerName());
-                    ls.autoInstallApp(onlyAppName);
-                } catch (TopologyException e) {
-                    //Most likely an error with installing a directory so log and carry on
-                    Log.error(c, "installApplications", e);
-                } catch (Exception e) {
-                    //Not a 'can't install a directory' Exception so throw
-                    throw e;
-                }
+            String onlyAppName = fileName;
+            if (onlyAppName.endsWith(".xml")) {
+                onlyAppName = onlyAppName.substring(0, onlyAppName.length() - 4);
             }
+            if (onlyAppName.endsWith(".ear") || onlyAppName.endsWith(".eba") || onlyAppName.endsWith(".war") ||
+                onlyAppName.endsWith(".jar") || onlyAppName.endsWith(".rar") || onlyAppName.endsWith(".zip") ||
+                onlyAppName.endsWith(".esa")) {
+                onlyAppName = onlyAppName.substring(0, onlyAppName.length() - 4);
+            }
+            if (onlyAppName.endsWith(".js")) {
+                onlyAppName = onlyAppName.substring(0, onlyAppName.length() - 3);
+            }
+            if (onlyAppName.endsWith(".jsar")) {
+                onlyAppName = onlyAppName.substring(0, onlyAppName.length() - 5);
+            }
+            Log.info(c, "addAppsToVerificationList", "Adding " + onlyAppName + " to the startup verification list for server " + ls.getServerName());
+            ls.autoInstallApp(onlyAppName);
+        } catch (TopologyException e) {
+            //Most likely an error with installing a directory so log and carry on
+            Log.error(c, "installApplications", e);
         } catch (Exception e) {
+            //Not a 'can't install a directory' Exception so throw
             Log.error(c, "installApplications", e);
             throw e;
         }

@@ -37,6 +37,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyClient;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.impl.LibertyServerFactory;
 
 /**
  * Helper utilities for working with the ShrinkWrap APIs.
@@ -150,10 +151,8 @@ public class ShrinkHelper {
     public static void exportAppToServer(LibertyServer server, Archive<?> a, DeployOptions... options) throws Exception {
         exportToServer(server, "apps", a, options);
 
-        String appName = a.getName();
         if (shouldValidate(options)) {
-            String installedAppName = (appName.endsWith(".war") || appName.endsWith(".ear")) ? appName.substring(0, appName.length() - 4) : appName;
-            server.addInstalledAppForValidation(installedAppName);
+            LibertyServerFactory.addAppsToVerificationList(a.getName(), server);
         }
     }
 

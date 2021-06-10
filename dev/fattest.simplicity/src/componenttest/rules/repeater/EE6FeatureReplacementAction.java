@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2020 IBM Corporation and others.
+ * Copyright (c) 2018,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,12 +34,15 @@ public class EE6FeatureReplacementAction extends FeatureReplacementAction {
                                                  "jmsMdb-3.1",
                                                  "managedBeans-1.0",
                                                  "mdb-3.1",
-                                                 "componenttest-1.0", };
+                                                 "jaxrs-1.1",
+                                                 "jca-1.6",
+                                                 "componenttest-1.0" };
 
     public static final Set<String> EE6_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE6_FEATURES_ARRAY)));
 
     public EE6FeatureReplacementAction() {
         super(EE6_FEATURE_SET);
+        removeFeatures(EE7FeatureReplacementAction.EE7_FEATURE_SET);
         removeFeatures(EE8FeatureReplacementAction.EE8_FEATURE_SET);
         removeFeatures(JakartaEE9Action.EE9_FEATURE_SET);
         forceAddFeatures(false);
