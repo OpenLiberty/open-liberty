@@ -113,6 +113,8 @@ public class OidcBaseClientValidator {
     private void detectIllegalChars() throws OidcServerException {
         detectNonVSCHARCharacters(client.getClientId(), OAuth20Constants.CLIENT_ID);
         detectNonVSCHARCharacters(client.getClientSecret(), OAuth20Constants.CLIENT_SECRET);
+        detectIllegalCharacters(client.getClientId());
+        detectIllegalCharacters(client.getClientSecret());
         detectIllegalCharacters(client.getRedirectUris());
         detectIllegalCharacters(client.getClientName());
         detectIllegalCharacters(client.getPostLogoutRedirectUris());
