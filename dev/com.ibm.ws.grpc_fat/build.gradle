@@ -202,3 +202,5 @@ assemble.doLast {
           into "generated-src"
     }
 }
+
+addRequiredLibraries.dependsOn addJakartaTransformer
