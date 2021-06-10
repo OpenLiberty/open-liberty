@@ -176,6 +176,10 @@ public class MessageConstants extends com.ibm.ws.security.fat.common.MessageCons
     public static final String CWWKS6048E_JWT_MISSING_FROM_SUBJECT = "CWWKS6048E";
     public static final String CWWKS6049E_JWK_NOT_RETURNED = "CWWKS6049E";
     public static final String CWWKS6052E_JWT_TRUSTED_ISSUERS_NULL = "CWWKS6052E";
+    public static final String CWWKS6056E_ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE = "CWWKS6056E";
+    public static final String CWWKS6057E_CTY_NOT_JWT_FOR_NESTED_JWS = "CWWKS6057E";
+    public static final String CWWKS6065E_NESTED_JWS_REQUIRED_BUT_NOT_FOUND = "CWWKS6065E";
+    public static final String CWWKS6066E_JWE_DECRYPTION_KEY_MISSING = "CWWKS6066E";
 
     public static final String CWIML4537E_PRINCIPAL_NOT_FOUND = "CWIML4537E";
 

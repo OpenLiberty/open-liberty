@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,13 +15,13 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.ibm.websphere.ras.annotation.Sensitive;
-import com.ibm.ws.security.common.jwk.impl.JWKSet;
+import com.ibm.ws.security.jwt.config.JwtConsumerConfig;
 
 /**
  * This interface is an adapter layer that can be constructed from either an OidcClientConfig or SocialLoginConfig.
  * It provides the minimum common configuration info so the two types of OIDC clients can use some common processing code.
  */
-public interface ConvergedClientConfig {
+public interface ConvergedClientConfig extends JwtConsumerConfig {
 
     public boolean isSocial();
 
@@ -60,13 +60,7 @@ public interface ConvergedClientConfig {
 
     public String getSSLConfigurationName();
 
-    public String getSslRef();
-
     public String getTokenEndpointAuthMethod();
-
-    public boolean isHostNameVerificationEnabled();
-
-    public String getId();
 
     public String getRedirectUrlFromServerToClient();
 
@@ -92,8 +86,6 @@ public interface ConvergedClientConfig {
 
     public boolean getUseAccessTokenAsIdToken();
 
-    public boolean getUseSystemPropertiesForHttpClientConnections();
-
     public boolean isMapIdentityToRegistryUser();
 
     public boolean isIncludeCustomCacheKeyInSubject();
@@ -101,8 +93,6 @@ public interface ConvergedClientConfig {
     public boolean isIncludeIdTokenInSubject();
 
     public boolean isDisableLtpaCookie();
-
-    public String getSignatureAlgorithm();
 
     public String getGroupIdentifier();
 
@@ -116,24 +106,13 @@ public interface ConvergedClientConfig {
 
     public String getUniqueUserIdentifier();
 
-    @Sensitive
-    public String getSharedKey();
-
-    public String getJwkEndpointUrl();
-
     public Key getPublicKey() throws Exception;
-
-    public boolean getTokenReuse();
 
     public String getJsonWebKey();
 
     public boolean allowedAllAudiences();
 
     public boolean disableIssChecking();
-
-    public List<String> getAudiences();
-
-    public JWKSet getJwkSet();
 
     public String getJwkClientId();
 
@@ -152,9 +131,6 @@ public interface ConvergedClientConfig {
 
     public List<String> getForwardLoginParameter();
 
-    /**
-     * @return
-     */
     String getIntrospectionTokenTypeHint();
 
 }
