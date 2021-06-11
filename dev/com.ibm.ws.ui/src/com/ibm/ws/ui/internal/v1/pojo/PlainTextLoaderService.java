@@ -251,10 +251,8 @@ public class PlainTextLoaderService implements IToolDataService {
         String toolData = null;
         // synchronized is done by the caller
         try {
-            if (persist != null) {
-                toolData = persist.loadPlainText(persistedName);
-                Tr.info(tc, "LOADED_PERSISTED_TOOL_DATA", userId, toolName);
-            }
+            toolData = persist.loadPlainText(persistedName);
+            Tr.info(tc, "LOADED_PERSISTED_TOOL_DATA", userId, toolName);
         } catch (FileNotFoundException e) {
             // do nothing and return null toolData
         } catch (IOException e) {
@@ -277,21 +275,22 @@ public class PlainTextLoaderService implements IToolDataService {
             Tr.entry(tc, "deleteToolData", new Object[] {"userId=" + userId, "toolName=" + toolName});
         }
         String[] persistedNames = getPersistedNames(toolName, userId);
-        boolean isDeleted = true;
+        boolean deletedFromCollective = true;
+        boolean deletedFromFile = true;
         synchronized(getSyncObject(persistedNames[1])) {
             for (String persistedName : persistedNames) {
                 if (persistenceProviderCollective != null)
-                    isDeleted  = isDeleted && deleteToolDataFromPersistence(persistenceProviderCollective, persistedName, userId, toolName);
+                    deletedFromCollective  = deleteToolDataFromPersistence(persistenceProviderCollective, persistedName, userId, toolName) && deletedFromCollective;
 
                 if (persistenceProviderFile != null)
-                    isDeleted = isDeleted && deleteToolDataFromPersistence(persistenceProviderFile, persistedName,  userId, toolName);
+                    deletedFromFile = deleteToolDataFromPersistence(persistenceProviderFile, persistedName,  userId, toolName) && deletedFromFile;
             }
         }
         if (tc.isEntryEnabled()) {
-            Tr.exit(tc, "deleteToolData", isDeleted);
+            Tr.exit(tc, "deleteToolData", deletedFromCollective && deletedFromFile);
         }
 
-        return isDeleted;
+        return deletedFromCollective && deletedFromFile;
     }
 
     /** {@inheritDoc} */
@@ -417,10 +416,10 @@ public class PlainTextLoaderService implements IToolDataService {
             {
                 try {
                     String data = loadToolDataFromPersistence(persistenceProviderFile, fromPersistedName, userId, toolName);
-                        if (data != null) {
-                            persistenceProviderCollective.storePlainText(toPersistedName, data);
-                            promoted = true;
-                        }
+                    if (data != null && !"IOException".equals(data)) {
+                        persistenceProviderCollective.storePlainText(toPersistedName, data);
+                        promoted = true;
+                    }
                 } catch (IOException e) {
                     Tr.error(tc, "UNABLE_TO_PROMOTE_TOOL_DATA_CONTENT", userId, toolName);
                 } catch (JSONMarshallException e) {

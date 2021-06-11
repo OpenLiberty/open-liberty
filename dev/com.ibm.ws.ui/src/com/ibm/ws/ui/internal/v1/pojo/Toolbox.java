@@ -146,7 +146,11 @@ public class Toolbox implements IToolbox {
      * @return The encrypted user id
      */
     public static String getEncodedUserId(String userId) {
-        return Base64.getUrlEncoder().encodeToString(userId.getBytes());
+        String encodedUserId = userId;
+        if (userId != null) {
+            encodedUserId = Base64.getUrlEncoder().encodeToString(userId.getBytes());
+        }
+        return encodedUserId;
     }
 
     /**
