@@ -41,10 +41,8 @@ task cleanBeforeRun(type: Delete) {
 configurations {
   requiredLibs
   jdbcDrivers { transitive = false; }
-  databaseRotationDrivers
   derby
   jakartaTransformer
-  testcontainers
 }
 
 dependencies {
@@ -57,14 +55,6 @@ dependencies {
 		'org.apache.derby:derby:10.11.1.1',
 		'com.oracle.database.jdbc.debug:ojdbc8_g:21.1.0.0'
 
-  // this will inherit from the 'testcontainers' config
-  databaseRotationDrivers "org.testcontainers:database-commons:${testcontainersVersion}",
-       "org.testcontainers:jdbc:${testcontainersVersion}",
-       "org.testcontainers:oracle-xe:${testcontainersVersion}",
-       "org.testcontainers:mssqlserver:${testcontainersVersion}",
-       "org.testcontainers:postgresql:${testcontainersVersion}",
-       "org.testcontainers:db2:${testcontainersVersion}"
-
   jakartaTransformer 'biz.aQute.bnd:biz.aQute.bnd.transform:5.3.0',
        'commons-cli:commons-cli:1.4',
        'org.slf4j:slf4j-simple:1.7.30',
@@ -72,23 +62,6 @@ dependencies {
        'org.eclipse.transformer:org.eclipse.transformer:0.2.0',
        'org.eclipse.transformer:org.eclipse.transformer.cli:0.2.0'
 
-  testcontainers "org.testcontainers:testcontainers:${testcontainersVersion}",
-       'com.fasterxml.jackson.core:jackson-annotations:2.10.3',
-       'com.github.docker-java:docker-java-api:3.2.8',
-       'com.github.docker-java:docker-java-transport:3.2.8',
-       'com.github.docker-java:docker-java-transport-zerodep:3.2.8',
-       'net.java.dev.jna:jna:5.8.0',
-       'org.apache.commons:commons-compress:1.20',
-       'org.rnorth.duct-tape:duct-tape:1.0.8',
-       'org.rnorth.visible-assertions:visible-assertions:2.1.2',
-       'org.slf4j:slf4j-api:1.7.30',
-       'org.slf4j:slf4j-jdk14:1.7.30'
-}
-
-task addTestcontainers(type: Copy) {
-  mustRunAfter jar
-  from configurations.testcontainers
-  into new File(autoFvtDir, 'lib')
 }
 
 task addRequiredLibraries(type: Copy) {
@@ -130,13 +103,6 @@ task copyJdbcDrivers(type: Copy) {
   rename 'ojdbc8_g.*.jar', 'ojdbc8_g.jar'
   rename 'postgresql.*.jar', 'postgresql.jar'
   rename 'mssql-jdbc.*.jar', 'mssql-jdbc.jar'
-}
-
-task copyDatabaseRotationDrivers(type: Copy) {
-  mustRunAfter jar
-  dependsOn addTestcontainers
-  from configurations.databaseRotationDrivers
-  into new File(autoFvtDir, 'lib')
 }
 
 task copyFeatureBundles {

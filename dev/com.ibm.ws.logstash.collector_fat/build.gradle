@@ -8,8 +8,8 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-addRequiredLibraries.dependsOn addTestcontainers
 
 dependencies {
   requiredLibs 'org.json:json:20080701' 
+  requiredLibs project(':io.openliberty.org.testcontainers')
 } 

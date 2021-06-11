@@ -19,6 +19,7 @@ dependencies {
            project(':io.openliberty.org.apache.commons.codec'),
            project(':com.ibm.ws.org.apache.commons.io'),
            'com.google.code.gson:gson:2.2.4'
+  requiredLibs project(':io.openliberty.org.testcontainers')
 }
 
 task copyCloudant(type: Copy) {
@@ -28,4 +29,3 @@ task copyCloudant(type: Copy) {
 }
 
 addRequiredLibraries.dependsOn copyCloudant
-addRequiredLibraries.dependsOn addTestcontainers

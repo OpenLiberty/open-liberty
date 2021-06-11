@@ -16,6 +16,7 @@ configurations {
 dependencies {
   jpaFatTools project(':com.ibm.ws.jpa_testframework')
   requiredLibs project(":com.ibm.ws.jpa.tests.spec10.entitymanager")
+  requiredLibs project(':io.openliberty.org.testcontainers')
 }
 
 task addJPAFATTools (type: Copy) {
@@ -57,7 +58,6 @@ task copyCommonFiles {
 
 addRequiredLibraries {
   dependsOn copyJdbcDrivers
-  dependsOn copyDatabaseRotationDrivers
   dependsOn addJakartaTransformer
   dependsOn addJPAFATTools
   dependsOn copyFAT
