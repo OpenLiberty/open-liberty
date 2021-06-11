@@ -124,9 +124,6 @@ public class CHFWEventHandler implements EventHandler {
             for (ChainData chain : chains) {
 
                 if (cf.isChainRunning(chain)) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                        Tr.event(tc, "Chain running; channel=" + name);
-                    }
                     // stop the chain now..
                     cf.stopChain(chain, 0);
                 }
