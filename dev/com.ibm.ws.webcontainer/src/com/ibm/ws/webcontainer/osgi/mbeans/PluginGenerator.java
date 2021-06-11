@@ -864,20 +864,50 @@ public class PluginGenerator {
         }
     }
 
-    @FFDCIgnore(IOException.class)
-    public static void copyFile(File in, File out) throws IOException {
-        FileChannel inChannel = new FileInputStream(in).getChannel();
-        FileChannel outChannel = new FileOutputStream(out).getChannel();
+    @FFDCIgnore({ IOException.class })
+    public static void copyFile(File in, File out) throws IOException
+    {
+        FileChannel inChannel = null;
+        FileChannel outChannel = null;
         try {
-            inChannel.transferTo(0, inChannel.size(),
-                                 outChannel);
-        } catch (IOException e) {
+            inChannel = new FileInputStream(in).getChannel();
+            outChannel = new FileOutputStream(out).getChannel();
+        } catch(FileNotFoundException fnf) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "FileChannel creation failed; we'll wait a bit and try again. Original exception: " + fnf);
+            }
+            try {
+                // in rapid server update cases there's a chance the file will still report that it's held by another process
+                // we'll wait a bit for the file lock to clear up and try again
+                Thread.sleep(500);
+                if (inChannel == null) {
+                    inChannel = new FileInputStream(in).getChannel();
+                }
+                if (outChannel == null) {
+                    outChannel = new FileOutputStream(out).getChannel();
+                } 
+            } catch (InterruptedException ie) {
+                // ignore
+            } catch(FileNotFoundException secondFnf) {
+                // we hit the FileNotFoundException a second time, so we'll give up and close any open streams below 
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Stream creation failed a second time; we won't try again. Original exception: " + secondFnf);
+                }
+                throw secondFnf;
+            }
+        }
+        try {
+            if (inChannel != null && outChannel != null) {
+                inChannel.transferTo(0, inChannel.size(),
+                outChannel);
+            }
+        }
+        catch (IOException e) {
             throw e;
-        } finally {
-            if (inChannel != null)
-                inChannel.close();
-            if (outChannel != null)
-                outChannel.close();
+        }
+        finally {
+            if (inChannel != null) inChannel.close();
+            if (outChannel != null) outChannel.close();
         }
     }
 
