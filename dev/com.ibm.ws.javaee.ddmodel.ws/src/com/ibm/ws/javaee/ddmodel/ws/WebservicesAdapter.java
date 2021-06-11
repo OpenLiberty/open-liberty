@@ -31,8 +31,6 @@ public final class WebservicesAdapter implements ContainerAdapter<Webservices> {
     @FFDCIgnore(ParseException.class)
     @Override
     public Webservices adapt(Container root, OverlayContainer rootOverlay, ArtifactContainer artifactContainer, Container containerToAdapt) throws UnableToAdaptException {
-
-        //try to find cache
         Webservices wsxml = (Webservices) rootOverlay.getFromNonPersistentCache(artifactContainer.getPath(), Webservices.class);
 
         if (wsxml != null) {
@@ -48,43 +46,32 @@ public final class WebservicesAdapter implements ContainerAdapter<Webservices> {
         }
 
         if (ddEntry != null) {
-
             try {
                 WebServicesDDParser ddParser = new WebServicesDDParser(containerToAdapt, ddEntry);
                 wsxml = ddParser.parse();
-                //cache it
                 rootOverlay.addToNonPersistentCache(artifactContainer.getPath(), Webservices.class, wsxml);
                 return wsxml;
             } catch (ParseException e) {
                 throw new UnableToAdaptException(e);
             }
-
         }
 
         return null;
     }
 
-    /**
-     * DDParser for webservices.xml
-     */
     private static final class WebServicesDDParser extends DDParser {
-
-        /**
-         * @param ddRootContainer
-         * @param ddEntry
-         * @throws ParseException
-         */
         public WebServicesDDParser(Container ddRootContainer, Entry ddEntry) throws ParseException {
             super(ddRootContainer, ddEntry);
         }
 
-        Webservices parse() throws ParseException {
+        @Override
+        public WebservicesType parse() throws ParseException {
             super.parseRootElement();
-            return (Webservices) rootParsable;
+            return (WebservicesType) rootParsable;
         }
 
         @Override
-        protected DDParser.ParsableElement createRootParsable() throws ParseException {
+        protected WebservicesType createRootParsable() throws ParseException {
             if (!"webservices".equals(rootElementLocalName)) {
                 return null;
             }
@@ -96,6 +83,23 @@ public final class WebservicesAdapter implements ContainerAdapter<Webservices> {
                 return new WebservicesType(getDeploymentDescriptorPath());
             }
             throw new ParseException(invalidDeploymentDescriptorVersion(vers));
+        }
+
+        @Override
+        protected VersionData[] getVersionData() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        protected void validateRootElementName() throws ParseException {
+            // TODO Auto-generated method stub
+        }
+
+        @Override
+        protected WebservicesType createRootElement() {
+            // TODO Auto-generated method stub
+            return null;
         }
     }
 }

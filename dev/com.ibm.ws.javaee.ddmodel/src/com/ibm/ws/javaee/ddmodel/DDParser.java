@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2020 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,18 +31,32 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.container.service.app.deploy.ModuleInfo;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.service.util.DesignatedXMLInputFactory;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
+import com.ibm.wsspi.adaptable.module.NonPersistentCache;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 
 public abstract class DDParser {
     private static final TraceComponent tc = Tr.register(DDParser.class);
 
+    //
+
+    public static final String NAMESPACE_SUN_J2EE =
+        "http://java.sun.com/xml/ns/j2ee";
+    public static final String NAMESPACE_SUN_JAVAEE =
+        "http://java.sun.com/xml/ns/javaee";
+    public static final String NAMESPACE_JCP_JAVAEE =
+        "http://xmlns.jcp.org/xml/ns/javaee";
+    public static final String NAMESPACE_JAKARTA =
+        "https://jakarta.ee/xml/ns/jakartaee";    
+
+    //
+
     public static class ParseException extends Exception {
-        /**  */
         private static final long serialVersionUID = -2437543890927284677L;
 
         public ParseException(String translatedMessage) {
@@ -54,29 +68,27 @@ public abstract class DDParser {
         }
     }
 
+    //
+
     public interface RootParsable {
-        public void describe(StringBuilder sb);
+        void describe(StringBuilder sb);
     }
 
     public interface Parsable {
-        public void describe(Diagnostics diag);
+        void describe(Diagnostics diag);
     }
 
     public interface ParsableElement extends Parsable {
+        void setNil(boolean nilled);
+        boolean isNil();
 
-        public void setNil(boolean nilled);
+        boolean isIdAllowed();
 
-        public boolean isNil();
+        boolean handleAttribute(DDParser parser, String nsURI, String localName, int index) throws ParseException;
+        boolean handleChild(DDParser parser, String localName) throws ParseException;
+        boolean handleContent(DDParser parser) throws ParseException;
 
-        public boolean isIdAllowed();
-
-        public boolean handleAttribute(DDParser parser, String nsURI, String localName, int index) throws ParseException;
-
-        public boolean handleChild(DDParser parser, String localName) throws ParseException;
-
-        public boolean handleContent(DDParser parser) throws ParseException;
-
-        public void finish(DDParser parser) throws ParseException;
+        void finish(DDParser parser) throws ParseException;
     }
 
     public static abstract class ElementContentParsable implements ParsableElement {
@@ -166,7 +178,9 @@ public abstract class DDParser {
         }
     }
 
-    public static class ParsableListImplements<T extends ParsableElement, I> extends ParsableList<T> {
+    public static class ParsableListImplements<T extends ParsableElement, I>
+        extends ParsableList<T> {
+
         @Trivial
         @SuppressWarnings("unchecked")
         public List<I> getList() {
@@ -177,7 +191,8 @@ public abstract class DDParser {
     public static class ComponentIDMap {
         public static final Object DUPLICATE = new Object();
 
-        private final Map<String, Object> idToComponentMap = new HashMap<String, Object>();
+        private final Map<String, Object> idToComponentMap =
+            new HashMap<String, Object>();
 
         @Trivial
         Object get(String id) {
@@ -310,132 +325,160 @@ public abstract class DDParser {
     }
 
     private static final class DTDPublicIDResolver implements XMLResolver {
-        String dtdPublicId;
+        private String dtdPublicId;
 
+        /**
+         * Override to answer an empty input stream.
+         *
+         * As a side effect, store the public ID.  This is used
+         * when processing the XML header.
+         *
+         * @return The resolved entity.  This implementation
+         *     always answers an empty input stream.
+         */
         @Override
-        public Object resolveEntity(String publicID, String systemID, String baseURI, String namespace) throws XMLStreamException {
+        public Object resolveEntity(
+            String publicID, String systemID,
+            String baseURI, String namespace) throws XMLStreamException {
+
             dtdPublicId = publicID;
+
             return new ByteArrayInputStream(new byte[0]);
         }
     }
 
-    private XMLStreamReader xsr = null;
-    public String namespace;
-    public String idNamespace;
-    public String dtdPublicId;
-    /**
-     * The version specified in the deployment descriptor (e.g., 30 for servlet 3.0)
-     */
-    public int version;
-    /**
-     * The EE platform version implied by the version of the deployment descriptor
-     * (e.g., 60 for EE 6).
-     */
-    public int eePlatformVersion;
+    //
 
-    /**
-     * Distinct from the version implied by the deployment descriptor, the Liberty runtime
-     * has rules of function, dictated by the specification, that act on multiple descriptor
-     * versions. Ex: an EE6 descriptor level running in an EE7 runtime.
-     */
-    public int runtimeVersion;
-
-    public ComponentIDMap idMap = new ComponentIDMap();
-
-    protected final Container rootContainer;
-    protected final Entry adaptableEntry;
-    protected final String ddEntryPath;
-    public final Class<?> crossComponentDocumentType;
-    protected ParsableElement rootParsable;
-    public String rootElementLocalName;
-    protected String currentElementLocalName;
-    protected StringBuilder contentBuilder = new StringBuilder();
-    protected boolean trimSimpleContentAsRequiredByServletSpec;
-
-    protected final Object describeRootParsable = new Object() {
-        @Trivial
-        @Override
-        public String toString() {
-            DDParser.Diagnostics diag = new DDParser.Diagnostics(DDParser.this.idMap);
-            diag.describe(rootParsable != null ? rootParsable.toString() : "DDParser", rootParsable);
-            return diag.getDescription();
-        }
-    };
-
-    protected abstract ParsableElement createRootParsable() throws ParseException;
-
-    public DDParser(Container ddRootContainer, Entry ddEntry) throws ParseException {
-        this(ddRootContainer, ddEntry, null);
+    public DDParser(Container rootContainer, Entry adaptableEntry,
+            boolean trimSimpleContent,
+            int maxSchemaVersion, int maxRuntimeVersion) throws ParseException {
+        this(rootContainer, adaptableEntry,
+             UNUSED_CROSS_COMPONENT_TYPE, trimSimpleContent,
+             maxSchemaVersion, maxRuntimeVersion);
     }
+    
+    public DDParser(Container rootContainer, Entry adaptableEntry,
+                    int maxSchemaVersion, int maxRuntimeVersion) throws ParseException {
+        this(rootContainer, adaptableEntry,
+             UNUSED_CROSS_COMPONENT_TYPE, !TRIM_SIMPLE_CONTENT,
+             maxSchemaVersion, maxRuntimeVersion);
+    }    
+    
+    public DDParser(Container rootContainer, Entry adaptableEntry,
+                    Class<?> crossComponentType) throws ParseException {
+        this(rootContainer, adaptableEntry,
+             crossComponentType, !TRIM_SIMPLE_CONTENT,
+             UNUSED_MAX_SCHEMA_VERSION, UNUSED_MAX_RUNTIME_VERSION);
+    }    
+
+    public DDParser(Container rootContainer, Entry adaptableEntry) throws ParseException {
+        this(rootContainer, adaptableEntry,
+             UNUSED_CROSS_COMPONENT_TYPE, !TRIM_SIMPLE_CONTENT,
+             UNUSED_MAX_SCHEMA_VERSION, UNUSED_MAX_RUNTIME_VERSION);
+    }    
+    
+    protected static final Class<?> UNUSED_CROSS_COMPONENT_TYPE = null;
+    protected static final boolean TRIM_SIMPLE_CONTENT = true;
+    protected static final int UNUSED_MAX_SCHEMA_VERSION = -1;
+    protected static final int UNUSED_MAX_RUNTIME_VERSION = -1;
 
     /**
-     * Construct a parser for a specified container and container entry.  The container entry contains
-     * descriptor text which is to be parsed.
+     * Construct a parser for a specified container and container entry.
      * 
      * @param rootContainer The root container containing the entry which is to be parsed.
      * @param adaptableEntry The container entry which is to be parsed.
-     * @param crossComponentDocumentType Unknown.
+     * @param crossComponentType Unknown.
+     * @param trimSimpleContent Control parameter: Tells if simple content
+     *     is to be trimmed.  This capability is required for parsing web and
+     *     web fragment descriptors.
+     * @param maxSchemaVersion The maximum schema version which will be
+     *     parsed.
+     * @param maxRuntimeVersion The maximum runtime version which will be
+     *     parsed.
      *
      * @throws ParseException Thrown in case of a parse error.  Not currently thrown.
      *    Declared for future use.
      */
-    public DDParser(Container rootContainer, Entry adaptableEntry, Class<?> crossComponentDocumentType) throws ParseException {
-        this.rootContainer = rootContainer;
+    public DDParser(
+            Container rootContainer, Entry adaptableEntry,
+            Class<?> crossComponentType, boolean trimSimpleContent,
+            int maxSchemaVersion, int maxRuntimeVersion) throws ParseException {
+
+        this.crossComponentDocumentType = crossComponentType;
+        this.trimSimpleContentAsRequiredByServletSpec = trimSimpleContent;
+
+        this.maxVersion = maxSchemaVersion;
+        this.runtimeVersion = maxRuntimeVersion;
+
         this.adaptableEntry = adaptableEntry;
         this.ddEntryPath = adaptableEntry.getPath();
-        this.crossComponentDocumentType = crossComponentDocumentType;
+        this.rootContainer = rootContainer;
     }
 
-    public String getDeploymentDescriptorPath() {
-        return ddEntryPath.substring(1);
-    }
+    // Control parameters ... 
+
+    public final Class<?> crossComponentDocumentType;
+
+    protected final boolean trimSimpleContentAsRequiredByServletSpec;
 
     /**
-     * Allow specific implementing parsers to manipulate this default behavior.
+     * The current platform runtime version.  This is determined
+     * by what features are provisioned.  This is one of the values
+     * as defined by {@link JavaEEVersion}.
+     * 
+     * The platform runtime version determines what specification is
+     * used by the runtime.
+     * 
+     * Note that this is distinct from any schema version which is
+     * present in an application or module deployment descriptor.
+     * The schema version determines the format of the descriptor.
+     * The platform runtime version determines how the descriptor
+     * content is used.
      */
-    protected void failInvalidRootElement() throws ParseException {
-        if (rootParsable == null) {
-            throw new ParseException(invalidRootElement());
-        }
-    }
+    public final int runtimeVersion;
 
-    @FFDCIgnore({ IllegalArgumentException.class, XMLStreamException.class })
-    private XMLStreamReader createXMLStreamReader(XMLResolver resolver, InputStream stream) throws ParseException {
-        try {
-            XMLInputFactory inputFactory = DesignatedXMLInputFactory.newInstance();
-            // IBM XML parser requires a special property to enable line numbers.
-            try {
-                inputFactory.setProperty("javax.xml.stream.isSupportingLocationCoordinates", true);
-            } catch (IllegalArgumentException e) {
-                e.getClass(); // findbugs
-            }
-            inputFactory.setXMLResolver(resolver);
-            return inputFactory.createXMLStreamReader(stream);
-        } catch (XMLStreamException e) {
-            throw new ParseException(xmlError(e), e);
-        }
-    }
+    /**
+     * The current maximum supported schema version.
+     * 
+     * This is the analog to the runtime version, but is
+     * expressed as a schema version.  For example, for web
+     * module descriptors, schema version "25" corresponds
+     * to JavaEE version "50".
+     */
+    public final int maxVersion;
 
-    @FFDCIgnore(XMLStreamException.class)
-    private void parseToRootElement() throws ParseException {
-        try {
-            while (!xsr.isStartElement()) {
-                if (!xsr.hasNext()) {
-                    throw new ParseException(rootElementNotFound());
-                }
-                xsr.next();
-            }
-        } catch (XMLStreamException e) {
-            throw new ParseException(xmlError(e), e);
-        }
-    }
+    // What will be parsed ...
+
+    protected final Entry adaptableEntry;
+    protected final String ddEntryPath;
+
+    protected final Container rootContainer;
+
+    private final Map<Class<?>, Object> adaptCache =
+        new HashMap<Class<?>, Object>();
 
     @Trivial
     public Entry getAdaptableEntry() {
         return adaptableEntry;
     }
 
-    private final Map<Class<?>, Object> adaptCache = new HashMap<Class<?>, Object>();
+    protected InputStream openEntry() throws ParseException {
+        try {
+            return adaptableEntry.adapt(InputStream.class);
+        } catch ( UnableToAdaptException e ) {
+            throw new ParseException( xmlError(e), e );
+        }
+    }
+
+    @Trivial
+    public String getPath() {
+        return ddEntryPath;
+    }
+
+    @Trivial
+    public String getDeploymentDescriptorPath() {
+        return ddEntryPath.substring(1);
+    }
 
     @Trivial
     public <T> T adaptRootContainer(Class<T> adaptTarget) throws ParseException {
@@ -456,28 +499,158 @@ public abstract class DDParser {
         }
     }
 
+    public String getModuleName() {
+        ModuleInfo moduleInfo = cacheGet(ModuleInfo.class);
+        if ( moduleInfo != null ) {
+            return moduleInfo.getName();
+        } else {
+            return rootContainer.getName();
+        }
+    }
+    
+    @SuppressWarnings("unchecked")
+    public <T> T cacheGet(Class<T> targetClass) {
+        NonPersistentCache cache = null;
+        try {
+            cache = rootContainer.adapt(NonPersistentCache.class);
+        } catch ( UnableToAdaptException e ) {
+            // FFDC
+        }
+        return ( (cache == null) ? null : (T) cache.getFromCache(targetClass) );
+    }    
+    
+    
+    // XML header values ...
+
+    public int version; // Schema version
+    public int eePlatformVersion; // Schema version turned into a platform version.
+
+    public String dtdPublicId;
+    public String namespace;
+
+    public String idNamespace;
+
+    public String getVersionText() {
+        if ( version == 0 ) {
+            return null;
+        } else {
+            byte[] versionBytes = {
+                (byte) ('0' + (version / 10)),
+                '.',
+                (byte) ('0' + (version % 10)) };
+            return new String(versionBytes);
+        }
+    }
+
+    // Root parse objects ...
+    
+    protected ParsableElement rootParsable;    
+    public String rootElementLocalName;
+    
+    public ComponentIDMap idMap = new ComponentIDMap();
+
+    protected String currentElementLocalName;
+
+    protected final Object describeRootParsable = new Object() {
+        @Trivial
+        @Override
+        public String toString() {
+            DDParser.Diagnostics diag = new DDParser.Diagnostics(DDParser.this.idMap);
+            diag.describe(rootParsable != null ? rootParsable.toString() : "DDParser", rootParsable);
+            return diag.getDescription();
+        }
+    };
+
+    /**
+     * Allow specific implementing parsers to manipulate this default behavior.
+     */
+    protected void failInvalidRootElement() throws ParseException {
+        if (rootParsable == null) {
+            throw new ParseException(invalidRootElement());
+        }
+    }
+
     @Trivial
     public ParsableElement getRootParsable() {
         return rootParsable;
     }
 
+    // Reading primitives ...
+    
+    private XMLStreamReader xsr;
+    
     @Trivial
     public String getNamespaceURI(String prefix) {
         return xsr.getNamespaceURI(prefix);
     }
 
-    // TODO: Need to rewrite this!
     @Trivial
-    public String getAttributeValue(String namespaceURI, String localName) {
-        boolean checkNS = namespaceURI != null;
-        if (checkNS && namespaceURI.length() == 0) {
-            namespaceURI = null;
-        }
-        final int attrCount = xsr.getAttributeCount();
-        for (int i = 0; i < attrCount; ++i) {
-            if (localName.equals(xsr.getAttributeLocalName(i)) &&
-                (!checkNS || ("".equals(xsr.getAttributeNamespace(i)) ? null : xsr.getAttributeNamespace(i)) == namespaceURI)) {
-                return xsr.getAttributeValue(i);
+    public int getLineNumber() {
+        return ( (xsr == null) ? -1 : xsr.getLocation().getLineNumber() );
+    }
+
+    @Trivial
+    public boolean isWhiteSpace() {
+        return xsr.isWhiteSpace();
+    }
+    
+    /**
+     * Retrieve the value of an attribute.
+     * 
+     * Match on the target local name and optionally on a target namespace.
+     *
+     * Match only on the target local name if the target namespace is null.
+     *
+     * Match an empty target namespace against empty attribute namespaces
+     * and against null attribute namespaces.
+     *
+     * @param targetNS The namespace of the target attribute.
+     * @param targetLocalName The local name of the target attribute.
+     *
+     * @return The value of the target attribute.  Null if the target
+     *     attribute is not found.
+     */
+    @Trivial
+    public String getAttributeValue(String targetNS, String targetLocalName) {
+        int attrCount = xsr.getAttributeCount();
+        for ( int attrNo = 0; attrNo < attrCount; attrNo++ ) {
+            String attrLocalName = xsr.getAttributeLocalName(attrNo);
+
+            // First check is against the attribute local name.
+            // This must match the target local name.
+
+            if ( !targetLocalName.equals(attrLocalName) ) {
+                continue;
+            }
+
+            // Second check is against the attribute namespace.
+            // Ignore this check if a null target namespace was provided.
+
+            if ( targetNS == null ) {
+                return xsr.getAttributeValue(attrNo);
+            }
+
+            // When matching namespaces, an empty target namespace
+            // matches a null attribute namespace as well as an
+            // empty attribute namespace.  A non-null target namespace
+            // must exactly match the attribute namespace.
+            
+            String attrNS = xsr.getAttributeNamespace(attrNo);
+            if ( attrNS == null ) {
+                if ( targetNS.isEmpty() ) {
+                    return xsr.getAttributeValue(attrNo);
+                } else {
+                    // Keep looking: The target namespace is
+                    // not null and is not empty, and this
+                    // attribute namespace is null.
+                }
+            } else {
+                if ( targetNS.equals(attrNS) ) {
+                    // This test works if either namespace is empty.
+                    return xsr.getAttributeValue(attrNo);
+                } else {
+                    // Keep looking.
+                }
             }
         }
         return null;
@@ -529,6 +702,10 @@ public abstract class DDParser {
         return parseEnum(getAttributeValue(index), valueClass);
     }
 
+    // Element content primitives ...
+
+    protected StringBuilder contentBuilder = new StringBuilder();
+    
     @Trivial
     public void appendTextToContent() {
         contentBuilder.append(xsr.getText());
@@ -549,9 +726,88 @@ public abstract class DDParser {
         return getContentString(false);
     }
 
-    @Trivial
-    public boolean isWhiteSpace() {
-        return xsr.isWhiteSpace();
+    // Top level parsing ...
+
+    public ParsableElement parse() throws ParseException {
+        parseRootElement();
+        return rootParsable;
+    }
+
+    protected void parseRootElement() throws ParseException {
+        InputStream stream = null;
+        try {
+            stream = openEntry();
+
+            DTDPublicIDResolver resolver = new DTDPublicIDResolver();
+            
+            try {
+                xsr = createXMLStreamReader(resolver, stream);
+
+                parseToRootElement();
+
+                dtdPublicId = resolver.dtdPublicId;
+                namespace = xsr.getNamespaceURI();
+                rootElementLocalName = xsr.getLocalName();
+
+                currentElementLocalName = rootElementLocalName;
+                rootParsable = createRootParsable();
+                failInvalidRootElement();
+
+                if ( rootParsable != null ) {
+                    parse(rootParsable);
+                }
+
+            } finally {
+                if ( xsr != null ) {
+                    try {
+                        xsr.close();
+                    } catch ( XMLStreamException xse ) {
+                        // FFDC
+                    }
+                }
+            }
+
+        } finally {
+            if ( stream != null ) {
+                try {
+                    stream.close();
+                } catch ( IOException ioe ) {
+                    //FFDC
+                }
+            }
+        }
+    }
+
+    @FFDCIgnore({ IllegalArgumentException.class, XMLStreamException.class })
+    private XMLStreamReader createXMLStreamReader(XMLResolver resolver, InputStream stream) throws ParseException {
+        try {
+            XMLInputFactory inputFactory = DesignatedXMLInputFactory.newInstance();
+            // IBM XML parser requires a special property to enable line numbers.
+            try {
+                inputFactory.setProperty("javax.xml.stream.isSupportingLocationCoordinates", true);
+            } catch ( IllegalArgumentException e ) {
+                // FFDC
+            }
+            inputFactory.setXMLResolver(resolver);
+            return inputFactory.createXMLStreamReader(stream);
+
+        } catch ( XMLStreamException e ) {
+            throw new ParseException(xmlError(e), e);
+        }
+    }
+    
+    @FFDCIgnore(XMLStreamException.class)
+    private void parseToRootElement() throws ParseException {
+        try {
+            while (!xsr.isStartElement()) {
+                if (!xsr.hasNext()) {
+                    throw new ParseException(rootElementNotFound());
+                }
+                xsr.next();
+            }
+        } catch ( XMLStreamException e ) {
+            throw new ParseException(xmlError(e), e);
+        }
     }
 
     @Trivial
@@ -575,43 +831,75 @@ public abstract class DDParser {
         }
     }
 
-    protected void parseRootElement() throws ParseException {
-        InputStream stream = null;
-        try {
-            stream = adaptableEntry.adapt(InputStream.class);
-            DTDPublicIDResolver resolver = new DTDPublicIDResolver();
-            xsr = createXMLStreamReader(resolver, stream);
-            parseToRootElement();
-            dtdPublicId = resolver.dtdPublicId;
-            resolver = null;
-            namespace = xsr.getNamespaceURI();
-            rootElementLocalName = xsr.getLocalName();
-            currentElementLocalName = rootElementLocalName;
-            rootParsable = createRootParsable();
-            failInvalidRootElement();
-            if (rootParsable != null) {
-                parse(rootParsable);
-            }
-        } catch (UnableToAdaptException e) {
-            throw new ParseException(xmlError(e), e);
-        } finally {
-            try {
-                if (xsr != null) {
-                    xsr.close();
-                }
-            } catch (XMLStreamException xse) {
-                // FFDCs
-            } finally {
-                try {
-                    if (stream != null) {
-                        stream.close();
-                    }
-                } catch (IOException ioe) {
-                    //FFDCs
+    protected abstract VersionData[] getVersionData();
+    protected abstract void validateRootElementName() throws ParseException;
+    protected abstract ParsableElement createRootElement();
+
+    protected ParsableElement createRootParsable() throws ParseException {
+        validateRootElementName();
+
+        String versionAttr = getAttributeValue("", "version");
+
+        // Need either a version, or a namespace, or a public ID.
+
+        if ( versionAttr == null ) { 
+            if ( namespace == null ) {
+                if ( dtdPublicId == null ) {
+                    throw new ParseException( missingDescriptorVersion() );
                 }
             }
         }
+
+        VersionData versionData = selectVersion( getVersionData(),
+                versionAttr, dtdPublicId, namespace,
+                maxVersion );
+        
+        if ( versionData == null ) {
+            // Version has priority, next namespace, and finally public ID.
+            // One of these must be set, per the prior test.
+            if ( versionAttr != null ) {
+                throw new ParseException( unsupportedDescriptorVersion(versionAttr) );
+            } else if ( namespace != null ) {
+                throw new ParseException( unsupportedDescriptorNamespace(namespace) );
+            } else { // ( dtdPublicId != null )
+                throw new ParseException( unsupportedDescriptorPublicId(dtdPublicId) );
+            }
+        }            
+
+        // Allow the selection of the version even if it is not provisioned.
+        // This is slightly improper, as it changes an 'unsupported' exception
+        // into an 'unprovisioned' exception across releases, as the product adds
+        // support for new specifications.
+
+        if ( versionData.version > maxVersion ) {
+            throw new ParseException( unprovisionedDescriptorVersion(versionData.version, maxVersion) );
+        }
+
+        // Version has precedence over namespace.  That creates a possibility
+        // of the namespace not matching the version.
+        //
+        // In either case of a namespace mis-match, or the namespace being
+        // entirely absent, patch in the correct namespace.
+
+        if ( (versionAttr != null) && (namespace != null) ) {
+            if ( !namespace.equals(versionData.namespace) ) {
+                warning( incorrectDescriptorNamespace(versionAttr, namespace, versionData.namespace) );
+                namespace = versionData.namespace;                
+            }
+        }
+        if ( (namespace == null) && (versionData.namespace != null) ) {
+            namespace = versionData.namespace;
+        }
+
+        // Note that parsing will reassign the version upon parsing
+        // the 'version' attribute of the header.
+        version = versionData.version;
+        eePlatformVersion = versionData.platformVersion;
+
+        return createRootElement();
     }
+    
+    // Body parsing ...
 
     /**
      * If you are wanting to parse from the root element you should
@@ -644,7 +932,7 @@ public abstract class DDParser {
                     if (oldValue != ComponentIDMap.DUPLICATE) {
                         idMap.put(key, ComponentIDMap.DUPLICATE);
                     }
-                    if (tc.isDebugEnabled()) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "The element {0} has an id {1} that is not unique.", currentElementLocalName, key);
                     }
                 }
@@ -748,6 +1036,8 @@ public abstract class DDParser {
         return TokenType.wrap(this, lexical);
     }
 
+    // Enum handling ...
+
     /**
      * A mix-in interface for enums that allows values to be used only if
      * the parser version is at the correct level.
@@ -809,94 +1099,275 @@ public abstract class DDParser {
         return constant;
     }
 
+    // Version handling ...
+
+    protected static class VersionData {
+        public final String versionAttr;
+        public final String namespace;
+        public final String publicId;
+        public final int version;
+        public final int platformVersion;
+
+        public VersionData(
+            String versionAttr, String publicId, String namespace, int version, int platformVersion) {
+
+            this.versionAttr = versionAttr;
+            this.namespace = namespace;
+            this.publicId = publicId;
+            this.version = version;
+            this.platformVersion = platformVersion;
+        }
+        
+        public boolean accept(String ddVersionAttr, String ddPublicId, String ddNamespace) {
+            if ( ddVersionAttr == null ) {
+                return ( ((publicId != null) && publicId.equals(ddPublicId)) ||
+                         ((namespace != null) && namespace.equals(ddNamespace)) );
+            } else {
+                return versionAttr.equals(ddVersionAttr);
+            }
+        }
+        
+        public String toString() {
+            return super.toString() +
+                "(" + versionAttr +
+                ", " + namespace +
+                ", " + publicId +
+                ", " + version +
+                ", " + platformVersion +
+                ")";
+        }
+    }
+
+    /**
+     * Select the last version that accepts the specified descriptor header
+     * values.
+     *
+     * The table of versions must be in ascending order.
+     *
+     * When no version attribute is specified, match the highest provisioned
+     * version that matches the schema.
+     *
+     * Schema based matching is inexact: Multiple schemas are used
+     * by the same version.
+     *
+     * Ignore mismatches between the version attribute and the namespace.
+     * The version value takes precedence.
+     * 
+     * @param versions The versions from which to select.
+     * @param versionAttr The version attribute value from an XML header.
+     *     Will be null if parsing a DTD based descriptor.  May be null,
+     *     in which case the public ID or namespace will be used for
+     *     matching.
+     * @param publicId The public ID from an XML header.  Will be null
+     *     unless parsing a DTD based descriptor.
+     * @param namespace The namespace value from an XML header.  Will
+     *     be null if parsing a DTD based descriptor.  May be null,
+     *     in which case the version or public ID will be used for matching.
+     * @param maxPlatformVersion The current maximum provisioned
+     *     version.  (See {@link JavaEEVersion}.)  This limits version
+     *     selection when schema matching is inexact.  This does not
+     *     limit version selection in other cases: A version which is
+     *     higher than allowed by the maximum platform version may be
+     *     selected.
+     *     
+     * @return The selected version.  Null if no matching version was
+     *     selected.
+     */
+    protected static VersionData selectVersion(
+        VersionData[] versions,
+        String versionAttr, String publicId, String namespace,
+        int maxPlatformVersion) {
+
+        VersionData lastSelected = null;
+        for ( VersionData version : versions ) {
+            // Look for the last matching version ...
+            // But, once a match is found, disregard versions which
+            // require a higher platform version than is provisioned.
+            if ( (lastSelected != null) && (maxPlatformVersion < version.platformVersion) ) {
+                break;
+            }
+
+            if ( version.accept(versionAttr, publicId, namespace) ) {
+                lastSelected = version;
+                // Keep looking ... if the match was schema based,
+                // there can be a higher version which also matches
+                // the schema.  Current rules are to use the highest
+                // version allowed by the platform version.
+            }
+        }
+        return lastSelected;
+    }
+    
+    // Error handling ...
+
+    /**
+     * Describe an entry, providing paths to parent archives
+     * back to the root-of-roots container.
+     * 
+     * If possible, display the simple name of the physical path
+     * of the root-of-roots container.  Do not display the full
+     * physical path, as that would leak information about the
+     * server location on disk.
+     *
+     * For example:
+     * <code>
+     *     WEB-INF/web.xml
+     *     webModule.war : WEB-INF/web.xml
+     *     myEar.ear : webModule.war : WEB-INF/web.xml
+     *     WEB-INF/lib/fragment1.jar : META-INF/web-fragment.xml
+     * </code>
+     *
+     * @return A description of the target entry, including
+     *     relative paths of enclosing entries.
+     */
+    protected String describeEntry() {
+        StringBuilder builder = new StringBuilder();
+
+        Entry nextEntry = adaptableEntry;
+        while ( nextEntry != null ) {
+            if ( builder.length() > 0 ) {
+                builder.insert(0, " : ");
+            }
+            String nextPath = nextEntry.getPath();
+            if ( (nextPath.length() > 1) && (nextPath.charAt(0) == '/') ) {
+                nextPath = nextPath.substring(1); // Strip leading '/'
+            }
+            builder.insert(0, nextPath);
+
+            Container nextRoot = nextEntry.getRoot();
+            try {
+                nextEntry = nextRoot.adapt(Entry.class);
+            } catch ( UnableToAdaptException e ) {
+                break; // Unexpected
+            }
+
+            if ( nextEntry == null ) {
+                // We have reached the root-of-roots ...
+                //
+                // Do our best to display information about the root-of-roots
+                // container.  If this has a physical path, display the simple
+                // name from the path.  Don't display more, as that would leak
+                // information about the physical location of server files.
+                // Don't display anything if the root has just '/' as its path.
+
+                @SuppressWarnings("deprecation")
+                String path = nextRoot.getPhysicalPath();
+                if ( path != null ) {
+                    path = path.replace('\\', '/');
+                    int slashOffset = path.lastIndexOf('/');
+                    if ( slashOffset != -1 ) {
+                        path = path.substring(slashOffset + 1);
+                    }
+                    if ( !path.isEmpty() ) {
+                        builder.insert(0, " : ");
+                        builder.insert(0, path);
+                    }
+                }
+            }
+        }
+
+        String description = builder.toString();
+        System.out.println("Description [ " + description + " ]"); // Temp for debugging.
+        return description;
+    }
+    
+    // Static: Invoked from descriptor element parsers, which
+    //         which do not have a convenient reference to a parser.
+    // TODO: Add the reference?  The warning is supplied without
+    //       a descriptor reference and without a line number.
+
     public static void unresolvedReference(String elementName, String href) {
-        if (tc.isDebugEnabled()) {
+        if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
             Tr.debug(tc, "Unable to resolve reference from element {0} to {1}.", elementName, href);
         }
     }
 
-    public String getPath() {
-        return ddEntryPath;
+    protected void warning(String message) {
+        Tr.warning(tc, message);
     }
-
-    public int getLineNumber() {
-        return xsr == null ? -1 : xsr.getLocation().getLineNumber();
-    }
+    
+    protected void warning(String messageKey, Object... parms) {
+        Tr.warning(tc, messageKey, parms);
+    }    
 
     public String requiredAttributeMissing(String attrLocal) {
-        return Tr.formatMessage(tc, "required.attribute.missing", ddEntryPath, getLineNumber(), currentElementLocalName, attrLocal);
+        return Tr.formatMessage(tc, "required.attribute.missing", describeEntry(), getLineNumber(), currentElementLocalName, attrLocal);
     }
 
     protected String invalidRootElement() {
-        return Tr.formatMessage(tc, "invalid.root.element", ddEntryPath, getLineNumber(), rootElementLocalName);
+        return Tr.formatMessage(tc, "invalid.root.element", describeEntry(), getLineNumber(), rootElementLocalName);
     }
 
     private String rootElementNotFound() {
-        return Tr.formatMessage(tc, "root.element.not.found", ddEntryPath, getLineNumber());
+        return Tr.formatMessage(tc, "root.element.not.found", describeEntry(), getLineNumber());
     }
 
     private String endElementNotFound() {
-        return Tr.formatMessage(tc, "end.element.not.found", ddEntryPath, getLineNumber(), currentElementLocalName);
+        return Tr.formatMessage(tc, "end.element.not.found", describeEntry(), getLineNumber(), currentElementLocalName);
     }
 
     private String incorrectIDAttrNamespace(String attrNS) {
-        return Tr.formatMessage(tc, "incorrect.id.attr.namespace", ddEntryPath, getLineNumber(), currentElementLocalName, attrNS, idNamespace);
+        return Tr.formatMessage(tc, "incorrect.id.attr.namespace", describeEntry(), getLineNumber(), currentElementLocalName, attrNS, idNamespace);
     }
 
     private String unexpectedAttribute(String attrLocal) {
-        return Tr.formatMessage(tc, "unexpected.attribute", ddEntryPath, getLineNumber(), currentElementLocalName, attrLocal);
+        return Tr.formatMessage(tc, "unexpected.attribute", describeEntry(), getLineNumber(), currentElementLocalName, attrLocal);
     }
 
     public String unexpectedContent() {
-        return Tr.formatMessage(tc, "unexpected.content", ddEntryPath, getLineNumber(), currentElementLocalName);
+        return Tr.formatMessage(tc, "unexpected.content", describeEntry(), getLineNumber(), currentElementLocalName);
     }
 
     private String incorrectChildElementNamespace(String elementNS, String elementLocal) {
-        return Tr.formatMessage(tc, "incorrect.child.element.namespace", ddEntryPath, getLineNumber(), currentElementLocalName, elementLocal, elementNS, namespace);
+        return Tr.formatMessage(tc, "incorrect.child.element.namespace", describeEntry(), getLineNumber(), currentElementLocalName, elementLocal, elementNS, namespace);
     }
 
     private String unexpectedChildElement(String elementLocal) {
-        return Tr.formatMessage(tc, "unexpected.child.element", ddEntryPath, getLineNumber(), currentElementLocalName, elementLocal);
+        return Tr.formatMessage(tc, "unexpected.child.element", describeEntry(), getLineNumber(), currentElementLocalName, elementLocal);
     }
 
     public String invalidHRefPrefix(String hrefElementName, String hrefPrefix) {
-        return Tr.formatMessage(tc, "invalid.href.prefix", ddEntryPath, getLineNumber(), hrefElementName, hrefPrefix);
+        return Tr.formatMessage(tc, "invalid.href.prefix", describeEntry(), getLineNumber(), hrefElementName, hrefPrefix);
     }
 
     protected String unknownDeploymentDescriptorVersion() {
-        return Tr.formatMessage(tc, "unknown.deployment.descriptor.version", ddEntryPath);
+        return Tr.formatMessage(tc, "unknown.deployment.descriptor.version", describeEntry());
     }
 
     protected String invalidDeploymentDescriptorNamespace(String useVersion) {
-        return Tr.formatMessage(tc, "invalid.deployment.descriptor.namespace", ddEntryPath, getLineNumber(), namespace, useVersion);
+        return Tr.formatMessage(tc, "invalid.deployment.descriptor.namespace", describeEntry(), getLineNumber(), namespace, useVersion);
     }
 
     protected String invalidDeploymentDescriptorVersion(String useVersion) {
-        return Tr.formatMessage(tc, "invalid.deployment.descriptor.version", ddEntryPath, getLineNumber(), useVersion);
+        return Tr.formatMessage(tc, "invalid.deployment.descriptor.version", describeEntry(), getLineNumber(), useVersion);
     }
+    
+    protected String invalidDeploymentDescriptorPublicId(String usePublicId) {
+        return Tr.formatMessage(tc, "invalid.deployment.descriptor.public.id", describeEntry(), getLineNumber(), usePublicId);
+    }    
 
     protected String missingDeploymentDescriptorNamespace() {
-        return Tr.formatMessage(tc, "missing.deployment.descriptor.namespace", ddEntryPath, getLineNumber());
+        return Tr.formatMessage(tc, "missing.deployment.descriptor.namespace", describeEntry(), getLineNumber());
     }
 
     protected String missingDeploymentDescriptorVersion() {
-        return Tr.formatMessage(tc, "missing.deployment.descriptor.version", ddEntryPath, getLineNumber());
+        return Tr.formatMessage(tc, "missing.deployment.descriptor.version", describeEntry(), getLineNumber());
     }
 
     public String tooManyElements(String element) {
-        return Tr.formatMessage(tc, "at.most.one.occurrence", ddEntryPath, getLineNumber(), currentElementLocalName, element);
+        return Tr.formatMessage(tc, "at.most.one.occurrence", describeEntry(), getLineNumber(), currentElementLocalName, element);
     }
 
     public String missingElement(String element) {
-        return Tr.formatMessage(tc, "required.method.element.missing", ddEntryPath, getLineNumber(), currentElementLocalName, element);
+        return Tr.formatMessage(tc, "required.method.element.missing", describeEntry(), getLineNumber(), currentElementLocalName, element);
     }
 
     private String xmlError(XMLStreamException e) {
-        return Tr.formatMessage(tc, "xml.error", ddEntryPath, getLineNumber(), e.getMessage());
+        return Tr.formatMessage(tc, "xml.error", describeEntry(), getLineNumber(), e.getMessage());
     }
 
     private String xmlError(Throwable e) {
-        return Tr.formatMessage(tc, "xml.error", ddEntryPath, getLineNumber(), e.toString());
+        return Tr.formatMessage(tc, "xml.error", describeEntry(), getLineNumber(), e.toString());
     }
 
     public String invalidEnumValue(String value, Object... values) {
@@ -907,14 +1378,47 @@ public abstract class DDParser {
             }
             builder.append(values[i]);
         }
-        return Tr.formatMessage(tc, "invalid.enum.value", ddEntryPath, getLineNumber(), value, builder);
+        return Tr.formatMessage(tc, "invalid.enum.value", describeEntry(), getLineNumber(), value, builder);
     }
 
     public String invalidIntValue(String value) {
-        return Tr.formatMessage(tc, "invalid.int.value", ddEntryPath, getLineNumber(), value);
+        return Tr.formatMessage(tc, "invalid.int.value", describeEntry(), getLineNumber(), value);
     }
 
     public String invalidLongValue(String value) {
-        return Tr.formatMessage(tc, "invalid.long.value", ddEntryPath, getLineNumber(), value);
+        return Tr.formatMessage(tc, "invalid.long.value", describeEntry(), getLineNumber(), value);
     }
+
+    // New messages ...
+
+    protected String missingDescriptorVersion() {
+        // The deployment descriptor {0} specifies neither a version, a PUBLIC ID, or a schema.
+        return Tr.formatMessage(tc, "missing.descriptor.version", describeEntry());
+    }
+
+    protected String unsupportedDescriptorVersion(String ddVersion) {
+        // The deployment descriptor {0}, at line {1}, specifies unsupported version {2}.
+        return Tr.formatMessage(tc, "unsupported.descriptor.version", describeEntry(), getLineNumber(), ddVersion);
+    }
+
+    protected String unsupportedDescriptorNamespace(String ddNamespace) {
+        // The deployment descriptor {0}, at line {1}, specifies unsupported namespace {2}.        
+        return Tr.formatMessage(tc, "unsupported.descriptor.namespace", describeEntry(), getLineNumber(), ddNamespace);
+    }
+
+    protected String incorrectDescriptorNamespace(String ddVersion, String ddNamespace, String expectedNamespace) {
+        // The deployment descriptor {0}, at line {1}, specifies version {2} and namespace {3}, but should have namespace {4}.
+        return Tr.formatMessage(tc, "incorrect.descriptor.version", describeEntry(), getLineNumber(), ddVersion, ddNamespace, expectedNamespace);        
+    }
+
+    protected String unsupportedDescriptorPublicId(String ddPublicId) {
+        // The deployment descriptor {0}, at line {1}, specifies unsupported public ID {2}.
+        return Tr.formatMessage(tc, "unsupported.descriptor.public.id", describeEntry(), getLineNumber(), ddPublicId);
+    }
+
+    protected String unprovisionedDescriptorVersion(int schemaVersion, int maxSchemaVersion) {
+        // The deployment descriptor {0}, at line {1}, specifies version {2}, which
+        // is higher than the current provisioned version {3}.
+        return Tr.formatMessage(tc, "unprovisioned.descriptor.version", describeEntry(), getLineNumber(), schemaVersion, maxSchemaVersion);
+    }    
 }

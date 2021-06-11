@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,20 +20,22 @@ public class ManagedBeanBndDDParser extends DDParser {
         super(ddRootContainer, ddEntry);
     }
 
-    public com.ibm.ws.javaee.dd.managedbean.ManagedBeanBnd parse() throws ParseException {
+    @Override
+    public ManagedBeanBndType parse() throws ParseException {
         super.parseRootElement();
-        return (com.ibm.ws.javaee.dd.managedbean.ManagedBeanBnd) rootParsable;
+        return (ManagedBeanBndType) rootParsable;
     }
 
     @Override
-    protected ParsableElement createRootParsable() throws ParseException {
+    protected ManagedBeanBndType createRootParsable() throws ParseException {
         if ("managed-bean-bnd".equals(rootElementLocalName)) {
             return createXMLRootParsable();
+        } else {
+            throw new ParseException(invalidRootElement());
         }
-        throw new ParseException(invalidRootElement());
     }
 
-    private ParsableElement createXMLRootParsable() throws ParseException {
+    private ManagedBeanBndType createXMLRootParsable() throws ParseException {
         if (namespace == null) {
             throw new ParseException(missingDeploymentDescriptorNamespace());
         }
@@ -44,14 +46,31 @@ public class ManagedBeanBndDDParser extends DDParser {
         if ("http://websphere.ibm.com/xml/ns/javaee".equals(namespace)) {
             if ("1.0".equals(versionString)) {
                 version = 10;
-                return new com.ibm.ws.javaee.ddmodel.managedbean.ManagedBeanBndType(getDeploymentDescriptorPath());
+                return new ManagedBeanBndType(getDeploymentDescriptorPath());
             }
             if ("1.1".equals(versionString)) {
                 version = 11;
-                return new com.ibm.ws.javaee.ddmodel.managedbean.ManagedBeanBndType(getDeploymentDescriptorPath());
+                return new ManagedBeanBndType(getDeploymentDescriptorPath());
             }
             throw new ParseException(invalidDeploymentDescriptorVersion(versionString));
         }
         throw new ParseException(invalidDeploymentDescriptorNamespace(versionString));
+    }
+
+    @Override
+    protected VersionData[] getVersionData() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    protected void validateRootElementName() throws ParseException {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    protected ManagedBeanBndType createRootElement() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

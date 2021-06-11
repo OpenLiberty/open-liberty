@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import com.ibm.ws.javaee.ddmodel.DDParser;
 import com.ibm.ws.javaee.ddmodel.DDParser.ParseException;
 import com.ibm.ws.javaee.ddmodel.TokenType;
 import com.ibm.ws.javaee.ddmodel.common.XSDTokenType;
+import com.ibm.ws.javaee.version.JavaEEVersion;
 
 /*
  <xsd:complexType name="web-appType">
@@ -40,6 +41,21 @@ public class WebAppType extends WebCommonType implements WebApp, DDParser.RootPa
     public WebAppType(String path) {
         super(path);
     }
+
+    @Override
+    public boolean isIdAllowed() {
+        return true;
+    }
+    
+    // attributes
+    TokenType version;
+    BooleanType metadata_complete;
+
+    // elements
+    XSDTokenType module_name;
+
+    // WebCommonType fields appear here in sequence
+    AbsoluteOrderingType absolute_ordering;
 
     @Override
     public String getVersion() {
@@ -66,27 +82,40 @@ public class WebAppType extends WebCommonType implements WebApp, DDParser.RootPa
         return absolute_ordering;
     }
 
-    // attributes
-    TokenType version;
-    BooleanType metadata_complete;
-    // elements
-    XSDTokenType module_name;
-    // WebCommonType fields appear here in sequence
-    AbsoluteOrderingType absolute_ordering;
+    //
 
+    /**
+     * Override: Ensure that the version is assigned.
+     * 
+     * Use the version computed by the parser to ensure
+     * the local version variable is assigned. 
+     */
     @Override
-    public boolean isIdAllowed() {
-        return true;
+    public void finish(DDParser parser) throws ParseException {
+        super.finish(parser);
+        if ( version == null ) {
+            // In all cases, not just for 2.2 and 2.3, 
+            // ensure that the local version variable is
+            // assigned.
+            //
+            // Previously, only the two DTD based formats
+            // might be missing a version attribute.
+            // Changes to enable more descriptor deviations
+            // mean that other cases might also be missing
+            // a version attribute.
+
+            version = parser.parseToken( parser.getVersionText() );            
+        }
     }
 
     @Override
     public boolean handleAttribute(DDParser parser, String nsURI, String localName, int index) throws ParseException {
         if (nsURI == null || XMLConstants.NULL_NS_URI.equals(nsURI)) {
-            if (parser.version >= 24 && "version".equals(localName)) {
+            if (parser.version >= WebApp.VERSION_2_4 && "version".equals(localName)) {
                 version = parser.parseTokenAttributeValue(index);
                 return true;
             }
-            if (parser.version >= 24 && "metadata-complete".equals(localName)) {
+            if (parser.version >= WebApp.VERSION_2_4 && "metadata-complete".equals(localName)) {
                 metadata_complete = parser.parseBooleanAttributeValue(index);
                 return true;
             }
@@ -95,40 +124,34 @@ public class WebAppType extends WebCommonType implements WebApp, DDParser.RootPa
     }
 
     @Override
-    public void finish(DDParser parser) throws ParseException {
-        super.finish(parser);
-        if (version == null) {
-            if (parser.version < 24) {
-                version = parser.parseToken(parser.version == 22 ? "2.2" : "2.3");
-            } else {
-                throw new ParseException(parser.requiredAttributeMissing("version"));
-            }
-        }
-    }
-
-    @Override
     public boolean handleChild(DDParser parser, String localName) throws ParseException {
         if (super.handleChild(parser, localName)) {
             return true;
         }
+
         if ("module-name".equals(localName)) {
             XSDTokenType module_name = new XSDTokenType();
             parser.parse(module_name);
             this.module_name = module_name;
             return true;
         }
+
         if ("absolute-ordering".equals(localName)) {
             AbsoluteOrderingType absolute_ordering = new AbsoluteOrderingType();
             parser.parse(absolute_ordering);
             if (this.absolute_ordering == null) {
                 this.absolute_ordering = absolute_ordering;
-            } else if (parser.runtimeVersion >= 70) { //EE7 clarification, can only have one absolute-ordering element.
+            } else if (parser.runtimeVersion >= JavaEEVersion.VERSION_7_0_INT) {
+                // EE7 clarification: Can only have one absolute-ordering element.
                 throw new ParseException(parser.tooManyElements("absolute-ordering"));
             }
             return true;
         }
+
         return false;
     }
+
+    //
 
     @Override
     public void describe(DDParser.Diagnostics diag) {
@@ -140,13 +163,13 @@ public class WebAppType extends WebCommonType implements WebApp, DDParser.RootPa
     }
 
     @Override
-    protected String toTracingSafeString() {
-        return "web-app";
-    }
-
-    @Override
     public void describe(StringBuilder sb) {
         DDParser.Diagnostics diag = new DDParser.Diagnostics(idMap, sb);
         diag.describe(toTracingSafeString(), this);
+    }
+    
+    @Override
+    protected String toTracingSafeString() {
+        return "web-app";
     }
 }

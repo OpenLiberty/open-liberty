@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012,2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -178,29 +178,26 @@ public final class WebservicesBndAdapter implements ContainerAdapter<Webservices
         // EMPTY
     }
 
-    /**
-     * DDParser for webservices.xml
-     */
     private static final class WsClientBindingParser extends DDParser {
-
         public WsClientBindingParser(Container ddRootContainer, Entry ddEntry) throws ParseException {
             super(ddRootContainer, ddEntry);
         }
 
-        WebservicesBnd parse() throws ParseException {
+        @Override
+        public WebservicesBndType parse() throws ParseException {
             super.parseRootElement();
-            return (WebservicesBnd) rootParsable;
+            return (WebservicesBndType) rootParsable;
         }
 
         @Override
-        protected ParsableElement createRootParsable() throws ParseException {
+        protected WebservicesBndType createRootParsable() throws ParseException {
             if (WEBSERVICES_BND_ELEMENT_NAME.equals(rootElementLocalName)) {
                 return createXMLRootParsable();
             }
             return null;
         }
 
-        private DDParser.ParsableElement createXMLRootParsable() throws ParseException {
+        private WebservicesBndType createXMLRootParsable() throws ParseException {
             if (namespace == null) {
                 throw new ParseException(unknownDeploymentDescriptorVersion());
             }
@@ -210,6 +207,23 @@ public final class WebservicesBndAdapter implements ContainerAdapter<Webservices
             } else {
                 throw new ParseException(unknownDeploymentDescriptorVersion());
             }
+        }
+
+        @Override
+        protected VersionData[] getVersionData() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        protected void validateRootElementName() throws ParseException {
+            // TODO Auto-generated method stub
+        }
+
+        @Override
+        protected WebservicesBndType createRootElement() {
+            // TODO Auto-generated method stub
+            return null;
         }
     }
 }

@@ -25,7 +25,7 @@ public class WebBndTest extends WebBndTestBase {
     @Test
     public void testGetVersion() throws Exception {
         Assert.assertEquals("XMI", parseWebBndXMI(webAppBinding("") + "</webappbnd:WebAppBinding>",
-                                                  parse(webApp24() + "</web-app>")).getVersion());
+                                                  parse(webApp24Head() + "</web-app>")).getVersion());
         Assert.assertEquals("Version should be 1.0", "1.0", parseWebBndXML(webBnd10() + "</web-bnd>").getVersion());
         Assert.assertEquals("Version should be 1.1", "1.1", parseWebBndXML(webBnd11() + "</web-bnd>").getVersion());
         Assert.assertEquals("Version should be 1.2", "1.2", parseWebBndXML(webBnd12() + "</web-bnd>").getVersion());
@@ -55,7 +55,7 @@ public class WebBndTest extends WebBndTestBase {
     public void testVirtualHostXMIDefault() throws Exception {
         WebBnd bnd = parseWebBndXMI(webAppBinding("") +
                                     "</webappbnd:WebAppBinding>",
-                                    parse(webApp24() + "</web-app>"));
+                                    parse(webApp24Head() + "</web-app>"));
         Assert.assertNull(bnd.getVirtualHost());
     }
 
@@ -63,7 +63,7 @@ public class WebBndTest extends WebBndTestBase {
     public void testVirtualHostXMI() throws Exception {
         WebBnd bnd = parseWebBndXMI(webAppBinding(" virtualHostName=\"vhost0\"") +
                                     "</webappbnd:WebAppBinding>",
-                                    parse(webApp24() + "</web-app>"));
+                                    parse(webApp24Head() + "</web-app>"));
         Assert.assertEquals("vhost0", bnd.getVirtualHost().getName());
     }
 
@@ -72,7 +72,7 @@ public class WebBndTest extends WebBndTestBase {
         WebBnd bnd = parseWebBndXMI(webAppBinding("") +
                                     "  <virtualHostName xsi:nil=\"true\"/>" +
                                     "</webappbnd:WebAppBinding>",
-                                    parse(webApp24() + "</web-app>"));
+                                    parse(webApp24Head() + "</web-app>"));
         Assert.assertNull(bnd.getVirtualHost().getName());
     }
 
@@ -96,7 +96,7 @@ public class WebBndTest extends WebBndTestBase {
                                     "  <messageDestinations name=\"md0\"/>" +
                                     "  <messageDestinations name=\"md1\"/>" +
                                     "</webappbnd:WebAppBinding>",
-                                    parse(webApp24() + "</web-app>"));
+                                    parse(webApp24Head() + "</web-app>"));
         List<MessageDestination> mds = bnd.getMessageDestinations();
         Assert.assertTrue(mds.toString(), mds.isEmpty());
     }
@@ -116,7 +116,7 @@ public class WebBndTest extends WebBndTestBase {
         WebBnd bnd = parseWebBndXMI(webAppBinding("") +
                                     "  <jaspiRefBinding/>" +
                                     "</webappbnd:WebAppBinding>",
-                                    parse(webApp24() + "</web-app>"));
+                                    parse(webApp24Head() + "</web-app>"));
         JASPIRef jr = bnd.getJASPIRef();
         //Assert.assertNull(jr.getProviderName());
         Assert.assertEquals(JASPIRef.UseJASPIEnum.inherit, jr.getUseJASPI());
@@ -137,7 +137,7 @@ public class WebBndTest extends WebBndTestBase {
         WebBnd bnd = parseWebBndXMI(webAppBinding("") +
                                     "  <jaspiRefBinding providerName=\"pn0\"/>" +
                                     "</webappbnd:WebAppBinding>",
-                                    parse(webApp24() + "</web-app>"));
+                                    parse(webApp24Head() + "</web-app>"));
         JASPIRef jr = bnd.getJASPIRef();
         Assert.assertEquals("pn0", jr.getProviderName());
         Assert.assertEquals(JASPIRef.UseJASPIEnum.inherit, jr.getUseJASPI());
@@ -158,7 +158,7 @@ public class WebBndTest extends WebBndTestBase {
         WebBnd bnd = parseWebBndXMI(webAppBinding("") +
                                     "  <jaspiRefBinding useJaspi=\"yes\"/>" +
                                     "</webappbnd:WebAppBinding>",
-                                    parse(webApp24() + "</web-app>"));
+                                    parse(webApp24Head() + "</web-app>"));
         JASPIRef jr = bnd.getJASPIRef();
         //Assert.assertNull(jr.getProviderName());
         Assert.assertEquals(JASPIRef.UseJASPIEnum.yes, jr.getUseJASPI());
@@ -179,7 +179,7 @@ public class WebBndTest extends WebBndTestBase {
         WebBnd bnd = parseWebBndXMI(webAppBinding("") +
                                     "  <jaspiRefBinding useJaspi=\"no\"/>" +
                                     "</webappbnd:WebAppBinding>",
-                                    parse(webApp24() + "</web-app>"));
+                                    parse(webApp24Head() + "</web-app>"));
         JASPIRef jr = bnd.getJASPIRef();
         //Assert.assertNull(jr.getProviderName());
         Assert.assertEquals(JASPIRef.UseJASPIEnum.no, jr.getUseJASPI());
@@ -200,7 +200,7 @@ public class WebBndTest extends WebBndTestBase {
         WebBnd bnd = parseWebBndXMI(webAppBinding("") +
                                     "  <jaspiRefBinding useJaspi=\"inherit\"/>" +
                                     "</webappbnd:WebAppBinding>",
-                                    parse(webApp24() + "</web-app>"));
+                                    parse(webApp24Head() + "</web-app>"));
         JASPIRef jr = bnd.getJASPIRef();
         //Assert.assertNull(jr.getProviderName());
         Assert.assertEquals(JASPIRef.UseJASPIEnum.inherit, jr.getUseJASPI());
@@ -216,6 +216,6 @@ public class WebBndTest extends WebBndTestBase {
                        "    <bindingServiceRef href=\"WEB-INF/web.xml#sr1\"/>" +
                        "  </serviceRefBindings>" +
                        "</webappbnd:WebAppBinding>",
-                       parse(webApp24() + "</web-app>"));
+                       parse(webApp24Head() + "</web-app>"));
     }
 }

@@ -50,7 +50,7 @@ public final class WebAppEntryAdapter implements EntryAdapter<WebApp> {
         OverlayContainer container,
         ArtifactEntry rawWebAppEntry,
         Entry webAppEntry) throws UnableToAdaptException {
-
+        
         String webAppPath = rawWebAppEntry.getPath();
         WebApp webAppDD = (WebApp) container.getFromNonPersistentCache(webAppPath, WebApp.class);
         if ( webAppDD == null ) {

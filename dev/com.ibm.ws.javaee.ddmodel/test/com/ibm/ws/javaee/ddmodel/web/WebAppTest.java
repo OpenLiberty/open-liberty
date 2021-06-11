@@ -49,52 +49,38 @@ public class WebAppTest extends WebAppTestBase {
                "<absolute-ordering>" +
                "</absolute-ordering>";
     }
-    
-    // Servlet 3.0 cases ...
-
-    // TODO: We don't support the two DD cases, Servlet 2.2
-    //       and Servlet 2.3.  Should we?
-
-    @Test(expected = DDParser.ParseException.class)    
-    public void testEE6Web22() throws Exception {
-        @SuppressWarnings("unused")        
-        WebApp webApp = parse( webApp(WebApp.VERSION_2_2) );
-    }
-
-    @Test(expected = DDParser.ParseException.class)    
-    public void testEE6Web23() throws Exception {
-        @SuppressWarnings("unused")        
-        WebApp webApp = parse( webApp(WebApp.VERSION_2_3) );
-    }
 
     @Test
-    public void testEE6Web24() throws Exception {
-        @SuppressWarnings("unused")        
-        WebApp webApp = parse( webApp(WebApp.VERSION_2_4) );
-    }
-    
-    @Test
-    public void testEE6Web30() throws Exception {
-        @SuppressWarnings("unused")        
-        WebApp webApp = parse( webApp(WebApp.VERSION_3_0) );
-    }    
+    public void testWebApp() throws Exception {
+        String[] unprovisionedSchemaMessages =
+            { "unprovisioned.descriptor.version" };        
 
-    @Test(expected = DDParser.ParseException.class)
-    public void testEE6Web31() throws Exception {
-        @SuppressWarnings("unused")        
-        WebApp webApp = parse( webApp(WebApp.VERSION_3_1) );
-    }
+        for ( int schemaVersion : WebApp.VERSIONS ) {
+            for ( int maxSchemaVersion : WebApp.VERSIONS ) {
+                // The WebApp parser uses a maximum schema
+                // version of "max(version, WebApp.VERSION_3_0)".
+                // Adjust the message expectations accordingly.
+                //
+                // See: com.ibm.ws.javaee.ddmodel.web.WebAppDDParser
 
-    @Test(expected = DDParser.ParseException.class)
-    public void testEE6Web40() throws Exception {
-        @SuppressWarnings("unused")        
-        WebApp webApp = parse( webApp(WebApp.VERSION_4_0) );
-    }
-    
-    @Test(expected = IllegalArgumentException.class)    
-    public void testEE6Web50() throws Exception {
-        @SuppressWarnings("unused")        
-        WebApp webApp = parse( webApp(WebApp.VERSION_5_0), WebApp.VERSION_3_0 );        
+                int effectiveMax;
+                if ( maxSchemaVersion < WebApp.VERSION_3_0 ) {
+                    effectiveMax = WebApp.VERSION_3_0;
+                } else {
+                    effectiveMax = maxSchemaVersion;
+                }
+
+                String[] expectedMessages;
+                if ( schemaVersion > effectiveMax ) {
+                    expectedMessages = unprovisionedSchemaMessages;
+                } else {
+                    expectedMessages = null;
+                }
+
+                parse( webApp(schemaVersion, ""),
+                       maxSchemaVersion, expectedMessages );
+            }
+        }
     }
     
     // Servlet 3.0 specific cases ...
@@ -167,8 +153,7 @@ public class WebAppTest extends WebAppTestBase {
      */
     @Test
     public void testEE6Web30AbsoluteOrderingDuplicateElements() throws Exception {
-        @SuppressWarnings("unused")        
-        WebApp webApp = parse( webApp( WebApp.VERSION_3_0, dupeAbsOrder() ) );
+        parse( webApp( WebApp.VERSION_3_0, dupeAbsOrder() ) );
     }
 
     /**
@@ -176,76 +161,11 @@ public class WebAppTest extends WebAppTestBase {
      */
     @Test(expected = DDParser.ParseException.class)
     public void testEE6Web30DenyUncoveredHttpMethods() throws Exception {
-        @SuppressWarnings("unused")
-        WebApp webApp = parse(
-            webApp( WebApp.VERSION_3_0,
-                    "<deny-uncovered-http-methods/>" ) );
-    }
-
-    // Partial header cases ...
-
-    @Test(expected = DDParser.ParseException.class)
-    public void testEE6Web30NoSchema() throws Exception {
-        @SuppressWarnings("unused")        
-        WebApp webApp = parse( noSchemaWebApp30() + webAppTail() ); 
-    }
-    
-    @Test(expected = DDParser.ParseException.class)
-    public void testEE6Web30NoSchemaInstance() throws Exception {
-        @SuppressWarnings("unused")        
-        WebApp webApp = parse( noSchemaInstanceWebApp30() + webAppTail() ); 
-    }
-    
-    @Test
-    public void testEE6Web30NoSchemaLocation() throws Exception {
-        @SuppressWarnings("unused")        
-        WebApp webApp = parse( noSchemaLocationWebApp30() + webAppTail() ); 
-    }    
-    
-    @Test(expected = DDParser.ParseException.class)
-    public void testEE6Web30NoVersion() throws Exception {
-        @SuppressWarnings("unused")        
-        WebApp webApp = parse( noVersionWebApp30() + webAppTail() ); 
-    }        
-
-    @Test
-    public void testEE6Web30NoID() throws Exception {
-        @SuppressWarnings("unused")        
-        WebApp webApp = parse( noIDWebApp30() + webAppTail() ); 
+        parse( webApp( WebApp.VERSION_3_0, "<deny-uncovered-http-methods/>" ) );
     }
 
     // Servlet 3.1 cases ...
 
-    @Test()
-    public void testEE7Web24() throws Exception {
-        @SuppressWarnings("unused")        
-        WebApp webApp = parse( webApp(WebApp.VERSION_2_4), WebApp.VERSION_3_1 );
-    }
-
-    @Test()
-    public void testEE7Web30() throws Exception {
-        @SuppressWarnings("unused")        
-        WebApp webApp = parse( webApp(WebApp.VERSION_3_0), WebApp.VERSION_3_1 );
-    }
-
-    @Test()
-    public void testEE7Web31() throws Exception {
-        @SuppressWarnings("unused")        
-        WebApp webApp = parse( webApp(WebApp.VERSION_3_1), WebApp.VERSION_3_1 );        
-    }
-
-    @Test(expected = DDParser.ParseException.class)
-    public void testEE7Web40() throws Exception {
-        @SuppressWarnings("unused")        
-        WebApp webApp = parse( webApp(WebApp.VERSION_4_0), WebApp.VERSION_3_1 );
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testEE7Web50() throws Exception {
-        @SuppressWarnings("unused")        
-        WebApp webApp = parse( webApp(WebApp.VERSION_5_0), WebApp.VERSION_3_1 );        
-    }
-    
     // The prohibition against having more than one absolute ordering element
     // was added in JavaEE7.
     //
@@ -258,10 +178,8 @@ public class WebAppTest extends WebAppTestBase {
      */    
     @Test(expected = DDParser.ParseException.class)
     public void testEE7Web31AbsoluteOrderingDuplicates() throws Exception {
-        @SuppressWarnings("unused")
-        WebApp webApp = parse(
-            webApp( WebApp.VERSION_3_1, dupeAbsOrder() ),
-            WebApp.VERSION_3_1 );
+        parse( webApp( WebApp.VERSION_3_1, dupeAbsOrder() ),
+               WebApp.VERSION_3_1 );
     }
 
     /**
@@ -271,10 +189,8 @@ public class WebAppTest extends WebAppTestBase {
      */    
     @Test
     public void testEE7Web31DenyUncoveredHttpMethods() throws Exception {
-        @SuppressWarnings("unused")
-        WebApp webApp = parse(        
-            webApp( WebApp.VERSION_3_1, "<deny-uncovered-http-methods/>" ),
-            WebApp.VERSION_3_1 );
+        parse( webApp( WebApp.VERSION_3_1, "<deny-uncovered-http-methods/>" ),
+               WebApp.VERSION_3_1 );
     }
 
     /**
@@ -282,74 +198,8 @@ public class WebAppTest extends WebAppTestBase {
      */    
     @Test(expected = DDParser.ParseException.class)
     public void testEE7Web31DenyUncoveredHttpMethodsNotEmptyType() throws Exception {
-        @SuppressWarnings("unused")        
-        WebApp webApp = parse(                
-            webApp( WebApp.VERSION_3_1,
-                    "<deny-uncovered-http-methods>junk</deny-uncovered-http-methods>" ),
-            WebApp.VERSION_3_1 );
+        parse( webApp( WebApp.VERSION_3_1,
+                       "<deny-uncovered-http-methods>junk</deny-uncovered-http-methods>" ),
+                WebApp.VERSION_3_1 );
     }
-
-    // Servlet 4.0 cases ...
-
-    @Test
-    public void testEE8Web24() throws Exception {
-        @SuppressWarnings("unused")        
-        WebApp webApp = parse( webApp(WebApp.VERSION_2_4), WebApp.VERSION_4_0 );        
-    }
-
-    @Test
-    public void testEE8Web30() throws Exception {
-        @SuppressWarnings("unused")        
-        WebApp webApp = parse( webApp(WebApp.VERSION_3_0), WebApp.VERSION_4_0 );        
-    }
-
-    @Test
-    public void testEE8Web31() throws Exception {
-        @SuppressWarnings("unused")        
-        WebApp webApp = parse( webApp(WebApp.VERSION_3_1), WebApp.VERSION_4_0 );        
-    }
-
-    @Test
-    public void testEE8Web40() throws Exception {
-        @SuppressWarnings("unused")        
-        WebApp webApp = parse( webApp(WebApp.VERSION_4_0), WebApp.VERSION_4_0 );        
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testEE8Web50() throws Exception {
-        @SuppressWarnings("unused")        
-        WebApp webApp = parse( webApp(WebApp.VERSION_5_0), WebApp.VERSION_4_0 );        
-    }
-    
-    // Servlet 5.0 cases ...
-
-    @Test
-    public void testJakarta9Web24() throws Exception {
-        @SuppressWarnings("unused")        
-        WebApp webApp = parse( webApp(WebApp.VERSION_2_4), WebApp.VERSION_4_0 );        
-    }
-
-    @Test
-    public void testJakarta9Web30() throws Exception {
-        @SuppressWarnings("unused")        
-        WebApp webApp = parse( webApp(WebApp.VERSION_3_0), WebApp.VERSION_5_0 );        
-    }
-
-    @Test
-    public void testJakarta9Web31() throws Exception {
-        @SuppressWarnings("unused")        
-        WebApp webApp = parse( webApp(WebApp.VERSION_3_1), WebApp.VERSION_5_0 );        
-    }
-
-    @Test
-    public void testJakarta9Web40() throws Exception {
-        @SuppressWarnings("unused")        
-        WebApp webApp = parse( webApp(WebApp.VERSION_4_0), WebApp.VERSION_5_0 );        
-    }    
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testJakarta9Web50() throws Exception {
-        @SuppressWarnings("unused")        
-        WebApp webApp = parse( webApp(WebApp.VERSION_5_0), WebApp.VERSION_5_0 );        
-    }        
 }

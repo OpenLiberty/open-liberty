@@ -38,7 +38,7 @@ public class WebExtTest extends WebExtTestBase {
     @Test
     public void testGetVersion() throws Exception {
         Assert.assertEquals("XMI", parseWebExtXMI(webAppExtension("") + "</webappext:WebAppExtension>",
-                                                  parse(webApp24() + "</web-app>")).getVersion());
+                                                  parse(webApp24Head() + "</web-app>")).getVersion());
         Assert.assertEquals("Version should be 1.0", "1.0", parseWebExtXML(webExt10() + "</web-ext>").getVersion());
         Assert.assertEquals("Version should be 1.1", "1.1", parseWebExtXML(webExt11() + "</web-ext>").getVersion());
     }
@@ -124,7 +124,7 @@ public class WebExtTest extends WebExtTestBase {
 
     @Test
     public void testXMIWebExt() throws Exception {
-        WebApp webApp = parse(webApp24() + "</web-app>");
+        WebApp webApp = parse(webApp24Head() + "</web-app>");
         WebExt webExt = parseWebExtXMI(webAppExtension("") + "</webappext:WebAppExtension>", webApp);
         Assert.assertFalse(webExt.isSetReloadInterval());
         Assert.assertFalse(webExt.isSetContextRoot());
@@ -218,7 +218,7 @@ public class WebExtTest extends WebExtTestBase {
 
     @Test
     public void testXMIServlet() throws Exception {
-        WebApp webApp = parse(webApp24() +
+        WebApp webApp = parse(webApp24Head() +
                               "<servlet id=\"s0id\">" +
                               "  <servlet-name>s0</servlet-name>" +
                               "</servlet>" +
@@ -305,7 +305,7 @@ public class WebExtTest extends WebExtTestBase {
                                        "<extendedServlets>" +
                                        "  <localTransaction boundary=\"BeanMethod\" resolver=\"ContainerAtBoundary\" unresolvedAction=\"Commit\" shareable=\"true\"/>" +
                                        "</extendedServlets>" +
-                                       "</webappext:WebAppExtension>", parse(webApp24() + "</web-app>"));
+                                       "</webappext:WebAppExtension>", parse(webApp24Head() + "</web-app>"));
         List<ServletExtension> ses = webExt.getServletExtensions();
 
         Assert.assertNull(ses.get(0).getLocalTransaction());
@@ -386,7 +386,7 @@ public class WebExtTest extends WebExtTestBase {
                                        "<extendedServlets>" +
                                        "  <globalTransaction sendWSAT=\"true\"/>" +
                                        "</extendedServlets>" +
-                                       "</webappext:WebAppExtension>", parse(webApp24() + "</web-app>"));
+                                       "</webappext:WebAppExtension>", parse(webApp24Head() + "</web-app>"));
         List<ServletExtension> ses = webExt.getServletExtensions();
 
         Assert.assertNull(ses.get(0).getGlobalTransaction());
@@ -434,7 +434,7 @@ public class WebExtTest extends WebExtTestBase {
                                        "<extendedServlets>" +
                                        "  <webGlobalTransaction supportsWSAT=\"true\" />" +
                                        "</extendedServlets>" +
-                                       "</webappext:WebAppExtension>", parse(webApp24() + "</web-app>"));
+                                       "</webappext:WebAppExtension>", parse(webApp24Head() + "</web-app>"));
         List<ServletExtension> servlets = webExt.getServletExtensions();
 
         Assert.assertNull(servlets.get(0).getWebGlobalTransaction());
@@ -493,7 +493,7 @@ public class WebExtTest extends WebExtTestBase {
                                        "    <pages name=\"pn1\" uri=\"pu1\"/>" +
                                        "  </markupLanguages>" +
                                        "</extendedServlets>" +
-                                       "</webappext:WebAppExtension>", parse(webApp24() + "</web-app>"));
+                                       "</webappext:WebAppExtension>", parse(webApp24Head() + "</web-app>"));
         List<ServletExtension> ses = webExt.getServletExtensions();
 
         Assert.assertEquals(Collections.emptyList(), ses.get(0).getMarkupLanguages());
@@ -536,16 +536,16 @@ public class WebExtTest extends WebExtTestBase {
     @Test
     public void testXMIDefaultErrorPage() throws Exception {
         WebExt webExt = parseWebExtXMI(webAppExtension("") +
-                                       "</webappext:WebAppExtension>", parse(webApp24() + "</web-app>"));
+                                       "</webappext:WebAppExtension>", parse(webApp24Head() + "</web-app>"));
         Assert.assertNull(webExt.getDefaultErrorPage());
 
         webExt = parseWebExtXMI(webAppExtension("") +
                                 "  <defaultErrorPage xsi:nil=\"true\"/>" +
-                                "</webappext:WebAppExtension>", parse(webApp24() + "</web-app>"));
+                                "</webappext:WebAppExtension>", parse(webApp24Head() + "</web-app>"));
         Assert.assertNull(webExt.getDefaultErrorPage());
 
         webExt = parseWebExtXMI(webAppExtension("defaultErrorPage=\"dep\"") +
-                                "</webappext:WebAppExtension>", parse(webApp24() + "</web-app>"));
+                                "</webappext:WebAppExtension>", parse(webApp24Head() + "</web-app>"));
         Assert.assertEquals("dep", webExt.getDefaultErrorPage());
     }
 
@@ -570,7 +570,7 @@ public class WebExtTest extends WebExtTestBase {
 
     @Test
     public void testXMIFileServingAttribute() throws Exception {
-        WebApp webApp = parse(webApp24() + "</web-app>");
+        WebApp webApp = parse(webApp24Head() + "</web-app>");
         WebExt webExt = parseWebExtXMI(webAppExtension("") + "</webappext:WebAppExtension>", webApp);
         Assert.assertEquals(Collections.emptyList(), webExt.getFileServingAttributes());
 
@@ -609,7 +609,7 @@ public class WebExtTest extends WebExtTestBase {
 
     @Test
     public void testXMIInvokerAttribute() throws Exception {
-        WebApp webApp = parse(webApp24() + "</web-app>");
+        WebApp webApp = parse(webApp24Head() + "</web-app>");
         WebExt webExt = parseWebExtXMI(webAppExtension("") + "</webappext:WebAppExtension>", webApp);
         Assert.assertEquals(Collections.emptyList(), webExt.getInvokerAttributes());
 
@@ -648,7 +648,7 @@ public class WebExtTest extends WebExtTestBase {
 
     @Test
     public void testXMIJspAttribute() throws Exception {
-        WebApp webApp = parse(webApp24() + "</web-app>");
+        WebApp webApp = parse(webApp24Head() + "</web-app>");
         WebExt webExt = parseWebExtXMI(webAppExtension("") + "</webappext:WebAppExtension>", webApp);
         Assert.assertEquals(Collections.emptyList(), webExt.getJspAttributes());
 
@@ -687,7 +687,7 @@ public class WebExtTest extends WebExtTestBase {
 
     @Test
     public void testXMIMimeFilter() throws Exception {
-        WebApp webApp = parse(webApp24() + "</web-app>");
+        WebApp webApp = parse(webApp24Head() + "</web-app>");
         WebExt webExt = parseWebExtXMI(webAppExtension("") + "</webappext:WebAppExtension>", webApp);
         Assert.assertEquals(Collections.emptyList(), webExt.getMimeFilters());
 
@@ -797,7 +797,7 @@ public class WebExtTest extends WebExtTestBase {
 
     @Test
     public void testXMIResourceRef() throws Exception {
-        WebApp webApp = parse(webApp24() +
+        WebApp webApp = parse(webApp24Head() +
                               "<resource-ref id=\"rr0id\">" +
                               "  <res-ref-name>n0</res-ref-name>" +
                               "</resource-ref>" +
@@ -1071,7 +1071,7 @@ public class WebExtTest extends WebExtTestBase {
 
     @Test
     public void testXMIServletCacheConfig() throws Exception {
-        WebApp webApp = parse(webApp24() + "</web-app>");
+        WebApp webApp = parse(webApp24Head() + "</web-app>");
         WebExt webExt = parseWebExtXMI(webAppExtension("") + "</webappext:WebAppExtension>", webApp);
         Assert.assertEquals(Collections.emptyList(), webExt.getServletCacheConfigs());
 

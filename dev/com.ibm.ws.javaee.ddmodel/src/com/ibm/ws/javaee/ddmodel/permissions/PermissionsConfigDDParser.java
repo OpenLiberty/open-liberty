@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.javaee.ddmodel.permissions;
 
-import com.ibm.ws.javaee.dd.permissions.PermissionsConfig;
 import com.ibm.ws.javaee.ddmodel.DDParser;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
@@ -21,23 +20,22 @@ final class PermissionsConfigDDParser extends DDParser {
         super(ddRootContainer, ddEntry);
     }
 
-    PermissionsConfig parse() throws ParseException {
+    @Override
+    public PermissionsConfigType parse() throws ParseException {
         super.parseRootElement();
-        return (PermissionsConfig) rootParsable;
+        return (PermissionsConfigType) rootParsable;
     }
 
     @Override
-    protected ParsableElement createRootParsable() throws ParseException {
+    protected PermissionsConfigType createRootParsable() throws ParseException {
         if (!"permissions".equals(rootElementLocalName)) {
             throw new ParseException(invalidRootElement());
         }
-        String vers = getAttributeValue("", "version");
 
+        String vers = getAttributeValue("", "version");
         if ("http://xmlns.jcp.org/xml/ns/javaee".equals(namespace)) {
             if ("7".equals(vers)) {
-                /*
-                 * The 7 permissions.xml schema version is used for JavaEE 7 and 8.
-                 */
+                // The 7 permissions.xml schema version is used for JavaEE 7 and 8.
                 version = 70;
                 return new PermissionsConfigType(getDeploymentDescriptorPath());
             }
@@ -48,5 +46,22 @@ final class PermissionsConfigDDParser extends DDParser {
             }
         }
         throw new ParseException(invalidDeploymentDescriptorNamespace(vers));
+    }
+
+    @Override
+    protected VersionData[] getVersionData() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    protected void validateRootElementName() throws ParseException {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    protected PermissionsConfigType createRootElement() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

@@ -18,20 +18,17 @@ import com.ibm.ws.javaee.dd.DeploymentDescriptor;
  * Represents &lt;faces-config>.
  */
 public interface FacesConfig extends DeploymentDescriptor {
+    String DD_NAME = "WEB-INF/faces-config.xml";
 
-    static final String DD_NAME = "WEB-INF/faces-config.xml";
+    int VERSION_1_0 = 10;
+    int VERSION_1_1 = 11;
+    int VERSION_1_2 = 12;
+    int VERSION_2_0 = 20;
+    int VERSION_2_1 = 21;
+    int VERSION_2_2 = 22;
+    int VERSION_2_3 = 23;
+    int VERSION_3_0 = 30;
 
-    static final int VERSION_2_0 = 20;
-
-    static final int VERSION_2_2 = 22;
-
-    static final int VERSION_2_3 = 23;
-
-    static final int VERSION_3_0 = 30;
-
-    /**
-     * @return version="..." attribute value
-     */
     String getVersion();
 
     List<FacesConfigManagedBean> getManagedBeans();

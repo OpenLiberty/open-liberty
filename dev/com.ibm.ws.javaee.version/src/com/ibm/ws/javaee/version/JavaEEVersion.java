@@ -26,15 +26,37 @@ public abstract class JavaEEVersion {
     // 8,   http://xmlns.jcp.org/xml/ns/javaee  // last javax
     // 9,   https://jakarta.ee/xml/ns/jakartaee // jakarta
 
+    public static final int VERSION_1_2_INT = 12;
+    public static final int VERSION_1_3_INT = 13;
+    public static final int VERSION_1_4_INT = 14;
+    public static final int VERSION_5_0_INT = 50;
+    public static final int VERSION_6_0_INT = 60;
+    public static final int VERSION_7_0_INT = 70;
+    public static final int VERSION_8_0_INT = 80;
+    public static final int VERSION_9_0_INT = 90;
+
+    // These must be in increasing order.
+
+    public static final int [] VERSION_INTS = {
+            VERSION_1_2_INT,
+            VERSION_1_3_INT,
+            VERSION_1_4_INT,
+            VERSION_5_0_INT,
+            VERSION_6_0_INT,
+            VERSION_7_0_INT,
+            VERSION_8_0_INT,
+            VERSION_9_0_INT
+    };
+
     public static final Version VERSION_1_2 = new Version(1, 2, 0);
     public static final Version VERSION_1_3 = new Version(1, 3, 0);
     public static final Version VERSION_1_4 = new Version(1, 4, 0);
     public static final Version VERSION_5_0 = new Version(5, 0, 0);
     public static final Version VERSION_6_0 = new Version(6, 0, 0);
     public static final Version VERSION_7_0 = new Version(7, 0, 0);
-    public static final Version VERSION_8_0 = new Version(8, 0, 0); // javax
-    public static final Version VERSION_9_0 = new Version(9, 0, 0); // jakarta
-
+    public static final Version VERSION_8_0 = new Version(8, 0, 0);
+    public static final Version VERSION_9_0 = new Version(9, 0, 0);
+    
     // These must be in increasing order.
 
     public static final Version[] VERSIONS = {
@@ -44,8 +66,8 @@ public abstract class JavaEEVersion {
             VERSION_5_0,
             VERSION_6_0,
             VERSION_7_0,
-            VERSION_8_0, // javax
-            VERSION_9_0  // jakarta
+            VERSION_8_0,
+            VERSION_9_0
     };
 
     public static final Version DEFAULT_VERSION = VERSION_6_0;

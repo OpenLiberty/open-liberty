@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,98 +13,89 @@ package com.ibm.ws.javaee.ddmodel.web;
 import com.ibm.ws.javaee.dd.web.WebApp;
 import com.ibm.ws.javaee.ddmodel.DDParser;
 import com.ibm.ws.javaee.ddmodel.web.common.WebAppType;
+import com.ibm.ws.javaee.version.JavaEEVersion;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
 
-/**
- *
- */
 public class WebAppDDParser extends DDParser {
-    private final int maxVersion;
+    public static final String WEBAPP_DTD_PUBLIC_ID_22 =
+        "-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN";
+    public static final String WEBAPP_DTD_PUBLIC_ID_23 =
+        "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN";
+    
+    private static VersionData[] VERSION_DATA = {
+        new VersionData("2.2", WEBAPP_DTD_PUBLIC_ID_22, null, WebApp.VERSION_2_2, JavaEEVersion.VERSION_1_2_INT),
+        new VersionData("2.3", WEBAPP_DTD_PUBLIC_ID_23, null, WebApp.VERSION_2_2, JavaEEVersion.VERSION_1_3_INT),
 
-    public WebAppDDParser(Container ddRootContainer, Entry ddEntry, int version) throws ParseException {
-        super(ddRootContainer, ddEntry);
-        trimSimpleContentAsRequiredByServletSpec = true;
-        this.maxVersion = version;
+        new VersionData("2.4", null, NAMESPACE_SUN_J2EE,   WebApp.VERSION_2_4, JavaEEVersion.VERSION_1_4_INT),
+        new VersionData("2.5", null, NAMESPACE_SUN_JAVAEE, WebApp.VERSION_2_5, JavaEEVersion.VERSION_5_0_INT),
+        new VersionData("3.0", null, NAMESPACE_SUN_JAVAEE, WebApp.VERSION_3_0, JavaEEVersion.VERSION_6_0_INT),
+        new VersionData("3.1", null, NAMESPACE_JCP_JAVAEE, WebApp.VERSION_3_1, JavaEEVersion.VERSION_7_0_INT),
+        new VersionData("4.0", null, NAMESPACE_JCP_JAVAEE, WebApp.VERSION_4_0, JavaEEVersion.VERSION_8_0_INT),
+
+        new VersionData("5.0", null, NAMESPACE_JAKARTA, WebApp.VERSION_5_0, JavaEEVersion.VERSION_9_0_INT)
+    };
+
+    @Override    
+    protected VersionData[] getVersionData() {
+        return VERSION_DATA;
     }
 
-    WebApp parse() throws ParseException {
-        super.parseRootElement();
-        return (WebApp) rootParsable;
+    /**
+     * Obtain the runtime version which corresponds to
+     * a specified maximum supported schema version.
+     *
+     * @param schemaVersion The maximum supported schema version.
+     *
+     * @return The runtime version which corresponds to
+     *     the specified maximum schema version.
+     */
+    protected static int getRuntimeVersion(int schemaVersion) {
+        if ( schemaVersion > WebApp.VERSION_5_0 ) {
+            throw new IllegalArgumentException("Unsupported WebApp version [ " + schemaVersion + " ]");
+
+        } else if ( schemaVersion == WebApp.VERSION_5_0 ) {
+            return JavaEEVersion.VERSION_9_0_INT;
+        } else if ( schemaVersion == WebApp.VERSION_4_0 ) {
+            return JavaEEVersion.VERSION_8_0_INT;
+        } else if ( schemaVersion == WebApp.VERSION_3_1 ) {
+            return JavaEEVersion.VERSION_7_0_INT;
+        } else if ( schemaVersion == WebApp.VERSION_3_0 ) {
+            return JavaEEVersion.VERSION_6_0_INT;
+
+        } else {
+            // Ignore any lower value.  The lowest runtime specification
+            // supported by Liberty is Servlet-3.0.
+            // ( maxVersion < WebApp.VERSION_3_0 ) {
+            return JavaEEVersion.VERSION_6_0_INT;
+        }
+    }
+    
+    protected static int adjustSchemaVersion(int maxSchemaVersion) {
+        return ( (maxSchemaVersion < WebApp.VERSION_3_0) ? WebApp.VERSION_3_0 : maxSchemaVersion );
     }
 
-    private static final String WEBAPP_DTD_PUBLIC_ID_22 = "-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN";
-    private static final String WEBAPP_DTD_PUBLIC_ID_23 = "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN";
+    public WebAppDDParser(Container ddRootContainer, Entry ddEntry, int maxSchemaVersion) throws ParseException {
+        super( ddRootContainer, ddEntry,
+               TRIM_SIMPLE_CONTENT,
+               adjustSchemaVersion(maxSchemaVersion),
+               getRuntimeVersion(maxSchemaVersion) );
+    }
+
+    @Override    
+    public WebAppType parse() throws ParseException {
+        return (WebAppType) super.parse();
+    }
 
     @Override
-    protected ParsableElement createRootParsable() throws ParseException {
-        if (!"web-app".equals(rootElementLocalName)) {
-            throw new ParseException(invalidRootElement());
+    protected void validateRootElementName() throws ParseException {
+        if ( !"web-app".equals(rootElementLocalName) ) {
+            throw new ParseException( invalidRootElement() );
         }
-        String vers = getAttributeValue("", "version");
-        if (vers == null) {
-            if (namespace == null && dtdPublicId != null) {
-                if (WEBAPP_DTD_PUBLIC_ID_22.equals(dtdPublicId)) {
-                    version = 22;
-                    eePlatformVersion = 12;
-                    return new WebAppType(getDeploymentDescriptorPath());
-                }
-                if (WEBAPP_DTD_PUBLIC_ID_23.equals(dtdPublicId)) {
-                    version = 23;
-                    eePlatformVersion = 13;
-                    return new WebAppType(getDeploymentDescriptorPath());
-                }
-            }
-            throw new ParseException(unknownDeploymentDescriptorVersion());
-        }
-
-        if (maxVersion == 50)
-            runtimeVersion = 90;
-        else if (maxVersion == 40)
-            runtimeVersion = 80;
-        else if (maxVersion == 31)
-            runtimeVersion = 70;
-        else
-            runtimeVersion = 60; //Servlet-3.0 is the earliest Liberty runtime spec.
-
-        if ("2.4".equals(vers)) {
-            if ("http://java.sun.com/xml/ns/j2ee".equals(namespace)) {
-                version = 24;
-                eePlatformVersion = 14;
-                return new WebAppType(getDeploymentDescriptorPath());
-            }
-        } else if ("2.5".equals(vers)) {
-            if ("http://java.sun.com/xml/ns/javaee".equals(namespace)) {
-                version = 25;
-                eePlatformVersion = 50;
-                return new WebAppType(getDeploymentDescriptorPath());
-            }
-        } else if ("3.0".equals(vers)) {
-            if ("http://java.sun.com/xml/ns/javaee".equals(namespace)) {
-                version = WebApp.VERSION_3_0;
-                eePlatformVersion = 60;
-                return new WebAppType(getDeploymentDescriptorPath());
-            }
-        } else if ((maxVersion >= 31) && "3.1".equals(vers)) {
-            if ("http://xmlns.jcp.org/xml/ns/javaee".equals(namespace)) {
-                version = WebApp.VERSION_3_1;
-                eePlatformVersion = 70;
-                return new WebAppType(getDeploymentDescriptorPath());
-            }
-        } else if ((maxVersion >= 40) && "4.0".equals(vers)) {
-            if ("http://xmlns.jcp.org/xml/ns/javaee".equals(namespace)) {
-                version = WebApp.VERSION_4_0;
-                eePlatformVersion = 80;
-                return new WebAppType(getDeploymentDescriptorPath());
-            }
-        } else if ((maxVersion >= 50) && "5.0".equals(vers)) {
-            if ("https://jakarta.ee/xml/ns/jakartaee".equals(namespace)) {
-                version = WebApp.VERSION_5_0;
-                eePlatformVersion = 90;
-                return new WebAppType(getDeploymentDescriptorPath());
-            }
-        }
-        throw new ParseException(invalidDeploymentDescriptorNamespace(vers));
     }
 
+    @Override    
+    protected ParsableElement createRootElement() {
+        return new WebAppType( getDeploymentDescriptorPath() );        
+    }
 }
