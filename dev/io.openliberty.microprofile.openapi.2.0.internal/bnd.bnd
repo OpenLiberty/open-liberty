@@ -31,7 +31,8 @@ Export-Package: \
     io.openliberty.microprofile.openapi20.css,\
     io.openliberty.microprofile.openapi20.servlets,\
     io.openliberty.microprofile.openapi20.utils,\
-    io.openliberty.microprofile.openapi20.validation
+    io.openliberty.microprofile.openapi20.validation,\
+    io.openliberty.microprofile.openapi20.config;thread-context=true
 
 Private-Package: \
     io.openliberty.microprofile.openapi20.cache
@@ -39,6 +40,13 @@ Private-Package: \
 Include-Resource: \
     META-INF/services=resources/META-INF/services,\
     WEB-INF=resources/WEB-INF
+
+Service-Component: \
+    io.openliberty.microprofile.openapi20.internal_${replace;${bVersion};\\.;_}.ResourceProvider;\
+    implementation:=com.ibm.wsspi.classloading.ResourceProvider;\
+    provide:=com.ibm.wsspi.classloading.ResourceProvider; \
+    configuration-policy:=ignore; \
+    properties:="resources=META-INF/services/org.eclipse.microprofile.config.spi.ConfigSource"
 
 -dsannotations-inherit: true
 -dsannotations: io.openliberty.microprofile.openapi20.ApplicationListener,\
