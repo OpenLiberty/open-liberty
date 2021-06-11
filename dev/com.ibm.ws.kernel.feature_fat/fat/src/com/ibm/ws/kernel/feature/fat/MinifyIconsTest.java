@@ -49,6 +49,7 @@ public class MinifyIconsTest {
     private static MinifiedServerTestUtils minifyUtils = null;
     private static Map<String, IconFeature> iconFeaturesInstalled = new HashMap<String, IconFeature>();
     private static boolean supportedPlatform = true;
+    private static String LIB_EXTRACT = "lib/extract";
 
     /**
      * Set up the test. This method is called very early on and does almost all of the heavy lifting. That's
@@ -215,7 +216,8 @@ public class MinifyIconsTest {
         for (IconFeature feature : iconFeaturesInstalled.values()) {
             removeIconFeature(feature);
         }
-
+        if (minifyUtils.isManifestOrLibExtractCreatedForTest())
+            minifiedServer.deleteFileFromLibertyInstallRoot(LIB_EXTRACT);
     }
 
     /**
