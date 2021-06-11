@@ -411,22 +411,22 @@ public class PlainTextLoaderService implements IToolDataService {
             Tr.entry(tc, "promoteIfPossible", new Object[] {"fromPersistedName=" + fromPersistedName, "toPersistedName=" + toPersistedName});
         }
         boolean promoted = false;
-        if (persistenceProviderCollective != null) {
-            if (persistenceProviderCollective.exists(fromPersistedName) == false && persistenceProviderFile.exists(fromPersistedName) == true)
-            {
-                try {
-                    String data = loadToolDataFromPersistence(persistenceProviderFile, fromPersistedName, userId, toolName);
-                    if (data != null && !"IOException".equals(data)) {
-                        persistenceProviderCollective.storePlainText(toPersistedName, data);
-                        promoted = true;
-                    }
-                } catch (IOException e) {
-                    Tr.error(tc, "UNABLE_TO_PROMOTE_TOOL_DATA_CONTENT", userId, toolName);
-                } catch (JSONMarshallException e) {
-                    Tr.error(tc, "UNABLE_TO_PROMOTE_TOOL_JSON_DATA_CONTENT", e.getMessage());
+ 
+        if (persistenceProviderFile.exists(fromPersistedName) == true)
+        {
+            try {
+                String data = loadToolDataFromPersistence(persistenceProviderFile, fromPersistedName, userId, toolName);
+                if (data != null && !"IOException".equals(data)) {
+                    persistenceProviderCollective.storePlainText(toPersistedName, data);
+                    promoted = true;
                 }
+            } catch (IOException e) {
+                Tr.error(tc, "UNABLE_TO_PROMOTE_TOOL_DATA_CONTENT", userId, toolName);
+            } catch (JSONMarshallException e) {
+                Tr.error(tc, "UNABLE_TO_PROMOTE_TOOL_JSON_DATA_CONTENT", e.getMessage());
             }
         }
+
         if (tc.isEntryEnabled()) {
             Tr.exit(tc, "promoteIfPossible", promoted);
         }
