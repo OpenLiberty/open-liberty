@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application version="9" 
+        xmlns="https://jakarta.ee/xml/ns/jakartaee" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+        xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee
+                https://jakarta.ee/xml/ns/jakartaee/application_9.xsd"> 
+
+  <module>
+      <web>
+	       <web-uri>webProfile9App.war</web-uri>
+          <context-root>webProfile9App</context-root>
+      </web>
+  </module>
+
+</application>
