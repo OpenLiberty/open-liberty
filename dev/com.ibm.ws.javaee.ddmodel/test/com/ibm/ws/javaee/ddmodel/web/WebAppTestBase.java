@@ -37,11 +37,11 @@ public class WebAppTestBase extends DDTestBase {
         OverlayContainer rootOverlay = mockery.mock(OverlayContainer.class, "rootOverlay" + mockId++);
         ArtifactEntry artifactEntry = mockery.mock(ArtifactEntry.class, "artifactEntry" + mockId++);
 
-        Container moduleRoot = mockery.mock(Container.class, "root" + mockId++);
-        Entry moduleEntry = mockery.mock(Entry.class, "entry" + mockId++);        
+        Container appRoot = mockery.mock(Container.class, "appRoot" + mockId++);
+        Entry moduleEntry = mockery.mock(Entry.class, "moduleEntry" + mockId++);        
 
-        Container root = mockery.mock(Container.class, "root" + mockId++);
-        Entry entry = mockery.mock(Entry.class, "entry" + mockId++);
+        Container moduleRoot = mockery.mock(Container.class, "moduleRoot" + mockId++);
+        Entry ddEntry = mockery.mock(Entry.class, "ddEntry" + mockId++);
 
         @SuppressWarnings("unchecked")
         ServiceReference<ServletVersion> versionRef = mockery.mock(ServiceReference.class, "sr" + mockId++);
@@ -52,32 +52,31 @@ public class WebAppTestBase extends DDTestBase {
                 allowing(rootOverlay).getFromNonPersistentCache(with(any(String.class)), with(any(Class.class)));
                 will(returnValue(null));
 
-                allowing(moduleRoot).getPhysicalPath();
-                will(returnValue("c:\\someDir\\apps\\expanded\\myEar.ear"));
-                allowing(moduleRoot).adapt(Entry.class);
-                will(returnValue(null));
-
-                allowing(moduleEntry).getRoot();
-                will(returnValue(moduleRoot));
-                allowing(moduleEntry).getPath();
-                will(returnValue("webModule.war"));
-
                 allowing(artifactEntry).getRoot();
-                will(returnValue(root));
+                will(returnValue(moduleRoot));
                 allowing(artifactEntry).getPath();
                 will(returnValue('/' + WebApp.DD_NAME));
 
-                allowing(root).adapt(Entry.class);
+                allowing(appRoot).getPhysicalPath();
+                will(returnValue("c:\\someDir\\apps\\expanded\\myEar.ear"));
+                allowing(appRoot).adapt(Entry.class);
+                will(returnValue(null));
+
+                allowing(moduleEntry).getRoot();
+                will(returnValue(appRoot));
+                allowing(moduleEntry).getPath();
+                will(returnValue("webModule.war"));
+
+                allowing(moduleRoot).adapt(Entry.class);
                 will(returnValue(moduleEntry));
 
-                allowing(entry).getRoot();
-                will(returnValue(root));                
-                allowing(entry).getPath();
+                allowing(ddEntry).getRoot();
+                will(returnValue(moduleRoot));                
+                allowing(ddEntry).getPath();
                 will(returnValue('/' + WebApp.DD_NAME));
-
-                allowing(entry).adapt(InputStream.class);
+                allowing(ddEntry).adapt(InputStream.class);
                 will(returnValue(new ByteArrayInputStream(xml.getBytes("UTF-8"))));
-
+                
                 allowing(versionRef).getProperty(ServletVersion.VERSION);
                 will(returnValue(maxVersion));
             }
@@ -89,7 +88,7 @@ public class WebAppTestBase extends DDTestBase {
         Exception boundException;
 
         try {
-            WebApp webApp = adapter.adapt(root, rootOverlay, artifactEntry, entry);
+            WebApp webApp = adapter.adapt(moduleRoot, rootOverlay, artifactEntry, ddEntry);
             if ( (messages != null) && (messages.length != 0) ) {
                 throw new Exception("Expected exception text [ " + Arrays.toString(messages) + " ]");
             }

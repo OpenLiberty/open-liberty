@@ -22,7 +22,7 @@ public class AppClientTest extends AppClientTestBase {
     @Test
     public void testAppClient() throws Exception {
         String[] unsupportedSchemaMessages =
-            { "CWWKC2262E", "invalid.deployment.descriptor.namespace" };        
+            { "CWWKC2262E", "unprovisioned.descriptor.version" };        
 
         for ( int schemaVersion : ApplicationClient.VERSIONS ) {
             for ( int maxSchemaVersion : ApplicationClient.VERSIONS ) {

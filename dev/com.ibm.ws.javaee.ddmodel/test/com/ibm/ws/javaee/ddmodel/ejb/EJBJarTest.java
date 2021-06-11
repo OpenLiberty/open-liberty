@@ -83,8 +83,8 @@ public class EJBJarTest extends EJBJarTestBase {
     @Test
     public void testGetVersionID() throws Exception {
         String[] unsupportedSchemaMessages =
-            { "CWWKC2262E", "invalid.deployment.descriptor.namespace" };        
-
+            { "CWWKC2262E", "unprovisioned.descriptor.version" };        
+        
         for ( int schemaVersion : EJBJar.VERSIONS ) {
             for ( int maxSchemaVersion : EJBJar.VERSIONS ) {
                 // The EJB parser uses a maximum schema

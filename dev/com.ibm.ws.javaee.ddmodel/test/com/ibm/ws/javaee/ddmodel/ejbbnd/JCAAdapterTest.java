@@ -15,6 +15,7 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.ibm.ws.javaee.dd.ejb.EJBJar;
 import com.ibm.ws.javaee.dd.ejbbnd.EJBJarBnd;
 import com.ibm.ws.javaee.dd.ejbbnd.EnterpriseBean;
 import com.ibm.ws.javaee.dd.ejbbnd.MessageDriven;
@@ -122,20 +123,26 @@ public class JCAAdapterTest extends EJBJarBndTestBase {
 
     @Test
     public void testJCAAdapterAttributeDestinationBindingNameXMI() throws Exception {
-        EJBJarBnd ejbJarBnd = parseEJBJarBinding(ejbJarBinding("") +
-                                                 "<ejbBindings xmi:type=\"ejbbnd:MessageDrivenBeanBinding\" " +
-                                                 "    activationSpecJndiName=\"activationSpecBindingName3\" " +
-                                                 "    destinationJndiName=\"destinationBindingName\">" +
-                                                 "  <enterpriseBean xmi:type=\"ejb:MessageDriven\" href=\"" + getEJBJarPath() + "#md0\"/>" +
-                                                 "</ejbBindings>" +
-                                                 "</ejbbnd:EJBJarBinding>",
-                                                 parseEJBJar(ejbJar21() +
-                                                             "  <enterprise-beans>" +
-                                                             "    <message-driven id=\"md0\">" +
-                                                             "      <ejb-name>MessageDrivenBean3</ejb-name>" +
-                                                             "    </message-driven>" +
-                                                             "  </enterprise-beans>" +
-                                                             "</ejb-jar>"));
+        EJBJar ejbJar =
+            parseEJBJar(
+                ejbJar21() +
+                    "<enterprise-beans>" +
+                        "<message-driven id=\"md0\">" +
+                            "<ejb-name>MessageDrivenBean3</ejb-name>" +
+                        "</message-driven>" +
+                    "</enterprise-beans>" +
+                "</ejb-jar>");
+
+        EJBJarBnd ejbJarBnd =
+            parseEJBJarBinding(
+                ejbJarBinding("") +
+                    "<ejbBindings xmi:type=\"ejbbnd:MessageDrivenBeanBinding\" " +
+                        "activationSpecJndiName=\"activationSpecBindingName3\" " +
+                        "destinationJndiName=\"destinationBindingName\">" +
+                        "<enterpriseBean xmi:type=\"ejb:MessageDriven\" href=\"" + getEJBJarPath() + "#md0\"/>" +
+                    "</ejbBindings>" +
+                "</ejbbnd:EJBJarBinding>", ejbJar);
+        
         List<EnterpriseBean> mdBeans = ejbJarBnd.getEnterpriseBeans();
         Assert.assertEquals("Only expected 1 message driven bean", 1, mdBeans.size());
         MessageDriven bean0 = (MessageDriven) mdBeans.get(0);

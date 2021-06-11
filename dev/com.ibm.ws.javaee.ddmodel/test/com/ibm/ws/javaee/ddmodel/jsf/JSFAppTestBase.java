@@ -16,6 +16,7 @@ import java.io.InputStream;
 import org.jmock.Expectations;
 import org.osgi.framework.ServiceReference;
 
+import com.ibm.ws.javaee.dd.app.Application;
 import com.ibm.ws.javaee.dd.jsf.FacesConfig;
 import com.ibm.ws.javaee.ddmodel.DDTestBase;
 import com.ibm.ws.javaee.version.FacesVersion;
@@ -31,7 +32,7 @@ public class JSFAppTestBase extends DDTestBase {
     private static final String JSF22_FacesConfig_Version = "2.2";
     private static final String JSF23_FacesConfig_Version = "2.3";
 
-    protected FacesConfig parse(final String xml) throws Exception {
+    protected FacesConfig parse(String xml) throws Exception {
         if (xml.contains(JSF22_FacesConfig_Version)) {
             return parseJSFApp(xml, FacesConfig.VERSION_2_2);
         } else if(xml.contains(JSF23_FacesConfig_Version)){
@@ -41,44 +42,59 @@ public class JSFAppTestBase extends DDTestBase {
         }
     }
 
-    FacesConfig parseJSFApp(final String xml, final int maxVersion) throws Exception {
-        FacesConfigAdapter adapter = new FacesConfigAdapter();
-        final Container root = mockery.mock(Container.class, "root" + mockId++);
-        final Entry entry = mockery.mock(Entry.class, "entry" + mockId++);
-        final OverlayContainer rootOverlay = mockery.mock(OverlayContainer.class, "rootOverlay" + mockId++);
-        final ArtifactContainer artifactContainer = mockery.mock(ArtifactContainer.class, "artifactContainer" + mockId++);
-        final Container container = mockery.mock(Container.class, "container" + mockId++);
-        @SuppressWarnings("unchecked")
-        final ServiceReference<FacesVersion> versionRef = mockery.mock(ServiceReference.class, "sr" + mockId++);
+    FacesConfig parseJSFApp(String xml, int maxVersion) throws Exception {
+        OverlayContainer rootOverlay = mockery.mock(OverlayContainer.class, "rootOverlay" + mockId++);
+        ArtifactContainer artifactContainer = mockery.mock(ArtifactContainer.class, "artifactContainer" + mockId++);
 
         mockery.checking(new Expectations() {
             {
-                allowing(artifactContainer).getPath();
-                will(returnValue(FacesConfig.DD_NAME));
-
                 allowing(rootOverlay).getFromNonPersistentCache(with(any(String.class)), with(any(Class.class)));
                 will(returnValue(null));
-
-                allowing(container).getEntry(FacesConfig.DD_NAME);
-                will(returnValue(entry));
-
-                allowing(entry).getPath();
-                will(returnValue('/' + FacesConfig.DD_NAME));
-
-                allowing(entry).adapt(InputStream.class);
-                will(returnValue(new ByteArrayInputStream(xml.getBytes("UTF-8"))));
-
                 allowing(rootOverlay).addToNonPersistentCache(with(any(String.class)), with(any(Class.class)), with(any(Object.class)));
 
+                allowing(artifactContainer).getPath();
+                will(returnValue(FacesConfig.DD_NAME));
+            }
+        });
+        
+        Container moduleRoot = mockery.mock(Container.class, "moduleRoot" + mockId++);
+        Entry ddEntry = mockery.mock(Entry.class, "entry" + mockId++);
+
+        mockery.checking(new Expectations() {
+            {
+                allowing(moduleRoot).adapt(Entry.class);
+                will(returnValue(null));
+                allowing(moduleRoot).getPhysicalPath();
+                will(returnValue("/root/wlp/usr/servers/server1/apps/myWar.war"));   
+                allowing(moduleRoot).getPath();
+                will(returnValue("/"));
+                allowing(moduleRoot).getEntry(FacesConfig.DD_NAME);
+                will(returnValue(ddEntry));
+
+                allowing(ddEntry).getRoot();
+                will(returnValue(moduleRoot));
+                allowing(ddEntry).getPath();
+                will(returnValue('/' + FacesConfig.DD_NAME));
+                allowing(ddEntry).adapt(InputStream.class);
+                will(returnValue(new ByteArrayInputStream(xml.getBytes("UTF-8"))));
+            }
+        });
+        
+        @SuppressWarnings("unchecked")
+        ServiceReference<FacesVersion> versionRef = mockery.mock(ServiceReference.class, "sr" + mockId++);
+
+        mockery.checking(new Expectations() {
+            {
                 allowing(versionRef).getProperty(FacesVersion.FACES_VERSION);
                 will(returnValue(maxVersion));
             }
         });
 
+        FacesConfigAdapter adapter = new FacesConfigAdapter();
         adapter.setVersion(versionRef);
 
         try {
-            return adapter.adapt(root, rootOverlay, artifactContainer, container);
+            return adapter.adapt(moduleRoot, rootOverlay, artifactContainer, moduleRoot);
         } catch (UnableToAdaptException e) {
             Throwable cause = e.getCause();
             throw cause instanceof Exception ? (Exception) cause : e;

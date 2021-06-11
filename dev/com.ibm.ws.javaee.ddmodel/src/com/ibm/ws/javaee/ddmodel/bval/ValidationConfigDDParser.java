@@ -22,7 +22,8 @@ public class ValidationConfigDDParser extends DDParser {
 
     @Override
     protected void failInvalidRootElement() throws ParseException {
-        // provide warning message, but do not fail if the wrong root element is found
+        // provide warning message, but do not fail if
+        // the wrong root element is found.
         if ( rootParsable == null ) {
             warning( "BVKEY_NOT_A_BEAN_VALIDATION_XML", getModuleName() );
         }
@@ -74,7 +75,6 @@ public class ValidationConfigDDParser extends DDParser {
     @Override
     protected void validateRootElementName() throws ParseException {
         // TODO Auto-generated method stub
-        
     }
 
     @Override

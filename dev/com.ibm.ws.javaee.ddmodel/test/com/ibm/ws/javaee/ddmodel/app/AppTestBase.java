@@ -28,64 +28,61 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 
 public class AppTestBase extends DDTestBase {
 
-    protected Application parse(String xml, Version platformVersion) throws Exception {
-        String versionText = platformVersion.toString();
-
-        // Mock up data structures needed to perform parsing:
-
-        // Mock up the parameters to 'ApplicationAdapter.adapt':
-        Container root = mockery.mock(Container.class, "root" + mockId++);
+    @SuppressWarnings("deprecation")
+    protected Application parse(String xmlText, Version platformVersion) throws Exception {
         OverlayContainer rootOverlay = mockery.mock(OverlayContainer.class, "rootOverlay" + mockId++);
         ArtifactContainer artifactContainer = mockery.mock(ArtifactContainer.class, "artifactContainer" + mockId++);
-        Container containerToAdapt = mockery.mock(Container.class, "containerToAdapt" + mockId++);
-
-        // Mock up the entry for the application descriptor:
-        Entry entry = mockery.mock(Entry.class, "entry" + mockId++);
-
-        // Mock up the JavaEEVersion reference, which carries the application feature version:
-        @SuppressWarnings("unchecked")
-        ServiceReference<JavaEEVersion> versionRef = mockery.mock(ServiceReference.class, "sr" + mockId++);
-
-        // Teach the mock objects their expectations.  These are determined by
-        // examination of the application adapter code.
-
-        // containerToAdapt3.getEntry("META-INF/application.xml")
 
         mockery.checking(new Expectations() {
             {
-                // Required by calls to getFromNonPersistentCache and addToNonPersistentCache.
-                // The actual return value doesn't matter.
-                allowing(artifactContainer).getPath();
-                will(returnValue("/"));
-
-                // Give the root overlay the non-persistent cache API.
                 allowing(rootOverlay).getFromNonPersistentCache(with(any(String.class)), with(any(Class.class)));
                 will(returnValue(null));
                 allowing(rootOverlay).addToNonPersistentCache(with(any(String.class)), with(any(Class.class)), with(any(Object.class)));
 
-                // Teach the container to answer the entry for the application descriptor.
-                allowing(containerToAdapt).getEntry(Application.DD_NAME);
-                will(returnValue(entry));
+                allowing(artifactContainer).getPath();
+                will(returnValue("/"));
+            }
+        });
+        
+        Container appRoot = mockery.mock(Container.class, "appRoot" + mockId++);
+        Entry ddEntry = mockery.mock(Entry.class, "ddEntry" + mockId++);
 
-                // Fill in the path and input stream APIs for the descriptor entry.
-                allowing(entry).getPath();
+        mockery.checking(new Expectations() {
+            {
+                allowing(appRoot).adapt(Entry.class);
+                will(returnValue(null));
+                allowing(appRoot).getPhysicalPath();
+                will(returnValue("/root/wlp/usr/servers/server1/apps/myEAR.ear"));   
+                allowing(appRoot).getPath();
+                will(returnValue("/"));
+                allowing(appRoot).getEntry(Application.DD_NAME);
+                will(returnValue(ddEntry));
+
+                allowing(ddEntry).getRoot();
+                will(returnValue(appRoot));
+                allowing(ddEntry).getPath();
                 will(returnValue('/' + Application.DD_NAME));
-                allowing(entry).adapt(InputStream.class);
-                will(returnValue(new ByteArrayInputStream(xml.getBytes("UTF-8"))));
+                allowing(ddEntry).adapt(InputStream.class);
+                will(returnValue(new ByteArrayInputStream(xmlText.getBytes("UTF-8"))));
+            }
+        });
 
-                // Teach the version reference to answer the platform version.
+        @SuppressWarnings("unchecked")
+        ServiceReference<JavaEEVersion> versionRef = mockery.mock(ServiceReference.class, "sr" + mockId++);
+        String versionText = platformVersion.toString();
+
+        mockery.checking(new Expectations() {
+            {                
                 allowing(versionRef).getProperty(JavaEEVersion.VERSION);
                 will(returnValue(versionText));
             }
         });
 
-        // Parse using the mock data structures:
-
         ApplicationAdapter adapter = new ApplicationAdapter();
         adapter.setVersion(versionRef);
 
         try {
-            return adapter.adapt(root, rootOverlay, artifactContainer, containerToAdapt);
+            return adapter.adapt(appRoot, rootOverlay, artifactContainer, appRoot);
         } catch (UnableToAdaptException e) {
             Throwable cause = e.getCause();
             throw cause instanceof Exception ? (Exception) cause : e;

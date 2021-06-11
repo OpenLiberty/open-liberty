@@ -85,6 +85,7 @@ public class EJBJarTestBase {
      *     unexpected exception, or if parsing succeeds when
      *     an exception is expected.
      */
+    @SuppressWarnings("deprecation")
     protected static EJBJar parse(
         String xmlText,
         int maxSchemaVersion,
@@ -94,34 +95,53 @@ public class EJBJarTestBase {
         ServiceReference<EJBJarDDParserVersion> versionRef =
             mockery.mock(ServiceReference.class, "sr" + generateId());
 
+        NonPersistentCache nonPC = mockery.mock(NonPersistentCache.class, "nonPC" + generateId());
+
         OverlayContainer rootOverlay = mockery.mock(OverlayContainer.class, "rootOverlay" + generateId());
         ArtifactEntry artifactEntry = mockery.mock(ArtifactEntry.class, "artifactContainer" + generateId());
 
-        Container root = mockery.mock(Container.class, "root" + generateId());
-        Entry entry = mockery.mock(Entry.class, "entry" + generateId());
+        Container appRoot = mockery.mock(Container.class, "appRoot" + mockId++);
+        Entry moduleEntry = mockery.mock(Entry.class, "moduleEntry" + mockId++);    
 
-        NonPersistentCache nonPC = mockery.mock(NonPersistentCache.class, "nonPC" + generateId());
+        Container moduleRoot = mockery.mock(Container.class, "moduleRoot" + generateId());
+        Entry ddEntry = mockery.mock(Entry.class, "ddEntry" + generateId());
 
         mockery.checking(new Expectations() {
             {
-                allowing(versionRef).getProperty(EJBJarDDParserVersion.VERSION);
-                will(returnValue(maxSchemaVersion));
-
                 allowing(rootOverlay).getFromNonPersistentCache(with(any(String.class)), with(EJBJar.class));
                 will(returnValue(null));
                 allowing(rootOverlay).addToNonPersistentCache(with(any(String.class)), with(EJBJar.class), with(any(EJBJar.class)));
+
                 allowing(artifactEntry).getPath();
                 will(returnValue("/META-INF/ejb-jar.xml"));
 
-                allowing(root).adapt(NonPersistentCache.class);
-                will(returnValue(nonPC));
                 allowing(nonPC).getFromCache(WebModuleInfo.class);
                 will(returnValue(null));
 
-                allowing(entry).getPath();
+                allowing(appRoot).getPhysicalPath();
+                will(returnValue("c:\\someDir\\apps\\expanded\\myEar.ear"));
+                allowing(appRoot).adapt(Entry.class);
+                will(returnValue(null));
+
+                allowing(moduleEntry).getRoot();
+                will(returnValue(appRoot));
+                allowing(moduleEntry).getPath();
+                will(returnValue("ejbJar.jar"));
+
+                allowing(moduleRoot).adapt(NonPersistentCache.class);
+                will(returnValue(nonPC));
+                allowing(moduleRoot).adapt(Entry.class);
+                will(returnValue(moduleEntry));
+
+                allowing(ddEntry).getRoot();
+                will(returnValue(moduleRoot));                
+                allowing(ddEntry).getPath();
                 will(returnValue("/META-INF/ejb-jar.xml"));
-                allowing(entry).adapt(InputStream.class);
+                allowing(ddEntry).adapt(InputStream.class);
                 will(returnValue(new ByteArrayInputStream(xmlText.getBytes("UTF-8"))));
+
+                allowing(versionRef).getProperty(EJBJarDDParserVersion.VERSION);
+                will(returnValue(maxSchemaVersion));
             }
         });
 
@@ -131,7 +151,7 @@ public class EJBJarTestBase {
         EJBJar ejbJar;
         Exception boundException;
         try {
-            ejbJar = adapter.adapt(root, rootOverlay, artifactEntry, entry);
+            ejbJar = adapter.adapt(moduleRoot, rootOverlay, artifactEntry, ddEntry);
             if ( (expectedMessages != null) && (expectedMessages.length != 0) ) {
                 throw new Exception("Expected exception text [ " + Arrays.toString(expectedMessages) + " ]");
             }

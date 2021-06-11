@@ -83,7 +83,7 @@ public final class WebservicesBndAdapter implements ContainerAdapter<Webservices
 
         if (ddEntry != null) {
             try {
-                WsClientBindingParser parser = new WsClientBindingParser(containerToAdapt, ddEntry);
+                WsClientBndParser parser = new WsClientBndParser(containerToAdapt, ddEntry);
                 WebservicesBnd wsBind = parser.parse();
                 if (fromConfig == null) {
                     return wsBind;
@@ -178,14 +178,15 @@ public final class WebservicesBndAdapter implements ContainerAdapter<Webservices
         // EMPTY
     }
 
-    private static final class WsClientBindingParser extends DDParser {
-        public WsClientBindingParser(Container ddRootContainer, Entry ddEntry) throws ParseException {
+    private static final class WsClientBndParser extends DDParser {
+        public WsClientBndParser(Container ddRootContainer, Entry ddEntry) throws ParseException {
             super(ddRootContainer, ddEntry);
         }
 
         @Override
         public WebservicesBndType parse() throws ParseException {
             super.parseRootElement();
+
             return (WebservicesBndType) rootParsable;
         }
 

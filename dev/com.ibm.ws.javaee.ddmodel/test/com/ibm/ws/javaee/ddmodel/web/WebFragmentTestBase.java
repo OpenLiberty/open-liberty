@@ -12,6 +12,7 @@ package com.ibm.ws.javaee.ddmodel.web;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 
 import org.jmock.Expectations;
 import org.osgi.framework.ServiceReference;
@@ -32,50 +33,94 @@ public class WebFragmentTestBase extends DDTestBase {
         return parse(xml, WebApp.VERSION_3_0);
     }
 
-    WebFragment parse(final String xml, final int maxVersion) throws Exception {
-        WebFragmentAdapter adapter = new WebFragmentAdapter();
-        final Container root = mockery.mock(Container.class, "root" + mockId++);
-        final Entry entry = mockery.mock(Entry.class, "entry" + mockId++);
-        final OverlayContainer rootOverlay = mockery.mock(OverlayContainer.class, "rootOverlay" + mockId++);
-        final ArtifactContainer artifactContainer = mockery.mock(ArtifactContainer.class, "artifactContainer" + mockId++);
-        final Container container = mockery.mock(Container.class, "container" + mockId++);
-        @SuppressWarnings("unchecked")
-        final ServiceReference<ServletVersion> versionRef = mockery.mock(ServiceReference.class, "sr" + mockId++);
+    WebFragment parse(String xmlText, int maxVersion) throws Exception {
+        OverlayContainer rootOverlay = mockery.mock(OverlayContainer.class, "rootOverlay" + mockId++);
+        ArtifactContainer artifactContainer = mockery.mock(ArtifactContainer.class, "artifactContainer" + mockId++);
 
-        mockery.checking(new Expectations() {
-            {
-                allowing(artifactContainer).getPath();
-                will(returnValue(WebFragment.DD_NAME));
+        wireOverlay(rootOverlay, artifactContainer);
+        
+        Container moduleRoot = mockery.mock(Container.class, "moduleRoot" + mockId++);
+        Entry fragmentEntry = mockery.mock(Entry.class, "fragmentEntry" + mockId++);
+        Container fragmentRoot = mockery.mock(Container.class, "fragmentRoot" + mockId++);
+        Entry ddEntry = mockery.mock(Entry.class, "ddEntry" + mockId++);
 
-                allowing(rootOverlay).getFromNonPersistentCache(with(any(String.class)), with(any(Class.class)));
-                will(returnValue(null));
+        wireFragment(moduleRoot, fragmentEntry, fragmentRoot, ddEntry, xmlText);
 
-                allowing(container).getEntry(WebFragment.DD_NAME);
-                will(returnValue(entry));
-
-                allowing(entry).getPath();
-                will(returnValue('/' + WebFragment.DD_NAME));
-
-                allowing(entry).adapt(InputStream.class);
-                will(returnValue(new ByteArrayInputStream(xml.getBytes("UTF-8"))));
-
-                allowing(rootOverlay).addToNonPersistentCache(with(any(String.class)), with(any(Class.class)), with(any(Object.class)));
-
-                allowing(versionRef).getProperty(ServletVersion.VERSION);
-                will(returnValue(maxVersion));
-            }
-        });
-
-        adapter.setVersion(versionRef);
+        WebFragmentAdapter adapter = mockFragmentAdapter(maxVersion);
 
         try {
-            return adapter.adapt(root, rootOverlay, artifactContainer, container);
-        } catch (UnableToAdaptException e) {
+            return adapter.adapt(fragmentRoot, rootOverlay, artifactContainer, fragmentRoot);
+        } catch ( UnableToAdaptException e ) {
             Throwable cause = e.getCause();
             throw cause instanceof Exception ? (Exception) cause : e;
         }
     }
 
+    private void wireOverlay(OverlayContainer rootOverlay, ArtifactContainer artifactContainer) {
+        mockery.checking(new Expectations() {
+            {
+                allowing(rootOverlay).getFromNonPersistentCache(with(any(String.class)), with(any(Class.class)));
+                will(returnValue(null));
+                allowing(rootOverlay).addToNonPersistentCache(with(any(String.class)), with(any(Class.class)), with(any(Object.class)));
+
+                allowing(artifactContainer).getPath();
+                will(returnValue("/"));
+            }
+        });
+    }
+
+    @SuppressWarnings("deprecation")
+    private void wireFragment(
+            Container moduleRoot,
+            Entry fragmentEntry, Container fragmentRoot,
+            Entry ddEntry, String xmlText) throws UnsupportedEncodingException, UnableToAdaptException {
+        
+        mockery.checking(new Expectations() {
+            {
+                allowing(moduleRoot).getPhysicalPath();
+                will(returnValue("/root/wlp/usr/servers/server1/apps/web.war"));
+                allowing(moduleRoot).adapt(Entry.class);
+                will(returnValue(null));
+
+                allowing(fragmentEntry).getRoot();
+                will(returnValue(moduleRoot));
+                allowing(fragmentEntry).getPath();
+                will(returnValue("/WEB-INF/lib/fragment1.jar"));
+        
+                allowing(fragmentRoot).adapt(Entry.class);
+                will(returnValue(fragmentEntry));                
+                allowing(fragmentRoot).getPath();
+                will(returnValue("/"));
+                allowing(fragmentRoot).getEntry(WebFragment.DD_NAME);
+                will(returnValue(ddEntry));
+        
+                allowing(ddEntry).getRoot();
+                will(returnValue(moduleRoot));
+                allowing(ddEntry).getPath();
+                will(returnValue('/' + WebFragment.DD_NAME));
+                allowing(ddEntry).adapt(InputStream.class);
+                will(returnValue(new ByteArrayInputStream(xmlText.getBytes("UTF-8"))));
+            }
+        });        
+    }
+    
+    private WebFragmentAdapter mockFragmentAdapter(int maxVersion) {
+        @SuppressWarnings("unchecked")
+        ServiceReference<ServletVersion> versionRef = mockery.mock(ServiceReference.class, "sr" + mockId++);
+
+        mockery.checking(new Expectations() {
+            {
+                allowing(versionRef).getProperty(ServletVersion.VERSION);
+                will(returnValue(maxVersion));
+            }
+        });
+        
+        WebFragmentAdapter adapter = new WebFragmentAdapter();
+        adapter.setVersion(versionRef);
+
+        return adapter;
+    }
+    
     protected static final String webFragment30() {
         return "<web-fragment" +
                " xmlns=\"http://java.sun.com/xml/ns/javaee\"" +

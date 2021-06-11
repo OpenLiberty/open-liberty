@@ -32,45 +32,65 @@ public class JNDIEnvironmentRefsTestBase {
     private final Mockery mockery = new Mockery();
     private int mockId;
 
-    private EJBJar parseEJBJar(final String xml) throws Exception {
-        EJBJarEntryAdapter adapter = new EJBJarEntryAdapter();
-        @SuppressWarnings("unchecked")
-        final ServiceReference<EJBJarDDParserVersion> versionRef = mockery.mock(ServiceReference.class, "sr" + mockId++);
-        final Container root = mockery.mock(Container.class, "root" + mockId++);
-        final Entry entry = mockery.mock(Entry.class, "entry" + mockId++);
-        final OverlayContainer rootOverlay = mockery.mock(OverlayContainer.class, "rootOverlay" + mockId++);
-        final ArtifactEntry artifactEntry = mockery.mock(ArtifactEntry.class, "artifactContainer" + mockId++);
-        final NonPersistentCache nonPC = mockery.mock(NonPersistentCache.class, "nonPC" + mockId++);
+    private EJBJar parseEJBJar(String xml) throws Exception {
+        OverlayContainer rootOverlay = mockery.mock(OverlayContainer.class, "rootOverlay" + mockId++);
+        ArtifactEntry artifactEntry = mockery.mock(ArtifactEntry.class, "artifactEntry" + mockId++);
 
         mockery.checking(new Expectations() {
             {
-                allowing(artifactEntry).getPath();
-                will(returnValue("META-INF/ejb-jar.xml"));
-
-                allowing(root).adapt(NonPersistentCache.class);
-                will(returnValue(nonPC));
-                allowing(nonPC).getFromCache(WebModuleInfo.class);
-                will(returnValue(null));
-
-                allowing(entry).getPath();
-                will(returnValue("META-INF/ejb-jar.xml"));
-
-                allowing(entry).adapt(InputStream.class);
-                will(returnValue(new ByteArrayInputStream(xml.getBytes("UTF-8"))));
-
                 allowing(rootOverlay).getFromNonPersistentCache(with(any(String.class)), with(EJBJar.class));
                 will(returnValue(null));
                 allowing(rootOverlay).addToNonPersistentCache(with(any(String.class)), with(EJBJar.class), with(any(EJBJar.class)));
+                
+                allowing(artifactEntry).getPath();
+                will(returnValue("META-INF/ejb-jar.xml"));
+            }
+        });
+        
+        NonPersistentCache nonPC = mockery.mock(NonPersistentCache.class, "nonPC" + mockId++);
+        Container moduleRoot = mockery.mock(Container.class, "moduleRoot" + mockId++);
+        Entry ddEntry = mockery.mock(Entry.class, "ddEntry" + mockId++);
 
+        mockery.checking(new Expectations() {
+            {
+                allowing(nonPC).getFromCache(WebModuleInfo.class);
+                will(returnValue(null));
+
+                allowing(moduleRoot).adapt(NonPersistentCache.class);
+                will(returnValue(nonPC));
+                
+                allowing(moduleRoot).adapt(Entry.class);
+                will(returnValue(null));
+                allowing(moduleRoot).getPhysicalPath();
+                will(returnValue("/root/wlp/usr/servers/server1/apps/ejbJar.jar"));                
+                allowing(moduleRoot).getPath();
+                will(returnValue("/"));
+
+                allowing(ddEntry).getRoot();
+                will(returnValue(moduleRoot));
+                allowing(ddEntry).getPath();
+                will(returnValue("/META-INF/ejb-jar.xml"));
+
+                allowing(ddEntry).adapt(InputStream.class);
+                will(returnValue(new ByteArrayInputStream(xml.getBytes("UTF-8"))));
+            }
+        });
+        
+        @SuppressWarnings("unchecked")
+        ServiceReference<EJBJarDDParserVersion> versionRef = mockery.mock(ServiceReference.class, "sr" + mockId++);
+        
+        mockery.checking(new Expectations() {
+            {        
                 allowing(versionRef).getProperty(EJBJarDDParserVersion.VERSION);
                 will(returnValue(EJBJar.VERSION_3_2));
             }
         });
 
+        EJBJarEntryAdapter adapter = new EJBJarEntryAdapter();
         adapter.setVersion(versionRef);
 
         try {
-            return adapter.adapt(root, rootOverlay, artifactEntry, entry);
+            return adapter.adapt(moduleRoot, rootOverlay, artifactEntry, ddEntry);
         } catch (UnableToAdaptException e) {
             Throwable cause = e.getCause();
             throw cause instanceof Exception ? (Exception) cause : e;

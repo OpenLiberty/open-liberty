@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,10 +15,6 @@ import java.io.InputStream;
 
 import org.jmock.Expectations;
 import org.jmock.Mockery;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-
-import test.common.SharedOutputManager;
 
 import com.ibm.ws.container.service.app.deploy.ModuleInfo;
 import com.ibm.ws.container.service.app.deploy.WebModuleInfo;
@@ -30,70 +26,65 @@ import com.ibm.wsspi.artifact.ArtifactEntry;
 import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 
 public class ValidationConfigTestBase {
-
-    protected static SharedOutputManager outputMgr;
-
     private final Mockery mockery = new Mockery();
     private int mockId;
 
-    @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
-        outputMgr = SharedOutputManager.getInstance();
-        outputMgr.captureStreams();
-    }
-
-    @AfterClass
-    public static void tearDownAfterClass() throws Exception {
-        outputMgr.restoreStreams();
-    }
-
-    ValidationConfig parse(final String xml) throws Exception {
+    ValidationConfig parse(String xml) throws Exception {
         return parse(xml, false);
     }
 
-    ValidationConfig parse(final String xml, final boolean notBvalXml) throws Exception {
-        ValidationConfigEntryAdapter adapter = new ValidationConfigEntryAdapter();
-        final Container root = mockery.mock(Container.class, "root" + mockId++);
-        final Entry entry = mockery.mock(Entry.class, "entry" + mockId++);
-        final OverlayContainer rootOverlay = mockery.mock(OverlayContainer.class, "rootOverlay" + mockId++);
-        final ArtifactEntry artifactEntry = mockery.mock(ArtifactEntry.class, "artifactContainer" + mockId++);
-        final NonPersistentCache nonPC = mockery.mock(NonPersistentCache.class, "nonPC" + mockId++);
-        final ModuleInfo moduleInfo = mockery.mock(ModuleInfo.class, "moduleInfo" + mockId++);
+    @SuppressWarnings("deprecation")
+    ValidationConfig parse(String xml, boolean notBvalXml) throws Exception {
+        OverlayContainer rootOverlay = mockery.mock(OverlayContainer.class, "rootOverlay" + mockId++);
+        ArtifactEntry artifactEntry = mockery.mock(ArtifactEntry.class, "artifactContainer" + mockId++);
+
+        NonPersistentCache nonPC = mockery.mock(NonPersistentCache.class, "nonPC" + mockId++);
+        Container moduleRoot = mockery.mock(Container.class, "moduleRoot" + mockId++);
+        Entry ddEntry = mockery.mock(Entry.class, "ddEntry" + mockId++);
+
+        ModuleInfo moduleInfo = ( notBvalXml ? mockery.mock(ModuleInfo.class, "moduleInfo" + mockId++) : null );
 
         mockery.checking(new Expectations() {
             {
-                allowing(artifactEntry).getPath();
-                will(returnValue("META-INF/validation.xml"));
-
-                allowing(root).adapt(NonPersistentCache.class);
-                will(returnValue(nonPC));
-                allowing(nonPC).getFromCache(WebModuleInfo.class);
-                will(returnValue(null));
-
-                allowing(entry).getPath();
-                will(returnValue("META-INF/validation.xml"));
-
-                allowing(entry).adapt(InputStream.class);
-                will(returnValue(new ByteArrayInputStream(xml.getBytes("UTF-8"))));
-
                 allowing(rootOverlay).getFromNonPersistentCache(with(any(String.class)), with(ValidationConfig.class));
                 will(returnValue(null));
                 allowing(rootOverlay).addToNonPersistentCache(with(any(String.class)), with(ValidationConfig.class), with(any(ValidationConfig.class)));
 
-                if (notBvalXml) {
-                    allowing(root).getName();
-                    will(returnValue("testModule"));
+                allowing(artifactEntry).getPath();
+                will(returnValue("META-INF/validation.xml"));
 
+                allowing(nonPC).getFromCache(WebModuleInfo.class);
+                will(returnValue(null));
+                allowing(moduleRoot).adapt(NonPersistentCache.class);
+                will(returnValue(nonPC));
+                allowing(moduleRoot).getPhysicalPath();
+                will(returnValue("/root/wlp/usr/servers/server1/apps/ejbJar.jar"));
+                allowing(moduleRoot).adapt(Entry.class);
+                will(returnValue(null));
+                allowing(moduleRoot).getPath();
+                will(returnValue("/"));
+
+                allowing(ddEntry).getRoot();
+                will(returnValue(moduleRoot));
+                allowing(ddEntry).getPath();
+                will(returnValue("META-INF/validation.xml"));
+                allowing(ddEntry).adapt(InputStream.class);
+                will(returnValue(new ByteArrayInputStream(xml.getBytes("UTF-8"))));
+
+                if (notBvalXml) {
                     allowing(nonPC).getFromCache(ModuleInfo.class);
                     will(returnValue(moduleInfo));
-
                     allowing(moduleInfo).getName();
                     will(returnValue("thisModule"));
+
+                    allowing(moduleRoot).getName();
+                    will(returnValue("testModule"));
                 }
             }
         });
 
-        return adapter.adapt(root, rootOverlay, artifactEntry, entry);
+        ValidationConfigEntryAdapter adapter = new ValidationConfigEntryAdapter();
+        return adapter.adapt(moduleRoot, rootOverlay, artifactEntry, ddEntry);
     }
 
     static final String validationConfig() {

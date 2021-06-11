@@ -10,11 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.javaee.ddmodel.ejb;
 
-import com.ibm.ws.javaee.dd.app.Application;
 import com.ibm.ws.javaee.dd.ejb.EJBJar;
 import com.ibm.ws.javaee.dd.web.WebApp;
 import com.ibm.ws.javaee.ddmodel.DDParser;
-import com.ibm.ws.javaee.ddmodel.DDParser.ParseException;
 import com.ibm.ws.javaee.version.JavaEEVersion;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
@@ -32,9 +30,9 @@ public class EJBJarDDParser extends DDParser {
         new VersionData("2.1", null, NAMESPACE_SUN_J2EE,   EJBJar.VERSION_2_1, JavaEEVersion.VERSION_1_4_INT),
         new VersionData("3.0", null, NAMESPACE_SUN_JAVAEE, EJBJar.VERSION_3_0, JavaEEVersion.VERSION_5_0_INT),
         new VersionData("3.1", null, NAMESPACE_SUN_JAVAEE, EJBJar.VERSION_3_1, JavaEEVersion.VERSION_6_0_INT),
-        new VersionData("3.2", null, NAMESPACE_JCP_JAVAEE, EJBJar.VERSION_3_1, JavaEEVersion.VERSION_7_0_INT),
+        new VersionData("3.2", null, NAMESPACE_JCP_JAVAEE, EJBJar.VERSION_3_2, JavaEEVersion.VERSION_7_0_INT),
 
-        new VersionData("4.0", null, NAMESPACE_JAKARTA, WebApp.VERSION_5_0, JavaEEVersion.VERSION_9_0_INT)
+        new VersionData("4.0", null, NAMESPACE_JAKARTA, EJBJar.VERSION_4_0, JavaEEVersion.VERSION_9_0_INT)
     };
 
     @Override

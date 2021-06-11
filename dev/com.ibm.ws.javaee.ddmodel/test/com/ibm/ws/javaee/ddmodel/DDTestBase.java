@@ -12,6 +12,7 @@ package com.ibm.ws.javaee.ddmodel;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 
 import org.jmock.Expectations;
@@ -30,62 +31,61 @@ public class DDTestBase {
     protected final Mockery mockery = new Mockery();
     protected int mockId;
 
-    protected <T, A> T parse(String xml, ContainerAdapter<T> adapter, String path, String... messages) throws Exception {
+    protected <T, A> T parse(
+        String xml,
+        ContainerAdapter<T> adapter,
+        String path, String... messages) throws Exception {
+
         return parse(xml, adapter, path, null, null, messages);
     }
 
-    protected <T, A> T parse(String xml, ContainerAdapter<T> adapter, String path,
-                             Class<A> extraAdaptClass, A extraAdapt,
-                             String... messages) throws Exception {
-        return parse(xml, adapter, path, extraAdaptClass, extraAdapt, null, null, messages);
+    protected <T, A> T parse(
+        String xmlText,
+        ContainerAdapter<T> adapter,
+        String ddPath,
+        Class<A> extraAdaptClass, A extraAdaptValue,
+        String... messages) throws Exception {
+
+        return parse(xmlText, adapter, ddPath, extraAdaptClass, extraAdaptValue, null, null, messages);
     }
 
-    protected <T, A, N> T parse(String xml, ContainerAdapter<T> adapter, String path,
-                                Class<A> extraAdaptClass, A extraAdapt,
-                                Class<N> npCacheClass, N npCache,
-                                String... messages) throws Exception {
+    // Parse using a container adapter.    
+    protected <T, A, N> T parse(
+        String xmlText,
+        ContainerAdapter<T> adapter,
+        String ddPath,
+        Class<A> extraAdaptClass, A extraAdaptValue,
+        Class<N> npCacheClass, N npCache,
+        String... messages) throws Exception {
 
-        OverlayContainer rootOverlay =
-            mockery.mock(OverlayContainer.class, "rootOverlay" + mockId++);
-        ArtifactContainer artifactContainer =
-            mockery.mock(ArtifactContainer.class, "artifactContainer" + mockId++);
+        String appPath = "/parent/wlp/usr/servers/server1/apps/someApp.ear";
+        String modulePath = "web.war";
+        String fragmentPath = null;
 
-        Container root = mockery.mock(Container.class, "root" + mockId++);
-        Entry entry = mockery.mock(Entry.class, "entry" + mockId++);
+        OverlayContainer rootOverlay = mockery.mock(OverlayContainer.class, "rootOverlay" + mockId++);
+        ArtifactContainer artifactContainer = mockery.mock(ArtifactContainer.class, "artifactContainer" + mockId++);
 
-        Container container = mockery.mock(Container.class, "container" + mockId++);
+        Container appRoot = ((appPath == null) ? null : mockery.mock(Container.class, "appRoot" + mockId++));
 
-        mockery.checking(new Expectations() {
-            {
-                if (npCacheClass != null) {
-                    allowing(rootOverlay).getFromNonPersistentCache(with(any(String.class)), with(npCacheClass));
-                    will(returnValue(npCache));
-                }
-                allowing(rootOverlay).getFromNonPersistentCache(with(any(String.class)), with(any(Class.class)));
-                will(returnValue(null));
-                allowing(rootOverlay).addToNonPersistentCache(with(any(String.class)), with(any(Class.class)), with(any(Object.class)));
+        Entry moduleEntry = ((appPath == null) ? null : mockery.mock(Entry.class, "moduleEntry" + mockId++));
+        Container moduleRoot = mockery.mock(Container.class, "moduleRoot" + mockId++);
 
-                allowing(artifactContainer).getPath();
-                will(returnValue(null));
+        Entry fragmentEntry = ((fragmentPath == null) ? null : mockery.mock(Entry.class, "fragmentEntry" + mockId++));
+        Container fragmentRoot = ((fragmentPath == null) ? null : mockery.mock(Container.class, "fragmentRoot" + mockId++));
 
-                allowing(container).getEntry(path);
-                will(returnValue(entry));
-                if (extraAdaptClass != null) {
-                    allowing(container).adapt(extraAdaptClass);
-                    will(returnValue(extraAdapt));
-                }
-
-                allowing(entry).getPath();
-                will(returnValue('/' + path));
-                allowing(entry).adapt(InputStream.class);
-                will(returnValue(new ByteArrayInputStream(xml.getBytes("UTF-8"))));
-            }
-        });
+        Entry ddEntry = mockery.mock(Entry.class, "ddEntry" + mockId++);
+        
+        wire(appPath, modulePath, fragmentPath, ddPath,
+             rootOverlay, artifactContainer, null,
+             appRoot, moduleEntry, moduleRoot, fragmentEntry, fragmentRoot, ddEntry,
+             xmlText,
+             extraAdaptClass, extraAdaptValue,
+             npCacheClass, npCache);
 
         Exception boundException;
 
         try {
-            T returnValue = adapter.adapt(root, rootOverlay, artifactContainer, container);
+            T returnValue = adapter.adapt(moduleRoot, rootOverlay, artifactContainer, moduleRoot);
             if ( (messages != null) && (messages.length != 0) ) {
                 throw new Exception("Expected exception text [ " + Arrays.toString(messages) + " ]");
             }            
@@ -113,37 +113,37 @@ public class DDTestBase {
         throw boundException;
     }            
 
+    // Parse using an entry adapter.
     protected <T, A> T parse(
-        String xml, EntryAdapter<T> adapter, String path,
+        String xmlText, EntryAdapter<T> adapter, String ddPath,
         String... messages) throws Exception {
 
-        Container root = mockery.mock(Container.class, "root" + mockId++);
+        String appPath = "/parent/wlp/usr/servers/server1/apps/someApp.ear";
+        String modulePath = "web.war";
+        String fragmentPath = null;
+
         OverlayContainer rootOverlay = mockery.mock(OverlayContainer.class, "rootOverlay" + mockId++);
         ArtifactEntry artifactEntry = mockery.mock(ArtifactEntry.class, "artifactEntry" + mockId++);
-        Entry entry = mockery.mock(Entry.class, "entry" + mockId++);
 
-        mockery.checking(new Expectations() {
-            {
-                allowing(artifactEntry).getPath();
-                will(returnValue('/' + path));
+        Container appRoot = ((appPath == null) ? null : mockery.mock(Container.class, "appRoot" + mockId++));
 
-                allowing(rootOverlay).getFromNonPersistentCache(with(any(String.class)), with(any(Class.class)));
-                will(returnValue(null));
+        Entry moduleEntry = ((appPath == null) ? null : mockery.mock(Entry.class, "moduleEntry" + mockId++));
+        Container moduleRoot = mockery.mock(Container.class, "moduleRoot" + mockId++);
 
-                allowing(entry).getPath();
-                will(returnValue('/' + path));
+        Entry fragmentEntry = ((fragmentPath == null) ? null : mockery.mock(Entry.class, "fragmentEntry" + mockId++));
+        Container fragmentRoot = ((fragmentPath == null) ? null : mockery.mock(Container.class, "fragmentRoot" + mockId++));        
 
-                allowing(entry).adapt(InputStream.class);
-                will(returnValue(new ByteArrayInputStream(xml.getBytes("UTF-8"))));
+        Entry ddEntry = mockery.mock(Entry.class, "ddEntry" + mockId++);
 
-                allowing(rootOverlay).addToNonPersistentCache(with(any(String.class)), with(any(Class.class)), with(any(Object.class)));
-            }
-        });
+        wire(appPath, modulePath, fragmentPath, ddPath,
+             rootOverlay, null, artifactEntry,
+             appRoot, moduleEntry, moduleRoot, fragmentEntry, fragmentRoot, ddEntry,
+             xmlText);
 
         Exception boundException;
 
         try {
-            T returnValue = adapter.adapt(root, rootOverlay, artifactEntry, entry);
+            T returnValue = adapter.adapt(moduleRoot, rootOverlay, artifactEntry, ddEntry);
             if ( (messages != null) && (messages.length != 0) ) {
                 throw new Exception("Expected exception text [ " + Arrays.toString(messages) + " ]");
             }            
@@ -169,5 +169,142 @@ public class DDTestBase {
             }
         }
         throw boundException;        
+    }
+
+    protected void wire(
+            String appPath, String modulePath, String fragmentPath, String ddPath,
+            OverlayContainer rootOverlay,
+            ArtifactContainer artifactContainer, ArtifactEntry artifactEntry,
+            Container appRoot, Entry moduleEntry,
+            Container moduleRoot, Entry fragmentEntry,
+            Container fragmentRoot, Entry ddEntry,
+            String xmlText) throws UnsupportedEncodingException, UnableToAdaptException {
+
+        wire(appPath, modulePath, fragmentPath, ddPath,
+             rootOverlay, artifactContainer, artifactEntry,
+             appRoot, moduleEntry, moduleRoot, fragmentEntry, fragmentRoot, ddEntry,
+             xmlText,
+             null, null, null, null);
+    }
+
+    @SuppressWarnings("deprecation")
+    protected <T, A, N> void wire(
+            String appPath, String modulePath, String fragmentPath, String ddPath,
+            OverlayContainer rootOverlay,
+            ArtifactContainer artifactContainer, ArtifactEntry artifactEntry,
+            Container appRoot, Entry moduleEntry,
+            Container moduleRoot, Entry fragmentEntry,
+            Container fragmentRoot, Entry ddEntry,
+            String xmlText,
+            Class<A> extraAdaptClass, A extraAdapt,
+            Class<N> npCacheClass, N npCache) throws UnsupportedEncodingException, UnableToAdaptException {
+
+        mockery.checking(new Expectations() {
+            {
+                if ( npCacheClass != null ) {
+                    allowing(rootOverlay).getFromNonPersistentCache(with(any(String.class)), with(npCacheClass));
+                    will(returnValue(npCache));
+                }
+
+                allowing(rootOverlay).addToNonPersistentCache(with(any(String.class)), with(any(Class.class)), with(any(Object.class)));
+                allowing(rootOverlay).getFromNonPersistentCache(with(any(String.class)), with(any(Class.class)));
+                will(returnValue(null));
+
+                // An artifact container is provided when parsing
+                // using container adapt.  An artifact entry is
+                // provided when parsing using entry adapt.
+
+                if ( artifactContainer != null ) {
+                    allowing(artifactContainer).getPath();
+                    will(returnValue("/"));
+                }
+                if ( artifactEntry != null ) {
+                    allowing(artifactEntry).getPath();
+                    will(returnValue('/' + ddPath));
+                }
+
+                // Wire up the root-of-roots.
+                // If the module root is not the root-of-roots,
+                // wire the module root to the app root.
+
+                Container rootOfRoots;
+                String rootPath;
+
+                if ( appRoot != null ) {
+                    rootOfRoots = appRoot;
+                    rootPath = appPath;
+
+                    allowing(appRoot).getPath();
+                    will(returnValue("/"));
+                    allowing(appRoot).getEntry(modulePath);
+                    will(returnValue(moduleEntry));
+
+                    allowing(moduleEntry).getRoot();
+                    will(returnValue(appRoot));
+                    allowing(moduleEntry).getPath();
+                    will(returnValue(modulePath));
+
+                    allowing(moduleRoot).adapt(Entry.class);
+                    will(returnValue(moduleEntry));
+                    
+                } else {
+                    rootOfRoots = moduleRoot;
+                    rootPath = modulePath;
+                }
+                
+                allowing(rootOfRoots).getPhysicalPath();
+                will(returnValue(rootPath));                
+                allowing(rootOfRoots).adapt(Entry.class);
+                will(returnValue(null));
+
+                allowing(moduleRoot).getPath();
+                will(returnValue("/"));
+
+                // Wire the module and fragment.
+                //
+                // When there is a fragment, wire it to the
+                // module, and set it as the descriptor root.
+                //
+                // Otherwise, set the module as the descriptor root.
+
+                Container ddRoot;
+                
+                if ( fragmentEntry != null ) {
+                    ddRoot = fragmentRoot;
+
+                    allowing(moduleRoot).getEntry(fragmentPath);
+                    will(returnValue(fragmentEntry));
+                    
+                    allowing(fragmentEntry).getRoot();
+                    will(returnValue(moduleRoot));
+                    allowing(fragmentEntry).getPath();
+                    will(returnValue(fragmentPath));
+
+                    allowing(fragmentRoot).adapt(Entry.class);
+                    will(returnValue(fragmentEntry));
+                    allowing(fragmentRoot).getPath();
+                    will(returnValue("/"));
+                    
+                } else {
+                    ddRoot = moduleRoot;
+                }
+
+                // Wire the descriptor entry.
+
+                allowing(ddRoot).getEntry(ddPath);
+                will(returnValue(ddEntry));
+                if ( extraAdaptClass != null ) {
+                    allowing(ddRoot).adapt(extraAdaptClass);
+                    will(returnValue(extraAdapt));
+                }
+
+                allowing(ddEntry).getRoot();
+                will(returnValue(ddRoot));
+                allowing(ddEntry).getPath();
+                will(returnValue('/' + ddPath));
+                allowing(ddEntry).adapt(InputStream.class);
+                will(returnValue(new ByteArrayInputStream(xmlText.getBytes("UTF-8"))));
+            }
+        });
     }
 }

@@ -365,9 +365,6 @@ public class ValidationConfigTest extends ValidationConfigTestBase {
     public void testNotBValValidationXML() throws Exception {
         ValidationConfig config = parse(notValidationConfig(), true);
         assertNull("non Bean Validation xml should return null: " + config, config);
-
-        // find that message is output to messages.log
-        outputMgr.expectWarning("CWWKC2271W");
     }
 
     @Test

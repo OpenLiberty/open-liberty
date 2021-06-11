@@ -17,6 +17,7 @@ import java.util.Arrays;
 import org.jmock.Expectations;
 import org.osgi.framework.ServiceReference;
 
+import com.ibm.ws.javaee.dd.app.Application;
 import com.ibm.ws.javaee.dd.client.ApplicationClient;
 import com.ibm.ws.javaee.ddmodel.DDTestBase;
 import com.ibm.wsspi.adaptable.module.Container;
@@ -27,6 +28,7 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 
 public class AppClientTestBase extends DDTestBase {
 
+    @SuppressWarnings("deprecation")
     protected ApplicationClient parse(
         String xml,
         int maxVersion,
@@ -34,13 +36,6 @@ public class AppClientTestBase extends DDTestBase {
 
         OverlayContainer rootOverlay = mockery.mock(OverlayContainer.class, "rootOverlay" + mockId++);
         ArtifactEntry artifactEntry = mockery.mock(ArtifactEntry.class, "artifactEntry" + mockId++);
-
-        Container root = mockery.mock(Container.class, "root" + mockId++);
-        Entry entry = mockery.mock(Entry.class, "entry" + mockId++);
-
-        @SuppressWarnings("unchecked")
-        ServiceReference<ApplicationClientDDParserVersion> versionRef =
-            mockery.mock(ServiceReference.class, "sr" + mockId++);
 
         mockery.checking(new Expectations() {
             {
@@ -50,12 +45,38 @@ public class AppClientTestBase extends DDTestBase {
 
                 allowing(artifactEntry).getPath();
                 will(returnValue('/' + ApplicationClient.DD_NAME));
+            }
+        });
+        
+        Container moduleRoot = mockery.mock(Container.class, "moduleRoot" + mockId++);
+        Entry ddEntry = mockery.mock(Entry.class, "ddEntry" + mockId++);
 
-                allowing(entry).getPath();
+        mockery.checking(new Expectations() {
+            {
+                allowing(moduleRoot).adapt(Entry.class);
+                will(returnValue(null));
+                allowing(moduleRoot).getPhysicalPath();
+                will(returnValue("/root/wlp/usr/servers/server1/apps/myClient.jar"));   
+                allowing(moduleRoot).getPath();
+                will(returnValue("/"));
+                allowing(moduleRoot).getEntry(Application.DD_NAME);
+                will(returnValue(ddEntry));
+
+                allowing(ddEntry).getRoot();
+                will(returnValue(moduleRoot));
+                allowing(ddEntry).getPath();
                 will(returnValue('/' + ApplicationClient.DD_NAME));
-                allowing(entry).adapt(InputStream.class);
+                allowing(ddEntry).adapt(InputStream.class);
                 will(returnValue(new ByteArrayInputStream(xml.getBytes("UTF-8"))));
+            }
+        });
+        
+        @SuppressWarnings("unchecked")
+        ServiceReference<ApplicationClientDDParserVersion> versionRef =
+            mockery.mock(ServiceReference.class, "sr" + mockId++);
 
+        mockery.checking(new Expectations() {
+            {        
                 allowing(versionRef).getProperty(ApplicationClientDDParserVersion.VERSION);
                 will(returnValue(maxVersion));
             }
@@ -67,7 +88,7 @@ public class AppClientTestBase extends DDTestBase {
         Exception boundException;
 
         try {
-            ApplicationClient appClient = adapter.adapt(root, rootOverlay, artifactEntry, entry);
+            ApplicationClient appClient = adapter.adapt(moduleRoot, rootOverlay, artifactEntry, ddEntry);
             if ( (expectedMessages != null) && (expectedMessages.length != 0) ) {
                 throw new Exception("Expected exception text [ " + Arrays.toString(expectedMessages) + " ]");
             }
