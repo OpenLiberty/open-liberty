@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 IBM Corporation and others.
+ * Copyright (c) 2009,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -164,9 +164,6 @@ public class HttpDispatcherChannel implements InboundChannel, Discriminator {
      * final chain stop instead of waiting the full quiesce timeout length.
      */
     private void signalNoConnections() {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(tc, "Entering signalNoConnections");
-        }
         EventEngine events = HttpDispatcher.getEventService();
         if (null == events) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
@@ -193,9 +190,6 @@ public class HttpDispatcherChannel implements InboundChannel, Discriminator {
         if (0L < millisec) {
             this.quiescing = true;
             if (0 == this.activeConnections.get()) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(tc, "About to call signalNoConnections: " + this + " time=" + millisec);
-                }
                 // no current connections, notify the final stop can happen now
                 signalNoConnections();
             }

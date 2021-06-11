@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2014 IBM Corporation and others.
+ * Copyright (c) 2009, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -67,7 +67,6 @@ public class CHFWEventHandler implements EventHandler {
     public void handleEvent(Event event) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "Handle event; event=" + event.getTopic());
-            Thread.currentThread().dumpStack();
         }
         String topic = event.getTopic();
         if (topic.equalsIgnoreCase(ChannelFramework.EVENT_STOPCHAIN.getName())) {
@@ -94,7 +93,6 @@ public class CHFWEventHandler implements EventHandler {
     private void stopChain(String name, Event event) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "Stop chain event; chain=" + name);
-            Thread.currentThread().dumpStack();
         }
         ChannelFramework cf = ChannelFrameworkFactory.getChannelFramework();
         try {
@@ -119,7 +117,6 @@ public class CHFWEventHandler implements EventHandler {
     private void stopChannel(String name, Event event) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "Stop chain event; channel=" + name);
-            Thread.currentThread().dumpStack();
         }
         ChannelFramework cf = ChannelFrameworkFactory.getChannelFramework();
         try {
