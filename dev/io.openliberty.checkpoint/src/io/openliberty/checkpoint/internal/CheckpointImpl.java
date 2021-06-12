@@ -28,6 +28,8 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
 
@@ -43,6 +45,8 @@ import io.openliberty.checkpoint.spi.SnapshotHookFactory;
                                   policyOption = ReferencePolicyOption.GREEDY),
            property = { "osgi.command.function=snapshot", "osgi.command.scope=criu" })
 public class CheckpointImpl implements Checkpoint {
+
+    private static final TraceComponent tc = Tr.register(CheckpointImpl.class);
     private final ComponentContext cc;
 
     @Reference
@@ -88,7 +92,7 @@ public class CheckpointImpl implements Checkpoint {
     @Descriptor("Take a snapshot")
     public void snapshot(Phase phase) throws SnapshotFailed {
         doSnapshot(phase,
-                   locAdmin.resolveResource(WsLocationConstants.SYMBOL_SERVER_WORKAREA_DIR + "snapshot").asFile());
+                   locAdmin.resolveResource(WsLocationConstants.SYMBOL_SERVER_WORKAREA_DIR + "snapshot/").asFile());
     }
 
     private void doSnapshot(Phase phase, File directory) throws SnapshotFailed {
@@ -101,7 +105,15 @@ public class CheckpointImpl implements Checkpoint {
             if (currentCriu == null) {
                 throw new SnapshotFailed(Type.SNAPSHOT_FAILED, "The criu command is not available.", null);
             } else {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "criu attempt dump to '" + directory + "' and exit process.");
+                }
+
                 currentCriu.dump(directory);
+
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "criu dump to " + directory + " in recovery.");
+                }
             }
         } catch (Exception e) {
             abortPrepare(snapshotHooks, e);
