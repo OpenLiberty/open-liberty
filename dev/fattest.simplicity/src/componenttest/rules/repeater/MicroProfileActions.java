@@ -166,6 +166,21 @@ public class MicroProfileActions {
                                                           "mpOpenTracing-2.0",
                                                           "mpRestClient-2.0" };
 
+    private static final String[] MP41_FEATURES_ARRAY = { "servlet-4.0",
+                                                          "cdi-2.0",
+                                                          "jaxrs-2.1",
+                                                          "jaxrsClient-2.1",
+                                                          "jsonb-1.0",
+                                                          "jsonp-1.1",
+                                                          "mpConfig-2.0",
+                                                          "mpFaultTolerance-3.0",
+                                                          "mpHealth-3.1",
+                                                          "mpJwt-1.2",
+                                                          "mpMetrics-3.0",
+                                                          "mpOpenAPI-2.0",
+                                                          "mpOpenTracing-2.0",
+                                                          "mpRestClient-2.0" };
+
     private static final Set<String> MP10_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP10_FEATURES_ARRAY)));
     private static final Set<String> MP12_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP12_FEATURES_ARRAY)));
     private static final Set<String> MP13_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP13_FEATURES_ARRAY)));
@@ -177,6 +192,7 @@ public class MicroProfileActions {
     private static final Set<String> MP32_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP32_FEATURES_ARRAY)));
     private static final Set<String> MP33_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP33_FEATURES_ARRAY)));
     private static final Set<String> MP40_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP40_FEATURES_ARRAY)));
+    private static final Set<String> MP41_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP41_FEATURES_ARRAY)));
 
     //The FeatureSet IDs. Since these will be used as the RepeatAction IDs, they can also be used in annotations such as @SkipForRepeat
     public static final String MP10_ID = "MicroProfile_10";
@@ -190,6 +206,7 @@ public class MicroProfileActions {
     public static final String MP32_ID = "MicroProfile_32";
     public static final String MP33_ID = "MicroProfile_33";
     public static final String MP40_ID = "MicroProfile_40";
+    public static final String MP41_ID = "MicroProfile_41";
 
     //The MicroProfile FeatureSets
     public static final FeatureSet MP10 = new FeatureSet(MP10_ID, MP10_FEATURE_SET);
@@ -203,12 +220,13 @@ public class MicroProfileActions {
     public static final FeatureSet MP32 = new FeatureSet(MP32_ID, MP32_FEATURE_SET);
     public static final FeatureSet MP33 = new FeatureSet(MP33_ID, MP33_FEATURE_SET);
     public static final FeatureSet MP40 = new FeatureSet(MP40_ID, MP40_FEATURE_SET);
+    public static final FeatureSet MP41 = new FeatureSet(MP41_ID, MP41_FEATURE_SET);
 
     //The FeatureSet for the latest MicrotProfile version
-    public static final FeatureSet LATEST = MP40;
+    public static final FeatureSet LATEST = MP41;
 
     //All MicroProfile FeatureSets
-    private static final FeatureSet[] ALL_SETS_ARRAY = { MP10, MP12, MP13, MP14, MP20, MP21, MP22, MP30, MP32, MP33, MP40 };
+    private static final FeatureSet[] ALL_SETS_ARRAY = { MP10, MP12, MP13, MP14, MP20, MP21, MP22, MP30, MP32, MP33, MP40, MP41 };
     public static final Set<FeatureSet> ALL = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(ALL_SETS_ARRAY)));
 
     /**
