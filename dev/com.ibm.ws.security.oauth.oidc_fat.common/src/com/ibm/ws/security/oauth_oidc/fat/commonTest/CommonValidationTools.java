@@ -1681,7 +1681,7 @@ public class CommonValidationTools {
                     tokenVerifier.verifyAndDeserialize();
                     result = tokenVerifier.isSigned();
                 } else {
-                    if (sigAlg == Constants.SIGALG_RS256) {
+                    if (isInList(Constants.ALL_TEST_SIGALGS, sigAlg) ) {
                         // return true - we're not ready to validate RS256 quite yet
                         return true;
                     } else {
