@@ -5,7 +5,6 @@ visibility = private
 -features=\
   com.ibm.websphere.appserver.jaxws-2.3
 -bundles=\
-  com.ibm.ws.jaxws.2.3.wsat, \
   com.ibm.ws.wsat.common.3.2; start-phase:=CONTAINER_LATE, \
   com.ibm.ws.wsat.cxf.utils.3.2, \
   com.ibm.ws.wsat.webclient.3.2, \

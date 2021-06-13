@@ -29,4 +29,5 @@ Export-Package: \
 	com.ibm.ws.org.apache.cxf.cxf.api.2.6.2;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.rt.ws.addr.2.6.2;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.2.6.2;version=latest,\
+	com.ibm.ws.org.apache.neethi.3.0.2;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest

@@ -28,6 +28,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -144,6 +145,7 @@ public class AssertionTest extends WSATTest {
 
 	@Test
 	@ExpectedFFDC(value = { "javax.servlet.ServletException", "java.lang.RuntimeException" })
+	@SkipForRepeat({"jaxws-2.3", SkipForRepeat.EE9_FEATURES})
 	public void testAssertionIgnorable() {
 		// Expect an exception because Atomic Transaction policy assertion
 		// MUST NOT include a wsp:Ignorable attribute with a value of 'true'.

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,8 @@ import java.io.BufferedReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import javax.xml.ws.soap.SOAPFaultException;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -27,6 +29,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -110,6 +113,7 @@ public class MultiServerTest extends WSATTest {
 	
 	@Test
   @Mode(TestMode.LITE)
+        @SkipForRepeat({"jaxws-2.3", SkipForRepeat.EE9_FEATURES})
 	public void testOneway() {
 		try {
 			String urlStr = BASE_URL + "/oneway/OnewayClientServlet"
@@ -123,8 +127,8 @@ public class MultiServerTest extends WSATTest {
 			System.out.println("testOneway Result : " + result);
 			assertTrue(
 					"Cannot get expected exception from server",
-					result.contains("javax.xml.ws.soap.SOAPFaultException:"
-							+ " WS-AT can not work on ONE-WAY webservice method"));
+					result.contains(SOAPFaultException.class.getName()
+							+ ": WS-AT can not work on ONE-WAY webservice method"));
 			// List<String> errors = new ArrayList<String>();
 			// errors.add("WTRN0127E");
 			// server.addIgnoredErrors(errors);

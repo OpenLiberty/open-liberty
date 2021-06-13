@@ -6,7 +6,6 @@ visibility = private
   io.openliberty.xmlWS-3.0, \
   com.ibm.websphere.appserver.servlet-5.0
 -bundles=\
-  com.ibm.ws.jaxws.2.3.wsat, \
   com.ibm.ws.wsat.common.3.2.jakarta; start-phase:=CONTAINER_LATE, \
   com.ibm.ws.wsat.cxf.utils.3.2.jakarta, \
   com.ibm.ws.wsat.webclient.3.2.jakarta, \
