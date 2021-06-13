@@ -10,9 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.javaee.ddmodel.web;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.ibm.ws.javaee.dd.web.WebApp;
+import com.ibm.ws.javaee.ddmodel.DDParser;
 
 /**
  * Tests of web application descriptors which have partial headers.
@@ -30,7 +32,7 @@ public class WebAppHeaderTest extends WebAppTestBase {
             ">" + "\n" +
         "</web-app>";
 
-    // Not valid
+    // Not valid: Need 'xmlns:xsi' if 'xsi:schemaLocation' is present.
     protected static String noSchemaInstanceWebApp30 =
         "<web-app" +
             " xmlns=\"http://java.sun.com/xml/ns/javaee\"" +
@@ -40,6 +42,17 @@ public class WebAppHeaderTest extends WebAppTestBase {
             " id=\"WebApp_ID\"" +
             ">" + "\n" +
         "</web-app>";
+
+    // Valid
+    protected static String noXSIWebApp30 =
+        "<web-app" +
+            " xmlns=\"http://java.sun.com/xml/ns/javaee\"" +
+            // " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+            // " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd\"" +
+            " version=\"3.0\"" +
+            " id=\"WebApp_ID\"" +
+            ">" + "\n" +
+        "</web-app>";    
 
     // Valid
     protected static String noSchemaLocationWebApp30 =
@@ -69,202 +82,202 @@ public class WebAppHeaderTest extends WebAppTestBase {
             " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd\"" +
             " version=\"3.0\"" +
             // " id=\"WebApp_ID\"" +
-            ">" +
+        ">" +
         "</web-app>";
     
-    //
+    // Version only is valid.
     
     protected static String webAppVersionOnly24 =
-        "<web-app" +
-            " xmlns=\"http://java.sun.com/xml/ns/j2ee\"" +
-            " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-            " version=\"2.4\"" +
-            ">" + "\n" +
-       "</web-app>";
+            "<web-app version=\"2.4\"/>";
 
     protected static String webAppVersionOnly25 =
-        "<web-app" +
-            " xmlns=\"http://java.sun.com/xml/ns/javaee\"" +
-            " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-            " version=\"2.5\"" +
-            ">" + "\n" +
-       "</web-app>";
+            "<web-app version=\"2.5\"/>";
     
     protected static String webAppVersionOnly30 =
-        "<web-app" +
-            " xmlns=\"http://java.sun.com/xml/ns/javaee\"" +
-            " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-            " version=\"3.0\"" +
-            ">" + "\n" +
-       "</web-app>";
-    
+            "<web-app version=\"3.0\"/>";
+        
     protected static String webAppVersionOnly31 =
-        "<web-app" +
-            " xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"" +
-            " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-            " version=\"3.1\"" +
-            ">" + "\n" +
-       "</web-app>";
+            "<web-app version=\"3.1\"/>";
 
     protected static String webAppVersionOnly40 =
-        "<web-app" +
-            " xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"" +
-            " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-            " version=\"4.0\"" +
-            ">" + "\n" +
-       "</web-app>";
+            "<web-app version=\"4.0\"/>";
 
     protected static String webAppVersionOnly50 =
-        "<web-app xmlns=\"https://jakarta.ee/xml/ns/jakartaee\"" +
-            " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-            " xsi:schemaLocation=\"https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_5_0.xsd\"" +
-            " version=\"5.0\"" +
-            ">" + "\n" +
-       "</web-app>";
-
-    //
+            "<web-app version=\"5.0\"/>";
+    
+    protected static String webAppVersionOnlyUnknown =
+            "<web-app version=\"9.9\"/>";
+    
+    // Schema only is valid
 
     protected static String webAppSchemaOnly24 =
-        "<web-app" +
-            " xmlns=\"http://java.sun.com/xml/ns/j2ee\"" +
-            " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-            " xsi:schemaLocation=\"http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd\"" +
-            ">" + "\n" +
-       "</web-app>";
+        "<web-app xmlns=\"http://java.sun.com/xml/ns/j2ee\"/>";
 
+    // The schemas for 25 and 30 are the same.
     protected static String webAppSchemaOnly25 =
-        "<web-app xmlns=\"http://java.sun.com/xml/ns/javaee\"" +
-            " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-            " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd\"" +
-            " version=\"2.5\"" +
-            " id=\"WebApp_ID\"" +
-            ">" + "\n" +
-        "</web-app>";
+        "<web-app xmlns=\"http://java.sun.com/xml/ns/javaee\"/>";
     
-    protected static String webAppSchemaOnly30 =
-        "<web-app" +
-            " xmlns=\"http://java.sun.com/xml/ns/javaee\"" +
-            " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-            " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd\"" +
-            ">" + "\n" +
-        "</web-app>";
-    
+    // The schemas for 31 and 40 are the same.
     protected static String webAppSchemaOnly31 =
-        "<web-app" +
-            " xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"" +
-            " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-            " xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd\"" +
-            " version=\"3.1\"" +
-            " id=\"WebApp_ID\"" +
-            ">" + "\n" +
-        "</web-app>";
-
-    protected static String webAppSchemaOnly40 =
-        "<web-app" +
-            " xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"" +
-            " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-            " xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd\"" +
-            ">" + "\n" +
-        "</web-app>";
+        "<web-app xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"/>";
 
     protected static String webAppSchemaOnly50 =
-        "<web-app xmlns=\"https://jakarta.ee/xml/ns/jakartaee\"" +
-            " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-            " xsi:schemaLocation=\"https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_5_0.xsd\"" +
-            ">" + "\n" +
-        "</web-app>";
+        "<web-app xmlns=\"https://jakarta.ee/xml/ns/jakartaee\"/>";
+
+    protected static String webAppSchemaOnlyUnknown =
+        "<web-app xmlns=\"https://unknown\"/>";
     
     //
 
-    // A schema is no longer required.
     @Test
     public void testEE6Web30NoSchema() throws Exception {
-        parse(noSchemaWebApp30);
+        WebApp webApp = parse(noSchemaWebApp30);
+        Assert.assertEquals("Assigned descriptor version", "3.0", webApp.getVersion());        
     }
 
-    // A schema instance is still required.
+    // Not valid: Need 'xmlns:xsi' if 'xsi:schemaLocation' is present.    
     @Test
     public void testEE6Web30NoSchemaInstance() throws Exception {
-        parse(noSchemaInstanceWebApp30, "xml.error"); 
+        parse(noSchemaInstanceWebApp30, "CWWKC2272E", "xml.error"); 
     }
 
-    // A schema location is not required.
     @Test
     public void testEE6Web30NoSchemaLocation() throws Exception {
-        parse(noSchemaLocationWebApp30); 
+        WebApp webApp = parse(noSchemaLocationWebApp30);
+        Assert.assertEquals("Assigned descriptor version", "3.0", webApp.getVersion());
     }    
-
-    // A version is not required.
-    public void testEE6Web30NoVersion() throws Exception {
-        parse(noVersionWebApp30); 
+    
+    @Test
+    public void testEE6Web30NoXSI() throws Exception {
+        WebApp webApp = parse(noXSIWebApp30);
+        Assert.assertEquals("Assigned descriptor version", "3.0", webApp.getVersion());
     }
 
-    // An ID is not required.
+    @Test
+    public void testEE6Web30NoVersion() throws Exception {
+        WebApp webApp = parse(noVersionWebApp30);
+        Assert.assertEquals("Assigned descriptor version", "3.0", webApp.getVersion());
+    }
+
     @Test
     public void testEE6Web30NoID() throws Exception {
-        parse(noIDWebApp30);
-    }
-    
-    //
-    
-    @Test
-    public void testWeb24VersionOnly() throws Exception {
-        parse(webAppVersionOnly24);
+        WebApp webApp = parse(noIDWebApp30);
+        Assert.assertEquals("Assigned descriptor version", "3.0", webApp.getVersion());        
     }
 
-    @Test
-    public void testWeb25VersionOnly() throws Exception {
-        parse(webAppVersionOnly25);
+    //
+
+    public static class VersionTestData {
+        public final String xmlText;
+        public final int version;
+        public final String versionText;
+        
+        public VersionTestData(String xmlText, int version) {
+            this.xmlText = xmlText;
+            this.version = version;
+            this.versionText = DDParser.getVersionText(version);
+        }
     }
+
+    // Version based parsing always assigns the exact version
+    // which is in the descriptor.
+
+    public static final VersionTestData[] VERSION_TEST_DATA = {
+        new VersionTestData(webAppVersionOnly24, WebApp.VERSION_2_4),
+        new VersionTestData(webAppVersionOnly25, WebApp.VERSION_2_5),
+        new VersionTestData(webAppVersionOnly30, WebApp.VERSION_3_0),
+        new VersionTestData(webAppVersionOnly31, WebApp.VERSION_3_1),
+        new VersionTestData(webAppVersionOnly40, WebApp.VERSION_4_0),
+        new VersionTestData(webAppVersionOnly50, WebApp.VERSION_5_0),
+    };
     
     @Test
-    public void testWeb30VersionOnly() throws Exception {
-        parse(webAppVersionOnly30);
+    public void testWebVersionOnly() throws Exception {
+        for ( VersionTestData testData : VERSION_TEST_DATA ) {
+            WebApp webApp = parse(testData.xmlText, testData.version);
+            Assert.assertEquals("Assigned descriptor version", testData.versionText, webApp.getVersion());
+        }
     }
-    
+
+    // The version must be known.
+
     @Test
-    public void testWeb31VersionOnly() throws Exception {
-        parse(webAppVersionOnly31, WebApp.VERSION_5_0);
+    public void testVersionOnlyUnknown() throws Exception {
+        parse(webAppVersionOnlyUnknown, "CWWKC2272E", "unsupported.descriptor.version"); 
     }
+
+    // A un-provisioned version message is generated when the version is known
+    // but not currently provisioned.
     
     @Test
-    public void testWeb40VersionOnly() throws Exception {
-        parse(webAppVersionOnly40, WebApp.VERSION_5_0);
+    public void testVersionOnlyUnprovisioned() throws Exception {
+        parse(webAppVersionOnly50, WebApp.VERSION_3_1, "CWWKC2272E", "unprovisioned.descriptor.version"); 
     }
-    
-    @Test
-    public void testWeb50VersionOnly() throws Exception {
-        parse(webAppVersionOnly50, WebApp.VERSION_5_0);
-    }    
-    
+
     //
     
-    @Test
-    public void testWeb24SchemaOnly() throws Exception {
-        parse(webAppSchemaOnly24);
+    public static class SchemaTestData {
+        public final int version;
+        public final String xmlText;
+        public final int maxVersion;
+        public final int expectedVersion;
+        public final String expectedVersionText;
+
+        public SchemaTestData(
+            int version, String xmlText,
+            int maxVersion,
+            int expectedVersion) {
+            
+            this.version = version;
+            this.xmlText = xmlText;
+            this.maxVersion = maxVersion;
+            this.expectedVersion = expectedVersion;
+            this.expectedVersionText = DDParser.getVersionText(expectedVersion);
+        }
     }
     
-    @Test
-    public void testWeb25SchemaOnly() throws Exception {
-        parse(webAppSchemaOnly25);
-    }
+    public static SchemaTestData[] SCHEMA_TEST_DATA = {
+        // The 2.4 schema is for 2.4, only.
+        new SchemaTestData(WebApp.VERSION_2_4, webAppSchemaOnly24, WebApp.VERSION_2_4, WebApp.VERSION_2_4),
+        new SchemaTestData(WebApp.VERSION_2_4, webAppSchemaOnly24, WebApp.VERSION_2_5, WebApp.VERSION_2_4),
+        new SchemaTestData(WebApp.VERSION_2_4, webAppSchemaOnly24, WebApp.VERSION_3_0, WebApp.VERSION_2_4),            
+
+        // The 2.5 schema is for 2.5 and for 3.0.
+        // Since the minimum provisioning is 3.0, the assigned version is always 3.0.
+        new SchemaTestData(WebApp.VERSION_2_5, webAppSchemaOnly25, WebApp.VERSION_2_5, WebApp.VERSION_3_0),
+        new SchemaTestData(WebApp.VERSION_2_5, webAppSchemaOnly25, WebApp.VERSION_3_0, WebApp.VERSION_3_0),
+        new SchemaTestData(WebApp.VERSION_2_5, webAppSchemaOnly25, WebApp.VERSION_3_1, WebApp.VERSION_3_0),            
+        new SchemaTestData(WebApp.VERSION_2_5, webAppSchemaOnly25, WebApp.VERSION_4_0, WebApp.VERSION_3_0),            
+
+        // The 3.1 schema is for 3.1 and for 4.0.
+        // The assigned version can be 3.1 or 4.0, depending on the provisioning.
+        new SchemaTestData(WebApp.VERSION_3_1, webAppSchemaOnly31, WebApp.VERSION_3_1, WebApp.VERSION_3_1),                        
+        new SchemaTestData(WebApp.VERSION_3_1, webAppSchemaOnly31, WebApp.VERSION_4_0, WebApp.VERSION_4_0),                                    
+        new SchemaTestData(WebApp.VERSION_3_1, webAppSchemaOnly31, WebApp.VERSION_5_0, WebApp.VERSION_4_0),                                    
+
+        // The 5.0 schema is for 5.0, only.
+        new SchemaTestData(WebApp.VERSION_5_0, webAppSchemaOnly50, WebApp.VERSION_5_0, WebApp.VERSION_5_0)                                                
+    };
     
     @Test
-    public void testWeb30SchemaOnly() throws Exception {
-        parse(webAppSchemaOnly30);
+    public void testWebSchemaOnly() throws Exception {
+        for ( SchemaTestData testData : SCHEMA_TEST_DATA ) {
+            WebApp webApp = parse(testData.xmlText, testData.maxVersion);
+            Assert.assertEquals("Assigned descriptor version", testData.expectedVersionText, webApp.getVersion());
+        }
     }
     
+    // The schema must be valid.
     @Test
-    public void testWeb31SchemaOnly() throws Exception {
-        parse(webAppSchemaOnly31, WebApp.VERSION_5_0);
+    public void testSchemaOnlyUnknown() throws Exception {
+        parse(webAppSchemaOnlyUnknown, "CWWKC2272E", "unsupported.descriptor.namespace"); 
     }
     
+    // A un-provisioned schema message is generated when the schema is known
+    // but not currently provisioned.
+
     @Test
-    public void testWeb40SchemaOnly() throws Exception {
-        parse(webAppSchemaOnly40, WebApp.VERSION_5_0);
-    }
-    
-    public void testWeb50SchemaOnly() throws Exception {
-        parse(webAppVersionOnly50, WebApp.VERSION_5_0);
-    }        
+    public void testSchemaOnlyUnprovisioned() throws Exception {
+        parse(webAppSchemaOnly50, WebApp.VERSION_3_1, "CWWKC2272E", "unprovisioned.descriptor.version"); 
+    }    
 }

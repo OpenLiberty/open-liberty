@@ -54,6 +54,18 @@ public abstract class DDParser {
     public static final String NAMESPACE_JAKARTA =
         "https://jakarta.ee/xml/ns/jakartaee";    
 
+    public static String getVersionText(int version) {
+        if ( version == 0 ) {
+            return null;
+
+        } else {
+            byte[] versionBytes = {
+                (byte) ('0' + (version / 10)),
+                '.',
+                (byte) ('0' + (version % 10)) };
+            return new String(versionBytes);
+        }
+    }    
     //
 
     public static class ParseException extends Exception {
@@ -531,15 +543,7 @@ public abstract class DDParser {
     public String idNamespace;
 
     public String getVersionText() {
-        if ( version == 0 ) {
-            return null;
-        } else {
-            byte[] versionBytes = {
-                (byte) ('0' + (version / 10)),
-                '.',
-                (byte) ('0' + (version % 10)) };
-            return new String(versionBytes);
-        }
+        return getVersionText(version);
     }
 
     // Root parse objects ...
@@ -1147,8 +1151,8 @@ public abstract class DDParser {
      * When no version attribute is specified, match the highest provisioned
      * version that matches the schema.
      *
-     * Schema based matching is inexact: Multiple schemas are used
-     * by the same version.
+     * Schema based matching is inexact: Multiple versions may exist which
+     * use the same schema.
      *
      * Ignore mismatches between the version attribute and the namespace.
      * The version value takes precedence.
@@ -1163,12 +1167,8 @@ public abstract class DDParser {
      * @param namespace The namespace value from an XML header.  Will
      *     be null if parsing a DTD based descriptor.  May be null,
      *     in which case the version or public ID will be used for matching.
-     * @param maxPlatformVersion The current maximum provisioned
-     *     version.  (See {@link JavaEEVersion}.)  This limits version
-     *     selection when schema matching is inexact.  This does not
-     *     limit version selection in other cases: A version which is
-     *     higher than allowed by the maximum platform version may be
-     *     selected.
+     * @param maxSchemaVersion The current maximum provisioned
+     *     schema version.
      *     
      * @return The selected version.  Null if no matching version was
      *     selected.
@@ -1176,23 +1176,30 @@ public abstract class DDParser {
     protected static VersionData selectVersion(
         VersionData[] versions,
         String versionAttr, String publicId, String namespace,
-        int maxPlatformVersion) {
+        int maxSchemaVersion) {
 
+        // There are two selection rules which interact to
+        // give rise to the loop termination test:
+        //
+        // First, look for any first match, even if that match
+        // is above the maximum provisioned version.
+        //
+        // Second, after finding the first match, disregard any
+        // subsequent versions which are higher than the maximum
+        // provisioned version.
+        //
+        // The selection will be either the first version which
+        // matches and which is above the maximum provisioned
+        // version, or will be the last version which matches and
+        // which is provisioned.
         VersionData lastSelected = null;
         for ( VersionData version : versions ) {
-            // Look for the last matching version ...
-            // But, once a match is found, disregard versions which
-            // require a higher platform version than is provisioned.
-            if ( (lastSelected != null) && (maxPlatformVersion < version.platformVersion) ) {
+            if ( (lastSelected != null) && (version.version > maxSchemaVersion) ) {
                 break;
             }
 
             if ( version.accept(versionAttr, publicId, namespace) ) {
                 lastSelected = version;
-                // Keep looking ... if the match was schema based,
-                // there can be a higher version which also matches
-                // the schema.  Current rules are to use the highest
-                // version allowed by the platform version.
             }
         }
         return lastSelected;

@@ -29,8 +29,9 @@ public interface WebApp extends ModuleDeploymentDescriptor, DeploymentDescriptor
 
     int[] VERSIONS = { 
         VERSION_2_2, VERSION_2_3,
-        VERSION_2_4, VERSION_2_5,
-        VERSION_3_0, VERSION_3_1, VERSION_4_0,
+        VERSION_2_4,
+        VERSION_2_5, VERSION_3_0,
+        VERSION_3_1, VERSION_4_0,
         VERSION_5_0
     };
 
