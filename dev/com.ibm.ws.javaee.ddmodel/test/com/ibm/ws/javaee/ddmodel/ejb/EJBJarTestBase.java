@@ -91,20 +91,10 @@ public class EJBJarTestBase {
         int maxSchemaVersion,
         String... expectedMessages) throws Exception {
 
-        @SuppressWarnings("unchecked")
-        ServiceReference<EJBJarDDParserVersion> versionRef =
-            mockery.mock(ServiceReference.class, "sr" + generateId());
-
         NonPersistentCache nonPC = mockery.mock(NonPersistentCache.class, "nonPC" + generateId());
 
         OverlayContainer rootOverlay = mockery.mock(OverlayContainer.class, "rootOverlay" + generateId());
         ArtifactEntry artifactEntry = mockery.mock(ArtifactEntry.class, "artifactContainer" + generateId());
-
-        Container appRoot = mockery.mock(Container.class, "appRoot" + mockId++);
-        Entry moduleEntry = mockery.mock(Entry.class, "moduleEntry" + mockId++);    
-
-        Container moduleRoot = mockery.mock(Container.class, "moduleRoot" + generateId());
-        Entry ddEntry = mockery.mock(Entry.class, "ddEntry" + generateId());
 
         mockery.checking(new Expectations() {
             {
@@ -114,7 +104,17 @@ public class EJBJarTestBase {
 
                 allowing(artifactEntry).getPath();
                 will(returnValue("/META-INF/ejb-jar.xml"));
+            }
+        });
+        
+        Container appRoot = mockery.mock(Container.class, "appRoot" + mockId++);
+        Entry moduleEntry = mockery.mock(Entry.class, "moduleEntry" + mockId++);    
 
+        Container moduleRoot = mockery.mock(Container.class, "moduleRoot" + generateId());
+        Entry ddEntry = mockery.mock(Entry.class, "ddEntry" + generateId());
+
+        mockery.checking(new Expectations() {
+            {
                 allowing(nonPC).getFromCache(WebModuleInfo.class);
                 will(returnValue(null));
 
@@ -139,7 +139,15 @@ public class EJBJarTestBase {
                 will(returnValue("/META-INF/ejb-jar.xml"));
                 allowing(ddEntry).adapt(InputStream.class);
                 will(returnValue(new ByteArrayInputStream(xmlText.getBytes("UTF-8"))));
+            }
+        });
+        
+        @SuppressWarnings("unchecked")
+        ServiceReference<EJBJarDDParserVersion> versionRef =
+            mockery.mock(ServiceReference.class, "sr" + generateId());
 
+        mockery.checking(new Expectations() {
+            {        
                 allowing(versionRef).getProperty(EJBJarDDParserVersion.VERSION);
                 will(returnValue(maxSchemaVersion));
             }
