@@ -26,6 +26,17 @@ public abstract class JavaEEVersion {
     // 8,   http://xmlns.jcp.org/xml/ns/javaee  // last javax
     // 9,   https://jakarta.ee/xml/ns/jakartaee // jakarta
 
+    public static final String VERSION_1_2_STR = "1.2";
+    public static final String VERSION_1_3_STR = "1.3";
+    public static final String VERSION_1_4_STR = "1.4";
+    public static final String VERSION_5_0_STR = "5.0";
+    public static final String VERSION_6_0_STR = "6.0";
+    public static final String VERSION_7_STR = "7";    
+    public static final String VERSION_7_0_STR = "7.0";
+    public static final String VERSION_8_0_STR = "8.0";
+    public static final String VERSION_9_STR = "9";
+    public static final String VERSION_9_0_STR = "9.0";
+    
     public static final int VERSION_1_2_INT = 12;
     public static final int VERSION_1_3_INT = 13;
     public static final int VERSION_1_4_INT = 14;

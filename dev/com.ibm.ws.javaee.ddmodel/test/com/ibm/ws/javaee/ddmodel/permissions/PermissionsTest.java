@@ -103,6 +103,7 @@ public class PermissionsTest extends DDTestBase {
                 " version=\"6\">" + "\n" +
         permissionsXMLTail;
     
+    // This is now valid, because the version takes precedence.
     private static final String permissionsXMLInvalidNamespace =    
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
         "<permissions" +
@@ -111,6 +112,17 @@ public class PermissionsTest extends DDTestBase {
             " xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/permissions_7.xsd\"" +
             " version=\"7\">" + "\n" +
         permissionsXMLTail;
+
+    // This is is still invalid: There is no version, and the namespace cannot be used.
+    private static final String permissionsXMLInvalidNamespaceNoVersion =    
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+            "<permissions" +
+                " xmlns=\"http://xmlns.jcp.org/xml/ns/java\"" +
+                " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+                " xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/permissions_7.xsd\"" +
+                // " version=\"7\"" +
+                ">" + "\n" +
+            permissionsXMLTail;
 
     // Missing one element ...
 
@@ -156,7 +168,8 @@ public class PermissionsTest extends DDTestBase {
                 " xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"" +
                 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
                 " xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/permissions_7.xsd\"" +
-                // " version=\"7\">" + "\n" +
+                // " version=\"7\"" +
+                ">" + "\n" +
             permissionsXMLTail;        
     
     // Only one element ...
@@ -171,7 +184,7 @@ public class PermissionsTest extends DDTestBase {
 
     private static final String permissionsXML9SchemaOnly =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-        "<permissions xmlns=\"https://jakarta.ee/xml/ns/jakartaee\">";
+        "<permissions xmlns=\"https://jakarta.ee/xml/ns/jakartaee\"/>";
 
     private static final String permissionsXML9VersionOnly =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
@@ -217,13 +230,22 @@ public class PermissionsTest extends DDTestBase {
 
     @Test
     public void testInvalidVersion() throws Exception {
-        parsePermissions(permissionsXMLInvalidVersion, "CWWKC2262E", "invalid.deployment.descriptor.namespace");
+        // parsePermissions(permissionsXMLInvalidVersion, "CWWKC2262E", "unsupported.deployment.descriptor.namespace");
+        // The error code changed.
+        parsePermissions(permissionsXMLInvalidVersion, "CWWKC2262E", "unsupported.descriptor.version");        
     }
 
     @Test
     public void testInvalidNamespace() throws Exception {
-        parsePermissions(permissionsXMLInvalidNamespace, "CWWKC2262E", "invalid.deployment.descriptor.namespace");
+        // parsePermissions(permissionsXMLInvalidNamespace, "CWWKC2262E", "invalid.deployment.descriptor.namespace");
+        // This is now valid, because the version has precedence.        
+        parsePermissions(permissionsXMLInvalidNamespace);
     }
+    
+    @Test
+    public void testInvalidNamespaceNoVersion() throws Exception {
+        parsePermissions(permissionsXMLInvalidNamespaceNoVersion, "CWWKC2262E", "unsupported.descriptor.namespace");
+    }    
 
     @Test
     public void testInvalidClassNameAttr() throws Exception {
@@ -234,7 +256,9 @@ public class PermissionsTest extends DDTestBase {
 
     @Test
     public void testPermissions7NoSchema() throws Exception {
-        parsePermissions(permissionsXML7NoSchema, "CWWKC2262E", "invalid.deployment.descriptor.namespace"); // Previously failing.
+        // parsePermissions(permissionsXML7NoSchema, "CWWKC2262E", "invalid.deployment.descriptor.namespace"); // Previously failing.
+        // This is now valid.
+        parsePermissions(permissionsXML7NoSchema);
     }    
 
     @Test
@@ -254,28 +278,38 @@ public class PermissionsTest extends DDTestBase {
 
     @Test
     public void testPermissions7NoVersion() throws Exception {
-        parsePermissions(permissionsXML7NoVersion, "CWWKC2272E", "xml.error"); // Previously failing.
+        // parsePermissions(permissionsXML7NoVersion, "CWWKC2262E", "invalid.deployment.descriptor.namespace"); // Previously failing
+        // This is now valid.        
+        parsePermissions(permissionsXML7NoVersion);
     }        
             
     //
 
     @Test
     public void testPermissions7SchemaOnly() throws Exception {
-        parsePermissions(permissionsXML7SchemaOnly, "CWWKC2262E", "invalid.deployment.descriptor.namespace"); // Previously failing.
+        // parsePermissions(permissionsXML7SchemaOnly, "CWWKC2262E", "invalid.deployment.descriptor.namespace"); // Previously failing.
+        // This is now valid.
+        parsePermissions(permissionsXML7SchemaOnly);
     }
 
     @Test
     public void testPermissions7VersionOnly() throws Exception {
-        parsePermissions(permissionsXML7VersionOnly, "CWWKC2262E", "invalid.deployment.descriptor.namespace"); // Previously failing.
+        // parsePermissions(permissionsXML7VersionOnly, "CWWKC2262E", "invalid.deployment.descriptor.namespace"); // Previously failing.
+        // This is now valid.
+        parsePermissions(permissionsXML7VersionOnly);
     }
     
     @Test
     public void testPermissions9SchemaOnly() throws Exception {
-        parsePermissions(permissionsXML9SchemaOnly, "CWWKC2262E", "invalid.deployment.descriptor.namespace"); // Previously failing.
+        // parsePermissions(permissionsXML9SchemaOnly, "CWWKC2262E", "invalid.deployment.descriptor.namespace"); // Previously failing.
+        // This is now valid.
+        parsePermissions(permissionsXML9SchemaOnly);
     }
 
     @Test
     public void testPermissions9VersionOnly() throws Exception {
-        parsePermissions(permissionsXML9VersionOnly, "CWWKC2262E", "invalid.deployment.descriptor.namespace"); // Previously failing.
+        // parsePermissions(permissionsXML9VersionOnly, "CWWKC2262E", "invalid.deployment.descriptor.namespace"); // Previously failing.
+        // This is now valid.
+        parsePermissions(permissionsXML9VersionOnly);
     }
 }

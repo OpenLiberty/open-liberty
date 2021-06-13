@@ -11,57 +11,114 @@
 package com.ibm.ws.javaee.ddmodel.permissions;
 
 import com.ibm.ws.javaee.ddmodel.DDParser;
+import com.ibm.ws.javaee.version.JavaEEVersion;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
 
 final class PermissionsConfigDDParser extends DDParser {
 
-    public PermissionsConfigDDParser(Container ddRootContainer, Entry ddEntry) throws ParseException {
+    /**
+     * Create a permissions configuration parser.
+     * 
+     * Note that a maximum schema version is not accepted.
+     * permissions parsing currently accepts up-level schema
+     * versions.
+     *
+     * @param ddRootContainer The container containing the
+     *     descriptor entry.
+     * @param ddEntry The entry containing the descriptor.
+     *
+     * @throws ParseException Thrown if parsing fails.
+     */
+    public PermissionsConfigDDParser(Container ddRootContainer, Entry ddEntry)
+        throws ParseException {
+
         super(ddRootContainer, ddEntry);
     }
 
     @Override
     public PermissionsConfigType parse() throws ParseException {
         super.parseRootElement();
+
         return (PermissionsConfigType) rootParsable;
     }
 
+    /**
+     * Override: The rules for parsing permissions descriptors are
+     * simpler than the usual rules.  Permissions currently don't
+     * care about provisioning.
+     */
     @Override
     protected PermissionsConfigType createRootParsable() throws ParseException {
-        if (!"permissions".equals(rootElementLocalName)) {
-            throw new ParseException(invalidRootElement());
+        validateRootElementName();
+
+        int ddVersion;
+
+        String ddVersionAttr = getAttributeValue("", "version");
+        if ( ddVersionAttr != null ) {
+            // First, try to use the version.  Don't try to use
+            // the namespace if the version is available.
+
+            String expectedNamespace;
+            if ( JavaEEVersion.VERSION_7_STR.equals(ddVersionAttr) ) {
+                ddVersion = JavaEEVersion.VERSION_7_0_INT;
+                expectedNamespace = NAMESPACE_JCP_JAVAEE;
+            } else if ( JavaEEVersion.VERSION_9_STR.equals(ddVersionAttr) ) {
+                ddVersion = JavaEEVersion.VERSION_9_0_INT;
+                expectedNamespace = NAMESPACE_JAKARTA;
+            } else {
+                throw new ParseException( unsupportedDescriptorVersion(ddVersionAttr) );         
+            }
+
+            // Fill in or correct the namespace, if necessary.
+            boolean assignNamespace;
+            if ( namespace == null ) {
+                assignNamespace = true;
+            } else if ( !namespace.contentEquals(expectedNamespace) ) {
+                assignNamespace = true;
+                warning( incorrectDescriptorNamespace(ddVersionAttr, namespace, expectedNamespace) );
+            } else {
+                assignNamespace = false;
+            }
+            if ( assignNamespace ) {
+                namespace = expectedNamespace;
+            }
+
+        } else if ( namespace != null ) {
+            // Next, try to use the namespace.
+            if ( namespace.equals(NAMESPACE_JCP_JAVAEE) ) {
+                ddVersion = 70;
+            } else if ( namespace.equals(NAMESPACE_JAKARTA) ) {
+                ddVersion = 90;
+            } else {
+                throw new ParseException( unsupportedDescriptorNamespace(namespace) );
+            }
+
+        } else {
+            // Fail if there is no version attribute and no namespace.
+            throw new ParseException( missingDescriptorVersion() );
         }
 
-        String vers = getAttributeValue("", "version");
-        if ("http://xmlns.jcp.org/xml/ns/javaee".equals(namespace)) {
-            if ("7".equals(vers)) {
-                // The 7 permissions.xml schema version is used for JavaEE 7 and 8.
-                version = 70;
-                return new PermissionsConfigType(getDeploymentDescriptorPath());
-            }
-        } else if ("https://jakarta.ee/xml/ns/jakartaee".equals(namespace)) {
-            if ("9".equals(vers)) {
-                version = 90;
-                return new PermissionsConfigType(getDeploymentDescriptorPath());
-            }
-        }
-        throw new ParseException(invalidDeploymentDescriptorNamespace(vers));
+        // Always assign the version, even if later parsing will override it.
+        version = ddVersion;
+
+        return createRootElement();
     }
 
     @Override
     protected VersionData[] getVersionData() {
-        // TODO Auto-generated method stub
-        return null;
+        return null; // Unused 
     }
 
     @Override
     protected void validateRootElementName() throws ParseException {
-        // TODO Auto-generated method stub
+        if ( !"permissions".equals(rootElementLocalName) ) {
+            throw new ParseException(invalidRootElement());
+        }
     }
 
     @Override
     protected PermissionsConfigType createRootElement() {
-        // TODO Auto-generated method stub
-        return null;
+        return new PermissionsConfigType( getDeploymentDescriptorPath() );
     }
 }
