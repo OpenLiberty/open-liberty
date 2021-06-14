@@ -56,3 +56,5 @@ clean.doLast {
     file('build').deleteDir()
   }
 }
+
+addRequiredLibraries.dependsOn addJakartaTransformer

@@ -1142,10 +1142,24 @@ public final class JAXBUtils {
     @FFDCIgnore(PropertyException.class)
     public static void setEscapeHandler(Marshaller marshaller, Object escapeHandler) {
         try {
-            String postFix = getPostfix(marshaller.getClass());
-            if (postFix != null && escapeHandler != null) {
-                marshaller.setProperty("com.sun.xml" + postFix + ".bind.characterEscapeHandler", escapeHandler);
+            //Liberty change begin
+            String propertyName;
+            //Jakarta EE 9
+            if (JAXBContext.class.getName().startsWith("jakarta.")) {
+                propertyName = "org.glassfish.jaxb.marshaller.CharacterEscapeHandler";
+            } else {
+                String postFix = getPostfix(marshaller.getClass());
+                if (postFix == null) {
+                    propertyName = null;
+                } else {
+                    propertyName = "com.sun.xml" + postFix + ".bind.characterEscapeHandler";
+                }
             }
+            
+            if (propertyName != null && escapeHandler != null) {
+                marshaller.setProperty(propertyName, escapeHandler);
+            }
+            //Liberty change end
         } catch (PropertyException e) {
             LOG.log(Level.INFO, "Failed to set MinumEscapeHandler to jaxb marshaller", e);
         }
@@ -1162,18 +1176,25 @@ public final class JAXBUtils {
     @FFDCIgnore(Exception.class)
     private static Object createEscapeHandler(Class<?> cls, String simpleClassName) {
         try {
-            String postFix = getPostfix(cls);
-            if (postFix == null) {
-                LOG.log(Level.WARNING, "Failed to create" + simpleClassName + " for unknown jaxb class:"
-                    + cls);
-                return null;
+            //Liberty change begin
+            String packageName;
+            //Jakarta EE 9
+            if (JAXBContext.class.getName().startsWith("jakarta.")) {
+                packageName = "org.glassfish.jaxb.core.marshaller";
+            } else {
+                String postFix = getPostfix(cls);
+                if (postFix == null) {
+                    LOG.log(Level.WARNING, "Failed to create" + simpleClassName + " for unknown jaxb class:"
+                        + cls);
+                    return null;
+                }
+                packageName = "com.sun.xml" + postFix + ".bind.marshaller";
             }
-            Class<?> handlerClass = ClassLoaderUtils.loadClass("com.sun.xml" + postFix
-                                                                   + ".bind.marshaller." + simpleClassName,
+            Class<?> handlerClass = ClassLoaderUtils.loadClass(packageName + "." + simpleClassName,
                                                                cls);
             Class<?> handlerInterface = ClassLoaderUtils
-                .loadClass("com.sun.xml" + postFix + ".bind.marshaller.CharacterEscapeHandler",
-                           cls);
+                .loadClass(packageName + ".CharacterEscapeHandler", cls);
+            //Liberty change end
             Object targetHandler = ReflectionUtil.getDeclaredField(handlerClass, "theInstance").get(null);
             ClassLoader loader = System.getSecurityManager() == null ? cls.getClassLoader() : 
                 AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> {
