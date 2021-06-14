@@ -18,8 +18,6 @@ import java.io.BufferedReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import javax.xml.ws.soap.SOAPFaultException;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -29,7 +27,6 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -113,7 +110,6 @@ public class MultiServerTest extends WSATTest {
 	
 	@Test
   @Mode(TestMode.LITE)
-        @SkipForRepeat({"jaxws-2.3", SkipForRepeat.EE9_FEATURES})
 	public void testOneway() {
 		try {
 			String urlStr = BASE_URL + "/oneway/OnewayClientServlet"
@@ -125,10 +121,12 @@ public class MultiServerTest extends WSATTest {
 			String result = br.readLine();
 			assertNotNull(result);
 			System.out.println("testOneway Result : " + result);
+			// The fault exception can start with jakarta or jaxa depending
+			// on if EE9 or before.
 			assertTrue(
 					"Cannot get expected exception from server",
-					result.contains(SOAPFaultException.class.getName()
-							+ ": WS-AT can not work on ONE-WAY webservice method"));
+					result.contains(".xml.ws.soap.SOAPFaultException:"
+							+ " WS-AT can not work on ONE-WAY webservice method"));
 			// List<String> errors = new ArrayList<String>();
 			// errors.add("WTRN0127E");
 			// server.addIgnoredErrors(errors);

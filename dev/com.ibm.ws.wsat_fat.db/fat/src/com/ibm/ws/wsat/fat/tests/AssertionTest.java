@@ -28,8 +28,9 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.ExpectedFFDC;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.EE8FeatureReplacementAction;
+import componenttest.rules.repeater.EmptyAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.HttpUtils;
@@ -143,9 +144,12 @@ public class AssertionTest extends WSATTest {
 		}
 	}
 
+	// CXF 2.6.2 does some work during Servlet.init that causes FFDC to come out,
+	// but with CXF 3.x, that logic does not happen any longer, so the FFDCs do not come out.
+	// See AbstractHTTPDestination.initConfig to see the difference in behavior.
 	@Test
-	@ExpectedFFDC(value = { "javax.servlet.ServletException", "java.lang.RuntimeException" })
-	@SkipForRepeat({"jaxws-2.3", SkipForRepeat.EE9_FEATURES})
+	@ExpectedFFDC(value = { "javax.servlet.ServletException", "java.lang.RuntimeException" },
+	              repeatAction = {EmptyAction.ID, EE8FeatureReplacementAction.ID})
 	public void testAssertionIgnorable() {
 		// Expect an exception because Atomic Transaction policy assertion
 		// MUST NOT include a wsp:Ignorable attribute with a value of 'true'.
