@@ -17,6 +17,7 @@
 error=Error: {0}
 error.inputConsoleNotAvailable=Input console is not available.
 error.missingIO=Error, missing I/O device: {0}.
+error.consoleError=Error while reading console input: {0}
 
 usage=Usage: {0}
 task.unknown=Unknown task: {0}
@@ -94,3 +95,9 @@ createLTPAKeys.fileExists=The {0} file already exists.  Unable to create a LTPA 
 createLTPAKeys.createdFile=Created LTPA keys file: {0}\n\
 Include the following configuration to your server.xml\n\
 {1}\n
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+importSigner.confirm=Add signer to the trust store now? (y/n)
+importSigner.invalidPort=The provided port {0} is not a number.
+importSigner.selfSigned=Certificate for {0} is a self-signed certificate.
+importSigner.failWritingKeystore=An error occurred writing {0}. Error was: {1}

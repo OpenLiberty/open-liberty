@@ -20,7 +20,9 @@ public enum SecurityUtilityReturnCodes {
     ERR_SERVER_NOT_FOUND(2),
     ERR_CLIENT_NOT_FOUND(3),
     ERR_PATH_CANNOT_BE_CREATED(4),
-    ERR_FILE_EXISTS(5);
+    ERR_FILE_EXISTS(5),
+    ERR_CERT_CHAIN_NOT_FOUND(6),
+    ERR_WRITE_FAILED(7);
 
     final int rc;
 

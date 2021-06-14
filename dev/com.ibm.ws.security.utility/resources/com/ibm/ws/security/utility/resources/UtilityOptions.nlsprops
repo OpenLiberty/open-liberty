@@ -267,3 +267,40 @@ tlsProfiler.option-key.verbose=\
 \ \ \ \ --verbose
 tlsProfiler.option-desc.verbose=\
 \tInclude additional information about unsafe protocols.
+
+# -------- importSigner OPTIONS ------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+importSigner.desc=\
+\tImport the signer certificate of a target host and port into the provided keystore.
+importSigner.usage.options=\
+\t{0} importSigner [options]
+importSigner.required-key.password=\
+\ \ \ \ --password[=pwd]
+importSigner.required-desc.password=\
+\tKeystore password, minimum {1} characters.\n\
+\tIf no value is defined you will be prompted.
+importSigner.required-key.keyStore=\
+\ \ \ \ --keyStore
+importSigner.required-desc.keyStore=\
+\tSpecify the KeyStore file.
+importSigner.required-key.port=\
+\ \ \ \ --port
+importSigner.required-desc.port=\
+\tSpecify the port.
+importSigner.required-key.host=\
+\ \ \ \ --host
+importSigner.required-desc.host=\
+\tSpecify the host.
+importSigner.option-key.type=\
+\ \ \ \ --type
+importSigner.option-desc.type=\
+\tThe type of the keystore. If not provided will be guessed from keystore file extension.\n
+importSigner.option-key.alias=\
+\ \ \ \ --alias
+importSigner.option-desc.alias=\
+\tThe alias to store the certificate under, will be generated if not specified.

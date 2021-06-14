@@ -22,10 +22,12 @@ import java.io.PrintStream;
 public class ConsoleWrapper {
     private final Console console;
     private final PrintStream stderr;
+    private final PrintStream stdout;
 
-    public ConsoleWrapper(Console console, PrintStream stderr) {
+    public ConsoleWrapper(Console console, PrintStream stderr, PrintStream stdout) {
         this.console = console;
         this.stderr = stderr;
+        this.stdout = stdout;
     }
 
     /**
@@ -42,7 +44,7 @@ public class ConsoleWrapper {
      * The values entered on the console are masked (not echoed back to
      * the console).
      * 
-     * @param prompt
+     * @param prompt the user prompt
      * @return String read from input.
      */
     public String readMaskedText(String prompt) {
@@ -58,9 +60,30 @@ public class ConsoleWrapper {
                 return String.valueOf(in);
             }
         } catch (IOError e) {
-            stderr.println("Exception while reading stdin: " + e.getMessage());
+            stderr.println(CommandUtils.getMessage("error.consoleError", e.getMessage()));
             e.printStackTrace(stderr);
         }
         return null;
+    }
+
+    public boolean confirm(String key) {
+        if (!isInputStreamAvailable()) {
+            stderr.println(CommandUtils.getMessage("error.inputConsoleNotAvailable"));
+            return false;
+        }
+        try {
+            stdout.print(CommandUtils.getMessage(key));
+            stdout.print(' ');
+            String entry = console.readLine();
+            if ("y".equalsIgnoreCase(entry)) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (IOError e) {
+            stderr.println(CommandUtils.getMessage("error.consoleError", e.getMessage()));
+            e.printStackTrace(stderr);
+        }
+        return false;
     }
 }
