@@ -65,7 +65,8 @@ public abstract class DDParser {
                 (byte) ('0' + (version % 10)) };
             return new String(versionBytes);
         }
-    }    
+    }
+
     //
 
     public static class ParseException extends Exception {

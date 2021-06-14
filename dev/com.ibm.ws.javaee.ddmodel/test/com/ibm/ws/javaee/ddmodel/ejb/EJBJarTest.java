@@ -165,11 +165,11 @@ public class EJBJarTest extends EJBJarTestBase {
             //      parsing is not the target of these unit tests.
 
             Assert.assertTrue(
-                    parse( ejbJar(version, "metadata-complete='true'", ""), EJBJar.VERSION_4_0)
-                        .isMetadataComplete() );
-                Assert.assertFalse(
-                    parse( ejbJar(version, "metadata-complete='false'", ""), EJBJar.VERSION_4_0)
-                        .isMetadataComplete() );            
+                parse( ejbJar(version, "metadata-complete='true'", ""), EJBJar.VERSION_4_0)
+                    .isMetadataComplete() );
+            Assert.assertFalse(
+                parse( ejbJar(version, "metadata-complete='false'", ""), EJBJar.VERSION_4_0)
+                    .isMetadataComplete() );            
         }
     }
 

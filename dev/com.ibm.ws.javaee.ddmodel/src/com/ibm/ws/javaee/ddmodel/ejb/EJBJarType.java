@@ -282,13 +282,21 @@ public class EJBJarType extends DescriptionGroup implements DeploymentDescriptor
     @Override
     public void finish(DDParser parser) throws ParseException {
         super.finish(parser);
-        if (version == null) {
-            if (parser.version < 21) {
-                version = parser.parseToken(parser.version == 11 ? "1.1" : "2.0");
-            } else {
-                throw new ParseException(parser.requiredAttributeMissing("version"));
-            }
+
+        if ( version == null ) {
+            // In all cases, not just for 1.0 and 1.1, 
+            // ensure that the local version variable is
+            // assigned.
+            //
+            // Previously, only the two DTD based formats
+            // might be missing a version attribute.
+            // Changes to enable more descriptor deviations
+            // mean that other cases might also be missing
+            // a version attribute.
+
+            version = parser.parseToken( parser.getVersionText() );            
         }
+
         this.versionId = parser.version;
         this.idMap = parser.idMap;
     }
