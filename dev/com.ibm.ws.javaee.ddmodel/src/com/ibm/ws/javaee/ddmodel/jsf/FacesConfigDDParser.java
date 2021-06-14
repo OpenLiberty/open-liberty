@@ -97,13 +97,13 @@ final class FacesConfigDDParser extends DDParser {
 
     @Override
     protected void validateRootElementName() throws ParseException {
-        if (!"faces-config".equals(rootElementLocalName)) {
+        if ( !"faces-config".equals(rootElementLocalName) ) {
             throw new ParseException(invalidRootElement());
         }
     }
 
     @Override
     protected FacesConfigType createRootElement() {
-        return new FacesConfigType(getDeploymentDescriptorPath());
+        return new FacesConfigType( getDeploymentDescriptorPath() );
     }
 }
