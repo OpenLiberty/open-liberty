@@ -98,8 +98,17 @@ public class JweHelper {
         return (keyAlias != null || keyLocation != null);
     }
 
-    @FFDCIgnore({ Exception.class })
     public static String extractJwsFromJweToken(String jweString, JwtConsumerConfig config, MpConfigProperties mpConfigProps) throws InvalidTokenException {
+        String payload = extractPayloadFromJweToken(jweString, config, mpConfigProps);
+        if (!isJws(payload)) {
+            String errorMsg = Tr.formatMessage(tc, "NESTED_JWS_REQUIRED_BUT_NOT_FOUND");
+            throw new InvalidTokenException(errorMsg);
+        }
+        return payload;
+    }
+
+    @FFDCIgnore({ Exception.class })
+    public static String extractPayloadFromJweToken(String jweString, JwtConsumerConfig config, MpConfigProperties mpConfigProps) throws InvalidTokenException {
         JweHelper helper = new JweHelper();
         String payload = null;
         try {
@@ -107,10 +116,6 @@ public class JweHelper {
         } catch (Exception e) {
             String errorMsg = Tr.formatMessage(tc, "ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE", new Object[] { config.getId(), e });
             throw new InvalidTokenException(errorMsg, e);
-        }
-        if (!isJws(payload)) {
-            String errorMsg = Tr.formatMessage(tc, "NESTED_JWS_REQUIRED_BUT_NOT_FOUND");
-            throw new InvalidTokenException(errorMsg);
         }
         return payload;
     }
