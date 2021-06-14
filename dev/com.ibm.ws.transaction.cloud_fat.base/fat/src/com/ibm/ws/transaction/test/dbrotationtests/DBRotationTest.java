@@ -306,6 +306,9 @@ public class DBRotationTest extends FATServletClient {
 
             // server1 should be stopped
             assertFalse(longLeaseLengthServer1.getServerName() + " is not stopped (" + serverStatus + ")", 0 == serverStatus);
+            // The server has been halted but its status variable won't have been reset because we crashed it. In order to
+            // setup the server for a restart, set the server state manually.
+            longLeaseLengthServer1.setStarted(false);
         }
         Log.info(this.getClass(), method, "test complete");
     }
