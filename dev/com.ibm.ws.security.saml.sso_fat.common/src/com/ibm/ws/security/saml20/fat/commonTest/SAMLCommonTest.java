@@ -289,7 +289,7 @@ public class SAMLCommonTest extends CommonTest {
                 CommonLocalLDAPServerSuite two = new CommonLocalLDAPServerSuite();
                 one.ldapSetUp();
                 ldapRefList.add(one);
-                two.ldapSetUp();
+                two.ldapSetUp(1);
                 ldapRefList.add(two);
                 // we're having an issue with the in memory LDAP server on z/OS, added a method to see if it can accept requests,
                 // if NOT, we'll use a "external" LDAP server (Shibboleth allows for failover to additional LDAP servers, but,
