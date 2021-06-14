@@ -155,10 +155,9 @@ public class PackageRunnableTest {
         // Doesn't work on z/OS (because you can't package into a jar on z/OS)
         assumeTrue(!System.getProperty("os.name").equals("z/OS"));
 
-        Log.info(c, method, "*** This test is ONLY using --include=runnable, and does not include minify!!!!");
         String stdout = server.executeServerScript("package",
                                                    new String[] { "--archive=" + runnableJar.getAbsolutePath(),
-                                                                  "--include=runnable" }).getStdout();
+                                                                  "--include=minify,runnable" }).getStdout();
 
         String searchString = "Server " + serverName + " package complete";
         if (!stdout.contains(searchString)) {
@@ -683,7 +682,7 @@ public class PackageRunnableTest {
 
     /**
      * Gets the manifest.mf size from the wlp.lib.extract.jar file
-     * 
+     *
      * @return
      * @throws Exception
      */
