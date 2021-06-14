@@ -26,9 +26,9 @@ final class FacesConfigDDParser extends DDParser {
         new VersionData("1.0", FACES_CONFIG_DTD_PUBLIC_ID_10, null, FacesConfig.VERSION_1_0, JavaEEVersion.VERSION_1_2_INT),    
         new VersionData("1.1", FACES_CONFIG_DTD_PUBLIC_ID_11, null, FacesConfig.VERSION_1_1, JavaEEVersion.VERSION_1_3_INT),
 
-        new VersionData("1.2", null, NAMESPACE_SUN_J2EE,   FacesConfig.VERSION_1_2, JavaEEVersion.VERSION_5_0_INT),                    
-        new VersionData("2.0", null, NAMESPACE_SUN_J2EE,   FacesConfig.VERSION_2_0, JavaEEVersion.VERSION_6_0_INT),            
-        new VersionData("2.1", null, NAMESPACE_SUN_J2EE,   FacesConfig.VERSION_2_1, JavaEEVersion.VERSION_6_0_INT),
+        new VersionData("1.2", null, NAMESPACE_SUN_JAVAEE, FacesConfig.VERSION_1_2, JavaEEVersion.VERSION_5_0_INT),                    
+        new VersionData("2.0", null, NAMESPACE_SUN_JAVAEE, FacesConfig.VERSION_2_0, JavaEEVersion.VERSION_6_0_INT),            
+        new VersionData("2.1", null, NAMESPACE_SUN_JAVAEE, FacesConfig.VERSION_2_1, JavaEEVersion.VERSION_6_0_INT),
         new VersionData("2.2", null, NAMESPACE_JCP_JAVAEE, FacesConfig.VERSION_2_2, JavaEEVersion.VERSION_7_0_INT),
         new VersionData("2.3", null, NAMESPACE_JCP_JAVAEE, FacesConfig.VERSION_2_3, JavaEEVersion.VERSION_8_0_INT),                            
         
