@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020 IBM Corporation and others.
+# Copyright (c) 2010, 2020, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -48,6 +48,12 @@ installFeature.option-desc.--to=\tEspecifique d\u00f3nde debe instalarse la cara
 \testa opci\u00f3n no se especifica, la caracter\u00edstica se instala como una \n\
 \tcaracter\u00edstica de usuario.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--featuresBom=\ \ \ \ --featuresBom=Coordenada Maven
+installFeature.option-desc.--featuresBom=\tEspecifique la coordenada Maven para el archivo BOM de caracter\u00edsticas. Esta opci\u00f3n  \n\
+\tpermite la instalaci\u00f3n de caracter\u00edsticas de usuario desde el repositorio \n\
+\tde maven configurado. Aseg\u00farese de que el repositorio tambi\u00e9n contenga el \n\
+\tarchivo JSON de caracter\u00edsticas asociado en el mismo groupId que BOM.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.--from=\ \ \ \ --from=V\u00edaccesoArchivo
 installFeature.option-desc.--from=\tUtilice la opci\u00f3n para especificar la v\u00eda de acceso de archivo de un         \n\
 \trepositorio de artefacto de Maven como origen para que featureUtility instale activos.
@@ -66,6 +72,12 @@ installServerFeatures.desc=\tInstale las caracter\u00edsticas necesarias para un
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.name...=\ \ \ \ nombre ...
 installServerFeatures.option-desc.name...=\tEl nombre de un servidor existente en el mismo entorno de Liberty.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--featuresBom=\ \ \ \ --featuresBom=Coordenada Maven
+installServerFeatures.option-desc.--featuresBom=\tEspecifique la coordenada Maven para el archivo BOM de caracter\u00edsticas. Esta opci\u00f3n  \n\
+\tpermite la instalaci\u00f3n de caracter\u00edsticas de usuario desde el repositorio \n\
+\tde maven configurado. Aseg\u00farese de que el repositorio tambi\u00e9n contenga el \n\
+\tarchivo JSON de caracter\u00edsticas asociado en el mismo groupId que BOM.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.--from=\ \ \ \ --from=V\u00edaccesoArchivo
 installServerFeatures.option-desc.--from=\tUtilice la opci\u00f3n para especificar la v\u00eda de acceso de archivo de un         \n\
@@ -90,6 +102,6 @@ viewSettings.desc=\tVer los valores de proxy y repositorios.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 viewSettings.option-key.--viewValidationMessages=\ \ \ \ --viewValidationMessages
 viewSettings.option-desc.--viewValidationMessages=\tUtilice esta opci\u00f3n para visualizar los mensajes detallados de la           \n\
-\tvalidaci\u00f3n del archivo featureUtility.properties configurado.           \n\
+\tvalidaci\u00f3n del archivo featureUtility.properties configurado.         \n\
 \tCada mensaje contiene un c\u00f3digo de error, el n\u00famero de l\u00ednea donde se ha encontrado \n\
-\tel error y la causa del error.							
+\tel error y la causa del error.

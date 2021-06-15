@@ -176,19 +176,18 @@ public class LPSTest {
         }
         Log.info(this.getClass(), method, "setupRec" + id + " returned: " + result);
         
-        final String str = "Setting state from RECOVERING to ACTIVE";
         //restart server in three modes
         if(startServer.equals("server1")){
         		restartServer(server);
-                server.waitForStringInTrace(str);
+                server.waitForStringInTrace("Performed recovery for "+server.getServerName());
         } else if(startServer.equals("server2")){
         		restartServer(server2);
-                server2.waitForStringInTrace(str);
+                server2.waitForStringInTrace("Performed recovery for "+server2.getServerName());
         } else if(startServer.equals("both")){
         		restartServer(server);
             	restartServer(server2);
-                server.waitForStringInTrace(str);
-                server2.waitForStringInTrace(str);
+                server.waitForStringInTrace("Performed recovery for "+server.getServerName());
+                server2.waitForStringInTrace("Performed recovery for "+server2.getServerName());
         }
         System.out.println(logKeyword + "restarted server: " + startServer);
 

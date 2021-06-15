@@ -10,5 +10,7 @@
 #*******************************************************************************
 -include= jar:${fileuri;${repo;org.ehcache.modules:ehcache-107;3.8.1}}!/META-INF/MANIFEST.MF,bnd.overrides
 
+-includeresource: \
+ @${repo;org.ehcache.modules:ehcache-107;3.8.1}!/!META-INF/MANIFEST.MF|META-INF/maven/* 
 
 -buildpath: org.ehcache.modules:ehcache-107;version=3.8.1

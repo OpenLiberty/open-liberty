@@ -14,38 +14,30 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.testcontainers.containers.MSSQLServerContainer;
-import org.testcontainers.utility.DockerImageName;
 
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.containers.ExternalTestServiceDockerClientStrategy;
-import componenttest.containers.SimpleLogConsumer;
 
 @RunWith(Suite.class)
-@SuiteClasses(SQLServerTest.class)
+@SuiteClasses({
+                SQLServerTest.class,
+                SQLServerSSLTest.class
+})
 public class FATSuite {
 
     public static final String DB_NAME = "test";
+    public static final String TABLE_NAME = "MYTABLE";
 
     //Required to ensure we calculate the correct strategy each run even when
     //switching between local and remote docker hosts.
     static {
         ExternalTestServiceDockerClientStrategy.setupTestcontainers();
     }
-
-    private static final DockerImageName sqlserverImage = DockerImageName.parse("aguibert/sqlserver-ssl:1.0")//
-                    .asCompatibleSubstituteFor("mcr.microsoft.com/mssql/server");
-
-    @ClassRule
-    public static MSSQLServerContainer<?> sqlserver = new MSSQLServerContainer<>(sqlserverImage) //
-                    .withLogConsumer(new SimpleLogConsumer(FATSuite.class, "sqlserver")) //
-                    .acceptLicense();
 
     /**
      * Create database and tables needed by test servlet.
@@ -54,13 +46,19 @@ public class FATSuite {
      *
      * @throws SQLException
      */
-    @BeforeClass
-    public static void setup() throws SQLException {
-        final String TABLE_NAME = "MYTABLE";
+    public static void setupDatabase(MSSQLServerContainer<?> sqlserver, boolean ssl) throws SQLException {
+        /*
+         * IBM JDK will return TLSv1 when SSLContext.getInstance(TLS) is called.
+         * Force driver to use TLSv1.2 for this setup step.
+         * See documentation here: https://github.com/microsoft/mssql-jdbc/wiki/SSLProtocol
+         */
+        if (ssl) {
+            sqlserver.withUrlParam("SSLProtocol", "TLSv1.2");
+        }
 
         //Setup database and settings
-        Log.info(FATSuite.class, "setup", "Attempting to setup database with name: " + DB_NAME + "."
-                                          + " With connection URL: " + sqlserver.getJdbcUrl());
+        Log.info(FATSuite.class, "setupDatabase", "Attempting to setup database with name: " + DB_NAME + "."
+                                                  + " With connection URL: " + sqlserver.getJdbcUrl());
         try (Connection conn = sqlserver.createConnection(""); Statement stmt = conn.createStatement()) {
             stmt.execute("CREATE DATABASE [" + DB_NAME + "];");
             stmt.execute("EXEC sp_sqljdbc_xa_install");
@@ -69,7 +67,7 @@ public class FATSuite {
 
         //Create test table
         sqlserver.withUrlParam("databaseName", DB_NAME);
-        Log.info(FATSuite.class, "setup", "Attempting to setup database table with name: " + TABLE_NAME + "."
+        Log.info(FATSuite.class, "setupDatabase", "Attempting to setup database table with name: " + TABLE_NAME + "."
                                           + " With connection URL: " + sqlserver.getJdbcUrl());
         try (Connection conn = sqlserver.createConnection(""); Statement stmt = conn.createStatement()) {
             // Create tables

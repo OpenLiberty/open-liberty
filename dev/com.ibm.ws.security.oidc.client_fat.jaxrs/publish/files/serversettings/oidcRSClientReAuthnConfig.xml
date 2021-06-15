@@ -1,0 +1,124 @@
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+	<authFilter id="rs_accessTokenShortLifetime_Filter">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_accessTokenShortLifetime"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="accessTokenShortLifetime"
+		disableLtpaCookie="true"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		inboundPropagation="required"
+		sharedKey="secret"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_AccessTokenShortLifetime/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_AccessTokenShortLifetime/token"
+		validationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_AccessTokenShortLifetime/${oAuthOidcRSValidationEndpoint}"
+		validationMethod="${oAuthOidcRSValidationType}"
+		issuerIdentifier="http://localhost:${bvt.prop.security_1_HTTP_default}/${providerRoot}/endpoint/${providerSample}_AccessTokenShortLifetime,https://localhost:${bvt.prop.security_1_HTTP_default.secure}/${providerRoot}/endpoint/${providerSample}_AccessTokenShortLifetime"
+		jwkEndpointUrl="${oidcJWKValidationURL_PT_ShortLifetime}"
+		signatureAlgorithm="${oidcSignAlg}"
+		clockSkew="2s"
+		authFilterRef="rs_accessTokenShortLifetime_Filter" />
+
+
+	<authFilter id="rs_idTokenShortLifetime_Filter">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_idTokenShortLifetime"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="idTokenShortLifetime"
+		disableLtpaCookie="true"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		inboundPropagation="required"
+		sharedKey="secret"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_IDTokenShortLifetime/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_IDTokenShortLifetime/token"
+		validationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_IDTokenShortLifetime/${oAuthOidcRSValidationEndpoint}"
+		validationMethod="${oAuthOidcRSValidationType}"
+		issuerIdentifier="http://localhost:${bvt.prop.security_1_HTTP_default}/${providerRoot}/endpoint/${providerSample}_IDTokenShortLifetime,https://localhost:${bvt.prop.security_1_HTTP_default.secure}/${providerRoot}/endpoint/${providerSample}_IDTokenShortLifetime"
+		jwkEndpointUrl="${oidcJWKValidationURL_ID_ShortLifetime}"
+		signatureAlgorithm="${oidcSignAlg}"
+		clockSkew="2s"
+		authFilterRef="rs_idTokenShortLifetime_Filter" />
+
+
+	<authFilter id="rs_bothShortLifetime_Filter">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_bothShortLifetime"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="bothShortLifetime"
+		disableLtpaCookie="true"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		inboundPropagation="required"
+		sharedKey="secret"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_BothShortLifetime/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_BothShortLifetime/token"
+		validationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_BothShortLifetime/${oAuthOidcRSValidationEndpoint}"
+		validationMethod="${oAuthOidcRSValidationType}"
+		issuerIdentifier="http://localhost:${bvt.prop.security_1_HTTP_default}/${providerRoot}/endpoint/${providerSample}_BothShortLifetime,https://localhost:${bvt.prop.security_1_HTTP_default.secure}/${providerRoot}/endpoint/${providerSample}_BothShortLifetime"
+		jwkEndpointUrl="${oidcJWKValidationURL_Both_ShortLifetime}"
+		signatureAlgorithm="${oidcSignAlg}"
+		clockSkew="2s"
+		authFilterRef="rs_bothShortLifetime_Filter" />
+
+
+	<authFilter id="rs_bothLongLifetime_Filter">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="helloworld_bothLongLifetime"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="bothLongLifetime"
+		disableLtpaCookie="true"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		inboundPropagation="required"
+		sharedKey="secret"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_BothLongLifetime/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_BothLongLifetime/token"
+		validationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample_BothLongLifetime/${oAuthOidcRSValidationEndpoint}"
+		validationMethod="${oAuthOidcRSValidationType}"
+		issuerIdentifier="http://localhost:${bvt.prop.security_1_HTTP_default}/${providerRoot}/endpoint/${providerSample}_BothLongLifetime,https://localhost:${bvt.prop.security_1_HTTP_default.secure}/${providerRoot}/endpoint/${providerSample}_BothLongLifetime"
+		jwkEndpointUrl="${oidcJWKValidationURL_Both_LongLifetime}"
+		signatureAlgorithm="${oidcSignAlg}"
+		clockSkew="2s"
+		authFilterRef="rs_bothLongLifetime_Filter" />
+
+</server>

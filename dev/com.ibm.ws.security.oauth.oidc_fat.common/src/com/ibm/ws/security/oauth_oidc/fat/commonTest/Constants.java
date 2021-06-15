@@ -716,8 +716,14 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String PROPAGATE_TOKEN_BOOLEAN_TRUE = "propagate_token_boolean_true";
     public static final String PROPAGATE_TOKEN_STRING_FALSE = "propagate_token_string__false";
     public static final String PROPAGATE_TOKEN_BOOLEAN_FALSE = "propagate_token_boolean_false";
+    public static final String PROPAGATE_JWT_TOKEN_STRING_TRUE = "propagate_jwt_token_string_true";
+    public static final String PROPAGATE_JWT_TOKEN_BOOLEAN_TRUE = "propagate_jwt_token_boolean_true";
+    public static final String PROPAGATE_JWT_TOKEN_STRING_FALSE = "propagate_jwt_token_string_false";
+    public static final String PROPAGATE_JWT_TOKEN_BOOLEAN_FALSE = "propagate_jwt_token_boolean_false";
     public static final String HEADER_NAME = "headerName";
     public static final String JWT_BUILDER_NAME = "jwtBuilder";
+    public static final String OAUTH_HANDLER = "com.ibm.ws.jaxrs.client.oauth.sendToken";
+    public static final String JWT_HANDLER = "com.ibm.ws.jaxrs.client.oidc.sendJwtToken";
 
     public static final String RS_COOKIE = "RS_ltpatoken";
     public static final String OP_COOKIE = "OP_ltpatoken";

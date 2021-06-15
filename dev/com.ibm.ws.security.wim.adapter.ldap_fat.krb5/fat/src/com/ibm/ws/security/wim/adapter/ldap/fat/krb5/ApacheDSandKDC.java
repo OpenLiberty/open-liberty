@@ -63,8 +63,6 @@ import org.apache.directory.shared.kerberos.codec.types.EncryptionType;
 import org.apache.directory.shared.kerberos.codec.types.PrincipalNameType;
 import org.apache.directory.shared.kerberos.components.EncryptionKey;
 import org.apache.directory.shared.kerberos.components.PrincipalName;
-import org.junit.After;
-import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
@@ -80,35 +78,35 @@ public class ApacheDSandKDC {
 
     private static boolean FAT_TEST_LOCALRUN = Boolean.getBoolean("fat.test.localrun");
 
-    public static final String BASE_DN = LdapKerberosUtils.BASE_DN;
+    public static String BASE_DN = LdapKerberosUtils.BASE_DN; // default, override in extending class
 
-    public static final String DOMAIN = LdapKerberosUtils.DOMAIN;
+    public static String DOMAIN = LdapKerberosUtils.DOMAIN; // default, override in extending class
 
-    private static CoreSession session;
+    protected static CoreSession session;
 
     private static KdcConnection conn;
 
-    private static String bindPassword = LdapKerberosUtils.BIND_PASSWORD;
+    protected static String bindPassword = LdapKerberosUtils.BIND_PASSWORD; // default, override in extending class
 
-    private static String bindUserName = LdapKerberosUtils.BIND_USER;
+    protected static String bindUserName = LdapKerberosUtils.BIND_USER; // default, override in extending class
 
-    public static String bindPrincipalName = LdapKerberosUtils.BIND_PRINCIPAL_NAME;
+    public static String bindPrincipalName = LdapKerberosUtils.BIND_PRINCIPAL_NAME; // default, override in extending class
 
     private static String serverPrincipal;
 
     public static String ldapServerHostName = LdapKerberosUtils.HOSTNAME;
 
-    private static String ldapUser = "ldap";
+    protected static String ldapUser = "ldap"; // default, override in extending class
 
-    private static String ldapPrincipal = ldapUser + "/" + ldapServerHostName + "@" + DOMAIN;
+    private static String ldapPrincipal;
 
-    private static String ldapUserDN = "uid=" + ldapUser + "," + BASE_DN;
+    private static String ldapUserDN;
 
-    private static String krbtgtUser = "krbtgt";
+    protected static String krbtgtUser = "krbtgt"; // default, override in extending class
 
-    private static String krbtgtUserDN = "uid=" + krbtgtUser + "," + BASE_DN;
+    private static String krbtgtUserDN;
 
-    private static String krbtgtPrincipal = krbtgtUser + "/" + DOMAIN + "@" + DOMAIN;
+    private static String krbtgtPrincipal;
 
     protected static String ticketCacheFile = null;
 
@@ -118,13 +116,6 @@ public class ApacheDSandKDC {
 
     public static long MIN_LIFE = 6 * 60000;
 
-    // regular user/group
-    protected static final String vmmUser1 = "user1";
-    protected static final String vmmUser1DN = "uid=vmmUser1," + BASE_DN;
-    protected static final String vmmUser1pwd = "password";
-    protected static final String vmmGroup1 = "vmmGroup1";
-    protected static final String vmmGroup1DN = "cn=" + vmmGroup1 + "," + BASE_DN;
-
     static int LDAP_PORT = -1;
     static int KDC_PORT = -1;
 
@@ -133,7 +124,7 @@ public class ApacheDSandKDC {
     private static final String DIRECTORY_NAME = c.toString();
     private static boolean initialised;
 
-    private static DirectoryService directoryService;
+    protected static DirectoryService directoryService;
     private static LdapServer ldapServer;
     private static KdcServer kdcServer;
 
@@ -219,14 +210,21 @@ public class ApacheDSandKDC {
         Log.info(c, "startKDC", "Started KDC");
     }
 
-    @BeforeClass
-    public static void setup() throws Exception {
+    //  @BeforeClass
+    public static void setupService() throws Exception {
         // Uncomment to add more logging, will log a ton to output.txt, use only when needed
 //        Logger root = Logger.getLogger("");
 //        root.setLevel(Level.FINEST);
 //        for (Handler handler : root.getHandlers()) {
 //            handler.setLevel(Level.FINEST);
 //        }
+        ldapPrincipal = ldapUser + "/" + ldapServerHostName + "@" + DOMAIN;
+
+        ldapUserDN = "uid=" + ldapUser + "," + BASE_DN;
+
+        krbtgtUserDN = "uid=" + krbtgtUser + "," + BASE_DN;
+
+        krbtgtPrincipal = krbtgtUser + "/" + DOMAIN + "@" + DOMAIN;
 
         if (initialised) {
             Log.info(c, "start", "ApacheDS already marked as started.");
@@ -252,8 +250,6 @@ public class ApacheDSandKDC {
                                                       new Dn(ldapUserDN), ldapServer);
         }
 
-        addBasicUserAndGroup();
-
         createTicketCacheFile();
 
         createKeyTabFile();
@@ -262,31 +258,9 @@ public class ApacheDSandKDC {
 
     }
 
-    @After
-    public void tearDown() throws Exception {
+    public void tearDownService() throws Exception {
         stopAllServers();
         initialised = false;
-    }
-
-    /**
-     * Add a starter user and group for general servlet login and searches
-     *
-     */
-    public static void addBasicUserAndGroup() throws Exception {
-        Log.info(c, "addBasicUserAndGroup", "Adding basic user and group");
-        Entry entry = directoryService.newEntry(new Dn(vmmUser1DN));
-        entry.add("objectclass", "inetorgperson");
-        entry.add("uid", vmmUser1);
-        entry.add("sn", "user1");
-        entry.add("cn", "user1");
-        entry.add("userPassword", vmmUser1pwd);
-        session.add(entry);
-
-        entry = directoryService.newEntry(new Dn(vmmGroup1DN));
-        entry.add("objectclass", "groupOfNames");
-        entry.add("member", vmmUser1DN);
-        session.add(entry);
-        Log.info(c, "addBasicUserAndGroup", "Adding basic user and group");
     }
 
     /**
@@ -296,7 +270,7 @@ public class ApacheDSandKDC {
      */
     public static void createTicketCacheFile() throws Exception {
         Log.info(c, "createTicketCacheFile", "Creating ticket cache for " + bindPrincipalName);
-        File ccFile = File.createTempFile("user17Cache-", ".cc");
+        File ccFile = File.createTempFile(bindUserName + "Cache-", ".cc");
         if (!FAT_TEST_LOCALRUN) {
             ccFile.deleteOnExit();
         }

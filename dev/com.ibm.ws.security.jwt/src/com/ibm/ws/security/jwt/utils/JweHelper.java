@@ -12,7 +12,6 @@ package com.ibm.ws.security.jwt.utils;
 
 import java.security.Key;
 import java.security.KeyStoreException;
-import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.CertificateException;
 
@@ -116,15 +115,22 @@ public class JweHelper {
         return payload;
     }
 
-    String getJwePayload(String jweString, JwtConsumerConfig config, MpConfigProperties mpConfigProps) throws JoseException, Exception, InvalidTokenException {
-        JweHelper helper = new JweHelper();
+    String getJwePayload(String jweString, JwtConsumerConfig config, MpConfigProperties mpConfigProps) throws Exception {
+        Key decryptionKey = getJweDecryptionKey(config, mpConfigProps, getKidFromJweString(jweString));
+        if (decryptionKey == null) {
+            String errorMsg = Tr.formatMessage(tc, "JWE_DECRYPTION_KEY_MISSING", new Object[] { JwtUtils.CFG_KEY_KEY_MANAGEMENT_KEY_ALIAS, config.getKeyManagementKeyAlias() });
+            throw new InvalidTokenException(errorMsg);
+        }
+        return getJwePayload(jweString, decryptionKey);
+    }
+
+    String getJwePayload(String jweString, @Sensitive Key decryptionKey) throws JoseException, InvalidTokenException {
         JsonWebEncryption jwe = new JsonWebEncryption();
         jwe.setCompactSerialization(jweString);
-        Key decryptionKey = helper.getJweDecryptionKey(config, mpConfigProps, helper.getKidFromJweString(jweString));
         jwe.setKey(decryptionKey);
         String payload = jwe.getPayload();
         if (isJws(payload)) {
-            helper.verifyContentType(jwe);
+            verifyContentType(jwe);
         }
         return payload;
     }
@@ -178,18 +184,20 @@ public class JweHelper {
     }
 
     @Sensitive
-    PrivateKey getJweDecryptionKey(JwtConsumerConfig config, MpConfigProperties mpConfigProps, String kid) throws Exception {
-        String keyAlias = config.getKeyManagementKeyAlias();
-        if (keyAlias != null) {
+    Key getJweDecryptionKey(JwtConsumerConfig config, MpConfigProperties mpConfigProps, String kid) throws Exception {
+        Key key = config.getJweDecryptionKey();
+        if (key != null) {
             // Server configuration takes precedence over MP Config property values
-            String keyStoreRef = config.getKeyStoreRef();
-            return JwtUtils.getPrivateKey(keyAlias, keyStoreRef);
+            return key;
         }
         return getJweDecryptionKeyFromMpConfigProps(config, mpConfigProps, kid);
     }
 
     @Sensitive
-    private PrivateKey getJweDecryptionKeyFromMpConfigProps(JwtConsumerConfig config, MpConfigProperties mpConfigProps, String kid) throws Exception {
+    private Key getJweDecryptionKeyFromMpConfigProps(JwtConsumerConfig config, MpConfigProperties mpConfigProps, String kid) throws Exception {
+        if (mpConfigProps == null) {
+            return null;
+        }
         String keyLocation = mpConfigProps.get(MpConfigProperties.DECRYPT_KEY_LOCATION);
         checkDecryptKeyLocationForInlineKey(keyLocation);
         JwKRetriever jwkRetriever = new JwKRetriever(config.getJwkSet());

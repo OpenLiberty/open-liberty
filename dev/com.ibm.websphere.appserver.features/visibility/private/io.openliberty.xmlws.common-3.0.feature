@@ -19,15 +19,14 @@ IBM-API-Package:\
  jakarta.xml.ws.spi; type="spec", \
  jakarta.xml.ws.spi.http; type="spec", \
  jakarta.xml.ws.wsaddressing; type="spec"
--features=\
- com.ibm.websphere.appserver.classloading-1.0, \
- com.ibm.websphere.appserver.containerServices-1.0, \
- com.ibm.websphere.appserver.injection-2.0, \
- com.ibm.websphere.appserver.httpcommons-1.0, \
- com.ibm.websphere.appserver.internal.slf4j-1.7.7, \
- io.openliberty.jakarta.xmlWS-3.0,\
- io.openliberty.jakarta.mail-2.0,\
- io.openliberty.xmlBinding-3.0
+-features=io.openliberty.jakarta.xmlWS-3.0, \
+  io.openliberty.xmlBinding-3.0, \
+  com.ibm.websphere.appserver.containerServices-1.0, \
+  com.ibm.websphere.appserver.httpcommons-1.0, \
+  com.ibm.websphere.appserver.classloading-1.0, \
+  io.openliberty.jakarta.mail-2.0, \
+  com.ibm.websphere.appserver.injection-2.0, \
+  com.ibm.websphere.appserver.internal.slf4j-1.7.7
 -bundles=\
  com.ibm.websphere.org.osgi.service.http.jakarta; location:="dev/api/spec/,lib/", \
  com.ibm.ws.cxf.client, \

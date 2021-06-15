@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020 IBM Corporation and others.
+# Copyright (c) 2010, 2020, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -48,6 +48,12 @@ installFeature.option-desc.--to=\tSpecificare dove installare la funzione. La fu
 \tquesta opzione non \u00e8 specificata, la funzione viene installata come funzione \n\
 \tutente.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--featuresBom=\ \ \ \ --featuresBom=Maven coordinate
+installFeature.option-desc.--featuresBom=\tSpecificare la coordinata Maven per il file BOM delle funzioni. Questa opzione \n\
+\tconsente l'installazione delle funzioni utente dal repository     \n\
+\tmaven configurato. Assicurarsi che il repository contenga anche il       \n\
+\tfile JSON delle funzioni associato nello stesso ID gruppo del BOM.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.--from=\ \ \ \ --from=filePath
 installFeature.option-desc.--from=\tUtilizzare questa opzione per specificare il percorso file\n \tdi un repository di risorse utente Maven come origine per l'installazione degli asset da parte di featureUtility.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
@@ -65,6 +71,12 @@ installServerFeatures.desc=\tInstallare le funzioni richieste per un dato server
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.name...=\ \ \ \ name ...
 installServerFeatures.option-desc.name...=\tIl nome di un server esistente nello stesso ambiente Liberty.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--featuresBom=\ \ \ \ --featuresBom=Maven coordinate
+installServerFeatures.option-desc.--featuresBom=\tSpecificare la coordinata Maven per il file BOM delle funzioni. Questa opzione \n\
+\tconsente l'installazione delle funzioni utente dal repository     \n\
+\tmaven configurato. Assicurarsi che il repository contenga anche il       \n\
+\tfile JSON delle funzioni associato nello stesso ID gruppo del BOM.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.--from=\ \ \ \ --from=filePath
 installServerFeatures.option-desc.--from=\tUtilizzare questa opzione per specificare il percorso file\n \tdi un repository di risorse utente Maven come origine per l'installazione degli asset da parte di featureUtility.
@@ -88,6 +100,6 @@ viewSettings.desc=\tVisualizzare le impostazioni di proxy e repository.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 viewSettings.option-key.--viewValidationMessages=\ \ \ \ --viewValidationMessages
 viewSettings.option-desc.--viewValidationMessages=\tUtilizzare questa opzione per visualizzare i messaggi dettagliati dalla\n\
-\tconvalida del file featureUtility.properties configurato.           \n\
+\tconvalida del file featureUtility.properties configurato.         \n\
 \tOgni messaggio contiene un codice di errore, il numero di riga in cui \n\
 \t\u00e8 stato trovato l'errore e la causa dell'errore.

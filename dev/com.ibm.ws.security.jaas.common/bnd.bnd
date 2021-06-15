@@ -100,6 +100,6 @@ instrument.classesExcludes: com/ibm/ws/security/jaas/common/internal/resources/*
 	com.ibm.wsspi.org.osgi.service.component.annotations,\
 	com.ibm.wsspi.org.osgi.service.metatype.annotations,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-	com.ibm.ws.org.apache.commons.codec;version=latest
+	io.openliberty.org.apache.commons.codec;version=latest
 	
 	

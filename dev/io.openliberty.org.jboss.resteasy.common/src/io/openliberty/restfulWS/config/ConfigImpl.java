@@ -14,6 +14,7 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -24,17 +25,20 @@ import org.eclipse.microprofile.config.spi.ConfigSource;
 public class ConfigImpl implements Config {
     private final Set<ConfigSource> configSources = Collections.singleton(new ConfigSourceImpl(this));
     private final Map<String, String> configProperties = new HashMap<>();
+    private Set<Object> myPropertiesSet = Collections.synchronizedSet(new HashSet<>());
 
     ConfigImpl() {
         if (ConfigProviderResolverImpl.java2SecurityEnabled) {
             AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
-                for (Object key : System.getProperties().keySet()) {
+                myPropertiesSet.addAll(System.getProperties().keySet());
+                for (Object key : myPropertiesSet) {
                     configProperties.put((String) key, System.getProperty((String)key));
                 }
                 return null;
             });
         } else {
-            for (Object key : System.getProperties().keySet()) {
+            myPropertiesSet.addAll(System.getProperties().keySet());
+            for (Object key : myPropertiesSet) {
                  configProperties.put((String) key, System.getProperty((String)key));
             }
         }

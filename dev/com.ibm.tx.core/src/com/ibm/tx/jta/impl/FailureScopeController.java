@@ -1,7 +1,7 @@
 package com.ibm.tx.jta.impl;
 
 /*******************************************************************************
- * Copyright (c) 2002, 2009 IBM Corporation and others.
+ * Copyright (c) 2002, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,12 +18,12 @@ import javax.transaction.SystemException;
 
 import com.ibm.tx.TranConstants;
 import com.ibm.tx.util.ConcurrentHashSet;
-import com.ibm.tx.util.logging.FFDCFilter;
-import com.ibm.tx.util.logging.Tr;
-import com.ibm.tx.util.logging.TraceComponent;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.Transaction.JTA.FailureScopeLifeCycle;
 import com.ibm.ws.Transaction.JTA.FailureScopeLifeCycleHelper;
 import com.ibm.ws.Transaction.JTS.Configuration;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.kernel.service.util.CpuInfo;
 import com.ibm.ws.recoverylog.spi.FailureScope;
 import com.ibm.ws.recoverylog.spi.RecoveryAgent;
@@ -64,7 +64,8 @@ public class FailureScopeController {
 
     protected static final boolean isConcurrent = CpuInfo.getAvailableProcessors() > SMP_THRESH;
 
-    protected FailureScopeController() {}
+    protected FailureScopeController() {
+    }
 
     @SuppressWarnings("unused")
     public FailureScopeController(FailureScope fs) throws SystemException {
@@ -233,6 +234,11 @@ public class FailureScopeController {
 
                 if (!partnersLeft) {
                     Tr.audit(tc, "WTRN0105_CLEAN_SHUTDOWN");
+                    // Shutdown is clean, we may delete the home server lease if peer recovery is enabled.
+                    // This is a noop if peer recovery is not enabled.
+                    if (_recoveryManager != null) {
+                        _recoveryManager.deleteServerLease(serverName());
+                    }
                 } else if (tc.isDebugEnabled()) {
                     if (partnersLeft) {
                         Tr.debug(tc, "Not a clean shutdown", new Object[] { immediate, _localFailureScope });
@@ -296,10 +302,10 @@ public class FailureScopeController {
      * This method is called to register the creation of a new transaction associated
      * with the managed failure scope.
      *
-     * @param tran The transaction identity object
+     * @param tran      The transaction identity object
      * @param recovered Flag to indicate if the new transaction was created as part
-     *            of a recovery process for this failure scope (true) or
-     *            normal running (false)
+     *                      of a recovery process for this failure scope (true) or
+     *                      normal running (false)
      */
     public void registerTransaction(TransactionImpl tran, boolean recovered) {
         if (tc.isEntryEnabled())

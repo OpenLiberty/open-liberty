@@ -1,8 +1,13 @@
-<!-- Copyright (c) 2018 IBM Corporation and others. All rights reserved. 
-	This program and the accompanying materials are made available under the 
-	terms of the Eclipse Public License v1.0 which accompanies this distribution, 
-	and is available at http://www.eclipse.org/legal/epl-v10.html Contributors: 
-	IBM Corporation - initial API and implementation -->
+<!--
+    Copyright (c) 2018, 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
 <server description="com.ibm.ws.wim.adapter.ldap.fat.custom.certmapper">
 
 	<featureManager>
@@ -16,10 +21,10 @@
 		trustStoreRef="defaultTrustStore" clientAuthenticationSupported="true" />
 	<keyStore id="defaultKeyStore"
 		location="${server.config.dir}/resources/security/DummyServerKeyFile.jks"
-		type="JKS" password="WebAS" />
+		type="JKS" password="security" />
 	<keyStore id="defaultTrustStore"
 		location="${server.config.dir}/resources/security/DummyServerTrustFile.jks"
-		type="JKS" password="WebAS" />
+		type="JKS" password="security" />
  
 	<webAppSecurity allowFailOverToBasicAuth="false" />
 

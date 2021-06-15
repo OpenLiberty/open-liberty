@@ -14,7 +14,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -48,8 +48,8 @@ public class BundleFactory extends ManifestFactory {
     private String metatypeXML = null;
     private final List<ServiceComponentDeclaration> components = new ArrayList<ServiceComponentDeclaration>();
 
-    // Leaving this commented out main method in the code 
-    // to serve as an example of how to use this factory 
+    // Leaving this commented out main method in the code
+    // to serve as an example of how to use this factory
     // with a service component declaration.
     //    public static void main(String[] args) throws IOException {
     //        final ServiceComponentDeclaration scd = new ServiceComponentDeclaration()
@@ -189,18 +189,16 @@ public class BundleFactory extends ManifestFactory {
         try {
             MessageDigest shaDigest = MessageDigest.getInstance(SHA_ALGORITHM);
             for (ServiceComponentDeclaration component : components) {
-                shaDigest.update(component.toString().getBytes("UTF-8"));
+                shaDigest.update(component.toString().getBytes(StandardCharsets.UTF_8));
             }
             if (defaultInstance != null) {
-                shaDigest.update(defaultInstance.getBytes("UTF-8"));
+                shaDigest.update(defaultInstance.getBytes(StandardCharsets.UTF_8));
             }
             if (metatypeXML != null) {
-                shaDigest.update(metatypeXML.getBytes("UTF-8"));
+                shaDigest.update(metatypeXML.getBytes(StandardCharsets.UTF_8));
             }
             addAttributeValues(EXTRAS_SHA_HEADER, getHexSHA(shaDigest));
         } catch (NoSuchAlgorithmException e) {
-            // auto FFDC
-        } catch (UnsupportedEncodingException e) {
             // auto FFDC
         }
     }
@@ -241,19 +239,19 @@ public class BundleFactory extends ManifestFactory {
             // write each component
             for (ServiceComponentDeclaration component : components) {
                 jarOut.putNextEntry(new JarEntry(component.getFileName()));
-                jarOut.write(component.toString().getBytes("UTF-8"));
+                jarOut.write(component.toString().getBytes(StandardCharsets.UTF_8));
                 jarOut.closeEntry();
             }
 
             if (defaultInstance != null) {
                 jarOut.putNextEntry(new JarEntry("OSGI-INF/wlp/defaultInstances.xml"));
-                jarOut.write(defaultInstance.getBytes("UTF-8"));
+                jarOut.write(defaultInstance.getBytes(StandardCharsets.UTF_8));
                 jarOut.closeEntry();
             }
 
             if (metatypeXML != null) {
                 jarOut.putNextEntry(new JarEntry("OSGI-INF/metatype/metatype.xml"));
-                jarOut.write(metatypeXML.getBytes("UTF-8"));
+                jarOut.write(metatypeXML.getBytes(StandardCharsets.UTF_8));
                 jarOut.closeEntry();
             }
 

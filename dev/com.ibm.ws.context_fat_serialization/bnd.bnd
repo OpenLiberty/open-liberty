@@ -30,5 +30,5 @@ tested.features: appsecurity-4.0, cdi-3.0, concurrent-2.0, enterpriseBeansLite-4
 	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
 	com.ibm.websphere.org.osgi.core,\
 	com.ibm.websphere.security,\
-	com.ibm.ws.org.apache.commons.codec.1.4,\
+	io.openliberty.org.apache.commons.codec;version=latest,\
 	fattest.simplicity

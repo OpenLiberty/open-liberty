@@ -34,21 +34,21 @@ IBM-SPI-Package: com.ibm.wsspi.webcontainer, \
  com.ibm.ws.webcontainer.spiadapter.collaborator, \
  com.ibm.websphere.webcontainer.async
 Subsystem-Category: JavaEE8Application
--features=com.ibm.websphere.appserver.injection-1.0, \
- com.ibm.websphere.appserver.artifact-1.0, \
- com.ibm.websphere.appserver.containerServices-1.0, \
- com.ibm.websphere.appserver.javaeedd-1.0, \
- com.ibm.websphere.appserver.classloading-1.0, \
- com.ibm.websphere.appserver.appmanager-1.0, \
- com.ibm.websphere.appserver.javaeePlatform-8.0, \
- com.ibm.websphere.appserver.anno-1.0, \
- com.ibm.websphere.appserver.javax.annotation-1.3, \
- com.ibm.websphere.appserver.httptransport-1.0, \
- io.openliberty.servlet.api-4.0, \
- com.ibm.websphere.appserver.requestProbes-1.0, \
- com.ibm.websphere.appserver.eeCompatible-8.0, \
- com.ibm.websphere.appserver.servlet-servletSpi1.0, \
- com.ibm.websphere.appserver.javaeeddSchema-1.0
+-features=io.openliberty.servlet.api-4.0, \
+  com.ibm.websphere.appserver.javaeeddSchema-1.0, \
+  com.ibm.websphere.appserver.containerServices-1.0, \
+  com.ibm.websphere.appserver.javaeePlatform-8.0, \
+  com.ibm.websphere.appserver.classloading-1.0, \
+  com.ibm.websphere.appserver.eeCompatible-8.0, \
+  com.ibm.websphere.appserver.servlet-servletSpi1.0, \
+  com.ibm.websphere.appserver.httptransport-1.0, \
+  com.ibm.websphere.appserver.javaeedd-1.0, \
+  com.ibm.websphere.appserver.appmanager-1.0, \
+  com.ibm.websphere.appserver.requestProbes-1.0, \
+  com.ibm.websphere.appserver.javax.annotation-1.3, \
+  com.ibm.websphere.appserver.injection-1.0, \
+  com.ibm.websphere.appserver.anno-1.0, \
+  com.ibm.websphere.appserver.artifact-1.0
 -bundles=com.ibm.ws.app.manager.war, \
  com.ibm.ws.managedobject, \
  com.ibm.ws.org.apache.commons.io, \

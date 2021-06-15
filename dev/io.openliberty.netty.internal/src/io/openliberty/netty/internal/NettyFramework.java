@@ -28,8 +28,10 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.feature.ServerStarted;
+import com.ibm.wsspi.channelfw.ChannelConfiguration;
 import com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener;
 
 import io.netty.bootstrap.Bootstrap;
@@ -77,7 +79,7 @@ public class NettyFramework implements ServerQuiesceListener {
     private Bootstrap bootstrap;
 
     private EventLoopGroup parentGroup;
-    private EventLoopGroup workerGroup;
+    private EventLoopGroup childGroup;
     private EventLoopGroup udpGroup;
 
     @Activate
@@ -91,9 +93,9 @@ public class NettyFramework implements ServerQuiesceListener {
          */
         // use the executor service provided by Liberty
         parentGroup = new NioEventLoopGroup(0, executorService);
-        workerGroup = new NioEventLoopGroup(0, executorService);
+        childGroup = new NioEventLoopGroup(0, executorService);
 
-        serverBootstrap = createTCPBoostrap(new HttpServerInitializer(), parentGroup, workerGroup);
+        serverBootstrap = createTCPBoostrap(new HttpServerInitializer(), parentGroup, childGroup);
         try {
             runWhenServerStarted(new Callable<Void>() {
                 @Override
@@ -162,9 +164,9 @@ public class NettyFramework implements ServerQuiesceListener {
      * @return ServerBootstrap
      */
     private ServerBootstrap createTCPBoostrap(ChannelInitializer<Channel> initializer, EventLoopGroup parentGroup, 
-            EventLoopGroup workerGroup) {
+            EventLoopGroup childGroup) {
         return new ServerBootstrap()
-                .group(this.parentGroup, this.workerGroup)
+                .group(parentGroup, childGroup)
                 .channel(NioServerSocketChannel.class)
                 .childHandler(initializer)
                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000)
@@ -195,8 +197,8 @@ public class NettyFramework implements ServerQuiesceListener {
             if (parentGroup != null) {
                 parentGroup.shutdownGracefully();
             }
-            if (workerGroup != null) {
-                workerGroup.shutdownGracefully();
+            if (childGroup != null) {
+                childGroup.shutdownGracefully();
             }
         }
     }

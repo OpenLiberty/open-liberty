@@ -29,15 +29,11 @@ fat.project: true
 	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
 	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
 	com.ibm.websphere.javaee.jsonb.1.0;version=latest,\
-	com.ibm.ws.org.slf4j.api.1.7.7;version=latest,\
 	org.apache.kafka:kafka-clients;version=2.3.0,\
-	com.github.docker-java:docker-java-api;version=3.2.7,\
-	org.testcontainers:testcontainers;version=1.15.1,\
-	org.testcontainers:kafka;version=1.15.1,\
-	org.rnorth.duct-tape:duct-tape;version=1.0.8,\
+	io.openliberty.org.testcontainers;version=latest,\
 	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
 	org.testng:testng;version=6.14.3,\
-	org.reactivestreams:reactive-streams-tck;version=1.0.2,\
+	org.reactivestreams:reactive-streams-tck;version=1.0.3,\
 	com.ibm.websphere.org.reactivestreams.reactive-streams.1.0;version=latest,\
 	com.ibm.ws.io.smallrye.reactive.streams-operators;version=latest,\
 	com.ibm.ws.microprofile.reactive.messaging.kafka;version=latest,\

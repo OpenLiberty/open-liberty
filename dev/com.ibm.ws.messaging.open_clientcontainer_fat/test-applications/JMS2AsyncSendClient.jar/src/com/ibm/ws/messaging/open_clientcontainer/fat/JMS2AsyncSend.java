@@ -12,6 +12,7 @@
 package com.ibm.ws.messaging.open_clientcontainer.fat;
 
 import java.util.Properties;
+import java.util.logging.Level;
 import java.util.Enumeration;
 import javax.jms.BytesMessage;
 import javax.jms.ConnectionFactory;
@@ -318,6 +319,7 @@ public class JMS2AsyncSend extends ClientMain {
 
   @ClientTest
   public void testJMS2MessageOrderingMultipleContexts() throws JMSException, InterruptedException {
+    Util.setLevel(Level.FINEST);
     clearQueue(queueOne_);
     completionListener_.reset();
     int outOfOrderCount = 0;
@@ -375,6 +377,7 @@ public class JMS2AsyncSend extends ClientMain {
     }
     clearQueue(queueOne_);
     completionListener_.reset();
+    Util.setLevel(Level.INFO);
   }
 
   @ClientTest

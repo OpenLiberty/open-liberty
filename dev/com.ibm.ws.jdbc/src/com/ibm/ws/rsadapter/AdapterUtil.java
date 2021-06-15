@@ -1192,11 +1192,11 @@ public class AdapterUtil {
         }
         else
         {
-            if (mcf.dataStoreHelper == null) {
+            if (iHelper.dataStoreHelper == null) {
                 mappedX = sqlX;
                 mapsToStaleConnection = iHelper.isConnectionError(sqlX);
             } else {
-                mappedX = mcf.dataStoreHelper.mapException(sqlX);
+                mappedX = iHelper.mapException(sqlX);
                 mapsToStaleConnection = isLegacyException(mappedX, IdentifyExceptionAs.StaleConnection.legacyClassName);
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, mappedX == sqlX ? "not replaced" : ("mapped to " + mappedX.getClass().getName()));
@@ -1210,7 +1210,7 @@ public class AdapterUtil {
 
             // Check for stale statement
 
-            if (mcf.dataStoreHelper == null)
+            if (iHelper.dataStoreHelper == null)
                 isStaleStatement = iHelper.isStaleStatement(sqlX);
             else if (isLegacyException(mappedX, IdentifyExceptionAs.StaleStatement.legacyClassName))
                 try {

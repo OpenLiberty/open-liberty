@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -70,13 +70,50 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
     
     
     /**
-     * Test the install of jsp-2.3 from maven central.
+     * Test installation of feature json-1.0 from local repository
      *
      * @throws Exception
      */
     @Test
     public void testInstallFeature() throws Exception {
         final String METHOD_NAME = "testInstallFeature";
+        Log.entering(c, METHOD_NAME);
+        replaceWlpProperties("21.0.0.4");
+        //change this 
+        copyFileToMinifiedRoot("etc", "../../publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
+
+        copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/features/21.0.0.4",
+                "../../publish/repo/com/ibm/websphere/appserver/features/features/21.0.0.4/features-21.0.0.4.json");
+
+        copyFileToMinifiedRoot("repo/io/openliberty/features/features/21.0.0.4",
+                "../../publish/repo/io/openliberty/features/features/21.0.0.4/features-21.0.0.4.json");
+
+        copyFileToMinifiedRoot("repo/io/openliberty/features/json-1.0/21.0.0.4",
+                "../../publish/repo/io/openliberty/features/json-1.0/21.0.0.4/json-1.0-21.0.0.4.esa");
+
+        writeToProps(minifiedRoot+ "/etc/featureUtility.properties", "featureLocalRepo", minifiedRoot + "/repo/");
+
+        String[] param1s = { "installFeature", "json-1.0", "--verbose"};
+        String [] fileLists = {"lib/features/com.ibm.websphere.appserver.json-1.0.mf"};
+        ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
+        assertEquals("Exit code should be 0",0, po.getReturnCode());
+        String output = po.getStdout();
+        assertTrue("Should contain json-1.0", output.contains("json-1.0"));
+
+        deleteRepo(METHOD_NAME);
+        Log.exiting(c, METHOD_NAME);
+    }
+    
+   
+    /**
+     * Test the install of jsp-2.2, jsp-2.3 from maven central.
+     * Multi-version is not supported with installServerFeature as it cannot be installed to same resource. 
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testMultiVersionFeatures() throws Exception {
+        final String METHOD_NAME = "testMultiVersionFeatures";
         Log.entering(c, METHOD_NAME);
         replaceWlpProperties("20.0.0.4");
         copyFileToMinifiedRoot("etc", "../../publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
@@ -90,65 +127,71 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         copyFileToMinifiedRoot("repo/io/openliberty/features/jsp-2.3/20.0.0.4",
                 "../../publish/repo/io/openliberty/features/jsp-2.3/20.0.0.4/jsp-2.3-20.0.0.4.esa");
 
+        copyFileToMinifiedRoot("repo/io/openliberty/features/jsp-2.2/20.0.0.4",
+                "../../publish/repo/io/openliberty/features/jsp-2.2/20.0.0.4/jsp-2.2-20.0.0.4.esa");
+
 
 
         writeToProps(minifiedRoot+ "/etc/featureUtility.properties", "featureLocalRepo", minifiedRoot + "/repo/");
 
-        String[] param1s = { "installFeature", "jsp-2.3", "--verbose"};
-        String [] fileLists = {"lib/features/com.ibm.websphere.appserver.jsp-2.3.mf"};
-//        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.jsp-2.3", fileLists);
+        String[] param1s = { "installFeature", "jsp-2.2", "jsp-2.3", "--verbose"};
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
         assertEquals("Exit code should be 0",0, po.getReturnCode());
         String output = po.getStdout();
+        assertTrue("Should contain jsp-2.2", output.contains("jsp-2.2"));
         assertTrue("Should contain jsp-2.3", output.contains("jsp-2.3"));
-
-//        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.jsp-2.3", fileLists);
-        Log.exiting(c, METHOD_NAME);
     }
-
     /**
-     * Test the installation of features cdi-1.2 and jsf-2.2 together, which should also install the autofeature cdi1.2-jsf2.2.
+     * Test the installation of features eventLogging-1.0 and osgiConsole-1.0, which should also install the autofeature eventLogging-1.0-osgiCOnsole-1.0
      * @throws Exception
      */
     @Test
     public void testInstallAutoFeature() throws Exception {
         final String METHOD_NAME = "testInstallAutoFeature";
         Log.entering(c, METHOD_NAME);
-        replaceWlpProperties("20.0.0.4");
+        replaceWlpProperties("21.0.0.4");
         copyFileToMinifiedRoot("etc", "../../publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
 
-        copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/features/20.0.0.4",
-                "../../publish/repo/com/ibm/websphere/appserver/features/features/20.0.0.4/features-20.0.0.4.json");
+        copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/features/21.0.0.4",
+                "../../publish/repo/com/ibm/websphere/appserver/features/features/21.0.0.4/features-21.0.0.4.json");
 
-        copyFileToMinifiedRoot("repo/io/openliberty/features/features/20.0.0.4",
-                "../../publish/repo/io/openliberty/features/features/20.0.0.4/features-20.0.0.4.json");
-
-        copyFileToMinifiedRoot("repo/io/openliberty/features/jsf-2.2/20.0.0.4",
-                "../../publish/repo/io/openliberty/features/jsf-2.2/20.0.0.4/jsf-2.2-20.0.0.4.esa");
-
-        copyFileToMinifiedRoot("repo/io/openliberty/features/cdi-1.2/20.0.0.4",
-                "../../publish/repo/io/openliberty/features/cdi-1.2/20.0.0.4/cdi-1.2-20.0.0.4.esa");
-
+        copyFileToMinifiedRoot("repo/io/openliberty/features/features/21.0.0.4",
+                "../../publish/repo/io/openliberty/features/features/21.0.0.4/features-21.0.0.4.json");
+        
+        copyFileToMinifiedRoot("repo/io/openliberty/features/osgiConsole-1.0/21.0.0.4",
+              "../../publish/repo/io/openliberty/features/osgiConsole-1.0/21.0.0.4/com.ibm.websphere.appserver.osgiConsole-1.0.esa");
+        
+        copyFileToMinifiedRoot("repo/io/openliberty/features/osgiConsole-1.0/21.0.0.4",
+                "../../publish/repo/io/openliberty/features/osgiConsole-1.0/21.0.0.4/osgiConsole-1.0-21.0.0.4.esa");
+        
+        
+        copyFileToMinifiedRoot("repo/io/openliberty/features/eventLogging-1.0/21.0.0.4",
+                "../../publish/repo/io/openliberty/features/eventLogging-1.0/21.0.0.4/com.ibm.websphere.appserver.eventLogging-1.0.esa");
+          
+        copyFileToMinifiedRoot("repo/io/openliberty/features/eventLogging-1.0/21.0.0.4",
+                "../../publish/repo/io/openliberty/features/eventLogging-1.0/21.0.0.4/com.ibm.websphere.appserver.requestProbeJDBC-1.0.esa");
+        
+        copyFileToMinifiedRoot("repo/io/openliberty/features/eventLogging-1.0/21.0.0.4",
+                "../../publish/repo/io/openliberty/features/eventLogging-1.0/21.0.0.4/com.ibm.websphere.appserver.requestProbes-1.0.esa");
+        
+        copyFileToMinifiedRoot("repo/io/openliberty/features/eventLogging-1.0/21.0.0.4",
+                "../../publish/repo/io/openliberty/features/eventLogging-1.0/21.0.0.4/com.ibm.websphere.appserver.requestProbeServlet-1.0.esa");
+        
+        copyFileToMinifiedRoot("repo/io/openliberty/features/eventLogging-1.0/21.0.0.4",
+                "../../publish/repo/io/openliberty/features/eventLogging-1.0/21.0.0.4/eventLogging-1.0-21.0.0.4.esa");
+        
 
         writeToProps(minifiedRoot+ "/etc/featureUtility.properties", "featureLocalRepo", minifiedRoot + "/repo/");
 
-        String[] param1s = { "installFeature", "jsf-2.2", "cdi-1.2", "--verbose"};
-        String [] fileListA = {"lib/features/com.ibm.websphere.appserver.jsf-2.2.mf", "lib/features/com.ibm.websphere.appserver.cdi1.2-jsf2.2.mf"};
-        String [] fileListB = {"lib/features/com.ibm.websphere.appserver.cdi-1.2.mf"};
-//        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.jsf-2.2", fileListA);
-//        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.cdi-1.2", fileListB);
-
+        String[] param1s = { "installFeature", "eventLogging-1.0", "osgiConsole-1.0", "--verbose"};
+        String [] fileListA = {"lib/features/com.ibm.websphere.appserver.eventLogging-1.0.mf"};
+        String [] fileListB = {"lib/features/com.ibm.websphere.appserver.osgiConsole-1.0.mf"};
 
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
         assertEquals("Exit code should be 0",0, po.getReturnCode());
         String output = po.getStdout();
-        assertTrue("Output should contain jsf-2.2", output.indexOf("jsf-2.2") >= 0);
-        assertTrue("Output should contain cdi-1.2", output.indexOf("cdi-1.2") >= 0);
-        assertTrue("The autofeature cdi1.2-jsf-2.2 should be installed" , new File(minifiedRoot + "/lib/features/com.ibm.websphere.appserver.cdi1.2-jsf2.2.mf").exists());
-
-//        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.jsf-2.2", fileListA);
-////        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.cdi-1.2", fileListB);
-
+        assertTrue("Output should contain eventLogging-1.0", output.indexOf("eventLogging-1.0") >= 0);
+        assertTrue("Output should contain osgiConsole-1.0", output.indexOf("osgiConsole-1.0") >= 0);
 
         Log.exiting(c, METHOD_NAME);
     }
@@ -186,7 +229,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 
         Map<String, String> propsMap = new HashMap<String, String>();
         propsMap.put("featureLocalRepo", minifiedRoot + "/repo/");
-        propsMap.put("wlptestjson.JSON.coordinate", "com.ibm.websphere.appserver.features");
+        propsMap.put("wlptestjson.featuresbom", "com.ibm.websphere.appserver.features:features:20.0.0.4");
         writeToProps(minifiedRoot+ "/etc/featureUtility.properties", propsMap);
         String[] param1s = { "installFeature", "adminCenter-1.0", "--acceptLicense", "--verbose" };
 
@@ -235,7 +278,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 
         Map<String, String> propsMap = new HashMap<String, String>();
         propsMap.put("featureLocalRepo", minifiedRoot + "/repo/");
-        propsMap.put("wlptestjson.JSON.coordinate", "com.ibm.websphere.appserver.features");
+        propsMap.put("wlptestjson.featuresbom", "com.ibm.websphere.appserver.features:features:20.0.0.4");
         writeToProps(minifiedRoot+ "/etc/featureUtility.properties", propsMap);
         String[] param1s = { "installFeature", "adminCenter-1.0", "deploy-1.0", "--acceptLicense", "--verbose" };
 
@@ -312,38 +355,43 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
     }
 
     /**
-     * Try to install a feature (mpHealth-2.0) twice. Expected to fail.
+     * Try to install a feature (ssl-1.0) twice. Expected to fail.
      */
     @Test
     public void testAlreadyInstalledFeature() throws Exception {
         final String METHOD_NAME = "testAlreadyInstalledFeature";
         Log.entering(c, METHOD_NAME);
         
-        replaceWlpProperties("20.0.0.4");
         copyFileToMinifiedRoot("etc", "../../publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
 
-        copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/features/20.0.0.4",
-                "../../publish/repo/com/ibm/websphere/appserver/features/features/20.0.0.4/features-20.0.0.4.json");
+        copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/features/21.0.0.4",
+                "../../publish/repo/com/ibm/websphere/appserver/features/features/21.0.0.4/features-21.0.0.4.json");
 
-        copyFileToMinifiedRoot("repo/io/openliberty/features/features/20.0.0.4",
-                "../../publish/repo/io/openliberty/features/features/20.0.0.4/features-20.0.0.4.json");
+        copyFileToMinifiedRoot("repo/io/openliberty/features/features/21.0.0.4",
+                "../../publish/repo/io/openliberty/features/features/21.0.0.4/features-21.0.0.4.json");
 
-        copyFileToMinifiedRoot("repo/io/openliberty/features/mpHealth-2.0/20.0.0.4",
-                "../../publish/repo/io/openliberty/features/mpHealth-2.0/20.0.0.4/mpHealth-2.0-20.0.0.4.esa");
+        copyFileToMinifiedRoot("repo/io/openliberty/features/ssl-1.0/21.0.0.4",
+                "../../publish/repo/io/openliberty/features/ssl-1.0/21.0.0.4/com.ibm.websphere.appserver.certificateCreator-1.0.esa");
+
+        copyFileToMinifiedRoot("repo/io/openliberty/features/ssl-1.0/21.0.0.4",
+                "../../publish/repo/io/openliberty/features/ssl-1.0/21.0.0.4/com.ibm.websphere.appserver.channelfw-1.0.esa");
+        
+        copyFileToMinifiedRoot("repo/io/openliberty/features/ssl-1.0/21.0.0.4",
+                "../../publish/repo/io/openliberty/features/ssl-1.0/21.0.0.4/com.ibm.websphere.appserver.ssl-1.0.esa");
         
         writeToProps(minifiedRoot+ "/etc/featureUtility.properties", "featureLocalRepo", minifiedRoot + "/repo/");
 
-        String[] param1s = { "installFeature", "mpHealth-2.0", "--verbose"};
-        String [] fileLists = {"lib/features/com.ibm.websphere.appserver.mpHealth-2.0.mf"};
+        String[] param1s = { "installFeature", "ssl-1.0", "--verbose"};
+        String [] fileLists = {"lib/features/com.ibm.websphere.appserver.ssl-1.0.mf"};
 //        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.mpHealth-2.0", fileLists);
 
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
         assertEquals("Exit code should be 0",0, po.getReturnCode());
         String output = po.getStdout();
-        assertTrue("Should contain mpHealth-2.0", output.contains("mpHealth-2.0"));
+        assertTrue("Should contain ssl-1.0", output.contains("ssl-1.0"));
 
         po = runFeatureUtility(METHOD_NAME, param1s);
-        assertEquals("Exit code should be 22 indicating already installd feature",22, po.getReturnCode());
+        assertEquals("Exit code should be 22 indicating already installed feature",22, po.getReturnCode());
         output = po.getStdout();
         assertTrue("Should contain CWWKF1250I", output.contains("CWWKF1250I"));
 

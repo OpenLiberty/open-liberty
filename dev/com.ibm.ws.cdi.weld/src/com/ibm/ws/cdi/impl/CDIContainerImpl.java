@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.cdi.impl;
 
+import java.lang.annotation.Annotation;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
@@ -191,8 +192,10 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
         WebSphereCDIDeployment deployment = getDeployment(application);
         if (deployment != null) {
             try {
+                currentDeployment.set(deployment);
                 deployment.shutdown();
             } finally {
+                currentDeployment.remove();
                 unsetDeployment(application);
             }
         }
@@ -633,28 +636,13 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
 
         Set<Class<? extends Extension>> extensionClasses = webSphereCDIExtensionMetaData.getExtensions();
         Set<Class<?>> beanClasses = webSphereCDIExtensionMetaData.getBeanClasses();
-
-        for (Iterator<Class<? extends Extension>> i = extensionClasses.iterator(); i.hasNext();) {
-            Class extensionClass = i.next();
-            if (extensionClass.getClassLoader() != webSphereCDIExtensionMetaData.getClass().getClassLoader()) {
-                i.remove();
-                Tr.error(tc, "spi.extension.class.in.different.bundle.CWOWB1011E", extensionClass.getCanonicalName());
-            }
-        }
-
-        for (Iterator<Class<?>> i = beanClasses.iterator(); i.hasNext();) {
-            Class beanClass = i.next();
-            if (beanClass.getClassLoader() != webSphereCDIExtensionMetaData.getClass().getClassLoader()) {
-                i.remove();
-                Tr.error(tc, "spi.extension.class.in.different.bundle.CWOWB1011E", beanClass.getCanonicalName());
-            }
-        }
+        Set<Class<? extends Annotation>> beanDefiningAnnotationClasses = webSphereCDIExtensionMetaData.getBeanDefiningAnnotationClasses();
 
         Set<String> extensionClassNames = extensionClasses.stream().map(clazz -> clazz.getCanonicalName()).collect(Collectors.toSet());
 
-        //The simpler SPI does not offer these properties.
         Set<String> extra_classes = beanClasses.stream().map(clazz -> clazz.getCanonicalName()).collect(Collectors.toSet());
-        Set<String> extraAnnotations = Collections.emptySet();
+        Set<String> extraAnnotations = beanDefiningAnnotationClasses.stream().map(clazz -> clazz.getCanonicalName()).collect(Collectors.toSet());
+        //The simpler SPI does not offer these properties.
         boolean applicationBDAsVisible = false;
         boolean extClassesOnly = false;
 

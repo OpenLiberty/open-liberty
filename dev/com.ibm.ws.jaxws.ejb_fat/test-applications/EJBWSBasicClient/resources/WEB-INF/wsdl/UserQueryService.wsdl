@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://ejbbasic.jaxws.ws.ibm.com/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" name="UserQueryService" targetNamespace="http://ejbbasic.jaxws.ws.ibm.com/">
+<wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata"
+xmlns:wsp="http://www.w3.org/ns/ws-policy"
+xmlns:wsa="http://www.w3.org/2005/08/addressing"
+xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://ejbbasic.jaxws.ws.ibm.com/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" name="UserQueryService" targetNamespace="http://ejbbasic.jaxws.ws.ibm.com/">
   <wsdl:types>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://ejbbasic.jaxws.ws.ibm.com/" attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://ejbbasic.jaxws.ws.ibm.com/">
   <xs:element name="getUser" type="tns:getUser"/>
@@ -60,21 +64,26 @@
   </wsdl:message>
   <wsdl:portType name="UserQuery">
     <wsdl:operation name="getUser">
-      <wsdl:input message="tns:getUser" name="getUser">
+      <wsdl:input message="tns:getUser" name="getUser" wsam:Action="getUserInput" >
     </wsdl:input>
-      <wsdl:output message="tns:getUserResponse" name="getUserResponse">
+      <wsdl:output message="tns:getUserResponse" name="getUserResponse" wsam:Action="getUserOutput" >
     </wsdl:output>
-      <wsdl:fault message="tns:UserNotFoundException" name="UserNotFoundException">
+      <wsdl:fault message="tns:UserNotFoundException" name="UserNotFoundException" >
     </wsdl:fault>
     </wsdl:operation>
     <wsdl:operation name="listUsers">
-      <wsdl:input message="tns:listUsers" name="listUsers">
+      <wsdl:input message="tns:listUsers" name="listUsers" wsam:Action="listUsersInput">
     </wsdl:input>
-      <wsdl:output message="tns:listUsersResponse" name="listUsersResponse">
+      <wsdl:output message="tns:listUsersResponse" name="listUsersResponse" wsam:Action="listUsersOutput">
     </wsdl:output>
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="UserQueryServiceSoapBinding" type="tns:UserQuery">
+      <wsp:Policy>
+      <wsam:Addressing wsp:Optional="true">
+        <wsp:Policy/>
+      </wsam:Addressing>
+    </wsp:Policy>
     <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
     <wsdl:operation name="getUser">
       <soap:operation soapAction="" style="document"/>

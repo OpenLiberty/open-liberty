@@ -17,6 +17,7 @@ import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.sib.trm.TrmConstants;
 import com.ibm.ws.sib.utils.ras.SibTr;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * This class represents a LinkCellule. A LinkCellule is constructed from the
@@ -79,12 +80,7 @@ public final class LinkCellule extends Cellule {
 
     if (b[0] == Cellule.LINKCELLULE) {
 
-      String cellule = null;
-      try {
-        cellule = new String(b, 1, b.length-1, "UTF-8");
-      } catch (UnsupportedEncodingException e) {
-        FFDCFilter.processException(e, className + ".<init>", "1", this);
-      }
+      String cellule = new String(b, 1, b.length-1, StandardCharsets.UTF_8);
 
       // Locate the delimiter character and separate out the two subnet names
 
@@ -122,12 +118,7 @@ public final class LinkCellule extends Cellule {
   public byte[] getBytes() {
     if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(tc, "getBytes");
 
-    byte[] b = null;
-    try {
-      b = string().getBytes("UTF-8");
-    } catch (UnsupportedEncodingException e) {
-      FFDCFilter.processException(e, className + ".getBytes", "2", this);
-    }
+    byte[] b = string().getBytes(StandardCharsets.UTF_8);
 
     byte[] c = new byte[b.length+1];
 

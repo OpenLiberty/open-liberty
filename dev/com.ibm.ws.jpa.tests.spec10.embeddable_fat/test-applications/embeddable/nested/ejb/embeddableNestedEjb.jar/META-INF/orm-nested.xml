@@ -1,0 +1,453 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm orm_2_0.xsd" version="2.0">
+
+    <entity class="com.ibm.ws.jpa.embeddable.nested.model.XMLEntity01">
+        <table name="EN_XMLEntity01"/>
+        <attributes>
+            <id name="id"></id>
+            <basic name="ent01_str01"></basic>
+            <basic name="ent01_str02"></basic>
+            <basic name="ent01_str03"></basic>
+            <embedded name="embeddable01"></embedded>
+        </attributes>
+    </entity>
+
+    <entity class="com.ibm.ws.jpa.embeddable.nested.model.XMLEntity02">
+        <table name="EN_XMLEntity02"/>
+        <attributes>
+            <id name="id"></id>
+            <basic name="ent02_str01"></basic>
+            <basic name="ent02_str02"></basic>
+            <basic name="ent02_str03"></basic>
+            <embedded name="embeddable02a"></embedded>
+        </attributes>
+    </entity>
+
+    <entity class="com.ibm.ws.jpa.embeddable.nested.model.XMLEntity03">
+        <table name="EN_XMLEntity03"/>
+        <attributes>
+            <id name="id"></id>
+            <basic name="ent03_str01"></basic>
+            <basic name="ent03_str02"></basic>
+            <basic name="ent03_str03"></basic>
+            <embedded name="embeddable03a"></embedded>
+        </attributes>
+    </entity>
+
+    <entity class="com.ibm.ws.jpa.embeddable.nested.model.XMLEntity04">
+        <table name="EN_XMLEntity04"/>
+        <attributes>
+            <id name="id"></id>
+            <basic name="ent04_str01"></basic>
+            <basic name="ent04_str02"></basic>
+            <basic name="ent04_str03"></basic>
+            <embedded name="embeddable04a"></embedded>
+        </attributes>
+    </entity>
+
+    <entity class="com.ibm.ws.jpa.embeddable.nested.model.XMLEntity05">
+        <table name="EN_XMLEntity05"/>
+        <attributes>
+            <id name="id"></id>
+            <basic name="ent05_str01"></basic>
+            <basic name="ent05_str02"></basic>
+            <basic name="ent05_str03"></basic>
+            <embedded name="embeddable05a"></embedded>
+        </attributes>
+    </entity>
+
+    <entity class="com.ibm.ws.jpa.embeddable.nested.model.XMLEntity06">
+        <table name="EN_XMLEntity06"/>
+        <attributes>
+            <id name="id"></id>
+            <basic name="ent06_str01"></basic>
+            <basic name="ent06_str02"></basic>
+            <basic name="ent06_str03"></basic>
+            <embedded name="embeddable01"></embedded>
+            <embedded name="embeddable04a"></embedded>
+        </attributes>
+    </entity>
+
+    <entity class="com.ibm.ws.jpa.embeddable.nested.model.XMLEntity07">
+        <table name="EN_XMLEntity07"/>
+        <attributes>
+            <id name="id"></id>
+            <basic name="ent07_str01"></basic>
+            <basic name="ent07_str02"></basic>
+            <basic name="ent07_str03"></basic>
+            <embedded name="embeddable01"></embedded>
+            <embedded name="embeddable04a"></embedded>
+            <embedded name="embeddable07a"></embedded>
+        </attributes>
+    </entity>
+
+    <entity class="com.ibm.ws.jpa.embeddable.nested.model.XMLEntity08">
+        <table name="EN_XMLEntity08"/>
+        <attributes>
+            <id name="id"></id>
+            <basic name="ent08_str01"></basic>
+            <basic name="ent08_str02"></basic>
+            <basic name="ent08_str03"></basic>
+            <element-collection name="ent08_set01">
+                <order-by></order-by>
+                <collection-table name="EN_XMLEntity08_ent08_set01">
+                    <join-column name="XMLEntity08_ID" />
+                </collection-table>
+            </element-collection>
+            <element-collection name="ent08_set02">
+                <order-by></order-by>
+                <collection-table name="EN_XMLEntity08_ent08_set02">
+                    <join-column name="XMLEntity08_ID" />
+                </collection-table>
+            </element-collection>
+            <element-collection name="ent08_set03">
+                <order-by>emb01_int02 DESC</order-by>
+                <collection-table name="EN_XMLEntity08_ent08_set03">
+                    <join-column name="XMLEntity08_ID" />
+                </collection-table>
+            </element-collection>
+        </attributes>
+    </entity>
+
+    <entity class="com.ibm.ws.jpa.embeddable.nested.model.XMLEntity09">
+        <table name="EN_XMLEntity09"/>
+        <attributes>
+            <id name="id"></id>
+            <basic name="ent09_str01"></basic>
+            <basic name="ent09_str02"></basic>
+            <basic name="ent09_str03"></basic>
+            <element-collection name="ent09_list01">
+                <order-by></order-by>
+                <collection-table name="EN_XMLEntity09_ent09_list01">
+                    <join-column name="XMLEntity09_ID" />
+                </collection-table>
+            </element-collection>
+            <element-collection name="ent09_list02">
+                <order-by></order-by>
+                <collection-table name="EN_XMLEntity09_ent09_list02">
+                    <join-column name="XMLEntity09_ID" />
+                </collection-table>
+            </element-collection>
+            <element-collection name="ent09_list03">
+                <order-by>emb01_int03 DESC</order-by>
+                <collection-table name="EN_XMLEntity09_ent09_list03">
+                    <join-column name="XMLEntity09_ID" />
+                </collection-table>
+            </element-collection>
+        </attributes>
+    </entity>
+
+    <entity class="com.ibm.ws.jpa.embeddable.nested.model.XMLEntity10">
+        <table name="EN_XMLEntity10"/>
+        <attributes>
+            <id name="id"></id>
+            <basic name="ent10_str01"></basic>
+            <basic name="ent10_str02"></basic>
+            <basic name="ent10_str03"></basic>
+            <element-collection name="ent10_vector01">
+                <order-by></order-by>
+                <collection-table name="EN_XMLEntity10_ent10_vector01">
+                    <join-column name="XMLEntity10_ID" />
+                </collection-table>
+            </element-collection>
+            <element-collection name="ent10_vector02">
+                <order-by></order-by>
+                <collection-table name="EN_XMLEntity10_ent10_vector02">
+                    <join-column name="XMLEntity10_ID" />
+                </collection-table>
+             </element-collection>
+            <element-collection name="ent10_vector03">
+                <order-by>embeddable04b.embeddable04c.embeddable04d.embeddable04e.emb04e_int14 DESC,
+                          embeddable04b.embeddable04c.embeddable04d.emb04d_str10 DESC,
+                          embeddable04b.embeddable04c.emb04c_int09 DESC,
+                          embeddable04b.emb04b_str05 DESC,
+                          emb04a_int01 DESC</order-by>
+                <collection-table name="EN_XMLEntity10_ent10_vector03">
+                    <join-column name="XMLEntity10_ID" />
+                </collection-table>
+            </element-collection>
+            <embedded name="embeddable04a"></embedded>
+        </attributes>
+    </entity>
+
+    <entity class="com.ibm.ws.jpa.embeddable.nested.model.XMLEntity11">
+        <table name="EN_XMLEntity11"/>
+        <attributes>
+            <id name="id"></id>
+            <basic name="ent11_str01"></basic>
+            <basic name="ent11_str02"></basic>
+            <basic name="ent11_str03"></basic>
+            <element-collection name="ent11_list">
+                <collection-table name="EN_XMLEntity11_ent11_list">
+                    <join-column name="XMLEntity11_ID" />
+                </collection-table>
+            </element-collection>
+            <element-collection name="ent11_llist">
+                <order-by>emb11_int01 ASC</order-by>
+                <collection-table name="EN_XMLEntity11_ent11_llist">
+                    <join-column name="XMLEntity11_ID" />
+                </collection-table>
+            </element-collection>
+            <element-collection name="ent11_map">
+                <collection-table name="EN_XMLEntity11_ent11_map">
+                    <join-column name="XMLEntity11_ID" />
+                </collection-table>
+            </element-collection>
+            <element-collection name="ent11_set">
+                <collection-table name="EN_XMLEntity11_ent11_set">
+                    <join-column name="XMLEntity11_ID" />
+                </collection-table>
+            </element-collection>
+            <element-collection name="ent11_vector">
+                <collection-table name="EN_XMLEntity11_ent11_vector">
+                    <join-column name="XMLEntity11_ID" />
+                </collection-table>
+            </element-collection>
+        </attributes>
+    </entity>
+
+    <embeddable class="com.ibm.ws.jpa.embeddable.nested.model.XMLEmbeddable01">
+        <attributes>
+            <basic name="emb01_int01"></basic>
+            <basic name="emb01_int02"></basic>
+            <basic name="emb01_int03"></basic>
+        </attributes>
+    </embeddable>
+
+    <embeddable class="com.ibm.ws.jpa.embeddable.nested.model.XMLEmbeddable02a">
+        <attributes>
+            <basic name="emb02a_int01"></basic>
+            <basic name="emb02a_int02"></basic>
+            <basic name="emb02a_int03"></basic>
+            <embedded name="embeddable02b"></embedded>
+        </attributes>
+    </embeddable>
+    <embeddable class="com.ibm.ws.jpa.embeddable.nested.model.XMLEmbeddable02b">
+        <attributes>
+            <basic name="emb02b_int04"></basic>
+            <basic name="emb02b_int05"></basic>
+            <basic name="emb02b_int06"></basic>
+        </attributes>
+    </embeddable>
+
+    <embeddable class="com.ibm.ws.jpa.embeddable.nested.model.XMLEmbeddable03a">
+        <attributes>
+            <basic name="emb03a_int01"></basic>
+            <basic name="emb03a_int02"></basic>
+            <basic name="emb03a_int03"></basic>
+            <embedded name="embeddable03b"></embedded>
+        </attributes>
+    </embeddable>
+    <embeddable class="com.ibm.ws.jpa.embeddable.nested.model.XMLEmbeddable03b">
+        <attributes>
+            <basic name="emb03b_int04"></basic>
+            <basic name="emb03b_int05"></basic>
+            <basic name="emb03b_int06"></basic>
+            <!--        <embedded name="embeddable03a"></embedded>           OPENJPA-1038 -->
+        </attributes>
+    </embeddable>
+
+    <embeddable class="com.ibm.ws.jpa.embeddable.nested.model.XMLEmbeddable04a">
+        <attributes>
+            <basic name="emb04a_int01"></basic>
+            <basic name="emb04a_int02"></basic>
+            <basic name="emb04a_int03"></basic>
+            <embedded name="embeddable04b"></embedded>
+        </attributes>
+    </embeddable>
+    <embeddable class="com.ibm.ws.jpa.embeddable.nested.model.XMLEmbeddable04b">
+        <attributes>
+            <basic name="emb04b_str04"></basic>
+            <basic name="emb04b_str05"></basic>
+            <basic name="emb04b_str06"></basic>
+            <embedded name="embeddable04c"></embedded>
+        </attributes>
+    </embeddable>
+    <embeddable class="com.ibm.ws.jpa.embeddable.nested.model.XMLEmbeddable04c">
+        <attributes>
+            <basic name="emb04c_int07"></basic>
+            <basic name="emb04c_int08"></basic>
+            <basic name="emb04c_int09"></basic>
+            <embedded name="embeddable04d"></embedded>
+        </attributes>
+    </embeddable>
+    <embeddable class="com.ibm.ws.jpa.embeddable.nested.model.XMLEmbeddable04d">
+        <attributes>
+            <basic name="emb04d_str10"></basic>
+            <basic name="emb04d_str11"></basic>
+            <basic name="emb04d_str12"></basic>
+            <embedded name="embeddable04e"></embedded>
+        </attributes>
+    </embeddable>
+    <embeddable class="com.ibm.ws.jpa.embeddable.nested.model.XMLEmbeddable04e">
+        <attributes>
+            <basic name="emb04e_int13"></basic>
+            <basic name="emb04e_int14"></basic>
+            <basic name="emb04e_int15"></basic>
+            <embedded name="embeddable04f"></embedded>
+        </attributes>
+    </embeddable>
+    <embeddable class="com.ibm.ws.jpa.embeddable.nested.model.XMLEmbeddable04f">
+        <attributes>
+            <basic name="emb04f_str16"></basic>
+            <basic name="emb04f_str17"></basic>
+            <basic name="emb04f_str18"></basic>
+        </attributes>
+    </embeddable>
+
+    <embeddable class="com.ibm.ws.jpa.embeddable.nested.model.XMLEmbeddable05a">
+        <attributes>
+            <basic name="emb05a_int01"></basic>
+            <basic name="emb05a_int02"></basic>
+            <basic name="emb05a_int03"></basic>
+            <embedded name="embeddable05b"></embedded>
+        </attributes>
+    </embeddable>
+    <embeddable class="com.ibm.ws.jpa.embeddable.nested.model.XMLEmbeddable05b">
+        <attributes>
+            <basic name="emb05b_str04"></basic>
+            <basic name="emb05b_str05"></basic>
+            <basic name="emb05b_str06"></basic>
+            <embedded name="embeddable05c"></embedded>
+        </attributes>
+    </embeddable>
+    <embeddable class="com.ibm.ws.jpa.embeddable.nested.model.XMLEmbeddable05c">
+        <attributes>
+            <basic name="emb05c_int04"></basic>
+            <basic name="emb05c_int05"></basic>
+            <basic name="emb05c_int06"></basic>
+            <embedded name="embeddable05d"></embedded>
+        </attributes>
+    </embeddable>
+    <embeddable class="com.ibm.ws.jpa.embeddable.nested.model.XMLEmbeddable05d">
+        <attributes>
+            <basic name="emb05d_str07"></basic>
+            <basic name="emb05d_str08"></basic>
+            <basic name="emb05d_str09"></basic>
+            <embedded name="embeddable05e"></embedded>
+        </attributes>
+    </embeddable>
+    <embeddable class="com.ibm.ws.jpa.embeddable.nested.model.XMLEmbeddable05e">
+        <attributes>
+            <basic name="emb05e_int07"></basic>
+            <basic name="emb05e_int08"></basic>
+            <basic name="emb05e_int09"></basic>
+            <embedded name="embeddable05f"></embedded>
+        </attributes>
+    </embeddable>
+    <embeddable class="com.ibm.ws.jpa.embeddable.nested.model.XMLEmbeddable05f">
+        <attributes>
+            <basic name="emb05f_str10"></basic>
+            <basic name="emb05f_str11"></basic>
+            <basic name="emb05f_str12"></basic>
+            <!--        <embedded name="embeddable05a"></embedded>           OPENJPA-1038 -->
+        </attributes>
+    </embeddable>
+
+    <embeddable class="com.ibm.ws.jpa.embeddable.nested.model.XMLEmbeddable07a">
+        <attributes>
+            <basic name="emb07a_int01"></basic>
+            <basic name="emb07a_int02"></basic>
+            <basic name="emb07a_int03"></basic>
+            <embedded name="embeddable07b"></embedded>
+            <embedded name="embeddable01">
+                <attribute-override name="emb01_int01">
+                    <column name="emb07a_emb01_int01"/>
+                </attribute-override>
+                <attribute-override name="emb01_int02">
+                    <column name="emb07a_emb01_int02"/>
+                </attribute-override>
+                <attribute-override name="emb01_int03">
+                    <column name="emb07a_emb01_int03"/>
+                </attribute-override>
+            </embedded>
+        </attributes>
+    </embeddable>
+    <embeddable class="com.ibm.ws.jpa.embeddable.nested.model.XMLEmbeddable07b">
+        <attributes>
+            <basic name="emb07b_int04"></basic>
+            <basic name="emb07b_int05"></basic>
+            <basic name="emb07b_int06"></basic>
+            <embedded name="embeddable04a">
+                <attribute-override name="emb04a_int01">
+                    <column name="emb07b_emb04a_int01"/>
+                </attribute-override>
+                <attribute-override name="emb04a_int02">
+                    <column name="emb07b_emb04a_int02"/>
+                </attribute-override>
+                <attribute-override name="emb04a_int03">
+                    <column name="emb07b_emb04a_int03"/>
+                </attribute-override>
+                <attribute-override name="embeddable04b.emb04b_str04">
+                    <column name="emb07b_emb04b_str04"/>
+                </attribute-override>
+                <attribute-override name="embeddable04b.emb04b_str05">
+                    <column name="emb07b_emb04b_str05"/>
+                </attribute-override>
+                <attribute-override name="embeddable04b.emb04b_str06">
+                    <column name="emb07b_emb04b_str06"/>
+                </attribute-override>
+                <attribute-override name="embeddable04b.embeddable04c.emb04c_int07">
+                    <column name="emb07b_emb04c_int07"/>
+                </attribute-override>
+                <attribute-override name="embeddable04b.embeddable04c.emb04c_int08">
+                    <column name="emb07b_emb04c_int08"/>
+                </attribute-override>
+                <attribute-override name="embeddable04b.embeddable04c.emb04c_int09">
+                    <column name="emb07b_emb04c_int09"/>
+                </attribute-override>
+                <attribute-override name="embeddable04b.embeddable04c.embeddable04d.emb04d_str10">
+                    <column name="emb07b_emb04d_str10"/>
+                </attribute-override>
+                <attribute-override name="embeddable04b.embeddable04c.embeddable04d.emb04d_str11">
+                    <column name="emb07b_emb04d_str11"/>
+                </attribute-override>
+                <attribute-override name="embeddable04b.embeddable04c.embeddable04d.emb04d_str12">
+                    <column name="emb07b_emb04d_str12"/>
+                </attribute-override>
+                <attribute-override name="embeddable04b.embeddable04c.embeddable04d.embeddable04e.emb04e_int13">
+                    <column name="emb07b_emb04e_int13"/>
+                </attribute-override>
+                <attribute-override name="embeddable04b.embeddable04c.embeddable04d.embeddable04e.emb04e_int14">
+                    <column name="emb07b_emb04e_int14"/>
+                </attribute-override>
+                <attribute-override name="embeddable04b.embeddable04c.embeddable04d.embeddable04e.emb04e_int15">
+                    <column name="emb07b_emb04e_int15"/>
+                </attribute-override>
+                <attribute-override name="embeddable04b.embeddable04c.embeddable04d.embeddable04e.embeddable04f.emb04f_str16">
+                    <column name="emb07b_emb04f_str16"/>
+                </attribute-override>
+                <attribute-override name="embeddable04b.embeddable04c.embeddable04d.embeddable04e.embeddable04f.emb04f_str17">
+                    <column name="emb07b_emb04f_str17"/>
+                </attribute-override>
+                <attribute-override name="embeddable04b.embeddable04c.embeddable04d.embeddable04e.embeddable04f.emb04f_str18">
+                    <column name="emb07b_emb04f_str18"/>
+                </attribute-override>
+            </embedded>
+        </attributes>
+    </embeddable>
+
+    <embeddable class="com.ibm.ws.jpa.embeddable.nested.model.XMLEmbeddable11">
+        <attributes>
+            <basic name="emb11_str01"></basic>
+            <basic name="emb11_str02"></basic>
+            <basic name="emb11_str03"></basic>
+            <basic name="emb11_int01"></basic>
+            <basic name="emb11_int02"></basic>
+            <basic name="emb11_int03"></basic>
+        </attributes>
+    </embeddable>
+</entity-mappings>

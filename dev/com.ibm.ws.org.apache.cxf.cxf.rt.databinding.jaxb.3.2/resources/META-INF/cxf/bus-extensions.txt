@@ -1,0 +1,2 @@
+org.apache.cxf.jaxb.WrapperHelperProxyService:org.apache.cxf.jaxb.WrapperHelperCreator:true
+org.apache.cxf.jaxb.FactoryClassProxyService:org.apache.cxf.jaxb.FactoryClassCreator:true

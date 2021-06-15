@@ -21,6 +21,7 @@ src: \
     test-applications/olgh9018/src,\
     test-applications/olgh9339/src,\
     test-applications/olgh10515/src,\
+    test-applications/olgh16686/src,\
     test-applications/ordercolumn/src,\
     test-applications/query/src,\
     test-applications/querylockmode/src,\

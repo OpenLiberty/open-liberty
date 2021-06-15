@@ -18,14 +18,14 @@ Bundle-SymbolicName: com.ibm.ws.org.joda.time.2.9.9
 WS-TraceGroup: WSS4J
 
 Export-Package: \
- org.joda.time, \
- org.joda.time.chrono, \
- org.joda.time.format
+ org.joda.time;version="2.9.9",, \
+ org.joda.time.chrono;version="2.9.9", \
+ org.joda.time.format;version="2.9.9"
 
 Import-Package: \
  !org.joda.convert
  
-Private-Package: org.joda.time.*
+Private-Package: org.joda.time.*;version="2.9.9"
 
 Include-Resource: \
  @${repo;joda-time:joda-time;2.9.9}!/org/joda/time/**/*xml,\

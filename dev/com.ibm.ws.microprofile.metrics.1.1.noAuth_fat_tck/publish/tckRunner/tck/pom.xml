@@ -15,8 +15,8 @@
     <name>MicroProfile Metrics TCK Runner 1.1 TCK Module</name>
 
     <properties>
-        <microprofile.metrics.version>1.1.1</microprofile.metrics.version>
-        <arquillian.version>1.1.13.Final</arquillian.version>
+        <microprofile.metrics.version>1.1.4</microprofile.metrics.version>
+        <arquillian.version>1.3.0.Final</arquillian.version>
 
         <!-- the below is used in arquillian.xml -->
         <wlp>${wlp}</wlp>

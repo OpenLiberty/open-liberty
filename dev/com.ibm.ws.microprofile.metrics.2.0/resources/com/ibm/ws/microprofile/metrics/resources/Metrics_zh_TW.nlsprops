@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2011 IBM Corporation and others.
+# Copyright (c) 2009, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -127,6 +127,11 @@ session.liveSessions.description=\u76ee\u524d\u767b\u5165\u7684\u4f7f\u7528\u800
 session.activeSessions.description=\u540c\u6642\u4f5c\u7528\u4e2d\u7684\u968e\u6bb5\u4f5c\u696d\u6578\u76ee\u3002\uff08\u5982\u679c\u7522\u54c1\u76ee\u524d\u4f7f\u7528\u4f7f\u7528\u8005\u968e\u6bb5\u4f5c\u696d\u8655\u7406\u8981\u6c42\uff0c\u5247\u968e\u6bb5\u4f5c\u696d\u662f\u4f5c\u7528\u4e2d\uff09\u3002
 session.invalidated.total.description=\u555f\u7528\u6b64\u5ea6\u91cf\u4e4b\u5f8c\uff0c\u5df2\u767b\u51fa\u7684\u968e\u6bb5\u4f5c\u696d\u6578\u76ee\u3002
 session.invalidatedbyTimeout.total.description=\u555f\u7528\u6b64\u5ea6\u91cf\u4e4b\u5f8c\uff0c\u56e0\u70ba\u903e\u6642\u800c\u767b\u51fa\u7684\u968e\u6bb5\u4f5c\u696d\u6578\u76ee\u3002
+
+requestTiming.requestCount.description=\u81ea\u4f3a\u670d\u5668\u555f\u52d5\u4ee5\u4f86\u7684 Servlet \u8981\u6c42\u6578\u76ee\u3002
+requestTiming.activeRequestCount.description=\u76ee\u524d\u5728\u57f7\u884c\u4e2d\u7684 Servlet \u8981\u6c42\u6578\u76ee\u3002
+requestTiming.slowRequestCount.description=\u76ee\u524d\u5728\u57f7\u884c\u4e2d\u4f46\u901f\u5ea6\u6162\u7684 Servlet \u8981\u6c42\u6578\u76ee\u3002
+requestTiming.hungRequestCount.description=\u76ee\u524d\u5728\u57f7\u884c\u4e2d\u4f46\u537b\u7576\u6389\u7684 Servlet \u8981\u6c42\u6578\u76ee\u3002
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message

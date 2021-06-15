@@ -359,7 +359,7 @@ position_param_not_found=Il n''y avait aucun param\u00e8tre \u00e0 la position :
 
 pu_configured_for_resource_local=Impossible de cr\u00e9er un \u00e9l\u00e9ment EntityManager avec SynchronizationType car PersistenceUnit est configur\u00e9 avec des transactions locales de ressource.
 
-remove_deletion_failed=\u00c9chec de retrait de suppression :
+remove_deletion_failed=Echec de retrait de suppression :
 
 rollback_because_of_rollback_only=Transaction "annul\u00e9e" car elle \u00e9tait d\u00e9finie sur RollbackOnly.
 

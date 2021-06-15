@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2018 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,8 +13,8 @@ package com.ibm.ws.recoverylog.custom.jdbc.impl;
 
 import javax.sql.DataSource;
 
-import com.ibm.tx.util.logging.Tr;
-import com.ibm.tx.util.logging.TraceComponent;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.recoverylog.spi.CustomLogProperties;
 import com.ibm.ws.recoverylog.spi.InternalLogException;
@@ -56,7 +56,7 @@ public class SQLNonTransactionalDataSource {
      * SQLNonTransactionalDataSource objects.
      * </p>
      *
-     * @param dsName The name of the Data Source.
+     * @param dsName              The name of the Data Source.
      * @param customLogProperties The custom properties of the log.
      */
     public SQLNonTransactionalDataSource(String dsName, CustomLogProperties customLogProperties) {

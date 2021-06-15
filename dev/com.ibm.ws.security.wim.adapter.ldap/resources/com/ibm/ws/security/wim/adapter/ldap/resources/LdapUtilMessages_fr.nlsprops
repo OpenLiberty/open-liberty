@@ -279,3 +279,7 @@ IDMAP_INVALID_FORMAT.useraction=Mettez \u00e0 jour la valeur userIdMap de sorte 
 KRB5_SERVICE_NOT_AVAILABLE=CWIML4521E: Le registre LDAP {0} a tent\u00e9 de se connecter au serveur LDAP \u00e0 l''aide des donn\u00e9es d''identification Kerberos pour le nom principal {1}, mais le service Kerberos qui fournit ces donn\u00e9es d''identification est indisponible. Le m\u00e9canisme d''authentification de liaison est {2}.
 KRB5_SERVICE_NOT_AVAILABLE.explanation=Le service Kerberos \u00e9tait indisponible lorsque le registre LDAP a tent\u00e9 d'\u00e9tablir la liaison avec le serveur LDAP. Si le service Kerberos est indisponible, aucun utilisateur ne peut s'authentifier.
 KRB5_SERVICE_NOT_AVAILABLE.useraction=Examinez les attributs bindAuthMechanism, krb5Principal et krb5TicketCache dans les param\u00e8tres de configuration du registre LDAP ainsi que la configuration Kerberos. Red\u00e9marrez le serveur.
+
+FILTER_MISSING_PERCENT_V=CWIML4523E: La valeur {0} pour {1} n''est pas valide. Elle requiert une assertion de valeur d''attribut dans laquelle l''assertion de valeur est =%v. Exemple : {2}.
+FILTER_MISSING_PERCENT_V.explanation=Le registre LDAP remplace %v par la valeur \u00e0 rechercher lors de la recherche d'utilisateurs ou de groupes.
+FILTER_MISSING_PERCENT_V.useraction=Mettez \u00e0 jour le filtre sp\u00e9cifi\u00e9 afin d'inclure une assertion de valeur d'attribut contenant =%v.

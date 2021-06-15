@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2020 IBM Corporation and others.
+ * Copyright (c) 2009, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -46,6 +46,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     private static String logDir = null;
     private static final String defaultLogDir = "$(server.output.dir)/tranlog";
     private boolean activateHasBeenCalled = false; // Used for eyecatcher in trace for startup ordering.
+    private boolean _dataSourceFactorySet = false;
 
     private final ConcurrentServiceReferenceSet<TransactionSettingsProvider> _transactionSettingsProviders = new ConcurrentServiceReferenceSet<TransactionSettingsProvider>("transactionSettingsProvider");
     /**
@@ -65,8 +66,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     private TransactionManagerService tmsRef = null;
     private byte[] _applId;
 
-    public JTMConfigurationProvider() {
-    }
+    public JTMConfigurationProvider() {}
 
     /*
      * Called by DS to activate service
@@ -183,6 +183,8 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
         if (tc.isDebugEnabled())
             Tr.debug(tc, "post-setReference  datasourceFactory ref " + dataSourceFactoryRef);
 
+        // Set the flag that says that this method has been called
+        _dataSourceFactorySet = true;
         if (!activateHasBeenCalled)
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "setDataSourceFactory has been called before activate");
@@ -300,8 +302,8 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     }
 
     @Override
-    public int getLeaseRenewalTime() {
-        Number num = (Number) _props.get("leaseRenewalTime");
+    public int getLeaseRenewalThreshold() {
+        Number num = (Number) _props.get("leaseRenewalThreshold");
         return num.intValue();
     }
 
@@ -709,5 +711,10 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     public int getStandardTransientErrorRetryAttempts() {
         Number num = (Number) _props.get("standardTransientErrorRetryAttempts");
         return num.intValue();
+    }
+
+    @Override
+    public boolean isDataSourceFactorySet() {
+        return _dataSourceFactorySet;
     }
 }

@@ -945,12 +945,12 @@ public interface WIMMessageKey {
     String CAN_NOT_UPDATE_PROPERTY_IN_REPOSITORY = "CAN_NOT_UPDATE_PROPERTY_IN_REPOSITORY";
 
     /**
-     * Account {0} is stored in the file registry in temporary workspace. You must use the "$AdminConfig save" command to save it in the master repository.
+     * Account {0} is stored in the file registry in temporary workspace. You must use the "$AdminConfig save" command to save it in the main repository.
      **/
     String FILE_REGISTRY_ACCOUNT_ADDED = "FILE_REGISTRY_ACCOUNT_ADDED";
 
     /**
-     * The password is changed for {0} in the file registry in temporary workspace. You must use the "$AdminConfig save" command to save it in the master repository.
+     * The password is changed for {0} in the file registry in temporary workspace. You must use the "$AdminConfig save" command to save it in the main repository.
      **/
     String FILE_REGISTRY_ACCOUNT_PASSWORD_CHANGED = "FILE_REGISTRY_ACCOUNT_PASSWORD_CHANGED";
 
@@ -1053,7 +1053,7 @@ public interface WIMMessageKey {
     String CONFIG_NOT_COMPLETE = "CONFIG_NOT_COMPLETE";
 
     /**
-     * The configuration is saved in a temporary workspace. You must use the "$AdminConfig save" command to save it in the master repository.
+     * The configuration is saved in a temporary workspace. You must use the "$AdminConfig save" command to save it in the main repository.
      */
     String CONFIG_SAVED_IN_WORKSPACE = "CONFIG_SAVED_IN_WORKSPACE";
 

@@ -391,7 +391,7 @@ public class ReferenceContextImpl implements ReferenceContext {
         // -------------------------------------------------------------------
         // Get the cumulative ComponentNamespaceConfiguration info object
         // -------------------------------------------------------------------
-        ComponentNameSpaceConfiguration masterCompNSConfig;
+        ComponentNameSpaceConfiguration mainCompNSConfig;
         List<Class<?>> annotatedClasses;
 
         if (numProviders == 1) {
@@ -401,13 +401,13 @@ public class ReferenceContextImpl implements ReferenceContext {
             // ----------------------------------------------------------------
 
             // Use the specified ComponentNameSpaceConfiguration input object in a pure flow
-            masterCompNSConfig = primaryCompNSConfig;
+            mainCompNSConfig = primaryCompNSConfig;
 
             // Stick output data structures into the input object so they can get
             // populated by the InjectionEngine.
-            masterCompNSConfig.setJavaColonContext(ivComponentJavaContext);
-            masterCompNSConfig.setJavaColonCompEnvMap(ivJavaColonCompEnvMap);
-            masterCompNSConfig.setEnvironmentProperties(ivEjbContext10);
+            mainCompNSConfig.setJavaColonContext(ivComponentJavaContext);
+            mainCompNSConfig.setJavaColonCompEnvMap(ivJavaColonCompEnvMap);
+            mainCompNSConfig.setEnvironmentProperties(ivEjbContext10);
 
             // The user will ultimately retrieve their list of resolved resource
             // refs from the 'ivResolvedResourceRef' instance variable on this
@@ -419,7 +419,7 @@ public class ReferenceContextImpl implements ReferenceContext {
             // has a pointer to the same spot in memory as this existing list, so that
             // it can see the current resource-ref data, as well as any updates the
             // InjectionEngine makes to it.
-            ivResourceRefConfigList = masterCompNSConfig.getResourceRefConfigList(); // F743-18775
+            ivResourceRefConfigList = mainCompNSConfig.getResourceRefConfigList(); // F743-18775
 
             // F743-33811.1 - InjectionEngine will default this to the list of
             // injection classes if isMetadataComplete returns false.
@@ -546,38 +546,38 @@ public class ReferenceContextImpl implements ReferenceContext {
             annotatedClasses = new ArrayList<Class<?>>(totalAnnotatedClasses);
 
             // ----------------------------------------------------------------
-            // Create the master input object using the cumulative just gathered.
+            // Create the main input object using the cumulative just gathered.
             // ----------------------------------------------------------------
-            masterCompNSConfig = new ComponentNameSpaceConfiguration(primaryCompNSConfig.getModuleName(), primaryCompNSConfig.getJ2EEName()); // F48603.7
-            masterCompNSConfig.setLogicalModuleName(logicalAppName, logicalModuleName); // F743-29417
-            masterCompNSConfig.setOwningFlow(ComponentNameSpaceConfiguration.ReferenceFlowKind.HYBRID);
-            masterCompNSConfig.setCheckApplicationConfiguration(ivCheckAppConfig); // F743-33178
+            mainCompNSConfig = new ComponentNameSpaceConfiguration(primaryCompNSConfig.getModuleName(), primaryCompNSConfig.getJ2EEName()); // F48603.7
+            mainCompNSConfig.setLogicalModuleName(logicalAppName, logicalModuleName); // F743-29417
+            mainCompNSConfig.setOwningFlow(ComponentNameSpaceConfiguration.ReferenceFlowKind.HYBRID);
+            mainCompNSConfig.setCheckApplicationConfiguration(ivCheckAppConfig); // F743-33178
 
-            masterCompNSConfig.setJavaColonContext(ivComponentJavaContext);
-            masterCompNSConfig.setJavaColonCompEnvMap(ivJavaColonCompEnvMap);
-            masterCompNSConfig.setClassLoader(classLoader);
-            masterCompNSConfig.setModuleMetaData(primaryCompNSConfig.getModuleMetaData());
-            masterCompNSConfig.setModuleLoadStrategy(primaryCompNSConfig.getModuleLoadStrategy());
-            masterCompNSConfig.setInjectionClasses(new ArrayList<Class<?>>(totalInjectionClasses));
-            masterCompNSConfig.setSFSB(isSFSB);
-            masterCompNSConfig.setUsesActivitySessions(usesActivitySessions);
+            mainCompNSConfig.setJavaColonContext(ivComponentJavaContext);
+            mainCompNSConfig.setJavaColonCompEnvMap(ivJavaColonCompEnvMap);
+            mainCompNSConfig.setClassLoader(classLoader);
+            mainCompNSConfig.setModuleMetaData(primaryCompNSConfig.getModuleMetaData());
+            mainCompNSConfig.setModuleLoadStrategy(primaryCompNSConfig.getModuleLoadStrategy());
+            mainCompNSConfig.setInjectionClasses(new ArrayList<Class<?>>(totalInjectionClasses));
+            mainCompNSConfig.setSFSB(isSFSB);
+            mainCompNSConfig.setUsesActivitySessions(usesActivitySessions);
 
-            masterCompNSConfig.setEnvironmentProperties(ivEjbContext10);
-            JNDIEnvironmentRefType.setAllRefs(masterCompNSConfig, totalRefs);
+            mainCompNSConfig.setEnvironmentProperties(ivEjbContext10);
+            JNDIEnvironmentRefType.setAllRefs(mainCompNSConfig, totalRefs);
 
-            mergeResRefsAndBindings(masterCompNSConfig, compNSConfigs, null); // F743-33811.2
-            ivResourceRefConfigList = masterCompNSConfig.getResourceRefConfigList();
+            mergeResRefsAndBindings(mainCompNSConfig, compNSConfigs, null); // F743-33811.2
+            ivResourceRefConfigList = mainCompNSConfig.getResourceRefConfigList();
 
-            createPersistenceMaps(masterCompNSConfig, compNSConfigs); // F743-30682
+            createPersistenceMaps(mainCompNSConfig, compNSConfigs); // F743-30682
         }
 
         if (isTraceOn && tc.isDebugEnabled())
             Tr.debug(tc, "annotatedClasses=" + annotatedClasses);
 
         InjectionProcessorContextImpl context = ivInjectionEngine.createInjectionProcessorContext(); // F743-33811.1
-        masterCompNSConfig.setInjectionProcessorContext(context);
+        mainCompNSConfig.setInjectionProcessorContext(context);
 
-        List<Class<?>> injectionClasses = masterCompNSConfig.getInjectionClasses();
+        List<Class<?>> injectionClasses = mainCompNSConfig.getInjectionClasses();
         if (injectionClasses != null) {
             ivProcessedInjectionClasses.addAll(injectionClasses);
         }
@@ -585,7 +585,7 @@ public class ReferenceContextImpl implements ReferenceContext {
         //-----------------------------------------------
         // Do the actual reference processing
         //-----------------------------------------------
-        ivInjectionEngine.processInjectionMetaData(masterCompNSConfig, annotatedClasses); // F743-33811.1
+        ivInjectionEngine.processInjectionMetaData(mainCompNSConfig, annotatedClasses); // F743-33811.1
 
         // F743-21481
         // Each of the InjectionProcessor instances provided a set of resolved
@@ -616,7 +616,7 @@ public class ReferenceContextImpl implements ReferenceContext {
         //       reference processing to be in the ReferenceContext, since that
         //       information is what the webservice listener actually cares about.
         // -------------------------------------------------------------------
-        ivInjectionEngine.notifyInjectionMetaDataListeners(this, masterCompNSConfig);
+        ivInjectionEngine.notifyInjectionMetaDataListeners(this, mainCompNSConfig);
 
         if (isTraceOn && tc.isDebugEnabled()) {
             Tr.debug(tc, "Output component context:", ivComponentJavaContext);
@@ -634,7 +634,7 @@ public class ReferenceContextImpl implements ReferenceContext {
      * and set them on the specified ComponentNameSpaceConfiguration.
      */
     // F743-30682
-    private void createPersistenceMaps(ComponentNameSpaceConfiguration masterCompNSConfig,
+    private void createPersistenceMaps(ComponentNameSpaceConfiguration mainCompNSConfig,
                                        List<ComponentNameSpaceConfiguration> compNSConfigs) {
         Map<Class<?>, Collection<String>> classesToComponents = new HashMap<Class<?>, Collection<String>>();
         Map<String, Collection<String>> persistenceRefsToComponents = new HashMap<String, Collection<String>>();
@@ -671,7 +671,7 @@ public class ReferenceContextImpl implements ReferenceContext {
             }
         }
 
-        masterCompNSConfig.setPersistenceMaps(classesToComponents, persistenceRefsToComponents);
+        mainCompNSConfig.setPersistenceMaps(classesToComponents, persistenceRefsToComponents);
     }
 
     private <T> void addComponentToPersistenceMap(Map<T, Collection<String>> map, T key, String name) {
@@ -711,11 +711,11 @@ public class ReferenceContextImpl implements ReferenceContext {
     /**
      * Merge bindings and resource references.
      *
-     * @param masterCompNSConfig the output component
-     * @param compNSConfigs      the input components
-     * @param scope              the desired scope, or null for all scopes
+     * @param mainCompNSConfig the output component
+     * @param compNSConfigs    the input components
+     * @param scope            the desired scope, or null for all scopes
      */
-    static void mergeResRefsAndBindings(ComponentNameSpaceConfiguration masterCompNSConfig,
+    static void mergeResRefsAndBindings(ComponentNameSpaceConfiguration mainCompNSConfig,
                                         List<ComponentNameSpaceConfiguration> compNSConfigs,
                                         InjectionScope scope) throws InjectionException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
@@ -727,14 +727,14 @@ public class ReferenceContextImpl implements ReferenceContext {
         Map<JNDIEnvironmentRefType, Map<String, ComponentNameSpaceConfiguration>> allBindingComps = new EnumMap<JNDIEnvironmentRefType, Map<String, ComponentNameSpaceConfiguration>>(JNDIEnvironmentRefType.class);
         for (JNDIEnvironmentRefType refType : JNDIEnvironmentRefType.VALUES) {
             if (refType.getBindingElementName() != null) {
-                masterCompNSConfig.setJNDIEnvironmentRefBindings(refType.getType(), new HashMap<String, String>());
+                mainCompNSConfig.setJNDIEnvironmentRefBindings(refType.getType(), new HashMap<String, String>());
                 allBindingComps.put(refType, new HashMap<String, ComponentNameSpaceConfiguration>());
             }
         }
 
         Map<String, String> envEntryValues = new HashMap<String, String>();
         Map<String, ComponentNameSpaceConfiguration> envEntryValueComps = new HashMap<String, ComponentNameSpaceConfiguration>();
-        masterCompNSConfig.setEnvEntryValues(envEntryValues);
+        mainCompNSConfig.setEnvEntryValues(envEntryValues);
 
         boolean refMergeSuccess = true;
         for (int componentIndex = 0; componentIndex < compNSConfigs.size(); componentIndex++) {
@@ -774,7 +774,7 @@ public class ReferenceContextImpl implements ReferenceContext {
                                                      refType.getBindingElementName(),
                                                      refType.getBindingAttributeName(),
                                                      compNSConfig.getJNDIEnvironmentRefBindings(refType.getType()),
-                                                     masterCompNSConfig.getJNDIEnvironmentRefBindings(refType.getType()),
+                                                     mainCompNSConfig.getJNDIEnvironmentRefBindings(refType.getType()),
                                                      allBindingComps.get(refType));
                 }
             }
@@ -785,7 +785,7 @@ public class ReferenceContextImpl implements ReferenceContext {
                                              envEntryValues, envEntryValueComps);
         }
 
-        refMergeSuccess &= mergeResRefs(masterCompNSConfig, compNSConfigs, resRefMap); // d643480
+        refMergeSuccess &= mergeResRefs(mainCompNSConfig, compNSConfigs, resRefMap); // d643480
 
         if (!refMergeSuccess) {
             throw new InjectionConfigurationException("There were conflicting references.  " +
@@ -865,14 +865,14 @@ public class ReferenceContextImpl implements ReferenceContext {
      * with a given name contributed by that component. If the component does
      * not have a reference by that name, the entry will be <tt>null</tt>.
      *
-     * @param masterCompNSConfig the output component configuration
-     * @param compNSConfigs      the input component configurations
-     * @param totalResRefs       mapping of resource reference name to array of
-     *                               resources indexed by component index
+     * @param mainCompNSConfig the output component configuration
+     * @param compNSConfigs    the input component configurations
+     * @param totalResRefs     mapping of resource reference name to array of
+     *                             resources indexed by component index
      * @return <tt>true</tt> if the merge was successful, or <tt>false</tt> if
      *         conflicts were reported
      */
-    private static boolean mergeResRefs(ComponentNameSpaceConfiguration masterCompNSConfig,
+    private static boolean mergeResRefs(ComponentNameSpaceConfiguration mainCompNSConfig,
                                         List<ComponentNameSpaceConfiguration> compNSConfigs,
                                         Map<String, ResourceRefConfig[]> totalResRefs) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
@@ -880,7 +880,7 @@ public class ReferenceContextImpl implements ReferenceContext {
             Tr.entry(tc, "mergeResRefs");
 
         ResourceRefConfigList resRefList = InternalInjectionEngineAccessor.getInstance().createResourceRefConfigList();
-        masterCompNSConfig.setResourceRefConfigList(resRefList);
+        mainCompNSConfig.setResourceRefConfigList(resRefList);
 
         List<ResourceRefConfig.MergeConflict> conflicts = new ArrayList<ResourceRefConfig.MergeConflict>();
         for (Map.Entry<String, ResourceRefConfig[]> entry : totalResRefs.entrySet()) {
@@ -894,8 +894,8 @@ public class ReferenceContextImpl implements ReferenceContext {
                 Tr.error(tc, "CONFLICTING_REFERENCES_CWNEN0062E",
                          compNSConfigs.get(conflict.getIndex1()).getDisplayName(),
                          compNSConfigs.get(conflict.getIndex2()).getDisplayName(),
-                         masterCompNSConfig.getModuleName(),
-                         masterCompNSConfig.getApplicationName(),
+                         mainCompNSConfig.getModuleName(),
+                         mainCompNSConfig.getApplicationName(),
                          conflict.getAttributeName(),
                          conflict.getResourceRefConfig().getName(),
                          conflict.getValue1(),

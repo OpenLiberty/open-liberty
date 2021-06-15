@@ -1,0 +1,3 @@
+# for dump action: com.ibm.ws.kernel.boot.internal.commands.HotSpotJavaDumperImpl$VirtualMachine.remoteDataDump(HotSpotJavaDumperImpl.java:342)
+--add-exports
+jdk.attach/sun.tools.attach=ALL-UNNAMED

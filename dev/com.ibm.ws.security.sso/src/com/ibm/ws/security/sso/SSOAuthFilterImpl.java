@@ -126,9 +126,11 @@ public class SSOAuthFilterImpl implements com.ibm.ws.webcontainer.security.util.
         AuthenticationFilter authFilter = null;
         if (ltpaConfigurationRef != null) {
             ltpaConfig = ltpaConfigurationRef.getService();
-            String pid = ltpaConfig.getAuthFilterRef();
-            if (pid != null && pid.length() > 0) {
-                authFilter = getAuthFilterService(pid);
+            if (ltpaConfig != null) {
+                String pid = ltpaConfig.getAuthFilterRef();
+                if (pid != null && pid.length() > 0) {
+                    authFilter = getAuthFilterService(pid);
+                }
             }
         }
         return authFilter;

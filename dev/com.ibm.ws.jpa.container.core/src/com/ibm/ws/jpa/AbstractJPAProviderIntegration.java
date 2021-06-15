@@ -175,12 +175,17 @@ public abstract class AbstractJPAProviderIntegration implements JPAProviderInteg
              * Set this property to `false` so that EclipseLink will return the same integer
              * value it has always returned for CASE expressions and not change behavior
              *
-             * NOTE: This property is only applicable for JPA 22. JPAVersion > JPA22 has changed
+             * NOTE: This property is applicable for JPA 21 & JPA 22. JPAVersion > JPA22 has changed
              * behavior by default
              */
             if (!properties.containsKey("eclipselink.sql.allow-convert-result-to-boolean") &&
                 JPAAccessor.getJPAComponent().getJPAVersion().equals(JPAVersion.JPA22)) {
                 props.put("eclipselink.sql.allow-convert-result-to-boolean", "false");
+            }
+            // The property is named differently for EclipseLink 2.6
+            if (!properties.containsKey("eclipselink.allow-result-type-conversion") &&
+                JPAAccessor.getJPAComponent().getJPAVersion().equals(JPAVersion.JPA21)) {
+                props.put("eclipselink.allow-result-type-conversion", "false");
             }
 
             /*

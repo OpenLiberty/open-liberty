@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,8 +12,8 @@ package com.ibm.rls.jdbc;
 
 import org.osgi.service.component.ComponentContext;
 
-import com.ibm.tx.util.logging.Tr;
-import com.ibm.tx.util.logging.TraceComponent;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.recoverylog.custom.jdbc.impl.SQLMultiScopeRecoveryLog;
 import com.ibm.ws.recoverylog.custom.jdbc.impl.SQLSharedServerLeaseLog;
 import com.ibm.ws.recoverylog.spi.CustomLogProperties;
@@ -39,7 +39,8 @@ public class SQLRecoveryLogFactory implements RecoveryLogFactory {
     private static final TraceComponent tc = Tr.register(SQLRecoveryLogFactory.class,
                                                          TraceConstants.TRACE_GROUP, TraceConstants.NLS_FILE);
 
-    public SQLRecoveryLogFactory() {}
+    public SQLRecoveryLogFactory() {
+    }
 
     /*
      * Called by DS to activate service
@@ -51,17 +52,17 @@ public class SQLRecoveryLogFactory implements RecoveryLogFactory {
 
     /*
      * createRecoveryLog
-     * 
+     *
      * @param props properties to be associated with the new recovery log (eg DBase config)
-     * 
+     *
      * @param agent RecoveryAgent which provides client service data eg clientId
-     * 
+     *
      * @param logcomp RecoveryLogComponent which can be used by the recovery log to notify failures
-     * 
+     *
      * @param failureScope the failurescope (server) for which this log is to be created
-     * 
+     *
      * @return RecoveryLog or MultiScopeLog to be used for logging
-     * 
+     *
      * @exception InvalidLogPropertiesException thrown if the properties are not consistent with the logFactory
      */
     @Override
@@ -76,6 +77,7 @@ public class SQLRecoveryLogFactory implements RecoveryLogFactory {
         return theLog;
     }
 
+    @Override
     public SharedServerLeaseLog createLeaseLog(CustomLogProperties props) throws InvalidLogPropertiesException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "createLeaseLog", new Object[] { props });

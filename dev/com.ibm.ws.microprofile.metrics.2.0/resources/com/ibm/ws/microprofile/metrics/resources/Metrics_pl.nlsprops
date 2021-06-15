@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2011 IBM Corporation and others.
+# Copyright (c) 2009, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -127,6 +127,11 @@ session.liveSessions.description=Liczba u\u017cytkownik\u00f3w, kt\u00f3rzy s\u0
 session.activeSessions.description=Liczba jednocze\u015bnie aktywnych sesji. (Sesja jest aktywna, je\u015bli produkt aktualnie przetwarza \u017c\u0105danie, kt\u00f3re korzysta z tej sesji u\u017cytkownika).
 session.invalidated.total.description=Liczba sesji wylogowanych od momentu w\u0142\u0105czenia tego pomiaru.
 session.invalidatedbyTimeout.total.description=Liczba sesji, kt\u00f3re zosta\u0142y wylogowane z powodu przekroczenia limitu czasu od momentu w\u0142\u0105czenia tego pomiaru.
+
+requestTiming.requestCount.description=Liczba \u017c\u0105da\u0144 serwlet\u00f3w od uruchomienia serwera.
+requestTiming.activeRequestCount.description=Liczba obecnie realizowanych \u017c\u0105da\u0144 serwlet\u00f3w.
+requestTiming.slowRequestCount.description=Liczba obecnie realizowanych, ale wolno dzia\u0142aj\u0105cych \u017c\u0105da\u0144 serwlet\u00f3w.
+requestTiming.hungRequestCount.description=Liczba obecnie realizowanych, ale zawieszonych \u017c\u0105da\u0144 serwlet\u00f3w.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message

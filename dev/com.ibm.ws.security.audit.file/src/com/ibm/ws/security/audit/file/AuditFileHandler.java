@@ -58,8 +58,8 @@ import com.ibm.ws.security.audit.event.AuditMgmtEvent;
 import com.ibm.ws.security.audit.logutils.FileLog;
 import com.ibm.ws.ssl.KeyStoreService;
 import com.ibm.wsspi.collector.manager.BufferManager;
-import com.ibm.wsspi.collector.manager.CollectorManager;
 import com.ibm.wsspi.collector.manager.Handler;
+import com.ibm.wsspi.collector.manager.CollectorManager;
 import com.ibm.wsspi.collector.manager.SynchronousHandler;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
@@ -658,28 +658,34 @@ public class AuditFileHandler implements SynchronousHandler {
     public void setSignerKeys() throws KeyStoreException, AuditSigningException {
         KeyStoreService service = null;
         int retries = 0;
+        boolean foundKeyStore = false;
         if (getSign().booleanValue()) {
             service = keyStoreServiceRef.getService();
             try {
                 signerKeyStoreLocation = service.getKeyStoreLocation(signerKeyStoreId);
             } catch (KeyStoreException e) {
-                retries++;
-                try {
-                    Thread.sleep(10000);
-                } catch (InterruptedException e1) {
-                    // ignore it
-                }
-                if (retries < 6) {
+                while (retries < 6) {
+                    retries++;
+                    service = keyStoreServiceRef.getService();
                     try {
                         signerKeyStoreLocation = service.getKeyStoreLocation(signerKeyStoreId);
+                        foundKeyStore = true;
+                        break;
                     } catch (KeyStoreException ee) {
                         // ignore it until we've exhausted our retries
+                        try {
+                            Thread.sleep(10000);
+                        } catch (InterruptedException e1) {
+                            // ignore it
+                        }
                     }
                 }
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Exception with keystore.", e.getMessage());
-                Tr.error(tc, "FAILURE_INITIALIZING_SIGNING_CONFIGURATION", new Object[] { e.getMessage() });
-                throw new KeyStoreException(e);
+                if (!foundKeyStore) {
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Exception with keystore.", e.getMessage());
+                    Tr.error(tc, "FAILURE_INITIALIZING_SIGNING_CONFIGURATION", new Object[] { e.getMessage() });
+                    throw new KeyStoreException(e);
+                }
             }
         }
 
@@ -986,7 +992,7 @@ public class AuditFileHandler implements SynchronousHandler {
                                             if (tc.isDebugEnabled())
                                                 Tr.debug(tc, "maxFileSize: " + max);
 
-                                            if ((currentFileSize + total_to_add_length) >= max) {
+                                            if ((currentFileSize + total_to_add_length + 2) >= max) {
                                                 if (tc.isDebugEnabled())
                                                     Tr.debug(tc, "adding padding to roll into new log");
                                                 byte[] padding = new byte[(int) (max - currentFileSize)];
@@ -1021,7 +1027,7 @@ public class AuditFileHandler implements SynchronousHandler {
                                             if (tc.isDebugEnabled())
                                                 Tr.debug(tc, "maxFileSize: " + max);
 
-                                            if ((currentFileSize + total_to_add_length) >= max) {
+                                            if ((currentFileSize + total_to_add_length + 2) >= max) {
                                                 if (tc.isDebugEnabled())
                                                     Tr.debug(tc, "adding padding to roll into new log");
                                                 byte[] padding = new byte[(int) (max - currentFileSize)];
@@ -1078,7 +1084,7 @@ public class AuditFileHandler implements SynchronousHandler {
                                         if (tc.isDebugEnabled())
                                             Tr.debug(tc, "maxFileSize: " + max);
 
-                                        if ((currentFileSize + total_to_add_length) >= max) {
+                                        if ((currentFileSize + total_to_add_length + 2) >= max) {
                                             if (tc.isDebugEnabled())
                                                 Tr.debug(tc, "adding padding to roll into new log");
                                             byte[] padding = new byte[(int) (max - currentFileSize)];

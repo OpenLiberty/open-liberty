@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -225,7 +226,7 @@ public class OpenAPIUIBundlesUpdater {
     private static void processResource(String resourcePath, Object resourceContents, ZipOutputStream zos) throws UnsupportedEncodingException, IOException {
         if (resourceContents != null) {
             if (resourceContents instanceof String) {
-                zos.write(((String) resourceContents).getBytes("UTF-8"));
+                zos.write(((String) resourceContents).getBytes(StandardCharsets.UTF_8));
                 if (OpenAPIUtils.isDebugEnabled(tc)) {
                     Tr.debug(tc, "Processed (String) resource at " + resourcePath);
                 }
@@ -270,7 +271,7 @@ public class OpenAPIUIBundlesUpdater {
         if (bundleResource != null) {
             BufferedReader br = null;
             try { // read the requested resource from the bundle
-                br = new BufferedReader(new InputStreamReader(bundleResource.openConnection().getInputStream(), "UTF-8"));
+                br = new BufferedReader(new InputStreamReader(bundleResource.openConnection().getInputStream(), StandardCharsets.UTF_8));
                 while (br.ready()) {
                     responseString.append(br.readLine());
                 }

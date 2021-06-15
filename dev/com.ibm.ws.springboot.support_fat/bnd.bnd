@@ -45,7 +45,8 @@ tested.features: \
     com.ibm.ws.springboot.support.version21.test.app;version=latest,\
     com.ibm.ws.springboot.support.version22.test.app;version=latest,\
     com.ibm.ws.springboot.support.version23.test.app;version=latest,\
-	commons-logging:commons-logging;version=1.1.3,\
+	io.openliberty.org.apache.commons.logging;version=latest,\
+	io.openliberty.org.apache.commons.codec;version=latest,\
 	net.sourceforge.htmlunit:htmlunit;version=2.44.0,\
 	net.sourceforge.htmlunit:neko-htmlunit;strategy=exact;version=2.44.0,\
 	net.sourceforge.htmlunit:webdriver;version=2.6,\

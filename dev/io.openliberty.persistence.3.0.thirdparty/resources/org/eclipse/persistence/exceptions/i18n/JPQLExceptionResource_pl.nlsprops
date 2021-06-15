@@ -99,7 +99,7 @@
 
 8036=B\u0142\u0105d podczas kompilowania zapytania [{0}], wiersz {1}, kolumna {2}: niepoprawne wyra\u017cenie nawigacji [{3}], nie mo\u017cna przej\u015b\u0107 do pola powi\u0105zania, kt\u00f3rego warto\u015bci\u0105 jest kolekcja [{4}].
 
-8037=B\u0142\u0105d podczas kompilowania zapytania [{0}] , wiersz {1}, kolumna {2}: nieznany typ encji [{3}].
+8037=B\u0142\u0105d podczas kompilowania zapytania [{0}], wiersz {1}, kolumna {2}: nieznany typ encji [{3}].
 
 8038=B\u0142\u0105d podczas kompilowania zapytania [{0}], wiersz {1}, kolumna {2}: napotkano problem podczas rozstrzygania nazwy klasy - klasa [{3}] nie zosta\u0142a znaleziona.
 

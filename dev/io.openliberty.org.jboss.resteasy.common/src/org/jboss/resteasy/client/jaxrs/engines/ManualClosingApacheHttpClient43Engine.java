@@ -31,6 +31,7 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Invocation;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import java.io.BufferedInputStream;
@@ -40,10 +41,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.management.ManagementFactory;
 import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * An Apache HTTP engine for use with the new Builder Config style.
@@ -58,16 +61,16 @@ public class ManualClosingApacheHttpClient43Engine implements ApacheHttpClientEn
    //Liberty Change:  Add doPriv  
    static
    {
-   		try {
-      		processId = AccessController.doPrivileged(new PrivilegedExceptionAction<String>() {
-      			@Override
-      			public String run() throws Exception {
-      				return ManagementFactory.getRuntimeMXBean().getName().replaceAll("[^0-9a-zA-Z]", "");
-      			}  	
-      		});
-     	} catch (PrivilegedActionException pae) {
-               throw new RuntimeException(pae);
-        }
+      try {
+         processId = AccessController.doPrivileged(new PrivilegedExceptionAction<String>() {
+            @Override
+            public String run() throws Exception {
+               return ManagementFactory.getRuntimeMXBean().getName().replaceAll("[^0-9a-zA-Z]", "");
+            }
+         });
+      } catch (PrivilegedActionException pae) {
+         throw new RuntimeException(pae);
+      }
    }
 
    protected final HttpClient httpClient;
@@ -115,43 +118,60 @@ public class ManualClosingApacheHttpClient43Engine implements ApacheHttpClientEn
     * <br>
     * Defaults to JVM temp directory.
     */
-   protected File fileUploadTempFileDir = new File(ResteasyConfigProvider.getConfig().getOptionalValue("java.io.tmpdir", String.class).orElse(null));
+   protected File fileUploadTempFileDir = getTempDir(); // Liberty Change - remove overlay when changes are in RestEasy
 
    public ManualClosingApacheHttpClient43Engine()
    {
-      this.httpClient = createDefaultHttpClient();
-      this.allowClosingHttpClient = true;
+      this(null, null, true, null);
    }
 
    public ManualClosingApacheHttpClient43Engine(final HttpHost defaultProxy)
    {
-      this.defaultProxy = defaultProxy;
-      this.httpClient = createDefaultHttpClient();
-      this.allowClosingHttpClient = true;
+      this(null, null, true, defaultProxy);
    }
 
    public ManualClosingApacheHttpClient43Engine(final HttpClient httpClient)
    {
-      this.httpClient = httpClient;
-      this.allowClosingHttpClient = true;
+      this(httpClient, null, true, null);
    }
 
    public ManualClosingApacheHttpClient43Engine(final HttpClient httpClient, final boolean closeHttpClient)
    {
-      if (closeHttpClient && !(httpClient instanceof CloseableHttpClient))
-      {
-         throw new IllegalArgumentException(
-               "httpClient must be a CloseableHttpClient instance in order for allowing engine to close it!");
-      }
-      this.httpClient = httpClient;
-      this.allowClosingHttpClient = closeHttpClient;
+      this(httpClient, null, closeHttpClient, null);
    }
 
    public ManualClosingApacheHttpClient43Engine(final HttpClient httpClient, final HttpContextProvider httpContextProvider)
    {
+      this(httpClient, httpContextProvider, true, null);
+   }
+
+   private ManualClosingApacheHttpClient43Engine(HttpClient httpClient, final HttpContextProvider httpContextProvider, final boolean closeHttpClient, HttpHost defaultProxy)
+   {
+       if (httpClient == null) {
+           httpClient = createDefaultHttpClient();
+       }
+       if (closeHttpClient && !(httpClient instanceof CloseableHttpClient))
+       {
+          throw new IllegalArgumentException(
+                "httpClient must be a CloseableHttpClient instance in order for allowing engine to close it!");
+       }
       this.httpClient = httpClient;
       this.httpContextProvider = httpContextProvider;
-      this.allowClosingHttpClient = true;
+      this.allowClosingHttpClient = closeHttpClient;
+      this.defaultProxy = defaultProxy;
+      
+      try {
+          int threshold = Integer.parseInt(
+              ResteasyConfigProvider.getConfig()
+                                    .getOptionalValue("org.jboss.resteasy.client.jaxrs.engines.fileUploadInMemoryThreshold", String.class)
+                                    .orElse("1"));
+          if (threshold > -1) {
+              this.fileUploadInMemoryThresholdLimit = threshold;
+          }
+          LogMessages.LOGGER.debugf("Negative threshold, %s, specified. Using default value", threshold);
+      } catch (Exception e) {
+          LogMessages.LOGGER.debug("Exception caught parsing memory threshold. Using default value.", e);
+      }
    }
 
    /**
@@ -499,11 +519,13 @@ public class ManualClosingApacheHttpClient43Engine implements ApacheHttpClientEn
       this.chunked = chunked;
    }
 
+   @Override
    public boolean isFollowRedirects()
    {
       return followRedirects;
    }
 
+   @Override
    public void setFollowRedirects(boolean followRedirects)
    {
       this.followRedirects = followRedirects;
@@ -555,17 +577,21 @@ public class ManualClosingApacheHttpClient43Engine implements ApacheHttpClientEn
       AbstractHttpEntity entityToBuild = null;
       DeferredFileOutputStream memoryManagedOutStream = writeRequestBodyToOutputStream(request);
 
+      MediaType mediaType = request.getHeaders().getMediaType();
+
       if (memoryManagedOutStream.isInMemory())
       {
          ByteArrayEntity entityToBuildByteArray = new ByteArrayEntity(memoryManagedOutStream.getData());
-         entityToBuildByteArray
-               .setContentType(new BasicHeader(HTTP.CONTENT_TYPE, request.getHeaders().getMediaType().toString()));
+         if (mediaType != null) {
+            entityToBuildByteArray
+                    .setContentType(new BasicHeader(HTTP.CONTENT_TYPE, mediaType.toString()));
+         }
          entityToBuild = entityToBuildByteArray;
       }
       else
       {
          entityToBuild = new FileExposingFileEntity(memoryManagedOutStream.getFile(),
-               request.getHeaders().getMediaType().toString());
+               mediaType == null ? null : mediaType.toString());
       }
       if (request.isChunked())
       {
@@ -747,5 +773,20 @@ public class ManualClosingApacheHttpClient43Engine implements ApacheHttpClientEn
       }
       closed = true;
    }
+   
+   // Liberty Change Start - remove overlay when changes are in RestEasy
+   // https://issues.redhat.com/browse/RESTEASY-2884
+   // https://github.com/resteasy/Resteasy/pull/2778
+   private static File getTempDir() {
+       if (System.getSecurityManager() == null) {
+          final Optional<String> value = ResteasyConfigProvider.getConfig().getOptionalValue("java.io.tmpdir", String.class);
+          return value.map(File::new).orElseGet(() -> new File(System.getProperty("java.io.tmpdir")));
+       }
+       return AccessController.doPrivileged((PrivilegedAction<File>) () -> {
+          final Optional<String> value = ResteasyConfigProvider.getConfig().getOptionalValue("java.io.tmpdir", String.class);
+          return value.map(File::new).orElseGet(() -> new File(System.getProperty("java.io.tmpdir")));
+       });
+    }
+   // Liberty Change End
 
 }

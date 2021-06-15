@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,8 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.javaeesec.fat;
+
+import static com.ibm.ws.security.javaeesec.fat_helper.JavaEESecTestBase.assumeNotWindowsEe9;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -176,6 +178,7 @@ public class MultipleModuleNoExpandTest extends JavaEESecTestBase {
     @Test
     public void testMultipleModuleWars() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+        assumeNotWindowsEe9();
 
         // create module1, form login, redirect, ldap1. grouponly.
         WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR1_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.form.get.redirect",
@@ -293,6 +296,7 @@ public class MultipleModuleNoExpandTest extends JavaEESecTestBase {
     @Test
     public void testMultipleModuleWarsWithModuleJar() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+        assumeNotWindowsEe9();
 
         // create module1, form login, redirect, ldap1. grouponly.
         WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR1_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.form.get.redirect",
@@ -406,6 +410,7 @@ public class MultipleModuleNoExpandTest extends JavaEESecTestBase {
     @Test
     public void testMultipleModuleWithCommonJar() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+        assumeNotWindowsEe9();
 
         // create module1, form login, redirect, ldap1. grouponly.
         WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR1_NAME, true, null, false, "web.war.servlets.form.get.redirect", "web.war.identitystores.ldap.ldap1",
@@ -464,6 +469,7 @@ public class MultipleModuleNoExpandTest extends JavaEESecTestBase {
     @Test
     public void testMultipleModuleWithModuleHAMJar() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+        assumeNotWindowsEe9();
 
         // create module1, ldap1. grouponly.
         WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR1_NAME, true, HAM_JAR_NAME, true, "web.jar.base", "web.war.servlets.secured", "web.war.identitystores.ldap.ldap1",
@@ -520,6 +526,7 @@ public class MultipleModuleNoExpandTest extends JavaEESecTestBase {
     @Test
     public void testMultipleModuleWithCommonHAMJar() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+        assumeNotWindowsEe9();
 
         // create module1, ldap1. grouponly.
         WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR1_NAME, true, null, false, "web.war.servlets.secured", "web.war.identitystores.ldap.ldap1",
@@ -584,5 +591,4 @@ public class MultipleModuleNoExpandTest extends JavaEESecTestBase {
         }
         verifyGroups(response, groups);
     }
-
 }

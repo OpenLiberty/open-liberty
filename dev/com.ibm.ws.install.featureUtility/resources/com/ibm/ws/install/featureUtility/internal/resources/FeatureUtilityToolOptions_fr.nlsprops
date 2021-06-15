@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020 IBM Corporation and others.
+# Copyright (c) 2010, 2020, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -48,6 +48,12 @@ installFeature.option-desc.--to=\tIndiquez o\u00f9 installer la fonction. La fon
 \tcette option n'est pas sp\u00e9cifi\u00e9e, la fonction est install\u00e9e en tant que \n\
 \tfonction utilisateur.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--featuresBom=\ \ \ \ --featuresBom=Coordonn\u00e9e Maven
+installFeature.option-desc.--featuresBom=\tSp\u00e9cifiez la coordonn\u00e9e Maven du fichier de nomenclature de fonctions. Cette option  \n\
+\tpermet d'installer les fonctions utilisateur \u00e0 partir du     \n\
+\tr\u00e9f\u00e9rentiel maven configur\u00e9. Assurez-vous que le r\u00e9f\u00e9rentiel contient \u00e9galement le fichier JSON       \n\
+\tdes fonctions associ\u00e9es dans le m\u00eame groupId que la nomenclature.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.--from=\ \ \ \ --from=filePath
 installFeature.option-desc.--from=\tUtilisez cette option pour sp\u00e9cifier le chemin de fichier d'un r\u00e9f\u00e9rentiel \n\
 \td'artefacts Maven en tant que source pour l'installation d'actifs par featureUtility.
@@ -66,6 +72,12 @@ installServerFeatures.desc=\tInstallez les fonctions requises pour un serveur no
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.name...=\ \ \ \ name ...
 installServerFeatures.option-desc.name...=\tNom d'un serveur existant dans le m\u00eame environnement Liberty.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--featuresBom=\ \ \ \ --featuresBom=Coordonn\u00e9e Maven
+installServerFeatures.option-desc.--featuresBom=\tSp\u00e9cifiez la coordonn\u00e9e Maven du fichier de nomenclature de fonctions. Cette option  \n\
+\tpermet d'installer les fonctions utilisateur \u00e0 partir du     \n\
+\tr\u00e9f\u00e9rentiel maven configur\u00e9. Assurez-vous que le r\u00e9f\u00e9rentiel contient \u00e9galement le fichier JSON       \n\
+\tdes fonctions associ\u00e9es dans le m\u00eame groupId que la nomenclature.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.--from=\ \ \ \ --from=filePath
 installServerFeatures.option-desc.--from=\tUtilisez cette option pour sp\u00e9cifier le chemin de fichier d'un r\u00e9f\u00e9rentiel \n\
@@ -90,6 +102,6 @@ viewSettings.desc=\tAfficher les r\u00e9f\u00e9rentiels et les param\u00e8tres d
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 viewSettings.option-key.--viewValidationMessages=\ \ \ \ --viewValidationMessages
 viewSettings.option-desc.--viewValidationMessages=\tUtilisez cette option pour afficher les messages d\u00e9taill\u00e9s de la\n\
-\tvalidation du fichier featureUtility.properties configur\u00e9.           \n\
+\tvalidation du fichier featureUtility.properties configur\u00e9.         \n\
 \tChaque message contient un code d'erreur, le num\u00e9ro de la ligne sur laquelle l'erreur \n\
-\ta \u00e9t\u00e9 d\u00e9tect\u00e9e, ainsi que la cause de l'erreur.		
+\ta \u00e9t\u00e9 d\u00e9tect\u00e9e, ainsi que la cause de l'erreur.

@@ -13,7 +13,7 @@ bVersion=1.0.0
 
 Bundle-Name:  Extension To Test CDI SPI 
 Bundle-SymbolicName: cdi.spi.extension
-Bundle-Description: This bundle tests cdi runtime extension; version=${bVersion}
+Bundle-Description: This bundle tests the cdi runtime spi; version=${bVersion}
 
 Import-Package: \
   javax.enterprise.*; version="[1.1.0,2.1.0)",\
@@ -22,6 +22,7 @@ Import-Package: \
 
 Export-Package: \
 	com.ibm.ws.cdi.extension.spi.test.bundle;version=1.0.0,\
+	com.ibm.ws.cdi.extension.spi.test.bundle.annotations;version=1.0.0,\
 	com.ibm.ws.cdi.extension.spi.test.bundle.extension;version=1.0.0,\
 	com.ibm.ws.cdi.extension.spi.test.bundle.getclass.producer;version=1.0.0,\
 	com.ibm.ws.cdi.extension.spi.test.bundle.getclass.beaninjection;version=1.0.0,\

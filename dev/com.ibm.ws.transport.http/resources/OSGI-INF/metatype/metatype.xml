@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2011, 2020 IBM Corporation and others.
+    Copyright (c) 2011, 2021 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -161,7 +161,7 @@
             id="keepAliveEnabled" required="false" type="Boolean" default="true" />
 
         <AD name="%http.maxKeepAliveRequests" description="%http.maxKeepAliveRequests.desc"
-            id="maxKeepAliveRequests" required="false" type="Integer" default="100" min="-1" />
+            id="maxKeepAliveRequests" required="false" type="Integer" default="-1" min="-1" />
 
         <AD name="%http.persistTimeout" description="%http.persistTimeout.desc"
             id="persistTimeout" required="false" type="String" ibm:type="duration(s)" min="0" default="30s" />

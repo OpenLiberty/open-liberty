@@ -24,7 +24,6 @@ import com.ibm.ws.security.saml20.fat.commonTest.utils.RSCommonUtils;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServerWrapper;
@@ -220,7 +219,6 @@ public class RSSamlAPITests extends SAMLCommonTest {
      * @throws Exception
      */
     @Mode(TestMode.LITE)
-    @SkipForRepeat(SkipForRepeat.EE9_FEATURES) // TODO - figure out if we can re-enable
     @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.ws.message.decoder.MessageDecodingException", "org.opensaml.xml.parse.XMLParserException" })
     @Test
     public void RSSamlAPITests_useJaxRSCLientServlet_runtimePropagateToken_setStringTrue() throws Exception {
@@ -257,7 +255,6 @@ public class RSSamlAPITests extends SAMLCommonTest {
      * @throws Exception
      */
     @Mode(TestMode.LITE)
-    @SkipForRepeat(SkipForRepeat.EE9_FEATURES) // TODO - figure out if we can re-enable
     @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.ws.message.decoder.MessageDecodingException", "org.opensaml.xml.parse.XMLParserException" })
     @Test
     public void RSSamlAPITests_useJaxRSCLientServlet_runtimePropagateToken_setBooleanTrue() throws Exception {

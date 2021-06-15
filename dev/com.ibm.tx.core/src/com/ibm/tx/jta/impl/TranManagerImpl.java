@@ -1,7 +1,7 @@
 package com.ibm.tx.jta.impl;
 
 /*******************************************************************************
- * Copyright (c) 2002, 2013, 2020 IBM Corporation and others.
+ * Copyright (c) 2002, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,15 +28,14 @@ import com.ibm.tx.TranConstants;
 import com.ibm.tx.config.ConfigurationProvider;
 import com.ibm.tx.config.ConfigurationProviderManager;
 import com.ibm.tx.ltc.impl.LocalTranCurrentSet;
-import com.ibm.tx.util.logging.FFDCFilter;
-import com.ibm.tx.util.logging.Tr;
-import com.ibm.tx.util.logging.TraceComponent;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.Transaction.UOWCoordinator;
 import com.ibm.ws.Transaction.JTA.Util;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.wsspi.tx.UOWEventListener;
 
-public class TranManagerImpl
-{
+public class TranManagerImpl {
     private static final TraceComponent tc = Tr.register(TranManagerImpl.class,
                                                          TranConstants.TRACE_GROUP,
                                                          TranConstants.NLS_FILE);
@@ -52,15 +51,13 @@ public class TranManagerImpl
     /**
      * Transaction Manager Constructor.
      */
-    public TranManagerImpl()
-    {
+    public TranManagerImpl() {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "TranManagerImpl");
 
         final ConfigurationProvider cp = ConfigurationProviderManager.getConfigurationProvider();
 
-        if (cp == null)
-        {
+        if (cp == null) {
             throw new IllegalStateException();
         }
 
@@ -82,7 +79,7 @@ public class TranManagerImpl
             final NotSupportedException nse = new NotSupportedException("Nested transactions are not supported.");
             FFDCFilter.processException(nse, "com.ibm.tx.jta.impl.TranManagerImpl.begin", "135", this);
             if (tc.isEntryEnabled())
-                Tr.exit(tc, "begin", new Object[] {"(SPI)", nse});
+                Tr.exit(tc, "begin", new Object[] { "(SPI)", nse });
             throw nse;
         }
 
@@ -102,8 +99,7 @@ public class TranManagerImpl
         begin(txTimeout);
     }
 
-    protected TransactionImpl createNewTransaction(int timeout)
-                    throws SystemException /* @512190A */
+    protected TransactionImpl createNewTransaction(int timeout) throws SystemException /* @512190A */
     {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "createNewTransaction", timeout);
@@ -117,18 +113,14 @@ public class TranManagerImpl
     /**
      * Used by UserTransaction to create a transaction
      */
-    public void beginUserTran()
-                    throws NotSupportedException, SystemException /* @512190C */
+    public void beginUserTran() throws NotSupportedException, SystemException /* @512190C */
     {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "beginUserTran", this);
 
-        if (tx == null)
-        {
+        if (tx == null) {
             tx = createNewTransaction(txTimeout);
-        }
-        else
-        {
+        } else {
             Tr.error(tc, "WTRN0017_UNABLE_TO_BEGIN_NESTED_TRANSACTION");
             final NotSupportedException nse = new NotSupportedException("Nested transactions are not supported.");
             FFDCFilter.processException(nse, "com.ibm.tx.jta.impl.TranManagerImpl.beginUserTran", "159", this);
@@ -141,30 +133,25 @@ public class TranManagerImpl
             Tr.exit(tc, "beginUserTran", tx);
     }
 
-    public void commit() throws RollbackException, HeuristicMixedException, HeuristicRollbackException,
-                    SecurityException, IllegalStateException, SystemException
-    {
+    public void commit() throws RollbackException, HeuristicMixedException, HeuristicRollbackException, SecurityException, IllegalStateException, SystemException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "commit", "(SPI)");
 
-        if (tx == null)
-        {
+        if (tx == null) {
             final String msg = "No transaction associated with this thread";
             final IllegalStateException ise = new IllegalStateException(msg);
             FFDCFilter.processException(ise, "com.ibm.tx.jta.impl.TranManagerImpl.commit", "167", this);
             if (tc.isEntryEnabled())
-                Tr.exit(tc, "commit", new Object[] {"(SPI)", ise});
+                Tr.exit(tc, "commit", new Object[] { "(SPI)", ise });
             throw ise;
         }
 
         // Tran is gonna get taken off the thread as part of commit processing so save a reference here
         final UOWCoordinator completingTx = tx;
 
-        try
-        {
+        try {
             tx.commit();
-        } finally
-        {
+        } finally {
             invokeEventListener(completingTx, UOWEventListener.POST_END, null);
 
             if (tc.isEntryEnabled())
@@ -172,29 +159,25 @@ public class TranManagerImpl
         }
     }
 
-    public void rollback() throws IllegalStateException, SecurityException, SystemException
-    {
+    public void rollback() throws IllegalStateException, SecurityException, SystemException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "rollback", "(SPI)");
 
-        if (tx == null)
-        {
+        if (tx == null) {
             final String msg = "No transaction associated with this thread";
             final IllegalStateException ise = new IllegalStateException(msg);
             FFDCFilter.processException(ise, "com.ibm.tx.jta.impl.TranManagerImpl.rollback", "193", this);
             if (tc.isEntryEnabled())
-                Tr.exit(tc, "rollback", new Object[] {"(SPI)", ise});
+                Tr.exit(tc, "rollback", new Object[] { "(SPI)", ise });
             throw ise;
         }
 
         // Tran is gonna get taken off the thread as part of commit processing so save a reference here
         final UOWCoordinator completingTx = tx;
 
-        try
-        {
+        try {
             tx.rollback();
-        } finally
-        {
+        } finally {
             invokeEventListener(completingTx, UOWEventListener.POST_END, null);
 
             if (tc.isEntryEnabled())
@@ -202,23 +185,18 @@ public class TranManagerImpl
         }
     }
 
-    public Transaction suspend()
-    {
+    public Transaction suspend() {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "suspend", new Object[] {"(SPI)", this});
+            Tr.entry(tc, "suspend", new Object[] { "(SPI)", this });
 
         TransactionImpl suspended = null;
 
-        if (tx != null)
-        {
-            if (tx.getTxType() != UOWCoordinator.TXTYPE_NONINTEROP_GLOBAL)
-            {
+        if (tx != null) {
+            if (tx.getTxType() != UOWCoordinator.TXTYPE_NONINTEROP_GLOBAL) {
                 suspended = tx;
                 tx = null;
                 invokeEventListener(suspended, UOWEventListener.SUSPEND, null);
-            }
-            else
-            {
+            } else {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "the tx is NONINTEROP_GLOBAL it should not be suspended");
                 tx = null;
@@ -226,36 +204,31 @@ public class TranManagerImpl
         }
 
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "suspend", new Object[] {"(SPI)", suspended});
+            Tr.exit(tc, "suspend", new Object[] { "(SPI)", suspended });
         return suspended;
     }
 
-    public void resume(Transaction t) throws InvalidTransactionException, IllegalStateException
-    {
+    public void resume(Transaction t) throws InvalidTransactionException, IllegalStateException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "resume", new Object[] {"(SPI)", t});
+            Tr.entry(tc, "resume", new Object[] { "(SPI)", t });
 
-        if (tx != null)
-        {
+        if (tx != null) {
             final String msg = "Thread is already associated with a transaction";
             final IllegalStateException ise = new IllegalStateException(msg);
             FFDCFilter.processException(ise, "com.ibm.tx.jta.impl.TranManagerImpl.resume", "249", this);
             if (tc.isEntryEnabled())
-                Tr.exit(tc, "resume", new Object[] {"(SPI)", ise});
+                Tr.exit(tc, "resume", new Object[] { "(SPI)", ise });
             throw ise;
         }
 
-        try
-        {
+        try {
             // If the transaction to be resumed
             // is null then the call is a no-op,
             // otherwise we must check that it's
             // in a valid state to be resumed.
-            if (t != null)
-            {
-                switch (((TransactionImpl) t).getTransactionState().getState())
-                {
-                // These states imply the transaction is invalid (non-existant or finished)
+            if (t != null) {
+                switch (((TransactionImpl) t).getTransactionState().getState()) {
+                    // These states imply the transaction is invalid (non-existant or finished)
                     case TransactionState.STATE_COMMITTED:
                     case TransactionState.STATE_ROLLED_BACK:
                     case TransactionState.STATE_NONE:
@@ -271,8 +244,7 @@ public class TranManagerImpl
 
                 tx.setMostRecentThread(Thread.currentThread());
             }
-        } catch (Throwable e)
-        {
+        } catch (Throwable e) {
             // Either the supplied transaction is not a TransactionImpl or it is an invalid state for resume
             FFDCFilter.processException(e, "com.ibm.tx.jta.impl.TranManagerImpl.resume", "201", this);
 
@@ -286,8 +258,7 @@ public class TranManagerImpl
 
         // RTC 171838. In the special case where the tx is TXTYPE_NONINTEROP_GLOBAL, we do not need to alert event listeners that a tran
         // has been resumed.
-        if (tx != null && tx.getTxType() != UOWCoordinator.TXTYPE_NONINTEROP_GLOBAL)
-        {
+        if (tx != null && tx.getTxType() != UOWCoordinator.TXTYPE_NONINTEROP_GLOBAL) {
             invokeEventListener(tx, UOWEventListener.RESUME, null);
         }
 
@@ -295,76 +266,61 @@ public class TranManagerImpl
             Tr.exit(tc, "resume", "(SPI)");
     }
 
-    public void setRollbackOnly() throws IllegalStateException
-    {
+    public void setRollbackOnly() throws IllegalStateException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "setRollbackOnly", "(SPI)");
 
-        if (tx == null)
-        {
+        if (tx == null) {
             final String msg = "No transaction associated with this thread";
             final IllegalStateException ise = new IllegalStateException(msg);
             FFDCFilter.processException(ise, "com.ibm.tx.jta.impl.TranManagerImpl.setRollbackOnly", "303", this);
             if (tc.isEntryEnabled())
-                Tr.exit(tc, "setRollbackOnly", new Object[] {"(SPI)", ise});
+                Tr.exit(tc, "setRollbackOnly", new Object[] { "(SPI)", ise });
             throw ise;
         }
 
-        try
-        {
+        try {
             tx.setRollbackOnly();
-        } finally
-        {
+        } finally {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "setRollbackOnly", "(SPI)");
         }
     }
 
-    public void setTransactionTimeout(int timeout) throws SystemException
-    {
+    public void setTransactionTimeout(int timeout) throws SystemException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "setTransactionTimeout", new Object[] {"(SPI)", timeout});
+            Tr.entry(tc, "setTransactionTimeout", new Object[] { "(SPI)", timeout });
 
-        if (timeout > 0)
-        {
+        if (timeout > 0) {
             if (timeout == Integer.MAX_VALUE) // 68 years
             {
                 txTimeout = 0; // disable timeout
-            }
-            else
-            {
+            } else {
                 txTimeout = timeout;
             }
-        }
-        else if (timeout == 0)
-        {
+        } else if (timeout == 0) {
             txTimeout = ConfigurationProviderManager.getConfigurationProvider().getTotalTransactionLifetimeTimeout();
 
-            if (txTimeout == 0)
-            {
+            if (txTimeout == 0) {
                 txTimeout = DEFAULT_TX_TIMEOUT;
             }
-        }
-        else
-        {
+        } else {
             final SystemException se = new SystemException("Transaction timeout value must be >= 0");
             FFDCFilter.processException(se, "com.ibm.tx.jta.impl.TranManagerImpl.setTransactionTimeout", "206", this);
             if (tc.isEntryEnabled())
-                Tr.exit(tc, "setTransactionTimeout", new Object[] {"(SPI)", se});
+                Tr.exit(tc, "setTransactionTimeout", new Object[] { "(SPI)", se });
             throw se;
         }
         // Note: TransactionImpl will later check against maximumTransactionTimeout - its is done there as it is common for CMT/BMT
 
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "setTransactionTimeout", new Object[] {"(SPI)", txTimeout});
+            Tr.exit(tc, "setTransactionTimeout", new Object[] { "(SPI)", txTimeout });
     }
 
-    public int getStatus()
-    {
+    public int getStatus() {
         int status = Status.STATUS_NO_TRANSACTION;
 
-        if (tx != null)
-        {
+        if (tx != null) {
             status = tx.getStatus();
         }
 
@@ -374,16 +330,14 @@ public class TranManagerImpl
         return status;
     }
 
-    public Transaction getTransaction()
-    {
+    public Transaction getTransaction() {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "getTransaction (SPI)", new Object[] { this, tx, new Exception("SPI Stack Trace") });
 
         return tx;
     }
 
-    public TransactionImpl getTransactionImpl()
-    {
+    public TransactionImpl getTransactionImpl() {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "getTransactionImpl", new Object[] { this, tx });
 
@@ -392,14 +346,11 @@ public class TranManagerImpl
 
     // Enlists a 2PC resource with the transaction,
     // that this class is managing.
-    public boolean enlist(XAResource xaRes, int recoveryId)
-                    throws RollbackException, IllegalStateException, SystemException
-    {
+    public boolean enlist(XAResource xaRes, int recoveryId) throws RollbackException, IllegalStateException, SystemException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "enlist", new Object[] { xaRes, recoveryId });
 
-        if (tx == null)
-        {
+        if (tx == null) {
             final String msg = "No transaction associated with this thread";
             final IllegalStateException ise = new IllegalStateException(msg);
             FFDCFilter.processException(ise, "com.ibm.tx.jta.impl.TranManagerImpl.enlist", "470", this);
@@ -409,24 +360,20 @@ public class TranManagerImpl
         }
 
         boolean ret = false;
-        try
-        {
+        try {
             ret = tx.enlistResource(xaRes, recoveryId);
-        } finally
-        {
+        } finally {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "enlist", ret);
         }
         return ret;
     }
 
-    public boolean delist(XAResource xaRes, int flag)
-    {
+    public boolean delist(XAResource xaRes, int flag) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "delist", new Object[] { xaRes, Util.printFlag(flag) });
 
-        if (tx == null)
-        {
+        if (tx == null) {
             if (tc.isEventEnabled())
                 Tr.event(tc, "The transaction was not found.");
             if (tc.isEntryEnabled())
@@ -435,11 +382,9 @@ public class TranManagerImpl
         }
 
         boolean ret = false;
-        try
-        {
+        try {
             ret = tx.delistResource(xaRes, flag);
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             if (tc.isEventEnabled())
                 Tr.event(tc, "delist exception absorbed", e);
         }
@@ -453,14 +398,12 @@ public class TranManagerImpl
     /**
      * Return the current UOW coordinator (either local or global)
      */
-    public UOWCoordinator getUOWCoord()
-    {
+    public UOWCoordinator getUOWCoord() {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "getUOWCoord", this);
 
         UOWCoordinator uow = tx;
-        if (uow == null)
-        {
+        if (uow == null) {
             // can optimise this by caching the threadlocal 'LocalTranCurrentSet.instance().self'
             uow = (UOWCoordinator) LocalTranCurrentSet.instance().getLocalTranCoord();
         }
@@ -470,39 +413,32 @@ public class TranManagerImpl
         return uow;
     }
 
-    public synchronized void setUOWEventListener(UOWEventListener el)
-    {
+    public synchronized void setUOWEventListener(UOWEventListener el) {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "setUOWEventListener", el);
 
-        if (_UOWEventListeners == null)
-        {
+        if (_UOWEventListeners == null) {
             _UOWEventListeners = new HashSet<UOWEventListener>();
         }
 
         _UOWEventListeners.add(el);
     }
 
-    public synchronized void unsetUOWEventListener(UOWEventListener el)
-    {
+    public synchronized void unsetUOWEventListener(UOWEventListener el) {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "unsetUOWEventListener", el);
 
-        if (_UOWEventListeners != null)
-        {
+        if (_UOWEventListeners != null) {
             _UOWEventListeners.remove(el);
         }
     }
 
-    public synchronized void invokeEventListener(UOWCoordinator uowc, int event, Object data)
-    {
-        if (_UOWEventListeners != null)
-        {
+    public synchronized void invokeEventListener(UOWCoordinator uowc, int event, Object data) {
+        if (_UOWEventListeners != null) {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "invokeEventListener", new Object[] { uowc, event, data });
 
-            for (UOWEventListener el : _UOWEventListeners)
-            {
+            for (UOWEventListener el : _UOWEventListeners) {
                 el.UOWEvent(uowc, event, data);
             }
         }

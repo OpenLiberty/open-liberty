@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import javax.enterprise.inject.UnsatisfiedResolutionException;
+import javax.enterprise.inject.spi.CDI;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -41,18 +42,28 @@ public class TestServlet extends HttpServlet {
     @Inject
     AppBean appBean;
 
+    @Inject
+    CustomBDABean customBDABean;
+
     private static final long serialVersionUID = 1L;
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 
         String unregString = "";
-
         try {
-            UnregisteredBean ub = javax.enterprise.inject.spi.CDI.current().select(UnregisteredBean.class).get();
+            UnregisteredBean ub = CDI.current().select(UnregisteredBean.class).get();
             unregString = "Found unregistered bean";
         } catch (UnsatisfiedResolutionException e) {
             unregString = "Could not find unregistered bean";
+        }
+
+        String unregBDAString = "";
+        try {
+            UnregisteredBDABean ub = CDI.current().select(UnregisteredBDABean.class).get();
+            unregBDAString = ub.toString();
+        } catch (UnsatisfiedResolutionException e) {
+            unregBDAString = "Could not find unregistered BDA bean";
         }
 
         PrintWriter pw = response.getWriter();
@@ -61,7 +72,9 @@ public class TestServlet extends HttpServlet {
         pw.println(beanInjectedString.toString());
         pw.println(classString.toString());
         pw.println(unregString);
+        pw.println(unregBDAString);
         pw.println(appBean.toString());
+        pw.println(customBDABean.toString());
 
     }
 }

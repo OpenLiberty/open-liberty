@@ -10,11 +10,7 @@
 # This script performs validation for PRs that will fail if a fat was created/renamed/removed but not updated in test-categories
 TEST_CATEGORY_DIR=$PWD/.github/test-categories/
 DEV_DIR=$PWD/dev
-TEMP_COMPAR_DIR=$PWD/category-comparison/
-
-if [ ! -d $TEMP_COMPAR_DIR ]; then 
-    mkdir $TEMP_COMPAR_DIR
-fi
+TEMP_COMPAR_DIR=$PWD/category-comparison/ && mkdir -p $TEMP_COMPAR_DIR
 
 #Collect existing fats in test-categories
 awk 1 $TEST_CATEGORY_DIR* > $TEMP_COMPAR_DIR/expectedTmp
@@ -24,7 +20,7 @@ sort -o $TEMP_COMPAR_DIR/expected $TEMP_COMPAR_DIR/expected
 #Collect actual fats that exist in file system
 for dir in $DEV_DIR/*_fat*/
 do 
-    dirName=$(basename -- "$dir")  # Strip /home/etc/...
+    dirName=$(basename -- $dir)  # Strip /home/etc/...
     echo $dirName >> $TEMP_COMPAR_DIR/actual
 done
 sort -o $TEMP_COMPAR_DIR/actual $TEMP_COMPAR_DIR/actual

@@ -17,8 +17,8 @@ import java.sql.Driver;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.sql.SQLNonTransientException;
-import java.util.AbstractMap;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -749,7 +749,8 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
                     || !match(newProperties.get(DSConfig.HELPER_CLASS), properties.get(DSConfig.HELPER_CLASS))
                     || !match(newProperties.get(DSConfig.JDBC_DRIVER_REF), properties.get(DSConfig.JDBC_DRIVER_REF))
                     || !match(newProperties.get(DSConfig.ON_CONNECT), properties.get(DSConfig.ON_CONNECT))
-                    || !match(newProperties.get(DataSourceDef.transactional.name()), properties.get(DataSourceDef.transactional.name()))) {
+                    || !match(newProperties.get(DataSourceDef.transactional.name()), properties.get(DataSourceDef.transactional.name()))
+                    || connectorSvc.isHeritageEnabled() && !config.identifyExceptions.equals(wProps.get(DSConfig.IDENTIFY_EXCEPTION))) {
                     // Destroy everything, and allow lazy initialization to recreate
                     destroyConnectionFactories(true);
                 } else if (!AdapterUtil.match(vProps, config.vendorProps)
@@ -882,8 +883,7 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
                 identifications.put(new SQLStateAndCode(sqlState, errorCode), as);
             }
         }
-        if (identifications != null)
-            wProps.put(DSConfig.IDENTIFY_EXCEPTION, identifications);
+        wProps.put(DSConfig.IDENTIFY_EXCEPTION, identifications == null ? Collections.EMPTY_MAP : identifications);
 
         //Don't send out auth alias recommendation message with UCP since it may be required to set the 
         //user and password as ds props

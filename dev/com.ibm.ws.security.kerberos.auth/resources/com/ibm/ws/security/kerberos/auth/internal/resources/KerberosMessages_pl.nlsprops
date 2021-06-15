@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2020, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -21,6 +21,19 @@
 KRB5_FILE_NOT_FOUND_CWWKS4345E=CWWKS4345E: Atrybut [{0}] z elementu {1} odwo\u0142uje si\u0119 do pliku, kt\u00f3ry nie istnieje w po\u0142o\u017ceniu: {2}
 KRB5_FILE_NOT_FOUND_CWWKS4345E.explanation=Konfiguracja odwo\u0142uje si\u0119 do pliku, kt\u00f3ry nie istnieje lub kt\u00f3rego nie mo\u017cna odczyta\u0107.
 KRB5_FILE_NOT_FOUND_CWWKS4345E.useraction=Upewnij si\u0119, \u017ce konfiguracja wskazuje na istniej\u0105cy plik, kt\u00f3ry mo\u017ce by\u0107 odczytywany przez proces aplikacji.
+
 KRB5_FILE_FOUND_CWWKS4346I=CWWKS4346I: Komponent Kerberos jest skonfigurowany tak, by korzysta\u0142 z pliku {0} w po\u0142o\u017ceniu {1}
 KRB5_FILE_FOUND_CWWKS4346I.explanation=Plik okre\u015blony w konfiguracji zosta\u0142 pomy\u015blnie znaleziony.
 KRB5_FILE_FOUND_CWWKS4346I.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+KRB5_LOGIN_FAILED_CACHE_CWWKS4347E=CWWKS4347E: Nie powiod\u0142o si\u0119 logowanie Kerberos z u\u017cyciem nazwy u\u017cytkownika protoko\u0142u Kerberos {0} i pami\u0119ci podr\u0119cznej referencji Kerberos (ccache) {1}. Nie znaleziono biletu Kerberos.
+KRB5_LOGIN_FAILED_CACHE_CWWKS4347E.explanation=Podana nazwa u\u017cytkownika protoko\u0142u Kerberos jest niepoprawna albo pami\u0119\u0107 podr\u0119czna referencji Kerberos (ccache) jest niepoprawna b\u0105d\u017a utraci\u0142a wa\u017cno\u015b\u0107.
+KRB5_LOGIN_FAILED_CACHE_CWWKS4347E.useraction=Podaj poprawn\u0105 nazw\u0119 u\u017cytkownika protoko\u0142u Kerberos i upewnij si\u0119, \u017ce pami\u0119\u0107 podr\u0119czna referencji Kerberos (ccache) jest poprawna i nie utraci\u0142a wa\u017cno\u015bci.
+
+KRB5_LOGIN_FAILED_KEYTAB_CWWKS4348E=CWWKS4348E: Nie powiod\u0142o si\u0119 logowanie Kerberos z u\u017cyciem nazwy u\u017cytkownika protoko\u0142u Kerberos {0} i pliku keytab Kerberos {1}. Nie znaleziono biletu Kerberos.
+KRB5_LOGIN_FAILED_KEYTAB_CWWKS4348E.explanation=Podana nazwa u\u017cytkownika protoko\u0142u Kerberos jest niepoprawna albo plik keytab Kerberos jest niepoprawny.
+KRB5_LOGIN_FAILED_KEYTAB_CWWKS4348E.useraction=Podaj poprawn\u0105 nazw\u0119 pliku keytab protoko\u0142u Kerberos, kt\u00f3ry zawiera poprawn\u0105 nazw\u0119 u\u017cytkownika protoko\u0142u Kerberos.
+		
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB_CWWKS4349E=CWWKS4349E: Nie powiod\u0142o si\u0119 logowanie Kerberos z u\u017cyciem nazwy u\u017cytkownika protoko\u0142u Kerberos {0} i domy\u015blnego pliku keytab Kerberos. Nie znaleziono biletu Kerberos.
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB_CWWKS4349E.explanation=Podana nazwa u\u017cytkownika protoko\u0142u Kerberos jest niepoprawna albo domy\u015blny plik keytab Kerberos jest niepoprawny.
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB_CWWKS4349E.useraction=Podaj poprawn\u0105 nazw\u0119 pliku keytab protoko\u0142u Kerberos, kt\u00f3ry zawiera poprawn\u0105 nazw\u0119 u\u017cytkownika protoko\u0142u Kerberos.

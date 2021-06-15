@@ -1,9 +1,0 @@
-Subsystem-ManifestVersion: 1
-IBM-ShortName: jdbcHeritage-1.0
-Subsystem-SymbolicName: ShortName:jdbcHeritage-1.0;visibility:=public
-Subsystem-Version: 1.0.0
-Subsystem-Content: jdbcHeritage; version="[1,1.0.100)"
-Subsystem-Type: osgi.subsystem.feature
-IBM-API-Package: com.ibm.websphere.ce.cm; type="ibm-api",
- com.ibm.websphere.rsadapter; type="ibm-api"
-IBM-Feature-Version: 2

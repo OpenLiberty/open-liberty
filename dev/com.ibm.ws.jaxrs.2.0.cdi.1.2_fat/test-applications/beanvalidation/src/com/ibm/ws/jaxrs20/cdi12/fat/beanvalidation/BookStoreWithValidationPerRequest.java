@@ -20,17 +20,6 @@ import javax.ws.rs.core.MediaType;
 
 @Path("/perrequest/")
 public class BookStoreWithValidationPerRequest {
-    @NotNull
-    private String id;
-
-    @QueryParam("id")
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getId() {
-        return this.id;
-    }
 
     Person person;
 
@@ -44,7 +33,7 @@ public class BookStoreWithValidationPerRequest {
     @Path("book")
     @NotNull
     @Produces(MediaType.TEXT_PLAIN)
-    public String book() {
-        return person.talk();
+    public String book(@NotNull @QueryParam("id") String id) {
+        return person.talk() + " " + id;
     }
 }

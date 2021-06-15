@@ -44,6 +44,7 @@ import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -59,7 +60,7 @@ import componenttest.topology.impl.LibertyServer;
  * request during the mbean call which happens inside the initial servlet call.
  */
 @RunWith(FATRunner.class)
-@SkipForRepeat({"MPM23", "MPM22", "MPM20"})
+@SkipForRepeat({ "MPM23", "MPM22", "MPM20" })
 public class RequestTimingMbeanTest {
 
     private static final Class<RequestTimingMbeanTest> c = RequestTimingMbeanTest.class;
@@ -88,6 +89,14 @@ public class RequestTimingMbeanTest {
     @BeforeClass
     public static void setUp() throws Exception {
         ShrinkHelper.defaultDropinApp(server, "RequestTimingWebApp", "com.ibm.ws.request.timing.app");
+
+        JavaInfo java = JavaInfo.forCurrentVM();
+        int javaMajorVersion = java.majorVersion();
+        if (javaMajorVersion != 8) {
+            Log.info(c, "setUp", " Java version = " + javaMajorVersion + " - It is higher than 8, adding --add-exports...");
+            server.copyFileToLibertyServerRoot("add-exports/jvm.options");
+        }
+
         server.startServer();
     }
 

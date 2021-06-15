@@ -2,8 +2,7 @@ Manifest-Version: 1.0
 Subsystem-Type: osgi.subsystem.feature
 IBM-Feature-Version: 2
 Subsystem-Version: 1.0.0
-Subsystem-Content: RSHandler2.jakarta;version="1.0.0",
- io.openliberty.globalhandler-2.0; type="osgi.subsystem.feature"
+Subsystem-Content: RSHandler2.jakarta;version="1.0.0"
 Subsystem-SymbolicName: RSHandler2Feature;visibility:=public
 Subsystem-ManifestVersion: 1.0
 IBM-ShortName: RSHandler2Feature

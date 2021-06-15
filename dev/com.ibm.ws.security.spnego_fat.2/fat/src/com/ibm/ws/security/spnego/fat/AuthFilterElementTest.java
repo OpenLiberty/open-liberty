@@ -37,7 +37,8 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
 @RunWith(FATRunner.class)
-@Mode(TestMode.FULL)
+//@Mode(TestMode.FULL)
+@Mode(TestMode.QUARANTINE)
 public class AuthFilterElementTest extends CommonTest {
 
     private static final Class<?> c = AuthFilterElementTest.class;

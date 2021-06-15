@@ -272,3 +272,7 @@ IDMAP_INVALID_FORMAT.useraction=Aktualisieren Sie den userIdMap-Wert so, dass er
 KRB5_SERVICE_NOT_AVAILABLE=CWIML4521E: Die LDAP-Registry {0} hat versucht, mithilfe von Kerberos-Berechtigungsnachweisen f\u00fcr den {1}-Principalnamen eine Bindung zu einem LDAP-Server herzustellen, aber der Kerberos-Service, der diese Berechtigungsnachweise bereitstellt, ist nicht verf\u00fcgbar. Das Authentifizierungsverfahren f\u00fcr die Bindung ist: {2}.
 KRB5_SERVICE_NOT_AVAILABLE.explanation=Der Kerberos-Service war nicht verf\u00fcgbar, als die LDAP-Registry versucht hat, eine Bindung zum LDAP-Server herzustellen. Der Kerberos-Service muss verf\u00fcgbar sein, damit sich Benutzer authentifizieren k\u00f6nnen.
 KRB5_SERVICE_NOT_AVAILABLE.useraction=\u00dcberpr\u00fcfen Sie die Konfigurationseinstellungen der LDAP-Registry im Hinblick auf die Attribute bindAuthMechanism, krb5Principal und krb5TicketCache sowie die Kerberos-Konfiguration. Starten Sie den Server erneut. 
+
+FILTER_MISSING_PERCENT_V=CWIML4523E: Der Wert {0} f\u00fcr {1} ist ung\u00fcltig. Er setzt eine Attributwertzusicherung voraus, bei der die Wertzusicherung =%v ist. Beispiel: {2}.
+FILTER_MISSING_PERCENT_V.explanation=Die LDAP-Registry ersetzt die Angabe %v durch den zu suchenden Wert, wenn Suchvorg\u00e4nge f\u00fcr Benutzer oder Gruppen durchgef\u00fchrt werden.
+FILTER_MISSING_PERCENT_V.useraction=Aktualisieren Sie den angegebenen Filter, um eine Attributwertzusicherung einzuschlie\u00dfen, die =%v in der Wertzusicherung enth\u00e4lt.

@@ -42,7 +42,7 @@ import org.apache.wss4j.common.crypto.PasswordEncryptor;
 import org.apache.wss4j.common.ext.WSSecurityException;
 import org.apache.wss4j.dom.handler.RequestData;
 import org.apache.wss4j.dom.handler.WSHandler;
-
+//No Liberty Change, but needed to recompile due to Liberty change in MessageImpl.
 public abstract class AbstractWSS4JInterceptor extends WSHandler implements SoapInterceptor,
     PhaseInterceptor<SoapMessage> {
 

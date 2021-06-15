@@ -24,8 +24,6 @@ import componenttest.topology.database.container.DatabaseContainerFactory;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                TestOLGH10310_Web.class,
-                TestOLGH10310_EJB.class,
                 TestOLGH11795_Web.class,
                 TestOLGH11795_EJB.class,
                 componenttest.custom.junit.runner.AlwaysPassesTest.class

@@ -53,6 +53,7 @@ import com.ibm.ws.security.acme.utils.AcmeFatUtils;
 
 import componenttest.annotation.CheckForLeakedPasswords;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -63,14 +64,10 @@ import componenttest.topology.impl.LibertyServer;
  * replace it if necessary.
  * 
  * TODO There are no CRL tests.
- * 
- * >>>>QUARANTINE -- The Boulder intermediate certificate expired. Work to
- * either update the existing certificate or pull a new image of Boulder (which
- * has made significant change is ongoing). Further notes in RTC 279882.
  */
 @RunWith(FATRunner.class)
-// @Mode(TestMode.FULL)
-@Mode(TestMode.QUARANTINE)
+@Mode(TestMode.FULL)
+@SkipForRepeat(SkipForRepeat.EE9_FEATURES) // No value added
 public class AcmeRevocationTest {
 
 	@Server("com.ibm.ws.security.acme.fat.revocation")

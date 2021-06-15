@@ -24,7 +24,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.apache.cxf.ws.security.SecurityConstants;
 import org.osgi.framework.Constants;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
@@ -68,7 +67,7 @@ public class WSSecurityConfiguration implements ConfigurationListener {
     //protected static final String unknown_caller_token_name = "Caller token name specified is not valid.";
 
     static final String[] SPECIAL_CFG_KEYS = { "component.name", "component.id", "config.source", "config.id", "id", "service.vendor",
-                                              "service.factoryPid", "service.pid" };
+                                               "service.factoryPid", "service.pid" };
 
     public static final String KEY_KEYSTORE_SERVICE = "keyStoreService";
     private final AtomicServiceReference<KeyStoreService> keyStoreServiceRef = new AtomicServiceReference<KeyStoreService>(KEY_KEYSTORE_SERVICE);
@@ -180,7 +179,6 @@ public class WSSecurityConfiguration implements ConfigurationListener {
         UsernameTokenValidator.setSecurityService(null);
         WSSecurityLibertyPluginInterceptor.setBindingsConfiguration(null);
         WSSecurityLibertyPluginInterceptor.setSamlTokenConfiguration(null);
-
         // the WSSecurity is still using the properties from activate/modified
         cfgCallback = null;
         defaultConfigMap.clear();
@@ -192,7 +190,7 @@ public class WSSecurityConfiguration implements ConfigurationListener {
     }
 
     /**
-     * 
+     *
      */
     private synchronized void internalModify() {
         cfgCallback = null;
@@ -211,7 +209,7 @@ public class WSSecurityConfiguration implements ConfigurationListener {
     }
 
     /**
-     * 
+     *
      */
     void processSamlToken() {
         // handle the samlToken configuration
@@ -243,7 +241,7 @@ public class WSSecurityConfiguration implements ConfigurationListener {
         Map<String, Object> samlTokenConfigMap = new HashMap<String, Object>();
 
         samlTokenConfigMap.put(KEY_wantAssertionsSigned, true); // Boolean
-        samlTokenConfigMap.put(KEY_clockSkew, 300L); // 5 minutes 
+        samlTokenConfigMap.put(KEY_clockSkew, 300L); // 5 minutes
         String shortMethod = "bearer";
         samlTokenConfigMap.put(KEY_requiredSubjectConfirmationMethod, subjectConfirmationMethods.get(shortMethod)); // String
         samlTokenConfigMap.put(KEY_timeToLive, 1800L); // 30minutes
@@ -304,7 +302,7 @@ public class WSSecurityConfiguration implements ConfigurationListener {
     // * @throws Exception
     // */
     //private void processSamlTrustEngine() throws Exception {
-    //    // reset stored saml data 
+    //    // reset stored saml data
     //    samlX509List = Collections.synchronizedList(new ArrayList<String>());
     //    samlCrlList = Collections.synchronizedList(new ArrayList<String>());
     //    isSamlTrustEngineEnabled = false;
@@ -453,16 +451,11 @@ public class WSSecurityConfiguration implements ConfigurationListener {
 
                         defaultConfigMap.put(WSSecurityConstants.CXF_SIG_PROPS, signaturePropertyMap);
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "signature configuration type = ", signaturePropertyMap.
-                                            get(WSSecurityConstants.WSS4J_KS_TYPE));
-                            Tr.debug(tc, "signature configuration alias = ", signaturePropertyMap.
-                                            get(WSSecurityConstants.WSS4J_KS_ALIAS));
-                            Tr.debug(tc, "signature configuration ks file = ", signaturePropertyMap.
-                                            get(WSSecurityConstants.WSS4J_KS_FILE));
-                            Tr.debug(tc, "signature configuration password = ", signaturePropertyMap.
-                                            get(WSSecurityConstants.WSS4J_KS_PASSWORD));
-                            Tr.debug(tc, "signature configuration provider = ", signaturePropertyMap.
-                                            get(WSSecurityConstants.WSS4J_CRYPTO_PROVIDER));
+                            Tr.debug(tc, "signature configuration type = ", signaturePropertyMap.get(WSSecurityConstants.WSS4J_KS_TYPE));
+                            Tr.debug(tc, "signature configuration alias = ", signaturePropertyMap.get(WSSecurityConstants.WSS4J_KS_ALIAS));
+                            Tr.debug(tc, "signature configuration ks file = ", signaturePropertyMap.get(WSSecurityConstants.WSS4J_KS_FILE));
+                            Tr.debug(tc, "signature configuration password = ", signaturePropertyMap.get(WSSecurityConstants.WSS4J_KS_PASSWORD));
+                            Tr.debug(tc, "signature configuration provider = ", signaturePropertyMap.get(WSSecurityConstants.WSS4J_CRYPTO_PROVIDER));
                         }
                     } else {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -596,10 +589,13 @@ public class WSSecurityConfiguration implements ConfigurationListener {
 
             }
         }
-        defaultConfigMap.put(SecurityConstants.RETURN_SECURITY_ERROR, true); //@AV999
         if (defaultConfigMap.isEmpty()) {
             Tr.info(tc, "WSSECURITY_NO_CONFIG_DEFINED_PROV");
-        }
+        } /*
+            else if (!(defaultConfigMap.containsKey(SecurityConstants.RETURN_SECURITY_ERROR))) {
+            defaultConfigMap.put(SecurityConstants.RETURN_SECURITY_ERROR, true); //v3
+            }*/
+           
 
     }
 
@@ -648,7 +644,7 @@ public class WSSecurityConfiguration implements ConfigurationListener {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.osgi.service.cm.ConfigurationListener#configurationEvent(org.osgi.service.cm.ConfigurationEvent)
      */
     @Override

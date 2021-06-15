@@ -53,7 +53,7 @@ public class DerbyNetworkClientHelper extends DerbyHelper {
     DerbyNetworkClientHelper(WSManagedConnectionFactoryImpl mcf) {
         super(mcf);
 
-        dataStoreHelper = "com.ibm.websphere.rsadapter.DerbyNetworkServerDataStoreHelper";
+        dataStoreHelperClassName = "com.ibm.websphere.rsadapter.DerbyNetworkServerDataStoreHelper";
 
         mcf.doesStatementCacheIsoLevel = true;
 
@@ -117,6 +117,11 @@ public class DerbyNetworkClientHelper extends DerbyHelper {
 
     @Override
     public void doStatementCleanup(PreparedStatement stmt) throws SQLException {
+        if (dataStoreHelper != null) {
+            doStatementCleanupLegacy(stmt);
+            return;
+        }
+
         // setCursorName not supported in network server
         stmt.setFetchDirection(ResultSet.FETCH_FORWARD);
         stmt.setMaxFieldSize(0);

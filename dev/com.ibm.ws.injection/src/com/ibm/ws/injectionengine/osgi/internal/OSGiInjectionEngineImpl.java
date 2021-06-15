@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,8 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -35,7 +37,6 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -103,16 +104,14 @@ import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSetMap;
 import com.ibm.wsspi.resource.ResourceBindingListener;
 
 @Component(service = {
-                      OSGiInjectionEngineImpl.class,
-                      InjectionEngine.class,
-                      ApplicationMetaDataListener.class,
-                      ModuleMetaDataListener.class,
-                      ComponentMetaDataListener.class,
-                      ApplicationStateListener.class },
+                       OSGiInjectionEngineImpl.class,
+                       InjectionEngine.class,
+                       ApplicationMetaDataListener.class,
+                       ModuleMetaDataListener.class,
+                       ComponentMetaDataListener.class,
+                       ApplicationStateListener.class },
            property = { "service.vendor=IBM" })
-public class OSGiInjectionEngineImpl
-                extends AbstractInjectionEngine
-                implements InjectionEngine, ApplicationMetaDataListener, ModuleMetaDataListener, ComponentMetaDataListener, ApplicationStateListener {
+public class OSGiInjectionEngineImpl extends AbstractInjectionEngine implements InjectionEngine, ApplicationMetaDataListener, ModuleMetaDataListener, ComponentMetaDataListener, ApplicationStateListener {
 
     private static final TraceComponent tc = Tr.register(OSGiInjectionEngineImpl.class);
     private static final TraceComponent tcTWAS = Tr.register(OSGiInjectionEngineImpl.class, InjectionConfigConstants.traceString, InjectionConfigConstants.messageFile);
@@ -125,7 +124,8 @@ public class OSGiInjectionEngineImpl
     private static final BundleContext bundleContext = bundle.getBundleContext();
 
     private static final String OBJECT_FACTORY_NAME = ObjectFactory.class.getName();
-    private static final String OBJECT_FACTORY_FILTER = "(" + Constants.OBJECTCLASS + "=" + OBJECT_FACTORY_NAME + ")";
+    private static final String OBJECT_FACTORY_INFO_NAME = ObjectFactoryInfo.class.getName();
+    private static final long OBJECT_FACTORY_TIMEOUT = TimeUnit.SECONDS.toMillis(10);
 
     private static final AtomicServiceReference<EJBLinkReferenceFactory> ejbLinkReferenceFactorySRRef = new AtomicServiceReference<EJBLinkReferenceFactory>(REFERENCE_EJB_LINK_REFERENCE_FACTORY);
 
@@ -142,14 +142,16 @@ public class OSGiInjectionEngineImpl
     private MetaDataSlot moduleMetaDataSlot;
     private MetaDataSlot componentMetaDataSlot;
 
-    private final ConcurrentServiceReferenceSetMap<String, ResourceFactoryBuilder> resourceFactoryBuilders =
-                    new ConcurrentServiceReferenceSetMap<String, ResourceFactoryBuilder>(REFERENCE_RESOURCE_FACTORY_BUILDERS);
+    private final ConcurrentServiceReferenceSetMap<String, ResourceFactoryBuilder> resourceFactoryBuilders = new ConcurrentServiceReferenceSetMap<String, ResourceFactoryBuilder>(REFERENCE_RESOURCE_FACTORY_BUILDERS);
 
     ResourceRefConfigFactory resourceRefConfigFactory;
     private ResourceRefConfig defaultResourceRefConfig;
 
     private final ReentrantReadWriteLock nonCompLock = new ReentrantReadWriteLock();
     private final OSGiInjectionScopeData globalScopeData = new OSGiInjectionScopeData(null, NamingConstants.JavaColonNamespace.GLOBAL, null, nonCompLock);
+
+    private long objectFactoryWaitTime = OBJECT_FACTORY_TIMEOUT;
+    private final Map<String, ServiceReference<ObjectFactory>> objectFactoryRefs = new HashMap<String, ServiceReference<ObjectFactory>>();
 
     public OSGiInjectionEngineImpl() {
         // initialize() must be called before processors can be registered,
@@ -173,10 +175,10 @@ public class OSGiInjectionEngineImpl
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * This method has been overridden in the OSGI Injection Engine to provide
      * the java: bindings to the naming service through the injection helper. <p>
-     * 
+     *
      * Unlike traditional WAS, the bindings have not been bound into a physical
      * name space, instead, the bindings are used similar to EJBContext.lookup.
      */
@@ -457,8 +459,8 @@ public class OSGiInjectionEngineImpl
 
     /**
      * Gets the injection scope data for a namespace.
-     * 
-     * @param cmd the component metadata, or null if null should be returned
+     *
+     * @param cmd       the component metadata, or null if null should be returned
      * @param namespace the namespace
      * @return the scope data, or null if unavailable
      */
@@ -544,7 +546,7 @@ public class OSGiInjectionEngineImpl
     /**
      * Attempt to create an indirect reference for a resource definition from a
      * resource binding provider.
-     * 
+     *
      * @return an indirect reference object based on a binding provider, or null
      */
     private Reference createDefinitionResourceBindingListenerReference(String refName,
@@ -584,7 +586,7 @@ public class OSGiInjectionEngineImpl
 
     /**
      * Create a reference for a resource definition from a ResourceFactory.
-     * 
+     *
      * @return a ResourceFactory reference object
      */
     private Reference createDefinitionResourceFactoryReference(ComponentNameSpaceConfiguration compNSConfig,
@@ -750,7 +752,7 @@ public class OSGiInjectionEngineImpl
             objectFactory = AccessController.doPrivileged(new PrivilegedExceptionAction<ObjectFactory>() {
                 @Override
                 public ObjectFactory run() throws InjectionException {
-                    return getOSGiObjectFactory(objectFactoryClassName);
+                    return getOSGiObjectFactory(objectFactoryClassName, objectFactoryClass);
 
                 }
             });
@@ -776,7 +778,8 @@ public class OSGiInjectionEngineImpl
         throw new InjectionException("The injection engine failed to load the " + objectFactoryClassName + " ObjectFactory class.");
     }
 
-    private ObjectFactory getOSGiObjectFactory(String objectFactoryClassName) throws InjectionException {
+    @FFDCIgnore({ InterruptedException.class })
+    private ObjectFactory getOSGiObjectFactory(String objectFactoryClassName, Class<? extends ObjectFactory> objectFactoryClass) throws InjectionException {
         if (objectFactoryClassName == null) {
             // This is an internal error indicating that an InjectionBinding was
             // resolved without properly setting an injection or binding object.
@@ -785,24 +788,37 @@ public class OSGiInjectionEngineImpl
             throw new IllegalStateException();
         }
 
-        ServiceReference<?>[] references;
-        try {
-            // Use getAllServiceReferences because the injection bundle usually
-            // won't have import visibility to the implementation class.
-            references = bundleContext.getAllServiceReferences(objectFactoryClassName, OBJECT_FACTORY_FILTER);
-        } catch (InvalidSyntaxException e) {
-            throw new IllegalStateException(e);
-        }
-
-        if (references != null) {
-            for (ServiceReference<?> reference : references) {
-                if (reference.isAssignableTo(bundle, OBJECT_FACTORY_NAME)) {
-                    ObjectFactory objectFactory = (ObjectFactory) bundleContext.getService(reference);
-                    if (objectFactory != null) {
-                        return objectFactory;
+        // Look for the requested ObjectFactory ServiceReference in the map of registered ObjectFactory
+        // references. If not found and the ObjectFactory class is not available, then wait up to
+        // 10 seconds for the ObjectFactory to be registered. If still not found, then disable waiting
+        // and allow the injection/lookup to fail without any further delays.
+        ServiceReference<ObjectFactory> ref = null;
+        synchronized (objectFactoryRefs) {
+            ref = objectFactoryRefs.get(objectFactoryClassName);
+            if (ref == null && objectFactoryClass == null) {
+                long waitTime = objectFactoryWaitTime;
+                long startTime = System.currentTimeMillis();
+                while (ref == null && waitTime > 0) {
+                    try {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                            Tr.debug(tc, "Waiting up to " + waitTime + " for " + objectFactoryClassName);
+                        objectFactoryRefs.wait(waitTime);
+                    } catch (InterruptedException e) {
+                        // ignore; continue
                     }
+                    waitTime = OBJECT_FACTORY_TIMEOUT - (System.currentTimeMillis() - startTime);
+                    ref = objectFactoryRefs.get(objectFactoryClassName);
+                }
+                if (ref == null) {
+                    objectFactoryWaitTime = 0;
                 }
             }
+        }
+
+        if (ref != null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "Obtaining service from ref : " + ref);
+            return bundleContext.getService(ref);
         }
 
         return null;
@@ -833,7 +849,8 @@ public class OSGiInjectionEngineImpl
     }
 
     @Override
-    public void componentMetaDataCreated(MetaDataEvent<ComponentMetaData> event) {}
+    public void componentMetaDataCreated(MetaDataEvent<ComponentMetaData> event) {
+    }
 
     @Override
     public void componentMetaDataDestroyed(MetaDataEvent<ComponentMetaData> event) {
@@ -862,8 +879,7 @@ public class OSGiInjectionEngineImpl
      * Process references declared in application.xml.
      */
     private void processApplicationReferences(EARApplicationInfo appInfo, Application app) throws StateChangeException {
-        Map<JNDIEnvironmentRefType, List<? extends JNDIEnvironmentRef>> allRefs =
-                        new EnumMap<JNDIEnvironmentRefType, List<? extends JNDIEnvironmentRef>>(JNDIEnvironmentRefType.class);
+        Map<JNDIEnvironmentRefType, List<? extends JNDIEnvironmentRef>> allRefs = new EnumMap<JNDIEnvironmentRefType, List<? extends JNDIEnvironmentRef>>(JNDIEnvironmentRefType.class);
         boolean anyRefs = false;
         for (JNDIEnvironmentRefType refType : JNDIEnvironmentRefType.VALUES) {
             List<? extends JNDIEnvironmentRef> refs = refType.getRefs(app);
@@ -903,13 +919,16 @@ public class OSGiInjectionEngineImpl
     }
 
     @Override
-    public void applicationStarted(ApplicationInfo appInfo) {}
+    public void applicationStarted(ApplicationInfo appInfo) {
+    }
 
     @Override
-    public void applicationStopping(ApplicationInfo appInfo) {}
+    public void applicationStopping(ApplicationInfo appInfo) {
+    }
 
     @Override
-    public void applicationStopped(ApplicationInfo appInfo) {}
+    public void applicationStopped(ApplicationInfo appInfo) {
+    }
 
     @org.osgi.service.component.annotations.Reference(name = REFERENCE_RESOURCE_BINDING_LISTENERS,
                                                       service = ResourceBindingListener.class,
@@ -957,14 +976,16 @@ public class OSGiInjectionEngineImpl
         componentMetaDataSlot = slotService.reserveMetaDataSlot(ComponentMetaData.class);
     }
 
-    protected void unsetMetaDataSlotService(MetaDataSlotService slotService) {}
+    protected void unsetMetaDataSlotService(MetaDataSlotService slotService) {
+    }
 
     @org.osgi.service.component.annotations.Reference
     protected void setResourceRefConfigFactory(ResourceRefConfigFactory resourceRefConfigFactory) {
         this.resourceRefConfigFactory = resourceRefConfigFactory;
     }
 
-    protected void unsetResourceRefConfigFactory(ResourceRefConfigFactory resourceRefConfigFactory) {}
+    protected void unsetResourceRefConfigFactory(ResourceRefConfigFactory resourceRefConfigFactory) {
+    }
 
     @org.osgi.service.component.annotations.Reference(name = REFERENCE_EJB_LINK_REFERENCE_FACTORY,
                                                       service = EJBLinkReferenceFactory.class,
@@ -988,6 +1009,35 @@ public class OSGiInjectionEngineImpl
     @Override
     public void unregisterObjectFactoryInfo(ObjectFactoryInfo info) throws InjectionException {
         super.unregisterObjectFactoryInfo(info);
+    }
+
+    @org.osgi.service.component.annotations.Reference(cardinality = ReferenceCardinality.MULTIPLE,
+                                                      policy = ReferencePolicy.DYNAMIC)
+    public void registerObjectFactory(ServiceReference<ObjectFactory> ref) throws InjectionException {
+        String[] objectFactoryClassNames = (String[]) ref.getProperty(Constants.OBJECTCLASS);
+        synchronized (objectFactoryRefs) {
+            for (String objectFactoryClassName : objectFactoryClassNames) {
+                if (!OBJECT_FACTORY_NAME.equals(objectFactoryClassName) && !OBJECT_FACTORY_INFO_NAME.equals(objectFactoryClassName)) {
+                    objectFactoryRefs.put(objectFactoryClassName, ref);
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(tc, "Added ObjectFactory : " + objectFactoryClassName + ", " + ref);
+                    objectFactoryRefs.notifyAll();
+                }
+            }
+        }
+    }
+
+    public void unregisterObjectFactory(ServiceReference<ObjectFactory> ref) throws InjectionException {
+        synchronized (objectFactoryRefs) {
+            for (Iterator<Entry<String, ServiceReference<ObjectFactory>>> iterator = objectFactoryRefs.entrySet().iterator(); iterator.hasNext();) {
+                Entry<String, ServiceReference<ObjectFactory>> entry = iterator.next();
+                if (ref.equals(entry.getValue())) {
+                    iterator.remove();
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(tc, "Removed ObjectFactory : " + entry.getKey() + ", " + ref);
+                }
+            }
+        }
     }
 
     @org.osgi.service.component.annotations.Reference(cardinality = ReferenceCardinality.MULTIPLE,

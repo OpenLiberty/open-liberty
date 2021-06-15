@@ -158,7 +158,7 @@ instrument.classesExcludes: com/ibm/ws/security/saml/sso20/internal/resources/Sa
     com.ibm.ws.org.objenesis:objenesis;version=1.0, \
     fattest.simplicity;version=latest, \
     com.ibm.ws.security.test.common;version=latest, \
-    commons-logging:commons-logging;version=1.1.3, \
+    io.openliberty.org.apache.commons.logging;version=latest, \
     com.ibm.ws.security.registry;version=latest, \
     com.ibm.ws.kernel.boot;version=latest, \
     com.ibm.ws.org.apache.santuario.xmlsec.1.5.2;version=latest, \
@@ -166,13 +166,13 @@ instrument.classesExcludes: com/ibm/ws/security/saml/sso20/internal/resources/Sa
     com.ibm.ws.security.authorization;version=latest, \
     com.ibm.ws.adaptable.module;version=latest, \
     com.ibm.ws.container.service.compat;version=latest, \
-    commons-io:commons-io;version=2.6, \
+    com.ibm.ws.org.apache.commons.io;version=latest, \
     com.ibm.ws.logging;version=latest, \
     com.ibm.ws.crypto.passwordutil;version=latest, \
     org.slf4j:slf4j-api;version=1.7.7, \
     org.slf4j:slf4j-jdk14;version=1.7.7, \
     com.ibm.ws.org.apache.commons.fileupload;version=latest, \
-    com.ibm.ws.org.apache.commons.codec;version=latest, \
+    io.openliberty.org.apache.commons.codec;version=latest, \
     com.ibm.ws.security.common;version=latest, \
     com.ibm.ws.container.service;version=latest, \
     com.ibm.ws.threading;version=latest, \

@@ -70,7 +70,7 @@ public class WCCustomProperties {
 
     public static String ERROR_PAGE_COMPATIBILITY;
     public static boolean MAP_FILTERS_TO_ASTERICK;
-    public static boolean SUPPRESS_HTML_RECURSIVE_ERROR_OUTPUT;
+    public static boolean SUPPRESS_HTML_RECURSIVE_ERROR_OUTPUT = true;         //Property is not read by the server starting 21.0.0.7; default is always true
     public static boolean THROW_MISSING_JSP_EXCEPTION;          //PK57843
 
     //638627 had to change default to true for CTS test case
@@ -322,6 +322,9 @@ public class WCCustomProperties {
     //21.0.0.4
     public static boolean SET_HTML_CONTENT_TYPE_ON_ERROR; 
 
+    //21.0.0.6
+    public static boolean EXCLUDE_ALL_HANDLED_TYPES_CLASSES;
+
     static {
         setCustomPropertyVariables(); //initializes all the variables
     }
@@ -415,6 +418,7 @@ public class WCCustomProperties {
         WCCustomProperties.FullyQualifiedPropertiesMap.put("getrealpathreturnsqualifiedPath", "com.ibm.ws.webcontainer.getrealpathreturnsqualifiedPath");
         WCCustomProperties.FullyQualifiedPropertiesMap.put("redirecttorelativeurl", "com.ibm.ws.webcontainer.redirecttorelativeurl");
         WCCustomProperties.FullyQualifiedPropertiesMap.put("sethtmlcontenttypeonerror", "com.ibm.ws.webcontainer.sethtmlcontenttypeonerror"); //PH34054
+        WCCustomProperties.FullyQualifiedPropertiesMap.put("excludeallhandledtypesclasses", "com.ibm.ws.webcontainer.excludeallhandledtypesclasses");
     }
 
     //some properties require "com.ibm.ws.webcontainer." on the front
@@ -433,6 +437,7 @@ public class WCCustomProperties {
             Tr.entry(tc, "setCustomProperties");
         }
 
+        customProps = WebContainer.getWebContainerProperties();
         String ky;
         String propertyKey;
 
@@ -537,7 +542,7 @@ public class WCCustomProperties {
 
         ERROR_PAGE_COMPATIBILITY = customProps.getProperty("com.ibm.ws.webcontainer.contenttypecompatibility");
         MAP_FILTERS_TO_ASTERICK = Boolean.valueOf(customProps.getProperty("com.ibm.ws.webcontainer.mapfilterstoasterisk")).booleanValue();
-        SUPPRESS_HTML_RECURSIVE_ERROR_OUTPUT = Boolean.valueOf(customProps.getProperty("com.ibm.ws.webcontainer.suppresshtmlrecursiveerroroutput")).booleanValue();
+        //SUPPRESS_HTML_RECURSIVE_ERROR_OUTPUT = Boolean.valueOf(customProps.getProperty("com.ibm.ws.webcontainer.suppresshtmlrecursiveerroroutput")).booleanValue(); // issue 14242, no longer read by the server started 21.0.0.7
         THROW_MISSING_JSP_EXCEPTION = Boolean.valueOf(customProps.getProperty("com.ibm.ws.webcontainer.throwmissingjspexception")).booleanValue(); //PK57843
 
         //638627 had to change default to true for CTS test case
@@ -626,7 +631,6 @@ public class WCCustomProperties {
         
         //Start 7.0.0.19
         IFMODIFIEDSINCE_NEWER_THAN_FILEMODIFIED_TIMESTAMP = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.modifiedsincelaterthanfiletimestamp", "false")).booleanValue(); //PM36341
-        ALLOW_QUERY_PARAM_WITH_NO_EQUAL = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.allowqueryparamwithnoequal")).booleanValue(); //PM35450
         //End 7.0.0.19
 
         //Begin 8.0
@@ -810,14 +814,24 @@ public class WCCustomProperties {
             DISABLE_X_POWERED_BY = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.disablexpoweredby","true")).booleanValue();
             STOP_APP_STARTUP_ON_LISTENER_EXCEPTION = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.stopappstartuponlistenerexception" , "true")).booleanValue();
             DECODE_URL_PLUS_SIGN = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.decodeurlplussign", "false")).booleanValue(); 
+            ALLOW_QUERY_PARAM_WITH_NO_EQUAL = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.allowqueryparamwithnoequal", "true")).booleanValue();
+            //21.0.0.6
+            EXCLUDE_ALL_HANDLED_TYPES_CLASSES = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.excludeallhandledtypesclasses", "true")).booleanValue();
         } else {
             DISABLE_X_POWERED_BY = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.disablexpoweredby","false")).booleanValue();
             STOP_APP_STARTUP_ON_LISTENER_EXCEPTION = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.stopappstartuponlistenerexception" , "false")).booleanValue();
             DECODE_URL_PLUS_SIGN = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.decodeurlplussign", "true")).booleanValue();
+            ALLOW_QUERY_PARAM_WITH_NO_EQUAL = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.allowqueryparamwithnoequal", "false")).booleanValue();
+            //21.0.0.6
+            EXCLUDE_ALL_HANDLED_TYPES_CLASSES = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.excludeallhandledtypesclasses", "false")).booleanValue();
+
         }
         
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, methodName, "DISABLE_X_POWERED_BY [" + DISABLE_X_POWERED_BY + "], STOP_APP_STARTUP_ON_LISTENER_EXCEPTION ["+ STOP_APP_STARTUP_ON_LISTENER_EXCEPTION + "], DECODE_URL_PLUS_SIGN [" + DECODE_URL_PLUS_SIGN + "]");
+            Tr.debug(tc, methodName, "DISABLE_X_POWERED_BY [" + DISABLE_X_POWERED_BY + "], " +
+                                     "STOP_APP_STARTUP_ON_LISTENER_EXCEPTION ["+ STOP_APP_STARTUP_ON_LISTENER_EXCEPTION + "], " +
+                                     "DECODE_URL_PLUS_SIGN [" + DECODE_URL_PLUS_SIGN + "], " +
+                                     "ALLOW_QUERY_PARAM_WITH_NO_EQUAL [" + ALLOW_QUERY_PARAM_WITH_NO_EQUAL + "]");
         }
     }
 

@@ -36,7 +36,8 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServerFactory;
 
 @RunWith(FATRunner.class)
-@Mode(TestMode.FULL)
+//@Mode(TestMode.FULL)
+@Mode(TestMode.QUARANTINE)
 @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
 public class TrustedActiveDirectoryDomainsTest extends CommonTest {
 

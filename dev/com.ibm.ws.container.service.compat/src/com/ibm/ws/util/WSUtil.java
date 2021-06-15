@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,11 +13,18 @@ package com.ibm.ws.util;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
+import com.ibm.ejs.ras.Tr;
+import com.ibm.ejs.ras.TraceComponent;
+
 public class WSUtil {
-
+    // Using the same trace style as used by
+    // com.ibm.ws.util.ThreadPool
+    private static TraceComponent tc =
+        Tr.register(WSUtil.class, "Runtime", "com.ibm.ws.runtime.runtime");
+    
+    // rewrote method to improve perf (251221)    
     @SuppressWarnings("unchecked")
-    public static String resolveURI(String uriToResolve) { // rewrote method to improve perf (251221)
-
+    public static String resolveURI(String uriToResolve) {
         //Not much to resolve in this case
         if (uriToResolve == null) {
             return null;
@@ -91,6 +98,7 @@ public class WSUtil {
 
         StringTokenizer uriParser = new StringTokenizer(uriToResolve, "/", false);
         String currentElement = null;
+        @SuppressWarnings("rawtypes")
         ArrayList uriElements = new ArrayList();
 
         while (uriParser.hasMoreTokens() == true) {
@@ -104,8 +112,27 @@ public class WSUtil {
             if (currentElement.equals("..") == true) {
                 if (uriElements.size() < 1) {
                     // URI is outside the current context
-                    throw new java.lang.IllegalArgumentException("The specified URI, " + uriToResolve
-                                                                 + ", is invalid because it contains more references to parent directories (\"..\") than is possible.");
+
+                    // Start: Issue 17123:
+                    // "UPDATE ERROR OUTPUT TO MEET THE MESSAGING STANDARD" 
+                    //
+                    // Per the issue, the current text is to be changed to a
+                    // generic message, and error details are to be written
+                    // to server logs.
+                    
+                    // throw new java.lang.IllegalArgumentException(
+                    //     "The specified URI, " + uriToResolve + ", is invalid because" +
+                    //     " it contains more references to parent directories (\"..\")" +
+                    //     " than is possible.");
+
+                    if ( TraceComponent.isAnyTracingEnabled() && tc.isErrorEnabled() ) {
+                        Tr.error(tc,
+                            "Non-valid URI [ " + uriToResolve + " ]:" +
+                            " The URI contains too many parent directory elements (\"..\")."); 
+                    }
+                    throw new IllegalArgumentException("Non-valid URI.");
+
+                    // End: Issue 17123
                 }
 
                 uriElements.remove(uriElements.size() - 1);
@@ -138,34 +165,4 @@ public class WSUtil {
         }
 
     }
-
-    public static void main(String args[]) {
-
-        String question = "/hello\\\\there\\////dog?queryString=5";
-        System.out.println(question + ": resolvedURI = [" + WSUtil.resolveURI(question) + "]");
-        String question2 = "/hello/../dog/";
-        System.out.println(question2 + ": resolvedURI = [" + WSUtil.resolveURI(question2) + "]");
-        String question3 = "/hello/./dog/";
-        System.out.println(question3 + ": resolvedURI = [" + WSUtil.resolveURI(question3) + "]");
-        String question4 = "/hello//dog/";
-        System.out.println(question4 + ": resolvedURI = [" + WSUtil.resolveURI(question4) + "]");
-        String question5 = "/hello//dog/?hello=/../5";
-        System.out.println(question5 + ": resolvedURI = [" + WSUtil.resolveURI(question5) + "]");
-        String question6 = "/hello/dog/?hello=/../5";
-        System.out.println(question6 + ": resolvedURI = [" + WSUtil.resolveURI(question6) + "]");
-        String question7 = "?hello=/../5";
-        System.out.println(question7 + ": resolvedURI = [" + WSUtil.resolveURI(question7) + "]");
-        String question8 = "todd?hello=\\string";
-        System.out.println(question8 + ": resolvedURI = [" + WSUtil.resolveURI(question8) + "]");
-        String question9 = "?";
-        System.out.println(question9 + ": resolvedURI = [" + WSUtil.resolveURI(question9) + "]");
-        String question10 = "/servlet/snoop";
-        System.out.println(question10 + ": resolvedURI = [" + WSUtil.resolveURI(question10) + "]");
-        String question11 = "\\servlet\\snoop";
-        System.out.println(question11 + ": resolvedURI = [" + WSUtil.resolveURI(question11) + "]");
-        String question12 = "\\";
-        System.out.println(question12 + ": resolvedURI = [" + WSUtil.resolveURI(question12) + "]");
-
-    }
-
 }

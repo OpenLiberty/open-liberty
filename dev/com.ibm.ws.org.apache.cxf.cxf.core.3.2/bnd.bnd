@@ -8,11 +8,11 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.apache.cxf:cxf-core;3.4.1.20201002}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;${repo;org.apache.cxf:cxf-core;3.4.3}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 
 -includeresource: \
-   @${repo;org.apache.cxf:cxf-core;3.4.1.20201002;EXACT}!/!*-INF/*,\
+   @${repo;org.apache.cxf:cxf-core;3.4.3;EXACT}!/!*-INF/*,\
    org/apache/cxf=${bin}/org/apache/cxf,\
    META-INF=resources/META-INF
    
@@ -22,9 +22,9 @@ instrument.classesExcludes: org/apache/cxf/common/jaxb/*.class, \
 -buildpath: \
   javax.activation:activation;version=1.1,\
   com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
-  org.apache.cxf:cxf-core;strategy=exact;version=3.4.1.20201002,\
+  org.apache.cxf:cxf-core;strategy=exact;version=3.4.3,\
   com.ibm.ws.logging.core,\
-  org.apache.cxf:cxf-rt-transports-http;strategy=exact;version=3.4.1.20201002,\
+  org.apache.cxf:cxf-rt-transports-http;strategy=exact;version=3.4.3,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   com.ibm.websphere.org.osgi.service.component;version=latest,\
   com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\

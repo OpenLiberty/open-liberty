@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class GenerateCategories {
     
     //Constants
-    static final boolean DEBUG = false;
+    static final boolean DEBUG = true;
     static final String TEST_CATEGORY_DIR = ".github/test-categories/";
     static final String MODIFIED_FILES_DIFF = ".github/modified_files.diff";
 
@@ -200,12 +200,16 @@ public class GenerateCategories {
             if (modifiedFile.startsWith(TEST_CATEGORY_DIR))
                 continue;
             if (!modifiedFile.startsWith("dev/")) {
-                debug("WARN: Found modified file outside of 'dev/' tree.");
+                debug("WARN: Found modified file outside of 'dev/' tree: " + modifiedFile);
                 modifiedProjects.add("INFRA_OR_UNKNOWN");
             }
-            String projectName = modifiedFile.substring(4);
-            projectName = projectName.substring(0, projectName.indexOf('/'));
-            modifiedProjects.add(projectName);
+            try {
+                String projectName = modifiedFile.substring(4);
+                projectName = projectName.substring(0, projectName.indexOf('/'));
+                modifiedProjects.add(projectName);
+            } catch (StringIndexOutOfBoundsException e) {
+                debug("Could not parse modifiedFile=" + modifiedFile);
+            }
         }
 
         return modifiedProjects;
@@ -233,6 +237,6 @@ public class GenerateCategories {
     private static void debug(Object msg) {
         if (!DEBUG)
             return;
-        System.out.println(msg);
+        System.err.println(msg);
     }
 }

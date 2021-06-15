@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    This file is an EXAMPLE policy file.  While the policy presented in this 
+    example file is illustrative of some simple cases, it relies on the names of
+    non-existent example services and the example attributes demonstrated in the
+    default attribute-resolver.xml file.
+
+    This example does contain some usable "general purpose" policies that may be
+    useful in conjunction with specific deployment choices, but those policies may
+    not be applicable to your specific needs or constraints.    
+-->
+<AttributeFilterPolicyGroup id="ShibbolethFilterPolicy"
+        xmlns="urn:mace:shibboleth:2.0:afp"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="urn:mace:shibboleth:2.0:afp http://shibboleth.net/schema/idp/shibboleth-afp.xsd">
+
+    <!--
+    Example rule relying on a locally applied tag in metadata to trigger attribute
+    release of some specific attributes. Add additional attributes as desired.
+    -->
+	<AttributeFilterPolicy id="Per-Attribute-singleValued">
+	    <PolicyRequirementRule xsi:type="ANY" />
+	 
+	    <AttributeRule attributeID="eduPersonPrincipalName">
+	        <PermitValueRule xsi:type="EntityAttributeExactMatch"
+	            attributeName="http://shibboleth.net/ns/attributes/releaseAllValues"
+	            attributeNameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri"
+	            attributeValue="eduPersonPrincipalName" />
+	    </AttributeRule>
+	 
+	    <AttributeRule attributeID="mail">
+	        <PermitValueRule xsi:type="EntityAttributeExactMatch"
+	            attributeName="http://shibboleth.net/ns/attributes/releaseAllValues"
+	            attributeNameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri"
+	            attributeValue="mail" />
+	    </AttributeRule>
+	</AttributeFilterPolicy>
+
+    <!--
+    Same as above but more efficient form for an attribute with multiple values.
+    -->
+    <AttributeFilterPolicy id="Per-Attribute-Affiliation">
+        <PolicyRequirementRule xsi:type="EntityAttributeExactMatch"
+            attributeName="http://shibboleth.net/ns/attributes/releaseAllValues"
+            attributeNameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri"
+            attributeValue="eduPersonScopedAffiliation" />
+     
+        <AttributeRule attributeID="eduPersonScopedAffiliation" permitAny="true" />
+    </AttributeFilterPolicy>
+
+    <!--
+    Example rule for honoring Subject ID requirement tag in metadata.
+    The example supplies pairwise-id if subject-id isn't explicitly required.
+    -->
+    <AttributeFilterPolicy id="subject-identifiers">
+        <PolicyRequirementRule xsi:type="ANY" />
+
+        <AttributeRule attributeID="samlPairwiseID">
+            <PermitValueRule xsi:type="OR">
+                <Rule xsi:type="EntityAttributeExactMatch"
+                    attributeName="urn:oasis:names:tc:SAML:profiles:subject-id:req"
+                    attributeNameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri"
+                    attributeValue="pairwise-id" />
+                <Rule xsi:type="EntityAttributeExactMatch"
+                    attributeName="urn:oasis:names:tc:SAML:profiles:subject-id:req"
+                    attributeNameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri"
+                    attributeValue="any" />
+            </PermitValueRule>
+        </AttributeRule>
+
+        <AttributeRule attributeID="samlSubjectID">
+            <PermitValueRule xsi:type="EntityAttributeExactMatch"
+                attributeName="urn:oasis:names:tc:SAML:profiles:subject-id:req"
+                attributeNameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri"
+                attributeValue="subject-id" />
+        </AttributeRule>
+    </AttributeFilterPolicy>
+
+    <!-- Release an additional attribute to an SP. -->
+    <AttributeFilterPolicy id="example1">
+        <PolicyRequirementRule xsi:type="Requester" value="https://sp.example.org" />
+
+        <AttributeRule attributeID="uid" permitAny="true" />
+    </AttributeFilterPolicy>
+
+    <!-- Release eduPersonScopedAffiliation to two specific SPs. -->
+    <AttributeFilterPolicy id="example2">
+        <PolicyRequirementRule xsi:type="OR">
+            <Rule xsi:type="Requester" value="https://sp.example.org" />
+            <Rule xsi:type="Requester" value="https://another.example.org/shibboleth" />
+        </PolicyRequirementRule>
+
+        <AttributeRule attributeID="eduPersonScopedAffiliation" permitAny="true" />
+    </AttributeFilterPolicy>
+    
+</AttributeFilterPolicyGroup>

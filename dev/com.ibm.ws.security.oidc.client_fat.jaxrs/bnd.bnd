@@ -1,0 +1,47 @@
+#*******************************************************************************
+# Copyright (c) 2021 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+tested.features: restfulwsclient-3.0, restfulws-3.0, appsecurity-4.0, expressionlanguage-4.0, pages-3.0
+
+src: \
+  fat/src, \
+  test-applications/jaxrsclient.war/src, \
+  test-applications/simplejaxrsclient.war/src
+
+fat.project: true
+
+-buildpath: \
+	com.ibm.websphere.javaee.jsonp.1.0;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+	com.ibm.websphere.security;version=latest,\
+	com.ibm.ws.com.google.gson.2.2.4;version=latest,\
+	com.ibm.ws.com.google.guice.2.0;version=latest,\
+	com.ibm.ws.com.meterware.httpunit.1.7;version=latest,\
+	httpunit:httpunit;version='1.7',\
+	com.ibm.ws.common.encoder;version=latest,\
+	com.ibm.ws.net.oauth.jsontoken.1.1-r42;version=latest,\
+	com.ibm.ws.org.openid4java.0.9.7;version=latest,\
+	com.ibm.ws.security.fat.common;version=latest,\
+	com.ibm.ws.security.fat.common.jwt;version=latest,\
+	com.ibm.ws.security.fat.common.social;version=latest,\
+	com.ibm.ws.security.oauth.oidc_fat.common;version=latest,\
+	com.ibm.ws.security.openidconnect.clients.common;version=latest,\
+	com.ibm.ws.security.openidconnect.common;version=latest,\
+	io.openliberty.org.apache.commons.codec;version=latest,\
+	io.openliberty.org.apache.commons.logging;version=latest,\
+	net.sourceforge.htmlunit:htmlunit;version='2.44.0',\
+	com.ibm.ws.org.apache.directory.server;version=latest,\
+	com.ibm.websphere.javaee.jaxrs.2.0;version=latest,\
+	javax.ws.rs-api;version=latest,\
+	com.ibm.ws.security.jwt;version=latest,\
+	com.ibm.ws.security.oauth.2.0;version=latest

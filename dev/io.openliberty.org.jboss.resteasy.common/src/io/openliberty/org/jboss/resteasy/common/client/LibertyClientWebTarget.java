@@ -14,8 +14,6 @@ import java.net.URI;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
@@ -76,6 +74,8 @@ public class LibertyClientWebTarget extends ClientWebTarget {
             // incomplete url encountered from uriBuilder.build, we can't act on it
         }
 
+        JAXRSClientConstants.mapProperties(configuration);
+        
         // for timeouts and proxy settings, update ClientBuilder
         Long timeout = toLong(configuration, JAXRSClientConstants.CONNECTION_TIMEOUT);
         if (timeout != null) {
@@ -84,6 +84,10 @@ public class LibertyClientWebTarget extends ClientWebTarget {
         timeout = toLong(configuration, JAXRSClientConstants.RECEIVE_TIMEOUT);
         if (timeout != null) {
             builder.readTimeout(timeout, TimeUnit.MILLISECONDS);
+        }
+        Boolean followRedirects = toBoolean(configuration, JAXRSClientConstants.AUTO_FOLLOW_REDIRECTS);
+        if (followRedirects != null) {
+            ((LibertyResteasyClientImpl)client).setAutoFollowRedirects(followRedirects);
         }
         String proxyHost = (String) configuration.getProperty(ResteasyClientBuilder.PROPERTY_PROXY_HOST);
         if (proxyHost != null) {
@@ -121,6 +125,21 @@ public class LibertyClientWebTarget extends ClientWebTarget {
             return (Integer) o;
         } catch (ClassCastException | NumberFormatException ex) {
             Tr.warning(tc, "INVALID_INT_PROPERTY_CWWKW1303W", key, o);
+        }
+        return null;
+    }
+
+    private static Boolean toBoolean(ClientConfiguration configuration, String key) {
+        Object o = configuration.getProperty(key);
+        if (o == null) return null;
+        if (o instanceof Boolean) return (Boolean)o;
+        if (o instanceof String) return Boolean.parseBoolean((String)o);
+        
+        try {
+            // try direct cast - log a warning if this fails
+            return (Boolean) o;
+        } catch (ClassCastException ex) {
+            Tr.warning(tc, "INVALID_BOOLEAN_PROPERTY_CWWKW1304W", key, o);
         }
         return null;
     }

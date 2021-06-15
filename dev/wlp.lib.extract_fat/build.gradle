@@ -11,6 +11,15 @@ task addRequiredFiles(type: Copy) {
   }
 }
 
-autoFVT {
-  dependsOn addRequiredFiles
+autoFVT.dependsOn ':wlp.lib.extract:build'
+autoFVT.dependsOn addRequiredFiles
+
+autoFVT.doLast {
+  /*
+   * Copy wlp.lib.extract.jar for doing bin/server package command
+   */
+  copy {
+  	from new File('../wlp.lib.extract/build/libs', 'wlp.lib.extract.jar')
+  	into new File(autoFvtDir, 'lib/LibertyFATTestFiles')
+  }
 }

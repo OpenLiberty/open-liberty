@@ -7,10 +7,10 @@ IBM-API-Package: jakarta.jms; version="3.0"; type="spec", \
 IBM-ShortName: messagingClient-3.0
 WLP-AlsoKnownAs: wasJmsClient-3.0
 Subsystem-Name: Messaging Server 3.0 Client
--features=io.openliberty.messaging-3.0.internal, \
- com.ibm.websphere.appserver.channelfw-1.0, \
- com.ibm.websphere.appserver.transaction-2.0, \
- com.ibm.websphere.appserver.eeCompatible-9.0
+-features=com.ibm.websphere.appserver.channelfw-1.0, \
+  io.openliberty.messaging-3.0.internal, \
+  com.ibm.websphere.appserver.eeCompatible-9.0, \
+  com.ibm.websphere.appserver.transaction-2.0
 -bundles=com.ibm.ws.messaging.common, \
  com.ibm.ws.resource, \
  com.ibm.ws.messaging.utils, \

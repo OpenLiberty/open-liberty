@@ -20,7 +20,7 @@ repo.generateChecksums.path: ${path;\
     ${repo;com.ibm.websphere.org.osgi.core}}
     
 repo.nlsTasks.path: ${path;\
-    ${repo;commons-io:commons-io;2.4},\
+    ${repo;commons-io:commons-io;2.8.0},\
     ${repo;commons-lang:commons-lang;2.4},\
     ${repo;org.apache.commons:commons-math;2.2},\
     ${repo;com.ibm.ws.componenttest:mantis-collections;2.5.0},\
@@ -34,7 +34,7 @@ repo.featureTasks.path: ${path;\
     ${repo;com.ibm.ws.kernel.boot.core},\
     ${repo;com.ibm.ws.logging.core},\
     ${repo;biz.aQute.bnd:biz.aQute.bnd;5.3.0},\
-    ${repo;org.apache.ant:ant;1.9.6},\
+    ${repo;com.ibm.ws.org.apache.ant},\
     ${repo;com.ibm.ws.componenttest:infra.buildtasks-core;4.0.0},\
     ${repo;org.jsoup:jsoup;1.7.2},\
     ${repo;org.apache.aries:org.apache.aries.util;1.1.3},\
@@ -47,7 +47,7 @@ repo.generateRepositoryContent.path: ${path;\
     ${repo;com.ibm.ws.kernel.feature.core},\
     ${repo;com.ibm.ws.logging.core},\
     ${repo;wlp-generateChecksums},\
-    ${repo;org.apache.ant:ant;1.9.6},\
+    ${repo;com.ibm.ws.org.apache.ant},\
     ${repo;org.jsoup:jsoup;1.7.2},\
     ${repo;org.apache.aries:org.apache.aries.util;1.1.3},\
     ${repo;org.osgi:org.osgi.core;6.0.0}}
@@ -59,7 +59,7 @@ repo.repositoryGenerator.path: ${path;\
     ${repo;com.ibm.ws.kernel.boot.core},\
     ${repo;com.ibm.ws.kernel.feature.core},\
     ${repo;com.ibm.ws.logging.core},\
-    ${repo;org.apache.ant:ant;1.9.6},\
+    ${repo;com.ibm.ws.org.apache.ant},\
     ${repo;javax.json:javax.json-api;1.1.2},\
     ${repo;org.glassfish:javax.json;1.1.2},\
     ${repo;org.jsoup:jsoup;1.7.2},\
@@ -68,8 +68,8 @@ repo.repositoryGenerator.path: ${path;\
 
 repo.mavenRepoTasks.path: ${path;\
     ${repo;wlp-mavenRepoTasks},\
-    ${repo;org.apache.ant:ant;1.9.6},\
-    ${repo;commons-io:commons-io;2.4},\
+    ${repo;com.ibm.ws.org.apache.ant},\
+    ${repo;commons-io:commons-io;2.8.0},\
     ${repo;commons-lang:commons-lang;2.4},\
     ${repo;javax.json:javax.json-api;1.1.2},\
     ${repo;org.glassfish:javax.json;1.1.2},\
@@ -79,4 +79,4 @@ repo.mavenRepoTasks.path: ${path;\
 #    ${repo;org.codehaus.plexus:plexus-utils;3.0.24}}
 
 repo.junitReportTask.path: ${path;\
-    ${repo;org.apache.ant:ant-junit;1.9.6}}
+    ${repo;com.ibm.ws.org.apache.ant-junit}}

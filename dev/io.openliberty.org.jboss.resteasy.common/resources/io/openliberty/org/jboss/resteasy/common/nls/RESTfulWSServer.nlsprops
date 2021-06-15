@@ -68,3 +68,11 @@ INVALID_INT_PROPERTY_CWWKW1303W=CWWKW1303W: The {0} client property must be an i
 INVALID_INT_PROPERTY_CWWKW1303W.explanation=Client properties, such as proxy port settings, must be configured as a positive integer or a string that can be converted to an integer. This message indicates that a client property was configured with an invalid value. This property will be ignored.
 INVALID_INT_PROPERTY_CWWKW1303W.useraction=Review the application code and server configuration to determine where this property was set incorrectly and either remove the property or change it to a valid integer value.
 
+INVALID_BOOLEAN_PROPERTY_CWWKW1304W=CWWKW1304W: The {0} client property must be a boolean, but was configured incorrectly with {1}. This setting will be ignored.
+INVALID_BOOLEAN_PROPERTY_CWWKW1304W.explanation=Client properties, such as whether to automatically follow redirects, must be configured as a boolean or a string that can be converted to an boolean. This message indicates that a client property was is set to an invalid value. This property will be ignored.
+INVALID_BOOLEAN_PROPERTY_CWWKW1304W.useraction=Review the application code and server configuration to determine where this property was set incorrectly and either remove the property or change it to a valid boolean value.
+
+# Same message as in /com.ibm.ws.jaxrs.2.0.client/resources/com/ibm/ws/jaxrs20/client/internal/resources/JAXRSClientMessages.nlsprops
+warn_missing_mpjwt_token=CWWKW0707W: The [{0}] attribute in the [{1}] configuration is set to [{2}], but the MicroProfile JSON Web Token (JWT) is not available. The request does not contain an Authorization header with the token.
+warn_missing_mpjwt_token.explanation=The runtime failed to find the MicroProfile JWT in the runAs subject. This error usually indicates a problem with the authentication. Make sure that no errors are encountered while the MicroProfile JWT feature authenticates a user.
+warn_missing_mpjwt_token.useraction=Check the user action for any prior errors that the server logged.

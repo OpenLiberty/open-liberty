@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.fat.util.FatLogHandler;
+import com.ibm.ws.fat.wc.tests.WC5GetContextPath;
 import com.ibm.ws.fat.wc.tests.WC5JakartaServletTest;
 import com.ibm.ws.fat.wc.tests.WCAddJspFileTest;
 import com.ibm.ws.fat.wc.tests.WCApplicationMBeanStatusTest;
@@ -25,6 +26,7 @@ import com.ibm.ws.fat.wc.tests.WCEncodingTest;
 import com.ibm.ws.fat.wc.tests.WCGetMappingSlashStarTest;
 import com.ibm.ws.fat.wc.tests.WCGetMappingTest;
 import com.ibm.ws.fat.wc.tests.WCPushBuilderTest;
+import com.ibm.ws.fat.wc.tests.WCSCIHandlesTypesTest;
 import com.ibm.ws.fat.wc.tests.WCSameSiteCookieAttributeTests;
 import com.ibm.ws.fat.wc.tests.WCSendRedirectRelativeURLDefault;
 import com.ibm.ws.fat.wc.tests.WCSendRedirectRelativeURLTrue;
@@ -83,7 +85,9 @@ import componenttest.rules.repeater.RepeatTests;
                 WCServletPathForDefaultMappingFalse.class,
                 WCGetMappingSlashStarTest.class,
                 WCSendRedirectRelativeURLTrue.class,
-                WCSendRedirectRelativeURLDefault.class
+                WCSendRedirectRelativeURLDefault.class,
+                WC5GetContextPath.class,
+                WCSCIHandlesTypesTest.class
 })
 
 public class FATSuite {

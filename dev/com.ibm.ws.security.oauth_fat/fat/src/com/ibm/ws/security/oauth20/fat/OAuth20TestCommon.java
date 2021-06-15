@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,6 +39,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestName;
+import org.slf4j.LoggerFactory;
 
 import com.ibm.websphere.simplicity.config.MongoDBElement;
 import com.ibm.websphere.simplicity.log.Log;
@@ -53,6 +54,15 @@ import com.meterware.httpunit.WebResponse;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.LDAPUtils;
+import de.flapdoodle.embed.mongo.Command;
+import de.flapdoodle.embed.mongo.MongodExecutable;
+import de.flapdoodle.embed.mongo.MongodStarter;
+import de.flapdoodle.embed.mongo.config.Defaults;
+import de.flapdoodle.embed.mongo.config.MongodConfig;
+import de.flapdoodle.embed.mongo.config.Net;
+import de.flapdoodle.embed.mongo.distribution.Version;
+import de.flapdoodle.embed.process.config.RuntimeConfig;
+import de.flapdoodle.embed.process.runtime.Network;
 
 public class OAuth20TestCommon {
 
@@ -83,6 +93,8 @@ public class OAuth20TestCommon {
     final static String DB_PWD = "dbPwd";
     final static String DB_USER = "dbUser";
     static String dbInfo = "";
+
+    private static MongodExecutable mongodExecutable = null;
 
     static {
         try {
@@ -150,6 +162,20 @@ public class OAuth20TestCommon {
 
     private static String[] expectedMessages;
 
+    private static boolean runRemote = true;
+
+    static {
+        /*
+         * Local mongoDB does not run on z/OS, use remote
+         */
+        //isZOS = LibertyServerUtils.isZOS();
+        if (runRemote) {
+            Log.info(thisClass, "staticSetup", "Will connect to remote mongoDB server.");
+        } else {
+            Log.info(thisClass, "staticSetup", "Will start local mongoDB server.");
+        }
+    }
+
     @Before
     public void beforeTest() {
         /*
@@ -210,11 +236,11 @@ public class OAuth20TestCommon {
             isRunningCustomStore = true;
             server.installUserBundle("security.custom.store_1.0");
             server.installUserFeature("customStoreSample-1.0");
-            setupRemoteMongoDBConfig(server);
+            setupMongoDBConfig(server);
         } else if (_server.equals(MONGO_STORE_BELL_SERVER) || _server.equals(MONGO_STORE_BELL_SERVER2) || _server.equals(MONGO_STORE_BELL_SERVER3)) {
             Log.info(thisClass, thisMethod, "Add CustomStore Bell");
             isRunningCustomStore = true;
-            setupRemoteMongoDBConfig(server);
+            setupMongoDBConfig(server);
         }
 
         // start the test server and wait for it to complete starting
@@ -250,6 +276,60 @@ public class OAuth20TestCommon {
         printTestStart();
         init();
         return;
+    }
+
+    private void setupMongoDBConfig(LibertyServer server) throws Exception {
+        String methodName = "setupMongoDBConfig";
+        if (runRemote) {
+            setupRemoteMongoDBConfig(server);
+            return;
+        }
+
+        /*
+         * Get the MongoDB connection properties. These are read in from the
+         * mongoDB.props file.
+         */
+        String mongodbName = "oauthMongoDB";
+        String mongodbHost = "localHost";
+        int mongodbPort = Network.getFreeServerPort();
+
+        Log.info(thisClass, methodName, "Populate mongo db props file for CustomStoreSample use.");
+        File tmpFile = new File("lib/LibertyFATTestFiles/", MONGO_PROPS_FILE);
+        tmpFile.getParentFile().mkdirs();
+        try {
+            BufferedWriter out = new BufferedWriter(new FileWriter(tmpFile));
+            try {
+                out.write("DBNAME:" + mongodbName);
+                out.write("\nHOST:" + mongodbHost);
+                out.write("\nPORT:" + mongodbPort);
+            } finally {
+                out.close();
+            }
+
+            server.copyFileToLibertyServerRoot(MONGO_PROPS_FILE);
+        } catch (IllegalStateException e) {
+            Log.info(thisClass, methodName, "Failed to create props file " + MONGO_PROPS_FILE);
+            e.printStackTrace();
+        } finally {
+            tmpFile.delete();
+        }
+
+        /*
+         * Startup a MondoDB instance.
+         */
+        Log.info(thisClass, methodName, "Start embedded mongoDB server.");
+        RuntimeConfig runtimeConfig = Defaults.runtimeConfigFor(Command.MongoD, LoggerFactory.getLogger(thisClass.getName()))
+                        .build();
+        MongodStarter starter = MongodStarter.getInstance(runtimeConfig);
+        MongodConfig builder = MongodConfig.builder()
+                        .version(Version.Main.PRODUCTION/* Version.V3_6_5 */)
+                        .net(new Net(mongodbHost, mongodbPort, Network.localhostIsIPv6()))
+                        .build();
+        mongodExecutable = starter.prepare(builder);
+        mongodExecutable.start();
+
+        // build variables to send to the setup servlet
+        dbInfo = "&" + DB_NAME + "=" + mongodbName + "&" + DB_HOST + "=" + mongodbHost + "&" + DB_PORT + "=" + mongodbPort;
     }
 
     private void setupRemoteMongoDBConfig(LibertyServer server) throws Exception {
@@ -288,7 +368,8 @@ public class OAuth20TestCommon {
 
         // build variables to send to the setup servlet
         dbInfo = "&" + DB_NAME + "=" + mongoConfig.getDatabaseName() + "&" + DB_HOST + "=" + mongoConfig.getMongo().getHostNames() + "&" + DB_PWD + "="
-                 + mongoConfig.getMongo().getPassword() + "&" + DB_PORT + "=" + mongoConfig.getMongo().getPortList()[0] + "&" + DB_USER + "=" + mongoConfig.getMongo().getUser();
+                 + mongoConfig.getMongo().getPassword() + "&" + DB_PORT + "=" + mongoConfig.getMongo().getPortList()[0] + "&" + DB_USER + "=" + mongoConfig.getMongo().getUser()
+                 + "&uid=" + mongoTableUid;
     }
 
     @After
@@ -298,36 +379,38 @@ public class OAuth20TestCommon {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        try {
-            /**
-             * Clean up the remote mongoDB database.
-             */
-            String urlString = httpStart + "/oAuth20MongoSetup?port=" + new Integer(server.getHttpDefaultPort());
+        if (runRemote) {
+            try {
+                /**
+                 * Clean up the remote mongoDB database.
+                 */
+                String urlString = httpStart + "/oAuth20MongoSetup?port=" + new Integer(server.getHttpDefaultPort());
 
-            urlString = urlString + "&dropDB=true" + dbInfo;
-            URL setupURL = new URL(urlString);
-            Log.info(thisClass, "tearDown", "dropURL: " + setupURL);
-            HttpURLConnection con = (HttpURLConnection) setupURL.openConnection();
-            con.setDoInput(true);
-            con.setDoOutput(true);
-            con.setUseCaches(false);
-            con.setRequestMethod("GET");
-            InputStream is = con.getInputStream();
-            InputStreamReader isr = new InputStreamReader(is);
-            BufferedReader br = new BufferedReader(isr);
+                urlString = urlString + "&dropDB=true" + dbInfo;
+                URL setupURL = new URL(urlString);
+                Log.info(thisClass, "tearDown", "dropURL: " + setupURL);
+                HttpURLConnection con = (HttpURLConnection) setupURL.openConnection();
+                con.setDoInput(true);
+                con.setDoOutput(true);
+                con.setUseCaches(false);
+                con.setRequestMethod("GET");
+                InputStream is = con.getInputStream();
+                InputStreamReader isr = new InputStreamReader(is);
+                BufferedReader br = new BufferedReader(isr);
 
-            String sep = System.getProperty("line.separator");
-            StringBuilder lines = new StringBuilder();
+                String sep = System.getProperty("line.separator");
+                StringBuilder lines = new StringBuilder();
 
-            // Send output from servlet to console output
-            for (String line = br.readLine(); line != null; line = br.readLine()) {
-                lines.append(line).append(sep);
-                Log.info(thisClass, "tearDown", line);
+                // Send output from servlet to console output
+                for (String line = br.readLine(); line != null; line = br.readLine()) {
+                    lines.append(line).append(sep);
+                    Log.info(thisClass, "tearDown", line);
+                }
+
+                con.disconnect();
+            } catch (Throwable e) {
+                Log.info(thisClass, "tearDown", "Exception calling dropDB for mongoDB. If this is a Derby test, ignore this message." + e);
             }
-
-            con.disconnect();
-        } catch (Throwable e) {
-            Log.info(thisClass, "tearDown", "Exception calling dropDB for mongoDB. If this is a Derby test, ignore this message." + e);
         }
 
         try {
@@ -336,10 +419,16 @@ public class OAuth20TestCommon {
             Log.info(thisClass, "tearDown", "Exception removing MONGO_PROPS_FILE. If this is a Derby test, ignore this message." + e);
         }
 
-        if (server != null && server.isStarted()) {
-            server.stopServer(expectedMessages);
-        }
+        try {
+            if (server != null && server.isStarted()) {
+                server.stopServer(expectedMessages);
+            }
 
+        } finally {
+            if (mongodExecutable != null) {
+                mongodExecutable.stop();
+            }
+        }
     }
 
     public String conditSet(String defValue, String specificValue) {
@@ -503,7 +592,7 @@ public class OAuth20TestCommon {
 
     public void setupMongDBEntries(String schemaName) throws Exception {
         Log.info(thisClass, "setupMongDBEntries", "Create DataBases through the server");
-        String urlString = httpStart + "/oAuth20MongoSetup?port=" + new Integer(server.getHttpDefaultPort()) + "&uid=" + mongoTableUid + dbInfo;
+        String urlString = httpStart + "/oAuth20MongoSetup?port=" + new Integer(server.getHttpDefaultPort()) + dbInfo;
         setupInner(urlString, schemaName);
     }
 

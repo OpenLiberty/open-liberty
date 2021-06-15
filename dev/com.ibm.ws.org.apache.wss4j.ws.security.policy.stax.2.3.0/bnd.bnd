@@ -10,6 +10,9 @@
 #*******************************************************************************
 -include= jar:${fileuri;${repo;org.apache.wss4j:wss4j-ws-security-policy-stax;2.3.0}}!/META-INF/MANIFEST.MF,bnd.overrides
 
+-includeresource: \
+ @${repo;org.apache.wss4j:wss4j-ws-security-policy-stax;2.3.0}!/!META-INF/**
+
 
 -buildpath: org.apache.wss4j:wss4j-ws-security-policy-stax;version=2.3.0, \
             com.ibm.ws.prereq.wsdl4j.1.6.2;version=latest

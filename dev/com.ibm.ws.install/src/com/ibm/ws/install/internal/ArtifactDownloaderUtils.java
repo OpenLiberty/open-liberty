@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -101,8 +101,6 @@ public class ArtifactDownloaderUtils {
         }
     }
 
-
-
     public static List<String> acquireFeatureURLs(List<String> mavenCoords, String repo) {
         List<String> result = new ArrayList<String>();
         for (String coord : mavenCoords) {
@@ -160,7 +158,7 @@ public class ArtifactDownloaderUtils {
         return result;
     }
 
-    public static String getMasterChecksum(String url, String format) throws IOException {
+    public static String getPrimaryChecksum(String url, String format) throws IOException {
         URL urlLocation = new URL(url + "." + format.toLowerCase());
         return getChecksumFromURL(urlLocation);
     }
@@ -224,6 +222,15 @@ public class ArtifactDownloaderUtils {
                 throw ExceptionUtils.createByKey("ERROR_FAILED_TO_CONNECT_MAVEN"); //503
             }
         }
+    }
+
+    public static String getMavenCoordFromPath(String coordPath, String groupID) {
+        String result = coordPath;
+        String[] resSplit = result.split(File.separator);
+        String artifactID = resSplit[(resSplit.length - 3)];
+        String version = resSplit[(resSplit.length - 2)];
+        result = groupID + ":" + artifactID + ":" + version;
+        return result;
     }
 
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ import java.rmi.RemoteException;
 import java.util.List;
 
 import javax.ejb.CreateException;
+import javax.ejb.EJB;
 import javax.naming.NamingException;
 
 import com.ibm.ejs.container.HomeRecord;
@@ -29,7 +30,8 @@ public class SystemNameSpaceBinderImpl implements NameSpaceBinder<String> {
     }
 
     @Override
-    public void beginBind() throws NamingException {}
+    public void beginBind() throws NamingException {
+    }
 
     @Override
     public String createBindingObject(HomeRecord hr,
@@ -52,13 +54,16 @@ public class SystemNameSpaceBinderImpl implements NameSpaceBinder<String> {
     }
 
     @Override
-    public void bindJavaGlobal(String name, String bindingObject) throws NamingException {}
+    public void bindJavaGlobal(String name, String bindingObject) throws NamingException {
+    }
 
     @Override
-    public void bindJavaApp(String name, String bindingObject) throws NamingException {}
+    public void bindJavaApp(String name, String bindingObject) throws NamingException {
+    }
 
     @Override
-    public void bindJavaModule(String name, String bindingObject) throws NamingException {}
+    public void bindJavaModule(String name, String bindingObject) throws NamingException {
+    }
 
     @Override
     public void bindBindings(String homeBindingName,
@@ -69,8 +74,10 @@ public class SystemNameSpaceBinderImpl implements NameSpaceBinder<String> {
                              String interfaceName,
                              boolean local,
                              boolean deferred) throws NamingException {
-        if (remoteRuntime == null)
-            throw new NamingException("Unable to bind system module. Ensure the ejbRemote feature is installed.");
+        if (remoteRuntime == null) {
+            String remoteFeatureName = EJB.class.getName().startsWith("jakarta") ? "enterpriseBeansRemote" : "ejbRemote";
+            throw new NamingException("Unable to bind system module. Ensure the " + remoteFeatureName + " feature is installed.");
+        }
 
         HomeRecordImpl hrImpl = HomeRecordImpl.cast(hr);
         if (hrImpl.remoteBindingData == null) {
@@ -79,16 +86,20 @@ public class SystemNameSpaceBinderImpl implements NameSpaceBinder<String> {
     }
 
     @Override
-    public void bindEJBFactory() throws NamingException {}
+    public void bindEJBFactory() throws NamingException {
+    }
 
     @Override
-    public void beginUnbind(boolean error) throws NamingException {}
+    public void beginUnbind(boolean error) throws NamingException {
+    }
 
     @Override
-    public void unbindJavaGlobal(List<String> names) throws NamingException {}
+    public void unbindJavaGlobal(List<String> names) throws NamingException {
+    }
 
     @Override
-    public void unbindJavaApp(List<String> names) throws NamingException {}
+    public void unbindJavaApp(List<String> names) throws NamingException {
+    }
 
     @Override
     public void unbindBindings(HomeRecord hr) throws NamingException {
@@ -102,32 +113,42 @@ public class SystemNameSpaceBinderImpl implements NameSpaceBinder<String> {
     }
 
     @Override
-    public void unbindEJBFactory() throws NamingException {}
+    public void unbindEJBFactory() throws NamingException {
+    }
 
     @Override
-    public void end() throws NamingException {}
+    public void end() throws NamingException {
+    }
 
     @Override
-    public void bindDefaultEJBLocal(String bindingObject, HomeRecord hr) {}
+    public void bindDefaultEJBLocal(String bindingObject, HomeRecord hr) {
+    }
 
     @Override
-    public void bindDefaultEJBRemote(String bindingObject, HomeRecord hr) {}
+    public void bindDefaultEJBRemote(String bindingObject, HomeRecord hr) {
+    }
 
     @Override
-    public void unbindEJBLocal(List<String> names) throws NamingException {}
+    public void unbindEJBLocal(List<String> names) throws NamingException {
+    }
 
     @Override
-    public void bindSimpleBindingName(String bindingObject, HomeRecord hr, boolean local, boolean generateDisambiguatedSimpleBindingNames) {}
+    public void bindSimpleBindingName(String bindingObject, HomeRecord hr, boolean local, boolean generateDisambiguatedSimpleBindingNames) {
+    }
 
     @Override
-    public void bindLocalHomeBindingName(String bindingObject, HomeRecord hr) {}
+    public void bindLocalHomeBindingName(String bindingObject, HomeRecord hr) {
+    }
 
     @Override
-    public void bindLocalBusinessInterface(String bindingObject, HomeRecord hr) {}
+    public void bindLocalBusinessInterface(String bindingObject, HomeRecord hr) {
+    }
 
     @Override
-    public void unbindLocalColonEJB(List<String> names) throws NamingException {}
+    public void unbindLocalColonEJB(List<String> names) throws NamingException {
+    }
 
     @Override
-    public void unbindRemote(List<String> names) {}
+    public void unbindRemote(List<String> names) {
+    }
 }

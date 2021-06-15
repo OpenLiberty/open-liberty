@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar id="ejb-jar_id" 
+        xmlns="http://java.sun.com/xml/ns/javaee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_0.xsd"
+        metadata-complete="false" version="3.0">   
+
+    <enterprise-beans>
+        <!--  Stateless Session Bean, Annotation JNDI Injection -->
+        <session>
+            <ejb-name>AnnotatedJNDISLEJB</ejb-name>
+            <business-local>com.ibm.ws.jpa.fvt.ejbinwar.ejb.jndi.AnnotatedJNDISLEJBLocal</business-local>
+            <ejb-class>com.ibm.ws.jpa.fvt.ejbinwar.ejb.jndi.AnnotatedJNDISLEJB</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Bean</transaction-type>
+            <persistence-unit-ref>
+                <description>Cleanup Persistence Context</description>
+                <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
+                <persistence-unit-name>CLEANUP_RL</persistence-unit-name>
+            </persistence-unit-ref>
+        </session>
+        
+        <!--  Stateless Session Bean, DD JNDI Injection -->
+        <session>
+            <ejb-name>DDJNDISLEJB</ejb-name>
+            <business-local>com.ibm.ws.jpa.fvt.ejbinwar.ejb.jndi.DDJNDISLEJBLocal</business-local>
+            <ejb-class>com.ibm.ws.jpa.fvt.ejbinwar.ejb.jndi.DDJNDISLEJB</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Bean</transaction-type>
+            
+            <!-- CM TS -->
+		    <persistence-context-ref>
+		        <persistence-context-ref-name>jpa/ejbinwar/jndi/dd/ejbinwar/common_cmts</persistence-context-ref-name>
+		        <persistence-unit-name>COMMON_JTA</persistence-unit-name>
+		        <persistence-context-type>Transaction</persistence-context-type>
+		    </persistence-context-ref>
+		    <persistence-context-ref>
+		        <persistence-context-ref-name>jpa/ejbinwar/jndi/dd/ejbinwar/ejb_cmts</persistence-context-ref-name>
+		        <persistence-unit-name>EJB_JTA</persistence-unit-name>
+		        <persistence-context-type>Transaction</persistence-context-type>
+		    </persistence-context-ref>
+		    <persistence-context-ref>
+		        <persistence-context-ref-name>jpa/ejbinwar/jndi/dd/earlib/common_cmts</persistence-context-ref-name>
+		        <persistence-unit-name>../lib/jpapulib.jar#COMMON_JTA</persistence-unit-name>
+		        <persistence-context-type>Transaction</persistence-context-type>
+		    </persistence-context-ref>
+		    <persistence-context-ref>
+		        <persistence-context-ref-name>jpa/ejbinwar/jndi/dd/earlib/jpalib_cmts</persistence-context-ref-name>
+		        <persistence-unit-name>JPALIB_JTA</persistence-unit-name>
+		        <persistence-context-type>Transaction</persistence-context-type>
+		    </persistence-context-ref>
+		    
+		    <!-- AM JTA -->
+		    <persistence-unit-ref>
+		        <persistence-unit-ref-name>jpa/ejbinwar/jndi/dd/ejbinwar/common_jta</persistence-unit-ref-name>
+		        <persistence-unit-name>COMMON_JTA</persistence-unit-name>
+		    </persistence-unit-ref>
+		    <persistence-unit-ref>
+		        <persistence-unit-ref-name>jpa/ejbinwar/jndi/dd/ejbinwar/ejb_jta</persistence-unit-ref-name>
+		        <persistence-unit-name>EJB_JTA</persistence-unit-name>
+		    </persistence-unit-ref>
+		    <persistence-unit-ref>
+		        <persistence-unit-ref-name>jpa/ejbinwar/jndi/dd/earlib/common_jta</persistence-unit-ref-name>
+		        <persistence-unit-name>../lib/jpapulib.jar#COMMON_JTA</persistence-unit-name>
+		    </persistence-unit-ref>
+		    <persistence-unit-ref>
+		        <persistence-unit-ref-name>jpa/ejbinwar/jndi/dd/earlib/jpalib_jta</persistence-unit-ref-name>
+		        <persistence-unit-name>JPALIB_JTA</persistence-unit-name>
+		    </persistence-unit-ref>
+		    <!-- 
+		    <persistence-unit-ref>
+		        <persistence-unit-ref-name>jpa/ejbinwar/jndi/dd/earroot/common_jta</persistence-unit-ref-name>
+		        <persistence-unit-name>../jpapuroot.jar#COMMON_JTA</persistence-unit-name>
+		    </persistence-unit-ref>
+		    <persistence-unit-ref>
+		        <persistence-unit-ref-name>jpa/ejbinwar/jndi/dd/earroot/jpalib_jta</persistence-unit-ref-name>
+		        <persistence-unit-name>JPAROOT_JTA</persistence-unit-name>
+		    </persistence-unit-ref>
+		    -->
+		    
+		    <!-- AM RL -->
+		    <persistence-unit-ref>
+		        <persistence-unit-ref-name>jpa/ejbinwar/jndi/dd/ejbinwar/common_rl</persistence-unit-ref-name>
+		        <persistence-unit-name>COMMON_RL</persistence-unit-name>
+		    </persistence-unit-ref>
+		    <persistence-unit-ref>
+		        <persistence-unit-ref-name>jpa/ejbinwar/jndi/dd/ejbinwar/ejb_rl</persistence-unit-ref-name>
+		        <persistence-unit-name>EJB_RL</persistence-unit-name>
+		    </persistence-unit-ref>
+		    <persistence-unit-ref>
+		        <persistence-unit-ref-name>jpa/ejbinwar/jndi/dd/earlib/common_rl</persistence-unit-ref-name>
+		        <persistence-unit-name>../lib/jpapulib.jar#COMMON_RL</persistence-unit-name>
+		    </persistence-unit-ref>
+		    <persistence-unit-ref>
+		        <persistence-unit-ref-name>jpa/ejbinwar/jndi/dd/earlib/jpalib_rl</persistence-unit-ref-name>
+		        <persistence-unit-name>JPALIB_RL</persistence-unit-name>
+		    </persistence-unit-ref>
+    
+            <persistence-unit-ref>
+                <description>Cleanup Persistence Context</description>
+                <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
+                <persistence-unit-name>CLEANUP_RL</persistence-unit-name>
+            </persistence-unit-ref>
+        </session>
+        
+        <!--  Stateful Session Bean, Annotation JNDI Injection -->
+        <session>
+            <ejb-name>AnnotatedJNDISFEJB</ejb-name>
+            <business-local>com.ibm.ws.jpa.fvt.ejbinwar.ejb.jndi.AnnotatedJNDISFEJBLocal</business-local>
+            <ejb-class>com.ibm.ws.jpa.fvt.ejbinwar.ejb.jndi.AnnotatedJNDISFEJB</ejb-class>
+            <session-type>Stateful</session-type>
+            <transaction-type>Bean</transaction-type>
+            <persistence-unit-ref>
+                <description>Cleanup Persistence Context</description>
+                <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
+                <persistence-unit-name>CLEANUP_RL</persistence-unit-name>
+            </persistence-unit-ref>
+        </session>
+        
+        <!--  Stateful Session Bean, DD JNDI Injection -->
+        <session>
+            <ejb-name>DDJNDISFEJB</ejb-name>
+            <business-local>com.ibm.ws.jpa.fvt.ejbinwar.ejb.jndi.DDJNDISFEJBLocal</business-local>
+            <ejb-class>com.ibm.ws.jpa.fvt.ejbinwar.ejb.jndi.DDJNDISFEJB</ejb-class>
+            <session-type>Stateful</session-type>
+            <transaction-type>Bean</transaction-type>
+            
+            <!-- CM TS -->
+            <persistence-context-ref>
+                <persistence-context-ref-name>jpa/ejbinwar/jndi/dd/ejbinwar/common_cmts</persistence-context-ref-name>
+                <persistence-unit-name>COMMON_JTA</persistence-unit-name>
+                <persistence-context-type>Transaction</persistence-context-type>
+            </persistence-context-ref>
+            <persistence-context-ref>
+                <persistence-context-ref-name>jpa/ejbinwar/jndi/dd/ejbinwar/ejb_cmts</persistence-context-ref-name>
+                <persistence-unit-name>EJB_JTA</persistence-unit-name>
+                <persistence-context-type>Transaction</persistence-context-type>
+            </persistence-context-ref>
+            <persistence-context-ref>
+                <persistence-context-ref-name>jpa/ejbinwar/jndi/dd/earlib/common_cmts</persistence-context-ref-name>
+                <persistence-unit-name>../lib/jpapulib.jar#COMMON_JTA</persistence-unit-name>
+                <persistence-context-type>Transaction</persistence-context-type>
+            </persistence-context-ref>
+            <persistence-context-ref>
+                <persistence-context-ref-name>jpa/ejbinwar/jndi/dd/earlib/jpalib_cmts</persistence-context-ref-name>
+                <persistence-unit-name>JPALIB_JTA</persistence-unit-name>
+                <persistence-context-type>Transaction</persistence-context-type>
+            </persistence-context-ref>
+            
+            <!-- AM JTA -->
+            <persistence-unit-ref>
+                <persistence-unit-ref-name>jpa/ejbinwar/jndi/dd/ejbinwar/common_jta</persistence-unit-ref-name>
+                <persistence-unit-name>COMMON_JTA</persistence-unit-name>
+            </persistence-unit-ref>
+            <persistence-unit-ref>
+                <persistence-unit-ref-name>jpa/ejbinwar/jndi/dd/ejbinwar/ejb_jta</persistence-unit-ref-name>
+                <persistence-unit-name>EJB_JTA</persistence-unit-name>
+            </persistence-unit-ref>
+            <persistence-unit-ref>
+                <persistence-unit-ref-name>jpa/ejbinwar/jndi/dd/earlib/common_jta</persistence-unit-ref-name>
+                <persistence-unit-name>../lib/jpapulib.jar#COMMON_JTA</persistence-unit-name>
+            </persistence-unit-ref>
+            <persistence-unit-ref>
+                <persistence-unit-ref-name>jpa/ejbinwar/jndi/dd/earlib/jpalib_jta</persistence-unit-ref-name>
+                <persistence-unit-name>JPALIB_JTA</persistence-unit-name>
+            </persistence-unit-ref>
+            <!-- 
+            <persistence-unit-ref>
+                <persistence-unit-ref-name>jpa/ejbinwar/jndi/dd/earroot/common_jta</persistence-unit-ref-name>
+                <persistence-unit-name>../jpapuroot.jar#COMMON_JTA</persistence-unit-name>
+            </persistence-unit-ref>
+            <persistence-unit-ref>
+                <persistence-unit-ref-name>jpa/ejbinwar/jndi/dd/earroot/jpalib_jta</persistence-unit-ref-name>
+                <persistence-unit-name>JPAROOT_JTA</persistence-unit-name>
+            </persistence-unit-ref>
+            -->
+            
+            <!-- AM RL -->
+            <persistence-unit-ref>
+                <persistence-unit-ref-name>jpa/ejbinwar/jndi/dd/ejbinwar/common_rl</persistence-unit-ref-name>
+                <persistence-unit-name>COMMON_RL</persistence-unit-name>
+            </persistence-unit-ref>
+            <persistence-unit-ref>
+                <persistence-unit-ref-name>jpa/ejbinwar/jndi/dd/ejbinwar/ejb_rl</persistence-unit-ref-name>
+                <persistence-unit-name>EJB_RL</persistence-unit-name>
+            </persistence-unit-ref>
+            <persistence-unit-ref>
+                <persistence-unit-ref-name>jpa/ejbinwar/jndi/dd/earlib/common_rl</persistence-unit-ref-name>
+                <persistence-unit-name>../lib/jpapulib.jar#COMMON_RL</persistence-unit-name>
+            </persistence-unit-ref>
+            <persistence-unit-ref>
+                <persistence-unit-ref-name>jpa/ejbinwar/jndi/dd/earlib/jpalib_rl</persistence-unit-ref-name>
+                <persistence-unit-name>JPALIB_RL</persistence-unit-name>
+            </persistence-unit-ref>
+    
+            <persistence-unit-ref>
+                <description>Cleanup Persistence Context</description>
+                <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
+                <persistence-unit-name>CLEANUP_RL</persistence-unit-name>
+            </persistence-unit-ref>
+        </session>
+        
+        <!--  Stateful Session Bean, Annotation JNDI Extended Scope Injection -->
+        <session>
+            <ejb-name>AnnotatedJNDISFEXEJB</ejb-name>
+            <business-local>com.ibm.ws.jpa.fvt.ejbinwar.ejb.jndi.AnnotatedJNDISFEXEJBLocal</business-local>
+            <ejb-class>com.ibm.ws.jpa.fvt.ejbinwar.ejb.jndi.AnnotatedJNDISFEXEJB</ejb-class>
+            <session-type>Stateful</session-type>
+            <transaction-type>Bean</transaction-type>
+            <persistence-unit-ref>
+                <description>Cleanup Persistence Context</description>
+                <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
+                <persistence-unit-name>CLEANUP_RL</persistence-unit-name>
+            </persistence-unit-ref>
+        </session>
+        
+        <!--  Stateful Session Bean, DD JNDI Extended Scope Injection -->
+        <session>
+            <ejb-name>DDJNDISFEXEJB</ejb-name>
+            <business-local>com.ibm.ws.jpa.fvt.ejbinwar.ejb.jndi.DDJNDISFEXEJBLocal</business-local>
+            <ejb-class>com.ibm.ws.jpa.fvt.ejbinwar.ejb.jndi.DDJNDISFEXEJB</ejb-class>
+            <session-type>Stateful</session-type>
+            <transaction-type>Bean</transaction-type>
+            
+            <!-- CM EX -->
+            <persistence-context-ref>
+                <persistence-context-ref-name>jpa/ejbinwar/jndi/dd/ejbinwar/common_cmex</persistence-context-ref-name>
+                <persistence-unit-name>COMMON_JTA</persistence-unit-name>
+                <persistence-context-type>Extended</persistence-context-type>
+            </persistence-context-ref>
+            <persistence-context-ref>
+                <persistence-context-ref-name>jpa/ejbinwar/jndi/dd/ejbinwar/ejb_cmex</persistence-context-ref-name>
+                <persistence-unit-name>EJB_JTA</persistence-unit-name>
+                <persistence-context-type>Extended</persistence-context-type>
+            </persistence-context-ref>
+            <persistence-context-ref>
+                <persistence-context-ref-name>jpa/ejbinwar/jndi/dd/earlib/common_cmex</persistence-context-ref-name>
+                <persistence-unit-name>../lib/jpapulib.jar#COMMON_JTA</persistence-unit-name>
+                <persistence-context-type>Extended</persistence-context-type>
+            </persistence-context-ref>
+            <persistence-context-ref>
+                <persistence-context-ref-name>jpa/ejbinwar/jndi/dd/earlib/jpalib_cmex</persistence-context-ref-name>
+                <persistence-unit-name>JPALIB_JTA</persistence-unit-name>
+                <persistence-context-type>Extended</persistence-context-type>
+            </persistence-context-ref>
+    
+            <persistence-unit-ref>
+                <description>Cleanup Persistence Context</description>
+                <persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
+                <persistence-unit-name>CLEANUP_RL</persistence-unit-name>
+            </persistence-unit-ref>
+        </session>
+    </enterprise-beans>
+</ejb-jar>

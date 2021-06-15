@@ -15,8 +15,8 @@ dependencies {
     'net.sf.jtidy:jtidy:9.3.8',	
     'org.apache.httpcomponents.client5:httpclient5:5.0.2',
     'org.apache.httpcomponents.core5:httpcore5:5.0.2',
-    'commons-logging:commons-logging:1.1.3',
-    'commons-codec:commons-codec:1.6'
+    project(':io.openliberty.org.apache.commons.logging'),
+    project(':io.openliberty.org.apache.commons.codec')
 }
 
 addRequiredLibraries.dependsOn addJakartaTransformer

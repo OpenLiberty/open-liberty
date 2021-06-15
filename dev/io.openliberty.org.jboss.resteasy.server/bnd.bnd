@@ -13,6 +13,8 @@ bVersion=1.0
 
 Bundle-SymbolicName: io.openliberty.org.jboss.resteasy.server
 
+resteasy-version=4.6.0.Final
+
 src: src, resources
 
 -cdiannotations:
@@ -32,10 +34,10 @@ Service-Component: \
 Export-Package: \
   com.ibm.websphere.jaxrs.server;version=3.0.0;thread-local=true, \
   io.openliberty.org.jboss.resteasy.common.cdi;thread-context=true, \
-  org.jboss.resteasy.cdi;version=4.5.8.Final;thread-context=true, \
-  org.jboss.resteasy.cdi.i18n;version=4.5.8.Final, \
-  org.jboss.resteasy.plugins.servlet;version=4.5.8.Final, \
-  org.jboss.resteasy.plugins.servlet.i18n;version=4.5.8.Final
+  org.jboss.resteasy.cdi;version=${resteasy-version};thread-context=true, \
+  org.jboss.resteasy.cdi.i18n;version=${resteasy-version}, \
+  org.jboss.resteasy.plugins.servlet;version=${resteasy-version}, \
+  org.jboss.resteasy.plugins.servlet.i18n;version=${resteasy-version}
 
 # Using version=! in order to not have a version attached to the import for packages that were removed
 # from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the
@@ -68,19 +70,19 @@ Private-Package: \
   io.openliberty.org.jboss.resteasy.common.component
   
 instrument.ffdc: false
-instrument.disabled: true
+instrument.disabled: false
 
 
 Include-Resource:\
-  @${repo;org.jboss.resteasy:resteasy-cdi;4.5.8.Final;EXACT}, \
-  @${repo;org.jboss.resteasy:resteasy-servlet-initializer;4.5.8.Final;EXACT}, \
+  @${repo;org.jboss.resteasy:resteasy-cdi;${resteasy-version};EXACT}, \
+  @${repo;org.jboss.resteasy:resteasy-servlet-initializer;${resteasy-version};EXACT}, \
   com/ibm/websphere=${bin}/com/ibm/websphere, \
   io/openliberty=${bin}/io/openliberty, \
   META-INF=resources/META-INF
 
 -buildpath: \
-	org.jboss.resteasy:resteasy-cdi;strategy=exact;version=4.5.8.Final,\
-	org.jboss.resteasy:resteasy-servlet-initializer;strategy=exact;version=4.5.8.Final,\
+	org.jboss.resteasy:resteasy-cdi;strategy=exact;version=${resteasy-version},\
+	org.jboss.resteasy:resteasy-servlet-initializer;strategy=exact;version=${resteasy-version},\
 	com.ibm.ws.org.apache.commons.io,\
 	com.ibm.ws.org.apache.httpcomponents,\
 	com.ibm.websphere.javaee.annotation.1.3,\
@@ -114,7 +116,7 @@ Include-Resource:\
 	../build.sharedResources/lib/junit/old/junit.jar;version=file,\
 	com.ibm.websphere.javaee.mail.1.6,\
 	com.ibm.ws.org.apache.commons.io,\
-	com.ibm.ws.org.apache.commons.logging.1.0.3,\
+	io.openliberty.org.apache.commons.logging,\
 	com.ibm.ws.org.apache.httpcomponents,\
 	com.ibm.ws.org.glassfish.json.1.1
 

@@ -20,6 +20,7 @@ import com.ibm.ws.cdi12.fat.tests.AppClientTest;
 import com.ibm.ws.fat.util.FatLogHandler;
 
 import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
@@ -32,7 +33,8 @@ public class FATSuite {
 
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(FeatureReplacementAction.EE8_FEATURES());
+                    .andWith(FeatureReplacementAction.EE8_FEATURES())
+                    .andWith(new JakartaEE9Action());
 
     /**
      * @see {@link FatLogHandler#generateHelpFile()}

@@ -85,7 +85,13 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
 
     private boolean _checkingLeases = true;
 
-    protected TxRecoveryAgentImpl() {}
+    /**
+     * Flag to indicate whether the server is stopping.
+     */
+    volatile private boolean _serverStopping;
+
+    protected TxRecoveryAgentImpl() {
+	}
 
     private static ThreadLocal<Boolean> _replayThread = new ThreadLocal<Boolean>();
 
@@ -129,7 +135,8 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
     }
 
     @Override
-    public void agentReportedFailure(int clientId, FailureScope failureScope) {}
+    public void agentReportedFailure(int clientId, FailureScope failureScope) {
+    }
 
     @Override
     public int clientIdentifier() {
@@ -172,6 +179,12 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
 
             // Big message if Peer recovery is supported, just debug otherwise
             if (_isPeerRecoverySupported) {
+                // If we are attempting to recover a peer and the home server is stopping, then do not continue
+                if (_serverStopping) {
+                    if (tc.isEntryEnabled())
+                        Tr.exit(tc, "initiateRecovery", "server stopping");
+                    return;
+                }
                 Tr.audit(tc, "WTRN0108I: Recovery initiated for server " + recoveredServerIdentity);
             } else {
                 if (tc.isDebugEnabled())
@@ -458,7 +471,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                                                     _recoveryGroup,
                                                     this,
                                                     _recoveryDirector,
-                                                    cp.getLeaseLength() * cp.getLeaseRenewalTime() / 100,
+                                                    cp.getLeaseLength() * cp.getLeaseRenewalThreshold() / 100,
                                                     cp.getLeaseCheckInterval());
                 }
             }
@@ -595,6 +608,9 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
     public void stop(boolean immediate) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "stop", new Object[] { Boolean.valueOf(immediate) });
+
+        // Set the flag to signify that the server is stopping
+        _serverStopping = true;
 
         // Stop lease timeout alarm popping when server is on its way down
         LeaseTimeoutManager.stopTimeout();

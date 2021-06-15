@@ -15,6 +15,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
@@ -36,12 +37,10 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
-@SkipForRepeat("EE9_FEATURES") // Continue to skip this test for EE9 as Default SSL is not supported yet
 @RunWith(FATRunner.class)
 public class JAXRSClientSSLTestNoLibertySSLCfg extends AbstractTest {
 
@@ -51,7 +50,7 @@ public class JAXRSClientSSLTestNoLibertySSLCfg extends AbstractTest {
     @Server("jaxrs20.client.JAXRSClientSSLTest")
     public static LibertyServer server;
 
-    private final static String appname = "jaxrsclientssl";
+    protected final static String appname = "jaxrsclientssl";
     protected final static String target = appname + "/ClientTestServlet";
 
     @BeforeClass
@@ -111,21 +110,7 @@ public class JAXRSClientSSLTestNoLibertySSLCfg extends AbstractTest {
     public void testClientNoLibertySSL_ClientBuilder() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         p.put("param", "alex");
-        runTestOnServer(target, "testClientBasicSSLDefault_ClientBuilder", p, "[Basic Resource]:alex");
-    }
-
-    @Test
-    public void testClientNoLibertySSL_Client() throws Exception {
-        Map<String, String> p = new HashMap<String, String>();
-        p.put("param", "alex");
-        runTestOnServer(target, "testClientBasicSSLDefault_Client", p, "[Basic Resource]:alex");
-    }
-
-    @Test
-    public void testClientNoLibertySSL_WebTarget() throws Exception {
-        Map<String, String> p = new HashMap<String, String>();
-        p.put("param", "alex");
-        runTestOnServer(target, "testClientBasicSSLDefault_WebTarget", p, "[Basic Resource]:alex");
+        runTestOnServer(target, "testClientBasicSSLDefault", p, "[Basic Resource]:alex");
     }
 
     @Test
@@ -177,6 +162,18 @@ public class JAXRSClientSSLTestNoLibertySSLCfg extends AbstractTest {
                 break;
             }
         }
+
+        if (line.contains("InvocationTargetException")) { 
+            BufferedReader errBr =  HttpUtils.getErrorStream(con);           
+            
+            String exception = "";
+            String aLine;
+            while ((aLine = errBr.readLine()) != null) {
+                exception = exception + aLine;
+            }
+            Log.info(this.getClass(), testMethod, "Test failed with an InvocationTargetException " + exception);
+        }
+        
         assertTrue("Real response is " + line + " and the expected response is one of " + String.join(" | ", expectedResponses),  foundExpectedResponse);
     }
 }

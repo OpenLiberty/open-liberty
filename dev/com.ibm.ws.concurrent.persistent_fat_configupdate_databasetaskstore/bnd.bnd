@@ -25,5 +25,5 @@ fat.project: true
 	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
 	com.ibm.websphere.appserver.spi.logging;version=latest,\
 	com.ibm.ws.concurrent.persistent;version=latest,\
-	org.apache.commons.codec
+	io.openliberty.org.apache.commons.codec;version=latest
 	

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,8 +16,8 @@ def appBuildDir = "${buildDir}/test-application"
 
 dependencies { 
   requiredLibs 'com.ibm.ws.componenttest:public.api:1.0.0',
-    'commons-logging:commons-logging:1.1.1',
-    'commons-codec:commons-codec:1.4',
+    project(':io.openliberty.org.apache.commons.logging'),
+    project(':io.openliberty.org.apache.commons.codec'),
     'org.apache.httpcomponents:httpclient:4.1.2',
     'org.apache.httpcomponents:httpcore:4.1.2',
     'org.apache.directory.server:apacheds-service:2.0.0-M15',
@@ -222,6 +222,27 @@ autoFVT.doLast {
      from new File(appBuildDir, 'com.ibm.ws.security.wim.adapter.ldap.certificate.mapper.sample_1.0.jar')
      into new File(autoFvtDir, 'publish/bundles')
    }
+   
+  /*
+   * Copy clientcert keystores and truststores.
+   */
+  servers = [
+    'com.ibm.ws.security.wim.adapter.ldap.fat.custom.certmapper.bell',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.custom.certmapper.feature',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.tds.certlogin',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.tds.certlogin_SBInFilter',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.tds.fedcertlogin'
+  ]
+  servers.each { server ->
+    copy {
+      from new File(projectDir, 'publish/files/clientcert/DummyServerKeyFile.jks')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/resources/security')
+    }
+    copy {
+      from new File(projectDir, 'publish/files/clientcert/DummyServerTrustFile.jks')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/resources/security')
+    }
+  }
 }
 
 /*

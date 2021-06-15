@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2020 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -976,6 +976,42 @@ public class LibertyServer implements LogMonitorClient {
         return startServerAndValidate(preClean, cleanStart, false, true, true);
     }
 
+    /**
+     * Given a formatted "CWWKO0221E" error string, parse out a port number and use it to invoke 
+     * printProcessHoldingPort
+     *
+     * Example error (newlines added for readability):
+     *
+     * [5/11/21 17:16:41:009 GMT] 00000026 com.ibm.ws.tcpchannel.internal.TCPPort
+     * E CWWKO0221E: TCP Channel defaultHttpEndpoint-ssl initialization did not succeed.
+     * The socket bind did not succeed for host * and port 8020.
+     * The port might already be in use.
+     * Exception Message: EDC8115I Address already in use.
+     *
+     * @param errorString in the format of "CWWKO0221E"
+     */
+    protected void printProcessHoldingPort(String errorString) {
+        final String m = "printProcessHoldingPort";
+        String portIndexString = "port ";
+        int start = errorString.indexOf(portIndexString);
+        if (start > 0) {
+            start += portIndexString.length();
+            int end = errorString.indexOf(".", start);
+            if ((end - start) > 0) {
+                try {
+                    int port = Integer.parseInt(errorString.substring(start, end));
+                    if (port > 0) {
+                        printProcessHoldingPort(port);
+                        return;    
+                    }
+                } catch (NumberFormatException nfe) {
+                    Log.info(c, m, "Failed to find a port number, cannot log the process holding the port");
+                }
+            }
+        }
+        Log.info(c, m, "Failed to find a port number, cannot log the process holding the port");
+    }
+
     protected void printProcessHoldingPort(int port) {
         final String m = "printProcessHoldingPort";
         try {
@@ -1115,7 +1151,9 @@ public class LibertyServer implements LogMonitorClient {
                                              boolean validateTimedExit) throws Exception {
         final String method = "startServerWithArgs";
         Log.info(c, method, ">>> STARTING SERVER: " + this.getServerName());
-        Log.info(c, method, "Starting " + this.getServerName() + "; clean=" + cleanStart + ", validateApps=" + validateApps + ", expectStartFailure=" + expectStartFailure
+        Log.info(c, method,
+                 "Starting " + this.getServerName() + "; preClean=" + preClean + ", clean=" + cleanStart + ", validateApps=" + validateApps + ", expectStartFailure="
+                            + expectStartFailure
                             + ", cmd=" + serverCmd + ", args=" + args);
 
         if (serverCleanupProblem) {
@@ -2133,6 +2171,8 @@ public class LibertyServer implements LogMonitorClient {
                 }
                 TopologyException serverStartException = new TopologyException(exMessage);
                 Log.error(c, method, serverStartException, errMessage);
+                // since a startup error was not expected, trigger a dump to help with debugging
+                serverDump();
                 postStopServerArchive();
                 throw serverStartException;
             }
@@ -2474,6 +2514,9 @@ public class LibertyServer implements LogMonitorClient {
                     sb.append("\n <br>");
                     sb.append(errorInLog);
                     Log.info(c, method, "Error/warning found in log ORIGINALLY: " + errorInLog);
+                    if (errorInLog.contains("CWWKO0221E")) {
+                        printProcessHoldingPort(errorInLog);
+                    }
                 }
             }
         } catch (Exception e) {
@@ -2552,6 +2595,9 @@ public class LibertyServer implements LogMonitorClient {
                 sb.append("\n <br>");
                 sb.append(errorInLog);
                 Log.info(c, method, "Error/warning found: " + errorInLog);
+                if (errorInLog.contains("CWWKO0221E")) {
+                    printProcessHoldingPort(errorInLog);
+                }
             }
             ex = new Exception(sb.toString());
         }
@@ -2637,13 +2683,12 @@ public class LibertyServer implements LogMonitorClient {
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy-HH-mm-ss");
         Date d = new Date(System.currentTimeMillis());
 
-        String runLevel = RepeatTestFilter.getMostRecentRepeatAction();
+        String runLevel = RepeatTestFilter.getRepeatActionsAsString();
 
         String logDirectoryName = "";
         if (runLevel == null || runLevel.isEmpty()) {
             logDirectoryName = pathToAutoFVTOutputServersFolder + "/" + serverToUse + "-" + sdf.format(d);
-        }
-        else {
+        } else {
             logDirectoryName = pathToAutoFVTOutputServersFolder + "/" + serverToUse + "-" + runLevel + "-" + sdf.format(d);
         }
         LocalFile logFolder = new LocalFile(logDirectoryName);

@@ -66,9 +66,6 @@ public class SQLServerTestServlet extends FATServlet {
     @Resource(lookup = "jdbc/ss-using-driver-type")
     private DataSource ss_using_driver_type;
 
-    @Resource(lookup = "jdbc/sqlserver-ssl")
-    DataSource secureDs;
-
     @Resource(name = "java:comp/jdbc/env/unsharable-ds-xa-loosely-coupled", shareable = false)
     private DataSource unsharable_ds_xa_loosely_coupled;
 
@@ -219,8 +216,7 @@ public class SQLServerTestServlet extends FATServlet {
         tran.begin();
         long start = System.nanoTime();
         try {
-            Connection con = ds.getConnection();
-            try {
+            try (Connection con = ds.getConnection()) {
                 con.createStatement().executeQuery("SELECT STRVAL FROM MYTABLE WHERE ID=0").close(); //perform db operation
                 con.createStatement().execute("WAITFOR DELAY '00:00:16'"); // Wait for 16 seconds
 
@@ -239,8 +235,6 @@ public class SQLServerTestServlet extends FATServlet {
             } catch (SQLException x) {
                 if (x.getErrorCode() != 1206) // distributed transaction cancelled (due to timeout)
                     throw x;
-            } finally {
-                con.close();
             }
         } finally {
             try {
@@ -271,6 +265,9 @@ public class SQLServerTestServlet extends FATServlet {
             } catch (RollbackException x) {
                 System.out.println("tran.commit() threw a RollbackException as expected.");
                 x.printStackTrace(System.out);
+            } finally {
+                //Restore default transaction timeout
+                tran.setTransactionTimeout(0);
             }
         }
 
@@ -324,13 +321,6 @@ public class SQLServerTestServlet extends FATServlet {
             assertEquals("tres", result.getNString(1));
         } finally {
             con.close();
-        }
-    }
-
-    @Test
-    public void testDatasourceWithSSL() throws Exception {
-        try (Connection con = secureDs.getConnection()) {
-            System.out.println("Got connection with SSL");
         }
     }
 

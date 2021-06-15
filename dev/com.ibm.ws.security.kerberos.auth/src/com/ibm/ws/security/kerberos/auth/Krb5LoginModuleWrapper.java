@@ -172,18 +172,31 @@ public class Krb5LoginModuleWrapper implements LoginModule {
         krb5loginModule.initialize(subject, callbackHandler, sharedState, options);
     }
 
+    /**
+     * If the login module returns false, throws a LoginException. This is to make the IBM Krb5LoginModule behavior
+     * match the Sun Krb5LoginModule.<br><br>
+     *
+     * {@inheritDoc}
+     */
     @Override
     public boolean login() throws LoginException {
-        krb5loginModule.login();
+        if (!krb5loginModule.login())
+            throw new LoginException("Kerberos login failed");
         login_called = true;
         return true;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * If the login module returns false, throws a LoginException. This is to make the IBM Krb5LoginModule behavior
+     * match the Sun Krb5LoginModule.<br><br>
+     *
+     * {@inheritDoc}
+     */
     @Override
     public boolean commit() throws LoginException {
         if (login_called)
-            krb5loginModule.commit();
+            if (!krb5loginModule.commit())
+                throw new LoginException("Kerberos login failed (commit)");
         return true;
     }
 

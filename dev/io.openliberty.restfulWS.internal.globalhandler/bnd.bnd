@@ -13,6 +13,8 @@ bVersion=1.0
 
 Bundle-SymbolicName: io.openliberty.restfulWS.internal.globalhandler
 
+jakartaeeMe: true
+
 src: src, resources
 
 #-cdiannotations:
@@ -42,13 +44,8 @@ Include-Resource:\
 
 -buildpath: \
   io.openliberty.org.jboss.resteasy.common;version=latest,\
-  io.openliberty.jakarta.annotation.2.0, \
-  io.openliberty.jakarta.cdi.3.0, \
-  io.openliberty.jakarta.interceptor.2.0, \
-  io.openliberty.jakarta.xmlBinding.3.0, \
-  io.openliberty.jakarta.restfulWS.3.0, \
-  io.openliberty.jakarta.servlet.5.0, \
-  io.openliberty.jakarta.validation.3.0;version=latest, \
+  com.ibm.websphere.javaee.jaxrs.2.1, \
+  com.ibm.websphere.javaee.servlet.4.0, \
   com.ibm.websphere.org.osgi.core;version=latest, \
   com.ibm.websphere.org.osgi.service.component;version=latest, \
   com.ibm.ws.adaptable.module;version=latest, \
@@ -58,5 +55,5 @@ Include-Resource:\
   com.ibm.ws.org.jboss.logging, \
   com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
   com.ibm.ws.webcontainer;version=latest, \
-  io.openliberty.webservices.handler.2.0;version=latest, \
+  com.ibm.ws.webservices.handler;version=latest, \
   com.ibm.wsspi.org.osgi.service.component.annotations;version=latest

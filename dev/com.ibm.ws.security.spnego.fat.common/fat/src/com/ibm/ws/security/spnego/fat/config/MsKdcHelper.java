@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.spnego.fat.config;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.Map;
 
@@ -91,6 +92,7 @@ public class MsKdcHelper extends KdcHelper {
 
         try {
             Log.info(thisClass, methodName, "Copying files needed for Kerberos");
+            // TODO Why are we copying these to the server root?
             server.copyFileToLibertyServerRoot(SPNEGOConstants.KERBEROS, SPNEGOConstants.CREATE_WIN_USER_LOCAL_FILE);
             server.copyFileToLibertyServerRoot(SPNEGOConstants.KERBEROS, SPNEGOConstants.REMOTE_WIN_USER_LOCAL_FILE);
             server.copyFileToLibertyServerRoot(SPNEGOConstants.KERBEROS, SPNEGOConstants.CREATE_WIN_KEYTAB_LOCAL_FILE);
@@ -165,7 +167,7 @@ public class MsKdcHelper extends KdcHelper {
         }
 
         String localScriptName = SPNEGOConstants.CREATE_WIN_USER_SET_SPN_LOCAL_FILE;
-        String remoteScriptName = SPNEGOConstants.CREATE_WIN_USER_SET_SPN_REMOTE_FILE;
+        String remoteScriptName = getUniqueRemoteFileName(SPNEGOConstants.CREATE_WIN_USER_SET_SPN_REMOTE_FILE);
         server.copyFileToLibertyServerRoot(SPNEGOConstants.KERBEROS, localScriptName);
 
         Log.info(thisClass, methodName, "Pushing to remote machine");
@@ -177,7 +179,9 @@ public class MsKdcHelper extends KdcHelper {
         }
 
         String kdcShortName = getKdcShortName();
-        String createUserAndSpnCommand = "./" + remoteScriptName + " " + user + " " + InitClass.USER_PWD + " HTTP " + spns[0] + " " + kdcShortName;
+        String createUserAndSpnCommand = "./" + remoteScriptName + " " + getUniqueRemoteFileName(SPNEGOConstants.REMOVE_WIN_USER_REMOTE_FILE) + " "
+                                         + getUniqueRemoteFileName(SPNEGOConstants.CREATE_WIN_USER_REMOTE_FILE) + " " + user + " " + InitClass.USER_PWD + " HTTP " + spns[0] + " "
+                                         + kdcShortName;
 
         if (optionalCmdArgs != null) {
             for (String argument : optionalCmdArgs.keySet()) {
@@ -208,7 +212,7 @@ public class MsKdcHelper extends KdcHelper {
         Log.info(thisClass, methodName, "Setting SPN: " + spnHost + " for user: " + user);
 
         String localScriptName = SPNEGOConstants.SET_USER_SPN_LOCAL_FILE;
-        String remoteScriptName = SPNEGOConstants.SET_USER_SPN_REMOTE_FILE;
+        String remoteScriptName = getUniqueRemoteFileName(SPNEGOConstants.SET_USER_SPN_REMOTE_FILE);
         server.copyFileToLibertyServerRoot(SPNEGOConstants.KERBEROS, localScriptName);
         if (InitClass.needToPushsetUserSPN) {
             Log.info(thisClass, methodName, "We need to push the setUserSPN script to the KDC");
@@ -242,8 +246,8 @@ public class MsKdcHelper extends KdcHelper {
 
         String kdcShortName = getKdcShortName();
 
-        String deleteUserCommand = "cscript " + SPNEGOConstants.REMOVE_WIN_USER_REMOTE_FILE + " -user " + user + " -host " + kdcShortName;
-        String deleteUserCommandMasked = "cscript " + SPNEGOConstants.REMOVE_WIN_USER_REMOTE_FILE + " -user " + user + " -host " + "kdcShortName";
+        String deleteUserCommand = "cscript " + getUniqueRemoteFileName(SPNEGOConstants.REMOVE_WIN_USER_REMOTE_FILE) + " -user " + user + " -host " + kdcShortName;
+        String deleteUserCommandMasked = "cscript " + getUniqueRemoteFileName(SPNEGOConstants.REMOVE_WIN_USER_REMOTE_FILE) + " -user " + user + " -host " + "kdcShortName";
         Log.info(thisClass, methodName, "Deleting user on KDC using command: " + deleteUserCommandMasked);
         ProgramOutput output = executeRemoteCommand(null, deleteUserCommand, true);
         if (output.getReturnCode() != 0) {
@@ -257,7 +261,7 @@ public class MsKdcHelper extends KdcHelper {
         Log.info(thisClass, methodName, "Deleting SPN: " + "spn" + " for user: " + user);
 
         String localScriptName = SPNEGOConstants.DELETE_USER_SPN_LOCAL_FILE;
-        String remoteScriptName = SPNEGOConstants.DELETE_USER_SPN_REMOTE_FILE;
+        String remoteScriptName = getUniqueRemoteFileName(SPNEGOConstants.DELETE_USER_SPN_REMOTE_FILE);
         server.copyFileToLibertyServerRoot(SPNEGOConstants.KERBEROS, localScriptName);
 
         if (InitClass.needToPushdeleteUserSPN) {
@@ -282,7 +286,7 @@ public class MsKdcHelper extends KdcHelper {
         Log.info(thisClass, methodName, "Adding SPN: " + "spn" + " for user: " + user + " to existing keytab file");
 
         String localScriptName = SPNEGOConstants.ADD_SPN_TO_KEYTAB_LOCAL_FILE;
-        String remoteScriptName = SPNEGOConstants.ADD_SPN_TO_KEYTAB_REMOTE_FILE;
+        String remoteScriptName = getUniqueRemoteFileName(SPNEGOConstants.ADD_SPN_TO_KEYTAB_REMOTE_FILE);
         server.copyFileToLibertyServerRoot(SPNEGOConstants.KERBEROS, localScriptName);
         if (InitClass.needToPushaddSPNKeytab) {
             Log.info(thisClass, methodName, "We need to push the addSPNKeytab script to the KDC");
@@ -319,9 +323,9 @@ public class MsKdcHelper extends KdcHelper {
      * @throws Exception
      */
     private void pushVbsAndBatFilesToKDCMachine(Machine kdcMachine) throws Exception {
-        pushLocalFileToRemoteMachine(kdcMachine, SPNEGOConstants.CREATE_WIN_USER_LOCAL_FILE, SPNEGOConstants.CREATE_WIN_USER_REMOTE_FILE);
-        pushLocalFileToRemoteMachine(kdcMachine, SPNEGOConstants.REMOTE_WIN_USER_LOCAL_FILE, SPNEGOConstants.REMOVE_WIN_USER_REMOTE_FILE);
-        pushLocalFileToRemoteMachine(kdcMachine, SPNEGOConstants.CREATE_WIN_KEYTAB_LOCAL_FILE, SPNEGOConstants.CREATE_WIN_KEYTAB_REMOTE_FILE);
+        pushLocalFileToRemoteMachine(kdcMachine, SPNEGOConstants.CREATE_WIN_USER_LOCAL_FILE, getUniqueRemoteFileName(SPNEGOConstants.CREATE_WIN_USER_REMOTE_FILE));
+        pushLocalFileToRemoteMachine(kdcMachine, SPNEGOConstants.REMOTE_WIN_USER_LOCAL_FILE, getUniqueRemoteFileName(SPNEGOConstants.REMOVE_WIN_USER_REMOTE_FILE));
+        pushLocalFileToRemoteMachine(kdcMachine, SPNEGOConstants.CREATE_WIN_KEYTAB_LOCAL_FILE, getUniqueRemoteFileName(SPNEGOConstants.CREATE_WIN_KEYTAB_REMOTE_FILE));
         pushLocalFileToRemoteMachine(kdcMachine, SPNEGOConstants.KRB5_LOCAL_KEYTAB_LOCAL_FILE, SPNEGOConstants.KRB5_LOCAL_KEYTAB_REMOTE_FILE);
     }
 
@@ -374,8 +378,10 @@ public class MsKdcHelper extends KdcHelper {
             nameForSpn = customSpnName;
         }
 
-        String scriptFile = SPNEGOConstants.CREATE_WIN_KEYTAB_REMOTE_FILE;
-        String createWinKeyTabFileCommand = "./" + scriptFile + " " + getDefaultUserName() + " " + InitClass.USER_PWD + " HTTP " + nameForSpn + " "
+        String scriptFile = getUniqueRemoteFileName(SPNEGOConstants.CREATE_WIN_KEYTAB_REMOTE_FILE);
+        String createWinKeyTabFileCommand = "./" + scriptFile + " " + getUniqueRemoteFileName(SPNEGOConstants.REMOVE_WIN_USER_REMOTE_FILE)
+                                            + " " + getUniqueRemoteFileName(SPNEGOConstants.CREATE_WIN_USER_REMOTE_FILE) + " "
+                                            + getDefaultUserName() + " " + InitClass.USER_PWD + " HTTP " + nameForSpn + " "
                                             + InitClass.serverShortHostName + SPNEGOConstants.KRB5_KEYTAB_TEMP_SUFFIX + " " + getKdcRealm() + " " + kdcShortName;
 
         if (optionalCmdArgs != null) {
@@ -429,12 +435,12 @@ public class MsKdcHelper extends KdcHelper {
             try {
 
                 String chmodCMD = "chmod 777 " + scriptFile;
-                if (scriptFile != null && (((scriptFile == SPNEGOConstants.ADD_SPN_TO_KEYTAB_REMOTE_FILE) && InitClass.needToPushaddSPNKeytab)) ||
-                    ((scriptFile == SPNEGOConstants.DELETE_USER_SPN_REMOTE_FILE) && InitClass.needToPushdeleteUserSPN) ||
-                    ((scriptFile == SPNEGOConstants.SET_USER_SPN_REMOTE_FILE) && InitClass.needToPushsetUserSPN) ||
-                    ((scriptFile == SPNEGOConstants.CREATE_WIN_USER_SET_SPN_REMOTE_FILE) && InitClass.needToPushwinSetSPN) ||
-                    ((scriptFile == SPNEGOConstants.CREATE_WIN_KEYTAB_REMOTE_FILE) && InitClass.sendvbs) ||
-                    ((scriptFile == SPNEGOConstants.REMOVE_WIN_USER_REMOTE_FILE) && InitClass.sendvbs)) {
+                if (scriptFile != null && (((scriptFile == getUniqueRemoteFileName(SPNEGOConstants.ADD_SPN_TO_KEYTAB_REMOTE_FILE)) && InitClass.needToPushaddSPNKeytab)) ||
+                    ((scriptFile == getUniqueRemoteFileName(SPNEGOConstants.DELETE_USER_SPN_REMOTE_FILE)) && InitClass.needToPushdeleteUserSPN) ||
+                    ((scriptFile == getUniqueRemoteFileName(SPNEGOConstants.SET_USER_SPN_REMOTE_FILE)) && InitClass.needToPushsetUserSPN) ||
+                    ((scriptFile == getUniqueRemoteFileName(SPNEGOConstants.CREATE_WIN_USER_SET_SPN_REMOTE_FILE)) && InitClass.needToPushwinSetSPN) ||
+                    ((scriptFile == getUniqueRemoteFileName(SPNEGOConstants.CREATE_WIN_KEYTAB_REMOTE_FILE)) && InitClass.sendvbs) ||
+                    ((scriptFile == getUniqueRemoteFileName(SPNEGOConstants.REMOVE_WIN_USER_REMOTE_FILE)) && InitClass.sendvbs)) {
 
                     Log.info(thisClass, methodName, "Call chmod 777 on script using command: " + chmodCMD);
                     output = executeSshCommand(sshSession, chmodCMD, 30);
@@ -443,9 +449,22 @@ public class MsKdcHelper extends KdcHelper {
                 }
 
                 Log.info(thisClass, methodName, "Executing command --> " + command);
-                output = executeSshCommand(sshSession, command, 120);
+                boolean failed = false;
+                try {
+                    output = executeSshCommand(sshSession, command, 120);
+                    failed = output.getReturnCode() != 0;
+                } catch (IOException e) {
+                    if (!retryUponFailure) {
+                        throw e;
+                    }
 
-                if (retryUponFailure && output.getReturnCode() != 0) {
+                    /*
+                     * This will cause timeouts to retry, but that should be pretty unusual.
+                     */
+                    failed = true;
+                }
+
+                if (retryUponFailure && failed) {
                     Log.info(thisClass, methodName, "Remote command failed with return code " + output.getReturnCode());
                     Log.info(thisClass, methodName, "Sleeping for a few seconds to see if that helps resolve any problems encountered");
                     Thread.sleep(15 * 1000);
@@ -459,5 +478,116 @@ public class MsKdcHelper extends KdcHelper {
             sshClient.stop();
         }
         return output;
+    }
+
+    @Override
+    public void teardown() {
+        final String methodName = "teardown()";
+
+        /*
+         * Delete the default user.
+         */
+        try {
+            deleteUser();
+        } catch (Exception e) {
+            Log.error(thisClass, methodName, e, "Error deleting the user " + defaultUserName + " from the KDC on teardown.");
+        }
+
+        /*
+         * Delete the krb5.keytab.
+         *
+         * TODO Seems this file name could / should be unique.
+         */
+        try {
+            deleteRemoteFileFromRemoteMachine(getKdcMachine(), SPNEGOConstants.KRB5_KEYTAB_FILE);
+        } catch (Exception e) {
+            Log.error(thisClass, methodName, e, "Error deleting the file " + SPNEGOConstants.KRB5_KEYTAB_FILE + " from the KDC on teardown.");
+        }
+
+        /*
+         * Delete the scripts that were copied over to the KDC.
+         */
+        if (!InitClass.needToPushaddSPNKeytab) {
+            String file = getUniqueRemoteFileName(SPNEGOConstants.ADD_SPN_TO_KEYTAB_REMOTE_FILE);
+            try {
+                deleteRemoteFileFromRemoteMachine(getKdcMachine(), file);
+            } catch (Exception e) {
+                Log.error(thisClass, methodName, e, "Error deleting the file " + file + " from the KDC on teardown.");
+            }
+        }
+        if (!InitClass.sendvbs) {
+            String file = getUniqueRemoteFileName(SPNEGOConstants.CREATE_WIN_KEYTAB_REMOTE_FILE);
+            try {
+                deleteRemoteFileFromRemoteMachine(getKdcMachine(), file);
+            } catch (Exception e) {
+                Log.error(thisClass, methodName, e, "Error deleting the file " + file + " from the KDC on teardown.");
+            }
+
+            file = getUniqueRemoteFileName(SPNEGOConstants.CREATE_WIN_USER_REMOTE_FILE);
+            try {
+                deleteRemoteFileFromRemoteMachine(getKdcMachine(), file);
+            } catch (Exception e) {
+                Log.error(thisClass, methodName, e, "Error deleting the file " + file + " from the KDC on teardown.");
+            }
+
+            file = getUniqueRemoteFileName(SPNEGOConstants.REMOVE_WIN_USER_REMOTE_FILE);
+            try {
+                deleteRemoteFileFromRemoteMachine(getKdcMachine(), file);
+            } catch (Exception e) {
+                Log.error(thisClass, methodName, e, "Error deleting the file " + file + " from the KDC on teardown.");
+            }
+        }
+        if (!InitClass.needToPushwinSetSPN) {
+            String file = getUniqueRemoteFileName(SPNEGOConstants.CREATE_WIN_USER_SET_SPN_REMOTE_FILE);
+            try {
+                deleteRemoteFileFromRemoteMachine(getKdcMachine(), file);
+            } catch (Exception e) {
+                Log.error(thisClass, methodName, e, "Error deleting the file " + file + " from the KDC on teardown.");
+            }
+        }
+        if (!InitClass.needToPushdeleteUserSPN) {
+            String file = getUniqueRemoteFileName(SPNEGOConstants.DELETE_USER_SPN_REMOTE_FILE);
+            try {
+                deleteRemoteFileFromRemoteMachine(getKdcMachine(), file);
+            } catch (Exception e) {
+                Log.error(thisClass, methodName, e, "Error deleting the file " + file + " from the KDC on teardown.");
+            }
+        }
+        if (!InitClass.needToPushsetUserSPN) {
+            String file = getUniqueRemoteFileName(SPNEGOConstants.SET_USER_SPN_REMOTE_FILE);
+            try {
+                deleteRemoteFileFromRemoteMachine(getKdcMachine(), file);
+            } catch (Exception e) {
+                Log.error(thisClass, methodName, e, "Error deleting the file " + file + " from the KDC on teardown.");
+            }
+        }
+
+        /*
+         * Don't EVER delete the localhost_HTTP_krb5.keytab from the remote machine. There are other changes
+         * made to stop the test from getting this far if the short host name comes back as localhost,
+         * but prevent it just in case.
+         *
+         * TODO Seems we could use the getUniqueRemoteFileName for this file as well.
+         */
+        if (!"localhost".equalsIgnoreCase(InitClass.serverShortHostName)) {
+            String file = InitClass.serverShortHostName + SPNEGOConstants.KRB5_KEYTAB_TEMP_SUFFIX;
+            try {
+                deleteRemoteFileFromRemoteMachine(getKdcMachine(), file);
+            } catch (Exception e) {
+                Log.error(thisClass, methodName, e, "Error deleting the file " + file + " from the KDC on teardown.");
+            }
+        }
+    }
+
+    /**
+     * Gets a unique remote file name based on the local short host name. The file name is unique for this host,
+     * and should help avoid conflicts when pushing files to the KDC host.
+     *
+     * @param remoteFileName The base remote file name.
+     * @return A unique filename for the specified remote file name. The name should be consistent
+     *         for this host and the duration of the test.
+     */
+    private String getUniqueRemoteFileName(String remoteFileName) {
+        return InitClass.serverShortHostName + "_" + remoteFileName;
     }
 }

@@ -44,7 +44,7 @@ public class MappingTable {
 	public static final String COUNTER = MetricType.COUNTER.toString().toUpperCase();
 	public static final String GAUGE = MetricType.GAUGE.toString().toUpperCase();
 	public static final String SIMPLE_TIMER = MetricType.SIMPLE_TIMER.toString().toUpperCase().replaceAll(" ", "_");
-	
+
 	private static MappingTable singleton = null;
 
 	private Map<String, String[][]> mappingTable = new HashMap<String, String[][]>();
@@ -59,12 +59,12 @@ public class MappingTable {
 	private MappingTable() {
 		
 		String[][] requestTimeTable = new String[][] {
-		{ "vendor", "requestTiming.requestCount", "Request Count", "requestTiming.requestCount.description", COUNTER, MetricUnits.NONE, "RequestCount", null, null },
-		{ "vendor", "requestTiming.activeRequestCount", "Active Request Count", "requestTiming.activeRequestCount.description", GAUGE, MetricUnits.NONE, "ActiveRequestCount", null, null },
-		{ "vendor", "requestTiming.slowRequestCount", "Slow Request Count", "requestTiming.slowRequestCount.description", GAUGE, MetricUnits.NONE, "SlowRequestCount", null, null },
-		{ "vendor", "requestTiming.hungRequestCount", "Hung Request Count", "requestTiming.hungRequestCount.description", GAUGE, MetricUnits.NONE, "HungRequestCount", null, null }
-	};
-	mappingTable.put("WebSphere:type=RequestTimingStats,name=*", requestTimeTable);
+			{ "vendor", "requestTiming.requestCount", "Request Count", "requestTiming.requestCount.description", COUNTER, MetricUnits.NONE, "RequestCount", null, null },
+			{ "vendor", "requestTiming.activeRequestCount", "Active Request Count", "requestTiming.activeRequestCount.description", GAUGE, MetricUnits.NONE, "ActiveRequestCount", null, null },
+			{ "vendor", "requestTiming.slowRequestCount", "Slow Request Count", "requestTiming.slowRequestCount.description", GAUGE, MetricUnits.NONE, "SlowRequestCount", null, null },
+			{ "vendor", "requestTiming.hungRequestCount", "Hung Request Count", "requestTiming.hungRequestCount.description", GAUGE, MetricUnits.NONE, "HungRequestCount", null, null }
+		};
+		mappingTable.put("WebSphere:type=RequestTimingStats,name=*", requestTimeTable);
 
 
 		String[][] threadPoolTable = new String[][] {

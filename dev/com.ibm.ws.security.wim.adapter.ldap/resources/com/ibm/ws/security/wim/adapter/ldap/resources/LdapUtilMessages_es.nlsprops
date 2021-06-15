@@ -279,3 +279,7 @@ IDMAP_INVALID_FORMAT.useraction=Actualice el valor de userIdMap para que se ajus
 KRB5_SERVICE_NOT_AVAILABLE=CWIML4521E: El registro de LDAP {0} ha intentado enlazar con el servidor de LDAP utilizando credenciales de Kerberos para el nombre de principal {1}, pero el servicio Kerberos que proporciona estas credenciales no est\u00e1 disponible. El mecanismo de autenticaci\u00f3n de enlace es {2}.
 KRB5_SERVICE_NOT_AVAILABLE.explanation=El servicio Kerberos no estaba disponible cuando el registro de LDAP ha intentado enlazar con el servidor LDAP. Si el servicio Kerberos no est\u00e1 disponible, no se puede autenticar ning\u00fan usuario.
 KRB5_SERVICE_NOT_AVAILABLE.useraction=Revise los valores de configuraci\u00f3n del registro de LDAP para comprobar los atributos bindAuthMechanism, krb5Principal y krb5TicketCache, as\u00ed como la configuraci\u00f3n de Kerberos. Reinicie el servidor.
+
+FILTER_MISSING_PERCENT_V=CWIML4523E: El valor {0} para {1} no es v\u00e1lido. Requiere una aserci\u00f3n de valor de atributo donde la aserci\u00f3n de valor es =%v. Por ejemplo, {2}.
+FILTER_MISSING_PERCENT_V.explanation=El registro LDAP sustituye %v por el valor que se debe buscar al realizar b\u00fasquedas de usuarios o grupos.
+FILTER_MISSING_PERCENT_V.useraction=Actualice el filtro especificado para incluir una aserci\u00f3n de valor de atributo que contenga =%v en la aserci\u00f3n de valor.

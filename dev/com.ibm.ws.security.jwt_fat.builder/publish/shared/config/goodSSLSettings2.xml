@@ -10,7 +10,7 @@
 		id="myKeyStore"
 		password="Liberty"
 		type="jks"
-		location="${server.config.dir}/commonBasicKeyStore.jks" />
+		location="${server.config.dir}/dsaKey.jks" />
 	<keyStore
 		id="myTrustStore"
 		password="Liberty"

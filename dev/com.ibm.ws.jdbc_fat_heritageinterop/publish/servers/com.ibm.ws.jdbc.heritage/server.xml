@@ -1,0 +1,84 @@
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+  <include location="../fatTestPorts.xml"/>
+
+  <featureManager>
+    <feature>componenttest-1.0</feature>
+    <feature>dataStoreHelper-1.0</feature> <!-- exposes the DataStoreHelper interfaces as API -->
+    <feature>jdbc-4.2</feature>
+    <feature>usr:jdbcHeritage-1.0</feature> <!-- provides the heritageSettings configuration -->
+    <feature>osgiConsole-1.0</feature>
+    <feature>servlet-3.1</feature>
+  </featureManager>
+
+  <variable name="onError" value="FAIL"/>
+
+  <library id="JDBCLib">
+    <file name="${server.config.dir}/jdbc/HeritageDriver.jar"/>
+    <fileset dir="${shared.resource.dir}/derby"/>
+  </library>
+
+  <application location="heritageApp.war">
+    <classloader commonLibraryRef="JDBCLib"/>
+    <web-ext>
+      <resource-ref name="java:comp/jdbc/env/unsharable-ds-xa-loosely-coupled" branch-coupling="LOOSE" isolation-level="TRANSACTION_READ_COMMITTED"/>
+    </web-ext>
+  </application>
+
+  <authData id="dbAuth" user="dbuser" password="{xor}Oz0vKDs=" />
+
+  <dataSource id="DefaultDataSource" containerAuthDataRef="dbAuth" queryTimeout="1m21s" supplementalJDBCTrace="true" validationTimeout="18s">
+    <jdbcDriver libraryRef="JDBCLib" javax.sql.XADataSource="test.jdbc.heritage.driver.HDXADataSource"/>
+    <properties databaseName="memory:testdb" createDatabase="create"
+                driverType="fake" longDataCacheSize="4" responseBuffering="maybe"
+                supportsCatalog="false" supportsNetworkTimeout="false" supportsReadOnly="false" supportsSchema="false" supportsTypeMap="false"/>
+                <!-- rely on custom DataStoreHelper metadata to determine lack of support for the above attributes -->
+    <heritageSettings helperClass="test.jdbc.heritage.driver.helper.HDDataStoreHelper" replaceExceptions="true"/>
+    <identifyException as="None" sqlState="08004"/>
+    <identifyException as="StaleConnection" sqlState="H8000"/>
+    <identifyException as="com.ibm.websphere.ce.cm.StaleConnectionException" sqlState="H8006"/>
+    <identifyException as="test.jdbc.heritage.driver.helper.HeritageDBDuplicateKeyException" errorCode="143360"/>
+    <identifyException as="test.jdbc.heritage.driver.helper.HeritageDBFeatureUnavailableException" errorCode="40960"/>
+  </dataSource>
+
+  <dataSource jndiName="jdbc/helperDefaulted" containerAuthDataRef="dbAuth" connectionSharing="MatchOriginalRequest"
+              type="javax.sql.DataSource">
+    <connectionManager enableSharingForDirectLookups="false"/>
+    <jdbcDriver libraryRef="JDBCLib" javax.sql.DataSource="test.jdbc.heritage.driver.HDDataSource"/>
+    <properties databaseName="memory:testdb" createDatabase="create"
+                supportsNetworkTimeout="false" supportsSchema="false" supportsTypeMap="false"/>
+                <!-- rely on identifyExceptions to determine lack of support for NetworkTimeout/Schema; DataStoreHelper.isUnsupported for TypeMap -->
+    <heritageSettings replaceExceptions="true"/>
+    <identifyException as="None" sqlState="S1000"/>
+    <identifyException as="AuthorizationError" errorCode="28"/>
+    <identifyException as="StaleConnection" errorCode="8008"/>
+    <identifyException as="StaleConnection" errorCode="8008"/>
+    <identifyException as="StaleStatement" sqlState="22013"/>
+    <identifyException as="test.jdbc.heritage.driver.helper.HeritageDBDuplicateKeyException" sqlState="2300H"/>
+    <identifyException as="test.jdbc.heritage.driver.helper.HeritageDBFeatureUnavailableException" sqlState="0A00H"/>
+    <identifyException as="Unsupported" errorCode="10"/>
+    <identifyException as="Unsupported" sqlState="HDISA"/>
+  </dataSource>
+
+  <dataSource jndiName="jdbc/one-phase" containerAuthDataRef="dbAuth" connectionSharing="MatchCurrentState"
+              isolationLevel="TRANSACTION_READ_COMMITTED" type="javax.sql.DataSource">
+    <jdbcDriver libraryRef="JDBCLib" javax.sql.DataSource="test.jdbc.heritage.driver.HDDataSource"/>
+    <properties databaseName="memory:testdb" createDatabase="create"/>
+    <heritageSettings helperClass="com.ibm.websphere.rsadapter.GenericDataStoreHelper" replaceExceptions="false"/>
+  </dataSource>
+
+  <javaPermission codeBase="${shared.resource.dir}derby/derby.jar" className="java.security.AllPermission"/>
+
+  <javaPermission codeBase="${server.config.dir}/apps/heritageApp.war" className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
+  <javaPermission codeBase="${server.config.dir}/apps/heritageApp.war" className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+
+</server>

@@ -20,6 +20,6 @@ fat.project: true
 -buildpath: \
   com.ibm.websphere.javaee.annotation.1.1;version=latest,\
   com.ibm.websphere.javaee.mail.1.5;version=latest, \
-  com.icegreen:greenmail;version=1.5.10, \
+  com.ibm.ws.com.icegreen:greenmail;strategy=exact;version=2.0.0.fd826131f671b0d3230b0d0e1638d8c4, \
   org.slf4j:slf4j-api;version=1.7.7, \
   org.slf4j:slf4j-jdk14;version=1.7.7

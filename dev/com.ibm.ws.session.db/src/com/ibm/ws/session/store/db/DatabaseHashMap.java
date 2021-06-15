@@ -177,6 +177,7 @@ public class DatabaseHashMap extends BackedHashMap {
     boolean usingDerby = false;
     boolean usingDB2zOS = false; // LIDB2775.25 zOS
     boolean usingSolidDB = false;
+    boolean usingPostgreSQL = false;
     transient DatabaseHandler dbHandler = null;
 
     private Hashtable suspendedTransactions = null;
@@ -344,6 +345,7 @@ public class DatabaseHashMap extends BackedHashMap {
                     smallColSize = dbHandler.getSmallColumnSize();
                     mediumColSize = dbHandler.getMediumColumnSize();
                     largeColSize = dbHandler.getLargeColumnSize();
+                    usingPostgreSQL = true;
                 } else if (dbCode == DBPortability.MYSQL) {
                     dbHandler = new MySQLHandler();
                     smallColSize = dbHandler.getSmallColumnSize();
@@ -505,6 +507,8 @@ public class DatabaseHashMap extends BackedHashMap {
                     }
                 } // Oracle case to be handled later
             } //PM27191 END
+        } else if (usingPostgreSQL) {
+            qualifierName = dmd.getUserName();
         }
         
         if (com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {

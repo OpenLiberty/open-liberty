@@ -789,7 +789,11 @@ public class CommonValidationTools {
                     }
                     if (key.equals(Constants.STATE_KEY)) {
                         msgUtils.assertTrueAndLog(thisMethod, "State is null", value != null);
-                        msgUtils.assertTrueAndLog(thisMethod, "State value expected: " + settings.getState() + " but received: " + value, value.equals(settings.getState()));
+                        if (Constants.EXIST_WITH_ANY_VALUE.equals(settings.getState())) {
+                            Log.info(thisClass,thisMethod, "Skipping state check at callers request") ;
+                        } else {
+                            msgUtils.assertTrueAndLog(thisMethod, "State value expected: " + settings.getState() + " but received: " + value, value.equals(settings.getState()));
+                        }
                     }
                     // when coding the test where request and server scopes do not match in the future, set the expected response value into
                     // TestSettings, add the expectation, then set the value in TestSettings to the value that the request should pass in (before calling
@@ -1677,7 +1681,7 @@ public class CommonValidationTools {
                     tokenVerifier.verifyAndDeserialize();
                     result = tokenVerifier.isSigned();
                 } else {
-                    if (sigAlg == Constants.SIGALG_RS256) {
+                    if (isInList(Constants.ALL_TEST_SIGALGS, sigAlg) ) {
                         // return true - we're not ready to validate RS256 quite yet
                         return true;
                     } else {

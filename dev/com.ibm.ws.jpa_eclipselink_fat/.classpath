@@ -12,6 +12,9 @@
 	<classpathentry kind="src" path="test-applications/olgh10068/src"/>
 	<classpathentry kind="src" path="test-applications/olgh14426/src"/>
 	<classpathentry kind="src" path="test-applications/olgh14457/src"/>
+	<classpathentry kind="src" path="test-applications/olgh16588/src"/>
+	<classpathentry kind="src" path="test-applications/olgh16685/src"/>
+	<classpathentry kind="src" path="test-applications/olgh16772/src"/>
 	<classpathentry kind="src" path="test-applications/helpers/DatabaseManagement/src"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>

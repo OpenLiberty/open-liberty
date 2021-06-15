@@ -1,18 +1,18 @@
-package com.ibm.ws.Transaction.JTA;
-
-import com.ibm.tx.TranConstants;
 /*******************************************************************************
- * Copyright (c) 1997, 2020 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- * IBM Corporation - initial API and implementation
+ *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-import com.ibm.tx.util.logging.Tr;
-import com.ibm.tx.util.logging.TraceComponent;
+package com.ibm.ws.Transaction.JTA;
+
+import com.ibm.tx.TranConstants;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 
 public class ResourceWrapper implements StatefulResource {
     private static final TraceComponent tc = Tr.register(

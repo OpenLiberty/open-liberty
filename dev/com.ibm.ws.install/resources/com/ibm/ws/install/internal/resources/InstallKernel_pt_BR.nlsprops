@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020 IBM Corporation and others.
+# Copyright (c) 2010, 2020, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -872,7 +872,7 @@ ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY.useraction=Instale os recursos que
 
 ERROR_BETA_EDITION_NOT_SUPPORTED=CWWKF1411E: A instala\u00e7\u00e3o ou a atualiza\u00e7\u00e3o de recursos n\u00e3o \u00e9 suportada para libera\u00e7\u00f5es beta.
 ERROR_BETA_EDITION_NOT_SUPPORTED.explanation=A instala\u00e7\u00e3o ou a atualiza\u00e7\u00e3o de recursos n\u00e3o \u00e9 suportada para o produto instalado.
-ERROR_BETA_EDITION_NOT_SUPPORTED.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+ERROR_BETA_EDITION_NOT_SUPPORTED.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
 
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: O recurso foi transferido por download com sucesso.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=O recurso foi transferido por download.
@@ -885,5 +885,9 @@ TOOL_DOWNLOAD_FEATURES_OK.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
 MAPBASED_ERROR_UNSUPPORTED_FILE=CWWKF1502E: O arquivo {0} n\u00e3o pode ser instalado porque \u00e9 um tipo de arquivo n\u00e3o suportado. Apenas a instala\u00e7\u00e3o dos arquivos do ESA \u00e9 suportada.
 MAPBASED_ERROR_UNSUPPORTED_FILE.explanation=O arquivo n\u00e3o foi instalado porque um tipo n\u00e3o-suportado de arquivo foi fornecido.
 MAPBASED_ERROR_UNSUPPORTED_FILE.useraction=Consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_INVALID_FEATURE_BOM_COORDINATE=CWWKF1503E: O formato da coordenada Maven do BOM de recursos {0} n\u00e3o \u00e9 v\u00e1lido. Certifique-se de que a coordenada esteja no formato groupId:artifactId:version.
+ERROR_INVALID_FEATURE_BOM_COORDINATE.explanation=O formato da coordenada Maven do BOM de recursos n\u00e3o \u00e9 v\u00e1lido.
+ERROR_INVALID_FEATURE_BOM_COORDINATE.useraction=Reformate a coordenada Maven do BOM de recursos para se ajustar ao formato groupId:artifactId:version.
 
 MSG_STABILIZING_FEATUREMANAGER=Esta a\u00e7\u00e3o featureManager est\u00e1 estabilizada. Use installUtility {0} no lugar. O comando installUtility \u00e9 recomendado para a\u00e7\u00f5es relacionadas a instala\u00e7\u00e3o e reposit\u00f3rio.

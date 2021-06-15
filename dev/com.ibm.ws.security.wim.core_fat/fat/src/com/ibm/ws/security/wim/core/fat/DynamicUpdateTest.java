@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -66,6 +66,12 @@ public class DynamicUpdateTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
+
+        /*
+         * Transform any applications into EE9 when necessary.
+         */
+        FATSuite.transformApps(server, "dropins/userRegistry.war");
+
         // Add LDAP variables to bootstrap properties file
         LDAPUtils.addLDAPVariables(server);
         Log.info(c, "setUp", "Starting the server... (will wait for userRegistry servlet to start)");
@@ -98,7 +104,7 @@ public class DynamicUpdateTest {
         Log.info(c, "tearDown", "Stopping the server...");
 
         try {
-            server.stopServer("CWIML1018E", "CWIML4538E");
+            server.stopServer("CWIML1018E", "CWIML4538E", "CWWKG0027W");
         } finally {
             server.removeInstalledAppForValidation("userRegistry");
             server.deleteFileFromLibertyInstallRoot("lib/features/internalfeatures/securitylibertyinternals-1.0.mf");

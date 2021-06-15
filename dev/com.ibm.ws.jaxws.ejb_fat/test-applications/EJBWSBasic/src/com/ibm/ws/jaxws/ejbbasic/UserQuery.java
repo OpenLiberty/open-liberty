@@ -12,9 +12,11 @@ package com.ibm.ws.jaxws.ejbbasic;
 
 import javax.ejb.Stateless;
 import javax.jws.WebService;
+import javax.xml.ws.soap.Addressing;
 
 @Stateless
 @WebService
+@Addressing(enabled = true, required = true)
 public class UserQuery {
 
     public User getUser(String userName) throws UserNotFoundException {

@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2020 IBM Corporation and others.
+# Copyright (c) 2009, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -129,8 +129,14 @@ session.invalidated.total.description=Il numero di sessioni da cui \u00e8 stata 
 session.invalidatedbyTimeout.total.description=Il numero di sessioni da cui \u00e8 stata effettuata l'uscita per timeout dal momento dell'abilitazione di questa metrica.
 
 
-REST.request.description=Il numero di richiami e il tempo di risposta totale di questo metodo di risorsa RESTful dall'avvio del server. La metrica non registrer\u00e0 n\u00e9 il tempo trascorso n\u00e9 il conteggio di una richiesta REST, qualora sia risultata in un'eccezione non associata. Inoltre, tiene traccia della durata di tempo pi\u00f9 elevata nel minuto interamente completato precedente e la durata di tempo minore registrata nel minuto interamente completato precedente.
-REST.request.unmappedException.description=Il numero totale di eccezioni non associate che si verificano da questo metodo risorsa RESTful dall'avvio del server.
+REST.request.description=Il numero di richiami e il tempo di risposta totale di questo metodo di risorsa RESTful dall'avvio del server. La metrica non registrer\u00e0 il tempo trascorso e non contegger\u00e0 una richiesta REST, se questa ha generato un'eccezione non associata. Inoltre, tiene traccia della durata di tempo massima registrata nel precedente minuto intero completato e della durata di tempo minima registrata nel precedente minuto intero completato.
+REST.request.unmappedException.description=Il numero totale di eccezioni non associate che vengono generate da questo metodo di risorsa RESTful dall'avvio del server.
+
+
+requestTiming.requestCount.description=Il numero di richieste servlet dall'avvio del server.
+requestTiming.activeRequestCount.description=Il numero di richieste servlet attualmente in esecuzione.
+requestTiming.slowRequestCount.description=Il numero di richieste servlet che sono attualmente in esecuzione, ma l'esecuzione \u00e8 lenta.
+requestTiming.hungRequestCount.description=Il numero di richieste servlet che sono attualmente in esecuzione, ma l'esecuzione \u00e8 bloccata.
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message
 #-----------------------------------------------------------------------------------------------------------------------------

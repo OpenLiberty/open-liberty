@@ -6,6 +6,7 @@
 	<classpathentry kind="src" path="test-bundles/cdi.spi.extension/src"/>
 	<classpathentry kind="src" path="test-bundles/cdi.spi.constructor.fail.extension/src"/>
 	<classpathentry kind="src" path="test-bundles/cdi.helloworld.extension/src"/>
+    <classpathentry kind="src" path="test-bundles/cdi.spi.misplaced/src"/>
 	<classpathentry kind="src" path="test-applications/applicationExtension.jar/src"/>
 	<classpathentry kind="src" path="test-applications/dynamicallyAddedBeans.jar/src"/>
 	<classpathentry kind="src" path="test-applications/helloWorldExtensionTest.war/src"/>

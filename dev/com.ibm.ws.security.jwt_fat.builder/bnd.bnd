@@ -27,7 +27,7 @@ src: \
 
 fat.project: true
 tested.features:\
-        jwt-1.0, jsonp-2.0, restfulwsclient-3.0, restfulws-3.0, pages-3.0
+        jwt-1.0, jsonp-2.0, restfulwsclient-3.0, restfulws-3.0, pages-3.0, appsecurity-4.0
 
 
 # To define a global minimum java level for the FAT, use the following property.
@@ -48,10 +48,9 @@ runtime.minimum.java.level: 1.8
 	javax.servlet-api,\
 	com.ibm.ws.org.jose4j;version=latest,\
 	org.glassfish:javax.json;version=1.0,\
-	com.ibm.ws.org.apache.commons.codec.1.4;version=latest,\
+	io.openliberty.org.apache.commons.codec;version=latest,\
 	com.ibm.ws.org.apache.commons.lang3;version=latest,\
-	com.ibm.ws.org.apache.commons.logging.1.0.3;version=latest,\
-	org.apache.commons.codec,\
+	io.openliberty.org.apache.commons.logging;version=latest,\
 	com.ibm.ws.org.apache.httpcomponents;version=latest,\
 	net.sourceforge.htmlunit:htmlunit;version=2.44.0,\
 	net.sourceforge.htmlunit:webdriver;version=2.6,\

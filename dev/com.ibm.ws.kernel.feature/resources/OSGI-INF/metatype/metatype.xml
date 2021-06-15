@@ -20,6 +20,8 @@
 			<Option	label="%onError.ignore" value="IGNORE"/>   
 		</AD> 
         <AD id="feature" name="%feature.name" description="%feature.desc" required="false" type="String" cardinality="2147483647"/>
+        <AD id="package.server.conflict" name="internal" description="internal use only" 
+            type="Boolean" default="false" required="false"/>
     </OCD>
   
     <Designate pid="com.ibm.ws.kernel.feature">
