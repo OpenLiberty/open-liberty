@@ -29,6 +29,7 @@ src: \
     test-applications/oauthtaidemo/src, \
     test-applications/testMediator/src, \
     test-applications/testTokenEndpoint/src, \
+    test-applications/testUserinfoEndpoint/src, \
     test-bundles/com.ibm.ws.security.oauth20.jwt.mediator/src, \
     test-bundles/com.ibm.ws.security.oauth20.token.mapping/src, \
     test-bundles/com.ibm.ws.security.oauth20.tokenintrospectprovider/src, \
@@ -63,6 +64,7 @@ test.project: true
 	io.openliberty.org.apache.commons.codec;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.security.fat.common;version=latest,\
+	com.ibm.ws.security.fat.common.jwt;version=latest,\
 	com.ibm.ws.security.oauth.2.0;version=latest,\
 	com.ibm.ws.security.openidconnect.clients.common;version=latest,\
 	com.ibm.ws.security.openidconnect.common;version=latest,\
@@ -82,7 +84,9 @@ test.project: true
 	de.flapdoodle.embed.process;version='3.0.1',\
 	org.slf4j:slf4j-jdk14;version=latest,\
 	com.ibm.ws.org.slf4j.api.1.7.7,\
-	com.ibm.ws.javaee.servlet.3.1;version='1.0.10'
+	com.ibm.ws.javaee.servlet.3.1;version='1.0.10',
+	org.glassfish:javax.json;version=1.0,\
+	javax.servlet-api
     
 -testpath: \
     cglib:cglib-nodep;version=3.3.0, \
