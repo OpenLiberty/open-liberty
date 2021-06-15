@@ -15,6 +15,7 @@ import static com.ibm.ws.jaxrs20.fat.TestUtils.getPort;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.DataInputStream;
@@ -28,15 +29,16 @@ import javax.ws.rs.core.MediaType;
 import org.apache.http.Header;
 import org.apache.http.HttpException;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicHeader;
 import org.apache.wink.common.internal.providers.entity.DataSourceProvider;
+import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -48,7 +50,6 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
@@ -56,13 +57,13 @@ import componenttest.topology.impl.LibertyServer;
  * Centralized test for built-in standard providers required by the JAX-RS specification.
  */
 @RunWith(FATRunner.class)
-@SkipForRepeat("EE9_FEATURES") // currently broken due to multiple issues
+//@SkipForRepeat("EE9_FEATURES") // currently broken due to multiple issues
 public class StandardProvidersTest {
 
     @Server("com.ibm.ws.jaxrs.fat.providers")
     public static LibertyServer server;
 
-    private static HttpClient httpClient;
+    private static CloseableHttpClient httpClient;
     private static final String providerswar = "providers";
 
     @BeforeClass
@@ -94,12 +95,12 @@ public class StandardProvidersTest {
 
     @Before
     public void getHttpClient() {
-        httpClient = new DefaultHttpClient();
+        httpClient = HttpClientBuilder.create().build();
     }
 
     @After
-    public void resetHttpClient() {
-        httpClient.getConnectionManager().shutdown();
+    public void resetHttpClient() throws IOException {
+        httpClient.close();
     }
 
     private String getStandardTestURI() {
@@ -158,7 +159,7 @@ public class StandardProvidersTest {
         }
 
         assertEquals(200, resp.getStatusLine().getStatusCode());
-        assertEquals("text/plain", resp.getFirstHeader("Content-Type").getValue());
+        assertThat(resp.getFirstHeader("Content-Type").getValue(), Matchers.containsString("text/plain"));
         assertEquals(barr.length, Integer.valueOf(resp.getFirstHeader("Content-Length").getValue()).intValue());
     }
 
@@ -290,7 +291,7 @@ public class StandardProvidersTest {
         for (int c = 0; c < barr.length; ++c) {
             assertEquals(barr[c], receivedBArr[c]);
         }
-        assertEquals("text/plain", resp.getFirstHeader("Content-Type").getValue());
+        assertThat(resp.getFirstHeader("Content-Type").getValue(), Matchers.containsString("text/plain"));
         assertEquals("1000", resp.getFirstHeader("Content-Length").getValue());
     }
 
@@ -478,7 +479,7 @@ public class StandardProvidersTest {
         for (int c = 0; c < barr.length; ++c) {
             assertEquals(barr[c], receivedBArr[c]);
         }
-        assertEquals("text/plain", resp.getFirstHeader("Content-Type").getValue());
+        assertThat(resp.getFirstHeader("Content-Type").getValue(), Matchers.containsString("text/plain"));
         assertEquals(1000, Integer.valueOf(resp.getFirstHeader("Content-Length")
                         .getValue()).intValue());
 
@@ -570,7 +571,7 @@ public class StandardProvidersTest {
             assertEquals(barr[c], receivedBArr[c]);
         }
 
-        assertEquals("text/plain", resp.getFirstHeader("Content-Type").getValue());
+        assertThat(resp.getFirstHeader("Content-Type").getValue(), Matchers.containsString("text/plain"));
         // Original test expects Content-Length header to be null, too
         assertNull(resp.getFirstHeader("Content-Length"));
 
@@ -626,7 +627,7 @@ public class StandardProvidersTest {
     public void testISAcceptMatchesReturnContentType() throws Exception {
 
         HttpPut put = new HttpPut(isTestUri);
-        byte[] barr = new byte[100000];
+        byte[] barr = new byte[80000];
         Random r = new Random();
         r.nextBytes(barr);
         ByteArrayEntity putReq = new ByteArrayEntity(barr);
@@ -807,8 +808,8 @@ public class StandardProvidersTest {
             System.out.println("Status code from PUT = " + resp.getStatusLine().getStatusCode());
             //assertEquals(204, resp.getStatusLine().getStatusCode());
         } finally {
-            httpClient.getConnectionManager().shutdown();
-            httpClient = new DefaultHttpClient();
+            httpClient.close();
+            httpClient = HttpClientBuilder.create().build();
         }
 
         HttpGet get = new HttpGet(multivalTestUri);
@@ -867,7 +868,7 @@ public class StandardProvidersTest {
 
         String str = asString(resp);
         assertEquals("abcd", str);
-        assertEquals("text/plain", resp.getFirstHeader("Content-Type").getValue());
+        assertThat(resp.getFirstHeader("Content-Type").getValue(), Matchers.containsString("text/plain"));
         Header contentLengthHeader = post.getFirstHeader("Content-Length");
         assertNull(contentLengthHeader == null ? "null" : contentLengthHeader.getValue(),
                    contentLengthHeader);
@@ -984,12 +985,8 @@ public class StandardProvidersTest {
         HttpResponse resp = httpClient.execute(post);
         assertEquals(200, resp.getStatusLine().getStatusCode());
         String str = asString(resp);
-        assertEquals("<message><user>user1</user><password>user1pwd</password></message>",
-                     str);
-        assertEquals("text/xml", resp.getFirstHeader("Content-Type").getValue());
-        Header contentLengthHeader = resp.getFirstHeader("Content-Length");
-        assertNull(contentLengthHeader == null ? "null" : contentLengthHeader.getValue(),
-                   contentLengthHeader);
+        assertThat(str, Matchers.containsString("<message><user>user1</user><password>user1pwd</password></message>"));
+        assertThat(resp.getFirstHeader("Content-Type").getValue(), Matchers.containsString("text/xml"));
     }
 
     /**
@@ -1009,12 +1006,8 @@ public class StandardProvidersTest {
 
         assertEquals(200, resp.getStatusLine().getStatusCode());
         String str = asString(resp);
-        assertEquals("<message><user>user1</user><password>user1pwd</password></message>",
-                     str);
-        assertEquals("application/xml", resp.getFirstHeader("Content-Type").getValue());
-        Header contentLengthHeader = resp.getFirstHeader("Content-Length");
-        assertNull(contentLengthHeader == null ? "null" : contentLengthHeader.getValue(),
-                   contentLengthHeader);
+        assertThat(str, Matchers.containsString("<message><user>user1</user><password>user1pwd</password></message>"));
+        assertThat(resp.getFirstHeader("Content-Type").getValue(), Matchers.containsString("application/xml"));
     }
 
     /**
@@ -1078,10 +1071,7 @@ public class StandardProvidersTest {
         String contentType =
                         (resp.getFirstHeader("Content-Type") == null) ? null : resp
                                         .getFirstHeader("Content-Type").getValue();
-        assertEquals("text/xml", contentType);
-        Header contentLengthHeader = resp.getFirstHeader("Content-Length");
-        assertNull(contentLengthHeader == null ? "null" : contentLengthHeader.getValue(),
-                   contentLengthHeader);
+        assertThat(contentType, Matchers.containsString("text/xml"));
     }
 
     /**
@@ -1156,7 +1146,7 @@ public class StandardProvidersTest {
             assertEquals(barr[c], receivedBArr[c]);
         }
 
-        assertEquals("text/plain", resp.getFirstHeader("Content-Type").getValue());
+        assertThat(resp.getFirstHeader("Content-Type").getValue(), Matchers.containsString("text/plain"));
         Header contentLengthHeader = resp.getFirstHeader("Content-Length");
         assertNull(contentLengthHeader == null ? "null" : contentLengthHeader.getValue(),
                    contentLengthHeader);
@@ -1169,11 +1159,12 @@ public class StandardProvidersTest {
     public void testPutStreamngOutput() throws Exception {
 
         HttpPut put = new HttpPut(strmTestUri);
-        byte[] barr = new byte[100000];
+        byte[] barr = new byte[50000];
         Random r = new Random();
         r.nextBytes(barr);
         ByteArrayEntity entity = new ByteArrayEntity(barr);
         entity.setContentType("bytes/array");
+        //entity.setContentType("text/plain");
         put.setEntity(entity);
 
         HttpResponse resp = httpClient.execute(put);
@@ -1210,7 +1201,7 @@ public class StandardProvidersTest {
     public void testStreamingAcceptMatchesReturnedContentType() throws Exception {
 
         HttpPut put = new HttpPut(strmTestUri);
-        byte[] barr = new byte[100000];
+        byte[] barr = new byte[60000];
         Random r = new Random();
         r.nextBytes(barr);
         ByteArrayEntity entity = new ByteArrayEntity(barr);

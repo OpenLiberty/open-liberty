@@ -76,6 +76,7 @@ public class ClientTestServlet extends HttpServlet {
             ClientBuilder cb = ClientBuilder.newBuilder();
             cb.property("com.ibm.ws.jaxrs.client.connection.timeout", "120000");
             cb.property("com.ibm.ws.jaxrs.client.receive.timeout", "120000");
+            cb.register(JaxbContextResolver.class);
             client = cb.build();
 
             Method testM = this.getClass().getDeclaredMethod(testMethod, new Class[] { Map.class, StringBuilder.class });
