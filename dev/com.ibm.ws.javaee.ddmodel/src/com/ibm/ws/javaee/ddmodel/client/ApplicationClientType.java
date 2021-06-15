@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,7 +13,6 @@ package com.ibm.ws.javaee.ddmodel.client;
 import java.util.Collections;
 import java.util.List;
 
-import com.ibm.ws.javaee.dd.DeploymentDescriptor;
 import com.ibm.ws.javaee.dd.client.ApplicationClient;
 import com.ibm.ws.javaee.dd.common.Description;
 import com.ibm.ws.javaee.dd.common.DisplayName;
@@ -299,13 +298,53 @@ public class ApplicationClientType extends JNDIEnvironmentRefsGroup implements A
     @Override
     public void finish(DDParser parser) throws ParseException {
         super.finish(parser);
-        if (version == null) {
-            if (parser.version < 14) {
-                version = parser.parseToken(parser.version == 12 ? "1.2" : "1.3");
-            } else {
-                throw new ParseException(parser.requiredAttributeMissing("version"));
+
+        if ( version == null ) {
+            // In all cases, not just for 1.0 and 1.1, 
+            // ensure that the local version variable is
+            // assigned.
+            //
+            // Previously, only the two DTD based formats
+            // might be missing a version attribute.
+            // Changes to enable more descriptor deviations
+            // mean that other cases might also be missing
+            // a version attribute.
+
+            // The version text is text of the version as
+            // it appears in the XML text.
+
+            String versionText;
+            switch ( parser.version ) {
+            case ApplicationClient.VERSION_1_2:
+                versionText = "1.2";
+                break;
+            case ApplicationClient.VERSION_1_3:
+                versionText = "1.3";
+                break;
+            case ApplicationClient.VERSION_1_4:
+                versionText = "1.4";
+                break;
+            case ApplicationClient.VERSION_5:
+                versionText = "5";
+                break;
+            case ApplicationClient.VERSION_6:
+                versionText = "6";
+                break;
+            case ApplicationClient.VERSION_7:
+                versionText = "7";
+                break;
+            case ApplicationClient.VERSION_8:
+                versionText = "8";
+                break;
+            case ApplicationClient.VERSION_9:
+                versionText = "9";
+                break;
+            default:
+                throw new IllegalArgumentException("Unsupported application client version [ " + parser.eePlatformVersion + " ]");
             }
+            version = parser.parseToken(versionText);
         }
+    
         this.versionId = parser.version;
         this.idMap = parser.idMap;
     }

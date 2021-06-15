@@ -127,22 +127,20 @@ public class AppClientTestBase extends DDTestBase {
     //
     // 9,   https://jakarta.ee/xml/ns/jakartaee    
     
-    protected static String appClientHead12() {
-        return "<!DOCTYPE application-client PUBLIC" +
+    protected static String appClient12Head =
+        "<!DOCTYPE application-client PUBLIC" +
                " \"-//Sun Microsystems, Inc.//DTD J2EE Application Client 1.2//EN\"" + 
                " \"http://java.sun.com/j2ee/dtds/application_client_1_2.dtd\">" +
                "<application-client>";
-    }
 
-    protected static String appClientHead13() {
-        return "<!DOCTYPE application-client PUBLIC" +
+    protected static String appClient13Head =
+        "<!DOCTYPE application-client PUBLIC" +
                 " \"-//Sun Microsystems, Inc.//DTD J2EE Application Client 1.3//EN\"" + 
                 " \"http://java.sun.com/j2ee/dtds/application_client_1_3.dtd\">" +
                 "<application-client>";
-    }
 
-    protected static String appClientHead14() {
-        return "<application-client" +
+    protected static String appClient14Head =
+        "<application-client" +
                " xmlns=\"http://java.sun.com/xml/ns/j2ee\"" +
                " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
                " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee" +
@@ -150,10 +148,9 @@ public class AppClientTestBase extends DDTestBase {
                " version=\"1.4\"" +
                " id=\"ApplicationClient_ID\"" +
                ">";
-    }
 
-    protected static String appClientHead50() {
-        return "<application-client" +
+    protected static String appClient50Head = 
+        "<application-client" +
                 " xmlns=\"http://java.sun.com/xml/ns/javaee\"" +
                 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
                 " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee" +
@@ -161,10 +158,9 @@ public class AppClientTestBase extends DDTestBase {
                 " version=\"5\"" +
                 " id=\"ApplicationClient_ID\"" +
                 ">";
-    }
 
-    protected static String appClientHead60() {
-        return "<application-client" +
+    protected static String appClient60Head =
+        "<application-client" +
                 " xmlns=\"http://java.sun.com/xml/ns/javaee\"" +
                 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
                 " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee" +
@@ -172,10 +168,9 @@ public class AppClientTestBase extends DDTestBase {
                 " version=\"6\"" +
                 " id=\"ApplicationClient_ID\"" +
                 ">";
-    }
 
-    protected static String appClientHead70() {
-        return "<application-client" +
+    protected static String appClient70Head =
+        "<application-client" +
                 " xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"" +
                 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
                 " xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/javaee" +
@@ -183,10 +178,9 @@ public class AppClientTestBase extends DDTestBase {
                 " version=\"7\"" +
                 " id=\"ApplicationClient_ID\"" +
                 ">";
-    }    
 
-    protected static String appClientHead80() {
-        return "<application-client" +
+    protected static String appClient80Head = 
+        "<application-client" +
                 " xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"" +
                 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
                 " xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/javaee" +
@@ -194,10 +188,9 @@ public class AppClientTestBase extends DDTestBase {
                 " version=\"8\"" +
                 " id=\"ApplicationClient_ID\"" +
                 ">";
-    }
 
-    protected static String appClientHead90() {
-        return "<application-client" +
+    protected static String appClient90Head =
+        "<application-client" +
                 " xmlns=\"https://jakarta.ee/xml/ns/jakartaee\"" +
                 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
                 " xsi:schemaLocation=\"https://jakarta.ee/xml/ns/jakartaee " +
@@ -205,34 +198,32 @@ public class AppClientTestBase extends DDTestBase {
                 " version=\"9\"" +
                 " id=\"ApplicationClient_ID\"" +
                 ">";
-    }
 
-    protected static String appClientTail() {
-        return "</application-client>";
-    }
+    protected static String appClientTail =
+        "</application-client>";
     
-    protected static String appClientXML(int version, String enclosed) {
-        String head;
-        if ( version == ApplicationClient.VERSION_1_2 ) {
-            head = appClientHead12();
-        } else if ( version == ApplicationClient.VERSION_1_3) {
-            head = appClientHead13();
-        } else if ( version == ApplicationClient.VERSION_1_4 ) {
-            head = appClientHead14();
-        } else if ( version == ApplicationClient.VERSION_5) {
-            head = appClientHead50();
-        } else if ( version == ApplicationClient.VERSION_6 ) {
-            head = appClientHead60();            
-        } else if ( version == ApplicationClient.VERSION_7 ) {
-            head = appClientHead70();            
-        } else if ( version == ApplicationClient.VERSION_8 ) {
-            head = appClientHead80();
-        } else if ( version == ApplicationClient.VERSION_9 ) {
-            head = appClientHead90();
+    protected static String appClientXML(int schemaVersion, String body) {
+        String appClientHead;
+        if ( schemaVersion == ApplicationClient.VERSION_1_2 ) {
+            appClientHead = appClient12Head;
+        } else if ( schemaVersion == ApplicationClient.VERSION_1_3) {
+            appClientHead = appClient13Head;
+        } else if ( schemaVersion == ApplicationClient.VERSION_1_4 ) {
+            appClientHead = appClient14Head;
+        } else if ( schemaVersion == ApplicationClient.VERSION_5) {
+            appClientHead = appClient50Head;
+        } else if ( schemaVersion == ApplicationClient.VERSION_6 ) {
+            appClientHead = appClient60Head;            
+        } else if ( schemaVersion == ApplicationClient.VERSION_7 ) {
+            appClientHead = appClient70Head;            
+        } else if ( schemaVersion == ApplicationClient.VERSION_8 ) {
+            appClientHead = appClient80Head;
+        } else if ( schemaVersion == ApplicationClient.VERSION_9 ) {
+            appClientHead = appClient90Head;
         } else {
-            throw new IllegalArgumentException("Unsupported application client version [ " + version + " ]");
+            throw new IllegalArgumentException("Unsupported application client version [ " + schemaVersion + " ]");
         }
 
-        return head + enclosed + appClientTail();
+        return appClientHead + body + appClientTail;
     }
 }

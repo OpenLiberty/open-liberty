@@ -64,14 +64,14 @@ public class EJBJarBndTest extends EJBJarBndTestBase {
 
     // Interceptor and message destination tests are included here since the InterceptorType is from commonbnd. 
     // The other EJB type tests are in their specific type test file in this package.
-    final String interceptorXML2 =
-                    "<interceptor class=\"com.ibm.test.InterceptorClass\"> \n" +
-                                    "<ejb-ref name=\"ejbRef2a\" binding-name=\"ejbRefBindingName2a\"/> \n" +
-                                    "<ejb-ref name=\"ejbRef2b\" binding-name=\"ejbRefBindingName2b\"/> \n" +
-                                    "<resource-ref name=\"resourceRefName\" binding-name=\"resourceRefBindingName\"/> \n" +
-                                    "<message-destination-ref name=\"messageDestName\" binding-name=\"messageDestBindingName\"/> \n" +
-                                    "<resource-env-ref name=\"resourceEnvRefName\" binding-name=\"resourceEnvRefBindingName\"/> \n" +
-                                    "</interceptor> \n";
+    public static final String interceptorXML2 =
+            "<interceptor class=\"com.ibm.test.InterceptorClass\"> \n" +
+                    "<ejb-ref name=\"ejbRef2a\" binding-name=\"ejbRefBindingName2a\"/> \n" +
+                    "<ejb-ref name=\"ejbRef2b\" binding-name=\"ejbRefBindingName2b\"/> \n" +
+                    "<resource-ref name=\"resourceRefName\" binding-name=\"resourceRefBindingName\"/> \n" +
+                    "<message-destination-ref name=\"messageDestName\" binding-name=\"messageDestBindingName\"/> \n" +
+                    "<resource-env-ref name=\"resourceEnvRefName\" binding-name=\"resourceEnvRefBindingName\"/> \n" +
+            "</interceptor> \n";
 
     @Test
     public void testInterceptorEmptyLists() throws Exception {
@@ -129,9 +129,9 @@ public class EJBJarBndTest extends EJBJarBndTestBase {
         Assert.assertEquals("resourceRefBindingName", interceptor.getResourceRefs().get(0).getBindingName());
     }
 
-    final String messageDetinationXML2 =
-                    "<message-destination name=\"messageDestName2\" binding-name=\"messageDestBinding2\"> \n" +
-                                    "</message-destination> \n";
+    public static final String messageDetinationXML2 =
+            "<message-destination name=\"messageDestName2\" binding-name=\"messageDestBinding2\"> \n" +
+            "</message-destination> \n";
 
     @Test
     public void testMessageDestinations() throws Exception {

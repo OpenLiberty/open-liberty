@@ -15,7 +15,7 @@ import org.junit.Test;
 
 import com.ibm.ws.javaee.dd.ejb.EJBJar;
 
-public class EJBJarHeaderTest extends EJBJarTestBase {
+public class EJBJarTestHeader extends EJBJarTestBase {
 
     protected static String ejbJar21NoNamespace =
             "<ejb-jar" +
@@ -118,6 +118,7 @@ public class EJBJarHeaderTest extends EJBJarTestBase {
         EJBJar ejbJar = parse(ejbJar21NoVersion, EJBJar.VERSION_3_0);
         Assert.assertEquals( 21, ejbJar.getVersionID() );
     }
+
     //
     
     @Test

@@ -307,4 +307,18 @@ public class DDTestBase {
             }
         });
     }
+
+    public static final String[] UNSUPPORTED_DESCRIPTOR_NAMESPACE_MESSAGES =
+        { "unsupported.descriptor.namespace" };
+
+    public static final String[] UNSUPPORTED_DESCRIPTOR_VERSION_MESSAGES =
+        { "unsupported.descriptor.version" };
+
+    public static final String[] UNPROVISIONED_DESCRIPTOR_VERSION_MESSAGES =
+        { "CWWKC2262E", "unprovisioned.descriptor.version" };        
+
+    public static final String[] XML_ERROR_MESSAGES =
+        { "CWWKC2272E", "xml.error" };
+    
+    
 }

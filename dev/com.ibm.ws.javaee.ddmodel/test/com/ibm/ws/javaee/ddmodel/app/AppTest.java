@@ -14,7 +14,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.osgi.framework.Version;
 
-import com.ibm.ws.javaee.ddmodel.DDParser;
 import com.ibm.ws.javaee.version.JavaEEVersion;
 
 /**
@@ -46,178 +45,28 @@ public class AppTest extends AppTestBase {
         }
     }
 
-    // JavaEE6 cases ...
-
-    // Parse everything except 7.0 and 8.0 and 9.0
-
     @Test
-    public void testEE6App12() throws Exception {
-        parse(app12(), JavaEEVersion.VERSION_6_0);
-    }
+    public void testApp() throws Exception {
+        for ( int schemaVersion : JavaEEVersion.VERSION_INTS ) {
+            for ( int maxSchemaVersion : JavaEEVersion.VERSION_INTS ) {
+                // Open liberty will always parse JavaEE6 and earlier
+                // schema versions.
+                int effectiveMax;
+                if ( maxSchemaVersion < JavaEEVersion.VERSION_6_0_INT ) {
+                    effectiveMax = JavaEEVersion.VERSION_6_0_INT;
+                } else {
+                    effectiveMax = maxSchemaVersion;
+                }
+                
+                String[] expectedMessages; 
+                if ( schemaVersion > effectiveMax ) {
+                    expectedMessages = UNPROVISIONED_DESCRIPTOR_VERSION_MESSAGES;
+                } else {
+                    expectedMessages = null;
+                }
 
-    @Test
-    public void testEE6App13() throws Exception {
-        parse(app13(), JavaEEVersion.VERSION_6_0);
-    }
-
-    @Test
-    public void testEE6App14() throws Exception {
-        parse(app14(), JavaEEVersion.VERSION_6_0);
-    }
-
-    @Test
-    public void testEE6App50() throws Exception {
-        parse(app50(), JavaEEVersion.VERSION_6_0);
-    }
-
-    @Test
-    public void testEE6App60() throws Exception {
-        parse(app60(), JavaEEVersion.VERSION_6_0);
-    }
-
-    @Test(expected = DDParser.ParseException.class)
-    public void testEE6App70() throws Exception {
-        parse(app70(), JavaEEVersion.VERSION_6_0);
-    }
-
-    @Test(expected = DDParser.ParseException.class)
-    public void testEE6App80() throws Exception {
-        parse(app80(), JavaEEVersion.VERSION_6_0);
-    }
-
-    @Test(expected = DDParser.ParseException.class)
-    public void testEE6App90() throws Exception {
-        parse(app90(), JavaEEVersion.VERSION_6_0);
-    }
-
-    // JavaEE7 cases ...
-
-    // Parse everything except 8.0 and 9.0
-
-    @Test
-    public void testEE7App12() throws Exception {
-        parse(app12(), JavaEEVersion.VERSION_7_0);
-    }
-
-    @Test
-    public void testEE7App13() throws Exception {
-        parse(app13(), JavaEEVersion.VERSION_7_0);
-    }
-
-    @Test
-    public void testEE7App14() throws Exception {
-        parse(app14(), JavaEEVersion.VERSION_7_0);
-    }
-
-    @Test
-    public void testEE7App50() throws Exception {
-        parse(app50(), JavaEEVersion.VERSION_7_0);
-    }
-
-    @Test
-    public void testEE7App60() throws Exception {
-        parse(app60(), JavaEEVersion.VERSION_7_0);
-    }
-
-    @Test
-    public void testEE7App70() throws Exception {
-        parse(app70(), JavaEEVersion.VERSION_7_0);
-    }
-
-    @Test(expected = DDParser.ParseException.class)
-    public void testEE7App80() throws Exception {
-        parse(app80(), JavaEEVersion.VERSION_7_0);
-    }
-
-    @Test(expected = DDParser.ParseException.class)
-    public void testEE7App90() throws Exception {
-        parse(app90(), JavaEEVersion.VERSION_7_0);
-    }
-
-    // JavaEE8 cases ...
-
-    // Parse everything except 9.0.
-
-    @Test
-    public void testEE8App12() throws Exception {
-        parse(app12(), JavaEEVersion.VERSION_8_0);
-    }
-
-    @Test
-    public void testEE8App13() throws Exception {
-        parse(app13(), JavaEEVersion.VERSION_8_0);
-    }
-
-    @Test
-    public void testEE8App14() throws Exception {
-        parse(app14(), JavaEEVersion.VERSION_8_0);
-    }
-
-    @Test
-    public void testEE8App50() throws Exception {
-        parse(app50(), JavaEEVersion.VERSION_8_0);
-    }
-
-    @Test
-    public void testEE8App60() throws Exception {
-        parse(app60(), JavaEEVersion.VERSION_8_0);
-    }
-
-    @Test
-    public void testEE8App70() throws Exception {
-        parse(app70(), JavaEEVersion.VERSION_8_0);
-    }
-
-    @Test
-    public void testEE8App80() throws Exception {
-        parse(app80(), JavaEEVersion.VERSION_8_0);
-    }
-
-    @Test(expected = DDParser.ParseException.class)
-    public void testEE8App90() throws Exception {
-        parse(app90(), JavaEEVersion.VERSION_8_0);
-    }
-
-    // JakartaEE9 cases ...
-
-    // Parse everything.
-    @Test
-    public void testEE9App12() throws Exception {
-        parse(app12(), JavaEEVersion.VERSION_9_0);
-    }
-
-    @Test
-    public void testEE9App13() throws Exception {
-        parse(app13(), JavaEEVersion.VERSION_9_0);
-    }
-
-    @Test
-    public void testEE9App14() throws Exception {
-        parse(app14(), JavaEEVersion.VERSION_9_0);
-    }
-
-    @Test
-    public void testEE9App50() throws Exception {
-        parse(app50(), JavaEEVersion.VERSION_9_0);
-    }
-
-    @Test
-    public void testEE9App60() throws Exception {
-        parse(app60(), JavaEEVersion.VERSION_9_0);
-    }
-
-    @Test
-    public void testEE9App70() throws Exception {
-        parse(app70(), JavaEEVersion.VERSION_9_0);
-    }
-
-    @Test
-    public void testEE9App80() throws Exception {
-        parse(app80(), JavaEEVersion.VERSION_9_0);
-    }
-
-    @Test
-    public void testEE9App90() throws Exception {
-        parse(app90(), JavaEEVersion.VERSION_9_0);
-    }
+                parse( app(schemaVersion, ""), maxSchemaVersion, expectedMessages );
+            }
+        }
+    }    
 }

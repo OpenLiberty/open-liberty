@@ -18,12 +18,8 @@ import com.ibm.ws.javaee.dd.client.ApplicationClient;
  * Application deployment descriptor parse tests.
  */
 public class AppClientTest extends AppClientTestBase {
-
     @Test
     public void testAppClient() throws Exception {
-        String[] unsupportedSchemaMessages =
-            { "CWWKC2262E", "unprovisioned.descriptor.version" };        
-
         for ( int schemaVersion : ApplicationClient.VERSIONS ) {
             for ( int maxSchemaVersion : ApplicationClient.VERSIONS ) {
                 // Open liberty will always parse JavaEE6 and earlier
@@ -37,7 +33,7 @@ public class AppClientTest extends AppClientTestBase {
                 
                 String[] expectedMessages; 
                 if ( schemaVersion > effectiveMax ) {
-                    expectedMessages = unsupportedSchemaMessages;
+                    expectedMessages = UNPROVISIONED_DESCRIPTOR_VERSION_MESSAGES;
                 } else {
                     expectedMessages = null;
                 }

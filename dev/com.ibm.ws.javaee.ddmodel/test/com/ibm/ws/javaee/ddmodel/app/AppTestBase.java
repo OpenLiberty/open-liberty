@@ -12,12 +12,13 @@ package com.ibm.ws.javaee.ddmodel.app;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.Arrays;
 
 import org.jmock.Expectations;
 import org.osgi.framework.ServiceReference;
-import org.osgi.framework.Version;
 
 import com.ibm.ws.javaee.dd.app.Application;
+import com.ibm.ws.javaee.ddmodel.DDParser;
 import com.ibm.ws.javaee.ddmodel.DDTestBase;
 import com.ibm.ws.javaee.version.JavaEEVersion;
 import com.ibm.wsspi.adaptable.module.Container;
@@ -29,7 +30,7 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 public class AppTestBase extends DDTestBase {
 
     @SuppressWarnings("deprecation")
-    protected Application parse(String xmlText, Version platformVersion) throws Exception {
+    protected Application parse(String xmlText, int maxSchemaVersion, String... expectedMessages) throws Exception {
         OverlayContainer rootOverlay = mockery.mock(OverlayContainer.class, "rootOverlay" + mockId++);
         ArtifactContainer artifactContainer = mockery.mock(ArtifactContainer.class, "artifactContainer" + mockId++);
 
@@ -69,7 +70,7 @@ public class AppTestBase extends DDTestBase {
 
         @SuppressWarnings("unchecked")
         ServiceReference<JavaEEVersion> versionRef = mockery.mock(ServiceReference.class, "sr" + mockId++);
-        String versionText = platformVersion.toString();
+        String versionText = DDParser.getVersionText(maxSchemaVersion);
 
         mockery.checking(new Expectations() {
             {                
@@ -81,12 +82,36 @@ public class AppTestBase extends DDTestBase {
         ApplicationAdapter adapter = new ApplicationAdapter();
         adapter.setVersion(versionRef);
 
+        Application app;
+        Exception boundException;
+
         try {
-            return adapter.adapt(appRoot, rootOverlay, artifactContainer, appRoot);
-        } catch (UnableToAdaptException e) {
+            app = adapter.adapt(appRoot, rootOverlay, artifactContainer, appRoot);
+            if ( (expectedMessages != null) && (expectedMessages.length != 0) ) {
+                throw new Exception("Expected exception text [ " + Arrays.toString(expectedMessages) + " ]");
+            }
+            return app;
+
+        } catch ( UnableToAdaptException e ) {
             Throwable cause = e.getCause();
-            throw cause instanceof Exception ? (Exception) cause : e;
+            if ( cause instanceof Exception ) {
+                boundException = (Exception) cause;
+            } else {
+                boundException = e;
+            }
         }
+
+        if ( (expectedMessages != null) && (expectedMessages.length != 0) ) {
+            String message = boundException.getMessage();
+            if ( message != null ) {
+                for ( String expected : expectedMessages ) {
+                    if ( message.contains(expected) ) {
+                        return null;
+                    }
+                }
+            }
+        }
+        throw boundException;
     }
 
     // 1.2
@@ -100,24 +125,22 @@ public class AppTestBase extends DDTestBase {
 
     // 1.2 and 1.3 are DD based:
 
-    protected static String app12Head() {
-        return "<!DOCTYPE application PUBLIC" +
-               " \"-//Sun Microsystems, Inc.//DTD J2EE Application 1.2//EN\"" +
-               " \"http://java.sun.com/j2ee/dtds/application_1_2.dtd\">" +
-               "<application>";
-    }
+    protected static String app12Head =
+        "<!DOCTYPE application PUBLIC" +
+                " \"-//Sun Microsystems, Inc.//DTD J2EE Application 1.2//EN\"" +
+                " \"http://java.sun.com/j2ee/dtds/application_1_2.dtd\">" +
+        "<application>";
 
-    protected static String app13Head() {
-        return "<!DOCTYPE application PUBLIC" +
+    protected static String app13Head = 
+        "<!DOCTYPE application PUBLIC" +
                " \"-//Sun Microsystems, Inc.//DTD J2EE Application 1.3//EN\"" +
                " \"http://java.sun.com/j2ee/dtds/application_1_3.dtd\">" +
-               "<application>";
-    }
+        "<application>";
 
     // 1.4, 5.0. 6.0, 7.0, and 8.0 are schema based:
 
-    protected static String app14Head() {
-        return "<application" +
+    protected static String app14Head = 
+        "<application" +
                " xmlns=\"http://java.sun.com/xml/ns/j2ee\"" +
                " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
                " xsi:schemaLocation=\"http://java.sun.com/xml/ns/j2ee" +
@@ -125,10 +148,9 @@ public class AppTestBase extends DDTestBase {
                " version=\"1.4\"" +
                " id=\"Application_ID\"" +
                ">";
-    }
 
-    protected static String app50Head() {
-        return "<application" +
+    protected static String app50Head = 
+        "<application" +
                " xmlns=\"http://java.sun.com/xml/ns/javaee\"" +
                " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
                " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee" +
@@ -136,10 +158,9 @@ public class AppTestBase extends DDTestBase {
                " version=\"5\"" +
                " id=\"Application_ID\"" +
                ">";
-    }
 
-    protected static String app60Head() {
-        return "<application" +
+    protected static String app60Head =
+        "<application" +
                " xmlns=\"http://java.sun.com/xml/ns/javaee\"" +
                " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
                " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee" +
@@ -147,10 +168,9 @@ public class AppTestBase extends DDTestBase {
                " version=\"6\"" +
                " id=\"Application_ID\"" +
                ">";
-    }
 
-    protected static String app70Head() {
-        return "<application" +
+    protected static String app70Head =
+        "<application" +
                " xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"" +
                " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
                " xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/javaee" +
@@ -158,10 +178,9 @@ public class AppTestBase extends DDTestBase {
                " version=\"7\"" +
                " id=\"Application_ID\"" +
                ">";
-    }
 
-    protected static String app80Head() {
-        return "<application" +
+    protected static String app80Head =
+        "<application" +
                " xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"" +
                " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
                " xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/javaee" +
@@ -169,10 +188,9 @@ public class AppTestBase extends DDTestBase {
                " version=\"8\"" +
                " id=\"Application_ID\"" +
                ">";
-    }
 
-    protected static String app90Head() {
-        return "<application" +
+    protected static String app90Head =
+        "<application" +
                " xmlns=\"https://jakarta.ee/xml/ns/jakartaee\"" +
                " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
                " xsi:schemaLocation=\"https://jakarta.ee/xml/ns/jakartaee" +
@@ -180,77 +198,37 @@ public class AppTestBase extends DDTestBase {
                " version=\"9\"" +
                " id=\"Application_ID\"" +
                ">";
-    }
 
-    protected static String appTail() {
-        return "</application>";
-    }
+    protected static String appTail =
+        "</application>";
 
     //
 
-    protected static String app12(String text) {
-        return app12Head() + text + appTail();
+    protected static String app(int schemaVersion, String appBody) {
+        String appHead;
+        
+        if ( schemaVersion == JavaEEVersion.VERSION_1_2_INT ) {
+            appHead = app12Head;
+        } else if ( schemaVersion == JavaEEVersion.VERSION_1_3_INT ) {
+            appHead = app13Head;
+        } else if ( schemaVersion == JavaEEVersion.VERSION_1_4_INT ) {
+            appHead = app14Head;
+        } else if ( schemaVersion == JavaEEVersion.VERSION_5_0_INT ) {
+            appHead = app50Head;
+        } else if ( schemaVersion == JavaEEVersion.VERSION_6_0_INT ) {
+            appHead = app60Head;
+        } else if ( schemaVersion == JavaEEVersion.VERSION_7_0_INT ) {
+            appHead = app70Head;
+        } else if ( schemaVersion == JavaEEVersion.VERSION_8_0_INT ) {
+            appHead = app80Head;
+        } else if ( schemaVersion == JavaEEVersion.VERSION_9_0_INT ) {
+            appHead = app90Head;
+        } else {
+            throw new IllegalArgumentException("Unknown application version [ " + schemaVersion + " ]");
+        }
+        
+        return appHead + "\n" +
+               appBody + "\n" +
+               appTail;
     }
-    
-    protected static String app13(String text) {
-        return app13Head() + text + appTail();
-    }
-    
-    protected static String app14(String text) {
-        return app14Head() + text + appTail();
-    }
-    
-    protected static String app50(String text) {
-        return app50Head() + text + appTail();
-    }
-    
-    protected static String app60(String text) {
-        return app60Head() + text + appTail();
-    }
-    
-    protected static String app70(String text) {
-        return app70Head() + text + appTail();
-    }
-    
-    protected static String app80(String text) {
-        return app80Head() + text + appTail();
-    }
-    
-    protected static String app90(String text) {
-        return app90Head() + text + appTail();
-    }
-
-    //
-
-    protected static String app12() {
-        return app12("");
-    }
-    
-    protected static String app13() {
-        return app13("");
-    }
-    
-    protected static String app14() {
-        return app14("");
-    }
-    
-    protected static String app50() {
-        return app50("");
-    }
-    
-    protected static String app60() {
-        return app60("");
-    }
-    
-    protected static String app70() {
-        return app70("");
-    }
-    
-    protected static String app80() {
-        return app80("");
-    }
-    
-    protected static String app90() {
-        return app90("");
-    }    
 }

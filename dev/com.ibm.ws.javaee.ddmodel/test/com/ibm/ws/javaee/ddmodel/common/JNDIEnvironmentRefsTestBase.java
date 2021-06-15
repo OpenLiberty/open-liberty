@@ -32,6 +32,7 @@ public class JNDIEnvironmentRefsTestBase {
     private final Mockery mockery = new Mockery();
     private int mockId;
 
+    @SuppressWarnings("deprecation")
     private EJBJar parseEJBJar(String xml) throws Exception {
         OverlayContainer rootOverlay = mockery.mock(OverlayContainer.class, "rootOverlay" + mockId++);
         ArtifactEntry artifactEntry = mockery.mock(ArtifactEntry.class, "artifactEntry" + mockId++);

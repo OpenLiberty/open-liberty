@@ -19,8 +19,7 @@ import com.ibm.ws.javaee.ddmodel.DDParser;
 /**
  * Tests of web application descriptors which have partial headers.
  */
-public class WebAppHeaderTest extends WebAppTestBase {
-    
+public class WebAppTestHeader extends WebAppTestBase {
     // Now valid
     protected static String noSchemaWebApp30 =
         "<web-app" +

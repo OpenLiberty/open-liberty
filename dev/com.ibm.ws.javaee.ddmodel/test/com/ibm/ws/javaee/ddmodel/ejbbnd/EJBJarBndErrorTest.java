@@ -38,9 +38,10 @@ public class EJBJarBndErrorTest extends EJBJarBndTestBase {
         } catch (DDParser.ParseException e) {
             String msg = e.getMessage();
             Assert.assertTrue("Should get a specific message. Got: " + msg,
-                              msg.contains("CWWKC2263") &&
-                                              msg.contains("3.0") &&
-                                              msg.contains("ibm-ejb-jar-bnd.xml"));
+                              (msg.contains("CWWKC2263") &&
+                               msg.contains("3.0") &&
+                               msg.contains("ibm-ejb-jar-bnd.xml")) ||
+                              msg.contains("invalid.deployment.descriptor.version"));
         }
     }
 
@@ -53,9 +54,10 @@ public class EJBJarBndErrorTest extends EJBJarBndTestBase {
         } catch (DDParser.ParseException e) {
             String msg = e.getMessage();
             Assert.assertTrue("Parse exception for bad root is not as expected. Got: " + e.getMessage(),
-                              msg.contains("CWWKC2252") &&
-                                              msg.contains("ejb-jar-ext") &&
-                                              msg.contains("ibm-ejb-jar-bnd.xml"));
+                              (msg.contains("CWWKC2252") &&
+                               msg.contains("ejb-jar-ext") &&
+                               msg.contains("ibm-ejb-jar-bnd.xml")) ||
+                              msg.contains("invalid.root.element"));
         }
     }
 
@@ -74,8 +76,9 @@ public class EJBJarBndErrorTest extends EJBJarBndTestBase {
         } catch (DDParser.ParseException e) {
             String msg = e.getMessage();
             Assert.assertTrue("Should get specific exception message for missing namespace. Got: " + e.getMessage(),
-                              msg.contains("CWWKC2264") &&
-                                              msg.contains("ibm-ejb-jar-bnd.xml"));
+                              (msg.contains("CWWKC2264") &&
+                               msg.contains("ibm-ejb-jar-bnd.xml")) ||
+                              msg.contains("missing.deployment.descriptor.namespace"));
         }
     }
 
