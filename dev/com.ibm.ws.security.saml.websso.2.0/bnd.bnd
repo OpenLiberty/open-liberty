@@ -185,3 +185,5 @@ instrument.classesExcludes: com/ibm/ws/security/saml/sso20/internal/resources/Sa
     com.ibm.ws.container.service;version=latest, \
     com.ibm.ws.threading;version=latest, \
     com.ibm.ws.injection.core;version=latest
+
+jakartaeeMe: true

@@ -35,7 +35,4 @@ Export-Package: \
 Include-Resource: \
  @${repo;org.opensaml:opensaml-messaging-api;3.4.5}!/!META-INF/MANIFEST.MF|META-INF/maven/*
 
-Archiver-Version:
-Build-Jdk:
-Built-By:
-Main-Class:
+jakartaeeMe: true
