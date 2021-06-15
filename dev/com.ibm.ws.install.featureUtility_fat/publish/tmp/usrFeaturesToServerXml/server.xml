@@ -3,7 +3,7 @@
 
     <!-- Enable features -->
     <featureManager>
-	<feature>testesa1</feature>
+	<feature>ext.test:testesa1</feature>
     </featureManager>
 
     <!-- To access this server from a remote client add a host attribute to the

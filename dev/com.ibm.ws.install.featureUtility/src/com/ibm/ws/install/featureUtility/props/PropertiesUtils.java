@@ -51,8 +51,9 @@ public class PropertiesUtils {
     public final static String PROXY_USER = "proxyUser";
     public final static String PROXY_PASSWORD = "proxyPassword";
     public final static String FEATURE_LOCAL_REPO = "featureLocalRepo";
+    public final static String FEATURES_BOM = "featuresBOM";
     public final static String EQUALS = "=";
-    private final static String[] SUPPORTED_KEYS = { USE_WLP_REPO, PROXY_HOST, PROXY_PORT, PROXY_USER, PROXY_PASSWORD, FEATURE_LOCAL_REPO };
+    private final static String[] SUPPORTED_KEYS = { USE_WLP_REPO, PROXY_HOST, PROXY_PORT, PROXY_USER, PROXY_PASSWORD, FEATURE_LOCAL_REPO, FEATURES_BOM };
     private static final Logger logger = Logger.getLogger(InstallConstants.LOGGER_NAME);
 
 
