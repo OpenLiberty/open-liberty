@@ -19,6 +19,7 @@ import org.jmock.Mockery;
 import com.ibm.ws.container.service.app.deploy.ModuleInfo;
 import com.ibm.ws.container.service.app.deploy.WebModuleInfo;
 import com.ibm.ws.javaee.dd.bval.ValidationConfig;
+import com.ibm.ws.javaee.ddmodel.DDTestBase;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
 import com.ibm.wsspi.adaptable.module.NonPersistentCache;
@@ -87,37 +88,44 @@ public class ValidationConfigTestBase {
         return adapter.adapt(moduleRoot, rootOverlay, artifactEntry, ddEntry);
     }
 
-    static final String validationConfig() {
+    protected static String validationConfigNoVersion() {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
-               " <validation-config" +
-               " xmlns=\"http://jboss.org/xml/ns/javax/validation/configuration\"" +
-               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
-               " xsi:schemaLocation=\"http://jboss.org/xml/ns/javax/validation/configuration validation-configuration-1.0.xsd\"" +
+               "<validation-config" +
+                   " xmlns=\"http://jboss.org/xml/ns/javax/validation/configuration\"" +
+                   " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
+                   " xsi:schemaLocation=\"http://jboss.org/xml/ns/javax/validation/configuration validation-configuration-1.0.xsd\"" +
                ">";
     }
 
-    static final String validationConfig10() {
+    protected static String validationConfig10() {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
-               " <validation-config" +
-               " xmlns=\"http://jboss.org/xml/ns/javax/validation/configuration\"" +
-               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
-               " xsi:schemaLocation=\"http://jboss.org/xml/ns/javax/validation/configuration validation-configuration-1.1.xsd\"" +
-               " version=\"1.0\"" +
+               "<validation-config" +
+                   " xmlns=\"http://jboss.org/xml/ns/javax/validation/configuration\"" +
+                   " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
+                   " xsi:schemaLocation=\"http://jboss.org/xml/ns/javax/validation/configuration validation-configuration-1.1.xsd\"" +
+                   " version=\"1.0\"" +
                ">";
     }
 
-    static final String validationConfig11() {
+    protected static String validationConfig11() {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
-               " <validation-config" +
-               " xmlns=\"http://jboss.org/xml/ns/javax/validation/configuration\"" +
-               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
-               " xsi:schemaLocation=\"http://jboss.org/xml/ns/javax/validation/configuration validation-configuration-1.1.xsd\"" +
-               " version=\"1.1\"" +
+               "<validation-config" +
+                   " xmlns=\"http://jboss.org/xml/ns/javax/validation/configuration\"" +
+                   " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
+                   " xsi:schemaLocation=\"http://jboss.org/xml/ns/javax/validation/configuration validation-configuration-1.1.xsd\"" +
+                   " version=\"1.1\"" +
                ">";
     }
 
-    static final String notValidationConfig() {
+    protected static String notValidationConfig() {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
-               " <not-validation-config><not-validation-config>";
+               "<not-validation-config>" +
+               "</not-validation-config>";
+    }
+
+    //
+    
+    public static void verifyMessage(Exception e, String altMessage, String... requiredMessages) {
+        DDTestBase.verifyMessage(e, altMessage, requiredMessages);
     }
 }

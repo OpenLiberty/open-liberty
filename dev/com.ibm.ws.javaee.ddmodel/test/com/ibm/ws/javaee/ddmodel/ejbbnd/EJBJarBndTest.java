@@ -200,8 +200,9 @@ public class EJBJarBndTest extends EJBJarBndTestBase {
         } catch (DDParser.ParseException e) {
             String msg = e.getMessage();
             Assert.assertTrue("Should get specific exception message for missing required name. Got: " + e.getMessage(),
-                              msg.contains("CWWKC2251") &&
-                                              msg.contains("ibm-ejb-jar-bnd.xmi"));
+                    (msg.contains("CWWKC2251") &&
+                     msg.contains("ibm-ejb-jar-bnd.xmi")) ||
+                    msg.contains("required.attribute.missing"));
         }
     }
 

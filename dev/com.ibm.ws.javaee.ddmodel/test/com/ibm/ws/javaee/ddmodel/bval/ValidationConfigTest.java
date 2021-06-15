@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014,2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,34 +31,49 @@ import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 public class ValidationConfigTest extends ValidationConfigTestBase {
 
     @Test
-    public void testGetVersion() throws Exception {
-        Assert.assertEquals("Version should be 1.0", ValidationConfig.VERSION_1_0,
-                            parse(validationConfig() + "</validation-config>").getVersionID());
-        try {
-            parse(validationConfig10() + "</validation-config>").getVersionID();
-            fail("having validation.xml with version=1.0 isn't valid");
-        } catch (UnableToAdaptException e) {
-            assertTrue("exception message should have contained CWWKC2263E: " + e.getMessage(),
-                       e.getMessage().contains("CWWKC2263E"));
-        }
-        Assert.assertEquals("Version should be 1.1", ValidationConfig.VERSION_1_1,
-                            parse(validationConfig11() + "</validation-config>").getVersionID());
+    public void testGetVersionNoVersion() throws Exception {
+        int versionId = parse(validationConfigNoVersion() + "</validation-config>")
+                .getVersionID();
+        Assert.assertEquals("Version should be 1.0",
+                ValidationConfig.VERSION_1_0,
+                versionId);
     }
 
     @Test
+    public void testGetVersion11() throws Exception {
+        int versionId = parse(validationConfig11() + "</validation-config>")
+                .getVersionID();
+        Assert.assertEquals("Version should be 1.1",
+                ValidationConfig.VERSION_1_1,
+                versionId);
+    }
+
+    @Test
+    public void testGetVersion10() throws Exception {
+        try {
+            parse(validationConfig10() + "</validation-config>");
+            fail("having validation.xml with version=1.0 isn't valid");
+        } catch (UnableToAdaptException e) {
+            verifyMessage(e, "invalid.deployment.descriptor.version", "CWWKC2263E");
+        }
+    }
+
+    //
+
+    @Test
     public void testGetDefaultProvider() throws Exception {
-        String defaultProvider = parse(validationConfig() +
+        String defaultProvider = parse(validationConfigNoVersion() +
                                        "</validation-config>").getDefaultProvider();
         assertEquals("no default-provider specified should have returned null: " + defaultProvider,
                      null, defaultProvider);
 
-        defaultProvider = parse(validationConfig() +
+        defaultProvider = parse(validationConfigNoVersion() +
                                 "<default-provider></default-provider>" +
                                 "</validation-config>").getDefaultProvider();
         assertEquals("Emtpy default provider didn't return empty string: " + defaultProvider,
                      "", defaultProvider);
 
-        defaultProvider = parse(validationConfig() +
+        defaultProvider = parse(validationConfigNoVersion() +
                                 "<default-provider>provider.class.Name</default-provider>" +
                                 "</validation-config>").getDefaultProvider();
         assertEquals("default provider shouldn't have returned: " + defaultProvider,
@@ -69,8 +84,7 @@ public class ValidationConfigTest extends ValidationConfigTestBase {
                                     "<default-provider>provider.class.Name</default-provider>" +
                                     "</validation-config>").getDefaultProvider();
         } catch (UnableToAdaptException e) {
-            assertTrue("exception message should have contained CWWKC2263E: " + e.getMessage(),
-                       e.getMessage().contains("CWWKC2263E"));
+            verifyMessage(e, "invalid.deployment.descriptor.version", "CWWKC2263E");
         }
 
         defaultProvider = parse(validationConfig11() +
@@ -82,18 +96,18 @@ public class ValidationConfigTest extends ValidationConfigTestBase {
 
     @Test
     public void testGetMessageInterpolator() throws Exception {
-        String messageInterpolator = parse(validationConfig() +
+        String messageInterpolator = parse(validationConfigNoVersion() +
                                            "</validation-config>").getMessageInterpolator();
         assertEquals("no message-interpolator specified should have returned null: " + messageInterpolator,
                      null, messageInterpolator);
 
-        messageInterpolator = parse(validationConfig() +
+        messageInterpolator = parse(validationConfigNoVersion() +
                                     "<message-interpolator></message-interpolator>" +
                                     "</validation-config>").getMessageInterpolator();
         assertEquals("Emtpy message-interpolator didn't return empty string: " + messageInterpolator,
                      "", messageInterpolator);
 
-        messageInterpolator = parse(validationConfig() +
+        messageInterpolator = parse(validationConfigNoVersion() +
                                     "<message-interpolator>provider.class.Name1</message-interpolator>" +
                                     "</validation-config>").getMessageInterpolator();
         assertEquals("message-interpolator shouldn't have returned: " + messageInterpolator,
@@ -102,18 +116,18 @@ public class ValidationConfigTest extends ValidationConfigTestBase {
 
     @Test
     public void testGetTraversableResolver() throws Exception {
-        String traversableResolver = parse(validationConfig() +
+        String traversableResolver = parse(validationConfigNoVersion() +
                                            "</validation-config>").getTraversableResolver();
         assertEquals("no traversable-resolver specified should have returned null: " + traversableResolver,
                      null, traversableResolver);
 
-        traversableResolver = parse(validationConfig() +
+        traversableResolver = parse(validationConfigNoVersion() +
                                     "<traversable-resolver></traversable-resolver>" +
                                     "</validation-config>").getTraversableResolver();
         assertEquals("Emtpy traversable-resolver didn't return empty string: " + traversableResolver,
                      "", traversableResolver);
 
-        traversableResolver = parse(validationConfig() +
+        traversableResolver = parse(validationConfigNoVersion() +
                                     "<traversable-resolver>provider.class.Name2</traversable-resolver>" +
                                     "</validation-config>").getTraversableResolver();
         assertEquals("traversable-resolver shouldn't have returned: " + traversableResolver,
@@ -122,18 +136,18 @@ public class ValidationConfigTest extends ValidationConfigTestBase {
 
     @Test
     public void testGetConstraintValidatorFactory() throws Exception {
-        String constraintValidatorFactory = parse(validationConfig() +
+        String constraintValidatorFactory = parse(validationConfigNoVersion() +
                                                   "</validation-config>").getConstraintValidatorFactory();
         assertEquals("no constraint-validator-factory specified should have returned null: " + constraintValidatorFactory,
                      null, constraintValidatorFactory);
 
-        constraintValidatorFactory = parse(validationConfig() +
+        constraintValidatorFactory = parse(validationConfigNoVersion() +
                                            "<constraint-validator-factory></constraint-validator-factory>" +
                                            "</validation-config>").getConstraintValidatorFactory();
         assertEquals("Emtpy constraint-validator-factory didn't return empty string: " + constraintValidatorFactory,
                      "", constraintValidatorFactory);
 
-        constraintValidatorFactory = parse(validationConfig() +
+        constraintValidatorFactory = parse(validationConfigNoVersion() +
                                            "<constraint-validator-factory>provider.class.Name3</constraint-validator-factory>" +
                                            "</validation-config>").getConstraintValidatorFactory();
         assertEquals("constraint-validator-factory shouldn't have returned: " + constraintValidatorFactory,
@@ -142,18 +156,18 @@ public class ValidationConfigTest extends ValidationConfigTestBase {
 
     @Test
     public void testGetParameterNameProvider() throws Exception {
-        String parameterNameProvider = parse(validationConfig() +
+        String parameterNameProvider = parse(validationConfigNoVersion() +
                                              "</validation-config>").getParameterNameProvider();
         assertEquals("no parameter-name-provider specified should have returned null: " + parameterNameProvider,
                      null, parameterNameProvider);
 
-        parameterNameProvider = parse(validationConfig() +
+        parameterNameProvider = parse(validationConfigNoVersion() +
                                       "<parameter-name-provider></parameter-name-provider>" +
                                       "</validation-config>").getParameterNameProvider();
         assertEquals("Emtpy parameter-name-provider didn't return empty string: " + parameterNameProvider,
                      "", parameterNameProvider);
 
-        parameterNameProvider = parse(validationConfig() +
+        parameterNameProvider = parse(validationConfigNoVersion() +
                                       "<parameter-name-provider>provider.class.Name4</parameter-name-provider>" +
                                       "</validation-config>").getParameterNameProvider();
         assertEquals("parameter-name-provider shouldn't have returned: " + parameterNameProvider,
@@ -254,12 +268,12 @@ public class ValidationConfigTest extends ValidationConfigTestBase {
 
     @Test
     public void testGetConstraintMappings() throws Exception {
-        List<String> constraintMappings = parse(validationConfig() +
+        List<String> constraintMappings = parse(validationConfigNoVersion() +
                                                 "</validation-config>").getConstraintMappings();
         assertEquals("constraint-mapping didn't return list of size 0: " + constraintMappings,
                      0, constraintMappings.size());
 
-        constraintMappings = parse(validationConfig() +
+        constraintMappings = parse(validationConfigNoVersion() +
                                    "<constraint-mapping></constraint-mapping>" +
                                    "</validation-config>").getConstraintMappings();
         assertEquals("constraint-mapping didn't return list of size 1: " + constraintMappings,
@@ -267,7 +281,7 @@ public class ValidationConfigTest extends ValidationConfigTestBase {
         assertEquals("constraint-mapping shouldn't have returned: " + constraintMappings,
                      "", constraintMappings.get(0));
 
-        constraintMappings = parse(validationConfig() +
+        constraintMappings = parse(validationConfigNoVersion() +
                                    "<constraint-mapping>META-INF/my-mapping.xml</constraint-mapping>" +
                                    "</validation-config>").getConstraintMappings();
         assertEquals("constraint-mapping didn't return list of size 1: " + constraintMappings,
@@ -275,7 +289,7 @@ public class ValidationConfigTest extends ValidationConfigTestBase {
         assertEquals("constraint-mapping shouldn't have returned: " + constraintMappings,
                      "META-INF/my-mapping.xml", constraintMappings.get(0));
 
-        constraintMappings = parse(validationConfig() +
+        constraintMappings = parse(validationConfigNoVersion() +
                                    "<constraint-mapping>META-INF/my-mapping.xml</constraint-mapping>" +
                                    "<constraint-mapping>META-INF/my-other-mapping.xml</constraint-mapping>" +
                                    "</validation-config>").getConstraintMappings();
@@ -290,14 +304,14 @@ public class ValidationConfigTest extends ValidationConfigTestBase {
     @Test
     public void testGetProperties() throws Exception {
         // no properties
-        List<Property> properties = parse(validationConfig() +
-                                          "</validation-config>").getProperties();
+        List<Property> properties = parse(validationConfigNoVersion() + "</validation-config>")
+                .getProperties();
         assertEquals("property didn't return list of size 0: " + properties,
                      0, properties.size());
 
         // one property
-        properties = parse(validationConfig() +
-                           "<property name=\"x\">y</property>" +
+        properties = parse(validationConfigNoVersion() +
+                               "<property name=\"x\">y</property>" +
                            "</validation-config>").getProperties();
         assertEquals("property didn't return list of size 1: " + properties,
                      1, properties.size());
@@ -308,9 +322,9 @@ public class ValidationConfigTest extends ValidationConfigTestBase {
                      "y", property.getValue());
 
         // two properties
-        properties = parse(validationConfig() +
-                           "<property name=\"x\">y</property>" +
-                           "<property name=\"x1\">y1</property>" +
+        properties = parse(validationConfigNoVersion() +
+                               "<property name=\"x\">y</property>" +
+                               "<property name=\"x1\">y1</property>" +
                            "</validation-config>").getProperties();
         assertEquals("property didn't return list of size 2: " + properties,
                      2, properties.size());
@@ -326,8 +340,8 @@ public class ValidationConfigTest extends ValidationConfigTestBase {
                      "y1", property.getValue());
 
         // one property with no value
-        properties = parse(validationConfig() +
-                           "<property name=\"x\"></property>" +
+        properties = parse(validationConfigNoVersion() +
+                               "<property name=\"x\"></property>" +
                            "</validation-config>").getProperties();
         assertEquals("property didn't return list of size 1: " + properties,
                      1, properties.size());
@@ -338,8 +352,8 @@ public class ValidationConfigTest extends ValidationConfigTestBase {
                      "", property.getValue());
 
         // one property with empty name
-        properties = parse(validationConfig() +
-                           "<property name=\"\">y</property>" +
+        properties = parse(validationConfigNoVersion() +
+                               "<property name=\"\">y</property>" +
                            "</validation-config>").getProperties();
         assertEquals("property didn't return list of size 1: " + properties,
                      1, properties.size());
@@ -351,13 +365,12 @@ public class ValidationConfigTest extends ValidationConfigTestBase {
 
         // one property with no name attribute
         try {
-            properties = parse(validationConfig() +
-                               "<property>y</property>" +
+            properties = parse(validationConfigNoVersion() +
+                                   "<property>y</property>" +
                                "</validation-config>").getProperties();
             fail("an exception should be thrown if the property element doesn't have a name attribute");
         } catch (UnableToAdaptException e) {
-            assertTrue("exception message should have contained CWWKC2251E: " + e.getMessage(),
-                       e.getMessage().contains("CWWKC2251E"));
+            verifyMessage(e, "required.attribute.missing", "CWWKC2251E");
         }
     }
 
@@ -370,14 +383,12 @@ public class ValidationConfigTest extends ValidationConfigTestBase {
     @Test
     public void testUnknownElement() throws Exception {
         try {
-            parse(validationConfig() +
-                  "<not-part-of-validation-config>x</not-part-of-validation-config>" +
+            parse(validationConfigNoVersion() +
+                    "<not-part-of-validation-config>x</not-part-of-validation-config>" +
                   "</validation-config>");
             fail("an exception should be thrown if unknown elements are used");
         } catch (UnableToAdaptException e) {
-            assertTrue("exception message should have contained CWWKC2259E: " + e.getMessage(),
-                       e.getMessage().contains("CWWKC2259E"));
+            verifyMessage(e, "unexpected.child.element", "CWWKC2259E");
         }
     }
-
 }

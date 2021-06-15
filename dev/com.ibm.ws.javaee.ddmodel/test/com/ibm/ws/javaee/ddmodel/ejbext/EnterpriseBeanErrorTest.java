@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,15 +22,13 @@ public class EnterpriseBeanErrorTest extends EJBJarExtTestBase {
 
     static final String ejbJarExt20() {
         return "<?xml version=\"1.1\" encoding=\"UTF-8\"?>" + "\n" +
-               " <ejb-jar-ext" +
-               " xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"" +
-               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
-               " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-ext_1_0.xsd\"" +
-               " version=\"2.0\"" +
+               "<ejb-jar-ext" +
+                   " xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"" +
+                   " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
+                   " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-ext_1_0.xsd\"" +
+                   " version=\"2.0\"" +
                ">";
     }
-
-    List<Session> sessionBeans;
 
     @Test
     public void testGetVersionError() throws Exception {
@@ -39,7 +37,7 @@ public class EnterpriseBeanErrorTest extends EJBJarExtTestBase {
             Assert.assertEquals("Version should be 2.0", "2.0", parse(ejbJarExt20() + "</ejb-jar-ext>").getVersion());
             Assert.fail("An exception should have been thrown but was not.");
         } catch (DDParser.ParseException e) {
-            Assert.assertTrue("Should get specific msg. Got: " + e.getMessage(), e.getMessage().contains("CWWKC2263"));
+            verifyMessage(e, "invalid.deployment.descriptor.version", "CWWKC2263");
         }
     }
 
@@ -53,8 +51,7 @@ public class EnterpriseBeanErrorTest extends EJBJarExtTestBase {
                          "</ejb-jar-ext>");
             Assert.fail("An exception should have been thrown but was not.");
         } catch (DDParser.ParseException e) {
-            Assert.assertTrue("Should get specific msg. Got: " + e.getMessage(),
-                              e.getMessage().contains("CWWKC2251"));
+            verifyMessage(e, "required.attribute.missing", "CWWKC2251");
         }
     }
 
@@ -69,8 +66,7 @@ public class EnterpriseBeanErrorTest extends EJBJarExtTestBase {
                          "</ejb-jar-ext>");
             Assert.fail("An exception should have been thrown but was not.");
         } catch (DDParser.ParseException e) {
-            Assert.assertTrue("Should get specific msg. Got: " + e.getMessage(),
-                              e.getMessage().contains("CWWKC2269"));
+            verifyMessage(e, "found.duplicate.ejbname", "CWWKC2269");
         }
     }
 
@@ -86,8 +82,7 @@ public class EnterpriseBeanErrorTest extends EJBJarExtTestBase {
                          "</ejb-jar-ext>");
             Assert.fail("An exception should have been thrown but was not.");
         } catch (DDParser.ParseException e) {
-            Assert.assertTrue("Should get specific msg. Got: " + e.getMessage(),
-                              e.getMessage().contains("CWWKC2267"));
+            verifyMessage(e, "required.method.element.missing", "CWWKC2267"); 
         }
     }
 
@@ -107,8 +102,7 @@ public class EnterpriseBeanErrorTest extends EJBJarExtTestBase {
                          "</ejb-jar-ext>");
             Assert.fail("An exception should have been thrown but was not.");
         } catch (DDParser.ParseException e) {
-            Assert.assertTrue("Should get specific msg. Got: " + e.getMessage(),
-                              e.getMessage().contains("CWWKC2251"));
+            verifyMessage(e, "required.attribute.missing", "CWWKC2251");
         }
     }
 
@@ -125,8 +119,7 @@ public class EnterpriseBeanErrorTest extends EJBJarExtTestBase {
                          "</ejb-jar-ext>");
             Assert.fail("An exception should have been thrown but was not.");
         } catch (DDParser.ParseException e) {
-            Assert.assertTrue("Should get specific msg. Got: " + e.getMessage(),
-                              e.getMessage().contains("CWWKC2268"));
+            verifyMessage(e, "runasmode.missing.specifiedID.element", "CWWKC2268");
         }
     }
 
@@ -144,8 +137,7 @@ public class EnterpriseBeanErrorTest extends EJBJarExtTestBase {
                          "</ejb-jar-ext>");
             Assert.fail("An exception should have been thrown but was not.");
         } catch (DDParser.ParseException e) {
-            Assert.assertTrue("Should get specific msg. Got: " + e.getMessage(),
-                              e.getMessage().contains("CWWKC2251"));
+            verifyMessage(e, "required.attribute.missing", "CWWKC2251");
         }
     }
 
@@ -160,8 +152,7 @@ public class EnterpriseBeanErrorTest extends EJBJarExtTestBase {
                          "</ejb-jar-ext>");
             Assert.fail("An exception should have been thrown but was not.");
         } catch (DDParser.ParseException e) {
-            Assert.assertTrue("Should get specific msg. Got: " + e.getMessage(),
-                              e.getMessage().contains("CWWKC2251"));
+            verifyMessage(e, "required.attribute.missing", "CWWKC2251");
         }
     }
 }

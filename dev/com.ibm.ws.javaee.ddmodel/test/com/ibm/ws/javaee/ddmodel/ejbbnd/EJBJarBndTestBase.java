@@ -34,7 +34,6 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainer;
  * -concentrate on the pristine path where the ejb-jar-bnd.xml file is
  * well formed.
  */
-
 public class EJBJarBndTestBase extends DDTestBase {
     protected boolean isWarModule = false;
 
@@ -220,4 +219,17 @@ public class EJBJarBndTestBase extends DDTestBase {
                                     + "   <defaultAuth xmi:type=\"xmiType\" xmi:id=\"BasicAuthData_123\"/>"
                                     + "</defaultDatasource>";
 
+    //
+
+    protected void verifyMissingAttribute(Exception e, String elementName, String attributeName) {
+        verifyMessage(e,
+                "required.attribute.missing",
+                "CWWKC2251", elementName, attributeName, "ibm-ejb-jar-bnd.xml");
+    }
+
+    protected void verifyDuplicateEJBName(Exception e, String beanName) {
+        verifyMessage(e,
+                "found.duplicate.ejbname",
+                "CWWKC2269", beanName, "ibm-ejb-jar-bnd.xml");        
+    }    
 }

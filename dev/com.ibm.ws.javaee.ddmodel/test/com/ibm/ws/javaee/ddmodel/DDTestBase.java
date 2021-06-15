@@ -17,6 +17,7 @@ import java.util.Arrays;
 
 import org.jmock.Expectations;
 import org.jmock.Mockery;
+import org.junit.Assert;
 
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
@@ -308,6 +309,8 @@ public class DDTestBase {
         });
     }
 
+    //
+
     public static final String[] UNSUPPORTED_DESCRIPTOR_NAMESPACE_MESSAGES =
         { "unsupported.descriptor.namespace" };
 
@@ -319,6 +322,31 @@ public class DDTestBase {
 
     public static final String[] XML_ERROR_MESSAGES =
         { "CWWKC2272E", "xml.error" };
-    
-    
+
+    //
+
+    public static void verifyMessage(Exception e, String altMessage, String... requiredMessages) {
+        String errorMsg = e.getMessage();
+
+        if ( requiredMessages.length == 0 ) {
+            throw new IllegalArgumentException("No required messages are specified");
+        }
+
+        if ( errorMsg == null ) {
+            Assert.fail("Exception [ " + e.getClass() + " ] [ " + e + " ] has a null message." +
+                        "Either [ " + altMessage + " ] or all of [ " + Arrays.toString(requiredMessages) + " ] are required.");
+            return; // Never reached; need this to avoid possible null value warnings.
+        }
+
+        if ( errorMsg.contains(altMessage) ) {
+            return;
+        }
+
+        for ( String requiredMessage : requiredMessages ) {
+            if ( !errorMsg.contains(requiredMessage) ) {
+                Assert.fail("Exception [ " + e.getClass() + " ] [ " + e + " ] does not contain [ " + requiredMessage + " ]." +
+                            " Either [ " + altMessage + " ] or all of [ " + Arrays.toString(requiredMessages) + " ] are required.");
+            }
+        }
+    }    
 }
