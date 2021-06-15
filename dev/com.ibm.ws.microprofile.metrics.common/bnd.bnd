@@ -31,6 +31,7 @@ Private-Package: \
 Include-Resource: \
 	OSGI-INF=resources/OSGI-INF
     
+src: src, resources
 
 -dsannotations-inherit: true
 
