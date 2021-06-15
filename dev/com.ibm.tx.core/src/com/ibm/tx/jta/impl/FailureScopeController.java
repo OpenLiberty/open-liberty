@@ -12,12 +12,13 @@ package com.ibm.tx.jta.impl;
  *******************************************************************************/
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.Collections;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.transaction.SystemException;
 
 import com.ibm.tx.TranConstants;
-import com.ibm.tx.util.ConcurrentHashSet;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.Transaction.JTA.FailureScopeLifeCycle;
@@ -62,7 +63,7 @@ public class FailureScopeController {
         }
     });
 
-    protected static final boolean isConcurrent = CpuInfo.getAvailableProcessors() > SMP_THRESH;
+    protected static final boolean isConcurrent = CpuInfo.getAvailableProcessors().get() > SMP_THRESH;
 
     protected FailureScopeController() {
     }
@@ -79,7 +80,7 @@ public class FailureScopeController {
         // If small SMP system, use synchronized hashset. If a large system,
         // use a concurrent data structure
         if (isConcurrent) {
-            _transactions = new ConcurrentHashSet<TransactionImpl>();
+            _transactions = Collections.newSetFromMap(new ConcurrentHashMap<TransactionImpl, Boolean>(256, 0.75f, LocalTIDTable.getNumCHBuckets()));
         } else {
             _transactions = new java.util.HashSet<TransactionImpl>();
         }
@@ -166,7 +167,7 @@ public class FailureScopeController {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "shutdown", new Object[] { this, Boolean.valueOf(immediate) });
 
-        // As long as we are not being requsted to perform an immediate shutdown and recovery
+        // As long as we are not being requested to perform an immediate shutdown and recovery
         // processing was not prevented in the first place, perform the shutdown logic.
         // I'll preserve the logic here for 232512 but it might be OK to skip this
         // in the absence of a recovery manager

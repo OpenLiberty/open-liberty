@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2010 IBM Corporation and others.
+ * Copyright (c) 1997, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import com.ibm.ejs.ras.Tr;
 import com.ibm.ejs.ras.TraceComponent;
+import com.ibm.ws.kernel.service.util.AvailableProcessorsListener;
 import com.ibm.ws.kernel.service.util.CpuInfo;
 
 /**
@@ -31,7 +32,7 @@ import com.ibm.ws.kernel.service.util.CpuInfo;
  * the buffer. The buffer contains a expedited FIFO buffer, whose objects
  * will be removed before objects in the main buffer.
  */
-public class BoundedBuffer<T> implements BlockingQueue<T> {
+public class BoundedBuffer<T> implements BlockingQueue<T>, AvailableProcessorsListener {
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //
     // Implementation Note:  the buffer is implemented using a circular
@@ -101,8 +102,10 @@ public class BoundedBuffer<T> implements BlockingQueue<T> {
  */
 
     // D312598 - begin
-    private static final int SPINS_TAKE_;
-    private static final int SPINS_PUT_;
+    private static final AtomicInteger SPINS_TAKE_;
+    private static final AtomicInteger SPINS_PUT_;
+    private static final boolean spinsTakeProp;
+    private static final boolean spinsPutProp;
     private static final boolean YIELD_TAKE_;
     private static final boolean YIELD_PUT_;
 
@@ -113,8 +116,15 @@ public class BoundedBuffer<T> implements BlockingQueue<T> {
 
         //D638088 - modified spinning defaults to adjust to the number
         //of physical processors on host system.
-        SPINS_TAKE_ = Integer.getInteger("com.ibm.ws.util.BoundedBuffer.spins_take", CpuInfo.getAvailableProcessors() - 1).intValue(); // D371967
-        SPINS_PUT_ = Integer.getInteger("com.ibm.ws.util.BoundedBuffer.spins_put", SPINS_TAKE_ / 4).intValue(); // D371967
+        Integer spinsTake = Integer.getInteger("com.ibm.ws.util.BoundedBuffer.spins_take", null); // D371967
+        spinsTakeProp = (spinsTake != null);
+
+        SPINS_TAKE_ = new AtomicInteger(spinsTake == null ? (CpuInfo.getAvailableProcessors().get() - 1) : spinsTake.intValue());
+
+        Integer spinsPut = Integer.getInteger("com.ibm.ws.util.BoundedBuffer.spins_put", null); // D371967
+        spinsPutProp = (spinsPut != null);
+
+        SPINS_PUT_ = new AtomicInteger(spinsPut == null ? (SPINS_TAKE_.get() / 4) : spinsPut.intValue());
 
         YIELD_TAKE_ = Boolean.getBoolean("com.ibm.ws.util.BoundedBuffer.yield_take");
         YIELD_PUT_ = Boolean.getBoolean("com.ibm.ws.util.BoundedBuffer.yield_put");
@@ -134,7 +144,8 @@ public class BoundedBuffer<T> implements BlockingQueue<T> {
     };
 
     // D371967: An easily-identified marker class used for locking
-    private static class PutQueueLock extends Object {}
+    private static class PutQueueLock extends Object {
+    }
 
     private final PutQueueLock putQueue_ = new PutQueueLock();
     private int putQueueLen_ = 0;
@@ -235,7 +246,7 @@ public class BoundedBuffer<T> implements BlockingQueue<T> {
      * Create a BoundedBuffer with the given capacity.
      *
      * @exception IllegalArgumentException if the requested capacity
-     *                is less or equal to zero.
+     *                                         is less or equal to zero.
      */
     @SuppressWarnings("unchecked")
     public BoundedBuffer(Class<T> c, int capacity, int expeditedCapacity) throws IllegalArgumentException {
@@ -252,6 +263,9 @@ public class BoundedBuffer<T> implements BlockingQueue<T> {
         final T[] expeditedBuffer = (T[]) Array.newInstance(c, expeditedCapacity);
         this.expeditedBuffer = expeditedBuffer;
 
+        if (!spinsTakeProp) {
+            CpuInfo.addAvailableProcessorsListener(this);
+        }
         //enable debug output
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Created bounded buffer: capacity=" + capacity + " expedited capacity=" + expeditedCapacity);
@@ -373,7 +387,7 @@ public class BoundedBuffer<T> implements BlockingQueue<T> {
                 return;
             }
 
-            int spinctr = SPINS_PUT_;
+            int spinctr = SPINS_PUT_.get();
             while (numberOfUsedSlots.get() >= buffer.length) {
                 // busy wait
                 if (spinctr > 0) {
@@ -395,7 +409,7 @@ public class BoundedBuffer<T> implements BlockingQueue<T> {
      * the call will block for up to the specified timeout
      * period.
      *
-     * @param x the object being placed in the buffer.
+     * @param x               the object being placed in the buffer.
      * @param timeoutInMillis the timeout period in milliseconds.
      * @return the object that was put into the buffer (t) or
      *         null in the event that the request timed out.
@@ -429,7 +443,7 @@ public class BoundedBuffer<T> implements BlockingQueue<T> {
             if (start == -1)
                 start = System.currentTimeMillis();
 
-            int spinctr = SPINS_PUT_;
+            int spinctr = SPINS_PUT_.get();
             while (numberOfUsedSlots.get() >= buffer.length) {
                 if (waitTime <= 0) {
                     return null;
@@ -455,13 +469,13 @@ public class BoundedBuffer<T> implements BlockingQueue<T> {
      * specified maximum capacity, the call will block for up to the
      * specified timeout period.
      *
-     * @param x the object being placed in the buffer.
+     * @param x               the object being placed in the buffer.
      * @param timeoutInMillis the timeout period in milliseconds.
      * @param maximumCapacity the desired maximum capacity of the buffer
      * @return the object that was put into the buffer (x) or
      *         null in the event that the request timed out.
      * @exception IllegalArgumentException if the object is null or if the
-     *                supplied maximum capacity exceeds the buffer's size.
+     *                                         supplied maximum capacity exceeds the buffer's size.
      */
     public T put(T t, long timeoutInMillis, int maximumCapacity) throws InterruptedException {
         if ((t == null) || (maximumCapacity > buffer.length)) {
@@ -492,7 +506,7 @@ public class BoundedBuffer<T> implements BlockingQueue<T> {
             if (start == -1)
                 start = System.currentTimeMillis();
 
-            int spinctr = SPINS_PUT_;
+            int spinctr = SPINS_PUT_.get();
             while (numberOfUsedSlots.get() >= buffer.length) {
                 if (waitTime <= 0) {
                     return null;
@@ -518,9 +532,9 @@ public class BoundedBuffer<T> implements BlockingQueue<T> {
      * the call will block for up to the specified amount of
      * time, waiting for space to be freed up.
      *
-     * @param x the object being placed into the buffer.
+     * @param x       the object being placed into the buffer.
      * @param timeout the maximum amount of time
-     *            that the caller is willing to wait if the buffer is full.
+     *                    that the caller is willing to wait if the buffer is full.
      * @return true if the object was added to the buffer; false if
      *         it was not added before the timeout expired.
      */
@@ -557,7 +571,7 @@ public class BoundedBuffer<T> implements BlockingQueue<T> {
             if (start == -1)
                 start = System.currentTimeMillis();
 
-            int spinctr = SPINS_PUT_;
+            int spinctr = SPINS_PUT_.get();
             while (numberOfUsedSlots.get() >= buffer.length) {
                 if (waitTime <= 0) {
                     return false;
@@ -656,17 +670,17 @@ public class BoundedBuffer<T> implements BlockingQueue<T> {
      * a specified amount of time before it gives up.
      *
      * @param timeout -
-     *            the amount of time, that the caller is willing to wait
-     *            in the event of an empty buffer.
-     * @param unit -
-     *            the unit of time
+     *                    the amount of time, that the caller is willing to wait
+     *                    in the event of an empty buffer.
+     * @param unit    -
+     *                    the unit of time
      */
     @Override
     public T poll(long timeout, TimeUnit unit) throws InterruptedException {
         T old = poll();
         long endTimeMillis = System.currentTimeMillis() + unit.toMillis(timeout);
         long timeLeftMillis = endTimeMillis - System.currentTimeMillis();
-        int spinctr = SPINS_TAKE_;
+        int spinctr = SPINS_TAKE_.get();
 
         while (old == null && timeLeftMillis > 0) {
             while (size() <= 0 && timeLeftMillis > 0) {
@@ -801,7 +815,7 @@ public class BoundedBuffer<T> implements BlockingQueue<T> {
      * Increases the buffer's capacity by the given amount.
      *
      * @param additionalCapacity
-     *            The amount by which the buffer's capacity should be increased.
+     *                               The amount by which the buffer's capacity should be increased.
      */
     @SuppressWarnings("unchecked")
     public synchronized void expand(int additionalCapacity) {
@@ -865,7 +879,7 @@ public class BoundedBuffer<T> implements BlockingQueue<T> {
      * Increases the expedited buffer's capacity by the given amount.
      *
      * @param additionalCapacity
-     *            The amount by which the expedited buffer's capacity should be increased.
+     *                               The amount by which the expedited buffer's capacity should be increased.
      */
     @SuppressWarnings("unchecked")
     public synchronized void expandExpedited(int additionalCapacity) {
@@ -1549,6 +1563,22 @@ public class BoundedBuffer<T> implements BlockingQueue<T> {
     public void clear() {
         //Optional Collection method
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setAvailableProcessors(int availableProcessors) {
+        if (!spinsTakeProp) {
+            SPINS_TAKE_.set(availableProcessors - 1);
+            if (!spinsPutProp) {
+                SPINS_PUT_.set(SPINS_TAKE_.get() / 4);
+            }
+        }
+    }
+
+    public void removeFromAvailableProcessors() {
+        if (!spinsTakeProp) {
+            CpuInfo.removeAvailableProcessorsListener(this);
+        }
     }
 
     //@awisniew - DELETED

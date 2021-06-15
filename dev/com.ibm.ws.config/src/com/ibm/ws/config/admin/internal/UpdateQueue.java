@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -148,7 +148,7 @@ class UpdateQueue<T> {
          * subclass the ThreadPoolExecutor to provide some debug info.
          * Pass in the new RejectedExecutionHandler defined above.
          */
-        int maxSize = CpuInfo.getAvailableProcessors();
+        int maxSize = CpuInfo.getAvailableProcessors().get();
         threadPool = new ScheduledThreadPoolExecutor(0, threadFactory, rejectionHandler);
         threadPool.setMaximumPoolSize(maxSize);
         threadPool.setKeepAliveTime(60, TimeUnit.SECONDS);

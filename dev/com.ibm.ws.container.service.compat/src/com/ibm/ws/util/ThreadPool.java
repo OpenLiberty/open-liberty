@@ -56,20 +56,20 @@ public class ThreadPool {
     /**
      * Specifies that a dispatch should block if the request queue
      * is already full.
-     * 
+     *
      * @see #execute(Runnable, int)
-     * 
-     * 
+     *
+     *
      */
     public static final int WAIT_WHEN_QUEUE_IS_FULL = 0;
 
     /**
      * Specifies that a dispatch should throw an exception if
      * the request queue is already full.
-     * 
+     *
      * @see #execute(Runnable, int)
-     * 
-     * 
+     *
+     *
      */
     public static final int ERROR_WHEN_QUEUE_IS_FULL = 1;
 
@@ -80,11 +80,11 @@ public class ThreadPool {
      * a dispatch is made when it is full. Should the queue
      * have already reached its expansion limit an exception
      * is thrown.
-     * 
+     *
      * @see #execute(Runnable, int)
      * @see #setQueueExpansionLimit(int)
-     * 
-     * 
+     *
+     *
      */
     public static final int EXPAND_WHEN_QUEUE_IS_FULL_ERROR_AT_LIMIT = 2;
 
@@ -93,17 +93,17 @@ public class ThreadPool {
      * a dispatch is made when it is full. Should the queue
      * have already reached its expansion limit the dispatch
      * will block.
-     * 
+     *
      * @see #execute(Runnable, int)
      * @see #setQueueExpansionLimit(int)
-     * 
-     * 
+     *
+     *
      */
     public static final int EXPAND_WHEN_QUEUE_IS_FULL_WAIT_AT_LIMIT = 3;
 
     /**
      * The maximum number of threads allowed in pool.
-     * 
+     *
      * @deprecated Use getMaximumPoolSize()
      */
 
@@ -112,7 +112,7 @@ public class ThreadPool {
 
     /**
      * The minumum number of threads to maintain in pool.
-     * 
+     *
      * @deprecated Use getMinimumPoolSize()
      */
     @Deprecated
@@ -120,7 +120,7 @@ public class ThreadPool {
 
     /**
      * The current pool size.
-     * 
+     *
      * @deprecated Use getPoolSize()
      */
     @Deprecated
@@ -135,7 +135,7 @@ public class ThreadPool {
 
     /**
      * The maximum time for an idle thread to wait for new task.
-     * 
+     *
      * @deprecated Use getKeepAliveTime()
      */
     @Deprecated
@@ -151,7 +151,7 @@ public class ThreadPool {
     /**
      * Shutdown flag - latches true when a shutdown method is called
      * in order to disable queuing/handoffs of new tasks.
-     * 
+     *
      * @deprecated This will be private in a future release.
      */
     @Deprecated
@@ -162,7 +162,7 @@ public class ThreadPool {
      * their threads. This is needed by the interruptAll method. It
      * may also be useful in subclasses that need to perform other
      * thread management chores.
-     * 
+     *
      * @deprecated This will be private in a future release.
      */
     @Deprecated
@@ -170,7 +170,7 @@ public class ThreadPool {
 
     /**
      * Unique thread identifier within this ThreadPool instance.
-     * 
+     *
      * @deprecated This will be private in a future release.
      */
     @Deprecated
@@ -178,7 +178,7 @@ public class ThreadPool {
 
     /**
      * Should we queue thread requests, rather then creating new threads.
-     * 
+     *
      * @deprecated Use isGrowWasNeeded() and setGrowAsNeeded()
      */
     @Deprecated
@@ -192,7 +192,7 @@ public class ThreadPool {
     /**
      * Controls the clearing of any java.lang.ThreadLocal
      * objects after each dispatch.
-     * 
+     *
      * @deprecated This will be private in a future release.
      */
     @Deprecated
@@ -200,7 +200,7 @@ public class ThreadPool {
 
     /**
      * Cached thread priority.
-     * 
+     *
      * @deprecated This will be private in a future release.
      */
     @Deprecated
@@ -239,7 +239,7 @@ public class ThreadPool {
     /**
      * specifies whether the threads in the pool are to be decorated via
      * setupThreadStub
-     * 
+     *
      * @since 6.0.2 (263391/331761)
      */
     protected boolean _isDecoratedZOS = false; // 331761A
@@ -250,7 +250,7 @@ public class ThreadPool {
      * threads
      * so that requests processed by the threads on zOS can zWLM from the CR to
      * the SR.
-     * 
+     *
      * Marked volatile to ensure correct initialisation (without it the contents
      * of the Method
      * object may not be seen by a thread that sees the reference as non-null)
@@ -267,7 +267,7 @@ public class ThreadPool {
     /**
      * Provides a plug point for monitoring activity in
      * the thread pool.
-     * 
+     *
      * @since 5.0.3 (LIDB3275)
      */
 
@@ -277,14 +277,14 @@ public class ThreadPool {
          * Called during a check of all active threads. The implementation
          * should return true if the thread is considered to be hung (that is,
          * active for too long).
-         * 
+         *
          * @param threadName
-         *            - the thread's name..
+         *                               - the thread's name..
          * @param threadNumber
-         *            - the thread's id.
+         *                               - the thread's id.
          * @param timeActiveInMillis
-         *            - the approximate time (in milliseconds) that
-         *            the thread has been active.
+         *                               - the approximate time (in milliseconds) that
+         *                               the thread has been active.
          * @return true if the thread is hung; false if it is not.
          */
         boolean checkThread(Thread thread, String threadId, long timeActiveInMillis); // d212112
@@ -292,13 +292,13 @@ public class ThreadPool {
         /**
          * Called when a thread that was previously marked as
          * hung has now completed work.
-         * 
+         *
          * @param threadName
-         *            - the thread's name
+         *                         - the thread's name
          * @param threadNumber
-         *            - the thread's id
-         * @param long timeActiveInMillis the approximate time (in milliseconds)
-         *        that the thread has been active.
+         *                         - the thread's id
+         * @param long         timeActiveInMillis the approximate time (in milliseconds)
+         *                         that the thread has been active.
          */
         void clearThread(Thread thread, String threadId, long timeActiveInMillis); // d212112
     }
@@ -327,7 +327,7 @@ public class ThreadPool {
 
     /**
      * Defines an interface for Worker Threads.
-     * 
+     *
      */
 
     public interface WorkerThread extends com.ibm.wsspi.runtime.ThreadPool.WorkerThread {
@@ -344,7 +344,7 @@ public class ThreadPool {
     // begin @LIDB3275.1A
     /**
      * Defines an interface for z/OS Worker Threads.
-     * 
+     *
      */
 
     public interface WorkerZOSThread {
@@ -366,7 +366,7 @@ public class ThreadPool {
     /**
      * Defines the interface required on each thread in order to support
      * WasThreadLocal requirements.
-     * 
+     *
      * <p>
      * Note: this is <u>not</u> an SPI.
      */
@@ -376,7 +376,7 @@ public class ThreadPool {
         /**
          * Gets the WasThreadLocal instance for the current thread
          * associated with the given key.
-         * 
+         *
          * @param key
          * @return The WasThreadLocal instance (if it exists) or null.
          * @see com.ibm.websphere.spi.util.WasThreadLocal
@@ -386,7 +386,7 @@ public class ThreadPool {
         /**
          * Sets the WasThreadLocal instance for the current thread
          * associated with the given key.
-         * 
+         *
          * @param key
          * @param value
          */
@@ -397,11 +397,11 @@ public class ThreadPool {
 
     /**
      * Create a thread cache, whose threads are to be children of the group.
-     * 
+     *
      * @param group
-     *            The thread group to which this thread cache is bound.
+     *                   The thread group to which this thread cache is bound.
      * @param nstart
-     *            Number of thread to create in advance.
+     *                   Number of thread to create in advance.
      */
     public ThreadPool(int minSize, int maxSize, ThreadPoolListener[] tpls) {
         this(null, minSize, maxSize, tpls);
@@ -409,9 +409,9 @@ public class ThreadPool {
 
     /**
      * Create a thread cache, after creating a new thread group.
-     * 
+     *
      * @param name
-     *            The name of the thread group to create.
+     *                 The name of the thread group to create.
      */
     public ThreadPool(String name, int minSize, int maxSize) {
         this(name, minSize, maxSize, null);
@@ -428,12 +428,11 @@ public class ThreadPool {
         threads_ = new HashMap();
 
         // begin LIDB2255-58, D201932
-        String clearThreadLocals = (String) AccessController.doPrivileged(new PrivilegedAction()
-        {
-            public Object run()
-        {
-            return System.getProperty("com.ibm.websphere.threadpool.clearThreadLocal");
-        }
+        String clearThreadLocals = (String) AccessController.doPrivileged(new PrivilegedAction() {
+            @Override
+            public Object run() {
+                return System.getProperty("com.ibm.websphere.threadpool.clearThreadLocal");
+            }
         });
 
         if ((clearThreadLocals != null) && Boolean.valueOf(clearThreadLocals).booleanValue()) {
@@ -468,11 +467,11 @@ public class ThreadPool {
      * Controls the pool's behavior with respect to thread local.
      * <p>
      * <b>WARNING:</b> Altering this attribute when work has already been dispatched to the thread pool will result in undefined behavior.
-     * 
+     *
      * @param b
-     *            when true, thread locals will be cleared after
-     *            every dispath. When false, thread locals will not
-     *            be cleared.
+     *              when true, thread locals will be cleared after
+     *              every dispath. When false, thread locals will not
+     *              be cleared.
      * @since LIDB1855-58
      * @deprecated This capability will go away in a future
      *             release (the behavior will be to never clear thread
@@ -490,10 +489,10 @@ public class ThreadPool {
      * Get the maximum number of threads that may be used
      * to execute concurrent work. Note that this number may
      * still be exceeded if the pool is growable.
-     * 
+     *
      * @see #setGrowAsNeeded(boolean)
-     * 
-     * 
+     *
+     *
      */
     public synchronized int getMaximumPoolSize() {
         return maximumPoolSize_;
@@ -503,14 +502,14 @@ public class ThreadPool {
      * Set the maximum number of threads that may be used
      * to execute concurrent work. Note that this number may
      * still be exceeded if the pool is growable.
-     * 
+     *
      * @exception IllegalArgumentException
-     *                if newMaximum is
-     *                less or equal to zero. It is not considered an error to
-     *                set the maximum to be less than than the minimum. However,
-     *                in this case there are no guarantees about behavior.
-     * 
-     * 
+     *                                         if newMaximum is
+     *                                         less or equal to zero. It is not considered an error to
+     *                                         set the maximum to be less than than the minimum. However,
+     *                                         in this case there are no guarantees about behavior.
+     *
+     *
      */
 
     public synchronized void setMaximumPoolSize(int newMaximum) {
@@ -523,12 +522,12 @@ public class ThreadPool {
     /**
      * Gets the minimum number of threads that may be used
      * to execute concurrent work.
-     * 
+     *
      * <p>
      * Note: the pool does not necessarily create the minimum number of threads (they may be created on demand). However, the pool of threads will not shrink below this minimum
      * value.
-     * 
-     * 
+     *
+     *
      */
 
     public synchronized int getMinimumPoolSize() {
@@ -538,14 +537,14 @@ public class ThreadPool {
     /**
      * Set the minimum number of threadsthat may be used
      * to execute concurrent work.
-     * 
+     *
      * @exception IllegalArgumentException
-     *                if newMinimum is less
-     *                than zero. It is not considered an error to set the minimum
-     *                to be greater than the maximum. However, in this case there
-     *                are no guarantees about behavior.)
-     * 
-     * 
+     *                                         if newMinimum is less
+     *                                         than zero. It is not considered an error to set the minimum
+     *                                         to be greater than the maximum. However, in this case there
+     *                                         are no guarantees about behavior.)
+     *
+     *
      */
 
     public synchronized void setMinimumPoolSize(int newMinimum) {
@@ -557,11 +556,11 @@ public class ThreadPool {
 
     /**
      * Gets the current number of active threads in the pool.
-     * 
+     *
      * <p>
      * Note that this number is somewhat volatile.
-     * 
-     * 
+     *
+     *
      */
 
     public synchronized int getPoolSize() {
@@ -572,8 +571,8 @@ public class ThreadPool {
      * Get the number of milliseconds to keep idle threads while waiting
      * for new work. A negative value means to wait forever. A zero
      * value means not to wait at all.
-     * 
-     * 
+     *
+     *
      */
     public synchronized long getKeepAliveTime() {
         return keepAliveTime_;
@@ -583,8 +582,8 @@ public class ThreadPool {
      * Set the number of milliseconds to keep idle threads alive
      * while waiting for new work. A negative value means to wait
      * forever. A zero value means not to wait at all.
-     * 
-     * 
+     *
+     *
      */
     public synchronized void setKeepAliveTime(long msecs) {
         keepAliveTime_ = msecs;
@@ -597,7 +596,7 @@ public class ThreadPool {
      * dispatched on this thread pool, the behavior of this
      * method and all subsequent calls to this pool are
      * undefined.
-     * 
+     *
      * As a result of the request buffer size being set the
      * expansion limit of the buffer is set to be 10
      * times greater than the newly configured buffer size.
@@ -612,6 +611,9 @@ public class ThreadPool {
             throw new IllegalStateException("cannot resize non-empty ThreadPool request buffer");
         }
 
+        if (this.requestBuffer != null) {
+            this.requestBuffer.removeFromAvailableProcessors();
+        }
         this.requestBuffer = new BoundedBuffer(size);
         requestBufferInitialCapacity_ = size;
         requestBufferExpansionLimit_ = requestBufferInitialCapacity_ * 10;
@@ -626,7 +628,7 @@ public class ThreadPool {
     /**
      * Create and start a thread to handle a new command. Call only
      * when holding lock.
-     * 
+     *
      * @deprecated This will be private in a future release.
      */
 
@@ -702,7 +704,7 @@ public class ThreadPool {
      * Create and start up to numberOfThreads threads in the pool.
      * Return the number created. This may be less than the number
      * requested if creating more would exceed maximum pool size bound.
-     * 
+     *
      * @deprecated This method will go away in a future release. All
      *             thread creation should be done lazily.
      */
@@ -752,7 +754,7 @@ public class ThreadPool {
      * interruptions, each thread will terminate after processing its
      * current task. Threads will terminate sooner if the executed tasks
      * themselves respond to interrupts.
-     * 
+     *
      * @deprecated
      */
     @Deprecated
@@ -768,16 +770,16 @@ public class ThreadPool {
      * has expired. This method may only be called <em>after</em> invoking
      * shutdownNow or
      * shutdownAfterProcessingCurrentlyQueuedTasks.
-     * 
+     *
      * @param maxWaitTime
-     *            the maximum time in milliseconds to wait
+     *                        the maximum time in milliseconds to wait
      * @return true if the pool has terminated within the max wait period
      * @exception IllegalStateException
-     *                if shutdown has not been requested
+     *                                      if shutdown has not been requested
      * @exception InterruptedException
-     *                if the current thread has been interrupted in the course of
-     *                waiting
-     * 
+     *                                      if the current thread has been interrupted in the course of
+     *                                      waiting
+     *
      * @deprecated
      */
     @Deprecated
@@ -812,12 +814,12 @@ public class ThreadPool {
      * Wait for a shutdown pool to fully terminate. This method may
      * only be called <em>after</em> invoking shutdownNow or
      * shutdownAfterProcessingCurrentlyQueuedTasks.
-     * 
+     *
      * @exception IllegalStateException
-     *                if shutdown has not been requested
+     *                                      if shutdown has not been requested
      * @exception InterruptedException
-     *                if the current thread has been interrupted in the course of
-     *                waiting
+     *                                      if the current thread has been interrupted in the course of
+     *                                      waiting
      * @deprecated
      */
     @Deprecated
@@ -831,7 +833,7 @@ public class ThreadPool {
 
     /**
      * Cleanup method called upon termination of worker thread.
-     * 
+     *
      * @deprecated This will become private in a future release.
      **/
     @Deprecated
@@ -854,7 +856,7 @@ public class ThreadPool {
 
     /**
      * Get a task from the handoff queue, or null if shutting down.
-     * 
+     *
      * @deprecated This will become private in a future release.
      */
 
@@ -903,7 +905,7 @@ public class ThreadPool {
                 // PK77809 Let the buffer know we have a waiting thread
                 synchronized (this) {
                     requestBuffer.decrementWaitingThreads();
-                };
+                } ;
 
                 throw e;
             }
@@ -940,10 +942,10 @@ public class ThreadPool {
      * Enable/disable the thread pool to grow as needed.
      * This flag should be turned on only if always getting a thread as fast
      * as possible is critical.
-     * 
+     *
      * @param onoff
-     *            The toggle.
-     * 
+     *                  The toggle.
+     *
      */
     public void setGrowAsNeeded(boolean onoff) {
         this.growasneeded = onoff;
@@ -961,9 +963,9 @@ public class ThreadPool {
      * default, the context class loader of the thread calling <tt>execute</tt> will be used. If this occurs within the context of an application thread,
      * then the application class loader will not be eligible for garbage
      * collection until the thread expires.
-     * 
+     *
      * @param cl
-     *            the context class loader for new threads
+     *               the context class loader for new threads
      */
     public void setContextClassLoader(ClassLoader cl) {
         contextClassLoader = cl;
@@ -971,7 +973,7 @@ public class ThreadPool {
 
     /**
      * Gets the context class loader to be used when new threads are created.
-     * 
+     *
      * @return the context class loader for new threads
      */
     public ClassLoader getContextClassLoader() {
@@ -983,10 +985,10 @@ public class ThreadPool {
      * Changing the cached thread priority should be done before the thread
      * cache is initialized, it will <em>not</em> affect already created
      * threads.
-     * 
+     *
      * @param priority
-     *            The new cachewd threads priority.
-     * 
+     *                     The new cachewd threads priority.
+     *
      */
     public void setThreadPriority(int priority) {
         threadpriority = priority;
@@ -994,9 +996,9 @@ public class ThreadPool {
 
     /**
      * Get the cached thread normal priority.
-     * 
+     *
      * @return Currently assigned cached thread priority.
-     * 
+     *
      */
     public int getThreadPriority() {
         return threadpriority;
@@ -1005,7 +1007,7 @@ public class ThreadPool {
     /**
      * sets this thread pool to create threads which are decorated via
      * setupThreadStub
-     * 
+     *
      */
     public void setDecoratedZOS() { // 331761A
 
@@ -1059,8 +1061,8 @@ public class ThreadPool {
      * Dispatch work on a daemon thread. This thread is not accounted
      * for in the pool. There are no corresponding
      * ThreadPoolListener events. There is no MonitorPlugin support.
-     * 
-     * 
+     *
+     *
      */
 
     public void executeOnDaemon(Runnable command) {
@@ -1075,15 +1077,14 @@ public class ThreadPool {
 
         final String runId = name + " : DMN" + id; // d185137.2
 
-        Thread t = (Thread) AccessController.doPrivileged(new PrivilegedAction()
-        { // d185137.2
-            public Object run()
-        {
-            // return new Thread(commandToRun); // d185137.2
-            Thread temp = new Thread(commandToRun, runId); // d185137.2
-            temp.setDaemon(true);
-            return temp;
-        }
+        Thread t = (Thread) AccessController.doPrivileged(new PrivilegedAction() { // d185137.2
+            @Override
+            public Object run() {
+                // return new Thread(commandToRun); // d185137.2
+                Thread temp = new Thread(commandToRun, runId); // d185137.2
+                temp.setDaemon(true);
+                return temp;
+            }
         });
         t.start();
     }
@@ -1094,12 +1095,12 @@ public class ThreadPool {
      * Arrange for the given command to be executed by a thread in this
      * pool. The method normally returns when the command has been
      * handed off for (possibly later) execution.
-     * 
+     *
      * This is equivalent to <code>execute(command, ThreadPool.WAIT_WHEN_QUEUE_IS_FULL);</code>
-     * 
+     *
      * @see #execute(Runnable, int)
-     * 
-     * 
+     *
+     *
      */
 
     public void execute(Runnable command) throws InterruptedException, IllegalStateException {
@@ -1115,17 +1116,17 @@ public class ThreadPool {
      * Arrange for the given command to be executed by a thread in this
      * pool. The call's behavior when the pool and its internal request
      * queue are at full capacity is determined by the blockingMode.
-     * 
-     * 
-     * 
+     *
+     *
+     *
      * @param command
-     *            - the work to be dispatched.
-     * 
+     *                         - the work to be dispatched.
+     *
      * @param blockingMode
-     *            - specifies whether this call will block
-     *            until capacity becomes available(WAIT_WHEN_QUEUE_IS_FULL) or
-     *            throws an exception (ERROR_WHEN_QUEUE_IS_FULL).
-     * 
+     *                         - specifies whether this call will block
+     *                         until capacity becomes available(WAIT_WHEN_QUEUE_IS_FULL) or
+     *                         throws an exception (ERROR_WHEN_QUEUE_IS_FULL).
+     *
      * @see #WAIT_WHEN_QUEUE_IS_FULL
      * @see #ERROR_WHEN_QUEUE_IS_FULL
      */
@@ -1138,16 +1139,16 @@ public class ThreadPool {
      * Arrange for the given command to be executed by a thread in this
      * pool. If the pools internal request buffer is full, the call
      * will block for at most timeoutInMillis milliseconds.
-     * 
+     *
      * @param command
-     *            - the work to be dispatched.
+     *                            - the work to be dispatched.
      * @param timeoutInMillis
-     *            - the amount of time to block and
-     *            wait if the request buffer is full.
+     *                            - the amount of time to block and
+     *                            wait if the request buffer is full.
      * @return the command if it was, indeed queued to the pool or
      *         null if the request timed out.
-     * 
-     * 
+     *
+     *
      */
 
     public Runnable execute(Runnable command, long timeoutInMillis) throws InterruptedException, IllegalStateException {
@@ -1251,13 +1252,12 @@ public class ThreadPool {
                     // the
                     // stack when the new thread was created.
                     // Using the JDK doPriv directly avoids this leak.
-                    AccessController.doPrivileged(new PrivilegedAction()
-                    { // d185137
-                        public Object run()
-                    {
-                        addThread(null);
-                        return null; // nothing to return
-                    }
+                    AccessController.doPrivileged(new PrivilegedAction() { // d185137
+                        @Override
+                        public Object run() {
+                            addThread(null);
+                            return null; // nothing to return
+                        }
                     });
                 }
 
@@ -1281,13 +1281,12 @@ public class ThreadPool {
                     // the
                     // stack when the new thread was created.
                     // Using the JDK doPriv directly avoids this leak.
-                    AccessController.doPrivileged(new PrivilegedAction()
-                    { // d185137
-                        public Object run()
-                    {
-                        addThread(null);
-                        return null; // nothing to return
-                    }
+                    AccessController.doPrivileged(new PrivilegedAction() { // d185137
+                        @Override
+                        public Object run() {
+                            addThread(null);
+                            return null; // nothing to return
+                        }
                     });
                     // PM13147: Log the fact that the thread pool has grown beyond its
                     // maximum size
@@ -1372,13 +1371,13 @@ public class ThreadPool {
      * it
      * to not be run. A command may not be canceled if it has already been started
      * on a thread.
-     * 
+     *
      * If the command exists in the internal queue multiple times, the one which
      * would be executed first will be removed.
-     * 
+     *
      * @param command
-     *            - the command to be canceled
-     * 
+     *                    - the command to be canceled
+     *
      * @return true if the command was canceled
      */
     public boolean cancel(Runnable command) {
@@ -1453,11 +1452,11 @@ public class ThreadPool {
     /**
      * Registers a MonitorPlugin with this thread pool. Only
      * one plugin is supported in the current implementation.
-     * 
+     *
      * @throws TooManyListenersException
-     *             if a different
-     *             MonitorPlugin had already been registered with
-     *             this ThreadPool.
+     *                                       if a different
+     *                                       MonitorPlugin had already been registered with
+     *                                       this ThreadPool.
      */
 
     public void setMonitorPlugin(MonitorPlugin plugin) throws TooManyListenersException {
@@ -1480,7 +1479,7 @@ public class ThreadPool {
      * Checks all active threads in this thread pool to determine if
      * they are hung. The definition of hung is provided by the
      * MonitorPlugin.
-     * 
+     *
      * @see MonitorPlugin
      */
     public void checkAllThreads() {
@@ -1533,13 +1532,13 @@ public class ThreadPool {
      * size.
      * <p>
      * There are no guarantees in behavior should this limit be set to a value that is less than the buffer's size.
-     * 
+     *
      * @see #EXPAND_WHEN_QUEUE_IS_FULL_ERROR_AT_LIMIT
      * @see #EXPAND_WHEN_QUEUE_IS_FULL_WAIT_AT_LIMIT
-     * 
+     *
      * @see #getRequestBufferSize(int)
-     * 
-     * 
+     *
+     *
      */
     public void setRequestBufferExpansionLimit(int limit) {
         requestBufferExpansionLimit_ = limit;
@@ -1701,6 +1700,7 @@ public class ThreadPool {
             clearThreadLocals();
         }
 
+        @Override
         public void disableHangDetectionForCurrentDispatch() {
             setStartTime(0);
         }
@@ -1759,10 +1759,11 @@ public class ThreadPool {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see
          * com.ibm.ws.util.ThreadPool.WasThreadLocalSupport#get(java.lang.Object)
          */
+        @Override
         public Object get(Object key) {
 
             if (key == null) {
@@ -1782,11 +1783,12 @@ public class ThreadPool {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see
          * com.ibm.ws.util.ThreadPool.WasThreadLocalSupport#set(java.lang.Object,
          * java.lang.Object)
          */
+        @Override
         public void set(Object key, Object value) {
 
             if (key == null) {
@@ -1841,13 +1843,13 @@ public class ThreadPool {
      */
     /*
      * Alex class ZOSWorker extends Worker implements WorkerZOSThread {
-     * 
+     *
      * private int internalWorkThread = 0; // Flag to tell C++ code what type of
      * thread
-     * 
+     *
      * private int useWLM = 0; // Flag to tell C++ code to use WLM Select to get
      * work.
-     * 
+     *
      * // This in reality a CommonBridge Object that has methods that we need to
      * call. These
      * // methods use to be called from C++ when we attached z/OS Application
@@ -1858,7 +1860,7 @@ public class ThreadPool {
      * thread first
      * // gets started and when the thread is exiting.
      * private ZThreadUtilities utils = null;
-     * 
+     *
      * /**
      * This constructor is call from addThread in the ThreadPool outter class.
      */
@@ -1892,7 +1894,7 @@ public class ThreadPool {
      * UnsupportedOperationException("Method not supported on this platform");
      * }
      * }
-     * 
+     *
      * /**
      */
     /*
@@ -1921,7 +1923,7 @@ public class ThreadPool {
      * workerDone(this, false);
      * }
      * }
-     * 
+     *
      * /**
      * This method is call from CommonBridge.threadStarted. It does a lot of the
      * things
@@ -1934,7 +1936,7 @@ public class ThreadPool {
      * incActive();
      * super.threadStarted(); // 379236
      * }
-     * 
+     *
      * /**
      * This method is call from CommonBridge.threadReturned. It does a lot of the
      * things
@@ -1962,7 +1964,7 @@ public class ThreadPool {
 
     /**
      * This is a z/OS CR only worker thread. When the thread is run it calls
-     * 
+     *
      * Added in defect 263391/331761
      */
 
@@ -1993,6 +1995,7 @@ public class ThreadPool {
          * decorated.
          * It is functionally equivalent to the run method on the Worker class.
          */
+        @Override
         public void processTasks() {
             super.run();
         }
