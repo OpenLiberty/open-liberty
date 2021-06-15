@@ -9,13 +9,7 @@ IBM-API-Package: \
 IBM-ShortName: grpc-1.0
 Subsystem-Version: 1.0.0
 Subsystem-Name: gRPC 1.0
--bundles=\
-  io.openliberty.grpc.1.0.internal,\
-  com.ibm.ws.security.authorization.util
--features=com.ibm.websphere.appserver.servlet-4.0, \
-  io.openliberty.internal.grpc-1.0
--jars=\
-  io.openliberty.grpc.1.0; location:="dev/api/ibm/,lib/"
+-features=com.ibm.websphere.appserver.servlet-4.0; ibm.tolerates:="5.0"
 -files=dev/api/ibm/javadoc/io.openliberty.grpc.1.0_1.0-javadoc.zip
 kind=ga
 edition=core

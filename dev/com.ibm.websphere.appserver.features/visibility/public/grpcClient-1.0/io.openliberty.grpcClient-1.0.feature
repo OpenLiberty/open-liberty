@@ -11,13 +11,7 @@ IBM-API-Package: \
 IBM-ShortName: grpcClient-1.0
 Subsystem-Version: 1.0.0
 Subsystem-Name: gRPC Client 1.0
--features=com.ibm.websphere.appserver.servlet-4.0, \
-  com.ibm.websphere.appserver.internal.slf4j-1.7.7, \
-  io.openliberty.internal.grpc-1.0
--bundles=\
-  io.openliberty.grpc.1.0.internal.client, \
-  io.openliberty.grpc.client.1.0.thirdparty; location:="dev/api/third-party/,lib/", \
-  io.openliberty.org.apache.commons.logging
-kind=ga
-edition=core
+-features=com.ibm.websphere.appserver.servlet-4.0; ibm.tolerates:="5.0"
+kind=noship
+edition=full
 WLP-Activation-Type: parallel

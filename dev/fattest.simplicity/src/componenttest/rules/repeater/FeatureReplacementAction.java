@@ -82,8 +82,6 @@ public class FeatureReplacementAction implements RepeatTestAction {
         featureNameMapping.put("jsfContainer", "facesContainer");
         featureNameMapping.put("jsp", "pages");
         featureNameMapping.put("el", "expressionLanguage");
-        featureNameMapping.put("grpc", "jakartaGrpc");
-        featureNameMapping.put("grpcClient", "jakartaGrpcClient");
         featuresWithNameChangeOnEE9 = Collections.unmodifiableMap(featureNameMapping);
     }
 
@@ -518,7 +516,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
                     // If we found a feature to remove that is actually present in config file, then
                     // replace it with the corresponding feature
                     if (removed) {
-                        String toAdd = getReplacementFeature(removeFeature, addFeatures);
+                        String toAdd = getReplacementFeature(removeFeature, addFeatures, alwaysAddFeatures);
                         if (toAdd != null)
                             features.add(toAdd);
                     }
@@ -562,7 +560,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
      *
      * @return                     The replacement feature name. Null if no replacement is available.
      */
-    private static String getReplacementFeature(String originalFeature, Set<String> replacementFeatures) {
+    private static String getReplacementFeature(String originalFeature, Set<String> replacementFeatures, Set<String> alwaysAddFeatures) {
         String methodName = "getReplacementFeature";
         // Example: servlet-3.1 --> servlet-4.0
         int dashOffset = originalFeature.indexOf('-');
@@ -578,6 +576,11 @@ public class FeatureReplacementAction implements RepeatTestAction {
         for (String replacementFeature : replacementFeatures) {
             if (replacementFeature.toLowerCase().startsWith(baseFeature.toLowerCase())) {
                 replaceFeature = replacementFeature;
+            }
+        }
+        for (String alwaysAddFeature : alwaysAddFeatures) {
+            if (alwaysAddFeature.toLowerCase().startsWith(baseFeature.toLowerCase())) {
+                replaceFeature = alwaysAddFeature;
             }
         }
         if (replaceFeature != null) {
