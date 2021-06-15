@@ -15,7 +15,7 @@ public class CertCapture {
             SSLContext ctx = SSLContext.getInstance("TLS");
             CapturingTrustManager tm = new CapturingTrustManager();
             ctx.init(null, new TrustManager[]{tm}, null);
-            SSLSocket soc = (SSLSocket) ctx.getSocketFactory().createSocket("www.ibm.com", 443);
+            SSLSocket soc = (SSLSocket) ctx.getSocketFactory().createSocket(host, port);
             soc.startHandshake();
             soc.close();
             return tm.getAcceptedIssuers();

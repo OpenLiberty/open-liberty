@@ -8,15 +8,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyStore;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class ImportSignerTask extends BaseCommandTask {
     private static final String ARG_HOST = "--host";
@@ -25,7 +23,10 @@ public class ImportSignerTask extends BaseCommandTask {
     public static final String ARG_PASSWORD = "--password";
     public static final String ARG_ALIAS = "--alias";
     public static final String ARG_TYPE = "--type";
-    public static final List<String> KNOWN_ARGS = Arrays.asList(ARG_HOST, ARG_PORT, ARG_PASSWORD, ARG_KEYSTORE, ARG_ALIAS, ARG_TYPE);
+    private static final String ARG_ACCEPT = "--accept";
+    public static final List<String> KNOWN_ARGS = Arrays.asList(ARG_HOST, ARG_PORT, ARG_PASSWORD, ARG_KEYSTORE, ARG_ALIAS, ARG_TYPE, ARG_ACCEPT);
+    private static final String BEGIN_PEM = "-----BEGIN CERTIFICATE-----";
+    private static final String END_PEM = "-----END CERTIFICATE-----";
     private static MessageDigest sha1Hasher;
     private static MessageDigest sha256Hasher;
 
@@ -121,7 +122,7 @@ public class ImportSignerTask extends BaseCommandTask {
     @Override
     public SecurityUtilityReturnCodes handleTask(ConsoleWrapper stdin, PrintStream stdout, PrintStream stderr, String[] args) throws Exception {
 
-        validateArgumentList(args, Collections.singletonList(ARG_PASSWORD));
+        validateArgumentList(args, Arrays.asList(ARG_PASSWORD, ARG_ACCEPT));
 
         String host = getArgumentValue(ARG_HOST, args, null, null, stdin, stderr);
         int port = Integer.parseInt(getArgumentValue(ARG_PORT, args, null, null, stdin, stderr));
@@ -129,12 +130,18 @@ public class ImportSignerTask extends BaseCommandTask {
         String keyStorePassword = getArgumentValue(ARG_PASSWORD, args,null, ARG_PASSWORD, stdin, stderr);
         String alias = getArgumentValue(ARG_ALIAS, args,null, null, stdin, stderr);
         String type = getArgumentValue(ARG_TYPE, args, null, null, stdin, stderr);
+        String accept = getArgumentValue(ARG_ACCEPT, args, "false", null, stdin, stderr);
+
+        File ksFile = new File(keyStore);
 
         if (type == null) {
-            if (keyStore.endsWith(".p12")) {
+            String simpleName = ksFile.getName().toLowerCase();
+            if (simpleName.endsWith(".p12")) {
                 type = "PKCS12";
-            } else if (keyStore.endsWith(".jks")) {
+            } else if (simpleName.endsWith(".jks")) {
                 type = "JKS";
+            } else if (simpleName.endsWith(".pem")) {
+                type = "PEM";
             } else {
                 throw new IllegalArgumentException(getMessage("missingArg", ARG_TYPE));
             }
@@ -142,54 +149,107 @@ public class ImportSignerTask extends BaseCommandTask {
 
         X509Certificate[] certs = CertCapture.retrieveCertificates(host, port);
 
-        if (certs == null || certs.length == 0) {
-            stderr.println(getMessage("importSigner.selfSigned", host));
-            return SecurityUtilityReturnCodes.ERR_CERT_CHAIN_NOT_FOUND;
-        }
+        if (certs != null) {
+            printCerts(certs);
 
-        printCerts(certs);
-
-        if (stdin.confirm("importSigner.confirm")) {
-            if (!storeCert(certs[1], new File(keyStore), type, keyStorePassword.toCharArray(), alias, stderr)) {
-                return SecurityUtilityReturnCodes.ERR_WRITE_FAILED;
+            boolean importCert = false;
+            if ("false".equals(accept)) {
+                // default for accept if not specified is false which means prompt
+                importCert = stdin.confirm("importSigner.confirm");
+            } else if (accept == null) {
+                // If accept has no argument do an unconditional import
+                importCert = true;
+                stdout.println(getMessage("importSigner.alwaysImport"));
+            } else {
+                importCert = isAccept(certs, accept);
+                if (!importCert) stdout.println(getMessage("importSigner.nomatch"));
             }
+
+            if (importCert) {
+                X509Certificate certToStore;
+
+                if (certs.length == 1) {
+                    certToStore = certs[0];
+                } else {
+                    certToStore = certs[1];
+                }
+
+                if (!storeCert(certToStore, ksFile, type, keyStorePassword.toCharArray(), alias, stderr)) {
+                    return SecurityUtilityReturnCodes.ERR_WRITE_FAILED;
+                }
+                stdout.println(getMessage("importSigner.imported", keyStore));
+            }
+        } else {
+            stderr.println(getMessage("importSigner.noCertsFound", host, port));
+            return SecurityUtilityReturnCodes.ERR_CERT_CHAIN_NOT_FOUND;
         }
 
         return SecurityUtilityReturnCodes.OK;
     }
 
+    private boolean isAccept(X509Certificate[] certs, String accept) throws CertificateEncodingException {
+
+        X509Certificate cert = certs[0];
+        int len = accept.length();
+        if (len == 95) {
+            // check sha256
+            CharSequence shaHash = hash(cert.getEncoded(), sha256Hasher);
+            String str = new StringBuilder().append(shaHash).toString();
+            return str.equalsIgnoreCase(accept);
+        } else if (len == 59) {
+            // check sha1
+            CharSequence shaHash = hash(cert.getEncoded(), sha1Hasher);
+            String str = new StringBuilder().append(shaHash).toString();
+            return str.equalsIgnoreCase(accept);
+        }
+
+        return false;
+    }
+
     private boolean storeCert(X509Certificate cert, File keyStore, String type, char[] pwd, String alias, PrintStream stderr) {
         try {
-            KeyStore ks = KeyStore.getInstance(type);
-            if (keyStore.exists()) {
-                ks.load(new FileInputStream(keyStore), pwd);
+            if ("PEM".equalsIgnoreCase(type)) {
+                PrintStream pemFile = new PrintStream(keyStore);
+                pemFile.println(BEGIN_PEM);
+                Base64.Encoder enc = Base64.getMimeEncoder(64, System.getProperty("line.separator").getBytes(StandardCharsets.UTF_8));
+                pemFile.println(enc.encodeToString(cert.getEncoded()));
+                pemFile.println(END_PEM);
             } else {
-                ks.load(null, pwd);
+                KeyStore ks = KeyStore.getInstance(type);
+                if (keyStore.exists()) {
+                    ks.load(new FileInputStream(keyStore), pwd);
+                } else {
+                    ks.load(null, pwd);
+                }
+                if (alias == null) {
+                    alias = cert.getSubjectDN().getName();
+                }
+                ks.setCertificateEntry(alias, cert);
+                ks.store(new FileOutputStream(keyStore), pwd);
             }
-            if (alias == null) {
-                alias = cert.getSubjectDN().getName();
-            }
-            ks.setCertificateEntry(alias, cert);
-            ks.store(new FileOutputStream(keyStore), pwd);
-
-            return true;
         } catch (Exception e) {
             stderr.println(getMessage("importSigner.failWritingKeystore", keyStore, e.getMessage()));
             return false;
         }
+        return true;
     }
 
     private static void printCerts(X509Certificate[] chain) throws CertificateEncodingException {
         StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < 2; i++) {
+        int len = (chain.length == 1) ? 1 : 2;
+        for (int i = 0; i < len; i++) {
             X509Certificate cert = chain[i];
             builder.append("Subject DN:\t").append(cert.getSubjectDN()).append("\r\n")
                     .append("Issuer DN:\t").append(cert.getIssuerDN()).append("\r\n")
                     .append("Serial number:\t").append(toHex(cert.getSerialNumber().toByteArray())).append("\r\n")
-                    .append("Expires:\t").append(cert.getNotAfter()).append("\r\n")
-                    .append("SHA-1 Digest:\t").append(hash(cert.getEncoded(), sha1Hasher)).append("\r\n")
-                    .append("SHA-256 Digest:\t").append(hash(cert.getEncoded(), sha256Hasher)).append("\r\n")
-                    .append("\r\n");
+                    .append("Expires:\t").append(cert.getNotAfter()).append("\r\n");
+            if (sha1Hasher != null) {
+                builder.append("SHA-1 Digest:\t").append(hash(cert.getEncoded(), sha1Hasher)).append("\r\n");
+            }
+            if (sha256Hasher != null) {
+                builder.append("SHA-256 Digest:\t").append(hash(cert.getEncoded(), sha256Hasher)).append("\r\n");
+            }
+            builder.append("\r\n");
         }
 
         System.out.println(builder);
