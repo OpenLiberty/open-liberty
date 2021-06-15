@@ -218,4 +218,7 @@ public class Constants {
 
     /* ****************** Misc ****************************** */
     public static final String TEST_CASE = "test_case";
+    public static final int DEFAULT_LDAP_PORT = 9085;
+    public static final int DEFAULT_LDAP_SECURE_PORT = 8995;
+
 }
