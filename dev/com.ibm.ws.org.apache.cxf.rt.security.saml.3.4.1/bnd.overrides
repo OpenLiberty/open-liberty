@@ -27,9 +27,4 @@ Import-Package:  \
   com.ibm.ws.ffdc, \
   *
 
-Include-Resource: \
-  @${repo;org.apache.cxf:cxf-rt-security-saml;3.4.1;EXACT}!/META-INF/DEPENDENCIES, \
-  @${repo;org.apache.cxf:cxf-rt-security-saml;3.4.1;EXACT}!/META-INF/LICENSE, \
-  @${repo;org.apache.cxf:cxf-rt-security-saml;3.4.1;EXACT}!/META-INF/NOTICE, \
-  @${repo;org.apache.cxf:cxf-rt-security-saml;3.4.1;EXACT}!/META-INF/cxf/*
-
+jakartaeeMe: true
