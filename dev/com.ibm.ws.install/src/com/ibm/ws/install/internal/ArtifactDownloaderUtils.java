@@ -42,18 +42,31 @@ import com.ibm.ws.install.InstallException;
 
 public class ArtifactDownloaderUtils {
 
-    private static boolean isFinished = false;
     private final static Logger logger = InstallLogUtils.getInstallLogger();
-    private final static String DEFAULT_THREAD_NUM = "8";
+    private final static Integer DEFAULT_THREAD_NUM = 8;
+    public final static int THREAD_SLEEP = 300;
+    private static int thread_num = 0;
+
+    public static int getNumThreads() {
+        if (thread_num == 0) {
+            try {
+                String num_thread = System.getProperty("com.ibm.ws.install.featureUtility.artifactThreads", DEFAULT_THREAD_NUM.toString());
+                thread_num = Integer.parseInt(num_thread);
+            } catch (NumberFormatException e) {
+                logger.warning("Could not convert com.ibm.ws.install.featureUtility.artifactThreads to integer value: " + e.getMessage());
+                thread_num = DEFAULT_THREAD_NUM;
+            }
+            logger.info("Using " + thread_num + " threads to download artifacts.");
+        }
+        return thread_num;
+    }
 
     public static List<String> getMissingFiles(List<String> featureURLs, Map<String, Object> envMap) throws IOException, InterruptedException, ExecutionException {
         List<String> result = new Vector<String>();
         logger.fine("number of missing features: " + featureURLs.size());
 
-        String num_threads = System.getProperty("artifactThreads", DEFAULT_THREAD_NUM).toString();
-        logger.fine("number of threads that will be used: " + num_threads);
-
-        final ExecutorService executor = Executors.newFixedThreadPool(Integer.parseInt(num_threads));
+        int numThreads = getNumThreads();
+        final ExecutorService executor = Executors.newFixedThreadPool(numThreads);
         final List<Future<?>> futures = new ArrayList<>();
 
         for (String url : featureURLs) {
@@ -65,7 +78,6 @@ public class ArtifactDownloaderUtils {
                 } catch (IOException e) {
                     logger.fine(e.getMessage());
                 }
-
             });
             futures.add(future);
         }
@@ -81,7 +93,7 @@ public class ArtifactDownloaderUtils {
                 }
             }
             logger.fine("Finding " + futures.size() + " maven artifacts.. ");
-            Thread.sleep(100);
+            Thread.sleep(THREAD_SLEEP);
         }
         executor.shutdown();
         return result;

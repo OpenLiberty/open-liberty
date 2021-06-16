@@ -58,29 +58,19 @@ public class ArtifactDownloader implements AutoCloseable {
 
     private final ProgressBar progressBar;
 
-    private static Map<String, Object> envMap;
-
-    private final String num_threads = System.getProperty("artifactThreads", DEFAULT_THREAD_NUM).toString();
+    private static Map<String, Object> envMap = null;
 
     private final ExecutorService executor;
-
-    private final static String DEFAULT_THREAD_NUM = "8";
 
     ArtifactDownloader() {
         this.downloadedFiles = new ArrayList<File>();
         this.progressBar = ProgressBar.getInstance();
-        this.envMap = null;
-        this.executor = Executors.newFixedThreadPool(Integer.parseInt(num_threads));
-
+        this.executor = Executors.newFixedThreadPool(ArtifactDownloaderUtils.getNumThreads());
     }
 
     private Future<String> submitDownloadRequest(String coords, String fileType, String dLocation, MavenRepository repository) {
         return executor.submit(() -> {
-            try {
-                synthesizeAndDownload(coords, fileType, dLocation, repository, false);
-            } catch (InstallException e) {
-                fine(e.getMessage());
-            }
+            synthesizeAndDownload(coords, fileType, dLocation, repository, false);
             return coords + "." + fileType;
         });
     }
@@ -146,7 +136,6 @@ public class ArtifactDownloader implements AutoCloseable {
                 Iterator<Future<?>> iter = futures.iterator();
                 try {
                     while (iter.hasNext()) {
-                        boolean updateProgress = false;
                         Future<?> future = iter.next();
                         if (future.isDone()) {
                             String downloadedCoords;
@@ -161,7 +150,7 @@ public class ArtifactDownloader implements AutoCloseable {
                         }
                     }
                     logger.fine("Remaining artifacts: " + futures.size());
-                    Thread.sleep(300);
+                    Thread.sleep(ArtifactDownloaderUtils.THREAD_SLEEP);
                 } catch (InterruptedException | ExecutionException e) {
                     throw new InstallException(e.getMessage());
                 }

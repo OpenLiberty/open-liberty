@@ -1303,19 +1303,21 @@ public class InstallKernelMap implements Map {
         if (repositories == null) {
             return null;
         }
-        ArtifactDownloader artifactDownloader = new ArtifactDownloader();
-        artifactDownloader.setEnvMap(envMap);
-        String openLibertyVersion = getLibertyVersion();
-        List<String> reqJsons = new ArrayList<String>();
-        reqJsons.add((String) data.get(REQ_OL_JSON_COORD) + ":" + "features" + ":" + openLibertyVersion);
-        for (MavenRepository repository : repositories) {
-            logger.fine("Testing connection for repository: " + repository);
-            if (artifactDownloader.testConnection(repository)) {
-                return repository;
-            } else {
-                artifactDownloader.testConnection(repository, reqJsons);
+        try (ArtifactDownloader artifactDownloader = new ArtifactDownloader()) {
+            artifactDownloader.setEnvMap(envMap);
+            String openLibertyVersion = getLibertyVersion();
+            List<String> reqJsons = new ArrayList<String>();
+            reqJsons.add((String) data.get(REQ_OL_JSON_COORD) + ":" + "features" + ":" + openLibertyVersion);
+            for (MavenRepository repository : repositories) {
+                logger.fine("Testing connection for repository: " + repository);
+                if (artifactDownloader.testConnection(repository)) {
+                    return repository;
+                } else {
+                    artifactDownloader.testConnection(repository, reqJsons);
+                }
             }
         }
+
         return null;
     }
 
