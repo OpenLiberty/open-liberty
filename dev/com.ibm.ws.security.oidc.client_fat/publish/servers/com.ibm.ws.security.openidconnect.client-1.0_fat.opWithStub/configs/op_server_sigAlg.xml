@@ -58,8 +58,6 @@
 		id="OAuthConfigSample"
 		filter="request-url%=SimpleServlet;request-url!=snooping"
 		httpsRequired="false"
-		allowPublicClients="false"
-		oauthOnly="true"
 		autoAuthorize="true"
 		jwtAccessToken="true"
 	>
