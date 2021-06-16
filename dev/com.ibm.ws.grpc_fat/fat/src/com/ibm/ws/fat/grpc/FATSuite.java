@@ -10,9 +10,15 @@
  *******************************************************************************/
 package com.ibm.ws.fat.grpc;
 
+import org.junit.ClassRule;
+
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+
+import componenttest.rules.repeater.EmptyAction;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -38,5 +44,9 @@ import org.junit.runners.Suite.SuiteClasses;
 public class FATSuite {
 
     private static final Class<?> c = FATSuite.class;
+
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification()
+                    .andWith(FeatureReplacementAction.EE9_FEATURES().removeFeature("servlet-4.0").alwaysAddFeature("servlet-5.0").fullFATOnly());
 
 }

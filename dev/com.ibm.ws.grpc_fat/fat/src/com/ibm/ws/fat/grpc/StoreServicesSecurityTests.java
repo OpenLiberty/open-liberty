@@ -19,6 +19,7 @@ import com.ibm.testapp.g3store.restConsumer.client.ConsumerEndpointJWTCookieFATS
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -28,6 +29,7 @@ import componenttest.topology.utils.FATServletClient;
  *
  */
 
+@SkipForRepeat(SkipForRepeat.EE9_FEATURES)
 @RunWith(FATRunner.class)
 public class StoreServicesSecurityTests extends FATServletClient {
 
