@@ -22,6 +22,9 @@ public class HelloClientBean {
     @WebServiceRef(name = "services/hello", value = HelloService.class)
     Hello hello;
 
+    // Constructor is required to prevent intermittent InvocationTargetException
+    public HelloClientBean()    {}
+
     public String sayHelloWorld() {
         return hello.sayHello("World");
     }
