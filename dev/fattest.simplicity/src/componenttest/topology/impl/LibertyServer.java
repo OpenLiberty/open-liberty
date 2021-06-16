@@ -6364,7 +6364,7 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     public void clearAdditionalSystemProperties() {
-        this.additionalSystemProperties.clear();
+        this.additionalSystemProperties = null;
     }
 
     /**
