@@ -51,6 +51,7 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
     private static final Set<String> APP_NAMES = Collections.singleton(APP_DEFAULT); // jcacheApp not included because it isn't normally configured
     private static final String[] EMPTY_RECYCLE_LIST = new String[0];
     private static final String SERVLET_NAME = "SessionCacheConfigTestServlet";
+    private static final int seconds = 5;
 
     private static String[] cleanupList = EMPTY_RECYCLE_LIST;
 
@@ -67,8 +68,8 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(savedConfig);
 
-        Log.info(SessionCacheConfigUpdateTest.class, "cleanUpPerTest", "wait 5 seconds");
-        TimeUnit.SECONDS.sleep(5);
+        Log.info(SessionCacheConfigUpdateTest.class, "cleanUpPerTest", "wait seconds " + seconds);
+        TimeUnit.SECONDS.sleep(seconds);
         server.waitForConfigUpdateInLogUsingMark(APP_NAMES, cleanupList);
         cleanupList = EMPTY_RECYCLE_LIST;
 
@@ -209,8 +210,8 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
         server.setTraceMarkToEndOfDefaultTrace();
         server.updateServerConfiguration(config);
 
-        Log.info(SessionCacheConfigUpdateTest.class, "testScheduleInvalidation", "wait 2 seconds");
-        TimeUnit.SECONDS.sleep(2);
+        Log.info(SessionCacheConfigUpdateTest.class, "testScheduleInvalidation", "wait seconds " + seconds);
+        TimeUnit.SECONDS.sleep(seconds);
         server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
         String messageToCheckFor = "doScheduledInvalidation scheduled hours are " + Integer.toString(hour1) + " and " + Integer.toString(hour2);
 
@@ -254,8 +255,8 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
 
-        Log.info(SessionCacheConfigUpdateTest.class, "testWriteContents", "wait 2 seconds");
-        TimeUnit.SECONDS.sleep(2);
+        Log.info(SessionCacheConfigUpdateTest.class, "testWriteContents", "wait seconds " + seconds);
+        TimeUnit.SECONDS.sleep(seconds);
         Log.info(SessionCacheConfigUpdateTest.class, "testWriteContents",
                  server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST).toString());
 
@@ -266,8 +267,8 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
 
-        Log.info(SessionCacheConfigUpdateTest.class, "testWriteContents", "wait 2 seconds");
-        TimeUnit.SECONDS.sleep(2);
+        Log.info(SessionCacheConfigUpdateTest.class, "testWriteContents", "wait seconds " + seconds);
+        TimeUnit.SECONDS.sleep(seconds);
         Log.info(SessionCacheConfigUpdateTest.class, "testWriteContents",
                  server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST).toString());
 
@@ -293,8 +294,8 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
 
-        Log.info(SessionCacheConfigUpdateTest.class, "testWriteFrequency", "wait 2 seconds");
-        TimeUnit.SECONDS.sleep(2);
+        Log.info(SessionCacheConfigUpdateTest.class, "testWriteFrequency", "wait seconds " + seconds);
+        TimeUnit.SECONDS.sleep(seconds);
         server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
 
         // Set a new attribute value without performing a manual sync, the value in the cache should not be updated
@@ -324,8 +325,8 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
 
-        Log.info(SessionCacheConfigUpdateTest.class, "testWriteInterval", "wait 2 seconds");
-        TimeUnit.SECONDS.sleep(2);
+        Log.info(SessionCacheConfigUpdateTest.class, "testWriteInterval", "wait seconds " + seconds);
+        TimeUnit.SECONDS.sleep(seconds);
         server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
 
         // Set a new attribute value and verify that it does not get persisted upon the end of the servlet request.
