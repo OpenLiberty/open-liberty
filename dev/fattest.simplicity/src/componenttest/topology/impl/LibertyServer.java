@@ -5718,7 +5718,7 @@ public class LibertyServer implements LogMonitorClient {
 
     public void deleteAllDropinApplications() throws Exception {
         LibertyFileManager.deleteLibertyDirectoryAndContents(machine, getServerRoot() + "/dropins");
-        LibertyFileManager.createRemoteFile(machine, getServerRoot() + "/dropins");
+        LibertyFileManager.createRemoteFile(machine, getServerRoot() + "/dropins").mkdir();
     }
 
     /**
