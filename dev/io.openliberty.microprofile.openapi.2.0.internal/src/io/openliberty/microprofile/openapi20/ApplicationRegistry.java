@@ -14,10 +14,12 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.Map.Entry;
 
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
@@ -49,8 +51,10 @@ public class ApplicationRegistry {
     private ApplicationProcessor applicationProcessor;
 
     // Thread safety: access to these fields must be synchronized on this
-    private Map<String, ApplicationRecord> applications = new TreeMap<>();
+    private Map<String, ApplicationRecord> applications = new LinkedHashMap<>(); // Linked map retains order in which applications were added
 
+    private ModuleSelectionConfig moduleSelectionConfig = null;
+    
     /**
      * The addApplication method is invoked by the {@link ApplicationListener} when it is notified that an application
      * is starting. It only needs to process the application if we have not already found an application that implements
@@ -65,16 +69,24 @@ public class ApplicationRegistry {
             if (LoggingUtils.isEventEnabled(tc)) {
                 Tr.event(tc, "Application Processor: Adding application started: appInfo=" + newAppInfo);
             }
+            
+            if (moduleSelectionConfig == null) {
+                moduleSelectionConfig = ModuleSelectionConfig.fromConfig(ConfigProvider.getConfig(ApplicationRegistry.class.getClassLoader()));
+            }
 
             // Store the app in our collection
             applications.put(newAppInfo.getName(), record);
-        }
-
-        // Process the application
-        Collection<OpenAPIProvider> openApiProviders = applicationProcessor.processApplication(newAppInfo);
-        synchronized (this) {
-            for (OpenAPIProvider openApiProvider : openApiProviders) {
-                record.providers.add(openApiProvider);
+            
+            if (!moduleSelectionConfig.useFirstModuleOnly() || providersIsEmpty()) {
+                Collection<OpenAPIProvider> openApiProviders = applicationProcessor.processApplication(newAppInfo, moduleSelectionConfig);
+                for (OpenAPIProvider openApiProvider : openApiProviders) {
+                    record.providers.add(openApiProvider);
+                }
+            } else {
+                if (LoggingUtils.isEventEnabled(tc)) {
+                    Tr.event(this, tc, "Application Processor: useFirstModuleOnly is configured and we already have a module. Not processing. appInfo=" + newAppInfo);
+                }
+                
             }
         }
 
@@ -98,7 +110,20 @@ public class ApplicationRegistry {
             }
 
             // Remove the app from our collection
-            applications.remove(removedAppInfo.getName());
+            ApplicationRecord removedRecord = applications.remove(removedAppInfo.getName());
+            
+            if (moduleSelectionConfig.useFirstModuleOnly() && !removedRecord.providers.isEmpty()) {
+                // We just removed the module used for the OpenAPI document, we need to find a new module to use if there is one
+                synchronized (this) {
+                    for (ApplicationRecord app : applications.values()) {
+                        Collection<OpenAPIProvider> providers = applicationProcessor.processApplication(app.info, moduleSelectionConfig);
+                        if (!providers.isEmpty()) {
+                            app.providers.addAll(providers);
+                            break;
+                        }
+                    }
+                }
+            }
 
             if (LoggingUtils.isEventEnabled(tc)) {
                 Tr.event(tc, "Application Processor: Removing application ended: appInfo=" + removedAppInfo);
@@ -155,13 +180,25 @@ public class ApplicationRegistry {
                                .collect(toList());
         }
     }
+    
+    /**
+     * Thread safety: Caller must hold lock on {@code this}
+     * @return {@code true} if {@link #applications} contains no providers
+     */
+    private boolean providersIsEmpty() {
+        for (Entry<String, ApplicationRecord> entry : applications.entrySet()) {
+            if (!entry.getValue().providers.isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     private static class ApplicationRecord {
         public ApplicationRecord(ApplicationInfo info) {
             this.info = info;
         }
 
-        @SuppressWarnings("unused")
         private ApplicationInfo info;
         private List<OpenAPIProvider> providers = new ArrayList<>();
     }

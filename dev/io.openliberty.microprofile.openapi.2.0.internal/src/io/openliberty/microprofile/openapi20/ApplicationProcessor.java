@@ -83,7 +83,7 @@ public class ApplicationProcessor {
      *         The OpenAPIProvider for the application, or null if the application is not an OAS applciation.
      */
     @FFDCIgnore(UnableToAdaptException.class)
-    public Collection<OpenAPIProvider> processApplication(final ApplicationInfo appInfo) {
+    public Collection<OpenAPIProvider> processApplication(final ApplicationInfo appInfo, ModuleSelectionConfig selectionConfig) {
 
         // Create the variable to return
         List<OpenAPIProvider> openAPIProviders = new ArrayList<>();
@@ -113,6 +113,25 @@ public class ApplicationProcessor {
                             
                             WebModuleInfo webModuleInfo = ModuleUtils.getWebModuleInfo(containerInfo.getContainer());
                             if (webModuleInfo == null) {
+                                continue;
+                            }
+                            
+                            if (selectionConfig.useFirstModuleOnly() && !openAPIProviders.isEmpty()) {
+                                // Note, this only checks whether we've already created a provider for a module in _this_ application,
+                                // but that's sufficient because ApplicationRegistry won't even call us if it's already got a provider
+                                // from another application.
+                                if (LoggingUtils.isEventEnabled(tc)) {
+                                    Tr.event(this, tc, "Ignoring module because useFirstModuleOnly is set and we already found one. module=" + webModuleInfo.getName());
+                                }
+                                
+                                break;
+                            }
+                            
+                            if (!selectionConfig.isIncluded(webModuleInfo)) {
+                                if (LoggingUtils.isEventEnabled(tc)) {
+                                    Tr.event(this, tc, "Module not included by config. module=" + webModuleInfo.getName());
+                                }
+                                
                                 continue;
                             }
                             

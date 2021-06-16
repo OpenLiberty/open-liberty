@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -164,6 +164,11 @@ public class Constants {
     
     // Environment variable constants
     public static final String ENV_VAR_VCAP_APPLICATION      = "VCAP_APPLICATION";
+    
+    // Merge config constants
+    public static final String MERGE_INCLUDE_CONFIG          = "mp.openapi.extensions.merged.include";
+    public static final String MERGE_EXCLUDE_CONFIG          = "mp.openapi.extensions.merged.exclude";
+    public static final String MERGE_INFO_CONFIG             = "mp.openapi.extensions.merged.info";
     
     // Misc. Constants
     public static final String RESPONSE_RANGE_SUCCESS        = "2XX";
