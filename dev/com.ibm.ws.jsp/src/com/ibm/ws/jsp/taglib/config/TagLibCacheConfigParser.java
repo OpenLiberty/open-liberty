@@ -33,8 +33,6 @@ public class TagLibCacheConfigParser extends DefaultHandler {
     public static final String DTD_PUBLIC_ID = "http://www.ibm.com/xml/ns/TagLibCacheConfig.xsd";
 
     public static final String DTD_RESOURCE_PATH = "/com/ibm/ws/jsp/tablib/config/TagLibCacheConfig.xsd";
-
-    public static final String DTD_RESOURCE_PATH_EE9 = "/com/ibm/ws/jsp/tablib/config/TagLibCacheConfig.jstl.2.0.xsd";
     
     protected SAXParser saxParser = null;
 
@@ -174,12 +172,7 @@ public class TagLibCacheConfigParser extends DefaultHandler {
         InputSource isrc = null;
         String resourcePath = null;            
         if (publicId.equals(DTD_PUBLIC_ID)) {
-
-            if(com.ibm.ws.jsp.webcontainerext.JSPExtensionFactory.isPages30orHigher()){
-                resourcePath = DTD_RESOURCE_PATH_EE9;
-            } else {
-                resourcePath = DTD_RESOURCE_PATH;
-            }        
+            resourcePath = DTD_RESOURCE_PATH;     
         }
         if (resourcePath != null) {
             InputStream input = this.getClass().getResourceAsStream(resourcePath);

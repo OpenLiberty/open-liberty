@@ -23,7 +23,7 @@
 		<location>/com/ibm/ws/jsp/jsx/tags/jsxFunction.tld</location>
 	</implict-taglib>
 	<global-taglib>
-		<jar-name>standard.jstl.2.0.jar</jar-name>
+		<jar-name>standard.tags.2.0.jar</jar-name>
 		<tld-path path="META-INF/c.tld" uri="http://java.sun.com/jsp/jstl/core"/>
 		<tld-path path="META-INF/c-1_0.tld" uri="http://java.sun.com/jstl/core"/>
 		<tld-path path="META-INF/c-1_0-rt.tld" uri="http://java.sun.com/jstl/core_rt"/>
