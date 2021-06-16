@@ -46,7 +46,7 @@ import io.grpc.examples.helloworld.GreeterGrpc;
 import io.grpc.examples.helloworld.GreeterGrpc.GreeterBlockingStub;
 
 @RunWith(FATRunner.class)
-@Mode(TestMode.FULL)
+// @Mode(TestMode.FULL)
 public class ClientInterceptorTests extends FATServletClient {
 
     protected static final Class<?> c = ClientInterceptorTests.class;

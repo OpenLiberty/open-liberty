@@ -42,7 +42,7 @@ import io.grpc.examples.helloworld.HelloReply;
 import io.grpc.examples.helloworld.HelloRequest;
 
 @RunWith(FATRunner.class)
-@Mode(TestMode.FULL)
+// @Mode(TestMode.FULL)
 public class ServiceInterceptorTests extends FATServletClient {
 
     protected static final Class<?> c = ServiceInterceptorTests.class;

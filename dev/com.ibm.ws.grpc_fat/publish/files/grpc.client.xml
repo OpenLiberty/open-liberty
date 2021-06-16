@@ -11,6 +11,7 @@
 <server description="FAT configuration for gRPC client with no grpcClient elements">
     <featureManager>
         <feature>grpcClient-1.0</feature>
+        <feature>servlet-4.0</feature>
      </featureManager>
 
 	 <httpEndpoint id="defaultHttpEndpoint"

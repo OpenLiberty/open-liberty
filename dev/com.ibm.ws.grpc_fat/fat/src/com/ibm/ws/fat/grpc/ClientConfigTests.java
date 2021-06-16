@@ -47,7 +47,7 @@ import componenttest.topology.utils.FATServletClient;
  *
  */
 @RunWith(FATRunner.class)
-@Mode(TestMode.FULL)
+// @Mode(TestMode.FULL)
 public class ClientConfigTests extends FATServletClient {
 
     protected static final Class<?> c = ClientConfigTests.class;

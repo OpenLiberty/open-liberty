@@ -13,6 +13,7 @@
         <feature>grpc-1.0</feature>
         <feature>grpcClient-1.0</feature>
         <feature>appSecurity-2.0</feature>
+         <feature>servlet-4.0</feature>
     </featureManager>
     
     <grpcClient host="*" sslRef="CustomSSLSettings" />
