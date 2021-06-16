@@ -124,7 +124,7 @@ public class ArtifactDownloader implements AutoCloseable {
             // we have downloaded mavenCoords.length * 2 (esa and pom) amount of features.
             double individualSize = progressBar.getMethodIncrement("downloadArtifacts") / (2 * mavenCoords.size());
             progressBar.updateMethodMap("downloadArtifact", individualSize);
-            logger.info(Messages.INSTALL_KERNEL_MESSAGES.getMessage("MSG_BEGINNING_DOWNLOAD_FEATURES"));
+            info(Messages.INSTALL_KERNEL_MESSAGES.getMessage("MSG_BEGINNING_DOWNLOAD_FEATURES"));
             for (String coords : mavenCoords) {
                 Future<?> future1 = submitDownloadRequest(coords, "esa", dLocation, repository);
                 futures.add(future1);
@@ -149,7 +149,7 @@ public class ArtifactDownloader implements AutoCloseable {
                             iter.remove();
                         }
                     }
-                    logger.fine("Remaining artifacts: " + futures.size());
+                    fine("Remaining artifacts: " + futures.size());
                     Thread.sleep(ArtifactDownloaderUtils.THREAD_SLEEP);
                 } catch (InterruptedException | ExecutionException e) {
                     throw new InstallException(e.getMessage());
