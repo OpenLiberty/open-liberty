@@ -16,9 +16,6 @@ import org.osgi.framework.Version;
 
 import com.ibm.ws.javaee.version.JavaEEVersion;
 
-/**
- * Application deployment descriptor parse tests.
- */
 public class AppTest extends AppTestBase {
     @Test
     public void testCompareVersions() throws Exception {

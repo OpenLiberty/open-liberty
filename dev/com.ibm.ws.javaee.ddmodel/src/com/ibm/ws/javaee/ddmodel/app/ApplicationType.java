@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -393,21 +393,21 @@ public class ApplicationType extends JNDIEnvironmentRefs implements Application,
                 break;
             case Application.VERSION_5:
                 versionText = "5";
-                break;
+                break;                
             case Application.VERSION_6:
                 versionText = "6";
-                break;
+                break;                                
             case Application.VERSION_7:
                 versionText = "7";
                 break;
             case Application.VERSION_8:
                 versionText = "8";
-                break;
+                break;          
             case Application.VERSION_9:
                 versionText = "9";
-                break;
+                break;                                                                
             default:
-                throw new IllegalArgumentException("Unsupported application version [ " + parser.eePlatformVersion + " ]");
+                throw new IllegalArgumentException("Unsupported application bindings version [ " + parser.version + " ]");
             }
             version = parser.parseToken(versionText);
         }

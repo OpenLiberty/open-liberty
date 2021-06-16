@@ -1416,8 +1416,13 @@ public abstract class DDParser {
 
     protected String incorrectDescriptorNamespace(String ddVersion, String ddNamespace, String expectedNamespace) {
         // The deployment descriptor {0}, at line {1}, specifies version {2} and namespace {3}, but should have namespace {4}.
-        return Tr.formatMessage(tc, "incorrect.descriptor.version", describeEntry(), getLineNumber(), ddVersion, ddNamespace, expectedNamespace);        
+        return Tr.formatMessage(tc, "incorrect.descriptor.namespace.for.version", describeEntry(), getLineNumber(), ddVersion, ddNamespace, expectedNamespace);        
     }
+    
+    protected String incorrectDescriptorNamespace(String ddNamespace, String expectedNamespace) {
+        // The deployment descriptor {0}, at line {1}, specifies namespace {2}, but should have namespace {3}.
+        return Tr.formatMessage(tc, "incorrect.descriptor.namespace", describeEntry(), getLineNumber(), ddNamespace, expectedNamespace);        
+    }    
 
     protected String unsupportedDescriptorPublicId(String ddPublicId) {
         // The deployment descriptor {0}, at line {1}, specifies unsupported public ID {2}.
