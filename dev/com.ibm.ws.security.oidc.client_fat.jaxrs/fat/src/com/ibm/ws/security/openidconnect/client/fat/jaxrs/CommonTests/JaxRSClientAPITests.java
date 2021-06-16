@@ -19,7 +19,6 @@ import org.junit.Test;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.jwt.JWTTokenBuilder;
 import com.ibm.ws.security.fat.common.jwt.utils.JwtKeyTools;
-import com.ibm.ws.security.fat.common.jwt.utils.JwtTokenBuilderUtils;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.CommonTest;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.EndpointSettings.endpointSettings;
@@ -46,13 +45,8 @@ public class JaxRSClientAPITests extends CommonTest {
     public static String[] test_GOOD_LOGIN_AGAIN_ACTIONS = Constants.GOOD_OIDC_LOGIN_AGAIN_ACTIONS;
     public static String[] test_LOGIN_PAGE_ONLY = Constants.GET_LOGIN_PAGE_ONLY;
     public static String test_FinalAction = Constants.LOGIN_USER;
-    protected static String hostName = "localhost";
-    public static final String MSG_USER_NOT_IN_REG = "CWWKS1106A";
     protected static final Boolean contextWillNotBeSet = false;
     protected static final Boolean contextWillBeSet = true;
-    public static final JwtTokenBuilderUtils tokenBuilderHelpers = new JwtTokenBuilderUtils();
-
-    String errMsg0x704 = "CertPathBuilderException";
 
     /**
      * Add additional checks for output from the other new API's
@@ -123,7 +117,9 @@ public class JaxRSClientAPITests extends CommonTest {
     }
 
     /**
-     *
+     * Create and Save a JWS token that the test userinfo endpoint can return - this will
+     * allow us to test that the RP and RS can process a userinfo reponse that contains
+     * a JWS instead of a simple JSON reponse
      */
     public void saveJWSUserInfoResponse() throws Exception {
 
@@ -143,6 +139,11 @@ public class JaxRSClientAPITests extends CommonTest {
 
     }
 
+    /**
+     * Create and Save a JWE token that the test userinfo endpoint can return - this will
+     * allow us to test that the RP and RS can process a userinfo reponse that contains
+     * a JWE instead of a simple JSON reponse
+     */
     public void saveJWEUserInfoResponse() throws Exception {
 
         String thisMethod = "saveJWEUserInfoResponse";
@@ -160,21 +161,6 @@ public class JaxRSClientAPITests extends CommonTest {
         List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "userinfoToken", jwtToken);
         genericInvokeEndpointWithHttpUrlConn(_testName, null, testSettings.getUserinfoEndpt(), Constants.PUTMETHOD, "misc", parms, null, null);
 
-        //
-        //        JWTTokenBuilder builder = tokenBuilderHelpers.populateAlternateJWEToken(JwtKeyTools.getPublicKeyFromPem(JwtKeyTools.getComplexPublicKeyForSigAlg(testOPServer.getServer(), Constants.SIGALG_RS256)));
-        //        builder.setIssuer(testOPServer.getHttpString() + "/TokenEndpointServlet");
-        //        builder.setAlorithmHeaderValue(Constants.SIGALG_RS256);
-        //        builder.setRSAKey(testOPServer.getServer().getServerRoot() + "/RS256private-key.pem");
-        //        // calling buildJWE will override the header contents
-        //        String jwtToken = builder.buildJWE("JOSE", "not_jwt");
-        //
-        //
-        //        JSONObject claims = new JSONObject();
-        //        claims.put("iss", "bob");
-        //        claims.put("sub", "testuser");
-        //        String claimString = claims.toString();
-        //        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "claims", claimString);
-        //        genericInvokeEndpointWithHttpUrlConn(_testName, null, testSettings.getUserinfoEndpt(), Constants.PUTMETHOD, "misc", parms, null, null);
     }
 
     /**
@@ -195,7 +181,7 @@ public class JaxRSClientAPITests extends CommonTest {
      * <LI>Should authenticate and access the test servlet without issue
      * </OL>
      */
-    //    @Mode(TestMode.LITE)
+    @Mode(TestMode.LITE)
     @Test
     public void APIOidcJaxRSClientTests_protectedApp() throws Exception {
 
@@ -229,7 +215,7 @@ public class JaxRSClientAPITests extends CommonTest {
      * <LI>All api's should return null - we should not apptempt to invoke the app on the RS server
      * </OL>
      */
-    //    @Mode(TestMode.LITE)
+    @Mode(TestMode.LITE)
     @Test
     public void APIOidcJaxRSClientTests_unProtectedApp() throws Exception {
 
@@ -283,7 +269,7 @@ public class JaxRSClientAPITests extends CommonTest {
 
     }
 
-    //    @Mode(TestMode.LITE)
+    @Mode(TestMode.LITE)
     @Test
     public void APIOidcJaxRSClientTests_jaxrsOAuthClientProperty_string_true() throws Exception {
 
@@ -299,7 +285,7 @@ public class JaxRSClientAPITests extends CommonTest {
 
     }
 
-    //    @Mode(TestMode.LITE)
+    @Mode(TestMode.LITE)
     @Test
     public void APIOidcJaxRSClientTests_jaxrsOAuthClientProperty_boolean_true() throws Exception {
 
@@ -315,7 +301,7 @@ public class JaxRSClientAPITests extends CommonTest {
 
     }
 
-    //    @Mode(TestMode.LITE)
+    @Mode(TestMode.LITE)
     @Test
     public void APIOidcJaxRSClientTests_jaxrsOAuthClientProperty_string_false() throws Exception {
 
@@ -332,7 +318,7 @@ public class JaxRSClientAPITests extends CommonTest {
 
     }
 
-    //    @Mode(TestMode.LITE)
+    //        @Mode(TestMode.LITE)
     @Test
     public void APIOidcJaxRSClientTests_jaxrsOAuthClientProperty_boolean_false() throws Exception {
 
@@ -349,7 +335,7 @@ public class JaxRSClientAPITests extends CommonTest {
 
     }
 
-    //    @Mode(TestMode.LITE)
+    @Mode(TestMode.LITE)
     @Test
     public void APIOidcJaxRSClientTests_jaxrsJWTClientProperty_string_true() throws Exception {
 
@@ -371,7 +357,7 @@ public class JaxRSClientAPITests extends CommonTest {
 
     }
 
-    //    @Mode(TestMode.LITE)
+    @Mode(TestMode.LITE)
     @Test
     public void APIOidcJaxRSClientTests_jaxrsJWTClientProperty_boolean_true() throws Exception {
 
@@ -393,7 +379,7 @@ public class JaxRSClientAPITests extends CommonTest {
 
     }
 
-    //    @Mode(TestMode.LITE)
+    @Mode(TestMode.LITE)
     @Test
     public void APIOidcJaxRSClientTests_jaxrsJWTClientProperty_string_false() throws Exception {
 
@@ -410,7 +396,7 @@ public class JaxRSClientAPITests extends CommonTest {
 
     }
 
-    //    @Mode(TestMode.LITE)
+    @Mode(TestMode.LITE)
     @Test
     public void APIOidcJaxRSClientTests_jaxrsJWTClientProperty_boolean_false() throws Exception {
 

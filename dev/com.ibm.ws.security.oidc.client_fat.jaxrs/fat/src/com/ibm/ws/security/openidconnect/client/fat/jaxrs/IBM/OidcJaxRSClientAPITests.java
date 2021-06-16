@@ -79,7 +79,6 @@ public class OidcJaxRSClientAPITests extends JaxRSClientAPITests {
             .with(new OidcClientJaxrsRepeatAction(Constants.OPAQUE_TOKEN_FORMAT))
             .andWith(new OidcClientJaxrsRepeatAction(Constants.JWS_TOKEN_FORMAT))
             .andWith(new OidcClientJaxrsRepeatAction(Constants.JWE_TOKEN_FORMAT));
-    //            .with(new OidcClientJaxrsRepeatAction(Constants.JWE_TOKEN_FORMAT));
 
     @SuppressWarnings("serial")
     @BeforeClass
@@ -102,7 +101,7 @@ public class OidcJaxRSClientAPITests extends JaxRSClientAPITests {
 
         // Since the Liberty OP does not yet create JWE's (it only creates JWS'), we need to use test token and userinfo endpoints
         // when the OP does support returning JWE's, we can remove most of the following code and just startup the OP server with unique configs
-        // that we produce the correct JWT and userinfo response.
+        // that will produce the correct JWT and userinfo response.
         String authorizeEndpointUri = "\"http://localhost:${bvt.prop." + Constants.SYS_PROP_PORT_OP_HTTP_DEFAULT + "}/oidc/endpoint/OidcConfigSample/authorize\"";
         String tokenEndpointUri = "\"http://localhost:${bvt.prop." + Constants.SYS_PROP_PORT_OP_HTTP_DEFAULT + "}/oidc/endpoint/OidcConfigSample/token\"";
         String validationEndpointUri = "\"http://localhost:${bvt.prop." + Constants.SYS_PROP_PORT_OP_HTTP_DEFAULT + "}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}\"";
@@ -112,7 +111,6 @@ public class OidcJaxRSClientAPITests extends JaxRSClientAPITests {
         String trustAlias = null;
         String trustStoreRef = null;
 
-        // tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"
         testSettings = new TestSettings();
         // all but the opapue token repeat type should use some form of a JWT token (JWS or JWE) - so set the token type to JWT by default
         String tokenType = Constants.JWT_TOKEN;
@@ -161,11 +159,6 @@ public class OidcJaxRSClientAPITests extends JaxRSClientAPITests {
         validationSettings.put("special_trustStoreRef", trustStoreRef);
         setMiscBootstrapParms(validationSettings);
 
-        //        http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}
-        //            propValue = "\"https://localhost:${bvt.prop." + Constants.SYS_PROP_PORT_OP_HTTPS_DEFAULT + "}/${" + Constants.BOOT_PROP_PROVIDER_ROOT + "}/endpoint/" + entry.getValue() + "/jwk\"";
-
-        // TODO - NOTE - our OP's userinfo will always return json data - we need to stub out returning a JWS or JWE
-
         // Start the Generic/App Server
         genericTestServer = commonSetUp("com.ibm.ws.security.openidconnect.client-1.0_fat.jaxrs.rs", "rs_server_api_orig.xml", Constants.GENERIC_SERVER, apps, Constants.DO_NOT_USE_DERBY, Constants.NO_EXTRA_MSGS, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true, tokenType, Constants.X509_CERT);
         genericTestServer.addIgnoredServerException(MessageConstants.CWWKG0032W_CONFIG_INVALID_VALUE);
@@ -174,12 +167,11 @@ public class OidcJaxRSClientAPITests extends JaxRSClientAPITests {
         // Start the OIDC OP server - tell it to generate JWT access tokens
         testOPServer = commonSetUp("com.ibm.ws.security.openidconnect.client-1.0_fat.jaxrs.opWithStub", "op_server_encrypt.xml", Constants.OIDC_OP, Constants.NO_EXTRA_APPS, Constants.DO_NOT_USE_DERBY, Constants.NO_EXTRA_MSGS, null, null, true, true, tokenType, Constants.X509_CERT);
         //Start the OIDC RP server and setup default values
-
         testRPServer = commonSetUp("com.ibm.ws.security.openidconnect.client-1.0_fat.jaxrs.rp", "rp_server_api_orig.xml", Constants.OIDC_RP, Constants.NO_EXTRA_APPS, Constants.DO_NOT_USE_DERBY, Constants.NO_EXTRA_MSGS, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true, tokenType, Constants.X509_CERT);
         testRPServer.addIgnoredServerException(MessageConstants.CWWKG0033W_CONFIG_REFERENCE_NOT_FOUND);
+
         // override actions that generic tests should use - Need to skip consent form as httpunit
         // cannot process the form because of embedded javascript
-
         test_GOOD_LOGIN_ACTIONS = Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT;
         test_GOOD_POST_LOGIN_ACTIONS = Constants.GOOD_OIDC_POST_LOGIN_ACTIONS_SKIP_CONSENT;
         test_GOOD_LOGIN_AGAIN_ACTIONS = Constants.GOOD_OIDC_LOGIN_AGAIN_ACTIONS;
@@ -212,6 +204,7 @@ public class OidcJaxRSClientAPITests extends JaxRSClientAPITests {
             List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "builderId", "defaultJWT");
             genericInvokeEndpointWithHttpUrlConn(_testName, null, testSettings.getTokenEndpt(), Constants.PUTMETHOD, "misc", parms, null, null);
         }
+        // TODO - prep for future testing
         // save a Token - for these tests, the content doesn't matter - just trying to validate the behavior with propagation
         if (Constants.JWS_USERINFO_DATA.equals(FATSuite.repeatFlag)) {
             saveJWSUserInfoResponse();

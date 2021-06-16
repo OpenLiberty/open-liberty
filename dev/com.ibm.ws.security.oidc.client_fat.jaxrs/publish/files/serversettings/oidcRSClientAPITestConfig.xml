@@ -17,12 +17,14 @@
 			matchType="contains" />
 	</authFilter>
 
+<!--
 	<authFilter id="badAuthFilter">
 		<requestUrl
 			id="badRequestUrl"
 			urlPattern="/BadHelloworld"
 			matchType="contains" />
 	</authFilter>
+-->
 
 	<openidConnectClient
 		id="client01"
