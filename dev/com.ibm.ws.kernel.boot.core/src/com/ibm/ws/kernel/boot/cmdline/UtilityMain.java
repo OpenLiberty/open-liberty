@@ -336,6 +336,7 @@ public class UtilityMain {
         List<AbstractResourceRepository> repos = new ArrayList<AbstractResourceRepository>();
         // default install location.
         repos.add(new NameBasedLocalBundleRepository(Utils.getInstallDir()));
+        repos.add(new NameBasedLocalBundleRepository(new File(Utils.getInstallDir(), "usr/extension")));
         // add extension directory if it exists.
         List<File> extDirs = ExtensionUtils.listProductExtensionDirectories();
         for (File extDir : extDirs) {

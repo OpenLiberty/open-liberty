@@ -1,0 +1,7 @@
+-include= ~../cnf/resources/bnd/bundle.props
+
+bVersion=1.0
+
+#This file defines the main fat bundle
+Bundle-Name: com.ibm.ws.security.utility_fat
+Bundle-SymbolicName: com.ibm.ws.security.utility_fat

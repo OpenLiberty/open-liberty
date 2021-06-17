@@ -1,0 +1,12 @@
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+
+Bundle-Name: Custom Encryption
+Bundle-SymbolicName: com.ibm.websphere.crypto.sample.customencryption; singleton:=true
+Bundle-Description: Bundles that tests a user feature that uses persistent executor; version=${bVersion}
+
+Export-Package: com.ibm.websphere.crypto.sample.customencryption;version=1.0
+
+-dsannotations: \
+  com.ibm.websphere.crypto.sample.customencryption.CustomEncryptionImpl

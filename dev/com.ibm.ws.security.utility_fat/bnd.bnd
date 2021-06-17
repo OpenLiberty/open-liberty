@@ -1,0 +1,14 @@
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+src: \
+	fat/src, \
+        test-bundles/customencryption/src
+
+fat.project: true
+-sub: *.bnd
+
+-buildpath: 	com.ibm.websphere.org.osgi.service.component;version=latest,\
+            	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+            	com.ibm.ws.crypto.passwordutil;version=latest
+
