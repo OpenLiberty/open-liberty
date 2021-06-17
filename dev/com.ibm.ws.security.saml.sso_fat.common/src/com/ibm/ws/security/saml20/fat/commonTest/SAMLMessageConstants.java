@@ -26,6 +26,7 @@ public class SAMLMessageConstants {
     public static final String CWWKS5018E_SAML_RESPONSE_CANNOT_BE_DECODED = "CWWKS5018E";
 
     public static final String CWWKS5021E_IDP_METADATA_MISSING_ISSUER = "CWWKS5021E";
+    public static final String CWWKS5023E_IDP_METADATA_NOT_VALID = "CWWKS5023E";
     public static final String CWWKS5025E_IDP_METADATA_DOES_NOT_EXIST = "CWWKS5025E";
     public static final String CWWKS5029E_RELAY_STATE_NOT_RECOGNIZED = "CWWKS5029E";
 

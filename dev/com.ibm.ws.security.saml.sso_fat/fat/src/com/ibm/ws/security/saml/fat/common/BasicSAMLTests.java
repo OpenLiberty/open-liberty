@@ -243,7 +243,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
      */
 
     @ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException" })
-    @AllowedFFDC(value = { "org.opensaml.ws.security.SecurityPolicyException" })
+    @AllowedFFDC(value = { "org.opensaml.ws.security.SecurityPolicyException", "org.opensaml.messaging.handler.MessageHandlerException" })
     @Test
     public void basicSAMLTests_noIdAssertNoUser_IDPSignMisMatch_IDPEncrypt() throws Exception {
 
@@ -571,7 +571,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
 
     }
 
-    @ExpectedFFDC(value = { "org.opensaml.ws.security.SecurityPolicyException", "com.ibm.ws.security.saml.error.SamlException" })
+    @AllowedFFDC(value = { "org.opensaml.ws.security.SecurityPolicyException", "org.opensaml.messaging.handler.MessageHandlerException", "com.ibm.ws.security.saml.error.SamlException" })
     @Test
     public void basicSAMLTests_mangleSAMLToken_userNameInAssertion_signed() throws Exception {
 
@@ -590,7 +590,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
 
     }
 
-    @ExpectedFFDC(value = { "org.opensaml.ws.message.decoder.MessageDecodingException" })
+    @AllowedFFDC(value = { "org.opensaml.ws.message.decoder.MessageDecodingException", "org.opensaml.messaging.decoder.MessageDecodingException" })
     @Test
     public void basicSAMLTests_mangleSAMLToken_badXMLFormatInResponse() throws Exception {
 
@@ -608,7 +608,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
 
     }
 
-    @ExpectedFFDC(value = { "org.opensaml.ws.message.decoder.MessageDecodingException" })
+    @AllowedFFDC(value = { "org.opensaml.ws.message.decoder.MessageDecodingException", "org.opensaml.messaging.decoder.MessageDecodingException" })
     @Test
     public void basicSAMLTests_mangleSAMLToken_sendGarbage() throws Exception {
 
@@ -877,7 +877,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
     @Mode(TestMode.LITE)
     // all flows get the SamlException, only the IDP and Unsolicited flows get SecurityPolicyException
     @ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException" })
-    @AllowedFFDC(value = { "org.opensaml.ws.security.SecurityPolicyException" })
+    @AllowedFFDC(value = { "org.opensaml.ws.security.SecurityPolicyException", "org.opensaml.messaging.handler.MessageHandlerException" })
     @Test
     public void basicSAMLTests_badLTPAToken_missingIDPSSODescriptor() throws Exception {
 

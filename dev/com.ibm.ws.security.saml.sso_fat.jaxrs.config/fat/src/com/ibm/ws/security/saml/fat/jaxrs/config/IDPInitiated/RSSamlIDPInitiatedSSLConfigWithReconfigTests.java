@@ -21,6 +21,7 @@ import com.ibm.ws.security.saml.fat.jaxrs.config.utils.RSSamlProviderSettings;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLMessageConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLTestSettings;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -93,7 +94,8 @@ public class RSSamlIDPInitiatedSSLConfigWithReconfigTests extends RSSamlIDPIniti
      *
      * @throws Exception
      */
-    @ExpectedFFDC({ "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.ws.security.SecurityPolicyException" })
+    @ExpectedFFDC({ "com.ibm.ws.security.saml.error.SamlException" })
+    @AllowedFFDC(value = {"org.opensaml.ws.security.SecurityPolicyException", "org.opensaml.messaging.handler.MessageHandlerException" })
     @Test
     public void RSSamlIDPInitiatedConfigTests_signatureMethodAlgorithm_SHA256() throws Exception {
 

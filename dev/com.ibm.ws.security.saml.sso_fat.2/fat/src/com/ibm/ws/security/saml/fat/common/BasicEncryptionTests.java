@@ -135,7 +135,7 @@ public class BasicEncryptionTests extends SAMLCommonTest {
      * @throws Exception
      */
     @MaximumJavaLevel(javaLevel = 8) // test uses DSA cert and that is no longer supported
-    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.xml.encryption.DecryptionException", "org.opensaml.xml.signature.SignatureException" })
+    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.xml.encryption.DecryptionException", "org.opensaml.xml.signature.SignatureException", "org.opensaml.xmlsec.encryption.support.DecryptionException", "org.opensaml.xmlsec.signature.support.SignatureException" })
     @Test
     public void testNoKeyAlias_DefaultKeyAliasInKeystore_MultipleCertsInKeystore_MissingCorrectCert() throws Exception {
 
@@ -187,7 +187,7 @@ public class BasicEncryptionTests extends SAMLCommonTest {
      * @throws Exception
      */
     @MaximumJavaLevel(javaLevel = 8) // test uses DSA cert and that is no longer supported
-    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.xml.encryption.DecryptionException", "org.opensaml.xml.signature.SignatureException" })
+    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.xml.encryption.DecryptionException", "org.opensaml.xml.signature.SignatureException" , "org.opensaml.xmlsec.encryption.support.DecryptionException", "org.opensaml.xmlsec.signature.support.SignatureException"})
     @Test
     public void testNoKeyAlias_DefaultKeyAliasInKeystore_OneCertInKeystore_WrongCert() throws Exception {
 
@@ -259,7 +259,7 @@ public class BasicEncryptionTests extends SAMLCommonTest {
      * @throws Exception
      */
     @Mode(TestMode.LITE)
-    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.xml.encryption.DecryptionException" })
+    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.xml.encryption.DecryptionException", "org.opensaml.xmlsec.encryption.support.DecryptionException"})
     @Test
     public void testKeyAlias_MultipleCertsInKeystore_KeyAliasIsWrongCert() throws Exception {
 
@@ -332,7 +332,7 @@ public class BasicEncryptionTests extends SAMLCommonTest {
      * @throws Exception
      */
     @MaximumJavaLevel(javaLevel = 8) // test uses DSA cert and that is no longer supported
-    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.xml.encryption.DecryptionException", "org.opensaml.xml.signature.SignatureException" })
+    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.xml.encryption.DecryptionException", "org.opensaml.xml.signature.SignatureException", "org.opensaml.xmlsec.encryption.support.DecryptionException", "org.opensaml.xmlsec.signature.support.SignatureException" })
     @Test
     public void testKeyAlias_OneCertInKeystore_KeyAliasIsWrongCert() throws Exception {
 

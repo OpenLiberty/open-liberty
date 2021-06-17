@@ -73,7 +73,7 @@ public class CxfSAMLCallerTests extends SAMLCommonTest {
     //1/26/2021 comment out
     //@Mode(TestMode.LITE)
     //scenario 1 - done
-    @Test
+    //@Test
     public void testCxfCallerHttpPolicy() throws Exception {
 
         // Create the conversation object which will maintain state for us
@@ -135,7 +135,7 @@ public class CxfSAMLCallerTests extends SAMLCommonTest {
     //1/26/2021 comment out
     //@Mode(TestMode.LITE)
     //scenario 3 - done
-    @Test
+    //@Test
     public void testCxfCaller_WithRealmName() throws Exception {
         if (testSAMLServer2 == null) {
             // 1 server reconfig
@@ -173,7 +173,7 @@ public class CxfSAMLCallerTests extends SAMLCommonTest {
     //1/26/2021 comment out
     //@Mode(TestMode.LITE)
     //scenario 5
-    @Test
+    //@Test
     public void testCxfCallerHttpsPolicy_IncludeTokenInSubjectIsFalse() throws Exception {
         if (testSAMLServer2 == null) {
             // 1 server reconfig
