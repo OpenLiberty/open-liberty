@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasKey;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
@@ -51,7 +52,7 @@ public class MergeProcessorTest {
         OpenAPI result = resultProvider.getModel();
         assertThat(resultProvider.getApplicationPath(), is(nullValue()));
 
-        assertThat(result.getComponents().getSchemas(), allOf(hasKey("bar"), hasKey("error"), hasKey("foo"), hasKey("error1")));
+        assertThat(result.getComponents().getSchemas(), allOf(hasKey("bar"), hasKey("error"), hasKey("foo")));
         assertThat(result.getPaths().getPathItems(), allOf(hasKey("/foo/foo"), hasKey("/foo/login"), hasKey("/bar/bar"), hasKey("/bar/login")));
 
         OpenAPI expectedModel = loadModel("clashing-path-merged.yaml");
@@ -97,6 +98,25 @@ public class MergeProcessorTest {
         OpenAPI expectedModel = loadModel("component-clash-merge.yaml");
         assertModelsEqual(expectedModel, result);
     }
+    
+    /**
+     * Test that components are not renamed if they're identical across documents
+     */
+    @Test
+    public void testComponentMerging() throws IOException {
+        OpenAPIProvider model1 = loadModel("component-merging-1.yaml", "/test1");
+        OpenAPIProvider model2 = loadModel("component-merging-2.yaml", "/test2");
+
+        OpenAPIProvider resultProvider = MergeProcessor.mergeDocuments(Arrays.asList(model1, model2));
+        OpenAPI result = resultProvider.getModel();
+        assertThat(resultProvider.getApplicationPath(), is(nullValue()));
+        assertThat(resultProvider.getMergeProblems(), is(empty()));
+
+        System.out.println(OpenApiSerializer.serialize(resultProvider.getModel(), Format.YAML));
+
+        OpenAPI expectedModel = loadModel("component-merging-merge.yaml");
+        assertModelsEqual(expectedModel, result);
+    }
 
     /**
      * Test that context roots can be moved from servers to paths
@@ -136,6 +156,14 @@ public class MergeProcessorTest {
         assertModelsEqual(expectedModel, result);
     }
     
+    /**
+     * Test that clashing tag names are handled correctly
+     * <p>
+     * <ul>
+     * <li>Tags defined at the top level are split if their definition is different (e.g. they have the same name but different descriptions)</li>
+     * <li>Ad-hoc tags used without prior definition are never split</li>
+     * </ul>
+     */
     @Test
     public void testClashingTags() {
         OpenAPIProvider model1 = loadModel("tag-clash-1.yaml", "");
@@ -290,7 +318,7 @@ public class MergeProcessorTest {
         assertThat(actual, instanceOf(List.class));
         List<?> actualList = (List<?>) actual;
 
-        assertEquals("List has wrong size", context, expectedList.size(), actualList.size());
+        assertThat("List has wrong size at " + contextString(context), actualList, hasSize(expectedList.size()));
 
         Iterator<?> expectedIterator = expectedList.iterator();
         Iterator<?> actualIterator = actualList.iterator();

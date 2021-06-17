@@ -17,16 +17,16 @@ paths:
       security:
         - fooSecurityScheme: []
       callbacks:
-        test2:
+        test:
           $ref: "#/components/callbacks/fooCallback"
 components:
   schemas:
     fooSchema:
       type: string
-      description: test2
+      description: test
   responses:
     fooResponse:
-      description: test2
+      description: test
       content:
         text/plain:
           schema:
@@ -43,41 +43,41 @@ components:
   parameters:
     fooParameter:
       name: foo
-      description: test2
+      description: test
       in: query
       required: true
       schema:
         type: string
   examples:
     fooExample:
-      value: test2
+      value: test
   requestBodies:
     fooRequestBody:
-      description: test2
+      description: test
       content: {}
   headers:
     fooHeader:
-      description: test2
+      description: test
       schema:
         type: string
   securitySchemes:
     fooSecurityScheme:
-      name: test2
+      name: test
       type: apiKey
       in: query
   links:
     fooLink: 
-      description: test2
+      description: test
   callbacks:
     fooCallback:
       "$request.body#/callbackURL":
         post:
           requestBody:
-            description: test2
+            description: test
             content:
               'application/json':
                 schema:
                   type: object
           responses:
             202:
-              description: test2
+              description: test

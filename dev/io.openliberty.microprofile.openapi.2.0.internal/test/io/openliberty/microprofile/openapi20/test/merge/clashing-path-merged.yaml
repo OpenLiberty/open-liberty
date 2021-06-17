@@ -87,7 +87,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/error1"
+                $ref: "#/components/schemas/error"
 components:
   schemas:
     foo:
@@ -118,13 +118,3 @@ components:
       required: 
         - id
         - name
-    error1:
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-      required:
-        - code
-        - message

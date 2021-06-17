@@ -107,9 +107,9 @@ public class MergeProcessor {
     private Set<String> pathNames = new HashSet<>();
 
     /**
-     * The unique names which are in use for models processed so far, grouped by the type of name
+     * The unique names and their values which are in use for models processed so far, grouped by the type of name
      */
-    private Map<NameType, Set<String>> namesInUse = new HashMap<>();
+    private Map<NameType, Map<String, Object>> namesInUse = new HashMap<>();
 
     private List<String> mergeProblems = new ArrayList<>();
 
@@ -236,7 +236,7 @@ public class MergeProcessor {
 
     private void renameClashingTags(OpenAPI document, RenameHolder renameHolder) {
         for (Tag tag : notNull(document.getTags())) {
-            tag.setName(renameHolder.createUniqueName(NameType.TAG, tag.getName()));
+            tag.setName(renameHolder.createUniqueName(NameType.TAG, tag.getName(), tag));
         }
     }
 
@@ -266,7 +266,7 @@ public class MergeProcessor {
         HashMap<String, T> newMap = new HashMap<>();
         for (Entry<String, T> entry : componentMap.entrySet()) {
             String key = entry.getKey();
-            newMap.put(renameHolder.createUniqueName(nameType, key), entry.getValue());
+            newMap.put(renameHolder.createUniqueName(nameType, key, entry.getValue()), entry.getValue());
         }
         return newMap;
     }
@@ -279,7 +279,7 @@ public class MergeProcessor {
 
         for (PathItem item : notNull(paths.getPathItems()).values()) {
             for (Operation op : notNull(item.getOperations()).values()) {
-                op.setOperationId(renameHolder.createUniqueName(NameType.OPERATION_ID, op.getOperationId()));
+                op.setOperationId(renameHolder.createUniqueName(NameType.OPERATION_ID, op.getOperationId(), null));
             }
         }
     }
@@ -667,6 +667,7 @@ public class MergeProcessor {
      */
     public class RenameHolder {
         private Map<NameType, Map<String, String>> renames = new HashMap<>();
+        private boolean hasRenames = false;
 
         /**
          * Get the map of renames for the current model of the given name type
@@ -682,31 +683,34 @@ public class MergeProcessor {
         }
 
         /**
-         * Get the set of names in use for the given name type
+         * Get the set of names and their values in use for the given name type
          * <p>
          * Note that this is shared between all models being merged.
          * 
          * @param nameType the name type
-         * @return the set of names in use
+         * @return map of names to their values
          */
         @Trivial
-        private Set<String> getNamesInUse(NameType nameType) {
-            return MergeProcessor.this.namesInUse.computeIfAbsent(nameType, (k) -> new HashSet<>());
+        private Map<String, Object> getNamesInUse(NameType nameType) {
+            return MergeProcessor.this.namesInUse.computeIfAbsent(nameType, (k) -> new HashMap<>());
         }
+        
+        private static final String NO_VALUE = "NO VALUE";
 
         /**
          * Create and reserve a unique name, based on a possibly non-unique name
          * <p>
-         * If this method is called with the same {@code oldName} when processing different documents, it will return different values.
+         * If this method is called with the same {@code oldName} and different {@code value} when processing different documents, it will return different names.
          * <p>
-         * However, if this method is called multiple times with the same {@code oldName} <i>within the same document</i> it will return the same value. This is to make it easier
+         * However, if this method is called multiple times with the same {@code oldName} <i>within the same document</i> it will return the same name. This is to make it easier
          * to process tags which can be used without previous definition.
          * 
          * @param nameType the type of name
          * @param oldName the possibly non-unique name
+         * @param value the value associated with the name, or {@code null} to not perform an equality check on the value
          * @return the new name (which may be the same as {@code oldName})
          */
-        public String createUniqueName(NameType nameType, String oldName) {
+        public String createUniqueName(NameType nameType, String oldName, Object value) {
             if (oldName == null) {
                 return null;
             }
@@ -717,34 +721,42 @@ public class MergeProcessor {
             if (previousRename != null) {
                 return previousRename;
             }
-
+            
+            Map<String, Object> namesInUse = getNamesInUse(nameType);
             String newName = oldName;
-            Set<String> nameSet = getNamesInUse(nameType);
-            if (nameSet.contains(newName)) {
+            Object valueInUse = namesInUse.get(newName);
+            if (valueInUse != null && (valueInUse == NO_VALUE || !ModelEquality.equals(valueInUse, value))) {
+                // We need to rename
                 int count = 1;
                 newName = oldName + count;
-                while (nameSet.contains(newName)) {
+                valueInUse = namesInUse.get(newName);
+                
+                // Compute the new name
+                while (valueInUse != null && (valueInUse == NO_VALUE || !ModelEquality.equals(valueInUse, value))) {
                     count++;
                     newName = oldName + count;
+                    valueInUse = namesInUse.get(newName);
                 }
-            }
-
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                if (!oldName.equals(newName)) {
+                
+                // Store the rename
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                     Tr.event(tc, "Renamed " + nameType + " " + oldName + " -> " + newName);
                 }
+                hasRenames = true;
             }
 
+            namesInUse.put(newName, value == null ? NO_VALUE : value);
             renameMap.put(oldName, newName);
-            nameSet.add(newName);
             return newName;
         }
 
         /**
-         * Look up the corresponding name to which {@code name} was renamed
+         * Look up the corresponding name to which {@code oldName} was renamed
          * <p>
-         * If {@code name} was previously passed to {@link #createUniqueName(NameType, String)} or {@link #registerRename(NameType, String, String)}, then the new name will be
-         * returned, otherwise {@code name} will be returned.
+         * If {@code oldName} was previously passed to {@link #createUniqueName(NameType, String)} or {@link #registerRename(NameType, String, String)}, then the new name will be
+         * returned, otherwise {@code oldName} will be returned.
+         * <p>
+         * This is useful for updating references to objects which may have been renamed
          * 
          * @param nameType the type of name
          * @param oldName the possibly non-unique name
@@ -772,25 +784,20 @@ public class MergeProcessor {
                 }
             }
 
+            hasRenames = true;
             getRenameMap(nameType).put(oldName, newName);
         }
 
         /**
          * Returns whether any renames have been recorded.
          * <p>
-         * This will be true iff a call to {@link #createUniqueName(NameType, String)} returned a different name to the one it was passed.
+         * This will be true if a call to {@link #createUniqueName(NameType, String)} returned a different name to the one it was passed or if
+         * {@link #registerRename(NameType, String, String)} has been called.
          * 
          * @return {@code true} if any renames have been recorded, otherwise {@code false}
          */
         public boolean hasRenames() {
-            //TODO: Fix this - even non-renames are now added...
-            for (Map<String, String> subRename : renames.values()) {
-                if (!subRename.isEmpty()) {
-                    return true;
-                }
-            }
-
-            return false;
+            return hasRenames;
         }
     }
 

@@ -218,7 +218,7 @@ public class RenameReferenceVisitor implements OpenAPIModelVisitor {
         if (tags != null && !tags.isEmpty()) {
             List<String> newTags = new ArrayList<>();
             for (String tag : tags) {
-                newTags.add(renameHolder.createUniqueName(NameType.TAG, tag));
+                newTags.add(renameHolder.lookupName(NameType.TAG, tag));
             }
             if (!Objects.equals(tags, newTags)) {
                 operation.setTags(newTags);

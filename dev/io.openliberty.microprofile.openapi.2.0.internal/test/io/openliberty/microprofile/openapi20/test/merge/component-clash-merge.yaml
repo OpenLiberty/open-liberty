@@ -55,10 +55,13 @@ components:
   schemas:
     fooSchema:
       type: string
+      description: test1
     barSchema:
       type: string
+      description: test1
     fooSchema1:
       type: string
+      description: test2
   responses:
     fooResponse:
       description: test1
