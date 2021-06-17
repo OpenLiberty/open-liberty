@@ -15,7 +15,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ SecurityUtilityEncodeTest.class })
+@SuiteClasses({ SecurityUtilityEncodeTest.class, SecurityUtilityImportSignerTest.class })
 /**
  * Purpose: This suite collects and runs all known good test suites.
  */

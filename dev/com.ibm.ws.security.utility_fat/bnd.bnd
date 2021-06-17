@@ -3,7 +3,7 @@ bVersion=1.0
 
 src: \
 	fat/src, \
-        test-bundles/customencryption/src
+    test-bundles/customencryption/src
 
 fat.project: true
 -sub: *.bnd

@@ -1,4 +1,5 @@
 <server>
+    <include location="../fatTestPorts.xml"/>
     <featureManager>
         <feature>servlet-4.0</feature>
         <feature>transportSecurity-1.0</feature>

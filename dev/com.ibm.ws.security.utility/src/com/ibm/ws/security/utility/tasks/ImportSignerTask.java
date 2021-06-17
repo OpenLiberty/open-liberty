@@ -19,7 +19,7 @@ import java.util.*;
 public class ImportSignerTask extends BaseCommandTask {
     private static final String ARG_HOST = "--host";
     private static final String ARG_PORT = "--port";
-    public static final String ARG_KEYSTORE = "--keyStore";
+    public static final String ARG_KEYSTORE = "--keystore";
     public static final String ARG_PASSWORD = "--password";
     public static final String ARG_ALIAS = "--alias";
     public static final String ARG_TYPE = "--type";
@@ -46,7 +46,7 @@ public class ImportSignerTask extends BaseCommandTask {
 
     @Override
     boolean isKnownArgument(String arg) {
-        return KNOWN_ARGS.contains(arg);
+        return KNOWN_ARGS.contains(arg.toLowerCase());
     }
 
     @Override
@@ -64,7 +64,7 @@ public class ImportSignerTask extends BaseCommandTask {
                 if (index != -1) {
                     arg = arg.substring(0, index);
                 }
-                argList.add(arg);
+                argList.add(arg.toLowerCase());
             }
         }
 
@@ -72,11 +72,10 @@ public class ImportSignerTask extends BaseCommandTask {
             message.append(" ").append(getMessage("missingArg", ARG_HOST));
         }
 
-        if (!argList.contains(ARG_PORT)) {
-            message.append(" ").append(getMessage("missingArg", ARG_PORT));
-        } else {
-            // check number
-            String port = getArgumentValue(ARG_PORT, args, null, null, null, null);
+        // Port is not required, but checking the value here anyway
+        if (argList.contains(ARG_PORT)) {
+            // check port is a valid number
+            String port = getArgumentValue(ARG_PORT, args, "443", null, null, null);
             try {
                 Integer.parseInt(port);
             } catch (NumberFormatException nfe) {
@@ -86,6 +85,15 @@ public class ImportSignerTask extends BaseCommandTask {
 
         if (!argList.contains(ARG_KEYSTORE)) {
             message.append(" ").append(getMessage("missingArg", ARG_KEYSTORE));
+        } else {
+            String keyStore = getArgumentValue(ARG_KEYSTORE, args, null, null, null, null);
+            File f = new File(keyStore);
+            String simpleName = f.getName().toLowerCase();
+            if (!simpleName.endsWith(".pem")) {
+                if (!argList.contains(ARG_PASSWORD)) {
+                    message.append(" ").append(getMessage("missingArg", ARG_PASSWORD));
+                }
+            }
         }
 
         if (!argList.contains(ARG_HOST)) {
@@ -125,9 +133,9 @@ public class ImportSignerTask extends BaseCommandTask {
         validateArgumentList(args, Arrays.asList(ARG_PASSWORD, ARG_ACCEPT));
 
         String host = getArgumentValue(ARG_HOST, args, null, null, stdin, stderr);
-        int port = Integer.parseInt(getArgumentValue(ARG_PORT, args, null, null, stdin, stderr));
+        int port = Integer.parseInt(getArgumentValue(ARG_PORT, args, "443", null, stdin, stderr));
         String keyStore = getArgumentValue(ARG_KEYSTORE, args, null, null, stdin, stderr);
-        String keyStorePassword = getArgumentValue(ARG_PASSWORD, args,null, ARG_PASSWORD, stdin, stderr);
+        String keyStorePassword = getArgumentValue(ARG_PASSWORD, args,"", ARG_PASSWORD, stdin, stderr);
         String alias = getArgumentValue(ARG_ALIAS, args,null, null, stdin, stderr);
         String type = getArgumentValue(ARG_TYPE, args, null, null, stdin, stderr);
         String accept = getArgumentValue(ARG_ACCEPT, args, "false", null, stdin, stderr);
@@ -239,8 +247,8 @@ public class ImportSignerTask extends BaseCommandTask {
         int len = (chain.length == 1) ? 1 : 2;
         for (int i = 0; i < len; i++) {
             X509Certificate cert = chain[i];
-            builder.append("Subject DN:\t").append(cert.getSubjectDN()).append("\r\n")
-                    .append("Issuer DN:\t").append(cert.getIssuerDN()).append("\r\n")
+            builder.append("Subject DN:\t").append(cert.getSubjectX500Principal()).append("\r\n")
+                    .append("Issuer DN:\t").append(cert.getIssuerX500Principal()).append("\r\n")
                     .append("Serial number:\t").append(toHex(cert.getSerialNumber().toByteArray())).append("\r\n")
                     .append("Expires:\t").append(cert.getNotAfter()).append("\r\n");
             if (sha1Hasher != null) {

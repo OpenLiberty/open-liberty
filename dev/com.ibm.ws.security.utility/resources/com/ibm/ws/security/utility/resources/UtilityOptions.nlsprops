@@ -279,19 +279,20 @@ importSigner.desc=\
 \tImport the signer certificate of a target host and port into the provided keystore.
 importSigner.usage.options=\
 \t{0} importSigner [options]
-importSigner.required-key.password=\
+importSigner.option-key.password=\
 \ \ \ \ --password[=pwd]
-importSigner.required-desc.password=\
+importSigner.option-desc.password=\
 \tKeystore password, minimum {1} characters.\n\
-\tIf no value is defined you will be prompted.
+\tIf no value is defined you will be prompted.\n\
+\tRequired if store type is PKCS12 or JKS.
 importSigner.required-key.keyStore=\
 \ \ \ \ --keyStore
 importSigner.required-desc.keyStore=\
 \tSpecify the KeyStore file.
-importSigner.required-key.port=\
+importSigner.option-key.port=\
 \ \ \ \ --port
-importSigner.required-desc.port=\
-\tSpecify the port.
+importSigner.option-desc.port=\
+\tSpecify the port. Defaults to 443
 importSigner.required-key.host=\
 \ \ \ \ --host
 importSigner.required-desc.host=\

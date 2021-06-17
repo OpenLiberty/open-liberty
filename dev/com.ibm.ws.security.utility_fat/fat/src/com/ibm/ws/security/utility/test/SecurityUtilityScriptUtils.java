@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -44,6 +45,10 @@ public class SecurityUtilityScriptUtils {
             this.name = name;
             this.value = value;
         }
+    }
+
+    protected static List<String> execute(List<EnvVar> envVars, String ... args) throws IOException, InterruptedException {
+        return execute(envVars, Arrays.asList(args));
     }
 
     protected static List<String> execute(List<EnvVar> envVars, List<String> args) throws IOException, InterruptedException {
@@ -79,6 +84,9 @@ public class SecurityUtilityScriptUtils {
         for (EnvVar envVar : envVars) {
             builder.environment().put(envVar.name, envVar.value);
         }
+
+        System.out.println(builder.directory());
+        System.out.println(System.getProperty("user.dir"));
 
         final Process p = builder.start();
         List<String> output = new ArrayList<String>();
