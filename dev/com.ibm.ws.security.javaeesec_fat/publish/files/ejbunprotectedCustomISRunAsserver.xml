@@ -66,5 +66,7 @@
 	</library>
 	<javaPermission codebase="${shared.resource.dir}/derby/derby.jar"
 		className="java.security.AllPermission" />
+	<javaPermission className="java.security.AllPermission" />
+	
 	<include location="../fatTestPorts.xml" />
 </server>
