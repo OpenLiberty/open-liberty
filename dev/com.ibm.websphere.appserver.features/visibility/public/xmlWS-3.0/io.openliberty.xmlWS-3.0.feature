@@ -18,7 +18,6 @@ IBM-API-Package: \
  com.ibm.ws.jaxws.2.3.common.jakarta;start-phase:=CONTAINER_LATE, \
  com.ibm.ws.jaxws.webcontainer.jakarta, \
  com.ibm.ws.jaxws.2.3.web.jakarta, \
- com.ibm.ws.jaxws.2.3.wsat, \
  com.ibm.ws.webservices.javaee.common.jakarta
 -files=\
  bin/xmlWS/wsgen; ibm.executable:=true; ibm.file.encoding:=ebcdic, \

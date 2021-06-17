@@ -17,7 +17,6 @@ Subsystem-Name: Java Web Services 2.3
   com.ibm.websphere.appserver.globalhandler-1.0
 -bundles=\
  com.ibm.ws.javaee.ddmodel.ws, \
- com.ibm.ws.jaxws.2.3.wsat, \
  com.ibm.ws.jaxws.2.3.common; start-phase:=CONTAINER_LATE, \
  com.ibm.ws.webservices.javaee.common
 kind=noship

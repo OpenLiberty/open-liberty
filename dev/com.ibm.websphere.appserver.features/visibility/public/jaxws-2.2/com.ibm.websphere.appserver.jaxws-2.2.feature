@@ -48,7 +48,6 @@ Subsystem-Name: Java Web Services 2.2
  com.ibm.ws.javaee.ddmodel.wsbnd, \
  com.ibm.ws.jaxws.common; start-phase:=CONTAINER_LATE, \
  com.ibm.ws.jaxws.tools.2.2.10, \
- com.ibm.ws.jaxws.wsat, \
  com.ibm.ws.org.apache.cxf.cxf.api.2.6.2, \
  com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.2.6.2, \
  com.ibm.ws.org.apache.cxf.cxf.rt.bindings.xml.2.6.2, \
