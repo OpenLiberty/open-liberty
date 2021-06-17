@@ -54,12 +54,9 @@ public class AcidReference<T> {
     public T get() { return getWithWait().get(); }
 
     private Ref<T> getWithWait() {
-	int contention = -1;
         for (;;) {
             Ref<T> ref = atomicReference.get();
-            contention++;
             if (ref.isTransitional()) continue;
-            if (contention > 0) System.out.println("### contention: " + contention);
             return ref;
         }
     }
