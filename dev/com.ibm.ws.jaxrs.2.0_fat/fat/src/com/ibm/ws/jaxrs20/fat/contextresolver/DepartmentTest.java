@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,14 +28,14 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -48,12 +48,10 @@ import com.ibm.ws.jaxrs.fat.contextresolver.DepartmentListWrapper;
 import com.ibm.ws.jaxrs.fat.contextresolver.User;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
-@SkipForRepeat("EE9_FEATURES") // currently broken due to multiple issues
 public class DepartmentTest {
 
     @Server("com.ibm.ws.jaxrs.fat.contextresolver")
@@ -108,7 +106,7 @@ public class DepartmentTest {
             Marshaller marshaller = context.createMarshaller();
             StringWriter sw = new StringWriter();
             marshaller.marshal(newDepartment, sw);
-            HttpClient client = new DefaultHttpClient();
+            CloseableHttpClient client = HttpClientBuilder.create().build();
             postMethod = new HttpPost(departmentMappedUri);
             ByteArrayEntity reqEntity = new ByteArrayEntity(sw.toString().getBytes());
             reqEntity.setContentType("text/xml");
@@ -120,7 +118,8 @@ public class DepartmentTest {
             newDepartment.setDepartmentName("Sales");
             sw = new StringWriter();
             marshaller.marshal(newDepartment, sw);
-            client = new DefaultHttpClient();
+            client.close();
+            client = HttpClientBuilder.create().build();
             postMethod = new HttpPost(departmentMappedUri);
             reqEntity = new ByteArrayEntity(sw.toString().getBytes());
             reqEntity.setContentType("text/xml");
@@ -128,7 +127,8 @@ public class DepartmentTest {
             client.execute(postMethod);
 
             // now let's get the list of Departments that we just created (should be 2)
-            client = new DefaultHttpClient();
+            client.close();
+            client = HttpClientBuilder.create().build();
             getAllMethod = new HttpGet(departmentMappedUri);
             HttpResponse response = client.execute(getAllMethod);
             assertNotNull(response);
@@ -141,7 +141,8 @@ public class DepartmentTest {
             assertEquals(2, dptList.size());
 
             // now get a specific Department that was created
-            client = new DefaultHttpClient();
+            client.close();
+            client = HttpClientBuilder.create().build();
             getOneMethod = new HttpGet(departmentMappedUri + "/1");
             response = client.execute(getOneMethod);
             assertNotNull(response);
@@ -154,7 +155,8 @@ public class DepartmentTest {
             // let's send a Head request for both an existent and non-existent resource
             // we are testing to see if header values being set in the resource
             // implementation are sent back appropriately
-            client = new DefaultHttpClient();
+            client.close();
+            client = HttpClientBuilder.create().build();
             httpHead = new HttpHead(departmentMappedUri + "/3");
             response = client.execute(httpHead);
             assertNotNull(response.getAllHeaders());
@@ -185,7 +187,7 @@ public class DepartmentTest {
 
     @Test
     public void testUserContextProvider() throws Exception {
-        HttpClient httpClient = new DefaultHttpClient();
+        CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 
         User user = new User();
         user.setUserName("joedoe@example.com");
@@ -202,7 +204,8 @@ public class DepartmentTest {
             HttpResponse response = httpClient.execute(postMethod);
             assertEquals(204, response.getStatusLine().getStatusCode());
         } finally {
-            httpClient = new DefaultHttpClient();
+            httpClient.close();
+            httpClient = HttpClientBuilder.create().build();
         }
 
         HttpGet getMethod = new HttpGet(contextMappedUri + "/joedoe@example.com");
@@ -218,6 +221,8 @@ public class DepartmentTest {
         } catch (Exception e) {
             e.printStackTrace();
             fail(e.getMessage());
+        } finally {
+            httpClient.close();
         }
     }
 }

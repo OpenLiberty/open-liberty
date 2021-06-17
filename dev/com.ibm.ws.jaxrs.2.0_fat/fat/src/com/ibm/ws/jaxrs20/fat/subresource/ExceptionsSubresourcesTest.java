@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,12 +42,10 @@ import com.ibm.ws.jaxrs.fat.subresource.CommentError;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
-@SkipForRepeat("EE9_FEATURES") // currently broken due to multiple issues
 public class ExceptionsSubresourcesTest {
     private static final Class<?> c = ExceptionsSubresourcesTest.class;
 
@@ -410,7 +408,7 @@ public class ExceptionsSubresourcesTest {
      * @throws Exception
      */
     @Test
-    @AllowedFFDC("org.apache.cxf.interceptor.Fault")
+    @AllowedFFDC({"org.apache.cxf.interceptor.Fault", "org.jboss.resteasy.spi.UnhandledException"})
     public void testCheckedException() throws Exception {
 
         HttpPut putMethod = new HttpPut(getSubresTestUri() + "/commentdata");
@@ -432,7 +430,7 @@ public class ExceptionsSubresourcesTest {
      * @throws Exception
      */
     @Test
-    @AllowedFFDC("java.lang.NumberFormatException")
+    @AllowedFFDC({"java.lang.NumberFormatException", "org.jboss.resteasy.spi.UnhandledException"})
     public void testRuntimeException() throws Exception {
 
         HttpDelete deleteMethod = new HttpDelete(getSubresTestUri() + "/commentdata/afdsfsdf");

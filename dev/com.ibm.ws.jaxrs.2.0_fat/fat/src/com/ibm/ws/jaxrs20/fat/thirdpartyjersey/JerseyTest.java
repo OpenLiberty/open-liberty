@@ -29,12 +29,10 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
-@SkipForRepeat("EE9_FEATURES") // currently broken due to multiple issues
 public class JerseyTest {
 
     @Server("com.ibm.ws.jaxrs.fat.thirdpartyjersey")
@@ -69,7 +67,7 @@ public class JerseyTest {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        server.stopServer("CWNEN0070W");
     }
 
     private int getPort() {

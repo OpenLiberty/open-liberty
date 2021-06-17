@@ -35,6 +35,7 @@ import org.mockserver.integration.ClientAndServer;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
@@ -132,6 +133,7 @@ public class JAXRSClientSSLProxyAuthTest extends AbstractTest {
     }
 
     @SkipForRepeat(NO_MODIFICATION) // jaxrs-2.0 currently does not implement HTTPS-based proxy authentication
+    @MinimumJavaLevel(javaLevel = 11)
     @Test
     public void testTunnelThroughProxyToHTTPSEndpoint() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
