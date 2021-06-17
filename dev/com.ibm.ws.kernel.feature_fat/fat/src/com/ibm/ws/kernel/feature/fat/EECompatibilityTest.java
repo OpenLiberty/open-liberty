@@ -185,12 +185,12 @@ public class EECompatibilityTest {
     @Test
     @ExpectedFFDC({ "java.lang.IllegalArgumentException" })
     public void testConflictingHelperFeaturesJakartaEE9and8() throws Exception {
-        server.changeFeatures(Arrays.asList("jakartaee-9.0", "jakartaee-8.0"));
+        server.changeFeatures(Arrays.asList("jakartaee-9.1", "jakartaee-8.0"));
         server.startServer(name.getMethodName() + ".log", true, true, false);
         // The server reports a singleton conflict and installs neither helper feature!
         msg = server.waitForStringInLogUsingMark(DIFF_EE_CONFLICT, shortTimeOut);
         assertTrue("The feature manager should report a singleton conflict for the incompatible jakartaee helper features, but it did not: msg="
-                   + msg, msg != null && msg.contains("jakartaee-9.0") && msg.contains("Jakarta EE 9") && msg.contains("Java EE"));
+                   + msg, msg != null && msg.contains("jakartaee-9.1") && msg.contains("Jakarta EE 9") && msg.contains("Java EE"));
         assertNotNull("Expected no features to be installed.", server.waitForStringInLog(NO_FEATURES, shortTimeOut));
         server.stopServer(ANY_CONFLICT + "|" + NO_FEATURES);
     }

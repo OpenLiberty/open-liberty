@@ -27,7 +27,7 @@ tested.features: \
         messagingClient-3.0,\
         messagingServer-3.0,\
         messaging-3.0,\
-        jakartaeeClient-9.0,\
+        jakartaeeClient-9.1,\
         xmlWS-3.0
 
 # Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)

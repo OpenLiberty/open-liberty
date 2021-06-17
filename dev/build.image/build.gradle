@@ -252,6 +252,11 @@ def webProfile8Features() {
     features
 }
 
+def webProfile9Features() {
+    String features = project.file('profiles/webProfile9/features.xml').readLines()
+    features
+}
+
 def javaee8Features() {
     String features = project.file('profiles/javaee8/features.xml').readLines()
     features
@@ -383,6 +388,36 @@ if (isAutomatedBuild && !isIFIXBuild) {
             }
         }
     }
+    
+    
+    task packageOpenLibertyWebProfile9(type: PackageLibertyWithFeatures) {
+        doFirst {
+            excludedEE7Features.each {
+                this.&removeFeature("${it}")
+            }
+        }
+        dependsOn parent.subprojects.assemble
+        dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
+        withFeatures this.&webProfile9Features
+        packageServerConflict = false
+        outputTo packageDir
+        doLast {
+            ["$packageDir/wlp/NOTICES", "$packageDir/wlp/README.TXT", "$packageDir/wlp/lib/versions/openliberty.properties"].each { path ->
+                replaceBetaVersionAndEdition(path, bnd.libertyRelease, libertyBeta)
+            }
+            copy {
+                from "$packageDir/wlp/templates/servers/webProfile9/server.xml"
+                into "$packageDir/wlp/templates/servers/defaultServer"
+            }
+            copy {
+                from "$packageDir/wlp/templates/clients/jakartaeeClient9/client.xml"
+                into "$packageDir/wlp/templates/clients/defaultClient"
+            }
+            excludedEE7Features.each {
+                this.&restoreFeature("${it}")
+            }
+        }
+    }
 
     task packageOpenLibertyJavaee8(type: PackageLibertyWithFeatures) {
         doFirst {
@@ -412,11 +447,16 @@ if (isAutomatedBuild && !isIFIXBuild) {
     }
 
     task packageOpenLibertyJakartaee9(type: PackageLibertyWithFeatures) {
-
+        doFirst {
+            excludedEE7Features.each {
+                this.&removeFeature("${it}")
+            }
+        }
         enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
         withFeatures this.&jakartaee9Features
+        packageServerConflict = false
         outputTo packageDir
         doLast {
             ["$packageDir/wlp/NOTICES", "$packageDir/wlp/README.TXT", "$packageDir/wlp/lib/versions/openliberty.properties"].each { path ->
@@ -426,6 +466,13 @@ if (isAutomatedBuild && !isIFIXBuild) {
             copy {
                 from "$packageDir/wlp/templates/servers/jakartaee9/server.xml"
                 into "$packageDir/wlp/templates/servers/defaultServer"
+            }
+            copy {
+                from "$packageDir/wlp/templates/clients/jakartaeeClient9/client.xml"
+                into "$packageDir/wlp/templates/clients/defaultClient"
+            }
+            excludedEE7Features.each {
+                this.&restoreFeature("${it}")
             }
         }
     }
@@ -464,6 +511,9 @@ if (isAutomatedBuild && !isIFIXBuild) {
         withFeatures this.&microProfile5Features
         outputTo packageDir
         doLast {
+            ["$packageDir/wlp/NOTICES", "$packageDir/wlp/README.TXT", "$packageDir/wlp/lib/versions/openliberty.properties"].each { path ->
+                replaceBetaVersionAndEdition(path, bnd.libertyRelease, libertyBeta)
+            }
             copy {
                 from "$packageDir/wlp/templates/servers/microProfile5/server.xml"
                 into "$packageDir/wlp/templates/servers/defaultServer"
@@ -560,6 +610,21 @@ if (isAutomatedBuild && !isIFIXBuild) {
     }
     publish.dependsOn zipOpenLibertyWebProfile8
 
+    // Includes both kind=ga and kind=beta features.
+    task zipOpenLibertyWebProfile9(type: Zip) {
+        dependsOn packageOpenLibertyWebProfile9
+        dependsOn genChecksums
+        baseName 'openliberty-webProfile9'
+        from packageDir
+        destinationDir distsDir
+        version betaVersion
+        doLast {
+            rootProject.userProps.setProperty('zipopenliberty.webprofile9.archivename', archivePath.toString())
+            rootProject.storeProps()
+        }
+    }
+    publish.dependsOn zipOpenLibertyWebProfile9
+
     // Includes only kind=ga features.
     task zipOpenLibertyJavaee8(type: Zip) {
         dependsOn packageOpenLibertyJavaee8
@@ -575,6 +640,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
     }
     publish.dependsOn zipOpenLibertyJavaee8
 
+// Includes only kind=ga features.
     task zipOpenLibertyMicroProfile4(type: Zip) {
         dependsOn packageOpenLibertyMicroProfile4
         dependsOn genChecksums
@@ -589,13 +655,14 @@ if (isAutomatedBuild && !isIFIXBuild) {
     }
     publish.dependsOn zipOpenLibertyMicroProfile4
 
+// Includes both kind=ga and kind=beta features.
     task zipOpenLibertyMicroProfile5(type: Zip) {
         dependsOn packageOpenLibertyMicroProfile5
         dependsOn genChecksums
         baseName 'openliberty-microProfile5'
         from packageDir
         destinationDir distsDir
-        version releaseVersion
+        version betaVersion
         doLast {
             rootProject.userProps.setProperty('zipopenliberty.microprofile5.archivename', archivePath.toString())
             rootProject.storeProps()
@@ -634,7 +701,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
 
     // Generate checksums
     task genZipChecksums() {
-        dependsOn zipOpenLibertyDev, zipOpenLibertyAll, zipOpenLiberty, zipOpenLibertyKernel, zipOpenLibertyWebProfile8, zipOpenLibertyJavaee8, zipOpenLibertyMicroProfile4, zipOpenLibertyMicroProfile5, zipOpenLibertyBeta, zipOpenLibertyJakartaee9Beta
+        dependsOn zipOpenLibertyDev, zipOpenLibertyAll, zipOpenLiberty, zipOpenLibertyKernel, zipOpenLibertyWebProfile8, zipOpenLibertyWebProfile9, zipOpenLibertyJavaee8, zipOpenLibertyMicroProfile4, zipOpenLibertyMicroProfile5, zipOpenLibertyBeta, zipOpenLibertyJakartaee9Beta
         doLast {
           generateZipChecksums(ant)
           ant.calcZipChecksums(installRoot:"${distsDir}") {}

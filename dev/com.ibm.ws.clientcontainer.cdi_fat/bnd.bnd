@@ -21,7 +21,7 @@ src: \
 	
 
 tested.features: \
-  jakartaeeClient-9.0
+  jakartaeeClient-9.1
 	
 	
 test.project: true

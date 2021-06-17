@@ -1,6 +1,4 @@
-<feature>jakartaee-9.1</feature>
-<feature>jakartaeeClient-9.1</feature>
-<feature>appSecurityClient-1.0</feature>
+<feature>webProfile-9.1</feature>
 <feature>monitor-1.0</feature>
 <feature>ldapRegistry-3.0</feature>
 <feature>appSecurity-4.0</feature>
@@ -9,3 +7,4 @@
 <feature>transportSecurity-1.0</feature>
 <feature>sessionCache-1.0</feature>
 <!-- <feature>sessionDatabase-1.0</feature> temporarily removed as it clashes with sessionCache-1.0-->
+
