@@ -57,7 +57,6 @@ import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
-//@SkipForRepeat("EE9_FEATURES") // currently broken due to multiple issues
 public class ParamsTest {
 
     @Server("com.ibm.ws.jaxrs.fat.params")
