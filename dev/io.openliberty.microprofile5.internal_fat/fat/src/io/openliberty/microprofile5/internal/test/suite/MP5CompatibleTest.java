@@ -82,7 +82,7 @@ public class MP5CompatibleTest {
     }
 
     /**
-     * microProfile-5.0 plus jakartaee-9.0
+     * microProfile-5.0 plus jakartaee-9.1
      * Should always pass
      *
      * @throws Exception

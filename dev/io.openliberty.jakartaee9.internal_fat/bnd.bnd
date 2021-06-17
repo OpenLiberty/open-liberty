@@ -18,9 +18,7 @@ src: \
 fat.project: true
 
 tested.features:\
-    jakartaee-9.0, \
     jakartaee-9.1, \
-    webProfile-9.0, \
     webProfile-9.1
 
 -buildpath: \
