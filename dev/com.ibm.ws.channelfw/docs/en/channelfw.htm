@@ -63,19 +63,8 @@ inbound listening chain on *:9080. The format is &lt;keytype&gt;.&lt;name>=
 [&lt;props&gt;], where the keytypes are endpoint, channel, chain, group (of chains), and factory.</li>
 </ul>
 <h2 id="config">channelfw bundle configuration</h2>
-The channelfw bundles contains configuration for the framework itself, the WsByteBuffer
-pooling code, and the TCP channel factory.
+The channelfw bundle contains configuration for the framework itself, and the TCP channel factory.
 <ul>
-<li>The "wsbb" key is used to mark the bytebuffer configuration, such as:
-<pre>
-wsbb.class=com.ibm.ws.bytebuffer.internal.WsByteBufferPoolManagerImpl
-wsbb.poolSizes=32, 1024, 8192, 16384, 24576, 32768, 49152, 65536
-wsbb.poolDepths=30, 30, 30, 20, 20, 20, 10, 10
-</pre>
-That specifies the internal class used by the pooling code. This can be changed if
-another pool manager is wanted; however, it must be public from the providing bundle.
-The pool sizes and depths define the various bytebuffer pools created and how much
-they contain per thread.</li>
 <li>The "chfw" key distinguishs the channel framework specific configuration values, such as:
 <pre>
 chfw.ChainStartRetryInterval=5000
