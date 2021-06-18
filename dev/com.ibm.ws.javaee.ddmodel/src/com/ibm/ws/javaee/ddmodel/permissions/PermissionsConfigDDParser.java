@@ -33,7 +33,7 @@ final class PermissionsConfigDDParser extends DDParser {
     public PermissionsConfigDDParser(Container ddRootContainer, Entry ddEntry)
         throws ParseException {
 
-        super(ddRootContainer, ddEntry);
+        super(ddRootContainer, ddEntry, "permissions");
     }
 
     @Override
@@ -102,16 +102,6 @@ final class PermissionsConfigDDParser extends DDParser {
         // Always assign the version, even if later parsing will override it.
         version = ddVersion;
 
-        return createRootElement();
-    }
-
-    protected void validateRootElementName() throws ParseException {
-        if ( !"permissions".equals(rootElementLocalName) ) {
-            throw new ParseException(invalidRootElement());
-        }
-    }
-
-    protected PermissionsConfigType createRootElement() {
         return new PermissionsConfigType( getDeploymentDescriptorPath() );
     }
 }

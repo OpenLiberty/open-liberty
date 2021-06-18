@@ -79,19 +79,13 @@ public class WebAppDDParser extends DDParserSpec {
         super( ddRootContainer, ddEntry,
                adjustSchemaVersion(maxSchemaVersion),
                getRuntimeVersion(maxSchemaVersion),
-               TRIM_SIMPLE_CONTENT);
+               TRIM_SIMPLE_CONTENT,
+               "web-app");
     }
 
     @Override    
     public WebAppType parse() throws ParseException {
         return (WebAppType) super.parse();
-    }
-
-    @Override
-    protected void validateRootElementName() throws ParseException {
-        if ( !"web-app".equals(rootElementLocalName) ) {
-            throw new ParseException( invalidRootElement() );
-        }
     }
 
     @Override    

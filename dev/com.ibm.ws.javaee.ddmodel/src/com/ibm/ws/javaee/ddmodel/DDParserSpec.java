@@ -26,18 +26,26 @@ public abstract class DDParserSpec extends DDParser {
     
     //
 
-    public DDParserSpec(Container ddRootContainer, Entry ddEntry) throws ParseException {
+    public DDParserSpec(
+        Container ddRootContainer, Entry ddEntry,
+        String expectedRootName) throws ParseException {
+
         this(ddRootContainer, ddEntry,
              DDParser.UNUSED_MAX_SCHEMA_VERSION,
              DDParser.UNUSED_MAX_RUNTIME_VERSION,
-             !TRIM_SIMPLE_CONTENT);
+             !TRIM_SIMPLE_CONTENT,
+             expectedRootName);
     }
 
     public DDParserSpec(
             Container ddRootContainer, Entry ddEntry,
-            int schemaVersion, int runtimeVersion) throws ParseException {
-        this(ddRootContainer, ddEntry, schemaVersion, runtimeVersion,
-             !TRIM_SIMPLE_CONTENT);
+            int schemaVersion, int runtimeVersion,
+            String expectedRootName) throws ParseException {
+
+        this(ddRootContainer, ddEntry,
+             schemaVersion, runtimeVersion,
+             !TRIM_SIMPLE_CONTENT,
+             expectedRootName);
     }
     
     public static final boolean TRIM_SIMPLE_CONTENT = true;    
@@ -45,8 +53,12 @@ public abstract class DDParserSpec extends DDParser {
     public DDParserSpec(
             Container ddRootContainer, Entry ddEntry,
             int schemaVersion, int runtimeVersion,
-            boolean trimSimpleContent) throws ParseException {
-        super(ddRootContainer, ddEntry, schemaVersion, runtimeVersion);
+            boolean trimSimpleContent,
+            String expectedRootName) throws ParseException {
+
+        super(ddRootContainer, ddEntry,
+              schemaVersion, runtimeVersion,
+              expectedRootName);
         
         this.trimSimpleContent = trimSimpleContent; 
     }
@@ -78,7 +90,6 @@ public abstract class DDParserSpec extends DDParser {
     }
     
     protected abstract VersionData[] getVersionData();
-    protected abstract void validateRootElementName() throws ParseException;
     protected abstract ParsableElement createRootElement();
 
     protected ParsableElement createRootParsable() throws ParseException {

@@ -35,19 +35,13 @@ public class WebFragmentDDParser extends DDParserSpec {
         super( ddRootContainer, ddEntry,
                WebAppDDParser.adjustSchemaVersion(maxSchemaVersion),
                WebAppDDParser.getRuntimeVersion(maxSchemaVersion),
-               TRIM_SIMPLE_CONTENT );
+               TRIM_SIMPLE_CONTENT,
+               "web-fragment" );
     }
 
     @Override
     public WebFragmentType parse() throws ParseException {
         return (WebFragmentType) super.parse();
-    }
-
-    @Override
-    protected void validateRootElementName() throws ParseException {
-        if ( !"web-fragment".equals(rootElementLocalName) ) {
-            throw new ParseException( invalidRootElement() );
-        }
     }
 
     @Override

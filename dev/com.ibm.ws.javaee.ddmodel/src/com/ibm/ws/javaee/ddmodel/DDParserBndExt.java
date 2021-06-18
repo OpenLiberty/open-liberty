@@ -58,13 +58,11 @@ public abstract class DDParserBndExt extends DDParser {
         XMLVersionMapping[] xmlVersionMappings,
         int xmlDefaultVersion) throws DDParser.ParseException {
 
-        super(ddRootContainer, ddEntry);
+        super(ddRootContainer, ddEntry, expectedRootElementName);
 
         this.crossComponentType = crossComponentType;
 
         this.xmi = xmi;
-        this.expectedRootElementName = expectedRootElementName;
-
         this.xmiNamespace = xmiNamespace;
 
         this.xmlVersionMappings = xmlVersionMappings;
@@ -96,12 +94,6 @@ public abstract class DDParserBndExt extends DDParser {
         return xmi;
     }
 
-    private final String expectedRootElementName;
-    
-    public String getExpectedRootElementName() {
-        return expectedRootElementName;
-    }
-
     private final String xmiNamespace;
     
     public String getXMINamespace() {
@@ -123,16 +115,12 @@ public abstract class DDParserBndExt extends DDParser {
     //
 
     protected ParsableElement createRootParsable() throws ParseException {
-        String useExpectedRootName = getExpectedRootElementName();
+        validateRootElementName();
 
-        if ( useExpectedRootName.equals(rootElementLocalName)) {
-            if ( isXMI() ) {
-                return createXMIRootParsable();
-            } else {
-                return createXMLRootParsable();
-            }
+        if ( isXMI() ) {
+            return createXMIRootParsable();
         } else {
-            throw new ParseException( unexpectedRootElement(useExpectedRootName) );
+            return createXMLRootParsable();
         }
     }
 

@@ -294,7 +294,7 @@ public class EJBJarType extends DescriptionGroup implements DeploymentDescriptor
             // mean that other cases might also be missing
             // a version attribute.
 
-            version = parser.parseToken( parser.getVersionText() );            
+            version = parser.parseToken( parser.getVersionText() );
         }
 
         this.versionId = parser.version;

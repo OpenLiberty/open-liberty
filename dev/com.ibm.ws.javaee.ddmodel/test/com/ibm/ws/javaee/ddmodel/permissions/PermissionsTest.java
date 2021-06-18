@@ -225,7 +225,7 @@ public class PermissionsTest extends DDTestBase {
 
     @Test
     public void testInvalidRootElement() throws Exception {
-        parsePermissions(permissionsXMLInvalidRoot, "CWWKC2252E", "invalid.root.element");
+        parsePermissions(permissionsXMLInvalidRoot, "CWWKC2252E", "unexpected.root.element");
     }
 
     @Test

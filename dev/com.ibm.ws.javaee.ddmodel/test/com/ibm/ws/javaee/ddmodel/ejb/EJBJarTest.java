@@ -308,7 +308,7 @@ public class EJBJarTest extends EJBJarTestBase {
         } catch ( Exception e ) {
             String msg = e.getMessage();
             Assert.assertTrue("Unexpected exception [ " + e.getMessage() + " ]",
-                    msg.contains("invalid.root.element") ||
+                    msg.contains("unexpected.root.element") ||
                     (msg.contains("CWWKC2252") &&
                      msg.contains("ejb-NOT-jar") &&
                      msg.contains("ejb-jar.xml")));

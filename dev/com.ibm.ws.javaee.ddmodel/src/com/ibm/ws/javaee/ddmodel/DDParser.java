@@ -353,9 +353,12 @@ public abstract class DDParser {
 
     //
 
-    public DDParser(Container ddRootContainer, Entry ddEntry) throws ParseException {
+    public DDParser(Container ddRootContainer, Entry ddEntry, String expectedRootName)
+        throws ParseException {
+
         this(ddRootContainer, ddEntry,
-             UNUSED_MAX_SCHEMA_VERSION, UNUSED_MAX_RUNTIME_VERSION);
+             UNUSED_MAX_SCHEMA_VERSION, UNUSED_MAX_RUNTIME_VERSION,
+             expectedRootName);
     }    
     
     protected static final int UNUSED_MAX_SCHEMA_VERSION = -1;
@@ -370,12 +373,14 @@ public abstract class DDParser {
      *     parsed.
      * @param maxRuntimeVersion The maximum runtime version which will be
      *     parsed.
+     * @param expectedRootName The expected root element name.
      *
      * @throws ParseException Thrown in case of a parse error.  Not currently thrown.
      *    Declared for future use.
      */
     public DDParser(Container ddRootContainer, Entry ddEntry,
-                    int maxSchemaVersion, int maxRuntimeVersion) throws ParseException {
+                    int maxSchemaVersion, int maxRuntimeVersion,
+                    String expectedRootName) throws ParseException {
 
         this.maxVersion = maxSchemaVersion;
         this.runtimeVersion = maxRuntimeVersion;
@@ -383,6 +388,8 @@ public abstract class DDParser {
         this.adaptableEntry = ddEntry;
         this.ddEntryPath = ddEntry.getPath();
         this.rootContainer = ddRootContainer;
+        
+        this.expectedRootName = expectedRootName;
     }
 
     /**
@@ -501,6 +508,20 @@ public abstract class DDParser {
         return ( (cache == null) ? null : (T) cache.getFromCache(targetClass) );
     }    
     
+    // Parse parameterization ...
+    
+    private final String expectedRootName;
+    
+    public String getExpectedRootName() {
+        return expectedRootName;
+    }
+    
+    protected void validateRootElementName() throws ParseException {
+        String useExpectedName = getExpectedRootName();
+        if ( !useExpectedName.equals(rootElementLocalName)) {
+            throw new ParseException( unexpectedRootElement(useExpectedName) );
+        }
+    }    
     
     // XML header values ...
 

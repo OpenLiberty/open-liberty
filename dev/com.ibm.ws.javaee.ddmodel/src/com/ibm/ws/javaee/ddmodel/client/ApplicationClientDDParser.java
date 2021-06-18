@@ -70,19 +70,13 @@ public class ApplicationClientDDParser extends DDParserSpec {
 
         super( ddRootContainer, ddEntry,
                adjustSchemaVersion(maxSchemaVersion),
-               getRuntimeVersion(maxSchemaVersion) );
+               getRuntimeVersion(maxSchemaVersion),
+               "application-client");
     }
 
     @Override
     public ApplicationClientType parse() throws ParseException {
         return (ApplicationClientType) super.parse();
-    }
-
-    @Override
-    protected void validateRootElementName() throws ParseException {
-        if ( !"application-client".equals(rootElementLocalName)) {
-            throw new ParseException(invalidRootElement());
-        }
     }
 
     @Override

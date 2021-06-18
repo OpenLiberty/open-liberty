@@ -70,19 +70,13 @@ public class ApplicationDDParser extends DDParserSpec {
 
         super( ddRootContainer, ddEntry,
                adjustSchemaVersion(maxSchemaVersion),
-               getRuntimeVersion(maxSchemaVersion) );
+               getRuntimeVersion(maxSchemaVersion),
+               "application");
     }
 
     @Override
     public ApplicationType parse() throws ParseException {
         return (ApplicationType) super.parse();
-    }
-
-    @Override
-    protected void validateRootElementName() throws ParseException {
-        if ( !"application".equals(rootElementLocalName) ) {
-            throw new ParseException(invalidRootElement());
-        }
     }
     
     @Override

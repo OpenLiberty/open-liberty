@@ -83,7 +83,8 @@ final class FacesConfigDDParser extends DDParserSpec {
     public FacesConfigDDParser(Container ddRootContainer, Entry ddEntry, int maxSchemaVersion) throws ParseException {
         super( ddRootContainer, ddEntry,
                adjustSchemaVersion(maxSchemaVersion),
-               getRuntimeVersion(maxSchemaVersion) );
+               getRuntimeVersion(maxSchemaVersion),
+               "faces-config" );
     }
 
     public int getFacesBundleLoadedVersion() {
@@ -93,13 +94,6 @@ final class FacesConfigDDParser extends DDParserSpec {
     @Override
     public FacesConfigType parse() throws ParseException {
         return (FacesConfigType) super.parse();
-    }
-
-    @Override
-    protected void validateRootElementName() throws ParseException {
-        if ( !"faces-config".equals(rootElementLocalName) ) {
-            throw new ParseException(invalidRootElement());
-        }
     }
 
     @Override

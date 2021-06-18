@@ -71,19 +71,13 @@ public class EJBJarDDParser extends DDParserSpec {
     public EJBJarDDParser(Container ddRootContainer, Entry ddEntry, int maxSchemaVersion) throws ParseException {
         super( ddRootContainer, ddEntry,
                adjustSchemaVersion(maxSchemaVersion),
-               getRuntimeVersion(maxSchemaVersion) );
+               getRuntimeVersion(maxSchemaVersion),
+               "ejb-jar");
     }
 
     @Override
     public EJBJarType parse() throws ParseException {
         return (EJBJarType) super.parse();
-    }
-
-    @Override
-    protected void validateRootElementName() throws ParseException {
-        if ( !"ejb-jar".equals(rootElementLocalName) ) {
-            throw new ParseException(invalidRootElement());
-        }
     }
 
     @Override    

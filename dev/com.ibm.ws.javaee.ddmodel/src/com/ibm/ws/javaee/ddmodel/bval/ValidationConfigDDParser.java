@@ -13,7 +13,6 @@ package com.ibm.ws.javaee.ddmodel.bval;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.ws.javaee.dd.bval.ValidationConfig;
 import com.ibm.ws.javaee.ddmodel.DDParser;
-import com.ibm.ws.javaee.ddmodel.DDParser.ParseException;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
 
@@ -23,7 +22,7 @@ public class ValidationConfigDDParser extends DDParser {
 
     public ValidationConfigDDParser(Container ddRootContainer, Entry ddEntry)
         throws ParseException {
-        super(ddRootContainer, ddEntry);
+        super(ddRootContainer, ddEntry, "validation-config");
     }
 
     /**
