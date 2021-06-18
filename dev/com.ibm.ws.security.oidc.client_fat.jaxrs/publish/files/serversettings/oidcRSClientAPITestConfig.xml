@@ -13,16 +13,18 @@
 	<authFilter id="myAuthFilter">
 		<requestUrl
 			id="myRequestUrl"
-			urlPattern="JaxRSClient"
+			urlPattern="helloworld"
 			matchType="contains" />
 	</authFilter>
 
+<!--
 	<authFilter id="badAuthFilter">
 		<requestUrl
 			id="badRequestUrl"
-			urlPattern="/BadSimpleServlet"
+			urlPattern="/BadHelloworld"
 			matchType="contains" />
 	</authFilter>
+-->
 
 	<openidConnectClient
 		id="client01"
@@ -30,26 +32,24 @@
 		clientId="client01"
 		clientSecret="{xor}LDo8LTor"
 		sharedKey="secret"
-		grantType="implicit"
-		mapIdentityToRegistryUser="true"
 		httpsRequired="false"
-		issuerIdentifier="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample"
+		inboundPropagation="required"
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
-		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
-		tokenEndpointUrl="${special_tokenEndpoint}"
+		validationEndpointUrl="${special_validationEndpoint}"
+		validationMethod="${oAuthOidcRSValidationType}"
+		issuerIdentifier="http://localhost:${bvt.prop.security_1_HTTP_default}/${providerRoot}/endpoint/${providerSample},https://localhost:${bvt.prop.security_1_HTTP_default.secure}/${providerRoot}/endpoint/${providerSample},http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		jwkEndpointUrl="${oidcJWKValidationURL}"
+		signatureAlgorithm="${speical_sigAlg}"
+		clockSkew="2s"
 		authFilterRef="myAuthFilter"
-		keyManagementK4YeyAlias="${special_keyManagementKeyAlias}"
+		keyManagementKeyAlias="${special_keyManagementKeyAlias}"
 		sslRef="${special_sslref}"
 		trustStoreRef="${special_trustStoreRef}"
 		trustAliasName="${special_trustAlias}"
-		signatureAlgorithm="${speical_sigAlg}"
-	 >
+	>
 	</openidConnectClient>
-<!-- 		
-		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
-		authorizationEndpointUrl="${special_authorizeEndpoint}"
- -->
- 	<ssl
+
+	<ssl
 		id="allSigAlgSSLSettings"
 		keyStoreRef="key_allSigAlg"
 		trustStoreRef="trust_allSigAlg"
@@ -66,5 +66,6 @@
          password="Liberty"
          type="PKCS12"
          location="${server.config.dir}/allAlgKeyStore.p12" />
-
+		<!-- tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize" -->
 </server>

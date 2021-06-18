@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.client.fat.jaxrs.CommonTests;
 
@@ -17,10 +17,14 @@ import java.util.Map;
 import org.junit.Test;
 
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.security.fat.common.jwt.JWTTokenBuilder;
+import com.ibm.ws.security.fat.common.jwt.utils.JwtKeyTools;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.CommonTest;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
+import com.ibm.ws.security.oauth_oidc.fat.commonTest.EndpointSettings.endpointSettings;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestSettings;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.ValidationData.validationData;
+import com.ibm.ws.security.openidconnect.client.fat.jaxrs.FATSuite;
 import com.meterware.httpunit.WebConversation;
 
 import componenttest.custom.junit.runner.Mode;
@@ -41,12 +45,8 @@ public class JaxRSClientAPITests extends CommonTest {
     public static String[] test_GOOD_LOGIN_AGAIN_ACTIONS = Constants.GOOD_OIDC_LOGIN_AGAIN_ACTIONS;
     public static String[] test_LOGIN_PAGE_ONLY = Constants.GET_LOGIN_PAGE_ONLY;
     public static String test_FinalAction = Constants.LOGIN_USER;
-    protected static String hostName = "localhost";
-    public static final String MSG_USER_NOT_IN_REG = "CWWKS1106A";
     protected static final Boolean contextWillNotBeSet = false;
     protected static final Boolean contextWillBeSet = true;
-
-    String errMsg0x704 = "CertPathBuilderException";
 
     /**
      * Add additional checks for output from the other new API's
@@ -56,34 +56,33 @@ public class JaxRSClientAPITests extends CommonTest {
 
         String bearer, scopes = null;
         List<validationData> expectations = vData.addSuccessStatusCodes(null);
-        if (contextWillBeSet) {
-            expectations = validationTools.addDefaultRSOAuthExpectations(expectations, testCase, finalAction, settings);
-            bearer = "Bearer";
-            scopes = settings.getScope();
-            if (scopes.contains("openid")) {
-                expectations = vData.addExpectation(expectations, finalAction, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_CONTAIN,
-                                                    "Did not see a valid ID Token in the ouptut", null, "JaxRSClient-getIdToken: null");
+        if (!Constants.JWE_TOKEN_FORMAT.equals(FATSuite.repeatFlag)) {
+            if (contextWillBeSet) {
+                expectations = validationTools.addDefaultRSOAuthExpectations(expectations, testCase, finalAction, settings);
+                bearer = "Bearer";
+                scopes = settings.getScope();
+                if (scopes.contains("openid")) {
+                    expectations = vData.addExpectation(expectations, finalAction, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_CONTAIN, "Did not see a valid ID Token in the ouptut", null, "JaxRSClient-getIdToken: null");
+                } else {
+                    expectations = vData.addExpectation(expectations, finalAction, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Received an ID Token and should NOT have", null, "JaxRSClient-getIdToken: null");
+                }
             } else {
-                expectations = vData.addExpectation(expectations, finalAction, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Received an ID Token and should NOT have", null,
-                                                    "JaxRSClient-getIdToken: null");
+                bearer = "null";
+                scopes = "null";
+                expectations = vData.addExpectation(expectations, finalAction, testRPServer, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Did not see a message that all of the subject values were null", null, "All values in subject are null as they should be");
+                expectations = vData.addExpectation(expectations, finalAction, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_CONTAIN, "Got to the target App on the RS server and should not have...", null, "formlogin/SimpleServlet");
             }
+            expectations = vData.addExpectation(expectations, finalAction, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not see the Access Token Type set to Bearer printed in the app output", null, "JaxRSClient-getAccessTokenType: " + bearer);
+            //		expectations = vData.addExpectation(expectations, finalAction, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not see the Access Token Expiration Time printed in the app output", null, "JaxRSClient-getAccessTokenExpirationTime: 0") ;
+            expectations = vData.addExpectation(expectations, finalAction, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not see the Access Token printed in the app output", null, "JaxRSClient-getAccessToken: ");
+            expectations = vData.addExpectation(expectations, finalAction, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not see the Access Token Scopes printed in the app output", null, "JaxRSClient-getScopes: " + scopes);
+            expectations = vData.addExpectation(expectations, finalAction, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not see the Access Token IDToken printed in the app output", null, "JaxRSClient-getIdToken: ");
         } else {
-            bearer = "null";
-            scopes = "null";
-            expectations = vData.addExpectation(expectations, finalAction, testRPServer, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS,
-                                                "Did not see a message that all of the subject values were null", null, "All values in subject are null as they should be");
-            expectations = vData.addExpectation(expectations, finalAction, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_CONTAIN,
-                                                "Got to the target App on the RS server and should not have...", null, "formlogin/SimpleServlet");
+            if (contextWillBeSet) {
+                expectations = vData.addExpectation(expectations, finalAction, Constants.RESPONSE_FULL, Constants.STRING_MATCHES, "Did not see the Access Token Type set to Bearer printed in the app output", null, "token_type.*Bearer.*");
+                expectations = vData.addExpectation(expectations, finalAction, Constants.RESPONSE_FULL, Constants.STRING_MATCHES, "Did not see the correct issuer in the output", null, "iss.*localhost.*TokenEndpointServlet.*");
+            }
         }
-        expectations = vData.addExpectation(expectations, finalAction, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS,
-                                            "Did not see the Access Token Type set to Bearer printed in the app output", null, "JaxRSClient-getAccessTokenType: " + bearer);
-        //		expectations = vData.addExpectation(expectations, finalAction, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not see the Access Token Expiration Time printed in the app output", null, "JaxRSClient-getAccessTokenExpirationTime: 0") ;
-        expectations = vData.addExpectation(expectations, finalAction, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not see the Access Token printed in the app output",
-                                            null, "JaxRSClient-getAccessToken: ");
-        expectations = vData.addExpectation(expectations, finalAction, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS,
-                                            "Did not see the Access Token Scopes printed in the app output", null, "JaxRSClient-getScopes: " + scopes);
-        expectations = vData.addExpectation(expectations, finalAction, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS,
-                                            "Did not see the Access Token IDToken printed in the app output", null, "JaxRSClient-getIdToken: ");
         return expectations;
     }
 
@@ -95,10 +94,8 @@ public class JaxRSClientAPITests extends CommonTest {
 
         List<validationData> expectations = vData.addSuccessStatusCodes(null, finalAction);
         expectations = vData.addResponseStatusExpectation(expectations, finalAction, Constants.INTERNAL_SERVER_ERROR_STATUS);
-        expectations = vData.addExpectation(expectations, finalAction, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not see response code 401 in the output", null,
-                                            Constants.HTTP_UNAUTHORIZED_EXCEPTION);
-        expectations = vData.addExpectation(expectations, finalAction, testRPServer, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS,
-                                            "Did not see response code 401 in the output", null, Constants.HTTP_UNAUTHORIZED_EXCEPTION);
+        expectations = vData.addExpectation(expectations, finalAction, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not see response code 401 in the output", null, Constants.HTTP_UNAUTHORIZED_EXCEPTION);
+        expectations = vData.addExpectation(expectations, finalAction, testRPServer, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Did not see response code 401 in the output", null, Constants.HTTP_UNAUTHORIZED_EXCEPTION);
         return expectations;
     }
 
@@ -111,9 +108,59 @@ public class JaxRSClientAPITests extends CommonTest {
         }
         Log.info(thisClass, "updateMap", "Processing Key: " + theKey + " Value: " + theValue);
         currentMap.put(theKey, theValue);
+        if (Constants.JWE_TOKEN_FORMAT.equals(FATSuite.repeatFlag)) {
+            currentMap.put("skipApiChecks", "true");
+        }
         settings.setRequestParms(currentMap);
 
         return settings;
+    }
+
+    /**
+     * Create and Save a JWS token that the test userinfo endpoint can return - this will
+     * allow us to test that the RP and RS can process a userinfo reponse that contains
+     * a JWS instead of a simple JSON reponse
+     */
+    public void saveJWSUserInfoResponse() throws Exception {
+
+        String thisMethod = "saveJWSUserInfoResponse";
+        msgUtils.printMethodName(thisMethod);
+
+        JWTTokenBuilder builder = new JWTTokenBuilder();
+
+        builder.setIssuer(testOPServer.getHttpString() + "/TokenEndpointServlet");
+        builder.setAlorithmHeaderValue(Constants.SIGALG_RS256);
+        builder.setRSAKey(testOPServer.getServer().getServerRoot() + "/RS256private-key.pem");
+        builder.setIssuer("testuser");
+        // calling buildJWE will override the header contents
+        String jwtToken = builder.build();
+        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "userinfoToken", jwtToken);
+        genericInvokeEndpointWithHttpUrlConn(_testName, null, testSettings.getUserinfoEndpt(), Constants.PUTMETHOD, "misc", parms, null, null);
+
+    }
+
+    /**
+     * Create and Save a JWE token that the test userinfo endpoint can return - this will
+     * allow us to test that the RP and RS can process a userinfo reponse that contains
+     * a JWE instead of a simple JSON reponse
+     */
+    public void saveJWEUserInfoResponse() throws Exception {
+
+        String thisMethod = "saveJWEUserInfoResponse";
+        msgUtils.printMethodName(thisMethod);
+
+        JWTTokenBuilder builder = new JWTTokenBuilder();
+
+        builder.setIssuer(testOPServer.getHttpString() + "/TokenEndpointServlet");
+        builder.setAlorithmHeaderValue(Constants.SIGALG_RS256);
+        builder.setRSAKey(testOPServer.getServer().getServerRoot() + "/RS256private-key.pem");
+        builder.setIssuer("testuser");
+        builder.setKeyManagementKey(JwtKeyTools.getPublicKeyFromPem(JwtKeyTools.getComplexPublicKeyForSigAlg(testOPServer.getServer(), Constants.SIGALG_RS256)));
+        // calling buildJWE will override the header contents
+        String jwtToken = builder.buildJWE("JOSE", "jwt");
+        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "userinfoToken", jwtToken);
+        genericInvokeEndpointWithHttpUrlConn(_testName, null, testSettings.getUserinfoEndpt(), Constants.PUTMETHOD, "misc", parms, null, null);
+
     }
 
     /**
@@ -214,7 +261,11 @@ public class JaxRSClientAPITests extends CommonTest {
 
         List<validationData> expectations = setRSOauthExpectationsWithAPIChecks(_testName, test_FinalAction, updatedTestSettings, contextWillBeSet);
 
-        genericRP(_testName, wc, updatedTestSettings, test_GOOD_LOGIN_ACTIONS, expectations);
+        String[] actionFlag = test_GOOD_LOGIN_ACTIONS;
+        if (Constants.JWE_TOKEN_FORMAT.equals(FATSuite.repeatFlag)) {
+            actionFlag = Constants.GET_LOGIN_PAGE_ONLY;
+        }
+        genericRP(_testName, wc, updatedTestSettings, actionFlag, expectations);
 
     }
 
@@ -267,7 +318,7 @@ public class JaxRSClientAPITests extends CommonTest {
 
     }
 
-    @Mode(TestMode.LITE)
+    //        @Mode(TestMode.LITE)
     @Test
     public void APIOidcJaxRSClientTests_jaxrsOAuthClientProperty_boolean_false() throws Exception {
 

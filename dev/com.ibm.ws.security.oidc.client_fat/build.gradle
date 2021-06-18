@@ -165,7 +165,12 @@ autoFVT.doLast {
     into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.openidconnect.client-1.0_fat.opWithStub/test-apps')
     rename 'testTokenEndpoint.zip', 'testTokenEndpoint.war'
   }
-  /*
+   copy {
+    from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, 'publish/files/serversettings/')
+    into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.openidconnect.client-1.0_fat.opWithStub/imports')
+    include 'tokenEndpointApplication.xml'
+  }
+ /*
   * Copy the pem files that are needed to use with the TokenEndpointServlet
   */
        	/* copy shared key/trust stores from the common jwt security fat project */

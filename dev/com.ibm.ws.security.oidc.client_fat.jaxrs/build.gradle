@@ -253,6 +253,26 @@ autoFVT.doLast {
     into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.openidconnect.client-1.0_fat.jaxrs.opWithStub/test-apps')
     rename 'testTokenEndpoint.zip', 'testTokenEndpoint.war'
   }
+  copy {
+    from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, 'publish/files/serversettings/')
+    into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.openidconnect.client-1.0_fat.jaxrs.opWithStub/imports')
+    include 'tokenEndpointApplication.xml'
+  }
+
+   /*
+   * Copy UserinfoEndpointServlet application and the associated keystore to the applicable test server.
+   */
+  copy {
+    from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').buildDir, 'test-application/testUserinfoEndpoint.zip')
+    into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.openidconnect.client-1.0_fat.jaxrs.opWithStub/test-apps')
+    rename 'testUserinfoEndpoint.zip', 'testUserinfoEndpoint.war'
+  }
+  copy {
+    from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, 'publish/files/serversettings/')
+    into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.openidconnect.client-1.0_fat.jaxrs.opWithStub/imports')
+    include 'userinfoEndpointApplication.xml'
+  }
+  
   /*
   * Copy the pem files that are needed to use with the TokenEndpointServlet
   */
