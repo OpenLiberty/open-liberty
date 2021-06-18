@@ -13,15 +13,18 @@ package com.ibm.ws.javaee.ddmodel.webext;
 
 import com.ibm.ws.javaee.dd.web.WebApp;
 import com.ibm.ws.javaee.ddmodel.DDParser;
+import com.ibm.ws.javaee.ddmodel.DDParserBndExt;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
 
-public class WebExtDDParser extends DDParser {
-    private final boolean xmi;
-
-    public WebExtDDParser(Container ddRootContainer, Entry ddEntry, boolean xmi) throws DDParser.ParseException {
-        super(ddRootContainer, ddEntry, WebApp.class);
-        this.xmi = xmi;
+public class WebExtDDParser extends DDParserBndExt {
+    public WebExtDDParser(Container ddRootContainer, Entry ddEntry, boolean xmi)
+        throws DDParser.ParseException {
+        super( ddRootContainer, ddEntry, WebApp.class,
+                xmi,
+                (xmi ? "WebAppExtension" : "web-ext"),
+                NAMESPACE_WEB_EXT_XMI,
+                XML_VERSION_MAPPINGS_10_11, 11 );
     }
 
     @Override
@@ -32,65 +35,11 @@ public class WebExtDDParser extends DDParser {
 
     @Override
     protected WebExtType createRootParsable() throws ParseException {
-        if (!xmi && "web-ext".equals(rootElementLocalName)) {
-            return createXMLRootParsable();
-        } else if (xmi && "WebAppExtension".equals(rootElementLocalName)) {
-            WebExtType rootParsableElement = createXMIRootParsable();
-            namespace = null;
-            idNamespace = "http://www.omg.org/XMI";
-            return rootParsableElement;
-        } else {
-            throw new ParseException(invalidRootElement());
-        }
-    }
-
-    private WebExtType createXMLRootParsable() throws ParseException {
-        if (namespace == null) {
-            throw new ParseException(missingDeploymentDescriptorNamespace());
-        }
-        String versionString = getAttributeValue("", "version");
-        if (versionString == null) {
-            throw new ParseException(missingDeploymentDescriptorVersion());
-        }
-        if ("http://websphere.ibm.com/xml/ns/javaee".equals(namespace)) {
-            if ("1.0".equals(versionString)) {
-                version = 10;
-                return new WebExtType(getDeploymentDescriptorPath());
-            }
-            if ("1.1".equals(versionString)) {
-                version = 11;
-                return new WebExtType(getDeploymentDescriptorPath());
-            }
-            throw new ParseException(invalidDeploymentDescriptorVersion(versionString));
-        }
-        throw new ParseException(invalidDeploymentDescriptorNamespace(versionString));
-    }
-
-    private WebExtType createXMIRootParsable() throws ParseException {
-        if (namespace == null) {
-            throw new ParseException(missingDeploymentDescriptorNamespace());
-        }
-        if ("webappext.xmi".equals(namespace)) {
-            version = 9;
-            return new WebExtType(getDeploymentDescriptorPath(), true);
-        }
-        throw new ParseException(missingDeploymentDescriptorVersion());
+        return (WebExtType) super.createRootParsable();
     }
 
     @Override
-    protected VersionData[] getVersionData() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    protected void validateRootElementName() throws ParseException {
-        // TODO Auto-generated method stub
-    }
-
-    @Override
-    protected WebExtType createRootElement() {
-        // TODO Auto-generated method stub
-        return null;
+    protected WebExtType createRoot() {
+        return new WebExtType( getDeploymentDescriptorPath(), isXMI() );
     }
 }

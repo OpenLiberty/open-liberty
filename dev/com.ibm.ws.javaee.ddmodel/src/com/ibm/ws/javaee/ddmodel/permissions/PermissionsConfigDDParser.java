@@ -11,12 +11,12 @@
 package com.ibm.ws.javaee.ddmodel.permissions;
 
 import com.ibm.ws.javaee.ddmodel.DDParser;
+import com.ibm.ws.javaee.ddmodel.DDParserSpec;
 import com.ibm.ws.javaee.version.JavaEEVersion;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
 
 final class PermissionsConfigDDParser extends DDParser {
-
     /**
      * Create a permissions configuration parser.
      * 
@@ -62,10 +62,10 @@ final class PermissionsConfigDDParser extends DDParser {
             String expectedNamespace;
             if ( JavaEEVersion.VERSION_7_STR.equals(ddVersionAttr) ) {
                 ddVersion = JavaEEVersion.VERSION_7_0_INT;
-                expectedNamespace = NAMESPACE_JCP_JAVAEE;
+                expectedNamespace = DDParserSpec.NAMESPACE_JCP_JAVAEE;
             } else if ( JavaEEVersion.VERSION_9_STR.equals(ddVersionAttr) ) {
                 ddVersion = JavaEEVersion.VERSION_9_0_INT;
-                expectedNamespace = NAMESPACE_JAKARTA;
+                expectedNamespace = DDParserSpec.NAMESPACE_JAKARTA;
             } else {
                 throw new ParseException( unsupportedDescriptorVersion(ddVersionAttr) );         
             }
@@ -86,9 +86,9 @@ final class PermissionsConfigDDParser extends DDParser {
 
         } else if ( namespace != null ) {
             // Next, try to use the namespace.
-            if ( namespace.equals(NAMESPACE_JCP_JAVAEE) ) {
+            if ( namespace.equals(DDParserSpec.NAMESPACE_JCP_JAVAEE) ) {
                 ddVersion = 70;
-            } else if ( namespace.equals(NAMESPACE_JAKARTA) ) {
+            } else if ( namespace.equals(DDParserSpec.NAMESPACE_JAKARTA) ) {
                 ddVersion = 90;
             } else {
                 throw new ParseException( unsupportedDescriptorNamespace(namespace) );
@@ -105,19 +105,12 @@ final class PermissionsConfigDDParser extends DDParser {
         return createRootElement();
     }
 
-    @Override
-    protected VersionData[] getVersionData() {
-        return null; // Unused 
-    }
-
-    @Override
     protected void validateRootElementName() throws ParseException {
         if ( !"permissions".equals(rootElementLocalName) ) {
             throw new ParseException(invalidRootElement());
         }
     }
 
-    @Override
     protected PermissionsConfigType createRootElement() {
         return new PermissionsConfigType( getDeploymentDescriptorPath() );
     }

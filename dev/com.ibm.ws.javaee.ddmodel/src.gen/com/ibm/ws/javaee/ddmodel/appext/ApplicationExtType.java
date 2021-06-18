@@ -18,6 +18,8 @@ public class ApplicationExtType extends com.ibm.ws.javaee.ddmodel.DDParser.Eleme
         this(ddPath, false);
     }
 
+    public static final boolean IS_XMI = true;
+
     public ApplicationExtType(String ddPath, boolean xmi) {
         this.xmi = xmi;
         this.deploymentDescriptorPath = ddPath;

@@ -209,22 +209,5 @@ public final class WebservicesBndAdapter implements ContainerAdapter<Webservices
                 throw new ParseException(unknownDeploymentDescriptorVersion());
             }
         }
-
-        @Override
-        protected VersionData[] getVersionData() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        @Override
-        protected void validateRootElementName() throws ParseException {
-            // TODO Auto-generated method stub
-        }
-
-        @Override
-        protected WebservicesBndType createRootElement() {
-            // TODO Auto-generated method stub
-            return null;
-        }
     }
 }

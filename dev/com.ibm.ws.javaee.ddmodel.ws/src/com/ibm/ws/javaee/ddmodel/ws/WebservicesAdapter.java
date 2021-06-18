@@ -84,22 +84,5 @@ public final class WebservicesAdapter implements ContainerAdapter<Webservices> {
             }
             throw new ParseException(invalidDeploymentDescriptorVersion(vers));
         }
-
-        @Override
-        protected VersionData[] getVersionData() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        @Override
-        protected void validateRootElementName() throws ParseException {
-            // TODO Auto-generated method stub
-        }
-
-        @Override
-        protected WebservicesType createRootElement() {
-            // TODO Auto-generated method stub
-            return null;
-        }
     }
 }

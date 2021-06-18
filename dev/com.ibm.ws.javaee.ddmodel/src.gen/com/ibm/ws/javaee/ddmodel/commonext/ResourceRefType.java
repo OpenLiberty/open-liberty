@@ -110,7 +110,7 @@ public class ResourceRefType extends com.ibm.ws.javaee.ddmodel.DDParser.ElementC
     @Override
     public boolean handleChild(DDParser parser, String localName) throws DDParser.ParseException {
         if (xmi && "resourceRef".equals(localName)) {
-            this.resourceRef = new com.ibm.ws.javaee.ddmodel.CrossComponentReferenceType("resourceRef", parser.crossComponentDocumentType);
+            this.resourceRef = new com.ibm.ws.javaee.ddmodel.CrossComponentReferenceType("resourceRef", parser.getCrossComponentType());
             parser.parse(resourceRef);
             com.ibm.ws.javaee.dd.common.ResourceRef referent = this.resourceRef.resolveReferent(parser, com.ibm.ws.javaee.dd.common.ResourceRef.class);
             if (referent == null) {

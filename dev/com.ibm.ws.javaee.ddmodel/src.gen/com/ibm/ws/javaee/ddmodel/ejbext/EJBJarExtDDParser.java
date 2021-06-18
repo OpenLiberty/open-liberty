@@ -13,85 +13,33 @@ package com.ibm.ws.javaee.ddmodel.ejbext;
 
 import com.ibm.ws.javaee.dd.ejb.EJBJar;
 import com.ibm.ws.javaee.ddmodel.DDParser;
+import com.ibm.ws.javaee.ddmodel.DDParserBndExt;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
 
-public class EJBJarExtDDParser extends DDParser {
-    private final boolean xmi;
-
+public class EJBJarExtDDParser extends DDParserBndExt {
     public EJBJarExtDDParser(Container ddRootContainer, Entry ddEntry, boolean xmi) throws DDParser.ParseException {
-        super(ddRootContainer, ddEntry, EJBJar.class);
-        this.xmi = xmi;
+        super( ddRootContainer, ddEntry, EJBJar.class,
+               xmi,
+               (xmi ? "EJBJarExtension" : "ejb-jar-ext"),
+               NAMESPACE_EJB_EXT_XMI,
+               XML_VERSION_MAPPINGS_10_11, 11);
     }
 
     @Override
     public EJBJarExtType parse() throws ParseException {
         super.parseRootElement();
+
         return (EJBJarExtType) rootParsable;
     }
 
     @Override
     protected EJBJarExtType createRootParsable() throws ParseException {
-        if (!xmi && "ejb-jar-ext".equals(rootElementLocalName)) {
-            return createXMLRootParsable();
-        } else if (xmi && "EJBJarExtension".equals(rootElementLocalName)) {
-            EJBJarExtType rootParsableElement = createXMIRootParsable();
-            namespace = null;
-            idNamespace = "http://www.omg.org/XMI";
-            return rootParsableElement;
-        } else {
-            throw new ParseException(invalidRootElement());
-        }
-    }
-
-    private EJBJarExtType createXMLRootParsable() throws ParseException {
-        if (namespace == null) {
-            throw new ParseException(missingDeploymentDescriptorNamespace());
-        }
-        String versionString = getAttributeValue("", "version");
-        if (versionString == null) {
-            throw new ParseException(missingDeploymentDescriptorVersion());
-        }
-        if ("http://websphere.ibm.com/xml/ns/javaee".equals(namespace)) {
-            if ("1.0".equals(versionString)) {
-                version = 10;
-                return new EJBJarExtType(getDeploymentDescriptorPath());
-            }
-            if ("1.1".equals(versionString)) {
-                version = 11;
-                return new EJBJarExtType(getDeploymentDescriptorPath());
-            }
-            throw new ParseException(invalidDeploymentDescriptorVersion(versionString));
-        }
-        throw new ParseException(invalidDeploymentDescriptorNamespace(versionString));
-    }
-
-    private EJBJarExtType createXMIRootParsable() throws ParseException {
-        if (namespace == null) {
-            throw new ParseException(missingDeploymentDescriptorNamespace());
-        }
-        if ("ejbext.xmi".equals(namespace)) {
-            version = 9;
-            return new EJBJarExtType(getDeploymentDescriptorPath(), true);
-        }
-        throw new ParseException(missingDeploymentDescriptorVersion());
+        return (EJBJarExtType) super.createRootParsable();
     }
 
     @Override
-    protected VersionData[] getVersionData() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    protected void validateRootElementName() throws ParseException {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    protected EJBJarExtType createRootElement() {
-        // TODO Auto-generated method stub
-        return null;
+    protected EJBJarExtType createRoot() {
+        return new EJBJarExtType( getDeploymentDescriptorPath(), isXMI() );
     }
 }

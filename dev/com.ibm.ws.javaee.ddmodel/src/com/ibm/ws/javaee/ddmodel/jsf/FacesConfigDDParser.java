@@ -11,12 +11,12 @@
 package com.ibm.ws.javaee.ddmodel.jsf;
 
 import com.ibm.ws.javaee.dd.jsf.FacesConfig;
-import com.ibm.ws.javaee.ddmodel.DDParser;
+import com.ibm.ws.javaee.ddmodel.DDParserSpec;
 import com.ibm.ws.javaee.version.JavaEEVersion;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
 
-final class FacesConfigDDParser extends DDParser {
+final class FacesConfigDDParser extends DDParserSpec {
     public static final String FACES_CONFIG_DTD_PUBLIC_ID_10 =
         "-//Sun Microsystems, Inc.//DTD JavaServer Faces Config 1.0//EN";
     public static final String FACES_CONFIG_DTD_PUBLIC_ID_11 =

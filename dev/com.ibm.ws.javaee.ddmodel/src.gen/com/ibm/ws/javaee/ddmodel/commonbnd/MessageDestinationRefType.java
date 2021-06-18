@@ -60,7 +60,7 @@ public class MessageDestinationRefType extends com.ibm.ws.javaee.ddmodel.DDParse
     @Override
     public boolean handleChild(DDParser parser, String localName) throws DDParser.ParseException {
         if (xmi && "bindingMessageDestinationRef".equals(localName)) {
-            this.bindingMessageDestinationRef = new com.ibm.ws.javaee.ddmodel.CrossComponentReferenceType("bindingMessageDestinationRef", parser.crossComponentDocumentType);
+            this.bindingMessageDestinationRef = new com.ibm.ws.javaee.ddmodel.CrossComponentReferenceType("bindingMessageDestinationRef", parser.getCrossComponentType());
             parser.parse(bindingMessageDestinationRef);
             com.ibm.ws.javaee.dd.common.MessageDestinationRef referent = this.bindingMessageDestinationRef.resolveReferent(parser, com.ibm.ws.javaee.dd.common.MessageDestinationRef.class);
             if (referent == null) {

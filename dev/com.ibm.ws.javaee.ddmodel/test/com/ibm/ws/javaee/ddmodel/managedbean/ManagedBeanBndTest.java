@@ -203,22 +203,8 @@ public class ManagedBeanBndTest extends DDTestBase {
 
     @Test
     public void testNamespaceMissing() throws Exception {
-        parseBnd(noNamespaceMBeanBndXML, "CWWKC2264E", "missing.deployment.descriptor.namespace");
-
-        // CWWKC2264E: An error occurred while trying to determine
-        // the namespace of the /META-INF/ibm-managed-bean-bnd.xml
-        // deployment descriptor on line 1.
-        
-        //   at com.ibm.ws.javaee.ddmodel.managedbean.ManagedBeanBndDDParser.createXMLRootParsable(ManagedBeanBndDDParser.java:38)
-        //   at com.ibm.ws.javaee.ddmodel.managedbean.ManagedBeanBndDDParser.createRootParsable(ManagedBeanBndDDParser.java:31)
-        //   at com.ibm.ws.javaee.ddmodel.DDParser.parseRootElement(DDParser.java:590)
-        //   at com.ibm.ws.javaee.ddmodel.managedbean.ManagedBeanBndDDParser.parse(ManagedBeanBndDDParser.java:24)
-        //   at com.ibm.ws.javaee.ddmodel.managedbean.ManagedBeanBndAdapter.adapt(ManagedBeanBndAdapter.java:67)
-        //   at com.ibm.ws.javaee.ddmodel.managedbean.ManagedBeanBndAdapter.adapt(ManagedBeanBndAdapter.java:35)
-        //   at com.ibm.ws.javaee.ddmodel.DDTestBase.parse(DDTestBase.java:85)
-        //   at com.ibm.ws.javaee.ddmodel.managedbean.ManagedBeanBndTest.parseBnd(ManagedBeanBndTest.java:143)
-        //   at com.ibm.ws.javaee.ddmodel.managedbean.ManagedBeanBndTest.testNamespaceMissing(ManagedBeanBndTest.java:233)        
-    }
+        parseBnd(noNamespaceMBeanBndXML);
+ }
     
     @Test
     public void testSchemaInstanceMissing() throws Exception {
@@ -265,20 +251,7 @@ public class ManagedBeanBndTest extends DDTestBase {
 
     @Test
     public void testVersionMissing() throws Exception {
-        parseBnd(noVersionMBeanBndXML, "CWWKC2265E", "missing.deployment.descriptor.version");
-        
-        // CWWKC2265E: An error occurred while trying to determine the version
-        // of the /META-INF/ibm-managed-bean-bnd.xml deployment descriptor on line 1.
-        // 
-        //   at com.ibm.ws.javaee.ddmodel.managedbean.ManagedBeanBndDDParser.createXMLRootParsable(ManagedBeanBndDDParser.java:42)
-        //   at com.ibm.ws.javaee.ddmodel.managedbean.ManagedBeanBndDDParser.createRootParsable(ManagedBeanBndDDParser.java:31)
-        //   at com.ibm.ws.javaee.ddmodel.DDParser.parseRootElement(DDParser.java:590)
-        //   at com.ibm.ws.javaee.ddmodel.managedbean.ManagedBeanBndDDParser.parse(ManagedBeanBndDDParser.java:24)
-        //   at com.ibm.ws.javaee.ddmodel.managedbean.ManagedBeanBndAdapter.adapt(ManagedBeanBndAdapter.java:67)
-        //   at com.ibm.ws.javaee.ddmodel.managedbean.ManagedBeanBndAdapter.adapt(ManagedBeanBndAdapter.java:35)
-        //   at com.ibm.ws.javaee.ddmodel.DDTestBase.parse(DDTestBase.java:85)
-        //   at com.ibm.ws.javaee.ddmodel.managedbean.ManagedBeanBndTest.parseBnd(ManagedBeanBndTest.java:143)
-        //   at com.ibm.ws.javaee.ddmodel.managedbean.ManagedBeanBndTest.testVersionMissing(ManagedBeanBndTest.java:248)        
+        parseBnd(noVersionMBeanBndXML);
     }
     
     //

@@ -11,13 +11,13 @@
 package com.ibm.ws.javaee.ddmodel.web;
 
 import com.ibm.ws.javaee.dd.web.WebApp;
-import com.ibm.ws.javaee.ddmodel.DDParser;
+import com.ibm.ws.javaee.ddmodel.DDParserSpec;
 import com.ibm.ws.javaee.ddmodel.web.common.WebFragmentType;
 import com.ibm.ws.javaee.version.JavaEEVersion;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
 
-public class WebFragmentDDParser extends DDParser {
+public class WebFragmentDDParser extends DDParserSpec {
     private static VersionData[] VERSION_DATA = {
         new VersionData("3.0", null, NAMESPACE_SUN_JAVAEE, WebApp.VERSION_3_0, JavaEEVersion.VERSION_6_0_INT),
         new VersionData("3.1", null, NAMESPACE_JCP_JAVAEE, WebApp.VERSION_3_1, JavaEEVersion.VERSION_7_0_INT),
@@ -33,9 +33,9 @@ public class WebFragmentDDParser extends DDParser {
 
     public WebFragmentDDParser(Container ddRootContainer, Entry ddEntry, int maxSchemaVersion) throws ParseException {
         super( ddRootContainer, ddEntry,
-               TRIM_SIMPLE_CONTENT,
                WebAppDDParser.adjustSchemaVersion(maxSchemaVersion),
-               WebAppDDParser.getRuntimeVersion(maxSchemaVersion) );
+               WebAppDDParser.getRuntimeVersion(maxSchemaVersion),
+               TRIM_SIMPLE_CONTENT );
     }
 
     @Override

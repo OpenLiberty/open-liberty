@@ -11,12 +11,12 @@
 package com.ibm.ws.javaee.ddmodel.app;
 
 import com.ibm.ws.javaee.dd.app.Application;
-import com.ibm.ws.javaee.ddmodel.DDParser;
+import com.ibm.ws.javaee.ddmodel.DDParserSpec;
 import com.ibm.ws.javaee.version.JavaEEVersion;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
 
-public class ApplicationDDParser extends DDParser {
+public class ApplicationDDParser extends DDParserSpec {
     public static final String APPLICATION_DTD_PUBLIC_ID_12 =
         "-//Sun Microsystems, Inc.//DTD J2EE Application 1.2//EN";
     public static final String APPLICATION_DTD_PUBLIC_ID_13 =

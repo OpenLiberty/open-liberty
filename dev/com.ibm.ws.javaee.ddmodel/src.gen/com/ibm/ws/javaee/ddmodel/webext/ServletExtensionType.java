@@ -77,7 +77,7 @@ public class ServletExtensionType extends com.ibm.ws.javaee.ddmodel.DDParser.Ele
     @Override
     public boolean handleChild(DDParser parser, String localName) throws DDParser.ParseException {
         if (xmi && "extendedServlet".equals(localName)) {
-            this.extendedServlet = new com.ibm.ws.javaee.ddmodel.CrossComponentReferenceType("extendedServlet", parser.crossComponentDocumentType);
+            this.extendedServlet = new com.ibm.ws.javaee.ddmodel.CrossComponentReferenceType("extendedServlet", parser.getCrossComponentType());
             parser.parse(extendedServlet);
             com.ibm.ws.javaee.dd.web.common.Servlet referent = this.extendedServlet.resolveReferent(parser, com.ibm.ws.javaee.dd.web.common.Servlet.class);
             if (referent == null) {

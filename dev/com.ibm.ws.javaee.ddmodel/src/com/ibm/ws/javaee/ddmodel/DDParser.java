@@ -45,15 +45,6 @@ public abstract class DDParser {
 
     //
 
-    public static final String NAMESPACE_SUN_J2EE =
-        "http://java.sun.com/xml/ns/j2ee";
-    public static final String NAMESPACE_SUN_JAVAEE =
-        "http://java.sun.com/xml/ns/javaee";
-    public static final String NAMESPACE_JCP_JAVAEE =
-        "http://xmlns.jcp.org/xml/ns/javaee";
-    public static final String NAMESPACE_JAKARTA =
-        "https://jakarta.ee/xml/ns/jakartaee";    
-
     public static String getVersionText(int version) {
         if ( version == 0 ) {
             return null;
@@ -362,48 +353,19 @@ public abstract class DDParser {
 
     //
 
-    public DDParser(Container rootContainer, Entry adaptableEntry,
-            boolean trimSimpleContent,
-            int maxSchemaVersion, int maxRuntimeVersion) throws ParseException {
-        this(rootContainer, adaptableEntry,
-             UNUSED_CROSS_COMPONENT_TYPE, trimSimpleContent,
-             maxSchemaVersion, maxRuntimeVersion);
-    }
-    
-    public DDParser(Container rootContainer, Entry adaptableEntry,
-                    int maxSchemaVersion, int maxRuntimeVersion) throws ParseException {
-        this(rootContainer, adaptableEntry,
-             UNUSED_CROSS_COMPONENT_TYPE, !TRIM_SIMPLE_CONTENT,
-             maxSchemaVersion, maxRuntimeVersion);
-    }    
-    
-    public DDParser(Container rootContainer, Entry adaptableEntry,
-                    Class<?> crossComponentType) throws ParseException {
-        this(rootContainer, adaptableEntry,
-             crossComponentType, !TRIM_SIMPLE_CONTENT,
-             UNUSED_MAX_SCHEMA_VERSION, UNUSED_MAX_RUNTIME_VERSION);
-    }    
-
-    public DDParser(Container rootContainer, Entry adaptableEntry) throws ParseException {
-        this(rootContainer, adaptableEntry,
-             UNUSED_CROSS_COMPONENT_TYPE, !TRIM_SIMPLE_CONTENT,
+    public DDParser(Container ddRootContainer, Entry ddEntry) throws ParseException {
+        this(ddRootContainer, ddEntry,
              UNUSED_MAX_SCHEMA_VERSION, UNUSED_MAX_RUNTIME_VERSION);
     }    
     
-    protected static final Class<?> UNUSED_CROSS_COMPONENT_TYPE = null;
-    protected static final boolean TRIM_SIMPLE_CONTENT = true;
     protected static final int UNUSED_MAX_SCHEMA_VERSION = -1;
     protected static final int UNUSED_MAX_RUNTIME_VERSION = -1;
 
     /**
      * Construct a parser for a specified container and container entry.
      * 
-     * @param rootContainer The root container containing the entry which is to be parsed.
-     * @param adaptableEntry The container entry which is to be parsed.
-     * @param crossComponentType Unknown.
-     * @param trimSimpleContent Control parameter: Tells if simple content
-     *     is to be trimmed.  This capability is required for parsing web and
-     *     web fragment descriptors.
+     * @param ddRootContainer The root container containing the entry which is to be parsed.
+     * @param ddEntry The container entry which is to be parsed.
      * @param maxSchemaVersion The maximum schema version which will be
      *     parsed.
      * @param maxRuntimeVersion The maximum runtime version which will be
@@ -412,27 +374,34 @@ public abstract class DDParser {
      * @throws ParseException Thrown in case of a parse error.  Not currently thrown.
      *    Declared for future use.
      */
-    public DDParser(
-            Container rootContainer, Entry adaptableEntry,
-            Class<?> crossComponentType, boolean trimSimpleContent,
-            int maxSchemaVersion, int maxRuntimeVersion) throws ParseException {
-
-        this.crossComponentDocumentType = crossComponentType;
-        this.trimSimpleContentAsRequiredByServletSpec = trimSimpleContent;
+    public DDParser(Container ddRootContainer, Entry ddEntry,
+                    int maxSchemaVersion, int maxRuntimeVersion) throws ParseException {
 
         this.maxVersion = maxSchemaVersion;
         this.runtimeVersion = maxRuntimeVersion;
 
-        this.adaptableEntry = adaptableEntry;
-        this.ddEntryPath = adaptableEntry.getPath();
-        this.rootContainer = rootContainer;
+        this.adaptableEntry = ddEntry;
+        this.ddEntryPath = ddEntry.getPath();
+        this.rootContainer = ddRootContainer;
     }
 
+    /**
+     * Answer the type of the linked descriptor.
+     * 
+     * The presence of this API on {@link DDParser} is
+     * a historical artifact.  Cross component types are
+     * only used for BND and EXT documents, and the API
+     * should have only been exposed to {@link DDParserBndExt}.
+     * Rewiring the many parse types is too big of a change,
+     * so the API has been left here.
+     *
+     * @return The type of the linked descriptor.
+     */
+    public Class<?> getCrossComponentType() {
+        throw new UnsupportedOperationException("Cross components require a BND or EXT parser");
+    }
+    
     // Control parameters ... 
-
-    public final Class<?> crossComponentDocumentType;
-
-    protected final boolean trimSimpleContentAsRequiredByServletSpec;
 
     /**
      * The current platform runtime version.  This is determined
@@ -716,19 +685,33 @@ public abstract class DDParser {
         contentBuilder.append(xsr.getText());
     }
 
+    /**
+     * Answer the accumulated content, conditionally
+     * trimming whitespace.  Reset the content accumulator.
+     *
+     * This default implementation never trims whitespace.
+     * See {@link DDParserSpec#getContentString(boolean)}.
+     * 
+     * @param untrimmed Control parameter: Tell if trimming
+     *    (if enabled for this type), is to be performed.
+     * @return The accumulated content.
+     */    
     @Trivial
     public String getContentString(boolean untrimmed) {
-        String lexical = contentBuilder.toString();
-        if (!untrimmed && trimSimpleContentAsRequiredByServletSpec) {
-            lexical = lexical.trim();
-        }
-        contentBuilder.setLength(0);
-        return lexical;
+        return getContentString();
     }
 
+    /**
+     * Answer the accumulated content, including
+     * whitespace.  Reset the content accumulator.
+     *
+     * @return The accumulated content.
+     */
     @Trivial
     public String getContentString() {
-        return getContentString(false);
+        String content = contentBuilder.toString();
+        contentBuilder.setLength(0);
+        return content;
     }
 
     // Top level parsing ...
@@ -836,73 +819,7 @@ public abstract class DDParser {
         }
     }
 
-    protected abstract VersionData[] getVersionData();
-    protected abstract void validateRootElementName() throws ParseException;
-    protected abstract ParsableElement createRootElement();
-
-    protected ParsableElement createRootParsable() throws ParseException {
-        validateRootElementName();
-
-        String versionAttr = getAttributeValue("", "version");
-
-        // Need either a version, or a namespace, or a public ID.
-
-        if ( versionAttr == null ) { 
-            if ( namespace == null ) {
-                if ( dtdPublicId == null ) {
-                    throw new ParseException( missingDescriptorVersion() );
-                }
-            }
-        }
-
-        VersionData versionData = selectVersion( getVersionData(),
-                versionAttr, dtdPublicId, namespace,
-                maxVersion );
-        
-        if ( versionData == null ) {
-            // Version has priority, next namespace, and finally public ID.
-            // One of these must be set, per the prior test.
-            if ( versionAttr != null ) {
-                throw new ParseException( unsupportedDescriptorVersion(versionAttr) );
-            } else if ( namespace != null ) {
-                throw new ParseException( unsupportedDescriptorNamespace(namespace) );
-            } else { // ( dtdPublicId != null )
-                throw new ParseException( unsupportedDescriptorPublicId(dtdPublicId) );
-            }
-        }            
-
-        // Allow the selection of the version even if it is not provisioned.
-        // This is slightly improper, as it changes an 'unsupported' exception
-        // into an 'unprovisioned' exception across releases, as the product adds
-        // support for new specifications.
-
-        if ( versionData.version > maxVersion ) {
-            throw new ParseException( unprovisionedDescriptorVersion(versionData.version, maxVersion) );
-        }
-
-        // Version has precedence over namespace.  That creates a possibility
-        // of the namespace not matching the version.
-        //
-        // In either case of a namespace mis-match, or the namespace being
-        // entirely absent, patch in the correct namespace.
-
-        if ( (versionAttr != null) && (namespace != null) ) {
-            if ( !namespace.equals(versionData.namespace) ) {
-                warning( incorrectDescriptorNamespace(versionAttr, namespace, versionData.namespace) );
-                namespace = versionData.namespace;                
-            }
-        }
-        if ( (namespace == null) && (versionData.namespace != null) ) {
-            namespace = versionData.namespace;
-        }
-
-        // Note that parsing will reassign the version upon parsing
-        // the 'version' attribute of the header.
-        version = versionData.version;
-        eePlatformVersion = versionData.platformVersion;
-
-        return createRootElement();
-    }
+    protected abstract ParsableElement createRootParsable() throws ParseException;
     
     // Body parsing ...
 
@@ -1433,5 +1350,11 @@ public abstract class DDParser {
         // The deployment descriptor {0}, at line {1}, specifies version {2}, which
         // is higher than the current provisioned version {3}.
         return Tr.formatMessage(tc, "unprovisioned.descriptor.version", describeEntry(), getLineNumber(), schemaVersion, maxSchemaVersion);
+    }
+    
+    protected String unexpectedRootElement(String expectedRootElementName) {
+        // The deployment descriptor {0}, at line {1}, has root element {2},
+        // but requires root element {3}. 
+        return Tr.formatMessage(tc, "unexpected.root.element", describeEntry(), getLineNumber(), expectedRootElementName, rootElementLocalName);
     }    
 }

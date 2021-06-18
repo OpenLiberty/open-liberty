@@ -60,7 +60,7 @@ public class EJBRefType extends com.ibm.ws.javaee.ddmodel.DDParser.ElementConten
     @Override
     public boolean handleChild(DDParser parser, String localName) throws DDParser.ParseException {
         if (xmi && "bindingEjbRef".equals(localName)) {
-            this.bindingEjbRef = new com.ibm.ws.javaee.ddmodel.CrossComponentReferenceType("bindingEjbRef", parser.crossComponentDocumentType);
+            this.bindingEjbRef = new com.ibm.ws.javaee.ddmodel.CrossComponentReferenceType("bindingEjbRef", parser.getCrossComponentType());
             parser.parse(bindingEjbRef);
             com.ibm.ws.javaee.dd.common.EJBRef referent = this.bindingEjbRef.resolveReferent(parser, com.ibm.ws.javaee.dd.common.EJBRef.class);
             if (referent == null) {

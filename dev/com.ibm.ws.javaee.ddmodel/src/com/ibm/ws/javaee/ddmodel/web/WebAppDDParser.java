@@ -11,13 +11,13 @@
 package com.ibm.ws.javaee.ddmodel.web;
 
 import com.ibm.ws.javaee.dd.web.WebApp;
-import com.ibm.ws.javaee.ddmodel.DDParser;
+import com.ibm.ws.javaee.ddmodel.DDParserSpec;
 import com.ibm.ws.javaee.ddmodel.web.common.WebAppType;
 import com.ibm.ws.javaee.version.JavaEEVersion;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
 
-public class WebAppDDParser extends DDParser {
+public class WebAppDDParser extends DDParserSpec {
     public static final String WEBAPP_DTD_PUBLIC_ID_22 =
         "-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN";
     public static final String WEBAPP_DTD_PUBLIC_ID_23 =
@@ -77,9 +77,9 @@ public class WebAppDDParser extends DDParser {
 
     public WebAppDDParser(Container ddRootContainer, Entry ddEntry, int maxSchemaVersion) throws ParseException {
         super( ddRootContainer, ddEntry,
-               TRIM_SIMPLE_CONTENT,
                adjustSchemaVersion(maxSchemaVersion),
-               getRuntimeVersion(maxSchemaVersion) );
+               getRuntimeVersion(maxSchemaVersion),
+               TRIM_SIMPLE_CONTENT);
     }
 
     @Override    

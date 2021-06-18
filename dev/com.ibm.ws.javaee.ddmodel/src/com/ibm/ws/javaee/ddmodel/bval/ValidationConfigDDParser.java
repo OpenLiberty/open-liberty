@@ -65,21 +65,4 @@ public class ValidationConfigDDParser extends DDParser {
         }
         throw new ParseException(invalidDeploymentDescriptorNamespace(vers));
     }
-
-    @Override
-    protected VersionData[] getVersionData() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    protected void validateRootElementName() throws ParseException {
-        // TODO Auto-generated method stub
-    }
-
-    @Override
-    protected ValidationConfigType createRootElement() {
-        // TODO Auto-generated method stub
-        return null;
-    }
 }

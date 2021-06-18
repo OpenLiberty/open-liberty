@@ -13,11 +13,12 @@ package com.ibm.ws.javaee.ddmodel.ejb;
 import com.ibm.ws.javaee.dd.ejb.EJBJar;
 import com.ibm.ws.javaee.dd.web.WebApp;
 import com.ibm.ws.javaee.ddmodel.DDParser;
+import com.ibm.ws.javaee.ddmodel.DDParserSpec;
 import com.ibm.ws.javaee.version.JavaEEVersion;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
 
-public class EJBJarDDParser extends DDParser {
+public class EJBJarDDParser extends DDParserSpec {
     public static final String EJBJAR_DTD_PUBLIC_ID_11 =
         "-//Sun Microsystems, Inc.//DTD Enterprise JavaBeans 1.1//EN";
     public static final String EJBJAR_DTD_PUBLIC_ID_20 =

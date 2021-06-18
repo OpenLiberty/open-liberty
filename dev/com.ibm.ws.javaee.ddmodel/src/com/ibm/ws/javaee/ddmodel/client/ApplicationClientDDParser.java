@@ -13,11 +13,12 @@ package com.ibm.ws.javaee.ddmodel.client;
 import com.ibm.ws.javaee.dd.app.Application;
 import com.ibm.ws.javaee.dd.client.ApplicationClient;
 import com.ibm.ws.javaee.ddmodel.DDParser;
+import com.ibm.ws.javaee.ddmodel.DDParserSpec;
 import com.ibm.ws.javaee.version.JavaEEVersion;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
 
-public class ApplicationClientDDParser extends DDParser {
+public class ApplicationClientDDParser extends DDParserSpec {
     private static final String APPCLIENT_DTD_PUBLIC_ID_12 = "-//Sun Microsystems, Inc.//DTD J2EE Application Client 1.2//EN";
     private static final String APPCLIENT_DTD_PUBLIC_ID_13 = "-//Sun Microsystems, Inc.//DTD J2EE Application Client 1.3//EN";
 

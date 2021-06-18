@@ -125,7 +125,7 @@ public class ModuleExtensionType extends com.ibm.ws.javaee.ddmodel.DDParser.Elem
     @Override
     public boolean handleChild(DDParser parser, String localName) throws DDParser.ParseException {
         if (xmi && "module".equals(localName)) {
-            this.module = new com.ibm.ws.javaee.ddmodel.CrossComponentReferenceType("module", parser.crossComponentDocumentType);
+            this.module = new com.ibm.ws.javaee.ddmodel.CrossComponentReferenceType("module", parser.getCrossComponentType());
             parser.parse(module);
             com.ibm.ws.javaee.dd.app.Module referent = this.module.resolveReferent(parser, com.ibm.ws.javaee.dd.app.Module.class);
             if (referent == null) {
@@ -136,7 +136,7 @@ public class ModuleExtensionType extends com.ibm.ws.javaee.ddmodel.DDParser.Elem
             return true;
         }
         if (xmi && "applicationExtension".equals(localName)) {
-            this.applicationExtension = new com.ibm.ws.javaee.ddmodel.CrossComponentReferenceType("applicationExtension", parser.crossComponentDocumentType);
+            this.applicationExtension = new com.ibm.ws.javaee.ddmodel.CrossComponentReferenceType("applicationExtension", parser.getCrossComponentType());
             parser.parse(applicationExtension);
             // The referent is unused.
             return true;

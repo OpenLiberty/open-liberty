@@ -13,15 +13,19 @@ package com.ibm.ws.javaee.ddmodel.appext;
 
 import com.ibm.ws.javaee.dd.app.Application;
 import com.ibm.ws.javaee.ddmodel.DDParser;
+import com.ibm.ws.javaee.ddmodel.DDParserBndExt;
+import com.ibm.ws.javaee.ddmodel.appbnd.ApplicationBndType;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
 
-public class ApplicationExtDDParser extends DDParser {
-    private final boolean xmi;
+public class ApplicationExtDDParser extends DDParserBndExt {
 
     public ApplicationExtDDParser(Container ddRootContainer, Entry ddEntry, boolean xmi) throws DDParser.ParseException {
-        super(ddRootContainer, ddEntry, Application.class);
-        this.xmi = xmi;
+        super( ddRootContainer, ddEntry, Application.class,
+               xmi,
+               (xmi ? "ApplicationExtension" : "application-ext"),
+               NAMESPACE_APP_EXT_XMI,
+               XML_VERSION_MAPPINGS_10_11, 11);
     }
 
     @Override
@@ -32,66 +36,11 @@ public class ApplicationExtDDParser extends DDParser {
 
     @Override
     protected ApplicationExtType createRootParsable() throws ParseException {
-        if (!xmi && "application-ext".equals(rootElementLocalName)) {
-            return createXMLRootParsable();
-        } else if (xmi && "ApplicationExtension".equals(rootElementLocalName)) {
-            ApplicationExtType rootParsableElement = createXMIRootParsable();
-            namespace = null;
-            idNamespace = "http://www.omg.org/XMI";
-            return rootParsableElement;
-        } else {
-            throw new ParseException(invalidRootElement());
-        }
+        return (ApplicationExtType) super.createRootParsable();
     }
-
-    private ApplicationExtType createXMLRootParsable() throws ParseException {
-        if (namespace == null) {
-            throw new ParseException(missingDeploymentDescriptorNamespace());
-        }
-        String versionString = getAttributeValue("", "version");
-        if (versionString == null) {
-            throw new ParseException(missingDeploymentDescriptorVersion());
-        }
-        if ("http://websphere.ibm.com/xml/ns/javaee".equals(namespace)) {
-            if ("1.0".equals(versionString)) {
-                version = 10;
-                return new ApplicationExtType(getDeploymentDescriptorPath());
-            }
-            if ("1.1".equals(versionString)) {
-                version = 11;
-                return new ApplicationExtType(getDeploymentDescriptorPath());
-            }
-            throw new ParseException(invalidDeploymentDescriptorVersion(versionString));
-        }
-        throw new ParseException(invalidDeploymentDescriptorNamespace(versionString));
-    }
-
-    private ApplicationExtType createXMIRootParsable() throws ParseException {
-        if (namespace == null) {
-            throw new ParseException(missingDeploymentDescriptorNamespace());
-        }
-        if ("applicationext.xmi".equals(namespace)) {
-            version = 9;
-            return new ApplicationExtType(getDeploymentDescriptorPath(), true);
-        }
-        throw new ParseException(missingDeploymentDescriptorVersion());
-    }
-
-    @Override
-    protected VersionData[] getVersionData() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    protected void validateRootElementName() throws ParseException {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    protected ApplicationExtType createRootElement() {
-        // TODO Auto-generated method stub
-        return null;
+    
+    @Override    
+    protected ApplicationExtType createRoot() {
+        return new ApplicationExtType( getDeploymentDescriptorPath(), isXMI() );
     }
 }

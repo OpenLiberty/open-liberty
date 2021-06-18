@@ -60,7 +60,7 @@ public class ResourceEnvRefType extends com.ibm.ws.javaee.ddmodel.DDParser.Eleme
     @Override
     public boolean handleChild(DDParser parser, String localName) throws DDParser.ParseException {
         if (xmi && "bindingResourceEnvRef".equals(localName)) {
-            this.bindingResourceEnvRef = new com.ibm.ws.javaee.ddmodel.CrossComponentReferenceType("bindingResourceEnvRef", parser.crossComponentDocumentType);
+            this.bindingResourceEnvRef = new com.ibm.ws.javaee.ddmodel.CrossComponentReferenceType("bindingResourceEnvRef", parser.getCrossComponentType());
             parser.parse(bindingResourceEnvRef);
             com.ibm.ws.javaee.dd.common.ResourceEnvRef referent = this.bindingResourceEnvRef.resolveReferent(parser, com.ibm.ws.javaee.dd.common.ResourceEnvRef.class);
             if (referent == null) {
