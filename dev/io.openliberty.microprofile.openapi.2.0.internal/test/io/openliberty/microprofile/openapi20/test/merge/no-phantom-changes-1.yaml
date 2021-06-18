@@ -1,9 +1,9 @@
 openapi: 3.0.3
 info:
-  title: test2
+  title: "test"
   version: "1.0"
 paths:
-  "/testfoo":
+  /testA:
     post:
       parameters: 
         - $ref: "#/components/parameters/fooParameter"
@@ -19,6 +19,11 @@ paths:
       callbacks:
         test:
           $ref: "#/components/callbacks/fooCallback"
+servers: 
+ - url: http://example.org
+externalDocs:
+  url: http://example.org
+  description: test docs
 components:
   schemas:
     fooSchema:

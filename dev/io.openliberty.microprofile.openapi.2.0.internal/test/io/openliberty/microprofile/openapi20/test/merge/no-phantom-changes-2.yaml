@@ -1,9 +1,9 @@
 openapi: 3.0.3
 info:
-  title: test1
+  title: "test-breakage"
   version: "1.0"
 paths:
-  "/testfoo":
+  /testA:
     post:
       parameters: 
         - $ref: "#/components/parameters/fooParameter"
@@ -17,9 +17,9 @@ paths:
       security:
         - fooSecurityScheme: []
       callbacks:
-        test:
+        test-breakage:
           $ref: "#/components/callbacks/fooCallback"
-  "/testbar":
+  /testB:
     post:
       parameters: 
         - $ref: "#/components/parameters/barParameter"
@@ -33,19 +33,24 @@ paths:
       security:
         - barSecurityScheme: []
       callbacks:
-        test:
+        test-breakage:
           $ref: "#/components/callbacks/barCallback"
+servers: 
+ - url: http://example.org
+externalDocs:
+  url: http://example.org/test-breakage
+  description: test-breakage docs
 components:
   schemas:
     fooSchema:
       type: string
-      description: test
+      description: test-breakage
     barSchema:
       type: string
-      description: test
+      description: test-breakage
   responses:
     fooResponse:
-      description: test
+      description: test-breakage
       content:
         text/plain:
           schema:
@@ -60,7 +65,7 @@ components:
         foo:
           $ref: "#/components/links/fooLink"
     barResponse:
-      description: test
+      description: test-breakage
       content:
         text/plain:
           schema:
@@ -77,75 +82,75 @@ components:
   parameters:
     fooParameter:
       name: foo
-      description: test
+      description: test-breakage
       in: query
       required: true
       schema:
         type: string
     barParameter:
       name: bar
-      description: test
+      description: test-breakage
       in: query
       required: true
       schema:
         type: string
   examples:
     fooExample:
-      value: test
+      value: test-breakage
     barExample:
-      value: test
+      value: test-breakage
   requestBodies:
     fooRequestBody:
-      description: test
+      description: test-breakage
       content: {}
     barRequestBody:
-      description: test
+      description: test-breakage
       content: {}
   headers:
     fooHeader:
-      description: test
+      description: test-breakage
       schema:
         type: string
     barHeader:
-      description: test
+      description: test-breakage
       schema:
         type: string
   securitySchemes:
     fooSecurityScheme:
-      name: test
+      name: test-breakage
       type: apiKey
       in: query
     barSecurityScheme:
-      name: test
+      name: test-breakage
       type: apiKey
       in: query
   links:
     fooLink: 
-      description: test
+      description: test-breakage
     barLink:
-      description: test
+      description: test-breakage
   callbacks:
     fooCallback:
       "$request.body#/callbackURL":
         post:
           requestBody:
-            description: test
+            description: test-breakage
             content:
               'application/json':
                 schema:
                   type: object
           responses:
             202:
-              description: test
+              description: test-breakage
     barCallback:
       "$request.body#/callbackURL":
         post:
           requestBody:
-            description: test
+            description: test-breakage
             content:
               'application/json':
                 schema:
                   type: object
           responses:
             202:
-              description: test
+              description: test-breakage

@@ -220,6 +220,81 @@ public class MergeProcessorTest {
         assertModelsEqual(expectedModel, result);
     }
 
+    /**
+     * Test that external docs links are retained when they're identical
+     */
+    @Test
+    public void testDocsIdentical() {
+        OpenAPIProvider model1 = loadModel("docs-identical-1.yaml", "/test1");
+        OpenAPIProvider model2 = loadModel("docs-identical-2.yaml", "/test2");
+
+        OpenAPIProvider resultProvider = MergeProcessor.mergeDocuments(Arrays.asList(model1, model2));
+        OpenAPI result = resultProvider.getModel();
+        assertThat(resultProvider.getApplicationPath(), is(nullValue()));
+        assertThat(resultProvider.getMergeProblems(), is(empty()));
+
+        OpenAPI expectedModel = loadModel("docs-identical-merged.yaml");
+        assertModelsEqual(expectedModel, result);
+    }
+
+    /**
+     * Test that external docs links are removed if they're different
+     */
+    @Test
+    public void testDocsRemoved() {
+        OpenAPIProvider model1 = loadModel("docs-removed-1.yaml", "/test1");
+        OpenAPIProvider model2 = loadModel("docs-removed-2.yaml", "/test2");
+
+        OpenAPIProvider resultProvider = MergeProcessor.mergeDocuments(Arrays.asList(model1, model2));
+        OpenAPI result = resultProvider.getModel();
+        assertThat(resultProvider.getApplicationPath(), is(nullValue()));
+        assertThat(resultProvider.getMergeProblems(), is(empty()));
+
+        OpenAPI expectedModel = loadModel("docs-removed-merged.yaml");
+        assertModelsEqual(expectedModel, result);
+    }
+    
+    /**
+     * Test that external docs links are removed if they're different
+     */
+    @Test
+    public void testInfoIdentical() {
+        OpenAPIProvider model1 = loadModel("info-identical-1.yaml", "/test1");
+        OpenAPIProvider model2 = loadModel("info-identical-2.yaml", "/test2");
+
+        OpenAPIProvider resultProvider = MergeProcessor.mergeDocuments(Arrays.asList(model1, model2));
+        OpenAPI result = resultProvider.getModel();
+        assertThat(resultProvider.getApplicationPath(), is(nullValue()));
+        assertThat(resultProvider.getMergeProblems(), is(empty()));
+
+        OpenAPI expectedModel = loadModel("info-identical-merged.yaml");
+        assertModelsEqual(expectedModel, result);
+    }
+    
+    /**
+     * Test that if a model is not included in the merge because there were unresolvable clashes, it doesn't cause changes in the final model
+     * <p>
+     * In particular, it shouldn't cause components or tags to be renamed or info or external docs to be removed
+     */
+    @Test
+    public void testClashingModelDoesntCauseChanges() {
+        OpenAPIProvider model1 = loadModel("no-phantom-changes-1.yaml", "/test1");
+        OpenAPIProvider model2 = loadModel("no-phantom-changes-2.yaml", "/test2");
+        OpenAPIProvider model3 = loadModel("no-phantom-changes-3.yaml", "/test3");
+
+        // Note, model 2 clashes with model 1 and so won't be included in the final result
+        // Names in model 3 overlap with model 2 and would be renamed, but shouldn't be because model 2 was discarded
+        // Similarly, model 2 has a different info and external docs section so it would cause those to be discarded from the final model
+        OpenAPIProvider resultProvider = MergeProcessor.mergeDocuments(Arrays.asList(model1, model2, model3));
+        OpenAPI result = resultProvider.getModel();
+        assertThat(resultProvider.getApplicationPath(), is(nullValue()));
+        assertThat(resultProvider.getMergeProblems(), contains(containsString("no-phantom-changes-2")));
+
+        OpenAPI expectedModel = loadModel("no-phantom-changes-merged.yaml");
+        assertModelsEqual(expectedModel, result);
+    }
+
+
     private OpenAPI loadModel(String modelResource) {
         try (InputStream is = MergeProcessorTest.class.getResourceAsStream(modelResource)) {
             Assert.assertNotNull("Test file not loaded: " + modelResource, is);

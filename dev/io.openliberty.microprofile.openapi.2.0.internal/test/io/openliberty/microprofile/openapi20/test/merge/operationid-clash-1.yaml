@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: test
+  title: test1
   version: "1.0"
 paths:
   "/testA":

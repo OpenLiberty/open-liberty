@@ -156,7 +156,7 @@ public class MergeConfigTest {
     
     @Test
     public void testModuleExclusion() throws Exception {
-        setMergeConfig("all", "testEar/test3, testEar/test1");
+        setMergeConfig("all", "testEar/test3, testEar/test1", null);
         server.startServer();
         
         WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")

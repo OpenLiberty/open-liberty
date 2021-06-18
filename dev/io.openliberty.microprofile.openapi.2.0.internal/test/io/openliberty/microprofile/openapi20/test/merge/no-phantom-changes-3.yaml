@@ -1,75 +1,80 @@
 openapi: 3.0.3
 info:
-  title: test2
+  title: "test"
   version: "1.0"
 paths:
-  "/testfoo":
+  /testC:
     post:
       parameters: 
-        - $ref: "#/components/parameters/fooParameter"
+        - $ref: "#/components/parameters/barParameter"
       requestBody:
-        $ref: "#/components/requestBodies/fooRequestBody"
+        $ref: "#/components/requestBodies/barRequestBody"
       responses:
         200:
-          $ref: "#/components/responses/fooResponse"
+          $ref: "#/components/responses/barResponse"
         202:
           description: "success"
       security:
-        - fooSecurityScheme: []
+        - barSecurityScheme: []
       callbacks:
         test:
-          $ref: "#/components/callbacks/fooCallback"
+          $ref: "#/components/callbacks/barCallback"
+servers: 
+ - url: http://example.org
+externalDocs:
+  url: http://example.org
+  description: test docs
 components:
   schemas:
-    fooSchema:
+    barSchema:
       type: string
       description: test
   responses:
-    fooResponse:
+    barResponse:
       description: test
       content:
         text/plain:
           schema:
-            $ref: "#/components/schemas/fooSchema"
+            $ref: "#/components/schemas/barSchema"
           examples: 
-            foo:
-              $ref: "#/components/examples/fooExample"
+            bar:
+              $ref: "#/components/examples/barExample"
       headers:
-        foo: 
-          $ref: "#/components/headers/fooHeader"
+        bar: 
+          $ref: "#/components/headers/barHeader"
       links:
-        foo:
-          $ref: "#/components/links/fooLink"
+        bar:
+          $ref: "#/components/links/barLink"
   parameters:
-    fooParameter:
-      name: foo
+    barParameter:
+      name: bar
       description: test
       in: query
       required: true
       schema:
         type: string
   examples:
-    fooExample:
+    barExample:
       value: test
   requestBodies:
-    fooRequestBody:
+    barRequestBody:
       description: test
       content: {}
   headers:
-    fooHeader:
+    barHeader:
       description: test
       schema:
         type: string
   securitySchemes:
-    fooSecurityScheme:
+    barSecurityScheme:
       name: test
       type: apiKey
       in: query
   links:
-    fooLink: 
+    barLink: 
       description: test
   callbacks:
-    fooCallback:
+    barCallback:
       "$request.body#/callbackURL":
         post:
           requestBody:

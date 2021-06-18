@@ -1,9 +1,9 @@
 openapi: 3.0.3
 info:
-  title: test2
+  title: "test"
   version: "1.0"
 paths:
-  "/testfoo":
+  /testA:
     post:
       parameters: 
         - $ref: "#/components/parameters/fooParameter"
@@ -19,9 +19,33 @@ paths:
       callbacks:
         test:
           $ref: "#/components/callbacks/fooCallback"
+  /testC:
+    post:
+      parameters: 
+        - $ref: "#/components/parameters/barParameter"
+      requestBody:
+        $ref: "#/components/requestBodies/barRequestBody"
+      responses:
+        200:
+          $ref: "#/components/responses/barResponse"
+        202:
+          description: "success"
+      security:
+        - barSecurityScheme: []
+      callbacks:
+        test:
+          $ref: "#/components/callbacks/barCallback"
+servers: 
+ - url: http://example.org
+externalDocs:
+  url: http://example.org
+  description: test docs
 components:
   schemas:
     fooSchema:
+      type: string
+      description: test
+    barSchema:
       type: string
       description: test
   responses:
@@ -40,6 +64,21 @@ components:
       links:
         foo:
           $ref: "#/components/links/fooLink"
+    barResponse:
+      description: test
+      content:
+        text/plain:
+          schema:
+            $ref: "#/components/schemas/barSchema"
+          examples: 
+            bar:
+              $ref: "#/components/examples/barExample"
+      headers:
+        bar:
+          $ref: "#/components/headers/barHeader"
+      links:
+        bar:
+          $ref: "#/components/links/barLink"
   parameters:
     fooParameter:
       name: foo
@@ -48,15 +87,31 @@ components:
       required: true
       schema:
         type: string
+    barParameter:
+      name: bar
+      description: test
+      in: query
+      required: true
+      schema:
+        type: string
   examples:
     fooExample:
+      value: test
+    barExample:
       value: test
   requestBodies:
     fooRequestBody:
       description: test
       content: {}
+    barRequestBody:
+      description: test
+      content: {}
   headers:
     fooHeader:
+      description: test
+      schema:
+        type: string
+    barHeader:
       description: test
       schema:
         type: string
@@ -65,11 +120,29 @@ components:
       name: test
       type: apiKey
       in: query
+    barSecurityScheme:
+      name: test
+      type: apiKey
+      in: query
   links:
     fooLink: 
       description: test
+    barLink:
+      description: test
   callbacks:
     fooCallback:
+      "$request.body#/callbackURL":
+        post:
+          requestBody:
+            description: test
+            content:
+              'application/json':
+                schema:
+                  type: object
+          responses:
+            202:
+              description: test
+    barCallback:
       "$request.body#/callbackURL":
         post:
           requestBody:

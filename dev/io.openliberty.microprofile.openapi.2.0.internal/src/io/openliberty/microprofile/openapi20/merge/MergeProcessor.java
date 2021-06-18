@@ -12,12 +12,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiPredicate;
 
 import org.eclipse.microprofile.openapi.OASFactory;
 import org.eclipse.microprofile.openapi.models.Components;
+import org.eclipse.microprofile.openapi.models.ExternalDocumentation;
 import org.eclipse.microprofile.openapi.models.OpenAPI;
 import org.eclipse.microprofile.openapi.models.Operation;
 import org.eclipse.microprofile.openapi.models.PathItem;
@@ -25,7 +25,6 @@ import org.eclipse.microprofile.openapi.models.Paths;
 import org.eclipse.microprofile.openapi.models.info.Info;
 import org.eclipse.microprofile.openapi.models.security.SecurityRequirement;
 import org.eclipse.microprofile.openapi.models.servers.Server;
-import org.eclipse.microprofile.openapi.models.servers.ServerVariable;
 import org.eclipse.microprofile.openapi.models.tags.Tag;
 
 import com.ibm.websphere.ras.Tr;
@@ -56,6 +55,14 @@ public class MergeProcessor {
 
     private static final TraceComponent tc = Tr.register(MergeProcessor.class);
 
+    private static final Info MERGED_INFO;
+
+    static {
+        MERGED_INFO = OASFactory.createInfo();
+        MERGED_INFO.setTitle("Merged documentation");
+        MERGED_INFO.setVersion("1.0");
+    }
+
     /**
      * Create a merged OpenAPI model from a list of OpenAPIProviders.
      * <p>
@@ -81,7 +88,7 @@ public class MergeProcessor {
                 Tr.event(tc, "Unable to trace merged document", e);
             }
         }
-        
+
         return mergedDoc;
 
     }
@@ -119,9 +126,17 @@ public class MergeProcessor {
 
     private void process() {
 
-        boolean securityIdentical = isSecurityIdentical(providers);
+        List<InProgressModel> inProgressModels = new ArrayList<>();
 
+        // First loop which just does all the steps necessary to determine whether there are any fatal merge conflicts
+        // which result in removing some of the requested merge providers.
+        // This ensures that when we come to rename things to avoid non-fatal merge conflicts, we aren't trying to avoid
+        // clashing with models that have been removed.
         for (OpenAPIProvider provider : providers) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(this, tc, "Starting path processing for " + provider);
+            }
+
             // Make a deep copy, to avoid modifying the input model
             OpenAPI model = (OpenAPI) ModelCopy.copy(provider.getModel());
 
@@ -131,44 +146,73 @@ public class MergeProcessor {
             prependPaths(model, provider.getApplicationPath(), renameHolder);
 
             // Check for clashes
-            if (findPathClashes(model, provider)) {
-                break;
+            if (!findAndRecordPathClashes(model, provider)) {
+                InProgressModel inProgressModel = new InProgressModel();
+                inProgressModel.model = model;
+                inProgressModel.provider = provider;
+                inProgressModel.renameHolder = renameHolder;
+                inProgressModels.add(inProgressModel);
+
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(this, tc, "No path clashes for " + provider + ", including in merge");
+                }
+            }
+        }
+
+        boolean securityIdentical = isSecurityIdentical(inProgressModels);
+        boolean infoIdentical = isInfoIdentical(inProgressModels);
+        boolean externalDocsIdentical = isExternalDocsIdentical(inProgressModels);
+        boolean serversIdentical = isServersIdentical(inProgressModels);
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.event(this, tc, "Security identical = " + securityIdentical);
+            Tr.event(this, tc, "Info identical = " + infoIdentical);
+            Tr.event(this, tc, "External docs identical = " + externalDocsIdentical);
+            Tr.event(this, tc, "Servers identical = " + serversIdentical);
+        }
+
+        // Second loop which moves and renames parts of the models where necessary to avoid clashes
+        for (InProgressModel inProgress : inProgressModels) {
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(this, tc, "Starting main processing for " + inProgress.provider);
             }
 
             // Find and process renames
-            renameClashingTags(model, renameHolder);
-            renameClashingComponents(model, renameHolder);
-            renameClashingOperationIds(model, renameHolder);
+            renameClashingTags(inProgress.model, inProgress.renameHolder);
+            renameClashingComponents(inProgress.model, inProgress.renameHolder);
+            renameClashingOperationIds(inProgress.model, inProgress.renameHolder);
 
             // Move security requirements
             if (!securityIdentical) {
-                moveSecurityRequirements(model);
+                moveSecurityRequirements(inProgress.model);
             }
 
-            if (renameHolder.hasRenames()) {
+            if (!infoIdentical) {
+                inProgress.model.setInfo(MERGED_INFO);
+            }
+
+            if (!externalDocsIdentical) {
+                inProgress.model.setExternalDocs(null);
+            }
+
+            if (!serversIdentical) {
+                moveServersUnderPaths(inProgress.model);
+            }
+
+            if (inProgress.renameHolder.hasRenames()) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                     Tr.event(this, tc, "Updating references to renamed elements");
                 }
 
                 // Update references
-                OpenAPIModelVisitor visitor = new RenameReferenceVisitor(renameHolder);
-                OpenAPIModelWalker walker = new OpenAPIModelWalker(model);
+                OpenAPIModelVisitor visitor = new RenameReferenceVisitor(inProgress.renameHolder);
+                OpenAPIModelWalker walker = new OpenAPIModelWalker(inProgress.model);
                 walker.accept(visitor);
             }
 
-            // TODO: Generate an info block
-            processedModels.add(model);
-            includedProviders.add(provider);
-        }
-
-        if (!isServersIdentical(processedModels)) {
-            for (OpenAPI model : processedModels) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(this, tc, "Moving servers from the top level to under paths");
-                }
-
-                moveServersUnderPaths(model);
-            }
+            processedModels.add(inProgress.model);
+            includedProviders.add(inProgress.provider);
         }
     }
 
@@ -188,11 +232,6 @@ public class MergeProcessor {
 
         merged.setOpenapi("3.0.3");
 
-        Info mergedInfo = OASFactory.createInfo();
-        mergedInfo.setVersion("1.0");
-        mergedInfo.setTitle("Merged documentation");
-        merged.setInfo(mergedInfo);
-
         return new MergedOpenAPIProvider(merged, mergeProblems);
     }
 
@@ -207,7 +246,7 @@ public class MergeProcessor {
      * @param provider the provider that provided the model
      * @return {@code true} if there are any clashes, otherwise {@code false}
      */
-    private boolean findPathClashes(OpenAPI model, OpenAPIProvider provider) {
+    private boolean findAndRecordPathClashes(OpenAPI model, OpenAPIProvider provider) {
         Paths paths = model.getPaths();
         if (paths == null) {
             return false;
@@ -462,32 +501,25 @@ public class MergeProcessor {
         return server.getUrl().endsWith(contextRoot) || server.getUrl().endsWith(contextRoot + "/");
     }
 
-    private static boolean isSecurityIdentical(List<OpenAPIProvider> documents) {
-        List<List<SecurityRequirement>> reqs = documents.stream().map(d -> d.getModel().getSecurity()).collect(toList());
+    private static boolean isSecurityIdentical(List<InProgressModel> models) {
+        List<List<SecurityRequirement>> reqs = models.stream().map(d -> d.model.getSecurity()).collect(toList());
 
-        return allEqual(reqs, (a, b) -> listsEqual(a, b, MergeProcessor::isSecurityRequirementsEqual));
+        return allEqual(reqs, ModelEquality::equals);
     }
 
-    private static boolean isSecurityRequirementsEqual(SecurityRequirement a, SecurityRequirement b) {
-        return Objects.equals(a.getSchemes(), b.getSchemes());
+    private static boolean isServersIdentical(List<InProgressModel> processedModels) {
+        List<List<Server>> servers = processedModels.stream().map(m -> m.model).map(OpenAPI::getServers).collect(toList());
+        return allEqual(servers, ModelEquality::equals);
     }
 
-    private static boolean isServersIdentical(List<OpenAPI> processedModels) {
-        List<List<Server>> servers = processedModels.stream().map(OpenAPI::getServers).collect(toList());
-        return allEqual(servers, (a, b) -> listsEqual(a, b, MergeProcessor::isServersEqual));
+    private static boolean isInfoIdentical(List<InProgressModel> models) {
+        List<Info> infos = models.stream().map(m -> m.model).map(OpenAPI::getInfo).collect(toList());
+        return allEqual(infos, ModelEquality::equals);
     }
 
-    private static boolean isServersEqual(Server a, Server b) {
-        return Objects.equals(a.getUrl(), b.getUrl())
-               && Objects.equals(a.getDescription(), b.getDescription())
-               && Objects.equals(a.getExtensions(), b.getExtensions())
-               && mapsEqual(a.getVariables(), b.getVariables(), MergeProcessor::isServerVariableEqual);
-    }
-
-    private static boolean isServerVariableEqual(ServerVariable a, ServerVariable b) {
-        return listsEqual(a.getEnumeration(), b.getEnumeration(), Objects::equals)
-               && Objects.equals(a.getDescription(), b.getDescription())
-               && Objects.equals(a.getDefaultValue(), b.getDefaultValue());
+    private static boolean isExternalDocsIdentical(List<InProgressModel> models) {
+        List<ExternalDocumentation> docs = models.stream().map(m -> m.model).map(OpenAPI::getExternalDocs).collect(toList());
+        return allEqual(docs, ModelEquality::equals);
     }
 
     private static void moveServersUnderPaths(OpenAPI model) {
@@ -538,70 +570,6 @@ public class MergeProcessor {
     }
 
     /**
-     * Tests whether two lists are equal, using {@code comparator} to compare the list items
-     * 
-     * @param <T> the list item type
-     * @param a the first list, may be {@code null}
-     * @param b the second list, may be {@code null}
-     * @param comparator the comparison function
-     * @return {@code true} if {@code a} and {@code b} are equal, {@code false} otherwise
-     */
-    private static <T> boolean listsEqual(List<? extends T> a, List<? extends T> b, BiPredicate<? super T, ? super T> comparator) {
-        if (a == null) {
-            return b == null;
-        } else {
-            if (b == null) {
-                return false;
-            }
-        }
-
-        if (a.size() != b.size()) {
-            return false;
-        }
-
-        for (int i = 0; i < a.size(); i++) {
-            if (!equals(a.get(i), b.get(i), comparator)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * Tests whether two maps are equal, using {@code comparator} to compare the map values
-     * 
-     * @param <T> the map item type
-     * @param a the first map, may be {@code null}
-     * @param b the second map, may be {@code null}
-     * @param comparator the comparison function
-     * @return {@code true} if {@code a} and {@code b} are equal, {@code false} otherwise
-     */
-    private static <T> boolean mapsEqual(Map<?, ? extends T> a, Map<?, ? extends T> b, BiPredicate<? super T, ? super T> comparator) {
-        if (a == null) {
-            return b == null;
-        } else {
-            if (b == null) {
-                return false;
-            }
-        }
-
-        if (!Objects.equals(a.entrySet(), b.entrySet())) {
-            return false;
-        }
-
-        for (Entry<?, ? extends T> entry : a.entrySet()) {
-            T itema = entry.getValue();
-            T itemb = b.get(entry.getKey());
-            if (!equals(itema, itemb, comparator)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
      * Tests if two objects are equal, using {@code comparator} to test their equality if both {@code a} and {@code b} are not {@code null}.
      * 
      * @param <T> the type of {@code a} and {@code b}
@@ -612,22 +580,10 @@ public class MergeProcessor {
      */
     private static <T> boolean equals(T a, T b, BiPredicate<? super T, ? super T> comparator) {
         if (a == null) {
-            if (b == null) {
-                return true;
-            } else {
-                return false;
-            }
+            return b == null ? true : false;
         } else {
-            if (b == null) {
-                return false;
-            } else {
-                if (!comparator.test(a, b)) {
-                    return false;
-                }
-            }
+            return b == null ? false : comparator.test(a, b);
         }
-
-        return true;
     }
 
     /**
@@ -694,7 +650,7 @@ public class MergeProcessor {
         private Map<String, Object> getNamesInUse(NameType nameType) {
             return MergeProcessor.this.namesInUse.computeIfAbsent(nameType, (k) -> new HashMap<>());
         }
-        
+
         private static final String NO_VALUE = "NO VALUE";
 
         /**
@@ -721,7 +677,7 @@ public class MergeProcessor {
             if (previousRename != null) {
                 return previousRename;
             }
-            
+
             Map<String, Object> namesInUse = getNamesInUse(nameType);
             String newName = oldName;
             Object valueInUse = namesInUse.get(newName);
@@ -730,14 +686,14 @@ public class MergeProcessor {
                 int count = 1;
                 newName = oldName + count;
                 valueInUse = namesInUse.get(newName);
-                
+
                 // Compute the new name
                 while (valueInUse != null && (valueInUse == NO_VALUE || !ModelEquality.equals(valueInUse, value))) {
                     count++;
                     newName = oldName + count;
                     valueInUse = namesInUse.get(newName);
                 }
-                
+
                 // Store the rename
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                     Tr.event(tc, "Renamed " + nameType + " " + oldName + " -> " + newName);
@@ -799,6 +755,12 @@ public class MergeProcessor {
         public boolean hasRenames() {
             return hasRenames;
         }
+    }
+
+    private static class InProgressModel {
+        private OpenAPIProvider provider;
+        private OpenAPI model;
+        private RenameHolder renameHolder;
     }
 
     public enum NameType {

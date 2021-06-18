@@ -112,7 +112,7 @@ public class MergeTest {
         doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
         openapiNode = OpenAPITestUtil.readYamlTree(doc);
         OpenAPITestUtil.checkPaths(openapiNode, 3, "/test1/test", "/test2/test", "/test3/test");
-        OpenAPITestUtil.checkInfo(openapiNode, "Merged documentation", "1.0");
+        OpenAPITestUtil.checkInfo(openapiNode, "Generated API", "1.0");
         assertServerContextRoot(openapiNode, null);
         
 
@@ -123,7 +123,7 @@ public class MergeTest {
         doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
         openapiNode = OpenAPITestUtil.readYamlTree(doc);
         OpenAPITestUtil.checkPaths(openapiNode, 2, "/test2/test", "/test3/test");
-        OpenAPITestUtil.checkInfo(openapiNode, "Merged documentation", "1.0");
+        OpenAPITestUtil.checkInfo(openapiNode, "Generated API", "1.0");
         assertServerContextRoot(openapiNode, null);
     }
 
@@ -143,7 +143,7 @@ public class MergeTest {
         String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
         JsonNode openapiNode = OpenAPITestUtil.readYamlTree(doc);
         OpenAPITestUtil.checkPaths(openapiNode, 2, "/test1/test", "/test2/test");
-        OpenAPITestUtil.checkInfo(openapiNode, "Merged documentation", "1.0");
+        OpenAPITestUtil.checkInfo(openapiNode, "Generated API", "1.0");
         assertServerContextRoot(openapiNode, null);
     }
 
