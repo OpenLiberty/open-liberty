@@ -31,6 +31,10 @@ public abstract class DDParserBndExt extends DDParser {
     protected static final XMLVersionMapping XML_VERSION_MAPPING_12 =
             new XMLVersionMapping("1.2", 12);    
 
+    protected static final XMLVersionMapping[] XML_VERSION_MAPPINGS_10_10 = {
+            XML_VERSION_MAPPING_10
+    };
+
     protected static final XMLVersionMapping[] XML_VERSION_MAPPINGS_10_11 = {
             XML_VERSION_MAPPING_10,
             XML_VERSION_MAPPING_11,
@@ -42,14 +46,14 @@ public abstract class DDParserBndExt extends DDParser {
             XML_VERSION_MAPPING_12
     };
     
-    public static final boolean IS_XMI = true;
     public static final Class<?> UNUSED_CROSS_COMPONENT_TYPE = null;
+    public static final boolean IS_XMI = true;
+    public static final String UNUSED_XMI_NAMESPACE = null;
 
     public DDParserBndExt(
         Container ddRootContainer, Entry ddEntry,
         Class<?> crossComponentType,
-        boolean xmi,
-        String expectedRootElementName,
+        boolean xmi, String expectedRootElementName,
         String xmiNamespace,
         XMLVersionMapping[] xmlVersionMappings,
         int xmlDefaultVersion) throws DDParser.ParseException {

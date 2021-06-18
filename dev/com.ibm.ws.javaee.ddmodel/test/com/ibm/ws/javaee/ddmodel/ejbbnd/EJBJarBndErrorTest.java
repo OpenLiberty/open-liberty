@@ -33,7 +33,7 @@ public class EJBJarBndErrorTest extends EJBJarBndTestBase {
             Assert.fail("An exception should have been thrown.");
         } catch (DDParser.ParseException e) {
             verifyMessage(e,
-                    "invalid.deployment.descriptor.version",
+                    "unsupported.descriptor.version",
                     "CWWKC2263", "3.0", "ibm-ejb-jar-bnd.xml"); 
         }
     }
@@ -46,7 +46,7 @@ public class EJBJarBndErrorTest extends EJBJarBndTestBase {
             Assert.fail("Parser should have thrown an exception for bad root.");
         } catch (DDParser.ParseException e) {
             verifyMessage(e,
-                    "invalid.root.element",
+                    "unexpected.root.element",
                     "CWWKC2252", "ejb-jar-ext", "ibm-ejb-jar-bnd.xml");
         }
     }
@@ -61,14 +61,7 @@ public class EJBJarBndErrorTest extends EJBJarBndTestBase {
 
     @Test
     public void testEjbJarBndNoNamespaceError() throws Exception {
-        try {
-            getEJBJarBnd(ejbJarBndNoNameSpace + "</ejb-jar-bnd>");
-            Assert.fail("Parser should have thrown an exception for no namespace.");
-        } catch (DDParser.ParseException e) {
-            verifyMessage(e,
-                    "missing.deployment.descriptor.namespace",
-                    "CWWKC2264", "ibm-ejb-jar-bnd.xml");
-        }
+        getEJBJarBnd(ejbJarBndNoNameSpace + "</ejb-jar-bnd>");
     }
 
     protected static final String ejbJarBndMissingVersion =
@@ -80,14 +73,7 @@ public class EJBJarBndErrorTest extends EJBJarBndTestBase {
 
     @Test
     public void testEjbJarBndMissingVersionError() throws Exception {
-        try {
-            getEJBJarBnd(ejbJarBndMissingVersion + "</ejb-jar-bnd>");
-            Assert.fail("Parser should have thrown an exception for no version.");
-        } catch (DDParser.ParseException e) {
-            verifyMessage(e,
-                    "missing.deployment.descriptor.version",
-                    "CWWKC2265", "ibm-ejb-jar-bnd.xml");
-        }
+        getEJBJarBnd(ejbJarBndMissingVersion + "</ejb-jar-bnd>");
     }
 
     //name is required in EnterpriseBean

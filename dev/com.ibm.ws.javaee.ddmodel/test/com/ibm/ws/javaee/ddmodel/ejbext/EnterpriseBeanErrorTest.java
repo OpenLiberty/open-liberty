@@ -37,7 +37,7 @@ public class EnterpriseBeanErrorTest extends EJBJarExtTestBase {
             Assert.assertEquals("Version should be 2.0", "2.0", parse(ejbJarExt20() + "</ejb-jar-ext>").getVersion());
             Assert.fail("An exception should have been thrown but was not.");
         } catch (DDParser.ParseException e) {
-            verifyMessage(e, "invalid.deployment.descriptor.version", "CWWKC2263");
+            verifyMessage(e, "unsupported.descriptor.version", "CWWKC2263");
         }
     }
 

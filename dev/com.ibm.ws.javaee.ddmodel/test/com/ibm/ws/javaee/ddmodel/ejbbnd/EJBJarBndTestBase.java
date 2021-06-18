@@ -49,33 +49,33 @@ public class EJBJarBndTestBase extends DDTestBase {
         return parse(xml, ejbJar);
     }
 
-    private EJBJarBnd parse(final String xml, final EJBJar ejbJar) throws Exception {
+    private EJBJarBnd parse(String xml, EJBJar ejbJar) throws Exception {
         boolean xmi = ejbJar != null;
-        final WebModuleInfo moduleInfo = isWarModule ? mockery.mock(WebModuleInfo.class, "webModuleInfo" + mockId++) : null;
-        final String entryName = isWarModule ?
+        WebModuleInfo moduleInfo = isWarModule ? mockery.mock(WebModuleInfo.class, "webModuleInfo" + mockId++) : null;
+        String entryName = isWarModule ?
                         (xmi ? EJBJarBndAdapter.XMI_BND_IN_WEB_MOD_NAME : EJBJarBndAdapter.XML_BND_IN_WEB_MOD_NAME) :
                         (xmi ? EJBJarBndAdapter.XMI_BND_IN_EJB_MOD_NAME : EJBJarBndAdapter.XML_BND_IN_EJB_MOD_NAME);
         return parse(xml, new EJBJarBndAdapter(), entryName, EJBJar.class, ejbJar, WebModuleInfo.class, moduleInfo);
     }
 
     public EJBJarBnd getEJBJarBnd(String jarString) throws Exception {
-        return parse(jarString, null);
+        return parse(jarString, (EJBJar) null);
     }
 
     public EJBJar parseEJBJar(String xml) throws Exception {
         return parseEJBJar(xml, EJBJar.VERSION_3_2);
     }
 
-    public EJBJar parseEJBJar(final String xml, final int maxVersion) throws Exception {
+    public EJBJar parseEJBJar(String xml, int maxVersion) throws Exception {
         EJBJarEntryAdapter adapter = new EJBJarEntryAdapter();
         @SuppressWarnings("unchecked")
-        final ServiceReference<EJBJarDDParserVersion> versionRef = mockery.mock(ServiceReference.class, "sr" + mockId++);
-        final Container root = mockery.mock(Container.class, "root" + mockId++);
-        final Entry entry = mockery.mock(Entry.class, "entry" + mockId++);
-        final OverlayContainer rootOverlay = mockery.mock(OverlayContainer.class, "rootOverlay" + mockId++);
-        final ArtifactEntry artifactEntry = mockery.mock(ArtifactEntry.class, "artifactContainer" + mockId++);
-        final NonPersistentCache nonPC = mockery.mock(NonPersistentCache.class, "nonPC" + mockId++);
-        final WebModuleInfo moduleInfo = isWarModule ? mockery.mock(WebModuleInfo.class, "webModuleInfo" + mockId++) : null;
+        ServiceReference<EJBJarDDParserVersion> versionRef = mockery.mock(ServiceReference.class, "sr" + mockId++);
+        Container root = mockery.mock(Container.class, "root" + mockId++);
+        Entry entry = mockery.mock(Entry.class, "entry" + mockId++);
+        OverlayContainer rootOverlay = mockery.mock(OverlayContainer.class, "rootOverlay" + mockId++);
+        ArtifactEntry artifactEntry = mockery.mock(ArtifactEntry.class, "artifactContainer" + mockId++);
+        NonPersistentCache nonPC = mockery.mock(NonPersistentCache.class, "nonPC" + mockId++);
+        WebModuleInfo moduleInfo = isWarModule ? mockery.mock(WebModuleInfo.class, "webModuleInfo" + mockId++) : null;
 
         mockery.checking(new Expectations() {
             {

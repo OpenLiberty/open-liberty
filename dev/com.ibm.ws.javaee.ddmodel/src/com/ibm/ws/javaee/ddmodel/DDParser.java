@@ -41,7 +41,7 @@ import com.ibm.wsspi.adaptable.module.NonPersistentCache;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 
 public abstract class DDParser {
-    private static final TraceComponent tc = Tr.register(DDParser.class);
+    protected static final TraceComponent tc = Tr.register(DDParser.class);
 
     //
 
@@ -535,15 +535,6 @@ public abstract class DDParser {
         }
     };
 
-    /**
-     * Allow specific implementing parsers to manipulate this default behavior.
-     */
-    protected void failInvalidRootElement() throws ParseException {
-        if (rootParsable == null) {
-            throw new ParseException(invalidRootElement());
-        }
-    }
-
     @Trivial
     public ParsableElement getRootParsable() {
         return rootParsable;
@@ -739,7 +730,6 @@ public abstract class DDParser {
 
                 currentElementLocalName = rootElementLocalName;
                 rootParsable = createRootParsable();
-                failInvalidRootElement();
 
                 if ( rootParsable != null ) {
                     parse(rootParsable);
@@ -1355,6 +1345,6 @@ public abstract class DDParser {
     protected String unexpectedRootElement(String expectedRootElementName) {
         // The deployment descriptor {0}, at line {1}, has root element {2},
         // but requires root element {3}. 
-        return Tr.formatMessage(tc, "unexpected.root.element", describeEntry(), getLineNumber(), expectedRootElementName, rootElementLocalName);
+        return Tr.formatMessage(tc, "unexpected.root.element", describeEntry(), getLineNumber(), rootElementLocalName, expectedRootElementName);
     }    
 }

@@ -23,7 +23,7 @@ public abstract class DDParserSpec extends DDParser {
         "http://xmlns.jcp.org/xml/ns/javaee";
     public static final String NAMESPACE_JAKARTA =
         "https://jakarta.ee/xml/ns/jakartaee";    
-
+    
     //
 
     public DDParserSpec(Container ddRootContainer, Entry ddEntry) throws ParseException {

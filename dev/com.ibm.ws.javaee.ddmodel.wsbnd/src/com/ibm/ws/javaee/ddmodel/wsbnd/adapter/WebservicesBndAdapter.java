@@ -34,8 +34,8 @@ import com.ibm.ws.container.service.app.deploy.extended.ExtendedApplicationInfo;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.javaee.dd.app.Application;
 import com.ibm.ws.javaee.dd.app.Module;
-import com.ibm.ws.javaee.ddmodel.DDParser;
 import com.ibm.ws.javaee.ddmodel.DDParser.ParseException;
+import com.ibm.ws.javaee.ddmodel.DDParserBndExt;
 import com.ibm.ws.javaee.ddmodel.wsbnd.WebservicesBnd;
 import com.ibm.ws.javaee.ddmodel.wsbnd.impl.WebservicesBndComponentImpl;
 import com.ibm.ws.javaee.ddmodel.wsbnd.impl.WebservicesBndType;
@@ -178,36 +178,29 @@ public final class WebservicesBndAdapter implements ContainerAdapter<Webservices
         // EMPTY
     }
 
-    private static final class WsClientBndParser extends DDParser {
+    private static final class WsClientBndParser extends DDParserBndExt {
         public WsClientBndParser(Container ddRootContainer, Entry ddEntry) throws ParseException {
-            super(ddRootContainer, ddEntry);
+            super(ddRootContainer, ddEntry,
+                    UNUSED_CROSS_COMPONENT_TYPE,
+                    !IS_XMI, WEBSERVICES_BND_ELEMENT_NAME, UNUSED_XMI_NAMESPACE,
+                    XML_VERSION_MAPPINGS_10_10,
+                    10);
         }
 
         @Override
         public WebservicesBndType parse() throws ParseException {
             super.parseRootElement();
-
             return (WebservicesBndType) rootParsable;
         }
 
         @Override
         protected WebservicesBndType createRootParsable() throws ParseException {
-            if (WEBSERVICES_BND_ELEMENT_NAME.equals(rootElementLocalName)) {
-                return createXMLRootParsable();
-            }
-            return null;
+            return (WebservicesBndType) super.createRootParsable();
         }
 
-        private WebservicesBndType createXMLRootParsable() throws ParseException {
-            if (namespace == null) {
-                throw new ParseException(unknownDeploymentDescriptorVersion());
-            }
-            if ("http://websphere.ibm.com/xml/ns/javaee".equals(namespace)) {
-                version = 10;
-                return new WebservicesBndType(getDeploymentDescriptorPath());
-            } else {
-                throw new ParseException(unknownDeploymentDescriptorVersion());
-            }
+        @Override
+        protected WebservicesBndType createRoot() {
+            return new WebservicesBndType( getDeploymentDescriptorPath() );            
         }
     }
 }

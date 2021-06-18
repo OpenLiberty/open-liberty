@@ -54,7 +54,7 @@ public class ValidationConfigTest extends ValidationConfigTestBase {
             parse(validationConfig10() + "</validation-config>");
             fail("having validation.xml with version=1.0 isn't valid");
         } catch (UnableToAdaptException e) {
-            verifyMessage(e, "invalid.deployment.descriptor.version", "CWWKC2263E");
+            verifyMessage(e, "unsupported.descriptor.version", "CWWKC2263E");
         }
     }
 
@@ -84,7 +84,7 @@ public class ValidationConfigTest extends ValidationConfigTestBase {
                                     "<default-provider>provider.class.Name</default-provider>" +
                                     "</validation-config>").getDefaultProvider();
         } catch (UnableToAdaptException e) {
-            verifyMessage(e, "invalid.deployment.descriptor.version", "CWWKC2263E");
+            verifyMessage(e, "unsupported.descriptor.version", "CWWKC2263E");
         }
 
         defaultProvider = parse(validationConfig11() +
