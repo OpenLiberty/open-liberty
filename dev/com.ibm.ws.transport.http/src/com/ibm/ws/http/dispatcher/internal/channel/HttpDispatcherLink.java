@@ -158,6 +158,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Connection must be already closed since vc is null");
             }
+            this.myChannel.decrementActiveConns();
             return;
         }
 
@@ -712,7 +713,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
      * It is the value of the part before ":" in the Host header value, if any,
      * or the resolved server name, or the server IP address.
      *
-     * @param request the inbound request
+     * @param request        the inbound request
      * @param remoteHostAddr the requesting client IP address
      */
     @Override
@@ -743,8 +744,8 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
      * the part after ":" in the Host header value, if any, or the server port
      * where the client connection was accepted on.
      *
-     * @param request the inbound request
-     * @param localPort the server port where the client connection was accepted on.
+     * @param request        the inbound request
+     * @param localPort      the server port where the client connection was accepted on.
      * @param remoteHostAddr the requesting client IP address
      */
     @Override
