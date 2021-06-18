@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2020 IBM Corporation and others.
+ * Copyright (c) 2003, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -153,6 +153,11 @@ class LogHandle {
      */
     FailureScope _failureScope;
 
+    /**
+     * A flag to indicate whether the recovery log belongs to the home server.
+     */
+    private final boolean _isHomeServer;
+
     //------------------------------------------------------------------------------
     // Method: LogHandle.LogHandle
     //------------------------------------------------------------------------------
@@ -199,6 +204,7 @@ class LogHandle {
         _maxLogFileSize = maxLogFileSize;
         _logFileSize = logFileSize;
         _failureScope = fs;
+        _isHomeServer = Configuration.localFailureScope().equals(_failureScope);
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "LogHandle", this);
@@ -743,8 +749,14 @@ class LogHandle {
             throw new InternalLogException(exc);
         }
 
-        _file1 = null;
-        _file2 = null;
+        if (!_isHomeServer) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Working with a peer server retain LogFileHandles on close");
+        } else {
+            _file1 = null;
+            _file2 = null;
+        }
+
         _activeFile = null;
         _recoveredRecords = null;
         _physicalFreeBytes = 0;
@@ -1220,5 +1232,37 @@ class LogHandle {
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "createWarningFile");
+    }
+
+    /**
+     * Delete the underlying file system tree where the log file resides
+     */
+    public void delete() {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "delete", new Object[] { this });
+
+        if (_file1 != null && _file2 != null) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Delete the underlying file system log files. Working with log directory " + _logDirectory);
+
+            // Delete the required directory tree
+            File directoryToBeDeleted = new File(_logDirectory);
+            // Only proceed if the directory exists.
+            if (directoryToBeDeleted != null && directoryToBeDeleted.exists()) {
+                directoryToBeDeleted = directoryToBeDeleted.getParentFile();
+
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Working with directory " + directoryToBeDeleted.getAbsolutePath());
+                boolean deleted = RLSUtils.deleteDirectoryTree(directoryToBeDeleted);
+            } else {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "The directory does not exist");
+            }
+        }
+        _file1 = null;
+        _file2 = null;
+
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "delete");
     }
 }

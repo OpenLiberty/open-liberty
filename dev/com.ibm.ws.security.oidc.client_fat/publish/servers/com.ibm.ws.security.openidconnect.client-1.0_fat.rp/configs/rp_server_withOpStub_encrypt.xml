@@ -56,7 +56,6 @@
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
 		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
-		validateAccessTokenLocally="true"
 		authFilterRef="authFilterRS256"
 		signatureAlgorithm="RS256"
 		trustStoreRef="trust_allSigAlg"
@@ -81,7 +80,6 @@
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
 		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
-		validateAccessTokenLocally="true"
 		authFilterRef="authFilterRS384"
 		signatureAlgorithm="RS384"
 		trustStoreRef="trust_allSigAlg"
@@ -106,7 +104,6 @@
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
 		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
-		validateAccessTokenLocally="true"
 		authFilterRef="authFilterRS512"
 		signatureAlgorithm="RS512"
 		trustStoreRef="trust_allSigAlg"
@@ -115,7 +112,7 @@
 	</openidConnectClient>	
 -->	
 	
-<!--  diff sign and encrypt varieties -->	
+<!--  RS encryption variations -->	
 
 	<authFilter id="authFilterHS256RS256">
 		<requestUrl
@@ -135,9 +132,8 @@
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
 		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
-		validateAccessTokenLocally="true"
 		authFilterRef="authFilterHS256RS256"
-		keyManagmetnKeyAlias="rs256"
+		keyManagementKeyAlias="rs256"
 		sslRef="ssl_allSigAlg"
 	>
 	</openidConnectClient>
@@ -160,9 +156,9 @@
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
 		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
-		validateAccessTokenLocally="true"
 		authFilterRef="authFilterHS384RS256"
-		keyManagmetnKeyAlias="rs256"
+		signatureAlgorithm="HS384"
+		keyManagementKeyAlias="rs256"
 		sslRef="ssl_allSigAlg"
 	>
 	</openidConnectClient>
@@ -185,9 +181,9 @@
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
 		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
-		validateAccessTokenLocally="true"
 		authFilterRef="authFilterHS512RS256"
-		keyManagmetnKeyAlias="rs256"
+		signatureAlgorithm="HS512"
+		keyManagementKeyAlias="rs256"
 		sslRef="ssl_allSigAlg"
 	>
 	</openidConnectClient>
@@ -210,12 +206,11 @@
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
 		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
-		validateAccessTokenLocally="true"
 		authFilterRef="authFilterRS256RS256"
 		signatureAlgorithm="RS256"
 		trustStoreRef="trust_allSigAlg"
 		trustAliasName="rs256"
-		keyManagmetnKeyAlias="rs256"
+		keyManagementKeyAlias="rs256"
 		sslRef="ssl_allSigAlg"
 	>
 	</openidConnectClient>	
@@ -237,12 +232,11 @@
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
 		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
-		validateAccessTokenLocally="true"
 		authFilterRef="authFilterRS384RS256"
 		signatureAlgorithm="RS384"
 		trustStoreRef="trust_allSigAlg"
 		trustAliasName="rs384"
-		keyManagmetnKeyAlias="rs256"
+		keyManagementKeyAlias="rs256"
 		sslRef="ssl_allSigAlg"
 	>
 	</openidConnectClient>	
@@ -264,12 +258,11 @@
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
 		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
-		validateAccessTokenLocally="true"
 		authFilterRef="authFilterRS512RS256"
 		signatureAlgorithm="RS512"
 		trustStoreRef="trust_allSigAlg"
 		trustAliasName="rs512"
-		keyManagmetnKeyAlias="rs256"
+		keyManagementKeyAlias="rs256"
 		sslRef="ssl_allSigAlg"
 	>
 	</openidConnectClient>	
@@ -291,12 +284,11 @@
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
 		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
-		validateAccessTokenLocally="true"
 		authFilterRef="authFilterES256RS256"
 		signatureAlgorithm="ES256"
 		trustStoreRef="trust_allSigAlg"
 		trustAliasName="es256"
-		keyManagmetnKeyAlias="rs256"
+		keyManagementKeyAlias="rs256"
 		sslRef="ssl_allSigAlg"
 	>
 	</openidConnectClient>	
@@ -318,12 +310,11 @@
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
 		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
-		validateAccessTokenLocally="true"
 		authFilterRef="authFilterES384RS256"
 		signatureAlgorithm="ES384"
 		trustStoreRef="trust_allSigAlg"
 		trustAliasName="es384"
-		keyManagmetnKeyAlias="rs256"
+		keyManagementKeyAlias="rs256"
 		sslRef="ssl_allSigAlg"
 	>
 	</openidConnectClient>	
@@ -345,12 +336,11 @@
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
 		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
-		validateAccessTokenLocally="true"
 		authFilterRef="authFilterES512RS256"
 		signatureAlgorithm="ES512"
 		trustStoreRef="trust_allSigAlg"
 		trustAliasName="es512"
-		keyManagmetnKeyAlias="rs256"
+		keyManagementKeyAlias="rs256"
 		sslRef="ssl_allSigAlg"
 	>
 	</openidConnectClient>	
@@ -373,9 +363,8 @@
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
 		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
-		validateAccessTokenLocally="true"
 		authFilterRef="authFilterHS256RS384"
-		keyManagmetnKeyAlias="rs384"
+		keyManagementKeyAlias="rs384"
 		sslRef="ssl_allSigAlg"
 	>
 	</openidConnectClient>
@@ -398,9 +387,9 @@
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
 		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
-		validateAccessTokenLocally="true"
 		authFilterRef="authFilterHS384RS384"
-		keyManagmetnKeyAlias="rs384"
+		signatureAlgorithm="HS384"
+		keyManagementKeyAlias="rs384"
 		sslRef="ssl_allSigAlg"
 	>
 	</openidConnectClient>
@@ -423,9 +412,9 @@
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
 		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
-		validateAccessTokenLocally="true"
 		authFilterRef="authFilterHS512RS384"
-		keyManagmetnKeyAlias="rs384"
+		signatureAlgorithm="HS512"
+		keyManagementKeyAlias="rs384"
 		sslRef="ssl_allSigAlg"
 	>
 	</openidConnectClient>
@@ -448,12 +437,11 @@
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
 		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
-		validateAccessTokenLocally="true"
 		authFilterRef="authFilterRS256RS384"
 		signatureAlgorithm="RS256"
 		trustStoreRef="trust_allSigAlg"
 		trustAliasName="rs256"
-		keyManagmetnKeyAlias="rs384"
+		keyManagementKeyAlias="rs384"
 		sslRef="ssl_allSigAlg"
 	>
 	</openidConnectClient>	
@@ -475,12 +463,11 @@
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
 		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
-		validateAccessTokenLocally="true"
 		authFilterRef="authFilterRS384RS384"
 		signatureAlgorithm="RS384"
 		trustStoreRef="trust_allSigAlg"
 		trustAliasName="rs384"
-		keyManagmetnKeyAlias="rs384"
+		keyManagementKeyAlias="rs384"
 		sslRef="ssl_allSigAlg"
 	>
 	</openidConnectClient>	
@@ -502,12 +489,11 @@
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
 		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
-		validateAccessTokenLocally="true"
 		authFilterRef="authFilterRS512RS384"
 		signatureAlgorithm="RS512"
 		trustStoreRef="trust_allSigAlg"
 		trustAliasName="rs512"
-		keyManagmetnKeyAlias="rs384"
+		keyManagementKeyAlias="rs384"
 		sslRef="ssl_allSigAlg"
 	>
 	</openidConnectClient>	
@@ -529,12 +515,11 @@
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
 		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
-		validateAccessTokenLocally="true"
 		authFilterRef="authFilterES256RS384"
 		signatureAlgorithm="ES256"
 		trustStoreRef="trust_allSigAlg"
 		trustAliasName="es256"
-		keyManagmetnKeyAlias="rs384"
+		keyManagementKeyAlias="rs384"
 		sslRef="ssl_allSigAlg"
 	>
 	</openidConnectClient>	
@@ -556,12 +541,11 @@
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
 		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
-		validateAccessTokenLocally="true"
 		authFilterRef="authFilterES384RS384"
 		signatureAlgorithm="ES384"
 		trustStoreRef="trust_allSigAlg"
 		trustAliasName="es384"
-		keyManagmetnKeyAlias="rs384"
+		keyManagementKeyAlias="rs384"
 		sslRef="ssl_allSigAlg"
 	>
 	</openidConnectClient>	
@@ -583,12 +567,11 @@
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
 		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
-		validateAccessTokenLocally="true"
 		authFilterRef="authFilterES512RS384"
 		signatureAlgorithm="ES512"
 		trustStoreRef="trust_allSigAlg"
 		trustAliasName="es512"
-		keyManagmetnKeyAlias="rs384"
+		keyManagementKeyAlias="rs384"
 		sslRef="ssl_allSigAlg"
 	>
 	</openidConnectClient>	
@@ -611,9 +594,8 @@
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
 		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
-		validateAccessTokenLocally="true"
 		authFilterRef="authFilterHS256RS512"
-		keyManagmetnKeyAlias="rs512"
+		keyManagementKeyAlias="rs512"
 		sslRef="ssl_allSigAlg"
 	>
 	</openidConnectClient>
@@ -636,9 +618,9 @@
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
 		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
-		validateAccessTokenLocally="true"
 		authFilterRef="authFilterHS384RS512"
-		keyManagmetnKeyAlias="rs512"
+		signatureAlgorithm="HS384"
+		keyManagementKeyAlias="rs512"
 		sslRef="ssl_allSigAlg"
 	>
 	</openidConnectClient>
@@ -661,9 +643,9 @@
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
 		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
-		validateAccessTokenLocally="true"
 		authFilterRef="authFilterHS512RS512"
-		keyManagmetnKeyAlias="rs512"
+		signatureAlgorithm="HS512"
+		keyManagementKeyAlias="rs512"
 		sslRef="ssl_allSigAlg"
 	>
 	</openidConnectClient>
@@ -686,12 +668,11 @@
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
 		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
-		validateAccessTokenLocally="true"
 		authFilterRef="authFilterRS256RS512"
 		signatureAlgorithm="RS256"
 		trustStoreRef="trust_allSigAlg"
 		trustAliasName="rs256"
-		keyManagmetnKeyAlias="rs512"
+		keyManagementKeyAlias="rs512"
 		sslRef="ssl_allSigAlg"
 	>
 	</openidConnectClient>	
@@ -713,12 +694,11 @@
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
 		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
-		validateAccessTokenLocally="true"
 		authFilterRef="authFilterRS384RS512"
 		signatureAlgorithm="RS384"
 		trustStoreRef="trust_allSigAlg"
 		trustAliasName="rs384"
-		keyManagmetnKeyAlias="rs512"
+		keyManagementKeyAlias="rs512"
 		sslRef="ssl_allSigAlg"
 	>
 	</openidConnectClient>	
@@ -740,12 +720,11 @@
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
 		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
-		validateAccessTokenLocally="true"
 		authFilterRef="authFilterRS512RS512"
 		signatureAlgorithm="RS512"
 		trustStoreRef="trust_allSigAlg"
 		trustAliasName="rs512"
-		keyManagmetnKeyAlias="rs512"
+		keyManagementKeyAlias="rs512"
 		sslRef="ssl_allSigAlg"
 	>
 	</openidConnectClient>	
@@ -767,12 +746,11 @@
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
 		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
-		validateAccessTokenLocally="true"
 		authFilterRef="authFilterES256RS512"
 		signatureAlgorithm="ES256"
 		trustStoreRef="trust_allSigAlg"
 		trustAliasName="es256"
-		keyManagmetnKeyAlias="rs512"
+		keyManagementKeyAlias="rs512"
 		sslRef="ssl_allSigAlg"
 	>
 	</openidConnectClient>	
@@ -794,12 +772,11 @@
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
 		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
-		validateAccessTokenLocally="true"
 		authFilterRef="authFilterES384RS512"
 		signatureAlgorithm="ES384"
 		trustStoreRef="trust_allSigAlg"
 		trustAliasName="es384"
-		keyManagmetnKeyAlias="rs512"
+		keyManagementKeyAlias="rs512"
 		sslRef="ssl_allSigAlg"
 	>
 	</openidConnectClient>	
@@ -821,16 +798,711 @@
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
 		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
-		validateAccessTokenLocally="true"
 		authFilterRef="authFilterES512RS512"
 		signatureAlgorithm="ES512"
 		trustStoreRef="trust_allSigAlg"
 		trustAliasName="es512"
-		keyManagmetnKeyAlias="rs512"
+		keyManagementKeyAlias="rs512"
 		sslRef="ssl_allSigAlg"
 	>
 	</openidConnectClient>	
 				
+	
+<!-- ES encryption variations -->
+	<authFilter id="authFilterHS256ES256">
+		<requestUrl
+			id="requestUrlHS256ES256"
+			urlPattern="/simple/SignHS256EncryptES256"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="SignHS256EncryptES256"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
+		authFilterRef="authFilterHS256ES256"
+		keyManagementKeyAlias="es256"
+		sslRef="ssl_allSigAlg"
+	>
+	</openidConnectClient>
+
+	<authFilter id="authFilterHS384ES256">
+		<requestUrl
+			id="requestUrlHS384ES256"
+			urlPattern="/simple/SignHS384EncryptES256"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="SignHS384EncryptES256"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
+		authFilterRef="authFilterHS384ES256"
+		signatureAlgorithm="HS384"
+		keyManagementKeyAlias="es256"
+		sslRef="ssl_allSigAlg"
+	>
+	</openidConnectClient>
+
+	<authFilter id="authFilterHS512ES256">
+		<requestUrl
+			id="requestUrlHS512ES256"
+			urlPattern="/simple/SignHS512EncryptES256"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="SignHS512EncryptES256"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
+		authFilterRef="authFilterHS512ES256"
+		signatureAlgorithm="HS512"
+		keyManagementKeyAlias="es256"
+		sslRef="ssl_allSigAlg"
+	>
+	</openidConnectClient>
+	
+	
+	<authFilter id="authFilterRS256ES256">
+		<requestUrl
+			id="requestUrlRS256ES256"
+			urlPattern="/simple/SignRS256EncryptES256"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="SignRS256EncryptES256"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
+		authFilterRef="authFilterRS256ES256"
+		signatureAlgorithm="RS256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="rs256"
+		keyManagementKeyAlias="es256"
+		sslRef="ssl_allSigAlg"
+	>
+	</openidConnectClient>	
+	
+	<authFilter id="authFilterRS384ES256">
+		<requestUrl
+			id="requestUrlRS384ES256"
+			urlPattern="/simple/SignRS384EncryptES256"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="SignRS384EncryptES256"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
+		authFilterRef="authFilterRS384ES256"
+		signatureAlgorithm="RS384"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="rs384"
+		keyManagementKeyAlias="es256"
+		sslRef="ssl_allSigAlg"
+	>
+	</openidConnectClient>	
+	
+	<authFilter id="authFilterRS512ES256">
+		<requestUrl
+			id="requestUrlRS512ES256"
+			urlPattern="/simple/SignRS512EncryptES256"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="SignRS512EncryptES256"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
+		authFilterRef="authFilterRS512ES256"
+		signatureAlgorithm="RS512"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="rs512"
+		keyManagementKeyAlias="es256"
+		sslRef="ssl_allSigAlg"
+	>
+	</openidConnectClient>	
+	
+	<authFilter id="authFilterES256ES256">
+		<requestUrl
+			id="requestUrlES256ES256"
+			urlPattern="/simple/SignES256EncryptES256"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="SignES256EncryptES256"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
+		authFilterRef="authFilterES256ES256"
+		signatureAlgorithm="ES256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="es256"
+		keyManagementKeyAlias="es256"
+		sslRef="ssl_allSigAlg"
+	>
+	</openidConnectClient>	
+	
+	<authFilter id="authFilterES384ES256">
+		<requestUrl
+			id="requestUrlES384ES256"
+			urlPattern="/simple/SignES384EncryptES256"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="SignES384EncryptES256"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
+		authFilterRef="authFilterES384ES256"
+		signatureAlgorithm="ES384"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="es384"
+		keyManagementKeyAlias="es256"
+		sslRef="ssl_allSigAlg"
+	>
+	</openidConnectClient>	
+	
+	<authFilter id="authFilterES512ES256">
+		<requestUrl
+			id="requestUrlES512ES256"
+			urlPattern="/simple/SignES512EncryptES256"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="SignES512EncryptES256"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
+		authFilterRef="authFilterES512ES256"
+		signatureAlgorithm="ES512"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="es512"
+		keyManagementKeyAlias="es256"
+		sslRef="ssl_allSigAlg"
+	>
+	</openidConnectClient>	
+
+	<authFilter id="authFilterHS256ES384">
+		<requestUrl
+			id="requestUrlHS256ES384"
+			urlPattern="/simple/SignHS256EncryptES384"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="SignHS256EncryptES384"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
+		authFilterRef="authFilterHS256ES384"
+		keyManagementKeyAlias="es384"
+		sslRef="ssl_allSigAlg"
+	>
+	</openidConnectClient>
+
+	<authFilter id="authFilterHS384ES384">
+		<requestUrl
+			id="requestUrlHS384ES384"
+			urlPattern="/simple/SignHS384EncryptES384"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="SignHS384EncryptES384"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
+		authFilterRef="authFilterHS384ES384"
+		signatureAlgorithm="HS384"
+		keyManagementKeyAlias="es384"
+		sslRef="ssl_allSigAlg"
+	>
+	</openidConnectClient>
+
+	<authFilter id="authFilterHS512ES384">
+		<requestUrl
+			id="requestUrlHS512ES384"
+			urlPattern="/simple/SignHS512EncryptES384"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="SignHS512EncryptES384"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
+		authFilterRef="authFilterHS512ES384"
+		signatureAlgorithm="HS512"
+		keyManagementKeyAlias="es384"
+		sslRef="ssl_allSigAlg"
+	>
+	</openidConnectClient>
+	
+	
+	<authFilter id="authFilterRS256ES384">
+		<requestUrl
+			id="requestUrlRS256ES384"
+			urlPattern="/simple/SignRS256EncryptES384"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="SignRS256EncryptES384"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
+		authFilterRef="authFilterRS256ES384"
+		signatureAlgorithm="RS256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="rs256"
+		keyManagementKeyAlias="es384"
+		sslRef="ssl_allSigAlg"
+	>
+	</openidConnectClient>	
+	
+	<authFilter id="authFilterRS384ES384">
+		<requestUrl
+			id="requestUrlRS384ES384"
+			urlPattern="/simple/SignRS384EncryptES384"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="SignRS384EncryptES384"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
+		authFilterRef="authFilterRS384ES384"
+		signatureAlgorithm="RS384"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="rs384"
+		keyManagementKeyAlias="es384"
+		sslRef="ssl_allSigAlg"
+	>
+	</openidConnectClient>	
+	
+	<authFilter id="authFilterRS512ES384">
+		<requestUrl
+			id="requestUrlRS512ES384"
+			urlPattern="/simple/SignRS512EncryptES384"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="SignRS512EncryptES384"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
+		authFilterRef="authFilterRS512ES384"
+		signatureAlgorithm="RS512"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="rs512"
+		keyManagementKeyAlias="es384"
+		sslRef="ssl_allSigAlg"
+	>
+	</openidConnectClient>	
+	
+	<authFilter id="authFilterES256ES384">
+		<requestUrl
+			id="requestUrlES256ES384"
+			urlPattern="/simple/SignES256EncryptES384"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="SignES256EncryptES384"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
+		authFilterRef="authFilterES256ES384"
+		signatureAlgorithm="ES256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="es256"
+		keyManagementKeyAlias="es384"
+		sslRef="ssl_allSigAlg"
+	>
+	</openidConnectClient>	
+	
+	<authFilter id="authFilterES384ES384">
+		<requestUrl
+			id="requestUrlES384ES384"
+			urlPattern="/simple/SignES384EncryptES384"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="SignES384EncryptES384"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
+		authFilterRef="authFilterES384ES384"
+		signatureAlgorithm="ES384"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="es384"
+		keyManagementKeyAlias="es384"
+		sslRef="ssl_allSigAlg"
+	>
+	</openidConnectClient>	
+	
+	<authFilter id="authFilterES512ES384">
+		<requestUrl
+			id="requestUrlES512ES384"
+			urlPattern="/simple/SignES512EncryptES384"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="SignES512EncryptES384"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
+		authFilterRef="authFilterES512ES384"
+		signatureAlgorithm="ES512"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="es512"
+		keyManagementKeyAlias="es384"
+		sslRef="ssl_allSigAlg"
+	>
+	</openidConnectClient>	
+
+	<authFilter id="authFilterHS256ES512">
+		<requestUrl
+			id="requestUrlHS256ES512"
+			urlPattern="/simple/SignHS256EncryptES512"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="SignHS256EncryptES512"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
+		authFilterRef="authFilterHS256ES512"
+		keyManagementKeyAlias="es512"
+		sslRef="ssl_allSigAlg"
+	>
+	</openidConnectClient>
+
+	<authFilter id="authFilterHS384ES512">
+		<requestUrl
+			id="requestUrlHS384ES512"
+			urlPattern="/simple/SignHS384EncryptES512"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="SignHS384EncryptES512"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
+		authFilterRef="authFilterHS384ES512"
+		signatureAlgorithm="HS384"
+		keyManagementKeyAlias="es512"
+		sslRef="ssl_allSigAlg"
+	>
+	</openidConnectClient>
+
+	<authFilter id="authFilterHS512ES512">
+		<requestUrl
+			id="requestUrlHS512ES512"
+			urlPattern="/simple/SignHS512EncryptES512"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="SignHS512EncryptES512"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
+		authFilterRef="authFilterHS512ES512"
+		signatureAlgorithm="HS512"
+		keyManagementKeyAlias="es512"
+		sslRef="ssl_allSigAlg"
+	>
+	</openidConnectClient>
+	
+	
+	<authFilter id="authFilterRS256ES512">
+		<requestUrl
+			id="requestUrlRS256ES512"
+			urlPattern="/simple/SignRS256EncryptES512"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="SignRS256EncryptES512"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
+		authFilterRef="authFilterRS256ES512"
+		signatureAlgorithm="RS256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="rs256"
+		keyManagementKeyAlias="es512"
+		sslRef="ssl_allSigAlg"
+	>
+	</openidConnectClient>	
+	
+	<authFilter id="authFilterRS384ES512">
+		<requestUrl
+			id="requestUrlRS384ES512"
+			urlPattern="/simple/SignRS384EncryptES512"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="SignRS384EncryptES512"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
+		authFilterRef="authFilterRS384ES512"
+		signatureAlgorithm="RS384"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="rs384"
+		keyManagementKeyAlias="es512"
+		sslRef="ssl_allSigAlg"
+	>
+	</openidConnectClient>	
+	
+	<authFilter id="authFilterRS512ES512">
+		<requestUrl
+			id="requestUrlRS512ES512"
+			urlPattern="/simple/SignRS512EncryptES512"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="SignRS512EncryptES512"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
+		authFilterRef="authFilterRS512ES512"
+		signatureAlgorithm="RS512"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="rs512"
+		keyManagementKeyAlias="es512"
+		sslRef="ssl_allSigAlg"
+	>
+	</openidConnectClient>	
+	
+	<authFilter id="authFilterES256ES512">
+		<requestUrl
+			id="requestUrlES256ES512"
+			urlPattern="/simple/SignES256EncryptES512"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="SignES256EncryptES512"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
+		authFilterRef="authFilterES256ES512"
+		signatureAlgorithm="ES256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="es256"
+		keyManagementKeyAlias="es512"
+		sslRef="ssl_allSigAlg"
+	>
+	</openidConnectClient>	
+	
+	<authFilter id="authFilterES384ES512">
+		<requestUrl
+			id="requestUrlES384ES512"
+			urlPattern="/simple/SignES384EncryptES512"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="SignES384EncryptES512"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
+		authFilterRef="authFilterES384ES512"
+		signatureAlgorithm="ES384"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="es384"
+		keyManagementKeyAlias="es512"
+		sslRef="ssl_allSigAlg"
+	>
+	</openidConnectClient>	
+	
+	<authFilter id="authFilterES512ES512">
+		<requestUrl
+			id="requestUrlES512ES512"
+			urlPattern="/simple/SignES512EncryptES512"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="SignES512EncryptES512"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
+		authFilterRef="authFilterES512ES512"
+		signatureAlgorithm="ES512"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="es512"
+		keyManagementKeyAlias="es512"
+		sslRef="ssl_allSigAlg"
+	>
+	</openidConnectClient>		
+		
+<!-- Other -->						
 	<authFilter id="authFilterInvalidKeyManagementKeyAlias">
 		<requestUrl
 			id="requestUrlInvalidKeyManagementKeyAlias"
@@ -848,12 +1520,11 @@
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
 		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
-		validateAccessTokenLocally="true"
 		authFilterRef="authFilterInvalidKeyManagementKeyAlias"
 		signatureAlgorithm="RS256"
 		trustStoreRef="trust_allSigAlg"
 		trustAliasName="rs256"
-		keyManagmetnKeyAlias="ES384"
+		keyManagementKeyAlias="ES384"
 		sslRef="ssl_allSigAlg"
 	>
 	</openidConnectClient>	
@@ -875,12 +1546,11 @@
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
 		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
-		validateAccessTokenLocally="true"
 		authFilterRef="authFilterNonExistantKeyManagementKeyAlias"
 		signatureAlgorithm="RS256"
 		trustStoreRef="trust_allSigAlg"
 		trustAliasName="rs256"
-		keyManagmetnKeyAlias="nonExistantKeyManagementKeyAlias"
+		keyManagementKeyAlias="nonExistantKeyManagementKeyAlias"
 		sslRef="ssl_allSigAlg"
 	>
 	</openidConnectClient>		
@@ -902,7 +1572,6 @@
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
 		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
-		validateAccessTokenLocally="true"
 		authFilterRef="authFilterOmittedKeyManagementKeyAlias"
 		signatureAlgorithm="RS256"
 		trustStoreRef="trust_allSigAlg"
@@ -928,7 +1597,6 @@
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
 		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
-		validateAccessTokenLocally="true"
 		authFilterRef="authFilterRS256none"
 		signatureAlgorithm="RS256"
 		trustStoreRef="trust_allSigAlg"
@@ -954,7 +1622,6 @@
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
 		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
-		validateAccessTokenLocally="true"
 		authFilterRef="authFilterRS384none"
 		signatureAlgorithm="RS384"
 		trustStoreRef="trust_allSigAlg"
@@ -980,7 +1647,6 @@
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
 		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
-		validateAccessTokenLocally="true"
 		authFilterRef="authFilterRS512none"
 		signatureAlgorithm="RS512"
 		trustStoreRef="trust_allSigAlg"
@@ -989,7 +1655,81 @@
 	>
 	</openidConnectClient>					
 
+	<authFilter id="authFilterES256none">
+		<requestUrl
+			id="requestUrlES256none"
+			urlPattern="/simple/SignES256Encryptnone"
+			matchType="contains" />
+	</authFilter>
 
+	<openidConnectClient
+		id="SignES256Encryptnone"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
+		authFilterRef="authFilterES256none"
+		signatureAlgorithm="ES256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="es256"
+		sslRef="ssl_allSigAlg"
+	>
+	</openidConnectClient>		
+	
+	<authFilter id="authFilterES384none">
+		<requestUrl
+			id="requestUrlES384none"
+			urlPattern="/simple/SignES384Encryptnone"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="SignES384Encryptnone"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
+		authFilterRef="authFilterES384none"
+		signatureAlgorithm="ES384"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="es384"
+		sslRef="ssl_allSigAlg"
+	>
+	</openidConnectClient>					
+
+	<authFilter id="authFilterES512none">
+		<requestUrl
+			id="requestUrlES512none"
+			urlPattern="/simple/SignES512Encryptnone"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="SignES512Encryptnone"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
+		authFilterRef="authFilterES512none"
+		signatureAlgorithm="ES512"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="es512"
+		sslRef="ssl_allSigAlg"
+	>
+	</openidConnectClient>	
+	
 	<authFilter id="authFilterRS256ShortRS256">
 		<requestUrl
 			id="requestUrlRS256ShortRS256"
@@ -1007,12 +1747,11 @@
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
 		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
-		validateAccessTokenLocally="true"
 		authFilterRef="authFilterRS256ShortRS256"
 		signatureAlgorithm="RS256"
 		trustStoreRef="trust_allSigAlg"
 		trustAliasName="rs256"
-		keyManagmetnKeyAlias="short_rs256"
+		keyManagementKeyAlias="short_rs256"
 		sslRef="ssl_allSigAlg"
 	>
 	</openidConnectClient>	
@@ -1034,12 +1773,11 @@
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
 		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
-		validateAccessTokenLocally="true"
 		authFilterRef="authFilterRS256PublicRS256"
 		signatureAlgorithm="RS256"
 		trustStoreRef="trust_allSigAlg"
 		trustAliasName="rs256"
-		keyManagmetnKeyAlias="rs256"
+		keyManagementKeyAlias="rs256"
 		sslRef="ssl_allSigAlg_badKeyStore"
 	>
 	</openidConnectClient>		
@@ -1061,11 +1799,10 @@
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
 		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
-		validateAccessTokenLocally="true"
 		authFilterRef="authFilterRP_trustStoreRefOmitted"
 		signatureAlgorithm="RS256"
 		trustAliasName="rs256"
-		keyManagmetnKeyAlias="rs256"
+		keyManagementKeyAlias="rs256"
 		sslRef="ssl_allSigAlg"
 	>
 	</openidConnectClient>		
@@ -1087,11 +1824,11 @@
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
 		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
-		validateAccessTokenLocally="true"
 		authFilterRef="authFilterRP_sslRefOmitted"
 		signatureAlgorithm="RS256"
 		trustAliasName="rs256"
-		keyManagmetnKeyAlias="rs256"
+		keyManagementKeyAlias="rs256"
 	>
-	</openidConnectClient>				
+	</openidConnectClient>		
+		
 </server>

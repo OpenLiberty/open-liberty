@@ -20,6 +20,7 @@ configurations {
 
 // Define G:A:V coordinates of each dependency
 dependencies {
+requiredLibs project(':io.openliberty.org.testcontainers')
 infinispanClient 'com.github.ben-manes.caffeine:caffeine:2.8.0',
                  'org.infinispan:infinispan-client-hotrod:10.0.0.Final',
                  'org.infinispan:infinispan-commons:10.0.0.Final',
@@ -47,5 +48,4 @@ addRequiredLibraries {
   dependsOn addDerby
   dependsOn addInfinispanClientLibs
   dependsOn addJakartaTransformer
-  dependsOn addTestcontainers
 }

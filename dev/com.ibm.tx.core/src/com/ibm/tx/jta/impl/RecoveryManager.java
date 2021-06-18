@@ -12,6 +12,9 @@ package com.ibm.tx.jta.impl;
  *******************************************************************************/
 
 import java.io.IOException;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -25,14 +28,14 @@ import com.ibm.tx.jta.TransactionManagerFactory;
 import com.ibm.tx.jta.util.TxTMHelper;
 import com.ibm.tx.util.TMHelper;
 import com.ibm.tx.util.Utils;
-import com.ibm.tx.util.logging.FFDCFilter;
-import com.ibm.tx.util.logging.Tr;
-import com.ibm.tx.util.logging.TraceComponent;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.Transaction.JTA.FailureScopeLifeCycle;
 import com.ibm.ws.Transaction.JTA.FailureScopeLifeCycleHelper;
 import com.ibm.ws.Transaction.JTA.JTAResource;
 import com.ibm.ws.Transaction.JTA.Util;
 import com.ibm.ws.Transaction.JTS.Configuration;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.recoverylog.spi.DistributedRecoveryLog;
 import com.ibm.ws.recoverylog.spi.FailureScope;
 import com.ibm.ws.recoverylog.spi.InternalLogException;
@@ -690,9 +693,10 @@ public class RecoveryManager implements Runnable {
      */
     public void deleteServerLease(String recoveryIdentity) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "deleteServerLease", new Object[] { this, recoveryIdentity });
+            Tr.entry(tc, "deleteServerLease", this, recoveryIdentity);
         try {
             if (_leaseLog != null) {
+                _leaseLog.releasePeerLease(recoveryIdentity);
                 _leaseLog.deleteServerLease(recoveryIdentity);
             }
         } catch (Exception e) {
@@ -1570,8 +1574,29 @@ public class RecoveryManager implements Runnable {
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "Server with identity " + _localRecoveryIdentity + " has recovered the logs of server " + _failureScopeController.serverName());
                         deleteServerLease(_failureScopeController.serverName());
-                    }
 
+                        boolean retainPeerLogs = false;
+                        try {
+                            retainPeerLogs = AccessController.doPrivileged(
+                                                                           new PrivilegedExceptionAction<Boolean>() {
+                                                                               @Override
+                                                                               public Boolean run() {
+                                                                                   return Boolean.getBoolean("com.ibm.ws.recoverylog.disablepeerlogdeletion");
+                                                                               }
+                                                                           });
+                        } catch (PrivilegedActionException e) {
+                            FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RecoveryManager", "1588");
+                            if (tc.isDebugEnabled())
+                                Tr.debug(tc, "Exception disabling peer log deletion", e);
+                        }
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Should peer recovery logs be retained ", retainPeerLogs);
+                        if (!retainPeerLogs) {
+                            // Delete the peer recovery logs.
+                            _tranLog.delete();
+                            _xaLog.delete();
+                        }
+                    }
                 } else /* @PK31789A */
                 { /* @PK31789A */
                     // Ensure all end-tran records processed before we delete partners

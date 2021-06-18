@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -211,7 +211,7 @@ public class SRTInputStream31 extends SRTInputStream
             this.callback = new AsyncAlreadyReadCallback(this, tcm);
         } else {
             //Create a new HttpServletCallback so we can use it for our async read callbacks
-            this.callback = new AsyncReadCallback(this, tcm);
+            this.callback = new AsyncReadCallback(this, tcm, request.getAsyncContext());
         }    
         
         AsyncContext31Impl ac = (AsyncContext31Impl)request.getAsyncContext();

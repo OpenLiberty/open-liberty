@@ -21,6 +21,4 @@ WS-TraceGroup: WSS4J
 Export-Package: \
  org.apache.wss4j.binding.*
 
-Include-Resource: \
- @${repo;org.apache.wss4j:wss4j-bindings;2.3.0}!/!META-INF/MANIFEST.MF|META-INF/maven/*
-
+jakartaeeMe: true

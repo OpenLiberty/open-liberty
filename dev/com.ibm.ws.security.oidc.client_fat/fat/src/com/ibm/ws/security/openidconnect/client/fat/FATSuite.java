@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 package com.ibm.ws.security.openidconnect.client.fat;
@@ -23,8 +23,10 @@ import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientCookieNameTest
 import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientDiscoveryBasicTests;
 import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientDiscoveryErrorTests;
 import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientDiscoveryJWTBasicTests;
+import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientEncryptionTests;
 import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientLTPACookieTests;
 import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientSameSiteTests;
+import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientSignatureAlgTests;
 import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientWasReqURLTests;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
@@ -34,20 +36,20 @@ import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                AlwaysPassesTest.class,
-                OidcClientBasicTests.class,
-                // OidcClientLogoutTests.class
-                OidcClientCookieNameTests.class,
-                OidcClientConsentTests.class,
-                OidcClientLTPACookieTests.class,
-                OidcClientDiscoveryBasicTests.class,
-                OidcClientDiscoveryErrorTests.class,
-                OidcClientDiscoveryJWTBasicTests.class,
-                // OidcCertificationRPBasicProfileTests.class,
-                OidcClientSameSiteTests.class,
-                OidcClientWasReqURLTests.class,
-//                OidcClientSignatureAlgTests.class,
-//                OidcClientEncryptionTests.class
+        AlwaysPassesTest.class,
+        OidcClientBasicTests.class,
+        // OidcClientLogoutTests.class
+        OidcClientCookieNameTests.class,
+        OidcClientConsentTests.class,
+        OidcClientLTPACookieTests.class,
+        OidcClientDiscoveryBasicTests.class,
+        OidcClientDiscoveryErrorTests.class,
+        OidcClientDiscoveryJWTBasicTests.class,
+        // OidcCertificationRPBasicProfileTests.class,
+        OidcClientSameSiteTests.class,
+        OidcClientWasReqURLTests.class,
+        OidcClientSignatureAlgTests.class,
+        OidcClientEncryptionTests.class
 })
 /**
  * Purpose: This suite collects and runs all known good test suites.
@@ -60,5 +62,5 @@ public class FATSuite extends CommonLocalLDAPServerSuite {
      */
     @ClassRule
     public static RepeatTests repeat = RepeatTests.with(new EmptyAction().liteFATOnly())
-                    .andWith(new JakartaEE9Action().fullFATOnly());
+            .andWith(new JakartaEE9Action().fullFATOnly());
 }

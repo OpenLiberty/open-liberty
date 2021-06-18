@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2009 IBM Corporation and others.
+ * Copyright (c) 2007, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,8 +15,8 @@ import java.io.Serializable;
 import javax.transaction.xa.XAResource;
 
 import com.ibm.tx.TranConstants;
-import com.ibm.tx.util.logging.Tr;
-import com.ibm.tx.util.logging.TraceComponent;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 
 public class DirectEnlistXAResourceInfo implements Serializable {
     private static final long serialVersionUID = -6971618853657075544L;
@@ -29,7 +29,7 @@ public class DirectEnlistXAResourceInfo implements Serializable {
 
     public DirectEnlistXAResourceInfo(XAResource xaResource) {
         _xaResource = xaResource;
-        // If our resource can be serialized, make sure it is, 
+        // If our resource can be serialized, make sure it is,
         // but otherwise allow serialization to happen without exception
         if (_xaResource instanceof Serializable) {
             serializableXaResource = (Serializable) _xaResource;
@@ -58,8 +58,8 @@ public class DirectEnlistXAResourceInfo implements Serializable {
             if (!rmName.equals(otherDirectEnlistXAResource.rmName)) {
                 return false;
             }
-            // Only compare the serializable xa resource, since the other 
-            // won't get reconstituted after deserialization, and we want to 
+            // Only compare the serializable xa resource, since the other
+            // won't get reconstituted after deserialization, and we want to
             // claim to be the same after serialization as before
             if (serializableXaResource != null && !(serializableXaResource.equals(otherDirectEnlistXAResource.serializableXaResource))) {
                 return false;
@@ -77,8 +77,8 @@ public class DirectEnlistXAResourceInfo implements Serializable {
         // the isSameRM method of the wrapped XAResource instance to determine equality and there's
         // no guarantee that if a.isSameRM(b) returns true that a.hashCode() == b.hashCode().
         //
-        // We could probably jump through lots of hoops and have a complex hashing algorithm to 
-        // work around this problem but this class is internal to the TM and as such we can be 
+        // We could probably jump through lots of hoops and have a complex hashing algorithm to
+        // work around this problem but this class is internal to the TM and as such we can be
         // certain that it'll never be used as a key in e.g. a HashMap so I don't believe it's
         // worth it.
         //

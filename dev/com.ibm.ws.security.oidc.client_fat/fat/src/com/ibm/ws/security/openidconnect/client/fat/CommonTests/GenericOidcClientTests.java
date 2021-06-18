@@ -896,6 +896,7 @@ public class GenericOidcClientTests extends CommonTest {
      * <LI>In this scenario, the consent form is disabled in OP by setting the oauthProvider attribute
      * <LI>in server.xml as: autoAuthorize="true"
      * <LI>Test is showing a good main path flow.
+     * <LI>The clientSecret is configured in the RP
      * </OL>
      * <P>
      * Expected Results:
@@ -904,27 +905,72 @@ public class GenericOidcClientTests extends CommonTest {
      * </OL>
      */
     @Test
-    public void OidcClientTestSigAlgNone() throws Exception {
+    public void OidcClientTestSigAlgNone_clientSecretConfigured() throws Exception {
 
         WebConversation wc = new WebConversation();
 
         // Reconfigure OP server with basic SSL settings
         // Reconfigure RP server with basic SSL settings
-        ClientTestHelpers.reconfigServers(_testName, Constants.JUNIT_REPORTING, "op_server_basic_sig_alg_none.xml", "rp_server_sig_alg_none.xml");
+        ClientTestHelpers.reconfigServers(_testName, Constants.JUNIT_REPORTING, "op_server_basic_sig_alg_none_withSecret.xml", "rp_server_sig_alg_none_withSecret.xml");
 
         TestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.setScope("openid profile");
         updatedTestSettings.setSignatureAlg(Constants.SIGALG_NONE);
+        updatedTestSettings.setNonce(Constants.EXIST_WITH_ANY_VALUE);
+        updatedTestSettings.setState(Constants.EXIST_WITH_ANY_VALUE);
 
         List<validationData> expectations = vData.addSuccessStatusCodes(null);
         expectations = validationTools.addIdTokenStringValidation(vData, expectations, test_FinalAction, Constants.RESPONSE_FULL, Constants.IDToken_STR);
         expectations = vData.addExpectation(expectations, Constants.GET_LOGIN_PAGE, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS,
-                "Did Not get the OpenID Connect login page.", null, Constants.LOGIN_PROMPT);
+                                            "Did Not get the OpenID Connect login page.", null, Constants.LOGIN_PROMPT);
         expectations = validationTools.addDefaultIDTokenExpectations(expectations, _testName, eSettings.getProviderType(), test_FinalAction, updatedTestSettings);
         expectations = validationTools.addDefaultGeneralResponseExpectations(expectations, _testName, eSettings.getProviderType(), test_FinalAction, updatedTestSettings);
-        
+
         testRPServer.addIgnoredServerExceptions("CWWKS1741W");
-        
+
+        genericRP(_testName, wc, updatedTestSettings, test_GOOD_LOGIN_ACTIONS, expectations);
+    }
+
+    /**
+     * Test Purpose:
+     * <OL>
+     * <LI>Attempt to access a test servlet specifying valid OP url
+     * <LI>The signature Algorithm is set to "none" in both the OP server as well as the client in the RP.
+     * <LI>In this scenario, the consent form is disabled in OP by setting the oauthProvider attribute
+     * <LI>in server.xml as: autoAuthorize="true"
+     * <LI>Test is showing a good main path flow.
+     * <LI>The clientSecret is NOT configured in the RP
+     * </OL>
+     * <P>
+     * Expected Results:
+     * <OL>
+     * <LI>Should authenticate and access the test servlet without issue. The response should not be signed.
+     * </OL>
+     */
+    @Test
+    public void OidcClientTestSigAlgNone_clientSecretNotConfigured() throws Exception {
+
+        WebConversation wc = new WebConversation();
+
+        // Reconfigure OP server with basic SSL settings
+        // Reconfigure RP server with basic SSL settings
+        ClientTestHelpers.reconfigServers(_testName, Constants.JUNIT_REPORTING, "op_server_basic_sig_alg_none_withoutSecret.xml", "rp_server_sig_alg_none_withoutSecret.xml");
+
+        TestSettings updatedTestSettings = testSettings.copyTestSettings();
+        updatedTestSettings.setScope("openid profile");
+        updatedTestSettings.setSignatureAlg(Constants.SIGALG_NONE);
+        updatedTestSettings.setNonce(Constants.EXIST_WITH_ANY_VALUE);
+        updatedTestSettings.setState(Constants.EXIST_WITH_ANY_VALUE);
+
+        List<validationData> expectations = vData.addSuccessStatusCodes(null);
+        expectations = validationTools.addIdTokenStringValidation(vData, expectations, test_FinalAction, Constants.RESPONSE_FULL, Constants.IDToken_STR);
+        expectations = vData.addExpectation(expectations, Constants.GET_LOGIN_PAGE, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS,
+                                            "Did Not get the OpenID Connect login page.", null, Constants.LOGIN_PROMPT);
+        expectations = validationTools.addDefaultIDTokenExpectations(expectations, _testName, eSettings.getProviderType(), test_FinalAction, updatedTestSettings);
+        expectations = validationTools.addDefaultGeneralResponseExpectations(expectations, _testName, eSettings.getProviderType(), test_FinalAction, updatedTestSettings);
+
+        testRPServer.addIgnoredServerExceptions("CWWKS1741W");
+
         genericRP(_testName, wc, updatedTestSettings, test_GOOD_LOGIN_ACTIONS, expectations);
     }
 
@@ -989,7 +1035,7 @@ public class GenericOidcClientTests extends CommonTest {
 
         // Reconfigure OP server with basic SSL settings
         // Reconfigure RP server with basic SSL settings
-        ClientTestHelpers.reconfigServers(_testName, Constants.JUNIT_REPORTING, "op_server_basic_sig_alg_none.xml", "rp_server_sig_alg_hs256.xml");
+        ClientTestHelpers.reconfigServers(_testName, Constants.JUNIT_REPORTING, "op_server_basic_sig_alg_none_withSecret.xml", "rp_server_sig_alg_hs256.xml");
 
         TestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.setScope("openid profile");
@@ -1023,11 +1069,13 @@ public class GenericOidcClientTests extends CommonTest {
         //        // Reconfigure OP server with basic SSL settings
         //        // Reconfigure RP server with basic SSL settings
 
-        ClientTestHelpers.reconfigServers(_testName, Constants.JUNIT_REPORTING, "op_server_basic_sig_alg_hs256.xml", "rp_server_sig_alg_none.xml");
+        ClientTestHelpers.reconfigServers(_testName, Constants.JUNIT_REPORTING, "op_server_basic_sig_alg_hs256.xml", "rp_server_sig_alg_none_withSecret.xml");
 
         TestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.setScope("openid profile");
         updatedTestSettings.setSignatureAlg(Constants.SIGALG_HS256);
+        updatedTestSettings.setNonce(Constants.EXIST_WITH_ANY_VALUE);
+        updatedTestSettings.setState(Constants.EXIST_WITH_ANY_VALUE);
 
         List<validationData> expectations = vData.addSuccessStatusCodes(null);
         expectations = validationTools.addIdTokenStringValidation(vData, expectations, test_FinalAction, Constants.RESPONSE_FULL, Constants.IDToken_STR);

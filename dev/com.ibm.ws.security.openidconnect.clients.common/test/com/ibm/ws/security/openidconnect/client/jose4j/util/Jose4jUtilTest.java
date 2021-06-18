@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -215,13 +215,11 @@ public class Jose4jUtilTest extends CommonTestClass {
             {
                 one(clientConfig).getSignatureAlgorithm();
                 will(returnValue(SIGNATURE_ALG_NONE));
-                one(clientConfig).getSharedKey();
-                will(returnValue(SHARED_KEY));
             }
         });
         try {
             Object keyValue = util.getVerifyKey(clientConfig, "kid", "x5t");
-            assertNotNull("Expected a valid key but received null.", keyValue);
+            assertNull("Expected a null key but received " + keyValue, keyValue);
         } catch (Exception e) {
             outputMgr.failWithThrowable("testGetVerifyKey", e);
         }

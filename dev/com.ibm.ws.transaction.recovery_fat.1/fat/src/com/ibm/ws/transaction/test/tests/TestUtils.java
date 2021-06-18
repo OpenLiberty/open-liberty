@@ -73,7 +73,8 @@ public class TestUtils {
         }
 
         // Server appears to have started ok
-        assertNotNull(recoveringServer.getServerName() + " didn't recover properly", recoveringServer.waitForStringInTrace("Setting state from RECOVERING to ACTIVE"));
+        assertNotNull(recoveringServer.getServerName() + " didn't recover properly",
+                      recoveringServer.waitForStringInTrace("Performed recovery for " + recoveringServer.getServerName()));
 
         int attempt = 0;
         while (true) {

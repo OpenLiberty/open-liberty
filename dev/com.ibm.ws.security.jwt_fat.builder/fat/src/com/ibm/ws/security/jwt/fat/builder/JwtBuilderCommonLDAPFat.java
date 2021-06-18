@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import org.junit.AfterClass;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.com.unboundid.InMemoryLDAPServer;
 import com.ibm.ws.security.fat.common.CommonSecurityFat;
+import com.ibm.ws.security.fat.common.Constants;
 import com.ibm.ws.security.fat.common.servers.ServerBootstrapUtils;
 import com.unboundid.ldap.sdk.Entry;
 
@@ -55,7 +56,10 @@ public class JwtBuilderCommonLDAPFat extends CommonSecurityFat {
     }
 
     public static void initLdapServer() throws Exception {
-        ds = new InMemoryLDAPServer(BASE_DN);
+        // Choose a port for LDAP - we ran into an instance where 8020 and 8021 were chosen
+        // This caused problems starting one of the other servers that the tests use
+        //        ds = new InMemoryLDAPServer(BASE_DN);
+        ds = new InMemoryLDAPServer(true, Constants.DEFAULT_LDAP_PORT, Constants.DEFAULT_LDAP_SECURE_PORT, BASE_DN);
 
         /*
          * Add the partition entries.

@@ -13,7 +13,5 @@
 dependencies {
   requiredLibs  'org.apache.httpcomponents.client5:httpclient5:5.0.2',
     'org.apache.httpcomponents.core5:httpcore5:5.0.2',
-    'org.apache.httpcomponents.core5:httpcore5-h2:5.0.2',
-    project(':io.openliberty.org.apache.commons.logging'),
-    project(':io.openliberty.org.apache.commons.codec')
+    'org.apache.httpcomponents.core5:httpcore5-h2:5.0.2'
 }

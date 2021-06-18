@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -653,7 +653,7 @@ public class MPJwt12MPConfigTests extends MPJwtMPConfigTests {
     }
 
     /**
-     * Sets expectations to check when the keyManagementKeyAlias is not set
+     * Sets expectations to check when the decryption key cannot be found
      *
      * @param server - server whose logs will be searched
      * @param extraMsgs - the tai drives the code down different paths depending on if it finds config info in server.xml - if it finds config settings, we'll get 2 extra messages.
@@ -662,7 +662,7 @@ public class MPJwt12MPConfigTests extends MPJwtMPConfigTests {
      */
     public Expectations setEncryptMissingKeyExpectations(LibertyServer server, boolean extraMsgs) throws Exception {
         Expectations expectations = setAllBadEncryptExpectations(server, extraMsgs);
-        expectations.addExpectation(new ServerMessageExpectation(server, "The key must not be null", "Messagelog did not contain an exception indicating that the keyManagementKeyAlias was missing."));
+        expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS6066E_JWE_DECRYPTION_KEY_MISSING, "Messagelog did not contain an exception indicating that a JWE decryption key was missing."));
         return expectations;
 
     }

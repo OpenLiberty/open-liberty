@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.oauth_oidc.fat.commonTest;
 
@@ -20,9 +20,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-//import org.jdom.Document;
-//import org.jdom.Element;
-//import org.jdom.input.SAXBuilder;
+// import org.jdom.Document;
+// import org.jdom.Element;
+// import org.jdom.input.SAXBuilder;
 
 import com.gargoylesoftware.htmlunit.HttpMethod;
 import com.gargoylesoftware.htmlunit.WebClient;
@@ -1877,52 +1877,6 @@ public class CommonTestHelpers extends TestHelpers {
         }
         theMap.put(settings.getHeaderName(), builtValue);
         return theMap;
-    }
-
-    public Object processPutRequest(String testcase, WebClient webClient, String token, TestSettings settings, List<validationData> expectations) throws Exception {
-
-        String thisMethod = "processLogout";
-        msgUtils.printMethodName(thisMethod);
-
-        // set the mark to the end of all logs to ensure that any checking for
-        // messages is done only for this step of the testing
-        setMarkToEndOfAllServersLogs();
-        Object thePage = null;
-
-        try {
-
-            setMarkToEndOfAllServersLogs();
-
-            // Invoke protected resource
-            URL url = AutomationTools.getNewUrl(settings.getTokenEndpt());
-            com.gargoylesoftware.htmlunit.WebRequest request = new com.gargoylesoftware.htmlunit.WebRequest(url, HttpMethod.PUT);
-            request.setRequestParameters(new ArrayList());
-
-            if (token != null) {
-                setRequestParameterIfSet(request, "tokenToSave", token);
-                Log.info(thisClass, testcase, "tokenToSave: " + token);
-            } else {
-                Log.info(thisClass, testcase, "tokenToSave will NOT be set");
-                throw new Exception("We need to save off a token for the tokenEndpoint to return to the RP - it's kinda the point of the test");
-            }
-
-            msgUtils.printRequestParts(webClient, request, thisMethod, "Request for " + Constants.PUTMETHOD);
-            thePage = webClient.getPage(request);
-
-            // make sure the page is processed before continuing
-            waitBeforeContinuing(webClient);
-
-            msgUtils.printAllCookies(webClient);
-            msgUtils.printResponseParts(thePage, thisMethod, "Response from protected app: ");
-
-        } catch (Exception e) {
-
-            validationTools.validateException(expectations, Constants.PUTMETHOD, e);
-
-        }
-        validationTools.validateResult(thePage, Constants.PUTMETHOD, expectations, settings);
-        return thePage;
-
     }
 
 }

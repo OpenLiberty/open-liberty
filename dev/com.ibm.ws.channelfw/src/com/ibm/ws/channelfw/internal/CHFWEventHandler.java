@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2014 IBM Corporation and others.
+ * Copyright (c) 2009, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,7 +42,7 @@ public class CHFWEventHandler implements EventHandler {
 
     /**
      * Activate this component.
-     * 
+     *
      * @param context
      */
     protected void activate(ComponentContext context) {
@@ -51,7 +51,7 @@ public class CHFWEventHandler implements EventHandler {
 
     /**
      * Deactivate this component.
-     * 
+     *
      * @param context
      */
     protected void deactivate(ComponentContext context) {
@@ -65,6 +65,9 @@ public class CHFWEventHandler implements EventHandler {
      */
     @Override
     public void handleEvent(Event event) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.event(tc, "Handle event; event=" + event.getTopic());
+        }
         String topic = event.getTopic();
         if (topic.equalsIgnoreCase(ChannelFramework.EVENT_STOPCHAIN.getName())) {
             String chainName = event.getProperty(ChannelFramework.EVENT_CHAINNAME, String.class);
@@ -83,7 +86,7 @@ public class CHFWEventHandler implements EventHandler {
 
     /**
      * Stop the explicit chain provided.
-     * 
+     *
      * @param name
      * @param event
      */
@@ -94,7 +97,7 @@ public class CHFWEventHandler implements EventHandler {
         ChannelFramework cf = ChannelFrameworkFactory.getChannelFramework();
         try {
             if (cf.isChainRunning(name)) {
-                // stop the chain now.. 
+                // stop the chain now..
                 cf.stopChain(name, 0L);
             }
         } catch (Exception e) {
@@ -107,7 +110,7 @@ public class CHFWEventHandler implements EventHandler {
 
     /**
      * Stop chains using the provided channel.
-     * 
+     *
      * @param name
      * @param event
      */
@@ -119,8 +122,9 @@ public class CHFWEventHandler implements EventHandler {
         try {
             ChainData[] chains = cf.getAllChains(name);
             for (ChainData chain : chains) {
+
                 if (cf.isChainRunning(chain)) {
-                    // stop the chain now.. 
+                    // stop the chain now..
                     cf.stopChain(chain, 0);
                 }
             }

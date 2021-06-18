@@ -7,13 +7,15 @@
      <sslDefault outboundSSLRef="mySSLConfig" />
      <!-- Server SSL configuration -->
      <ssl id="defaultSSLConfig" keyStoreRef="defaultKeyStore" trustStoreRef="defaultTrustStore" /> 
-     <keyStore id="defaultKeyStore" location="defaultKey.jks" type="JKS" password="passw0rd" /> 
-     <keyStore id="defaultTrustStore" location="defaultTrust.jks" type="JKS" password="passw0rd" /> 
+     <keyStore id="defaultKeyStore" location="defaultKey.p12" password="passw0rd" /> 
+     <keyStore id="defaultTrustStore" location="defaultTrust.p12" password="passw0rd" /> 
 
      <!-- customize SSL configuration -->
      <ssl id="mySSLConfig" keyStoreRef="clientKeyStore" trustStoreRef="clientTrustStore" /> 
-     <keyStore id="clientKeyStore" location="key.jks" type="JKS" password="passw0rd" /> 
-     <keyStore id="clientTrustStore" location="trust.jks" type="JKS" password="passw0rd" /> 
+     <keyStore id="clientKeyStore" location="key.p12" password="passw0rd" /> 
+     <keyStore id="clientTrustStore" location="trust.p12" password="passw0rd" /> 
+
+    <logging traceSpecification="org.apache.http.*=all" maxFiles="1"/>
 
   	<include location="../fatTestPorts.xml"/>
   	<javaPermission className="org.osgi.framework.AdminPermission" name="*" actions="*"/>

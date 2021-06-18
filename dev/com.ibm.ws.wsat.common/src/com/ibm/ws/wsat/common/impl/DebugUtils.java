@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,9 +21,9 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.stream.StreamResult;
 
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
-import org.apache.cxf.wsdl.EndpointReferenceUtils;
 
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.wsat.cxf.utils.WSATCXFUtils;
 
 /**
  * Assorted debug helpers
@@ -31,9 +31,9 @@ import com.ibm.websphere.ras.annotation.Trivial;
 @Trivial
 public class DebugUtils {
 
-    // Convert an EPR to readable XML 
+    // Convert an EPR to readable XML
     public static String printEPR(EndpointReferenceType epr) {
-        return printXML(EndpointReferenceUtils.convertToXML(epr));
+        return printXML(WSATCXFUtils.convertToXML(epr));
     }
 
     private static String printXML(Source source) {

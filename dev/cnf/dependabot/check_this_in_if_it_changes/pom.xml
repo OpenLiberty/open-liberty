@@ -68,6 +68,11 @@
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+      <version>2.12.3</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
       <version>2.11.2</version>
     </dependency>
@@ -279,12 +284,12 @@
     <dependency>
       <groupId>com.sun.istack</groupId>
       <artifactId>istack-commons-runtime</artifactId>
-      <version>4.0.0-M3</version>
+      <version>4.0.1</version>
     </dependency>
     <dependency>
       <groupId>com.sun.istack</groupId>
       <artifactId>istack-commons-tools</artifactId>
-      <version>4.0.0-M3</version>
+      <version>4.0.1</version>
     </dependency>
     <dependency>
       <groupId>com.sun.mail</groupId>
@@ -294,12 +299,12 @@
     <dependency>
       <groupId>com.sun.xml.bind.external</groupId>
       <artifactId>relaxng-datatype</artifactId>
-      <version>3.0.0-M4</version>
+      <version>3.0.1</version>
     </dependency>
     <dependency>
       <groupId>com.sun.xml.bind.external</groupId>
       <artifactId>rngom</artifactId>
-      <version>3.0.0-M3</version>
+      <version>3.0.1</version>
     </dependency>
     <dependency>
       <groupId>com.sun.xml.bind</groupId>
@@ -647,16 +652,6 @@
       <version>1.0.9</version>
     </dependency>
     <dependency>
-      <groupId>io.smallrye</groupId>
-      <artifactId>smallrye-open-api-core</artifactId>
-      <version>2.1.1</version>
-    </dependency>
-    <dependency>
-      <groupId>io.smallrye</groupId>
-      <artifactId>smallrye-open-api-jaxrs</artifactId>
-      <version>2.1.1</version>
-    </dependency>
-    <dependency>
       <groupId>jakarta.activation</groupId>
       <artifactId>jakarta.activation-api</artifactId>
       <version>2.0.0</version>
@@ -915,6 +910,11 @@
       <groupId>jtidy</groupId>
       <artifactId>jtidy</artifactId>
       <version>4aug2000r7-dev</version>
+    </dependency>
+    <dependency>
+      <groupId>net.java.dev.jna</groupId>
+      <artifactId>jna</artifactId>
+      <version>5.8.0</version>
     </dependency>
     <dependency>
       <groupId>net.minidev</groupId>
@@ -1877,6 +1877,11 @@
       <version>3.0</version>
     </dependency>
     <dependency>
+      <groupId>org.eclipse.microprofile.health</groupId>
+      <artifactId>microprofile-health-api</artifactId>
+      <version>3.1-RC3</version>
+    </dependency>
+    <dependency>
       <groupId>org.eclipse.microprofile.jwt</groupId>
       <artifactId>microprofile-jwt-auth-api</artifactId>
       <version>1.0</version>
@@ -2234,7 +2239,7 @@
     <dependency>
       <groupId>org.glassfish</groupId>
       <artifactId>jakarta.faces</artifactId>
-      <version>3.0.0-RC3</version>
+      <version>3.0.1</version>
     </dependency>
     <dependency>
       <groupId>org.glassfish</groupId>
@@ -2485,11 +2490,6 @@
       <groupId>org.jboss.weld</groupId>
       <artifactId>weld-osgi-bundle</artifactId>
       <version>4.0.0.Final</version>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss</groupId>
-      <artifactId>jandex</artifactId>
-      <version>2.1.2.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jmock</groupId>
@@ -2867,6 +2867,11 @@
       <version>1.0.8</version>
     </dependency>
     <dependency>
+      <groupId>org.rnorth.visible-assertions</groupId>
+      <artifactId>visible-assertions</artifactId>
+      <version>2.1.2</version>
+    </dependency>
+    <dependency>
       <groupId>org.seleniumhq.webdriver</groupId>
       <artifactId>webdriver-common</artifactId>
       <version>0.9.7376</version>
@@ -3208,6 +3213,11 @@
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
+      <artifactId>selenium</artifactId>
+      <version>1.15.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
       <artifactId>testcontainers</artifactId>
       <version>1.15.3</version>
     </dependency>
@@ -3465,6 +3475,16 @@
       <groupId>io.smallrye</groupId>
       <artifactId>smallrye-graphql</artifactId>
       <version>1.0.9</version>
+    </dependency>
+    <dependency>
+      <groupId>io.smallrye</groupId>
+      <artifactId>smallrye-open-api-core</artifactId>
+      <version>2.1.5</version>
+    </dependency>
+    <dependency>
+      <groupId>io.smallrye</groupId>
+      <artifactId>smallrye-open-api-jaxrs</artifactId>
+      <version>2.1.5</version>
     </dependency>
     <dependency>
       <groupId>javax.activation</groupId>
@@ -3820,6 +3840,11 @@
       <groupId>org.jboss.logging</groupId>
       <artifactId>jboss-logging</artifactId>
       <version>3.3.2.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss</groupId>
+      <artifactId>jandex</artifactId>
+      <version>2.3.0.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jvnet.mimepull</groupId>

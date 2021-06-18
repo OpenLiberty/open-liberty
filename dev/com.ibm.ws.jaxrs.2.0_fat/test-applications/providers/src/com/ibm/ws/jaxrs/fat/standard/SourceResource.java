@@ -21,6 +21,9 @@ import javax.ws.rs.core.Response;
 import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.stream.StreamSource;
+
+import org.w3c.dom.Document;
 
 @Path("providers/standard/source")
 public class SourceResource {
@@ -61,17 +64,23 @@ public class SourceResource {
     }
 
     @PUT
-    public void putSource(DOMSource source) throws IOException {
-        SourceResource.source = source;
+    public void putSource(Document doc) throws IOException {
+        SourceResource.source = new DOMSource(doc);
     }
 
     @POST
     @Path("/empty")
     public Response postReader(Source source) throws IOException {
         if (source != null) {
-            SAXSource s = (SAXSource) source;
-            if (s.getInputSource().getByteStream() == null) {
-                return Response.ok("expected").build();
+            if (source instanceof SAXSource) {
+                SAXSource s = (SAXSource) source;
+                if (s.getInputSource().getByteStream() == null) {
+                    return Response.ok("expected").build();
+                }
+            } else if (source instanceof StreamSource) {
+                if (-1 == ((StreamSource)source).getInputStream().read()) {
+                    return Response.ok("expected").build();
+                }
             }
         }
         return Response.serverError().build();

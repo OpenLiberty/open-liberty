@@ -70,7 +70,7 @@ public class WCCustomProperties {
 
     public static String ERROR_PAGE_COMPATIBILITY;
     public static boolean MAP_FILTERS_TO_ASTERICK;
-    public static boolean SUPPRESS_HTML_RECURSIVE_ERROR_OUTPUT;
+    public static boolean SUPPRESS_HTML_RECURSIVE_ERROR_OUTPUT = true;         //Property is not read by the server starting 21.0.0.7; default is always true
     public static boolean THROW_MISSING_JSP_EXCEPTION;          //PK57843
 
     //638627 had to change default to true for CTS test case
@@ -542,7 +542,7 @@ public class WCCustomProperties {
 
         ERROR_PAGE_COMPATIBILITY = customProps.getProperty("com.ibm.ws.webcontainer.contenttypecompatibility");
         MAP_FILTERS_TO_ASTERICK = Boolean.valueOf(customProps.getProperty("com.ibm.ws.webcontainer.mapfilterstoasterisk")).booleanValue();
-        SUPPRESS_HTML_RECURSIVE_ERROR_OUTPUT = Boolean.valueOf(customProps.getProperty("com.ibm.ws.webcontainer.suppresshtmlrecursiveerroroutput")).booleanValue();
+        //SUPPRESS_HTML_RECURSIVE_ERROR_OUTPUT = Boolean.valueOf(customProps.getProperty("com.ibm.ws.webcontainer.suppresshtmlrecursiveerroroutput")).booleanValue(); // issue 14242, no longer read by the server started 21.0.0.7
         THROW_MISSING_JSP_EXCEPTION = Boolean.valueOf(customProps.getProperty("com.ibm.ws.webcontainer.throwmissingjspexception")).booleanValue(); //PK57843
 
         //638627 had to change default to true for CTS test case
@@ -817,7 +817,6 @@ public class WCCustomProperties {
             ALLOW_QUERY_PARAM_WITH_NO_EQUAL = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.allowqueryparamwithnoequal", "true")).booleanValue();
             //21.0.0.6
             EXCLUDE_ALL_HANDLED_TYPES_CLASSES = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.excludeallhandledtypesclasses", "true")).booleanValue();
-
         } else {
             DISABLE_X_POWERED_BY = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.disablexpoweredby","false")).booleanValue();
             STOP_APP_STARTUP_ON_LISTENER_EXCEPTION = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.stopappstartuponlistenerexception" , "false")).booleanValue();

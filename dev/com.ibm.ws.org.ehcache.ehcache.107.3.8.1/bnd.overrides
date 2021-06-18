@@ -47,6 +47,5 @@ DynamicImport-Package: \
   org.apache.cxf.ws.security.tokenstore, \
   org.apache.wss4j.common.cache   
 
-Include-Resource: \
- @${repo;org.ehcache.modules:ehcache-107;3.8.1}!/!META-INF/MANIFEST.MF|META-INF/maven/*
 
+jakartaeeMe: true

@@ -11,6 +11,10 @@
 -include= jar:${fileuri;${repo;org.apache.cxf:cxf-rt-ws-mex;3.4.1;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 -includeresource: \
-    @${repo;org.apache.cxf:cxf-rt-ws-mex;3.4.1;EXACT}!/!META-INF/maven/*
+    @${repo;org.apache.cxf:cxf-rt-ws-mex;3.4.1;EXACT}!/!META-INF/maven/*, \
+    @${repo;org.apache.cxf:cxf-rt-ws-mex;3.4.1;EXACT}!/META-INF/DEPENDENCIES, \
+    @${repo;org.apache.cxf:cxf-rt-ws-mex;3.4.1;EXACT}!/META-INF/LICENSE, \
+    @${repo;org.apache.cxf:cxf-rt-ws-mex;3.4.1;EXACT}!/META-INF/NOTICE, \
+    @${repo;org.apache.cxf:cxf-rt-ws-mex;3.4.1;EXACT}!/META-INF/cxf/*
 
 -buildpath: org.apache.cxf:cxf-rt-ws-mex;strategy=exact;version=3.4.1

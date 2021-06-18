@@ -23,7 +23,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.fat.util.SharedServer;
 import com.meterware.httpunit.GetMethodWebRequest;
 import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
@@ -51,25 +50,6 @@ public class CDINoInjectionTest {
     private static final String CDI12_TEST_V2_JAR_NAME = "CDI12TestV2";
     private static final String CDI12_TEST_V2_NO_INJECTION_APP_NAME = "CDI12TestV2NoInjection";
 
-    /**
-     * Perform a request to the the server instance and verify that the
-     * response has expected text. Throw an exception if the expected
-     * text is not present or if the unexpected text is present.
-     *
-     * The request path is used to create a request URL via {@link SharedServer.getServerUrl}.
-     *
-     * Both the expected text and the unexpected text are tested using a contains
-     * test. The test does not look for an exact match.
-     *
-     * @param webBrowser          Simulated web browser instance through which the request is made.
-     * @param requestPath         The path which will be requested.
-     * @param expectedResponses   Expected response text. All elements are tested.
-     * @param unexpectedResponses Unexpected response text. All elements are tested.
-     * @return The encapsulated response.
-     *
-     * @throws Exception Thrown if the expected response text is not present or if the
-     *                       unexpected response text is present.
-     */
     @BeforeClass
     public static void setupClass() throws Exception {
         // Build the CDI12TestV2 jar to add to the war app as a lib

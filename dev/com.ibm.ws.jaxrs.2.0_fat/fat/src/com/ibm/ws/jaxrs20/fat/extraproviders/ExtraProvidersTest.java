@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,12 +23,11 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.jaxrs20.fat.AbstractTest;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
-@SkipForRepeat("EE9_FEATURES") // currently broken due to multiple issues
 public class ExtraProvidersTest extends AbstractTest {
 
     // Use the same server as JAXRSWebContainerTest
@@ -58,7 +57,7 @@ public class ExtraProvidersTest extends AbstractTest {
     @AfterClass
     public static void tearDown() throws Exception {
         if (server != null) {
-            server.stopServer("CWWKW0100W");
+            server.stopServer("CWWKW0100W", "CWWKW1305W");
         }
     }
 
@@ -118,9 +117,10 @@ public class ExtraProvidersTest extends AbstractTest {
      */
     @Test
     public void testNoPublicConstructorProvider() {
-        assertNotNull("No warning logged for provider without a public constructor - expected CWWKW0100W",
-                      server.waitForStringInLog("CWWKW0100W.*com.ibm.ws.jaxrs.fat.extraproviders.NoPublicConstructorProvider"));
-        assertNotNull("No warning logged for provider (declared via Application classes) without a public constructor - expected CWWKW0100W",
-                      server.waitForStringInLog("CWWKW0100W.*com.ibm.ws.jaxrs.fat.extraproviders.NoAnnotationNoPublicConstructorProvider"));
+        final String prefix = JakartaEE9Action.isActive() ? "CWWKW1305W" : "CWWKW0100W";
+        assertNotNull("No warning logged for provider without a public constructor - expected " + prefix,
+                      server.waitForStringInLog(prefix + ".*com.ibm.ws.jaxrs.fat.extraproviders.NoPublicConstructorProvider"));
+        assertNotNull("No warning logged for provider (declared via Application classes) without a public constructor - expected " + prefix,
+                      server.waitForStringInLog(prefix + ".*com.ibm.ws.jaxrs.fat.extraproviders.NoAnnotationNoPublicConstructorProvider"));
     }
 }

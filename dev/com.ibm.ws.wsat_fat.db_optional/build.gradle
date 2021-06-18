@@ -58,6 +58,7 @@ task copyCommonFiles {
 
 addRequiredLibraries.dependsOn copyFAT
 addRequiredLibraries.dependsOn addDerbyToSharedDir
+addRequiredLibraries.dependsOn addJakartaTransformer
 
 jar {
   dependsOn copyCommonFiles

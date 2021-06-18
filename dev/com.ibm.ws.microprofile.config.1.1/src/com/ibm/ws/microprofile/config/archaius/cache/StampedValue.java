@@ -64,7 +64,7 @@ public class StampedValue {
     public SourcedValue getSourced() {
         boolean fromCache = true;
         int cacheVersion = stampedValue.getStamp();
-        int latestVersion = parentContainer.getMasterVersion();
+        int latestVersion = parentContainer.getPrimaryVersion();
         String key = parentContainer.getKey();
         SourcedValue sourcedValue = null;
         if (cacheVersion != latestVersion) {

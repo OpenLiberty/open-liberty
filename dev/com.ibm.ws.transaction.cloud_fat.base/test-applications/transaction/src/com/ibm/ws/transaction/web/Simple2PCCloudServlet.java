@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.transaction.web;
 
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -169,6 +170,76 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
             con.commit();
         } catch (Exception ex) {
             System.out.println("setPeerOwnership: caught exception in testSetup: " + ex);
+        }
+    }
+
+    public void testTranlogTableAccess(HttpServletRequest request,
+                                       HttpServletResponse response) throws Exception {
+        Connection con = dsTranLog.getConnection();
+        con.setAutoCommit(false);
+
+        try {
+            DatabaseMetaData mdata = con.getMetaData();
+
+            System.out.println("testTranlogTableAccess: get metadata tables - " + mdata);
+
+            // Need to be a bit careful here, some RDBMS store uppercase versions of the name and some lower.
+            boolean foundUpperTranCloud1 = false; // WAS_TRAN_LOGCLOUD0011 should have been dropped
+            boolean foundUpperTranCloud2 = false; // WAS_TRAN_LOGCLOUD0021 should be found
+            boolean foundUpperPartnerCloud1 = false; // WAS_PARTNER_LOGCLOUD0011 should have been dropped
+            boolean foundUpperPartnerCloud2 = false; // WAS_PARTNER_LOGCLOUD0021 should be found
+            //Retrieving the columns in the database
+            ResultSet tables = mdata.getTables(null, null, "WAS_%", null); // Just get all the "WAS" prepended tables
+            String tableString = "";
+            while (tables.next()) {
+                tableString = tables.getString("Table_NAME");
+                System.out.println("testTranlogTableAccess: Found table name: " + tableString);
+                if (tableString.equalsIgnoreCase("WAS_TRAN_LOGCLOUD0011"))
+                    foundUpperTranCloud1 = true;
+                else if (tableString.equalsIgnoreCase("WAS_TRAN_LOGCLOUD0021"))
+                    foundUpperTranCloud2 = true;
+                else if (tableString.equalsIgnoreCase("WAS_PARTNER_LOGCLOUD0011"))
+                    foundUpperPartnerCloud1 = true;
+                else if (tableString.equalsIgnoreCase("WAS_PARTNER_LOGCLOUD0021"))
+                    foundUpperPartnerCloud2 = true;
+            }
+
+            boolean foundLowerTranCloud1 = false; // WAS_TRAN_LOGCLOUD0011 should have been dropped
+            boolean foundLowerTranCloud2 = false; // WAS_TRAN_LOGCLOUD0021 should be found
+            boolean foundLowerPartnerCloud1 = false; // WAS_PARTNER_LOGCLOUD0011 should have been dropped
+            boolean foundLowerPartnerCloud2 = false; // WAS_PARTNER_LOGCLOUD0021 should be found
+            tables = mdata.getTables(null, null, "was%", null); // Just get all the "was" tables
+            while (tables.next()) {
+                tableString = tables.getString("Table_NAME");
+                System.out.println("testTranlogTableAccess: Found table name: " + tableString);
+                if (tableString.equalsIgnoreCase("WAS_TRAN_LOGCLOUD0011"))
+                    foundLowerTranCloud1 = true;
+                else if (tableString.equalsIgnoreCase("WAS_TRAN_LOGCLOUD0021"))
+                    foundLowerTranCloud2 = true;
+                else if (tableString.equalsIgnoreCase("WAS_PARTNER_LOGCLOUD0011"))
+                    foundLowerPartnerCloud1 = true;
+                else if (tableString.equalsIgnoreCase("WAS_PARTNER_LOGCLOUD0021"))
+                    foundLowerPartnerCloud2 = true;
+            }
+
+            // Report unexpected behaviour
+            final PrintWriter pw = response.getWriter();
+            if (foundUpperTranCloud1 || foundLowerTranCloud1) {
+                pw.println("Unexpectedly found tran log table for CLOUD0011");
+            }
+            if (!foundUpperTranCloud2 && !foundLowerTranCloud2) {
+                pw.println("Unexpectedly did not find tran log table for CLOUD0021");
+            }
+            if (foundUpperPartnerCloud1 || foundLowerPartnerCloud1) {
+                pw.println("Unexpectedly found partner log table for CLOUD0011");
+            }
+            if (!foundUpperPartnerCloud2 && !foundLowerPartnerCloud2) {
+                pw.println("Unexpectedly did not find partner log table for CLOUD0021");
+            }
+            tables.close();
+            con.commit();
+        } catch (Exception ex) {
+            System.out.println("testTranlogTableAccess: caught exception " + ex);
         }
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2016 IBM Corporation and others.
+ * Copyright (c) 2003, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,11 +12,14 @@
 package com.ibm.ws.recoverylog.spi;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 
-import com.ibm.tx.util.logging.FFDCFilter;
-import com.ibm.tx.util.logging.Tr;
-import com.ibm.tx.util.logging.TraceComponent;
+import com.ibm.tx.TranConstants;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.FFDCFilter;
 
 //------------------------------------------------------------------------------
 // Class: RecoverableUnitImpl
@@ -32,7 +35,7 @@ import com.ibm.tx.util.logging.TraceComponent;
  * client service will group information related to a specific unit of work
  * in a single recoverable unit.
  * </p>
- * 
+ *
  * <p>
  * Each recoverable unit is further subdivided into an arbitrary number of
  * discrete blocks called "recoverable unit sections". The RecoverableUnitSectionImpl
@@ -42,23 +45,22 @@ import com.ibm.tx.util.logging.TraceComponent;
  * Typically, the client service will group information of a given type into
  * a single recoverable unit section.
  * </p>
- * 
+ *
  * <p>
  * Information in the form of byte arrays is written to a recoverable unit section
  * rather than directly to recoverable unit.
  * </p>
- * 
+ *
  * <p>
  * This class provides the implementation of the RecoverableUnit interface.
  * </p>
  */
-public class RecoverableUnitImpl implements RecoverableUnit
-{
+public class RecoverableUnitImpl implements RecoverableUnit {
     /**
      * WebSphere RAS TraceComponent registration.
      */
     private static final TraceComponent tc = Tr.register(RecoverableUnitImpl.class,
-                                                         TraceConstants.TRACE_GROUP, null);
+                                                         TraceConstants.TRACE_GROUP, TranConstants.NLS_FILE);
 
     /**
      * A record type code inserted into the header information of a recoverable
@@ -96,15 +98,15 @@ public class RecoverableUnitImpl implements RecoverableUnit
      */
     private static final int REMOVAL_HEADER_SIZE = RLSUtils.INT_SIZE + // Serialized FST data length
                                                    RLSUtils.LONG_SIZE + // ID
-                                                   RLSUtils.SHORT_SIZE; // type                                                                                                   
+                                                   RLSUtils.SHORT_SIZE; // type
 
     /**
      * The size, in bytes, of the "head" and "tail" information needed to encapsulate
      * a record on a persistent storate device.
      */
     private static final int TOTAL_HEADER_SIZE = 4 + // "RCRD"
-                                                 RLSUtils.LONG_SIZE + // sequence number  
-                                                 RLSUtils.INT_SIZE + // record length in bytes                                     
+                                                 RLSUtils.LONG_SIZE + // sequence number
+                                                 RLSUtils.INT_SIZE + // record length in bytes
                                                  RECORD_HEADER_SIZE +
                                                  RLSUtils.LONG_SIZE; // tail sequence number;
 
@@ -136,7 +138,7 @@ public class RecoverableUnitImpl implements RecoverableUnit
      * </ul>
      * </p>
      */
-    private final java.util.HashMap _recoverableUnitSections;
+    private final HashMap<Integer, RecoverableUnitSection> _recoverableUnitSections;
 
     /**
      * Flag indicating if this RecoverableUnitImpl holds data that is stored in
@@ -268,27 +270,25 @@ public class RecoverableUnitImpl implements RecoverableUnit
      * <p>
      * Package access constructor for the creation of recoverable units.
      * </p>
-     * 
+     *
      * <p>
      * This method should only be called by the RLS itself during either initial
      * creation of a recoverable unit or recreation during server startup.
      * </p>
-     * 
-     * @param recLog The parent recovery log reference.
-     * @param identity The identity of the new recoverable unit (must be unique
-     *            within the associated recovery log.)
+     *
+     * @param recLog       The parent recovery log reference.
+     * @param identity     The identity of the new recoverable unit (must be unique
+     *                         within the associated recovery log.)
      * @param failureScope The FailureScope that this recoverable unit should belong to
-     * @param logHandle The LogHandle reference that provides access to the
-     *            underlying physical recovery log.
-     * @param storageMode The required storage mode (defined in the RecoveryLogImpl.java)
-     * @param controlLock The lock object, owned by the associated recovery log and used
-     *            to coordinate access to it.
+     * @param logHandle    The LogHandle reference that provides access to the
+     *                         underlying physical recovery log.
+     * @param storageMode  The required storage mode (defined in the RecoveryLogImpl.java)
+     * @param controlLock  The lock object, owned by the associated recovery log and used
+     *                         to coordinate access to it.
      */
-    private RecoverableUnitImpl(MultiScopeRecoveryLog recLog, long identity, FailureScope failureScope, LogHandle logHandle, int storageMode, Lock controlLock, boolean recovered)
-    {
+    private RecoverableUnitImpl(MultiScopeRecoveryLog recLog, long identity, FailureScope failureScope, LogHandle logHandle, int storageMode, Lock controlLock, boolean recovered) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "RecoverableUnitImpl", new java.lang.Object[] { recLog, new Long(identity), failureScope, logHandle, new Integer(storageMode), controlLock,
-                                                                        new Boolean(recovered) });
+            Tr.entry(tc, "RecoverableUnitImpl", recLog, identity, failureScope, logHandle, storageMode, controlLock, recovered);
 
         // Cache the supplied information
         _deflatedFailureScope = FailureScopeManager.toByteArray(failureScope);
@@ -305,7 +305,7 @@ public class RecoverableUnitImpl implements RecoverableUnit
 
         // Allocate the map used to contain the recoverable unit sections created within
         // the new recoverable unit.
-        _recoverableUnitSections = new java.util.HashMap();
+        _recoverableUnitSections = new HashMap<Integer, RecoverableUnitSection>();
 
         // Cache details about the identity of the associated client / recovery log
         _serverName = recLog.serverName();
@@ -320,34 +320,28 @@ public class RecoverableUnitImpl implements RecoverableUnit
             Tr.exit(tc, "RecoverableUnitImpl", this);
     }
 
-    RecoverableUnitImpl(MultiScopeRecoveryLog recLog, long identity, FailureScope failureScope, LogHandle logHandle, int storageMode, Lock controlLock)
-    {
+    RecoverableUnitImpl(MultiScopeRecoveryLog recLog, long identity, FailureScope failureScope, LogHandle logHandle, int storageMode, Lock controlLock) {
         this(recLog, identity, failureScope, logHandle, storageMode, controlLock, false);
 
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "RecoverableUnitImpl", new Object[] { recLog, new Long(identity), failureScope, logHandle, new Integer(storageMode), controlLock });
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "RecoverableUnitImpl", this);
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "RecoverableUnitImpl", recLog, identity, failureScope, logHandle, storageMode, controlLock, this);
     }
 
-    RecoverableUnitImpl(MultiScopeRecoveryLog recLog, long identity, FailureScope failureScope, LogHandle logHandle, int storageMode, Lock controlLock, ReadableLogRecord record) throws InternalLogException, LogCorruptedException
-    {
+    RecoverableUnitImpl(MultiScopeRecoveryLog recLog, long identity, FailureScope failureScope, LogHandle logHandle, int storageMode, Lock controlLock,
+                        ReadableLogRecord record) throws InternalLogException, LogCorruptedException {
         this(recLog, identity, failureScope, logHandle, storageMode, controlLock, true);
 
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "RecoverableUnitImpl", new Object[] { recLog, new Long(identity), failureScope, logHandle, new Integer(storageMode), controlLock, record });
+            Tr.entry(tc, "RecoverableUnitImpl", recLog, identity, failureScope, logHandle, storageMode, controlLock, record);
 
-        try
-        {
+        try {
             recover(record);
-        } catch (LogCorruptedException lce)
-        {
+        } catch (LogCorruptedException lce) {
             FFDCFilter.processException(lce, "com.ibm.ws.recoverylog.spi.RecoverableUnitImpl.RecoverableUnitImpl", "290", this);
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "RecoverableUnitImpl", lce);
             throw lce;
-        } catch (InternalLogException ile)
-        {
+        } catch (InternalLogException ile) {
             FFDCFilter.processException(ile, "com.ibm.ws.recoverylog.spi.RecoverableUnitImpl.RecoverableUnitImpl", "296", this);
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "RecoverableUnitImpl", ile);
@@ -363,66 +357,58 @@ public class RecoverableUnitImpl implements RecoverableUnit
     //------------------------------------------------------------------------------
     /**
      * Creates a new recoverable unit section.
-     * 
-     * @param identity Identity of the new recoverable unit section (must be unique
-     *            within the recoverable unit)
+     *
+     * @param identity   Identity of the new recoverable unit section (must be unique
+     *                       within the recoverable unit)
      * @param singleData Flag indicating if the new recoverable unit section should
-     *            retain only a single item of data at any one time. If this
-     *            flag is true, only the most recent item of data added to it
-     *            is retained and preceeding items of data are thrown away.
-     * 
+     *                       retain only a single item of data at any one time. If this
+     *                       flag is true, only the most recent item of data added to it
+     *                       is retained and preceeding items of data are thrown away.
+     *
      * @return The new RecoverableUnitSectionImpl instance.
-     * 
+     *
      * @exception RecoverableUnitSectionExistsException Thrown if a recoverable unit
-     *                section already exists with
-     *                the supplied identity.
-     * @exception InternalLogException An unexpected error has occured.
+     *                                                      section already exists with
+     *                                                      the supplied identity.
+     * @exception InternalLogException                  An unexpected error has occured.
      */
     @Override
-    public RecoverableUnitSection createSection(int identity, boolean singleData) throws RecoverableUnitSectionExistsException, InternalLogException
-    {
+    public RecoverableUnitSection createSection(int identity, boolean singleData) throws RecoverableUnitSectionExistsException, InternalLogException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "createSection", new java.lang.Object[] { this, new Integer(identity), new Boolean(singleData) });
+            Tr.entry(tc, "createSection", this, identity, singleData);
 
         // If the parent recovery log instance has experienced a serious internal error then prevent
         // this operation from executing.
-        if (_recLog.failed())
-        {
+        if (_recLog.failed()) {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "createSection", this);
             throw new InternalLogException(null);
         }
 
         // Construct a new Integer to wrap the 'id' value in order to use this in the _recoverableUnitSections map.
-        Integer sectionId = new Integer(identity);
+        Integer sectionId = identity;
 
         RecoverableUnitSectionImpl recoverableUnitSection = null;
 
         _controlLock.getSharedLock(LOCK_REQUEST_ID_RUI_CREATESECTION);
 
-        if (_recoverableUnitSections.containsKey(sectionId) == false)
-        {
+        if (_recoverableUnitSections.containsKey(sectionId) == false) {
             recoverableUnitSection = new RecoverableUnitSectionImpl(_recLog, this, _identity, identity, _controlLock, _logHandle, _storageMode, singleData);
             _recoverableUnitSections.put(sectionId, recoverableUnitSection);
             if (tc.isEventEnabled())
                 Tr.event(tc, "RecoverableUnitImpl '" + _identity + "' created a new RecoverableUnitSection with identity '" + identity + "'");
-        }
-        else
-        {
+        } else {
             if (tc.isEventEnabled())
                 Tr.event(tc, "RecoverableUnitImpl '" + _identity + "' was unable to create a RecoverableUnitSection with id '" + identity + "' as it already exists");
 
-            try
-            {
+            try {
                 _controlLock.releaseSharedLock(LOCK_REQUEST_ID_RUI_CREATESECTION);
-            } catch (NoSharedLockException exc)
-            {
+            } catch (NoSharedLockException exc) {
                 FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.RecoverableUnitImpl.createSection", "212", this);
                 if (tc.isEntryEnabled())
                     Tr.exit(tc, "createSection", "InternalLogException");
                 throw new InternalLogException(exc);
-            } catch (Throwable exc)
-            {
+            } catch (Throwable exc) {
                 FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.RecoverableUnitImpl.createSection", "218", this);
                 if (tc.isEntryEnabled())
                     Tr.exit(tc, "createSection", "InternalLogException");
@@ -434,11 +420,9 @@ public class RecoverableUnitImpl implements RecoverableUnit
             throw new RecoverableUnitSectionExistsException(null);
         }
 
-        try
-        {
+        try {
             _controlLock.releaseSharedLock(LOCK_REQUEST_ID_RUI_CREATESECTION);
-        } catch (NoSharedLockException exc)
-        {
+        } catch (NoSharedLockException exc) {
             FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.RecoverableUnitImpl.createSection", "232", this);
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "createSection", "InternalLogException");
@@ -457,12 +441,12 @@ public class RecoverableUnitImpl implements RecoverableUnit
      * <p>
      * Remove a recoverable unit section from the recoverable unit.
      * </p>
-     * 
+     *
      * <p>
      * The recoverable unit section is no longer considered valid after this
      * call. The client service must not invoke any further methods on it.
      * </p>
-     * 
+     *
      * <p>
      * The RLS will remove the recoverable unit section from its "in memory" copy of
      * the recovery log and write (but not force) a record of this deletion to
@@ -473,24 +457,23 @@ public class RecoverableUnitImpl implements RecoverableUnit
      * subsequent keypoint operation will remove all reference to the recoverable
      * unit from the recovery log.
      * </p>
-     * 
+     *
      * <p>
      * This method must not be invoked whilst an unclosed LogCursor is held for the
      * recoverable unit sections in this recoverable unit. The
      * <code>LogCursor.remove</code> method should be used instead.
      * </p>
-     * 
+     *
      * @param identity The identity of the target recoverable unit section.
-     * 
+     *
      * @exception InvalidRecoverableUnitSectionException The recoverable unit section
-     *                does not exist.
-     * @exception InternalLogException An unexpected error has occured.
+     *                                                       does not exist.
+     * @exception InternalLogException                   An unexpected error has occured.
      */
     @Override
-    public void removeSection(int identity) throws InvalidRecoverableUnitSectionException, InternalLogException
-    {
+    public void removeSection(int identity) throws InvalidRecoverableUnitSectionException, InternalLogException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "removeSection", new java.lang.Object[] { this, new Integer(identity) });
+            Tr.entry(tc, "removeSection", this, identity);
 
         // REQD: Implementation not yet provided. No users of the RLS currently require this operation.
 
@@ -505,19 +488,18 @@ public class RecoverableUnitImpl implements RecoverableUnit
     /**
      * Returns the recoverable unit section previously created with the supplied
      * identity. If no such recoverable unit section exists, this method returns null.
-     * 
+     *
      * @param identity The identitiy of the required recoverable unit section.
-     * 
+     *
      * @return The recoverable unit section previously created with the supplied
      *         identity.
      */
     @Override
-    public RecoverableUnitSection lookupSection(int identity)
-    {
+    public RecoverableUnitSection lookupSection(int identity) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "lookupSection", new java.lang.Object[] { this, new Integer(identity) });
+            Tr.entry(tc, "lookupSection", this, identity);
 
-        RecoverableUnitSectionImpl recoverableUnitSection = (RecoverableUnitSectionImpl) _recoverableUnitSections.get(new Integer(identity));
+        RecoverableUnitSection recoverableUnitSection = _recoverableUnitSections.get(identity);
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "lookupSection", recoverableUnitSection);
@@ -534,7 +516,7 @@ public class RecoverableUnitImpl implements RecoverableUnit
      * that the recovery log contains an up to date copy of the information retained
      * in the target recoverable unit.
      * </p>
-     * 
+     *
      * <p>
      * The information is written to the underlying recovery log, but not forced
      * through to persisent storage. After this call, the information is not
@@ -542,7 +524,7 @@ public class RecoverableUnitImpl implements RecoverableUnit
      * To ensure that this information will be recovered, a force operation
      * should be used instead (eg RecoverableUnitImpl.forceSections)
      * </p>
-     * 
+     *
      * <p>
      * This call my be used as part of an optomization when several recoverable units
      * need to be pushed to disk. For example, the following sequence will ensure that
@@ -556,19 +538,18 @@ public class RecoverableUnitImpl implements RecoverableUnit
      * <li>RecoverableUnit4.forceSections</li>
      * </ul>
      * </p>
-     * 
+     *
      * <p>
      * This simple version version of the method is exposed on the interfaces and can
      * deligates down to the implementation method.
      * </p>
-     * 
+     *
      * @exception InternalLogException An unexpected error has occured.
      */
     @Override
-    public void writeSections() throws InternalLogException
-    {
+    public void writeSections() throws InternalLogException {
         // Lack of trace or ffdc is deliberate. This method is the external interface
-        // for the real writeSections call and as such we don't want to see two entries for the 
+        // for the real writeSections call and as such we don't want to see two entries for the
         // same method in the trace.
         this.writeSections(false);
     }
@@ -586,12 +567,12 @@ public class RecoverableUnitImpl implements RecoverableUnit
      * recovery log. Either way, the the underlying recovery log will contain an up
      * to date copy of the information retained in the target
      * <p>
-     * 
+     *
      * <p>
      * This extension of the standard writeSections method is required for
      * keypoint support
      * </p>
-     * 
+     *
      * <p>
      * The information is written to the underlying recovery log, but not forced
      * through to persisent storage. After this call, the information is not
@@ -599,7 +580,7 @@ public class RecoverableUnitImpl implements RecoverableUnit
      * To ensure that this information will be recovered, a force operation
      * should be used instead (eg RecoverableUnitImpl.forceSections)
      * </p>
-     * 
+     *
      * <p>
      * This call my be used as part of an optomization when several recoverable units
      * need to be pushed to disk. For example, the following sequence will ensure that
@@ -613,34 +594,31 @@ public class RecoverableUnitImpl implements RecoverableUnit
      * <li>RecoverableUnit4.forceSections(..)</li>
      * </ul>
      * </p>
-     * 
+     *
      * <p>
      * This internal version of the method is not exposed on the interfaces and can only
      * be called from within the RLS. Client services invoke the simpler version of the
      * method (with no arguments) which deligates down to this method.
      * </p>
-     * 
+     *
      * @param rewriteRequired Boolean flag indicating if a rewrite is required.
-     * 
+     *
      * @exception InternalLogException An unexpected error has occured.
      */
-    void writeSections(boolean rewriteRequired) throws InternalLogException
-    {
+    void writeSections(boolean rewriteRequired) throws InternalLogException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "writeSections", new java.lang.Object[] { this, new Boolean(rewriteRequired) });
+            Tr.entry(tc, "writeSections", this, rewriteRequired);
 
         // If the parent recovery log instance has experienced a serious internal error then prevent
         // this operation from executing.
-        if (_recLog.failed())
-        {
+        if (_recLog.failed()) {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "writeSections", "InternalLogException");
             throw new InternalLogException(null);
         }
 
         // If the log was not open then throw an exception
-        if (_logHandle == null)
-        {
+        if (_logHandle == null) {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "writeSections", "InternalLogException");
             throw new InternalLogException(null);
@@ -651,10 +629,8 @@ public class RecoverableUnitImpl implements RecoverableUnit
         // If there is data stored within this recoverable unit that has not yet been
         // persisted to disk or there is existing data and a rewrite is being performed
         // then (re)persist the required data.
-        if ((_unwrittenDataSize > 0) || (rewriteRequired && (_totalDataSize > 0)))
-        {
-            try
-            {
+        if ((_unwrittenDataSize > 0) || (rewriteRequired && (_totalDataSize > 0))) {
+            try {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Writing recoverable unit '" + _identity + "'");
 
@@ -663,12 +639,9 @@ public class RecoverableUnitImpl implements RecoverableUnit
 
                 int requiredRecordSize = _recordHeaderSize;
 
-                if (rewriteRequired)
-                {
+                if (rewriteRequired) {
                     requiredRecordSize += _totalDataSize;
-                }
-                else
-                {
+                } else {
                     requiredRecordSize += _unwrittenDataSize;
                 }
 
@@ -680,22 +653,20 @@ public class RecoverableUnitImpl implements RecoverableUnit
                 // In some situations, there will not be enough space in the underlying recovery to obtain a
                 // WritableLogRecord of the required size. The recovery log will need to perform "housekeeping"
                 // to clean up the recovery log before this latest record can be written. In such
-                // situations, the getWritableLogRecord() will trigger a keypoint operation before returning. 
+                // situations, the getWritableLogRecord() will trigger a keypoint operation before returning.
                 // Given that the keypoint operation will actually cause all the information within this
                 // recoverable unit to be (re)written to disk, this method need take no further action. This
                 // condition is indicated by the return of a null log record.
-                if (logRecord != null)
-                {
+                if (logRecord != null) {
                     writeRecordHeader(logRecord, RECORDTYPENORMAL);
 
                     // Obtain an iterator that can be used to access each of the recoverable unit sections in turn.
-                    Iterator recoverableUnitSectionsIterator = _recoverableUnitSections.values().iterator();
+                    Iterator<RecoverableUnitSection> recoverableUnitSectionsIterator = _recoverableUnitSections.values().iterator();
 
-                    while (recoverableUnitSectionsIterator.hasNext())
-                    {
+                    while (recoverableUnitSectionsIterator.hasNext()) {
                         RecoverableUnitSectionImpl section = (RecoverableUnitSectionImpl) (recoverableUnitSectionsIterator.next());
 
-                        // Now direct the recoverable unit section to write its content. If the recoverable unit 
+                        // Now direct the recoverable unit section to write its content. If the recoverable unit
                         // section has no data to write then this will be a no-op.
                         section.format(rewriteRequired, logRecord);
                     }
@@ -713,19 +684,16 @@ public class RecoverableUnitImpl implements RecoverableUnit
 
                     _logHandle.writeLogRecord(logRecord);
                 }
-            } catch (IOException exc)
-            {
+            } catch (IOException exc) {
                 FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.RecoverableUnitImpl.writeSections", "383", this);
                 if (tc.isEventEnabled())
                     Tr.event(tc, "An unexpected error IO occurred whilst formatting the recovery log buffer", exc);
 
                 _recLog.markFailed(exc); /* @MD19484C */
 
-                try
-                {
+                try {
                     _controlLock.releaseSharedLock(LOCK_REQUEST_ID_RUI_WRITESECTIONS);
-                } catch (Throwable exc2)
-                {
+                } catch (Throwable exc2) {
                     FFDCFilter.processException(exc2, "com.ibm.ws.recoverylog.spi.RecoverableUnitImpl.writeSections", "392", this);
                     if (tc.isEntryEnabled())
                         Tr.exit(tc, "writeSections", "InternalLogException");
@@ -735,19 +703,16 @@ public class RecoverableUnitImpl implements RecoverableUnit
                 if (tc.isEntryEnabled())
                     Tr.exit(tc, "writeSections", "InternalLogException");
                 throw new InternalLogException(exc);
-            } catch (InternalLogException exc)
-            {
+            } catch (InternalLogException exc) {
                 FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.RecoverableUnitImpl.writeSections", "587", this);
                 if (tc.isEventEnabled())
                     Tr.event(tc, "An InternalLogException exception occured whilst formatting the recovery log buffer", exc);
 
                 _recLog.markFailed(exc); /* @MD19484C */
 
-                try
-                {
+                try {
                     _controlLock.releaseSharedLock(LOCK_REQUEST_ID_RUI_WRITESECTIONS);
-                } catch (Throwable exc2)
-                {
+                } catch (Throwable exc2) {
                     FFDCFilter.processException(exc2, "com.ibm.ws.recoverylog.spi.RecoverableUnitImpl.writeSections", "392", this);
                     // The shared lock release has failed whilst procesing the initial InternalLogExcption failure. Because
                     // this may be a LogFullException (which extends InternalLogException), rather than re-generating the
@@ -757,19 +722,16 @@ public class RecoverableUnitImpl implements RecoverableUnit
                 if (tc.isEntryEnabled())
                     Tr.exit(tc, "writeSections", exc);
                 throw exc;
-            } catch (Throwable exc)
-            {
+            } catch (Throwable exc) {
                 FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.RecoverableUnitImpl.writeSections", "402", this);
                 if (tc.isEventEnabled())
                     Tr.event(tc, "An unexpected error occurred whilst formatting the recovery log buffer", exc);
 
                 _recLog.markFailed(exc); /* @MD19484C */
 
-                try
-                {
+                try {
                     _controlLock.releaseSharedLock(LOCK_REQUEST_ID_RUI_WRITESECTIONS);
-                } catch (Throwable exc2)
-                {
+                } catch (Throwable exc2) {
                     FFDCFilter.processException(exc2, "com.ibm.ws.recoverylog.spi.RecoverableUnitImpl.writeSections", "411", this);
                     if (tc.isEntryEnabled())
                         Tr.exit(tc, "writeSections", "InternalLogException");
@@ -780,18 +742,14 @@ public class RecoverableUnitImpl implements RecoverableUnit
                     Tr.exit(tc, "writeSections", "InternalLogException");
                 throw new InternalLogException(exc);
             }
-        }
-        else
-        {
+        } else {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "RecoverableUnitImpl has no RecoverableUnitSections that need to be added to the disk record");
         }
 
-        try
-        {
+        try {
             _controlLock.releaseSharedLock(LOCK_REQUEST_ID_RUI_WRITESECTIONS);
-        } catch (NoSharedLockException exc)
-        {
+        } catch (NoSharedLockException exc) {
             FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.RecoverableUnitImpl.writeSections", "474", this);
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "writeSections", "InternalLogException");
@@ -812,7 +770,7 @@ public class RecoverableUnitImpl implements RecoverableUnit
      * This ensures that the recovery log contains an up to date copy of the
      * information retained in the target recoverable unit section.
      * </p>
-     * 
+     *
      * <p>
      * The information is written to the underlying recovery log, but not forced
      * through to persisent storage. After this call, the information is not
@@ -820,32 +778,29 @@ public class RecoverableUnitImpl implements RecoverableUnit
      * To ensure that this information will be recovered, a force operation
      * should be used instead (eg RecoverableUnitImpl.forceSections)
      * </p>
-     * 
-     * @param target The target recoverable unit section reference
+     *
+     * @param target            The target recoverable unit section reference
      * @param unwrittenDataSize The number of bytes of persistent storage that
-     *            will be required by the recoverable unit section
-     *            to create a persistent record of its unwritten
-     *            information.
-     * 
+     *                              will be required by the recoverable unit section
+     *                              to create a persistent record of its unwritten
+     *                              information.
+     *
      * @exception InternalLogException An unexpected error has occured.
      */
-    void writeSection(RecoverableUnitSectionImpl target, int unwrittenDataSize) throws InternalLogException
-    {
+    void writeSection(RecoverableUnitSectionImpl target, int unwrittenDataSize) throws InternalLogException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "writeSection", new java.lang.Object[] { this, target, new Integer(unwrittenDataSize) });
+            Tr.entry(tc, "writeSection", this, target, unwrittenDataSize);
 
         // If the parent recovery log instance has experienced a serious internal error then prevent
         // this operation from executing.
-        if (_recLog.failed())
-        {
+        if (_recLog.failed()) {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "writeSection", this);
             throw new InternalLogException(null);
         }
 
         // If the log was not open then throw an exception
-        if (_logHandle == null)
-        {
+        if (_logHandle == null) {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "writeSection", "InternalLogException");
             throw new InternalLogException(null);
@@ -853,8 +808,7 @@ public class RecoverableUnitImpl implements RecoverableUnit
 
         _controlLock.getSharedLock(LOCK_REQUEST_ID_RUI_WRITESECTION);
 
-        try
-        {
+        try {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Writing recoverable unit '" + target.identity() + "'");
 
@@ -871,17 +825,16 @@ public class RecoverableUnitImpl implements RecoverableUnit
             // In some situations, there will not be enough space in the underlying recovery to obtain a
             // WritableLogRecord of the required size. The recovery log will need to perform "housekeeping"
             // to clean up the recovery log before this latest record can be written. In such
-            // situations, the getWritableLogRecord() will trigger a keypoint operation before returning. 
+            // situations, the getWritableLogRecord() will trigger a keypoint operation before returning.
             // Given that the keypoint operation will actually cause all the information within this
             // recoverable unit to be (re)written to disk, this method need take no further action. This
             // condition is indicated by the return of a null log record.
-            if (logRecord != null)
-            {
+            if (logRecord != null) {
                 // Write the records header to disk. This includes the recoverable unit's identity,
                 // the failure scope that the unit belongs to, and the record's type.
                 writeRecordHeader(logRecord, RECORDTYPENORMAL);
 
-                // Now direct the recoverable unit section to write its content. If the recoverable unit 
+                // Now direct the recoverable unit section to write its content. If the recoverable unit
                 // section has no data to write then this will be a no-op.
                 target.format(false, logRecord);
 
@@ -893,25 +846,22 @@ public class RecoverableUnitImpl implements RecoverableUnit
                 // will cause it to add the appropriate record tail to the underlying recovery log.
                 logRecord.close();
 
-                // Flag the fact at least part of this recoverable unit has now been written to the 
+                // Flag the fact at least part of this recoverable unit has now been written to the
                 // underlying recovery log.
                 _storedOnDisk = true;
 
                 _logHandle.writeLogRecord(logRecord);
             }
-        } catch (IOException exc)
-        {
+        } catch (IOException exc) {
             FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.RecoverableUnitImpl.writeSection", "755", this);
             if (tc.isEventEnabled())
                 Tr.event(tc, "An unexpected error IO occurred whilst formatting the recovery log buffer", exc);
 
             _recLog.markFailed(exc); /* @MD19484C */
 
-            try
-            {
+            try {
                 _controlLock.releaseSharedLock(LOCK_REQUEST_ID_RUI_WRITESECTION);
-            } catch (Throwable exc2)
-            {
+            } catch (Throwable exc2) {
                 FFDCFilter.processException(exc2, "com.ibm.ws.recoverylog.spi.RecoverableUnitImpl.writeSection", "766", this);
                 if (tc.isEntryEnabled())
                     Tr.exit(tc, "writeSection", "InternalLogException");
@@ -921,19 +871,16 @@ public class RecoverableUnitImpl implements RecoverableUnit
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "writeSection", "InternalLogException");
             throw new InternalLogException(exc);
-        } catch (Throwable exc)
-        {
+        } catch (Throwable exc) {
             FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.RecoverableUnitImpl.writeSection", "776", this);
             if (tc.isEventEnabled())
                 Tr.event(tc, "An unexpected error occurred whilst formatting the recovery log buffer", exc);
 
             _recLog.markFailed(exc); /* @MD19484C */
 
-            try
-            {
+            try {
                 _controlLock.releaseSharedLock(LOCK_REQUEST_ID_RUI_WRITESECTION);
-            } catch (Throwable exc2)
-            {
+            } catch (Throwable exc2) {
                 FFDCFilter.processException(exc2, "com.ibm.ws.recoverylog.spi.RecoverableUnitImpl.writeSection", "787", this);
                 if (tc.isEntryEnabled())
                     Tr.exit(tc, "writeSection", "InternalLogException");
@@ -945,11 +892,9 @@ public class RecoverableUnitImpl implements RecoverableUnit
             throw new InternalLogException(exc);
         }
 
-        try
-        {
+        try {
             _controlLock.releaseSharedLock(LOCK_REQUEST_ID_RUI_WRITESECTION);
-        } catch (NoSharedLockException exc)
-        {
+        } catch (NoSharedLockException exc) {
             FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.RecoverableUnitImpl.writeSection", "802", this);
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "writeSection", "InternalLogException");
@@ -970,13 +915,13 @@ public class RecoverableUnitImpl implements RecoverableUnit
      * that the recovery log contains an up to date copy of the information retained
      * in the target recoverable unit.
      * </p>
-     * 
+     *
      * <p>
      * The information is written to the underlying recovery log and forced
      * through to persisent storage. After this call, the information is
      * guaranteed to be retrieved during any post-failure recovery processing.
      * </p>
-     * 
+     *
      * <p>
      * This call my be used as part of an optomization when several recoverable units
      * need to be pushed to disk. For example, the following sequence will ensure that
@@ -990,19 +935,18 @@ public class RecoverableUnitImpl implements RecoverableUnit
      * <li>RecoverableUnit4.forceSections</li>
      * </ul>
      * </p>
-     * 
+     *
      * <p>
      * This simple version version of the method is exposed on the interfaces and can
      * deligates down to the implementation method.
      * </p>
-     * 
+     *
      * @exception InternalLogException An unexpected error has occured.
      */
     @Override
-    public void forceSections() throws InternalLogException
-    {
+    public void forceSections() throws InternalLogException {
         // Lack of trace or exception handling is deliberate. This method is the external interface
-        // for the real forceSections call and as such we don't want to see two entries for the 
+        // for the real forceSections call and as such we don't want to see two entries for the
         // same method in the trace.
         this.forceSections(false);
     }
@@ -1020,13 +964,13 @@ public class RecoverableUnitImpl implements RecoverableUnit
      * recovery log. Either way, the the underlying recovery log contains an up
      * to date copy of the information retained in the target.
      * <p>
-     * 
+     *
      * <p>
      * The information is written to the underlying recovery log and forced
      * through to persisent storage. After this call, the information is
      * guaranteed to be retrieved during any post-failure recovery processing.
      * </p>
-     * 
+     *
      * <p>
      * This call my be used as part of an optomization when several recoverable units
      * need to be pushed to disk. For example, the following sequence will ensure that
@@ -1040,42 +984,37 @@ public class RecoverableUnitImpl implements RecoverableUnit
      * <li>RecoverableUnit4.forceSections(..)</li>
      * </ul>
      * </p>
-     * 
+     *
      * <p>
      * This internal version of the method is not exposed on the interfaces and can only
      * be called from within the RLS. Client services invoke the simpler version of the
      * method (with no arguments) which deligates down to this method.
      * </p>
-     * 
+     *
      * @param rewriteRequired Boolean flag indicating if a rewrite is required.
-     * 
+     *
      * @exception InternalLogException An unexpected error has occured.
      */
-    void forceSections(boolean rewriteRequired) throws InternalLogException
-    {
+    void forceSections(boolean rewriteRequired) throws InternalLogException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "forceSections", new java.lang.Object[] { this, new Boolean(rewriteRequired) });
+            Tr.entry(tc, "forceSections", this, rewriteRequired);
 
         // If the parent recovery log instance has experienced a serious internal error then prevent
         // this operation from executing.
-        if (_recLog.failed())
-        {
+        if (_recLog.failed()) {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "forceSections", this);
             throw new InternalLogException(null);
         }
 
-        try
-        {
+        try {
             writeSections(rewriteRequired);
-        } catch (InternalLogException exc)
-        {
+        } catch (InternalLogException exc) {
             FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.RecoverableUnitImpl.forceSections", "531", this);
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "forceSections", exc);
             throw exc;
-        } catch (Throwable exc)
-        {
+        } catch (Throwable exc) {
             FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.RecoverableUnitImpl.forceSections", "537", this);
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "forceSections", "InternalLogException");
@@ -1084,30 +1023,24 @@ public class RecoverableUnitImpl implements RecoverableUnit
 
         _controlLock.getSharedLock(LOCK_REQUEST_ID_RUI_FORCESECTIONS);
 
-        try
-        {
+        try {
             _logHandle.force();
-        } catch (InternalLogException exc)
-        {
+        } catch (InternalLogException exc) {
             FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.RecoverableUnitImpl.forceSections", "550", this);
             _recLog.markFailed(exc); /* @MD19484C */
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "forceSections", exc);
             throw exc;
-        } catch (Throwable exc)
-        {
+        } catch (Throwable exc) {
             FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.RecoverableUnitImpl.forceSections", "556", this);
             _recLog.markFailed(exc); /* @MD19484C */
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "forceSections", "InternalLogException");
             throw new InternalLogException(exc);
-        } finally
-        {
-            try
-            {
+        } finally {
+            try {
                 _controlLock.releaseSharedLock(LOCK_REQUEST_ID_RUI_FORCESECTIONS);
-            } catch (Throwable exc)
-            {
+            } catch (Throwable exc) {
                 FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.RecoverableUnitImpl.forceSections", "568", this);
                 throw new InternalLogException(exc);
             }
@@ -1125,39 +1058,38 @@ public class RecoverableUnitImpl implements RecoverableUnit
      * Returns a LogCursor that can be used to itterate through all active
      * recoverable unit sections. The order in which they are returned is not defined.
      * </p>
-     * 
+     *
      * <p>
      * The LogCursor must be closed when it is no longer needed or its itteration
      * is complete. (See the LogCursor class for more information)
      * </p>
-     * 
+     *
      * <p>
      * Objects returned by <code>LogCursor.next</code> or <code>LogCursor.last</code>
      * must be cast to type RecoverableUnitSection(Impl).
      * </p>
-     * 
+     *
      * <p>
      * Care must be taken not remove or add recoverable unit sections whilst the
      * resulting LogCursor is open. Doing so will result in a
      * ConcurrentModificationException being thrown.
      * </p>
-     * 
+     *
      * <p>
      * If there are no active recoverable unit sections then the resulting LogCursor
      * object will return null from its next() and last() methods, 0 from the initialSize()
      * method and false from hasNext()
      * <p>
-     * 
+     *
      * @return A LogCursor that can be used to cycle through all active recoverable unit
      *         sections
      */
     @Override
-    public LogCursor sections()
-    {
+    public LogCursor sections() {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "sections", this);
 
-        java.util.Collection recoverableUnitSectionsValues = _recoverableUnitSections.values();
+        Collection<RecoverableUnitSection> recoverableUnitSectionsValues = _recoverableUnitSections.values();
 
         LogCursorImpl cursor = new LogCursorImpl(null, recoverableUnitSectionsValues, false, null);
 
@@ -1172,16 +1104,15 @@ public class RecoverableUnitImpl implements RecoverableUnit
     //------------------------------------------------------------------------------
     /**
      * Returns the identity of this recoverable unit.
-     * 
+     *
      * @return The identity of this recoverable unit.
      */
     @Override
-    public long identity()
-    {
+    public long identity() {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "identity", this);
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "identity", new Long(_identity));
+            Tr.exit(tc, "identity", _identity);
         return _identity;
     }
 
@@ -1196,12 +1127,12 @@ public class RecoverableUnitImpl implements RecoverableUnit
      * From it, this method can retrieve details of recoverable unit sections and data
      * items that must be ADDED to any already stored in memory.
      * </p>
-     * 
+     *
      * <p>
      * This method may be called any number of times to complete recovery processing
      * for the target recoverable unit.
      * </p>
-     * 
+     *
      * <p>
      * This method throws LogCorruptedException to indicate that a failure has occured
      * whilst parsing the data. We assume that this failure has been caused as a result
@@ -1209,34 +1140,30 @@ public class RecoverableUnitImpl implements RecoverableUnit
      * this by assmuning that all valid information has now been retireved from the
      * underlying recovery log.
      * </p>
-     * 
+     *
      * @param logRecord Provides direct access to the underlying recovery log and the
-     *            recoverable unit sections / data items that need to be restored.
-     * 
+     *                      recoverable unit sections / data items that need to be restored.
+     *
      * @exception LogCorruptedException Corrupt log data was detected (see above)
-     * @exception InternalLogException An unexpected exception has occured
+     * @exception InternalLogException  An unexpected exception has occured
      */
-    private void recover(ReadableLogRecord logRecord) throws LogCorruptedException, InternalLogException
-    {
+    private void recover(ReadableLogRecord logRecord) throws LogCorruptedException, InternalLogException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "recover", new Object[] { this, logRecord });
 
         // If the parent recovery log instance has experienced a serious internal error then prevent
         // this operation from executing.
-        if (_recLog.failed())
-        {
+        if (_recLog.failed()) {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "recover", this);
             throw new InternalLogException(null);
         }
 
-        try
-        {
-            // Read the record type field. 
+        try {
+            // Read the record type field.
             short recordType = logRecord.getShort();
 
-            if (recordType == RecoverableUnitImpl.RECORDTYPEDELETED)
-            {
+            if (recordType == RecoverableUnitImpl.RECORDTYPEDELETED) {
                 // This record is a marker to indicate that the recoverable unit was deleted at this point
                 // in its lifecycle (ie its lifecycle in relation to the data contained in the recovery
                 // log before and after the deletion record). In order to support re-use of a recoverable
@@ -1252,9 +1179,7 @@ public class RecoverableUnitImpl implements RecoverableUnit
                 // We must set this back down here.
                 this.removeDuringLogRead();
 
-            }
-            else
-            {
+            } else {
                 // This record is not a deletion record. It contains new data to be recovered for the recoverable
                 // unit. Decode the record accordingly.
                 if (tc.isDebugEnabled())
@@ -1262,14 +1187,13 @@ public class RecoverableUnitImpl implements RecoverableUnit
 
                 // Determine the identity of the next section. Ideally, we would decode the entire
                 // recoverable unit section from within the RecoverableUnitSectionImpl class, rather
-                // than decoding part of it here. Unfortunatly, we must determine if this class 
+                // than decoding part of it here. Unfortunatly, we must determine if this class
                 // already knows about this recoverable unit section and if not create it and place
                 // it into the _recoverableUnitSections map. This means that we must decode both its
                 // identity and 'singleData' flag.
                 int recoverableUnitSectionIdentity = logRecord.getInt();
 
-                while (recoverableUnitSectionIdentity != END_OF_SECTIONS)
-                {
+                while (recoverableUnitSectionIdentity != END_OF_SECTIONS) {
                     // This is a real recoverable unit section record and not just the marker
                     // to indicate that there are no further recoverable unit sections stored
                     // within the record.
@@ -1284,48 +1208,38 @@ public class RecoverableUnitImpl implements RecoverableUnit
                     // Determine if this section can hold multiple data items.
                     final boolean singleData = logRecord.getBoolean();
 
-                    if (tc.isDebugEnabled())
-                    {
-                        if (singleData)
-                        {
+                    if (tc.isDebugEnabled()) {
+                        if (singleData) {
                             Tr.debug(tc, "RecoverableUnitSection can hold only a single data item");
-                        }
-                        else
-                        {
+                        } else {
                             Tr.debug(tc, "RecoverableUnitSection can hold multiple data items");
                         }
                     }
 
                     // Determine if the identity has been encountered before and either lookup or create
                     // the corrisponding recoverable unit section.
-                    RecoverableUnitSectionImpl recoverableUnitSection = (RecoverableUnitSectionImpl) _recoverableUnitSections.get(new Integer(recoverableUnitSectionIdentity));
+                    RecoverableUnitSectionImpl recoverableUnitSection = (RecoverableUnitSectionImpl) _recoverableUnitSections.get(recoverableUnitSectionIdentity);
 
-                    if (recoverableUnitSection == null)
-                    {
+                    if (recoverableUnitSection == null) {
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "RecoverableUnitSection " + recoverableUnitSectionIdentity + " has not been encountered before. Creating.");
 
-                        try
-                        {
+                        try {
                             recoverableUnitSection = (RecoverableUnitSectionImpl) createSection(recoverableUnitSectionIdentity, singleData);
-                        } catch (RecoverableUnitSectionExistsException exc)
-                        {
+                        } catch (RecoverableUnitSectionExistsException exc) {
                             // This exception should not be generated in practice as we are in the single threaded
                             // recovery process and have already checked that the RecoverableUnitSection does not
                             // exist. If this exception was actually generated then ignore it - it simply indicates
                             // that the creation has failed as the section has already been created. Given that
                             // creation is the goal, this does not seem to be a problem.
                             FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.RecoverableUnitImpl.recover", "713", this);
-                        } catch (InternalLogException exc)
-                        {
+                        } catch (InternalLogException exc) {
                             FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.RecoverableUnitImpl.recover", "717", this);
                             if (tc.isDebugEnabled())
                                 Tr.debug(tc, "An unexpected exception occured when attempting to create a new RecoverableUnitSection");
                             throw exc; // Caught in this method further down.
                         }
-                    }
-                    else
-                    {
+                    } else {
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "RecoverableUnitSection " + recoverableUnitSectionIdentity + " has been encountered before.");
                     }
@@ -1344,8 +1258,7 @@ public class RecoverableUnitImpl implements RecoverableUnit
                     recoverableUnitSectionIdentity = logRecord.getInt();
                 }
             }
-        } catch (LogCorruptedException exc)
-        {
+        } catch (LogCorruptedException exc) {
             FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.RecoverableUnitImpl.recover", "740", this);
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "A LogCorruptedException exception occured reconstructng a RecoverableUnitImpl");
@@ -1353,8 +1266,7 @@ public class RecoverableUnitImpl implements RecoverableUnit
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "recover", exc);
             throw exc;
-        } catch (InternalLogException exc)
-        {
+        } catch (InternalLogException exc) {
             FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.RecoverableUnitImpl.recover", "747", this);
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "An InternalLogException exception occured reconstructng a RecoverableUnitImpl");
@@ -1362,8 +1274,7 @@ public class RecoverableUnitImpl implements RecoverableUnit
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "recover", exc);
             throw exc;
-        } catch (Throwable exc)
-        {
+        } catch (Throwable exc) {
             FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.RecoverableUnitImpl.recover", "753", this);
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "An exception occured reconstructng a RecoverableUnitImpl");
@@ -1386,15 +1297,14 @@ public class RecoverableUnitImpl implements RecoverableUnit
      * This method DOES NOT write anything to the logs it is merely used to discard any payload
      * associated with the RU from the totalDataSize of the log.
      * </p>
-     * 
+     *
      * <p>
      * There is NO NEED to hold the shared lock before invoking this method because we only call this
      * while opening the logs - this method is private and should not be called at ANY other point.
      * </p>
-     * 
+     *
      */
-    private void removeDuringLogRead()
-    {
+    private void removeDuringLogRead() {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "removeDuringLogRead", new Object[] { this, String.valueOf(_payloadAdded) });
 
@@ -1405,14 +1315,10 @@ public class RecoverableUnitImpl implements RecoverableUnit
         // the RU hasn't actually added any payload - that will only have happened if a DataItem in a RU Section
         // has been processed for this RU so we check this via new instance variable _payloadAdded
 
-        if (_payloadAdded)
-        {
-            if (_unwrittenDataSize > 0)
-            {
+        if (_payloadAdded) {
+            if (_unwrittenDataSize > 0) {
                 _recLog.payloadDeleted(_totalDataSize + _totalHeaderSize, _unwrittenDataSize + _totalHeaderSize);
-            }
-            else
-            {
+            } else {
                 _recLog.payloadDeleted(_totalDataSize + _totalHeaderSize, _unwrittenDataSize);
             }
         }
@@ -1437,34 +1343,30 @@ public class RecoverableUnitImpl implements RecoverableUnit
      * special record to the underlying recovery log that indicates this event occured,
      * and allows 'old' information to be ignored during recovery.
      * </p>
-     * 
+     *
      * <p>
      * Caller MUST hold the shared lock before invoking this method.
      * </p>
-     * 
+     *
      * @exception InternalLogException An unexpected exception has occured
      */
-    void remove() throws InternalLogException
-    {
+    void remove() throws InternalLogException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "remove", this);
 
         // If the parent recovery log instance has experienced a serious internal error then prevent
         // this operation from executing.
-        if (_recLog.failed())
-        {
+        if (_recLog.failed()) {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "remove", this);
             throw new InternalLogException(null);
         }
 
-        if (_storedOnDisk)
-        {
+        if (_storedOnDisk) {
             // There is information relating to this recoverable unit stored in the underlying
             // recovery log. We must write a deletion record to indicate that this is no longer
             // valid.
-            try
-            {
+            try {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Creating deletion record for recoverable unit '" + _identity + "'");
 
@@ -1475,8 +1377,7 @@ public class RecoverableUnitImpl implements RecoverableUnit
                 // unit has already been removed from the map it will not have been written as part
                 // of the keypoint process and no longer exists in the log. Therefore there is no
                 // need to write the deletion record for this recoverable unit.
-                if (logRecord != null)
-                {
+                if (logRecord != null) {
                     writeRecordHeader(logRecord, RECORDTYPEDELETED);
 
                     // Tell the WritableLogRecord that we have finished building the removal record. This
@@ -1485,8 +1386,7 @@ public class RecoverableUnitImpl implements RecoverableUnit
 
                     _logHandle.writeLogRecord(logRecord);
                 }
-            } catch (Throwable exc)
-            {
+            } catch (Throwable exc) {
                 FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.RecoverableUnitImpl.remove", "801", this);
                 if (tc.isEventEnabled())
                     Tr.event(tc, "An unexpected error occurred whilst formatting the recovery log buffer");
@@ -1495,9 +1395,7 @@ public class RecoverableUnitImpl implements RecoverableUnit
                     Tr.exit(tc, "remove", "InternalLogException");
                 throw new InternalLogException(exc);
             }
-        }
-        else
-        {
+        } else {
             // There is no trace of this recoverable unit in the underlying recovery log and so there is
             // no further action to take.
             if (tc.isDebugEnabled())
@@ -1505,18 +1403,15 @@ public class RecoverableUnitImpl implements RecoverableUnit
         }
 
         // Inform the recovery log of the reduction in the data payload due to this unit being deleted.
-        if (_unwrittenDataSize > 0)
-        {
+        if (_unwrittenDataSize > 0) {
             _recLog.payloadDeleted(_totalDataSize + _totalHeaderSize, _unwrittenDataSize + _totalHeaderSize);
-        }
-        else
-        {
+        } else {
             _recLog.payloadDeleted(_totalDataSize + _totalHeaderSize, _unwrittenDataSize);
         }
 
         // Next, "forget" all stored recoverable unit sections. This will ensure that no further
         // reference to this recoverable unit can be written to disk even if the client service
-        // invokes a write or force method on it in the future. We also need to clear out the 
+        // invokes a write or force method on it in the future. We also need to clear out the
         // total and unwritten data size fields to ensure that we don't attempt to begin
         // writing even when there are no sections to write.
         if (tc.isEventEnabled())
@@ -1538,11 +1433,11 @@ public class RecoverableUnitImpl implements RecoverableUnit
      * the amount of active data that it holds. This information must be passed to its
      * parent recovery log in order that it may track the amount of active data in
      * the entire recovery log.
-     * 
+     *
      * This call is driven by recoverable unit section to which data has been
      * added and accounts for the additional data and header fields necessary to form
      * a persistent record of the new data item.
-     * 
+     *
      * This data has not yet been written to persistent storage and must therefour be
      * tracked in both total and unwritten data size fields. It is important to
      * understand why two parameters are required on this call rather than a single
@@ -1552,50 +1447,49 @@ public class RecoverableUnitImpl implements RecoverableUnit
      * size of all the header information that the underlying recoverable unit sections
      * and data items will need to form a persistent record of the data, then the
      * unwritten and total data size fields will be made up as follows:
-     * 
+     *
      * unwritten total
      * D3 D3
      * D2 D2
      * D1 D1
      * H H
-     * 
+     *
      * Once this information has been written to disk, D1,D2 and D3 will be deducted
      * from the unwritten total (see payloadWritten) whilst the total data size remains
      * unchanged. Because there is then no further unwritten information there is no
      * requirement for header H, so it also is removed as follows:-
-     * 
+     *
      * unwritten total
      * D3
      * D2
      * D1
      * - H
-     * 
+     *
      * Consider that a new data item of size D4 is added. We need to add D4 + H to the
      * unwritten field and D4 alone to the total field. Since the caller takes care of
      * the size of H anyway, we need two parameters to contain this level of detail.
      * At this point the makeup of these two fields is as follows:-
-     * 
+     *
      * unwritten total
      * D4
      * D3
      * D2
      * D4 D1
      * H H
-     * 
+     *
      * @param unwrittenPayloadSize The additional number of bytes that would be needed
-     *            to form a persistent record of the new data item
-     *            that has been added within this recoverable unit when
-     *            a writeSections or forceSections operation is driven
-     *            by the client service.
-     * @param totalPayloadSize The additional number of bytes that would be needed
-     *            to form a persistent record of the new data item
-     *            that has been added within this recovery log when a
-     *            keypoint operation occurs.
+     *                                 to form a persistent record of the new data item
+     *                                 that has been added within this recoverable unit when
+     *                                 a writeSections or forceSections operation is driven
+     *                                 by the client service.
+     * @param totalPayloadSize     The additional number of bytes that would be needed
+     *                                 to form a persistent record of the new data item
+     *                                 that has been added within this recovery log when a
+     *                                 keypoint operation occurs.
      */
-    protected void payloadAdded(int unwrittenPayloadSize, int totalPayloadSize)
-    {
+    protected void payloadAdded(int unwrittenPayloadSize, int totalPayloadSize) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "payloadAdded", new Object[] { this, new Integer(unwrittenPayloadSize), new Integer(totalPayloadSize) });
+            Tr.entry(tc, "payloadAdded", this, unwrittenPayloadSize, totalPayloadSize);
 
         _payloadAdded = true;
 
@@ -1605,16 +1499,14 @@ public class RecoverableUnitImpl implements RecoverableUnit
         // When adding new payload, if there was currently no unwritten data then we will need to
         // an additional header in order to be able to contain this information. When we pass on
         // this payload adjustment we must account for the header size.
-        if (_unwrittenDataSize == 0)
-        {
+        if (_unwrittenDataSize == 0) {
             unwrittenRecLogAdjustment += _totalHeaderSize;
         }
 
         // When adding new payload, if there was currently no written data then we will need to
         // an additional header in order to be able to contain this information. When we pass on
         // this payload adjustment we must account for the header size.
-        if (_totalDataSize == 0)
-        {
+        if (_totalDataSize == 0) {
             totalRecLogAdjustment += _totalHeaderSize;
         }
 
@@ -1642,11 +1534,11 @@ public class RecoverableUnitImpl implements RecoverableUnit
      * to track the amount of unwritten active data it holds. This information must be
      * passed to its parent recovery log in order that it may track the amount of
      * unwritten data in the entire recovery log.
-     * 
+     *
      * This call is driven by the recoverable unit section from which data has been
      * written and accounts for both the data and header fields necessary to write the
      * data completly.
-     * 
+     *
      * Writing data in this manner will not change the total amount of active data
      * contained by the recoverable unit so only the unwritten data size will be effected.
      * The following example can be used to illustrate this. Consider that data items of
@@ -1655,52 +1547,48 @@ public class RecoverableUnitImpl implements RecoverableUnit
      * that the underlying recoverable unit sections and data items will need to form
      * a persistent record of the data, then the unwritten and total data size fields
      * will be made up as follows:
-     * 
+     *
      * unwritten total
      * D3 D3
      * D2 D2
      * D1 D1
      * H H
-     * 
+     *
      * Suppose that the data item corrisponding to D2 has been written to disk. D2 + h2
      * (where h2 is any component of H that will no longer be required to form a
      * persistent record of the unwritten data) will be removed from the unwritten total
      * so we have:-
-     * 
+     *
      * unwritten total
      * D3
      * D3 D2
      * D1 D1
      * H-h2 H
-     * 
+     *
      * If the remaining data items are also written it should be clear that D3+h3 + D1+h1
      * bytes will also be removed from the unwritten total leaving it at zero. Also that
      * h1 + h2 + h3 = H.
-     * 
+     *
      * @param payloadSize The number of bytes that no longer need to be written in order
-     *            to form a persistent record of the remaining unwritten data items
-     *            when a writeSections or forceSections operation is driven by the
-     *            client service.
+     *                        to form a persistent record of the remaining unwritten data items
+     *                        when a writeSections or forceSections operation is driven by the
+     *                        client service.
      */
-    protected void payloadWritten(int payloadSize)
-    {
+    protected void payloadWritten(int payloadSize) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "payloadWritten", new Object[] { this, new Integer(payloadSize) });
+            Tr.entry(tc, "payloadWritten", this, payloadSize);
 
         // Track the unwritten payload decrease directly. We take no account for this classes header
         // values in this figure. The total payload remains unchanged since we are not removing the
         // corresponding payload, just writing it to the underlying recovery log.
         _unwrittenDataSize -= payloadSize;
 
-        // When writing existing payload, if the resulting unwritten data size has gone back down to 
+        // When writing existing payload, if the resulting unwritten data size has gone back down to
         // zero then there will be no further need to account for the unwritten data header.
         // When we pass on this payload adjustment we must account for the header size.
-        if (_unwrittenDataSize == 0)
-        {
+        if (_unwrittenDataSize == 0) {
             _recLog.payloadWritten(payloadSize + _totalHeaderSize);
-        }
-        else
-        {
+        } else {
             _recLog.payloadWritten(payloadSize);
         }
 
@@ -1718,15 +1606,15 @@ public class RecoverableUnitImpl implements RecoverableUnit
      * unit sections. At present this method is only invoked as a result of the
      * SingleDataItem class removing existing payload before adding back additional
      * payload for its replacement data data.
-     * 
+     *
      * The recoverable unit must use the supplied information to track the amount of
      * active data it holds. This information must be passed to its parent recovery log
      * in order that it may track the amount of active data in the entire recovery log.
-     * 
+     *
      * This call is driven by the recoverable unit section from which data has been
      * removed and accounts for both the data and header fields that would have been
      * necessary to form a persistent record of this data content.
-     * 
+     *
      * This data may or may not have been written to persistent storage and must
      * therefour be tracked in both total and unwritten data size fields. It is important
      * to understand why two parameters are required on this call rather than a single
@@ -1737,54 +1625,51 @@ public class RecoverableUnitImpl implements RecoverableUnit
      * H represents the size of all the header information that the recoverable unit
      * section will need to form a persistent record of the data, then the unwritten
      * and total data size fields will be made up as follows:
-     * 
+     *
      * unwritten total
      * D1 D1
      * H H
-     * 
+     *
      * If this information is then written to disk, D1+H will be deducted from the
      * unwritten total (see payloadWritten) whilst the total data size remains
      * unchanged.
-     * 
+     *
      * unwritten total
      * D1
      * - H
-     * 
+     *
      * If D1 is subsequently deleted, the total will need to be reduced but the unwritten
      * field will remian unchanged. Since it is the callers responsibility to determine
      * the amount that needs to be removed from each, two arguments are required.
-     * 
+     *
      * @param unwrittenPayloadSize The number of bytes that will no longer be required
-     *            to form a persistent record of the recoverable unit
-     *            when either the writeSections or forceSections
-     *            operation is driven by the client service.
-     * @param totalPayloadSize The number of bytes that will no longer be required
-     *            to form a persistent record of the recoverable unit
-     *            next time a keypoint operation occurs.
+     *                                 to form a persistent record of the recoverable unit
+     *                                 when either the writeSections or forceSections
+     *                                 operation is driven by the client service.
+     * @param totalPayloadSize     The number of bytes that will no longer be required
+     *                                 to form a persistent record of the recoverable unit
+     *                                 next time a keypoint operation occurs.
      */
-    protected void payloadDeleted(int totalPayloadSize, int unwrittenPayloadSize)
-    {
+    protected void payloadDeleted(int totalPayloadSize, int unwrittenPayloadSize) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "payloadDeleted", new Object[] { this, new Integer(totalPayloadSize), new Integer(unwrittenPayloadSize) });
+            Tr.entry(tc, "payloadDeleted", this, totalPayloadSize, unwrittenPayloadSize);
 
         // Track the payload decreases directly. We take no account for this classes header values
         // in these figures.
         _totalDataSize -= totalPayloadSize;
         _unwrittenDataSize -= unwrittenPayloadSize;
 
-        // When removing existing payload, if the resulting unwritten data size has gone back down to 
+        // When removing existing payload, if the resulting unwritten data size has gone back down to
         // zero then there will be no further need to account for the unwritten data header.
         // When we pass on this payload adjustment we must account for the header size.
-        if (_unwrittenDataSize == 0 && (unwrittenPayloadSize != 0))
-        {
+        if (_unwrittenDataSize == 0 && (unwrittenPayloadSize != 0)) {
             unwrittenPayloadSize += _totalHeaderSize;
         }
 
-        // When removing existing payload, if the resulting written data size has gone back down to 
+        // When removing existing payload, if the resulting written data size has gone back down to
         // zero then there will be no further need to account for the written data header.
         // When we pass on this payload adjustment we must account for the header size.
-        if (_totalDataSize == 0)
-        {
+        if (_totalDataSize == 0) {
             totalPayloadSize += _totalHeaderSize;
         }
 
@@ -1797,10 +1682,10 @@ public class RecoverableUnitImpl implements RecoverableUnit
             Tr.exit(tc, "payloadDeleted");
     }
 
-    protected static void recover(MultiScopeRecoveryLog recoveryLog, ReadableLogRecord record, LogHandle logHandle, int storageMode, Lock controlLock) throws LogCorruptedException, InternalLogException
-    {
+    protected static void recover(MultiScopeRecoveryLog recoveryLog, ReadableLogRecord record, LogHandle logHandle, int storageMode,
+                                  Lock controlLock) throws LogCorruptedException, InternalLogException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "recover", new Object[] { recoveryLog, record, logHandle, new Integer(storageMode), controlLock });
+            Tr.entry(tc, "recover", recoveryLog, record, logHandle, storageMode, controlLock);
 
         // First, read the length field of the serialized failure
         // scope to which this recoverable unit section belongs.
@@ -1810,38 +1695,31 @@ public class RecoverableUnitImpl implements RecoverableUnit
         final byte[] failureScopeBytes = new byte[failureScopeLength];
         record.get(failureScopeBytes);
 
-        try
-        {
-            // Inflate the FailureScope          
+        try {
+            // Inflate the FailureScope
             final FailureScope failureScope = FailureScopeManager.toFailureScope(failureScopeBytes);
 
-            // Read the RecoverableUnit identity. 
+            // Read the RecoverableUnit identity.
             final long recoverableUnitIdentity = record.getLong();
 
             RecoverableUnitImpl recoverableUnit = recoveryLog.getRecoverableUnit(recoverableUnitIdentity);
 
-            if (recoverableUnit == null)
-            {
+            if (recoverableUnit == null) {
                 recoverableUnit = new RecoverableUnitImpl(recoveryLog, recoverableUnitIdentity, failureScope, logHandle, storageMode, controlLock, record);
-            }
-            else
-            {
+            } else {
                 recoverableUnit.recover(record);
             }
-        } catch (LogCorruptedException lce)
-        {
+        } catch (LogCorruptedException lce) {
             FFDCFilter.processException(lce, "com.ibm.ws.recoverylog.spi.RecoverableUnitImpl.recover", "1604");
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "recover", lce);
             throw lce;
-        } catch (InternalLogException ile)
-        {
+        } catch (InternalLogException ile) {
             FFDCFilter.processException(ile, "com.ibm.ws.recoverylog.spi.RecoverableUnitImpl.recover", "1608");
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "recover", ile);
             throw ile;
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             FFDCFilter.processException(e, "com.ibm.ws.recoverylog.spi.RecoverableUnitImpl.recover", "1612");
 
             if (tc.isEventEnabled())
@@ -1855,13 +1733,12 @@ public class RecoverableUnitImpl implements RecoverableUnit
             Tr.exit(tc, "recover");
     }
 
-    private void writeRecordHeader(WriteableLogRecord logRecord, short recordType)
-    {
+    private void writeRecordHeader(WriteableLogRecord logRecord, short recordType) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "writeRecordHeader", new Object[] { logRecord, new Short(recordType), this });
+            Tr.entry(tc, "writeRecordHeader", logRecord, recordType, this);
 
         // Firstly, write the length of the serialized
-        // FailureScope to which this recoverable unit belongs. 
+        // FailureScope to which this recoverable unit belongs.
         logRecord.putInt(_deflatedFailureScope.length);
         logRecord.put(_deflatedFailureScope);
 
@@ -1875,12 +1752,9 @@ public class RecoverableUnitImpl implements RecoverableUnit
             Tr.exit(tc, "writeRecordHeader");
     }
 
-    protected FailureScope failureScope()
-    {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "failureScope", this);
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "failureScope", _failureScope);
+    protected FailureScope failureScope() {
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "failureScope", this, _failureScope);
         return _failureScope;
     }
 
@@ -1889,12 +1763,11 @@ public class RecoverableUnitImpl implements RecoverableUnit
     //------------------------------------------------------------------------------
     /**
      * Returns the string representation of this object instance.
-     * 
+     *
      * @return String The string representation of this object instance.
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         if (_traceId == null)
             // Now establish a 'traceId' string. This is output at key trace points to allow
             // easy mapping of recovery log operations to clients logs.

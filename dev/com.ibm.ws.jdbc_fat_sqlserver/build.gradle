@@ -15,9 +15,7 @@ configurations {
 }
 
 dependencies {
-  requiredLibs "org.testcontainers:database-commons:${testcontainersVersion}",
-               "org.testcontainers:jdbc:${testcontainersVersion}",
-               "org.testcontainers:mssqlserver:${testcontainersVersion}"
+  requiredLibs project(':io.openliberty.org.testcontainers')
   sqlserver 'com.microsoft.sqlserver:mssql-jdbc:9.2.1.jre8'
 }
 
@@ -37,4 +35,3 @@ task copySharedSQLServer(type: Copy) {
 
 addRequiredLibraries.dependsOn copySharedSQLServer
 addRequiredLibraries.dependsOn copySharedSqlServerAnon
-addRequiredLibraries.dependsOn addTestcontainers

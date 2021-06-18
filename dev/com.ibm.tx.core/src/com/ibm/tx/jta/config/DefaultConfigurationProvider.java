@@ -414,4 +414,14 @@ public class DefaultConfigurationProvider implements ConfigurationProvider {
     public int getLeaseRenewalThreshold() {
         return 90;
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.ibm.tx.config.ConfigurationProvider#isDataSourceFactorySet()
+     */
+    @Override
+    public boolean isDataSourceFactorySet() {
+        return false;
+    }
 }

@@ -113,6 +113,7 @@ Import-Package: \
   !com.sun.tools.internal.xjc.api, \
   !com.sun.tools.xjc.api, \
   !com.sun.xml.bind.api, \
+  !org.glassfish.jaxb.runtime.api, \
   !org.apache.karaf.jaas.boot.principal, \
   !sun.misc, \
   !com.ctc.wstx.*, \
@@ -137,6 +138,8 @@ Import-Package: \
 DynamicImport-Package: \
   com.ctc.wstx.*,\
   com.sun.xml.messaging.saaj.*,\
+  com.sun.xml.bind.*,\
+  org.glassfish.jaxb.*,\
   javax.xml.ws,\
   org.apache.cxf.bus,\
   org.apache.cxf.*

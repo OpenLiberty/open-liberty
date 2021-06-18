@@ -27,7 +27,7 @@ import org.jboss.resteasy.client.jaxrs.internal.ResteasyClientImpl;
 
 public class LibertyResteasyClientImpl extends ResteasyClientImpl {
     private final LibertyResteasyClientBuilderImpl builder;
-    private final Supplier<ClientHttpEngine> httpEngineSupplier;
+    private Supplier<ClientHttpEngine> httpEngineSupplier;
     private AtomicReference<ClientHttpEngine> httpEngine = new AtomicReference<>();
 
     protected LibertyResteasyClientImpl(final Supplier<ClientHttpEngine> httpEngine,
@@ -64,6 +64,21 @@ public class LibertyResteasyClientImpl extends ResteasyClientImpl {
             engine = httpEngine.get();
         }
         return engine;
+    }
+
+    void setAutoFollowRedirects(boolean b) {
+        synchronized (httpEngine) {
+            if (httpEngine.get() == null) {
+                Supplier<ClientHttpEngine> originalSupplier = httpEngineSupplier;
+                httpEngineSupplier = () -> {
+                    ClientHttpEngine engine = originalSupplier.get();
+                    engine.setFollowRedirects(b);
+                    return engine;
+                };
+            } else {
+                httpEngine.get().setFollowRedirects(b);
+            }
+        }
     }
 
     @Override

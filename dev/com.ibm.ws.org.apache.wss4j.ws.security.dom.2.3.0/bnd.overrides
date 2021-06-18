@@ -28,8 +28,9 @@ Import-Package: \
  !org.bouncycastle.asn1.x500, \
  !org.bouncycastle.asn1.x509, \
  com.sun.xml.messaging.saaj.soap;resolution:=optional, \
+ com.ibm.websphere.ras, \
+ com.ibm.websphere.ras.annotation, \
+ com.ibm.ws.ffdc, \
  *
 
-Include-Resource: \
- @${repo;org.apache.wss4j:wss4j-ws-security-dom;2.3.0}!/!META-INF/MANIFEST.MF|META-INF/maven/*
-
+jakartaeeMe: true

@@ -530,4 +530,14 @@ public class EmbeddableConfigurationProviderImpl implements ConfigurationProvide
     public int getLeaseRenewalThreshold() {
         return 90;
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.ibm.tx.config.ConfigurationProvider#isDataSourceFactorySet()
+     */
+    @Override
+    public boolean isDataSourceFactorySet() {
+        return false;
+    }
 }

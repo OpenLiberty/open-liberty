@@ -25,6 +25,4 @@ Import-Package: \
  javax.servlet, \
  *
  
-Include-Resource: \
- @${repo;org.apache.wss4j:wss4j-ws-security-web;2.3.0}!/!META-INF/MANIFEST.MF|META-INF/maven/*
-
+jakartaeeMe: true
