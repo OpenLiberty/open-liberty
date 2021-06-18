@@ -32,7 +32,7 @@ public class SingleTableCache extends CommonCache {
         }
         lookupTable = Collections.synchronizedMap(new BoundedHashMap(this.entryLimit));
 
-        if (timeoutInMilliSeconds > 0) {
+        if (timeoutInMilliSeconds >= 0) {
             this.timeoutInMilliSeconds = timeoutInMilliSeconds;
         }
     }
