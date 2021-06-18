@@ -33,7 +33,8 @@ IBM-API-Package: \
     org.eclipse.microprofile.openapi.models.security; type="stable",\
     org.eclipse.microprofile.openapi.models.servers; type="stable",\
     org.eclipse.microprofile.openapi.models.tags; type="stable",\
-    org.eclipse.microprofile.openapi.spi; type="stable"
+    org.eclipse.microprofile.openapi.spi; type="stable",\
+    io.openliberty.microprofile.openapi20.config; type="internal"
 -features=com.ibm.websphere.appserver.mpConfig-2.0, \
   com.ibm.wsspi.appserver.webBundle-1.0, \
   com.ibm.websphere.appserver.servlet-4.0, \

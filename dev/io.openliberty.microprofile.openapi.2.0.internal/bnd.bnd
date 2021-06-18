@@ -32,7 +32,7 @@ Export-Package: \
     io.openliberty.microprofile.openapi20.servlets,\
     io.openliberty.microprofile.openapi20.utils,\
     io.openliberty.microprofile.openapi20.validation,\
-    io.openliberty.microprofile.openapi20.config;thread-context=true
+    io.openliberty.microprofile.openapi20.config
 
 Private-Package: \
     io.openliberty.microprofile.openapi20.cache
