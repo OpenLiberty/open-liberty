@@ -147,6 +147,7 @@
          <AD id="requireExpClaimForIntrospection" name="internal" description="internal use only" required="false" type="Boolean" default="true" />
          <AD id="requireIatClaimForIntrospection" name="internal" description="internal use only" required="false" type="Boolean" default="true" />
          <AD id="keyManagementKeyAlias" name="%keyManagementKeyAlias" description="%keyManagementKeyAlias.desc" required="false" type="String" ibm:beta="true" />
+         <AD id="accessTokenCacheTimeout" name="%accessTokenCacheTimeout" description="%accessTokenCacheTimeout.desc" required="false" type="String" default="5m" ibm:type="duration" ibm:beta="true" />
      </OCD>
 
     <Designate factoryPid="com.ibm.ws.security.openidconnect.client.oidcClientConfig">

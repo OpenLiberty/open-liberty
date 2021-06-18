@@ -85,4 +85,6 @@ public interface OidcClientConfig extends ConvergedClientConfig {
 
     public SingleTableCache getCache();
 
+    public long getAccessTokenCacheTimeout();
+
 }
