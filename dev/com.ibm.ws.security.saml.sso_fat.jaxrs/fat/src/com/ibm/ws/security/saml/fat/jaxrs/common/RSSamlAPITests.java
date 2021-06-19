@@ -163,7 +163,8 @@ public class RSSamlAPITests extends SAMLCommonTest {
      *
      * @throws Exception
      */
-    @ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.ws.message.decoder.MessageDecodingException", "org.opensaml.xml.parse.XMLParserException", "org.opensaml.messaging.decoder.MessageDecodingException", "net.shibboleth.utilities.java.support.xml.XMLParserException" })
+    @ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException" })
+    @AllowedFFDC(value = { "org.opensaml.ws.message.decoder.MessageDecodingException", "org.opensaml.xml.parse.XMLParserException", "org.opensaml.messaging.decoder.MessageDecodingException", "net.shibboleth.utilities.java.support.xml.XMLParserException" })
     //	@Mode(TestMode.LITE)
     @Test
     public void RSSamlAPITests_useJaxRSCLientServlet_junkInAssertion() throws Exception {
