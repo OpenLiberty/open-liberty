@@ -61,6 +61,9 @@ public class ApplicationClientBndType extends com.ibm.ws.javaee.ddmodel.clientbn
     @Override
     public void finish(DDParser parser) throws DDParser.ParseException {
         super.finish(parser);
+        if ( version == null ) {
+            version = parser.parseToken( parser.getDottedVersionText() );            
+        }        
         this.idMap = parser.idMap;
     }
 

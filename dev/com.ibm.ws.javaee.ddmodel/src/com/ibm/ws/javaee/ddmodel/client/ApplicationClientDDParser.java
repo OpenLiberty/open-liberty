@@ -12,7 +12,6 @@ package com.ibm.ws.javaee.ddmodel.client;
 
 import com.ibm.ws.javaee.dd.app.Application;
 import com.ibm.ws.javaee.dd.client.ApplicationClient;
-import com.ibm.ws.javaee.ddmodel.DDParser;
 import com.ibm.ws.javaee.ddmodel.DDParserSpec;
 import com.ibm.ws.javaee.version.JavaEEVersion;
 import com.ibm.wsspi.adaptable.module.Container;
@@ -39,27 +38,6 @@ public class ApplicationClientDDParser extends DDParserSpec {
     protected VersionData[] getVersionData() {
         return VERSION_DATA;
     }
-
-    /**
-     * Obtain the runtime version which corresponds to
-     * a specified maximum supported schema version.
-     *
-     * @param schemaVersion The maximum supported schema version.
-     *
-     * @return The runtime version which corresponds to
-     *     the specified maximum schema version.
-     */
-    protected static int getRuntimeVersion(int schemaVersion) {
-        if ( schemaVersion > Application.VERSION_9 ) {
-            throw new IllegalArgumentException("Unsupported application client version [ " + schemaVersion + " ]");
-        } else if ( schemaVersion < Application.VERSION_6 ) {
-            return JavaEEVersion.VERSION_6_0_INT;
-        } else {
-            // Application schema versions are the same as the corresponding
-            // platform versions.
-            return schemaVersion;
-        }
-    }        
             
     protected static int adjustSchemaVersion(int maxSchemaVersion) {
         return ( (maxSchemaVersion < Application.VERSION_6) ? Application.VERSION_6 : maxSchemaVersion );
@@ -70,7 +48,6 @@ public class ApplicationClientDDParser extends DDParserSpec {
 
         super( ddRootContainer, ddEntry,
                adjustSchemaVersion(maxSchemaVersion),
-               getRuntimeVersion(maxSchemaVersion),
                "application-client");
     }
 

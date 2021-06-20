@@ -18,7 +18,7 @@ import com.ibm.wsspi.adaptable.module.Entry;
 
 public class ValidationConfigDDParser extends DDParser {
     public static final String NAMESPACE_JBOSS_VALIDATION_CONFIG =
-            "http://jboss.org/xml/ns/javax/validation/configuration";
+        "http://jboss.org/xml/ns/javax/validation/configuration";
 
     public ValidationConfigDDParser(Container ddRootContainer, Entry ddEntry)
         throws ParseException {
@@ -75,7 +75,7 @@ public class ValidationConfigDDParser extends DDParser {
         String versionAttr = getAttributeValue("", "version");
         if ( versionAttr == null ) {
             version = ValidationConfig.VERSION_1_0; // JavaEE 6
-        } else if ( "1.1".equals(versionAttr) ) {
+        } else if ( ValidationConfig.VERSION_1_1_STR.equals(versionAttr) ) {
             version = ValidationConfig.VERSION_1_1; // JavaEE 7
         } else {
             throw new ParseException( unsupportedDescriptorVersion(versionAttr) );

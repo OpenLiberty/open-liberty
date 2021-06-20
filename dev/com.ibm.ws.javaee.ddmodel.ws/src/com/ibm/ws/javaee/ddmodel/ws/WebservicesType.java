@@ -133,16 +133,14 @@ public class WebservicesType extends DescriptionGroup implements Webservices,
         this.webservice_descriptions.add(wsdes);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void finish(DDParser parser) throws ParseException {
-        this.idMap = parser.idMap;
-
         super.finish(parser);
 
         if ( version == null ) {
-            version = parser.parseToken( parser.getVersionText() );
+            version = parser.parseToken( parser.getDottedVersionText() );
         }
+        this.idMap = parser.idMap;
     }
 
     /** {@inheritDoc} */

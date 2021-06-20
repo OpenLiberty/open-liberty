@@ -34,7 +34,6 @@ public class WebFragmentDDParser extends DDParserSpec {
     public WebFragmentDDParser(Container ddRootContainer, Entry ddEntry, int maxSchemaVersion) throws ParseException {
         super( ddRootContainer, ddEntry,
                WebAppDDParser.adjustSchemaVersion(maxSchemaVersion),
-               WebAppDDParser.getRuntimeVersion(maxSchemaVersion),
                TRIM_SIMPLE_CONTENT,
                "web-fragment" );
     }

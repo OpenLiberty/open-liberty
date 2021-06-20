@@ -174,7 +174,7 @@ public class WebAppTestHeader extends WebAppTestBase {
         public VersionTestData(String xmlText, int version) {
             this.xmlText = xmlText;
             this.version = version;
-            this.versionText = DDParser.getVersionText(version);
+            this.versionText = DDParser.getDottedVersionText(version);
         }
     }
 
@@ -231,7 +231,7 @@ public class WebAppTestHeader extends WebAppTestBase {
             this.xmlText = xmlText;
             this.maxVersion = maxVersion;
             this.expectedVersion = expectedVersion;
-            this.expectedVersionText = DDParser.getVersionText(expectedVersion);
+            this.expectedVersionText = DDParser.getDottedVersionText(expectedVersion);
         }
     }
     

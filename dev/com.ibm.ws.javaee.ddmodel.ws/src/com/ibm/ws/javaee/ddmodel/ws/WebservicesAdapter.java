@@ -91,17 +91,17 @@ public final class WebservicesAdapter implements ContainerAdapter<Webservices> {
             int ddVersion;
             String versAttr = getAttributeValue("", "version");
             if ( versAttr == null ) {
-                ddVersion = 20;
-            } else if ( versAttr.equals("2.0") ) {
-                ddVersion = 20;
-            } else if ( versAttr.equals("1.4") ) {
-                ddVersion = 14;
-            } else if ( versAttr.equals("1.3") ) {
-                ddVersion = 13;
-            } else if ( versAttr.equals("1.2") ) {
-                ddVersion = 12;
-            } else if ( versAttr.equals("1.1") ) {
-                ddVersion = 11;
+                ddVersion = Webservices.VERSION_2_0;
+            } else if ( versAttr.equals(Webservices.VERSION_2_0) ) {
+                ddVersion = Webservices.VERSION_2_0;
+            } else if ( versAttr.equals(Webservices.VERSION_1_4) ) {
+                ddVersion = Webservices.VERSION_1_4;
+            } else if ( versAttr.equals(Webservices.VERSION_1_3) ) {
+                ddVersion = Webservices.VERSION_1_3;
+            } else if ( versAttr.equals(Webservices.VERSION_1_2) ) {
+                ddVersion = Webservices.VERSION_1_2;
+            } else if ( versAttr.equals(Webservices.VERSION_1_1) ) {
+                ddVersion = Webservices.VERSION_1_1;
             } else {
                 throw new ParseException( unsupportedDescriptorVersion(versAttr) );
             }

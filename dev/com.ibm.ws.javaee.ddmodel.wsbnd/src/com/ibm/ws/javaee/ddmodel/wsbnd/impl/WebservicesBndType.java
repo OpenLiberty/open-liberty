@@ -310,8 +310,11 @@ public class WebservicesBndType extends DDParser.ElementContentParsable implemen
 
     @Override
     public void finish(DDParser parser) throws ParseException {
+        super.finish(parser);        
+        if ( version == null ) {
+            version = parser.parseToken( parser.getDottedVersionText() );
+        }        
         this.idMap = parser.idMap;
-        super.finish(parser);
     }
 
     //ONLY used by WsClientBinding

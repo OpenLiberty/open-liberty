@@ -380,36 +380,7 @@ public class ApplicationType extends JNDIEnvironmentRefs implements Application,
             // The version text is text of the version as
             // it appears in the XML text.
 
-            String versionText;
-            switch ( parser.version ) {
-            case Application.VERSION_1_2:
-                versionText = "1.2";
-                break;
-            case Application.VERSION_1_3:
-                versionText = "1.3";
-                break;
-            case Application.VERSION_1_4:
-                versionText = "1.4";
-                break;
-            case Application.VERSION_5:
-                versionText = "5";
-                break;                
-            case Application.VERSION_6:
-                versionText = "6";
-                break;                                
-            case Application.VERSION_7:
-                versionText = "7";
-                break;
-            case Application.VERSION_8:
-                versionText = "8";
-                break;          
-            case Application.VERSION_9:
-                versionText = "9";
-                break;                                                                
-            default:
-                throw new IllegalArgumentException("Unsupported application bindings version [ " + parser.version + " ]");
-            }
-            version = parser.parseToken(versionText);
+            version = parser.parseToken( parser.getVersionText() );
         }
 
         this.idMap = parser.idMap;

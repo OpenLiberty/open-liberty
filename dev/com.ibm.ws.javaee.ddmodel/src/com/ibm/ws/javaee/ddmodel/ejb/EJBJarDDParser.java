@@ -11,8 +11,6 @@
 package com.ibm.ws.javaee.ddmodel.ejb;
 
 import com.ibm.ws.javaee.dd.ejb.EJBJar;
-import com.ibm.ws.javaee.dd.web.WebApp;
-import com.ibm.ws.javaee.ddmodel.DDParser;
 import com.ibm.ws.javaee.ddmodel.DDParserSpec;
 import com.ibm.ws.javaee.version.JavaEEVersion;
 import com.ibm.wsspi.adaptable.module.Container;
@@ -41,29 +39,6 @@ public class EJBJarDDParser extends DDParserSpec {
         return VERSION_DATA;
     }
 
-    /**
-     * Obtain the runtime version which corresponds to
-     * a specified maximum supported schema version.
-     *
-     * @param schemaVersion The maximum supported schema version.
-     *
-     * @return The runtime version which corresponds to
-     *     the specified maximum schema version.
-     */
-    protected static int getRuntimeVersion(int schemaVersion) {
-        if ( schemaVersion > EJBJar.VERSION_4_0 ) {
-            throw new IllegalArgumentException("Unsupported EJBJar schema version [ " + schemaVersion + " ]");
-        } else if (schemaVersion == EJBJar.VERSION_4_0) {
-            return JavaEEVersion.VERSION_9_0_INT;
-        } else if (schemaVersion == EJBJar.VERSION_3_2) {
-            return JavaEEVersion.VERSION_7_0_INT;
-        } else {
-            // Ignore any lower value.  The lowest runtime specification
-            // supported by Liberty is EJB 3.1
-            return JavaEEVersion.VERSION_6_0_INT;
-        }    
-    }
-    
     protected static int adjustSchemaVersion(int maxSchemaVersion) {
         return ( (maxSchemaVersion < EJBJar.VERSION_3_1) ? EJBJar.VERSION_3_1 : maxSchemaVersion );
     }
@@ -71,8 +46,7 @@ public class EJBJarDDParser extends DDParserSpec {
     public EJBJarDDParser(Container ddRootContainer, Entry ddEntry, int maxSchemaVersion) throws ParseException {
         super( ddRootContainer, ddEntry,
                adjustSchemaVersion(maxSchemaVersion),
-               getRuntimeVersion(maxSchemaVersion),
-               "ejb-jar");
+               "ejb-jar" );
     }
 
     @Override

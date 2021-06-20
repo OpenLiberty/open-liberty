@@ -249,8 +249,7 @@ public class FacesConfigType extends DDParser.ElementContentParsable implements 
             // be missing a version attribute.  Changes to enable
             // more descriptor deviations mean that other cases
             // might also be missing a version attribute.
-
-            version = parser.parseToken( parser.getVersionText() );            
+            version = parser.parseToken( parser.getDottedVersionText() );            
         }
     }
 

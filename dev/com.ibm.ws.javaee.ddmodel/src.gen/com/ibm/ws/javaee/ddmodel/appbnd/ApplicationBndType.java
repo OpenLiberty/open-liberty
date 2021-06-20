@@ -16,6 +16,7 @@ import com.ibm.ws.javaee.dd.appbnd.Profile;
 import com.ibm.ws.javaee.dd.appbnd.SecurityRole;
 import com.ibm.ws.javaee.ddmodel.CrossComponentReferenceType;
 import com.ibm.ws.javaee.ddmodel.DDParser;
+import com.ibm.ws.javaee.ddmodel.DDParser.ParseException;
 import com.ibm.ws.javaee.ddmodel.commonbnd.RefBindingsGroupType;
 
 public class ApplicationBndType 
@@ -85,9 +86,19 @@ public class ApplicationBndType
         return idMap.getIdForComponent(ddComponent);
     }
 
+    /**
+     * Override: Ensure that the version is assigned.
+     * 
+     * Use the version computed by the parser to ensure
+     * the local version variable is assigned. 
+     */
     @Override
     public void finish(DDParser parser) throws DDParser.ParseException {
         super.finish(parser);
+
+        if ( version == null ) {
+            version = parser.parseToken( parser.getDottedVersionText() );            
+        }
         this.idMap = parser.idMap;
 
         if (xmi) {

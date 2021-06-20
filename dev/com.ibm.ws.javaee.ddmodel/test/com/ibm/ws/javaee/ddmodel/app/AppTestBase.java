@@ -70,7 +70,7 @@ public class AppTestBase extends DDTestBase {
 
         @SuppressWarnings("unchecked")
         ServiceReference<JavaEEVersion> versionRef = mockery.mock(ServiceReference.class, "sr" + mockId++);
-        String versionText = DDParser.getVersionText(maxSchemaVersion);
+        String versionText = DDParser.getDottedVersionText(maxSchemaVersion);
 
         mockery.checking(new Expectations() {
             {                

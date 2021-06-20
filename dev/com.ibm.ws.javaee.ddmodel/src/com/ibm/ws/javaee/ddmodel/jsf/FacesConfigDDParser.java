@@ -38,32 +38,7 @@ final class FacesConfigDDParser extends DDParserSpec {
     @Override
     protected VersionData[] getVersionData() {
         return VERSION_DATA;
-    }
-
-    /**
-     * Obtain the runtime version which corresponds to
-     * a specified maximum supported schema version.
-     *
-     * @param schemaVersion The maximum supported schema version.
-     *
-     * @return The runtime version which corresponds to
-     *     the specified maximum schema version.
-     */
-    protected static int getRuntimeVersion(int schemaVersion) {
-        if ( schemaVersion > FacesConfig.VERSION_3_0 ) {
-            throw new IllegalArgumentException("Unsupported Faces Config version [ " + schemaVersion + " ]");
-
-        } else if ( schemaVersion == FacesConfig.VERSION_2_2 ) {
-            return JavaEEVersion.VERSION_7_0_INT;
-        } else if ( schemaVersion == FacesConfig.VERSION_2_3 ) {
-            return JavaEEVersion.VERSION_8_0_INT;
-        } else if ( schemaVersion == FacesConfig.VERSION_3_0 ) {
-            return JavaEEVersion.VERSION_9_0_INT;
-
-        } else { // ( schemaVersion < FacesConfig.VERSION_2_2 )
-            return JavaEEVersion.VERSION_6_0_INT;          
-        }
-    }        
+    } 
 
     // 2.1 is returned instead of 2.0.
     //
@@ -83,7 +58,6 @@ final class FacesConfigDDParser extends DDParserSpec {
     public FacesConfigDDParser(Container ddRootContainer, Entry ddEntry, int maxSchemaVersion) throws ParseException {
         super( ddRootContainer, ddEntry,
                adjustSchemaVersion(maxSchemaVersion),
-               getRuntimeVersion(maxSchemaVersion),
                "faces-config" );
     }
 

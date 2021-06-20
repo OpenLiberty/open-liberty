@@ -41,36 +41,6 @@ public class WebAppDDParser extends DDParserSpec {
         return VERSION_DATA;
     }
 
-    /**
-     * Obtain the runtime version which corresponds to
-     * a specified maximum supported schema version.
-     *
-     * @param schemaVersion The maximum supported schema version.
-     *
-     * @return The runtime version which corresponds to
-     *     the specified maximum schema version.
-     */
-    protected static int getRuntimeVersion(int schemaVersion) {
-        if ( schemaVersion > WebApp.VERSION_5_0 ) {
-            throw new IllegalArgumentException("Unsupported WebApp version [ " + schemaVersion + " ]");
-
-        } else if ( schemaVersion == WebApp.VERSION_5_0 ) {
-            return JavaEEVersion.VERSION_9_0_INT;
-        } else if ( schemaVersion == WebApp.VERSION_4_0 ) {
-            return JavaEEVersion.VERSION_8_0_INT;
-        } else if ( schemaVersion == WebApp.VERSION_3_1 ) {
-            return JavaEEVersion.VERSION_7_0_INT;
-        } else if ( schemaVersion == WebApp.VERSION_3_0 ) {
-            return JavaEEVersion.VERSION_6_0_INT;
-
-        } else {
-            // Ignore any lower value.  The lowest runtime specification
-            // supported by Liberty is Servlet-3.0.
-            // ( maxVersion < WebApp.VERSION_3_0 ) {
-            return JavaEEVersion.VERSION_6_0_INT;
-        }
-    }
-    
     protected static int adjustSchemaVersion(int maxSchemaVersion) {
         return ( (maxSchemaVersion < WebApp.VERSION_3_0) ? WebApp.VERSION_3_0 : maxSchemaVersion );
     }
@@ -78,9 +48,8 @@ public class WebAppDDParser extends DDParserSpec {
     public WebAppDDParser(Container ddRootContainer, Entry ddEntry, int maxSchemaVersion) throws ParseException {
         super( ddRootContainer, ddEntry,
                adjustSchemaVersion(maxSchemaVersion),
-               getRuntimeVersion(maxSchemaVersion),
                TRIM_SIMPLE_CONTENT,
-               "web-app");
+               "web-app" );
     }
 
     @Override    

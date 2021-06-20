@@ -43,9 +43,24 @@ import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 public abstract class DDParser {
     protected static final TraceComponent tc = Tr.register(DDParser.class);
 
+    protected void warning(String message) {
+        Tr.warning(tc, message);
+    }
+    
+    //
+    
+    public static final String NAMESPACE_SUN_J2EE =
+        "http://java.sun.com/xml/ns/j2ee";
+    public static final String NAMESPACE_SUN_JAVAEE =
+        "http://java.sun.com/xml/ns/javaee";
+    public static final String NAMESPACE_JCP_JAVAEE =
+        "http://xmlns.jcp.org/xml/ns/javaee";
+    public static final String NAMESPACE_JAKARTA =
+        "https://jakarta.ee/xml/ns/jakartaee";    
+
     //
 
-    public static String getVersionText(int version) {
+    public static String getDottedVersionText(int version) {
         if ( version == 0 ) {
             return null;
 
@@ -58,6 +73,21 @@ public abstract class DDParser {
         }
     }
 
+    public static String getVersionText(int version) {
+        switch ( version ) {
+            case 0: return null;
+            case 12: return "1.2";
+            case 13: return "1.3";
+            case 14: return "1.4";
+            case 50: return "5";
+            case 60: return "6";
+            case 70: return "7";
+            case 80: return "8";
+            case 90: return "9";
+            default: throw new IllegalArgumentException("Unknown schema version");
+        }
+    }
+    
     //
 
     public static class ParseException extends Exception {
@@ -357,21 +387,19 @@ public abstract class DDParser {
         throws ParseException {
 
         this(ddRootContainer, ddEntry,
-             UNUSED_MAX_SCHEMA_VERSION, UNUSED_MAX_RUNTIME_VERSION,
+             UNUSED_MAX_SCHEMA_VERSION,
              expectedRootName);
     }    
     
     protected static final int UNUSED_MAX_SCHEMA_VERSION = -1;
-    protected static final int UNUSED_MAX_RUNTIME_VERSION = -1;
 
     /**
      * Construct a parser for a specified container and container entry.
      * 
+     * 
      * @param ddRootContainer The root container containing the entry which is to be parsed.
      * @param ddEntry The container entry which is to be parsed.
      * @param maxSchemaVersion The maximum schema version which will be
-     *     parsed.
-     * @param maxRuntimeVersion The maximum runtime version which will be
      *     parsed.
      * @param expectedRootName The expected root element name.
      *
@@ -379,16 +407,15 @@ public abstract class DDParser {
      *    Declared for future use.
      */
     public DDParser(Container ddRootContainer, Entry ddEntry,
-                    int maxSchemaVersion, int maxRuntimeVersion,
+                    int maxSchemaVersion,
                     String expectedRootName) throws ParseException {
 
         this.maxVersion = maxSchemaVersion;
-        this.runtimeVersion = maxRuntimeVersion;
 
         this.adaptableEntry = ddEntry;
         this.ddEntryPath = ddEntry.getPath();
         this.rootContainer = ddRootContainer;
-        
+
         this.expectedRootName = expectedRootName;
     }
 
@@ -410,30 +437,7 @@ public abstract class DDParser {
     
     // Control parameters ... 
 
-    /**
-     * The current platform runtime version.  This is determined
-     * by what features are provisioned.  This is one of the values
-     * as defined by {@link JavaEEVersion}.
-     * 
-     * The platform runtime version determines what specification is
-     * used by the runtime.
-     * 
-     * Note that this is distinct from any schema version which is
-     * present in an application or module deployment descriptor.
-     * The schema version determines the format of the descriptor.
-     * The platform runtime version determines how the descriptor
-     * content is used.
-     */
-    public final int runtimeVersion;
-
-    /**
-     * The current maximum supported schema version.
-     * 
-     * This is the analog to the runtime version, but is
-     * expressed as a schema version.  For example, for web
-     * module descriptors, schema version "25" corresponds
-     * to JavaEE version "50".
-     */
+    /** The current maximum supported schema version. */
     public final int maxVersion;
 
     // What will be parsed ...
@@ -533,6 +537,10 @@ public abstract class DDParser {
 
     public String idNamespace;
 
+    public String getDottedVersionText() {
+        return getDottedVersionText(version);
+    }
+    
     public String getVersionText() {
         return getVersionText(version);
     }
@@ -1218,20 +1226,8 @@ public abstract class DDParser {
         }
     }
 
-    protected void warning(String message) {
-        Tr.warning(tc, message);
-    }
-    
-    protected void warning(String messageKey, Object... parms) {
-        Tr.warning(tc, messageKey, parms);
-    }    
-
     public String requiredAttributeMissing(String attrLocal) {
         return Tr.formatMessage(tc, "required.attribute.missing", describeEntry(), getLineNumber(), currentElementLocalName, attrLocal);
-    }
-
-    protected String invalidRootElement() {
-        return Tr.formatMessage(tc, "invalid.root.element", describeEntry(), getLineNumber(), rootElementLocalName);
     }
 
     private String rootElementNotFound() {
@@ -1264,30 +1260,6 @@ public abstract class DDParser {
 
     public String invalidHRefPrefix(String hrefElementName, String hrefPrefix) {
         return Tr.formatMessage(tc, "invalid.href.prefix", describeEntry(), getLineNumber(), hrefElementName, hrefPrefix);
-    }
-
-    protected String unknownDeploymentDescriptorVersion() {
-        return Tr.formatMessage(tc, "unknown.deployment.descriptor.version", describeEntry());
-    }
-
-    protected String invalidDeploymentDescriptorNamespace(String useVersion) {
-        return Tr.formatMessage(tc, "invalid.deployment.descriptor.namespace", describeEntry(), getLineNumber(), namespace, useVersion);
-    }
-
-    protected String invalidDeploymentDescriptorVersion(String useVersion) {
-        return Tr.formatMessage(tc, "invalid.deployment.descriptor.version", describeEntry(), getLineNumber(), useVersion);
-    }
-    
-    protected String invalidDeploymentDescriptorPublicId(String usePublicId) {
-        return Tr.formatMessage(tc, "invalid.deployment.descriptor.public.id", describeEntry(), getLineNumber(), usePublicId);
-    }    
-
-    protected String missingDeploymentDescriptorNamespace() {
-        return Tr.formatMessage(tc, "missing.deployment.descriptor.namespace", describeEntry(), getLineNumber());
-    }
-
-    protected String missingDeploymentDescriptorVersion() {
-        return Tr.formatMessage(tc, "missing.deployment.descriptor.version", describeEntry(), getLineNumber());
     }
 
     public String tooManyElements(String element) {
@@ -1327,34 +1299,26 @@ public abstract class DDParser {
 
     // New messages ...
 
+    // protected String missingDeploymentDescriptorVersion() {
+    //     return Tr.formatMessage(tc, "missing.deployment.descriptor.version", describeEntry(), getLineNumber());
+    // }
+    
     protected String missingDescriptorVersion() {
         // The deployment descriptor {0} specifies neither a version, a PUBLIC ID, or a schema.
         return Tr.formatMessage(tc, "missing.descriptor.version", describeEntry());
     }
 
+    // protected String invalidDeploymentDescriptorVersion(String useVersion) {
+    //     return Tr.formatMessage(tc, "invalid.deployment.descriptor.version", describeEntry(), getLineNumber(), useVersion);
+    // }
+    
+    // protected String unknownDeploymentDescriptorVersion() {
+    //     return Tr.formatMessage(tc, "unknown.deployment.descriptor.version", describeEntry());
+    // }
+
     protected String unsupportedDescriptorVersion(String ddVersion) {
         // The deployment descriptor {0}, at line {1}, specifies unsupported version {2}.
         return Tr.formatMessage(tc, "unsupported.descriptor.version", describeEntry(), getLineNumber(), ddVersion);
-    }
-
-    protected String unsupportedDescriptorNamespace(String ddNamespace) {
-        // The deployment descriptor {0}, at line {1}, specifies unsupported namespace {2}.        
-        return Tr.formatMessage(tc, "unsupported.descriptor.namespace", describeEntry(), getLineNumber(), ddNamespace);
-    }
-
-    protected String incorrectDescriptorNamespace(String ddVersion, String ddNamespace, String expectedNamespace) {
-        // The deployment descriptor {0}, at line {1}, specifies version {2} and namespace {3}, but should have namespace {4}.
-        return Tr.formatMessage(tc, "incorrect.descriptor.namespace.for.version", describeEntry(), getLineNumber(), ddVersion, ddNamespace, expectedNamespace);        
-    }
-    
-    protected String incorrectDescriptorNamespace(String ddNamespace, String expectedNamespace) {
-        // The deployment descriptor {0}, at line {1}, specifies namespace {2}, but should have namespace {3}.
-        return Tr.formatMessage(tc, "incorrect.descriptor.namespace", describeEntry(), getLineNumber(), ddNamespace, expectedNamespace);        
-    }    
-
-    protected String unsupportedDescriptorPublicId(String ddPublicId) {
-        // The deployment descriptor {0}, at line {1}, specifies unsupported public ID {2}.
-        return Tr.formatMessage(tc, "unsupported.descriptor.public.id", describeEntry(), getLineNumber(), ddPublicId);
     }
 
     protected String unprovisionedDescriptorVersion(int schemaVersion, int maxSchemaVersion) {
@@ -1363,6 +1327,44 @@ public abstract class DDParser {
         return Tr.formatMessage(tc, "unprovisioned.descriptor.version", describeEntry(), getLineNumber(), schemaVersion, maxSchemaVersion);
     }
     
+    // protected String missingDeploymentDescriptorNamespace() {
+    //     return Tr.formatMessage(tc, "missing.deployment.descriptor.namespace", describeEntry(), getLineNumber());
+    // }
+    
+    protected String unsupportedDescriptorNamespace(String ddNamespace) {
+        // The deployment descriptor {0}, at line {1}, specifies unsupported namespace {2}.        
+        return Tr.formatMessage(tc, "unsupported.descriptor.namespace", describeEntry(), getLineNumber(), ddNamespace);
+    }
+
+    // protected String invalidDeploymentDescriptorNamespace(String useVersion) {
+    //     return Tr.formatMessage(tc, "invalid.deployment.descriptor.namespace", describeEntry(), getLineNumber(), namespace, useVersion);
+    // }
+    
+    protected String incorrectDescriptorNamespace(String ddVersion, String ddNamespace, String expectedNamespace) {
+        // The deployment descriptor {0}, at line {1}, specifies version {2} and namespace {3},
+        // but should have namespace {4}.
+        return Tr.formatMessage(tc, "incorrect.descriptor.namespace.for.version", describeEntry(), getLineNumber(), ddVersion, ddNamespace, expectedNamespace);        
+    }
+    
+    protected String incorrectDescriptorNamespace(String ddNamespace, String expectedNamespace) {
+        // The deployment descriptor {0}, at line {1}, specifies namespace {2},
+        // but should have namespace {3}.
+        return Tr.formatMessage(tc, "incorrect.descriptor.namespace", describeEntry(), getLineNumber(), ddNamespace, expectedNamespace);        
+    }    
+
+    // protected String invalidDeploymentDescriptorPublicId(String usePublicId) {
+    //     return Tr.formatMessage(tc, "invalid.deployment.descriptor.public.id", describeEntry(), getLineNumber(), usePublicId);
+    // }    
+    
+    protected String unsupportedDescriptorPublicId(String ddPublicId) {
+        // The deployment descriptor {0}, at line {1}, specifies unsupported public ID {2}.
+        return Tr.formatMessage(tc, "unsupported.descriptor.public.id", describeEntry(), getLineNumber(), ddPublicId);
+    }
+
+    // protected String invalidRootElement() {
+    //     return Tr.formatMessage(tc, "invalid.root.element", describeEntry(), getLineNumber(), rootElementLocalName);
+    // }
+
     protected String unexpectedRootElement(String expectedRootElementName) {
         // The deployment descriptor {0}, at line {1}, has root element {2},
         // but requires root element {3}. 

@@ -10,9 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.javaee.ddmodel.permissions;
 
+import com.ibm.ws.javaee.dd.permissions.PermissionsConfig;
 import com.ibm.ws.javaee.ddmodel.DDParser;
 import com.ibm.ws.javaee.ddmodel.DDParserSpec;
-import com.ibm.ws.javaee.version.JavaEEVersion;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
 
@@ -60,11 +60,11 @@ final class PermissionsConfigDDParser extends DDParser {
             // the namespace if the version is available.
 
             String expectedNamespace;
-            if ( JavaEEVersion.VERSION_7_STR.equals(ddVersionAttr) ) {
-                ddVersion = JavaEEVersion.VERSION_7_0_INT;
+            if ( PermissionsConfig.VERSION_7_STR.equals(ddVersionAttr) ) {
+                ddVersion = PermissionsConfig.VERSION_7_0;
                 expectedNamespace = DDParserSpec.NAMESPACE_JCP_JAVAEE;
-            } else if ( JavaEEVersion.VERSION_9_STR.equals(ddVersionAttr) ) {
-                ddVersion = JavaEEVersion.VERSION_9_0_INT;
+            } else if ( PermissionsConfig.VERSION_9_STR.equals(ddVersionAttr) ) {
+                ddVersion = PermissionsConfig.VERSION_9_0;
                 expectedNamespace = DDParserSpec.NAMESPACE_JAKARTA;
             } else {
                 throw new ParseException( unsupportedDescriptorVersion(ddVersionAttr) );         
@@ -87,9 +87,9 @@ final class PermissionsConfigDDParser extends DDParser {
         } else if ( namespace != null ) {
             // Next, try to use the namespace.
             if ( namespace.equals(DDParserSpec.NAMESPACE_JCP_JAVAEE) ) {
-                ddVersion = 70;
+                ddVersion = PermissionsConfig.VERSION_7_0;
             } else if ( namespace.equals(DDParserSpec.NAMESPACE_JAKARTA) ) {
-                ddVersion = 90;
+                ddVersion = PermissionsConfig.VERSION_9_0;
             } else {
                 throw new ParseException( unsupportedDescriptorNamespace(namespace) );
             }

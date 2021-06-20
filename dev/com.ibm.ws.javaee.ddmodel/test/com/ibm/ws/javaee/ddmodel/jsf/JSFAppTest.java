@@ -23,7 +23,7 @@ public class JSFAppTest extends JSFAppTestBase {
             { "CWWKC2262E", "unprovisioned.descriptor.version" };        
 
         for ( int schemaVersion : FacesConfig.VERSIONS ) {
-            String schemaVersionStr = DDParser.getVersionText(schemaVersion);
+            String schemaVersionStr = DDParser.getDottedVersionText(schemaVersion);
             
             for ( int maxSchemaVersion : FacesConfig.VERSIONS ) {
                 // The Faces config parser uses a maximum schema

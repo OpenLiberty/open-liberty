@@ -20,7 +20,6 @@ import com.ibm.ws.javaee.ddmodel.DDParser;
 import com.ibm.ws.javaee.ddmodel.DDParser.ParseException;
 import com.ibm.ws.javaee.ddmodel.TokenType;
 import com.ibm.ws.javaee.ddmodel.common.XSDTokenType;
-import com.ibm.ws.javaee.version.JavaEEVersion;
 
 /*
  <xsd:complexType name="web-appType">
@@ -92,7 +91,6 @@ public class WebAppType extends WebCommonType implements WebApp, DDParser.RootPa
      */
     @Override
     public void finish(DDParser parser) throws ParseException {
-        super.finish(parser);
         if ( version == null ) {
             // In all cases, not just for 2.2 and 2.3, 
             // ensure that the local version variable is
@@ -103,9 +101,10 @@ public class WebAppType extends WebCommonType implements WebApp, DDParser.RootPa
             // Changes to enable more descriptor deviations
             // mean that other cases might also be missing
             // a version attribute.
-
-            version = parser.parseToken( parser.getVersionText() );            
+            version = parser.parseToken( parser.getDottedVersionText() );            
         }
+        
+        super.finish(parser);
     }
 
     @Override
@@ -141,8 +140,10 @@ public class WebAppType extends WebCommonType implements WebApp, DDParser.RootPa
             parser.parse(absolute_ordering);
             if (this.absolute_ordering == null) {
                 this.absolute_ordering = absolute_ordering;
-            } else if (parser.runtimeVersion >= JavaEEVersion.VERSION_7_0_INT) {
-                // EE7 clarification: Can only have one absolute-ordering element.
+            } else if (parser.maxVersion >= WebApp.VERSION_3_1) {
+                // WebApp 3.1, which corresponds to JavaEE7, clarified the
+                // parsing of absolute ordering: At most one absolute ordering
+                // is allowed.
                 throw new ParseException(parser.tooManyElements("absolute-ordering"));
             }
             return true;

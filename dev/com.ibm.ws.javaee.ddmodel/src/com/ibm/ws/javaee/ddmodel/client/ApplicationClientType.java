@@ -313,36 +313,7 @@ public class ApplicationClientType extends JNDIEnvironmentRefsGroup implements A
             // The version text is text of the version as
             // it appears in the XML text.
 
-            String versionText;
-            switch ( parser.version ) {
-            case ApplicationClient.VERSION_1_2:
-                versionText = "1.2";
-                break;
-            case ApplicationClient.VERSION_1_3:
-                versionText = "1.3";
-                break;
-            case ApplicationClient.VERSION_1_4:
-                versionText = "1.4";
-                break;
-            case ApplicationClient.VERSION_5:
-                versionText = "5";
-                break;
-            case ApplicationClient.VERSION_6:
-                versionText = "6";
-                break;
-            case ApplicationClient.VERSION_7:
-                versionText = "7";
-                break;
-            case ApplicationClient.VERSION_8:
-                versionText = "8";
-                break;
-            case ApplicationClient.VERSION_9:
-                versionText = "9";
-                break;
-            default:
-                throw new IllegalArgumentException("Unsupported application client version [ " + parser.eePlatformVersion + " ]");
-            }
-            version = parser.parseToken(versionText);
+            version = parser.parseToken( parser.getVersionText() );
         }
     
         this.versionId = parser.version;

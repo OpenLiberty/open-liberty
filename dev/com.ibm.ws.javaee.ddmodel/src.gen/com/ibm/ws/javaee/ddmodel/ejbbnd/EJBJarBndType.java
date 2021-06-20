@@ -147,8 +147,11 @@ public class EJBJarBndType extends com.ibm.ws.javaee.ddmodel.DDParser.ElementCon
 
     @Override
     public void finish(DDParser parser) throws DDParser.ParseException {
+        if ( version == null ) {
+            version = parser.parseToken( parser.getDottedVersionText() );            
+        }
         this.idMap = parser.idMap;
-
+        
         {
             java.util.Map<String, com.ibm.ws.javaee.dd.ejbbnd.EnterpriseBean> beans = new java.util.HashMap<String, com.ibm.ws.javaee.dd.ejbbnd.EnterpriseBean>(getEnterpriseBeans().size());
             for (com.ibm.ws.javaee.dd.ejbbnd.EnterpriseBean bean : getEnterpriseBeans()) {

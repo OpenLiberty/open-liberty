@@ -15,35 +15,23 @@ import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
 
 public abstract class DDParserSpec extends DDParser {
-    public static final String NAMESPACE_SUN_J2EE =
-        "http://java.sun.com/xml/ns/j2ee";
-    public static final String NAMESPACE_SUN_JAVAEE =
-        "http://java.sun.com/xml/ns/javaee";
-    public static final String NAMESPACE_JCP_JAVAEE =
-        "http://xmlns.jcp.org/xml/ns/javaee";
-    public static final String NAMESPACE_JAKARTA =
-        "https://jakarta.ee/xml/ns/jakartaee";    
-    
-    //
-
     public DDParserSpec(
         Container ddRootContainer, Entry ddEntry,
         String expectedRootName) throws ParseException {
 
         this(ddRootContainer, ddEntry,
              DDParser.UNUSED_MAX_SCHEMA_VERSION,
-             DDParser.UNUSED_MAX_RUNTIME_VERSION,
              !TRIM_SIMPLE_CONTENT,
              expectedRootName);
     }
 
     public DDParserSpec(
             Container ddRootContainer, Entry ddEntry,
-            int schemaVersion, int runtimeVersion,
+            int maxSchemaVersion,
             String expectedRootName) throws ParseException {
 
         this(ddRootContainer, ddEntry,
-             schemaVersion, runtimeVersion,
+             maxSchemaVersion,
              !TRIM_SIMPLE_CONTENT,
              expectedRootName);
     }
@@ -52,12 +40,12 @@ public abstract class DDParserSpec extends DDParser {
 
     public DDParserSpec(
             Container ddRootContainer, Entry ddEntry,
-            int schemaVersion, int runtimeVersion,
+            int maxSchemaVersion,
             boolean trimSimpleContent,
             String expectedRootName) throws ParseException {
 
         super(ddRootContainer, ddEntry,
-              schemaVersion, runtimeVersion,
+              maxSchemaVersion,
               expectedRootName);
         
         this.trimSimpleContent = trimSimpleContent; 
