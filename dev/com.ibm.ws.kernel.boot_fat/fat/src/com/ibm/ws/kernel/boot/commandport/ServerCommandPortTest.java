@@ -25,7 +25,6 @@ import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.HttpUtils;
@@ -60,10 +59,6 @@ public class ServerCommandPortTest {
      */
     public void testServerCommandPortDisabled() throws Exception {
         LibertyServer server = commandPortDisabledServer;
-        JavaInfo java = JavaInfo.forCurrentVM();
-        if (java.majorVersion() != 8) {
-            server.copyFileToLibertyServerRoot("illegalAccess/jvm.options");
-        }
 
         // server should start, but with a warning message that we can't actually tell if it completed starting
         // because the command port is disabled
