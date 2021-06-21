@@ -21,10 +21,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
+import javax.security.auth.Subject;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.http.Header;
@@ -96,6 +98,7 @@ public class AccessTokenAuthenticatorTest {
     private final HttpResponse httpResponse = mockery.mock(HttpResponse.class, "httpResponse");
     private final StatusLine statusLine = mockery.mock(StatusLine.class, "statusLine");
     private final Header header = mockery.mock(Header.class, "header");
+    private final ProviderAuthenticationResult authnResult = mockery.mock(ProviderAuthenticationResult.class);
     protected final SSLSocketFactory sslSocketFactory = mockery.mock(SSLSocketFactory.class, "sslSocketFactory");
 
     private static final AccessTokenAuthenticatorTest authenticatorTest = new AccessTokenAuthenticatorTest();
@@ -715,7 +718,7 @@ public class AccessTokenAuthenticatorTest {
     @Test
     public void testAuthenticate_resultAlreadyCached() {
         SingleTableCache cache = getCache();
-        ProviderAuthenticationResult cachedResult = new ProviderAuthenticationResult(AuthResult.SUCCESS, HttpServletResponse.SC_OK);
+        ProviderAuthenticationResult cachedResult = createProviderAuthenticationResult(System.currentTimeMillis());
         cache.put(ACCESS_TOKEN, cachedResult);
 
         mockery.checking(new Expectations() {
@@ -789,8 +792,7 @@ public class AccessTokenAuthenticatorTest {
     @Test
     public void test_getCachedTokenAuthenticationResult_resultAlreadyCached() {
         SingleTableCache cache = getCache();
-        // Set unique result values just so we can check against them
-        ProviderAuthenticationResult cachedResult = new ProviderAuthenticationResult(AuthResult.OAUTH_CHALLENGE, HttpServletResponse.SC_EXPECTATION_FAILED);
+        ProviderAuthenticationResult cachedResult = createProviderAuthenticationResult(System.currentTimeMillis());
         cache.put(ACCESS_TOKEN, cachedResult);
         mockery.checking(new Expectations() {
             {
@@ -805,6 +807,159 @@ public class AccessTokenAuthenticatorTest {
         assertNotNull("Result should not have been null but was.", result);
         assertEquals("Cached result did not match expected object.", cachedResult.getStatus(), result.getStatus());
         assertEquals("Cached result did not match expected object.", cachedResult.getHttpStatusCode(), result.getHttpStatusCode());
+    }
+
+    @Test
+    public void test_isTokenInCachedResultExpired_nullCustomProperties() {
+        mockery.checking(new Expectations() {
+            {
+                one(authnResult).getCustomProperties();
+                will(returnValue(null));
+            }
+        });
+
+        boolean result = sslTokenAuth.isTokenInCachedResultExpired(authnResult, clientConfig);
+        assertTrue("Authentication result without custom properties should have been considered as an expired token.", result);
+    }
+
+    @Test
+    public void test_isTokenInCachedResultExpired_emptyCustomProperties() {
+        final Hashtable<String, Object> customProperties = new Hashtable<String, Object>();
+        mockery.checking(new Expectations() {
+            {
+                one(authnResult).getCustomProperties();
+                will(returnValue(customProperties));
+            }
+        });
+
+        boolean result = sslTokenAuth.isTokenInCachedResultExpired(authnResult, clientConfig);
+        assertTrue("Authentication result with an empty set of custom properties should have been considered as an expired token.", result);
+    }
+
+    @Test
+    public void test_isTokenInCachedResultExpired_zeroExp() {
+        long expValue = 0;
+        final Hashtable<String, Object> customProperties = new Hashtable<String, Object>();
+        Map<String, Object> tokenInfoMap = new HashMap<String, Object>();
+        tokenInfoMap.put("exp", expValue);
+        customProperties.put(Constants.ACCESS_TOKEN_INFO, tokenInfoMap);
+
+        mockery.checking(new Expectations() {
+            {
+                one(authnResult).getCustomProperties();
+                will(returnValue(customProperties));
+            }
+        });
+
+        boolean result = sslTokenAuth.isTokenInCachedResultExpired(authnResult, clientConfig);
+        assertTrue("A token expiration time of 0 should have been considered as an expired token.", result);
+    }
+
+    @Test
+    public void test_isTokenInCachedResultExpired_expLarge() {
+        long expValue = System.currentTimeMillis();
+        final Hashtable<String, Object> customProperties = new Hashtable<String, Object>();
+        Map<String, Object> tokenInfoMap = new HashMap<String, Object>();
+        tokenInfoMap.put("exp", expValue);
+        customProperties.put(Constants.ACCESS_TOKEN_INFO, tokenInfoMap);
+
+        mockery.checking(new Expectations() {
+            {
+                one(authnResult).getCustomProperties();
+                will(returnValue(customProperties));
+            }
+        });
+
+        boolean result = sslTokenAuth.isTokenInCachedResultExpired(authnResult, clientConfig);
+        assertFalse("A token expiration time of " + expValue + " compared to current time should not have been considered as an expired token.", result);
+    }
+
+    @Test
+    public void test_getTokenExpirationFromCustomProperties_nullCustomProperties() {
+        long result = sslTokenAuth.getTokenExpirationFromCustomProperties(null);
+        assertEquals("Did not get expected expiration time from the custom properties.", 0, result);
+    }
+
+    @Test
+    public void test_getTokenExpirationFromCustomProperties_emptyCustomProperties() {
+        Hashtable<String, Object> customProperties = new Hashtable<String, Object>();
+        long result = sslTokenAuth.getTokenExpirationFromCustomProperties(customProperties);
+        assertEquals("Did not get expected expiration time from the custom properties.", 0, result);
+    }
+
+    @Test
+    public void test_getTokenExpirationFromCustomProperties_missingTokenInfo() {
+        Hashtable<String, Object> customProperties = new Hashtable<String, Object>();
+        customProperties.put("one", 1);
+        customProperties.put("two", "two");
+
+        long result = sslTokenAuth.getTokenExpirationFromCustomProperties(customProperties);
+        assertEquals("Did not get expected expiration time from the custom properties.", 0, result);
+    }
+
+    @Test
+    public void test_getTokenExpirationFromCustomProperties_tokenInfoEntryWrongType() {
+        Hashtable<String, Object> customProperties = new Hashtable<String, Object>();
+        customProperties.put(Constants.ACCESS_TOKEN_INFO, "wrong type");
+
+        long result = sslTokenAuth.getTokenExpirationFromCustomProperties(customProperties);
+        assertEquals("Did not get expected expiration time from the custom properties.", 0, result);
+    }
+
+    @Test
+    public void test_getTokenExpirationFromCustomProperties_tokenInfoEmpty() {
+        Hashtable<String, Object> customProperties = new Hashtable<String, Object>();
+        Map<String, Object> tokenInfoMap = new HashMap<String, Object>();
+        customProperties.put(Constants.ACCESS_TOKEN_INFO, tokenInfoMap);
+
+        long result = sslTokenAuth.getTokenExpirationFromCustomProperties(customProperties);
+        assertEquals("Did not get expected expiration time from the custom properties.", 0, result);
+    }
+
+    @Test
+    public void test_getTokenExpirationFromCustomProperties_tokenInfoMissingExp() {
+        Hashtable<String, Object> customProperties = new Hashtable<String, Object>();
+        Map<String, Object> tokenInfoMap = new HashMap<String, Object>();
+        tokenInfoMap.put("one", "one");
+        customProperties.put(Constants.ACCESS_TOKEN_INFO, tokenInfoMap);
+
+        long result = sslTokenAuth.getTokenExpirationFromCustomProperties(customProperties);
+        assertEquals("Did not get expected expiration time from the custom properties.", 0, result);
+    }
+
+    @Test
+    public void test_getTokenExpirationFromCustomProperties_expWrongType() {
+        Hashtable<String, Object> customProperties = new Hashtable<String, Object>();
+        Map<String, Object> tokenInfoMap = new HashMap<String, Object>();
+        tokenInfoMap.put("exp", "wrong type");
+        customProperties.put(Constants.ACCESS_TOKEN_INFO, tokenInfoMap);
+
+        long result = sslTokenAuth.getTokenExpirationFromCustomProperties(customProperties);
+        assertEquals("Did not get expected expiration time from the custom properties.", 0, result);
+    }
+
+    @Test
+    public void test_getTokenExpirationFromCustomProperties_expNegative() {
+        long expValue = -42;
+        Hashtable<String, Object> customProperties = new Hashtable<String, Object>();
+        Map<String, Object> tokenInfoMap = new HashMap<String, Object>();
+        tokenInfoMap.put("exp", expValue);
+        customProperties.put(Constants.ACCESS_TOKEN_INFO, tokenInfoMap);
+
+        long result = sslTokenAuth.getTokenExpirationFromCustomProperties(customProperties);
+        assertEquals("Did not get expected expiration time from the custom properties.", expValue, result);
+    }
+
+    @Test
+    public void test_getTokenExpirationFromCustomProperties_expNormal() {
+        long expValue = 300;
+        Hashtable<String, Object> customProperties = new Hashtable<String, Object>();
+        Map<String, Object> tokenInfoMap = new HashMap<String, Object>();
+        tokenInfoMap.put("exp", expValue);
+        customProperties.put(Constants.ACCESS_TOKEN_INFO, tokenInfoMap);
+
+        long result = sslTokenAuth.getTokenExpirationFromCustomProperties(customProperties);
+        assertEquals("Did not get expected expiration time from the custom properties.", expValue, result);
     }
 
     @Test
@@ -1202,6 +1357,15 @@ public class AccessTokenAuthenticatorTest {
 
     private SingleTableCache getCache() {
         return new SingleTableCache(1000 * 60);
+    }
+
+    private ProviderAuthenticationResult createProviderAuthenticationResult(long expTime) {
+        Hashtable<String, Object> customProperties = new Hashtable<String, Object>();
+        Map<String, Object> accessTokenInfo = new HashMap<String, Object>();
+        accessTokenInfo.put("exp", expTime);
+        customProperties.put(Constants.ACCESS_TOKEN_INFO, accessTokenInfo);
+        ProviderAuthenticationResult result = new ProviderAuthenticationResult(AuthResult.SUCCESS, HttpServletResponse.SC_OK, GOOD_USER, new Subject(), customProperties, HTTPS_URL);
+        return result;
     }
 
     final class FakeAccessTokenAuthenticator extends AccessTokenAuthenticator {
