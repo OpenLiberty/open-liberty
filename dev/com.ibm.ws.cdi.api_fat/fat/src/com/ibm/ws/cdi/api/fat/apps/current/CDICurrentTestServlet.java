@@ -70,9 +70,16 @@ public class CDICurrentTestServlet extends FATServlet {
             Thread.sleep(5);
         }
 
+        System.out.println("GREP 3 " + java.time.LocalDateTime.now());  
         assertTrue("The thread with CDI.current never completed", false);
     }
 
+    public static void setWasCDICurrentFound(boolean b) {
+
+        wasCDICurrentFoundViaMES = b;
+        System.out.println("GREP 2 " + java.time.LocalDateTime.now());
+
+    }
 
     public class CallCDICurrent implements Runnable {
  
@@ -81,9 +88,11 @@ public class CDICurrentTestServlet extends FATServlet {
             CDI cdi = CDI.current();
             System.out.println("GREP MOE + " + cdi);
             if (cdi != null) {
-                CDICurrentTestServlet.wasCDICurrentFoundViaMES = true;
+                CDICurrentTestServlet.setWasCDICurrentFound(true);
+                System.out.println("GREP 1 " + java.time.LocalDateTime.now());
             } else {
-                CDICurrentTestServlet.wasCDICurrentFoundViaMES = false;
+                System.out.println("GREP 1 " + java.time.LocalDateTime.now());
+                CDICurrentTestServlet.setWasCDICurrentFound(false);
             }
         }
     }
