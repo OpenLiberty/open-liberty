@@ -19,7 +19,7 @@ import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTest;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTestHelpers;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLTestSettings;
-//3/2021
+
 import componenttest.annotation.SkipForRepeat;
 
 import componenttest.annotation.AllowedFFDC;
@@ -44,11 +44,9 @@ import componenttest.topology.impl.LibertyServerWrapper;
  * TFIM IdP. The client invokes the SP application by sending the SAML
  * 2.0 token in the HTTP POST request.
  */
+
 @LibertyServerWrapper
-//1/20/2021 the full mode is already set at class level in CL FAT and kept the same in OL but 
-//will no longer need the LITE mode in some of test cases below
 @Mode(TestMode.FULL)
-//1/21/2021 added
 @RunWith(FATRunner.class)
 public class CxfSAMLAsymSignEncTests extends SAMLCommonTest {
 
@@ -80,8 +78,6 @@ public class CxfSAMLAsymSignEncTests extends SAMLCommonTest {
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @AllowedFFDC(value = { "java.lang.Exception" })
     @Test
-    //Orig:
-    //public void testSAMLCXFSignedSupportingTokens_Asymmmetric() throws Exception {
     public void testSAMLCXFSignedSupportingTokens_AsymmmetricEE7Only() throws Exception {
         
     	WebClient webClient = SAMLCommonTestHelpers.getWebClient();
@@ -97,9 +93,6 @@ public class CxfSAMLAsymSignEncTests extends SAMLCommonTest {
 
     //3/2021 to run with EE8
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    //@AllowedFFDC(value = { "java.lang.Exception", "java.lang.ClassNotFoundException" }) //@AV999
-    //5/2021
-    //@AllowedFFDC(value = { "java.lang.Exception", "java.lang.ClassNotFoundException", "java.net.MalformedURLException" })
     //6/2021
     @AllowedFFDC(value = { "java.lang.Exception", "java.lang.ClassNotFoundException", "java.net.MalformedURLException", "java.security.PrivilegedActionException", "java.lang.NoSuchMethodException" })
     @Test
@@ -136,8 +129,6 @@ public class CxfSAMLAsymSignEncTests extends SAMLCommonTest {
     @AllowedFFDC(value = { "java.lang.Exception" })
     @ExpectedFFDC(value = { "org.apache.ws.security.WSSecurityException" })
     @Test
-    //Orig:
-    //public void testSAMLCXFSignedSupportingTokens_Asymmmetric_ClientNotSigned() throws Exception {
     public void testSAMLCXFSignedSupportingTokens_Asymmmetric_ClientNotSignedEE7Only() throws Exception {
         
     	WebClient webClient = SAMLCommonTestHelpers.getWebClient();
@@ -153,8 +144,6 @@ public class CxfSAMLAsymSignEncTests extends SAMLCommonTest {
     
     //3/2021 to run with EE8, then the corresponding error message can be expected
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    //3/2021
-    //@AllowedFFDC(value = { "java.lang.Exception", "org.apache.ws.security.WSSecurityException" }) //@AV999
     @AllowedFFDC(value = { "java.lang.Exception", "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
     @Test
     public void testSAMLCXFSignedSupportingTokens_Asymmmetric_ClientNotSignedEE8Only() throws Exception {
@@ -186,8 +175,6 @@ public class CxfSAMLAsymSignEncTests extends SAMLCommonTest {
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @AllowedFFDC(value = { "java.lang.Exception" })
     @Test
-    //Orig:
-    //public void testSAMLCXFEncryptedSupportingTokens_Asymmmetric() throws Exception {
     public void testSAMLCXFEncryptedSupportingTokens_AsymmmetricEE7Only() throws Exception {
         
     	WebClient webClient = SAMLCommonTestHelpers.getWebClient();
@@ -238,8 +225,6 @@ public class CxfSAMLAsymSignEncTests extends SAMLCommonTest {
     @AllowedFFDC(value = { "java.lang.Exception" })
     @ExpectedFFDC(value = { "org.apache.ws.security.WSSecurityException" })
     @Test
-    //Orig:
-    //public void testSAMLCXFEncryptedSupportingTokens_Asymmmetric_ClientNotEncrypted() throws Exception {
     public void testSAMLCXFEncryptedSupportingTokens_Asymmmetric_ClientNotEncryptedEE7Only() throws Exception {
         
     	WebClient webClient = SAMLCommonTestHelpers.getWebClient();
@@ -255,7 +240,6 @@ public class CxfSAMLAsymSignEncTests extends SAMLCommonTest {
 
     //3/2021 to run with EE8
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    //@AllowedFFDC(value = { "java.lang.Exception", "org.apache.ws.security.WSSecurityException" }) //@AV999
     @AllowedFFDC(value = { "java.lang.Exception", "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" }) 
     @Test
     public void testSAMLCXFEncryptedSupportingTokens_Asymmmetric_ClientNotEncryptedEE8Only() throws Exception {
@@ -284,8 +268,6 @@ public class CxfSAMLAsymSignEncTests extends SAMLCommonTest {
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @AllowedFFDC(value = { "java.lang.Exception" })
     @Test
-    //Orig:
-    //public void testSAMLCXFSignedEncryptedSupportingTokens_Asymmmetric() throws Exception {
     public void testSAMLCXFSignedEncryptedSupportingTokens_AsymmmetricEE7Only() throws Exception {
 
         WebClient webClient = SAMLCommonTestHelpers.getWebClient();
@@ -336,8 +318,6 @@ public class CxfSAMLAsymSignEncTests extends SAMLCommonTest {
     @AllowedFFDC(value = { "java.lang.Exception" })
     @ExpectedFFDC(value = { "org.apache.ws.security.WSSecurityException" })
     @Test
-    //Orig:
-    //public void testSAMLCXFSignedEncryptedSupportingTokens_Asymmmetric_ClientNotEncrypted() throws Exception {
     public void testSAMLCXFSignedEncryptedSupportingTokens_Asymmmetric_ClientNotEncryptedEE7Only() throws Exception {
         WebClient webClient = SAMLCommonTestHelpers.getWebClient();
 
@@ -352,7 +332,6 @@ public class CxfSAMLAsymSignEncTests extends SAMLCommonTest {
 
     //3/2021 to run with EE8
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    //@AllowedFFDC(value = { "java.lang.Exception", "org.apache.ws.security.WSSecurityException" }) //@AV999
     @AllowedFFDC(value = { "java.lang.Exception", "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
     @Test
     public void testSAMLCXFSignedEncryptedSupportingTokens_Asymmmetric_ClientNotEncryptedEE8Only() throws Exception {
@@ -388,8 +367,6 @@ public class CxfSAMLAsymSignEncTests extends SAMLCommonTest {
     @AllowedFFDC(value = { "java.lang.Exception" })
     @ExpectedFFDC(value = { "org.apache.ws.security.WSSecurityException" })
     @Test
-    //Orig:
-    //public void testSAMLCXFSignedEncryptedSupportingTokens_Asymmmetric_ClientNotSigned() throws Exception {
     public void testSAMLCXFSignedEncryptedSupportingTokens_Asymmmetric_ClientNotSignedEE7Only() throws Exception {
         
     	WebClient webClient = SAMLCommonTestHelpers.getWebClient();
@@ -405,7 +382,6 @@ public class CxfSAMLAsymSignEncTests extends SAMLCommonTest {
 
     //3/2021 to run with EE8, then the corresponding error message can be expected
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    //@AllowedFFDC(value = { "java.lang.Exception", "org.apache.ws.security.WSSecurityException" }) //@AV999
     @AllowedFFDC(value = { "java.lang.Exception", "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
     @Test
     public void testSAMLCXFSignedEncryptedSupportingTokens_Asymmmetric_ClientNotSignedEE8Only() throws Exception {
@@ -437,8 +413,6 @@ public class CxfSAMLAsymSignEncTests extends SAMLCommonTest {
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @AllowedFFDC(value = { "java.lang.Exception" })
     @Test
-    //Orig:
-    //public void testSAMLCXFSignedEncryptedAsyncSupportingTokens_Asymmmetric() throws Exception {
     public void testSAMLCXFSignedEncryptedAsyncSupportingTokens_AsymmmetricEE7Only() throws Exception {
         WebClient webClient = SAMLCommonTestHelpers.getWebClient();
 

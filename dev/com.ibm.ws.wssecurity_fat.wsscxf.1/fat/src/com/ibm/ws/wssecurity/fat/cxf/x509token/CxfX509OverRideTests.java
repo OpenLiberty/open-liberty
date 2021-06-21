@@ -20,10 +20,8 @@ import java.util.Set;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-//Added 11/2020
 import org.junit.runner.RunWith;
 
-//Added 11/2020
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
@@ -34,10 +32,7 @@ import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
 import componenttest.annotation.AllowedFFDC;
-//Mei:
 import componenttest.annotation.ExpectedFFDC;
-//End
-//Added 11/2020
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
@@ -46,15 +41,9 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
-//Added 11/2020
 @Mode(TestMode.FULL)
-//Added 11/2020
 @RunWith(FATRunner.class)
 public class CxfX509OverRideTests {
-
-    //orig from CL:
-    //private static String serverName = "com.ibm.ws.wssecurity_fat.x509_1";
-    //private static LibertyServer server = LibertyServerFactory.getLibertyServer(serverName);
 
     //Added 11/2020
     static final private String serverName = "com.ibm.ws.wssecurity_fat.x509_1";
@@ -83,9 +72,6 @@ public class CxfX509OverRideTests {
     public static void setUp() throws Exception {
 
         String thisMethod = "setup";
-
-        //orig from CL:
-        //SharedTools.installCallbackHandler(server);
 
         //2/2021
         ServerConfiguration config = server.getServerConfiguration();
@@ -119,10 +105,6 @@ public class CxfX509OverRideTests {
         assertNotNull("defaultHttpEndpoint SSL port may not be started at:" + portNumberSecure,
                       server.waitForStringInLog("CWWKO0219I.*" + portNumberSecure));
 
-        //2/2021 Orig:
-        //x509ClientUrl = "http://localhost:" + portNumber
-        //                + "/x509client/CxfX509SvcClient";
-
         //2/2021
         if (features.contains("jaxws-2.2")) {
             x509ClientUrl = "http://localhost:" + portNumber
@@ -146,8 +128,6 @@ public class CxfX509OverRideTests {
     // overwrite them.
     //
 
-    //4/2021
-    //@AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
     //5/2021 added PrivilegedActionExc, NoSuchMethodExc as a result of java11 and ee8
     @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException", "java.lang.ClassNotFoundException",
                            "java.security.PrivilegedActionException",
@@ -179,10 +159,7 @@ public class CxfX509OverRideTests {
     //2/2021 to test with EE7, then the corresponding exception can be expected
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    //Orig:
     @AllowedFFDC("org.apache.ws.security.WSSecurityException")
-    //Orig:
-    //public void testCxfX50NegativeService() throws Exception {
     public void testCxfX50NegativeServiceEE7Only() throws Exception {
 
         String thisMethod = "testCxfX509Service";
@@ -206,7 +183,7 @@ public class CxfX509OverRideTests {
     //2/2021 to test with EE8, then the corresponding exception can be expected
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    @ExpectedFFDC("org.apache.wss4j.common.ext.WSSecurityException") //@AV999
+    @ExpectedFFDC("org.apache.wss4j.common.ext.WSSecurityException")
     public void testCxfX50NegativeServiceEE8Only() throws Exception {
 
         String thisMethod = "testCxfX509Service";
@@ -287,8 +264,6 @@ public class CxfX509OverRideTests {
         } catch (Exception e) {
             e.printStackTrace(System.out);
         }
-        //orig from CL:
-        //SharedTools.unInstallCallbackHandler(server);
 
         //2/2021
         server.deleteFileFromLibertyInstallRoot("usr/extension/lib/bundles/com.ibm.ws.wssecurity.example.cbh.jar");

@@ -51,10 +51,6 @@ tested.features: jaxws-2.3, \
   axb-2.3, \
   el-3.0
 
-#can't compile locally	
-#com.ibm.ws.org.apache.cxf.rt.security.3.3.6;version=latest,\
-#com.ibm.ws.org.apache.cxf.rt.ws.security.3.3.6;version=latest,\	
-	
 	
 -buildpath: \
 	com.ibm.ws.wssecurity.fat.utils.common;version=latest,\

@@ -16,10 +16,8 @@ import static org.junit.Assert.assertTrue;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-//Added 10/2020
 import org.junit.runner.RunWith;
 
-//Added 10/2020
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.wssecurity.fat.utils.common.SharedTools;
@@ -28,18 +26,14 @@ import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
-//4/2021
 import componenttest.annotation.AllowedFFDC;
-//Added 10/2020
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 
-//Added 11/2020
 @Mode(TestMode.FULL)
-//Added 10/2020
 @RunWith(FATRunner.class)
 public class CxfUntNoPassTests {
     private static String serverName = "com.ibm.ws.wssecurity_fat";
@@ -47,9 +41,6 @@ public class CxfUntNoPassTests {
     //Added 10/2020
     @Server("com.ibm.ws.wssecurity_fat")
     public static LibertyServer server;
-
-    //orig from CL
-    //private static LibertyServer server = LibertyServerFactory.getLibertyServer(serverName);
 
     static private final Class<?> thisClass = CxfUntNoPassTests.class;
 

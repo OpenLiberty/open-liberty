@@ -16,9 +16,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.ibm.ws.wssecurity.fat.cxf.samltoken.LiteAlwaysRunTest.AlwaysRunAndPassTest;
-import com.ibm.ws.wssecurity.fat.cxf.samltoken.OneServerTests.CxfSAMLWSSTemplates1ServerTests;
-import com.ibm.ws.wssecurity.fat.cxf.samltoken.TwoServerTests.CxfSAMLWSSTemplates2ServerTests;
+import com.ibm.ws.wssecurity.fat.cxf.samltoken.OneServerTests.CxfSAMLBasic1ServerTests;
+import com.ibm.ws.wssecurity.fat.cxf.samltoken.TwoServerTests.CxfSAMLBasic2ServerTests;
 import com.ibm.ws.wssecurity.fat.cxf.samltoken.TwoServerTests.CxfSAMLWSSTemplatesWithExternalPolicy2ServerTests;
 
 import componenttest.rules.repeater.EmptyAction;
@@ -29,11 +28,10 @@ import componenttest.rules.repeater.RepeatTests;
 @SuiteClasses({
 
 	   //Lite
-	   AlwaysRunAndPassTest.class,
+	   CxfSAMLBasic2ServerTests.class,
              
        //Full
-       CxfSAMLWSSTemplates2ServerTests.class,
-       CxfSAMLWSSTemplates1ServerTests.class,
+	   CxfSAMLBasic1ServerTests.class,
        CxfSAMLWSSTemplatesWithExternalPolicy2ServerTests.class
           
               

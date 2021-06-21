@@ -16,22 +16,16 @@ import java.util.Set;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-//Added 11/2020
 import org.junit.runner.RunWith;
 
-//Added 11/2020
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.wssecurity.fat.utils.common.CommonTests;
-//Added 11/2020
 import com.ibm.ws.wssecurity.fat.utils.common.PrepCommonSetup;
 
 import componenttest.annotation.AllowedFFDC;
-//Mei:
 import componenttest.annotation.ExpectedFFDC;
-//End
-//Added 11/2020
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
@@ -40,9 +34,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
-//Added 11/2020
 @Mode(TestMode.FULL)
-//Added 11/2020
 @RunWith(FATRunner.class)
 public class CxfX509StrTypeTests extends CommonTests {
 
@@ -62,9 +54,6 @@ public class CxfX509StrTypeTests extends CommonTests {
         ShrinkHelper.defaultDropinApp(server, "x509sig", "com.ibm.ws.wssecurity.fat.x509sig");
         PrepCommonSetup serverObject = new PrepCommonSetup();
         serverObject.prepareSetup(server);
-
-        //Orig:
-        //commonSetUp(serverName, "server_enc.xml", false, "/x509sigclient/CxfX509SigSvcClient");
 
         //2/2021
         ServerConfiguration config = server.getServerConfiguration();
@@ -89,8 +78,6 @@ public class CxfX509StrTypeTests extends CommonTests {
      * This is a positive scenario.
      */
 
-    //4/2021
-    //@AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
     //5/2021 added PrivilegedActionExc, NoSuchMethodExc as a result of java11 and ee8
     @AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException", "java.security.PrivilegedActionException",
                            "java.lang.NoSuchMethodException" })
@@ -175,10 +162,7 @@ public class CxfX509StrTypeTests extends CommonTests {
     //2/2021 to test with EE7, then the corresponding server_badenc.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    //Orig:
     @AllowedFFDC("org.apache.ws.security.WSSecurityException")
-    //Orig:
-    //public void testCxfClientKeysMismatch() throws Exception {
     public void testCxfClientKeysMismatchEE7Only() throws Exception {
 
         // use server config with encryption keystore files

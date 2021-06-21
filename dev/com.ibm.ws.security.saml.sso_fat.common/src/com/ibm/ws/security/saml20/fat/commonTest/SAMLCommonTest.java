@@ -462,10 +462,10 @@ public class SAMLCommonTest extends CommonTest {
      *
      * @param server
      * @param configFileName
-     *            Config file name within the configs/ directory of the server.
+     *                             Config file name within the configs/ directory of the server.
      * @param configOutputName
-     *            File name to which the result will be written, relative to the server's configs/ directory.
-     *            If null or empty, this will be set to the value of {@code configFileName}.
+     *                             File name to which the result will be written, relative to the server's configs/ directory.
+     *                             If null or empty, this will be set to the value of {@code configFileName}.
      * @return The path to the resulting configuration file.
      */
     public static String updateConfigFileWithDefaultSettings(SAMLTestServer server, String configFileName, String configOutputName) {
@@ -482,11 +482,11 @@ public class SAMLCommonTest extends CommonTest {
      *
      * @param server
      * @param configFileName
-     *            Config file name within the configs/ directory of the server.
+     *                             Config file name within the configs/ directory of the server.
      * @param configSettings
      * @param configOutputName
-     *            File name to which the result will be written, relative to the server's configs/ directory.
-     *            If null or empty, this will be set to the value of {@code configFileName}.
+     *                             File name to which the result will be written, relative to the server's configs/ directory.
+     *                             If null or empty, this will be set to the value of {@code configFileName}.
      * @return The path to the resulting configuration file.
      */
     public static String updateConfigFile(SAMLTestServer server, String configFileName, BaseConfigSettings configSettings, String configOutputName) {
@@ -500,12 +500,12 @@ public class SAMLCommonTest extends CommonTest {
      *
      * @param server
      * @param configFileName
-     *            Config file name within the configs/ directory of the server.
+     *                             Config file name within the configs/ directory of the server.
      * @param replaceVals
-     *            Maps variable names to the values to be used to replace them within the file.
+     *                             Maps variable names to the values to be used to replace them within the file.
      * @param configOutputName
-     *            File name to which the result will be written, relative to the server's configs/ directory.
-     *            If null or empty, this will be set to the value of {@code configFileName}.
+     *                             File name to which the result will be written, relative to the server's configs/ directory.
+     *                             If null or empty, this will be set to the value of {@code configFileName}.
      * @return The path to the resulting configuration file.
      */
     public static String updateConfigFile(SAMLTestServer server, String configFileName, Map<String, String> replaceVals, String configOutputName) {
@@ -1210,7 +1210,7 @@ public class SAMLCommonTest extends CommonTest {
      * Add the newly added server to the list of server references
      *
      * @param server
-     *            - server reference to add
+     *                   - server reference to add
      * @throws Exception
      */
     private static void addToServerRefList(SAMLTestServer server) throws Exception {
@@ -1237,7 +1237,7 @@ public class SAMLCommonTest extends CommonTest {
      * JakartaEE9 transform a list of applications.
      *
      * @param myServer The server to transform the applications on.
-     * @param apps The names of the applications to transform. Should include the path from the server root directory.
+     * @param apps     The names of the applications to transform. Should include the path from the server root directory.
      */
     private static void transformApps(LibertyServer myServer, String... apps) {
         if (JakartaEE9Action.isActive()) {
@@ -1248,6 +1248,7 @@ public class SAMLCommonTest extends CommonTest {
         }
     }
 
+    @Override
     public WebClient getAndSaveWebClient() throws Exception {
 
         WebClient webClient = SAMLCommonTestHelpers.getWebClient();
@@ -1255,6 +1256,7 @@ public class SAMLCommonTest extends CommonTest {
         return webClient;
     }
 
+    @Override
     public WebClient getAndSaveWebClient(boolean override) throws Exception {
 
         WebClient webClient = SAMLCommonTestHelpers.getWebClient(override);

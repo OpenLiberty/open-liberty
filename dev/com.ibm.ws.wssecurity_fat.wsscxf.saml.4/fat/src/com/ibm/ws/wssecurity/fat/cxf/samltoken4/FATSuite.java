@@ -26,7 +26,7 @@ import componenttest.rules.repeater.RepeatTests;
 @RunWith(Suite.class)
 @SuiteClasses({
 
-	   //Lite
+	    //Lite
         AlwaysRunAndPassTest.class,
         //Full
         CxfSAMLCaller2ServerTests.class

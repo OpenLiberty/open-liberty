@@ -20,10 +20,8 @@ import java.util.Set;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-//Added 11/2020
 import org.junit.runner.RunWith;
 
-//Added 11/2020
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
@@ -33,9 +31,7 @@ import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
-//4/2021
 import componenttest.annotation.AllowedFFDC;
-//Added 11/2020
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -43,22 +39,15 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
-//Added 11/2020
 @Mode(TestMode.FULL)
-//Added 11/2020
 @RunWith(FATRunner.class)
 public class CxfBspTests {
-    //orig from CL
-    //private static String serverName = "com.ibm.ws.wssecurity_fat.sample";
 
-    //Added 11/2020
+    //11/2020
     static final private String serverName = "com.ibm.ws.wssecurity_fat.sample";
-    //Added 11/2020
     @Server(serverName)
-    public static LibertyServer server;
 
-    //orig from CL:
-    // private static LibertyServer server = LibertyServerFactory.getLibertyServer(serverName);
+    public static LibertyServer server;
 
     static private final Class<?> thisClass = CxfBspTests.class;
 
@@ -77,13 +66,7 @@ public class CxfBspTests {
     @BeforeClass
     public static void setUp() throws Exception {
 
-        //Orig:
-        //copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_bsp.xml");
-        // rename_webcontent(server);
         String thisMethod = "setup";
-
-        //orig from CL:
-        //SharedTools.installCallbackHandler(server);
 
         //2/2021
         ServerConfiguration config = server.getServerConfiguration();
@@ -361,8 +344,7 @@ public class CxfBspTests {
         } catch (Exception e) {
             e.printStackTrace(System.out);
         }
-        //orig from CL
-        //SharedTools.unInstallCallbackHandler(server);
+
     }
 
     private static void printMethodName(String strMethod) {

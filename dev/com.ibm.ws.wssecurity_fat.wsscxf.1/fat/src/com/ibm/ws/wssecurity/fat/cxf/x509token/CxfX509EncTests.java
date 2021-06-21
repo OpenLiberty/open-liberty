@@ -16,11 +16,9 @@ import java.util.Set;
 
 import org.junit.After;
 import org.junit.BeforeClass;
-//Added 10/2020
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-//Added 10/2020
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
@@ -29,10 +27,7 @@ import com.ibm.ws.wssecurity.fat.utils.common.PrepCommonSetup;
 import com.ibm.ws.wssecurity.fat.utils.common.UpdateWSDLPortNum;
 
 import componenttest.annotation.AllowedFFDC;
-//Mei:
 import componenttest.annotation.ExpectedFFDC;
-//End
-//Added 10/2020
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
@@ -41,9 +36,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
-//Added 11/2020
 @Mode(TestMode.FULL)
-//Added 10/2020
 @RunWith(FATRunner.class)
 public class CxfX509EncTests extends CommonTests {
 
@@ -67,10 +60,6 @@ public class CxfX509EncTests extends CommonTests {
 
     @BeforeClass
     public static void setUp() throws Exception {
-
-        //orig from CL: Commented out 10/2020
-        //commonSetUp(serverName, false,
-        //            "/x509encclient/CxfX509EncSvcClient");
 
         //2/2021
         ServerConfiguration config = server.getServerConfiguration();
@@ -107,8 +96,6 @@ public class CxfX509EncTests extends CommonTests {
      *
      */
 
-    //4/2021
-    //@AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
     //5/2021 added PrivilegedActionExc, NoSuchMethodExc as a result of java11 and ee8
     @AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException", "java.security.PrivilegedActionException",
                            "java.lang.NoSuchMethodException" })
@@ -413,10 +400,7 @@ public class CxfX509EncTests extends CommonTests {
     //2/2021 to test with EE7, then the corresponding message can be expected
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    //Orig:
     @AllowedFFDC("org.apache.ws.security.WSSecurityException")
-    //Orig:
-    //public void testCXFClientWrongEncKeyAlgorithm() throws Exception {
     public void testCXFClientWrongEncKeyAlgorithmEE7Only() throws Exception {
 
         String thisMethod = "testCXFClientWrongEncKeyAlgorithm";
@@ -504,10 +488,7 @@ public class CxfX509EncTests extends CommonTests {
     //2/2021 to test with EE7, then the corresponding message can be expected
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    //Orig:
     @AllowedFFDC("org.apache.ws.security.WSSecurityException")
-    //Orig:
-    //public void testCXFClientWrongDataEncAlgorithm() throws Exception {
     public void testCXFClientWrongDataEncAlgorithmEE7Only() throws Exception {
 
         String thisMethod = "testCXFClientWrongDataEncAlgorithm";
@@ -596,21 +577,14 @@ public class CxfX509EncTests extends CommonTests {
     //2/2021 to test with EE7, then the corresponding server_sym.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    //Orig:
     @AllowedFFDC("org.apache.ws.security.WSSecurityException")
-    //Orig:
-    //public void testCXFClientWrongEncryptionKey() throws Exception {
     public void testCXFClientWrongEncryptionKeyEE7Only() throws Exception {
 
         String thisMethod = "testCXFClientWrongEncryptionKey";
         printMethodName(thisMethod, "Start Prep for " + thisMethod);
-        //orig:
+
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wrongEnc.xml");
-        //Added 11/2020
-        //UpdateServerXml reconfigServerObj = new UpdateServerXml();
-        //reconfigServerObj.reconfigServer(server, System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wrongEnc.xml");
-        //Added 11/2020
-        //newReconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wrongEnc.xml");
+
         printMethodName(thisMethod, "End Prep for " + thisMethod);
 
         genericTest(
@@ -638,10 +612,9 @@ public class CxfX509EncTests extends CommonTests {
                     "The test expected an exception from the server.");
 
         printMethodName(thisMethod, "Start Cleanup for " + thisMethod);
-        //orig:
+
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
-        //Added 11/2020
-        //reconfigServerObj.reconfigServer(server, System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
+
         printMethodName(thisMethod, "End Cleanup for " + thisMethod);
 
     }
@@ -658,11 +631,7 @@ public class CxfX509EncTests extends CommonTests {
         printMethodName(thisMethod, "Start Prep for " + thisMethod);
 
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wrongEnc_wss4j.xml");
-        //Added 11/2020
-        //UpdateServerXml reconfigServerObj = new UpdateServerXml();
-        //reconfigServerObj.reconfigServer(server, System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wrongEnc.xml");
-        //Added 11/2020
-        //newReconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wrongEnc.xml");
+
         printMethodName(thisMethod, "End Prep for " + thisMethod);
 
         genericTest(
@@ -690,10 +659,9 @@ public class CxfX509EncTests extends CommonTests {
                     "The test expected an exception from the server.");
 
         printMethodName(thisMethod, "Start Cleanup for " + thisMethod);
-        //orig:
+
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig_wss4j.xml");
-        //Added 11/2020
-        //reconfigServerObj.reconfigServer(server, System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
+
         printMethodName(thisMethod, "End Cleanup for " + thisMethod);
 
     }
@@ -710,8 +678,6 @@ public class CxfX509EncTests extends CommonTests {
     //2/2021 run with EE7
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    //Orig:
-    //public void testCXFClientEncryptionBeforeSign() throws Exception {
     public void testCXFClientEncryptionBeforeSignEE7Only() throws Exception {
         genericTest(
                     // test name for logging

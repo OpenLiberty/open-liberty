@@ -17,10 +17,8 @@ import java.util.Set;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
-//Added 10/2020
 import org.junit.runner.RunWith;
 
-//Added 10/2020
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
@@ -29,7 +27,6 @@ import com.ibm.ws.wssecurity.fat.utils.common.PrepCommonSetup;
 import com.ibm.ws.wssecurity.fat.utils.common.UpdateWSDLPortNum;
 
 import componenttest.annotation.AllowedFFDC;
-//Added 10/2020
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -37,9 +34,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
-//Added 11/2020
 @Mode(TestMode.FULL)
-//Added 10/2020
 @RunWith(FATRunner.class)
 public class CxfDeriveKeyTests extends CommonTests {
 
@@ -48,7 +43,7 @@ public class CxfDeriveKeyTests extends CommonTests {
     static final private String serverName = "com.ibm.ws.wssecurity_fat.derived";
     static private String newClientWsdl = null;
 
-    //Added 10/2020
+    //10/2020
     @Server(serverName)
     public static LibertyServer server;
 
@@ -89,8 +84,6 @@ public class CxfDeriveKeyTests extends CommonTests {
      *
      */
 
-    //4/2021
-    //@AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
     //5/2021 added PrivilegedActionExc, NoSuchMethodExc as a result of java11 and ee8
     @AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException", "java.security.PrivilegedActionException",
                            "java.lang.NoSuchMethodException" })
@@ -138,10 +131,7 @@ public class CxfDeriveKeyTests extends CommonTests {
      *
      */
     @Test
-    //Orig:
-    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
     //2/2021
-    //@AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException" })
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException" })
     public void testCXFDeriveKey1WrongPw() throws Exception {
 
@@ -185,9 +175,8 @@ public class CxfDeriveKeyTests extends CommonTests {
      * This is a negative scenario.
      *
      */
-    // 93217 - null pointer thrown - this is fixed and I am uncommenting to get this test run
+
     @Test
-    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
     //4/2021
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
     public void testCXFDeriveKey1ClMissingPToken() throws Exception {
@@ -233,7 +222,6 @@ public class CxfDeriveKeyTests extends CommonTests {
      *
      */
     @Test
-    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
     //4/2021
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
     public void testCXFDeriveKey1X509NotUNT() throws Exception {
@@ -323,10 +311,8 @@ public class CxfDeriveKeyTests extends CommonTests {
      * This is a negative scenario.
      *
      */
-    // 93212 - enable when issues are resolved -
+
     @Test
-    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
-    //aruna
     //4/2021
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
     public void testCXFDeriveKey2ClMissingReqDerivedKeys() throws Exception {
@@ -374,7 +360,6 @@ public class CxfDeriveKeyTests extends CommonTests {
      *
      */
     @Test
-    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
     //4/2021
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
     public void testCXFDeriveKey1ReqDerivedKeysOnlyInClient() throws Exception {
@@ -467,8 +452,6 @@ public class CxfDeriveKeyTests extends CommonTests {
      */
 
     @Test
-    //2/2021
-    //@AllowedFFDC("java.util.MissingResourceException") //@AV999 TODO
     //4/2021
     @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException" })
     public void testCXFDeriveKey4() throws Exception {
@@ -796,7 +779,6 @@ public class CxfDeriveKeyTests extends CommonTests {
      *
      */
     @Test
-    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
     //4/2021
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
     public void testCXFDeriveKey5MissingSigned() throws Exception {
@@ -843,7 +825,6 @@ public class CxfDeriveKeyTests extends CommonTests {
      *
      */
     @Test
-    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
     //4/2021
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
     public void testCXFDeriveKey5MissingSignedAddEncrypted() throws Exception {
@@ -983,7 +964,6 @@ public class CxfDeriveKeyTests extends CommonTests {
      *
      */
     @Test
-    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
     //4/2021
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
     public void testCXFDeriveKey6MissingEncrypted() throws Exception {
@@ -1031,7 +1011,6 @@ public class CxfDeriveKeyTests extends CommonTests {
      *
      */
     @Test
-    // @AllowedFFDC("org.apache.ws.security.WSSecurityException")
     //4/2021
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
     public void testCXFDeriveKey6MissingEncryptedAddSigned() throws Exception {
@@ -1124,7 +1103,6 @@ public class CxfDeriveKeyTests extends CommonTests {
      *
      */
     @Test
-    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
     //4/2021
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
     public void testCXFDeriveKey7MissingEncrypted() throws Exception {
@@ -1217,7 +1195,6 @@ public class CxfDeriveKeyTests extends CommonTests {
      *
      */
     @Test
-    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
     //4/2021
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
     public void testCXFDeriveKey7MissingSignedEncrypted() throws Exception {

@@ -22,8 +22,6 @@ import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 
-//12/2020 Setting this test class for LITE bucket
-//Added 10/2020
 @RunWith(FATRunner.class)
 public class CxfSSLUNTNonceTests extends SSLTestCommon {
 
@@ -41,10 +39,6 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
      */
 
     @Test
-    //2/2021
-    //@AllowedFFDC("java.util.MissingResourceException") //@AV999
-    //4/2021
-    //@AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
     //5/2021 added PrivilegedActionExc, NoSuchMethodExc as a result of java11 and ee8
     @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException", "java.lang.ClassNotFoundException", "java.security.PrivilegedActionException",
                            "java.lang.NoSuchMethodException" })
@@ -70,8 +64,6 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
      */
 
     @Test
-    //2/2021
-    //@AllowedFFDC("java.util.MissingResourceException") //@AV999
     //4/2021
     @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
     public void testCxfUntNonceAndCreatedSSL() throws Exception {
@@ -97,8 +89,6 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
      */
 
     @Test
-    //2/2021
-    //@AllowedFFDC("java.util.MissingResourceException") //@AV999
     //4/2021
     @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
     public void testCxfUntNonceAndCreatedNoIdSSL() throws Exception {
@@ -126,8 +116,6 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
      *
      */
     @Test
-    //Orig: this will trigger failure although test passed
-    //@ExpectedFFDC("org.apache.ws.security.WSSecurityException")
     //2/2021
     @AllowedFFDC(value = { "java.util.MissingResourceException", "org.apache.wss4j.common.ext.WSSecurityException", "org.apache.ws.security.WSSecurityException" })
     public void testCxfUntExpiredMsgSSL() throws Exception {
@@ -157,7 +145,6 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
     //2/2021 run with EE7
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    //Orig: need to work on old feature
     @AllowedFFDC("org.apache.ws.security.WSSecurityException")
     public void testCxfUntOldExtFutureTimestampSSLEE7Only() throws Exception {
 
@@ -176,11 +163,8 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
 
     }
 
-    //2/2021 to run with EE8
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    //2/2021
-    //@AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.util.MissingResourceException" })
     //4/2021
     @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.util.MissingResourceException", "java.net.MalformedURLException" })
     public void testCxfUntOldExtFutureTimestampSSLEE8Only() throws Exception {
@@ -212,8 +196,6 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
      */
 
     @Test
-    //2/2021
-    //@AllowedFFDC("java.util.MissingResourceException") //@AV999
     //4/2021
     @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
     public void testCxfUntReqTimestampSSL() throws Exception {
@@ -240,7 +222,6 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
     //2/2021 run with EE7
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    //Orig:
     @ExpectedFFDC("org.apache.ws.security.WSSecurityException")
     public void testCxfUntReqTimestampMissingSSLEE7Only() throws Exception {
 
@@ -339,7 +320,6 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
     //2/2021 run with EE7
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    //Orig: also needs the old variable replayAttack to work on old feature
     @ExpectedFFDC("org.apache.ws.security.WSSecurityException")
     public void testCxfUntReplaySSLEE7Only() throws Exception {
 
@@ -389,7 +369,6 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
     //2/2021 run with EE8
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    //2/2021
     @AllowedFFDC(value = { "java.util.MissingResourceException", "org.apache.wss4j.common.ext.WSSecurityException" }) //@AV999
     public void testCxfUntHardcodedReplaySSLEE8Only() throws Exception {
 

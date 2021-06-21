@@ -17,20 +17,16 @@ import java.util.Set;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
-//Added 11/2020
 import org.junit.runner.RunWith;
 
-//Added 11/2020
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.wssecurity.fat.utils.common.CommonTests;
-//Added 11/2020
 import com.ibm.ws.wssecurity.fat.utils.common.PrepCommonSetup;
 import com.ibm.ws.wssecurity.fat.utils.common.UpdateWSDLPortNum;
 
 import componenttest.annotation.AllowedFFDC;
-//Added 11/2020
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -38,9 +34,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
-//Added 11/2020
 @Mode(TestMode.FULL)
-//Added 11/2020
 @RunWith(FATRunner.class)
 public class CxfEndSupTokensSymTests extends CommonTests {
 
@@ -64,9 +58,6 @@ public class CxfEndSupTokensSymTests extends CommonTests {
         //server.addInstalledAppForValidation("x509endsuptokensclient");
         PrepCommonSetup serverObject = new PrepCommonSetup();
         serverObject.prepareSetup(server);
-        //orig from CL:
-        //commonSetUp(serverName, "server_sym.xml", true,
-        //            "/endsuptokensclient/CxfEndSupTokensSvcClient");
 
         //2/2021
         ServerConfiguration config = server.getServerConfiguration();
@@ -99,9 +90,6 @@ public class CxfEndSupTokensSymTests extends CommonTests {
      */
 
     @Test
-    //@AllowedFFDC("javax.net.ssl.SSLException")
-    //4/2021
-    //@AllowedFFDC(value = { "javax.net.ssl.SSLException", "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
     //5/2021 added PrivilegedActionExc, NoSuchMethodExc as a result of java11 and ee8
     @AllowedFFDC(value = { "javax.net.ssl.SSLException", "java.net.MalformedURLException", "java.lang.ClassNotFoundException", "java.security.PrivilegedActionException",
                            "java.lang.NoSuchMethodException" })
@@ -148,7 +136,6 @@ public class CxfEndSupTokensSymTests extends CommonTests {
      *
      */
     @Test
-    //@AllowedFFDC("javax.net.ssl.SSLException")
     //4/2021
     @AllowedFFDC(value = { "javax.net.ssl.SSLException", "java.net.MalformedURLException" })
     public void testCXFEndSupTokens4ClAddEncrypted() throws Exception {
@@ -194,7 +181,6 @@ public class CxfEndSupTokensSymTests extends CommonTests {
      *
      */
     @Test
-    //@AllowedFFDC("javax.net.ssl.SSLException")
     //4/2021
     @AllowedFFDC(value = { "javax.net.ssl.SSLException", "java.net.MalformedURLException" })
     public void testCXFEndSupTokens4ClAddSigned() throws Exception {
@@ -378,7 +364,6 @@ public class CxfEndSupTokensSymTests extends CommonTests {
      *
      */
     @Test
-    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
     //4/2021
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
     public void testCXFEndSupTokens5MissingSigned() throws Exception {
@@ -425,7 +410,6 @@ public class CxfEndSupTokensSymTests extends CommonTests {
      *
      */
     @Test
-    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
     //4/2021
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
     public void testCXFEndSupTokens5MissingSignedAddEncrypted() throws Exception {
@@ -564,7 +548,6 @@ public class CxfEndSupTokensSymTests extends CommonTests {
      *
      */
     @Test
-    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
     //4/2021
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
     public void testCXFEndSupTokens6MissingEncrypted() throws Exception {
@@ -611,7 +594,6 @@ public class CxfEndSupTokensSymTests extends CommonTests {
      *
      */
     @Test
-    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
     //4/2021
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
     public void testCXFEndSupTokens6MissingEncryptedAddSigned() throws Exception {
@@ -703,7 +685,6 @@ public class CxfEndSupTokensSymTests extends CommonTests {
      *
      */
     @Test
-    // @AllowedFFDC("org.apache.ws.security.WSSecurityException")
     //4/2021
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
     public void testCXFEndSupTokens7MissingEncrypted() throws Exception {
@@ -796,7 +777,6 @@ public class CxfEndSupTokensSymTests extends CommonTests {
      *
      */
     @Test
-    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
     //4/2021
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
     public void testCXFEndSupTokens7MissingSignedEncrypted() throws Exception {

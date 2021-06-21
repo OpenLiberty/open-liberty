@@ -12,39 +12,31 @@
 package com.ibm.ws.wssecurity.fat.cxf.usernametoken;
 
 import java.io.File;
-//4/2021
 import java.util.Set;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-//Added 10/2020
 import org.junit.runner.RunWith;
 
-//Added 10/2020
 import com.ibm.websphere.simplicity.ShrinkHelper;
-//4/2021
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.AllowedFFDC;
-//Added 10/2020
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-//Added 11/2020
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
-//Added 11/2020, this test used to be run as LITE in CL, but takes more than 3 min to run, which is set to run with Full mode now
 @Mode(TestMode.FULL)
-//Added 10/2020
 @RunWith(FATRunner.class)
 public class CxfSSLUNTNonceTimeOutTests extends SSLTestCommon {
 
     static private final Class<?> thisClass = CxfSSLUNTNonceTimeOutTests.class;
 
-    //Added 10/2020
+    //10/2020
     static final private String serverName = "com.ibm.ws.wssecurity_fat.ssl";
     @Server(serverName)
     public static LibertyServer server;
@@ -54,15 +46,6 @@ public class CxfSSLUNTNonceTimeOutTests extends SSLTestCommon {
         String thisMethod = "setup";
         //4/2021
         String copyFromFile = "";
-
-        //Orig:
-        //String copyFromFile = System.getProperty("user.dir") +
-        //                      File.separator +
-        //                      server.getPathToAutoFVTNamedServer() +
-        //                      "server_customize.xml";
-
-        //orig from CL:
-        //server = LibertyServerFactory.getLibertyServer("com.ibm.ws.wssecurity_fat.ssl");
 
         //4/2021
         ServerConfiguration config = server.getServerConfiguration();
@@ -89,8 +72,6 @@ public class CxfSSLUNTNonceTimeOutTests extends SSLTestCommon {
 
         try {
             String serverFileLoc = (new File(server.getServerConfigurationPath().replace('\\', '/'))).getParent();
-            //Mei: from Aruna's changes, but the line already matched
-            //String serverFileLoc = (new File(server.getServerConfigurationPath().replace('\\', '/'))).getParent();
 
             Log.info(thisClass, "reconfigServer", "Copying: " + copyFromFile
                                                   + " to " + serverFileLoc);
@@ -118,10 +99,6 @@ public class CxfSSLUNTNonceTimeOutTests extends SSLTestCommon {
      *
      */
     @Test
-    //2/2021
-    //@AllowedFFDC("java.util.MissingResourceException") //@AV999
-    //4/2021
-    //@AllowedFFDC(value = { "java.util.MissingResourceException", "java.lang.ClassNotFoundException" })
     //5/2021 added PrivilegedActionExc, NoSuchMethodExc as a result of java11 and ee8
     @AllowedFFDC(value = { "java.util.MissingResourceException", "java.lang.ClassNotFoundException", "java.security.PrivilegedActionException",
                            "java.lang.NoSuchMethodException" })
@@ -152,10 +129,6 @@ public class CxfSSLUNTNonceTimeOutTests extends SSLTestCommon {
      * exception
      */
     @Test
-    //Orig:
-    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
-    //2/2021
-    //@AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.util.MissingResourceException" }) //@AV999
     @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.util.MissingResourceException", "org.apache.ws.security.WSSecurityException" })
     public void testCxfUntHardcodedReplayTwoAndMoreMinutesSSL() throws Exception {
         // Make sure the server.xml is set to server_customize.xml

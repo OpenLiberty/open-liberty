@@ -16,10 +16,8 @@ import java.util.Set;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-//Added 10/2020
 import org.junit.runner.RunWith;
 
-//Added 10/2020
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
@@ -27,7 +25,6 @@ import com.ibm.ws.wssecurity.fat.utils.common.CommonTests;
 import com.ibm.ws.wssecurity.fat.utils.common.PrepCommonSetup;
 
 import componenttest.annotation.AllowedFFDC;
-//Added 10/2020
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
@@ -36,9 +33,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
-//Added 11/2020
 @Mode(TestMode.FULL)
-//Added 10/2020
 @RunWith(FATRunner.class)
 public class CxfSha2SigTests extends CommonTests {
 
@@ -91,8 +86,6 @@ public class CxfSha2SigTests extends CommonTests {
     //2/2021 to test with EE7, then the corresponding server_orig.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    //Orig:
-    //public void testCxfSha2SignSoapBody() throws Exception {
     public void testCxfSha2SignSoapBodyEE7Only() throws Exception {
 
         String thisMethod = "testCxfSha2SignSoapBody";
@@ -127,8 +120,6 @@ public class CxfSha2SigTests extends CommonTests {
     //2/2021 to test with EE8, then the corresponding server_orig_wss4j.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    //4/2021
-    //@AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
     //5/2021 added PrivilegedActionExc, NoSuchMethodExc as a result of java11 and ee8
     @AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException", "java.security.PrivilegedActionException",
                            "java.lang.NoSuchMethodException" })
@@ -176,8 +167,6 @@ public class CxfSha2SigTests extends CommonTests {
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @AllowedFFDC("org.apache.ws.security.WSSecurityException")
-    //Orig:
-    //public void testCxfSha2DigestAlgorithm() throws Exception {
     public void testCxfSha2DigestAlgorithmEE7Only() throws Exception {
 
         String thisMethod = "testCxfSha2DigestAlgorithm";
@@ -212,7 +201,6 @@ public class CxfSha2SigTests extends CommonTests {
     //2/2021 to test with EE8, then the corresponding server_orig_wss4j.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
     //4/2021
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
     public void testCxfSha2DigestAlgorithmEE8Only() throws Exception {
@@ -258,8 +246,6 @@ public class CxfSha2SigTests extends CommonTests {
     //2/2021 to test with EE7, then the corresponding server_sha384.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    //Orig:
-    //public void testCxfSha384SigAlgorithm() throws Exception {
     public void testCxfSha384SigAlgorithmEE7Only() throws Exception {
 
         String thisMethod = "testTwasSha384SigAlgorithm";
@@ -339,8 +325,6 @@ public class CxfSha2SigTests extends CommonTests {
     //2/2021 to test with EE7, then the corresponding server_sha512.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    //Orig:
-    //public void testCxfSha512SigAlgorithm() throws Exception {
     public void testCxfSha512SigAlgorithmEE7Only() throws Exception {
 
         String thisMethod = "testTwasSha512SigAlgorithm";
@@ -423,9 +407,7 @@ public class CxfSha2SigTests extends CommonTests {
     //2/2021 to test with EE7, then the corresponding server_sha2.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    //Orig:
     @AllowedFFDC("org.apache.ws.security.WSSecurityException")
-    //public void testCxfSha1ToSha2SigAlgorithm() throws Exception {
     public void testCxfSha1ToSha2SigAlgorithmEE7Only() throws Exception {
 
         String thisMethod = "testCxfSha1ToSha2SigAlgorithm";
@@ -464,8 +446,6 @@ public class CxfSha2SigTests extends CommonTests {
     //2/2021 to test with EE8, then the corresponding server_sha2_wss4j.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    //2/2021
-    //@AllowedFFDC("org.apache.wss4j.common.ext.WSSecurityException")
     //4/2021
     @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
     public void testCxfSha1ToSha2SigAlgorithmEE8Only() throws Exception {
@@ -516,8 +496,6 @@ public class CxfSha2SigTests extends CommonTests {
     //2/2021 to test with EE7, then the corresponding server_2048.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    //Orig:
-    //public void testCxfSha256SigAlg2048Keylen() throws Exception {
     public void testCxfSha256SigAlg2048KeylenEE7Only() throws Exception {
 
         String thisMethod = "testCxfSha256SigAlg2048Keylen";
@@ -599,8 +577,6 @@ public class CxfSha2SigTests extends CommonTests {
     //2/2021 to test with EE7, then the corresponding server_sha3sym.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    //Orig:
-    //public void testCxfSha384SymBinding() throws Exception {
     public void testCxfSha384SymBindingEE7Only() throws Exception {
 
         String thisMethod = "testCxfSha384SymBinding";
@@ -682,8 +658,6 @@ public class CxfSha2SigTests extends CommonTests {
     //2/2021 to test with EE7, then the corresponding server_sha5sym.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    //Orig:
-    //public void testCxfSha512SymBinding() throws Exception {
     public void testCxfSha512SymBindingEE7Only() throws Exception {
         String thisMethod = "testCxfSha512SymBinding";
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha5sym.xml");

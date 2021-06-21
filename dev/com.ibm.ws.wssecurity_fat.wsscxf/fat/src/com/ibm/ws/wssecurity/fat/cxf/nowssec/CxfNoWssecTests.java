@@ -18,10 +18,8 @@ import java.io.StringReader;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-//Added 10/2020
 import org.junit.runner.RunWith;
 
-//Added 10/2020
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.wssecurity.fat.utils.common.SharedTools;
@@ -30,14 +28,12 @@ import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
-//Added 10/2020
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
-//Note the potential collided factor in testCxfClientNoWsse(), when full mode annotation is used
+//Note: the potential collided factor in testCxfClientNoWsse(), when full mode annotation is used
 //12/2020 Setting this test class for LITE bucket
-//Added 10/2020
 @RunWith(FATRunner.class)
 public class CxfNoWssecTests {
 
@@ -46,9 +42,6 @@ public class CxfNoWssecTests {
     @Server(serverName)
 
     public static LibertyServer server;
-
-    //Orig from CL
-    //private static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.wssecurity_fat");
 
     private final Class<?> thisClass = CxfNoWssecTests.class;
 

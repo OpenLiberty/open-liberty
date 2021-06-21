@@ -50,10 +50,6 @@ tested.features: jaxws-2.3, \
   cdi-2.0, \
   axb-2.3, \
   el-3.0
-
-#can't compile locally	
-#com.ibm.ws.org.apache.cxf.rt.security.3.3.6;version=latest,\
-#com.ibm.ws.org.apache.cxf.rt.ws.security.3.3.6;version=latest,\	
 	
 	
 -buildpath: \
@@ -62,7 +58,7 @@ tested.features: jaxws-2.3, \
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
 	httpunit:httpunit;version=1.5.4,\
 	com.ibm.websphere.security;version=latest,\
-      io.openliberty.org.apache.commons.codec;version=latest,\
+    io.openliberty.org.apache.commons.codec;version=latest,\
 	com.ibm.ws.org.apache.commons.lang3;version=latest,\
 	io.openliberty.org.apache.commons.logging;version=latest,\
 	com.ibm.ws.org.apache.ws.security.wss4j.1.6.7;version=latest,\

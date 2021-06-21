@@ -20,7 +20,6 @@ import java.util.Set;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-//Added 11/2020
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -33,27 +32,19 @@ import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
-//4/2021
 import componenttest.annotation.AllowedFFDC;
-//Added 11/2020
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
-//12/2020 Setting this test class for LITE bucket
-//Added 11/2020
 @RunWith(FATRunner.class)
 public class CxfSampleTests {
 
-    //orig from CL
-    //private static String serverName = "com.ibm.ws.wssecurity_fat.sample";
-    //private static LibertyServer server = LibertyServerFactory.getLibertyServer(serverName);
-
-    //Added 11/2020
+    //11/2020
     static final private String serverName = "com.ibm.ws.wssecurity_fat.sample";
-    //Added 11/2020
     @Server(serverName)
+
     public static LibertyServer server;
 
     static private final Class<?> thisClass = CxfSampleTests.class;
@@ -73,15 +64,9 @@ public class CxfSampleTests {
     @BeforeClass
     public static void setUp() throws Exception {
 
-        //Orig:
-        //copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_asym.xml");
-
         // rename_webcontent(server);
         String thisMethod = "setup";
         String defaultPort = "8010";
-
-        //orig from CL
-        //SharedTools.installCallbackHandler(server);
 
         //2/2021
         ServerConfiguration config = server.getServerConfiguration();
@@ -184,8 +169,6 @@ public class CxfSampleTests {
         return;
     }
 
-    //4/2021 added allowed ffdc to run with EE8
-    //@AllowedFFDC(value = { "java.net.MalformedURLException" })
     //5/2021 added PrivilegedActionExc, NoSuchMethodExc as a result of java11 and ee8
     @AllowedFFDC(value = { "java.net.MalformedURLException", "java.security.PrivilegedActionException", "java.lang.NoSuchMethodException" })
     @Test
