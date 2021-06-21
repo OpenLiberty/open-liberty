@@ -12,6 +12,7 @@ package io.openliberty.microprofile.openapi20.fat.deployments;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.DISABLE_VALIDATION;
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.HashMap;
@@ -28,6 +29,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
@@ -86,7 +88,7 @@ public class MergeConfigTest {
     
     @Test
     public void testWarInclusion() throws Exception {
-        setMergeConfig("test2, test3", null);
+        setMergeConfig("test2, test3", null, null);
         server.startServer();
         
         WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
@@ -109,7 +111,7 @@ public class MergeConfigTest {
     
     @Test
     public void testWarExclusion() throws Exception {
-        setMergeConfig("all", "test2");
+        setMergeConfig("all", "test2", null);
         server.startServer();
         
         WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
@@ -132,7 +134,7 @@ public class MergeConfigTest {
     
     @Test
     public void testModuleInclusion() throws Exception {
-        setMergeConfig("testEar/test2", null);
+        setMergeConfig("testEar/test2", null, null);
         server.startServer();
         
         WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
@@ -178,7 +180,106 @@ public class MergeConfigTest {
         OpenAPITestUtil.checkPaths(openapiNode, 1, "/test2");
     }
     
-    private void setMergeConfig(String included, String excluded) {
+    @Test
+    public void testInfoConfigured() throws Exception {
+        String info = "{"
+                        + "\"title\": \"test title\","
+                        + "\"version\": \"3.7\","
+                        + "\"termsOfService\": \"http://example.org/tos\","
+                        + "\"contact\": {"
+                        + "\"name\": \"John Smith\","
+                        + "\"url\": \"http://example.org/contact\""
+                        + "},"
+                        + "\"license\": {"
+                        + "\"name\": \"Apache 2.0\","
+                        + "\"url\": \"https://www.apache.org/licenses/LICENSE-2.0.html\""
+                        + "}"
+                        + "}";
+        
+        setMergeConfig("all", null, info);
+        server.startServer();
+        
+        WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
+                        .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+        deployApp(war1);
+        
+        WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war")
+                        .addClasses(DeploymentTestApp.class, DeploymentTestResource2.class);
+        deployApp(war2);
+        
+        String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
+        JsonNode openapiNode = OpenAPITestUtil.readYamlTree(doc);
+        
+        JsonNode expectedInfo = new ObjectMapper().readTree(info);
+        
+        assertEquals(expectedInfo, openapiNode.path("info"));
+    }
+    
+    @Test
+    public void testInfoInvalidJson() throws Exception {
+        setMergeConfig("all", null, "foo");
+        server.startServer();
+        
+        WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
+                        .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+        deployApp(war1);
+        
+        WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war")
+                        .addClasses(DeploymentTestApp.class, DeploymentTestResource2.class);
+        deployApp(war2);
+        
+        String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
+        JsonNode openapiNode = OpenAPITestUtil.readYamlTree(doc);
+        
+        server.findStringsInLogsUsingMark("could not be parsed as JSON.*foo", server.getDefaultLogFile());
+        assertEquals("Document title", "Generated API", openapiNode.path("info").path("title").asText());
+        assertEquals("Version", "1.0", openapiNode.path("info").path("version").asText());
+    }
+    
+    @Test
+    public void testInfoNoTitle() throws Exception {
+        setMergeConfig("all", null, "{\"version\": \"1.0\"}");
+        server.startServer();
+        
+        WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
+                        .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+        deployApp(war1);
+        
+        WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war")
+                        .addClasses(DeploymentTestApp.class, DeploymentTestResource2.class);
+        deployApp(war2);
+        
+        String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
+        JsonNode openapiNode = OpenAPITestUtil.readYamlTree(doc);
+        
+        server.findStringsInLogsUsingMark("The title and version properties must be set.*1.0", server.getDefaultLogFile());
+        assertEquals("Document title", "Generated API", openapiNode.path("info").path("title").asText());
+        assertEquals("Version", "1.0", openapiNode.path("info").path("version").asText());
+    }
+    
+    @Test
+    public void testInfoConfiguredOneApp() throws Exception {
+        String info = "{"
+                        + "\"title\": \"test title\","
+                        + "\"version\": \"3.7\""
+                        + "}";
+        
+        setMergeConfig("all", null, info);
+        server.startServer();
+        
+        WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
+                        .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+        deployApp(war1);
+        
+        String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
+        JsonNode openapiNode = OpenAPITestUtil.readYamlTree(doc);
+        
+        JsonNode expectedInfo = new ObjectMapper().readTree(info);
+        
+        assertEquals(expectedInfo, openapiNode.path("info"));
+    }
+    
+    private void setMergeConfig(String included, String excluded, String info) {
         Map<String, String> configProps = new HashMap<>();
         if (included != null) {
             configProps.put("mp_openapi_extensions_merged_include", included);
@@ -186,6 +287,10 @@ public class MergeConfigTest {
         
         if (excluded != null) {
             configProps.put("mp_openapi_extensions_merged_exclude", excluded);
+        }
+        
+        if (info != null) {
+            configProps.put("mp_openapi_extensions_merged_info", info);
         }
         
         server.setAdditionalSystemProperties(configProps);
