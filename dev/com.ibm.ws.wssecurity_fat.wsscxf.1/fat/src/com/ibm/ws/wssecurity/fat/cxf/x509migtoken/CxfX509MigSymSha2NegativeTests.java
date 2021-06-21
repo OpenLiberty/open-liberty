@@ -20,10 +20,8 @@ import java.util.Set;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-//Added 11/2020
 import org.junit.runner.RunWith;
 
-//Added 11/2020
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
@@ -34,7 +32,6 @@ import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
 import componenttest.annotation.AllowedFFDC;
-//Added 11/2020
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -42,15 +39,9 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
-//Added 11/2020
 @Mode(TestMode.FULL)
-//Added 11/2020
 @RunWith(FATRunner.class)
 public class CxfX509MigSymSha2NegativeTests {
-
-    //orig from CL:
-    //private static String serverName = "com.ibm.ws.wssecurity_fat.x509migsym";
-    //private static LibertyServer server = LibertyServerFactory.getLibertyServer(serverName);
 
     //Added 11/2020
     static final private String serverName = "com.ibm.ws.wssecurity_fat.x509migsym";
@@ -67,9 +58,6 @@ public class CxfX509MigSymSha2NegativeTests {
     private static String portNumber = "";
     private static String portNumberSecure = "";
     private static String x509MigSymClientUrl = "";
-
-    //2/2021 Orig: not used in this test class
-    //private static String x509MigBadSymClientUrl = "";
 
     private String methodFull = null;
 
@@ -88,13 +76,7 @@ public class CxfX509MigSymSha2NegativeTests {
     @BeforeClass
     public static void setUp() throws Exception {
 
-        //Orig:
-        //copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_badsha2.xml");
-
         String thisMethod = "setup";
-
-        //orig from CL:
-        //SharedTools.installCallbackHandler(server);
 
         //2/2021
         ServerConfiguration config = server.getServerConfiguration();
@@ -136,10 +118,6 @@ public class CxfX509MigSymSha2NegativeTests {
         // using the original port to send the parameters
         x509MigSymClientUrl = "http://localhost:" + portNumber +
                               "/x509migclient/CxfX509MigSvcClient";
-        // using the original port to send the parameters
-        //2/2021 Orig: not used in this test class
-        //x509MigBadSymClientUrl = "http://localhost:" + portNumber +
-        //                         "/x509migbadclient/CxfX509MigBadSvcClient";
 
         // portNumber = "9085";                // for debugging
         Log.info(thisClass, thisMethod, "****portNumber is(2):" + portNumber);
@@ -158,13 +136,6 @@ public class CxfX509MigSymSha2NegativeTests {
      */
 
     @Test
-    //Orig:
-    //@AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.lang.Exception" })
-    //2/2021
-    //@AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.lang.Exception", "org.apache.wss4j.common.ext.WSSecurityException" })
-    //4/2021
-    //@AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.lang.Exception", "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException",
-    //                       "java.lang.ClassNotFoundException" })
     //5/2021 added PrivilegedActionExc, NoSuchMethodExc as a result of java11 and ee8
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.lang.Exception", "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException",
                            "java.lang.ClassNotFoundException", "java.security.PrivilegedActionException",
@@ -202,10 +173,6 @@ public class CxfX509MigSymSha2NegativeTests {
      */
 
     @Test
-    //Orig:
-    //@AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.lang.Exception" })
-    //2/2021
-    //@AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.lang.Exception", "org.apache.wss4j.common.ext.WSSecurityException" })
     //4/2021
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.lang.Exception", "org.apache.wss4j.common.ext.WSSecurityException",
                            "java.net.MalformedURLException" })
@@ -242,10 +209,6 @@ public class CxfX509MigSymSha2NegativeTests {
      */
 
     @Test
-    //Orig:
-    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
-    //2/2021
-    //@AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException" })
     //4/2021
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException" })
     public void testCxfX509IssuerSerialMigSymServiceSha1ToSha512() throws Exception {
@@ -280,28 +243,6 @@ public class CxfX509MigSymSha2NegativeTests {
      * Though this test is not enforced it yet.
      *
      */
-    //2/2021 Orig:
-    //protected void testRoutine(
-    //                           String thisMethod,
-    //                           String x509Policy,
-    //                           String testMode, // Positive, positive-1, negative or negative-1... etc
-    //                           String portNumber,
-    //                           String portNumberSecure,
-    //                           String strServiceName,
-    //                           String strServicePort) throws Exception {
-    //    testSubRoutine(
-    //                   thisMethod,
-    //                   x509Policy,
-    //                   testMode, // Positive, positive-1, negative or negative-1... etc
-    //                   portNumber,
-    //                   portNumberSecure,
-    //                   strServiceName,
-    //                   strServicePort,
-    //                   x509MigSymClientUrl,
-    //                   "");
-
-    //    return;
-    //}
 
     //2/2021
     protected void testRoutine(
@@ -351,38 +292,6 @@ public class CxfX509MigSymSha2NegativeTests {
 
         return;
     }
-
-    /**
-     * TestDescription:
-     *
-     * This test invokes a jax-ws cxf web service.
-     * It needs to have X509 key set to sign and encrypt the SOAPBody
-     * The request is request in https.
-     * Though this test is not enforced it yet.
-     *
-     */
-    //2/2021 Orig: not used in this test class
-    //protected void testBadRoutine(
-    //                              String thisMethod,
-    //                              String x509Policy,
-    //                              String testMode, // Positive, positive-1, negative or negative-1... etc
-    //                              String portNumber,
-    //                              String portNumberSecure,
-    //                              String strServiceName,
-    //                              String strServicePort) throws Exception {
-    //    testSubRoutine(
-    //                   thisMethod,
-    //                   x509Policy,
-    //                   testMode, // Positive, positive-1, negative or negative-1... etc
-    //                   portNumber,
-    //                   portNumberSecure,
-    //                   strServiceName,
-    //                   strServicePort,
-    //                   x509MigBadSymClientUrl,
-    //                   "Bad");
-
-    //    return;
-    //}
 
     /**
      * TestDescription:
@@ -468,8 +377,7 @@ public class CxfX509MigSymSha2NegativeTests {
         } catch (Exception e) {
             e.printStackTrace(System.out);
         }
-        //orig from CL:
-        //SharedTools.unInstallCallbackHandler(server);
+
         //2/2021
         server.deleteFileFromLibertyInstallRoot("usr/extension/lib/bundles/com.ibm.ws.wssecurity.example.cbh.jar");
         server.deleteFileFromLibertyInstallRoot("usr/extension/lib/features/wsseccbh-1.0.mf");

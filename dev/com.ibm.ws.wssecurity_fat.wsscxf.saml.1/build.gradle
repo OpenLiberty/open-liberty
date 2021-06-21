@@ -93,6 +93,56 @@ task samltoken_WAR(type: War, dependsOn: classes) {
   }
 }
 
+/******************************************************************
+ ******************************************************************
+ **
+ ** samlwsstemplates.war
+ **
+ ******************************************************************
+ ******************************************************************/
+task samlwsstemplates_WAR(type: War, dependsOn: classes) {
+  destinationDir file(appBuildDir)
+  archiveName "samlwsstemplates.war"
+  
+  manifest {
+    attributes("Class-Path": "")
+  }
+  
+  from ('test-applications/samlwsstemplates/resources') {
+    include '**'
+  }
+  from ('build/classes/java/main') {
+    include 'com/ibm/ws/wssecurity/fat/wsstemplates/**' 
+    into 'WEB-INF/classes'
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** samlwsstemplatesclient.war
+ **
+ ******************************************************************
+ ******************************************************************/
+task samlwsstemplatesclient_WAR(type: War, dependsOn: classes) {
+  destinationDir file(appBuildDir)
+  archiveName "samlwsstemplatesclient.war"
+  
+  manifest {
+    attributes("Class-Path": "")
+  }
+  
+  from ('test-applications/samlwsstemplatesclient/resources') {
+    include '**'
+  }
+  
+  from ('build/classes/java/main') {
+    include 'com/ibm/ws/wssecurity/fat/wsstemplatesclient/**' 
+    include 'test/wssecfvt/wsstemplates/**'
+    into 'WEB-INF/classes'
+  }
+}
 
 /*
  * The 'assemble' task builds all these applications.
@@ -100,6 +150,8 @@ task samltoken_WAR(type: War, dependsOn: classes) {
 assemble { 
   dependsOn samlcxfclient_WAR
   dependsOn samltoken_WAR
+  dependsOn samlwsstemplates_WAR
+  dependsOn samlwsstemplatesclient_WAR
 }
 
 addRequiredLibraries.dependsOn copyShibbolethIdpConfig, copyShibbolethServer
@@ -182,7 +234,8 @@ autoFVT.doLast {
 /* Copy common files to all servers */
   def servers = [
         'com.ibm.ws.wssecurity_fat.saml',
-        'com.ibm.ws.wssecurity_fat.saml.2servers'
+        'com.ibm.ws.wssecurity_fat.saml.2servers',
+        'com.ibm.ws.wssecurity_fat.saml.wssTemplates'
   ]
 
   servers.each { server ->
@@ -255,6 +308,28 @@ autoFVT.doLast {
     into new File(autoFvtDir, 'publish/servers/' + server + '/test-apps')
     }
        
+    copy {
+    from new File(appBuildDir, 'samlwsstemplates.war')
+    into new File(autoFvtDir, 'publish/servers/' + server + '/test-apps')
+    }   
   }
+  
+  
+  servers = [
+        'com.ibm.ws.wssecurity_fat.saml.wssTemplates'
+  ]
+  
+  servers.each { server ->
+    copy {
+    from new File(appBuildDir, 'samlwsstemplatesclient.war')
+    into new File(autoFvtDir, 'publish/servers/' + server + '/test-apps')
+    }
+    
+    copy {
+    from new File(appBuildDir, 'samlwsstemplates.war')
+    into new File(autoFvtDir, 'publish/servers/' + server + '/test-apps')
+    }
+  }
+  
   
 }

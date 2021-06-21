@@ -17,10 +17,8 @@ import java.util.Set;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
-//Added 10/2020
 import org.junit.runner.RunWith;
 
-//Added 10/2020
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
@@ -29,7 +27,6 @@ import com.ibm.ws.wssecurity.fat.utils.common.PrepCommonSetup;
 import com.ibm.ws.wssecurity.fat.utils.common.UpdateWSDLPortNum;
 
 import componenttest.annotation.AllowedFFDC;
-//Added 10/2020
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
@@ -38,9 +35,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
-//Added 11/2020
 @Mode(TestMode.FULL)
-//Added 10/2020
 @RunWith(FATRunner.class)
 public class CxfWss11SigTests extends CommonTests {
 
@@ -89,8 +84,6 @@ public class CxfWss11SigTests extends CommonTests {
      *
      */
 
-    //4/2021
-    //@AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
     //5/2021 added PrivilegedActionExc, NoSuchMethodExc as a result of java11 and ee8
     @AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException", "java.security.PrivilegedActionException",
                            "java.lang.NoSuchMethodException" })
@@ -178,10 +171,6 @@ public class CxfWss11SigTests extends CommonTests {
      *
      */
     @Test
-    //Orig:
-    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
-    //2/2021
-    //@AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException" })
     //4/2021
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException" })
     public void testCXFClientBasicSigClConfSrvNoConf() throws Exception {
@@ -283,32 +272,16 @@ public class CxfWss11SigTests extends CommonTests {
     //2/2021 to test with EE7, then the corresponding message can be expected
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    //Orig:
-    //@ExpectedFFDC("org.apache.ws.security.WSSecurityException")
-    //Mei:
-    @AllowedFFDC("org.apache.ws.security.WSSecurityException") //@AV999
-    //Orig:
-    //public void testCXFClientBasicEncryptedElementMisMatch() throws Exception {
+    @AllowedFFDC("org.apache.ws.security.WSSecurityException")
     public void testCXFClientBasicEncryptedElementMisMatchEE7Only() throws Exception {
 
-        //Orig:
-        //String thisMethod = "testCXFClientBasicEncryptedElement";
-        String thisMethod = "testCXFClientBasicEncryptedElementMisMatchEE7Only";
+        String thisMethod = "testCXFClientBasicEncryptedElement";
         printMethodName(thisMethod, "Start Prep for " + thisMethod);
         newClientWsdl = updateClientWsdl(defaultClientWsdlLoc + "WSS11Signature_Elements.wsdl",
                                          defaultClientWsdlLoc + "WSS11Signature_ElementsUpdated.wsdl");
         Log.info(thisClass, thisMethod, "Using " + newClientWsdl);
         printMethodName(thisMethod, "End Prep for " + thisMethod);
-        //Mei:
-        //server.is //@AV999 TODO
-        boolean jaxws23feature = false;
-        String messagetoexpect = "Body not SIGNED"; //existing
-        //if (server.hasjasws23feature) then jaxws23feature=true //@AV999 TODO
-        jaxws23feature = true;
-        if (jaxws23feature) {
-            messagetoexpect = "Soap Body is not SIGNED";
-        }
-        //End
+
         genericTest(
                     // test name for logging
                     thisMethod,
@@ -329,12 +302,7 @@ public class CxfWss11SigTests extends CommonTests {
                     // msg to send from svc client to server
                     "",
                     // expected response from server
-                    //Orig:
                     "Body not SIGNED",
-                    //Mei:
-                    //"Body not SIGNED", //@AV999
-                    //messagetoexpect,
-                    //End
                     // msg to issue if do NOT get the expected result
                     "The test expected a succesful message from the server.");
 
@@ -354,16 +322,7 @@ public class CxfWss11SigTests extends CommonTests {
                                          defaultClientWsdlLoc + "WSS11Signature_ElementsUpdated.wsdl");
         Log.info(thisClass, thisMethod, "Using " + newClientWsdl);
         printMethodName(thisMethod, "End Prep for " + thisMethod);
-        //Mei:
-        //server.is //@AV999 TODO
-        boolean jaxws23feature = false;
-        String messagetoexpect = "Body not SIGNED"; //existing
-        //if (server.hasjasws23feature) then jaxws23feature=true //@AV999 TODO
-        jaxws23feature = true;
-        if (jaxws23feature) {
-            messagetoexpect = "Soap Body is not SIGNED";
-        }
-        //End
+
         genericTest(
                     // test name for logging
                     thisMethod,
@@ -384,10 +343,6 @@ public class CxfWss11SigTests extends CommonTests {
                     // msg to send from svc client to server
                     "",
                     // expected response from server
-                    //Orig:
-                    //"Body not SIGNED",
-                    //Mei:
-                    //"Body not SIGNED", //@AV999
                     //messagetoexpect,
                     "Soap Body is not SIGNED",
                     //End
@@ -413,13 +368,9 @@ public class CxfWss11SigTests extends CommonTests {
     //2/2021 to test with EE7, then the corresponding server_enchdr.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    //Orig:
-    //public void testCXFClientBasicEncryptedElement() throws Exception {
     public void testCXFClientBasicEncryptedElementEE7Only() throws Exception {
 
-        //Orig:
-        //String thisMethod = "testCXFClientBasicEncryptedElement";
-        String thisMethod = "testCXFClientBasicEncryptedElementEE7Only";
+        String thisMethod = "testCXFClientBasicEncryptedElement";
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_enchdr.xml");
         genericTest(
                     // test name for logging
@@ -503,28 +454,15 @@ public class CxfWss11SigTests extends CommonTests {
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @AllowedFFDC("org.apache.ws.security.WSSecurityException")
-    //Orig:
-    //public void testCXFClientBasicSigSignedElementMisMatch() throws Exception {
     public void testCXFClientBasicSigSignedElementMisMatchEE7Only() throws Exception {
 
-        //Orig:
-        //String thisMethod = "testCXFClientBasicSigSignedElement";
-        String thisMethod = "testCXFClientBasicSigSignedElementMisMatchEE7Only";
+        String thisMethod = "testCXFClientBasicSigSignedElement";
         printMethodName(thisMethod, "Start Prep for " + thisMethod);
         newClientWsdl = updateClientWsdl(defaultClientWsdlLoc + "WSS11Signature_Elements.wsdl",
                                          defaultClientWsdlLoc + "WSS11Signature_ElementsUpdated.wsdl");
         Log.info(thisClass, thisMethod, "Using " + newClientWsdl);
         printMethodName(thisMethod, "End Prep for " + thisMethod);
-        //Mei:
-        //server.is //@AV999 TODO
-        boolean jaxws23feature = false;
-        String messagetoexpect = "Body not SIGNED"; //existing
-        //if (server.hasjasws23feature) then jaxws23feature=true //@AV999 TODO
-        jaxws23feature = true;
-        if (jaxws23feature) {
-            messagetoexpect = "Soap Body is not SIGNED";
-        }
-        //End
+
         genericTest(
                     // test name for logging
                     thisMethod,
@@ -545,12 +483,7 @@ public class CxfWss11SigTests extends CommonTests {
                     // msg to send from svc client to server
                     "",
                     // expected response from server
-                    //Orig:
                     "Body not SIGNED",
-                    //Mei:
-                    //"Body not SIGNED", //@AV999
-                    //messagetoexpect,
-                    //End
                     // msg to issue if do NOT get the expected result
                     "The test expected a succesful message from the server.");
 
@@ -559,7 +492,6 @@ public class CxfWss11SigTests extends CommonTests {
     //2/2021 to test with EE8, then the corresponding message can be expected and server_wss4j.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
     //4/2021
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
     public void testCXFClientBasicSigSignedElementMisMatchEE8Only() throws Exception {
@@ -570,16 +502,7 @@ public class CxfWss11SigTests extends CommonTests {
                                          defaultClientWsdlLoc + "WSS11Signature_ElementsUpdated.wsdl");
         Log.info(thisClass, thisMethod, "Using " + newClientWsdl);
         printMethodName(thisMethod, "End Prep for " + thisMethod);
-        //Mei:
-        //server.is //@AV999 TODO
-        boolean jaxws23feature = false;
-        String messagetoexpect = "Body not SIGNED"; //existing
-        //if (server.hasjasws23feature) then jaxws23feature=true //@AV999 TODO
-        jaxws23feature = true;
-        if (jaxws23feature) {
-            messagetoexpect = "Soap Body is not SIGNED";
-        }
-        //End
+
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
         genericTest(
                     // test name for logging
@@ -601,12 +524,6 @@ public class CxfWss11SigTests extends CommonTests {
                     // msg to send from svc client to server
                     "",
                     // expected response from server
-                    //Orig:
-                    //"Body not SIGNED",
-                    //Mei:
-                    //"Body not SIGNED", //@AV999
-                    //messagetoexpect,
-                    //End
                     "Soap Body is not SIGNED",
                     // msg to issue if do NOT get the expected result
                     "The test expected a succesful message from the server.");
@@ -628,8 +545,6 @@ public class CxfWss11SigTests extends CommonTests {
     //2/2021 run with EE7
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    //Orig:
-    //public void testCXFClientBasicSigSignedElement() throws Exception {
     public void testCXFClientBasicSigSignedElementEE7Only() throws Exception {
 
         String thisMethod = "testCXFClientBasicSigSignedElement";
@@ -706,8 +621,6 @@ public class CxfWss11SigTests extends CommonTests {
     //2/2021 run with EE7
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    //Orig:
-    //public void testCXFClientBasicSigClNoSignConfSrvNoSignNoConf() throws Exception {
     public void testCXFClientBasicSigClNoSignConfSrvNoSignNoConfEE7Only() throws Exception {
 
         String thisMethod = "testCXFClientBasicSigClNoSignConfSrvNoSignNoConf";

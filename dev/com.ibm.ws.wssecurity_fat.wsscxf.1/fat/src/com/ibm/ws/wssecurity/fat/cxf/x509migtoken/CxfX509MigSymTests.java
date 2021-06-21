@@ -22,10 +22,8 @@ import javax.crypto.Cipher;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-//Added 11/2020
 import org.junit.runner.RunWith;
 
-//Added 11/2020
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
@@ -36,7 +34,6 @@ import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
 import componenttest.annotation.AllowedFFDC;
-//Added 11/2020
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -44,15 +41,9 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
-//Added 11/2020
 @Mode(TestMode.FULL)
-//Added 11/2020
 @RunWith(FATRunner.class)
 public class CxfX509MigSymTests {
-
-    //orig from CL:
-    //private static String serverName = "com.ibm.ws.wssecurity_fat.x509migsym";
-    //private static LibertyServer server = LibertyServerFactory.getLibertyServer(serverName);
 
     //Added 11/2020
     static final private String serverName = "com.ibm.ws.wssecurity_fat.x509migsym";
@@ -87,13 +78,7 @@ public class CxfX509MigSymTests {
     @BeforeClass
     public static void setUp() throws Exception {
 
-        //Orig:
-        //copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha512.xml");
-
         String thisMethod = "setup";
-
-        //orig from CL
-        //SharedTools.installCallbackHandler(server);
 
         //2/2021
         ServerConfiguration config = server.getServerConfiguration();
@@ -299,9 +284,6 @@ public class CxfX509MigSymTests {
      */
 
     @Test
-    //@AllowedFFDC(value = { "java.lang.Exception" })
-    //4/2021
-    //@AllowedFFDC(value = { "java.lang.Exception", "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
     //5/2021 added PrivilegedActionExc, NoSuchMethodExc as a result of java11 and ee8
     @AllowedFFDC(value = { "java.lang.Exception", "java.net.MalformedURLException", "java.lang.ClassNotFoundException", "java.security.PrivilegedActionException",
                            "java.lang.NoSuchMethodException" })
@@ -336,7 +318,6 @@ public class CxfX509MigSymTests {
      */
 
     @Test
-    //@AllowedFFDC(value = { "java.lang.Exception" })
     //4/2021
     @AllowedFFDC(value = { "java.lang.Exception", "java.net.MalformedURLException" })
     public void testCxfX509KeyIdMigSymServiceHttps() throws Exception {
@@ -1498,10 +1479,6 @@ public class CxfX509MigSymTests {
      * Once it's implemented, the test become positive and test in here is set to negative on regular tests
      **/
     @Test
-    //Orig:
-    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
-    //2/2021
-    //@AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException" })
     //4/2021
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException" })
     public void testBasic192Service() throws Exception {
@@ -1598,7 +1575,6 @@ public class CxfX509MigSymTests {
     // With SymmetricBinding
     //
     @Test
-    //@AllowedFFDC("javax.net.ssl.SSLException")
     //4/2021
     @AllowedFFDC(value = { "javax.net.ssl.SSLException", "java.net.MalformedURLException" })
     public void testSymmetricEndorsingUNTPolicy() throws Exception {
@@ -1739,7 +1715,6 @@ public class CxfX509MigSymTests {
      */
 
     @Test
-    //@AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.lang.Exception" })
     //4/2021
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.lang.Exception", "java.net.MalformedURLException" })
     public void testBadCxfX509KeyIdMigSymEncryptBeforeSigningService() throws Exception {
@@ -1772,7 +1747,6 @@ public class CxfX509MigSymTests {
      */
 
     @Test
-    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
     //4/2021
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
     public void testBadCxfX509IssuerSerialMigSymNoEncryptSignatureService() throws Exception {
@@ -1805,7 +1779,6 @@ public class CxfX509MigSymTests {
      */
 
     @Test
-    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
     //4/2021
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
     public void testBadCxfX509ProtectTokensMigSymService() throws Exception {
@@ -1870,7 +1843,6 @@ public class CxfX509MigSymTests {
      */
 
     @Test
-    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
     //4/2021
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
     public void testBadCxfX509KeyIdDerivedMigSymService() throws Exception {
@@ -1903,8 +1875,6 @@ public class CxfX509MigSymTests {
      */
 
     @Test
-    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
-    // gkuo: To be discussed with Chunlong
     //4/2021
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
     public void testBadCxfX509ThumbprintDerivedMigSymService() throws Exception {
@@ -1947,7 +1917,6 @@ public class CxfX509MigSymTests {
      *
      **/
     @Test
-    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
     //4/2021
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
     public void testBadX509KeyIdentifierUNTService() throws Exception {
@@ -1992,7 +1961,6 @@ public class CxfX509MigSymTests {
      *
      **/
     @Test
-    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
     //4/2021
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
     public void testBadX509SignatureConfirmService() throws Exception {
@@ -2036,10 +2004,6 @@ public class CxfX509MigSymTests {
      *
      **/
     @Test
-    //Orig:
-    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
-    //2/2021
-    //@AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException" })
     //4/2021
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException" })
     public void testBadSymEncSignService() throws Exception {
@@ -2106,10 +2070,6 @@ public class CxfX509MigSymTests {
      **/
 
     @Test
-    //Orig:
-    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
-    //2/2021
-    //@AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException" })
     //4/2021
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException" })
     public void testBadBasic192Service() throws Exception {
@@ -2153,10 +2113,6 @@ public class CxfX509MigSymTests {
     //      </ds:SignedInfo>
     //  in tcpmon
     @Test
-    //Orig:
-    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
-    //2/2021
-    //@AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException" })
     //4/2021
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException" })
     public void testBadInclusiveC14NService() throws Exception {
@@ -2242,28 +2198,6 @@ public class CxfX509MigSymTests {
      * Though this test is not enforced it yet.
      *
      */
-    //2/2021 Orig:
-    //protected void testRoutine(
-    //                           String thisMethod,
-    //                           String x509Policy,
-    //                           String testMode, // Positive, positive-1, negative or negative-1... etc
-    //                           String portNumber,
-    //                           String portNumberSecure,
-    //                           String strServiceName,
-    //                           String strServicePort) throws Exception {
-    //    testSubRoutine(
-    //                   thisMethod,
-    //                   x509Policy,
-    //                   testMode, // Positive, positive-1, negative or negative-1... etc
-    //                   portNumber,
-    //                   portNumberSecure,
-    //                   strServiceName,
-    //                   strServicePort,
-    //                   x509MigSymClientUrl,
-    //                   "");
-    //
-    //    return;
-    //}
 
     //2/2021
     protected void testRoutine(
@@ -2323,29 +2257,6 @@ public class CxfX509MigSymTests {
      * Though this test is not enforced it yet.
      *
      */
-
-    //2/2021 Orig:
-    //protected void testBadRoutine(
-    //                              String thisMethod,
-    //                              String x509Policy,
-    //                              String testMode, // Positive, positive-1, negative or negative-1... etc
-    //                              String portNumber,
-    //                              String portNumberSecure,
-    //                              String strServiceName,
-    //                              String strServicePort) throws Exception {
-    //    testSubRoutine(
-    //                   thisMethod,
-    //                   x509Policy,
-    //                   testMode, // Positive, positive-1, negative or negative-1... etc
-    //                   portNumber,
-    //                   portNumberSecure,
-    //                   strServiceName,
-    //                   strServicePort,
-    //                   x509MigBadSymClientUrl,
-    //                   "Bad"
-
-    //    return;
-    //}
 
     //2/2021
     protected void testBadRoutine(
@@ -2478,8 +2389,7 @@ public class CxfX509MigSymTests {
         } catch (Exception e) {
             e.printStackTrace(System.out);
         }
-        //orig from CL:
-        //SharedTools.unInstallCallbackHandler(server);
+
         //2/2021
         server.deleteFileFromLibertyInstallRoot("usr/extension/lib/bundles/com.ibm.ws.wssecurity.example.cbh.jar");
         server.deleteFileFromLibertyInstallRoot("usr/extension/lib/features/wsseccbh-1.0.mf");

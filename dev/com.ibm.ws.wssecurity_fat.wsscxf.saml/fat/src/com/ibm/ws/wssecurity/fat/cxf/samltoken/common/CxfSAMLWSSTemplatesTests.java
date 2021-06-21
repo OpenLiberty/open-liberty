@@ -14,7 +14,6 @@ package com.ibm.ws.wssecurity.fat.cxf.samltoken.common;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-//3/2021
 import componenttest.annotation.SkipForRepeat;
 
 import com.gargoylesoftware.htmlunit.WebClient;
@@ -34,10 +33,7 @@ import componenttest.topology.impl.LibertyServerWrapper;
  */
 
 @LibertyServerWrapper
-//1/20/2021 the full mode is already set at class level in CL FAT and kept the same in OL but 
-//will no longer need the LITE mode in some of test cases below
 @Mode(TestMode.FULL)
-//1/21/2021 added
 @RunWith(FATRunner.class)
 public class CxfSAMLWSSTemplatesTests extends SAMLCommonTest {
 
@@ -58,8 +54,6 @@ public class CxfSAMLWSSTemplatesTests extends SAMLCommonTest {
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @AllowedFFDC(value = { "java.lang.Exception" })
     @Test
-    //Orig:
-    //public void CxfSAMLWSSTemplatesTests_Saml20TokenOverSSL() throws Exception {
     public void CxfSAMLWSSTemplatesTests_Saml20TokenOverSSLEE7Only() throws Exception {
         WebClient webClient = SAMLCommonTestHelpers.getWebClient();
 
@@ -74,7 +68,6 @@ public class CxfSAMLWSSTemplatesTests extends SAMLCommonTest {
     
     //3/2021 to run with EE8
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    //@AllowedFFDC(value = { "java.lang.Exception", "java.util.MissingResourceException", "java.lang.ClassNotFoundException", "java.net.MalformedURLException" }) //@AV999
     //6/2021
     @AllowedFFDC(value = { "java.lang.Exception", "java.util.MissingResourceException", "java.lang.ClassNotFoundException", "java.net.MalformedURLException", "java.security.PrivilegedActionException", "java.lang.NoSuchMethodException"
  })
@@ -115,8 +108,6 @@ public class CxfSAMLWSSTemplatesTests extends SAMLCommonTest {
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @AllowedFFDC(value = { "java.lang.Exception" })
     @Test
-    //Orig:
-    //public void CxfSAMLWSSTemplatesTests_Saml20TokenOverSSL_httpFromClient() throws Exception {
     public void CxfSAMLWSSTemplatesTests_Saml20TokenOverSSL_httpFromClientEE7Only() throws Exception {
         
     	WebClient webClient = SAMLCommonTestHelpers.getWebClient();
@@ -171,8 +162,6 @@ public class CxfSAMLWSSTemplatesTests extends SAMLCommonTest {
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @AllowedFFDC(value = { "java.lang.Exception" })
     @Test
-    //Orig:
-    //public void CxfSAMLWSSTemplatesTests_AsymmetricX509MutualAuthenticationWithSaml() throws Exception {
     public void CxfSAMLWSSTemplatesTests_AsymmetricX509MutualAuthenticationWithSamlEE7Only() throws Exception {
         
     	if (testSAMLServer2 == null) {
@@ -196,7 +185,8 @@ public class CxfSAMLWSSTemplatesTests extends SAMLCommonTest {
 
     //3/2021 to run with EE8, then server_2_in_1_AsymSignEnc_wss4j.xml, server_2_wsstemplate_AsymSignEnc_wss4j.xml, server_1_AsymSignEnc_wss4j.xml can be used
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    @AllowedFFDC(value = { "java.lang.Exception", "java.lang.ClassNotFoundException", "java.net.MalformedURLException" }) //@AV999 TODO we should not see CNFE and MalformedURL
+    @AllowedFFDC(value = { "java.lang.Exception", "java.lang.ClassNotFoundException", "java.net.MalformedURLException", "java.security.PrivilegedActionException",
+            "java.lang.NoSuchMethodException" }) //@AV999 TODO we should not see CNFE and MalformedURL
     @Test
     public void CxfSAMLWSSTemplatesTests_AsymmetricX509MutualAuthenticationWithSamlEE8Only() throws Exception {
 
@@ -233,8 +223,6 @@ public class CxfSAMLWSSTemplatesTests extends SAMLCommonTest {
     @AllowedFFDC(value = { "java.lang.Exception" })
     @ExpectedFFDC(value = { "org.apache.ws.security.WSSecurityException" })
     @Test
-    //Orig:
-    //public void CxfSAMLWSSTemplatesTests_AsymmetricX509MutualAuthenticationWithSaml_omitInitiatorToken() throws Exception {
     public void CxfSAMLWSSTemplatesTests_AsymmetricX509MutualAuthenticationWithSaml_omitInitiatorTokenEE7Only() throws Exception {
     	
         if (testSAMLServer2 == null) {
@@ -267,8 +255,7 @@ public class CxfSAMLWSSTemplatesTests extends SAMLCommonTest {
     //server_2_in_1_AsymSignEnc_wss4j.xml, server_2_wsstemplate_AsymSignEnc_wss4j.xml, server_1_AsymSignEnc_wss4j.xml can be used
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
     @AllowedFFDC(value = { "java.lang.Exception", "java.net.MalformedURLException" })
-    //6/2021 comment out the test temporarily; see https://github.com/OpenLiberty/open-liberty/issues/17588
-    //@Test 
+    @Test 
     public void CxfSAMLWSSTemplatesTests_AsymmetricX509MutualAuthenticationWithSaml_omitInitiatorTokenEE8Only() throws Exception {
 
         if (testSAMLServer2 == null) {
@@ -315,8 +302,6 @@ public class CxfSAMLWSSTemplatesTests extends SAMLCommonTest {
     @AllowedFFDC(value = { "java.lang.Exception" })
     @ExpectedFFDC(value = { "org.apache.ws.security.WSSecurityException" })
     @Test
-    //Orig:
-    //public void CxfSAMLWSSTemplatesTests_AsymmetricX509MutualAuthenticationWithSaml_omitRecipientToken() throws Exception {
     public void CxfSAMLWSSTemplatesTests_AsymmetricX509MutualAuthenticationWithSaml_omitRecipientTokenEE7Only() throws Exception {
     	
         if (testSAMLServer2 == null) {
@@ -347,8 +332,7 @@ public class CxfSAMLWSSTemplatesTests extends SAMLCommonTest {
     //3/2021 to run with EE8, then server_2_in_1_AsymSignEnc_wss4j.xml, server_2_wsstemplate_AsymSignEnc_wss4j.xml, server_1_AsymSignEnc_wss4j.xml can be used
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
     @AllowedFFDC(value = { "java.lang.Exception", "java.net.MalformedURLException" })
-    //6/2021 comment out the test temporarily; see https://github.com/OpenLiberty/open-liberty/issues/17588
-    //@Test
+    @Test
     public void CxfSAMLWSSTemplatesTests_AsymmetricX509MutualAuthenticationWithSaml_omitRecipientTokenEE8Only() throws Exception {
 
         if (testSAMLServer2 == null) {
@@ -392,8 +376,6 @@ public class CxfSAMLWSSTemplatesTests extends SAMLCommonTest {
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @AllowedFFDC(value = { "java.lang.Exception" })
     @Test
-    //Orig:
-    //public void CxfSAMLWSSTemplatesTests_X509SymmetricForMessageAndSamlForClient() throws Exception {
     public void CxfSAMLWSSTemplatesTests_X509SymmetricForMessageAndSamlForClientEE7Only() throws Exception {
         
     	WebClient webClient = SAMLCommonTestHelpers.getWebClient();
@@ -445,8 +427,6 @@ public class CxfSAMLWSSTemplatesTests extends SAMLCommonTest {
     @AllowedFFDC(value = { "java.lang.Exception" })
     @ExpectedFFDC(value = { "org.apache.ws.security.WSSecurityException" })
     @Test
-    //Orig:
-    //public void CxfSAMLWSSTemplatesTests_X509SymmetricForMessageAndSamlForClient_omitProtectionPolicy() throws Exception {
     public void CxfSAMLWSSTemplatesTests_X509SymmetricForMessageAndSamlForClient_omitProtectionPolicyEE7Only() throws Exception {
     	
         WebClient webClient = SAMLCommonTestHelpers.getWebClient();
@@ -462,9 +442,8 @@ public class CxfSAMLWSSTemplatesTests extends SAMLCommonTest {
     
     //3/2021 to run with EE8
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    @AllowedFFDC(value = { "java.lang.Exception", "java.net.MalformedURLException" }) //@AV999
-    //6/2021 comment out the test temporarily; see https://github.com/OpenLiberty/open-liberty/issues/17588
-    //@Test
+    @AllowedFFDC(value = { "java.lang.Exception", "java.net.MalformedURLException" }) 
+    @Test
     public void CxfSAMLWSSTemplatesTests_X509SymmetricForMessageAndSamlForClient_omitProtectionPolicyEE8Only() throws Exception {
 
     	//3/2021

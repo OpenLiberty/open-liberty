@@ -40,11 +40,10 @@ import componenttest.rules.repeater.RepeatTests;
 @RunWith(Suite.class)
 @SuiteClasses({
 
-                //Lite bucket
+                //Lite
                 CxfX509MigTests.class,
 
-                //Full bucket
-
+                //Full
                 CxfSha2SigTests.class,
                 CxfWss11SigTests.class,
                 CxfWss11EncTests.class,

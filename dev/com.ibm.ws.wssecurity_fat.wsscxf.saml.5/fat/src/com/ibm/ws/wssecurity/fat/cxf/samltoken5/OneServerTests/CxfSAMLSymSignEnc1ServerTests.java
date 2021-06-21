@@ -13,15 +13,12 @@ package com.ibm.ws.wssecurity.fat.cxf.samltoken5.OneServerTests;
 
 import java.util.ArrayList;
 import java.util.List;
-//3/2021
 import java.util.Set;
 
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
-//3/2021
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
-
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLMessageConstants;
@@ -48,9 +45,9 @@ import componenttest.topology.utils.HttpUtils;
  * TFIM IdP. The client invokes the SP application by sending the SAML
  * 2.0 token in the HTTP POST request.
  */
+
 @LibertyServerWrapper
 @Mode(TestMode.FULL)
-//1/21/2021 added
 @RunWith(FATRunner.class)
 public class CxfSAMLSymSignEnc1ServerTests extends CxfSAMLSymSignEncTests {
 
@@ -78,11 +75,10 @@ public class CxfSAMLSymSignEnc1ServerTests extends CxfSAMLSymSignEncTests {
 
         List<String> extraApps = new ArrayList<String>();
         extraApps.add(SAMLConstants.SAML_CXF_CLIENT_APP);
-
+       
         startSPWithIDPServer("com.ibm.ws.wssecurity_fat.saml", "server_2_in_1_symSignEnc.xml", SAMLConstants.SAML_SERVER_TYPE, extraMsgs, extraApps, true, SAMLConstants.EXAMPLE_CALLBACK, SAMLConstants.EXAMPLE_CALLBACK_FEATURE);
-
-        //Orig: 3/2021 In EE7/EE8 dual test scenario, without adding the ignoring of CWWKF0001E, EE7 test resulted to additional error count 
-        //testSAMLServer.addIgnoredServerExceptions(SAMLMessageConstants.CWWKS5207W_SAML_CONFIG_IGNORE_ATTRIBUTES, SAMLMessageConstants.CWWKG0101W_CONFIG_NOT_VISIBLE_TO_OTHER_BUNDLES);
+ 
+        //3/2021 
         testSAMLServer.addIgnoredServerExceptions(SAMLMessageConstants.CWWKS5207W_SAML_CONFIG_IGNORE_ATTRIBUTES, SAMLMessageConstants.CWWKG0101W_CONFIG_NOT_VISIBLE_TO_OTHER_BUNDLES, SAMLMessageConstants.CWWKF0001E_FEATURE_MISSING);
 
         servicePort = Integer.toString(testSAMLServer.getServerHttpPort());
@@ -94,13 +90,6 @@ public class CxfSAMLSymSignEnc1ServerTests extends CxfSAMLSymSignEncTests {
         testSettings.setSpTargetApp(testSAMLServer.getHttpString() + "/samlcxfclient/CxfSamlSvcClient");
         testSettings.setSamlTokenValidationData(testSettings.getIdpUserName(), testSettings.getSamlTokenValidationData().getIssuer(), testSettings.getSamlTokenValidationData().getInResponseTo(), testSettings.getSamlTokenValidationData().getMessageID(), testSettings.getSamlTokenValidationData().getEncryptionKeyUser(), testSettings.getSamlTokenValidationData().getRecipient(), testSettings.getSamlTokenValidationData().getEncryptAlg());
 
-        //3/2021 update the config for EE8 test
-        ServerConfiguration config = testSAMLServer.getServer().getServerConfiguration();
-        Set<String> features = config.getFeatureManager().getFeatures();
-        if (features.contains("usr:wsseccbh-2.0")) {
-        	testSAMLServer.getServer().copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
-        	testSAMLServer.getServer().copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
-        } //End 3/2021
-        
+                
     }
 }

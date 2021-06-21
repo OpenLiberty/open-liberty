@@ -16,19 +16,15 @@ import java.util.Set;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-//Added 10/2020
 import org.junit.runner.RunWith;
 
-//Added 10/2020
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.wssecurity.fat.utils.common.CommonTests;
 import com.ibm.ws.wssecurity.fat.utils.common.PrepCommonSetup;
 
-//4/2021
 import componenttest.annotation.AllowedFFDC;
-//Added 10/2020
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
@@ -37,9 +33,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
-//Added 11/2020
 @Mode(TestMode.FULL)
-//Added 10/2020
 @RunWith(FATRunner.class)
 public class CxfWss11EncTests extends CommonTests {
 
@@ -104,8 +98,6 @@ public class CxfWss11EncTests extends CommonTests {
     //2/2021 to test with EE7, then the corresponding server_enchdr.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    //Orig:
-    //public void testCXFClientEncryptHeaderNS1() throws Exception {
     public void testCXFClientEncryptHeaderNS1EE7Only() throws Exception {
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_enchdr.xml");
         genericTest(
@@ -133,8 +125,6 @@ public class CxfWss11EncTests extends CommonTests {
                     "The test expected a succesful message from the server.");
     }
 
-    //4/2021
-    //@AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
     //5/2021 added PrivilegedActionExc, NoSuchMethodExc as a result of java11 and ee8
     @AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException", "java.security.PrivilegedActionException",
                            "java.lang.NoSuchMethodException" })
@@ -197,8 +187,6 @@ public class CxfWss11EncTests extends CommonTests {
     //2/2021 to test with EE7, then the corresponding server.xml and callbackhandler can be used
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    //Orig:
-    //public void testCXFClientEncryptHeaderNS2() throws Exception {
     public void testCXFClientEncryptHeaderNS2EE7Only() throws Exception {
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
         genericTest(
@@ -286,8 +274,6 @@ public class CxfWss11EncTests extends CommonTests {
     //2/2021 to test with EE7, then the corresponding server.xml and callbackhandler can be used
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    //Orig:
-    //public void testCXFClientEncryptHeaderAny() throws Exception {
     public void testCXFClientEncryptHeaderAnyEE7Only() throws Exception {
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server.xml");
         genericTest(

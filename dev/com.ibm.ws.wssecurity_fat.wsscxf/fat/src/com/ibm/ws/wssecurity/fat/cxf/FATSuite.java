@@ -42,7 +42,7 @@ import componenttest.rules.repeater.RepeatTests;
 @RunWith(Suite.class)
 @SuiteClasses({
 
-                //Lite bucket
+                //Lite
                 CxfUNTBasicTests.class,
                 CxfSSLUNTNonceTests.class,
                 CxfNoWssecTests.class,
@@ -50,7 +50,7 @@ import componenttest.rules.repeater.RepeatTests;
                 CxfSampleTests.class,
                 CxfSymSampleTests.class,
 
-                //Full bucket
+                //Full
                 CxfSSLUNTNonceTimeOutTests.class,
                 CxfPasswordDigestTests.class,
                 CxfSSLUNTBasicTests.class,
@@ -64,7 +64,6 @@ import componenttest.rules.repeater.RepeatTests;
                 CxfBspTests.class,
                 CxfInteropX509Tests.class
 
-                
 })
 
 /**

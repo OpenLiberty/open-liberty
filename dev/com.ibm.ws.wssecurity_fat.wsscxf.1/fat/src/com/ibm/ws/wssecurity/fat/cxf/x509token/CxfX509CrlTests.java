@@ -14,25 +14,19 @@ package com.ibm.ws.wssecurity.fat.cxf.x509token;
 import java.io.File;
 import java.util.Set;
 
-//Added 11/2020
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.BeforeClass;
 import org.junit.Test;
-//Added 11/2020
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.wssecurity.fat.utils.common.CommonTests;
-//Added 11/2020
 import com.ibm.ws.wssecurity.fat.utils.common.PrepCommonSetup;
 
 import componenttest.annotation.AllowedFFDC;
-//Mei:
 import componenttest.annotation.ExpectedFFDC;
-//End
-//Added 11/2020
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
@@ -41,9 +35,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
-//Added 11/2020
 @Mode(TestMode.FULL)
-//Added 11/2020
 @RunWith(FATRunner.class)
 public class CxfX509CrlTests extends CommonTests {
 
@@ -59,10 +51,6 @@ public class CxfX509CrlTests extends CommonTests {
 
     @BeforeClass
     public static void setUp() throws Exception {
-
-        //orig from CL
-        //commonSetUp(serverName, false,
-        //            "/x509crlclient/CxfX509CrlSvcClient");
 
         //2/2021
         ServerConfiguration config = server.getServerConfiguration();
@@ -107,8 +95,6 @@ public class CxfX509CrlTests extends CommonTests {
     //2/2021 to test with EE7, then the corresponding server_certp.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    //Orig:
-    //public void testCXFClientCRLPNotInList() throws Exception {
     public void testCXFClientCRLPNotInListEE7Only() throws Exception {
 
         String thisMethod = "testCXFClientCRLPNotInList";
@@ -140,8 +126,6 @@ public class CxfX509CrlTests extends CommonTests {
 
     }
 
-    //4/2021
-    //@AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
     //5/2021 added PrivilegedActionExc, NoSuchMethodExc as a result of java11 and ee8
     @AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException", "java.security.PrivilegedActionException",
                            "java.lang.NoSuchMethodException" })
@@ -193,12 +177,7 @@ public class CxfX509CrlTests extends CommonTests {
     //2/2021 to test with EE7, then the corresponding server_certn.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    //Orig:
     @AllowedFFDC("org.apache.ws.security.WSSecurityException")
-    //2/2021:
-    //@ExpectedFFDC("org.apache.wss4j.common.ext.WSSecurityException") //@AV999
-    //Orig:
-    //public void testCXFClientCRLNInList() throws Exception {
     public void testCXFClientCRLNInListEE7Only() throws Exception {
 
         String thisMethod = "testCXFClientCRLNInList";

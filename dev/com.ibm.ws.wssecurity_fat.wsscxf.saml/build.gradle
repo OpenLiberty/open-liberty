@@ -42,27 +42,27 @@ dependencies {
  */
 def appBuildDir = "${buildDir}/test-application"
 
-
 /******************************************************************
  ******************************************************************
  **
- ** samlwsstemplates.war
+ ** samlcxfclient.war
  **
  ******************************************************************
  ******************************************************************/
-task samlwsstemplates_WAR(type: War, dependsOn: classes) {
+task samlcxfclient_WAR(type: War, dependsOn: classes) {
   destinationDir file(appBuildDir)
-  archiveName "samlwsstemplates.war"
+  archiveName "samlcxfclient.war"
   
   manifest {
     attributes("Class-Path": "")
   }
   
-  from ('test-applications/samlwsstemplates/resources') {
+  from ('test-applications/samlcxfclient/resources') {
     include '**'
   }
   from ('build/classes/java/main') {
-    include 'com/ibm/ws/wssecurity/fat/wsstemplates/**' 
+    include 'com/ibm/ws/wssecurity/fat/samlcxfclient/**' 
+    include 'fats/cxf/basic/wssec/**'
     into 'WEB-INF/classes'
   }
 }
@@ -71,28 +71,27 @@ task samlwsstemplates_WAR(type: War, dependsOn: classes) {
 /******************************************************************
  ******************************************************************
  **
- ** samlwsstemplatesclient.war
+ ** samltoken.war
  **
  ******************************************************************
  ******************************************************************/
-task samlwsstemplatesclient_WAR(type: War, dependsOn: classes) {
+task samltoken_WAR(type: War, dependsOn: classes) {
   destinationDir file(appBuildDir)
-  archiveName "samlwsstemplatesclient.war"
+  archiveName "samltoken.war"
   
   manifest {
     attributes("Class-Path": "")
   }
   
-  from ('test-applications/samlwsstemplatesclient/resources') {
+  from ('test-applications/samltoken/resources') {
     include '**'
   }
-  
   from ('build/classes/java/main') {
-    include 'com/ibm/ws/wssecurity/fat/wsstemplatesclient/**' 
-    include 'test/wssecfvt/wsstemplates/**'
+    include 'com/ibm/ws/wssecurity/fat/samltoken/**' 
     into 'WEB-INF/classes'
   }
 }
+
 
 /******************************************************************
  ******************************************************************
@@ -148,8 +147,8 @@ task samlwsstemplateswithep_WAR(type: War, dependsOn: classes) {
  * The 'assemble' task builds all these applications.
  */
 assemble { 
-  dependsOn samlwsstemplates_WAR
-  dependsOn samlwsstemplatesclient_WAR
+  dependsOn samlcxfclient_WAR
+  dependsOn samltoken_WAR
   dependsOn samlwsstemplatesclientwithep_WAR
   dependsOn samlwsstemplateswithep_WAR
 }
@@ -233,8 +232,8 @@ autoFVT.doLast {
     
 /* Copy common files to all servers */
   def servers = [
+        'com.ibm.ws.wssecurity_fat.saml',
         'com.ibm.ws.wssecurity_fat.saml.2servers',
-        'com.ibm.ws.wssecurity_fat.saml.wssTemplates',
         'com.ibm.ws.wssecurity_fat.saml.2serverswithep',
         'com.ibm.ws.wssecurity_fat.saml.wssTemplateswithep'
   ]
@@ -282,6 +281,24 @@ autoFVT.doLast {
   }    
 
 /* Copy files for specific server */
+  servers = [
+        'com.ibm.ws.wssecurity_fat.saml'
+  ]
+  
+  servers.each { server ->
+    copy {
+    from new File(appBuildDir, 'samlcxfclient.war')
+    into new File(autoFvtDir, 'publish/servers/' + server + '/test-apps')
+    }
+    
+    copy {
+    from new File(appBuildDir, 'samltoken.war')
+    into new File(autoFvtDir, 'publish/servers/' + server + '/test-apps')
+    }
+    
+  }
+  
+/* Copy files for specific server */
   
   servers = [
         'com.ibm.ws.wssecurity_fat.saml.2servers'
@@ -289,27 +306,12 @@ autoFVT.doLast {
   
   servers.each { server ->
     copy {
-    from new File(appBuildDir, 'samlwsstemplates.war')
-    into new File(autoFvtDir, 'publish/servers/' + server + '/test-apps')
-    }
-  }
-  
-  servers = [
-        'com.ibm.ws.wssecurity_fat.saml.wssTemplates'
-  ]
-  
-  servers.each { server ->
-    copy {
-    from new File(appBuildDir, 'samlwsstemplatesclient.war')
+    from new File(appBuildDir, 'samltoken.war')
     into new File(autoFvtDir, 'publish/servers/' + server + '/test-apps')
     }
     
-    copy {
-    from new File(appBuildDir, 'samlwsstemplates.war')
-    into new File(autoFvtDir, 'publish/servers/' + server + '/test-apps')
-    }
   }
-  
+   
   servers = [
         'com.ibm.ws.wssecurity_fat.saml.wssTemplateswithep'
   ]

@@ -22,10 +22,8 @@ import javax.crypto.Cipher;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-//Added 11/2020
 import org.junit.runner.RunWith;
 
-//Added 11/2020
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
@@ -36,21 +34,14 @@ import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
 import componenttest.annotation.AllowedFFDC;
-//Added 11/2020
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
-//12/2020 Setting this test class for LITE bucket
-//Added 11/2020
 @RunWith(FATRunner.class)
 public class CxfX509MigTests {
-
-    //orig from CL:
-    //private static String serverName = "com.ibm.ws.wssecurity_fat.x509mig";
-    //private static LibertyServer server = LibertyServerFactory.getLibertyServer(serverName);
 
     //Added 11/2020
     static final private String serverName = "com.ibm.ws.wssecurity_fat.x509mig";
@@ -88,9 +79,6 @@ public class CxfX509MigTests {
     public static void setUp() throws Exception {
 
         String thisMethod = "setup";
-
-        //orig from CL:
-        //SharedTools.installCallbackHandler(server);
 
         //2/2021
         ServerConfiguration config = server.getServerConfiguration();
@@ -331,8 +319,6 @@ public class CxfX509MigTests {
      *
      */
 
-    //4/2021 add allowed ffdc to run with EE8
-    //@AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
     //5/2021 added PrivilegedActionExc, NoSuchMethodExc as a result of java11 and ee8
     @AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException", "java.security.PrivilegedActionException",
                            "java.lang.NoSuchMethodException" })
@@ -2212,10 +2198,6 @@ public class CxfX509MigTests {
      */
 
     @Test
-    //Orig:
-    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
-    //2/2021
-    //@AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException" })
     //4/2021
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException" })
     public void testCxfX509AsymmetricSignatureReplayMigService() throws Exception {
@@ -2963,9 +2945,6 @@ public class CxfX509MigTests {
 
     //2/2021 run with EE7
     @Test
-    //Orig:
-    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
-    //2/2021
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException" })
     public void testBadCxfX509AsymIssuerSerialMigService() throws Exception {
         String thisMethod = "testBadCxfX509AsymIssuerSerialMigService";
@@ -3065,8 +3044,6 @@ public class CxfX509MigTests {
      */
 
     @Test
-    //2/2021
-    //@AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException" })
     public void testBadCxfX509TransportEndrosingMigServiceHttps() throws Exception {
         String thisMethod = "testCxfX509TransportEndorsingMigService";
         methodFull = "testBadCxfX509TransportEndorsingMigServiceHttps";
@@ -3450,27 +3427,6 @@ public class CxfX509MigTests {
      * Though this test is not enforced it yet.
      *
      */
-    //2/2021 Orig:
-    //   protected void testRoutine(
-    //                              String thisMethod,
-    //                              String x509Policy,
-    //                              String testMode, // Positive, positive-1, negative or negative-1... etc
-    //                              String portNumber,
-    //                              String portNumberSecure,
-    //                              String strServiceName,
-    //                              String strServicePort) throws Exception {
-    //       testSubRoutine(
-    //                      thisMethod,
-    //                      x509Policy,
-    //                      testMode, // Positive, positive-1, negative or negative-1... etc
-    //                      portNumber,
-    //                      portNumberSecure,
-    //                      strServiceName,
-    //                      strServicePort,
-    //                      x509MigClientUrl);
-    //
-    //       return;
-    //  }
 
     //2/2021
     protected void testRoutine(
@@ -3581,10 +3537,6 @@ public class CxfX509MigTests {
      * It expects to fail
      **/
     @Test
-    //Orig:
-    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
-    //2/2021
-    //@AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException" })
     //4/2021
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException" })
     public void testBadAsymEndSignService() throws Exception {
@@ -3647,8 +3599,6 @@ public class CxfX509MigTests {
      *
      */
     @Test
-    //Orig:
-    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
     //2/2021
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException" })
     public void testBadTripleDesService() throws Exception {
@@ -3703,8 +3653,6 @@ public class CxfX509MigTests {
     //2/2021 to run with EE7 as positive
     //@Test not valid test?
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    //Orig:
-    //public void testBadBasic128Service() throws Exception {
     public void testBadBasic128ServiceEE7Only() throws Exception {
         String thisMethod = "testBadBasic128Service";
         methodFull = "testBadBasic128Service";

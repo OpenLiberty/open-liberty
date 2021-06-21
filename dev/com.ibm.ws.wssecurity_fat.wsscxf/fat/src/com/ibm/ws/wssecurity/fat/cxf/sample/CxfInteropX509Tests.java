@@ -20,10 +20,8 @@ import java.util.Set;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-//Added 11/2020
 import org.junit.runner.RunWith;
 
-//Added 11/2020
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
@@ -33,9 +31,7 @@ import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
-//4/2021
 import componenttest.annotation.AllowedFFDC;
-//Added 11/2020
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -43,20 +39,14 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
-//Added 11/2020
 @Mode(TestMode.FULL)
-//Added 11/2020
 @RunWith(FATRunner.class)
 public class CxfInteropX509Tests {
 
-    //orig from CL:
-    //private static String serverName = "com.ibm.ws.wssecurity_fat.sample";
-    //private static LibertyServer server = LibertyServerFactory.getLibertyServer(serverName);
-
-    //Added 11/2020
+    //11/2020
     static final private String serverName = "com.ibm.ws.wssecurity_fat.sample";
-    //Added 11/2020
     @Server(serverName)
+
     public static LibertyServer server;
 
     static private final Class<?> thisClass = CxfInteropX509Tests.class;
@@ -76,13 +66,7 @@ public class CxfInteropX509Tests {
     @BeforeClass
     public static void setUp() throws Exception {
 
-        //Orig:
-        //copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_x509.xml");
-        // rename_webcontent(server);
         String thisMethod = "setup";
-
-        //orig from CL
-        //SharedTools.installCallbackHandler(server);
 
         //2/2021
         ServerConfiguration config = server.getServerConfiguration();
@@ -329,8 +313,6 @@ public class CxfInteropX509Tests {
         } catch (Exception e) {
             e.printStackTrace(System.out);
         }
-        //orig from CL
-        //SharedTools.unInstallCallbackHandler(server);
 
         //2/2021
         server.deleteFileFromLibertyInstallRoot("usr/extension/lib/bundles/com.ibm.ws.wssecurity.example.cbh.jar");

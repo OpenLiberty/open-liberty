@@ -16,15 +16,12 @@ import java.util.Set;
 
 import org.junit.After;
 import org.junit.BeforeClass;
-//Added 11/2020
 import org.junit.runner.RunWith;
 
-//Added 11/2020
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.wssecurity.fat.utils.common.CommonTests;
-//Added 11/2020
 import com.ibm.ws.wssecurity.fat.utils.common.PrepCommonSetup;
 import com.ibm.ws.wssecurity.fat.utils.common.UpdateWSDLPortNum;
 
@@ -36,9 +33,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
-//Added 11/2020
 @Mode(TestMode.FULL)
-//Added 11/2020
 @RunWith(FATRunner.class)
 public class CxfX509ASyncTests extends CommonTests {
 
@@ -56,11 +51,7 @@ public class CxfX509ASyncTests extends CommonTests {
     @BeforeClass
     public static void setUp() throws Exception {
 
-        //orig from CL
-        //commonSetUp(serverName, false,
-        //            "/x509aSyncclient/CxfX509AsyncSvcClient");
-
-//6/2021 need to update CommonTest.java to get req parameter of CBHVersion; comment out for now
+        //6/2021 need to update CommonTest.java to get req parameter of CBHVersion; comment out for now
         //2/2021
         ServerConfiguration config = server.getServerConfiguration();
         Set<String> features = config.getFeatureManager().getFeatures();
@@ -110,7 +101,6 @@ public class CxfX509ASyncTests extends CommonTests {
     //skip EE7 test
     //@SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
     //5/2021 added PrivilegedActionExc, NoSuchMethodExc as a result of java11 and ee8
-    //added ClassNotFound to see if it resolves 16071
     @AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException", "java.security.PrivilegedActionException",
                            "java.lang.NoSuchMethodException" })
     public void testCxfAsyncInvokeNonBlocking() throws Exception {
@@ -154,8 +144,7 @@ public class CxfX509ASyncTests extends CommonTests {
      * This is a positive scenario.
      *
      */
-    //Orig:
-    //@Test
+
     //2/2021
     //@Test
     public void testCxfAsyncInvokeBlocking() throws Exception {
@@ -198,8 +187,7 @@ public class CxfX509ASyncTests extends CommonTests {
      * This is a positive scenario.
      *
      */
-    //Orig:
-    //@Test
+
     //2/2021
     //@Test
     public void testCxfAsyncInvokeWithHandler() throws Exception {

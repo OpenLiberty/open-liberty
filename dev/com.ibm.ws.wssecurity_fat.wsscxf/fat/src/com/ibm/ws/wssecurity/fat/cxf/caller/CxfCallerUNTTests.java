@@ -20,36 +20,25 @@ import java.util.Set;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-//Added 10/2020
 import org.junit.runner.RunWith;
 
-//Added 10/2020
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
-//2/2021
 import com.ibm.ws.wssecurity.fat.utils.common.SharedTools;
 import com.meterware.httpunit.GetMethodWebRequest;
 import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
-//4/2021
 import componenttest.annotation.AllowedFFDC;
-//Added 10/2020
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
-//12/2020 Setting this test class for LITE bucket
-//Added 10/2020
 @RunWith(FATRunner.class)
 public class CxfCallerUNTTests {
-
-    //orig from CL:
-    //private static String serverName = "com.ibm.ws.wssecurity_fat.caller";
-    //private static LibertyServer server = LibertyServerFactory.getLibertyServer(serverName);
 
     //Added 10/2020
     static final private String serverName = "com.ibm.ws.wssecurity_fat.caller";
@@ -85,9 +74,6 @@ public class CxfCallerUNTTests {
     public static void setUp() throws Exception {
 
         String thisMethod = "setup";
-
-        //orig from CL:
-        //SharedTools.installCallbackHandler(server);
 
         //2/2021
         ServerConfiguration config = server.getServerConfiguration();
@@ -130,11 +116,6 @@ public class CxfCallerUNTTests {
         callerUNTClientUrl = "http://localhost:" + portNumber +
                              "/callerclient/CxfCallerSvcClient";
 
-        //2/2021 Orig: from CL, CxfCallerBadUNTClient doesn't exist
-        // using the original port to send the parameters
-        //callerBadUNTClientUrl = "http://localhost:" + portNumber +
-        //                        "/callerclient/CxfCallerBadUNTClient";
-
         // portNumber = "9085";                // for debugging
         Log.info(thisClass, thisMethod, "****portNumber is(2):" + portNumber);
         Log.info(thisClass, thisMethod, "****portNumberSecure is(2):" + portNumberSecure);
@@ -149,8 +130,6 @@ public class CxfCallerUNTTests {
      *
      */
 
-    //4/2021 added allowed ffdc to run with EE8
-    //@AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
     //5/2021 added PrivilegedActionExc, NoSuchMethodExc as a result of java11 and ee8
     @AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException", "java.security.PrivilegedActionException",
                            "java.lang.NoSuchMethodException" })
@@ -285,32 +264,6 @@ public class CxfCallerUNTTests {
      * Though this test is not enforced it yet.
      *
      */
-    //2/2021 Orig:
-    //protected void testRoutine(
-    //                           String thisMethod,
-    //                           String callerPolicy,
-    //                           String testMode, // Positive, positive-1, negative or negative-1... etc
-    //                           String portNumber,
-    //                           String portNumberSecure,
-    //                           String strServiceName,
-    //                           String strServicePort,
-    //                           String untID,
-    //                           String untPassword) throws Exception {
-    //    testSubRoutine(
-    //                   thisMethod,
-    //                   callerPolicy,
-    //                   testMode, // Positive, positive-1, negative or negative-1... etc
-    //                   portNumber,
-    //                   portNumberSecure,
-    //                   strServiceName,
-    //                   strServicePort,
-    //                   callerUNTClientUrl,
-    //                   "",
-    //                   untID,
-    //                   untPassword);
-
-    //    return;
-    //}
 
     //2/2021
     protected void testRoutine(
@@ -378,32 +331,6 @@ public class CxfCallerUNTTests {
      * Though this test is not enforced it yet.
      *
      */
-    //2/2021 Orig:
-    //protected void testBadRoutine(
-    //                              String thisMethod,
-    //                              String callerPolicy,
-    //                              String testMode, // Positive, positive-1, negative or negative-1... etc
-    //                              String portNumber,
-    //                              String portNumberSecure,
-    //                              String strServiceName,
-    //                              String strServicePort,
-    //                              String untID,
-    //                              String untPassword) throws Exception {
-    //    testSubRoutine(
-    //                   thisMethod,
-    //                   callerPolicy,
-    //                   testMode, // Positive, positive-1, negative or negative-1... etc
-    //                   portNumber,
-    //                   portNumberSecure,
-    //                   strServiceName,
-    //                   strServicePort,
-    //                   callerBadUNTClientUrl,
-    //                   "Bad",
-    //                   untID,
-    //                   untPassword);
-
-    //    return;
-    //}
 
     //2/2021
     protected void testBadRoutine(
@@ -546,8 +473,6 @@ public class CxfCallerUNTTests {
         } catch (Exception e) {
             e.printStackTrace(System.out);
         }
-        //orig from CL
-        //SharedTools.unInstallCallbackHandler(server);
 
         //2/2021
         server.deleteFileFromLibertyInstallRoot("usr/extension/lib/bundles/com.ibm.ws.wssecurity.example.cbh.jar");

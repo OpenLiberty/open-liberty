@@ -16,10 +16,8 @@ import static org.junit.Assert.assertTrue;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-//Added 10/2020
 import org.junit.runner.RunWith;
 
-//Added 10/2020
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.wssecurity.fat.utils.common.SharedTools;
@@ -28,21 +26,14 @@ import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
-//4/2021
 import componenttest.annotation.AllowedFFDC;
-//Added 10/2020
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.vulnerability.LeakedPasswordChecker;
 
-//12/2020 Setting this test class for LITE bucket
-//Added 10/2020
 @RunWith(FATRunner.class)
 public class CxfUNTBasicTests {
-
-    //Orig from CL:
-    //private static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.wssecurity_fat");
 
     //Added 10/2020
     static final private String serverName = "com.ibm.ws.wssecurity_fat";
@@ -153,9 +144,6 @@ public class CxfUNTBasicTests {
 
         //Orig:
         //leakedPasswordChecker.checkForPasswordInTrace("security</wsse:Password>");
-        //Mei:
-        //leakedPasswordChecker.checkForPasswordInTrace("security</wsse:Password>"); //@AV999
-        //End
 
         return;
     }
@@ -261,9 +249,6 @@ public class CxfUNTBasicTests {
 
         //Orig:
         //leakedPasswordChecker.checkForPasswordInTrace("badpswd123</wsse:Password>");
-        //Mei:
-        //leakedPasswordChecker.checkForPasswordInTrace("badpswd123</wsse:Password>");
-        //End
 
         return;
 

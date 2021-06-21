@@ -14,8 +14,6 @@ package com.ibm.ws.wssecurity.fat.cxf.samltoken3.common;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import componenttest.custom.junit.runner.FATRunner;
-
-//3/2021
 import componenttest.annotation.SkipForRepeat;
 
 import com.gargoylesoftware.htmlunit.WebClient;
@@ -23,9 +21,8 @@ import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTest;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTestHelpers;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLTestSettings;
-//import com.ibm.ws.wssecurity.fat.cxf.samltoken.common.CXFSAMLCommonUtils;
 import com.ibm.ws.wssecurity.fat.cxf.samltoken3.common.CXFSAMLCommonUtils;
-//3/2021
+
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.custom.junit.runner.Mode;
@@ -47,10 +44,8 @@ import componenttest.topology.impl.LibertyServerWrapper;
  * TFIM IdP. The client invokes the SP application by sending the SAML
  * 2.0 token in the HTTP POST request.
  */
+
 @LibertyServerWrapper
-//orig from CL:
-//@Mode(TestMode.FULL)
-//1/26/2021 updated to set Lite at class level; that is, no mode annotation
 @RunWith(FATRunner.class)
 public class CxfSAMLCallerTests extends SAMLCommonTest {
 
@@ -102,8 +97,6 @@ public class CxfSAMLCallerTests extends SAMLCommonTest {
     //scenario 2
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @Test
-    //Orig:
-    //public void testCxfCallerHttpsPolicy() throws Exception {
     public void testCxfCallerHttpsPolicyEE7Only() throws Exception {
         
     	if (testSAMLServer2 == null) {
@@ -143,7 +136,6 @@ public class CxfSAMLCallerTests extends SAMLCommonTest {
     //3/2021 to run with EE8
     //scenario 2
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    //@AllowedFFDC(value = { "java.util.MissingResourceException", "java.lang.ClassNotFoundException", "java.net.MalformedURLException" }) //@AV999
     //6/2021
     @AllowedFFDC(value = { "java.util.MissingResourceException", "java.lang.ClassNotFoundException", "java.net.MalformedURLException", "java.security.PrivilegedActionException", "java.lang.NoSuchMethodException" })
     @Test
@@ -187,8 +179,6 @@ public class CxfSAMLCallerTests extends SAMLCommonTest {
     //scenario 3 - done
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @Test
-    //Orig:
-    //public void testCxfCaller_WithRealmName() throws Exception {
     public void testCxfCaller_WithRealmNameEE7Only() throws Exception {
         
     	if (testSAMLServer2 == null) {
@@ -268,8 +258,6 @@ public class CxfSAMLCallerTests extends SAMLCommonTest {
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     //scenario 5
     @Test
-    //Orig:
-    //public void testCxfCallerHttpsPolicy_IncludeTokenInSubjectIsFalse() throws Exception {
     public void testCxfCallerHttpsPolicy_IncludeTokenInSubjectIsFalseEE7Only() throws Exception {
         
     	if (testSAMLServer2 == null) {
@@ -303,7 +291,6 @@ public class CxfSAMLCallerTests extends SAMLCommonTest {
     //3/2021 to run with EE8
     //scenario 5
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    //@AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException" }) //@AV999
     @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
     @Test
     public void testCxfCallerHttpsPolicy_IncludeTokenInSubjectIsFalseEE8Only() throws Exception {

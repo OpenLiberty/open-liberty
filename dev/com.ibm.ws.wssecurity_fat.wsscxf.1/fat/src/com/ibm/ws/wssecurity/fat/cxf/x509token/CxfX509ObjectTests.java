@@ -17,15 +17,12 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.util.Set;
 
-//Added 11/2020
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-//Added 11/2020
 import org.junit.runner.RunWith;
 
-//Added 11/2020
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
@@ -35,9 +32,7 @@ import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
-//05/2021
 import componenttest.annotation.AllowedFFDC;
-//Added 11/2020
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -45,15 +40,9 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
-//Added 11/2020
 @Mode(TestMode.FULL)
-//Added 11/2020
 @RunWith(FATRunner.class)
 public class CxfX509ObjectTests {
-
-    //orig from CL
-    //private static String serverName = "com.ibm.ws.wssecurity_fat.x509_2";
-    //private static LibertyServer server = LibertyServerFactory.getLibertyServer(serverName);
 
     //Added 11/2020
     static final private String serverName = "com.ibm.ws.wssecurity_fat.x509_2";
@@ -82,9 +71,6 @@ public class CxfX509ObjectTests {
     public static void setUp() throws Exception {
 
         String thisMethod = "setup";
-
-        //orig from CL
-        //SharedTools.installCallbackHandler(server);
 
         //2/2021
         ServerConfiguration config = server.getServerConfiguration();
@@ -122,10 +108,6 @@ public class CxfX509ObjectTests {
         assertNotNull("defaultHttpEndpoint SSL port may not be started at:" + portNumberSecure,
                       server.waitForStringInLog("CWWKO0219I.*" + portNumberSecure));
 
-        //2/2021 Orig:
-        //x509ClientUrl = "http://localhost:" + portNumber
-        //                + "/x509client/CxfX509SvcClient";
-
         //2/2021
         if (features.contains("jaxws-2.2")) {
             x509ClientUrl = "http://localhost:" + portNumber
@@ -154,8 +136,7 @@ public class CxfX509ObjectTests {
 
     //4/2021 this test expects to fail with EE8 "java.lang.ClassNotFoundException: org.apache.wss4j.common.crypto.CryptoFactory"
     //Aruna is aware of the cause from feature definition API packages; waiting for the next stage of update to fix it
-    //05/2021
-    //@AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
+
     //6/2021
     @AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException", "java.security.PrivilegedActionException",
                            "java.lang.NoSuchMethodException" })

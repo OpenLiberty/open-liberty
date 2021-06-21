@@ -20,10 +20,8 @@ import java.util.Set;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-//Added 10/2020
 import org.junit.runner.RunWith;
 
-//Added 10/2020
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
@@ -33,9 +31,7 @@ import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
-//4/2021
 import componenttest.annotation.AllowedFFDC;
-//Added 10/2020
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -43,17 +39,11 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
-//Added 11/2020
 @Mode(TestMode.FULL)
-//Added 10/2020
 @RunWith(FATRunner.class)
 public class CxfCallerX509SymTests {
 
-    //orig from CL
-    //private static String serverName = "com.ibm.ws.wssecurity_fat.x509symcaller";
-    //private static LibertyServer server = LibertyServerFactory.getLibertyServer(serverName);
-
-    //Added 10/2020
+    //10/2020
     static final private String serverName = "com.ibm.ws.wssecurity_fat.x509symcaller";
     @Server(serverName)
     public static LibertyServer server;
@@ -84,9 +74,6 @@ public class CxfCallerX509SymTests {
     public static void setUp() throws Exception {
 
         String thisMethod = "setup";
-
-        //orig from CL
-        //SharedTools.installCallbackHandler(server);
 
         //2/2021
         ServerConfiguration config = server.getServerConfiguration();
@@ -127,11 +114,6 @@ public class CxfCallerX509SymTests {
         callerUNTClientUrl = "http://localhost:" + portNumber +
                              "/callerclient/CxfCallerSvcClient";
 
-        // using the original port to send the parameters
-        //2/2021 Orig: from CL, CxfCallerBadUNTClient doesn't exist
-        //callerBadUNTClientUrl = "http://localhost:" + portNumber +
-        //                        "/callerclient/CxfCallerBadUNTClient";
-
         // portNumber = "9085";                // for debugging
         Log.info(thisClass, thisMethod, "****portNumber is(2):" + portNumber);
         Log.info(thisClass, thisMethod, "****portNumberSecure is(2):" + portNumberSecure);
@@ -146,15 +128,11 @@ public class CxfCallerX509SymTests {
      *
      */
 
-    //4/2021
-    //@AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
     //5/2021 added PrivilegedActionExc, NoSuchMethodExc as a result of java11 and ee8
     @AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException", "java.security.PrivilegedActionException",
                            "java.lang.NoSuchMethodException" })
     @Test
     public void testCxfCallerSymmetricEndorsingPolicy() throws Exception {
-        //UpdateServerXml.reconfigServer(server, System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_x509_sym.xml");
-        //2/2021 server_x509_sym.xml doesn't exist in publish/servers/com.ibm.ws.wssecurity_fat.x509symcaller
 
         String thisMethod = "testCxfCallerSymmetricEndorsingPolicy";
         methodFull = "testCxfCallerSymmetricEndorsingPolicy";
@@ -397,8 +375,6 @@ public class CxfCallerX509SymTests {
         } catch (Exception e) {
             e.printStackTrace(System.out);
         }
-        //orig from CL
-        //SharedTools.unInstallCallbackHandler(server);
 
         //2/2021
         server.deleteFileFromLibertyInstallRoot("usr/extension/lib/bundles/com.ibm.ws.wssecurity.example.cbh.jar");

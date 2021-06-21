@@ -17,21 +17,16 @@ import java.util.Set;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
-//Added 11/2020
 import org.junit.runner.RunWith;
 
-//Added 11/2020
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.wssecurity.fat.utils.common.CommonTests;
-//Added 11/2020
 import com.ibm.ws.wssecurity.fat.utils.common.PrepCommonSetup;
 import com.ibm.ws.wssecurity.fat.utils.common.UpdateWSDLPortNum;
 
-//2/2021
 import componenttest.annotation.AllowedFFDC;
-//Added 11/2020
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -39,11 +34,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
-//import com.ibm.ws.wssecurity.fat.utils.common.UpdateWSDLPortNum;
-
-//Added 11/2020
 @Mode(TestMode.FULL)
-//Added 11/2020
 @RunWith(FATRunner.class)
 public class CxfEndSupTokensAsymTests extends CommonTests {
 
@@ -66,9 +57,6 @@ public class CxfEndSupTokensAsymTests extends CommonTests {
         ShrinkHelper.defaultDropinApp(server, "endsuptokens", "com.ibm.ws.wssecurity.fat.endsuptokens");
         PrepCommonSetup serverObject = new PrepCommonSetup();
         serverObject.prepareSetup(server);
-
-        //orig from CL
-        //commonSetUp(serverName, "server_asym.xml", true, "/endsuptokensclient/CxfEndSupTokensSvcClient");
 
         //2/2021
         ServerConfiguration config = server.getServerConfiguration();
@@ -98,10 +86,6 @@ public class CxfEndSupTokensAsymTests extends CommonTests {
      *
      */
     @Test
-    //2/2021
-    //@AllowedFFDC("java.util.MissingResourceException") //@AV999
-    //4/2021
-    //@AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
     //5/2021 added PrivilegedActionExc, NoSuchMethodExc as a result of java11 and ee8
     @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException", "java.lang.ClassNotFoundException", "java.security.PrivilegedActionException",
                            "java.lang.NoSuchMethodException" })
@@ -190,8 +174,6 @@ public class CxfEndSupTokensAsymTests extends CommonTests {
      *
      */
     @Test
-    //2/2021
-    //@AllowedFFDC("java.util.MissingResourceException") //@AV999
     //4/2021
     @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException" })
     public void testCXFEndSupTokens0Body() throws Exception {
@@ -236,8 +218,6 @@ public class CxfEndSupTokensAsymTests extends CommonTests {
      *
      */
     @Test
-    //2/2021
-    //@AllowedFFDC("java.util.MissingResourceException") //@AV999
     //4/2021
     @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException" })
     public void testCXFEndSupTokens0BodyElement() throws Exception {
@@ -324,8 +304,6 @@ public class CxfEndSupTokensAsymTests extends CommonTests {
      *
      */
     @Test
-    //2/2021
-    //@AllowedFFDC("java.util.MissingResourceException") //@AV999
     //4/2021
     @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException" })
     public void testCXFEndSupTokens1() throws Exception {
