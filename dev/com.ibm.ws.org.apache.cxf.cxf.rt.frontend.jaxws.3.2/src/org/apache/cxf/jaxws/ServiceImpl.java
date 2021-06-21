@@ -160,6 +160,7 @@ public class ServiceImpl extends ServiceDelegate {
 
         if (url != null) {
             try {
+                LOG.log(Level.FINE, "Calling initializePorts for service: " + serviceName + " and WSDL: " + wsdlURL);
                 initializePorts();
             } catch (ServiceConstructionException e) {
                 throw new WebServiceException(e);
@@ -168,6 +169,7 @@ public class ServiceImpl extends ServiceDelegate {
     }
 
     private void initializePorts() {
+        LOG.log(Level.INFO, "IN initializePorts");
         try {
             Definition def = bus.getExtension(WSDLManager.class).getDefinition(wsdlURL);
             javax.wsdl.Service serv = def.getService(serviceName);
@@ -212,11 +214,20 @@ public class ServiceImpl extends ServiceDelegate {
                 addPort(name, bindingID, address);
             }
         } catch (WebServiceException e) {
+            // Liberty change: log line below is added
+            LOG.log(Level.FINE, "Caught WebServiceException : e");
             throw e;
         } catch (Throwable e) {
             if (e instanceof UncheckedException && LOG.isLoggable(Level.FINE)) {
                 LOG.log(Level.FINE, e.getLocalizedMessage(), e);
             }
+            LOG.log(Level.FINE, "Caught Throwable : e");
+            // Liberty Change
+            // Log the original ConnectionException and throw a new WebServicesException
+            if (e.getMessage().contains("ConnectException")) {
+                LOG.log(Level.FINE, "Throwing WebServiceException: ConnectException...");
+                throw new WebServiceException(e);
+            }// Liberty change: end
             WSDLServiceFactory sf = new WSDLServiceFactory(bus, wsdlURL, serviceName);
             Service service = sf.create();
             for (ServiceInfo si : service.getServiceInfos()) {
@@ -487,21 +498,20 @@ public class ServiceImpl extends ServiceDelegate {
             clientFac.setBindingId(portInfo.getBindingID());
             clientFac.setAddress(portInfo.getAddress());
         }
-        //configureObject(portName.toString() + ".jaxws-client.proxyFactory", proxyFac);
+
         if (clazz != ServiceImpl.class) {
             // handlerchain should be on the generated Service object
             proxyFac.setLoadHandlers(false);
         }
-              
-        Object obj =  AccessController.doPrivileged(new PrivilegedAction<Object>() { 
+
+        Object obj =  AccessController.doPrivileged(new PrivilegedAction<Object>() {
             @Override
             public Object run() {
                         return proxyFac.create();
-  
+
             }
         });
-     // Liberty Change End
-         proxyFac.create();
+        proxyFac.create();
 
         // Configure the Service
         Service service = serviceFactory.getService();
@@ -767,5 +777,3 @@ public class ServiceImpl extends ServiceDelegate {
         }
     }
 }
-
-

@@ -100,7 +100,7 @@ Export-Package: \
   org.apache.cxf.ws.addressing.v200408;version=${exportVer},\
   org.apache.cxf.ws.addressing.wsdl;version=${exportVer},\
   org.apache.cxf.wsdl.http;version=${exportVer}
-
+  
 Private-Package: \
   com.ibm.ws.cxf.core
 

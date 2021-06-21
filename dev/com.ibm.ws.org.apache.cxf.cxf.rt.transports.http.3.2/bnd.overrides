@@ -8,7 +8,7 @@ Bundle-Activator: com.ibm.ws.cxf.transports.http.NoOpActivator
 exportVer=3.4.3
 
 Export-Package: \
-  com.ibm.ws.cxf.transports.http,\
+  com.ibm.ws.cxf.transports.http;version=${exportVer},\
   org.apache.cxf.transport.http;version=${exportVer},\
   org.apache.cxf.transport.http.auth;version=${exportVer},\
   org.apache.cxf.transport.http.osgi;version=${exportVer},\

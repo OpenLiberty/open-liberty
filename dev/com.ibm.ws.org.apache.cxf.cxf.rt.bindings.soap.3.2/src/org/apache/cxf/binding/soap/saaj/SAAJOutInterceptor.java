@@ -112,7 +112,8 @@ public class SAAJOutInterceptor extends AbstractSoapInterceptor {
                 saaj.getSOAPPart().getEnvelope().addHeader();
             }
         } catch (SOAPException e) {
-            throw new SoapFault(new Message("SOAPEXCEPTION", BUNDLE, e.getMessage()),
+            // Liberty change: e.getMessage() parameter is removed from new Message("SOAPEXCEPTION", BUNDLE, e.getMessage())
+            throw new SoapFault(new Message("SOAPEXCEPTION", BUNDLE),
                                 e,
                                 message.getVersion().getSender());
         }
@@ -137,7 +138,8 @@ public class SAAJOutInterceptor extends AbstractSoapInterceptor {
 
 
             } catch (SOAPException e) {
-                throw new SoapFault(new Message("SOAPEXCEPTION", BUNDLE, e.getMessage()), e, version.getSender());
+                // Liberty change: e.getMessage() parameter is removed from new Message("SOAPEXCEPTION", BUNDLE, e.getMessage())
+                throw new SoapFault(new Message("SOAPEXCEPTION", BUNDLE), e, version.getSender());
             }
         } else if (!message.containsKey(ORIGINAL_XML_WRITER)) {
             //as the SOAPMessage already has everything in place, we do not need XMLStreamWriter to write
@@ -220,7 +222,8 @@ public class SAAJOutInterceptor extends AbstractSoapInterceptor {
                         throw new SoapFault(e.getCause().getMessage(), e,
                                             message.getVersion().getSender());
                     }
-                    throw new SoapFault(new Message("SOAPEXCEPTION", BUNDLE, e.getMessage()), e,
+                    // Liberty change: e.getMessage() parameter is removed from new Message("SOAPEXCEPTION", BUNDLE, e.getMessage())
+                    throw new SoapFault(new Message("SOAPEXCEPTION", BUNDLE), e,
                                         message.getVersion().getSender());
                 }
             }
