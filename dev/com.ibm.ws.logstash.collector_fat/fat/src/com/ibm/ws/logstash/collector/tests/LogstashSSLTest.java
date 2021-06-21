@@ -63,7 +63,7 @@ public class LogstashSSLTest extends LogstashCollectorTest {
         Log.info(c, "setUp", "os.name = " + os);
         Log.info(c, "setUp", "runTest = " + runTest);
 
-        if (!runTest) {
+        if (!runTest || (os != null && (os.contains("os/390") || os.contains("z/os") || os.contains("zos")))) {
             return;
         }
 
