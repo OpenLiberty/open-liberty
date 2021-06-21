@@ -39,7 +39,7 @@ public class SessionTest extends EJBJarBndTestBase {
 
     @Test
     public void testSessionEmptyXMI() throws Exception {
-        EJBJarBnd ejbJarBnd = parseEJBJarBinding(ejbJarBinding("") +
+        EJBJarBnd ejbJarBnd = parseEJBJarBnd(ejbJarBinding("") +
                                                  "<ejbBindings>" +
                                                  "  <enterpriseBean xmi:type=\"ejb:Session\" href=\"" + getEJBJarPath() + "#s0\"/>" +
                                                  "</ejbBindings>" +
@@ -72,7 +72,7 @@ public class SessionTest extends EJBJarBndTestBase {
 
     @Test
     public void testSessionAttributeNameTestXMI() throws Exception {
-        EJBJarBnd ejbJarBnd = parseEJBJarBinding(ejbJarBinding("") +
+        EJBJarBnd ejbJarBnd = parseEJBJarBnd(ejbJarBinding("") +
                                                  "<ejbBindings>" +
                                                  "  <enterpriseBean xmi:type=\"ejb:Session\" href=\"" + getEJBJarPath() + "#s0\"/>" +
                                                  "</ejbBindings>" +
@@ -105,7 +105,7 @@ public class SessionTest extends EJBJarBndTestBase {
 
     @Test
     public void testSessionAttributeSimpleBindingTestXMI() throws Exception {
-        EJBJarBnd ejbJarBnd = parseEJBJarBinding(ejbJarBinding("") +
+        EJBJarBnd ejbJarBnd = parseEJBJarBnd(ejbJarBinding("") +
                                                  "<ejbBindings jndiName=\"SimpleBindingName2\">" +
                                                  "  <enterpriseBean xmi:type=\"ejb:Session\" href=\"" + getEJBJarPath() + "#s0\"/>" +
                                                  "</ejbBindings>" +
@@ -195,7 +195,7 @@ public class SessionTest extends EJBJarBndTestBase {
 
     @Test
     public void testSessionElementEJBRefXMI() throws Exception {
-        EJBJarBnd ejbJarBnd = parseEJBJarBinding(ejbJarBinding("") +
+        EJBJarBnd ejbJarBnd = parseEJBJarBnd(ejbJarBinding("") +
                                                  "<ejbBindings>" +
                                                  "  <enterpriseBean xmi:type=\"ejb:Session\" href=\"" + getEJBJarPath() + "#s0\"/>" +
                                                  "  <ejbRefBindings jndiName=\"SBBindingName7\">" +
@@ -241,7 +241,7 @@ public class SessionTest extends EJBJarBndTestBase {
 
     @Test
     public void testSessionElementResourceRefXMI() throws Exception {
-        EJBJarBnd ejbJarBnd = parseEJBJarBinding(ejbJarBinding("") +
+        EJBJarBnd ejbJarBnd = parseEJBJarBnd(ejbJarBinding("") +
                                                  "<ejbBindings>" +
                                                  "  <enterpriseBean xmi:type=\"ejb:Session\" href=\"" + getEJBJarPath() + "#s0\"/>" +
                                                  "  <resRefBindings jndiName=\"resourceRefBinding8\">" +
@@ -297,7 +297,7 @@ public class SessionTest extends EJBJarBndTestBase {
 
     @Test
     public void testSessionElementResourceRefOptionalElementsXMI() throws Exception {
-        EJBJarBnd ejbJarBnd = parseEJBJarBinding(ejbJarBinding("") +
+        EJBJarBnd ejbJarBnd = parseEJBJarBnd(ejbJarBinding("") +
                                                  "<ejbBindings>" +
                                                  "  <enterpriseBean xmi:type=\"ejb:Session\" href=\"" + getEJBJarPath() + "#s0\"/>" +
                                                  "  <resRefBindings jndiName=\"ResourceRefBindingName11\" loginConfigurationName=\"customLoginConfiguration11\">" +
@@ -347,7 +347,7 @@ public class SessionTest extends EJBJarBndTestBase {
 
     @Test
     public void testSessionElementResourceEnvRefTestXMI() throws Exception {
-        EJBJarBnd ejbJarBnd = parseEJBJarBinding(ejbJarBinding("") +
+        EJBJarBnd ejbJarBnd = parseEJBJarBnd(ejbJarBinding("") +
                                                  "<ejbBindings>" +
                                                  "  <enterpriseBean xmi:type=\"ejb:Session\" href=\"" + getEJBJarPath() + "#s0\"/>" +
                                                  "  <resourceEnvRefBindings jndiName=\"resourceEnvRefBindingName9\">" +
@@ -391,7 +391,7 @@ public class SessionTest extends EJBJarBndTestBase {
 
     @Test
     public void testSessionElementMessageDestinationXMI() throws Exception {
-        EJBJarBnd ejbJarBnd = parseEJBJarBinding(ejbJarBinding("") +
+        EJBJarBnd ejbJarBnd = parseEJBJarBnd(ejbJarBinding("") +
                                                  "<ejbBindings>" +
                                                  "  <enterpriseBean xmi:type=\"ejb:Session\" href=\"" + getEJBJarPath() + "#s0\"/>" +
                                                  "  <messageDestinationRefBindings jndiName=\"messageDestinationBindingName10\">" +

@@ -12,45 +12,57 @@ package com.ibm.ws.javaee.ddmodel.appbnd;
 
 import com.ibm.ws.javaee.dd.app.Application;
 import com.ibm.ws.javaee.dd.appbnd.ApplicationBnd;
-import com.ibm.ws.javaee.ddmodel.DDTestBase;
-import com.ibm.ws.javaee.ddmodel.app.ApplicationAdapter;
+import com.ibm.ws.javaee.ddmodel.app.AppTestBase;
 
-public class AppBndTestBase extends DDTestBase {
-    Application parseApplication(String xml) throws Exception {
-        return parse(xml, new ApplicationAdapter(), Application.DD_NAME);
+public class AppBndTestBase extends AppTestBase {
+    protected static ApplicationBndAdapter createAppBndAdapter() {
+        return new ApplicationBndAdapter();
+    }
+    
+    protected static ApplicationBnd parseAppBndXMI(String ddText, Application app) throws Exception {
+        return parseAppBndXMI(ddText, app, null);
     }
 
-    protected static String app14(String body) {
-        return "<application" +
-                   " xmlns=\"http://java.sun.com/xml/ns/j2ee\"" +
-                   " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-                   " xsi:schemaLocation=\"http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/application_1_4.xsd\"" +
-                   " version=\"1.4\"" +
-                   " id=\"Application_ID\"" +
-               ">" + "\n" +
-               body + "\n" +
-               "</application>" + "\n";
+    protected static ApplicationBnd parseAppBndXMI(
+            String ddText,
+            Application app,
+            String altMessage, String... messages) throws Exception {
+
+        String ddPath = ApplicationBnd.XMI_BND_NAME;         
+
+        return parseAppBnd(ddText, ddPath, app, altMessage, messages);
+    }
+    
+    protected static ApplicationBnd parseAppBndXML(String ddText) throws Exception {
+            return parseAppBndXML(ddText, null);
+    }
+
+    protected static ApplicationBnd parseAppBndXML(
+            String ddText,
+            String altMessage, String... messages) throws Exception {
+
+        String ddPath = ApplicationBnd.XML_BND_NAME; 
+        
+        return parseAppBnd(ddText, ddPath, null, altMessage, messages);
+    }    
+
+    protected static ApplicationBnd parseAppBnd(
+            String ddText, String ddPath,
+            Application app,
+            String altMessage, String... messages) throws Exception {
+
+        String appPath = null;
+        String modulePath = "/root/wlp/usr/servers/server1/apps/myEAR.ear";
+        String fragmentPath = null;
+
+        return parse(
+                appPath, modulePath, fragmentPath,
+                ddText, createAppBndAdapter(), ddPath,
+                Application.class, app,
+                altMessage, messages);
     }
 
     //
-
-    ApplicationBnd parseXML(String xml, String... messages) throws Exception {
-        return parse(xml,
-                new ApplicationBndAdapter(),
-                ApplicationBnd.XML_BND_NAME,
-                Application.class,
-                null,
-                messages);
-    }
-
-    ApplicationBnd parseXMI(String xml, Application app, String... messages) throws Exception {
-        return parse(xml,
-                new ApplicationBndAdapter(),
-                ApplicationBnd.XMI_BND_NAME,
-                Application.class,
-                app,
-                messages);
-    }
 
     protected static final String appBnd10Head = 
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +

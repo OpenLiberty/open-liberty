@@ -29,42 +29,98 @@ import com.ibm.wsspi.artifact.ArtifactEntry;
 import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 
 public class DDTestBase {
-    protected final Mockery mockery = new Mockery();
-    protected int mockId;
+    // 1.2
+    // 1.3
+    //
+    // 1.4, http://java.sun.com/xml/ns/j2ee
+    // 5,   http://java.sun.com/xml/ns/javaee
+    // 6,   http://java.sun.com/xml/ns/javaee
+    // 7,   http://xmlns.jcp.org/xml/ns/javaee
+    // 8,   http://xmlns.jcp.org/xml/ns/javaee
+    //
+    // 9,   https://jakarta.ee/xml/ns/jakartaee    
+    
+    protected static final Mockery mockery = new Mockery();
+    protected static int mockId;
 
-    protected <T, A> T parse(
-        String xml,
-        ContainerAdapter<T> adapter,
-        String path, String... messages) throws Exception {
-
-        return parse(xml, adapter, path, null, null, messages);
-    }
-
-    protected <T, A> T parse(
-        String xmlText,
-        ContainerAdapter<T> adapter,
-        String ddPath,
-        Class<A> extraAdaptClass, A extraAdaptValue,
-        String... messages) throws Exception {
-
-        return parse(xmlText, adapter, ddPath, extraAdaptClass, extraAdaptValue, null, null, messages);
+    protected static int generateId() {
+        return mockId++;
     }
 
     // Parse using a container adapter.    
-    protected <T, A, N> T parse(
-        String xmlText,
-        ContainerAdapter<T> adapter,
-        String ddPath,
+
+    protected static <T, A> T parse(
+            String appPath, String modulePath, String fragmentPath,
+            String ddText, ContainerAdapter<T> ddAdapter, String ddPath) throws Exception {
+
+        return parse(appPath, modulePath, fragmentPath,
+                     ddText, ddAdapter, ddPath,
+                     null);
+    }
+
+    protected static <T, A> T parse(
+            String appPath, String modulePath, String fragmentPath,            
+            String ddText, ContainerAdapter<T> ddAdapter, String ddPath,
+            String altMessage, String... messages) throws Exception {
+
+        return parse(appPath, modulePath, fragmentPath,
+                     ddText, ddAdapter, ddPath,
+                     null, null,
+                     altMessage, messages);
+    }
+
+    protected static <T, A> T parse(
+            String appPath, String modulePath, String fragmentPath,            
+            String ddText, ContainerAdapter<T> ddAdapter, String ddPath,
+            Class<A> extraAdaptClass, A extraAdaptValue) throws Exception {
+        
+        return parse(
+                appPath, modulePath, fragmentPath,
+                ddText, ddAdapter, ddPath,
+                extraAdaptClass, extraAdaptValue,
+                null);
+    }
+
+    protected static <T, A> T parse(
+            String appPath, String modulePath, String fragmentPath,            
+            String ddText, ContainerAdapter<T> ddAdapter, String ddPath,
+            Class<A> extraAdaptClass, A extraAdaptValue,
+            String altMessage, String... messages) throws Exception {
+
+        return parse(
+                appPath, modulePath, fragmentPath,
+                ddText, ddAdapter, ddPath,
+                extraAdaptClass, extraAdaptValue,
+                null, null,
+                altMessage, messages);
+    }
+
+    protected static <T, A, N> T parse(
+            String appPath, String modulePath, String fragmentPath,            
+            String ddText, ContainerAdapter<T> ddAdapter, String ddPath,
+            Class<A> extraAdaptClass, A extraAdaptValue,
+            Class<N> npCacheClass, N npCache) throws Exception {
+
+        return parse(
+                appPath, modulePath, fragmentPath,
+                ddText, ddAdapter, ddPath,
+                extraAdaptClass, extraAdaptValue,
+                npCacheClass, npCache,
+                null);
+    }
+
+    protected static <T, A, N> T parse(
+        String appPath, String modulePath, String fragmentPath,                        
+        String ddText, ContainerAdapter<T> ddAdapter, String ddPath,
         Class<A> extraAdaptClass, A extraAdaptValue,
         Class<N> npCacheClass, N npCache,
-        String... messages) throws Exception {
-
-        String appPath = "/parent/wlp/usr/servers/server1/apps/someApp.ear";
-        String modulePath = "web.war";
-        String fragmentPath = null;
+        String altMessage, String... messages) throws Exception {
 
         OverlayContainer rootOverlay = mockery.mock(OverlayContainer.class, "rootOverlay" + mockId++);
         ArtifactContainer artifactContainer = mockery.mock(ArtifactContainer.class, "artifactContainer" + mockId++);
+
+        wire(rootOverlay, artifactContainer, null, null,
+             npCacheClass, npCache);
 
         Container appRoot = ((appPath == null) ? null : mockery.mock(Container.class, "appRoot" + mockId++));
 
@@ -77,54 +133,42 @@ public class DDTestBase {
         Entry ddEntry = mockery.mock(Entry.class, "ddEntry" + mockId++);
         
         wire(appPath, modulePath, fragmentPath, ddPath,
-             rootOverlay, artifactContainer, null,
              appRoot, moduleEntry, moduleRoot, fragmentEntry, fragmentRoot, ddEntry,
-             xmlText,
-             extraAdaptClass, extraAdaptValue,
-             npCacheClass, npCache);
-
-        Exception boundException;
+             ddText,
+             extraAdaptClass, extraAdaptValue);
 
         try {
-            T returnValue = adapter.adapt(moduleRoot, rootOverlay, artifactContainer, moduleRoot);
-            if ( (messages != null) && (messages.length != 0) ) {
-                throw new Exception("Expected exception text [ " + Arrays.toString(messages) + " ]");
-            }            
+            T returnValue = ddAdapter.adapt(moduleRoot, rootOverlay, artifactContainer, moduleRoot);
+            verifySuccess(altMessage, messages);
             return returnValue;
 
         } catch ( UnableToAdaptException e ) {
-            Throwable cause = e.getCause();
-            if ( cause instanceof Exception ) {
-                boundException = (Exception) cause;
-            } else {
-                boundException = e;
-            }
+            verifyFailure( getCause(e), altMessage, messages );
+            return null;
         }
-
-        if ( (messages != null) && (messages.length != 0) ) {
-            String message = boundException.getMessage();
-            if ( message != null ) {
-                for ( String expected : messages ) {
-                    if ( message.contains(expected) ) {
-                        return null;
-                    }
-                }
-            }
-        }
-        throw boundException;
     }            
 
     // Parse using an entry adapter.
-    protected <T, A> T parse(
-        String xmlText, EntryAdapter<T> adapter, String ddPath,
-        String... messages) throws Exception {
+    
+    protected static <T, A> T parse(
+            String appPath, String modulePath, String fragmentPath,            
+            String xmlText, EntryAdapter<T> adapter, String ddPath) throws Exception {
 
-        String appPath = "/parent/wlp/usr/servers/server1/apps/someApp.ear";
-        String modulePath = "web.war";
-        String fragmentPath = null;
+        return parse(
+                appPath, modulePath, fragmentPath,
+                xmlText, adapter, ddPath,
+                null);
+    }
+
+    protected static <T, A> T parse(
+            String appPath, String modulePath, String fragmentPath,
+            String ddText, EntryAdapter<T> ddAdapter, String ddPath,
+            String altMessage, String... messages) throws Exception {
 
         OverlayContainer rootOverlay = mockery.mock(OverlayContainer.class, "rootOverlay" + mockId++);
         ArtifactEntry artifactEntry = mockery.mock(ArtifactEntry.class, "artifactEntry" + mockId++);
+
+        wire(rootOverlay, null, artifactEntry, ddPath, null, null);
 
         Container appRoot = ((appPath == null) ? null : mockery.mock(Container.class, "appRoot" + mockId++));
 
@@ -137,68 +181,31 @@ public class DDTestBase {
         Entry ddEntry = mockery.mock(Entry.class, "ddEntry" + mockId++);
 
         wire(appPath, modulePath, fragmentPath, ddPath,
-             rootOverlay, null, artifactEntry,
              appRoot, moduleEntry, moduleRoot, fragmentEntry, fragmentRoot, ddEntry,
-             xmlText);
-
-        Exception boundException;
+             ddText,
+             null, null);
 
         try {
-            T returnValue = adapter.adapt(moduleRoot, rootOverlay, artifactEntry, ddEntry);
-            if ( (messages != null) && (messages.length != 0) ) {
-                throw new Exception("Expected exception text [ " + Arrays.toString(messages) + " ]");
-            }            
+            T returnValue = ddAdapter.adapt(moduleRoot, rootOverlay, artifactEntry, ddEntry);
+            verifySuccess(altMessage, messages);
             return returnValue;
 
         } catch ( UnableToAdaptException e ) {
-            Throwable cause = e.getCause();
-            if ( cause instanceof Exception ) {
-                boundException = (Exception) cause;
-            } else {
-                boundException = e;
-            }
+            verifyFailure( getCause(e), altMessage, messages );
+            return null;
         }
-
-        if ( (messages != null) && (messages.length != 0) ) {
-            String message = boundException.getMessage();
-            if ( message != null ) {
-                for ( String expected : messages ) {
-                    if ( message.contains(expected) ) {
-                        return null;
-                    }
-                }
-            }
-        }
-        throw boundException;        
     }
 
-    protected void wire(
-            String appPath, String modulePath, String fragmentPath, String ddPath,
-            OverlayContainer rootOverlay,
-            ArtifactContainer artifactContainer, ArtifactEntry artifactEntry,
-            Container appRoot, Entry moduleEntry,
-            Container moduleRoot, Entry fragmentEntry,
-            Container fragmentRoot, Entry ddEntry,
-            String xmlText) throws UnsupportedEncodingException, UnableToAdaptException {
-
-        wire(appPath, modulePath, fragmentPath, ddPath,
-             rootOverlay, artifactContainer, artifactEntry,
-             appRoot, moduleEntry, moduleRoot, fragmentEntry, fragmentRoot, ddEntry,
-             xmlText,
-             null, null, null, null);
+    protected static Exception getCause(UnableToAdaptException e ) {
+        Throwable cause = e.getCause();
+        return ( (cause instanceof Exception) ? (Exception) cause : e );
     }
-
-    @SuppressWarnings("deprecation")
-    protected <T, A, N> void wire(
-            String appPath, String modulePath, String fragmentPath, String ddPath,
+    
+    protected static <N> void wire(
             OverlayContainer rootOverlay,
-            ArtifactContainer artifactContainer, ArtifactEntry artifactEntry,
-            Container appRoot, Entry moduleEntry,
-            Container moduleRoot, Entry fragmentEntry,
-            Container fragmentRoot, Entry ddEntry,
-            String xmlText,
-            Class<A> extraAdaptClass, A extraAdapt,
-            Class<N> npCacheClass, N npCache) throws UnsupportedEncodingException, UnableToAdaptException {
+            ArtifactContainer artifactContainer,
+            ArtifactEntry artifactEntry, String ddPath,
+            Class<N> npCacheClass, N npCache) {
 
         mockery.checking(new Expectations() {
             {
@@ -210,7 +217,7 @@ public class DDTestBase {
                 allowing(rootOverlay).addToNonPersistentCache(with(any(String.class)), with(any(Class.class)), with(any(Object.class)));
                 allowing(rootOverlay).getFromNonPersistentCache(with(any(String.class)), with(any(Class.class)));
                 will(returnValue(null));
-
+                
                 // An artifact container is provided when parsing
                 // using container adapt.  An artifact entry is
                 // provided when parsing using entry adapt.
@@ -223,7 +230,21 @@ public class DDTestBase {
                     allowing(artifactEntry).getPath();
                     will(returnValue('/' + ddPath));
                 }
+            }
+        });
+    }
 
+    @SuppressWarnings("deprecation")
+    protected static <T, A, N> void wire(
+            String appPath, String modulePath, String fragmentPath, String ddPath,
+            Container appRoot, Entry moduleEntry,
+            Container moduleRoot, Entry fragmentEntry,
+            Container fragmentRoot, Entry ddEntry,
+            String ddText,
+            Class<A> extraAdaptClass, A extraAdapt) throws UnsupportedEncodingException, UnableToAdaptException {
+        
+        mockery.checking(new Expectations() {
+            {        
                 // Wire up the root-of-roots.
                 // If the module root is not the root-of-roots,
                 // wire the module root to the app root.
@@ -304,38 +325,53 @@ public class DDTestBase {
                 allowing(ddEntry).getPath();
                 will(returnValue('/' + ddPath));
                 allowing(ddEntry).adapt(InputStream.class);
-                will(returnValue(new ByteArrayInputStream(xmlText.getBytes("UTF-8"))));
+                will(returnValue(new ByteArrayInputStream(ddText.getBytes("UTF-8"))));
             }
         });
     }
 
     //
 
+    public static final String UNSUPPORTED_DESCRIPTOR_NAMESPACE_ALT_MESSAGE =
+            "unsupported.descriptor.namespace";
     public static final String[] UNSUPPORTED_DESCRIPTOR_NAMESPACE_MESSAGES =
-        { "unsupported.descriptor.namespace" };
+            { "unknown" };
 
+    public static final String UNSUPPORTED_DESCRIPTOR_VERSION_ALT_MESSAGE =
+            "unsupported.descriptor.version";
     public static final String[] UNSUPPORTED_DESCRIPTOR_VERSION_MESSAGES =
-        { "unsupported.descriptor.version" };
-
+            { "unknown" };
+            
+    public static final String UNPROVISIONED_DESCRIPTOR_VERSION_ALT_MESSAGE =    
+            "unprovisioned.descriptor.version";            
     public static final String[] UNPROVISIONED_DESCRIPTOR_VERSION_MESSAGES =
-        { "CWWKC2262E", "unprovisioned.descriptor.version" };        
+            { "CWWKC2262E" };
 
+    public static final String XML_ERROR_ALT_MESSAGE =
+            "xml.error";    
     public static final String[] XML_ERROR_MESSAGES =
-        { "CWWKC2272E", "xml.error" };
+            { "CWWKC2272E" };
 
     //
 
-    public static void verifyMessage(Exception e, String altMessage, String... requiredMessages) {
-        String errorMsg = e.getMessage();
-
-        if ( requiredMessages.length == 0 ) {
-            throw new IllegalArgumentException("No required messages are specified");
+    public static void verifySuccess(String altMessage, String... requiredMessages) {
+        if ( (requiredMessages != null) && (requiredMessages.length > 0) ) {
+            Assert.fail("Expected failure did not occur." +
+                        " Either [ " + altMessage + " ] or all of [ " + Arrays.toString(requiredMessages) + " ] were expected.");
+        }
+    }
+    
+    public static void verifyFailure(Exception e, String altMessage, String... requiredMessages) {
+        if ( (requiredMessages == null) || (requiredMessages.length == 0) ) {        
+            Assert.fail("Unexpected exception [ " + e.getClass() + " ] [ " + e + " ]");
+            return; // Never reached.
         }
 
+        String errorMsg = e.getMessage();
         if ( errorMsg == null ) {
             Assert.fail("Exception [ " + e.getClass() + " ] [ " + e + " ] has a null message." +
                         "Either [ " + altMessage + " ] or all of [ " + Arrays.toString(requiredMessages) + " ] are required.");
-            return; // Never reached; need this to avoid possible null value warnings.
+            return; // Never reached.
         }
 
         if ( errorMsg.contains(altMessage) ) {
@@ -346,6 +382,7 @@ public class DDTestBase {
             if ( !errorMsg.contains(requiredMessage) ) {
                 Assert.fail("Exception [ " + e.getClass() + " ] [ " + e + " ] does not contain [ " + requiredMessage + " ]." +
                             " Either [ " + altMessage + " ] or all of [ " + Arrays.toString(requiredMessages) + " ] are required.");
+                return; // Never reached.
             }
         }
     }    

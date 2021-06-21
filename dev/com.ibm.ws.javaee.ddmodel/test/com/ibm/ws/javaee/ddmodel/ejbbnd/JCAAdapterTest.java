@@ -41,7 +41,7 @@ public class JCAAdapterTest extends EJBJarBndTestBase {
 
     @Test
     public void testJCAAdapterAttributeActivationSpecBindingNameXMI() throws Exception {
-        EJBJarBnd ejbJarBnd = parseEJBJarBinding(ejbJarBinding("") +
+        EJBJarBnd ejbJarBnd = parseEJBJarBnd(ejbJarBinding("") +
                                                  "<ejbBindings xmi:type=\"ejbbnd:MessageDrivenBeanBinding\" activationSpecJndiName=\"activationSpecBindingName1\">" +
                                                  "  <enterpriseBean xmi:type=\"ejb:MessageDriven\" href=\"" + getEJBJarPath() + "#md0\"/>" +
                                                  "</ejbBindings>" +
@@ -83,7 +83,7 @@ public class JCAAdapterTest extends EJBJarBndTestBase {
 
     @Test
     public void testJCAAdapterAttributeActivationSpecAuthAliasXMI() throws Exception {
-        EJBJarBnd ejbJarBnd = parseEJBJarBinding(ejbJarBinding("") +
+        EJBJarBnd ejbJarBnd = parseEJBJarBnd(ejbJarBinding("") +
                                                  "<ejbBindings xmi:type=\"ejbbnd:MessageDrivenBeanBinding\" activationSpecAuthAlias=\"authAlias2\">" +
                                                  "  <enterpriseBean xmi:type=\"ejb:MessageDriven\" href=\"" + getEJBJarPath() + "#md0\"/>" +
                                                  "</ejbBindings>" +
@@ -134,7 +134,7 @@ public class JCAAdapterTest extends EJBJarBndTestBase {
                 "</ejb-jar>");
 
         EJBJarBnd ejbJarBnd =
-            parseEJBJarBinding(
+            parseEJBJarBnd(
                 ejbJarBinding("") +
                     "<ejbBindings xmi:type=\"ejbbnd:MessageDrivenBeanBinding\" " +
                         "activationSpecJndiName=\"activationSpecBindingName3\" " +

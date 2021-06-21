@@ -29,7 +29,7 @@ public class EJBJarBndErrorTest extends EJBJarBndTestBase {
     @Test
     public void testGetVersionError() throws Exception {
         try {
-            parse(ejbJarBndInvalidVersion + "</ejb-jar-bnd>");
+            parseEJBJarBnd(ejbJarBndInvalidVersion + "</ejb-jar-bnd>");
             Assert.fail("An exception should have been thrown.");
         } catch (DDParser.ParseException e) {
             verifyMessage(e,

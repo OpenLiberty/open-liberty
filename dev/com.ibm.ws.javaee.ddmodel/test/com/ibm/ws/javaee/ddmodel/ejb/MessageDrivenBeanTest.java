@@ -46,7 +46,7 @@ public class MessageDrivenBeanTest extends EJBJarTestBase {
     @Test
     public void testMessageDrivenBeanMethods() throws Exception {
         List<EnterpriseBean> beans =
-             parse( ejbJar20(mdbXML), EJBJar.VERSION_4_0 )
+             parseEJBJar( ejbJar20(mdbXML), EJBJar.VERSION_4_0 )
                 .getEnterpriseBeans();
 
         Assert.assertEquals(2, beans.size());
@@ -96,7 +96,7 @@ public class MessageDrivenBeanTest extends EJBJarTestBase {
             
     @Test
     public void testMessageDrivenActivationConfig() throws Exception {
-        List<EnterpriseBean> beans = parse(
+        List<EnterpriseBean> beans = parseEJBJar(
             ejbJar21(mdbMessageDriven0XML), EJBJar.VERSION_4_0)
                 .getEnterpriseBeans();
 
@@ -131,7 +131,7 @@ public class MessageDrivenBeanTest extends EJBJarTestBase {
     @Test
     public void testMessageDrivenActivationConfigEJB20() throws Exception {
         List<EnterpriseBean> beans =
-            parse( ejbJar20(mdbMessageDriven1XML), EJBJar.VERSION_3_2)
+            parseEJBJar( ejbJar20(mdbMessageDriven1XML), EJBJar.VERSION_3_2)
                 .getEnterpriseBeans();
 
         MessageDriven bean0 = (MessageDriven) beans.get(0);
@@ -164,7 +164,7 @@ public class MessageDrivenBeanTest extends EJBJarTestBase {
     @Test
     public void testMessageDrivenActivationConfigEJB20v40() throws Exception {
         List<EnterpriseBean> beans =
-            parse(ejbJar20(mdbMessageDriven2XML), EJBJar.VERSION_4_0)
+            parseEJBJar(ejbJar20(mdbMessageDriven2XML), EJBJar.VERSION_4_0)
                 .getEnterpriseBeans();
 
         MessageDriven bean0 = (MessageDriven) beans.get(0);
@@ -196,7 +196,7 @@ public class MessageDrivenBeanTest extends EJBJarTestBase {
 
     @Test
     public void testMessageDrivenActivationConfigEJB20Exception() throws Exception {
-        parse( ejbJar20(mdbMessageDriven3XML),
+        parseEJBJar( ejbJar20(mdbMessageDriven3XML),
                EJBJar.VERSION_4_0,
                "CWWKC2273E", "invalid.enum.value");
     }
@@ -231,7 +231,7 @@ public class MessageDrivenBeanTest extends EJBJarTestBase {
 
     @Test
     public void testMessageDrivenTimeOutServiceBean() throws Exception {
-        List<EnterpriseBean> beans = parse(
+        List<EnterpriseBean> beans = parseEJBJar(
             ejbJar20(mdbTimeoutXML), EJBJar.VERSION_4_0)
                 .getEnterpriseBeans();
 
@@ -273,7 +273,7 @@ public class MessageDrivenBeanTest extends EJBJarTestBase {
     @Test
     public void testMessageDrivenTransactionalBean() throws Exception {
         List<EnterpriseBean> beans =
-            parse(ejbJar20(mdbTransactionalXML), EJBJar.VERSION_4_0)
+            parseEJBJar(ejbJar20(mdbTransactionalXML), EJBJar.VERSION_4_0)
                 .getEnterpriseBeans();
 
         MessageDriven mdb0 = (MessageDriven) beans.get(0);
@@ -310,7 +310,7 @@ public class MessageDrivenBeanTest extends EJBJarTestBase {
     @Test
     public void testMessageDrivenMethodInterceptorBean() throws Exception {
         List<EnterpriseBean> beans =
-            parse(ejbJar20(mdbInterceptorXML), EJBJar.VERSION_4_0)
+            parseEJBJar(ejbJar20(mdbInterceptorXML), EJBJar.VERSION_4_0)
                 .getEnterpriseBeans();
         
         MessageDriven mdb0 = (MessageDriven) beans.get(0);

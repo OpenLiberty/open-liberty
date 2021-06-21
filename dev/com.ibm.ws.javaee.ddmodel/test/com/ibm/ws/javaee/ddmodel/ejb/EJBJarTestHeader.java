@@ -89,33 +89,32 @@ public class EJBJarTestHeader extends EJBJarTestBase {
     
     //
     
-
     @Test
     public void testEJB21NoNamespace() throws Exception {
-        EJBJar ejbJar = parse(ejbJar21NoNamespace, EJBJar.VERSION_3_0);
+        EJBJar ejbJar = parseEJBJar(ejbJar21NoNamespace, EJBJar.VERSION_3_0);
         Assert.assertEquals( 21, ejbJar.getVersionID() );
     }
 
     @Test
     public void testEJB21NoSchemaInstance() throws Exception {
-        parse(ejbJar21NoSchemaInstance, EJBJar.VERSION_3_0, "CWWKC2272E", "xml.error");
+        parseEJBJar(ejbJar21NoSchemaInstance, EJBJar.VERSION_3_0, "xml.error", "CWWKC2272E");
     }
 
     @Test
     public void testEJB21NoSchemaLocation() throws Exception {
-        EJBJar ejbJar = parse(ejbJar21NoSchemaLocation, EJBJar.VERSION_3_0);
+        EJBJar ejbJar = parseEJBJar(ejbJar21NoSchemaLocation, EJBJar.VERSION_3_0);
         Assert.assertEquals( 21, ejbJar.getVersionID() );
     }
 
     @Test
     public void testEJB21NoXSI() throws Exception {
-        EJBJar ejbJar = parse(ejbJar21NoXSI, EJBJar.VERSION_3_0);
+        EJBJar ejbJar = parseEJBJar(ejbJar21NoXSI, EJBJar.VERSION_3_0);
         Assert.assertEquals( 21, ejbJar.getVersionID() );
     }
 
     @Test
     public void testEJB21NoVersion() throws Exception {
-        EJBJar ejbJar = parse(ejbJar21NoVersion, EJBJar.VERSION_3_0);
+        EJBJar ejbJar = parseEJBJar(ejbJar21NoVersion, EJBJar.VERSION_3_0);
         Assert.assertEquals( 21, ejbJar.getVersionID() );
     }
 
@@ -123,13 +122,13 @@ public class EJBJarTestHeader extends EJBJarTestBase {
     
     @Test
     public void testEJB21NamespaceOnly() throws Exception {
-        EJBJar ejbJar = parse(ejbJar21NamespaceOnly, EJBJar.VERSION_3_0);
+        EJBJar ejbJar = parseEJBJar(ejbJar21NamespaceOnly, EJBJar.VERSION_3_0);
         Assert.assertEquals( 21, ejbJar.getVersionID() );
     }
 
     @Test
     public void testEJB21VersionOnly() throws Exception {
-        EJBJar ejbJar = parse(ejbJar21VersionOnly, EJBJar.VERSION_3_0);
+        EJBJar ejbJar = parseEJBJar(ejbJar21VersionOnly, EJBJar.VERSION_3_0);
         Assert.assertEquals( 21, ejbJar.getVersionID() );
     }
 
@@ -143,25 +142,25 @@ public class EJBJarTestHeader extends EJBJarTestBase {
 
     @Test
     public void testEJB30NamespaceOnlyAt30() throws Exception {
-        EJBJar ejbJar = parse(ejbJar30NamespaceOnly, EJBJar.VERSION_3_0);
+        EJBJar ejbJar = parseEJBJar(ejbJar30NamespaceOnly, EJBJar.VERSION_3_0);
         Assert.assertEquals( 31, ejbJar.getVersionID() );
     }
 
     @Test
     public void testEJB30NamespaceOnlyAt31() throws Exception {
-        EJBJar ejbJar = parse(ejbJar30NamespaceOnly, EJBJar.VERSION_3_1);
+        EJBJar ejbJar = parseEJBJar(ejbJar30NamespaceOnly, EJBJar.VERSION_3_1);
         Assert.assertEquals( 31, ejbJar.getVersionID() );
     }    
     
     @Test
     public void testEJB30NamespaceOnlyAt40() throws Exception {
-        EJBJar ejbJar = parse(ejbJar30NamespaceOnly, EJBJar.VERSION_4_0);
+        EJBJar ejbJar = parseEJBJar(ejbJar30NamespaceOnly, EJBJar.VERSION_4_0);
         Assert.assertEquals( 31, ejbJar.getVersionID() );
     }        
 
     @Test
     public void testEJB30VersionOnly() throws Exception {
-        EJBJar ejbJar = parse(ejbJar30VersionOnly, EJBJar.VERSION_3_0);
+        EJBJar ejbJar = parseEJBJar(ejbJar30VersionOnly, EJBJar.VERSION_3_0);
         Assert.assertEquals( 30, ejbJar.getVersionID() );
     }
 
@@ -172,17 +171,17 @@ public class EJBJarTestHeader extends EJBJarTestBase {
 
     @Test
     public void testEJB30VersionMismatch() throws Exception {
-        EJBJar ejbJar = parse(ejbJar30VersionMismatch, EJBJar.VERSION_3_0);
+        EJBJar ejbJar = parseEJBJar(ejbJar30VersionMismatch, EJBJar.VERSION_3_0);
         Assert.assertEquals( 30, ejbJar.getVersionID() );
     }
 
     @Test
     public void testEJBUnknownNamespace() throws Exception {
-        parse(ejbJarUnknownNamespace, EJBJar.VERSION_3_0, "unsupported.descriptor.namespace");
+        parseEJBJar(ejbJarUnknownNamespace, EJBJar.VERSION_3_0, "unsupported.descriptor.namespace", "unknown");
     }
 
     @Test
     public void testEJBUnknownVersion() throws Exception {
-        parse(ejbJarUnknownVersion, EJBJar.VERSION_3_0, "unsupported.descriptor.version");
+        parseEJBJar(ejbJarUnknownVersion, EJBJar.VERSION_3_0, "unsupported.descriptor.version", "unknown");
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2016 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import com.ibm.ws.javaee.dd.ejbbnd.EJBJarBnd;
 import com.ibm.ws.javaee.ddmodel.DDTestBase;
 import com.ibm.ws.javaee.ddmodel.ejb.EJBJarDDParserVersion;
 import com.ibm.ws.javaee.ddmodel.ejb.EJBJarEntryAdapter;
+import com.ibm.ws.javaee.ddmodel.ejb.EJBJarTestBase;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
 import com.ibm.wsspi.adaptable.module.NonPersistentCache;
@@ -34,81 +35,28 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainer;
  * -concentrate on the pristine path where the ejb-jar-bnd.xml file is
  * well formed.
  */
-public class EJBJarBndTestBase extends DDTestBase {
+public class EJBJarBndTestBase extends EJBJarTestBase {
     protected boolean isWarModule = false;
 
     protected String getEJBJarPath() {
         return isWarModule ? "WEB-INF/ejb-jar.xml" : "META-INF/ejb-jar.xml";
     }
 
-    public EJBJarBnd parse(String xml) throws Exception {
-        return parse(xml, null);
+    public EJBJarBnd parseEJBJarBnd(String xml) throws Exception {
+        return parseEJBJarBnd(xml, (EJBJar) null);
     }
 
-    public EJBJarBnd parseEJBJarBinding(String xml, EJBJar ejbJar) throws Exception {
-        return parse(xml, ejbJar);
+    public EJBJarBnd getEJBJarBnd(String xml) throws Exception {
+        return parseEJBJarBnd(xml, (EJBJar) null);
     }
 
-    private EJBJarBnd parse(String xml, EJBJar ejbJar) throws Exception {
+    public EJBJarBnd parseEJBJarBnd(String xml, EJBJar ejbJar) throws Exception {
         boolean xmi = ejbJar != null;
         WebModuleInfo moduleInfo = isWarModule ? mockery.mock(WebModuleInfo.class, "webModuleInfo" + mockId++) : null;
         String entryName = isWarModule ?
                         (xmi ? EJBJarBndAdapter.XMI_BND_IN_WEB_MOD_NAME : EJBJarBndAdapter.XML_BND_IN_WEB_MOD_NAME) :
                         (xmi ? EJBJarBndAdapter.XMI_BND_IN_EJB_MOD_NAME : EJBJarBndAdapter.XML_BND_IN_EJB_MOD_NAME);
         return parse(xml, new EJBJarBndAdapter(), entryName, EJBJar.class, ejbJar, WebModuleInfo.class, moduleInfo);
-    }
-
-    public EJBJarBnd getEJBJarBnd(String jarString) throws Exception {
-        return parse(jarString, (EJBJar) null);
-    }
-
-    public EJBJar parseEJBJar(String xml) throws Exception {
-        return parseEJBJar(xml, EJBJar.VERSION_3_2);
-    }
-
-    public EJBJar parseEJBJar(String xml, int maxVersion) throws Exception {
-        EJBJarEntryAdapter adapter = new EJBJarEntryAdapter();
-        @SuppressWarnings("unchecked")
-        ServiceReference<EJBJarDDParserVersion> versionRef = mockery.mock(ServiceReference.class, "sr" + mockId++);
-        Container root = mockery.mock(Container.class, "root" + mockId++);
-        Entry entry = mockery.mock(Entry.class, "entry" + mockId++);
-        OverlayContainer rootOverlay = mockery.mock(OverlayContainer.class, "rootOverlay" + mockId++);
-        ArtifactEntry artifactEntry = mockery.mock(ArtifactEntry.class, "artifactContainer" + mockId++);
-        NonPersistentCache nonPC = mockery.mock(NonPersistentCache.class, "nonPC" + mockId++);
-        WebModuleInfo moduleInfo = isWarModule ? mockery.mock(WebModuleInfo.class, "webModuleInfo" + mockId++) : null;
-
-        mockery.checking(new Expectations() {
-            {
-                allowing(artifactEntry).getPath();
-                will(returnValue('/' + getEJBJarPath()));
-
-                allowing(root).adapt(NonPersistentCache.class);
-                will(returnValue(nonPC));
-                allowing(nonPC).getFromCache(WebModuleInfo.class);
-                will(returnValue(moduleInfo));
-
-                allowing(entry).getPath();
-                will(returnValue('/' + getEJBJarPath()));
-
-                allowing(entry).adapt(InputStream.class);
-                will(returnValue(new ByteArrayInputStream(xml.getBytes("UTF-8"))));
-
-                allowing(rootOverlay).getFromNonPersistentCache(with(any(String.class)), with(EJBJar.class));
-                will(returnValue(null));
-                allowing(rootOverlay).addToNonPersistentCache(with(any(String.class)), with(EJBJar.class), with(any(EJBJar.class)));
-
-                allowing(versionRef).getProperty(EJBJarDDParserVersion.VERSION);
-                will(returnValue(maxVersion));
-            }
-        });
-
-        adapter.setVersion(versionRef);
-        try {
-            return adapter.adapt(root, rootOverlay, artifactEntry, entry);
-        } catch (UnableToAdaptException e) {
-            Throwable cause = e.getCause();
-            throw cause instanceof Exception ? (Exception) cause : e;
-        }
     }
 
     static final String ejbJar21() {
@@ -222,13 +170,13 @@ public class EJBJarBndTestBase extends DDTestBase {
     //
 
     protected void verifyMissingAttribute(Exception e, String elementName, String attributeName) {
-        verifyMessage(e,
+        verifyFailure(e,
                 "required.attribute.missing",
                 "CWWKC2251", elementName, attributeName, "ibm-ejb-jar-bnd.xml");
     }
 
     protected void verifyDuplicateEJBName(Exception e, String beanName) {
-        verifyMessage(e,
+        verifyFailure(e,
                 "found.duplicate.ejbname",
                 "CWWKC2269", beanName, "ibm-ejb-jar-bnd.xml");        
     }    

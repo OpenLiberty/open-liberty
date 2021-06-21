@@ -33,7 +33,7 @@ import com.ibm.ws.javaee.dd.webext.ServletCacheConfig;
 import com.ibm.ws.javaee.dd.webext.ServletExtension;
 import com.ibm.ws.javaee.dd.webext.WebExt;
 
-public class WebExtTest extends WebExtTestBase {
+public class WebAppExtTest extends WebAppExtTestBase {
 
     @Test
     public void testGetVersion() throws Exception {
@@ -1225,7 +1225,7 @@ public class WebExtTest extends WebExtTestBase {
             }
         });
 
-        WebExt webExt = parse(webExt11() +
+        WebExt webExt = parseAppBnd(webExt11() +
                               "<context-root uri=\"TestContextRoot\" />" +
                               "</web-ext>", new WebExtAdapter(), WebExt.XML_EXT_NAME, WebApp.class, webAppMock);
 
@@ -1244,7 +1244,7 @@ public class WebExtTest extends WebExtTestBase {
             }
         });
 
-        WebExt webExt = parse(webExt11() +
+        WebExt webExt = parseAppBnd(webExt11() +
                               "<context-root uri=\"TestContextRoot\" />" +
                               "</web-ext>", new WebExtAdapter(), WebExt.XML_EXT_NAME, WebApp.class, webAppMock);
 

@@ -20,40 +20,41 @@ import org.junit.Test;
 import com.ibm.ws.javaee.dd.appext.ApplicationExt;
 import com.ibm.ws.javaee.dd.appext.ModuleExtension;
 
-public class ApplicationExtTest extends ApplicationExtTestBase {
+public class ApplicationExtTest extends AppExtTestBase {
     @Test
     public void testGetVersion() throws Exception {
-        Assert.assertEquals("XMI", parseApplicationExtXMI(applicationExtension("") + "</applicationext:ApplicationExtension>",
-                                                          parseApplication(application14() + "</application>")).getVersion());
-        Assert.assertEquals("Version should be 1.0", "1.0", parseApplicationExtXML(applicationExt10("") + "</application-ext>").getVersion());
-        Assert.assertEquals("Version should be 1.1", "1.1", parseApplicationExtXML(applicationExt11("") + "</application-ext>").getVersion());
+        Assert.assertEquals("XMI",
+                parseAppExtXMI(appExt20("") + "</applicationext:ApplicationExtension>",
+                               parseApp(app14Head + "</application>")).getVersion());
+        Assert.assertEquals("Version should be 1.0", "1.0", parseAppExtXML(appExt10("") + "</application-ext>").getVersion());
+        Assert.assertEquals("Version should be 1.1", "1.1", parseAppExtXML(appExt11("") + "</application-ext>").getVersion());
     }
 
     @Test
     public void testClientMode() throws Exception {
-        ApplicationExt appExt = parseApplicationExtXML(applicationExt10("") + "</application-ext>");
+        ApplicationExt appExt = parseAppExtXML(appExt10("") + "</application-ext>");
         Assert.assertNull(appExt.getClientMode());
         Assert.assertFalse(appExt.isSetClientMode());
 
-        appExt = parseApplicationExtXML(applicationExt10("client-mode=\"ISOLATED\"") + "</application-ext>");
+        appExt = parseAppExtXML(appExt10("client-mode=\"ISOLATED\"") + "</application-ext>");
         Assert.assertEquals(ApplicationExt.ClientModeEnum.ISOLATED, appExt.getClientMode());
         Assert.assertTrue(appExt.isSetClientMode());
 
-        appExt = parseApplicationExtXML(applicationExt10("client-mode=\"FEDERATED\"") + "</application-ext>");
+        appExt = parseAppExtXML(appExt10("client-mode=\"FEDERATED\"") + "</application-ext>");
         Assert.assertEquals(ApplicationExt.ClientModeEnum.FEDERATED, appExt.getClientMode());
         Assert.assertTrue(appExt.isSetClientMode());
 
-        appExt = parseApplicationExtXML(applicationExt10("client-mode=\"SERVER_DEPLOYED\"") + "</application-ext>");
+        appExt = parseAppExtXML(appExt10("client-mode=\"SERVER_DEPLOYED\"") + "</application-ext>");
         Assert.assertEquals(ApplicationExt.ClientModeEnum.SERVER_DEPLOYED, appExt.getClientMode());
         Assert.assertTrue(appExt.isSetClientMode());
     }
 
     @Test
     public void testModuleExtension() throws Exception {
-        ApplicationExt appExt = parseApplicationExtXML(applicationExt10("") + "</application-ext>");
+        ApplicationExt appExt = parseAppExtXML(appExt10("") + "</application-ext>");
         Assert.assertEquals(Collections.emptyList(), appExt.getModuleExtensions());
 
-        appExt = parseApplicationExtXML(applicationExt10("") +
+        appExt = parseAppExtXML(appExt10("") +
                                         "<module-extension/>" +
                                         "<module-extension name=\"n\">" +
                                         "  <alt-bindings uri=\"ab\"/>" +
@@ -90,11 +91,13 @@ public class ApplicationExtTest extends ApplicationExtTestBase {
 
     @Test
     public void testXMIModuleExtension() throws Exception {
-        ApplicationExt appExt = parseApplicationExtXMI(applicationExtension("") + "</applicationext:ApplicationExtension>",
-                                                       parseApplication(application14() + "</application>"));
+        ApplicationExt appExt = parseAppExtXMI(
+                appExt20("") + "</applicationext:ApplicationExtension>",
+                parseApp(app14Head + "</application>"));
+
         Assert.assertEquals(Collections.emptyList(), appExt.getModuleExtensions());
 
-        appExt = parseApplicationExtXMI(applicationExtension("xmi:id=\"ApplicationExtension_ID\"") +
+        appExt = parseAppExtXMI(appExt20("xmi:id=\"ApplicationExtension_ID\"") +
                                         "<moduleExtensions dependentClasspath=\"dc\">" +
                                         "  <applicationExtension href=\"META-INF/ibm-application-ext.xmi#ApplicationExtension_ID\"/>" +
                                         "</moduleExtensions>" +
@@ -102,13 +105,13 @@ public class ApplicationExtTest extends ApplicationExtTestBase {
                                         "  <module href=\"META-INF/application.xml#Module_ID\"/>" +
                                         "</moduleExtensions>" +
                                         "</applicationext:ApplicationExtension>",
-                                        parseApplication(application14() +
-                                                         "<module id=\"Module_ID\">" +
-                                                         "  <web>" +
-                                                         "    <web-uri>n</web-uri>" +
-                                                         "  </web>" +
-                                                         "</module>" +
-                                                         "</application>"));
+                                        parseApp(app14Head +
+                                                "<module id=\"Module_ID\">" +
+                                                "  <web>" +
+                                                "    <web-uri>n</web-uri>" +
+                                                "  </web>" +
+                                                "</module>" +
+                                                "</application>"));
         List<ModuleExtension> mes = appExt.getModuleExtensions();
         Assert.assertEquals(mes.toString(), 2, mes.size());
 
@@ -137,10 +140,10 @@ public class ApplicationExtTest extends ApplicationExtTestBase {
 
     @Test
     public void testReloadInterval() throws Exception {
-        ApplicationExt appExt = parseApplicationExtXML(applicationExt10("") + "</application-ext>");
+        ApplicationExt appExt = parseAppExtXML(appExt10("") + "</application-ext>");
         Assert.assertFalse(appExt.isSetReloadInterval());
 
-        appExt = parseApplicationExtXML(applicationExt10("") +
+        appExt = parseAppExtXML(appExt10("") +
                                         "<reload-interval value=\"1234\"/>" +
                                         "</application-ext>");
         Assert.assertTrue(appExt.isSetReloadInterval());
@@ -149,28 +152,28 @@ public class ApplicationExtTest extends ApplicationExtTestBase {
 
     @Test
     public void testXMIReloadInterval() throws Exception {
-        ApplicationExt appExt = parseApplicationExtXMI(applicationExtension("") + "</applicationext:ApplicationExtension>",
-                                                       parseApplication(application14() + "</application>"));
+        ApplicationExt appExt = parseAppExtXMI(appExt20("") + "</applicationext:ApplicationExtension>",
+                                                       parseApp(app14Head + "</application>"));
         Assert.assertFalse(appExt.isSetReloadInterval());
 
-        appExt = parseApplicationExtXMI(applicationExtension("") +
+        appExt = parseAppExtXMI(appExt20("") +
                                         "<reloadInterval xsi:nil=\"true\"/>" +
                                         "</applicationext:ApplicationExtension>",
-                                        parseApplication(application14() + "</application>"));
+                                        parseApp(app14Head + "</application>"));
         Assert.assertFalse(appExt.isSetReloadInterval());
 
-        appExt = parseApplicationExtXMI(applicationExtension("reloadInterval=\"1234\"") + "</applicationext:ApplicationExtension>",
-                                        parseApplication(application14() + "</application>"));
+        appExt = parseAppExtXMI(appExt20("reloadInterval=\"1234\"") + "</applicationext:ApplicationExtension>",
+                                        parseApp(app14Head + "</application>"));
         Assert.assertTrue(appExt.isSetReloadInterval());
         Assert.assertEquals(1234, appExt.getReloadInterval());
     }
 
     @Test
     public void testSharedSessionContext() throws Exception {
-        ApplicationExt appExt = parseApplicationExtXML(applicationExt10("") + "</application-ext>");
+        ApplicationExt appExt = parseAppExtXML(appExt10("") + "</application-ext>");
         Assert.assertFalse(appExt.isSetSharedSessionContext());
 
-        appExt = parseApplicationExtXML(applicationExt10("") +
+        appExt = parseAppExtXML(appExt10("") +
                                         "<shared-session-context value=\"true\"/>" +
                                         "</application-ext>");
         Assert.assertTrue(appExt.isSetSharedSessionContext());
@@ -179,12 +182,12 @@ public class ApplicationExtTest extends ApplicationExtTestBase {
 
     @Test
     public void testXMISharedSessionContext() throws Exception {
-        ApplicationExt appExt = parseApplicationExtXMI(applicationExtension("") + "</applicationext:ApplicationExtension>",
-                                                       parseApplication(application14() + "</application>"));
+        ApplicationExt appExt = parseAppExtXMI(appExt20("") + "</applicationext:ApplicationExtension>",
+                                                       parseApp(app14Head + "</application>"));
         Assert.assertFalse(appExt.isSetSharedSessionContext());
 
-        appExt = parseApplicationExtXMI(applicationExtension("sharedSessionContext=\"true\"") + "</applicationext:ApplicationExtension>",
-                                        parseApplication(application14() + "</application>"));
+        appExt = parseAppExtXMI(appExt20("sharedSessionContext=\"true\"") + "</applicationext:ApplicationExtension>",
+                                        parseApp(app14Head + "</application>"));
         Assert.assertTrue(appExt.isSetSharedSessionContext());
         Assert.assertTrue(appExt.isSharedSessionContext());
     }

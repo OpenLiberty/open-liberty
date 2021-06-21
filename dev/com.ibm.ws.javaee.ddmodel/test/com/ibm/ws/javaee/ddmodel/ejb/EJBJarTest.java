@@ -82,9 +82,6 @@ public class EJBJarTest extends EJBJarTestBase {
     
     @Test
     public void testGetVersionID() throws Exception {
-        String[] unsupportedSchemaMessages =
-            { "CWWKC2262E", "unprovisioned.descriptor.version" };        
-        
         for ( int schemaVersion : EJBJar.VERSIONS ) {
             for ( int maxSchemaVersion : EJBJar.VERSIONS ) {
                 // The EJB parser uses a maximum schema
@@ -101,22 +98,19 @@ public class EJBJarTest extends EJBJarTestBase {
                     effectiveMax = maxSchemaVersion;
                 }
 
-                String[] expectedMessages;
+                String altMessage;
+                String[] messages;
                 if ( schemaVersion > effectiveMax ) {
-                    expectedMessages = unsupportedSchemaMessages;
+                    altMessage = UNPROVISIONED_DESCRIPTOR_VERSION_ALT_MESSAGE;
+                    messages = UNPROVISIONED_DESCRIPTOR_VERSION_MESSAGES;
                 } else {
-                    expectedMessages = null;
+                    altMessage = null;
+                    messages = null;
                 }
 
-                // System.out.println("Schema [ " + schemaVersion + " ]");
-                // System.out.println("Maximum [ " + effectiveMax + " ] [ " + maxSchemaVersion + " ]");
-                // if ( expectedMessages != null ) {
-                //     System.out.println("Messages [ " + Arrays.toString(expectedMessages) + " ]");
-                // }
-
-                EJBJar ejbJar = parse(
-                    ejbJar(schemaVersion, "", ""),
-                    maxSchemaVersion, expectedMessages );
+                EJBJar ejbJar = parseEJBJar(
+                    ejbJar(schemaVersion, "", ""), maxSchemaVersion, !EJB_IN_WAR,
+                    altMessage, messages );
 
                 if ( schemaVersion <= effectiveMax ) {
                     Assert.assertEquals( schemaVersion, ejbJar.getVersionID() );
@@ -128,10 +122,10 @@ public class EJBJarTest extends EJBJarTestBase {
     @Test
     public void testGetModuleName() throws Exception {
         Assert.assertNull(
-            parse( ejbJar31("", ""), EJBJar.VERSION_4_0)
+            parseEJBJar( ejbJar31("", ""), EJBJar.VERSION_4_0)
                 .getModuleName() );
         Assert.assertEquals("test",
-            parse(ejbJar31("", "<module-name>test</module-name>"), EJBJar.VERSION_4_0)
+            parseEJBJar(ejbJar31("", "<module-name>test</module-name>"), EJBJar.VERSION_4_0)
                 .getModuleName());
     }
 
@@ -147,16 +141,16 @@ public class EJBJarTest extends EJBJarTestBase {
     public void testIsMetadataComplete() throws Exception {
         for ( int version : EJBJar.VERSIONS ) {
             Assert.assertFalse(
-                parse( ejbJar(version, "", ""), EJBJar.VERSION_4_0)
+                parseEJBJar( ejbJar(version, "", ""), EJBJar.VERSION_4_0)
                     .isMetadataComplete() );
         }
 
         for ( int version : EJBJar.ANNOTATION_ENABLED_VERSIONS ) {
             Assert.assertTrue(
-                parse( ejbJar(version, "metadata-complete=\"true\"", ""), EJBJar.VERSION_4_0)
+                parseEJBJar( ejbJar(version, "metadata-complete=\"true\"", ""), EJBJar.VERSION_4_0)
                     .isMetadataComplete() );
             Assert.assertFalse(
-                parse( ejbJar(version, "metadata-complete=\"false\"", ""), EJBJar.VERSION_4_0)
+                parseEJBJar( ejbJar(version, "metadata-complete=\"false\"", ""), EJBJar.VERSION_4_0)
                     .isMetadataComplete() );
 
             // XML allows attributes to use both single quotes and double quotes.
@@ -165,23 +159,23 @@ public class EJBJarTest extends EJBJarTestBase {
             //      parsing is not the target of these unit tests.
 
             Assert.assertTrue(
-                parse( ejbJar(version, "metadata-complete='true'", ""), EJBJar.VERSION_4_0)
+                parseEJBJar( ejbJar(version, "metadata-complete='true'", ""), EJBJar.VERSION_4_0)
                     .isMetadataComplete() );
             Assert.assertFalse(
-                parse( ejbJar(version, "metadata-complete='false'", ""), EJBJar.VERSION_4_0)
+                parseEJBJar( ejbJar(version, "metadata-complete='false'", ""), EJBJar.VERSION_4_0)
                     .isMetadataComplete() );            
         }
     }
 
     @Test
     public void testDescriptionGroup() throws Exception {
-        DescriptionGroup dg0 = parse( ejbJar30("", ""), EJBJar.VERSION_4_0 );
+        DescriptionGroup dg0 = parseEJBJar( ejbJar30("", ""), EJBJar.VERSION_4_0 );
 
         Assert.assertEquals(Collections.emptyList(), dg0.getDescriptions());
         Assert.assertEquals(Collections.emptyList(), dg0.getDisplayNames());
         Assert.assertEquals(Collections.emptyList(), dg0.getIcons());
 
-        DescriptionGroup dg1 = parse( ejbJar30("", descriptionGroupXML), EJBJar.VERSION_4_0 );
+        DescriptionGroup dg1 = parseEJBJar( ejbJar30("", descriptionGroupXML), EJBJar.VERSION_4_0 );
 
         List<Description> ds = dg1.getDescriptions();
         Assert.assertEquals(ds.toString(), 2, ds.size());
@@ -209,7 +203,7 @@ public class EJBJarTest extends EJBJarTestBase {
 
     @Test
     public void testIconEE13() throws Exception {
-        DescriptionGroup dg = parse(
+        DescriptionGroup dg = parseEJBJar(
             ejbJar20( "<small-icon>si</small-icon>" +
                       "<large-icon>li</large-icon>" ),
             EJBJar.VERSION_4_0);
@@ -224,56 +218,56 @@ public class EJBJarTest extends EJBJarTestBase {
     @Test
     public void testGetEnterpriseBeans() throws Exception {
         Assert.assertEquals(0,
-            parse( ejbJar11(""), EJBJar.VERSION_4_0)
+            parseEJBJar( ejbJar11(""), EJBJar.VERSION_4_0)
                 .getEnterpriseBeans().size() );
     }
 
     @Test
     public void testGetInterceptors() throws Exception {
         Assert.assertNull(
-            parse(ejbJar30("", ""), EJBJar.VERSION_4_0)
+            parseEJBJar(ejbJar30("", ""), EJBJar.VERSION_4_0)
                 .getInterceptors());
         Assert.assertNotNull(
-            parse(ejbJar30("", "<interceptors/>"), EJBJar.VERSION_4_0)
+            parseEJBJar(ejbJar30("", "<interceptors/>"), EJBJar.VERSION_4_0)
                 .getInterceptors() );
     }
 
     @Test
     public void testGetAssemblyDescriptor() throws Exception {
         Assert.assertNull(
-            parse(ejbJar11(""), EJBJar.VERSION_4_0)
+            parseEJBJar(ejbJar11(""), EJBJar.VERSION_4_0)
                 .getAssemblyDescriptor() );
 
         Assert.assertNotNull(
-            parse(ejbJar11("<assembly-descriptor/>"), EJBJar.VERSION_4_0)
+            parseEJBJar(ejbJar11("<assembly-descriptor/>"), EJBJar.VERSION_4_0)
                 .getAssemblyDescriptor() );
     }
 
     @Test
     public void testRelationships() throws Exception {
         Assert.assertNull(
-            parse(ejbJar21(""), EJBJar.VERSION_4_0)
+            parseEJBJar(ejbJar21(""), EJBJar.VERSION_4_0)
                 .getRelationshipList() );
         Assert.assertNotNull(
-            parse( ejbJar21("<relationships></relationships>"), EJBJar.VERSION_4_0)
+            parseEJBJar( ejbJar21("<relationships></relationships>"), EJBJar.VERSION_4_0)
                 .getRelationshipList() );
     }
 
     @Test
     public void testGetEjbClientJar() throws Exception {
         Assert.assertNull(
-            parse(ejbJar11(""), EJBJar.VERSION_4_0)
+            parseEJBJar(ejbJar11(""), EJBJar.VERSION_4_0)
                 .getEjbClientJar() );
 
         Assert.assertEquals("client.jar",
-            parse(ejbJar11("<ejb-client-jar>client.jar</ejb-client-jar>"), EJBJar.VERSION_4_0)
+            parseEJBJar(ejbJar11("<ejb-client-jar>client.jar</ejb-client-jar>"), EJBJar.VERSION_4_0)
                 .getEjbClientJar());
     }
 
     @Test
     public void testDisplayNames() throws Exception {
         List<DisplayName> displayNameList =
-            parse(ejbJar11( displayNamesXML), EJBJar.VERSION_4_0).getDisplayNames();
+            parseEJBJar(ejbJar11( displayNamesXML), EJBJar.VERSION_4_0).getDisplayNames();
 
         Assert.assertEquals(3, displayNameList.size());
         Assert.assertEquals("DisplayName0", displayNameList.get(0).getValue());
@@ -286,7 +280,7 @@ public class EJBJarTest extends EJBJarTestBase {
     @Test
     public void testIcons() throws Exception {
         List<Icon> iconList =
-            parse( ejbJar11(iconsXML), EJBJar.VERSION_4_0 ).getIcons();
+            parseEJBJar( ejbJar11(iconsXML), EJBJar.VERSION_4_0 ).getIcons();
 
         Assert.assertEquals(3, iconList.size());
         Assert.assertEquals("MySmallIcon0", iconList.get(0).getSmallIcon());
@@ -302,16 +296,8 @@ public class EJBJarTest extends EJBJarTestBase {
 
     @Test
     public void testInvalidRootElement() throws Exception {
-        try {
-            parse(invalidRootElement, EJBJar.VERSION_4_0);
-            Assert.fail("Expected parse exception did not occur");
-        } catch ( Exception e ) {
-            String msg = e.getMessage();
-            Assert.assertTrue("Unexpected exception [ " + e.getMessage() + " ]",
-                    msg.contains("unexpected.root.element") ||
-                    (msg.contains("CWWKC2252") &&
-                     msg.contains("ejb-NOT-jar") &&
-                     msg.contains("ejb-jar.xml")));
-        }
+        parseEJBJar(invalidRootElement, EJBJar.VERSION_4_0,
+                "unexpected.root.element",
+                "CWWKC2252", "ejb-NOT-jar", "ejb-jar.xml");
     }
 }

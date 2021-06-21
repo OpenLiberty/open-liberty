@@ -10,10 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.javaee.ddmodel.app;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.util.Arrays;
-
 import org.jmock.Expectations;
 import org.osgi.framework.ServiceReference;
 
@@ -21,53 +17,9 @@ import com.ibm.ws.javaee.dd.app.Application;
 import com.ibm.ws.javaee.ddmodel.DDParser;
 import com.ibm.ws.javaee.ddmodel.DDTestBase;
 import com.ibm.ws.javaee.version.JavaEEVersion;
-import com.ibm.wsspi.adaptable.module.Container;
-import com.ibm.wsspi.adaptable.module.Entry;
-import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
-import com.ibm.wsspi.artifact.ArtifactContainer;
-import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 
 public class AppTestBase extends DDTestBase {
-
-    @SuppressWarnings("deprecation")
-    protected Application parse(String xmlText, int maxSchemaVersion, String... expectedMessages) throws Exception {
-        OverlayContainer rootOverlay = mockery.mock(OverlayContainer.class, "rootOverlay" + mockId++);
-        ArtifactContainer artifactContainer = mockery.mock(ArtifactContainer.class, "artifactContainer" + mockId++);
-
-        mockery.checking(new Expectations() {
-            {
-                allowing(rootOverlay).getFromNonPersistentCache(with(any(String.class)), with(any(Class.class)));
-                will(returnValue(null));
-                allowing(rootOverlay).addToNonPersistentCache(with(any(String.class)), with(any(Class.class)), with(any(Object.class)));
-
-                allowing(artifactContainer).getPath();
-                will(returnValue("/"));
-            }
-        });
-        
-        Container appRoot = mockery.mock(Container.class, "appRoot" + mockId++);
-        Entry ddEntry = mockery.mock(Entry.class, "ddEntry" + mockId++);
-
-        mockery.checking(new Expectations() {
-            {
-                allowing(appRoot).adapt(Entry.class);
-                will(returnValue(null));
-                allowing(appRoot).getPhysicalPath();
-                will(returnValue("/root/wlp/usr/servers/server1/apps/myEAR.ear"));   
-                allowing(appRoot).getPath();
-                will(returnValue("/"));
-                allowing(appRoot).getEntry(Application.DD_NAME);
-                will(returnValue(ddEntry));
-
-                allowing(ddEntry).getRoot();
-                will(returnValue(appRoot));
-                allowing(ddEntry).getPath();
-                will(returnValue('/' + Application.DD_NAME));
-                allowing(ddEntry).adapt(InputStream.class);
-                will(returnValue(new ByteArrayInputStream(xmlText.getBytes("UTF-8"))));
-            }
-        });
-
+    protected static ApplicationAdapter createAppAdapter(int maxSchemaVersion) {
         @SuppressWarnings("unchecked")
         ServiceReference<JavaEEVersion> versionRef = mockery.mock(ServiceReference.class, "sr" + mockId++);
         String versionText = DDParser.getDottedVersionText(maxSchemaVersion);
@@ -79,51 +31,32 @@ public class AppTestBase extends DDTestBase {
             }
         });
 
-        ApplicationAdapter adapter = new ApplicationAdapter();
-        adapter.setVersion(versionRef);
+        ApplicationAdapter ddAdapter = new ApplicationAdapter();
+        ddAdapter.setVersion(versionRef);
 
-        Application app;
-        Exception boundException;
-
-        try {
-            app = adapter.adapt(appRoot, rootOverlay, artifactContainer, appRoot);
-            if ( (expectedMessages != null) && (expectedMessages.length != 0) ) {
-                throw new Exception("Expected exception text [ " + Arrays.toString(expectedMessages) + " ]");
-            }
-            return app;
-
-        } catch ( UnableToAdaptException e ) {
-            Throwable cause = e.getCause();
-            if ( cause instanceof Exception ) {
-                boundException = (Exception) cause;
-            } else {
-                boundException = e;
-            }
-        }
-
-        if ( (expectedMessages != null) && (expectedMessages.length != 0) ) {
-            String message = boundException.getMessage();
-            if ( message != null ) {
-                for ( String expected : expectedMessages ) {
-                    if ( message.contains(expected) ) {
-                        return null;
-                    }
-                }
-            }
-        }
-        throw boundException;
+        return ddAdapter;
     }
 
-    // 1.2
-    // 1.3
-    // 1.4, http://java.sun.com/xml/ns/j2ee
-    // 5,   http://java.sun.com/xml/ns/javaee
-    // 6,   http://java.sun.com/xml/ns/javaee
-    // 7,   http://xmlns.jcp.org/xml/ns/javaee
-    // 8,   http://xmlns.jcp.org/xml/ns/javaee
-    // 9,   https://jakarta.ee/xml/ns/jakartaee
+    protected static Application parseApp(String ddText) throws Exception {
+        return parseApp(ddText, Application.VERSION_7, null);
+    }
+    
+    protected static Application parseApp(String ddText, int maxSchemaVersion) throws Exception {
+        return parseApp(ddText, maxSchemaVersion, null);
+    }
 
-    // 1.2 and 1.3 are DD based:
+    protected static Application parseApp(String ddText, int maxSchemaVersion, String altMessage, String... messages) throws Exception {
+        String appPath = null;
+        String modulePath = "/root/wlp/usr/servers/server1/apps/myEAR.ear";
+        String fragmentPath = null;
+        String ddPath = Application.DD_NAME;
+
+        ApplicationAdapter ddAdapter = createAppAdapter(maxSchemaVersion);
+        
+        return parse(appPath, modulePath, fragmentPath,
+                     ddText, ddAdapter, ddPath,
+                     altMessage, messages);
+    }
 
     protected static String app12Head =
         "<!DOCTYPE application PUBLIC" +

@@ -57,7 +57,7 @@ public class EnterpriseBeanTest extends EJBJarTestBase {
     @Test
     public void testEnterpriseBeanSecurity() throws Exception {
         List<EnterpriseBean> beans =
-            parse(ejbJar20(ejb0XML), EJBJar.VERSION_4_0)
+            parseEJBJar(ejbJar20(ejb0XML), EJBJar.VERSION_4_0)
                 .getEnterpriseBeans();
 
         Assert.assertEquals(2, beans.size());
@@ -103,7 +103,7 @@ public class EnterpriseBeanTest extends EJBJarTestBase {
     @Test
     public void testEnterpriseBean() throws Exception {
         List<EnterpriseBean> beans =
-            parse(ejbJar11(ejb1XML), EJBJar.VERSION_4_0)
+            parseEJBJar(ejbJar11(ejb1XML), EJBJar.VERSION_4_0)
                 .getEnterpriseBeans();
 
         Assert.assertEquals(3, beans.size());

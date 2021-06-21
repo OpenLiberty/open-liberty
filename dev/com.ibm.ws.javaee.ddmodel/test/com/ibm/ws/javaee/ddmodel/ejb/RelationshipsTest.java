@@ -66,7 +66,7 @@ public class RelationshipsTest extends EJBJarTestBase {
 
     @Test
     public void testRelationships() throws Exception {
-        EJBJar ejbJar = parse( ejbJar20(relationships), EJBJar.VERSION_4_0 );
+        EJBJar ejbJar = parseEJBJar( ejbJar20(relationships), EJBJar.VERSION_4_0 );
         Relationships relationships = ejbJar.getRelationshipList();
 
         List<EJBRelation> ejbRelationList = relationships.getEjbRelations();

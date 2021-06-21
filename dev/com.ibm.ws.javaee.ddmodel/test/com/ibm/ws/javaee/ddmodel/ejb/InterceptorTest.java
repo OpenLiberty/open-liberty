@@ -32,7 +32,7 @@ public class InterceptorTest extends EJBJarTestBase {
 
     @BeforeClass
     public static void setup() throws Exception {
-        interceptorsEJBJar = parse( ejbJar30("", interceptorsXML), EJBJar.VERSION_4_0 );
+        interceptorsEJBJar = parseEJBJar( ejbJar30("", interceptorsXML), EJBJar.VERSION_4_0 );
     }
 
     private static EJBJar interceptorsEJBJar;
@@ -306,7 +306,7 @@ public class InterceptorTest extends EJBJarTestBase {
 
     @Test
     public void testAroundConstruct() throws Exception {
-        List<Interceptor> interceptors = parse(
+        List<Interceptor> interceptors = parseEJBJar(
             ejbJar32("", interceptorsAroundConstructXML), EJBJar.VERSION_4_0)
                 .getInterceptors().getInterceptorList();
 
@@ -333,7 +333,7 @@ public class InterceptorTest extends EJBJarTestBase {
 
     @Test
     public void testAroundConstructEJB31() throws Exception {
-        parse( ejbJar31("", interceptorsAroundConstruct31XML),
+        parseEJBJar( ejbJar31("", interceptorsAroundConstruct31XML),
                EJBJar.VERSION_4_0,
                "CWWKC2259E", "unexpected.child.element" );
     }

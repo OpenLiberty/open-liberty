@@ -31,14 +31,17 @@ public class AppClientTest extends AppClientTestBase {
                     effectiveMax = maxSchemaVersion;
                 }
                 
-                String[] expectedMessages; 
+                String altMessage;
+                String[] messages; 
                 if ( schemaVersion > effectiveMax ) {
-                    expectedMessages = UNPROVISIONED_DESCRIPTOR_VERSION_MESSAGES;
+                    altMessage = UNPROVISIONED_DESCRIPTOR_VERSION_ALT_MESSAGE;
+                    messages = UNPROVISIONED_DESCRIPTOR_VERSION_MESSAGES;
                 } else {
-                    expectedMessages = null;
+                    altMessage = null;
+                    messages = null;
                 }
                 
-                parse( appClientXML(schemaVersion, ""), maxSchemaVersion, expectedMessages );
+                parse( appClientXML(schemaVersion, ""), maxSchemaVersion, altMessage, messages );
             }
         }
     }

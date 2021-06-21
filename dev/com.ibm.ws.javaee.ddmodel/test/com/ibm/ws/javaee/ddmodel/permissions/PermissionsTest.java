@@ -28,7 +28,7 @@ public class PermissionsTest extends DDTestBase {
         // Both JavaEE and Jakarta versions are supported, regardless
         // of the provisioning.
 
-        return parse( xml, new PermissionsAdapter(), PermissionsConfig.DD_NAME, messages );
+        return parseEJBJar( xml, new PermissionsAdapter(), PermissionsConfig.DD_NAME, messages );
     }
 
     // Usual contents ...

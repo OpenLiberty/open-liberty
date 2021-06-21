@@ -269,7 +269,7 @@ public class AssemblyDescriptorTest extends EJBJarTestBase {
     //
     
     AssemblyDescriptor getAssemblyDescriptor(String adXML) throws Exception {
-        EJBJar ejbJar = parse( ejbJar11(adXML), EJBJar.VERSION_4_0 );
+        EJBJar ejbJar = parseEJBJar( ejbJar11(adXML), EJBJar.VERSION_4_0 );
         return ejbJar.getAssemblyDescriptor();
     }
 
@@ -481,7 +481,7 @@ public class AssemblyDescriptorTest extends EJBJarTestBase {
 
     @Test
     public void testMethodIntfLifecycleCallback() throws Exception {
-        EJBJar ejbJar = parse( ejbJar32( "", lifecycleCallbackXML),
+        EJBJar ejbJar = parseEJBJar( ejbJar32( "", lifecycleCallbackXML),
                                EJBJar.VERSION_4_0 );
 
         Assert.assertEquals(Method.INTERFACE_TYPE_LIFECYCLE_CALLBACK,
@@ -490,22 +490,22 @@ public class AssemblyDescriptorTest extends EJBJarTestBase {
 
     @Test
     public void testMethodIntfLifecycleCallbackEJB31() throws Exception {
-        parse( ejbJar31("", lifecycleCallbackXML),
+        parseEJBJar( ejbJar31("", lifecycleCallbackXML),
                 EJBJar.VERSION_4_0,
-                "CWWKC2273E", "invalid.enum.value" );
+                "invalid.enum.value", "CWWKC2273E" ); 
     }
 
     @Test
     public void testMethodIntfErrorEJB31() throws Exception {
-        parse( ejbJar31("", invalidMethodIntfXML),
+        parseEJBJar( ejbJar31("", invalidMethodIntfXML),
                EJBJar.VERSION_4_0,
-               "CWWKC2273E", "invalid.enum.value" );                   
+               "invalid.enum.value", "CWWKC2273E" ); 
     }
 
     @Test
     public void testMethodIntfErrorEJB32() throws Exception {
-        parse( ejbJar32("",  invalidMethodIntfXML),
+        parseEJBJar( ejbJar32("",  invalidMethodIntfXML),
                EJBJar.VERSION_4_0,
-               "CWWKC2273E", "invalid.enum.value" );
+               "invalid.enum.value", "CWWKC2273E" );
     }
 }

@@ -14,6 +14,7 @@ import java.util.List;
 
 import junit.framework.Assert;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.ibm.ws.javaee.dd.app.Application;
@@ -26,45 +27,51 @@ import com.ibm.ws.javaee.dd.appbnd.SpecialSubject;
 import com.ibm.ws.javaee.dd.appbnd.User;
 
 public class AppBndTest extends AppBndTestBase {
+    protected static Application app14;
+    
+    @BeforeClass
+    public static void initApp() throws Exception {
+        app14 = parseApp( app(Application.VERSION_1_4, ""), Application.VERSION_7 );
+    }
+    
+    //
+    
     @Test
     public void testXMIGetVersion() throws Exception {
-        Application app = parseApplication( app14("") );
-        
         Assert.assertEquals("Incorrect application binding version",
                 "XMI",
-                parseXMI( appBndXMI("", ""), app ).getVersion());
+                parseAppBndXMI( appBndXMI("", ""), app14 ).getVersion());
     }
 
     @Test
     public void testXMLGetVersion10() throws Exception {
         Assert.assertEquals("Incorrect application binding version",
                 "1.0",
-                parseXML(appBnd10Head + appBndTail).getVersion());
+                parseAppBndXML(appBnd10Head + appBndTail).getVersion());
     }
     
     @Test
     public void testXMLGetVersion11() throws Exception {    
         Assert.assertEquals("Incorrect application binding version",
                 "1.1",
-                parseXML(appBnd11Head + appBndTail).getVersion());
+                parseAppBndXML(appBnd11Head + appBndTail).getVersion());
     }
     
     @Test
     public void testXMLGetVersion12() throws Exception {        
         Assert.assertEquals("Incorrect application binding version",
                 "1.2",
-                parseXML(appBnd12Head + appBndTail).getVersion());
+                parseAppBndXML(appBnd12Head + appBndTail).getVersion());
     }
 
     @Test
     public void testXMIAppName() throws Exception {
-        Application app = parseApplication( app14("") );
-        parseXMI( appBndXMI("appName=\"an\"", ""), app );
+        parseAppBndXMI( appBndXMI("appName=\"an\"", ""), app14 );
     }
 
     @Test
     public void testXMLSecurityRole() throws Exception {
-        ApplicationBnd appBnd = parseXML(
+        ApplicationBnd appBnd = parseAppBndXML(
                 appBnd10Head +
                     "<security-role/>" +
                     "<security-role name=\"sr1\">" +
@@ -138,16 +145,18 @@ public class AppBndTest extends AppBndTestBase {
 
     @Test
     public void testXMISecurityRole() throws Exception {
-        Application app = parseApplication(
-            app14("<security-role id=\"sr0id\"/>" +
+        Application app = parseApp(
+            app(Application.VERSION_1_4,
+                  "<security-role id=\"sr0id\"/>" +
                   "<security-role id=\"sr1id\">" +
                       "<role-name>sr1</role-name>" +
                   "</security-role>" +
                   "<security-role id=\"sr2id\">" +
                       "<role-name>sr2</role-name>" +
-                  "</security-role>") );
+                  "</security-role>"),
+                Application.VERSION_7);
         
-        ApplicationBnd appBnd = parseXMI(
+        ApplicationBnd appBnd = parseAppBndXMI(
             appBndXMI("",
                 "<authorizationTable>" +
                     "<authorizations>" +
@@ -235,11 +244,9 @@ public class AppBndTest extends AppBndTestBase {
 
     @Test
     public void testXMISecurityRoleCompat() throws Exception {
-        Application app = parseApplication( app14("") );
-
         // This "applicationbnd" prefix erroneously has no xmlns.
         
-        ApplicationBnd appBnd = parseXMI(
+        ApplicationBnd appBnd = parseAppBndXMI(
             "<com.ibm.ejs.models.base.bindings.applicationbnd.applicationbnd:ApplicationBinding" +
                 // " xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"" +        
                 " xmlns:com.ibm.ejs.models.base.bindings.applicationbnd.applicationbnd=\"applicationbnd.xmi\"" +
@@ -256,7 +263,7 @@ public class AppBndTest extends AppBndTestBase {
                         "</authorizations>" +
                     "</authorizationTable>" +
                 "</com.ibm.ejs.models.base.bindings.applicationbnd.applicationbnd:ApplicationBinding>",
-                app);
+                app14);
 
         List<SecurityRole> srs = appBnd.getSecurityRoles();
         Assert.assertEquals(srs.toString(), 1, srs.size());
@@ -270,9 +277,9 @@ public class AppBndTest extends AppBndTestBase {
 
     @Test
     public void testXMISecurityRoleEmpty() throws Exception {
-        Application app = parseApplication( app14("") );
+        Application app = parseApp( app(Application.VERSION_1_4, ""), Application.VERSION_7 );
 
-        parseXMI( appBndXMI("",
+        parseAppBndXMI( appBndXMI("",
                     "<authorizationTable/>" +
                     "<runAsMap/>"),
                   app );
@@ -280,7 +287,7 @@ public class AppBndTest extends AppBndTestBase {
 
     @Test
     public void testXMLProfile() throws Exception {
-        ApplicationBnd appBnd = parseXML(
+        ApplicationBnd appBnd = parseAppBndXML(
                 appBnd10Head +
                     "<profile/>" +
                         "<profile name=\"pn1\">" +
@@ -306,7 +313,7 @@ public class AppBndTest extends AppBndTestBase {
 
     @Test
     public void testXMLJASPIRef() throws Exception {
-        ApplicationBnd appBnd = parseXML(
+        ApplicationBnd appBnd = parseAppBndXML(
             appBnd10Head +
                 "<jaspi-ref provider-name=\"pn0\"/>" +
             appBndTail);

@@ -24,35 +24,35 @@ public class EJBJarBndTest extends EJBJarBndTestBase {
 
     @Test
     public void testGetVersionID() throws Exception {
-        Assert.assertEquals("XMI", parseEJBJarBinding(ejbJarBinding("") + "</ejbbnd:EJBJarBinding>",
+        Assert.assertEquals("XMI", parseEJBJarBnd(ejbJarBinding("") + "</ejbbnd:EJBJarBinding>",
                                                       parseEJBJar(ejbJar21() + "</ejb-jar>")).getVersion());
-        Assert.assertEquals("1.0", parse(ejbJarBnd10() + "</ejb-jar-bnd>").getVersion());
-        Assert.assertEquals("1.1", parse(ejbJarBnd11() + "</ejb-jar-bnd>").getVersion());
-        Assert.assertEquals("1.2", parse(ejbJarBnd12() + "</ejb-jar-bnd>").getVersion());
+        Assert.assertEquals("1.0", parseEJBJarBnd(ejbJarBnd10() + "</ejb-jar-bnd>").getVersion());
+        Assert.assertEquals("1.1", parseEJBJarBnd(ejbJarBnd11() + "</ejb-jar-bnd>").getVersion());
+        Assert.assertEquals("1.2", parseEJBJarBnd(ejbJarBnd12() + "</ejb-jar-bnd>").getVersion());
 
     }
 
     @Test
     public void testEmptyEnterpriseBeans() throws Exception {
-        Assert.assertNotNull("Enterprise bean list should not be null.", parse(ejbJarBnd10() + "</ejb-jar-bnd>").getEnterpriseBeans());
-        Assert.assertEquals("Enterprise bean list should be empty.", 0, parse(ejbJarBnd10() + "</ejb-jar-bnd>").getEnterpriseBeans().size());
+        Assert.assertNotNull("Enterprise bean list should not be null.", parseEJBJarBnd(ejbJarBnd10() + "</ejb-jar-bnd>").getEnterpriseBeans());
+        Assert.assertEquals("Enterprise bean list should be empty.", 0, parseEJBJarBnd(ejbJarBnd10() + "</ejb-jar-bnd>").getEnterpriseBeans().size());
     }
 
     @Test
     public void testEmptyMessageDestinations() throws Exception {
-        Assert.assertNotNull("MessageDestinations list should not be null.", parse(ejbJarBnd10() + "</ejb-jar-bnd>").getMessageDestinations());
-        Assert.assertEquals("MessageDestinations list should be empty.", 0, parse(ejbJarBnd10() + "</ejb-jar-bnd>").getMessageDestinations().size());
+        Assert.assertNotNull("MessageDestinations list should not be null.", parseEJBJarBnd(ejbJarBnd10() + "</ejb-jar-bnd>").getMessageDestinations());
+        Assert.assertEquals("MessageDestinations list should be empty.", 0, parseEJBJarBnd(ejbJarBnd10() + "</ejb-jar-bnd>").getMessageDestinations().size());
     }
 
     @Test
     public void testEmptyInterceptorsList() throws Exception {
-        Assert.assertNotNull("Interceptor list should not be null.", parse(ejbJarBnd10() + "</ejb-jar-bnd>").getInterceptors());
-        Assert.assertEquals("Interceptor list should be empty.", 0, parse(ejbJarBnd10() + "</ejb-jar-bnd>").getInterceptors().size());
+        Assert.assertNotNull("Interceptor list should not be null.", parseEJBJarBnd(ejbJarBnd10() + "</ejb-jar-bnd>").getInterceptors());
+        Assert.assertEquals("Interceptor list should be empty.", 0, parseEJBJarBnd(ejbJarBnd10() + "</ejb-jar-bnd>").getInterceptors().size());
     }
 
     @Test
     public void testEmptyXMI() throws Exception {
-        EJBJarBnd ejbJarBnd = parseEJBJarBinding(ejbJarBinding("") + "</ejbbnd:EJBJarBinding>",
+        EJBJarBnd ejbJarBnd = parseEJBJarBnd(ejbJarBinding("") + "</ejbbnd:EJBJarBinding>",
                                                  parseEJBJar(ejbJar21() + "</ejb-jar>"));
         Assert.assertNotNull("Enterprise bean list should not be null.", ejbJarBnd.getEnterpriseBeans());
         Assert.assertEquals("Enterprise bean list should be empty.", 0, ejbJarBnd.getEnterpriseBeans().size());
@@ -176,13 +176,13 @@ public class EJBJarBndTest extends EJBJarBndTestBase {
     @SuppressWarnings("unused")
     @Test
     public void testCurrentBackendID() throws Exception {
-        EJBJarBnd ejbJarBnd = parseEJBJarBinding(testCurrentBackendID, parseEJBJar(ejbJar21() + "</ejb-jar>"));
+        EJBJarBnd ejbJarBnd = parseEJBJarBnd(testCurrentBackendID, parseEJBJar(ejbJar21() + "</ejb-jar>"));
     }
 
     @SuppressWarnings("unused")
     @Test
     public void testDefaultCMPConnectionFactory() throws Exception {
-        EJBJarBnd ejbJarBnd = parseEJBJarBinding(ejbJarBinding("") +
+        EJBJarBnd ejbJarBnd = parseEJBJarBnd(ejbJarBinding("") +
                                                  defaultCMPConnectionFactoryXMI1 +
                                                  " </ejbbnd:EJBJarBinding>", parseEJBJar(ejbJar21() + "</ejb-jar>"));
     }
@@ -192,7 +192,7 @@ public class EJBJarBndTest extends EJBJarBndTestBase {
     public void testCMPConnectionFactory() throws Exception {
 
         try {
-            EJBJarBnd ejbJarBnd = parseEJBJarBinding(ejbJarBinding("") +
+            EJBJarBnd ejbJarBnd = parseEJBJarBnd(ejbJarBinding("") +
                                                      testCMPConnectionFactoryXMI1 +
                                                      " </ejbbnd:EJBJarBinding>",
                                                      parseEJBJar(ejbJar21() + "</ejb-jar>"));
@@ -209,7 +209,7 @@ public class EJBJarBndTest extends EJBJarBndTestBase {
     @SuppressWarnings("unused")
     @Test
     public void testDefaultDataSource() throws Exception {
-        EJBJarBnd ejbJarBnd = parseEJBJarBinding(ejbJarBinding("") +
+        EJBJarBnd ejbJarBnd = parseEJBJarBnd(ejbJarBinding("") +
                                                  defaultDataSourceXMI1 +
                                                  " </ejbbnd:EJBJarBinding>", parseEJBJar(ejbJar21() + "</ejb-jar>"));
     }
@@ -217,7 +217,7 @@ public class EJBJarBndTest extends EJBJarBndTestBase {
     @SuppressWarnings("unused")
     @Test
     public void testDefaultDataSource2() throws Exception {
-        EJBJarBnd ejbJarBnd = parseEJBJarBinding(ejbJarBinding("") +
+        EJBJarBnd ejbJarBnd = parseEJBJarBnd(ejbJarBinding("") +
                                                  defaultDataSourceXMI2 +
                                                  " </ejbbnd:EJBJarBinding>", parseEJBJar(ejbJar21() + "</ejb-jar>"));
     }

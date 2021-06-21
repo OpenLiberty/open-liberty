@@ -12,33 +12,57 @@ package com.ibm.ws.javaee.ddmodel.appext;
 
 import com.ibm.ws.javaee.dd.app.Application;
 import com.ibm.ws.javaee.dd.appext.ApplicationExt;
-import com.ibm.ws.javaee.ddmodel.DDTestBase;
-import com.ibm.ws.javaee.ddmodel.app.ApplicationAdapter;
+import com.ibm.ws.javaee.ddmodel.app.AppTestBase;
 
-public class ApplicationExtTestBase extends DDTestBase {
-    ApplicationExt parseApplicationExtXML(final String xml) throws Exception {
-        return parse(xml, new ApplicationExtAdapter(), ApplicationExt.XML_EXT_NAME, Application.class, null);
+public class AppExtTestBase extends AppTestBase {
+    protected static ApplicationExtAdapter createAppExtAdapter() {
+        return new ApplicationExtAdapter();
+    }
+    
+    protected static ApplicationExt parseAppExtXMI(String ddText, Application app) throws Exception {
+        return parseAppExtXMI(ddText, app, null);
     }
 
-    Application parseApplication(final String xml) throws Exception {
-        return parse(xml, new ApplicationAdapter(), Application.DD_NAME);
+    protected static ApplicationExt parseAppExtXMI(
+            String ddText,
+            Application app,
+            String altMessage, String... messages) throws Exception {
+
+        String ddPath = ApplicationExt.XMI_EXT_NAME;         
+
+        return parseAppExt(ddText, ddPath, app, altMessage, messages);
+    }
+    
+    protected static ApplicationExt parseAppExtXML(String ddText) throws Exception {
+            return parseAppExtXML(ddText, null);
     }
 
-    ApplicationExt parseApplicationExtXMI(final String xml, final Application app) throws Exception {
-        return parse(xml, new ApplicationExtAdapter(), ApplicationExt.XMI_EXT_NAME, Application.class, app);
+    protected static ApplicationExt parseAppExtXML(
+            String ddText,
+            String altMessage, String... messages) throws Exception {
+
+        String ddPath = ApplicationExt.XML_EXT_NAME; 
+        
+        return parseAppExt(ddText, ddPath, null, altMessage, messages);
+    }    
+
+    protected static ApplicationExt parseAppExt(
+            String ddText, String ddPath,
+            Application app,
+            String altMessage, String... messages) throws Exception {
+
+        String appPath = null;
+        String modulePath = "/root/wlp/usr/servers/server1/apps/myEAR.ear";
+        String fragmentPath = null;
+
+        return parse(
+                appPath, modulePath, fragmentPath,
+                ddText, createAppExtAdapter(), ddPath,
+                Application.class, app,
+                altMessage, messages);
     }
 
-    static String application14() {
-        return "<application" +
-               " xmlns=\"http://java.sun.com/xml/ns/j2ee\"" +
-               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-               " xsi:schemaLocation=\"http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/application_1_4.xsd\"" +
-               " version=\"1.4\"" +
-               " id=\"Application_ID\"" +
-               ">";
-    }
-
-    static String applicationExtension(String attrs) {
+    public static String appExt20(String attrs) {
         return "<applicationext:ApplicationExtension" +
                " xmlns:applicationext=\"applicationext.xmi\"" +
                " xmlns:xmi=\"http://www.omg.org/XMI\"" +
@@ -49,7 +73,7 @@ public class ApplicationExtTestBase extends DDTestBase {
                "<application href=\"META-INF/application.xml#Application_ID\"/>";
     }
 
-    static final String applicationExt10(String attrs) {
+    public static final String appExt10(String attrs) {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
                " <application-ext" +
                " xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"" +
@@ -60,7 +84,7 @@ public class ApplicationExtTestBase extends DDTestBase {
                ">";
     }
 
-    static final String applicationExt11(String attrs) {
+    public static final String appExt11(String attrs) {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
                " <application-ext" +
                " xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"" +

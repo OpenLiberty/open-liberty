@@ -130,7 +130,8 @@ public class AppClientTestHeader extends AppClientTestBase {
 
     @Test
     public void testAppClient14NoSchemaInstance() throws Exception {
-        parse(appClient14NoSchemaInstance, ApplicationClient.VERSION_6, XML_ERROR_MESSAGES);
+        parse(appClient14NoSchemaInstance, ApplicationClient.VERSION_6,
+                XML_ERROR_ALT_MESSAGE, XML_ERROR_MESSAGES);
     }
 
     @Test
@@ -251,12 +252,14 @@ public class AppClientTestHeader extends AppClientTestBase {
     @Test
     public void testAppClientNamespaceBad() throws Exception {
         parse(appClientNamespaceBad, ApplicationClient.VERSION_6,
+                UNSUPPORTED_DESCRIPTOR_NAMESPACE_ALT_MESSAGE,
                 UNSUPPORTED_DESCRIPTOR_NAMESPACE_MESSAGES);
     }
 
     @Test
     public void testAppClientVersionBead() throws Exception {
         parse(appClientVersionBead, ApplicationClient.VERSION_6,
+                UNSUPPORTED_DESCRIPTOR_VERSION_ALT_MESSAGE,
                 UNSUPPORTED_DESCRIPTOR_VERSION_MESSAGES);
     }
 }

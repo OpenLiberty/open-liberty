@@ -22,6 +22,7 @@ import com.ibm.ws.javaee.dd.ejbext.EJBJarExt;
 import com.ibm.ws.javaee.ddmodel.DDTestBase;
 import com.ibm.ws.javaee.ddmodel.ejb.EJBJarDDParserVersion;
 import com.ibm.ws.javaee.ddmodel.ejb.EJBJarEntryAdapter;
+import com.ibm.ws.javaee.ddmodel.ejb.EJBJarTestBase;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
 import com.ibm.wsspi.adaptable.module.NonPersistentCache;
@@ -37,9 +38,7 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainer;
  * 
  */
 
-public class EJBJarExtTestBase extends DDTestBase {
-    protected boolean isWarModule = false;
-
+public class EJBJarExtTestBase extends EJBJarTestBase {
     private EJBJarExt parse(final String xml, String path, EJBJar ejbJar) throws Exception {
         final WebModuleInfo moduleInfo = isWarModule ? mockery.mock(WebModuleInfo.class, "webModuleInfo" + mockId++) : null;
         return parse(xml, new EJBJarExtAdapter(), path, EJBJar.class, ejbJar, WebModuleInfo.class, moduleInfo);
@@ -63,51 +62,6 @@ public class EJBJarExtTestBase extends DDTestBase {
 
     protected String getEJBJarPath() {
         return isWarModule ? "WEB-INF/ejb-jar.xml" : "META-INF/ejb-jar.xml";
-    }
-
-    public EJBJar parseEJBJar(final String xml, final int maxVersion) throws Exception {
-        EJBJarEntryAdapter adapter = new EJBJarEntryAdapter();
-        @SuppressWarnings("unchecked")
-        final ServiceReference<EJBJarDDParserVersion> versionRef = mockery.mock(ServiceReference.class, "sr" + mockId++);
-        final Container root = mockery.mock(Container.class, "root" + mockId++);
-        final Entry entry = mockery.mock(Entry.class, "entry" + mockId++);
-        final OverlayContainer rootOverlay = mockery.mock(OverlayContainer.class, "rootOverlay" + mockId++);
-        final ArtifactEntry artifactEntry = mockery.mock(ArtifactEntry.class, "artifactContainer" + mockId++);
-        final NonPersistentCache nonPC = mockery.mock(NonPersistentCache.class, "nonPC" + mockId++);
-        final WebModuleInfo moduleInfo = isWarModule ? mockery.mock(WebModuleInfo.class, "webModuleInfo" + mockId++) : null;
-
-        mockery.checking(new Expectations() {
-            {
-                allowing(artifactEntry).getPath();
-                will(returnValue('/' + getEJBJarPath()));
-
-                allowing(root).adapt(NonPersistentCache.class);
-                will(returnValue(nonPC));
-                allowing(nonPC).getFromCache(WebModuleInfo.class);
-                will(returnValue(moduleInfo));
-
-                allowing(entry).getPath();
-                will(returnValue('/' + getEJBJarPath()));
-
-                allowing(entry).adapt(InputStream.class);
-                will(returnValue(new ByteArrayInputStream(xml.getBytes("UTF-8"))));
-
-                allowing(rootOverlay).getFromNonPersistentCache(with(any(String.class)), with(EJBJar.class));
-                will(returnValue(null));
-                allowing(rootOverlay).addToNonPersistentCache(with(any(String.class)), with(EJBJar.class), with(any(EJBJar.class)));
-
-                allowing(versionRef).getProperty(EJBJarDDParserVersion.VERSION);
-                will(returnValue(maxVersion));
-            }
-        });
-
-        adapter.setVersion(versionRef);
-        try {
-            return adapter.adapt(root, rootOverlay, artifactEntry, entry);
-        } catch (UnableToAdaptException e) {
-            Throwable cause = e.getCause();
-            throw cause instanceof Exception ? (Exception) cause : e;
-        }
     }
 
     static final String ejbJar21() {

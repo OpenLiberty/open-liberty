@@ -14,15 +14,15 @@ import com.ibm.ws.javaee.dd.web.WebApp;
 import com.ibm.ws.javaee.dd.webext.WebExt;
 import com.ibm.ws.javaee.ddmodel.web.WebAppTestBase;
 
-public class WebExtTestBase extends WebAppTestBase {
+public class WebAppExtTestBase extends WebAppTestBase {
     protected boolean isWarModule = false;
 
     WebExt parseWebExtXML(final String xml) throws Exception {
-        return parse(xml, new WebExtAdapter(), WebExt.XML_EXT_NAME, WebApp.class, null);
+        return parseAppBnd(xml, new WebExtAdapter(), WebExt.XML_EXT_NAME, WebApp.class, null);
     }
 
     WebExt parseWebExtXMI(final String xml, final WebApp webApp) throws Exception {
-        return parse(xml, new WebExtAdapter(), WebExt.XMI_EXT_NAME, WebApp.class, webApp);
+        return parseAppBnd(xml, new WebExtAdapter(), WebExt.XMI_EXT_NAME, WebApp.class, webApp);
     }
 
     static final String webAppExtension(String attrs) {
