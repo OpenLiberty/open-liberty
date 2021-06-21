@@ -6,10 +6,12 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- * IBM Corporation - initial API and implementation
+ *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-@org.osgi.annotation.versioning.Version("1.0")
+/**
+ *
+ */
 @TraceOptions(traceGroup = "criu", messageBundle = "io.openliberty.checkpoint.resources.CheckpointMessages")
-package io.openliberty.checkpoint.internal.criu;
+package io.openliberty.checkpoint.internal;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;

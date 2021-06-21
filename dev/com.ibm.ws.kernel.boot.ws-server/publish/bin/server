@@ -69,7 +69,8 @@
 #              a z/OS environment.
 #
 ###############################################################################
-
+export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu
+export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libcriu.so
 SERVER_UNKNOWN_STATUS=5
 
 ##
@@ -743,13 +744,13 @@ readServerEnv()
       *=*)
         # Only accept alphanumeric variable names to avoid eval complexities.
         if var=`safeEcho "$line" | sed -e 's/^\([a-zA-Z0-9_][a-zA-Z0-9_]*\)=.*/\1/'`; then
-           case $var in
-	   *=*)
-               SERVER_ENV_SETUP_FAILURE="${var} ${SERVER_ENV_SETUP_FAILURE}" ;;
-           *)
-              extractValueAndEscapeForEval "${line}"
-              eval "${var}=${escapeForEvalResult}; export ${var}" ;;
-	   esac
+          case $var in
+          *=*)
+            SERVER_ENV_SETUP_FAILURE="${var} ${SERVER_ENV_SETUP_FAILURE}" ;;
+          *)
+            extractValueAndEscapeForEval "${line}"
+            eval "${var}=${escapeForEvalResult}; export ${var}" ;;
+          esac
         fi
       esac
     done
@@ -826,10 +827,15 @@ javaCmd()
     if [ -n "${option}" ]; then
       if [ -z "${option##-D*}" ] || [ -z "${option##-X*}" ]; then
         JVM_OPTIONS_QUOTED="$JVM_OPTIONS_QUOTED '$option'"
-      elif [ -z "$REMAINING_ARGS" ] ; then
-        REMAINING_ARGS="$option"
       else
-        REMAINING_ARGS="$REMAINING_ARGS $option"
+        if [ -z "${option##--checkpoint=*}" ]; then
+          CHECKPOINT=${option#--checkpoint=}
+        fi
+        if [ -z "$REMAINING_ARGS" ] ; then
+          REMAINING_ARGS="$option"
+        else
+          REMAINING_ARGS="$REMAINING_ARGS $option"
+        fi  
       fi
     else
       REMAINING_ARGS="$REMAINING_ARGS $option"
@@ -841,6 +847,15 @@ javaCmd()
   eval "set -- ${JAVA_AGENT_QUOTED} ${JVM_OPTIONS_QUOTED} ${JAVA_DEBUG} ${JVM_ARGS} -jar ${WLP_INSTALL_DIR_QUOTED}/bin/tools/ws-server.jar ""$REMAINING_ARGS"
   ARGS="$@"
 
+  if [ $ACTION = "run" ] || [ $ACTION = "debug" ] || [ $ACTION = "start" ]; then
+     if [ -n "${CHECKPOINT}" ]; then                                               
+       if [ -d "${SERVER_OUTPUT_DIR}/workarea/snapshot" ]; then 
+         echo remove existing snapshot
+         rm -r ${SERVER_OUTPUT_DIR}/workarea/snapshot
+         #TODO check for error removing existing snapshot
+       fi
+     fi
+  fi
   # Do not add extra logic after the commands without preserving $?
   if [ -n "${JAVA_CMD_LOG}" ]; then
     rmIfExist "${JAVA_CMD_LOG}"
@@ -1054,20 +1069,34 @@ serverCmd()
     OPENJ9_JAVA_OPTIONS=${SAVE_OPENJ9_JAVA_OPTIONS}
 
     if [ -n "${SERVER_CMD_BACKGROUND_LOG}" ]; then
-      # Verify/wait for the process to start
-      javaCmd '' "${SERVER_NAME}" --pid="${PID}" --status:start "$@"
-      rc=$?
-
-      # write the pid file if return is OK or UNKNOWN
-      if [ $rc = 0 -o $rc = $SERVER_UNKNOWN_STATUS ]; then
-        safeEcho "${PID}" > "${X_PID_FILE}"
-      fi
-    fi
-    
+      if [ -n "${CHECKPOINT}" ]; then
+        #don't wait on process status
+        # issue javacmd to verify snapshot and do any post snapshot
+        # fixup here    
+        echo Take checkpoint ${CHECKPOINT}.
+        # invoke platform to verify snapshot taken
+        # or return an error and issue error message,     
+      else  
+        # Verify/wait for the process to start unless a checkpoint is requested
+        javaCmd '' "${SERVER_NAME}" --pid="${PID}" --status:start "$@"
+        rc=$?
+        # write the pid file if return is OK or UNKNOWN
+        if [ $rc = 0 -o $rc = $SERVER_UNKNOWN_STATUS ]; then
+          safeEcho "${PID}" > "${X_PID_FILE}"
+        fi        
+      fi    
+    fi 
   fi
-
   return $rc
 }
+
+### Basic precheck for criu on this platform. Some checks only possible from liberty proper
+### so may want to remove this check in lieu of liberty internal checks
+checkCriuSupport()
+{
+  return 0  
+}
+
 
 JAVA_DEBUG=
 JVM_OPTIONS_QUOTED=
@@ -1326,6 +1355,29 @@ case "$ACTION" in
       exit 2
     fi    
   ;;
+  
+  # Restore a criu snapshot from a previous checkpoint
+  restore)   
+    serverEnv
+    # restore artifacts and environment prior to snapshot here
+    
+    # no good way to check for criu support since fats startu is imperitive
+    #   just let criu invocation fail with a hopefully informative error message.
+    if [ ! -d "${SERVER_OUTPUT_DIR}/workarea/snapshot" ]; then
+      echo Snapshot image not found at ${SERVER_OUTPUT_DIR}/workarea/snapshot.
+      exit 2
+    fi  
+    # invoke criu command
+    echo Launch restore.
+    criu restore --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/snapshot -j -v -o ${SERVER_OUTPUT_DIR}/logs/restore.log &
+    rc=$?
+    PID=$!
+    if [ $rc = 0 ]; then
+      safeEcho "${PID}" > "${X_PID_FILE}"
+    fi        
+
+    # restore backed up state from end of snapshot
+  ;; 
   
   version)
     installEnv
