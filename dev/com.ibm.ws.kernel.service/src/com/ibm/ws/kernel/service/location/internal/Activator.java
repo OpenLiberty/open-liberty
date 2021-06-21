@@ -27,12 +27,10 @@ import org.osgi.framework.Constants;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.kernel.pseudo.internal.PseudoContextFactory;
 import com.ibm.wsspi.kernel.service.location.VariableRegistry;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsResource;
-import com.ibm.wsspi.kernel.service.location.WsResource.Type;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 import com.ibm.wsspi.kernel.service.utils.TimestampUtils;
 
@@ -75,25 +73,26 @@ public class Activator implements BundleActivator {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(tc, "Failed to install initialContextFactoryBuilder because it was already installed", ex);
             }
+            // Look for time file created during CRIU restore. Use it to calculate more accurate server start time.
             context.registerService(SnapshotHookFactory.class, (p) -> {
                 return new SnapshotHook() {
                     @Override
+                    @FFDCIgnore({ NumberFormatException.class, IOException.class, IllegalArgumentException.class })
                     public void restore() {
                         long restoreTime = 0;
-                        WsResource restoreTimeResource = locServiceImpl.getServerWorkareaResource("restoreTime");
-                        if (restoreTimeResource.isType(Type.FILE)) {
-                            try {
-                                List<String> restoreStartTimeEnv = Files.readAllLines(restoreTimeResource.asFile().toPath());
-                                System.out.println("restore time: " + restoreStartTimeEnv);
-                                if (!restoreStartTimeEnv.isEmpty()) {
-                                    long startTimeInMillis = Long.parseLong(restoreStartTimeEnv.get(0));
-                                    long currentTime = System.currentTimeMillis();
-                                    System.out.println("current time: " + currentTime);
-                                    restoreTime = currentTime - startTimeInMillis;
-                                }
-                            } catch (NumberFormatException e) {
-                            } catch (IOException e) {
+                        try {
+                            WsResource restoreTimeResource = locServiceImpl.getServerWorkareaResource("restoreTime");
+                            List<String> restoreStartTimeEnv = Files.readAllLines(restoreTimeResource.asFile().toPath());
+                            System.out.println("restore time: " + restoreStartTimeEnv);
+                            if (!restoreStartTimeEnv.isEmpty()) {
+                                long startTimeInMillis = Long.parseLong(restoreStartTimeEnv.get(0));
+                                long currentTime = System.currentTimeMillis();
+                                System.out.println("current time: " + currentTime);
+                                restoreTime = currentTime - startTimeInMillis;
                             }
+                        } catch (NumberFormatException e) {
+                        } catch (IOException e) {
+                        } catch (IllegalArgumentException e) {
                         }
                         long startTimeNano = System.nanoTime() - TimeUnit.MILLISECONDS.toNanos(restoreTime);
                         TimestampUtils.resetStartTime(startTimeNano);

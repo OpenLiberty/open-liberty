@@ -830,6 +830,8 @@ javaCmd()
       else
         if [ -z "${option##--checkpoint=*}" ]; then
           CHECKPOINT=${option#--checkpoint=}
+          # TODO remove below option once JVM handles it automatically
+          JVM_OPTIONS_QUOTED="$JVM_OPTIONS_QUOTED -XX:-UsePerfData"
         fi
         if [ -z "$REMAINING_ARGS" ] ; then
           REMAINING_ARGS="$option"
@@ -1361,14 +1363,15 @@ case "$ACTION" in
     serverEnv
     # restore artifacts and environment prior to snapshot here
     
-    # no good way to check for criu support since fats startu is imperitive
+    # no good way to check for criu support since fast startup is imperitive
     #   just let criu invocation fail with a hopefully informative error message.
     if [ ! -d "${SERVER_OUTPUT_DIR}/workarea/snapshot" ]; then
       echo Snapshot image not found at ${SERVER_OUTPUT_DIR}/workarea/snapshot.
       exit 2
     fi  
     # invoke criu command
-    echo Launch restore.
+    echo Restore server checkpoint.
+    echo `date +%s%3N` > ${SERVER_OUTPUT_DIR}/workarea/restoreTime
     criu restore --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/snapshot -j -v -o ${SERVER_OUTPUT_DIR}/logs/restore.log &
     rc=$?
     PID=$!
