@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,9 @@
 package io.openliberty.sse.broadcaster;
 
 import java.lang.reflect.Field;
+import java.lang.NoSuchFieldException;
 import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
@@ -46,14 +48,11 @@ public class Resource extends Application {
     @Produces(MediaType.TEXT_PLAIN)
     public boolean setup(@Context Sse sse) { //returns whether setup was necessary
         synchronized (Resource.class) {
-            if (broadcaster == null) {
-                broadcaster = sse.newBroadcaster();
-                _log.info("setup created new Broadcaster: " + broadcaster);
-                return true;
-            }
+            //Always create a new broadcaster instance.
+            broadcaster = sse.newBroadcaster();
+            _log.info("setup created new Broadcaster: " + broadcaster);
+            return true;
         }
-        _log.info("setup Broadcaster previously created: " + broadcaster);
-        return false;
     }
 
     @GET
@@ -107,10 +106,22 @@ public class Resource extends Application {
         //Class<?> broadcasterImplClass = Class.forName("org.apache.cxf.jaxrs.sse.SseBroadcasterImpl");
         Class<?> broadcasterImplClass = broadcaster.getClass();
         _log.info("broadcasterImplClass " + broadcasterImplClass);
-        Field subscribersField = broadcasterImplClass.getDeclaredField("subscribers");
-        subscribersField.setAccessible(true);
-        Set<SseEventSink> registeredSinks = (Set<SseEventSink>) subscribersField.get(broadcaster);
-        int size = registeredSinks.size();
+        
+        // CXF and RestEasy have different fields and types in their versions of BroadcasterImpl.
+        Field subscribersField = null;
+        int size = 0;
+        try {
+            subscribersField = broadcasterImplClass.getDeclaredField("subscribers");
+            subscribersField.setAccessible(true);
+            Set<SseEventSink> registeredSinks = (Set<SseEventSink>) subscribersField.get(broadcaster);
+            size = registeredSinks.size();            
+        } catch (NoSuchFieldException e) {  //check EE9
+            subscribersField = broadcasterImplClass.getDeclaredField("outputQueue");
+            subscribersField.setAccessible(true);
+            ConcurrentLinkedQueue<SseEventSink> registeredSinks = (ConcurrentLinkedQueue<SseEventSink>) subscribersField.get(broadcaster);
+            size = registeredSinks.size();          
+        }
+        
         _log.info("getNumOfSinksInBroadcaster " + size);
         return size;
     }
@@ -128,5 +139,5 @@ public class Resource extends Application {
             }
         }
         
-    }
+    }   
 }

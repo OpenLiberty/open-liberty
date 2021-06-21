@@ -36,6 +36,9 @@ import org.apache.cxf.wsdl.EndpointReferenceUtils;
  * The idea of this class to reduce duplication of code in the com.ibm.ws.wsat.* projects by
  * having a utility class that abstracts calls to CXF where the code has been refactored between
  * releases. In this case it is used for the CXF 2.6.2 and 3.x level of code where code was refactored.
+ *
+ * The AddressingProperties class was changed from an interface to a concrete class which will cause a
+ * IncompatibleClassChangeError. As such an Object it used for the AddressingProperties methods
  */
 public final class WSATCXFUtils {
     public static Source convertToXML(EndpointReferenceType epr) {
@@ -46,8 +49,10 @@ public final class WSATCXFUtils {
         return EndpointReferenceUtils.duplicate(epr);
     }
 
-    public static AddressingProperties createAddressingProperties() {
-        return new AddressingPropertiesImpl();
+    public static Object createAddressingProperties(EndpointReferenceType fromEpr) {
+        AddressingProperties wsAddr = new AddressingPropertiesImpl();
+        wsAddr.setReplyTo(fromEpr);
+        return wsAddr;
     }
 
     public static JAXBContext getJAXBContext() throws JAXBException {
@@ -64,5 +69,17 @@ public final class WSATCXFUtils {
 
     public static EffectivePolicy getEffectiveServerRequestPolicy(PolicyEngine pe, EndpointInfo ei, BindingOperationInfo boi, Message m) {
         return pe.getEffectiveServerRequestPolicy(ei, boi);
+    }
+
+    public static EndpointReferenceType getReplyTo(Object addressProp) {
+        return ((AddressingProperties) addressProp).getReplyTo();
+    }
+
+    public static EndpointReferenceType getFaultTo(Object addressProp) {
+        return ((AddressingProperties) addressProp).getFaultTo();
+    }
+
+    public static EndpointReferenceType getFrom(Object addressProp) {
+        return ((AddressingProperties) addressProp).getFrom();
     }
 }

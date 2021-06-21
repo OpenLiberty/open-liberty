@@ -25,7 +25,7 @@ public class MyRootResource {
     /*
      * Subresource method.
      */
-    @Path("subresource")
+    @Path("actual_subresource")
     public MyObject postSub() {
         return new MyObject();
     }

@@ -54,6 +54,8 @@ import java.util.List;
 
 import javax.security.auth.callback.CallbackHandler;
 
+import com.ibm.ws.ffdc.annotation.FFDCIgnore; //Liberty code change
+
 
 /**
  * WS-Security Utility methods. <p/>
@@ -68,6 +70,7 @@ public final class WSSecurityUtil {
 
     private static final ClassValue<Method> GET_DOM_ELEMENTS_METHODS = new ClassValue<Method>() {
         @Override
+        @FFDCIgnore(NoSuchMethodException.class)
         protected Method computeValue(Class<?> type) {
             try {
                 return getMethod(type, "getDomElement");
@@ -80,6 +83,7 @@ public final class WSSecurityUtil {
 
     private static final ClassValue<Method> GET_ENVELOPE_METHODS = new ClassValue<Method>() {
         @Override
+        @FFDCIgnore(NoSuchMethodException.class)
         protected Method computeValue(Class<?> type) {
             try {
                 return getMethod(type, "getEnvelope");
@@ -124,6 +128,7 @@ public final class WSSecurityUtil {
         // Complete
     }
 
+    @FFDCIgnore(PrivilegedActionException.class)
     private static Method getMethod(final Class<?> clazz, final String name,
                                    final Class<?>... parameterTypes) throws NoSuchMethodException {
         try {

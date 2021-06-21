@@ -2,6 +2,7 @@
     <featureManager>
         <feature>componenttest-1.0</feature>
         <feature>jaxrs-2.0</feature>
+        <feature>jaxb-2.2</feature>
     </featureManager>
     
     <application type="war" id="jackson2x" name="jackson2x" location="jackson2x.war">        

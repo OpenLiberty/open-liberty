@@ -21,7 +21,6 @@ import javax.xml.ws.soap.AddressingFeature;
 
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.frontend.ClientProxy;
-import org.apache.cxf.ws.addressing.AddressingProperties;
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
 import org.apache.cxf.ws.addressing.JAXWSAConstants;
 
@@ -243,9 +242,9 @@ public class WebClientImpl extends WebClient {
             // However, tWAS seems to expect the replyTo to be set (and it uses it when sending protocol
             // responses), so we had better set replyTo, as inter-op with tWAS is our prime use-case.
 
-            AddressingProperties wsAddr = WSATCXFUtils.createAddressingProperties();
+            Object wsAddr = WSATCXFUtils.createAddressingProperties(fromEpr.getEndpointReference());
             //wsAddr.setFrom(fromEpr.getEndpointReference());
-            wsAddr.setReplyTo(fromEpr.getEndpointReference());
+            //wsAddr.setReplyTo(fromEpr.getEndpointReference());
             ((BindingProvider) port).getRequestContext().put(JAXWSAConstants.CLIENT_ADDRESSING_PROPERTIES, wsAddr);
         }
         if (toEpr.isSecure()) {

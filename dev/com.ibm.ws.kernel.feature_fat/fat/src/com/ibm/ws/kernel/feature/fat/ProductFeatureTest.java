@@ -76,6 +76,7 @@ public class ProductFeatureTest {
     private static final String PRODUCT_FEATURE_PATH = "producttest/lib/features/";
     private static final String PRODUCT_BUNDLE_PATH = "producttest/lib/";
     private static final String PRODUCT_EXTENSIONS_PATH = "etc/extensions/";
+    private static final String LIB_EXTRACT = "lib/extract/";
 
     private static final String CACHE_DIRECTORY = "workarea/platform/";
     private static final String FEATURE_BUNDLE_CACHE = CACHE_DIRECTORY + "feature.bundles.cache";
@@ -819,6 +820,10 @@ public class ProductFeatureTest {
             }
 
         } finally {
+            // remove /lib/extract if created manually
+            if (minifyUtils.isManifestOrLibExtractCreatedForTest())
+                server.deleteFileFromLibertyInstallRoot(LIB_EXTRACT);
+
             //be sure to clean up
             minifyUtils.tearDown();
         }

@@ -38,7 +38,6 @@ Import-Package: \
   *
 
 Export-Package: \
-    com.ibm.ws.microprofile.health.resources; version="1.0", \
     com.ibm.ws.microprofile.health.impl;version=1.0, \
     com.ibm.ws.microprofile.health.spi.impl;version=1.0
 

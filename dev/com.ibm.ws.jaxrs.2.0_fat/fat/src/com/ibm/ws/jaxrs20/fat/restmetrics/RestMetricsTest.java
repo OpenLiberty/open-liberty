@@ -24,12 +24,12 @@ import java.net.URL;
 import java.util.ArrayList;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -45,7 +45,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
-@SkipForRepeat("EE9_FEATURES") // currently broken due to multiple issues
+@SkipForRepeat("EE9_FEATURES") // MP Metrics is not supported with EE9 until MP 5
 public class RestMetricsTest {
 
      // Array to hold the names that identify the methods in metrics 2.3
@@ -118,12 +118,12 @@ public class RestMetricsTest {
         }
     }
 
-    public HttpClient getHttpClient() {
-        return new DefaultHttpClient();
+    public CloseableHttpClient getHttpClient() {
+        return HttpClientBuilder.create().build();
     }
 
-    public void resetHttpClient(HttpClient client) {
-        client.getConnectionManager().shutdown();
+    public void resetHttpClient(CloseableHttpClient client) throws IOException {
+        client.close();
     }
 
     private static int getPort() {
@@ -487,7 +487,7 @@ public class RestMetricsTest {
         StringEntity entity = new StringEntity("Post");
         entity.setContentType("text/*");
         postMethod.setEntity(entity);
-        HttpClient client = getHttpClient();
+        CloseableHttpClient client = getHttpClient();
 
         try {
             HttpResponse resp = client.execute(postMethod);
@@ -508,7 +508,7 @@ public class RestMetricsTest {
         entity.setContentType("text/*");
         putMethod.setEntity(entity);
 
-        HttpClient client = getHttpClient();
+        CloseableHttpClient client = getHttpClient();
 
         try {
             HttpResponse resp = client.execute(putMethod);
@@ -528,7 +528,7 @@ public class RestMetricsTest {
     private void runDeleteMethod(int index) throws IOException {
         HttpDelete deleteMethod = new HttpDelete(MAPPEDURI + "/delete1");
 
-        HttpClient client = getHttpClient();
+        CloseableHttpClient client = getHttpClient();
 
         try {
             HttpResponse resp = client.execute(deleteMethod);

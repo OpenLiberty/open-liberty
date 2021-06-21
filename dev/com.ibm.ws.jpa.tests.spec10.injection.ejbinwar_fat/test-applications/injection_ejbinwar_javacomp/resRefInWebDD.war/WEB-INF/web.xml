@@ -1,0 +1,37 @@
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+    version="2.5">
+
+    <servlet>
+        <servlet-name>JPAEjbInWarJavaCompTestServlet</servlet-name>
+        <servlet-class>com.ibm.ws.jpa.fvt.ejbinwar_javacomp.web.rrinwar.JPAEjbInWarJavaCompTestServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>JPAEjbInWarJavaCompTestServlet</servlet-name>
+        <url-pattern>/JPAEjbInWarJavaCompTestServlet</url-pattern>
+    </servlet-mapping>
+
+    
+    <ejb-local-ref>
+        <ejb-ref-name>ejbinwar/javaCompEnv/JPAEjbInWarJavaCompEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.ejbinwar_javacomp.ejb.JPAEjbInWarJavaCompEJBLocal</local>
+        <ejb-link>JPAEjbInWarJavaCompEJB</ejb-link>
+    </ejb-local-ref>
+
+	<resource-ref>
+		<res-ref-name>jdbc/JC_JPA_JTA_DS</res-ref-name>
+		<res-type>javax.sql.DataSource</res-type>
+		<res-auth>Container</res-auth>
+		<res-sharing-scope>Shareable</res-sharing-scope>
+		<mapped-name>jdbc/JC_JPA_JTA_DS</mapped-name>
+	</resource-ref>
+	<resource-ref>
+		<res-ref-name>jdbc/JC_JPA_NJTA_DS</res-ref-name>
+		<res-type>javax.sql.DataSource</res-type>
+		<res-auth>Container</res-auth>
+		<res-sharing-scope>Shareable</res-sharing-scope>
+		<mapped-name>jdbc/JC_JPA_NJTA_DS</mapped-name>
+	</resource-ref>
+    
+</web-app>

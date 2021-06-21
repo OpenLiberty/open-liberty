@@ -35,7 +35,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
-@SkipForRepeat("EE9_FEATURES") // currently broken due to multiple issues
+@SkipForRepeat("EE9_FEATURES") // this test uses a CXF-specific property that is not applicable in RESTEasy (EE9)
 public class ServiceScopeTest {
 
     @Server("com.ibm.ws.jaxrs.fat.service.scope")
