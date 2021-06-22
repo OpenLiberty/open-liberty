@@ -35,11 +35,7 @@ Service-Component: \
     properties:="service.vendor=IBM", \
   io.openliberty.faces_3_0.cdiextension; \
     implementation:=com.ibm.ws.jsf.shared.ext.CdiSPIExtension; \
-    provide:='io.openliberty.cdi.spi.CDIExtensionMetadata'; \
-    properties:="service.vendor=IBM,\
-    bean.defining.annotations=jakarta.faces.flow.FlowScoped;jakarta.faces.view.ViewScoped,\
-    api.classes=jakarta.faces.flow.builder.FlowDefinition;jakarta.faces.flow.builder.FlowBuilderParameter,\
-    extension.classes.only=true",\
+    provide:='io.openliberty.cdi.spi.CDIExtensionMetadata',\
   io.openliberty.faces_30.dd; \
     implementation:=com.ibm.ws.javaee.version.FacesVersion; \
     provide:=com.ibm.ws.javaee.version.FacesVersion; \

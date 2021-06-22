@@ -10,6 +10,38 @@
  *******************************************************************************/
 package com.ibm.ws.jsf.shared.ext;
 
+import static org.osgi.service.component.annotations.ConfigurationPolicy.IGNORE;
+
+import java.lang.annotation.Annotation;
+import java.util.HashSet;
+import java.util.Set;
+
+import jakarta.faces.flow.FlowScoped;
+import jakarta.faces.flow.builder.FlowBuilderParameter;
+import jakarta.faces.flow.builder.FlowDefinition;
+import jakarta.faces.view.ViewScoped;
+
+import org.osgi.service.component.annotations.Component;
+
 import io.openliberty.cdi.spi.CDIExtensionMetadata;
 
-public class CdiSPIExtension implements CDIExtensionMetadata {}
+@Component(service = CDIExtensionMetadata.class, configurationPolicy = IGNORE)
+public class CdiSPIExtension implements CDIExtensionMetadata {
+
+    @Override
+    public Set<Class<?>> getBeanClasses() {
+        Set<Class<?>> beans = new HashSet<Class<?>>();
+        beans.add(FlowBuilderParameter.class);
+        beans.add(FlowDefinition.class);
+        return beans;
+    }
+
+    @Override
+    public Set<Class<? extends Annotation>> getBeanDefiningAnnotationClasses() {
+        Set<Class<? extends Annotation>> BDAs = new HashSet<Class<? extends Annotation>>();
+        BDAs.add(FlowScoped.class);
+        BDAs.add(ViewScoped.class);
+        return BDAs;
+    }
+
+}

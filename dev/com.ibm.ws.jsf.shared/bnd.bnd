@@ -42,4 +42,6 @@ instrument.classesExcludes: \
 	com.ibm.ws.logging.core,\
 	com.ibm.websphere.org.osgi.core,\
 	com.ibm.websphere.org.osgi.service.component, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
+	org.apache.myfaces.core:myfaces-api;version=3.0.0, \
