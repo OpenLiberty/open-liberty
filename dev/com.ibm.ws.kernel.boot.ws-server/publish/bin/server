@@ -1372,7 +1372,7 @@ case "$ACTION" in
     # invoke criu command
     echo Restore server checkpoint.
     echo `date +%s%3N` > ${SERVER_OUTPUT_DIR}/workarea/restoreTime
-    criu restore --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/snapshot -j -v -o ${SERVER_OUTPUT_DIR}/logs/restore.log &
+    criu restore --file-locks --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/snapshot -j -v -o ${SERVER_OUTPUT_DIR}/logs/restore.log &
     rc=$?
     PID=$!
     if [ $rc = 0 ]; then
