@@ -235,6 +235,7 @@ public class LogstashSSLTest extends LogstashCollectorTest {
         testName = "testLogstashForAuditEvent";
         setConfig("server_logs_audit.xml");
         clearContainerOutput();
+        assertNotNull("The application is not ready", server.waitForStringInLogUsingMark("CWWKT0016I", 10000));
 
         createTraceEvent(testName);
 
