@@ -106,6 +106,7 @@ public class ServerTrackerTest extends CommonTestClass {
                     one(server1).addInstalledAppForValidation(Constants.APP_TESTMARKER);
                     one(server1).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKG0014E_CONFIG_PARSER_XML_SYNTAX_ERROR));
                     one(server1).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKO0227E_EXECUTOR_SERVICE_MISSING));
+                    one(server1).addIgnoredErrors(Arrays.asList(MessageConstants.SSL_NOT_RESTARTED_PROPERLY));
                 }
             });
 
@@ -133,6 +134,7 @@ public class ServerTrackerTest extends CommonTestClass {
                     exactly(2).of(server1).addInstalledAppForValidation(Constants.APP_TESTMARKER);
                     exactly(2).of(server1).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKG0014E_CONFIG_PARSER_XML_SYNTAX_ERROR));
                     exactly(2).of(server1).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKO0227E_EXECUTOR_SERVICE_MISSING));
+                    exactly(2).of(server1).addIgnoredErrors(Arrays.asList(MessageConstants.SSL_NOT_RESTARTED_PROPERLY));
                 }
             });
 
@@ -161,12 +163,15 @@ public class ServerTrackerTest extends CommonTestClass {
                     one(server1).addInstalledAppForValidation(Constants.APP_TESTMARKER);
                     one(server1).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKG0014E_CONFIG_PARSER_XML_SYNTAX_ERROR));
                     one(server1).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKO0227E_EXECUTOR_SERVICE_MISSING));
+                    one(server1).addIgnoredErrors(Arrays.asList(MessageConstants.SSL_NOT_RESTARTED_PROPERLY));
                     one(server2).addInstalledAppForValidation(Constants.APP_TESTMARKER);
                     one(server2).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKG0014E_CONFIG_PARSER_XML_SYNTAX_ERROR));
                     one(server2).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKO0227E_EXECUTOR_SERVICE_MISSING));
+                    one(server2).addIgnoredErrors(Arrays.asList(MessageConstants.SSL_NOT_RESTARTED_PROPERLY));
                     one(server3).addInstalledAppForValidation(Constants.APP_TESTMARKER);
                     one(server3).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKG0014E_CONFIG_PARSER_XML_SYNTAX_ERROR));
                     one(server3).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKO0227E_EXECUTOR_SERVICE_MISSING));
+                    one(server3).addIgnoredErrors(Arrays.asList(MessageConstants.SSL_NOT_RESTARTED_PROPERLY));
                 }
             });
 
@@ -232,7 +237,8 @@ public class ServerTrackerTest extends CommonTestClass {
                     one(server1).addInstalledAppForValidation(Constants.APP_TESTMARKER);
                     one(server1).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKG0014E_CONFIG_PARSER_XML_SYNTAX_ERROR));
                     one(server1).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKO0227E_EXECUTOR_SERVICE_MISSING));
-               }
+                    one(server1).addIgnoredErrors(Arrays.asList(MessageConstants.SSL_NOT_RESTARTED_PROPERLY));
+                }
             });
 
             tracker.addServer(server1);
@@ -264,7 +270,8 @@ public class ServerTrackerTest extends CommonTestClass {
                     one(server1).addInstalledAppForValidation(Constants.APP_TESTMARKER);
                     one(server1).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKG0014E_CONFIG_PARSER_XML_SYNTAX_ERROR));
                     one(server1).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKO0227E_EXECUTOR_SERVICE_MISSING));
-               }
+                    one(server1).addIgnoredErrors(Arrays.asList(MessageConstants.SSL_NOT_RESTARTED_PROPERLY));
+                }
             });
 
             tracker.addServer(server1);
@@ -301,12 +308,15 @@ public class ServerTrackerTest extends CommonTestClass {
                     one(server1).addInstalledAppForValidation(Constants.APP_TESTMARKER);
                     one(server1).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKG0014E_CONFIG_PARSER_XML_SYNTAX_ERROR));
                     one(server1).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKO0227E_EXECUTOR_SERVICE_MISSING));
+                    one(server1).addIgnoredErrors(Arrays.asList(MessageConstants.SSL_NOT_RESTARTED_PROPERLY));
                     one(server2).addInstalledAppForValidation(Constants.APP_TESTMARKER);
                     one(server2).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKG0014E_CONFIG_PARSER_XML_SYNTAX_ERROR));
                     one(server2).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKO0227E_EXECUTOR_SERVICE_MISSING));
+                    one(server2).addIgnoredErrors(Arrays.asList(MessageConstants.SSL_NOT_RESTARTED_PROPERLY));
                     one(server3).addInstalledAppForValidation(Constants.APP_TESTMARKER);
                     one(server3).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKG0014E_CONFIG_PARSER_XML_SYNTAX_ERROR));
                     one(server3).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKO0227E_EXECUTOR_SERVICE_MISSING));
+                    one(server3).addIgnoredErrors(Arrays.asList(MessageConstants.SSL_NOT_RESTARTED_PROPERLY));
                 }
             });
 
@@ -343,12 +353,15 @@ public class ServerTrackerTest extends CommonTestClass {
                     one(server1).addInstalledAppForValidation(Constants.APP_TESTMARKER);
                     one(server1).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKG0014E_CONFIG_PARSER_XML_SYNTAX_ERROR));
                     one(server1).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKO0227E_EXECUTOR_SERVICE_MISSING));
+                    one(server1).addIgnoredErrors(Arrays.asList(MessageConstants.SSL_NOT_RESTARTED_PROPERLY));
                     one(server2).addInstalledAppForValidation(Constants.APP_TESTMARKER);
                     one(server2).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKG0014E_CONFIG_PARSER_XML_SYNTAX_ERROR));
                     one(server2).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKO0227E_EXECUTOR_SERVICE_MISSING));
+                    one(server2).addIgnoredErrors(Arrays.asList(MessageConstants.SSL_NOT_RESTARTED_PROPERLY));
                     one(server3).addInstalledAppForValidation(Constants.APP_TESTMARKER);
                     one(server3).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKG0014E_CONFIG_PARSER_XML_SYNTAX_ERROR));
                     one(server3).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKO0227E_EXECUTOR_SERVICE_MISSING));
+                    one(server3).addIgnoredErrors(Arrays.asList(MessageConstants.SSL_NOT_RESTARTED_PROPERLY));
                 }
             });
 

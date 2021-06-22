@@ -13,5 +13,6 @@
   	<javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
   	<javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read"/>
   	<javaPermission className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
+  	<javaPermission className="org.osgi.framework.AdminPermission" name="*" actions="*"/>
 
 </client>

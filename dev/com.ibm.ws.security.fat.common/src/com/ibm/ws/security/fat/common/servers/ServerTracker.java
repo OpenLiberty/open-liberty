@@ -54,6 +54,8 @@ public class ServerTracker {
         server.addIgnoredErrors(Arrays.asList(MessageConstants.CWWKG0014E_CONFIG_PARSER_XML_SYNTAX_ERROR));
         // ignore shutdown timing issues
         server.addIgnoredErrors(Arrays.asList(MessageConstants.CWWKO0227E_EXECUTOR_SERVICE_MISSING));
+        // ignore potential timing issue with SSL port restart - if the port was ready when tests need it, that's good enough
+        server.addIgnoredErrors(Arrays.asList(MessageConstants.SSL_NOT_RESTARTED_PROPERLY));
 
     }
 

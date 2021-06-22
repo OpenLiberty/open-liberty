@@ -14,7 +14,7 @@ bVersion=1.0
 Bundle-SymbolicName: io.openliberty.org.apache.myfaces.3.0
 Bundle-Description:  Jakarta Server Faces, MyFaces 3.0 Implementation
 
-Implementation-Version: 3.0.0
+Implementation-Version: 3.0.1
 
 -fixupmessages.missingexport: "Used bundle version * for exported package";is:=ignore
 
@@ -119,7 +119,7 @@ Import-Package: \
   *
 
 -buildpath: \
-  org.apache.myfaces.core:myfaces-impl;version=3.0.0,\
+  org.apache.myfaces.core:myfaces-impl;version=${Implementation-Version},\
   io.openliberty.jakarta.faces.3.0;version=latest,\
   com.ibm.ws.classloading;version=latest,\
   com.ibm.ws.webcontainer;version=latest,\
