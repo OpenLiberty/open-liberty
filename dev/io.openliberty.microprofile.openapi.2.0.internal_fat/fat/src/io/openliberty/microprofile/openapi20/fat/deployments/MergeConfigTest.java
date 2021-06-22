@@ -12,8 +12,10 @@ package io.openliberty.microprofile.openapi20.fat.deployments;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.DISABLE_VALIDATION;
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -76,6 +78,9 @@ public class MergeConfigTest {
         String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
         JsonNode openapiNode = OpenAPITestUtil.readYamlTree(doc);
         OpenAPITestUtil.checkPaths(openapiNode, 1, "/test");
+        
+        // Test that a message was output
+        assertThat(server.findStringsInLogs(" I .*Combining OpenAPI documentation from multiple modules is disabled.*test1"), hasSize(1));
 
         // remove app 1
         removeApp(war1);
@@ -84,6 +89,33 @@ public class MergeConfigTest {
         doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
         openapiNode = OpenAPITestUtil.readYamlTree(doc);
         OpenAPITestUtil.checkPaths(openapiNode, 1, "/test2");
+    }
+    
+    @Test
+    public void testFirstModuleOnlyEar() throws Exception {
+        // start server
+        server.startServer();
+        
+        WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
+                        .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+        
+        WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war")
+                        .addClasses(DeploymentTestApp.class, DeploymentTestResource2.class);
+        
+        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
+                        .addAsModules(war1, war2);
+        
+        deployApp(ear);
+        
+        // check that documentation includes only app 1
+        String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
+        JsonNode openapiNode = OpenAPITestUtil.readYamlTree(doc);
+        
+        // Only one module is processed, but we don't know which one it will be
+        OpenAPITestUtil.checkPaths(openapiNode, 1);
+        
+        // Test that a message was output
+        assertThat(server.findStringsInLogs(" I .*Combining OpenAPI documentation from multiple modules is disabled.*test/(test1|test2)"), hasSize(1));
     }
     
     @Test

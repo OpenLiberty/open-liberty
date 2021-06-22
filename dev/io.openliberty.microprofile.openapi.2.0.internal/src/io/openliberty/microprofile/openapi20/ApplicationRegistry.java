@@ -27,6 +27,7 @@ import org.osgi.service.component.annotations.Reference;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 import io.openliberty.microprofile.openapi20.merge.MergeProcessor;
 import io.openliberty.microprofile.openapi20.utils.LoggingUtils;
@@ -49,6 +50,8 @@ public class ApplicationRegistry {
 
     @Reference
     private ApplicationProcessor applicationProcessor;
+    
+    private boolean multiAppWarningGiven = false;
 
     // Thread safety: access to these fields must be synchronized on this
     private Map<String, ApplicationRecord> applications = new LinkedHashMap<>(); // Linked map retains order in which applications were added
@@ -77,14 +80,17 @@ public class ApplicationRegistry {
             // Store the app in our collection
             applications.put(newAppInfo.getName(), record);
             
-            if (!moduleSelectionConfig.useFirstModuleOnly() || providersIsEmpty()) {
+            OpenAPIProvider firstProvider = getFirstProvider();
+            
+            if (moduleSelectionConfig.useFirstModuleOnly() && firstProvider != null) {
+                if (LoggingUtils.isEventEnabled(tc)) {
+                    Tr.event(this, tc, "Application Processor: useFirstModuleOnly is configured and we already have a module. Not processing. appInfo=" + newAppInfo);
+                }
+                setUsingMultiModulesWithoutConfig(firstProvider);
+            } else {
                 Collection<OpenAPIProvider> openApiProviders = applicationProcessor.processApplication(newAppInfo, moduleSelectionConfig);
                 for (OpenAPIProvider openApiProvider : openApiProviders) {
                     record.providers.add(openApiProvider);
-                }
-            } else {
-                if (LoggingUtils.isEventEnabled(tc)) {
-                    Tr.event(this, tc, "Application Processor: useFirstModuleOnly is configured and we already have a module. Not processing. appInfo=" + newAppInfo);
                 }
                 
             }
@@ -172,6 +178,19 @@ public class ApplicationRegistry {
             return mergedProvider;
         }
     }
+    
+    /**
+     * Called at the point where we notice that multiple modules are deployed but the OpenAPI config is set to only generate docs from the first module
+     * @param firstModule the module which <i>is</i> being used to generate openAPI documentation
+     */
+    public void setUsingMultiModulesWithoutConfig(OpenAPIProvider firstModule) {
+        if (!multiAppWarningGiven && ProductInfo.getBetaEdition()) {
+            Tr.info(tc, "Combining OpenAPI documentation from multiple modules is disabled. Only {0} will be used to generate OpenAPI documentation."
+                            + "To enable merging of OpenAPI documentation from all modules, set config property mp.openapi.extensions.merged.include = all.",
+                            firstModule);
+            multiAppWarningGiven = true;
+        }
+    }
 
     private List<OpenAPIProvider> getProvidersToMerge() {
         synchronized (this) {
@@ -183,15 +202,16 @@ public class ApplicationRegistry {
     
     /**
      * Thread safety: Caller must hold lock on {@code this}
-     * @return {@code true} if {@link #applications} contains no providers
+     * @return {@code null} if {@link #applications} contains no providers
      */
-    private boolean providersIsEmpty() {
+    private OpenAPIProvider getFirstProvider() {
         for (Entry<String, ApplicationRecord> entry : applications.entrySet()) {
-            if (!entry.getValue().providers.isEmpty()) {
-                return false;
+            List<OpenAPIProvider> providers = entry.getValue().providers;
+            if (!providers.isEmpty()) {
+                return providers.get(0);
             }
         }
-        return true;
+        return null;
     }
 
     private static class ApplicationRecord {

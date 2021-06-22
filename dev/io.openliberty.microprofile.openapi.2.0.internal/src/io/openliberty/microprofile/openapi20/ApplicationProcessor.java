@@ -10,6 +10,10 @@
  *******************************************************************************/
 package io.openliberty.microprofile.openapi20;
 
+import static org.osgi.service.component.annotations.ReferenceCardinality.OPTIONAL;
+import static org.osgi.service.component.annotations.ReferencePolicy.DYNAMIC;
+import static org.osgi.service.component.annotations.ReferencePolicyOption.GREEDY;
+
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -73,7 +77,12 @@ public class ApplicationProcessor {
     
     @Reference
     private ClassLoadingService classLoadingService;
-
+    
+    // This needs to be an optional dynamic reference to accommodate the circular dependency
+    // It should almost always be present
+    @Reference(cardinality = OPTIONAL, policy = DYNAMIC, policyOption = GREEDY)
+    private volatile ApplicationRegistry appRegistry;
+    
     /**
      * The processApplication method processes applications that are added to the OpenLiberty instance.
      * 
@@ -123,8 +132,12 @@ public class ApplicationProcessor {
                                 if (LoggingUtils.isEventEnabled(tc)) {
                                     Tr.event(this, tc, "Ignoring module because useFirstModuleOnly is set and we already found one. module=" + webModuleInfo.getName());
                                 }
+                                ApplicationRegistry appRegistry = this.appRegistry;
+                                if (appRegistry != null) {
+                                    appRegistry.setUsingMultiModulesWithoutConfig(openAPIProviders.get(0));
+                                }
                                 
-                                break;
+                                break; // Break here since there's no point in looking at any further modules
                             }
                             
                             if (!selectionConfig.isIncluded(webModuleInfo)) {
