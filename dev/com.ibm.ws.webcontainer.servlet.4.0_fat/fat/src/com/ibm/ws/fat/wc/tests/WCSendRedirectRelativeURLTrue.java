@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,51 +19,41 @@ import java.util.logging.Logger;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.ws.fat.util.LoggingTest;
-import com.ibm.ws.fat.util.SharedServer;
-import com.ibm.ws.fat.wc.WCApplicationHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
-public class WCSendRedirectRelativeURLTrue extends LoggingTest {
+public class WCSendRedirectRelativeURLTrue {
 
     private static final Logger LOG = Logger.getLogger(WCAddJspFileTest.class.getName());
 
-    @ClassRule
-    public static SharedServer SHARED_SERVER = new SharedServer("servlet40_sendRedirectURL_True");
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.fat.util.LoggingTest#getSharedServer()
-     */
-    @Override
-    protected SharedServer getSharedServer() {
-        return SHARED_SERVER;
-    }
+    @Server("servlet40_sendRedirectURL_True")
+    public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
         LOG.info("Setup : add TestAddJspFile to the server if not already present.");
 
-        WCApplicationHelper.addEarToServerDropins(SHARED_SERVER.getLibertyServer(), "TestAddJspFile.ear", false,
-                                                  "TestAddJspFile.war", true, null, false, "testaddjspfile.war.listeners");
+        ShrinkHelper.defaultDropinApp(server, "TestAddJspFile.war", "testaddjspfile.war.listeners");
 
-        SHARED_SERVER.startIfNotStarted();
-        WCApplicationHelper.waitForAppStart("TestAddJspFile", WCAddJspFileTest.class.getName(), SHARED_SERVER.getLibertyServer());
+        // Start the server and use the class name so we can find logs easily.
+        server.startServer(WCSendRedirectRelativeURLTrue.class.getSimpleName() + ".log");
         LOG.info("Setup : complete, ready for Tests");
     }
 
     @AfterClass
     public static void testCleanup() throws Exception {
-        SHARED_SERVER.getLibertyServer().stopServer();
+        if (server != null && server.isStarted()) {
+            server.stopServer();
+        }
     }
 
     /**
@@ -83,7 +73,7 @@ public class WCSendRedirectRelativeURLTrue extends LoggingTest {
         LOG.info("\n /************************************************************************************/");
 
         try {
-            String URLString = SHARED_SERVER.getServerUrl(true, "/TestAddJspFile/sendRedirect.jsp");
+            String URLString = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/TestAddJspFile/sendRedirect.jsp";
             URL url = new URL(URLString);
             HttpURLConnection con = null;
             int responseCode = 0;
