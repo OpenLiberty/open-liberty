@@ -132,9 +132,16 @@ autoFVT.doLast {
       from project(':com.ibm.ws.security.fat.common').file('publish/shared/config')
       into new File(autoFvtDir, 'publish/shared/config')
     }
-    
-        copy { 
-    from new File(project(':com.ibm.ws.security.fat.common.jwt').buildDir, 'test-application/jwtbuilder.war')
+
+    /* copy the jwtbuilder app config file from security_fat.common.jwt */
+    copy {
+      from project(':com.ibm.ws.security.fat.common.jwt').file('publish/shared/config')
+      include "jwtBuilderApplication.xml"
+      into new File(autoFvtDir, 'publish/shared/config')
+    }
+     
+    copy { 
+      from new File(project(':com.ibm.ws.security.fat.common.jwt').buildDir, 'test-application/jwtbuilder.war')
       into new File(autoFvtDir, 'publish/servers/' + server + '/test-apps')
     }
   }

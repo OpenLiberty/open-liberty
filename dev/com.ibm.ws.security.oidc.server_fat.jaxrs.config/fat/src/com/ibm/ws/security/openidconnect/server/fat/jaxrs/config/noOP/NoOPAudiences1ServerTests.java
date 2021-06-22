@@ -70,6 +70,9 @@ public class NoOPAudiences1ServerTests extends MangleJWTTestTools {
         String certType = Constants.X509_CERT;
 
         testSettings = new TestSettings();
+        // We don't need an OP server, but, we do need commonSetup to run through some steps normally done for the OP
+        // set skipServerStart = true to skip the actual start (but do everything else) - skipServerStart will
+        // be reset to false by the skip method - that allows the RS to be started in the following step.
         skipServerStart = true;
         testOPServer = commonSetUp(OPServerName, "server_audiences.xml", Constants.OIDC_OP, extraApps, Constants.DO_NOT_USE_DERBY, extraMsgs, null, Constants.OIDC_OP, true, true, tokenType, certType);
         genericTestServer = commonSetUp(RSServerName, "server_audiences.xml", Constants.GENERIC_SERVER, extraApps2, Constants.DO_NOT_USE_DERBY, extraMsgs2, null, Constants.OIDC_OP, true, true, tokenType, certType);
