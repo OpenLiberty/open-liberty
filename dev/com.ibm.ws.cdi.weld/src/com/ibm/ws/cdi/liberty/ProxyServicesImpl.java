@@ -12,6 +12,10 @@ package com.ibm.ws.cdi.liberty;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
+import java.security.ProtectionDomain;
 
 import org.eclipse.osgi.container.ModuleLoader;
 import org.eclipse.osgi.container.ModuleWiring;
