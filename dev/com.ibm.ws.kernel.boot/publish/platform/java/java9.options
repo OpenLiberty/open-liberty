@@ -7,6 +7,9 @@ java.base/sun.security.action=ALL-UNNAMED
 java.naming/com.sun.jndi.ldap=ALL-UNNAMED
 --add-exports
 java.naming/com.sun.jndi.url.ldap=ALL-UNNAMED
+# for Oracle Kerberos
+--add-exports
+java.security.jgss/sun.security.krb5.internal=ALL-UNNAMED
 ### Opens
 --add-opens
 java.base/java.util=ALL-UNNAMED
@@ -46,4 +49,3 @@ java.base/java.security=ALL-UNNAMED
 # for java -jar execution on command line (java.net.URLClassLoader)
 --add-opens
 java.base/java.net=ALL-UNNAMED
-
