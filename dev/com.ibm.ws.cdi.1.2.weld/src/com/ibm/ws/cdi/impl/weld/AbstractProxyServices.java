@@ -14,9 +14,6 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
-import java.security.ProtectionDomain;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.WeakHashMap;
 
 import org.eclipse.osgi.util.ManifestElement;
 import org.jboss.weld.serialization.spi.ProxyServices;
@@ -36,37 +33,6 @@ import com.ibm.ws.cdi.CDIRuntimeException;
 public abstract class AbstractProxyServices implements ProxyServices {
 
     private static final ManifestElement[] WELD_PACKAGES;
-    private static java.lang.reflect.Method defineClass1, defineClass2;
-    private static final AtomicBoolean classLoaderMethodsMadeAccessible = new AtomicBoolean(false);
-
-    private WeakHashMap<Class<?>, ClassLoader> classToClassLoader = new WeakHashMap<Class<?>, ClassLoader>(); //Do we need this?
-
-    /**
-     * This method cracks open {@code ClassLoader#defineClass()} methods by calling {@code setAccessible()}.
-     * <p>
-     * It was taken from WeldDefaultProxyService
-     **/
-    public static void makeClassLoaderMethodsAccessible() {
-        // the AtomicBoolean make sure this gets invoked only once.
-        if (classLoaderMethodsMadeAccessible.compareAndSet(false, true)) {
-            try {
-                AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
-                    public Object run() throws Exception {
-                        Class<?> cl = Class.forName("java.lang.ClassLoader");
-                        final String name = "defineClass";
-
-                        defineClass1 = cl.getDeclaredMethod(name, String.class, byte[].class, int.class, int.class);
-                        defineClass2 = cl.getDeclaredMethod(name, String.class, byte[].class, int.class, int.class, ProtectionDomain.class);
-                        defineClass1.setAccessible(true);
-                        defineClass2.setAccessible(true);
-                        return null;
-                    }
-                });
-            } catch (PrivilegedActionException pae) {
-                throw new RuntimeException("cannot initialize ClassPool", pae.getException());
-            }
-        }
-    }
 
     static {
         try {
@@ -120,58 +86,6 @@ public abstract class AbstractProxyServices implements ProxyServices {
         });
     }
 
-    @Override
-    Class<?> defineClass​(Class<?> originalClass, String className, byte[] classBytes, int off, int len, ProtectionDomain protectionDomain) throws ClassFormatError {
-        try {
-            makeClassLoaderMethodsAccessible();
-            java.lang.reflect.Method method;
-            Object[] args;
-            if (protectionDomain == null) {
-                method = defineClass1;
-                args = new Object[]{className, classBytes, off, len};
-            } else {
-                method = defineClass2;
-                args = new Object[]{className, classBytes, off, len, protectionDomain};
-            }
-            ClassLoader loader = getClassLoader(originalClass);
-            /*if (loader == null) {
-                loader = Thread.currentThread().getContextClassLoader();
-                // cannot determine CL, we need to throw an exception
-                if (loader == null) {
-                    throw BeanLogger.LOG.cannotDetermineClassLoader(className, originalClass);
-                }
-            }*/
-            Class<?> clazz = (Class) method.invoke(loader, args);
-            classToClassLoader.put(clazz, loader);
-            return clazz;
-        } catch (RuntimeException e) {
-            throw e;
-        } catch (java.lang.reflect.InvocationTargetException e) {
-            throw new RuntimeException(e.getTargetException());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    Class<?> loadClass​(Class<?> originalClass, String classBinaryName) throws ClassNotFoundException {
-        try {
-            return (Class<?>) AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
-                @Override
-                public Object run() throws Exception {
-                    ClassLoader cl = classToClassLoader.containsKey(originalClass) ? classToClassLoader.get(originalClass) : getClassLoader(this.getClass());
-                    return Class.forName(classBinaryName, true, cl);
-                }
-            });
-        } catch (PrivilegedActionException pae) {
-            throw new CDIRuntimeException(pae.getException());
-        }
-    }
-
-    public boolean supportsClassDefining() {
-        return true;
-    }
-
     //implemented on a platform specific basis
     protected abstract void addWeldDynamicImports(Bundle b, ManifestElement[] dynamicImports);
 
@@ -191,3 +105,4 @@ public abstract class AbstractProxyServices implements ProxyServices {
     }
 
 }
+

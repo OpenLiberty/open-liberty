@@ -8,14 +8,10 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.cdi.liberty;
+package com.ibm.ws.cdi.proxy;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
-import java.security.ProtectionDomain;
 
 import org.eclipse.osgi.container.ModuleLoader;
 import org.eclipse.osgi.container.ModuleWiring;
@@ -33,6 +29,10 @@ import com.ibm.ws.cdi.impl.weld.AbstractProxyServices;
  *
  */
 public class ProxyServicesImpl extends AbstractProxyServices implements ProxyServices {
+
+    public ProxyServicesImpl() {
+        System.out.println("GREP 1.2");
+    }
 
     @Override
     protected void addWeldDynamicImports(Bundle b, ManifestElement[] dynamicImports) {
@@ -61,3 +61,4 @@ public class ProxyServicesImpl extends AbstractProxyServices implements ProxySer
         }
     }
 }
+
