@@ -71,7 +71,7 @@
 		signatureAlgorithm="RS256"
 		audiences="client01"
 		keyStoreRef="key_allSigAlg"
-        keyAlias="rs256" />
+		keyAlias="rs256"
 		/>
 	
 	<jwtBuilder 
@@ -80,7 +80,7 @@
 		signatureAlgorithm="RS384"
 		audiences="client01"
 		keyStoreRef="key_allSigAlg"
-        keyAlias="rs384" />
+		keyAlias="rs384"
 		/>		
 
 	<jwtBuilder 
@@ -89,7 +89,7 @@
 		signatureAlgorithm="RS512"
 		audiences="client01"
 		keyStoreRef="key_allSigAlg"
-        keyAlias="rs512" />
+		keyAlias="rs512"
 		/>
 		
 	<jwtBuilder 
@@ -98,7 +98,7 @@
 		signatureAlgorithm="ES256"
 		audiences="client01"
 		keyStoreRef="key_allSigAlg"
-        keyAlias="es256" />
+		keyAlias="es256"
 		/>
 		
 	<jwtBuilder 
@@ -107,7 +107,7 @@
 		signatureAlgorithm="ES384"
 		audiences="client01"
 		keyStoreRef="key_allSigAlg"
-        keyAlias="es384" />
+		keyAlias="es384"
 		/>
 		
 	<jwtBuilder 
@@ -116,7 +116,7 @@
 		signatureAlgorithm="ES512"
 		audiences="client01"
 		keyStoreRef="key_allSigAlg"
-        keyAlias="es512" />
+		keyAlias="es512"
 		/>		
 		
 	<jwtBuilder 
@@ -149,7 +149,7 @@
 		signatureAlgorithm="RS256"
 		audiences="client01"
 		keyStoreRef="key_allSigAlg"
-        keyAlias="short_rs256" />
+		keyAlias="short_rs256"
 		/>
 	
 	<jwtBuilder 
@@ -158,7 +158,7 @@
 		signatureAlgorithm="RS384"
 		audiences="client01"
 		keyStoreRef="key_allSigAlg"
-        keyAlias="short_rs384" />
+		keyAlias="short_rs384"
 		/>		
 
 	<jwtBuilder 
@@ -167,7 +167,7 @@
 		signatureAlgorithm="RS512"
 		audiences="client01"
 		keyStoreRef="key_allSigAlg"
-        keyAlias="short_rs512" />
+		keyAlias="short_rs512"
 		/>
 		
 	<jwtBuilder 
@@ -176,7 +176,7 @@
 		signatureAlgorithm="ES256"
 		audiences="client01"
 		keyStoreRef="key_allSigAlg"
-        keyAlias="short_es256" />
+		keyAlias="short_es256"
 		/>
 		
 	<jwtBuilder 
@@ -185,7 +185,7 @@
 		signatureAlgorithm="ES384"
 		audiences="client01"
 		keyStoreRef="key_allSigAlg"
-        keyAlias="short_es384" />
+		keyAlias="short_es384"
 		/>
 		
 	<jwtBuilder 
@@ -194,6 +194,6 @@
 		signatureAlgorithm="ES512"
 		audiences="client01"
 		keyStoreRef="key_allSigAlg"
-        keyAlias="short_es512" />
+		keyAlias="short_es512"
 		/>												
 </server>
