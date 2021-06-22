@@ -21,5 +21,5 @@ Subsystem-Name: Jakarta EE 9.1 Application Client
   io.openliberty.xmlWSClient-3.0, \
   com.ibm.websphere.appserver.transaction-2.0, \
   io.openliberty.jsonp-2.0
-kind=noship
-edition=full
+kind=beta
+edition=base
