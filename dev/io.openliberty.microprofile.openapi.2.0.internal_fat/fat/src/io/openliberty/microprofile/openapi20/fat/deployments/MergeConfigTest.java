@@ -162,6 +162,15 @@ public class MergeConfigTest {
         String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
         JsonNode openapiNode = OpenAPITestUtil.readYamlTree(doc);
         OpenAPITestUtil.checkPaths(openapiNode, 2, "/test1/test", "/test3/test");
+        
+        // check that merge is traced
+        assertThat(server.findStringsInTrace("Merged document:"), hasSize(1));
+        assertThat(server.findStringsInTrace("OpenAPIProvider retrieved from cache"), hasSize(0));
+        
+        // check merged model was cached and cache is used on subsequent requests
+        OpenAPIConnection.openAPIDocsConnection(server, false).download();
+        assertThat(server.findStringsInTrace("Merged document:"), hasSize(1));
+        assertThat(server.findStringsInTrace("OpenAPIProvider retrieved from cache"), hasSize(1));
     }
     
     @Test

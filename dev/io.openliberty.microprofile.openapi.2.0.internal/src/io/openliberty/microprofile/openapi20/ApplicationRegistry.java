@@ -58,6 +58,8 @@ public class ApplicationRegistry {
 
     private ModuleSelectionConfig moduleSelectionConfig = null;
     
+    private OpenAPIProvider cachedProvider = null;
+    
     /**
      * The addApplication method is invoked by the {@link ApplicationListener} when it is notified that an application
      * is starting. It only needs to process the application if we have not already found an application that implements
@@ -89,6 +91,11 @@ public class ApplicationRegistry {
                 setUsingMultiModulesWithoutConfig(firstProvider);
             } else {
                 Collection<OpenAPIProvider> openApiProviders = applicationProcessor.processApplication(newAppInfo, moduleSelectionConfig);
+                
+                if (!openApiProviders.isEmpty()) {
+                    // If the new application has any providers, invalidate the model cache
+                    cachedProvider = null;
+                }
                 for (OpenAPIProvider openApiProvider : openApiProviders) {
                     record.providers.add(openApiProvider);
                 }
@@ -118,9 +125,12 @@ public class ApplicationRegistry {
             // Remove the app from our collection
             ApplicationRecord removedRecord = applications.remove(removedAppInfo.getName());
             
-            if (moduleSelectionConfig.useFirstModuleOnly() && !removedRecord.providers.isEmpty()) {
-                // We just removed the module used for the OpenAPI document, we need to find a new module to use if there is one
-                synchronized (this) {
+            if (!removedRecord.providers.isEmpty()) {
+                // If the removed application had any providers, invalidate the provider cache
+                cachedProvider = null;
+                
+                if (moduleSelectionConfig.useFirstModuleOnly()) {
+                    // We just removed the module used for the OpenAPI document, we need to find a new module to use if there is one
                     for (ApplicationRecord app : applications.values()) {
                         Collection<OpenAPIProvider> providers = applicationProcessor.processApplication(app.info, moduleSelectionConfig);
                         if (!providers.isEmpty()) {
@@ -130,6 +140,7 @@ public class ApplicationRegistry {
                     }
                 }
             }
+            
 
             if (LoggingUtils.isEventEnabled(tc)) {
                 Tr.event(tc, "Application Processor: Removing application ended: appInfo=" + removedAppInfo);
@@ -138,44 +149,45 @@ public class ApplicationRegistry {
     }
 
     /**
-     * The getCurrentOpenAPIProvider method returns the OpenAPIProvider for the current application, if any.
+     * Finds the models from all configured applications, merges them if necessary and returns them.
      * 
-     * @return OpenAPIProvider
-     *         The current OpenAPIProvider.
+     * @return an {@code OpenAPIProvider} holding an OpenAPI model or {@code null} if there are no OpenAPI providers
      */
-    public OpenAPIProvider getCurrentOpenAPIProvider() {
+    public OpenAPIProvider getOpenAPIProvider() {
         synchronized (this) {
-            for (ApplicationRecord record : applications.values()) {
-                if (!record.providers.isEmpty()) {
-                    return record.providers.get(0);
+            if (cachedProvider != null) {
+                if (LoggingUtils.isDebugEnabled(tc)) {
+                    Tr.debug(this, tc, "OpenAPIProvider retrieved from cache");
                 }
+                
+                return cachedProvider;
             }
-        }
-        return null;
-    }
-
-    /**
-     * Merges the models from all configured applications and returns them.
-     * 
-     * @return an {@code OpenAPIProvider} holding a merged OpenAPI model or {@code null} if there are no OpenAPI models to merge
-     */
-    public OpenAPIProvider getMergedOpenAPIProvider() {
-        List<OpenAPIProvider> providers = getProvidersToMerge();
-        if (providers.isEmpty()) {
-            return null;
-        } else if (providers.size() == 1) {
-            return providers.get(0);
-        } else {
-            OpenAPIProvider mergedProvider = MergeProcessor.mergeDocuments(providers);
-            if (!mergedProvider.getMergeProblems().isEmpty()) {
-                StringBuilder sb = new StringBuilder();
-                for (String problem : mergedProvider.getMergeProblems()) {
-                    sb.append("\n - ");
-                    sb.append(problem);
+            
+            if (LoggingUtils.isDebugEnabled(tc)) {
+                Tr.debug(this, tc, "Finding OpenAPIProvider");
+            }
+            
+            List<OpenAPIProvider> providers = getProvidersToMerge();
+            OpenAPIProvider result;
+            if (providers.isEmpty()) {
+                result = null;
+            } else if (providers.size() == 1) {
+                result = providers.get(0);
+            } else {
+                OpenAPIProvider mergedProvider = MergeProcessor.mergeDocuments(providers);
+                if (!mergedProvider.getMergeProblems().isEmpty()) {
+                    StringBuilder sb = new StringBuilder();
+                    for (String problem : mergedProvider.getMergeProblems()) {
+                        sb.append("\n - ");
+                        sb.append(problem);
+                    }
+                    Tr.warning(tc, "CWWKO1662W: The following problems occurred while merging OpenAPI documents: {0}", sb.toString());
                 }
-                Tr.warning(tc, "CWWKO1662W: The following problems occurred while merging OpenAPI documents: {0}", sb.toString());
+                result = mergedProvider;
             }
-            return mergedProvider;
+            
+            cachedProvider = result;
+            return result;
         }
     }
     

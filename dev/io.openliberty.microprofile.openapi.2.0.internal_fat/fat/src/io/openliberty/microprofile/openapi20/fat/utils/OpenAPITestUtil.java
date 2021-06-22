@@ -241,8 +241,8 @@ public class OpenAPITestUtil {
         String title = infoNode.get("title").textValue();
         String version = infoNode.get("version").textValue();
 
-        assertTrue("Incorrect default value for title", title.equals(defaultTitle));
-        assertTrue("Incorrect default value for version", version.equals(defaultVersion));
+        assertEquals("Incorrect default value for title", defaultTitle, title);
+        assertEquals("Incorrect default value for version", defaultVersion, version);
     }
 
     public static void changeServerPorts(LibertyServer server, int httpPort, int httpsPort) throws Exception {

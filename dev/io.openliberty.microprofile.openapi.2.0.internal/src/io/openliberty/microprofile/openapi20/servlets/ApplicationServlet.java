@@ -79,7 +79,7 @@ public class ApplicationServlet extends OpenAPIServletBase {
             ApplicationRegistry appRegistry = appRegistryTracker.getService();
             OpenAPIProvider currentProvider = null;
             if (appRegistry != null) {
-                currentProvider = appRegistry.getMergedOpenAPIProvider();
+                currentProvider = appRegistry.getOpenAPIProvider();
             }
             final String document;
             if (currentProvider != null) {

@@ -100,6 +100,15 @@ public class MergeTest {
         String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
         JsonNode openapiNode = OpenAPITestUtil.readYamlTree(doc);
         OpenAPITestUtil.checkPaths(openapiNode, 1, "/test");
+        
+        // check that merge is not traced
+        assertThat(server.findStringsInLogsAndTraceUsingMark("Merged document:"), hasSize(0));
+        assertThat(server.findStringsInLogsAndTraceUsingMark("OpenAPIProvider retrieved from cache"), hasSize(0));
+        
+        // check merged model was cached and cache is used on subsequent requests
+        OpenAPIConnection.openAPIDocsConnection(server, false).download();
+        assertThat(server.findStringsInLogsAndTraceUsingMark("Merged document:"), hasSize(0));
+        assertThat(server.findStringsInLogsAndTraceUsingMark("OpenAPIProvider retrieved from cache"), hasSize(1));
 
         deployApp(war2);
         deployApp(war3);
@@ -115,6 +124,15 @@ public class MergeTest {
         OpenAPITestUtil.checkInfo(openapiNode, "Generated API", "1.0");
         assertServerContextRoot(openapiNode, null);
         
+        // check that merge is traced
+        assertThat(server.findStringsInLogsAndTraceUsingMark("Merged document:"), hasSize(1));
+        assertThat(server.findStringsInLogsAndTraceUsingMark("OpenAPIProvider retrieved from cache"), hasSize(0));
+        
+        // check merged model was cached and cache is used on subsequent requests
+        OpenAPIConnection.openAPIDocsConnection(server, false).download();
+        assertThat(server.findStringsInLogsAndTraceUsingMark("Merged document:"), hasSize(1));
+        assertThat(server.findStringsInLogsAndTraceUsingMark("OpenAPIProvider retrieved from cache"), hasSize(1));
+        
 
         // Remove war1
         undeployApp(war1);
@@ -125,6 +143,15 @@ public class MergeTest {
         OpenAPITestUtil.checkPaths(openapiNode, 2, "/test2/test", "/test3/test");
         OpenAPITestUtil.checkInfo(openapiNode, "Generated API", "1.0");
         assertServerContextRoot(openapiNode, null);
+        
+        // check that merge is traced
+        assertThat(server.findStringsInLogsAndTraceUsingMark("Merged document:"), hasSize(1));
+        assertThat(server.findStringsInLogsAndTraceUsingMark("OpenAPIProvider retrieved from cache"), hasSize(0));
+        
+        // check merged model was cached and cache is used on subsequent requests
+        OpenAPIConnection.openAPIDocsConnection(server, false).download();
+        assertThat(server.findStringsInLogsAndTraceUsingMark("Merged document:"), hasSize(1));
+        assertThat(server.findStringsInLogsAndTraceUsingMark("OpenAPIProvider retrieved from cache"), hasSize(1));
     }
 
     @Test
@@ -241,6 +268,7 @@ public class MergeTest {
 
     private void deployApp(Archive<?> archive) throws Exception {
         server.setMarkToEndOfLog();
+        server.setTraceMarkToEndOfDefaultTrace();
         ShrinkHelper.exportDropinAppToServer(server, archive, SERVER_ONLY, DISABLE_VALIDATION);
         assertNotNull(server.waitForStringInLogUsingMark("CWWKZ0001I:.*" + getName(archive)));
         deployedApps.add(getName(archive));
@@ -248,6 +276,7 @@ public class MergeTest {
     
     private void undeployApp(Archive<?> archive) throws Exception {
         server.setMarkToEndOfLog();
+        server.setTraceMarkToEndOfDefaultTrace();
         server.deleteFileFromLibertyServerRoot("dropins/" + archive.getName());
         deployedApps.remove(getName(archive));
         assertNotNull(server.waitForStringInLogUsingMark("CWWKZ0009I:.*" + getName(archive)));
