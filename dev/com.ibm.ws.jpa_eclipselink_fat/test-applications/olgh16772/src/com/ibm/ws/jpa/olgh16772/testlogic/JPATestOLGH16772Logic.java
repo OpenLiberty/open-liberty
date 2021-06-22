@@ -168,8 +168,9 @@ public class JPATestOLGH16772Logic extends AbstractTestLogic {
             }
         }
 
-        //TODO: Disable test until EclipseLink 3.0/2.7 are updated to include the fix
-        if ((isUsingJPA30Feature() || isUsingJPA22Feature()) && JPAProviderImpl.ECLIPSELINK.equals(getJPAProviderImpl(jpaResource))) {
+        //TODO: Disable test until EclipseLink 3.0 is updated to include the fix
+        //TODO: Disable test until EclipseLink 2.7 is updated to include the fix
+        if ((isUsingJPA22Feature() || isUsingJPA30Feature()) && JPAProviderImpl.ECLIPSELINK.equals(getJPAProviderImpl(jpaResource))) {
             return;
         }
 
@@ -212,7 +213,7 @@ public class JPATestOLGH16772Logic extends AbstractTestLogic {
                     String expected = "SELECT STRVAL1 FROM TRIMENTITYOLGH16772 WHERE (STRVAL1 = TRIM(LEADING 'A' FROM 'AAHELLO WORDAAAAA'))";
                     Assert.assertEquals(expected, sql.get(0));
                 } else {
-                    String expected = "SELECT STRVAL1 FROM TRIMENTITYOLGH16772 WHERE (STRVAL1 = LTRIM('A', 'AAHELLO WORDAAAAA'))";
+                    String expected = "SELECT STRVAL1 FROM TRIMENTITYOLGH16772 WHERE (STRVAL1 = LTRIM('AAHELLO WORDAAAAA', 'A'))";
                     Assert.assertEquals(expected, sql.get(0));
                 }
 
@@ -238,7 +239,7 @@ public class JPATestOLGH16772Logic extends AbstractTestLogic {
                     String expected = "SELECT STRVAL1 FROM TRIMENTITYOLGH16772 WHERE (STRVAL1 = TRIM(LEADING 'A' FROM 'AAHELLO WORDAAAAA'))";
                     Assert.assertEquals(expected, sql.get(0));
                 } else {
-                    String expected = "SELECT STRVAL1 FROM TRIMENTITYOLGH16772 WHERE (STRVAL1 = LTRIM('A', 'AAHELLO WORDAAAAA'))";
+                    String expected = "SELECT STRVAL1 FROM TRIMENTITYOLGH16772 WHERE (STRVAL1 = LTRIM('AAHELLO WORDAAAAA', 'A'))";
                     Assert.assertEquals(expected, sql.get(0));
                 }
             } finally {
@@ -275,8 +276,9 @@ public class JPATestOLGH16772Logic extends AbstractTestLogic {
             }
         }
 
-        //TODO: Disable test until EclipseLink 3.0/2.7 are updated to include the fix
-        if ((isUsingJPA30Feature() || isUsingJPA22Feature()) && JPAProviderImpl.ECLIPSELINK.equals(getJPAProviderImpl(jpaResource))) {
+        //TODO: Disable test until EclipseLink 3.0 is updated to include the fix
+        //TODO: Disable test until EclipseLink 2.7 is updated to include the fix
+        if ((isUsingJPA22Feature() || isUsingJPA30Feature()) && JPAProviderImpl.ECLIPSELINK.equals(getJPAProviderImpl(jpaResource))) {
             return;
         }
 
@@ -319,7 +321,7 @@ public class JPATestOLGH16772Logic extends AbstractTestLogic {
                     String expected = "SELECT STRVAL1 FROM TRIMENTITYOLGH16772 WHERE (STRVAL1 = TRIM(TRAILING 'A' FROM 'AAHELLO WORDAAAAA'))";
                     Assert.assertEquals(expected, sql.get(0));
                 } else {
-                    String expected = "SELECT STRVAL1 FROM TRIMENTITYOLGH16772 WHERE (STRVAL1 = RTRIM('A', 'AAHELLO WORDAAAAA'))";
+                    String expected = "SELECT STRVAL1 FROM TRIMENTITYOLGH16772 WHERE (STRVAL1 = RTRIM('AAHELLO WORDAAAAA', 'A'))";
                     Assert.assertEquals(expected, sql.get(0));
                 }
 
@@ -345,7 +347,7 @@ public class JPATestOLGH16772Logic extends AbstractTestLogic {
                     String expected = "SELECT STRVAL1 FROM TRIMENTITYOLGH16772 WHERE (STRVAL1 = TRIM(TRAILING 'A' FROM 'AAHELLO WORDAAAAA'))";
                     Assert.assertEquals(expected, sql.get(0));
                 } else {
-                    String expected = "SELECT STRVAL1 FROM TRIMENTITYOLGH16772 WHERE (STRVAL1 = RTRIM('A', 'AAHELLO WORDAAAAA'))";
+                    String expected = "SELECT STRVAL1 FROM TRIMENTITYOLGH16772 WHERE (STRVAL1 = RTRIM('AAHELLO WORDAAAAA', 'A'))";
                     Assert.assertEquals(expected, sql.get(0));
                 }
             } finally {
@@ -491,8 +493,9 @@ public class JPATestOLGH16772Logic extends AbstractTestLogic {
             }
         }
 
-        //TODO: Disable test until EclipseLink 3.0/2.7 are updated to include the fix
-        if ((isUsingJPA30Feature() || isUsingJPA22Feature()) && JPAProviderImpl.ECLIPSELINK.equals(getJPAProviderImpl(jpaResource))) {
+        //TODO: Disable test until EclipseLink 3.0 is updated to include the fix
+        //TODO: Disable test until EclipseLink 2.7 is updated to include the fix
+        if ((isUsingJPA22Feature() || isUsingJPA30Feature()) && JPAProviderImpl.ECLIPSELINK.equals(getJPAProviderImpl(jpaResource))) {
             return;
         }
 
@@ -535,7 +538,7 @@ public class JPATestOLGH16772Logic extends AbstractTestLogic {
                     String expected = "SELECT TRIM(LEADING 'A' FROM 'AAHELLO WORDAAAAA') FROM TRIMENTITYOLGH16772 WHERE (STRVAL1 = 'HELLO')";
                     Assert.assertEquals(expected, sql.get(0));
                 } else {
-                    String expected = "SELECT LTRIM('A', 'AAHELLO WORDAAAAA') FROM TRIMENTITYOLGH16772 WHERE (STRVAL1 = 'HELLO')";
+                    String expected = "SELECT LTRIM('AAHELLO WORDAAAAA', 'A') FROM TRIMENTITYOLGH16772 WHERE (STRVAL1 = 'HELLO')";
                     Assert.assertEquals(expected, sql.get(0));
                 }
 
@@ -561,7 +564,7 @@ public class JPATestOLGH16772Logic extends AbstractTestLogic {
                     String expected = "SELECT TRIM(LEADING 'A' FROM 'AAHELLO WORDAAAAA') FROM TRIMENTITYOLGH16772 WHERE (STRVAL1 = 'HELLO')";
                     Assert.assertEquals(expected, sql.get(0));
                 } else {
-                    String expected = "SELECT LTRIM('A', 'AAHELLO WORDAAAAA') FROM TRIMENTITYOLGH16772 WHERE (STRVAL1 = 'HELLO')";
+                    String expected = "SELECT LTRIM('AAHELLO WORDAAAAA', 'A') FROM TRIMENTITYOLGH16772 WHERE (STRVAL1 = 'HELLO')";
                     Assert.assertEquals(expected, sql.get(0));
                 }
             } finally {
@@ -598,8 +601,9 @@ public class JPATestOLGH16772Logic extends AbstractTestLogic {
             }
         }
 
-        //TODO: Disable test until EclipseLink 3.0/2.7 are updated to include the fix
-        if ((isUsingJPA30Feature() || isUsingJPA22Feature()) && JPAProviderImpl.ECLIPSELINK.equals(getJPAProviderImpl(jpaResource))) {
+        //TODO: Disable test until EclipseLink 3.0 is updated to include the fix
+        //TODO: Disable test until EclipseLink 2.7 is updated to include the fix
+        if ((isUsingJPA22Feature() || isUsingJPA30Feature()) && JPAProviderImpl.ECLIPSELINK.equals(getJPAProviderImpl(jpaResource))) {
             return;
         }
 
@@ -642,7 +646,7 @@ public class JPATestOLGH16772Logic extends AbstractTestLogic {
                     String expected = "SELECT TRIM(TRAILING 'A' FROM 'AAHELLO WORDAAAAA') FROM TRIMENTITYOLGH16772 WHERE (STRVAL1 = 'HELLO')";
                     Assert.assertEquals(expected, sql.get(0));
                 } else {
-                    String expected = "SELECT RTRIM('A', 'AAHELLO WORDAAAAA') FROM TRIMENTITYOLGH16772 WHERE (STRVAL1 = 'HELLO')";
+                    String expected = "SELECT RTRIM('AAHELLO WORDAAAAA', 'A') FROM TRIMENTITYOLGH16772 WHERE (STRVAL1 = 'HELLO')";
                     Assert.assertEquals(expected, sql.get(0));
                 }
 
@@ -668,7 +672,7 @@ public class JPATestOLGH16772Logic extends AbstractTestLogic {
                     String expected = "SELECT TRIM(TRAILING 'A' FROM 'AAHELLO WORDAAAAA') FROM TRIMENTITYOLGH16772 WHERE (STRVAL1 = 'HELLO')";
                     Assert.assertEquals(expected, sql.get(0));
                 } else {
-                    String expected = "SELECT RTRIM('A', 'AAHELLO WORDAAAAA') FROM TRIMENTITYOLGH16772 WHERE (STRVAL1 = 'HELLO')";
+                    String expected = "SELECT RTRIM('AAHELLO WORDAAAAA', 'A') FROM TRIMENTITYOLGH16772 WHERE (STRVAL1 = 'HELLO')";
                     Assert.assertEquals(expected, sql.get(0));
                 }
             } finally {
