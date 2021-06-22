@@ -14,6 +14,9 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 import com.ibm.ws.javaee.dd.common.RunAs;
 import com.ibm.ws.javaee.dd.common.SecurityRoleRef;
@@ -21,7 +24,18 @@ import com.ibm.ws.javaee.dd.ejb.EJBJar;
 import com.ibm.ws.javaee.dd.ejb.EnterpriseBean;
 import com.ibm.ws.javaee.dd.ejb.SecurityIdentity;
 
-public class EnterpriseBeanTest extends EJBJarTestBase {
+@RunWith(Parameterized.class)
+public class EJBJarEnterpriseBeanTest extends EJBJarTestBase {
+    @Parameters
+    public static Iterable<? extends Object> data() {
+        return TEST_DATA;
+    }
+    
+    public EJBJarEnterpriseBeanTest(boolean ejbInWar) {
+        super(ejbInWar);
+    }
+
+    //
 
     protected static final String ejb0XML =
             "<enterprise-beans>" +

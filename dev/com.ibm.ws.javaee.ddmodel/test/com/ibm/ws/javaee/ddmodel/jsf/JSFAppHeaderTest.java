@@ -15,7 +15,7 @@ import org.junit.Test;
 
 import com.ibm.ws.javaee.dd.jsf.FacesConfig;
 
-public class JSFAppTestHeader extends JSFAppTestBase {
+public class JSFAppHeaderTest extends JSFAppTestBase {
  
     protected static final String jsf20NoSchema =
             "<faces-config" +

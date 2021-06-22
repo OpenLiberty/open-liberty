@@ -10,21 +10,12 @@
  *******************************************************************************/
 package com.ibm.ws.javaee.ddmodel.ejb;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-
 import org.jmock.Expectations;
 import org.osgi.framework.ServiceReference;
 
 import com.ibm.ws.container.service.app.deploy.WebModuleInfo;
 import com.ibm.ws.javaee.dd.ejb.EJBJar;
 import com.ibm.ws.javaee.ddmodel.DDTestBase;
-import com.ibm.wsspi.adaptable.module.Container;
-import com.ibm.wsspi.adaptable.module.Entry;
-import com.ibm.wsspi.adaptable.module.NonPersistentCache;
-import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
-import com.ibm.wsspi.artifact.ArtifactEntry;
-import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 
 /**
  * test the ejb-jar.xml parser
@@ -44,26 +35,62 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainer;
  * If we can match the defaults used by WCCM (by looking at
  * WCCMBASE/ws/code/jst.j2ee.core.mofj2ee), that would be ideal.
  */
-
 public class EJBJarTestBase extends DDTestBase {
-    public static EJBJar parseEJBJar(String ddText) throws Exception {
-        return parseEJBJar(ddText, EJBJar.VERSION_3_2, !EJB_IN_WAR, null);
+
+    public EJBJarTestBase(boolean ejbInWar) {
+        this.ejbInWar = ejbInWar;
+    }
+
+    private final boolean ejbInWar;
+
+    public boolean getEJBInWar() {
+        return ejbInWar;
+    }    
+    
+    public static String getEJBJarPath(boolean ejbInWar) {
+        return ( ejbInWar ? "WEB-INF/ejb-jar.xml" : "META-INF/ejb-jar.xml" );
+    }
+
+    public String getEJBJarPath() {
+        return getEJBJarPath( getEJBInWar() );
+    }
+
+    //
+
+    public EJBJar parseEJBJar(String ddText) throws Exception {
+        return parseEJBJar(ddText, EJBJar.VERSION_3_2, getEJBInWar(), null);
     }
     
-    public static EJBJar parseEJBJar(String ddText, boolean ejbInWar) throws Exception {
-        return parseEJBJar(ddText, EJBJar.VERSION_3_2, ejbInWar, null);
+    public EJBJar parseEJBJar(String ddText, String altMessage, String...messages) throws Exception {
+        return parseEJBJar(ddText, EJBJar.VERSION_3_2, getEJBInWar(), altMessage, messages);
+    }
+    
+    protected EJBJar parseEJBJar(String ddText, int maxSchemaVersion) throws Exception {
+        return parseEJBJar(ddText, maxSchemaVersion, getEJBInWar(), null);
+    }
+    
+    protected EJBJar parseEJBJar(String ddText, int maxSchemaVersion, String altMessage, String...messages) throws Exception {
+        return parseEJBJar(ddText, maxSchemaVersion, getEJBInWar(), altMessage, messages);
     }    
 
-    protected static EJBJar parseEJBJar(String ddText, int maxSchemaVersion) throws Exception {
-        return parseEJBJar(ddText, maxSchemaVersion, !EJB_IN_WAR, null);
+    protected static EJBJarEntryAdapter createEJBJarAdapter(int maxSchemaVersion) {
+        @SuppressWarnings("unchecked")
+        ServiceReference<EJBJarDDParserVersion> versionRef =
+            mockery.mock(ServiceReference.class, "sr" + generateId());
+
+        mockery.checking(new Expectations() {
+            {        
+                allowing(versionRef).getProperty(EJBJarDDParserVersion.VERSION);
+                will(returnValue(maxSchemaVersion));
+            }
+        });
+
+        EJBJarEntryAdapter ddAdapter = new EJBJarEntryAdapter();
+        ddAdapter.setVersion(versionRef);
+        
+        return ddAdapter;
     }
     
-    protected static EJBJar parseEJBJar(String ddText, int maxSchemaVersion,
-            String altMessage, String... messages) throws Exception {
-        return parseEJBJar(ddText, maxSchemaVersion, !EJB_IN_WAR,
-                altMessage, messages);
-    }
-
     public static final boolean EJB_IN_WAR = true;
     
     /**
@@ -83,8 +110,9 @@ public class EJBJarTestBase extends DDTestBase {
      * @param ddText XML text which is to be parsed.
      * @param maxSchemaVersion The maximum schema version to
      *     use to parse the descriptor.
-     * @param expectedMessages Error text which is expected.
-     * 
+     * @param altMessage Alternate error text.
+     * @param messages Error text which is expected.
+     *
      * @return The parsed root EJB descriptor element, or null
      *     if an expected exception is thrown.
      *
@@ -92,87 +120,35 @@ public class EJBJarTestBase extends DDTestBase {
      *     unexpected exception, or if parsing succeeds when
      *     an exception is expected.
      */
-    @SuppressWarnings("deprecation")
     protected static EJBJar parseEJBJar(
-            String ddText,
-            int maxSchemaVersion, boolean ejbInWar,
+            String ddText, int maxSchemaVersion, boolean ejbInWar,
             String altMessage, String... messages) throws Exception {
-
-        OverlayContainer rootOverlay = mockery.mock(OverlayContainer.class, "rootOverlay" + generateId());
-        ArtifactEntry artifactEntry = mockery.mock(ArtifactEntry.class, "artifactContainer" + generateId());
-
-        mockery.checking(new Expectations() {
-            {
-                allowing(rootOverlay).getFromNonPersistentCache(with(any(String.class)), with(EJBJar.class));
-                will(returnValue(null));
-                allowing(rootOverlay).addToNonPersistentCache(with(any(String.class)), with(EJBJar.class), with(any(EJBJar.class)));
-                
-                allowing(artifactEntry).getPath();
-                will(returnValue("/META-INF/ejb-jar.xml"));
-            }
-        });
         
-        NonPersistentCache nonPC = mockery.mock(NonPersistentCache.class, "nonPC" + generateId());
-        WebModuleInfo webModuleInfo = ejbInWar ? mockery.mock(WebModuleInfo.class, "webModuleInfo" + mockId++) : null;
+        String appPath = null;
         
-        Container appRoot = mockery.mock(Container.class, "appRoot" + mockId++);
-        Entry moduleEntry = mockery.mock(Entry.class, "moduleEntry" + mockId++);    
-
-        Container moduleRoot = mockery.mock(Container.class, "moduleRoot" + generateId());
-        Entry ddEntry = mockery.mock(Entry.class, "ddEntry" + generateId());
-
-        mockery.checking(new Expectations() {
-            {
-                allowing(nonPC).getFromCache(WebModuleInfo.class);
-                will(returnValue(webModuleInfo));
-
-                allowing(appRoot).getPhysicalPath();
-                will(returnValue("c:\\someDir\\apps\\expanded\\myEar.ear"));
-                allowing(appRoot).adapt(Entry.class);
-                will(returnValue(null));
-
-                allowing(moduleEntry).getRoot();
-                will(returnValue(appRoot));
-                allowing(moduleEntry).getPath();
-                will(returnValue("ejbJar.jar"));
-
-                allowing(moduleRoot).adapt(NonPersistentCache.class);
-                will(returnValue(nonPC));
-                allowing(moduleRoot).adapt(Entry.class);
-                will(returnValue(moduleEntry));
-
-                allowing(ddEntry).getRoot();
-                will(returnValue(moduleRoot));                
-                allowing(ddEntry).getPath();
-                will(returnValue("/META-INF/ejb-jar.xml"));
-                allowing(ddEntry).adapt(InputStream.class);
-                will(returnValue(new ByteArrayInputStream(ddText.getBytes("UTF-8"))));
-            }
-        });
-        
-        @SuppressWarnings("unchecked")
-        ServiceReference<EJBJarDDParserVersion> versionRef =
-            mockery.mock(ServiceReference.class, "sr" + generateId());
-
-        mockery.checking(new Expectations() {
-            {        
-                allowing(versionRef).getProperty(EJBJarDDParserVersion.VERSION);
-                will(returnValue(maxSchemaVersion));
-            }
-        });
-
-        EJBJarEntryAdapter adapter = new EJBJarEntryAdapter();
-        adapter.setVersion(versionRef);
-        
-        try {
-            EJBJar ejbJar = adapter.adapt(moduleRoot, rootOverlay, artifactEntry, ddEntry);
-            verifySuccess(altMessage, messages);
-            return ejbJar;
-
-        } catch ( UnableToAdaptException e ) {
-            verifyFailure( getCause(e), altMessage, messages );
-            return null;
+        String modulePath;
+        if ( ejbInWar ) {
+            modulePath = "/root/wlp/usr/servers/server1/apps/MyWAR.war";
+        } else {
+            modulePath = "/root/wlp/usr/servers/server1/apps/MyEJB.jar";
         }
+
+        String fragmentPath = null;
+
+        String ddPath = getEJBJarPath(ejbInWar);
+        
+        WebModuleInfo webModuleInfo;
+        if ( ejbInWar ) {
+            webModuleInfo = mockery.mock(WebModuleInfo.class, "webModuleInfo" + mockId++);
+        } else {
+            webModuleInfo = null;
+        }
+
+        return parse(
+                appPath, modulePath, fragmentPath,
+                ddText, createEJBJarAdapter(maxSchemaVersion), ddPath,
+                WebModuleInfo.class, webModuleInfo,
+                altMessage, messages);
     }
 
     //

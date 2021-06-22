@@ -15,6 +15,9 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 import com.ibm.ws.javaee.dd.common.Description;
 import com.ibm.ws.javaee.dd.common.DescriptionGroup;
@@ -22,7 +25,17 @@ import com.ibm.ws.javaee.dd.common.DisplayName;
 import com.ibm.ws.javaee.dd.common.Icon;
 import com.ibm.ws.javaee.dd.ejb.EJBJar;
 
+@RunWith(Parameterized.class)
 public class EJBJarTest extends EJBJarTestBase {
+    @Parameters
+    public static Iterable<? extends Object> data() {
+        return TEST_DATA;
+    }
+    
+    public EJBJarTest(boolean ejbInWar) {
+        super(ejbInWar);
+    }
+
     protected static final String invalidRootElement =
         "<!DOCTYPE ejb-jar PUBLIC" +
             " \"-//Sun Microsystems, Inc.//DTD Enterprise JavaBeans 1.1//EN\" \"http://java.sun.com/j2ee/dtds/ejb-jar_1_1.dtd\">" +

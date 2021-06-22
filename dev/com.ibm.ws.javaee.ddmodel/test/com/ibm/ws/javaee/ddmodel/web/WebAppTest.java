@@ -52,9 +52,6 @@ public class WebAppTest extends WebAppTestBase {
 
     @Test
     public void testWebApp() throws Exception {
-        String[] unprovisionedSchemaMessages =
-            { "unprovisioned.descriptor.version" };        
-
         for ( int schemaVersion : WebApp.VERSIONS ) {
             for ( int maxSchemaVersion : WebApp.VERSIONS ) {
                 // The WebApp parser uses a maximum schema
@@ -70,15 +67,19 @@ public class WebAppTest extends WebAppTestBase {
                     effectiveMax = maxSchemaVersion;
                 }
 
-                String[] expectedMessages;
+                String altMessage;
+                String[] messages;
                 if ( schemaVersion > effectiveMax ) {
-                    expectedMessages = unprovisionedSchemaMessages;
+                    altMessage = UNPROVISIONED_DESCRIPTOR_VERSION_ALT_MESSAGE;
+                    messages = UNPROVISIONED_DESCRIPTOR_VERSION_MESSAGES;
                 } else {
-                    expectedMessages = null;
+                    altMessage = null;
+                    messages = null;
                 }
 
-                parse( webApp(schemaVersion, ""),
-                       maxSchemaVersion, expectedMessages );
+                parseWebApp( webApp(schemaVersion, ""),
+                             maxSchemaVersion,
+                             altMessage, messages );
             }
         }
     }
@@ -91,7 +92,7 @@ public class WebAppTest extends WebAppTestBase {
      */
     @Test
     public void testEE6Web30EnvEntryValueWhitespace() throws Exception {
-        WebApp webApp = parse(
+        WebApp webApp = parseWebApp(
             webApp( WebApp.VERSION_3_0,
                     "<env-entry>" +
                         "<env-entry-name> envName </env-entry-name>" +
@@ -114,7 +115,7 @@ public class WebAppTest extends WebAppTestBase {
      */
     @Test
     public void testEE6Web30AbsoluteOrderingElement() throws Exception {
-        WebApp webApp = parse( webApp( WebApp.VERSION_3_0, absOrder() ) ); 
+        WebApp webApp = parseWebApp( webApp( WebApp.VERSION_3_0, absOrder() ) ); 
 
         AbsoluteOrdering absOrder = webApp.getAbsoluteOrdering();
         Assert.assertNotNull(absOrder);
@@ -131,7 +132,7 @@ public class WebAppTest extends WebAppTestBase {
      */    
     @Test
     public void testEE6Web30OthersElement() throws Exception {
-        WebApp webApp = parse( webApp( WebApp.VERSION_3_0, othersAbsOrder() ) ); 
+        WebApp webApp = parseWebApp( webApp( WebApp.VERSION_3_0, othersAbsOrder() ) ); 
         
         AbsoluteOrdering absOrder = webApp.getAbsoluteOrdering();
         Assert.assertNotNull(absOrder);
@@ -153,7 +154,7 @@ public class WebAppTest extends WebAppTestBase {
      */
     @Test
     public void testEE6Web30AbsoluteOrderingDuplicateElements() throws Exception {
-        parse( webApp( WebApp.VERSION_3_0, dupeAbsOrder() ) );
+        parseWebApp( webApp( WebApp.VERSION_3_0, dupeAbsOrder() ) );
     }
 
     /**
@@ -161,7 +162,7 @@ public class WebAppTest extends WebAppTestBase {
      */
     @Test(expected = DDParser.ParseException.class)
     public void testEE6Web30DenyUncoveredHttpMethods() throws Exception {
-        parse( webApp( WebApp.VERSION_3_0, "<deny-uncovered-http-methods/>" ) );
+        parseWebApp( webApp( WebApp.VERSION_3_0, "<deny-uncovered-http-methods/>" ) );
     }
 
     // Servlet 3.1 cases ...
@@ -178,8 +179,8 @@ public class WebAppTest extends WebAppTestBase {
      */    
     @Test(expected = DDParser.ParseException.class)
     public void testEE7Web31AbsoluteOrderingDuplicates() throws Exception {
-        parse( webApp( WebApp.VERSION_3_1, dupeAbsOrder() ),
-               WebApp.VERSION_3_1 );
+        parseWebApp( webApp( WebApp.VERSION_3_1, dupeAbsOrder() ),
+                     WebApp.VERSION_3_1 );
     }
 
     /**
@@ -189,8 +190,8 @@ public class WebAppTest extends WebAppTestBase {
      */    
     @Test
     public void testEE7Web31DenyUncoveredHttpMethods() throws Exception {
-        parse( webApp( WebApp.VERSION_3_1, "<deny-uncovered-http-methods/>" ),
-               WebApp.VERSION_3_1 );
+        parseWebApp( webApp( WebApp.VERSION_3_1, "<deny-uncovered-http-methods/>" ),
+                     WebApp.VERSION_3_1 );
     }
 
     /**
@@ -198,8 +199,8 @@ public class WebAppTest extends WebAppTestBase {
      */    
     @Test(expected = DDParser.ParseException.class)
     public void testEE7Web31DenyUncoveredHttpMethodsNotEmptyType() throws Exception {
-        parse( webApp( WebApp.VERSION_3_1,
+        parseWebApp( webApp( WebApp.VERSION_3_1,
                        "<deny-uncovered-http-methods>junk</deny-uncovered-http-methods>" ),
-                WebApp.VERSION_3_1 );
+                     WebApp.VERSION_3_1 );
     }
 }

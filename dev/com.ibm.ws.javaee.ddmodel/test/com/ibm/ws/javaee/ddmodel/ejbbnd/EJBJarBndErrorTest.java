@@ -11,8 +11,20 @@
 package com.ibm.ws.javaee.ddmodel.ejbbnd;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
+@RunWith(Parameterized.class)
 public class EJBJarBndErrorTest extends EJBJarBndTestBase {
+    @Parameters
+    public static Iterable<? extends Object> data() {
+        return TEST_DATA;
+    }
+    
+    public EJBJarBndErrorTest(boolean ejbInWar) {
+        super(ejbInWar);
+    }
 
     protected static final String ejbJarBndInvalidVersion =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +

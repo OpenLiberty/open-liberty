@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,10 +14,14 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 import com.ibm.ws.javaee.dd.commonext.GlobalTransaction;
 import com.ibm.ws.javaee.dd.commonext.LocalTransaction;
 import com.ibm.ws.javaee.dd.commonext.ResourceRef;
+import com.ibm.ws.javaee.dd.ejb.EJBJar;
 import com.ibm.ws.javaee.dd.ejbext.BeanCache;
 import com.ibm.ws.javaee.dd.ejbext.EJBJarExt;
 import com.ibm.ws.javaee.dd.ejbext.EnterpriseBean;
@@ -26,18 +30,28 @@ import com.ibm.ws.javaee.dd.ejbext.RunAsModeBase;
 import com.ibm.ws.javaee.dd.ejbext.Session;
 import com.ibm.ws.javaee.dd.ejbext.StartAtAppStart;
 
-public class EnterpriseBeanTest extends EJBJarExtTestBase {
+@RunWith(Parameterized.class)
+public class EJBJarExtBeanTest extends EJBJarExtTestBase {
+    @Parameters
+    public static Iterable<? extends Object> data() {
+        return TEST_DATA;
+    }
+    
+    public EJBJarExtBeanTest(boolean ejbInWar) {
+        super(ejbInWar);
+    }
 
     @Test
     public void testEnterpriseBeanEmpty() throws Exception {
-        List<EnterpriseBean> sessionBeans = getEJBJarExt(EJBJarExtTestBase.ejbJarExt11() +
-                                                         "<session name=\"session0\">" +
-                                                         "</session>" +
-                                                         "<session name=\"session1\">" +
-                                                         "</session>" +
-                                                         "<session name=\"session2\">" +
-                                                         "</session>" +
-                                                         "</ejb-jar-ext>").getEnterpriseBeans();
+        List<EnterpriseBean> sessionBeans =
+            parseEJBJarExtXML(ejbJarExt11() +
+                                  "<session name=\"session0\">" +
+                                  "</session>" +
+                                  "<session name=\"session1\">" +
+                                  "</session>" +
+                                  "<session name=\"session2\">" +
+                                  "</session>" +
+                              "</ejb-jar-ext>").getEnterpriseBeans();
 
         Assert.assertEquals("Should be some beans in here", 3, sessionBeans.size());
 
@@ -59,30 +73,34 @@ public class EnterpriseBeanTest extends EJBJarExtTestBase {
 
     @Test
     public void testXMIEnterpriseBeanEmpty() throws Exception {
-        List<EnterpriseBean> sessionBeans = parseEJBJarExtension(ejbJarExtension("") +
-                                                                 "<ejbExtensions xmi:type=\"ejbext:SessionExtension\">" +
-                                                                 "  <enterpriseBean xmi:type=\"ejb:Session\" href=\"META-INF/ejb-jar.xml#s0\"/>" +
-                                                                 "</ejbExtensions>" +
-                                                                 "<ejbExtensions xmi:type=\"ejbext:SessionExtension\">" +
-                                                                 "  <enterpriseBean xmi:type=\"ejb:Session\" href=\"META-INF/ejb-jar.xml#s1\"/>" +
-                                                                 "</ejbExtensions>" +
-                                                                 "<ejbExtensions xmi:type=\"ejbext:SessionExtension\">" +
-                                                                 "  <enterpriseBean xmi:type=\"ejb:Session\" href=\"META-INF/ejb-jar.xml#s2\"/>" +
-                                                                 "</ejbExtensions>" +
-                                                                 "</ejbext:EJBJarExtension>",
-                                                                 parseEJBJar(ejbJar21() +
-                                                                             "<enterprise-beans>" +
-                                                                             "  <session id=\"s0\">" +
-                                                                             "    <ejb-name>session0</ejb-name>" +
-                                                                             "  </session>" +
-                                                                             "  <session id=\"s1\">" +
-                                                                             "    <ejb-name>session1</ejb-name>" +
-                                                                             "  </session>" +
-                                                                             "  <session id=\"s2\">" +
-                                                                             "    <ejb-name>session2</ejb-name>" +
-                                                                             "  </session>" +
-                                                                             "</enterprise-beans>" +
-                                                                             "</ejb-jar>")).getEnterpriseBeans();
+        EJBJar ejbJar = parseEJBJar(
+                ejbJar21() +
+                    "<enterprise-beans>" +
+                        "<session id=\"s0\">" +
+                            "<ejb-name>session0</ejb-name>" +
+                        "</session>" +
+                        "<session id=\"s1\">" +
+                            "<ejb-name>session1</ejb-name>" +
+                        "</session>" +
+                        "<session id=\"s2\">" +
+                            "<ejb-name>session2</ejb-name>" +
+                        "</session>" +
+                    "</enterprise-beans>" +
+                "</ejb-jar>");
+
+        List<EnterpriseBean> sessionBeans = parseEJBJarExtXMI(
+                ejbJarExtension("") +
+                    "<ejbExtensions xmi:type=\"ejbext:SessionExtension\">" +
+                        "<enterpriseBean xmi:type=\"ejb:Session\" href=\"META-INF/ejb-jar.xml#s0\"/>" +
+                    "</ejbExtensions>" +
+                    "<ejbExtensions xmi:type=\"ejbext:SessionExtension\">" +
+                        "<enterpriseBean xmi:type=\"ejb:Session\" href=\"META-INF/ejb-jar.xml#s1\"/>" +
+                    "</ejbExtensions>" +
+                    "<ejbExtensions xmi:type=\"ejbext:SessionExtension\">" +
+                        "<enterpriseBean xmi:type=\"ejb:Session\" href=\"META-INF/ejb-jar.xml#s2\"/>" +
+                    "</ejbExtensions>" +
+                "</ejbext:EJBJarExtension>",
+                ejbJar).getEnterpriseBeans();
 
         Assert.assertEquals("Should be some beans in here", 3, sessionBeans.size());
 
@@ -104,20 +122,22 @@ public class EnterpriseBeanTest extends EJBJarExtTestBase {
 
     @Test
     public void testEnterpriseBeanGetMultipleTimes() throws Exception {
-        EJBJarExt ejbJarExt = getEJBJarExt(EJBJarExtTestBase.ejbJarExt11() +
-                                           "<session name=\"session0\">" +
-                                           "</session>" +
-                                           "<session name=\"session1\">" +
-                                           "</session>" +
-                                           "<session name=\"session2\">" +
-                                           "</session>" +
-                                           "<message-driven name=\"md0\">" +
-                                           "</message-driven>" +
-                                           "<message-driven name=\"md1\">" +
-                                           "</message-driven>" +
-                                           "<message-driven name=\"md2\">" +
-                                           "</message-driven>" +
-                                           "</ejb-jar-ext>");
+        EJBJarExt ejbJarExt = parseEJBJarExtXML(
+                ejbJarExt11() +
+                    "<session name=\"session0\">" +
+                    "</session>" +
+                    "<session name=\"session1\">" +
+                    "</session>" +
+                    "<session name=\"session2\">" +
+                    "</session>" +
+                    "<message-driven name=\"md0\">" +
+                    "</message-driven>" +
+                    "<message-driven name=\"md1\">" +
+                    "</message-driven>" +
+                    "<message-driven name=\"md2\">" +
+                    "</message-driven>" +
+                "</ejb-jar-ext>");
+
         Assert.assertEquals("Should be 3 session beans in here", 6, ejbJarExt.getEnterpriseBeans().size());
         Assert.assertEquals("Should be 3 session beans in here", 6, ejbJarExt.getEnterpriseBeans().size());
         Assert.assertEquals("Should be 3 session beans in here", 6, ejbJarExt.getEnterpriseBeans().size());
@@ -125,31 +145,37 @@ public class EnterpriseBeanTest extends EJBJarExtTestBase {
 
     @Test
     public void testXMIIgnored() throws Exception {
-        parseEJBJarExtension(ejbJarExtension("") +
-                             "<ejbExtensions xmi:type=\"ejbext:SessionExtension\" timeout=\"42\">" +
-                             "  <enterpriseBean xmi:type=\"ejb:Session\" href=\"META-INF/ejb-jar.xml#s0\"/>" +
-                             "  <structure inheritenceRoot=\"true\"/>" +
-                             "  <internationalization invocationLocale=\"CALLER\"/>" +
-                             "  <internationalization invocationLocale=\"SERVER\"/>" +
-                             "</ejbExtensions>" +
-                             "</ejbext:EJBJarExtension>",
-                             parseEJBJar(ejbJar21() +
-                                         "<enterprise-beans>" +
-                                         "  <session id=\"s0\">" +
-                                         "    <ejb-name>session0</ejb-name>" +
-                                         "  </session>" +
-                                         "</enterprise-beans>" +
-                                         "</ejb-jar>")).getEnterpriseBeans();
+        EJBJar ejbJar = parseEJBJar(
+            ejbJar21() +
+                "<enterprise-beans>" +
+                    "<session id=\"s0\">" +
+                        "<ejb-name>session0</ejb-name>" +
+                    "</session>" +
+                "</enterprise-beans>" +
+            "</ejb-jar>");
+
+        parseEJBJarExtXMI(
+                ejbJarExtension("") +
+                    "<ejbExtensions xmi:type=\"ejbext:SessionExtension\" timeout=\"42\">" +
+                        "<enterpriseBean xmi:type=\"ejb:Session\" href=\"META-INF/ejb-jar.xml#s0\"/>" +
+                        "<structure inheritenceRoot=\"true\"/>" +
+                        "<internationalization invocationLocale=\"CALLER\"/>" +
+                        "<internationalization invocationLocale=\"SERVER\"/>" +
+                    "</ejbExtensions>" +
+                "</ejbext:EJBJarExtension>",
+                ejbJar).getEnterpriseBeans();        
     }
 
     @Test
     public void testEnterpriseBeanSessionTimeout() throws Exception {
-        List<EnterpriseBean> sessionBeans = getEJBJarExt(EJBJarExtTestBase.ejbJarExt11() +
-                                                         "<session name=\"session0\">" +
-                                                         "<time-out value=\"42\">" +
-                                                         "</time-out>" +
-                                                         "</session>" +
-                                                         "</ejb-jar-ext>").getEnterpriseBeans();
+        List<EnterpriseBean> sessionBeans = parseEJBJarExtXML(
+                ejbJarExt11() +
+                    "<session name=\"session0\">" +
+                        "<time-out value=\"42\">" +
+                        "</time-out>" +
+                    "</session>" +
+                "</ejb-jar-ext>").getEnterpriseBeans();
+
         com.ibm.ws.javaee.dd.ejbext.EnterpriseBean bean0 = sessionBeans.get(0);
         Assert.assertEquals("should be session0", "session0", bean0.getName());
         Session session = (Session) bean0;
@@ -158,16 +184,16 @@ public class EnterpriseBeanTest extends EJBJarExtTestBase {
 
     @Test
     public void testXMIEnterpriseBeanSessionTimeout() throws Exception {
-        List<EnterpriseBean> sessionBeans = parseEJBJarExtension(ejbJarExtension("") +
+        List<EnterpriseBean> sessionBeans = parseEJBJarExtXMI(ejbJarExtension("") +
                                                                  "<ejbExtensions xmi:type=\"ejbext:SessionExtension\" timeout=\"42\">" +
-                                                                 "  <enterpriseBean xmi:type=\"ejb:Session\" href=\"META-INF/ejb-jar.xml#s0\"/>" +
+                                                                 "<enterpriseBean xmi:type=\"ejb:Session\" href=\"META-INF/ejb-jar.xml#s0\"/>" +
                                                                  "</ejbExtensions>" +
                                                                  "</ejbext:EJBJarExtension>",
                                                                  parseEJBJar(ejbJar21() +
                                                                              "<enterprise-beans>" +
-                                                                             "  <session id=\"s0\">" +
-                                                                             "    <ejb-name>session0</ejb-name>" +
-                                                                             "  </session>" +
+                                                                             "<session id=\"s0\">" +
+                                                                             "<ejb-name>session0</ejb-name>" +
+                                                                             "</session>" +
                                                                              "</enterprise-beans>" +
                                                                              "</ejb-jar>")).getEnterpriseBeans();
         com.ibm.ws.javaee.dd.ejbext.EnterpriseBean bean0 = sessionBeans.get(0);
@@ -178,7 +204,7 @@ public class EnterpriseBeanTest extends EJBJarExtTestBase {
 
     @Test
     public void testEnterpriseBeanBeanCache() throws Exception {
-        List<EnterpriseBean> sessionBeans = getEJBJarExt(EJBJarExtTestBase.ejbJarExt11() +
+        List<EnterpriseBean> sessionBeans = parseEJBJarExtXML(ejbJarExt11() +
                                                          "<session name=\"session0\">" +
                                                          "<bean-cache activation-policy=\"ONCE\"/>" +
                                                          "</session>" +
@@ -213,38 +239,38 @@ public class EnterpriseBeanTest extends EJBJarExtTestBase {
 
     @Test
     public void testXMIEnterpriseBeanBeanCache() throws Exception {
-        List<EnterpriseBean> sessionBeans = parseEJBJarExtension(ejbJarExtension("") +
+        List<EnterpriseBean> sessionBeans = parseEJBJarExtXMI(ejbJarExtension("") +
                                                                  "<ejbExtensions xmi:type=\"ejbext:SessionExtension\">" +
-                                                                 "  <enterpriseBean xmi:type=\"ejb:Session\" href=\"META-INF/ejb-jar.xml#s0\"/>" +
-                                                                 "  <beanCache activateAt=\"ONCE\"/>" +
+                                                                 "<enterpriseBean xmi:type=\"ejb:Session\" href=\"META-INF/ejb-jar.xml#s0\"/>" +
+                                                                 "<beanCache activateAt=\"ONCE\"/>" +
                                                                  "</ejbExtensions>" +
                                                                  "<ejbExtensions xmi:type=\"ejbext:SessionExtension\">" +
-                                                                 "  <enterpriseBean xmi:type=\"ejb:Session\" href=\"META-INF/ejb-jar.xml#s1\"/>" +
-                                                                 "  <beanCache activateAt=\"ACTIVITY_SESSION\"/>" +
+                                                                 "<enterpriseBean xmi:type=\"ejb:Session\" href=\"META-INF/ejb-jar.xml#s1\"/>" +
+                                                                 "<beanCache activateAt=\"ACTIVITY_SESSION\"/>" +
                                                                  "</ejbExtensions>" +
                                                                  "<ejbExtensions xmi:type=\"ejbext:SessionExtension\">" +
-                                                                 "  <enterpriseBean xmi:type=\"ejb:Session\" href=\"META-INF/ejb-jar.xml#s2\"/>" +
-                                                                 "  <beanCache activateAt=\"TRANSACTION\"/>" +
+                                                                 "<enterpriseBean xmi:type=\"ejb:Session\" href=\"META-INF/ejb-jar.xml#s2\"/>" +
+                                                                 "<beanCache activateAt=\"TRANSACTION\"/>" +
                                                                  "</ejbExtensions>" +
                                                                  "<ejbExtensions xmi:type=\"ejbext:SessionExtension\">" +
-                                                                 "  <enterpriseBean xmi:type=\"ejb:Session\" href=\"META-INF/ejb-jar.xml#s3\"/>" +
-                                                                 "  <beanCache/>" +
+                                                                 "<enterpriseBean xmi:type=\"ejb:Session\" href=\"META-INF/ejb-jar.xml#s3\"/>" +
+                                                                 "<beanCache/>" +
                                                                  "</ejbExtensions>" +
                                                                  "</ejbext:EJBJarExtension>",
                                                                  parseEJBJar(ejbJar21() +
                                                                              "<enterprise-beans>" +
-                                                                             "  <session id=\"s0\">" +
-                                                                             "    <ejb-name>session0</ejb-name>" +
-                                                                             "  </session>" +
-                                                                             "  <session id=\"s1\">" +
-                                                                             "    <ejb-name>session1</ejb-name>" +
-                                                                             "  </session>" +
-                                                                             "  <session id=\"s2\">" +
-                                                                             "    <ejb-name>session2</ejb-name>" +
-                                                                             "  </session>" +
-                                                                             "  <session id=\"s3\">" +
-                                                                             "    <ejb-name>session3</ejb-name>" +
-                                                                             "  </session>" +
+                                                                             "<session id=\"s0\">" +
+                                                                             "<ejb-name>session0</ejb-name>" +
+                                                                             "</session>" +
+                                                                             "<session id=\"s1\">" +
+                                                                             "<ejb-name>session1</ejb-name>" +
+                                                                             "</session>" +
+                                                                             "<session id=\"s2\">" +
+                                                                             "<ejb-name>session2</ejb-name>" +
+                                                                             "</session>" +
+                                                                             "<session id=\"s3\">" +
+                                                                             "<ejb-name>session3</ejb-name>" +
+                                                                             "</session>" +
                                                                              "</enterprise-beans>" +
                                                                              "</ejb-jar>")).getEnterpriseBeans();
         Assert.assertEquals("Should be some beans in here", 4, sessionBeans.size());
@@ -264,7 +290,7 @@ public class EnterpriseBeanTest extends EJBJarExtTestBase {
 
     @Test
     public void testEnterpriseBeanLocalTransaction() throws Exception {
-        List<EnterpriseBean> messageDrivenBeans = getEJBJarExt(EJBJarExtTestBase.ejbJarExt11() +
+        List<EnterpriseBean> messageDrivenBeans = parseEJBJarExtXML(ejbJarExt11() +
                                                                "<message-driven name=\"md0\">" +
                                                                "<local-transaction/>" +
                                                                "</message-driven>" +
@@ -319,33 +345,33 @@ public class EnterpriseBeanTest extends EJBJarExtTestBase {
 
     @Test
     public void testXMIEnterpriseBeanLocalTransaction() throws Exception {
-        List<EnterpriseBean> messageDrivenBeans = parseEJBJarExtension(ejbJarExtension("") +
+        List<EnterpriseBean> messageDrivenBeans = parseEJBJarExtXMI(ejbJarExtension("") +
                                                                        "<ejbExtensions xmi:type=\"ejbext:MessageDrivenExtension\">" +
-                                                                       "  <enterpriseBean xmi:type=\"ejb:MessageDriven\" href=\"META-INF/ejb-jar.xml#md0id\"/>" +
-                                                                       "  <localTransaction/>" +
+                                                                       "<enterpriseBean xmi:type=\"ejb:MessageDriven\" href=\"META-INF/ejb-jar.xml#md0id\"/>" +
+                                                                       "<localTransaction/>" +
                                                                        "</ejbExtensions>" +
                                                                        "<ejbExtensions xmi:type=\"ejbext:MessageDrivenExtension\">" +
-                                                                       "  <enterpriseBean xmi:type=\"ejb:MessageDriven\" href=\"META-INF/ejb-jar.xml#md1id\"/>" +
-                                                                       "  <localTransaction boundary=\"ActivitySession\" resolver=\"Application\"" +
-                                                                       "   unresolvedAction=\"Rollback\" shareable=\"true\"/>" +
+                                                                       "<enterpriseBean xmi:type=\"ejb:MessageDriven\" href=\"META-INF/ejb-jar.xml#md1id\"/>" +
+                                                                       "<localTransaction boundary=\"ActivitySession\" resolver=\"Application\"" +
+                                                                       " unresolvedAction=\"Rollback\" shareable=\"true\"/>" +
                                                                        "</ejbExtensions>" +
                                                                        "<ejbExtensions xmi:type=\"ejbext:MessageDrivenExtension\">" +
-                                                                       "  <enterpriseBean xmi:type=\"ejb:MessageDriven\" href=\"META-INF/ejb-jar.xml#md2id\"/>" +
-                                                                       "  <localTransaction boundary=\"BeanMethod\" resolver=\"ContainerAtBoundary\"" +
-                                                                       "   unresolvedAction=\"Commit\" shareable=\"false\"/>" +
+                                                                       "<enterpriseBean xmi:type=\"ejb:MessageDriven\" href=\"META-INF/ejb-jar.xml#md2id\"/>" +
+                                                                       "<localTransaction boundary=\"BeanMethod\" resolver=\"ContainerAtBoundary\"" +
+                                                                       " unresolvedAction=\"Commit\" shareable=\"false\"/>" +
                                                                        "</ejbExtensions>" +
                                                                        "</ejbext:EJBJarExtension>",
                                                                        parseEJBJar(ejbJar21() +
                                                                                    "<enterprise-beans>" +
-                                                                                   "  <message-driven id=\"md0id\">" +
-                                                                                   "    <ejb-name>md0</ejb-name>" +
-                                                                                   "  </message-driven>" +
-                                                                                   "  <message-driven id=\"md1id\">" +
-                                                                                   "    <ejb-name>md1</ejb-name>" +
-                                                                                   "  </message-driven>" +
-                                                                                   "  <message-driven id=\"md2id\">" +
-                                                                                   "    <ejb-name>md2</ejb-name>" +
-                                                                                   "  </message-driven>" +
+                                                                                   "<message-driven id=\"md0id\">" +
+                                                                                   "<ejb-name>md0</ejb-name>" +
+                                                                                   "</message-driven>" +
+                                                                                   "<message-driven id=\"md1id\">" +
+                                                                                   "<ejb-name>md1</ejb-name>" +
+                                                                                   "</message-driven>" +
+                                                                                   "<message-driven id=\"md2id\">" +
+                                                                                   "<ejb-name>md2</ejb-name>" +
+                                                                                   "</message-driven>" +
                                                                                    "</enterprise-beans>" +
                                                                                    "</ejb-jar>")).getEnterpriseBeans();
 
@@ -384,31 +410,31 @@ public class EnterpriseBeanTest extends EJBJarExtTestBase {
 
     @Test
     public void testXMIEnterpriseBeanLocalTran() throws Exception {
-        List<EnterpriseBean> messageDrivenBeans = parseEJBJarExtension(ejbJarExtension("") +
+        List<EnterpriseBean> messageDrivenBeans = parseEJBJarExtXMI(ejbJarExtension("") +
                                                                        "<ejbExtensions xmi:type=\"ejbext:MessageDrivenExtension\">" +
-                                                                       "  <enterpriseBean xmi:type=\"ejb:MessageDriven\" href=\"META-INF/ejb-jar.xml#md0id\"/>" +
-                                                                       "  <localTran/>" +
+                                                                       "<enterpriseBean xmi:type=\"ejb:MessageDriven\" href=\"META-INF/ejb-jar.xml#md0id\"/>" +
+                                                                       "<localTran/>" +
                                                                        "</ejbExtensions>" +
                                                                        "<ejbExtensions xmi:type=\"ejbext:MessageDrivenExtension\">" +
-                                                                       "  <enterpriseBean xmi:type=\"ejb:MessageDriven\" href=\"META-INF/ejb-jar.xml#md1id\"/>" +
-                                                                       "  <localTran boundary=\"ACTIVITY_SESSION\" resolver=\"BEAN\" unresolvedAction=\"ROLLBACK\"/>" +
+                                                                       "<enterpriseBean xmi:type=\"ejb:MessageDriven\" href=\"META-INF/ejb-jar.xml#md1id\"/>" +
+                                                                       "<localTran boundary=\"ACTIVITY_SESSION\" resolver=\"BEAN\" unresolvedAction=\"ROLLBACK\"/>" +
                                                                        "</ejbExtensions>" +
                                                                        "<ejbExtensions xmi:type=\"ejbext:MessageDrivenExtension\">" +
-                                                                       "  <enterpriseBean xmi:type=\"ejb:MessageDriven\" href=\"META-INF/ejb-jar.xml#md2id\"/>" +
-                                                                       "  <localTran boundary=\"BEAN_METHOD\" resolver=\"CONTAINER\" unresolvedAction=\"COMMIT\" />" +
+                                                                       "<enterpriseBean xmi:type=\"ejb:MessageDriven\" href=\"META-INF/ejb-jar.xml#md2id\"/>" +
+                                                                       "<localTran boundary=\"BEAN_METHOD\" resolver=\"CONTAINER\" unresolvedAction=\"COMMIT\" />" +
                                                                        "</ejbExtensions>" +
                                                                        "</ejbext:EJBJarExtension>",
                                                                        parseEJBJar(ejbJar21() +
                                                                                    "<enterprise-beans>" +
-                                                                                   "  <message-driven id=\"md0id\">" +
-                                                                                   "    <ejb-name>md0</ejb-name>" +
-                                                                                   "  </message-driven>" +
-                                                                                   "  <message-driven id=\"md1id\">" +
-                                                                                   "    <ejb-name>md1</ejb-name>" +
-                                                                                   "  </message-driven>" +
-                                                                                   "  <message-driven id=\"md2id\">" +
-                                                                                   "    <ejb-name>md2</ejb-name>" +
-                                                                                   "  </message-driven>" +
+                                                                                   "<message-driven id=\"md0id\">" +
+                                                                                   "<ejb-name>md0</ejb-name>" +
+                                                                                   "</message-driven>" +
+                                                                                   "<message-driven id=\"md1id\">" +
+                                                                                   "<ejb-name>md1</ejb-name>" +
+                                                                                   "</message-driven>" +
+                                                                                   "<message-driven id=\"md2id\">" +
+                                                                                   "<ejb-name>md2</ejb-name>" +
+                                                                                   "</message-driven>" +
                                                                                    "</enterprise-beans>" +
                                                                                    "</ejb-jar>")).getEnterpriseBeans();
 
@@ -445,7 +471,7 @@ public class EnterpriseBeanTest extends EJBJarExtTestBase {
 
     @Test
     public void testEnterpriseBeanShareableLocalTransaction() throws Exception {
-        List<EnterpriseBean> messageDrivenBeans = getEJBJarExt(EJBJarExtTestBase.ejbJarExt11() +
+        List<EnterpriseBean> messageDrivenBeans = parseEJBJarExtXML(ejbJarExt11() +
                                                                "<message-driven name=\"md0\">" +
                                                                "<local-transaction shareable=\"true\">" +
                                                                "</local-transaction>" +
@@ -462,7 +488,7 @@ public class EnterpriseBeanTest extends EJBJarExtTestBase {
         Assert.assertTrue("Should be true", lt0.isSetShareable());
         Assert.assertTrue("Should be true", lt0.isShareable());
 
-        messageDrivenBeans = getEJBJarExt(EJBJarExtTestBase.ejbJarExt11() +
+        messageDrivenBeans = parseEJBJarExtXML(ejbJarExt11() +
                                           "<message-driven name=\"md0\">" +
                                           "<local-transaction shareable=\"false\">" +
                                           "</local-transaction>" +
@@ -482,17 +508,17 @@ public class EnterpriseBeanTest extends EJBJarExtTestBase {
 
     @Test
     public void testXMIEnterpriseBeanShareableLocalTransaction() throws Exception {
-        List<EnterpriseBean> messageDrivenBeans = parseEJBJarExtension(ejbJarExtension("") +
+        List<EnterpriseBean> messageDrivenBeans = parseEJBJarExtXMI(ejbJarExtension("") +
                                                                        "<ejbExtensions xmi:type=\"ejbext:MessageDrivenExtension\">" +
-                                                                       "  <enterpriseBean xmi:type=\"ejb:MessageDriven\" href=\"META-INF/ejb-jar.xml#md0id\"/>" +
-                                                                       "  <localTransaction shareable=\"true\"/>" +
+                                                                       "<enterpriseBean xmi:type=\"ejb:MessageDriven\" href=\"META-INF/ejb-jar.xml#md0id\"/>" +
+                                                                       "<localTransaction shareable=\"true\"/>" +
                                                                        "</ejbExtensions>" +
                                                                        "</ejbext:EJBJarExtension>",
                                                                        parseEJBJar(ejbJar21() +
                                                                                    "<enterprise-beans>" +
-                                                                                   "  <message-driven id=\"md0id\">" +
-                                                                                   "    <ejb-name>md0</ejb-name>" +
-                                                                                   "  </message-driven>" +
+                                                                                   "<message-driven id=\"md0id\">" +
+                                                                                   "<ejb-name>md0</ejb-name>" +
+                                                                                   "</message-driven>" +
                                                                                    "</enterprise-beans>" +
                                                                                    "</ejb-jar>")).getEnterpriseBeans();
 
@@ -505,7 +531,7 @@ public class EnterpriseBeanTest extends EJBJarExtTestBase {
         Assert.assertTrue("Should be true", lt0.isSetShareable());
         Assert.assertTrue("Should be true", lt0.isShareable());
 
-        messageDrivenBeans = getEJBJarExt(EJBJarExtTestBase.ejbJarExt11() +
+        messageDrivenBeans = parseEJBJarExtXML(ejbJarExt11() +
                                           "<message-driven name=\"md0\">" +
                                           "<local-transaction shareable=\"false\">" +
                                           "</local-transaction>" +
@@ -525,7 +551,7 @@ public class EnterpriseBeanTest extends EJBJarExtTestBase {
 
     @Test
     public void testEnterpriseBeanGlobalTransaction() throws Exception {
-        List<EnterpriseBean> messageDrivenBeans = getEJBJarExt(EJBJarExtTestBase.ejbJarExt11() +
+        List<EnterpriseBean> messageDrivenBeans = parseEJBJarExtXML(ejbJarExt11() +
                                                                "<message-driven name=\"md0\">" +
                                                                "<global-transaction>" +
                                                                "</global-transaction>" +
@@ -541,17 +567,17 @@ public class EnterpriseBeanTest extends EJBJarExtTestBase {
 
     @Test
     public void testXMIEnterpriseBeanGlobalTransaction() throws Exception {
-        List<EnterpriseBean> messageDrivenBeans = parseEJBJarExtension(ejbJarExtension("") +
+        List<EnterpriseBean> messageDrivenBeans = parseEJBJarExtXMI(ejbJarExtension("") +
                                                                        "<ejbExtensions xmi:type=\"ejbext:MessageDrivenExtension\">" +
-                                                                       "  <enterpriseBean xmi:type=\"ejb:MessageDriven\" href=\"META-INF/ejb-jar.xml#md0id\"/>" +
-                                                                       "  <globalTransaction/>" +
+                                                                       "<enterpriseBean xmi:type=\"ejb:MessageDriven\" href=\"META-INF/ejb-jar.xml#md0id\"/>" +
+                                                                       "<globalTransaction/>" +
                                                                        "</ejbExtensions>" +
                                                                        "</ejbext:EJBJarExtension>",
                                                                        parseEJBJar(ejbJar21() +
                                                                                    "<enterprise-beans>" +
-                                                                                   "  <message-driven id=\"md0id\">" +
-                                                                                   "    <ejb-name>md0</ejb-name>" +
-                                                                                   "  </message-driven>" +
+                                                                                   "<message-driven id=\"md0id\">" +
+                                                                                   "<ejb-name>md0</ejb-name>" +
+                                                                                   "</message-driven>" +
                                                                                    "</enterprise-beans>" +
                                                                                    "</ejb-jar>")).getEnterpriseBeans();
 
@@ -564,7 +590,7 @@ public class EnterpriseBeanTest extends EJBJarExtTestBase {
 
     @Test
     public void testEnterpriseBeanResourceRef() throws Exception {
-        List<EnterpriseBean> messageDrivenBeans = getEJBJarExt(EJBJarExtTestBase.ejbJarExt11() +
+        List<EnterpriseBean> messageDrivenBeans = parseEJBJarExtXML(ejbJarExt11() +
                                                                "<message-driven name=\"md0\">" +
 
                                                                "<resource-ref name=\"resRef0\">" +
@@ -594,34 +620,34 @@ public class EnterpriseBeanTest extends EJBJarExtTestBase {
 
     @Test
     public void testXMIEnterpriseBeanResourceRef() throws Exception {
-        List<EnterpriseBean> messageDrivenBeans = parseEJBJarExtension(ejbJarExtension("") +
+        List<EnterpriseBean> messageDrivenBeans = parseEJBJarExtXMI(ejbJarExtension("") +
                                                                        "<ejbExtensions xmi:type=\"ejbext:MessageDrivenExtension\">" +
-                                                                       "  <enterpriseBean xmi:type=\"ejb:MessageDriven\" href=\"META-INF/ejb-jar.xml#md0id\"/>" +
-                                                                       "  <resourceRefExtensions>" +
-                                                                       "    <resourceRef href=\"META-INF/ejb-jar.xml#rr0\"/>" +
-                                                                       "  </resourceRefExtensions>" +
-                                                                       "  <resourceRefExtensions>" +
-                                                                       "    <resourceRef href=\"META-INF/ejb-jar.xml#rr1\"/>" +
-                                                                       "  </resourceRefExtensions>" +
-                                                                       "  <resourceRefExtensions>" +
-                                                                       "    <resourceRef href=\"META-INF/ejb-jar.xml#rr2\"/>" +
-                                                                       "  </resourceRefExtensions>" +
+                                                                       "<enterpriseBean xmi:type=\"ejb:MessageDriven\" href=\"META-INF/ejb-jar.xml#md0id\"/>" +
+                                                                       "<resourceRefExtensions>" +
+                                                                       "<resourceRef href=\"META-INF/ejb-jar.xml#rr0\"/>" +
+                                                                       "</resourceRefExtensions>" +
+                                                                       "<resourceRefExtensions>" +
+                                                                       "<resourceRef href=\"META-INF/ejb-jar.xml#rr1\"/>" +
+                                                                       "</resourceRefExtensions>" +
+                                                                       "<resourceRefExtensions>" +
+                                                                       "<resourceRef href=\"META-INF/ejb-jar.xml#rr2\"/>" +
+                                                                       "</resourceRefExtensions>" +
                                                                        "</ejbExtensions>" +
                                                                        "</ejbext:EJBJarExtension>",
                                                                        parseEJBJar(ejbJar21() +
                                                                                    "<enterprise-beans>" +
-                                                                                   "  <message-driven id=\"md0id\">" +
-                                                                                   "    <ejb-name>md0</ejb-name>" +
-                                                                                   "    <resource-ref id=\"rr0\">" +
-                                                                                   "      <res-ref-name>resRef0</res-ref-name>" +
-                                                                                   "    </resource-ref>" +
-                                                                                   "    <resource-ref id=\"rr1\">" +
-                                                                                   "      <res-ref-name>resRef1</res-ref-name>" +
-                                                                                   "    </resource-ref>" +
-                                                                                   "    <resource-ref id=\"rr2\">" +
-                                                                                   "      <res-ref-name>resRef2</res-ref-name>" +
-                                                                                   "    </resource-ref>" +
-                                                                                   "  </message-driven>" +
+                                                                                   "<message-driven id=\"md0id\">" +
+                                                                                   "<ejb-name>md0</ejb-name>" +
+                                                                                   "<resource-ref id=\"rr0\">" +
+                                                                                   "<res-ref-name>resRef0</res-ref-name>" +
+                                                                                   "</resource-ref>" +
+                                                                                   "<resource-ref id=\"rr1\">" +
+                                                                                   "<res-ref-name>resRef1</res-ref-name>" +
+                                                                                   "</resource-ref>" +
+                                                                                   "<resource-ref id=\"rr2\">" +
+                                                                                   "<res-ref-name>resRef2</res-ref-name>" +
+                                                                                   "</resource-ref>" +
+                                                                                   "</message-driven>" +
                                                                                    "</enterprise-beans>" +
                                                                                    "</ejb-jar>")).getEnterpriseBeans();
 
@@ -642,7 +668,7 @@ public class EnterpriseBeanTest extends EJBJarExtTestBase {
 
     @Test
     public void testEnterpriseBeanRunAsMode() throws Exception {
-        List<EnterpriseBean> sessionBeans = getEJBJarExt(EJBJarExtTestBase.ejbJarExt11() +
+        List<EnterpriseBean> sessionBeans = parseEJBJarExtXML(ejbJarExt11() +
                                                          "<session name=\"session0\">" +
                                                          "<run-as-mode mode='CALLER_IDENTITY' description='description0'>" +
                                                          "<method name='method0'/>" +
@@ -703,41 +729,41 @@ public class EnterpriseBeanTest extends EJBJarExtTestBase {
 
     @Test
     public void testXMIEnterpriseBeanRunAsMode() throws Exception {
-        List<EnterpriseBean> sessionBeans = parseEJBJarExtension(ejbJarExtension("") +
+        List<EnterpriseBean> sessionBeans = parseEJBJarExtXMI(ejbJarExtension("") +
                                                                  "<ejbExtensions xmi:type=\"ejbext:SessionExtension\" timeout=\"42\">" +
-                                                                 "  <enterpriseBean xmi:type=\"ejb:Session\" href=\"META-INF/ejb-jar.xml#s0\"/>" +
-                                                                 "  <runAsSettings description=\"description0\">" +
-                                                                 "    <runAsMode xmi:type=\"ejbext:UseCallerIdentity\"/>" +
-                                                                 "    <methodElements name=\"method0\"/>" +
-                                                                 "    <methodElements name=\"method1\"/>" +
-                                                                 "  </runAsSettings>" +
-                                                                 "  <runAsSettings>" +
-                                                                 "    <runAsMode xmi:type=\"ejbext:RunAsSpecifiedIdentity\">" +
-                                                                 "      <runAsSpecifiedIdentity roleName=\"drum\"/>" +
-                                                                 "    </runAsMode>" +
-                                                                 "    <methodElements name=\"method0\"/>" +
-                                                                 "    <methodElements name=\"method1\"/>" +
-                                                                 "  </runAsSettings>" +
-                                                                 "  <runAsSettings>" +
-                                                                 "    <runAsMode xmi:type=\"ejbext:RunAsSpecifiedIdentity\">" +
-                                                                 "      <runAsSpecifiedIdentity roleName=\"jelly\" description=\"description1\"/>" +
-                                                                 "    </runAsMode>" +
-                                                                 "    <methodElements name=\"method0\"/>" +
-                                                                 "    <methodElements name=\"method1\"/>" +
-                                                                 "  </runAsSettings>" +
-                                                                 "  <runAsSettings description=\"description0\">" +
-                                                                 "    <runAsMode xmi:type=\"ejbext:UseSystemIdentity\"/>" +
-                                                                 "    <methodElements name=\"method0\"/>" +
-                                                                 "    <methodElements name=\"method1\" parms=\"boolean\"/>" +
-                                                                 "    <methodElements name=\"method2\" parms=\"java.lang.Object java.lang.Object\"/>" +
-                                                                 "  </runAsSettings>" +
+                                                                 "<enterpriseBean xmi:type=\"ejb:Session\" href=\"META-INF/ejb-jar.xml#s0\"/>" +
+                                                                 "<runAsSettings description=\"description0\">" +
+                                                                 "<runAsMode xmi:type=\"ejbext:UseCallerIdentity\"/>" +
+                                                                 "<methodElements name=\"method0\"/>" +
+                                                                 "<methodElements name=\"method1\"/>" +
+                                                                 "</runAsSettings>" +
+                                                                 "<runAsSettings>" +
+                                                                 "<runAsMode xmi:type=\"ejbext:RunAsSpecifiedIdentity\">" +
+                                                                 "<runAsSpecifiedIdentity roleName=\"drum\"/>" +
+                                                                 "</runAsMode>" +
+                                                                 "<methodElements name=\"method0\"/>" +
+                                                                 "<methodElements name=\"method1\"/>" +
+                                                                 "</runAsSettings>" +
+                                                                 "<runAsSettings>" +
+                                                                 "<runAsMode xmi:type=\"ejbext:RunAsSpecifiedIdentity\">" +
+                                                                 "<runAsSpecifiedIdentity roleName=\"jelly\" description=\"description1\"/>" +
+                                                                 "</runAsMode>" +
+                                                                 "<methodElements name=\"method0\"/>" +
+                                                                 "<methodElements name=\"method1\"/>" +
+                                                                 "</runAsSettings>" +
+                                                                 "<runAsSettings description=\"description0\">" +
+                                                                 "<runAsMode xmi:type=\"ejbext:UseSystemIdentity\"/>" +
+                                                                 "<methodElements name=\"method0\"/>" +
+                                                                 "<methodElements name=\"method1\" parms=\"boolean\"/>" +
+                                                                 "<methodElements name=\"method2\" parms=\"java.lang.Object java.lang.Object\"/>" +
+                                                                 "</runAsSettings>" +
                                                                  "</ejbExtensions>" +
                                                                  "</ejbext:EJBJarExtension>",
                                                                  parseEJBJar(ejbJar21() +
                                                                              "<enterprise-beans>" +
-                                                                             "  <session id=\"s0\">" +
-                                                                             "    <ejb-name>session0</ejb-name>" +
-                                                                             "  </session>" +
+                                                                             "<session id=\"s0\">" +
+                                                                             "<ejb-name>session0</ejb-name>" +
+                                                                             "</session>" +
                                                                              "</enterprise-beans>" +
                                                                              "</ejb-jar>")).getEnterpriseBeans();
 
@@ -771,7 +797,7 @@ public class EnterpriseBeanTest extends EJBJarExtTestBase {
 
     @Test
     public void testEnterpriseStartAtAppStart() throws Exception {
-        List<EnterpriseBean> sessionBeans = getEJBJarExt(EJBJarExtTestBase.ejbJarExt11() +
+        List<EnterpriseBean> sessionBeans = parseEJBJarExtXML(ejbJarExt11() +
                                                          "<session name='session0'>" +
                                                          "<start-at-app-start value='true'/>" +
                                                          "</session>" +
@@ -798,28 +824,28 @@ public class EnterpriseBeanTest extends EJBJarExtTestBase {
 
     @Test
     public void testXMIEnterpriseStartAtAppStart() throws Exception {
-        List<EnterpriseBean> sessionBeans = parseEJBJarExtension(ejbJarExtension("") +
+        List<EnterpriseBean> sessionBeans = parseEJBJarExtXMI(ejbJarExtension("") +
                                                                  "<ejbExtensions xmi:type=\"ejbext:SessionExtension\" startEJBAtApplicationStart=\"true\">" +
-                                                                 "  <enterpriseBean xmi:type=\"ejb:Session\" href=\"META-INF/ejb-jar.xml#s0\"/>" +
+                                                                 "<enterpriseBean xmi:type=\"ejb:Session\" href=\"META-INF/ejb-jar.xml#s0\"/>" +
                                                                  "</ejbExtensions>" +
                                                                  "<ejbExtensions xmi:type=\"ejbext:SessionExtension\" startEJBAtApplicationStart=\"false\">" +
-                                                                 "  <enterpriseBean xmi:type=\"ejb:Session\" href=\"META-INF/ejb-jar.xml#s1\"/>" +
+                                                                 "<enterpriseBean xmi:type=\"ejb:Session\" href=\"META-INF/ejb-jar.xml#s1\"/>" +
                                                                  "</ejbExtensions>" +
                                                                  "<ejbExtensions xmi:type=\"ejbext:SessionExtension\">" +
-                                                                 "  <enterpriseBean xmi:type=\"ejb:Session\" href=\"META-INF/ejb-jar.xml#s2\"/>" +
+                                                                 "<enterpriseBean xmi:type=\"ejb:Session\" href=\"META-INF/ejb-jar.xml#s2\"/>" +
                                                                  "</ejbExtensions>" +
                                                                  "</ejbext:EJBJarExtension>",
                                                                  parseEJBJar(ejbJar21() +
                                                                              "<enterprise-beans>" +
-                                                                             "  <session id=\"s0\">" +
-                                                                             "    <ejb-name>session0</ejb-name>" +
-                                                                             "  </session>" +
-                                                                             "  <session id=\"s1\">" +
-                                                                             "    <ejb-name>session1</ejb-name>" +
-                                                                             "  </session>" +
-                                                                             "  <session id=\"s2\">" +
-                                                                             "    <ejb-name>session2</ejb-name>" +
-                                                                             "  </session>" +
+                                                                             "<session id=\"s0\">" +
+                                                                             "<ejb-name>session0</ejb-name>" +
+                                                                             "</session>" +
+                                                                             "<session id=\"s1\">" +
+                                                                             "<ejb-name>session1</ejb-name>" +
+                                                                             "</session>" +
+                                                                             "<session id=\"s2\">" +
+                                                                             "<ejb-name>session2</ejb-name>" +
+                                                                             "</session>" +
                                                                              "</enterprise-beans>" +
                                                                              "</ejb-jar>")).getEnterpriseBeans();
 

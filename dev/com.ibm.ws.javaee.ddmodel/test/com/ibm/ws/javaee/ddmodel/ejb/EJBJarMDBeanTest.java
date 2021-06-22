@@ -14,6 +14,9 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 import com.ibm.ws.javaee.dd.common.InterceptorCallback;
 import com.ibm.ws.javaee.dd.ejb.ActivationConfig;
@@ -25,7 +28,18 @@ import com.ibm.ws.javaee.dd.ejb.NamedMethod;
 import com.ibm.ws.javaee.dd.ejb.Timer;
 import com.ibm.ws.javaee.dd.ejb.TransactionalBean;
 
-public class MessageDrivenBeanTest extends EJBJarTestBase {
+@RunWith(Parameterized.class)
+public class EJBJarMDBeanTest extends EJBJarTestBase {
+    @Parameters
+    public static Iterable<? extends Object> data() {
+        return TEST_DATA;
+    }
+    
+    public EJBJarMDBeanTest(boolean ejbInWar) {
+        super(ejbInWar);
+    }
+
+    //
 
     protected static final String mdbXML =
         "<enterprise-beans>" +

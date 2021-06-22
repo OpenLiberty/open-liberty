@@ -15,6 +15,9 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 import com.ibm.ws.javaee.dd.common.MessageDestination;
 import com.ibm.ws.javaee.dd.common.SecurityRole;
@@ -27,7 +30,16 @@ import com.ibm.ws.javaee.dd.ejb.InterceptorBinding;
 import com.ibm.ws.javaee.dd.ejb.Method;
 import com.ibm.ws.javaee.dd.ejb.MethodPermission;
 
-public class AssemblyDescriptorTest extends EJBJarTestBase {
+@RunWith(Parameterized.class)
+public class EJBJarAssemblyDescriptorTest extends EJBJarTestBase {
+    @Parameters
+    public static Iterable<? extends Object> data() {
+        return TEST_DATA;
+    }
+    
+    public EJBJarAssemblyDescriptorTest(boolean ejbInWar) {
+        super(ejbInWar);
+    }
 
     protected static final String method0 =
         "<method>" +

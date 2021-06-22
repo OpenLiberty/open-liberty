@@ -15,7 +15,7 @@ import org.junit.Test;
 
 import com.ibm.ws.javaee.dd.client.ApplicationClient;
 
-public class AppClientTestHeader extends AppClientTestBase {
+public class AppClientHeaderTest extends AppClientTestBase {
     protected static String appClient14NoNamespace =
             "<application-client" +
                 // " xmlns=\"http://java.sun.com/xml/ns/j2ee\"" +

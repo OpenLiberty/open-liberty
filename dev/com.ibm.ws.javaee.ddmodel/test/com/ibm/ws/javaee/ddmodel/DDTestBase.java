@@ -13,7 +13,9 @@ package com.ibm.ws.javaee.ddmodel;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -39,6 +41,19 @@ public class DDTestBase {
     // 8,   http://xmlns.jcp.org/xml/ns/javaee
     //
     // 9,   https://jakarta.ee/xml/ns/jakartaee    
+    
+    //
+    
+    protected static final List<boolean[]> TEST_DATA;
+    
+    static {
+        List<boolean[]> testData = new ArrayList<boolean[]>(2);
+        testData.add( new boolean[] { false });
+        testData.add( new boolean[] { true });
+        TEST_DATA = testData;
+    }
+
+    //
     
     protected static final Mockery mockery = new Mockery();
     protected static int mockId;
@@ -152,17 +167,20 @@ public class DDTestBase {
     
     protected static <T, A> T parse(
             String appPath, String modulePath, String fragmentPath,            
-            String xmlText, EntryAdapter<T> adapter, String ddPath) throws Exception {
+            String xmlText, EntryAdapter<T> adapter, String ddPath,
+            String altMessage, String... messages) throws Exception {
 
         return parse(
                 appPath, modulePath, fragmentPath,
                 xmlText, adapter, ddPath,
-                null);
+                null, null,
+                altMessage, messages);
     }
-
+    
     protected static <T, A> T parse(
             String appPath, String modulePath, String fragmentPath,
             String ddText, EntryAdapter<T> ddAdapter, String ddPath,
+            Class<A> extraAdaptClass, A extraAdapt,
             String altMessage, String... messages) throws Exception {
 
         OverlayContainer rootOverlay = mockery.mock(OverlayContainer.class, "rootOverlay" + mockId++);
@@ -183,7 +201,7 @@ public class DDTestBase {
         wire(appPath, modulePath, fragmentPath, ddPath,
              appRoot, moduleEntry, moduleRoot, fragmentEntry, fragmentRoot, ddEntry,
              ddText,
-             null, null);
+             extraAdaptClass, extraAdapt);
 
         try {
             T returnValue = ddAdapter.adapt(moduleRoot, rootOverlay, artifactEntry, ddEntry);

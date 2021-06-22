@@ -10,22 +10,52 @@
  *******************************************************************************/
 package com.ibm.ws.javaee.ddmodel.webbnd;
 
+import com.ibm.ws.container.service.app.deploy.WebModuleInfo;
 import com.ibm.ws.javaee.dd.web.WebApp;
 import com.ibm.ws.javaee.dd.webbnd.WebBnd;
-import com.ibm.ws.javaee.ddmodel.web.WebAppEntryAdapter;
 import com.ibm.ws.javaee.ddmodel.web.WebAppTestBase;
 
 public class WebAppBndTestBase extends WebAppTestBase {
-    protected WebApp parseWebApp(String xml) throws Exception {
-        return parse(xml, new WebAppEntryAdapter(), WebApp.DD_NAME);
+    protected static WebBndAdapter createWebBndAdapter() {
+        return new WebBndAdapter();
+    }
+    
+    protected WebBnd parseWebAppBndXMI(String ddText, WebApp webApp) throws Exception {
+        return parseAppBnd(ddText, WebBnd.XMI_BND_NAME, webApp, null);
     }
 
-    protected WebBnd parseWebAppBndXML(String xml) throws Exception {
-        return parseAppBnd(xml, new WebBndAdapter(), WebBnd.XML_BND_NAME, WebApp.class, null);
+    protected WebBnd parseWebAppBndXMI(String ddText, WebApp webApp, String altMessage, String... messages) throws Exception {
+        return parseAppBnd(ddText, WebBnd.XMI_BND_NAME, webApp, altMessage, messages);
     }
 
-    protected WebBnd parseWebAppBndXMI(String xml, WebApp webApp) throws Exception {
-        return parseAppBnd(xml, new WebBndAdapter(), WebBnd.XMI_BND_NAME, WebApp.class, webApp);
+    protected WebBnd parseWebAppBndXML(String ddText) throws Exception {
+        return parseAppBnd(ddText, WebBnd.XML_BND_NAME, null, null);
+    }
+    
+    protected WebBnd parseWebAppBndXML(String ddText, String altMessage, String... messages) throws Exception {
+        return parseAppBnd(ddText, WebBnd.XML_BND_NAME, null, altMessage, messages);
+    }    
+    
+    protected WebBnd parseAppBnd(String ddText, String ddPath, WebApp webApp) throws Exception {
+        return parseAppBnd(ddText, ddPath, webApp, null);
+    }
+
+    private WebBnd parseAppBnd(
+            String ddText, String ddPath, WebApp webApp,
+            String altMessage, String... messages) throws Exception {
+
+        String appPath = null;
+        String modulePath = "/root/wlp/usr/servers/server1/apps/MyWar.war";
+        String fragmentPath = null;
+
+        WebModuleInfo webInfo = mockery.mock(WebModuleInfo.class, "webModuleInfo" + mockId++);
+
+        return parse(
+                appPath, modulePath, fragmentPath,
+                ddText, createWebBndAdapter(), ddPath,
+                WebApp.class, webApp,
+                WebModuleInfo.class, webInfo,
+                altMessage, messages);        
     }
 
     protected static String webAppBinding(String attrs) {

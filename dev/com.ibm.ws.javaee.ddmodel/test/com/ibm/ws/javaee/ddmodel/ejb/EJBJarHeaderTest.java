@@ -12,10 +12,22 @@ package com.ibm.ws.javaee.ddmodel.ejb;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 import com.ibm.ws.javaee.dd.ejb.EJBJar;
 
-public class EJBJarTestHeader extends EJBJarTestBase {
+@RunWith(Parameterized.class)
+public class EJBJarHeaderTest extends EJBJarTestBase {
+    @Parameters
+    public static Iterable<? extends Object> data() {
+        return TEST_DATA;
+    }
+
+    public EJBJarHeaderTest(boolean ejbInWar) {
+        super(ejbInWar);
+    }
 
     protected static String ejbJar21NoNamespace =
             "<ejb-jar" +

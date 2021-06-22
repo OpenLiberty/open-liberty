@@ -14,6 +14,9 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 import com.ibm.ws.javaee.dd.ejb.CMRField;
 import com.ibm.ws.javaee.dd.ejb.EJBJar;
@@ -21,7 +24,19 @@ import com.ibm.ws.javaee.dd.ejb.EJBRelation;
 import com.ibm.ws.javaee.dd.ejb.EJBRelationshipRole;
 import com.ibm.ws.javaee.dd.ejb.Relationships;
 
-public class RelationshipsTest extends EJBJarTestBase {
+@RunWith(Parameterized.class)
+public class EJBJarRelationshipsTest extends EJBJarTestBase {
+    @Parameters
+    public static Iterable<? extends Object> data() {
+        return TEST_DATA;
+    }
+    
+    public EJBJarRelationshipsTest(boolean ejbInWar) {
+        super(ejbInWar);
+    }
+
+    //
+
     protected static final String relationships =
         "<relationships>" +
             "<ejb-relation>" +

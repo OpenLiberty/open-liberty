@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,58 +10,92 @@
  *******************************************************************************/
 package com.ibm.ws.javaee.ddmodel.ejbext;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-
-import org.jmock.Expectations;
-import org.osgi.framework.ServiceReference;
-
 import com.ibm.ws.container.service.app.deploy.WebModuleInfo;
 import com.ibm.ws.javaee.dd.ejb.EJBJar;
 import com.ibm.ws.javaee.dd.ejbext.EJBJarExt;
-import com.ibm.ws.javaee.ddmodel.DDTestBase;
-import com.ibm.ws.javaee.ddmodel.ejb.EJBJarDDParserVersion;
-import com.ibm.ws.javaee.ddmodel.ejb.EJBJarEntryAdapter;
+import com.ibm.ws.javaee.ddmodel.DDParserBndExt;
 import com.ibm.ws.javaee.ddmodel.ejb.EJBJarTestBase;
-import com.ibm.wsspi.adaptable.module.Container;
-import com.ibm.wsspi.adaptable.module.Entry;
-import com.ibm.wsspi.adaptable.module.NonPersistentCache;
-import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
-import com.ibm.wsspi.artifact.ArtifactEntry;
-import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 
 /**
  * test the ejb-jar-ext.xml parser
  * -concentrate on the pristine path where the ejb-jarext.xml file is well formed
  * -testing entity and relationships is optional
  * -testing error handling is secondary
- * 
  */
-
 public class EJBJarExtTestBase extends EJBJarTestBase {
-    private EJBJarExt parse(final String xml, String path, EJBJar ejbJar) throws Exception {
-        final WebModuleInfo moduleInfo = isWarModule ? mockery.mock(WebModuleInfo.class, "webModuleInfo" + mockId++) : null;
-        return parse(xml, new EJBJarExtAdapter(), path, EJBJar.class, ejbJar, WebModuleInfo.class, moduleInfo);
+
+    public EJBJarExtTestBase(boolean ejbInWar) {
+        super(ejbInWar);
     }
 
-    EJBJarExt parse(final String xml) throws Exception {
-        return parse(xml, isWarModule ? EJBJarExtAdapter.XML_EXT_IN_WEB_MOD_NAME : EJBJarExtAdapter.XML_EXT_IN_EJB_MOD_NAME, null);
+    //
+    
+    // TODO: Haven't found the correct pattern for this ...
+    //       Need to use 'getEJBInJar', which is instance
+    //       state because of how repeat testing works.
+    //       But the value should be initialized as a static
+    //       variable, since it is to be shared between tests.
+    
+    private EJBJar ejbJar21;
+
+    public EJBJar getEJBJar21() throws Exception {
+        if ( ejbJar21 == null ) {
+            ejbJar21 = parseEJBJar(ejbJar21() + "</ejb-jar>");
+        }
+        return ejbJar21;
     }
 
-    public EJBJarExt getEJBJarExt(String jarString) throws Exception {
-        return parse(jarString);
+    //
+    
+    protected EJBJarExtAdapter createEJBJarExtAdapter() {
+        return new EJBJarExtAdapter();
     }
 
-    public EJBJarExt parseEJBJarExtension(final String xml, EJBJar ejbJar) throws Exception {
-        return parse(xml, isWarModule ? EJBJarExtAdapter.XMI_EXT_IN_WEB_MOD_NAME : EJBJarExtAdapter.XMI_EXT_IN_EJB_MOD_NAME, ejbJar);
+    public EJBJarExt parseEJBJarExtXMI(String ddText, EJBJar ejbJar) throws Exception {
+        return parseEJBJarExt(ddText, DDParserBndExt.IS_XMI, ejbJar, null);
     }
 
-    public EJBJar parseEJBJar(String xml) throws Exception {
-        return parseEJBJar(xml, EJBJar.VERSION_3_2);
+    public EJBJarExt parseEJBJarExtXML(String ddText) throws Exception {
+        return parseEJBJarExt(ddText, !DDParserBndExt.IS_XMI, null, null);
     }
+    
+    public EJBJarExt parseEJBJarExtXML(String ddText, String altMessage, String...messages) throws Exception {
+        return parseEJBJarExt(ddText, !DDParserBndExt.IS_XMI, null, altMessage, messages);
+    }    
 
-    protected String getEJBJarPath() {
-        return isWarModule ? "WEB-INF/ejb-jar.xml" : "META-INF/ejb-jar.xml";
+    public EJBJarExt parseEJBJarExt(
+            String ddText, boolean xmi, EJBJar ejbJar,
+            String altMessage, String ... messages) throws Exception {
+
+        boolean ejbInWar = getEJBInWar();
+
+        String appPath = null;
+
+        String modulePath;
+        if ( ejbInWar ) {
+            modulePath = "/root/wlp/usr/servers/server1/apps/myWEB.war";
+        } else {
+            modulePath = "/root/wlp/usr/servers/server1/apps/myEJB.jar";
+        }
+
+        String fragmentPath = null;
+
+        String ddPath;
+        if ( ejbInWar ) {
+            ddPath = ( xmi ? EJBJarExtAdapter.XMI_EXT_IN_WEB_MOD_NAME : EJBJarExtAdapter.XML_EXT_IN_WEB_MOD_NAME );
+        } else {
+            ddPath = ( xmi ? EJBJarExtAdapter.XML_EXT_IN_EJB_MOD_NAME : EJBJarExtAdapter.XML_EXT_IN_EJB_MOD_NAME );            
+        }
+
+        WebModuleInfo moduleInfo =
+            ( ejbInWar ? mockery.mock(WebModuleInfo.class, "webModuleInfo" + mockId++) : null );
+
+        return parse(
+                appPath, modulePath, fragmentPath,
+                ddText, createEJBJarExtAdapter(), ddPath,
+                EJBJar.class, ejbJar,
+                WebModuleInfo.class, moduleInfo,
+                altMessage, messages);
     }
 
     static final String ejbJar21() {

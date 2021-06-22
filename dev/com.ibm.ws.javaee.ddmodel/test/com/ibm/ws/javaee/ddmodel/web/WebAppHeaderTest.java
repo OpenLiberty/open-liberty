@@ -19,7 +19,7 @@ import com.ibm.ws.javaee.ddmodel.DDParser;
 /**
  * Tests of web application descriptors which have partial headers.
  */
-public class WebAppTestHeader extends WebAppTestBase {
+public class WebAppHeaderTest extends WebAppTestBase {
     // Now valid
     protected static String noSchemaWebApp30 =
         "<web-app" +
@@ -130,37 +130,37 @@ public class WebAppTestHeader extends WebAppTestBase {
 
     @Test
     public void testEE6Web30NoSchema() throws Exception {
-        WebApp webApp = parse(noSchemaWebApp30);
+        WebApp webApp = parseWebApp(noSchemaWebApp30);
         Assert.assertEquals("Assigned descriptor version", "3.0", webApp.getVersion());        
     }
 
     // Not valid: Need 'xmlns:xsi' if 'xsi:schemaLocation' is present.    
     @Test
     public void testEE6Web30NoSchemaInstance() throws Exception {
-        parse(noSchemaInstanceWebApp30, "CWWKC2272E", "xml.error"); 
+        parseWebApp(noSchemaInstanceWebApp30, "CWWKC2272E", "xml.error"); 
     }
 
     @Test
     public void testEE6Web30NoSchemaLocation() throws Exception {
-        WebApp webApp = parse(noSchemaLocationWebApp30);
+        WebApp webApp = parseWebApp(noSchemaLocationWebApp30);
         Assert.assertEquals("Assigned descriptor version", "3.0", webApp.getVersion());
     }    
     
     @Test
     public void testEE6Web30NoXSI() throws Exception {
-        WebApp webApp = parse(noXSIWebApp30);
+        WebApp webApp = parseWebApp(noXSIWebApp30);
         Assert.assertEquals("Assigned descriptor version", "3.0", webApp.getVersion());
     }
 
     @Test
     public void testEE6Web30NoVersion() throws Exception {
-        WebApp webApp = parse(noVersionWebApp30);
+        WebApp webApp = parseWebApp(noVersionWebApp30);
         Assert.assertEquals("Assigned descriptor version", "3.0", webApp.getVersion());
     }
 
     @Test
     public void testEE6Web30NoID() throws Exception {
-        WebApp webApp = parse(noIDWebApp30);
+        WebApp webApp = parseWebApp(noIDWebApp30);
         Assert.assertEquals("Assigned descriptor version", "3.0", webApp.getVersion());        
     }
 
@@ -193,7 +193,7 @@ public class WebAppTestHeader extends WebAppTestBase {
     @Test
     public void testWebVersionOnly() throws Exception {
         for ( VersionTestData testData : VERSION_TEST_DATA ) {
-            WebApp webApp = parse(testData.xmlText, testData.version);
+            WebApp webApp = parseWebApp(testData.xmlText, testData.version);
             Assert.assertEquals("Assigned descriptor version", testData.versionText, webApp.getVersion());
         }
     }
@@ -202,7 +202,7 @@ public class WebAppTestHeader extends WebAppTestBase {
 
     @Test
     public void testVersionOnlyUnknown() throws Exception {
-        parse(webAppVersionOnlyUnknown, "CWWKC2272E", "unsupported.descriptor.version"); 
+        parseWebApp(webAppVersionOnlyUnknown, "CWWKC2272E", "unsupported.descriptor.version"); 
     }
 
     // A un-provisioned version message is generated when the version is known
@@ -210,7 +210,7 @@ public class WebAppTestHeader extends WebAppTestBase {
     
     @Test
     public void testVersionOnlyUnprovisioned() throws Exception {
-        parse(webAppVersionOnly50, WebApp.VERSION_3_1, "CWWKC2272E", "unprovisioned.descriptor.version"); 
+        parseWebApp(webAppVersionOnly50, WebApp.VERSION_3_1, "CWWKC2272E", "unprovisioned.descriptor.version"); 
     }
 
     //
@@ -261,7 +261,7 @@ public class WebAppTestHeader extends WebAppTestBase {
     @Test
     public void testWebSchemaOnly() throws Exception {
         for ( SchemaTestData testData : SCHEMA_TEST_DATA ) {
-            WebApp webApp = parse(testData.xmlText, testData.maxVersion);
+            WebApp webApp = parseWebApp(testData.xmlText, testData.maxVersion);
             Assert.assertEquals("Assigned descriptor version", testData.expectedVersionText, webApp.getVersion());
         }
     }
@@ -269,7 +269,7 @@ public class WebAppTestHeader extends WebAppTestBase {
     // The schema must be valid.
     @Test
     public void testSchemaOnlyUnknown() throws Exception {
-        parse(webAppSchemaOnlyUnknown, "CWWKC2272E", "unsupported.descriptor.namespace"); 
+        parseWebApp(webAppSchemaOnlyUnknown, "CWWKC2272E", "unsupported.descriptor.namespace"); 
     }
     
     // A un-provisioned schema message is generated when the schema is known
@@ -277,6 +277,6 @@ public class WebAppTestHeader extends WebAppTestBase {
 
     @Test
     public void testSchemaOnlyUnprovisioned() throws Exception {
-        parse(webAppSchemaOnly50, WebApp.VERSION_3_1, "CWWKC2272E", "unprovisioned.descriptor.version"); 
+        parseWebApp(webAppSchemaOnly50, WebApp.VERSION_3_1, "CWWKC2272E", "unprovisioned.descriptor.version"); 
     }    
 }

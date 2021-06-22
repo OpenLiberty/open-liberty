@@ -22,13 +22,32 @@ import com.ibm.ws.javaee.ddmodel.ejb.EJBJarTestBase;
  * well formed.
  */
 public class EJBJarBndTestBase extends EJBJarTestBase {
-    protected static EJBJarBndAdapter createEJBJarBndAdapter() {
-        return new EJBJarBndAdapter();
+    
+    public EJBJarBndTestBase(boolean ejbInWar) {
+        super(ejbInWar);
     }
 
-    // TODO: Use a test runner to alternate this.
-    public boolean getEJBInWar() {
-        return false;
+    //
+    
+    // TODO: Haven't found the correct pattern for this ...
+    //       Need to use 'getEJBInJar', which is instance
+    //       state because of how repeat testing works.
+    //       But the value should be initialized as a static
+    //       variable, since it is to be shared between tests.
+    
+    private EJBJar ejbJar21;
+
+    public EJBJar getEJBJar21() throws Exception {
+        if ( ejbJar21 == null ) {
+            ejbJar21 = parseEJBJar(ejbJar21() + "</ejb-jar>");
+        }
+        return ejbJar21;
+    }
+
+    //
+    
+    protected EJBJarBndAdapter createEJBJarBndAdapter() {
+        return new EJBJarBndAdapter();
     }
 
     public EJBJarBnd parseEJBJarBndXMI(String ddText, EJBJar ejbJar) throws Exception {
@@ -43,8 +62,10 @@ public class EJBJarBndTestBase extends EJBJarTestBase {
         return parseEJBJarBnd(ddText, !DDParserBndExt.IS_XMI, null, altMessage, messages);
     }    
 
-    public EJBJarBnd parseEJBJarBnd(String ddText, boolean xmi, EJBJar ejbJar,
+    public EJBJarBnd parseEJBJarBnd(
+            String ddText, boolean xmi, EJBJar ejbJar,
             String altMessage, String ... messages) throws Exception {
+
         boolean ejbInWar = getEJBInWar();
 
         String appPath = null;

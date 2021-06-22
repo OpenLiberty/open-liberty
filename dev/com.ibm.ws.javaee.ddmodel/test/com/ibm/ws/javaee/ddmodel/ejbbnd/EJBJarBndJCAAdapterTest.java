@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,21 +14,35 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 import com.ibm.ws.javaee.dd.ejb.EJBJar;
 import com.ibm.ws.javaee.dd.ejbbnd.EJBJarBnd;
 import com.ibm.ws.javaee.dd.ejbbnd.EnterpriseBean;
 import com.ibm.ws.javaee.dd.ejbbnd.MessageDriven;
 
-public class JCAAdapterTest extends EJBJarBndTestBase {
+@RunWith(Parameterized.class)
+public class EJBJarBndJCAAdapterTest extends EJBJarBndTestBase {
+    @Parameters
+    public static Iterable<? extends Object> data() {
+        return TEST_DATA;
+    }
+    
+    public EJBJarBndJCAAdapterTest(boolean ejbInWar) {
+        super(ejbInWar);
+    }
 
-    String jcaAdapterXML1 = "<message-driven name=\"MessageDrivenBean1\"> \n" +
-                            "<jca-adapter activation-spec-binding-name=\"activationSpecBindingName1\"/> \n " +
-                            "</message-driven>\n";
+    protected static final String jcaAdapterXML1 =
+            "<message-driven name=\"MessageDrivenBean1\">\n" +
+                "<jca-adapter activation-spec-binding-name=\"activationSpecBindingName1\"/>\n" +
+            "</message-driven>";
 
     @Test
     public void testJCAAdapterAttributeActivationSpecBindingName() throws Exception {
-        EJBJarBnd ejbJarBnd = getEJBJarBnd(EJBJarBndTestBase.ejbJarBnd11() + jcaAdapterXML1 + "</ejb-jar-bnd>");
+        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(EJBJarBndTestBase.ejbJarBnd11() + jcaAdapterXML1 + "</ejb-jar-bnd>");
+
         List<EnterpriseBean> mdBeans = ejbJarBnd.getEnterpriseBeans();
         Assert.assertEquals("Only expected 1 message driven bean", 1, mdBeans.size());
         MessageDriven bean0 = (MessageDriven) mdBeans.get(0);
@@ -41,18 +55,23 @@ public class JCAAdapterTest extends EJBJarBndTestBase {
 
     @Test
     public void testJCAAdapterAttributeActivationSpecBindingNameXMI() throws Exception {
-        EJBJarBnd ejbJarBnd = parseEJBJarBnd(ejbJarBinding("") +
-                                                 "<ejbBindings xmi:type=\"ejbbnd:MessageDrivenBeanBinding\" activationSpecJndiName=\"activationSpecBindingName1\">" +
-                                                 "  <enterpriseBean xmi:type=\"ejb:MessageDriven\" href=\"" + getEJBJarPath() + "#md0\"/>" +
-                                                 "</ejbBindings>" +
-                                                 "</ejbbnd:EJBJarBinding>",
-                                                 parseEJBJar(ejbJar21() +
-                                                             "  <enterprise-beans>" +
-                                                             "    <message-driven id=\"md0\">" +
-                                                             "      <ejb-name>MessageDrivenBean1</ejb-name>" +
-                                                             "    </message-driven>" +
-                                                             "  </enterprise-beans>" +
-                                                             "</ejb-jar>"));
+        EJBJar ejbJar = parseEJBJar(
+                ejbJar21() +
+                    "<enterprise-beans>" +
+                        "<message-driven id=\"md0\">" +
+                            "<ejb-name>MessageDrivenBean1</ejb-name>" +
+                        "</message-driven>" +
+                    "</enterprise-beans>" +
+                "</ejb-jar>");
+
+        EJBJarBnd ejbJarBnd = parseEJBJarBndXMI(
+                ejbJarBinding("") +
+                    "<ejbBindings xmi:type=\"ejbbnd:MessageDrivenBeanBinding\" activationSpecJndiName=\"activationSpecBindingName1\">" +
+                        "<enterpriseBean xmi:type=\"ejb:MessageDriven\" href=\"" + getEJBJarPath() + "#md0\"/>" +
+                    "</ejbBindings>" +
+                "</ejbbnd:EJBJarBinding>",
+                ejbJar);
+
         List<EnterpriseBean> mdBeans = ejbJarBnd.getEnterpriseBeans();
         Assert.assertEquals("Only expected 1 message driven bean", 1, mdBeans.size());
         MessageDriven bean0 = (MessageDriven) mdBeans.get(0);
@@ -63,16 +82,21 @@ public class JCAAdapterTest extends EJBJarBndTestBase {
         Assert.assertEquals("activationSpecBindingName1", bean0.getJCAAdapter().getActivationSpecBindingName());
     }
 
-    String jcaAdapterXML2 = "<message-driven name=\"MessageDrivenBean2\"> \n" +
-                            "<jca-adapter activation-spec-binding-name=\"activationSpecBindingName1\" \n " +
-                            "activation-spec-auth-alias=\"authAlias2\"/> \n " +
-                            "</message-driven>\n";
+    protected static final String jcaAdapterXML2 =
+            "<message-driven name=\"MessageDrivenBean2\">\n" +
+                "<jca-adapter" +
+                    " activation-spec-binding-name=\"activationSpecBindingName1\"\n" +
+                    " activation-spec-auth-alias=\"authAlias2\"/>\n" +
+            "</message-driven>\n";
 
     @Test
     public void testJCAAdapterAttributeActivationSpecAuthAlias() throws Exception {
-        EJBJarBnd ejbJarBnd = getEJBJarBnd(EJBJarBndTestBase.ejbJarBnd10() + jcaAdapterXML2 + "</ejb-jar-bnd>");
+        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(
+                EJBJarBndTestBase.ejbJarBnd10() +
+                    jcaAdapterXML2 +
+                "</ejb-jar-bnd>");
+        
         List<EnterpriseBean> mdBeans = ejbJarBnd.getEnterpriseBeans();
-
         Assert.assertEquals(1, mdBeans.size());
         MessageDriven bean0 = (MessageDriven) mdBeans.get(0);
         Assert.assertEquals("MessageDrivenBean2", bean0.getName());
@@ -83,18 +107,22 @@ public class JCAAdapterTest extends EJBJarBndTestBase {
 
     @Test
     public void testJCAAdapterAttributeActivationSpecAuthAliasXMI() throws Exception {
-        EJBJarBnd ejbJarBnd = parseEJBJarBnd(ejbJarBinding("") +
-                                                 "<ejbBindings xmi:type=\"ejbbnd:MessageDrivenBeanBinding\" activationSpecAuthAlias=\"authAlias2\">" +
-                                                 "  <enterpriseBean xmi:type=\"ejb:MessageDriven\" href=\"" + getEJBJarPath() + "#md0\"/>" +
-                                                 "</ejbBindings>" +
-                                                 "</ejbbnd:EJBJarBinding>",
-                                                 parseEJBJar(ejbJar21() +
-                                                             "  <enterprise-beans>" +
-                                                             "    <message-driven id=\"md0\">" +
-                                                             "      <ejb-name>MessageDrivenBean2</ejb-name>" +
-                                                             "    </message-driven>" +
-                                                             "  </enterprise-beans>" +
-                                                             "</ejb-jar>"));
+        EJBJar ejbJar = parseEJBJar(ejbJar21() +
+                        "<enterprise-beans>" +
+                            "<message-driven id=\"md0\">" +
+                                "<ejb-name>MessageDrivenBean2</ejb-name>" +
+                            "</message-driven>" +
+                        "</enterprise-beans>" +
+                    "</ejb-jar>");
+        
+        EJBJarBnd ejbJarBnd = parseEJBJarBndXMI(
+                ejbJarBinding("") +
+                    "<ejbBindings xmi:type=\"ejbbnd:MessageDrivenBeanBinding\" activationSpecAuthAlias=\"authAlias2\">" +
+                        "<enterpriseBean xmi:type=\"ejb:MessageDriven\" href=\"" + getEJBJarPath() + "#md0\"/>" +
+                    "</ejbBindings>" +
+                "</ejbbnd:EJBJarBinding>",
+                ejbJar);
+
         List<EnterpriseBean> mdBeans = ejbJarBnd.getEnterpriseBeans();
         Assert.assertEquals(1, mdBeans.size());
         MessageDriven bean0 = (MessageDriven) mdBeans.get(0);
@@ -104,13 +132,15 @@ public class JCAAdapterTest extends EJBJarBndTestBase {
         Assert.assertEquals("authAlias2", bean0.getJCAAdapter().getActivationSpecAuthAlias());
     }
 
-    String jcaAdapterXML3 = "<message-driven name=\"MessageDrivenBean3\"> \n" +
-                            "<jca-adapter activation-spec-binding-name=\"activationSpecBindingName3\" destination-binding-name=\"destinationBindingName\"/> \n " +
-                            "</message-driven>\n";
+    protected static final String jcaAdapterXML3 =
+            "<message-driven name=\"MessageDrivenBean3\">\n" +
+                "<jca-adapter activation-spec-binding-name=\"activationSpecBindingName3\" destination-binding-name=\"destinationBindingName\"/>\n" +
+            "</message-driven>";
 
     @Test
     public void testJCAAdapterAttributeDestinationBindingName() throws Exception {
-        EJBJarBnd ejbJarBnd = getEJBJarBnd(EJBJarBndTestBase.ejbJarBnd10() + jcaAdapterXML3 + "</ejb-jar-bnd>");
+        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(ejbJarBnd10() + jcaAdapterXML3 + "</ejb-jar-bnd>");
+
         List<EnterpriseBean> mdBeans = ejbJarBnd.getEnterpriseBeans();
         Assert.assertEquals("Only expected 1 message driven bean", 1, mdBeans.size());
         MessageDriven bean0 = (MessageDriven) mdBeans.get(0);
@@ -123,8 +153,7 @@ public class JCAAdapterTest extends EJBJarBndTestBase {
 
     @Test
     public void testJCAAdapterAttributeDestinationBindingNameXMI() throws Exception {
-        EJBJar ejbJar =
-            parseEJBJar(
+        EJBJar ejbJar = parseEJBJar(
                 ejbJar21() +
                     "<enterprise-beans>" +
                         "<message-driven id=\"md0\">" +
@@ -133,15 +162,15 @@ public class JCAAdapterTest extends EJBJarBndTestBase {
                     "</enterprise-beans>" +
                 "</ejb-jar>");
 
-        EJBJarBnd ejbJarBnd =
-            parseEJBJarBnd(
+        EJBJarBnd ejbJarBnd = parseEJBJarBndXMI(
                 ejbJarBinding("") +
                     "<ejbBindings xmi:type=\"ejbbnd:MessageDrivenBeanBinding\" " +
                         "activationSpecJndiName=\"activationSpecBindingName3\" " +
                         "destinationJndiName=\"destinationBindingName\">" +
                         "<enterpriseBean xmi:type=\"ejb:MessageDriven\" href=\"" + getEJBJarPath() + "#md0\"/>" +
                     "</ejbBindings>" +
-                "</ejbbnd:EJBJarBinding>", ejbJar);
+                "</ejbbnd:EJBJarBinding>",
+                ejbJar);
         
         List<EnterpriseBean> mdBeans = ejbJarBnd.getEnterpriseBeans();
         Assert.assertEquals("Only expected 1 message driven bean", 1, mdBeans.size());

@@ -14,6 +14,9 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 import com.ibm.ws.container.service.app.deploy.WebModuleInfo;
 import com.ibm.ws.javaee.dd.commonbnd.Interceptor;
@@ -22,7 +25,33 @@ import com.ibm.ws.javaee.dd.managedbean.ManagedBean;
 import com.ibm.ws.javaee.dd.managedbean.ManagedBeanBnd;
 import com.ibm.ws.javaee.ddmodel.DDTestBase;
 
+@RunWith(Parameterized.class)
 public class ManagedBeanBndTest extends DDTestBase {
+    @Parameters
+    public static Iterable<? extends Object> data() {
+        return TEST_DATA;
+    }
+        
+    public ManagedBeanBndTest(boolean isWar) {
+        this.isWar = isWar;
+    }
+
+    private final boolean isWar;
+
+    public boolean getIsWar() {
+        return isWar;
+    }   
+
+    public static String getMBeanBndPath(boolean isWar) {
+        return ( isWar ? ManagedBeanBndAdapter.XML_BND_IN_WEB_MOD_NAME
+                       : ManagedBeanBndAdapter.XML_BND_IN_EJB_MOD_NAME );    
+    }
+    
+    public String getMBeanBndPath() {
+        return getMBeanBndPath( getIsWar() );
+    }
+
+
     // XML fragments ...
 
     private static final String refsXML =
@@ -35,12 +64,12 @@ public class ManagedBeanBndTest extends DDTestBase {
         "<message-destination-ref name=\"AnnotationInjectionInterceptor/jms/RequestQueue\"" +
             " binding-name=\"Jetstream/jms/RequestQueue\"/>\n" +
         "<resource-env-ref name=\"AnnotationInjectionInterceptor/jms/ResponseQueue\"" +
-            " binding-name=\"Jetstream/jms/ResponseQueue\"/>\n";
+            " binding-name=\"Jetstream/jms/ResponseQueue\"/>";
 
     private final static String interceptorXML_Start =
-        "<interceptor class=\"suite.r70.base.injection.mix.ejbint.XMLInjectionInterceptor3\">\n";
+        "<interceptor class=\"suite.r70.base.injection.mix.ejbint.XMLInjectionInterceptor3\">";
     private final static String interceptorXML_End =
-        "</interceptor>\n";
+        "</interceptor>";
 
     private static String interceptorXML(String nestedXMLText) {
         return interceptorXML_Start +
@@ -120,27 +149,40 @@ public class ManagedBeanBndTest extends DDTestBase {
         "</managed-bean-bnd-wrong>";
 
     //
-
-    protected boolean isWarModule = false;
     
-    private ManagedBeanBnd parseBnd(String xmlText, String ... messages) throws Exception {
-        String bndPath =
-            isWarModule ? ManagedBeanBndAdapter.XML_BND_IN_WEB_MOD_NAME
-                        : ManagedBeanBndAdapter.XML_BND_IN_EJB_MOD_NAME;
-        WebModuleInfo moduleInfo =
-            isWarModule ? mockery.mock(WebModuleInfo.class, "webModuleInfo" + mockId++)
-                        : null;
+    private ManagedBeanBnd parseBnd(String ddText) throws Exception {
+        return parseBnd(ddText, null);
+    }
 
-        return parse( xmlText, new ManagedBeanBndAdapter(), bndPath,
-                      null, null,
-                      WebModuleInfo.class, moduleInfo, messages );
+    private ManagedBeanBnd parseBnd(String ddText, String altMessage, String ... messages) throws Exception {
+        String appPath = null;
+        
+        String modulePath;
+        WebModuleInfo webInfo;
+        if ( getIsWar() ) {
+            modulePath = "/root/wlp/usr/servers/server1/apps/MyWar.war";
+            webInfo = mockery.mock(WebModuleInfo.class, "webModuleInfo" + mockId++);
+        } else {
+            modulePath = "/root/wlp/usr/servers/server1/apps/MyEjb.jar";
+            webInfo = null;
+        }
+
+        String fragmentPath = null;
+
+        String ddPath = getMBeanBndPath();
+
+        return parse( appPath, modulePath, fragmentPath,
+                ddText, new ManagedBeanBndAdapter(), ddPath,
+                null, null,
+                WebModuleInfo.class, webInfo,
+                altMessage, messages );
     }
 
     // Parse helpers ...
 
-    private ManagedBean parseMBean(String nestedXMLText) throws Exception {
-        String xmlText = mBeanBndXML(nestedXMLText);
-        ManagedBeanBnd managedBeanBnd = parseBnd(xmlText);
+    private ManagedBean parseMBean(String nestedDDText) throws Exception {
+        String ddText = mBeanBndXML(nestedDDText);
+        ManagedBeanBnd managedBeanBnd = parseBnd(ddText);
 
         List<ManagedBean> managedBeans = managedBeanBnd.getManagedBeans();
         Assert.assertEquals(1, managedBeans.size());
@@ -150,9 +192,9 @@ public class ManagedBeanBndTest extends DDTestBase {
         return managedBean;
     }
 
-    private Interceptor parseInterceptor(String nestedXMLText) throws Exception {
-        String xmlText = mBeanBndXML(nestedXMLText);
-        ManagedBeanBnd managedBeanBnd = parseBnd(xmlText);
+    private Interceptor parseInterceptor(String nestedDDText) throws Exception {
+        String ddText = mBeanBndXML(nestedDDText);
+        ManagedBeanBnd managedBeanBnd = parseBnd(ddText);
 
         List<Interceptor> interceptors = managedBeanBnd.getInterceptors();
         Assert.assertEquals(1, interceptors.size());
@@ -167,80 +209,17 @@ public class ManagedBeanBndTest extends DDTestBase {
     
     @Test
     public void testWrongRootElement() throws Exception {
-        parseBnd(badRootMBeanXML, "CWWKC2272E", "xml.error");
-        
-        // CWWKC2272E: An error occurred while parsing the
-        // /META-INF/ibm-managed-bean-bnd.xml deployment descriptor on line 1.
-        // The error message was: Element type "managed-bean-bnd-wrong" must
-        // be followed by either attribute specifications, ">" or "/>". ]
-
-        //   at com.ibm.ws.javaee.ddmodel.DDParser.parseToRootElement(DDParser.java:429)
-        //   at com.ibm.ws.javaee.ddmodel.DDParser.parseRootElement(DDParser.java:584)
-        //   at com.ibm.ws.javaee.ddmodel.managedbean.ManagedBeanBndDDParser.parse(ManagedBeanBndDDParser.java:24)
-        //   at com.ibm.ws.javaee.ddmodel.managedbean.ManagedBeanBndAdapter.adapt(ManagedBeanBndAdapter.java:67)
-        //   at com.ibm.ws.javaee.ddmodel.managedbean.ManagedBeanBndAdapter.adapt(ManagedBeanBndAdapter.java:35)
-        //   at com.ibm.ws.javaee.ddmodel.DDTestBase.parse(DDTestBase.java:85)
-        //   at com.ibm.ws.javaee.ddmodel.managedbean.ManagedBeanBndTest.parseBnd(ManagedBeanBndTest.java:143)
-        //   at com.ibm.ws.javaee.ddmodel.managedbean.ManagedBeanBndTest.testWrongRootElement(ManagedBeanBndTest.java:193)
-        
-        // Caused by: javax.xml.stream.XMLStreamException: Element type "managed-bean-bnd-wrong" must be followed by either attribute specifications, ">" or "/>".
-        //   at com.ibm.xml.xlxp.api.stax.msg.StAXMessageProvider.throwWrappedXMLStreamException(StAXMessageProvider.java:73)
-        //   at com.ibm.xml.xlxp.api.stax.XMLStreamReaderImpl.produceFatalErrorEvent(XMLStreamReaderImpl.java:2172)
-        //   at com.ibm.xml.xlxp.api.stax.XMLStreamReaderImpl.reportFatalError(XMLStreamReaderImpl.java:2178)
-        //   at com.ibm.xml.xlxp.scan.DocumentEntityScanner.reportFatalError(DocumentEntityScanner.java:479)
-        //   at com.ibm.xml.xlxp.scan.DocumentEntityScanner.scanStartElementUnbuffered(DocumentEntityScanner.java:3533)
-        //   at com.ibm.xml.xlxp.api.util.SimpleScannerHelper.scanStartElementUnbuffered(SimpleScannerHelper.java:1003)
-        //   at com.ibm.xml.xlxp.scan.DocumentEntityScanner.stateUnbufferedStartElement(DocumentEntityScanner.java:507)
-        //   at com.ibm.xml.xlxp.scan.DocumentEntityScanner.scanRootElement(DocumentEntityScanner.java:1874)
-        //   at com.ibm.xml.xlxp.scan.DocumentEntityScanner.scanProlog(DocumentEntityScanner.java:1757)
-        //   at com.ibm.xml.xlxp.scan.DocumentEntityScanner.produceEvent(DocumentEntityScanner.java:636)
-        //   at com.ibm.xml.xlxp.api.stax.XMLStreamReaderImpl.getNextScannerEvent(XMLStreamReaderImpl.java:1714)
-        //   at com.ibm.xml.xlxp.api.stax.XMLStreamReaderImpl.next(XMLStreamReaderImpl.java:605)
-        //   at com.ibm.xml.xlxp.api.stax.XMLInputFactoryImpl$XMLStreamReaderProxy.next(XMLInputFactoryImpl.java:188)
-        //   at com.ibm.ws.javaee.ddmodel.DDParser.parseToRootElement(DDParser.java:426)
-        //   ... 54 more        
+        parseBnd(badRootMBeanXML, "xml.error", "CWWKC2272E");
     }
 
     @Test
     public void testNamespaceMissing() throws Exception {
         parseBnd(noNamespaceMBeanBndXML);
- }
+    }
     
     @Test
     public void testSchemaInstanceMissing() throws Exception {
-        parseBnd(noSchemaInstanceMBeanBndXML, "CWWKC2272E", "xml.error");
-        // CWWKC2272E: An error occurred while parsing the /META-INF/ibm-managed-bean-bnd.xml
-        // deployment descriptor on line 1. The error message was: The namespace prefix "xsi"
-        // was not declared.
-        
-        //   at com.ibm.ws.javaee.ddmodel.DDParser.parseToRootElement(DDParser.java:429)
-        //   at com.ibm.ws.javaee.ddmodel.DDParser.parseRootElement(DDParser.java:584)
-        //   at com.ibm.ws.javaee.ddmodel.managedbean.ManagedBeanBndDDParser.parse(ManagedBeanBndDDParser.java:24)
-        //   at com.ibm.ws.javaee.ddmodel.managedbean.ManagedBeanBndAdapter.adapt(ManagedBeanBndAdapter.java:67)
-        //   at com.ibm.ws.javaee.ddmodel.managedbean.ManagedBeanBndAdapter.adapt(ManagedBeanBndAdapter.java:35)
-        //   at com.ibm.ws.javaee.ddmodel.DDTestBase.parse(DDTestBase.java:85)
-        //   at com.ibm.ws.javaee.ddmodel.managedbean.ManagedBeanBndTest.parseBnd(ManagedBeanBndTest.java:143)
-        //   at com.ibm.ws.javaee.ddmodel.managedbean.ManagedBeanBndTest.testSchemaMissing(ManagedBeanBndTest.java:238)
-        // 
-        // Caused by: javax.xml.stream.XMLStreamException: The namespace prefix "xsi" was not declared.
-        //   at com.ibm.xml.xlxp.api.stax.msg.StAXMessageProvider.throwWrappedXMLStreamException(StAXMessageProvider.java:73)
-        //   at com.ibm.xml.xlxp.api.stax.XMLStreamReaderImpl.produceFatalErrorEvent(XMLStreamReaderImpl.java:2172)
-        //   at com.ibm.xml.xlxp.api.stax.XMLStreamReaderImpl.reportFatalError(XMLStreamReaderImpl.java:2178)
-        //   at com.ibm.xml.xlxp.api.util.SimpleScannerHelper.undeclaredPrefix(SimpleScannerHelper.java:778)
-        //   at com.ibm.xml.xlxp.api.util.SimpleScannerHelper.resolveNamespaceURIs(SimpleScannerHelper.java:760)
-        //   at com.ibm.xml.xlxp.api.util.SimpleScannerHelper.finishElement(SimpleScannerHelper.java:683)
-        //   at com.ibm.xml.xlxp.api.util.SimpleScannerHelper.finishStartElement(SimpleScannerHelper.java:712)
-        //   at com.ibm.xml.xlxp.scan.DocumentEntityScanner.scanStartElementUnbuffered(DocumentEntityScanner.java:3548)
-        //   at com.ibm.xml.xlxp.api.util.SimpleScannerHelper.scanStartElementUnbuffered(SimpleScannerHelper.java:1003)
-        //   at com.ibm.xml.xlxp.scan.DocumentEntityScanner.stateUnbufferedStartElement(DocumentEntityScanner.java:507)
-        //   at com.ibm.xml.xlxp.scan.DocumentEntityScanner.scanRootElement(DocumentEntityScanner.java:1874)
-        //   at com.ibm.xml.xlxp.scan.DocumentEntityScanner.scanProlog(DocumentEntityScanner.java:1757)
-        //   at com.ibm.xml.xlxp.scan.DocumentEntityScanner.produceEvent(DocumentEntityScanner.java:636)
-        //   at com.ibm.xml.xlxp.api.stax.XMLStreamReaderImpl.getNextScannerEvent(XMLStreamReaderImpl.java:1714)
-        //   at com.ibm.xml.xlxp.api.stax.XMLStreamReaderImpl.next(XMLStreamReaderImpl.java:605)
-        //   at com.ibm.xml.xlxp.api.stax.XMLInputFactoryImpl$XMLStreamReaderProxy.next(XMLInputFactoryImpl.java:188)
-        //   at com.ibm.ws.javaee.ddmodel.DDParser.parseToRootElement(DDParser.java:426)
-        //   ... 54 more        
+        parseBnd(noSchemaInstanceMBeanBndXML, "xml.error", "CWWKC2272E"); 
     }
 
     // Current parsing does not require a schema location.
@@ -258,23 +237,7 @@ public class ManagedBeanBndTest extends DDTestBase {
 
     @Test
     public void testRequiredAttributeClassMissing() throws Exception {
-        parseBnd( mBeanBndXML(noClassMBeanXML), "CWWKC2251E", "required.attribute.missing");
-        
-        // CWWKC2251E: The managed-bean element is missing the required class
-        // attribute in the /META-INF/ibm-managed-bean-bnd.xml deployment
-        // descriptor on line 3.
-        // 
-        //   at com.ibm.ws.javaee.ddmodel.managedbean.ManagedBeanType.finish(ManagedBeanType.java:36)
-        //   at com.ibm.ws.javaee.ddmodel.DDParser.parse(DDParser.java:678)
-        //   at com.ibm.ws.javaee.ddmodel.managedbean.ManagedBeanBndType.handleChild(ManagedBeanBndType.java:94)
-        //   at com.ibm.ws.javaee.ddmodel.DDParser.parse(DDParser.java:696)
-        //   at com.ibm.ws.javaee.ddmodel.DDParser.parseRootElement(DDParser.java:593)
-        //   at com.ibm.ws.javaee.ddmodel.managedbean.ManagedBeanBndDDParser.parse(ManagedBeanBndDDParser.java:24)
-        //   at com.ibm.ws.javaee.ddmodel.managedbean.ManagedBeanBndAdapter.adapt(ManagedBeanBndAdapter.java:67)
-        //   at com.ibm.ws.javaee.ddmodel.managedbean.ManagedBeanBndAdapter.adapt(ManagedBeanBndAdapter.java:35)
-        //   at com.ibm.ws.javaee.ddmodel.DDTestBase.parse(DDTestBase.java:85)
-        //   at com.ibm.ws.javaee.ddmodel.managedbean.ManagedBeanBndTest.parseBnd(ManagedBeanBndTest.java:143)
-        //   at com.ibm.ws.javaee.ddmodel.managedbean.ManagedBeanBndTest.testRequiredAttributeClassMissing(ManagedBeanBndTest.java:270)
+        parseBnd( mBeanBndXML(noClassMBeanXML), "required.attribute.missing", "CWWKC2251E" );
     }
 
     // Tests on valid data ...

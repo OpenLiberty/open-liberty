@@ -18,7 +18,7 @@ import com.ibm.ws.javaee.ddmodel.DDTestBase;
 
 public class AppClientTestBase extends DDTestBase {
 
-    protected ApplicationClientEntryAdapter createAdapter(int maxSchemaVersion) {
+    protected static ApplicationClientEntryAdapter createAdapter(int maxSchemaVersion) {
         @SuppressWarnings("unchecked")
         ServiceReference<ApplicationClientDDParserVersion> versionRef =
         mockery.mock(ServiceReference.class, "sr" + mockId++);
@@ -42,7 +42,7 @@ public class AppClientTestBase extends DDTestBase {
         return parse(ddText, maxSchemaVersion, null);
     }
 
-    protected ApplicationClient parse(
+    protected static ApplicationClient parse(
         String ddText,
         int maxSchemaVersion,
         String altMessage, String... messages) throws Exception {
@@ -54,7 +54,10 @@ public class AppClientTestBase extends DDTestBase {
 
         ApplicationClientEntryAdapter ddAdapter = createAdapter(maxSchemaVersion);
 
-        return parse(appPath, modulePath, fragmentPath, ddText, ddAdapter, ddPath, altMessage, messages);
+        return parse(appPath, modulePath, fragmentPath,
+                ddText, ddAdapter, ddPath,
+                null, null,
+                altMessage, messages);
     }
 
     protected static String appClient12Head =

@@ -17,6 +17,9 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 import com.ibm.ws.javaee.dd.common.Description;
 import com.ibm.ws.javaee.dd.common.DescriptionGroup;
@@ -34,9 +37,20 @@ import com.ibm.ws.javaee.dd.ejb.Session;
 import com.ibm.ws.javaee.dd.ejb.Timer;
 import com.ibm.ws.javaee.dd.ejb.TimerSchedule;
 import com.ibm.ws.javaee.dd.ejb.TransactionalBean;
-import com.ibm.ws.javaee.ddmodel.DDParser;
 
-public class SessionBeanTest extends EJBJarTestBase {
+@RunWith(Parameterized.class)
+public class EJBJarSessionBeanTest extends EJBJarTestBase {
+    @Parameters
+    public static Iterable<? extends Object> data() {
+        return TEST_DATA;
+    }
+    
+    public EJBJarSessionBeanTest(boolean ejbInWar) {
+        super(ejbInWar);
+    }
+
+    //
+
     protected static final String sessionBeansXML =
             "<enterprise-beans>" +
                 "<session>" +

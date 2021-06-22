@@ -24,7 +24,7 @@ import com.ibm.ws.javaee.dd.commonbnd.ResourceRef;
 import com.ibm.ws.javaee.dd.web.WebApp;
 import com.ibm.ws.javaee.dd.webbnd.WebBnd;
 
-public class WebAppBndTestRef extends WebAppBndTestBase {
+public class WebAppBndReferencesTest extends WebAppBndTestBase {
     @Test
     public void testEJBRef() throws Exception {
         WebBnd bnd = parseWebAppBndXML(

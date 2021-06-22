@@ -14,7 +14,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.List;
 
@@ -26,369 +25,311 @@ import com.ibm.ws.javaee.dd.bval.DefaultValidatedExecutableTypes.ExecutableTypeE
 import com.ibm.ws.javaee.dd.bval.ExecutableValidation;
 import com.ibm.ws.javaee.dd.bval.Property;
 import com.ibm.ws.javaee.dd.bval.ValidationConfig;
-import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 
 public class ValidationConfigTest extends ValidationConfigTestBase {
-
     @Test
-    public void testGetVersionNoVersion() throws Exception {
-        int versionId = parse(validationConfigNoVersion() + "</validation-config>")
-                .getVersionID();
-        Assert.assertEquals("Version should be 1.0",
-                ValidationConfig.VERSION_1_0,
-                versionId);
+    public void testVersionMissing() throws Exception {
+        int versionId = parseNoVersion().getVersionID();
+        Assert.assertEquals("Version should be 1.0", ValidationConfig.VERSION_1_0, versionId);
     }
 
     @Test
-    public void testGetVersion11() throws Exception {
-        int versionId = parse(validationConfig11() + "</validation-config>")
-                .getVersionID();
-        Assert.assertEquals("Version should be 1.1",
-                ValidationConfig.VERSION_1_1,
-                versionId);
+    public void testVersion10() throws Exception {
+        parse( validationConfig10(),
+               UNSUPPORTED_DESCRIPTOR_VERSION_ALT_MESSAGE,
+               UNSUPPORTED_DESCRIPTOR_VERSION_MESSAGES );
     }
 
     @Test
-    public void testGetVersion10() throws Exception {
-        try {
-            parse(validationConfig10() + "</validation-config>");
-            fail("having validation.xml with version=1.0 isn't valid");
-        } catch (UnableToAdaptException e) {
-            verifyMessage(e, "unsupported.descriptor.version", "CWWKC2263E");
-        }
+    public void testVersion11() throws Exception {
+        int versionId = parse11().getVersionID();
+        Assert.assertEquals("Version should be 1.1", ValidationConfig.VERSION_1_1, versionId);
     }
 
+    @Test
+    public void testNotBValValidationXML() throws Exception {
+        ValidationConfig config = parse(notValidationConfig(), NOT_BVAL_XML);
+        assertNull("Non-bean Validation xml should be null", config);
+    }
+
+    @Test
+    public void testUnknownElement() throws Exception {
+        parse( validationConfigNoVersion(
+                   "<not-part-of-validation-config>x</not-part-of-validation-config>"),
+               "unexpected.child.element", "CWWKC2259E");
+    }
+    
     //
 
     @Test
+    public void testVersion11NoNamespace() throws Exception {
+        parse(validationConfig11NoNamespace(), "unknown", "unknown");
+    }
+
+    @Test
+    public void testVersion11NoSchemaInstance() throws Exception {
+        int versionId = parse(validationConfig11NoSchemaInstance()).getVersionID();
+        Assert.assertEquals("Version should be 1.1", ValidationConfig.VERSION_1_1, versionId);
+    }
+
+    @Test
+    public void testVersion11NoSchemaLocation() throws Exception {
+        int versionId = parse(validationConfig11NoSchemaLocation()).getVersionID();
+        Assert.assertEquals("Version should be 1.1", ValidationConfig.VERSION_1_1, versionId);
+    }
+
+    @Test
+    public void testVersion11NoXSI() throws Exception {
+        int versionId = parse(validationConfig11NoXSI()).getVersionID();
+        Assert.assertEquals("Version should be 1.1", ValidationConfig.VERSION_1_1, versionId);
+    }
+
+    @Test
+    public void testNamespaceOnly() throws Exception {
+        int versionId = parse(validationConfigNamespaceOnly()).getVersionID();
+        Assert.assertEquals("Version should be 1.1", ValidationConfig.VERSION_1_1, versionId);
+    }
+
+    @Test
+    public void testVersion10Only() throws Exception {
+        parse(validationConfigVersion10Only(), "unknown", "unknown");
+    }
+
+    @Test
+    public void testVersion11Only() throws Exception {
+        int versionId = parse(validationConfigVersion11Only()).getVersionID();
+        Assert.assertEquals("Version should be 1.1", ValidationConfig.VERSION_1_1, versionId);
+    }
+
+    @Test
+    public void testVersion12Only() throws Exception {
+        parse(validationConfigVersion12Only(), "unknown", "unknown");
+    }
+
+    //
+    
+    @Test
     public void testGetDefaultProvider() throws Exception {
-        String defaultProvider = parse(validationConfigNoVersion() +
-                                       "</validation-config>").getDefaultProvider();
-        assertEquals("no default-provider specified should have returned null: " + defaultProvider,
-                     null, defaultProvider);
+        String defaultProvider = parseNoVersion().getDefaultProvider();
+        assertEquals("Default provider should be null", null, defaultProvider);
 
-        defaultProvider = parse(validationConfigNoVersion() +
-                                "<default-provider></default-provider>" +
-                                "</validation-config>").getDefaultProvider();
-        assertEquals("Emtpy default provider didn't return empty string: " + defaultProvider,
-                     "", defaultProvider);
+        defaultProvider = parseNoVersion("<default-provider></default-provider>")
+                .getDefaultProvider();
+        assertEquals("Default provider should be empty", "", defaultProvider);
 
-        defaultProvider = parse(validationConfigNoVersion() +
-                                "<default-provider>provider.class.Name</default-provider>" +
-                                "</validation-config>").getDefaultProvider();
-        assertEquals("default provider shouldn't have returned: " + defaultProvider,
-                     "provider.class.Name", defaultProvider);
+        defaultProvider = parseNoVersion("<default-provider>provider.class.Name</default-provider>")
+                .getDefaultProvider();
+        assertEquals("Incorrect default provider", "provider.class.Name", defaultProvider);
 
-        try {
-            defaultProvider = parse(validationConfig10() +
-                                    "<default-provider>provider.class.Name</default-provider>" +
-                                    "</validation-config>").getDefaultProvider();
-        } catch (UnableToAdaptException e) {
-            verifyMessage(e, "unsupported.descriptor.version", "CWWKC2263E");
-        }
+        parse( validationConfig10("<default-provider>provider.class.Name</default-provider>"),
+               UNSUPPORTED_DESCRIPTOR_VERSION_ALT_MESSAGE,
+               UNSUPPORTED_DESCRIPTOR_VERSION_MESSAGES );              
 
-        defaultProvider = parse(validationConfig11() +
-                                "<default-provider>provider.class.Name</default-provider>" +
-                                "</validation-config>").getDefaultProvider();
-        assertEquals("default provider shouldn't have returned: " + defaultProvider,
-                     "provider.class.Name", defaultProvider);
+        defaultProvider = parse11("<default-provider>provider.class.Name</default-provider>")
+                .getDefaultProvider();
+        assertEquals("Incorrect default provider", "provider.class.Name", defaultProvider);
     }
 
     @Test
     public void testGetMessageInterpolator() throws Exception {
-        String messageInterpolator = parse(validationConfigNoVersion() +
-                                           "</validation-config>").getMessageInterpolator();
-        assertEquals("no message-interpolator specified should have returned null: " + messageInterpolator,
-                     null, messageInterpolator);
+        String messageInterpolator = parseNoVersion().getMessageInterpolator();
+        assertEquals("Message interpolator should be null", null, messageInterpolator);
 
-        messageInterpolator = parse(validationConfigNoVersion() +
-                                    "<message-interpolator></message-interpolator>" +
-                                    "</validation-config>").getMessageInterpolator();
-        assertEquals("Emtpy message-interpolator didn't return empty string: " + messageInterpolator,
-                     "", messageInterpolator);
+        messageInterpolator = parseNoVersion("<message-interpolator></message-interpolator>")
+                .getMessageInterpolator();
+        assertEquals("Message interpolator should be empty", "", messageInterpolator);
 
-        messageInterpolator = parse(validationConfigNoVersion() +
-                                    "<message-interpolator>provider.class.Name1</message-interpolator>" +
-                                    "</validation-config>").getMessageInterpolator();
-        assertEquals("message-interpolator shouldn't have returned: " + messageInterpolator,
-                     "provider.class.Name1", messageInterpolator);
+        messageInterpolator = parseNoVersion("<message-interpolator>provider.class.Name1</message-interpolator>")
+                .getMessageInterpolator();
+        assertEquals("Incorrect message interpolator", "provider.class.Name1", messageInterpolator);
     }
 
     @Test
     public void testGetTraversableResolver() throws Exception {
-        String traversableResolver = parse(validationConfigNoVersion() +
-                                           "</validation-config>").getTraversableResolver();
-        assertEquals("no traversable-resolver specified should have returned null: " + traversableResolver,
-                     null, traversableResolver);
+        String traversableResolver = parseNoVersion().getTraversableResolver();
+        assertEquals("Traversable resolver should be null", null, traversableResolver);
 
-        traversableResolver = parse(validationConfigNoVersion() +
-                                    "<traversable-resolver></traversable-resolver>" +
-                                    "</validation-config>").getTraversableResolver();
-        assertEquals("Emtpy traversable-resolver didn't return empty string: " + traversableResolver,
-                     "", traversableResolver);
+        traversableResolver =
+                parseNoVersion("<traversable-resolver></traversable-resolver>")
+                    .getTraversableResolver();
+        assertEquals("Traversable resolver should be empty", "", traversableResolver);
 
-        traversableResolver = parse(validationConfigNoVersion() +
-                                    "<traversable-resolver>provider.class.Name2</traversable-resolver>" +
-                                    "</validation-config>").getTraversableResolver();
-        assertEquals("traversable-resolver shouldn't have returned: " + traversableResolver,
-                     "provider.class.Name2", traversableResolver);
+        traversableResolver =
+                parseNoVersion("<traversable-resolver>provider.class.Name2</traversable-resolver>")
+                    .getTraversableResolver();
+        assertEquals("Incorrect traversable resolver", "provider.class.Name2", traversableResolver);
     }
 
     @Test
     public void testGetConstraintValidatorFactory() throws Exception {
-        String constraintValidatorFactory = parse(validationConfigNoVersion() +
-                                                  "</validation-config>").getConstraintValidatorFactory();
-        assertEquals("no constraint-validator-factory specified should have returned null: " + constraintValidatorFactory,
-                     null, constraintValidatorFactory);
+        String constraintValidatorFactory = parseNoVersion().getConstraintValidatorFactory();
+        assertEquals("Constraint validator factory should be null", null, constraintValidatorFactory);
 
-        constraintValidatorFactory = parse(validationConfigNoVersion() +
-                                           "<constraint-validator-factory></constraint-validator-factory>" +
-                                           "</validation-config>").getConstraintValidatorFactory();
-        assertEquals("Emtpy constraint-validator-factory didn't return empty string: " + constraintValidatorFactory,
-                     "", constraintValidatorFactory);
+        constraintValidatorFactory =
+                parseNoVersion("<constraint-validator-factory></constraint-validator-factory>")
+                    .getConstraintValidatorFactory();
+        assertEquals("Constraint validator factory should be empty", "", constraintValidatorFactory);
 
-        constraintValidatorFactory = parse(validationConfigNoVersion() +
-                                           "<constraint-validator-factory>provider.class.Name3</constraint-validator-factory>" +
-                                           "</validation-config>").getConstraintValidatorFactory();
-        assertEquals("constraint-validator-factory shouldn't have returned: " + constraintValidatorFactory,
-                     "provider.class.Name3", constraintValidatorFactory);
+        constraintValidatorFactory =
+                parseNoVersion("<constraint-validator-factory>provider.class.Name3</constraint-validator-factory>")
+                    .getConstraintValidatorFactory();
+        assertEquals("Incorrect constraint validator factory", "provider.class.Name3", constraintValidatorFactory);
     }
 
     @Test
     public void testGetParameterNameProvider() throws Exception {
-        String parameterNameProvider = parse(validationConfigNoVersion() +
-                                             "</validation-config>").getParameterNameProvider();
-        assertEquals("no parameter-name-provider specified should have returned null: " + parameterNameProvider,
-                     null, parameterNameProvider);
+        String parameterNameProvider = parseNoVersion().getParameterNameProvider();
+        assertEquals("Parameter name provider should be null", null, parameterNameProvider);
 
-        parameterNameProvider = parse(validationConfigNoVersion() +
-                                      "<parameter-name-provider></parameter-name-provider>" +
-                                      "</validation-config>").getParameterNameProvider();
-        assertEquals("Emtpy parameter-name-provider didn't return empty string: " + parameterNameProvider,
-                     "", parameterNameProvider);
+        parameterNameProvider = parseNoVersion("<parameter-name-provider></parameter-name-provider>")
+                .getParameterNameProvider();
+        assertEquals("Parameter name provider should be empty", "", parameterNameProvider);
 
-        parameterNameProvider = parse(validationConfigNoVersion() +
-                                      "<parameter-name-provider>provider.class.Name4</parameter-name-provider>" +
-                                      "</validation-config>").getParameterNameProvider();
-        assertEquals("parameter-name-provider shouldn't have returned: " + parameterNameProvider,
-                     "provider.class.Name4", parameterNameProvider);
+        parameterNameProvider = parseNoVersion("<parameter-name-provider>provider.class.Name4</parameter-name-provider>")
+                .getParameterNameProvider();
+        assertEquals("Incorrect parameter name provider", "provider.class.Name4", parameterNameProvider);
     }
 
     @Test
     public void testGetDefaultValidatedExecutableTypes() throws Exception {
         // no executable-validation specified
-        ExecutableValidation validation = parse(validationConfig11() +
-                                                "</validation-config>").getExecutableValidation();
-        assertNull("executable-validation didn't return null" + validation, validation);
+        ExecutableValidation validation = parse11().getExecutableValidation();
+        assertNull("executable-validation should be null", validation);
 
         // enabled NOT specified and one executable-type specified
-        validation = parse(validationConfig11() +
-                           "<executable-validation>" +
-                           "<default-validated-executable-types>" +
-                           "<executable-type>NONE</executable-type>" +
-                           "</default-validated-executable-types>" +
-                           "</executable-validation>" +
-                           "</validation-config>").getExecutableValidation();
-        assertTrue("executable validation should be enabled by default, but isn't", validation.getEnabled());
+        validation = parse11("<executable-validation>" +
+                                 "<default-validated-executable-types>" +
+                                     "<executable-type>NONE</executable-type>" +
+                                 "</default-validated-executable-types>" +
+                             "</executable-validation>").getExecutableValidation();
+        assertTrue("Default executable validation should be enabled", validation.getEnabled());
 
         List<ExecutableTypeEnum> list = validation.getDefaultValidatedExecutableTypes().getExecutableTypes();
-        assertEquals("executable types list should be of size 1, but was" + list.size(), 1, list.size());
-        assertEquals("the only executable-type should be NONE: " + list.get(0),
-                     ExecutableTypeEnum.NONE, list.get(0));
+        assertEquals("executable types list should be of size 1", 1, list.size());
+        assertEquals("the only executable-type should be NONE", ExecutableTypeEnum.NONE, list.get(0));
 
         // enabled specified false and two executable-type's specified
-        validation = parse(validationConfig11() +
-                           "<executable-validation enabled=\"false\">" +
-                           "<default-validated-executable-types>" +
-                           "<executable-type>NONE</executable-type>" +
-                           "<executable-type>GETTER_METHODS</executable-type>" +
-                           "</default-validated-executable-types>" +
-                           "</executable-validation>" +
-                           "</validation-config>").getExecutableValidation();
+        validation = parse11("<executable-validation enabled=\"false\">" +
+                                 "<default-validated-executable-types>" +
+                                     "<executable-type>NONE</executable-type>" +
+                                     "<executable-type>GETTER_METHODS</executable-type>" +
+                                 "</default-validated-executable-types>" +
+                             "</executable-validation>").getExecutableValidation();
         assertFalse("executable validation should false", validation.getEnabled());
 
         list = validation.getDefaultValidatedExecutableTypes().getExecutableTypes();
-        assertEquals("executable types list should be of size 2, but was" + list.size(), 2, list.size());
-        assertEquals("the executable-type should be NONE: " + list.get(0),
-                     ExecutableTypeEnum.NONE, list.get(0));
-        assertEquals("the executable-type should be GETTER_METHODS: " + list.get(1),
+        assertEquals("executable types list should be of size 2", 2, list.size());
+        assertEquals("the executable-type should be NONE", ExecutableTypeEnum.NONE, list.get(0));
+        assertEquals("the executable-type should be GETTER_METHODS",
                      ExecutableTypeEnum.GETTER_METHODS, list.get(1));
 
         // enabled specified true and NO executable-type's specified, but 
         // default-validated-executable-types specified
-        validation = parse(validationConfig11() +
-                           "<executable-validation enabled=\"true\">" +
-                           "<default-validated-executable-types>" +
-                           "</default-validated-executable-types>" +
-                           "</executable-validation>" +
-                           "</validation-config>").getExecutableValidation();
+        validation = parse11("<executable-validation enabled=\"true\">" +
+                                 "<default-validated-executable-types>" +
+                                 "</default-validated-executable-types>" +
+                             "</executable-validation>").getExecutableValidation();
         assertTrue("executable validation should true", validation.getEnabled());
 
         list = validation.getDefaultValidatedExecutableTypes().getExecutableTypes();
-        assertEquals("executable types list should be of size 0, but was" + list.size(), 0, list.size());
+        assertEquals("executable types list should be of size 0", 0, list.size());
 
         // NO executable-type's specified and default-validated-executable-types not specified
-        validation = parse(validationConfig11() +
-                           "<executable-validation>" +
-                           "</executable-validation>" +
-                           "</validation-config>").getExecutableValidation();
+        validation = parse11("<executable-validation>" +
+                             "</executable-validation>").getExecutableValidation();
         assertTrue("default executable validation should true", validation.getEnabled());
 
-        assertNull("default-validated-executable-types wasn't specified so it should be null",
+        assertNull("default-validated-executable-types should be null",
                    validation.getDefaultValidatedExecutableTypes());
 
         // provide executable-type that isn't recognized
-        try {
-            validation = parse(validationConfig11() +
-                               "<executable-validation>" +
-                               "<default-validated-executable-types>" +
-                               "<executable-type>NON</executable-type>" +
-                               "</default-validated-executable-types>" +
-                               "</executable-validation>" +
-                               "</validation-config>").getExecutableValidation();
-            fail("parsing should fail when executable-type is specified which isn't a valid enum value");
-        } catch (UnableToAdaptException e) {
-            // Ignore: Expected
-        }
+        parse( validationConfig11(
+                   "<executable-validation>" +
+                       "<default-validated-executable-types>" +
+                           "<executable-type>NON</executable-type>" +
+                       "</default-validated-executable-types>" +
+                   "</executable-validation>"),
+               "unknown", "unknown");
 
         // provide executable-type that is empty
-        try {
-            validation = parse(validationConfig11() +
-                               "<executable-validation>" +
-                               "<default-validated-executable-types>" +
-                               "<executable-type></executable-type>" +
-                               "</default-validated-executable-types>" +
-                               "</executable-validation>" +
-                               "</validation-config>").getExecutableValidation();
-            fail("parsing should fail when an empty executable-type is specified");
-        } catch (UnableToAdaptException e) {
-            // Ignore: Expected
-        }
+        parse( validationConfig11(
+                   "<executable-validation>" +
+                       "<default-validated-executable-types>" +
+                           "<executable-type></executable-type>" +
+                       "</default-validated-executable-types>" +
+                   "</executable-validation>"),
+                "unknown", "unknown");
     }
 
     @Test
     public void testGetConstraintMappings() throws Exception {
-        List<String> constraintMappings = parse(validationConfigNoVersion() +
-                                                "</validation-config>").getConstraintMappings();
-        assertEquals("constraint-mapping didn't return list of size 0: " + constraintMappings,
-                     0, constraintMappings.size());
+        List<String> constraintMappings = parseNoVersion().getConstraintMappings();
+        assertEquals("constraint mapping should have length 0", 0, constraintMappings.size());
 
-        constraintMappings = parse(validationConfigNoVersion() +
-                                   "<constraint-mapping></constraint-mapping>" +
-                                   "</validation-config>").getConstraintMappings();
-        assertEquals("constraint-mapping didn't return list of size 1: " + constraintMappings,
-                     1, constraintMappings.size());
-        assertEquals("constraint-mapping shouldn't have returned: " + constraintMappings,
-                     "", constraintMappings.get(0));
+        constraintMappings = parseNoVersion("<constraint-mapping></constraint-mapping>")
+                .getConstraintMappings();
+        assertEquals("constraint mapping should have length 1", 1, constraintMappings.size());
+        assertEquals("Incorrect constraint mapping", "", constraintMappings.get(0));
 
-        constraintMappings = parse(validationConfigNoVersion() +
-                                   "<constraint-mapping>META-INF/my-mapping.xml</constraint-mapping>" +
-                                   "</validation-config>").getConstraintMappings();
-        assertEquals("constraint-mapping didn't return list of size 1: " + constraintMappings,
-                     1, constraintMappings.size());
-        assertEquals("constraint-mapping shouldn't have returned: " + constraintMappings,
+        constraintMappings = parseNoVersion("<constraint-mapping>META-INF/my-mapping.xml</constraint-mapping>")
+                .getConstraintMappings();
+        assertEquals("constraint-mapping should have length 1", 1, constraintMappings.size());
+        assertEquals("Incorrect constraint mapping", "META-INF/my-mapping.xml", constraintMappings.get(0));
+
+        constraintMappings =
+                parseNoVersion(
+                        "<constraint-mapping>META-INF/my-mapping.xml</constraint-mapping>" +
+                        "<constraint-mapping>META-INF/my-other-mapping.xml</constraint-mapping>")
+                    .getConstraintMappings();
+        assertEquals("constraint mapping should have length 2", 2, constraintMappings.size());
+        assertEquals("Incorrect constraint mapping at element 0",
                      "META-INF/my-mapping.xml", constraintMappings.get(0));
-
-        constraintMappings = parse(validationConfigNoVersion() +
-                                   "<constraint-mapping>META-INF/my-mapping.xml</constraint-mapping>" +
-                                   "<constraint-mapping>META-INF/my-other-mapping.xml</constraint-mapping>" +
-                                   "</validation-config>").getConstraintMappings();
-        assertEquals("constraint-mapping didn't return list of size 2: " + constraintMappings,
-                     2, constraintMappings.size());
-        assertEquals("constraint-mapping shouldn't have returned: " + constraintMappings,
-                     "META-INF/my-mapping.xml", constraintMappings.get(0));
-        assertEquals("constraint-mapping shouldn't have returned: " + constraintMappings,
+        assertEquals("Incorrect constraint mapping at element 1",
                      "META-INF/my-other-mapping.xml", constraintMappings.get(1));
     }
 
     @Test
     public void testGetProperties() throws Exception {
         // no properties
-        List<Property> properties = parse(validationConfigNoVersion() + "</validation-config>")
-                .getProperties();
-        assertEquals("property didn't return list of size 0: " + properties,
-                     0, properties.size());
+        List<Property> properties = parseNoVersion().getProperties();
+        assertEquals("Properties should have length 0", 0, properties.size());
 
         // one property
-        properties = parse(validationConfigNoVersion() +
-                               "<property name=\"x\">y</property>" +
-                           "</validation-config>").getProperties();
-        assertEquals("property didn't return list of size 1: " + properties,
-                     1, properties.size());
+        properties = parseNoVersion("<property name=\"x\">y</property>").getProperties();
+        assertEquals("property should have length 1", 1, properties.size());
         Property property = properties.get(0);
-        assertEquals("property name shouldn't have returned: " + property.getName(),
-                     "x", property.getName());
-        assertEquals("property value shouldn't have returned: " + property.getValue(),
-                     "y", property.getValue());
+        assertEquals("Incorrect property name", "x", property.getName());
+        assertEquals("Incorrect property value", "y", property.getValue());
 
         // two properties
-        properties = parse(validationConfigNoVersion() +
-                               "<property name=\"x\">y</property>" +
-                               "<property name=\"x1\">y1</property>" +
-                           "</validation-config>").getProperties();
-        assertEquals("property didn't return list of size 2: " + properties,
-                     2, properties.size());
+        properties = parseNoVersion(
+                "<property name=\"x\">y</property>" +
+                "<property name=\"x1\">y1</property>").getProperties();
+        assertEquals("property should have length 2", 2, properties.size());
         property = properties.get(0);
-        assertEquals("property name shouldn't have returned: " + property.getName(),
-                     "x", property.getName());
-        assertEquals("property value shouldn't have returned: " + property.getValue(),
-                     "y", property.getValue());
+        assertEquals("Incorrect property name 0", "x", property.getName());
+        assertEquals("Incorrect property value 0", "y", property.getValue());
+        
         property = properties.get(1);
-        assertEquals("property name shouldn't have returned: " + property.getName(),
-                     "x1", property.getName());
-        assertEquals("property value shouldn't have returned: " + property.getValue(),
-                     "y1", property.getValue());
+        assertEquals("Incorrect property name 1", "x1", property.getName());
+        assertEquals("Incorrect property vale 1", "y1", property.getValue());        
 
         // one property with no value
-        properties = parse(validationConfigNoVersion() +
-                               "<property name=\"x\"></property>" +
-                           "</validation-config>").getProperties();
-        assertEquals("property didn't return list of size 1: " + properties,
-                     1, properties.size());
+        properties = parseNoVersion("<property name=\"x\"></property>").getProperties();
+        assertEquals("property should have length 1", 1, properties.size());
         property = properties.get(0);
-        assertEquals("property name shouldn't have returned: " + property.getName(),
-                     "x", property.getName());
-        assertEquals("property value shouldn't have returned: " + property.getValue(),
-                     "", property.getValue());
+        assertEquals("Incorrect property name",  "x", property.getName());
+        assertEquals("Incorrect property value", "", property.getValue());
 
         // one property with empty name
-        properties = parse(validationConfigNoVersion() +
-                               "<property name=\"\">y</property>" +
-                           "</validation-config>").getProperties();
-        assertEquals("property didn't return list of size 1: " + properties,
-                     1, properties.size());
+        properties = parseNoVersion("<property name=\"\">y</property>").getProperties();
+        assertEquals("property should have length 1", 1, properties.size());
         property = properties.get(0);
-        assertEquals("property name shouldn't have returned: " + property.getName(),
-                     "", property.getName());
-        assertEquals("property value shouldn't have returned: " + property.getValue(),
-                     "y", property.getValue());
+        assertEquals("Incorrect property name", "", property.getName());
+        assertEquals("Incorrect property value", "y", property.getValue());
 
         // one property with no name attribute
-        try {
-            properties = parse(validationConfigNoVersion() +
-                                   "<property>y</property>" +
-                               "</validation-config>").getProperties();
-            fail("an exception should be thrown if the property element doesn't have a name attribute");
-        } catch (UnableToAdaptException e) {
-            verifyMessage(e, "required.attribute.missing", "CWWKC2251E");
-        }
-    }
-
-    @Test
-    public void testNotBValValidationXML() throws Exception {
-        ValidationConfig config = parse(notValidationConfig(), true);
-        assertNull("non Bean Validation xml should return null: " + config, config);
-    }
-
-    @Test
-    public void testUnknownElement() throws Exception {
-        try {
-            parse(validationConfigNoVersion() +
-                    "<not-part-of-validation-config>x</not-part-of-validation-config>" +
-                  "</validation-config>");
-            fail("an exception should be thrown if unknown elements are used");
-        } catch (UnableToAdaptException e) {
-            verifyMessage(e, "unexpected.child.element", "CWWKC2259E");
-        }
+        parse( validationConfigNoVersion("<property>y</property>"),
+               "required.attribute.missing", "CWWKC2251E");
     }
 }

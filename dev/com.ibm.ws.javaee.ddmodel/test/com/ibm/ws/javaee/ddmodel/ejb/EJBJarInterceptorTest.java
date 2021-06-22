@@ -13,8 +13,10 @@ package com.ibm.ws.javaee.ddmodel.ejb;
 import java.util.List;
 
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 import com.ibm.ws.javaee.dd.common.EJBRef;
 import com.ibm.ws.javaee.dd.common.EnvEntry;
@@ -28,19 +30,28 @@ import com.ibm.ws.javaee.dd.ejb.EJBJar;
 import com.ibm.ws.javaee.dd.ejb.Interceptor;
 import com.ibm.ws.javaee.dd.ejb.Interceptors;
 
-public class InterceptorTest extends EJBJarTestBase {
-
-    @BeforeClass
-    public static void setup() throws Exception {
-        interceptorsEJBJar = parseEJBJar( ejbJar30("", interceptorsXML), EJBJar.VERSION_4_0 );
+@RunWith(Parameterized.class)
+public class EJBJarInterceptorTest extends EJBJarTestBase {
+    @Parameters
+    public static Iterable<? extends Object> data() {
+        return TEST_DATA;
+    }
+    
+    public EJBJarInterceptorTest(boolean ejbInWar) {
+        super(ejbInWar);
     }
 
-    private static EJBJar interceptorsEJBJar;
+    //
+    
+    private EJBJar interceptorsEJBJar;
 
-    protected static EJBJar getInterceptorsEjbJar() throws Exception {
+    protected EJBJar getInterceptorsEjbJar() throws Exception {
+        if ( interceptorsEJBJar == null ) {
+            interceptorsEJBJar = parseEJBJar( ejbJar30("", interceptorsXML), EJBJar.VERSION_4_0 );
+        }
         return interceptorsEJBJar;
     }
-
+    
     //
 
     protected static final String ejbRefXML =
@@ -334,7 +345,7 @@ public class InterceptorTest extends EJBJarTestBase {
     @Test
     public void testAroundConstructEJB31() throws Exception {
         parseEJBJar( ejbJar31("", interceptorsAroundConstruct31XML),
-               EJBJar.VERSION_4_0,
-               "CWWKC2259E", "unexpected.child.element" );
+                     EJBJar.VERSION_4_0,
+                     "unexpected.child.element", "CWWKC2259E"); 
     }
 }

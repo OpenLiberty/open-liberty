@@ -16,7 +16,7 @@ import org.junit.Test;
 import com.ibm.ws.javaee.dd.app.Application;
 import com.ibm.ws.javaee.version.JavaEEVersion;
 
-public class AppTestHeader extends AppTestBase {
+public class AppHeaderTest extends AppTestBase {
     // 1.4, http://java.sun.com/xml/ns/j2ee
     // 5,   http://java.sun.com/xml/ns/javaee
     // 7,   http://xmlns.jcp.org/xml/ns/javaee

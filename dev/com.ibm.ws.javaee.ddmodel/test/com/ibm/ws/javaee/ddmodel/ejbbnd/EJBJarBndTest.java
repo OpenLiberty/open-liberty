@@ -13,31 +13,36 @@ package com.ibm.ws.javaee.ddmodel.ejbbnd;
 import java.util.List;
 
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 import com.ibm.ws.javaee.dd.commonbnd.Interceptor;
 import com.ibm.ws.javaee.dd.commonbnd.MessageDestination;
-import com.ibm.ws.javaee.dd.ejb.EJBJar;
 import com.ibm.ws.javaee.dd.ejbbnd.EJBJarBnd;
-import com.ibm.ws.javaee.ddmodel.DDParser;
 import com.ibm.ws.javaee.ddmodel.DDParserBndExt;
 
+
+@RunWith(Parameterized.class)
 public class EJBJarBndTest extends EJBJarBndTestBase {
-
-    protected static EJBJar ejbJar21;
-
-    @BeforeClass
-    public static void initEJBJar21() throws Exception {
-        ejbJar21 = parseEJBJar(ejbJar21() + "</ejb-jar>");
+    @Parameters
+    public static Iterable<? extends Object> data() {
+        return TEST_DATA;
     }
+
+    public EJBJarBndTest(boolean ejbInWar) {
+        super(ejbInWar);
+    }
+
+    //
     
     @Test
     public void testGetVersionID() throws Exception {
         Assert.assertEquals(
                 "XMI",
                 parseEJBJarBndXMI(ejbJarBinding("") + "</ejbbnd:EJBJarBinding>",
-                                  ejbJar21)
+                                  getEJBJar21())
                     .getVersion());
 
         Assert.assertEquals(
@@ -87,7 +92,7 @@ public class EJBJarBndTest extends EJBJarBndTestBase {
     public void testEmptyXMI() throws Exception {
         EJBJarBnd ejbJarBnd = parseEJBJarBndXMI(
                 ejbJarBinding("") + "</ejbbnd:EJBJarBinding>",
-                ejbJar21);
+                getEJBJar21());
 
         Assert.assertNotNull("Enterprise bean list should not be null.", ejbJarBnd.getEnterpriseBeans());
         Assert.assertEquals("Enterprise bean list should be empty.", 0, ejbJarBnd.getEnterpriseBeans().size());
@@ -211,7 +216,7 @@ public class EJBJarBndTest extends EJBJarBndTestBase {
     @Test
     public void testCurrentBackendID() throws Exception {
         parseEJBJarBndXMI(testCurrentBackendID,
-                          ejbJar21);
+                          getEJBJar21());
     }
 
     @Test
@@ -219,7 +224,7 @@ public class EJBJarBndTest extends EJBJarBndTestBase {
         parseEJBJarBndXMI(ejbJarBinding("") +
                               defaultCMPConnectionFactoryXMI1 +
                               " </ejbbnd:EJBJarBinding>",
-                          ejbJar21);
+                          getEJBJar21());
     }
 
     @Test
@@ -227,7 +232,7 @@ public class EJBJarBndTest extends EJBJarBndTestBase {
         parseEJBJarBnd(ejbJarBinding("") +
                           testCMPConnectionFactoryXMI1 +
                       "</ejbbnd:EJBJarBinding>",
-                      DDParserBndExt.IS_XMI, ejbJar21,
+                      DDParserBndExt.IS_XMI, getEJBJar21(),
                       "required.attribute.missing",
                       "CWWKC2251", "ibm-ejb-jar-bnd.xmi");
     }
@@ -237,7 +242,7 @@ public class EJBJarBndTest extends EJBJarBndTestBase {
         parseEJBJarBndXMI(ejbJarBinding("") +
                               defaultDataSourceXMI1 +
                           " </ejbbnd:EJBJarBinding>",
-                          ejbJar21);
+                          getEJBJar21());
     }
 
     @Test
@@ -245,6 +250,6 @@ public class EJBJarBndTest extends EJBJarBndTestBase {
         parseEJBJarBndXMI(ejbJarBinding("") +
                               defaultDataSourceXMI2 +
                           " </ejbbnd:EJBJarBinding>",
-                          ejbJar21);
+                          getEJBJar21());
     }
 }

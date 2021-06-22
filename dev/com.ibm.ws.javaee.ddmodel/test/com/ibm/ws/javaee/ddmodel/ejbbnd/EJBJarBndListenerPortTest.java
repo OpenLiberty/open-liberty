@@ -14,23 +14,35 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 import com.ibm.ws.javaee.dd.ejbbnd.EJBJarBnd;
 import com.ibm.ws.javaee.dd.ejbbnd.EnterpriseBean;
 import com.ibm.ws.javaee.dd.ejbbnd.MessageDriven;
 
-public class ListenerPortTest extends EJBJarBndTestBase {
+@RunWith(Parameterized.class)
+public class EJBJarBndListenerPortTest extends EJBJarBndTestBase {
+    @Parameters
+    public static Iterable<? extends Object> data() {
+        return TEST_DATA;
+    }
+    
+    public EJBJarBndListenerPortTest(boolean ejbInWar) {
+        super(ejbInWar);
+    }
 
-    String listenerPortXML =
-                    "<message-driven name=\"MessageDrivenBean1\"> \n" +
-                                    "<listener-port name=\"lpName1\"/> \n " +
-                                    "</message-driven>\n";
+    protected static final String listenerPortXML =
+            "<message-driven name=\"MessageDrivenBean1\">\n" +
+                "<listener-port name=\"lpName1\"/>\n" +
+            "</message-driven>";
 
     @Test
     public void testListenerPortAttributeName() throws Exception {
-        EJBJarBnd ejbJarBnd = getEJBJarBnd(EJBJarBndTestBase.ejbJarBnd11() + listenerPortXML + "</ejb-jar-bnd>");
-        List<EnterpriseBean> mdBeans = ejbJarBnd.getEnterpriseBeans();
+        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(ejbJarBnd11() + listenerPortXML + "</ejb-jar-bnd>");
 
+        List<EnterpriseBean> mdBeans = ejbJarBnd.getEnterpriseBeans();
         Assert.assertEquals("Only expected 1 message driven bean", 1, mdBeans.size());
         MessageDriven bean0 = (MessageDriven) mdBeans.get(0);
         Assert.assertEquals(bean0.getName(), "MessageDrivenBean1", bean0.getName());

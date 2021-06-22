@@ -10,110 +10,58 @@
  *******************************************************************************/
 package com.ibm.ws.javaee.ddmodel.web;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.util.Arrays;
-
 import org.jmock.Expectations;
 import org.osgi.framework.ServiceReference;
 
 import com.ibm.ws.javaee.dd.web.WebApp;
 import com.ibm.ws.javaee.ddmodel.DDTestBase;
 import com.ibm.ws.javaee.version.ServletVersion;
-import com.ibm.wsspi.adaptable.module.Container;
-import com.ibm.wsspi.adaptable.module.Entry;
-import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
-import com.ibm.wsspi.artifact.ArtifactEntry;
-import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 
 public class WebAppTestBase extends DDTestBase {
 
-	protected WebApp parse(String xml, String... messages) throws Exception {
-        return parse(xml, WebApp.VERSION_3_0, messages);
-    }
-
-    @SuppressWarnings("deprecation")
-    WebApp parse(String xml, int maxVersion, String... messages) throws Exception {
-        OverlayContainer rootOverlay = mockery.mock(OverlayContainer.class, "rootOverlay" + mockId++);
-        ArtifactEntry artifactEntry = mockery.mock(ArtifactEntry.class, "artifactEntry" + mockId++);
-
-        Container appRoot = mockery.mock(Container.class, "appRoot" + mockId++);
-        Entry moduleEntry = mockery.mock(Entry.class, "moduleEntry" + mockId++);        
-
-        Container moduleRoot = mockery.mock(Container.class, "moduleRoot" + mockId++);
-        Entry ddEntry = mockery.mock(Entry.class, "ddEntry" + mockId++);
-
+    protected static WebAppEntryAdapter createWebAppAdapter(int maxVersion) {
         @SuppressWarnings("unchecked")
-        ServiceReference<ServletVersion> versionRef = mockery.mock(ServiceReference.class, "sr" + mockId++);
+        ServiceReference<ServletVersion> versionRef =
+            mockery.mock(ServiceReference.class, "sr" + mockId++);
 
         mockery.checking(new Expectations() {
             {
-                allowing(rootOverlay).addToNonPersistentCache(with(any(String.class)), with(any(Class.class)), with(any(Object.class)));                
-                allowing(rootOverlay).getFromNonPersistentCache(with(any(String.class)), with(any(Class.class)));
-                will(returnValue(null));
-
-                allowing(artifactEntry).getRoot();
-                will(returnValue(moduleRoot));
-                allowing(artifactEntry).getPath();
-                will(returnValue('/' + WebApp.DD_NAME));
-
-                allowing(appRoot).getPhysicalPath();
-                will(returnValue("c:\\someDir\\apps\\expanded\\myEar.ear"));
-                allowing(appRoot).adapt(Entry.class);
-                will(returnValue(null));
-
-                allowing(moduleEntry).getRoot();
-                will(returnValue(appRoot));
-                allowing(moduleEntry).getPath();
-                will(returnValue("webModule.war"));
-
-                allowing(moduleRoot).adapt(Entry.class);
-                will(returnValue(moduleEntry));
-
-                allowing(ddEntry).getRoot();
-                will(returnValue(moduleRoot));                
-                allowing(ddEntry).getPath();
-                will(returnValue('/' + WebApp.DD_NAME));
-                allowing(ddEntry).adapt(InputStream.class);
-                will(returnValue(new ByteArrayInputStream(xml.getBytes("UTF-8"))));
-                
                 allowing(versionRef).getProperty(ServletVersion.VERSION);
                 will(returnValue(maxVersion));
             }
         });
 
-        WebAppEntryAdapter adapter = new WebAppEntryAdapter();
-        adapter.setVersion(versionRef);
+        WebAppEntryAdapter ddAdapter = new WebAppEntryAdapter();
+        ddAdapter.setVersion(versionRef);
+        
+        return ddAdapter;
+    }
 
-        Exception boundException;
+    protected WebApp parseWebApp(String ddText) throws Exception {
+        return parseWebApp(ddText, WebApp.VERSION_3_0, null);
+    }
 
-        try {
-            WebApp webApp = adapter.adapt(moduleRoot, rootOverlay, artifactEntry, ddEntry);
-            if ( (messages != null) && (messages.length != 0) ) {
-                throw new Exception("Expected exception text [ " + Arrays.toString(messages) + " ]");
-            }
-            return webApp;
+    protected WebApp parseWebApp(String ddText, String altMessage, String... messages)
+            throws Exception {
+        return parseWebApp(ddText, WebApp.VERSION_3_0, altMessage, messages);
+    }
 
-        } catch ( UnableToAdaptException e ) {
-            Throwable cause = e.getCause();
-            if ( cause instanceof Exception ) {
-                boundException = (Exception) cause;
-            } else {
-                boundException = e;
-            }
-        }
+    protected WebApp parseWebApp(String ddText, int maxSchemaVersion)
+            throws Exception {
+        return parseWebApp(ddText, maxSchemaVersion, null);
+    }
 
-        if ( (messages != null) && (messages.length != 0) ) {
-            String message = boundException.getMessage();
-            if ( message != null ) {
-                for ( String expected : messages ) {
-                    if ( message.contains(expected) ) {
-                        return null;
-                    }
-                }
-            }
-        }
-        throw boundException;        
+    protected WebApp parseWebApp(
+            String ddText, int maxSchemaVersion,
+            String altMessage, String... messages) throws Exception {
+
+        String appPath = null;
+        String modulePath = "/root/wlp/usr/servers/server1/apps/MyWar.war";
+        String fragmentPath = null;
+
+        return parse(appPath, modulePath, fragmentPath,
+                ddText, createWebAppAdapter(maxSchemaVersion), WebApp.DD_NAME,
+                altMessage, messages);
     }
 
     protected static String webApp22Head() {    

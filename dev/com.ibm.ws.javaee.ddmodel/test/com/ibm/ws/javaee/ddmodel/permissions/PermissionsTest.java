@@ -22,13 +22,23 @@ import com.ibm.ws.javaee.ddmodel.DDTestBase;
 
 public class PermissionsTest extends DDTestBase {
 
-    private PermissionsConfig parsePermissions(String xml, String ... messages) throws Exception {
+    private PermissionsConfig parsePermissions(String ddText) throws Exception {
+        return parsePermissions(ddText, null);
+    }
+
+    private PermissionsConfig parsePermissions(String ddText, String altMessage, String ... messages) throws Exception {
         // Permissions doesn't check the provisioning ...
         //
         // Both JavaEE and Jakarta versions are supported, regardless
         // of the provisioning.
 
-        return parseEJBJar( xml, new PermissionsAdapter(), PermissionsConfig.DD_NAME, messages );
+        String appPath = null;
+        String modulePath = "/root/wlp/usr/servers/server1/myWar.war";
+        String fragmentPath = null;
+        
+        return parse( appPath, modulePath, fragmentPath,
+                      ddText, new PermissionsAdapter(), PermissionsConfig.DD_NAME,
+                      altMessage, messages );
     }
 
     // Usual contents ...
