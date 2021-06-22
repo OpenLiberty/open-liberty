@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.cdi.liberty;
+package com.ibm.ws.cdi.proxy;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -57,3 +57,4 @@ public class ProxyServicesImpl extends AbstractProxyServices implements ProxySer
         }
     }
 }
+
