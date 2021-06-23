@@ -380,22 +380,6 @@ public class MergeProcessor {
         }
 
         Map<String, PathItem> pathItems = paths.getPathItems();
-        // As a heuristic, if there were no servers, instead check whether all the paths appear to already start with the context root
-        if (servers == null || servers.isEmpty()) {
-            boolean allPathsStartWithContextRoot = true;
-            for (String path : pathItems.keySet()) {
-                if (!pathStartsWithContextRoot(path, contextRoot)) {
-                    allPathsStartWithContextRoot = false;
-                    break;
-                }
-            }
-            if (allPathsStartWithContextRoot) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(tc, "No servers in model and all paths start with context root, assuming we shouldn't add the context root.");
-                }
-                allServersEndWithContextRoot = false;
-            }
-        }
 
         if (allServersEndWithContextRoot) {
             for (Entry<String, PathItem> entry : pathItems.entrySet()) {
@@ -480,10 +464,6 @@ public class MergeProcessor {
 
     private static String addContextRoot(String key, String contextRoot) {
         return contextRoot + key;
-    }
-
-    private static boolean pathStartsWithContextRoot(String path, String contextRoot) {
-        return path.startsWith(contextRoot);
     }
 
     private static void removeContextRoot(Server server, String contextRoot) {
