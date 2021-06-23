@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2015 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.WeakHashMap;
+
+import javax.ejb.EJBException;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.annotations.Component;
@@ -58,10 +60,14 @@ public class EJBStubClassGeneratorImpl implements ClassGenerator, ApplicationSta
 
     private static final int RMIC_COMPATIBLE_ALL = -1;
 
-    @Reference(service = LibertyProcess.class, target = "(wlp.process.type=server)")
-    protected void setLibertyProcess(ServiceReference<LibertyProcess> reference) {}
+    private static final boolean isJakarta = EJBException.class.getCanonicalName().startsWith("jakarta");
 
-    protected void unsetLibertyProcess(ServiceReference<LibertyProcess> reference) {}
+    @Reference(service = LibertyProcess.class, target = "(wlp.process.type=server)")
+    protected void setLibertyProcess(ServiceReference<LibertyProcess> reference) {
+    }
+
+    protected void unsetLibertyProcess(ServiceReference<LibertyProcess> reference) {
+    }
 
     /**
      * Set of classes that should be generated with maximum RMIC compatibility.
@@ -69,6 +75,8 @@ public class EJBStubClassGeneratorImpl implements ClassGenerator, ApplicationSta
      * <p>
      * This is actually WeakMap[ClassLoader, WeakSet[Class]]. The values are
      * also weak to allow the keys in the map to be garbage collected.
+     *
+     * Note: not used for Jakarta name space (Enterprise Beans 4.0); always RMIC compatible.
      */
     private final Map<ClassLoader, Set<Class<?>>> rmicCompatibleClassesByLoader = new WeakHashMap<ClassLoader, Set<Class<?>>>();
 
@@ -80,6 +88,8 @@ public class EJBStubClassGeneratorImpl implements ClassGenerator, ApplicationSta
      * This is actually a WeakHashMap[ApplicationInfo, Set[String]] to ensure that the
      * entries may be garbage collected when an application is removed from the
      * server process. <p>
+     *
+     * Note: not used for Jakarta name space (Enterprise Beans 4.0); always RMIC compatible.
      */
     private final Map<ApplicationInfo, Set<String>> rmicCompatibleClassNamesByApp = new WeakHashMap<ApplicationInfo, Set<String>>();
 
@@ -127,12 +137,22 @@ public class EJBStubClassGeneratorImpl implements ClassGenerator, ApplicationSta
     }
 
     private synchronized boolean isRMICCompatibleClass(Class<?> c, ClassLoader loader) {
+        // Starting with Jakarta EE 9/Enterprise Beans 4.0 RMICCompatible is always used.
+        if (isJakarta) {
+            return true;
+        }
         Set<Class<?>> rmicCompatibleClasses = rmicCompatibleClassesByLoader.get(loader);
         return rmicCompatibleClasses != null && rmicCompatibleClasses.contains(c);
     }
 
     @Override
     public Set<String> getRMICCompatibleClasses(String appName) {
+        // Starting with Jakarta EE 9/Enterprise Beans 4.0 RMICCompatible is always used,
+        // so the set of RMIC compatible interfaces is no longer collected.
+        if (isJakarta) {
+            throw new UnsupportedOperationException("All classes are RMIC compatible.");
+        }
+
         // Create an empty set to return if none found; otherwise use it to
         // make a copy to protect against caller modification.
         Set<String> rmicCompatibleClassNames = new HashSet<String>();
@@ -149,6 +169,12 @@ public class EJBStubClassGeneratorImpl implements ClassGenerator, ApplicationSta
 
     @Override
     public void addRMICCompatibleClasses(ClassLoader loader, Set<String> classesToAdd) {
+        // Starting with Jakarta EE 9/Enterprise Beans 4.0 RMICCompatible is always used,
+        // so no need to collect RMIC compatible interfaces.
+        if (isJakarta) {
+            throw new UnsupportedOperationException("All classes are RMIC compatible.");
+        }
+
         synchronized (rmicCompatibleClassesByLoader) {
             Set<Class<?>> rmicCompatibleClasses = rmicCompatibleClassesByLoader.get(loader);
             if (rmicCompatibleClasses == null) {
@@ -172,6 +198,12 @@ public class EJBStubClassGeneratorImpl implements ClassGenerator, ApplicationSta
         // In Liberty, there is no separate deploy step, so we need to ensure
         // that stubs for pre-EJB 3 modules are generated with as much
         // compatibility with RMIC as we can.
+        //
+        // Starting with Jakarta EE 9/Enterprise Beans 4.0 RMICCompatible is always used,
+        // so no need to collect RMIC compatible interfaces.
+        if (isJakarta) {
+            return;
+        }
 
         NonPersistentCache appCache = getNonPersistentCache(appInfo.getContainer());
         ApplicationClassesContainerInfo appClassesContainerInfo = getFromCache(appCache, ApplicationClassesContainerInfo.class);
@@ -281,11 +313,14 @@ public class EJBStubClassGeneratorImpl implements ClassGenerator, ApplicationSta
     }
 
     @Override
-    public void applicationStarted(ApplicationInfo appInfo) {}
+    public void applicationStarted(ApplicationInfo appInfo) {
+    }
 
     @Override
-    public void applicationStopping(ApplicationInfo appInfo) {}
+    public void applicationStopping(ApplicationInfo appInfo) {
+    }
 
     @Override
-    public void applicationStopped(ApplicationInfo appInfo) {}
+    public void applicationStopped(ApplicationInfo appInfo) {
+    }
 }
