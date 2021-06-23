@@ -323,15 +323,15 @@ public class MergeConfigTest {
     private void setMergeConfig(String included, String excluded, String info) {
         Map<String, String> configProps = new HashMap<>();
         if (included != null) {
-            configProps.put("mp_openapi_extensions_merged_include", included);
+            configProps.put("mp_openapi_extensions_liberty_merged_include", included);
         }
         
         if (excluded != null) {
-            configProps.put("mp_openapi_extensions_merged_exclude", excluded);
+            configProps.put("mp_openapi_extensions_liberty_merged_exclude", excluded);
         }
         
         if (info != null) {
-            configProps.put("mp_openapi_extensions_merged_info", info);
+            configProps.put("mp_openapi_extensions_liberty_merged_info", info);
         }
         
         server.setAdditionalSystemProperties(configProps);

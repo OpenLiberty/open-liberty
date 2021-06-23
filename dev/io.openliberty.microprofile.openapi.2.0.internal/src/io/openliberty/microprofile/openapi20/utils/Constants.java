@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.eclipse.microprofile.openapi.OASConfig;
 import org.eclipse.microprofile.openapi.models.media.Schema;
 
 public class Constants {
@@ -166,9 +167,9 @@ public class Constants {
     public static final String ENV_VAR_VCAP_APPLICATION      = "VCAP_APPLICATION";
     
     // Merge config constants
-    public static final String MERGE_INCLUDE_CONFIG          = "mp.openapi.extensions.merged.include";
-    public static final String MERGE_EXCLUDE_CONFIG          = "mp.openapi.extensions.merged.exclude";
-    public static final String MERGE_INFO_CONFIG             = "mp.openapi.extensions.merged.info";
+    public static final String MERGE_INCLUDE_CONFIG          = OASConfig.EXTENSIONS_PREFIX + "liberty.merged.include";
+    public static final String MERGE_EXCLUDE_CONFIG          = OASConfig.EXTENSIONS_PREFIX + "liberty.merged.exclude";
+    public static final String MERGE_INFO_CONFIG             = OASConfig.EXTENSIONS_PREFIX + "liberty.merged.info";
     
     // Misc. Constants
     public static final String RESPONSE_RANGE_SUCCESS        = "2XX";

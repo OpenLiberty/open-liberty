@@ -55,7 +55,7 @@ public class MergeTest {
 
     @BeforeClass
     public static void setupServer() throws Exception {
-        server.setAdditionalSystemProperties(Collections.singletonMap("mp_openapi_extensions_merged_include", "all"));
+        server.setAdditionalSystemProperties(Collections.singletonMap("mp_openapi_extensions_liberty_merged_include", "all"));
         server.startServer();
     }
 

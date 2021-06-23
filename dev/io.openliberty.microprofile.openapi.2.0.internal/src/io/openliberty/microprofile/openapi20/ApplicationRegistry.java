@@ -198,7 +198,7 @@ public class ApplicationRegistry {
     public void setUsingMultiModulesWithoutConfig(OpenAPIProvider firstModule) {
         if (!multiAppWarningGiven && ProductInfo.getBetaEdition()) {
             Tr.info(tc, "Combining OpenAPI documentation from multiple modules is disabled. Only {0} will be used to generate OpenAPI documentation."
-                            + "To enable merging of OpenAPI documentation from all modules, set config property mp.openapi.extensions.merged.include = all.",
+                            + "To enable merging of OpenAPI documentation from all modules, set config property mp.openapi.extensions.liberty.merged.include = all.",
                             firstModule);
             multiAppWarningGiven = true;
         }
