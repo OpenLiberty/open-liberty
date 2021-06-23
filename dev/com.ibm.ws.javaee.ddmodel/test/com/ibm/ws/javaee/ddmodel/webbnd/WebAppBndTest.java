@@ -18,20 +18,9 @@ import org.junit.Test;
 
 import com.ibm.ws.javaee.dd.commonbnd.JASPIRef;
 import com.ibm.ws.javaee.dd.commonbnd.MessageDestination;
-import com.ibm.ws.javaee.dd.web.WebApp;
 import com.ibm.ws.javaee.dd.webbnd.WebBnd;
 
 public class WebAppBndTest extends WebAppBndTestBase {
-    
-    private WebApp webApp24;
-
-    protected WebApp getWebApp24() throws Exception {
-        if ( webApp24 == null ) {
-            webApp24 = parseWebApp(webApp24Head() + "</web-app>");
-        }
-        return webApp24;
-    }
-    
     
     @Test
     public void testGetVersion() throws Exception {

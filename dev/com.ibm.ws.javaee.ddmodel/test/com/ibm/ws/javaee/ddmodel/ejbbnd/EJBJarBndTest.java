@@ -230,7 +230,7 @@ public class EJBJarBndTest extends EJBJarBndTestBase {
     @Test
     public void testCMPConnectionFactory() throws Exception {
         parseEJBJarBnd(ejbJarBinding("") +
-                          testCMPConnectionFactoryXMI1 +
+                          testCMPConnectionFactoryXMI1() +
                       "</ejbbnd:EJBJarBinding>",
                       DDParserBndExt.IS_XMI, getEJBJar21(),
                       "required.attribute.missing",

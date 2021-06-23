@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.javaee.ddmodel.ejbext;
 
+import com.ibm.ws.container.service.app.deploy.EJBModuleInfo;
+import com.ibm.ws.container.service.app.deploy.ModuleInfo;
 import com.ibm.ws.container.service.app.deploy.WebModuleInfo;
 import com.ibm.ws.javaee.dd.ejb.EJBJar;
 import com.ibm.ws.javaee.dd.ejbext.EJBJarExt;
@@ -29,13 +31,7 @@ public class EJBJarExtTestBase extends EJBJarTestBase {
     }
 
     //
-    
-    // TODO: Haven't found the correct pattern for this ...
-    //       Need to use 'getEJBInJar', which is instance
-    //       state because of how repeat testing works.
-    //       But the value should be initialized as a static
-    //       variable, since it is to be shared between tests.
-    
+
     private EJBJar ejbJar21;
 
     public EJBJar getEJBJar21() throws Exception {
@@ -80,62 +76,83 @@ public class EJBJarExtTestBase extends EJBJarTestBase {
 
         String fragmentPath = null;
 
+        ClassKeyedData[] adaptData = new ClassKeyedData[] {
+                new ClassKeyedData(EJBJar.class, ejbJar)
+        };
+        
         String ddPath;
+        ClassKeyedData[] cacheData;
+        
         if ( ejbInWar ) {
             ddPath = ( xmi ? EJBJarExtAdapter.XMI_EXT_IN_WEB_MOD_NAME : EJBJarExtAdapter.XML_EXT_IN_WEB_MOD_NAME );
-        } else {
-            ddPath = ( xmi ? EJBJarExtAdapter.XML_EXT_IN_EJB_MOD_NAME : EJBJarExtAdapter.XML_EXT_IN_EJB_MOD_NAME );            
-        }
 
-        WebModuleInfo moduleInfo =
-            ( ejbInWar ? mockery.mock(WebModuleInfo.class, "webModuleInfo" + mockId++) : null );
+            WebModuleInfo webModuleInfo = mockery.mock(WebModuleInfo.class, "webModuleInfo" + mockId++);
+
+            cacheData = new ClassKeyedData[] {
+                    new ClassKeyedData(ModuleInfo.class, webModuleInfo),
+                    new ClassKeyedData(WebModuleInfo.class, webModuleInfo)
+            };
+
+        } else {
+            ddPath = ( xmi ? EJBJarExtAdapter.XMI_EXT_IN_EJB_MOD_NAME : EJBJarExtAdapter.XML_EXT_IN_EJB_MOD_NAME );
+
+            EJBModuleInfo ejbModuleInfo = mockery.mock(EJBModuleInfo.class, "ejbModuleInfo" + mockId++);
+            
+            cacheData = new ClassKeyedData[] {
+                    new ClassKeyedData(ModuleInfo.class, ejbModuleInfo),
+                    new ClassKeyedData(EJBModuleInfo.class, ejbModuleInfo)
+            };
+        }
 
         return parse(
                 appPath, modulePath, fragmentPath,
                 ddText, createEJBJarExtAdapter(), ddPath,
-                EJBJar.class, ejbJar,
-                WebModuleInfo.class, moduleInfo,
-                altMessage, messages);
+                adaptData, cacheData,
+                altMessage, messages);                    
     }
 
-    static final String ejbJar21() {
+    protected static String ejbJar21() {
         return "<ejb-jar" +
-               " xmlns=\"http://java.sun.com/xml/ns/j2ee\"" +
-               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-               " xsi:schemaLocation=\"http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/ejb-jar_2_1.xsd\"" +
-               " version=\"2.1\"" +
-               " id=\"EJBJar_ID\"" +
+                   " xmlns=\"http://java.sun.com/xml/ns/j2ee\"" +
+                   " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+                   " xsi:schemaLocation=\"http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/ejb-jar_2_1.xsd\"" +
+                   " version=\"2.1\"" +
+                   " id=\"EJBJar_ID\"" +
                ">";
     }
 
-    static final String ejbJarExtension(String attrs) {
+    protected String ejbJarExtXMI(String attrs) {
+        return ejbJarExtXMI(attrs, getEJBJarPath() );
+    }
+
+    protected static String ejbJarExtXMI(String attrs, String ejbDDPath) {
         return "<ejbext:EJBJarExtension" +
-               " xmlns:ejbext=\"ejbext.xmi\"" +
-               " xmlns:xmi=\"http://www.omg.org/XMI\"" +
-               " xmlns:ejb=\"ejb.xmi\"" +
-               " xmi:version=\"2.0\"" +
-               " " + attrs +
+                   " xmlns:ejbext=\"ejbext.xmi\"" +
+                   " xmlns:xmi=\"http://www.omg.org/XMI\"" +
+                   " xmlns:ejb=\"ejb.xmi\"" +
+                   " xmi:version=\"2.0\"" +
+                   " " + attrs +
                ">" +
-               "<ejbJar href=\"META-INF/ejb-jar.xml#EJBJar_ID\"/>";
+               "<ejbJar href=\"" + ejbDDPath + "#EJBJar_ID\"/>";
     }
 
-    static final String ejbJarExt10() {
+    protected static String ejbJarExt10XML() {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
-               " <ejb-jar-ext" +
-               " xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"" +
-               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
-               " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-ext_1_0.xsd\"" +
-               " version=\"1.0\"" +
+               "<ejb-jar-ext" +
+                   " xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"" +
+                   " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
+                   " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-ext_1_0.xsd\"" +
+                   " version=\"1.0\"" +
                ">";
     }
 
-    static final String ejbJarExt11() {
+    protected static String ejbJarExt11XML() {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
-               " <ejb-jar-ext" +
-               " xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"" +
-               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
-               " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-ext_1_1.xsd\"" +
-               " version=\"1.1\"" +
+               "<ejb-jar-ext" +
+                   " xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"" +
+                   " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
+                   " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-ext_1_1.xsd\"" +
+                   " version=\"1.1\"" +
                ">";
     }
 }

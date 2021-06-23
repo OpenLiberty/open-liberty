@@ -63,19 +63,20 @@ public class ValidationConfigTest extends ValidationConfigTestBase {
 
     @Test
     public void testVersion11NoNamespace() throws Exception {
-        parse(validationConfig11NoNamespace(), "unknown", "unknown");
+        parse( validationConfig11NoNamespace(),
+               "missing.descriptor.namespace", "unknown" );
     }
 
     @Test
     public void testVersion11NoSchemaInstance() throws Exception {
-        int versionId = parse(validationConfig11NoSchemaInstance()).getVersionID();
-        Assert.assertEquals("Version should be 1.1", ValidationConfig.VERSION_1_1, versionId);
+        parse( validationConfig11NoSchemaInstance(),
+               "xml.error", "unknown" );
     }
 
     @Test
     public void testVersion11NoSchemaLocation() throws Exception {
-        int versionId = parse(validationConfig11NoSchemaLocation()).getVersionID();
-        Assert.assertEquals("Version should be 1.1", ValidationConfig.VERSION_1_1, versionId);
+        parse( validationConfig11NoSchemaLocation(),
+               "xml.error", "unknown" );
     }
 
     @Test
@@ -87,23 +88,25 @@ public class ValidationConfigTest extends ValidationConfigTestBase {
     @Test
     public void testNamespaceOnly() throws Exception {
         int versionId = parse(validationConfigNamespaceOnly()).getVersionID();
-        Assert.assertEquals("Version should be 1.1", ValidationConfig.VERSION_1_1, versionId);
+        Assert.assertEquals("Version should be 1.0", ValidationConfig.VERSION_1_0, versionId);
     }
 
     @Test
     public void testVersion10Only() throws Exception {
-        parse(validationConfigVersion10Only(), "unknown", "unknown");
+        parse( validationConfigVersion10Only(),
+               "missing.descriptor.namespace", "unknown" );
     }
 
     @Test
     public void testVersion11Only() throws Exception {
-        int versionId = parse(validationConfigVersion11Only()).getVersionID();
-        Assert.assertEquals("Version should be 1.1", ValidationConfig.VERSION_1_1, versionId);
+        parse( validationConfigVersion11Only(),
+               "missing.descriptor.namespace", "unknown" );
     }
 
     @Test
     public void testVersion12Only() throws Exception {
-        parse(validationConfigVersion12Only(), "unknown", "unknown");
+        parse( validationConfigVersion12Only(),
+               "missing.descriptor.namespace", "unknown" );
     }
 
     //
@@ -249,7 +252,7 @@ public class ValidationConfigTest extends ValidationConfigTestBase {
                            "<executable-type>NON</executable-type>" +
                        "</default-validated-executable-types>" +
                    "</executable-validation>"),
-               "unknown", "unknown");
+               "invalid.enum.value", "unknown");
 
         // provide executable-type that is empty
         parse( validationConfig11(
@@ -258,7 +261,7 @@ public class ValidationConfigTest extends ValidationConfigTestBase {
                            "<executable-type></executable-type>" +
                        "</default-validated-executable-types>" +
                    "</executable-validation>"),
-                "unknown", "unknown");
+                "invalid.enum.value", "unknown");
     }
 
     @Test

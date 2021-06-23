@@ -147,6 +147,7 @@ public class EJBJarTestBase extends DDTestBase {
         return parse(
                 appPath, modulePath, fragmentPath,
                 ddText, createEJBJarAdapter(maxSchemaVersion), ddPath,
+                null, null,
                 WebModuleInfo.class, webModuleInfo,
                 altMessage, messages);
     }

@@ -13,6 +13,7 @@ package com.ibm.ws.javaee.ddmodel.web;
 import org.jmock.Expectations;
 import org.osgi.framework.ServiceReference;
 
+import com.ibm.ws.container.service.app.deploy.WebModuleInfo;
 import com.ibm.ws.javaee.dd.web.WebApp;
 import com.ibm.ws.javaee.ddmodel.DDTestBase;
 import com.ibm.ws.javaee.version.ServletVersion;
@@ -37,6 +38,10 @@ public class WebAppTestBase extends DDTestBase {
         return ddAdapter;
     }
 
+    protected static WebModuleInfo createWebModuleInfo() {
+        return mockery.mock(WebModuleInfo.class, "webModuleInfo" + mockId++);
+    }
+    
     protected WebApp parseWebApp(String ddText) throws Exception {
         return parseWebApp(ddText, WebApp.VERSION_3_0, null);
     }
@@ -61,6 +66,8 @@ public class WebAppTestBase extends DDTestBase {
 
         return parse(appPath, modulePath, fragmentPath,
                 ddText, createWebAppAdapter(maxSchemaVersion), WebApp.DD_NAME,
+                null, null,
+                WebModuleInfo.class, createWebModuleInfo(),
                 altMessage, messages);
     }
 
@@ -137,7 +144,6 @@ public class WebAppTestBase extends DDTestBase {
                ">";
     }
     
-    
     protected static String webAppTail() {
         return "</web-app>";
     }
@@ -169,4 +175,15 @@ public class WebAppTestBase extends DDTestBase {
         }
         return head + "\n" + nestedText + "\n" + webAppTail();
     }
+    
+    //
+    
+    private WebApp webApp24;
+
+    protected WebApp getWebApp24() throws Exception {
+        if ( webApp24 == null ) {
+            webApp24 = parseWebApp(webApp24Head() + "</web-app>");
+        }
+        return webApp24;
+    }    
 }

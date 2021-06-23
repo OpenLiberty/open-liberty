@@ -18,11 +18,7 @@ import org.junit.Test;
 import com.ibm.ws.javaee.dd.common.EnvEntry;
 import com.ibm.ws.javaee.dd.web.WebApp;
 import com.ibm.ws.javaee.dd.web.common.AbsoluteOrdering;
-import com.ibm.ws.javaee.ddmodel.DDParser;
 
-/**
- * Servlet deployment descriptor parse tests.
- */
 public class WebAppTest extends WebAppTestBase {
     // Absolute ordering fragments.
 
@@ -160,9 +156,10 @@ public class WebAppTest extends WebAppTestBase {
     /**
      * Verify that empty deny-uncovered-http-methods are not allowed.
      */
-    @Test(expected = DDParser.ParseException.class)
+    @Test
     public void testEE6Web30DenyUncoveredHttpMethods() throws Exception {
-        parseWebApp( webApp( WebApp.VERSION_3_0, "<deny-uncovered-http-methods/>" ) );
+        parseWebApp( webApp( WebApp.VERSION_3_0, "<deny-uncovered-http-methods/>" ),
+                "unexpected.child.element", "unknown" );
     }
 
     // Servlet 3.1 cases ...
@@ -177,10 +174,11 @@ public class WebAppTest extends WebAppTestBase {
      * not allowed.  These were allowed in Servlet 3.0 / Java EE6,
      * but are not allowed in Servlet 3.1 / Java EE7.
      */    
-    @Test(expected = DDParser.ParseException.class)
+    @Test
     public void testEE7Web31AbsoluteOrderingDuplicates() throws Exception {
         parseWebApp( webApp( WebApp.VERSION_3_1, dupeAbsOrder() ),
-                     WebApp.VERSION_3_1 );
+                     WebApp.VERSION_3_1,
+                     "at.most.one.occurrence", "unknown" );
     }
 
     /**
@@ -197,10 +195,11 @@ public class WebAppTest extends WebAppTestBase {
     /**
      * Verify that non-empty deny-uncovered-http-methods are not allowed.
      */    
-    @Test(expected = DDParser.ParseException.class)
+    @Test
     public void testEE7Web31DenyUncoveredHttpMethodsNotEmptyType() throws Exception {
         parseWebApp( webApp( WebApp.VERSION_3_1,
                        "<deny-uncovered-http-methods>junk</deny-uncovered-http-methods>" ),
-                     WebApp.VERSION_3_1 );
+                     WebApp.VERSION_3_1,
+                     "unexpected.content", "unknown");
     }
 }

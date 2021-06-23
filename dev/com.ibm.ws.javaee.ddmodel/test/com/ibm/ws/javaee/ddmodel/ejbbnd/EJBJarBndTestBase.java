@@ -83,7 +83,7 @@ public class EJBJarBndTestBase extends EJBJarTestBase {
         if ( ejbInWar ) {
             ddPath = ( xmi ? EJBJarBndAdapter.XMI_BND_IN_WEB_MOD_NAME : EJBJarBndAdapter.XML_BND_IN_WEB_MOD_NAME );
         } else {
-            ddPath = ( xmi ? EJBJarBndAdapter.XML_BND_IN_EJB_MOD_NAME : EJBJarBndAdapter.XML_BND_IN_EJB_MOD_NAME );            
+            ddPath = ( xmi ? EJBJarBndAdapter.XMI_BND_IN_EJB_MOD_NAME : EJBJarBndAdapter.XML_BND_IN_EJB_MOD_NAME );            
         }
 
         WebModuleInfo moduleInfo =
@@ -97,7 +97,7 @@ public class EJBJarBndTestBase extends EJBJarTestBase {
                 altMessage, messages);
     }
 
-    public static final String ejbJar21() {
+    public static String ejbJar21() {
         return "<ejb-jar" +
                    " xmlns=\"http://java.sun.com/xml/ns/j2ee\"" +
                    " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
@@ -107,7 +107,11 @@ public class EJBJarBndTestBase extends EJBJarTestBase {
                ">";
     }
 
-    public static final String ejbJarBinding(String attrs) {
+    public String ejbJarBinding(String attrs) {
+        return ejbJarBinding( attrs, getEJBJarPath() );
+    }
+
+    public static String ejbJarBinding(String attrs, String ddPath) {
         return "<ejbbnd:EJBJarBinding" +
                    " xmlns:ejbbnd=\"ejbbnd.xmi\"" +
                    " xmlns:xmi=\"http://www.omg.org/XMI\"" +
@@ -115,10 +119,10 @@ public class EJBJarBndTestBase extends EJBJarTestBase {
                    " xmi:version=\"2.0\"" +
                    " " + attrs +
                ">" +
-                   "<ejbJar href=\"META-INF/ejb-jar.xml#EJBJar_ID\"/>";
+                   "<ejbJar href=\"META-INF/" + ddPath + "#EJBJar_ID\"/>";
     }
 
-    public static final String ejbJarBnd10() {
+    public static String ejbJarBnd10() {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                "<ejb-jar-bnd" +
                    " xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"\n" +
@@ -128,24 +132,24 @@ public class EJBJarBndTestBase extends EJBJarTestBase {
                    " version=\"1.0\">";
     }
 
-    public static final String ejbJarBnd11() {
+    public static String ejbJarBnd11() {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                "<ejb-jar-bnd" +
                    " xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"\n" +
                    " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
                    " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee" +
-                       " http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-bnd_1_1.xsd\"" +
+                       " http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-bnd_1_1.xsd\"\n" +
                    " version=\"1.1\">";
     }
 
-    public static final String ejbJarBnd12() {
+    public static String ejbJarBnd12() {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                "<ejb-jar-bnd" +
                    " xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"\n" +
                    " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
                    " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee" +
-                       " http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-bnd_1_2.xsd\"" +
-                   "version=\"1.2\">";
+                       " http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-bnd_1_2.xsd\"\n" +
+                   " version=\"1.2\">";
     }
 
     public static final String sessionXML8 =
@@ -189,13 +193,18 @@ public class EJBJarBndTestBase extends EJBJarTestBase {
     public static final String defaultCMPConnectionFactoryXMI1 =
             "<defaultCMPConnectionFactory xmi:id=\"CMPConnectionFactoryBindingName\" jndiName=\"jdbc/CMPConnectionFactory\" resAuth=\"Container\" properties=\"\"/>";
 
-    public static final String testCMPConnectionFactoryXMI1 =
-            "<ejbBindings xmi:id=\"EnterpriseBeanBindingName\" jndiName=\"ejb/EnterpriseBeanBinding\">" +
-                "<enterpriseBean xmi:type=\"ejb:EnterpriseBean\" href=\"META-INF/ejb-jar.xml#EnterpriseBean\"/>" +
-                "<cmpConnectionFactory xmi:id=\"CMPConnectionFactoryBindingNAme\" jndiName=\"jdbc/CMPConnectionFactory\" resAuth=\"Container\" loginConfigurationName=\"DefaultCMPConnectionFactoryMapping\">" +
-                    "<properties xmi:id=\"Property\" name=\"com.ibm.test.testProperty\" value=\"testData\" description=\"Test Post Pls Ignore\"/>" +
-                "</cmpConnectionFactory>" +
-            "</ejbBindings>";
+    public String testCMPConnectionFactoryXMI1() {
+        return testCMPConnectionFactoryXMI1( getEJBJarPath() );
+    }
+
+    public static String testCMPConnectionFactoryXMI1(String ddPath) {
+        return "<ejbBindings xmi:id=\"EnterpriseBeanBindingName\" jndiName=\"ejb/EnterpriseBeanBinding\">" +
+                   "<enterpriseBean xmi:type=\"ejb:EnterpriseBean\" href=\"" + ddPath + "#EnterpriseBean\"/>" +
+                   "<cmpConnectionFactory xmi:id=\"CMPConnectionFactoryBindingNAme\" jndiName=\"jdbc/CMPConnectionFactory\" resAuth=\"Container\" loginConfigurationName=\"DefaultCMPConnectionFactoryMapping\">" +
+                       "<properties xmi:id=\"Property\" name=\"com.ibm.test.testProperty\" value=\"testData\" description=\"Test Post Pls Ignore\"/>" +
+                   "</cmpConnectionFactory>" +
+               "</ejbBindings>";
+    }
 
     public static final String testCurrentBackendID =
             "<ejbbnd:EJBJarBinding" +

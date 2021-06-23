@@ -33,14 +33,6 @@ import com.ibm.ws.javaee.dd.webext.ServletExtension;
 import com.ibm.ws.javaee.dd.webext.WebExt;
 
 public class WebAppExtTest extends WebAppExtTestBase {
-    private WebApp webApp24;
-
-    protected WebApp getWebApp24() throws Exception {
-        if ( webApp24 == null ) {
-            webApp24 = getWebApp24();
-        }
-        return webApp24;
-    }
     
     @Test
     public void testGetVersion() throws Exception {

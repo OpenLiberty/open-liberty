@@ -11,10 +11,13 @@
 package com.ibm.ws.javaee.ddmodel.bval;
 
 import com.ibm.websphere.ras.Tr;
+import com.ibm.ws.container.service.app.deploy.ModuleInfo;
+import com.ibm.ws.container.service.app.deploy.WebModuleInfo;
 import com.ibm.ws.javaee.dd.bval.ValidationConfig;
 import com.ibm.ws.javaee.ddmodel.DDParser;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
+import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 
 public class ValidationConfigDDParser extends DDParser {
     public static final String NAMESPACE_JBOSS_VALIDATION_CONFIG =
@@ -66,7 +69,9 @@ public class ValidationConfigDDParser extends DDParser {
         //       are on guard for accidentally using a file
         //       not intended for bean validation, we require
         //       that the correct namespace be provided.
-        if ( !NAMESPACE_JBOSS_VALIDATION_CONFIG.equals(namespace) ) {
+        if ( namespace == null ) {
+            throw new ParseException( missingDescriptorNamespace(NAMESPACE_JBOSS_VALIDATION_CONFIG) );                            
+        } else if ( !NAMESPACE_JBOSS_VALIDATION_CONFIG.equals(namespace) ) {
             throw new ParseException( unsupportedDescriptorNamespace(namespace) );                
         }
         
@@ -144,4 +149,25 @@ public class ValidationConfigDDParser extends DDParser {
                 describeEntry(), getModuleName(), getLineNumber(),
                 rootElementLocalName, expectedRootElementName);
     }        
+    
+    public String getModuleName() {
+        ModuleInfo moduleInfo = cacheGet(ModuleInfo.class);
+        if ( moduleInfo != null ) {
+            return moduleInfo.getName();
+
+        } else {
+            Entry rootEntry;
+            try {
+                rootEntry = rootContainer.adapt(Entry.class);
+            } catch ( UnableToAdaptException e ) {
+                // FFDC, but otherwise ignore.
+                rootEntry = null;
+            }
+            if ( rootEntry != null ) {
+                return rootEntry.getPath().substring(1);
+            } else {
+                return getSimpleName(rootContainer);
+            }
+        }
+    }    
 }

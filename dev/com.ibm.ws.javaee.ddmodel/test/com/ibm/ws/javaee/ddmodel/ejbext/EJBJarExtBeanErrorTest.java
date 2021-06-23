@@ -46,7 +46,7 @@ public class EJBJarExtBeanErrorTest extends EJBJarExtTestBase {
 
     @Test
     public void testEnterpriseBeanNoName() throws Exception {
-        parseEJBJarExtXML(ejbJarExt11() +
+        parseEJBJarExtXML(ejbJarExt11XML() +
                              "<session>" + //no name
                              "</session>" +
                          "</ejb-jar-ext>",
@@ -55,7 +55,7 @@ public class EJBJarExtBeanErrorTest extends EJBJarExtTestBase {
 
     @Test
     public void testEnterpriseBeanDuplicateName() throws Exception {
-        parseEJBJarExtXML(ejbJarExt11() +
+        parseEJBJarExtXML(ejbJarExt11XML() +
                              "<session name=\"duplicate\">" +
                              "</session>" +
                              "<session name=\"duplicate\">" +
@@ -67,7 +67,7 @@ public class EJBJarExtBeanErrorTest extends EJBJarExtTestBase {
     @Test
     public void testEnterpriseBeanRunAsModeNoMethods() throws Exception {
         //run-as-mode must have 1 or more methods.
-        parseEJBJarExtXML(ejbJarExt11() +
+        parseEJBJarExtXML(ejbJarExt11XML() +
                              "<session name=\"session0\">" +
                                  "<run-as-mode mode='CALLER_IDENTITY' description='description0'>" +
                                  "</run-as-mode>" +
@@ -79,7 +79,7 @@ public class EJBJarExtBeanErrorTest extends EJBJarExtTestBase {
     @Test
     public void testEnterpriseBeanRunAsModeNoSpecifiedIdentityRole() throws Exception {
         //role is required in SpecifiedIdentity
-        parseEJBJarExtXML(ejbJarExt11() +
+        parseEJBJarExtXML(ejbJarExt11XML() +
                               "<session name=\"session0\">" +
                                   "<run-as-mode mode='SPECIFIED_IDENTITY'>" +
                                       "<specified-identity>" + //no role
@@ -95,7 +95,7 @@ public class EJBJarExtBeanErrorTest extends EJBJarExtTestBase {
     @Test
     public void testEnterpriseBeanSpecifiedIdentityError() throws Exception {
         //specified-identity element is required when mode is SPECIFIED_IDENTITY
-        parseEJBJarExtXML(ejbJarExt11() +
+        parseEJBJarExtXML(ejbJarExt11XML() +
                               "<session name=\"session0\">" +
                                   "<run-as-mode mode='SPECIFIED_IDENTITY'>" +
                                   //getting exception because no specified-identity element here
@@ -108,7 +108,7 @@ public class EJBJarExtBeanErrorTest extends EJBJarExtTestBase {
     @Test
     public void testEnterpriseBeanRunAsModeNoNode() throws Exception {
         //mode is required in <run-as-mode>
-        parseEJBJarExtXML(ejbJarExt11() +
+        parseEJBJarExtXML(ejbJarExt11XML() +
                               "<session name=\"session0\">" +
                                   "<run-as-mode>" +
                                       "<method name='method0'/>" +
@@ -122,7 +122,7 @@ public class EJBJarExtBeanErrorTest extends EJBJarExtTestBase {
     @Test
     public void testEnterpriseStartAtAppStartNoValue() throws Exception {
         //StartAtAppStart requires value
-        parseEJBJarExtXML(ejbJarExt11() +
+        parseEJBJarExtXML(ejbJarExt11XML() +
                               "<session name='session0'>" +
                                   "<start-at-app-start/>" +
                               "</session>" +

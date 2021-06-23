@@ -32,25 +32,25 @@ public class EJBJarExtTest extends EJBJarExtTestBase {
     @Test
     public void testGetVersion() throws Exception {
         Assert.assertEquals("XMI",
-                parseEJBJarExtXMI(ejbJarExtension("") + "</ejbext:EJBJarExtension>", getEJBJar21())
+                parseEJBJarExtXMI(ejbJarExtXMI("") + "</ejbext:EJBJarExtension>", getEJBJar21())
                     .getVersion());
 
         Assert.assertEquals("Version should be 1.0",
-                "1.0", parseEJBJarExtXML(ejbJarExt10() + "</ejb-jar-ext>").getVersion());
+                "1.0", parseEJBJarExtXML(ejbJarExt10XML() + "</ejb-jar-ext>").getVersion());
         Assert.assertEquals("Version should be 1.1",
-                "1.1", parseEJBJarExtXML(ejbJarExt11() + "</ejb-jar-ext>").getVersion());
+                "1.1", parseEJBJarExtXML(ejbJarExt11XML() + "</ejb-jar-ext>").getVersion());
     }
 
     @Test
     public void testGetEnterpriseBeans() throws Exception {
         Assert.assertEquals("List size should be zero",
-                0, parseEJBJarExtXML(ejbJarExt11() + "</ejb-jar-ext>").getEnterpriseBeans().size());
+                0, parseEJBJarExtXML(ejbJarExt11XML() + "</ejb-jar-ext>").getEnterpriseBeans().size());
     }
 
     @Test
     public void testGetEnterpriseBeansXMI() throws Exception {
         Assert.assertEquals(Collections.emptyList(),
-                parseEJBJarExtXMI(ejbJarExtension("") + "</ejbext:EJBJarExtension>", getEJBJar21())
+                parseEJBJarExtXMI(ejbJarExtXMI("") + "</ejbext:EJBJarExtension>", getEJBJar21())
                     .getEnterpriseBeans());
     }
 

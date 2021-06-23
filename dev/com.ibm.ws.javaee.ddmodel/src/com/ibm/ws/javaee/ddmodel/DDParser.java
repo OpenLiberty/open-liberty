@@ -31,7 +31,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.container.service.app.deploy.ModuleInfo;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.service.util.DesignatedXMLInputFactory;
@@ -492,15 +491,6 @@ public abstract class DDParser {
         }
     }
 
-    public String getModuleName() {
-        ModuleInfo moduleInfo = cacheGet(ModuleInfo.class);
-        if ( moduleInfo != null ) {
-            return moduleInfo.getName();
-        } else {
-            return rootContainer.getName();
-        }
-    }
-    
     @SuppressWarnings("unchecked")
     public <T> T cacheGet(Class<T> targetClass) {
         NonPersistentCache cache = null;
@@ -1144,9 +1134,18 @@ public abstract class DDParser {
     
     // Error handling ...
 
+    public String describeEntry() {
+        return describeEntry(adaptableEntry, null, null); 
+    }
+    
     /**
      * Describe an entry, providing paths to parent archives
      * back to the root-of-roots container.
+     * 
+     * The starting point is either an entry, or is an imputed
+     * entry beneath an initial container.  (Either the initial
+     * entry or both the initial container and the initial path
+     * must be specified.)
      * 
      * If possible, display the simple name of the physical path
      * of the root-of-roots container.  Do not display the full
@@ -1161,24 +1160,40 @@ public abstract class DDParser {
      *     WEB-INF/lib/fragment1.jar : META-INF/web-fragment.xml
      * </code>
      *
+     * @param initialEntry An initial entry.
+     * @param initialRoot An initial container.
+     * @param initialPath An initial path.
+     *
      * @return A description of the target entry, including
      *     relative paths of enclosing entries.
      */
-    protected String describeEntry() {
+    public static String describeEntry(Entry initialEntry, Container initialRoot, String initialPath) {
         StringBuilder builder = new StringBuilder();
 
-        Entry nextEntry = adaptableEntry;
-        while ( nextEntry != null ) {
-            if ( builder.length() > 0 ) {
-                builder.insert(0, " : ");
+        Entry nextEntry = initialEntry;
+        while ( (nextEntry != null) || (initialPath != null) ) {
+            String nextPath;
+            Container nextRoot;
+
+            if ( nextEntry != null ) {
+                if ( builder.length() > 0 ) {
+                    builder.insert(0, " : ");
+                }
+                nextPath = nextEntry.getPath();
+                if ( (nextPath.length() > 1) && (nextPath.charAt(0) == '/') ) {
+                    nextPath = nextPath.substring(1); // Strip leading '/'
+                }        
+
+                nextRoot = nextEntry.getRoot();
+
+            } else {
+                nextPath = initialPath;
+                initialPath = null;
+                nextRoot = initialRoot;
             }
-            String nextPath = nextEntry.getPath();
-            if ( (nextPath.length() > 1) && (nextPath.charAt(0) == '/') ) {
-                nextPath = nextPath.substring(1); // Strip leading '/'
-            }
+
             builder.insert(0, nextPath);
 
-            Container nextRoot = nextEntry.getRoot();
             try {
                 nextEntry = nextRoot.adapt(Entry.class);
             } catch ( UnableToAdaptException e ) {
@@ -1194,18 +1209,10 @@ public abstract class DDParser {
                 // information about the physical location of server files.
                 // Don't display anything if the root has just '/' as its path.
 
-                @SuppressWarnings("deprecation")
-                String path = nextRoot.getPhysicalPath();
-                if ( path != null ) {
-                    path = path.replace('\\', '/');
-                    int slashOffset = path.lastIndexOf('/');
-                    if ( slashOffset != -1 ) {
-                        path = path.substring(slashOffset + 1);
-                    }
-                    if ( !path.isEmpty() ) {
-                        builder.insert(0, " : ");
-                        builder.insert(0, path);
-                    }
+                String path = getSimpleName(nextRoot);
+                if ( (path != null) && !path.isEmpty() ) {
+                    builder.insert(0, " : ");
+                    builder.insert(0, path);
                 }
             }
         }
@@ -1213,6 +1220,21 @@ public abstract class DDParser {
         String description = builder.toString();
         System.out.println("Description [ " + description + " ]"); // Temp for debugging.
         return description;
+    }
+    
+    public static String getSimpleName(Container container) {
+        @SuppressWarnings("deprecation")
+        String path = container.getPhysicalPath();
+        if ( path == null ) {
+            return null;
+        }
+
+        path = path.replace('\\', '/');
+        int slashOffset = path.lastIndexOf('/');
+        if ( slashOffset != -1 ) {
+            path = path.substring(slashOffset + 1);
+        }
+        return path;
     }
     
     // Static: Invoked from descriptor element parsers, which
@@ -1331,6 +1353,11 @@ public abstract class DDParser {
     //     return Tr.formatMessage(tc, "missing.deployment.descriptor.namespace", describeEntry(), getLineNumber());
     // }
     
+    protected String missingDescriptorNamespace(String ddNamespace) {
+        // The deployment descriptor {0}, at line {1}, does not have required namespace {2}.        
+        return Tr.formatMessage(tc, "missing.descriptor.namespace", describeEntry(), getLineNumber(), ddNamespace);
+    }
+
     protected String unsupportedDescriptorNamespace(String ddNamespace) {
         // The deployment descriptor {0}, at line {1}, specifies unsupported namespace {2}.        
         return Tr.formatMessage(tc, "unsupported.descriptor.namespace", describeEntry(), getLineNumber(), ddNamespace);

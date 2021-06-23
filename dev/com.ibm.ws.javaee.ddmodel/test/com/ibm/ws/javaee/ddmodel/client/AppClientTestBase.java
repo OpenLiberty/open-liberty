@@ -56,7 +56,6 @@ public class AppClientTestBase extends DDTestBase {
 
         return parse(appPath, modulePath, fragmentPath,
                 ddText, ddAdapter, ddPath,
-                null, null,
                 altMessage, messages);
     }
 

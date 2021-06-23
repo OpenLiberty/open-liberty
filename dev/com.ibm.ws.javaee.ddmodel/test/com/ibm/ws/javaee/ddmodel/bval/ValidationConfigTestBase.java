@@ -59,6 +59,7 @@ public class ValidationConfigTestBase extends DDTestBase {
 
         return parse(appPath, modulePath, fragmentPath,
                      ddText, createValidationConfigAdapter(), ddPath,
+                     null, null,
                      ModuleInfo.class, moduleInfo,
                      altMessage, messages);
     }

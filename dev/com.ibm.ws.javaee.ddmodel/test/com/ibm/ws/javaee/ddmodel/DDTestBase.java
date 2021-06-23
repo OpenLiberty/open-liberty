@@ -23,6 +23,7 @@ import org.junit.Assert;
 
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
+import com.ibm.wsspi.adaptable.module.NonPersistentCache;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter;
 import com.ibm.wsspi.adaptable.module.adapters.EntryAdapter;
@@ -42,14 +43,12 @@ public class DDTestBase {
     //
     // 9,   https://jakarta.ee/xml/ns/jakartaee    
     
-    //
-    
-    protected static final List<boolean[]> TEST_DATA;
+    protected static final List<Boolean[]> TEST_DATA;
     
     static {
-        List<boolean[]> testData = new ArrayList<boolean[]>(2);
-        testData.add( new boolean[] { false });
-        testData.add( new boolean[] { true });
+        List<Boolean[]> testData = new ArrayList<Boolean[]>(2);
+        testData.add( new Boolean[] { Boolean.FALSE });
+        testData.add( new Boolean[] { Boolean.TRUE });
         TEST_DATA = testData;
     }
 
@@ -62,9 +61,29 @@ public class DDTestBase {
         return mockId++;
     }
 
+    //
+    
+    protected static class ClassKeyedData {
+        public final Class<?> classKey;
+        public final Object value;
+        
+        public ClassKeyedData(Class<?> classKey, Object value) {
+            this.classKey = classKey;
+            this.value = value;
+        }
+    }
+
+    protected static ClassKeyedData[] asDataArray(Class<?> adaptKey, Object adaptValue) {
+        if ( adaptKey == null ) {
+            return null;
+        } else {
+            return new ClassKeyedData[] { new ClassKeyedData(adaptKey, adaptValue) };
+        }
+    }
+
     // Parse using a container adapter.    
 
-    protected static <T, A> T parse(
+    protected static <T> T parse(
             String appPath, String modulePath, String fragmentPath,
             String ddText, ContainerAdapter<T> ddAdapter, String ddPath) throws Exception {
 
@@ -73,21 +92,21 @@ public class DDTestBase {
                      null);
     }
 
-    protected static <T, A> T parse(
+    protected static <T> T parse(
             String appPath, String modulePath, String fragmentPath,            
             String ddText, ContainerAdapter<T> ddAdapter, String ddPath,
             String altMessage, String... messages) throws Exception {
 
         return parse(appPath, modulePath, fragmentPath,
                      ddText, ddAdapter, ddPath,
-                     null, null,
+                     (Class<?>) null, null,
                      altMessage, messages);
     }
 
-    protected static <T, A> T parse(
+    protected static <T> T parse(
             String appPath, String modulePath, String fragmentPath,            
             String ddText, ContainerAdapter<T> ddAdapter, String ddPath,
-            Class<A> extraAdaptClass, A extraAdaptValue) throws Exception {
+            Class<?> extraAdaptClass, Object extraAdaptValue) throws Exception {
         
         return parse(
                 appPath, modulePath, fragmentPath,
@@ -96,10 +115,10 @@ public class DDTestBase {
                 null);
     }
 
-    protected static <T, A> T parse(
+    protected static <T> T parse(
             String appPath, String modulePath, String fragmentPath,            
             String ddText, ContainerAdapter<T> ddAdapter, String ddPath,
-            Class<A> extraAdaptClass, A extraAdaptValue,
+            Class<?> extraAdaptClass, Object extraAdaptValue,
             String altMessage, String... messages) throws Exception {
 
         return parse(
@@ -110,32 +129,31 @@ public class DDTestBase {
                 altMessage, messages);
     }
 
-    protected static <T, A, N> T parse(
-            String appPath, String modulePath, String fragmentPath,            
+    protected static <T> T parse(
+            String appPath, String modulePath, String fragmentPath,                        
             String ddText, ContainerAdapter<T> ddAdapter, String ddPath,
-            Class<A> extraAdaptClass, A extraAdaptValue,
-            Class<N> npCacheClass, N npCache) throws Exception {
+            Class<?> extraAdaptClass, Object extraAdaptValue,
+            Class<?> npCacheKey, Object npCacheValue,
+            String altMessage, String... messages) throws Exception {
 
-        return parse(
-                appPath, modulePath, fragmentPath,
+        return parse(appPath, modulePath, fragmentPath,
                 ddText, ddAdapter, ddPath,
-                extraAdaptClass, extraAdaptValue,
-                npCacheClass, npCache,
-                null);
+                asDataArray(extraAdaptClass, extraAdaptValue),
+                asDataArray(npCacheKey, npCacheValue),
+                altMessage, messages);
     }
-
-    protected static <T, A, N> T parse(
-        String appPath, String modulePath, String fragmentPath,                        
-        String ddText, ContainerAdapter<T> ddAdapter, String ddPath,
-        Class<A> extraAdaptClass, A extraAdaptValue,
-        Class<N> npCacheClass, N npCache,
-        String altMessage, String... messages) throws Exception {
-
+        
+    protected static <T> T parse(
+                String appPath, String modulePath, String fragmentPath,                        
+                String ddText, ContainerAdapter<T> ddAdapter, String ddPath,
+                ClassKeyedData[] adaptData,
+                ClassKeyedData[] cacheData,
+                String altMessage, String... messages) throws Exception {        
+        
         OverlayContainer rootOverlay = mockery.mock(OverlayContainer.class, "rootOverlay" + mockId++);
         ArtifactContainer artifactContainer = mockery.mock(ArtifactContainer.class, "artifactContainer" + mockId++);
 
-        wire(rootOverlay, artifactContainer, null, null,
-             npCacheClass, npCache);
+        wire(rootOverlay, artifactContainer, null, null, cacheData);
 
         Container appRoot = ((appPath == null) ? null : mockery.mock(Container.class, "appRoot" + mockId++));
 
@@ -150,7 +168,7 @@ public class DDTestBase {
         wire(appPath, modulePath, fragmentPath, ddPath,
              appRoot, moduleEntry, moduleRoot, fragmentEntry, fragmentRoot, ddEntry,
              ddText,
-             extraAdaptClass, extraAdaptValue);
+             adaptData, cacheData);
 
         try {
             T returnValue = ddAdapter.adapt(moduleRoot, rootOverlay, artifactContainer, moduleRoot);
@@ -165,7 +183,7 @@ public class DDTestBase {
 
     // Parse using an entry adapter.
     
-    protected static <T, A> T parse(
+    protected static <T> T parse(
             String appPath, String modulePath, String fragmentPath,            
             String xmlText, EntryAdapter<T> adapter, String ddPath,
             String altMessage, String... messages) throws Exception {
@@ -174,23 +192,38 @@ public class DDTestBase {
                 appPath, modulePath, fragmentPath,
                 xmlText, adapter, ddPath,
                 null, null,
+                null, null,
                 altMessage, messages);
     }
     
-    protected static <T, A> T parse(
+    protected static <T> T parse(
             String appPath, String modulePath, String fragmentPath,
             String ddText, EntryAdapter<T> ddAdapter, String ddPath,
-            Class<A> extraAdaptClass, A extraAdapt,
+            Class<?> extraAdaptClass, Object extraAdapt,
+            Class<?> npCacheClass, Object npCache,            
+            String altMessage, String... messages) throws Exception {
+        return parse(appPath, modulePath, fragmentPath,
+                ddText, ddAdapter, ddPath,
+                asDataArray(extraAdaptClass, extraAdapt),
+                asDataArray(npCacheClass, npCache),
+                altMessage, messages);
+    }
+
+    protected static <T> T parse(
+            String appPath, String modulePath, String fragmentPath,
+            String ddText, EntryAdapter<T> ddAdapter, String ddPath,
+            ClassKeyedData[] adaptData,
+            ClassKeyedData[] cacheData,
             String altMessage, String... messages) throws Exception {
 
         OverlayContainer rootOverlay = mockery.mock(OverlayContainer.class, "rootOverlay" + mockId++);
         ArtifactEntry artifactEntry = mockery.mock(ArtifactEntry.class, "artifactEntry" + mockId++);
 
-        wire(rootOverlay, null, artifactEntry, ddPath, null, null);
+        wire(rootOverlay, null, artifactEntry, ddPath, cacheData);
 
         Container appRoot = ((appPath == null) ? null : mockery.mock(Container.class, "appRoot" + mockId++));
-
         Entry moduleEntry = ((appPath == null) ? null : mockery.mock(Entry.class, "moduleEntry" + mockId++));
+
         Container moduleRoot = mockery.mock(Container.class, "moduleRoot" + mockId++);
 
         Entry fragmentEntry = ((fragmentPath == null) ? null : mockery.mock(Entry.class, "fragmentEntry" + mockId++));
@@ -201,7 +234,7 @@ public class DDTestBase {
         wire(appPath, modulePath, fragmentPath, ddPath,
              appRoot, moduleEntry, moduleRoot, fragmentEntry, fragmentRoot, ddEntry,
              ddText,
-             extraAdaptClass, extraAdapt);
+             adaptData, cacheData);
 
         try {
             T returnValue = ddAdapter.adapt(moduleRoot, rootOverlay, artifactEntry, ddEntry);
@@ -219,17 +252,19 @@ public class DDTestBase {
         return ( (cause instanceof Exception) ? (Exception) cause : e );
     }
     
-    protected static <N> void wire(
+    protected static void wire(
             OverlayContainer rootOverlay,
             ArtifactContainer artifactContainer,
             ArtifactEntry artifactEntry, String ddPath,
-            Class<N> npCacheClass, N npCache) {
+            ClassKeyedData[] cacheData) {
 
         mockery.checking(new Expectations() {
             {
-                if ( npCacheClass != null ) {
-                    allowing(rootOverlay).getFromNonPersistentCache(with(any(String.class)), with(npCacheClass));
-                    will(returnValue(npCache));
+                if ( cacheData != null ) {
+                    for ( ClassKeyedData nextCacheData : cacheData ) {
+                        allowing(rootOverlay).getFromNonPersistentCache(with(any(String.class)), with( nextCacheData.classKey ));
+                        will(returnValue( nextCacheData.value ));
+                    }
                 }
 
                 allowing(rootOverlay).addToNonPersistentCache(with(any(String.class)), with(any(Class.class)), with(any(Object.class)));
@@ -253,13 +288,14 @@ public class DDTestBase {
     }
 
     @SuppressWarnings("deprecation")
-    protected static <T, A, N> void wire(
+    protected static void wire(
             String appPath, String modulePath, String fragmentPath, String ddPath,
             Container appRoot, Entry moduleEntry,
             Container moduleRoot, Entry fragmentEntry,
             Container fragmentRoot, Entry ddEntry,
             String ddText,
-            Class<A> extraAdaptClass, A extraAdapt) throws UnsupportedEncodingException, UnableToAdaptException {
+            ClassKeyedData[] adaptData,
+            ClassKeyedData[] cacheData) throws UnsupportedEncodingException, UnableToAdaptException {
         
         mockery.checking(new Expectations() {
             {        
@@ -297,6 +333,20 @@ public class DDTestBase {
                 allowing(rootOfRoots).adapt(Entry.class);
                 will(returnValue(null));
 
+                if ( cacheData != null ) {
+                    NonPersistentCache npCache = mockery.mock(NonPersistentCache.class, "npCache" + mockId++);                    
+
+                    allowing(moduleRoot).adapt(NonPersistentCache.class);
+                    will(returnValue(npCache));
+
+                    for ( ClassKeyedData nextCacheData : cacheData ) {
+                        allowing(npCache).getFromCache( nextCacheData.classKey );
+                        will(returnValue( nextCacheData.value ));
+                    }
+                    // allowing(npCache).getFromCache(with(any(Class.class)));
+                    // will(returnValue(null));                    
+                }
+                
                 allowing(moduleRoot).getPath();
                 will(returnValue("/"));
 
@@ -333,9 +383,11 @@ public class DDTestBase {
 
                 allowing(ddRoot).getEntry(ddPath);
                 will(returnValue(ddEntry));
-                if ( extraAdaptClass != null ) {
-                    allowing(ddRoot).adapt(extraAdaptClass);
-                    will(returnValue(extraAdapt));
+                if ( adaptData != null ) {
+                    for ( ClassKeyedData nextAdaptData : adaptData ) {
+                        allowing(ddRoot).adapt( nextAdaptData.classKey );
+                        will(returnValue( nextAdaptData.value ));
+                    }
                 }
 
                 allowing(ddEntry).getRoot();
