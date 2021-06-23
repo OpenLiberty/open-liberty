@@ -440,6 +440,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String customCacheKey = (String) hashtableAuthData.get(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY);
         if (customCacheKey != null) {
             subject = authCacheService.getSubject(customCacheKey);
+            return subject;
         }
         //We do not create look up key for hashtable userid/pwd or userid only
         String userid = (String) hashtableAuthData.get(AttributeNameConstants.WSCREDENTIAL_USERID);
