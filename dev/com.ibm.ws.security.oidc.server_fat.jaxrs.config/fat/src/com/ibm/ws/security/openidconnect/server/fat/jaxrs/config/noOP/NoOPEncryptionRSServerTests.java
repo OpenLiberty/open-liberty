@@ -62,7 +62,6 @@ public class NoOPEncryptionRSServerTests extends MangleJWTTestTools {
         // add any additional messages that you want the "start" to wait for
         // we should wait for any providers that this test requires
         List<String> extraMsgs = new ArrayList<String>();
-        extraMsgs.add("CWWKS1631I.*");
 
         List<String> extraApps = new ArrayList<String>();
         extraApps.add("jwtbuilder");

@@ -134,26 +134,6 @@
 		audiences="client01"
 	>
 	</openidConnectClient>	
-
-	<openidConnectClient
-		id="SignRS256EncryptRS256"
-		scope="openid profile"
-		clientId="client01"
-		clientSecret="{xor}LDo8LTor"
-		mapIdentityToRegistryUser="true"
-		httpsRequired="false"
-		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_3_HTTP_default}"
-		authFilterRef="authFilterRS256RS256"
-		signatureAlgorithm="RS256"
-		trustStoreRef="trust_allSigAlg"
-		trustAliasName="rs256"
-		keyManagementKeyAlias="rs256"
-		sslRef="ssl_allSigAlg"
-		inboundPropagation="required"
-		issuerIdentifier="client01"
-		audiences="client01"
-	>
-	</openidConnectClient>	
  	
 	<authFilter id="authFilterRS384RS256">
 		<requestUrl

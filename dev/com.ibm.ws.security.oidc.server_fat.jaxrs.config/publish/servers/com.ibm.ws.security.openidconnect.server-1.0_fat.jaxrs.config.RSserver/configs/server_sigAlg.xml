@@ -35,14 +35,8 @@
 
 	<openidConnectClient
 		id="hs256"
-		scope="openid profile"
-		clientId="client01"
-		clientSecret="{xor}LDo8LTor"
 		sharedKey="secret"
-		mapIdentityToRegistryUser="true"
-		httpsRequired="false"
-		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_3_HTTP_default}"
-		validateAccessTokenLocally="true"
+		signatureAlgorithm="HS256"
 		authFilterRef="authFilterHS256"
 		inboundPropagation="required"
 		issuerIdentifier="client01"
@@ -59,15 +53,8 @@
 
 	<openidConnectClient
 		id="hs384"
-		scope="openid profile"
-		clientId="client01"
-		clientSecret="{xor}LDo8LTor"
 		sharedKey="secret"
 		signatureAlgorithm="HS384"
-		mapIdentityToRegistryUser="true"
-		httpsRequired="false"
-		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_3_HTTP_default}"
-		validateAccessTokenLocally="true"
 		authFilterRef="authFilterHS384"
 		inboundPropagation="required"
 		issuerIdentifier="client01"
@@ -84,15 +71,8 @@
 
 	<openidConnectClient
 		id="hs512"
-		scope="openid profile"
-		clientId="client01"
-		clientSecret="{xor}LDo8LTor"
 		sharedKey="secret"
 		signatureAlgorithm="HS512"
-		mapIdentityToRegistryUser="true"
-		httpsRequired="false"
-		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_3_HTTP_default}"
-		validateAccessTokenLocally="true"
 		authFilterRef="authFilterHS512"
 		inboundPropagation="required"
 		issuerIdentifier="client01"
@@ -110,13 +90,6 @@
 
 	<openidConnectClient
 		id="rs256"
-		scope="openid profile"
-		clientId="client01"
-		clientSecret="{xor}LDo8LTor"
-		mapIdentityToRegistryUser="true"
-		httpsRequired="false"
-		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_3_HTTP_default}"
-		validateAccessTokenLocally="true"
 		authFilterRef="authFilterRS256"
 		signatureAlgorithm="RS256"
 		trustStoreRef="trust_allSigAlg"
@@ -136,13 +109,6 @@
 
 	<openidConnectClient
 		id="rs384"
-		scope="openid profile"
-		clientId="client01"
-		clientSecret="{xor}LDo8LTor"
-		mapIdentityToRegistryUser="true"
-		httpsRequired="false"
-		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_3_HTTP_default}"
-		validateAccessTokenLocally="true"
 		authFilterRef="authFilterRS384"
 		signatureAlgorithm="RS384"
 		trustStoreRef="trust_allSigAlg"
@@ -162,13 +128,6 @@
 
 	<openidConnectClient
 		id="rs512"
-		scope="openid profile"
-		clientId="client01"
-		clientSecret="{xor}LDo8LTor"
-		mapIdentityToRegistryUser="true"
-		httpsRequired="false"
-		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_3_HTTP_default}"
-		validateAccessTokenLocally="true"
 		authFilterRef="authFilterRS512"
 		signatureAlgorithm="RS512"
 		trustStoreRef="trust_allSigAlg"
@@ -188,13 +147,6 @@
 
 	<openidConnectClient
 		id="es256"
-		scope="openid profile"
-		clientId="client01"
-		clientSecret="{xor}LDo8LTor"
-		mapIdentityToRegistryUser="true"
-		httpsRequired="false"
-		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_3_HTTP_default}"
-		validateAccessTokenLocally="true"
 		authFilterRef="authFilterES256"
 		signatureAlgorithm="ES256"
 		trustStoreRef="trust_allSigAlg"
@@ -214,13 +166,6 @@
 
 	<openidConnectClient
 		id="es384"
-		scope="openid profile"
-		clientId="client01"
-		clientSecret="{xor}LDo8LTor"
-		mapIdentityToRegistryUser="true"
-		httpsRequired="false"
-		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_3_HTTP_default}"
-		validateAccessTokenLocally="true"
 		authFilterRef="authFilterES384"
 		signatureAlgorithm="ES384"
 		trustStoreRef="trust_allSigAlg"
@@ -240,13 +185,6 @@
 
 	<openidConnectClient
 		id="es512"
-		scope="openid profile"
-		clientId="client01"
-		clientSecret="{xor}LDo8LTor"
-		mapIdentityToRegistryUser="true"
-		httpsRequired="false"
-		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_3_HTTP_default}"
-		validateAccessTokenLocally="true"
 		authFilterRef="authFilterES512"
 		signatureAlgorithm="ES512"
 		trustStoreRef="trust_allSigAlg"
