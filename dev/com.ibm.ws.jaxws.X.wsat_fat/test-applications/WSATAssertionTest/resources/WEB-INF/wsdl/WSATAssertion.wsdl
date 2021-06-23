@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	name="HelloImplWSATAssertionService" targetNamespace="http://server.fat.wsat.ws.ibm.com/"
+	xmlns:ns1="http://schemas.xmlsoap.org/soap/http" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:tns="http://server.fat.wsat.ws.ibm.com/" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata"
+	xmlns:wsat="http://docs.oasis-open.org/ws-tx/wsat/2006/06" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl"
+	xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"
+	xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<wsp:Policy wsu:Id="TransactedPolicy">
+		<wsat:ATAssertion/>
+	</wsp:Policy>
+	<wsdl:types>
+		<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+			elementFormDefault="unqualified" targetNamespace="http://server.fat.wsat.ws.ibm.com/"
+			version="1.0">
+			<xs:element name="sayHello" type="tns:sayHello" />
+			<xs:element name="sayHelloResponse" type="tns:sayHelloResponse" />
+			<xs:element name="sayHelloToOther" type="tns:sayHelloToOther" />
+			<xs:element name="sayHelloToOtherResponse" type="tns:sayHelloToOtherResponse" />
+			<xs:complexType name="sayHello">
+				<xs:sequence />
+			</xs:complexType>
+			<xs:complexType name="sayHelloResponse">
+				<xs:sequence>
+					<xs:element minOccurs="0" name="return" type="xs:string" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="sayHelloToOther">
+				<xs:sequence>
+					<xs:element minOccurs="0" name="arg0" type="xs:string" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="sayHelloToOtherResponse">
+				<xs:sequence>
+					<xs:element minOccurs="0" name="return" type="xs:string" />
+				</xs:sequence>
+			</xs:complexType>
+		</xs:schema>
+	</wsdl:types>
+	<wsdl:message name="sayHello">
+		<wsdl:part element="tns:sayHello" name="parameters">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="sayHelloToOther">
+		<wsdl:part element="tns:sayHelloToOther" name="parameters">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="sayHelloResponse">
+		<wsdl:part element="tns:sayHelloResponse" name="parameters">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="sayHelloToOtherResponse">
+		<wsdl:part element="tns:sayHelloToOtherResponse" name="parameters">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:portType name="Hello">
+		<wsdl:operation name="sayHello">
+			<wsdl:input message="tns:sayHello" name="sayHello">
+			</wsdl:input>
+			<wsdl:output message="tns:sayHelloResponse" name="sayHelloResponse">
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="sayHelloToOther">
+			<wsdl:input message="tns:sayHelloToOther" name="sayHelloToOther">
+			</wsdl:input>
+			<wsdl:output message="tns:sayHelloToOtherResponse" name="sayHelloToOtherResponse">
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="HelloImplWSATAssertionServiceSoapBinding" type="tns:Hello">
+		<wsp:PolicyReference URI="#TransactedPolicy"
+				wsdl:required="true" />
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<wsdl:operation name="sayHello">
+			<soap:operation soapAction="" style="document" />
+			<wsdl:input name="sayHello">
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output name="sayHelloResponse">
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="sayHelloToOther">
+			<soap:operation soapAction="" style="document" />
+			<wsdl:input name="sayHelloToOther">
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output name="sayHelloToOtherResponse">
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="HelloImplWSATAssertionService">
+		<wsdl:port binding="tns:HelloImplWSATAssertionServiceSoapBinding" name="HelloImplWSATAssertionPort">
+			<soap:address location="http://localhost:8010/wsatassertion/HelloImplWSATAssertionService" />
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>

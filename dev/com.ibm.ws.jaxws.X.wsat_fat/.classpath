@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="fat/src"/>
+	<classpathentry kind="src" path="test-applications/WSATAssertionTest/src"/>
+	<classpathentry kind="src" path="test-applications/policyAttachmentsClient1/src"/>
+	<classpathentry kind="src" path="test-applications/policyAttachmentsClient2/src"/>
+	<classpathentry kind="src" path="test-applications/policyAttachmentsService1/.apt_generated"/>
+	<classpathentry kind="src" path="test-applications/policyAttachmentsService1/src"/>
+	<classpathentry kind="src" path="test-applications/policyAttachmentsService2/src"/>
+	<classpathentry kind="src" path="test-applications/policyAttachmentsService3/.apt_generated"/>
+	<classpathentry kind="src" path="test-applications/policyAttachmentsService3/src"/>
+	<classpathentry kind="src" path="test-applications/simpleTestService/src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-15">
+		<attributes>
+			<attribute name="owner.project.facets" value="java"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" path="/fattest.simplicity"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
