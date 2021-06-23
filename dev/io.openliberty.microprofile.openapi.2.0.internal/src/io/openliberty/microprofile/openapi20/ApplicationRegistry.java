@@ -31,6 +31,7 @@ import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 import io.openliberty.microprofile.openapi20.merge.MergeProcessor;
 import io.openliberty.microprofile.openapi20.utils.LoggingUtils;
+import io.openliberty.microprofile.openapi20.utils.MessageConstants;
 
 /**
  * The ApplicationRegistry class maintains a collection of the applications that are deployed to the OpenLiberty
@@ -181,7 +182,7 @@ public class ApplicationRegistry {
                         sb.append("\n - ");
                         sb.append(problem);
                     }
-                    Tr.warning(tc, "CWWKO1662W: The following problems occurred while merging OpenAPI documents: {0}", sb.toString());
+                    Tr.warning(tc, MessageConstants.OPENAPI_MERGE_PROBLEMS_CWWKO1662W, sb.toString());
                 }
                 result = mergedProvider;
             }
@@ -197,9 +198,7 @@ public class ApplicationRegistry {
      */
     public void setUsingMultiModulesWithoutConfig(OpenAPIProvider firstModule) {
         if (!multiAppWarningGiven && ProductInfo.getBetaEdition()) {
-            Tr.info(tc, "Combining OpenAPI documentation from multiple modules is disabled. Only {0} will be used to generate OpenAPI documentation."
-                            + "To enable merging of OpenAPI documentation from all modules, set config property mp.openapi.extensions.liberty.merged.include = all.",
-                            firstModule);
+            Tr.info(tc, MessageConstants.OPENAPI_MERGE_DISABLED_CWWKO1663I, firstModule);
             multiAppWarningGiven = true;
         }
     }

@@ -272,9 +272,11 @@ public class MergeConfigTest {
         String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
         JsonNode openapiNode = OpenAPITestUtil.readYamlTree(doc);
         
-        server.findStringsInLogsUsingMark("could not be parsed as JSON.*foo", server.getDefaultLogFile());
+        server.findStringsInLogsUsingMark("CWWKO1665W:.*could not be parsed as JSON.*foo", server.getDefaultLogFile());
         assertEquals("Document title", "Generated API", openapiNode.path("info").path("title").asText());
         assertEquals("Version", "1.0", openapiNode.path("info").path("version").asText());
+        
+        server.stopServer("CWWKO1665W");
     }
     
     @Test
@@ -293,9 +295,11 @@ public class MergeConfigTest {
         String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
         JsonNode openapiNode = OpenAPITestUtil.readYamlTree(doc);
         
-        server.findStringsInLogsUsingMark("The title and version properties must be set.*1.0", server.getDefaultLogFile());
+        server.findStringsInLogsUsingMark("CWWKO1664W:.*The title and version properties must be set.*1.0", server.getDefaultLogFile());
         assertEquals("Document title", "Generated API", openapiNode.path("info").path("title").asText());
         assertEquals("Version", "1.0", openapiNode.path("info").path("version").asText());
+        
+        server.stopServer("CWWKO1664W");
     }
     
     @Test

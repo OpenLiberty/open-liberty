@@ -64,3 +64,28 @@ OPENAPI_APPLICATION_PROCESSED.useraction=No action is required.
 OPENAPI_APPLICATION_PROCESSING_ERROR=CWWKO1661E: An error occurred when processing application {0} and an OpenAPI document was not produced. The error was: {1}.
 OPENAPI_APPLICATION_PROCESSING_ERROR.explanation=A runtime error occurred when processing the application.
 OPENAPI_APPLICATION_PROCESSING_ERROR.useraction=Review the FFDC logs and exception text to identify the problem.
+
+OPENAPI_MERGE_PROBLEMS_CWWKO1662W=CWWKO1662W: The following problems occurred while merging OpenAPI documents: {0}
+OPENAPI_MERGE_PROBLEMS_CWWKO1662W.explanation=The OpenAPI documentation from multiple web modules could not be successfully merged. If the reported problems are not fixed, the endpoints from the reported modules will not be included in the generated OpenAPI document.
+OPENAPI_MERGE_PROBLEMS_CWWKO1662W.useraction=Review the merge problems to identify why the generated OpenAPI documents could not be merged.
+
+OPENAPI_MERGE_PROBLEM_PATH_CLASH=Path {0} from {1} clashes with a path from another module. {1} will not be merged.
+OPENAPI_MERGE_PROBLEM_PATH_CLASH.explanation=The given path is present in two modules. Both instances of the path can't be included in the same OpenAPI document. This message is returned as part of CWWKO1662.
+OPENAPI_MERGE_PROBLEM_PATH_CLASH.useraction=Either change one of the conflicting modules or configure the mpOpenApi-2.0 feature to exclude one of them. This problem can be caused if servers are included in the OpenAPI document and the server URL does not end with the context root of the application (e.g. because the application will be accessed at a different URL through a reverse proxy).
+
+OPENAPI_MERGE_DISABLED_CWWKO1663I=CWWKO1663I: Combining OpenAPI documentation from multiple modules is disabled. Only {0} will be used to generate OpenAPI documentation. To enable merging of OpenAPI documentation from all modules, set config property mp.openapi.extensions.liberty.merged.include = all.
+OPENAPI_MERGE_DISABLED_CWWKO1663I.explanation=Unless OpenAPI documentation merging is enabled, OpenAPI documentation will only be generated for the first OpenAPI module deployed.
+OPENAPI_MERGE_DISABLED_CWWKO1663I.useraction=If you want all of your web modules to be used to generate OpenAPI documentation, set the MicroProfile Config property listed in the message. This can be set in any of the locations that MicroProfile Config searches for config properties, e.g. in a Java system property or an environment variable.
+
+OPENAPI_MERGE_INFO_INVALID_CWWKO1664W=CWWKO1664W: The info object configured with property {0} is not valid. The title and version properties must be set. The invalid value was: {1}
+OPENAPI_MERGE_INFO_INVALID_CWWKO1664W.explanation=If the property is set, it must be set to a complete info section in JSON format, with the title and version properties set to valid values.
+OPENAPI_MERGE_INFO_INVALID_CWWKO1664W.useraction=Correct the configured info value.
+
+OPENAPI_MERGE_INFO_PARSE_ERROR_CWWKO1665W=CWWKO1665W: The config property {0} could not be parsed as JSON. The value was: {1}\nThe error was: {2}
+OPENAPI_MERGE_INFO_PARSE_ERROR_CWWKO1665W.explanation=If the property is set, it must be set to a complete info section in JSON format.
+OPENAPI_MERGE_INFO_PARSE_ERROR_CWWKO1665W.useraction=Review the error text to identify the problem and correct the configured info value so that it is valid JSON.
+
+OPENAPI_MERGE_INVALID_NAME_CWWKO1666W=CWWKO1666W: Invalid name found in {0}: {1}. Each name must be of the format "applicationName" or "applicationName/moduleName"
+OPENAPI_MERGE_INVALID_NAME_CWWKO1666W.explanation=The given config property must contain a comma-separated list of application and module names, or one of the special values "all", "first", or "none".
+OPENAPI_MERGE_INVALID_NAME_CWWKO1666W.useraction=Review the error text to identify the problem and correct the indicated configuration property.
+

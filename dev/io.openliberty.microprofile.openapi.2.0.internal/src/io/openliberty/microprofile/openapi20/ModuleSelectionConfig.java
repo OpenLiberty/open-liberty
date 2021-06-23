@@ -24,6 +24,7 @@ import com.ibm.ws.container.service.app.deploy.ModuleInfo;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 import io.openliberty.microprofile.openapi20.utils.Constants;
+import io.openliberty.microprofile.openapi20.utils.MessageConstants;
 
 /**
  * Handles reading the merge include/exclude configuration properties and indicating whether a particular module should be included or excluded.
@@ -221,7 +222,7 @@ public class ModuleSelectionConfig {
             Matcher m = CONFIG_VALUE_NAME_REFERENCE.matcher(configValuePart);
             
             if (!m.matches()) {
-                Tr.warning(tc, "Invalid name found in {0}: {1}. Each name must be of the format \"applicationName\" or \"applicationName/moduleName\"", configKey, configValuePart);
+                Tr.warning(tc, MessageConstants.OPENAPI_MERGE_INVALID_NAME_CWWKO1666W, configKey, configValuePart);
                 continue;
             }
             

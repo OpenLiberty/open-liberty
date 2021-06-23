@@ -33,6 +33,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 
 import io.openliberty.microprofile.openapi20.MergedOpenAPIProvider;
 import io.openliberty.microprofile.openapi20.OpenAPIProvider;
+import io.openliberty.microprofile.openapi20.utils.MessageConstants;
 import io.openliberty.microprofile.openapi20.utils.OpenAPIModelVisitor;
 import io.openliberty.microprofile.openapi20.utils.OpenAPIModelWalker;
 import io.smallrye.openapi.api.util.MergeUtil;
@@ -261,7 +262,7 @@ public class MergeProcessor {
         for (String path : pathItems.keySet()) {
             if (this.pathNames.contains(path)) {
                 // Report a clash
-                mergeProblems.add("Path " + path + " from " + provider + " clashes with a path from another module. " + provider + " will not be merged.");
+                mergeProblems.add(Tr.formatMessage(tc, MessageConstants.OPENAPI_MERGE_PROBLEM_PATH_CLASH, path, provider));
                 clashesFound = true;
             }
         }

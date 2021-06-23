@@ -298,11 +298,11 @@ public class OpenAPIUtils {
             if (info.getTitle() != null && info.getVersion() != null) {
                 return info;
             } else {
-                Tr.warning(tc, "The info object configured with property {0} is not valid. The title and version properties must be set. The invalid value was: {1}", Constants.MERGE_INFO_CONFIG, infoJson.get());
+                Tr.warning(tc, MessageConstants.OPENAPI_MERGE_INFO_INVALID_CWWKO1664W, Constants.MERGE_INFO_CONFIG, infoJson.get());
                 return null;
             }
         } catch (JsonProcessingException ex) {
-            Tr.warning(tc, "The config property {0} could not be parsed as JSON. The value was: {1}\nThe error was: {2}", Constants.MERGE_INFO_CONFIG, infoJson.get(), ex.toString());
+            Tr.warning(tc, MessageConstants.OPENAPI_MERGE_INFO_PARSE_ERROR_CWWKO1665W, Constants.MERGE_INFO_CONFIG, infoJson.get(), ex.toString());
             return null;
         }
     }
