@@ -71,10 +71,10 @@ import componenttest.rules.repeater.RepeatTests;
                 // And, when WCTrailersTest fails, it causes most of the tests to fail with errors.
                 // I'm still determining if this is purely a local problem.
                 //              WCPushBuilderSecurityTest.class,
-                WCAddJspFileTest.class,
                 WCServletContainerInitializerFilterServletNameMappingTest.class,
                 WCApplicationMBeanStatusTest.class,
                 // @Server Annotations
+                WCAddJspFileTest.class,
                 WCEncodingTest.class,
                 WCServerTest.class,
                 WC5JakartaServletTest.class,
