@@ -431,6 +431,7 @@ public class WorkTestServlet extends FATServlet {
     public void testSubmitBlockingWork() throws Exception {
         blockingWorkStarted = new CountDownLatch(1);
         blockingWorkCanEnd = new CountDownLatch(1);
+        blockingWorkResult = new LinkedBlockingQueue<Object>();
 
         WorkItem item = wmExecutor.schedule(() -> {
             System.out.println("blocking");
