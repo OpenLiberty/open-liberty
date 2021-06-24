@@ -20,17 +20,20 @@ Bundle-Description: FAT Testcontainer Bundle; version=${bVersion}
 # binary files instead of class files. This is expected and necessary
 
 Export-Package: \
+	ch.qos.logback.classic.*;version="1.2.3",\
+	ch.qos.logback.core.*;version="1.2.3",\
 	com.github.*;version="3.2.8",\
 	com.sun.jna.*;version="5.8.0",\
 	org.apache.commons.*;version="1.20",\
 	org.testcontainers.*;version="1.15.3";-split-package:=merge-last,\
 	org.rnorth.*;version="1.0.8",\
-	org.slf4j.*;version="1.7.30"
+	org.slf4j.*;version="1.7.30";-split-package:=merge-last
 
 #Ensure that /META-INF/service folder from testcontainers core project is included in bundle.
 # This will ensure that the other docker container strategies are accessible at runtime.	
 Include-Resource: \
-	@${repo;org.testcontainers:testcontainers;1.15.3;EXACT}!/META-INF/**
+	@${repo;org.testcontainers:testcontainers;1.15.3;EXACT}!/META-INF/**,\
+	resources/logback-test.xml
 
 #Ensure that a stub project is created in CL
 generate.replacement: true
@@ -59,4 +62,6 @@ generate.replacement: true
 	org.rnorth.visible-assertions:visible-assertions;version=2.1.2,\
 	org.slf4j:slf4j-api;version=1.7.30,\
 	org.slf4j:slf4j-simple;version=1.7.30,\
-	net.java.dev.jna:jna;version=5.8.0
+	net.java.dev.jna:jna;version=5.8.0,\
+	ch.qos.logback:logback-classic;version=1.2.3,\
+	ch.qos.logback:logback-core;version=1.2.3
