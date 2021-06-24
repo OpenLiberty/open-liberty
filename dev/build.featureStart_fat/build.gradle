@@ -13,3 +13,13 @@
 dependencies {
   requiredLibs project(':io.openliberty.org.apache.commons.logging')
 }
+
+task requireCapabilities{
+  dependsOn autoFVT
+  doLast {
+    File configProps = new File(autoFvtDir, "configuration.properties")
+    configProps.append("\nrequire.capabilities=use-openLiberty-features\n")
+  }
+}
+
+zipAutoFVT.dependsOn requireCapabilities

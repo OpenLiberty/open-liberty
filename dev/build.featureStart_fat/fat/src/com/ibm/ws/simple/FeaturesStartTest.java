@@ -11,6 +11,7 @@
 package com.ibm.ws.simple;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,6 +36,7 @@ import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.OperatingSystem;
+import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 
@@ -67,9 +69,17 @@ public class FeaturesStartTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        String m = "setup";
+        
+        // Don't bother running test if not using an Open Liberty installation for server.
+        ProgramOutput po = server.getMachine().execute(server.getInstallRoot() + "/bin/productInfo version");
+        String stdout = po.getStdout();
+        Log.info(c, m, "Product info version: " + stdout);
+        assumeTrue(stdout.contains("Product name: Open Liberty"));
+        
         javaInfo = JavaInfo.forServer(server);
         JAVA_LEVEL = javaInfo.majorVersion();
-        Log.info(c, "setup", "The java level being used by the server is: " + JAVA_LEVEL);
+        Log.info(c, m, "The java level being used by the server is: " + JAVA_LEVEL);
 
         initAcceptableErrors();
 
