@@ -30,6 +30,7 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.http.Header;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.entity.BasicHttpEntity;
@@ -100,6 +101,7 @@ public class AccessTokenAuthenticatorTest {
     private final SSLSupport sslSupport = mockery.mock(SSLSupport.class, "sslSupport");
     private final HttpResponse httpResponse = mockery.mock(HttpResponse.class, "httpResponse");
     private final StatusLine statusLine = mockery.mock(StatusLine.class, "statusLine");
+    private final HttpEntity httpEntity = mockery.mock(HttpEntity.class);
     private final Header header = mockery.mock(Header.class, "header");
     private final Key decryptionKey = mockery.mock(Key.class);
     protected final SSLSocketFactory sslSocketFactory = mockery.mock(SSLSocketFactory.class, "sslSocketFactory");
@@ -1002,6 +1004,30 @@ public class AccessTokenAuthenticatorTest {
             {
                 one(httpResponse).getEntity();
                 will(returnValue(entity));
+                one(clientConfig).getInboundPropagation();
+                will(returnValue(REQUIRED));
+                one(clientRequest).getRsFailMsg();
+                will(returnValue("doesn't matter"));
+            }
+        });
+        JSONObject result = tokenAuth.extractSuccessfulResponse(clientConfig, clientRequest, httpResponse);
+        assertNull("Result should have been null but was " + result + ".", result);
+    }
+
+    @Test
+    public void test_extractSuccessfulResponse_missingContentType() throws Exception {
+        String inputString = "This is not JSON";
+        final InputStream input = new ByteArrayInputStream(inputString.getBytes());
+        mockery.checking(new Expectations() {
+            {
+                one(httpResponse).getEntity();
+                will(returnValue(httpEntity));
+                one(httpEntity).getContent();
+                will(returnValue(input));
+                allowing(httpEntity).getContentLength();
+                will(returnValue((long) inputString.length()));
+                allowing(httpEntity).getContentType();
+                will(returnValue(null));
                 one(clientConfig).getInboundPropagation();
                 will(returnValue(REQUIRED));
                 one(clientRequest).getRsFailMsg();

@@ -360,6 +360,7 @@ public class AccessTokenAuthenticator {
         }
         String contentType = getContentType(entity);
         if (contentType == null) {
+            logError(clientConfig, oidcClientRequest, "PROPAGATION_TOKEN_INVALID_VALIDATION_URL", clientConfig.getValidationEndpointUrl());
             return null;
         }
         JSONObject jobj = null;
