@@ -38,8 +38,8 @@ import com.ibm.websphere.ssl.JSSEHelper;
 import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
-import com.ibm.ws.security.common.structures.SingleTableCache;
 import com.ibm.ws.security.jwt.utils.JweHelper;
+import com.ibm.ws.security.openidconnect.client.internal.AccessTokenCacheHelper;
 import com.ibm.ws.security.openidconnect.client.internal.TraceConstants;
 import com.ibm.ws.security.openidconnect.client.jose4j.util.Jose4jUtil;
 import com.ibm.ws.security.openidconnect.clients.common.ClientConstants;
@@ -68,6 +68,7 @@ public class AccessTokenAuthenticator {
     OidcClientUtil oidcClientUtil = new OidcClientUtil();
     SSLSupport sslSupport = null;
     private Jose4jUtil jose4jUtil = null;
+    AccessTokenCacheHelper cacheHelper = new AccessTokenCacheHelper();
 
     private static boolean issuedBetaMessage = false;
 
@@ -116,7 +117,7 @@ public class AccessTokenAuthenticator {
             return oidcResult;
         }
 
-        ProviderAuthenticationResult cachedResult = getCachedTokenAuthenticationResult(clientConfig, accessToken);
+        ProviderAuthenticationResult cachedResult = cacheHelper.getCachedTokenAuthenticationResult(clientConfig, accessToken);
         if (cachedResult != null) {
             return cachedResult;
         }
@@ -167,7 +168,7 @@ public class AccessTokenAuthenticator {
             // this is authenticated by the access_token
             req.setAttribute(OidcClient.PROPAGATION_TOKEN_AUTHENTICATED, Boolean.TRUE);
 
-            cacheTokenAuthenticationResult(clientConfig, accessToken, oidcResult);
+            cacheHelper.cacheTokenAuthenticationResult(clientConfig, accessToken, oidcResult);
         }
 
         if (tc.isDebugEnabled()) {
@@ -175,81 +176,6 @@ public class AccessTokenAuthenticator {
             Tr.debug(tc, "Token is owned by '" + oidcResult.getUserName() + "'");
         }
         return oidcResult;
-    }
-
-    ProviderAuthenticationResult getCachedTokenAuthenticationResult(OidcClientConfig clientConfig, String token) {
-        if (!clientConfig.getTokenReuse()) {
-            return null;
-        }
-        SingleTableCache cache = clientConfig.getCache();
-        ProviderAuthenticationResult result = (ProviderAuthenticationResult) cache.get(token);
-        if (result != null) {
-            if (isTokenInCachedResultExpired(result, clientConfig)) {
-                return null;
-            }
-            Subject newSubject = recreateSubject(result.getSubject());
-            return new ProviderAuthenticationResult(result.getStatus(), result.getHttpStatusCode(), result.getUserName(), newSubject, result.getCustomProperties(), result.getRedirectUrl());
-        }
-        return null;
-    }
-
-    boolean isTokenInCachedResultExpired(ProviderAuthenticationResult cachedResult, OidcClientConfig clientConfig) {
-        Hashtable<String, Object> customProperties = cachedResult.getCustomProperties();
-        if (customProperties == null || customProperties.isEmpty()) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Custom properties were null or empty");
-            }
-            return true;
-        }
-        long tokenExp = getTokenExpirationFromCustomProperties(customProperties);
-        long clockSkew = clientConfig.getClockSkewInSeconds();
-        long now = System.currentTimeMillis() / 1000;
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "Current system time: " + now + ", token expiration time: " + tokenExp + ", clockSkew: " + clockSkew);
-        }
-        if (now > (tokenExp + clockSkew)) {
-            return true;
-        }
-        return false;
-    }
-
-    @FFDCIgnore(Exception.class)
-    @SuppressWarnings("unchecked")
-    long getTokenExpirationFromCustomProperties(Hashtable<String, Object> customProperties) {
-        if (customProperties == null || customProperties.isEmpty()) {
-            return 0;
-        }
-        if (!customProperties.containsKey(Constants.ACCESS_TOKEN_INFO)) {
-            return 0;
-        }
-        try {
-            Map<String, Object> tokenInfoMap = (Map<String, Object>) customProperties.get(Constants.ACCESS_TOKEN_INFO);
-            if (tokenInfoMap == null) {
-                return 0;
-            }
-            if (!tokenInfoMap.containsKey("exp")) {
-                return 0;
-            }
-            return (long) tokenInfoMap.get("exp");
-        } catch (Exception e) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Failed to obtain expiration time from customer properties: " + e);
-            }
-            return 0;
-        }
-    }
-
-    Subject recreateSubject(Subject cachedSubject) {
-        Subject newSubject = new Subject();
-        if (cachedSubject != null) {
-            newSubject = new Subject(false, cachedSubject.getPrincipals(), cachedSubject.getPublicCredentials(), cachedSubject.getPrivateCredentials());
-        }
-        return newSubject;
-    }
-
-    void cacheTokenAuthenticationResult(OidcClientConfig clientConfig, String token, ProviderAuthenticationResult result) {
-        SingleTableCache cache = clientConfig.getCache();
-        cache.put(token, result);
     }
 
     @FFDCIgnore({ Exception.class })
