@@ -84,6 +84,7 @@ public class FeatureDefinitionUtils {
     public final static Collection<String> ALLOWED_ON_CLIENT_ONLY_FEATURES = Arrays.asList("com.ibm.websphere.appserver.javaeeClient-7.0",
                                                                                            "com.ibm.websphere.appserver.javaeeClient-8.0",
                                                                                            "io.openliberty.jakartaeeClient-9.0",
+                                                                                           "io.openliberty.jakartaeeClient-9.1",
                                                                                            "com.ibm.websphere.appserver.appSecurityClient-1.0");
 
     public static final String NL = "\r\n";
@@ -271,7 +272,7 @@ public class FeatureDefinitionUtils {
      * manifest.
      *
      * @param details ManifestDetails containing manifest parser and accessor methods
-     *            for retrieving information from the manifest.
+     *                    for retrieving information from the manifest.
      * @return new ImmutableAttributes
      */
     static ImmutableAttributes loadAttributes(String repoType, File featureFile, ProvisioningDetails details) throws IOException {
