@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -3063,7 +3063,15 @@ public class MessageItem extends Item implements SIMPMessage, TransactionCallbac
 
                 int rdl_count = guessRedeliveredCount();
 
-                persistRedeliveredCount(rdl_count);
+                try {
+                    persistRedeliveredCount(rdl_count);
+
+                } catch (NotInMessageStore e) {
+                    // No FFDC code needed
+                    SibTr.exception(tc, e);
+                    // It is possible that the message has already been removed from the itemStream,  
+                    // as it has already been unlocked.
+                }
 
                 //updating the value in MFP.
                 if (msg != null)
