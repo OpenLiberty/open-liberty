@@ -24,14 +24,20 @@ public class SnapshotFailed extends Exception {
         RESTORE_ABORT;
     }
 
+    private final int errorCode;
     private final Type type;
 
-    public SnapshotFailed(Type type, String msg, Exception cause) {
+    public SnapshotFailed(Type type, String msg, Exception cause, int errorCode) {
         super(msg, cause);
         this.type = type;
+        this.errorCode = errorCode;
     }
 
     public Type getType() {
         return type;
+    }
+
+    public int getErrorCode() {
+        return errorCode;
     }
 }

@@ -25,6 +25,7 @@ import com.ibm.ws.threading.listeners.CompletionListener;
 import io.openliberty.checkpoint.spi.Checkpoint;
 import io.openliberty.checkpoint.spi.Checkpoint.Phase;
 import io.openliberty.checkpoint.spi.SnapshotFailed;
+import io.openliberty.checkpoint.spi.SnapshotFailed.Type;
 
 @Component
 public class CheckpointFeatures implements RuntimeUpdateListener {
@@ -48,6 +49,10 @@ public class CheckpointFeatures implements RuntimeUpdateListener {
                         try {
                             checkpoint.snapshot(Phase.FEATURES);
                         } catch (SnapshotFailed e) {
+                            if (e.getType() == Type.SNAPSHOT_FAILED) {
+                                System.exit(e.getErrorCode());
+                            }
+                            // TODO should we always exit on failure?
                         }
                     }
                 }
