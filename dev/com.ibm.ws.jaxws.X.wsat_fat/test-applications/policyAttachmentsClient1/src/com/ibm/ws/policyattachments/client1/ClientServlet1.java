@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-com.ibm.ws.policyattachments.client1;
+package com.ibm.ws.policyattachments.client1;
 
 import java.io.IOException;
 import java.io.PrintWriter;
