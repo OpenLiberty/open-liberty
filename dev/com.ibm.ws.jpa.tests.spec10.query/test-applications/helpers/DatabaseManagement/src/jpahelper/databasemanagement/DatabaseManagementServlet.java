@@ -238,26 +238,39 @@ public class DatabaseManagementServlet extends HttpServlet {
     }
 
     private void dumpDBMeta(DatabaseMetaData dbMeta) throws SQLException {
+        final String dbProductName = dbMeta.getDatabaseProductName();
+        final String dbProductVersion = dbMeta.getDatabaseProductVersion();
+        final String jdbcDriverVersion = dbMeta.getDriverVersion();
+        final String jdbcURL = dbMeta.getURL();
+        final String username = dbMeta.getUserName();
+
         StringBuilder sb = new StringBuilder();
         sb.append("\n");
         sb.append("################################################################################\n");
         sb.append("DBMeta Dump:\n");
-        sb.append("DB Product Name: ").append(dbMeta.getDatabaseProductName()).append("\n");
-        sb.append("DB Product Version: ").append(dbMeta.getDatabaseProductVersion()).append("\n");
-        sb.append("JDBC Driver Version: ").append(dbMeta.getDriverVersion()).append("\n");
-        sb.append("DB URL: ").append(dbMeta.getURL()).append("\n");
-        sb.append("DB Username: ").append(dbMeta.getUserName()).append("\n");
+        sb.append("DB Product Name: ").append(dbProductName).append("\n");
+        sb.append("DB Product Version: ").append(dbProductVersion).append("\n");
+        sb.append("JDBC Driver Version: ").append(jdbcDriverVersion).append("\n");
+        sb.append("DB URL: ").append(jdbcURL).append("\n");
+        sb.append("DB Username: ").append(username).append("\n");
 
-        sb.append("DB Schemas:\n");
-        try {
-            ResultSet schemas = dbMeta.getSchemas();
-            while (schemas.next()) {
-                sb.append("  ").append(schemas.getString("TABLE_SCHEM")).append("\n");
+        // DB2 on Z requires stored procedures to be installed in order for schemas to be introspected.
+        // Because it generates FFDC should this fail (complicating problem determination), we will
+        // not attempt to dump schemas on DB2/Z
+        if (dbProductName != null && "DB2".equals(dbProductName) && dbProductVersion != null && dbProductVersion.startsWith("DSN")) {
+            sb.append("DB/2 on z/OS detected -- Not Dumping Schemas");
+        } else {
+            sb.append("DB Schemas:\n");
+            try {
+                ResultSet schemas = dbMeta.getSchemas();
+                while (schemas.next()) {
+                    sb.append("  ").append(schemas.getString("TABLE_SCHEM")).append("\n");
+                }
+            } catch (Throwable t) {
+                // Ouch
+                sb.append("   DB SCHEMAS NOT AVAILABLE -- " + t.getMessage());
+                t.printStackTrace();
             }
-        } catch (Throwable t) {
-            // Ouch
-            sb.append("   DB SCHEMAS NOT AVAILABLE -- " + t.getMessage());
-            t.printStackTrace();
         }
 
         sb.append("################################################################################\n");
