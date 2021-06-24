@@ -28,7 +28,7 @@ public class WebAppHeaderTest extends WebAppTestBase {
             " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd\"" +
             " version=\"3.0\"" +
             " id=\"WebApp_ID\"" +
-            ">" + "\n" +
+        ">" + "\n" +
         "</web-app>";
 
     // Not valid: Need 'xmlns:xsi' if 'xsi:schemaLocation' is present.
@@ -39,7 +39,7 @@ public class WebAppHeaderTest extends WebAppTestBase {
             " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd\"" +
             " version=\"3.0\"" +
             " id=\"WebApp_ID\"" +
-            ">" + "\n" +
+        ">" + "\n" +
         "</web-app>";
 
     // Valid
@@ -50,7 +50,7 @@ public class WebAppHeaderTest extends WebAppTestBase {
             // " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd\"" +
             " version=\"3.0\"" +
             " id=\"WebApp_ID\"" +
-            ">" + "\n" +
+        ">" + "\n" +
         "</web-app>";    
 
     // Valid
@@ -60,7 +60,8 @@ public class WebAppHeaderTest extends WebAppTestBase {
             " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
             // " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd\"" +               
             " version=\"3.0\"" +
-            " id=\"WebApp_ID\">" +
+            " id=\"WebApp_ID\"" +
+        ">" +
         "</web-app>";
 
     // Valid
@@ -70,8 +71,9 @@ public class WebAppHeaderTest extends WebAppTestBase {
             " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
             " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd\"" +
             // " version=\"3.0\"" +               
-            " id=\"WebApp_ID\">" +
-       "</web-app>";
+            " id=\"WebApp_ID\"" +
+        ">" +
+        "</web-app>";
 
     // Valid
     protected static String noIDWebApp30 =
@@ -137,7 +139,7 @@ public class WebAppHeaderTest extends WebAppTestBase {
     // Not valid: Need 'xmlns:xsi' if 'xsi:schemaLocation' is present.    
     @Test
     public void testEE6Web30NoSchemaInstance() throws Exception {
-        parseWebApp(noSchemaInstanceWebApp30, "CWWKC2272E", "xml.error"); 
+        parseWebApp(noSchemaInstanceWebApp30, "xml.error", "CWWKC2272E");
     }
 
     @Test
@@ -194,7 +196,8 @@ public class WebAppHeaderTest extends WebAppTestBase {
     public void testWebVersionOnly() throws Exception {
         for ( VersionTestData testData : VERSION_TEST_DATA ) {
             WebApp webApp = parseWebApp(testData.xmlText, testData.version);
-            Assert.assertEquals("Assigned descriptor version", testData.versionText, webApp.getVersion());
+            Assert.assertEquals("Assigned descriptor version",
+                    testData.versionText, webApp.getVersion());
         }
     }
 
@@ -202,7 +205,8 @@ public class WebAppHeaderTest extends WebAppTestBase {
 
     @Test
     public void testVersionOnlyUnknown() throws Exception {
-        parseWebApp(webAppVersionOnlyUnknown, "CWWKC2272E", "unsupported.descriptor.version"); 
+        parseWebApp(webAppVersionOnlyUnknown,
+                "unsupported.descriptor.version", "CWWKC2272E"); 
     }
 
     // A un-provisioned version message is generated when the version is known
@@ -210,7 +214,8 @@ public class WebAppHeaderTest extends WebAppTestBase {
     
     @Test
     public void testVersionOnlyUnprovisioned() throws Exception {
-        parseWebApp(webAppVersionOnly50, WebApp.VERSION_3_1, "CWWKC2272E", "unprovisioned.descriptor.version"); 
+        parseWebApp(webAppVersionOnly50, WebApp.VERSION_3_1,
+                "unprovisioned.descriptor.version", "CWWKC2272E"); 
     }
 
     //
@@ -262,14 +267,16 @@ public class WebAppHeaderTest extends WebAppTestBase {
     public void testWebSchemaOnly() throws Exception {
         for ( SchemaTestData testData : SCHEMA_TEST_DATA ) {
             WebApp webApp = parseWebApp(testData.xmlText, testData.maxVersion);
-            Assert.assertEquals("Assigned descriptor version", testData.expectedVersionText, webApp.getVersion());
+            Assert.assertEquals("Assigned descriptor version",
+                    testData.expectedVersionText, webApp.getVersion());
         }
     }
     
     // The schema must be valid.
     @Test
     public void testSchemaOnlyUnknown() throws Exception {
-        parseWebApp(webAppSchemaOnlyUnknown, "CWWKC2272E", "unsupported.descriptor.namespace"); 
+        parseWebApp(webAppSchemaOnlyUnknown,
+                "unsupported.descriptor.namespace", "CWWKC2272E");
     }
     
     // A un-provisioned schema message is generated when the schema is known
@@ -277,6 +284,7 @@ public class WebAppHeaderTest extends WebAppTestBase {
 
     @Test
     public void testSchemaOnlyUnprovisioned() throws Exception {
-        parseWebApp(webAppSchemaOnly50, WebApp.VERSION_3_1, "CWWKC2272E", "unprovisioned.descriptor.version"); 
+        parseWebApp(webAppSchemaOnly50, WebApp.VERSION_3_1,
+                "unprovisioned.descriptor.version", "CWWKC2272E");
     }    
 }

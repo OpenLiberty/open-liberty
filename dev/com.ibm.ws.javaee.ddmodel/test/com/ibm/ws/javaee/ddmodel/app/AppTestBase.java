@@ -164,4 +164,13 @@ public class AppTestBase extends DDTestBase {
                appBody + "\n" +
                appTail;
     }
+    
+    private Application app14;
+    
+    public Application app14() throws Exception {
+        if ( app14 == null ) {
+            app14 = parseApp( app(Application.VERSION_1_4, ""), Application.VERSION_7 );
+        }
+        return app14;
+    }    
 }

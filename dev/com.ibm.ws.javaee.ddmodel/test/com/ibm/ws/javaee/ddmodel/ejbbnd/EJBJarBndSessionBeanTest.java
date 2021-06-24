@@ -42,8 +42,7 @@ public class EJBJarBndSessionBeanTest extends EJBJarBndTestBase {
 
     @Test
     public void testSessionEmptyLists() throws Exception {
-        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(
-                ejbJarBnd10() + sessionXML1 + "</ejb-jar-bnd>");
+        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(ejbJarBnd10(sessionXML1));
 
         List<EnterpriseBean> sessionBeans = ejbJarBnd.getEnterpriseBeans();
         Assert.assertEquals(1, sessionBeans.size());
@@ -58,18 +57,16 @@ public class EJBJarBndSessionBeanTest extends EJBJarBndTestBase {
     @Test
     public void testSessionEmptyXMI() throws Exception {
         EJBJar ejbJar = parseEJBJar(
-                ejbJar21() +
+                ejbJar21(
                     "<enterprise-beans>" +
                         "<session id=\"s0\"/>" +
-                    "</enterprise-beans>" +
-                "</ejb-jar>");
+                    "</enterprise-beans>"));
 
         EJBJarBnd ejbJarBnd = parseEJBJarBndXMI(
-                ejbJarBinding("") +
+                ejbJarBndXMI("",
                     "<ejbBindings>" +
                         "<enterpriseBean xmi:type=\"ejb:Session\" href=\"" + getEJBJarPath() + "#s0\"/>" +
-                    "</ejbBindings>" +
-                "</ejbbnd:EJBJarBinding>",
+                    "</ejbBindings>"),
                 ejbJar);
         
         List<EnterpriseBean> sessionBeans = ejbJarBnd.getEnterpriseBeans();
@@ -85,8 +82,7 @@ public class EJBJarBndSessionBeanTest extends EJBJarBndTestBase {
 
     @Test
     public void testSessionAttributeNameTest() throws Exception {
-        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(
-                ejbJarBnd11() + sessionXML1 + "</ejb-jar-bnd>");
+        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(ejbJarBnd11(sessionXML1));
 
         List<EnterpriseBean> sessionBeans = ejbJarBnd.getEnterpriseBeans();
         Assert.assertEquals(1, sessionBeans.size());
@@ -97,20 +93,18 @@ public class EJBJarBndSessionBeanTest extends EJBJarBndTestBase {
     @Test
     public void testSessionAttributeNameTestXMI() throws Exception {
         EJBJar ejbJar = parseEJBJar(
-                ejbJar21() +
+                ejbJar21(
                     "<enterprise-beans>" +
                         "<session id=\"s0\">" +
                             "<ejb-name>SessionBean1</ejb-name>" +
                         "</session>" +
-                    "</enterprise-beans>" +
-                "</ejb-jar>");
+                    "</enterprise-beans>"));
                 
         EJBJarBnd ejbJarBnd = parseEJBJarBndXMI(
-                ejbJarBinding("") +
+                ejbJarBndXMI("",
                     "<ejbBindings>" +
                         "<enterpriseBean xmi:type=\"ejb:Session\" href=\"" + getEJBJarPath() + "#s0\"/>" +
-                    "</ejbBindings>" +
-                "</ejbbnd:EJBJarBinding>",
+                    "</ejbBindings>"),
                 ejbJar);
         
         List<EnterpriseBean> sessionBeans = ejbJarBnd.getEnterpriseBeans();
@@ -124,8 +118,7 @@ public class EJBJarBndSessionBeanTest extends EJBJarBndTestBase {
 
     @Test
     public void testSessionAttributeSimpleBindingTest() throws Exception {
-        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(
-                ejbJarBnd11() + sessionXML2 + "</ejb-jar-bnd>");
+        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(ejbJarBnd11(sessionXML2));
         
         List<EnterpriseBean> sessionBeans = ejbJarBnd.getEnterpriseBeans();
         Assert.assertEquals(1, sessionBeans.size());
@@ -137,20 +130,18 @@ public class EJBJarBndSessionBeanTest extends EJBJarBndTestBase {
     @Test
     public void testSessionAttributeSimpleBindingTestXMI() throws Exception {
         EJBJar ejbJar = parseEJBJar(
-                ejbJar21() +
+                ejbJar21(
                     "<enterprise-beans>" +
                         "<session id=\"s0\">" +
                             "<ejb-name>SessionBean2</ejb-name>" +
                         "</session>" +
-                    "</enterprise-beans>" +
-                "</ejb-jar>");
+                    "</enterprise-beans>"));
                 
         EJBJarBnd ejbJarBnd = parseEJBJarBndXMI(
-                ejbJarBinding("") +
+                ejbJarBndXMI("",
                     "<ejbBindings jndiName=\"SimpleBindingName2\">" +
                         "<enterpriseBean xmi:type=\"ejb:Session\" href=\"" + getEJBJarPath() + "#s0\"/>" +
-                    "</ejbBindings>" +
-                "</ejbbnd:EJBJarBinding>",
+                    "</ejbBindings>"),
                 ejbJar);
 
         List<EnterpriseBean> sessionBeans = ejbJarBnd.getEnterpriseBeans();
@@ -165,8 +156,7 @@ public class EJBJarBndSessionBeanTest extends EJBJarBndTestBase {
 
     @Test
     public void testSessionAttributeComponentIdTest() throws Exception {
-        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(
-                ejbJarBnd11() + sessionXML3 + "</ejb-jar-bnd>");
+        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(ejbJarBnd11(sessionXML3));
 
         List<EnterpriseBean> sessionBeans = ejbJarBnd.getEnterpriseBeans();
         Assert.assertEquals(1, sessionBeans.size());
@@ -180,8 +170,7 @@ public class EJBJarBndSessionBeanTest extends EJBJarBndTestBase {
 
     @Test
     public void testSessionAttributeRemoteHomeBindingTest() throws Exception {
-        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(
-                ejbJarBnd11() + sessionXML4 + "</ejb-jar-bnd>");
+        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(ejbJarBnd11(sessionXML4));
 
         List<EnterpriseBean> sessionBeans = ejbJarBnd.getEnterpriseBeans();
         Assert.assertEquals(1, sessionBeans.size());
@@ -195,8 +184,7 @@ public class EJBJarBndSessionBeanTest extends EJBJarBndTestBase {
 
     @Test
     public void testSessionAttributeLocalHomeBindingTest() throws Exception {
-        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(
-                ejbJarBnd11() + sessionXML5 + "</ejb-jar-bnd>");
+        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(ejbJarBnd11(sessionXML5));
 
         List<EnterpriseBean> sessionBeans = ejbJarBnd.getEnterpriseBeans();
         Assert.assertEquals(1, sessionBeans.size());
@@ -212,8 +200,7 @@ public class EJBJarBndSessionBeanTest extends EJBJarBndTestBase {
 
     @Test
     public void testSessionElementInterfaceTest() throws Exception {
-        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(
-                ejbJarBnd10() + sessionXML6 + "</ejb-jar-bnd>");
+        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(ejbJarBnd11(sessionXML6));
 
         List<EnterpriseBean> sessionBeans = ejbJarBnd.getEnterpriseBeans();
         Assert.assertEquals(1, sessionBeans.size());
@@ -231,8 +218,7 @@ public class EJBJarBndSessionBeanTest extends EJBJarBndTestBase {
 
     @Test
     public void testSessionElementEJBRefTest() throws Exception {
-        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(
-                ejbJarBnd10() + sessionXML7 + "</ejb-jar-bnd>");
+        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(ejbJarBnd11(sessionXML7));
 
         List<EnterpriseBean> sessionBeans = ejbJarBnd.getEnterpriseBeans();
         Assert.assertEquals(1, sessionBeans.size());
@@ -244,7 +230,7 @@ public class EJBJarBndSessionBeanTest extends EJBJarBndTestBase {
     @Test
     public void testSessionElementEJBRefXMI() throws Exception {
         EJBJar ejbJar = parseEJBJar(
-                ejbJar21() +
+                ejbJar21(
                     "<enterprise-beans>" +
                         "<session id=\"s0\">" +
                             "<ejb-name>SessionBean7</ejb-name>" +
@@ -252,18 +238,16 @@ public class EJBJarBndSessionBeanTest extends EJBJarBndTestBase {
                                 "<ejb-ref-name>SBEjbRefName7</ejb-ref-name>" +
                             "</ejb-ref>" +
                         "</session>" +
-                    "</enterprise-beans>" +
-                "</ejb-jar>");
+                    "</enterprise-beans>"));
 
         EJBJarBnd ejbJarBnd = parseEJBJarBndXMI(
-                ejbJarBinding("") +
+                ejbJarBndXMI("",
                     "<ejbBindings>" +
                         "<enterpriseBean xmi:type=\"ejb:Session\" href=\"" + getEJBJarPath() + "#s0\"/>" +
                         "<ejbRefBindings jndiName=\"SBBindingName7\">" +
                             "<bindingEjbRef href=\"" + getEJBJarPath() + "#er0\"/>" +
                         "</ejbRefBindings>" +
-                    "</ejbBindings>" +
-                "</ejbbnd:EJBJarBinding>",
+                    "</ejbBindings>"),
                 ejbJar);
         
         List<EnterpriseBean> sessionBeans = ejbJarBnd.getEnterpriseBeans();
@@ -275,8 +259,7 @@ public class EJBJarBndSessionBeanTest extends EJBJarBndTestBase {
 
     @Test
     public void testSessionElementResourceRefTest() throws Exception {
-        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(
-                ejbJarBnd10() + sessionXML8 + "</ejb-jar-bnd>");
+        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(ejbJarBnd11(sessionXML8));
 
         List<EnterpriseBean> sessionBeans = ejbJarBnd.getEnterpriseBeans();
         Assert.assertEquals(1, sessionBeans.size());
@@ -288,7 +271,7 @@ public class EJBJarBndSessionBeanTest extends EJBJarBndTestBase {
     @Test
     public void testSessionElementResourceRefXMI() throws Exception {
         EJBJar ejbJar = parseEJBJar(
-                ejbJar21() +
+                ejbJar21(
                     "<enterprise-beans>" +
                         "<session id=\"s0\">" +
                             "<ejb-name>SessionBean8</ejb-name>" +
@@ -296,18 +279,16 @@ public class EJBJarBndSessionBeanTest extends EJBJarBndTestBase {
                                 "<res-ref-name>resourceRefName8</res-ref-name>" +
                             "</resource-ref>" +
                         "</session>" +
-                    "</enterprise-beans>" +
-                "</ejb-jar>");
+                    "</enterprise-beans>"));
 
         EJBJarBnd ejbJarBnd = parseEJBJarBndXMI(
-                ejbJarBinding("") +
+                ejbJarBndXMI("",
                     "<ejbBindings>" +
                         "<enterpriseBean xmi:type=\"ejb:Session\" href=\"" + getEJBJarPath() + "#s0\"/>" +
                         "<resRefBindings jndiName=\"resourceRefBinding8\">" +
                             "<bindingResourceRef href=\"" + getEJBJarPath() + "#rr0\"/>" +
                         "</resRefBindings>" +
-                    "</ejbBindings>" +
-                "</ejbbnd:EJBJarBinding>",
+                    "</ejbBindings>"),
                 ejbJar);
         
         List<EnterpriseBean> sessionBeans = ejbJarBnd.getEnterpriseBeans();
@@ -331,8 +312,7 @@ public class EJBJarBndSessionBeanTest extends EJBJarBndTestBase {
 
     @Test
     public void testSessionElementResourceRefOptionalElements() throws Exception {
-        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(
-                ejbJarBnd11() + sessionXML11 + "</ejb-jar-bnd>");
+        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(ejbJarBnd11(sessionXML11));        
 
         List<EnterpriseBean> sessionBeans = ejbJarBnd.getEnterpriseBeans();
         Assert.assertEquals(1, sessionBeans.size());
@@ -351,7 +331,7 @@ public class EJBJarBndSessionBeanTest extends EJBJarBndTestBase {
     @Test
     public void testSessionElementResourceRefOptionalElementsXMI() throws Exception {
         EJBJar ejbJar = parseEJBJar(
-                ejbJar21() +
+                ejbJar21(
                     "<enterprise-beans>" +
                         "<session id=\"s0\">" +
                             "<ejb-name>SessionBean11</ejb-name>" +
@@ -359,19 +339,17 @@ public class EJBJarBndSessionBeanTest extends EJBJarBndTestBase {
                                 "<res-ref-name>ResourceRef11</res-ref-name>" +
                             "</resource-ref>" +
                         "</session>" +
-                    "</enterprise-beans>" +
-                "</ejb-jar>");
+                    "</enterprise-beans>"));
                 
         EJBJarBnd ejbJarBnd = parseEJBJarBndXMI(
-                ejbJarBinding("") +
+                ejbJarBndXMI("",
                     "<ejbBindings>" +
                         "<enterpriseBean xmi:type=\"ejb:Session\" href=\"" + getEJBJarPath() + "#s0\"/>" +
                         "<resRefBindings jndiName=\"ResourceRefBindingName11\" loginConfigurationName=\"customLoginConfiguration11\">" +
                             "<bindingResourceRef href=\"" + getEJBJarPath() + "#rr0\"/>" +
                             "<properties name=\"propname\" value=\"propvalue\"/>" +
                         "</resRefBindings>" +
-                    "</ejbBindings>" +
-                "</ejbbnd:EJBJarBinding>",
+                    "</ejbBindings>"),
                 ejbJar);
         
         List<EnterpriseBean> sessionBeans = ejbJarBnd.getEnterpriseBeans();
@@ -395,8 +373,7 @@ public class EJBJarBndSessionBeanTest extends EJBJarBndTestBase {
 
     @Test
     public void testSessionElementResourceEnvRefTest() throws Exception {
-        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(
-                ejbJarBnd10() + sessionXML9 + "</ejb-jar-bnd>");
+        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(ejbJarBnd10(sessionXML9));
 
         List<EnterpriseBean> sessionBeans = ejbJarBnd.getEnterpriseBeans();
         Assert.assertEquals(1, sessionBeans.size());
@@ -409,7 +386,7 @@ public class EJBJarBndSessionBeanTest extends EJBJarBndTestBase {
     @Test
     public void testSessionElementResourceEnvRefTestXMI() throws Exception {
         EJBJar ejbJar = parseEJBJar(
-                ejbJar21() +
+                ejbJar21(
                     "<enterprise-beans>" +
                         "<session id=\"s0\">" +
                             "<ejb-name>SessionBean9</ejb-name>" +
@@ -417,18 +394,16 @@ public class EJBJarBndSessionBeanTest extends EJBJarBndTestBase {
                                 "<resource-env-ref-name>resourceEnvRef9</resource-env-ref-name>" +
                             "</resource-env-ref>" +
                         "</session>" +
-                    "</enterprise-beans>" +
-                "</ejb-jar>");
+                    "</enterprise-beans>"));
                 
         EJBJarBnd ejbJarBnd = parseEJBJarBndXMI(
-                ejbJarBinding("") +
+                ejbJarBndXMI("",
                     "<ejbBindings>" +
                         "<enterpriseBean xmi:type=\"ejb:Session\" href=\"" + getEJBJarPath() + "#s0\"/>" +
                         "<resourceEnvRefBindings jndiName=\"resourceEnvRefBindingName9\">" +
                             "<bindingResourceEnvRef href=\"" + getEJBJarPath() + "#rer0\"/>" +
                         "</resourceEnvRefBindings>" +
-                    "</ejbBindings>" +
-                "</ejbbnd:EJBJarBinding>",
+                    "</ejbBindings>"),
                 ejbJar);
         
         List<EnterpriseBean> sessionBeans = ejbJarBnd.getEnterpriseBeans();
@@ -446,7 +421,8 @@ public class EJBJarBndSessionBeanTest extends EJBJarBndTestBase {
 
     @Test
     public void testSessionElementMessageDestinationTest() throws Exception {
-        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(ejbJarBnd11() + sessionXML10 + "</ejb-jar-bnd>");
+        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(ejbJarBnd10(sessionXML10));
+
         List<EnterpriseBean> sessionBeans = ejbJarBnd.getEnterpriseBeans();
         Assert.assertEquals(1, sessionBeans.size());
         Assert.assertEquals(1, sessionBeans.get(0).getMessageDestinationRefs().size());
@@ -459,7 +435,7 @@ public class EJBJarBndSessionBeanTest extends EJBJarBndTestBase {
     @Test
     public void testSessionElementMessageDestinationXMI() throws Exception {
         EJBJar ejbJar = parseEJBJar(
-                ejbJar21() +
+                ejbJar21(
                     "<enterprise-beans>" +
                         "<session id=\"s0\">" +
                             "<ejb-name>SessionBean10</ejb-name>" +
@@ -467,18 +443,16 @@ public class EJBJarBndSessionBeanTest extends EJBJarBndTestBase {
                                 "<message-destination-ref-name>messageDestinationName10</message-destination-ref-name>" +
                             "</message-destination-ref>" +
                         "</session>" +
-                    "</enterprise-beans>" +
-                "</ejb-jar>");
+                    "</enterprise-beans>"));
 
         EJBJarBnd ejbJarBnd = parseEJBJarBndXMI(
-                ejbJarBinding("") +
+                ejbJarBndXMI("",
                     "<ejbBindings>" +
                         "<enterpriseBean xmi:type=\"ejb:Session\" href=\"" + getEJBJarPath() + "#s0\"/>" +
                         "<messageDestinationRefBindings jndiName=\"messageDestinationBindingName10\">" +
                             "<bindingMessageDestinationRef href=\"" + getEJBJarPath() + "#mdr0\"/>" +
                         "</messageDestinationRefBindings>" +
-                    "</ejbBindings>" +
-                "</ejbbnd:EJBJarBinding>",
+                    "</ejbBindings>"),
                 ejbJar);
         
         List<EnterpriseBean> sessionBeans = ejbJarBnd.getEnterpriseBeans();
@@ -493,7 +467,7 @@ public class EJBJarBndSessionBeanTest extends EJBJarBndTestBase {
     @Test
     public void testSessionAllBeans() throws Exception {
         EJBJarBnd ejbJarBnd = parseEJBJarBndXML(
-                ejbJarBnd11() +
+                ejbJarBnd11(
                     sessionXML1 +
                     sessionXML2 +
                     sessionXML3 +
@@ -504,8 +478,7 @@ public class EJBJarBndSessionBeanTest extends EJBJarBndTestBase {
                     sessionXML8 +
                     sessionXML9 +
                     sessionXML10 +
-                    sessionXML11 +
-            "</ejb-jar-bnd>");
+                    sessionXML11));
 
         List<EnterpriseBean> sessionBeans = ejbJarBnd.getEnterpriseBeans();
         Assert.assertEquals(11, sessionBeans.size());

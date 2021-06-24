@@ -28,10 +28,9 @@ public class WebAppBndReferencesTest extends WebAppBndTestBase {
     @Test
     public void testEJBRef() throws Exception {
         WebBnd bnd = parseWebAppBndXML(
-                webAppBnd12() +
+                webBndXML12(
                     "<ejb-ref name=\"ref0\" binding-name=\"bn0\"/>" +
-                    "<ejb-ref name=\"ref1\" binding-name=\"bn1\"/>" +
-                "</web-bnd>");
+                    "<ejb-ref name=\"ref1\" binding-name=\"bn1\"/>"));
         List<EJBRef> refs = bnd.getEJBRefs();
         Assert.assertEquals(refs.toString(), 2, refs.size());
         Assert.assertEquals("ref0", refs.get(0).getName());
@@ -42,24 +41,24 @@ public class WebAppBndReferencesTest extends WebAppBndTestBase {
 
     @Test
     public void testEJBRefXMI() throws Exception {
-        WebApp webApp = parseWebApp(webApp24Head() +
-                                        "<ejb-ref id=\"id0\">" +
-                                            "<ejb-ref-name>ref0</ejb-ref-name>" +
-                                        "</ejb-ref>" +
-                                        "<ejb-ref id=\"id1\">" +
-                                            "<ejb-ref-name>ref1</ejb-ref-name>" +
-                                        "</ejb-ref>" +
-                                    "</web-app>");
+        WebApp webApp = parseWebApp(
+                webApp(WebApp.VERSION_2_4,
+                       "<ejb-ref id=\"id0\">" +
+                           "<ejb-ref-name>ref0</ejb-ref-name>" +
+                       "</ejb-ref>" +
+                       "<ejb-ref id=\"id1\">" +
+                       "    <ejb-ref-name>ref1</ejb-ref-name>" +
+                        "</ejb-ref>"));
 
-        WebBnd bnd = parseWebAppBndXMI(webAppBnd20("") +
-                                            "<ejbRefBindings jndiName=\"bn0\">" +
-                                                "<bindingEjbRef href=\"WEB-INF/web.xml#id0\"/>" +
-                                            "</ejbRefBindings>" +
-                                            "<ejbRefBindings jndiName=\"bn1\">" +
-                                                "<bindingEjbRef href=\"WEB-INF/web.xml#id1\"/>" +
-                                            "</ejbRefBindings>" +
-                                        "</webappbnd:WebAppBinding>",
-                                        webApp);
+        WebBnd bnd = parseWebAppBndXMI(
+                webBndXMI20("",
+                        "<ejbRefBindings jndiName=\"bn0\">" +
+                            "<bindingEjbRef href=\"WEB-INF/web.xml#id0\"/>" +
+                        "</ejbRefBindings>" +
+                        "<ejbRefBindings jndiName=\"bn1\">" +
+                            "<bindingEjbRef href=\"WEB-INF/web.xml#id1\"/>" +
+                        "</ejbRefBindings>"),
+                webApp);
 
         List<EJBRef> refs = bnd.getEJBRefs();
         Assert.assertEquals(refs.toString(), 2, refs.size());
@@ -71,10 +70,11 @@ public class WebAppBndReferencesTest extends WebAppBndTestBase {
 
     @Test
     public void testResourceRef() throws Exception {
-        WebBnd bnd = parseWebAppBndXML(webAppBnd12() +
-                               "<resource-ref name=\"ref0\" binding-name=\"bn0\"/>" +
-                               "<resource-ref name=\"ref1\" binding-name=\"bn1\"/>" +
-                           "</web-bnd>");
+        WebBnd bnd = parseWebAppBndXML(
+                webBndXML12(
+                    "<resource-ref name=\"ref0\" binding-name=\"bn0\"/>" +
+                    "<resource-ref name=\"ref1\" binding-name=\"bn1\"/>"));
+
         List<ResourceRef> refs = bnd.getResourceRefs();
         Assert.assertEquals(refs.toString(), 2, refs.size());
         Assert.assertEquals("ref0", refs.get(0).getName());
@@ -85,34 +85,34 @@ public class WebAppBndReferencesTest extends WebAppBndTestBase {
 
     @Test
     public void testResourceRefXMI() throws Exception {
-        WebApp webApp = parseWebApp(webApp24Head() +
-                                        "<resource-ref id=\"id0\">" +
-                                            "<res-ref-name>ref0</res-ref-name>" +
-                                        "</resource-ref>" +
-                                        "<resource-ref id=\"id1\">" +
-                                            "<res-ref-name>ref1</res-ref-name>" +
-                                        "</resource-ref>" +
-                                        "<resource-ref id=\"id2\">" +
-                                            "<res-ref-name>ref2</res-ref-name>" +
-                                        "</resource-ref>" +
-                                    "</web-app>");
+        WebApp webApp = parseWebApp(
+                webApp(WebApp.VERSION_2_4,
+                       "<resource-ref id=\"id0\">" +
+                               "<res-ref-name>ref0</res-ref-name>" +
+                       "</resource-ref>" +
+                       "<resource-ref id=\"id1\">" +
+                           "<res-ref-name>ref1</res-ref-name>" +
+                       "</resource-ref>" +
+                       "<resource-ref id=\"id2\">" +
+                           "<res-ref-name>ref2</res-ref-name>" +
+                       "</resource-ref>"));
 
-        WebBnd bnd = parseWebAppBndXMI(webAppBnd20("") +
-                                        "<resRefBindings jndiName=\"bn0\">" +
-                                        "<bindingResourceRef href=\"WEB-INF/web.xml#id0\"/>" +
-                                        "</resRefBindings>" +
-                                        "<resRefBindings jndiName=\"bn1\" loginConfigurationName=\"lcn1\">" +
-                                        "<bindingResourceRef href=\"WEB-INF/web.xml#id1\"/>" +
-                                        "<defaultAuth xmi:type=\"commonbnd:BasicAuthData\"/>" +
-                                        "</resRefBindings>" +
-                                        "<resRefBindings jndiName=\"bn2\" loginConfigurationName=\"lcn2\">" +
-                                        "<bindingResourceRef href=\"WEB-INF/web.xml#id2\"/>" +
-                                        "<defaultAuth xmi:type=\"commonbnd:BasicAuthData\" userId=\"userid2\" password=\"password2\"/>" +
-                                        "<properties name=\"pn0\" value=\"pv0\" description=\"pd0\"/>" +
-                                        "<properties name=\"pn1\" value=\"pv1\" description=\"pd1\"/>" +
-                                        "</resRefBindings>" +
-                                        "</webappbnd:WebAppBinding>",
-                                        webApp);
+        WebBnd bnd = parseWebAppBndXMI(
+                webBndXMI20("",
+                        "<resRefBindings jndiName=\"bn0\">" +
+                                "<bindingResourceRef href=\"WEB-INF/web.xml#id0\"/>" +
+                        "</resRefBindings>" +
+                        "<resRefBindings jndiName=\"bn1\" loginConfigurationName=\"lcn1\">" +
+                            "<bindingResourceRef href=\"WEB-INF/web.xml#id1\"/>" +
+                            "<defaultAuth xmi:type=\"commonbnd:BasicAuthData\"/>" +
+                        "</resRefBindings>" +
+                        "<resRefBindings jndiName=\"bn2\" loginConfigurationName=\"lcn2\">" +
+                            "<bindingResourceRef href=\"WEB-INF/web.xml#id2\"/>" +
+                            "<defaultAuth xmi:type=\"commonbnd:BasicAuthData\" userId=\"userid2\" password=\"password2\"/>" +
+                            "<properties name=\"pn0\" value=\"pv0\" description=\"pd0\"/>" +
+                            "<properties name=\"pn1\" value=\"pv1\" description=\"pd1\"/>" +
+                        "</resRefBindings>"),
+                webApp);
         
         List<ResourceRef> refs = bnd.getResourceRefs();
         Assert.assertEquals(refs.toString(), 3, refs.size());
@@ -148,10 +148,11 @@ public class WebAppBndReferencesTest extends WebAppBndTestBase {
 
     @Test
     public void testResourceEnvRef() throws Exception {
-        WebBnd bnd = parseWebAppBndXML(webAppBnd12() +
-                               "<resource-env-ref name=\"ref0\" binding-name=\"bn0\"/>" +
-                               "<resource-env-ref name=\"ref1\" binding-name=\"bn1\"/>" +
-                           "</web-bnd>");
+        WebBnd bnd = parseWebAppBndXML(
+                webBndXML12(
+                        "<resource-env-ref name=\"ref0\" binding-name=\"bn0\"/>" +
+                        "<resource-env-ref name=\"ref1\" binding-name=\"bn1\"/>"));
+
         List<ResourceEnvRef> refs = bnd.getResourceEnvRefs();
         Assert.assertEquals(refs.toString(), 2, refs.size());
         Assert.assertEquals("ref0", refs.get(0).getName());
@@ -162,24 +163,24 @@ public class WebAppBndReferencesTest extends WebAppBndTestBase {
 
     @Test
     public void testResourceEnvRefXMI() throws Exception {
-        WebApp webApp = parseWebApp(webApp24Head() +
-                                        "<resource-env-ref id=\"id0\">" +
-                                            "<resource-env-ref-name>ref0</resource-env-ref-name>" +
-                                        "</resource-env-ref>" +
-                                        "<resource-env-ref id=\"id1\">" +
-                                            "<resource-env-ref-name>ref1</resource-env-ref-name>" +
-                                        "</resource-env-ref>" +
-                                    "</web-app>");
+        WebApp webApp = parseWebApp(
+                webApp(WebApp.VERSION_2_4,
+                        "<resource-env-ref id=\"id0\">" +
+                                "<resource-env-ref-name>ref0</resource-env-ref-name>" +
+                        "</resource-env-ref>" +
+                        "<resource-env-ref id=\"id1\">" +
+                            "<resource-env-ref-name>ref1</resource-env-ref-name>" +
+                        "</resource-env-ref>"));
 
-        WebBnd bnd = parseWebAppBndXMI(webAppBnd20("") +
-                                            "<resourceEnvRefBindings jndiName=\"bn0\">" +
-                                            "<bindingResourceEnvRef href=\"WEB-INF/web.xml#id0\"/>" +
-                                            "</resourceEnvRefBindings>" +
-                                            "<resourceEnvRefBindings jndiName=\"bn1\">" +
-                                            "<bindingResourceEnvRef href=\"WEB-INF/web.xml#id1\"/>" +
-                                            "</resourceEnvRefBindings>" +
-                                        "</webappbnd:WebAppBinding>",
-                                        webApp);
+        WebBnd bnd = parseWebAppBndXMI(
+                webBndXMI20("",
+                        "<resourceEnvRefBindings jndiName=\"bn0\">" +
+                            "<bindingResourceEnvRef href=\"WEB-INF/web.xml#id0\"/>" +
+                        "</resourceEnvRefBindings>" +
+                            "<resourceEnvRefBindings jndiName=\"bn1\">" +
+                            "<bindingResourceEnvRef href=\"WEB-INF/web.xml#id1\"/>" +
+                        "</resourceEnvRefBindings>"),
+                webApp);
 
         List<ResourceEnvRef> refs = bnd.getResourceEnvRefs();
         Assert.assertEquals(refs.toString(), 2, refs.size());
@@ -191,10 +192,11 @@ public class WebAppBndReferencesTest extends WebAppBndTestBase {
 
     @Test
     public void testMessageDestinationRef() throws Exception {
-        WebBnd bnd = parseWebAppBndXML(webAppBnd12() +
-                           "<message-destination-ref name=\"ref0\" binding-name=\"bn0\"/>" +
-                           "<message-destination-ref name=\"ref1\" binding-name=\"bn1\"/>" +
-                           "</web-bnd>");
+        WebBnd bnd = parseWebAppBndXML(
+                webBndXML12(
+                        "<message-destination-ref name=\"ref0\" binding-name=\"bn0\"/>" +
+                        "<message-destination-ref name=\"ref1\" binding-name=\"bn1\"/>"));
+
         List<MessageDestinationRef> refs = bnd.getMessageDestinationRefs();
         Assert.assertEquals(refs.toString(), 2, refs.size());
         Assert.assertEquals("ref0", refs.get(0).getName());
@@ -205,24 +207,24 @@ public class WebAppBndReferencesTest extends WebAppBndTestBase {
 
     @Test
     public void testMessageDestinationRefXMI() throws Exception {
-        WebApp webApp = parseWebApp(webApp24Head() +
-                                        "<message-destination-ref id=\"id0\">" +
-                                            "<message-destination-ref-name>ref0</message-destination-ref-name>" +
-                                        "</message-destination-ref>" +
-                                        "<message-destination-ref id=\"id1\">" +
-                                            "<message-destination-ref-name>ref1</message-destination-ref-name>" +
-                                        "</message-destination-ref>" +
-                                    "</web-app>");
+        WebApp webApp = parseWebApp(
+                webApp(WebApp.VERSION_2_4,
+                        "<message-destination-ref id=\"id0\">" +
+                            "<message-destination-ref-name>ref0</message-destination-ref-name>" +
+                        "</message-destination-ref>" +
+                            "<message-destination-ref id=\"id1\">" +
+                            "<message-destination-ref-name>ref1</message-destination-ref-name>" +
+                        "</message-destination-ref>"));
 
-        WebBnd bnd = parseWebAppBndXMI(webAppBnd20("") +
-                                        "<messageDestinationRefBindings jndiName=\"bn0\">" +
-                                        "<bindingMessageDestinationRef href=\"WEB-INF/web.xml#id0\"/>" +
-                                        "</messageDestinationRefBindings>" +
-                                        "<messageDestinationRefBindings jndiName=\"bn1\">" +
-                                        "<bindingMessageDestinationRef href=\"WEB-INF/web.xml#id1\"/>" +
-                                        "</messageDestinationRefBindings>" +
-                                        "</webappbnd:WebAppBinding>",
-                                        webApp);
+        WebBnd bnd = parseWebAppBndXMI(
+                webBndXMI20("",
+                        "<messageDestinationRefBindings jndiName=\"bn0\">" +
+                            "<bindingMessageDestinationRef href=\"WEB-INF/web.xml#id0\"/>" +
+                        "</messageDestinationRefBindings>" +
+                        "<messageDestinationRefBindings jndiName=\"bn1\">" +
+                            "<bindingMessageDestinationRef href=\"WEB-INF/web.xml#id1\"/>" +
+                        "</messageDestinationRefBindings>"),
+                webApp);
         
         List<MessageDestinationRef> refs = bnd.getMessageDestinationRefs();
         Assert.assertEquals(refs.toString(), 2, refs.size());

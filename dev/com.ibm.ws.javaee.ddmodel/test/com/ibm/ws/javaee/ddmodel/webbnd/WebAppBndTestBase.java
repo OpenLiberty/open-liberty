@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 IBM Corporation and others.
+ * Copyright (c) 2013, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -58,66 +58,77 @@ public class WebAppBndTestBase extends WebAppTestBase {
                 altMessage, messages);        
     }
 
-    protected static String webAppBinding(String attrs) {
+    protected static final String webAppBndTailXMI =
+            "</webappbnd:WebAppBinding>";
+
+    protected static String webAppBndXMI() {
+        return webBndXMI20("", "");
+    }
+
+    // " xmlns:webapplication=\"webapplication.xmi\" " +
+
+    protected static String webBndXMI20(String attrs, String body) {
         return "<webappbnd:WebAppBinding" +
-               " xmlns:webappbnd=\"webappbnd.xmi\"" +
-               " xmlns:xmi=\"http://www.omg.org/XMI\"" +
-               " xmlns:webapplication=\"webapplication.xmi\" " +
-               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-               " xmi:version=\"2.0\" " +
-               attrs +
+                   " xmlns:webappbnd=\"webappbnd.xmi\"" +
+                   " xmlns:commonbnd=\"commonbnd.xmi\"" +
+                   " xmlns:xmi=\"http://www.omg.org/XMI\"" +
+                   " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+                   " xmi:version=\"2.0\" " +
+                   attrs +
                ">" +
-               "<webapp href=\"WEB-INF/web.xml#WebApp_ID\"/>";
+                   "<webapp href=\"WEB-INF/web.xml#WebApp_ID\"/>" +
+                   body +
+               webAppBndTailXMI;
     }
+    
+    protected static final String webBndTailXML =
+            "</web-bnd>";
 
-    protected static String webBnd10() {
+    protected static String webBndXML10() {
+        return webBndXML10("");
+    }
+    
+    protected static String webBndXML10(String body) {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
-               " <web-bnd" +
-               " xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"" +
-               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
-               " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-web-bnd_1_0.xsd\"" +
-               " version=\"1.0\"" +
-               ">";
+               "<web-bnd" +
+                   " xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"" +
+                   " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
+                   " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-web-bnd_1_0.xsd\"" +
+                   " version=\"1.0\"" +
+               ">" +
+                   body +
+               webBndTailXML;
     }
 
-    protected static String webBnd11() {
+    protected static String webBndXML11() {
+        return webBndXML11("");
+    }
+    
+    protected static String webBndXML11(String body) {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
-               " <web-bnd" +
-               " xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"" +
-               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
-               " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-web-bnd_1_1.xsd\"" +
-               " version=\"1.1\"" +
-               ">";
+               "<web-bnd" +
+                   " xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"" +
+                   " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
+                   " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-web-bnd_1_1.xsd\"" +
+                   " version=\"1.1\"" +
+               ">" +
+                   body +
+               webBndTailXML;
     }
 
-    protected static String webBnd12() {
-        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
-               " <web-bnd" +
-               " xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"" +
-               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
-               " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-web-bnd_1_2.xsd\"" +
-               " version=\"1.2\"" +
-               ">";
+    protected static String webBndXML12() {
+        return webBndXML12("");
     }
 
-    protected static String webAppBnd12() {
+    protected static String webBndXML12(String body) {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
                "<web-bnd" +
                    " xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"" +
                    " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
                    " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-web-bnd_1_2.xsd\"" +
                    " version=\"1.2\"" +
-               ">";
-    }    
-    
-    protected static String webAppBnd20(String attrs) {
-        return "<webappbnd:WebAppBinding" +
-                   " xmlns:webappbnd=\"webappbnd.xmi\"" +
-                   " xmlns:xmi=\"http://www.omg.org/XMI\"" +
-                   " xmlns:commonbnd=\"commonbnd.xmi\"" +
-                   " xmi:version=\"2.0\" " +
-                   attrs +
                ">" +
-               "<webapp href=\"WEB-INF/web.xml#WebApp_ID\"/>";
+                   body +
+               webBndTailXML;
     }
 }

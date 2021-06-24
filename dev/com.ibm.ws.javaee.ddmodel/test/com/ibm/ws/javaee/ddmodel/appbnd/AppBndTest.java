@@ -14,7 +14,6 @@ import java.util.List;
 
 import junit.framework.Assert;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.ibm.ws.javaee.dd.app.Application;
@@ -27,58 +26,50 @@ import com.ibm.ws.javaee.dd.appbnd.SpecialSubject;
 import com.ibm.ws.javaee.dd.appbnd.User;
 
 public class AppBndTest extends AppBndTestBase {
-    protected static Application app14;
-    
-    @BeforeClass
-    public static void initApp() throws Exception {
-        app14 = parseApp( app(Application.VERSION_1_4, ""), Application.VERSION_7 );
-    }
-    
-    //
     
     @Test
     public void testXMIGetVersion() throws Exception {
         Assert.assertEquals("Incorrect application binding version",
                 "XMI",
-                parseAppBndXMI( appBndXMI("", ""), app14 ).getVersion());
+                parseAppBndXMI( appBndXMI("", ""), app14() ).getVersion());
     }
 
     @Test
     public void testXMLGetVersion10() throws Exception {
         Assert.assertEquals("Incorrect application binding version",
                 "1.0",
-                parseAppBndXML(appBnd10Head + appBndTail).getVersion());
+                parseAppBndXML(appBnd10()).getVersion());
     }
     
     @Test
     public void testXMLGetVersion11() throws Exception {    
         Assert.assertEquals("Incorrect application binding version",
                 "1.1",
-                parseAppBndXML(appBnd11Head + appBndTail).getVersion());
+                parseAppBndXML(appBnd11()).getVersion());
     }
     
     @Test
     public void testXMLGetVersion12() throws Exception {        
         Assert.assertEquals("Incorrect application binding version",
                 "1.2",
-                parseAppBndXML(appBnd12Head + appBndTail).getVersion());
+                parseAppBndXML(appBnd12()).getVersion());
     }
 
     @Test
     public void testXMIAppName() throws Exception {
-        parseAppBndXMI( appBndXMI("appName=\"an\"", ""), app14 );
+        parseAppBndXMI( appBndXMI("appName=\"an\"", ""), app14() );
     }
 
     @Test
     public void testXMLSecurityRole() throws Exception {
         ApplicationBnd appBnd = parseAppBndXML(
-                appBnd10Head +
+                appBnd10(
                     "<security-role/>" +
                     "<security-role name=\"sr1\">" +
-                    "<user/>" +
-                    "<group/>" +
-                    "<special-subject/>" +
-                    "<run-as/>" +
+                        "<user/>" +
+                        "<group/>" +
+                        "<special-subject/>" +
+                        "<run-as/>" +
                     "</security-role>" +
                     "<security-role name=\"sr2\">" +
                         "<user name=\"u0n\" access-id=\"u0ai\"/>" +
@@ -90,8 +81,7 @@ public class AppBndTest extends AppBndTestBase {
                         "<special-subject type=\"ALL_AUTHENTICATED_IN_TRUSTED_REALMS\"/>" +
                         "<special-subject type=\"SERVER\"/>" +
                         "<run-as userid=\"rau\" password=\"rap\"/>" +
-                    "</security-role>" +
-                appBndTail);
+                    "</security-role>"));
 
         List<SecurityRole> srs = appBnd.getSecurityRoles();
         Assert.assertEquals(srs.toString(), 3, srs.size());
@@ -263,7 +253,7 @@ public class AppBndTest extends AppBndTestBase {
                         "</authorizations>" +
                     "</authorizationTable>" +
                 "</com.ibm.ejs.models.base.bindings.applicationbnd.applicationbnd:ApplicationBinding>",
-                app14);
+                app14() );
 
         List<SecurityRole> srs = appBnd.getSecurityRoles();
         Assert.assertEquals(srs.toString(), 1, srs.size());
@@ -277,24 +267,21 @@ public class AppBndTest extends AppBndTestBase {
 
     @Test
     public void testXMISecurityRoleEmpty() throws Exception {
-        Application app = parseApp( app(Application.VERSION_1_4, ""), Application.VERSION_7 );
-
         parseAppBndXMI( appBndXMI("",
-                    "<authorizationTable/>" +
-                    "<runAsMap/>"),
-                  app );
+                            "<authorizationTable/>" +
+                            "<runAsMap/>"),
+                        app14() );
     }
 
     @Test
     public void testXMLProfile() throws Exception {
-        ApplicationBnd appBnd = parseAppBndXML(
-                appBnd10Head +
+        ApplicationBnd appBnd =
+                parseAppBndXML( appBnd10(
                     "<profile/>" +
                         "<profile name=\"pn1\">" +
                         "<client-profile/>" +
                         "<client-profile name=\"cpn\"/>" +
-                    "</profile>" +
-                appBndTail);
+                    "</profile>"));
 
         List<Profile> profiles = appBnd.getProfiles();
         Assert.assertEquals(profiles.toString(), 2, profiles.size());
@@ -313,10 +300,8 @@ public class AppBndTest extends AppBndTestBase {
 
     @Test
     public void testXMLJASPIRef() throws Exception {
-        ApplicationBnd appBnd = parseAppBndXML(
-            appBnd10Head +
-                "<jaspi-ref provider-name=\"pn0\"/>" +
-            appBndTail);
+        ApplicationBnd appBnd =
+                parseAppBndXML(appBnd10("<jaspi-ref provider-name=\"pn0\"/>"));
         Assert.assertEquals("pn0", appBnd.getJASPIRef().getProviderName());
     }        
 }

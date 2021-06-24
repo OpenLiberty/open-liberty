@@ -64,39 +64,7 @@ public class AppBndTestBase extends AppTestBase {
 
     //
 
-    protected static final String appBnd10Head = 
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
-            "<application-bnd" +
-                " xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"" +
-                " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
-                " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-application-bnd_1_0.xsd\"" +
-                " version=\"1.0\"" +
-            ">";
-
-    protected static final String appBnd11Head =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
-            "<application-bnd" +
-                " xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"" +
-                " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
-                " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-application-bnd_1_1.xsd\"" +
-                " version=\"1.1\"" +
-            ">";
-
-    protected static final String appBnd12Head =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
-            "<application-bnd" +
-                " xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"" +
-                " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
-                " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-application-bnd_1_2.xsd\"" +
-                " version=\"1.2\"" +
-            ">";
-    
-    protected static final String appBndTail =
-            "</application-bnd>";
-
-    //
-
-    protected static final String appBndXMI(String attrs, String body) {
+    public static final String appBndXMI(String attrs, String body) {
         return "<applicationbnd:ApplicationBinding" +
                     " xmlns:applicationbnd=\"applicationbnd.xmi\"" +
                     " xmlns:commonbnd=\"commonbnd.xmi\"" +
@@ -107,5 +75,56 @@ public class AppBndTestBase extends AppTestBase {
                     "<application href=\"META-INF/application.xml#Application_ID\"/>" + "\n" +
                     body + "\n" +
                 "</applicationbnd:ApplicationBinding>";        
-    }                  
+    }
+    
+    public static final String appBndTail =
+            "</application-bnd>";
+    
+    public final String appBnd10() {
+        return appBnd10("");
+    }
+    
+    public final String appBnd10(String body) {
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
+               "<application-bnd" +
+                   " xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"" +
+                   " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
+                   " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-application-bnd_1_0.xsd\"" +
+                   " version=\"1.0\"" +
+               ">" + "\n" +
+                   body + "\n" +
+               appBndTail;
+    }
+    
+    public final String appBnd11() {
+        return appBnd11("");
+    }
+    
+    public final String appBnd11(String body) {
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
+               "<application-bnd" +
+                   " xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"" +
+                   " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
+                   " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-application-bnd_1_1.xsd\"" +
+                   " version=\"1.1\"" +
+               ">" + "\n" +
+                   body + "\n" +
+               appBndTail;
+    }
+
+    public final String appBnd12() {
+        return appBnd12("");
+    }
+
+    public final String appBnd12(String body) {
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
+               "<application-bnd" +
+                   " xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"" +
+                   " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
+                   " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-application-bnd_1_2.xsd\"" +
+                   " version=\"1.2\"" +
+               ">" + "\n" +
+                   body + "\n" +
+               appBndTail;
+    }
 }

@@ -40,7 +40,7 @@ public class EJBJarBndListenerPortTest extends EJBJarBndTestBase {
 
     @Test
     public void testListenerPortAttributeName() throws Exception {
-        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(ejbJarBnd11() + listenerPortXML + "</ejb-jar-bnd>");
+        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(ejbJarBnd11(listenerPortXML));
 
         List<EnterpriseBean> mdBeans = ejbJarBnd.getEnterpriseBeans();
         Assert.assertEquals("Only expected 1 message driven bean", 1, mdBeans.size());

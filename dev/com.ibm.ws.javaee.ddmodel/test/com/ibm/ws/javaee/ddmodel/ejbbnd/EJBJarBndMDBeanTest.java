@@ -42,10 +42,7 @@ public class EJBJarBndMDBeanTest extends EJBJarBndTestBase {
 
     @Test
     public void testMessageDrivenEmptyLists() throws Exception {
-        String mdbXML = ejbJarBnd11() +
-                            messageDrivenXML1 +
-                        "</ejb-jar-bnd>";
-        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(mdbXML);
+        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(ejbJarBnd11(messageDrivenXML1));
 
         List<EnterpriseBean> mdBeans = ejbJarBnd.getEnterpriseBeans();
         Assert.assertEquals(1, mdBeans.size());
@@ -62,10 +59,7 @@ public class EJBJarBndMDBeanTest extends EJBJarBndTestBase {
 
     @Test
     public void testMessageDrivenAttributeName() throws Exception {
-        String mdbXML = ejbJarBnd11() +
-                            messageDrivenXML1 +
-                        "</ejb-jar-bnd>";
-        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(mdbXML);
+        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(ejbJarBnd11(messageDrivenXML1));
 
         List<EnterpriseBean> mdBeans = ejbJarBnd.getEnterpriseBeans();
         Assert.assertEquals(1, mdBeans.size());
@@ -80,10 +74,7 @@ public class EJBJarBndMDBeanTest extends EJBJarBndTestBase {
 
     @Test
     public void testMessageDrivenElementListenerPort() throws Exception {
-        String mdbXML = ejbJarBnd11() +
-                            messageDrivenXML2 +
-                        "</ejb-jar-bnd>";
-        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(mdbXML);
+        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(ejbJarBnd11(messageDrivenXML2));
 
         List<EnterpriseBean> mdBeans = ejbJarBnd.getEnterpriseBeans();
         Assert.assertEquals(1, mdBeans.size());
@@ -99,10 +90,7 @@ public class EJBJarBndMDBeanTest extends EJBJarBndTestBase {
 
     @Test
     public void testMessageDrivenElementJCAAdapter() throws Exception {
-        String mdbXML = ejbJarBnd11() +
-                            messageDrivenXML3 +
-                        "</ejb-jar-bnd>";
-        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(mdbXML);
+        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(ejbJarBnd11(messageDrivenXML3));
 
         List<EnterpriseBean> mdBeans = ejbJarBnd.getEnterpriseBeans();
         Assert.assertEquals(1, mdBeans.size());
@@ -121,10 +109,7 @@ public class EJBJarBndMDBeanTest extends EJBJarBndTestBase {
 
     @Test
     public void testMessageDrivenElementEjbRef() throws Exception {
-        String mdbXML = ejbJarBnd11() +
-                            messageDrivenXML4 +
-                        "</ejb-jar-bnd>";
-        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(mdbXML);
+        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(ejbJarBnd11(messageDrivenXML4));
 
         List<EnterpriseBean> mdBeans = ejbJarBnd.getEnterpriseBeans();
         Assert.assertEquals(1, mdBeans.size());
@@ -144,10 +129,7 @@ public class EJBJarBndMDBeanTest extends EJBJarBndTestBase {
 
     @Test
     public void testMessageDrivenElementResourceRef() throws Exception {
-        String mdbXML = ejbJarBnd11() +
-                            messageDrivenXML5 +
-                        "</ejb-jar-bnd>";
-        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(mdbXML);
+        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(ejbJarBnd11(messageDrivenXML5));
 
         List<EnterpriseBean> mdBeans = ejbJarBnd.getEnterpriseBeans();
         Assert.assertEquals(1, mdBeans.size());
@@ -173,10 +155,7 @@ public class EJBJarBndMDBeanTest extends EJBJarBndTestBase {
 
     @Test
     public void testMessageDrivenElementResourceRefOptionalElements() throws Exception {
-        String mdbXML = ejbJarBnd11() +
-                            messageDrivenXML6 +
-                        "</ejb-jar-bnd>";
-        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(mdbXML);
+        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(ejbJarBnd11(messageDrivenXML6));
 
         List<EnterpriseBean> mdBeans = ejbJarBnd.getEnterpriseBeans();
         Assert.assertEquals(1, mdBeans.size());
@@ -204,10 +183,7 @@ public class EJBJarBndMDBeanTest extends EJBJarBndTestBase {
 
     @Test
     public void testMessageDrivenElementResourceRefMultiple() throws Exception {
-        String mdbXML = ejbJarBnd11() +
-                            messageDrivenXML7 +
-                        "</ejb-jar-bnd>";
-        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(mdbXML);
+        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(ejbJarBnd11(messageDrivenXML7));
 
         List<EnterpriseBean> mdBeans = ejbJarBnd.getEnterpriseBeans();
         Assert.assertEquals(1, mdBeans.size());
@@ -229,10 +205,7 @@ public class EJBJarBndMDBeanTest extends EJBJarBndTestBase {
 
     @Test
     public void testMessageDrivenElementResourceEnvRef() throws Exception {
-        String mdbXML = ejbJarBnd11() +
-                            messageDrivenXML8 +
-                        "</ejb-jar-bnd>";
-        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(mdbXML);
+        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(ejbJarBnd11(messageDrivenXML8));
 
         List<EnterpriseBean> mdBeans = ejbJarBnd.getEnterpriseBeans();
         Assert.assertEquals(1, mdBeans.size());
@@ -254,10 +227,7 @@ public class EJBJarBndMDBeanTest extends EJBJarBndTestBase {
 
     @Test
     public void testMessageDrivenElementResourceEnvRefMultiple() throws Exception {
-        String mdbXML = ejbJarBnd11() +
-                            messageDrivenXML9 +
-                        "</ejb-jar-bnd>";
-        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(mdbXML);
+        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(ejbJarBnd11(messageDrivenXML9));
 
         List<EnterpriseBean> mdBeans = ejbJarBnd.getEnterpriseBeans();
         Assert.assertEquals(1, mdBeans.size());
@@ -279,10 +249,7 @@ public class EJBJarBndMDBeanTest extends EJBJarBndTestBase {
 
     @Test
     public void testMessageDrivenElementMessageDestinationRef() throws Exception {
-        String mdbXML = ejbJarBnd11() +
-                            messageDrivenXML10 +
-                        "</ejb-jar-bnd>";
-        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(mdbXML);
+        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(ejbJarBnd11(messageDrivenXML10));
 
         List<EnterpriseBean> mdBeans = ejbJarBnd.getEnterpriseBeans();
         Assert.assertEquals(1, mdBeans.size());
@@ -296,18 +263,17 @@ public class EJBJarBndMDBeanTest extends EJBJarBndTestBase {
 
     @Test
     public void testMessageDrivenMultiple() throws Exception {
-        String mdbXML = ejbJarBnd11() +
-                            messageDrivenXML1 +
-                            messageDrivenXML2 +
-                            messageDrivenXML3 +
-                            messageDrivenXML4 +
-                            messageDrivenXML5 +
-                            messageDrivenXML6 +
-                            messageDrivenXML7 +
-                            messageDrivenXML8 +
-                            messageDrivenXML9 +
-                            messageDrivenXML10 +
-                        "</ejb-jar-bnd>";
+        String mdbXML = ejbJarBnd11(
+                messageDrivenXML1 +
+                messageDrivenXML2 +
+                messageDrivenXML3 +
+                messageDrivenXML4 +
+                messageDrivenXML5 +
+                messageDrivenXML6 +
+                messageDrivenXML7 +
+                messageDrivenXML8 +
+                messageDrivenXML9 +
+                messageDrivenXML10);
         EJBJarBnd ejbJarBnd = parseEJBJarBndXML(mdbXML);
 
         List<EnterpriseBean> mdBeans = ejbJarBnd.getEnterpriseBeans();

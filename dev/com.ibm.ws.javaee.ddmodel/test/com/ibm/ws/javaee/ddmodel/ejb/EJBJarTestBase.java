@@ -57,20 +57,20 @@ public class EJBJarTestBase extends DDTestBase {
 
     //
 
-    public EJBJar parseEJBJar(String ddText) throws Exception {
-        return parseEJBJar(ddText, EJBJar.VERSION_3_2, getEJBInWar(), null);
+    public EJBJar parseEJBJar(String ddbody) throws Exception {
+        return parseEJBJar(ddbody, EJBJar.VERSION_3_2, getEJBInWar(), null);
     }
     
-    public EJBJar parseEJBJar(String ddText, String altMessage, String...messages) throws Exception {
-        return parseEJBJar(ddText, EJBJar.VERSION_3_2, getEJBInWar(), altMessage, messages);
+    public EJBJar parseEJBJar(String ddbody, String altMessage, String...messages) throws Exception {
+        return parseEJBJar(ddbody, EJBJar.VERSION_3_2, getEJBInWar(), altMessage, messages);
     }
     
-    protected EJBJar parseEJBJar(String ddText, int maxSchemaVersion) throws Exception {
-        return parseEJBJar(ddText, maxSchemaVersion, getEJBInWar(), null);
+    protected EJBJar parseEJBJar(String ddbody, int maxSchemaVersion) throws Exception {
+        return parseEJBJar(ddbody, maxSchemaVersion, getEJBInWar(), null);
     }
     
-    protected EJBJar parseEJBJar(String ddText, int maxSchemaVersion, String altMessage, String...messages) throws Exception {
-        return parseEJBJar(ddText, maxSchemaVersion, getEJBInWar(), altMessage, messages);
+    protected EJBJar parseEJBJar(String ddbody, int maxSchemaVersion, String altMessage, String...messages) throws Exception {
+        return parseEJBJar(ddbody, maxSchemaVersion, getEJBInWar(), altMessage, messages);
     }    
 
     protected static EJBJarEntryAdapter createEJBJarAdapter(int maxSchemaVersion) {
@@ -94,7 +94,7 @@ public class EJBJarTestBase extends DDTestBase {
     public static final boolean EJB_IN_WAR = true;
     
     /**
-     * Parse XML text as an EJB deployment descriptor using
+     * Parse XML body as an EJB deployment descriptor using
      * the rules for the specified maximum schema version.
      * Answer the parsed root descriptor element.
      * 
@@ -107,11 +107,11 @@ public class EJBJarTestBase extends DDTestBase {
      * Parsing assigns names to container artifacts using
      * a unique ID.  See {@link #generateId()}.
      *
-     * @param ddText XML text which is to be parsed.
+     * @param ddbody XML body which is to be parsed.
      * @param maxSchemaVersion The maximum schema version to
      *     use to parse the descriptor.
-     * @param altMessage Alternate error text.
-     * @param messages Error text which is expected.
+     * @param altMessage Alternate error body.
+     * @param messages Error body which is expected.
      *
      * @return The parsed root EJB descriptor element, or null
      *     if an expected exception is thrown.
@@ -121,7 +121,7 @@ public class EJBJarTestBase extends DDTestBase {
      *     an exception is expected.
      */
     protected static EJBJar parseEJBJar(
-            String ddText, int maxSchemaVersion, boolean ejbInWar,
+            String ddbody, int maxSchemaVersion, boolean ejbInWar,
             String altMessage, String... messages) throws Exception {
         
         String appPath = null;
@@ -146,7 +146,7 @@ public class EJBJarTestBase extends DDTestBase {
 
         return parse(
                 appPath, modulePath, fragmentPath,
-                ddText, createEJBJarAdapter(maxSchemaVersion), ddPath,
+                ddbody, createEJBJarAdapter(maxSchemaVersion), ddPath,
                 null, null,
                 WebModuleInfo.class, webModuleInfo,
                 altMessage, messages);
@@ -222,35 +222,35 @@ public class EJBJarTestBase extends DDTestBase {
     
     //
     
-    protected static String ejbJar11(String text) {
-        return ejbJar11Head() + text + ejbJarTail();
+    protected static String ejbJar11(String body) {
+        return ejbJar11Head() + body + ejbJarTail();
     }
 
-    protected static String ejbJar20(String text) {
-        return ejbJar20Head() + text + ejbJarTail();        
+    protected static String ejbJar20(String body) {
+        return ejbJar20Head() + body + ejbJarTail();        
     }
     
-    protected static String ejbJar21(String text) {
-        return ejbJar21Head() + text + ejbJarTail();        
+    protected static String ejbJar21(String body) {
+        return ejbJar21Head() + body + ejbJarTail();        
     }
 
-    protected static String ejbJar30(String attrs, String text) {
-        return ejbJar30Head(attrs) + text + ejbJarTail();        
+    protected static String ejbJar30(String attrs, String body) {
+        return ejbJar30Head(attrs) + body + ejbJarTail();        
     }
 
-    protected static String ejbJar31(String attrs, String text) {
-        return ejbJar31Head(attrs) + text + ejbJarTail();
+    protected static String ejbJar31(String attrs, String body) {
+        return ejbJar31Head(attrs) + body + ejbJarTail();
     }
 
-    protected static String ejbJar32(String attrs, String text) {
-        return ejbJar32Head(attrs) + text + ejbJarTail();
+    protected static String ejbJar32(String attrs, String body) {
+        return ejbJar32Head(attrs) + body + ejbJarTail();
     }
     
-    protected static String ejbJar40(String attrs, String text) {
-        return ejbJar40Head(attrs) + text + ejbJarTail();
+    protected static String ejbJar40(String attrs, String body) {
+        return ejbJar40Head(attrs) + body + ejbJarTail();
     }
 
-    protected static String ejbJar(int version, String attrs, String text) {
+    protected static String ejbJar(int version, String attrs, String body) {
         String head;
 
         if ( version == EJBJar.VERSION_1_1 ) {
@@ -271,6 +271,17 @@ public class EJBJarTestBase extends DDTestBase {
             throw new IllegalArgumentException("Unknown EJBJar version [ " + version + " ]");
         }
         
-        return head + text + ejbJarTail();
+        return head + body + ejbJarTail();
+    }
+    
+    //
+
+    private EJBJar ejbJar21;
+
+    public EJBJar getEJBJar21() throws Exception {
+        if ( ejbJar21 == null ) {
+            ejbJar21 = parseEJBJar( ejbJar21Head() + ejbJarTail() );
+        }
+        return ejbJar21;
     }
 }

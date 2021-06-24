@@ -31,17 +31,6 @@ public class EJBJarExtTestBase extends EJBJarTestBase {
     }
 
     //
-
-    private EJBJar ejbJar21;
-
-    public EJBJar getEJBJar21() throws Exception {
-        if ( ejbJar21 == null ) {
-            ejbJar21 = parseEJBJar(ejbJar21() + "</ejb-jar>");
-        }
-        return ejbJar21;
-    }
-
-    //
     
     protected EJBJarExtAdapter createEJBJarExtAdapter() {
         return new EJBJarExtAdapter();
@@ -111,21 +100,18 @@ public class EJBJarExtTestBase extends EJBJarTestBase {
                 altMessage, messages);                    
     }
 
-    protected static String ejbJar21() {
-        return "<ejb-jar" +
-                   " xmlns=\"http://java.sun.com/xml/ns/j2ee\"" +
-                   " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-                   " xsi:schemaLocation=\"http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/ejb-jar_2_1.xsd\"" +
-                   " version=\"2.1\"" +
-                   " id=\"EJBJar_ID\"" +
-               ">";
+    protected String ejbJarExtXMI() {
+        return ejbJarExtXMI("", "");
     }
 
-    protected String ejbJarExtXMI(String attrs) {
-        return ejbJarExtXMI(attrs, getEJBJarPath() );
+    protected String ejbJarExtXMI(String attrs, String body) {
+        return ejbJarExtXMI(attrs, getEJBJarPath(), body );
     }
 
-    protected static String ejbJarExtXMI(String attrs, String ejbDDPath) {
+    protected static final String ejbJarXMITail =
+            "</ejbext:EJBJarExtension>";
+
+    protected static String ejbJarExtXMI(String attrs, String ejbDDPath, String body) {
         return "<ejbext:EJBJarExtension" +
                    " xmlns:ejbext=\"ejbext.xmi\"" +
                    " xmlns:xmi=\"http://www.omg.org/XMI\"" +
@@ -133,26 +119,43 @@ public class EJBJarExtTestBase extends EJBJarTestBase {
                    " xmi:version=\"2.0\"" +
                    " " + attrs +
                ">" +
-               "<ejbJar href=\"" + ejbDDPath + "#EJBJar_ID\"/>";
+               "<ejbJar href=\"" + ejbDDPath + "#EJBJar_ID\"/>" +
+                   body +
+               ejbJarXMITail;
     }
 
-    protected static String ejbJarExt10XML() {
+    protected static final String ejbJarXMLTail =
+            "</ejb-jar-ext>";
+    
+    protected static String ejbJarExt10() {
+        return ejbJarExt10("");
+    }
+
+    protected static String ejbJarExt10(String body) {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
                "<ejb-jar-ext" +
                    " xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"" +
                    " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
                    " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-ext_1_0.xsd\"" +
                    " version=\"1.0\"" +
-               ">";
+               ">" +
+                   body +
+               ejbJarXMLTail;
     }
 
-    protected static String ejbJarExt11XML() {
+    protected static String ejbJarExt11() {
+        return ejbJarExt11("");
+    }
+
+    protected static String ejbJarExt11(String body) {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
                "<ejb-jar-ext" +
                    " xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"" +
                    " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
                    " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-ext_1_1.xsd\"" +
                    " version=\"1.1\"" +
-               ">";
+               ">" +
+                   body +
+               ejbJarXMLTail;
     }
 }

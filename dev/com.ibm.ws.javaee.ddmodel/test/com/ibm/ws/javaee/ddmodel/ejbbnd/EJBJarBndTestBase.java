@@ -29,23 +29,6 @@ public class EJBJarBndTestBase extends EJBJarTestBase {
 
     //
     
-    // TODO: Haven't found the correct pattern for this ...
-    //       Need to use 'getEJBInJar', which is instance
-    //       state because of how repeat testing works.
-    //       But the value should be initialized as a static
-    //       variable, since it is to be shared between tests.
-    
-    private EJBJar ejbJar21;
-
-    public EJBJar getEJBJar21() throws Exception {
-        if ( ejbJar21 == null ) {
-            ejbJar21 = parseEJBJar(ejbJar21() + "</ejb-jar>");
-        }
-        return ejbJar21;
-    }
-
-    //
-    
     protected EJBJarBndAdapter createEJBJarBndAdapter() {
         return new EJBJarBndAdapter();
     }
@@ -97,21 +80,19 @@ public class EJBJarBndTestBase extends EJBJarTestBase {
                 altMessage, messages);
     }
 
-    public static String ejbJar21() {
-        return "<ejb-jar" +
-                   " xmlns=\"http://java.sun.com/xml/ns/j2ee\"" +
-                   " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-                   " xsi:schemaLocation=\"http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/ejb-jar_2_1.xsd\"" +
-                   " version=\"2.1\"" +
-                   " id=\"EJBJar_ID\"" +
-               ">";
+
+    public String ejbJarBndXMI() {
+        return ejbJarBndXMI("", "");
     }
 
-    public String ejbJarBinding(String attrs) {
-        return ejbJarBinding( attrs, getEJBJarPath() );
+    public String ejbJarBndXMI(String attrs, String body) {
+        return ejbJarBndXMI( attrs, getEJBJarPath(), body );
     }
 
-    public static String ejbJarBinding(String attrs, String ddPath) {
+    public static final String ejbJarTailXMI =
+            "</ejbbnd:EJBJarBinding>";
+
+    public static String ejbJarBndXMI(String attrs, String ddPath, String body) {
         return "<ejbbnd:EJBJarBinding" +
                    " xmlns:ejbbnd=\"ejbbnd.xmi\"" +
                    " xmlns:xmi=\"http://www.omg.org/XMI\"" +
@@ -119,37 +100,60 @@ public class EJBJarBndTestBase extends EJBJarTestBase {
                    " xmi:version=\"2.0\"" +
                    " " + attrs +
                ">" +
-                   "<ejbJar href=\"META-INF/" + ddPath + "#EJBJar_ID\"/>";
+                   "<ejbJar href=\"META-INF/" + ddPath + "#EJBJar_ID\"/>" + "\n" +
+                   body + "\n" +
+               ejbJarTailXMI;
     }
 
+    public static final String ejbJarTailXML =
+            "</ejb-jar-bnd>";
+    
     public static String ejbJarBnd10() {
+        return ejbJarBnd10("");
+    }
+
+    public static String ejbJarBnd10(String body) {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                "<ejb-jar-bnd" +
                    " xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"\n" +
                    " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
                    " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee" +
                    " http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-bnd_1_0.xsd\"" +
-                   " version=\"1.0\">";
+                   " version=\"1.0\">" + "\n" +
+                   body + "\n" +
+               ejbJarTailXML;
     }
 
     public static String ejbJarBnd11() {
+        return ejbJarBnd11("");
+    }
+    
+    public static String ejbJarBnd11(String body) {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                "<ejb-jar-bnd" +
                    " xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"\n" +
                    " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
                    " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee" +
                        " http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-bnd_1_1.xsd\"\n" +
-                   " version=\"1.1\">";
+                   " version=\"1.1\">" + "\n" +
+                   body + "\n" +
+               ejbJarTailXML;
     }
 
     public static String ejbJarBnd12() {
+        return ejbJarBnd12("");
+    }
+
+    public static String ejbJarBnd12(String body) {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                "<ejb-jar-bnd" +
                    " xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"\n" +
                    " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
                    " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee" +
                        " http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-bnd_1_2.xsd\"\n" +
-                   " version=\"1.2\">";
+                   " version=\"1.2\">" + "\n" +
+                   body + "\n" +
+               ejbJarTailXML;
     }
 
     public static final String sessionXML8 =
@@ -206,7 +210,7 @@ public class EJBJarBndTestBase extends EJBJarTestBase {
                "</ejbBindings>";
     }
 
-    public static final String testCurrentBackendID =
+    public static final String ejbBndXMLCurrentBackendID =
             "<ejbbnd:EJBJarBinding" +
                 " xmi:version=\"2.0\"" +
                 " xmlns:xmi=\"http://www.omg.org/XMI\"" +
@@ -215,7 +219,7 @@ public class EJBJarBndTestBase extends EJBJarTestBase {
                 " xmi:id=\"ejb-jar_ID_Bnd\"" +
                 " currentBackendId=\"testID\"" + 
             ">" +
-                "</ejbbnd:EJBJarBinding>";
+            "</ejbbnd:EJBJarBinding>";
 
     public static final String defaultDataSourceXMI1 =
             " <defaultDatasource xmi:id=\"ResourceRefBinding_123\"/>";

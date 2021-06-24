@@ -164,14 +164,16 @@ public class DDTestBase {
         Container fragmentRoot = ((fragmentPath == null) ? null : mockery.mock(Container.class, "fragmentRoot" + mockId++));
 
         Entry ddEntry = mockery.mock(Entry.class, "ddEntry" + mockId++);
-        
+
         wire(appPath, modulePath, fragmentPath, ddPath,
              appRoot, moduleEntry, moduleRoot, fragmentEntry, fragmentRoot, ddEntry,
              ddText,
              adaptData, cacheData);
 
+        Container ddRoot = ( (fragmentRoot == null) ? moduleRoot : fragmentRoot );
+
         try {
-            T returnValue = ddAdapter.adapt(moduleRoot, rootOverlay, artifactContainer, moduleRoot);
+            T returnValue = ddAdapter.adapt(ddRoot, rootOverlay, artifactContainer, ddRoot);
             verifySuccess(altMessage, messages);
             return returnValue;
 

@@ -41,27 +41,25 @@ public class EJBJarBndInterfaceTest extends EJBJarBndTestBase {
 
     @Test
     public void testInterfaceAttributeBindingName() throws Exception {
-        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(EJBJarBndTestBase.ejbJarBnd11() + interfaceXML1 + "</ejb-jar-bnd>");
+        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(ejbJarBnd11(interfaceXML1));
         Assert.assertEquals("interfaceBindingName1", ((Session) ejbJarBnd.getEnterpriseBeans().get(0)).getInterfaces().get(0).getBindingName());
     }
 
     @Test
     public void testInterfaceAttributeClass() throws Exception {
-        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(EJBJarBndTestBase.ejbJarBnd11() + interfaceXML1 + "</ejb-jar-bnd>");
+        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(ejbJarBnd11(interfaceXML1));
         Assert.assertEquals("com.ibm.Class1", ((Session) ejbJarBnd.getEnterpriseBeans().get(0)).getInterfaces().get(0).getClassName());
     }
 
     protected static final String interfaceXML2 =
-            ejbJarBnd10() +
-                "<session name=\"SessionBean2\">\n" +
-                    "<interface binding-name=\"interfaceBinding2\"\n" +
-                    "class=\"com.ibm.test.SessionBean2\"/>\n" +
-                "</session>\n" +
-            "</ejb-jar-bnd>";
+            "<session name=\"SessionBean2\">\n" +
+                "<interface binding-name=\"interfaceBinding2\"\n" +
+                "class=\"com.ibm.test.SessionBean2\"/>\n" +
+            "</session>";
 
     @Test
     public void testInterfaceAttributesSeparateLine() throws Exception {
-        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(interfaceXML2);
+        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(ejbJarBnd10(interfaceXML2));
         Assert.assertEquals("interfaceBinding2", ((Session) ejbJarBnd.getEnterpriseBeans().get(0)).getInterfaces().get(0).getBindingName());
         Assert.assertEquals("com.ibm.test.SessionBean2", ((Session) ejbJarBnd.getEnterpriseBeans().get(0)).getInterfaces().get(0).getClassName());
     }
@@ -75,7 +73,7 @@ public class EJBJarBndInterfaceTest extends EJBJarBndTestBase {
 
     @Test
     public void testInterfaceMultiple() throws Exception {
-        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(EJBJarBndTestBase.ejbJarBnd11() + interfaceXML3 + "</ejb-jar-bnd>");
+        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(ejbJarBnd11(interfaceXML3));
 
         List<EnterpriseBean> sessionBeans = ejbJarBnd.getEnterpriseBeans();
         Session bean0 = (Session) sessionBeans.get(0);

@@ -73,86 +73,86 @@ public class WebAppTestBase extends DDTestBase {
 
     protected static String webApp22Head() {    
         return "<!DOCTYPE web-app PUBLIC" +
-               " \"-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN\"" +
-               " \"http://java.sun.com/j2ee/dtds/web-app_2.2.dtd\"" +
+                   " \"-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN\"" +
+                   " \"http://java.sun.com/j2ee/dtds/web-app_2.2.dtd\"" +
                ">" + "\n" +
-               "<web-app>";
+                   "<web-app>";
     }
 
     protected static String webApp23Head() {
         return "<!DOCTYPE web-app PUBLIC" +
-               " \"-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN\"" +
-               " \"http://java.sun.com/dtd/web-app_2_3.dtd\"" +
-               ">" + "\n" +
+                   " \"-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN\"" +
+                   " \"http://java.sun.com/dtd/web-app_2_3.dtd\"" +
+                   ">" + "\n" +
                "<web-app>";
     }
 
     protected static String webApp24Head() {
         return "<web-app" +
-               " xmlns=\"http://java.sun.com/xml/ns/j2ee\"" +
-               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-               " xsi:schemaLocation=\"http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd\"" +
-               " version=\"2.4\"" +
-               " id=\"WebApp_ID\"" +
+                   " xmlns=\"http://java.sun.com/xml/ns/j2ee\"" +
+                   " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+                   " xsi:schemaLocation=\"http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd\"" +
+                   " version=\"2.4\"" +
+                   " id=\"WebApp_ID\"" +
                ">";
     }
 
     protected static String webApp25Head() {
         return "<web-app xmlns=\"http://java.sun.com/xml/ns/javaee\"" +
-               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-               " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd\"" +
-               " version=\"2.5\"" +
-               " id=\"WebApp_ID\"" +
+                   " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+                   " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd\"" +
+                   " version=\"2.5\"" +
+                   " id=\"WebApp_ID\"" +
                ">";
     }
     
     protected static String webApp30Head() {
         return "<web-app" +
-               " xmlns=\"http://java.sun.com/xml/ns/javaee\"" +
-               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-               " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd\"" +
-               " version=\"3.0\"" +
-               " id=\"WebApp_ID\"" +
+                   " xmlns=\"http://java.sun.com/xml/ns/javaee\"" +
+                   " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+                   " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd\"" +
+                   " version=\"3.0\"" +
+                   " id=\"WebApp_ID\"" +
                ">";
     }
     
     protected static String webApp31Head() {
         return "<web-app" +
-               " xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"" +
-               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-               " xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd\"" +
-               " version=\"3.1\"" +
-               " id=\"WebApp_ID\"" +
+                   " xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"" +
+                   " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+                   " xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd\"" +
+                   " version=\"3.1\"" +
+                   " id=\"WebApp_ID\"" +
                ">";
     }
 
     protected static String webApp40Head() {
         return "<web-app" +
-               " xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"" +
-               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-               " xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd\"" +
-               " version=\"4.0\"" +
-               " id=\"WebApp_ID\"" +
+                   " xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"" +
+                   " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+                   " xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd\"" +
+                   " version=\"4.0\"" +
+                   " id=\"WebApp_ID\"" +
                ">";
     }
 
     protected static String webApp50Head() {
         return "<web-app xmlns=\"https://jakarta.ee/xml/ns/jakartaee\"" +
-               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-               " xsi:schemaLocation=\"https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_5_0.xsd\"" +
-               " version=\"5.0\"" +
+                   " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+                   " xsi:schemaLocation=\"https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_5_0.xsd\"" +
+                   " version=\"5.0\"" +
                ">";
     }
-    
+
     protected static String webAppTail() {
         return "</web-app>";
     }
-    
+
     protected static String webApp(int version) {
         return webApp(version, "");
     }
 
-    protected static String webApp(int version, String nestedText) {
+    protected static String webApp(int version, String body) {
         String head;
         if ( version == WebApp.VERSION_2_2 ) {
             head = webApp22Head();
@@ -173,7 +173,7 @@ public class WebAppTestBase extends DDTestBase {
         } else {
             throw new IllegalArgumentException("Unexpected WebVersion [ " + version + " ]");
         }
-        return head + "\n" + nestedText + "\n" + webAppTail();
+        return head + "\n" + body + "\n" + webAppTail();
     }
     
     //

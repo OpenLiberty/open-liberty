@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2018 IBM Corporation and others.
+ * Copyright (c) 2013, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,10 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.javaee.ddmodel.web;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-
 import org.jmock.Expectations;
 import org.osgi.framework.ServiceReference;
 
@@ -21,90 +17,11 @@ import com.ibm.ws.javaee.dd.web.WebApp;
 import com.ibm.ws.javaee.dd.web.WebFragment;
 import com.ibm.ws.javaee.ddmodel.DDTestBase;
 import com.ibm.ws.javaee.version.ServletVersion;
-import com.ibm.wsspi.adaptable.module.Container;
-import com.ibm.wsspi.adaptable.module.Entry;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
-import com.ibm.wsspi.artifact.ArtifactContainer;
-import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 
 public class WebFragmentTestBase extends DDTestBase {
 
-    WebFragment parse(String xml) throws Exception {
-        return parse(xml, WebApp.VERSION_3_0);
-    }
-
-    WebFragment parse(String xmlText, int maxVersion) throws Exception {
-        OverlayContainer rootOverlay = mockery.mock(OverlayContainer.class, "rootOverlay" + mockId++);
-        ArtifactContainer artifactContainer = mockery.mock(ArtifactContainer.class, "artifactContainer" + mockId++);
-
-        wireOverlay(rootOverlay, artifactContainer);
-        
-        Container moduleRoot = mockery.mock(Container.class, "moduleRoot" + mockId++);
-        Entry fragmentEntry = mockery.mock(Entry.class, "fragmentEntry" + mockId++);
-        Container fragmentRoot = mockery.mock(Container.class, "fragmentRoot" + mockId++);
-        Entry ddEntry = mockery.mock(Entry.class, "ddEntry" + mockId++);
-
-        wireFragment(moduleRoot, fragmentEntry, fragmentRoot, ddEntry, xmlText);
-
-        WebFragmentAdapter adapter = mockFragmentAdapter(maxVersion);
-
-        try {
-            return adapter.adapt(fragmentRoot, rootOverlay, artifactContainer, fragmentRoot);
-        } catch ( UnableToAdaptException e ) {
-            Throwable cause = e.getCause();
-            throw cause instanceof Exception ? (Exception) cause : e;
-        }
-    }
-
-    private void wireOverlay(OverlayContainer rootOverlay, ArtifactContainer artifactContainer) {
-        mockery.checking(new Expectations() {
-            {
-                allowing(rootOverlay).getFromNonPersistentCache(with(any(String.class)), with(any(Class.class)));
-                will(returnValue(null));
-                allowing(rootOverlay).addToNonPersistentCache(with(any(String.class)), with(any(Class.class)), with(any(Object.class)));
-
-                allowing(artifactContainer).getPath();
-                will(returnValue("/"));
-            }
-        });
-    }
-
-    @SuppressWarnings("deprecation")
-    private void wireFragment(
-            Container moduleRoot,
-            Entry fragmentEntry, Container fragmentRoot,
-            Entry ddEntry, String xmlText) throws UnsupportedEncodingException, UnableToAdaptException {
-        
-        mockery.checking(new Expectations() {
-            {
-                allowing(moduleRoot).getPhysicalPath();
-                will(returnValue("/root/wlp/usr/servers/server1/apps/web.war"));
-                allowing(moduleRoot).adapt(Entry.class);
-                will(returnValue(null));
-
-                allowing(fragmentEntry).getRoot();
-                will(returnValue(moduleRoot));
-                allowing(fragmentEntry).getPath();
-                will(returnValue("/WEB-INF/lib/fragment1.jar"));
-        
-                allowing(fragmentRoot).adapt(Entry.class);
-                will(returnValue(fragmentEntry));                
-                allowing(fragmentRoot).getPath();
-                will(returnValue("/"));
-                allowing(fragmentRoot).getEntry(WebFragment.DD_NAME);
-                will(returnValue(ddEntry));
-        
-                allowing(ddEntry).getRoot();
-                will(returnValue(moduleRoot));
-                allowing(ddEntry).getPath();
-                will(returnValue('/' + WebFragment.DD_NAME));
-                allowing(ddEntry).adapt(InputStream.class);
-                will(returnValue(new ByteArrayInputStream(xmlText.getBytes("UTF-8"))));
-            }
-        });        
-    }
-    
-    private WebFragmentAdapter mockFragmentAdapter(int maxVersion) {
+    private WebFragmentAdapter createFragmentAdapter(int maxVersion) {
         @SuppressWarnings("unchecked")
         ServiceReference<ServletVersion> versionRef = mockery.mock(ServiceReference.class, "sr" + mockId++);
 
@@ -114,44 +31,126 @@ public class WebFragmentTestBase extends DDTestBase {
                 will(returnValue(maxVersion));
             }
         });
-        
+
         WebFragmentAdapter adapter = new WebFragmentAdapter();
         adapter.setVersion(versionRef);
 
         return adapter;
     }
+        
+    WebFragment parse(String ddText) throws Exception {
+        return parse(ddText, WebApp.VERSION_3_0, null);
+    }
+
+    WebFragment parse(String ddText, int maxSchemaVersion) throws Exception {
+        return parse(ddText, maxSchemaVersion, null);
+    }
+
+    WebFragment parse(String ddText, String altMessage, String... messages) throws Exception {
+        return parse(ddText, WebApp.VERSION_3_0, altMessage, messages);
+    }
     
-    protected static final String webFragment30() {
-        return "<web-fragment" +
-               " xmlns=\"http://java.sun.com/xml/ns/javaee\"" +
-               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-               " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-fragment_3_0.xsd\"" +
-               " version=\"3.0\"" +
-               " id=\"WebFragment_ID\"" +
-               ">";
-    }
+    WebFragment parse(String ddText, int maxSchemaVersion,
+            String altMessage,
+            String... messages) throws Exception {
 
-    protected static final String webFragment31() {
-        return "<web-fragment" +
-               " xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"" +
-               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-               " xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-fragment_3_1.xsd\"" +
-               " version=\"3.1\"" +
-               " id=\"WebFragment_ID\"" +
-               ">";
-    }
+        String appPath = null;
+        String modulePath = "/root/wlp/usr/servers/server1/apps/MyWar.war";
+        String fragmentPath = "WEB-INF/lib/fragment1.jar";
+        String ddPath = WebFragment.DD_NAME;
 
-    protected static final String webFragment40() {
-        return "<web-fragment" +
-               " xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"" +
-               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-               " xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-fragment_4_0.xsd\"" +
-               " version=\"4.0\"" +
-               " id=\"WebFragment_ID\"" +
-               ">";
+        try {
+            return parse(
+                    appPath, modulePath, fragmentPath,
+                    ddText, createFragmentAdapter(maxSchemaVersion), ddPath,
+                    altMessage, messages);
+        } catch ( UnableToAdaptException e ) {
+            Throwable cause = e.getCause();
+            throw cause instanceof Exception ? (Exception) cause : e;
+        }
     }
 
     protected static String webFragmentTail() {
         return "</web-fragment>";
     }
+    
+    protected static final String webFragment30() {
+        return webFragment30("");
+    }
+    
+    protected static final String webFragment30(String body) {
+        return "<web-fragment" +
+                   " xmlns=\"http://java.sun.com/xml/ns/javaee\"" +
+                   " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+                   " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-fragment_3_0.xsd\"" +
+                   " version=\"3.0\"" +
+                   " id=\"WebFragment_ID\"" +
+               ">" +
+                   body +
+               webFragmentTail();
+    }
+
+    protected static final String webFragment31() {
+        return webFragment31("");
+    }
+    
+    protected static final String webFragment31(String body) {
+        return "<web-fragment" +
+                   " xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"" +
+                   " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+                   " xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-fragment_3_1.xsd\"" +
+                   " version=\"3.1\"" +
+                   " id=\"WebFragment_ID\"" +
+               ">" +
+                   body +
+               webFragmentTail();
+    }
+
+    protected static final String webFragment40() {
+        return webFragment40("");
+    }
+
+    protected static final String webFragment40(String body) {
+        return "<web-fragment" +
+                   " xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"" +
+                   " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+                   " xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-fragment_4_0.xsd\"" +
+                   " version=\"4.0\"" +
+                   " id=\"WebFragment_ID\"" +
+               ">" +
+                   body +
+               webFragmentTail();
+    }
+
+    protected static String webFragment50() {
+        return webFragment50("");
+    }
+
+    protected static String webFragment50(String body) {
+        return "<web-fragment xmlns=\"https://jakarta.ee/xml/ns/jakartaee\"" +
+                   " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+                   " xsi:schemaLocation=\"https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-fragment_5_0.xsd\"" +
+                   " version=\"5.0\"" +
+               ">" +
+                   body +
+               webFragmentTail();
+    }    
+    
+    protected static String webFragment(int schemaVersion) {
+        return webFragment(schemaVersion, "");
+    }
+
+    protected static String webFragment(int version, String body) {
+        if ( version == WebApp.VERSION_3_0 ) {
+            return webFragment30(body);
+        } else if ( version == WebApp.VERSION_3_1 ) {
+            return webFragment31(body);
+        } else if ( version == WebApp.VERSION_4_0 ) {
+            return webFragment40(body);
+        } else if ( version == WebApp.VERSION_5_0 ) {
+            return webFragment50(body);
+        } else {
+            throw new IllegalArgumentException("Unexpected WebFragment version [ " + version + " ]");
+        }
+    }    
 }

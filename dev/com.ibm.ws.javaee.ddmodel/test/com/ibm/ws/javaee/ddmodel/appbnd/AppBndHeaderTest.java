@@ -12,21 +12,11 @@ package com.ibm.ws.javaee.ddmodel.appbnd;
 
 import junit.framework.Assert;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.ibm.ws.javaee.dd.app.Application;
 import com.ibm.ws.javaee.dd.appbnd.ApplicationBnd;
 
-public class AppBndTestHeader extends AppBndTestBase {
-    protected static Application app14;
-    
-    @BeforeClass
-    public static void initApp() throws Exception {
-        app14 = parseApp( app(Application.VERSION_1_4, ""), Application.VERSION_7 );
-    }
-    
-    //
+public class AppBndHeaderTest extends AppBndTestBase {
     
     protected static final String appBndXMINoVersion =
             "<applicationbnd:ApplicationBinding" +
@@ -112,35 +102,35 @@ public class AppBndTestHeader extends AppBndTestBase {
     public void testXMIGetVersion() throws Exception {
         Assert.assertEquals("Incorrect application binding version",
                 "XMI",
-                parseAppBndXMI( appBndXMI("", ""), app14 ).getVersion());
+                parseAppBndXMI( appBndXMI("", ""), app14() ).getVersion());
     }
 
     @Test
     public void testXMLGetVersion10() throws Exception {
         Assert.assertEquals("Incorrect application binding version",
                 "1.0",
-                parseAppBndXML(appBnd10Head + appBndTail).getVersion());
+                parseAppBndXML(appBnd10()).getVersion());
     }
     
     @Test
     public void testXMLGetVersion11() throws Exception {    
         Assert.assertEquals("Incorrect application binding version",
                 "1.1",
-                parseAppBndXML(appBnd11Head + appBndTail).getVersion());
+                parseAppBndXML(appBnd11()).getVersion());
     }
     
     @Test
     public void testXMLGetVersion12() throws Exception {        
         Assert.assertEquals("Incorrect application binding version",
                 "1.2",
-                parseAppBndXML(appBnd12Head + appBndTail).getVersion());
+                parseAppBndXML(appBnd12()).getVersion());
     }
 
     //
 
     @Test
     public void testXMINoVersion() throws Exception {
-        ApplicationBnd appBnd = parseAppBndXMI(appBndXMINoVersion, app14);
+        ApplicationBnd appBnd = parseAppBndXMI(appBndXMINoVersion, app14());
         Assert.assertEquals("XMI", appBnd.getVersion());
     }
 
@@ -199,6 +189,8 @@ public class AppBndTestHeader extends AppBndTestBase {
 
     @Test
     public void testBadVersion() throws Exception {
-        parseAppBndXML(appBnd11VersionOnly);
+        parseAppBndXML(appBndBadVersion,
+                UNSUPPORTED_DESCRIPTOR_VERSION_ALT_MESSAGE,
+                UNSUPPORTED_DESCRIPTOR_VERSION_MESSAGES);
     }
 }

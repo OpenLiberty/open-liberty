@@ -41,7 +41,7 @@ public class EJBJarBndJCAAdapterTest extends EJBJarBndTestBase {
 
     @Test
     public void testJCAAdapterAttributeActivationSpecBindingName() throws Exception {
-        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(EJBJarBndTestBase.ejbJarBnd11() + jcaAdapterXML1 + "</ejb-jar-bnd>");
+        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(EJBJarBndTestBase.ejbJarBnd11(jcaAdapterXML1));
 
         List<EnterpriseBean> mdBeans = ejbJarBnd.getEnterpriseBeans();
         Assert.assertEquals("Only expected 1 message driven bean", 1, mdBeans.size());
@@ -56,20 +56,18 @@ public class EJBJarBndJCAAdapterTest extends EJBJarBndTestBase {
     @Test
     public void testJCAAdapterAttributeActivationSpecBindingNameXMI() throws Exception {
         EJBJar ejbJar = parseEJBJar(
-                ejbJar21() +
+                ejbJar21(
                     "<enterprise-beans>" +
                         "<message-driven id=\"md0\">" +
                             "<ejb-name>MessageDrivenBean1</ejb-name>" +
                         "</message-driven>" +
-                    "</enterprise-beans>" +
-                "</ejb-jar>");
+                    "</enterprise-beans>"));
 
         EJBJarBnd ejbJarBnd = parseEJBJarBndXMI(
-                ejbJarBinding("") +
+                ejbJarBndXMI("",
                     "<ejbBindings xmi:type=\"ejbbnd:MessageDrivenBeanBinding\" activationSpecJndiName=\"activationSpecBindingName1\">" +
                         "<enterpriseBean xmi:type=\"ejb:MessageDriven\" href=\"" + getEJBJarPath() + "#md0\"/>" +
-                    "</ejbBindings>" +
-                "</ejbbnd:EJBJarBinding>",
+                    "</ejbBindings>"),
                 ejbJar);
 
         List<EnterpriseBean> mdBeans = ejbJarBnd.getEnterpriseBeans();
@@ -92,9 +90,7 @@ public class EJBJarBndJCAAdapterTest extends EJBJarBndTestBase {
     @Test
     public void testJCAAdapterAttributeActivationSpecAuthAlias() throws Exception {
         EJBJarBnd ejbJarBnd = parseEJBJarBndXML(
-                EJBJarBndTestBase.ejbJarBnd10() +
-                    jcaAdapterXML2 +
-                "</ejb-jar-bnd>");
+                EJBJarBndTestBase.ejbJarBnd10(jcaAdapterXML2));
         
         List<EnterpriseBean> mdBeans = ejbJarBnd.getEnterpriseBeans();
         Assert.assertEquals(1, mdBeans.size());
@@ -107,20 +103,18 @@ public class EJBJarBndJCAAdapterTest extends EJBJarBndTestBase {
 
     @Test
     public void testJCAAdapterAttributeActivationSpecAuthAliasXMI() throws Exception {
-        EJBJar ejbJar = parseEJBJar(ejbJar21() +
+        EJBJar ejbJar = parseEJBJar(ejbJar21(
                         "<enterprise-beans>" +
                             "<message-driven id=\"md0\">" +
                                 "<ejb-name>MessageDrivenBean2</ejb-name>" +
                             "</message-driven>" +
-                        "</enterprise-beans>" +
-                    "</ejb-jar>");
+                        "</enterprise-beans>"));
         
         EJBJarBnd ejbJarBnd = parseEJBJarBndXMI(
-                ejbJarBinding("") +
+                ejbJarBndXMI("",
                     "<ejbBindings xmi:type=\"ejbbnd:MessageDrivenBeanBinding\" activationSpecAuthAlias=\"authAlias2\">" +
                         "<enterpriseBean xmi:type=\"ejb:MessageDriven\" href=\"" + getEJBJarPath() + "#md0\"/>" +
-                    "</ejbBindings>" +
-                "</ejbbnd:EJBJarBinding>",
+                    "</ejbBindings>"),
                 ejbJar);
 
         List<EnterpriseBean> mdBeans = ejbJarBnd.getEnterpriseBeans();
@@ -139,7 +133,7 @@ public class EJBJarBndJCAAdapterTest extends EJBJarBndTestBase {
 
     @Test
     public void testJCAAdapterAttributeDestinationBindingName() throws Exception {
-        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(ejbJarBnd10() + jcaAdapterXML3 + "</ejb-jar-bnd>");
+        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(ejbJarBnd10(jcaAdapterXML3));
 
         List<EnterpriseBean> mdBeans = ejbJarBnd.getEnterpriseBeans();
         Assert.assertEquals("Only expected 1 message driven bean", 1, mdBeans.size());
@@ -154,22 +148,21 @@ public class EJBJarBndJCAAdapterTest extends EJBJarBndTestBase {
     @Test
     public void testJCAAdapterAttributeDestinationBindingNameXMI() throws Exception {
         EJBJar ejbJar = parseEJBJar(
-                ejbJar21() +
+                ejbJar21(
                     "<enterprise-beans>" +
                         "<message-driven id=\"md0\">" +
                             "<ejb-name>MessageDrivenBean3</ejb-name>" +
                         "</message-driven>" +
-                    "</enterprise-beans>" +
-                "</ejb-jar>");
+                    "</enterprise-beans>"));
+
 
         EJBJarBnd ejbJarBnd = parseEJBJarBndXMI(
-                ejbJarBinding("") +
+                ejbJarBndXMI("",
                     "<ejbBindings xmi:type=\"ejbbnd:MessageDrivenBeanBinding\" " +
                         "activationSpecJndiName=\"activationSpecBindingName3\" " +
                         "destinationJndiName=\"destinationBindingName\">" +
                         "<enterpriseBean xmi:type=\"ejb:MessageDriven\" href=\"" + getEJBJarPath() + "#md0\"/>" +
-                    "</ejbBindings>" +
-                "</ejbbnd:EJBJarBinding>",
+                    "</ejbBindings>"),
                 ejbJar);
         
         List<EnterpriseBean> mdBeans = ejbJarBnd.getEnterpriseBeans();

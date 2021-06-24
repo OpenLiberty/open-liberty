@@ -24,7 +24,7 @@ import com.ibm.wsspi.artifact.ArtifactEntry;
 import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 
 public final class WebAppEntryAdapter implements EntryAdapter<WebApp> {
-    private static final int DEFAULT_MAX_VERSION = WebApp.VERSION_3_0;
+    protected static final int DEFAULT_MAX_VERSION = WebApp.VERSION_3_0;
 
     private ServiceReference<ServletVersion> versionRef;
     private volatile int maxVersion = DEFAULT_MAX_VERSION;

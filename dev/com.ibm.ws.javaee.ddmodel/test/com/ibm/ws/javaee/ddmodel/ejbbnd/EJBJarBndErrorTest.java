@@ -32,19 +32,19 @@ public class EJBJarBndErrorTest extends EJBJarBndTestBase {
                  " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
                  " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee\n" +
                      " http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-bnd_3_0.xsd\"" +
-                 " version=\"3.0\"> ";
+                 " version=\"3.0\"/>";
 
     // 1.0 & 1.1 are the only valid versions
     @Test
     public void testGetVersionError() throws Exception {
-        parseEJBJarBndXML(ejbJarBndInvalidVersion + "</ejb-jar-bnd>",
+        parseEJBJarBndXML(ejbJarBndInvalidVersion,
                           "unsupported.descriptor.version",
                           "CWWKC2263", "3.0", "ibm-ejb-jar-bnd.xml"); 
     }
 
     @Test
     public void testEjbJarBndBadRoot() throws Exception {
-        parseEJBJarBndXML(ejbJarExt10 + "</ejb-jar-ext>",
+        parseEJBJarBndXML(ejbJarExt10,
                           "unexpected.root.element",
                           "CWWKC2252", "ejb-jar-ext", "ibm-ejb-jar-bnd.xml");
     }
@@ -76,20 +76,18 @@ public class EJBJarBndErrorTest extends EJBJarBndTestBase {
 
     @Test
     public void testSessionBeanNoName() throws Exception {
-        parseEJBJarBndXML(ejbJarBnd10() +
+        parseEJBJarBndXML(ejbJarBnd10(
                               "<session>" + //no name
-                              "</session>" +
-                         "</ejb-jar-bnd>",
+                              "</session>"),
                          "required.attribute.missing",
                          "CWWKC2251", "session", "name");
     }
 
     @Test
     public void testMessageDrivenBeanNoName() throws Exception {
-        parseEJBJarBndXML(ejbJarBnd10() +
+        parseEJBJarBndXML(ejbJarBnd10(
                               "<message-driven>" + //no name
-                              "</message-driven>" +
-                          "</ejb-jar-bnd>",
+                              "</message-driven>"),
                           "required.attribute.missing",
                           "CWWKC2251", "message-driven", "name");                         
     }
@@ -101,14 +99,13 @@ public class EJBJarBndErrorTest extends EJBJarBndTestBase {
                 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
                 " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-ext_1_0.xsd\"" +
                 " version=\"1.0\"" +
-            ">";
+            "/>";
     
     protected static final String interfaceErrorBindingName =
-        ejbJarBnd10() +
+        ejbJarBnd10(
             "<session name=\"VersionedDriver\"> " +
                 "<interface class=\"com.ibm.test.ClassBN\"/> \n " +
-            "</session> " +
-        "</ejb-jar-bnd>";
+            "</session>");
 
     @Test
     public void testInterfaceMissingBindingName() throws Exception {
@@ -118,11 +115,10 @@ public class EJBJarBndErrorTest extends EJBJarBndTestBase {
     }
 
     protected static final String interfaceClassError =
-            ejbJarBnd10() +
+            ejbJarBnd10(
                 "<session name=\"SessionBean\"> " +
                     "<interface binding-name=\"interfaceBindingName\"/>" +
-                "</session> " +
-            "</ejb-jar-bnd>";
+                "</session>");
 
     @Test
     public void testInterfaceMissingClassName() throws Exception {
@@ -132,11 +128,10 @@ public class EJBJarBndErrorTest extends EJBJarBndTestBase {
     }
 
     protected static final String listenerPortNoNameError =
-            ejbJarBnd11() +
+            ejbJarBnd11(
                 "<message-driven name=\"MessageDrivenBean\"> \n" +
                     "<listener-port></listener-port> \n " +
-                "</message-driven>\n" +
-            "</ejb-jar-bnd>";
+                "</message-driven>");
 
     @Test
     public void testListenerPortMissingName() throws Exception {
@@ -146,12 +141,11 @@ public class EJBJarBndErrorTest extends EJBJarBndTestBase {
     }
 
     protected static final String jcaAdapterXML2 =
-        ejbJarBnd10() +
+        ejbJarBnd10(
             "<message-driven name=\"MessageDrivenBean\">\n" +
                 "<jca-adapter destination-binding-name=\"jcaAdapterDestinationBindingName\"\n" +
                     " activation-spec-auth-alias=\"\"/>\n" +
-            "</message-driven>\n" +
-        "</ejb-jar-bnd>";
+            "</message-driven>");
 
     //listener port requires activation-spec-binding-name
     @Test
@@ -164,17 +158,16 @@ public class EJBJarBndErrorTest extends EJBJarBndTestBase {
     protected static final String jcaAdapterBothListenerPortAndJcaAdapterError =
             "<message-driven name=\"MessageDrivenBean\">\n" +
                 "<listener-port name=\"lpName\"/>\n" +
-                "<jca-adapter activation-spec-binding-name=\"jcaAdapterActivationSpecBindingName\" destination-binding-name=\"jcaAdapterDestinationBindingName\"\n" +
+                "<jca-adapter activation-spec-binding-name=\"jcaAdapterActivationSpecBindingName\"" +
+                    " destination-binding-name=\"jcaAdapterDestinationBindingName\"" +
                     " activation-spec-auth-alias=\"\"/>\n" +
-            "</message-driven>\n";
+            "</message-driven>";
 
     // no longer validating the jca-adapter and listener-port content.
     // Ignore if they are both defined.
     @Test
     public void testMDBListenerPortandJCAAdapterError() throws Exception {
-        parseEJBJarBndXML(ejbJarBnd11() +
-                              jcaAdapterBothListenerPortAndJcaAdapterError +
-                         "</ejb-jar-bnd>");
+        parseEJBJarBndXML(ejbJarBnd11(jcaAdapterBothListenerPortAndJcaAdapterError));
     }
 
     protected static final String jcaMDBNeitherListenerPortNorJcaAdapterError =
@@ -184,9 +177,7 @@ public class EJBJarBndErrorTest extends EJBJarBndTestBase {
     // removed validation that either a jca-adapter or listener-port is included.
     @Test
     public void testJCAAdapterNeitherLPandJCAAdapterError() throws Exception {
-        parseEJBJarBndXML(ejbJarBnd11() +
-                              jcaMDBNeitherListenerPortNorJcaAdapterError +
-                         "</ejb-jar-bnd>");
+        parseEJBJarBndXML(ejbJarBnd11(jcaMDBNeitherListenerPortNorJcaAdapterError));
     }
 
     protected static final String sessionXML =
@@ -204,50 +195,35 @@ public class EJBJarBndErrorTest extends EJBJarBndTestBase {
 
     @Test
     public void testEJBNonUniqueName1() throws Exception {
-        parseEJBJarBndXML(ejbJarBnd10() +
-                           sessionXML +
-                           sessionXML +
-                       "</ejb-jar-bnd>",
-                       "found.duplicate.ejbname",
-                       "CWWKC2269", "CommonBeanName", "ibm-ejb-jar-bnd.xml");        
+        parseEJBJarBndXML(ejbJarBnd10(sessionXML + sessionXML),
+                          "found.duplicate.ejbname",
+                          "CWWKC2269", "CommonBeanName", "ibm-ejb-jar-bnd.xml");        
     }
 
     @Test
     public void testEJBNonUniqueName2() throws Exception {
-        parseEJBJarBndXML(ejbJarBnd10() +
-                              messageDrivenXML +
-                              messageDrivenXML +
-                          "</ejb-jar-bnd>",
+        parseEJBJarBndXML(ejbJarBnd10(messageDrivenXML + messageDrivenXML),
                           "found.duplicate.ejbname",
                           "CWWKC2269", "CommonBeanName", "ibm-ejb-jar-bnd.xml");        
     }
 
     @Test
     public void testEJBNonUniqueName3() throws Exception {
-        parseEJBJarBndXML(ejbJarBnd10() +
-                              sessionXML +
-                              messageDrivenXML +
-                          "</ejb-jar-bnd>",
+        parseEJBJarBndXML(ejbJarBnd10(sessionXML + messageDrivenXML),
                           "found.duplicate.ejbname",
                           "CWWKC2269", "CommonBeanName", "ibm-ejb-jar-bnd.xml");        
     }
 
     @Test
     public void testInterceptorNonUniqueClassName() throws Exception {
-        parseEJBJarBndXML(ejbJarBnd10() +
-                              interceptorXML1 +
-                              interceptorXML1 +
-                          "</ejb-jar-bnd>",
+        parseEJBJarBndXML(ejbJarBnd10(interceptorXML1 + interceptorXML1),
                           "found.duplicate.attribute.value",
                           "CWWKC2270", "interceptor", "com.ibm.test.Interceptor1", "ibm-ejb-jar-bnd.xml");
     }
 
     @Test
     public void testMessageDestinationNonUniqueName() throws Exception {
-        parseEJBJarBndXML(ejbJarBnd10() +
-                              messageDetinationXML1 +
-                              messageDetinationXML1 +
-                          "</ejb-jar-bnd>",
+        parseEJBJarBndXML(ejbJarBnd10(messageDetinationXML1 + messageDetinationXML1),
                           "found.duplicate.attribute.value",
                           "CWWKC2270", "message-destination", "messageDestName1", "ibm-ejb-jar-bnd.xml");            
     }

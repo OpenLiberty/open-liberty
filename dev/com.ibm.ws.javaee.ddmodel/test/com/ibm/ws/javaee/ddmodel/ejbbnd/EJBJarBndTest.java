@@ -41,58 +41,51 @@ public class EJBJarBndTest extends EJBJarBndTestBase {
     public void testGetVersionID() throws Exception {
         Assert.assertEquals(
                 "XMI",
-                parseEJBJarBndXMI(ejbJarBinding("") + "</ejbbnd:EJBJarBinding>",
-                                  getEJBJar21())
-                    .getVersion());
+                parseEJBJarBndXMI(ejbJarBndXMI(), getEJBJar21()).getVersion());
 
         Assert.assertEquals(
                 "1.0",
-                parseEJBJarBndXML(ejbJarBnd10() + "</ejb-jar-bnd>")
-                    .getVersion());
+                parseEJBJarBndXML(ejbJarBnd10()).getVersion());
         
         Assert.assertEquals(
                 "1.1",
-                parseEJBJarBndXML(ejbJarBnd11() + "</ejb-jar-bnd>")
-                    .getVersion());
+                parseEJBJarBndXML(ejbJarBnd11()).getVersion());
         
         Assert.assertEquals(
                 "1.2",
-                    parseEJBJarBndXML(ejbJarBnd12() + "</ejb-jar-bnd>")
-                        .getVersion());
+                parseEJBJarBndXML(ejbJarBnd12()).getVersion());
 
     }
 
     @Test
     public void testEmptyEnterpriseBeans() throws Exception {
         Assert.assertNotNull("Enterprise bean list should not be null.",
-                parseEJBJarBndXML(ejbJarBnd10() + "</ejb-jar-bnd>").getEnterpriseBeans());
+                parseEJBJarBndXML(ejbJarBnd10()).getEnterpriseBeans());
         Assert.assertEquals("Enterprise bean list should be empty.", 0,
-                parseEJBJarBndXML(ejbJarBnd10() + "</ejb-jar-bnd>").getEnterpriseBeans().size());
+                parseEJBJarBndXML(ejbJarBnd10()).getEnterpriseBeans().size());
     }
 
     @Test
     public void testEmptyMessageDestinations() throws Exception {
         Assert.assertNotNull("MessageDestinations list should not be null.",
-                parseEJBJarBndXML(ejbJarBnd10() + "</ejb-jar-bnd>").getMessageDestinations());
+                parseEJBJarBndXML(ejbJarBnd10()).getMessageDestinations());
         Assert.assertEquals("MessageDestinations list should be empty.",
                 0,
-                parseEJBJarBndXML(ejbJarBnd10() + "</ejb-jar-bnd>").getMessageDestinations().size());
+                parseEJBJarBndXML(ejbJarBnd10()).getMessageDestinations().size());
     }
 
     @Test
     public void testEmptyInterceptorsList() throws Exception {
         Assert.assertNotNull("Interceptor list should not be null.",
-                parseEJBJarBndXML(ejbJarBnd10() + "</ejb-jar-bnd>").getInterceptors());
+                parseEJBJarBndXML(ejbJarBnd10()).getInterceptors());
         Assert.assertEquals("Interceptor list should be empty.",
                 0,
-                parseEJBJarBndXML(ejbJarBnd10() + "</ejb-jar-bnd>").getInterceptors().size());
+                parseEJBJarBndXML(ejbJarBnd10()).getInterceptors().size());
     }
 
     @Test
     public void testEmptyXMI() throws Exception {
-        EJBJarBnd ejbJarBnd = parseEJBJarBndXMI(
-                ejbJarBinding("") + "</ejbbnd:EJBJarBinding>",
-                getEJBJar21());
+        EJBJarBnd ejbJarBnd = parseEJBJarBndXMI( ejbJarBndXMI(), getEJBJar21() );
 
         Assert.assertNotNull("Enterprise bean list should not be null.", ejbJarBnd.getEnterpriseBeans());
         Assert.assertEquals("Enterprise bean list should be empty.", 0, ejbJarBnd.getEnterpriseBeans().size());
@@ -115,11 +108,8 @@ public class EJBJarBndTest extends EJBJarBndTestBase {
 
     @Test
     public void testInterceptorEmptyLists() throws Exception {
-        String interceptorXML = EJBJarBndTestBase.ejbJarBnd11() +
-                                interceptorXML1 +
-                                "</ejb-jar-bnd>";
-
-        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(interceptorXML);
+        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(ejbJarBnd11(interceptorXML1));
+        
         List<Interceptor> interceptors = ejbJarBnd.getInterceptors();
         Assert.assertEquals(1, interceptors.size());
         Interceptor interceptor = interceptors.get(0);
@@ -136,11 +126,8 @@ public class EJBJarBndTest extends EJBJarBndTestBase {
 
     @Test
     public void testInterceptorLists() throws Exception {
-        String interceptorXML = EJBJarBndTestBase.ejbJarBnd11() +
-                                interceptorXML2 +
-                                "</ejb-jar-bnd>";
-
-        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(interceptorXML);
+        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(ejbJarBnd11(interceptorXML2));
+        
         List<Interceptor> interceptors = ejbJarBnd.getInterceptors();
         Assert.assertEquals(1, interceptors.size());
         Interceptor interceptor = interceptors.get(0);
@@ -175,12 +162,11 @@ public class EJBJarBndTest extends EJBJarBndTestBase {
 
     @Test
     public void testMessageDestinations() throws Exception {
-        String messageDestXML = EJBJarBndTestBase.ejbJarBnd11() +
-                                messageDetinationXML1 +
-                                messageDetinationXML2 +
-                                "</ejb-jar-bnd>";
-
+        String messageDestXML = ejbJarBnd11(
+                messageDetinationXML1 +
+                messageDetinationXML2);
         EJBJarBnd ejbJarBnd = parseEJBJarBndXML(messageDestXML);
+
         List<MessageDestination> messageDests = ejbJarBnd.getMessageDestinations();
         Assert.assertEquals(2, messageDests.size());
         Assert.assertEquals("messageDestName1", messageDests.get(0).getName());
@@ -191,18 +177,17 @@ public class EJBJarBndTest extends EJBJarBndTestBase {
 
     @Test
     public void testEjbJarBndMultiple() throws Exception {
-        String mdbXML = EJBJarBndTestBase.ejbJarBnd11() +
-                        sessionXML8 +
-                        sessionXML11 +
-                        messageDrivenXML7 +
-                        messageDrivenXML9 +
-                        interceptorXML1 +
-                        interceptorXML2 +
-                        messageDetinationXML1 +
-                        messageDetinationXML2 +
-                        "</ejb-jar-bnd>";
-
+        String mdbXML = ejbJarBnd11(
+                sessionXML8 +
+                sessionXML11 +
+                messageDrivenXML7 +
+                messageDrivenXML9 +
+                interceptorXML1 +
+                interceptorXML2 +
+                messageDetinationXML1 +
+                messageDetinationXML2);
         EJBJarBnd ejbJarBnd = parseEJBJarBndXML(mdbXML);
+
         Assert.assertEquals(4, ejbJarBnd.getEnterpriseBeans().size());
         Assert.assertEquals(2, ejbJarBnd.getInterceptors().size());
         Assert.assertEquals(2, ejbJarBnd.getMessageDestinations().size());
@@ -215,41 +200,32 @@ public class EJBJarBndTest extends EJBJarBndTestBase {
 
     @Test
     public void testCurrentBackendID() throws Exception {
-        parseEJBJarBndXMI(testCurrentBackendID,
-                          getEJBJar21());
+        parseEJBJarBndXMI(ejbBndXMLCurrentBackendID, getEJBJar21());
     }
 
     @Test
     public void testDefaultCMPConnectionFactory() throws Exception {
-        parseEJBJarBndXMI(ejbJarBinding("") +
-                              defaultCMPConnectionFactoryXMI1 +
-                              " </ejbbnd:EJBJarBinding>",
-                          getEJBJar21());
+        parseEJBJarBndXMI( ejbJarBndXMI("", defaultCMPConnectionFactoryXMI1),
+                           getEJBJar21() );
     }
 
     @Test
     public void testCMPConnectionFactory() throws Exception {
-        parseEJBJarBnd(ejbJarBinding("") +
-                          testCMPConnectionFactoryXMI1() +
-                      "</ejbbnd:EJBJarBinding>",
-                      DDParserBndExt.IS_XMI, getEJBJar21(),
-                      "required.attribute.missing",
-                      "CWWKC2251", "ibm-ejb-jar-bnd.xmi");
+        parseEJBJarBnd( ejbJarBndXMI("", testCMPConnectionFactoryXMI1()),
+                        DDParserBndExt.IS_XMI, getEJBJar21(),
+                        "required.attribute.missing",
+                        "CWWKC2251", "ibm-ejb-jar-bnd.xmi" );
     }
 
     @Test
     public void testDefaultDataSource() throws Exception {
-        parseEJBJarBndXMI(ejbJarBinding("") +
-                              defaultDataSourceXMI1 +
-                          " </ejbbnd:EJBJarBinding>",
-                          getEJBJar21());
+        parseEJBJarBndXMI( ejbJarBndXMI("", defaultDataSourceXMI1),
+                           getEJBJar21() );
     }
 
     @Test
     public void testDefaultDataSource2() throws Exception {
-        parseEJBJarBndXMI(ejbJarBinding("") +
-                              defaultDataSourceXMI2 +
-                          " </ejbbnd:EJBJarBinding>",
-                          getEJBJar21());
+        parseEJBJarBndXMI( ejbJarBndXMI("", defaultDataSourceXMI2),
+                           getEJBJar21() );
     }
 }
