@@ -103,13 +103,16 @@ public class CheckpointImpl implements Checkpoint {
         try {
             ExecuteCRIU currentCriu = criu;
             if (currentCriu == null) {
-                throw new SnapshotFailed(Type.SNAPSHOT_FAILED, "The criu command is not available.", null);
+                throw new SnapshotFailed(Type.SNAPSHOT_FAILED, "The criu command is not available.", null, 0);
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "criu attempt dump to '" + directory + "' and exit process.");
                 }
 
-                currentCriu.dump(directory);
+                int dumpCode = currentCriu.dump(directory);
+                if (dumpCode < 0) {
+                    throw new SnapshotFailed(Type.SNAPSHOT_FAILED, "The criu dump command failed with error: " + dumpCode, null, dumpCode);
+                }
 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "criu dump to " + directory + " in recovery.");
@@ -117,7 +120,10 @@ public class CheckpointImpl implements Checkpoint {
             }
         } catch (Exception e) {
             abortPrepare(snapshotHooks, e);
-            throw new SnapshotFailed(Type.SNAPSHOT_FAILED, "Failed to create snapshot.", e);
+            if (e instanceof SnapshotFailed) {
+                throw (SnapshotFailed) e;
+            }
+            throw new SnapshotFailed(Type.SNAPSHOT_FAILED, "Failed to create snapshot.", e, 0);
         }
         restore(phase, snapshotHooks);
     }
@@ -168,7 +174,7 @@ public class CheckpointImpl implements Checkpoint {
     }
 
     private static SnapshotFailed failedPrepare(Exception cause) {
-        return new SnapshotFailed(Type.PREPARE_ABORT, "Failed to prepare for a snapshot.", cause);
+        return new SnapshotFailed(Type.PREPARE_ABORT, "Failed to prepare for a snapshot.", cause, 0);
     }
 
     private void abortPrepare(List<SnapshotHook> snapshotHooks, Exception cause) {
@@ -189,6 +195,6 @@ public class CheckpointImpl implements Checkpoint {
     }
 
     private static SnapshotFailed failedRestore(Exception cause) {
-        return new SnapshotFailed(Type.RESTORE_ABORT, "Failed to restore from snapshot.", cause);
+        return new SnapshotFailed(Type.RESTORE_ABORT, "Failed to restore from snapshot.", cause, 0);
     }
 }

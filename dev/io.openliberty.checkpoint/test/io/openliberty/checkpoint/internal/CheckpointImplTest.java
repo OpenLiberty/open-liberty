@@ -60,11 +60,12 @@ public class CheckpointImplTest {
         volatile boolean throwIOException = false;
 
         @Override
-        public void dump(File directory) throws IOException {
+        public int dump(File directory) throws IOException {
             this.directory = directory;
             if (throwIOException) {
                 throw new IOException("Test exception thrown from TestCRIU");
             }
+            return 0;
         }
 
     }

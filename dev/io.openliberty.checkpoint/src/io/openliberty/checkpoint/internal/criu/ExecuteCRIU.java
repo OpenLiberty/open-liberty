@@ -17,5 +17,5 @@ import java.io.IOException;
  *
  */
 public interface ExecuteCRIU {
-    void dump(File directory) throws IOException;
+    int dump(File directory) throws IOException;
 }
