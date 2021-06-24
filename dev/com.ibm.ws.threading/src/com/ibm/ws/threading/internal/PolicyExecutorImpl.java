@@ -347,15 +347,19 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     public int cancel(String identifier, boolean interruptIfRunning) {
         int count = 0;
 
-        // Remove and cancel all queued tasks.
-        for (PolicyTaskFutureImpl<?> f = queue.poll(); f != null; f = queue.poll())
-            if (f.cancel(false))
+        // Cancel all queued tasks. The tasks remove themselves from the queue upon successful cancel.
+        for (Iterator<PolicyTaskFutureImpl<?>> it = queue.iterator(); it.hasNext();) {
+            PolicyTaskFutureImpl<?> f = it.next();
+            if (identifier.equals(f.getIdentifier()) && f.cancel(interruptIfRunning))
                 count++;
+        }
 
         // Cancel tasks that are running
-        for (Iterator<PolicyTaskFutureImpl<?>> it = running.iterator(); it.hasNext();)
-            if (it.next().cancel(interruptIfRunning))
+        for (Iterator<PolicyTaskFutureImpl<?>> it = running.iterator(); it.hasNext();) {
+            PolicyTaskFutureImpl<?> f = it.next();
+            if (identifier.equals(f.getIdentifier()) && f.cancel(interruptIfRunning))
                 count++;
+        }
 
         return count;
     }
