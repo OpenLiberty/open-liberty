@@ -12,12 +12,18 @@ package com.ibm.ws.microprofile.appConfig.stress.test;
 
 import static org.junit.Assert.fail;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryUsage;
 import java.util.Iterator;
 
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
 import javax.servlet.annotation.WebServlet;
 
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.config.spi.ConfigBuilder;
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 import org.junit.Test;
@@ -28,9 +34,39 @@ import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
 @WebServlet("/")
+@RequestScoped
 public class StressTestServlet extends FATServlet {
 
-    public static final String DYNAMIC_REFRESH_INTERVAL_PROP_NAME = "microprofile.config.refresh.rate";
+    private static final String DYNAMIC_REFRESH_INTERVAL_PROP_NAME = "microprofile.config.refresh.rate";
+
+    @Inject
+    @ConfigProperty(name = "myInt")
+    private Instance<Integer> myProp;
+
+    @Test
+    public void testDestroyInstance() {
+        for (int i = 0; i < 100000000; i++) {
+            Integer myInt = myProp.get();
+            try {
+                if (i % 100000 == 0) {
+                    System.out.println("Prop " + i + " = " + myInt);
+                    MemoryUsage mu = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
+                    MemoryUsage muNH = ManagementFactory.getMemoryMXBean().getNonHeapMemoryUsage();
+                    System.out.println(
+                                       "Init :" + mu.getInit() +
+                                       "\nMax :" + mu.getMax() +
+                                       "\nUsed :" + mu.getUsed() +
+                                       "\nCommited :" + mu.getCommitted() +
+                                       "\nInit NH :" + muNH.getInit() +
+                                       "\nMax NH :" + muNH.getMax() +
+                                       "\nUsed NH:" + muNH.getUsed() +
+                                       "\nCommited NH:" + muNH.getCommitted());
+                }
+            } finally {
+                myProp.destroy(myInt);
+            }
+        }
+    }
 
     @Test
     public void testLargeConfigSources() throws Exception {
@@ -217,57 +253,69 @@ public class StressTestServlet extends FATServlet {
         System.setProperty(DYNAMIC_REFRESH_INTERVAL_PROP_NAME, "" + 0);
         boolean passed = true;
 
-        ConfigBuilder b = ConfigProviderResolver.instance().getBuilder();
+        try {
+            ConfigBuilder b = ConfigProviderResolver.instance().getBuilder();
 
-        int size = 1000;
-        for (int i = 0; i < size; i++) {
-            ConfigProviderResolver.instance().releaseConfig(ConfigProvider.getConfig());
+            int size = 1000;
+            for (int i = 0; i < size; i++) {
+                ConfigProviderResolver.instance().releaseConfig(ConfigProvider.getConfig());
 
-            MySource s = new MySource();
-            s.put("p" + i, "v" + i);
-            b.withSources(s);
-            Config configA = b.build();
-            ConfigProviderResolver.instance().registerConfig(configA, Thread.currentThread().getContextClassLoader());
-            ConfigProviderResolver.instance().releaseConfig(configA);
+                MySource s = new MySource();
+                s.put("p" + i, "v" + i);
+                b.withSources(s);
+                Config configA = b.build();
+                ConfigProviderResolver.instance().registerConfig(configA, Thread.currentThread().getContextClassLoader());
+                ConfigProviderResolver.instance().releaseConfig(configA);
 
-            Config configB = b.withSources(new MySource().put("p2" + i, "v2" + i)).build();
-            ConfigProviderResolver.instance().registerConfig(configB, Thread.currentThread().getContextClassLoader());
+                Config configB = b.withSources(new MySource().put("p2" + i, "v2" + i)).build();
+                ConfigProviderResolver.instance().registerConfig(configB, Thread.currentThread().getContextClassLoader());
 
-            Config configB2 = ConfigProvider.getConfig();
-            if (configB2 != configB) {
-                passed = false;
-                break;
-            }
-            ConfigProviderResolver.instance().releaseConfig(configB2);
+                Config configB2 = ConfigProvider.getConfig();
+                if (configB2 != configB) {
+                    passed = false;
+                    break;
+                }
+                ConfigProviderResolver.instance().releaseConfig(configB2);
 
-            Config configC = b.withSources(new MySource().put("p2" + i, "v2" + i)).build();
+                Config configC = b.withSources(new MySource().put("p2" + i, "v2" + i)).build();
 
-            ConfigBuilder emptyB = ConfigProviderResolver.instance().getBuilder();
-            Config configD = emptyB.build();
-            ConfigProviderResolver.instance().registerConfig(configD, Thread.currentThread().getContextClassLoader());
+                ConfigBuilder emptyB = ConfigProviderResolver.instance().getBuilder();
+                Config configD = emptyB.build();
+                ConfigProviderResolver.instance().registerConfig(configD, Thread.currentThread().getContextClassLoader());
 
-            // Should be empty.
-            Config configE = ConfigProvider.getConfig();
-            Iterable<String> names = configE.getPropertyNames();
-            for (Iterator<String> iterator = names.iterator(); iterator.hasNext();) {
-                passed = false;
-                break;
+                // Should be empty.
+                Config configE = ConfigProvider.getConfig();
+                Iterable<String> names = configE.getPropertyNames();
+                for (Iterator<String> iterator = names.iterator(); iterator.hasNext();) {
+                    passed = false;
+                    break;
+                }
+
+                if (!passed) {
+                    break;
+                }
             }
 
             if (!passed) {
-                break;
+                StringBuffer result = new StringBuffer();
+                result.append("FAILED: ");
+                Config c = ConfigProvider.getConfig();
+                Iterable<String> names = c.getPropertyNames();
+                for (String name : names) {
+                    result.append("\n" + name + "=" + c.getValue(name, String.class));
+                }
+                fail(result.toString());
             }
-        }
-
-        if (!passed) {
-            StringBuffer result = new StringBuffer();
-            result.append("FAILED: ");
-            Config c = ConfigProvider.getConfig();
-            Iterable<String> names = c.getPropertyNames();
-            for (String name : names) {
-                result.append("\n" + name + "=" + c.getValue(name, String.class));
-            }
-            fail(result.toString());
+        } finally {
+            //try to reset things to how they were before the test!
+            Config current = ConfigProvider.getConfig();
+            ConfigProviderResolver.instance().releaseConfig(current);
+            ConfigBuilder b = ConfigProviderResolver.instance().getBuilder();
+            b.addDefaultSources();
+            b.addDiscoveredConverters();
+            b.addDiscoveredSources();
+            Config c = b.build();
+            ConfigProviderResolver.instance().registerConfig(c, Thread.currentThread().getContextClassLoader());
         }
     }
 }
