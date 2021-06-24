@@ -604,8 +604,8 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
      * Install an User feature with the "--to=Extension" parameters
      */
     @Test
-    public void testFearureInstallUserFeatureToExtension() throws Exception {
-    	final String METHOD_NAME = "testFearureInstallUserFeatureToExtension";
+    public void testFeatureInstallUserFeatureToExtension() throws Exception {
+    	final String METHOD_NAME = "testFeatureInstallUserFeatureToExtension";
         Log.entering(c, METHOD_NAME);
 
         replaceWlpProperties("20.0.0.4");
