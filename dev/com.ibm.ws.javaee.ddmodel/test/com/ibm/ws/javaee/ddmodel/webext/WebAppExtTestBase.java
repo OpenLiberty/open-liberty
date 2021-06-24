@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,19 +20,19 @@ public class WebAppExtTestBase extends WebAppTestBase {
         return new WebExtAdapter();
     }
     
-    protected WebExt parseWebAppExtXMI(String ddText, WebApp webApp) throws Exception {
+    protected WebExt parseWebExtXMI(String ddText, WebApp webApp) throws Exception {
         return parseAppExt(ddText, WebExt.XMI_EXT_NAME, webApp, null);
     }
 
-    protected WebExt parseWebAppExtXMI(String ddText, WebApp webApp, String altMessage, String... messages) throws Exception {
+    protected WebExt parseWebExtXMI(String ddText, WebApp webApp, String altMessage, String... messages) throws Exception {
         return parseAppExt(ddText, WebExt.XMI_EXT_NAME, webApp, altMessage, messages);
     }
 
-    protected WebExt parseWebAppExtXML(String ddText) throws Exception {
+    protected WebExt parseWebExtXML(String ddText) throws Exception {
         return parseAppExt(ddText, WebExt.XML_EXT_NAME, null, null);
     }
     
-    protected WebExt parseWebAppExtXML(String ddText, String altMessage, String... messages) throws Exception {
+    protected WebExt parseWebExtXML(String ddText, String altMessage, String... messages) throws Exception {
         return parseAppExt(ddText, WebExt.XML_EXT_NAME, null, altMessage, messages);
     }    
     
@@ -60,7 +60,14 @@ public class WebAppExtTestBase extends WebAppTestBase {
 
     //
 
-    protected static final String webAppExtension(String attrs) {
+    protected static final String webExtTailXMI =
+            "</webappext:WebAppExtension>";
+
+    protected static final String webExtXMI20() {
+        return webExt20XMI("", "");
+    }
+
+    protected static final String webExt20XMI(String attrs, String body) {
         return "<webappext:WebAppExtension" +
                    " xmlns:webappext=\"webappext.xmi\"" +
                    " xmlns:xmi=\"http://www.omg.org/XMI\"" +
@@ -69,26 +76,43 @@ public class WebAppExtTestBase extends WebAppTestBase {
                    " xmi:version=\"2.0\" " +
                    attrs +
                ">" +
-               "<webApp href=\"WEB-INF/web.xml#WebApp_ID\"/>";
+                   "<webApp href=\"WEB-INF/web.xml#WebApp_ID\"/>" +
+                   body +
+               webExtTailXMI;
     }
 
-    protected static final String webExt10() {
+    protected static final String webExtTailXML =
+            "</web-ext>";
+
+    protected static final String webExtXML10() {
+        return webExt10XML("");
+    }
+    
+    protected static final String webExt10XML(String body) {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
                "<web-ext" +
                    " xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"" +
                    " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
                    " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-web-ext_1_0.xsd\"" +
                    " version=\"1.0\"" +
-               ">";
+               ">" +
+                   body +
+               webExtTailXML;
     }
 
-    protected static final String webExt11() {
+    protected static final String webExtXML11() {
+        return webExt11XML("");
+    }
+    
+    protected static final String webExt11XML(String body) {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
                "<web-ext" +
                    " xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"" +
                    " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
                    " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-web-ext_1_1.xsd\"" +
                    " version=\"1.1\"" +
-               ">";
+               ">" +
+                   body +
+               webExtTailXML;
     }
 }

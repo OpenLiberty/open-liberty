@@ -26,48 +26,44 @@ public class WebAppBndTest extends WebAppBndTestBase {
     public void testGetVersion() throws Exception {
         Assert.assertEquals(
                 "XMI",
-                parseWebAppBndXMI(webAppBndXMI(), getWebApp24()).getVersion());
+                parseWebBndXMI(webBndXMI20(), getWebApp24()).getVersion());
 
         Assert.assertEquals("Version should be 1.0",
                 "1.0",
-                parseWebAppBndXML(webBndXML10()).getVersion());
+                parseWebBndXML(webBndXML10()).getVersion());
         Assert.assertEquals("Version should be 1.1",
                 "1.1",
-                parseWebAppBndXML(webBndXML11()).getVersion());
+                parseWebBndXML(webBndXML11()).getVersion());
         Assert.assertEquals("Version should be 1.2",
                 "1.2",
-                parseWebAppBndXML(webBndXML12()).getVersion());
+                parseWebBndXML(webBndXML12()).getVersion());
     }
 
     public void testXMIInXMLError() throws Exception {
-        parseWebAppBndXML( webAppBndXMI(), "xml.error", "unknown" );
+        parseWebBndXML( webBndXMI20(), "xml.error", "unknown" );
     }
 
     @Test
     public void testVirtualHostDefault() throws Exception {
-        WebBnd bnd = parseWebAppBndXML(webBndXML10());
+        WebBnd bnd = parseWebBndXML(webBndXML10());
         Assert.assertNull(bnd.getVirtualHost());
     }
 
     @Test
     public void testVirtualHost() throws Exception {
-        WebBnd bnd = parseWebAppBndXML(
-                webBndXML10() +
-                    "<virtual-host name=\"vhost0\"/>" +
-                "</web-bnd>");
-
+        WebBnd bnd = parseWebBndXML(webBndXML10("<virtual-host name=\"vhost0\"/>"));
         Assert.assertEquals("vhost0", bnd.getVirtualHost().getName());
     }
 
     @Test
     public void testVirtualHostXMIDefault() throws Exception {
-        WebBnd bnd = parseWebAppBndXMI( webAppBndXMI(), getWebApp24() );
+        WebBnd bnd = parseWebBndXMI( webBndXMI20(), getWebApp24() );
         Assert.assertNull(bnd.getVirtualHost());
     }
 
     @Test
     public void testVirtualHostXMI() throws Exception {
-        WebBnd bnd = parseWebAppBndXMI(
+        WebBnd bnd = parseWebBndXMI(
                 webBndXMI20("virtualHostName=\"vhost0\"", ""),
                 getWebApp24() );
         Assert.assertEquals("vhost0", bnd.getVirtualHost().getName());
@@ -75,7 +71,7 @@ public class WebAppBndTest extends WebAppBndTestBase {
 
     @Test
     public void testVirtualHostXMINil() throws Exception {
-        WebBnd bnd = parseWebAppBndXMI(
+        WebBnd bnd = parseWebBndXMI(
                 webBndXMI20("", "<virtualHostName xsi:nil=\"true\"/>"),
                 getWebApp24());
         Assert.assertNull(bnd.getVirtualHost().getName());
@@ -83,7 +79,7 @@ public class WebAppBndTest extends WebAppBndTestBase {
 
     @Test
     public void testMessageDestination() throws Exception {
-        WebBnd bnd = parseWebAppBndXML(
+        WebBnd bnd = parseWebBndXML(
                 webBndXML10(
                     "<message-destination name=\"md0\" binding-name=\"mdb0\"/>" +
                     "<message-destination name=\"md1\" binding-name=\"mdb1\"/>"));
@@ -98,7 +94,7 @@ public class WebAppBndTest extends WebAppBndTestBase {
 
     @Test
     public void testMessageDestinationXMI() throws Exception {
-        WebBnd bnd = parseWebAppBndXMI(
+        WebBnd bnd = parseWebBndXMI(
                 webBndXMI20("",
                     "<messageDestinations name=\"md0\"/>" +
                     "<messageDestinations name=\"md1\"/>"),
@@ -110,7 +106,7 @@ public class WebAppBndTest extends WebAppBndTestBase {
 
     @Test
     public void testJASPIRefDefault() throws Exception {
-        WebBnd bnd = parseWebAppBndXML(webBndXML10("<jaspi-ref/>"));
+        WebBnd bnd = parseWebBndXML(webBndXML10("<jaspi-ref/>"));
 
         JASPIRef jr = bnd.getJASPIRef();
         //Assert.assertNull(jr.getProviderName());
@@ -119,7 +115,7 @@ public class WebAppBndTest extends WebAppBndTestBase {
 
     @Test
     public void testJASPIRefXMIDefault() throws Exception {
-        WebBnd bnd = parseWebAppBndXMI(
+        WebBnd bnd = parseWebBndXMI(
                 webBndXMI20("", "<jaspiRefBinding/>"),
                 getWebApp24() );
 
@@ -130,7 +126,7 @@ public class WebAppBndTest extends WebAppBndTestBase {
 
     @Test
     public void testJASPIRefProviderName() throws Exception {
-        WebBnd bnd = parseWebAppBndXML(webBndXML10("<jaspi-ref provider-name=\"pn0\"/>"));
+        WebBnd bnd = parseWebBndXML(webBndXML10("<jaspi-ref provider-name=\"pn0\"/>"));
 
         JASPIRef jr = bnd.getJASPIRef();
         Assert.assertEquals("pn0", jr.getProviderName());
@@ -139,7 +135,7 @@ public class WebAppBndTest extends WebAppBndTestBase {
 
     @Test
     public void testJASPIRefProviderNameXMI() throws Exception {
-        WebBnd bnd = parseWebAppBndXMI(
+        WebBnd bnd = parseWebBndXMI(
                 webBndXMI20("", "<jaspiRefBinding providerName=\"pn0\"/>"),
                 getWebApp24());
 
@@ -150,7 +146,7 @@ public class WebAppBndTest extends WebAppBndTestBase {
 
     @Test
     public void testJASPIRefUseJASPIYes() throws Exception {
-        WebBnd bnd = parseWebAppBndXML(webBndXML10("<jaspi-ref use-jaspi=\"yes\"/>"));
+        WebBnd bnd = parseWebBndXML(webBndXML10("<jaspi-ref use-jaspi=\"yes\"/>"));
 
         JASPIRef jr = bnd.getJASPIRef();
         //Assert.assertNull(jr.getProviderName());
@@ -159,7 +155,7 @@ public class WebAppBndTest extends WebAppBndTestBase {
 
     @Test
     public void testJASPIRefUseJASPIYesXMI() throws Exception {
-        WebBnd bnd = parseWebAppBndXMI(
+        WebBnd bnd = parseWebBndXMI(
                 webBndXMI20("", "<jaspiRefBinding useJaspi=\"yes\"/>"),
                 getWebApp24() );
 
@@ -170,7 +166,7 @@ public class WebAppBndTest extends WebAppBndTestBase {
 
     @Test
     public void testJASPIRefUseJASPINo() throws Exception {
-        WebBnd bnd = parseWebAppBndXML(webBndXML10("<jaspi-ref use-jaspi=\"no\"/>"));
+        WebBnd bnd = parseWebBndXML(webBndXML10("<jaspi-ref use-jaspi=\"no\"/>"));
 
         JASPIRef jr = bnd.getJASPIRef();
         //Assert.assertNull(jr.getProviderName());
@@ -179,7 +175,7 @@ public class WebAppBndTest extends WebAppBndTestBase {
 
     @Test
     public void testJASPIRefUseJASPINoXMI() throws Exception {
-        WebBnd bnd = parseWebAppBndXMI(
+        WebBnd bnd = parseWebBndXMI(
                 webBndXMI20("", "<jaspiRefBinding useJaspi=\"no\"/>"),
                 getWebApp24() );
 
@@ -190,7 +186,7 @@ public class WebAppBndTest extends WebAppBndTestBase {
 
     @Test
     public void testJASPIRefUseJASPIInherit() throws Exception {
-        WebBnd bnd = parseWebAppBndXML(webBndXML10("<jaspi-ref use-jaspi=\"inherit\"/>"));
+        WebBnd bnd = parseWebBndXML(webBndXML10("<jaspi-ref use-jaspi=\"inherit\"/>"));
 
         JASPIRef jr = bnd.getJASPIRef();
         //Assert.assertNull(jr.getProviderName());
@@ -199,7 +195,7 @@ public class WebAppBndTest extends WebAppBndTestBase {
 
     @Test
     public void testJASPIRefUseJASPIInheritXMI() throws Exception {
-        WebBnd bnd = parseWebAppBndXMI(
+        WebBnd bnd = parseWebBndXMI(
                 webBndXMI20("", "<jaspiRefBinding useJaspi=\"inherit\"/>"),
                 getWebApp24());
 
@@ -210,15 +206,14 @@ public class WebAppBndTest extends WebAppBndTestBase {
 
     @Test
     public void testServiceRefXMI() throws Exception {
-        parseWebAppBndXMI(
+        parseWebBndXMI(
                 webBndXMI20("",
                     "<serviceRefBindings jndiName=\"sr0\">" +
                         "<bindingServiceRef href=\"WEB-INF/web.xml#sr0\"/>" +
                     "</serviceRefBindings>" +
                     "<serviceRefBindings jndiName=\"sr1\">" +
                         "<bindingServiceRef href=\"WEB-INF/web.xml#sr1\"/>" +
-                    "</serviceRefBindings>" +
-                "</webappbnd:WebAppBinding>"),
+                    "</serviceRefBindings>"),
                 getWebApp24());
     }
 }

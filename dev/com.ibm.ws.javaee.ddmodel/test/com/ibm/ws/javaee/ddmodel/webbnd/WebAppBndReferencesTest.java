@@ -27,7 +27,7 @@ import com.ibm.ws.javaee.dd.webbnd.WebBnd;
 public class WebAppBndReferencesTest extends WebAppBndTestBase {
     @Test
     public void testEJBRef() throws Exception {
-        WebBnd bnd = parseWebAppBndXML(
+        WebBnd bnd = parseWebBndXML(
                 webBndXML12(
                     "<ejb-ref name=\"ref0\" binding-name=\"bn0\"/>" +
                     "<ejb-ref name=\"ref1\" binding-name=\"bn1\"/>"));
@@ -50,7 +50,7 @@ public class WebAppBndReferencesTest extends WebAppBndTestBase {
                        "    <ejb-ref-name>ref1</ejb-ref-name>" +
                         "</ejb-ref>"));
 
-        WebBnd bnd = parseWebAppBndXMI(
+        WebBnd bnd = parseWebBndXMI(
                 webBndXMI20("",
                         "<ejbRefBindings jndiName=\"bn0\">" +
                             "<bindingEjbRef href=\"WEB-INF/web.xml#id0\"/>" +
@@ -70,7 +70,7 @@ public class WebAppBndReferencesTest extends WebAppBndTestBase {
 
     @Test
     public void testResourceRef() throws Exception {
-        WebBnd bnd = parseWebAppBndXML(
+        WebBnd bnd = parseWebBndXML(
                 webBndXML12(
                     "<resource-ref name=\"ref0\" binding-name=\"bn0\"/>" +
                     "<resource-ref name=\"ref1\" binding-name=\"bn1\"/>"));
@@ -97,7 +97,7 @@ public class WebAppBndReferencesTest extends WebAppBndTestBase {
                            "<res-ref-name>ref2</res-ref-name>" +
                        "</resource-ref>"));
 
-        WebBnd bnd = parseWebAppBndXMI(
+        WebBnd bnd = parseWebBndXMI(
                 webBndXMI20("",
                         "<resRefBindings jndiName=\"bn0\">" +
                                 "<bindingResourceRef href=\"WEB-INF/web.xml#id0\"/>" +
@@ -148,7 +148,7 @@ public class WebAppBndReferencesTest extends WebAppBndTestBase {
 
     @Test
     public void testResourceEnvRef() throws Exception {
-        WebBnd bnd = parseWebAppBndXML(
+        WebBnd bnd = parseWebBndXML(
                 webBndXML12(
                         "<resource-env-ref name=\"ref0\" binding-name=\"bn0\"/>" +
                         "<resource-env-ref name=\"ref1\" binding-name=\"bn1\"/>"));
@@ -172,7 +172,7 @@ public class WebAppBndReferencesTest extends WebAppBndTestBase {
                             "<resource-env-ref-name>ref1</resource-env-ref-name>" +
                         "</resource-env-ref>"));
 
-        WebBnd bnd = parseWebAppBndXMI(
+        WebBnd bnd = parseWebBndXMI(
                 webBndXMI20("",
                         "<resourceEnvRefBindings jndiName=\"bn0\">" +
                             "<bindingResourceEnvRef href=\"WEB-INF/web.xml#id0\"/>" +
@@ -192,7 +192,7 @@ public class WebAppBndReferencesTest extends WebAppBndTestBase {
 
     @Test
     public void testMessageDestinationRef() throws Exception {
-        WebBnd bnd = parseWebAppBndXML(
+        WebBnd bnd = parseWebBndXML(
                 webBndXML12(
                         "<message-destination-ref name=\"ref0\" binding-name=\"bn0\"/>" +
                         "<message-destination-ref name=\"ref1\" binding-name=\"bn1\"/>"));
@@ -216,7 +216,7 @@ public class WebAppBndReferencesTest extends WebAppBndTestBase {
                             "<message-destination-ref-name>ref1</message-destination-ref-name>" +
                         "</message-destination-ref>"));
 
-        WebBnd bnd = parseWebAppBndXMI(
+        WebBnd bnd = parseWebBndXMI(
                 webBndXMI20("",
                         "<messageDestinationRefBindings jndiName=\"bn0\">" +
                             "<bindingMessageDestinationRef href=\"WEB-INF/web.xml#id0\"/>" +

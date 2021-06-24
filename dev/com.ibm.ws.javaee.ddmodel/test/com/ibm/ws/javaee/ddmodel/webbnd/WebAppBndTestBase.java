@@ -20,27 +20,27 @@ public class WebAppBndTestBase extends WebAppTestBase {
         return new WebBndAdapter();
     }
     
-    protected WebBnd parseWebAppBndXMI(String ddText, WebApp webApp) throws Exception {
-        return parseAppBnd(ddText, WebBnd.XMI_BND_NAME, webApp, null);
+    protected WebBnd parseWebBndXMI(String ddText, WebApp webApp) throws Exception {
+        return parseWebBnd(ddText, WebBnd.XMI_BND_NAME, webApp, null);
     }
 
-    protected WebBnd parseWebAppBndXMI(String ddText, WebApp webApp, String altMessage, String... messages) throws Exception {
-        return parseAppBnd(ddText, WebBnd.XMI_BND_NAME, webApp, altMessage, messages);
+    protected WebBnd parseWebBndXMI(String ddText, WebApp webApp, String altMessage, String... messages) throws Exception {
+        return parseWebBnd(ddText, WebBnd.XMI_BND_NAME, webApp, altMessage, messages);
     }
 
-    protected WebBnd parseWebAppBndXML(String ddText) throws Exception {
-        return parseAppBnd(ddText, WebBnd.XML_BND_NAME, null, null);
+    protected WebBnd parseWebBndXML(String ddText) throws Exception {
+        return parseWebBnd(ddText, WebBnd.XML_BND_NAME, null, null);
     }
     
-    protected WebBnd parseWebAppBndXML(String ddText, String altMessage, String... messages) throws Exception {
-        return parseAppBnd(ddText, WebBnd.XML_BND_NAME, null, altMessage, messages);
+    protected WebBnd parseWebBndXML(String ddText, String altMessage, String... messages) throws Exception {
+        return parseWebBnd(ddText, WebBnd.XML_BND_NAME, null, altMessage, messages);
     }    
     
-    protected WebBnd parseAppBnd(String ddText, String ddPath, WebApp webApp) throws Exception {
-        return parseAppBnd(ddText, ddPath, webApp, null);
+    protected WebBnd parseWebBnd(String ddText, String ddPath, WebApp webApp) throws Exception {
+        return parseWebBnd(ddText, ddPath, webApp, null);
     }
 
-    private WebBnd parseAppBnd(
+    private WebBnd parseWebBnd(
             String ddText, String ddPath, WebApp webApp,
             String altMessage, String... messages) throws Exception {
 
@@ -61,7 +61,7 @@ public class WebAppBndTestBase extends WebAppTestBase {
     protected static final String webAppBndTailXMI =
             "</webappbnd:WebAppBinding>";
 
-    protected static String webAppBndXMI() {
+    protected static String webBndXMI20() {
         return webBndXMI20("", "");
     }
 
