@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -36,7 +35,6 @@ import javax.ws.rs.sse.SseEventSource;
 import org.junit.After;
 import org.junit.Test;
 
-import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
@@ -185,7 +183,6 @@ public class SseClientBehaviorTestServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat("EE9_FEATURES") // RESTEasy behavior different (likely problem).
     public void testDoNotListenWhenResponseIs503InvalidRetryAfterHeader(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         expectCompletionEventNoSseEvents("http://localhost:" + req.getServerPort() +
                                          "/SseClientBehaviorApp/clientBehavior/503InvalidRetryAfter", 1);
