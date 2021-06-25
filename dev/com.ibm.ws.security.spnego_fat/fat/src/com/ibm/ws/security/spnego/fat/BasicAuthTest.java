@@ -87,7 +87,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
                                         SPNEGOConstants.USE_COMMON_KEYTAB,
                                         SPNEGOConstants.START_SERVER);
 
-        testHelper.addShutdownMessages("CWWKS9127W", "CWWKS4317E", "CWWKS4308E", "CWWKS4309E", "CWWKS4318E", "CWWKG0083W", "CWWKS4313E");
+        testHelper.addShutdownMessages("CWWKS9127W", "CWWKS4317E", "CWWKS4308E", "CWWKS4309E", "CWWKS4318E", "CWWKG0083W", "CWWKS4313E", "CWWKS4312E");
     }
 
     @Before
@@ -850,8 +850,6 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
     @Test
     public void testTrimKerberosRealmNameFromPrincipalUsingCustomJaasLogin() throws Exception {
         preTestCheck();
-        List<String> checkMsgs = new ArrayList<String>();
-        checkMsgs.add("CWWKG0017I");
 
         testHelper.reconfigureServer("trimKerberosRealmFromPrincipal_customJaasLogin.xml", name.getMethodName(), null, false);
 
