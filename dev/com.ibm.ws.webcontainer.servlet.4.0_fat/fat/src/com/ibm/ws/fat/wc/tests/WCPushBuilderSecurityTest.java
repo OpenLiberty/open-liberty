@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,14 +14,13 @@ import java.util.logging.Logger;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
-import com.ibm.ws.fat.util.LoggingTest;
-import com.ibm.ws.fat.util.SharedServer;
-import com.ibm.ws.fat.wc.WCApplicationHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.impl.LibertyServer;
 
 /**
  * Test the push method of PushBuilder from a secured and an unsecured servlet
@@ -31,27 +30,30 @@ import componenttest.custom.junit.runner.FATRunner;
  * wait until they release the official version to implement the actual automation.
  */
 @RunWith(FATRunner.class)
-public class WCPushBuilderSecurityTest extends LoggingTest {
+public class WCPushBuilderSecurityTest {
 
     private static final Logger LOG = Logger.getLogger(WCPushBuilderSecurityTest.class.getName());
 
-    @ClassRule
-    public static SharedServer SHARED_SERVER = new SharedServer("servlet40_PushBuilderSecurity");
+    @Server("servlet40_PushBuilderSecurity")
+    public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
         LOG.info("Setup : add TestPushBuilderSecurity to the server if not already present.");
 
-        WCApplicationHelper.addWarToServerApps(SHARED_SERVER.getLibertyServer(), "TestPushBuilderSecurity.war", true, "testpushbuildersecurity.war.servlets");
+        ShrinkHelper.defaultDropinApp(server, "TestPushBuilderSecurity.war", "testpushbuildersecurity.war.servlets");
 
-        SHARED_SERVER.startIfNotStarted();
-        WCApplicationHelper.waitForAppStart("TestPushBuilderSecurity", WCPushBuilderSecurityTest.class.getName(), SHARED_SERVER.getLibertyServer());
+        // Start the server and use the class name so we can find logs easily.
+        server.startServer(WCPushBuilderSecurityTest.class.getSimpleName() + ".log");
         LOG.info("Setup : complete, ready for Tests");
     }
 
     @AfterClass
     public static void testCleanup() throws Exception {
-        SHARED_SERVER.getLibertyServer().stopServer();
+        // Stop the server
+        if (server != null && server.isStarted()) {
+            server.stopServer();
+        }
     }
 
     /**
@@ -96,16 +98,6 @@ public class WCPushBuilderSecurityTest extends LoggingTest {
     //@Test
     public void testPushBuilderPushMethodUnsecured() throws Exception {
 
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.fat.util.LoggingTest#getSharedServer()
-     */
-    @Override
-    protected SharedServer getSharedServer() {
-        return SHARED_SERVER;
     }
 
 }
