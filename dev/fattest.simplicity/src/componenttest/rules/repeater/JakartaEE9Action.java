@@ -131,6 +131,11 @@ public class JakartaEE9Action extends FeatureReplacementAction {
     }
 
     @Override
+    public JakartaEE9Action liteFATOnly() {
+        return (JakartaEE9Action) super.liteFATOnly();
+    }
+
+    @Override
     public JakartaEE9Action withTestMode(TestMode mode) {
         return (JakartaEE9Action) super.withTestMode(mode);
     }
