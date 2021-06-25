@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2020 IBM Corporation and others.
+# Copyright (c) 2017, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -65,12 +65,14 @@ Service-Component: \
      immediate:=true; \
      properties:="service.vendor=IBM,jmx.objectname=WebSphere:name=com.ibm.ws.jmx.mbeans.generatePluginConfig"
      
--dsannotations: com.ibm.ws.webcontainer.osgi.container.config.WebAppConfigurationAdapter,\
- com.ibm.ws.webcontainer.osgi.webapp.WebAppInjectionClassListAdapter,\
+-dsannotations: \
+ com.ibm.ws.webcontainer.osgi.DynamicVirtualHostManager,\
  com.ibm.ws.webcontainer.osgi.WebContainer,\
  com.ibm.ws.webcontainer.osgi.WebContainerListener,\
+ com.ibm.ws.webcontainer.osgi.container.config.WebAppConfigurationAdapter,\
+ com.ibm.ws.webcontainer.osgi.interceptor.RegisterRequestInterceptor,\
  com.ibm.ws.webcontainer.osgi.session.SessionHelper, \
- com.ibm.ws.webcontainer.osgi.interceptor.RegisterRequestInterceptor
+ com.ibm.ws.webcontainer.osgi.webapp.WebAppInjectionClassListAdapter
  
 # For each exported package, create (in that package) a package-info.java
 # file, and place an @version javadoc tag in package-level javadoc. 
@@ -184,6 +186,7 @@ jakartaeeMe: true
 	com.ibm.ws.adaptable.module;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.ws.javaee.dd;version=latest,\
+	com.ibm.ws.kernel.feature,\
 	com.ibm.ws.kernel.security.thread,\
 	com.ibm.ws.anno;version=latest,\
 	com.ibm.ws.artifact;version=latest,\
