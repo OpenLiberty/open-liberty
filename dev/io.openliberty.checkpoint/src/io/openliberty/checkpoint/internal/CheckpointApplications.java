@@ -46,7 +46,7 @@ public class CheckpointApplications implements ServerReadyStatus {
                 checkpoint.snapshot(Phase.APPLICATIONS);
             } catch (SnapshotFailed e) {
                 if (e.getType() == Type.SNAPSHOT_FAILED) {
-                    System.exit(e.getErrorCode());
+                    new Thread(() -> System.exit(e.getErrorCode()), "Snapshot exit.").start();
                 }
                 // TODO should we always exit on failure?
             }
