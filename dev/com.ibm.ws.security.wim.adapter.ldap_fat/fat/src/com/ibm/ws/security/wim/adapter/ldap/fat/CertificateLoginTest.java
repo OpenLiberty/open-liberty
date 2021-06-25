@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -85,6 +86,12 @@ public class CertificateLoginTest {
     public static void tearDown() throws Exception {
         Log.info(c, "tearDown", "Stopping the server...");
         myServer.stopServer("CWIML4538E");
+    }
+
+    @After
+    public void afterTest() {
+        Log.info(c, "afterTest", "Reset log mark...");
+        myServer.resetLogMarks();
     }
 
     /**
@@ -311,7 +318,7 @@ public class CertificateLoginTest {
 
         client = setupClient(user1InvalidCertFile, true);
         client.access("/SimpleServlet", 403);
-        myServer.waitForStringInLog("CWIML4537E:", 2000);
+        myServer.waitForStringInLogUsingMark("CWIML4537E:", 2000);
         Log.info(c, methodName, "Exiting test " + methodName);
     }
 
@@ -338,7 +345,7 @@ public class CertificateLoginTest {
 
         client = setupClient(user1CertFile, true);
         client.access("/SimpleServlet", 403);
-        myServer.waitForStringInLog("CWIML4538E:"); // com.ibm.websphere.wim.exception.DuplicateLogonIdException: CWIML4538E: The user registry operation could not be completed. More than one record exists for the null principal name in the configured user registries. The principal name must be unique across all the user registries.
+        myServer.waitForStringInLogUsingMark("CWIML4538E:"); // com.ibm.websphere.wim.exception.DuplicateLogonIdException: CWIML4538E: The user registry operation could not be completed. More than one record exists for the null principal name in the configured user registries. The principal name must be unique across all the user registries.
 
         Log.info(c, methodName, "Exiting test " + methodName);
     }
