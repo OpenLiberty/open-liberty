@@ -1,0 +1,31 @@
+/*******************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+configurations {
+  standaloneclient
+}
+
+configurations.standaloneclient {
+  transitive = false
+}
+
+dependencies {
+  standaloneclient project(':io.openliberty.standalone.rest.client.2.1')
+}
+
+task addStandaloneClientJar(type: Copy) {
+  from configurations.standaloneclient
+  into "${buildDir}/autoFVT/publish/files"
+}
+
+addRequiredLibraries {
+  dependsOn addStandaloneClientJar
+}

@@ -24,6 +24,7 @@ Private-Package: \
  javax.json.*, \
  javax.ws.rs.*, \
  javax.xml.*, \
+ org.apache.commons.logging.*, \
  org.apache.cxf.*, \
  org.eclipse.microprofile.rest*, \
  org.eclipse.yasson.*, \
@@ -58,6 +59,7 @@ Private-Package: \
  @${repo;com.ibm.ws.cxf.client},\
  @${repo;com.ibm.ws.logging},\
  @${repo;com.ibm.ws.container.service},\
+ @${repo;io.openliberty.org.apache.commons.logging},\
  @${repo;io.openliberty.org.eclipse.microprofile.rest.client.2.0},\
  @${repo;org.slf4j:slf4j-api;1.7.25},\
  @${repo;org.slf4j:slf4j-simple;1.7.25},\
