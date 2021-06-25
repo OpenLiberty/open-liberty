@@ -29,6 +29,8 @@ import com.ibm.ws.jpa.eclipselink.TestOLGH16685_EJB;
 import com.ibm.ws.jpa.eclipselink.TestOLGH16685_Web;
 import com.ibm.ws.jpa.eclipselink.TestOLGH16772_EJB;
 import com.ibm.ws.jpa.eclipselink.TestOLGH16772_Web;
+import com.ibm.ws.jpa.eclipselink.TestOLGH16970_EJB;
+import com.ibm.ws.jpa.eclipselink.TestOLGH16970_Web;
 import com.ibm.ws.jpa.eclipselink.TestOLGH8014_EJB;
 import com.ibm.ws.jpa.eclipselink.TestOLGH8014_Web;
 import com.ibm.ws.jpa.eclipselink.TestOLGH8294_EJB;
@@ -75,6 +77,8 @@ import componenttest.topology.database.container.DatabaseContainerFactory;
                 TestOLGH16685_Web.class,
                 TestOLGH16772_EJB.class,
                 TestOLGH16772_Web.class,
+                TestOLGH16970_EJB.class,
+                TestOLGH16970_Web.class,
                 componenttest.custom.junit.runner.AlwaysPassesTest.class
 })
 public class FATSuite {
