@@ -2,9 +2,7 @@
 symbolicName = io.openliberty.samlWeb2.0.internal.opensaml-3.4
 visibility=private
 singleton=true
--features=\
-  com.ibm.websphere.appserver.wss4j-2.3
--bundles=\
+-bundles=com.ibm.ws.org.apache.santuario.xmlsec.2.2.0, \
   com.ibm.ws.com.google.guava, \
   com.ibm.ws.org.apache.httpcomponents, \
   com.ibm.ws.org.cryptacular.cryptacular.1.2.4, \

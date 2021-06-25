@@ -6,7 +6,6 @@ visibility = private
   com.ibm.websphere.appserver.servlet-5.0, \
   io.openliberty.samlWeb2.0.internal.ee9.opensaml-3.4
 -bundles=\
-  com.ibm.ws.security.saml.websso.2.0.jakarta, \
   io.openliberty.security.saml.internal.wab.2.0, \
   io.openliberty.security.common.internal
 kind=beta
