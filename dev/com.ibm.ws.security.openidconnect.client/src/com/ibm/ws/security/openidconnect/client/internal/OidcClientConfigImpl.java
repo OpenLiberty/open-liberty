@@ -1565,7 +1565,6 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     /** {@inheritDoc} */
     @Override
     public boolean createSession() {
-        // TODO Auto-generated method stub
         return createSession;
     }
 
@@ -1588,14 +1587,12 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     /** {@inheritDoc} */
     @Override
     public String getUserIdentifier() {
-        // TODO Auto-generated method stub
         return userIdentifier;
     }
 
     /** {@inheritDoc} */
     @Override
     public String getIntrospectionTokenTypeHint() {
-        // TODO Auto-generated method stub
         return introspectionTokenTypeHint;
     }
 
@@ -1675,7 +1672,6 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     /** {@inheritDoc} */
     @Override
     public boolean disableIssChecking() {
-        // TODO Auto-generated method stub
         return disableIssChecking;
     }
 
@@ -1767,7 +1763,6 @@ public class OidcClientConfigImpl implements OidcClientConfig {
 
     @Override
     public String jwtRef() {
-        // TODO Auto-generated method stub
         return jwtRef;
     }
 
@@ -1796,7 +1791,6 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     /** {@inheritDoc} */
     @Override
     public boolean getAccessTokenInLtpaCookie() {
-        // TODO Auto-generated method stub
         return accessTokenInLtpaCookie;
     }
 
@@ -1941,7 +1935,6 @@ public class OidcClientConfigImpl implements OidcClientConfig {
             }
             return null;
         }
-        // TODO - this isn't working correctly
         Properties sslConfigProps = getSslConfigProperties(sslRef);
         if (sslConfigProps != null) {
             keyStoreName = sslConfigProps.getProperty(com.ibm.websphere.ssl.Constants.SSLPROP_KEY_STORE_NAME);

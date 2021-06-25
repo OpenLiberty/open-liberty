@@ -12,8 +12,8 @@ package com.ibm.ws.security.common.structures;
 
 public class CacheEntry {
 
-    Object value;
-    long createdAt = 0L;
+    private Object value;
+    private long createdAt = 0L;
 
     public CacheEntry(Object value) {
         this.value = value;

@@ -239,9 +239,7 @@ public class AccessTokenAuthenticator {
     Subject recreateSubject(Subject cachedSubject) {
         Subject newSubject = new Subject();
         if (cachedSubject != null) {
-            newSubject.getPrincipals().addAll(cachedSubject.getPrincipals());
-            newSubject.getPublicCredentials().addAll(cachedSubject.getPublicCredentials());
-            newSubject.getPrivateCredentials().addAll(cachedSubject.getPrivateCredentials());
+            newSubject = new Subject(false, cachedSubject.getPrincipals(), cachedSubject.getPublicCredentials(), cachedSubject.getPrivateCredentials());
         }
         return newSubject;
     }
