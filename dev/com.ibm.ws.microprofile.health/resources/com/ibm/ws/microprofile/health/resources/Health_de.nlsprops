@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -45,6 +45,10 @@ healthcheck.bean.call.exception.CWMH0050E.explanation=Die angegebene Aufrufmetho
 healthcheck.bean.call.exception.CWMH0050E.useraction=\u00dcberpr\u00fcfen Sie Ihre Aufrufmethode innerhalb der HealthCheck-Bean, um die aufgetretene Ausnahme zu ermitteln.
 
 # The HealthCheck bean call method had a DOWN outcome
-healthcheck.application.down.CWMH0051W=CWMH0051W: Die {0}, die die HealthCheckResponse in der {1}-Anwendung im Modul {2} implementiert, hat ein DOWN-Ergebnis {3} mit den folgenden Daten {4} berichtet.
-healthcheck.application.down.CWMH0051W.explanation=Das DOWN-Ergebnis kann dazu f\u00fchren, dass ein \u00dcberwachungsservice auf diesem Server Ma\u00dfnahmen ergreift.
-healthcheck.application.down.CWMH0051W.useraction=Es ist keine Benutzeraktion erforderlich. Diese Warnung hat ein DOWN-Ergebnis erfasst.
+healthcheck.application.down.CWMH0052W=CWMH0052W: Die Klasse {0}, die die HealthCheckResponse in der Anwendung {1} im Modul {2} implementiert, hat einen Status {3} mit den folgenden Daten berichtet: {4}.
+healthcheck.application.down.CWMH0052W.explanation=Der Status DOWN kann dazu f\u00fchren, dass ein \u00dcberwachungsservice auf diesem Server ausgef\u00fchrt wird.
+healthcheck.application.down.CWMH0052W.useraction=Es ist keine Benutzeraktion erforderlich. Diese Warnung ist eine Aufzeichnung des Status DOWN.
+# The Readiness HealthCheck had a DOWN outcome, when applications are not started yet
+readiness.healthcheck.applications.not.started.down.CWMH0053W=CWMH0053W: Die Statuspr\u00fcfung f\u00fcr die Bereitschaft hat einen Gesamtstatus von DOWN ergeben, weil die folgenden Anwendungen noch nicht gestartet sind: {0}
+readiness.healthcheck.applications.not.started.down.CWMH0053W.explanation=Die Statuspr\u00fcfung f\u00fcr die Bereitschaft hat den Gesamtstatus DOWN gemeldet, weil die angegebenen Anwendungen noch nicht gestartet und daher f\u00fcr die Verarbeitung von Anforderungen nicht bereit sind.
+readiness.healthcheck.applications.not.started.down.CWMH0053W.useraction=Diese Warnung ist eine Aufzeichnung des Status DOWN und es ist keine Benutzeraktion erforderlich. Warten Sie, bis alle Anwendungen gestartet sind. Nachdem alle Anwendungen gestartet wurden, werden die benutzerdefinierten Statuspr\u00fcfungen verarbeitet.

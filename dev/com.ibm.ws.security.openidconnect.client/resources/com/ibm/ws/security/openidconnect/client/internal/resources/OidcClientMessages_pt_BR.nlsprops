@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2019, 2020 IBM Corporation and others.
+# Copyright (c) 2019, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -232,11 +232,11 @@ OIDC_CLIENT_BAD_REQUEST_NO_STATE.useraction=Verifique a configura\u00e7\u00e3o d
 
 # STOP HERE, OIDC COMMON HAS RESERVED 1751 - 1799
 
-# do not translate hostname 
+# do not translate hostname, sameSiteCookie, webAppSecurity, Strict, Lax, None
 # used by client
 OIDC_CLIENT_BAD_REQUEST_NO_COOKIE=CWWKS1520E: Uma solicita\u00e7\u00e3o para [{0}] n\u00e3o \u00e9 v\u00e1lida. Um cookie necess\u00e1rio cujo nome come\u00e7a com WASReqURLOidc est\u00e1 ausente. O nome do host usado para acessar o cliente pode n\u00e3o corresponder ao nome registrado no provedor. Um c\u00f3digo de resposta 500 ser\u00e1 retornado.
 OIDC_CLIENT_BAD_REQUEST_NO_COOKIE.explanation=Foi recebida uma solicita\u00e7\u00e3o que n\u00e3o incluiu um cookie necess\u00e1rio.
-OIDC_CLIENT_BAD_REQUEST_NO_COOKIE.useraction=Verifique as configura\u00e7\u00f5es de provedor e de cliente do OpenID Connect. A aus\u00eancia do cookie pode ser causada por acessar o cliente com um nome de host que difere do nome do host do redirecionamento que est\u00e1 registrado com o provedor.
+OIDC_CLIENT_BAD_REQUEST_NO_COOKIE.useraction=Verifique as configura\u00e7\u00f5es de provedor e de cliente do OpenID Connect. A aus\u00eancia do cookie pode ser causada por acessar o cliente com um nome de host que difere do nome do host do redirecionamento que est\u00e1 registrado com o provedor. Se o atributo sameSiteCookie no elemento webAppSecurity na configura\u00e7\u00e3o do servidor estiver configurado como Strict, tente configurar o valor como Lax ou None.
 
 OIDC_CLIENT_DISCOVERY_OVERRIDE_EP=CWWKS1521W: A configura\u00e7\u00e3o [{2}] do cliente do OpenId Connect (parte respons\u00e1vel ou RP) especifica a URL do endpoint de descoberta [{0}] e os outros terminais. O RP usar\u00e1 as informa\u00e7\u00f5es da solicita\u00e7\u00e3o de descoberta e ignorar\u00e1 os outros terminais configurados [{1}].
 OIDC_CLIENT_DISCOVERY_OVERRIDE_EP.explanation=O cliente do OpenId Connect usa o terminal de descoberta para entrar em contato com o provedor e usa as informa\u00e7\u00f5es da solicita\u00e7\u00e3o de descoberta para entrar em contato com os outros terminais, como autoriza\u00e7\u00e3o, token e userinfo.

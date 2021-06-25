@@ -28,15 +28,15 @@ POST_LOGOUT_PAGE_FAILURE_TEXT=Il se peut que vous ne soyez pas compl\u00e8tement
 #Message prefix block: CWWKS5000 - CWWKS5099
 SAML20_CONFIG_PROCESSED=CWWKS5000I: Le traitement de la configuration SAML Web SSO version 2.0 [{0}] a abouti.
 SAML20_CONFIG_PROCESSED.explanation=Le traitement de la configuration SAML Web SSO version 2.0 a abouti.
-SAML20_CONFIG_PROCESSED.useraction=Aucune action n'est requise.
+SAML20_CONFIG_PROCESSED.useraction=Aucune action n'est n\u00e9cessaire.
 
 SAML20_CONFIG_MODIFIED=CWWKS5001I: Le traitement de la configuration SAML Web SSO version 2.0 [{0}] a abouti.
 SAML20_CONFIG_MODIFIED.explanation=Le traitement de la configuration SAML Web SSO version 2.0 a abouti.
-SAML20_CONFIG_MODIFIED.useraction=Aucune action n'est requise.
+SAML20_CONFIG_MODIFIED.useraction=Aucune action n'est n\u00e9cessaire.
 
 SAML20_ENDPOINT_SERVICE_ACTIVATED=CWWKS5002I: Le service de noeud final SAML Web SSO version 2.0 est activ\u00e9.
 SAML20_ENDPOINT_SERVICE_ACTIVATED.explanation=Le service de noeud final SAML Web SSO version 2.0 est activ\u00e9.
-SAML20_ENDPOINT_SERVICE_ACTIVATED.useraction=Aucune action n'est requise.
+SAML20_ENDPOINT_SERVICE_ACTIVATED.useraction=Aucune action n'est n\u00e9cessaire.
 
 # web RequestFilter
 SAML20_INVALID_ACS_URL=CWWKS5003E: Le noeud final demand\u00e9 [{0}] n''est pas pris en charge dans ce fournisseur de services SAML Web Single Sign-On (SSO). 
@@ -92,7 +92,7 @@ SAML20_POST_LOGOUT_URL_NOT_VALID.useraction=Assurez-vous que la valeur d'URL de 
 
 SAML20_CONFIG_DEACTIVATED=CWWKS5016I: La configuration SAML Web SSO version 2.0 [{0}] a \u00e9t\u00e9 d\u00e9sactiv\u00e9e.
 SAML20_CONFIG_DEACTIVATED.explanation=La d\u00e9sactivation de la configuration SAML Web SSO version 2.0 a abouti.
-SAML20_CONFIG_DEACTIVATED.useraction=Aucune action n'est requise.
+SAML20_CONFIG_DEACTIVATED.useraction=Aucune action n'est n\u00e9cessaire.
 
 # CWWKS5017E removed (using SAML20_DECODE_SAML_RESPONSE_FAILURE_LOG/CWWKS5018E instead)
 # {0} = Error message text
@@ -135,7 +135,7 @@ ACCESS_FILE_INFO_ERROR.useraction=V\u00e9rifiez que le fichier existe et que l'a
 
 SAML20_IDP_METADATA_FILE_CHANGED=CWWKS5038I: Le fichier de m\u00e9tadonn\u00e9es du fournisseur d''identit\u00e9 [{1}] dans le fournisseur de services [{0}] a \u00e9t\u00e9 modifi\u00e9.
 SAML20_IDP_METADATA_FILE_CHANGED.explanation=Le fichier de m\u00e9tadonn\u00e9es du fournisseur d'identit\u00e9 a \u00e9t\u00e9 mis \u00e0 jour avec les nouvelles donn\u00e9es de configuration pour ce fournisseur. Le fournisseur de services va recharger le fichier.
-SAML20_IDP_METADATA_FILE_CHANGED.useraction=Aucune action n'est requise.
+SAML20_IDP_METADATA_FILE_CHANGED.useraction=Aucune action n'est n\u00e9cessaire.
 
 SAML20_SP_UNSOLICITED_WITH_IN_RESPONSE_TO=CWWKS5040E: L''attribut InResponseTo [{0}] n''est pas autoris\u00e9 dans une r\u00e9ponse SAML non sollicit\u00e9e.
 SAML20_SP_UNSOLICITED_WITH_IN_RESPONSE_TO.explanation=La r\u00e9ponse SAML non sollicit\u00e9e contient un attribut InResponseTo.  Cette condition n'est pas autoris\u00e9e.
@@ -210,7 +210,7 @@ SAML20_SESSION_ERR=CWWKS5062E: L''attribut SessionNotOnOrAfter [{0}] est hors pl
 SAML20_SESSION_ERR.explanation=L'assertion SAML a \u00e9t\u00e9 re\u00e7ue \u00e0 un moment correspondant ou ult\u00e9rieur au param\u00e8tre SessionNotOnOrAfter de l'\u00e9l\u00e9ment AuthnStatement de l'assertion.  Cette condition n'est pas autoris\u00e9e. Les raisons possibles de cette erreur sont que l'horloge du destinataire est d\u00e9synchronis\u00e9e par rapport \u00e0 celle du cr\u00e9ateur de l'assertion ou que l'assertion a \u00e9t\u00e9 obtenue et renvoy\u00e9e par une application non autoris\u00e9e.
 SAML20_SESSION_ERR.useraction=Synchronisez les horloges du fournisseur de services SAML et du fournisseur d'identit\u00e9, ou augmentez le param\u00e8tre de d\u00e9calage d'horloge.
 
-SAML20_AUTHENTICATION_FAIL=CWWKS5063E: Exception SAML : Le fournisseur de service SAML n'a pas r\u00e9ussi \u00e0 traiter la demande d'authentification.
+SAML20_AUTHENTICATION_FAIL=CWWKS5063E: Exception SAML : Le fournisseur de services SAML a \u00e9chou\u00e9 \u00e0 traiter la demande d'authentification.
 SAML20_AUTHENTICATION_FAIL.explanation=Le processus d'authentification n'a pas abouti car une autre erreur s'est produite avant ce message.
 SAML20_AUTHENTICATION_FAIL.useraction=Consultez l'action utilisateur pour plus de d\u00e9tails sur l'erreur qui s'affiche avant ce message. 
 
@@ -248,7 +248,7 @@ SAML20_CANNOT_RESOLVE_ASSERTION=CWWKS5076E: Le service UserCredentialResolver n'
 SAML20_CANNOT_RESOLVE_ASSERTION.explanation=Le service UserCredentialResolver fourni par la fonction utilisateur n'arrive pas \u00e0 mapper correctement l'assertion SAML et g\u00e9n\u00e8re une exception UserIdentityException.
 SAML20_CANNOT_RESOLVE_ASSERTION.useraction=V\u00e9rifiez que le service UserCredentialResolver est correctement configur\u00e9 si l'exception UserIdentityException n'est pas attendue.
 
-SAML20_MULTI_SPECIFIC_SP=CWWKS5077E: L''ex\u00e9cution ne peut pas s\u00e9lectionner le fournisseur de services dans la liste des fournisseurs de services {1}] to process the request [{0}]. 
+SAML20_MULTI_SPECIFIC_SP=CWWKS5077E: L''ex\u00e9cution ne peut pas s\u00e9lectionner le fournisseur de services dans la liste des fournisseurs de services [{1}] pour traiter la demande [{0}]. 
 SAML20_MULTI_SPECIFIC_SP.explanation=La demande ne doit pas r\u00e9pondre aux crit\u00e8res de filtrage de plusieurs \u00e9l\u00e9ments authFilter. Elle doit respecter les conditions d'un seul \u00e9l\u00e9ment authFilter, de sorte que l'ex\u00e9cution puisse choisir le fournisseur de services appropri\u00e9 pour le traitement.
 SAML20_MULTI_SPECIFIC_SP.useraction=Consultez la configuration de serveur et ajustez les \u00e9l\u00e9ments authnFilter, de sorte que les conditions d'un \u00e9l\u00e9ment authFilter soient remplies et la demande sera trait\u00e9e par le fournisseur de services qui r\u00e9f\u00e9rence l'\u00e9l\u00e9ment authFilter.
 
@@ -302,10 +302,10 @@ RS_SAML_TRUSTED_ISSUERS_ERROR.useraction=Supprimez la liste trustedIssuers de pk
 # 0=Boolean value (i.e. "true" or "false"), 1=Configuration attribute names, 2=Configuration ID
 SAML_CONFIG_IGNORE_ATTRIBUTES=CWWKS5207W: L''attribut inboundPropagation est d\u00e9fini sur [{0}] dans la configuration de samlWebSso20 [{2}]. Les attributs [{1}] seront ignor\u00e9s au cours du traitement.
 SAML_CONFIG_IGNORE_ATTRIBUTES.explanation=La configuration samlWebSso20 est d\u00e9finie afin de traiter la propagation entrante de jeton SAML ou de SAML Web SSO, mais non des deux. Les attributs list\u00e9s seront ignor\u00e9s lors du traitement de demandes Web avec la configuration SAML sp\u00e9cifi\u00e9e.
-SAML_CONFIG_IGNORE_ATTRIBUTES.useraction=Aucune action n'est requise.
+SAML_CONFIG_IGNORE_ATTRIBUTES.useraction=Aucune action n'est n\u00e9cessaire.
 
 SAML_BAD_INBOUND_SAML_TOKEN=CWWKS5208E: L''assertion SAML entrante n''est pas valide [{0}].
-SAML_BAD_INBOUND_SAML_TOKEN.explanation=L'assertion SAML, qui est contenue dans l'en-t\u00eate de la demande \
+SAML_BAD_INBOUND_SAML_TOKEN.explanation=L'assertion SAML, qui est contenue dans l'en-t\u00eate de demande \
 HTTP, n'est pas valide et ne peut pas \u00eatre analys\u00e9e correctement.
 SAML_BAD_INBOUND_SAML_TOKEN.useraction=V\u00e9rifiez qu'une assertion SAML valide est g\u00e9n\u00e9r\u00e9e correctement.
 
