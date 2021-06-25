@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -552,4 +552,7 @@ public class SAMLConstants extends Constants {
     public static final String SERVLET_40 = "servlet40";
     public static final String EXAMPLE_CALLBACK = "com.ibm.ws.wssecurity.example.cbh_1.0.0";
     public static final String EXAMPLE_CALLBACK_FEATURE = "wsseccbh-1.0";
+	//issue 17687
+    public static final String EXAMPLE_CALLBACK_WSS4J = "com.ibm.ws.wssecurity.example.cbhwss4j";
+    public static final String EXAMPLE_CALLBACK_FEATURE_WSS4J = "wsseccbh-2.0";
 }
