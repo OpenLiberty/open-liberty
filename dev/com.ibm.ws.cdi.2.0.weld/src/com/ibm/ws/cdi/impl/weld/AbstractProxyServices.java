@@ -10,12 +10,12 @@
  *******************************************************************************/
 package com.ibm.ws.cdi.impl.weld;
 
+import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.security.ProtectionDomain;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.WeakHashMap;
 
 import org.eclipse.osgi.util.ManifestElement;
@@ -37,32 +37,34 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 public abstract class AbstractProxyServices implements ProxyServices {
 
     private static final ManifestElement[] WELD_PACKAGES;
-    private static java.lang.reflect.Method defineClass1, defineClass2;
-    private static final AtomicBoolean classLoaderMethodsMadeAccessible = new AtomicBoolean(false);
 
-    private WeakHashMap<Class<?>, ClassLoader> classToClassLoader = new WeakHashMap<Class<?>, ClassLoader>(); //Do we need this?
+    private static enum ClassLoaderMethods {
+        ;//No enum instances
 
-    /**
-     * This method cracks open {@code ClassLoader#defineClass()} methods by calling {@code setAccessible()}.
-     * <p>
-     * It was taken from WeldDefaultProxyService
-     **/
-    public static void makeClassLoaderMethodsAccessible() {
-        // the AtomicBoolean make sure this gets invoked only once.
-        if (classLoaderMethodsMadeAccessible.compareAndSet(false, true)) {
+        private static final Method defineClass1, defineClass2, getClassLoadingLock;
+
+        static {
             try {
-                AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
-                    public Object run() throws Exception {
+                Method[] methods = AccessController.doPrivileged(new PrivilegedExceptionAction<Method[]>() {
+                    public Method[] run() throws Exception {
                         Class<?> cl = Class.forName("java.lang.ClassLoader");
                         final String name = "defineClass";
+                        final String getClassLoadingLockName = "getClassLoadingLock";
 
-                        defineClass1 = cl.getDeclaredMethod(name, String.class, byte[].class, int.class, int.class);
-                        defineClass2 = cl.getDeclaredMethod(name, String.class, byte[].class, int.class, int.class, ProtectionDomain.class);
-                        defineClass1.setAccessible(true);
-                        defineClass2.setAccessible(true);
-                        return null;
+                        Method[] methods = new Method[3];
+
+                        methods[0] = cl.getDeclaredMethod(name, String.class, byte[].class, int.class, int.class);
+                        methods[1] = cl.getDeclaredMethod(name, String.class, byte[].class, int.class, int.class, ProtectionDomain.class);
+                        methods[2] = cl.getDeclaredMethod(getClassLoadingLockName, String.class);
+                        methods[0].setAccessible(true);
+                        methods[1].setAccessible(true);
+                        methods[2].setAccessible(true);
+                        return methods;
                     }
                 });
+                defineClass1 = methods[0];
+                defineClass2 = methods[1];
+                getClassLoadingLock = methods[2];
             } catch (PrivilegedActionException pae) {
                 throw new RuntimeException("cannot initialize ClassPool", pae.getException());
             }
@@ -122,56 +124,65 @@ public abstract class AbstractProxyServices implements ProxyServices {
     }
 
     @Override
+    @FFDCIgnore(ClassNotFoundException.class)
     public Class<?> defineClass​(Class<?> originalClass, String className, byte[] classBytes, int off, int len, ProtectionDomain protectionDomain) throws ClassFormatError {
+
+        ClassLoader loader = loaderMap.get(originalClass);
+        Object classLoaderLock = null;
         try {
-            makeClassLoaderMethodsAccessible();
-            java.lang.reflect.Method method;
-            Object[] args;
-            if (protectionDomain == null) {
-                method = defineClass1;
-                args = new Object[]{className, classBytes, off, len};
-            } else {
-                method = defineClass2;
-                args = new Object[]{className, classBytes, off, len, protectionDomain};
-            }
-            ClassLoader loader = getClassLoader(originalClass);
-            /*if (loader == null) {
-                loader = Thread.currentThread().getContextClassLoader();
-                // cannot determine CL, we need to throw an exception
-                if (loader == null) {
-                    throw BeanLogger.LOG.cannotDetermineClassLoader(className, originalClass);
-                }
-            }*/
-            Class<?> clazz = (Class) method.invoke(loader, args);
-            classToClassLoader.put(clazz, loader);
-            return clazz;
-        } catch (RuntimeException e) {
-            throw e;
-        } catch (java.lang.reflect.InvocationTargetException e) {
-            throw new RuntimeException(e.getTargetException());
+            classLoaderLock = ClassLoaderMethods.getClassLoadingLock.invoke(loader, className);
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+
+        synchronized (classLoaderLock) {
+            try {
+                //First check we haven't defined this in another thread.
+                return loadClass​(className, loader);
+            } catch (ClassNotFoundException e) {
+                //Do nothing, move on to defining the class. 
+            }
+
+            try {
+                java.lang.reflect.Method method;
+                Object[] args;
+                if (protectionDomain == null) {
+                    method = ClassLoaderMethods.defineClass1;
+                    args = new Object[]{className, classBytes, off, len};
+                } else {
+                    method = ClassLoaderMethods.defineClass2;
+                    args = new Object[]{className, classBytes, off, len, protectionDomain};
+                }
+                Class<?> clazz = (Class) method.invoke(loader, args);
+                return clazz;
+            } catch (RuntimeException e) {
+                throw e;
+            } catch (java.lang.reflect.InvocationTargetException e) {
+                throw new RuntimeException(e.getTargetException());
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
     @Override
-    @FFDCIgnore(java.security.PrivilegedActionException.class)
     public Class<?> loadClass​(Class<?> originalClass, String classBinaryName) throws ClassNotFoundException {
-        try {
-            return (Class<?>) AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
-                @Override
-                public Object run() throws Exception {
-                    ClassLoader cl = classToClassLoader.containsKey(originalClass) ? classToClassLoader.get(originalClass) : getClassLoader(this.getClass());
-                    return Class.forName(classBinaryName, true, cl);
-                }
-            });
-        } catch (PrivilegedActionException pae) {
-            if (pae.getException() instanceof ClassNotFoundException) {
-                throw (ClassNotFoundException) pae.getException();
-            }
-            throw new CDIRuntimeException(pae.getException());
-        }
+        ClassLoader cl = loaderMap.get(originalClass);
+        return loadClass​(classBinaryName, cl);
     }
+
+    private Class<?> loadClass​(String classBinaryName, ClassLoader cl) throws ClassNotFoundException {
+        return Class.forName(classBinaryName, true, cl);
+    }
+
+/*    @FFDCIgnore(ClassNotFoundException.class)
+    public Class<?> loadClass​(Class<?> originalClass, String classBinaryName) throws ClassNotFoundException {
+         if (originalClassToProxyClass.containsKey(originalClass)) {
+             return originalClassToProxyClass.get(originalClass);
+         } else {
+             throw new ClassNotFoundException("We failed to find a proxy class " + classBinaryName);
+         }
+    }*/
 
     public boolean supportsClassDefining() {
         return true;
@@ -195,4 +206,9 @@ public abstract class AbstractProxyServices implements ProxyServices {
         }
     }
 
+    private final ClassValue<ClassLoader> loaderMap = new ClassValue<ClassLoader>() {
+        public ClassLoader computeValue(Class<?> type) {
+            return getClassLoader(type);
+        }
+    };
 }
