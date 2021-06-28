@@ -55,9 +55,9 @@ import io.openliberty.microprofile.openapi20.utils.MessageConstants;
 import io.openliberty.microprofile.openapi20.utils.ModuleUtils;
 import io.openliberty.microprofile.openapi20.utils.OpenAPIUtils;
 import io.smallrye.openapi.api.OpenApiConfig;
-import io.smallrye.openapi.api.OpenApiDocument;
 import io.smallrye.openapi.api.constants.OpenApiConstants;
 import io.smallrye.openapi.api.models.info.InfoImpl;
+import io.smallrye.openapi.api.util.ConfigUtil;
 import io.smallrye.openapi.api.util.FilterUtil;
 import io.smallrye.openapi.api.util.MergeUtil;
 import io.smallrye.openapi.runtime.OpenApiProcessor;
@@ -292,8 +292,6 @@ public class ApplicationProcessor {
 
     private OpenAPI generateModel(OpenApiConfig config, Container appContainer, WebModuleInfo moduleInfo, ModuleClassesContainerInfo moduleClassesContainerInfo, ClassLoader appClassloader) {
         OpenAPI openAPIModel;
-        OpenApiDocument.INSTANCE.reset();
-        OpenApiDocument.INSTANCE.config(config);
         
         ClassLoader tccl = classLoadingService.createThreadContextClassLoader(appClassloader);
         Object oldClassLoader = THREAD_CONTEXT_ACCESSOR.pushContextClassLoaderForUnprivileged(tccl);
@@ -331,6 +329,8 @@ public class ApplicationProcessor {
                 if (openAPIModel.getInfo().getVersion() == null) {
                     openAPIModel.getInfo().setVersion(Constants.DEFAULT_OPENAPI_DOC_VERSION);
                 }
+                
+                ConfigUtil.applyConfig(config, openAPIModel);
                 
                 if (OpenAPIUtils.isDefaultOpenApiModel(openAPIModel)) {
                     openAPIModel = null;
