@@ -14,6 +14,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -31,6 +32,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -70,7 +72,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     private final AtomicReference<Callback> cbConcurrency = new AtomicReference<Callback>();
     private final AtomicReference<Callback> cbLateStart = new AtomicReference<Callback>();
     private final AtomicReference<Callback> cbQueueSize = new AtomicReference<Callback>();
-    private Runnable cbShutdown;
+    private final AtomicReference<Consumer<Set<Object>>> cbShutdown = new AtomicReference<Consumer<Set<Object>>>();
 
     /**
      * Use this lock to make a consistent update to both expedite and expeditesAvailable,
@@ -1118,8 +1120,21 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     }
 
     @Override
-    public void registerShutdownCallback(Runnable callback) {
-        cbShutdown = callback;
+    public void registerShutdownCallback(Consumer<Set<Object>> callback) {
+        if (!cbShutdown.compareAndSet(null, callback)
+            && !cbShutdown.get().equals(callback))
+            throw new IllegalStateException(cbShutdown + " is already registered");
+    }
+
+    // TODO remove once consuming code is switched over to above
+    @Override
+    public void registerShutdownCallback(final Runnable callback) {
+        cbShutdown.set(new Consumer<Set<Object>>() {
+            @Override
+            public void accept(Set<Object> runningTasks) {
+                callback.run();
+            }
+        });
     }
 
     @Override
@@ -1210,8 +1225,14 @@ public class PolicyExecutorImpl implements PolicyExecutor {
 
             shutdownLatch.countDown();
 
-            if (cbShutdown != null)
-                cbShutdown.run();
+            Consumer<Set<Object>> callback = cbShutdown.get();
+            if (callback != null) {
+                Set<Object> runningTasks = new HashSet<Object>();
+                for (Iterator<PolicyTaskFutureImpl<?>> it = running.iterator(); it.hasNext();)
+                    runningTasks.add(it.next().task);
+
+                callback.accept(runningTasks);
+            }
         } else
             while (state.get() == State.ENQUEUE_STOPPING)
                 try { // Await completion of other thread that concurrently invokes shutdown.
