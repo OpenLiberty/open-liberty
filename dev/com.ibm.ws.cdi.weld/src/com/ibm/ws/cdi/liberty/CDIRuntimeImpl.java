@@ -52,6 +52,7 @@ import com.ibm.ws.cdi.internal.interfaces.EjbEndpointService;
 import com.ibm.ws.cdi.internal.interfaces.ExtensionArchive;
 import com.ibm.ws.cdi.internal.interfaces.TransactionService;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereCDIDeployment;
+import com.ibm.ws.cdi.proxy.ProxyServicesImpl;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.metadata.MetaDataSlotService;
 import com.ibm.ws.container.service.metadata.extended.DeferredMetaDataFactory;
