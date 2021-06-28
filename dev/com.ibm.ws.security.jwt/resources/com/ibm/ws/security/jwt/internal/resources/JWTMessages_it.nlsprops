@@ -382,3 +382,7 @@ JWE_REQUIRED_BUT_TOKEN_NOT_JWE.useraction=Per accettare i token JWS invece dei t
 NESTED_JWS_REQUIRED_BUT_NOT_FOUND=CWWKS6065E: Il payload del token JWE (JSON Web Encryption) incluso nella richiesta non \u00e8 un token JWS (JSON Web Signature).
 NESTED_JWS_REQUIRED_BUT_NOT_FOUND.explanation=Il payload di un token JWE deve essere un JWT (JSON Web Token) valido nel formato JWS.
 NESTED_JWS_REQUIRED_BUT_NOT_FOUND.useraction=Assicurarsi che il payload del token JWE sia un JWT valido nel formato JWS.
+
+JWE_DECRYPTION_KEY_MISSING=CWWKS6066E: Impossibile decodificare il token JWE (JSON Web Encryption) perch\u00e9 non \u00e8 possibile trovare una chiave di decodifica. L''attributo di configurazione del server {0} \u00e8 impostato su [{1}].
+JWE_DECRYPTION_KEY_MISSING.explanation=Una chiave di decodifica \u00e8 necessaria per decodificare il token JWE. La chiave di decodifica deve essere presente nel keystore del consumer JWT oppure \u00e8 necessario specificare la chiave nelle propriet\u00e0 di configurazione del microprofilo.
+JWE_DECRYPTION_KEY_MISSING.useraction=Verificare che l'alias chiave specificato nel messaggio sia presente nel keystore del consumer JWT. Se l'alias non \u00e8 configurato, \u00e8 necessario specificare la chiave di decodifica nelle propriet\u00e0 di configurazione del microprofilo.

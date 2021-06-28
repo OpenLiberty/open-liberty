@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2019, 2020 IBM Corporation and others.
+# Copyright (c) 2019, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -232,11 +232,11 @@ OIDC_CLIENT_BAD_REQUEST_NO_STATE.useraction=V\u00e9rifiez la configuration du fo
 
 # STOP HERE, OIDC COMMON HAS RESERVED 1751 - 1799
 
-# do not translate hostname 
+# do not translate hostname, sameSiteCookie, webAppSecurity, Strict, Lax, None
 # used by client
 OIDC_CLIENT_BAD_REQUEST_NO_COOKIE=CWWKS1520E: Une demande envoy\u00e9e \u00e0 [{0}] n''est pas valide. Un cookie requis dont le nom commence par WASReqURLOidc manque. Le nom d''h\u00f4te qui est utilis\u00e9 pour acc\u00e9der au client ne correspond pas au nom qui est enregistr\u00e9 aupr\u00e8s du fournisseur. Le code de r\u00e9ponse 500 est renvoy\u00e9.
 OIDC_CLIENT_BAD_REQUEST_NO_COOKIE.explanation=Une demande n'incluant pas un cookie requis a \u00e9t\u00e9 re\u00e7ue.
-OIDC_CLIENT_BAD_REQUEST_NO_COOKIE.useraction=V\u00e9rifiez la configuration du client et la configuration du fournisseur OpenID Connect. Il se peut que le cookie manque suite \u00e0 l'acc\u00e8s au client avec un nom d'h\u00f4te diff\u00e9rent du nom d'h\u00f4te de redirection enregistr\u00e9 aupr\u00e8s du fournisseur.
+OIDC_CLIENT_BAD_REQUEST_NO_COOKIE.useraction=V\u00e9rifiez la configuration du client et la configuration du fournisseur OpenID Connect. Il se peut que le cookie manque suite \u00e0 l'acc\u00e8s au client avec un nom d'h\u00f4te diff\u00e9rent du nom d'h\u00f4te de redirection enregistr\u00e9 aupr\u00e8s du fournisseur. Si l'attribut sameSiteCookie de l'\u00e9l\u00e9ment webAppSecurity de la configuration du serveur est d\u00e9fini sur Strict, essayez de d\u00e9finir la valeur sur Lax ou Aucun.
 
 OIDC_CLIENT_DISCOVERY_OVERRIDE_EP=CWWKS1521W: La configuration [{2}] (partie utilisatrice, ou RP) du client OpenId Connect sp\u00e9cifie \u00e0 la fois l''URL du noeud final de reconnaissance [{0}] et celle des autres noeuds finaux. La partie utilisatrice (RP) utilisera les informations de la demande de reconnaissance et ignorera les autres noeuds finaux configur\u00e9s [{1}].
 OIDC_CLIENT_DISCOVERY_OVERRIDE_EP.explanation=Le client OpenId Connect utilise le point d'extr\u00e9mit\u00e9 de d\u00e9couverte (discovery) pour contacter le fournisseur. Il utilise aussi les informations de la demande de d\u00e9couverte pour contacter les autres points d'extr\u00e9mit\u00e9 tels que authorization, token et userinfo.
@@ -286,5 +286,6 @@ AUTHFILTER_MULTIPLE_MATCHED.useraction=R\u00e9visez le fichier server.xml et cor
 # do not translate hostname, wasReqURLRedirectDomainNames, and webAppSecurity
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE=CWWKS1532E: Une demande envoy\u00e9e \u00e0 [{0}] n''est pas valide. Un cookie requis dont le nom commence par WASReqURLOidc poss\u00e8de une valeur incorrecte. Le nom d''h\u00f4te [{1}] qui est utilis\u00e9 dans le cookie ne correspond pas au nom enregistr\u00e9 aupr\u00e8s du fournisseur. Le code de r\u00e9ponse 500 est renvoy\u00e9.
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.explanation=Une demande incluant un cookie incorrectement form\u00e9 a \u00e9t\u00e9 re\u00e7ue.
-OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.useraction=V\u00e9rifiez la configuration du client et la configuration du fournisseur OpenID Connect. Il se peut que le cookie soit incorrectement form\u00e9 suite \u00e0 sa modification au niveau de l'agent utilisateur avec un nom d'h\u00f4te diff\u00e9rent du nom d'h\u00f4te de la redirection enregistr\u00e9 aupr\u00e8s du fournisseur. Si le nom d'h\u00f4te est attendu, ajoutez-le \u00e0 l'attribut wasReqURLRedirectDomainNames de l'\u00e9l\u00e9ment webAppSecurity dans le fichier server.xml. 
+OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.useraction=V\u00e9rifiez la configuration du client et la configuration du fournisseur OpenID Connect. Il se peut que le cookie soit incorrectement form\u00e9 suite \u00e0 sa modification au niveau de l'agent utilisateur avec un nom d'h\u00f4te diff\u00e9rent du nom d'h\u00f4te de la redirection enregistr\u00e9 aupr\u00e8s du fournisseur. Si le nom d'h\u00f4te est attendu, ajoutez-le \u00e0 l'attribut wasReqURLRedirectDomainNames de l'\u00e9l\u00e9ment webAppSecurity dans le fichier server.xml.
+
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

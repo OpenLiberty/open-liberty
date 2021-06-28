@@ -71,7 +71,7 @@ SAML20_SP_BAD_VERSION_ERROR=CWWKS5010E: R\u0103spunsul SAML con\u0163ine o versi
 SAML20_SP_BAD_VERSION_ERROR.explanation=R\u0103spunsul SAML con\u0163ine o versiune de revendicare care nu este suportat\u0103 de furnizorul de servicii. Versiunea acceptat\u0103 este afi\u015fat\u0103 \u00een mesaj.
 SAML20_SP_BAD_VERSION_ERROR.useraction=Asigura\u0163i-v\u0103 c\u0103 IdP este configurat pentru revendicarea cu versiunea 2.0.
 
-SAML20_RESPONSE_BAD_ISSUE_TIME=CWWKS5011E: IssueInstant [{0}] din r\u0103spunsul SAML este \u00een afara intervalului. Momentul de timp curent este [{1}]. Setarea devia\u0163iei ceasului prezent este {2} secunde.
+SAML20_RESPONSE_BAD_ISSUE_TIME=CWWKS5011E: IssueInstant [{0}] din r\u0103spunsul SAML este \u00een afara intervalului. Momentul de timp curent este [{1}]. Setarea curent\u0103 pentru devia\u0163ia ceasului este {2} secunde.
 SAML20_RESPONSE_BAD_ISSUE_TIME.explanation=R\u0103spunsul SAML este emis \u00een afara unei perioade de timp acceptabile.  Un posibil motiv al erorii este nesincronizarea ceasului primitorului cu ceasul creatorului aser\u0163iunii.
 SAML20_RESPONSE_BAD_ISSUE_TIME.useraction=Asigura\u0163i-v\u0103 c\u0103 data \u015fi timpul pentru IdP sunt sincronizate cu acest furnizor de servicii SAML Web Single Sign-On (SSO) sau cre\u015fte\u0163i devia\u0163ia ceasului.
 
@@ -79,7 +79,7 @@ SAML20_RESPONSE_BAD_DESTINATION=CWWKS5012E: Destina\u0163ia [{0}] din r\u0103spu
 SAML20_RESPONSE_BAD_DESTINATION.explanation=Destina\u0163ia din r\u0103spunsul SAML trebuie s\u0103 se potriveasc\u0103 cu URL-ul furnizorului de servicii.
 SAML20_RESPONSE_BAD_DESTINATION.useraction=Contacta\u0163i administratorul IdP pentru a v\u0103 asigura c\u0103 IdP-ul este configurat corespunz\u0103tor.    
 
-RS_EMPTY_SAML_ASSERTION=CWWKS5013E: Antetul numit [{0}] trebuie s\u0103 con\u0163in\u0103 o aser\u0163iune SAML valid\u0103, dar fie nu exist\u0103 \u00een cererea HTTP, fie aser\u0163iunea SAML este un \u015fir gol.
+RS_EMPTY_SAML_ASSERTION=CWWKS5013E: Antetul numit [{0}] trebuie s\u0103 con\u0163in\u0103 o Aser\u0163iune valid\u0103 SAML dar aceasta fir nu exist\u0103 \u00een cererea HTTP sau Aser\u0163iunea SAML este un \u015fir gol.
 RS_EMPTY_SAML_ASSERTION.explanation=O Aser\u0163iune valid\u0103 SAML trebuie s\u0103 fie setat\u0103 la antetul indicat \u00een cererea HTTP. 
 RS_EMPTY_SAML_ASSERTION.useraction=Asigura\u0163i-v\u0103 c\u0103 configura\u0163ia rsSaml specific\u0103 un headerName corect \u015fi c\u0103 este setat\u0103 o Aser\u0163iune valid\u0103 SAML la acel antet specificat \u00een cererea HTTP.
 
@@ -95,7 +95,7 @@ SAML20_CONFIG_DEACTIVATED.useraction=Nicio ac\u0163iune nu este necesar\u0103.
 # CWWKS5017E removed (using SAML20_DECODE_SAML_RESPONSE_FAILURE_LOG/CWWKS5018E instead)
 # {0} = Error message text
 # {1} = Error class
-SAML20_DECODE_SAML_RESPONSE_FAILURE_LOG=CWWKS5018E: R\u0103spunsul SAML nu poate fi decodificat sau parsat. [{1}:{0}].
+SAML20_DECODE_SAML_RESPONSE_FAILURE_LOG=CWWKS5018E: R\u0103spunsul SAML nu poate fi decodat sau parsat. [{1}:{0}].
 SAML20_DECODE_SAML_RESPONSE_FAILURE_LOG.explanation=Furnizorul de servicii (service provider - SP) nu poate decodifica sau parsa mesajul de r\u0103spuns SAML. Cauzele acestui e\u015fec includ codificarea incorect\u0103 de c\u0103tre IdP, schema incorect\u0103, sau e\u015fu\u0103rile de comunica\u0163ie.
 SAML20_DECODE_SAML_RESPONSE_FAILURE_LOG.useraction=Contacta\u0163i administratorul IdP SAML.
 
@@ -180,7 +180,7 @@ SAML20_ELEMENT_ATTR_ERR=CWWKS5052E: Atributul [{0}] din elementul [{1}] din reve
 SAML20_ELEMENT_ATTR_ERR.explanation=Revendicarea SAML are un element c\u0103ruia \u00eei lipse\u015fte un atribut necesar la momentul rul\u0103rii.
 SAML20_ELEMENT_ATTR_ERR.useraction=Atributul necesar trebuie s\u0103 fie ad\u0103ugat la revendicarea SAML.  Contacta\u0163i administratorul furnizorului de identitate (IdP) pentru a v\u0103 asigura c\u0103 IdP-ul este configurat corespunz\u0103tor.
 
-SAML20_SUBJECT_NOTONAFTER_ERR=CWWKS5053E: Atributul NotOnOrAfter [{0}] din elementul SubjectConfirmationData este \u00een afara intervalului.  Momentul de timp curent este [{1}]. Setarea devia\u0163iei ceasului prezent este {2} secunde.
+SAML20_SUBJECT_NOTONAFTER_ERR=CWWKS5053E: Atributul NotOnOrAfter [{0}] din elementul SubjectConfirmationData este \u00een afara intervalului.  Momentul de timp curent este [{1}]. Setarea curent\u0103 pentru devia\u0163ia ceasului este {2} secunde.
 SAML20_SUBJECT_NOTONAFTER_ERR.explanation=Valoarea revendic\u0103rii SAML a fost primit\u0103 la un moment dat care este la sau dup\u0103 setarea NotOnOrAfter pe SubjectConfirmationData \u00een revendicare.  Aceast\u0103 condi\u0163ie nu este permis\u0103. Un posibil motiv pentru eroare este c\u0103 ceasul receptorului nu este sincronizat cu ceasul creatorului aser\u0163iunii.
 SAML20_SUBJECT_NOTONAFTER_ERR.useraction=Sincroniza\u0163i ceasurile furnizorului de servicii (SP) SAML \u015fi al furnizorului de identitate (IdP) sau m\u0103ri\u0163i setarea pentru decalajul ceasului.
 
@@ -208,7 +208,7 @@ SAML20_SESSION_ERR=CWWKS5062E: Atributul SessionNotOnOrAfter [{0}] este \u00een 
 SAML20_SESSION_ERR.explanation=Valoarea revendic\u0103rii SAML a fost primit\u0103 la un moment dat care este la sau dup\u0103 setarea SessionNotOnOrAfter din AuthnStatement \u00een revendicare.  Aceast\u0103 condi\u0163ie nu este permis\u0103. Motivele posibile ale erorii sunt nesincronizarea ceasului primitorului cu ceasul creatorului aser\u0163iunii sau faptul c\u0103 aser\u0163iunea a fost ob\u0163inut\u0103 \u015fi retrimis\u0103 de c\u0103tre o aplica\u0163ie neautorizat\u0103.
 SAML20_SESSION_ERR.useraction=Sincroniza\u0163i ceasurile furnizorului de servicii (SP) SAML \u015fi al furnizorului de identitate (IdP) sau m\u0103ri\u0163i setarea pentru decalajul ceasului.
 
-SAML20_AUTHENTICATION_FAIL=CWWKS5063E: Excep\u0163ie SAML: Furnizorul de servicii (SP) SAML a e\u015fuat s\u0103 proceseze cererea de autentificare.
+SAML20_AUTHENTICATION_FAIL=CWWKS5063E: Excep\u0163ie SAML: Furnizorul de servicii (SP) SAML nu a reu\u015fit s\u0103 proceseze cererea de autentificare.
 SAML20_AUTHENTICATION_FAIL.explanation=Procesul de autentificare nu s-a desf\u0103\u015furat cu succes deoarece c\u00e2teva alte erori au ap\u0103rut \u00eenainte de acest mesaj.
 SAML20_AUTHENTICATION_FAIL.useraction=Vede\u0163i ac\u0163iunea de utilizator pentru eroarea care apare \u00eenainte de acest mesaj. 
 
@@ -280,7 +280,7 @@ SAML20_IDP_PROTOCOL_NOT_HTTPS=CWWKS5084E: Furnizorul de servicii (SP) necesit\u0
 SAML20_IDP_PROTOCOL_NOT_HTTPS.explanation=Furnizorul de servicii SAML WebSSO (SP) necesit\u0103 comunica\u0163ie SSL, dar a fost utilizat HTTP \u00een URL-ul IdP.
 SAML20_IDP_PROTOCOL_NOT_HTTPS.useraction=Face\u0163i una din urm\u0103toarele ac\u0163iuni: 1) Asigura\u0163i-v\u0103 c\u0103 furnizorul de identitate SAML WebSSO suport\u0103 SSL. 2) Dac\u0103 furnizorul de identitate SAML WebSSO nu suport\u0103 SSL, seta\u0163i httpsRequired \u00een configura\u0163ia furnizorului de servicii SAML WebSSO la false.
 
-RS_SAML_RESPONSE_NOT_SUPPORTED=CWWKS5085E: R\u0103spunsul SAML din con\u0163inutul antetului [{0}] din cererea HTTP nu este suportat.
+RS_SAML_RESPONSE_NOT_SUPPORTED=CWWKS5085E: R\u0103spunsul SAML din con\u0163inutul antetului header [{0}] din cererea HTTP nu este suportat.
 RS_SAML_RESPONSE_NOT_SUPPORTED.explanation=Este suportat\u0103 numai Aser\u0163iunea SAML pentru con\u0163inutul antetului indicat \u00een cererea HTTP. 
 RS_SAML_RESPONSE_NOT_SUPPORTED.useraction=Asigura\u0163i-v\u0103 c\u0103 Aser\u0163iunea SAML este \u00een con\u0163inutul antetului indicat.
 

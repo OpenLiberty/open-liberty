@@ -382,3 +382,7 @@ JWE_REQUIRED_BUT_TOKEN_NOT_JWE.useraction=Para aceptar se\u00f1ales JWS en lugar
 NESTED_JWS_REQUIRED_BUT_NOT_FOUND=CWWKS6065E: La carga \u00fatil de la se\u00f1al JWE (JSON Web Encryption) que se incluye en la solicitud no es una se\u00f1al JWS (JSON Web Signature).
 NESTED_JWS_REQUIRED_BUT_NOT_FOUND.explanation=La carga \u00fatil de una se\u00f1al JWE debe ser una JWT (JSON Web Token) v\u00e1lida en formato JWS.
 NESTED_JWS_REQUIRED_BUT_NOT_FOUND.useraction=Aseg\u00farese de que la carga \u00fatil de la se\u00f1al JWE sea una JWT v\u00e1lida en formato JWS.
+
+JWE_DECRYPTION_KEY_MISSING=CWWKS6066E: La se\u00f1al JWE (JSON Web Encryption) no se puede descifrar porque no se puede encontrar una clave de descifrado. El atributo de configuraci\u00f3n del servidor {0} est\u00e1 establecido en [{1}].
+JWE_DECRYPTION_KEY_MISSING.explanation=Es necesaria una clave de descifrado para descifrar la se\u00f1al JWE. La clave de descifrado debe estar presente en el almac\u00e9n de claves de consumidor de JWT o la clave debe especificarse en las propiedades de configuraci\u00f3n de MicroProfile.
+JWE_DECRYPTION_KEY_MISSING.useraction=Verifique que el alias de clave especificado en el mensaje exista en el almac\u00e9n de claves de consumidor de JWT. Si el alias no est\u00e1 configurado, la clave de descifrado debe especificarse en las propiedades de configuraci\u00f3n de MicroProfile.

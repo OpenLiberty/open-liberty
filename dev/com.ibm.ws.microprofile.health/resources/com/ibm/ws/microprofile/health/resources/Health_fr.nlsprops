@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -45,6 +45,11 @@ healthcheck.bean.call.exception.CWMH0050E.explanation=La m\u00e9thode d'appel sp
 healthcheck.bean.call.exception.CWMH0050E.useraction=V\u00e9rifiez votre m\u00e9thode d'appel dans le bean HealthCheck pour identifier l'exception qui s'est produite.
 
 # The HealthCheck bean call method had a DOWN outcome
-healthcheck.application.down.CWMH0051W=CWMH0051W: Le {0} impl\u00e9mentant HealthCheckResponse dans l'application {1} dans le module {2}, a signal\u00e9 un r\u00e9sultat DOWN {3} avec donn\u00e9es {4}.
-healthcheck.application.down.CWMH0051W.explanation=Le r\u00e9sultat DOWN peut entra\u00eener une action du service de surveillance sur ce serveur.
-healthcheck.application.down.CWMH0051W.useraction=Aucune intervention de l'utilisateur n'est requise. Cet avertissement est un enregistrement du r\u00e9sultat DOWN.
+healthcheck.application.down.CWMH0052W=CWMH0052W: La classe {0} qui impl\u00e9mente HealthCheckResponse dans l'application {1} dans le module {2} a pour statut {3} avec les donn\u00e9es suivantes : {4}.
+healthcheck.application.down.CWMH0052W.explanation=Le statut DOWN peut entra\u00eener une action du service de surveillance sur ce serveur.
+healthcheck.application.down.CWMH0052W.useraction=Aucune action de l'utilisateur n'est requise.  Cet avertissement est un enregistrement du statut DOWN.
+
+# The Readiness HealthCheck had a DOWN outcome, when applications are not started yet
+readiness.healthcheck.applications.not.started.down.CWMH0053W=CWMH0053W: Le bilan de sant\u00e9 permettant de savoir si le produit est pr\u00eat a signal\u00e9 un statut global DOWN car les applications suivantes ne sont pas encore d\u00e9marr\u00e9es : {0}
+readiness.healthcheck.applications.not.started.down.CWMH0053W.explanation=Le bilan de sant\u00e9 permettant de savoir si le produit est pr\u00eat a signal\u00e9 un statut global DOWN car les applications sp\u00e9cifi\u00e9es ne sont pas encore d\u00e9marr\u00e9es et ne sont pas pr\u00eates \u00e0 traiter les demandes.
+readiness.healthcheck.applications.not.started.down.CWMH0053W.useraction=Cet avertissement est un enregistrement du statut DOWN et aucune action utilisateur n'est n\u00e9cessaire. Attendez que toutes les applications soient d\u00e9marr\u00e9es. Une fois toutes les applications d\u00e9marr\u00e9es, les bilans de sant\u00e9 d\u00e9finies par l'utilisateur sont trait\u00e9es.
