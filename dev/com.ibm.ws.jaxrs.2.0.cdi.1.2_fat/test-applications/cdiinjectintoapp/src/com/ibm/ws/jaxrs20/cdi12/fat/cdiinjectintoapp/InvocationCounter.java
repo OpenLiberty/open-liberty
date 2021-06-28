@@ -8,6 +8,11 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
+package com.ibm.ws.jaxrs20.cdi12.fat.cdiinjectintoapp;
 
-addRequiredLibraries.dependsOn addJakartaTransformer
+public interface InvocationCounter {
+
+    int invoke();
+
+    int getInvocations();
+}
