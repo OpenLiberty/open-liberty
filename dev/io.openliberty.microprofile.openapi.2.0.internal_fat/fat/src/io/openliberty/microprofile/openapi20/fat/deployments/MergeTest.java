@@ -239,7 +239,7 @@ public class MergeTest {
 
         // check for clash message
         assertNotNull(server.waitForStringInLogUsingMark("CWWKO1662W", server.getDefaultLogFile()));
-        assertThat(server.findStringsInLogsUsingMark(" - Path /test.*test2.* clashes with a path from another module.*will not be merged", server.getDefaultLogFile()), hasSize(1));
+        assertThat(server.findStringsInLogsUsingMark(" - Path /test.*test2.* clashes with a path from.*test1.*test2.*will not be merged", server.getDefaultLogFile()), hasSize(1));
     }
 
     private Asset openApiJsonWithServers(String... urls) {

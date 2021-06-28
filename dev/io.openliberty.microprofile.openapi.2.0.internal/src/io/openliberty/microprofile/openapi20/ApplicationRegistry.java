@@ -131,6 +131,10 @@ public class ApplicationRegistry {
                 cachedProvider = null;
                 
                 if (moduleSelectionConfig.useFirstModuleOnly()) {
+                    if (LoggingUtils.isEventEnabled(tc)) {
+                        Tr.event(this, tc, "Application Processor: Current OpenAPI application removed, looking for another application to document.");
+                    }
+
                     // We just removed the module used for the OpenAPI document, we need to find a new module to use if there is one
                     for (ApplicationRecord app : applications.values()) {
                         Collection<OpenAPIProvider> providers = applicationProcessor.processApplication(app.info, moduleSelectionConfig);

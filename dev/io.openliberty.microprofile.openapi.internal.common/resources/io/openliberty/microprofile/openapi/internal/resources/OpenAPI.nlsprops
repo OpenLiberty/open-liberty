@@ -69,7 +69,7 @@ OPENAPI_MERGE_PROBLEMS_CWWKO1662W=CWWKO1662W: The following problems occurred wh
 OPENAPI_MERGE_PROBLEMS_CWWKO1662W.explanation=The OpenAPI documentation from multiple web modules could not be successfully merged. If the reported problems are not fixed, the endpoints from the reported modules will not be included in the generated OpenAPI document.
 OPENAPI_MERGE_PROBLEMS_CWWKO1662W.useraction=Review the merge problems to identify why the generated OpenAPI documents could not be merged.
 
-OPENAPI_MERGE_PROBLEM_PATH_CLASH=Path {0} from {1} clashes with a path from another module. {1} will not be merged.
+OPENAPI_MERGE_PROBLEM_PATH_CLASH=Path {0} from module {1} clashes with a path from module {2}. {1} will not be merged.
 OPENAPI_MERGE_PROBLEM_PATH_CLASH.explanation=The given path is present in two modules. Both instances of the path can't be included in the same OpenAPI document. This message is returned as part of CWWKO1662.
 OPENAPI_MERGE_PROBLEM_PATH_CLASH.useraction=Either change one of the conflicting modules or configure the mpOpenApi-2.0 feature to exclude one of them. This problem can be caused if servers are included in the OpenAPI document and the server URL does not end with the context root of the application (e.g. because the application will be accessed at a different URL through a reverse proxy).
 

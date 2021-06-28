@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -75,6 +74,11 @@ public class MergeProcessor {
     public static OpenAPIProvider mergeDocuments(List<OpenAPIProvider> documents) {
 
         MergeProcessor mergeProcessor = new MergeProcessor();
+        
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.event(mergeProcessor, tc, "Beginning merge of OpenAPI documents for " + documents);
+        }
+
         for (OpenAPIProvider document : documents) {
             mergeProcessor.add(document);
         }
@@ -84,9 +88,9 @@ public class MergeProcessor {
         OpenAPIProvider mergedDoc = mergeProcessor.getMergedDocument();
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             try {
-                Tr.event(tc, "Merged document: ", OpenApiSerializer.serialize(mergedDoc.getModel(), Format.JSON));
+                Tr.event(mergeProcessor, tc, "Merged document: ", OpenApiSerializer.serialize(mergedDoc.getModel(), Format.JSON));
             } catch (IOException e) {
-                Tr.event(tc, "Unable to trace merged document", e);
+                Tr.event(mergeProcessor, tc, "Unable to trace merged document", e);
             }
         }
 
@@ -112,7 +116,7 @@ public class MergeProcessor {
     /**
      * The path names in use for models processed so far
      */
-    private Set<String> pathNames = new HashSet<>();
+    private Map<OpenAPIProvider, Set<String>> pathNames = new HashMap<>();
 
     /**
      * The unique names and their values which are in use for models processed so far, grouped by the type of name
@@ -260,15 +264,22 @@ public class MergeProcessor {
 
         boolean clashesFound = false;
         for (String path : pathItems.keySet()) {
-            if (this.pathNames.contains(path)) {
-                // Report a clash
-                mergeProblems.add(Tr.formatMessage(tc, MessageConstants.OPENAPI_MERGE_PROBLEM_PATH_CLASH, path, provider));
-                clashesFound = true;
+            for (Entry<OpenAPIProvider, Set<String>> entry : this.pathNames.entrySet()) {
+                OpenAPIProvider otherProvider = entry.getKey();
+                Set<String> pathNames = entry.getValue();
+                if (pathNames.contains(path)) {
+                    // Report a clash
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                        Tr.event(this, tc, "Path " + path + " clashes with " + otherProvider);
+                    }
+                    mergeProblems.add(Tr.formatMessage(tc, MessageConstants.OPENAPI_MERGE_PROBLEM_PATH_CLASH, path, provider, otherProvider));
+                    clashesFound = true;
+                }
             }
         }
 
         if (!clashesFound) {
-            this.pathNames.addAll(pathItems.keySet());
+            this.pathNames.put(provider, pathItems.keySet());
         }
 
         return clashesFound;
@@ -387,7 +398,7 @@ public class MergeProcessor {
                 if (!pathServersEndWithContextRoot(entry.getValue(), contextRoot)) {
                     allServersEndWithContextRoot = false;
                     if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                        Tr.event(tc, "Server under " + entry.getKey() + " did not end with context root " + contextRoot);
+                        Tr.event(tc, "Server under path " + entry.getKey() + " did not end with context root " + contextRoot + ". Context root cannot be prepended to paths.");
                     }
 
                 }
@@ -395,8 +406,8 @@ public class MergeProcessor {
         }
 
         if (allServersEndWithContextRoot) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Removing context root " + contextRoot + " from servers and adding it to paths");
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(tc, "Removing context root " + contextRoot + " from servers and adding it to paths");
             }
 
             for (Server server : notNull(servers)) {
@@ -717,7 +728,7 @@ public class MergeProcessor {
         public void registerRename(NameType nameType, String oldName, String newName) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                 if (!oldName.equals(newName)) {
-                    Tr.event(tc, "Manual rename " + nameType + " " + oldName + " -> " + newName);
+                    Tr.event(tc, "Renamed " + nameType + " " + oldName + " -> " + newName);
                 }
             }
 

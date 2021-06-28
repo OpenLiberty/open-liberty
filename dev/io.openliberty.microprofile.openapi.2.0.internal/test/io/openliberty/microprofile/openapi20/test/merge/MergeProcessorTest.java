@@ -9,6 +9,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.stringContainsInOrder;
 import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
@@ -69,9 +70,10 @@ public class MergeProcessorTest {
 
         OpenAPIProvider resultProvider = MergeProcessor.mergeDocuments(Arrays.asList(model1, model2));
 
+        // Path X from module Y clashes with module Z. Module Y will not be included.
         assertThat("Merge problems", resultProvider.getMergeProblems(),
-                   contains(allOf(containsString("/test"),
-                                  containsString("clashing-path-with-server-2.yaml"))));
+                   contains(stringContainsInOrder(Arrays.asList("/test", "clashing-path-with-server-2.yaml", "clashing-path-with-server-1.yaml", "clashing-path-with-server-2.yaml"))));
+        
 
         // As there's only one model in the final merge, it should be returned without modification
         assertModelsEqual(model1.getModel(), resultProvider.getModel());

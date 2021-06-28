@@ -130,7 +130,7 @@ public class ApplicationProcessor {
                                 // but that's sufficient because ApplicationRegistry won't even call us if it's already got a provider
                                 // from another application.
                                 if (LoggingUtils.isEventEnabled(tc)) {
-                                    Tr.event(this, tc, "Ignoring module because useFirstModuleOnly is set and we already found one. module=" + webModuleInfo.getName());
+                                    Tr.event(this, tc, "ApplicationProcessor: Ignoring module because useFirstModuleOnly is set and we already found one. module=" + webModuleInfo.getName());
                                 }
                                 ApplicationRegistry appRegistry = this.appRegistry;
                                 if (appRegistry != null) {
@@ -142,7 +142,7 @@ public class ApplicationProcessor {
                             
                             if (!selectionConfig.isIncluded(webModuleInfo)) {
                                 if (LoggingUtils.isEventEnabled(tc)) {
-                                    Tr.event(this, tc, "Module not included by config. module=" + webModuleInfo.getName());
+                                    Tr.event(this, tc, "ApplicationProcessor: Module not included by config. module=" + webModuleInfo.getName());
                                 }
                                 
                                 continue;
