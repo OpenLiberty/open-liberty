@@ -263,7 +263,7 @@ public class BasicSseResource extends Application {
                 try (SseEventSink sink = eventSink) {
 
                     OutboundSseEvent event = sse.newEventBuilder()
-                                    .mediaType(MediaType.MULTIPART_FORM_DATA_TYPE)
+                                  // .mediaType(MediaType.APPLICATION_XML_TYPE) Cause a IllegalArgumentException
                                     .data(JaxbObject.class, JAXB_OBJECTS[0])
                                     .build();
                     System.out.println("BasicSseResource.sendErrorEvents() sending: " + JAXB_OBJECTS[0]);

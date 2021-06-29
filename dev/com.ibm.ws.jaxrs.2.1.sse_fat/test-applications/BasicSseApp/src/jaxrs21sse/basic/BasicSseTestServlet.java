@@ -396,7 +396,7 @@ public class BasicSseTestServlet extends FATServlet {
 
                                 @Override
                                 public void accept(InboundSseEvent t) {
-                                    JaxbObject o = t.readData(JaxbObject.class, MediaType.MULTIPART_FORM_DATA_TYPE);
+                                    JaxbObject o = t.readData(JaxbObject.class, MediaType.APPLICATION_XML_TYPE);
                                     System.out.println("new event: " + o);
                                     receivedEvents.add(o);
                                 }
@@ -407,7 +407,6 @@ public class BasicSseTestServlet extends FATServlet {
                                 public void accept(Throwable t) {
                                     System.out.println("new error: " + t);
                                     errors.add(t);
-                                    executionLatch.countDown();   // Added because RestEasy doesn't send a completion event following an error.
                                 }
                             },
                             new Runnable() {
