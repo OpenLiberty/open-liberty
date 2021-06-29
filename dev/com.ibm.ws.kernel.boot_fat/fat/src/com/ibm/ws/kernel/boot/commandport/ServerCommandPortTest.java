@@ -41,6 +41,7 @@ public class ServerCommandPortTest {
     private static final LibertyServer commandPortEnabledServer = LibertyServerFactory.getLibertyServer(COMMAND_PORT_ENABLED_SERVER_NAME);
 
     private static final boolean isMac = System.getProperty("os.name", "unknown").toLowerCase().indexOf("mac os") >= 0;
+    private final static boolean isHotspotVM = System.getProperty("java.vm.name", "unknown").contains("HotSpot");
 
     @Rule
     public TestName testName = new TestName();
@@ -153,9 +154,9 @@ public class ServerCommandPortTest {
         // ensure that the command port in the .sCommand file is greater than 0
         assertTrue(getCommandPort(server) > 0);
 
-        // validate server javadump command on all platforms except mac, because javadump
-        // is unreliable on hotspot jvms
-        if (!isMac) {
+        // validate server javadump command on all platforms except mac (and any hotspot vm),
+        // because javadump is unreliable on hotspot jvms
+        if (!isMac && !isHotspotVM) {
             output = server.executeServerScript("javadump", null).getStdout();
             assertTrue(output.contains("Server " + server.getServerName() + " dump complete in"));
             validateDumpFile(output, server, COMMAND_PORT_ENABLED_SERVER_NAME);
