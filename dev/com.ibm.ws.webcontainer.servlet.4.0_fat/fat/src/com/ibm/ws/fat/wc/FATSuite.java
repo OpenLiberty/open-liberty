@@ -64,7 +64,6 @@ import componenttest.rules.repeater.RepeatTests;
                 WCPushBuilderTest.class,
                 WCServletClarificationTest.class,
                 WCContextRootPrecedence.class,
-                WCTrailersTest.class,
                 // TFB:
                 // Locally, WCTrailersTest fails unless I add '-Dglobal.debug.java2.sec=false' to
                 // the gradlew 'buildandrun' invocation.
@@ -75,6 +74,7 @@ import componenttest.rules.repeater.RepeatTests;
                 WCApplicationMBeanStatusTest.class,
                 // @Server Annotations
                 WCAddJspFileTest.class,
+                WCTrailersTest.class,
                 WCEncodingTest.class,
                 WCServerTest.class,
                 WC5JakartaServletTest.class,
