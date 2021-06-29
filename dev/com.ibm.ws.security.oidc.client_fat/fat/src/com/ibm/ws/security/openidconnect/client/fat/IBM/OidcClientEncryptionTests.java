@@ -67,6 +67,7 @@ public class OidcClientEncryptionTests extends CommonTest {
     protected static String hostName = "localhost";
     public static final String MSG_USER_NOT_IN_REG = "CWWKS1106A";
     public static final JwtTokenBuilderUtils tokenBuilderHelpers = new JwtTokenBuilderUtils();
+    public static final String badTokenSegment = "1234567890123456789";
 
     @SuppressWarnings("serial")
     @BeforeClass
@@ -261,20 +262,6 @@ public class OidcClientEncryptionTests extends CommonTest {
     }
 
     /**
-     * Create a generic builder using RS256 for signing and encryption
-     *
-     * @return - a builder populated with values that can be validated by the SignHS256EncryptRS256 RP
-     * @throws Exception
-     */
-    public JWTTokenBuilder createGenericRS256Builder() throws Exception {
-        JWTTokenBuilder builder = tokenBuilderHelpers.populateAlternateJWEToken(JwtKeyTools.getPublicKeyFromPem(JwtKeyTools.getComplexPublicKeyForSigAlg(testOPServer.getServer(), Constants.SIGALG_RS256)));
-        builder.setIssuer(testOPServer.getHttpString() + "/TokenEndpointServlet");
-        builder.setAlorithmHeaderValue(Constants.SIGALG_RS256);
-        builder.setRSAKey(testOPServer.getServer().getServerRoot() + "/RS256private-key.pem");
-        return builder;
-    }
-
-    /**
      * TODO when issue 17485 is completed, remove setting/passing parms and update the builder configs that encrypt with ES algs
      * with keyManagementKeyAlgorithm set to ECDH-ES
      *
@@ -289,6 +276,45 @@ public class OidcClientEncryptionTests extends CommonTest {
         List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, JwtConstants.PARAM_KEY_MGMT_ALG, JwtConstants.KEY_MGMT_KEY_ALG_ES);
         parms = eSettings.addEndpointSettingsIfNotNull(parms, JwtConstants.PARAM_ENCRYPT_KEY, JwtKeyTools.getComplexPublicKeyForSigAlg(testOPServer.getServer(), alg));
         return parms;
+    }
+
+    public String createGenericRS256JWE() throws Exception {
+        // We're going to use a test JWT token builder to create a token that has "notJOSE" in the JWE header type field
+        // the Liberty builder won't allow us to update that field, so, we need to peice a token together
+        JWTTokenBuilder builder = tokenBuilderHelpers.populateAlternateJWEToken(JwtKeyTools.getPublicKeyFromPem(JwtKeyTools.getComplexPublicKeyForSigAlg(testOPServer.getServer(), Constants.SIGALG_RS256)));
+        builder.setIssuer(testOPServer.getHttpString() + "/TokenEndpointServlet");
+        builder.setAlorithmHeaderValue(Constants.SIGALG_RS256);
+        builder.setRSAKey(testOPServer.getServer().getServerRoot() + "/RS256private-key.pem");
+        builder.setClaim("token_src", "testcase builder");
+        // calling buildJWE will override the header contents
+        String jwtToken = builder.buildJWE("JOSE", "jwt");
+
+        return jwtToken;
+    }
+
+    public String createTokenWithBadElement(int badPart) throws Exception {
+
+        String createTokenWithBadElement = "createTokenWithBadElement";
+        String jwtToken = createGenericRS256JWE();
+        Log.info(thisClass, createTokenWithBadElement, jwtToken);
+        String[] jwtTokenArray = jwtToken.split("\\.");
+        Log.info(thisClass, createTokenWithBadElement, "size: " + jwtTokenArray.length);
+        String badJweToken = "";
+
+        for (int i = 0; i < 5; i++) {
+            Log.info(thisClass, createTokenWithBadElement, "i=" + i);
+            Log.info(thisClass, createTokenWithBadElement, "badJweToken: " + badJweToken);
+            Log.info(thisClass, createTokenWithBadElement, "subString: " + jwtTokenArray[i]);
+            if (!badJweToken.equals("")) {
+                badJweToken = badJweToken + ".";
+            }
+            if (i == (badPart - 1)) {
+                badJweToken = badJweToken + badTokenSegment;
+            } else {
+                badJweToken = badJweToken + jwtTokenArray[i];
+            }
+        }
+        return badJweToken;
     }
 
     /******************************* tests *******************************/
@@ -824,6 +850,7 @@ public class OidcClientEncryptionTests extends CommonTest {
         builder.setIssuer(testOPServer.getHttpString() + "/TokenEndpointServlet");
         builder.setAlorithmHeaderValue(Constants.SIGALG_RS256);
         builder.setRSAKey(testOPServer.getServer().getServerRoot() + "/RS256private-key.pem");
+        builder.setClaim("token_src", "testcase builder");
         // calling buildJWE will override the header contents
         String jwtToken = builder.buildJWE("notJOSE", "jwt");
 
@@ -842,6 +869,7 @@ public class OidcClientEncryptionTests extends CommonTest {
         builder.setIssuer(testOPServer.getHttpString() + "/TokenEndpointServlet");
         builder.setAlorithmHeaderValue(Constants.SIGALG_RS256);
         builder.setRSAKey(testOPServer.getServer().getServerRoot() + "/RS256private-key.pem");
+        builder.setClaim("token_src", "testcase builder");
         // calling buildJWE will override the header contents
         String jwtToken = builder.buildJWE("JOSE", "not_jwt");
 
@@ -938,6 +966,133 @@ public class OidcClientEncryptionTests extends CommonTest {
         expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_MATCHES, "Didn't find expected error message in the RP logs saying a signing key was not found.", MessageConstants.CWWKS1739E_JWT_KEY_NOT_FOUND);
         expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_MATCHES, "Didn't find expected error message in the RP logs for failure to validate the ID token.", MessageConstants.CWWKS1706E_CLIENT_FAILED_TO_VALIDATE_ID_TOKEN);
         genericEncryptTest(Constants.SIGALG_RS256, setBuilderName(Constants.SIGALG_RS256), Constants.SIGALG_RS256, "RP_trustStoreRefOmitted", expectations);
+
+    }
+
+    /**
+     * Test that the RP detects that the JWE is invalid as it has too many parts (6) (one of which is completely invalid)
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientEncryptionTests_JWETooManyParts() throws Exception {
+
+        // the built token will be passed to the test app via the overrideToken parm
+        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "overrideToken", createGenericRS256JWE() + "." + badTokenSegment);
+
+        List<validationData> expectations = validationTools.add401Responses(Constants.LOGIN_USER);
+        expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_MATCHES, "Didn't find expected error message in the RP logs saying that the passed JWE had the wrong number of parts.", MessageConstants.CWWKS1706E_CLIENT_FAILED_TO_VALIDATE_ID_TOKEN + ".*but was 6.*");
+        genericEncryptTest(Constants.SIGALG_RS256, setBuilderName(Constants.SIGALG_RS256), Constants.SIGALG_RS256, setAppName(Constants.SIGALG_RS256), expectations, parms);
+
+    }
+
+    /**
+     * Test that the RP detects that the JWE is invalid as it has too few parts - the token only has 4 parts.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientEncryptionTests_JWETooFewParts() throws Exception {
+
+        String jwtToken = createGenericRS256JWE();
+
+        String badJweToken = jwtToken.substring(0, jwtToken.lastIndexOf(".") - 1);
+        // the built token will be passed to the test app via the overrideToken parm
+        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "overrideToken", badJweToken);
+
+        List<validationData> expectations = validationTools.add401Responses(Constants.LOGIN_USER);
+        expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_MATCHES, "Didn't find expected error message in the RP logs saying that the passed JWE had the wrong number of parts.", MessageConstants.CWWKS1706E_CLIENT_FAILED_TO_VALIDATE_ID_TOKEN + ".*but was 4.*");
+        genericEncryptTest(Constants.SIGALG_RS256, setBuilderName(Constants.SIGALG_RS256), Constants.SIGALG_RS256, setAppName(Constants.SIGALG_RS256), expectations, parms);
+
+    }
+
+    /**
+     * Test that the RP detects that the JWE is invalid - Part 1 is not valid
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientEncryptionTests_JWE_Part1_isInvalid() throws Exception {
+
+        // the built token will be passed to the test app via the overrideToken parm
+        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "overrideToken", createTokenWithBadElement(1));
+
+        List<validationData> expectations = validationTools.add401Responses(Constants.LOGIN_USER);
+        expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Didn't find expected error message in the RP logs saying that the passed JWE had the wrong number of parts.", MessageConstants.CWWKS1706E_CLIENT_FAILED_TO_VALIDATE_ID_TOKEN);
+        expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Didn't find expected error message in the RP logs saying that the passed JWE had the wrong number of parts.", MessageConstants.CWWKS6056E_ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE);
+        genericEncryptTest(Constants.SIGALG_RS256, setBuilderName(Constants.SIGALG_RS256), Constants.SIGALG_RS256, setAppName(Constants.SIGALG_RS256), expectations, parms);
+
+    }
+
+    /**
+     * Test that the RP detects that the JWE is invalid - Part 2 is not valid
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientEncryptionTests_JWE_Part2_isInvalid() throws Exception {
+
+        // the built token will be passed to the test app via the overrideToken parm
+        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "overrideToken", createTokenWithBadElement(2));
+
+        List<validationData> expectations = validationTools.add401Responses(Constants.LOGIN_USER);
+        expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Didn't find expected error message in the RP logs saying that the passed JWE had the wrong number of parts.", MessageConstants.CWWKS1706E_CLIENT_FAILED_TO_VALIDATE_ID_TOKEN);
+        expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Didn't find expected error message in the RP logs saying that the passed JWE had the wrong number of parts.", MessageConstants.CWWKS6056E_ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE);
+        genericEncryptTest(Constants.SIGALG_RS256, setBuilderName(Constants.SIGALG_RS256), Constants.SIGALG_RS256, setAppName(Constants.SIGALG_RS256), expectations, parms);
+
+    }
+
+    /**
+     * Test that the RP detects that the JWE is invalid - Part 3 is not valid
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientEncryptionTests_JWE_Par3_isInvalid() throws Exception {
+
+        // the built token will be passed to the test app via the overrideToken parm
+        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "overrideToken", createTokenWithBadElement(3));
+
+        List<validationData> expectations = validationTools.add401Responses(Constants.LOGIN_USER);
+        expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Didn't find expected error message in the RP logs saying that the passed JWE had the wrong number of parts.", MessageConstants.CWWKS1706E_CLIENT_FAILED_TO_VALIDATE_ID_TOKEN);
+        expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Didn't find expected error message in the RP logs saying that the passed JWE had the wrong number of parts.", MessageConstants.CWWKS6056E_ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE);
+        genericEncryptTest(Constants.SIGALG_RS256, setBuilderName(Constants.SIGALG_RS256), Constants.SIGALG_RS256, setAppName(Constants.SIGALG_RS256), expectations, parms);
+
+    }
+
+    /**
+     * Test that the RP detects that the JWE is invalid - Part 4 is not valid
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientEncryptionTests_JWE_Part4_isInvalid() throws Exception {
+
+        // the built token will be passed to the test app via the overrideToken parm
+        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "overrideToken", createTokenWithBadElement(4));
+
+        List<validationData> expectations = validationTools.add401Responses(Constants.LOGIN_USER);
+        expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Didn't find expected error message in the RP logs saying that the passed JWE had the wrong number of parts.", MessageConstants.CWWKS1706E_CLIENT_FAILED_TO_VALIDATE_ID_TOKEN);
+        expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Didn't find expected error message in the RP logs saying that the passed JWE had the wrong number of parts.", MessageConstants.CWWKS6056E_ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE);
+        genericEncryptTest(Constants.SIGALG_RS256, setBuilderName(Constants.SIGALG_RS256), Constants.SIGALG_RS256, setAppName(Constants.SIGALG_RS256), expectations, parms);
+
+    }
+
+    /**
+     * Test that the RP detects that the JWE is invalid - Part 5 is not valid
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientEncryptionTests_JWE_Part5_isInvalid() throws Exception {
+
+        // the built token will be passed to the test app via the overrideToken parm
+        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "overrideToken", createTokenWithBadElement(5));
+
+        List<validationData> expectations = validationTools.add401Responses(Constants.LOGIN_USER);
+        expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Didn't find expected error message in the RP logs saying that the passed JWE had the wrong number of parts.", MessageConstants.CWWKS1706E_CLIENT_FAILED_TO_VALIDATE_ID_TOKEN);
+        expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Didn't find expected error message in the RP logs saying that the passed JWE had the wrong number of parts.", MessageConstants.CWWKS6056E_ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE);
+        genericEncryptTest(Constants.SIGALG_RS256, setBuilderName(Constants.SIGALG_RS256), Constants.SIGALG_RS256, setAppName(Constants.SIGALG_RS256), expectations, parms);
 
     }
 }

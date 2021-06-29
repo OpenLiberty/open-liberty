@@ -50,6 +50,7 @@ public class NoOPEncryptionRSServerTests extends MangleJWTTestTools {
     private static final Class<?> thisClass = NoOPEncryptionRSServerTests.class;
     protected static final String OPServerName = "com.ibm.ws.security.openidconnect.server-1.0_fat.jaxrs.config.OPserver";
     protected static final String RSServerName = "com.ibm.ws.security.openidconnect.server-1.0_fat.jaxrs.config.RSserver";
+    protected static final String badTokenSegment = "1234567890123456789";
 
     private static final JwtTokenActions actions = new JwtTokenActions();
     public static final JwtTokenBuilderUtils tokenBuilderHelpers = new JwtTokenBuilderUtils();
@@ -127,6 +128,7 @@ public class NoOPEncryptionRSServerTests extends MangleJWTTestTools {
         if (parms == null) {
             parms = new ArrayList<NameValuePair>();
         }
+        parms.add(new NameValuePair("token_src", "product builder"));
         parms.add(new NameValuePair("sub", "testuser"));
         String jwtToken = actions.getJwtTokenUsingBuilder(_testName, testOPServer.getServer(), builderId, parms);
         Log.info(thisClass, _testName, jwtToken);
@@ -318,6 +320,31 @@ public class NoOPEncryptionRSServerTests extends MangleJWTTestTools {
         Log.info(thisClass, _testName, "************************ Testing with RS - Verifying with " + sigAlg + " and decrypting using: " + decryptAlg + " ************************");
         Log.info(thisClass, _testName, "********************************************************************************************************************");
         return "snoop/Sign" + sigAlg + "Encrypt" + decryptAlg;
+    }
+
+    public String createTokenWithBadElement(int badPart) throws Exception {
+
+        String thisMethod = "createTokenWithBadElement";
+        String jwtToken = createTokenWithSubject("SignRS256EncryptRS256Builder");
+        Log.info(thisClass, thisMethod, jwtToken);
+        String[] jwtTokenArray = jwtToken.split("\\.");
+        Log.info(thisClass, thisMethod, "size: " + jwtTokenArray.length);
+        String badJweToken = "";
+
+        for (int i = 0; i < 5; i++) {
+            Log.info(thisClass, thisMethod, "i=" + i);
+            Log.info(thisClass, thisMethod, "badJweToken: " + badJweToken);
+            Log.info(thisClass, thisMethod, "subString: " + jwtTokenArray[i]);
+            if (!badJweToken.equals("")) {
+                badJweToken = badJweToken + ".";
+            }
+            if (i == (badPart - 1)) {
+                badJweToken = badJweToken + badTokenSegment;
+            } else {
+                badJweToken = badJweToken + jwtTokenArray[i];
+            }
+        }
+        return badJweToken;
     }
 
     /******************************* tests *******************************/
@@ -857,6 +884,7 @@ public class NoOPEncryptionRSServerTests extends MangleJWTTestTools {
         builder.setIssuer("client01");
         builder.setAlorithmHeaderValue(Constants.SIGALG_RS256);
         builder.setRSAKey(testOPServer.getServer().getServerRoot() + "/RS256private-key.pem");
+        builder.setClaim("token_src", "testcase builder");
         // calling buildJWE will override the header contents
         String jwtToken = builder.buildJWE("notJOSE", "jwt");
 
@@ -874,6 +902,7 @@ public class NoOPEncryptionRSServerTests extends MangleJWTTestTools {
         builder.setIssuer("client01");
         builder.setAlorithmHeaderValue(Constants.SIGALG_RS256);
         builder.setRSAKey(testOPServer.getServer().getServerRoot() + "/RS256private-key.pem");
+        builder.setClaim("token_src", "testcase builder");
         // calling buildJWE will override the header contents
         String jwtToken = builder.buildJWE("JOSE", "not_jwt");
 
@@ -893,8 +922,11 @@ public class NoOPEncryptionRSServerTests extends MangleJWTTestTools {
     @Test
     public void NoOPEncryption1ServerTests_simpleJsonPayload() throws Exception {
 
+        List<NameValuePair> extraparms = new ArrayList<NameValuePair>();
+        extraparms.add(new NameValuePair("token_src", "alternate JWE builder"));
+
         // build a jwt token whose payload contains only json data - make sure that we do not allow this format (it's not supported at this time)
-        String jwtToken = tokenBuilderHelpers.buildAlternatePayloadJWEToken(JwtKeyTools.getPublicKeyFromPem(JwtKeyTools.getComplexPublicKeyForSigAlg(testOPServer.getServer(), Constants.SIGALG_RS256)));
+        String jwtToken = tokenBuilderHelpers.buildAlternatePayloadJWEToken(JwtKeyTools.getPublicKeyFromPem(JwtKeyTools.getComplexPublicKeyForSigAlg(testOPServer.getServer(), Constants.SIGALG_RS256)), extraparms);
 
         TestSettings updatedTestSettings = rsTools.updateRSProtectedResource(testSettings, setAppName(Constants.SIGALG_RS256));
         String[] msgs = new String[] { MessageConstants.CWWKS1737E_JWT_VALIDATION_FAILURE, MessageConstants.CWWKS6065E_NESTED_JWS_REQUIRED_BUT_NOT_FOUND };
@@ -960,6 +992,116 @@ public class NoOPEncryptionRSServerTests extends MangleJWTTestTools {
 
         String[] msgs = new String[] { MessageConstants.CWWKS1737E_JWT_VALIDATION_FAILURE, MessageConstants.CWWKS1739E_JWT_KEY_NOT_FOUND };
         genericEncryptTest(Constants.SIGALG_RS256, setBuilderName(Constants.SIGALG_RS256), Constants.SIGALG_RS256, "/snoop/RS_trustStoreRefOmitted", msgs);
+
+    }
+
+    /**
+     * Test that the RS detects that the JWE is invalid as it has too many parts (6) (one of which is completely invalid)
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientEncryptionTests_JWETooManyParts() throws Exception {
+
+        String jwtToken = createTokenWithSubject("SignRS256EncryptRS256Builder") + "." + badTokenSegment;
+
+        TestSettings updatedTestSettings = rsTools.updateRSProtectedResource(testSettings, setAppName(Constants.SIGALG_RS256));
+
+        String[] msgs = new String[] { MessageConstants.CWWKS1737E_JWT_VALIDATION_FAILURE };
+        negativeTest(updatedTestSettings, jwtToken, msgs);
+
+    }
+
+    /**
+     * Test that the RS detects that the JWE is invalid as it has too few parts - the token only has 4 parts.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientEncryptionTests_JWETooFewParts() throws Exception {
+
+        String jwtToken = createTokenWithSubject("SignRS256EncryptRS256Builder");
+        String badJweToken = jwtToken.substring(0, jwtToken.lastIndexOf(".") - 1);
+
+        TestSettings updatedTestSettings = rsTools.updateRSProtectedResource(testSettings, setAppName(Constants.SIGALG_RS256));
+
+        String[] msgs = new String[] { MessageConstants.CWWKS1737E_JWT_VALIDATION_FAILURE };
+        negativeTest(updatedTestSettings, badJweToken, msgs);
+
+    }
+
+    /**
+     * Test that the RS detects that the JWE is invalid - Part 1 is not valid
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientEncryptionTests_JWE_Part1_isInvalid() throws Exception {
+
+        TestSettings updatedTestSettings = rsTools.updateRSProtectedResource(testSettings, setAppName(Constants.SIGALG_RS256));
+
+        String[] msgs = new String[] { MessageConstants.CWWKS1725E_VALIDATION_ENDPOINT_URL_NOT_VALID_OR_FAILED };
+        negativeTest(updatedTestSettings, createTokenWithBadElement(1), msgs);
+
+    }
+
+    /**
+     * Test that the RS detects that the JWE is invalid - Part 2 is not valid
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientEncryptionTests_JWE_Part2_isInvalid() throws Exception {
+
+        TestSettings updatedTestSettings = rsTools.updateRSProtectedResource(testSettings, setAppName(Constants.SIGALG_RS256));
+
+        String[] msgs = new String[] { MessageConstants.CWWKS1737E_JWT_VALIDATION_FAILURE, MessageConstants.CWWKS6056E_ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE };
+        negativeTest(updatedTestSettings, createTokenWithBadElement(2), msgs);
+
+    }
+
+    /**
+     * Test that the RS detects that the JWE is invalid - Part 3 is not valid
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientEncryptionTests_JWE_Par3_isInvalid() throws Exception {
+
+        TestSettings updatedTestSettings = rsTools.updateRSProtectedResource(testSettings, setAppName(Constants.SIGALG_RS256));
+
+        String[] msgs = new String[] { MessageConstants.CWWKS1737E_JWT_VALIDATION_FAILURE, MessageConstants.CWWKS6056E_ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE };
+        negativeTest(updatedTestSettings, createTokenWithBadElement(3), msgs);
+
+    }
+
+    /**
+     * Test that the RS detects that the JWE is invalid - Part 4 is not valid
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientEncryptionTests_JWE_Part4_isInvalid() throws Exception {
+
+        TestSettings updatedTestSettings = rsTools.updateRSProtectedResource(testSettings, setAppName(Constants.SIGALG_RS256));
+
+        String[] msgs = new String[] { MessageConstants.CWWKS1737E_JWT_VALIDATION_FAILURE, MessageConstants.CWWKS6056E_ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE };
+        negativeTest(updatedTestSettings, createTokenWithBadElement(4), msgs);
+
+    }
+
+    /**
+     * Test that the RS detects that the JWE is invalid - Part 5 is not valid
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientEncryptionTests_JWE_Part5_isInvalid() throws Exception {
+
+        TestSettings updatedTestSettings = rsTools.updateRSProtectedResource(testSettings, setAppName(Constants.SIGALG_RS256));
+
+        String[] msgs = new String[] { MessageConstants.CWWKS1737E_JWT_VALIDATION_FAILURE, MessageConstants.CWWKS6056E_ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE };
+        negativeTest(updatedTestSettings, createTokenWithBadElement(5), msgs);
 
     }
 
