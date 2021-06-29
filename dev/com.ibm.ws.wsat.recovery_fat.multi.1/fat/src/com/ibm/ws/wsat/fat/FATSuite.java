@@ -14,13 +14,15 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.wsat.fat.tests.MultiRecoveryTest1;
+
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-	MultiRecoveryTest.class,
+	MultiRecoveryTest1.class,
 })
 public class FATSuite {
 
