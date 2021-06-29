@@ -87,19 +87,19 @@ public class ApacheKDCCommonTest {
             Log.info(c, thisMethod, "Using IBM hybrid or IBM JDK 8 or lower Expectations.");
         }
 
-        configFile = ApacheDSandKDCforSPNEGO.getDefaultConfigFile();
+        configFile = ApacheKDCforSPNEGO.getDefaultConfigFile();
         assertNotNull("ConfigFile is null", configFile);
         Log.info(c, "setUp", "Config file: " + configFile);
 
-        keytabFile = ApacheDSandKDCforSPNEGO.getLibertyServerSPNKeytabFile();
+        keytabFile = ApacheKDCforSPNEGO.getLibertyServerSPNKeytabFile();
         assertNotNull("Keytab is null", keytabFile);
         Log.info(c, "setUp", "Keytab file: " + keytabFile);
 
-        InitClass.COMMON_TOKEN_USER = ApacheDSandKDCforSPNEGO.COMMON_TOKEN_USER;
-        InitClass.FQN = "@" + ApacheDSandKDCforSPNEGO.DOMAIN;
+        InitClass.COMMON_TOKEN_USER = ApacheKDCforSPNEGO.COMMON_TOKEN_USER;
+        InitClass.FQN = "@" + ApacheKDCforSPNEGO.DOMAIN;
 
-        InitClass.SECOND_USER = ApacheDSandKDCforSPNEGO.SECOND_USER;
-        InitClass.SECOND_USER_PWD = ApacheDSandKDCforSPNEGO.SECOND_USER_PWD;
+        InitClass.SECOND_USER = ApacheKDCforSPNEGO.KRB5_USER2;
+        InitClass.SECOND_USER_PWD = ApacheKDCforSPNEGO.KRB5_USER2_PWD;
 
         //must set to avoid NPE from re-using existing helper functions
         InitClass.KDCP_VAR = InitClass.KDC_HOSTNAME;
@@ -143,45 +143,35 @@ public class ApacheKDCCommonTest {
     public static void createNewSpnegoToken(boolean setAsCommonSpnegoToken, boolean selectUser1) throws Exception {
         String thisMethod = "createNewSpnegoToken";
         Log.info(c, thisMethod, "****Creating a new SPNEGO token");
-        String user = ApacheDSandKDCforSPNEGO.FIRST_USER;
-        String password = ApacheDSandKDCforSPNEGO.FIRST_USER_PWD;
+
         boolean isEmployee = true;
         boolean isManager = false;
 
         if (setAsCommonSpnegoToken) {
             Log.info(c, thisMethod, "The new SPNEGO token will be set as the common SPNEGO token for all future tests and test classes.");
-            // Pick a user to use in creating the SPNEGO token; this allows for some desired degree of randomness in the test cases
-            Log.info(c, thisMethod, "Selecting user for whom the new common SPNEGO token will be created");
-            if (selectUser1) {
-                Log.info(c, thisMethod, "Selecting specified user: user1");
-                ApacheDSandKDCforSPNEGO.COMMON_TOKEN_USER = user;
-            } else {
-                ApacheDSandKDCforSPNEGO.COMMON_TOKEN_USER = selectRandomUser();
-            }
-            setRolesForCommonUser(ApacheDSandKDCforSPNEGO.COMMON_TOKEN_USER);
 
-            user = ApacheDSandKDCforSPNEGO.COMMON_TOKEN_USER;
-            password = ApacheDSandKDCforSPNEGO.COMMON_TOKEN_USER_PWD;
-            isEmployee = ApacheDSandKDCforSPNEGO.COMMON_TOKEN_USER_IS_EMPLOYEE;
-            isManager = ApacheDSandKDCforSPNEGO.COMMON_TOKEN_USER_IS_MANAGER;
+            setRolesForCommonUser(ApacheKDCforSPNEGO.KRB5_USER1);
+
+            isEmployee = ApacheKDCforSPNEGO.COMMON_TOKEN_USER_IS_EMPLOYEE;
+            isManager = ApacheKDCforSPNEGO.COMMON_TOKEN_USER_IS_MANAGER;
         }
 
-        Log.info(c, thisMethod, "SPNEGO token will be created for user: " + user + " (isEmployee=" + isEmployee + ", isManager=" + isManager + ")");
+        Log.info(c, thisMethod, "SPNEGO token will be created for user: " + ApacheKDCforSPNEGO.KRB5_USER1 + " (isEmployee=" + isEmployee + ", isManager=" + isManager + ")");
 
-        createSpnegoToken(thisMethod, user, password);
+        createSpnegoToken(thisMethod, ApacheKDCforSPNEGO.KRB5_USER1, ApacheKDCforSPNEGO.KRB5_USER1_PWD);
 
         if (setAsCommonSpnegoToken) {
-            ApacheDSandKDCforSPNEGO.COMMON_TOKEN_CREATION_DATE = System.currentTimeMillis();
+            ApacheKDCforSPNEGO.COMMON_TOKEN_CREATION_DATE = System.currentTimeMillis();
             DateFormat formatter = DateFormat.getTimeInstance(DateFormat.LONG);
-            Log.info(c, thisMethod, "SPNEGO token created at " + formatter.format(new Date(ApacheDSandKDCforSPNEGO.COMMON_TOKEN_CREATION_DATE)) + " and will be refreshed in "
-                                    + (ApacheDSandKDCforSPNEGO.TOKEN_REFRESH_LIFETIME_SECONDS / 60.0) + " minute(s).");
+            Log.info(c, thisMethod, "SPNEGO token created at " + formatter.format(new Date(ApacheKDCforSPNEGO.COMMON_TOKEN_CREATION_DATE)) + " and will be refreshed in "
+                                    + (ApacheKDCforSPNEGO.TOKEN_REFRESH_LIFETIME_SECONDS / 60.0) + " minute(s).");
 
-            ApacheDSandKDCforSPNEGO.COMMON_SPNEGO_TOKEN = spnegoTokenForTestClass;
+            ApacheKDCforSPNEGO.COMMON_SPNEGO_TOKEN = spnegoTokenForTestClass;
 
             // Let any tests know that the token has been refreshed
             wasCommonTokenRefreshed = true;
 
-            Log.info(c, thisMethod, "New common SPNEGO token: " + ApacheDSandKDCforSPNEGO.COMMON_SPNEGO_TOKEN);
+            Log.info(c, thisMethod, "New common SPNEGO token: " + ApacheKDCforSPNEGO.COMMON_SPNEGO_TOKEN);
         }
     }
 
@@ -218,7 +208,7 @@ public class ApacheKDCCommonTest {
     public static String createToken(String username, String password, String targetServer, String realm, String kdcHostName, String krb5ConfPath,
                                      Krb5Helper krb5Helper, boolean includeClientGSSCredentialInSubject, Oid mechOid, String jaasLoginContextEntry) throws Exception {
         String method = "createToken";
-        String targetSpn = ApacheDSandKDCforSPNEGO.SPN;
+        String targetSpn = ApacheKDCforSPNEGO.SPN;
         Log.info(c, method, "Target SPN: " + targetSpn);
 
         Subject subject = null;
@@ -235,20 +225,20 @@ public class ApacheKDCCommonTest {
 
     private static String selectRandomUser() {
         List<String> users = new ArrayList<String>();
-        users.add(ApacheDSandKDCforSPNEGO.FIRST_USER);
-        users.add(ApacheDSandKDCforSPNEGO.SECOND_USER);
+        users.add(ApacheKDCforSPNEGO.KRB5_USER1);
+        users.add(ApacheKDCforSPNEGO.KRB5_USER2);
         return users.get((new Random().nextInt(users.size())));
     }
 
     private static void setRolesForCommonUser(String user) {
-        if (user.equals(ApacheDSandKDCforSPNEGO.FIRST_USER)) {
-            ApacheDSandKDCforSPNEGO.COMMON_TOKEN_USER_IS_EMPLOYEE = true;
-            ApacheDSandKDCforSPNEGO.COMMON_TOKEN_USER_IS_MANAGER = false;
-            ApacheDSandKDCforSPNEGO.COMMON_TOKEN_USER_PWD = ApacheDSandKDCforSPNEGO.FIRST_USER_PWD;
+        if (user.equals(ApacheKDCforSPNEGO.KRB5_USER1)) {
+            ApacheKDCforSPNEGO.COMMON_TOKEN_USER_IS_EMPLOYEE = true;
+            ApacheKDCforSPNEGO.COMMON_TOKEN_USER_IS_MANAGER = false;
+            ApacheKDCforSPNEGO.COMMON_TOKEN_USER_PWD = ApacheKDCforSPNEGO.KRB5_USER1_PWD;
         } else {
-            ApacheDSandKDCforSPNEGO.COMMON_TOKEN_USER_IS_EMPLOYEE = false;
-            ApacheDSandKDCforSPNEGO.COMMON_TOKEN_USER_IS_MANAGER = true;
-            ApacheDSandKDCforSPNEGO.COMMON_TOKEN_USER_PWD = ApacheDSandKDCforSPNEGO.SECOND_USER_PWD;
+            ApacheKDCforSPNEGO.COMMON_TOKEN_USER_IS_EMPLOYEE = false;
+            ApacheKDCforSPNEGO.COMMON_TOKEN_USER_IS_MANAGER = true;
+            ApacheKDCforSPNEGO.COMMON_TOKEN_USER_PWD = ApacheKDCforSPNEGO.KRB5_USER2_PWD;
         }
     }
 
@@ -408,11 +398,11 @@ public class ApacheKDCCommonTest {
         if (useCanonicalHostName) {
             Log.info(c, thisMethod, "Using the canonical host name in the target server SPN: " + "rndhostname");
             //TARGET_SERVER = fullyQualifiedDomainName;
-            TARGET_SERVER = ApacheDSandKDCforSPNEGO.canonicalHostname;
+            TARGET_SERVER = ApacheKDCforSPNEGO.canonicalHostname;
         } else {
             Log.info(c, thisMethod, "Using the short host name in the target server SPN");
 //            String shortHostName = getKdcHelper().getShortHostName(fullyQualifiedDomainName, true);
-            TARGET_SERVER = ApacheDSandKDCforSPNEGO.serverShortHostName;
+            TARGET_SERVER = ApacheKDCforSPNEGO.serverShortHostName;
 
         }
 
@@ -527,7 +517,7 @@ public class ApacheKDCCommonTest {
         } else {
             Log.info(c, thisMethod, "Using the short host name in the target server SPN");
             //String shortHostName = getKdcHelper().getShortHostName(fullyQualifiedDomainName, true);
-            TARGET_SERVER = ApacheDSandKDCforSPNEGO.serverShortHostName;
+            TARGET_SERVER = ApacheKDCforSPNEGO.serverShortHostName;
         }
 
         if (createSpnegoToken || shouldCommonTokenBeRefreshed()) {
@@ -551,7 +541,7 @@ public class ApacheKDCCommonTest {
             Log.info(c, thisMethod, "Copying common keytab file into " + SPNEGOConstants.KRB_RESOURCE_LOCATION);
             // Liberty infrastructure already adds leading and trailing '/' characters when copying
             String sanitizedKrbResourcePath = SPNEGOConstants.KRB_RESOURCE_LOCATION.substring(1, SPNEGOConstants.KRB_RESOURCE_LOCATION.length() - 1);
-            getMyServer().copyFileToLibertyServerRoot(sanitizedKrbResourcePath, ApacheDSandKDCforSPNEGO.KEYTAB_FILE_LOCATION);
+            getMyServer().copyFileToLibertyServerRoot(sanitizedKrbResourcePath, ApacheKDCforSPNEGO.KEYTAB_FILE_LOCATION);
         }
 
         if (startServer) {
@@ -659,11 +649,11 @@ public class ApacheKDCCommonTest {
      */
     protected static boolean shouldCommonTokenBeRefreshed() {
         String thisMethod = "shouldCommonTokenBeRefreshed";
-        if (ApacheDSandKDCforSPNEGO.OTHER_SUPPORT_JDKS) {
+        if (ApacheKDCforSPNEGO.OTHER_SUPPORT_JDKS) {
             return true;
         }
         long currentTime = System.currentTimeMillis();
-        if (((currentTime - ApacheDSandKDCforSPNEGO.COMMON_TOKEN_CREATION_DATE) / 1000) > ApacheDSandKDCforSPNEGO.TOKEN_REFRESH_LIFETIME_SECONDS) {
+        if (((currentTime - ApacheKDCforSPNEGO.COMMON_TOKEN_CREATION_DATE) / 1000) > ApacheKDCforSPNEGO.TOKEN_REFRESH_LIFETIME_SECONDS) {
             Log.info(c, thisMethod, "SPNEGO token lifetime has exceeded allowed time; recommend a new token should be created.");
             return true;
         }
@@ -724,8 +714,8 @@ public class ApacheKDCCommonTest {
      * @return
      */
     public String successfulSpnegoServletCall(Map<String, String> headers) {
-        return successfulSpnegoServletCall(headers, ApacheDSandKDCforSPNEGO.COMMON_TOKEN_USER, ApacheDSandKDCforSPNEGO.COMMON_TOKEN_USER_IS_EMPLOYEE,
-                                           ApacheDSandKDCforSPNEGO.COMMON_TOKEN_USER_IS_MANAGER);
+        return successfulSpnegoServletCall(headers, ApacheKDCforSPNEGO.COMMON_TOKEN_USER, ApacheKDCforSPNEGO.COMMON_TOKEN_USER_IS_EMPLOYEE,
+                                           ApacheKDCforSPNEGO.COMMON_TOKEN_USER_IS_MANAGER);
     }
 
     /**
@@ -780,9 +770,9 @@ public class ApacheKDCCommonTest {
      */
     public String successfulSpnegoServletCallForMappedUser(String spnegoTokenUser, String spnegoTokenUserPwd,
                                                            String mapToUser, boolean isMappedUserEmployee, boolean isMappedUserManager) throws Exception {
-        String spnegoToken = ApacheDSandKDCforSPNEGO.COMMON_SPNEGO_TOKEN;
+        String spnegoToken = ApacheKDCforSPNEGO.COMMON_SPNEGO_TOKEN;
         // We might already have a SPNEGO token, so only create a new token if given a user different from the one used to create the common token
-        if (spnegoTokenUser != ApacheDSandKDCforSPNEGO.COMMON_TOKEN_USER) {
+        if (spnegoTokenUser != ApacheKDCforSPNEGO.COMMON_TOKEN_USER) {
             createSpnegoToken("successfulSpnegoServletCallForMappedUser", spnegoTokenUser, spnegoTokenUserPwd);
             spnegoToken = spnegoTokenForTestClass;
         }
@@ -954,7 +944,7 @@ public class ApacheKDCCommonTest {
          * createNewSpnegoToken(SPNEGOConstants.SET_AS_COMMON_TOKEN);
          * }
          */
-        return ApacheDSandKDCforSPNEGO.COMMON_SPNEGO_TOKEN;
+        return ApacheKDCforSPNEGO.COMMON_SPNEGO_TOKEN;
     }
 
     /**
@@ -992,13 +982,13 @@ public class ApacheKDCCommonTest {
      * @return
      */
     public Spnego addDefaultSpnegoConfigElement(ServerConfiguration newServer) {
-        return setSpnegoConfigElement(newServer, configFile, keytabFile, ApacheDSandKDCforSPNEGO.SPN, "false", null, null, null);
+        return setSpnegoConfigElement(newServer, configFile, keytabFile, ApacheKDCforSPNEGO.SPN, "false", null, null, null);
     }
 
     protected Spnego setDefaultSpnegoConfigValues(Spnego spnego) throws Exception {
         spnego.krb5Config = configFile;
         spnego.krb5Keytab = keytabFile;
-        spnego.servicePrincipalNames = ApacheDSandKDCforSPNEGO.SPN;
+        spnego.servicePrincipalNames = ApacheKDCforSPNEGO.SPN;
         spnego.canonicalHostName = "false";
         spnego.skipForUnprotectedURI = null;
         spnego.spnegoAuthenticationErrorPageURL = null;
@@ -1035,7 +1025,7 @@ public class ApacheKDCCommonTest {
     }
 
     protected void setDefaultSpnegoServerConfig(boolean enableInfoLogging) throws Exception {
-        setSpnegoServerConfig(configFile, keytabFile, ApacheDSandKDCforSPNEGO.SPN, "false", null, null, null, false);
+        setSpnegoServerConfig(configFile, keytabFile, ApacheKDCforSPNEGO.SPN, "false", null, null, null, false);
     }
 
     protected void setSpnegoServerConfig(String config, String keytab, String spn, String useCanonicalHost, String authErrorPage, String notSupportedErrorPage,

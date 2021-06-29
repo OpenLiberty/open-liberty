@@ -29,9 +29,9 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.utils.FileUtils;
 
 @RunWith(FATRunner.class)
-public class ApacheDSandKDCforSPNEGO extends ApacheDSandKDC {
+public class ApacheKDCforSPNEGO extends ApacheDSandKDC {
 
-    private static final Class<?> c = ApacheDSandKDCforSPNEGO.class;
+    private static final Class<?> c = ApacheKDCforSPNEGO.class;
 
     public static String SPN;
 
@@ -41,29 +41,20 @@ public class ApacheDSandKDCforSPNEGO extends ApacheDSandKDC {
 
     public static String canonicalHostname = "canhostname1";
 
-    private static String libertyServerSPNKeytabFile = null;
+    private static String SpnegoSPNKeytabFile = null;
 
     //ADDED ON
     //KDC Users
-    public static String KDC_USER = bindUserName;
-    public static String KDC_USER_PWD = bindPassword;
-    public static String KDC2_USER = null;
-    public static String KDC2_USER_PWD = null;
+    public static String KRB5_USER = bindUserName;
+    public static String KRB5_USER_PWD = bindPassword;
 
-    public static String FIRST_USER = KDC_USER; //"user1";
-    public static String FIRST_USER_PWD = KDC_USER_PWD; //"user1pwd";
-    public static String FIRST_USER_KRB5_FQN = null;
-    public static String FIRST_USER_KRB5_FQN_PWD = null;
-    public static String SECOND_USER = KDC_USER; //"user2";
-    public static String USER_PWD = null;
-    public static String SECOND_USER_PWD = KDC_USER_PWD; //"user2pwd";
-    public static String SECOND_USER_KRB5_FQN = null;
-    public static String SECOND_USER_KRB5_FQN_PWD = null;
-    public static String Z_USER = null;
-    public static String Z_USER_PWD = null;
+    public static String KRB5_USER1 = KRB5_USER; //"user1";
+    public static String KRB5_USER1_PWD = KRB5_USER_PWD; //"user1pwd";
+    public static String KRB5_USER2 = KRB5_USER; //"user2";
+    public static String KRB5_USER2_PWD = KRB5_USER_PWD; //"user2pwd";
 
-    public static String COMMON_TOKEN_USER = FIRST_USER;
-    public static String COMMON_TOKEN_USER_PWD = FIRST_USER_PWD;
+    public static String COMMON_TOKEN_USER = KRB5_USER1;
+    public static String COMMON_TOKEN_USER_PWD = KRB5_USER1_PWD;
     public static boolean COMMON_TOKEN_USER_IS_EMPLOYEE = true;
     public static boolean COMMON_TOKEN_USER_IS_MANAGER = false;
 
@@ -71,7 +62,6 @@ public class ApacheDSandKDCforSPNEGO extends ApacheDSandKDC {
     public static String KEYTAB_FILE_LOCATION = null;
     public static long COMMON_TOKEN_CREATION_DATE = 0;
     public static final double TOKEN_REFRESH_LIFETIME_SECONDS = 180;
-    public static boolean RUN_TESTS = true;
     public static boolean LOCALHOST_DEFAULT_IP_ADDRESS = true; //127.0.0.1       localhost
 
     public static boolean IBM_JDK_V8_LOWER = false;
@@ -86,21 +76,19 @@ public class ApacheDSandKDCforSPNEGO extends ApacheDSandKDC {
     @BeforeClass
     public static void setup() throws Exception {
 
+        WHICH_FAT = "SPNEGO";
+
         bindUserName = "user1";
         bindPassword = "user1pwd";
         bindPrincipalName = bindUserName + "@" + DOMAIN;
-        KDC_USER = bindUserName;
-        KDC_USER_PWD = bindPassword;
-        FIRST_USER = KDC_USER;
-        FIRST_USER_PWD = KDC_USER_PWD;
-        COMMON_TOKEN_USER = FIRST_USER;
+        KRB5_USER = bindUserName;
+        KRB5_USER_PWD = bindPassword;
+        KRB5_USER1 = KRB5_USER;
+        KRB5_USER1_PWD = KRB5_USER_PWD;
+        COMMON_TOKEN_USER = KRB5_USER1;
 
-        SECOND_USER = "user2";
-        SECOND_USER_PWD = "user2pwd";
-
-        ldapUser = "ldap";
-
-        krbtgtUser = "krbtgt";
+        KRB5_USER2 = "user2";
+        KRB5_USER2_PWD = "user2pwd";
 
         spnegoUserDN = "uid=" + canonicalHostname + "," + BASE_DN;
 
@@ -110,13 +98,11 @@ public class ApacheDSandKDCforSPNEGO extends ApacheDSandKDC {
 
         ApacheKDCCommonTest.setGlobalLoggingLevel(Level.INFO);
 
-        createPrincipal(SECOND_USER, SECOND_USER_PWD, SECOND_USER + "@" + DOMAIN);
+        createPrincipal(KRB5_USER2, KRB5_USER2_PWD);
 
-        createSpnegoSPNUserEntry();
+        createSpnegoSPNEntry();
 
-        createLibertyServerSPNKeytab();
-
-        //addBasicUserAndGroup();
+        createSpnegoSPNKeytab();
     }
 
     @After
@@ -129,8 +115,9 @@ public class ApacheDSandKDCforSPNEGO extends ApacheDSandKDC {
      *
      * @throws Exception
      */
-    public static void createSpnegoSPNUserEntry() throws Exception {
-        Log.info(c, "createKerberosUserEntries", "Creating KDC user entries");
+    public static void createSpnegoSPNEntry() throws Exception {
+        String methodName = "createSpnegoSPNEntry";
+        Log.info(c, methodName, "Creating KDC user entries");
 
         session = kdcServer.getDirectoryService().getAdminSession();
 
@@ -146,8 +133,7 @@ public class ApacheDSandKDCforSPNEGO extends ApacheDSandKDC {
         entry.add("krb5KeyVersionNumber", "0");
         session.add(entry);
 
-        Log.info(c, "createKerberosUserEntries", "Created " + entry.getDn());
-
+        Log.info(c, methodName, "Created " + entry.getDn());
     }
 
     /**
@@ -155,8 +141,9 @@ public class ApacheDSandKDCforSPNEGO extends ApacheDSandKDC {
      *
      * @throws Exception
      */
-    public static void createLibertyServerSPNKeytab() throws Exception {
-        Log.info(c, "createLibertyServerSPNKeytab", "Creating keytab for " + SPN);
+    public static void createSpnegoSPNKeytab() throws Exception {
+        String methodName = "createSpnegoSPNKeytab";
+        Log.info(c, methodName, "Creating keytab for " + SPN);
         File keyTabTemp = File.createTempFile(canonicalHostname + "_http", ".keytab");
         if (!FAT_TEST_LOCALRUN) {
             keyTabTemp.deleteOnExit();
@@ -169,17 +156,17 @@ public class ApacheDSandKDCforSPNEGO extends ApacheDSandKDC {
         keytab.setEntries(entries);
         keytab.write(keyTabTemp);
 
-        libertyServerSPNKeytabFile = keyTabTemp.getAbsolutePath();
-        KEYTAB_FILE_LOCATION = libertyServerSPNKeytabFile;
+        SpnegoSPNKeytabFile = keyTabTemp.getAbsolutePath();
+        KEYTAB_FILE_LOCATION = SpnegoSPNKeytabFile;
 
-        Log.info(c, "createLibertyServerSPNKeytab", "Created keytab: " + libertyServerSPNKeytabFile);
-        Log.info(c, "createLibertyServerSPNKeytab", "Keytab actual contents: " + FileUtils.readFile(libertyServerSPNKeytabFile));
+        Log.info(c, methodName, "Created keytab: " + SpnegoSPNKeytabFile);
+        Log.info(c, methodName, "Keytab actual contents: " + FileUtils.readFile(SpnegoSPNKeytabFile));
     }
 
     /**
      * @return the libertyServerSPNKeytabFile
      */
     public static String getLibertyServerSPNKeytabFile() {
-        return libertyServerSPNKeytabFile;
+        return SpnegoSPNKeytabFile;
     }
 }

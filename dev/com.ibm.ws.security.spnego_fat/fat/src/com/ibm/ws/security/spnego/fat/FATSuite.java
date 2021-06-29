@@ -23,8 +23,8 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.security.spnego.fat.config.ApacheDSandKDCforSPNEGO;
 import com.ibm.ws.security.spnego.fat.config.ApacheKDCCommonTest;
+import com.ibm.ws.security.spnego.fat.config.ApacheKDCforSPNEGO;
 import com.ibm.ws.security.spnego.fat.config.InitClass;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
@@ -47,7 +47,7 @@ import componenttest.topology.impl.LibertyServerFactory;
                 //SpnegoTokenHelperApiTest.class,
                 //TrustedActiveDirectoryDomainsTest.class
 })
-public class FATSuite extends ApacheDSandKDCforSPNEGO {
+public class FATSuite extends ApacheKDCforSPNEGO {
     private static final Class<?> c = FATSuite.class;
 
     //@ClassRule
@@ -87,6 +87,7 @@ public class FATSuite extends ApacheDSandKDCforSPNEGO {
 
         private boolean isSupportJDK() throws IOException {
             String thisMethod = "isSupportJDK";
+            boolean runTests = true;
             JavaInfo javaInfo = JavaInfo.forServer(LibertyServerFactory.getLibertyServer("BasicAuthTest"));
 
             IBM_JDK_V8_LOWER = javaInfo.vendor() == Vendor.IBM && javaInfo.majorVersion() <= 8;
@@ -101,13 +102,13 @@ public class FATSuite extends ApacheDSandKDCforSPNEGO {
             if (!IBM_JDK_V8_LOWER && !OTHER_SUPPORT_JDKS && !SUN_ORACLE_JDK_V8_HIGHER) {
                 Log.info(c, thisMethod, "The JDK used on this system is version: " + javaInfo.majorVersion() + " and vendor: " + javaInfo.vendor() +
                                         ". Because only IBM JDK version 8 or less, Oracle and Open JDK version 8 and higher and JDK version 11 are currently supported, no tests will be run.");
-                RUN_TESTS = false;
+                runTests = false;
             }
             if (IBM_HYBRID_JDK) {
-                RUN_TESTS = false;
+                runTests = false;
             }
             Log.info(c, thisMethod, "The JDK vendor used is " + javaInfo.vendor() + " and version: " + javaInfo.majorVersion());
-            return RUN_TESTS;
+            return runTests;
         };
 
         private boolean isHybridJDK(JavaInfo javaInfo) {

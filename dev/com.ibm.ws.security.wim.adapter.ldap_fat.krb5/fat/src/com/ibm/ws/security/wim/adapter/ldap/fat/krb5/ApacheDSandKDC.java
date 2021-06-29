@@ -82,6 +82,8 @@ public class ApacheDSandKDC {
 
     public static String DOMAIN = LdapKerberosUtils.DOMAIN; // default, override in extending class
 
+    public static String WHICH_FAT = "LDAP"; // default, override in extending class. options: {LDAP, SPNEGO}
+
     protected static CoreSession session;
 
     private static KdcConnection conn;
@@ -291,25 +293,34 @@ public class ApacheDSandKDC {
     /**
      * Create the principal that will be used for Kerberos bind
      *
-     * @param uid
+     * @param krb5User
      * @param userPassword
      * @param principalName
      * @return
      * @throws Exception
      */
-    public static String createPrincipal(String uid, String userPassword, String principalName) throws Exception {
+    public static String createPrincipal(String krb5User, String krb5UserPwd) throws Exception {
+        String principalName = krb5User + "@" + DOMAIN;
         Entry entry = new DefaultEntry(session.getDirectoryService().getSchemaManager());
-        entry.setDn("uid=" + uid + "," + BASE_DN);
-        entry.add("objectClass", "top", "person", "inetOrgPerson", "krb5principal", "krb5kdcentry");
-        entry.add("cn", uid);
-        entry.add("sn", uid);
-        entry.add("uid", uid);
-        entry.add("userPassword", userPassword);
+        entry.add("userPassword", krb5UserPwd);
         entry.add("krb5PrincipalName", principalName);
         entry.add("krb5KeyVersionNumber", "0");
+
+        //The following attributes are required to complete the valid Directory Service User Entry:
+        entry.setDn("uid=" + krb5User + "," + BASE_DN);
+        entry.add("objectClass", "top", "person", "inetOrgPerson", "krb5principal", "krb5kdcentry");
+        entry.add("cn", krb5User);
+        entry.add("sn", krb5User);
+        entry.add("uid", krb5User);
+
         session.add(entry);
 
-        Log.info(c, "createPrincipal", "Created " + entry.getDn());
+        if ("LDAP".equals(WHICH_FAT)) {
+            Log.info(c, "createPrincipal", "Created " + entry.getDn());
+        } else {
+            //SPNEGO FAT
+            Log.info(c, "createPrincipal", "Created " + entry.get("krb5PrincipalName"));
+        }
 
         return entry.getDn().getName();
     }
@@ -351,7 +362,7 @@ public class ApacheDSandKDC {
 
         Log.info(c, "createPrincipal", "Created " + entry.getDn());
 
-        createPrincipal(bindUserName, bindPassword, bindPrincipalName);
+        createPrincipal(bindUserName, bindPassword);
 
         Log.info(c, "startAllServers", "Created KDC user entries");
 
@@ -676,9 +687,7 @@ public class ApacheDSandKDC {
     private static void addKerberosKeys(String principalName, String principalPwd, List<KeytabEntry> entries, KerberosTime timeStamp) {
         int principalType = 1; // KRB5_NT_PRINCIPAL
 
-        for (Map.Entry<EncryptionType, EncryptionKey> keyEntry : KerberosKeyFactory.getKerberosKeys(
-                                                                                                    principalName, principalPwd)
-                        .entrySet()) {
+        for (Map.Entry<EncryptionType, EncryptionKey> keyEntry : KerberosKeyFactory.getKerberosKeys(principalName, principalPwd).entrySet()) {
             final EncryptionKey key = keyEntry.getValue();
             final byte keyVersion = (byte) key.getKeyVersion();
             entries.add(new KeytabEntry(principalName, principalType, timeStamp, keyVersion, key));
