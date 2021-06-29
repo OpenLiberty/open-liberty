@@ -356,10 +356,14 @@ public class SseEventSourceImpl implements SseEventSource
          {
             if (ex.hasRetryAfter())
             {
-               onConnection();
-               Date requestTime = new Date();
-               long localReconnectDelay = ex.getRetryTime(requestTime).getTime() - requestTime.getTime();
-               reconnect(localReconnectDelay);
+               try {   // https://issues.redhat.com/browse/RESTEASY-2952
+                   onConnection();
+                   Date requestTime = new Date();
+                   long localReconnectDelay = ex.getRetryTime(requestTime).getTime() - requestTime.getTime();
+                   reconnect(localReconnectDelay);
+               } catch (Throwable t) {
+                    onUnrecoverableError(t);  // https://issues.redhat.com/browse/RESTEASY-2952
+               }
             }
             else
             {
@@ -440,9 +444,16 @@ public class SseEventSourceImpl implements SseEventSource
          {
             reconnectDelay = event.getReconnectDelay();
          }
-         onEventConsumers.forEach(consumer -> {
-            consumer.accept(event);
-         });
+         
+         try {  // https://issues.redhat.com/browse/RESTEASY-2950
+             
+             onEventConsumers.forEach(consumer -> {
+                consumer.accept(event);
+             });
+         } catch (Throwable t) {
+             // Something when wrong in event processing so post error to consumers.
+             onUnrecoverableError(t);  // https://issues.redhat.com/browse/RESTEASY-2950
+         }
       }
 
       private Invocation.Builder buildRequest(MediaType... mediaTypes)

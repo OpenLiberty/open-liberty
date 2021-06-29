@@ -8,6 +8,24 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
+package com.ibm.ws.jaxrs20.cdi12.fat.cdiinjectintoapp;
 
-addRequiredLibraries.dependsOn addJakartaTransformer
+import java.util.concurrent.atomic.AtomicInteger;
+
+import javax.enterprise.context.ApplicationScoped;
+
+@ApplicationScoped
+public class InvocationCounterImpl implements InvocationCounter {
+
+    AtomicInteger count = new AtomicInteger(0);
+
+    @Override
+    public int invoke() {
+        return count.incrementAndGet();
+    }
+
+    @Override
+    public int getInvocations() {
+        return count.get();
+    }
+}
