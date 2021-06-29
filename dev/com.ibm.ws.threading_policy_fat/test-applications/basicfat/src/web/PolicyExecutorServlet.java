@@ -5365,6 +5365,8 @@ public class PolicyExecutorServlet extends FATServlet {
         CountDownTask task1 = new CountDownTask(task1started, task1released, TIMEOUT_NS * 2);
         executor1.submit(task1);
 
+        assertTrue(task1started.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
         provider.shutdownNowByIdentifierPrefix("PolicyExecutorProvider-testShutdownCallback-4");
         assertEquals(4, count.get());
 
