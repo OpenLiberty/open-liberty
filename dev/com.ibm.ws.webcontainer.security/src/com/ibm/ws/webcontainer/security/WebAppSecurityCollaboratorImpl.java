@@ -58,6 +58,7 @@ import com.ibm.ws.security.context.SubjectManager;
 import com.ibm.ws.security.registry.RegistryException;
 import com.ibm.ws.security.registry.UserRegistry;
 import com.ibm.ws.security.registry.UserRegistryService;
+import com.ibm.ws.security.utils.SecurityUtils;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.ws.webcontainer.osgi.WebContainer;
 import com.ibm.ws.webcontainer.security.internal.BasicAuthAuthenticator;
@@ -88,6 +89,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
+import com.ibm.wsspi.security.audit.AuditService;
 import com.ibm.wsspi.security.tai.TrustAssociationInterceptor;
 import com.ibm.wsspi.webcontainer.RequestProcessor;
 import com.ibm.wsspi.webcontainer.collaborator.IWebAppSecurityCollaborator;
@@ -165,6 +167,8 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
     private boolean isJaspiEnabled = false;
     private Subject savedSubject = null;
     private boolean isActive = false;
+    private AuditService auditService = null;
+    ArrayList<String> delUsers = new ArrayList<String>();
 
     /**
      * Zero length constructor required by DS.
@@ -172,6 +176,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
     public WebAppSecurityCollaboratorImpl() {
         this(new SubjectHelper(), new SubjectManager(), new HTTPSRedirectHandler());
         this.auditManager = new AuditManager();
+        this.auditService = SecurityUtils.getAuditService();
     }
 
     /**
@@ -186,6 +191,8 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         this.subjectManager = subjectManager;
         this.httpsRedirectHandler = httpsRedirectHandler;
         this.collabUtils = new CollaboratorUtils(subjectManager);
+        this.auditService = SecurityUtils.getAuditService();
+
     }
 
     /**
@@ -202,6 +209,8 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         this.httpsRedirectHandler = httpsRedirectHandler;
         this.webAppSecConfig = webAppSecConfig;
         WebSecurityHelperImpl.setWebAppSecurityConfig(webAppSecConfig);
+        this.auditService = SecurityUtils.getAuditService();
+
     }
 
     public void setSecurityService(ServiceReference<SecurityService> reference) {
@@ -485,7 +494,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
             return false;
         }
         Set<String> features = provisionerService.getInstalledFeatures();
-	return features.contains("appSecurity-3.0") || features.contains("appSecurity-4.0");
+        return features.contains("appSecurity-3.0") || features.contains("appSecurity-4.0");
     }
 
     /**
@@ -863,107 +872,85 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
     private void performDelegation(String servletName) {
 
         Subject delegationSubject = subjectManager.getCallerSubject();
-        if (delegationSubject != null && delegationSubject.getPublicCredentials(WSCredential.class) != null
-            && delegationSubject.getPublicCredentials(WSCredential.class).iterator() != null &&
-            delegationSubject.getPublicCredentials(WSCredential.class).iterator().hasNext()) {
-            WSCredential credential = delegationSubject.getPublicCredentials(WSCredential.class).iterator().next();
+        ArrayList<String> delUsers = new ArrayList<String>();
+
+        AuditService auditService = SecurityUtils.getAuditService();
+
+        WSCredential credential = getCredentialFromDelegationSubject(delegationSubject);
+
+        if (auditService != null && credential != null) {
             try {
                 extraAuditData.put("REALM", credential.getRealmName());
+                delUsers.add(credential.getAccessId());
             } catch (CredentialExpiredException e) {
             } catch (CredentialDestroyedException e) {
             }
         }
-        ArrayList<String> delUsers = new ArrayList<String>();
-        if (delegationSubject != null) {
-            String buff = delegationSubject.toString();
-            if (buff != null) {
-                int a = buff.indexOf("accessId");
-                if (a != -1) {
-                    buff = buff.substring(a + 9);
-                    a = buff.indexOf(",");
-                    if (a != -1) {
-                        buff = buff.substring(0, a);
-                        delUsers.add(buff);
-                    }
-                }
 
-            }
-        }
+        // we have to go through this pass whether we audit or not to get the updated delegation subject from any runAS
         SecurityMetadata secMetadata = getSecurityMetadata();
         if (secMetadata != null) {
             String roleName = secMetadata.getRunAsRoleForServlet(servletName);
             String invalidUser = "";
             if (roleName != null) {
-                extraAuditData.put("RUN_AS_ROLE", roleName);
-
+                if (auditService != null) {
+                    extraAuditData.put("RUN_AS_ROLE", roleName);
+                }
                 try {
                     SecurityService securityService = securityServiceRef.getService();
                     AuthenticationService authService = securityService.getAuthenticationService();
                     delegationSubject = authService.delegate(roleName, getApplicationName());
-                    if (delegationSubject != null) {
-                        String buff = delegationSubject.toString();
-                        if (buff != null) {
-                            int a = buff.indexOf("accessId");
-                            if (a != -1) {
-                                buff = buff.substring(a + 9);
-                                a = buff.indexOf(",");
-                                if (a != -1) {
-                                    buff = buff.substring(0, a);
-                                    delUsers.add(buff);
+
+                    if (auditService != null) {
+                        if (delegationSubject != null) {
+                            try {
+                                credential = getCredentialFromDelegationSubject(delegationSubject);
+                                if (credential != null) {
+                                    delUsers.add(credential.getAccessId());
                                 }
+                            } catch (CredentialExpiredException e) {
+                            } catch (CredentialDestroyedException e) {
                             }
-
+                        } else {
+                            invalidUser = authService.getInvalidDelegationUser();
+                            delUsers.add(invalidUser);
                         }
-                    } else {
-                        invalidUser = authService.getInvalidDelegationUser();
-                        delUsers.add(invalidUser);
-                    }
-
-                    extraAuditData.put("DELEGATION_USERS_LIST", delUsers);
-                    //auditManager.setDelegatedUsers(delUsers);
-                    //Audit.audit(Audit.EventID.SECURITY_AUTHN_DELEGATION_01, auditManager, AuditConstants.SUCCESS, Integer.valueOf(200));
-                    if (delegationSubject != null) {
-                        Audit.audit(Audit.EventID.SECURITY_AUTHN_DELEGATION_01, extraAuditData, AuditConstants.SUCCESS, Integer.valueOf(200));
-                    } else {
-                        Audit.audit(Audit.EventID.SECURITY_AUTHN_DELEGATION_01, extraAuditData, AuditConstants.FAILURE, Integer.valueOf(401));
+                        extraAuditData.put("DELEGATION_USERS_LIST", delUsers);
+                        if (delegationSubject != null) {
+                            Audit.audit(Audit.EventID.SECURITY_AUTHN_DELEGATION_01, extraAuditData, AuditConstants.SUCCESS, Integer.valueOf(200));
+                        } else {
+                            Audit.audit(Audit.EventID.SECURITY_AUTHN_DELEGATION_01, extraAuditData, AuditConstants.FAILURE, Integer.valueOf(401));
+                        }
 
                     }
 
                 } catch (IllegalArgumentException e) {
-                    if (delegationSubject != null) {
-                        String buff = delegationSubject.toString();
-                        if (buff != null) {
-                            int a = buff.indexOf("accessId");
-                            if (a != -1) {
-                                buff = buff.substring(a + 9);
-                                a = buff.indexOf(",");
-                                if (a != -1) {
-                                    buff = buff.substring(0, a);
-                                    delUsers.add(buff);
-                                }
-                            }
-
-                        }
-                    } else {
-                        SecurityService securityService = securityServiceRef.getService();
-                        AuthenticationService authService = securityService.getAuthenticationService();
-                        invalidUser = authService.getInvalidDelegationUser();
-                        delUsers.add(invalidUser);
-                        extraAuditData.put(DELEGATION_USERS_LIST, delUsers);
-                    }
-
-                    //Audit.audit(Audit.EventID.SECURITY_AUTHN_DELEGATION_01, auditManager, AuditConstants.FAILURE, Integer.valueOf(401));
-                    Audit.audit(Audit.EventID.SECURITY_AUTHN_DELEGATION_01, extraAuditData, AuditConstants.FAILURE, Integer.valueOf(401));
-
+                    if (auditService != null)
+                        Audit.audit(Audit.EventID.SECURITY_AUTHN_DELEGATION_01, extraAuditData, AuditConstants.FAILURE, Integer.valueOf(401));
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Exception performing delegation.", e);
+                        Tr.debug(tc, "Exception creating AuditData in perform delegation method.", e);
                     }
-                }
-            }
-        }
-        if (delegationSubject != null) {
+                } //end of catch
+            } //if (roleName != null)
+        } //if (secMetaData !== null)
+
+        // we have to update the invocation subject with any updated delegation subject whether we audit or not
+        if (delegationSubject != null)
+
+        {
             subjectManager.setInvocationSubject(delegationSubject);
         }
+    }
+
+    WSCredential getCredentialFromDelegationSubject(Subject delegationSubject) {
+
+        WSCredential credential = null;
+        if (delegationSubject != null && delegationSubject.getPublicCredentials(WSCredential.class) != null
+            && delegationSubject.getPublicCredentials(WSCredential.class).iterator() != null &&
+            delegationSubject.getPublicCredentials(WSCredential.class).iterator().hasNext()) {
+            credential = delegationSubject.getPublicCredentials(WSCredential.class).iterator().next();
+        }
+        return credential;
     }
 
     /**
