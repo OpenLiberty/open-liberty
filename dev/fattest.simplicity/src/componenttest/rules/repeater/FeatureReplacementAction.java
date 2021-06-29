@@ -120,6 +120,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
     private final Set<String> addFeatures = new LinkedHashSet<>();
     private final Set<String> alwaysAddFeatures = new HashSet<>();
     private TestMode testRunMode = TestMode.LITE;
+    private boolean liteFATOnly = false;
     private final Set<String> serverConfigPaths = new HashSet<String>();
     private boolean calledForServers = false;
     private boolean calledForServerConfigPaths = false;
@@ -264,6 +265,13 @@ public class FeatureReplacementAction implements RepeatTestAction {
 
     public FeatureReplacementAction fullFATOnly() {
         this.testRunMode = TestMode.FULL;
+        liteFATOnly = false;
+        return this;
+    }
+
+    public FeatureReplacementAction liteFATOnly() {
+        this.testRunMode = TestMode.LITE;
+        liteFATOnly = true;
         return this;
     }
 
@@ -373,6 +381,12 @@ public class FeatureReplacementAction implements RepeatTestAction {
                                      " is not valid for current mode " + TestModeFilter.FRAMEWORK_TEST_MODE);
             return false;
         }
+        if (liteFATOnly && TestModeFilter.FRAMEWORK_TEST_MODE.compareTo(TestMode.LITE) != 0) {
+            Log.info(c, "isEnabled", "Skipping action '" + toString() + "' because the test mode " + testRunMode +
+                                     " is not LITE and the test is marked to run in LITE FAT mode only.");
+            return false;
+        }
+
         return true;
     }
 
