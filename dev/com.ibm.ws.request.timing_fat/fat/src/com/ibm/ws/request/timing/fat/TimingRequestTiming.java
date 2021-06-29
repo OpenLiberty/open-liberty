@@ -130,10 +130,7 @@ public class TimingRequestTiming {
         createRequests(6000, 1);
 
         server.waitForStringInLog("TRAS0112W", 10000);
-        server.waitForStringInLog("TRAS0114W", 10000);
-
         int slow = fetchSlowRequestWarningsCount();
-        int hung = fetchHungRequestWarningsCount();
 
         //Retry the request again
         if (slow == 0) {
@@ -142,6 +139,9 @@ public class TimingRequestTiming {
             server.waitForStringInLogUsingMark("TRAS0112W", 10000);
             slow = fetchSlowRequestWarningsCount();
         }
+
+        server.waitForStringInLog("TRAS0114W", 10000);
+        int hung = fetchHungRequestWarningsCount();
 
         assertTrue("Expected > 0 slow request warning but found : " + slow, (slow > 0));
 
@@ -181,11 +181,19 @@ public class TimingRequestTiming {
 
         createRequests(8000, 1);
 
-        int slow = fetchSlowRequestWarningsCount();
-        int hung = fetchHungRequestWarningsCount();
-
         server.waitForStringInLogUsingMark("TRAS0112W", 10000);
+        int slow = fetchSlowRequestWarningsCount();
+
+        // Retry the request again
+        if (slow == 0) {
+            CommonTasks.writeLogMsg(Level.INFO, "$$$$ -----> Retry because no slow request warning found!");
+            createRequests(8000, 1);
+            server.waitForStringInLogUsingMark("TRAS0112W", 10000);
+            slow = fetchSlowRequestWarningsCount();
+        }
+
         server.waitForStringInLogUsingMark("TRAS0114W", 10000);
+        int hung = fetchHungRequestWarningsCount();
 
         assertTrue("Expected  > 0 slow request warnings but found : " + slow, ((slow - p_slow) > 0));
         assertTrue("Expected 1 or more hung request warning but found : " + hung, (hung > 0));
@@ -197,7 +205,18 @@ public class TimingRequestTiming {
 
         createRequests(12000, 1);
 
+        server.waitForStringInLogUsingMark("TRAS0112W", 10000);
         int n_slow = fetchSlowRequestWarningsCount();
+
+        // Retry the request again
+        if (n_slow == 0) {
+            CommonTasks.writeLogMsg(Level.INFO, "$$$$ -----> Retry because no new_slow request warning found!");
+            createRequests(12000, 1);
+            server.waitForStringInLogUsingMark("TRAS0112W", 10000);
+            n_slow = fetchSlowRequestWarningsCount();
+        }
+
+        server.waitForStringInLogUsingMark("TRAS0114W", 10000);
         int n_hung = fetchHungRequestWarningsCount();
 
         assertTrue("Expected > 0 slow request warning but found : " + n_slow, ((n_slow - slow) > 0));
@@ -313,9 +332,17 @@ public class TimingRequestTiming {
         createRequests(20000, 1);
 
         server.waitForStringInLogUsingMark("TRAS0112W", 10000);
-        server.waitForStringInLogUsingMark("TRAS0114W", 10000);
-
         int slow = fetchSlowRequestWarningsCount();
+
+        // Retry the request again
+        if (slow == 0) {
+            CommonTasks.writeLogMsg(Level.INFO, "$$$$ -----> Retry because no slow request warning found!");
+            createRequests(20000, 1);
+            server.waitForStringInLogUsingMark("TRAS0112W", 10000);
+            slow = fetchSlowRequestWarningsCount();
+        }
+
+        server.waitForStringInLogUsingMark("TRAS0114W", 10000);
         int hung = fetchHungRequestWarningsCount();
 
         assertTrue("Expected > 1 slow request warnings but found : " + slow, (slow > 1));
@@ -346,7 +373,6 @@ public class TimingRequestTiming {
         createRequests(7000, 1);
 
         server.waitForStringInLogUsingMark("TRAS0112W", 10000);
-        server.waitForStringInLogUsingMark("TRAS0114W", 10000);
 
         int slow = fetchSlowRequestWarningsCount();
 
@@ -358,6 +384,7 @@ public class TimingRequestTiming {
             slow = fetchSlowRequestWarningsCount();
         }
 
+        server.waitForStringInLogUsingMark("TRAS0114W", 10000);
         int hung = fetchHungRequestWarningsCount();
 
         assertTrue("Expected > 0 slow request warning but found : " + slow, (slow > 0));
@@ -432,10 +459,16 @@ public class TimingRequestTiming {
         server.waitForStringInLogUsingMark("TRAS0114W", 10000);
 
         int slow = fetchSlowRequestWarningsCount();
-        int hung = fetchHungRequestWarningsCount();
-
         assertTrue("Expected 0 slow request warning but found : " + slow, (slow == 0));
 
+        int hung = fetchHungRequestWarningsCount();
+        // Retry the request again
+        if (hung == 0) {
+            CommonTasks.writeLogMsg(Level.INFO, "$$$$ -----> Retry because no h request warning found!");
+            createRequests(5000, 1);
+            server.waitForStringInLogUsingMark("TRAS0114W", 10000);
+            hung = fetchHungRequestWarningsCount();
+        }
         assertTrue("Expected 1 hung request warning but found : " + hung, (hung > 0));
 
         CommonTasks.writeLogMsg(Level.INFO, "***** timing works - local config disables slow request for value smaller that 1 *****");
@@ -459,7 +492,6 @@ public class TimingRequestTiming {
         createRequests(6000, 1);
 
         server.waitForStringInLogUsingMark("TRAS0112W", 15000);
-        server.waitForStringInLogUsingMark("TRAS0114W", 10000);
 
         int slow = fetchSlowRequestWarningsCount();
 
@@ -470,6 +502,7 @@ public class TimingRequestTiming {
             slow = fetchSlowRequestWarningsCount();
         }
 
+        server.waitForStringInLogUsingMark("TRAS0114W", 10000);
         int hung = fetchHungRequestWarningsCount();
 
         assertTrue("Expected > 1 slow request warnings but found : " + slow, (slow > 1));
@@ -560,8 +593,8 @@ public class TimingRequestTiming {
             server.waitForStringInLog("TRAS0112W", 15000);
             slow = fetchSlowRequestWarningsCount();
         }
-
         int hung = fetchHungRequestWarningsCount();
+
         assertTrue("Expected > 1 slow request warnings but found : " + slow, (slow > 1));
 
         assertTrue("Expected 0 hung request warning but found : " + hung, (hung == 0));
@@ -588,13 +621,22 @@ public class TimingRequestTiming {
         createRequests(9000, 1);
 
         server.waitForStringInLogUsingMark("TRAS0112W", 10000);
-        server.waitForStringInLogUsingMark("TRAS0114W", 10000);
-
         int slow = fetchSlowRequestWarningsCount();
-        int hung = fetchHungRequestWarningsCount();
-        assertTrue("Expected > 0 slow request warnings but found : " + slow, (slow > 0));
 
+        //Retry the request again
+        if (slow == 0) {
+            CommonTasks.writeLogMsg(Level.INFO, "$$$$ -----> Retry because no slow request warning found!");
+            createRequests(9000, 1);
+            server.waitForStringInLogUsingMark("TRAS0112W", 10000);
+            slow = fetchSlowRequestWarningsCount();
+        }
+
+        server.waitForStringInLogUsingMark("TRAS0114W", 10000);
+        int hung = fetchHungRequestWarningsCount();
+
+        assertTrue("Expected > 0 slow request warnings but found : " + slow, (slow > 0));
         assertTrue("Expected 1 hung request warning but found : " + hung, (hung > 0));
+
         server.setMarkToEndOfLog();
 
         CommonTasks.writeLogMsg(Level.INFO, "**** >>>>> UPDATED server configuration thresholds for  <global : defaults ><timing - Slow : 3s , hung : 5s>");

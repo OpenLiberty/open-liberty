@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -725,6 +725,8 @@ public class SlowRequestTiming {
         //Step 2 - Create 2 requests of 4 seconds each.
         createRequest("?sleepTime=4000");
         createRequest("?sleepTime=4000");
+
+        server.waitForStringInLog("TRAS0112W", 20000);
         int slowCount = fetchNoOfslowRequestWarnings();
 
         assertTrue("No slow warning found for sampleRate 2!", (slowCount > 0));
@@ -736,7 +738,17 @@ public class SlowRequestTiming {
         waitForConfigurationUpdate();
 
         createRequest("?sleepTime=4000");
+
+        server.waitForStringInLog("TRAS0112W", 20000);
         int newslowCount = fetchNoOfslowRequestWarnings();
+
+        //Retry the request again
+        if (newslowCount == 0) {
+            CommonTasks.writeLogMsg(Level.INFO, "$$$$ -----> Retry because no new slow request warning found!");
+            createRequest("?sleepTime=4000");
+            server.waitForStringInLog("TRAS0112W", 20000);
+            newslowCount = fetchNoOfslowRequestWarnings();
+        }
 
         assertTrue("No slow warning found for sampleRate 1!", (newslowCount - slowCount > 0));
 
@@ -753,6 +765,7 @@ public class SlowRequestTiming {
         //Step 2 -Create Request for 11 seconds
         createRequest("?sleepTime=11000");
 
+        server.waitForStringInLog("TRAS0112W", 20000);
         int slowCount = fetchNoOfslowRequestWarnings();
         assertTrue("No slow request warning found..", (slowCount > 0));
 
@@ -765,7 +778,17 @@ public class SlowRequestTiming {
         //Step 3 - Create 2 requests of 4 seconds each and verify that it works like sampleRate 2.
         createRequest("?sleepTime=4000");
         createRequest("?sleepTime=4000");
+        server.waitForStringInLog("TRAS0112W", 20000);
         int currentCount = fetchNoOfslowRequestWarnings() - slowCount;
+
+        //Retry the request again
+        if (currentCount <= 0) {
+            CommonTasks.writeLogMsg(Level.INFO, "$$$$ -----> Retry because no new slow request warning found!");
+            createRequest("?sleepTime=4000");
+            createRequest("?sleepTime=4000");
+            server.waitForStringInLog("TRAS0112W", 20000);
+            currentCount = fetchNoOfslowRequestWarnings() - slowCount;
+        }
 
         assertTrue("No slow warning found for sampleRate 2!", (currentCount > 0));
         CommonTasks.writeLogMsg(Level.INFO, "***** SampleRate Dynamic Enablement works as expected! *****");
