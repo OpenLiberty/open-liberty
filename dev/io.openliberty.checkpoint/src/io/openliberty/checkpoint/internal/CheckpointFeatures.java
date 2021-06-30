@@ -36,7 +36,7 @@ public class CheckpointFeatures implements RuntimeUpdateListener {
     @Activate
     public CheckpointFeatures(@Reference Checkpoint checkpoint, BundleContext bc) {
         this.checkpoint = checkpoint;
-        this.doCheckpoint = "features".equals(bc.getProperty("io.openliberty.checkpoint"));
+        this.doCheckpoint = "features".equals(bc.getProperty(Checkpoint.CHECKPOINT_PROPERTY_NAME));
     }
 
     @Override
