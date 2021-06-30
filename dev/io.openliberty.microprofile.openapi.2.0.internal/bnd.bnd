@@ -45,6 +45,7 @@ Include-Resource: \
 -dsannotations: io.openliberty.microprofile.openapi20.ApplicationListener,\
     io.openliberty.microprofile.openapi20.ApplicationRegistry,\
     io.openliberty.microprofile.openapi20.ApplicationProcessor,\
+    io.openliberty.microprofile.openapi20.MergeDisabledAlerter,\
     io.openliberty.microprofile.openapi20.OLOASFactoryResolverImpl,\
     io.openliberty.microprofile.openapi20.css.CustomCSSProcessor,\
     io.openliberty.microprofile.openapi20.DefaultHostListener

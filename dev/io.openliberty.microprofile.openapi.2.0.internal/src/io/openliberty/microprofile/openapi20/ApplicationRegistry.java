@@ -27,7 +27,6 @@ import org.osgi.service.component.annotations.Reference;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 import io.openliberty.microprofile.openapi20.merge.MergeProcessor;
 import io.openliberty.microprofile.openapi20.utils.LoggingUtils;
@@ -52,8 +51,9 @@ public class ApplicationRegistry {
     @Reference
     private ApplicationProcessor applicationProcessor;
     
-    private boolean multiAppWarningGiven = false;
-
+    @Reference
+    private MergeDisabledAlerter mergeDisabledAlerter;
+    
     // Thread safety: access to these fields must be synchronized on this
     private Map<String, ApplicationRecord> applications = new LinkedHashMap<>(); // Linked map retains order in which applications were added
 
@@ -89,7 +89,7 @@ public class ApplicationRegistry {
                 if (LoggingUtils.isEventEnabled(tc)) {
                     Tr.event(this, tc, "Application Processor: useFirstModuleOnly is configured and we already have a module. Not processing. appInfo=" + newAppInfo);
                 }
-                setUsingMultiModulesWithoutConfig(firstProvider);
+                mergeDisabledAlerter.setUsingMultiModulesWithoutConfig(firstProvider);
             } else {
                 Collection<OpenAPIProvider> openApiProviders = applicationProcessor.processApplication(newAppInfo, moduleSelectionConfig);
                 
@@ -196,17 +196,6 @@ public class ApplicationRegistry {
         }
     }
     
-    /**
-     * Called at the point where we notice that multiple modules are deployed but the OpenAPI config is set to only generate docs from the first module
-     * @param firstModule the module which <i>is</i> being used to generate openAPI documentation
-     */
-    public void setUsingMultiModulesWithoutConfig(OpenAPIProvider firstModule) {
-        if (!multiAppWarningGiven && ProductInfo.getBetaEdition()) {
-            Tr.info(tc, MessageConstants.OPENAPI_MERGE_DISABLED_CWWKO1663I, firstModule);
-            multiAppWarningGiven = true;
-        }
-    }
-
     private List<OpenAPIProvider> getProvidersToMerge() {
         synchronized (this) {
             return applications.values().stream()
