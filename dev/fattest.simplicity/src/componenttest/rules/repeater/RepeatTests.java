@@ -47,6 +47,13 @@ public class RepeatTests extends ExternalResource {
     }
 
     /**
+     * Adds an iteration of test execution without making any modifications, but only run in FULL mode
+     */
+    public static RepeatTests withoutModificationInFullMode() {
+        return new RepeatTests().andWithoutModificationInFullMode();
+    }
+
+    /**
      * Adds an iteration of test execution, where the action.setup() is called before repeating the tests.
      */
     public static RepeatTests with(RepeatTestAction action) {
@@ -66,6 +73,14 @@ public class RepeatTests extends ExternalResource {
      */
     public RepeatTests andWithoutModification() {
         actions.add(NO_MODIFICATION_ACTION);
+        return this;
+    }
+
+    /**
+     * Adds an iteration of test execution without making any modifications, but run in FULL mode
+     */
+    public RepeatTests andWithoutModificationInFullMode() {
+        actions.add(new EmptyAction().fullFATOnly());
         return this;
     }
 
