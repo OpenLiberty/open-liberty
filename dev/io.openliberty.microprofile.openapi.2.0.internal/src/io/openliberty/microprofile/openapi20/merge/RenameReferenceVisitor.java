@@ -33,8 +33,7 @@ import org.eclipse.microprofile.openapi.models.responses.APIResponse;
 import org.eclipse.microprofile.openapi.models.security.SecurityRequirement;
 import org.eclipse.microprofile.openapi.models.security.SecurityScheme;
 
-import io.openliberty.microprofile.openapi20.merge.MergeProcessor.NameType;
-import io.openliberty.microprofile.openapi20.merge.MergeProcessor.RenameHolder;
+import io.openliberty.microprofile.openapi20.merge.NameProcessor.DocumentNameProcessor;
 import io.openliberty.microprofile.openapi20.utils.OpenAPIModelVisitor;
 import io.openliberty.microprofile.openapi20.utils.OpenAPIModelWalker.Context;
 
@@ -50,22 +49,23 @@ import io.openliberty.microprofile.openapi20.utils.OpenAPIModelWalker.Context;
  */
 public class RenameReferenceVisitor implements OpenAPIModelVisitor {
 
-    private final RenameHolder renameHolder;
+    private final DocumentNameProcessor documentNameProcessor;
 
     /**
      * Creates a RenameReferenceVisitor
      * 
-     * @param renameHolder the {@code RenameHolder} holding the renames for the model
+     * @param documentNameProcessor the {@link DocumentNameProcessor} holding the renames for the model
      */
-    public RenameReferenceVisitor(RenameHolder renameHolder) {
-        this.renameHolder = renameHolder;
+    public RenameReferenceVisitor(DocumentNameProcessor documentNameProcessor) {
+        this.documentNameProcessor = documentNameProcessor;
     }
 
-    private void updateReference(Reference<?> referrer, NameType nameType, String prefix) {
+    private void updateReference(Reference<?> referrer, NameType nameType) {
         String reference = referrer.getRef();
+        String prefix = nameType.getReferencePrefix();
         if (reference != null && reference.startsWith(prefix)) {
             String oldName = reference.split("/")[3];
-            String newName = renameHolder.lookupName(nameType, oldName);
+            String newName = documentNameProcessor.lookupName(nameType, oldName);
             if (!oldName.equals(newName)) {
                 referrer.setRef(prefix + newName);
             }
@@ -74,28 +74,28 @@ public class RenameReferenceVisitor implements OpenAPIModelVisitor {
 
     @Override
     public Example visitExample(Context context, Example example) {
-        updateReference(example, NameType.EXAMPLES, "#/components/examples/");
+        updateReference(example, NameType.EXAMPLES);
         return example;
     }
 
     @Override
     public Example visitExample(Context context, String key, Example example) {
-        updateReference(example, NameType.EXAMPLES, "#/components/examples/");
+        updateReference(example, NameType.EXAMPLES);
         return example;
     }
 
     @Override
     public Header visitHeader(Context context, String key, Header header) {
-        updateReference(header, NameType.HEADERS, "#/components/headers/");
+        updateReference(header, NameType.HEADERS);
         return header;
     }
 
     @Override
     public Link visitLink(Context context, String key, Link link) {
         if (link.getRef() != null) {
-            updateReference(link, NameType.LINKS, "#/components/links/");
+            updateReference(link, NameType.LINKS);
         } else {
-            link.setOperationId(renameHolder.lookupName(NameType.OPERATION_ID, link.getOperationId()));
+            link.setOperationId(documentNameProcessor.lookupName(NameType.OPERATION_ID, link.getOperationId()));
             link.setOperationRef(updateOperationRef(link.getOperationRef()));
         }
         return link;
@@ -122,7 +122,7 @@ public class RenameReferenceVisitor implements OpenAPIModelVisitor {
         }
 
         String oldPath = decodePathReference(m.group(1));
-        String newPath = renameHolder.lookupName(NameType.PATHS, oldPath);
+        String newPath = documentNameProcessor.lookupName(NameType.PATHS, oldPath);
 
         if (!oldPath.equals(newPath)) {
             String newRef = operationRef.substring(0, m.start(1))
@@ -145,49 +145,49 @@ public class RenameReferenceVisitor implements OpenAPIModelVisitor {
 
     @Override
     public Parameter visitParameter(Context context, Parameter p) {
-        updateReference(p, NameType.PARAMETERS, "#/components/parameters/");
+        updateReference(p, NameType.PARAMETERS);
         return p;
     }
 
     @Override
     public Parameter visitParameter(Context context, String key, Parameter p) {
-        updateReference(p, NameType.PARAMETERS, "#/components/parameters/");
+        updateReference(p, NameType.PARAMETERS);
         return p;
     }
 
     @Override
     public RequestBody visitRequestBody(Context context, RequestBody rb) {
-        updateReference(rb, NameType.REQUEST_BODIES, "#/components/requestBodies/");
+        updateReference(rb, NameType.REQUEST_BODIES);
         return rb;
     }
 
     @Override
     public RequestBody visitRequestBody(Context context, String key, RequestBody rb) {
-        updateReference(rb, NameType.REQUEST_BODIES, "#/components/requestBodies/");
+        updateReference(rb, NameType.REQUEST_BODIES);
         return rb;
     }
 
     @Override
     public APIResponse visitResponse(Context context, String key, APIResponse response) {
-        updateReference(response, NameType.RESPONSES, "#/components/responses/");
+        updateReference(response, NameType.RESPONSES);
         return response;
     }
 
     @Override
     public Schema visitSchema(Context context, Schema schema) {
-        updateReference(schema, NameType.SCHEMAS, "#/components/schemas/");
+        updateReference(schema, NameType.SCHEMAS);
         return schema;
     }
 
     @Override
     public Schema visitSchema(Context context, String key, Schema schema) {
-        updateReference(schema, NameType.SCHEMAS, "#/components/schemas/");
+        updateReference(schema, NameType.SCHEMAS);
         return schema;
     }
 
     @Override
     public SecurityScheme visitSecurityScheme(Context context, String key, SecurityScheme scheme) {
-        updateReference(scheme, NameType.SECURITY_SCHEMES, "#/components/securitySchemes/");
+        updateReference(scheme, NameType.SECURITY_SCHEMES);
         return scheme;
     }
 
@@ -197,7 +197,7 @@ public class RenameReferenceVisitor implements OpenAPIModelVisitor {
         if (schemes != null) {
             Map<String, List<String>> newSchemes = new HashMap<>();
             for (Entry<String, List<String>> entry : schemes.entrySet()) {
-                String newName = renameHolder.lookupName(NameType.SECURITY_SCHEMES, entry.getKey());
+                String newName = documentNameProcessor.lookupName(NameType.SECURITY_SCHEMES, entry.getKey());
                 newSchemes.put(newName, entry.getValue());
             }
             secReq.setSchemes(newSchemes);
@@ -207,7 +207,7 @@ public class RenameReferenceVisitor implements OpenAPIModelVisitor {
 
     @Override
     public Callback visitCallback(Context context, String key, Callback callback) {
-        updateReference(callback, NameType.CALLBACKS, "#/components/callbacks/");
+        updateReference(callback, NameType.CALLBACKS);
         return callback;
     }
 
@@ -218,7 +218,7 @@ public class RenameReferenceVisitor implements OpenAPIModelVisitor {
         if (tags != null && !tags.isEmpty()) {
             List<String> newTags = new ArrayList<>();
             for (String tag : tags) {
-                newTags.add(renameHolder.lookupName(NameType.TAG, tag));
+                newTags.add(documentNameProcessor.lookupName(NameType.TAG, tag));
             }
             if (!Objects.equals(tags, newTags)) {
                 operation.setTags(newTags);

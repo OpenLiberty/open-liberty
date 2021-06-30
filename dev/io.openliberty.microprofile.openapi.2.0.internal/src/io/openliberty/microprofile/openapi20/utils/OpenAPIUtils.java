@@ -12,8 +12,13 @@ package io.openliberty.microprofile.openapi20.utils;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.BiPredicate;
 
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.openapi.OASFactory;
@@ -304,6 +309,79 @@ public class OpenAPIUtils {
         } catch (JsonProcessingException ex) {
             Tr.warning(tc, MessageConstants.OPENAPI_MERGE_INFO_PARSE_ERROR_CWWKO1665W, Constants.MERGE_INFO_CONFIG, infoJson.get(), ex.toString());
             return null;
+        }
+    }
+
+    /**
+     * Check whether all elements of {@code collection} are equal to each other using the given equality function
+     * <p>
+     * Actually assumes that equals is implemented properly and just checks that the first element is equal to all others
+     * <p>
+     * If {@code collection} contains less than two elements, this method will always return {@code true}.
+     * 
+     * @param <T> the element type
+     * @param collection the collection of elements to test for equality
+     * @param comparator the function to use to test equality
+     * @return {@code true} if all elements of {@code collection} are equal, {@code false} otherwise
+     */
+    public static <T> boolean allEqual(Collection<? extends T> collection, BiPredicate<? super T, ? super T> comparator) {
+        Iterator<? extends T> i = collection.iterator();
+        if (!i.hasNext()) {
+            return true;
+        }
+    
+        T first = i.next();
+        while (i.hasNext()) {
+            if (!equals(first, i.next(), comparator)) {
+                return false;
+            }
+        }
+    
+        return true;
+    }
+
+    /**
+     * Tests if two objects are equal, using {@code comparator} to test their equality if both {@code a} and {@code b} are not {@code null}.
+     * 
+     * @param <T> the type of {@code a} and {@code b}
+     * @param a the first object
+     * @param b the second object
+     * @param comparator the comparison function
+     * @return {@code true} if {@code a} and {@code b} are equal, {@code false} otherwise
+     */
+    public static <T> boolean equals(T a, T b, BiPredicate<? super T, ? super T> comparator) {
+        if (a == null) {
+            return b == null ? true : false;
+        } else {
+            return b == null ? false : comparator.test(a, b);
+        }
+    }
+
+    /**
+     * Converts {@code null} to an empty map
+     * 
+     * @param in a map, or {@code null}
+     * @return an empty map if {@code in} is {@code null}, otherwise {@code in}
+     */
+    public static <K, V> Map<K, V> notNull(Map<K, V> in) {
+        if (in == null) {
+            return Collections.emptyMap();
+        } else {
+            return in;
+        }
+    }
+
+    /**
+     * Converts {@code null} to an empty list
+     * 
+     * @param in a list, or {@code null}
+     * @return an empty list if {@code in} is {@code null}, otherwise {@code in}
+     */
+    public static <V> List<V> notNull(List<V> in) {
+        if (in == null) {
+            return Collections.emptyList();
+        } else {
+            return in;
         }
     }
 }

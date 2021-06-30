@@ -10,19 +10,18 @@
  *******************************************************************************/
 package io.openliberty.microprofile.openapi20.merge;
 
+import static io.openliberty.microprofile.openapi20.utils.OpenAPIUtils.allEqual;
+import static io.openliberty.microprofile.openapi20.utils.OpenAPIUtils.notNull;
 import static java.util.stream.Collectors.toList;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.function.BiPredicate;
 
 import org.eclipse.microprofile.openapi.OASFactory;
 import org.eclipse.microprofile.openapi.models.Components;
@@ -38,10 +37,10 @@ import org.eclipse.microprofile.openapi.models.tags.Tag;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.ras.annotation.Trivial;
 
 import io.openliberty.microprofile.openapi20.MergedOpenAPIProvider;
 import io.openliberty.microprofile.openapi20.OpenAPIProvider;
+import io.openliberty.microprofile.openapi20.merge.NameProcessor.DocumentNameProcessor;
 import io.openliberty.microprofile.openapi20.utils.Constants;
 import io.openliberty.microprofile.openapi20.utils.MessageConstants;
 import io.openliberty.microprofile.openapi20.utils.OpenAPIModelVisitor;
@@ -125,10 +124,7 @@ public class MergeProcessor {
      */
     private Map<OpenAPIProvider, Set<String>> pathNames = new HashMap<>();
 
-    /**
-     * The unique names and their values which are in use for models processed so far, grouped by the type of name
-     */
-    private Map<NameType, Map<String, Object>> namesInUse = new HashMap<>();
+    private NameProcessor nameProcessor = new NameProcessor();
 
     private List<String> mergeProblems = new ArrayList<>();
 
@@ -157,18 +153,14 @@ public class MergeProcessor {
             // Make a deep copy, to avoid modifying the input model
             OpenAPI model = (OpenAPI) ModelCopy.copy(provider.getModel());
 
-            RenameHolder renameHolder = new RenameHolder();
+            DocumentNameProcessor documentNameProcessor = nameProcessor.createDocumentNameProcessor();
 
             // Add context root to the front of paths if possible
-            prependPaths(model, provider.getApplicationPath(), renameHolder);
+            prependPaths(model, provider.getApplicationPath(), documentNameProcessor);
 
             // Check for clashes
             if (!findAndRecordPathClashes(model, provider)) {
-                InProgressModel inProgressModel = new InProgressModel();
-                inProgressModel.model = model;
-                inProgressModel.provider = provider;
-                inProgressModel.renameHolder = renameHolder;
-                inProgressModels.add(inProgressModel);
+                inProgressModels.add(new InProgressModel(provider, model, documentNameProcessor));
 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                     Tr.event(this, tc, "No path clashes for " + provider + ", including in merge");
@@ -196,9 +188,9 @@ public class MergeProcessor {
             }
 
             // Find and process renames
-            renameClashingTags(inProgress.model, inProgress.renameHolder);
-            renameClashingComponents(inProgress.model, inProgress.renameHolder);
-            renameClashingOperationIds(inProgress.model, inProgress.renameHolder);
+            renameClashingTags(inProgress.model, inProgress.documentNameProcessor);
+            renameClashingComponents(inProgress.model, inProgress.documentNameProcessor);
+            renameClashingOperationIds(inProgress.model, inProgress.documentNameProcessor);
 
             // Move security requirements
             if (!securityIdentical) {
@@ -217,13 +209,13 @@ public class MergeProcessor {
                 moveServersUnderPaths(inProgress.model);
             }
 
-            if (inProgress.renameHolder.hasRenames()) {
+            if (inProgress.documentNameProcessor.hasRenames()) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                     Tr.event(this, tc, "Updating references to renamed elements");
                 }
 
                 // Update references
-                OpenAPIModelVisitor visitor = new RenameReferenceVisitor(inProgress.renameHolder);
+                OpenAPIModelVisitor visitor = new RenameReferenceVisitor(inProgress.documentNameProcessor);
                 OpenAPIModelWalker walker = new OpenAPIModelWalker(inProgress.model);
                 walker.accept(visitor);
             }
@@ -297,31 +289,31 @@ public class MergeProcessor {
         return clashesFound;
     }
 
-    private void renameClashingTags(OpenAPI document, RenameHolder renameHolder) {
+    private void renameClashingTags(OpenAPI document, DocumentNameProcessor documentNameProcessor) {
         for (Tag tag : notNull(document.getTags())) {
-            tag.setName(renameHolder.createUniqueName(NameType.TAG, tag.getName(), tag));
+            tag.setName(documentNameProcessor.createUniqueName(NameType.TAG, tag.getName(), tag));
         }
     }
 
-    private void renameClashingComponents(OpenAPI document, RenameHolder renameHolder) {
+    private void renameClashingComponents(OpenAPI document, DocumentNameProcessor documentNameProcessor) {
         Components components = document.getComponents();
 
         if (components == null) {
             return;
         }
 
-        components.setCallbacks(renameComponents(NameType.CALLBACKS, components.getCallbacks(), renameHolder));
-        components.setExamples(renameComponents(NameType.EXAMPLES, components.getExamples(), renameHolder));
-        components.setHeaders(renameComponents(NameType.HEADERS, components.getHeaders(), renameHolder));
-        components.setLinks(renameComponents(NameType.LINKS, components.getLinks(), renameHolder));
-        components.setParameters(renameComponents(NameType.PARAMETERS, components.getParameters(), renameHolder));
-        components.setRequestBodies(renameComponents(NameType.REQUEST_BODIES, components.getRequestBodies(), renameHolder));
-        components.setResponses(renameComponents(NameType.RESPONSES, components.getResponses(), renameHolder));
-        components.setSchemas(renameComponents(NameType.SCHEMAS, components.getSchemas(), renameHolder));
-        components.setSecuritySchemes(renameComponents(NameType.SECURITY_SCHEMES, components.getSecuritySchemes(), renameHolder));
+        components.setCallbacks(renameComponents(NameType.CALLBACKS, components.getCallbacks(), documentNameProcessor));
+        components.setExamples(renameComponents(NameType.EXAMPLES, components.getExamples(), documentNameProcessor));
+        components.setHeaders(renameComponents(NameType.HEADERS, components.getHeaders(), documentNameProcessor));
+        components.setLinks(renameComponents(NameType.LINKS, components.getLinks(), documentNameProcessor));
+        components.setParameters(renameComponents(NameType.PARAMETERS, components.getParameters(), documentNameProcessor));
+        components.setRequestBodies(renameComponents(NameType.REQUEST_BODIES, components.getRequestBodies(), documentNameProcessor));
+        components.setResponses(renameComponents(NameType.RESPONSES, components.getResponses(), documentNameProcessor));
+        components.setSchemas(renameComponents(NameType.SCHEMAS, components.getSchemas(), documentNameProcessor));
+        components.setSecuritySchemes(renameComponents(NameType.SECURITY_SCHEMES, components.getSecuritySchemes(), documentNameProcessor));
     }
 
-    private <T> Map<String, T> renameComponents(NameType nameType, Map<String, T> componentMap, RenameHolder renameHolder) {
+    private <T> Map<String, T> renameComponents(NameType nameType, Map<String, T> componentMap, DocumentNameProcessor documentNameProcessor) {
         if (componentMap == null) {
             return null;
         }
@@ -329,12 +321,12 @@ public class MergeProcessor {
         HashMap<String, T> newMap = new HashMap<>();
         for (Entry<String, T> entry : componentMap.entrySet()) {
             String key = entry.getKey();
-            newMap.put(renameHolder.createUniqueName(nameType, key, entry.getValue()), entry.getValue());
+            newMap.put(documentNameProcessor.createUniqueName(nameType, key, entry.getValue()), entry.getValue());
         }
         return newMap;
     }
 
-    private void renameClashingOperationIds(OpenAPI document, RenameHolder renameHolder) {
+    private void renameClashingOperationIds(OpenAPI document, DocumentNameProcessor documentNameProcessor) {
         Paths paths = document.getPaths();
         if (paths == null) {
             return;
@@ -342,7 +334,7 @@ public class MergeProcessor {
 
         for (PathItem item : notNull(paths.getPathItems()).values()) {
             for (Operation op : notNull(item.getOperations()).values()) {
-                op.setOperationId(renameHolder.createUniqueName(NameType.OPERATION_ID, op.getOperationId(), null));
+                op.setOperationId(documentNameProcessor.createUniqueName(NameType.OPERATION_ID, op.getOperationId(), null));
             }
         }
     }
@@ -378,7 +370,7 @@ public class MergeProcessor {
      * 
      * @param model the OpenAPI model
      */
-    private static void prependPaths(OpenAPI model, String contextRoot, RenameHolder renameHolder) {
+    private static void prependPaths(OpenAPI model, String contextRoot, DocumentNameProcessor documentNameProcessor) {
         if (contextRoot == null) {
             return;
         }
@@ -444,7 +436,7 @@ public class MergeProcessor {
 
                 // Then add the context root to the path
                 String newPath = addContextRoot(entry.getKey(), contextRoot);
-                renameHolder.registerRename(NameType.PATHS, entry.getKey(), newPath);
+                documentNameProcessor.registerRename(NameType.PATHS, entry.getKey(), newPath);
                 newPathItems.put(newPath, pathItem);
             }
             paths.setPathItems(newPathItems);
@@ -507,7 +499,6 @@ public class MergeProcessor {
 
     private static boolean isSecurityIdentical(List<InProgressModel> models) {
         List<List<SecurityRequirement>> reqs = models.stream().map(d -> d.model.getSecurity()).collect(toList());
-
         return allEqual(reqs, ModelEquality::equals);
     }
 
@@ -545,241 +536,15 @@ public class MergeProcessor {
         model.setServers(null);
     }
 
-    /**
-     * Check whether all elements of {@code collection} are equal to each other using the given equality function
-     * <p>
-     * Actually assumes that equals is implemented properly and just checks that the first element is equal to all others
-     * <p>
-     * If {@code collection} contains less than two elements, this method will always return {@code true}.
-     * 
-     * @param <T> the element type
-     * @param collection the collection of elements to test for equality
-     * @param comparator the function to use to test equality
-     * @return {@code true} if all elements of {@code collection} are equal, {@code false} otherwise
-     */
-    private static <T> boolean allEqual(Collection<? extends T> collection, BiPredicate<? super T, ? super T> comparator) {
-        Iterator<? extends T> i = collection.iterator();
-        if (!i.hasNext()) {
-            return true;
-        }
-
-        T first = i.next();
-        while (i.hasNext()) {
-            if (!equals(first, i.next(), comparator)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * Tests if two objects are equal, using {@code comparator} to test their equality if both {@code a} and {@code b} are not {@code null}.
-     * 
-     * @param <T> the type of {@code a} and {@code b}
-     * @param a the first object
-     * @param b the second object
-     * @param comparator the comparison function
-     * @return {@code true} if {@code a} and {@code b} are equal, {@code false} otherwise
-     */
-    private static <T> boolean equals(T a, T b, BiPredicate<? super T, ? super T> comparator) {
-        if (a == null) {
-            return b == null ? true : false;
-        } else {
-            return b == null ? false : comparator.test(a, b);
-        }
-    }
-
-    /**
-     * Converts {@code null} to an empty map
-     * 
-     * @param in a map, or {@code null}
-     * @return an empty map if {@code in} is {@code null}, otherwise {@code in}
-     */
-    private static <K, V> Map<K, V> notNull(Map<K, V> in) {
-        if (in == null) {
-            return Collections.emptyMap();
-        } else {
-            return in;
-        }
-    }
-
-    /**
-     * Converts {@code null} to an empty list
-     * 
-     * @param in a list, or {@code null}
-     * @return an empty list if {@code in} is {@code null}, otherwise {@code in}
-     */
-    private static <V> List<V> notNull(List<V> in) {
-        if (in == null) {
-            return Collections.emptyList();
-        } else {
-            return in;
-        }
-    }
-
-    /**
-     * Creates and stores new unique names for model elements.
-     * <p>
-     * Certain names must be unique within an OpenAPI document. When merging documents, these names may have to be changed so that they don't clash.
-     * <p>
-     * This class handles detecting clashes, creating new names as required and looking up the new names of renamed elements.
-     */
-    public class RenameHolder {
-        private Map<NameType, Map<String, String>> renames = new HashMap<>();
-        private boolean hasRenames = false;
-
-        /**
-         * Get the map of renames for the current model of the given name type
-         * <p>
-         * The returned map maps from the original non-unique name, to the new generated unique name
-         * 
-         * @param nameType the name type
-         * @return the map of renames
-         */
-        @Trivial
-        private Map<String, String> getRenameMap(NameType nameType) {
-            return renames.computeIfAbsent(nameType, (k) -> new HashMap<>());
-        }
-
-        /**
-         * Get the set of names and their values in use for the given name type
-         * <p>
-         * Note that this is shared between all models being merged.
-         * 
-         * @param nameType the name type
-         * @return map of names to their values
-         */
-        @Trivial
-        private Map<String, Object> getNamesInUse(NameType nameType) {
-            return MergeProcessor.this.namesInUse.computeIfAbsent(nameType, (k) -> new HashMap<>());
-        }
-
-        private static final String NO_VALUE = "NO VALUE";
-
-        /**
-         * Create and reserve a unique name, based on a possibly non-unique name
-         * <p>
-         * If this method is called with the same {@code oldName} and different {@code value} when processing different documents, it will return different names.
-         * <p>
-         * However, if this method is called multiple times with the same {@code oldName} <i>within the same document</i> it will return the same name. This is to make it easier
-         * to process tags which can be used without previous definition.
-         * 
-         * @param nameType the type of name
-         * @param oldName the possibly non-unique name
-         * @param value the value associated with the name, or {@code null} to not perform an equality check on the value
-         * @return the new name (which may be the same as {@code oldName})
-         */
-        public String createUniqueName(NameType nameType, String oldName, Object value) {
-            if (oldName == null) {
-                return null;
-            }
-
-            Map<String, String> renameMap = getRenameMap(nameType);
-
-            String previousRename = renameMap.get(oldName);
-            if (previousRename != null) {
-                return previousRename;
-            }
-
-            Map<String, Object> namesInUse = getNamesInUse(nameType);
-            String newName = oldName;
-            Object valueInUse = namesInUse.get(newName);
-            if (valueInUse != null && (valueInUse == NO_VALUE || !ModelEquality.equals(valueInUse, value))) {
-                // We need to rename
-                int count = 1;
-                newName = oldName + count;
-                valueInUse = namesInUse.get(newName);
-
-                // Compute the new name
-                while (valueInUse != null && (valueInUse == NO_VALUE || !ModelEquality.equals(valueInUse, value))) {
-                    count++;
-                    newName = oldName + count;
-                    valueInUse = namesInUse.get(newName);
-                }
-
-                // Store the rename
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(tc, "Renamed " + nameType + " " + oldName + " -> " + newName);
-                }
-                hasRenames = true;
-            }
-
-            namesInUse.put(newName, value == null ? NO_VALUE : value);
-            renameMap.put(oldName, newName);
-            return newName;
-        }
-
-        /**
-         * Look up the corresponding name to which {@code oldName} was renamed
-         * <p>
-         * If {@code oldName} was previously passed to {@link #createUniqueName(NameType, String)} or {@link #registerRename(NameType, String, String)}, then the new name will be
-         * returned, otherwise {@code oldName} will be returned.
-         * <p>
-         * This is useful for updating references to objects which may have been renamed
-         * 
-         * @param nameType the type of name
-         * @param oldName the possibly non-unique name
-         * @return the corresponding new name (which may be the same as {@code oldName}
-         */
-        public String lookupName(NameType nameType, String oldName) {
-            return getRenameMap(nameType).getOrDefault(oldName, oldName);
-        }
-
-        /**
-         * Register that something is being renamed (for reasons other than it clashing with another name)
-         * <p>
-         * This is used e.g. when a path name is changed to add the context root.
-         * <p>
-         * In most other circumstances, {@link #createUniqueName(NameType, String)} should be used instead to generate a non-clashing name
-         * 
-         * @param nameType the type of name
-         * @param oldName the old name
-         * @param newName the new name
-         */
-        public void registerRename(NameType nameType, String oldName, String newName) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                if (!oldName.equals(newName)) {
-                    Tr.event(tc, "Renamed " + nameType + " " + oldName + " -> " + newName);
-                }
-            }
-
-            hasRenames = true;
-            getRenameMap(nameType).put(oldName, newName);
-        }
-
-        /**
-         * Returns whether any renames have been recorded.
-         * <p>
-         * This will be true if a call to {@link #createUniqueName(NameType, String)} returned a different name to the one it was passed or if
-         * {@link #registerRename(NameType, String, String)} has been called.
-         * 
-         * @return {@code true} if any renames have been recorded, otherwise {@code false}
-         */
-        public boolean hasRenames() {
-            return hasRenames;
-        }
-    }
-
     private static class InProgressModel {
+        private InProgressModel(OpenAPIProvider provider, OpenAPI model, DocumentNameProcessor documentNameProcessor) {
+            this.provider = provider;
+            this.model = model;
+            this.documentNameProcessor = documentNameProcessor;
+        }
         private OpenAPIProvider provider;
         private OpenAPI model;
-        private RenameHolder renameHolder;
-    }
-
-    public enum NameType {
-        TAG,
-        OPERATION_ID,
-        CALLBACKS,
-        EXAMPLES,
-        HEADERS,
-        LINKS,
-        PARAMETERS,
-        REQUEST_BODIES,
-        RESPONSES,
-        SCHEMAS,
-        SECURITY_SCHEMES,
-        PATHS
+        private DocumentNameProcessor documentNameProcessor;
     }
 
 }
