@@ -67,10 +67,6 @@ public class LogstashSSLTest extends LogstashCollectorTest {
         Log.info(c, "setUp", "os.name is z/os machine = " + !runTest);
         Log.info(c, "setUp", "runTest = " + runTest);
 
-        if (!runTest) {
-            return;
-        }
-
         clearContainerOutput();
         String host = logstashContainer.getContainerIpAddress();
         String port = String.valueOf(logstashContainer.getMappedPort(5043));
