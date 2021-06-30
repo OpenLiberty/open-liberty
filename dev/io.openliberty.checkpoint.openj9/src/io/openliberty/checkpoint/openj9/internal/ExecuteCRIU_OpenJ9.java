@@ -19,12 +19,14 @@ import org.eclipse.openj9.criu.CRIUSupport.CRIUResultType;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+
 import io.openliberty.checkpoint.internal.criu.ExecuteCRIU;
 
 public class ExecuteCRIU_OpenJ9 implements BundleActivator, ExecuteCRIU {
 
     @Override
-
+    @FFDCIgnore(ClassNotFoundException.class)
     public void start(BundleContext bc) {
         try {
             Class.forName("org.eclipse.openj9.criu.CRIUSupport");
