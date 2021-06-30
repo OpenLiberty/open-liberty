@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,7 +45,6 @@ import componenttest.topology.impl.LibertyServer;
  * case can check that the password specified in the actual Client APIs are not logged, even when tracing is enabled.
  */
 @RunWith(FATRunner.class)
-@SkipForRepeat("EE9_FEATURES") // Continue to skip this test for EE9 as proxy authority (properties com.ibm.ws.jaxrs.client.proxy.*) is not supported yet
 public class JAXRS21ClientSSLProxyAuthTest extends JAXRS21AbstractTest {
     private final static Class<?> c = JAXRS21ClientSSLProxyAuthTest.class;
 
@@ -193,13 +192,14 @@ public class JAXRS21ClientSSLProxyAuthTest extends JAXRS21AbstractTest {
         p.put("proxyusername", "jaxrsUser");
         p.put("proxypassword", "USE_PASSWORD_FROM_SERVLET");
 
-        this.runTestOnServer(target, "testProxyToHTTP_ClientBuilder", p, "[Proxy Error]:javax.ws.rs.ClientErrorException: HTTP 407 Proxy Authentication Required");
+        this.runTestOnServer(target, "testProxyToHTTP_ClientBuilder", p, "[Proxy Error]:javax.ws.rs.ClientErrorException: HTTP 407 Proxy Authentication Required",
+                                                                         "[Proxy Error]:jakarta.ws.rs.ClientErrorException: HTTP 407 Proxy Authentication Required");
 
         assertEquals("Proxy Password value printed in trace output", 0, server.findStringsInLogsAndTraceUsingMark("myPa\\$\\$word").size());
         server.setMarkToEndOfLog(server.getFileFromLibertyServerRoot("logs/trace.log"));
     }
 
-    // @Test // TODO: Enable after fixing Open-Liberty issue 169
+    @Test
     public void testTunnelThroughProxyToHTTPEndpointTimeout_ClientBuilder() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         p.put("param", "helloRochester");
@@ -210,7 +210,8 @@ public class JAXRS21ClientSSLProxyAuthTest extends JAXRS21AbstractTest {
         p.put("proxypassword", "USE_PASSWORD_FROM_SERVLET");
         p.put("timeout", "100");
 
-        this.runTestOnServer(target, "testProxyToHTTPTimeout_ClientBuilder", p, "[Proxy Error]:javax.ws.rs.ProcessingException: java.net.SocketTimeoutException: ");
+        this.runTestOnServer(target, "testProxyToHTTPTimeout_ClientBuilder", p, "[Proxy Error]:javax.ws.rs.ProcessingException: java.net.SocketTimeoutException: ",
+                                                                                "[Proxy Error]:jakarta.ws.rs.ProcessingException: RESTEASY004655");
 
         assertEquals("Proxy Password value printed in trace output", 0, server.findStringsInLogsAndTraceUsingMark("myPa\\$\\$word").size());
         server.setMarkToEndOfLog(server.getFileFromLibertyServerRoot("logs/trace.log"));
@@ -293,13 +294,15 @@ public class JAXRS21ClientSSLProxyAuthTest extends JAXRS21AbstractTest {
         p.put("proxyusername", "jaxrsUser");
         p.put("proxypassword", "USE_PASSWORD_FROM_SERVLET");
 
-        this.runTestOnServer(target, "testProxyToHTTP_Client", p, "[Proxy Error]:javax.ws.rs.ClientErrorException: HTTP 407 Proxy Authentication Required");
+        this.runTestOnServer(target, "testProxyToHTTP_Client", p, "[Proxy Error]:javax.ws.rs.ClientErrorException: HTTP 407 Proxy Authentication Required",
+                                                                  "[Proxy Error]:jakarta.ws.rs.ClientErrorException: HTTP 407 Proxy Authentication Required");
 
         assertEquals("Proxy Password value printed in trace output", 0, server.findStringsInLogsAndTraceUsingMark("myPa\\$\\$word").size());
         server.setMarkToEndOfLog(server.getFileFromLibertyServerRoot("logs/trace.log"));
     }
 
-    // @Test // TODO: Enable after fixing Open-Liberty issue 169
+    @Test
+    @SkipForRepeat("EE9_FEATURES") // RESTEasy only supports properties set on ClientBuilder
     public void testTunnelThroughProxyToHTTPEndpointTimeout_Client() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         p.put("param", "helloRochester");
@@ -310,7 +313,8 @@ public class JAXRS21ClientSSLProxyAuthTest extends JAXRS21AbstractTest {
         p.put("proxypassword", "USE_PASSWORD_FROM_SERVLET");
         p.put("timeout", "100");
 
-        this.runTestOnServer(target, "testProxyToHTTPTimeout_Client", p, "[Proxy Error]:javax.ws.rs.ProcessingException: java.net.SocketTimeoutException: ");
+        this.runTestOnServer(target, "testProxyToHTTPTimeout_Client", p, "[Proxy Error]:javax.ws.rs.ProcessingException: java.net.SocketTimeoutException: ",
+                                                                         "[Proxy Error]:jakarta.ws.rs.ProcessingException: java.net.SocketTimeoutException: ");
 
         assertEquals("Proxy Password value printed in trace output", 0, server.findStringsInLogsAndTraceUsingMark("myPa\\$\\$word").size());
         server.setMarkToEndOfLog(server.getFileFromLibertyServerRoot("logs/trace.log"));
@@ -393,12 +397,14 @@ public class JAXRS21ClientSSLProxyAuthTest extends JAXRS21AbstractTest {
         p.put("proxyusername", "jaxrsUser");
         p.put("proxypassword", "USE_PASSWORD_FROM_SERVLET");
 
-        this.runTestOnServer(target, "testProxyToHTTP_WebTarget", p, "[Proxy Error]:javax.ws.rs.ClientErrorException: HTTP 407 Proxy Authentication Required");
+        this.runTestOnServer(target, "testProxyToHTTP_WebTarget", p, "[Proxy Error]:javax.ws.rs.ClientErrorException: HTTP 407 Proxy Authentication Required",
+                                                                     "[Proxy Error]:jakarta.ws.rs.ClientErrorException: HTTP 407 Proxy Authentication Required");
 
         assertEquals("Proxy Password value printed in trace output", 0, server.findStringsInLogsAndTraceUsingMark("myPa\\$\\$word").size());
     }
 
-    // @Test // TODO: Enable after fixing Open-Liberty issue 169
+    @Test
+    @SkipForRepeat("EE9_FEATURES") // RESTEasy only supports properties set on ClientBuilder
     public void testTunnelThroughProxyToHTTPEndpointTimeout_WebTarget() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         p.put("param", "helloRochester");
@@ -409,7 +415,8 @@ public class JAXRS21ClientSSLProxyAuthTest extends JAXRS21AbstractTest {
         p.put("proxypassword", "USE_PASSWORD_FROM_SERVLET");
         p.put("timeout", "100");
 
-        this.runTestOnServer(target, "testProxyToHTTPTimeout_WebTarget", p, "[Proxy Error]:javax.ws.rs.ProcessingException: java.net.SocketTimeoutException: ");
+        this.runTestOnServer(target, "testProxyToHTTPTimeout_WebTarget", p, "[Proxy Error]:javax.ws.rs.ProcessingException: java.net.SocketTimeoutException: ",
+                                                                            "[Proxy Error]:jakarta.ws.rs.ProcessingException: java.net.SocketTimeoutException: ");
 
         assertEquals("Proxy Password value printed in trace output", 0, server.findStringsInLogsAndTraceUsingMark("myPa\\$\\$word").size());
         server.setMarkToEndOfLog(server.getFileFromLibertyServerRoot("logs/trace.log"));
@@ -492,24 +499,8 @@ public class JAXRS21ClientSSLProxyAuthTest extends JAXRS21AbstractTest {
         p.put("proxyusername", "jaxrsUser");
         p.put("proxypassword", "USE_PASSWORD_FROM_SERVLET");
 
-        this.runTestOnServer(target, "testProxyToHTTP_Builder", p, "[Proxy Error]:javax.ws.rs.ClientErrorException: HTTP 407 Proxy Authentication Required");
-
-        assertEquals("Proxy Password value printed in trace output", 0, server.findStringsInLogsAndTraceUsingMark("myPa\\$\\$word").size());
-        server.setMarkToEndOfLog(server.getFileFromLibertyServerRoot("logs/trace.log"));
-    }
-
-    // @Test // TODO: Enable after fixing Open-Liberty issue 169
-    public void testTunnelThroughProxyToHTTPEndpointTimeout_Builder() throws Exception {
-        Map<String, String> p = new HashMap<String, String>();
-        p.put("param", "helloRochester");
-        p.put("proxyhost", "localhost");
-        p.put("proxyport", "" + proxyPort);
-        p.put("proxytype", "HTTP");
-        p.put("proxyusername", "jaxrsUser");
-        p.put("proxypassword", "USE_PASSWORD_FROM_SERVLET");
-        p.put("timeout", "100");
-
-        this.runTestOnServer(target, "testProxyToHTTPTimeout_Builder", p, "[Proxy Error]:javax.ws.rs.ProcessingException: java.net.SocketTimeoutException: ");
+        this.runTestOnServer(target, "testProxyToHTTP_Builder", p, "[Proxy Error]:javax.ws.rs.ClientErrorException: HTTP 407 Proxy Authentication Required",
+                                                                   "[Proxy Error]:jakarta.ws.rs.ClientErrorException: HTTP 407 Proxy Authentication Required");
 
         assertEquals("Proxy Password value printed in trace output", 0, server.findStringsInLogsAndTraceUsingMark("myPa\\$\\$word").size());
         server.setMarkToEndOfLog(server.getFileFromLibertyServerRoot("logs/trace.log"));
