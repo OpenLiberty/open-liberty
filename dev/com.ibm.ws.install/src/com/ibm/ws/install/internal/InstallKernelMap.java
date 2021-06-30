@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1793,7 +1793,9 @@ public class InstallKernelMap implements Map {
         envMapRet.put("FEATURE_REPO_USER", System.getenv("FEATURE_REPO_USER"));
         envMapRet.put("FEATURE_REPO_PASSWORD", System.getenv("FEATURE_REPO_PASSWORD"));
         List<MavenRepository> repos = new ArrayList<>();
-        repos.add(new MavenRepository("Environment Variables Repo", System.getenv("FEATURE_REPO_URL"), System.getenv("FEATURE_REPO_USER"), System.getenv("FEATURE_REPO_PASSWORD")));
+        if (System.getenv("FEATURE_REPO_URL") != null) {
+            repos.add(new MavenRepository("Environment Variables Repo", System.getenv("FEATURE_REPO_URL"), System.getenv("FEATURE_REPO_USER"), System.getenv("FEATURE_REPO_PASSWORD")));
+        }
         envMapRet.put("FEATURE_UTILITY_MAVEN_REPOSITORIES", repos);
 
         envMapRet.put("FEATURE_LOCAL_REPO", System.getenv("FEATURE_LOCAL_REPO"));
