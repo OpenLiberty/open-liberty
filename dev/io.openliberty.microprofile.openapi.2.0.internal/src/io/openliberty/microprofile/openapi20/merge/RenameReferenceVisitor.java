@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -135,11 +135,11 @@ public class RenameReferenceVisitor implements OpenAPIModelVisitor {
 
     }
 
-    private String decodePathReference(String pathReference) {
+    private static String decodePathReference(String pathReference) {
         return pathReference.replace("~1", "/").replace("~0", "~");
     }
 
-    private String encodePathReference(String path) {
+    private static String encodePathReference(String path) {
         return path.replace("~", "~0").replace("/", "~1");
     }
 

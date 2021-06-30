@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package io.openliberty.microprofile.openapi20.merge;
 
 import java.util.Iterator;
@@ -7,8 +17,24 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 
+/**
+ * Utilities for recursively comparing OpenAPI model objects
+ */
 public class ModelEquality {
 
+    /**
+     * Recursively compare two objects for equality.
+     * <ul>
+     * <li>If {@code a} and {@code b} are model objects, recursively compare each of their properties</li>
+     * <li>If {@code a} and {@code b} are lists, recursively compare each item</li>
+     * <li>If {@code a} and {@code b} are maps, ensure the key set is the same and the recursively compare the values</li>
+     * <li>Otherwise, use {@link Objects#equals(Object, Object)} to compare {@code a} and {@code b}
+     * </ul>
+     * 
+     * @param a the first item to compare
+     * @param b the second item to compare
+     * @return {@code true} if {@code a} and {@code b} are equal, otherwise {@code false}
+     */
     public static boolean equals(Object a, Object b) {
         if (a == b) {
             return true;

@@ -29,6 +29,7 @@ public class Constants {
     // OpenAPI Document Default Constants
     public static final String DEFAULT_OPENAPI_DOC_TITLE    = "Generated API";
     public static final String DEFAULT_OPENAPI_DOC_VERSION  = "1.0";
+    public static final String MERGED_OPENAPI_DOC_TITLE     = "Merged documentation";
     
     // File Suffix Constants
     public static final String FILE_SUFFIX_CLASS            = ".class";

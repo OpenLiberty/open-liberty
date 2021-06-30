@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package io.openliberty.microprofile.openapi20.merge;
 
 import static java.util.stream.Collectors.toList;
@@ -32,9 +42,11 @@ import com.ibm.websphere.ras.annotation.Trivial;
 
 import io.openliberty.microprofile.openapi20.MergedOpenAPIProvider;
 import io.openliberty.microprofile.openapi20.OpenAPIProvider;
+import io.openliberty.microprofile.openapi20.utils.Constants;
 import io.openliberty.microprofile.openapi20.utils.MessageConstants;
 import io.openliberty.microprofile.openapi20.utils.OpenAPIModelVisitor;
 import io.openliberty.microprofile.openapi20.utils.OpenAPIModelWalker;
+import io.smallrye.openapi.api.constants.OpenApiConstants;
 import io.smallrye.openapi.api.util.MergeUtil;
 import io.smallrye.openapi.runtime.io.Format;
 import io.smallrye.openapi.runtime.io.OpenApiSerializer;
@@ -59,8 +71,8 @@ public class MergeProcessor {
 
     static {
         MERGED_INFO = OASFactory.createInfo();
-        MERGED_INFO.setTitle("Merged documentation");
-        MERGED_INFO.setVersion("1.0");
+        MERGED_INFO.setTitle(Constants.MERGED_OPENAPI_DOC_TITLE);
+        MERGED_INFO.setVersion(Constants.DEFAULT_OPENAPI_DOC_VERSION);
     }
 
     /**
@@ -73,14 +85,10 @@ public class MergeProcessor {
      */
     public static OpenAPIProvider mergeDocuments(List<OpenAPIProvider> documents) {
 
-        MergeProcessor mergeProcessor = new MergeProcessor();
-        
+        MergeProcessor mergeProcessor = new MergeProcessor(documents);
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(mergeProcessor, tc, "Beginning merge of OpenAPI documents for " + documents);
-        }
-
-        for (OpenAPIProvider document : documents) {
-            mergeProcessor.add(document);
         }
 
         mergeProcessor.process();
@@ -95,7 +103,6 @@ public class MergeProcessor {
         }
 
         return mergedDoc;
-
     }
 
     /**
@@ -125,8 +132,13 @@ public class MergeProcessor {
 
     private List<String> mergeProblems = new ArrayList<>();
 
-    private void add(OpenAPIProvider document) {
-        providers.add(document);
+    /**
+     * Create a new MergeProcessor which will merge the given providers
+     * 
+     * @param providers the providers to merge
+     */
+    private MergeProcessor(List<OpenAPIProvider> providers) {
+        this.providers = Collections.unmodifiableList(providers);
     }
 
     private void process() {
@@ -235,7 +247,7 @@ public class MergeProcessor {
             merged = MergeUtil.merge(merged, model);
         }
 
-        merged.setOpenapi("3.0.3");
+        merged.setOpenapi(OpenApiConstants.OPEN_API_VERSION);
 
         return new MergedOpenAPIProvider(merged, mergeProblems);
     }
