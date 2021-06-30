@@ -80,8 +80,7 @@ public class RenameReferenceVisitor implements OpenAPIModelVisitor {
 
     @Override
     public Example visitExample(Context context, String key, Example example) {
-        updateReference(example, NameType.EXAMPLES);
-        return example;
+        return visitExample(context, example);
     }
 
     @Override
@@ -151,8 +150,7 @@ public class RenameReferenceVisitor implements OpenAPIModelVisitor {
 
     @Override
     public Parameter visitParameter(Context context, String key, Parameter p) {
-        updateReference(p, NameType.PARAMETERS);
-        return p;
+        return visitParameter(context, p);
     }
 
     @Override
@@ -163,8 +161,7 @@ public class RenameReferenceVisitor implements OpenAPIModelVisitor {
 
     @Override
     public RequestBody visitRequestBody(Context context, String key, RequestBody rb) {
-        updateReference(rb, NameType.REQUEST_BODIES);
-        return rb;
+        return visitRequestBody(context, rb);
     }
 
     @Override
@@ -181,8 +178,7 @@ public class RenameReferenceVisitor implements OpenAPIModelVisitor {
 
     @Override
     public Schema visitSchema(Context context, String key, Schema schema) {
-        updateReference(schema, NameType.SCHEMAS);
-        return schema;
+        return visitSchema(context, schema);
     }
 
     @Override
