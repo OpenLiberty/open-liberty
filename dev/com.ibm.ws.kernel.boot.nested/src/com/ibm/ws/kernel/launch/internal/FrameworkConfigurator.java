@@ -41,8 +41,8 @@ public class FrameworkConfigurator {
      * allow sub-classes to further massage framework initialization properties.
      *
      * @param config
-     *            BootstrapConfig object containing the active set of properties
-     *            that will be used to initialize the framework.
+     *                   BootstrapConfig object containing the active set of properties
+     *                   that will be used to initialize the framework.
      */
     public static void configure(BootstrapConfig config) {
         extraBootDelegationPackages(config);
@@ -196,7 +196,8 @@ public class FrameworkConfigurator {
         final String defaultDelegation = "com.ibm.ws.kernel.boot.jmx.internal," +
                                          "sun.*,com.sun.*,com.ibm.lang.management,com.ibm.ws.boot.delegated.*," +
                                          "org.apache.xml.*,org.apache.xerces.*,com.ibm.xylem.*,com.ibm.xml.*," +
-                                         "com.ibm.xtq.*,com.ibm.net.ssl.*,com.ibm.crypto.*,com.ibm.security.*,jdk.*";
+                                         "com.ibm.xtq.*,com.ibm.net.ssl.*,com.ibm.crypto.*,com.ibm.security.*,jdk.*," +
+                                         "org.eclipse.openj9.criu";
 
         String osgiDelegationPackages = config.get(org.osgi.framework.Constants.FRAMEWORK_BOOTDELEGATION);
         if (osgiDelegationPackages == null)
@@ -221,7 +222,7 @@ public class FrameworkConfigurator {
      *
      * @return non-null instance of the framework factory.
      * @throws LaunchException
-     *             if Factory can not be found or instantiated.
+     *                             if Factory can not be found or instantiated.
      * @see {@link KernelUtils#getServiceClass(BufferedReader)}
      */
     public static FrameworkFactory getFrameworkFactory(ClassLoader loader) {
