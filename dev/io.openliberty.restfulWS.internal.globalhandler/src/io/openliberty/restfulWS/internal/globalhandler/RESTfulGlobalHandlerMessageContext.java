@@ -21,9 +21,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.websphere.ras.Traceable;
+import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.wsspi.webservices.handler.GlobalHandlerMessageContext;
 import com.ibm.wsspi.webservices.handler.HandlerConstants;
 
+@Trivial
 public class RESTfulGlobalHandlerMessageContext implements GlobalHandlerMessageContext, Traceable {
 
     private final boolean isServerSide;
@@ -74,6 +77,7 @@ public class RESTfulGlobalHandlerMessageContext implements GlobalHandlerMessageC
     }
 
     @Override
+    @Sensitive
     public Object getProperty(String name) {
         return propertyGetter.apply(name);
     }
@@ -136,7 +140,11 @@ public class RESTfulGlobalHandlerMessageContext implements GlobalHandlerMessageC
             Iterator<String> iter = getPropertyNames();
             while (iter.hasNext()) {
                 String name = iter.next();
-                sb.append(LS).append(name).append("=").append(getProperty(name));
+                if (name.toLowerCase().contains("password")) {
+                    sb.append(LS).append(name).append("=").append("*****");
+                } else {
+                    sb.append(LS).append(name).append("=").append(getProperty(name));
+                }
             }
         }
         sb.append("]");

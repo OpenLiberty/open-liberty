@@ -33,7 +33,9 @@ tested.features: \
   appsecurity-3.0,\
   restfulWS-3.0, \
   xmlBinding-3.0, \
-  jsonb-2.0
+  jsonb-2.0, \
+  appsecurity-4.0, \
+  expressionlanguage-4.0
 
 -buildpath: \
 	com.ibm.websphere.javaee.annotation.1.2,\
