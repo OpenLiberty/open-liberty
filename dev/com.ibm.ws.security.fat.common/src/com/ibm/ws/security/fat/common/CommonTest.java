@@ -28,7 +28,6 @@ public class CommonTest {
 
     private final static Class<?> thisClass = CommonTest.class;
     public static String _testName = "";
-    protected static int timeoutCounter = 0;
     protected static int allowableTimeoutCount = 0;
     public static CommonMessageTools msgUtils = new CommonMessageTools();
     protected WebClientTracker webClientTracker = new WebClientTracker();
@@ -108,6 +107,7 @@ public class CommonTest {
     public static void timeoutChecker() throws Exception {
         String method = "timeoutChecker";
 
+        int timeoutCounter = 0 ;
         boolean timeoutFound = false;
         String outputFile = "./results/output.txt";
         File f = new File(outputFile);
@@ -130,10 +130,6 @@ public class CommonTest {
                                 timeoutFound = true;
                             }
                         }
-                    }
-                    if (theLine.contains("TestClass END")) {
-                        Log.info(thisClass, method, "Found an end of test class marker in log");
-                        timeoutFound = false;
                     }
                 }
             } catch (IOException e) {

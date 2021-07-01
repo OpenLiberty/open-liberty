@@ -114,7 +114,7 @@ public class SAMLCommonTest extends CommonTest {
     protected static List<CommonLocalLDAPServerSuite> ldapRefList = new ArrayList<CommonLocalLDAPServerSuite>();
     protected static boolean cipherMayExceed128 = false;
     public static boolean usingExternalLDAPServer = false;
-	//issue 17687
+    //issue 17687
     public static String callbackHandlerWss4j = SAMLConstants.EXAMPLE_CALLBACK_WSS4J;
     public static String featureWss4j = SAMLConstants.EXAMPLE_CALLBACK_FEATURE_WSS4J;
 
@@ -205,7 +205,7 @@ public class SAMLCommonTest extends CommonTest {
 
     }
 
-    //issue 17687 
+    //issue 17687
     public static SAMLTestServer commonSetUp(String requestedServer,
                                              String serverXML, String testType, String serverType,
                                              List<String> addtlApps, List<String> addtlMessages, Boolean checkForSecuityStart, String callbackHandler,
@@ -221,14 +221,13 @@ public class SAMLCommonTest extends CommonTest {
         return commonSetUp(requestedServer, serverXML, testType, serverType, addtlApps, addtlMessages, checkForSecuityStart, cbHandlers);
 
     } //End issue 17687
-	
-    
+
     //issue 17687
     public static SAMLTestServer commonSetUp(String requestedServer,
                                              String serverXML, String testType, String serverType,
                                              List<String> addtlApps, List<String> addtlMessages, Boolean checkForSecuityStart, Map<String, String> cbHandlers) throws Exception {
-    //End issue 17687
-		
+        //End issue 17687
+
         String thisMethod = "commonSetUp";
         msgUtils.printMethodName(thisMethod);
 
@@ -269,7 +268,7 @@ public class SAMLCommonTest extends CommonTest {
             } else {
                 aTestServer = new SAMLTestServer(requestedServer, usableServerXml, serverType, cbHandlers);
             } //End issue 17687
-			
+
             aTestServer.removeServerConfigFiles();
             aTestServer.setServerNameAndHostIp();
 
@@ -952,6 +951,7 @@ public class SAMLCommonTest extends CommonTest {
         try {
             for (SAMLTestServer server : serverRefList) {
                 addToAllowableTimeoutCount(server.getRetryTimeoutCount());
+                addToAllowableTimeoutCount(server.getSslWaitTimeoutCount());
             }
             timeoutChecker();
         } catch (Exception e) {
