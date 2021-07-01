@@ -133,7 +133,7 @@ public class ApplicationProcessor {
                             
                             if (!selectionConfig.isIncluded(webModuleInfo)) {
                                 if (LoggingUtils.isEventEnabled(tc)) {
-                                    Tr.event(this, tc, "ApplicationProcessor: Module not included by config. module=" + webModuleInfo.getName());
+                                    Tr.event(this, tc, "ApplicationProcessor: Module not included by config. app=" + appInfo.getName() + " module=" + webModuleInfo.getName() + ", config = " + selectionConfig);
                                 }
                                 
                                 continue;

@@ -14,6 +14,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import com.ibm.websphere.ras.annotation.Trivial;
+
 import java.util.Objects;
 import java.util.Optional;
 
@@ -36,6 +39,11 @@ public class ModelEquality {
      * @return {@code true} if {@code a} and {@code b} are equal, otherwise {@code false}
      */
     public static boolean equals(Object a, Object b) {
+        return equalsImpl(a, b);
+    }
+    
+    @Trivial
+    private static boolean equalsImpl(Object a, Object b) {
         if (a == b) {
             return true;
         }
@@ -68,13 +76,14 @@ public class ModelEquality {
         }
     }
 
+    @Trivial
     private static boolean equalsMap(Map<?, ?> a, Map<?, ?> b) {
         if (!Objects.equals(a.keySet(), b.keySet())) {
             return false;
         }
 
         for (Entry<?, ?> entry : a.entrySet()) {
-            if (!equals(entry.getValue(), b.get(entry.getKey()))) {
+            if (!equalsImpl(entry.getValue(), b.get(entry.getKey()))) {
                 return false;
             }
         }
@@ -82,6 +91,7 @@ public class ModelEquality {
         return true;
     }
 
+    @Trivial
     private static boolean equalsList(List<?> a, List<?> b) {
         if (a.size() != b.size()) {
             return false;
@@ -90,7 +100,7 @@ public class ModelEquality {
         Iterator<?> ai = a.iterator();
         Iterator<?> bi = b.iterator();
         while (ai.hasNext()) {
-            if (!equals(ai.next(), bi.next())) {
+            if (!equalsImpl(ai.next(), bi.next())) {
                 return false;
             }
         }
@@ -98,13 +108,14 @@ public class ModelEquality {
         return true;
     }
 
+    @Trivial
     private static boolean equalsModelObject(ModelType modelType, Object a, Object b) {
         if (!modelType.isInstance(b)) {
             return false;
         }
 
         for (ModelType.ModelParameter p : modelType.getParameters()) {
-            if (!equals(p.get(a), p.get(b))) {
+            if (!equalsImpl(p.get(a), p.get(b))) {
                 return false;
             }
         }

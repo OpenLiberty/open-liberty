@@ -15,6 +15,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import com.ibm.websphere.ras.annotation.Trivial;
+
 import java.util.Optional;
 
 /**
@@ -31,6 +34,11 @@ public class ModelCopy {
      * @return the copy
      */
     public static Object copy(Object object) {
+        return doCopy(object);
+    }
+    
+    @Trivial
+    private static Object doCopy(Object object) {
         if (object == null) {
             return null;
         }
@@ -46,26 +54,29 @@ public class ModelCopy {
         }
     }
 
+    @Trivial
     private static Object copyList(List<?> copyFrom) {
         List<Object> copyTo = new ArrayList<>();
         for (Object o : copyFrom) {
-            copyTo.add(copy(o));
+            copyTo.add(doCopy(o));
         }
         return copyTo;
     }
 
+    @Trivial
     private static Map<Object, Object> copyMap(Map<?, ?> copyFrom) {
         Map<Object, Object> copyTo = new HashMap<>();
         for (Entry<?, ?> entry : copyFrom.entrySet()) {
-            copyTo.put(entry.getKey(), copy(entry.getValue()));
+            copyTo.put(entry.getKey(), doCopy(entry.getValue()));
         }
         return copyTo;
     }
 
+    @Trivial
     private static Object copyModelObject(ModelType mo, Object object) {
         Object result = mo.createInstance();
         for (ModelType.ModelParameter desc : mo.getParameters()) {
-            desc.set(result, copy(desc.get(object)));
+            desc.set(result, doCopy(desc.get(object)));
         }
         return result;
     }

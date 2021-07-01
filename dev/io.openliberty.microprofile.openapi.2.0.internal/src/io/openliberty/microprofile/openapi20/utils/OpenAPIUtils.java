@@ -363,6 +363,7 @@ public class OpenAPIUtils {
      * @param in a map, or {@code null}
      * @return an empty map if {@code in} is {@code null}, otherwise {@code in}
      */
+    @Trivial
     public static <K, V> Map<K, V> notNull(Map<K, V> in) {
         if (in == null) {
             return Collections.emptyMap();
@@ -377,6 +378,7 @@ public class OpenAPIUtils {
      * @param in a list, or {@code null}
      * @return an empty list if {@code in} is {@code null}, otherwise {@code in}
      */
+    @Trivial
     public static <V> List<V> notNull(List<V> in) {
         if (in == null) {
             return Collections.emptyList();

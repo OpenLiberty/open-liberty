@@ -54,9 +54,12 @@ import org.eclipse.microprofile.openapi.models.servers.Server;
 import org.eclipse.microprofile.openapi.models.servers.ServerVariable;
 import org.eclipse.microprofile.openapi.models.tags.Tag;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 /**
  * Tools for reflectively navigating OpenAPI 2.0 model objects
  */
+@Trivial
 public enum ModelType {
     OPENAPI(OpenAPI.class),
     INFO(Info.class),
