@@ -114,9 +114,6 @@ public class SAMLCommonTest extends CommonTest {
     protected static List<CommonLocalLDAPServerSuite> ldapRefList = new ArrayList<CommonLocalLDAPServerSuite>();
     protected static boolean cipherMayExceed128 = false;
     public static boolean usingExternalLDAPServer = false;
-	//issue 17687
-    public static String callbackHandlerWss4j = SAMLConstants.EXAMPLE_CALLBACK_WSS4J;
-    public static String featureWss4j = SAMLConstants.EXAMPLE_CALLBACK_FEATURE_WSS4J;
 
     @Rule
     public final TestName testName = new TestName();
@@ -215,7 +212,6 @@ public class SAMLCommonTest extends CommonTest {
         if (callbackHandler != null && feature != null) {
             cbHandlers = new HashMap<String, String>();
             cbHandlers.put(callbackHandler, feature);
-            cbHandlers.put(callbackHandlerWss4j, featureWss4j);
         }
 
         return commonSetUp(requestedServer, serverXML, testType, serverType, addtlApps, addtlMessages, checkForSecuityStart, cbHandlers);
