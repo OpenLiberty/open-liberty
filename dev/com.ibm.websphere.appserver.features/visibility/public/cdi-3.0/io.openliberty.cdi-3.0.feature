@@ -25,7 +25,6 @@ IBM-API-Package: jakarta.decorator;  type="spec", \
  org.jboss.weld.bean.proxy; type="internal", \
  org.jboss.weld.bean.proxy.util; type="internal", \
  org.jboss.weld.module.ejb; type="internal", \
- org.jboss.weld.proxy; type="internal", \
  org.jboss.weld.security; type="internal", \
  org.jboss.weld.serialization.spi; type="internal", \
  org.jboss.weld.context;type="third-party", \

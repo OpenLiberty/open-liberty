@@ -13,8 +13,12 @@ Specification-Version: 2.0
 DynamicImport-Package: *
 Export-Package: !org.jboss.weld.environment.se.*, \
  org.jboss.*;version="3.1.7.SP1", \
- org.jboss.weldx.transaction;version="1.0.16"
-Private-Package: org.jboss.weld.environment.se.*
+ org.jboss.weldx.transaction;version="1.0.16", \
+ !org.jboss.weld.bean.proxy.util\
+ !org.jboss.weld.proxy
+Private-Package: org.jboss.weld.environment.se.*, \
+ org.jboss.weld.bean.proxy.util\
+ org.jboss.weld.proxy
 Import-Package: javax.annotation;version="1.1",javax.el;version="1.0";re\
  solution:=optional,javax.faces.application;resolution:=optional,javax.f\
  aces.context;resolution:=optional,javax.interceptor;version="1.0",javax\
@@ -59,7 +63,6 @@ Service-Component: \
         |org.jboss.weld.annotated.slim.backed\
         |org.jboss.weld.bean\
         |org.jboss.weld.bean.builtin\
-        |org.jboss.weld.bean.proxy.util\
         |org.jboss.weld.contexts.beanstore\
         |org.jboss.weld.contexts.conversation\
         |org.jboss.weld.contexts\
@@ -69,7 +72,6 @@ Service-Component: \
         |org.jboss.weld.literal\
         |org.jboss.weld.manager\
         |org.jboss.weld.module.ejb\
-        |org.jboss.weld.proxy\
         |org.jboss.weld.serialization\
         |org.jboss.weld.util.bean\
         |org.jboss.weld.util.collections"
