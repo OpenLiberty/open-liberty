@@ -154,9 +154,15 @@ class LogHandle {
     FailureScope _failureScope;
 
     /**
-     * A flag to indicate whether the recovery log belongs to the home server.
+     * A flag to indicate whether we are operating in a peer recovery environment.
      */
-    private final boolean _isHomeServer;
+    private final boolean _isPeerRecoverySupported;
+
+    /**
+     * A flag that allows the support of the "original" peer recovery behaviour, where recovery logs
+     * would not be deleted.
+     */
+    private boolean _retainLogsInPeerRecoveryEnv;
 
     //------------------------------------------------------------------------------
     // Method: LogHandle.LogHandle
@@ -182,8 +188,16 @@ class LogHandle {
      *
      * @param maxLogFileSize The maximum allowable log file size (in kbytes)
      */
-    LogHandle(MultiScopeRecoveryLog recoveryLog, String serviceName, int serviceVersion, String serverName, String logName, String logDirectory, int logFileSize,
-              int maxLogFileSize, FailureScope fs) {
+    LogHandle(MultiScopeRecoveryLog recoveryLog,
+              String serviceName,
+              int serviceVersion,
+              String serverName,
+              String logName,
+              String logDirectory,
+              int logFileSize,
+              int maxLogFileSize,
+              FailureScope fs,
+              boolean isPeerRecoverySupported) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "LogHandle", new java.lang.Object[] { recoveryLog,
                                                                serviceName,
@@ -193,7 +207,8 @@ class LogHandle {
                                                                logDirectory,
                                                                logFileSize,
                                                                maxLogFileSize,
-                                                               fs });
+                                                               fs,
+                                                               isPeerRecoverySupported });
 
         _recoveryLog = recoveryLog;
         _serviceName = serviceName;
@@ -204,7 +219,7 @@ class LogHandle {
         _maxLogFileSize = maxLogFileSize;
         _logFileSize = logFileSize;
         _failureScope = fs;
-        _isHomeServer = Configuration.localFailureScope().equals(_failureScope);
+        _isPeerRecoverySupported = isPeerRecoverySupported;
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "LogHandle", this);
@@ -749,9 +764,9 @@ class LogHandle {
             throw new InternalLogException(exc);
         }
 
-        if (!_isHomeServer) {
+        if (_isPeerRecoverySupported && !_retainLogsInPeerRecoveryEnv) {
             if (tc.isDebugEnabled())
-                Tr.debug(tc, "Working with a peer server retain LogFileHandles on close");
+                Tr.debug(tc, "Working in a peer recovery environment retain logFileHandles on close");
         } else {
             _file1 = null;
             _file2 = null;
@@ -1253,7 +1268,7 @@ class LogHandle {
 
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Working with directory " + directoryToBeDeleted.getAbsolutePath());
-                boolean deleted = RLSUtils.deleteDirectoryTree(directoryToBeDeleted);
+                RLSUtils.archiveAndDeleteDirectoryTree(directoryToBeDeleted);
             } else {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "The directory does not exist");
@@ -1264,5 +1279,15 @@ class LogHandle {
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "delete");
+    }
+
+    public void retainLogsInPeerRecoveryEnv(boolean retainLogs) {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "retainLogsInPeerRecoveryEnv", new Object[] { retainLogs, this });
+
+        _retainLogsInPeerRecoveryEnv = retainLogs;
+
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "retainLogsInPeerRecoveryEnv", this);
     }
 }

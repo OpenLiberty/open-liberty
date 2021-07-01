@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2020 IBM Corporation and others.
+ * Copyright (c) 1997, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -170,19 +170,19 @@ public class RecoveryLogManagerImpl implements RecoveryLogManager {
      * object provided by the client service.
      * </p>
      *
-     * @param failureScope  The required FailureScope
+     * @param failureScope The required FailureScope
      * @param logProperties Contains the identity and physical properties of the
-     *                          recovery log.
+     *            recovery log.
      *
      * @return The RecoveryLog instance.
      *
      * @exception InvalidLogPropertiesException The RLS does not recognize or cannot
-     *                                              support the supplied LogProperties
+     *                support the supplied LogProperties
      */
     @Override
-    public synchronized RecoveryLog getRecoveryLog(FailureScope failureScope, LogProperties logProperties) throws InvalidLogPropertiesException {
+    public synchronized RecoveryLog getRecoveryLog(FailureScope failureScope, LogProperties logProperties, boolean isPeerRecoverySupported) throws InvalidLogPropertiesException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "getRecoveryLog", new Object[] { failureScope, logProperties, this });
+            Tr.entry(tc, "getRecoveryLog", new Object[] { failureScope, logProperties, isPeerRecoverySupported, this });
         /* 5@PK01151D */
         // If we're on Z, we can have a ZLogProperties (System Logger) based
         // recovery log.  Otherwise, FileLogProperties and CustomLogProperties are the only supported types.
@@ -263,7 +263,7 @@ public class RecoveryLogManagerImpl implements RecoveryLogManager {
                 if (multiScopeRecoveryLog == null) {
                     // Either a single scope log is required or there was no
                     // existing log for the given identifier. Create a new log.
-                    multiScopeRecoveryLog = new MultiScopeRecoveryLog(fileLogProperties, _recoveryAgent, failureScope);
+                    multiScopeRecoveryLog = new MultiScopeRecoveryLog(fileLogProperties, _recoveryAgent, failureScope, isPeerRecoverySupported);
 
                     if (logType == FileLogProperties.LOG_TYPE_MULTIPLE_SCOPE) {
                         // If this is a multiple scope log then we store it in the map so
@@ -335,7 +335,10 @@ public class RecoveryLogManagerImpl implements RecoveryLogManager {
                         throw new InvalidLogPropertiesException();
                     }
 
-                    recoveryLog = factory.createRecoveryLog(customLogProperties, _recoveryAgent, Configuration.getRecoveryLogComponent(), failureScope);
+                    recoveryLog = factory.createRecoveryLog(customLogProperties,
+                                                            _recoveryAgent,
+                                                            Configuration.getRecoveryLogComponent(),
+                                                            failureScope);
                     if (recoveryLog == null) {
                         if (tc.isEventEnabled())
                             Tr.event(tc, "Custom recovery log factory returned NULL recovery log", customLogId);

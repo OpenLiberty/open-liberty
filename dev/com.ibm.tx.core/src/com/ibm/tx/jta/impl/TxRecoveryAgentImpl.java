@@ -90,8 +90,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
      */
     volatile private boolean _serverStopping;
 
-    protected TxRecoveryAgentImpl() {
-	}
+    protected TxRecoveryAgentImpl() {}
 
     private static ThreadLocal<Boolean> _replayThread = new ThreadLocal<Boolean>();
 
@@ -135,8 +134,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
     }
 
     @Override
-    public void agentReportedFailure(int clientId, FailureScope failureScope) {
-    }
+    public void agentReportedFailure(int clientId, FailureScope failureScope) {}
 
     @Override
     public int clientIdentifier() {
@@ -293,7 +291,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                 //
                 // Create the Transaction log
                 //
-                _transactionLog = rlm.getRecoveryLog(fs, transactionLogProps);
+                _transactionLog = rlm.getRecoveryLog(fs, transactionLogProps, _isPeerRecoverySupported);
 
                 // Configure the SQL HADB Retry parameters
                 if (_transactionLog != null && _transactionLog instanceof HeartbeatLog) {
@@ -306,7 +304,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                 //
                 // Create the Partner (XAResources) log
                 //
-                _partnerLog = rlm.getRecoveryLog(fs, partnerLogProps);
+                _partnerLog = rlm.getRecoveryLog(fs, partnerLogProps, _isPeerRecoverySupported);
 
                 // Configure the SQL HADB Retry parameters
                 if (_partnerLog != null && _partnerLog instanceof HeartbeatLog) {
@@ -377,9 +375,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                     }
                 }
 
-                _recoveryManager.setLeaseLog(_leaseLog);
-                _recoveryManager.setRecoveryGroup(_recoveryGroup);
-                _recoveryManager.setLocalRecoveryIdentity(localRecoveryIdentity);
+                _recoveryManager.configurePeerRecovery(_leaseLog, _recoveryGroup, localRecoveryIdentity);
             }
 
             final Thread t = AccessController.doPrivileged(new PrivilegedAction<Thread>() {
@@ -929,7 +925,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                         // Get the Partner (XAResources) log
                         //
                         final RecoveryLogManager rlm = Configuration.getLogManager();
-                        partnerLog = rlm.getRecoveryLog(fs, partnerLogProps);
+                        partnerLog = rlm.getRecoveryLog(fs, partnerLogProps, _isPeerRecoverySupported);
 
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "Custom PartnerLog is set - ", partnerLog);
