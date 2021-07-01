@@ -851,10 +851,15 @@ javaCmd()
 
   if [ $ACTION = "run" ] || [ $ACTION = "debug" ] || [ $ACTION = "start" ]; then
      if [ -n "${CHECKPOINT}" ]; then                                               
-       if [ -d "${SERVER_OUTPUT_DIR}/workarea/snapshot" ]; then 
-         echo remove existing snapshot
-         rm -r ${SERVER_OUTPUT_DIR}/workarea/snapshot
-         #TODO check for error removing existing snapshot
+       if [ -d "${SERVER_OUTPUT_DIR}/workarea/checkpoint" ]; then 
+         echo remove existing checkpoint image
+         rm -r ${SERVER_OUTPUT_DIR}/workarea/checkpoint
+         rc=$? 
+         if [ $rc != 0 ]; then        
+            #TODO issue localized error
+            echo error deleting checkpoint
+            return $rc
+         fi   
        fi
      fi
   fi
@@ -862,6 +867,12 @@ javaCmd()
   if [ -n "${JAVA_CMD_LOG}" ]; then
     rmIfExist "${JAVA_CMD_LOG}"
     "${JAVA_CMD}" "$@" >> "${JAVA_CMD_LOG}" 2>&1 &
+    rc=$?
+    if [ -n "${CHECKPOINT}" ]; then
+      mkdirs ${SERVER_OUTPUT_DIR}/workarea/checkpoint
+      echo "" > ${SERVER_OUTPUT_DIR}/workarea/checkpoint/startCommand
+    fi
+    return $rc   
   elif [ $ACTION = "run" ] || [ $ACTION = "debug" ] ; then
     exec "${JAVA_CMD}" "$@"
   else
@@ -1073,20 +1084,21 @@ serverCmd()
     if [ -n "${SERVER_CMD_BACKGROUND_LOG}" ]; then
       if [ -n "${CHECKPOINT}" ]; then
         #don't wait on process status
-        # issue javacmd to verify snapshot and do any post snapshot
+        # issue javacmd to verify checkpoint and do any post checkpoint
         # fixup here    
         echo Take checkpoint ${CHECKPOINT}.
-        # invoke platform to verify snapshot taken
+        # invoke platform to verify checkpoint taken
         # or return an error and issue error message,     
       else  
         # Verify/wait for the process to start unless a checkpoint is requested
         javaCmd '' "${SERVER_NAME}" --pid="${PID}" --status:start "$@"
         rc=$?
         # write the pid file if return is OK or UNKNOWN
-        if [ $rc = 0 -o $rc = $SERVER_UNKNOWN_STATUS ]; then
+      fi
+      if [ $rc = 0 -o $rc = $SERVER_UNKNOWN_STATUS ]; then
           safeEcho "${PID}" > "${X_PID_FILE}"
-        fi        
-      fi    
+      fi        
+    
     fi 
   fi
   return $rc
@@ -1358,28 +1370,30 @@ case "$ACTION" in
     fi    
   ;;
   
-  # Restore a criu snapshot from a previous checkpoint
+  # Start from a checkpoint image
   restore)   
     serverEnv
-    # restore artifacts and environment prior to snapshot here
+    # restore artifacts and environment prior to checkpoint here
     
     # no good way to check for criu support since fast startup is imperitive
     #   just let criu invocation fail with a hopefully informative error message.
-    if [ ! -d "${SERVER_OUTPUT_DIR}/workarea/snapshot" ]; then
-      echo Snapshot image not found at ${SERVER_OUTPUT_DIR}/workarea/snapshot.
+    if [ ! -d "${SERVER_OUTPUT_DIR}/workarea/checkpoint/image" ]; then
+      echo checkpoint image not found at ${SERVER_OUTPUT_DIR}/workarea/checkpoint/image.
       exit 2
     fi  
     # invoke criu command
-    echo Restore server checkpoint.
-    echo `date +%s%3N` > ${SERVER_OUTPUT_DIR}/workarea/restoreTime
-    criu restore --file-locks --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/snapshot -j -v -o ${SERVER_OUTPUT_DIR}/logs/restore.log &
+    echo Start server from image.
+    echo `date +%s%3N` > ${SERVER_OUTPUT_DIR}/workarea/checkpoint/restoreTime
+    if [ -f ${SERVER_OUTPUT_DIR}/workarea/checkpoint/startCommand ]; then
+      criu restore --file-locks --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/checkpoint/image -j -v -o ${SERVER_OUTPUT_DIR}/logs/restore.log &
+    else 
+      criu restore --file-locks --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/checkpoint/image -j -v -o ${SERVER_OUTPUT_DIR}/logs/restore.log
+    fi
     rc=$?
-    PID=$!
-    if [ $rc = 0 ]; then
-      safeEcho "${PID}" > "${X_PID_FILE}"
+    if [ $rc != 0 ]; then
+       echo The criu restore command exited with error code $rc        
+       #TODO check if server really not running and if not launch it normally.  
     fi        
-
-    # restore backed up state from end of snapshot
   ;; 
   
   version)

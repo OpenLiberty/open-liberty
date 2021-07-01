@@ -92,7 +92,7 @@ public class CheckpointImpl implements Checkpoint {
     @Descriptor("Take a snapshot")
     public void snapshot(Phase phase) throws SnapshotFailed {
         doSnapshot(phase,
-                   locAdmin.resolveResource(WsLocationConstants.SYMBOL_SERVER_WORKAREA_DIR + "snapshot/").asFile());
+                   locAdmin.resolveResource(WsLocationConstants.SYMBOL_SERVER_WORKAREA_DIR + "checkpoint/image/").asFile());
     }
 
     private void doSnapshot(Phase phase, File directory) throws SnapshotFailed {
