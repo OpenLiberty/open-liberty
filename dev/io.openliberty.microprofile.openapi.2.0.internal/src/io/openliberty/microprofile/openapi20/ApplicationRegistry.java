@@ -23,10 +23,13 @@ import org.eclipse.microprofile.config.ConfigProvider;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
+import com.ibm.ws.kernel.feature.ServerStartedPhase2;
 
 import io.openliberty.microprofile.openapi20.merge.MergeProcessor;
 import io.openliberty.microprofile.openapi20.utils.LoggingUtils;
@@ -151,6 +154,15 @@ public class ApplicationRegistry {
                 Tr.event(tc, "Application Processor: Removing application ended: appInfo=" + removedAppInfo);
             }
         }
+    }
+    
+    @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC)
+    protected void setServerStartPhase2(ServerStartedPhase2 event) {
+        
+    }
+    
+    protected void unsetServerStartPhase2(ServerStartedPhase2 event) {
+        
     }
 
     /**
