@@ -12,7 +12,9 @@ package io.openliberty.microprofile.openapi20.fat.deployments;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.DISABLE_VALIDATION;
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
@@ -139,6 +141,9 @@ public class MergeConfigTest {
         String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
         JsonNode openapiNode = OpenAPITestUtil.readYamlTree(doc);
         OpenAPITestUtil.checkPaths(openapiNode, 2, "/test2/test", "/test3/test");
+        
+        // Expect this warning because we're starting the server before deploying applications
+        server.stopServer("CWWKO1667W"); // Config references application not deployed
     }
     
     @Test
@@ -195,6 +200,9 @@ public class MergeConfigTest {
         String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
         JsonNode openapiNode = OpenAPITestUtil.readYamlTree(doc);
         OpenAPITestUtil.checkPaths(openapiNode, 1, "/test2");
+        
+        // Expect this warning because we're starting the server before deploying applications
+        server.stopServer("CWWKO1667W"); // Config references application not deployed
     }
     
     @Test
@@ -323,6 +331,43 @@ public class MergeConfigTest {
         
         assertEquals(expectedInfo, openapiNode.path("info"));
     }
+    
+    @Test
+    public void testUnusedConfigWarningPresent() throws Exception {
+        setMergeConfig("test1, appWibble", null, null);
+        
+        WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
+                        .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+        ShrinkHelper.exportDropinAppToServer(server, war1, SERVER_ONLY);
+        
+        WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war")
+                        .addClasses(DeploymentTestApp.class, DeploymentTestResource2.class);
+        ShrinkHelper.exportDropinAppToServer(server, war2, SERVER_ONLY);
+        
+        server.startServer();
+        
+        assertNotNull(server.waitForStringInLog("CWWKO1667W:.*appWibble")); // appWibble configured but not deployed at startup
+        server.stopServer("CWWKO1667W");
+    }
+    
+    @Test
+    public void testUnusedConfigWarningNotPresent() throws Exception {
+        setMergeConfig("test1, test2", null, null);
+        
+        WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
+                        .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
+        ShrinkHelper.exportDropinAppToServer(server, war1, SERVER_ONLY);
+        
+        WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war")
+                        .addClasses(DeploymentTestApp.class, DeploymentTestResource2.class);
+        ShrinkHelper.exportDropinAppToServer(server, war2, SERVER_ONLY);
+        
+        server.startServer();
+        
+        assertNotNull(server.waitForStringInTrace("Checking for unused configuration entries"));
+        assertThat(server.findStringsInLogs("CWWKO1667W"), is(empty())); // No warning about app configured but not deployed
+    }
+
     
     private void setMergeConfig(String included, String excluded, String info) {
         Map<String, String> configProps = new HashMap<>();

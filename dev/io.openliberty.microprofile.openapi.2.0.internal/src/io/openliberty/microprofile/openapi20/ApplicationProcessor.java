@@ -85,7 +85,7 @@ public class ApplicationProcessor {
      * @return OpenAPIProvider
      *         The OpenAPIProvider for the application, or null if the application is not an OAS applciation.
      */
-    @FFDCIgnore(UnableToAdaptException.class)
+    @FFDCIgnore(ApplicationReadException.class)
     public Collection<OpenAPIProvider> processApplication(final ApplicationInfo appInfo, ModuleSelectionConfig selectionConfig) {
 
         // Create the variable to return
@@ -94,86 +94,89 @@ public class ApplicationProcessor {
         if (LoggingUtils.isEventEnabled(tc)) {
             Tr.event(tc, "Application Processor: Processing application started: appInfo=" + appInfo);
         }
-
-        // Make sure that we have valid application info
-        if (appInfo != null) {
-
-            // Get the container for the application
-            Container appContainer = appInfo.getContainer();
-            if (appContainer != null) {
-
-                // Check for app classes, if it is not there then the app manager is not in control of this app
-                try {
-                    NonPersistentCache cache = appContainer.adapt(NonPersistentCache.class);
-                    ApplicationClassesContainerInfo applicationClassesContainerInfo = (ApplicationClassesContainerInfo) cache.getFromCache(ApplicationClassesContainerInfo.class);
-                    if (applicationClassesContainerInfo != null) {
-                        
-                        for (ModuleClassesContainerInfo moduleClassesContainerInfo : applicationClassesContainerInfo.getModuleClassesContainerInfo()) {
-                            ContainerInfo containerInfo = (ContainerInfo) moduleClassesContainerInfo;
-                            if (containerInfo.getType() != Type.WEB_MODULE) {
-                                continue;
-                            }
-                            
-                            WebModuleInfo webModuleInfo = ModuleUtils.getWebModuleInfo(containerInfo.getContainer());
-                            if (webModuleInfo == null) {
-                                continue;
-                            }
-                            
-                            if (selectionConfig.useFirstModuleOnly() && !openAPIProviders.isEmpty()) {
-                                // Note, this only checks whether we've already created a provider for a module in _this_ application,
-                                // but that's sufficient because ApplicationRegistry won't even call us if it's already got a provider
-                                // from another application.
-                                if (LoggingUtils.isEventEnabled(tc)) {
-                                    Tr.event(this, tc, "ApplicationProcessor: Ignoring module because useFirstModuleOnly is set and we already found one. module=" + webModuleInfo.getName());
-                                }
-                                mergeDisabledAlerter.setUsingMultiModulesWithoutConfig(openAPIProviders.get(0));
-                                
-                                break; // Break here since there's no point in looking at any further modules
-                            }
-                            
-                            if (!selectionConfig.isIncluded(webModuleInfo)) {
-                                if (LoggingUtils.isEventEnabled(tc)) {
-                                    Tr.event(this, tc, "ApplicationProcessor: Module not included by config. app=" + appInfo.getName() + " module=" + webModuleInfo.getName() + ", config = " + selectionConfig);
-                                }
-                                
-                                continue;
-                            }
-                            
-                            // Process the web module
-                            OpenAPIProvider openAPIProvider = processWebModule(containerInfo.getContainer(), webModuleInfo, moduleClassesContainerInfo);
-                            if (openAPIProvider != null) {
-                                Tr.info(tc, MessageConstants.OPENAPI_APPLICATION_PROCESSED, webModuleInfo.getApplicationInfo().getDeploymentName());
-                                openAPIProviders.add(openAPIProvider);
-                            }
-                        }
-                        if (LoggingUtils.isEventEnabled(tc)) {
-                            Tr.event(tc, "Application Processor: Processing application ended: appInfo=" + appInfo);
-                        }
-                    } else {
-                        // No application classes... the app manager is not in control of this ap
-                        if (LoggingUtils.isEventEnabled(tc)) {
-                            Tr.event(tc, "Application Processor: Processing application ended: appInfo=" + appInfo + ", applicationClassesContainerInfo=null");
-                        }
-                    }
-                } catch (UnableToAdaptException e) {
-                    if (LoggingUtils.isEventEnabled(tc)) {
-                        Tr.event(tc, "Failed to adapt NonPersistentCache: container=" + appContainer + " : \n" + e.getMessage());
-                    }
+        
+        try {
+            Collection<ModuleClassesContainerInfo> moduleClassesContainerInfos = getModuleClassesContainerInfos(appInfo);
+            for (ModuleClassesContainerInfo moduleClassesContainerInfo : moduleClassesContainerInfos) {
+                ContainerInfo containerInfo = (ContainerInfo) moduleClassesContainerInfo;
+                if (containerInfo.getType() != Type.WEB_MODULE) {
+                    continue;
                 }
-            } else {
-                if (LoggingUtils.isEventEnabled(tc)) {
-                    Tr.event(tc, "Application Processor: Processing application ended: appInfo=" + appInfo + ", appContainer=null");
+                
+                WebModuleInfo webModuleInfo = ModuleUtils.getWebModuleInfo(containerInfo.getContainer());
+                if (webModuleInfo == null) {
+                    continue;
+                }
+                
+                if (selectionConfig.useFirstModuleOnly() && !openAPIProviders.isEmpty()) {
+                    // Note, this only checks whether we've already created a provider for a module in _this_ application,
+                    // but that's sufficient because ApplicationRegistry won't even call us if it's already got a provider
+                    // from another application.
+                    if (LoggingUtils.isEventEnabled(tc)) {
+                        Tr.event(this, tc, "ApplicationProcessor: Ignoring module because useFirstModuleOnly is set and we already found one. module=" + webModuleInfo.getName());
+                    }
+                    mergeDisabledAlerter.setUsingMultiModulesWithoutConfig(openAPIProviders.get(0));
+                    
+                    break; // Break here since there's no point in looking at any further modules
+                }
+                
+                if (!selectionConfig.isIncluded(webModuleInfo)) {
+                    if (LoggingUtils.isEventEnabled(tc)) {
+                        Tr.event(this, tc, "ApplicationProcessor: Module not included by config. app=" + appInfo.getName() + " module=" + webModuleInfo.getName() + ", config = " + selectionConfig);
+                    }
+                    
+                    continue;
+                }
+                
+                // Process the web module
+                OpenAPIProvider openAPIProvider = processWebModule(containerInfo.getContainer(), webModuleInfo, moduleClassesContainerInfo);
+                if (openAPIProvider != null) {
+                    Tr.info(tc, MessageConstants.OPENAPI_APPLICATION_PROCESSED, webModuleInfo.getApplicationInfo().getDeploymentName());
+                    openAPIProviders.add(openAPIProvider);
                 }
             }
-        } else {
             if (LoggingUtils.isEventEnabled(tc)) {
-                Tr.event(tc, "Application Processor: Processing application ended: appInfo=null");
+                Tr.event(tc, "Application Processor: Processing application ended: appInfo=" + appInfo);
+            }
+        } catch (ApplicationReadException e) {
+            if (LoggingUtils.isEventEnabled(tc)) {
+                Tr.event(this, tc, "Application Processor: Processing application ended: " + e.toString(), e);
             }
         }
 
         return openAPIProviders;
     }
-
+    
+    /**
+     * Extracts the ModuleClassContainerInfos for the given application
+     * 
+     * @param appInfo the application info
+     * @return the ModuleClassContainerInfos for the modules within the application
+     * @throws ApplicationReadException if there is a problem reading the application which means the ModuleClassContainerInfos can't be obtained
+     */
+    public Collection<ModuleClassesContainerInfo> getModuleClassesContainerInfos(ApplicationInfo appInfo) throws ApplicationReadException {
+        List<ModuleClassesContainerInfo> result = new ArrayList<>();
+        Container appContainer = appInfo.getContainer();
+        if (appContainer == null) {
+            throw new ApplicationReadException("appInfo=null");
+        }
+        
+        try {
+            NonPersistentCache cache = appContainer.adapt(NonPersistentCache.class);
+            ApplicationClassesContainerInfo applicationClassesContainerInfo = (ApplicationClassesContainerInfo) cache.getFromCache(ApplicationClassesContainerInfo.class);
+            if (applicationClassesContainerInfo == null) {
+                throw new ApplicationReadException("appInfo=" + appInfo + ", appContainer=null");
+            }
+            
+            for (ModuleClassesContainerInfo moduleClassesContainerInfo : applicationClassesContainerInfo.getModuleClassesContainerInfo()) {
+                result.add(moduleClassesContainerInfo);
+            }
+        } catch (UnableToAdaptException e) {
+            throw new ApplicationReadException("Failed to adapt NonPersistentCache: container=" + appContainer + " : \n" + e.getMessage(), e);
+        }
+        return result;
+    }
+    
     /**
      * The processWebModule method attempts to generate an OpenAPIProvider for the specified web module using the
      * SmallRye implementation.

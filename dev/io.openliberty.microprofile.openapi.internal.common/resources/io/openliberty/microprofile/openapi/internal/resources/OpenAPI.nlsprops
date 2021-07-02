@@ -89,3 +89,6 @@ OPENAPI_MERGE_INVALID_NAME_CWWKO1666W=CWWKO1666W: Invalid name found in {0}: {1}
 OPENAPI_MERGE_INVALID_NAME_CWWKO1666W.explanation=The given config property must contain a comma-separated list of application and module names, or one of the special values "all", "first", or "none".
 OPENAPI_MERGE_INVALID_NAME_CWWKO1666W.useraction=Review the error text to identify the problem and correct the indicated configuration property.
 
+OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W=CWWKO1667W: The configuration property {0} included the value {1} but that did not match any deployed application or web module
+OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W.explanation=The server has been configured to create OpenAPI documentation for the given application or module name, but no application or web module with that name was deployed.
+OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W.useraction=Check that all applications started correctly and that the names in the configuration property are specified correctly.

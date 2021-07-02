@@ -10,8 +10,12 @@
  *******************************************************************************/
 package io.openliberty.microprofile.openapi20;
 
+import static java.util.stream.Collectors.toList;
+
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -156,6 +160,30 @@ public class ModuleSelectionConfig {
         return result;
     }
     
+    /**
+     * Given a complete list of all application modules deployed, return a list of entries from the include configuration which didn't match any of the deployed modules.
+     * 
+     * @param moduleInfos the deployed module infos
+     * @return the list of include configuration entries which was unused
+     */
+    public List<String> findIncludesNotMatchingAnything(Collection<? extends ModuleInfo> moduleInfos) {
+        if (isAll || isFirst) {
+            return Collections.emptyList();
+        }
+
+        List<ModuleName> includedNotYetSeen = new ArrayList<>(included);
+        for (Iterator<ModuleName> iterator = includedNotYetSeen.iterator(); iterator.hasNext();) {
+            ModuleName moduleName = (ModuleName) iterator.next();
+            for (ModuleInfo moduleInfo : moduleInfos) {
+                if (matches(moduleName, moduleInfo)) {
+                    iterator.remove();
+                    break;
+                }
+            }
+        }
+
+        return includedNotYetSeen.stream().map(ModuleName::toString).collect(toList());
+    }
     
     private boolean matches(ModuleName name, ModuleInfo module) {
         if (name.moduleName != null && !name.moduleName.equals(module.getName())) {

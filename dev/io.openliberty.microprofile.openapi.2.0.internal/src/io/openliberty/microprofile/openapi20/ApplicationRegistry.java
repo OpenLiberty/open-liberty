@@ -18,6 +18,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.osgi.service.component.annotations.Component;
@@ -29,11 +30,17 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
+import com.ibm.ws.container.service.app.deploy.ContainerInfo;
+import com.ibm.ws.container.service.app.deploy.ContainerInfo.Type;
+import com.ibm.ws.container.service.app.deploy.WebModuleInfo;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.feature.ServerStartedPhase2;
 
 import io.openliberty.microprofile.openapi20.merge.MergeProcessor;
+import io.openliberty.microprofile.openapi20.utils.Constants;
 import io.openliberty.microprofile.openapi20.utils.LoggingUtils;
 import io.openliberty.microprofile.openapi20.utils.MessageConstants;
+import io.openliberty.microprofile.openapi20.utils.ModuleUtils;
 
 /**
  * The ApplicationRegistry class maintains a collection of the applications that are deployed to the OpenLiberty
@@ -60,7 +67,7 @@ public class ApplicationRegistry {
     // Thread safety: access to these fields must be synchronized on this
     private Map<String, ApplicationRecord> applications = new LinkedHashMap<>(); // Linked map retains order in which applications were added
 
-    private ModuleSelectionConfig moduleSelectionConfig = null;
+    private ModuleSelectionConfig moduleSelectionConfig = ModuleSelectionConfig.fromConfig(ConfigProvider.getConfig(ApplicationRegistry.class.getClassLoader()));
     
     private OpenAPIProvider cachedProvider = null;
     
@@ -79,10 +86,6 @@ public class ApplicationRegistry {
                 Tr.event(tc, "Application Processor: Adding application started: appInfo=" + newAppInfo);
             }
             
-            if (moduleSelectionConfig == null) {
-                moduleSelectionConfig = ModuleSelectionConfig.fromConfig(ConfigProvider.getConfig(ApplicationRegistry.class.getClassLoader()));
-            }
-
             // Store the app in our collection
             applications.put(newAppInfo.getName(), record);
             
@@ -156,9 +159,41 @@ public class ApplicationRegistry {
         }
     }
     
+
+    /**
+     * This reference should be fulfilled once the server has attempted to start all applications during startup.
+     * <p>
+     * At this point, check whether there are any entries in the config which don't match any deployed applications.
+     * 
+     * @param event ignored
+     */
+    @FFDCIgnore(ApplicationReadException.class)
     @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC)
     protected void setServerStartPhase2(ServerStartedPhase2 event) {
-        
+        synchronized (this) {
+            if (LoggingUtils.isEventEnabled(tc)) {
+                Tr.event(this, tc, "Checking for unused configuration entries");
+            }
+            
+            List<WebModuleInfo> modules = new ArrayList<>();
+            for (ApplicationRecord record : applications.values()) {
+                try {
+                    applicationProcessor.getModuleClassesContainerInfos(record.info)
+                                                                      .stream()
+                                                                      .map((mcci) -> (ContainerInfo) mcci)
+                                                                      .filter(c -> c.getType() == Type.WEB_MODULE)
+                                                                      .map(ContainerInfo::getContainer)
+                                                                      .map(ModuleUtils::getWebModuleInfo)
+                                                                      .filter(Objects::nonNull)
+                                                                      .forEach(modules::add);
+                } catch (ApplicationReadException e) {
+                    // Couldn't read this application for some reason, but that means we can't have been able to include modules from it anyway.
+                }
+            }
+            for (String unmatchedInclude : moduleSelectionConfig.findIncludesNotMatchingAnything(modules)) {
+                Tr.warning(tc, MessageConstants.OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W, Constants.MERGE_INCLUDE_CONFIG, unmatchedInclude);
+            }
+        }
     }
     
     protected void unsetServerStartPhase2(ServerStartedPhase2 event) {

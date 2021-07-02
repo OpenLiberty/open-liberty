@@ -30,6 +30,7 @@ public class MessageConstants {
     public static final String OPENAPI_MERGE_INFO_INVALID_CWWKO1664W = "OPENAPI_MERGE_INFO_INVALID_CWWKO1664W"; //$NON-NLS-1$
     public static final String OPENAPI_MERGE_INFO_PARSE_ERROR_CWWKO1665W = "OPENAPI_MERGE_INFO_PARSE_ERROR_CWWKO1665W"; //$NON-NLS-1$
     public static final String OPENAPI_MERGE_INVALID_NAME_CWWKO1666W = "OPENAPI_MERGE_INVALID_NAME_CWWKO1666W"; //$NON-NLS-1$
+    public static final String OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W = "OPENAPI_MERGE_UNUSED_INCLUDE_CWWKO1667W"; //$NON-NLS-1$
     
     private MessageConstants() {
         // This class is not meant to be instantiated.
