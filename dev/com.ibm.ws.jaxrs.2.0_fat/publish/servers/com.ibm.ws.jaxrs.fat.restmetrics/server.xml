@@ -12,4 +12,5 @@
  
 <!-- Test application requires this permission in order to acquire access to Liberty's MBean server --> 	
   	<javaPermission className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
+  	<javaPermission className="javax.management.MBeanPermission" name="*" actions="*" />
 </server>
