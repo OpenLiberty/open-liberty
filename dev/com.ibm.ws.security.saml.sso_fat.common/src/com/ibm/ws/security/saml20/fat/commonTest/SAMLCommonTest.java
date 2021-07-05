@@ -157,7 +157,6 @@ public class SAMLCommonTest extends CommonTest {
         testSettings = null;
         samlConfigSettings = new SAMLConfigSettings();
         helpers = null;
-        timeoutCounter = 0;
         //allowableTimeoutCount = 0;
         flowType = null;
         copyMetaData = true;
@@ -245,7 +244,6 @@ public class SAMLCommonTest extends CommonTest {
             }
         }
 
-        timeoutCounter = 0;
         //        allowableTimeoutCount = 0;
         //		Integer defaultPort = null;
         String httpString = null;
