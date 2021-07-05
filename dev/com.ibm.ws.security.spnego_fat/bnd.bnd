@@ -35,4 +35,5 @@ tested.features: pages-3.0, appsecurity-4.0, cdi-3.0
     com.ibm.ws.security.token.s4u2;version=latest,\
     com.ibm.ws.webcontainer.security;version=latest,\
     com.ibm.ws.webcontainer.security_test.servlets;version=latest,\
+	com.ibm.ws.security.wim.adapter.ldap_fat.krb5;version=latest, \
     org.apache.httpcomponents:httpcore;version=4.1.2
