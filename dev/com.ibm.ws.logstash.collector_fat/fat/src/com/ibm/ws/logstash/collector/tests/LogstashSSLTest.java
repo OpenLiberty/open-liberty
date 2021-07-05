@@ -66,7 +66,9 @@ public class LogstashSSLTest extends LogstashCollectorTest {
         Log.info(c, "setUp", "os.name = " + os);
         Log.info(c, "setUp", "os.name is z/os machine = " + !runTest);
         Log.info(c, "setUp", "runTest = " + runTest);
-
+        
+        Assume.assumeTrue(runTest); // runTest must be true to run test
+        
         clearContainerOutput();
         String host = logstashContainer.getContainerIpAddress();
         String port = String.valueOf(logstashContainer.getMappedPort(5043));
@@ -91,8 +93,6 @@ public class LogstashSSLTest extends LogstashCollectorTest {
 
     @Before
     public void setUpTest() throws Exception {
-        Assume.assumeTrue(runTest); // runTest must be true to run test
-
         testName = "setUpTest";
         if (!server.isStarted()) {
             serverStart();
