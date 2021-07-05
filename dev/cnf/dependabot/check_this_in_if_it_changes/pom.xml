@@ -954,7 +954,7 @@
     <dependency>
       <groupId>net.sourceforge.htmlunit</groupId>
       <artifactId>htmlunit-cssparser</artifactId>
-      <version>1.6.0</version>
+      <version>1.8.0</version>
     </dependency>
     <dependency>
       <groupId>net.sourceforge.htmlunit</groupId>
