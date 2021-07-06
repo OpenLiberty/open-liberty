@@ -434,6 +434,9 @@ public class DDTestBase {
     }
     
     public static void verifyFailure(Exception e, String altMessage, String... requiredMessages) {
+        System.out.println("Validating exception [ " + e.getClass().getName() + " ] [ " + e + " ]");
+        System.out.println("  [ " + e.getMessage() + " ]");
+
         if ( (requiredMessages == null) || (requiredMessages.length == 0) ) {        
             Assert.fail("Unexpected exception [ " + e.getClass() + " ] [ " + e + " ]");
             return; // Never reached.

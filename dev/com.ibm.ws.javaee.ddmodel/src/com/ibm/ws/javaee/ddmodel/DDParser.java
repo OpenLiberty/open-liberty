@@ -1218,7 +1218,7 @@ public abstract class DDParser {
         }
 
         String description = builder.toString();
-        System.out.println("Description [ " + description + " ]"); // Temp for debugging.
+        // System.out.println("Description [ " + description + " ]"); // Temp for debugging.
         return description;
     }
     
@@ -1326,7 +1326,7 @@ public abstract class DDParser {
     // }
     
     protected String missingDescriptorVersion() {
-        // The deployment descriptor {0} specifies neither a version, a PUBLIC ID, or a schema.
+        // The deployment descriptor {0} specifies neither a version, nor a PUBLIC ID, nor a schema.
         return Tr.formatMessage(tc, "missing.descriptor.version", describeEntry());
     }
 
@@ -1379,10 +1379,6 @@ public abstract class DDParser {
         return Tr.formatMessage(tc, "incorrect.descriptor.namespace", describeEntry(), getLineNumber(), ddNamespace, expectedNamespace);        
     }    
 
-    // protected String invalidDeploymentDescriptorPublicId(String usePublicId) {
-    //     return Tr.formatMessage(tc, "invalid.deployment.descriptor.public.id", describeEntry(), getLineNumber(), usePublicId);
-    // }    
-    
     protected String unsupportedDescriptorPublicId(String ddPublicId) {
         // The deployment descriptor {0}, at line {1}, specifies unsupported public ID {2}.
         return Tr.formatMessage(tc, "unsupported.descriptor.public.id", describeEntry(), getLineNumber(), ddPublicId);
