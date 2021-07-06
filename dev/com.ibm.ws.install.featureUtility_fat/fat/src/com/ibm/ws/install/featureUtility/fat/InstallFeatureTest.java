@@ -400,7 +400,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
                 "../../publish/repo/io/openliberty/features/ssl-1.0/21.0.0.4/com.ibm.websphere.appserver.ssl-1.0.esa");
         
         copyFileToMinifiedRoot("repo/io/openliberty/features/ssl-1.0/21.0.0.4",
-                "../../publish/repo/io/openliberty/features/ssl-1.0/21.0.0.4/osgiConsole-1.0-21.0.0.4.esa");
+                "../../publish/repo/io/openliberty/features/ssl-1.0/21.0.0.4/ssl-1.0-21.0.0.4.esa");
         
         writeToProps(minifiedRoot+ "/etc/featureUtility.properties", "featureLocalRepo", minifiedRoot + "/repo/");
 
