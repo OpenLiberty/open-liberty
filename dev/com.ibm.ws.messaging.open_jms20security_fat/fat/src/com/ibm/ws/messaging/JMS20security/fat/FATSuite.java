@@ -25,6 +25,7 @@ import com.ibm.ws.messaging.JMS20security.fat.DCFTest.JMSDefaultConnectionFactor
 import com.ibm.ws.messaging.JMS20security.fat.JMSConsumerTest.JMSConsumerTest;
 import com.ibm.ws.messaging.JMS20security.fat.JMSContextTest.JMSContextTest;
 
+import componenttest.rules.repeater.EE7FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 
@@ -43,6 +44,6 @@ import componenttest.rules.repeater.RepeatTests;
 })
 public class FATSuite {
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification()
-                                             .andWith( new JakartaEE9Action() );
+    public static RepeatTests r = RepeatTests.with( new EE7FeatureReplacementAction() )
+                                             .andWith( new JakartaEE9Action().fullFATOnly() );
 }
