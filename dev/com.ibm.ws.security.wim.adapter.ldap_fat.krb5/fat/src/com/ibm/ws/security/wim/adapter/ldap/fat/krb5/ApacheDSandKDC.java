@@ -258,7 +258,7 @@ public class ApacheDSandKDC {
 
     }
 
-    public void tearDownService() throws Exception {
+    public static void tearDownService() throws Exception {
         stopAllServers();
         initialised = false;
     }
@@ -394,7 +394,8 @@ public class ApacheDSandKDC {
      * @throws Exception
      */
     public static void stopAllServers() throws Exception {
-        Log.info(c, "stopAllServers", "Stopping all ApacheDS servers");
+        String methodName = "stopAllServers";
+        Log.info(c, methodName, "Stopping all ApacheDS servers");
         if (kdcServer != null) {
             kdcServer.stop();
         }
@@ -406,7 +407,43 @@ public class ApacheDSandKDC {
         if (directoryService != null) {
             directoryService.shutdown();
         }
-        Log.info(c, "stopAllServers", "Stopped all ApacheDS servers");
+        Log.info(c, methodName, "Stopped all ApacheDS servers, double checking ports");
+
+        // Having some weird issues on Windows where servers fail to start, HTTP team suspects artifacts from this class
+        ServerSocket s = null;
+        for (int i = 0; i <= 3; i++) {
+            try {
+                Log.info(c, methodName, "Checking if KDC port is freed.");
+                s = new ServerSocket(KDC_PORT);
+                Log.info(c, methodName, "KDC port is free.");
+                break;
+            } catch (Throwable t) {
+                Log.info(c, methodName, "KDC port not free. Other tests may fail to start.");
+                Thread.sleep(1000);
+            } finally {
+                if (s != null) {
+                    s.close();
+                }
+            }
+        }
+
+        s = null;
+        for (int i = 0; i <= 3; i++) {
+            try {
+                Log.info(c, methodName, "Checking if LdapServer port is freed.");
+                s = new ServerSocket(LDAP_PORT);
+                Log.info(c, methodName, "LdapServer port is free.");
+                break;
+            } catch (Throwable t) {
+                Log.info(c, methodName, "LdapServer port not free. Other tests may fail to start.");
+                Thread.sleep(1000);
+            } finally {
+                if (s != null) {
+                    s.close();
+                }
+            }
+        }
+
     }
 
     /**
