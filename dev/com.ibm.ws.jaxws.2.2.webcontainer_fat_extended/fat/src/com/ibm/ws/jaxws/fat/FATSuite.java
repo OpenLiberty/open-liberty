@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,19 +24,14 @@ import componenttest.rules.repeater.RepeatTests;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-                BindingTypeWsdlMismatchTest.class,
-                CatalogFacilityTest.class,
-                CXFJMXSupportTest.class,
-                EndpointPropertiesTest.class,
-                HttpConduitPropertiesTest.class,
-                MTOMTest.class,
-                PureCXFTest.class,
-                ServerSideStubClientTest.class,
-                VirtualHostTest.class,
-                WebServiceContextTest.class,
-                WebServiceMonitorTest.class,
-                WebServiceRefFeaturesTest.class,
-                WebServiceRefTest.class
+                EJBServiceRefBndTest.class,
+                HandlerChainTest.class,
+                HandlerChainWithWebServiceClientTest.class,
+                POJOServiceSecurityTest.class,
+                PortComponentRefTest.class,
+                WebServiceInWebXMLTest.class,
+                WsBndEndpointOverrideTest.class,
+                WsBndServiceRefOverrideTest.class
 })
 public class FATSuite {
 
