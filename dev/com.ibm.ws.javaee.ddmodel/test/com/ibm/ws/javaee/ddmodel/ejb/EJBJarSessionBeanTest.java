@@ -881,7 +881,8 @@ public class EJBJarSessionBeanTest extends EJBJarTestBase {
                   "</session>" +
                   "</enterprise-beans>"),
                   EJBJar.VERSION_4_0,
-                  "unexpected.child.element", "unknown");
+                  "unexpected.child.element",
+                  "CWWKC2259E", "passivation-capable" );
     }
 
     @Test

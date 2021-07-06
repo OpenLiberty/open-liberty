@@ -159,7 +159,8 @@ public class WebAppTest extends WebAppTestBase {
     @Test
     public void testEE6Web30DenyUncoveredHttpMethods() throws Exception {
         parseWebApp( webApp( WebApp.VERSION_3_0, "<deny-uncovered-http-methods/>" ),
-                "unexpected.child.element", "unknown" );
+                "unexpected.child.element",
+                "CWWKC2259E", "deny-uncovered-http-methods", "web-app", "MyWar.war : WEB-INF/web.xml" );        
     }
 
     // Servlet 3.1 cases ...
@@ -178,7 +179,8 @@ public class WebAppTest extends WebAppTestBase {
     public void testEE7Web31AbsoluteOrderingDuplicates() throws Exception {
         parseWebApp( webApp( WebApp.VERSION_3_1, dupeAbsOrder() ),
                      WebApp.VERSION_3_1,
-                     "at.most.one.occurrence", "unknown" );
+                     "at.most.one.occurrence",
+                     "CWWKC2266E", "absolute-ordering", "MyWar.war : WEB-INF/web.xml" );
     }
 
     /**
@@ -200,6 +202,7 @@ public class WebAppTest extends WebAppTestBase {
         parseWebApp( webApp( WebApp.VERSION_3_1,
                        "<deny-uncovered-http-methods>junk</deny-uncovered-http-methods>" ),
                      WebApp.VERSION_3_1,
-                     "unexpected.content", "unknown");
+                     "unexpected.content",
+                     "CWWKC2257E", "deny-uncovered-http-methods", "MyWar.war : WEB-INF/web.xml" );                     
     }
 }

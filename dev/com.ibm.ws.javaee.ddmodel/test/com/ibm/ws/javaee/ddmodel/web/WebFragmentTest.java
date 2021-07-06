@@ -70,6 +70,8 @@ public class WebFragmentTest extends WebFragmentTestBase {
     public void testEE7WebFragment31OrderingDuplicates() throws Exception {
         parse(webFragment31("<ordering/>" + "<ordering/>"),
                 WebApp.VERSION_3_1,
-                "at.most.one.occurrence", "unknown");
+                "at.most.one.occurrence",
+                "CWWKC2266E", "ordering",
+                    "MyWar.war : WEB-INF/lib/fragment1.jar : META-INF/web-fragment.xml" );        
     }
 }

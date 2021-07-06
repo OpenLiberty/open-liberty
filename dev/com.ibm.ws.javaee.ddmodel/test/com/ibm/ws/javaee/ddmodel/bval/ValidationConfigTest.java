@@ -70,13 +70,15 @@ public class ValidationConfigTest extends ValidationConfigTestBase {
     @Test
     public void testVersion11NoSchemaInstance() throws Exception {
         parse( validationConfig11NoSchemaInstance(),
-               "xml.error", "unknown" );
+               "xml.error",
+               "CWWKC2272E", "ejbJar.jar : META-INF/validation.xml" );        
     }
 
     @Test
     public void testVersion11NoSchemaLocation() throws Exception {
         parse( validationConfig11NoSchemaLocation(),
-               "xml.error", "unknown" );
+               "xml.error",
+               "CWWKC2272E", "ejbJar.jar : META-INF/validation.xml" );
     }
 
     @Test
@@ -252,7 +254,8 @@ public class ValidationConfigTest extends ValidationConfigTestBase {
                            "<executable-type>NON</executable-type>" +
                        "</default-validated-executable-types>" +
                    "</executable-validation>"),
-               "invalid.enum.value", "unknown");
+               "invalid.enum.value",
+               "CWWKC2273E", "NON", "ejbJar.jar : META-INF/validation.xml" );
 
         // provide executable-type that is empty
         parse( validationConfig11(
@@ -261,7 +264,8 @@ public class ValidationConfigTest extends ValidationConfigTestBase {
                            "<executable-type></executable-type>" +
                        "</default-validated-executable-types>" +
                    "</executable-validation>"),
-                "invalid.enum.value", "unknown");
+                "invalid.enum.value",
+                "CWWKC2273E", "ejbJar.jar : META-INF/validation.xml" );                
     }
 
     @Test
