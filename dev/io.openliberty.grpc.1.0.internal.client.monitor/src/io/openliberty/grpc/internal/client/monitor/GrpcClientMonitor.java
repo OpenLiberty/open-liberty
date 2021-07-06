@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.grpc.internal.monitor;
+package io.openliberty.grpc.internal.client.monitor;
 
 import com.ibm.websphere.monitor.annotation.Monitor;
 import com.ibm.websphere.monitor.annotation.ProbeAtEntry;
@@ -33,14 +33,14 @@ public class GrpcClientMonitor {
 			"GrpcClient", this);
 
 	@ProbeAtEntry
-	@ProbeSite(clazz = "io.openliberty.grpc.internal.monitor.GrpcClientStatsMonitor", method = "recordCallStarted")
+	@ProbeSite(clazz = "io.openliberty.grpc.internal.client.monitor.GrpcClientStatsMonitor", method = "recordCallStarted")
 	public void atRpcCallStart(@This Object clientStats) {
 		GrpcClientStatsMonitor stats = (GrpcClientStatsMonitor) clientStats;
 		getGrpcClientStats(stats.getMethod()).recordCallStarted();
 	}
 
 	@ProbeAtReturn
-	@ProbeSite(clazz = "io.openliberty.grpc.internal.monitor.GrpcClientStatsMonitor", method = "recordClientHandled")
+	@ProbeSite(clazz = "io.openliberty.grpc.internal.client.monitor.GrpcClientStatsMonitor", method = "recordClientHandled")
 	public void atGrpcClientHandled(@This Object clientStats) {
 		GrpcClientStatsMonitor stats = (GrpcClientStatsMonitor) clientStats;
 		
@@ -52,14 +52,14 @@ public class GrpcClientMonitor {
 	}
 
 	@ProbeAtReturn
-	@ProbeSite(clazz = "io.openliberty.grpc.internal.monitor.GrpcClientStatsMonitor", method = "recordMsgReceived")
+	@ProbeSite(clazz = "io.openliberty.grpc.internal.client.monitor.GrpcClientStatsMonitor", method = "recordMsgReceived")
 	public void atClientMsgReceived(@This Object clientStats) {
 		GrpcClientStatsMonitor stats = (GrpcClientStatsMonitor) clientStats;
 		getGrpcClientStats(stats.getMethod()).incrementReceivedMsgCountBy(1);
 	}
 
 	@ProbeAtReturn
-	@ProbeSite(clazz = "io.openliberty.grpc.internal.monitor.GrpcClientStatsMonitor", method = "recordMsgSent")
+	@ProbeSite(clazz = "io.openliberty.grpc.internal.client.monitor.GrpcClientStatsMonitor", method = "recordMsgSent")
 	public void atGrpcClientMsgSent(@This Object clientStats) {
 		GrpcClientStatsMonitor stats = (GrpcClientStatsMonitor) clientStats;
 		getGrpcClientStats(stats.getMethod()).incrementSentMsgCountBy(1);
