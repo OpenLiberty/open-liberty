@@ -12,20 +12,19 @@
 package com.ibm.ws.javaee.ddmodel.appbnd;
 
 import com.ibm.ws.javaee.dd.app.Application;
-import com.ibm.ws.javaee.ddmodel.DDParser;
 import com.ibm.ws.javaee.ddmodel.DDParserBndExt;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
 
 public class ApplicationBndDDParser extends DDParserBndExt {
     public ApplicationBndDDParser(Container ddRootContainer, Entry ddEntry, boolean xmi)
-        throws DDParser.ParseException {
+        throws ParseException {
 
         super( ddRootContainer, ddEntry, Application.class,
-                xmi,
-                (xmi ? "ApplicationBinding" : "application-bnd" ),
-                NAMESPACE_APP_BND_XMI,
-                XML_VERSION_MAPPINGS_10_12, 12);        
+               xmi,
+               (xmi ? "ApplicationBinding" : "application-bnd" ),
+               NAMESPACE_APP_BND_XMI,
+               XML_VERSION_MAPPINGS_10_12, 12 );        
     }
 
     @Override

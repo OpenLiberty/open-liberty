@@ -12,7 +12,6 @@ package com.ibm.ws.javaee.ddmodel.bval;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.ws.container.service.app.deploy.ModuleInfo;
-import com.ibm.ws.container.service.app.deploy.WebModuleInfo;
 import com.ibm.ws.javaee.dd.bval.ValidationConfig;
 import com.ibm.ws.javaee.ddmodel.DDParser;
 import com.ibm.wsspi.adaptable.module.Container;

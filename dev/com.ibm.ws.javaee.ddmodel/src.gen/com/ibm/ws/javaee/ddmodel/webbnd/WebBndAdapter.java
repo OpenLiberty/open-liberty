@@ -28,7 +28,6 @@ import com.ibm.ws.container.service.app.deploy.NestedConfigHelper;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedApplicationInfo;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.javaee.ddmodel.DDParser.ParseException;
-import com.ibm.ws.javaee.ddmodel.web.WebAppDDParser;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;

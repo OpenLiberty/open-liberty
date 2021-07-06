@@ -29,11 +29,13 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
     service = ContainerAdapter.class,
-    property = { "service.vendor=IBM", "toType=com.ibm.ws.javaee.dd.appbnd.ApplicationBnd" })
+    property = { "service.vendor=IBM",
+                 "toType=com.ibm.ws.javaee.dd.appbnd.ApplicationBnd" })
 public class ApplicationBndAdapter implements ContainerAdapter<ApplicationBnd> {
     @Reference(cardinality = ReferenceCardinality.MULTIPLE,
                policy = ReferencePolicy.DYNAMIC,
                policyOption = ReferencePolicyOption.GREEDY)
+
     volatile List<ApplicationBnd> configurations;
 
     private ApplicationBndComponentImpl getConfigOverrides(OverlayContainer rootOverlay, ArtifactContainer artifactContainer) {

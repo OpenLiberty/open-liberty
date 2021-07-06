@@ -16,7 +16,6 @@ import com.ibm.ws.javaee.dd.appbnd.Profile;
 import com.ibm.ws.javaee.dd.appbnd.SecurityRole;
 import com.ibm.ws.javaee.ddmodel.CrossComponentReferenceType;
 import com.ibm.ws.javaee.ddmodel.DDParser;
-import com.ibm.ws.javaee.ddmodel.DDParser.ParseException;
 import com.ibm.ws.javaee.ddmodel.commonbnd.RefBindingsGroupType;
 
 public class ApplicationBndType 
