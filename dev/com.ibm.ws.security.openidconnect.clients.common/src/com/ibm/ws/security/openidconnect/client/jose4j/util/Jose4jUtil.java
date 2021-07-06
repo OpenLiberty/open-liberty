@@ -270,6 +270,7 @@ public class Jose4jUtil {
         return jsonStruct;
     }
 
+    @FFDCIgnore({ Exception.class })
     public Key getSignatureVerificationKeyFromJsonWebStructure(JsonWebStructure jsonStruct, ConvergedClientConfig clientConfig, OidcClientRequest oidcClientRequest) throws JWTTokenValidationFailedException {
         String kid = jsonStruct.getKeyIdHeaderValue();
         String x5t = jsonStruct.getX509CertSha1ThumbprintHeaderValue();
