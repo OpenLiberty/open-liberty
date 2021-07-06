@@ -200,7 +200,8 @@ public class WebFragmentHeaderTest extends WebFragmentTestBase {
     @Test
     public void testVersionOnlyUnknown() throws Exception {
         parse(webFragmentVersionOnlyUnknown,
-                "unsupported.descriptor.version", "CWWKC2272E"); 
+              UNSUPPORTED_DESCRIPTOR_VERSION_ALT_MESSAGE,
+              UNSUPPORTED_DESCRIPTOR_VERSION_MESSAGES);
     }
 
     // A un-provisioned version message is generated when the version is known
@@ -209,7 +210,8 @@ public class WebFragmentHeaderTest extends WebFragmentTestBase {
     @Test
     public void testVersionOnlyUnprovisioned() throws Exception {
         parse(webFragmentVersionOnly50, WebApp.VERSION_3_1,
-                "unprovisioned.descriptor.version", "CWWKC2272E"); 
+              UNPROVISIONED_DESCRIPTOR_VERSION_ALT_MESSAGE,
+              UNPROVISIONED_DESCRIPTOR_VERSION_MESSAGES);
     }
 
     //
@@ -264,7 +266,9 @@ public class WebFragmentHeaderTest extends WebFragmentTestBase {
     @Test
     public void testSchemaOnlyUnknown() throws Exception {
         parse(webFragmentSchemaOnlyUnknown,
-                "unsupported.descriptor.namespace", "CWWKC2272E");
+              UNSUPPORTED_DESCRIPTOR_NAMESPACE_ALT_MESSAGE,
+              UNSUPPORTED_DESCRIPTOR_NAMESPACE_MESSAGES);
+
     }
     
     // A un-provisioned schema message is generated when the schema is known
@@ -273,6 +277,8 @@ public class WebFragmentHeaderTest extends WebFragmentTestBase {
     @Test
     public void testSchemaOnlyUnprovisioned() throws Exception {
         parse(webFragmentSchemaOnly50, WebApp.VERSION_3_1,
-                "unprovisioned.descriptor.version", "CWWKC2272E");
+              UNPROVISIONED_DESCRIPTOR_VERSION_ALT_MESSAGE,
+              UNPROVISIONED_DESCRIPTOR_VERSION_MESSAGES);
+
     }    
 }

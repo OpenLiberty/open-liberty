@@ -21,9 +21,9 @@ import com.ibm.ws.javaee.version.JavaEEVersion;
 public class AppTestBase extends DDTestBase {
     protected static ApplicationAdapter createAppAdapter(int maxSchemaVersion) {
         @SuppressWarnings("unchecked")
-        ServiceReference<JavaEEVersion> versionRef = mockery.mock(ServiceReference.class, "sr" + mockId++);
+        ServiceReference<JavaEEVersion> versionRef =
+            mockery.mock(ServiceReference.class, "sr" + mockId++);
         String versionText = DDParser.getDottedVersionText(maxSchemaVersion);
-
         mockery.checking(new Expectations() {
             {                
                 allowing(versionRef).getProperty(JavaEEVersion.VERSION);

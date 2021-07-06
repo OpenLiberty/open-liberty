@@ -245,7 +245,8 @@ public class PermissionsTest extends DDTestBase {
         // "CWWKC2262E", "unsupported.deployment.descriptor.namespace");
         // The error code changed.
         parsePermissions(permissionsInvalidVersion,
-                "unsupported.descriptor.version", "CWWKC2262E"); 
+                         UNSUPPORTED_DESCRIPTOR_VERSION_ALT_MESSAGE,
+                         UNSUPPORTED_DESCRIPTOR_VERSION_MESSAGES);
     }
 
     @Test
@@ -259,7 +260,8 @@ public class PermissionsTest extends DDTestBase {
     @Test
     public void testInvalidNamespaceNoVersion() throws Exception {
         parsePermissions(permissionsInvalidNamespaceNoVersion,
-                "unsupported.descriptor.namespace", "CWWKC2262E");
+                         UNSUPPORTED_DESCRIPTOR_NAMESPACE_ALT_MESSAGE,
+                         UNSUPPORTED_DESCRIPTOR_NAMESPACE_MESSAGES);
     }    
 
     @Test

@@ -189,11 +189,15 @@ public class EJBJarHeaderTest extends EJBJarTestBase {
 
     @Test
     public void testEJBUnknownNamespace() throws Exception {
-        parseEJBJar(ejbJarUnknownNamespace, EJBJar.VERSION_3_0, "unsupported.descriptor.namespace", "unknown");
+        parseEJBJar(ejbJarUnknownNamespace, EJBJar.VERSION_3_0,
+                    UNSUPPORTED_DESCRIPTOR_NAMESPACE_ALT_MESSAGE,
+                    UNSUPPORTED_DESCRIPTOR_NAMESPACE_MESSAGES);
     }
 
     @Test
     public void testEJBUnknownVersion() throws Exception {
-        parseEJBJar(ejbJarUnknownVersion, EJBJar.VERSION_3_0, "unsupported.descriptor.version", "unknown");
+        parseEJBJar(ejbJarUnknownVersion, EJBJar.VERSION_3_0,
+                    UNSUPPORTED_DESCRIPTOR_VERSION_ALT_MESSAGE,
+                    UNSUPPORTED_DESCRIPTOR_VERSION_MESSAGES);
     }
 }

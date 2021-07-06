@@ -40,16 +40,20 @@ public class JSFAppTest extends JSFAppTestBase {
                     effectiveMax = maxSchemaVersion;
                 }
 
-                String[] expectedMessages;
+                String altMessage;
+                String[] messages;
                 if ( schemaVersion > effectiveMax ) {
-                    expectedMessages = unsupportedSchemaMessages;
+                    altMessage = UNPROVISIONED_DESCRIPTOR_VERSION_ALT_MESSAGE;
+                    messages = UNPROVISIONED_DESCRIPTOR_VERSION_MESSAGES;
                 } else {
-                    expectedMessages = null;
+                    altMessage = null;
+                    messages = null;
                 }
 
                 FacesConfig facesConfig = parse(
                     jsf(schemaVersion, ""),
-                    maxSchemaVersion, expectedMessages );
+                    maxSchemaVersion,
+                    altMessage, messages );
 
                 if ( schemaVersion <= effectiveMax ) {
                     Assert.assertEquals( schemaVersionStr, facesConfig.getVersion() );

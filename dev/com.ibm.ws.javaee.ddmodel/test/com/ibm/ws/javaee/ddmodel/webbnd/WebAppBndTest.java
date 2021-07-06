@@ -40,7 +40,7 @@ public class WebAppBndTest extends WebAppBndTestBase {
     }
 
     public void testXMIInXMLError() throws Exception {
-        parseWebBndXML( webBndXMI20(), "xml.error", "unknown" );
+        parseWebBndXML( webBndXMI20(),  XML_ERROR_ALT_MESSAGE, XML_ERROR_MESSAGES );
     }
 
     @Test

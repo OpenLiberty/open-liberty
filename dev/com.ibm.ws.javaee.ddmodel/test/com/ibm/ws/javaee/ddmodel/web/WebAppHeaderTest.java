@@ -206,7 +206,8 @@ public class WebAppHeaderTest extends WebAppTestBase {
     @Test
     public void testVersionOnlyUnknown() throws Exception {
         parseWebApp(webAppVersionOnlyUnknown,
-                "unsupported.descriptor.version", "CWWKC2272E"); 
+                    UNSUPPORTED_DESCRIPTOR_VERSION_ALT_MESSAGE,
+                    UNSUPPORTED_DESCRIPTOR_VERSION_MESSAGES);
     }
 
     // A un-provisioned version message is generated when the version is known
@@ -215,7 +216,8 @@ public class WebAppHeaderTest extends WebAppTestBase {
     @Test
     public void testVersionOnlyUnprovisioned() throws Exception {
         parseWebApp(webAppVersionOnly50, WebApp.VERSION_3_1,
-                "unprovisioned.descriptor.version", "CWWKC2272E"); 
+                    UNPROVISIONED_DESCRIPTOR_VERSION_ALT_MESSAGE,
+                    UNPROVISIONED_DESCRIPTOR_VERSION_MESSAGES);
     }
 
     //
@@ -276,7 +278,8 @@ public class WebAppHeaderTest extends WebAppTestBase {
     @Test
     public void testSchemaOnlyUnknown() throws Exception {
         parseWebApp(webAppSchemaOnlyUnknown,
-                "unsupported.descriptor.namespace", "CWWKC2272E");
+                    UNSUPPORTED_DESCRIPTOR_NAMESPACE_ALT_MESSAGE,
+                    UNSUPPORTED_DESCRIPTOR_NAMESPACE_MESSAGES);
     }
     
     // A un-provisioned schema message is generated when the schema is known
@@ -285,6 +288,8 @@ public class WebAppHeaderTest extends WebAppTestBase {
     @Test
     public void testSchemaOnlyUnprovisioned() throws Exception {
         parseWebApp(webAppSchemaOnly50, WebApp.VERSION_3_1,
-                "unprovisioned.descriptor.version", "CWWKC2272E");
+                    UNPROVISIONED_DESCRIPTOR_VERSION_ALT_MESSAGE,
+                    UNPROVISIONED_DESCRIPTOR_VERSION_MESSAGES);
+
     }    
 }

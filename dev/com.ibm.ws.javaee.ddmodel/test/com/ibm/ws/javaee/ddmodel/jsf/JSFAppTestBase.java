@@ -10,65 +10,16 @@
  *******************************************************************************/
 package com.ibm.ws.javaee.ddmodel.jsf;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.util.Arrays;
-
 import org.jmock.Expectations;
 import org.osgi.framework.ServiceReference;
 
 import com.ibm.ws.javaee.dd.jsf.FacesConfig;
 import com.ibm.ws.javaee.ddmodel.DDTestBase;
 import com.ibm.ws.javaee.version.FacesVersion;
-import com.ibm.wsspi.adaptable.module.Container;
-import com.ibm.wsspi.adaptable.module.Entry;
-import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
-import com.ibm.wsspi.artifact.ArtifactContainer;
-import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 
 public class JSFAppTestBase extends DDTestBase {
-    @SuppressWarnings("deprecation")
-    protected FacesConfig parse(String xmlText, int maxSchemaVersion, String... messages) throws Exception {
-        OverlayContainer rootOverlay =
-            mockery.mock(OverlayContainer.class, "rootOverlay" + mockId++);
-        ArtifactContainer artifactContainer =
-            mockery.mock(ArtifactContainer.class, "artifactContainer" + mockId++);
-
-        mockery.checking(new Expectations() {
-            {
-                allowing(rootOverlay).getFromNonPersistentCache(with(any(String.class)), with(any(Class.class)));
-                will(returnValue(null));
-                allowing(rootOverlay).addToNonPersistentCache(with(any(String.class)), with(any(Class.class)), with(any(Object.class)));
-
-                allowing(artifactContainer).getPath();
-                will(returnValue("/"));
-            }
-        });
-
-        Container moduleRoot = mockery.mock(Container.class, "moduleRoot" + mockId++);
-        Entry ddEntry = mockery.mock(Entry.class, "entry" + mockId++);
-
-        mockery.checking(new Expectations() {
-            {
-                allowing(moduleRoot).adapt(Entry.class);
-                will(returnValue(null));
-                allowing(moduleRoot).getPhysicalPath();
-                will(returnValue("/root/wlp/usr/servers/server1/apps/myWar.war"));   
-                allowing(moduleRoot).getPath();
-                will(returnValue("/"));
-                allowing(moduleRoot).getEntry(FacesConfig.DD_NAME);
-                will(returnValue(ddEntry));
-
-                allowing(ddEntry).getRoot();
-                will(returnValue(moduleRoot));
-                allowing(ddEntry).getPath();
-                will(returnValue('/' + FacesConfig.DD_NAME));
-                allowing(ddEntry).adapt(InputStream.class);
-                will(returnValue(new ByteArrayInputStream(xmlText.getBytes("UTF-8"))));
-            }
-        });
-        
-        @SuppressWarnings("unchecked")
+    private FacesConfigAdapter createFacesAdapter(int maxSchemaVersion) {
+        @SuppressWarnings("unchecked")        
         ServiceReference<FacesVersion> versionRef =
             mockery.mock(ServiceReference.class, "sr" + mockId++);
 
@@ -79,38 +30,31 @@ public class JSFAppTestBase extends DDTestBase {
             }
         });
 
-        FacesConfigAdapter adapter = new FacesConfigAdapter();
-        adapter.setVersion(versionRef);
+        FacesConfigAdapter ddAdapter = new FacesConfigAdapter();
+        ddAdapter.setVersion(versionRef);
+    
+        return ddAdapter;
+    }
+    
+    protected FacesConfig parse(String ddText, int maxSchemaVersion) throws Exception {
+        return parse(ddText, maxSchemaVersion, null);
+    }
 
-        Exception boundException;
+    protected FacesConfig parse(
+            String ddText,
+            int maxSchemaVersion,
+            String altMessage, String... messages) throws Exception {
 
-        try {
-            FacesConfig facesConfig = adapter.adapt(moduleRoot, rootOverlay, artifactContainer, moduleRoot);
-            if ( (messages != null) && (messages.length != 0) ) {
-                throw new Exception("Expected exception text [ " + Arrays.toString(messages) + " ]");
-            }
-            return facesConfig;
+        String appPath = null;
+        String modulePath = "/root/wlp/usr/servers/server1/apps/myWar.war";
+        String fragmentPath = null;
 
-        } catch ( UnableToAdaptException e ) {
-            Throwable cause = e.getCause();
-            if ( cause instanceof Exception ) {
-                boundException = (Exception) cause;
-            } else {
-                boundException = e;
-            }
-        }
+        String ddPath = FacesConfig.DD_NAME;
 
-        if ( (messages != null) && (messages.length != 0) ) {
-            String message = boundException.getMessage();
-            if ( message != null ) {
-                for ( String expected : messages ) {
-                    if ( message.contains(expected) ) {
-                        return null;
-                    }
-                }
-            }
-        }
-        throw boundException;          
+        return parse(
+                appPath, modulePath, fragmentPath,
+                ddText, createFacesAdapter(maxSchemaVersion), ddPath,
+                altMessage, messages);                    
     }
 
     protected static final String jsf10Head =

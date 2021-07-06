@@ -149,12 +149,16 @@ public class JSFAppHeaderTest extends JSFAppTestBase {
 
     @Test
     public void testJSF_NamespaceOnlyUnknown() throws Exception {
-        parse(jsfNamespaceOnlyUnknown, FacesConfig.VERSION_2_3, "unsupported.descriptor.namespace");
+        parse(jsfNamespaceOnlyUnknown, FacesConfig.VERSION_2_3,
+              UNSUPPORTED_DESCRIPTOR_NAMESPACE_ALT_MESSAGE,
+              UNSUPPORTED_DESCRIPTOR_NAMESPACE_MESSAGES);
     }
 
     @Test
     public void testJSF_VersionOnlyUnknown() throws Exception {
-        parse(jsfVersionOnlyUnknown, FacesConfig.VERSION_2_3, "unsupported.descriptor.version");
+        parse(jsfVersionOnlyUnknown, FacesConfig.VERSION_2_3,
+              UNSUPPORTED_DESCRIPTOR_VERSION_ALT_MESSAGE,
+              UNSUPPORTED_DESCRIPTOR_VERSION_MESSAGES);
     }
 }
 

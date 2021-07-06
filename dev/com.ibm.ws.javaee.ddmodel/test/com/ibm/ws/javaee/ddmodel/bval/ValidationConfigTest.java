@@ -64,7 +64,8 @@ public class ValidationConfigTest extends ValidationConfigTestBase {
     @Test
     public void testVersion11NoNamespace() throws Exception {
         parse( validationConfig11NoNamespace(),
-               "missing.descriptor.namespace", "unknown" );
+               MISSING_DESCRIPTOR_NAMESPACE_ALT_MESSAGE,
+               MISSING_DESCRIPTOR_NAMESPACE_ALT_MESSAGES );
     }
 
     @Test
@@ -96,19 +97,22 @@ public class ValidationConfigTest extends ValidationConfigTestBase {
     @Test
     public void testVersion10Only() throws Exception {
         parse( validationConfigVersion10Only(),
-               "missing.descriptor.namespace", "unknown" );
+               MISSING_DESCRIPTOR_NAMESPACE_ALT_MESSAGE,
+               MISSING_DESCRIPTOR_NAMESPACE_ALT_MESSAGES );
     }
 
     @Test
     public void testVersion11Only() throws Exception {
         parse( validationConfigVersion11Only(),
-               "missing.descriptor.namespace", "unknown" );
+               MISSING_DESCRIPTOR_NAMESPACE_ALT_MESSAGE,
+               MISSING_DESCRIPTOR_NAMESPACE_ALT_MESSAGES );
     }
 
     @Test
     public void testVersion12Only() throws Exception {
         parse( validationConfigVersion12Only(),
-               "missing.descriptor.namespace", "unknown" );
+               MISSING_DESCRIPTOR_NAMESPACE_ALT_MESSAGE,
+               MISSING_DESCRIPTOR_NAMESPACE_ALT_MESSAGES );
     }
 
     //

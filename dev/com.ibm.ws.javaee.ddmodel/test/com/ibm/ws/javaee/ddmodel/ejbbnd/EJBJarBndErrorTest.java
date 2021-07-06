@@ -39,7 +39,7 @@ public class EJBJarBndErrorTest extends EJBJarBndTestBase {
     public void testGetVersionError() throws Exception {
         parseEJBJarBndXML(ejbJarBndInvalidVersion,
                           "unsupported.descriptor.version",
-                          "CWWKC2263", "3.0", "ibm-ejb-jar-bnd.xml"); 
+                          "CWWKC2261", "3.0", "ibm-ejb-jar-bnd.xml"); 
     }
 
     @Test

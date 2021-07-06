@@ -40,7 +40,7 @@ public class EJBJarExtBeanErrorTest extends EJBJarExtTestBase {
 
     @Test
     public void testGetVersionError() throws Exception {
-        parseEJBJarExtXML(ejbJarExtBadVersion(), "unsupported.descriptor.version", "CWWKC2263");
+        parseEJBJarExtXML(ejbJarExtBadVersion(), "unsupported.descriptor.version", "CWWKC2261");
     }
 
     @Test

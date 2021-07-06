@@ -404,20 +404,25 @@ public class DDTestBase {
 
     //
 
+    public static final String MISSING_DESCRIPTOR_NAMESPACE_ALT_MESSAGE =
+            "missing.descriptor.namespace";
+    public static final String[] MISSING_DESCRIPTOR_NAMESPACE_ALT_MESSAGES =
+            { "CWWKC2264E" };    
+    
     public static final String UNSUPPORTED_DESCRIPTOR_NAMESPACE_ALT_MESSAGE =
             "unsupported.descriptor.namespace";
     public static final String[] UNSUPPORTED_DESCRIPTOR_NAMESPACE_MESSAGES =
-            { "unknown" };
-
+            { "CWWCK27780E" };
+    
     public static final String UNSUPPORTED_DESCRIPTOR_VERSION_ALT_MESSAGE =
             "unsupported.descriptor.version";
     public static final String[] UNSUPPORTED_DESCRIPTOR_VERSION_MESSAGES =
-            { "unknown" };
+            { "CWWKC2261E" };
             
     public static final String UNPROVISIONED_DESCRIPTOR_VERSION_ALT_MESSAGE =    
             "unprovisioned.descriptor.version";            
     public static final String[] UNPROVISIONED_DESCRIPTOR_VERSION_MESSAGES =
-            { "CWWKC2262E" };
+            { "CWWKC2263E" };
 
     public static final String XML_ERROR_ALT_MESSAGE =
             "xml.error";    

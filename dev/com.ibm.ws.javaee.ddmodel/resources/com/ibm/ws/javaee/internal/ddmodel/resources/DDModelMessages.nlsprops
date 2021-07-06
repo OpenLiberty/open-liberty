@@ -95,9 +95,9 @@ invalid.href.prefix.useraction=Correct the deployment descriptor.
 #    {1} is the number of a line within the deployment descriptor
 #    {2} is a version attribute value within the deployment descriptor
 # -----------------------------------------------------------------------
-unknown.deployment.descriptor.version=CWWKC2261E: The deployment descriptor {0}, at line {1}, specifies unsupported version {2}.
-unknown.deployment.descriptor.version.explanation=The version which was specified in the deployment descriptor is not valid for that type of deployment descriptor.
-unknown.deployment.descriptor.version.useraction=Correct the version specified in the deployment descriptor.
+unsupported.descriptor.version=CWWKC2261E: The deployment descriptor {0}, at line {1}, specifies unsupported version {2}.
+unsupported.descriptor.version.explanation=The version which was specified in the deployment descriptor is not valid for that type of deployment descriptor.
+unsupported.descriptor.version.useraction=Correct the version specified in the deployment descriptor.
 
 # REMOVED:
 # invalid.deployment.descriptor.namespace=CWWKC2262E: The server is unable to process the {3} version and the {2} namespace in the {0} deployment descriptor on line {1}.
@@ -121,11 +121,10 @@ unsupported.descriptor.namespace.useraction=Correct the namespace specified in t
 #    {0} is the path to a deployment descriptor, including paths to parent archives
 #    {1} is the number of a line within the deployment descriptor
 #    {2} is a namespace value within the deployment descriptor
-#    {3} is the correct namespace value which should be present in the deployment descriptor
 # -----------------------------------------------------------------------
-unsupported.descriptor.namespace=CWWCK27780W: The deployment descriptor {0}, at line {1}, specifies namespace {2}, but should have namespace {3}.
-unsupported.descriptor.namespace.explanation=The deployment descriptor has an incorrect namespace.  The namespace was ignored.
-unsupported.descriptor.namespace.useraction=Correct the namespace to a value which is valid for the deployment descriptor.
+unsupported.descriptor.namespace=CWWCK27780E: The deployment descriptor {0}, at line {1}, specifies unsupported namespace {2}.
+unsupported.descriptor.namespace.explanation=The deployment descriptor has an incorrect namespace.
+unsupported.descriptor.namespace.useraction=Correct the namespace to a valid value.
 
 # ADDED:
 # -----------------------------------------------------------------------
