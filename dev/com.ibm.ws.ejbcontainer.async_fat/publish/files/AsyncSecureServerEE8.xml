@@ -1,8 +1,8 @@
 <server>
     <featureManager>
-        <feature>servlet-3.1</feature>
+        <feature>servlet-4.0</feature>
         <feature>ejbLite-3.2</feature>
-        <feature>appSecurity-2.0</feature>
+        <feature>appSecurity-3.0</feature>
         <feature>componenttest-1.0</feature>
     </featureManager>
 
@@ -11,6 +11,22 @@
         <user name="userB" password="userBpass" />
         <user name="userC" password="userCpass" />
     </basicRegistry>
+
+    <application type="ear" id="AsyncSecureTestApp" name="AsyncSecureTestApp" location="AsyncSecureTestApp.ear">
+        <application-bnd>
+            <security-role name="Role1">
+                <user name="userA"/>
+            </security-role>
+            <security-role name="Role2">
+                <user name="userB"/>
+            </security-role>
+            <security-role name="Role3">
+                <user name="userA"/>
+                <user name="userC"/>
+                <run-as userid="userA"/>
+            </security-role>
+        </application-bnd>
+    </application>
 
     <include location="../fatTestPorts.xml"/>
 
