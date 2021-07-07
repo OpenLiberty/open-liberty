@@ -23,10 +23,14 @@ import org.apache.cxf.interceptor.*;
 import org.apache.cxf.io.CachedOutputStream;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.phase.Phase;
+import org.apache.cxf.staxutils.StaxUtils;
+import org.apache.cxf.message.MessageUtils;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.jaxws.JaxWsConstants;
+import javax.xml.stream.XMLStreamReader;
+import java.io.ByteArrayInputStream;
 
 /**
  * A simple logging handler which outputs the bytes of the message to the
@@ -90,19 +94,27 @@ public class LibertyLoggingInInterceptor extends LoggingInInterceptor {
     @Override
     public void handleMessage(Message message) throws Fault {
 
+	Boolean validate = MessageUtils.isTrue(message.getContextualProperty("cxf.enable.schema.validation"));
+        if (tc.isDebugEnabled()) {
+           Tr.debug(tc, "Property cxf.enable.schema.validation is set to: " + validate);
+        }
+
         Logger logger = getMessageLogger(message);
         if (tc.isDebugEnabled()) {
             if (logger.isLoggable(Level.INFO) || writer != null) {
-                logging(logger, message);
+                newlogging(logger, message, validate);
             }
         } else if (loggingInterceptorConfigProp) {
             if (logger.isLoggable(Level.INFO) || writer != null) {
-                logging(logger, message);
+                newlogging(logger, message, validate);
             }
         }
+	else if (validate) {
+	    validatelogging(logger, message);
+	}
     }
 
-    protected void logging(Logger logger, Message message) throws Fault {
+    protected void newlogging(Logger logger, Message message, Boolean validateXml) throws Fault {
         if (message.containsKey(LoggingMessage.ID_KEY)) {
             return;
         }
@@ -196,7 +208,138 @@ public class LibertyLoggingInInterceptor extends LoggingInInterceptor {
 
             }
         }
+
+	if (validateXml) {
+
+	   // Validate format of SOAP message, checks for missing end-tag elements, etc.
+	   ByteArrayInputStream paybais = null;
+	   XMLStreamReader xmlReader1 = null;
+	   try {
+	      paybais = new ByteArrayInputStream(buffer.getPayload().toString().getBytes());
+	      xmlReader1 = StaxUtils.createXMLStreamReader(paybais);
+	      if (xmlReader1 != null) {
+	         while (xmlReader1.hasNext()) {
+	            xmlReader1.next();
+	         }
+              }
+	   }
+	   catch (Exception e1) {
+              if (tc.isDebugEnabled()) {
+                 Tr.debug(tc, "Exception occurred validating XML: " + e1);
+              }
+              throw new Fault(e1);
+	   }
+	   finally {
+	      try {
+	         if (xmlReader1 != null) {
+		    xmlReader1.close();
+	         }	
+	         if (paybais != null) {
+	            paybais.close();
+	         }
+	      }
+	      catch (Exception e2) {
+	        // Ignore
+	      }
+	   }
+	}  // end if validateXml
+
         log(logger, formatLoggingMessage(buffer));
+
+    }
+
+
+    protected void logging(Logger logger, Message message) throws Fault {
+
+	newlogging(logger, message, false);
+
+    }
+
+
+    protected void validatelogging(Logger logger, Message message) throws Fault {
+
+        final LoggingMessage buffer = new LoggingMessage("0", "1");
+        String ct = (String) message.get(Message.CONTENT_TYPE);
+        String encoding = (String) message.get(Message.ENCODING);
+
+        if (!isShowBinaryContent() && isBinaryContent(ct)) {
+            // buffer.getMessage().append(BINARY_CONTENT_MESSAGE).append('\n');
+            // log(logger, buffer.toString());
+            return;
+        }
+
+        InputStream is = message.getContent(InputStream.class);
+        if (is != null) {
+            CachedOutputStream bos = new CachedOutputStream();
+            if (threshold > 0) {
+                bos.setThreshold(threshold);
+            }
+            try {
+                IOUtils.copy(is, bos);
+                bos.flush();
+                is.close();
+                message.setContent(InputStream.class, bos.getInputStream());
+                if (bos.getTempFile() != null) {
+                    //large thing on disk...
+                    buffer.getMessage().append("\nMessage (saved to tmp file):\n");
+                    buffer.getMessage().append("Filename: " + bos.getTempFile().getAbsolutePath() + "\n");
+                }
+                if (bos.size() > limit) {
+                    buffer.getMessage().append("(message truncated to " + limit + " bytes)\n");
+                }
+                writePayload(buffer.getPayload(), bos, encoding, ct);
+
+                bos.close();
+            } catch (Exception e) {
+                throw new Fault(e);
+            }
+        } else {
+            Reader reader = message.getContent(Reader.class);
+            if (reader != null) {
+                try {
+                    BufferedReader r = new BufferedReader(reader, limit);
+                    r.mark(limit);
+                    char b[] = new char[limit];
+                    int i = r.read(b);
+                    buffer.getPayload().append(b, 0, i);
+                    r.reset();
+                    message.setContent(Reader.class, r);
+                } catch (Exception e) {
+                    throw new Fault(e);
+                }
+
+            }
+        }
+
+	// Validate format of SOAP message, checks for missing end-tag elements, etc.
+	ByteArrayInputStream paybais = null;
+	XMLStreamReader xmlReader1 = null;
+	try {
+	   paybais = new ByteArrayInputStream(buffer.getPayload().toString().getBytes());
+	   xmlReader1 = StaxUtils.createXMLStreamReader(paybais);
+	   if (xmlReader1 != null) {
+	      while (xmlReader1.hasNext()) {
+	         xmlReader1.next();
+	      }
+           }
+	}
+	catch (Exception e1) {
+           throw new Fault(e1);
+	}
+	finally {
+	   try {
+	      if (xmlReader1 != null) {
+	  xmlReader1.close();
+	      }	
+	      if (paybais != null) {
+	         paybais.close();
+	      }
+	   }
+	   catch (Exception e2) {
+	     // Ignore
+	   }
+	}
+
     }
 
     protected String formatLoggingMessage(LoggingMessage loggingMessage) {
