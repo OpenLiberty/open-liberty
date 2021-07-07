@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2017 IBM Corporation and others.
+ * Copyright (c) 2010, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -405,6 +405,7 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService, Clas
         if (loader != null)
             return loader;
         EnumSet<ApiType> apiTypeVisibility = lib.getApiTypeVisibility();
+        boolean isSpiVisible = lib.getSpiTypeVisibility();
 
         ClassLoaderConfiguration clsCfg = createClassLoaderConfiguration().setId(clId).setSharedLibraries(lib.id());
 
@@ -423,7 +424,8 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService, Clas
         AppClassLoader result = new ClassLoaderFactory(bundleContext, digraph, classloaders, aclStore, resourceProviders, redefiner, generatorManager, globalConfig)
                         .configure(createGatewayConfiguration().setApplicationName(SHARED_LIBRARY_DOMAIN + ": " + lib.id())
                                         .setDynamicImportPackage("*")
-                                        .setApiTypeVisibility(apiTypeVisibility))
+                                        .setApiTypeVisibility(apiTypeVisibility)
+                                        .setSpiTypeVisibility(isSpiVisible))
                         .configure(clsCfg)
                         .onCreate(listenForLibraryChanges(lib.id()))
                         .getCanonical();

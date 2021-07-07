@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2020 IBM Corporation and others.
+ * Copyright (c) 2009, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -150,6 +150,8 @@ public class Provisioner {
     private static final String THREAD_CONTEXT_FILTER = "(thread-context=true)";
 
     private static final String REGION_KERNEL = "org.eclipse.equinox.region.kernel";
+
+    private static final String REGION_ALL_SPI = "liberty.all.spi";
 
     /** Owning/Associated feature manager */
     private final FeatureManager featureManager;
@@ -750,6 +752,12 @@ public class Provisioner {
                 productHub.connectRegion(regionApiHub, filter);
             }
         }
+
+        Region regionSpiHub = digraph.getRegion(REGION_ALL_SPI);
+        if (regionSpiHub == null) {
+            regionSpiHub = digraph.createRegion(REGION_ALL_SPI);
+            productHub.connectRegion(regionSpiHub, filter);
+        }
     }
 
     private Region createProductRegion(String productName, String productRegionName, Set<String> productApiServices, RegionDigraph digraph, Set<Long> bundleIds,
@@ -790,6 +798,8 @@ public class Provisioner {
         List<String> userDefinedApiFilters = new ArrayList<String>();
         List<String> internalApiFilters = new ArrayList<String>();
         List<String> osgiAppsAPIFilters = new ArrayList<String>();
+        List<String> spiFilters = new ArrayList<String>();
+
         for (Iterator<String> gatewayPackages = featureManager.packageInspector.getGatewayPackages(productName); gatewayPackages.hasNext();) {
             String packageName = gatewayPackages.next();
             if (apiPackagesToIgnore.contains(packageName)) {
@@ -826,6 +836,9 @@ public class Provisioner {
                 if (type.isUserDefinedApi()) {
                     userDefinedApiFilters.add(clause);
                 }
+                if (type.isSpi()) {
+                    spiFilters.add(clause);
+                }
             }
         }
 
@@ -838,6 +851,8 @@ public class Provisioner {
         connectGatewayRegion(ApiRegion.USER, userDefinedApiFilters, productRegion, null, digraph);
         connectGatewayRegion(ApiRegion.INTERNAL, internalApiFilters, productRegion, null, digraph);
         connectGatewayRegion(ApiRegion.THREAD_CONTEXT, Collections.singletonList(THREAD_CONTEXT_FILTER), productRegion, null, digraph);
+
+        connectGatewaySpiRegion(spiFilters, productRegion, digraph);
     }
 
     /**
@@ -902,6 +917,22 @@ public class Provisioner {
         }
 
         Region regionApiHub = digraph.getRegion(apiRegion.getRegionName());
+        regionApiHub.connectRegion(productRegion, toProductBuilder.build());
+    }
+
+    private void connectGatewaySpiRegion(List<String> packageFilters, Region productRegion, RegionDigraph digraph) throws InvalidSyntaxException, BundleException {
+        RegionFilterBuilder toProductBuilder = digraph.createRegionFilterBuilder();
+
+        toProductBuilder.allow(RegionFilter.VISIBLE_ALL_NAMESPACE, COMMON_ALL_NAMESPACE_FILTER);
+        toProductBuilder.allow(BundleNamespace.BUNDLE_NAMESPACE, COMMON_BUNDLE_NAMESPACE_FILTER);
+
+        // Create a sharing rule for importing all capabilities in the osgi.wiring.package namespace
+        // which are SPI packages.
+        for (String packageFilter : packageFilters) {
+            toProductBuilder.allow(RegionFilter.VISIBLE_PACKAGE_NAMESPACE, packageFilter);
+        }
+
+        Region regionApiHub = digraph.getRegion(REGION_ALL_SPI);
         regionApiHub.connectRegion(productRegion, toProductBuilder.build());
     }
 
