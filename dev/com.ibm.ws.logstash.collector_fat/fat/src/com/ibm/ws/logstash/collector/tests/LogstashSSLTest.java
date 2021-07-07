@@ -84,7 +84,8 @@ public class LogstashSSLTest extends LogstashCollectorTest {
         if (!checkGcSpecialCase()) {
             found_liberty_gc_at_startup = waitForStringInContainerOutput(LIBERTY_GC) != null;
         }
-
+        
+        assertNotNull("The application is not ready", server.waitForStringInLogUsingMark("CWWKT0016I", 10000));
         assertNotNull("Cannot find TRAS0218I from Logstash output", waitForStringInContainerOutput("TRAS0218I"));
         clearContainerOutput();
     }
