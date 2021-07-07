@@ -50,22 +50,8 @@ Export-Package: \
 
 # include the service providers and metatype
 Include-Resource: \
-  META-INF=@src/META-INF, \
   OSGI-INF=resources/OSGI-INF, \
   OSGI-INF/metatype/metatype.xml=resources/OSGI-INF/metatype/metatype.xml
-
-# expose the service providers to be consumed by grpc-common bundle
-Service-Component: \
-  io.openliberty.grpc.internal.client.ResourceProvider; \
-    implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
-    provide:=com.ibm.wsspi.classloading.ResourceProvider; \
-    configuration-policy:=optional; \
-    properties:="resources=${app-resources}"
-
-app-resources= \
-  META-INF/services/io.grpc.ManagedChannelProvider
-
-Provide-Capability: osgi.serviceloader;osgi.serviceloader=io.grpc.ManagedChannelProvider
 
 instrument.disabled: true
 
