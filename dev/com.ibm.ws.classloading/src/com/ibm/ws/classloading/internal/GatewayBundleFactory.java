@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -52,8 +52,10 @@ class GatewayBundleFactory {
     private static final String REGION_PREFIX = "liberty.gateway";
     private static final String REGION_POSTFIX = ".hub";
     private static final String REGION_PRODUCT_HUB = "liberty.product.api.spi.hub";
+    private static final String REGION_ALL_SPI = "liberty.all.spi";
     //package visibility for the hook factory..
-    static final String MANIFEST_GATEWAY_ALLOWEDTYPES_PROPERTY_KEY = "IBM-ApiTypeVisibility";
+    static final String MANIFEST_GATEWAY_ALLOWEDAPITYPES_PROPERTY_KEY = "IBM-ApiTypeVisibility";
+    static final String MANIFEST_GATEWAY_ALLOWEDSPITYPES_PROPERTY_KEY = "IBM-SpiTypeVisibility";
     static final String GATEWAY_BUNDLE_MARKER = "IBM-GatewayBundle";
     protected final BundleContext bundleContext;
     private final FrameworkWiring frameworkWiring;
@@ -153,16 +155,17 @@ class GatewayBundleFactory {
                         .requireBundles(gwConfig.getRequireBundle())
                         .dynamicallyImportPackages(gwConfig.getDynamicImportPackage())
                         .addAttributeValues(GATEWAY_BUNDLE_MARKER, "true")
-                        .addManifestAttribute(MANIFEST_GATEWAY_ALLOWEDTYPES_PROPERTY_KEY, gwConfig.getApiTypeVisibility())
+                        .addManifestAttribute(MANIFEST_GATEWAY_ALLOWEDAPITYPES_PROPERTY_KEY, gwConfig.getApiTypeVisibility())
+                        .addAttributeValues(MANIFEST_GATEWAY_ALLOWEDSPITYPES_PROPERTY_KEY, gwConfig.getSpiTypeVisibility() ? "spi" : "")
                         .setBundleLocationPrefix(BUNDLE_LOCATION_PREFIX)
                         .setBundleLocation(clConfig.getId().toString())
                         .setBundleContext(bundleContext)
-                        .setRegion(getRegion(gwConfig.getApiTypeVisibility()))
+                        .setRegion(getRegion(gwConfig.getApiTypeVisibility(), gwConfig.getSpiTypeVisibility()))
                         .setLazyActivation(true)
                         .createBundle();
     }
 
-    private Region getRegion(EnumSet<ApiType> apiTypeVisibility) {
+    private Region getRegion(EnumSet<ApiType> apiTypeVisibility, final boolean isSpiVisible) {
         if (digraph == null) {
             // this is for testing purposes
             return null;
@@ -177,15 +180,18 @@ class GatewayBundleFactory {
         for (ApiType apiType : apiTypeVisibility) {
             regionName.append('.').append(apiType.toString());
         }
+        if (isSpiVisible) {
+            regionName.append('.').append("spi");
+        }
         regionName.append(REGION_POSTFIX);
         Region region = digraph.getRegion(regionName.toString());
         if (region == null) {
-            return createRegion(apiTypeVisibility, regionName.toString());
+            return createRegion(apiTypeVisibility, isSpiVisible, regionName.toString());
         }
         return region;
     }
 
-    private Region createRegion(final EnumSet<ApiType> apiTypeVisibility, final String regionName) {
+    private Region createRegion(final EnumSet<ApiType> apiTypeVisibility, final boolean isSpiVisible, final String regionName) {
         try {
             ApiRegion.update(digraph, new Callable<RegionDigraph>() {
                 @Override
@@ -199,7 +205,7 @@ class GatewayBundleFactory {
                             return null;
                         }
                         region = copy.createRegion(regionName);
-                        connectToApiRegions(region, apiTypeVisibility, copy);
+                        connectToApiRegions(region, apiTypeVisibility, isSpiVisible, copy);
                         connectProductHubToGatewayRegion(region, copy);
                         return copy;
                     } catch (BundleException e) {
@@ -215,7 +221,7 @@ class GatewayBundleFactory {
         return digraph.getRegion(regionName);
     }
 
-    private void connectToApiRegions(Region region, EnumSet<ApiType> apiTypeVisibility, RegionDigraph copy) throws BundleException {
+    private void connectToApiRegions(Region region, EnumSet<ApiType> apiTypeVisibility, boolean isSpiVisible, RegionDigraph copy) throws BundleException {
         RegionFilterBuilder allBuilder = copy.createRegionFilterBuilder();
         // We want to import ALL from the api regions
         allBuilder.allowAll(RegionFilter.VISIBLE_ALL_NAMESPACE);
@@ -226,6 +232,11 @@ class GatewayBundleFactory {
             connectToInternal |= apiRegionType.delegateInternal();
             Region apiRegion = copy.getRegion(apiRegionType.getRegionName());
             region.connectRegion(apiRegion, allBuilder.build());
+        }
+        if (isSpiVisible) {
+            connectToInternal |= true;
+            Region spiRegion = copy.getRegion(REGION_ALL_SPI);
+            region.connectRegion(spiRegion, allBuilder.build());
         }
         if (connectToInternal) {
             // connect to the internal region if one of the base api types says to

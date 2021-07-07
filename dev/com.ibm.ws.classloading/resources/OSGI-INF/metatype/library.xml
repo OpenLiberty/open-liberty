@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2011,2019 IBM Corporation and others.
+    Copyright (c) 2011, 2021 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -14,55 +14,54 @@
   <OCD name="%library.service.name" description="%library.service.desc"
        id="com.ibm.ws.classloading.sharedlibrary"
        ibm:supportExtensions="true" ibm:alias="library">
-    
-     <AD name="%library.name" description="%library.name.desc"  
-        id="name" 
-        required="false" 
-        type="String"      
+
+     <AD name="%library.name" description="%library.name.desc"
+        id="name"
+        required="false"
+        type="String"
     />
 
-     <AD name="%library.description" description="%library.description.desc"  
-        id="description" 
-        required="false" 
-        type="String"     
+     <AD name="%library.description" description="%library.description.desc"
+        id="description"
+        required="false"
+        type="String"
     />
-    
-     <AD name="%library.fileset.ref" description="%library.fileset.ref.desc"  
-        id="filesetRef" 
-        required="false" 
-        type="String"     
-        cardinality="2147483647"   
+
+     <AD name="%library.fileset.ref" description="%library.fileset.ref.desc"
+        id="filesetRef"
+        required="false"
+        type="String"
+        cardinality="2147483647"
         ibm:type="pid"
         ibm:reference="com.ibm.ws.kernel.metatype.helper.fileset"
     />
-    
-     <AD name="%library.folder.ref" description="%library.folder.ref.desc"  
-        id="folderRef" 
-        required="false" 
-        type="String"     
-        cardinality="2147483647"   
+
+     <AD name="%library.folder.ref" description="%library.folder.ref.desc"
+        id="folderRef"
+        required="false"
+        type="String"
+        cardinality="2147483647"
         ibm:type="pid"
         ibm:reference="com.ibm.ws.classloading.sharedlibrary.folder"
     />
-    
-      <AD name="%library.file.ref" description="%library.file.ref.desc"  
-        id="fileRef" 
-        required="false" 
-        type="String"     
-        cardinality="2147483647"   
+
+     <AD name="%library.file.ref" description="%library.file.ref.desc"
+        id="fileRef"
+        required="false"
+        type="String"
+        cardinality="2147483647"
         ibm:type="pid"
         ibm:reference="com.ibm.ws.classloading.sharedlibrary.file"
     />
-    
+
      <AD name="%library.apis" description="%library.apis.desc"
         id="apiTypeVisibility"
         required="false"
         type="String"
         default="spec\,ibm-api\,api\,stable">
-    </AD>
+     </AD>
 
     <!-- Revisit this in the first fixpack to give proper multi-choice support with defaults.
-    
     <AD name="%library.apis" description="%library.apis.desc"
         id="apiTypeVisibility"
         required="false"
@@ -73,10 +72,18 @@
       <Option label="%library.api.ibmapi" value="ibm-api" description="%library.api.ibmapi.desc"/>
       <Option label="%library.api.api" value="api" description="%library.api.api.desc"/>
       <Option label="%library.api.thirdparty" value="third-party" description="%library.api.thirdparty.desc"/>
-    </AD> -->    
-    
+    </AD> -->
+
+     <AD name="%library.spis" description="%library.spis.desc"
+        id="spiTypeVisibility"
+        required="false"
+        type="String"
+        ibm:beta="true">
+        <Option label="%library.spi.spi" value="spi" description="%library.spi.spi.desc"/>
+     </AD>
+
   </OCD>
-  
+
   <Designate factoryPid="com.ibm.ws.classloading.sharedlibrary">
       <Object ocdref="com.ibm.ws.classloading.sharedlibrary"/>
   </Designate>

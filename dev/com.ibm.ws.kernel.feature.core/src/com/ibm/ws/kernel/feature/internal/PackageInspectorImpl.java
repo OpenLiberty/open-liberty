@@ -142,9 +142,11 @@ public class PackageInspectorImpl implements SharedPackageInspector, Introspecto
         API_ThirdParty(true, "third-party"),
         API_Stable(true, "stable"),
 
-        SPI(false, "spi"),
-        SPI_Spec(false, "spec"),
-        SPI_ThirdParty(false, "third-party");
+        SPI(false, "spi");
+        // SPI types, not currently supported
+        //SPI_Spec(false, "spec"),
+        //SPI_ThirdParty(false, "third-party"),
+        //SPI_IBM(false, "ibm-spi");
 
         private final boolean isApi;
         private final String attributeName;
@@ -460,7 +462,8 @@ public class PackageInspectorImpl implements SharedPackageInspector, Introspecto
         return index.packageIterator(new Filter<PackageInspectorImpl.PackageInfo>() {
             @Override
             public boolean includeValue(String packageName, PackageInfo value) {
-                return value.isApi() && value.exportedByProduct(productName);
+                return (value.isApi() && value.exportedByProduct(productName)) ||
+                       (value.isSpi() && value.exportedByProduct(productName)); // TODO Refactor if v.ebp() call is required
             }
         });
     }

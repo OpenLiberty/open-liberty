@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -89,6 +89,13 @@ public interface GatewayConfiguration {
      */
     GatewayConfiguration setApiTypeVisibility(Iterable<ApiType> types);
 
+    /**
+     * Sets the allowed SPI type to "spi".  Once set, it cannot be unset
+     *
+     * @param isSpiVisible A boolean that indicates SPI type "spi" is allowed to be loaded by the gateway classloader.
+     */
+    GatewayConfiguration setSpiTypeVisibility(boolean isSpiVisible);
+
     Iterable<String> getRequireBundle();
 
     Iterable<String> getImportPackage();
@@ -108,6 +115,12 @@ public interface GatewayConfiguration {
      * @return The set of allowed API types
      */
     EnumSet<ApiType> getApiTypeVisibility();
+
+    /**
+     * Returns true whenever SPI packages are allowed to be seen by a gateway classloader from this configuration.
+     * @return
+     */
+    boolean getSpiTypeVisibility();
 
     String getApplicationName();
 

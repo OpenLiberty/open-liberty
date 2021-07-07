@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,6 +43,8 @@ final class LibraryGeneration {
 
     private volatile boolean cancelled;
     private final SharedLibraryImpl library;
+
+    private final boolean isSpiVisible;
 
     LibraryGeneration(SharedLibraryImpl library, String libraryId, Dictionary<String, Object> props) {
         this.library = library;
@@ -88,11 +90,39 @@ final class LibraryGeneration {
         this.files = files;
         this.folders = folders;
         this.apiTypeVisibility = apiTypeVisibility;
+
+        // BETA: Library SPI visibility
+        String spiTypeVisibility = (String) props.get("spiTypeVisibility");
+        if (spiTypeVisibility == null) {
+            this.isSpiVisible = false;
+        } else if (betaFenceCheck()) {
+            this.isSpiVisible = "spi".equalsIgnoreCase(spiTypeVisibility);
+            if (!this.isSpiVisible && tc.isErrorEnabled())  // Config should handle invalid value
+                Tr.error(tc, "cls.library.config.typo", spiTypeVisibility, displayId, Arrays.asList("spi"));
+        } else {
+            this.isSpiVisible = false;
+        }
+
         if (this.filesetRefs.isEmpty()) {
             filesets = Collections.emptyList();
         } else {
             filesets = new ArrayBlockingQueue<Fileset>(filesetRefs.size());
         }
+    }
+
+    private static boolean issuedBetaMessage = false;
+
+    private boolean betaFenceCheck() {
+        boolean isBeta = com.ibm.ws.kernel.productinfo.ProductInfo.getBetaEdition();
+        if (!issuedBetaMessage) {
+            if (!isBeta) {
+                Tr.info(tc, "BETA: Library SPI type visibility is beta and is not available.");
+            } else {
+                Tr.info(tc, "BETA: Library SPI type visibility has been invoked by class " + this.getClass().getName() + " for the first time.");
+            }
+            issuedBetaMessage = true;
+        }
+        return isBeta;
     }
 
     private List<ArtifactContainer> initContainers(Collection<File> files, Collection<File> folders) {
@@ -147,6 +177,10 @@ final class LibraryGeneration {
 
     EnumSet<ApiType> getApiTypeVisibility() {
         return EnumSet.copyOf((EnumSet<ApiType>) apiTypeVisibility);
+    }
+
+    boolean getSpiTypeVisibility() {
+        return isSpiVisible;
     }
 
     Collection<File> getFiles() {

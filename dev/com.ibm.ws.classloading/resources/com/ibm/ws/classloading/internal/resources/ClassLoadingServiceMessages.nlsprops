@@ -97,6 +97,7 @@ cls.library.archive.useraction=Edit the server configuration and ensure any file
 cls.library.destroyed=CWWKL0018I: The library [{0}] is unavailable.
 cls.library.destroyed.explanation=A library has become unavailable, for example because it was removed from the server configuration.
 cls.library.destroyed.useraction=If the library is still required, ensure that it is still configured correctly.
+
 ####################### CLASS PROVIDER MESSAGES 0030-0039 ####################### 
 #################################################################################
 
@@ -133,9 +134,11 @@ cls.provider.class.space.conflict.useraction=Update the configuration so the del
 slf.no.cache=CWWKL0070E: The cache directory did not create successfully.
 slf.no.cache.explanation=The system was not able to create a folder on the disk.
 slf.no.cache.useraction=Make sure that the drive is has the correct write permissions and that there is enough space on disk
+
 slf.no.acf=CWWKL0071E: A null value was found for the ArtifactContainerFactory object.
 slf.no.acf.explanation=The ArtifactContainerFactory object must not be null when the server is running.
 slf.no.acf.useraction=See the problem determination information on the WebSphere Application Server Support web page: http://www.ibm.com/software/webservers/appserv/was/support or check with the class provider service vendor.
+
 slf.failed.delete=CWWKL0072W: The [{0}] cache file cannot be deleted. This result can lead to the corruption of nested archives.
 slf.failed.delete.explanation=The system failed to delete the cache file. Because the file still exists in the system, this might cause corruption in nested archives.
 slf.failed.delete.useraction=Verify that the cache file is not in a locked state, which can cause the file deletion to fail.
@@ -164,6 +167,14 @@ cls.classloader.config.typo2.useraction=Check the server configuration for inval
 cls.classloader.suggested.feature=CWWKL0084W: The {0} class could not be loaded. Try enabling the {1} feature or a newer version of the feature in the server.xml file.
 cls.classloader.suggested.feature.explanation=A class that is typically provided by one or more server features could not be loaded.
 cls.classloader.suggested.feature.useraction=Try enabling the specified feature or a newer version of the feature in the server.xml file.
+
+# CWWKL0085E is required iff server supports multiple SPI types
+# {0} The invalid SPI type
+# {1} The library containing the invalid SPI type
+# {2} A list of valid SPI types
+cls.library.config.typo=CWWKL0085E: The SPI type [{0}] for {1} is not valid and needs to be changed to one of the valid {2} SPI types.
+cls.library.config.typo.explanation=Change the invalid SPI type to a valid SPI type.
+cls.library.config.typo.useraction=Check the server configuration for invalid SPI type to ensure that the SPI type is correct.
 
 ####################### com.ibm.ws.classloader.context bundle messages 0090-0099 ###################
 ####################################################################################################

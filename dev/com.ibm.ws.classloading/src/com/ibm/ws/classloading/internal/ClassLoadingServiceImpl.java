@@ -429,6 +429,7 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
         if (loader != null)
             return loader;
         EnumSet<ApiType> apiTypeVisibility = lib.getApiTypeVisibility();
+        boolean isSpiVisible = lib.getSpiTypeVisibility();
 
         ClassLoaderConfiguration clsCfg = createClassLoaderConfiguration().setId(clId).setSharedLibraries(lib.id());
 
@@ -447,7 +448,8 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
         AppClassLoader result = new ClassLoaderFactory(bundleContext, digraph, classloaders, aclStore, resourceProviders, redefiner, generatorManager, globalConfig, getSystemTransformers())
                         .configure(createGatewayConfiguration().setApplicationName(SHARED_LIBRARY_DOMAIN + ": " + lib.id())
                                         .setDynamicImportPackage("*")
-                                        .setApiTypeVisibility(apiTypeVisibility))
+                                        .setApiTypeVisibility(apiTypeVisibility)
+                                        .setSpiTypeVisibility(isSpiVisible))
                         .configure(clsCfg)
                         .onCreate(listenForLibraryChanges(lib.id()))
                         .getCanonical();

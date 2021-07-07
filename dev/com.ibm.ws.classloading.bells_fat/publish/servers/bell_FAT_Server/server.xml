@@ -3,12 +3,13 @@
     	<feature>user.feature.meta.inf.services-1.0</feature>
         <feature>servlet-3.1</feature>
         <feature>bells-1.0</feature>
+        <feature>restConnector-2.0</feature>
     </featureManager>
 
     <include location="../fatTestPorts.xml"/>
 
- 	<library id="testImplClassNotConstructible" name="testImplClassNotConstructible" 
-	         description="testImplClassNotConstructible">
+    <library id="testImplClassNotConstructible" name="testImplClassNotConstructible" 
+            description="testImplClassNotConstructible">
         <fileset dir="${server.output.dir}/sharedLib" includes="testImplClassNotConstructible.jar" />
     </library>
 
@@ -71,13 +72,34 @@
     </library>
 
     <bell libraryRef="testNoEntry"/>
-    
+
     <library id="testReadingServicesFile" name="testReadingServicesFile" 
              description="testReadingServicesFile">
         <fileset dir="${server.output.dir}/sharedLib" includes="testReadingServicesFile.jar" />
     </library>
 
     <bell libraryRef="testReadingServicesFile"/>
+
+    <!-- SPI visibility tests use feature restConnector-2.0 to provide ibm-spi packages -->
+
+    <library id="testSpiTypeVisible" name="testSpiTypeVisible"
+            description="testSpiTypeVisible"
+            spiTypeVisibility="spi">
+        <fileset dir="${server.output.dir}/sharedLib" includes="testSpiTypeVisible.jar" />
+    </library>
+
+    <bell libraryRef="testSpiTypeVisible"/>
+
+    <library id="testNoSpiTypeVisible" name="testNoSpiTypeVisible"
+            description="testNoSpiTypeVisible">
+        <fileset dir="${server.output.dir}/sharedLib" includes="testSpiTypeVisible.jar" />
+    </library>
+
+    <bell libraryRef="testNoSpiTypeVisible"/>
+
+    <application location="SpiTypeVisibility.war">
+        <classloader commonLibraryRef="testSpiTypeVisible"/>
+    </application>
 
 </server>
 
