@@ -17,7 +17,7 @@
 	<ltpa id="myLtpa" authFilterRef="myAuthFilter"/>
 	<authFilter id="myAuthFilter">
 		<requestUrl id="myURL" urlPattern="/snoop" matchType="notContain" />
-		<host id="myHost" name="${security.spnego.test.system.host.name}" matchType="contains" />
+		<host id="myHost" name="${security.auth.filter.test.system.host.name}" matchType="contains" />
         <userAgent id="myAgent" agent="IE" matchType="notContain" />
     </authFilter>
 

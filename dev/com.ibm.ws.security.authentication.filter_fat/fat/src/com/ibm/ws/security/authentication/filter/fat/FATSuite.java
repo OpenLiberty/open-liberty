@@ -47,6 +47,9 @@ public class FATSuite {
                 LOCALHOST_DEFAULT_IP_ADDRESS = false;
             }
 
+            InetAddress localHost = InetAddress.getLocalHost();
+            String canonicalHostName = localHost.getCanonicalHostName();
+
             try {
                 CommonTest.commonSetUp("com.ibm.ws.security.authentication.filter.fat.setup", null, AuthFilterConstants.NO_APPS, AuthFilterConstants.NO_PROPS,
                                        AuthFilterConstants.DONT_START_SERVER);

@@ -21,17 +21,18 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.webcontainer.security.test.servlets.BasicAuthClient;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 
 @RunWith(FATRunner.class)
-//@Mode(TestMode.FULL)
+@Mode(TestMode.FULL)
 public class AuthFilterElementTest extends CommonTest {
 
     private static final Class<?> c = AuthFilterElementTest.class;
     private final String LTPA_COOKIE_NAME = "LtpaToken2";
-    String ssoCookie = null;
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -42,7 +43,7 @@ public class AuthFilterElementTest extends CommonTest {
     }
 
     @Before
-    public void createSSOCookie() throws Exception {
+    public void obtainSSOCookie() throws Exception {
         ssoCookie = getAndAssertSSOCookieForUser(AuthFilterConstants.USER0, AuthFilterConstants.USER0_PWD, AuthFilterConstants.IS_EMPLOYEE, AuthFilterConstants.IS_NOT_MANAGER);
     }
 
@@ -73,12 +74,12 @@ public class AuthFilterElementTest extends CommonTest {
      * - Should have an error message for "malformed ip range".
      */
 
-    @Test
-    //@AllowedFFDC({ "java.net.UnknownHostException", "com.ibm.ws.security.authentication.filter.internal.FilterException" })
+    //@Test
+    @AllowedFFDC({ "java.net.UnknownHostException", "com.ibm.ws.security.authentication.filter.internal.FilterException" })
     public void testRemoteAddressWithMalformedIp() throws Exception {
         testHelper.reconfigureServer("remoteAddressWithMalformedIp.xml", name.getMethodName(), AuthFilterConstants.NO_MSGS, AuthFilterConstants.RESTART_SERVER);
         Map<String, String> headers = getCommonHeadersWithSSOCookie(ssoCookie);
-        unsuccessfulLtpaServletCall(headers);
+        successfulLtpaServletCall(headers);
         testHelper.checkForMessages(true, MALFORMED_IPRANGE_SPECIFIED_CWWKS4354E);
     }
 
@@ -185,7 +186,7 @@ public class AuthFilterElementTest extends CommonTest {
 
         testHelper.reconfigureServer("authFilterRefAllElements.xml", name.getMethodName(), AuthFilterConstants.NO_MSGS, AuthFilterConstants.RESTART_SERVER);
 
-        commonSuccessfulLtpaServletCall(ssoCookie);
+        commonSuccessfulLtpaServletCall(ssoCookie, AuthFilterConstants.IE);
 
         List<String> checkMsgs = new ArrayList<String>();
         checkMsgs.add(AUTHENTICATION_FILTER_PROCESSED_CWWKS4358I);
@@ -324,9 +325,8 @@ public class AuthFilterElementTest extends CommonTest {
         testHelper.addBootstrapProperties(myServer, sysProps);
 
         testHelper.reconfigureServer("authFilterMultipleRequestUrl.xml", name.getMethodName(), AuthFilterConstants.NO_MSGS, AuthFilterConstants.RESTART_SERVER);
-        Map<String, String> headers = testHelper.setTestHeaders(null, AuthFilterConstants.IE, TARGET_SERVER, null);
+        Map<String, String> headers = testHelper.setTestHeaders(ssoCookie, AuthFilterConstants.IE, TARGET_SERVER, null);
         headers.put(AuthFilterConstants.HEADER_EMAIL, "sample@email.com");
-        insertSSOCookie(headers, ssoCookie);
         String response = successfulServletCall(AuthFilterConstants.SIMPLE_SERVLET, headers, AuthFilterConstants.USER0, AuthFilterConstants.IS_EMPLOYEE,
                                                 AuthFilterConstants.IS_NOT_MANAGER);
 
@@ -442,9 +442,8 @@ public class AuthFilterElementTest extends CommonTest {
     @Test
     public void testAuthFilterUsing_RequestHeader_Email_Equals_Valid() throws Exception {
         testHelper.reconfigureServer("requestHeaderEmail_Equals.xml", name.getMethodName(), AuthFilterConstants.NO_MSGS, AuthFilterConstants.RESTART_SERVER);
-        Map<String, String> headers = testHelper.setTestHeaders(null, AuthFilterConstants.IE, TARGET_SERVER, null);
+        Map<String, String> headers = testHelper.setTestHeaders(ssoCookie, AuthFilterConstants.IE, TARGET_SERVER, null);
         headers.put(AuthFilterConstants.HEADER_EMAIL, "sample@email.com");
-        insertSSOCookie(headers, ssoCookie);
         successfulServletCall(AuthFilterConstants.SIMPLE_SERVLET, headers, AuthFilterConstants.USER0, AuthFilterConstants.IS_EMPLOYEE, AuthFilterConstants.IS_NOT_MANAGER);
         testHelper.checkForMessages(true, AUTHENTICATION_FILTER_PROCESSED_CWWKS4358I);
     }
@@ -462,9 +461,8 @@ public class AuthFilterElementTest extends CommonTest {
     @Test
     public void testAuthFilterUsing_RequestHeader_Email_Contains_Valid() throws Exception {
         testHelper.reconfigureServer("requestHeaderEmail_Equals.xml", name.getMethodName(), AuthFilterConstants.NO_MSGS, AuthFilterConstants.RESTART_SERVER);
-        Map<String, String> headers = testHelper.setTestHeaders(null, AuthFilterConstants.IE, TARGET_SERVER, null);
+        Map<String, String> headers = testHelper.setTestHeaders(ssoCookie, AuthFilterConstants.IE, TARGET_SERVER, null);
         headers.put(AuthFilterConstants.HEADER_EMAIL, "sample@email.com");
-        insertSSOCookie(headers, ssoCookie);
         successfulServletCall(AuthFilterConstants.SIMPLE_SERVLET, headers, AuthFilterConstants.USER0, AuthFilterConstants.IS_EMPLOYEE, AuthFilterConstants.IS_NOT_MANAGER);
         testHelper.checkForMessages(true, AUTHENTICATION_FILTER_PROCESSED_CWWKS4358I);
     }
@@ -483,9 +481,8 @@ public class AuthFilterElementTest extends CommonTest {
     public void testAuthFilterUsing_RequestHeader_Email_Not_Contains_Valid() throws Exception {
         testHelper.reconfigureServer("requestHeaderEmail_Not_Contains.xml", name.getMethodName(), AuthFilterConstants.NO_MSGS, AuthFilterConstants.RESTART_SERVER);
         testHelper.setShutdownMessages("CWWKG0032W");
-        Map<String, String> headers = testHelper.setTestHeaders(null, AuthFilterConstants.IE, TARGET_SERVER, null);
+        Map<String, String> headers = testHelper.setTestHeaders(ssoCookie, AuthFilterConstants.IE, TARGET_SERVER, null);
         headers.put(AuthFilterConstants.HEADER_EMAIL, "mysample@email.com");
-        insertSSOCookie(headers, ssoCookie);
         successfulServletCall(AuthFilterConstants.SIMPLE_SERVLET, headers, AuthFilterConstants.USER0, AuthFilterConstants.IS_EMPLOYEE, AuthFilterConstants.IS_NOT_MANAGER);
         testHelper.checkForMessages(true, AUTHENTICATION_FILTER_PROCESSED_CWWKS4358I);
     }
@@ -494,9 +491,8 @@ public class AuthFilterElementTest extends CommonTest {
     public void testAuthFilterUsing_RequestHeader_custom_contains_Valid() throws Exception {
         testHelper.reconfigureServer("requestHeader_nameNoValue_contains.xml", name.getMethodName(), AuthFilterConstants.NO_MSGS, AuthFilterConstants.RESTART_SERVER);
         testHelper.setShutdownMessages("CWWKG0032W");
-        Map<String, String> headers = testHelper.setTestHeaders(null, AuthFilterConstants.IE, TARGET_SERVER, null);
+        Map<String, String> headers = testHelper.setTestHeaders(ssoCookie, AuthFilterConstants.IE, TARGET_SERVER, null);
         headers.put(AuthFilterConstants.HEADER_NAME_NO_VALUE, "myCustomData");
-        insertSSOCookie(headers, ssoCookie);
         successfulServletCall(AuthFilterConstants.SIMPLE_SERVLET, headers, AuthFilterConstants.USER0, AuthFilterConstants.IS_EMPLOYEE, AuthFilterConstants.IS_NOT_MANAGER);
         testHelper.checkForMessages(true, AUTHENTICATION_FILTER_PROCESSED_CWWKS4358I);
     }
@@ -504,9 +500,8 @@ public class AuthFilterElementTest extends CommonTest {
     @Test
     public void testAuthFilterUsing_RequestHeader_custom_contains_inValid() throws Exception {
         testHelper.reconfigureServer("requestHeader_nameNoValue_contains.xml", name.getMethodName(), AuthFilterConstants.NO_MSGS, AuthFilterConstants.RESTART_SERVER);
-        Map<String, String> headers = testHelper.setTestHeaders(null, AuthFilterConstants.IE, TARGET_SERVER, null);
+        Map<String, String> headers = testHelper.setTestHeaders(ssoCookie, AuthFilterConstants.IE, TARGET_SERVER, null);
         headers.put(AuthFilterConstants.HEADER_NAME_NO_VALUE_INVALID, "myInvalidData");
-        insertSSOCookie(headers, ssoCookie);
         unsuccessfulLtpaServletCall(headers);
         testHelper.checkForMessages(true, AUTHENTICATION_FILTER_PROCESSED_CWWKS4358I);
     }
@@ -514,9 +509,8 @@ public class AuthFilterElementTest extends CommonTest {
     @Test
     public void testAuthFilterUsing_RequestHeader_custom_equals_Valid() throws Exception {
         testHelper.reconfigureServer("requestHeader_nameNoValue_equals.xml", name.getMethodName(), AuthFilterConstants.NO_MSGS, AuthFilterConstants.RESTART_SERVER);
-        Map<String, String> headers = testHelper.setTestHeaders(null, AuthFilterConstants.IE, TARGET_SERVER, null);
+        Map<String, String> headers = testHelper.setTestHeaders(ssoCookie, AuthFilterConstants.IE, TARGET_SERVER, null);
         headers.put(AuthFilterConstants.HEADER_NAME_NO_VALUE, "myCustomData");
-        insertSSOCookie(headers, ssoCookie);
         successfulServletCall(AuthFilterConstants.SIMPLE_SERVLET, headers, AuthFilterConstants.USER0, AuthFilterConstants.IS_EMPLOYEE, AuthFilterConstants.IS_NOT_MANAGER);
         testHelper.checkForMessages(true, AUTHENTICATION_FILTER_PROCESSED_CWWKS4358I);
     }
@@ -524,9 +518,8 @@ public class AuthFilterElementTest extends CommonTest {
     @Test
     public void testAuthFilterUsing_RequestHeader_custom_equals_invalid() throws Exception {
         testHelper.reconfigureServer("requestHeader_nameNoValue_equals.xml", name.getMethodName(), AuthFilterConstants.NO_MSGS, AuthFilterConstants.RESTART_SERVER);
-        Map<String, String> headers = testHelper.setTestHeaders(null, AuthFilterConstants.IE, TARGET_SERVER, null);
+        Map<String, String> headers = testHelper.setTestHeaders(ssoCookie, AuthFilterConstants.IE, TARGET_SERVER, null);
         headers.put(AuthFilterConstants.HEADER_NAME_NO_VALUE_INVALID, "myInvalidData");
-        insertSSOCookie(headers, ssoCookie);
         unsuccessfulLtpaServletCall(headers);
         testHelper.checkForMessages(true, AUTHENTICATION_FILTER_PROCESSED_CWWKS4358I);
     }
@@ -534,9 +527,8 @@ public class AuthFilterElementTest extends CommonTest {
     @Test
     public void testAuthFilterUsing_RequestHeader_custom_notContain_Valid() throws Exception {
         testHelper.reconfigureServer("requestHeader_nameNoValue_notContain.xml", name.getMethodName(), AuthFilterConstants.NO_MSGS, AuthFilterConstants.RESTART_SERVER);
-        Map<String, String> headers = testHelper.setTestHeaders(null, AuthFilterConstants.IE, TARGET_SERVER, null);
+        Map<String, String> headers = testHelper.setTestHeaders(ssoCookie, AuthFilterConstants.IE, TARGET_SERVER, null);
         headers.put(AuthFilterConstants.HEADER_EMAIL, "mysample@email.com");
-        insertSSOCookie(headers, ssoCookie);
         successfulServletCall(AuthFilterConstants.SIMPLE_SERVLET, headers, AuthFilterConstants.USER0, AuthFilterConstants.IS_EMPLOYEE, AuthFilterConstants.IS_NOT_MANAGER);
         testHelper.checkForMessages(true, AUTHENTICATION_FILTER_PROCESSED_CWWKS4358I);
     }
@@ -563,12 +555,9 @@ public class AuthFilterElementTest extends CommonTest {
     @Test
     public void testAuthFilterUsing_RequestHeader_Email_Diff_Name() throws Exception {
         testHelper.reconfigureServer("requestHeaderEmail_Diff_Name.xml", name.getMethodName(), AuthFilterConstants.NO_MSGS, AuthFilterConstants.RESTART_SERVER);
-        Map<String, String> headers = testHelper.setTestHeaders(null, AuthFilterConstants.IE, TARGET_SERVER, null);
+        Map<String, String> headers = testHelper.setTestHeaders(ssoCookie, AuthFilterConstants.IE, TARGET_SERVER, null);
         headers.put(AuthFilterConstants.HEADER_EMAIL, "sample@email.com");
-
-        insertSSOCookie(headers, ssoCookie);
         unsuccessfulLtpaServletCall(headers);
-
         testHelper.checkForMessages(true, AUTHENTICATION_FILTER_PROCESSED_CWWKS4358I);
     }
 
@@ -585,9 +574,8 @@ public class AuthFilterElementTest extends CommonTest {
     @Test
     public void testAuthFilterUsing_RequestHeader_Email_Equals_NotValid() throws Exception {
         testHelper.reconfigureServer("requestHeaderEmail_Equals.xml", name.getMethodName(), AuthFilterConstants.NO_MSGS, AuthFilterConstants.RESTART_SERVER);
-        Map<String, String> headers = testHelper.setTestHeaders(null, AuthFilterConstants.IE, TARGET_SERVER, null);
+        Map<String, String> headers = testHelper.setTestHeaders(ssoCookie, AuthFilterConstants.IE, TARGET_SERVER, null);
         headers.put(AuthFilterConstants.HEADER_EMAIL, "incorrect@email.com");
-        insertSSOCookie(headers, ssoCookie);
         unsuccessfulLtpaServletCall(headers);
         testHelper.checkForMessages(true, AUTHENTICATION_FILTER_PROCESSED_CWWKS4358I);
     }
@@ -608,7 +596,6 @@ public class AuthFilterElementTest extends CommonTest {
         testHelper.reconfigureServer("requestHeaderEmail_Equals.xml", name.getMethodName(), AuthFilterConstants.NO_MSGS, AuthFilterConstants.RESTART_SERVER);
         Map<String, String> headers = testHelper.setTestHeaders(ssoCookie, AuthFilterConstants.IE, TARGET_SERVER, null);
         headers.put(AuthFilterConstants.HEADER_EMAIL, "mysample@email.com");
-        insertSSOCookie(headers, ssoCookie);
         unsuccessfulLtpaServletCall(headers);
         testHelper.checkForMessages(true, AUTHENTICATION_FILTER_PROCESSED_CWWKS4358I);
     }
@@ -628,11 +615,9 @@ public class AuthFilterElementTest extends CommonTest {
     public void testAuthFilterUsing_RequestHeader_Email_Not_Contains_InValid() throws Exception {
         testHelper.reconfigureServer("requestHeaderEmail_Not_Contains.xml", name.getMethodName(), AuthFilterConstants.NO_MSGS, AuthFilterConstants.RESTART_SERVER);
         testHelper.setShutdownMessages("CWWKG0032W");
-        Map<String, String> headers = testHelper.setTestHeaders(null, AuthFilterConstants.IE, TARGET_SERVER, null);
+        Map<String, String> headers = testHelper.setTestHeaders(ssoCookie, AuthFilterConstants.IE, TARGET_SERVER, null);
         headers.put(AuthFilterConstants.HEADER_EMAIL, "sample@email.com");
-        insertSSOCookie(headers, ssoCookie);
         successfulServletCall(AuthFilterConstants.SIMPLE_SERVLET, headers, AuthFilterConstants.USER0, AuthFilterConstants.IS_EMPLOYEE, AuthFilterConstants.IS_NOT_MANAGER);
-
         testHelper.checkForMessages(true, AUTHENTICATION_FILTER_PROCESSED_CWWKS4358I);
     }
 
@@ -663,7 +648,7 @@ public class AuthFilterElementTest extends CommonTest {
      * - Try to access a servlet with an valid header. The header will have an LTPAToken2.
      *
      * Expected results:
-     * - Successfully able to access SPNEGO protected resource.
+     * - Successfully able to access protected resource.
      */
 
     @Test
@@ -671,10 +656,7 @@ public class AuthFilterElementTest extends CommonTest {
         testHelper.reconfigureServer("cookieLTPA_Contains.xml", name.getMethodName(), AuthFilterConstants.NO_MSGS, AuthFilterConstants.RESTART_SERVER);
         Log.info(c, name.getMethodName(), "Accessing first servlet in order to obtain SSO cookie");
         Map<String, String> headers = getCommonHeadersWithSSOCookie(ssoCookie);
-
-        insertSSOCookie(headers, ssoCookie);
         successfulServletCall(AuthFilterConstants.SIMPLE_SERVLET, headers, AuthFilterConstants.USER0, AuthFilterConstants.IS_EMPLOYEE, AuthFilterConstants.IS_NOT_MANAGER);
-
         testHelper.checkForMessages(true, AUTHENTICATION_FILTER_PROCESSED_CWWKS4358I);
     }
 
@@ -692,9 +674,8 @@ public class AuthFilterElementTest extends CommonTest {
     public void testAuthFilterUsing_Cookie_LTPA_NotContains() throws Exception {
         testHelper.reconfigureServer("cookieLTPA_NotContain.xml", name.getMethodName(), AuthFilterConstants.NO_MSGS, AuthFilterConstants.RESTART_SERVER);
         Log.info(c, name.getMethodName(), "Accessing first servlet in order to obtain SSO cookie");
-        Map<String, String> headers = testHelper.setTestHeaders(null, AuthFilterConstants.IE, TARGET_SERVER, null);
-        headers.put("Cookie", LTPA_COOKIE_NAME + "=" + ssoCookie);
-        Log.info(c, name.getMethodName(), "Accessing SPNEGO servlet using valid SSO cookie and valid SPNEGO token headers");
+        Map<String, String> headers = testHelper.setTestHeaders(ssoCookie, AuthFilterConstants.IE, TARGET_SERVER, null);
+        Log.info(c, name.getMethodName(), "Accessing a servlet using valid SSO cookie");
         unsuccessfulLtpaServletCall(headers);
         testHelper.checkForMessages(true, AUTHENTICATION_FILTER_PROCESSED_CWWKS4358I);
     }
@@ -703,10 +684,10 @@ public class AuthFilterElementTest extends CommonTest {
      * Test description:
      * - Set server xml file to have authfilter config with cookie element set to equals
      * - Restart the server and check log results for validation of configuration.
-     * - Try to access SPNEGO servlet with an valid header. The header will have an invalid LTPAToken2.
+     * - Try to access a servlet with an valid header. The header will have an invalid LTPAToken2.
      *
      * Expected results:
-     * - Unable to access SPNEGO protected resource.
+     * - Unable to access a protected resource.
      */
 
     @Test
@@ -714,32 +695,7 @@ public class AuthFilterElementTest extends CommonTest {
         testHelper.reconfigureServer("cookieLTPA_Equals.xml", name.getMethodName(), AuthFilterConstants.NO_MSGS, AuthFilterConstants.RESTART_SERVER);
         Map<String, String> headers = testHelper.setTestHeaders(null, AuthFilterConstants.IE, TARGET_SERVER, null);
         headers.put("Cookie", LTPA_COOKIE_NAME + "=" + "someLTPAToken2");
-        unsuccessfulSpnegoServletCall(headers);
+        unsuccessfulLtpaServletCall(headers);
         testHelper.checkForMessages(true, AUTHENTICATION_FILTER_PROCESSED_CWWKS4358I);
-    }
-
-    /**
-     * Accesses a protected servlet using the given authorized credentials, verifies the response against the user,
-     * asserts that an SSO cookie was created, and returns the SSO cookie.
-     *
-     * @param user
-     * @param password
-     * @param isEmployee
-     * @param isManager
-     * @return
-     */
-    private String getAndAssertSSOCookieForUser(String user, String password, boolean isEmployee, boolean isManager) {
-        String SSO_SERVLET_NAME = "AllRoleServlet";
-        String SSO_SERVLET = "/" + SSO_SERVLET_NAME;
-        Log.info(c, name.getMethodName(), "Accessing servlet in order to obtain SSO cookie for user: " + user);
-        BasicAuthClient ssoClient = new BasicAuthClient(myServer, BasicAuthClient.DEFAULT_REALM, SSO_SERVLET_NAME, BasicAuthClient.DEFAULT_CONTEXT_ROOT);
-        String response = ssoClient.accessProtectedServletWithAuthorizedCredentials(SSO_SERVLET, user, password);
-        ssoClient.verifyResponse(response, user, isEmployee, isManager);
-
-        String ssoCookie = ssoClient.getCookieFromLastLogin();
-
-        verifySSOCookiePresent(ssoCookie);
-
-        return ssoCookie;
     }
 }

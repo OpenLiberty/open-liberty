@@ -18,7 +18,7 @@
 	<authFilter id="myAuthFilter">
 		<requestUrl id="myRequestUrl" urlPattern="/SimpleServlet" matchType="contains"/>
 		<remoteAddress id="myAddress" ip="127.0.0.1" matchType="equals" />
-		<host id="myHostName" name="${security.spnego.test.system.host.name}" matchType="contains"/>
+		<host id="myHostName" name="${security.auth.filter.test.system.host.name}" matchType="contains"/>
 		<userAgent id="myUserAgent" agent="Firefox" matchType="equals"/>
 		<webApp id="myWebApp1" name="basicauth" matchType="contains"/>
     </authFilter>

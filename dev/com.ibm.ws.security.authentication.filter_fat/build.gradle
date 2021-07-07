@@ -51,13 +51,6 @@ autoFVT.doLast {
     into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
     rename 'basicauth.zip', 'basicauth.war'
   }
-  /*
-  copy { 
-    from new File(project(':com.ibm.ws.webcontainer.security_test.servlets').buildDir, 'test-application/basicauth.zip')
-    into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
-    rename 'basicauth.zip', 'spnegoauth.war'
-  } 
-  */ 
   copy { 
     from new File(project(':com.ibm.ws.security.authentication.filter_fat').projectDir, 'publish/files/server_modules')
     into new File(autoFvtDir, 'publish/servers/' + server + '/imports')

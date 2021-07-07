@@ -18,7 +18,7 @@
     <authFilter id="myAuthFilter" >
     		<remoteAddress id="myRemoteAddress" ip="127.0.0.1" matchType="contains"/>
     		<remoteAddress id="unknownRemoteAddress" ip="0.0.0.0" matchType="notContain"/>
-    		<host id="myHost" name="${security.spnego.test.system.host.name}" matchType="contains"/>
+    		<host id="myHost" name="${security.auth.filter.test.system.host.name}" matchType="contains"/>
 			<host id="unknownHost" name="unknown.austin.ibm.com" matchType="notContain"/>
     		<webApp id="myWebApp1" name="basicauth" matchType="contains"/>
     		<webApp id="myWebApp2" name="spnegoauth" matchType="notContain"/>

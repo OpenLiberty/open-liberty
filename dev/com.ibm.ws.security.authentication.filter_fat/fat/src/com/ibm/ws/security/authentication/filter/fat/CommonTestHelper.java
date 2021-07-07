@@ -27,7 +27,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-//import org.ietf.jgss.Oid;
 import org.junit.Ignore;
 
 import com.ibm.websphere.simplicity.RemoteFile;
@@ -146,7 +145,7 @@ public class CommonTestHelper {
             server.setMarkToEndOfLog();
             server.stopServer(shutdownMsgs);
             // Make sure that all files are backed up to the timestamped server directory under autoFVT
-            server.waitForStringInLog("Successfully recovered server");
+//            server.waitForStringInLog("Successfully recovered server");
             Log.info(thisClass, thisMethod, "Resetting shutdown message list to empty list");
             shutdownMsgs = new String[0];
         }

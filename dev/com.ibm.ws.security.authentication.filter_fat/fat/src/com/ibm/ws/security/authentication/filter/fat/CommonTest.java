@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.security.authentication.filter.fat;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -22,8 +21,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 
@@ -40,9 +37,7 @@ public class CommonTest {
     public static LibertyServer myServer;
     public static BasicAuthClient myClient;
     protected static CommonTestHelper testHelper;
-    protected static String spnegoTokenForTestClass = null;
     protected static String TARGET_SERVER = "";
-    protected static boolean wasCommonTokenRefreshed = false;
 
     public final static String MALFORMED_IPRANGE_SPECIFIED_CWWKS4354E = "CWWKS4354E: A malformed IP address range was specified. Found ";
     public final static String AUTHENTICATION_FILTER_ELEMENT_NOT_SPECIFIED_CWWKS4357I = "CWWKS4357I: The authFilter element is not specified in the server.xml file.";
@@ -50,24 +45,12 @@ public class CommonTest {
     public final static String AUTHENTICATION_FILTER_MODIFIED_CWWKS4359I = "CWWKS4359I: The authentication filter .* configuration was successfully modified.";
     public final static String AUTHENTICATION_FILTER_MISSING_ID_ATTRIBUTE_CWWKS4360E = "CWWKS4360E: The authFilter element specified in the server.xml file is missing the required id attribute ";
     public final static String NTLM_TOKEN_RECEIVED_CWWKS4307E = "CWWKS4307E: <html><head><title>An NTLM Token was received.</title></head> ";
+    public String ssoCookie = null;
     @Rule
     public TestName name = new TestName();
 
-    @BeforeClass
-    public static void preClassCheck() {
-        String thisMethod = "preClassCheck";
-        Log.info(c, thisMethod, "Checking the assumption that the tests for this class should be run.");
-    }
-
-    @Before
-    public void preTestCheck() throws Exception {
-        String thisMethod = "preTestCheck";
-        Log.info(c, thisMethod, "Checking if new SPNEGO token should be created.");
-        wasCommonTokenRefreshed = false;
-    }
-
     /**
-     * Sets up protected variables. This method also determines whether an SPN, keytab, and/or initial SPNEGO token
+     * Sets up protected variables. This method also determines whether an SPN, keytab, and/or initial LTPA token
      * should be created, and whether the specified server should be started.
      *
      * @param testServerName
@@ -83,7 +66,6 @@ public class CommonTest {
                                    boolean startServer) throws Exception {
         String thisMethod = "commonSetUp";
         Log.info(c, thisMethod, "***Starting testcase: " + testServerName + "...");
-        Log.info(c, thisMethod, "Performing common setup");
 
         if (testServerName != null) {
             setMyServer(LibertyServerFactory.getLibertyServer(testServerName));
@@ -91,6 +73,7 @@ public class CommonTest {
         testHelper = new CommonTestHelper(getMyServer(), myClient);
 
         String hostName = testHelper.getTestSystemFullyQualifiedDomainName();
+        TARGET_SERVER = hostName;
         int hostPort = getMyServer().getHttpDefaultPort();
         Log.info(c, thisMethod, "setting up BasicauthClient with server " + hostName + "and port " + hostPort);
 
@@ -184,13 +167,6 @@ public class CommonTest {
         return checkExpectation(user, isEmployee, isManager, response);
     }
 
-    public String successfulServletCall(String servlet, Map<String, String> headers, String user, boolean isEmployee, boolean isManager, boolean handleSSOCookie,
-                                        String dumpSSOCookieName) {
-        String response = myClient.accessProtectedServletWithValidHeaders(servlet, headers, AuthFilterConstants.DONT_IGNORE_ERROR_CONTENT, handleSSOCookie, dumpSSOCookieName);
-
-        return checkExpectation(user, isEmployee, isManager, response);
-    }
-
     /**
      * @param user
      * @param isEmployee
@@ -226,61 +202,7 @@ public class CommonTest {
     }
 
     /**
-     * Performs a call to the SPNEGO servlet that is expected to be unsuccessful using the headers provided, resulting
-     * in a 401. The response received is expected to be null due to the unauthorized request.
-     *
-     * @param headers
-     * @return
-     */
-    public String unsuccessfulSpnegoServletCall(Map<String, String> headers) {
-        return unsuccessfulSpnegoServletCall(headers, AuthFilterConstants.IGNORE_ERROR_CONTENT);
-    }
-
-    /**
-     * Performs a call to the SPNEGO servlet that is expected to be unsuccessful using the headers provided, resulting
-     * in a 401.
-     *
-     * @param headers
-     * @param ignoreErrorContent - If true, the response received is expected to be null. Otherwise, the response
-     *            received is verified as unsuccessful and checked for the absence of GSS credentials.
-     * @return
-     */
-    public String unsuccessfulSpnegoServletCall(Map<String, String> headers, boolean ignoreErrorContent) {
-        return unsuccessfulSpnegoServletCall(headers, ignoreErrorContent, 401);
-    }
-
-    /**
-     * Performs a call to the SPNEGO servlet that is expected to be unsuccessful using the headers provided.
-     *
-     * @param headers
-     * @param ignoreErrorContent - If true, the response received is expected to be null. Otherwise, the response
-     *            received is verified as unsuccessful and checked for the absence of GSS credentials.
-     * @param expectedStatusCode
-     * @return
-     */
-    public String unsuccessfulSpnegoServletCall(Map<String, String> headers, boolean ignoreErrorContent, int expectedStatusCode) {
-        String response = unsuccessfulServletCall(AuthFilterConstants.SIMPLE_SERVLET, headers, ignoreErrorContent, expectedStatusCode);
-
-        if (!ignoreErrorContent) {
-            unsuccesfulSpnegoServletCall(response, AuthFilterConstants.OWNER_STRING);
-        }
-
-        return response;
-    }
-
-    /**
-     * Creates and returns a map of headers using the SPNEGO token created for this test class in the Authorization
-     * header, Firefox as the User-Agent header value, TARGET_SERVER as the Host header value, and null as the remote
-     * address header value.
-     *
-     * @return
-     */
-    protected Map<String, String> createHeaders() {
-        return testHelper.setTestHeaders("Negotiate " + spnegoTokenForTestClass, AuthFilterConstants.FIREFOX, TARGET_SERVER, null);
-    }
-
-    /**
-     * Creates and returns a map of headers using the common SPNEGO token in the Authorization header, Firefox as the
+     * Creates and returns a map of headers using the common LTPA token in the Authorization header, Firefox as the
      * User-Agent header value, TARGET_SERVER as the Host header value, and null as the remote address header value.
      *
      * @return
@@ -322,7 +244,7 @@ public class CommonTest {
     }
 
     /**
-     * Returns a map with the "Authorization" header set to "Negotiate " + the common SPNEGO token, "User-Agent" set to Firefox,
+     * Returns a map with the "Authorization" header set to "Negotiate " + the common LTPA token, "User-Agent" set to Firefox,
      * and "Host" set to TARGET_SERVER. In addition, a "Cookie" header with its value set to the specified
      * value is included in the map.
      *
@@ -384,18 +306,6 @@ public class CommonTest {
         successfulServletCall(AuthFilterConstants.SIMPLE_SERVLET, headers, AuthFilterConstants.USER0, AuthFilterConstants.IS_EMPLOYEE, AuthFilterConstants.IS_NOT_MANAGER);
     }
 
-    /**
-     * @param headers
-     */
-    public void insertSSOCookie(Map<String, String> headers, String ssoCookie) {
-        String SSO_COOKIE_NAME = "LtpaToken2";
-        headers.put("Cookie", SSO_COOKIE_NAME + "=" + ssoCookie);
-    }
-
-    public void responseShouldContainSpnegoErrorCode(String response) {
-        assertTrue("Response should contain SPNEGO error message.", response.contains(NTLM_TOKEN_RECEIVED_CWWKS4307E));
-    }
-
     public void verifySSOCookiePresent(String ssoCookie) {
         assertNotNull("Did not obtain SSO cookie despite successfully accessing protected resource.", ssoCookie);
 
@@ -411,15 +321,26 @@ public class CommonTest {
         assertTrue("Expected to receive a successful response but found a problem.", myClient.verifyResponse(response, user, isEmployee, isManager));
     }
 
-    public void unsuccesfulSpnegoServletCall(String response, String ownerInformation) {
-        assertFalse("Response should NOT contain Owner information related to GSS credentials.", response.contains(ownerInformation));
-    }
-
     /**
      * @param ex
      */
     public void logFailException(Exception ex) {
         Log.info(c, name.getMethodName(), "Unexpected exception: " + ex.getMessage());
         fail("Exception was thrown: " + ex.getMessage());
+    }
+
+    public String getAndAssertSSOCookieForUser(String user, String password, boolean isEmployee, boolean isManager) {
+        String SERVLET_NAME = "AllRoleServlet";
+        String SERVLET = "/" + SERVLET_NAME;
+        Log.info(c, name.getMethodName(), "Accessing servlet in order to obtain SSO cookie for user: " + user);
+        BasicAuthClient basicAuthClient = new BasicAuthClient(myServer, BasicAuthClient.DEFAULT_REALM, SERVLET_NAME, BasicAuthClient.DEFAULT_CONTEXT_ROOT);
+        String response = basicAuthClient.accessProtectedServletWithAuthorizedCredentials(SERVLET, user, password);
+        basicAuthClient.verifyResponse(response, user, isEmployee, isManager);
+
+        String ssoCookie = basicAuthClient.getCookieFromLastLogin();
+
+        verifySSOCookiePresent(ssoCookie);
+
+        return ssoCookie;
     }
 }

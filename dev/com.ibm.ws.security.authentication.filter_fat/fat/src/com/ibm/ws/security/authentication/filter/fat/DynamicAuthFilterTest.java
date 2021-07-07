@@ -19,17 +19,17 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.webcontainer.security.test.servlets.BasicAuthClient;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 
 @RunWith(FATRunner.class)
-//@Mode(TestMode.FULL)
+@Mode(TestMode.FULL)
 public class DynamicAuthFilterTest extends CommonTest {
 
     private static final Class<?> c = DynamicAuthFilterTest.class;
-    String ssoCookie = null;
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -39,43 +39,9 @@ public class DynamicAuthFilterTest extends CommonTest {
     }
 
     @Before
-    public void createSSOCookie() throws Exception {
+    public void obtainSSOCookie() throws Exception {
         ssoCookie = getAndAssertSSOCookieForUser(AuthFilterConstants.USER0, AuthFilterConstants.USER0_PWD, AuthFilterConstants.IS_EMPLOYEE, AuthFilterConstants.IS_NOT_MANAGER);
     }
-
-    /**
-     * Test description:
-     * - Reconfigure the server to remove the elements of the authfilter
-     * - Do a successful servlet call since all resources will be protected.
-     * - Reconfigure the server to add elements on the authfilter.
-     * - do another successfull servlet call.
-     * Expected results:
-     * - 1) A 200 should be received since all resources will be protected.(but expect the correct message to pop out)
-     * - 2) Another 200 since we use a valid configuration.
-     */
-
-//   @Test
-//    public void testAuthFilterElementsNotSpecifiedtoSpecified() throws Exception {
-//
-//
-//            testHelper.reconfigureServer("serverAuthFilterRefNoElementSpecified.xml", name.getMethodName(), AuthFilterConstants.NO_MSGS, AuthFilterConstants.DONT_RESTART_SERVER);
-//            commonSuccessfulLtpaServletCall(ssoCookie);
-//
-//            testHelper.checkForMessages(true, SPN_NOT_SPECIFIED_CWWKS4314I);
-//
-//            testHelper.reconfigureServer("ltpaDefaultConfig.xml", name.getMethodName(), AuthFilterConstants.NO_MSGS, AuthFilterConstants.DONT_RESTART_SERVER);
-//            commonSuccessfulLtpaServletCall(ssoCookie);
-//            testHelper.checkForMessages(true, AUTHENTICATION_FILTER_MODIFIED_CWWKS4359I, SPNEGO_CONFIGURATION_MODIFIED_CWWKS4301I);
-//
-//            testHelper.reconfigureServer("ltpaDefaultConfig.xml", name.getMethodName(), AuthFilterConstants.NO_MSGS, AuthFilterConstants.DONT_RESTART_SERVER);
-//            commonSuccessfulLtpaServletCall(ssoCookie);
-//
-//        } catch (Exception ex) {
-//
-//            Log.info(c, name.getMethodName(), "Unexpected exception: " +ex.getMessage());
-//            fail("Exception was thrown: " +ex.getMessage());
-//        }
-//    }
 
     /**
      * Test description:
@@ -115,7 +81,7 @@ public class DynamicAuthFilterTest extends CommonTest {
      * - 2) Another 200 since we use a valid configuration.
      */
 
-    ////@Test
+    //@Test
     @AllowedFFDC({ "java.net.UnknownHostException", "com.ibm.ws.security.authentication.filter.internal.FilterException" })
     public void testAuthFilterMalformedIPtoCorrectIp() throws Exception {
         //we now update the auth filter to add a bad URL pattern and do an unsucessful a servlet call
@@ -326,21 +292,6 @@ public class DynamicAuthFilterTest extends CommonTest {
         testHelper.reconfigureServer("serverAuthFilterWebAppContains.xml", name.getMethodName(), null, AuthFilterConstants.DONT_RESTART_SERVER);
         commonSuccessfulLtpaServletCall(ssoCookie);
         testHelper.checkForMessages(true, AUTHENTICATION_FILTER_MODIFIED_CWWKS4359I);
-    }
-
-    private String getAndAssertSSOCookieForUser(String user, String password, boolean isEmployee, boolean isManager) {
-        String SSO_SERVLET_NAME = "AllRoleServlet";
-        String SSO_SERVLET = "/" + SSO_SERVLET_NAME;
-        Log.info(c, name.getMethodName(), "Accessing servlet in order to obtain SSO cookie for user: " + user);
-        BasicAuthClient ssoClient = new BasicAuthClient(myServer, BasicAuthClient.DEFAULT_REALM, SSO_SERVLET_NAME, BasicAuthClient.DEFAULT_CONTEXT_ROOT);
-        String response = ssoClient.accessProtectedServletWithAuthorizedCredentials(SSO_SERVLET, user, password);
-        ssoClient.verifyResponse(response, user, isEmployee, isManager);
-
-        String ssoCookie = ssoClient.getCookieFromLastLogin();
-
-        verifySSOCookiePresent(ssoCookie);
-
-        return ssoCookie;
     }
 
 }

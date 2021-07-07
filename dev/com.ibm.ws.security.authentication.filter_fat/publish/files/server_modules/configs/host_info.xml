@@ -11,6 +11,6 @@
  *******************************************************************************/
 -->
 <server>
-	<variable name="defaultHostName" value="${security.spnego.test.system.host.name}" />
-	 <httpEndpoint host="${security.spnego.test.system.host.name}" httpPort="9080" id="HostOnly"/>
+	<variable name="defaultHostName" value="${security.auth.filter.test.system.host.name}" />
+	 <httpEndpoint host="${security.auth.filter.test.system.host.name}" httpPort="9080" id="HostOnly"/>
 </server>
