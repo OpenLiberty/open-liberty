@@ -17,14 +17,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
-import java.util.Random;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.TreeMap;
@@ -48,11 +46,16 @@ import componenttest.topology.impl.LibertyServer;
 /**
  * Super simple test to verify that each Open Liberty
  * feature can start and stop properly.
+ *
+ * NOTE: This bucket was split to only runs valid features with names M through Z due to slower
+ * fyre hardware (most notably Windows platform) being unable to run every feature we have in a
+ * 2 hour window. If you are looking for a feature with names A through L, see the
+ * build.featureStart.aToL project.
  */
 @RunWith(FATRunner.class)
-public class FeaturesStartTest {
+public class FeaturesStartTestMToZ {
 
-    private static final Class<?> c = FeaturesStartTest.class;
+    private static final Class<?> c = FeaturesStartTestMToZ.class;
 
     static final Map<String, Integer> featureJavaLevels = new TreeMap<>();
     static final List<String> features = new ArrayList<>();
@@ -62,7 +65,7 @@ public class FeaturesStartTest {
     static JavaInfo javaInfo = null;
     static int JAVA_LEVEL;
 
-    @Server("features.start.server")
+    @Server("features.start.m.to.z.server")
     public static LibertyServer server;
 
     @Rule
@@ -95,26 +98,10 @@ public class FeaturesStartTest {
             }
         }
 
-        // Randomly choose half of the total features to test and just run those so we
-        // don't timeout in 2 hours
-        int featuresListSize = features.size();
-        Log.info(c, method, "Initial feature list size from /lib/features/ = " + featuresListSize);
-
-        // Grab some random numbers to use for which tests will run
-        ArrayList<Integer> randomNumberList = randomNumberGenerator(featuresListSize, featuresListSize / 2);
-
-        for (int i = 0; i < features.size(); i++) {
-            if (randomNumberList.contains(i)) {
-                tempFeatureJavaLevels.add(features.get(i));
-                Log.info(c, method, "Adding test '" + features.get(i) + "' for this run.");
-            } else {
-                Log.info(c, method, "Ignoring test '" + features.get(i) + "' for this run.");
-            }
-        }
-
-        features.clear();
-        features.addAll(tempFeatureJavaLevels);
-        Log.info(c, method, "Total features to be executed after randomizing and removal = " + features.size() + " : " + features.toString());
+        Log.info(c, method, "**************************************************************************");
+        Log.info(c, method, "This bucket only runs valid features with names starting with M through Z.");
+        Log.info(c, method, "There will be " + features.size() + " started for this test.");
+        Log.info(c, method, "**************************************************************************");
     }
 
     @After
@@ -205,7 +192,8 @@ public class FeaturesStartTest {
                     return;
                 }
             }
-            if (shortName != null) {
+            // Only run non-null features M through Z in this bucket so that we don't timeout in 2 hours
+            if (shortName != null && shortName.toLowerCase().matches("^[m-z].*$")) {
                 features.add(shortName);
                 Log.info(c, "parseShortName", "Added public feature: " + shortName);
             } else {
@@ -217,16 +205,38 @@ public class FeaturesStartTest {
     }
 
     private static void initAcceptableErrors() throws Exception {
+        // TODO: OpenAPI code needs to be reworked so that it doesn't leave threads around when the server stops
+        // before it has finished initializing. Once OpenAPI is fixed, these QUISCE_FAILURES should be removed
         String[] QUISCE_FAILRUES = new String[] { "CWWKE1102W", "CWWKE1107W" };
-
+        allowError("openapi-3.0", QUISCE_FAILRUES);
         allowError("openapi-3.1", QUISCE_FAILRUES);
         allowError("mpOpenApi-1.0", QUISCE_FAILRUES);
 
+        allowError("logAnalysis-1.0", "CWWKE0702E: .* com.ibm.ws.loganalysis"); // requires binaryLogging-1.0 to be enabled via bootstrap.properties
+        allowError("rtcomm-1.0", "CWRTC0002E"); // The Rtcomm service is not able to connect to tcp://localhost:1883.
+        allowError("rtcommGateway-1.0", "CWRTC0002E"); // // The Rtcomm service is not able to connect to tcp://localhost:1883.
         allowError("samlWeb-2.0", "CWWKS5207W: .* inboundPropagation"); // lets the user now certain config attributes will be ignored depending on whether or not 'inboundPropagation' is configured
         allowError("wsSecuritySaml-1.1", "CWWKS5207W: .* inboundPropagation"); // pulls in the samlWeb-2.0 feature
+
+        // Ignore required config warnings for the 'collectiveMember-1.0' feature, and all features that include it
+        String[] COLLECTIVE_MEMBER_WARNINGS = new String[] { "CWWKG0033W: .*collectiveTrust", "CWWKG0033W: .*serverIdentity" };
+        allowError("collectiveMember-1.0", COLLECTIVE_MEMBER_WARNINGS);
+        allowError("collectiveController-1.0", COLLECTIVE_MEMBER_WARNINGS);
+        allowError("clusterMember-1.0", COLLECTIVE_MEMBER_WARNINGS);
+        allowError("dynamicRouting-1.0", COLLECTIVE_MEMBER_WARNINGS);
+        allowError("healthAnalyzer-1.0", COLLECTIVE_MEMBER_WARNINGS);
+        allowError("healthManager-1.0", COLLECTIVE_MEMBER_WARNINGS);
+        allowError("scalingController-1.0", COLLECTIVE_MEMBER_WARNINGS);
+        allowError("scalingMember-1.0", COLLECTIVE_MEMBER_WARNINGS);
     }
 
     private boolean skipFeature(String feature) throws Exception {
+
+        if (!feature.startsWith("zosconnect-") && // z/OS Connect is NOT a z/OS only feature
+            (feature.startsWith("zos") || feature.equalsIgnoreCase("batchSMFLogging-1.0"))) {
+            Log.info(c, testName.getMethodName(), "Skipping feature " + feature + " because it is for z/OS only.");
+            return true;
+        }
 
         // Don't test this feature if environment is using Java level below minimum required
         // specified in properties file. Not every feature has a mapping in that file.
@@ -256,6 +266,12 @@ public class FeaturesStartTest {
             }
         }
 
+        if (feature.equalsIgnoreCase("wmqJmsClient-2.0")) // wmqJmsClient.rar.location variable has not been set
+            return true;
+
+        if (feature.equalsIgnoreCase("wmqJmsClient-1.1")) // wmqJmsClient.rar.location variable has not been set
+            return true;
+
         return false;
     }
 
@@ -269,35 +285,5 @@ public class FeaturesStartTest {
 
         for (String allowedError : allowedErrors)
             allowedSet.add(allowedError);
-    }
-
-    /**
-     * Generates a list of unique random numbers
-     *
-     * @param totalNumbers
-     * @param numToKeep
-     * @return
-     */
-    private static ArrayList<Integer> randomNumberGenerator(int totalNumbers, int numbersToGenerate) {
-        String method = "randomNumberGenerator";
-        ArrayList<Integer> numbers = new ArrayList<Integer>();
-
-        // Build a random list of tests to delete
-        int ranNum = 0;
-        int counter = 0;
-        Random random = new Random();
-        while (counter < numbersToGenerate) {
-            ranNum = random.nextInt(totalNumbers);
-            if (!numbers.contains(ranNum)) {
-                numbers.add(ranNum);
-                counter++;
-            }
-        }
-
-        Log.info(c, method, "Random numbers are = " + numbers.toString());
-
-        Collections.sort(numbers);
-
-        return numbers;
     }
 }
