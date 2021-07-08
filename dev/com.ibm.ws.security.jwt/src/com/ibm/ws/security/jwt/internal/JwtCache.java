@@ -21,6 +21,7 @@ import org.jose4j.jwt.consumer.JwtContext;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.structures.CacheEntry;
 import com.ibm.ws.security.common.structures.SingleTableCache;
@@ -40,25 +41,30 @@ public class JwtCache extends SingleTableCache {
     }
 
     /**
+     * Find and return the object associated with the specified key.
+     */
+    @Override
+    public synchronized Object get(@Sensitive String key) {
+        JwtContext jwtContext = (JwtContext) super.get(key);
+        if (jwtContext == null || isJwtExpired(jwtContext)) {
+            return null;
+        }
+        return jwtContext;
+    }
+
+    /**
      * Implementation of the eviction strategy.
      */
     @Override
     protected synchronized void evictStaleEntries() {
+        super.evictStaleEntries();
+
         List<String> keysToRemove = new ArrayList<String>();
         for (Entry<String, Object> entry : lookupTable.entrySet()) {
             String key = entry.getKey();
-            Object cacheEntry = entry.getValue();
-            if (cacheEntry == null) {
-                keysToRemove.add(key);
-                continue;
-            }
-            CacheEntry cachEntryValue = (CacheEntry) cacheEntry;
-            if (cachEntryValue.isExpired(timeoutInMilliSeconds)) {
-                keysToRemove.add(key);
-                continue;
-            }
-            JwtContext jwtContext = (JwtContext) cachEntryValue.getValue();
-            if (isJwtExpired(jwtContext)) {
+            CacheEntry cacheEntry = (CacheEntry) entry.getValue();
+            JwtContext jwtContext = (JwtContext) cacheEntry.getValue();
+            if (jwtContext == null || isJwtExpired(jwtContext)) {
                 keysToRemove.add(key);
             }
         }

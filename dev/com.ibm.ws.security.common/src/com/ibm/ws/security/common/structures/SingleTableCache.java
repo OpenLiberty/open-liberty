@@ -32,9 +32,7 @@ public class SingleTableCache extends CommonCache {
         }
         lookupTable = Collections.synchronizedMap(new BoundedHashMap(this.entryLimit));
 
-        if (timeoutInMilliSeconds >= 0) {
-            this.timeoutInMilliSeconds = timeoutInMilliSeconds;
-        }
+        rescheduleCleanup(timeoutInMilliSeconds);
     }
 
     /**
@@ -65,12 +63,12 @@ public class SingleTableCache extends CommonCache {
     public synchronized void put(@Sensitive String key, Object value) {
         CacheEntry entry = new CacheEntry(value);
         lookupTable.put(key, entry);
-        evictStaleEntries();
     }
 
     /**
      * Implementation of the eviction strategy.
      */
+    @Override
     protected synchronized void evictStaleEntries() {
         List<String> keysToRemove = new ArrayList<String>();
         for (Entry<String, Object> entry : lookupTable.entrySet()) {

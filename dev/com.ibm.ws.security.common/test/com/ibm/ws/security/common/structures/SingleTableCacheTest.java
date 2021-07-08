@@ -65,7 +65,7 @@ public class SingleTableCacheTest extends CommonTestClass {
         try {
             SingleTableCache cache = new SingleTableCache(0);
             assertEquals("Cache size did not equal the expected value.", 50000, cache.size());
-            assertEquals("Cache timeout duration did not equal the expected value.", 0, cache.getTimeoutInMilliseconds());
+            assertEquals("Cache timeout duration did not equal the expected value.", 5 * 60 * 1000, cache.getTimeoutInMilliseconds());
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -76,7 +76,7 @@ public class SingleTableCacheTest extends CommonTestClass {
         try {
             SingleTableCache cache = new SingleTableCache(0, 0);
             assertEquals("Cache size did not equal the expected value.", 50000, cache.size());
-            assertEquals("Cache timeout duration did not equal the expected value.", 0, cache.getTimeoutInMilliseconds());
+            assertEquals("Cache timeout duration did not equal the expected value.", 5 * 60 * 1000, cache.getTimeoutInMilliseconds());
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }

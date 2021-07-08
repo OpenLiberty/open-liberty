@@ -10,6 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.security.common.structures;
 
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
 import com.ibm.websphere.ras.annotation.Sensitive;
 
 public abstract class CommonCache {
@@ -23,6 +26,11 @@ public abstract class CommonCache {
      * Default cache timeout.
      */
     protected long timeoutInMilliSeconds = 5 * 60 * 1000;
+
+    /**
+     * Scheduled executor to run the eviction task.
+     */
+    private ScheduledThreadPoolExecutor evictionSchedule;
 
     public int size() {
         return this.entryLimit;
@@ -54,6 +62,23 @@ public abstract class CommonCache {
         if (newTimeoutInMillis > 0) {
             this.timeoutInMilliSeconds = newTimeoutInMillis;
         }
+        if (evictionSchedule != null) {
+            evictionSchedule.shutdownNow();
+        }
+        evictionSchedule = new ScheduledThreadPoolExecutor(1);
+        evictionSchedule.scheduleWithFixedDelay(new EvictionTask(), timeoutInMilliSeconds, timeoutInMilliSeconds, TimeUnit.MILLISECONDS);
     }
 
+    /**
+     * Implementation of the eviction strategy.
+     */
+    abstract protected void evictStaleEntries();
+
+    private class EvictionTask implements Runnable {
+        @Override
+        public void run() {
+            evictStaleEntries();
+        }
+
+    }
 }
