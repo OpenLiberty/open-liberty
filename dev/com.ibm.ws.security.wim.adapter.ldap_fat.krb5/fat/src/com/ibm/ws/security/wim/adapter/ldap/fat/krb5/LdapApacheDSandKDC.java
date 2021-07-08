@@ -12,7 +12,7 @@ package com.ibm.ws.security.wim.adapter.ldap.fat.krb5;
 
 import org.apache.directory.api.ldap.model.entry.Entry;
 import org.apache.directory.api.ldap.model.name.Dn;
-import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
@@ -55,8 +55,8 @@ public class LdapApacheDSandKDC extends ApacheDSandKDC {
         addBasicUserAndGroup();
     }
 
-    @After
-    public void tearDown() throws Exception {
+    @AfterClass
+    public static void tearDown() throws Exception {
         tearDownService();
     }
 
