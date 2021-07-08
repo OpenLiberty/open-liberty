@@ -19,12 +19,17 @@ import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.inject.spi.CDI;
 import javax.servlet.annotation.WebServlet;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.ibm.ws.cdi.api.fat.apps.current.extension.MyDeploymentVerifier;
 
 import componenttest.app.FATServlet;
 
 @WebServlet("/")
 public class CDICurrentTestServlet extends FATServlet {
+
+    private static final Logger LOGGER = Logger.getLogger(CDICurrentTestServlet.class.getName());
 
     private static final long serialVersionUID = 1L;
 
@@ -57,6 +62,7 @@ public class CDICurrentTestServlet extends FATServlet {
 
         assertNotNull(CDI.current()); //Test outside a new thread just for completeness.
 
+        LOGGER.info("calling managedExecutorService");
         managedExecutorService.submit(new CallCDICurrent());
 
         int i = 40;
@@ -67,17 +73,17 @@ public class CDICurrentTestServlet extends FATServlet {
                 assertTrue("CDI.current returned null when called in a new Thread", wasCDICurrentFoundViaMES);
                 return;
             }
-            Thread.sleep(5);
+            Thread.sleep(15);
         }
 
-        System.out.println("GREP 3 " + java.time.LocalDateTime.now());  
+        LOGGER.info("About to throw exception");  
         assertTrue("The thread with CDI.current never completed", false);
     }
 
     public static void setWasCDICurrentFound(boolean b) {
 
-        wasCDICurrentFoundViaMES = b;
-        System.out.println("GREP 2 " + java.time.LocalDateTime.now());
+        wasCDICurrentFoundViaMES = b;        
+        LOGGER.info("Set test variable");  
 
     }
 
@@ -86,13 +92,13 @@ public class CDICurrentTestServlet extends FATServlet {
         @Override
         public void run() {
             CDI cdi = CDI.current();
-            System.out.println("GREP MOE + " + cdi);
+            LOGGER.info("Found CDI " + cdi);
             if (cdi != null) {
                 CDICurrentTestServlet.setWasCDICurrentFound(true);
-                System.out.println("GREP 1 " + java.time.LocalDateTime.now());
+                LOGGER.info("Calling setter for test variable");
             } else {
                 System.out.println("GREP 1 " + java.time.LocalDateTime.now());
-                CDICurrentTestServlet.setWasCDICurrentFound(false);
+                LOGGER.info("Calling setter for test variable");
             }
         }
     }
