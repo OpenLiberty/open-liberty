@@ -344,7 +344,16 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
     public void testInvalidFeature() throws Exception {
         final String METHOD_NAME = "testInvalidFeature";
         Log.entering(c, METHOD_NAME);
+        replaceWlpProperties("21.0.0.4");
+        copyFileToMinifiedRoot("etc", "../../publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
 
+        copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/features/21.0.0.4",
+                "../../publish/repo/com/ibm/websphere/appserver/features/features/21.0.0.4/features-21.0.0.4.json");
+
+        copyFileToMinifiedRoot("repo/io/openliberty/features/features/21.0.0.4",
+                "../../publish/repo/io/openliberty/features/features/21.0.0.4/features-21.0.0.4.json");
+                
+        writeToProps(minifiedRoot+ "/etc/featureUtility.properties", "featureLocalRepo", minifiedRoot + "/repo/");
         String[] param1s = { "installFeature", "veryClearlyMadeUpFeatureThatNoOneWillEverThinkToCreateThemselvesAbCxYz-1.0", "--verbose"};
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
         assertEquals("Exit code should be 21",21,  po.getReturnCode());
@@ -361,6 +370,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
     public void testAlreadyInstalledFeature() throws Exception {
         final String METHOD_NAME = "testAlreadyInstalledFeature";
         Log.entering(c, METHOD_NAME);
+        replaceWlpProperties("21.0.0.4");
         
         copyFileToMinifiedRoot("etc", "../../publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
 

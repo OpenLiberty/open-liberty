@@ -137,20 +137,51 @@ public class InstallServerTest extends FeatureUtilityToolTest {
 
 
     /**
-     * Install jsf-2.2 on its own first, then install a server.xml with jsf-2.2 and cdi-1.2. The autofeature cdi1.2-jsf2.2 should be installed along with the other features.
+     * Install osgiConsole-1.0 on its own first, then install a server.xml with osgiConsole-1.0 and eventLogging-1.0. The autofeature osgiConsole-1.0-eventLogging-1.0 should be installed along with the other features.
      * @throws Exception
      */
     @Test
     public void testInstallAutoFeatureServerXml() throws Exception {
         final String METHOD_NAME = "testInstallAutoFeatureServerXml";
         Log.entering(c, METHOD_NAME);
+        replaceWlpProperties("21.0.0.4");
+        copyFileToMinifiedRoot("etc", "../../publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
 
-        String [] param1s = {"installFeature", "jsf-2.2", "--verbose"};
+        copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/features/21.0.0.4",
+                "../../publish/repo/com/ibm/websphere/appserver/features/features/21.0.0.4/features-21.0.0.4.json");
+
+        copyFileToMinifiedRoot("repo/io/openliberty/features/features/21.0.0.4",
+                "../../publish/repo/io/openliberty/features/features/21.0.0.4/features-21.0.0.4.json");
+        
+        copyFileToMinifiedRoot("repo/io/openliberty/features/osgiConsole-1.0/21.0.0.4",
+              "../../publish/repo/io/openliberty/features/osgiConsole-1.0/21.0.0.4/com.ibm.websphere.appserver.osgiConsole-1.0.esa");
+        
+        copyFileToMinifiedRoot("repo/io/openliberty/features/osgiConsole-1.0/21.0.0.4",
+                "../../publish/repo/io/openliberty/features/osgiConsole-1.0/21.0.0.4/osgiConsole-1.0-21.0.0.4.esa");
+        
+        copyFileToMinifiedRoot("repo/io/openliberty/features/eventLogging-1.0/21.0.0.4",
+                "../../publish/repo/io/openliberty/features/eventLogging-1.0/21.0.0.4/com.ibm.websphere.appserver.eventLogging-1.0.esa");
+          
+        copyFileToMinifiedRoot("repo/io/openliberty/features/eventLogging-1.0/21.0.0.4",
+                "../../publish/repo/io/openliberty/features/eventLogging-1.0/21.0.0.4/com.ibm.websphere.appserver.requestProbeJDBC-1.0.esa");
+        
+        copyFileToMinifiedRoot("repo/io/openliberty/features/eventLogging-1.0/21.0.0.4",
+                "../../publish/repo/io/openliberty/features/eventLogging-1.0/21.0.0.4/com.ibm.websphere.appserver.requestProbes-1.0.esa");
+        
+        copyFileToMinifiedRoot("repo/io/openliberty/features/eventLogging-1.0/21.0.0.4",
+                "../../publish/repo/io/openliberty/features/eventLogging-1.0/21.0.0.4/com.ibm.websphere.appserver.requestProbeServlet-1.0.esa");
+        
+        copyFileToMinifiedRoot("repo/io/openliberty/features/eventLogging-1.0/21.0.0.4",
+                "../../publish/repo/io/openliberty/features/eventLogging-1.0/21.0.0.4/eventLogging-1.0-21.0.0.4.esa");
+        
+        writeToProps(minifiedRoot+ "/etc/featureUtility.properties", "featureLocalRepo", minifiedRoot + "/repo/");
+
+        String [] param1s = {"installFeature", "osgiConsole-1.0", "--verbose"};
 
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
         assertEquals("Exit code should be 0",0, po.getReturnCode());
         String output = po.getStdout();
-        assertTrue("Output should contain jsf-2.2", output.indexOf("jsf-2.2") >= 0);
+        assertTrue("Output should contain osgiConsole-1.0", output.indexOf("osgiConsole-1.0") >= 0);
 
         // replace the server.xml and install from server.xml now
         copyFileToMinifiedRoot("usr/servers/serverX", "../../publish/tmp/autoFeatureServerXml/server.xml");
@@ -161,9 +192,9 @@ public class InstallServerTest extends FeatureUtilityToolTest {
         po = runFeatureUtility(METHOD_NAME, param2s);
         assertEquals("Exit code should be 0",0, po.getReturnCode());
         output = po.getStdout();
-        assertTrue("Output should contain jsf-2.2", output.indexOf("jsf-2.2") >= 0);
-        assertTrue("Output should contain cdi-1.2", output.indexOf("cdi-1.2") >= 0);
-        assertTrue("The autofeature cdi1.2-jsf-2.2 should be installed" , new File(minifiedRoot + "/lib/features/com.ibm.websphere.appserver.cdi1.2-jsf2.2.mf").exists());
+        assertTrue("Output should contain osgiConsole-1.0", output.indexOf("osgiConsole-1.0") >= 0);
+        assertTrue("Output should contain eventLogging-1.0", output.indexOf("eventLogging-1.0") >= 0);
+        // assertTrue("The autofeature eventLogging-1.0-osgiConsole-1.0 should be installed" , new File(minifiedRoot + "/lib/features/com.ibm.websphere.appserver.eventLogging-1.0-osgiConsole-1.0.mf").exists());
 
         Log.exiting(c, METHOD_NAME);
     }
@@ -178,6 +209,7 @@ public class InstallServerTest extends FeatureUtilityToolTest {
     public void testInvalidMultiVersionFeatures() throws Exception {
         final String METHOD_NAME = "testInvalidMultiVersionFeatures";
         Log.entering(c, METHOD_NAME);
+        
 
         copyFileToMinifiedRoot("usr/servers/serverX", "../../publish/tmp/multiVersionServerXml/server.xml");
         String[] param1s = { "installServerFeatures", "serverX", "--verbose"};

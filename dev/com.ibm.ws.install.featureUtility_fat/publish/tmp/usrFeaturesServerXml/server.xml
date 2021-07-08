@@ -4,7 +4,7 @@
     <!-- Enable features -->
     <featureManager>
 	<feature>jsp-2.3</feature>
-	<feature>usr:mpHealth-2.0</feature>
+	<feature>ssl-1.0</feature>
     </featureManager>
 
     <!-- To access this server from a remote client add a host attribute to the
