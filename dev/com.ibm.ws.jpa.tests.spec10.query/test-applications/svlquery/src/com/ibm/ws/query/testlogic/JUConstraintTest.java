@@ -17,7 +17,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeSet;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -378,9 +377,17 @@ public class JUConstraintTest extends AbstractTestLogic {
 
         // Process Test Properties
         final Map<String, Serializable> testProps = testExecCtx.getProperties();
+        String dbProductName = "";
+        String dbProductVersion = "";
         if (testProps != null) {
             for (String key : testProps.keySet()) {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
+                if ("dbProductName".equals(key)) {
+                    dbProductName = key;
+                }
+                if ("dbProductVersion".equals(key)) {
+                    dbProductVersion = key;
+                }
             }
         }
 
@@ -395,34 +402,93 @@ public class JUConstraintTest extends AbstractTestLogic {
             Query query = em.createQuery(q);
             List<Part> pplist = query.getResultList();
 
-            TreeSet<String> ts = new TreeSet();
+            Assert.assertNotNull(pplist);
+
+            // [Part:10 totalMass:15.25 totalCost:10.0, Part:11 totalMass:25.8 totalCost:110.0, Part:12 totalMass:82.01 totalCost:114.0,
+            //  Part:20 totalMass:62.0 totalCost:47.5, Part:21 totalMass:183.81 totalCost:264.0, Part:99 totalMass:326.81 totalCost:361.5]
+
+            Object[] expectedAnswers = new Object[] {
+                                                      // PartBase: type, partno (i), totalMass (d), totalCost (d)
+                                                      // Part: type, partno,
+                                                      new Object[] { PartBase.class, 10, 15.25d, 10.0d },
+                                                      new Object[] { PartBase.class, 11, 25.8d, 110.0d },
+                                                      new Object[] { PartBase.class, 12, 82.01d, 114.0d },
+                                                      new Object[] { PartComposite.class, 20, 62.0d, 47.5d },
+                                                      new Object[] { PartComposite.class, 21, 183.81d, 264.0d },
+                                                      new Object[] { PartComposite.class, 99, 326.81d, 361.5d },
+
+            };
+            boolean[] foundAnswers = new boolean[] { false, false, false, false, false, false };
+
             for (Part p : pplist) {
+                Assert.assertNotNull(p);
+                final int partNo = p.getPartno();
+
                 if (p instanceof PartComposite) {
                     if (checkCycle((PartComposite) p)) {
                         System.err.println("Error; cycle involving part:" + p.getPartno());
                         continue;
                     }
-
                 }
-                CostAndMassForPart cm = calcCostAndMass(p);
-                ts.add(cm.toString());
-                System.err.println("Part:" + p.getPartno() + " totalMass:" + cm.totalMass + " totalCost:" + cm.totalCost);
+
+                final CostAndMassForPart cm = calcCostAndMass(p);
+                System.out.println(cm);
+
+                // Find the matching answer entry
+                Object[] answer = null;
+                int answerIdx = -1;
+                for (int index = 0; index < expectedAnswers.length; index++) {
+                    Object[] entry = (Object[]) expectedAnswers[index];
+                    int entryId = (int) entry[1];
+                    if (entryId == partNo && !foundAnswers[index]) {
+                        answer = entry;
+                        answerIdx = index;
+                        break;
+                    }
+                }
+
+                Assert.assertNotNull("Failed to find an answer entry for partNo = " + partNo, answer);
+                Assert.assertEquals((double) answer[2], cm.totalMass, 0.1);
+                Assert.assertEquals((double) answer[3], cm.totalCost, 0.1);
+
+                foundAnswers[answerIdx] = true;
             }
-            jpaResource.getTj().commitTransaction();
 
-            em.clear();
+            System.out.println("Outcome table:");
+            for (int idx = 0; idx < foundAnswers.length; idx++) {
+                System.out.println(" " + idx + " : " + foundAnswers[idx]);
+            }
 
-            ArrayList<String> cmal = new ArrayList(ts);
-            System.err.println(cmal);
-            Assert.assertEquals(cmal.toString(),
-                                "[Part:10 totalMass:15.25 totalCost:10.0, Part:11 totalMass:25.8 totalCost:110.0, Part:12 totalMass:82.01 totalCost:114.0, Part:20 totalMass:62.0 totalCost:47.5, Part:21 totalMass:183.81 totalCost:264.0, Part:99 totalMass:326.81 totalCost:361.5]");
+            for (int idx = 0; idx < foundAnswers.length; idx++) {
+                Assert.assertTrue("Assert idx " + idx, foundAnswers[idx]);
+            }
 
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            t.printStackTrace();
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
+//            TreeSet<String> ts = new TreeSet();
+//            for (Part p : pplist) {
+//                if (p instanceof PartComposite) {
+//                    if (checkCycle((PartComposite) p)) {
+//                        System.err.println("Error; cycle involving part:" + p.getPartno());
+//                        continue;
+//                    }
+//
+//                }
+//                CostAndMassForPart cm = calcCostAndMass(p);
+//                ts.add(cm.toString());
+//                System.err.println("Part:" + p.getPartno() + " totalMass:" + cm.totalMass + " totalCost:" + cm.totalCost);
+//            }
+//            jpaResource.getTj().commitTransaction();
+//
+//            em.clear();
+//
+//            ArrayList<String> cmal = new ArrayList(ts);
+//            System.err.println(cmal);
+//            String expectedText = "[Part:10 totalMass:15.25 totalCost:10.0, Part:11 totalMass:25.8 totalCost:110.0, Part:12 totalMass:82.01 totalCost:114.0, Part:20 totalMass:62.0 totalCost:47.5, Part:21 totalMass:183.81 totalCost:264.0, Part:99 totalMass:326.81 totalCost:361.5]";
+//            if ("DB2".equals(dbProductName) && dbProductVersion.startsWith("DSN")) {
+//                // DB2 on Z has floating point precision issues.  This is not a bug in JPA.
+//                expectedText = "[Part:10 totalMass:15.25 totalCost:10.0, Part:11 totalMass:25.8 totalCost:110.0, Part:12 totalMass:82.00999999999999 totalCost:114.0, Part:20 totalMass:62.0 totalCost:47.5, Part:21 totalMass:183.81 totalCost:264.0, Part:99 totalMass:326.81 totalCost:361.5]";
+//            }
+//            Assert.assertEquals(cmal.toString(), expectedText);
+
         } finally {
             System.out.println(testName + ": End");
         }

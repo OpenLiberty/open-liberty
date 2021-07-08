@@ -25,6 +25,7 @@ import com.ibm.ws.el.fat.tests.EL30OperatorPrecedenceTest;
 import com.ibm.ws.el.fat.tests.EL30OperatorsTest;
 import com.ibm.ws.el.fat.tests.EL30ReservedWordsTest;
 import com.ibm.ws.el.fat.tests.EL30StaticFieldsAndMethodsTest;
+import com.ibm.ws.el.fat.tests.EL30VarargsMethodMatchingTest;
 import com.ibm.ws.fat.util.FatLogHandler;
 
 import componenttest.rules.repeater.EmptyAction;
@@ -55,7 +56,8 @@ import componenttest.rules.repeater.RepeatTests;
                 EL30OperatorPrecedenceTest.class,
                 EL22OperatorsTest.class,
                 EL30OperatorsTest.class,
-                EL30MethodExpressionInvocationsTest.class
+                EL30MethodExpressionInvocationsTest.class,
+                EL30VarargsMethodMatchingTest.class
 })
 public class FATSuite {
 

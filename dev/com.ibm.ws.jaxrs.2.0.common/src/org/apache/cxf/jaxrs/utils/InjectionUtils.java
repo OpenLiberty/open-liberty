@@ -204,6 +204,7 @@ public final class InjectionUtils {
         return result;
     }
 
+    @FFDCIgnore(value = { NoSuchMethodException.class }) // Liberty Change
     public static Method checkProxy(Method methodToInvoke, Object resourceObject) {
         if (Proxy.class.isInstance(resourceObject)) {
             String methodToInvokeName = methodToInvoke.getName();

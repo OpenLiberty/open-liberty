@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,18 +30,21 @@ import com.ibm.ws.ejbcontainer.remote.enventry.web.EnvEntryServlet;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.custom.junit.runner.RepeatTestFilter;
+import componenttest.rules.repeater.EE8FeatureReplacementAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
 public class BadApplicationTests extends AbstractTest {
+    public static String eeVersion;
 
     @Server("com.ibm.ws.ejbcontainer.remote.fat.BadAppServer")
     @TestServlets({ @TestServlet(servlet = EnvEntryServlet.class, contextRoot = "EnvEntryWeb") })
@@ -53,12 +56,14 @@ public class BadApplicationTests extends AbstractTest {
     }
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.remote.fat.BadAppServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.remote.fat.BadAppServer"));
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.remote.fat.BadAppServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.remote.fat.BadAppServer")).andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.remote.fat.BadAppServer"));
 
     private static Set<String> installedApps;
 
     @BeforeClass
     public static void beforeClass() throws Exception {
+        eeVersion = JakartaEE9Action.isActive() ? "EE9" : RepeatTestFilter.isRepeatActionActive(EE8FeatureReplacementAction.ID) ? "EE8" : "";
+
         // Use ShrinkHelper to build the Ears & Wars
 
         //#################### InitTxRecoveryLogApp.ear (Automatically initializes transaction recovery logs)
@@ -67,7 +72,7 @@ public class BadApplicationTests extends AbstractTest {
         EnterpriseArchive InitTxRecoveryLogApp = ShrinkWrap.create(EnterpriseArchive.class, "InitTxRecoveryLogApp.ear");
         InitTxRecoveryLogApp.addAsModule(InitTxRecoveryLogEJBJar);
 
-        ShrinkHelper.exportDropinAppToServer(server, InitTxRecoveryLogApp);
+        ShrinkHelper.exportDropinAppToServer(server, InitTxRecoveryLogApp, DeployOptions.SERVER_ONLY);
 
         //#################### AppExcExtendsThrowableErrBean
         JavaArchive AppExcExtendsThrowableErrBeanJar = ShrinkHelper.buildJavaArchive("AppExcExtendsThrowableErrBean.jar", "com.ibm.ws.ejbcontainer.remote.jitdeploy.error1.ejb.");
@@ -75,12 +80,12 @@ public class BadApplicationTests extends AbstractTest {
         EnterpriseArchive AppExcExtendsThrowableErrBean = ShrinkWrap.create(EnterpriseArchive.class, "AppExcExtendsThrowableErrBean.ear");
         AppExcExtendsThrowableErrBean.addAsModule(AppExcExtendsThrowableErrBeanJar);
 
-        ShrinkHelper.exportAppToServer(server, AppExcExtendsThrowableErrBean, DeployOptions.DISABLE_VALIDATION);
+        ShrinkHelper.exportAppToServer(server, AppExcExtendsThrowableErrBean, DeployOptions.DISABLE_VALIDATION, DeployOptions.SERVER_ONLY);
 
         //#################### EnvEntryShared.jar
         JavaArchive EnvEntrySharedJar = ShrinkHelper.buildJavaArchive("EnvEntryShared.jar", "com.ibm.ws.ejbcontainer.remote.enventry.shared.");
 
-        ShrinkHelper.exportToServer(server, "lib/global", EnvEntrySharedJar);
+        ShrinkHelper.exportToServer(server, "lib/global", EnvEntrySharedJar, DeployOptions.SERVER_ONLY);
 
         //#################### EnvEntryApp
         JavaArchive EnvEntryEJBJar = ShrinkHelper.buildJavaArchive("EnvEntryEJB.jar", "com.ibm.ws.ejbcontainer.remote.enventry.ejb.");
@@ -90,7 +95,7 @@ public class BadApplicationTests extends AbstractTest {
         EnvEntryApp.addAsModule(EnvEntryEJBJar).addAsModule(EnvEntryWeb);
         EnvEntryApp = (EnterpriseArchive) ShrinkHelper.addDirectory(EnvEntryApp, "test-applications/EnvEntryApp.ear/resources");
 
-        ShrinkHelper.exportDropinAppToServer(server, EnvEntryApp);
+        ShrinkHelper.exportDropinAppToServer(server, EnvEntryApp, DeployOptions.SERVER_ONLY);
 
         //################### EnvEntryBad1App
         JavaArchive EnvEntryBad1EJBJar = ShrinkHelper.buildJavaArchive("EnvEntryBad1EJB.jar", "com.ibm.ws.ejbcontainer.remote.enventry.bad.ejb.");
@@ -99,7 +104,7 @@ public class BadApplicationTests extends AbstractTest {
         EnvEntryBad1App.addAsModule(EnvEntryBad1EJBJar);
         ShrinkHelper.addDirectory(EnvEntryBad1App, "test-applications/EnvEntryBad1App.ear/resources");
 
-        ShrinkHelper.exportDropinAppToServer(server, EnvEntryBad1App);
+        ShrinkHelper.exportDropinAppToServer(server, EnvEntryBad1App, DeployOptions.SERVER_ONLY);
 
         //################### EnvEntryBad2App
         JavaArchive EnvEntryBad2EJBJar = ShrinkHelper.buildJavaArchive("EnvEntryBad2EJB.jar", "com.ibm.ws.ejbcontainer.remote.enventry.bad.ejb2.");
@@ -108,7 +113,7 @@ public class BadApplicationTests extends AbstractTest {
         EnvEntryBad2App.addAsModule(EnvEntryBad2EJBJar);
         ShrinkHelper.addDirectory(EnvEntryBad2App, "test-applications/EnvEntryBad2App.ear/resources");
 
-        ShrinkHelper.exportDropinAppToServer(server, EnvEntryBad2App);
+        ShrinkHelper.exportDropinAppToServer(server, EnvEntryBad2App, DeployOptions.SERVER_ONLY);
 
         //################### EnvEntryBad3App
         JavaArchive EnvEntryBad3EJBJar = ShrinkHelper.buildJavaArchive("EnvEntryBad3EJB.jar", "com.ibm.ws.ejbcontainer.remote.enventry.bad.ejb3.");
@@ -117,7 +122,7 @@ public class BadApplicationTests extends AbstractTest {
         EnvEntryBad3App.addAsModule(EnvEntryBad3EJBJar);
         ShrinkHelper.addDirectory(EnvEntryBad3App, "test-applications/EnvEntryBad3App.ear/resources");
 
-        ShrinkHelper.exportDropinAppToServer(server, EnvEntryBad3App);
+        ShrinkHelper.exportDropinAppToServer(server, EnvEntryBad3App, DeployOptions.SERVER_ONLY);
 
         //################### EnvEntryBad4App
         JavaArchive EnvEntryBad4EJBJar = ShrinkHelper.buildJavaArchive("EnvEntryBad4EJB.jar", "com.ibm.ws.ejbcontainer.remote.enventry.bad.ejb4.");
@@ -126,7 +131,7 @@ public class BadApplicationTests extends AbstractTest {
         EnvEntryBad4App.addAsModule(EnvEntryBad4EJBJar);
         ShrinkHelper.addDirectory(EnvEntryBad4App, "test-applications/EnvEntryBad4App.ear/resources");
 
-        ShrinkHelper.exportDropinAppToServer(server, EnvEntryBad4App);
+        ShrinkHelper.exportDropinAppToServer(server, EnvEntryBad4App, DeployOptions.SERVER_ONLY);
 
         // Save list of dropins applications for server updates
         installedApps = server.listAllInstalledAppsForValidation();
@@ -182,7 +187,6 @@ public class BadApplicationTests extends AbstractTest {
      * java.lang.Exception class."
      */
     @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @Mode(TestMode.FULL)
     @ExpectedFFDC({ "javax.ejb.NoSuchEJBException", "com.ibm.wsspi.injectionengine.InjectionException",
                     "javax.ejb.EJBException", "com.ibm.ejs.container.ContainerException",
@@ -190,36 +194,7 @@ public class BadApplicationTests extends AbstractTest {
     public void testApplicationExceptionExtendsThrowable() throws Exception {
         server.setMarkToEndOfLog();
         server.saveServerConfiguration();
-        server.setServerConfigurationFile("ExtendsThrowable.xml");
-        assertNotNull(server.waitForStringInLogUsingMark("CNTR5107E"));
-        assertNotNull(server.waitForStringInLogUsingMark("CWWKZ0106E"));
-        server.setMarkToEndOfLog();
-        server.restoreServerConfiguration();
-        server.waitForConfigUpdateInLogUsingMark(installedApps);
-    }
-
-    /**
-     * This test verifies that application exceptions declared on the throws
-     * clause must extend Exception.
-     *
-     * <p>An application is installed with a module with a bean with an
-     * exception that extends Throwable rather than Exception.
-     *
-     * <p>The expected result is that the following message is printed, and the
-     * bean fails to start: "CNTR5107E: The {0} application exception defined on
-     * method {1} of class {1} must be defined as a subclass of the
-     * java.lang.Exception class."
-     */
-    @Test
-    @SkipForRepeat(SkipForRepeat.EE7_FEATURES)
-    @Mode(TestMode.FULL)
-    @ExpectedFFDC({ "javax.ejb.NoSuchEJBException", "com.ibm.wsspi.injectionengine.InjectionException",
-                    "javax.ejb.EJBException", "com.ibm.ejs.container.ContainerException",
-                    "com.ibm.ejs.container.EJBConfigurationException", "com.ibm.ws.container.service.state.StateChangeException" })
-    public void testApplicationExceptionExtendsThrowableEE8() throws Exception {
-        server.setMarkToEndOfLog();
-        server.saveServerConfiguration();
-        server.setServerConfigurationFile("ExtendsThrowableEE8.xml");
+        server.setServerConfigurationFile("ExtendsThrowable" + eeVersion + ".xml");
         assertNotNull(server.waitForStringInLogUsingMark("CNTR5107E"));
         assertNotNull(server.waitForStringInLogUsingMark("CWWKZ0106E"));
         server.setMarkToEndOfLog();

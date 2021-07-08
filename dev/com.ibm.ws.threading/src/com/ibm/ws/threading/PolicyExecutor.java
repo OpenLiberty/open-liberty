@@ -13,11 +13,13 @@ package com.ibm.ws.threading;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Consumer;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 
@@ -272,6 +274,18 @@ public interface PolicyExecutor extends ExecutorService {
      */
     Runnable registerQueueSizeCallback(int minAvailable, Runnable callback);
 
+    /**
+     * Registers a one-time callback to be invoked inline when the
+     * policy executor shuts down. If shutdown has already occurred,
+     * the callback does not get invoked.
+     *
+     * @param callback the callback to register.
+     * @throw IllegalStateException if a different shutdown callback
+     *        has already been registered with this policy executor.
+     */
+    void registerShutdownCallback(Consumer<Set<Object>> callback);
+
+    // TODO remove once consuming code is switched over to above
     /**
      * Registers a one-time callback to be invoked inline when the
      * policy executor shuts down. This method is intended for optional use

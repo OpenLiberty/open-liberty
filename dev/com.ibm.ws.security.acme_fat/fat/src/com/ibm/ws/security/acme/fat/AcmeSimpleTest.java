@@ -26,6 +26,7 @@ import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -611,6 +612,10 @@ public class AcmeSimpleTest {
 	}
 	
 	protected void stopServer(String ...msgs) throws Exception {
-		AcmeFatUtils.stopServer(server, msgs);
+		String alwaysAdd = "CWWKG0027W"; // update timeouts are okay, sometimes the acme certificate fetch takes longer
+ 		
+ 		List<String> tempList = new ArrayList<String>(Arrays.asList(msgs));
+		tempList.add(alwaysAdd);
+		AcmeFatUtils.stopServer(server, tempList.toArray(new String[tempList.size()]));
 	}
 }

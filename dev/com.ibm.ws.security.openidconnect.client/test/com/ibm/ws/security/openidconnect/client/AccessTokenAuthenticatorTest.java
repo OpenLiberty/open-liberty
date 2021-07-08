@@ -15,10 +15,12 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.Key;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -30,14 +32,15 @@ import javax.security.auth.Subject;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.http.Header;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.ParseException;
 import org.apache.http.StatusLine;
 import org.apache.http.entity.BasicHttpEntity;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
+import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -49,12 +52,16 @@ import org.junit.rules.TestRule;
 
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.websphere.security.jwt.InvalidTokenException;
 import com.ibm.websphere.ssl.JSSEHelper;
 import com.ibm.websphere.ssl.SSLConfig;
 import com.ibm.websphere.ssl.SSLConfigChangeListener;
 import com.ibm.websphere.ssl.SSLConfigurationNotAvailableException;
 import com.ibm.websphere.ssl.SSLException;
+import com.ibm.ws.common.internal.encoder.Base64Coder;
+import com.ibm.ws.security.common.crypto.HashUtils;
 import com.ibm.ws.security.common.structures.SingleTableCache;
+import com.ibm.ws.security.jwt.config.ConsumerUtils;
 import com.ibm.ws.security.openidconnect.clients.common.ClientConstants;
 import com.ibm.ws.security.openidconnect.clients.common.MockOidcClientRequest;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig;
@@ -97,8 +104,10 @@ public class AccessTokenAuthenticatorTest {
     private final SSLSupport sslSupport = mockery.mock(SSLSupport.class, "sslSupport");
     private final HttpResponse httpResponse = mockery.mock(HttpResponse.class, "httpResponse");
     private final StatusLine statusLine = mockery.mock(StatusLine.class, "statusLine");
+    private final HttpEntity httpEntity = mockery.mock(HttpEntity.class);
     private final Header header = mockery.mock(Header.class, "header");
     private final ProviderAuthenticationResult authnResult = mockery.mock(ProviderAuthenticationResult.class);
+    private final Key decryptionKey = mockery.mock(Key.class);
     protected final SSLSocketFactory sslSocketFactory = mockery.mock(SSLSocketFactory.class, "sslSocketFactory");
 
     private static final AccessTokenAuthenticatorTest authenticatorTest = new AccessTokenAuthenticatorTest();
@@ -113,7 +122,12 @@ public class AccessTokenAuthenticatorTest {
     private static final String SUPPORTED = "supported";
     private static final String REQUIRED = "required";
 
-    private final AccessTokenAuthenticator tokenAuth = new AccessTokenAuthenticator();
+    private final AccessTokenAuthenticator tokenAuth = new AccessTokenAuthenticator() {
+        @Override
+        boolean isRunningBetaMode() {
+            return true;
+        }
+    };
     private final AccessTokenAuthenticator sslTokenAuth = new FakeAccessTokenAuthenticator(sslSupport);
     private final ReferrerURLCookieHandler referrerURLCookieHandler = new ReferrerURLCookieHandler(webAppSecConfig);
     private final Map<String, Object> respMap = new HashMap<String, Object>();
@@ -255,6 +269,7 @@ public class AccessTokenAuthenticatorTest {
         final InputStream input = new ByteArrayInputStream(getJSONObjectString(true, currentDate, currentDate).getBytes());
         final BasicHttpEntity entity = new BasicHttpEntity();
         entity.setContent(input);
+        entity.setContentType("application/json");
 
         mockery.checking(new Expectations() {
             {
@@ -309,6 +324,7 @@ public class AccessTokenAuthenticatorTest {
         final InputStream input = new ByteArrayInputStream(getJSONObjectString(true, currentDate, currentDate).getBytes());
         final BasicHttpEntity entity = new BasicHttpEntity();
         entity.setContent(input);
+        entity.setContentType("application/json");
 
         mockery.checking(new Expectations() {
             {
@@ -382,6 +398,7 @@ public class AccessTokenAuthenticatorTest {
         final InputStream input = new ByteArrayInputStream(getJSONObjectString(true, currentDate, currentDate, GOOD_ISSUER).getBytes());
         final BasicHttpEntity entity = new BasicHttpEntity();
         entity.setContent(input);
+        entity.setContentType("application/json");
 
         mockery.checking(new Expectations() {
             {
@@ -434,6 +451,7 @@ public class AccessTokenAuthenticatorTest {
         final InputStream input = new ByteArrayInputStream(getJSONObjectString(true, currentDate, currentDate).getBytes());
         final BasicHttpEntity entity = new BasicHttpEntity();
         entity.setContent(input);
+        entity.setContentType("application/json");
 
         mockery.checking(new Expectations() {
             {
@@ -490,6 +508,7 @@ public class AccessTokenAuthenticatorTest {
         final InputStream input = new ByteArrayInputStream(getJSONObjectString(true, currentDate, currentDate, GOOD_ISSUER).getBytes());
         final BasicHttpEntity entity = new BasicHttpEntity();
         entity.setContent(input);
+        entity.setContentType("application/json");
 
         mockery.checking(new Expectations() {
             {
@@ -547,6 +566,7 @@ public class AccessTokenAuthenticatorTest {
         final InputStream input = new ByteArrayInputStream(getJSONObjectString(false, currentDate, currentDate, GOOD_ISSUER).getBytes());
         final BasicHttpEntity entity = new BasicHttpEntity();
         entity.setContent(input);
+        entity.setContentType("application/json");
 
         mockery.checking(new Expectations() {
             {
@@ -1238,7 +1258,7 @@ public class AccessTokenAuthenticatorTest {
     }
 
     @Test
-    public void testHandleResponseMap() throws ParseException, IOException {
+    public void testHandleResponseMap() throws Exception {
         final InputStream input = new ByteArrayInputStream(new String("").getBytes());
         final BasicHttpEntity entity = new BasicHttpEntity();
         entity.setContent(input);
@@ -1281,7 +1301,7 @@ public class AccessTokenAuthenticatorTest {
     }
 
     @Test
-    public void testHandleResponseMap_NullHeader() throws ParseException, IOException {
+    public void testHandleResponseMap_NullHeader() throws Exception {
         final InputStream input = new ByteArrayInputStream(new String("").getBytes());
         final BasicHttpEntity entity = new BasicHttpEntity();
         entity.setContent(input);
@@ -1315,6 +1335,239 @@ public class AccessTokenAuthenticatorTest {
         respMap.put(ClientConstants.RESPONSEMAP_CODE, httpResponse);
         JSONObject jsonObject = tokenAuth.handleResponseMap(respMap, clientConfig, clientRequest);
         assertNull("Expected to receive a null value but was received: " + jsonObject, jsonObject);
+    }
+
+    @Test
+    public void test_extractSuccessfulResponse_responseMissingEntity() throws Exception {
+        mockery.checking(new Expectations() {
+            {
+                one(httpResponse).getEntity();
+                will(returnValue(null));
+            }
+        });
+        JSONObject result = tokenAuth.extractSuccessfulResponse(clientConfig, clientRequest, httpResponse);
+        assertNull("Result should have been null but was " + result + ".", result);
+    }
+
+    @Test
+    public void test_extractSuccessfulResponse_emptyString() throws Exception {
+        final InputStream input = new ByteArrayInputStream(("").getBytes());
+        final BasicHttpEntity entity = new BasicHttpEntity();
+        entity.setContent(input);
+        entity.setContentType("application/json");
+        mockery.checking(new Expectations() {
+            {
+                one(httpResponse).getEntity();
+                will(returnValue(entity));
+                one(clientConfig).getInboundPropagation();
+                will(returnValue(REQUIRED));
+                one(clientRequest).getRsFailMsg();
+                will(returnValue("doesn't matter"));
+            }
+        });
+        JSONObject result = tokenAuth.extractSuccessfulResponse(clientConfig, clientRequest, httpResponse);
+        assertNull("Result should have been null but was " + result + ".", result);
+    }
+
+    @Test
+    public void test_extractSuccessfulResponse_missingContentType() throws Exception {
+        String inputString = "This is not JSON";
+        final InputStream input = new ByteArrayInputStream(inputString.getBytes());
+        mockery.checking(new Expectations() {
+            {
+                one(httpResponse).getEntity();
+                will(returnValue(httpEntity));
+                one(httpEntity).getContent();
+                will(returnValue(input));
+                allowing(httpEntity).getContentLength();
+                will(returnValue((long) inputString.length()));
+                allowing(httpEntity).getContentType();
+                will(returnValue(null));
+                one(clientConfig).getInboundPropagation();
+                will(returnValue(REQUIRED));
+                one(clientRequest).getRsFailMsg();
+                will(returnValue("doesn't matter"));
+            }
+        });
+        JSONObject result = tokenAuth.extractSuccessfulResponse(clientConfig, clientRequest, httpResponse);
+        assertNull("Result should have been null but was " + result + ".", result);
+    }
+
+    @Test
+    public void test_extractSuccessfulResponse_notJson() throws Exception {
+        final InputStream input = new ByteArrayInputStream(("This is not JSON").getBytes());
+        final BasicHttpEntity entity = new BasicHttpEntity();
+        entity.setContent(input);
+        entity.setContentType("text/plain");
+        mockery.checking(new Expectations() {
+            {
+                one(httpResponse).getEntity();
+                will(returnValue(entity));
+            }
+        });
+        JSONObject result = tokenAuth.extractSuccessfulResponse(clientConfig, clientRequest, httpResponse);
+        assertNull("Result should have been null but was " + result + ".", result);
+    }
+
+    @Test
+    public void test_extractSuccessfulResponse_emptyJson() throws Exception {
+        JSONObject responseJson = new JSONObject();
+        final InputStream input = new ByteArrayInputStream(new String(responseJson.toString()).getBytes());
+        final BasicHttpEntity entity = new BasicHttpEntity();
+        entity.setContent(input);
+        entity.setContentType("application/json");
+        mockery.checking(new Expectations() {
+            {
+                one(httpResponse).getEntity();
+                will(returnValue(entity));
+            }
+        });
+        JSONObject result = tokenAuth.extractSuccessfulResponse(clientConfig, clientRequest, httpResponse);
+        assertNotNull("Result should not have been null but was.", result);
+        assertTrue("Result should have been empty, but was " + result + ".", result.isEmpty());
+    }
+
+    @Test
+    public void test_extractSuccessfulResponse_validNonEmptyJson() throws Exception {
+        JSONObject responseJson = new JSONObject();
+        responseJson.put("key1", "value1");
+        responseJson.put("key2", "value2");
+        final InputStream input = new ByteArrayInputStream(new String(responseJson.toString()).getBytes());
+        final BasicHttpEntity entity = new BasicHttpEntity();
+        entity.setContent(input);
+        entity.setContentType("application/json");
+        mockery.checking(new Expectations() {
+            {
+                one(httpResponse).getEntity();
+                will(returnValue(entity));
+            }
+        });
+        JSONObject result = tokenAuth.extractSuccessfulResponse(clientConfig, clientRequest, httpResponse);
+        assertNotNull("Result should not have been null but was.", result);
+        assertEquals("Result did not match the expected value.", responseJson, result);
+    }
+
+    @Test
+    public void test_extractSuccessfulResponse_validNonEmptyJson_contentTypeJwt() throws Exception {
+        JSONObject responseJson = new JSONObject();
+        responseJson.put("key1", "value1");
+        responseJson.put("key2", "value2");
+        final InputStream input = new ByteArrayInputStream(new String(responseJson.toString()).getBytes());
+        final BasicHttpEntity entity = new BasicHttpEntity();
+        entity.setContent(input);
+        entity.setContentType("application/jwt");
+        mockery.checking(new Expectations() {
+            {
+                one(httpResponse).getEntity();
+                will(returnValue(entity));
+            }
+        });
+        JSONObject result = tokenAuth.extractSuccessfulResponse(clientConfig, clientRequest, httpResponse);
+        assertNull("Result should have been null but was " + result + ".", result);
+    }
+
+    //@Test
+    public void test_extractSuccessfulResponse_jws() throws Exception {
+        JSONObject headerJson = new JSONObject();
+        headerJson.put("alg", "HS256");
+        headerJson.put("typ", "JWT");
+        JSONObject payloadJson = new JSONObject();
+        payloadJson.put("iss", GOOD_ISSUER);
+        String jwsHeader = Base64Coder.base64Encode(headerJson.toString());
+        String jwsPayload = Base64Coder.base64Encode(payloadJson.toString());
+        String signature = HashUtils.digest(jwsHeader + "." + jwsPayload);
+        String rawResponse = jwsHeader + "." + jwsPayload + "." + signature;
+        final InputStream input = new ByteArrayInputStream(rawResponse.getBytes());
+        final BasicHttpEntity entity = new BasicHttpEntity();
+        entity.setContent(input);
+        entity.setContentType("application/jwt");
+        ConsumerUtils consumerUtils = new ConsumerUtils(null);
+
+        // TODO - update once parsing JWS tokens is implemented
+        mockery.checking(new Expectations() {
+            {
+                one(httpResponse).getEntity();
+                will(returnValue(entity));
+                one(clientConfig).getConsumerUtils();
+                will(returnValue(consumerUtils));
+                allowing(clientConfig).getKeyManagementKeyAlias();
+                will(returnValue(null));
+                one(clientConfig).getClockSkew();
+                will(returnValue(3000L));
+                one(clientConfig).isValidationRequired();
+                will(returnValue(false));
+                one(clientConfig).getTokenReuse();
+                will(returnValue(false));
+            }
+        });
+        JSONObject result = tokenAuth.extractSuccessfulResponse(clientConfig, clientRequest, httpResponse);
+        assertNotNull("Result should not have been null but was.", result);
+        assertEquals("Result did not match the expected value.", payloadJson, result);
+    }
+
+    @Test
+    public void test_extractClaimsFromJwtResponse_responseStringEmpty() throws Exception {
+        String rawResponse = "";
+
+        JSONObject result = tokenAuth.extractClaimsFromJwtResponse(rawResponse, clientConfig, clientRequest);
+        assertNull("Result should have been null but was " + result + ".", result);
+    }
+
+    //@Test
+    public void test_extractClaimsFromJwtResponse_jwsMalformed() throws Exception {
+        // Create a JWS but mangle the payload string
+        JSONObject headerJson = new JSONObject();
+        headerJson.put("alg", "HS256");
+        headerJson.put("typ", "JWT");
+        JSONObject payloadJson = new JSONObject();
+        payloadJson.put("iss", GOOD_ISSUER);
+        String jwsHeader = Base64Coder.base64Encode(headerJson.toString());
+        String jwsPayload = Base64Coder.base64Encode(payloadJson.toString()) + "_mangled";
+        String signature = HashUtils.digest(jwsHeader + "." + jwsPayload);
+        String rawResponse = jwsHeader + "." + jwsPayload + "." + signature;
+
+        // TODO - update once parsing JWS tokens is implemented
+        mockery.checking(new Expectations() {
+            {
+                //                one(clientConfig).getConsumerUtils();
+                //                will(returnValue(consumerUtils));
+                //                allowing(clientConfig).getKeyManagementKeyAlias();
+                //                will(returnValue(null));
+                //                one(clientConfig).getClockSkew();
+                //                will(returnValue(3000L));
+            }
+        });
+        try {
+            JSONObject result = tokenAuth.extractClaimsFromJwtResponse(rawResponse, clientConfig, clientRequest);
+            fail("Should have thrown an exception, but got " + result + ".");
+        } catch (InvalidJwtException e) {
+            assertTrue("Did not find expected exception and reason string. Exception was " + e, e.toString().contains("Unable to parse"));
+        }
+    }
+
+    @Test
+    public void test_extractClaimsFromJwtResponse_jweMalformed() throws Exception {
+        String rawResponse = "";
+        for (int i = 1; i <= 4; i++) {
+            rawResponse += Base64Coder.base64Encode("part" + i) + ".";
+        }
+        rawResponse += Base64Coder.base64Encode("part" + 5);
+
+        mockery.checking(new Expectations() {
+            {
+                one(clientConfig).getJweDecryptionKey();
+                will(returnValue(decryptionKey));
+                one(clientConfig).getId();
+                will(returnValue("configId"));
+            }
+        });
+        try {
+            JSONObject result = tokenAuth.extractClaimsFromJwtResponse(rawResponse, clientConfig, clientRequest);
+            fail("Should have thrown an exception, but got " + result + ".");
+        } catch (InvalidTokenException e) {
+            String expectedMsg = "CWWKS6056E";
+            assertTrue("Did not see expected " + expectedMsg + " error message in the exception [" + e + "].", e.getMessage().contains(expectedMsg));
+        }
     }
 
     /**

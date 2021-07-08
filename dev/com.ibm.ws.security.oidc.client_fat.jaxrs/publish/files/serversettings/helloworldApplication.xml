@@ -12,7 +12,7 @@
 
 	<application
 		type="war"
-		id="jaxrsclient"
+		id="helloworld"
 		name="helloworld"
 		location="${server.config.dir}/test-apps/helloworld.war"
 	>

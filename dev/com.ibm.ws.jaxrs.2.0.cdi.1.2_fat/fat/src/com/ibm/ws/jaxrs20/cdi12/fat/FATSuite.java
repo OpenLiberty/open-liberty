@@ -17,6 +17,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.jaxrs20.cdi12.fat.test.Basic12Test;
 import com.ibm.ws.jaxrs20.cdi12.fat.test.BeanValidation12Test;
+import com.ibm.ws.jaxrs20.cdi12.fat.test.CDIInjectIntoAppTest;
 import com.ibm.ws.jaxrs20.cdi12.fat.test.Complex12Test;
 import com.ibm.ws.jaxrs20.cdi12.fat.test.ContextAndClientTest;
 import com.ibm.ws.jaxrs20.cdi12.fat.test.ContextandCDI12Test;
@@ -37,6 +38,7 @@ import componenttest.rules.repeater.RepeatTests;
                AlwaysPassesTest.class,
                Basic12Test.class,             // Skip for JakartaEE9
                BeanValidation12Test.class,    // Skip for JakartaEE9
+               CDIInjectIntoAppTest.class,
                Complex12Test.class,           // Skip for JakartaEE9
                ContextAndClientTest.class,
                ContextandCDI12Test.class,     // Skip for JakartaEE9

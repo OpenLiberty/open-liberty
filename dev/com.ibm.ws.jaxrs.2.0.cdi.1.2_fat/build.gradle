@@ -10,5 +10,4 @@
  *******************************************************************************/
 apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 
-
 addRequiredLibraries.dependsOn addJakartaTransformer

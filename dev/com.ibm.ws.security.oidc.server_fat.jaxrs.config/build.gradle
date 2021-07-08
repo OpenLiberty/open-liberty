@@ -121,6 +121,15 @@ autoFVT.doLast {
       include 'commonBasicKeyStore.jks'
       include 'commonTrustStore.jks'
     }
+    
+  	/* copy shared key/trust stores from the common security fat project */
+    copy { 
+     from project(':com.ibm.ws.security.fat.common').file('publish/shared/securityKeys')
+     into new File(autoFvtDir, 'publish/servers/' + server + '/')
+     include 'allAlgKeyStore.p12'
+     include 'allAlgTrustStore.p12'
+    }
+        
   }
 
   servers = [
@@ -140,7 +149,27 @@ autoFVT.doLast {
 	  include 'rsaKeys.jks'
 	  include 'ec.jks' 
 	}    
-/* copy derby.jar */    
+
+	/* copy keys used to encrypt tokens */
+	copy { 
+		from project(':com.ibm.ws.security.fat.common.jwt').file('publish/shared/securityKeys')
+		into new File(autoFvtDir, 'publish/servers/' + server + '/')
+		include '*.pem'
+	}  	
+
+	/* copy the jwtbuilder app config file from security_fat.common.jwt */
+
+    copy {
+      from project(':com.ibm.ws.security.fat.common.jwt').file('publish/shared/config')
+      include "jwtBuilderApplication.xml"
+      into new File(autoFvtDir, 'publish/servers/' + server + '/imports')
+    }
+
+    copy { 
+      from new File(project(':com.ibm.ws.security.fat.common.jwt').buildDir, 'test-application/jwtbuilder.war')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/test-apps')
+    }
+    
   }
 
   /*

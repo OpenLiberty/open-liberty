@@ -434,42 +434,42 @@
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-api</artifactId>
-      <version>1.36.1</version>
+      <version>1.38.1</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-census</artifactId>
-      <version>1.36.1</version>
+      <version>1.38.1</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-context</artifactId>
-      <version>1.36.1</version>
+      <version>1.38.1</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-core</artifactId>
-      <version>1.36.1</version>
+      <version>1.38.1</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-netty</artifactId>
-      <version>1.36.1</version>
+      <version>1.38.1</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-protobuf-lite</artifactId>
-      <version>1.36.1</version>
+      <version>1.38.1</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-protobuf</artifactId>
-      <version>1.36.1</version>
+      <version>1.38.1</version>
     </dependency>
     <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-stub</artifactId>
-      <version>1.36.1</version>
+      <version>1.38.1</version>
     </dependency>
     <dependency>
       <groupId>io.jaegertracing</groupId>
@@ -1474,7 +1474,7 @@
     <dependency>
       <groupId>org.apache.myfaces.core</groupId>
       <artifactId>myfaces-api</artifactId>
-      <version>3.0.0</version>
+      <version>3.0.1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.myfaces.core</groupId>
@@ -1489,7 +1489,7 @@
     <dependency>
       <groupId>org.apache.myfaces.core</groupId>
       <artifactId>myfaces-impl</artifactId>
-      <version>3.0.0</version>
+      <version>3.0.1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.neethi</groupId>
@@ -1879,7 +1879,7 @@
     <dependency>
       <groupId>org.eclipse.microprofile.health</groupId>
       <artifactId>microprofile-health-api</artifactId>
-      <version>3.1-RC3</version>
+      <version>3.1</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.microprofile.jwt</groupId>

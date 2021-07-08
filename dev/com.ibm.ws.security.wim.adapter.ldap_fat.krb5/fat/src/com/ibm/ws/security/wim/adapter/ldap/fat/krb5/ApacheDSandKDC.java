@@ -76,11 +76,13 @@ public class ApacheDSandKDC {
 
     private static final Class<?> c = ApacheDSandKDC.class;
 
-    private static boolean FAT_TEST_LOCALRUN = Boolean.getBoolean("fat.test.localrun");
+    protected static boolean FAT_TEST_LOCALRUN = Boolean.getBoolean("fat.test.localrun");
 
     public static String BASE_DN = LdapKerberosUtils.BASE_DN; // default, override in extending class
 
     public static String DOMAIN = LdapKerberosUtils.DOMAIN; // default, override in extending class
+
+    public static String WHICH_FAT = "LDAP"; // default, override in extending class. options: {LDAP, SPNEGO}
 
     protected static CoreSession session;
 
@@ -126,7 +128,7 @@ public class ApacheDSandKDC {
 
     protected static DirectoryService directoryService;
     private static LdapServer ldapServer;
-    private static KdcServer kdcServer;
+    protected static KdcServer kdcServer;
 
     private static void startLdapServer() throws Exception {
         DirectoryServiceFactory dsf = new DefaultDirectoryServiceFactory();
@@ -291,25 +293,34 @@ public class ApacheDSandKDC {
     /**
      * Create the principal that will be used for Kerberos bind
      *
-     * @param uid
+     * @param krb5User
      * @param userPassword
      * @param principalName
      * @return
      * @throws Exception
      */
-    public static String createPrincipal(String uid, String userPassword, String principalName) throws Exception {
+    public static String createPrincipal(String krb5User, String krb5UserPwd) throws Exception {
+        String principalName = krb5User + "@" + DOMAIN;
         Entry entry = new DefaultEntry(session.getDirectoryService().getSchemaManager());
-        entry.setDn("uid=" + uid + "," + BASE_DN);
-        entry.add("objectClass", "top", "person", "inetOrgPerson", "krb5principal", "krb5kdcentry");
-        entry.add("cn", uid);
-        entry.add("sn", uid);
-        entry.add("uid", uid);
-        entry.add("userPassword", userPassword);
+        entry.add("userPassword", krb5UserPwd);
         entry.add("krb5PrincipalName", principalName);
         entry.add("krb5KeyVersionNumber", "0");
+
+        //The following attributes are required to complete the valid Directory Service User Entry:
+        entry.setDn("uid=" + krb5User + "," + BASE_DN);
+        entry.add("objectClass", "top", "person", "inetOrgPerson", "krb5principal", "krb5kdcentry");
+        entry.add("cn", krb5User);
+        entry.add("sn", krb5User);
+        entry.add("uid", krb5User);
+
         session.add(entry);
 
-        Log.info(c, "createPrincipal", "Created " + entry.getDn());
+        if ("LDAP".equals(WHICH_FAT)) {
+            Log.info(c, "createPrincipal", "Created " + entry.getDn());
+        } else {
+            //SPNEGO FAT
+            Log.info(c, "createPrincipal", "Created " + entry.get("krb5PrincipalName"));
+        }
 
         return entry.getDn().getName();
     }
@@ -351,7 +362,7 @@ public class ApacheDSandKDC {
 
         Log.info(c, "createPrincipal", "Created " + entry.getDn());
 
-        createPrincipal(bindUserName, bindPassword, bindPrincipalName);
+        createPrincipal(bindUserName, bindPassword);
 
         Log.info(c, "startAllServers", "Created KDC user entries");
 
@@ -631,20 +642,9 @@ public class ApacheDSandKDC {
             keyTabTemp.deleteOnExit();
         }
 
-        KerberosTime timeStamp = new KerberosTime();
-        int principalType = 1; // KRB5_NT_PRINCIPAL
-
         Keytab keytab = Keytab.getInstance();
 
-        List<KeytabEntry> entries = new ArrayList<KeytabEntry>();
-
-        for (Map.Entry<EncryptionType, EncryptionKey> keyEntry : KerberosKeyFactory.getKerberosKeys(
-                                                                                                    bindPrincipalName, bindPassword)
-                        .entrySet()) {
-            final EncryptionKey key = keyEntry.getValue();
-            final byte keyVersion = (byte) key.getKeyVersion();
-            entries.add(new KeytabEntry(bindPrincipalName, principalType, timeStamp, keyVersion, key));
-        }
+        List<KeytabEntry> entries = addKerberosKeysToKeytab(bindPrincipalName, bindPassword);
 
         keytab.setEntries(entries);
         keytab.write(keyTabTemp);
@@ -653,17 +653,44 @@ public class ApacheDSandKDC {
 
         Log.info(c, "createKeyTabFile", "Created keytab: " + keytabFile);
         Log.info(c, "createKeyTabFile", "Keytab actual contents: " + FileUtils.readFile(keytabFile));
+    }
+
+    /**
+     * @param entries
+     */
+    protected static List<KeytabEntry> addKerberosKeysToKeytab(String principalName, String principalPwd) {
+        List<KeytabEntry> entries = new ArrayList<KeytabEntry>();
+        KerberosTime timeStamp = new KerberosTime();
+
+        addKerberosKeys(principalName, principalPwd, entries, timeStamp);
+
         // KeytabEntry doesn't have a nice toString
         for (KeytabEntry key : entries) {
             StringBuffer strBuf = new StringBuffer();
             strBuf.append(" PrincipalName: " + key.getPrincipalName());
-            strBuf.append(" PrincipalType: " + key.getPrincipalType());
+            //strBuf.append(" PrincipalType: " + key.getPrincipalType());
             strBuf.append(" Key: " + key.getKey());
             strBuf.append(" KeyVersion: " + key.getKeyVersion());
-            strBuf.append(" TimeStamp: " + key.getTimeStamp());
+            //strBuf.append(" TimeStamp: " + key.getTimeStamp());
 
-            Log.info(c, "createKeyTabFile", "Keytab entry: " + strBuf.toString());
+            Log.info(c, "addKerberosKeysToKeytab", "Keytab entry: " + strBuf.toString());
         }
 
+        return entries;
+    }
+
+    /**
+     * @param principalName
+     * @param principalPwd
+     * @param entries
+     */
+    private static void addKerberosKeys(String principalName, String principalPwd, List<KeytabEntry> entries, KerberosTime timeStamp) {
+        int principalType = 1; // KRB5_NT_PRINCIPAL
+
+        for (Map.Entry<EncryptionType, EncryptionKey> keyEntry : KerberosKeyFactory.getKerberosKeys(principalName, principalPwd).entrySet()) {
+            final EncryptionKey key = keyEntry.getValue();
+            final byte keyVersion = (byte) key.getKeyVersion();
+            entries.add(new KeytabEntry(principalName, principalType, timeStamp, keyVersion, key));
+        }
     }
 }

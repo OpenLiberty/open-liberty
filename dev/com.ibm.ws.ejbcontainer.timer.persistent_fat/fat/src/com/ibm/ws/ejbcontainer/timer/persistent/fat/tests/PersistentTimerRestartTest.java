@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.config.EJBContainerElement;
 import com.ibm.websphere.simplicity.config.EJBTimerServiceElement;
 import com.ibm.websphere.simplicity.config.PersistentExecutor;
@@ -47,7 +48,7 @@ public class PersistentTimerRestartTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.timer.persistent.fat.PersistentTimerRestartServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.timer.persistent.fat.PersistentTimerRestartServer"));
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.timer.persistent.fat.PersistentTimerRestartServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.timer.persistent.fat.PersistentTimerRestartServer")).andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.timer.persistent.fat.PersistentTimerRestartServer"));
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -59,7 +60,7 @@ public class PersistentTimerRestartTest extends FATServletClient {
         EnterpriseArchive InitTxRecoveryLogApp = ShrinkWrap.create(EnterpriseArchive.class, "InitTxRecoveryLogApp.ear");
         InitTxRecoveryLogApp.addAsModule(InitTxRecoveryLogEJBJar);
 
-        ShrinkHelper.exportDropinAppToServer(server, InitTxRecoveryLogApp);
+        ShrinkHelper.exportDropinAppToServer(server, InitTxRecoveryLogApp, DeployOptions.SERVER_ONLY);
 
         //#################### RestartMissedTimerActionApp.ear
         JavaArchive RestartMissedTimerActionEJB = ShrinkHelper.buildJavaArchive("RestartMissedTimerActionEJB.jar", "com.ibm.ws.ejbcontainer.timer.persistent.restart.missed.ejb.");
@@ -68,7 +69,7 @@ public class PersistentTimerRestartTest extends FATServletClient {
         EnterpriseArchive RestartMissedTimerActionApp = ShrinkWrap.create(EnterpriseArchive.class, "RestartMissedTimerActionApp.ear");
         RestartMissedTimerActionApp.addAsModule(RestartMissedTimerActionEJB).addAsModule(RestartMissedTimerActionWeb);
 
-        ShrinkHelper.exportDropinAppToServer(server, RestartMissedTimerActionApp);
+        ShrinkHelper.exportDropinAppToServer(server, RestartMissedTimerActionApp, DeployOptions.SERVER_ONLY);
     }
 
     @AfterClass

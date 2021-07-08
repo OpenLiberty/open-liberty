@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.oauth_oidc.fat.commonTest;
 
@@ -17,6 +17,7 @@ public class MessageConstants extends com.ibm.ws.security.fat.common.MessageCons
     public static final String CWWKG0011W_CONFIG_VALIDATION_FAILURE = "CWWKG0011W";
 
     public static final String CWWKG0032W_CONFIG_INVALID_VALUE = "CWWKG0032W";
+    public static final String CWWKG0033W_CONFIG_REFERENCE_NOT_FOUND = "CWWKG0033W";
     public static final String CWWKG0081W_CONFIG_VALIDATION_FAILURE = "CWWKG0081W";
     public static final String CWWKG0083W_CONFIG_VALIDATION_FAILURE = "CWWKG0083W";
     public static final String CWWKG0058E_CONFIG_MISSING_REQUIRED_ATTRIBUTE = "CWWKG0058E";

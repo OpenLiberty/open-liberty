@@ -33,7 +33,7 @@ public abstract class AbstractLibertyVariable implements LibertyVariable {
         if (obscuredValuePattern.matcher(value).matches())
             return OBSCURED_VALUE;
 
-        return getValue();
+        return value;
     }
 
     @Override

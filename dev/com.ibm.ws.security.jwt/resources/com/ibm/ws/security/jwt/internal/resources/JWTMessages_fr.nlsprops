@@ -382,3 +382,7 @@ JWE_REQUIRED_BUT_TOKEN_NOT_JWE.useraction=Pour accepter des jetons JWS \u00e0 la
 NESTED_JWS_REQUIRED_BUT_NOT_FOUND=CWWKS6065E: Le contenu du jeton JWE (JSON Web Encryption) qui est inclus dans la demande n'est pas un jeton JWS (JSON Web Signature).
 NESTED_JWS_REQUIRED_BUT_NOT_FOUND.explanation=La charge d'un jeton JWE doit \u00eatre un jeton Web JSON (JWT) valide au format JWS.
 NESTED_JWS_REQUIRED_BUT_NOT_FOUND.useraction=Assurez-vous que le contenu du jeton JWE est un jeton Web JSON (JWT) au format JWS.
+
+JWE_DECRYPTION_KEY_MISSING=CWWKS6066E: Le jeton JWE (JSON Web Encryption) ne peut pas \u00eatre d\u00e9chiffr\u00e9 car une cl\u00e9 de d\u00e9chiffrement est introuvable. L''attribut de configuration du serveur {0} est d\u00e9fini sur [{1}].
+JWE_DECRYPTION_KEY_MISSING.explanation=Une cl\u00e9 de d\u00e9chiffrement est requise pour d\u00e9chiffrer le jeton JWE. La cl\u00e9 de d\u00e9chiffrement doit \u00eatre pr\u00e9sente dans le fichier de cl\u00e9s de consommateur JWT ou elle doit \u00eatre sp\u00e9cifi\u00e9e dans les propri\u00e9t\u00e9s de configuration du microprofil.
+JWE_DECRYPTION_KEY_MISSING.useraction=V\u00e9rifiez que l'alias de cl\u00e9 sp\u00e9cifi\u00e9 dans le message existe dans le fichier de cl\u00e9s de consommateur JWT. Si l'alias n'est pas configur\u00e9, la cl\u00e9 de d\u00e9chiffrement doit \u00eatre sp\u00e9cifi\u00e9e dans les propri\u00e9t\u00e9s de configuration du microprofil.

@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 package com.ibm.ws.security.openidconnect.server.fat.jaxrs.config;
@@ -47,6 +47,8 @@ import com.ibm.ws.security.openidconnect.server.fat.jaxrs.config.OIDC.OIDCMapToU
 import com.ibm.ws.security.openidconnect.server.fat.jaxrs.config.OIDC.OIDCSignatureAttributes2ServerTests;
 import com.ibm.ws.security.openidconnect.server.fat.jaxrs.config.OIDC.OIDCValidationMethod2ServerTests;
 import com.ibm.ws.security.openidconnect.server.fat.jaxrs.config.noOP.NoOPAudiences1ServerTests;
+import com.ibm.ws.security.openidconnect.server.fat.jaxrs.config.noOP.NoOPEncryptionRSServerTests;
+import com.ibm.ws.security.openidconnect.server.fat.jaxrs.config.noOP.NoOPSignatureRSServerTests;
 
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.JakartaEE9Action;
@@ -89,7 +91,11 @@ import componenttest.rules.repeater.RepeatTests;
         OIDCJWKEndpointUrl2ServerTests.class,
 
         // No OP (No OAuth or OIDC server) tests
-        NoOPAudiences1ServerTests.class
+        NoOPAudiences1ServerTests.class,
+        // for now, test without an OP since our OP can not create JWEs
+        // (these tests start a second server named "OP", but it contains no OP function, just jwt builders)
+        NoOPSignatureRSServerTests.class,
+        NoOPEncryptionRSServerTests.class
 
 })
 /**

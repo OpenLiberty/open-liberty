@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -45,6 +45,11 @@ healthcheck.bean.call.exception.CWMH0050E.explanation=\u6240\u6307\u5b9a\u8c03\u
 healthcheck.bean.call.exception.CWMH0050E.useraction=\u67e5\u770b HealthCheck bean \u4e2d\u7684\u8c03\u7528\u65b9\u6cd5\u4ee5\u786e\u5b9a\u6240\u53d1\u751f\u7684\u5f02\u5e38\u3002
 
 # The HealthCheck bean call method had a DOWN outcome
-healthcheck.application.down.CWMH0051W=CWMH0051W: \u5728\u6a21\u5757 {2} \u7684 {1} \u5e94\u7528\u7a0b\u5e8f\u4e2d\u5b9e\u73b0 HealthCheckResponse \u7684 {0} \u62a5\u544a\u4e86 DOWN \u7ed3\u679c {3}\uff0c\u5e76\u5e26\u6709\u6570\u636e {4}\u3002
-healthcheck.application.down.CWMH0051W.explanation=DOWN \u7ed3\u679c\u53ef\u80fd\u5bfc\u81f4\u76d1\u89c6\u670d\u52a1\u5728\u6b64\u670d\u52a1\u5668\u4e0a\u6267\u884c\u64cd\u4f5c\u3002
-healthcheck.application.down.CWMH0051W.useraction=\u7528\u6237\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002\u6b64\u8b66\u544a\u662f\u4e00\u6761 DOWN \u7ed3\u679c\u8bb0\u5f55\u3002
+healthcheck.application.down.CWMH0052W=CWMH0052W: \u6a21\u5757 {2} \u7684 {1} \u5e94\u7528\u7a0b\u5e8f\u4e2d\u5b9e\u73b0 HealthCheckResponse \u7684 {0} \u62a5\u544a\u4e86 {3} \u72b6\u6001\u4ee5\u53ca\u6570\u636e {4}\u3002
+healthcheck.application.down.CWMH0052W.explanation=DOWN \u72b6\u6001\u53ef\u80fd\u5bfc\u81f4\u76d1\u89c6\u670d\u52a1\u5728\u6b64\u670d\u52a1\u5668\u4e0a\u6267\u884c\u64cd\u4f5c\u3002
+healthcheck.application.down.CWMH0052W.useraction=\u7528\u6237\u65e0\u9700\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002\u6b64\u8b66\u544a\u662f\u4e00\u6761 DOWN \u72b6\u6001\u8bb0\u5f55\u3002
+
+# The Readiness HealthCheck had a DOWN outcome, when applications are not started yet
+readiness.healthcheck.applications.not.started.down.CWMH0053W=CWMH0053W: \u51c6\u5907\u5c31\u7eea\u8fd0\u884c\u72b6\u51b5\u68c0\u67e5\u62a5\u544a\u4e86\u603b\u4f53\u72b6\u6001 DOWN\uff0c\u56e0\u4e3a\u4e0b\u5217\u5e94\u7528\u7a0b\u5e8f\u5c1a\u672a\u542f\u52a8\uff1a{0}
+readiness.healthcheck.applications.not.started.down.CWMH0053W.explanation=\u51c6\u5907\u5c31\u7eea\u8fd0\u884c\u72b6\u51b5\u68c0\u67e5\u62a5\u544a\u4e86\u603b\u4f53\u72b6\u6001 DOWN\uff0c\u56e0\u4e3a\u6240\u6307\u5b9a\u7684\u5e94\u7528\u7a0b\u5e8f\u5c1a\u672a\u542f\u52a8\uff0c\u5e76\u4e14\u672a\u51c6\u5907\u597d\u5904\u7406\u8bf7\u6c42\u3002
+readiness.healthcheck.applications.not.started.down.CWMH0053W.useraction=\u6b64\u8b66\u544a\u662f DOWN \u72b6\u6001\u7684\u8bb0\u5f55\uff0c\u7528\u6237\u4e0d\u9700\u8981\u6267\u884c\u64cd\u4f5c\u3002\u8bf7\u4e00\u76f4\u7b49\u5230\u6240\u6709\u5e94\u7528\u7a0b\u5e8f\u90fd\u5df2\u542f\u52a8\u3002\u5728\u6240\u6709\u5e94\u7528\u7a0b\u5e8f\u90fd\u5df2\u542f\u52a8\u4e4b\u540e\uff0c\u5c06\u5904\u7406\u7528\u6237\u5b9a\u4e49\u7684\u8fd0\u884c\u72b6\u51b5\u68c0\u67e5\u3002

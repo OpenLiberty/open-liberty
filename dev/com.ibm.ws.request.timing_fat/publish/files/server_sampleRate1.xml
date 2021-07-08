@@ -26,6 +26,6 @@
 
  	<include location="../fatTestPorts.xml"/>
    
-	<requestTiming sampleRate = "1" slowRequestThreshold="3s" />
+	<requestTiming sampleRate="1" slowRequestThreshold="3s" />
   
 </server>

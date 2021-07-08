@@ -31,6 +31,8 @@ import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.engines.ApacheHttpClient43Engine;
 import org.jboss.resteasy.client.jaxrs.engines.ClientHttpEngineBuilder43;
 
+import com.ibm.websphere.ras.annotation.Sensitive;
+
 /**
  * This is primarily taken from org.jboss.resteasy.client.jaxrs.engines.ClientHttpEngineBuilder43,
  * but modified to include proxy authentication support - changes noted with {@code //Liberty...}
@@ -90,7 +92,8 @@ public class LibertyClientHttpEngineBuilder43 extends ClientHttpEngineBuilder43 
         return httpClientBuilder.build();
     }
 
-    private static String str(Object o) {
+    @Sensitive
+    private static String str(@Sensitive Object o) {
         if (o instanceof String) {
             return (String) o;
         }

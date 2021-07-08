@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2019, 2020 IBM Corporation and others.
+# Copyright (c) 2019, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -232,11 +232,11 @@ OIDC_CLIENT_BAD_REQUEST_NO_STATE.useraction=Verificare la configurazione del pro
 
 # STOP HERE, OIDC COMMON HAS RESERVED 1751 - 1799
 
-# do not translate hostname 
+# do not translate hostname, sameSiteCookie, webAppSecurity, Strict, Lax, None
 # used by client
 OIDC_CLIENT_BAD_REQUEST_NO_COOKIE=CWWKS1520E: Una richiesta per [{0}] non \u00e8 valida. Un cookie richiesto con un nome che inizia con WASReqURLOidc \u00e8 mancante. Il nome host che viene utilizzato per accedere al client potrebbe non corrispondere al nome registrato nel provider. Viene restituito un codice di risposta 500.
 OIDC_CLIENT_BAD_REQUEST_NO_COOKIE.explanation=\u00c8 stata ricevuta una richiesta che non include un cookie richiesto.
-OIDC_CLIENT_BAD_REQUEST_NO_COOKIE.useraction=Verificare la configurazione del provider OpenID Connect e del client. La mancanza del cookie pu\u00f2 essere causata dall'accesso al client con un nome host che differisce dal nome host del reindirizzamento registrato con il provider.
+OIDC_CLIENT_BAD_REQUEST_NO_COOKIE.useraction=Verificare la configurazione del provider OpenID Connect e del client. La mancanza del cookie pu\u00f2 essere causata dall'accesso al client con un nome host che differisce dal nome host del reindirizzamento registrato con il provider. Se l'attributo sameSiteCookie nell'elemento webAppSecurity nella configurazione del server \u00e8 impostato su Strict, provare a impostare il valore su Lax o None.
 
 OIDC_CLIENT_DISCOVERY_OVERRIDE_EP=CWWKS1521W: La configurazione del client OpenId Connect (Relying Party o RP) [{2}] specifica sia l''URL dell''endpoint di rilevamento [{0}] che gli altri endpoint. RP utilizzer\u00e0 le informazioni dalla richiesta di rilevamento e ignorer\u00e0 gli altri endpoint configurati [{1}].
 OIDC_CLIENT_DISCOVERY_OVERRIDE_EP.explanation=Il client OpenId Connect utilizza l'endpoint di rilevamento per contattare il provider e utilizza le informazioni dalla richiesta di rilevamento per contattare gli altri endpoint, quali autorizzazione e token e userinfo.

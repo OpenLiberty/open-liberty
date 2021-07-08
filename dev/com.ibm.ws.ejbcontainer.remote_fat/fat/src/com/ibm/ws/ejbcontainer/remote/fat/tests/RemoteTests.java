@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2020 IBM Corporation and others.
+ * Copyright (c) 2015, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.config.EJBAsynchronousElement;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.ejbcontainer.remote.ejb3session.sl.ann.web.AdvBasicCMTStatelessRemoteServlet;
@@ -120,7 +121,7 @@ public class RemoteTests extends AbstractTest {
     }
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().forServers("com.ibm.ws.ejbcontainer.remote.fat.RemoteServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.remote.fat.RemoteServer"));
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().forServers("com.ibm.ws.ejbcontainer.remote.fat.RemoteServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.remote.fat.RemoteServer")).andWith(FeatureReplacementAction.EE9_FEATURES().forServers("com.ibm.ws.ejbcontainer.remote.fat.RemoteServer"));
 
     @BeforeClass
     public static void beforeClass() throws Exception {
@@ -132,13 +133,13 @@ public class RemoteTests extends AbstractTest {
         EnterpriseArchive InitTxRecoveryLogApp = ShrinkWrap.create(EnterpriseArchive.class, "InitTxRecoveryLogApp.ear");
         InitTxRecoveryLogApp.addAsModule(InitTxRecoveryLogEJBJar);
 
-        ShrinkHelper.exportDropinAppToServer(server, InitTxRecoveryLogApp);
+        ShrinkHelper.exportDropinAppToServer(server, InitTxRecoveryLogApp, DeployOptions.SERVER_ONLY);
 
         //#################### BasicRemote.war
         WebArchive BasicRemoteWeb = ShrinkHelper.buildDefaultApp("BasicRemote.war", "com.ibm.ws.ejbcontainer.remote.fat.basic.");
         BasicRemoteWeb = (WebArchive) ShrinkHelper.addDirectory(BasicRemoteWeb, "test-applications/BasicRemote.war/resources");
 
-        ShrinkHelper.exportDropinAppToServer(server, BasicRemoteWeb);
+        ShrinkHelper.exportDropinAppToServer(server, BasicRemoteWeb, DeployOptions.SERVER_ONLY);
 
         //#################### CrossAppRemoteClient.war
         JavaArchive CrossAppRemoteSharedJar = ShrinkHelper.buildJavaArchive("CrossAppRemoteShared.jar", "com.ibm.ws.ejbcontainer.remote.fat.crossapp.shared.");
@@ -146,13 +147,13 @@ public class RemoteTests extends AbstractTest {
         CrossAppRemoteClient.addAsLibrary(CrossAppRemoteSharedJar);
         CrossAppRemoteClient = (WebArchive) ShrinkHelper.addDirectory(CrossAppRemoteClient, "test-applications/CrossAppRemoteClient.war/resources");
 
-        ShrinkHelper.exportDropinAppToServer(server, CrossAppRemoteClient);
+        ShrinkHelper.exportDropinAppToServer(server, CrossAppRemoteClient, DeployOptions.SERVER_ONLY);
 
         //#################### CrossAppRemoteEJB.war
         WebArchive CrossAppRemoteEJB = ShrinkHelper.buildDefaultApp("CrossAppRemoteEJB.war", "com.ibm.ws.ejbcontainer.remote.fat.crossapp.ejb.");
         CrossAppRemoteEJB.addAsLibrary(CrossAppRemoteSharedJar);
 
-        ShrinkHelper.exportDropinAppToServer(server, CrossAppRemoteEJB);
+        ShrinkHelper.exportDropinAppToServer(server, CrossAppRemoteEJB, DeployOptions.SERVER_ONLY);
 
         //#################### EJBHome2xTest.ear
         JavaArchive EJBHome2xTestEJB = ShrinkHelper.buildJavaArchive("EJBHome2xTestEJB.jar", "com.ibm.ws.ejbcontainer.remote.fat.home2x.ejb.");
@@ -163,13 +164,13 @@ public class RemoteTests extends AbstractTest {
         EJBHome2xTest.addAsModule(EJBHome2xTestEJB).addAsModule(EJBHome2xTestWeb);
         EJBHome2xTest = (EnterpriseArchive) ShrinkHelper.addDirectory(EJBHome2xTest, "test-applications/EJBHome2xTest.ear/resources");
 
-        ShrinkHelper.exportDropinAppToServer(server, EJBHome2xTest);
+        ShrinkHelper.exportDropinAppToServer(server, EJBHome2xTest, DeployOptions.SERVER_ONLY);
 
         //#################### EJBHomeTest.war
         WebArchive EJBHomeTest = ShrinkHelper.buildDefaultApp("EJBHomeTest.war", "com.ibm.ws.ejbcontainer.remote.fat.home.");
         EJBHomeTest = (WebArchive) ShrinkHelper.addDirectory(EJBHomeTest, "test-applications/EJBHomeTest.war/resources");
 
-        ShrinkHelper.exportDropinAppToServer(server, EJBHomeTest);
+        ShrinkHelper.exportDropinAppToServer(server, EJBHomeTest, DeployOptions.SERVER_ONLY);
 
         //#################### JitDeployApp
         JavaArchive JitDeployEJBJar = ShrinkHelper.buildJavaArchive("JitDeployEJB.jar", "com.ibm.ws.ejbcontainer.remote.misc.jitdeploy.ejb.");
@@ -179,13 +180,13 @@ public class RemoteTests extends AbstractTest {
         JitDeployApp.addAsModule(JitDeployEJBJar).addAsModule(JitDeployWeb);
         JitDeployApp = (EnterpriseArchive) ShrinkHelper.addDirectory(JitDeployApp, "test-applications/JitDeployApp.ear/resources");
 
-        ShrinkHelper.exportDropinAppToServer(server, JitDeployApp);
+        ShrinkHelper.exportDropinAppToServer(server, JitDeployApp, DeployOptions.SERVER_ONLY);
 
         //#################### RemoteTx.war
         WebArchive RemoteTx = ShrinkHelper.buildDefaultApp("RemoteTx.war", "com.ibm.ws.ejbcontainer.remote.fat.tx.");
         RemoteTx = (WebArchive) ShrinkHelper.addDirectory(RemoteTx, "test-applications/RemoteTx.war/resources");
 
-        ShrinkHelper.exportDropinAppToServer(server, RemoteTx);
+        ShrinkHelper.exportDropinAppToServer(server, RemoteTx, DeployOptions.SERVER_ONLY);
 
         //#################### SingletonApp.ear
         JavaArchive SingletonAnnEJBJar = ShrinkHelper.buildJavaArchive("SingletonAnnEJB.jar", "com.ibm.ws.ejbcontainer.remote.singleton.ann.ejb.",
@@ -199,7 +200,7 @@ public class RemoteTests extends AbstractTest {
         SingletonApp.addAsModule(SingletonAnnEJBJar).addAsModule(SingletonMixEJBJar).addAsModule(SingletonWeb);
         SingletonApp = (EnterpriseArchive) ShrinkHelper.addDirectory(SingletonApp, "test-applications/SingletonApp.ear/resources");
 
-        ShrinkHelper.exportDropinAppToServer(server, SingletonApp);
+        ShrinkHelper.exportDropinAppToServer(server, SingletonApp, DeployOptions.SERVER_ONLY);
 
         //#################### StatelessAnnTestApp
         JavaArchive StatelessAnnEJBJar = ShrinkHelper.buildJavaArchive("StatelessAnnEJB.jar", "com.ibm.ws.ejbcontainer.remote.ejb3session.sl.ann.ejb.");
@@ -209,7 +210,7 @@ public class RemoteTests extends AbstractTest {
         StatelessAnnApp.addAsModule(StatelessAnnEJBJar).addAsModule(StatelessAnnWeb);
         StatelessAnnApp = (EnterpriseArchive) ShrinkHelper.addDirectory(StatelessAnnApp, "test-applications/StatelessAnnTest.ear/resources");
 
-        ShrinkHelper.exportDropinAppToServer(server, StatelessAnnApp);
+        ShrinkHelper.exportDropinAppToServer(server, StatelessAnnApp, DeployOptions.SERVER_ONLY);
 
         //#################### StatelessMixTestApp
         JavaArchive StatelessMixASMDescEJBJar = ShrinkHelper.buildJavaArchive("StatelessMixASMDescEJB.jar", "com.ibm.ws.ejbcontainer.remote.ejb3session.sl.mix.asmdesc.");
@@ -224,7 +225,7 @@ public class RemoteTests extends AbstractTest {
         StatelessMixApp.addAsLibrary(StatelessMixIntfJar);
         StatelessMixApp = (EnterpriseArchive) ShrinkHelper.addDirectory(StatelessMixApp, "test-applications/StatelessMixTest.ear/resources");
 
-        ShrinkHelper.exportDropinAppToServer(server, StatelessMixApp);
+        ShrinkHelper.exportDropinAppToServer(server, StatelessMixApp, DeployOptions.SERVER_ONLY);
 
         // Finally, start server
         server.startServer();

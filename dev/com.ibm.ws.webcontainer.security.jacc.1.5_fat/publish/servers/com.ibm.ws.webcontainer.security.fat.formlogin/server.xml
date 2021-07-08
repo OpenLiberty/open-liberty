@@ -66,4 +66,6 @@
 	<javaPermission className="javax.security.auth.AuthPermission" name="wssecurity.getCallerSubject"/>
 	<javaPermission className="javax.security.auth.AuthPermission" name="wssecurity.getRunAsSubject"/>
     <javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="com.ibm.ws.security.token.internal.SingleSignonTokenImpl" principalType="com.ibm.ws.security.authentication.principals.WSPrincipal" principalName="*" actions="read"/>
+  	<javaPermission className="javax.security.auth.PrivateCredentialPermission"  name='* * "*"' actions="read" />
+
 </server>

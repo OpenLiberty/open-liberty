@@ -5349,16 +5349,37 @@ public class PolicyExecutorServlet extends FATServlet {
         PolicyExecutor executor3 = provider.create("testShutdownCallback-3");
         PolicyExecutor executor4 = provider.create("testShutdownCallback-4-and-other-text");
         AtomicInteger count = new AtomicInteger();
-        executor1.registerShutdownCallback(() -> count.addAndGet(1));
-        executor2.registerShutdownCallback(() -> count.addAndGet(2));
-        executor3.registerShutdownCallback(() -> count.addAndGet(33));
-        executor4.registerShutdownCallback(() -> count.addAndGet(4));
+        executor1.registerShutdownCallback(runningTasks -> {
+            count.addAndGet(runningTasks.size());
+            runningTasks.forEach(task -> {
+                if (task instanceof CountDownTask)
+                    ((CountDownTask) task).continueLatch.countDown();
+            });
+        });
+        executor2.registerShutdownCallback(runningTasks -> count.addAndGet(2));
+        executor3.registerShutdownCallback(runningTasks -> count.addAndGet(33));
+        executor4.registerShutdownCallback(runningTasks -> count.addAndGet(runningTasks.size() + 4));
+
+        CountDownLatch task1started = new CountDownLatch(1);
+        CountDownLatch task1released = new CountDownLatch(1);
+        CountDownTask task1 = new CountDownTask(task1started, task1released, TIMEOUT_NS * 2);
+        executor1.submit(task1);
+
+        assertTrue(task1started.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
         provider.shutdownNowByIdentifierPrefix("PolicyExecutorProvider-testShutdownCallback-4");
         assertEquals(4, count.get());
+
         count.set(0);
         executor1.shutdown();
         executor2.shutdownNow();
         assertEquals(3, count.get());
+
+        // Wait for the running task to be released due to the shutdown notification
+        for (long start = System.nanoTime(); task1.executionThreads.peek() != null && System.nanoTime() - start < TIMEOUT_NS;)
+            TimeUnit.MILLISECONDS.sleep(200);
+        assertNull(task1.executionThreads.peek());
+
         count.set(0);
         provider.shutdownNowByIdentifierPrefix("PolicyExecutorProvider-testShutdownCallback-");
         assertEquals(33, count.get());

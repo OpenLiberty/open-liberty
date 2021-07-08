@@ -89,6 +89,7 @@ public class TokenEndpointServlet extends HttpServlet {
                 } else {
                     builder = JwtBuilder.create(builderId);
                 }
+                builder.claim("token_src", "tokenEndpoint stub");
                 builder.claim("test", "token for testing");
                 builder.claim("at_hash", "dummy_hash_value");
                 builder.claim("uniqueSecurityName", "testuser");

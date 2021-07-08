@@ -23,6 +23,14 @@ import com.ibm.ws.jpa.tests.spec10.query.tests.TestSVLQuery_Bulkupdate_Web;
 import com.ibm.ws.jpa.tests.spec10.query.tests.TestSVLQuery_Web;
 import com.ibm.ws.jpa.tests.spec10.query.tests.olgh.TestOLGH14137_EJB;
 import com.ibm.ws.jpa.tests.spec10.query.tests.olgh.TestOLGH14137_Web;
+import com.ibm.ws.jpa.tests.spec10.query.tests.olgh.TestOLGH17369_EJB;
+import com.ibm.ws.jpa.tests.spec10.query.tests.olgh.TestOLGH17369_Web;
+import com.ibm.ws.jpa.tests.spec10.query.tests.olgh.TestOLGH17373_EJB;
+import com.ibm.ws.jpa.tests.spec10.query.tests.olgh.TestOLGH17373_Web;
+import com.ibm.ws.jpa.tests.spec10.query.tests.olgh.TestOLGH17376_EJB;
+import com.ibm.ws.jpa.tests.spec10.query.tests.olgh.TestOLGH17376_Web;
+import com.ibm.ws.jpa.tests.spec10.query.tests.olgh.TestOLGH17407_EJB;
+import com.ibm.ws.jpa.tests.spec10.query.tests.olgh.TestOLGH17407_Web;
 import com.ibm.ws.jpa.tests.spec10.query.tests.olgh.TestOLGH8014_EJB;
 import com.ibm.ws.jpa.tests.spec10.query.tests.olgh.TestOLGH8014_Web;
 
@@ -35,6 +43,14 @@ import componenttest.rules.repeater.RepeatTests;
                 TestOLGH8014_Web.class,
                 TestOLGH14137_EJB.class,
                 TestOLGH14137_Web.class,
+                TestOLGH17369_EJB.class,
+                TestOLGH17369_Web.class,
+                TestOLGH17373_EJB.class,
+                TestOLGH17373_Web.class,
+                TestOLGH17376_EJB.class,
+                TestOLGH17376_Web.class,
+                TestOLGH17407_EJB.class,
+                TestOLGH17407_Web.class,
                 TestSVLQuery_Web.class,
                 TestSVLQuery_Bulkupdate_Web.class,
                 TestSVLLoopAnoQuery_Web.class,

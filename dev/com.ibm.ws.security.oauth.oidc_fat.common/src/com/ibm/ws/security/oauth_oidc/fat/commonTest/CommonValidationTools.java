@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.oauth_oidc.fat.commonTest;
 
@@ -781,16 +781,16 @@ public class CommonValidationTools {
                         msgUtils.assertTrueAndLog(thisMethod, "Expires in is null", value != null);
                         Long expectedExpires = setAccessTimeout(settings);
                         Long actualExpires = Long.valueOf(value).longValue();
-                        if ((actualExpires <= expectedExpires) && (actualExpires > expectedExpires - 10L)) {
-                            Log.info(thisClass, thisMethod, "expires in was within 10ms of expected time");
+                        if ((actualExpires <= expectedExpires) && (actualExpires > expectedExpires - 20L)) {
+                            Log.info(thisClass, thisMethod, "expires in was within 20sec of expected time");
                         } else {
-                            fail("Expires in value expected: " + expectedExpires + " but received: " + actualExpires + " Test expects it within 10ms");
+                            fail("Expires in value expected: " + expectedExpires + " but received: " + actualExpires + " Test expects it within 20sec");
                         }
                     }
                     if (key.equals(Constants.STATE_KEY)) {
                         msgUtils.assertTrueAndLog(thisMethod, "State is null", value != null);
                         if (Constants.EXIST_WITH_ANY_VALUE.equals(settings.getState())) {
-                            Log.info(thisClass,thisMethod, "Skipping state check at callers request") ;
+                            Log.info(thisClass, thisMethod, "Skipping state check at callers request");
                         } else {
                             msgUtils.assertTrueAndLog(thisMethod, "State value expected: " + settings.getState() + " but received: " + value, value.equals(settings.getState()));
                         }
@@ -1681,7 +1681,7 @@ public class CommonValidationTools {
                     tokenVerifier.verifyAndDeserialize();
                     result = tokenVerifier.isSigned();
                 } else {
-                    if (isInList(Constants.ALL_TEST_SIGALGS, sigAlg) ) {
+                    if (isInList(Constants.ALL_TEST_SIGALGS, sigAlg)) {
                         // return true - we're not ready to validate RS256 quite yet
                         return true;
                     } else {
@@ -2294,8 +2294,8 @@ public class CommonValidationTools {
     public Expectations getDefault404Expectations(String testAction) {
         Expectations expectations = new Expectations();
         expectations.addExpectation(new ResponseStatusExpectation(testAction, HttpServletResponse.SC_NOT_FOUND));
-        expectations.addExpectation(new ResponseFullExpectation(testAction, Constants.STRING_MATCHES, MessageConstants.CWOAU0073E_FRONT_END_ERROR + ".+", 
-        		"Did not get public facing error message saying authentication failed."));
+        expectations.addExpectation(new ResponseFullExpectation(testAction, Constants.STRING_MATCHES, MessageConstants.CWOAU0073E_FRONT_END_ERROR + ".+",
+                "Did not get public facing error message saying authentication failed."));
         return expectations;
     }
 
