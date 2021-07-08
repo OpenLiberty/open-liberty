@@ -51,7 +51,8 @@ dependencies {
                'org.brotli:dec:0.1.2',
                'xalan:xalan:2.7.2',
                'xerces:xercesImpl:2.11.0',
-               'httpunit:httpunit:1.7'
+               'httpunit:httpunit:1.7',
+               'xml-apis:xml-apis:1.4.01'
 }
 
 // addRequiredLibraries.dependsOn addJakartaTransformer
