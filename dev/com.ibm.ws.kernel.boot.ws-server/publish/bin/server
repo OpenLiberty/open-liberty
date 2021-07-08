@@ -831,7 +831,7 @@ javaCmd()
         if [ -z "${option##--checkpoint=*}" ]; then
           CHECKPOINT=${option#--checkpoint=}
           # TODO remove below option once JVM handles it automatically
-          JVM_OPTIONS_QUOTED="$JVM_OPTIONS_QUOTED -XX:-UsePerfData"
+          JVM_OPTIONS_QUOTED="$JVM_OPTIONS_QUOTED -XX:+EnableCRIUSupport"
         fi
         if [ -z "$REMAINING_ARGS" ] ; then
           REMAINING_ARGS="$option"
