@@ -11,17 +11,25 @@
 
 package com.ibm.ws.jpa.tests.spec10.relationships.oneXmany;
 
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.jpa.tests.spec10.relationships.oneXmany.tests.AbstractFATSuite;
+import com.ibm.ws.jpa.tests.spec10.relationships.oneXmany.tests.Relationships_OneXMany_EJB;
+import com.ibm.ws.jpa.tests.spec10.relationships.oneXmany.tests.Relationships_OneXMany_Web;
+
+import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                JPA20Suite.class,
-                componenttest.custom.junit.runner.AlwaysPassesTest.class
+                Relationships_OneXMany_Web.class,
+                Relationships_OneXMany_EJB.class
 })
-public class FATSuite extends AbstractFATSuite {
+public class JPA20Suite extends AbstractFATSuite {
+
+    @ClassRule
+    public static RepeatTests r = RepeatTests.with(new RepeatWithJPA20());
 
 }
