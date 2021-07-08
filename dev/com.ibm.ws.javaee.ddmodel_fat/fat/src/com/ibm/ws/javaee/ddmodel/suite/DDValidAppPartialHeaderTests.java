@@ -14,7 +14,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class DDValidAppTests {
+public class DDValidAppPartialHeaderTests {
 
     public static final String[] ALLOWED_ERRORS = new String[] {
         // EMPTY
@@ -23,15 +23,15 @@ public class DDValidAppTests {
     @BeforeClass
     public static void setUp() throws Exception {
         CommonTests.commonSetUp(
-            DDValidAppTests.class,
+            DDValidAppPartialHeaderTests.class,
             "server_app.xml",
-            CommonTests.setUpTestApp);
+            CommonTests.setUpTestAppPartialHeaders);
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         CommonTests.commonTearDown(
-            DDValidAppTests.class,
+            DDValidAppPartialHeaderTests.class,
             CommonTests.tearDownTestApp,
             ALLOWED_ERRORS);
     }
@@ -40,80 +40,56 @@ public class DDValidAppTests {
 
     @Test
     public void testAutoInstall_Application() throws Exception {
-        CommonTests.test(DDValidAppTests.class, "testAutoInstall");    
+        CommonTests.test(DDValidAppPartialHeaderTests.class, "testAutoInstall");    
     }
 
     @Test
     public void testConfigurationSide_Application() throws Exception {
-        CommonTests.test(DDValidAppTests.class, "testConfigurationSide");
+        CommonTests.test(DDValidAppPartialHeaderTests.class, "testConfigurationSide");
     }
 
     @Test
-    public void testBasicBindingsConfiguration_Application() throws Exception {
-        CommonTests.test(DDValidAppTests.class, "testBasicBindingsConfiguration");
+    public void testBasicBindingConfiguration_Application() throws Exception {
+        CommonTests.test(DDValidAppPartialHeaderTests.class, "testBasicBindingConfiguration");
     }
     
     @Test
     public void testSecurityRoleOverrides_Application() throws Exception {
-        CommonTests.test(DDValidAppTests.class, "testSecurityRoleOverrides");
+        CommonTests.test(DDValidAppPartialHeaderTests.class, "testSecurityRoleOverrides");
     }
     
     @Test
     public void testWebExtensions_Application() throws Exception {
-        CommonTests.test(DDValidAppTests.class, "testWebExtensions");
-    }
-    
-    @Test
-    public void testWebExtensionsNoBindings_Application() throws Exception {
-        CommonTests.test(DDValidAppTests.class, "testWebExtensionsNoBindings");
+        CommonTests.test(DDValidAppPartialHeaderTests.class, "testWebExtensions");
     }
     
     @Test
     public void testWebBindings_Application() throws Exception {
-        CommonTests.test(DDValidAppTests.class, "testWebBindings");
-    }
-    
-    @Test
-    public void testWebBindingsNoBindings_Application() throws Exception {
-        CommonTests.test(DDValidAppTests.class, "testWebBindingsNoBindings");
+        CommonTests.test(DDValidAppPartialHeaderTests.class, "testWebBindings");
     }
     
     @Test
     public void testEJBBindings_Application() throws Exception {
-        CommonTests.test(DDValidAppTests.class, "testEJBBindings");
+        CommonTests.test(DDValidAppPartialHeaderTests.class, "testEJBBindings");
     }
     
     @Test
     public void testEJBExtensions_Application() throws Exception {
-        CommonTests.test(DDValidAppTests.class, "testEJBExtensions");
-    }
-    
-    @Test
-    public void testEJBBindingsNoBindings_Application() throws Exception {
-        CommonTests.test(DDValidAppTests.class, "testEJBBindingsNoBindings");
-    }
-    
-    @Test
-    public void testEJBExtensionsNoBindings_Application() throws Exception {
-        CommonTests.test(DDValidAppTests.class, "testEJBExtensionsNoBindings");
+        CommonTests.test(DDValidAppPartialHeaderTests.class, "testEJBExtensions");
     }
     
     @Test
     public void testApplicationExtensions_Application() throws Exception {
-        CommonTests.test(DDValidAppTests.class, "testApplicationExtensions");
+        CommonTests.test(DDValidAppPartialHeaderTests.class, "testApplicationExtensions");
     }
     
     @Test
     public void testManagedBeanBindings_Application() throws Exception {
-        CommonTests.test(DDValidAppTests.class, "testManagedBeanBindings");
+        CommonTests.test(DDValidAppPartialHeaderTests.class, "testManagedBeanBindings");
     }
     
     @Test
     public void testWebserviceBindings_Application() throws Exception {
-        CommonTests.test(DDValidAppTests.class, "testWebserviceBindings");
-    }
-    @Test
-    public void testWebserviceBindingsNoBindings_Application() throws Exception {
-        CommonTests.test(DDValidAppTests.class, "testWebserviceBindingsNoBindings");
+        CommonTests.test(DDValidAppPartialHeaderTests.class, "testWebserviceBindings");
     }
 }

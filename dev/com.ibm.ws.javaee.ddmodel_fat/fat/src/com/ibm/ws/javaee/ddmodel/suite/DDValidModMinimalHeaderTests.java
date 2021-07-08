@@ -14,7 +14,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class DDValidModTests {
+public class DDValidModMinimalHeaderTests {
 
     public static final String[] ALLOWED_ERRORS = new String[] {
         // EMPTY
@@ -23,15 +23,15 @@ public class DDValidModTests {
     @BeforeClass
     public static void setUp() throws Exception {
         CommonTests.commonSetUp(
-            DDValidModTests.class,
+            DDValidModMinimalHeaderTests.class,
             "server_mod.xml",
-            CommonTests.setUpTestModules);
+            CommonTests.setUpTestModulesMinimalHeaders);
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         CommonTests.commonTearDown(
-            DDValidModTests.class,
+            DDValidModMinimalHeaderTests.class,
             CommonTests.tearDownTestModules,
             ALLOWED_ERRORS);
     }
@@ -40,66 +40,46 @@ public class DDValidModTests {
 
     @Test
     public void testAutoInstall_Module() throws Exception {
-        CommonTests.test(DDValidModTests.class, "testAutoInstall");    
+        CommonTests.test(DDValidModMinimalHeaderTests.class, "testAutoInstall");    
     }
 
     @Test
     public void testBasicBindingConfiguration_Module() throws Exception {
-        CommonTests.test(DDValidModTests.class, "testBasicBindingConfiguration");
+        CommonTests.test(DDValidModMinimalHeaderTests.class, "testBasicBindingConfiguration");
     }   
     
     @Test
     public void testWebExtensions_Module() throws Exception {
-        CommonTests.test(DDValidModTests.class, "testWebExtensions");
-    }
-    
-    @Test
-    public void testWebExtensionsNoBindings_Module() throws Exception {
-        CommonTests.test(DDValidModTests.class, "testWebExtensionsNoBindings");
+        CommonTests.test(DDValidModMinimalHeaderTests.class, "testWebExtensions");
     }
     
     @Test
     public void testWebBindings_Module() throws Exception {
-        CommonTests.test(DDValidModTests.class, "testWebBindings");
-    }
-    
-    @Test
-    public void testWebBindingsNoBindings_Module() throws Exception {
-        CommonTests.test(DDValidModTests.class, "testWebBindingsNoBindings");
+        CommonTests.test(DDValidModMinimalHeaderTests.class, "testWebBindings");
     }
     
     @Test
     public void testEJBBindings_Module() throws Exception {
-        CommonTests.test(DDValidModTests.class, "testEJBBindings");
+        CommonTests.test(DDValidModMinimalHeaderTests.class, "testEJBBindings");
     }
     
     @Test
     public void testEJBExtensions_Module() throws Exception {
-        CommonTests.test(DDValidModTests.class, "testEJBExtensions");
-    }
-    
-    @Test
-    public void testEJBBindingsNoBindings_Module() throws Exception {
-        CommonTests.test(DDValidModTests.class, "testEJBBindingsNoBindings");
-    }
-    
-    @Test
-    public void testEJBExtensionsNoBindings_Module() throws Exception {
-        CommonTests.test(DDValidModTests.class, "testEJBExtensionsNox");
+        CommonTests.test(DDValidModMinimalHeaderTests.class, "testEJBExtensions");
     }
     
     @Test
     public void testApplicationExtensionFromWebApp_Module() throws Exception {
-        CommonTests.test(DDValidModTests.class, "testApplicationExtensionFromWebApp");
+        CommonTests.test(DDValidModMinimalHeaderTests.class, "testApplicationExtensionFromWebApp");
     }
     
     @Test
     public void testSecurityRoleOverridesFromWebApp_Module() throws Exception {
-        CommonTests.test(DDValidModTests.class, "testSecurityRoleOverridesFromWebApp");
+        CommonTests.test(DDValidModMinimalHeaderTests.class, "testSecurityRoleOverridesFromWebApp");
     }
     
     @Test
     public void testManagedBeanBindings_Module() throws Exception {
-        CommonTests.test(DDValidModTests.class, "testManagedBeanBindings");
+        CommonTests.test(DDValidModMinimalHeaderTests.class, "testManagedBeanBindings");
     }
 }
