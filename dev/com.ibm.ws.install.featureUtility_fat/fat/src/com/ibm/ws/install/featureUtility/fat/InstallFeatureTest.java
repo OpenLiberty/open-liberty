@@ -66,6 +66,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         resetOriginalWlpProps();
         cleanUpTempFiles();
     }
+
     
     
     
@@ -89,7 +90,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
                 "../../publish/repo/io/openliberty/features/features/21.0.0.4/features-21.0.0.4.json");
 
         copyFileToMinifiedRoot("repo/io/openliberty/features/json-1.0/21.0.0.4",
-                "../../publish/repo/io/openliberty/features/json-1.0/21.0.0.4/json-1.0-21.0.0.4.esa");
+                "../../publish/repo/io/openliberty/features/json-1.0/21.0.0.4/com.ibm.websphere.appserver.json-1.0.esa");
 
         writeToProps(minifiedRoot+ "/etc/featureUtility.properties", "featureLocalRepo", minifiedRoot + "/repo/");
 
@@ -106,7 +107,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
     
    
     /**
-     * Test the install of jsp-2.2, jsp-2.3 from maven central.
+     * Test the install of jsonp-1.0, jsonp-1.1 from maven central.
      * Multi-version is not supported with installServerFeature as it cannot be installed to same resource. 
      *
      * @throws Exception
@@ -115,31 +116,48 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
     public void testMultiVersionFeatures() throws Exception {
         final String METHOD_NAME = "testMultiVersionFeatures";
         Log.entering(c, METHOD_NAME);
-        replaceWlpProperties("20.0.0.4");
+        replaceWlpProperties("21.0.0.4");
         copyFileToMinifiedRoot("etc", "../../publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
 
-        copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/features/20.0.0.4",
-                "../../publish/repo/com/ibm/websphere/appserver/features/features/20.0.0.4/features-20.0.0.4.json");
+        copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/features/21.0.0.4",
+                "../../publish/repo/com/ibm/websphere/appserver/features/features/21.0.0.4/features-21.0.0.4.json");
 
-        copyFileToMinifiedRoot("repo/io/openliberty/features/features/20.0.0.4",
-                "../../publish/repo/io/openliberty/features/features/20.0.0.4/features-20.0.0.4.json");
+        copyFileToMinifiedRoot("repo/io/openliberty/features/features/21.0.0.4",
+                "../../publish/repo/io/openliberty/features/features/21.0.0.4/features-21.0.0.4.json");
 
-        copyFileToMinifiedRoot("repo/io/openliberty/features/jsp-2.3/20.0.0.4",
-                "../../publish/repo/io/openliberty/features/jsp-2.3/20.0.0.4/jsp-2.3-20.0.0.4.esa");
+        copyFileToMinifiedRoot("repo/io/openliberty/features/jsonp-1.0/21.0.0.4",
+                "../../publish/repo/io/openliberty/features/jsonp-1.0/21.0.0.4/jsonp-1.0-21.0.0.4.esa");
+        
+        copyFileToMinifiedRoot("repo/io/openliberty/features/jsonp-1.0/21.0.0.4",
+                "../../publish/repo/io/openliberty/features/jsonp-1.0/21.0.0.4/com.ibm.websphere.appserver.jsonpImpl-1.0.0.esa");
 
-        copyFileToMinifiedRoot("repo/io/openliberty/features/jsp-2.2/20.0.0.4",
-                "../../publish/repo/io/openliberty/features/jsp-2.2/20.0.0.4/jsp-2.2-20.0.0.4.esa");
+        copyFileToMinifiedRoot("repo/io/openliberty/features/jsonp-1.0/21.0.0.4",
+                "../../publish/repo/io/openliberty/features/jsonp-1.0/21.0.0.4/com.ibm.websphere.appserver.jsonp-1.0.esa");
 
+        copyFileToMinifiedRoot("repo/io/openliberty/features/jsonp-1.1/21.0.0.4",
+                "../../publish/repo/io/openliberty/features/jsonp-1.1/21.0.0.4/jsonp-1.1-21.0.0.4.esa");
+
+        copyFileToMinifiedRoot("repo/io/openliberty/features/jsonp-1.1/21.0.0.4",
+                "../../publish/repo/io/openliberty/features/jsonp-1.1/21.0.0.4/com.ibm.websphere.appserver.jsonp-1.1.esa");
+        
+        copyFileToMinifiedRoot("repo/io/openliberty/features/jsonp-1.1/21.0.0.4",
+                "../../publish/repo/io/openliberty/features/jsonp-1.1/21.0.0.4/com.ibm.websphere.appserver.jsonpInternal-1.1.esa");
+
+        copyFileToMinifiedRoot("repo/io/openliberty/features/jsonp-1.1/21.0.0.4",
+                "../../publish/repo/io/openliberty/features/jsonp-1.1/21.0.0.4/com.ibm.websphere.appserver.jsonpImpl-1.1.1.esa");
+        
+        copyFileToMinifiedRoot("repo/io/openliberty/features/jsonp-1.1/21.0.0.4",
+                "../../publish/repo/io/openliberty/features/jsonp-1.1/21.0.0.4/com.ibm.websphere.appserver.eeCompatible-8.0.esa");
 
 
         writeToProps(minifiedRoot+ "/etc/featureUtility.properties", "featureLocalRepo", minifiedRoot + "/repo/");
 
-        String[] param1s = { "installFeature", "jsp-2.2", "jsp-2.3", "--verbose"};
+        String[] param1s = { "installFeature", "jsonp-1.0", "jsonp-1.1", "--verbose"};
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
         assertEquals("Exit code should be 0",0, po.getReturnCode());
         String output = po.getStdout();
-        assertTrue("Should contain jsp-2.2", output.contains("jsp-2.2"));
-        assertTrue("Should contain jsp-2.3", output.contains("jsp-2.3"));
+        assertTrue("Should contain jsonp-1.0", output.contains("jsonp-1.0"));
+        assertTrue("Should contain jsonp-1.1", output.contains("jsonp-1.1"));
     }
     /**
      * Test the installation of features eventLogging-1.0 and osgiConsole-1.0, which should also install the autofeature eventLogging-1.0-osgiCOnsole-1.0
@@ -344,6 +362,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
     public void testInvalidFeature() throws Exception {
         final String METHOD_NAME = "testInvalidFeature";
         Log.entering(c, METHOD_NAME);
+        replaceWlpProperties("21.0.0.4");
 
         String[] param1s = { "installFeature", "veryClearlyMadeUpFeatureThatNoOneWillEverThinkToCreateThemselvesAbCxYz-1.0", "--verbose"};
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
@@ -361,6 +380,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
     public void testAlreadyInstalledFeature() throws Exception {
         final String METHOD_NAME = "testAlreadyInstalledFeature";
         Log.entering(c, METHOD_NAME);
+        replaceWlpProperties("21.0.0.4");
         
         copyFileToMinifiedRoot("etc", "../../publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
 
@@ -378,6 +398,9 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         
         copyFileToMinifiedRoot("repo/io/openliberty/features/ssl-1.0/21.0.0.4",
                 "../../publish/repo/io/openliberty/features/ssl-1.0/21.0.0.4/com.ibm.websphere.appserver.ssl-1.0.esa");
+        
+        copyFileToMinifiedRoot("repo/io/openliberty/features/ssl-1.0/21.0.0.4",
+                "../../publish/repo/io/openliberty/features/ssl-1.0/21.0.0.4/ssl-1.0-21.0.0.4.esa");
         
         writeToProps(minifiedRoot+ "/etc/featureUtility.properties", "featureLocalRepo", minifiedRoot + "/repo/");
 
@@ -460,12 +483,11 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
     public void testInvalidMavenCoordinatePackaging() throws Exception {
         String methodName = "testInvalidMavenCoordinatePackaging";
         Log.entering(c, methodName);
-
-        String currentVersion = getCurrentWlpVersion();
+        String version = "21.0.0.4";
 
 
         // test with invalid packaging
-        String [] param1s = {"if", "io.openliberty.features:jsp-2.3:"+currentVersion+":jar", "--verbose"};
+        String [] param1s = {"if", "io.openliberty.features:jsonp-1.0:"+version+":jar", "--verbose"};
         ProgramOutput po = runFeatureUtility(methodName, param1s);
         assertEquals(21, po.getReturnCode());
         //"CWWKF1395E"
@@ -473,7 +495,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         assertTrue("expected CWWKF1396E", output.indexOf("CWWKF1396E")>=0);
 
         // now try with valid packaging
-        String [] param2s = {"if", "io.openliberty.features:jsp-2.3:"+currentVersion+":esa", "--verbose"};
+        String [] param2s = {"if", "io.openliberty.features:jsonp-1.0:"+version+":esa", "--verbose"};
         po = runFeatureUtility(methodName, param2s);
         assertEquals("Should install successfully.", 0, po.getReturnCode());
         Log.exiting(c, methodName);

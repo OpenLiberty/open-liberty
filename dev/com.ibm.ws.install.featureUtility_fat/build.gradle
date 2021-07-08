@@ -1,0 +1,66 @@
+/*******************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+configurations {
+  json
+  ssl
+  jsonp
+  jsonpp
+  osgiConsole
+  eventLogging
+}
+
+dependencies {
+  json 'com.ibm.websphere.appserver:com.ibm.websphere.appserver.json:1.0@esa'
+  json 'io.openliberty.features:json-1.0:21.0.0.4@esa'
+  ssl 'io.openliberty.features:ssl-1.0:21.0.0.4@esa'
+  ssl 'com.ibm.websphere.appserver:com.ibm.websphere.appserver.certificateCreator:1.0@esa'
+  ssl 'com.ibm.websphere.appserver:com.ibm.websphere.appserver.channelfw:1.0@esa'
+  ssl 'com.ibm.websphere.appserver:com.ibm.websphere.appserver.ssl:1.0@esa'
+  jsonp 'io.openliberty.features:jsonp-1.0:21.0.0.4@esa'
+  jsonp 'com.ibm.websphere.appserver:com.ibm.websphere.appserver.jsonpImpl:1.0.0@esa'
+  jsonp 'com.ibm.websphere.appserver:com.ibm.websphere.appserver.jsonp:1.0@esa'
+  jsonpp 'io.openliberty.features:jsonp-1.1:21.0.0.4@esa'
+  jsonpp 'com.ibm.websphere.appserver:com.ibm.websphere.appserver.jsonp:1.1@esa'
+  jsonpp 'com.ibm.websphere.appserver:com.ibm.websphere.appserver.jsonpInternal:1.1@esa'
+  jsonpp 'com.ibm.websphere.appserver:com.ibm.websphere.appserver.jsonpImpl:1.1.1@esa'
+  jsonpp 'com.ibm.websphere.appserver:com.ibm.websphere.appserver.eeCompatible:8.0@esa'
+  osgiConsole 'io.openliberty.features:osgiConsole-1.0:21.0.0.4@esa'
+  osgiConsole 'com.ibm.websphere.appserver:com.ibm.websphere.appserver.osgiConsole:1.0@esa'
+  eventLogging 'io.openliberty.features:eventLogging-1.0:21.0.0.4@esa'
+  eventLogging 'com.ibm.websphere.appserver:com.ibm.websphere.appserver.eventLogging:1.0@esa'
+  eventLogging 'com.ibm.websphere.appserver:com.ibm.websphere.appserver.requestProbeJDBC:1.0@esa'
+  eventLogging 'com.ibm.websphere.appserver:com.ibm.websphere.appserver.requestProbeServlet:1.0@esa'
+  eventLogging 'com.ibm.websphere.appserver:com.ibm.websphere.appserver.requestProbes:1.0@esa'
+}
+
+task addAppLibs(type: Copy) {
+  from configurations.json
+  into "${buildDir}/../com.ibm.ws.install.featureUtility_fat/publish/repo/io/openliberty/features/json-1.0/21.0.0.4"
+  from configurations.osgiConsole
+  into "${buildDir}/../com.ibm.ws.install.featureUtility_fat/publish/repo/io/openliberty/features/osgiConsole-1.0/21.0.0.4"
+  from configurations.eventLogging
+  into "${buildDir}/../com.ibm.ws.install.featureUtility_fat/publish/repo/io/openliberty/features/eventLogging-1.0/21.0.0.4"
+}
+
+task addSSLJson(type : Copy) {
+  from configurations.ssl
+  into "${buildDir}/../com.ibm.ws.install.featureUtility_fat/publish/repo/io/openliberty/features/ssl-1.0/21.0.0.4"
+  from configurations.jsonp
+  into "${buildDir}/../com.ibm.ws.install.featureUtility_fat/publish/repo/io/openliberty/features/jsonp-1.0/21.0.0.4"
+  from configurations.jsonpp
+  into "${buildDir}/../com.ibm.ws.install.featureUtility_fat/publish/repo/io/openliberty/features/jsonp-1.1/21.0.0.4"
+}
+
+addRequiredLibraries {
+  dependsOn addAppLibs
+  dependsOn addSSLJson
+}
