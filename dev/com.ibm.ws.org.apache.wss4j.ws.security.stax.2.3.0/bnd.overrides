@@ -23,4 +23,7 @@ Export-Package: \
 Import-Package: \
  *
 
+DynamicImport-Package: \
+ org.glassfish.jaxb.runtime.v2.*
+
 jakartaeeMe: true
