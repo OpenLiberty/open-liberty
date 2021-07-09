@@ -1749,6 +1749,7 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
             try {
                 // update the allowedTimeout count to account for msgs issued during start retries
                 addToAllowableTimeoutCount(server.getRetryTimeoutCount());
+                addToAllowableTimeoutCount(server.getSslWaitTimeoutCount());
                 tearDownServer(server);
                 newServerRefList.add(server);
             } catch (Exception e) {
