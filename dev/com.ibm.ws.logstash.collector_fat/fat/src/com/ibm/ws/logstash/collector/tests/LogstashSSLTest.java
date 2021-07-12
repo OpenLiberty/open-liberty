@@ -64,7 +64,6 @@ public class LogstashSSLTest extends LogstashCollectorTest {
             runTest = false;
 
         Log.info(c, "setUp", "os.name = " + os);
-        Log.info(c, "setUp", "os.name is z/os machine = " + !runTest);
         Log.info(c, "setUp", "runTest = " + runTest);
         
         Assume.assumeTrue(runTest); // runTest must be true to run test
