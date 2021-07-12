@@ -28,6 +28,8 @@ import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.EmptyAction;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServerWrapper;
 
 @LibertyServerWrapper
@@ -900,7 +902,8 @@ public class SAMLMisc1ConfigTests extends SAMLConfigCommonTests {
      * time (not having to reconfig multiple times) we'll do all of this in one
      * test)
      */
-    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.ws.security.SecurityPolicyException", "org.opensaml.xml.signature.SignatureException", "org.opensaml.messaging.handler.MessageHandlerException", "org.opensaml.xml.signature.SignatureException"  })
+    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.ws.security.SecurityPolicyException", "org.opensaml.xml.signature.SignatureException" }, repeatAction = {EmptyAction.ID})
+    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.messaging.handler.MessageHandlerException", "org.opensaml.xml.signature.SignatureException"  }, repeatAction = {JakartaEE9Action.ID})
     // @Mode(TestMode.LITE)
     @Test
     public void test_config_errorPageURL() throws Exception {
@@ -969,7 +972,10 @@ public class SAMLMisc1ConfigTests extends SAMLConfigCommonTests {
      * Config attribute: errorPageURL This test will test specifying some bad
      * value (non existant url) Test shows that we get a decent
      */
-    @AllowedFFDC(value = { "com.ibm.ws.jsp.webcontainerext.JSPErrorReport", "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.ws.security.SecurityPolicyException", "org.opensaml.messaging.handler.MessageHandlerException" })
+    @ExpectedFFDC(value = {"com.ibm.ws.security.saml.error.SamlException"})
+    @ExpectedFFDC(value = {"org.opensaml.ws.security.SecurityPolicyException"}, repeatAction = {EmptyAction.ID})
+    @ExpectedFFDC(value = {"org.opensaml.messaging.handler.MessageHandlerException"}, repeatAction = {JakartaEE9Action.ID})
+    @AllowedFFDC(value = {"com.ibm.ws.jsp.webcontainerext.JSPErrorReport"})
     // @Mode(TestMode.LITE)
     @Test
     public void test_config_errorPageURL_invalid() throws Exception {
