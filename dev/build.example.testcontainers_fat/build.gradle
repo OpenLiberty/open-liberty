@@ -8,17 +8,14 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
- apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
- 
- // Add budle io.openliberty.org.testcontainers to list of required
- // libraries.  This bundle is needed both for compile time and runtime.
- dependencies {
-  requiredLibs project(':io.openliberty.org.testcontainers')
- }
+
+ // Copy bundle io.openliberty.org.testcontainers to AutoFVT/lib/
+ // This bundle is required both at compiletime and runtime.
+  addRequiredLibraries.dependsOn copyTestContainers
  
  // If you are preforming database testing use the copyJdbcDrivers
  // task to copy the common JDBC drivers into the
  // publish/shared/resources/jdbc directory 
  addRequiredLibraries.dependsOn copyJdbcDrivers
- 
+
  addRequiredLibraries.dependsOn addJakartaTransformer

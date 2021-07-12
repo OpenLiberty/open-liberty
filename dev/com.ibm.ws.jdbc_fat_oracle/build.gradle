@@ -19,7 +19,6 @@ configurations {
 }
 
 dependencies {
-  requiredLibs project(':io.openliberty.org.testcontainers')
   oracle        "com.oracle.database.jdbc.debug:ojdbc8_g:${oracleVersion}"
   oraclessl     "com.oracle.database.jdbc.debug:ojdbc8_g:${oracleVersion}",
                	"com.oracle.database.security:oraclepki:${oracleVersion}",
@@ -64,4 +63,5 @@ addRequiredLibraries {
   dependsOn copySharedUCP
   dependsOn copyAnonymousOracle
   dependsOn copySharedOracleSSL
+  dependsOn copyTestContainers
 }

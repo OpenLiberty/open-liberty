@@ -15,7 +15,6 @@ configurations {
 }
 
 dependencies {
-  requiredLibs project(':io.openliberty.org.testcontainers')
   db2 'com.ibm.db2:jcc:11.1.4.4'
 }
 
@@ -26,6 +25,7 @@ task copyDB2(type: Copy) {
 }
 
 addRequiredLibraries.dependsOn copyDB2
+addRequiredLibraries.dependsOn copyTestContainers
 
 // This is the equivalent ant code that needs to be invoked in order to transform the SQLJProcedure.sqlj
 // file into a .java file. Since the SQLJ customizer code library is not publicly available, and the
