@@ -62,7 +62,6 @@ import componenttest.rules.repeater.RepeatTests;
 @SuiteClasses({
                 // Shared Servers
                 WCPushBuilderTest.class,
-                WCServletClarificationTest.class,
                 WCContextRootPrecedence.class,
                 // TFB:
                 // Locally, WCTrailersTest fails unless I add '-Dglobal.debug.java2.sec=false' to
@@ -73,6 +72,7 @@ import componenttest.rules.repeater.RepeatTests;
                 WCServletContainerInitializerFilterServletNameMappingTest.class,
                 WCApplicationMBeanStatusTest.class,
                 // @Server Annotations
+                WCServletClarificationTest.class,
                 WCAddJspFileTest.class,
                 WCTrailersTest.class,
                 WCEncodingTest.class,
