@@ -26,7 +26,8 @@ Bundle-Activator: io.openliberty.checkpoint.openj9.internal.ExecuteCRIU_OpenJ9
 	com.ibm.ws.logging.core, \
 	com.ibm.wsspi.org.osgi.service.component;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
-	com.ibm.websphere.org.osgi.core
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.ws.kernel.boot.core;version=latest
 
 
 

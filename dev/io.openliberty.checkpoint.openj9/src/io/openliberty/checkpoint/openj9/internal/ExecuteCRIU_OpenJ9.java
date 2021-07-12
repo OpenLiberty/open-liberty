@@ -11,17 +11,17 @@
 package io.openliberty.checkpoint.openj9.internal;
 
 import java.io.File;
-import java.io.IOException;
 
 import org.eclipse.openj9.criu.CRIUSupport;
 import org.eclipse.openj9.criu.CRIUSupport.CRIUResult;
-import org.eclipse.openj9.criu.CRIUSupport.CRIUResultType;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import io.openliberty.checkpoint.internal.criu.ExecuteCRIU;
+import io.openliberty.checkpoint.spi.SnapshotResult;
+import io.openliberty.checkpoint.spi.SnapshotResult.SnapshotResultType;
 
 public class ExecuteCRIU_OpenJ9 implements BundleActivator, ExecuteCRIU {
 
@@ -42,17 +42,51 @@ public class ExecuteCRIU_OpenJ9 implements BundleActivator, ExecuteCRIU {
     }
 
     @Override
-    public int dump(File directory) throws IOException {
+    public SnapshotResult dump(File directory) {
+        SnapshotResult snapshotResult = new SnapshotResult(SnapshotResultType.SNAPSHOT_FAILED, "The criu dump command failed with error: Snapshot Failed", null);
+
         if (!CRIUSupport.isCRIUSupportEnabled()) {
             // TODO log appropriate message
             System.out.println("Must set the JVM option: -XX:+EnableCRIUSupport");
-            return -50;
+            return snapshotResult;
         }
         CRIUResult result = CRIUSupport.checkPointJVM(directory.toPath());
-        if (result.getType() == CRIUResultType.SUCCESS) {
-            return 1;
+
+        switch (result.getType()) {
+            case SUCCESS:
+                snapshotResult = createSnapshotResult(SnapshotResultType.SUCCESS, "Success");
+                break;
+
+            case UNSUPPORTED_OPERATION:
+                snapshotResult = createSnapshotResult(SnapshotResultType.UNSUPPORTED_OPERATION, "The criu dump command failed with error: Unsupported Operation");
+
+            case INVALID_ARGUMENTS:
+                snapshotResult = createSnapshotResult(SnapshotResultType.INVALID_ARGUMENTS, "The criu dump command failed with error: Invalid Arguments");
+                break;
+
+            case SYSTEM_CHECKPOINT_FAILURE:
+                snapshotResult = createSnapshotResult(SnapshotResultType.SYSTEM_CHECKPOINT_FAILURE, "The criu dump command failed with error: System Checkpoint Failure");
+                break;
+
+            case JVM_CHECKPOINT_FAILURE:
+                snapshotResult = createSnapshotResult(SnapshotResultType.JVM_CHECKPOINT_FAILURE, "The criu dump command failed with error: JVM Checkpoint Failure");
+                break;
+
+            case JVM_RESTORE_FAILURE:
+                snapshotResult = createSnapshotResult(SnapshotResultType.JVM_RESTORE_FAILURE, "The criu dump command failed with error: JVM Restore Failure");
+                break;
+
         }
-        return -50;
+        return snapshotResult;
+    }
+
+    /**
+     * @return
+     */
+    private SnapshotResult createSnapshotResult(SnapshotResultType type, String msg) {
+        SnapshotResult snapshotResult;
+        snapshotResult = new SnapshotResult(type, msg, null);
+        return snapshotResult;
     }
 
 }

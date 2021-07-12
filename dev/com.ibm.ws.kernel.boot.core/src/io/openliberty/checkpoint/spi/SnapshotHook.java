@@ -35,9 +35,9 @@ public interface SnapshotHook {
     /**
      * Abort the prepare for snapshot.
      *
-     * @param cause the exception that caused the abort
+     * @param snapshotResult that caused the abort
      */
-    default void abortPrepare(Exception cause) {
+    default void abortPrepare(SnapshotResult snapshotResult) {
     };
 
     /**
@@ -53,8 +53,8 @@ public interface SnapshotHook {
     /**
      * Abort the restore from snapshot.
      *
-     * @param cause the exception the caused the abort
+     * @param snapshotResult that caused the abort
      */
-    default void abortRestore(Exception cause) {
+    default void abortRestore(SnapshotResult snapshotResult) {
     };
 }

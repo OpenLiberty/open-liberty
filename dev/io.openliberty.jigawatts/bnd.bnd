@@ -22,7 +22,8 @@ Import-Package: *
     io.openliberty.checkpoint;version=latest, \
     com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
     com.ibm.wsspi.org.osgi.service.component;version=latest, \
-    com.ibm.wsspi.org.osgi.service.component.annotations;version=latest
+    com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
+    com.ibm.ws.kernel.boot.core;version=latest
 
 -dsannotations: \
     io.openliberty.jigawatts.internal.ExecuteCRIU_JNI

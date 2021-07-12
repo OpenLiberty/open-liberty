@@ -54,10 +54,8 @@ public interface Checkpoint {
     /**
      * Asserts that this platform supports checkpoint. Depending on implementation may
      * call out to native library support.
-     *
-     * @throws SnapshotFailed if support for snapshot functionality not available.
      */
-    default void checkpointSupported() throws SnapshotFailed {
+    default void checkpointSupported() {
     }
 
     /**
@@ -74,7 +72,7 @@ public interface Checkpoint {
      * call out to native library support.
      *
      * @param phase the phase to take the snapshot
-     * @throws SnapshotFailed if the snapshot fails
+     * @return SnapshotResult
      */
-    void snapshot(Phase phase) throws SnapshotFailed;
+    SnapshotResult snapshot(Phase phase);
 }

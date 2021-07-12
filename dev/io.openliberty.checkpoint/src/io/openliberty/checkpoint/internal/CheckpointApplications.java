@@ -22,8 +22,8 @@ import com.ibm.ws.kernel.feature.ServerReadyStatus;
 
 import io.openliberty.checkpoint.spi.Checkpoint;
 import io.openliberty.checkpoint.spi.Checkpoint.Phase;
-import io.openliberty.checkpoint.spi.SnapshotFailed;
-import io.openliberty.checkpoint.spi.SnapshotFailed.Type;
+import io.openliberty.checkpoint.spi.SnapshotResult;
+import io.openliberty.checkpoint.spi.SnapshotResult.SnapshotResultType;
 
 @Component(property = Constants.SERVICE_RANKING + ":Integer=-10000")
 public class CheckpointApplications implements ServerReadyStatus {
@@ -42,14 +42,13 @@ public class CheckpointApplications implements ServerReadyStatus {
     @Override
     public void check() {
         if (doCheckpoint) {
-            try {
-                checkpoint.snapshot(Phase.APPLICATIONS);
-            } catch (SnapshotFailed e) {
-                if (e.getType() == Type.SNAPSHOT_FAILED) {
-                    new Thread(() -> System.exit(e.getErrorCode()), "Snapshot exit.").start();
-                }
-                // TODO should we always exit on failure?
+
+            SnapshotResult snapshotResult = checkpoint.snapshot(Phase.APPLICATIONS);
+
+            if (snapshotResult.getType() == SnapshotResultType.SNAPSHOT_FAILED) {
+                new Thread(() -> System.exit(SnapshotResultType.SNAPSHOT_FAILED.getCode()), "Snapshot exit.").start();
             }
+            // TODO should we always exit on failure?
         }
     }
 
