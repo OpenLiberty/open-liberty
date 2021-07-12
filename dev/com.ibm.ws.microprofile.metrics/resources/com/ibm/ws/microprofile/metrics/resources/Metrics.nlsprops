@@ -136,6 +136,27 @@ jaxws.runtimeFaults.total.description=The number of runtime faults.
 jaxws.uncheckedApplicationFaults.total.description=The number of unchecked application faults.
 jaxws.responseTime.total.description=The total response handling time since the start of the server.
 
+sipTaskDuration.avgOutBoundQueue.description=The average task duration in the SIP stack outbound queue over a configured window of time
+sipTaskDuration.maxOutBoundQueue.description=The maximum task duration in the SIP stack outbound queue over a configured window of time
+sipTaskDuration.minOutBoundQueue.description=The minimum task duration in the SIP stack outbound queue over a configured window of time
+sipTaskDuration.avgInProcessingQueue.description=The average task duration in the SIP container processing queue over a configured window of time
+sipTaskDuration.maxInProcessingQueue.description=The maximum task duration in the SIP container processing queue over a configured window of time
+sipTaskDuration.minInProcessingQueue.description=The minimum task duration in the SIP container processing queue over a configured window of time
+sipTaskDuration.avgTaskDurationInApplication.description=The average task duration the SIP application code over a configured period
+sipTaskDuration.maxTaskDurationInApplication.description=The maximum task duration in the SIP application code over a configured period
+sipTaskDuration.minTaskDurationInApplication.description=The minimum task duration in the SIP application code over a configured period
+
+sipQueue.totalInProcessing.description=The total number of tasks, such as messages or SIP timer events, that have flowed through the processing SIP container queue over a configured window of time
+sipQueue.peakInProcessing.description=The maximum number of tasks in the processing SIP container queue over a configured window of time
+sipQueue.minimumInProcessing.description=The minimum number of tasks in the processing SIP container queue over a configured window of time
+sipQueue.percentageFullTasksInProcessing.description=The maximum processing SIP container queue usage percentage over a configured window of time
+sipQueue.totalOutBound.description=The total number of tasks that have flowed through the outbound SIP stack queue over a configured window of time
+sipQueue.peakOutBound.description=The maximum number of tasks in the outbound SIP stack queue over a configured window of time
+sipQueue.minimumOutBound.description=The minimum number of tasks in the outbound SIP stack queue over a configured window of time
+sipQueue.percentageFullTasksOutBound.description=The maximum outbound SIP stack queue usage percentage over a configured window of time
+
+
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message
 #-----------------------------------------------------------------------------------------------------------------------------

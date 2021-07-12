@@ -94,6 +94,40 @@ public class MappingTable {
         	{ "jaxws.client.%s.responseTime.total", "Total Response Time", "jaxws.responseTime.total.description", GAUGE, MetricUnits.MILLISECONDS, "TotalHandlingTime", null }
 		};
 		mappingTable.put("WebSphere:feature=jaxws,*,type=Performance.Counter.Client", jaxwsClientTable);
+
+		String[][] sipContainerBasicCountersTable = new String[][] {
+        	{ "sipcontainer.receivedMessages.count", "Incoming traffic", "sipcontainer.receivedMessages.count.description", GAUGE, MetricUnits.NONE, "ReceivedSipMsgs", null },
+        	{ "sipcontainer.newSipApplications.count", "New SIP application sessions", "sipcontainer.newSipApplications.count.description", GAUGE, MetricUnits.NONE, "NewSipApplications", null },
+        	{ "sipcontainer.requestProcessingTime.total", "Response time", "sipcontainer.requestProcessingTime.total.description", GAUGE, MetricUnits.NONE, "SipRequestProcessing", null },
+        	{ "sipcontainer.invokerSize", "Queue size", "sipcontainer.invokerSize.description", GAUGE, MetricUnits.NONE, "InvokerSize", null },
+        	{ "sipcontainer.rejectedMessages", "Rejected SIP messages", "sipcontainer.rejectedMessages.description", COUNTER, MetricUnits.NONE, "RejectedMessages", null },       	
+        	{ "sipcontainer.sipTimersInvocations.count", "SIP timer invocations", "sipcontainer.sipTimersInvocations.count.description", COUNTER, MetricUnits.NONE, "SipTimersInvocations", null },        	
+        	{ "sipcontainer.sipSessions", "Number of active SIP sessions", "sipcontainer.sipSessions.description", GAUGE, MetricUnits.NONE, "SipSessions", null },       	
+        	{ "sipcontainer.sipAppSessions", "New SIP application sessions", "sipcontainer.sipAppSessions.description", GAUGE, MetricUnits.NONE, "SipAppSessions", null }
+        };
+		mappingTable.put("WebSphere:type=SipContainerBasicCounters,name=SipContainer.Basic", sipContainerBasicCountersTable);
+
+		String[][] sipContainerTaskDurationCountersTable = new String[][] {
+        	{ "sipTaskDuration.avgOutBoundQueue", 		"Average Task Duration in outbound queue", 	"sipTaskDuration.avgOutBoundQueue.description", 	GAUGE, MetricUnits.NONE, "AvgTaskDurationOutBoundQueue", null },        	
+        	{ "sipTaskDuration.maxOutBoundQueue", 		"Maximum Task Duration in outbound queue", 	"sipTaskDuration.maxOutBoundQueue.description", 	GAUGE, MetricUnits.NONE, "MaxTaskDurationOutBoundQueue", null },        	
+        	{ "sipTaskDuration.minOutBoundQueue",		"Minimum Task Duration in outbound queue", 	"sipTaskDuration.minOutBoundQueue.description", 	GAUGE, MetricUnits.NONE, "MinTaskDurationOutBoundQueue", null },
+        	{ "sipTaskDuration.avgInProcessingQueue",	"Average Task Duration in processing queue","sipTaskDuration.avgInProcessingQueue.description", GAUGE, MetricUnits.NONE, "AvgTaskDurationInProcessingQueue", null },
+        	{ "sipTaskDuration.maxInProcessingQueue",	"Maximum Task Duration in processing queue","sipTaskDuration.maxInProcessingQueue.description", GAUGE, MetricUnits.NONE, "MaxTaskDurationInProcessingQueue", null },
+        	{ "sipTaskDuration.minInProcessingQueue",	"Minimum Task Duration in processing queue","sipTaskDuration.minInProcessingQueue.description", GAUGE, MetricUnits.NONE, "MinTaskDurationInProcessingQueue", null }
+        };
+		mappingTable.put("WebSphere:type=TaskDurationCounters,name=SipContainer.TaskDuration", sipContainerTaskDurationCountersTable);
+
+		String[][] sipContainerQueueMonitorCountersTable = new String[][] {
+        	{ "sipQueue.totalInProcessing", "Total number of tasks that have flowed through the processing SIP container queue", "sipQueue.totalInProcessing.description", GAUGE, MetricUnits.NONE, "TotalTasksCountInProcessingQueue", null },        	
+        	{ "sipQueue.peakInProcessing", "Maximum number of tasks in the processing SIP container queue", "sipQueue.peakInProcessing.description", GAUGE, MetricUnits.NONE, "PeakTasksCountInProcessingQueue", null },
+        	{ "sipQueue.minimumInProcessing", "Minimum number of tasks in the processing SIP container queue", "sipQueue.minimumInProcessing.description", GAUGE, MetricUnits.NONE, "MinTasksCountInProcessingQueue", null },
+        	{ "sipQueue.percentageFullTasksInProcessing", "Maximum percent full of the processing SIP container queue", "sipQueue.percentageFullTasksInProcessing.description", GAUGE, MetricUnits.NONE, "PercentageFullTasksCountInProcessingQueue", null },
+        	{ "sipQueue.totalOutBound", "Total number of tasks that have flowed through the outbound SIP stack queue", "sipQueue.totalOutBound.description", GAUGE, MetricUnits.NONE, "TotalTasksCountInOutboundQueue", null },
+        	{ "sipQueue.peakOutBound", "Maximum number of tasks in the outbound SIP stack queue", "sipQueue.peakOutBound.description", GAUGE, MetricUnits.NONE, "PeakTasksCountInOutboundQueue", null },
+        	{ "sipQueue.minimumOutBound", "Minimum number of tasks in the outbound SIP stack queue", "sipQueue.minimumOutBound.description", GAUGE, MetricUnits.NONE, "MinTasksCountInOutboundQueue", null },
+        	{ "sipQueue.percentageFullTasksOutBound", "Maximum percent full of the outbound SIP stack queue", "sipQueue.percentageFullTasksOutBound.description", GAUGE, MetricUnits.NONE, "PercentageFullTasksCountInOutboundQueue", null }
+        };
+		mappingTable.put("WebSphere:type=QueueMonitoringModule,name=SipContainer.QueueMonitor", sipContainerQueueMonitorCountersTable);
 	}
 	
 	private String getType(String objectName) {
