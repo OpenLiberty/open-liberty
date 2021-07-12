@@ -27,3 +27,5 @@ Import-Package: \
  
 Include-Resource: \
  @${repo;org.opensaml:opensaml-storage-api;3.4.5}!/!META-INF/MANIFEST.MF|META-INF/maven/*
+
+jakartaeeMe: true

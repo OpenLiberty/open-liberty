@@ -19,6 +19,7 @@ import com.ibm.ws.security.saml20.fat.commonTest.SAMLConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLMessageConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLTestSettings;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -74,7 +75,8 @@ public class SAMLSSLConfigTests extends SAMLConfigCommonTests {
      * signed, it needs to be at least as strong as what the config specifies
      */
     // @Mode(TestMode.LITE)
-    @ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.ws.security.SecurityPolicyException" })
+    @ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException" })
+    @AllowedFFDC(value = { "org.opensaml.ws.security.SecurityPolicyException", "org.opensaml.messaging.handler.MessageHandlerException" })
     @Test
     public void test_config_wantAssertionsSigned_false_withWeakerIDPSig() throws Exception {
 
@@ -103,7 +105,8 @@ public class SAMLSSLConfigTests extends SAMLConfigCommonTests {
      * signed, we must be able to validate the cert
      */
     // @Mode(TestMode.LITE)
-    @ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.ws.security.SecurityPolicyException" })
+    @ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException" })
+    @AllowedFFDC(value = { "org.opensaml.ws.security.SecurityPolicyException", "org.opensaml.messaging.handler.MessageHandlerException" }) 
     @Test
     public void test_config_wantAssertionsSigned_false_certMissingFromIDPMetaData() throws Exception {
 
@@ -295,7 +298,8 @@ public class SAMLSSLConfigTests extends SAMLConfigCommonTests {
      * the signer when the IDP uses SHA256, but should fail if SHA1 is used.
      */
     @Mode(TestMode.LITE)
-    @ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.ws.security.SecurityPolicyException" })
+    @ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException" })
+    @AllowedFFDC(value = { "org.opensaml.ws.security.SecurityPolicyException", "org.opensaml.messaging.handler.MessageHandlerException" })
     @Test
     public void test_config_signatureMethodAlgorithm_SHA256() throws Exception {
 
@@ -353,7 +357,8 @@ public class SAMLSSLConfigTests extends SAMLConfigCommonTests {
      * (note that this server config also specifies a funky filter for the
      * default sp config (it is normally equiv to a *))
      */
-    @ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.ws.security.SecurityPolicyException" })
+    @ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException" })
+    @AllowedFFDC(value = { "org.opensaml.ws.security.SecurityPolicyException", "org.opensaml.messaging.handler.MessageHandlerException" })
     @Mode(TestMode.LITE)
     @Test
     public void test_config_signatureMethodAlgorithm_weakAlgIgnored_useFormLogin() throws Exception {

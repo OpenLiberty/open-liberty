@@ -22,6 +22,7 @@ import com.ibm.ws.security.saml20.fat.commonTest.SAMLConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLMessageConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLTestSettings;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -80,7 +81,7 @@ public class PkixSAMLTests extends SAMLCommonTest {
      * The jks file does not have the self-signed certificates from the tfim IdP.
      * So, the test fails
      */
-    @ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.ws.security.SecurityPolicyException" })
+    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.ws.security.SecurityPolicyException", "org.opensaml.messaging.handler.MessageHandlerException" })
     @Mode(TestMode.LITE)
     @Test
     public void pkixSAMLTests_badTrustAnchorTest() throws Exception {
@@ -103,7 +104,7 @@ public class PkixSAMLTests extends SAMLCommonTest {
      * The jks file does not exit. The runtime should NOT use the IDPMetaData.
      * So, the test fails
      */
-    @ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.ws.security.SecurityPolicyException", "java.security.KeyStoreException" })
+    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.ws.security.SecurityPolicyException", "org.opensaml.messaging.handler.MessageHandlerException", "java.security.KeyStoreException" })
     @Mode(TestMode.LITE)
     @Test
     public void pkixSAMLTests_badTrustAnchorReference() throws Exception {

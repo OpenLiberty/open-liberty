@@ -900,7 +900,7 @@ public class SAMLMisc1ConfigTests extends SAMLConfigCommonTests {
      * time (not having to reconfig multiple times) we'll do all of this in one
      * test)
      */
-    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.ws.security.SecurityPolicyException", "org.opensaml.xml.signature.SignatureException" })
+    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.ws.security.SecurityPolicyException", "org.opensaml.xml.signature.SignatureException", "org.opensaml.messaging.handler.MessageHandlerException", "org.opensaml.xml.signature.SignatureException"  })
     // @Mode(TestMode.LITE)
     @Test
     public void test_config_errorPageURL() throws Exception {
@@ -969,8 +969,7 @@ public class SAMLMisc1ConfigTests extends SAMLConfigCommonTests {
      * Config attribute: errorPageURL This test will test specifying some bad
      * value (non existant url) Test shows that we get a decent
      */
-    @ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.ws.security.SecurityPolicyException" })
-    @AllowedFFDC(value = { "com.ibm.ws.jsp.webcontainerext.JSPErrorReport" })
+    @AllowedFFDC(value = { "com.ibm.ws.jsp.webcontainerext.JSPErrorReport", "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.ws.security.SecurityPolicyException", "org.opensaml.messaging.handler.MessageHandlerException" })
     // @Mode(TestMode.LITE)
     @Test
     public void test_config_errorPageURL_invalid() throws Exception {
