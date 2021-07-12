@@ -703,4 +703,10 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
         server1.deleteFileFromLibertyInstallRoot("/usr/shared/resources/data/tranlogdb");
         dynamicTest(server1, server2, 7, 2);
     }
+
+    @Override
+    protected void setUp(LibertyServer server) throws Exception {
+        // TODO Auto-generated method stub
+
+    }
 }

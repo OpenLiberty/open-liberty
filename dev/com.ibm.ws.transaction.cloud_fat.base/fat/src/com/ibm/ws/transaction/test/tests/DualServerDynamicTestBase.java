@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.transaction.test.tests;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 import java.io.FileNotFoundException;
@@ -55,113 +57,9 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
         dynamicTest(server1, server2, testSuffix, resourceCount);
     }
 
-    public void dynamicTest(LibertyServer server1, LibertyServer server2, String testSuffix, int resourceCount) throws Exception {
-        final String method = "dynamicTest";
-
-        StringBuilder sb = null;
-        boolean testFailed = false;
-        String testFailureString = "";
-
-        // Start Server1
-        server1.startServer();
-
-        try {
-            // We expect this to fail since it is gonna crash the server
-            sb = runTestWithResponse(server1, servletName, "setupRec" + testSuffix);
-        } catch (Throwable e) {
-            // as expected
-            Log.error(this.getClass(), method, e); // TODO remove this
-        }
-        Log.info(this.getClass(), method, "setupRec" + testSuffix + " returned: " + sb);
-
-        // wait for 1st server to have gone away
-        if (server1.waitForStringInLog("Dump State:") == null) {
-            testFailed = true;
-            testFailureString = "First server did not crash";
-        }
-
-        // Now start server2
-        if (!testFailed) {
-            server2.setHttpDefaultPort(Cloud2ServerPort);
-            ProgramOutput po = server2.startServerAndValidate(false, true, true);
-
-            if (po.getReturnCode() != 0) {
-                Log.info(this.getClass(), method, po.getCommand() + " returned " + po.getReturnCode());
-                Log.info(this.getClass(), method, "Stdout: " + po.getStdout());
-                Log.info(this.getClass(), method, "Stderr: " + po.getStderr());
-                Exception ex = new Exception("Could not start server2");
-                Log.error(this.getClass(), "dynamicTest", ex);
-                throw ex;
-            }
-
-            // wait for 2nd server to perform peer recovery
-            if (server2.waitForStringInTrace("Performed recovery for " + cloud1RecoveryIdentity, LOG_SEARCH_TIMEOUT) == null) {
-                testFailed = true;
-                testFailureString = "Second server did not perform peer recovery";
-            }
-        }
-
-        // flush the resource states
-        if (!testFailed) {
-
-            try {
-                sb = runTestWithResponse(server2, servletName, "dumpState");
-                Log.info(this.getClass(), method, sb.toString());
-            } catch (Exception e) {
-                Log.error(this.getClass(), method, e);
-                throw e;
-            }
-
-            //Stop server2
-            server2.stopServer((String[]) null);
-
-            // restart 1st server
-            server1.startServerAndValidate(false, true, true);
-
-            if (server1.waitForStringInTrace("WTRN0133I") == null) {
-                testFailed = true;
-                testFailureString = "Recovery incomplete on first server";
-            }
-        }
-
-        if (!testFailed) {
-
-            // check resource states
-            Log.info(this.getClass(), method, "calling checkRec" + testSuffix);
-            try {
-                sb = runTestWithResponse(server1, servletName, "checkRec" + testSuffix);
-            } catch (Exception e) {
-                Log.error(this.getClass(), "dynamicTest", e);
-                throw e;
-            }
-            Log.info(this.getClass(), method, "checkRec" + testSuffix + " returned: " + sb);
-
-            // Bounce first server to clear log
-            server1.stopServer("CWWKN0005W"); // LastingXAResourceImpl handles CWWKN0005W
-            server1.startServerAndValidate(false, true, true);
-
-            // Check log was cleared
-            if (server1.waitForStringInTrace("WTRN0135I") == null) {
-                testFailed = true;
-                testFailureString = "Transactions left in transaction log on first server";
-            }
-            if (!testFailed && (server1.waitForStringInTrace("WTRN0134I.*0") == null)) {
-                testFailed = true;
-                testFailureString = "XAResources left in partner log on first server";
-            }
-
-        }
-
-        tidyServerAfterTest(server1);
-        tidyServerAfterTest(server2);
-        // XA resource data is cleared in setup servlet methods. Probably should do it here.
-        if (testFailed)
-            fail(testFailureString);
-    }
-
     protected void tidyServerAfterTest(LibertyServer s) throws Exception {
         if (s.isStarted()) {
-            s.stopServer();
+            s.stopServer(new String[] { "CWWKE0701E" });
         }
         try {
             final RemoteFile rf = s.getFileFromLibertySharedDir(LastingXAResourceImpl.STATE_FILE_ROOT);
@@ -173,4 +71,97 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
         }
 
     }
+
+    public void dynamicTest(LibertyServer server1, LibertyServer server2, String id, int resourceCount) throws Exception {
+        final String method = "dynamicTest";
+        StringBuilder sb = null;
+        Log.info(this.getClass(), method, "Starting dynamic test in DualServerDynamicDBRotationTest");
+        // Start Server1
+        startServers(server1);
+        Log.info(this.getClass(), method, "now invoke runTestWithResponse from DualServerDynamicDBRotationTest");
+        try {
+            // We expect this to fail since it is gonna crash the server
+            sb = runTestWithResponse(server1, servletName, "setupRec" + id);
+        } catch (Throwable e) {
+        }
+        Log.info(this.getClass(), method, "back from runTestWithResponse in DualServerDynamicDBRotationTest, sb is " + sb);
+        assertNull("setupRec" + id + " returned: " + sb, sb);
+
+        Log.info(this.getClass(), method, "wait for first server to go away in DualServerDynamicDBRotationTest");
+        // wait for 1st server to have gone away
+        assertNotNull(server1.getServerName() + " did not crash", server1.waitForStringInLog("Dump State:"));
+
+        // Now start server2
+        server2.setHttpDefaultPort(Cloud2ServerPort);
+        startServers(server2);
+
+        // wait for 2nd server to perform peer recovery
+        assertNotNull(server2.getServerName() + " did not perform peer recovery",
+                      server2.waitForStringInTrace("Performed recovery for " + cloud1RecoveryIdentity, LOG_SEARCH_TIMEOUT));
+
+        // flush the resource states
+        try {
+            sb = runTestWithResponse(server2, servletName, "dumpState");
+            Log.info(this.getClass(), method, sb.toString());
+        } catch (Exception e) {
+            Log.error(this.getClass(), method, e);
+            fail(e.getMessage());
+        }
+
+        //Stop server2
+        server2.stopServer((String[]) null);
+
+        // restart 1st server
+        server1.resetStarted();
+        startServers(server1);
+
+        assertNotNull("Recovery incomplete on " + server1.getServerName(), server1.waitForStringInTrace("WTRN0133I"));
+
+        // check resource states
+        Log.info(this.getClass(), method, "calling checkRec" + id);
+        try {
+            sb = runTestWithResponse(server1, servletName, "checkRec" + id);
+        } catch (Exception e) {
+            Log.error(this.getClass(), "dynamicTest", e);
+            throw e;
+        }
+        Log.info(this.getClass(), method, "checkRec" + id + " returned: " + sb);
+
+        // Bounce first server to clear log
+        server1.stopServer(new String[] { "CWWKE0701E" });
+        startServers(server1);
+
+        // Check log was cleared
+        assertNotNull("Transactions left in transaction log on " + server1.getServerName(), server1.waitForStringInTrace("WTRN0135I"));
+        assertNotNull("XAResources left in partner log on " + server1.getServerName(), server1.waitForStringInTrace("WTRN0134I.*0"));
+    }
+
+    private void startServers(LibertyServer... servers) {
+        final String method = "startServers";
+
+        for (LibertyServer server : servers) {
+            assertNotNull("Attempted to start a null server", server);
+            ProgramOutput po = null;
+            try {
+                setUp(server);
+                po = server.startServerAndValidate(false, false, false);
+                if (po.getReturnCode() != 0) {
+                    Log.info(getClass(), method, po.getCommand() + " returned " + po.getReturnCode());
+                    Log.info(getClass(), method, "Stdout: " + po.getStdout());
+                    Log.info(getClass(), method, "Stderr: " + po.getStderr());
+                    throw new Exception(po.getCommand() + " returned " + po.getReturnCode());
+                }
+                server.validateAppLoaded(APP_NAME);
+            } catch (Throwable t) {
+                Log.error(getClass(), method, t);
+                assertNull("Failed to start server: " + t.getMessage() + (po == null ? "" : " " + po.getStdout()), t);
+            }
+        }
+    }
+
+    /**
+     * @param server
+     * @throws Exception
+     */
+    protected abstract void setUp(LibertyServer server) throws Exception;
 }

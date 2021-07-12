@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -85,7 +85,7 @@ public class SimpleTestNoRecOnStart extends FATServletClient {
 
             @Override
             public Void run() throws Exception {
-                server.stopServer("WTRN0017W");
+                server.stopServer("WTRN0017W", "CWWKE0701E");
                 ShrinkHelper.cleanAllExportedArchives();
                 return null;
             }
@@ -95,7 +95,7 @@ public class SimpleTestNoRecOnStart extends FATServletClient {
     /**
      * Test enlistment in transactions.
      *
-     * @param request HTTP request
+     * @param request  HTTP request
      * @param response HTTP response
      * @throws Exception if an error occurs.
      */

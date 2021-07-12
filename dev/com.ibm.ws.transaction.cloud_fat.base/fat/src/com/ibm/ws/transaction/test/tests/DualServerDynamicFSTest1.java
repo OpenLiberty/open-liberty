@@ -57,4 +57,10 @@ public class DualServerDynamicFSTest1 extends DualServerDynamicCoreTest1 {
         // server1.stopServer("WTRN0075W", "WTRN0076W"); // Stop the server and indicate the '"WTRN0075W", "WTRN0076W" error messages were expected
     }
 
+    @Override
+    protected void setUp(LibertyServer server) throws Exception {
+        // TODO Auto-generated method stub
+
+    }
+
 }

@@ -50,4 +50,10 @@ public class DualServerDynamicDBTest2 extends DualServerDynamicCoreTest2 {
         server1.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
         server2.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
     }
+
+    @Override
+    protected void setUp(LibertyServer server) throws Exception {
+        // TODO Auto-generated method stub
+
+    }
 }
