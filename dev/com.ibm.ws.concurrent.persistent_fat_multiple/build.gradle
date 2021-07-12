@@ -9,7 +9,9 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-addRequiredLibraries {
-	dependsOn copyJdbcDrivers
-	dependsOn copyDatabaseRotationDrivers
-}
+ dependencies {
+  requiredLibs project(':io.openliberty.org.testcontainers')
+ }
+ 
+addRequiredLibraries.dependsOn copyJdbcDrivers
+

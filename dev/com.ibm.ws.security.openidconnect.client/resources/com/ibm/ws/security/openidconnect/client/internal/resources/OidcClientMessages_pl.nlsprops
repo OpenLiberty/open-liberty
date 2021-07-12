@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2019, 2020 IBM Corporation and others.
+# Copyright (c) 2019, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -232,11 +232,11 @@ OIDC_CLIENT_BAD_REQUEST_NO_STATE.useraction=Sprawd\u017a konfiguracj\u0119 dosta
 
 # STOP HERE, OIDC COMMON HAS RESERVED 1751 - 1799
 
-# do not translate hostname 
+# do not translate hostname, sameSiteCookie, webAppSecurity, Strict, Lax, None
 # used by client
 OIDC_CLIENT_BAD_REQUEST_NO_COOKIE=CWWKS1520E: \u017b\u0105danie skierowane do [{0}] jest niepoprawne. Brakuje wymaganych informacji cookie o nazwie rozpoczynaj\u0105cej si\u0119 od \u0142a\u0144cucha WASReqURLOidc. Nazwa hosta u\u017cywana w celu uzyskania dost\u0119pu do klienta mo\u017ce nie by\u0107 zgodna z nazw\u0105 zarejestrowan\u0105 u dostawcy. Zosta\u0142 zwr\u00f3cony kod odpowiedzi 500.
 OIDC_CLIENT_BAD_REQUEST_NO_COOKIE.explanation=Odebrano \u017c\u0105danie, kt\u00f3re nie zawiera\u0142o wymaganych informacji cookie.
-OIDC_CLIENT_BAD_REQUEST_NO_COOKIE.useraction=Sprawd\u017a konfiguracje dostawcy i klienta OpenID Connect. Brak informacji cookie mo\u017ce wynika\u0107 st\u0105d, \u017ce podejmowana jest pr\u00f3ba uzyskania dost\u0119pu do klienta z u\u017cyciem nazwy hosta, kt\u00f3ra r\u00f3\u017cni si\u0119 od nazwy hosta przekierowania zarejestrowanej u dostawcy.
+OIDC_CLIENT_BAD_REQUEST_NO_COOKIE.useraction=Sprawd\u017a konfiguracje dostawcy i klienta OpenID Connect. Brak informacji cookie mo\u017ce wynika\u0107 st\u0105d, \u017ce podejmowana jest pr\u00f3ba uzyskania dost\u0119pu do klienta z u\u017cyciem nazwy hosta, kt\u00f3ra r\u00f3\u017cni si\u0119 od nazwy hosta przekierowania zarejestrowanej u dostawcy. Je\u015bli atrybut sameSiteCookie w elemencie webAppSecurity w konfiguracji serwera jest ustawiony na Strict, spr\u00f3buj zmieni\u0107 jego warto\u015b\u0107 na Lax lub None.
 
 OIDC_CLIENT_DISCOVERY_OVERRIDE_EP=CWWKS1521W: Konfiguracja klienta OpenId Connect (strona zale\u017cna - Relying Party lub RP) [{2}] zawiera zar\u00f3wno adres URL punktu ko\u0144cowego wykrywania [{0}], jak i inne punkty ko\u0144cowe. Strona zale\u017cna u\u017cyje informacji z \u017c\u0105dania wykrywania i zignoruje inne skonfigurowane punkty ko\u0144cowe [ {1}].
 OIDC_CLIENT_DISCOVERY_OVERRIDE_EP.explanation=Klient OpenId Connect korzysta z punktu ko\u0144cowego wykrywania do kontaktowania si\u0119 z dostawc\u0105 i u\u017cywa informacji z \u017c\u0105dania wykrywania do kontaktowania si\u0119 z innymi punktami ko\u0144cowymi, takimi jak autoryzacja, znacznik i informacje o u\u017cytkowniku.
@@ -287,4 +287,5 @@ AUTHFILTER_MULTIPLE_MATCHED.useraction=Przejrzyj plik server.xml i popraw konfig
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE=CWWKS1532E: \u017b\u0105danie skierowane do [{0}] jest niepoprawne. Wymagana informacja cookie o nazwie rozpoczynaj\u0105cej si\u0119 od WASReqURLOidc ma niepoprawn\u0105 warto\u015b\u0107. Nazwa hosta [{1}] u\u017cywana w celu uzyskania dost\u0119pu do klienta mo\u017ce nie by\u0107 zgodna z nazw\u0105 zarejestrowan\u0105 u dostawcy. Zosta\u0142 zwr\u00f3cony kod odpowiedzi 500.
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.explanation=Odebrano \u017c\u0105danie, kt\u00f3re zawiera zniekszta\u0142cone informacje cookie.
 OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.useraction=Sprawd\u017a konfiguracje dostawcy i klienta OpenID Connect. Nieprawid\u0142owy format informacji cookie mo\u017ce wynika\u0107 z modyfikacji informacji cookie przez agenta u\u017cytkownika poprzez wprowadzenie nazwy hosta, kt\u00f3ra r\u00f3\u017cni si\u0119 od nazwy hosta przekierowania zarejestrowanej u dostawcy. Je\u015bli oczekiwana jest nazwa hosta, nale\u017cy doda\u0107 j\u0105 do atrybutu wasReqURLRedirectDomainNames elementu webAppSecurity w pliku server.xml.
+
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

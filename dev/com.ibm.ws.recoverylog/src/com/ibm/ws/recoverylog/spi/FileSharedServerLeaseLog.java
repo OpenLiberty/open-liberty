@@ -23,8 +23,8 @@ import java.security.PrivilegedAction;
 
 import com.ibm.tx.config.ConfigurationProviderManager;
 import com.ibm.tx.util.Utils;
-import com.ibm.tx.util.logging.Tr;
-import com.ibm.tx.util.logging.TraceComponent;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
@@ -93,7 +93,8 @@ public class FileSharedServerLeaseLog implements SharedServerLeaseLog {
     private static final FileSharedServerLeaseLog _fileLeaseLog = new FileSharedServerLeaseLog();
 
     //to prevent creating another instance of Singleton
-    public FileSharedServerLeaseLog() {}
+    public FileSharedServerLeaseLog() {
+    }
 
     /**
      * WebSphere RAS TraceComponent registration.

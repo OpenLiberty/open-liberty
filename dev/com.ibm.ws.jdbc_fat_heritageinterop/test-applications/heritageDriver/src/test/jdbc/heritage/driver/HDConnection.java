@@ -65,6 +65,11 @@ public class HDConnection implements Connection, HeritageDBConnection, XAConnect
      */
     public final AtomicInteger cleanupCount = new AtomicInteger();
 
+    /**
+     * Pretend to support the catalog attribute, which would otherwise be ignored by Derby
+     */
+    private String catalog;
+
     final HDDataSource ds;
 
     /**
@@ -83,6 +88,11 @@ public class HDConnection implements Connection, HeritageDBConnection, XAConnect
     private Map<Object, Class<?>> exceptionIdentificationOverrides;
     private boolean failOnIsValid;
 
+    /**
+     * Pretend to support the network timeout attribute which isn't supported by Derby
+     */
+    private int networkTimeoutMS;
+
     private boolean restoreAutoCommitAfterTx;
 
     /**
@@ -94,6 +104,11 @@ public class HDConnection implements Connection, HeritageDBConnection, XAConnect
      * Counts the number of times that doConnectionSetupPerTransaction is invoked for this connection.
      */
     public final AtomicInteger transactionCount = new AtomicInteger(Integer.MIN_VALUE); // make it obvious if it never gets initialized to 1
+
+    /**
+     * Pretend to support the typeMap attribute, which would otherwise be rejected by Derby
+     */
+    private Map<String, Class<?>> typeMap;
 
     /**
      * Xid of transaction that we are pretending to participate in.
@@ -134,7 +149,17 @@ public class HDConnection implements Connection, HeritageDBConnection, XAConnect
 
     @Override
     public void close() throws SQLException {
-        connection().close();
+        try {
+            connection().close();
+        } catch (SQLException x) {
+            if ("25001".equals(x.getSQLState())) {
+                // transaction is still active
+                connection().rollback();
+                connection().close();
+            } else {
+                throw x;
+            }
+        }
     }
 
     @Override
@@ -258,7 +283,7 @@ public class HDConnection implements Connection, HeritageDBConnection, XAConnect
     @Override
     public String getCatalog() throws SQLException {
         if (ds.supportsCatalog)
-            return connection().getCatalog();
+            return catalog;
         else
             throw new SQLException("You disabled support for catalog.");
     }
@@ -296,7 +321,7 @@ public class HDConnection implements Connection, HeritageDBConnection, XAConnect
     @Override
     public int getNetworkTimeout() throws SQLException {
         if (ds.supportsNetworkTimeout)
-            return connection().getNetworkTimeout();
+            return networkTimeoutMS;
         else
             throw new SQLException("You disabled the ability to get the network timeout.", "HDISA", 0);
     }
@@ -322,7 +347,7 @@ public class HDConnection implements Connection, HeritageDBConnection, XAConnect
     @Override
     public Map<String, Class<?>> getTypeMap() throws SQLException {
         if (ds.supportsTypeMap)
-            return connection().getTypeMap();
+            return typeMap;
         else
             throw new SQLException("You disabled support for type map.", null, -40960);
     }
@@ -553,7 +578,7 @@ public class HDConnection implements Connection, HeritageDBConnection, XAConnect
     @Override
     public void setCatalog(String catalog) throws SQLException {
         if (ds.supportsCatalog)
-            connection().setCatalog(catalog);
+            this.catalog = catalog;
         else
             throw new SQLException("You disabled support for catalog.");
     }
@@ -596,7 +621,7 @@ public class HDConnection implements Connection, HeritageDBConnection, XAConnect
     @Override
     public void setNetworkTimeout(Executor executor, int milliseconds) throws SQLException {
         if (ds.supportsNetworkTimeout)
-            connection().setNetworkTimeout(executor, milliseconds);
+            networkTimeoutMS = milliseconds;
         else
             throw new SQLException("You disabled the ability to set the network timeout.");
     }
@@ -640,7 +665,7 @@ public class HDConnection implements Connection, HeritageDBConnection, XAConnect
     @Override
     public void setTypeMap(Map<String, Class<?>> map) throws SQLException {
         if (ds.supportsTypeMap)
-            connection().setTypeMap(map);
+            typeMap = map;
         else
             throw new SQLException("You disabled support for type map.");
     }

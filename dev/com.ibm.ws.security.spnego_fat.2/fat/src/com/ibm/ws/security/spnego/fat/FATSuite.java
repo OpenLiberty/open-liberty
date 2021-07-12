@@ -13,7 +13,6 @@ package com.ibm.ws.security.spnego.fat;
 import java.io.IOException;
 import java.net.InetAddress;
 
-import org.junit.ClassRule;
 import org.junit.rules.ExternalResource;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -42,7 +41,7 @@ public class FATSuite extends InitClass {
     /**
      * Rule to setup users, SPNs etc on the KDC.
      */
-    @ClassRule
+    //@ClassRule
     public static ExternalResource beforeRule = new ExternalResource() {
         /**
          * Creates the SPN and keytab file to be used in any ensuing tests. Test classes can elect to create their own
@@ -128,7 +127,7 @@ public class FATSuite extends InitClass {
      * Rule to cleanup users, SPNs etc from the KDC. This rule is separate from the setup
      * rule b/c the after method is not called when the before method fails.
      */
-    @ClassRule
+    //@ClassRule
     public static ExternalResource afterRule = new ExternalResource() {
         @Override
         protected void after() {

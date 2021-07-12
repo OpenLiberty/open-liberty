@@ -519,25 +519,6 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
         msgUtils.printMethodName(thisMethod);
         Log.info(thisClass, thisMethod, "Setting up global trust");
 
-        /*
-         * TODO BEGIN DELETE
-         *
-         * This block of code was added to support DSA keys until they are replaced
-         * in our tests.
-         */
-        String protocols = "SSLv3,TLSv1";
-        if (JavaInfo.JAVA_VERSION >= 8 || overrideForConsul)
-            protocols += ",TLSv1.1,TLSv1.2";
-
-        System.setProperty("com.ibm.jsse2.disableSSLv3", "false");
-        System.setProperty("https.protocols", protocols);
-        Security.setProperty("jdk.tls.disabledAlgorithms", "");
-
-        Log.info(thisClass, "enableSSLv3", "Enabled SSLv3.  https.protocols=" + protocols);
-        /*
-         * TODO END DELETE
-         */
-
         try {
             KeyManager keyManagers[] = null;
 
@@ -1768,6 +1749,7 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
             try {
                 // update the allowedTimeout count to account for msgs issued during start retries
                 addToAllowableTimeoutCount(server.getRetryTimeoutCount());
+                addToAllowableTimeoutCount(server.getSslWaitTimeoutCount());
                 tearDownServer(server);
                 newServerRefList.add(server);
             } catch (Exception e) {

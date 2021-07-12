@@ -24,10 +24,14 @@ import java.security.PrivilegedExceptionAction;
 import java.util.logging.Logger;
 
 import javax.xml.bind.JAXBElement;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.stream.StreamSource;
 
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
 
 import com.ibm.jbatch.container.jsl.ModelResolver;
 import com.ibm.jbatch.jsl.model.JSLJob;
@@ -53,7 +57,23 @@ public class JobModelResolverImpl implements ModelResolver<JSLJob> {
         InputStream is = null;
 
         final JobModelHandler handler = new JobModelHandler();
+        
+	SAXParserFactory factory = ParserFactory.newSAXParserFactory();
+        factory.setNamespaceAware(true);
+        factory.setValidating(false);
+
+	//Catch and re-throw as UnsupportedOperationException, since exceptions here will be
+	//due to an XML processor implementation not supporting a feature
         try {
+            factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+	    factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+	    factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+	    factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+        } catch (Throwable e) {
+            throw (UnsupportedOperationException)e;
+	}
+	
+	try {
             //Defect 178383: get the input stream from the source and ensure it is closed
             //in the finally block to release the xml from being locked
             is = source.getInputStream();
@@ -61,7 +81,7 @@ public class JobModelResolverImpl implements ModelResolver<JSLJob> {
 
             logger.fine("JobModelResolver start unmarshal");
 
-            final SAXParser parser = ParserFactory.newSAXParser(true, false);
+	    final SAXParser parser = factory.newSAXParser();
 
             result = AccessController.doPrivileged(
                                                    new PrivilegedExceptionAction<Object>() {

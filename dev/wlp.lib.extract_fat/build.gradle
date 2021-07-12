@@ -11,9 +11,10 @@ task addRequiredFiles(type: Copy) {
   }
 }
 
-autoFVT {
-  dependsOn addRequiredFiles
-  
+autoFVT.dependsOn ':wlp.lib.extract:build'
+autoFVT.dependsOn addRequiredFiles
+
+autoFVT.doLast {
   /*
    * Copy wlp.lib.extract.jar for doing bin/server package command
    */

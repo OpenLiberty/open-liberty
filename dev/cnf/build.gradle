@@ -396,6 +396,9 @@ task zipGradleBootstrap(type: Zip) {
             }
         }
     }
+    into 'wlp-jakartaee-transform/rules', {
+        from rootProject.fileTree(dir: 'wlp-jakartaee-transform/rules')
+    }
 }
 
 task libertyReleaseVersions {

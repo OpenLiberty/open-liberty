@@ -6,6 +6,6 @@ IBM-Provision-Capability: \
   osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.monitor-1.0))", \
   osgi.identity; filter:="(&(type=osgi.subsystem.feature)(|(osgi.identity=com.ibm.websphere.appserver.jaxrs-2.0)(osgi.identity=com.ibm.websphere.appserver.jaxrs-2.1)))"
 IBM-Install-Policy: when-satisfied
--bundles=com.ibm.ws.jaxrs.2.x.monitor
+-bundles=com.ibm.ws.jaxrs.2.x.monitor.component
 kind=ga
 edition=core

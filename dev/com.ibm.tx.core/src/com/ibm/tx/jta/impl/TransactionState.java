@@ -1,7 +1,7 @@
 package com.ibm.tx.jta.impl;
 
 /*******************************************************************************
- * Copyright (c) 2002, 2016 IBM Corporation and others.
+ * Copyright (c) 2002, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,11 +14,11 @@ package com.ibm.tx.jta.impl;
 import javax.transaction.SystemException;
 
 import com.ibm.tx.TranConstants;
-import com.ibm.tx.util.logging.FFDCFilter;
-import com.ibm.tx.util.logging.Tr;
-import com.ibm.tx.util.logging.TraceComponent;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.Transaction.JTA.Util;
 import com.ibm.ws.Transaction.JTS.Configuration;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.recoverylog.spi.InternalLogException;
 import com.ibm.ws.recoverylog.spi.LogFullException;
 import com.ibm.ws.recoverylog.spi.RecoverableUnit;
@@ -30,8 +30,7 @@ import com.ibm.ws.recoverylog.spi.RecoverableUnitSection;
  * The TransactionState interface provides operations that maintain the
  * relative commitment state of a TransactionImpl object.
  */
-public class TransactionState
-{
+public class TransactionState {
     /**
      * A state value indicating that the transaction has not yet been started or is finished
      */
@@ -121,15 +120,11 @@ public class TransactionState
     // servers) so cache a direct reference to the PLT for the local server.
     protected static final PartnerLogTable _partnerLogTable;
 
-    static
-    {
+    static {
         final FailureScopeController fsc = Configuration.getFailureScopeController();
-        if (fsc != null)
-        {
+        if (fsc != null) {
             _partnerLogTable = fsc.getPartnerLogTable();
-        }
-        else
-        {
+        } else {
             _partnerLogTable = null;
         }
     }
@@ -143,43 +138,44 @@ public class TransactionState
     // one-phase and two-phase transactions.
     //
     protected final static boolean[][] validStateChange = {
-                                                           /* from to actve ping pd cing cd ring rd h_com h_rb lastp cingop Comments -------------------------- */
-/* active */                                               { false, true, false, false, true, true, false, false, false, false, true }, /* In-flight */
-                                                           /* preparing */{ false, false, true, true, true, true, true, true, true, true, false }, /* flow xa_prepare */
-                                                           /* prepared */{ false, false, false, true, false, true, false, false, false, true, false }, /* subord only; force */
-                                                           /* committing */{ false, false, false, false, true, false, false, true, false, false, false }, /*
-                                                                                                                                                           * forced in root;
-                                                                                                                                                           * non-forced in subord
-                                                                                                                                                           */
-                                                           /* committed */{ false, false, false, false, false, false, false, false, false, false, false }, /* non-forced write */
-                                                           /* rolling_back */{ false, false, false, false, false, false, true, false, true, false, false }, /*
-                                                                                                                                                             * forced in root;
-                                                                                                                                                             * non-forced in subord
-                                                                                                                                                             */
-                                                           /* rolled_back */{ false, false, false, false, false, false, false, false, false, false, false }, /*                                      */
-                                                           /* heur_on_commit */{ false, false, false, false, true, false, true, false, false, false, false }, /*
-                                                                                                                                                               * Subordinate only;
-                                                                                                                                                               * forced
-                                                                                                                                                               */
-                                                           /* heur_on_rollback */{ false, false, false, false, false, false, true, false, false, false, false }, /*
-                                                                                                                                                                  * Subordinate
-                                                                                                                                                                  * only; forced
+                    /* from to actve ping pd cing cd ring rd h_com h_rb lastp cingop Comments -------------------------- */
+/* active */ { false, true, false, false, true, true, false, false, false, false, true }, /* In-flight */
+                                                            /* preparing */{ false, false, true, true, true, true, true, true, true, true, false }, /* flow xa_prepare */
+                                                            /* prepared */{ false, false, false, true, false, true, false, false, false, true, false }, /* subord only; force */
+                                                            /* committing */{ false, false, false, false, true, false, false, true, false, false, false }, /*
+                                                                                                                                                            * forced in root;
+                                                                                                                                                            * non-forced in subord
+                                                                                                                                                            */
+                                                            /* committed */{ false, false, false, false, false, false, false, false, false, false, false }, /* non-forced write */
+                                                            /* rolling_back */{ false, false, false, false, false, false, true, false, true, false, false }, /*
+                                                                                                                                                              * forced in root;
+                                                                                                                                                              * non-forced in subord
+                                                                                                                                                              */
+                                                            /* rolled_back */{ false, false, false, false, false, false, false, false, false, false,
+                                                                               false }, /*                                      */
+                                                            /* heur_on_commit */{ false, false, false, false, true, false, true, false, false, false, false }, /*
+                                                                                                                                                                * Subordinate only;
+                                                                                                                                                                * forced
+                                                                                                                                                                */
+                                                            /* heur_on_rollback */{ false, false, false, false, false, false, true, false, false, false, false }, /*
+                                                                                                                                                                   * Subordinate
+                                                                                                                                                                   * only; forced
+                                                                                                                                                                   */
+                                                            /* last_participant */{ false, false, false, true, false, true, false, false, false, false, false }, /*
+                                                                                                                                                                  * LPS force if
+                                                                                                                                                                  * configured
                                                                                                                                                                   */
-                                                           /* last_participant */{ false, false, false, true, false, true, false, false, false, false, false }, /*
-                                                                                                                                                                 * LPS force if
-                                                                                                                                                                 * configured
-                                                                                                                                                                 */
-                                                           /* committing_one_phase */{ false, false, false, false, true, false, true, false, false, false, false } }; /*
-                                                                                                                                                                       * root commit
-                                                                                                                                                                       * one phase
-                                                                                                                                                                       */
+                                                            /* committing_one_phase */{ false, false, false, false, true, false, true, false, false, false, false } }; /*
+                                                                                                                                                                        * root
+                                                                                                                                                                        * commit
+                                                                                                                                                                        * one phase
+                                                                                                                                                                        */
 
     /**
      * Default TransactionState constructor
      * On recovery, the state is overwritten by the state from the log.
      */
-    public TransactionState(TransactionImpl tran)
-    {
+    public TransactionState(TransactionImpl tran) {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "TransactionState", new java.lang.Object[] { this, tran });
 
@@ -195,13 +191,12 @@ public class TransactionState
      * If the RecoverableUnit records information prior to a log record being
      * forced, this may result in recovery of an in-flight transaction. The
      * TransactionState returns active in this case.
-     * 
+     *
      * @param log The RecoverableUnit for the transaction.
-     * 
+     *
      * @return The current state of the transaction.
      */
-    public int reconstruct(RecoverableUnit log) throws SystemException
-    {
+    public int reconstruct(RecoverableUnit log) throws SystemException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "reconstruct", new Object[] { this, log });
 
@@ -211,17 +206,13 @@ public class TransactionState
         // Lookup the TransactionState RecoverableUnitSection
         _logSection = log.lookupSection(TransactionImpl.TRAN_STATE_SECTION);
 
-        if (_logSection != null)
-        {
-            try
-            {
+        if (_logSection != null) {
+            try {
                 final byte[] logData = _logSection.lastData();
-                if (logData.length == 1)
-                {
+                if (logData.length == 1) {
                     logState = logData[0] & 0xff;
                     // Set the state value to be returned from the reconstruct method
-                    switch (logState)
-                    {
+                    switch (logState) {
                         case STATE_PREPARED:
                         case STATE_COMMITTING:
                         case STATE_COMMITTED:
@@ -238,14 +229,11 @@ public class TransactionState
                         default:
                             throw new SystemException("Transaction recovered in invalid state");
                     }
-                }
-                else
-                {
+                } else {
                     // If the log record data is invalid, then exit immediately.
                     throw new SystemException("Invalid transaction state record data in log");
                 }
-            } catch (Throwable e)
-            {
+            } catch (Throwable e) {
                 FFDCFilter.processException(e, "com.ibm.tx.jta.impl.TransactionState.reconstruct", "274", this);
                 Tr.fatal(tc, "WTRN0000_ERR_INT_ERROR", new Object[] { "reconstruct", "com.ibm.tx.jta.impl.TransactionState", e });
                 if (tc.isEventEnabled())
@@ -254,9 +242,7 @@ public class TransactionState
                     Tr.exit(tc, "reconstruct");
                 throw new SystemException(e.toString());
             }
-        }
-        else
-        {
+        } else {
             // PK84994 starts here
             // If the state record is not found, then exit immediately with state set to STATE_NONE.
             // Log an FFDC to show this has happened
@@ -267,7 +253,7 @@ public class TransactionState
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "reconstruct", stateToString(_state));
             return _state;
-            // PK84994 ends here        
+            // PK84994 ends here
         }
 
         _state = result;
@@ -275,24 +261,19 @@ public class TransactionState
 
         // Create a global identifier.
         final RecoverableUnitSection gtidSection = log.lookupSection(TransactionImpl.GLOBALID_SECTION);
-        if (gtidSection != null)
-        {
-            try
-            {
+        if (gtidSection != null) {
+            try {
                 final byte[] logData = gtidSection.lastData();
 
                 if (logData.length > 12) // We must have formatId and lengths encoded
                 {
                     final XidImpl xid = new XidImpl(logData, 0);
                     _tran.setXidImpl(xid);
-                }
-                else
-                {
+                } else {
                     // If the log record data is invalid, then exit immediately.
                     throw new SystemException("Invalid transaction global identifier record data in log");
                 }
-            } catch (Throwable e)
-            {
+            } catch (Throwable e) {
                 FFDCFilter.processException(e, "com.ibm.tx.jta.impl.TransactionState.reconstruct", "334", this);
                 Tr.fatal(tc, "WTRN0000_ERR_INT_ERROR", new Object[] { "reconstruct", "com.ibm.tx.jta.impl.TransactionState", e });
                 if (tc.isEventEnabled())
@@ -301,9 +282,7 @@ public class TransactionState
                     Tr.exit(tc, "reconstruct");
                 throw new SystemException(e.toString());
             }
-        }
-        else
-        {
+        } else {
             // PK84994 starts here
             // If the global transaction id record is not found, then exit immediately with state set to STATE_NONE.
             // Log an FFDC to show this has happened
@@ -314,7 +293,7 @@ public class TransactionState
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "reconstruct", stateToString(_state));
             return _state;
-            // PK84994 ends here        
+            // PK84994 ends here
         }
 
         if (tc.isEntryEnabled())
@@ -332,69 +311,57 @@ public class TransactionState
      * a subordinate transaction has its state changed to committing or
      * rolling_back, the state is added to the RecoverableUnit object, but is
      * not forced.
-     * 
+     *
      * @param newState The new state of the transaction.
-     * 
+     *
      * @return Indicates if the state change is possible.
      */
-    public void setState(int newState) throws SystemException
-    {
+    public void setState(int newState) throws SystemException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "setState", "from " + stateToString(_state) + " to " + stateToString(newState));
 
         final int oldState = _state;
 
         // Check that the state change is valid
-        if (validStateChange[_state][newState])
-        {
+        if (validStateChange[_state][newState]) {
             // Change state.  This is the point at which some log records may be written
             _state = newState;
 
             //
-            // Unconditional add of state information to 
+            // Unconditional add of state information to
             // log for various states.
             //
             if ((newState == STATE_COMMITTING) ||
                 (newState == STATE_LAST_PARTICIPANT) ||
                 (_tran.isSubordinate() &&
-                (newState == STATE_PREPARED ||
-                 newState == STATE_HEURISTIC_ON_COMMIT ||
-                newState == STATE_HEURISTIC_ON_ROLLBACK
-                )
-                ))
-            {
+                 (newState == STATE_PREPARED ||
+                  newState == STATE_HEURISTIC_ON_COMMIT ||
+                  newState == STATE_HEURISTIC_ON_ROLLBACK))) {
                 byteData[0] = (byte) _state;
 
                 // For a recovered transaction (peer or local), _logSection is always populated by the reconstruct call. As
                 // a result we don't need to worry here about which log (ie a peer or a local) to use.
-                if (_logSection != null)
-                {
-                    try
-                    {
+                if (_logSection != null) {
+                    try {
                         _logSection.addData(byteData);
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "State logged ok");
-                    } catch (Exception e)
-                    {
+                    } catch (Exception e) {
                         FFDCFilter.processException(e, "com.ibm.tx.jta.impl.TransactionState.setState", "416", this);
                         if (tc.isEventEnabled())
                             Tr.event(tc, "addData failed during setState!");
                     }
-                }
-                else if (!_loggingFailed) // First time through only - trap any failed attempts
+                } else if (!_loggingFailed) // First time through only - trap any failed attempts
                 {
-                    try
-                    {
+                    try {
                         _tranLog = _tran.getLog();
 
-                        if (_tranLog != null)
-                        {
+                        if (_tranLog != null) {
                             if (tc.isDebugEnabled())
                                 Tr.debug(tc, "Create sections in the Log for Recovery Coordinator"); // PK84994
                             // Create sections in the Log for Recovery coordinator                                         // PK84994
 
-                            if (_tran.isRAImport())
-                            {
+                            if (_tran.isRAImport()) {
                                 //  We were imported from an RA
                                 //  Write the recoveryId of the partner log entry for this provider to the tran log
                                 //  and the imported JCA Xid
@@ -414,13 +381,9 @@ public class TransactionState
                                 System.arraycopy(xidBytes, 0, logBytes, longBytes.length, xidBytes.length); // @249308A
 
                                 raSection.addData(logBytes); // @249308C
-                            }
-                            else if (_tran.isSubordinate())
-                            {
+                            } else if (_tran.isSubordinate()) {
                                 logSupOrRecCoord();
-                            }
-                            else if (tc.isEventEnabled())
-                            {
+                            } else if (tc.isEventEnabled()) {
                                 Tr.event(tc, "Superior transaction.");
                             }
                             // PK84994 starts here
@@ -433,8 +396,7 @@ public class TransactionState
                             _logSection.addData(byteData);
                             // PK84994 ends here
                         }
-                    } catch (Exception e)
-                    {
+                    } catch (Exception e) {
                         FFDCFilter.processException(e, "com.ibm.tx.jta.impl.TransactionState.setState", "408", this);
                         if (tc.isEntryEnabled())
                             Tr.exit(tc, "setState : CreateSection failed", e);
@@ -450,8 +412,7 @@ public class TransactionState
             // Do we need to write to the log? Have
             // we written any data to our section?
             //
-            if (_logSection != null)
-            {
+            if (_logSection != null) {
                 //
                 // Conditional add of state data to the log.
                 // this only happens if a RecoverableUnitSection
@@ -462,32 +423,26 @@ public class TransactionState
                 if (newState == STATE_COMMITTED ||
                     newState == STATE_ROLLED_BACK ||
                     newState == STATE_ROLLING_BACK ||
-                    (_tran.isSubordinate() && newState == STATE_HEURISTIC_ON_ROLLBACK))
-                {
+                    (_tran.isSubordinate() && newState == STATE_HEURISTIC_ON_ROLLBACK)) {
                     byteData[0] = (byte) _state;
 
-                    try
-                    {
+                    try {
                         _logSection.addData(byteData);
-                    } catch (Exception e)
-                    {
+                    } catch (Exception e) {
                         FFDCFilter.processException(e, "com.ibm.tx.jta.impl.TransactionState.setState", "500", this);
                         if (tc.isEventEnabled())
                             Tr.event(tc, "addData failed during setState!");
                     }
                 }
 
-                try
-                {
-                    switch (newState)
-                    {
+                try {
+                    switch (newState) {
                         case STATE_PREPARED:
                             //
                             // Subordinate transactions need to force a
                             // write before returning vote to root tran.
                             //
-                            if (_tran.isSubordinate())
-                            {
+                            if (_tran.isSubordinate()) {
                                 _tranLog.forceSections();
                             }
                             break;
@@ -501,7 +456,7 @@ public class TransactionState
                             // unforced write, but we always force since we reply
                             // early on commit and if a resource has failed and we
                             // crash, the superior may have already forgotten everything.
-                            // 
+                            //
                             _tranLog.forceSections();
                             break;
 
@@ -509,8 +464,7 @@ public class TransactionState
                         case STATE_HEURISTIC_ON_ROLLBACK:
 
                             // Always force heuristic and we only do it on a subordinate...
-                            if (_tran.isSubordinate())
-                            {
+                            if (_tran.isSubordinate()) {
                                 // Need to force sections here for the case where
                                 // we get a heuristic on prepare
                                 _tranLog.forceSections();
@@ -529,15 +483,14 @@ public class TransactionState
                             break;
 
                         case STATE_LAST_PARTICIPANT:
-                            // All 2PC resources have been prepared and we 
+                            // All 2PC resources have been prepared and we
                             // are waiting on the outcome of the 1PC last
                             // participant before confirming our completion
                             // direction.
                             _tranLog.forceSections();
                             break;
                     }
-                } catch (Exception e)
-                {
+                } catch (Exception e) {
                     FFDCFilter.processException(e, "com.ibm.tx.jta.impl.TransactionState.setState", "505", this);
                     if (_partnerLogTable != null)
                         FFDCFilter.processException(e, "com.ibm.ws.Transaction.JTA.TransactionState.setState", "506", _partnerLogTable);
@@ -546,8 +499,7 @@ public class TransactionState
                     else
                         Tr.error(tc, "WTRN0066_LOG_WRITE_ERROR", e);
                     // If this is the first log write and it fails, then stop further logging
-                    if (oldState == STATE_PREPARING)
-                    {
+                    if (oldState == STATE_PREPARING) {
                         _logSection = null; // Reset this so we do not write a rollback to the log
                         _loggingFailed = true; // Force no further subordinate logging
                         _state = oldState; // Reset state so we can rollback
@@ -557,9 +509,7 @@ public class TransactionState
                     throw new SystemException(e.toString());
                 }
             }
-        }
-        else
-        {
+        } else {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "TransactionState change FAILED from: " + stateToString(_state) + ", to: " + stateToString(newState));
             if (tc.isEntryEnabled())
@@ -571,45 +521,36 @@ public class TransactionState
             Tr.exit(tc, "setState");
     }
 
-    protected void logSupOrRecCoord() throws Exception
-    {
+    protected void logSupOrRecCoord() throws Exception {
         // Not used in JTM
     }
 
-    public void setCommittingStateUnlogged()
-    {
-        if ((_state == STATE_PREPARING) || (_state == STATE_LAST_PARTICIPANT))
-        {
+    public void setCommittingStateUnlogged() {
+        if ((_state == STATE_PREPARING) || (_state == STATE_LAST_PARTICIPANT)) {
             _state = STATE_COMMITTING;
         }
     }
 
-    public void setRollingBackStateUnlogged()
-    {
-        if ((_state == STATE_PREPARING) || (_state == STATE_LAST_PARTICIPANT))
-        {
+    public void setRollingBackStateUnlogged() {
+        if ((_state == STATE_PREPARING) || (_state == STATE_LAST_PARTICIPANT)) {
             _state = STATE_ROLLING_BACK;
         }
     }
 
-    public int getState()
-    {
+    public int getState() {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "getState", stateToString(_state));
         return _state;
     }
 
-    public void reset()
-    {
+    public void reset() {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "reset");
         _state = STATE_NONE;
     }
 
-    public static String stateToString(int state)
-    {
-        switch (state)
-        {
+    public static String stateToString(int state) {
+        switch (state) {
             case STATE_NONE:
                 return "STATE_NONE";
             case STATE_ACTIVE:
@@ -640,8 +581,7 @@ public class TransactionState
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return stateToString(_state);
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -260,7 +260,7 @@ public class BaseTraceService implements TrService {
      * of system properties we expect (for FFDC and logging).
      *
      * @param config a {@link LogProviderConfigImpl} containing TrService configuration
-     *                   from bootstrap properties
+     *            from bootstrap properties
      */
     @Override
     public void init(LogProviderConfig config) {
@@ -286,12 +286,10 @@ public class BaseTraceService implements TrService {
             }
 
             @Override
-            public void flush() {
-            }
+            public void flush() {}
 
             @Override
-            public void close() {
-            }
+            public void close() {}
         });
     }
 
@@ -308,7 +306,7 @@ public class BaseTraceService implements TrService {
      * so values set there are not unset by metatype defaults.
      *
      * @param config a {@link LogProviderConfigImpl} containing dynamic updates from
-     *                   the OSGi managed service.
+     *            the OSGi managed service.
      */
     @Override
     public synchronized void update(LogProviderConfig config) {
@@ -424,17 +422,34 @@ public class BaseTraceService implements TrService {
         }
 
         /*
-         * If consoleFormat has been configured to 'dev' or the deprecated format name 'basic' or the default message format 'simple' OR if consoleFormat is not a valid format
-         * (default to dev)
+         * If messageFormat has been configured to 'tbasic'
+         * - ensure that we are not connecting conduits/bufferManagers to the handler
+         * otherwise we would have the undesired effect of writing both 'tbasic' and 'json' formatted message events
+         */
+        if (messageFormat.toLowerCase().equals(LoggingConstants.TBASIC_MESSAGE_FORMAT)) {
+            if (messageLogHandler != null) {
+                messageLogHandler.setFormat(LoggingConstants.TBASIC_MESSAGE_FORMAT);
+                messageLogHandler.modified(new ArrayList<String>());
+                ArrayList<String> filteredList = new ArrayList<String>();
+                filteredList.add(LoggingConstants.DEFAULT_CONSOLE_SOURCE);
+                updateConduitSyncHandlerConnection(filteredList, messageLogHandler);
+            }
+        }
+
+        /*
+         * If consoleFormat has been configured to 'dev' or the deprecated format name 'basic' or the format name 'tbasic' or the default message format 'simple'
+         * OR if consoleFormat is not a valid format (default to dev)
          * - ensure that we are not connecting conduits/bufferManagers to the handler
          * otherwise we would have the undesired effect of writing both 'dev'/'simple' and 'json' formatted message events
          */
         if ((consoleFormat.toLowerCase().equals(LoggingConstants.DEFAULT_CONSOLE_FORMAT) || consoleFormat.toLowerCase().equals(LoggingConstants.DEPRECATED_DEFAULT_FORMAT)
-             || consoleFormat.toLowerCase().equals(LoggingConstants.DEFAULT_MESSAGE_FORMAT))
+             || consoleFormat.toLowerCase().equals(LoggingConstants.DEFAULT_MESSAGE_FORMAT) || consoleFormat.toLowerCase().equals(LoggingConstants.TBASIC_CONSOLE_FORMAT))
             || !(LoggingConfigUtils.isConsoleFormatValueValid(consoleFormat))) {
             if (consoleLogHandler != null) {
                 if (consoleFormat.toLowerCase().equals(LoggingConstants.DEFAULT_MESSAGE_FORMAT))
                     consoleLogHandler.setFormat(LoggingConstants.DEFAULT_MESSAGE_FORMAT);
+                else if (consoleFormat.toLowerCase().equals(LoggingConstants.TBASIC_CONSOLE_FORMAT))
+                    consoleLogHandler.setFormat(LoggingConstants.TBASIC_CONSOLE_FORMAT);
                 else
                     consoleLogHandler.setFormat(LoggingConstants.DEFAULT_CONSOLE_FORMAT);
 
@@ -1043,10 +1058,10 @@ public class BaseTraceService implements TrService {
     /**
      * Publish a trace log record.
      *
-     * @param detailLog           the trace writer
+     * @param detailLog the trace writer
      * @param logRecord
-     * @param id                  the trace object id
-     * @param formattedMsg        the result of {@link BaseTraceFormatter#formatMessage}
+     * @param id the trace object id
+     * @param formattedMsg the result of {@link BaseTraceFormatter#formatMessage}
      * @param formattedVerboseMsg the result of {@link BaseTraceFormatter#formatVerboseMessage}
      */
     protected void publishTraceLogRecord(TraceWriter detailLog, LogRecord logRecord, Object id, String formattedMsg, String formattedVerboseMsg) {
@@ -1193,7 +1208,7 @@ public class BaseTraceService implements TrService {
      * the trace file.
      *
      * @param config a {@link LogProviderConfigImpl} containing TrService configuration
-     *                   from bootstrap properties
+     *            from bootstrap properties
      */
     protected void initializeWriters(LogProviderConfigImpl config) {
         // createFileLog may or may not return the original log holder..
@@ -1230,7 +1245,7 @@ public class BaseTraceService implements TrService {
     private FileLogHeader newFileLogHeader(boolean trace, LogProviderConfigImpl config) {
         boolean isJSON = false;
         String messageFormat = config.getMessageFormat();
-        if (LoggingConstants.JSON_FORMAT.equals(messageFormat)) {
+        if (!trace && LoggingConstants.JSON_FORMAT.equals(messageFormat)) {
             isJSON = true;
             String jsonHeader = constructJSONHeader(messageFormat, config);
             return new FileLogHeader(jsonHeader, trace, javaLangInstrument, isJSON);
@@ -1337,8 +1352,7 @@ public class BaseTraceService implements TrService {
 
         /** {@inheritDoc} */
         @Override
-        public void close() throws IOException {
-        }
+        public void close() throws IOException {}
 
         /**
          * Only allow "off" as a valid value for toggling system.out
@@ -1654,8 +1668,8 @@ public class BaseTraceService implements TrService {
      * Write the text to the associated original stream.
      * This is preserved as a subroutine for extension by other delegates (test, JSR47 logging)
      *
-     * @param tc        StreamTraceComponent associated with original stream
-     * @param txt       pre-formatted or raw message
+     * @param tc StreamTraceComponent associated with original stream
+     * @param txt pre-formatted or raw message
      * @param rawStream if true, this is from direct invocation of System.out or System.err
      */
     protected synchronized void writeStreamOutput(SystemLogHolder holder, String txt, boolean rawStream) {

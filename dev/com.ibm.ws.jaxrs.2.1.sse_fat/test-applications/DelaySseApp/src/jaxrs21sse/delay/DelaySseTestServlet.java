@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -56,6 +56,71 @@ public class DelaySseTestServlet extends FATServlet {
     }
 
     public void testRetrySse(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+
+        final List<String> receivedEvents = new ArrayList<String>();
+        final List<String> eventSourceTimes = new ArrayList<String>();
+        final CountDownLatch executionLatch = new CountDownLatch(1);
+
+        Client client = ClientBuilder.newClient();
+        int port = req.getServerPort();
+        WebTarget target = client.target("http://localhost:" + port + "/DelaySseApp/delay/retry2");
+
+        try (SseEventSource source = SseEventSource.target(target).build()) {
+            System.out.println("DelaySseTestServlet:  client invoking server SSE resource on: " + source);
+            source.register(
+                            new Consumer<InboundSseEvent>() { // event
+
+                                @Override
+                                public void accept(InboundSseEvent t) {
+                                    System.out.println("DelaySseResource:  new delay event: " + t.getId() + " " + t.getName() + " " + t.getReconnectDelay() + " " + t.readData());
+                                    receivedEvents.add(t.readData(String.class));
+                                }
+                            },
+                            new Consumer<Throwable>() {
+
+                                @Override
+                                public void accept(Throwable t) {
+                                    t.printStackTrace();
+                                    fail("Caught unexpected exception: " + t);
+                                }
+                            },
+                            new Runnable() {
+
+                                @Override
+                                public void run() {
+                                    System.out.println("completion runnable executed");
+                                    executionLatch.countDown();
+                                }
+                            });
+
+            source.open();
+            System.out.println("DelaySseTestServlet:  client source open");
+
+            boolean success = executionLatch.await(120, TimeUnit.SECONDS);
+            if (!success) {
+                for (String re : receivedEvents) {
+                    int i = 0;
+                    System.out.println("receivedEvent " + i + " : " + re);
+                    i++;
+                }
+                for (String et : eventSourceTimes) {
+                    int i = 0;
+                    System.out.println("eventSourceTime " + i + " : " + et);
+                    i++;
+                }
+            }
+            assertTrue("Completion listener runnable was not executed", success);
+
+        } catch (InterruptedException e) {
+            // falls through
+            e.printStackTrace();
+        }
+
+        assertEquals("Received an unexpected number of events", 1, receivedEvents.size());
+        assertEquals("Unexpected results", "Retry Test Successful", receivedEvents.get(0));
+    }
+    
+    public void testDelayRetrySse(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 
         final List<String> receivedEvents = new ArrayList<String>();
         final List<String> eventSourceTimes = new ArrayList<String>();

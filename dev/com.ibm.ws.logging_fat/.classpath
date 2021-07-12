@@ -5,6 +5,7 @@
 	<classpathentry kind="src" path="test-applications/broken-servlet/src"/>
 	<classpathentry kind="src" path="test-applications/ffdc-servlet/src"/>
 	<classpathentry kind="src" path="test-applications/logger-servlet/src"/>
+	<classpathentry kind="src" path="test-applications/tbasic-servlet/src"/>
 	<classpathentry kind="src" path="test-applications/missing-feature-servlet/src"/>
 	<classpathentry kind="src" path="test-bundles/message.source.handler/src"/>
 	<classpathentry kind="src" path="test-bundles/sample.source.handler/src"/>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -47,6 +47,10 @@ public interface ClientEJBFactory {
      * ensure that stubs for pre-EJB 3 modules are generated with as much
      * compatibility with RMIC as we can. <p>
      *
+     * Starting with Jakarta EE 9 / Enterprise Beans 4.0 all remote bean
+     * interfaces are RMIC compatible so an application at EE 9 or later
+     * should not use this method; UnsupportedOperationException will be thrown.
+     *
      * @param appName name of the client application.
      *
      * @return Set of EJB interface class names that require compatibility with RMIC.
@@ -62,14 +66,14 @@ public interface ClientEJBFactory {
      *
      * All parameters must be non-null. <p>
      *
-     * @param appName name of the application containing the EJB.
-     * @param beanName beanName or ejb-link, including module information.
+     * @param appName       name of the application containing the EJB.
+     * @param beanName      beanName or ejb-link, including module information.
      * @param interfaceName component home or business interface of EJB.
      *
      * @return a reference to the EJB object specified.
      *
      * @exception RemoteException is thrown when the specified EJB cannot
-     *                be found or a failure occurs creating an instance.
+     *                                be found or a failure occurs creating an instance.
      **/
     RemoteObjectInstance create(String appName, String beanName, String interfaceName) throws RemoteException;
 
@@ -82,15 +86,15 @@ public interface ClientEJBFactory {
      *
      * All parameters must be non-null. <p>
      *
-     * @param appName name of the application containing the EJB.
-     * @param moduleName name of the module containing the EJB.
-     * @param beanName name of the specific EJB.
+     * @param appName       name of the application containing the EJB.
+     * @param moduleName    name of the module containing the EJB.
+     * @param beanName      name of the specific EJB.
      * @param interfaceName component home or business interface of EJB.
      *
      * @return a reference to the EJB object specified.
      *
      * @exception RemoteException is thrown when the specified EJB cannot
-     *                be found or a failure occurs creating an instance.
+     *                                be found or a failure occurs creating an instance.
      **/
     RemoteObjectInstance create(String appName, String moduleName, String beanName, String interfaceName) throws RemoteException;
 
@@ -108,14 +112,14 @@ public interface ClientEJBFactory {
      * considered an ambiguous reference, and an EJBException will
      * be thrown. <p>
      *
-     * @param appName name of the application containing the EJB.
-     * @param beanName name of the specific EJB.
+     * @param appName       name of the application containing the EJB.
+     * @param beanName      name of the specific EJB.
      * @param interfaceName component home or business interface of EJB.
      *
      * @return a reference to the EJB object specified.
      *
      * @exception RemoteException is thrown when the specified EJB cannot
-     *                be found or a failure occurs creating an instance.
+     *                                be found or a failure occurs creating an instance.
      **/
     RemoteObjectInstance findByBeanName(String appName, String beanName, String interfaceName) throws RemoteException;
 
@@ -133,13 +137,13 @@ public interface ClientEJBFactory {
      * interface, this is considered an ambiguous reference, and an
      * EJBException will be thrown. <p>
      *
-     * @param appName name of the application containing the EJB.
+     * @param appName       name of the application containing the EJB.
      * @param interfaceName component home or business interface of EJB.
      *
      * @return a reference to the EJB object specified.
      *
      * @exception RemoteException is thrown when the specified EJB cannot
-     *                be found or a failure occurs creating an instance.
+     *                                be found or a failure occurs creating an instance.
      **/
     RemoteObjectInstance findByInterface(String appName, String interfaceName) throws RemoteException;
 }

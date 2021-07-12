@@ -78,7 +78,7 @@ public class BasicConfigTests extends FATServletClient {
 
     @ClassRule
     public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP12, MicroProfileActions.MP13, MicroProfileActions.MP14, MicroProfileActions.MP33,
-                                                             MicroProfileActions.MP40);
+                                                             MicroProfileActions.MP41);
 
     @Server(SERVER_NAME)
     @TestServlets({

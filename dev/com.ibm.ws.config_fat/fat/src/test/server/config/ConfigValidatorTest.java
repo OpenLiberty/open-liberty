@@ -44,9 +44,10 @@ public class ConfigValidatorTest {
         LibertyFileManager.renameLibertyFile(server.getMachine(),
                                              server.getInstallRoot() + "/lib/" + jarName,
                                              server.getInstallRoot() + "/lib/" + jarName + ".bak");
-        server.copyFileToLibertyInstallRoot("lib", "validator/" + jarName);
 
         try {
+            server.copyFileToLibertyInstallRoot("lib", "validator/" + jarName);
+
             server.setServerStartTimeout(SERVER_START_TIMEOUT);
 
             server.startServer("goodSignature.log", true, true, false);

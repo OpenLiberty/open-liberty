@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,7 +22,6 @@ import javax.xml.namespace.QName;
 import org.apache.cxf.headers.Header;
 import org.apache.cxf.helpers.CastUtils;
 import org.apache.cxf.jaxws.context.WrappedMessageContext;
-import org.apache.cxf.ws.addressing.AddressingProperties;
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
 import org.apache.cxf.ws.addressing.Names;
 import org.w3c.dom.Element;
@@ -30,6 +29,7 @@ import org.w3c.dom.Element;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.jaxws.wsat.Constants;
+import com.ibm.ws.wsat.cxf.utils.WSATCXFUtils;
 import com.ibm.ws.wsat.service.Protocol;
 
 /**
@@ -85,11 +85,10 @@ public class WSATControlUtil {
         Map<String, String> wsatProperties = WSATControlUtil.getInstance().getPropertiesMap(headers);
         String ctxID = wsatProperties.get(Constants.WS_WSAT_CTX_REF.getLocalPart());
         String partID = wsatProperties.get(Constants.WS_WSAT_PART_REF.getLocalPart());
-        AddressingProperties addressProp = (AddressingProperties) wmc
-                        .get(org.apache.cxf.ws.addressing.JAXWSAConstants.SERVER_ADDRESSING_PROPERTIES_INBOUND);
-        EndpointReferenceType replyTo = addressProp.getReplyTo();
-        EndpointReferenceType faultTo = addressProp.getFaultTo();
-        EndpointReferenceType from = addressProp.getFrom();
+        Object addressProp = wmc.get(org.apache.cxf.ws.addressing.JAXWSAConstants.SERVER_ADDRESSING_PROPERTIES_INBOUND);
+        EndpointReferenceType replyTo = WSATCXFUtils.getReplyTo(addressProp);
+        EndpointReferenceType faultTo = WSATCXFUtils.getFaultTo(addressProp);
+        EndpointReferenceType from = WSATCXFUtils.getFrom(addressProp);
         for (Header h : headers) {
             Element ele = (Element) h.getObject();
             QName name = WSATControlUtil.getInstance().createQNameFromElement(ele);

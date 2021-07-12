@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.jaxrs.fat.jaxrsclient;
 
@@ -82,6 +82,9 @@ public class JaxRSClient extends HttpServlet {
         System.out.println("Header name: " + headerName);
         String jwtBuilder = request.getParameter("jwtBuilder");
         System.out.println("JWT Builder name: " + jwtBuilder);
+        String skipApiChecks = request.getParameter("skipApiValidation");
+        skipApiChecks = (skipApiChecks == null) ? "false" : contextSet;
+        System.out.println("Skip API Checks - used when we're testing with the \"test\" tokenEndpoint and not the \"product\" tokenEndpoint: " + skipApiChecks);
 
         Enumeration<String> v = request.getParameterNames();
         while (v.hasMoreElements()) {
@@ -105,64 +108,66 @@ public class JaxRSClient extends HttpServlet {
         pw.print("*******************  Start of JaxRSClient output  ******************* \r\n");
 
         // Tests for api's - if context is not set, the api's should NOT throw an NPE, returning null is fine!
-        try {
-            if (contextSet.equals("false")) {
-                // If we're in an unprotected app, none of the values should be set
-                if (accessTokenFromSubject == null && tokenTypeFromSubject == null && scopesFromSubject == null
-                        && accessTokenExpirationTimeFromSubject == null && idTokenFromSubject == null) {
-                    System.out.println("All values in subject are null as they should be" + "\n");
-                    // make sure api's all work with no context - they should return null (which we'll check
-                    // in the junit test class.
-                    String[] apiList = new String[] { "getAccessToken", "getAccessTokenType", "getAccessTokenExpirationTime", "getScopes", "getIdToken" };
+        if (skipApiChecks.equals("false")) {
+            try {
+                if (contextSet.equals("false")) {
+                    // If we're in an unprotected app, none of the values should be set
+                    if (accessTokenFromSubject == null && tokenTypeFromSubject == null && scopesFromSubject == null
+                            && accessTokenExpirationTimeFromSubject == null && idTokenFromSubject == null) {
+                        System.out.println("All values in subject are null as they should be" + "\n");
+                        // make sure api's all work with no context - they should return null (which we'll check
+                        // in the junit test class.
+                        String[] apiList = new String[] { "getAccessToken", "getAccessTokenType", "getAccessTokenExpirationTime", "getScopes", "getIdToken" };
 
-                    for (String api : apiList) {
-                        runApi(pw, response, api);
+                        for (String api : apiList) {
+                            runApi(pw, response, api);
+                        }
+                        return;
+                    } else {
+                        String printString = "one of: accessToken, tokenType, scopes, expiration time, or id_token, was NOT null in the subject and should have been";
+                        System.out.println(printString + "\n");
+                        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, printString);
+                        return;
                     }
-                    return;
                 } else {
-                    String printString = "one of: accessToken, tokenType, scopes, expiration time, or id_token, was NOT null in the subject and should have been";
-                    System.out.println(printString + "\n");
-                    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, printString);
-                    return;
+                    // we should have a subject, so make sure that the api's return the values that we manually find in the subject
+                    if (!accessTokenFromSubject.equals(runApi(pw, response, "getAccessToken"))) {
+                        String printString = "getAccessToken did NOT Match what test app found in the subject";
+                        System.out.println(printString);
+                        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, printString);
+                        return;
+                    }
+                    if (!tokenTypeFromSubject.equals(runApi(pw, response, "getAccessTokenType"))) {
+                        String printString = "getAccessTokenType did NOT Match what test app found in the subject";
+                        System.out.println(printString);
+                        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, printString);
+                        return;
+                    }
+                    if (!isExpirationWithinLimit(accessTokenExpirationTimeFromSubject, runApi(pw, response, "getAccessTokenExpirationTime"), EXP_TIME_TOLERANCE_SEC)) {
+                        String printString = "getAccessTokenExpirationTime did NOT Match what test app found in the subject";
+                        System.out.println(printString);
+                        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, printString);
+                        return;
+                    }
+                    if (!scopesFromSubject.equals(runApi(pw, response, "getScopes"))) {
+                        String printString = "getScopes did NOT Match what test app found in the subject";
+                        System.out.println(printString);
+                        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, printString);
+                        return;
+                    }
+                    if (!idTokenFromSubject.equals(runApi(pw, response, "getIdToken"))) {
+                        String printString = "getIdToken did NOT Match what test app found in the subject";
+                        System.out.println(printString);
+                        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, printString);
+                        return;
+                    }
                 }
-            } else {
-                // we should have a subject, so make sure that the api's return the values that we manually find in the subject
-                if (!accessTokenFromSubject.equals(runApi(pw, response, "getAccessToken"))) {
-                    String printString = "getAccessToken did NOT Match what test app found in the subject";
-                    System.out.println(printString);
-                    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, printString);
-                    return;
-                }
-                if (!tokenTypeFromSubject.equals(runApi(pw, response, "getAccessTokenType"))) {
-                    String printString = "getAccessTokenType did NOT Match what test app found in the subject";
-                    System.out.println(printString);
-                    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, printString);
-                    return;
-                }
-                if (!isExpirationWithinLimit(accessTokenExpirationTimeFromSubject, runApi(pw, response, "getAccessTokenExpirationTime"), EXP_TIME_TOLERANCE_SEC)) {
-                    String printString = "getAccessTokenExpirationTime did NOT Match what test app found in the subject";
-                    System.out.println(printString);
-                    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, printString);
-                    return;
-                }
-                if (!scopesFromSubject.equals(runApi(pw, response, "getScopes"))) {
-                    String printString = "getScopes did NOT Match what test app found in the subject";
-                    System.out.println(printString);
-                    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, printString);
-                    return;
-                }
-                if (!idTokenFromSubject.equals(runApi(pw, response, "getIdToken"))) {
-                    String printString = "getIdToken did NOT Match what test app found in the subject";
-                    System.out.println(printString);
-                    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, printString);
-                    return;
-                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println("Caught an exception calling a PropagationHelper API. " + e);
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
+                return;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Caught an exception calling a PropagationHelper API. " + e);
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());
-            return;
         }
 
         // decide which values we'll pass on the call to the protected app
@@ -195,38 +200,38 @@ public class JaxRSClient extends HttpServlet {
             String localResponse = null;
             Client client = ClientBuilder.newClient();
             switch (where) {
-                case Constants.PROPAGATE_TOKEN_STRING_TRUE:
-                    System.out.println("Set the propagation handler property (" + Constants.OAUTH_HANDLER + ") - string true");
-                    client.property(Constants.OAUTH_HANDLER, "true");
-                    break;
-                case Constants.PROPAGATE_TOKEN_STRING_FALSE:
-                    System.out.println("Set the propagation handler property (" + Constants.OAUTH_HANDLER + ") - string false");
-                    client.property(Constants.OAUTH_HANDLER, "false");
-                    break;
-                case Constants.PROPAGATE_TOKEN_BOOLEAN_TRUE:
-                    System.out.println("Set the propagation handler property (" + Constants.OAUTH_HANDLER + ") - boolean true");
-                    client.property(Constants.OAUTH_HANDLER, true);
-                    break;
-                case Constants.PROPAGATE_TOKEN_BOOLEAN_FALSE:
-                    System.out.println("Set the propagation handler property (" + Constants.OAUTH_HANDLER + ") - boolean false");
-                    client.property(Constants.OAUTH_HANDLER, false);
-                    break;
-                case Constants.PROPAGATE_JWT_TOKEN_STRING_TRUE:
-                    System.out.println("Set the propagation handler property (" + Constants.JWT_HANDLER + ") - string true");
-                    client.property(Constants.JWT_HANDLER, "true");
-                    break;
-                case Constants.PROPAGATE_JWT_TOKEN_STRING_FALSE:
-                    System.out.println("Set the propagation handler property (" + Constants.JWT_HANDLER + ") - string false");
-                    client.property(Constants.JWT_HANDLER, "false");
-                    break;
-                case Constants.PROPAGATE_JWT_TOKEN_BOOLEAN_TRUE:
-                    System.out.println("Set the propagation handler property (" + Constants.JWT_HANDLER + ") - boolean true");
-                    client.property(Constants.JWT_HANDLER, true);
-                    break;
-                case Constants.PROPAGATE_JWT_TOKEN_BOOLEAN_FALSE:
-                    System.out.println("Set the propagation handler property (" + Constants.JWT_HANDLER + ") - boolean false");
-                    client.property(Constants.JWT_HANDLER, false);
-                    break;
+            case Constants.PROPAGATE_TOKEN_STRING_TRUE:
+                System.out.println("Set the propagation handler property (" + Constants.OAUTH_HANDLER + ") - string true");
+                client.property(Constants.OAUTH_HANDLER, "true");
+                break;
+            case Constants.PROPAGATE_TOKEN_STRING_FALSE:
+                System.out.println("Set the propagation handler property (" + Constants.OAUTH_HANDLER + ") - string false");
+                client.property(Constants.OAUTH_HANDLER, "false");
+                break;
+            case Constants.PROPAGATE_TOKEN_BOOLEAN_TRUE:
+                System.out.println("Set the propagation handler property (" + Constants.OAUTH_HANDLER + ") - boolean true");
+                client.property(Constants.OAUTH_HANDLER, true);
+                break;
+            case Constants.PROPAGATE_TOKEN_BOOLEAN_FALSE:
+                System.out.println("Set the propagation handler property (" + Constants.OAUTH_HANDLER + ") - boolean false");
+                client.property(Constants.OAUTH_HANDLER, false);
+                break;
+            case Constants.PROPAGATE_JWT_TOKEN_STRING_TRUE:
+                System.out.println("Set the propagation handler property (" + Constants.JWT_HANDLER + ") - string true");
+                client.property(Constants.JWT_HANDLER, "true");
+                break;
+            case Constants.PROPAGATE_JWT_TOKEN_STRING_FALSE:
+                System.out.println("Set the propagation handler property (" + Constants.JWT_HANDLER + ") - string false");
+                client.property(Constants.JWT_HANDLER, "false");
+                break;
+            case Constants.PROPAGATE_JWT_TOKEN_BOOLEAN_TRUE:
+                System.out.println("Set the propagation handler property (" + Constants.JWT_HANDLER + ") - boolean true");
+                client.property(Constants.JWT_HANDLER, true);
+                break;
+            case Constants.PROPAGATE_JWT_TOKEN_BOOLEAN_FALSE:
+                System.out.println("Set the propagation handler property (" + Constants.JWT_HANDLER + ") - boolean false");
+                client.property(Constants.JWT_HANDLER, false);
+                break;
             }
 
             //String beforeJwtFromSubject = jwtFromSubject;
@@ -285,23 +290,23 @@ public class JaxRSClient extends HttpServlet {
                     printSubjectParts("updated-", response);
                     //String afterJwtFromSubject = jwtFromSubject;
                     String afterIssuedJwtFromSubject = issuedJwtFromSubject;
-//                    if (beforeJwtFromSubject == null && afterJwtFromSubject == null) {
-//                        pw.println("RP's JWT in subject is the same before and after the Injecter was invoked.");
-//                        pw.println("RP's JWT in subject check: passed");
-//                    } else {
-//                        if (beforeJwtFromSubject == null || afterJwtFromSubject == null) {
-//                            pw.println("RP's JWT in subject is NOT the same before and after the Injecter was invoked.");
-//                            pw.println("RP's JWT in subject check: failed");
-//                        } else {
-//                            if (beforeJwtFromSubject.equals(afterJwtFromSubject)) {
-//                                pw.println("RP's JWT in subject is the same before and after the Injecter was invoked.");
-//                                pw.println("RP's JWT in subject check: passed");
-//                            } else {
-//                                pw.println("RP's JWT in subject is NOT the same before and after the Injecter was invoked.");
-//                                pw.println("RP's JWT in subject check: failed");
-//                            }
-//                        }
-//                    }
+                    //                    if (beforeJwtFromSubject == null && afterJwtFromSubject == null) {
+                    //                        pw.println("RP's JWT in subject is the same before and after the Injecter was invoked.");
+                    //                        pw.println("RP's JWT in subject check: passed");
+                    //                    } else {
+                    //                        if (beforeJwtFromSubject == null || afterJwtFromSubject == null) {
+                    //                            pw.println("RP's JWT in subject is NOT the same before and after the Injecter was invoked.");
+                    //                            pw.println("RP's JWT in subject check: failed");
+                    //                        } else {
+                    //                            if (beforeJwtFromSubject.equals(afterJwtFromSubject)) {
+                    //                                pw.println("RP's JWT in subject is the same before and after the Injecter was invoked.");
+                    //                                pw.println("RP's JWT in subject check: passed");
+                    //                            } else {
+                    //                                pw.println("RP's JWT in subject is NOT the same before and after the Injecter was invoked.");
+                    //                                pw.println("RP's JWT in subject check: failed");
+                    //                            }
+                    //                        }
+                    //                    }
 
                     if (beforeIssuedJwtFromSubject == null && afterIssuedJwtFromSubject == null) {
                         pw.println("RP's Issued JWT in subject is the same before and after the Injecter was invoked.");
@@ -383,17 +388,17 @@ public class JaxRSClient extends HttpServlet {
                 } else {
                     pw.println("RP and RS Issued JWT's DO NOT match");
                 }
-//                } else if(beforeJwtFromSubject != null) {
-//                	if (localResponse.contains(beforeJwtFromSubject)) {
-//                        pw.println("RP and RS JWT's match");
-//                    } else {
-//                        pw.println("RP and RS JWT's DO NOT match");
-//                    }
-//                }
-//                else {
-//                	pw.println("RP and RS Issued JWT's DO NOT match");
-//                    pw.println("RP and RS JWT's DO NOT match");
-//                }
+                //                } else if(beforeJwtFromSubject != null) {
+                //                	if (localResponse.contains(beforeJwtFromSubject)) {
+                //                        pw.println("RP and RS JWT's match");
+                //                    } else {
+                //                        pw.println("RP and RS JWT's DO NOT match");
+                //                    }
+                //                }
+                //                else {
+                //                	pw.println("RP and RS Issued JWT's DO NOT match");
+                //                    pw.println("RP and RS JWT's DO NOT match");
+                //                }
             }
 
             // just return the output from the called app - junit client will vaidate

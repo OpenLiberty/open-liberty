@@ -260,8 +260,9 @@ public class HungRequestTiming {
 
         List<String> lines = server.findStringsInFileInLibertyServerRoot("TRAS0114W", MESSAGE_LOG);
         int previous = lines.size();
-        String line1 = lines.get(previous - 1);
         assertTrue("No Hung detection warning found!!!", (previous > 0));
+
+        String line1 = lines.get(previous - 1);
         CommonTasks.writeLogMsg(Level.INFO, "----> Hung Request Warning 1 : " + line1);
         assertTrue("Hung warning does not show that request was hung for 2s as expected..", isCorrectDuration(line1, 2000));
 
@@ -285,7 +286,6 @@ public class HungRequestTiming {
 
         String line2 = lines.get(current - 1);
         CommonTasks.writeLogMsg(Level.INFO, "----> Hung RequestWarning 2 : " + line2);
-
         assertTrue("Hung warning does not show that request was hung for 3s as expected..", isCorrectDuration(line2, 3000));
 
         CommonTasks.writeLogMsg(Level.INFO, "***** Dynamic Update of HungRequestThreshold works as expected! *****");
@@ -356,6 +356,16 @@ public class HungRequestTiming {
 
         List<String> lines = server.findStringsInFileInLibertyServerRoot("TRAS0114W", MESSAGE_LOG);
         int previous = lines.size();
+        // Retry the request again, since sometimes in the SOE builds, the feature update takes
+        // some time, and the request is created before the feature is properly updated,
+        // and the requestTiming warning does not registered in time.
+        if (previous == 0) {
+            CommonTasks.writeLogMsg(Level.INFO, "$$$$ -----> Retry the request because no hung request warning found!");
+            createRequest(4000);
+            server.waitForStringInLog("TRAS0114W", 30000);
+            lines = server.findStringsInFileInLibertyServerRoot("TRAS0114W", MESSAGE_LOG);
+            previous = lines.size();
+        }
         assertTrue("No Hung detection warning found!!!", (previous > 0));
 
         CommonTasks.writeLogMsg(Level.INFO, "----> Hung Request Warning : \n" + lines.get(0));
@@ -406,6 +416,17 @@ public class HungRequestTiming {
         server.waitForStringInLog("TRAS0114W", 90000);
         List<String> lines = server.findStringsInFileInLibertyServerRoot("TRAS0114W", MESSAGE_LOG);
         int previous = lines.size();
+        // Retry the request again, since sometimes in the SOE builds, the feature update takes
+        // some time, and the request is created before the feature is properly updated,
+        // and the requestTiming warning does not registered in time.
+        if (previous == 0) {
+            CommonTasks.writeLogMsg(Level.INFO, "$$$$ -----> Retry the request because no hung request warning found!");
+            createRequest(4000);
+            finishTimeOfFirstRequest = System.currentTimeMillis();
+            server.waitForStringInLog("TRAS0114W", 90000);
+            lines = server.findStringsInFileInLibertyServerRoot("TRAS0114W", MESSAGE_LOG);
+            previous = lines.size();
+        }
         CommonTasks.writeLogMsg(Level.INFO, "---> No. of Hung warnings : " + previous);
         assertTrue("Hung detection warning found!!!", (previous > 0));
         for (String line : lines) {

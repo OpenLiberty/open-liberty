@@ -10,8 +10,8 @@
  *******************************************************************************/
 
 configurations {
-    runPebble  { extendsFrom testcontainers }
-    runBoulder { extendsFrom testcontainers }
+    runPebble
+    runBoulder
 }
 
 dependencies {
@@ -20,7 +20,8 @@ dependencies {
                'org.shredzone.acme4j:acme4j-client:2.7',
                'org.shredzone.acme4j:acme4j-utils:2.7',
                project(':com.ibm.ws.security.acme'),
-               project(':com.ibm.ws.crypto.certificateutil')
+               project(':com.ibm.ws.crypto.certificateutil'),
+               project(':io.openliberty.org.testcontainers')
                
   runPebble    project(':io.openliberty.org.apache.commons.logging')
                
@@ -28,7 +29,6 @@ dependencies {
   
 }
 
-addRequiredLibraries.dependsOn addTestcontainers
 addRequiredLibraries.dependsOn addJakartaTransformer
 
 autoFVT.doLast {

@@ -33,8 +33,10 @@ import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.authentication.AuthenticationConstants;
 import com.ibm.ws.security.common.jwk.impl.JwKRetriever;
+import com.ibm.ws.security.jwt.utils.JweHelper;
 import com.ibm.ws.security.openidconnect.clients.common.AttributeToSubject;
 import com.ibm.ws.security.openidconnect.clients.common.ClientConstants;
 import com.ibm.ws.security.openidconnect.clients.common.ConvergedClientConfig;
@@ -54,11 +56,14 @@ import com.ibm.wsspi.ssl.SSLSupport;
 public class Jose4jUtil {
 
     private static final TraceComponent tc = Tr.register(Jose4jUtil.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
-    private static final String SIGNATURE_ALG_HS256 = "HS256";
-    private static final String SIGNATURE_ALG_RS256 = "RS256";
+    private static final String SIGNATURE_ALG_HS = "HS";
+    private static final String SIGNATURE_ALG_RS = "RS";
+    private static final String SIGNATURE_ALG_ES = "ES";
     private static final String SIGNATURE_ALG_NONE = "none";
     private final SSLSupport sslSupport;
     private static final JtiNonceCache jtiCache = new JtiNonceCache(); // Jose4jUil has only one instance
+
+    private static boolean issuedBetaMessage = false;
 
     // set org.jose4j.jws.default-allow-none to true to behave the same as old jwt
     // allow signatureAlgorithme as none
@@ -90,13 +95,16 @@ public class Jose4jUtil {
         String refreshToken = tokens.get(Constants.REFRESH_TOKEN);
         String clientId = clientConfig.getClientId();
         try {
-            if (tokenStr == null) {
+            if (tokenStr == null || tokenStr.isEmpty()) {
                 // This is for ID Token only
                 Tr.error(tc, "OIDC_CLIENT_IDTOKEN_REQUEST_FAILURE", new Object[] { clientId, clientConfig.getTokenEndpointUrl() });
                 return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
             }
+            if (JweHelper.isJwe(tokenStr) && isRunningBetaMode()) {
+                tokenStr = JweHelper.extractJwsFromJweToken(tokenStr, clientConfig, null);
+            }
 
-            JwtContext jwtContext = parseJwtWithoutValidation(tokenStr);
+            JwtContext jwtContext = parseJwtWithoutValidation(tokenStr, clientConfig);
             JwtClaims jwtClaims = parseJwtWithValidation(clientConfig, tokenStr, jwtContext, oidcClientRequest);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "post jwtClaims: " + jwtClaims + " firstPass jwtClaims=" + jwtContext.getJwtClaims());
@@ -146,7 +154,7 @@ public class Jose4jUtil {
                 String customCacheKey = oidcClientRequest.getAndSetCustomCacheKeyValue(); //username + tokenStr.toString().hashCode();
                 customProperties.put(ClientConstants.CREDENTIAL_STORING_TIME_MILLISECONDS, Long.valueOf(storingTime));
                 if (clientConfig.isIncludeCustomCacheKeyInSubject()) {
-                  customProperties.put(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY, customCacheKey);
+                    customProperties.put(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY, customCacheKey);
                 }
                 customProperties.put(AuthenticationConstants.INTERNAL_ASSERTION_KEY, Boolean.TRUE); // TODO checking?
             }
@@ -181,6 +189,19 @@ public class Jose4jUtil {
         return oidcResult;
     }
 
+    boolean isRunningBetaMode() {
+        if (!ProductInfo.getBetaEdition()) {
+            return false;
+        } else {
+            // Running beta exception, issue message if we haven't already issued one for this class
+            if (!issuedBetaMessage) {
+                Tr.info(tc, "BETA: A beta method has been invoked for the class " + this.getClass().getName() + " for the first time.");
+                issuedBetaMessage = !issuedBetaMessage;
+            }
+            return true;
+        }
+    }
+
     String getIdToken(Map<String, String> tokens, ConvergedClientConfig clientConfig) {
         if (tokens == null) {
             return null;
@@ -196,103 +217,15 @@ public class Jose4jUtil {
         return clientConfig.getUseAccessTokenAsIdToken();
     }
 
-    /**
-     * @param customProperties
-     * @param accessToken
-     * @param idToken
-     * @param clientConfig
-     * @throws Exception
-     */
-    //    private void addJWTTokenToSubject(Hashtable<String, Object> customProperties, OidcTokenImpl idToken, OidcClientConfig clientConfig) throws Exception {
-    //        //
-    //        if (clientConfig.jwtRef() != null && idToken != null) {
-    //            String[] claimsToCopy = clientConfig.getJwtClaims();
-    //            Map<String, Object> claimsToCopyMap = new HashMap<String, Object>();
-    //            //claimsToCopyMap.put(ClientConstants.SUB, idToken.getSubject()); //always copy this
-    //            if (claimsToCopy != null && claimsToCopy.length > 0) {
-    //                for (String claim : claimsToCopy) {
-    //                    Object v;
-    //                    if ((v = idToken.getClaim(claim)) != null) {
-    //                        claimsToCopyMap.put(claim, v);
-    //                    }
-    //                }
-    //            } else {
-    //                String subToAdd = null;
-    //                String sub = getSubjectClaim(clientConfig);
-    //                if (sub == null) {
-    //                    sub = ClientConstants.SUB;
-    //                }
-    //                try {
-    //                    subToAdd = (String) idToken.getClaim(sub);
-    //
-    //                } catch (ClassCastException cce) {
-    //                    subToAdd = null;
-    //                }
-    //                if (subToAdd != null) {
-    //                    claimsToCopyMap.put(sub, subToAdd);
-    //                }
-    //            }
-    //            buildJWTTokenAndAddToSubject(clientConfig, claimsToCopyMap, customProperties);
-    //        }
-    //    }
-    //
-    //    protected String getSubjectClaim(OidcClientConfig clientConfig) {
-    //        String sub = null;
-    //
-    //        sub = clientConfig.getUserIdentifier();
-    //        if (sub == null) {
-    //            sub = clientConfig.getUserIdentityToCreateSubject(); //default is "sub"
-    //        }
-    //        return sub;
-    //    }
-    //
-    //    protected String getSubClaimFromIdToken(OidcClientConfig clientConfig, OidcTokenImpl idToken) {
-    //        String sub = null;
-    //        String subToAdd = null;
-    //
-    //        sub = clientConfig.getUserIdentifier();
-    //        if (sub == null) {
-    //            sub = clientConfig.getUserIdentityToCreateSubject(); //default is "sub"
-    //        }
-    //        if (sub != null) {
-    //            try {
-    //                subToAdd = (String) idToken.getClaim(sub);
-    //
-    //            } catch (ClassCastException cce) {
-    //                subToAdd = null;
-    //            }
-    //        }
-    //        return subToAdd;
-    //    }
-
-    /**
-     * @param clientConfig
-     * @param claimsFromAnother
-     * @param customProperties
-     * @throws Exception
-     */
-    //    private void buildJWTTokenAndAddToSubject(OidcClientConfig clientConfig, Map claimsFromAnother, Hashtable<String, Object> customProperties) throws Exception {
-    //
-    //        JwtToken token = JwtBuilder.create(clientConfig.jwtRef()).claim(claimsFromAnother).buildJwt();
-    //        String jwt = token.compact();//JwtBuilder.create(clientConfig.jwtRef()).claim(idToken.getAllClaims()).buildJwt().compact();
-    //        if (jwt != null) {
-    //            customProperties.put(ClientConstants.ISSUED_JWT_TOKEN, jwt);
-    //        }
-    //
-    //    }
-
     //Just parse without validation for now
-    protected static JwtContext parseJwtWithoutValidation(String jwtString) throws Exception {
+    protected static JwtContext parseJwtWithoutValidation(String jwtString, ConvergedClientConfig clientConfig) throws Exception {
         JwtConsumer firstPassJwtConsumer = new JwtConsumerBuilder()
                 .setSkipAllValidators()
                 .setDisableRequireSignature()
                 .setSkipSignatureVerification()
                 .build();
 
-        JwtContext jwtContext = firstPassJwtConsumer.process(jwtString);
-
-        return jwtContext;
-
+        return firstPassJwtConsumer.process(jwtString);
     }
 
     @FFDCIgnore({ Exception.class })
@@ -352,10 +285,13 @@ public class Jose4jUtil {
     protected Key getVerifyKey(ConvergedClientConfig clientConfig, String kid, String x5t) throws Exception {
         Key keyValue = null;
         String signatureAlgorithm = clientConfig.getSignatureAlgorithm();
-        if (SIGNATURE_ALG_HS256.equals(signatureAlgorithm)) {
+        if (signatureAlgorithm == null) {
+            return keyValue;
+        }
+        if (signatureAlgorithm.startsWith(SIGNATURE_ALG_HS)) {
             //keyValue = Base64Coder.getBytes(clientConfig.getSharedKey());
             keyValue = new HmacKey(clientConfig.getSharedKey().getBytes(ClientConstants.CHARSET));
-        } else if (SIGNATURE_ALG_RS256.equals(signatureAlgorithm)) {
+        } else if (signatureAlgorithm.startsWith(SIGNATURE_ALG_RS) || signatureAlgorithm.startsWith(SIGNATURE_ALG_ES)) {
             if (clientConfig.getJwkEndpointUrl() != null || clientConfig.getJsonWebKey() != null) {
                 JwKRetriever retriever = createJwkRetriever(clientConfig);
                 keyValue = retriever.getPublicKeyFromJwk(kid, x5t, "sig", clientConfig.getUseSystemPropertiesForHttpClientConnections());
@@ -411,8 +347,10 @@ public class Jose4jUtil {
         String refreshToken = null;
         String clientId = clientConfig.getClientId();
         try {
-
-            JwtContext jwtContext = parseJwtWithoutValidation(jwtString);
+            if (JweHelper.isJwe(jwtString) && isRunningBetaMode()) {
+                jwtString = JweHelper.extractJwsFromJweToken(jwtString, clientConfig, null);
+            }
+            JwtContext jwtContext = parseJwtWithoutValidation(jwtString, clientConfig);
             JwtClaims jwtClaims = parseJwtWithValidation(clientConfig, jwtString, jwtContext, oidcClientRequest);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "jwtClaims: " + jwtClaims);
@@ -442,7 +380,7 @@ public class Jose4jUtil {
             if (accessToken != null) {
                 customProperties.put(Constants.ACCESS_TOKEN, accessToken);
                 if (clientConfig.isIncludeCustomCacheKeyInSubject()) {
-                  customProperties.put(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY, String.valueOf(accessToken.hashCode()));
+                    customProperties.put(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY, String.valueOf(accessToken.hashCode()));
                 }
                 customProperties.put(AuthenticationConstants.INTERNAL_ASSERTION_KEY, Boolean.TRUE);
             }

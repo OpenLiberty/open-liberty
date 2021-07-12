@@ -23,6 +23,15 @@ src: \
 
 fat.project: true
 
+# These features get added programmatically
+tested.features: \
+  restfulwsclient-3.0,\
+  jsonb-2.0,\
+  restfulws-3.0,,\
+  cdi-3.0,\
+  jsonp-2.0
+
+
 -buildpath: \
   com.ibm.websphere.javaee.annotation.1.2;version=latest,\
   com.ibm.websphere.javaee.jaxb.2.2;version=latest,\

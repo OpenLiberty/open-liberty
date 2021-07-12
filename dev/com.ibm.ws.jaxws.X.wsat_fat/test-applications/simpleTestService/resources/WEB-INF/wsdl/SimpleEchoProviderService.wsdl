@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions targetNamespace="http://simpleEchoProvider.impl.testservice.wsat.jaxws.ws.ibm.com/"
+	name="SimpleEchoProviderService" xmlns="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:tns="http://simpleEchoProvider.impl.testservice.wsat.jaxws.ws.ibm.com/"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+	<types>
+		<xsd:schema>
+			<xsd:import namespace="http://simpleEchoProvider.impl.testservice.wsat.jaxws.ws.ibm.com/"
+				schemaLocation="SimpleEchoProviderService_schema1.xsd" />
+		</xsd:schema>
+	</types>
+	<message name="echo">
+		<part name="parameters" element="tns:echo" />
+	</message>
+	<message name="echoResponse">
+		<part name="parameters" element="tns:echoResponse" />
+	</message>
+	<portType name="SimpleEchoProvider">
+		<operation name="echo">
+			<input message="tns:echo" />
+			<output message="tns:echoResponse" />
+		</operation>
+	</portType>
+	<binding name="SimpleEchoProviderPortBinding" type="tns:SimpleEchoProvider">
+		<soap:binding transport="http://schemas.xmlsoap.org/soap/http"
+			style="document" />
+		<operation name="echo">
+			<soap:operation soapAction="" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+	</binding>
+	<service name="SimpleEchoProviderService">
+		<port name="SimpleEchoProviderPort" binding="tns:SimpleEchoProviderPortBinding">
+			<soap:address location="REPLACE_WITH_ACTUAL_URL" />
+		</port>
+	</service>
+</definitions>
+

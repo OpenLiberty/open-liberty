@@ -1,4 +1,5 @@
 package com.ibm.tx.jta.impl;
+
 /*******************************************************************************
  * Copyright (c) 2007, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
@@ -14,34 +15,28 @@ import javax.resource.spi.work.ExecutionContext;
 import javax.resource.spi.work.WorkCompletedException;
 import javax.transaction.NotSupportedException;
 
-import com.ibm.tx.jta.*;
+import com.ibm.tx.jta.TransactionInflowManager;
 import com.ibm.tx.util.TMHelper;
-import com.ibm.tx.util.logging.FFDCFilter;
+import com.ibm.ws.ffdc.FFDCFilter;
 
-public class TransactionInflowManagerImpl implements TransactionInflowManager
-{
+public class TransactionInflowManagerImpl implements TransactionInflowManager {
     private static TransactionInflowManager _instance;
 
-    private TransactionInflowManagerImpl(){}
+    private TransactionInflowManagerImpl() {
+    }
 
-    public static synchronized TransactionInflowManager instance()
-    {
-        if (_instance == null)
-        {
+    public static synchronized TransactionInflowManager instance() {
+        if (_instance == null) {
             _instance = new TransactionInflowManagerImpl();
         }
 
         return _instance;
     }
 
-    public void associate(ExecutionContext ec, String inflowCoordinatorName) throws WorkCompletedException
-    {
-        try
-        {
+    public void associate(ExecutionContext ec, String inflowCoordinatorName) throws WorkCompletedException {
+        try {
             TMHelper.checkTMState();
-        }
-        catch(NotSupportedException e)
-        {
+        } catch (NotSupportedException e) {
             FFDCFilter.processException(e, "com.ibm.tx.jta.impl.TxExecutionContextHandler.associate", "105", this);
             throw new WorkCompletedException(e);
         }
@@ -49,13 +44,13 @@ public class TransactionInflowManagerImpl implements TransactionInflowManager
         TxExecutionContextHandler.instance().associate(ec, inflowCoordinatorName);
     }
 
-    public void dissociate()
-    {
+    @Override
+    public void dissociate() {
         TxExecutionContextHandler.doDissociate();
     }
 
-    public XATerminator getXATerminator(String inflowCoordinatorName)
-    {
+    @Override
+    public XATerminator getXATerminator(String inflowCoordinatorName) {
         return TxXATerminator.instance(inflowCoordinatorName);
     }
 }

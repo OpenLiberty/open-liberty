@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import javax.enterprise.inject.UnsatisfiedResolutionException;
+import javax.enterprise.inject.spi.CDI;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -43,7 +44,7 @@ public class TestServlet extends HttpServlet {
         String unregString = "";
 
         try {
-            ExtensionRegisteredBean ub = javax.enterprise.inject.spi.CDI.current().select(ExtensionRegisteredBean.class).get();
+            ExtensionRegisteredBean ub = CDI.current().select(ExtensionRegisteredBean.class).get();
             unregString = "Found unregistered bean";
         } catch (UnsatisfiedResolutionException e) {
             unregString = "Could not find unregistered bean";

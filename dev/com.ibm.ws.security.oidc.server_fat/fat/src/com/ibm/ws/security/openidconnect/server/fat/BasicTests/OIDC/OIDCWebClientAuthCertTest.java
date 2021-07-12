@@ -67,7 +67,7 @@ public class OIDCWebClientAuthCertTest extends genericWebClientAuthCertTest {
 
         testSettings = new TestSettings();
         testSettings.setProviderType(Constants.OIDC_OP);
-        setupSSLClientKeyStore("./securitykeys/commonLDAPUser1.jks", "security", "jks");
+        setupSSLClientKeyStore("./securitykeys/commonLDAPUser1.p12", "Liberty", "pkcs12");
         testOPServer = commonSetUp("com.ibm.ws.security.openidconnect.server-1.0_fat.cert", "server_no_cert.xml", Constants.OIDC_OP, extraApps, Constants.DO_NOT_USE_DERBY, extraMsgs, null, Constants.OIDC_OP, true, true, tokenType, certType);
         testSettings.setAdminUser("LDAPUser1");
         testSettings.setAdminPswd("LDAPUser1pwd");

@@ -41,9 +41,16 @@
          
          
          <AD id="signatureAlgorithm" required="false" type="String" name="%signatureAlgorithm" description="%signatureAlgorithm.desc" default="HS256">
-            	<Option label="%tokenSignAlgorithm.NONE" value="none" />
-            	<Option label="%tokenSignAlgorithm.RS256" value="RS256" />
-            	<Option label="%tokenSignAlgorithm.HS256" value="HS256" />
+             <Option label="%tokenSignAlgorithm.NONE" value="none" />
+             <Option label="%tokenSignAlgorithm.RS256" value="RS256" />
+             <Option label="%tokenSignAlgorithm.RS384" value="RS384" />
+             <Option label="%tokenSignAlgorithm.RS512" value="RS512" />
+             <Option label="%tokenSignAlgorithm.HS256" value="HS256" />
+             <Option label="%tokenSignAlgorithm.HS384" value="HS384" />
+             <Option label="%tokenSignAlgorithm.HS512" value="HS512" />
+             <Option label="%tokenSignAlgorithm.ES256" value="ES256" />
+             <Option label="%tokenSignAlgorithm.ES384" value="ES384" />
+             <Option label="%tokenSignAlgorithm.ES512" value="ES512" />
          </AD>
   		 
   		 <AD id="includeIdTokenInSubject" name="%includeIdTokenInSubject" description="%includeIdTokenInSubject.desc"  required="false" type="Boolean" default="true"/>

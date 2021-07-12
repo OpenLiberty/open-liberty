@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2019 IBM Corporation and others.
+ * Copyright (c) 2002, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,8 +11,8 @@
 
 package com.ibm.ws.recoverylog.spi;
 
-import com.ibm.tx.util.logging.Tr;
-import com.ibm.tx.util.logging.TraceComponent;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 
 //------------------------------------------------------------------------------
 //Class: RecoveryDirectorFactory
@@ -26,7 +26,7 @@ public class RecoveryDirectorFactory {
      * WebSphere RAS TraceComponent registration
      */
     private static final TraceComponent tc = Tr.register(RecoveryDirectorFactory.class,
-                                                         TraceConstants.TRACE_GROUP, null);
+                                                         TraceConstants.TRACE_GROUP, TraceConstants.NLS_FILE);
 
     /**
      * The single instance of the RecoveryDirector implementation class.

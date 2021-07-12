@@ -10,7 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs.fat.linkheader;
 
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 import java.util.Set;
@@ -49,43 +53,17 @@ public class ClientTestServlet extends FATServlet {
 
     @Test
     public void testResponseMultipleLinkHeaders() throws Exception {
-
-        Response response = client.target(URI_CONTEXT_ROOT).path("application/resource/multipleheaders").request(MediaType.APPLICATION_JSON_TYPE).get();
-
-        assertEquals(200, response.getStatus());
-
-        System.out.println("Headers:");
-        System.out.println(response.getHeaders());
-
-        Set<Link> links = response.getLinks();
-        assertEquals(3, links.size());
-
-        System.out.println("Links:");
-        for (Link link : links) {
-            System.out.println(link);
-            if (link.toString().contains("first")) {
-                assertEquals("<http://test>;rel=\"first\"", link.toString());
-            } else if (link.toString().contains("next")) {
-                assertEquals("<http://test>;rel=\"next\"", link.toString());
-            } else if (link.toString().contains("last")) {
-                assertEquals("<http://test>;rel=\"last\"", link.toString());
-            } else {
-                fail("invalid link returned");
-            }
-        }
-
-        assertEquals("<http://test>;rel=\"first\"", response.getLink("first").toString());
-        assertEquals("<http://test>;rel=\"next\"", response.getLink("next").toString());
-        assertEquals("<http://test>;rel=\"last\"", response.getLink("last").toString());
+        test("application/resource/multipleheaders");
     }
 
     @Test
     public void testResponseSingleLinkHeaderMultipleLinks() throws Exception {
+        test("application/resource/singleheader");
+    }
 
-        Response response = client.target(URI_CONTEXT_ROOT)
-                        .path("application/resource/singleheader")
-                        .request(MediaType.APPLICATION_JSON_TYPE)
-                        .get();
+    private void test(String path) throws Exception {
+
+        Response response = client.target(URI_CONTEXT_ROOT).path(path).request(MediaType.APPLICATION_JSON_TYPE).get();
 
         assertEquals(200, response.getStatus());
 
@@ -99,18 +77,24 @@ public class ClientTestServlet extends FATServlet {
         for (Link link : links) {
             System.out.println(link);
             if (link.toString().contains("first")) {
-                assertEquals("<http://test>;rel=\"first\"", link.toString());
+                assertThat(link.toString(), allOf(startsWith("<http://test>;"),
+                                                  endsWith("rel=\"first\"")));
             } else if (link.toString().contains("next")) {
-                assertEquals("<http://test>;rel=\"next\"", link.toString());
+                assertThat(link.toString(), allOf(startsWith("<http://test>;"),
+                                                  endsWith("rel=\"next\"")));
             } else if (link.toString().contains("last")) {
-                assertEquals("<http://test>;rel=\"last\"", link.toString());
+                assertThat(link.toString(), allOf(startsWith("<http://test>;"),
+                                                  endsWith("rel=\"last\"")));
             } else {
                 fail("invalid link returned");
             }
         }
 
-        assertEquals("<http://test>;rel=\"first\"", response.getLink("first").toString());
-        assertEquals("<http://test>;rel=\"next\"", response.getLink("next").toString());
-        assertEquals("<http://test>;rel=\"last\"", response.getLink("last").toString());
+        assertThat(response.getLink("first").toString(), allOf(startsWith("<http://test>;"),
+                                                               endsWith("rel=\"first\"")));
+        assertThat(response.getLink("next").toString(), allOf(startsWith("<http://test>;"),
+                                                               endsWith("rel=\"next\"")));
+        assertThat(response.getLink("last").toString(), allOf(startsWith("<http://test>;"),
+                                                               endsWith("rel=\"last\"")));
     }
 }

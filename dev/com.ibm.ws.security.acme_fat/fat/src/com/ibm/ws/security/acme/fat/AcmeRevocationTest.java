@@ -161,9 +161,17 @@ public class AcmeRevocationTest {
 			 * status as revoked. Cycle the server and we should now see that
 			 * the certificate is replaced since it was revoked.
 			 */
+			long markStop = System.currentTimeMillis();
 			stopServer();
+			
+			// account for possible time from Boulder: welcome-to-the-purge, purge expected in: 153s
+			long sleepFor = (153 * 1000) - (System.currentTimeMillis() - markStop);
+			if (sleepFor > 0) {
+				Log.info(AcmeSimpleTest.class, methodName, "Before restarting server, sleep for " + sleepFor);
+				Thread.sleep(sleepFor);
+			}
 			server.startServer();
-			server.waitForStringInLog("CWPKI2059I"); // Detected cert revoked!
+			assertNotNull("Did not find revoke in the logs: CWPKI2059I", server.waitForStringInLog("CWPKI2059I")); // Detected cert revoked!
 			AcmeFatUtils.waitForAcmeToCreateCertificate(server);
 			AcmeFatUtils.waitForSslEndpoint(server);
 			Certificate[] certificates2 = AcmeFatUtils.assertAndGetServerCertificate(server, boulder);

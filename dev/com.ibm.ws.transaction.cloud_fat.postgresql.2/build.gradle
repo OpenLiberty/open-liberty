@@ -12,7 +12,8 @@
 dependencies {
   requiredLibs project(":com.ibm.ws.tx.embeddable"),
                project(":com.ibm.ws.transaction.cloud_fat.base"),
-               project(':io.openliberty.org.apache.commons.logging')
+               project(':io.openliberty.org.apache.commons.logging'),
+               project(':io.openliberty.org.testcontainers')
 }
 
 File sharedDir = new File(autoFvtDir, 'publish/shared/resources')
@@ -54,7 +55,6 @@ task copyCommonFiles {
 addRequiredLibraries.dependsOn copyFAT
 addRequiredLibraries.dependsOn copyCommonFiles
 addRequiredLibraries.dependsOn copyJdbcDrivers
-addRequiredLibraries.dependsOn copyDatabaseRotationDrivers
 addRequiredLibraries.dependsOn addJakartaTransformer
 
 jar {

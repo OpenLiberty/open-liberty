@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,10 +14,12 @@ import static com.ibm.ws.jaxrs20.fat.TestUtils.getPort;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.IOException;
+
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -39,13 +41,13 @@ import componenttest.topology.impl.LibertyServer;
  * the MP OT mapper.
  */
 @RunWith(FATRunner.class)
-@SkipForRepeat("EE9_FEATURES") // currently broken due to multiple issues
+@SkipForRepeat("EE9_FEATURES") // MP Open Tracing doesn't support EE9 until MP 5
 public class ExceptionMappingWithOTTest {
 
     @Server("com.ibm.ws.jaxrs.fat.exceptionMappingWithOT")
     public static LibertyServer server;
 
-    private static HttpClient client;
+    private static CloseableHttpClient client;
     private static final String testWar = "exceptionMappingWithOT";
 
     @BeforeClass
@@ -78,12 +80,12 @@ public class ExceptionMappingWithOTTest {
 
     @Before
     public void getHttpClient() {
-        client = new DefaultHttpClient();
+        client = HttpClientBuilder.create().build();
     }
 
     @After
-    public void resetHttpClient() {
-        client.getConnectionManager().shutdown();
+    public void resetHttpClient() throws IOException {
+        client.close();
     }
 
     private String getBaseTestUri() {

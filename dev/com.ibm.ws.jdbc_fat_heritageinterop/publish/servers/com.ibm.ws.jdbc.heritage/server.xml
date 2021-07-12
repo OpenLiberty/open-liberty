@@ -36,8 +36,8 @@
 
   <authData id="dbAuth" user="dbuser" password="{xor}Oz0vKDs=" />
 
-  <dataSource id="DefaultDataSource" containerAuthDataRef="dbAuth" queryTimeout="1m21s" supplementalJDBCTrace="true" type="javax.sql.XADataSource" validationTimeout="18s">
-    <jdbcDriver libraryRef="JDBCLib" javax.sql.XADataSource="test.jdbc.heritage.driver.HDDataSource"/>
+  <dataSource id="DefaultDataSource" containerAuthDataRef="dbAuth" queryTimeout="1m21s" supplementalJDBCTrace="true" validationTimeout="18s">
+    <jdbcDriver libraryRef="JDBCLib" javax.sql.XADataSource="test.jdbc.heritage.driver.HDXADataSource"/>
     <properties databaseName="memory:testdb" createDatabase="create"
                 driverType="fake" longDataCacheSize="4" responseBuffering="maybe"
                 supportsCatalog="false" supportsNetworkTimeout="false" supportsReadOnly="false" supportsSchema="false" supportsTypeMap="false"/>
@@ -50,7 +50,9 @@
     <identifyException as="test.jdbc.heritage.driver.helper.HeritageDBFeatureUnavailableException" errorCode="40960"/>
   </dataSource>
 
-  <dataSource jndiName="jdbc/helperDefaulted" containerAuthDataRef="dbAuth" type="javax.sql.DataSource">
+  <dataSource jndiName="jdbc/helperDefaulted" containerAuthDataRef="dbAuth" connectionSharing="MatchOriginalRequest"
+              type="javax.sql.DataSource">
+    <connectionManager enableSharingForDirectLookups="false"/>
     <jdbcDriver libraryRef="JDBCLib" javax.sql.DataSource="test.jdbc.heritage.driver.HDDataSource"/>
     <properties databaseName="memory:testdb" createDatabase="create"
                 supportsNetworkTimeout="false" supportsSchema="false" supportsTypeMap="false"/>
@@ -65,6 +67,13 @@
     <identifyException as="test.jdbc.heritage.driver.helper.HeritageDBFeatureUnavailableException" sqlState="0A00H"/>
     <identifyException as="Unsupported" errorCode="10"/>
     <identifyException as="Unsupported" sqlState="HDISA"/>
+  </dataSource>
+
+  <dataSource jndiName="jdbc/one-phase" containerAuthDataRef="dbAuth" connectionSharing="MatchCurrentState"
+              isolationLevel="TRANSACTION_READ_COMMITTED" type="javax.sql.DataSource">
+    <jdbcDriver libraryRef="JDBCLib" javax.sql.DataSource="test.jdbc.heritage.driver.HDDataSource"/>
+    <properties databaseName="memory:testdb" createDatabase="create"/>
+    <heritageSettings helperClass="com.ibm.websphere.rsadapter.GenericDataStoreHelper" replaceExceptions="false"/>
   </dataSource>
 
   <javaPermission codeBase="${shared.resource.dir}derby/derby.jar" className="java.security.AllPermission"/>

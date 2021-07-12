@@ -51,7 +51,8 @@ dependencies {
                'org.apache.httpcomponents:httpmime:4.5.12',
                'org.brotli:dec:0.1.2',
                'xalan:xalan:2.7.2',
-               'xerces:xercesImpl:2.11.0'
+               'xerces:xercesImpl:2.11.0',
+               'xml-apis:xml-apis:1.4.01'
 }
 
 addRequiredLibraries.dependsOn addJakartaTransformer
@@ -160,6 +161,6 @@ autoFVT.doLast {
   copy {
     from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, 'securitykeys')
     into new File(autoFvtDir, 'securitykeys')
-    include 'commonLDAPUser1.jks', 'commonSslClientDefault.jks'
+    include 'commonLDAPUser1.p12', 'commonSslClientDefault.jks'
   }
 }

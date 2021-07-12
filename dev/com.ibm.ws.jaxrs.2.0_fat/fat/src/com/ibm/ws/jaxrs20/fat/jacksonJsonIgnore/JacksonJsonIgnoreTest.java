@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,9 +18,9 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -32,18 +32,16 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
-@SkipForRepeat("EE9_FEATURES") // currently broken due to multiple issues
 public class JacksonJsonIgnoreTest {
 
     @Server("com.ibm.ws.jaxrs.fat.jacksonJsonIgnore")
     public static LibertyServer server;
 
-    private static HttpClient client;
+    private static CloseableHttpClient client;
     private static final String jacksonwar = "jacksonJsonIgnore";
     private static final String jackson = "publish/shared/resources/jackson2x/";
 
@@ -72,12 +70,12 @@ public class JacksonJsonIgnoreTest {
 
     @Before
     public void getHttpClient() {
-        client = new DefaultHttpClient();
+        client = HttpClientBuilder.create().build();
     }
 
     @After
-    public void resetHttpClient() {
-        client.getConnectionManager().shutdown();
+    public void resetHttpClient() throws IOException {
+        client.close();
     }
 
     private final String mappedUri = getBaseTestUri(jacksonwar, "pojo", "test");

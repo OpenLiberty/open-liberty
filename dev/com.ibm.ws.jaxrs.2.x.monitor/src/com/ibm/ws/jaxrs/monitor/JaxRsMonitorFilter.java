@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,16 +14,17 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.Provider;
 
 import com.ibm.websphere.csi.J2EEName;
@@ -48,14 +49,25 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
     // jaxRSCountByName is a MeterCollection that will hold the RESTStats MXBean for each RESTful
     // resource method
     @PublishedMetric
-    public MeterCollection<REST_Stats> jaxRsCountByName = new MeterCollection<REST_Stats>("REST",this);
+    public final MeterCollection<REST_Stats> jaxRsCountByName = new MeterCollection<REST_Stats>("REST",this);
     
     // appMetricInfos is a hashmap used to store information for runtime and cleanup at 
     // application stop time.
-    ConcurrentHashMap<String,RestMetricInfo> appMetricInfos = new ConcurrentHashMap<String,RestMetricInfo>();
-    
+    static final ConcurrentHashMap<String,RestMetricInfo> appMetricInfos = new ConcurrentHashMap<String,RestMetricInfo>();
+    static final Set<JaxRsMonitorFilter> instances = new HashSet<>();
     private static final String START_TIME = "Start_Time";
-    
+    private static final String CMD = "CMD";
+
+    @PostConstruct
+    public void postConstruct() {
+    	instances.add(this);
+    }
+
+    @PreDestroy
+    public void preDestroy() {
+    	instances.remove(this);
+    }
+
     /**
      * Method : filter(ContainerRequestContext)
      * 
@@ -68,11 +80,11 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
      * 
      */
     @Override
-    public void filter(ContainerRequestContext reqCtx) throws IOException {
-    	
+    public void filter(ContainerRequestContext reqCtx) throws IOException {	
     	// Store the start time in the ContainerRequestContext that can be accessed
     	// in the response filter method.  
         reqCtx.setProperty(START_TIME, System.nanoTime());
+        reqCtx.setProperty(CMD, ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData());
           	
     }
     /**
@@ -116,7 +128,7 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
 			}
 			fullMethodName = fullMethodName + ")";
 
-			ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+			ComponentMetaData cmd = (ComponentMetaData) reqCtx.getProperty(CMD);
 			String appName = getAppName(cmd);
 			String modName = getModName(cmd);
 			String keyPrefix = createKeyPrefix(appName, modName);
@@ -254,7 +266,7 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
     }
     
     
-    protected RestMetricInfo getMetricInfo(String appName) {
+    static RestMetricInfo getMetricInfo(String appName) {
     	RestMetricInfo rMetricInfo = appMetricInfos.get(appName);
     	if (rMetricInfo == null) {
     		rMetricInfo = new RestMetricInfo();
@@ -275,7 +287,7 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
     
     // Clean up the resources that were created for each resource method within
     // an application
-    protected void cleanApplication(String appName) {   	
+    static void cleanApplication(String appName) {   	
     	RestMetricInfo rMetricInfo = appMetricInfos.get(appName);
     	if (rMetricInfo != null) {
     		HashSet<String> keys = rMetricInfo.getKeys();
@@ -284,7 +296,8 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
         		String key = null;
         		while (keyIterator.hasNext()) {
         			key = keyIterator.next();
-        			jaxRsCountByName.remove(key);      			
+        			for (JaxRsMonitorFilter filter : instances)
+        				filter.jaxRsCountByName.remove(key);      			
         		}
     			
     		}
@@ -292,7 +305,7 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
     	}
     }
     
-    class  RestMetricInfo {
+    static class RestMetricInfo {
     	boolean isEar = false;
     	HashSet<String> keys = new HashSet<String>();
     	

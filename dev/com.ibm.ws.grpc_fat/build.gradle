@@ -54,7 +54,7 @@ configurations {
   storeAppWarLibs
 }
 
-def grpcVersion = '1.36.1'
+def grpcVersion = '1.38.1'
 
 dependencies {
  

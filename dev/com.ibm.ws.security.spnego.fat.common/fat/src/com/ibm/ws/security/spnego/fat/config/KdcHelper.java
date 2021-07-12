@@ -127,9 +127,9 @@ public abstract class KdcHelper {
     /**
      * Creates a default user, sets a corresponding SPN, and creates the keytab file for the appropriate KDC host.
      *
-     * @param spnRealm         - Realm name to use in the SPN that will be created. If null, no realm will be appended to the SPN.
+     * @param spnRealm - Realm name to use in the SPN that will be created. If null, no realm will be appended to the SPN.
      * @param useCanonicalName - Boolean indicating whether the full canonical name of the host should be used for the SPN.
-     * @param optionalCmdArgs  - Optional map of command line arguments and values to pass to the script to create the user and keytab.
+     * @param optionalCmdArgs - Optional map of command line arguments and values to pass to the script to create the user and keytab.
      * @throws Exception
      */
     public abstract void createSpnAndKeytab(String spnRealm, boolean useCanonicalName, Map<String, String> optionalCmdArgs) throws Exception;
@@ -258,7 +258,7 @@ public abstract class KdcHelper {
      *
      * @param filePath
      * @param origStrRegex - Regular expression representing the value to be replaced.
-     * @param newStr       - The new string value that will replace each occurrence of origStrRegex that is found.
+     * @param newStr - The new string value that will replace each occurrence of origStrRegex that is found.
      * @throws Exception
      */
     public void replaceStringInFile(String filePath, String origStrRegex, String newStr) throws Exception {
@@ -548,8 +548,8 @@ public abstract class KdcHelper {
      * 2. If that is not possible because of an exception, we will write it at the winnt folder.
      * 3. If that is not possible then we will create the winnt folder and copy the files there.
      *
-     * @param file:            the file (krbconf or keytab) to be copied
-     * @param FilePath:        Current path where the file exist
+     * @param file: the file (krbconf or keytab) to be copied
+     * @param FilePath: Current path where the file exist
      * @param DefaultFilePath: Default path where we will copy these files.
      * @return if the copy was sucessful.
      * @throws Exception
@@ -809,8 +809,8 @@ public abstract class KdcHelper {
      * the variable is replaced with the server root path before extracting the keytab location.
      *
      * @param line - String expected to contain the keytab location in property=value format. If the value portion
-     *                 contains the ${server.config.dir} variable, it is replaced with the server root path. The value
-     *                 portion is then set as the keytab file path.
+     *            contains the ${server.config.dir} variable, it is replaced with the server root path. The value
+     *            portion is then set as the keytab file path.
      * @throws Exception
      */
     private void setKeytabFilePath(String line) throws Exception {
@@ -868,7 +868,7 @@ public abstract class KdcHelper {
      * Get an SSH ClientSession to the specified machine.
      *
      * @param sshClient The SSH client.
-     * @param machine   The machine to connect to.
+     * @param machine The machine to connect to.
      * @return The session.
      * @throws IOException If there was an error getting an SSH session to the machine.
      */
@@ -883,8 +883,8 @@ public abstract class KdcHelper {
      * Execute the command over the SSH session.
      *
      * @param sshSession The SSH ClientSession.
-     * @param command    The command to execute.
-     * @param timeout    Timeout for the command, in seconds.
+     * @param command The command to execute.
+     * @param timeout Timeout for the command, in seconds.
      * @return The ProgramOutput.
      * @throws IOException If there was an error executing the command.
      */
@@ -975,7 +975,7 @@ public abstract class KdcHelper {
     /**
      * Determine whether the remote file exists.
      *
-     * @param sshSession     The SSH session to use to check for the file.
+     * @param sshSession The SSH session to use to check for the file.
      * @param remoteFileName The remote file name.
      * @return True if the file exists, false otherwise.
      * @throws IOException If there was an error checking the file.
@@ -990,7 +990,7 @@ public abstract class KdcHelper {
      *
      * @param sshSession The SSH session to use to copy the file.
      * @param remoteFile The remote file to copy.
-     * @param localFile  The local file to copy to.
+     * @param localFile The local file to copy to.
      * @return True if the copy succeeded, false otherwise.
      */
     protected boolean copyFromRemoteFile(ClientSession sshSession, String remoteFile, String localFile) {
@@ -1028,7 +1028,7 @@ public abstract class KdcHelper {
      * Copy a local file to a remote file.
      *
      * @param sshSession The SSH session to use to copy the file.
-     * @param localFile  The local file to copy from.
+     * @param localFile The local file to copy from.
      * @param remoteFile The remote file to copy to.
      * @return True if the copy succeeded, false otherwise.
      */

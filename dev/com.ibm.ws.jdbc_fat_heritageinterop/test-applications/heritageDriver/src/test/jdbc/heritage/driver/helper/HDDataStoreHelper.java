@@ -41,6 +41,7 @@ import com.ibm.websphere.ce.cm.StaleStatementException;
 
 import test.jdbc.heritage.driver.HDConnection;
 import test.jdbc.heritage.driver.HDDataSource;
+import test.jdbc.heritage.driver.HDXADataSource;
 import test.jdbc.heritage.driver.HeritageDBConnection;
 import test.jdbc.heritage.driver.HeritageDBDoesNotImplementItException;
 
@@ -79,7 +80,8 @@ public class HDDataStoreHelper {
             throw new UnsupportedOperationException("This DataStoreHelper only works with fake JDBC drivers, not " + driverType);
 
         String dataSourceClassName = props.getProperty("dataSourceClass");
-        if (!HDDataSource.class.getName().equals(dataSourceClassName))
+        if (!HDDataSource.class.getName().equals(dataSourceClassName)
+            && !HDXADataSource.class.getName().equals(dataSourceClassName))
             throw new UnsupportedOperationException("This DataStoreHelper is incapable of supporting data source class " + dataSourceClassName);
 
         int longDataCacheSize = Integer.parseInt(props.getProperty("longDataCacheSize"));

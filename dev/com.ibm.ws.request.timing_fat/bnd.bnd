@@ -20,8 +20,11 @@ fat.project: true
 tested.features: \
 	servlet-5.0,\
 	pages-3.0,\
-	expressionLanguage-4.0
+	expressionLanguage-4.0, \
+        jsp-2.3, \
+        el-3.0
 
 -buildpath: \
 	com.ibm.ws.request.timing;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.0;version=latest
+

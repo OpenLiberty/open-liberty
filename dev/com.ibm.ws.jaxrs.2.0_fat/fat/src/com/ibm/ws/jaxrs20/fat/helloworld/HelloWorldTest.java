@@ -28,8 +28,8 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
@@ -96,9 +96,16 @@ public class HelloWorldTest {
     }
 
     @Test
-    @SkipForRepeat("EE9_FEATURES")
     public void testInvalidCharset() throws Exception {
-        assertEquals(415, runGetMethodInvalidCharset("/helloworld/rest/helloworld"));
+        int status = runPostMethodInvalidCharset("/helloworld/rest/helloworld");
+        // the spec doesn't mention charsets in terms of matching to resources...
+        // RESTEasy says an invalid charset is a client error, and returns 400
+        // CXF says it doesn't match any resource methods and returns 415
+        if (JakartaEE9Action.isActive()) {
+            assertEquals(400, status);
+        } else {
+            assertEquals(415, status);
+        }
     }
 
     private StringBuilder runGetMethod(int exprc, String requestUri, String testOut)
@@ -152,7 +159,7 @@ public class HelloWorldTest {
         }
     }
 
-    private int runGetMethodInvalidCharset(String requestUri)
+    private int runPostMethodInvalidCharset(String requestUri)
                     throws IOException {
         URL url = new URL("http://" + getHost() + ":" + getPort() + requestUri);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -161,7 +168,8 @@ public class HelloWorldTest {
             con.setDoOutput(true);
             con.setUseCaches(false);
             con.setRequestProperty("Content-Type", "text/plain; charset=invalid");
-            con.setRequestMethod("GET");
+            con.setRequestMethod("POST");
+            con.getOutputStream().write("Hello World!".getBytes());
 
             return con.getResponseCode();
         } finally {

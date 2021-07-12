@@ -629,26 +629,28 @@ public class FATRunner extends BlockJUnit4ClassRunner {
 
         ExpectedFFDC ffdc = m.getAnnotation(ExpectedFFDC.class);
         if (ffdc != null) {
+            String[] exceptionClasses = ffdc.value();
             if (JakartaEE9Action.isActive()) {
-                String[] exceptionClasses = ffdc.value();
+                String[] jakarta9ReplacementExceptionClasses = new String[exceptionClasses.length];
+                System.arraycopy(exceptionClasses, 0, jakarta9ReplacementExceptionClasses, 0, exceptionClasses.length);
+                int index = 0;
                 for (String exceptionClass : exceptionClasses) {
                     if (ee9Helper == null) {
                         ee9Helper = new EE9PackageReplacementHelper();
                     }
-                    exceptionClass = ee9Helper.replacePackages(exceptionClass);
-                    annotationListPerClass.add(exceptionClass);
+                    jakarta9ReplacementExceptionClasses[index++] = ee9Helper.replacePackages(exceptionClass);
                 }
-            } else if (RepeatTestFilter.isAnyRepeatActionActive()) {
+                exceptionClasses = jakarta9ReplacementExceptionClasses;
+            }
+            if (RepeatTestFilter.isAnyRepeatActionActive()) {
                 for (String repeatAction : ffdc.repeatAction()) {
                     if (repeatAction.equals(ExpectedFFDC.ALL_REPEAT_ACTIONS) || RepeatTestFilter.isRepeatActionActive(repeatAction)) {
-                        String[] exceptionClasses = ffdc.value();
                         for (String exceptionClass : exceptionClasses) {
                             annotationListPerClass.add(exceptionClass);
                         }
                     }
                 }
             } else {
-                String[] exceptionClasses = ffdc.value();
                 for (String exceptionClass : exceptionClasses) {
                     annotationListPerClass.add(exceptionClass);
                 }

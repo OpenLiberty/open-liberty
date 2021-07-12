@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2016 IBM Corporation and others.
+ * Copyright (c) 2004, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.ejb.ApplicationException;
+import javax.ejb.EJBException;
 
 import com.ibm.ejs.container.BeanMetaData;
 import com.ibm.ejs.container.ContainerProperties;
@@ -47,10 +48,10 @@ import com.ibm.wsspi.ejbcontainer.JITDeploy;
  * application may have multiple EJB jars, and therefore require multiple module
  * metadata implementation objects.
  */
-public class EJBModuleMetaDataImpl extends MetaDataImpl
-                implements com.ibm.websphere.csi.EJBModuleMetaData
-{
+public class EJBModuleMetaDataImpl extends MetaDataImpl implements com.ibm.websphere.csi.EJBModuleMetaData {
     private static final TraceComponent tc = Tr.register(EJBModuleMetaDataImpl.class, "EJBContainer", "com.ibm.ejs.container.container");
+    private static final boolean isJakarta = EJBException.class.getCanonicalName().startsWith("jakarta");
+    private static final int RMIC_COMPATIBLE_ALL = -1;
 
     /**
      * The data used to initialize the module. This field will be null as soon
@@ -157,6 +158,7 @@ public class EJBModuleMetaDataImpl extends MetaDataImpl
     /**
      * A map of the <interceptors></interceptors> meta data the is read from
      * the ejb-jar.xml file for this module. For example:
+     *
      * <pre>
      * <interceptors id="interceptors_1">
      * <interceptor id="interceptor_1">
@@ -173,6 +175,7 @@ public class EJBModuleMetaDataImpl extends MetaDataImpl
      * </interceptor>
      * </interceptors>
      * </pre>
+     *
      * The map key is the loaded Class object of the interceptor class
      * as identified by the <interceptor-class> stanza. The map value is a
      * EnumMap< InterceptorMethodKind, List<Method>> > where InterceptorMethodKind
@@ -367,8 +370,7 @@ public class EJBModuleMetaDataImpl extends MetaDataImpl
      * (i.e. with deferred initialization this happens over time, all beans are not
      * necessarily initialized when the application first starts).
      */
-    public EJBModuleMetaDataImpl(int slotCnt, EJBApplicationMetaData ejbAMD)
-    {
+    public EJBModuleMetaDataImpl(int slotCnt, EJBApplicationMetaData ejbAMD) {
         super(slotCnt);
         ivEJBApplicationMetaData = ejbAMD;
     }
@@ -382,38 +384,31 @@ public class EJBModuleMetaDataImpl extends MetaDataImpl
      *         otherwise, Boolean.TRUE if the exception should cause rollback
      *         or Boolean.FALSE if it should not
      */
-    public Boolean getApplicationExceptionRollback(Throwable t) // F743-14982
-    {
+    public Boolean getApplicationExceptionRollback(Throwable t) {
         Class<?> klass = t.getClass();
         ApplicationException ae = getApplicationException(klass);
         Boolean rollback = null;
 
-        if (ae != null)
-        {
+        if (ae != null) {
             rollback = ae.rollback();
         }
         // Prior to EJB 3.1, the specification did not explicitly state that
         // application exception status was inherited, so for efficiency, we
         // assumed it did not.  The EJB 3.1 specification clarified this but
         // used a different default.
-        else if (!ContainerProperties.EE5Compatibility) // F743-14982CdRv
-        {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            {
+        else if (!ContainerProperties.EE5Compatibility) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "searching for inherited application exception for " + klass.getName());
             }
 
-            for (Class<?> superClass = klass.getSuperclass(); superClass != Throwable.class; superClass = superClass.getSuperclass())
-            {
+            for (Class<?> superClass = klass.getSuperclass(); superClass != Throwable.class; superClass = superClass.getSuperclass()) {
                 ae = getApplicationException(superClass);
-                if (ae != null)
-                {
+                if (ae != null) {
                     // The exception class itself has already been checked.
                     // If a super-class indicates that application exception
                     // status is not inherited, then the exception is not
                     // an application exception, so leave rollback null.
-                    if (ae.inherited())
-                    {
+                    if (ae.inherited()) {
                         rollback = ae.rollback();
                     }
                     break;
@@ -433,23 +428,18 @@ public class EJBModuleMetaDataImpl extends MetaDataImpl
      * @return the settings, or null if no application-exception was provided
      *         for the specified class.
      */
-    private ApplicationException getApplicationException(Class<?> klass) // F743-14982
-    {
+    private ApplicationException getApplicationException(Class<?> klass) {
         ApplicationException result = null;
-        if (ivApplicationExceptionMap != null)
-        {
+        if (ivApplicationExceptionMap != null) {
             result = ivApplicationExceptionMap.get(klass.getName());
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() && result != null)
-            {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() && result != null) {
                 Tr.debug(tc, "found application-exception for " + klass.getName()
                              + ", rollback=" + result.rollback() + ", inherited=" + result.inherited());
             }
         }
-        if (result == null)
-        {
+        if (result == null) {
             result = klass.getAnnotation(ApplicationException.class);
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() && result != null)
-            {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() && result != null) {
                 Tr.debug(tc, "found ApplicationException for " + klass.getName()
                              + ", rollback=" + result.rollback() + ", inherited=" + result.inherited());
             }
@@ -489,19 +479,15 @@ public class EJBModuleMetaDataImpl extends MetaDataImpl
      * Return an Array of fully initialized ComponentMetaDatas for this modules.
      */
     @Override
-    public ComponentMetaData[] getComponentMetaDatas()
-    {
+    public ComponentMetaData[] getComponentMetaDatas() {
         ComponentMetaData[] initializedComponentMetaDatas = null;
 
-        synchronized (ivEJBApplicationMetaData)
-        {
+        synchronized (ivEJBApplicationMetaData) {
             initializedComponentMetaDatas = new ComponentMetaData[ivNumFullyInitializedBeans];
 
             int i = 0;
-            for (BeanMetaData bmd : ivBeanMetaDatas.values())
-            {
-                if (bmd.fullyInitialized)
-                {
+            for (BeanMetaData bmd : ivBeanMetaDatas.values()) {
+                if (bmd.fullyInitialized) {
                     initializedComponentMetaDatas[i++] = bmd;
                 }
             }
@@ -541,8 +527,7 @@ public class EJBModuleMetaDataImpl extends MetaDataImpl
     /**
      * Return a String with EJB Container's module level runtime config data
      */
-    public String toDumpString()
-    {
+    public String toDumpString() {
         // Get the New Line separator from the Java system property.
         String newLine = AccessController.doPrivileged(new SystemGetPropertyPrivileged("line.separator", "\n"));
         StringBuilder sb = new StringBuilder(toString());
@@ -595,8 +580,7 @@ public class EJBModuleMetaDataImpl extends MetaDataImpl
 
     } //toString
 
-    protected void toString(StringBuilder sb, String nl, String indent)
-    {
+    protected void toString(StringBuilder sb, String nl, String indent) {
         // Empty.
     }
 
@@ -606,8 +590,7 @@ public class EJBModuleMetaDataImpl extends MetaDataImpl
      *
      * @return true if the module was processed by ejbdeploy
      */
-    public boolean isEJBDeployed() // F743-21131
-    {
+    public boolean isEJBDeployed() {
         return ivModuleVersion < BeanMetaData.J2EE_EJB_VERSION_3_0 && !ivEJBInWAR; // F743-21131CodRv
     }
 
@@ -618,9 +601,11 @@ public class EJBModuleMetaDataImpl extends MetaDataImpl
      *
      * @return the RMIC compatibility level
      */
-    public int getRMICCompatible()
-    {
-        return JITDeploy.RMICCompatible;
+    public int getRMICCompatible() {
+        int rmicCompatible = isJakarta ? RMIC_COMPATIBLE_ALL : JITDeploy.RMICCompatible;
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "getRMICCompatible : " + rmicCompatible + (isJakarta ? " (jakarta)" : " (javax)"));
+        return rmicCompatible;
     }
 
     /**
@@ -630,8 +615,7 @@ public class EJBModuleMetaDataImpl extends MetaDataImpl
      *
      * @return desired EJBInterceptorBinding.
      */
-    final public List<EJBInterceptorBinding> getEJBInterceptorBindings(String ejbName) // d367572.9
-    {
+    final public List<EJBInterceptorBinding> getEJBInterceptorBindings(String ejbName) {
         return ivInterceptorBindingMap.get(ejbName);
     }
 
@@ -642,8 +626,7 @@ public class EJBModuleMetaDataImpl extends MetaDataImpl
      *
      * @return desired EJBInterceptorBinding.
      */
-    final public List<EJBInterceptorBinding> removeEJBInterceptorBindings(String ejbName) // d367572.9
-    {
+    final public List<EJBInterceptorBinding> removeEJBInterceptorBindings(String ejbName) {
         return ivInterceptorBindingMap.remove(ejbName);
     }
 
@@ -653,14 +636,12 @@ public class EJBModuleMetaDataImpl extends MetaDataImpl
      *
      * @param listener the listener
      */
-    public void addApplicationEventListener(EJBApplicationEventListener listener) // F743-26072
-    {
+    public void addApplicationEventListener(EJBApplicationEventListener listener) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isDebugEnabled())
             Tr.debug(tc, "addApplicationEventListener: " + listener);
 
-        if (ivApplicationEventListeners == null)
-        {
+        if (ivApplicationEventListeners == null) {
             ivApplicationEventListeners = new ArrayList<EJBApplicationEventListener>();
         }
         ivApplicationEventListeners.add(listener);
@@ -673,13 +654,11 @@ public class EJBModuleMetaDataImpl extends MetaDataImpl
      *
      * @param timerBean the list of timer method metadata
      */
-    public void addAutomaticTimerBean(AutomaticTimerBean timerBean) // d604213
-    {
+    public void addAutomaticTimerBean(AutomaticTimerBean timerBean) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "addAutomaticTimerBean: " + timerBean.getBeanMetaData().j2eeName);
 
-        if (ivAutomaticTimerBeans == null)
-        {
+        if (ivAutomaticTimerBeans == null) {
             ivAutomaticTimerBeans = new ArrayList<AutomaticTimerBean>();
         }
 
@@ -696,14 +675,13 @@ public class EJBModuleMetaDataImpl extends MetaDataImpl
      * the application lock as part of deferred EJB initialization.
      *
      * @param bmd is the BeanMetaData object for the EJB that initialization
-     *            just completed.
+     *                just completed.
      *
      * @returns boolean - indicating true if all ejbs have been initialized.
      */
     // d468919 -added entire method.
     // d462512 - log orphan warning message.
-    public void freeResourcesAfterAllBeansInitialized(BeanMetaData bmd)
-    {
+    public void freeResourcesAfterAllBeansInitialized(BeanMetaData bmd) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "freeResourcesAfterAllBeansInitialized: " + bmd.j2eeName + ", " +
@@ -713,10 +691,8 @@ public class EJBModuleMetaDataImpl extends MetaDataImpl
         boolean freeResources = ivNumFullyInitializedBeans == ivBeanMetaDatas.size();
 
         // Free the resources if all beans have been initialized.
-        if (freeResources)
-        {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            {
+        if (freeResources) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "all beans are initialized in module name = " + ivName
                              + ", freeing resources no longer needed");
             }
@@ -736,8 +712,7 @@ public class EJBModuleMetaDataImpl extends MetaDataImpl
      */
     // F54184 F54184.2
     @Override
-    public void setVersionedModuleBaseName(String appBaseName, String modBaseName)
-    {
+    public void setVersionedModuleBaseName(String appBaseName, String modBaseName) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "ModuleName = " + ivName + ", VersionedBaseName = " +
                          appBaseName + "#" + modBaseName);
@@ -764,9 +739,7 @@ public class EJBModuleMetaDataImpl extends MetaDataImpl
      * module uses the same name as the base version name. <p>
      */
     // F54184
-    public boolean isVersionedModule()
-    {
+    public boolean isVersionedModule() {
         return ivVersionedModuleBaseName != null;
     }
 } //EJBModuleMetaDataImpl
-

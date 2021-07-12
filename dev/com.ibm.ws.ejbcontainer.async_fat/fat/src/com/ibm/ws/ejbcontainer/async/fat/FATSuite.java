@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,13 +18,16 @@ import com.ibm.ws.ejbcontainer.async.fat.tests.AsyncConfigTests;
 import com.ibm.ws.ejbcontainer.async.fat.tests.AsyncCoreTests;
 import com.ibm.ws.ejbcontainer.async.fat.tests.AsyncRemoteTests;
 import com.ibm.ws.ejbcontainer.async.fat.tests.AsyncSecureTests;
+import com.ibm.ws.ejbcontainer.async.fat.tests.SingletonPostConstructTest;
+import com.ibm.ws.ejbcontainer.async.fat.tests.SingletonPredestroyTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
                 AsyncConfigTests.class,
                 AsyncCoreTests.class,
                 AsyncRemoteTests.class,
-                AsyncSecureTests.class
+                AsyncSecureTests.class,
+                SingletonPostConstructTest.class,
+                SingletonPredestroyTest.class
 })
-public class FATSuite {
-}
+public class FATSuite {}

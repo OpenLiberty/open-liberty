@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.Set;
 
 import org.eclipse.microprofile.config.Config;
@@ -26,20 +27,23 @@ public class ConfigImpl implements Config {
     private final Set<ConfigSource> configSources = Collections.singleton(new ConfigSourceImpl(this));
     private final Map<String, String> configProperties = new HashMap<>();
     private Set<Object> myPropertiesSet = Collections.synchronizedSet(new HashSet<>());
+    private Properties mySystemProperties = null;
 
     ConfigImpl() {
         if (ConfigProviderResolverImpl.java2SecurityEnabled) {
             AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
-                myPropertiesSet.addAll(System.getProperties().keySet());
+                mySystemProperties = (Properties) System.getProperties().clone();
+                myPropertiesSet.addAll(mySystemProperties.keySet());
                 for (Object key : myPropertiesSet) {
-                    configProperties.put((String) key, System.getProperty((String)key));
+                    configProperties.put((String) key, mySystemProperties.getProperty((String)key));
                 }
                 return null;
             });
         } else {
-            myPropertiesSet.addAll(System.getProperties().keySet());
+            mySystemProperties = (Properties) System.getProperties().clone();
+            myPropertiesSet.addAll(mySystemProperties.keySet());
             for (Object key : myPropertiesSet) {
-                 configProperties.put((String) key, System.getProperty((String)key));
+                 configProperties.put((String) key, mySystemProperties.getProperty((String)key));
             }
         }
         // Add EJBException to the list of wrapped exceptions that are processed by RESTEasy

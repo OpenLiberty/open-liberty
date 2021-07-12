@@ -125,8 +125,7 @@ public class WebContainerRequestState {
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  //306998.15
             logger.logp(Level.FINE, CLASS_NAME,"getAttribute", " name --> " + arg0);
         }
-    	Object obj = _attributes.get(arg0);
-        return obj;
+    	return _attributes.get(arg0);
     }
     
     /* (non-Javadoc)
@@ -139,7 +138,7 @@ public class WebContainerRequestState {
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  //306998.15
             logger.logp(Level.FINE, CLASS_NAME,"removeAttribute", " name --> " + arg0);
         }
-        Object oldValue=_attributes.remove(arg0);
+        _attributes.remove(arg0);
     }
 
     public boolean isInvokedFilters() {

@@ -82,3 +82,5 @@ clean.doLast {
     file('fat/src/com/ibm/ws/wsat/fat/tests').deleteDir()
   }
 }
+
+addRequiredLibraries.dependsOn addJakartaTransformer

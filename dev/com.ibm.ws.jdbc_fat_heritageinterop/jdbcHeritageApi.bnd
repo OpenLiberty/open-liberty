@@ -22,10 +22,10 @@ WS-TraceGroup: jdbcHeritage
 Fragment-Host: com.ibm.ws.jdbc
 
 Export-Package:\
- com.ibm.websphere.appprofile.accessintent,\
- com.ibm.websphere.rsadapter
+ com.ibm.websphere.appprofile.accessintent
 
 Import-Package: *
 
 Private-Package:\
- com.ibm.websphere.ce.cm
+ com.ibm.websphere.ce.cm,\
+ com.ibm.websphere.rsadapter

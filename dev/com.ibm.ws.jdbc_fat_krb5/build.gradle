@@ -11,15 +11,10 @@
 apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 
 dependencies {
-  requiredLibs "org.testcontainers:database-commons:${testcontainersVersion}",
-               "org.testcontainers:db2:${testcontainersVersion}",
-               "org.testcontainers:oracle-xe:${testcontainersVersion}",
-               "org.testcontainers:postgresql:${testcontainersVersion}",
-               "org.testcontainers:jdbc:${testcontainersVersion}"
+  requiredLibs project(':io.openliberty.org.testcontainers')
 }
 
 addRequiredLibraries {
   dependsOn copyJdbcDrivers
   dependsOn addJakartaTransformer
-  dependsOn addTestcontainers
 }

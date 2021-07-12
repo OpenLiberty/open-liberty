@@ -48,6 +48,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.jaxws.jmx.test.fat.util.ClientConnector;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -134,6 +135,7 @@ public class WebServiceMonitorTest {
     }
 
     @Test
+    @AllowedFFDC({"java.lang.IllegalArgumentException","com.ibm.websphere.security.auth.TokenCreationFailedException", "javax.security.auth.login.CredentialException"})
     public void testMonitorEnabled() throws Exception {
         String serviceName = "ConverterService";
         accessServiceWSDL(serviceName);

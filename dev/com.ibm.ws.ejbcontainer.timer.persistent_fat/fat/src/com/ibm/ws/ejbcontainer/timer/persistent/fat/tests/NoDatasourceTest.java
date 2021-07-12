@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,14 +20,18 @@ import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -47,6 +51,9 @@ public class NoDatasourceTest extends FATServletClient {
 
     @Server("com.ibm.ws.ejbcontainer.timer.persistent.fat.NoDatasourceServer")
     public static LibertyServer server;
+
+    @ClassRule
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.timer.persistent.fat.NoDatasourceServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.timer.persistent.fat.NoDatasourceServer")).andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.timer.persistent.fat.NoDatasourceServer"));
 
     @After
     public void cleanUp() throws Exception {
@@ -76,7 +83,7 @@ public class NoDatasourceTest extends FATServletClient {
         WebArchive NoDBNonPersistAutoTimerWeb = ShrinkHelper.buildDefaultApp("NoDBNonPersistAutoTimerWeb.war", "com.ibm.ws.ejbcontainer.timer.nodb.npauto.web.");
         EnterpriseArchive NoDBNonPersistAutoTimerApp = ShrinkWrap.create(EnterpriseArchive.class, "NoDBNonPersistAutoTimerApp.ear");
         NoDBNonPersistAutoTimerApp.addAsModule(NoDBNonPersistAutoTimerEJB).addAsModule(NoDBNonPersistAutoTimerWeb);
-        ShrinkHelper.exportToServer(server, "dropins", NoDBNonPersistAutoTimerApp);
+        ShrinkHelper.exportToServer(server, "dropins", NoDBNonPersistAutoTimerApp, DeployOptions.SERVER_ONLY);
 
         // Wait for the application to start
         assertNotNull("START_NON_PERSIST_AUTO", server.waitForStringInLogUsingMark(START_NON_PERSIST_AUTO));
@@ -108,7 +115,7 @@ public class NoDatasourceTest extends FATServletClient {
         JavaArchive NoDBPersistAutoTimerEJB = ShrinkHelper.buildJavaArchive("NoDBPersistAutoTimerEJB.jar", "com.ibm.ws.ejbcontainer.timer.nodb.pauto.ejb.");
         EnterpriseArchive NoDBPersistAutoTimerApp = ShrinkWrap.create(EnterpriseArchive.class, "NoDBPersistAutoTimerApp.ear");
         NoDBPersistAutoTimerApp.addAsModule(NoDBPersistAutoTimerEJB);
-        ShrinkHelper.exportToServer(server, "dropins", NoDBPersistAutoTimerApp);
+        ShrinkHelper.exportToServer(server, "dropins", NoDBPersistAutoTimerApp, DeployOptions.SERVER_ONLY);
 
         // Verify the application failed to start with correct messages
         assertNotNull(CNTR4020E, server.waitForStringInLogUsingMark(CNTR4020E)); // persistent timers not supported
@@ -143,7 +150,7 @@ public class NoDatasourceTest extends FATServletClient {
         WebArchive NoDBProgrammaticTimerWeb = ShrinkHelper.buildDefaultApp("NoDBProgrammaticTimerWeb.war", "com.ibm.ws.ejbcontainer.timer.nodb.programmatic.web.");
         EnterpriseArchive NoDBProgrammaticTimerApp = ShrinkWrap.create(EnterpriseArchive.class, "NoDBProgrammaticTimerApp.ear");
         NoDBProgrammaticTimerApp.addAsModule(NoDBProgrammaticTimerEJB).addAsModule(NoDBProgrammaticTimerWeb);
-        ShrinkHelper.exportToServer(server, "dropins", NoDBProgrammaticTimerApp);
+        ShrinkHelper.exportToServer(server, "dropins", NoDBProgrammaticTimerApp, DeployOptions.SERVER_ONLY);
 
         // Wait for the application to start
         assertNotNull(START_PROGRAMMATIC_AUTO, server.waitForStringInLogUsingMark(START_PROGRAMMATIC_AUTO));

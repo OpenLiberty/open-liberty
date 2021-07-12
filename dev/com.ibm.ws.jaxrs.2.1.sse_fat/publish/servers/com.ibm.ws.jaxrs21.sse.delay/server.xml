@@ -19,5 +19,8 @@
 	<variable name="onError" value="FAIL" />
 
 	<application location="DelaySseApp.war"/>
+	
+	<javaPermission codebase="${server.config.dir}/apps/DelaySseApp.war" className="java.lang.RuntimePermission" name="modifyThread"/>
+	
 
 </server>

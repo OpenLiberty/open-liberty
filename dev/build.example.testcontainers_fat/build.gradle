@@ -10,27 +10,15 @@
  *******************************************************************************/
  apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
  
- addRequiredLibraries.dependsOn addJakartaTransformer
- 
- // If you need certain pre-configured testcontainers from the org.testcontainers 
- // project you will want to declare those dependencies here.
- // Use ${testcontainersVersion} to make it easier to upgrade testcontainer versions.
+ // Add budle io.openliberty.org.testcontainers to list of required
+ // libraries.  This bundle is needed both for compile time and runtime.
  dependencies {
-  requiredLibs "org.testcontainers:database-commons:${testcontainersVersion}",
-               "org.testcontainers:db2:${testcontainersVersion}",
-               "org.testcontainers:jdbc:${testcontainersVersion}"
+  requiredLibs project(':io.openliberty.org.testcontainers')
  }
-
- addRequiredLibraries {  
-//CHOOSE ONE (from wlp-gradle/subprojects/fat.gradle): 
-  
-  //addTestcontainers - adds general TestContainer dependencies
-  dependsOn addTestcontainers
-  
-// -- OR --
-  //copyDatabaseRotationDrivers - adds general TestContainer dependencies and 
-  //  database specific TestContainer dependencies
-  dependsOn copyDatabaseRotationDrivers
-  //copyJdbcDrivers - Copies all common JDBC drivers used to database rotation
-  dependsOn copyJdbcDrivers
-}
+ 
+ // If you are preforming database testing use the copyJdbcDrivers
+ // task to copy the common JDBC drivers into the
+ // publish/shared/resources/jdbc directory 
+ addRequiredLibraries.dependsOn copyJdbcDrivers
+ 
+ addRequiredLibraries.dependsOn addJakartaTransformer

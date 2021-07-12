@@ -40,6 +40,7 @@ import com.ibm.ws.ejbcontainer.remote.ejb3session.sl.ann.ejb.TxAttrEJBLocal;
 import com.ibm.ws.ejbcontainer.remote.ejb3session.sl.ann.ejb.TxAttrEJBLocalHome;
 
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
 
 /**
@@ -326,6 +327,8 @@ public class TxAttrComp2Servlet extends FATServlet {
      * javax.transaction.TransactionRequiredException.
      */
     @Test
+    // TODO: Remove Skip when #17742 is fixed
+    @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
     @ExpectedFFDC({ "com.ibm.websphere.csi.CSITransactionRequiredException" })
     public void testMandatoryAttribThrowsExcp_TxAttrComp2() throws Exception {
         try {

@@ -45,3 +45,5 @@ Include-Resource: \
  @${repo;org.apache.wss4j:wss4j-ws-security-common;2.3.0}!/schemas/**,\
  @${repo;org.apache.wss4j:wss4j-ws-security-common;2.3.0}!/*xml, \
  @${repo;org.bouncycastle:bcprov-jdk15on;1.61;EXACT}!/!META-INF/MANIFEST.MF|META-INF/maven/*
+
+jakartaeeMe: true

@@ -25,8 +25,7 @@ Import-Package: \
   *
 
 Export-Package: \
-  io.openliberty.microprofile.health.internal.common,\
-  io.openliberty.microprofile.health.resources; version="1.0"
+  io.openliberty.microprofile.health.internal.common
   
 Private-Package: \
   io.openliberty.microprofile.health.resources

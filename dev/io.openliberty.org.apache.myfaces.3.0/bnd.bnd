@@ -14,7 +14,7 @@ bVersion=1.0
 Bundle-SymbolicName: io.openliberty.org.apache.myfaces.3.0
 Bundle-Description:  Jakarta Server Faces, MyFaces 3.0 Implementation
 
-Implementation-Version: 3.0.0
+Implementation-Version: 3.0.1
 
 -fixupmessages.missingexport: "Used bundle version * for exported package";is:=ignore
 
@@ -29,18 +29,18 @@ Include-Resource: \
   META-INF=@src/META-INF
 
 Service-Component: \
-  com.ibm.ws.faces_3_0.taglib; \
+  io.openliberty.faces_3_0.taglib; \
     implementation:=com.ibm.ws.faces.taglibconfig.FacesGlobalTagLibConfig; \
     provide:='com.ibm.wsspi.jsp.taglib.config.GlobalTagLibConfig'; \
     properties:="service.vendor=IBM", \
-  com.ibm.ws.jsf_3_0.cdiextension; \
+  io.openliberty.faces_3_0.cdiextension; \
     implementation:=com.ibm.ws.jsf.shared.ext.CdiExtension; \
     provide:='com.ibm.ws.cdi.extension.WebSphereCDIExtension'; \
     properties:="service.vendor=IBM,\
     bean.defining.annotations=jakarta.faces.flow.FlowScoped;jakarta.faces.view.ViewScoped,\
     api.classes=jakarta.faces.flow.builder.FlowDefinition;jakarta.faces.flow.builder.FlowBuilderParameter,\
     extension.classes.only=true",\
-  com.ibm.ws.jsf_30.dd; \
+  io.openliberty.faces_30.dd; \
     implementation:=com.ibm.ws.javaee.version.FacesVersion; \
     provide:=com.ibm.ws.javaee.version.FacesVersion; \
     properties:="version:Integer=30"
@@ -119,7 +119,7 @@ Import-Package: \
   *
 
 -buildpath: \
-  org.apache.myfaces.core:myfaces-impl;version=3.0.0,\
+  org.apache.myfaces.core:myfaces-impl;version=${Implementation-Version},\
   io.openliberty.jakarta.faces.3.0;version=latest,\
   com.ibm.ws.classloading;version=latest,\
   com.ibm.ws.webcontainer;version=latest,\

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,6 @@ import javax.xml.bind.JAXBElement;
 
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
 import org.apache.cxf.ws.addressing.ReferenceParametersType;
-import org.apache.cxf.wsdl.EndpointReferenceUtils;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -23,6 +22,7 @@ import com.ibm.ws.wsat.common.impl.WSATCoordinator;
 import com.ibm.ws.wsat.common.impl.WSATCoordinatorTran;
 import com.ibm.ws.wsat.common.impl.WSATParticipant;
 import com.ibm.ws.wsat.common.impl.WSATTransaction;
+import com.ibm.ws.wsat.cxf.utils.WSATCXFUtils;
 import com.ibm.ws.wsat.service.WSATContext;
 import com.ibm.ws.wsat.service.WSATException;
 import com.ibm.ws.wsat.service.WSATFault;
@@ -72,7 +72,7 @@ public class RegistrationImpl {
             }
         }
 
-        EndpointReferenceType epr = EndpointReferenceUtils.duplicate(registrationEndpoint);
+        EndpointReferenceType epr = WSATCXFUtils.duplicate(registrationEndpoint);
         ReferenceParametersType refs = new ReferenceParametersType();
 
         refs.getAny().add(new JAXBElement<String>(Constants.WS_WSAT_CTX_REF, String.class, global));
@@ -83,7 +83,7 @@ public class RegistrationImpl {
 
     /*
      * activate - called to create a new global transaction in the coordinator role
-     * 
+     *
      * Note: this function is used internally by the implementation - we do not expose
      * the WS-Coor Activation service.
      */
@@ -109,7 +109,7 @@ public class RegistrationImpl {
 
     /*
      * activate - called to create a global transaction in the participant role
-     * 
+     *
      * Note: this function is used internally by the implementation - we do not expose
      * the WS-Coor Activation service.
      */
@@ -135,19 +135,19 @@ public class RegistrationImpl {
      * register - called to register a new participant as part of an existing
      * global transaction.
      */
-    // TODO: Should we return WSATFaultExceptions from here and make the web-service 
+    // TODO: Should we return WSATFaultExceptions from here and make the web-service
     //       layer return the fault response, or should we return the fault from here?
     public EndpointReferenceType register(String globalId, EndpointReferenceType partEpr) throws WSATException {
         // Get the transaction - this should exist.  We should always be registering
         // into an existing active transaction.
         WSATCoordinatorTran wsatTran = WSATTransaction.getCoordTran(globalId);
         if (wsatTran == null) {
-            // Not a known transaction.  This should result in the WS-Coor spec 
+            // Not a known transaction.  This should result in the WS-Coor spec
             // CannotRegisterParticipant fault being returned.
             throw new WSATFaultException(WSATFault.getCannotRegisterParticipant(Tr.formatMessage(TC, "NO_WSAT_TRAN_CWLIB0201", globalId)));
         }
 
-        // Add the new participant and enlist with the transaction manager so it 
+        // Add the new participant and enlist with the transaction manager so it
         // will take part in 2PC transaction completion.
         WSATParticipant participant = wsatTran.addParticipant(partEpr);
         tranService.registerParticipant(globalId, participant);
@@ -158,19 +158,19 @@ public class RegistrationImpl {
     /*
      * registerParticipant - called to invoke registration of a participant back with a
      * coordinator.
-     * 
+     *
      * Note: this function is used internally by the implementation, it is
      * not part of the registration web service
      */
     public void registerParticipant(String globalId, WSATTransaction wsatTran) throws WSATException {
         // Generate an EPR for our participant protocol service.  This needs to contain
-        // the transaction global id (in a ReferenceParameter) so we can identify the 
+        // the transaction global id (in a ReferenceParameter) so we can identify the
         // controlling transaction when we later get invoked for prepare/commit/rollback
         EndpointReferenceType participant = protocolService.getParticipantEndpoint(globalId);
 
         // Register as a participant back with the coordinator passing back our participant
-        // EPR as a parameter.  This returns the coordinator that is used to return the 
-        // prepared/committed/readonly/aborted protocol flows.  Note we cannot assume the 
+        // EPR as a parameter.  This returns the coordinator that is used to return the
+        // prepared/committed/readonly/aborted protocol flows.  Note we cannot assume the
         // registration and coordinator EPRs are the same.
         WSATCoordinator wsatCoord = wsatTran.getRegistration();
         WebClient webClient = WebClient.getWebClient(wsatCoord, null);
@@ -178,7 +178,7 @@ public class RegistrationImpl {
         WSATCoordinator remoteCoord = wsatTran.setCoordinator(coordinator);
 
         // Register the remote coordinator with the transaction manager so it can be used
-        // for potential recovery replay. 
+        // for potential recovery replay.
         tranService.registerCoordinator(globalId, remoteCoord);
     }
 }

@@ -1,7 +1,5 @@
-package com.ibm.tx.jta.embeddable.impl;
-
 /*******************************************************************************
- * Copyright (c) 2004, 2013 IBM Corporation and others.
+ * Copyright (c) 2004, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +8,7 @@ package com.ibm.tx.jta.embeddable.impl;
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+package com.ibm.tx.jta.embeddable.impl;
 
 import java.io.Serializable;
 import java.rmi.RemoteException;
@@ -26,13 +25,12 @@ import javax.transaction.xa.Xid;
 
 import com.ibm.tx.TranConstants;
 import com.ibm.tx.jta.XAResourceNotAvailableException;
-import com.ibm.tx.util.logging.FFDCFilter;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.recoverylog.spi.RecoverableUnitSection;
 
-public final class WSATParticipantWrapper extends JTAAsyncResourceBase
-{
+public final class WSATParticipantWrapper extends JTAAsyncResourceBase {
     private static final TraceComponent tc = Tr.register(WSATParticipantWrapper.class, TranConstants.TRACE_GROUP, TranConstants.NLS_FILE);
 
     protected WSATAsyncResource _wsatAsyncResource;
@@ -48,8 +46,7 @@ public final class WSATParticipantWrapper extends JTAAsyncResourceBase
 
     // TODO timeouts
 
-    public WSATParticipantWrapper(WSATAsyncResource wsatAsyncResource)
-    {
+    public WSATParticipantWrapper(WSATAsyncResource wsatAsyncResource) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "WSATParticipantWrapper", wsatAsyncResource);
 
@@ -58,8 +55,7 @@ public final class WSATParticipantWrapper extends JTAAsyncResourceBase
             Tr.exit(tc, "WSATParticipantWrapper", this);
     }
 
-    public WSATParticipantWrapper(byte[] logData) throws SystemException
-    {
+    public WSATParticipantWrapper(byte[] logData) throws SystemException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "WSATParticipantWrapper", logData);
 
@@ -71,15 +67,13 @@ public final class WSATParticipantWrapper extends JTAAsyncResourceBase
     }
 
     @Override
-    public void commit_one_phase() throws XAException
-    {
+    public void commit_one_phase() throws XAException {
         // This is an error.  We are not ResourceSupportsOnePhaseCommit so this
         // method should never be called.
     }
 
     @Override
-    public void commit() throws XAException
-    {
+    public void commit() throws XAException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "commit", this);
 
@@ -92,8 +86,7 @@ public final class WSATParticipantWrapper extends JTAAsyncResourceBase
 
         XAException xae = null;
 
-        try
-        {
+        try {
             try {
                 _commitResult.get();
                 _commitExecutor.shutdown();
@@ -105,8 +98,7 @@ public final class WSATParticipantWrapper extends JTAAsyncResourceBase
                     Tr.exit(tc, "commit", xae);
                 throw xae;
             }
-        } finally
-        {
+        } finally {
             int rc = xae == null ? retVal : xae.errorCode;
         }
 
@@ -115,8 +107,7 @@ public final class WSATParticipantWrapper extends JTAAsyncResourceBase
     }
 
     @Override
-    public int prepare() throws XAException
-    {
+    public int prepare() throws XAException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "prepare", this);
 
@@ -161,8 +152,7 @@ public final class WSATParticipantWrapper extends JTAAsyncResourceBase
     }
 
     @Override
-    public void rollback() throws XAException
-    {
+    public void rollback() throws XAException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "rollback", this);
 
@@ -202,13 +192,11 @@ public final class WSATParticipantWrapper extends JTAAsyncResourceBase
     }
 
     @Override
-    public void sendAsyncCommit() throws XAException
-    {
+    public void sendAsyncCommit() throws XAException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "sendAsyncCommit", this);
 
-        if (_asyncState != ASYNC_STATE_ABORTED && _asyncState != ASYNC_STATE_COMMITTED)
-        {
+        if (_asyncState != ASYNC_STATE_ABORTED && _asyncState != ASYNC_STATE_COMMITTED) {
             _commitResult = new FutureTask<Void>(new Callable<Void>() {
                 @Override
                 public Void call() throws RemoteException, XAException, XAResourceNotAvailableException {
@@ -228,8 +216,7 @@ public final class WSATParticipantWrapper extends JTAAsyncResourceBase
     }
 
     @Override
-    public void sendAsyncPrepare() throws XAException
-    {
+    public void sendAsyncPrepare() throws XAException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "sendAsyncPrepare", this);
 
@@ -252,13 +239,11 @@ public final class WSATParticipantWrapper extends JTAAsyncResourceBase
     }
 
     @Override
-    public void sendAsyncRollback() throws XAException
-    {
+    public void sendAsyncRollback() throws XAException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "sendAsyncRollback", this);
 
-        if (_asyncState != ASYNC_STATE_ABORTED && _asyncState != ASYNC_STATE_COMMITTED)
-        {
+        if (_asyncState != ASYNC_STATE_ABORTED && _asyncState != ASYNC_STATE_COMMITTED) {
             _rollbackResult = new FutureTask<Void>(new Callable<Void>() {
                 @Override
                 public Void call() throws XAException, XAResourceNotAvailableException {
@@ -279,16 +264,15 @@ public final class WSATParticipantWrapper extends JTAAsyncResourceBase
     }
 
     @Override
-    public void start() throws XAException
-    {}
+    public void start() throws XAException {
+    }
 
     @Override
-    public void end(int flag) throws XAException
-    {}
+    public void end(int flag) throws XAException {
+    }
 
     @Override
-    public void forget() throws XAException
-    {
+    public void forget() throws XAException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "forget", this);
 
@@ -309,51 +293,44 @@ public final class WSATParticipantWrapper extends JTAAsyncResourceBase
     }
 
     @Override
-    public Xid getXID()
-    {
+    public Xid getXID() {
         return null;
     }
 
     @Override
-    public int getState()
-    {
+    public int getState() {
         return -1;
     }
 
     // Return default priority
     @Override
-    public int getPriority()
-    {
+    public int getPriority() {
         return DEFAULT_COMMIT_PRIORITY;
     }
 
     @Override
-    public XAResource XAResource()
-    {
+    public XAResource XAResource() {
         return null;
     }
 
     @Override
-    public void destroy()
-    {}
+    public void destroy() {
+    }
 
     @Override
-    public void setState(int in)
-    {}
+    public void setState(int in) {
+    }
 
     @Override
-    public void log(RecoverableUnitSection rus) throws javax.transaction.SystemException
-    {
+    public void log(RecoverableUnitSection rus) throws javax.transaction.SystemException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "log", new Object[] { rus, this });
 
         // Log the WSATAsyncResource by serializing it
 
-        try
-        {
+        try {
             rus.addData(_wsatAsyncResource.toLogData());
-        } catch (Exception exc)
-        {
+        } catch (Exception exc) {
             FFDCFilter.processException(exc, "com.ibm.ws.Transaction.wstx.WSATParticipantWrapper.log", "409", this);
 
             if (tc.isEventEnabled())
@@ -377,11 +354,9 @@ public final class WSATParticipantWrapper extends JTAAsyncResourceBase
             Tr.entry(tc, "toLogData", this);
 
         byte[] data = null;
-        try
-        {
+        try {
             data = _wsatAsyncResource.toLogData();
-        } catch (Exception exc)
-        {
+        } catch (Exception exc) {
             FFDCFilter.processException(exc, "com.ibm.ws.Transaction.wstx.WSATParticipantWrapper.toLogData", "448", this);
 
             if (tc.isEventEnabled())
@@ -401,20 +376,17 @@ public final class WSATParticipantWrapper extends JTAAsyncResourceBase
     } /* @LIDB1922-5A */
 
     @Override
-    public Serializable getKey()
-    {
+    public Serializable getKey() {
         return _wsatAsyncResource.getKey(); // this is not right yet
     }
 
     @Override
-    public String describe()
-    {
+    public String describe() {
         return _wsatAsyncResource.describe();
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return describe();
     }
 }

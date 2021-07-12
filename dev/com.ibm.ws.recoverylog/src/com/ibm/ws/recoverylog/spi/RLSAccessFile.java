@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005 IBM Corporation and others.
+ * Copyright (c) 2005, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,30 +16,29 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.HashMap;
 
-import com.ibm.tx.util.logging.Tr;
-import com.ibm.tx.util.logging.TraceComponent;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 
 //------------------------------------------------------------------------------
 //Class: RLSAccessFile
 //------------------------------------------------------------------------------
 /**
-* RLSAccessFile class provides an extension to RandomAccessFile to share the same file
-* descriptor between "multiple" usages.   The CoordinationLock and LogFileHandle usage
-* of RandomAccessFile is independent and used to use two separate file desciptors.
-* However on Windows and i-Series this causes problems with file access and locks
-* which is alleviated by using the same file descriptor.  A further problem with two
-* file desciptors is that some unix specifications state that the lock will get
-* released on the first close issued, but we need the lock to be freed on the final
-* close.  This will be the CoordinationLock.  This is ok for peer recovery as the
-* CoordinationLock is released, but for local recovery/shutdown it is not, so the
-* locks and file closes will not happen until the JVM exits.   At some point, the
-* CoordinationLock class should be integrated into the shutdown logic - but it is
-* handled by the RLS and the tran service still accesses the logs after the RLS has
-* terminated.
-*
-*/
-public class RLSAccessFile extends RandomAccessFile 
-{
+ * RLSAccessFile class provides an extension to RandomAccessFile to share the same file
+ * descriptor between "multiple" usages. The CoordinationLock and LogFileHandle usage
+ * of RandomAccessFile is independent and used to use two separate file desciptors.
+ * However on Windows and i-Series this causes problems with file access and locks
+ * which is alleviated by using the same file descriptor. A further problem with two
+ * file desciptors is that some unix specifications state that the lock will get
+ * released on the first close issued, but we need the lock to be freed on the final
+ * close. This will be the CoordinationLock. This is ok for peer recovery as the
+ * CoordinationLock is released, but for local recovery/shutdown it is not, so the
+ * locks and file closes will not happen until the JVM exits. At some point, the
+ * CoordinationLock class should be integrated into the shutdown logic - but it is
+ * handled by the RLS and the tran service still accesses the logs after the RLS has
+ * terminated.
+ *
+ */
+public class RLSAccessFile extends RandomAccessFile {
 
     /**
      * WebSphere RAS TraceComponent registration
@@ -49,7 +48,7 @@ public class RLSAccessFile extends RandomAccessFile
     /**
      * Map of open RandomAccessFiles
      */
-    private static HashMap _accessFiles = new HashMap();
+    private static HashMap<File, RLSAccessFile> _accessFiles = new HashMap<File, RLSAccessFile>();
 
     /**
      * Open use count of the file
@@ -59,7 +58,7 @@ public class RLSAccessFile extends RandomAccessFile
     /**
      * The file
      */
-    private File _file;
+    private final File _file;
 
     //
     // Usage of this class:
@@ -71,32 +70,33 @@ public class RLSAccessFile extends RandomAccessFile
     // the File is actually closed.
     //
 
-    RLSAccessFile(File file, String mode) throws FileNotFoundException
-    {
+    RLSAccessFile(File file, String mode) throws FileNotFoundException {
         super(file, mode);
-        if (tc.isEntryEnabled()) Tr.entry(tc, "RLSAccessFile", new Object[]{file, mode});
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "RLSAccessFile", new Object[] { file, mode });
         _useCount = 1;
         _file = file;
-        if (tc.isEntryEnabled()) Tr.exit(tc, "RLSAccessFile", this);
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "RLSAccessFile", this);
     }
-
 
     // The logic in close needs to account for recursive calls. See notes below.
 
-    public void close() throws IOException
-    {
-        if (tc.isEntryEnabled()) Tr.entry(tc, "close", new Object[]{this, _file});
-       
-    // By locking on the class rather than the object, and removing
-    // the inner lock on the class, this seems to resolve the problems
-    // reported in d347231 that file handles were not being released properly
-    //    synchronized(this) 
-		synchronized(RLSAccessFile.class)
-        { 
-            _useCount--;
-            if (tc.isDebugEnabled()) Tr.debug(tc, "remaining file use count", new Integer(_useCount));
+    @Override
+    public void close() throws IOException {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "close", new Object[] { this, _file });
 
-            // Check for 0 usage and close the actual file.  
+        // By locking on the class rather than the object, and removing
+        // the inner lock on the class, this seems to resolve the problems
+        // reported in d347231 that file handles were not being released properly
+        //    synchronized(this)
+        synchronized (RLSAccessFile.class) {
+            _useCount--;
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "remaining file use count", _useCount);
+
+            // Check for 0 usage and close the actual file.
             // One needs to be aware that close() can be called both directly by the user on
             // file.close(), and also indirectly by the JVM.  The JVM will call close() on a
             // filechannel.close() and also recursively call filechanel.close() and hence close()
@@ -108,45 +108,51 @@ public class RLSAccessFile extends RandomAccessFile
             // file.close() calling filechannel.close() calling file.close()).
 
             // Trace an innocious exception to help debug any recursion problems.
-            if (tc.isDebugEnabled() && (_useCount <= 0))
-            {
+            if (tc.isDebugEnabled() && (_useCount <= 0)) {
                 Tr.debug(tc, "call stack", new Exception("Dummy traceback"));
             }
-            if (_useCount == 0)
-            {
-                 super.close();
-       // Outer lock is now on class, so no need to lock here (d347231)
-       //          synchronized(RLSAccessFile.class)  
-       //          { 
-                     _accessFiles.remove(_file);
-       //          }
+            if (_useCount == 0) {
+                super.close();
+                // Outer lock is now on class, so no need to lock here (d347231)
+                _accessFiles.remove(_file);
             }
         }
 
-        if (tc.isEntryEnabled()) Tr.exit(tc, "close");
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "close");
     }
 
-    static synchronized RLSAccessFile getRLSAccessFile(File file) throws FileNotFoundException
-    {
+    public boolean delete() {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "delete", new Object[] { this, _file });
 
-        if (tc.isEntryEnabled()) Tr.entry(tc, "getRLSAccessFile", file);
+        boolean deleted = _file.delete();
+
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "delete", deleted);
+        return deleted;
+    }
+
+    static synchronized RLSAccessFile getRLSAccessFile(File file) throws FileNotFoundException {
+
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "getRLSAccessFile", file);
 
         // Note we only want to return a single fd per file name to enable locking to work with
         // a non-mapped file.  We always open each file with the same mode, ie "rw".  Assume the
         // caller passes in a suitable File reference which will match for equality as required.
         // An alternative is to use canonical names if this needs to be more generalized.
-        RLSAccessFile raf = (RLSAccessFile)_accessFiles.get(file);
-        if (raf == null)
-        {
+        RLSAccessFile raf = _accessFiles.get(file);
+        if (raf == null) {
             raf = new RLSAccessFile(file, "rw");
             _accessFiles.put(file, raf);
-        }
-        else
-        {
+        } else {
             raf._useCount++;
-            if (tc.isDebugEnabled()) Tr.debug(tc, "total file use count", new Integer(raf._useCount));
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "total file use count", raf._useCount);
         }
-        if (tc.isEntryEnabled()) Tr.exit(tc, "getRLSAccessFile", raf);
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "getRLSAccessFile", raf);
         return raf;
     }
 }

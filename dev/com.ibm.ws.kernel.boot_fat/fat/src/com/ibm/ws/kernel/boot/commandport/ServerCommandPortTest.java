@@ -25,7 +25,6 @@ import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.HttpUtils;
@@ -42,6 +41,7 @@ public class ServerCommandPortTest {
     private static final LibertyServer commandPortEnabledServer = LibertyServerFactory.getLibertyServer(COMMAND_PORT_ENABLED_SERVER_NAME);
 
     private static final boolean isMac = System.getProperty("os.name", "unknown").toLowerCase().indexOf("mac os") >= 0;
+    private final static boolean isHotspotVM = System.getProperty("java.vm.name", "unknown").contains("HotSpot");
 
     @Rule
     public TestName testName = new TestName();
@@ -60,10 +60,6 @@ public class ServerCommandPortTest {
      */
     public void testServerCommandPortDisabled() throws Exception {
         LibertyServer server = commandPortDisabledServer;
-        JavaInfo java = JavaInfo.forCurrentVM();
-        if (java.majorVersion() != 8) {
-            server.copyFileToLibertyServerRoot("illegalAccess/jvm.options");
-        }
 
         // server should start, but with a warning message that we can't actually tell if it completed starting
         // because the command port is disabled
@@ -140,11 +136,6 @@ public class ServerCommandPortTest {
     public void testServerCommandPortEnabled() throws Exception {
         LibertyServer server = commandPortEnabledServer;
 
-        JavaInfo java = JavaInfo.forCurrentVM();
-        if (java.majorVersion() != 8) {
-            server.copyFileToLibertyServerRoot("illegalAccess/jvm.options");
-        }
-
         String output = server.startServer().getStdout();
         assertTrue(output.contains("Server " + server.getServerName() + " started"));
 
@@ -163,9 +154,9 @@ public class ServerCommandPortTest {
         // ensure that the command port in the .sCommand file is greater than 0
         assertTrue(getCommandPort(server) > 0);
 
-        // validate server javadump command on all platforms except mac, because javadump
-        // is unreliable on hotspot jvms
-        if (!isMac) {
+        // validate server javadump command on all platforms except mac (and any hotspot vm),
+        // because javadump is unreliable on hotspot jvms
+        if (!isMac && !isHotspotVM) {
             output = server.executeServerScript("javadump", null).getStdout();
             assertTrue(output.contains("Server " + server.getServerName() + " dump complete in"));
             validateDumpFile(output, server, COMMAND_PORT_ENABLED_SERVER_NAME);

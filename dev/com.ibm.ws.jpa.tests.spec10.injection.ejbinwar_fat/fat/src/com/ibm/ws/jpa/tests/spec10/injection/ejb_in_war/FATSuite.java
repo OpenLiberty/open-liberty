@@ -26,6 +26,7 @@ import componenttest.topology.database.container.DatabaseContainerFactory;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
+                EjbInWar_JavaCompEnv_Test.class,
                 EjbInWar_Test.class,
                 componenttest.custom.junit.runner.AlwaysPassesTest.class
 })

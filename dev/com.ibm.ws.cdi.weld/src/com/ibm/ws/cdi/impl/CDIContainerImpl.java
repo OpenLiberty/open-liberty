@@ -192,8 +192,10 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
         WebSphereCDIDeployment deployment = getDeployment(application);
         if (deployment != null) {
             try {
+                currentDeployment.set(deployment);
                 deployment.shutdown();
             } finally {
+                currentDeployment.remove();
                 unsetDeployment(application);
             }
         }

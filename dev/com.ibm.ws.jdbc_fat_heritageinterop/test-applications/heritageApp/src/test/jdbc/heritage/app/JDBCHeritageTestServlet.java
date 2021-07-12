@@ -19,6 +19,9 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
@@ -31,9 +34,14 @@ import java.sql.SQLException;
 import java.sql.SQLRecoverableException;
 import java.sql.SQLTransactionRollbackException;
 import java.sql.Statement;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
+import java.util.concurrent.Executor;
 
 import javax.annotation.Resource;
+import javax.annotation.Resource.AuthenticationType;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -46,14 +54,17 @@ import org.junit.Test;
 import com.ibm.websphere.ce.cm.DuplicateKeyException;
 import com.ibm.websphere.ce.cm.ObjectClosedException;
 import com.ibm.websphere.ce.cm.StaleConnectionException;
+import com.ibm.websphere.rsadapter.JDBCConnectionSpec;
+import com.ibm.websphere.rsadapter.WSDataSource;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.app.FATServlet;
 import test.jdbc.heritage.driver.HeritageDBConnection;
 import test.jdbc.heritage.driver.helper.HeritageDBDuplicateKeyException;
 import test.jdbc.heritage.driver.helper.HeritageDBFeatureUnavailableException;
 import test.jdbc.heritage.driver.helper.HeritageDBStaleConnectionException;
 
-@SuppressWarnings("serial")
+@SuppressWarnings({ "serial", "restriction" })
 @WebServlet(urlPatterns = "/JDBCHeritageTestServlet")
 public class JDBCHeritageTestServlet extends FATServlet {
     @Resource
@@ -64,6 +75,15 @@ public class JDBCHeritageTestServlet extends FATServlet {
 
     @Resource(name = "java:comp/jdbc/env/unsharable-ds-xa-tightly-coupled", shareable = false)
     private DataSource defaultDataSource_unsharable_tightly_coupled;
+
+    @Resource(lookup = "jdbc/one-phase", shareable = true)
+    private DataSource dsOnePhaseSharable;
+
+    @Resource(lookup = "jdbc/one-phase", shareable = true, authenticationType = AuthenticationType.APPLICATION)
+    private DataSource dsOnePhaseSharableWithAppAuth;
+
+    @Resource(lookup = "jdbc/one-phase", shareable = false)
+    private DataSource dsOnePhaseUnsharable;
 
     @Resource(lookup = "jdbc/helperDefaulted", shareable = false)
     private DataSource dsWithHelperDefaulted;
@@ -88,6 +108,7 @@ public class JDBCHeritageTestServlet extends FATServlet {
                 // probably didn't exist
             }
             stmt.execute("CREATE TABLE MYTABLE (ID INT NOT NULL PRIMARY KEY, STRVAL VARCHAR(40))");
+            stmt.executeUpdate("INSERT INTO MYTABLE VALUES (0, 'zero')");
         } catch (SQLException x) {
             throw new ServletException(x);
         }
@@ -504,6 +525,39 @@ public class JDBCHeritageTestServlet extends FATServlet {
     }
 
     /**
+     * Verifies that the type of sharing indicated by the isShareable legacy operation
+     * is consistent with the resource reference.
+     */
+    @Test
+    public void testIsShareable() throws Exception {
+        Method isShareable;
+
+        try (Connection con = defaultDataSource.getConnection()) {
+            isShareable = con.getClass().getMethod("isShareable");
+
+            assertTrue((Boolean) isShareable.invoke(con));
+        }
+
+        try (Connection con = dsWithHelperDefaulted.getConnection()) {
+            assertFalse((Boolean) isShareable.invoke(con));
+        }
+    }
+
+    /**
+     * Verifies that the isXADataSource legacy operation returns the correct value
+     * based on the dataSource configuration.
+     */
+    @Test
+    public void testIsXADataSource() throws Exception {
+        assertTrue(((WSDataSource) defaultDataSource).isXADataSource());
+        assertTrue(((WSDataSource) defaultDataSource_unsharable_loosely_coupled).isXADataSource());
+        assertTrue(((WSDataSource) defaultDataSource_unsharable_tightly_coupled).isXADataSource());
+        assertFalse(((WSDataSource) dsOnePhaseSharable).isXADataSource());
+        assertFalse(((WSDataSource) dsOnePhaseUnsharable).isXADataSource());
+        assertFalse(((WSDataSource) dsWithHelperDefaulted).isXADataSource());
+    }
+
+    /**
      * Verifies that API classes can be loaded from the mock heritage API bundle fragment.
      */
     @Test
@@ -556,6 +610,375 @@ public class JDBCHeritageTestServlet extends FATServlet {
 
             // user-defined exception indicates stale:
             assertTrue(con.isClosed());
+        }
+    }
+
+    /**
+     * Verify that WSDataSource.getConnection(conspec) can be used to match and share a connection
+     * based on its catalog attribute.
+     */
+    @Test
+    public void testMatchCurrentCatalog() throws Exception {
+        WSDataSource wsds = (WSDataSource) dsOnePhaseSharable;
+
+        try (Connection con1 = wsds.getConnection()) {
+            con1.setAutoCommit(false);
+            con1.setCatalog("CATALOG-17");
+            con1.createStatement().executeUpdate("INSERT INTO MYTABLE VALUES (17, 'testMatchCurrentCatalog')");
+        }
+
+        // connection is not shared with a non-matching request
+        JDBCConnectionSpec req2 = new ConnectionRequest();
+        req2.setCatalog("CATALOG-18");
+        try (Connection con2 = wsds.getConnection(req2)) {
+            assertEquals("CATALOG-18", con2.getCatalog());
+            con2.setAutoCommit(false);
+            con2.createStatement().executeUpdate("INSERT INTO MYTABLE VALUES (18, 'testMatchCurrentCatalog')");
+            con2.rollback();
+        }
+
+        // connection can be shared based on its current state,
+        JDBCConnectionSpec req3 = new ConnectionRequest();
+        req3.setCatalog("CATALOG-17");
+        try (Connection con3 = wsds.getConnection(req3)) {
+            assertEquals("CATALOG-17", con3.getCatalog());
+            con3.commit();
+        }
+
+        // verify that only the first update was committed, whereas the second rolled back,
+        tx.begin();
+        try (Connection con4 = wsds.getConnection(new ConnectionRequest())) {
+            ResultSet result = con4.createStatement().executeQuery("SELECT ID FROM MYTABLE WHERE STRVAL='testMatchCurrentCatalog'");
+            assertTrue(result.next());
+            assertEquals(17, result.getInt(1));
+            assertFalse(result.next());
+        } finally {
+            tx.commit();
+        }
+    }
+
+    /**
+     * Verify that WSDataSource.getConnection(conspec) can be used to match and share a connection
+     * based on its cursor holdability attribute.
+     */
+    @Test
+    public void testMatchCurrentHoldability() throws Exception {
+        WSDataSource wsds = (WSDataSource) dsOnePhaseSharable;
+
+        try (Connection con1 = wsds.getConnection()) {
+            con1.setAutoCommit(false);
+            con1.setHoldability(ResultSet.CLOSE_CURSORS_AT_COMMIT);
+            con1.createStatement().executeUpdate("INSERT INTO MYTABLE VALUES (21, 'testMatchCurrentHoldability')");
+        }
+
+        // connection is not shared with a non-matching request
+        JDBCConnectionSpec req2 = new ConnectionRequest();
+        req2.setHoldability(ResultSet.HOLD_CURSORS_OVER_COMMIT);
+        try (Connection con2 = wsds.getConnection(req2)) {
+            assertEquals(ResultSet.HOLD_CURSORS_OVER_COMMIT, con2.getHoldability());
+            con2.setAutoCommit(false);
+            con2.createStatement().executeUpdate("INSERT INTO MYTABLE VALUES (22, 'testMatchCurrentHoldability')");
+            con2.rollback();
+        }
+
+        // connection can be shared based on its current state,
+        JDBCConnectionSpec req3 = new ConnectionRequest();
+        req3.setHoldability(ResultSet.CLOSE_CURSORS_AT_COMMIT);
+        try (Connection con3 = wsds.getConnection(req3)) {
+            assertEquals(ResultSet.CLOSE_CURSORS_AT_COMMIT, con3.getHoldability());
+            ResultSet result = con3.createStatement().executeQuery("SELECT STRVAL FROM MYTABLE WHERE ID=21");
+            con3.commit();
+            assertTrue(result.isClosed());
+        }
+
+        // verify that only the first update was committed, whereas the second rolled back,
+        tx.begin();
+        try (Connection con4 = wsds.getConnection(new ConnectionRequest())) {
+            ResultSet result = con4.createStatement().executeQuery("SELECT ID FROM MYTABLE WHERE STRVAL='testMatchCurrentHoldability'");
+            assertTrue(result.next());
+            assertEquals(21, result.getInt(1));
+            assertFalse(result.next());
+        } finally {
+            tx.commit();
+        }
+    }
+
+    /**
+     * Verify that WSDataSource.getConnection(conspec) can be used to match and share a connection
+     * based on its isolation level.
+     */
+    @AllowedFFDC({
+                   "java.lang.IllegalStateException", // test attempts to enlist multiple one-phase resources to prove that sharing does not occur
+                   "java.sql.SQLException", // test attempts to enlist multiple one-phase resources to prove that sharing does not occur
+                   "javax.resource.ResourceException" // test attempts to enlist multiple one-phase resources to prove that sharing does not occur
+    })
+    @Test
+    public void testMatchCurrentIsolationLevel() throws Exception {
+        tx.begin();
+        try (Connection con1 = dsOnePhaseSharable.getConnection()) {
+            // normal connection request defaults to isolationLevel from the dataSource,
+            assertEquals(Connection.TRANSACTION_READ_COMMITTED, con1.getTransactionIsolation());
+
+            con1.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+            con1.createStatement().executeUpdate("INSERT INTO MYTABLE VALUES (13, 'testMatchCurrentIsolationLevel')");
+
+            // connection can be shared based on its current state,
+            WSDataSource wsds = (WSDataSource) dsOnePhaseSharable;
+            JDBCConnectionSpec req2 = new ConnectionRequest();
+            req2.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+            Connection con2 = wsds.getConnection(req2);
+            assertEquals(Connection.TRANSACTION_SERIALIZABLE, con2.getTransactionIsolation());
+            int numUpdates = con2.createStatement().executeUpdate("UPDATE MYTABLE SET STRVAL='XIII' where ID=13");
+            assertEquals(1, numUpdates);
+
+            // connection cannot be shared based on a non-matching request
+            JDBCConnectionSpec req3 = new ConnectionRequest();
+            req3.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+            Connection con3 = wsds.getConnection(req3);
+            try {
+                con3.createStatement().executeUpdate("INSERT INTO MYTABLE VALUES (14, 'testMatchCurrentIsolationLevel')");
+                fail("3rd connection request should not share and thus be unable to enlist in second transactional resource.");
+            } catch (SQLException x) {
+                boolean multiple1PCResources = false;
+                for (Throwable cause = x.getCause(); cause != null && !multiple1PCResources; cause = cause.getCause())
+                    multiple1PCResources |= cause instanceof IllegalStateException;
+                if (multiple1PCResources) // expected
+                    tx.setRollbackOnly();
+                else
+                    throw x;
+            }
+        } finally {
+            if (tx.getStatus() == Status.STATUS_ACTIVE)
+                tx.commit();
+            else
+                tx.rollback();
+        }
+    }
+
+    /**
+     * Verify that WSDataSource.getConnection(conspec) can be used to match and share a connection
+     * based on its network timeout.
+     */
+    @AllowedFFDC({
+                   "java.lang.IllegalStateException", // test attempts to enlist multiple one-phase resources to prove that sharing does not occur
+                   "java.sql.SQLException", // test attempts to enlist multiple one-phase resources to prove that sharing does not occur
+                   "javax.resource.ResourceException" // test attempts to enlist multiple one-phase resources to prove that sharing does not occur
+    })
+    @Test
+    public void testMatchCurrentNetworkTimeout() throws Exception {
+        tx.begin();
+        try (Connection con1 = dsOnePhaseSharable.getConnection()) {
+            int originalNetworkTimeout = con1.getNetworkTimeout();
+            int newNetworkTimeout = originalNetworkTimeout + 30000;
+            Executor sameThreadExecutor = r -> r.run();
+
+            con1.setNetworkTimeout(sameThreadExecutor, newNetworkTimeout);
+            con1.createStatement().executeUpdate("INSERT INTO MYTABLE VALUES (15, 'testMatchCurrentNetworkTimeout')");
+
+            // connection can be shared based on its current state,
+            WSDataSource wsds = (WSDataSource) dsOnePhaseSharable;
+            JDBCConnectionSpec req2 = new ConnectionRequest();
+            req2.setNetworkTimeout(newNetworkTimeout);
+            Connection con2 = wsds.getConnection(req2);
+            assertEquals(newNetworkTimeout, con2.getNetworkTimeout());
+            int numUpdates = con2.createStatement().executeUpdate("UPDATE MYTABLE SET STRVAL='XV' where ID=15");
+            assertEquals(1, numUpdates);
+
+            // connection cannot be shared based on a non-matching request
+            JDBCConnectionSpec req3 = new ConnectionRequest();
+            req3.setNetworkTimeout(originalNetworkTimeout + 40000);
+            try (Connection con3 = wsds.getConnection(req3)) {
+                con3.createStatement().executeUpdate("INSERT INTO MYTABLE VALUES (16, 'testMatchCurrentNetworkTimeout')");
+                fail("3rd connection request should not share and thus be unable to enlist in second transactional resource.");
+            } catch (SQLException x) {
+                boolean multiple1PCResources = false;
+                for (Throwable cause = x.getCause(); cause != null && !multiple1PCResources; cause = cause.getCause())
+                    multiple1PCResources |= cause instanceof IllegalStateException;
+                if (multiple1PCResources) // expected
+                    tx.setRollbackOnly();
+                else
+                    throw x;
+            }
+        } finally {
+            if (tx.getStatus() == Status.STATUS_ACTIVE)
+                tx.commit();
+            else
+                tx.rollback();
+        }
+    }
+
+    /**
+     * Verify that WSDataSource.getConnection(conspec) can be used to match and share a connection
+     * based on its read only attribute.
+     */
+    @Test
+    public void testMatchCurrentReadOnly() throws Exception {
+        tx.begin();
+        try (Connection con1 = dsOnePhaseSharable.getConnection()) {
+
+            assertFalse(con1.isReadOnly());
+            con1.setReadOnly(true);
+
+            // connection can be shared based on its current state,
+            WSDataSource wsds = (WSDataSource) dsOnePhaseSharable;
+            JDBCConnectionSpec req2 = new ConnectionRequest();
+            req2.setReadOnly(true);
+            Connection con2 = wsds.getConnection(req2);
+            assertTrue(con2.isReadOnly());
+            ResultSet result = con2.createStatement().executeQuery("SELECT STRVAL FROM MYTABLE WHERE ID=0");
+            assertTrue(result.next());
+            assertEquals("zero", result.getString(1));
+        } finally {
+            tx.commit();
+        }
+    }
+
+    /**
+     * Verify that WSDataSource.getConnection(conspec) can be used to match and share a connection
+     * based on its schema attribute.
+     */
+    @Test
+    public void testMatchCurrentSchema() throws Exception {
+        WSDataSource wsds = (WSDataSource) dsOnePhaseSharable;
+
+        try (Connection con1 = wsds.getConnection()) {
+            con1.setAutoCommit(false);
+            con1.setSchema("APP");
+            con1.createStatement().executeUpdate("INSERT INTO DBUSER.MYTABLE VALUES (23, 'testMatchCurrentSchema')");
+        }
+
+        // connection is not shared with a non-matching request
+        JDBCConnectionSpec req2 = new ConnectionRequest();
+        req2.setSchema("DBUSER");
+        try (Connection con2 = wsds.getConnection(req2)) {
+            assertEquals("DBUSER", con2.getSchema());
+            con2.setAutoCommit(false);
+            con2.createStatement().executeUpdate("INSERT INTO DBUSER.MYTABLE VALUES (24, 'testMatchCurrentSchema')");
+            con2.rollback();
+        }
+
+        // connection can be shared based on its current state,
+        JDBCConnectionSpec req3 = new ConnectionRequest();
+        req3.setSchema("APP");
+        try (Connection con3 = wsds.getConnection(req3)) {
+            assertEquals("APP", con3.getSchema());
+            con3.commit();
+        }
+
+        // verify that only the first update was committed, whereas the second rolled back,
+        tx.begin();
+        try (Connection con4 = wsds.getConnection(new ConnectionRequest())) {
+            ResultSet result = con4.createStatement().executeQuery("SELECT ID FROM DBUSER.MYTABLE WHERE STRVAL='testMatchCurrentSchema'");
+            assertTrue(result.next());
+            assertEquals(23, result.getInt(1));
+            assertFalse(result.next());
+        } finally {
+            tx.commit();
+        }
+    }
+
+    /**
+     * Verify that WSDataSource.getConnection(conspec) can be used to match and share a connection
+     * based on its typeMap attribute.
+     */
+    @Test
+    public void testMatchCurrentTypeMap() throws Exception {
+        WSDataSource wsds = (WSDataSource) dsOnePhaseSharable;
+
+        Map<String, Class<?>> typeMap = new LinkedHashMap<String, Class<?>>();
+        typeMap.put("BIGINT", BigInteger.class);
+        typeMap.put("BIGD", BigDecimal.class);
+
+        Map<String, Class<?>> matchingTypeMap = new TreeMap<String, Class<?>>();
+        matchingTypeMap.put("BIGD", BigDecimal.class);
+        matchingTypeMap.put("BIGINT", BigInteger.class);
+
+        Map<String, Class<?>> nonMatchingTypeMap = new LinkedHashMap<String, Class<?>>();
+        nonMatchingTypeMap.put("BIGINT", BigInteger.class);
+        nonMatchingTypeMap.put("BIGD", Number.class);
+
+        try (Connection con1 = wsds.getConnection()) {
+            con1.setAutoCommit(false);
+            con1.setTypeMap(typeMap);
+            con1.createStatement().executeUpdate("INSERT INTO MYTABLE VALUES (19, 'testMatchCurrentTypeMap')");
+        }
+
+        // connection is not shared with a non-matching request
+        JDBCConnectionSpec req2 = new ConnectionRequest();
+        req2.setTypeMap(nonMatchingTypeMap);
+        try (Connection con2 = wsds.getConnection(req2)) {
+            assertEquals(nonMatchingTypeMap, con2.getTypeMap());
+            con2.setAutoCommit(false);
+            con2.createStatement().executeUpdate("INSERT INTO MYTABLE VALUES (20, 'testMatchCurrentTypeMap')");
+            con2.rollback();
+        }
+
+        // connection can be shared based on its current state,
+        JDBCConnectionSpec req3 = new ConnectionRequest();
+        req3.setTypeMap(matchingTypeMap);
+        try (Connection con3 = wsds.getConnection(req3)) {
+            assertEquals(matchingTypeMap, con3.getTypeMap());
+            con3.commit();
+        }
+
+        // verify that only the first update was committed, whereas the second rolled back,
+        tx.begin();
+        try (Connection con4 = wsds.getConnection(new ConnectionRequest())) {
+            ResultSet result = con4.createStatement().executeQuery("SELECT ID FROM MYTABLE WHERE STRVAL='testMatchCurrentTypeMap'");
+            assertTrue(result.next());
+            assertEquals(19, result.getInt(1));
+            assertFalse(result.next());
+        } finally {
+            tx.commit();
+        }
+    }
+
+    /**
+     * Verify that WSDataSource.getConnection(conspec) can be used to match and share a connection
+     * based on its user name attribute.
+     */
+    @Test
+    public void testMatchCurrentUser() throws Exception {
+        WSDataSource wsds = (WSDataSource) dsOnePhaseSharableWithAppAuth;
+
+        JDBCConnectionSpec req1 = new ConnectionRequest();
+        req1.setUserName("dbuser");
+        req1.setPassword("dbpwd");
+        try (Connection con1 = wsds.getConnection(req1)) {
+            con1.setAutoCommit(false);
+            assertEquals("dbuser", con1.getMetaData().getUserName().toLowerCase());
+            con1.createStatement().executeUpdate("INSERT INTO DBUSER.MYTABLE VALUES (25, 'testMatchCurrentUser')");
+        }
+
+        // connection is not shared with a non-matching request
+        JDBCConnectionSpec req2 = new ConnectionRequest();
+        req2.setUserName("otheruser");
+        req2.setPassword("dbpwd");
+        try (Connection con2 = wsds.getConnection(req2)) {
+            assertEquals("otheruser", con2.getMetaData().getUserName().toLowerCase());
+            con2.setAutoCommit(false);
+            con2.createStatement().executeUpdate("INSERT INTO DBUSER.MYTABLE VALUES (26, 'testMatchCurrentUser')");
+            con2.rollback();
+        }
+
+        // connection can be shared based on its current state,
+        JDBCConnectionSpec req3 = new ConnectionRequest();
+        req3.setUserName("dbuser");
+        req3.setPassword("dbpwd");
+        try (Connection con3 = wsds.getConnection(req3)) {
+            assertEquals("dbuser", con3.getMetaData().getUserName().toLowerCase());
+            con3.commit();
+        }
+
+        // verify that only the first update was committed, whereas the second rolled back,
+        tx.begin();
+        try (Connection con4 = wsds.getConnection(req2)) {
+            ResultSet result = con4.createStatement().executeQuery("SELECT ID FROM DBUSER.MYTABLE WHERE STRVAL='testMatchCurrentUser'");
+            assertTrue(result.next());
+            assertEquals(25, result.getInt(1));
+            assertFalse(result.next());
+        } finally {
+            tx.commit();
         }
     }
 

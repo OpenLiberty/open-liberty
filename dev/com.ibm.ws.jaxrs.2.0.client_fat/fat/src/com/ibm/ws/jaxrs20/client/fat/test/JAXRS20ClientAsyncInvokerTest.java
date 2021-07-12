@@ -159,6 +159,7 @@ public class JAXRS20ClientAsyncInvokerTest extends AbstractTest {
     }
 
     @Test
+    @AllowedFFDC("javax.ws.rs.ProcessingException")
     public void testAsyncInvoker_postReceiveTimeoutwithInvocationCallback() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         this.runTestOnServer(asyncInvokerTarget, "testAsyncInvoker_postReceiveTimeoutwithInvocationCallback", p, "Timeout as expected");

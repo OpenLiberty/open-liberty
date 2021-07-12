@@ -345,6 +345,10 @@ test {
     def propertiesFile = new File(compileTestJava.destinationDir, 'unittestports.properties')
     portSelectorTaskdef(ant)
     ant.portSelector(engineName: "${bnd.buildEngineName}", location: propertiesFile, jvmarg: 'jvmargPorts')
+    if (null.equals(ant.properties['jvmargPorts'])) {
+      logger.error( 'Error: PortSelector task failed to set ports; unittestports JVM props will not be set' )
+      return
+    }
     jvmArgs ant.jvmargPorts.tokenize()
   }
 

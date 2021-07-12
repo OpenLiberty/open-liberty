@@ -14,10 +14,10 @@ import javax.xml.bind.JAXBElement;
 
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
 import org.apache.cxf.ws.addressing.ReferenceParametersType;
-import org.apache.cxf.wsdl.EndpointReferenceUtils;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.jaxws.wsat.Constants;
+import com.ibm.ws.wsat.cxf.utils.WSATCXFUtils;
 
 /**
  * Represents the coordinator in a WSAT transaction.
@@ -67,7 +67,7 @@ public class WSATCoordinator extends WSATEndpoint {
      */
 
     public EndpointReferenceType getEndpointReference(String partId) {
-        EndpointReferenceType epr = EndpointReferenceUtils.duplicate(getEndpointReference());
+        EndpointReferenceType epr = WSATCXFUtils.duplicate(getEndpointReference());
         // duplicate doesn't seem to copy the ReferenceParams?, so add
         // back the originals plus our new participant id.
         ReferenceParametersType refs = new ReferenceParametersType();

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019,2020 IBM Corporation and others.
+ * Copyright (c) 2019,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,9 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.transaction.test.tests;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -21,7 +24,6 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -155,6 +157,10 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
 
         server1.waitForStringInLog("Dump State:");
 
+        // At this point server1's recovery log files should (absolutely!) be present
+        boolean exists = server1.fileExistsInLibertyServerRoot("tranlog");
+        assertTrue(server1.getServerName() + " has no recovery logs", exists);
+
         // Now start server2
         server2.setHttpDefaultPort(FScloud2ServerPort);
         ProgramOutput po = server2.startServerAndValidate(false, true, true);
@@ -169,6 +175,11 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
         }
 
         server2.waitForStringInTrace("Performed recovery for FScloud001");
+
+        // Check to see that the peer recovery log files have been deleted
+        exists = server1.fileExistsInLibertyServerRoot("tranlog");
+        assertFalse(server1.getServerName() + " recovery logs have not been deleted", exists);
+
         server2.stopServer();
     }
 

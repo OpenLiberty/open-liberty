@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -62,6 +62,7 @@ import com.ibm.ws.jaxrs20.fat.subresource.ExceptionsSubresourcesTest;
 import com.ibm.ws.jaxrs20.fat.thirdpartyjersey.JerseyTest;
 import com.ibm.ws.jaxrs20.fat.thirdpartyjerseywithinjection.JerseyInjectionTest;
 import com.ibm.ws.jaxrs20.fat.uriInfo.UriInfoTest;
+import com.ibm.ws.jaxrs20.fat.validation.ValidationTest;
 import com.ibm.ws.jaxrs20.fat.wadl.WADLTest;
 import com.ibm.ws.jaxrs20.fat.webcontainer.JAXRSWebContainerTest;
 
@@ -122,12 +123,12 @@ import componenttest.rules.repeater.RepeatTests;
                 StandardProvidersTest.class,
                 UriInfoTest.class,
                 UTF8Test.class,
-                //ValidationTest.class, //TODO: fix up and reenable tests - 6325
+                ValidationTest.class,
                 WADLTest.class
 })
 public class FATSuite {
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
                     .andWith(FeatureReplacementAction.EE8_FEATURES().withID("JAXRS-2.1"))
-                    .andWith(new JakartaEE9Action().alwaysAddFeature("jsonb-2.0"));
+                    .andWith(new JakartaEE9Action().alwaysAddFeature("jsonb-2.0").removeFeature("mpMetrics-2.3"));
 }

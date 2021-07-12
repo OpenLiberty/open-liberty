@@ -36,9 +36,9 @@ import java.util.concurrent.locks.ReentrantLock;
 import javax.sql.DataSource;
 
 import com.ibm.tx.config.ConfigurationProviderManager;
-import com.ibm.tx.util.logging.FFDCFilter;
-import com.ibm.tx.util.logging.Tr;
-import com.ibm.tx.util.logging.TraceComponent;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.recoverylog.spi.Configuration;
 import com.ibm.ws.recoverylog.spi.CustomLogProperties;
@@ -215,7 +215,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * These strings are used for Database table creation. DDL is
      * different for DB2 and Oracle.
      */
-    private static final String genericTablePreString = "CREATE TABLE ";
+    private static final String genericTableCreatePreString = "CREATE TABLE ";
+    private static final String genericTableDropPreString = "DROP TABLE ";
     private static final String genericTablePostString = "( SERVER_NAME VARCHAR(128), " +
                                                          "SERVICE_ID SMALLINT, " +
                                                          "RU_ID BIGINT, " +
@@ -223,7 +224,6 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                                                          "RUSECTION_DATA_INDEX SMALLINT, " +
                                                          "DATA LONG VARCHAR FOR BIT DATA) ";
 
-    private static final String db2TablePreString = "CREATE TABLE ";
     private static final String db2TablePostString = "( SERVER_NAME VARCHAR(128), " +
                                                      "SERVICE_ID SMALLINT, " +
                                                      "RU_ID BIGINT, " +
@@ -231,7 +231,6 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                                                      "RUSECTION_DATA_INDEX SMALLINT, " +
                                                      "DATA BLOB) ";
 
-    private static final String oracleTablePreString = "CREATE TABLE ";
     private static final String oracleTablePostString = "( SERVER_NAME VARCHAR(128), " +
                                                         "SERVICE_ID SMALLINT, " +
                                                         "RU_ID NUMBER(19), " +
@@ -239,7 +238,6 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                                                         "RUSECTION_DATA_INDEX SMALLINT, " +
                                                         "DATA BLOB) ";
 
-    private static final String postgreSQLTablePreString = "CREATE TABLE ";
     private static final String postgreSQLTablePostString = "( SERVER_NAME VARCHAR(128), " +
                                                             "SERVICE_ID SMALLINT, " +
                                                             "RU_ID BIGINT, " +
@@ -247,7 +245,6 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                                                             "RUSECTION_DATA_INDEX SMALLINT, " +
                                                             "DATA BYTEA) ";
 
-    private static final String sqlServerTablePreString = "CREATE TABLE ";
     private static final String sqlServerTablePostString = "( SERVER_NAME VARCHAR(128), " +
                                                            "SERVICE_ID SMALLINT, " +
                                                            "RU_ID BIGINT, " +
@@ -401,8 +398,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * </p>
      *
      * @param fileLogProperties The identity and physical properties of the recovery log.
-     * @param recoveryAgent The RecoveryAgent of the associated client service.
-     * @param fs The FailureScope of the associated client service.
+     * @param recoveryAgent     The RecoveryAgent of the associated client service.
+     * @param fs                The FailureScope of the associated client service.
      */
     public SQLMultiScopeRecoveryLog(CustomLogProperties logProperties, RecoveryAgent recoveryAgent, FailureScope fs) {
         if (tc.isEntryEnabled())
@@ -508,10 +505,10 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * calls independently.
      * </p>
      *
-     * @exception LogCorruptedException The recovery log has become corrupted and
-     *                cannot be opened.
+     * @exception LogCorruptedException  The recovery log has become corrupted and
+     *                                       cannot be opened.
      * @exception LogAllocationException The recovery log could not be created.
-     * @exception InternalLogException An unexpected failure has occured.
+     * @exception InternalLogException   An unexpected failure has occured.
      */
     @Override
     public void openLog() throws LogCorruptedException, LogAllocationException, InternalLogException {
@@ -819,11 +816,11 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * Retrieves log records from the database ready for recovery
      * processing.
      *
-     * @exception SQLException thrown if a SQLException is
-     *                encountered when accessing the
-     *                Database.
+     * @exception SQLException         thrown if a SQLException is
+     *                                     encountered when accessing the
+     *                                     Database.
      * @exception InternalLogException Thrown if an
-     *                unexpected error has occured.
+     *                                     unexpected error has occured.
      */
     private void recover(Connection conn) throws SQLException, RecoverableUnitSectionExistsException, InternalLogException {
         if (tc.isEntryEnabled())
@@ -893,8 +890,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      *
      * @return The service data.
      *
-     * @exception LogClosedException Thrown if the recovery log is closed and must
-     *                be opened before this call can be issued.
+     * @exception LogClosedException   Thrown if the recovery log is closed and must
+     *                                     be opened before this call can be issued.
      * @exception InternalLogException Thrown if an unexpected error has occured.
      */
     @Override
@@ -928,12 +925,12 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * finished.
      * </p>
      *
-     * @exception LogClosedException Thrown if the recovery log is closed and must
-     *                be opened before this call can be issued.
-     * @exception InternalLogException Thrown if an unexpected error has occured.
+     * @exception LogClosedException       Thrown if the recovery log is closed and must
+     *                                         be opened before this call can be issued.
+     * @exception InternalLogException     Thrown if an unexpected error has occured.
      * @exception LogIncompatibleException An attempt has been made access a recovery
-     *                log that is not compatible with this version
-     *                of the service.
+     *                                         log that is not compatible with this version
+     *                                         of the service.
      *
      */
     @Override
@@ -988,12 +985,12 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      *
      * @param serviceData The updated service data.
      *
-     * @exception LogClosedException Thrown if the recovery log is closed and must
-     *                be opened before this call can be issued.
-     * @exception InternalLogException Thrown if an unexpected error has occured.
+     * @exception LogClosedException       Thrown if the recovery log is closed and must
+     *                                         be opened before this call can be issued.
+     * @exception InternalLogException     Thrown if an unexpected error has occured.
      * @exception LogIncompatibleException An attempt has been made access a recovery
-     *                log that is not compatible with this version
-     *                of the service.
+     *                                         log that is not compatible with this version
+     *                                         of the service.
      */
     @Override
     public synchronized void recoveryComplete(byte[] serviceData) throws LogClosedException, InternalLogException {
@@ -1265,6 +1262,36 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             Tr.exit(tc, "closeLogImmediate");
     }
 
+    @Override
+    public void delete() {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "delete", new Object[] { _closesRequired, this });
+
+        synchronized (_DBAccessIntentLock) {
+            synchronized (this) {
+                if (failed() || _closesRequired > 0) {
+                    // FFDC exception but allow processing to continue
+                    Exception e = new Exception();
+                    FFDCFilter.processException(e, "com.ibm.ws.recoverylog.custom.jdbc.impl.SQLMultiScopeRecoveryLog.delete", "1277", this);
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "do not delete logs as failed state is " + failed() + " or closesRequired is " + _closesRequired);
+                } else { // the log is in the right state, we can proceed
+                    try {
+                        Connection conn = _theDS.getConnection();
+                        dropDBTable(conn);
+                    } catch (SQLException e) {
+                        // FFDC exception but allow processing to continue
+                        FFDCFilter.processException(e, "com.ibm.ws.recoverylog.custom.jdbc.impl.SQLMultiScopeRecoveryLog.delete", "1286", this);
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "delete caught exception ", e);
+                    }
+                }
+            }
+        }
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "delete");
+    }
+
     //------------------------------------------------------------------------------
     // Method: RecoveryLog.createRecoverableUnit
     //------------------------------------------------------------------------------
@@ -1286,8 +1313,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      *
      * @return The new RecoverableUnit.
      *
-     * @exception LogClosedException Thrown if the recovery log is closed and must be
-     *                opened before this call can be issued.
+     * @exception LogClosedException   Thrown if the recovery log is closed and must be
+     *                                     opened before this call can be issued.
      * @exception InternalLogException Thrown if an unexpected error has occured.
      */
     @Override
@@ -1354,10 +1381,10 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      *
      * @param identity Identity of the RecoverableUnit to be removed.
      *
-     * @exception LogClosedException Thrown if the recovery log is closed and must be
-     *                opened before this call can be issued.
+     * @exception LogClosedException              Thrown if the recovery log is closed and must be
+     *                                                opened before this call can be issued.
      * @exception InvalidRecoverableUnitException Thrown if the RecoverableUnit does not exist.
-     * @exception InternalLogException Thrown if an unexpected error has occured.
+     * @exception InternalLogException            Thrown if an unexpected error has occured.
      */
     @Override
     public void removeRecoverableUnit(long identity) throws LogClosedException, InvalidRecoverableUnitException, InternalLogException {
@@ -1471,7 +1498,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      *         RecoverableUnits.
      *
      * @exception LogClosedException Thrown if the recovery log is closed and must be
-     *                opened before this call can be issued.
+     *                                   opened before this call can be issued.
      */
     @Override
     public synchronized LogCursor recoverableUnits(FailureScope failureScope) throws LogClosedException /* @MD19706C */
@@ -1567,11 +1594,11 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * information will be removed and all cached information will be forced to disk.
      * </p>
      *
-     * @exception LogClosedException Thrown if the log is closed.
-     * @exception InternalLogException Thrown if an unexpected error has occured.
+     * @exception LogClosedException       Thrown if the log is closed.
+     * @exception InternalLogException     Thrown if an unexpected error has occured.
      * @exception LogIncompatibleException An attempt has been made access a recovery
-     *                log that is not compatible with this version
-     *                of the service.
+     *                                         log that is not compatible with this version
+     *                                         of the service.
      */
     @Override
     public void keypoint() throws InternalLogException {
@@ -2068,8 +2095,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * Drives the execution of the cached up database work.
      *
      * @exception SQLException thrown if a SQLException is
-     *                encountered when accessing the
-     *                Database.
+     *                             encountered when accessing the
+     *                             Database.
      */
     private void executeBatchStatements(Connection conn) throws SQLException {
         if (tc.isEntryEnabled())
@@ -2233,11 +2260,11 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * lag in peer recovery where an old server is closing down while
      * a new server is opening the same log for peer recovery.
      *
-     * @exception SQLException thrown if a SQLException is
-     *                encountered when accessing the
-     *                Database.
+     * @exception SQLException         thrown if a SQLException is
+     *                                     encountered when accessing the
+     *                                     Database.
      * @exception InternalLogException Thrown if an
-     *                unexpected error has occured.
+     *                                     unexpected error has occured.
      */
     private boolean takeHADBLock(Connection conn) throws SQLException, InternalLogException {
         if (tc.isEntryEnabled())
@@ -2327,11 +2354,11 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * consequently it can close statements in lower isolation levels that RR and still hold the lock
      * until the transaction is completed.
      *
-     * @exception SQLException thrown if a SQLException is
-     *                encountered when accessing the
-     *                Database.
+     * @exception SQLException         thrown if a SQLException is
+     *                                     encountered when accessing the
+     *                                     Database.
      * @exception InternalLogException Thrown if an
-     *                unexpected error has occured.
+     *                                     unexpected error has occured.
      */
     private void updateHADBLock(Connection conn) throws SQLException {
         if (tc.isEntryEnabled())
@@ -2488,8 +2515,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * log.
      *
      * @exception SQLException thrown if a SQLException is
-     *                encountered when accessing the
-     *                Database.
+     *                             encountered when accessing the
+     *                             Database.
      */
     private void createDBTable(Connection conn) throws SQLException {
         if (tc.isEntryEnabled())
@@ -2501,15 +2528,15 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
 
         try {
             createTableStmt = conn.createStatement();
-
+            String fullTableName = _recoveryTableName + _logIdentifierString + _recoveryTableNameSuffix;
             if (_isOracle) {
-                String oracleFullTableName = _recoveryTableName + _logIdentifierString + _recoveryTableNameSuffix;
-                String oracleTableString = oracleTablePreString + oracleFullTableName + oracleTablePostString;
+
+                String oracleTableString = genericTableCreatePreString + fullTableName + oracleTablePostString;
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Create Oracle Table using: " + oracleTableString);
 
                 String oracleIndexString = indexPreString + _recoveryIndexName + _logIdentifierString + _recoveryTableNameSuffix +
-                                           " ON " + oracleFullTableName + indexPostString;
+                                           " ON " + fullTableName + indexPostString;
 
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Create Oracle Index using: " + oracleIndexString);
@@ -2518,13 +2545,12 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 // Create index on the new table
                 createTableStmt.executeUpdate(oracleIndexString);
             } else if (_isDB2) {
-                String db2FullTableName = _recoveryTableName + _logIdentifierString + _recoveryTableNameSuffix;
-                String db2TableString = db2TablePreString + db2FullTableName + db2TablePostString;
+                String db2TableString = genericTableCreatePreString + fullTableName + db2TablePostString;
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Create DB2 Table using: " + db2TableString);
 
                 String db2IndexString = indexPreString + _recoveryIndexName + _logIdentifierString + _recoveryTableNameSuffix +
-                                        " ON " + db2FullTableName + indexPostString;
+                                        " ON " + fullTableName + indexPostString;
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Create DB2 Index using: " + db2IndexString);
                 // Create the DB2 table
@@ -2532,13 +2558,12 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 // Create index on the new table
                 createTableStmt.executeUpdate(db2IndexString);
             } else if (_isPostgreSQL) {
-                String postgreSQLFullTableName = _recoveryTableName + _logIdentifierString + _recoveryTableNameSuffix;
-                String postgreSQLTableString = postgreSQLTablePreString + postgreSQLFullTableName + postgreSQLTablePostString;
+                String postgreSQLTableString = genericTableCreatePreString + fullTableName + postgreSQLTablePostString;
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Create PostgreSQL table using: " + postgreSQLTableString);
 
                 String postgreSQLIndexString = indexPreString + _recoveryIndexName + _logIdentifierString + _recoveryTableNameSuffix +
-                                               " ON " + postgreSQLFullTableName + postgreSQLIndexPostString;
+                                               " ON " + fullTableName + postgreSQLIndexPostString;
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Create PostgreSQL index using: " + postgreSQLIndexString);
                 conn.rollback();
@@ -2547,13 +2572,12 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 // Create index on the new table
                 createTableStmt.execute(postgreSQLIndexString);
             } else if (_isSQLServer) {
-                String sqlServerFullTableName = _recoveryTableName + _logIdentifierString + _recoveryTableNameSuffix;
-                String sqlServerTableString = sqlServerTablePreString + sqlServerFullTableName + sqlServerTablePostString;
+                String sqlServerTableString = genericTableCreatePreString + fullTableName + sqlServerTablePostString;
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Create SQL Server table using: " + sqlServerTableString);
 
                 String sqlServerIndexString = indexPreString + _recoveryIndexName + _logIdentifierString + _recoveryTableNameSuffix +
-                                              " ON " + sqlServerFullTableName + indexPostString;
+                                              " ON " + fullTableName + indexPostString;
 
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Create SQL Server index using: " + sqlServerIndexString);
@@ -2563,13 +2587,12 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 // Create index on the new table
                 createTableStmt.execute(sqlServerIndexString);
             } else {
-                String genericFullTableName = _recoveryTableName + _logIdentifierString + _recoveryTableNameSuffix;
-                String genericTableString = genericTablePreString + genericFullTableName + genericTablePostString;
+                String genericTableString = genericTableCreatePreString + fullTableName + genericTablePostString;
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Create Generic Table using: " + genericTableString);
 
                 String genericIndexString = indexPreString + _recoveryIndexName + _logIdentifierString + _recoveryTableNameSuffix +
-                                            " ON " + genericFullTableName + indexPostString;
+                                            " ON " + fullTableName + indexPostString;
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Create Generic Index using: " + genericIndexString);
                 // Create the DB2 table
@@ -2580,7 +2603,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
 
             short serviceId = (short) _recoveryAgent.clientIdentifier();
             String insertString = "INSERT INTO " +
-                                  _recoveryTableName + _logIdentifierString + _recoveryTableNameSuffix +
+                                  fullTableName +
                                   " (SERVER_NAME, SERVICE_ID, RU_ID, RUSECTION_ID, RUSECTION_DATA_INDEX, DATA)" +
                                   " VALUES (?,?,?,?,?,?)";
             if (tc.isDebugEnabled())
@@ -2614,6 +2637,47 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "createDBTable");
+    }
+
+    //------------------------------------------------------------------------------
+    // Method: SQLMultiScopeRecoveryLog.dropDBTable
+    //------------------------------------------------------------------------------
+    /**
+     * Drops the database table that is being used for the recovery
+     * log.
+     *
+     * @exception SQLException thrown if a SQLException is
+     *                encountered when accessing the
+     *                Database.
+     */
+    private void dropDBTable(Connection conn) throws SQLException {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "dropDBTable", new java.lang.Object[] { conn, this });
+
+        Statement dropTableStmt = null;
+
+        boolean success = false;
+
+        try {
+            dropTableStmt = conn.createStatement();
+
+            String fullTableName = _recoveryTableName + _logIdentifierString + _recoveryTableNameSuffix;
+
+            String dropTableString = genericTableDropPreString + fullTableName;
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "drop Table using: " + dropTableString);
+
+            // Drop the table
+            dropTableStmt.executeUpdate(dropTableString);
+
+        } finally {
+            if (dropTableStmt != null && !dropTableStmt.isClosed()) {
+                dropTableStmt.close();
+            }
+        }
+
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "dropDBTable");
     }
 
     //------------------------------------------------------------------------------
@@ -2829,10 +2893,10 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * classes collection of such objects.
      *
      * @param recoverableUnit The RecoverableUnit to be added
-     * @param recovered Flag to indicate if this instances have been created during
-     *            recovery (true) or normal running (false). If its been created
-     *            during recovery we need to reserve the associated id so that
-     *            it can't be allocated to an independent RecoverableUnit.
+     * @param recovered       Flag to indicate if this instances have been created during
+     *                            recovery (true) or normal running (false). If its been created
+     *                            during recovery we need to reserve the associated id so that
+     *                            it can't be allocated to an independent RecoverableUnit.
      */
     protected void addRecoverableUnit(SQLRecoverableUnitImpl recoverableUnit, boolean recovered) {
         if (tc.isEntryEnabled())

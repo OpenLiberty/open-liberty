@@ -26,6 +26,5 @@ Import-Package: \
  !com.sun.security.jgss, \
  !org.bouncycastle.asn1.*, \
  * 
-Include-Resource: \
- @${repo;org.apache.wss4j:wss4j-ws-security-policy-stax;2.3.0}!/!META-INF/**
 
+jakartaeeMe: true

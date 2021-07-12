@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,6 +41,7 @@ import org.junit.Test;
 import componenttest.app.FATServlet;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -94,6 +95,32 @@ public class WorkTestCDIServlet extends FATServlet {
             }
         });
         assertEquals(WorkTestCDIServlet.class, result.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+    }
+
+    /**
+     * Submit work to a WorkManager whose concurrency policy (max1) is blocked
+     * from running it because another application using another WorkManager has
+     * used up the ability to run by having its work block.
+     * This method uses up the remaining queue positions.
+     */
+    public void testSubmitBlockedWork() throws Exception {
+        CountDownLatch running = new CountDownLatch(1);
+        Work work = () -> running.countDown();
+
+        WorkItem item1 = wmProduced.schedule(work);
+        WorkItem item2 = wmProduced.schedule(work);
+        try {
+            WorkItem item3 = wmProduced.schedule(work);
+            fail("Submitted too much work: " + item3);
+        } catch (WorkRejectedException x) {
+            // expected because maxQueueSize is 2
+        }
+
+        assertFalse(running.await(200, TimeUnit.MILLISECONDS));
+
+        // Queued but not started:
+        assertNull(item2.getResult());
+        assertNull(item1.getResult());
     }
 
     /**

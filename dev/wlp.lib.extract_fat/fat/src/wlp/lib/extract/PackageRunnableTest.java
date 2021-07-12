@@ -14,13 +14,11 @@ import static org.junit.Assert.*;
 import static org.junit.Assume.*;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -63,6 +61,7 @@ public class PackageRunnableTest {
     private static final File extractDirectory3 = new File("publish" + File.separator + "wlpExtract3");
     private static File extractLocation = null;
     private static File outputAutoFVTDirectory = null;
+    private static final long DUMMY_MANIFEST_FILE_SIZE = 41;
 
     /*
      * return env as array and add WLP_JAR_EXTRACT_DIR=extractDirectory
@@ -156,10 +155,9 @@ public class PackageRunnableTest {
         // Doesn't work on z/OS (because you can't package into a jar on z/OS)
         assumeTrue(!System.getProperty("os.name").equals("z/OS"));
 
-        Log.info(c, method, "*** This test is ONLY using --include=runnable, and does not include minify!!!!");
         String stdout = server.executeServerScript("package",
                                                    new String[] { "--archive=" + runnableJar.getAbsolutePath(),
-                                                                  "--include=runnable" }).getStdout();
+                                                                  "--include=minify,runnable" }).getStdout();
 
         String searchString = "Server " + serverName + " package complete";
         if (!stdout.contains(searchString)) {
@@ -646,83 +644,102 @@ public class PackageRunnableTest {
      * @throws Exception
      */
     private static boolean validateWLPLibExtractAndManifest() throws Exception {
-
-        String manifest = null;
         String method = "createWLPLibExtract";
-        boolean manifestFound = false;
-        JarFile libExtractJar = new JarFile("lib/LibertyFATTestFiles/wlp.lib.extract.jar");
 
         try {
             // Check if /lib/extract exists
             server.getFileFromLibertyInstallRoot("lib/extract");
 
+            // Make sure the manifest.mf file exists and is greater than 41
+            // bytes: "Dummy manifest written during minify test".
             File manifestFile = new File(server.getInstallRoot(), "lib/extract/META-INF/MANIFEST.MF");
 
-            // Check that the manifest.mf is the correct size
-            for (Enumeration<JarEntry> entries = libExtractJar.entries(); (entries.hasMoreElements() && !manifestFound);) {
-                JarEntry entry = entries.nextElement();
-
-                if (entry.getName().equals("META-INF/MANIFEST.MF")) {
-                    manifestFound = true;
-                    manifest = readJarEntryContent(libExtractJar, entry);
-                    // Compare file system manifest vs jar manifest
-                    if (manifestFile.length() != manifest.length()) {
-                        Log.info(c, method, "File system manifest.mf size was not correct. MANIFEST.MF on file system size = " + manifestFile.length()
-                                            + " MANIFEST.MF in wlp.lib.extract.jar size = " + manifest.length());
-                        if (manifestFile.exists()) {
-                            dumpFileToLog(manifestFile);
-                        } else {
-                            Log.info(c, method, "File " + server.getInstallRoot() + "lib/extract/META-INF/MANIFEST.MF did not exist!");
-                        }
-
-                        // Delete old manifest and write out a new manifest
-                        manifestFile.delete();
-                        manifestFile.createNewFile();
-                        BufferedWriter writer = new BufferedWriter(new FileWriter(manifestFile));
-                        writer.write(manifest);
-                        writer.close();
-
-                        libExtractJar.close();
-                        return true;
-                    } else {
-                        Log.info(c, method, "/lib/extract existed and MANIFEST.MF was the correct size");
-                        libExtractJar.close();
-                        return false;
-                    }
-                }
+            // if the manifest does not exist build it
+            if (!manifestFile.exists()) {
+                Log.info(c, method, "File system manifest.mf did not exist.  Building the complete /lib/extract/ folder.");
+                buildLibExtractFolder();
+                return true;
+            } else if (manifestFile.length() != getManifestSize()) {
+                Log.info(c, method, "File system manifest.mf size did not match manifest.mf size in wlp.lib.extract.jar. MANIFEST.MF on file system size = " + manifestFile.length()
+                                    + ". Deleting the manifest.mf file and rebuilding the complete /lib/extract/ folder.");
+                manifestFile.delete();
+                buildLibExtractFolder();
+                return true;
+            } else {
+                Log.info(c, method, "/lib/extract/ existed, and the manifest.mf was greater than " + DUMMY_MANIFEST_FILE_SIZE + " bytes in size.  Actual size is "
+                                    + manifestFile.length() + " bytes.");
+                return false;
             }
         } catch (FileNotFoundException ex) {
-            //expected - the directory does not exist - so proceed.
+            // expected - the directory does not exist - so proceed.
             Log.info(c, method, "The /lib/extract/ folder did not exist, creating it from /lib/LibertyFATTestFiles/wlp.lib.extract.jar.");
         }
 
-        // Build the /lib/extract structure since it didnt exist
-        RemoteFile libExtractDir = LibertyFileManager.createRemoteFile(server.getMachine(), server.getInstallRoot() + "/lib/extract");
-        libExtractDir.mkdirs();
-
-        for (Enumeration<JarEntry> entries = libExtractJar.entries(); entries.hasMoreElements();) {
-            JarEntry entry = entries.nextElement();
-            String entryName = entry.getName();
-
-            if ("wlp/".equals(entryName) || "wlp/lib/".equals(entryName) || "wlp/lib/extract/".equals(entryName)) {
-                continue;
-            }
-            File libExtractFile = new File(libExtractDir.getAbsolutePath() + "/" + entryName);
-
-            //Jar contains some contents in wlp/lib/extract folder. Copy those contents in libExtractDir directly.
-            if (entryName.startsWith("wlp/lib/extract")) {
-                libExtractFile = new File(libExtractDir.getAbsolutePath() + "/" + entryName.substring(entryName.lastIndexOf("extract/") + 8));
-            }
-
-            if (entryName.endsWith("/")) {
-                libExtractFile.mkdirs();
-            } else if (!entryName.endsWith("/")) {
-                writeFile(libExtractJar, entry, libExtractFile);
-            }
-        }
-        libExtractJar.close();
-
+        // The /lib/extract folder did not exist at all, so create it
+        buildLibExtractFolder();
         return true;
+    }
+
+    /**
+     * Gets the manifest.mf size from the wlp.lib.extract.jar file
+     *
+     * @return
+     * @throws Exception
+     */
+    private static long getManifestSize() throws Exception {
+        JarFile libExtractJar = new JarFile("lib/LibertyFATTestFiles/wlp.lib.extract.jar");
+        long mfSize = 0;
+        try {
+            for (Enumeration<JarEntry> entries = libExtractJar.entries(); entries.hasMoreElements();) {
+                JarEntry entry = entries.nextElement();
+                if (entry.getName().equals("META-INF/MANIFEST.MF")) {
+                    return entry.getSize();
+                }
+            }
+        } finally {
+            libExtractJar.close();
+        }
+        return mfSize;
+    }
+
+    /**
+     * Builds the /lib/extract folder from the wlp.lib.extract.jar
+     *
+     * @throws Exception
+     */
+    private static void buildLibExtractFolder() throws Exception {
+
+        JarFile libExtractJar = new JarFile("lib/LibertyFATTestFiles/wlp.lib.extract.jar");
+
+        try {
+            // Build the /lib/extract structure since it didnt exist
+            RemoteFile libExtractDir = LibertyFileManager.createRemoteFile(server.getMachine(), server.getInstallRoot() + "/lib/extract");
+            libExtractDir.mkdirs();
+
+            for (Enumeration<JarEntry> entries = libExtractJar.entries(); entries.hasMoreElements();) {
+                JarEntry entry = entries.nextElement();
+                String entryName = entry.getName();
+
+                if ("wlp/".equals(entryName) || "wlp/lib/".equals(entryName) || "wlp/lib/extract/".equals(entryName)) {
+                    continue;
+                }
+                File libExtractFile = new File(libExtractDir.getAbsolutePath() + "/" + entryName);
+
+                //Jar contains some contents in wlp/lib/extract folder. Copy those contents in libExtractDir directly.
+                if (entryName.startsWith("wlp/lib/extract")) {
+                    libExtractFile = new File(libExtractDir.getAbsolutePath() + "/" + entryName.substring(entryName.lastIndexOf("extract/") + 8));
+                }
+
+                if (entryName.endsWith("/")) {
+                    libExtractFile.mkdirs();
+                } else if (!entryName.endsWith("/")) {
+                    writeFile(libExtractJar, entry, libExtractFile);
+                }
+            }
+        } finally {
+            libExtractJar.close();
+        }
+
     }
 
     /**

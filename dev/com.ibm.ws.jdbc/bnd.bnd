@@ -28,7 +28,8 @@ Export-Package: \
     com.ibm.ws.rsadapter, \
     com.ibm.ws.rsadapter.jdbc, \
     com.ibm.ws.rsadapter.impl, \
-    com.ibm.websphere.ce.cm
+    com.ibm.websphere.ce.cm, \
+    com.ibm.websphere.rsadapter
 
 Import-Package: \
     com.ibm.ws.jca.adapter, \

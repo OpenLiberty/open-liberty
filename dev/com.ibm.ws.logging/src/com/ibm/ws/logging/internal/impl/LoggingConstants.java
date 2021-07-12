@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2020 IBM Corporation and others.
+ * Copyright (c) 2010, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,7 @@ package com.ibm.ws.logging.internal.impl;
 
 public interface LoggingConstants {
     public static enum TraceFormat {
-        BASIC, ENHANCED, ADVANCED;
+        BASIC, TBASIC, ENHANCED, ADVANCED;
     }
 
     String DEFAULT_LOG_LEVEL = "AUDIT";
@@ -40,8 +40,10 @@ public interface LoggingConstants {
 
     String DEFAULT_MESSAGE_SOURCE = "message";
     String DEFAULT_MESSAGE_FORMAT = "simple";
+    String TBASIC_MESSAGE_FORMAT = "tbasic";
     String DEFAULT_CONSOLE_SOURCE = "message";
     String DEFAULT_CONSOLE_FORMAT = "dev";
+    String TBASIC_CONSOLE_FORMAT = "tbasic";
     String DEFAULT_TRACE_SOURCE = "trace";
     String JSON_FORMAT = "json";
     String DEPRECATED_DEFAULT_FORMAT = "basic";

@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.oauth_oidc.fat.commonTest;
 
@@ -141,10 +141,10 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
 
     // All OP actions/tasks should be included in this list!
     public static final String[] OP_TEST_ACTIONS = { INVOKE_OAUTH_CLIENT, SUBMIT_TO_AUTH_SERVER, SUBMIT_TO_AUTH_SERVER_FOR_TOKEN, INVOKE_AUTH_SERVER, PERFORM_LOGIN,
-                                                     PERFORM_ISAM_LOGIN, INVOKE_PROTECTED_RESOURCE, INVOKE_ENDPOINT, INVOKE_INTROSPECTION_ENDPOINT, INVOKE_REVOCATION_ENDPOINT,
-                                                     INVOKE_DISCOVERY_ENDPOINT, INVOKE_JWT_ENDPOINT, INVOKE_AUTH_ENDPOINT, INVOKE_AUTH_ENDPOINT_WITH_BASIC_AUTH,
-                                                     INVOKE_TOKEN_ENDPOINT, LOGOUT, INVOKE_TOKEN_ENDPOINT_CL_CRED, INVOKE_TOKEN_ENDPOINT_PASSWORD, INVOKE_REFRESH_ENDPOINT,
-                                                     PERFORM_IDP_LOGIN, PERFORM_IDP_LOGIN, INVOKE_ACS, INVOKE_RS_PROTECTED_RESOURCE };
+            PERFORM_ISAM_LOGIN, INVOKE_PROTECTED_RESOURCE, INVOKE_ENDPOINT, INVOKE_INTROSPECTION_ENDPOINT, INVOKE_REVOCATION_ENDPOINT,
+            INVOKE_DISCOVERY_ENDPOINT, INVOKE_JWT_ENDPOINT, INVOKE_AUTH_ENDPOINT, INVOKE_AUTH_ENDPOINT_WITH_BASIC_AUTH,
+            INVOKE_TOKEN_ENDPOINT, LOGOUT, INVOKE_TOKEN_ENDPOINT_CL_CRED, INVOKE_TOKEN_ENDPOINT_PASSWORD, INVOKE_REFRESH_ENDPOINT,
+            PERFORM_IDP_LOGIN, PERFORM_IDP_LOGIN, INVOKE_ACS, INVOKE_RS_PROTECTED_RESOURCE };
 
     public static final String[] BASIC_AUTHENTICATION_ACTIONS = { INVOKE_OAUTH_CLIENT, SUBMIT_TO_AUTH_SERVER, PERFORM_LOGIN };
     // TODO For now, the actions are the same since we're using the id_token,
@@ -159,7 +159,7 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String[] BASIC_AUTHENTICATION_NOJSP_ACTIONS_WITH_BASIC_AUTH = { INVOKE_AUTH_ENDPOINT_WITH_BASIC_AUTH };
     public static final String[] BASIC_PROTECTED_RESOURCE_NOJSP_ACTIONS = { INVOKE_AUTH_ENDPOINT, PERFORM_LOGIN, INVOKE_TOKEN_ENDPOINT, INVOKE_PROTECTED_RESOURCE };
     public static final String[] BASIC_PROTECTED_RESOURCE_NOJSP_ACTIONS2 = { INVOKE_AUTH_ENDPOINT, PERFORM_IDP_LOGIN, INVOKE_ACS, INVOKE_TOKEN_ENDPOINT,
-                                                                             INVOKE_PROTECTED_RESOURCE };
+            INVOKE_PROTECTED_RESOURCE };
     public static final String[] BASIC_TOKEN_NOJSP_ACTIONS = { INVOKE_AUTH_ENDPOINT, PERFORM_LOGIN, INVOKE_TOKEN_ENDPOINT };
     public static final String[] BASIC_TOKEN_NOJSP_ACTIONS_WITH_BASIC_AUTH = { INVOKE_AUTH_ENDPOINT_WITH_BASIC_AUTH, INVOKE_TOKEN_ENDPOINT };
     public static final String[] BASIC_TOKEN_NOJSP_ONLY_ACTIONS = { INVOKE_TOKEN_ENDPOINT };
@@ -170,7 +170,7 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String[] APP_PASSWORD_NOJSP_ACTIONS = { INVOKE_TOKEN_ENDPOINT };
     public static final String[] APP_PASSWORD_PROTECTED_RESOURCE_NOJSP_ACTIONS = { INVOKE_TOKEN_ENDPOINT, INVOKE_PROTECTED_RESOURCE };
     public static final String[] BASIC_PROTECTED_RESOURCE_NOJSP_ACTIONS_WITH_BASIC_AUTH = { INVOKE_AUTH_ENDPOINT_WITH_BASIC_AUTH, INVOKE_TOKEN_ENDPOINT,
-                                                                                            INVOKE_PROTECTED_RESOURCE };
+            INVOKE_PROTECTED_RESOURCE };
     public static final String[] BASIC_PROTECTED_RESOURCE_NOJSP_AGAIN_ACTIONS = { INVOKE_AUTH_ENDPOINT, INVOKE_TOKEN_ENDPOINT, INVOKE_PROTECTED_RESOURCE };
     public static final String[] BASIC_AUTHENTICATE_ACTIONS_WITH_BASIC_AUTH = { INVOKE_OAUTH_CLIENT, SUBMIT_TO_AUTH_SERVER_WITH_BASIC_AUTH, };
     public static final String[] BASIC_PROTECTED_RESOURCE_ACTIONS_WITH_BASIC_AUTH = { INVOKE_OAUTH_CLIENT, SUBMIT_TO_AUTH_SERVER_WITH_BASIC_AUTH, INVOKE_PROTECTED_RESOURCE };
@@ -203,9 +203,9 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String[] BASIC_RS_PROTECTED_RESOURCE_ACTIONS = { INVOKE_OAUTH_CLIENT, SUBMIT_TO_AUTH_SERVER, PERFORM_LOGIN, INVOKE_RS_PROTECTED_RESOURCE };
     public static final String[] BASIC_JWT_RS_PROTECTED_RESOURCE_ACTIONS = { INVOKE_OAUTH_CLIENT, SUBMIT_TO_AUTH_SERVER, PERFORM_ISAM_LOGIN, INVOKE_RS_PROTECTED_RESOURCE };
     public static final String[] BASIC_PROTECTED_RESOURCE_RS_PROTECTED_RESOURCE_ACTIONS = { INVOKE_OAUTH_CLIENT, SUBMIT_TO_AUTH_SERVER, PERFORM_LOGIN, INVOKE_PROTECTED_RESOURCE,
-                                                                                            INVOKE_RS_PROTECTED_RESOURCE };
+            INVOKE_RS_PROTECTED_RESOURCE };
     public static final String[] BASIC_PROTECTED_RESOURCE_JWT_RS_PROTECTED_RESOURCE_ACTIONS = { INVOKE_OAUTH_CLIENT, SUBMIT_TO_AUTH_SERVER, PERFORM_ISAM_LOGIN,
-                                                                                                INVOKE_PROTECTED_RESOURCE, INVOKE_RS_PROTECTED_RESOURCE };
+            INVOKE_PROTECTED_RESOURCE, INVOKE_RS_PROTECTED_RESOURCE };
     public static final String[] INVOKE_RS_PROTECTED_RESOURCE_ONLY_ACTIONS = { INVOKE_RS_PROTECTED_RESOURCE };
     public static final String[] INVOKE_RS_PROTECTED_RESOURCE_LOGIN_ACTIONS = { INVOKE_RS_PROTECTED_RESOURCE, PERFORM_LOGIN };
 
@@ -222,7 +222,7 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
 
     // All RP actions/tasks should be included in this list!
     public static final String[] RP_TEST_ACTIONS = { GET_LOGIN_PAGE, SPECIFY_PROVIDER, LOGIN_OP_DIRECTLY, LOGIN_USER, GET_RP_CONSENT, LOGIN_AGAIN, LOGOUT, PERFORM_IDP_LOGIN,
-                                                     INVOKE_ACS };
+            INVOKE_ACS };
 
     // public static final List <String> SPECIFY_PROVIDER_ONLY = new
     // List<String>(GET_LOGIN_PAGE, SPECIFY_PROVIDER ) ;
@@ -339,6 +339,10 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String USERSTOKENMGMT_ENDPOINT = "usersTokenManagement";
     public static final String CLIENTMETATYPE_ENDPOINT = "clientMetatype";
     public static final String CHECKSESSIONIFRAME_ENDPOINT = "check_session_iframe";
+
+    public static final String JSON_USERINFO_DATA = "json_userinfo_data";
+    public static final String JWS_USERINFO_DATA = "jws_userinfo_data";
+    public static final String JWE_USERINFO_DATA = "jwe_userinfo_data";
 
     public static final String LOCAL_VALIDATION_METHOD = "";
 
@@ -591,6 +595,8 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String JWT_TOKEN_FORMAT = "jwt";
     public static final String MP_JWT_TOKEN_FORMAT = "mpjwt";
     public static final String OPAQUE_TOKEN_FORMAT = "opaque";
+    public static final String JWS_TOKEN_FORMAT = "jws_token";
+    public static final String JWE_TOKEN_FORMAT = "jwe_token";
     public static final String APP_PASSWORD_KEY = "app_password";
     public static final String APP_TOKEN_KEY = "app_token";
     public static final String APP_ID_KEY = "app_id";
@@ -805,7 +811,7 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String[] JWT_BUILDER_REQUIRED_HEADER_KEYS = { HEADER_ALGORITHM };
     public static final String[] JWT_BUILDER_REQUIRED_PAYLOAD_KEYS = { PAYLOAD_ISSUER, PAYLOAD_EXPIRATION_TIME_IN_SECS, PAYLOAD_TOKEN_TYPE, PAYLOAD_ISSUED_AT_TIME_IN_SECS };
     public static final String[] MP_JWT_BUILDER_REQUIRED_PAYLOAD_KEYS = { PAYLOAD_ISSUER, PAYLOAD_EXPIRATION_TIME_IN_SECS, PAYLOAD_TOKEN_TYPE, PAYLOAD_ISSUED_AT_TIME_IN_SECS,
-                                                                          PAYLOAD_USER_PRINCIPAL_NAME };
+            PAYLOAD_USER_PRINCIPAL_NAME };
 
     /********************************* JWT Consumer API Servlet ********************************/
     public static final String JWT_CONSUMER_SERVLET = "jwtconsumerclient";

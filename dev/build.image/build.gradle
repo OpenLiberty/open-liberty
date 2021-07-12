@@ -262,13 +262,13 @@ def jakartaee9Features() {
     features
 }
 
-def microProfile3Features() {
-    String features = project.file('profiles/microProfile3/features.xml').readLines()
+def microProfile4Features() {
+    String features = project.file('profiles/microProfile4/features.xml').readLines()
     features
 }
 
-def microProfile4Features() {
-    String features = project.file('profiles/microProfile4/features.xml').readLines()
+def microProfile5Features() {
+    String features = project.file('profiles/microProfile5/features.xml').readLines()
     features
 }
 
@@ -429,29 +429,6 @@ if (isAutomatedBuild && !isIFIXBuild) {
             }
         }
     }
-
-    task packageOpenLibertyMicroProfile3(type: PackageLibertyWithFeatures) {
-        doFirst {
-            excludedEE7Features.each {
-                this.&removeFeature("${it}")
-            }
-        }
-
-        dependsOn parent.subprojects.assemble
-        dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
-        withFeatures this.&microProfile3Features
-        packageServerConflict = true
-        outputTo packageDir
-        doLast {
-            copy {
-                from "$packageDir/wlp/templates/servers/microProfile3/server.xml"
-                into "$packageDir/wlp/templates/servers/defaultServer"
-            }
-            excludedEE7Features.each {
-                this.&restoreFeature("${it}")
-            }
-        }
-    }
     
     task packageOpenLibertyMicroProfile4(type: PackageLibertyWithFeatures) {
         doFirst {
@@ -467,6 +444,28 @@ if (isAutomatedBuild && !isIFIXBuild) {
         doLast {
             copy {
                 from "$packageDir/wlp/templates/servers/microProfile4/server.xml"
+                into "$packageDir/wlp/templates/servers/defaultServer"
+            }
+            excludedEE7Features.each {
+                this.&restoreFeature("${it}")
+            }
+        }
+    }
+    
+    task packageOpenLibertyMicroProfile5(type: PackageLibertyWithFeatures) {
+        doFirst {
+            excludedEE7Features.each {
+                this.&removeFeature("${it}")
+            }
+        }
+
+        dependsOn parent.subprojects.assemble
+        dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
+        withFeatures this.&microProfile5Features
+        outputTo packageDir
+        doLast {
+            copy {
+                from "$packageDir/wlp/templates/servers/microProfile5/server.xml"
                 into "$packageDir/wlp/templates/servers/defaultServer"
             }
             excludedEE7Features.each {
@@ -576,20 +575,6 @@ if (isAutomatedBuild && !isIFIXBuild) {
     }
     publish.dependsOn zipOpenLibertyJavaee8
 
-    task zipOpenLibertyMicroProfile3(type: Zip) {
-        dependsOn packageOpenLibertyMicroProfile3
-        dependsOn genChecksums
-        baseName 'openliberty-microProfile3'
-        from packageDir
-        destinationDir distsDir
-        version releaseVersion
-        doLast {
-            rootProject.userProps.setProperty('zipopenliberty.microprofile3.archivename', archivePath.toString())
-            rootProject.storeProps()
-        }
-    }
-    publish.dependsOn zipOpenLibertyMicroProfile3
-
     task zipOpenLibertyMicroProfile4(type: Zip) {
         dependsOn packageOpenLibertyMicroProfile4
         dependsOn genChecksums
@@ -603,6 +588,20 @@ if (isAutomatedBuild && !isIFIXBuild) {
         }
     }
     publish.dependsOn zipOpenLibertyMicroProfile4
+
+    task zipOpenLibertyMicroProfile5(type: Zip) {
+        dependsOn packageOpenLibertyMicroProfile5
+        dependsOn genChecksums
+        baseName 'openliberty-microProfile5'
+        from packageDir
+        destinationDir distsDir
+        version releaseVersion
+        doLast {
+            rootProject.userProps.setProperty('zipopenliberty.microprofile5.archivename', archivePath.toString())
+            rootProject.storeProps()
+        }
+    }
+    publish.dependsOn zipOpenLibertyMicroProfile5
 
     // Includes both kind=ga and kind=beta features.
     task zipOpenLibertyBeta(type: Zip) {
@@ -635,7 +634,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
 
     // Generate checksums
     task genZipChecksums() {
-        dependsOn zipOpenLibertyDev, zipOpenLibertyAll, zipOpenLiberty, zipOpenLibertyKernel, zipOpenLibertyWebProfile8, zipOpenLibertyJavaee8, zipOpenLibertyMicroProfile3, zipOpenLibertyMicroProfile4, zipOpenLibertyBeta, zipOpenLibertyJakartaee9Beta
+        dependsOn zipOpenLibertyDev, zipOpenLibertyAll, zipOpenLiberty, zipOpenLibertyKernel, zipOpenLibertyWebProfile8, zipOpenLibertyJavaee8, zipOpenLibertyMicroProfile4, zipOpenLibertyMicroProfile5, zipOpenLibertyBeta, zipOpenLibertyJakartaee9Beta
         doLast {
           generateZipChecksums(ant)
           ant.calcZipChecksums(installRoot:"${distsDir}") {}

@@ -131,7 +131,7 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
     /**
      * The type of data source (for example, javax.sql.XADataSource) or java.sql.Driver that this managed connection factory uses to establish connections.
      */
-    final Class<?> type;
+    public final Class<?> type;
 
     /**
      * Helps cope with differences between databases/JDBC drivers.

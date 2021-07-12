@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,18 +13,22 @@ package com.ibm.ws.jaxrs20.fat.exceptionmappers;
 import static com.ibm.ws.jaxrs20.fat.TestUtils.asString;
 import static com.ibm.ws.jaxrs20.fat.TestUtils.getPort;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+
+import java.io.IOException;
 
 import javax.xml.bind.JAXBContext;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -38,18 +42,17 @@ import com.ibm.ws.jaxrs.fat.exceptionmappers.mapped.CommentError;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
-@SkipForRepeat("EE9_FEATURES") // currently broken due to multiple issues
 public class ExceptionMappersTest {
 
     @Server("com.ibm.ws.jaxrs.fat.providers")
     public static LibertyServer server;
 
-    private static HttpClient client;
+    private static CloseableHttpClient client;
     private static final String providerswar = "providers";
 
     @BeforeClass
@@ -81,12 +84,12 @@ public class ExceptionMappersTest {
 
     @Before
     public void getHttpClient() {
-        client = new DefaultHttpClient();
+        client = HttpClientBuilder.create().build();
     }
 
     @After
-    public void resetHttpClient() {
-        client.getConnectionManager().shutdown();
+    public void resetHttpClient() throws IOException {
+        client.close();
     }
 
     private String getBaseTestUri() {
@@ -121,8 +124,8 @@ public class ExceptionMappersTest {
             newPostURILocation = resp.getFirstHeader("Location").getValue();
         } finally {
             // Do this so that connection for GET below doesn't fail
-            client.getConnectionManager().shutdown();
-            client = new DefaultHttpClient();
+            client.close();
+            client = HttpClientBuilder.create().build();
         }
 
         HttpGet getMethod = new HttpGet(newPostURILocation);
@@ -266,7 +269,7 @@ public class ExceptionMappersTest {
      * @throws Exception
      */
     @Test
-    @AllowedFFDC("java.lang.NullPointerException")
+    @AllowedFFDC({"java.lang.NullPointerException", "org.jboss.resteasy.spi.UnhandledException"})
     public void testRuntimeExceptionMappedProvider() throws Exception {
 
         /*
@@ -287,7 +290,7 @@ public class ExceptionMappersTest {
      * @throws Exception
      */
     @Test
-    @AllowedFFDC("java.lang.NullPointerException")
+    @AllowedFFDC({"java.lang.NullPointerException", "org.jboss.resteasy.spi.UnhandledException"})
     public void testNullPointerExceptionMappedProvider() throws Exception {
 
         HttpDelete postMethod = new HttpDelete(mappedUri + "/10000");
@@ -483,7 +486,7 @@ public class ExceptionMappersTest {
      * @throws Exception
      */
     @Test
-    @AllowedFFDC("java.lang.NumberFormatException")
+    @AllowedFFDC({"java.lang.NumberFormatException", "org.jboss.resteasy.spi.UnhandledException"})
     public void testRuntimeExceptionNoMappingProvider() throws Exception {
 
         // nomapped.Guestbook.deleteMessage() takes in a String param and
@@ -502,7 +505,7 @@ public class ExceptionMappersTest {
      * @throws Exception
      */
     @Test
-    @AllowedFFDC("java.lang.NullPointerException")
+    @AllowedFFDC({"java.lang.NullPointerException", "org.jboss.resteasy.spi.UnhandledException"})
     public void testNullPointerExceptionNoMappingProvider() throws Exception {
 
         HttpDelete postMethod = new HttpDelete(nomappedUri + "/10000");
@@ -516,7 +519,7 @@ public class ExceptionMappersTest {
      * @throws Exception
      */
     @Test
-    @AllowedFFDC("org.apache.cxf.interceptor.Fault")
+    @AllowedFFDC({"org.apache.cxf.interceptor.Fault", "org.jboss.resteasy.spi.UnhandledException"})
     public void testErrorNoMappingProvider() throws Exception {
 
         HttpDelete postMethod = new HttpDelete(nomappedUri + "/-99999");
@@ -530,7 +533,7 @@ public class ExceptionMappersTest {
      * @throws Exception
      */
     @Test
-    @AllowedFFDC("org.apache.cxf.interceptor.Fault")
+    @AllowedFFDC({"org.apache.cxf.interceptor.Fault", "org.jboss.resteasy.spi.UnhandledException"})
     public void testCheckExceptionNoMappingProvider() throws Exception {
 
         HttpPut putMethod = new HttpPut(nomappedUri + "/-99999");
@@ -604,9 +607,14 @@ public class ExceptionMappersTest {
 
         HttpPut putMethod = new HttpPut(nullconditionsUri + "/webappexceptionwithcauseandresponse");
         HttpResponse resp = client.execute(putMethod);
-        // Response.Status.NOT_ACCEPTABLE
-//        assertEquals(406, resp.getStatusLine().getStatusCode());
-        assertEquals("RuntimeExceptionMapper was used", asString(resp));
+        String response = asString(resp);
+        if (JakartaEE9Action.isActive()) {
+            // my reading of section 3.3.4 says RESTEasy does it the right way...
+            assertThat(response, Matchers.containsString("Entity inside response"));
+        } else {
+            // CXF seems to use the exception mapper instead of the response entity passed to the WebApplicationException...
+            assertEquals("RuntimeExceptionMapper was used", response);
+        }
     }
 
     /**
@@ -653,12 +661,12 @@ public class ExceptionMappersTest {
      * @throws Exception
      */
     @Test
+    @AllowedFFDC("com.ibm.ws.jaxrs.fat.exceptionmappers.nullconditions.GuestbookNullException")
     public void testExceptionMapperThrowsException() throws Exception {
 
         HttpPost postMethod = new HttpPost(nullconditionsUri + "/exceptionmapperthrowsexception");
         HttpResponse resp = client.execute(postMethod);
         assertEquals(500, resp.getStatusLine().getStatusCode());
-        assertEquals("", asString(resp));
     }
 
     /**
@@ -699,7 +707,7 @@ public class ExceptionMappersTest {
      * @throws Exception
      */
     @Test
-    @AllowedFFDC("org.apache.cxf.interceptor.Fault")
+    @AllowedFFDC({"org.apache.cxf.interceptor.Fault", "org.jboss.resteasy.spi.UnhandledException"})
     public void testThrowableCanBeThrown() throws Exception {
 
         HttpDelete deleteMethod = new HttpDelete(nullconditionsUri + "/throwsthrowable");
