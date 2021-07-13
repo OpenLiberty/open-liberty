@@ -180,9 +180,9 @@ public class RecoveryLogManagerImpl implements RecoveryLogManager {
      *                support the supplied LogProperties
      */
     @Override
-    public synchronized RecoveryLog getRecoveryLog(FailureScope failureScope, LogProperties logProperties, boolean isPeerRecoverySupported) throws InvalidLogPropertiesException {
+    public synchronized RecoveryLog getRecoveryLog(FailureScope failureScope, LogProperties logProperties) throws InvalidLogPropertiesException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "getRecoveryLog", new Object[] { failureScope, logProperties, isPeerRecoverySupported, this });
+            Tr.entry(tc, "getRecoveryLog", new Object[] { failureScope, logProperties, this });
         /* 5@PK01151D */
         // If we're on Z, we can have a ZLogProperties (System Logger) based
         // recovery log.  Otherwise, FileLogProperties and CustomLogProperties are the only supported types.
@@ -263,7 +263,7 @@ public class RecoveryLogManagerImpl implements RecoveryLogManager {
                 if (multiScopeRecoveryLog == null) {
                     // Either a single scope log is required or there was no
                     // existing log for the given identifier. Create a new log.
-                    multiScopeRecoveryLog = new MultiScopeRecoveryLog(fileLogProperties, _recoveryAgent, failureScope, isPeerRecoverySupported);
+                    multiScopeRecoveryLog = new MultiScopeRecoveryLog(fileLogProperties, _recoveryAgent, failureScope);
 
                     if (logType == FileLogProperties.LOG_TYPE_MULTIPLE_SCOPE) {
                         // If this is a multiple scope log then we store it in the map so

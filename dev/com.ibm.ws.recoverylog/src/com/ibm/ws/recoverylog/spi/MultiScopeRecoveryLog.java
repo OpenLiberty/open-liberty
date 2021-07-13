@@ -311,11 +311,6 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
     volatile boolean _failAssociatedLog = false;
 
     /**
-     * A flag to indicate whether we are operating in a peer recovery environment.
-     */
-    private final boolean _isPeerRecoverySupported;
-
-    /**
      * A flag that allows the support of the "original" peer recovery behaviour, where recovery logs
      * would not be deleted.
      */
@@ -345,9 +340,9 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
      * @param recoveryAgent The RecoveryAgent of the associated client service.
      * @param fs The FailureScope of the associated client service.
      */
-    MultiScopeRecoveryLog(FileLogProperties fileLogProperties, RecoveryAgent recoveryAgent, FailureScope fs, boolean isPeerRecoverySupported) {
+    MultiScopeRecoveryLog(FileLogProperties fileLogProperties, RecoveryAgent recoveryAgent, FailureScope fs) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "MultiScopeRecoveryLog", new Object[] { fileLogProperties, recoveryAgent, fs, isPeerRecoverySupported });
+            Tr.entry(tc, "MultiScopeRecoveryLog", new Object[] { fileLogProperties, recoveryAgent, fs });
 
         // Cache the supplied information
         _fileLogProperties = fileLogProperties;
@@ -364,7 +359,6 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
         _clientVersion = recoveryAgent.clientVersion();
         _serverName = fs.serverName();
         _failureScope = fs;
-        _isPeerRecoverySupported = isPeerRecoverySupported;
 
         // Lookup the system file separator character needed to build path names
         if (_fileSeparator == null) {
@@ -531,7 +525,7 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
         // on disk, otherwise just return directly to the caller (after incrementing the closes required counter)
         if (_logHandle == null) {
             // Create the LogHandle which will manage the physical log files.
-            _logHandle = new LogHandle(this, _clientName, _clientVersion, _serverName, _logName, _logDirectory, _logFileSize, _maxLogFileSize, _failureScope, _isPeerRecoverySupported);
+            _logHandle = new LogHandle(this, _clientName, _clientVersion, _serverName, _logName, _logDirectory, _logFileSize, _maxLogFileSize, _failureScope);
 
             // Allocate the map which holds the RecoverableUnit objects
             _recoverableUnits = new HashMap<Long, RecoverableUnit>();
@@ -1100,7 +1094,7 @@ public class MultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLog {
 
                     // Reset the internal state so that a subsequent open operation
                     // occurs with a "clean" environment.
-                    if (_isPeerRecoverySupported && !_retainLogsInPeerRecoveryEnv) {
+                    if (Configuration.HAEnabled() && !_retainLogsInPeerRecoveryEnv) {
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "Working in a peer recovery environment retain logHandle on close");
                     } else

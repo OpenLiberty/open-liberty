@@ -154,11 +154,6 @@ class LogHandle {
     FailureScope _failureScope;
 
     /**
-     * A flag to indicate whether we are operating in a peer recovery environment.
-     */
-    private final boolean _isPeerRecoverySupported;
-
-    /**
      * A flag that allows the support of the "original" peer recovery behaviour, where recovery logs
      * would not be deleted.
      */
@@ -196,8 +191,7 @@ class LogHandle {
               String logDirectory,
               int logFileSize,
               int maxLogFileSize,
-              FailureScope fs,
-              boolean isPeerRecoverySupported) {
+              FailureScope fs) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "LogHandle", new java.lang.Object[] { recoveryLog,
                                                                serviceName,
@@ -207,8 +201,7 @@ class LogHandle {
                                                                logDirectory,
                                                                logFileSize,
                                                                maxLogFileSize,
-                                                               fs,
-                                                               isPeerRecoverySupported });
+                                                               fs });
 
         _recoveryLog = recoveryLog;
         _serviceName = serviceName;
@@ -219,7 +212,6 @@ class LogHandle {
         _maxLogFileSize = maxLogFileSize;
         _logFileSize = logFileSize;
         _failureScope = fs;
-        _isPeerRecoverySupported = isPeerRecoverySupported;
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "LogHandle", this);
@@ -764,7 +756,7 @@ class LogHandle {
             throw new InternalLogException(exc);
         }
 
-        if (_isPeerRecoverySupported && !_retainLogsInPeerRecoveryEnv) {
+        if (Configuration.HAEnabled() && !_retainLogsInPeerRecoveryEnv) {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Working in a peer recovery environment retain logFileHandles on close");
         } else {

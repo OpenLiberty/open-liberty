@@ -56,7 +56,7 @@ public interface RecoveryLogManager {
      * @exception InvalidLogPropertiesException The RLS does not recognize or cannot
      *                support the supplied LogProperties
      */
-    public RecoveryLog getRecoveryLog(FailureScope failureScope, LogProperties logProperties, boolean isPeerRecoverySupported) throws InvalidLogPropertiesException;
+    public RecoveryLog getRecoveryLog(FailureScope failureScope, LogProperties logProperties) throws InvalidLogPropertiesException;
 
     /**
      * @param localRecoveryIdentity

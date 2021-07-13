@@ -291,7 +291,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                 //
                 // Create the Transaction log
                 //
-                _transactionLog = rlm.getRecoveryLog(fs, transactionLogProps, _isPeerRecoverySupported);
+                _transactionLog = rlm.getRecoveryLog(fs, transactionLogProps);
 
                 // Configure the SQL HADB Retry parameters
                 if (_transactionLog != null && _transactionLog instanceof HeartbeatLog) {
@@ -304,7 +304,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                 //
                 // Create the Partner (XAResources) log
                 //
-                _partnerLog = rlm.getRecoveryLog(fs, partnerLogProps, _isPeerRecoverySupported);
+                _partnerLog = rlm.getRecoveryLog(fs, partnerLogProps);
 
                 // Configure the SQL HADB Retry parameters
                 if (_partnerLog != null && _partnerLog instanceof HeartbeatLog) {
@@ -925,7 +925,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                         // Get the Partner (XAResources) log
                         //
                         final RecoveryLogManager rlm = Configuration.getLogManager();
-                        partnerLog = rlm.getRecoveryLog(fs, partnerLogProps, _isPeerRecoverySupported);
+                        partnerLog = rlm.getRecoveryLog(fs, partnerLogProps);
 
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "Custom PartnerLog is set - ", partnerLog);
