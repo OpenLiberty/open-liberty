@@ -10,6 +10,7 @@
  *******************************************************************************/
 
 dependencies {
-  requiredLibs 'org.json:json:20080701' 
-  requiredLibs project(':io.openliberty.org.testcontainers')
+  requiredLibs 'org.json:json:20080701'
 } 
+
+addRequiredLibraries.dependsOn copyTestContainers

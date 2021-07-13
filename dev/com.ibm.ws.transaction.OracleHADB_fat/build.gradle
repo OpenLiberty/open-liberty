@@ -13,8 +13,7 @@
 dependencies {
   requiredLibs project(":com.ibm.ws.tx.embeddable"),
                project(":com.ibm.ws.transaction.DerbyHADB_fat"),
-               project(':io.openliberty.org.apache.commons.logging'),
-               project(':io.openliberty.org.testcontainers')
+               project(':io.openliberty.org.apache.commons.logging')
 }
 
 File sharedDir = new File(autoFvtDir, 'publish/shared/resources')
@@ -72,6 +71,7 @@ addRequiredLibraries.dependsOn copyCommonFiles
 addRequiredLibraries.dependsOn copyJdbcDrivers
 addRequiredLibraries.dependsOn copyTxJdbcDrivers
 addRequiredLibraries.dependsOn addJakartaTransformer
+addRequiredLibraries.dependsOn copyTestContainers
 
 clean.doLast {
   if (file('test-applications').exists()){

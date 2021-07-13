@@ -27,7 +27,12 @@ Export-Package: \
 	org.rnorth.*;version="1.0.8",\
 	org.slf4j.*;version="1.7.30"
 
-test.project: true
+#Ensure that /META-INF/service folder from testcontainers core project is included in bundle.
+# This will ensure that the other docker container strategies are accessible at runtime.	
+Include-Resource: \
+	@${repo;org.testcontainers:testcontainers;1.15.3;EXACT}!/META-INF/**
+
+#Ensure that a stub project is created in CL
 generate.replacement: true
 
 #Notice: com.github.docker-java:docker-java-api has a runtime dependency on 
@@ -36,8 +41,6 @@ generate.replacement: true
 # Currently, the version included in each FAT is 2.11.2. If Testcontainers ever depends on a version of
 # jackson-annotations that is not backwards compatible with 2.11.2 then we will need to upgrade 
 # the version we include in FATs by updating /cnf/build.gradle configurations binaries.
-
-
 -buildpath: \
 	com.github.docker-java:docker-java-api;version=3.2.8,\
 	com.github.docker-java:docker-java-transport;version=3.2.8,\
