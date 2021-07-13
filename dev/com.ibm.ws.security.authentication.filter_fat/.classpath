@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="fat/src"/>
+	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="lib" path="/build.sharedResources/lib/junit/old/junit.jar">
+		<attributes>
+			<attribute name="bsn" value="../build.sharedResources/lib/junit/old/junit.jar"/>
+			<attribute name="type" value="EXTERNAL"/>
+			<attribute name="project" value="build.depScanner"/>
+			<attribute name="version" value="file"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" path="/fattest.simplicity"/>
+	<classpathentry kind="lib" path="/Users/utle/.m2/repository/com/ibm/ws/componenttest/public.api/1.0.0/public.api-1.0.0.jar">
+		<attributes>
+			<attribute name="bsn" value="com.ibm.ws.componenttest:public.api"/>
+			<attribute name="type" value="REPO"/>
+			<attribute name="project" value="build.example.testcontainers_fat"/>
+			<attribute name="version" value="1.0.0"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="src" path="/com.ibm.ws.webcontainer.security_test.servlets"/>
+	<classpathentry kind="src" path="/com.ibm.ws.security.spnego.fat.common"/>
+	<classpathentry kind="lib" path="/Users/utle/.ibmdhe/repository/com/ibm/ws/javax/j2ee/servlet/3.1/servlet-3.1.jar">
+		<attributes>
+			<attribute name="bsn" value="com.ibm.ws.javaee.servlet.3.1"/>
+			<attribute name="type" value="REPO"/>
+			<attribute name="project" value="com.ibm.websphere.javaee.servlet.3.1"/>
+			<attribute name="version" value="1.0.10.201509101149"/>
+		</attributes>
+		<accessrules>
+			<accessrule kind="accessible" pattern="javax/servlet/*"/>
+			<accessrule kind="accessible" pattern="javax/servlet/annotation/*"/>
+			<accessrule kind="accessible" pattern="javax/servlet/descriptor/*"/>
+			<accessrule kind="accessible" pattern="javax/servlet/http/*"/>
+			<accessrule kind="accessible" pattern="javax/servlet/resources/*"/>
+			<accessrule ignoreifbetter="true" kind="discouraged" pattern="**"/>
+		</accessrules>
+	</classpathentry>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
