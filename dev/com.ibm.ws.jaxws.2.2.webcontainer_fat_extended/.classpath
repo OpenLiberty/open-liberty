@@ -3,7 +3,6 @@
 	<classpathentry kind="src" path="fat/src"/>
 	<classpathentry kind="src" path="test-applications/addNumbersProvider/src"/>
 	<classpathentry kind="src" path="test-applications/addNumbersClient/src"/>
-	<classpathentry kind="src" path="test-applications/testEndpointPropertiesWeb/src"/>
 	<classpathentry kind="src" path="test-applications/ejbServiceRefBndAppCodes/src"/>
 	<classpathentry kind="src" path="test-applications/testPortComponentRefApplication/src"/>
 	<classpathentry kind="src" path="test-applications/testPortComponentRefEJBinWeb/src"/>
@@ -16,7 +15,6 @@
 	<classpathentry kind="src" path="test-applications/helloServer/src"/>
 	<classpathentry kind="src" path="test-applications/helloClientDDMerge/src"/>
 	<classpathentry kind="src" path="test-applications/helloClientServiceResource/src"/>
-	<classpathentry kind="src" path="test-applications/httpConduitProperties/src"/>
 	<classpathentry kind="src" path="test-applications/sharedLib/src"/>
 	<classpathentry kind="src" path="test-applications/testHandlerClientWithoutXML/src"/>
 	<classpathentry kind="src" path="test-applications/POJOServiceSecurity/src"/>

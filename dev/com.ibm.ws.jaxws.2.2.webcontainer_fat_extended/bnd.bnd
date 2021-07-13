@@ -23,7 +23,6 @@ src: \
   test-applications/helloClientServiceResource/src,\
   test-applications/helloEJBServer/src,\
   test-applications/helloServer/src,\
-  test-applications/httpConduitProperties/src,\
   test-applications/POJOServiceSecurity/src,\
   test-applications/POJOServiceSecurityClient/src,\
   test-applications/pureCXF/src,\
@@ -32,7 +31,6 @@ src: \
   test-applications/stubClient/src,\
   test-applications/testBindingTypeWsdlWeb/src,\
   test-applications/testCXFJMXSupport/src,\
-  test-applications/testEndpointPropertiesWeb/src,\
   test-applications/testHandlerClient/src,\
   test-applications/testHandlerClientWithoutXML/src,\
   test-applications/testHandlerProvider/src,\
