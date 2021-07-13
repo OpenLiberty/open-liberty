@@ -11,6 +11,8 @@
 package com.ibm.ws.cdi.impl.weld;
 
 import java.lang.reflect.Method;
+import java.net.URLClassLoader;
+import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
@@ -37,6 +39,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 public abstract class AbstractProxyServices implements ProxyServices {
 
     private static final ManifestElement[] WELD_PACKAGES;
+    private static final ClassLoader CLASS_LOADER_FOR_SYSTEM_CLASSES = org.jboss.weld.proxy.WeldConstruct.class.getClassLoader(); //I'm using this classloader because we'll need the weld classes to proxy anything.
 
     private static enum ClassLoaderMethods {
         ;//No enum instances
@@ -117,6 +120,8 @@ public abstract class AbstractProxyServices implements ProxyServices {
                 if (cl instanceof BundleReference) {
                     Bundle b = ((BundleReference) cl).getBundle();
                     addWeldDynamicImports(b, WELD_PACKAGES);
+                } else if (cl == null) {
+                    return CLASS_LOADER_FOR_SYSTEM_CLASSES;
                 }
                 return cl;
             }
@@ -142,7 +147,7 @@ public abstract class AbstractProxyServices implements ProxyServices {
             } catch (ClassNotFoundException e) {
                 //Do nothing, move on to defining the class. 
             }
-
+try {
             try {
                 java.lang.reflect.Method method;
                 Object[] args;
@@ -155,6 +160,19 @@ public abstract class AbstractProxyServices implements ProxyServices {
                 }
                 Class<?> clazz = (Class) method.invoke(loader, args);
                 return clazz;
+
+             } catch (LinkageError e) {
+                int tries = 10;
+                while (tries > 0) {
+                    Class<?> clazz = loadClass​(className, loader);
+                    if (clazz != null) {
+                        return clazz;
+                    }
+                    Thread.sleep(1000);
+                    tries--;
+                }
+                throw e;
+}
             } catch (RuntimeException e) {
                 throw e;
             } catch (java.lang.reflect.InvocationTargetException e) {

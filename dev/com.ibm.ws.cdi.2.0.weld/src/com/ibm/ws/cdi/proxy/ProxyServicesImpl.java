@@ -30,10 +30,6 @@ import com.ibm.ws.cdi.impl.weld.AbstractProxyServices;
  */
 public class ProxyServicesImpl extends AbstractProxyServices implements ProxyServices {
 
-    public ProxyServicesImpl() {
-        System.out.println("GREP 2.0");
-    }
-
     @Override
     protected void addWeldDynamicImports(Bundle b, ManifestElement[] dynamicImports) {
         // There is no OSGi API for adding a dynamic import to a class loader except
