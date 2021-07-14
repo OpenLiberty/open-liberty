@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,14 +15,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import componenttest.annotation.AllowedFFDC;
-import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
-//Added 11/2020
 @Mode(TestMode.FULL)
-//Added 10/2020
 @RunWith(FATRunner.class)
 public class CxfSSLUNTBasicTests extends SSLTestCommon {
 
@@ -46,8 +43,9 @@ public class CxfSSLUNTBasicTests extends SSLTestCommon {
      *
      */
     @Test
-    //Added 11/2020
-    //@Mode(TestMode.FULL)
+    //5/2021 added PrivilegedActionExc, NoSuchMethodExc as a result of java11 and ee8
+    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException", "java.lang.ClassNotFoundException", "java.security.PrivilegedActionException",
+                           "java.lang.NoSuchMethodException" })
     public void testUntWssecSvcClientSSL() throws Exception {
 
         genericTest("testUntWssecSvcClientSSL", untSSLClientUrl,
@@ -67,8 +65,8 @@ public class CxfSSLUNTBasicTests extends SSLTestCommon {
      *
      */
     @Test
-    //Added 11/2020
-    //@Mode(TestMode.FULL)
+    //2/2021
+    @AllowedFFDC("java.util.MissingResourceException")
     public void testUntWssecSvcClientOverrideUserSSL() throws Exception {
 
         genericTest("testUntWssecSvcClientOverrideDefUserSSL", untSSLClientUrl,
@@ -88,8 +86,8 @@ public class CxfSSLUNTBasicTests extends SSLTestCommon {
      *
      */
     @Test
-    //Added 11/2020
-    //@Mode(TestMode.FULL)
+    //2/2021
+    @AllowedFFDC("java.util.MissingResourceException") //@AV999
     public void testUntNoUserNoPasswordSSL() throws Exception {
 
         genericTest("testUntNoUserNoPasswordSSL", untSSLClientUrl,
@@ -109,9 +107,8 @@ public class CxfSSLUNTBasicTests extends SSLTestCommon {
      *
      */
     @Test
-    //Added 11/2020
-    //@Mode(TestMode.FULL)
-    @ExpectedFFDC("org.apache.ws.security.WSSecurityException")
+    //2/2021
+    @AllowedFFDC(value = { "java.util.MissingResourceException", "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException" })
     public void testUntCxfBadPswdSSL() throws Exception {
 
         genericTest("testUntCxfBadPswdSSL", untSSLClientUrl,
@@ -131,9 +128,8 @@ public class CxfSSLUNTBasicTests extends SSLTestCommon {
      *
      */
     @Test
-    //Added 11/2020
-    //@Mode(TestMode.FULL)
-    @AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //2/2021
+    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.util.MissingResourceException", "org.apache.ws.security.WSSecurityException" })
     public void testUntCxfBadPUserSSL() throws Exception {
 
         genericTest("testUntCxfBadPUserSSL", untSSLClientUrl,
@@ -153,8 +149,8 @@ public class CxfSSLUNTBasicTests extends SSLTestCommon {
      *
      */
     @Test
-    //Added 11/2020
-    //@Mode(TestMode.FULL)
+    //2/2021
+    @AllowedFFDC("java.util.MissingResourceException")
     public void testUntCxfNoSSL() throws Exception {
 
         genericTest("testUntCxfNoSSL", untClientUrl,
@@ -174,8 +170,8 @@ public class CxfSSLUNTBasicTests extends SSLTestCommon {
      *
      */
     @Test
-    //Added 11/2020
-    //@Mode(TestMode.FULL)
+    //4/2021
+    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
     public void testUntWssecSvcClientSSLManaged() throws Exception {
 
         genericTest("testUntWssecSvcClientSSLManaged", untSSLClientUrl,
@@ -195,8 +191,8 @@ public class CxfSSLUNTBasicTests extends SSLTestCommon {
      *
      */
     @Test
-    //Added 11/2020
-    //@Mode(TestMode.FULL)
+    //2/2021
+    @AllowedFFDC("java.util.MissingResourceException")
     public void testUntCxfSSL() throws Exception {
 
         genericTest("testUntCxfSSL", untSSLClientUrl,
@@ -216,8 +212,8 @@ public class CxfSSLUNTBasicTests extends SSLTestCommon {
      *
      */
     @Test
-    //Added 11/2020
-    //@Mode(TestMode.FULL)
+    //2/2021
+    @AllowedFFDC("java.util.MissingResourceException")
     public void testUntCxfSSLManaged() throws Exception {
 
         genericTest("testUntCxfSSLManaged", untSSLClientUrl,

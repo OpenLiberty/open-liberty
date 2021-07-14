@@ -72,6 +72,15 @@
 		ws-security.cache.config.file="${server.config.dir}/cxf-ehcache.xml"> </wsSecurityProvider> 
 		<application name="untoken" location="${server.config.dir}/untoken.war"> 
 		<classloader apiTypeVisibility="spec, ibm-api, third-party" /> </application> -->
+		
+	<wsSecurityProvider
+		id="default"
+		ws-security.return.security.error="true"
+	>
+	<!-- 3/2021 added ws-security.return.security.error -->
+	
+	</wsSecurityProvider>
+		
 	<wsSecurityClient
 		id="default"
 		ws-security.username="user1"
@@ -90,5 +99,10 @@
         <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.util"/>
         <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.name"/>
         <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.impl"/>
-       
+        <!-- 2/2021 EE8 -->
+        <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+        <javaPermission className="org.osgi.framework.AdminPermission" name="*" actions="*"/>
+        <javaPermission className="java.security.SecurityPermission" name="org.apache.xml.security.register"/>
+        <javaPermission className="java.net.URLPermission" name="https://localhost:8020/untoken/FVTVersionBAService" actions="POST:AcceptSOAPActionUser-Agent"/>   
+        
 </server>
