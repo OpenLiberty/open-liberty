@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,8 +11,6 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.usernametoken;
 
-//import java.io.File;
-
 import java.io.File;
 
 import org.junit.Test;
@@ -20,13 +18,13 @@ import org.junit.runner.RunWith;
 
 import com.ibm.ws.wssecurity.fat.utils.common.CommonTests;
 
+import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
-//Added 11/2020
 @Mode(TestMode.FULL)
-//Added 10/2020
 @RunWith(FATRunner.class)
 public class CxfWssTemplatesTests extends CommonTests {
 
@@ -49,8 +47,9 @@ public class CxfWssTemplatesTests extends CommonTests {
      * Verify that the Web service is invoked successfully. This is a positive scenario.
      */
     @Test
-    //Added 11/2020
-    //@Mode(TestMode.FULL)
+    //5/2021 added PrivilegedActionExc, NoSuchMethodExc as a result of java11 and ee8
+    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException", "java.lang.ClassNotFoundException", "java.security.PrivilegedActionException",
+                           "java.lang.NoSuchMethodException" })
     public void testCXFUserNameTokenPasswordHashOverSSL() throws Exception {
         // reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_enchdr.xml");
         genericTest(
@@ -91,8 +90,8 @@ public class CxfWssTemplatesTests extends CommonTests {
      * Verify that the Web service is invoked successfully. This is a positive scenario.
      */
     @Test
-    //Added 11/2020
-    //@Mode(TestMode.FULL)
+    //4/2021
+    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException" })
     public void testCXFUserNameTokenPasswordTextOverSSL() throws Exception {
         genericTest(
                     // test name for logging
@@ -133,9 +132,10 @@ public class CxfWssTemplatesTests extends CommonTests {
      *
      * Verify that the Web service is invoked successfully. This is a positive scenario.
      */
+
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
-    //Added 11/2020
-    //@Mode(TestMode.FULL)
     public void testCXFAsymmetricX509MutualAuthenticationWithUnt() throws Exception {
         genericTest(
                     // test name for logging
@@ -178,14 +178,47 @@ public class CxfWssTemplatesTests extends CommonTests {
      *
      * Verify that the Web service is invoked successfully. This is a positive scenario.
      */
+
+    //2/2021 to test with EE7, then the corresponding server_sym.xml can be used
     @Test
-    //Added 11/2020
-    //@Mode(TestMode.FULL)
-    public void testCXFUsernameTokenAsEndorsingAndX509Symmetric() throws Exception {
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    public void testCXFUsernameTokenAsEndorsingAndX509SymmetricEE7Only() throws Exception {
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sym.xml");
         genericTest(
                     // test name for logging
-                    "testCXFUsernameTokenAsEndorsingAndX509Symmetric",
+                    "testCXFUsernameTokenAsEndorsingAndX509SymmetricEE7Only",
+                    // Svc Client Url that generic test code should use
+                    clientHttpUrl,
+                    // Port that svc client code should use
+                    "",
+                    // user that svc client code should use
+                    "user1",
+                    // pw that svc client code should use
+                    "security",
+                    // wsdl sevice that svc client code should use
+                    "WSSTemplatesService3",
+                    // wsdl that the svc client code should use
+                    "",
+                    // wsdl port that svc client code should use
+                    "WSSTemplate3",
+                    // msg to send from svc client to server
+                    "",
+                    // expected response from server
+                    "Response: This is WSSTemplateWebSvc3 Web Service.",
+                    // msg to issue if do NOT get the expected result
+                    "The test expected a successful message from the server.");
+    }
+
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
+    @Test
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    public void testCXFUsernameTokenAsEndorsingAndX509SymmetricEE8Only() throws Exception {
+
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sym_wss4j.xml");
+        genericTest(
+                    // test name for logging
+                    "testCXFUsernameTokenAsEndorsingAndX509SymmetricEE8Only",
                     // Svc Client Url that generic test code should use
                     clientHttpUrl,
                     // Port that svc client code should use
@@ -220,14 +253,47 @@ public class CxfWssTemplatesTests extends CommonTests {
      *
      * Verify that the Web service is invoked successfully. This is a positive scenario.
      */
+
+    //2/2021 to test with EE7, then the corresponding server_sym.xml can be used
     @Test
-    //Added 11/2020
-    //@Mode(TestMode.FULL)
-    public void testCXFX509SymmetricAndEndorsing() throws Exception {
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    public void testCXFX509SymmetricAndEndorsingEE7Only() throws Exception {
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sym.xml");
         genericTest(
                     // test name for logging
-                    "testCXFX509SymmetricAndEndorsing",
+                    "testCXFX509SymmetricAndEndorsingEE7Only",
+                    // Svc Client Url that generic test code should use
+                    clientHttpUrl,
+                    // Port that svc client code should use
+                    "",
+                    // user that svc client code should use
+                    "user1",
+                    // pw that svc client code should use
+                    "security",
+                    // wsdl sevice that svc client code should use
+                    "WSSTemplatesService5",
+                    // wsdl that the svc client code should use
+                    "",
+                    // wsdl port that svc client code should use
+                    "WSSTemplate5",
+                    // msg to send from svc client to server
+                    "",
+                    // expected response from server
+                    "Response: This is WSSTemplateWebSvc5 Web Service.",
+                    // msg to issue if do NOT get the expected result
+                    "The test expected a successful message from the server.");
+    }
+
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
+    //2/2021 to test with EE8, then the corresponding server_sym_wss4j.xml can be used
+    @Test
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    public void testCXFX509SymmetricAndEndorsingEE8Only() throws Exception {
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sym_wss4j.xml");
+        genericTest(
+                    // test name for logging
+                    "testCXFX509SymmetricAndEndorsingEE8Only",
                     // Svc Client Url that generic test code should use
                     clientHttpUrl,
                     // Port that svc client code should use
@@ -269,14 +335,48 @@ public class CxfWssTemplatesTests extends CommonTests {
      *
      * Verify that the Web service is invoked successfully. This is a positive scenario.
      */
+
+    //2/2021 to test with EE7, then the corresponding server_sym.xml can be used
     @Test
-    //Added 11/2020
-    //@Mode(TestMode.FULL)
-    public void testCXFX509SymmetricForMessageAndUntForClient() throws Exception {
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    public void testCXFX509SymmetricForMessageAndUntForClientEE7Only() throws Exception {
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sym.xml");
         genericTest(
                     // test name for logging
-                    "testCXFX509SymmetricForMessageAndUntForClient",
+                    "testCXFX509SymmetricForMessageAndUntForClientEE7Only",
+                    // Svc Client Url that generic test code should use
+                    clientHttpUrl,
+                    // Port that svc client code should use
+                    "",
+                    // user that svc client code should use
+                    "user1",
+                    // pw that svc client code should use
+                    "security",
+                    // wsdl sevice that svc client code should use
+                    "WSSTemplatesService6",
+                    // wsdl that the svc client code should use
+                    "",
+                    // wsdl port that svc client code should use
+                    "WSSTemplate6",
+                    // msg to send from svc client to server
+                    "",
+                    // expected response from server
+                    "Response: This is WSSTemplateWebSvc6 Web Service.",
+                    // msg to issue if do NOT get the expected result
+                    "The test expected a successful message from the server.");
+    }
+
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
+    //2/2021 to test with EE8, then the corresponding server_sym_wss4j.xml can be used
+    @Test
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    public void testCXFX509SymmetricForMessageAndUntForClientEE8Only() throws Exception {
+
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sym_wss4j.xml");
+        genericTest(
+                    // test name for logging
+                    "testCXFX509SymmetricForMessageAndUntForClientEE8Only",
                     // Svc Client Url that generic test code should use
                     clientHttpUrl,
                     // Port that svc client code should use

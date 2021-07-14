@@ -13,9 +13,12 @@ package com.ibm.ws.wssecurity.fat.cxf.samltoken.TwoServerTests;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
+
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLConstants;
@@ -43,9 +46,9 @@ import componenttest.topology.utils.HttpUtils;
  * TFIM IdP. The client invokes the SP application by sending the SAML
  * 2.0 token in the HTTP POST request.
  */
+
 @LibertyServerWrapper
 @Mode(TestMode.FULL)
-//1/21/2021 added
 @RunWith(FATRunner.class)
 public class CxfSAMLWSSTemplatesWithExternalPolicy2ServerTests extends CxfSAMLWSSTemplatesTests {
 
@@ -66,6 +69,7 @@ public class CxfSAMLWSSTemplatesWithExternalPolicy2ServerTests extends CxfSAMLWS
         // we should wait for any providers that this test requires
         List<String> extraMsgs = new ArrayList<String>();
         List<String> extraMsgs2 = new ArrayList<String>();
+        
         extraMsgs.add("CWWKT0016I.*wsstemplatesclient.*");
         extraMsgs.add("CWWKS5000I");
         extraMsgs.add("CWWKS5002I");
@@ -73,6 +77,7 @@ public class CxfSAMLWSSTemplatesWithExternalPolicy2ServerTests extends CxfSAMLWS
 
         List<String> extraApps = new ArrayList<String>();
         List<String> extraApps2 = new ArrayList<String>();
+        
         extraApps.add("samlwsstemplatesclient");
         extraApps2.add("samlwsstemplates");
 
@@ -83,8 +88,9 @@ public class CxfSAMLWSSTemplatesWithExternalPolicy2ServerTests extends CxfSAMLWS
         copyMetaData = true;
         testSAMLServer = commonSetUp("com.ibm.ws.wssecurity_fat.saml.wssTemplateswithep", "server_1.xml", SAMLConstants.SAML_ONLY_SETUP, SAMLConstants.SAML_SERVER_TYPE, extraApps, extraMsgs);
 
-        testSAMLServer.addIgnoredServerExceptions(SAMLMessageConstants.CWWKS5207W_SAML_CONFIG_IGNORE_ATTRIBUTES, SAMLMessageConstants.CWWKG0101W_CONFIG_NOT_VISIBLE_TO_OTHER_BUNDLES);
-        testSAMLServer2.addIgnoredServerExceptions(SAMLMessageConstants.CWWKS5207W_SAML_CONFIG_IGNORE_ATTRIBUTES, SAMLMessageConstants.CWWKG0101W_CONFIG_NOT_VISIBLE_TO_OTHER_BUNDLES);
+        //3/2021
+        testSAMLServer.addIgnoredServerExceptions(SAMLMessageConstants.CWWKS5207W_SAML_CONFIG_IGNORE_ATTRIBUTES, SAMLMessageConstants.CWWKG0101W_CONFIG_NOT_VISIBLE_TO_OTHER_BUNDLES, SAMLMessageConstants.CWWKF0001E_FEATURE_MISSING);
+        testSAMLServer2.addIgnoredServerExceptions(SAMLMessageConstants.CWWKS5207W_SAML_CONFIG_IGNORE_ATTRIBUTES, SAMLMessageConstants.CWWKG0101W_CONFIG_NOT_VISIBLE_TO_OTHER_BUNDLES, SAMLMessageConstants.CWWKF0001E_FEATURE_MISSING);
 
         // now, we need to update the IDP files
         shibbolethHelpers.fixSPInfoInShibbolethServer(testSAMLServer, testIDPServer);
@@ -100,9 +106,10 @@ public class CxfSAMLWSSTemplatesWithExternalPolicy2ServerTests extends CxfSAMLWS
         setActionsForFlowType(flowType);
         testSettings.setIdpUserName("user1");
         testSettings.setIdpUserPwd("security");
-        testSettings.setSpTargetApp(testSAMLServer.getHttpString() + "/samlwsstemplatesclient/CxfWssSAMLTemplatesSvcClient");
-        testSettings.setSamlTokenValidationData(testSettings.getIdpUserName(), testSettings.getSamlTokenValidationData().getIssuer(), testSettings.getSamlTokenValidationData().getInResponseTo(), testSettings.getSamlTokenValidationData().getMessageID(), testSettings.getSamlTokenValidationData().getEncryptionKeyUser(), testSettings.getSamlTokenValidationData().getRecipient(), testSettings.getSamlTokenValidationData().getEncryptAlg());
-
+        
+        testSettings.setSpTargetApp(testSAMLServer.getHttpString() + "/samlwsstemplatesclient/CxfWssSAMLTemplatesSvcClient");              testSettings.setSamlTokenValidationData(testSettings.getIdpUserName(), testSettings.getSamlTokenValidationData().getIssuer(), testSettings.getSamlTokenValidationData().getInResponseTo(), testSettings.getSamlTokenValidationData().getMessageID(), testSettings.getSamlTokenValidationData().getEncryptionKeyUser(), testSettings.getSamlTokenValidationData().getRecipient(), testSettings.getSamlTokenValidationData().getEncryptAlg());
+        
+        
     }
 
 }

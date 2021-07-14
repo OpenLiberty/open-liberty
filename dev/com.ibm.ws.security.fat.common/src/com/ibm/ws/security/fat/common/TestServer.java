@@ -332,7 +332,6 @@ public class TestServer extends ExternalResource {
             server.setMarkToEndOfLog(server.getMatchingLogFile("messages.log"));
             server.setMarkToEndOfLog(server.getMatchingLogFile("trace.log"));
         } catch (Exception e) {
-            e.printStackTrace();
             Log.error(thisClass, methodName, e, "Failure setting the mark at the end of one or more of the server logs.");
         }
     }
@@ -1307,6 +1306,7 @@ public class TestServer extends ExternalResource {
         }
     }
 
+
     public void unInstallCallbackHandler(String callbackHandler, String feature) throws Exception {
         if (feature != null) {
             Log.info(thisClass, "unInstallCallbackHandler", "Un-Installing callback handler feature: " + feature);
@@ -1317,6 +1317,7 @@ public class TestServer extends ExternalResource {
             server.uninstallUserBundle(callbackHandler);
         }
     }
+
 
     /** TODO *************************************** Bootstrap utils *****************************************/
 
