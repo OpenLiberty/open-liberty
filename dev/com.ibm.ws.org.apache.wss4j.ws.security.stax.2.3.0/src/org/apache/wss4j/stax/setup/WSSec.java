@@ -62,8 +62,14 @@ public class WSSec {
         WSProviderConfig.init();
         ClassLoader cl = null;
         try {
-            //Liberty code change start
-            ClassLoader jaxbimplcl = org.glassfish.jaxb.runtime.v2.JAXBContextFactory.class.getClassLoader();
+            //Liberty code change start 
+            //TODO: look into why we are not finding this provider
+            ClassLoader jaxbimplcl = null;
+            try {
+                jaxbimplcl = org.glassfish.jaxb.runtime.v2.JAXBContextFactory.class.getClassLoader();
+            } catch (Throwable t) {
+                //ncdfe
+            }  
             if (jaxbimplcl != null) {
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("setting the glassfish classes loader!");
