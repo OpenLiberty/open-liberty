@@ -438,32 +438,42 @@ public class DDTestBase {
         }
     }
     
-    public static void verifyFailure(Exception e, String altMessage, String... requiredMessages) {
+    public static void verifyFailure(Exception e, String altMessage, String... requiredMessages) throws Exception {
         System.out.println("Validating exception [ " + e.getClass().getName() + " ] [ " + e + " ]");
         System.out.println("  [ " + e.getMessage() + " ]");
 
-        if ( (requiredMessages == null) || (requiredMessages.length == 0) ) {        
-            Assert.fail("Unexpected exception [ " + e.getClass() + " ] [ " + e + " ]");
-            return; // Never reached.
+        if ( (requiredMessages == null) || (requiredMessages.length == 0) ) {
+            System.out.println("Unexpected exception [ " + e.getClass() + " ] [ " + e + " ]");
+            throw e;
         }
 
         String errorMsg = e.getMessage();
         if ( errorMsg == null ) {
-            Assert.fail("Exception [ " + e.getClass() + " ] [ " + e + " ] has a null message." +
-                        "Either [ " + altMessage + " ] or all of [ " + Arrays.toString(requiredMessages) + " ] are required.");
-            return; // Never reached.
+            System.out.println(
+                    "Exception [ " + e.getClass() + " ] [ " + e + " ] has a null message." +
+                    "Either [ " + altMessage + " ] or all of [ " + Arrays.toString(requiredMessages) + " ] are required.");
+            throw e;
         }
 
         if ( errorMsg.contains(altMessage) ) {
             return;
         }
 
+        List<String> missingMessages = null;
         for ( String requiredMessage : requiredMessages ) {
             if ( !errorMsg.contains(requiredMessage) ) {
-                Assert.fail("Exception [ " + e.getClass() + " ] [ " + e + " ] does not contain [ " + requiredMessage + " ]." +
-                            " Either [ " + altMessage + " ] or all of [ " + Arrays.toString(requiredMessages) + " ] are required.");
-                return; // Never reached.
+                if ( missingMessages == null ) {
+                    missingMessages = new ArrayList<String>(1);
+                }
+                missingMessages.add(requiredMessage);
             }
+        }
+        if ( missingMessages != null ) {
+            System.out.println(
+                "Exception [ " + e.getClass() + " ] [ " + e + " ] does not contain [ " + Arrays.toString(requiredMessages) + " ].");
+            System.out.println(
+                "Either [ " + altMessage + " ] or all of [ " + Arrays.toString(requiredMessages) + " ] are required.");
+            throw e;
         }
     }    
 }

@@ -39,47 +39,47 @@ public class DDValidModPartialHeaderTests {
     //
 
     @Test
-    public void testAutoInstall_Module() throws Exception {
-        CommonTests.test(DDValidModPartialHeaderTests.class, "testAutoInstall");    
+    public void testAutoInstall_Module_PH() throws Exception {
+        CommonTests.test(DDValidModPartialHeaderTests.class, "testAutoInstall");
     }
 
     @Test
-    public void testBasicBindingConfiguration_Module() throws Exception {
-        CommonTests.test(DDValidModPartialHeaderTests.class, "testBasicBindingConfiguration");
+    public void testBindingsConfig_Module_PH() throws Exception {
+        CommonTests.test(DDValidModPartialHeaderTests.class, "testBindingsConfig");
     }   
     
     @Test
-    public void testWebExtensions_Module() throws Exception {
+    public void testWebExtensions_Module_PH() throws Exception {
         CommonTests.test(DDValidModPartialHeaderTests.class, "testWebExtensions");
     }
     
     @Test
-    public void testWebBindings_Module() throws Exception {
+    public void testWebBindings_Module_PH() throws Exception {
         CommonTests.test(DDValidModPartialHeaderTests.class, "testWebBindings");
     }
     
     @Test
-    public void testEJBBindings_Module() throws Exception {
+    public void testEJBBindings_Module_PH() throws Exception {
         CommonTests.test(DDValidModPartialHeaderTests.class, "testEJBBindings");
     }
     
     @Test
-    public void testEJBExtensions_Module() throws Exception {
+    public void testEJBExtensions_Module_PH() throws Exception {
         CommonTests.test(DDValidModPartialHeaderTests.class, "testEJBExtensions");
     }
     
     @Test
-    public void testApplicationExtensionFromWebApp_Module() throws Exception {
-        CommonTests.test(DDValidModPartialHeaderTests.class, "testApplicationExtensionFromWebApp");
+    public void testAppExtensionFromWebApp_Module_PH() throws Exception {
+        CommonTests.test(DDValidModPartialHeaderTests.class, "testAppExtensionFromWebApp");
     }
     
     @Test
-    public void testSecurityRoleOverridesFromWebApp_Module() throws Exception {
+    public void testSecurityRoleOverridesFromWebApp_Module_PH() throws Exception {
         CommonTests.test(DDValidModPartialHeaderTests.class, "testSecurityRoleOverridesFromWebApp");
     }
     
     @Test
-    public void testManagedBeanBindings_Module() throws Exception {
+    public void testManagedBeanBindings_Module_PH() throws Exception {
         CommonTests.test(DDValidModPartialHeaderTests.class, "testManagedBeanBindings");
     }
 }

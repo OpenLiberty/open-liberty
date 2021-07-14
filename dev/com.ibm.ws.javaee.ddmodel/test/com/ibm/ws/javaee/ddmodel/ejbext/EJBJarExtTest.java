@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,8 +9,6 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.javaee.ddmodel.ejbext;
-
-import java.util.Collections;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -43,14 +41,15 @@ public class EJBJarExtTest extends EJBJarExtTestBase {
 
     @Test
     public void testGetEnterpriseBeans() throws Exception {
-        Assert.assertEquals("List size should be zero",
-                0, parseEJBJarExtXML(ejbJarExt11()).getEnterpriseBeans().size());
+        Assert.assertEquals("Should have one EJB",
+                1,
+                parseEJBJarExtXML(ejbJarExt11()).getEnterpriseBeans().size());
     }
 
     @Test
     public void testGetEnterpriseBeansXMI() throws Exception {
-        Assert.assertEquals(Collections.emptyList(),
-                parseEJBJarExtXMI(ejbJarExtXMI(), getEJBJar21())
-                    .getEnterpriseBeans());
+        Assert.assertEquals("Should have one EJB",
+                1,
+                parseEJBJarExtXMI(ejbJarExtXMI(), getEJBJar21()).getEnterpriseBeans().size());
     }
 }

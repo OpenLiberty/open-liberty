@@ -16,7 +16,7 @@ import org.junit.Test;
 
 import com.ibm.ws.javaee.dd.webext.WebExt;
 
-public class WebAppBndHeaderTest extends WebAppExtTestBase {
+public class WebAppExtHeaderTest extends WebAppExtTestBase {
         
     protected static final String webExtXMINoVersion =
             "<webappext:WebAppExtension" +
@@ -24,8 +24,10 @@ public class WebAppBndHeaderTest extends WebAppExtTestBase {
                 " xmlns:xmi=\"http://www.omg.org/XMI\"" +
                 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
                 // " xmi:version=\"2.0\"" +
-            "/>";
-
+            ">" + "\n" +
+                webExtBodyXMI + "\n" +
+            webExtTailXMI;
+    
     protected static final String webExtXML10NoNamespace =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
             "<web-ext" +
@@ -33,7 +35,9 @@ public class WebAppBndHeaderTest extends WebAppExtTestBase {
                 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
                 " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-web-ext_1_0.xsd\"" +
                 " version=\"1.0\"" +
-            "/>";
+            ">" + "\n" +
+                webExtBodyXML + "\n" +
+            webExtTailXML;
     
     protected static final String webExtXML10NoSchemaInstance =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
@@ -42,7 +46,9 @@ public class WebAppBndHeaderTest extends WebAppExtTestBase {
                 // " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
                 " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-web-ext_1_0.xsd\"" +
                 " version=\"1.0\"" +
-            "/>";
+            ">" + "\n" +
+                webExtBodyXML + "\n" +
+            webExtTailXML;
     
     protected static final String webExtXML10NoSchemaLocation =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
@@ -51,7 +57,9 @@ public class WebAppBndHeaderTest extends WebAppExtTestBase {
                 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
                 // " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-web-ext_1_0.xsd\"" +
                 " version=\"1.0\"" +
-            "/>";
+            ">" + "\n" +
+                webExtBodyXML + "\n" +
+            webExtTailXML;
     
     protected static final String webExtXML10NoXSI =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
@@ -60,8 +68,10 @@ public class WebAppBndHeaderTest extends WebAppExtTestBase {
                 // " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
                 // " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-web-ext_1_0.xsd\"" +
                 " version=\"1.0\"" +
-            "/>";
-
+            ">" + "\n" +
+                webExtBodyXML + "\n" +
+            webExtTailXML;
+    
     protected static final String webExtXMLNoVersion =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
             "<web-ext" +
@@ -69,7 +79,9 @@ public class WebAppBndHeaderTest extends WebAppExtTestBase {
                 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
                 " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-web-ext_1_0.xsd\"" +
                 // " version=\"1.0\"" +
-            "/>";
+            ">" + "\n" +
+                webExtBodyXML + "\n" +
+            webExtTailXML;
     
     protected static final String webExtXML10VersionMismatch =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
@@ -78,38 +90,50 @@ public class WebAppBndHeaderTest extends WebAppExtTestBase {
                 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
                 " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-web-ext_1_0.xsd\"" +
                 " version=\"1.0\"" +
-            "/>";
+            ">" + "\n" +
+                webExtBodyXML + "\n" +
+            webExtTailXML;
     
     protected static final String webExtXMLNamespaceOnly =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
             "<web-ext" +
                 " xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"" +
-            "/>";
+            ">" + "\n" +
+                webExtBodyXML + "\n" +
+            webExtTailXML;
     
     protected static final String webExtXML10VersionOnly =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
             "<web-ext" +
                 " version=\"1.0\"" +
-            "/>";
-
+            ">" + "\n" +
+                webExtBodyXML + "\n" +
+            webExtTailXML;
+    
     protected static final String webExtXML11VersionOnly =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
             "<web-ext" +
                 " version=\"1.1\"" +
-            "/>";
-
+            ">" + "\n" +
+                webExtBodyXML + "\n" +
+            webExtTailXML;
+    
     protected static final String webExtXMLBadNamespaceOnly =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
             "<web-ext" +
                 " xmlns=\"http://junk\"" +
-            "/>";
+            ">" + "\n" +
+                webExtBodyXML + "\n" +
+            webExtTailXML;
     
     protected static final String webExtXMLBadVersionOnly =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
             "<web-ext" +
                 " version=\"9.9\"" +
-            "/>";
-
+            ">" + "\n" +
+                webExtBodyXML + "\n" +
+            webExtTailXML;
+    
     //
 
     @Test

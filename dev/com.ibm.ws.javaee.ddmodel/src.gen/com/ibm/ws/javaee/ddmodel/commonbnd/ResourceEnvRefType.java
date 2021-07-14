@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -63,9 +63,7 @@ public class ResourceEnvRefType extends com.ibm.ws.javaee.ddmodel.DDParser.Eleme
             this.bindingResourceEnvRef = new com.ibm.ws.javaee.ddmodel.CrossComponentReferenceType("bindingResourceEnvRef", parser.getCrossComponentType());
             parser.parse(bindingResourceEnvRef);
             com.ibm.ws.javaee.dd.common.ResourceEnvRef referent = this.bindingResourceEnvRef.resolveReferent(parser, com.ibm.ws.javaee.dd.common.ResourceEnvRef.class);
-            if (referent == null) {
-                DDParser.unresolvedReference("bindingResourceEnvRef", this.bindingResourceEnvRef.getReferenceString());
-            } else {
+            if (referent != null) {
                 this.name = parser.parseString(referent.getName());
             }
             return true;

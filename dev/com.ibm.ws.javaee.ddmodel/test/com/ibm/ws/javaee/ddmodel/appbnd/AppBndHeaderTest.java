@@ -28,6 +28,11 @@ public class AppBndHeaderTest extends AppBndTestBase {
                 "<application href=\"META-INF/application.xml#Application_ID\"/>" + "\n" +
             "</applicationbnd:ApplicationBinding>";            
 
+    protected static final String appBndContents =
+            "<security-role name=\"snooping\">\n" +
+                "<special-subject type=\"ALL_AUTHENTICATED_USERS\" />\n" +
+            "</security-role>";
+
     protected static final String appBnd11NoNamespace =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
             "<application-bnd" +
@@ -35,8 +40,10 @@ public class AppBndHeaderTest extends AppBndTestBase {
                 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
                 " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-application-bnd_1_1.xsd\"" +
                 " version=\"1.1\"" +
-            "/>";    
-    
+            ">" + "\n" + 
+                appBndContents + "\n" +
+            "</application-bnd>";
+
     protected static final String appBnd11NoSchemaInstance =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
             "<application-bnd" +
@@ -44,8 +51,10 @@ public class AppBndHeaderTest extends AppBndTestBase {
                 // " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
                 " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-application-bnd_1_1.xsd\"" +
                 " version=\"1.1\"" +
-            "/>";    
-    
+            ">" + "\n" + 
+                appBndContents + "\n" +
+            "</application-bnd>";  
+
     protected static final String appBnd11NoSchemaLocation =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
             "<application-bnd" +
@@ -53,8 +62,10 @@ public class AppBndHeaderTest extends AppBndTestBase {
                 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
                 // " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-application-bnd_1_1.xsd\"" +
                 " version=\"1.1\"" +
-            "/>";        
-    
+            ">" + "\n" + 
+                appBndContents + "\n" +
+            "</application-bnd>";
+
     protected static final String appBnd11NoXSI =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
             "<application-bnd" +
@@ -62,8 +73,10 @@ public class AppBndHeaderTest extends AppBndTestBase {
                 // " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
                 // " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-application-bnd_1_1.xsd\"" +
                 " version=\"1.1\"" +
-            "/>";            
-    
+            ">" + "\n" + 
+                appBndContents + "\n" +
+            "</application-bnd>";                        
+
     protected static final String appBnd11NoVersion =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
             "<application-bnd" +
@@ -71,8 +84,10 @@ public class AppBndHeaderTest extends AppBndTestBase {
                 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
                 " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-application-bnd_1_1.xsd\"" +
                 // " version=\"1.1\"" +
-            "/>";                
-    
+            ">" + "\n" + 
+                appBndContents + "\n" +
+            "</application-bnd>";
+
     protected static final String appBnd11VersionMismatch =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
             "<application-bnd" +
@@ -80,23 +95,36 @@ public class AppBndHeaderTest extends AppBndTestBase {
                 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
                 " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-application-bnd_1_1.xsd\"" +
                 " version=\"1.1\"" +
-            "/>";               
+            ">" + "\n" + 
+                appBndContents + "\n" +
+            "</application-bnd>";
+
     
     protected static final String appBndNamespaceOnly =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
-            "<application-bnd xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"/>";
+            "<application-bnd xmlns=\"http://websphere.ibm.com/xml/ns/javaee\">" + "\n" +
+                appBndContents + "\n" +
+            "</application-bnd>";
+    
     
     protected static final String appBnd11VersionOnly =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
-            "<application-bnd version=\"1.1\"/>";                   
+            "<application-bnd version=\"1.1\">" + "\n" +
+                appBndContents + "\n" +
+            "</application-bnd>";                    
     
     protected static final String appBndBadNamespace=
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
-            "<application-bnd xmlns=\"http://junk\"/>";
+            "<application-bnd xmlns=\"http://junk\">" + "\n" +
+                appBndContents + "\n" +
+            "</application-bnd>";                    
     
     protected static final String appBndBadVersion =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
-            "<application-bnd version=\"9.9\"/>";     
+            "<application-bnd version=\"9.9\">" + "\n" +
+                appBndContents + "\n" +
+            "</application-bnd>";                    
+
 
     @Test
     public void testXMIGetVersion() throws Exception {

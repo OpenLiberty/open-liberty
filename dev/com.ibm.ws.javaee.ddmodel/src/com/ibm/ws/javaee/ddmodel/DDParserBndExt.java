@@ -158,11 +158,11 @@ public abstract class DDParserBndExt extends DDParser {
         }
 
         if ( namespace == null ) {
-            namespace = NAMESPACE_IBM_JAVAEE;
+            patchNamespace(NAMESPACE_IBM_JAVAEE);
         } else if ( !namespace.equals(NAMESPACE_IBM_JAVAEE) ) {
             // TODO: Should this be an error?
             warning( incorrectDescriptorNamespace(namespace, NAMESPACE_IBM_JAVAEE) );
-            namespace = NAMESPACE_IBM_JAVAEE;            
+            patchNamespace(NAMESPACE_IBM_JAVAEE);            
         }
         idNamespace = null;
         version = ddVersion;
@@ -175,9 +175,10 @@ public abstract class DDParserBndExt extends DDParser {
         if ( (namespace != null) && !namespace.equals(expectedNamespace) ) {
             warning( incorrectDescriptorNamespace(namespace, expectedNamespace) );
         }
-        
-        // This is correct: Parsing expects the default namespace to be null.        
+
+        // This is correct: XMI parsing expects the namespace to be null.        
         namespace = null;
+        namespaceOriginal = null;
         idNamespace = NAMESPACE_OMG_XMI;
         version = 9;
 

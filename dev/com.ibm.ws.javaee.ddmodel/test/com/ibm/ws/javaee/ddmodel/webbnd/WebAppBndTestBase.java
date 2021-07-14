@@ -58,11 +58,15 @@ public class WebAppBndTestBase extends WebAppTestBase {
                 altMessage, messages);        
     }
 
-    protected static final String webAppBndTailXMI =
+    protected static String webBndXMIBody() {
+        return "<webapp href=\"WEB-INF/web.xml#WebApp_ID\"/>";
+    }
+
+    protected static final String webBndTailXMI =
             "</webappbnd:WebAppBinding>";
 
     protected static String webBndXMI20() {
-        return webBndXMI20("", "");
+        return webBndXMI20("", webBndXMIBody());
     }
 
     // " xmlns:webapplication=\"webapplication.xmi\" " +
@@ -78,14 +82,32 @@ public class WebAppBndTestBase extends WebAppTestBase {
                ">" +
                    "<webapp href=\"WEB-INF/web.xml#WebApp_ID\"/>" +
                    body +
-               webAppBndTailXMI;
+               webBndTailXMI;
+    }
+
+    protected static String webBndXMLBody() {
+        return "<virtual-host name=\"fromApp\"/>" + "\n" +
+               "<ejb-ref name=\"ejb/PriceSession\" binding-name=\"ejb/com/ibm/svt/populateModule/grade/PriceSessionHome\"/>" + "\n" +
+               "<ejb-ref name=\"SSBR\" binding-name=\"ejb/GasNet/Station#com.ibm.svt.stationModule.gas.station.StationSessionBeanRemote\"/>" + "\n" +
+               "<ejb-ref name=\"GMSBR\" binding-name=\"ejb/GasNet/GasMaint#com.ibm.svt.stationModule.gas.maintenance.GasMaintenanceSessionBeanRemote\"/>" + "\n" +
+               "<ejb-ref name=\"SeqSBR\" binding-name=\"ejb/GasNet/Seq#com.ibm.svt.stationModule.sequence.SequenceSessionBeanRemote\"/>" + "\n" +
+               "<ejb-ref name=\"SMBR\" binding-name=\"ejb/GasNet/StoreMaint#com.ibm.svt.stationModule.store.maintenance.StoreMaintenanceBeanRemote\"/>" + "\n" +
+               "<ejb-ref name=\"SCartBR\" binding-name=\"ejb/GasNet/Cart#com.ibm.svt.stationModule.store.storeSessions.ShoppingCartBeanRemote\"/>" + "\n" +
+               "<ejb-ref name=\"StoreSBR\" binding-name=\"ejb/GasNet/StationStore#com.ibm.svt.stationModule.store.storeSessions.StationStoreSessionBeanRemote\"/>" + "\n" +
+               "<ejb-ref name=\"FLSBR\" binding-name=\"ejb/GasNet/Failure#com.ibm.svt.stationModule.failureLog.FailureLogSessionBeanRemote\"/>" + "\n" +
+               "<resource-ref name=\"FuelDS\" binding-name=\"jdbc/FuelDS\"/>";
+    }
+    
+    protected static final String webBndXMLBody_noVHost() {
+        return "<ejb-ref name=\"ejb/PriceSession\" binding-name=\"ejb/com/ibm/svt/populateModule/grade/PriceSessionHome\"/>" + "\n" +
+               "<resource-ref name=\"FuelDS\" binding-name=\"jdbc/FuelDS\"/>";
     }
     
     protected static final String webBndTailXML =
             "</web-bnd>";
 
     protected static String webBndXML10() {
-        return webBndXML10("");
+        return webBndXML10(webBndXMLBody());
     }
     
     protected static String webBndXML10(String body) {
@@ -101,7 +123,7 @@ public class WebAppBndTestBase extends WebAppTestBase {
     }
 
     protected static String webBndXML11() {
-        return webBndXML11("");
+        return webBndXML11(webBndXMLBody());
     }
     
     protected static String webBndXML11(String body) {
@@ -117,7 +139,7 @@ public class WebAppBndTestBase extends WebAppTestBase {
     }
 
     protected static String webBndXML12() {
-        return webBndXML12("");
+        return webBndXML12(webBndXMLBody());
     }
 
     protected static String webBndXML12(String body) {

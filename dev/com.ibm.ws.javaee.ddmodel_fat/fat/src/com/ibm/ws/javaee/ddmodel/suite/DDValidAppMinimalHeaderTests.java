@@ -39,57 +39,57 @@ public class DDValidAppMinimalHeaderTests {
     //
 
     @Test
-    public void testAutoInstall_Application() throws Exception {
+    public void testAutoInstall_Application_MH() throws Exception {
         CommonTests.test(DDValidAppMinimalHeaderTests.class, "testAutoInstall");    
     }
 
     @Test
-    public void testConfigurationSide_Application() throws Exception {
-        CommonTests.test(DDValidAppMinimalHeaderTests.class, "testConfigurationSide");
+    public void testConfig_Application_MH() throws Exception {
+        CommonTests.test(DDValidAppMinimalHeaderTests.class, "testConfig");
     }
 
     @Test
-    public void testBasicBindingConfiguration_Application() throws Exception {
-        CommonTests.test(DDValidAppMinimalHeaderTests.class, "testBasicBindingConfiguration");
+    public void testBindingsConfig_Application_MH() throws Exception {
+        CommonTests.test(DDValidAppMinimalHeaderTests.class, "testBindingsConfig");
     }
-    
+
     @Test
-    public void testSecurityRoleOverrides_Application() throws Exception {
+    public void testSecurityRoleOverrides_Application_MH() throws Exception {
         CommonTests.test(DDValidAppMinimalHeaderTests.class, "testSecurityRoleOverrides");
     }
-    
+
     @Test
-    public void testWebExtensions_Application() throws Exception {
+    public void testWebExtensions_Application_MH() throws Exception {
         CommonTests.test(DDValidAppMinimalHeaderTests.class, "testWebExtensions");
     }
-    
+
     @Test
-    public void testWebBindings_Application() throws Exception {
+    public void testWebBindings_Application_MH() throws Exception {
         CommonTests.test(DDValidAppMinimalHeaderTests.class, "testWebBindings");
     }
     
     @Test
-    public void testEJBBindings_Application() throws Exception {
+    public void testEJBBindings_Application_MH() throws Exception {
         CommonTests.test(DDValidAppMinimalHeaderTests.class, "testEJBBindings");
     }
     
     @Test
-    public void testEJBExtensions_Application() throws Exception {
+    public void testEJBExtensions_Application_MH() throws Exception {
         CommonTests.test(DDValidAppMinimalHeaderTests.class, "testEJBExtensions");
     }
     
     @Test
-    public void testApplicationExtensions_Application() throws Exception {
+    public void testApplicationExtensions_Application_MH() throws Exception {
         CommonTests.test(DDValidAppMinimalHeaderTests.class, "testApplicationExtensions");
     }
     
     @Test
-    public void testManagedBeanBindings_Application() throws Exception {
+    public void testManagedBeanBindings_Application_MH() throws Exception {
         CommonTests.test(DDValidAppMinimalHeaderTests.class, "testManagedBeanBindings");
     }
     
     @Test
-    public void testWebserviceBindings_Application() throws Exception {
+    public void testWebserviceBindings_Application_MH() throws Exception {
         CommonTests.test(DDValidAppMinimalHeaderTests.class, "testWebserviceBindings");
     }
 }

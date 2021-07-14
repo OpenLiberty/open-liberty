@@ -100,15 +100,37 @@ public class EJBJarExtTestBase extends EJBJarTestBase {
                 altMessage, messages);                    
     }
 
+    //
+    
+    protected String ejbExtBodyXMI() {
+        return ejbExtBodyXMI( getEJBJarPath() );
+    }
+
+    protected static String ejbExtBodyXMI(String ddPath) {
+        return
+            "<ejbExtensions xmi:type=\"ejbext:SessionExtension\" xmi:id=\"SessionExtension_1\" timeout=\"600\">" + "\n" +
+                "<enterpriseBean xmi:type=\"ejb:Session\" href=\"" + ddPath + "#s0" + "\"/>" + "\n" +
+                "<structure xmi:id=\"BeanStructure_1\" inheritenceRoot=\"false\"/>" + "\n" +
+                "<beanCache xmi:id=\"BeanCache_1\" activateAt=\"ONCE\"/>" + "\n" +
+                "<internationalization xmi:id=\"BeanInternationalization_1\" invocationLocale=\"CALLER\"/>" + "\n" +
+                "<localTran xmi:id=\"LocalTran_1\" boundary=\"BEAN_METHOD\" unresolvedAction=\"ROLLBACK\"/>" + "\n" +
+            "</ejbExtensions>";
+    }
+
+    protected static final String ejbExtBodyXML =
+            "<session name=\"session0\"/>";
+
+    //
+
     protected String ejbJarExtXMI() {
-        return ejbJarExtXMI("", "");
+        return ejbJarExtXMI( "", ejbExtBodyXMI() );
     }
 
     protected String ejbJarExtXMI(String attrs, String body) {
         return ejbJarExtXMI(attrs, getEJBJarPath(), body );
     }
 
-    protected static final String ejbJarXMITail =
+    protected static final String ejbExtXMITail =
             "</ejbext:EJBJarExtension>";
 
     protected static String ejbJarExtXMI(String attrs, String ejbDDPath, String body) {
@@ -121,41 +143,41 @@ public class EJBJarExtTestBase extends EJBJarTestBase {
                ">" +
                "<ejbJar href=\"" + ejbDDPath + "#EJBJar_ID\"/>" +
                    body +
-               ejbJarXMITail;
+               ejbExtXMITail;
     }
 
-    protected static final String ejbJarXMLTail =
+    protected static final String ejbExtXMLTail =
             "</ejb-jar-ext>";
     
     protected static String ejbJarExt10() {
-        return ejbJarExt10("");
+        return ejbJarExt10(ejbExtBodyXML);
     }
 
     protected static String ejbJarExt10(String body) {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
-               "<ejb-jar-ext" +
-                   " xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"" +
+               "<ejb-jar-ext" + "\n" +
+                   " xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"" + "\n" +
                    " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
-                   " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-ext_1_0.xsd\"" +
-                   " version=\"1.0\"" +
-               ">" +
-                   body +
-               ejbJarXMLTail;
+                   " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-ext_1_0.xsd\"" + "\n" +
+                   " version=\"1.0\"" + "\n" +
+               ">" + "\n" +
+                   body + "\n" +
+               ejbExtXMLTail;
     }
 
     protected static String ejbJarExt11() {
-        return ejbJarExt11("");
+        return ejbJarExt11(ejbExtBodyXML);
     }
 
     protected static String ejbJarExt11(String body) {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
-               "<ejb-jar-ext" +
-                   " xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"" +
+               "<ejb-jar-ext" + "\n" +
+                   " xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"" + "\n" +
                    " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
-                   " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-ext_1_1.xsd\"" +
-                   " version=\"1.1\"" +
-               ">" +
-                   body +
-               ejbJarXMLTail;
+                   " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-ext_1_1.xsd\"" + "\n" +
+                   " version=\"1.1\"" + "\n" +
+               ">" + "\n" +
+                   body + "\n" +
+               ejbExtXMLTail;
     }
 }

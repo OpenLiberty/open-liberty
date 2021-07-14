@@ -79,9 +79,79 @@ unexpected.child.element=CWWKC2259E: Unexpected child element {3} of parent elem
 unexpected.child.element.explanation=An element not defined to be in the deployment descriptor was encountered.
 unexpected.child.element.useraction=Correct the deployment descriptor.
 
-invalid.href.prefix=CWWKC2260E: The href attribute value of the {2} element does not start with {3} in the {0} deployment descriptor on line {1}.
-invalid.href.prefix.explanation=An href attribute must start with the correct path to the descriptor being referenced.
-invalid.href.prefix.useraction=Correct the deployment descriptor.
+######
+
+# REMOVED:
+# invalid.href.prefix=CWWKC2260E: The href attribute value of the {2} element does not start with {3} in the {0} deployment descriptor on line {1}.
+# invalid.href.prefix.explanation=An href attribute must start with the correct path to the descriptor being referenced.
+# invalid.href.prefix.useraction=Correct the deployment descriptor.
+
+# REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives.
+#    {1} is the number of a line within the deployment descriptor.
+#    {2} is the name of the element which is being processed.
+#    {3} is the HREF value which is not valid.
+#    {4} is the actual prefix of the HREF value.
+#    {5} is the expected prefix of the HREF value.
+# -----------------------------------------------------------------------
+invalid.href.prefix=CWWKC2260E: HREF prefix {4} does not match the expected prefix {5} in HREF value {3} of element {2} in deployment descriptor {0} on line {1}.
+invalid.href.prefix.explanation=The prefix of the HREF value specifies a path to a referenced deployment descriptor.  The prefix does not match the path of that referenced deployment descriptor.
+invalid.href.prefix.useraction=Correct the HREF value.
+
+# ADDED:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives.
+#    {1} is the number of a line within the deployment descriptor.
+#    {2} is the name of the element which is being processed.
+#    {3} is an HREF value which is not valid.
+# -----------------------------------------------------------------------
+invalid.href=CWWKC2284E: Non-valid HREF value {3} of element {2} in deployment descriptor {0} on line {1}.
+invalid.href.explanation=The element value is not a valid HREF value: The value must have a ''#'' character, and the ''#'' character must not be the first or last character of the value.
+invalid.href.useraction=Correct the HREF value.
+
+# ADDED:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives.
+#    {1} is the number of a line within the deployment descriptor.
+#    {2} is the name of the element which is being processed.
+#    {3} is the HREF value which is not valid.
+#    {4} the expected type of the element referenced by the HREF.
+#    {5} the type of actual referenced element.
+# -----------------------------------------------------------------------
+incorrect.href.type=CWWKC2285E: An HREF references an object of type {5} but requires an object of type {4}.  The error occurs in HREF value {3} of element {2} in deployment descriptor {0} on line {1}.
+incorrect.href.type.explanation=The type of the object which is referenced by the HREF value is incorrect.
+incorrect.href.type.useraction=Correct the HREF value.
+
+# ADDED:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives.
+#    {1} is the number of a line within the deployment descriptor.
+#    {2} is the name of the element which is being processed.
+#    {3} is the HREF value which cannot be resolved.
+#    {4} is the ID of the HREF value.
+#    {5} is the path of a referenced deployment descriptor.
+# -----------------------------------------------------------------------
+unresolved.href=CWWKC2286E: Failed to resolve HREF ID {4} within referenced descriptor {5}, of HREF value {3} of element {2}, in deployment descriptor {0} on line {1}.
+unresolved.href.explanation=The HREF ID does not resolve to any available element of the referenced deployment descriptor. The HREF ID must match the ID of an element of the referenced deployment descriptor.
+unresolved.href.useraction=Correct either the HREF ID, or correct the ID values in the referenced deployment descriptor.
+
+# ADDED:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives.
+#    {1} is the number of a line within the deployment descriptor.
+#    {2} is the name of the element which is being processed.
+# -----------------------------------------------------------------------
+missing.href=CWWKC2287E: No HREF attribute is present in element {2} in deployment descriptor {0} on line {1}.
+missing.href.explanation=The element is required to provide an HREF attribute.  An HREF attribute has name ''href''.
+missing.href.useraction=Add an HREF attribute to the element.
+
+######
 
 # REMOVED:
 # unknown.deployment.descriptor.version=CWWKC2261E: An error occurred while trying to determine the version of the {0} deployment descriptor.

@@ -17,81 +17,114 @@ import com.ibm.ws.javaee.dd.app.Application;
 import com.ibm.ws.javaee.version.JavaEEVersion;
 
 public class AppHeaderTest extends AppTestBase {
+    
     // 1.4, http://java.sun.com/xml/ns/j2ee
     // 5,   http://java.sun.com/xml/ns/javaee
     // 7,   http://xmlns.jcp.org/xml/ns/javaee
 
     protected static String app50NoSchema =
-        "<application" +
-               // " xmlns=\"http://java.sun.com/xml/ns/javaee\"" +
-               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-               " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee" +
-               " http://java.sun.com/xml/ns/javaee/application_5.xsd\"" +
-               " version=\"5\"" +
-               " id=\"Application_ID\"" +
-               "/>";
+            "<application" +
+                // " xmlns=\"http://java.sun.com/xml/ns/javaee\"" +
+                " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+                " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee" +
+                " http://java.sun.com/xml/ns/javaee/application_5.xsd\"" +
+                " version=\"5\"" +
+                " id=\"Application_ID\"" +
+                ">\n" +
+                appBody + "\n" +
+            "</application>";
+               
     protected static String app50NoSchemaInstance =
-        "<application" +
-               " xmlns=\"http://java.sun.com/xml/ns/javaee\"" +
-               // " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-               " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee" +
-               " http://java.sun.com/xml/ns/javaee/application_5.xsd\"" +
-               " version=\"5\"" +
-               " id=\"Application_ID\"" +
-               "/>";
+            "<application" +
+                " xmlns=\"http://java.sun.com/xml/ns/javaee\"" +
+                // " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+                " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee" +
+                " http://java.sun.com/xml/ns/javaee/application_5.xsd\"" +
+                " version=\"5\"" +
+                " id=\"Application_ID\"" +
+                ">\n" +
+                appBody + "\n" +
+            "</application>";
+
     protected static String app50NoSchemaLocation =
-        "<application" +
-               " xmlns=\"http://java.sun.com/xml/ns/javaee\"" +
-               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-               // " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee" +
-               // " http://java.sun.com/xml/ns/javaee/application_5.xsd\"" +
-               " version=\"5\"" +
-               " id=\"Application_ID\"" +
-               "/>";
+            "<application" +
+                " xmlns=\"http://java.sun.com/xml/ns/javaee\"" +
+                " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+                // " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee" +
+                // " http://java.sun.com/xml/ns/javaee/application_5.xsd\"" +
+                " version=\"5\"" +
+                " id=\"Application_ID\"" +
+                ">\n" +
+                appBody + "\n" +
+            "</application>";
+
     protected static String app50NoXSI =
-        "<application" +
-               " xmlns=\"http://java.sun.com/xml/ns/javaee\"" +
-               // " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-               // " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee" +
-               // " http://java.sun.com/xml/ns/javaee/application_5.xsd\"" +
-               " version=\"5\"" +
-               " id=\"Application_ID\"" +
-               "/>";
+            "<application" +
+                " xmlns=\"http://java.sun.com/xml/ns/javaee\"" +
+                // " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+                // " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee" +
+                // " http://java.sun.com/xml/ns/javaee/application_5.xsd\"" +
+                " version=\"5\"" +
+                " id=\"Application_ID\"" +
+                ">\n" +
+                appBody + "\n" +
+            "</application>";
+
     protected static String app50NoVersion =
-        "<application" +
-               " xmlns=\"http://java.sun.com/xml/ns/javaee\"" +
-               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-               " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee" +
-               " http://java.sun.com/xml/ns/javaee/application_5.xsd\"" +
-               // " version=\"5\"" +
-               " id=\"Application_ID\"" +
-               "/>";
+            "<application" +
+                " xmlns=\"http://java.sun.com/xml/ns/javaee\"" +
+                " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+                " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee" +
+                " http://java.sun.com/xml/ns/javaee/application_5.xsd\"" +
+                // " version=\"5\"" +
+                " id=\"Application_ID\"" +
+                ">\n" +
+                appBody + "\n" +
+            "</application>";
+
     protected static String app50NoID =
-        "<application" +
-               " xmlns=\"http://java.sun.com/xml/ns/javaee\"" +
-               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-               " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee" +
-               " http://java.sun.com/xml/ns/javaee/application_5.xsd\"" +
-               " version=\"5\"" +
-               // " id=\"Application_ID\"" +
-               "/>";
+            "<application" +
+                " xmlns=\"http://java.sun.com/xml/ns/javaee\"" +
+                " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+                " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee" +
+                " http://java.sun.com/xml/ns/javaee/application_5.xsd\"" +
+                " version=\"5\"" +
+                // " id=\"Application_ID\"" +
+                ">\n" +
+                appBody + "\n" +
+            "</application>";
 
     //
 
     protected static String app14NamespaceOnly = 
-        "<application xmlns=\"http://java.sun.com/xml/ns/j2ee\"/>";
+        "<application xmlns=\"http://java.sun.com/xml/ns/j2ee\">" +
+            appBody + "\n" +
+        "</application>";
+    
     protected static String app14VersionOnly = 
-        "<application version=\"1.4\"/>";
+        "<application version=\"1.4\">" +
+            appBody + "\n" +
+        "</application>";
 
     protected static String app50NamespaceOnly =
-        "<application xmlns=\"http://java.sun.com/xml/ns/javaee\"/>";
+        "<application xmlns=\"http://java.sun.com/xml/ns/javaee\">" +
+            appBody + "\n" +
+        "</application>";
+
     protected static String app50VersionOnly =
-        "<application version=\"5\"/>";
+        "<application version=\"5\">" +
+            appBody + "\n" +
+        "</application>";
 
     protected static String app70NamespaceOnly =
-        "<application xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"/>";
+        "<application xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\">" +
+            appBody + "\n" +
+        "</application>";
+
     protected static String app70VersionOnly =
-        "<application version=\"7\"/>";
+        "<application version=\"7\">" +
+            appBody + "\n" +
+        "</application>";
 
     //
 
@@ -99,11 +132,19 @@ public class AppHeaderTest extends AppTestBase {
         "<application" +
                " xmlns=\"http://java.sun.com/xml/ns/j2ee\"" +
                " version=\"5\"" +
-        "/>";
+        ">" +
+            appBody + "\n" +
+        "</application>";
+
     protected static String app50UnknownNamespace =
-        "<application xmlns=\"http://junk\"/>";
+        "<application xmlns=\"http://junk\">" +
+            appBody + "\n" +
+        "</application>";
+
     protected static String app50UnknownVersion =
-        "<application version=\"99\"/>";
+        "<application version=\"99\">" +
+            appBody + "\n" +
+        "</application>";
 
     //
 
@@ -216,14 +257,14 @@ public class AppHeaderTest extends AppTestBase {
     @Test
     public void testApp50UnknownNamespace() throws Exception {
         parseApp(app50UnknownNamespace, JavaEEVersion.VERSION_9_0_INT,
-                UNSUPPORTED_DESCRIPTOR_NAMESPACE_ALT_MESSAGE,
-                UNSUPPORTED_DESCRIPTOR_NAMESPACE_MESSAGES);
+                 UNSUPPORTED_DESCRIPTOR_NAMESPACE_ALT_MESSAGE,
+                 UNSUPPORTED_DESCRIPTOR_NAMESPACE_MESSAGES);
     }
 
     @Test
     public void testApp50UnknownVersion() throws Exception {
         parseApp(app50UnknownVersion, JavaEEVersion.VERSION_9_0_INT,
-                UNSUPPORTED_DESCRIPTOR_VERSION_ALT_MESSAGE,
-                UNSUPPORTED_DESCRIPTOR_VERSION_MESSAGES);
+                 UNSUPPORTED_DESCRIPTOR_VERSION_ALT_MESSAGE,
+                 UNSUPPORTED_DESCRIPTOR_VERSION_MESSAGES);
     }
 }

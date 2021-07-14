@@ -80,9 +80,10 @@ public class EJBJarBndTestBase extends EJBJarTestBase {
                 altMessage, messages);
     }
 
+    //
 
     public String ejbJarBndXMI() {
-        return ejbJarBndXMI("", "");
+        return ejbJarBndXMI( "", ejbBndBodyXMI() );
     }
 
     public String ejbJarBndXMI(String attrs, String body) {
@@ -105,11 +106,31 @@ public class EJBJarBndTestBase extends EJBJarTestBase {
                ejbJarTailXMI;
     }
 
+    //
+    
+    public String ejbBndBodyXMI() {
+        return ejbBndBodyXMI( getEJBJarPath() );
+    }
+
+    public static final String ejbBndBodyXMI(String ddPath) {
+        return "<ejbBindings>" + "\n" +
+                    "<enterpriseBean xmi:type=\"ejb:Session\" href=\"" + ddPath + "#s0\"/>" + "\n" +
+               "</ejbBindings>";
+    }
+
+    //
+
     public static final String ejbJarTailXML =
             "</ejb-jar-bnd>";
+
+    public static final String ejbBndBodyXML() {
+        return "<session name=\"SessionBean1\" simple-binding-name=\"SimpleBindingName2\"/>";
+    }
+    
+    //
     
     public static String ejbJarBnd10() {
-        return ejbJarBnd10("");
+        return ejbJarBnd10( ejbBndBodyXML() );
     }
 
     public static String ejbJarBnd10(String body) {
@@ -125,7 +146,7 @@ public class EJBJarBndTestBase extends EJBJarTestBase {
     }
 
     public static String ejbJarBnd11() {
-        return ejbJarBnd11("");
+        return ejbJarBnd11( ejbBndBodyXML() );
     }
     
     public static String ejbJarBnd11(String body) {
@@ -141,7 +162,7 @@ public class EJBJarBndTestBase extends EJBJarTestBase {
     }
 
     public static String ejbJarBnd12() {
-        return ejbJarBnd12("");
+        return ejbJarBnd12( ejbBndBodyXML() );
     }
 
     public static String ejbJarBnd12(String body) {
@@ -222,7 +243,7 @@ public class EJBJarBndTestBase extends EJBJarTestBase {
             "</ejbbnd:EJBJarBinding>";
 
     public static final String defaultDataSourceXMI1 =
-            " <defaultDatasource xmi:id=\"ResourceRefBinding_123\"/>";
+            "<defaultDatasource xmi:id=\"ResourceRefBinding_123\"/>";
 
     public static final String defaultDataSourceXMI2 =
             "<defaultDatasource xmi:id=\"ResourceRefBinding_123\">" +

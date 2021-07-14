@@ -73,7 +73,7 @@ public class ValidationConfigDDParser extends DDParser {
         } else if ( !NAMESPACE_JBOSS_VALIDATION_CONFIG.equals(namespace) ) {
             throw new ParseException( unsupportedDescriptorNamespace(namespace) );                
         }
-        
+
         // "1.0" is NOT accepted as the version attribute.  The version
         // attribute must either be entirely absent, or must be "1.1".
         String versionAttr = getAttributeValue("", "version");

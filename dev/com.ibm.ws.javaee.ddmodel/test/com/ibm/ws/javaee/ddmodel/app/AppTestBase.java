@@ -70,8 +70,8 @@ public class AppTestBase extends DDTestBase {
                " \"http://java.sun.com/j2ee/dtds/application_1_3.dtd\">" +
         "<application>";
 
-    // 1.4, 5.0. 6.0, 7.0, and 8.0 are schema based:
-
+    // 1.4, 5.0. 6.0, 7.0, and 8.0 are schema based:    
+    
     protected static String app14Head = 
         "<application" +
                " xmlns=\"http://java.sun.com/xml/ns/j2ee\"" +
@@ -132,6 +132,31 @@ public class AppTestBase extends DDTestBase {
                " id=\"Application_ID\"" +
                ">";
 
+    protected static String appBody =
+            "<display-name>Deployment Descriptor FAT Enterprise Application</display-name>\n" +
+
+            "<module>\n" +
+                "<web>\n" +
+                    "<web-uri>,ServletTest.war</web-uri>\n" +
+                    "<context-root>,autoctx</context-root>\n" +
+                "</web>\n" +
+            "</module>\n" +
+
+            "<module>\n" +
+                "<web>\n" +
+                    "<web-uri>ServletTestNoBnd.war</web-uri>\n" +
+                    "<context-root>nobindings</context-root>\n" +
+                "</web>\n" +
+            "</module>\n" +
+
+            "<module>\n" +
+                "<ejb>EJBTest.jar</ejb>\n" +
+            "</module>\n" +
+
+            "<module>\n" +
+                "<ejb>EJBTestNoBnd.jar</ejb>\n" +
+            "</module>\n";    
+    
     protected static String appTail =
         "</application>";
 
@@ -169,7 +194,7 @@ public class AppTestBase extends DDTestBase {
     
     public Application app14() throws Exception {
         if ( app14 == null ) {
-            app14 = parseApp( app(Application.VERSION_1_4, ""), Application.VERSION_7 );
+            app14 = parseApp( app(Application.VERSION_1_4, appBody), Application.VERSION_7 );
         }
         return app14;
     }    

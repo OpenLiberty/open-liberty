@@ -385,9 +385,7 @@ public abstract class DDParser {
     public DDParser(Container ddRootContainer, Entry ddEntry, String expectedRootName)
         throws ParseException {
 
-        this(ddRootContainer, ddEntry,
-             UNUSED_MAX_SCHEMA_VERSION,
-             expectedRootName);
+        this(ddRootContainer, ddEntry, UNUSED_MAX_SCHEMA_VERSION, expectedRootName);
     }    
     
     protected static final int UNUSED_MAX_SCHEMA_VERSION = -1;
@@ -472,25 +470,61 @@ public abstract class DDParser {
         return ddEntryPath.substring(1);
     }
 
+    /**
+     * Obtain a target value from the root container using the
+     * {@link Container#adapt(Class)} API.
+     * 
+     * First look in a local cache, and answer any value cached
+     * locally.
+     * 
+     * Otherwise, obtain the value using <code>adapt</code>, store
+     * the value in the local cache, and return the value.
+     *
+     * @param <T> The type of value which is to be retrieved.
+     * @param targetClass The class of the value which is to be retrieved.
+     *
+     * @return The value which was retrieved.
+     *
+     * @throws ParseException Thrown in case of failure of the
+     *     <code>adapt</code> invocation.
+     */
     @Trivial
-    public <T> T adaptRootContainer(Class<T> adaptTarget) throws ParseException {
-        Object cachedObject = adaptCache.get(adaptTarget);
-        if (cachedObject != null) {
-            return adaptTarget.cast(cachedObject);
+    public <T> T adaptRootContainer(Class<T> targetClass) throws ParseException {
+        Object target = adaptCache.get(targetClass);
+        if ( target != null ) {
+            return targetClass.cast(target);
         }
+
         try {
-            T result = rootContainer.adapt(adaptTarget);
-            adaptCache.put(adaptTarget, result);
+            T result = rootContainer.adapt(targetClass);
+            // TODO: Need to handle null adapt results better.
+            adaptCache.put(targetClass, result);
             return result;
-        } catch (UnableToAdaptException e) {
+
+        } catch ( UnableToAdaptException e ) {
+            // TODO: Store adapt failures, too.
+
             Throwable cause = e.getCause();
-            if (cause instanceof ParseException) {
+            if ( cause instanceof ParseException ) {
                 throw (ParseException) cause;
             }
             throw new ParseException(xmlError(e), e);
         }
     }
 
+    /**
+     * Retrieve data stored in relation to a target class from the non-persistent
+     * cache of the root container.  While the non-persistent cache stored data
+     * not necessarily of the same type as the target class, this implementation
+     * expected the value to be of the same type.
+     *  
+     * @param <T> The type of data to be retrieved.
+     * @param targetClass The class of the data which is to be retrieved.
+     *
+     * @return Data of the specified type, retrieved from the non-persistent
+     *     cache of the root container.  Answer null if no non-persistent
+     *     cache is available, or if no data is stored for the specified type.
+     */
     @SuppressWarnings("unchecked")
     public <T> T cacheGet(Class<T> targetClass) {
         NonPersistentCache cache = null;
@@ -501,7 +535,7 @@ public abstract class DDParser {
         }
         return ( (cache == null) ? null : (T) cache.getFromCache(targetClass) );
     }    
-    
+
     // Parse parameterization ...
     
     private final String expectedRootName;
@@ -524,15 +558,57 @@ public abstract class DDParser {
 
     public String dtdPublicId;
     public String namespace;
-
+    public String namespaceOriginal;
     public String idNamespace;
 
     public String getDottedVersionText() {
         return getDottedVersionText(version);
     }
-    
+
     public String getVersionText() {
         return getVersionText(version);
+    }
+
+    /**
+     * Assign the namespace as the default namespace of this document,
+     * and store the original namespace.
+     *
+     * The code update may assign a namespace which is different from the
+     * namespace which is actually used by the XML text.  That breaks
+     * namespace checking for child elements.  Remember the original
+     * namespace and perform an update element namespaces when validating
+     * element namespaces.
+     * 
+     * See {@link com.ibm.ws.javaee.ddmodel.DDParserBndExt.createXMLRootParsable()
+     * com.ibm.ws.javaee.ddmodel.DDParserSpec.createRootParsable()
+     * A
+     * @param namespaceOverride
+     */
+    protected void patchNamespace(String namespaceOverride) {
+        namespaceOriginal = namespace;
+        namespace = namespaceOverride;
+    }
+
+    /**
+     * Match a local namespace against the default namespace, taking
+     * into account any override which was made to the namespace.
+     *
+     * @param localNamespace The local namespace which is to be tested.
+     *
+     * @return True or false telling if the local namespace matches the
+     *     default namespace.
+     */
+    protected boolean matchNamespace(String localNamespace) {
+        if ( ((namespaceOriginal != null) && namespaceOriginal.equals(localNamespace)) ||
+             ((namespaceOriginal == null) && (localNamespace == null)) ) {
+            localNamespace = namespace;
+        }
+
+        if ( namespace == null ) {
+            return ( localNamespace == null );
+        } else {
+            return namespace.equals(localNamespace);
+        }
     }
 
     // Root parse objects ...
@@ -905,14 +981,11 @@ public abstract class DDParser {
                         return;
                     case XMLStreamConstants.START_ELEMENT:
                         String localName = xsr.getLocalName();
-                        if (namespace != null) {
-                            if (!namespace.equals(xsr.getNamespaceURI())) {
-                                throw new ParseException(incorrectChildElementNamespace(xsr.getNamespaceURI(), localName));
-                            }
-                        } else if (xsr.getNamespaceURI() != null) {
-                            throw new ParseException(incorrectChildElementNamespace(xsr.getNamespaceURI(), localName));
+                        String localNamespace = xsr.getNamespaceURI();
+                        if ( !matchNamespace(localNamespace) ) {
+                            throw new ParseException( incorrectChildElementNamespace(localNamespace, localName) );
                         }
-                        final boolean handledChild = parsable.handleChild(this, localName);
+                        boolean handledChild = parsable.handleChild(this, localName);
                         currentElementLocalName = elementLocalName;
                         if (!handledChild) {
                             throw new ParseException(unexpectedChildElement(localName));
@@ -924,7 +997,10 @@ public abstract class DDParser {
                         break;
                     default:
                         int eventType = xsr.getEventType();
-                        RuntimeException re = new RuntimeException("unexpected event " + eventType + " while processing element \"" + elementName + "\".");
+                        RuntimeException re = new RuntimeException(
+                            "unexpected event " + eventType +
+                            " while processing element \"" + elementName + "\"" +
+                            " of " + describeEntry() + ".");
                         FFDCFilter.processException(re, "com.ibm.ws.javaee.ddmodel.DDParser", "410", this);
                         break;
                 }
@@ -1237,16 +1313,7 @@ public abstract class DDParser {
         return path;
     }
     
-    // Static: Invoked from descriptor element parsers, which
-    //         which do not have a convenient reference to a parser.
-    // TODO: Add the reference?  The warning is supplied without
-    //       a descriptor reference and without a line number.
-
-    public static void unresolvedReference(String elementName, String href) {
-        if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
-            Tr.debug(tc, "Unable to resolve reference from element {0} to {1}.", elementName, href);
-        }
-    }
+    //
 
     public String requiredAttributeMissing(String attrLocal) {
         return Tr.formatMessage(tc, "required.attribute.missing", describeEntry(), getLineNumber(), currentElementLocalName, attrLocal);
@@ -1273,6 +1340,8 @@ public abstract class DDParser {
     }
 
     private String incorrectChildElementNamespace(String elementNS, String elementLocal) {
+        // TODO: Not sure if it's better to use the original namespace or the forced namespace.
+        // String useNamespace = ( (namespaceOriginal != null) ? namespaceOriginal : namespace );
         return Tr.formatMessage(tc, "incorrect.child.element.namespace", describeEntry(), getLineNumber(), currentElementLocalName, elementLocal, elementNS, namespace);
     }
 
@@ -1280,9 +1349,30 @@ public abstract class DDParser {
         return Tr.formatMessage(tc, "unexpected.child.element", describeEntry(), getLineNumber(), currentElementLocalName, elementLocal);
     }
 
-    public String invalidHRefPrefix(String hrefElementName, String hrefPrefix) {
-        return Tr.formatMessage(tc, "invalid.href.prefix", describeEntry(), getLineNumber(), hrefElementName, hrefPrefix);
+    //
+
+    public String missingHRef(String hrefElementName) {
+        return Tr.formatMessage(tc, "missing.href", describeEntry(), getLineNumber(), hrefElementName);
     }
+
+    public String invalidHRef(String hrefElementName, String href) {
+        return Tr.formatMessage(tc, "invalid.href", describeEntry(), getLineNumber(), hrefElementName, href);
+    }    
+    
+    public String invalidHRefPrefix(String hrefElementName, String href, String hrefPrefix, String expectedPrefix) {
+        return Tr.formatMessage(tc, "invalid.href.prefix", describeEntry(), getLineNumber(), hrefElementName, href, hrefPrefix, expectedPrefix);
+    }
+
+    public String incorrectHRefType(String hrefElementName, String href, Class<?> referentClass, Object referent) {
+        return Tr.formatMessage(tc, "incorrect.href.type", describeEntry(), getLineNumber(),
+                hrefElementName, href, referentClass.getName(), referent.getClass().getName() );
+    }    
+    
+    public String unresolvedReference(String hrefElementName, String href, String hrefId, String hrefPath) {
+        return Tr.formatMessage(tc, "unresolved.href", describeEntry(), getLineNumber(), hrefElementName, href, hrefId, hrefPath);
+    }
+
+    //
 
     public String tooManyElements(String element) {
         return Tr.formatMessage(tc, "at.most.one.occurrence", describeEntry(), getLineNumber(), currentElementLocalName, element);
@@ -1319,7 +1409,7 @@ public abstract class DDParser {
         return Tr.formatMessage(tc, "invalid.long.value", describeEntry(), getLineNumber(), value);
     }
 
-    // New messages ...
+    // New and replacement messages ...
 
     // protected String missingDeploymentDescriptorVersion() {
     //     return Tr.formatMessage(tc, "missing.deployment.descriptor.version", describeEntry(), getLineNumber());
@@ -1339,13 +1429,10 @@ public abstract class DDParser {
     // }
 
     protected String unsupportedDescriptorVersion(String ddVersion) {
-        // The deployment descriptor {0}, at line {1}, specifies unsupported version {2}.
         return Tr.formatMessage(tc, "unsupported.descriptor.version", describeEntry(), getLineNumber(), ddVersion);
     }
 
     protected String unprovisionedDescriptorVersion(int schemaVersion, int maxSchemaVersion) {
-        // The deployment descriptor {0}, at line {1}, specifies version {2}, which
-        // is higher than the current provisioned version {3}.
         return Tr.formatMessage(tc, "unprovisioned.descriptor.version", describeEntry(), getLineNumber(), schemaVersion, maxSchemaVersion);
     }
     
@@ -1354,12 +1441,10 @@ public abstract class DDParser {
     // }
     
     protected String missingDescriptorNamespace(String ddNamespace) {
-        // The deployment descriptor {0}, at line {1}, does not have required namespace {2}.        
         return Tr.formatMessage(tc, "missing.descriptor.namespace", describeEntry(), getLineNumber(), ddNamespace);
     }
 
     protected String unsupportedDescriptorNamespace(String ddNamespace) {
-        // The deployment descriptor {0}, at line {1}, specifies unsupported namespace {2}.        
         return Tr.formatMessage(tc, "unsupported.descriptor.namespace", describeEntry(), getLineNumber(), ddNamespace);
     }
 
@@ -1368,19 +1453,14 @@ public abstract class DDParser {
     // }
     
     protected String incorrectDescriptorNamespace(String ddVersion, String ddNamespace, String expectedNamespace) {
-        // The deployment descriptor {0}, at line {1}, specifies version {2} and namespace {3},
-        // but should have namespace {4}.
         return Tr.formatMessage(tc, "incorrect.descriptor.namespace.for.version", describeEntry(), getLineNumber(), ddVersion, ddNamespace, expectedNamespace);        
     }
     
     protected String incorrectDescriptorNamespace(String ddNamespace, String expectedNamespace) {
-        // The deployment descriptor {0}, at line {1}, specifies namespace {2},
-        // but should have namespace {3}.
         return Tr.formatMessage(tc, "incorrect.descriptor.namespace", describeEntry(), getLineNumber(), ddNamespace, expectedNamespace);        
     }    
 
     protected String unsupportedDescriptorPublicId(String ddPublicId) {
-        // The deployment descriptor {0}, at line {1}, specifies unsupported public ID {2}.
         return Tr.formatMessage(tc, "unsupported.descriptor.public.id", describeEntry(), getLineNumber(), ddPublicId);
     }
 
@@ -1389,8 +1469,6 @@ public abstract class DDParser {
     // }
 
     protected String unexpectedRootElement(String expectedRootElementName) {
-        // The deployment descriptor {0}, at line {1}, has root element {2},
-        // but requires root element {3}. 
         return Tr.formatMessage(tc, "unexpected.root.element", describeEntry(), getLineNumber(), rootElementLocalName, expectedRootElementName);
     }    
 }

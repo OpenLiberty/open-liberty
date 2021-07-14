@@ -73,7 +73,7 @@ public class WebAppTest extends WebAppTestBase {
                     messages = null;
                 }
 
-                parseWebApp( webApp(schemaVersion, ""),
+                parseWebApp( webApp( schemaVersion, webAppBody() ),
                              maxSchemaVersion,
                              altMessage, messages );
             }
@@ -200,7 +200,7 @@ public class WebAppTest extends WebAppTestBase {
     @Test
     public void testEE7Web31DenyUncoveredHttpMethodsNotEmptyType() throws Exception {
         parseWebApp( webApp( WebApp.VERSION_3_1,
-                       "<deny-uncovered-http-methods>junk</deny-uncovered-http-methods>" ),
+                             "<deny-uncovered-http-methods>junk</deny-uncovered-http-methods>" ),
                      WebApp.VERSION_3_1,
                      "unexpected.content",
                      "CWWKC2257E", "deny-uncovered-http-methods", "MyWar.war : WEB-INF/web.xml" );                     

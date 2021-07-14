@@ -39,47 +39,47 @@ public class DDValidModMinimalHeaderTests {
     //
 
     @Test
-    public void testAutoInstall_Module() throws Exception {
+    public void testAutoInstall_Module_MH() throws Exception {
         CommonTests.test(DDValidModMinimalHeaderTests.class, "testAutoInstall");    
     }
 
     @Test
-    public void testBasicBindingConfiguration_Module() throws Exception {
-        CommonTests.test(DDValidModMinimalHeaderTests.class, "testBasicBindingConfiguration");
+    public void testBindingsConfig_Module_MH() throws Exception {
+        CommonTests.test(DDValidModMinimalHeaderTests.class, "testBindingsConfig");
     }   
     
     @Test
-    public void testWebExtensions_Module() throws Exception {
+    public void testWebExtensions_Module_MH() throws Exception {
         CommonTests.test(DDValidModMinimalHeaderTests.class, "testWebExtensions");
     }
     
     @Test
-    public void testWebBindings_Module() throws Exception {
+    public void testWebBindings_Module_MH() throws Exception {
         CommonTests.test(DDValidModMinimalHeaderTests.class, "testWebBindings");
     }
     
     @Test
-    public void testEJBBindings_Module() throws Exception {
+    public void testEJBBindings_Module_MH() throws Exception {
         CommonTests.test(DDValidModMinimalHeaderTests.class, "testEJBBindings");
     }
     
     @Test
-    public void testEJBExtensions_Module() throws Exception {
+    public void testEJBExtensions_Module_MH() throws Exception {
         CommonTests.test(DDValidModMinimalHeaderTests.class, "testEJBExtensions");
     }
     
     @Test
-    public void testApplicationExtensionFromWebApp_Module() throws Exception {
-        CommonTests.test(DDValidModMinimalHeaderTests.class, "testApplicationExtensionFromWebApp");
+    public void testAppExtensionFromWebApp_Module_MH() throws Exception {
+        CommonTests.test(DDValidModMinimalHeaderTests.class, "testAppExtensionFromWebApp");
     }
     
     @Test
-    public void testSecurityRoleOverridesFromWebApp_Module() throws Exception {
+    public void testSecurityRoleOverridesFromWebApp_Module_MH() throws Exception {
         CommonTests.test(DDValidModMinimalHeaderTests.class, "testSecurityRoleOverridesFromWebApp");
     }
     
     @Test
-    public void testManagedBeanBindings_Module() throws Exception {
+    public void testManagedBeanBindings_Module_MH() throws Exception {
         CommonTests.test(DDValidModMinimalHeaderTests.class, "testManagedBeanBindings");
     }
 }

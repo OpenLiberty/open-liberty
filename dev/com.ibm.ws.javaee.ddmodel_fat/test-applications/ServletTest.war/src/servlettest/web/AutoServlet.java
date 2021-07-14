@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012,2020 IBM Corporation and others.
+ * Copyright (c) 2012,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -127,7 +127,7 @@ public class AutoServlet extends HttpServlet {
         return OK;
     }
 
-    public String testConfigurationSide() throws Exception {
+    public String testConfig() throws Exception {
         // Simple check to make sure the component impl is present for each
         // configured type
         ConfigurationAdmin ca = getConfigurationAdmin();
@@ -151,7 +151,6 @@ public class AutoServlet extends HttpServlet {
         }
 
         return OK;
-
     }
 
     private Container getEarContainer() {
@@ -217,7 +216,7 @@ public class AutoServlet extends HttpServlet {
         return testWebBindings(TEST_WAR);
     }
 
-    public String testWebBindingsNoBnd() throws Exception {
+    public String testWebBindingsNoBindings() throws Exception {
         return testWebBindings(TEST_WAR_NO_BINDINGS);
     }
 
@@ -370,7 +369,7 @@ public class AutoServlet extends HttpServlet {
         return OK;
     }
 
-    public String testEJBBindingsNoBnd() throws Exception {
+    public String testEJBBindingsNoBindings() throws Exception {
         Container ejbContainer = getEJBJarContainer(TEST_EJB_NO_BINDINGS);
 
         EJBJarBnd bindings = ejbContainer.adapt(EJBJarBnd.class);
@@ -393,7 +392,7 @@ public class AutoServlet extends HttpServlet {
         return OK;
     }
 
-    public String testEJBExtensionsNoBnd() throws Exception {
+    public String testEJBExtensionsNoBindings() throws Exception {
         Container ejbContainer = getEJBJarContainer(TEST_EJB_NO_BINDINGS);
 
         EJBJarExt extensions = ejbContainer.adapt(EJBJarExt.class);
@@ -540,7 +539,7 @@ public class AutoServlet extends HttpServlet {
         return OK;
     }
 
-    public String testWebserviceBindingsNoBnd() throws Exception {
+    public String testWebserviceBindingsNoBindings() throws Exception {
         Container warContainer = getWarContainer(TEST_WAR_NO_BINDINGS);
 
         WebservicesBnd wsbnd = warContainer.adapt(WebservicesBnd.class);
@@ -840,7 +839,7 @@ public class AutoServlet extends HttpServlet {
         }
     }
 
-    public String testBasicBindingConfiguration() {
+    public String testBindingsConfig() {
         return OK;
     }
 

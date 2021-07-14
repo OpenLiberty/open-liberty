@@ -276,11 +276,20 @@ public class EJBJarTestBase extends DDTestBase {
     
     //
 
+    public static final String ejbJarBody21 =
+            "<enterprise-beans>" + "\n" +
+                "<session id=\"s0\">" + "\n" +
+                    "<ejb-name>SessionBean1</ejb-name>" + "\n" +
+                "</session>" + "\n" +
+            "</enterprise-beans>";
+
     private EJBJar ejbJar21;
 
     public EJBJar getEJBJar21() throws Exception {
         if ( ejbJar21 == null ) {
-            ejbJar21 = parseEJBJar( ejbJar21Head() + ejbJarTail() );
+            ejbJar21 = parseEJBJar( ejbJar21Head() + "\n" +
+                                        ejbJarBody21 + "\n" +
+                                    ejbJarTail() );
         }
         return ejbJar21;
     }

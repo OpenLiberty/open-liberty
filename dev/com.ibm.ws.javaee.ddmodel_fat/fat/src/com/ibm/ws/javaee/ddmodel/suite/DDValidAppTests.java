@@ -44,13 +44,13 @@ public class DDValidAppTests {
     }
 
     @Test
-    public void testConfigurationSide_Application() throws Exception {
-        CommonTests.test(DDValidAppTests.class, "testConfigurationSide");
+    public void testConfig_Application() throws Exception {
+        CommonTests.test(DDValidAppTests.class, "testConfig");
     }
 
     @Test
-    public void testBasicBindingsConfiguration_Application() throws Exception {
-        CommonTests.test(DDValidAppTests.class, "testBasicBindingsConfiguration");
+    public void testBindingsConfig_Application() throws Exception {
+        CommonTests.test(DDValidAppTests.class, "testBindingsConfig");
     }
     
     @Test

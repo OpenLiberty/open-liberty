@@ -29,13 +29,30 @@ public class EJBJarHeaderTest extends EJBJarTestBase {
         super(ejbInWar);
     }
 
+    protected static final String ejbJarBody =
+            "<display-name>EJBTest</display-name>" + "\n" +
+            "<enterprise-beans>" + "\n" +
+                "<session id=\"TestBean\">" + "\n" +
+                    "<ejb-name>TestBean</ejb-name>" + "\n" +
+                    "<home>ejbtest.ejb.ITestHome</home>" + "\n" +
+                    "<remote>ejbtest.ejb.ITestRemote</remote>" + "\n" +
+                    "<local-home>ejbtest.ejb.TestBeanLocalHome</local-home>" + "\n" +
+                    "<local>ejbtest.ejb.TestBeanLocal</local>" + "\n" +
+                    "<ejb-class>ejbtest.ejb.TestBean</ejb-class>" + "\n" +
+                    "<session-type>Stateful</session-type>" + "\n" +
+                    "<transaction-type>Bean</transaction-type>" + "\n" +
+                "</session>" + "\n" +
+            "</enterprise-beans>";
+    
     protected static String ejbJar21NoNamespace =
             "<ejb-jar" +
                 // " xmlns=\"http://java.sun.com/xml/ns/j2ee\"" +
                 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
                 " xsi:schemaLocation=\"http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/ejb-jar_2_1.xsd\"" +
                 " version=\"2.1\"" +
-            "/>";
+            ">" + "\n" +
+                ejbJarBody + "\n" +
+            "</ejb-jar>";
     
     protected static String ejbJar21NoSchemaInstance =
             "<ejb-jar" +
@@ -43,7 +60,9 @@ public class EJBJarHeaderTest extends EJBJarTestBase {
                 // " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
                 " xsi:schemaLocation=\"http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/ejb-jar_2_1.xsd\"" +
                 " version=\"2.1\"" +
-            "/>";
+            ">" + "\n" +
+                ejbJarBody + "\n" +
+            "</ejb-jar>";
     
     protected static String ejbJar21NoSchemaLocation =
             "<ejb-jar" +
@@ -51,15 +70,19 @@ public class EJBJarHeaderTest extends EJBJarTestBase {
                 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
                 // " xsi:schemaLocation=\"http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/ejb-jar_2_1.xsd\"" +
                 " version=\"2.1\"" +
-            "/>";
-
+            ">" + "\n" +
+                ejbJarBody + "\n" +
+            "</ejb-jar>";
+    
     protected static String ejbJar21NoXSI =
             "<ejb-jar" +
                 " xmlns=\"http://java.sun.com/xml/ns/j2ee\"" +
                 // " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
                 // " xsi:schemaLocation=\"http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/ejb-jar_2_1.xsd\"" +
                 " version=\"2.1\"" +
-            "/>";
+            ">" + "\n" +
+                ejbJarBody + "\n" +
+            "</ejb-jar>";
     
     protected static String ejbJar21NoVersion =
             "<ejb-jar" +
@@ -67,22 +90,31 @@ public class EJBJarHeaderTest extends EJBJarTestBase {
                 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
                 " xsi:schemaLocation=\"http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/ejb-jar_2_1.xsd\"" +
                 // " version=\"2.1\"" +
-            "/>";
-    
+            ">" + "\n" +
+                ejbJarBody + "\n" +
+            "</ejb-jar>";
     //
     
     protected static String ejbJar21NamespaceOnly =
-            "<ejb-jar xmlns=\"http://java.sun.com/xml/ns/j2ee\"/>";
+            "<ejb-jar xmlns=\"http://java.sun.com/xml/ns/j2ee\">" + "\n" +
+                ejbJarBody + "\n" +
+            "</ejb-jar>";
     
     protected static String ejbJar21VersionOnly =
-            "<ejb-jar version=\"2.1\"/>";
+            "<ejb-jar version=\"2.1\">" + "\n" +
+                ejbJarBody + "\n" +
+            "</ejb-jar>";
     
     protected static String ejbJar30NamespaceOnly =
-            "<ejb-jar xmlns=\"http://java.sun.com/xml/ns/javaee\"/>";
-
+            "<ejb-jar xmlns=\"http://java.sun.com/xml/ns/javaee\">" + "\n" +
+                ejbJarBody + "\n" +
+            "</ejb-jar>";
+    
     protected static String ejbJar30VersionOnly =
-            "<ejb-jar version=\"3.0\"/>";
-
+            "<ejb-jar version=\"3.0\">" + "\n" +
+                ejbJarBody + "\n" +
+            "</ejb-jar>";
+    
     //
 
     protected static String ejbJar30VersionMismatch =
@@ -91,13 +123,19 @@ public class EJBJarHeaderTest extends EJBJarTestBase {
                 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
                 " xsi:schemaLocation=\"http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/ejb-jar_2_1.xsd\"" +
                 " version=\"3.0\"" +
-            "/>";    
+            ">" + "\n" +    
+                ejbJarBody + "\n" +
+            "</ejb-jar>";
     
     protected static String ejbJarUnknownNamespace =
-            "<ejb-jar xmlns=\"http://junk\"/>";
-
+            "<ejb-jar xmlns=\"http://junk\">" + "\n" +
+                ejbJarBody + "\n" +
+            "</ejb-jar>";
+    
     protected static String ejbJarUnknownVersion =
-            "<ejb-jar version=\"9.9\"/>";
+            "<ejb-jar version=\"9.9\">" + "\n" +
+                ejbJarBody + "\n" +
+            "</ejb-jar>";
     
     //
     

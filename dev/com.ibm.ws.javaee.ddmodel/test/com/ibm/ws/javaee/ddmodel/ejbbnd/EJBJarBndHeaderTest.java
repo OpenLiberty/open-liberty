@@ -29,90 +29,139 @@ public class EJBJarBndHeaderTest extends EJBJarBndTestBase {
     public EJBJarBndHeaderTest(boolean ejbInWar) {
         super(ejbInWar);
     }
-        
-    protected static final String ejbJarBndXMINoVersion =
-            "<EJBJarBnd:EJBJarBinding" +
-                " xmlns:EJBJarBnd=\"EJBJarBnd.xmi\"" +
+
+    //
+    
+    protected String ejbJarBndXMINoVersion() {
+        return
+            "<ejbbnd:EJBJarBinding" +
+                " xmlns:ejbbnd=\"EJBJarBnd.xmi\"" +
                 " xmlns:commonbnd=\"commonbnd.xmi\"" +
                 " xmlns:xmi=\"http://www.omg.org/XMI\"" +
                 // " xmi:version=\"2.0\"" +
-            "/>";
+            ">" + "\n" +
+                "<ejbJar href=\"" + getEJBJarPath() + "#EJBJar_ID\"/>" + "\n" +
+                ejbBndBodyXMI() + "\n" +
+            ejbJarTailXMI;
+    }
 
-    protected static final String ejbJarBnd11NoNamespace =
+    protected String ejbJarBnd11NoNamespace() {
+        return
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
             "<ejb-jar-bnd" +
                 // " xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"" +
                 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
                 " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-bnd_1_1.xsd\"" +
                 " version=\"1.1\"" +
-            "/>";    
+            ">" + "\n" +
+                ejbBndBodyXML() + "\n" +
+            ejbJarTailXML;
+    }
     
-    protected static final String ejbJarBnd11NoSchemaInstance =
+    protected String ejbJarBnd11NoSchemaInstance() {
+        return
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
             "<ejb-jar-bnd" +
                 " xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"" +
                 // " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
                 " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-bnd_1_1.xsd\"" +
                 " version=\"1.1\"" +
-            "/>";    
+            ">" + "\n" +
+                ejbBndBodyXML() + "\n" +
+            ejbJarTailXML;    
+    }
     
-    protected static final String ejbJarBnd11NoSchemaLocation =
+    protected String ejbJarBnd11NoSchemaLocation() {
+        return
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
             "<ejb-jar-bnd" +
                 " xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"" +
                 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
                 // " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-bnd_1_1.xsd\"" +
                 " version=\"1.1\"" +
-            "/>";        
+            ">" + "\n" +
+                ejbBndBodyXML() + "\n" +
+            ejbJarTailXML;
+    }
     
-    protected static final String ejbJarBnd11NoXSI =
+    protected String ejbJarBnd11NoXSI() {
+        return
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
             "<ejb-jar-bnd" +
                 " xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"" +
                 // " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
                 // " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-bnd_1_1.xsd\"" +
                 " version=\"1.1\"" +
-            "/>";            
+            ">" + "\n" +  
+                ejbBndBodyXML() + "\n" +
+            ejbJarTailXML;
+    }
     
-    protected static final String ejbJarBnd11NoVersion =
+    protected String ejbJarBnd11NoVersion() {
+        return
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
             "<ejb-jar-bnd" +
                 " xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"" +
                 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
                 " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-bnd_1_1.xsd\"" +
                 // " version=\"1.1\"" +
-            "/>";                
+            ">" + "\n" +
+                ejbBndBodyXML() + "\n" +
+            ejbJarTailXML;
+    }
     
-    protected static final String ejbJarBnd11VersionMismatch =
+    protected String ejbJarBnd11VersionMismatch() {
+        return
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
             "<ejb-jar-bnd" +
                 " xmlns=\"http://junk\"" +
                 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
                 " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-bnd_1_1.xsd\"" +
                 " version=\"1.1\"" +
-            "/>";               
-    
-    protected static final String ejbJarBndNamespaceOnly =
+            ">" + "\n" +   
+                ejbBndBodyXML() + "\n" +
+            ejbJarTailXML;
+    }
+            
+    protected String ejbJarBndNamespaceOnly() {
+        return
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
-            "<ejb-jar-bnd xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"/>";
+            "<ejb-jar-bnd xmlns=\"http://websphere.ibm.com/xml/ns/javaee\">" + "\n" +
+                ejbBndBodyXML() + "\n" +
+            ejbJarTailXML;
+
+    }
     
-    protected static final String ejbJarBnd11VersionOnly =
+    protected String ejbJarBnd11VersionOnly() {
+        return
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
-            "<ejb-jar-bnd version=\"1.1\"/>";                   
+            "<ejb-jar-bnd version=\"1.1\">" + "\n" +
+                ejbBndBodyXML() + "\n" +
+            ejbJarTailXML;
+    }
+
+    protected String ejbJarBndBadNamespace() {
+        return
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
+            "<ejb-jar-bnd xmlns=\"http://junk\">" + "\n" +
+                ejbBndBodyXML() + "\n" +
+            ejbJarTailXML;
+    }
     
-    protected static final String ejbJarBndBadNamespace =
+    protected String ejbJarBndBadVersion() {
+        return
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
-            "<ejb-jar-bnd xmlns=\"http://junk\"/>";
-    
-    protected static final String ejbJarBndBadVersion =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
-            "<ejb-jar-bnd version=\"9.9\"/>";     
+            "<ejb-jar-bnd version=\"9.9\">" + "\n" +
+                ejbBndBodyXML() + "\n" +
+            ejbJarTailXML;
+    }
 
     @Test
     public void testXMIGetVersion() throws Exception {
         Assert.assertEquals("Incorrect ejb binding version",
                 "XMI",
-                parseEJBJarBndXMI( ejbJarBndXMI("", ""), getEJBJar21() ).getVersion());
+                parseEJBJarBndXMI( ejbJarBndXMI("", ejbBndBodyXMI() ), getEJBJar21() )
+                    .getVersion());
     }
 
     @Test
@@ -140,66 +189,66 @@ public class EJBJarBndHeaderTest extends EJBJarBndTestBase {
 
     @Test
     public void testXMINoVersion() throws Exception {
-        EJBJarBnd ejbJarBnd = parseEJBJarBndXMI(ejbJarBndXMINoVersion, getEJBJar21());
+        EJBJarBnd ejbJarBnd = parseEJBJarBndXMI(ejbJarBndXMINoVersion(), getEJBJar21());
         Assert.assertEquals("XMI", ejbJarBnd.getVersion());
     }
 
     @Test
     public void test11NoNamespace() throws Exception {
-        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(ejbJarBnd11NoNamespace);
+        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(ejbJarBnd11NoNamespace());
         Assert.assertEquals("1.1", ejbJarBnd.getVersion());
     }
 
     @Test
     public void test11NoSchemaInstance() throws Exception {
-        parseEJBJarBndXML(ejbJarBnd11NoSchemaInstance,
-                XML_ERROR_ALT_MESSAGE, XML_ERROR_MESSAGES);
+        parseEJBJarBndXML(ejbJarBnd11NoSchemaInstance(),
+                          XML_ERROR_ALT_MESSAGE, XML_ERROR_MESSAGES);
     }
 
     @Test
     public void test11NoSchemaLocation() throws Exception {
-        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(ejbJarBnd11NoSchemaLocation);
+        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(ejbJarBnd11NoSchemaLocation());
         Assert.assertEquals("1.1", ejbJarBnd.getVersion());        
     }    
 
     @Test
     public void test11NoXSI() throws Exception {
-        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(ejbJarBnd11NoXSI);
+        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(ejbJarBnd11NoXSI());
         Assert.assertEquals("1.1", ejbJarBnd.getVersion());
     }
 
     @Test
     public void test11NoVersion() throws Exception {
-        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(ejbJarBnd11NoVersion);
+        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(ejbJarBnd11NoVersion());
         Assert.assertEquals("1.2", ejbJarBnd.getVersion());
     }
 
     @Test
     public void test11VersionMismatch() throws Exception {
-        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(ejbJarBnd11VersionMismatch);
+        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(ejbJarBnd11VersionMismatch());
         Assert.assertEquals("1.1", ejbJarBnd.getVersion());
     }
 
     @Test
     public void testNamespaceOnly() throws Exception {
-        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(ejbJarBndNamespaceOnly);
+        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(ejbJarBndNamespaceOnly());
         Assert.assertEquals("1.2", ejbJarBnd.getVersion());
     }
 
     @Test
     public void test11VersionOnly() throws Exception {
-        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(ejbJarBnd11VersionOnly);
+        EJBJarBnd ejbJarBnd = parseEJBJarBndXML(ejbJarBnd11VersionOnly());
         Assert.assertEquals("1.1", ejbJarBnd.getVersion());
     }
 
     @Test
     public void testBadNamespace() throws Exception {
-        parseEJBJarBndXML(ejbJarBndBadNamespace);
+        parseEJBJarBndXML(ejbJarBndBadNamespace());
     }
 
     @Test
     public void testBadVersion() throws Exception {
-        parseEJBJarBndXML(ejbJarBndBadVersion,
+        parseEJBJarBndXML(ejbJarBndBadVersion(),
                 UNSUPPORTED_DESCRIPTOR_VERSION_ALT_MESSAGE,
                 UNSUPPORTED_DESCRIPTOR_VERSION_MESSAGES);
     }

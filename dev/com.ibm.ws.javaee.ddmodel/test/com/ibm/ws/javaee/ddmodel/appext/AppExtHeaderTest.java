@@ -28,6 +28,9 @@ public class AppExtHeaderTest extends AppExtTestBase {
                 "<application href=\"META-INF/application.xml#Application_ID\"/>" + "\n" +
             "</applicationExt:ApplicationExtension>";            
 
+    protected static final String appExtBody =
+        "<shared-session-context value=\"true\"/>";
+    
     protected static final String appExt11NoNamespace =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
             "<application-ext" +
@@ -35,7 +38,9 @@ public class AppExtHeaderTest extends AppExtTestBase {
                 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
                 " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-application-ext_1_1.xsd\"" +
                 " version=\"1.1\"" +
-            "/>";    
+            ">" + "\n" +
+                appExtBody + "\n" +
+            "</application-ext>";
     
     protected static final String appExt11NoSchemaInstance =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
@@ -44,7 +49,9 @@ public class AppExtHeaderTest extends AppExtTestBase {
                 // " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
                 " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-application-ext_1_1.xsd\"" +
                 " version=\"1.1\"" +
-            "/>";    
+            ">" + "\n" +    
+                appExtBody + "\n" +
+            "</application-ext>";
     
     protected static final String appExt11NoSchemaLocation =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
@@ -53,7 +60,9 @@ public class AppExtHeaderTest extends AppExtTestBase {
                 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
                 // " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-application-ext_1_1.xsd\"" +
                 " version=\"1.1\"" +
-            "/>";        
+            ">" + "\n" +        
+                appExtBody + "\n" +
+            "</application-ext>";
     
     protected static final String appExt11NoXSI =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
@@ -62,7 +71,9 @@ public class AppExtHeaderTest extends AppExtTestBase {
                 // " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
                 // " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-application-ext_1_1.xsd\"" +
                 " version=\"1.1\"" +
-            "/>";            
+            ">" + "\n" +            
+                appExtBody + "\n" +
+            "</application-ext>";
     
     protected static final String appExt11NoVersion =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
@@ -71,8 +82,10 @@ public class AppExtHeaderTest extends AppExtTestBase {
                 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
                 " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-application-ext_1_1.xsd\"" +
                 // " version=\"1.1\"" +
-            "/>";                
-    
+            ">" + "\n" +                
+                appExtBody + "\n" +
+            "</application-ext>";
+
     protected static final String appExt11VersionMismatch =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
             "<application-ext" +
@@ -80,23 +93,33 @@ public class AppExtHeaderTest extends AppExtTestBase {
                 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
                 " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-application-ext_1_1.xsd\"" +
                 " version=\"1.1\"" +
-            "/>";               
-    
+            ">" + "\n" +               
+                appExtBody + "\n" +
+            "</application-ext>";
+
     protected static final String appExtNamespaceOnly =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
-            "<application-ext xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"/>";
-    
+            "<application-ext xmlns=\"http://websphere.ibm.com/xml/ns/javaee\">" + "\n" +
+                appExtBody + "\n" +
+            "</application-ext>";
+
     protected static final String appExt11VersionOnly =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
-            "<application-ext version=\"1.1\"/>";                   
+            "<application-ext version=\"1.1\">" + "\n" +                   
+                appExtBody + "\n" +
+            "</application-ext>";
     
     protected static final String appExtBadNamespace=
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
-            "<application-ext xmlns=\"http://junk\"/>";
+            "<application-ext xmlns=\"http://junk\">" + "\n" +
+                appExtBody + "\n" +
+            "</application-ext>";
     
     protected static final String appExtBadVersion =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
-            "<application-ext version=\"9.9\"/>";     
+            "<application-ext version=\"9.9\">" + "\n" +
+                appExtBody + "\n" +
+            "</application-ext>";
 
     @Test
     public void testXMIGetVersion() throws Exception {
@@ -136,7 +159,7 @@ public class AppExtHeaderTest extends AppExtTestBase {
     @Test
     public void test11NoSchemaInstance() throws Exception {
         parseAppExtXML(appExt11NoSchemaInstance,
-                XML_ERROR_ALT_MESSAGE, XML_ERROR_MESSAGES);
+                       XML_ERROR_ALT_MESSAGE, XML_ERROR_MESSAGES);
     }
 
     @Test
@@ -183,7 +206,7 @@ public class AppExtHeaderTest extends AppExtTestBase {
     @Test
     public void testBadVersion() throws Exception {
         parseAppExtXML(appExtBadVersion,
-                UNSUPPORTED_DESCRIPTOR_VERSION_ALT_MESSAGE,
-                UNSUPPORTED_DESCRIPTOR_VERSION_MESSAGES);
+                       UNSUPPORTED_DESCRIPTOR_VERSION_ALT_MESSAGE,
+                       UNSUPPORTED_DESCRIPTOR_VERSION_MESSAGES);
     }
 }

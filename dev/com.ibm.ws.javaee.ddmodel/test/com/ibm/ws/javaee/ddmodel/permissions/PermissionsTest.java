@@ -106,11 +106,12 @@ public class PermissionsTest extends DDTestBase {
 
     private static final String permissionsInvalidVersion =    
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-            "<permissions" +
-                " xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"" +
-                " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-                " xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/permissions_7.xsd\"" +
-                " version=\"6\">" + "\n" +
+        "<permissions" +
+            " xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"" +
+            " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+            " xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/permissions_7.xsd\"" +
+            " version=\"6\">" + "\n" +
+            permissionsBody + "\n" +
         permissionsTail;
     
     // This is now valid, because the version takes precedence.
@@ -121,6 +122,7 @@ public class PermissionsTest extends DDTestBase {
             " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
             " xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/permissions_7.xsd\"" +
             " version=\"7\">" + "\n" +
+            permissionsBody + "\n" +
         permissionsTail;
 
     // This is is still invalid: There is no version, and the namespace cannot be used.
@@ -132,6 +134,7 @@ public class PermissionsTest extends DDTestBase {
                 " xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/permissions_7.xsd\"" +
                 // " version=\"7\"" +
                 ">" + "\n" +
+                permissionsBody + "\n" +
             permissionsTail;
 
     // Missing one element ...
@@ -143,6 +146,7 @@ public class PermissionsTest extends DDTestBase {
             " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
             " xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/permissions_7.xsd\"" +
             " version=\"7\">" + "\n" +
+            permissionsBody + "\n" +
         permissionsTail;
 
     private static final String permissions7NoSchemaInstance =
@@ -152,6 +156,7 @@ public class PermissionsTest extends DDTestBase {
                 // " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
                 " xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/permissions_7.xsd\"" +
                 " version=\"7\">" + "\n" +
+                permissionsBody + "\n" +
             permissionsTail;    
     
     private static final String permissions7NoSchemaLocation =
@@ -161,6 +166,7 @@ public class PermissionsTest extends DDTestBase {
                 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
                 // " xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/permissions_7.xsd\"" +
                 " version=\"7\">" + "\n" +
+                permissionsBody + "\n" +
             permissionsTail;        
     
     private static final String permissions7NoXSI =
@@ -170,6 +176,7 @@ public class PermissionsTest extends DDTestBase {
                 // " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
                 // " xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/permissions_7.xsd\"" +
                 " version=\"7\">" + "\n" +
+                permissionsBody + "\n" +
             permissionsTail;    
     
     private static final String permissions7NoVersion =
@@ -179,26 +186,35 @@ public class PermissionsTest extends DDTestBase {
                 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
                 " xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/permissions_7.xsd\"" +
                 // " version=\"7\"" +
-                ">" + "\n" +
+            ">" + "\n" +
+                permissionsBody + "\n" +
             permissionsTail;        
     
     // Only one element ...
 
     private static final String permissions7SchemaOnly =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-        "<permissions xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"/>";
+        "<permissions xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\">" + "\n" +
+            permissionsBody + "\n" +
+        permissionsTail;
 
     private static final String permissions7VersionOnly =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-        "<permissions version=\"7\"/>";
+        "<permissions version=\"7\">" +
+            permissionsBody + "\n" +
+        permissionsTail;
 
     private static final String permissions9SchemaOnly =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-        "<permissions xmlns=\"https://jakarta.ee/xml/ns/jakartaee\"/>";
+        "<permissions xmlns=\"https://jakarta.ee/xml/ns/jakartaee\">" +
+            permissionsBody + "\n" +
+        permissionsTail;
 
     private static final String permissions9VersionOnly =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-        "<permissions version=\"9\"/>";    
+        "<permissions version=\"9\">" +
+            permissionsBody + "\n" +
+            permissionsTail;
     
     //
 

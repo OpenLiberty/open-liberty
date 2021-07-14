@@ -141,6 +141,7 @@ public class WebAppTestBase extends DDTestBase {
                    " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
                    " xsi:schemaLocation=\"https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_5_0.xsd\"" +
                    " version=\"5.0\"" +
+                   " id=\"WebApp_ID\"" +
                ">";
     }
 
@@ -148,8 +149,23 @@ public class WebAppTestBase extends DDTestBase {
         return "</web-app>";
     }
 
+    protected static String webAppBody() {
+        return "<display-name>Bindings and Extensions Override Test Web Application</display-name>" + "\n" +
+               "<description>Used to run override tests for various bindings and extensions</description>" + "\n" +
+               "<servlet id=\"Default\">" + "\n" +
+               "<description>Print's to log... that's it!.</description>" + "\n" +
+               "<servlet-name>Auto Servlet</servlet-name>" + "\n" +      
+               "<servlet-class>servlettest.web.AutoServlet</servlet-class>" + "\n" +
+               "<load-on-startup></load-on-startup>" + "\n" +
+               "</servlet>" + "\n" +
+               "<servlet-mapping id=\"ServletMapping_Default\">" + "\n" +
+                   "<servlet-name>Auto Servlet</servlet-name>" + "\n" +
+                   "<url-pattern>/*</url-pattern>" + "\n" +
+               "</servlet-mapping>";
+    }
+    
     protected static String webApp(int version) {
-        return webApp(version, "");
+        return webApp( version, webAppBody() );
     }
 
     protected static String webApp(int version, String body) {
@@ -177,12 +193,15 @@ public class WebAppTestBase extends DDTestBase {
     }
     
     //
-    
+
     private WebApp webApp24;
 
     protected WebApp getWebApp24() throws Exception {
         if ( webApp24 == null ) {
-            webApp24 = parseWebApp(webApp24Head() + "</web-app>");
+            webApp24 = parseWebApp(
+                    webApp24Head() + "\n" +
+                        webAppBody() + "\n" +
+                    "</web-app>" );
         }
         return webApp24;
     }    

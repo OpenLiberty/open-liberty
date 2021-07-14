@@ -52,17 +52,17 @@ public class WebAppExtTest extends WebAppExtTestBase {
     public void testWebExt() throws Exception {
         WebExt webExt = parseWebExtXML(webExtXML10());
 
-        Assert.assertFalse(webExt.isSetReloadInterval());
+        Assert.assertEquals( webExtBodyXml_reloadInterval, webExt.getReloadInterval() );
         Assert.assertFalse(webExt.isSetContextRoot());
         Assert.assertNull(webExt.getContextRoot());
         Assert.assertFalse(webExt.isSetAutoloadFilters());
         Assert.assertFalse(webExt.isSetAutoEncodeRequests());
         Assert.assertFalse(webExt.isSetAutoEncodeResponses());
-        Assert.assertFalse(webExt.isSetEnableDirectoryBrowsing());
-        Assert.assertFalse(webExt.isSetEnableFileServing());
+        Assert.assertEquals(webExtBody_enableDirectoryBrowsing, webExt.isEnableDirectoryBrowsing());
+        Assert.assertEquals(webExtBody_enableFileServing, webExt.isEnableFileServing());
         Assert.assertFalse(webExt.isSetPreCompileJsps());
-        Assert.assertFalse(webExt.isSetEnableReloading());
-        Assert.assertFalse(webExt.isSetEnableServingServletsByClassName());
+        Assert.assertEquals(webExtBody_enableReloading, webExt.isEnableReloading());
+        Assert.assertEquals(webExtBody_enableServletsByClassName, webExt.isSetEnableServingServletsByClassName());
 
         webExt = parseWebExtXML(
                 webExt10XML(
@@ -157,7 +157,7 @@ public class WebAppExtTest extends WebAppExtTestBase {
                             " preCompileJSPs=\"false\"" +
                             " reloadingEnabled=\"false\"" +
                             " serveServletsByClassnameEnabled=\"false\"",
-                            ""),
+                            webExtBodyXMI),
                 getWebApp24());
 
         Assert.assertTrue(webExt.isSetReloadInterval());
@@ -190,7 +190,7 @@ public class WebAppExtTest extends WebAppExtTestBase {
                             " preCompileJSPs=\"true\"" +
                             " reloadingEnabled=\"true\"" +
                             " serveServletsByClassnameEnabled=\"true\"",
-                            ""),
+                            webExtBodyXMI),
                 getWebApp24());
 
         Assert.assertFalse(webExt.isSetReloadInterval());
@@ -216,7 +216,7 @@ public class WebAppExtTest extends WebAppExtTestBase {
 
     @Test
     public void testServlet() throws Exception {
-        WebExt webExt = parseWebExtXML(webExtXML10());
+        WebExt webExt = parseWebExtXML( webExt10XML("") );
         Assert.assertEquals(Collections.emptyList(), webExt.getServletExtensions());
 
         webExt = parseWebExtXML(
@@ -570,7 +570,7 @@ public class WebAppExtTest extends WebAppExtTestBase {
         Assert.assertNull(webExt.getDefaultErrorPage());
 
         webExt = parseWebExtXMI(
-                webExt20XMI("defaultErrorPage=\"dep\"", ""),
+                webExt20XMI("defaultErrorPage=\"dep\"", webExtBodyXMI),
                 getWebApp24());
         Assert.assertEquals("dep", webExt.getDefaultErrorPage());
     }
@@ -684,7 +684,7 @@ public class WebAppExtTest extends WebAppExtTestBase {
     @Test
     public void testXMIJspAttribute() throws Exception {
         WebApp webApp = getWebApp24();
-        WebExt webExt = parseWebExtXMI( webExtXMI20(), webApp );
+        WebExt webExt = parseWebExtXMI( webExt20XMI("", ""), webApp );
 
         Assert.assertEquals(Collections.emptyList(), webExt.getJspAttributes());
 
@@ -1277,6 +1277,7 @@ public class WebAppExtTest extends WebAppExtTestBase {
         WebExt webExt = parseWebExtXML(ddText);
 
         Assert.assertEquals("Incorrect context root",
-                "TestContextRoot", webExt.getContextRoot());
+                "TestContextRoot",
+                webExt.getContextRoot());
     }
 }

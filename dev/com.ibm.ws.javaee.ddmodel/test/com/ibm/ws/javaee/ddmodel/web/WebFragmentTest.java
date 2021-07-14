@@ -47,7 +47,7 @@ public class WebFragmentTest extends WebFragmentTestBase {
                     messages = null;
                 }
 
-                parse( webFragment(schemaVersion, ""),
+                parse( webFragment( schemaVersion, WebAppTestBase.webAppBody() ),
                        maxSchemaVersion,
                        altMessage, messages );
             }

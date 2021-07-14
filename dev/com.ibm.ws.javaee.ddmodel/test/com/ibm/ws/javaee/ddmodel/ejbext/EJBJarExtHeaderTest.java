@@ -30,31 +30,40 @@ public class EJBJarExtHeaderTest extends EJBJarExtTestBase {
         super(ejbInWar);
     }
         
-    protected static final String ejbJarExtXMINoVersion =
-            "<EJBJarExt:EJBJarExtension" +
-                " xmlns:EJBJarExt=\"EJBJarExt.xmi\"" +
-                " xmlns:commonExt=\"commonExt.xmi\"" +
-                " xmlns:xmi=\"http://www.omg.org/XMI\"" +
-                // " xmi:version=\"2.0\"" +
-            "/>";
+    protected String ejbJarExtXMINoVersion() {
+        return "<ejbext:EJBJarExtension" +
+                   " xmlns:ejbext=\"ejbext.xmi\"" +
+                   " xmlns:commonExt=\"commonExt.xmi\"" +
+                   " xmlns:xmi=\"http://www.omg.org/XMI\"" +
+                   // " xmi:version=\"2.0\"" +
+               ">" + "\n" +
+                   "<ejbJar href=\"" + getEJBJarPath() + "#EJBJar_ID\"/>" + "\n" +
+                   ejbExtBodyXMI() + "\n" +
+               ejbExtXMITail;
+    }
 
     protected static final String ejbJarExt11NoNamespace =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
-            "<ejb-jar-ext" +
-                // " xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"" +
-                " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
-                " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-ext_1_1.xsd\"" +
-                " version=\"1.1\"" +
-            "/>";    
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
+        "<ejb-jar-ext" +
+            // " xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"" +
+            " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
+            " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-ext_1_1.xsd\"" +
+            " version=\"1.1\"" +
+        ">" + "\n" +
+            ejbExtBodyXML + "\n" +
+        ejbExtXMLTail;
+
     
     protected static final String ejbJarExt11NoSchemaInstance =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
-            "<ejb-jar-ext" +
-                " xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"" +
-                // " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
-                " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-ext_1_1.xsd\"" +
-                " version=\"1.1\"" +
-            "/>";    
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
+        "<ejb-jar-ext" +
+            " xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"" +
+            // " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
+            " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-ext_1_1.xsd\"" +
+            " version=\"1.1\"" +
+        ">" + "\n" +
+            ejbExtBodyXML + "\n" +
+        ejbExtXMLTail;
     
     protected static final String ejbJarExt11NoSchemaLocation =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
@@ -63,7 +72,9 @@ public class EJBJarExtHeaderTest extends EJBJarExtTestBase {
                 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
                 // " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-ext_1_1.xsd\"" +
                 " version=\"1.1\"" +
-            "/>";        
+            ">" + "\n" +
+                ejbExtBodyXML + "\n" +
+            ejbExtXMLTail;
     
     protected static final String ejbJarExt11NoXSI =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
@@ -72,7 +83,9 @@ public class EJBJarExtHeaderTest extends EJBJarExtTestBase {
                 // " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
                 // " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-ext_1_1.xsd\"" +
                 " version=\"1.1\"" +
-            "/>";            
+            ">" + "\n" +
+                ejbExtBodyXML + "\n" +
+            ejbExtXMLTail;            
     
     protected static final String ejbJarExtXMLNoVersion =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
@@ -81,7 +94,10 @@ public class EJBJarExtHeaderTest extends EJBJarExtTestBase {
                 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
                 " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-ext_1_1.xsd\"" +
                 // " version=\"1.1\"" +
-            "/>";                
+            ">" + "\n" +
+                ejbExtBodyXML + "\n" +
+            ejbExtXMLTail;
+
     
     protected static final String ejbJarExtXML11VersionMismatch =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
@@ -90,23 +106,33 @@ public class EJBJarExtHeaderTest extends EJBJarExtTestBase {
                 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
                 " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-ext_1_1.xsd\"" +
                 " version=\"1.1\"" +
-            "/>";               
+            ">" + "\n" +
+                ejbExtBodyXML + "\n" +
+            ejbExtXMLTail;
     
     protected static final String ejbJarExtXMLNamespaceOnly =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
-            "<ejb-jar-ext xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"/>";
+            "<ejb-jar-ext xmlns=\"http://websphere.ibm.com/xml/ns/javaee\">" + "\n" +
+                ejbExtBodyXML + "\n" +
+            ejbExtXMLTail;
     
     protected static final String ejbJarExtXML11VersionOnly =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
-            "<ejb-jar-ext version=\"1.1\"/>";                   
+            "<ejb-jar-ext version=\"1.1\">" + "\n" +
+                ejbExtBodyXML + "\n" +
+            ejbExtXMLTail;
     
     protected static final String ejbJarExtXMLBadNamespaceOnly =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
-            "<ejb-jar-ext xmlns=\"http://junk\"/>";
+            "<ejb-jar-ext xmlns=\"http://junk\">" + "\n" +
+                ejbExtBodyXML + "\n" +
+            ejbExtXMLTail;
     
     protected static final String ejbJarExtXMLBadVersionOnly =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
-            "<ejb-jar-ext version=\"9.9\"/>";     
+            "<ejb-jar-ext version=\"9.9\">" + "\n" +
+                ejbExtBodyXML + "\n" +
+            ejbExtXMLTail;
 
     @Test
     public void testXMIGetVersion() throws Exception {
@@ -119,7 +145,7 @@ public class EJBJarExtHeaderTest extends EJBJarExtTestBase {
     public void testXMLGetVersion10() throws Exception {
         Assert.assertEquals("Incorrect ejb binding version",
                 "1.0",
-                parseEJBJarExtXML(ejbJarExt10()).getVersion());
+                parseEJBJarExtXML( ejbJarExt10() ).getVersion());
     }
     
     @Test
@@ -133,7 +159,7 @@ public class EJBJarExtHeaderTest extends EJBJarExtTestBase {
 
     @Test
     public void testXMINoVersion() throws Exception {
-        EJBJarExt ejbJarExt = parseEJBJarExtXMI(ejbJarExtXMINoVersion, getEJBJar21());
+        EJBJarExt ejbJarExt = parseEJBJarExtXMI(ejbJarExtXMINoVersion(), getEJBJar21());
         Assert.assertEquals("XMI", ejbJarExt.getVersion());
     }
 

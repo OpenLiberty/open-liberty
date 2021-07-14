@@ -29,7 +29,8 @@ public class WebAppHeaderTest extends WebAppTestBase {
             " version=\"3.0\"" +
             " id=\"WebApp_ID\"" +
         ">" + "\n" +
-        "</web-app>";
+            webAppBody() + "\n" +
+        webAppTail();
 
     // Not valid: Need 'xmlns:xsi' if 'xsi:schemaLocation' is present.
     protected static String noSchemaInstanceWebApp30 =
@@ -40,7 +41,8 @@ public class WebAppHeaderTest extends WebAppTestBase {
             " version=\"3.0\"" +
             " id=\"WebApp_ID\"" +
         ">" + "\n" +
-        "</web-app>";
+            webAppBody() + "\n" +
+        webAppTail();
 
     // Valid
     protected static String noXSIWebApp30 =
@@ -51,7 +53,8 @@ public class WebAppHeaderTest extends WebAppTestBase {
             " version=\"3.0\"" +
             " id=\"WebApp_ID\"" +
         ">" + "\n" +
-        "</web-app>";    
+            webAppBody() + "\n" +
+        webAppTail();    
 
     // Valid
     protected static String noSchemaLocationWebApp30 =
@@ -62,7 +65,8 @@ public class WebAppHeaderTest extends WebAppTestBase {
             " version=\"3.0\"" +
             " id=\"WebApp_ID\"" +
         ">" +
-        "</web-app>";
+            webAppBody() + "\n" +
+        webAppTail();
 
     // Valid
     protected static String noVersionWebApp30 =
@@ -73,7 +77,8 @@ public class WebAppHeaderTest extends WebAppTestBase {
             // " version=\"3.0\"" +               
             " id=\"WebApp_ID\"" +
         ">" +
-        "</web-app>";
+            webAppBody() + "\n" +
+        webAppTail();
 
     // Valid
     protected static String noIDWebApp30 =
@@ -84,49 +89,74 @@ public class WebAppHeaderTest extends WebAppTestBase {
             " version=\"3.0\"" +
             // " id=\"WebApp_ID\"" +
         ">" +
-        "</web-app>";
+            webAppBody() + "\n" +
+        webAppTail();
     
     // Version only is valid.
     
     protected static String webAppVersionOnly24 =
-            "<web-app version=\"2.4\"/>";
+            "<web-app version=\"2.4\">" + "\n" +
+                webAppBody() + "\n" +
+            webAppTail();
 
     protected static String webAppVersionOnly25 =
-            "<web-app version=\"2.5\"/>";
+            "<web-app version=\"2.5\">" + "\n" +
+                webAppBody() + "\n" +
+            webAppTail();
     
     protected static String webAppVersionOnly30 =
-            "<web-app version=\"3.0\"/>";
+            "<web-app version=\"3.0\">" + "\n" +
+                webAppBody() + "\n" +
+            webAppTail();
         
     protected static String webAppVersionOnly31 =
-            "<web-app version=\"3.1\"/>";
+            "<web-app version=\"3.1\">" + "\n" +
+                webAppBody() + "\n" +
+            webAppTail();
 
     protected static String webAppVersionOnly40 =
-            "<web-app version=\"4.0\"/>";
+            "<web-app version=\"4.0\">" + "\n" +
+                webAppBody() + "\n" +
+            webAppTail();
 
     protected static String webAppVersionOnly50 =
-            "<web-app version=\"5.0\"/>";
+            "<web-app version=\"5.0\">" + "\n" +
+                webAppBody() + "\n" +
+            webAppTail();
     
     protected static String webAppVersionOnlyUnknown =
-            "<web-app version=\"9.9\"/>";
+            "<web-app version=\"9.9\">" + "\n" +
+                webAppBody() + "\n" +
+            webAppTail();
     
     // Schema only is valid
 
     protected static String webAppSchemaOnly24 =
-        "<web-app xmlns=\"http://java.sun.com/xml/ns/j2ee\"/>";
+        "<web-app xmlns=\"http://java.sun.com/xml/ns/j2ee\">" + "\n" +
+            webAppBody() + "\n" +
+        webAppTail();
 
     // The schemas for 25 and 30 are the same.
     protected static String webAppSchemaOnly25 =
-        "<web-app xmlns=\"http://java.sun.com/xml/ns/javaee\"/>";
+        "<web-app xmlns=\"http://java.sun.com/xml/ns/javaee\">" + "\n" +
+            webAppBody() + "\n" +
+        webAppTail();
     
     // The schemas for 31 and 40 are the same.
     protected static String webAppSchemaOnly31 =
-        "<web-app xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"/>";
+        "<web-app xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\">" + "\n" +
+            webAppBody() + "\n" +
+        webAppTail();
 
     protected static String webAppSchemaOnly50 =
-        "<web-app xmlns=\"https://jakarta.ee/xml/ns/jakartaee\"/>";
+        "<web-app xmlns=\"https://jakarta.ee/xml/ns/jakartaee\">" + "\n" +
+            webAppBody() + "\n" +
+        webAppTail();
 
     protected static String webAppSchemaOnlyUnknown =
-        "<web-app xmlns=\"https://unknown\"/>";
+        "<web-app xmlns=\"https://unknown\">" + "\n" +
+            webAppBody() + "\n" +
+        webAppTail();
     
     //
 

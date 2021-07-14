@@ -58,10 +58,10 @@ public class EJBJarBndTest extends EJBJarBndTestBase {
     }
 
     @Test
-    public void testEmptyEnterpriseBeans() throws Exception {
+    public void testEnterpriseBeans() throws Exception {
         Assert.assertNotNull("Enterprise bean list should not be null.",
                 parseEJBJarBndXML(ejbJarBnd10()).getEnterpriseBeans());
-        Assert.assertEquals("Enterprise bean list should be empty.", 0,
+        Assert.assertEquals("Enterprise bean list should not be empty.", 1,
                 parseEJBJarBndXML(ejbJarBnd10()).getEnterpriseBeans().size());
     }
 
@@ -85,7 +85,7 @@ public class EJBJarBndTest extends EJBJarBndTestBase {
 
     @Test
     public void testEmptyXMI() throws Exception {
-        EJBJarBnd ejbJarBnd = parseEJBJarBndXMI( ejbJarBndXMI(), getEJBJar21() );
+        EJBJarBnd ejbJarBnd = parseEJBJarBndXMI( ejbJarBndXMI("", ""), getEJBJar21() );
 
         Assert.assertNotNull("Enterprise bean list should not be null.", ejbJarBnd.getEnterpriseBeans());
         Assert.assertEquals("Enterprise bean list should be empty.", 0, ejbJarBnd.getEnterpriseBeans().size());
@@ -212,9 +212,9 @@ public class EJBJarBndTest extends EJBJarBndTestBase {
     @Test
     public void testCMPConnectionFactory() throws Exception {
         parseEJBJarBnd( ejbJarBndXMI("", testCMPConnectionFactoryXMI1()),
-                        DDParserBndExt.IS_XMI, getEJBJar21(),
-                        "required.attribute.missing",
-                        "CWWKC2251", "ibm-ejb-jar-bnd.xmi" );
+                        DDParserBndExt.IS_XMI,
+                        getEJBJar21(),
+                        "missing.href", "CWWKC2287E");
     }
 
     @Test

@@ -44,8 +44,8 @@ public class DDValidModTests {
     }
 
     @Test
-    public void testBasicBindingConfiguration_Module() throws Exception {
-        CommonTests.test(DDValidModTests.class, "testBasicBindingConfiguration");
+    public void testBindingsConfig_Module() throws Exception {
+        CommonTests.test(DDValidModTests.class, "testBindingsConfig");
     }   
     
     @Test

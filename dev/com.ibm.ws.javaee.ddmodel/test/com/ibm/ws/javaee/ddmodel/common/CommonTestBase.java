@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,7 +28,7 @@ import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.artifact.ArtifactEntry;
 import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 
-public class JNDIEnvironmentRefsTestBase {
+public class CommonTestBase {
     private final Mockery mockery = new Mockery();
     private int mockId;
 
@@ -100,32 +100,32 @@ public class JNDIEnvironmentRefsTestBase {
 
     protected com.ibm.ws.javaee.dd.common.JNDIEnvironmentRefs parseEJB31(String refString) throws Exception {
         String xml = "<ejb-jar" +
-                     " xmlns=\"http://java.sun.com/xml/ns/javaee\"" +
-                     " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-                     " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd\"" +
-                     " version=\"3.1\"" +
-                     " <enterprise-beans>" +
-                     "  <session>" +
-                     refString +
-                     "  </session>" +
-                     " </enterprise-beans>" +
+                         " xmlns=\"http://java.sun.com/xml/ns/javaee\"" +
+                         " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+                         " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd\"" +
+                         " version=\"3.1\">" +
+                         "<enterprise-beans>" +
+                             "<session>" +
+                                 refString +
+                             "</session>" +
+                         "</enterprise-beans>" +
                      "</ejb-jar>";
         return parseEJBJar(xml).getEnterpriseBeans().get(0);
     }
 
     protected com.ibm.ws.javaee.dd.common.JNDIEnvironmentRefs parse(String refString) throws Exception {
         String xml = "<ejb-jar" +
-                     " xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"" +
-                     " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-                     " xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/ejb-jar_3_2.xsd\"" +
-                     " version=\"3.2\"" +
-                     ">" +
-                     " <enterprise-beans>" +
-                     "  <session>" +
-                     refString +
-                     "  </session>" +
-                     " </enterprise-beans>" +
+                         " xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"" +
+                         " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+                         " xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/ejb-jar_3_2.xsd\"" +
+                         " version=\"3.2\">" +
+                         "<enterprise-beans>" +
+                             "<session>" +
+                                 refString +
+                             "</session>" +
+                         "</enterprise-beans>" +
                      "</ejb-jar>";
+        
         return parseEJBJar(xml).getEnterpriseBeans().get(0);
     }
 }

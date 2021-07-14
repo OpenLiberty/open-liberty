@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -128,9 +128,7 @@ public class ModuleExtensionType extends com.ibm.ws.javaee.ddmodel.DDParser.Elem
             this.module = new com.ibm.ws.javaee.ddmodel.CrossComponentReferenceType("module", parser.getCrossComponentType());
             parser.parse(module);
             com.ibm.ws.javaee.dd.app.Module referent = this.module.resolveReferent(parser, com.ibm.ws.javaee.dd.app.Module.class);
-            if (referent == null) {
-                DDParser.unresolvedReference("module", this.module.getReferenceString());
-            } else {
+            if (referent != null) {
                 this.name = parser.parseString(referent.getModulePath());
             }
             return true;

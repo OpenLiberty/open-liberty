@@ -25,8 +25,10 @@ public class WebAppBndHeaderTest extends WebAppBndTestBase {
                 " xmlns:xmi=\"http://www.omg.org/XMI\"" +
                 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
                 // " xmi:version=\"2.0\"" +
-            "/>";
-
+            ">" + "\n" +
+                webBndXMIBody() + "\n" +
+            webBndTailXMI;
+    
     protected static final String webBndXML10NoNamespace =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
             "<web-bnd" +
@@ -34,7 +36,9 @@ public class WebAppBndHeaderTest extends WebAppBndTestBase {
                 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
                 " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-web-bnd_1_0.xsd\"" +
                 " version=\"1.0\"" +
-            "/>";
+            ">" + "\n" +
+                webBndXMLBody() + "\n" +
+            webBndTailXML;
     
     protected static final String webBndXML10NoSchemaInstance =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
@@ -43,7 +47,9 @@ public class WebAppBndHeaderTest extends WebAppBndTestBase {
                 // " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
                 " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-web-bnd_1_0.xsd\"" +
                 " version=\"1.0\"" +
-            "/>";
+            ">" + "\n" +
+                webBndXMLBody() + "\n" +
+            webBndTailXML;
     
     protected static final String webBndXML10NoSchemaLocation =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
@@ -52,7 +58,9 @@ public class WebAppBndHeaderTest extends WebAppBndTestBase {
                 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
                 // " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-web-bnd_1_0.xsd\"" +
                 " version=\"1.0\"" +
-            "/>";
+            ">" + "\n" +
+                webBndXMLBody() + "\n" +
+            webBndTailXML;
     
     protected static final String webBndXML10NoXSI =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
@@ -61,8 +69,10 @@ public class WebAppBndHeaderTest extends WebAppBndTestBase {
                 // " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
                 // " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-web-bnd_1_0.xsd\"" +
                 " version=\"1.0\"" +
-            "/>";
-
+            ">" + "\n" +
+                webBndXMLBody() + "\n" +
+            webBndTailXML;
+    
     protected static final String webBndXMLNoVersion =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
             "<web-bnd" +
@@ -70,7 +80,9 @@ public class WebAppBndHeaderTest extends WebAppBndTestBase {
                 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
                 " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-web-bnd_1_0.xsd\"" +
                 // " version=\"1.0\"" +
-            "/>";
+            ">" + "\n" +
+                webBndXMLBody() + "\n" +
+            webBndTailXML;
     
     protected static final String webBndXML10VersionMismatch =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
@@ -79,44 +91,57 @@ public class WebAppBndHeaderTest extends WebAppBndTestBase {
                 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "\n" +
                 " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-web-bnd_1_0.xsd\"" +
                 " version=\"1.0\"" +
-            "/>";
+            ">" + "\n" +
+                webBndXMLBody() + "\n" +
+            webBndTailXML;
     
     protected static final String webBndXMLNamespaceOnly =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
             "<web-bnd" +
                 " xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"" +
-            "/>";
+            ">" + "\n" +
+                webBndXMLBody() + "\n" +
+            webBndTailXML;
     
     protected static final String webBndXML10VersionOnly =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
             "<web-bnd" +
                 " version=\"1.0\"" +
-            "/>";
-
+            ">" + "\n" +
+                webBndXMLBody() + "\n" +
+            webBndTailXML;
+    
     protected static final String webBndXML11VersionOnly =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
             "<web-bnd" +
                 " version=\"1.1\"" +
-            "/>";
-
+            ">" + "\n" +
+                webBndXMLBody() + "\n" +
+            webBndTailXML;
+    
     protected static final String webBndXML12VersionOnly =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
             "<web-bnd" +
                 " version=\"1.2\"" +
-            "/>";
+            ">" + "\n" +
+                webBndXMLBody() + "\n" +
+            webBndTailXML;
     
     protected static final String webBndXMLBadNamespaceOnly =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
             "<web-bnd" +
                 " xmlns=\"http://junk\"" +
-            "/>";
+            ">" + "\n" +
+                webBndXMLBody() + "\n" +
+            webBndTailXML;
     
     protected static final String webBndXMLBadVersionOnly =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
             "<web-bnd" +
                 " version=\"9.9\"" +
-            "/>";
-
+            ">" + "\n" +
+                webBndXMLBody() + "\n" +
+            webBndTailXML;
     //
 
     @Test

@@ -30,7 +30,8 @@ public class WebFragmentHeaderTest extends WebFragmentTestBase {
             " version=\"3.0\"" +
             " id=\"WebFragment_ID\"" +
         ">" + "\n" +
-        "</web-fragment>";
+            WebAppTestBase.webAppBody() + "\n" +
+        webFragmentTail();
 
     // Not valid: Need 'xmlns:xsi' if 'xsi:schemaLocation' is present.
     protected static String noSchemaInstanceWebFragment30 =
@@ -41,7 +42,8 @@ public class WebFragmentHeaderTest extends WebFragmentTestBase {
             " version=\"3.0\"" +
             " id=\"WebFragment_ID\"" +
         ">" + "\n" +
-        "</web-fragment>";
+            WebAppTestBase.webAppBody() + "\n" +
+        webFragmentTail();
 
     // Valid
     protected static String noXSIWebFragment30 =
@@ -52,7 +54,8 @@ public class WebFragmentHeaderTest extends WebFragmentTestBase {
             " version=\"3.0\"" +
             " id=\"WebFragment_ID\"" +
         ">" + "\n" +
-        "</web-fragment>";    
+            WebAppTestBase.webAppBody() + "\n" +
+        webFragmentTail();
 
     // Valid
     protected static String noSchemaLocationWebFragment30 =
@@ -63,7 +66,8 @@ public class WebFragmentHeaderTest extends WebFragmentTestBase {
             " version=\"3.0\"" +
             " id=\"WebFragment_ID\"" +
         ">" +
-        "</web-fragment>";
+            WebAppTestBase.webAppBody() + "\n" +
+        webFragmentTail();
 
     // Valid
     protected static String noVersionWebFragment30 =
@@ -74,7 +78,8 @@ public class WebFragmentHeaderTest extends WebFragmentTestBase {
             // " version=\"3.0\"" +               
             " id=\"WebFragment_ID\"" +
         ">" +
-        "</web-fragment>";
+            WebAppTestBase.webAppBody() + "\n" +
+        webFragmentTail();
 
     // Valid
     protected static String noIDWebFragment30 =
@@ -85,39 +90,58 @@ public class WebFragmentHeaderTest extends WebFragmentTestBase {
             " version=\"3.0\"" +
             // " id=\"WebFragment_ID\"" +
         ">" +
-        "</web-fragment>";
+            WebAppTestBase.webAppBody() + "\n" +
+        webFragmentTail();
     
     // Version only is valid.
     
     protected static String webFragmentVersionOnly30 =
-            "<web-fragment version=\"3.0\"/>";
-        
+            "<web-fragment version=\"3.0\">" + "\n" +
+                WebAppTestBase.webAppBody() + "\n" +
+            webFragmentTail();
+
     protected static String webFragmentVersionOnly31 =
-            "<web-fragment version=\"3.1\"/>";
+            "<web-fragment version=\"3.1\">" + "\n" +
+                WebAppTestBase.webAppBody() + "\n" +
+            webFragmentTail();
 
     protected static String webFragmentVersionOnly40 =
-            "<web-fragment version=\"4.0\"/>";
+            "<web-fragment version=\"4.0\">" + "\n" +
+                WebAppTestBase.webAppBody() + "\n" +
+            webFragmentTail();
 
     protected static String webFragmentVersionOnly50 =
-            "<web-fragment version=\"5.0\"/>";
-    
+            "<web-fragment version=\"5.0\">" + "\n" +
+                WebAppTestBase.webAppBody() + "\n" +
+            webFragmentTail();
+
     protected static String webFragmentVersionOnlyUnknown =
-            "<web-fragment version=\"9.9\"/>";
-    
+            "<web-fragment version=\"9.9\">" + "\n" +
+                WebAppTestBase.webAppBody() + "\n" +
+            webFragmentTail();
+
     // Schema only is valid
 
     protected static String webFragmentSchemaOnly30 =
-        "<web-fragment xmlns=\"http://java.sun.com/xml/ns/javaee\"/>";
+        "<web-fragment xmlns=\"http://java.sun.com/xml/ns/javaee\">" + "\n" +
+            WebAppTestBase.webAppBody() + "\n" +
+        webFragmentTail();
 
     // The schemas for 31 and 40 are the same.
     protected static String webFragmentSchemaOnly31 =
-        "<web-fragment xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"/>";
+        "<web-fragment xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\">" + "\n" +
+            WebAppTestBase.webAppBody() + "\n" +
+        webFragmentTail();
 
     protected static String webFragmentSchemaOnly50 =
-        "<web-fragment xmlns=\"https://jakarta.ee/xml/ns/jakartaee\"/>";
+        "<web-fragment xmlns=\"https://jakarta.ee/xml/ns/jakartaee\">" + "\n" +
+            WebAppTestBase.webAppBody() + "\n" +
+        webFragmentTail();
 
     protected static String webFragmentSchemaOnlyUnknown =
-        "<web-fragment xmlns=\"https://unknown\"/>";
+        "<web-fragment xmlns=\"https://unknown\">" + "\n" +
+            WebAppTestBase.webAppBody() + "\n" +
+        webFragmentTail();
     
     //
 

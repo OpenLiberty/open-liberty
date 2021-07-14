@@ -75,7 +75,7 @@ public class WebFragmentTestBase extends DDTestBase {
     }
     
     protected static final String webFragment30() {
-        return webFragment30("");
+        return webFragment30(WebAppTestBase.webAppBody());
     }
     
     protected static final String webFragment30(String body) {
@@ -91,7 +91,7 @@ public class WebFragmentTestBase extends DDTestBase {
     }
 
     protected static final String webFragment31() {
-        return webFragment31("");
+        return webFragment31(WebAppTestBase.webAppBody());
     }
     
     protected static final String webFragment31(String body) {
@@ -107,7 +107,7 @@ public class WebFragmentTestBase extends DDTestBase {
     }
 
     protected static final String webFragment40() {
-        return webFragment40("");
+        return webFragment40(WebAppTestBase.webAppBody());
     }
 
     protected static final String webFragment40(String body) {
@@ -123,7 +123,7 @@ public class WebFragmentTestBase extends DDTestBase {
     }
 
     protected static String webFragment50() {
-        return webFragment50("");
+        return webFragment50(WebAppTestBase.webAppBody());
     }
 
     protected static String webFragment50(String body) {
@@ -137,7 +137,7 @@ public class WebFragmentTestBase extends DDTestBase {
     }    
     
     protected static String webFragment(int schemaVersion) {
-        return webFragment(schemaVersion, "");
+        return webFragment(schemaVersion, WebAppTestBase.webAppBody());
     }
 
     protected static String webFragment(int version, String body) {
@@ -152,5 +152,7 @@ public class WebFragmentTestBase extends DDTestBase {
         } else {
             throw new IllegalArgumentException("Unexpected WebFragment version [ " + version + " ]");
         }
-    }    
+    }
+    
+    
 }

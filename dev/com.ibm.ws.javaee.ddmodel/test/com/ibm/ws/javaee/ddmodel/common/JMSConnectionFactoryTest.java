@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,11 +21,11 @@ import com.ibm.ws.javaee.dd.common.JMSConnectionFactory;
 import com.ibm.ws.javaee.dd.common.Property;
 import com.ibm.ws.javaee.ddmodel.DDParser;
 
-public class JMSConnectionFactoryTest extends JNDIEnvironmentRefsTestBase {
+public class JMSConnectionFactoryTest extends CommonTestBase {
     @Test
     public void testDefault() throws Exception {
         String xml = "<jms-connection-factory>" +
-                     "  <name>name0</name>" +
+                         "<name>name0</name>" +
                      "</jms-connection-factory>";
         JMSConnectionFactory o = parse(xml).getJMSConnectionFactories().get(0);
         Assert.assertEquals(Arrays.asList(), o.getDescriptions());
@@ -45,33 +45,33 @@ public class JMSConnectionFactoryTest extends JNDIEnvironmentRefsTestBase {
     @Test(expected = DDParser.ParseException.class)
     public void testDefaultEJB31() throws Exception {
         parseEJB31("<jms-connection-factory>" +
-                   "  <name>name0</name>" +
+                       "<name>name0</name>" +
                    "</jms-connection-factory>");
     }
 
     @Test
     public void testAll() throws Exception {
         String xml = "<jms-connection-factory>" +
-                     "  <description>desc0</description>" +
-                     "  <description>desc1</description>" +
-                     "  <name>name0</name>" +
-                     "  <interface-name>intf0</interface-name>" +
-                     "  <class-name>class0</class-name>" +
-                     "  <resource-adapter>ra0</resource-adapter>" +
-                     "  <user>user0</user>" +
-                     "  <password>pass0</password>" +
-                     "  <client-id>cid0</client-id>" +
-                     "  <property>" +
-                     "    <name>prop0</name>" +
-                     "    <value>value0</value>" +
-                     "  </property>" +
-                     "  <property>" +
-                     "    <name>prop1</name>" +
-                     "    <value>value1</value>" +
-                     "  </property>" +
-                     "  <transactional>true</transactional>" +
-                     "  <max-pool-size>100</max-pool-size>" +
-                     "  <min-pool-size>10</min-pool-size>" +
+                         "<description>desc0</description>" +
+                         "<description>desc1</description>" +
+                         "<name>name0</name>" +
+                         "<interface-name>intf0</interface-name>" +
+                         "<class-name>class0</class-name>" +
+                         "<resource-adapter>ra0</resource-adapter>" +
+                         "<user>user0</user>" +
+                         "<password>pass0</password>" +
+                         "<client-id>cid0</client-id>" +
+                         "<property>" +
+                             "<name>prop0</name>" +
+                             "<value>value0</value>" +
+                         "</property>" +
+                         "<property>" +
+                             "<name>prop1</name>" +
+                             "<value>value1</value>" +
+                         "</property>" +
+                         "<transactional>true</transactional>" +
+                         "<max-pool-size>100</max-pool-size>" +
+                         "<min-pool-size>10</min-pool-size>" +
                      "</jms-connection-factory>";
         JMSConnectionFactory o = parse(xml).getJMSConnectionFactories().get(0);
         List<Description> descs = o.getDescriptions();

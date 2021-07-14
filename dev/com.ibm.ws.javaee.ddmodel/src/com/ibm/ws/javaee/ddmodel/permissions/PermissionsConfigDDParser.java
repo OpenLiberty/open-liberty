@@ -81,7 +81,7 @@ final class PermissionsConfigDDParser extends DDParser {
                 assignNamespace = false;
             }
             if ( assignNamespace ) {
-                namespace = expectedNamespace;
+                patchNamespace(expectedNamespace);
             }
 
         } else if ( namespace != null ) {

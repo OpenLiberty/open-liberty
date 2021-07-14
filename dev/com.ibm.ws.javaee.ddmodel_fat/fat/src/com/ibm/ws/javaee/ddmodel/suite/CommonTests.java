@@ -274,13 +274,22 @@ public abstract class CommonTests {
         Log.info(testClass, description + ": URL", "[ " + url + " ]" );
 
         HttpURLConnection con = getHttpConnection(url);
-        BufferedReader br = getConnectionStream(con);
-        String line = br.readLine();
-        if ( !"OK".equals(line) ) {
-            Log.info( testClass, methodName, description + ": FAILED" );
-            Assert.fail("Unexpected response: " + line);
-        } else {
-            Log.info( testClass, methodName, description + ": PASSED" );
+        try {
+            try ( BufferedReader br = getConnectionStream(con) ) {
+                String line = br.readLine();
+                if ( !"OK".equals(line) ) {
+                    Log.info( testClass, methodName, description + ": FAILED" );
+                    Assert.fail("Unexpected response [ " + line + " ] expected [ OK ]");
+                } else {
+                    Log.info( testClass, methodName, description + ": PASSED" );
+                }
+                while ( (line = br.readLine()) != null ) {
+                    Log.info( testClass, methodName, "[ " + line + " ]" );
+                }
+            }
+
+        } finally {
+            con.disconnect();
         }
     }
 

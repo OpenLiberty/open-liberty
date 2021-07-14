@@ -65,7 +65,7 @@ public class AppTest extends AppTestBase {
                     messages = null;
                 }
 
-                parseApp( app(schemaVersion, ""), maxSchemaVersion, altMessage, messages );
+                parseApp( app(schemaVersion, appBody), maxSchemaVersion, altMessage, messages );
             }
         }
     }    

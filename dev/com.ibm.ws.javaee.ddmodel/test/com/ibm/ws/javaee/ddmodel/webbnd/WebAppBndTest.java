@@ -45,7 +45,7 @@ public class WebAppBndTest extends WebAppBndTestBase {
 
     @Test
     public void testVirtualHostDefault() throws Exception {
-        WebBnd bnd = parseWebBndXML(webBndXML10());
+        WebBnd bnd = parseWebBndXML(webBndXML10(webBndXMLBody_noVHost()));
         Assert.assertNull(bnd.getVirtualHost());
     }
 
@@ -64,7 +64,7 @@ public class WebAppBndTest extends WebAppBndTestBase {
     @Test
     public void testVirtualHostXMI() throws Exception {
         WebBnd bnd = parseWebBndXMI(
-                webBndXMI20("virtualHostName=\"vhost0\"", ""),
+                webBndXMI20("virtualHostName=\"vhost0\"", webBndXMIBody()),
                 getWebApp24() );
         Assert.assertEquals("vhost0", bnd.getVirtualHost().getName());
     }

@@ -126,14 +126,17 @@ public abstract class DDParserSpec extends DDParser {
         // In either case of a namespace mis-match, or the namespace being
         // entirely absent, patch in the correct namespace.
 
-        if ( (versionAttr != null) && (namespace != null) ) {
-            if ( !namespace.equals(versionData.namespace) ) {
-                warning( incorrectDescriptorNamespace(versionAttr, namespace, versionData.namespace) );
-                namespace = versionData.namespace;                
+        if ( namespace != null ) {
+            if ( versionAttr != null ) {
+                if ( !namespace.equals(versionData.namespace) ) {
+                    warning( incorrectDescriptorNamespace(versionAttr, namespace, versionData.namespace) );
+                    patchNamespace(versionData.namespace);                
+                }
             }
-        }
-        if ( (namespace == null) && (versionData.namespace != null) ) {
-            namespace = versionData.namespace;
+        } else {
+            if ( versionData.namespace != null ) {
+                patchNamespace(versionData.namespace);
+            }
         }
 
         // Note that parsing will reassign the version upon parsing
