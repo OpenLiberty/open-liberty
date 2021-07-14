@@ -20,12 +20,12 @@
 
     <include optional="true" location="../fatTestPorts.xml"/>
 
-    <library id="testlib">
-      <file name="${server.config.dir}/libraries/testlib.jar"/>
-    </library>
-
     <resourceAdapter id="DummyRA" location="${server.config.dir}connectors/fvtra.rar" autoStart="true">
-      <classloader privateLibraryRef="testlib"/>
+      <classloader>
+        <privateLibrary>
+          <file name="${server.config.dir}/libraries/testlib.jar"/>
+        </privateLibrary>
+      </classloader>
       <properties.DummyRA userName="Mr. Classy Loader" password="secret" />
     </resourceAdapter>
     
