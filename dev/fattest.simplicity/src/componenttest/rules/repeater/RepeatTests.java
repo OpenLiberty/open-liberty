@@ -12,6 +12,7 @@ package componenttest.rules.repeater;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.junit.rules.ExternalResource;
 import org.junit.runner.Description;
@@ -74,6 +75,18 @@ public class RepeatTests extends ExternalResource {
      */
     public RepeatTests andWith(RepeatTestAction action) {
         actions.add(action);
+        return this;
+    }
+
+    /**
+     * Removes an iteration of test execution of the previous <code>and*</code> call if the passed-in supplier
+     * returns false. If true or if no test executions have been added, this method will have no effect.
+     */
+    public RepeatTests onlyIf(Supplier<Boolean> check) {
+        int size = actions.size();
+        if (size > 0 && !check.get()) {
+            actions.remove(size - 1);
+        }
         return this;
     }
 
