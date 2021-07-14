@@ -31,7 +31,6 @@ Import-Package: \
   *
 	
 Export-Package: \
-  io.openliberty.grpc.monitor,\
   io.openliberty.grpc.internal.monitor
 
 Liberty-Monitoring-Components: io.openliberty.grpc.internal.monitor.GrpcServerMonitor
