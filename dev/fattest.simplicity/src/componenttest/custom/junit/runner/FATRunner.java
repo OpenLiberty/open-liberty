@@ -672,13 +672,14 @@ public class FATRunner extends BlockJUnit4ClassRunner {
 
         // Declaring Class
         Class<?> declaringClass = m.getMethod().getDeclaringClass();
-        
-        ffdcs.add(declaringClass.getAnnotation(AllowedFFDC.class));
+        allowedffdcs = declaringClass.getAnnotationsByType(AllowedFFDC.class);
+        ffdcs.addAll(Arrays.asList(allowedffdcs));
 
         // Test Class
         Class<?> testClass = getTestClass().getJavaClass();
         if (!declaringClass.equals(testClass)) {
-            ffdcs.add(testClass.getAnnotation(AllowedFFDC.class));
+            allowedffdcs = testClass.getAnnotationsByType(AllowedFFDC.class);
+            ffdcs.addAll(Arrays.asList(allowedffdcs));
         }
 
         for (AllowedFFDC ffdc : ffdcs) {

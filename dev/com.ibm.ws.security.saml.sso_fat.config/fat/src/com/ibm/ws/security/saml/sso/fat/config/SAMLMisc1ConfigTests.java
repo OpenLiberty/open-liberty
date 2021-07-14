@@ -903,7 +903,7 @@ public class SAMLMisc1ConfigTests extends SAMLConfigCommonTests {
      * test)
      */
     @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.ws.security.SecurityPolicyException", "org.opensaml.xml.signature.SignatureException" }, repeatAction = {EmptyAction.ID})
-    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.messaging.handler.MessageHandlerException", "org.opensaml.xml.signature.SignatureException"  }, repeatAction = {JakartaEE9Action.ID})
+    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.messaging.handler.MessageHandlerException", "org.opensaml.xmlsec.signature.support.SignatureException"  }, repeatAction = {JakartaEE9Action.ID})
     // @Mode(TestMode.LITE)
     @Test
     public void test_config_errorPageURL() throws Exception {
