@@ -263,7 +263,6 @@ public class AccessTokenAuthenticatorTest {
 
     @Test
     public void testAuthenticate_UserinfoValidation_GoodOidcResult() throws javax.net.ssl.SSLException {
-        SingleTableCache cache = getCache();
         final Long currentDate = Calendar.getInstance().getTimeInMillis() / 1000;
         final InputStream input = new ByteArrayInputStream(getJSONObjectString(true, currentDate, currentDate).getBytes());
         final BasicHttpEntity entity = new BasicHttpEntity();
@@ -277,7 +276,7 @@ public class AccessTokenAuthenticatorTest {
                 one(req).setAttribute(OidcClient.PROPAGATION_TOKEN_AUTHENTICATED, Boolean.TRUE);
                 one(clientConfig).getAccessTokenInLtpaCookie();
                 will(returnValue(false));
-                one(clientConfig).getTokenReuse();
+                allowing(clientConfig).getAccessTokenCacheEnabled();
                 will(returnValue(false));
                 allowing(clientConfig).getValidationMethod();
                 will(returnValue(ClientConstants.VALIDATION_USERINFO));
@@ -295,8 +294,6 @@ public class AccessTokenAuthenticatorTest {
 
                 one(statusLine).getStatusCode();
                 will(returnValue(HttpServletResponse.SC_OK));
-                one(clientConfig).getCache();
-                will(returnValue(cache));
             }
         });
 
@@ -309,11 +306,6 @@ public class AccessTokenAuthenticatorTest {
 
         // verify that subject fixup was called
         assertTrue("fixSubject was not called as expected ", ((FakeAccessTokenAuthenticator) sslTokenAuth).fixSubjectCalled);
-
-        // Verify that the result was cached
-        ProviderAuthenticationResult cachedResult = (ProviderAuthenticationResult) cache.get(ACCESS_TOKEN);
-        assertNotNull("Cached authentication result should not have been null but was.", cachedResult);
-        assertEquals("Cached result did not match the result originally returned from the authenticate method.", oidcResult, cachedResult);
     }
 
     @Test
@@ -332,7 +324,7 @@ public class AccessTokenAuthenticatorTest {
 
                 one(clientConfig).getAccessTokenInLtpaCookie();
                 will(returnValue(false));
-                one(clientConfig).getTokenReuse();
+                allowing(clientConfig).getAccessTokenCacheEnabled();
                 will(returnValue(false));
                 one(clientConfig).getValidationMethod();
                 will(returnValue(ClientConstants.VALIDATION_USERINFO));
@@ -370,7 +362,7 @@ public class AccessTokenAuthenticatorTest {
 
                 one(clientConfig).getAccessTokenInLtpaCookie();
                 will(returnValue(false));
-                one(clientConfig).getTokenReuse();
+                one(clientConfig).getAccessTokenCacheEnabled();
                 will(returnValue(false));
                 exactly(2).of(clientConfig).getValidationMethod();
                 will(returnValue(ClientConstants.VALIDATION_USERINFO));
@@ -406,7 +398,7 @@ public class AccessTokenAuthenticatorTest {
 
                 one(clientConfig).getAccessTokenInLtpaCookie();
                 will(returnValue(false));
-                one(clientConfig).getTokenReuse();
+                allowing(clientConfig).getAccessTokenCacheEnabled();
                 will(returnValue(false));
                 one(clientConfig).getValidationMethod();
                 will(returnValue(ClientConstants.VALIDATION_INTROSPECT));
@@ -445,7 +437,6 @@ public class AccessTokenAuthenticatorTest {
 
     @Test
     public void testAuthenticate_IntrospectTokenValidation_disableIssChecking_no_issclaim() {
-        SingleTableCache cache = getCache();
         final Long currentDate = Calendar.getInstance().getTimeInMillis() / 1000;
         final InputStream input = new ByteArrayInputStream(getJSONObjectString(true, currentDate, currentDate).getBytes());
         final BasicHttpEntity entity = new BasicHttpEntity();
@@ -460,7 +451,7 @@ public class AccessTokenAuthenticatorTest {
 
                 one(clientConfig).getAccessTokenInLtpaCookie();
                 will(returnValue(false));
-                one(clientConfig).getTokenReuse();
+                allowing(clientConfig).getAccessTokenCacheEnabled();
                 will(returnValue(false));
                 one(clientConfig).getValidationMethod();
                 will(returnValue(ClientConstants.VALIDATION_INTROSPECT));
@@ -482,8 +473,6 @@ public class AccessTokenAuthenticatorTest {
 
                 one(statusLine).getStatusCode();
                 will(returnValue(HttpServletResponse.SC_OK));
-                one(clientConfig).getCache();
-                will(returnValue(cache));
             }
         });
 
@@ -493,11 +482,6 @@ public class AccessTokenAuthenticatorTest {
                 AuthResult.SUCCESS, oidcResult.getStatus());
         assertEquals("Unexpected status code, expected:" + HttpServletResponse.SC_OK + " but received:" + oidcResult.getHttpStatusCode() + ".",
                 HttpServletResponse.SC_OK, oidcResult.getHttpStatusCode());
-
-        // Verify that the result was cached
-        ProviderAuthenticationResult cachedResult = (ProviderAuthenticationResult) cache.get(ACCESS_TOKEN);
-        assertNotNull("Cached authentication result should not have been null but was.", cachedResult);
-        assertEquals("Cached result did not match the result originally returned from the authenticate method.", oidcResult, cachedResult);
     }
 
     @Test
@@ -517,6 +501,8 @@ public class AccessTokenAuthenticatorTest {
 
                 one(clientConfig).getAccessTokenInLtpaCookie();
                 will(returnValue(false));
+                allowing(clientConfig).getAccessTokenCacheEnabled();
+                will(returnValue(true));
                 one(clientConfig).getTokenReuse();
                 will(returnValue(false));
                 one(clientConfig).getValidationMethod();
@@ -574,7 +560,7 @@ public class AccessTokenAuthenticatorTest {
 
                 one(clientConfig).getAccessTokenInLtpaCookie();
                 will(returnValue(false));
-                one(clientConfig).getTokenReuse();
+                allowing(clientConfig).getAccessTokenCacheEnabled();
                 will(returnValue(false));
                 exactly(3).of(clientConfig).getValidationMethod();
                 will(returnValue(ClientConstants.VALIDATION_INTROSPECT));
@@ -615,7 +601,7 @@ public class AccessTokenAuthenticatorTest {
 
                 one(clientConfig).getAccessTokenInLtpaCookie();
                 will(returnValue(false));
-                one(clientConfig).getTokenReuse();
+                one(clientConfig).getAccessTokenCacheEnabled();
                 will(returnValue(false));
                 exactly(2).of(clientConfig).getValidationMethod();
                 will(returnValue(ClientConstants.VALIDATION_INTROSPECT));
@@ -648,7 +634,7 @@ public class AccessTokenAuthenticatorTest {
 
                 one(clientConfig).getAccessTokenInLtpaCookie();
                 will(returnValue(false));
-                one(clientConfig).getTokenReuse();
+                one(clientConfig).getAccessTokenCacheEnabled();
                 will(returnValue(false));
                 one(clientConfig).getValidationMethod();
                 will(returnValue(INVALID_VALIDATION));
@@ -716,7 +702,7 @@ public class AccessTokenAuthenticatorTest {
 
                 one(clientConfig).getAccessTokenInLtpaCookie();
                 will(returnValue(false));
-                one(clientConfig).getTokenReuse();
+                one(clientConfig).getAccessTokenCacheEnabled();
                 will(returnValue(false));
                 one(clientConfig).getValidationMethod();
                 will(returnValue(ClientConstants.VALIDATION_INTROSPECT));
@@ -746,6 +732,8 @@ public class AccessTokenAuthenticatorTest {
                 will(returnValue(BEARER));
                 one(clientConfig).getAccessTokenInLtpaCookie();
                 will(returnValue(false));
+                one(clientConfig).getAccessTokenCacheEnabled();
+                will(returnValue(true));
                 one(clientConfig).getTokenReuse();
                 will(returnValue(true));
                 one(clientConfig).getCache();

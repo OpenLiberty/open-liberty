@@ -28,7 +28,7 @@ public class AccessTokenCacheHelper {
     private static final TraceComponent tc = Tr.register(AccessTokenCacheHelper.class);
 
     public ProviderAuthenticationResult getCachedTokenAuthenticationResult(OidcClientConfig clientConfig, String token) {
-        if (!clientConfig.getTokenReuse()) {
+        if (!clientConfig.getAccessTokenCacheEnabled() || !clientConfig.getTokenReuse()) {
             return null;
         }
         SingleTableCache cache = clientConfig.getCache();
@@ -44,8 +44,10 @@ public class AccessTokenCacheHelper {
     }
 
     public void cacheTokenAuthenticationResult(OidcClientConfig clientConfig, String token, ProviderAuthenticationResult result) {
-        SingleTableCache cache = clientConfig.getCache();
-        cache.put(token, result);
+        if (clientConfig.getAccessTokenCacheEnabled()) {
+            SingleTableCache cache = clientConfig.getCache();
+            cache.put(token, result);
+        }
     }
 
     boolean isTokenInCachedResultExpired(ProviderAuthenticationResult cachedResult, OidcClientConfig clientConfig) {
