@@ -1053,10 +1053,10 @@ public class LibertyServer implements LogMonitorClient {
             socket = new ServerSocket();
             // This allows the socket to close and others to bind to it even if its in TIME_WAIT state
             socket.setReuseAddress(true);
-            socket.bind(new InetSocketAddress(getHttpDefaultPort()));
+            socket.bind(new InetSocketAddress(httpDefaultPort));
         } catch (Exception ex) {
-            Log.error(c, "checkPortsOpen", ex, "http default port is currently bound");
-            printProcessHoldingPort(getHttpDefaultPort());
+            Log.error(c, "checkPortsOpen", ex, "http default port (" + httpDefaultPort + ") is currently bound");
+            printProcessHoldingPort(httpDefaultPort);
             if (retry) {
                 Log.info(c, "checkPortsOpen", "Waiting 5 seconds and trying again");
                 try {
