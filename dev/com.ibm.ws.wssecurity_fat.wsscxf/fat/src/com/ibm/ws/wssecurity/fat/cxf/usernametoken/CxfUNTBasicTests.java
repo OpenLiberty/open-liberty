@@ -46,7 +46,7 @@ public class CxfUNTBasicTests {
 
     private static String httpPortNumber = "";
 
-    private static LeakedPasswordChecker leakedPasswordChecker = new LeakedPasswordChecker(server);
+    private static LeakedPasswordChecker leakedPasswordChecker;
 
     /**
      * Sets up any configuration required for running the OAuth tests.
@@ -69,6 +69,8 @@ public class CxfUNTBasicTests {
 
         untClientUrl = "http://localhost:" + httpPortNumber +
                        "/untclient/CxfUntSvcClient";
+
+        leakedPasswordChecker = new LeakedPasswordChecker(server);
 
         return;
 
@@ -142,8 +144,7 @@ public class CxfUNTBasicTests {
                    respReceived.contains(expectedResponse));
         Log.info(thisClass, thisMethod, "assertTrue");
 
-        //Orig:
-        //leakedPasswordChecker.checkForPasswordInTrace("security</wsse:Password>");
+        leakedPasswordChecker.checkForPasswordInTrace("security</wsse:Password>");
 
         return;
     }
@@ -247,8 +248,7 @@ public class CxfUNTBasicTests {
         assertTrue("The testUntCxfBadPswd test failed",
                    respReceived.contains(expectedResponse));
 
-        //Orig:
-        //leakedPasswordChecker.checkForPasswordInTrace("badpswd123</wsse:Password>");
+        leakedPasswordChecker.checkForPasswordInTrace("badpswd123</wsse:Password>");
 
         return;
 
