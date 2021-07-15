@@ -14,11 +14,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import static java.time.temporal.ChronoUnit.SECONDS;
+
 import javax.annotation.Resource;
 import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.inject.spi.CDI;
 import javax.servlet.annotation.WebServlet;
 
+import java.time.Duration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -59,16 +62,14 @@ public class CDICurrentTestServlet extends FATServlet {
      * Note that threads created via new Thread() will not have the required context and CDI.current() will return null
      */    
     public void testCDICurrentViaMES() throws Exception {
+        long startTime = System.nanoTime();
 
         assertNotNull(CDI.current()); //Test outside a new thread just for completeness.
 
         LOGGER.info("calling managedExecutorService");
         managedExecutorService.submit(new CallCDICurrent());
 
-        int i = 40;
-
-        while (i > 0) {
-            i--;
+        while (System.nanoTime() - startTime < Duration.of(10, SECONDS).toNanos()) {
             if (wasCDICurrentFoundViaMES != null) {
                 assertTrue("CDI.current returned null when called in a new Thread", wasCDICurrentFoundViaMES);
                 return;
