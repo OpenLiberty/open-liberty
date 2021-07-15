@@ -3174,7 +3174,7 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-websocket</artifactId>
-      <version>5.0.8.RELEASE</version>
+      <version>5.3.9</version>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
