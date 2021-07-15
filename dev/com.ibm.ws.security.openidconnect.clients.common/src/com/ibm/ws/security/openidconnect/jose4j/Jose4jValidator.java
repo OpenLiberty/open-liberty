@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.jose4j;
 
@@ -21,6 +21,7 @@ import org.joda.time.Instant;
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.NumericDate;
+import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.jose4j.jwt.consumer.InvalidJwtSignatureException;
 import org.jose4j.jwt.consumer.JwtConsumer;
 import org.jose4j.jwt.consumer.JwtConsumerBuilder;
@@ -262,6 +263,37 @@ public class Jose4jValidator {
         }
 
         return jwtClaims;
+    }
+
+    public JwtClaims validateJwsSignature(JsonWebSignature signature, String jwtString) throws JWTTokenValidationFailedException, InvalidJwtException {
+        verifySignAlgOnly(signature);
+
+        JwtConsumerBuilder builder = new JwtConsumerBuilder();
+        builder.setSkipDefaultAudienceValidation();
+        if (!rpSpecifiedSigningAlgorithm) {
+            // Signature algorithm is set to "none"; don't check the signature
+            builder.setDisableRequireSignature()
+                    .setSkipSignatureVerification();
+        } else {
+            builder.setVerificationKey(key)
+                    .setRelaxVerificationKeyValidation();
+        }
+
+        JwtConsumer jwtConsumer = builder.build();
+        try {
+            JwtContext validatedJwtContext = jwtConsumer.process(jwtString);
+            return validatedJwtContext.getJwtClaims();
+        } catch (InvalidJwtSignatureException e) {
+            Object[] objs = new Object[] { this.clientId, e.getLocalizedMessage(), this.signingAlgorithm };
+            oidcClientRequest.errorCommon(new String[] { "OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR",
+                    "OIDC_JWT_SIGNATURE_VERIFY_ERR" }, objs); // 219214
+
+            if (OidcCommonClientRequest.TYPE_ID_TOKEN.equals(oidcClientRequest.getTokenType())) {
+                throw new IDTokenValidationFailedException(e.getMessage(), e);
+            } else {
+                throw new JWTTokenValidationFailedException(e.getMessage(), e);
+            }
+        }
     }
 
     /**
