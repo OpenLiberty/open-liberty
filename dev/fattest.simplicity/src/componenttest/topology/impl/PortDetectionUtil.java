@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,7 +29,7 @@ public abstract class PortDetectionUtil {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see componenttest.topology.impl.PortDetectionUtil#determineOwnerOfPort(int)
          */
         @Override
@@ -52,7 +52,7 @@ public abstract class PortDetectionUtil {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see componenttest.topology.impl.PortDetectionUtil#determineOwnerOfPort(int)
          */
         @Override
@@ -64,15 +64,15 @@ public abstract class PortDetectionUtil {
                 String cmdOutput = po.getStdout();
                 //Output should resemble:
 //                Active Internet connections (only servers)
-//                Proto Recv-Q Send-Q Local Address               Foreign Address             State       PID/Program name   
-//                tcp        0      0 0.0.0.0:139                 0.0.0.0:*                   LISTEN      -                   
-//                tcp        0      0 0.0.0.0:111                 0.0.0.0:*                   LISTEN      -                   
-//                tcp        0      0 127.0.0.1:8979              0.0.0.0:*                   LISTEN      -                   
-//                tcp        0      0 0.0.0.0:48500               0.0.0.0:*                   LISTEN      -                   
+//                Proto Recv-Q Send-Q Local Address               Foreign Address             State       PID/Program name
+//                tcp        0      0 0.0.0.0:139                 0.0.0.0:*                   LISTEN      -
+//                tcp        0      0 0.0.0.0:111                 0.0.0.0:*                   LISTEN      -
+//                tcp        0      0 127.0.0.1:8979              0.0.0.0:*                   LISTEN      -
+//                tcp        0      0 0.0.0.0:48500               0.0.0.0:*                   LISTEN      -
 //                tcp        0      0 192.168.122.1:53            0.0.0.0:*                   LISTEN      -
-//                tcp        0      0 ::ffff:127.0.0.1:65341      :::*                        LISTEN      5124/sametime       
-//                tcp        0      0 :::445                      :::*                        LISTEN      -                   
-//                tcp        0      0 ::ffff:127.0.0.1:38848      :::*                        LISTEN      4823/java           
+//                tcp        0      0 ::ffff:127.0.0.1:65341      :::*                        LISTEN      5124/sametime
+//                tcp        0      0 :::445                      :::*                        LISTEN      -
+//                tcp        0      0 ::ffff:127.0.0.1:38848      :::*                        LISTEN      4823/java
 //                tcp        0      0 ::ffff:127.0.0.1:57248      :::*                        LISTEN      3944/symphony
                 StringTokenizer st = new StringTokenizer(cmdOutput, "/-" + LS);
                 int pid = -1;
@@ -125,7 +125,7 @@ public abstract class PortDetectionUtil {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see componenttest.topology.impl.PortDetectionUtil#determineOwnerOfPort(int)
          */
         @Override
@@ -205,7 +205,7 @@ public abstract class PortDetectionUtil {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see componenttest.topology.impl.PortDetectionUtil#determineOwnerOfPort(int)
          */
         @Override
@@ -243,7 +243,7 @@ public abstract class PortDetectionUtil {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see componenttest.topology.impl.PortDetectionUtil#determineOwnerOfPort(int)
          */
         @Override
@@ -255,7 +255,7 @@ public abstract class PortDetectionUtil {
             try {
                 ProgramOutput po = machine.execute(NETSTAT_CMD, parms);
                 String cmdOutput = po.getStdout();
-                //Output should resemble: 
+                //Output should resemble:
 //                Active Internet connections (only servers)
 //                MVS TCP/IP NETSTAT CS V1R10       TCPIP Name: TCPIP           13:47:39
 //                User Id  Conn     State
@@ -268,7 +268,7 @@ public abstract class PortDetectionUtil {
 //                  Foreign Socket: ::..0
 //                BBOS001  000014F5 Establsh
 //                  Local Socket:   ::ffff:9.57.165.181..4681
-//                  Foreign Socket: ::ffff:9.57.165.181..9355     
+//                  Foreign Socket: ::ffff:9.57.165.181..9355
                 if (!!!cmdOutput.contains("Listen")) {
                     // we did not find the port in the netstat cmd output
                     String msg = "Could not find port (" + port + ") listed in netstat output";
@@ -283,7 +283,7 @@ public abstract class PortDetectionUtil {
 //              BBON001    16842943
 //              BBON001    50397376
 //              BBOS001    50397397
-//              BBOS001    16842966  
+//              BBOS001    16842966
                 po = machine.execute(PS_CMD, PS_PARMS);
                 cmdOutput = po.getStdout();
                 pidInfo += LS + LS + LS + cmdOutput;
@@ -294,9 +294,134 @@ public abstract class PortDetectionUtil {
         }
     }
 
+    private static class WindowsDetector extends PortDetectionUtil {
+        private final static Class<?> c = WindowsDetector.class;
+        private final Machine machine;
+        private final String NETSTAT_CMD = "netstat";
+        private final String[] NETSTAT_PARMS = new String[] { "-ano" };
+        private final String PS_CMD = "wmic";
+        private final String[] PS_PARMS = new String[] { "process", "get", "processid,commandline" };
+
+        private WindowsDetector(Machine machine) {
+            this.machine = machine;
+        }
+
+        @Override
+        public String determineOwnerOfPort(final int port) throws IOException {
+            final String m = "determineOwnerOfPort";
+            String pid = "";
+            String commandLine = "";
+
+            try {
+                ProgramOutput po = machine.execute(NETSTAT_CMD, NETSTAT_PARMS);
+                String cmdOutput = po.getStdout();
+                StringTokenizer st = new StringTokenizer(cmdOutput, "/-" + LS);
+                while (st.hasMoreTokens()) {
+                    String s = st.nextToken().trim().toLowerCase();
+                    Log.finer(c, m, s);
+                    if (s.startsWith("tcp") && s.contains(":" + port + " ") && s.contains("listen")) {
+                        pid = s.substring(s.lastIndexOf(' ')).trim();
+                        break;
+                    }
+                }
+
+                if (!pid.isEmpty()) {
+                    Log.finer(c, m, "Process holding port " + port + " is " + pid);
+
+                    po = machine.execute(PS_CMD, PS_PARMS);
+                    cmdOutput = po.getStdout();
+                    st = new StringTokenizer(cmdOutput, LS);
+                    while (st.hasMoreTokens()) {
+                        String s = st.nextToken().trim();
+                        Log.finer(c, m, s);
+                        if (s.endsWith(pid)) {
+                            commandLine = s;
+                            break;
+                        }
+                    }
+
+                    if (!commandLine.isEmpty()) {
+                        commandLine = commandLine.substring(0, commandLine.lastIndexOf(pid)).trim();
+                        Log.finer(c, m, commandLine);
+                    }
+                }
+            } catch (Exception e) {
+                Log.error(c, m, e);
+            }
+
+            if (commandLine.isEmpty()) {
+                return "Couln't determine process holding port " + pid;
+            } else {
+                return commandLine;
+            }
+        }
+
+        /*
+         * (non-Javadoc)
+         *
+         * @see componenttest.topology.impl.PortDetectionUtil#determineOwnerOfPort(int)
+         */
+        public String XdetermineOwnerOfPort(final int port) throws IOException {
+
+            final String m = "determineOwnerOfPort";
+            String pidInfo = "";
+            try {
+                ProgramOutput po = machine.execute(NETSTAT_CMD, NETSTAT_PARMS);
+                String cmdOutput = po.getStdout();
+                //Output should resemble:
+                //                Active Internet connections (only servers)
+                //                Proto Recv-Q Send-Q Local Address               Foreign Address             State       PID/Program name
+                //                tcp        0      0 0.0.0.0:139                 0.0.0.0:*                   LISTEN      -
+                //                tcp        0      0 0.0.0.0:111                 0.0.0.0:*                   LISTEN      -
+                //                tcp        0      0 127.0.0.1:8979              0.0.0.0:*                   LISTEN      -
+                //                tcp        0      0 0.0.0.0:48500               0.0.0.0:*                   LISTEN      -
+                //                tcp        0      0 192.168.122.1:53            0.0.0.0:*                   LISTEN      -
+                //                tcp        0      0 ::ffff:127.0.0.1:65341      :::*                        LISTEN      5124/sametime
+                //                tcp        0      0 :::445                      :::*                        LISTEN      -
+                //                tcp        0      0 ::ffff:127.0.0.1:38848      :::*                        LISTEN      4823/java
+                //                tcp        0      0 ::ffff:127.0.0.1:57248      :::*                        LISTEN      3944/symphony
+                StringTokenizer st = new StringTokenizer(cmdOutput, "/-" + LS);
+                int pid = -1;
+                while (st.hasMoreTokens()) {
+                    String s = st.nextToken().trim();
+                    if (s.startsWith("tcp") && s.contains(":" + port + " ") && s.contains("LISTEN")) {
+                        String pidString = s.substring(s.lastIndexOf(' ')).trim();
+                        pid = Integer.parseInt(pidString);
+                        break;
+                    }
+                }
+
+                if (pid < 0) {
+                    // we did not find the port in the netstat cmd output
+                    String msg = "Could not find port (" + port + ") listed in netstat output";
+                    Log.info(c, m, msg + ":" + LS + cmdOutput);
+                    throw new Exception(msg);
+                }
+
+                String[] parms = Arrays.copyOf(PS_PARMS, PS_PARMS.length + 1);
+                parms[PS_PARMS.length] = "" + pid;
+                po = machine.execute(PS_CMD, parms);
+                pidInfo = po.getStdout();
+
+                if ("".equals(pidInfo)) {
+                    // we didn't find the pid in the list of processes...
+                    // possibly whatever process was listening on that port has exited...
+                    String msg = "Could not find PID, " + pid + " in PID list - possibly that process already exited";
+                    Log.info(c, m, msg + ":" + cmdOutput);
+                    throw new Exception(msg);
+                }
+            } catch (Exception ex) {
+                throw new IOException("Failed to determine owner of port " + port, ex);
+            }
+            return pidInfo;
+        }
+    }
+
     public static PortDetectionUtil getPortDetector(Machine machine) {
         try {
             switch (machine.getOperatingSystem()) {
+                case WINDOWS:
+                    return new WindowsDetector(machine);
                 case LINUX:
                     return new LinuxDetector(machine);
                 case MAC:
@@ -307,7 +432,7 @@ public abstract class PortDetectionUtil {
                     return new GenericNixDetector(machine);
                 case ZOS:
                     return new ZOSDetector(machine);
-                default: // Windows and ISeries
+                default: // ISeries
                     return new NoopDetector();
             }
         } catch (Exception e) {
@@ -319,11 +444,11 @@ public abstract class PortDetectionUtil {
 
     /**
      * Determine the process who is listening on the specified port.
-     * 
-     * @param port - the port to check - valid entries are 1-64535
-     * @return a string that should include OS-specific info about the process
-     *         that is listening on the specified port - or an empty string if
-     *         no data could be collected.
+     *
+     * @param  port        - the port to check - valid entries are 1-64535
+     * @return             a string that should include OS-specific info about the process
+     *                     that is listening on the specified port - or an empty string if
+     *                     no data could be collected.
      * @throws IOException - if a failure occurs while trying to detect the process
      */
     public abstract String determineOwnerOfPort(int port) throws IOException;
