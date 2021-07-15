@@ -63,7 +63,8 @@ public class ServerCommandListener extends ServerCommand {
     /**
      * The lock used to synchronize response writes.
      */
-    private final Object responseLock = new Object() {};
+    private final Object responseLock = new Object() {
+    };
 
     private final AtomicReference<Thread> responseThread = new AtomicReference<Thread>();
 
