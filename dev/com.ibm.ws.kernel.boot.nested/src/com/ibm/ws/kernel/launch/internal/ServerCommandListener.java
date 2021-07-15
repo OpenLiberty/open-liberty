@@ -204,9 +204,9 @@ public class ServerCommandListener extends ServerCommand {
 
         if (writable) {
             // Set the command file to writable for the owner only
-            if (!commandFileTmp.setWritable(false))
+            if (!commandFileTmp.setWritable(false, false))
                 writable = false;
-            if (!commandFileTmp.setWritable(true, true))
+            if (!commandFileTmp.setWritable(true))
                 writable = false;
         }
 
@@ -215,8 +215,8 @@ public class ServerCommandListener extends ServerCommand {
         }
 
         // Set the command file to readable for the owner only
-        commandFileTmp.setReadable(false);
-        commandFileTmp.setReadable(true, true);
+        commandFileTmp.setReadable(false, false);
+        commandFileTmp.setReadable(true);
 
         // Delete the contents of the directory.
         if (!FileUtils.recursiveClean(this.commandAuthDir) || !this.commandAuthDir.mkdir()) {
@@ -399,7 +399,7 @@ public class ServerCommandListener extends ServerCommand {
                         // this because by default, many umasks create world-readable files, which means everyone on a
                         // system can read the .sCommand file.
                         //
-                        // Generate a unique filename in .sCommandAuth and request that the client create the named file.
+                        // Create a .sCommandAuth and request that the client delete the named file.
                         String authID;
                         File authFile;
                         do {
