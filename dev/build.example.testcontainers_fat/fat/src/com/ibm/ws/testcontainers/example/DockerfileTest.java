@@ -57,14 +57,19 @@ public class DockerfileTest {
      * </pre>
      *
      * Doing this will result in a warning being logged:
+     *
+     * <pre>
      * W WARNING: Cannot use private registry for programmatically built image testcontainers/[image-sha]:latest.
      * Consider using a pre-built image instead.
+     * </pre>
      *
      * This warning is thrown to alert the developer that we CANNOT use our Artifactory image cache.
      * This could result in hitting our docker pull limits and introduce intermittent failures.
+     * <br>
      *
      * Instead, it is best practice to build and push your docker image to docker hub, and reference that instead.
      * You can still keep the Dockerfile and any related files in source control under publish/files.
+     * <br>
      *
      * In this case I pushed my custom image to my personal DockerHub repo under kyleaure/postgres-test-table:1.0
      * You will notice that everything else is configured the same as in the regular ContainersTest test class.
