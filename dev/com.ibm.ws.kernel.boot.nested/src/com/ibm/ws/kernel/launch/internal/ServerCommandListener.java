@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,6 +37,10 @@ import com.ibm.ws.kernel.boot.internal.FileUtils;
 import com.ibm.ws.kernel.boot.internal.ServerCommand;
 import com.ibm.ws.kernel.boot.internal.commands.JavaDumpAction;
 
+import io.openliberty.checkpoint.spi.Checkpoint.Phase;
+import io.openliberty.checkpoint.spi.SnapshotHook;
+import io.openliberty.checkpoint.spi.SnapshotHookFactory;
+
 /**
  * A trivial server command listener: opens a socket listening for commands.
  */
@@ -68,6 +72,10 @@ public class ServerCommandListener extends ServerCommand {
 
     private final AtomicReference<Thread> responseThread = new AtomicReference<Thread>();
 
+    // ServerCommandID contains info used in handshake between ServerCommandListener and a ServerCommandClient
+    // it's persisted on file system in the .sCommand file
+    private final ServerCommandID sci;
+    private final File serverWorkArea;
     private volatile boolean listenForCommands = false;
     private final Thread listeningThread;
 
@@ -94,13 +102,81 @@ public class ServerCommandListener extends ServerCommand {
         this.listeningThread = listeningThread;
 
         File serverDir = bootProps.getConfigFile(null);
-        File serverWorkArea = bootProps.getWorkareaFile(null);
+        serverWorkArea = bootProps.getWorkareaFile(null);
+
+        // set the default command port to:
+        //   -- disabled (-1) if we are running as a z/OS started task
+        //   -- ephemeral (0) otherwise
+        int commandPort = Boolean.parseBoolean(bootProps.get(BootstrapConstants.DEFAULT_COMMAND_PORT_DISABLED_PROPERTY)) ? -1 : 0;
+
+        String commandPortString = bootProps.get(BootstrapConstants.S_COMMAND_PORT_PROPERTY);
+        if (commandPortString != null) {
+            try {
+                commandPort = Integer.parseInt(commandPortString);
+            } catch (NumberFormatException nfe) {
+            }
+        }
 
         // If the server directory doesn't exist we have bigger problems
         if (!serverDir.exists()) {
             throw new LaunchException("Can not initialize server command listener - Invalid server directory", MessageFormat.format(BootstrapConstants.messages.getString("error.invalid.directory"),
                                                                                                                                     serverDir));
         }
+
+        File commandFileTmp = createCommandFileTmp(serverWorkArea);
+
+        try {
+            sci = init(commandPort, commandFileTmp);
+            createCommandFile(commandFileTmp);
+        } catch (IOException ex) {
+            throw new LaunchException("Failed to initialize server command listener", MessageFormat.format(BootstrapConstants.messages.getString("error.serverCommand.init"), ex));
+        }
+
+        //Set up snapshotHookFactory for checkpoint restore of the .sCommand file
+        frameworkManager.systemBundleCtx.registerService(SnapshotHookFactory.class,
+                                                         new SnapshotHookFactory() {
+                                                             @Override
+                                                             public SnapshotHook create(Phase phase) {
+                                                                 return new SnapshotHook() {
+                                                                     @Override
+                                                                     public void restore() {
+                                                                         File commandFileTmp = createCommandFileTmp(serverWorkArea);
+                                                                         createCommandFile(commandFileTmp);
+                                                                     }
+                                                                 };
+                                                             }
+                                                         }, null);
+    }
+
+    /**
+     *
+     */
+    private void createCommandFile(File sCommandTmp) {
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(sCommandTmp);
+            fos.write(sci.getIDString().getBytes());
+            fos.close();
+        } catch (IOException ioex) {
+            throw new LaunchException("Failed to initialize server command listener", MessageFormat.format(BootstrapConstants.messages.getString("error.serverCommand.init"),
+                                                                                                           ioex));
+        } finally {
+            Utils.tryToClose(fos);
+        }
+        // Now that the command file is fully written
+        if (!sCommandTmp.renameTo(commandFile)) {
+            throw securityError(serverWorkArea, null);
+        }
+    }
+
+    /**
+     * setup workarea temp command file (.sCommand.tmp) and clear .sCommandAuth/. Make best effort to restrict .sCommand access to user only.
+     *
+     * @param serverWorkArea
+     * @return File handle to newly created .sCommand.tmp
+     * @throws LaunchException if we fail to create/remove or set appropriate access permissions to a file
+     */
+    private File createCommandFileTmp(File serverWorkArea) throws LaunchException {
 
         boolean writable = true;
         if (!serverWorkArea.exists())
@@ -146,31 +222,7 @@ public class ServerCommandListener extends ServerCommand {
         if (!FileUtils.recursiveClean(this.commandAuthDir) || !this.commandAuthDir.mkdir()) {
             throw securityError(serverWorkArea, null);
         }
-
-        // set the default command port to:
-        //   -- disabled (-1) if we are running as a z/OS started task
-        //   -- ephemeral (0) otherwise
-        int commandPort = Boolean.parseBoolean(bootProps.get(BootstrapConstants.DEFAULT_COMMAND_PORT_DISABLED_PROPERTY)) ? -1 : 0;
-
-        String commandPortString = bootProps.get(BootstrapConstants.S_COMMAND_PORT_PROPERTY);
-        if (commandPortString != null) {
-            try {
-                commandPort = Integer.parseInt(commandPortString);
-            } catch (NumberFormatException nfe) {
-            }
-        }
-
-        try {
-            init(commandPort, commandFileTmp);
-        } catch (IOException ex) {
-            throw new LaunchException("Failed to initialize server command listener", MessageFormat.format(BootstrapConstants.messages.getString("error.serverCommand.init"), ex));
-        }
-
-        // Now that the command file is fully written and permissions are
-        // finalized, move the temp file in place.
-        if (!commandFileTmp.renameTo(commandFile)) {
-            throw securityError(serverWorkArea, null);
-        }
+        return commandFileTmp;
     }
 
     private LaunchException securityError(File file, Throwable cause) {
@@ -185,7 +237,7 @@ public class ServerCommandListener extends ServerCommand {
      *
      * @throws IOException
      */
-    private void init(int port, File commandFileTmp) throws IOException {
+    private ServerCommandID init(int port, File commandFileTmp) throws IOException {
         if (port != -1) {
             serverSocketChannel = SelectorProvider.provider().openServerSocketChannel();
 
@@ -262,16 +314,7 @@ public class ServerCommandListener extends ServerCommand {
             }
         }
 
-        ServerCommandID sci = new ServerCommandID(port, serverUUID);
-
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(commandFileTmp);
-            fos.write(sci.getIDString().getBytes());
-            fos.close();
-        } finally {
-            Utils.tryToClose(fos);
-        }
+        return new ServerCommandID(port, serverUUID);
     }
 
     /**
