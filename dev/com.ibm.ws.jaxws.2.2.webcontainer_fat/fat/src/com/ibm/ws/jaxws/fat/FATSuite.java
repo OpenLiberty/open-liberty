@@ -24,27 +24,19 @@ import componenttest.rules.repeater.RepeatTests;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-                WebServiceInWebXMLTest.class,
-                WebServiceContextTest.class,
-                HandlerChainTest.class,
-                WebServiceRefTest.class,
-                CatalogFacilityTest.class,
-                WebServiceRefFeaturesTest.class,
-                ServerSideStubClientTest.class,
-                PureCXFTest.class,
-                WsBndServiceRefOverrideTest.class,
-                WsBndEndpointOverrideTest.class,
-                CXFJMXSupportTest.class,
-                WebServiceMonitorTest.class,
-                HttpConduitPropertiesTest.class,
-                EJBServiceRefBndTest.class,
-                PortComponentRefTest.class,
-                EndpointPropertiesTest.class,
                 BindingTypeWsdlMismatchTest.class,
+                CatalogFacilityTest.class,
+                CXFJMXSupportTest.class,
+                EndpointPropertiesTest.class,
+                HttpConduitPropertiesTest.class,
                 MTOMTest.class,
-                HandlerChainWithWebServiceClientTest.class,
+                PureCXFTest.class,
+                ServerSideStubClientTest.class,
                 VirtualHostTest.class,
-                POJOServiceSecurityTest.class
+                WebServiceContextTest.class,
+                WebServiceMonitorTest.class,
+                WebServiceRefFeaturesTest.class,
+                WebServiceRefTest.class
 })
 public class FATSuite {
 

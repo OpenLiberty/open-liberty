@@ -41,6 +41,7 @@ task cleanBeforeRun(type: Delete) {
 configurations {
   requiredLibs
   jdbcDrivers { transitive = false; }
+  testcontainers { transitive = false; }
   derby
   jakartaTransformer
 }
@@ -61,6 +62,8 @@ dependencies {
        'org.slf4j:slf4j-api:1.7.26',
        'org.eclipse.transformer:org.eclipse.transformer:0.2.0',
        'org.eclipse.transformer:org.eclipse.transformer.cli:0.2.0'
+       
+  testcontainers project(':io.openliberty.org.testcontainers')
 
 }
 
@@ -72,7 +75,6 @@ task addRequiredLibraries(type: Copy) {
 
 task addJakartaTransformerRules(type: Copy) {
   mustRunAfter jar
-
   from project(':wlp-jakartaee-transform').file('rules')
   include 'jakarta*.properties'
   into new File(autoFvtDir, 'autoFVT-templates')
@@ -81,8 +83,13 @@ task addJakartaTransformerRules(type: Copy) {
 task addJakartaTransformer(type: Copy) {
   mustRunAfter jar
   dependsOn addJakartaTransformerRules
-
   from configurations.jakartaTransformer
+  into new File(autoFvtDir, 'lib')
+}
+
+task copyTestContainers(type: Copy) {
+  mustRunAfter jar
+  from configurations.testcontainers
   into new File(autoFvtDir, 'lib')
 }
 

@@ -185,7 +185,7 @@ public class TimingRequestTiming {
         int slow = fetchSlowRequestWarningsCount();
 
         // Retry the request again
-        if (slow == 0) {
+        if (slow == p_slow) {
             CommonTasks.writeLogMsg(Level.INFO, "$$$$ -----> Retry because no slow request warning found!");
             createRequests(8000, 1);
             server.waitForStringInLogUsingMark("TRAS0112W", 10000);
@@ -195,7 +195,7 @@ public class TimingRequestTiming {
         server.waitForStringInLogUsingMark("TRAS0114W", 10000);
         int hung = fetchHungRequestWarningsCount();
 
-        assertTrue("Expected  > 0 slow request warnings but found : " + slow, ((slow - p_slow) > 0));
+        assertTrue("Expected  > 0 slow request warnings but found : " + (slow - p_slow), ((slow - p_slow) > 0));
         assertTrue("Expected 1 or more hung request warning but found : " + hung, (hung > 0));
 
         server.setMarkToEndOfLog();
@@ -209,7 +209,7 @@ public class TimingRequestTiming {
         int n_slow = fetchSlowRequestWarningsCount();
 
         // Retry the request again
-        if (n_slow == 0) {
+        if (n_slow == slow) {
             CommonTasks.writeLogMsg(Level.INFO, "$$$$ -----> Retry because no new_slow request warning found!");
             createRequests(12000, 1);
             server.waitForStringInLogUsingMark("TRAS0112W", 10000);
@@ -219,8 +219,8 @@ public class TimingRequestTiming {
         server.waitForStringInLogUsingMark("TRAS0114W", 10000);
         int n_hung = fetchHungRequestWarningsCount();
 
-        assertTrue("Expected > 0 slow request warning but found : " + n_slow, ((n_slow - slow) > 0));
-        assertTrue("Expected 0 hung request warning but found : " + n_hung, ((n_hung - hung) == 0));
+        assertTrue("Expected > 0 slow request warning but found : " + (n_slow - slow), ((n_slow - slow) > 0));
+        assertTrue("Expected 0 hung request warning but found : " + (n_hung - hung), ((n_hung - hung) == 0));
 
         CommonTasks.writeLogMsg(Level.INFO, "***** timing works - Dynamic enable and disable *****");
     }

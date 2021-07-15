@@ -16,7 +16,6 @@ configurations {
 dependencies {
   db2 'com.ibm.db2:jcc:11.1.4.4'
   derbyClient 'org.apache.derby:derbyclient:10.11.1.1'
-  requiredLibs project(':io.openliberty.org.testcontainers')
 }
  
 //Anonymous drivers
@@ -55,4 +54,5 @@ task copyDB2(type: Copy) {
   dependsOn copyAutomaticDerby
   dependsOn copyDB2
   dependsOn copyJdbcDrivers
+  dependsOn copyTestContainers
 }

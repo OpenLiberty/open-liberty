@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,7 +13,6 @@ package com.ibm.ws.fat.wc.tests;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -36,48 +35,44 @@ import org.apache.hc.core5.net.URIAuthority;
 import org.apache.hc.core5.util.Timeout;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.ws.fat.util.LoggingTest;
-import com.ibm.ws.fat.util.SharedServer;
-import com.ibm.ws.fat.wc.WCApplicationHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.impl.LibertyServer;
 
 /**
  *
  */
 @RunWith(FATRunner.class)
-public class WCTrailersTest extends LoggingTest {
+public class WCTrailersTest {
 
     private static final Logger LOG = Logger.getLogger(WCTrailersTest.class.getName());
 
-    @ClassRule
-    public static SharedServer SHARED_SERVER = new SharedServer("servlet40_wcServer");
+    @Server("servlet40_wcServer")
+    public static LibertyServer server;
 
     @BeforeClass
     public static void before() throws Exception {
-        LOG.info("Setup : add TestServlet40 to the server if not already present.");
+        LOG.info("Setup : add TrailersTest.war to the server if not already present.");
 
-        WCApplicationHelper.addEarToServerDropins(SHARED_SERVER.getLibertyServer(), "TestServlet40.ear", true,
-                                                  "TestServlet40.war", true, "TestServlet40.jar", true, "testservlet40.war.servlets",
-                                                  "testservlet40.war.listeners", "testservlet40.jar.servlets");
+        ShrinkHelper.defaultDropinApp(server, "TrailersTest.war", "trailers.servlets", "trailers.listeners");
 
-        ArrayList<String> expectedErrors = new ArrayList<String>();
-        expectedErrors.add("CWWWC0401E:.*");
-        SHARED_SERVER.getLibertyServer().addIgnoredErrors(expectedErrors);
-        SHARED_SERVER.startIfNotStarted();
-        WCApplicationHelper.waitForAppStart("TestServlet40", WCTrailersTest.class.getName(), SHARED_SERVER.getLibertyServer());
+        // Start the server and use the class name so we can find logs easily.
+        server.startServer(WCTrailersTest.class.getSimpleName() + ".log");
         LOG.info("Setup : complete, ready for Tests");
     }
 
     @AfterClass
     public static void testCleanup() throws Exception {
-        SHARED_SERVER.getLibertyServer().stopServer();
+        if (server != null && server.isStarted()) {
+            server.stopServer();
+        }
     }
 
     @Test
@@ -140,12 +135,12 @@ public class WCTrailersTest extends LoggingTest {
 
     private void sendRequestWithTrailers(String parameters) throws Exception {
         HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(SHARED_SERVER.getLibertyServer().getHostname(), SHARED_SERVER.getLibertyServer().getHttpDefaultPort());
+        HttpHost target = new HttpHost(server.getHostname(), server.getHttpDefaultPort());
         BasicHttpContext coreContext = new BasicHttpContext();
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/TestServlet40/ServletGetTrailers";
+        String requestUri = "/TrailersTest/ServletGetTrailers";
 
         if (parameters != null)
             requestUri += parameters;
@@ -158,7 +153,7 @@ public class WCTrailersTest extends LoggingTest {
         request.setEntity(requestBody);
 
         LOG.info(">> Request URI: " + request.getUri());
-        URIAuthority auth = new URIAuthority(SHARED_SERVER.getLibertyServer().getHostname(), SHARED_SERVER.getLibertyServer().getHttpDefaultPort());
+        URIAuthority auth = new URIAuthority(server.getHostname(), server.getHttpDefaultPort());
         request.setAuthority(auth);
 
         try (ClassicHttpResponse response = httpRequester.execute(target, request, Timeout.ofSeconds(5), coreContext)) {
@@ -179,12 +174,12 @@ public class WCTrailersTest extends LoggingTest {
 
     private void getResponseWithTrailers(String parameters) throws Exception {
         HttpRequester httpRequester = RequesterBootstrap.bootstrap().create();
-        HttpHost target = new HttpHost(SHARED_SERVER.getLibertyServer().getHostname(), SHARED_SERVER.getLibertyServer().getHttpDefaultPort());
+        HttpHost target = new HttpHost(server.getHostname(), server.getHttpDefaultPort());
         BasicHttpContext coreContext = new BasicHttpContext();
 
         LOG.info("Target host : " + target.toURI());
 
-        String requestUri = "/TestServlet40/ServletSetTrailers";
+        String requestUri = "/TrailersTest/ServletSetTrailers";
 
         if (parameters != null)
             requestUri += parameters;
@@ -195,7 +190,7 @@ public class WCTrailersTest extends LoggingTest {
         request.setEntity(requestBody);
 
         LOG.info(">> Request URI: " + request.getUri());
-        URIAuthority auth = new URIAuthority(SHARED_SERVER.getLibertyServer().getHostname(), SHARED_SERVER.getLibertyServer().getHttpDefaultPort());
+        URIAuthority auth = new URIAuthority(server.getHostname(), server.getHttpDefaultPort());
         request.setAuthority(auth);
 
         try (ClassicHttpResponse response = httpRequester.execute(target, request, null, Timeout.ofSeconds(5),
@@ -221,15 +216,4 @@ public class WCTrailersTest extends LoggingTest {
             }
         }
     }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.fat.util.LoggingTest#getSharedServer()
-     */
-    @Override
-    protected SharedServer getSharedServer() {
-        return SHARED_SERVER;
-    }
-
 }

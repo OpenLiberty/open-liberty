@@ -50,12 +50,6 @@ autoFVT.doLast {
         'com.ibm.ws.wssecurity_fat.caller',
         'com.ibm.ws.wssecurity_fat.x509caller',
         'com.ibm.ws.wssecurity_fat.x509symcaller', 
-        'com.ibm.ws.wssecurity_fat.endsuptokens',
-        'com.ibm.ws.wssecurity_fat.x509',
-        'com.ibm.ws.wssecurity_fat.x509_1',
-        'com.ibm.ws.wssecurity_fat.x509_2',
-        'com.ibm.ws.wssecurity_fat.x509mig',
-        'com.ibm.ws.wssecurity_fat.x509migsym',
         'com.ibm.ws.wssecurity_fat.wsstemplates',
         'com.ibm.ws.wssecurity_fat.wsstemplateswithep',
         'com.ibm.ws.wssecurity_fat.sample'
@@ -69,19 +63,6 @@ autoFVT.doLast {
     }
   }
 
-/* Copy *.jar to this server */
-  
-  servers = [
-    'com.ibm.ws.wssecurity_fat.endsuptokens'
-  ]
-
-  servers.each { server ->
-    copy { 
-      from project.file('lib')
-      include "com.ibm.ws.com.meterware.httpunit.1.7.jar"
-      into new File(autoFvtDir, 'lib/')
-    }
-  }
 
 /* Copy override/autoFVT/cxfclient-policies/BasicPlcyBA.wsdl to this server */
   
@@ -118,13 +99,8 @@ autoFVT.doLast {
     'com.ibm.ws.wssecurity_fat.caller',
     'com.ibm.ws.wssecurity_fat.x509caller',
     'com.ibm.ws.wssecurity_fat.x509symcaller', 
-    'com.ibm.ws.wssecurity_fat.endsuptokens',
-    'com.ibm.ws.wssecurity_fat.x509_1',
-    'com.ibm.ws.wssecurity_fat.x509mig',
-    'com.ibm.ws.wssecurity_fat.x509migsym',
     'com.ibm.ws.wssecurity_fat.wsstemplates',
     'com.ibm.ws.wssecurity_fat.wsstemplateswithep',
-    'com.ibm.ws.wssecurity_fat.sha2sig',
     'com.ibm.ws.wssecurity_fat.sample'
   ]
 
@@ -136,29 +112,13 @@ autoFVT.doLast {
     }   
   }
 
- /* Copy securitykeys/dsig-receiver*.ks, and dsig-sender*.ks to this server */
-  
-  servers = [
-    'com.ibm.ws.wssecurity_fat.sha2sig'
-  ]
-
-  servers.each { server ->
-    copy { 
-      from project.file('securitykeys')
-      include "dsig-receiver*.ks", "dsig-sender*.ks"
-      into new File(autoFvtDir, 'publish/servers/' + server + '/')
-    }
-  }
-
+ 
 /* Copy securitykeys/x509Client*.properties to these servers */
 
   servers = [
     'com.ibm.ws.wssecurity_fat.caller',
     'com.ibm.ws.wssecurity_fat.x509caller',
     'com.ibm.ws.wssecurity_fat.x509symcaller', 
-    'com.ibm.ws.wssecurity_fat.x509_1',
-    'com.ibm.ws.wssecurity_fat.x509mig',
-    'com.ibm.ws.wssecurity_fat.x509migsym',
     'com.ibm.ws.wssecurity_fat.wsstemplates',
     'com.ibm.ws.wssecurity_fat.wsstemplateswithep'
   ]
@@ -171,51 +131,11 @@ autoFVT.doLast {
     }
   }
 
-/* Copy securitykeys/*Default.jks to this server */
-  
-  servers = [
-    'com.ibm.ws.wssecurity_fat.x509'
-  ]
-
-  servers.each { server ->
-    copy { 
-      from project.file('securitykeys')
-      include "*Default.jks"
-      into new File(autoFvtDir, 'publish/servers/' + server + '/')
-    }
-  }
-
-/* Copy securitykeys/x509ClientDefault*.properties to this server */
-  
-  servers = [
-    'com.ibm.ws.wssecurity_fat.x509_2'
-  ]
-
-  servers.each { server ->
-    copy { 
-      from project.file('securitykeys')
-      include "x509ClientDefault*.properties"
-      into new File(autoFvtDir, 'publish/servers/' + server + '/')
-    }
-
-    copy { 
-      from project.file('securitykeys')
-      include "x509*Default*.jks"
-      into new File(autoFvtDir, 'publish/servers/' + server + '/')
-    }
-    
-  }
 
 /* Copy securitykeys/enc-sender.jceks, and enc-receiver.jceks to these servers */
 
-  servers = [
-         'com.ibm.ws.wssecurity_fat.x509enc',
-         'com.ibm.ws.wssecurity_fat.x509sig',
-         'com.ibm.ws.wssecurity_fat.x509async',
-         'com.ibm.ws.wssecurity_fat.wss11enc',
-         'com.ibm.ws.wssecurity_fat.wss11sig',
-         'com.ibm.ws.wssecurity_fat.sha2sig',
-         'com.ibm.ws.wssecurity_fat.mustunderstand'
+  servers = [        
+       'com.ibm.ws.wssecurity_fat.mustunderstand'
   ]
 
   servers.each { server ->
@@ -232,29 +152,10 @@ autoFVT.doLast {
     }
   }
 
-/* Copy securitykeys/x509ServerDefault.jks to these servers */
-  
-  servers = [
-    'com.ibm.ws.wssecurity_fat.x509async',
-    'com.ibm.ws.wssecurity_fat.x509sig'
-  ]
-
-  servers.each { server ->
-    copy { 
-      from project.file('securitykeys')
-      include "x509ServerDefault.jks"
-      into new File(autoFvtDir, 'publish/servers/' + server + '/')
-    }
-  }
-
 /* Copy securitykeys/dsig-receiver.ks, and dsig-sender.ks to these servers */
 
   servers = [
-    'com.ibm.ws.wssecurity_fat.x509async',
-    'com.ibm.ws.wssecurity_fat.x509sig',
-    'com.ibm.ws.wssecurity_fat.wss11enc',
-    'com.ibm.ws.wssecurity_fat.wss11sig',
-    'com.ibm.ws.wssecurity_fat.mustunderstand'
+     'com.ibm.ws.wssecurity_fat.mustunderstand'
   ]
 
   servers.each { server ->
@@ -263,57 +164,6 @@ autoFVT.doLast {
       include "dsig-receiver.ks", "dsig-sender.ks"
       into new File(autoFvtDir, 'publish/servers/' + server + '/')
     }
-  }
-
-/* Copy securitykeys/intca2.cer to these servers */
-
-  servers = [
-    'com.ibm.ws.wssecurity_fat.wss11enc',
-    'com.ibm.ws.wssecurity_fat.wss11sig'
-  ]
-
-  servers.each { server ->
-    copy { 
-      from project.file('securitykeys')
-      include "intca2.cer"
-      into new File(autoFvtDir, 'publish/servers/' + server + '/')
-    }
-  }
-
-/* Copy securitykeys/wssecfvt2-rsa.ks to these servers */
-  
-  servers = [
-    'com.ibm.ws.wssecurity_fat.x509async',
-    'com.ibm.ws.wssecurity_fat.x509sig'
-  ]
-
-  servers.each { server ->
-    copy { 
-      from project.file('securitykeys')
-      include "wssecfvt2-rsa.ks"
-      into new File(autoFvtDir, 'publish/servers/' + server + '/')
-    }
-  }
-
-/* Copy securitykeys/myx509p.cer, myx509n.cer, myx509crl.crl, and myx509.ks  to this server */
-/* Copy autoFVT/lib *.jar  */
-
-  servers = [
-    'com.ibm.ws.wssecurity_fat.x509crl'
-  ]
-
-  servers.each { server ->
-    copy { 
-      from project.file('securitykeys')
-      include "myx509p.cer", "myx509n.cer", "myx509crl.crl", "myx509.ks"
-      into new File(autoFvtDir, 'publish/servers/' + server + '/')
-    }
-    copy {
-      from new File(autoFvtDir, 'lib')
-      include "com.ibm.ws.wssecurity.fat.utils.common.jar"
-      into new File(autoFvtDir, 'publish/servers/' + server + '/testApps/')
-    }
-   
   }
 
 }

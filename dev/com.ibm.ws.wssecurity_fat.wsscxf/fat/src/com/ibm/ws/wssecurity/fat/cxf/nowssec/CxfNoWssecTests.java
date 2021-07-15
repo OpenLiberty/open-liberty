@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,10 +18,8 @@ import java.io.StringReader;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-//Added 10/2020
 import org.junit.runner.RunWith;
 
-//Added 10/2020
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.wssecurity.fat.utils.common.SharedTools;
@@ -30,24 +28,20 @@ import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
-//Added 10/2020
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
-//Note the potential collided factor in testCxfClientNoWsse(), when full mode annotation is used
+//Note: the potential collided factor in testCxfClientNoWsse(), when full mode annotation is used
 //12/2020 Setting this test class for LITE bucket
-//@Mode(TestMode.FULL)
-//Added 10/2020
 @RunWith(FATRunner.class)
 public class CxfNoWssecTests {
 
-    //Added 10/2020
-    @Server("com.ibm.ws.wssecurity_fat")
-    public static LibertyServer server;
+    //2/2021
+    static final private String serverName = "com.ibm.ws.wssecurity_fat";
+    @Server(serverName)
 
-    //Orig from CL
-    //private static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.wssecurity_fat");
+    public static LibertyServer server;
 
     private final Class<?> thisClass = CxfNoWssecTests.class;
 

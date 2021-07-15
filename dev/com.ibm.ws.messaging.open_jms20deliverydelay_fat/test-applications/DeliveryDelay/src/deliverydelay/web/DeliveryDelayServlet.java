@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.Enumeration;
 
 import javax.jms.BytesMessage;
+import javax.jms.ConnectionFactory;
 import javax.jms.DeliveryMode;
 import javax.jms.Destination;
 import javax.jms.IllegalStateRuntimeException;
@@ -74,6 +75,15 @@ public class DeliveryDelayServlet extends HttpServlet {
     Topic jmsTopic1 = null;
     Topic jmsTopic2 = null;
 
+    /** @return the methodName of the caller. */
+    private static final String methodName() { return new Exception().getStackTrace()[1].getMethodName(); }
+    
+    private final class TestException extends Exception {
+        TestException(String message) {
+            super(new Date() +" "+message);
+        }
+    }
+    
     public QueueConnectionFactory getQCF(String name) {
         QueueConnectionFactory qcf;
         try {
@@ -123,7 +133,7 @@ public class DeliveryDelayServlet extends HttpServlet {
     }
 
     public void emptyQueue(QueueConnectionFactory qcf, Queue q) 
-        throws Exception {
+        throws TestException {
        
         long messagesReceived = 0; 
         try (JMSContext jmsContext = qcf.createContext(JMSContext.SESSION_TRANSACTED)) {
@@ -132,7 +142,7 @@ public class DeliveryDelayServlet extends HttpServlet {
             jmsContext.commit();
         }
         if (messagesReceived != 0) 
-            throw new Exception("Queue:"+q+ "contained "+messagesReceived+" messages");
+            throw new TestException("Queue:"+q+ "contained "+messagesReceived+" messages");
     }
 
     public int getMessageCount(QueueBrowser qb) throws JMSException {
@@ -286,223 +296,94 @@ public class DeliveryDelayServlet extends HttpServlet {
 
     //
 
-    public void testSetDeliveryDelay(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        JMSContext jmsContext = jmsQCFBindings.createContext();
+    public void testSetDeliveryDelay(HttpServletRequest request, HttpServletResponse response) throws JMSException, TestException {
         emptyQueue(jmsQCFBindings, jmsQueue);
-
-        JMSProducer jmsProducer = jmsContext.createProducer();
-        jmsProducer.setDeliveryDelay(deliveryDelay);
-
-        JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
-
-        TextMessage sendMsg = jmsContext.createTextMessage("testSetDeliveryDelay");
-        sendAndCheckDeliveryTime(jmsProducer, jmsQueue, sendMsg);
-
-        TextMessage recMsg1 = (TextMessage) jmsConsumer.receiveNoWait();
-        if ( recMsg1 != null ) {
-            testFailed = true;
-        }
-
-        TextMessage recMsg2 = (TextMessage) jmsConsumer.receive(30000);
-
-        if ( (recMsg2 == null) ||
-             (recMsg2.getText() == null) ||
-             !recMsg2.getText().equals("testSetDeliveryDelay") ) {
-            testFailed = true;
-        }
-
-        jmsConsumer.close();
-        jmsContext.close();
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveAfterDelay failed");
-        }
+        testSetDeliveryDelay(jmsQCFBindings, jmsQueue);
     }
 
-    public void testSetDeliveryDelay_Tcp(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        JMSContext jmsContext = jmsQCFTCP.createContext();
+    public void testSetDeliveryDelay_Tcp(HttpServletRequest request, HttpServletResponse response) throws JMSException, TestException {
         emptyQueue(jmsQCFTCP, jmsQueue);
-
-        JMSProducer jmsProducer = jmsContext.createProducer();
-        jmsProducer.setDeliveryDelay(deliveryDelay);
-
-        JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
-
-        TextMessage sendMsg = jmsContext.createTextMessage("testSetDeliveryDelay_TCP");
-        sendAndCheckDeliveryTime(jmsProducer, jmsQueue, sendMsg);
-
-        TextMessage recMsg1 = (TextMessage) jmsConsumer.receiveNoWait();
-        if ( recMsg1 != null ) {
-            testFailed = true;
-        }
-
-        TextMessage recMsg2 = (TextMessage) jmsConsumer.receive(30000);
-        if ( (recMsg2 == null) ||
-             (recMsg2.getText() == null) ||
-             !recMsg2.getText().equals("testSetDeliveryDelay_TCP") ) {
-            testFailed = true;
-        }
-
-        jmsConsumer.close();
-        jmsContext.close();
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveAfterDelay_TCP failed");
-        }
+        testSetDeliveryDelay(jmsQCFTCP, jmsQueue);
     }
 
-    public void testSetDeliveryDelayTopic(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        JMSContext jmsContext = jmsTCFBindings.createContext();
-
-        JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsTopic);
-
-        JMSProducer jmsProducer = jmsContext.createProducer();
-        jmsProducer.setDeliveryDelay(deliveryDelay);
-
-        TextMessage sendMsg = jmsContext.createTextMessage("testSetDeliveryDelayTopic");
-        sendAndCheckDeliveryTime(jmsProducer, jmsTopic, sendMsg);
-
-        TextMessage recMsg1 = (TextMessage) jmsConsumer.receiveNoWait();
-        if ( recMsg1 != null ) {
-            testFailed = true;
-        }
-
-        TextMessage recMsg2 = (TextMessage) jmsConsumer.receive(30000);
-        if ( (recMsg2 == null) ||
-             (recMsg2.getText() == null) ||
-             !recMsg2.getText().equals("testSetDeliveryDelayTopic") ) {
-            testFailed = true;
-        }
-
-        jmsConsumer.close();
-        jmsContext.close();
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveAfterDelayTopic failed");
-        }
+    public void testSetDeliveryDelayTopic(HttpServletRequest request, HttpServletResponse response) throws JMSException, TestException {
+        testSetDeliveryDelay(jmsTCFBindings, jmsTopic);
     }
 
-    public void testSetDeliveryDelayTopic_Tcp(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void testSetDeliveryDelayTopic_Tcp(HttpServletRequest request, HttpServletResponse response) throws JMSException, TestException {
+        testSetDeliveryDelay(jmsTCFTCP, jmsTopic);
+    }
+    
+    private void testSetDeliveryDelay(ConnectionFactory connectionFactory, Destination destination) throws JMSException, TestException {
 
-        boolean testFailed = false;
+        try (JMSContext jmsContext = connectionFactory.createContext()) {
 
-        JMSContext jmsContext = jmsTCFTCP.createContext();
+            JMSProducer jmsProducer = jmsContext.createProducer();
+            jmsProducer.setDeliveryDelay(deliveryDelay);
 
-        JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsTopic);
+            JMSConsumer jmsConsumer = jmsContext.createConsumer(destination);
 
-        JMSProducer jmsProducer = jmsContext.createProducer();
-        jmsProducer.setDeliveryDelay(deliveryDelay);
+            TextMessage sentMessage = jmsContext.createTextMessage(methodName() + " at " + new Date());
+            long beforeSend = System.currentTimeMillis();
+            jmsProducer.send(destination, sentMessage);
+            long afterSend = System.currentTimeMillis();
+            if (afterSend - beforeSend > deliveryDelay)
+                throw new TestException("Test Infrastructure running too slowly to meangfully test delivery delay beforeSend:"+beforeSend+" afterSend:"+afterSend+" deliveryDelay:"+deliveryDelay);
 
-        TextMessage sendMsg = jmsContext.createTextMessage("testSetDeliveryDelayTopic_TCP");
-        sendAndCheckDeliveryTime(jmsProducer, jmsTopic, sendMsg);
-
-        TextMessage recMsg1 = (TextMessage) jmsConsumer.receiveNoWait();
-        if ( recMsg1 != null ) {
-            testFailed = true;
-        }
-
-        TextMessage recMsg2 = (TextMessage) jmsConsumer.receive(30000);
-        if ( (recMsg2 == null) ||
-             (recMsg2.getText() == null) ||
-             !recMsg2.getText().equals("testSetDeliveryDelayTopic_TCP") ) {
-            testFailed = true;
-        }
-
-        jmsConsumer.close();
-        jmsContext.close();
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveAfterDelayTopic_TCP failed");
+            TextMessage receivedMessage = (TextMessage) jmsConsumer.receive(30000);
+            long afterReceive = System.currentTimeMillis();
+            if (receivedMessage == null)
+                throw new TestException("No message received, sentMessage:" + sentMessage);
+            if (!receivedMessage.getText().equals(sentMessage.getBody(String.class)))
+                throw new TestException("Wrong message received:" + receivedMessage + " sent:" + sentMessage);
+            if(afterReceive - beforeSend < deliveryDelay )
+                throw new TestException("Message received to soon, afterSend:"+afterSend+" afterReceive"+afterReceive+" deliveryDelay:"+deliveryDelay
+                        +"\nreceivedMessage:" + receivedMessage);            
         }
     }
 
     public void testSetDeliveryDelayTopicDurSub(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        JMSContext jmsContext = jmsTCFBindings.createContext();
-
-        JMSConsumer durJmsConsumer = jmsContext.createDurableConsumer(jmsTopic, "subs");
-
-        JMSProducer jmsProducer = jmsContext.createProducer();
-        jmsProducer.setDeliveryDelay(deliveryDelay);
-
-        TextMessage sendMsg = jmsContext.createTextMessage("testSetDeliveryDelayTopicDurSub");
-        sendAndCheckDeliveryTime(jmsProducer, jmsTopic, sendMsg);
-
-        TextMessage recMsg1 = (TextMessage) durJmsConsumer.receiveNoWait();
-        if ( recMsg1 != null ) {
-            testFailed = true;
-        }
-
-        TextMessage recMsg2 = (TextMessage) durJmsConsumer.receive(30000);
-        if ( (recMsg2 == null) ||
-             (recMsg2.getText() == null) ||
-             !recMsg2.getText().equals("testSetDeliveryDelayTopicDurSub") ) {
-            testFailed = true;
-        }
-
-        durJmsConsumer.close();
-
-        jmsContext.unsubscribe("subs");
-        jmsContext.close();
-
-        if ( testFailed ) {
-            throw new Exception("testSetDeliveryDelayTopicDurSub failed");
-        }
+            HttpServletRequest request, HttpServletResponse response) throws JMSException, TestException {
+        testSetDeliveryDelayTopicDurSub(jmsTCFBindings);
     }
-
+    
     public void testSetDeliveryDelayTopicDurSub_Tcp(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+            HttpServletRequest request, HttpServletResponse response) throws JMSException, TestException {
+        testSetDeliveryDelayTopicDurSub(jmsTCFTCP);
+    }
+    
+    private void testSetDeliveryDelayTopicDurSub(TopicConnectionFactory topicConnectionFactory) throws JMSException, TestException {
 
-        boolean testFailed = false;
+        try (JMSContext jmsContext = topicConnectionFactory.createContext()) {
 
-        JMSContext jmsContext = jmsTCFTCP.createContext();
+            JMSConsumer jmsConsumer = jmsContext.createDurableConsumer(jmsTopic, "subs");
 
-        JMSConsumer durJmsConsumer = jmsContext.createDurableConsumer(jmsTopic, "subs1");
+            JMSProducer jmsProducer = jmsContext.createProducer();
+            jmsProducer.setDeliveryDelay(deliveryDelay);
 
-        JMSProducer jmsProducer = jmsContext.createProducer();
-        jmsProducer.setDeliveryDelay(deliveryDelay);
-
-        TextMessage sendMsg = jmsContext.createTextMessage("testSetDeliveryDelayTopicDurSub_Tcp");
-        sendAndCheckDeliveryTime(jmsProducer, jmsTopic, sendMsg);
-
-        TextMessage recMsg1 = (TextMessage) durJmsConsumer.receiveNoWait();
-        if ( recMsg1 != null ) {
-            testFailed = true;
-        }
-
-        TextMessage recMsg2 = (TextMessage) durJmsConsumer.receive(30000);
-        if ( (recMsg2 == null) ||
-             (recMsg2.getText() == null) ||
-             !recMsg2.getText().equals("testSetDeliveryDelayTopicDurSub_Tcp") ) {
-            testFailed = true;
-        }
-
-        durJmsConsumer.close();
-
-        jmsContext.unsubscribe("subs1");
-        jmsContext.close();
-
-        if ( testFailed ) {
-            throw new Exception("testSetDeliveryDelayTopicDurSub_Tcp failed");
+            TextMessage sentMessage = jmsContext.createTextMessage(methodName() + " at " + new Date());
+            long beforeSend = System.currentTimeMillis();
+            jmsProducer.send(jmsTopic, sentMessage);
+            long afterSend = System.currentTimeMillis();
+            if (afterSend - beforeSend > deliveryDelay)
+                throw new TestException("Test Infrastructure running too slowly to meangfully test delivery delay beforeSend:"+beforeSend+" afterSend:"+afterSend+" deliveryDelay:"+deliveryDelay);
+           
+            TextMessage receivedMessage = (TextMessage) jmsConsumer.receive(30000);
+            long afterReceive = System.currentTimeMillis();
+            if (receivedMessage == null)
+                throw new TestException("No message received, sentMessage:" + sentMessage);
+            if (!receivedMessage.getText().equals(sentMessage.getBody(String.class)))
+                throw new TestException("Wrong message received:" + receivedMessage + " sent:" + sentMessage);
+            if(afterReceive -  beforeSend < deliveryDelay )
+                throw new TestException("Message received to soon, afterSend:"+afterSend+" afterReceive"+afterReceive+" deliveryDelay:"+deliveryDelay
+                        +"\nreceivedMessage:" + receivedMessage);
+            
+            jmsConsumer.close();
+            jmsContext.unsubscribe("subs");
         }
     }
 
+    /*
     public void testReceiveAfterDelayTopicDurSub(
         HttpServletRequest request, HttpServletResponse response) throws Exception {
 
@@ -547,6 +428,7 @@ public class DeliveryDelayServlet extends HttpServlet {
             throw new Exception("testReceiveAfterDelayTopic_TCP failed");
         }
     }
+    */
 
     public void testDeliveryDelayForDifferentDelays(
         HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -661,666 +543,232 @@ public class DeliveryDelayServlet extends HttpServlet {
     }
 
     public void testDeliveryMultipleMsgs(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        String failureReason = null;
-
-        JMSContext jmsContext = jmsQCFBindings.createContext();
+            HttpServletRequest request, HttpServletResponse response) throws JMSException, TestException {
         emptyQueue(jmsQCFBindings, jmsQueue);
-
-        JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
-        JMSConsumer jmsConsumer1 = jmsContext.createConsumer(jmsQueue1);
-
-        JMSProducer jmsProducer = jmsContext.createProducer();
-        jmsProducer.setDeliveryDelay(deliveryDelay);
-
-        TextMessage sendMsg1 = jmsContext.createTextMessage("testDeliveryMultipleMsgs1");
-        sendAndCheckDeliveryTime(jmsProducer, jmsQueue, sendMsg1);
-        TextMessage recMsg1 = (TextMessage) jmsConsumer.receiveNoWait();
-
-        TextMessage sendMsg2 = jmsContext.createTextMessage("testDeliveryMultipleMsgs2");
-        sendAndCheckDeliveryTime(jmsProducer, jmsQueue1, sendMsg2);
-        TextMessage recMsg2 = (TextMessage) jmsConsumer1.receiveNoWait();
-
-        if ( recMsg1 != null ) {
-            failureReason = "Unexpected received message 1 [ " + recMsg1 + " ]";
-        } else if ( recMsg2 != null ) {
-            failureReason = "Unexpected received message 2 [ " + recMsg2 + " ]";
-        }
-
-        recMsg1 = (TextMessage) jmsConsumer.receive(30000);
-        recMsg2 = (TextMessage) jmsConsumer1.receive(30000);
-
-        if ( (recMsg1 == null) ||
-             (recMsg1.getText() == null) ||
-             !recMsg1.getText().equals("testDeliveryMultipleMsgs1") ) {
-            failureReason = "Failed to receive message 1 [ " + recMsg1 + " ]";
-        } else if ( (recMsg2 == null) ||
-                    (recMsg2.getText() == null) ||
-                    !recMsg2.getText().equals("testDeliveryMultipleMsgs2") ) {
-            failureReason = "Failed to receive message 2 [ " + recMsg2 + " ]";
-        }
-
-        jmsConsumer.close();
-        jmsConsumer1.close();
-        jmsContext.close();
-
-        if ( failureReason != null ) {
-            throw new Exception("testDeliveryMultipleMsgs failed: " + failureReason);
-        }
-    }
-
-    public void testDeliveryMultipleMsgs_Tcp(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
-        
-        String failureReason = null;
-
-        JMSContext jmsContext = jmsQCFTCP.createContext();
-        emptyQueue(jmsQCFTCP, jmsQueue);
-
-        JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
-        JMSConsumer jmsConsumer1 = jmsContext.createConsumer(jmsQueue1);
-
-        JMSProducer jmsProducer = jmsContext.createProducer();
-        jmsProducer.setDeliveryDelay(deliveryDelay);
-
-        TextMessage sendMsg1 = jmsContext.createTextMessage("testDeliveryMultipleMsgs_Tcp1");
-        sendAndCheckDeliveryTime(jmsProducer, jmsQueue, sendMsg1);
-        TextMessage recMsg1 = (TextMessage) jmsConsumer.receiveNoWait();
-
-        TextMessage sendMsg2 = jmsContext.createTextMessage("testDeliveryMultipleMsgs_Tcp2");
-        sendAndCheckDeliveryTime(jmsProducer, jmsQueue1, sendMsg2);
-        TextMessage recMsg2 = (TextMessage) jmsConsumer1.receiveNoWait();
-
-        if ( recMsg1 != null ) {
-            failureReason = "Unexpected received message 1 [ " + recMsg1 + " ]";
-        } else if ( recMsg2 != null ) {
-            failureReason = "Unexpected received message 2 [ " + recMsg2 + " ]";
-        }
-
-        recMsg1 = (TextMessage) jmsConsumer.receive(30000);
-        recMsg2 = (TextMessage) jmsConsumer1.receive(30000);
-
-        if ( (recMsg1 == null) ||
-             (recMsg1.getText() == null) ||
-             !recMsg1.getText().equals("testDeliveryMultipleMsgs_Tcp1") ) {
-            failureReason = "Failed to receive message 1 [ " + recMsg1 + " ]";
-        } else if ( (recMsg2 == null) ||
-                    (recMsg2.getText() == null) ||
-                    !recMsg2.getText().equals("testDeliveryMultipleMsgs_Tcp2") ) {
-            failureReason = "Failed to receive message 2 [ " + recMsg2 + " ]";
-        }
-
-        jmsConsumer.close();
-        jmsConsumer1.close();
-        jmsContext.close();
-
-        if ( failureReason != null ) {
-            throw new Exception("testDeliveryMultipleMsgs_TCP failed: " + failureReason);
-        }
-    }
-
-    public void testDeliveryMultipleMsgsTopic(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        String failureReason = null;
-
-        JMSContext jmsContext = jmsTCFBindings.createContext();
-
-        JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsTopic);
-        JMSConsumer jmsConsumer1 = jmsContext.createConsumer(jmsTopic1);
-
-        JMSProducer jmsProducer = jmsContext.createProducer();
-        jmsProducer.setDeliveryDelay(deliveryDelay);
-
-        TextMessage sendMsg1 = jmsContext.createTextMessage("testDeliveryMultipleMsgsTopic1");
-        sendAndCheckDeliveryTime(jmsProducer, jmsTopic, sendMsg1);
-        TextMessage recMsg1 = (TextMessage) jmsConsumer.receiveNoWait();
-
-        TextMessage sendMsg2 = jmsContext.createTextMessage("testDeliveryMultipleMsgsTopic2");
-        sendAndCheckDeliveryTime(jmsProducer, jmsTopic1, sendMsg2);
-        TextMessage recMsg2 = (TextMessage) jmsConsumer1.receiveNoWait();
-
-        if ( recMsg1 != null ) {
-            failureReason = "Unexpected received message 1 [ " + recMsg1 + " ]";
-        } else if ( recMsg2 != null ) {
-            failureReason = "Unexpected received message 2 [ " + recMsg2 + " ]";
-        }
-
-        recMsg1 = (TextMessage) jmsConsumer.receive(30000);
-        recMsg2 = (TextMessage) jmsConsumer1.receive(30000);
-
-        if ( (recMsg1 == null) ||
-             (recMsg1.getText() == null) ||
-             !recMsg1.getText().equals("testDeliveryMultipleMsgsTopic1") ) {
-            failureReason = "Failed to receive message 1 [ " + recMsg1 + " ]";
-        } else if ( (recMsg2 == null) ||
-                    (recMsg2.getText() == null) ||
-                    !recMsg2.getText().equals("testDeliveryMultipleMsgsTopic2") ) {
-            failureReason = "Failed to receive message 2 [ " + recMsg2 + " ]";
-        }
-
-        jmsConsumer.close();
-        jmsConsumer1.close();
-        jmsContext.close();
-
-        if ( failureReason != null ) {
-            throw new Exception("testDeliveryMultipleMsgsTopic failed: " + failureReason);
-        }
-    }
-
-    public void testDeliveryMultipleMsgsTopic_Tcp(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        String failureReason = null;
-
-        JMSContext jmsContext = jmsTCFTCP.createContext();
-
-        JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsTopic);
-        JMSConsumer jmsConsumer1 = jmsContext.createConsumer(jmsTopic1);
-
-        JMSProducer jmsProducer = jmsContext.createProducer();
-        jmsProducer.setDeliveryDelay(deliveryDelay);
-
-        TextMessage sendMsg1 = jmsContext.createTextMessage("testDeliveryMultipleMsgsTopic_Tcp1");
-        sendAndCheckDeliveryTime(jmsProducer, jmsTopic, sendMsg1);
-        TextMessage recMsg1 = (TextMessage) jmsConsumer.receiveNoWait();
-
-        TextMessage sendMsg2 = jmsContext.createTextMessage("testDeliveryMultipleMsgsTopic_Tcp2");
-        sendAndCheckDeliveryTime(jmsProducer, jmsTopic1, sendMsg2);
-        TextMessage recMsg2 = (TextMessage) jmsConsumer1.receiveNoWait();
-
-        if ( recMsg1 != null ) {
-            failureReason = "Unexpected received message 1 [ " + recMsg1 + " ]";
-        } else if ( recMsg2 != null ) {
-            failureReason = "Unexpected received message 2 [ " + recMsg2 + " ]";
-        }
-
-        recMsg1 = (TextMessage) jmsConsumer.receive(30000);
-        recMsg2 = (TextMessage) jmsConsumer1.receive(30000);
-
-        if ( (recMsg1 == null) ||
-             (recMsg1.getText() == null) ||
-             !recMsg1.getText().equals("testDeliveryMultipleMsgsTopic_Tcp1") ) {
-            failureReason = "Failed to receive message 1 [ " + recMsg1 + " ]";
-        } else if ( (recMsg2 == null) ||
-                    (recMsg2.getText() == null) ||
-                    !recMsg2.getText().equals("testDeliveryMultipleMsgsTopic_Tcp2") ) {
-            failureReason = "Failed to receive message 2 [ " + recMsg2 + " ]";
-        }
-
-        jmsConsumer.close();
-        jmsConsumer1.close();
-        jmsContext.close();
-
-        if ( failureReason != null ) {
-            throw new Exception("testDeliveryMultipleMsgsTopic_TCP failed: " + failureReason);
-        }
-    }
-
-    public void testDeliveryDelayZeroAndNegativeValues(
-            HttpServletRequest request, HttpServletResponse response)
-            throws Exception {
-
-        boolean testFailed = false;
-
-        JMSContext jmsContext = jmsQCFBindings.createContext();
         emptyQueue(jmsQCFBindings, jmsQueue1);
-
-        JMSProducer jmsProducer = jmsContext.createProducer();
-        jmsProducer.setDeliveryDelay(0);
-
-        JMSConsumer jmsConsumer1 = jmsContext.createConsumer(jmsQueue1);
-
-        jmsProducer.send(jmsQueue1, "Zero Delivery Delay");
-        TextMessage msg2 = (TextMessage) jmsConsumer1.receiveNoWait();
-        if ( msg2 == null ) {
-            testFailed = true;
-        }
-
-        try {
-            jmsProducer.setDeliveryDelay(-10);
-            jmsProducer.send(jmsQueue, "Negative Delivery Delay");
-            testFailed = true;
-        } catch ( JMSRuntimeException e ) {
-            // expected
-        }
-
-        jmsConsumer1.close();
-        jmsContext.close();
-
-        if ( testFailed ) {
-            throw new Exception("testDeliveryDelayZeroAndNegativeValues failed");
-        }
+        testDeliveryMultipleMsgs(jmsQCFBindings, new Destination[] {jmsQueue, jmsQueue1});
     }
-
-    public void testDeliveryDelayZeroAndNegativeValues_Tcp(
-            HttpServletRequest request, HttpServletResponse response)
-            throws Exception {
-
-        boolean testFailed = false;
-
-        JMSContext jmsContext = jmsQCFTCP.createContext();
-        emptyQueue(jmsQCFTCP, jmsQueue1);
-
-        JMSProducer jmsProducer = jmsContext.createProducer();
-        jmsProducer.setDeliveryDelay(0);
-
-        JMSConsumer jmsConsumer1 = jmsContext.createConsumer(jmsQueue1);
-
-        jmsProducer.send(jmsQueue1, "Zero Delivery Delay");
-        TextMessage recMsg2 = (TextMessage) jmsConsumer1.receiveNoWait();
-
-        if ( recMsg2 == null ) {
-            testFailed = true;
-        }
-
-        try {
-            jmsProducer.setDeliveryDelay(-10);
-            testFailed = true;
-        } catch ( JMSRuntimeException e ) {
-            // expected
-        }
-
-        jmsConsumer1.close();
-        jmsContext.close();
-
-        if ( testFailed ) {
-            throw new Exception("testDeliveryDelayZeroAndNegativeValues failed");
-        }
-    }
-
-    public void testDeliveryDelayZeroAndNegativeValuesTopic(
-            HttpServletRequest request, HttpServletResponse response)
-            throws Exception {
-
-        boolean testFailed = false;
-
-        JMSContext jmsContext = jmsTCFBindings.createContext();
-
-        JMSConsumer jmsConsumer1 = jmsContext.createConsumer(jmsTopic);
-
-        JMSProducer jmsProducer = jmsContext.createProducer();
-        jmsProducer.setDeliveryDelay(0);
-
-        jmsProducer.send(jmsTopic, "Zero Delivery Delay");
-        TextMessage recMsg2 = (TextMessage) jmsConsumer1.receiveNoWait();
-
-        if ( recMsg2 == null ) {
-            testFailed = true;
-        }
-
-        try {
-            jmsProducer.setDeliveryDelay(-10);
-            testFailed = true;
-        } catch ( JMSRuntimeException e ) {
-            // expected
-        }
-
-        jmsConsumer1.close();
-        jmsContext.close();
-
-        if ( testFailed ) {
-            throw new Exception("testDeliveryDelayZeroAndNegativeValuesTopic failed");
-        }
-    }
-
-    public void testDeliveryDelayZeroAndNegativeValuesTopic_Tcp(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        JMSContext jmsContext = jmsTCFTCP.createContext(JMSContext.SESSION_TRANSACTED);
-
-        JMSConsumer jmsConsumer1 = jmsContext.createConsumer(jmsTopic);
-
-        JMSProducer jmsProducer = jmsContext.createProducer();
-        jmsProducer.setDeliveryDelay(0);
-
-        jmsProducer.send(jmsTopic, "Zero Delivery Delay - testDeliveryDelayZeroAndNegativeValuesTopic_Tcp");
-
-        jmsContext.commit();
-
-        TextMessage recMsg2 = (TextMessage) jmsConsumer1.receiveNoWait();
-
-        if ( recMsg2 == null ) {
-            testFailed = true;
-        }
-        jmsContext.commit();
-
-        try {
-            jmsProducer.setDeliveryDelay(-10);
-            testFailed = true;
-        } catch ( JMSRuntimeException e ) {
-            // expected
-        }
-
-        jmsContext.commit();
-        jmsConsumer1.close();
-        jmsContext.close();
-
-        if ( testFailed ) {
-            throw new Exception("testDeliveryDelayZeroAndNegativeValuesTopic_Tcp failed");
-        }
-    }
-
-    public void testSettingMultipleProperties(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        JMSContext jmsContext = jmsQCFBindings.createContext();
+    
+    public void testDeliveryMultipleMsgs_Tcp(
+            HttpServletRequest request, HttpServletResponse response) throws JMSException, TestException {
         emptyQueue(jmsQCFBindings, jmsQueue);
+        emptyQueue(jmsQCFBindings, jmsQueue1);
+        testDeliveryMultipleMsgs(jmsQCFTCP, new Destination[] {jmsQueue, jmsQueue1});
+    }
+   
+    public void testDeliveryMultipleMsgsTopic(
+            HttpServletRequest request, HttpServletResponse response) throws JMSException, TestException {
+        testDeliveryMultipleMsgs(jmsTCFBindings, new Destination[] {jmsTopic, jmsTopic1});
+    }
+    
+    public void testDeliveryMultipleMsgsTopic_Tcp(
+            HttpServletRequest request, HttpServletResponse response) throws JMSException, TestException {
+        testDeliveryMultipleMsgs(jmsTCFTCP, new Destination[] {jmsTopic, jmsTopic1});
+    }
+    
+    private void testDeliveryMultipleMsgs(ConnectionFactory connectionFactory, Destination[] destinations) throws JMSException, TestException {
 
-        JMSProducer jmsProducer = jmsContext.createProducer();
-        jmsProducer.setDeliveryDelay(1000).setDisableMessageID(true);
+        try (JMSContext jmsContext = jmsQCFBindings.createContext()) {
 
-        JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
+            JMSConsumer[] jmsConsumers = new JMSConsumer[destinations.length];
+            for (int i = 0; i < destinations.length; i++)
+                jmsConsumers[i] = jmsContext.createConsumer(destinations[i]);
 
-        jmsProducer.send(jmsQueue, "testSettingMultipleProperties");
-        TextMessage recMsg = (TextMessage) jmsConsumer.receive(30000);
+            JMSProducer jmsProducer = jmsContext.createProducer();
+            jmsProducer.setDeliveryDelay(deliveryDelay);
 
-        if ( (recMsg == null) ||
-             (recMsg.getText() == null) ||
-             !recMsg.getText().equals("testSettingMultipleProperties") ||
-             (recMsg.getJMSMessageID() != null) ) {
-            testFailed = true;
-        } else {
-            recMsg.getText();
-            recMsg.getJMSMessageID();
-        }
+            TextMessage[] sentMessages = new TextMessage[destinations.length];
+            long beforeSend = System.currentTimeMillis();
+            for (int i = 0; i < destinations.length; i++) {
+                sentMessages[i] = jmsContext.createTextMessage(methodName() + " to" + destinations[i] + " at " + new Date());
+                jmsProducer.send(destinations[i], sentMessages[i]);
+            }
+            long afterSend = System.currentTimeMillis();
+            if (afterSend - beforeSend > deliveryDelay)
+                throw new TestException("Test Infrastructure running too slowly to meangfully test delivery delay beforeSend:"+beforeSend+" afterSend:"+afterSend+" deliveryDelay:"+deliveryDelay);
 
-        jmsConsumer.close();
-        jmsContext.close();
-
-        if ( testFailed ) {
-            throw new Exception("testSettingMultipleProperties failed");
+            for (int i = 0; i < destinations.length; i++) {
+                TextMessage receivedMessage = (TextMessage) jmsConsumers[i].receive(30000);
+                long afterReceive = System.currentTimeMillis();
+                if (receivedMessage == null)
+                    throw new TestException("No message received("+i+"), sentMessage:" + sentMessages[i]); 
+                if (!receivedMessage.getText().equals(sentMessages[i].getBody(String.class)))
+                    throw new TestException("Wrong message ("+i+") received:" + receivedMessage + " sent:" + sentMessages[i]);
+                if(afterReceive - beforeSend < deliveryDelay )
+                    throw new TestException("Message received to soon, afterSend:"+afterSend+" afterReceive"+afterReceive+" deliveryDelay:"+deliveryDelay
+                            +"\nreceivedMessage:" + receivedMessage);
+            } 
         }
     }
 
-    public void testSettingMultipleProperties_Tcp(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void testDeliveryDelayZeroAndNegativeValues(HttpServletRequest request, HttpServletResponse response) throws JMSException, TestException {
+        emptyQueue(jmsQCFBindings, jmsQueue1);
+        testDeliveryDelayZeroAndNegativeValues(jmsQCFBindings, jmsQueue1);
+    }
+    
+    public void testDeliveryDelayZeroAndNegativeValues_Tcp(HttpServletRequest request, HttpServletResponse response) throws JMSException, TestException {
+        emptyQueue(jmsQCFTCP, jmsQueue1);
+        testDeliveryDelayZeroAndNegativeValues(jmsQCFTCP, jmsQueue1);
+    }
+    
+    public void testDeliveryDelayZeroAndNegativeValuesTopic(HttpServletRequest request, HttpServletResponse response) throws JMSException, TestException {
+        testDeliveryDelayZeroAndNegativeValues(jmsTCFBindings, jmsTopic);
+    }
+    
+    public void testDeliveryDelayZeroAndNegativeValuesTopic_Tcp(HttpServletRequest request, HttpServletResponse response) throws JMSException, TestException {
+        testDeliveryDelayZeroAndNegativeValues(jmsTCFTCP, jmsTopic);
+    }
+    
+    private void testDeliveryDelayZeroAndNegativeValues(ConnectionFactory connectionFactory, Destination destination) throws JMSException, TestException {
 
-        boolean testFailed = false;
+        // Note that, we use a transacted Context. Transacted, container managed and autocommit should all work.
+        try (JMSContext jmsContext = connectionFactory.createContext(JMSContext.SESSION_TRANSACTED)) {
+           
+            JMSProducer jmsProducer = jmsContext.createProducer();
+            jmsProducer.setDeliveryDelay(0);
 
-        JMSContext jmsContext = jmsQCFTCP.createContext();
+            JMSConsumer jmsConsumer = jmsContext.createConsumer(destination);
+
+            String sentMessageBody = methodName() + " at " + new Date();
+            jmsProducer.send(destination, sentMessageBody);
+            jmsContext.commit();
+
+            // Even though we are testing that there is no delay we allow 10 milliseconds for the
+            // message to appear on the queue, due to network transmission delays and server side processing.
+            TextMessage receivedMessage = (TextMessage) jmsConsumer.receive(10);
+            jmsContext.commit();
+
+            if (receivedMessage == null)
+                throw new TestException("No message received, sent:" + sentMessageBody);
+            if (!receivedMessage.getText().equals(sentMessageBody))
+                throw new TestException("Wrong message received:" + receivedMessage + " sent:" + sentMessageBody);
+
+            try {
+                jmsProducer.setDeliveryDelay(-10);
+                throw new TestException("Incorrectly set delivery delay to -10");
+            } catch (JMSRuntimeException e) {
+                // expected
+            }
+        }
+    }
+   
+    public void testSettingMultipleProperties(HttpServletRequest request, HttpServletResponse response) throws JMSException, TestException {
+        emptyQueue(jmsQCFBindings, jmsQueue);
+        testSettingMultipleProperties(jmsQCFBindings, jmsQueue);
+    }
+    
+    public void testSettingMultipleProperties_Tcp(HttpServletRequest request, HttpServletResponse response) throws JMSException, TestException {
         emptyQueue(jmsQCFTCP, jmsQueue);
-
-        JMSProducer jmsProducer = jmsContext.createProducer();
-        jmsProducer.setDeliveryDelay(1000).setDisableMessageID(true);
-
-        JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
-
-        jmsProducer.send(jmsQueue, "testSettingMultipleProperties_Tcp");
-
-        TextMessage recMsg = (TextMessage) jmsConsumer.receive(30000);
-
-        if ( (recMsg == null) ||
-             (recMsg.getText() == null) ||
-             !recMsg.getText().equals("testSettingMultipleProperties_Tcp") ||
-             (recMsg.getJMSMessageID() != null) ) {
-            testFailed = true;
-        }
-
-        jmsConsumer.close();
-        jmsContext.close();
-
-        if ( testFailed ) {
-            throw new Exception("testSettingMultipleProperties failed");
-        }
+        testSettingMultipleProperties(jmsQCFTCP, jmsQueue);
+    }
+    
+    public void testSettingMultiplePropertiesTopic(HttpServletRequest request, HttpServletResponse response) throws JMSException, TestException {
+        emptyQueue(jmsQCFBindings, jmsQueue);
+        testSettingMultipleProperties(jmsQCFBindings, jmsTopic);
+    }
+    
+    public void testSettingMultiplePropertiesTopic_Tcp(HttpServletRequest request, HttpServletResponse response) throws JMSException, TestException {
+        emptyQueue(jmsQCFTCP, jmsQueue);
+        testSettingMultipleProperties(jmsQCFTCP, jmsTopic);
     }
 
-    public void testSettingMultiplePropertiesTopic(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+    private void testSettingMultipleProperties(ConnectionFactory connectionFactory, Destination destination) throws JMSException, TestException {
 
-        boolean testFailed = false;
+        try (JMSContext jmsContext = connectionFactory.createContext()) {
+            JMSProducer jmsProducer = jmsContext.createProducer();
+            jmsProducer.setDeliveryDelay(1000).setDisableMessageID(true);
 
-        JMSContext jmsContext = jmsTCFBindings.createContext();
+            JMSConsumer jmsConsumer = jmsContext.createConsumer(destination);
 
-        JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsTopic);
+            String sentMessageBody = methodName() + " at " + new Date();
+            jmsProducer.send(destination, sentMessageBody);
+            TextMessage receivedMessage = (TextMessage) jmsConsumer.receive(30000);
 
-        JMSProducer jmsProducer = jmsContext.createProducer();
-        jmsProducer.setDeliveryDelay(1000).setDisableMessageID(true);
-
-        jmsProducer.send(jmsTopic, "testSettingMultiplePropertiesTopic");
-
-        TextMessage recMsg = (TextMessage) jmsConsumer.receive(30000);
-        if ( (recMsg == null) ||
-             (recMsg.getText() == null) ||
-             !recMsg.getText().equals("testSettingMultiplePropertiesTopic") ||
-             (recMsg.getJMSMessageID() != null) ) {
-            testFailed = true;
-        }
-
-        jmsConsumer.close();
-        jmsContext.close();
-
-        if ( testFailed ) {
-            throw new Exception("testSettingMultiplePropertiesTopic failed");
-        }
-    }
-
-    public void testSettingMultiplePropertiesTopic_Tcp(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        JMSContext jmsContext = jmsTCFTCP.createContext();
-
-        JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsTopic);
-
-        JMSProducer jmsProducer = jmsContext.createProducer();
-        jmsProducer.setDeliveryDelay(1000).setDisableMessageID(true);
-
-        jmsProducer.send(jmsTopic, "testSettingMultiplePropertiesTopic_Tcp");
-        TextMessage recMsg = (TextMessage) jmsConsumer.receive(30000);
-
-        if ( (recMsg == null) ||
-             (recMsg.getText() == null) ||
-             !recMsg.getText().equals("testSettingMultiplePropertiesTopic_Tcp") ||
-             (recMsg.getJMSMessageID() != null) ) {
-            testFailed = true;
-        }
-
-        jmsConsumer.close();
-        jmsContext.close();
-
-        if ( testFailed ) {
-            throw new Exception("testSettingMultiplePropertiesTopic_Tcp failed");
+            if (receivedMessage == null)
+                throw new TestException("No message received, sent:" + sentMessageBody);
+            if (!receivedMessage.getText().equals(sentMessageBody))
+                throw new TestException("Wrong message received:" + receivedMessage + " sent:" + sentMessageBody);
+            if (receivedMessage.getJMSMessageID() != null)
+                throw new TestException("Wrong JMSMessageID received:" + receivedMessage + " sent:" + sentMessageBody);
         }
     }
 
     private static final int DELIVERY_DELAY = 2000;
 
-    // testTransactedSend_B
-
-    public void testTransactedSend_B(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        JMSContext jmsContext = jmsQCFBindings.createContext(Session.SESSION_TRANSACTED);
+    public void testTransactedSend_B(HttpServletRequest request, HttpServletResponse response) throws JMSException, TestException, InterruptedException {
         emptyQueue(jmsQCFBindings, jmsQueue);
-
-        JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
-
-        JMSProducer jmsProducer = jmsContext.createProducer();
-        jmsProducer.setDeliveryDelay(DELIVERY_DELAY);
-
-        Message message = jmsContext.createTextMessage("testTransactedSend_B");
-        jmsProducer.send(jmsQueue, message);
-        long time_after_send = System.currentTimeMillis() + DELIVERY_DELAY;
-
-        Thread.sleep(1000);
-
-        jmsContext.commit();
-        long time_after_commit = System.currentTimeMillis() + DELIVERY_DELAY;
-
-        TextMessage recMsg = (TextMessage) jmsConsumer.receive(40000);
-
-        jmsContext.commit();
-
-        long rec_time = 0L;
-        if ( (recMsg != null) &&
-             (recMsg.getText() != null) &&
-             recMsg.getText().equals("testTransactedSend_B")) {
-            rec_time = recMsg.getLongProperty("JMSDeliveryTime");
-            if ( (Math.abs(rec_time - time_after_send) > 100) ||
-                 (Math.abs(rec_time - time_after_commit) < 1000)) {
-                testFailed = true;
-            }
-        } else {
-            testFailed = true;
-        }
-
-        jmsConsumer.close();
-        jmsContext.close();
-
-        if ( testFailed ) {
-            throw new Exception("testTransactedSend_B failed: " +
-                                describeTimes(time_after_send, time_after_commit, rec_time) );
-        }
+        testTransactedSend(jmsQCFBindings, jmsQueue1);
     }
 
-    private String describeTimes(long afterSend, long afterCommit, long received) {
-        return
-            "After send [ " + afterSend + " ]" +
-            "; after commit [ " + afterCommit + " ]" +
-            "; received [ " + received + " ]";
-    }
-
-    public void testTransactedSend_Tcp(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        JMSContext jmsContext = jmsQCFTCP.createContext(Session.SESSION_TRANSACTED);
+    public void testTransactedSend_Tcp(HttpServletRequest request, HttpServletResponse response) throws JMSException, TestException, InterruptedException {
         emptyQueue(jmsQCFTCP, jmsQueue);
-
-        JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
-
-        JMSProducer jmsProducer = jmsContext.createProducer();
-        jmsProducer.setDeliveryDelay(DELIVERY_DELAY);
-
-        Message message = jmsContext.createTextMessage("testTransactedSend_Tcp");
-        jmsProducer.send(jmsQueue, message);
-        long time_after_send = System.currentTimeMillis() + DELIVERY_DELAY;
-
-        Thread.sleep(1000);
-        jmsContext.commit();
-        long time_after_commit = System.currentTimeMillis() + DELIVERY_DELAY;
-
-        TextMessage recMsg = (TextMessage) jmsConsumer.receive(40000);
-        jmsContext.commit();
-
-        long rec_time = 0L;
-        if ( (recMsg != null) &&
-             (recMsg.getText() != null) &&
-             recMsg.getText().equals("testTransactedSend_Tcp") ) {
-            rec_time = recMsg.getLongProperty("JMSDeliveryTime");
-            if ( (Math.abs(rec_time - time_after_send) > 100) ||
-                 (Math.abs(rec_time - time_after_commit) < 1000) ) {
-                testFailed = true;
-            }
-        } else {
-            testFailed = true;
-        }
-
-        jmsConsumer.close();
-        jmsContext.close();
-
-        if ( testFailed ) {
-            throw new Exception("testTransactedSend_Tcp failed: " +
-                                describeTimes(time_after_send, time_after_commit, rec_time) );
-        }
+        testTransactedSend(jmsQCFTCP, jmsQueue1);
     }
 
-    public void testTransactedSendTopic_B(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        JMSContext jmsContext = jmsTCFBindings.createContext(Session.SESSION_TRANSACTED);
-
-        JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsTopic);
-
-        JMSProducer jmsProducer = jmsContext.createProducer();
-
-        Message message = jmsContext.createTextMessage("testTransactedSendTopic_B");
-
-        jmsProducer.setDeliveryDelay(DELIVERY_DELAY);
-        jmsProducer.send(jmsTopic, message);
-        long time_after_send = System.currentTimeMillis() + DELIVERY_DELAY;
-        Thread.sleep(1000);
-        jmsContext.commit();
-        long time_after_commit = System.currentTimeMillis() + DELIVERY_DELAY;
-
-        TextMessage recMsg = (TextMessage) jmsConsumer.receive(40000);
-        jmsContext.commit();
-
-        long rec_time = 0L;
-        if ( (recMsg != null) &&
-             (recMsg.getText() != null) &&
-             recMsg.getText().equals("testTransactedSendTopic_B") ) {
-            rec_time = recMsg.getLongProperty("JMSDeliveryTime");
-            if ( (Math.abs(rec_time - time_after_send) > 100) ||
-                 (Math.abs(rec_time - time_after_commit) < 1000) ) {
-                testFailed = true;
-            }
-        } else {
-            testFailed = true;
-        }
-
-        jmsConsumer.close();
-        jmsContext.close();
-
-        if ( testFailed ) {
-            throw new Exception("testTransactedSendTopic_B failed: " +
-                                describeTimes(time_after_send, time_after_commit, rec_time) );
-        }
+    public void testTransactedSendTopic_B(HttpServletRequest request, HttpServletResponse response) throws JMSException, TestException, InterruptedException {
+        testTransactedSend(jmsTCFBindings, jmsTopic);
     }
 
-    public void testTransactedSendTopic_Tcp(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void testTransactedSendTopic_Tcp(HttpServletRequest request, HttpServletResponse response) throws JMSException, TestException, InterruptedException {
+        testTransactedSend(jmsTCFTCP, jmsTopic);
+    }
 
-        boolean testFailed = false;
+    /**
+     * For transacted sends, the delay time starts when the client sends the message, not when the transaction is committed.
+     * 
+     * @see https://docs.oracle.com/javaee/7/api/index.html?javax/jms/JMSProducer.html
+     */
+    private void testTransactedSend(ConnectionFactory connectionFactory, Destination destination) throws JMSException, TestException, InterruptedException {
 
-        JMSContext jmsContext = jmsTCFTCP.createContext(Session.SESSION_TRANSACTED);
+        try (JMSContext jmsContext = connectionFactory.createContext(Session.SESSION_TRANSACTED)) {
 
-        JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsTopic);
+            JMSConsumer jmsConsumer = jmsContext.createConsumer(destination);
 
-        JMSProducer jmsProducer = jmsContext.createProducer();
+            JMSProducer jmsProducer = jmsContext.createProducer();
+            jmsProducer.setDeliveryDelay(deliveryDelay);
 
-        Message message = jmsContext.createTextMessage("testTransactedSendTopic_Tcp");
-        jmsProducer.setDeliveryDelay(DELIVERY_DELAY);
-        jmsProducer.send(jmsTopic, message);
-        long time_after_send = System.currentTimeMillis() + DELIVERY_DELAY;
-        Thread.sleep(1000);
-        jmsContext.commit();
-        long time_after_commit = System.currentTimeMillis() + DELIVERY_DELAY;
+            TextMessage sentMessage = jmsContext.createTextMessage(methodName() + " at " + new Date());
+            long beforeSend = System.currentTimeMillis();
+            jmsProducer.send(destination, sentMessage);
+            long afterSend = System.currentTimeMillis();
+            if (afterSend - beforeSend > deliveryDelay)
+                throw new TestException("Test Infrastructure running too slowly to meangfully test delivery delay beforeSend:" + beforeSend + " afterSend:" + afterSend
+                        + " deliveryDelay:" + deliveryDelay);
+            
+            final long commitDelay = 1000;
+            Thread.sleep(commitDelay);
+            jmsContext.commit();
 
-        TextMessage recMsg = (TextMessage) jmsConsumer.receive(40000);
-        jmsContext.commit();
-
-        long rec_time = 0L;
-        if ( (recMsg != null) &&
-             (recMsg.getText() != null) &&
-             recMsg.getText().equals("testTransactedSendTopic_Tcp") ) {
-            rec_time = recMsg.getLongProperty("JMSDeliveryTime");
-            if ( (Math.abs(rec_time - time_after_send) > 100) ||
-                 (Math.abs(rec_time - time_after_commit) < 1000) ) {
-                testFailed = true;
-            }
-        } else {
-            testFailed = true;
-        }
-
-        jmsConsumer.close();
-        jmsContext.close();
-
-        if ( testFailed ) {
-            throw new Exception("testTransactedSendTopic_Tcp failed: " +
-                                describeTimes(time_after_send, time_after_commit, rec_time) );
+            TextMessage receivedMessage = (TextMessage) jmsConsumer.receive(30000);
+            long afterReceive = System.currentTimeMillis();
+            jmsContext.commit();
+            if (receivedMessage == null)
+                throw new TestException("No message received, sentMessage:" + sentMessage);
+            
+            // For PubSub messages in Sib, the delivery delay time starts when the message is committed, later than what the JMS spec says. 
+            // For point to point messages, the delivery delay starts when the message is sent.
+            // JMSDeliveryTime is computed from the time the message is sent, even though a published message is actually received
+            // after deliverydelay+commitDelay. The JMS specification says the earliest time a message can be received is after deliveryDelay
+            // so this is within the specification. 
+            
+            long receiveLatency = afterReceive - receivedMessage.getJMSDeliveryTime();
+            if (receiveLatency < 0 )
+                throw new TestException("JMSDeliveryTime too soon, afterReceive:" + afterReceive + " JMSDeliveryTime:" + receivedMessage.getJMSDeliveryTime()
+                        + "\nreceivedMessage:" + receivedMessage);
+            
+            if (!receivedMessage.getText().equals(sentMessage.getBody(String.class)))
+                throw new TestException("Wrong message received:" + receivedMessage + " sent:" + sentMessage);
+            if (afterReceive - beforeSend < deliveryDelay)
+                throw new TestException("Message received to soon, afterSend:" + afterSend + " afterReceive" + afterReceive + " deliveryDelay:" + deliveryDelay
+                        + "\nreceivedMessage:" + receivedMessage);
+            
+            // The JMS Specification does not put an upper limit on how long it can take to deliver a message. Sib takes advantage of this 
+            // by not starting the delay timer for a PubSub message until it is committed.
+            // Allow 500 extra milliseconds for commit and receive latency. If the Test systems run too slowly we may get a false failure here. 
+            if (afterReceive - afterSend > deliveryDelay + commitDelay + 500)
+                throw new TestException("Message received to late, afterSend:" + afterSend + " afterReceive" + afterReceive 
+                        + " deliveryDelay:" + deliveryDelay +" commitDelay:" + commitDelay
+                        + "\nreceivedMessage:" + receivedMessage);
         }
     }
 
@@ -4148,6 +3596,13 @@ public class DeliveryDelayServlet extends HttpServlet {
         }
     }
 
+    private String describeTimes(long afterSend, long afterCommit, long received) {
+        return
+            "After send [ " + afterSend + " ]" +
+            "; after commit [ " + afterCommit + " ]" +
+            "; received [ " + received + " ]";
+    }
+   
     public void testTimingClassicApi_B(
         HttpServletRequest request, HttpServletResponse response) throws Exception {
 

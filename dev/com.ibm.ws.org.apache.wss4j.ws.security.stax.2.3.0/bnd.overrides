@@ -21,6 +21,10 @@ Export-Package: \
  org.apache.wss4j.stax.*
 
 Import-Package: \
+ org.glassfish.jaxb.runtime.v2;resolution:=optional,\
  *
+
+DynamicImport-Package: \
+ org.glassfish.jaxb.runtime.v2.*
 
 jakartaeeMe: true

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -316,15 +316,54 @@ public class POJOLoaderService implements ICatalogService, IToolboxService {
     }
 
     /**
-     * Load the Toolbox for the given user from the specified persistence provider.
-     * 
+     * Load the Toolbox for the given user from the specified persistence provider. It would attempt to load first the toolbox
+     * using the encoded file name format. If the file does not exist, then it would attempt to load the toolbox with the unecrypted 
+     * file name. If the file exists, promote the file name to encoded format if converting is flagged.
+     *
+     * @param persist The persistent layer
      * @param userId The userId of the toolbox to load
+     * @param convertToEncodedName Whether to perform promotion of an existing non-encoded file name found in persisted storage to its encoded file name
      * @return Returns a loaded, validated Toolbox instance or {@code null} if the instance was not available (or was invalid)
      */
-    @FFDCIgnore(FileNotFoundException.class)
-    private Toolbox loadToolboxFromPersistence(final IPersistenceProvider persist, final String userId) {
+    private Toolbox loadToolboxFromPersistence(final IPersistenceProvider persist, final String userId, final boolean convertToEncodedName) {
+        Toolbox toolbox = null;
         try {
-            String persistedName = Toolbox.PERSIST_NAME + "-" + userId;
+            toolbox = loadToolboxFromPersistenceUsingName(persist, Toolbox.PERSIST_NAME + "-" + Toolbox.getEncodedUserId(userId), userId);
+            if (toolbox == null) {
+
+                toolbox = loadToolboxFromPersistenceUsingName(persist, Toolbox.PERSIST_NAME + "-" + userId, userId);
+                if (toolbox == null) {
+                    if (tc.isEventEnabled()) {
+                        Tr.event(tc, "The persisted instance is not available. This is an expected code path and is likely fine.\n" +
+                                 "If the file should have been there, we'll see isDefault=true (rather than isDefault=false).\n" +
+                                 "That is the indicator to the client something may be wrong.");
+                    }
+                } else if (convertToEncodedName) {
+                    // save it to the encoded file name
+                    toolbox.storeToolbox();
+                    // delete the non-encoded toolbox json file
+                    persist.delete(Toolbox.PERSIST_NAME + "-" + userId);
+                    Tr.info(tc, "TOOLBOX_FILE_PROMOTED_TO_ENCODED_NAME", userId);
+
+                }
+            }
+        } catch (Throwable th) {
+            toolbox = null;
+        }
+        return toolbox;
+    }
+
+    /**
+     * Load the Toolbox for the given persisted name from the specified persistence provider.
+     *
+     * @param persist The persistent layer
+     * @param persistedName The file name in the persistent layer
+     * @param userId The userId of the toolbox to load
+     * @return Returns a loaded, validated Toolbox instance or {@code null} if the instance was not available
+     */
+    @FFDCIgnore(FileNotFoundException.class)
+    private Toolbox loadToolboxFromPersistenceUsingName(final IPersistenceProvider persist, final String persistedName, final String userId) throws Throwable {
+        try {
             Toolbox toolbox = persist.load(persistedName, Toolbox.class);
             toolbox.setCatalog(getCatalog());
             toolbox.setPersistenceProvider(getPersist());
@@ -332,13 +371,7 @@ public class POJOLoaderService implements ICatalogService, IToolboxService {
             Tr.info(tc, "LOADED_PERSISTED_TOOLBOX", userId);
             return toolbox;
         } catch (FileNotFoundException e) {
-            // This is an expected code path. If the toolbox persisted
-            // data is not there, just use the default instance!
-            if (tc.isEventEnabled()) {
-                Tr.event(tc, "The persisted instance is not available. This is an expected code path and is likely fine.\n" +
-                             "If the file should have been there, we'll see isDefault=true (rather than isDefault=false).\n" +
-                             "That is the indicator to the client something may be wrong.");
-            }
+            // do nothing and let the caller handles it
         } catch (JSONMarshallException e) {
             String msg = e.getMessage();
             if (msg != null && msg.equals("Fatal problems occurred while mapping content")) {
@@ -350,16 +383,19 @@ public class POJOLoaderService implements ICatalogService, IToolboxService {
                 // This is an unexpected code path. We should FFDC here.
                 Tr.error(tc, "UNABLE_TO_LOAD_TOOLBOX_SYNTAX", userId);
             }
+            throw e;
         } catch (IOException e) {
             // A general I/O error occured while accessing the persisted data.
             // This is the unexpected code path. We should FFDC here.
             Tr.error(tc, "UNABLE_TO_LOAD_TOOLBOX_ACCESS", userId);
+            throw e;
         } catch (InvalidPOJOException e) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Caught an InvalidPOJOException while trying to load the catalog from persisted storage", e);
             }
             // The persisted Toolbox instance is not valid, use the default instance
             Tr.error(tc, "LOADED_TOOLBOX_NOT_VALID", userId);
+            throw e;
         }
 
         return null;
@@ -371,7 +407,11 @@ public class POJOLoaderService implements ICatalogService, IToolboxService {
      * @return Returns a loaded, validated Catalog instance or {@code null} if the instance was not available (or was invalid).
      */
     private Toolbox loadToolboxFromFile(final String userId) {
-        return loadToolboxFromPersistence(persistenceProviderFile, userId);
+        return loadToolboxFromFile(userId, true);
+    }
+
+    private Toolbox loadToolboxFromFile(final String userId, boolean convertToEncodedName) {
+        return loadToolboxFromPersistence(persistenceProviderFile, userId, convertToEncodedName);
     }
 
     /**
@@ -394,9 +434,11 @@ public class POJOLoaderService implements ICatalogService, IToolboxService {
      * @return Returns a loaded, validated Toolbox instance or the default instance if a persisted copy was not available (or was invalid).
      */
     private Toolbox loadToolboxFromCollective(final String userId) {
-        Toolbox toolbox = loadToolboxFromPersistence(persistenceProviderCollective, userId);
+        Toolbox toolbox = loadToolboxFromPersistence(persistenceProviderCollective, userId, true);
         if (toolbox == null) {
-            toolbox = loadToolboxFromFile(userId);
+            // If the toolbox file is found in the non-encoded file name format in the file presistence layer, no need to convert it as the file
+            // is going to be promoted to collective encoded file name format.
+            toolbox = loadToolboxFromFile(userId, false);
             if (toolbox != null) {
                 Tr.info(tc, "TOOLBOX_FILE_PROMOTED_TO_COLLECTIVE", userId, "FILE", "COLLECTIVE");
             } else {

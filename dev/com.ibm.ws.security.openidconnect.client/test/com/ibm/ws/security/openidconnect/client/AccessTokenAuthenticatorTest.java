@@ -25,6 +25,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
@@ -40,7 +41,6 @@ import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
-import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -52,22 +52,20 @@ import org.junit.rules.TestRule;
 
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.annotation.Sensitive;
-import com.ibm.websphere.security.jwt.InvalidTokenException;
 import com.ibm.websphere.ssl.JSSEHelper;
 import com.ibm.websphere.ssl.SSLConfig;
 import com.ibm.websphere.ssl.SSLConfigChangeListener;
 import com.ibm.websphere.ssl.SSLConfigurationNotAvailableException;
 import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.common.internal.encoder.Base64Coder;
-import com.ibm.ws.security.common.crypto.HashUtils;
 import com.ibm.ws.security.common.structures.SingleTableCache;
-import com.ibm.ws.security.jwt.config.ConsumerUtils;
 import com.ibm.ws.security.openidconnect.clients.common.ClientConstants;
 import com.ibm.ws.security.openidconnect.clients.common.MockOidcClientRequest;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientRequest;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientUtil;
 import com.ibm.ws.security.openidconnect.common.Constants;
+import com.ibm.ws.security.test.common.CommonTestClass;
 import com.ibm.ws.ssl.JSSEProviderFactory;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
@@ -81,7 +79,7 @@ import com.ibm.wsspi.ssl.SSLSupport;
 
 import test.common.SharedOutputManager;
 
-public class AccessTokenAuthenticatorTest {
+public class AccessTokenAuthenticatorTest extends CommonTestClass {
 
     private static SharedOutputManager outputMgr = SharedOutputManager.getInstance();
     @Rule
@@ -1171,45 +1169,6 @@ public class AccessTokenAuthenticatorTest {
         assertNull("Result should have been null but was " + result + ".", result);
     }
 
-    //@Test
-    public void test_extractSuccessfulResponse_jws() throws Exception {
-        JSONObject headerJson = new JSONObject();
-        headerJson.put("alg", "HS256");
-        headerJson.put("typ", "JWT");
-        JSONObject payloadJson = new JSONObject();
-        payloadJson.put("iss", GOOD_ISSUER);
-        String jwsHeader = Base64Coder.base64Encode(headerJson.toString());
-        String jwsPayload = Base64Coder.base64Encode(payloadJson.toString());
-        String signature = HashUtils.digest(jwsHeader + "." + jwsPayload);
-        String rawResponse = jwsHeader + "." + jwsPayload + "." + signature;
-        final InputStream input = new ByteArrayInputStream(rawResponse.getBytes());
-        final BasicHttpEntity entity = new BasicHttpEntity();
-        entity.setContent(input);
-        entity.setContentType("application/jwt");
-        ConsumerUtils consumerUtils = new ConsumerUtils(null);
-
-        // TODO - update once parsing JWS tokens is implemented
-        mockery.checking(new Expectations() {
-            {
-                one(httpResponse).getEntity();
-                will(returnValue(entity));
-                one(clientConfig).getConsumerUtils();
-                will(returnValue(consumerUtils));
-                allowing(clientConfig).getKeyManagementKeyAlias();
-                will(returnValue(null));
-                one(clientConfig).getClockSkew();
-                will(returnValue(3000L));
-                one(clientConfig).isValidationRequired();
-                will(returnValue(false));
-                one(clientConfig).getTokenReuse();
-                will(returnValue(false));
-            }
-        });
-        JSONObject result = tokenAuth.extractSuccessfulResponse(clientConfig, clientRequest, httpResponse);
-        assertNotNull("Result should not have been null but was.", result);
-        assertEquals("Result did not match the expected value.", payloadJson, result);
-    }
-
     @Test
     public void test_extractClaimsFromJwtResponse_responseStringEmpty() throws Exception {
         String rawResponse = "";
@@ -1218,35 +1177,28 @@ public class AccessTokenAuthenticatorTest {
         assertNull("Result should have been null but was " + result + ".", result);
     }
 
-    //@Test
-    public void test_extractClaimsFromJwtResponse_jwsMalformed() throws Exception {
-        // Create a JWS but mangle the payload string
-        JSONObject headerJson = new JSONObject();
-        headerJson.put("alg", "HS256");
-        headerJson.put("typ", "JWT");
-        JSONObject payloadJson = new JSONObject();
-        payloadJson.put("iss", GOOD_ISSUER);
-        String jwsHeader = Base64Coder.base64Encode(headerJson.toString());
-        String jwsPayload = Base64Coder.base64Encode(payloadJson.toString()) + "_mangled";
-        String signature = HashUtils.digest(jwsHeader + "." + jwsPayload);
-        String rawResponse = jwsHeader + "." + jwsPayload + "." + signature;
+    @Test
+    public void test_extractClaimsFromJwtResponse_notJwt() throws Exception {
+        String rawResponse = "This is not in JWT format";
 
-        // TODO - update once parsing JWS tokens is implemented
+        JSONObject result = tokenAuth.extractClaimsFromJwtResponse(rawResponse, clientConfig, clientRequest);
+        assertNull("Result should have been null but was " + result + ".", result);
+    }
+
+    @Test
+    public void test_extractClaimsFromJwtResponse_jwsMalformed() throws Exception {
+        String rawResponse = "aaa.bbb.ccc";
         mockery.checking(new Expectations() {
             {
-                //                one(clientConfig).getConsumerUtils();
-                //                will(returnValue(consumerUtils));
-                //                allowing(clientConfig).getKeyManagementKeyAlias();
-                //                will(returnValue(null));
-                //                one(clientConfig).getClockSkew();
-                //                will(returnValue(3000L));
+                one(clientConfig).getId();
+                will(returnValue("configId"));
             }
         });
         try {
             JSONObject result = tokenAuth.extractClaimsFromJwtResponse(rawResponse, clientConfig, clientRequest);
             fail("Should have thrown an exception, but got " + result + ".");
-        } catch (InvalidJwtException e) {
-            assertTrue("Did not find expected exception and reason string. Exception was " + e, e.toString().contains("Unable to parse"));
+        } catch (Exception e) {
+            verifyException(e, "CWWKS1533E" + ".+" + Pattern.quote("org.jose4j.jwt.consumer.InvalidJwtException"));
         }
     }
 
@@ -1262,16 +1214,15 @@ public class AccessTokenAuthenticatorTest {
             {
                 one(clientConfig).getJweDecryptionKey();
                 will(returnValue(decryptionKey));
-                one(clientConfig).getId();
+                allowing(clientConfig).getId();
                 will(returnValue("configId"));
             }
         });
         try {
             JSONObject result = tokenAuth.extractClaimsFromJwtResponse(rawResponse, clientConfig, clientRequest);
             fail("Should have thrown an exception, but got " + result + ".");
-        } catch (InvalidTokenException e) {
-            String expectedMsg = "CWWKS6056E";
-            assertTrue("Did not see expected " + expectedMsg + " error message in the exception [" + e + "].", e.getMessage().contains(expectedMsg));
+        } catch (Exception e) {
+            verifyException(e, "CWWKS1533E" + ".+" + "CWWKS6056E");
         }
     }
 

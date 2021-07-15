@@ -28,8 +28,6 @@ dependencies {
   hibernateJPA22 'org.hibernate.common:hibernate-commons-annotations:5.1.0.Final'
   
   jpaFatTools project(':com.ibm.ws.jpa_testframework')
-  
-  requiredLibs project(':io.openliberty.org.testcontainers')
 }
 
 task addhibernateJPA22(type: Copy) {
@@ -59,4 +57,5 @@ addRequiredLibraries {
   dependsOn addhibernateJPA22
   dependsOn addJakartaTransformer
   dependsOn addJPAFATTools
+  dependsOn copyTestContainers
 }

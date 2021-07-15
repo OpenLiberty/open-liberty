@@ -103,6 +103,7 @@ public class MultiRecoveryTest1 extends MultiRecoveryTest{
 		recoveryTest(server, server2, "302","server2");
 	}
 	
+  @Mode(TestMode.LITE)
 	@Test
 	public void WSTXMPR003CFVT() throws Exception {
 		recoveryTest(server, server2, "303","both");
@@ -123,101 +124,5 @@ public class MultiRecoveryTest1 extends MultiRecoveryTest{
 	@Test
 	public void WSTXMPR004CFVT() throws Exception {
 		recoveryTest(server, server2, "403","both");
-	}
-	
-	@Test
-	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException"/*, "com.ibm.ws.wsat.service.WSATException" */})
-	public void WSTXMPR005AFVT() throws Exception {
-		recoveryTest(server, server2, "501","server1");
-	}
-	
-	@Test
-	@ExpectedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
-	@AllowedFFDC(value = { "javax.transaction.SystemException" })
-	// Need Jon Review:
-	// Got Exception WTRN0046E and Warning WTRN0049W, WTRN0094W during test
-	// Expect XAException and RollbackException
-	// Report javax.transaction.SystemException 
-	public void WSTXMPR005BFVT() throws Exception {
-		recoveryTest(server, server2, "502","server2");
-	}
-	
-	@Test
-	//@AllowedFFDC(value = {"javax.xml.ws.WebServiceException", "com.ibm.ws.wsat.service.WSATException" })
-	public void WSTXMPR005CFVT() throws Exception {
-		recoveryTest(server, server2, "503","both");
-	}
-	
-	@Test
-	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException", "com.ibm.ws.wsat.service.WSATException" })
-	public void WSTXMPR006AFVT() throws Exception {
-		recoveryTest(server, server2, "601","server1");
-	}
-	
-	@Test
-	@ExpectedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
-	@AllowedFFDC(value = { "javax.transaction.SystemException" })
-	public void WSTXMPR006BFVT() throws Exception {
-		recoveryTest(server, server2, "602","server2");
-	}
-	
-	@Test
-	public void WSTXMPR006CFVT() throws Exception {
-		recoveryTest(server, server2, "603","both");
-	}
-	
-	@Test
-	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.SystemException" })
-	public void WSTXMPR007AFVT() throws Exception {
-		recoveryTest(server, server2, "701","server1");
-	}
-	
-	@Test
-	@ExpectedFFDC(value = {"javax.transaction.xa.XAException" })
-	@AllowedFFDC(value = { "javax.transaction.SystemException", "java.util.concurrent.RejectedExecutionException", "com.ibm.ws.Transaction.JTA.HeuristicHazardException" })
-	// JDK8: Allow HeuristicHazardException
-	public void WSTXMPR007BFVT() throws Exception {
-		recoveryTest(server, server2, "702","server2");
-	}
-	
-  @Mode(TestMode.LITE)
-	@Test
-	@ExpectedFFDC(value = {"javax.transaction.xa.XAException" })
-	@AllowedFFDC(value = { "javax.transaction.SystemException", "com.ibm.ws.Transaction.JTA.HeuristicHazardException" })
-	// Need Jon Review:
-	// javax.transaction.xa.XAException 
-	// Caused by: com.ibm.tx.jta.XAResourceNotAvailableException
-	// Need review on whether it is expected
-	// Report javax.transaction.SystemException
-	// JDK8: Allow HeuristicHazardException
-	public void WSTXMPR007CFVT() throws Exception {
-		recoveryTest(server, server2, "703","both");
-	}
-	
-	@Test
-	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.SystemException" })
-	public void WSTXMPR008AFVT() throws Exception {
-		recoveryTest(server, server2, "801","server1");
-	}
-	
-	@Test
-	@ExpectedFFDC(value = {"javax.transaction.xa.XAException" })
-	@AllowedFFDC(value = { "javax.transaction.SystemException", "com.ibm.ws.Transaction.JTA.HeuristicHazardException" })
-	// JDK8: Allow HeuristicHazardException
-	public void WSTXMPR008BFVT() throws Exception {
-		recoveryTest(server, server2, "802","server2");
-	}
-	
-	@Test
-	@ExpectedFFDC(value = {"javax.transaction.xa.XAException" })
-	@AllowedFFDC(value = { "javax.transaction.SystemException", "com.ibm.ws.Transaction.JTA.HeuristicHazardException" })
-	// Need Jon Review:
-	// javax.transaction.xa.XAException 
-	// Caused by: com.ibm.tx.jta.XAResourceNotAvailableException
-	// Need review on whether it is expected
-	// Report javax.transaction.SystemException
-	// JDK8: Allow HeuristicHazardException
-	public void WSTXMPR008CFVT() throws Exception {
-		recoveryTest(server, server2, "803","both");
 	}
 }

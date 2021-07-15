@@ -30,5 +30,7 @@ Import-Package: \
  org.apache.xml.security.*;version="2.2.0", \
  *
 
+DynamicImport-Package: \
+ org.glassfish.jaxb.runtime.v2.*
 
 jakartaeeMe: true

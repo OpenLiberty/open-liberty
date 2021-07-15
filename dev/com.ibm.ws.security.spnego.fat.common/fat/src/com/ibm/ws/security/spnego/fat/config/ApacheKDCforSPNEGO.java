@@ -76,6 +76,9 @@ public class ApacheKDCforSPNEGO extends ApacheDSandKDC {
     @BeforeClass
     public static void setup() throws Exception {
 
+        if (!InitClass.RUN_TESTS)
+            return;
+
         WHICH_FAT = "SPNEGO";
 
         bindUserName = "user1";

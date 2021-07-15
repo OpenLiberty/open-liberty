@@ -17,7 +17,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.gargoylesoftware.htmlunit.WebClient;
-//import com.ibm.ws.security.fat.common.tooling.ValidationData.validationData;
+
 import com.ibm.ws.security.fat.common.ValidationData.validationData;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTest;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTestHelpers;
@@ -47,11 +47,8 @@ import componenttest.topology.impl.LibertyServerWrapper;
  * TFIM IdP. The client invokes the SP application by sending the SAML
  * 2.0 token in the HTTP POST request.
  */
+
 @LibertyServerWrapper
-//1/20/2021 the FULL mode at class level was already in CL FAT and will not work for LITE in OL, instead, we mix the FULL modes in the test case level below
-//with the existing LITE mode
-//@Mode(TestMode.FULL)
-//1/21/2021 added
 @RunWith(FATRunner.class)
 public class CxfSAMLBasicTests extends SAMLCommonTest {
 
@@ -100,6 +97,7 @@ public class CxfSAMLBasicTests extends SAMLCommonTest {
      * Test should succeed in accessing the server side service.
      *
      */
+    
     @Mode(TestMode.LITE)
     @AllowedFFDC(value = { "java.lang.Exception" })
     @Test

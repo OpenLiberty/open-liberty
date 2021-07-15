@@ -19,7 +19,7 @@
     </library>
 
     <javaPermission
-        codebase="${server.config.dir}/jaegerLib/slf4j-api-1.7.26.jar"
+        codebase="${server.config.dir}/jaegerLib/slf4j-api-1.7.30.jar"
         className="java.security.AllPermission" />
         
     <javaPermission
