@@ -5,4 +5,3 @@ com.ibm.ws.rest.handler.validator.cloudant_fat
 com.ibm.ws.rest.handler.validator_fat
 com.ibm.ws.runtime.update_fat
 com.ibm.ws.threading_policy_fat
-com.ibm.ws.classloading.bells_fat
