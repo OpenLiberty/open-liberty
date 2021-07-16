@@ -100,6 +100,7 @@ public class EJBJarBndTestBase extends EJBJarTestBase {
                    " xmlns:ejb=\"ejb.xmi\"" +
                    " xmi:version=\"2.0\"" +
                    " " + attrs +
+                   " xmi:id=\"ejbbnd_1\"" +
                ">" +
                    "<ejbJar href=\"META-INF/" + ddPath + "#EJBJar_ID\"/>" + "\n" +
                    body + "\n" +

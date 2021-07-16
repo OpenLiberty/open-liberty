@@ -16,8 +16,20 @@ import org.junit.Test;
 
 public class DDValidModPartialHeaderTests {
 
+    // Expected:
+    // CWWCK27789W: The deployment descriptor ServletTest.war : META-INF/permissions.xml, at line 2, with version 7, specifies namespace http://junk but should have namespace http://xmlns.jcp.org/xml/ns/javaee.
+    // CWWCK27789W: The deployment descriptor EJBTest.jar : META-INF/ejb-jar.xml, at line 2, with version 2.1, specifies namespace http://junk but should have namespace http://java.sun.com/xml/ns/j2ee.
+    // CWWCK27789W: The deployment descriptor ServletTest.war : WEB-INF/web.xml, at line 2, with version 3.0, specifies namespace http://junk but should have namespace http://java.sun.com/xml/ns/javaee.
+    // CWWCK27788W: The deployment descriptor ServletTest.war : WEB-INF/ibm-web-bnd.xml, at line 2, specifies namespace http://junk but should have namespace http://websphere.ibm.com/xml/ns/javaee.
+    // CWWCK27788W: The deployment descriptor ServletTest.war : WEB-INF/ibm-web-ext.xml, at line 2, specifies namespace http://junk but should have namespace http://websphere.ibm.com/xml/ns/javaee.
+    // CWWCK27788W: The deployment descriptor ServletTest.war : WEB-INF/ibm-web-ext.xml, at line 2, specifies namespace http://junk but should have namespace http://websphere.ibm.com/xml/ns/javaee.
+    // CWWCK27788W: The deployment descriptor ServletTest.war : WEB-INF/ibm-web-ext.xml, at line 2, specifies namespace http://junk but should have namespace http://websphere.ibm.com/xml/ns/javaee.
+    // CWWCK27788W: The deployment descriptor ServletTest.war : WEB-INF/ibm-web-bnd.xml, at line 2, specifies namespace http://junk but should have namespace http://websphere.ibm.com/xml/ns/javaee.
+    // CWWCK27788W: The deployment descriptor EJBTest.jar : META-INF/ibm-managed-bean-bnd.xml, at line 1, specifies namespace http://junk but should have namespace http://websphere.ibm.com/xml/ns/javaee.    
+    
     public static final String[] ALLOWED_ERRORS = new String[] {
-        // EMPTY
+            "CWWCK27788W",
+            "CWWCK27789W"
     };
 
     @BeforeClass
@@ -49,8 +61,8 @@ public class DDValidModPartialHeaderTests {
     }   
     
     @Test
-    public void testWebExtensions_Module_PH() throws Exception {
-        CommonTests.test(DDValidModPartialHeaderTests.class, "testWebExtensions");
+    public void testWebExtension_Module_PH() throws Exception {
+        CommonTests.test(DDValidModPartialHeaderTests.class, "testWebExtension");
     }
     
     @Test
@@ -64,13 +76,13 @@ public class DDValidModPartialHeaderTests {
     }
     
     @Test
-    public void testEJBExtensions_Module_PH() throws Exception {
-        CommonTests.test(DDValidModPartialHeaderTests.class, "testEJBExtensions");
+    public void testEJBExtension_Module_PH() throws Exception {
+        CommonTests.test(DDValidModPartialHeaderTests.class, "testEJBExtension");
     }
     
     @Test
-    public void testAppExtensionFromWebApp_Module_PH() throws Exception {
-        CommonTests.test(DDValidModPartialHeaderTests.class, "testAppExtensionFromWebApp");
+    public void testApplicationExtensionFromWebApp_Module_PH() throws Exception {
+        CommonTests.test(DDValidModPartialHeaderTests.class, "testApplicationExtensionFromWebApp");
     }
     
     @Test

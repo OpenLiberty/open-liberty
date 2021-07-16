@@ -49,13 +49,13 @@ public class DDValidModTests {
     }   
     
     @Test
-    public void testWebExtensions_Module() throws Exception {
-        CommonTests.test(DDValidModTests.class, "testWebExtensions");
+    public void testWebExtension_Module() throws Exception {
+        CommonTests.test(DDValidModTests.class, "testWebExtension");
     }
     
     @Test
-    public void testWebExtensionsNoBindings_Module() throws Exception {
-        CommonTests.test(DDValidModTests.class, "testWebExtensionsNoBindings");
+    public void testWebExtensionNoBindings_Module() throws Exception {
+        CommonTests.test(DDValidModTests.class, "testWebExtensionNoBindings");
     }
     
     @Test
@@ -74,8 +74,8 @@ public class DDValidModTests {
     }
     
     @Test
-    public void testEJBExtensions_Module() throws Exception {
-        CommonTests.test(DDValidModTests.class, "testEJBExtensions");
+    public void testEJBExtension_Module() throws Exception {
+        CommonTests.test(DDValidModTests.class, "testEJBExtension");
     }
     
     @Test
@@ -84,8 +84,8 @@ public class DDValidModTests {
     }
     
     @Test
-    public void testEJBExtensionsNoBindings_Module() throws Exception {
-        CommonTests.test(DDValidModTests.class, "testEJBExtensionsNox");
+    public void testEJBExtensionNoBindings_Module() throws Exception {
+        CommonTests.test(DDValidModTests.class, "testEJBExtensionNoBindings");
     }
     
     @Test

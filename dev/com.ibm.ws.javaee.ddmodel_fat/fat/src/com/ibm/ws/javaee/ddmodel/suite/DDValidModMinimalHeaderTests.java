@@ -49,8 +49,8 @@ public class DDValidModMinimalHeaderTests {
     }   
     
     @Test
-    public void testWebExtensions_Module_MH() throws Exception {
-        CommonTests.test(DDValidModMinimalHeaderTests.class, "testWebExtensions");
+    public void testWebExtension_Module_MH() throws Exception {
+        CommonTests.test(DDValidModMinimalHeaderTests.class, "testWebExtension");
     }
     
     @Test
@@ -64,13 +64,13 @@ public class DDValidModMinimalHeaderTests {
     }
     
     @Test
-    public void testEJBExtensions_Module_MH() throws Exception {
-        CommonTests.test(DDValidModMinimalHeaderTests.class, "testEJBExtensions");
+    public void testEJBExtension_Module_MH() throws Exception {
+        CommonTests.test(DDValidModMinimalHeaderTests.class, "testEJBExtension");
     }
     
     @Test
-    public void testAppExtensionFromWebApp_Module_MH() throws Exception {
-        CommonTests.test(DDValidModMinimalHeaderTests.class, "testAppExtensionFromWebApp");
+    public void testApplicationExtensionFromWebApp_Module_MH() throws Exception {
+        CommonTests.test(DDValidModMinimalHeaderTests.class, "testApplicationExtensionFromWebApp");
     }
     
     @Test

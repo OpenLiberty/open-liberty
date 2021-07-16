@@ -39,6 +39,7 @@ public class EJBJarBndHeaderTest extends EJBJarBndTestBase {
                 " xmlns:commonbnd=\"commonbnd.xmi\"" +
                 " xmlns:xmi=\"http://www.omg.org/XMI\"" +
                 // " xmi:version=\"2.0\"" +
+                " xmi:id=\"ejbbnd_1\"" +
             ">" + "\n" +
                 "<ejbJar href=\"" + getEJBJarPath() + "#EJBJar_ID\"/>" + "\n" +
                 ejbBndBodyXMI() + "\n" +
@@ -122,7 +123,21 @@ public class EJBJarBndHeaderTest extends EJBJarBndTestBase {
                 ejbBndBodyXML() + "\n" +
             ejbJarTailXML;
     }
-            
+    
+    protected String ejbJarBndXMIVersionOnly() {
+        return
+            "<ejbbnd:EJBJarBinding" +
+                // " xmlns:ejbbnd=\"EJBJarBnd.xmi\"" +
+                // " xmlns:commonbnd=\"commonbnd.xmi\"" +
+                // " xmlns:xmi=\"http://www.omg.org/XMI\"" +
+                " xmi:version=\"2.0\"" +
+                " xmi:id=\"ejbbnd_1\"" +
+            ">" + "\n" +
+                "<ejbJar href=\"" + getEJBJarPath() + "#EJBJar_ID\"/>" + "\n" +
+                ejbBndBodyXMI() + "\n" +
+            ejbJarTailXMI;
+    }
+    
     protected String ejbJarBndNamespaceOnly() {
         return
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" +
@@ -227,6 +242,12 @@ public class EJBJarBndHeaderTest extends EJBJarBndTestBase {
     public void test11VersionMismatch() throws Exception {
         EJBJarBnd ejbJarBnd = parseEJBJarBndXML(ejbJarBnd11VersionMismatch());
         Assert.assertEquals("1.1", ejbJarBnd.getVersion());
+    }
+
+    @Test
+    public void testXMIVersionOnly() throws Exception {
+        parseEJBJarBndXML(ejbJarBndXMIVersionOnly(),
+                          XML_ERROR_ALT_MESSAGE, XML_ERROR_MESSAGES);
     }
 
     @Test

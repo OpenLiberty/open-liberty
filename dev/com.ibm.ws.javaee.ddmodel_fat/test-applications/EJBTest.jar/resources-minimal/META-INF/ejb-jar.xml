@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ejb-jar id="ejb-jar_ID" version="2.1"/>
+<ejb-jar id="ejb-jar_ID" version="2.1">
 
     <display-name>EJBTest</display-name>
 

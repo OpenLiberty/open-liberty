@@ -327,3 +327,31 @@ unsupported.descriptor.public.id.useraction=Correct the public ID value of the d
 missing.descriptor.version=CWWCK27783E: The deployment descriptor {0} specifies neither a version, nor a PUBLIC ID, nor a schema.
 missing.descriptor.version.explanation=No XML header information is present within the deployment descriptor.  A valid deployment descriptor must have a version, a public ID or a schema.
 missing.descriptor.version.useraction=Correct the deployment descriptor by adding XML header information.
+
+# ADDED:
+# "incorrect.descriptor.namespace", describeEntry(), getLineNumber(), ddNamespace, expectedNamespace
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is the namespace which was specified in the deployment descriptor
+#    {3} is the expected namespace
+# -----------------------------------------------------------------------
+incorrect.descriptor.namespace=CWWCK27788W: The deployment descriptor {0}, at line {1}, specifies namespace {2} but should have namespace {3}.
+incorrect.descriptor.namespace.explanation=A specific namespace is expected within the deployment descriptor.  The incorrect namespace was ignored.
+incorrect.descriptor.namespace.useraction=Change the namespace within the deployment descriptor to the expected value.
+
+# ADDED:
+# "incorrect.descriptor.namespace.for.version", describeEntry(), getLineNumber(), ddVersion, ddNamespace, expectedNamespace
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is the version which was specified in the deployment descriptor
+#    {3} is the namespace which was specified in the deployment descriptor
+#    {4} is the expected namespace
+# -----------------------------------------------------------------------
+incorrect.descriptor.namespace.for.version=CWWCK27789W: The deployment descriptor {0}, at line {1}, with version {2}, specifies namespace {3} but should have namespace {4}.
+incorrect.descriptor.namespace.for.version.explanation=A specific namespace is expected within the deployment descriptor for the specified version.  The incorrect namespace was ignored.
+incorrect.descriptor.namespace.for.version.useraction=Change the namespace within the deployment descriptor to the expected value.
+

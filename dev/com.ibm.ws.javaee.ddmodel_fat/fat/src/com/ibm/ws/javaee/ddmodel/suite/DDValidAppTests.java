@@ -59,13 +59,13 @@ public class DDValidAppTests {
     }
     
     @Test
-    public void testWebExtensions_Application() throws Exception {
-        CommonTests.test(DDValidAppTests.class, "testWebExtensions");
+    public void testWebExtension_Application() throws Exception {
+        CommonTests.test(DDValidAppTests.class, "testWebExtension");
     }
     
     @Test
-    public void testWebExtensionsNoBindings_Application() throws Exception {
-        CommonTests.test(DDValidAppTests.class, "testWebExtensionsNoBindings");
+    public void testWebExtensionNoBindings_Application() throws Exception {
+        CommonTests.test(DDValidAppTests.class, "testWebExtensionNoBindings");
     }
     
     @Test
@@ -84,8 +84,8 @@ public class DDValidAppTests {
     }
     
     @Test
-    public void testEJBExtensions_Application() throws Exception {
-        CommonTests.test(DDValidAppTests.class, "testEJBExtensions");
+    public void testEJBExtension_Application() throws Exception {
+        CommonTests.test(DDValidAppTests.class, "testEJBExtension");
     }
     
     @Test
@@ -94,13 +94,13 @@ public class DDValidAppTests {
     }
     
     @Test
-    public void testEJBExtensionsNoBindings_Application() throws Exception {
-        CommonTests.test(DDValidAppTests.class, "testEJBExtensionsNoBindings");
+    public void testEJBExtensionNoBindings_Application() throws Exception {
+        CommonTests.test(DDValidAppTests.class, "testEJBExtensionNoBindings");
     }
     
     @Test
-    public void testApplicationExtensions_Application() throws Exception {
-        CommonTests.test(DDValidAppTests.class, "testApplicationExtensions");
+    public void testApplicationExtension_Application() throws Exception {
+        CommonTests.test(DDValidAppTests.class, "testApplicationExtension");
     }
     
     @Test

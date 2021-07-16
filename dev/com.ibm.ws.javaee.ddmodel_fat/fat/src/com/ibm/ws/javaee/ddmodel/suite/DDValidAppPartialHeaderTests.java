@@ -16,8 +16,26 @@ import org.junit.Test;
 
 public class DDValidAppPartialHeaderTests {
 
+    // Expected:
+    // CWWCK27789W: The deployment descriptor Test.ear : META-INF/application.xml, at line 2, with version 5, specifies namespace http://junk but should have namespace http://java.sun.com/xml/ns/javaee.
+    // CWWCK27789W: The deployment descriptor Test.ear : META-INF/permissions.xml, at line 2, with version 7, specifies namespace http://junk but should have namespace http://xmlns.jcp.org/xml/ns/javaee.
+    // CWWCK27789W: The deployment descriptor Test.ear : ServletTest.war : WEB-INF/web.xml, at line 2, with version 3.0, specifies namespace http://junk but should have namespace http://java.sun.com/xml/ns/javaee.
+    // CWWCK27789W: The deployment descriptor Test.ear : EJBTest.jar : META-INF/ejb-jar.xml, at line 2, with version 2.1, specifies namespace http://junk but should have namespace http://java.sun.com/xml/ns/j2ee.
+    // CWWCK27788W: The deployment descriptor Test.ear : ServletTest.war : WEB-INF/ibm-web-bnd.xml, at line 2, specifies namespace http://junk but should have namespace http://websphere.ibm.com/xml/ns/javaee.
+    // CWWCK27788W: The deployment descriptor Test.ear : ServletTest.war : WEB-INF/ibm-web-ext.xml, at line 2, specifies namespace http://junk but should have namespace http://websphere.ibm.com/xml/ns/javaee.
+    // CWWCK27788W: The deployment descriptor Test.ear : ServletTest.war : WEB-INF/ibm-web-ext.xml, at line 2, specifies namespace http://junk but should have namespace http://websphere.ibm.com/xml/ns/javaee.
+    // CWWCK27788W: The deployment descriptor Test.ear : META-INF/ibm-application-ext.xml, at line 2, specifies namespace http://junk but should have namespace http://websphere.ibm.com/xml/ns/javaee.
+    // CWWCK27788W: The deployment descriptor Test.ear : META-INF/ibm-application-ext.xml, at line 2, specifies namespace http://junk but should have namespace http://websphere.ibm.com/xml/ns/javaee.
+    // CWWCK27788W: The deployment descriptor Test.ear : META-INF/ibm-application-bnd.xml, at line 2, specifies namespace http://junk but should have namespace http://websphere.ibm.com/xml/ns/javaee.
+    // CWWCK27788W: The deployment descriptor Test.ear : ServletTest.war : WEB-INF/ibm-web-ext.xml, at line 2, specifies namespace http://junk but should have namespace http://websphere.ibm.com/xml/ns/javaee.
+    // CWWCK27788W: The deployment descriptor Test.ear : ServletTest.war : WEB-INF/ibm-web-bnd.xml, at line 2, specifies namespace http://junk but should have namespace http://websphere.ibm.com/xml/ns/javaee.
+    // CWWCK27788W: The deployment descriptor Test.ear : META-INF/ibm-application-ext.xml, at line 2, specifies namespace http://junk but should have namespace http://websphere.ibm.com/xml/ns/javaee.
+    // CWWCK27788W: The deployment descriptor Test.ear : EJBTest.jar : META-INF/ibm-managed-bean-bnd.xml, at line 1, specifies namespace http://junk but should have namespace http://websphere.ibm.com/xml/ns/javaee.
+    // CWWCK27788W: The deployment descriptor Test.ear : ServletTest.war : WEB-INF/ibm-ws-bnd.xml, at line 2, specifies namespace http://junk but should have namespace http://websphere.ibm.com/xml/ns/javaee.
+    
     public static final String[] ALLOWED_ERRORS = new String[] {
-        // EMPTY
+            "CWWCK27788W",
+            "CWWCK27789W"
     };
 
     @BeforeClass
@@ -59,8 +77,8 @@ public class DDValidAppPartialHeaderTests {
     }
     
     @Test
-    public void testWebExtensions_Application_PH() throws Exception {
-        CommonTests.test(DDValidAppPartialHeaderTests.class, "testWebExtensions");
+    public void testWebExtension_Application_PH() throws Exception {
+        CommonTests.test(DDValidAppPartialHeaderTests.class, "testWebExtension");
     }
     
     @Test
@@ -74,13 +92,13 @@ public class DDValidAppPartialHeaderTests {
     }
     
     @Test
-    public void testEJBExtensions_Application_PH() throws Exception {
-        CommonTests.test(DDValidAppPartialHeaderTests.class, "testEJBExtensions");
+    public void testEJBExtension_Application_PH() throws Exception {
+        CommonTests.test(DDValidAppPartialHeaderTests.class, "testEJBExtension");
     }
     
     @Test
-    public void testAppExtensions_Application_PH() throws Exception {
-        CommonTests.test(DDValidAppPartialHeaderTests.class, "testAppExtensions");
+    public void testApplicationExtension_Application_PH() throws Exception {
+        CommonTests.test(DDValidAppPartialHeaderTests.class, "testApplicationExtension");
     }
     
     @Test

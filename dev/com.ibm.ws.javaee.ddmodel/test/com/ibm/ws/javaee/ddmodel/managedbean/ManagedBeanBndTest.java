@@ -117,11 +117,11 @@ public class ManagedBeanBndTest extends DDTestBase {
             "</managed-bean-bnd>";
 
     private final static String noVersionMBeanBndXML =
-        "<managed-bean-bnd id=\"idvalue0\"" +
-            " xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"" +
-            " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-            " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee ibm-managed-bean-bnd_1_0.xsd\">" +
-        "</managed-bean-bnd>";
+            "<managed-bean-bnd id=\"idvalue0\"" +
+                " xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"" +
+                " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+                " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee ibm-managed-bean-bnd_1_0.xsd\">" +
+            "</managed-bean-bnd>";
 
     private final static String noNamespaceMBeanBndXML =
         "<managed-bean-bnd id=\"idvalue0\" version=\"1.0\"" +
@@ -148,6 +148,13 @@ public class ManagedBeanBndTest extends DDTestBase {
             " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee ibm-managed-bean-bnd_1_0.xsd\">" +
         "</managed-bean-bnd-wrong>";
 
+    private final static String versionOnlyMBeanBndXML =
+            "<managed-bean-bnd id=\"idvalue0\" version=\"1.0\"" +
+                // " xmlns=\"http://websphere.ibm.com/xml/ns/javaee\"" +
+                // " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+                // " xsi:schemaLocation=\"http://websphere.ibm.com/xml/ns/javaee ibm-managed-bean-bnd_1_0.xsd\"" +
+                ">" +
+            "</managed-bean-bnd>";    
     //
     
     private ManagedBeanBnd parseBnd(String ddText) throws Exception {
@@ -231,6 +238,11 @@ public class ManagedBeanBndTest extends DDTestBase {
     @Test
     public void testVersionMissing() throws Exception {
         parseBnd(noVersionMBeanBndXML);
+    }
+
+    @Test
+    public void testVersionOnly() throws Exception {
+        parseBnd(versionOnlyMBeanBndXML);
     }
     
     //

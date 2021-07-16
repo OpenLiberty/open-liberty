@@ -208,11 +208,16 @@ public class EJBJarExtAdapter implements ContainerAdapter<EJBJarExt> {
 
         configModuleNames.removeAll(appModuleNames);
         if ( !configModuleNames.isEmpty() ) {
+            // CWWKC2277E: One or more module names on the {1} element are invalid.
+            // The invalid module name or names are {0}.            
+            Tr.error(tc, "module.name.invalid", configModuleNames, "ejb-jar-ext");
+
+            // TODO:
             // Error encountered while processing extension data {0}:
             // The module name {1} does not match any of configured extension module names {2}.
-            Tr.error(tc, "module.name.not.found",
-                     DDParser.describeEntry(null, moduleInfo.getContainer(), ddEntryName),
-                     moduleInfo.getName(), configModuleNames);
+            // Tr.error(tc, "module.name.not.found",
+            //     DDParser.describeEntry(null, moduleInfo.getContainer(), ddEntryName),
+            //     moduleInfo.getName(), configModuleNames);
         }
      }
 
@@ -224,7 +229,7 @@ public class EJBJarExtAdapter implements ContainerAdapter<EJBJarExt> {
          appOverlay.addToNonPersistentCache(MODULE_NAME_NOT_SPECIFIED, EJBJarExtAdapter.class, MODULE_NAME_NOT_SPECIFIED);
 
          // Error encountered while processing extension data {0}:
-         //     A configured EJB extension is missing a module name.
+         // A configured EJB extension is missing a module name.
          Tr.error(tc, "module.name.not.specified",
                       DDParser.describeEntry(null, moduleInfo.getContainer(), ddEntryPath));
      }
