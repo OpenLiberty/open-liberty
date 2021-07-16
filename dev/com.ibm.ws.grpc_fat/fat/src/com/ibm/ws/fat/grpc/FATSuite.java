@@ -47,6 +47,6 @@ public class FATSuite {
 
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(FeatureReplacementAction.EE9_FEATURES().removeFeature("servlet-4.0").alwaysAddFeature("servlet-5.0").fullFATOnly());
+                    .andWith(FeatureReplacementAction.EE9_FEATURES().removeFeature("servlet-4.0").alwaysAddFeature("servlet-5.0"));
 
 }
