@@ -10,6 +10,13 @@
  *******************************************************************************/
 package com.ibm.ws.jsp23.fat.tests;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -802,6 +809,80 @@ public class JSPTests {
         LOG.info("Servlet response : " + response2.getText());
         assertTrue("The response did not contain: " + expect2, response2.getText().contains(expect2));
         server.deleteFileFromLibertyServerRoot(relEdrPath + orgEdrFile); // cleanup
+        Thread.sleep(500L); // ensure file is deleted
+    }
+
+    /**
+     * Same test as above, but this test verifies that the dependentsList 
+     * is populated when proccessing multiple requests concurrently. 
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testConcurrentRequestsForTrackDependencies() throws Exception {
+        String expect1 = "initial EDR header";
+        String expect2 = "updated EDR header";
+        String orgEdrFile = "headerEDR1.jsp";
+        String updEdrFile = "headerEDR2.jsp";
+        String relEdrPath = "../../shared/config/ExtendedDocumentRoot/";
+        String fullEdrPath = server.getServerRoot() + "/" + relEdrPath;
+        LOG.info("fullEdrPath: " + fullEdrPath);
+
+        // Tests on trackDependencies page     
+        String url = JSPUtils.createHttpUrlString(server, TestEDR_APP_NAME, "trackDependencies.jsp");
+        LOG.info("url: " + url);
+
+        server.copyFileToLibertyServerRoot(relEdrPath, orgEdrFile);
+        WebConversation wc1 = new WebConversation();
+        WebRequest request1 = new GetMethodWebRequest(url);
+
+        // Threading code borrowed from com.ibm.ws.transaction.core_fat.1 - TransactionScopedTest.java
+        final int instances = 2; // minumum of 2 
+
+        final ExecutorService executor = Executors.newFixedThreadPool(instances);
+        final Collection<Future<Boolean>> tasks = new ArrayList<Future<Boolean>>();
+
+        // run the test multiple times concurrently
+        for (int i = 0; i < instances; i++) {
+            tasks.add(executor.submit(new Callable<Boolean>() {
+                @Override
+                public Boolean call() throws Exception {
+                    LOG.info("Thread Started: Making Request!");
+                    wc1.getResponse(request1);
+                    return true;
+                }
+            }));
+        }
+        
+        // check runs completed successfully
+        for (Future<Boolean> task : tasks) {
+            try {
+                if (!task.get())
+                    throw new Exception("0");
+            } catch (Exception e) {
+                throw new Exception("1", e);
+            }
+        }
+
+        WebResponse response1 = wc1.getResponse(request1);
+        LOG.info("Servlet response : " + response1.getText());
+        assertTrue("The response did not contain: " + expect1, response1.getText().contains(expect1));
+
+        Thread.sleep(5000L); // delay a bit to be ensure noticeable time diff on updated EDR file
+        server.copyFileToLibertyServerRoot(relEdrPath, updEdrFile);
+        server.deleteFileFromLibertyServerRoot(relEdrPath + orgEdrFile);
+        server.renameLibertyServerRootFile(relEdrPath + updEdrFile, relEdrPath + orgEdrFile);
+        File updFile = new File(fullEdrPath + orgEdrFile);
+        updFile.setReadable(true);
+        updFile.setLastModified(System.currentTimeMillis());
+
+        WebConversation wc2 = new WebConversation();
+        WebRequest request2 = new GetMethodWebRequest(url);
+        WebResponse response2 = wc2.getResponse(request2);
+        LOG.info("Servlet response : " + response2.getText());
+        assertTrue("The response did not contain: " + expect2, response2.getText().contains(expect2));
+        server.deleteFileFromLibertyServerRoot(relEdrPath + orgEdrFile); // cleanup
+        Thread.sleep(500L); // ensure file is deleted
     }
 
     private void verifyStringsInResponse(String contextRoot, String path, String[] expectedResponseStrings) throws Exception {
