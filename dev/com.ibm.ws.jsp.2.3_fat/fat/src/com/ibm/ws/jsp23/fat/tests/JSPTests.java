@@ -781,7 +781,7 @@ public class JSPTests {
         String url = JSPUtils.createHttpUrlString(server, TestEDR_APP_NAME, "index.jsp");
         LOG.info("url: " + url);
 
-        runEDR(url, true);
+        runEDR(url, false);
     }
 
     /**
@@ -800,7 +800,7 @@ public class JSPTests {
         runEDR(url, true);
     }
 
-    private void runEDR(String url, boolean makeConcurrentRequests){
+    private void runEDR(String url, boolean makeConcurrentRequests) throws Exception {
         String expect1 = "initial EDR header";
         String expect2 = "updated EDR header";
         String orgEdrFile = "headerEDR1.jsp";
@@ -815,7 +815,7 @@ public class JSPTests {
 
         if(makeConcurrentRequests) {
             // Make 2 requests. 
-            makeConcurrentRequests(wc1, request1, 2)
+            makeConcurrentRequests(wc1, request1, 2);
         }
 
         WebResponse response1 = wc1.getResponse(request1);
@@ -839,15 +839,12 @@ public class JSPTests {
         Thread.sleep(500L); // ensure file is deleted
     }
 
-    public void static makeConcurrentRequests(WebConversation wc1, WebRequest request1, Integer numberOfCalls){
-
-        final int instances = 2; // minumum of 2 
-
-        final ExecutorService executor = Executors.newFixedThreadPool(instances);
+    public void makeConcurrentRequests(WebConversation wc1, WebRequest request1, int numberOfCalls) throws Exception {
+        final ExecutorService executor = Executors.newFixedThreadPool(numberOfCalls);
         final Collection<Future<Boolean>> tasks = new ArrayList<Future<Boolean>>();
 
         // run the test multiple times concurrently
-        for (int i = 0; i < instances; i++) {
+        for (int i = 0; i < numberOfCalls; i++) {
             tasks.add(executor.submit(new Callable<Boolean>() {
                 @Override
                 public Boolean call() throws Exception {
