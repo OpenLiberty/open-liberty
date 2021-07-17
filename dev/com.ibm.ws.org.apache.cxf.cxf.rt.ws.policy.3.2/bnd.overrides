@@ -14,7 +14,6 @@ cxfVersion=3.4.3
 
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.3.2
 
-
 Import-Package: \
 !java.*,\
 !com.ctc.wstx.*,\
@@ -36,4 +35,10 @@ javax.xml.bind.attachment;version=!,\
 *
 
 Export-Package: \
+  !schemas, \
+  !schemas.blueprint, \
   org.apache.cxf.ws.policy.*;version=${cxfVersion}
+  
+Private-Package: \
+  schemas, \
+  schemas.blueprint

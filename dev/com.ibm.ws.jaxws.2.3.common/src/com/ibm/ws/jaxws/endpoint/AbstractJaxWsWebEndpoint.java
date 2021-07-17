@@ -228,8 +228,10 @@ public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
 
     protected void updateDestination(HttpServletRequest request) {
 
+        Tr.info(tc, "@TJJ in updateDestination");
         String ad = destination.getEndpointInfo().getAddress();
         if (ad != null && ad.startsWith(HTTP_PREFIX)) {
+            Tr.info(tc, "@TJJ ad != null && ad.startsWith(HTTP_PREFIX) ad = " + ad );
             return;
         }
 
@@ -240,6 +242,7 @@ public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
                 && destination.getAddress().getAddress() != null) {
                 ad = destination.getAddress().getAddress().getValue();
                 if (ad == null) {
+                    Tr.info(tc, "@TJJ ad == nul ad = " + ad );
                     ad = "/";
                 }
             }
@@ -247,10 +250,14 @@ public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
             if (ad != null && !ad.startsWith(HTTP_PREFIX)) {
                 String base = getBaseURL(request);
                 if (disableAddressUpdates) {
+                    
                     request.setAttribute("org.apache.cxf.transport.endpoint.address",
                                          base + ad);
                 } else {
-                    BaseUrlHelper.setAddress(destination, base + ad);
+                    if(destination.getEndpointInfo().getAddress() == null) {
+                      
+                        BaseUrlHelper.setAddress(destination, base + ad);
+                    }
                 }
             }
         }
