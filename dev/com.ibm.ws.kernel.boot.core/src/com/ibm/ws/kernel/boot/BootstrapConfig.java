@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.kernel.boot;
 
-import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -1168,7 +1167,7 @@ public class BootstrapConfig {
      * @return
      */
     protected ReturnCode generateServerEnv(boolean generatePassword) {
-        BufferedWriter bw = null;
+
         File serverEnv = getConfigFile("server.env");
         try {
             char[] keystorePass = PasswordGenerator.generateRandom();
@@ -1188,14 +1187,8 @@ public class BootstrapConfig {
         } catch (IOException ex) {
             throw new LaunchException("Failed to create/update the server.env file for this server", MessageFormat.format(BootstrapConstants.messages.getString("error.create.java8serverenv"),
                                                                                                                           serverEnv.getAbsolutePath()), ex, ReturnCode.LAUNCH_EXCEPTION);
-        } finally {
-            if (bw != null) {
-                try {
-                    bw.close();
-                } catch (IOException ex) {
-                }
-            }
-        }
+        } 
+
         return ReturnCode.OK;
     }
 
