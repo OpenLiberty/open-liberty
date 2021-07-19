@@ -29,6 +29,7 @@
     </Designate>
    
     <OCD description="%orbWrapper.desc" name="%orbWrapper.name" 
+         ibm:objectClass="com.ibm.wsspi.application.lifecycle.ApplicationPrereq"
          id="com.ibm.ws.transport.iiop.internal.ORBWrapper" ibm:alias="orb">
 
         <AD name="%orbWrapper.nameService" description="%orbWrapper.nameService.desc"

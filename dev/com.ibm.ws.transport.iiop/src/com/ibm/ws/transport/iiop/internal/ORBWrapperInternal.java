@@ -46,6 +46,7 @@ import com.ibm.ws.transport.iiop.spi.IIOPEndpoint;
 import com.ibm.ws.transport.iiop.spi.ORBRef;
 import com.ibm.ws.transport.iiop.spi.ServerPolicySource;
 import com.ibm.ws.transport.iiop.spi.SubsystemFactory;
+import com.ibm.wsspi.application.lifecycle.ApplicationPrereq;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 
 /**
@@ -54,7 +55,7 @@ import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 @Component(factory = "com.ibm.ws.transport.iiop.internal.ORBWrapperInternal",
                 property = { "service.vendor=IBM" })
 @DSExt.PersistentFactoryComponent
-public class ORBWrapperInternal extends ServerPolicySourceImpl implements ORBRef, ClientORBRef, ServerPolicySource {
+public class ORBWrapperInternal extends ServerPolicySourceImpl implements ORBRef, ClientORBRef, ServerPolicySource, ApplicationPrereq {
     private static final TraceComponent tc = Tr.register(ORBWrapperInternal.class);
 
     private static final String KEY = "AdapterActivatorOp";
@@ -64,6 +65,7 @@ public class ORBWrapperInternal extends ServerPolicySourceImpl implements ORBRef
     private ConfigAdapter configAdapter;
     private ORB orb;
     private POA rootPOA;
+    private String applicationPrereqId;
 
     private final List<IIOPEndpoint> endpoints = new ArrayList<>();
 
@@ -75,6 +77,7 @@ public class ORBWrapperInternal extends ServerPolicySourceImpl implements ORBRef
     protected void activate(Map<String, Object> properties, ComponentContext cc) throws Exception {
         map.activate(cc);
         super.activate(properties, cc.getBundleContext());
+        applicationPrereqId = (String)properties.get("id");
         try {
             if (endpoints.isEmpty()) {
                 this.orb = configAdapter.createClientORB(properties, subsystemFactories);
@@ -120,6 +123,12 @@ public class ORBWrapperInternal extends ServerPolicySourceImpl implements ORBRef
         }
         super.deactivate();
         map.deactivate(cc);
+    }
+
+
+    @Override
+    public String getApplicationPrereqID() {
+	return applicationPrereqId;
     }
 
     @Reference
@@ -177,5 +186,4 @@ public class ORBWrapperInternal extends ServerPolicySourceImpl implements ORBRef
             return false;
         }
     }
-
 }
