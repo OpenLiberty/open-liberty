@@ -3259,7 +3259,7 @@
     <dependency>
       <groupId>xerces</groupId>
       <artifactId>xercesImpl</artifactId>
-      <version>2.11.0</version>
+      <version>2.12.1</version>
     </dependency>
     <dependency>
       <groupId>xml-apis</groupId>
