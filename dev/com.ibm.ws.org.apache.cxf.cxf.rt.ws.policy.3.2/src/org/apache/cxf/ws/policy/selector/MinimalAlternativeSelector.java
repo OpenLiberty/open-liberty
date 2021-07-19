@@ -43,7 +43,7 @@ public class MinimalAlternativeSelector extends BaseAlternativeSelector {
         Iterator<List<Assertion>> alternatives = policy.getAlternatives();
         while (alternatives.hasNext()) {
             List<Assertion> alternative = alternatives.next();
-            
+            // Liberty change restores behavior of CXF 2.6.2 
             if (engine.supportsAlternative(alternative, assertor, msg)
                 && isCompatibleWithRequest(alternative, request)
                 && (null == choice || alternative.size() < choice.size())) {
