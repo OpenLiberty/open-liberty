@@ -1,0 +1,32 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: z/OS Request Logging Saf
+Bundle-SymbolicName: com.ibm.ws.zos.request.logging.saf
+Bundle-Description: z/OS Request Logging Saf; version=${bVersion}
+
+WS-TraceGroup: zosRequestLoggingSaf
+
+Private-Package: com.ibm.ws.zos.request.logging.saf.internal*
+
+-dsannotations: \
+  com.ibm.ws.zos.request.logging.saf.internal.ZosRequestLoggingSafServiceImpl
+
+-buildpath: \
+	com.ibm.websphere.appserver.spi.logging;version=latest,\
+	com.ibm.websphere.security;version=latest,\
+	com.ibm.ws.security.credentials.saf;version=latest,\
+	com.ibm.ws.zos.core;version=latest,\
+	com.ibm.ws.zos.request.logging;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

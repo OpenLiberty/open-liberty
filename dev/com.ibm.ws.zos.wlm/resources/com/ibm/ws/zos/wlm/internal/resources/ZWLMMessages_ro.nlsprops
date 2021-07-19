@@ -1,0 +1,113 @@
+###############################################################################
+# Copyright (c) 2011, 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.wlm/resources/com.ibm.ws.zos.wlm.internal.resources/ZWLMMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB zOS WLM Processing
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR 
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0151-0200: WLM Services
+# -------------------------------------------------------------------------------------------------
+
+#{0}
+NATIVE_SERVICE_OOM=CWWKB0151E: Rutina nativ\u0103 ({0}) a \u00eent\u00e2lnit o condi\u0163ie \u00een afara memoriei.
+NATIVE_SERVICE_OOM.explanation=Serverul a condus o rutin\u0103 nativ\u0103 ce a \u00eent\u00e2lnit o condi\u0163ie \u00een afara memoriei.
+NATIVE_SERVICE_OOM.useraction=Examina\u0163i jurnalele serverului \u015fi mediul runtime pentru a determina motivul pentru e\u015fecul codului nativ.
+
+#{0}
+#{1}
+NATIVE_SERVICE_WLM_FAILURE=CWWKB0152E: Rutina nativ\u0103 ({0}) a primit un cod motiv de e\u015fec ({1}) de la WLM.
+NATIVE_SERVICE_WLM_FAILURE.explanation=Serverul a condus o metod\u0103 nativ\u0103 ce a apelat serviciul WLM referen\u0163iat.  Acest cod motiv din serviciul WLM indic\u0103 motivul pentru e\u015fec.
+NATIVE_SERVICE_WLM_FAILURE.useraction=Folosi\u0163i codul motiv WLM pentru a determina motivul pentru e\u015fec.
+
+#{0}
+#{1}
+NATIVE_SERVICE_ERRNO=CWWKB0153E: Rutin\u0103 nativ\u0103 ({0}) a e\u015fuat cu urm\u0103toarea eroare ({1}).
+NATIVE_SERVICE_ERRNO.explanation=Serverul a condus o metod\u0103 nativ\u0103 ce a apelat serviciul WLM referen\u0163iat.  Eroarea din serviciul WLM indic\u0103 motivul e\u015fu\u0103rii.
+NATIVE_SERVICE_ERRNO.useraction=Utiliza\u0163i valoarea errno pentru a determina motivul e\u015fu\u0103rii.
+
+#{0}
+#{1}
+#{2}
+#{3}
+#{4}
+NATIVE_SERVICE_FAILED_GENERIC=CWWKB0154E: Rutina nativ\u0103 a e\u015fuat, serviciul WebSphere Application Server ({0}) RC({1}), serviciul WLM ({2}) RC({3}) RSN({4}).
+NATIVE_SERVICE_FAILED_GENERIC.explanation=Serverul a condus o metod\u0103 nativ\u0103 care a e\u015fuat.  Serviciul WebSphere Application Server \u0163int\u0103 \u015fi codul de motiv sunt furnizate.  Serviciul WLM \u0163int\u0103 cu coduri retur \u015fi motiv sunt de asemenea furnizate.
+NATIVE_SERVICE_FAILED_GENERIC.useraction=Utiliza\u0163i returnarea \u015fi codul de motiv pentru a determina motivul pentru e\u015fuare.
+
+#{0}
+NATIVE_SERVICE_PC=CWWKB0155E: Rutina nativ\u0103 ({0}) a primit un cod de retur nea\u015fteptat ({1}) de la serviciul PC autorizat.
+NATIVE_SERVICE_PC.explanation=Serverul a condus o metod\u0103 nativ\u0103 pentru a realiza o apelare de serviciu autorizat.  A recep\u0163ionat un cod motiv diferit de zero de la PC-ul (Program Call) autorizat.
+NATIVE_SERVICE_PC.useraction=Examina\u0163i jurnalele serverului \u015fi mediul runtime pentru a determina motivul pentru e\u015fuarea de cod nativ.
+
+#{0} 
+NATIVE_SERVICE_FAILED_TO_REGISTER=CWWKB0156E: Rutina nativ\u0103 ({0}) nu a reu\u015fit s\u0103 \u00eenregistreze WLM Enclave \u00een registrul nativ.
+NATIVE_SERVICE_FAILED_TO_REGISTER.explanation=Serverul a condus o metod\u0103 nativ\u0103 s\u0103 realizeze un apel de serviciu autorizat.  Acesta a finalizat cu succes invocarea serviciului WLM nativ, dar nu a reu\u015fit s\u0103 \u00eenregistreze Enclave WLM \u00een registrul nativ.
+NATIVE_SERVICE_FAILED_TO_REGISTER.useraction=Examina\u0163i jurnalele serverului \u015fi mediul runtime pentru a determina motivul pentru e\u015fecul codului nativ.
+
+#{0} 
+NATIVE_SERVICE_REGISTRY_FAILED_VALIDATE=CWWKB0157E: Rutina nativ\u0103 ({0}) nu a reu\u015fit s\u0103 valideze WLM Enclave \u00een registrul nativ.
+NATIVE_SERVICE_REGISTRY_FAILED_VALIDATE.explanation=Jetonul livrat care reprezint\u0103 un WLM Enclave nu a reu\u015fit validarea \u00een registrul nativ.  
+NATIVE_SERVICE_REGISTRY_FAILED_VALIDATE.useraction=Examina\u0163i jurnalele serverului \u015fi mediul runtime pentru a determina motivul pentru e\u015fecul codului nativ.
+
+#{0} 
+NATIVE_SERVICE_UNAUTH_SERVICE_NOTFOUND=CWWKB0158E: Rutina nativ\u0103 ({0}) nu a reu\u015fit s\u0103 localize rutina nativ\u0103 stub neautorizat.
+NATIVE_SERVICE_UNAUTH_SERVICE_NOTFOUND.explanation=Nu a fost g\u0103sit un serviciu nativ necesar pentru procesarea apelului serviciului.  
+NATIVE_SERVICE_UNAUTH_SERVICE_NOTFOUND.useraction=Examina\u0163i jurnalele serverului \u015fi mediul runtime pentru a determina motivul pentru e\u015fecul codului nativ.
+
+#{0} 
+NATIVE_SERVICE_BPX4IPT_FAILED=CWWKB0159E: Rutina nativ\u0103 ({0}) a primit un rezultat nea\u015fteptat de la BPX4IPT.
+NATIVE_SERVICE_BPX4IPT_FAILED.explanation=O \u00eencercare de a conduce un apel de serviciu folosind BPX4IPT al serviciului nativ a e\u015fuat.  
+NATIVE_SERVICE_BPX4IPT_FAILED.useraction=Examina\u0163i jurnalele serverului \u015fi mediul runtime pentru a determina motivul pentru e\u015fecul codului nativ.
+
+#{0} 
+CONFIG_INVALID_COLLECTIONNAME=CWWKB0160W: Valoarea de configurare Workload Management pentru atributulcollectionName ({0}) a fost trunchiat\u0103.
+CONFIG_INVALID_COLLECTIONNAME.explanation=Valoarea livrat\u0103 pentru atributul collectionName a dep\u0103\u015fit maximul de 18 caractere.  Vor fi folosite primele 18 caractere.
+CONFIG_INVALID_COLLECTIONNAME.useraction=Actualiza\u0163i configura\u0163ia serverului pentru a specifica o valoare corect\u0103 pentru atributul collectionName.
+
+#{0}
+CONFIG_NO_COLLECTIONNAME=CWWKB0161W: Valoarea de configurare Workload Management pentru atributul collectionName este null sau gol. Va fi utilizat\u0103 valoarea implicit\u0103 ({0}).
+CONFIG_NO_COLLECTIONNAME.explanation=Valoarea livrat\u0103 pentru atributul collectionName este null sau goal\u0103.  
+CONFIG_NO_COLLECTIONNAME.useraction=Actualiza\u0163i configura\u0163ia serverului pentru a specifica o valoare pentru atributul collectionName.
+
+#{0}
+#{1}
+CLASSIFICATION_TRANCLASS_TRUNCATED=CWWKB0162W: Valoarea WLM Classification Configuration pentru atributul transactionClass a fost trunchiat\u0103 de la ({0}) la ({1}).
+CLASSIFICATION_TRANCLASS_TRUNCATED.explanation=A fost specificat\u0103 o regul\u0103 de clasificare care con\u0163ine o clas\u0103 de tranzac\u0163ie mai mare de 8 caractere. Acesta a fost trunchiat\u0103 pentru a avea doar 8 caractere.
+CLASSIFICATION_TRANCLASS_TRUNCATED.useraction=Actualiza\u0163i regula de clasificare asociat\u0103 pentru a specifica o valoare corect\u0103 pentru atributul transactionClass.
+
+#{0}
+CLASSIFICATION_DROPPED_TOO_MANY_WILDCARDS=CWWKB0163W: Valoarea WLM Classification Configuration pentru atributul resursei utilizeaz\u0103 metacaractere incorecte.  ({0}) con\u0163ine prea multe metacaractere consecutive.
+CLASSIFICATION_DROPPED_TOO_MANY_WILDCARDS.explanation=A fost specificat\u0103 o regul\u0103 de clasificare care con\u0163ine un \u015fir de resurs\u0103 cu prea multe metacaractere consecutive. \u015eirul de resurs\u0103 specificat con\u0163ine prea multe metacaractere consecutive. (Pot fi folosite p\u00e2n\u0103 la dou\u0103 consecutiv)
+CLASSIFICATION_DROPPED_TOO_MANY_WILDCARDS.useraction=Actualiza\u0163i regula de clasificare asociat\u0103 pentru a specifica un \u015fir de resurs\u0103 valid corect\u00e2nd utilizarea de metacaractere.
+
+#{0}
+CLASSIFICATION_DROPPED_BAD_WILDCARD=CWWKB0164W: Valoarea WLM Classification Configuration pentru atributul resursei utilizeaz\u0103 metacaractere incorecte. ({0}) con\u0163ine folosirea incorect\u0103 de metacaractere duble.
+CLASSIFICATION_DROPPED_BAD_WILDCARD.explanation=A fost specificat\u0103 o regul\u0103 de clasificare care con\u0163ine un \u015fir de resurs\u0103 ce utilizeaz\u0103 metacaractere duble.
+CLASSIFICATION_DROPPED_BAD_WILDCARD.useraction=Actualiza\u0163i regula de clasificare asociat\u0103, pentru a specifica un \u015fir de resurs\u0103 valid, elimin\u00e2nd metacaracterele duble.
+
+#{0}
+WLM_CURRENT_HEALTH_PERCENTAGE=CWWKB0165I: Procentajul de s\u0103n\u0103tate WLM pentru server este acum {0}.
+WLM_CURRENT_HEALTH_PERCENTAGE.explanation=Acest mesaj anun\u0163\u0103 c\u0103 este furnizat un nou factor de s\u0103n\u0103tate c\u0103tre WLM pentru server, utiliz\u00e2nd API-ul IWM4HLTH.
+WLM_CURRENT_HEALTH_PERCENTAGE.useraction=Nu este necesar\u0103 nicio ac\u0163iune.

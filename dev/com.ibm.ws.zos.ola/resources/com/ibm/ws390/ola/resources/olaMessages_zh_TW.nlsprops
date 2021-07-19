@@ -1,0 +1,305 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# DISCLAIMER OF WARRANTIES:  The following [enclosed] code is sample
+# code created by IBM Corporation.  This sample code is not part of
+# any standard or IBM product and is provided to you solely for the
+# purpose of assisting you in the development of your applications.
+# The code is provided "AS IS", without warranty of any kind.  IBM
+# shall not be liable for any damages arising out of your use of the
+# sample code, even if they have been advised of the possibility of
+# such damages.
+#-----------------------------------------------------------------------
+#
+# Translator Instructions:
+#
+# The messages to be translated are contained in key/text pairs and
+# contains three parts:
+#
+# 1) A key (a text string) which is an identifier used by the code to
+#    retrieve data.  This is required - and SHOULD NOT be translated.
+# 2) A equals ("=") sign separating the key and text.  This is required.
+# 3) A string containing data that will be displayed to
+#    the user when running the application.  This is required and
+#    SHOULD be translated.
+# 4) %%SERVICETEXT%% - (Is substitued by a text description which  
+#        is done by the book generation tool) 
+#    - for the complete text description see: include/private/bborabnd.mac 
+#
+# In short, each line in the resource array contains two strings.
+# The SECOND quoted string on each line should be translated.
+#
+#-----------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.zos.ola/resources/com/ibm/ws390/ola/resources/olaMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB zOS WOLA Processing
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR 
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0351-0400: WOLA Resource Adapter
+# -------------------------------------------------------------------------------------------------
+
+# Messages for DISPLAY,ADAPTER command.
+
+#{0} is the registration type, a single character.
+#{1} is the job name of the Liberty server, a text string between 1-8 characters
+#{2} is the registration name of the Liberty server, a text string between 1-12 characters
+CWWKB0351I=CWWKB0351I: \u985e\u578b\uff1a{0}\uff0c\u5de5\u4f5c\u540d\u7a31\uff1a{1}\uff0c\u540d\u7a31\uff1a{2}
+CWWKB0351I.explanation=\u8a73\u7d30\u767b\u9304\u6e05\u55ae\u6307\u4ee4\u7684\u7b2c\u4e00\u884c\u56de\u61c9\u3002
+CWWKB0351I.useraction=\u7121
+#-----------------------------------------------------------------------
+
+#{0} is the job number corresponding to the registration which is being described
+#{1} is either 'true' or 'false'
+#{2} is a number >= 0.
+CWWKB0352I=CWWKB0352I:  \u5de5\u4f5c\u865f\u78bc\uff1a{0}\uff0c\u4f5c\u7528\u4e2d\uff1a{1}\uff0c\u4f5c\u7528\u4e2d\u9023\u7dda\u6578\uff1a{2}
+CWWKB0352I.explanation=\u8a73\u7d30\u767b\u9304\u6e05\u55ae\u6307\u4ee4\u7684\u7b2c\u4e8c\u884c\u56de\u61c9\u3002
+CWWKB0352I.useraction=\u7121
+#-----------------------------------------------------------------------
+
+#{0} is a number >= 0.
+#{1} is a number >= 0.
+#{2} is a number >= 0 (representing the state of the registration)
+#{3} is a number >= 0
+CWWKB0353I=CWWKB0353I: \u9023\u7dda\u6578\u4e0b\u9650\uff1a{0}\uff0c\u9023\u7dda\u6578\u4e0a\u9650\uff1a{1}\uff0c\u72c0\u614b\uff1a{2}\uff0c\u8ffd\u8e64\u5c64\u6b21\uff1a{3}
+CWWKB0353I.explanation=\u8a73\u7d30\u767b\u9304\u6e05\u55ae\u6307\u4ee4\u7684\u7b2c\u4e09\u884c\u56de\u61c9\u3002
+CWWKB0353I.useraction=\u7121
+#-----------------------------------------------------------------------
+
+CWWKB0354I=CWWKB0354I: \u540d\u7a31         \u5de5\u4f5c\u540d\u7a31  SWT TL \u4e0b\u9650  \u4e0a\u9650  \u4f5c\u7528\u4e2d  \u72c0\u614b
+CWWKB0354I.explanation=\u5217\u8868\u767b\u9304\u6e05\u55ae\u6307\u4ee4\u7684\u6a19\u982d\u56de\u61c9\u3002
+CWWKB0354I.useraction=\u7121
+#-----------------------------------------------------------------------
+
+#{0} is a string, corresponding to 'Name' in message CWWKB0354I
+#{1} is a string, corresponding to 'Jobname' in message CWWKB0354I
+#{2} is a three digit number, corresponding to "SWT" in message CWWKB0354I
+#{3} is a two digit number, corresponding to "TL" in message CWWKB0354I
+#{4} is a number, corresponding to 'Min' in message CWWKB0354I
+#{5} is a number, corresponding to 'Max' in message CWWKB0354I
+#{6} is a number, corresponding to 'Active'	in message CWWKB0354I
+#{7} is a number, corresponding to 'State' in message CWWKB0354I
+CWWKB0355I=CWWKB0355I: {0} {1} {2} {3} {4} {5} {6} {7}
+CWWKB0355I.explanation=\u5217\u8868\u6307\u4ee4\u7684 RGE \u5217\u56de\u61c9\uff1aMODIFY,DISPLAY,ADAPTER,RGE,*
+CWWKB0355I.useraction=\u7121
+#-----------------------------------------------------------------------
+
+#{0} is a number
+#{1} is a number >= 0
+#{2} is a string from 1-8 characters.
+CWWKB0356I=CWWKB0356I: \u72c0\u614b\uff1a\u7248\u672c\uff1a{0}\uff0c\u9023\u7dda\u6578\u4e0a\u9650\uff1a{1}\uff0cWOLA \u7fa4\u7d44\u540d\u7a31\uff1a{2}
+CWWKB0356I.explanation=\u6307\u4ee4\u7684\u56de\u61c9\uff1aMODIFY DISPLAY,ADAPTER,STATUS
+CWWKB0356I.useraction=\u7121
+#-----------------------------------------------------------------------
+CWWKB0357I=CWWKB0357I: \u986f\u793a\u4f3a\u670d\u5668\u7684\u767b\u9304\uff1a
+CWWKB0357I.explanation=\u6307\u4ee4\u7684\u56de\u61c9\uff1aMODIFY DISPLAY,ADAPTER,REGISTRATIONS
+CWWKB0357I.useraction=\u7121
+#-----------------------------------------------------------------------
+CWWKB0358I=CWWKB0358I: \u986f\u793a WOLA \u7fa4\u7d44\u7684\u767b\u9304\uff1a
+CWWKB0358I.explanation=\u6307\u4ee4\u7684\u56de\u61c9\uff1aMODIFY DISPLAY,ADAPTER,GROUPRGES
+CWWKB0358I.useraction=\u7121
+#-----------------------------------------------------------------------
+CWWKB0359I=CWWKB0359I: \u53ef\u80fd\u7684\u914d\u63a5\u5668\u6307\u4ee4\uff1a\uff08\u7bc4\u4f8b\uff1aDISPLAY,ADAPTER,STATUS\uff09
+CWWKB0359I.explanation=\u4e0d\u660e ADAPTER \u6307\u4ee4\u6216 HELP \u6307\u4ee4\u7684\u56de\u61c9
+CWWKB0359I.useraction=\u7121
+#-----------------------------------------------------------------------
+#{0} is a string (an option name)
+#{1} is a description (of the option in #0)
+CWWKB0360I=CWWKB0360I: {0} - {1}
+CWWKB0360I.explanation=\u986f\u793a\u6307\u4ee4\u6216\u641c\u5c0b\u9078\u9805\u548c\u5176\u8aaa\u660e
+CWWKB0360I.useraction=\u7121
+#-----------------------------------------------------------------------
+#{0} is a string which the user supplied
+CWWKB0361I=CWWKB0361I: \u7121\u6548\u7684\u9078\u9805\u6216\u8a18\u865f\uff1a{0}
+CWWKB0361I.explanation=\u986f\u793a\u932f\u8aa4\u8a0a\u606f\uff0c\u6307\u51fa\u9078\u9805\u6216\u8a18\u865f\u7121\u6548
+CWWKB0361I.useraction=\u7121
+#-----------------------------------------------------------------------
+CWWKB0362I=CWWKB0362I: \u8aaa\u660e\uff1a\u7121\u6548\u7684\u5e03\u6797\u503c\uff1a\u539f\u9810\u671f\u70ba TRUE/FALSE \u6216 0/1
+CWWKB0362I.explanation=\u986f\u793a\u932f\u8aa4\u8a0a\u606f\uff0c\u6307\u51fa\u7121\u6548\u7684\u5e03\u6797\u503c
+CWWKB0362I.useraction=\u7121
+#-----------------------------------------------------------------------
+CWWKB0363I=CWWKB0363I: \u8aaa\u660e\uff1a\u7121\u6548\u7684\u6578\u503c
+CWWKB0363I.explanation=\u986f\u793a\u932f\u8aa4\uff0c\u6307\u51fa\u7121\u6548\u7684\u6578\u503c
+CWWKB0363I.useraction=\u7121
+#-----------------------------------------------------------------------
+CWWKB0364I=CWWKB0364I: \u8aaa\u660e\uff1a\u7121\u6548\u7684\u5c6c\u6027\u540d\u7a31
+CWWKB0364I.explanation=\u986f\u793a\u932f\u8aa4\u8a0a\u606f\uff0c\u6307\u51fa\u641c\u5c0b\u6642\u5c6c\u6027\u540d\u7a31\u7121\u6548
+CWWKB0364I.useraction=\u7121
+#-----------------------------------------------------------------------
+CWWKB0365I=CWWKB0365I: \u8aaa\u660e\uff1a\u4e0d\u61c9\u5305\u542b\u591a\u500b =
+CWWKB0365I.explanation=\u986f\u793a\u932f\u8aa4\uff0c\u6307\u51fa\u641c\u5c0b\u9078\u9805\u542b\u6709\u591a\u500b = \u7b26\u865f
+CWWKB0365I.useraction=\u7121
+#-----------------------------------------------------------------------
+CWWKB0366I=CWWKB0366I: \u6709\u6548\u7684\u641c\u5c0b\u9078\u9805\uff1a
+CWWKB0366I.explanation=\u986f\u793a\u6a19\u982d\u4f86\u5217\u51fa\u6709\u6548\u7684\u641c\u5c0b\u9078\u9805\u548c\u5176\u985e\u578b
+CWWKB0366I.useraction=\u7121
+#-----------------------------------------------------------------------
+#{0} is a string
+CWWKB0367I=CWWKB0367I: {0}
+CWWKB0367I.explanation=\u986f\u793a\u641c\u5c0b\u9078\u9805\u548c\u5176\u985e\u578b
+CWWKB0367I.useraction=\u7121
+#-----------------------------------------------------------------------
+#{0} is a string
+CWWKB0368I=CWWKB0368I: {0} \u986f\u793a OLA \u72c0\u614b
+CWWKB0368I.explanation=STATUS \u6307\u4ee4\u7684\u8aaa\u660e
+CWWKB0368I.useraction=\u7121
+#-----------------------------------------------------------------------
+#{0} is a string
+CWWKB0369I=CWWKB0369I: {0} \u986f\u793a\u73fe\u884c\u4f3a\u670d\u5668\u7684\u767b\u9304
+CWWKB0369I.explanation=STATUS \u6307\u4ee4\u7684\u8aaa\u660e
+CWWKB0369I.useraction=\u7121
+#-----------------------------------------------------------------------
+#{0} is a string
+CWWKB0370I=CWWKB0370I: {0} \u986f\u793a\u7d66\u5b9a\u4f3a\u670d\u5668\u540d\u7a31\u7684\u767b\u9304
+CWWKB0370I.explanation=STATUS \u6307\u4ee4\u7684\u8aaa\u660e
+CWWKB0370I.useraction=\u7121
+#-----------------------------------------------------------------------
+#{0} is a string
+CWWKB0371I=CWWKB0371I: {0} \u986f\u793a WOLA \u7fa4\u7d44\u7684\u767b\u9304
+CWWKB0371I.explanation=STATUS \u6307\u4ee4\u7684\u8aaa\u660e
+CWWKB0371I.useraction=\u7121
+#-----------------------------------------------------------------------
+#{0} is a string
+CWWKB0372I=CWWKB0372I: {0} \u53c3\u95b1 DISPLAY,ADAPTER,SEARCHRGES,HELP \u4ee5\u53d6\u5f97\u8cc7\u8a0a
+CWWKB0372I.explanation=STATUS \u6307\u4ee4\u7684\u8aaa\u660e
+CWWKB0372I.useraction=\u7121
+#-----------------------------------------------------------------------
+#{0} is a string (a server name supplied by the user)
+CWWKB0373I=CWWKB0373I: \u627e\u4e0d\u5230\u540d\u7a31\u662f {0} \u7684\u4f3a\u670d\u5668
+CWWKB0373I.explanation=DISPLAY,ADAPTER,REGISTRATIONS,servername \u6307\u4ee4\u7684\u932f\u8aa4\u8a0a\u606f
+CWWKB0373I.useraction=\u7121
+#-----------------------------------------------------------------------
+CWWKB0374I=CWWKB0374I: \u9019\u9805\u767b\u9304\u4e0d\u5305\u542b\u4efb\u4f55\u9023\u7dda\u63a7\u9ede
+CWWKB0374I.explanation=\u7576\u8a73\u7d30 RGE \u8996\u5716\u6c92\u6709\u4efb\u4f55\u9023\u7dda\u63a7\u9ede\u6642\u6240\u986f\u793a\u7684\u8a0a\u606f
+CWWKB0374I.useraction=\u7121
+#-----------------------------------------------------------------------
+CWWKB0375I=CWWKB0375I: ID                  LSCB        \u72c0\u614b
+CWWKB0375I.explanation=\u4ee5\u5217\u8868\u65b9\u5f0f\u986f\u793a\u9023\u7dda\u63a7\u9ede\u7684\u6a19\u982d
+CWWKB0375I.useraction=\u7121
+#-----------------------------------------------------------------------
+#{0} is a hexidecimal integer, corresponding to "ID" in message CWWKB0375I
+#{1} is a hexidecimal integer, corresponding to "LSCB" in message CWWKB0375I
+#{2} is a string describing connection state, corresponding to "State" in message CWWKB0375I
+CWWKB0376I=CWWKB0376I: {0} {1} {2}
+CWWKB0376I.explanation=\u986f\u793a\u767b\u9304\u9023\u7dda\u63a7\u9ede\u7684\u5217
+CWWKB0376I.useraction=\u7121
+#-----------------------------------------------------------------------
+CWWKB0377I=CWWKB0377I: 
+CWWKB0377I.explanation=\u7a7a\u683c\u5217
+CWWKB0377I.useraction=\u7121
+#-----------------------------------------------------------------------
+#{0} Is a string
+CWWKB0378I=CWWKB0378I: {0} \u6574\u500b\u6307\u4ee4\u4e4b\u5f8c\u5c07\u986f\u793a\u5ef6\u4f38\u8cc7\u8a0a
+CWWKB0378I.explanation=DETAILS \u6307\u4ee4\u7684\u8aaa\u660e
+CWWKB0378I.useraction=\u7121
+#-----------------------------------------------------------------------
+CWWKB0379I=CWWKB0379I: \u9019\u90e8\u4f3a\u670d\u5668\u4f7f\u7528\u7684\u300c\u6700\u4f73\u5316\u672c\u7aef\u914d\u63a5\u5668\u300dRAR \u6a94\u9700\u8981\u66f4\u65b0
+CWWKB0379I.explanation=\u9019\u500b\u670d\u52d9\u5957\u4ef6\u5df2\u91dd\u5c0d WebSphere Application Server for z/OS \u7684\u6700\u4f73\u5316\u672c\u7aef\u914d\u63a5\u5668 (OLA) \u7279\u6027\uff0c\u63d0\u4f9b\u4e00\u500b\u5df2\u66f4\u65b0\u7684 RAR \u6a94\u3002\u76ee\u524d\u5b89\u88dd\u7684\u7248\u672c\u53ef\u80fd\u4e0d\u76f8\u5bb9\u65bc\u9019\u500b\u670d\u52d9\u5957\u4ef6\u3002
+CWWKB0379I.useraction=\u8acb\u4ee5\u76ee\u524d\u5b89\u88dd\u7684 WebSphere Application Server for z/OS \u670d\u52d9\u5c64\u6b21\u6240\u63d0\u4f9b\u7684 RAR \u6a94\uff0c\u4f86\u53d6\u4ee3\u5b89\u88dd\u5728\u9019\u500b\u4f3a\u670d\u5668\u5be6\u4f8b\u4e2d\u7684\u300c\u6700\u4f73\u5316\u672c\u7aef\u914d\u63a5\u5668 (OLA)\u300dRAR \u6a94\u3002\u5b89\u88dd\u6307\u793a\u53ef\u5728 WebSphere Application Server for z/OS \u8cc7\u8a0a\u4e2d\u5fc3\u627e\u5230\u3002
+#-----------------------------------------------------------------------
+CWWKB0380E=CWWKB0380E: \u8207 OLA \u767b\u9304 {0} \u4e4b\u9593\u57f7\u884c\u4ea4\u6613\u91cd\u65b0\u540c\u6b65\u6642\u767c\u751f\u932f\u8aa4
+CWWKB0380E.explanation=WebSphere Application Server for z/OS \u8981\u6c42\u8207\u8a0a\u606f\u4e2d\u8b58\u5225\u7684\u300c\u6700\u4f73\u5316\u672c\u7aef\u914d\u63a5\u5668\u300d\u767b\u9304\u540d\u7a31\u9032\u884c\u4ea4\u6613\u91cd\u65b0\u540c\u6b65\u3002\u56e0\u7570\u5e38\u72c0\u6cc1\uff0c\u91cd\u65b0\u540c\u6b65\u7a0b\u5e8f\u672a\u5b8c\u6210\u3002
+CWWKB0380E.useraction=\u7576\u8207 CICS \u91cd\u65b0\u540c\u6b65\u6642\uff0c\u8acb\u78ba\u5b9a\u5c0d\u61c9\u81f3\u767b\u9304\u540d\u7a31\u7684\u300c\u6700\u4f73\u5316\u672c\u7aef\u914d\u63a5\u5668\u300d\u93c8\u7d50\u4f3a\u670d\u5668\u5df2\u555f\u52d5\u3002\u8acb\u67e5\u770b WebSphere Application Server for z/OS \u65e5\u8a8c\u548c FFDC\uff0c\u53d6\u5f97\u8207\u9019\u9805\u91cd\u65b0\u540c\u6b65\u4f5c\u696d\u76f8\u95dc\u806f\u7684\u7570\u5e38\u72c0\u6cc1\u3002\u5982\u679c\u4ecd\u6709\u554f\u984c\uff0c\u8acb\u806f\u7d61\u60a8\u7684\u4e0b\u4e00\u5c64\u652f\u63f4\u4eba\u54e1\u3002
+#-----------------------------------------------------------------------
+CWWKB0381E=CWWKB0381E: \u7576 {0} \u5177\u6709 OLA \u767b\u9304 {1} \u7684\u4ea4\u6613\u6642\uff0c\u767c\u751f\u7570\u5e38\u72c0\u6cc1
+CWWKB0381E.explanation=WebSphere Application Server for z/OS \u5617\u8a66\u5b8c\u6210\u5169\u6bb5\u5f0f\u78ba\u5b9a\u4ea4\u6613\uff0c\u4f46\u5728\u8207\u300c\u6700\u4f73\u5316\u672c\u7aef\u914d\u63a5\u5668\u300d\u767b\u9304\u901a\u8a0a\u6642\u767c\u751f\u932f\u8aa4\u3002\u5982\u679c\u76f8\u540c\u7684\u767b\u9304\u767c\u751f\u91cd\u8907\u7684\u932f\u8aa4\uff0c\u53ef\u80fd\u6703\u6291\u5236\u6b64\u8a0a\u606f\u3002
+CWWKB0381E.useraction=\u8acb\u78ba\u5b9a\u8a0a\u606f\u4e2d\u6307\u540d\u7684\u300c\u6700\u4f73\u5316\u672c\u7aef\u914d\u63a5\u5668\u300d\u767b\u9304\u5df2\u555f\u52d5\u3002\u5728\u4f3a\u670d\u5668\u555f\u52d5\u6642\u7684\u91cd\u65b0\u540c\u6b65\u671f\u9593\uff0c\u57fa\u65bc\u5169\u6bb5\u5f0f\u78ba\u5b9a\u548c\u5047\u8a2d\u4e2d\u65b7\u901a\u8a0a\u5354\u5b9a\u7684\u672c\u8cea\uff0c\u6b64\u8a0a\u606f\u672a\u5fc5\u8868\u793a\u5df2\u767c\u751f\u5931\u6557\u3002\u8acb\u6aa2\u67e5 WebSphere Application Server for z/OS \u65e5\u8a8c\u548c FFDC\uff0c\u53d6\u5f97\u5c0e\u81f4\u767c\u51fa\u6b64\u8a0a\u606f\u7684\u7570\u5e38\u72c0\u6cc1\u7684\u76f8\u95dc\u8a73\u7d30\u8cc7\u6599\u3002\u7570\u5e38\u72c0\u6cc1\u53ef\u80fd\u542b\u6709\u4ea4\u6613 XID\uff0c\u7528\u4f86\u8b58\u5225\u5931\u6557\u7684\u7279\u5b9a\u4ea4\u6613\u548c\u4f5c\u696d\u3002\u5982\u679c\u4ecd\u6709\u554f\u984c\uff0c\u8acb\u806f\u7d61\u60a8\u7684\u4e0b\u4e00\u5c64\u652f\u63f4\u4eba\u54e1\u3002
+#-----------------------------------------------------------------------
+#{0} Is a string representing an IMS OTMA XCF group ID
+#{1} Is a string representing an IMS OTMA XCF server name
+CWWKB0382I=CWWKB0382I: IMS {0} / {1} \u7684\u8a73\u7d30\u8cc7\u6599
+CWWKB0382I.explanation=\u986f\u793a OTMA \u91dd\u5c0d WebSphere Application Server for z/OS \u6240\u9023\u63a5\u7684 IMS \u7cfb\u7d71\u800c\u4f7f\u7528\u7684 XCF \u7fa4\u7d44 ID \u548c XCF \u4f3a\u670d\u5668\u540d\u7a31\u3002\u500b\u5225\u7684\u7528\u6236\u7aef\u540d\u7a31\u6703\u7dca\u63a5\u5728 CWWKB0383I \u8a0a\u606f\u4e2d\u63d0\u4f9b\u3002
+CWWKB0382I.useraction=\u7121
+#-----------------------------------------------------------------------
+#{0} Is a string representing a Liberty server name
+#{1} Is a string representing an IMS OTMA client name
+CWWKB0383I=CWWKB0383I: {0} {1}
+CWWKB0383I.explanation=\u986f\u793a\u7528\u4f86\u9023\u63a5\u524d\u8ff0 CWWKB0382I \u8a0a\u606f\u6240\u8b58\u5225\u4e4b IMS \u7cfb\u7d71\u7684 WebSphere Application Server for z/OS \u4f3a\u670d\u5668\u540d\u7a31\u548c OTMA \u7528\u6236\u7aef\u540d\u7a31\u3002
+CWWKB0383I.useraction=\u7121
+#-----------------------------------------------------------------------
+CWWKB0384I=CWWKB0384I: OTMA \u540d\u7a31\u5132\u5b58\u5340\u4e0d\u5b58\u5728
+CWWKB0384I.explanation=\u5c1a\u672a\u5efa\u7acb\u9019\u500b\u7cfb\u7d71\u7684 OTMA \u540d\u7a31\u5132\u5b58\u5340\uff0c\u7121\u6cd5\u4f7f\u7528 display \u6307\u4ee4\u4f86\u986f\u793a\u3002
+CWWKB0384I.useraction=\u7121
+#-----------------------------------------------------------------------
+#{0} is a string
+CWWKB0385I=CWWKB0385I: {0} \u986f\u793a OTMA \u540d\u7a31\u5132\u5b58\u5340
+CWWKB0385I.explanation=OTMANAMES \u6307\u4ee4\u7684\u8aaa\u660e\u3002
+CWWKB0385I.useraction=\u7121
+#-----------------------------------------------------------------------
+#{0} Is a number >= 0
+CWWKB0386I=CWWKB0386I: \u6bcf\u500b IMS \u7684\u540d\u7a31\u6578\u4e0a\u9650\u662f {0}
+CWWKB0386I.explanation=\u986f\u793a WebSphere Application Server for z/OS \u9023\u63a5\u6bcf\u4e00\u500b IMS \u7cfb\u7d71\u6642\u6240\u80fd\u4f7f\u7528\u7684 OTMA \u7528\u6236\u7aef\u540d\u7a31\u6578\u4e0a\u9650\u3002
+CWWKB0386I.useraction=\u7121
+#-----------------------------------------------------------------------
+#{0} Is a string
+#{1} is a hexidecimal number (a timestamp in STCK format)
+CWWKB0387I=CWWKB0387I: \u7531 {0} \u5728 {1} \u6642\u8a2d\u5b9a
+CWWKB0387I.explanation=\u986f\u793a\u8a2d\u5b9a\u4e86 OTMA \u7528\u6236\u7aef\u540d\u7a31\u6578\u4e0a\u9650\u7684 WebSphere Application Server for z/OS \u5e38\u99d0\u7a0b\u5f0f\u7fa4\u7d44\u540d\u7a31\u3002OTMA \u7528\u6236\u7aef\u540d\u7a31\u53ef\u7528\u4f86\u67e5\u770b WebSphere Application Server for z/OS \u5be6\u4f8b\u9023\u63a5\u4e86\u54ea\u4e9b IMS \u7cfb\u7d71\u3002\u4e5f\u6703\u4ee5 STCK \u683c\u5f0f\u986f\u793a\u8a2d\u5b9a OTMA \u7528\u6236\u7aef\u540d\u7a31\u6578\u4e0a\u9650\u7684\u6642\u9593\u3002OTMA \u7528\u6236\u7aef\u540d\u7a31\u6578\u4e0a\u9650\u662f\u7528 CWWKB0386I \u8a0a\u606f\u986f\u793a\u3002
+CWWKB0387I.useraction=\u7121
+#-----------------------------------------------------------------------
+CWWKB0388W=CWWKB0388W: \u300c\u6700\u4f73\u5316\u672c\u7aef\u914d\u63a5\u5668\u300dRAR \u662f\u4ee5 Proxy \u6a21\u5f0f\u904b\u4f5c\uff0c\u5c07\u4e0d\u6703\u53c3\u8207\u5340\u57df\u6216\u5ee3\u57df\u4ea4\u6613\u3002
+CWWKB0388W.explanation=\u7576\u300c\u6700\u4f73\u5316\u672c\u7aef\u914d\u63a5\u5668\u300dRAR \u5b89\u88dd\u5728 z/OS \u4ee5\u5916\u7684\u5e73\u53f0\u4e0a\u6642\uff0c\u6703\u4ee5 Proxy \u6a21\u5f0f\u904b\u4f5c\uff0c\u4e26\u8207\u5df2\u5b89\u88dd Proxy EJB \u7684 WebSphere Application Server for z/OS \u4f3a\u670d\u5668\u901a\u8a0a\u3002\u4ee5\u9019\u7a2e\u6a21\u5f0f\u57f7\u884c\u6642\uff0c\u4e0d\u652f\u63f4\u4ea4\u6613\u3002\u8cc7\u6e90\u914d\u63a5\u5668\u5c07\u5ffd\u7565\u5b83\u6240\u63a5\u6536\u7684\u4efb\u4f55\u4ea4\u6613\u901a\u8a0a\u5354\u5b9a\u8a0a\u606f\u3002
+CWWKB0388W.useraction=\u7121\u3002\u7576\u8cc7\u6e90\u914d\u63a5\u5668\u5728 Proxy \u6a21\u5f0f\u7b2c\u4e00\u6b21\u5617\u8a66\u53c3\u8207\u4ea4\u6613\u6642\uff0c\u6703\u767c\u51fa\u6b64\u8a0a\u606f\u3002
+#-----------------------------------------------------------------------
+CWWKB0389E=CWWKB0389E: \u5617\u8a66\u5728 Enterprise Java Bean \u76ee\u6a19\uff08JNDI \u8b58\u5225\u540d\u7a31\u662f {0}\uff09\u4e0a\u8655\u7406\u300cWebSphere \u6700\u4f73\u5316\u672c\u7aef\u914d\u63a5\u5668 (WOLA)\u300d\u9060\u7aef\u5de5\u4f5c\u8981\u6c42\u6642\u9047\u5230\u932f\u8aa4\u3002\u767c\u751f\u7684\u7570\u5e38\u72c0\u6cc1\u662f {1}\u3002
+CWWKB0389E.explanation=\u5617\u8a66\u5728\u9060\u7aef Enterprise Java Bean \u76ee\u6a19\u4e0a\u8655\u7406\u300cWebSphere \u6700\u4f73\u5316\u672c\u7aef\u914d\u63a5\u5668 (WOLA)\u300d\u9060\u7aef\u5de5\u4f5c\u8981\u6c42\u6642\u767c\u751f\u932f\u8aa4\u3002
+CWWKB0389E.useraction=\u8acb\u9a57\u8b49\u6240\u63d0\u4f9b\u7684\u300cJava \u547d\u540d\u548c\u76ee\u9304\u4ecb\u9762 (JNDI)\u300d\u540d\u7a31\u6b63\u78ba\u3002\u8acb\u9a57\u8b49 Enterprise Java Bean \u76ee\u6a19\u4f4d\u65bc\u547c\u53eb\u7aef\u53ef\u4ee5\u67e5\u770b\u548c\u547c\u53eb\u5230\u7684\u7bc4\u570d\u5167\u3002\u8acb\u67e5\u770b WebSphere Application Server for z/OS \u65e5\u8a8c\u548c\u300c\u9996\u6b21\u5931\u6557\u8cc7\u6599\u64f7\u53d6 (FFDC)\u300d\uff0c\u53d6\u5f97\u8207 Enterprise Java Bean \u9060\u7aef\u547c\u53eb\u76f8\u95dc\u806f\u7684\u7570\u5e38\u72c0\u6cc1\u3002
+#-----------------------------------------------------------------------
+#{0} is a string representing a transaction identifier (XID)
+CWWKB0390E=CWWKB0390E: \u5931\u6557\u8981\u6c42\u7684\u4ea4\u6613 XID \u662f\uff1a{0}
+CWWKB0390E.explanation=WebSphere Application Server for z/OS \u5728 CWWKB0381E \u8a0a\u606f\u4e2d\u5831\u544a\u4e86\u5931\u6557\u7684\u300cWebSphere \u6700\u4f73\u5316\u672c\u7aef\u914d\u63a5\u5668 (WOLA)\u300d\u4ea4\u6613\u89e3\u6790\u8981\u6c42\u3002\u6b64\u8a0a\u606f\u542b\u6709\u5931\u6557\u8981\u6c42\u7684\u4ea4\u6613 ID\u3002
+CWWKB0390E.useraction=\u4e0d\u9700\u63a1\u53d6\u4efb\u4f55\u52d5\u4f5c\u3002\u6b64\u8a0a\u606f\u4e2d\u7684\u8cc7\u8a0a\u53ef\u80fd\u6709\u52a9\u65bc\u89e3\u6c7a CWWKB0381E \u8a0a\u606f\u6240\u5831\u544a\u7684\u5931\u6557\u3002
+#-----------------------------------------------------------------------
+#{0} is a string representing a registration name
+CWWKB0391E=CWWKB0391E: \u627e\u4e0d\u5230\u6240\u8981\u6c42\u7684\u767b\u9304\u540d\u7a31 {0}
+CWWKB0391E.explanation=\u8cc7\u6e90\u914d\u63a5\u5668\u627e\u4e0d\u5230\u6240\u8981\u6c42\u7684\u767b\u9304\u540d\u7a31\u3002
+CWWKB0391E.useraction=\u8acb\u78ba\u5b9a\u5728 ConnectionFactory \u5167\u5bb9\u6216 getConnection \u8981\u6c42\u4e0a\u63d0\u4f9b\u4e4b ConnectionSpecImpl \u4e2d\u6240\u8f38\u5165\u7684\u767b\u9304\u540d\u7a31\u6b63\u78ba\u3002
+#-----------------------------------------------------------------------
+CWWKB0392W=CWWKB0392W: \u5c1a\u672a\u6307\u5b9a\u300cOTMA \u7528\u6236\u7aef\u300d\u540d\u7a31\u3002
+CWWKB0392W.explanation=\u5fc5\u9808\u5728 ConnectionSpec \u6216\u8005 server.xml \u4e2d\u6307\u5b9a\u300cOTMA \u7528\u6236\u7aef\u300d\u540d\u7a31
+CWWKB0392W.useraction=\u8acb\u78ba\u5b9a\u5728 ConnectionSpec \u4e2d\u5df2\u900f\u904e ConnectionSpecImpl.setOTMAClientName() \u8a2d\u5b9a\u4e86\u300cOTMA \u7528\u6236\u7aef\u300d\u540d\u7a31\uff0c\u6216\u8005\u5728 server.xml \u4e2d\u8a2d\u5b9a\u4e86\u300cOTMA \u7528\u6236\u7aef\u300d\u540d\u7a31\u3002
+#-----------------------------------------------------------------------
+#{0} is a string representing the name of an OTMA Client
+#{1} is a integer representing the maximum allowable length of an OTMA name
+CWWKB0393W=CWWKB0393W: \u6307\u5b9a\u7684\u300cOTMA \u7528\u6236\u7aef\u300d\u540d\u7a31 ({0}) \u70ba\u7a7a\u767d\u3001\u8d85\u904e\u4e86 {1} \u500b\u5b57\u5143\uff0c\u6216\u8005\u5305\u542b A-Z\u30010-9\u3001@\u3001\# \u548c $ \u4ee5\u5916\u7684\u5b57\u5143
+CWWKB0393W.explanation=\u300cOTMA \u7528\u6236\u7aef\u300d\u540d\u7a31\u7684\u9577\u5ea6\u5fc5\u9808\u5728 1 \u5230\u8a0a\u606f\u4e2d\u6307\u51fa\u7684\u9577\u5ea6\u4e4b\u9593\uff0c\u4e14\u300c\u7528\u6236\u7aef\u300d\u540d\u7a31\u53ea\u80fd\u7531\u5b57\u5143 A-Z\u30010-9\u3001@\u3001\# \u6216 $ \u7d44\u6210
+CWWKB0393W.useraction=\u8acb\u63d0\u4f9b\u300cOTMA \u7528\u6236\u7aef\u300d\u540d\u7a31\uff0c\u4e14\u5176\u9577\u5ea6\u5728\u9650\u5236\u5167\uff0c\u4e26\u4e14\u53ea\u4f7f\u7528\u5141\u8a31\u7684\u5b57\u5143\u3002
+#-----------------------------------------------------------------------
+#{0} is a string representing an OTMA Client name
+CWWKB0394I=CWWKB0394I: \u5c07\u4f7f\u7528\u300cOTMA \u7528\u6236\u7aef\u300d\u540d\u7a31 ({0})\u3002
+CWWKB0394I.explanation=\u6307\u5b9a\u7684\u300cOTMA \u7528\u6236\u7aef\u300d\u540d\u7a31\u70ba\u5c07\u4f7f\u7528\u7684\u300cOTMA \u7528\u6236\u7aef\u300d\u540d\u7a31\u3002\u9019\u53ef\u80fd\u4f86\u81ea\u65bc server.xml \u6216 ConnectionSpec\uff0c\u6216\u8005\u5b83\u53ef\u80fd\u662f\u9810\u8a2d\u503c\u3002
+CWWKB0394I.useraction=\u4e0d\u9700\u63a1\u53d6\u4efb\u4f55\u52d5\u4f5c\u3002
+#-----------------------------------------------------------------------
+#{0} is a string representing an OTMA name type, Server, or Group
+#{1} is a string representing the name of an OTMA Server, or OTMA Group
+#{2} is an integer representing the maximum allowable length of an OTMA name
+CWWKB0395E=CWWKB0395E: \u6307\u5b9a\u7684 OTMA {0} \u540d\u7a31 ({1}) \u70ba\u7a7a\u767d\u3001\u8d85\u904e\u4e86 {2} \u500b\u5b57\u5143\uff0c\u6216\u8005\u5305\u542b A-Z\u30010-9\u3001@\u3001\# \u548c $ \u4ee5\u5916\u7684\u5b57\u5143
+CWWKB0395E.explanation=\u6307\u51fa\u7684 OTMA \u540d\u7a31\u9577\u5ea6\u5fc5\u9808\u5728 1 \u5230\u8a0a\u606f\u4e2d\u6307\u5b9a\u7684\u9577\u5ea6\u4e4b\u9593\uff0c\u4e14\u540d\u7a31\u53ea\u80fd\u7531\u5b57\u5143 A-Z\u30010-9\u3001@\u3001\# \u6216 $ \u7d44\u6210
+CWWKB0395E.useraction=\u8acb\u63d0\u4f9b OTMA \u540d\u7a31\uff0c\u4e14\u5176\u9577\u5ea6\u5728\u9650\u5236\u5167\uff0c\u4e26\u4e14\u53ea\u4f7f\u7528\u5141\u8a31\u7684\u5b57\u5143\u3002
+#-----------------------------------------------------------------------
+CWWKB0396E=CWWKB0396E: \u5fc5\u9808\u5728 ConnectionFactory \u6216 ConnectionSpec \u4e2d\u6307\u5b9a\u300cOTMA \u7fa4\u7d44\u300d\u540d\u7a31\u548c\u300cOTMA \u4f3a\u670d\u5668\u300d\u540d\u7a31
+CWWKB0396E.explanation=\u5c1a\u672a\u6307\u5b9a\u300cOTMA \u7fa4\u7d44\u300d\u540d\u7a31\u53ca/\u6216\u300cOTMA \u4f3a\u670d\u5668\u300d\u540d\u7a31\u7684\u503c\u3002
+CWWKB0396E.useraction=\u8acb\u78ba\u5b9a ConnectionFactory \u6216 ConnectionSpec \u4e2d\u6307\u5b9a\u4e86\u300cOTMA \u7fa4\u7d44\u300d\u540d\u7a31\u548c\u300cOTMA \u4f3a\u670d\u5668\u300d\u540d\u7a31\u3002
+#-----------------------------------------------------------------------
+#{0} is a string representing the Maximum configured Receive Message size
+#{1} is a string representing the Max Number of segments configured
+#{2} is a string representing the Reconfigured maximum receive message size 
+CWWKB0397W=CWWKB0397W: \u6307\u5b9a\u7684 OTMA \u914d\u7f6e\u63a5\u6536\u5927\u5c0f\u4e0a\u9650 {0} \u5927\u65bc\u6240\u914d\u7f6e\u4e4b {1} \u5340\u6bb5\u6578\u4e0a\u9650\u6240\u5bb9\u8a31\u7684\u8a0a\u606f\u5927\u5c0f\u4e0a\u9650\u3002\u63a5\u6536\u8a0a\u606f\u5927\u5c0f\u4e0a\u9650\u5df2\u8b8a\u66f4\u70ba {2}\u3002
+CWWKB0397W.explanation=\u6240\u914d\u7f6e\u7684\u63a5\u6536\u8a0a\u606f\u5927\u5c0f\u4e0a\u9650\u5927\u65bc\u6240\u914d\u7f6e\u4e4b\u5340\u6bb5\u6578\u4e0a\u9650\u6240\u80fd\u8655\u7406\u7684\u8a0a\u606f\u5927\u5c0f\u3002\u6bcf\u4e00\u500b\u5340\u6bb5\u53ea\u80fd\u5e36\u6709 32k \u8cc7\u6599\u3002
+CWWKB0397W.useraction=\u8acb\u6aa2\u95b1\u914d\u7f6e\uff0c\u4e26\u78ba\u5b9a\u8a0a\u606f\u9577\u5ea6\u4e0a\u9650\u548c\u5340\u6bb5\u6578\u4e0a\u9650\u914d\u7f6e\u6b63\u78ba\u3002

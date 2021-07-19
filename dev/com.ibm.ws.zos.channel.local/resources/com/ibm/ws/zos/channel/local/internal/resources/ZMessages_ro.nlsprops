@@ -1,0 +1,66 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.channel.local/resources/com.ibm.ws.zos.channel.local.internal.resources/ZMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB zOS Local Channel Processing
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR 
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0301-0350: Local Channel Services
+# -------------------------------------------------------------------------------------------------
+
+#{0}
+#{1}
+NATIVE_SERVICE_LCOM_FAILURE=CWWKB0301E: Rutina nativ\u0103 a recep\u0163ionat ({0}) un cod de motiv de e\u015fuare ({1}) de la Local Communication.
+NATIVE_SERVICE_LCOM_FAILURE.explanation=Serverul a condus o metod\u0103 nativ\u0103 care a apelat serviciul Local Communication referen\u0163iat.  Codul de motiv de la serviciul Local Communication indic\u0103 motivul pentru e\u015fuare.
+NATIVE_SERVICE_LCOM_FAILURE.useraction=Utiliza\u0163i codul de motiv Local Communication pentru a determina motivul pentru e\u015fuare.
+
+#{0}
+#{1}
+#{2}
+#{3}
+#{4}
+NATIVE_SERVICE_FAILED_GENERIC=CWWKB0302E: Rutin\u0103 nativ\u0103 e\u015fuat\u0103, serviciu WebSphere Application Server ({0}) RC({1}), serviciu Local Communication ({2}) RC({3}) RSN({4}).
+NATIVE_SERVICE_FAILED_GENERIC.explanation=Serverul a condus o metod\u0103 nativ\u0103 care a e\u015fuat.  Serviciul WebSphere Application Server \u0163int\u0103 \u015fi codul de motiv sunt furnizate.  Serviciul Local Communication \u0163int\u0103 cu returnare \u015fi codurile de motiv sunt de asemenea furnizate.
+NATIVE_SERVICE_FAILED_GENERIC.useraction=Utiliza\u0163i returnarea \u015fi codul de motiv pentru a determina motivul pentru e\u015fuare.
+
+#{0}
+#{1}
+NATIVE_SERVICE_PC=CWWKB0303E: Rutina nativ\u0103 ({0}) a recep\u0163ionat un cod de motiv nea\u015fteptat ({1}) de la serviciul sau PC autorizat.
+NATIVE_SERVICE_PC.explanation=Serverul a condus o metod\u0103 nativ\u0103 pentru a realiza o apelare de serviciu autorizat.  A recep\u0163ionat un cod motiv diferit de zero de la PC-ul (Program Call) autorizat.
+NATIVE_SERVICE_PC.useraction=Examina\u0163i jurnalele serverului \u015fi mediul runtime pentru a determina motivul pentru e\u015fuarea de cod nativ.
+
+# Do not use 304-305 - deleted prior to WOLA Beta driver.
+
+#{0} 
+INVALID_NATIVE_REQUESTTYPE=CWWKB0306W: Local Communication a recep\u0163ionat un tip de cerere nativ necunoscut ({0}).
+INVALID_NATIVE_REQUESTTYPE.explanation=O cerere Local Communication a fost recep\u0163ionat\u0103 cu un tip de cerere necunoscut.  Cererea va fi ignorat\u0103.
+INVALID_NATIVE_REQUESTTYPE.useraction=Activa\u0163i urm\u0103rire nativ\u0103 pentru a determina cauza pentru tipul de cerere necunoscut.
+
+#{0} is an integer
+#{1} is an integer
+ANGEL_VERSION_INCOMPATIBLE=CWWKB0307E: Procesul angel de pe acest sistem nu este compatibil cu serviciul Local Communication. Versiune angel curent\u0103 este {0}, dar versiunea angel necesar\u0103 este {1}.
+ANGEL_VERSION_INCOMPATIBLE.explanation=Serviciul Local Communication este utilizat pentru a comunica cu clien\u0163i care ruleaz\u0103 pe acela\u015fi sistem ca aceast\u0103 instan\u0163\u0103 de server.  Procesul angel trebuie s\u0103 ruleze la un nivelul minim cerut de serviciul Local Communication.  Nivelul minim cerut este afi\u015fat \u00een mesaj.
+ANGEL_VERSION_INCOMPATIBLE.useraction=Examina\u0163i JCL-ul folosit pentru pornirea procesului angel pentru a vedea din ce director este \u00eenc\u0103rcat.  Versiunea de produs la acel director trebuie s\u0103 fie la acela\u015fi nivel PTF, sau mai mare, dec\u00e2t nivelul PTF al acestei instan\u0163e de server.

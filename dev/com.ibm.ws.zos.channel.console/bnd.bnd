@@ -1,0 +1,40 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: Channel Framework CommandHandler for z/OS
+Bundle-SymbolicName: com.ibm.ws.zos.channel.console
+Bundle-Description: z/OS Command Processing for Channel Framework; version=${bVersion}
+
+#Bundle-Activator: com.ibm.ws.zos.channel.console.ZosCHFWConsoleBundleActivator
+
+WS-TraceGroup: zConsole
+
+#Export-Package: com.ibm.ws.zos.channel.console;provide:=true
+
+
+Private-Package: \
+  com.ibm.ws.zos.channel.console, \
+  com.ibm.ws.zos.channel.console.internal*
+
+-dsannotations: \
+  com.ibm.ws.zos.channel.console.PauseResumeCommandHandler
+
+instrument.classesExcludes: com/ibm/ws/zos/channel/console/internal/resources/*.class
+
+-buildpath: \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+	com.ibm.websphere.appserver.spi.logging;version=latest, \
+	com.ibm.ws.kernel.boot.nested;version=latest, \
+	com.ibm.ws.kernel.service;version=latest, \
+	com.ibm.ws.zos.core;version=latest, \
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest

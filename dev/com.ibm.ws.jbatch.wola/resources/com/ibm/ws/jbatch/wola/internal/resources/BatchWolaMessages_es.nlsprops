@@ -1,0 +1,42 @@
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jbatch.wola/resources/com/ibm/ws/jbatch/wola/internal/resources/BatchWolaMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0250 - 0299: com.ibm.ws.jbatch.wola
+# 
+#
+# Note: do not translate "WOLA", "z/OS Local Adapter", or "batchManagerZos".
+batch.wola.listener.activation=CWWKY0250I: El escucha de proceso por lotes de las solicitudes de adaptador local de z/OS (WOLA) se ha activado, y se ha registrado con el nombre JNDI {0}.
+batch.wola.listener.activation.explanation=El escucha est\u00e1 activo y preparado para recibir solicitudes de clientes que utilicen los adaptadores locales de z/OS (WOLA), incluido el programa de utilidad de proceso por lotes, nativo de z/OS, batchManagerZos.
+
+batch.wola.listener.activation.useraction=No se requiere ninguna acci\u00f3n. 
+ 
+# Note: do not translate "WOLA", "z/OS Local Adapter", or "batchManagerZos".
+batch.wola.listener.deactivation=CWWKY0251I: El escucha de proceso por lotes de las solicitudes de adaptador local de z/OS (WOLA) se ha desactivado.
+batch.wola.listener.deactivation.explanation=El escucha se ha desactivado y ya no dar\u00e1 servicio a las solicitudes de clientes que utilicen los adaptadores locales de z/OS (WOLA), incluido el programa de utilidad de proceso por lotes, nativo de z/OS, batchManagerZos.
+batch.wola.listener.deactivation.useraction=No se requiere ninguna acci\u00f3n. 
+ 

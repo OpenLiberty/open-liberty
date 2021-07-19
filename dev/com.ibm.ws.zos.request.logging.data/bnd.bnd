@@ -1,0 +1,24 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: z/OS Request Logging Data
+Bundle-SymbolicName: com.ibm.ws.zos.request.logging.data
+Bundle-Description: RRS for JCA; version=${bVersion}
+
+WS-TraceGroup: zosRequestLogging
+
+Export-Package: com.ibm.ws.zos.request.logging.data
+
+-buildpath: \
+	com.ibm.ws.logging;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest
