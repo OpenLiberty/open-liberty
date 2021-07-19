@@ -1,0 +1,28 @@
+openapi: 3.0.3
+info:
+  title: test2
+  version: "1.0"
+paths:
+  "/foo":
+    get:
+      responses:
+        202:
+          description: "success"
+    post:
+      responses:
+        202:
+          description: "success"
+      servers:
+        - description: operation level server
+          url: http://example.org/oplevel/test2
+    servers:
+     - description: path level server
+       url: http://example.org/pathlevel/test2
+  "/bar":
+    get:
+      responses:
+        202:
+          description: "success"
+servers:
+ - description: top level server
+   url: http://example.org/toplevel/test2

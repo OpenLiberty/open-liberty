@@ -1,0 +1,72 @@
+openapi: 3.0.3
+info:
+  title: test1
+  version: "1.0"
+paths:
+  "/foo":
+    summary: "foo endpoint"
+    get:
+      summary: "get foos"
+      operationId: "getAllFoo"
+      responses:
+        200:
+          description: "success"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/foo"
+    post:
+      summary: "create a new foo"
+      operationId: "createFoo"
+      responses:
+        200:
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/foo"
+          links:
+            "list":
+              operationId: getAllFoo
+  "/login":
+    post:
+      summary: "user log in"
+      responses:
+        200:
+          description: "success"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sessionKey:
+                    type: string
+        400:
+          description: "failure"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+components:
+  schemas:
+    foo:
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+      required: 
+        - id
+        - name
+    error:
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      required:
+        - code
+        - message

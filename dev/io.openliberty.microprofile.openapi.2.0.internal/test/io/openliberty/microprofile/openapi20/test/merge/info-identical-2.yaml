@@ -1,0 +1,10 @@
+openapi: 3.0.3
+info:
+  title: "test"
+  version: "1.0"
+paths:
+  /testB:
+    get:
+      responses:
+        202:
+          description: "success"

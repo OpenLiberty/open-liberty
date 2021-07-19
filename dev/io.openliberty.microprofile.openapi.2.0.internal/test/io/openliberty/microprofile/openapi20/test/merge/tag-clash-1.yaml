@@ -1,0 +1,23 @@
+openapi: 3.0.3
+info:
+  title: test1
+  version: "1.0"
+paths:
+  "/testA":
+    get:
+      tags:
+       - a
+       - b
+       - c
+       - d
+      responses:
+        202:
+          description: "success"
+tags:
+  - name: a
+    description: description of a
+    externalDocs:
+      url: http://example.org/docs/a
+      description: Reference
+  - name: b
+    description: description of b

@@ -20,4 +20,16 @@
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>bndtools.core.bndnature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>results</name>
+			<type>2</type>
+			<locationURI>PROJECT_LOC/build/libs/autoFVT/results</locationURI>
+		</link>
+		<link>
+			<name>servers</name>
+			<type>2</type>
+			<locationURI>PROJECT_LOC/build/libs/autoFVT/output/servers</locationURI>
+		</link>
+	</linkedResources>
 </projectDescription>

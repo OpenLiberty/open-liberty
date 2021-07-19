@@ -1,0 +1,167 @@
+openapi: 3.0.3
+info:
+  title: Merged documentation
+  version: "1.0"
+paths:
+  "/test1/testfoo":
+    post:
+      parameters: 
+        - $ref: "#/components/parameters/fooParameter"
+      requestBody:
+        $ref: "#/components/requestBodies/fooRequestBody"
+      responses:
+        200:
+          $ref: "#/components/responses/fooResponse"
+        202:
+          description: "success"
+      security:
+        - fooSecurityScheme: []
+      callbacks:
+        test:
+          $ref: "#/components/callbacks/fooCallback"
+  "/test1/testbar":
+    post:
+      parameters: 
+        - $ref: "#/components/parameters/barParameter"
+      requestBody:
+        $ref: "#/components/requestBodies/barRequestBody"
+      responses:
+        200:
+          $ref: "#/components/responses/barResponse"
+        202:
+          description: "success"
+      security:
+        - barSecurityScheme: []
+      callbacks:
+        test:
+          $ref: "#/components/callbacks/barCallback"
+  "/test2/testfoo":
+    post:
+      parameters: 
+        - $ref: "#/components/parameters/fooParameter"
+      requestBody:
+        $ref: "#/components/requestBodies/fooRequestBody"
+      responses:
+        200:
+          $ref: "#/components/responses/fooResponse"
+        202:
+          description: "success"
+      security:
+        - fooSecurityScheme: []
+      callbacks:
+        test:
+          $ref: "#/components/callbacks/fooCallback"
+components:
+  schemas:
+    fooSchema:
+      type: string
+      description: test
+    barSchema:
+      type: string
+      description: test
+  responses:
+    fooResponse:
+      description: test
+      content:
+        text/plain:
+          schema:
+            $ref: "#/components/schemas/fooSchema"
+          examples: 
+            foo:
+              $ref: "#/components/examples/fooExample"
+      headers:
+        foo: 
+          $ref: "#/components/headers/fooHeader"
+      links:
+        foo:
+          $ref: "#/components/links/fooLink"
+    barResponse:
+      description: test
+      content:
+        text/plain:
+          schema:
+            $ref: "#/components/schemas/barSchema"
+          examples: 
+            bar:
+              $ref: "#/components/examples/barExample"
+      headers:
+        bar:
+          $ref: "#/components/headers/barHeader"
+      links:
+        bar:
+          $ref: "#/components/links/barLink"
+  parameters:
+    fooParameter:
+      name: foo
+      description: test
+      in: query
+      required: true
+      schema:
+        type: string
+    barParameter:
+      name: bar
+      description: test
+      in: query
+      required: true
+      schema:
+        type: string
+  examples:
+    fooExample:
+      value: test
+    barExample:
+      value: test
+  requestBodies:
+    fooRequestBody:
+      description: test
+      content: {}
+    barRequestBody:
+      description: test
+      content: {}
+  headers:
+    fooHeader:
+      description: test
+      schema:
+        type: string
+    barHeader:
+      description: test
+      schema:
+        type: string
+  securitySchemes:
+    fooSecurityScheme:
+      name: test
+      type: apiKey
+      in: query
+    barSecurityScheme:
+      name: test
+      type: apiKey
+      in: query
+  links:
+    fooLink: 
+      description: test
+    barLink:
+      description: test
+  callbacks:
+    fooCallback:
+      "$request.body#/callbackURL":
+        post:
+          requestBody:
+            description: test
+            content:
+              'application/json':
+                schema:
+                  type: object
+          responses:
+            202:
+              description: test
+    barCallback:
+      "$request.body#/callbackURL":
+        post:
+          requestBody:
+            description: test
+            content:
+              'application/json':
+                schema:
+                  type: object
+          responses:
+            202:
+              description: test

@@ -1,0 +1,66 @@
+openapi: 3.0.3
+info:
+  title: "Merged documentation"
+  version: "1.0"
+paths:
+  "/test1/testA":
+    get:
+      operationId: getTest
+      responses:
+        202:
+          description: "success"
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/test"
+      responses:
+        200:
+          description: "success"
+          links:
+            idLink:
+              operationId: "getTest"
+            refLink:
+              operationRef: "#/paths/~1test1~1testA/get"
+  "/test2/testB":
+    get:
+      operationId: getTest1
+      responses:
+        202:
+          description: "success"
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/test2"
+      responses:
+        200:
+          description: "success"
+          links:
+            idLink:
+              operationId: "getTest1"
+            refLink:
+              operationRef: "#/paths/~1test2~1testB/get"
+              
+components:
+  schemas:
+    test:
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+      required: 
+        - id
+        - name
+    test2:
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+      required: 
+        - id
+        - name

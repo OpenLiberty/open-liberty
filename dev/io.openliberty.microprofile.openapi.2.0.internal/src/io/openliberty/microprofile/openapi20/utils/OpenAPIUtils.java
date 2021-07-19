@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,12 +12,23 @@ package io.openliberty.microprofile.openapi20.utils;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.BiPredicate;
 
+import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.openapi.OASFactory;
 import org.eclipse.microprofile.openapi.models.OpenAPI;
+import org.eclipse.microprofile.openapi.models.info.Info;
 import org.eclipse.microprofile.openapi.models.servers.Server;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
@@ -33,6 +44,7 @@ import io.smallrye.openapi.api.models.PathsImpl;
 import io.smallrye.openapi.api.models.info.InfoImpl;
 import io.smallrye.openapi.runtime.io.Format;
 import io.smallrye.openapi.runtime.io.OpenApiSerializer;
+import io.smallrye.openapi.runtime.io.info.InfoReader;
 
 public class OpenAPIUtils {
     private static final TraceComponent tc = Tr.register(OpenAPIUtils.class);
@@ -251,5 +263,127 @@ public class OpenAPIUtils {
     
     private OpenAPIUtils() {
         // This class is not meant to be instantiated.
+    }
+
+    /**
+     * Create a shallow copy of an OpenAPI model
+     * <p>
+     * This allows us to replace the servers and info sections without modifying the original model.
+     * 
+     * @param model the original OpenAPI model
+     * @return shallow copy of {@code model}
+     */
+    public static OpenAPI shallowCopy(OpenAPI model) {
+        OpenAPI result = OASFactory.createOpenAPI();
+        
+        // Shallow copy each part
+        result.setOpenapi(model.getOpenapi());
+        result.setComponents(model.getComponents());
+        result.setExtensions(model.getExtensions());
+        result.setExternalDocs(model.getExternalDocs());
+        result.setInfo(model.getInfo());
+        result.setPaths(model.getPaths());
+        result.setSecurity(model.getSecurity());
+        result.setServers(model.getServers());
+        result.setTags(model.getTags());
+        
+        return result;
+    }
+    
+    @FFDCIgnore(JsonProcessingException.class)
+    public static Info getConfiguredInfo(Config config) {
+        Optional<String> infoJson = config.getOptionalValue(Constants.MERGE_INFO_CONFIG, String.class);
+        if (!infoJson.isPresent()) {
+            return null;
+        }
+        
+        try {
+            JsonNode infoNode = new ObjectMapper().readTree(infoJson.get());
+            Info info = InfoReader.readInfo(infoNode);
+            if (info.getTitle() != null && info.getVersion() != null) {
+                return info;
+            } else {
+                Tr.warning(tc, MessageConstants.OPENAPI_MERGE_INFO_INVALID_CWWKO1664W, Constants.MERGE_INFO_CONFIG, infoJson.get());
+                return null;
+            }
+        } catch (JsonProcessingException ex) {
+            Tr.warning(tc, MessageConstants.OPENAPI_MERGE_INFO_PARSE_ERROR_CWWKO1665W, Constants.MERGE_INFO_CONFIG, infoJson.get(), ex.toString());
+            return null;
+        }
+    }
+
+    /**
+     * Check whether all elements of {@code collection} are equal to each other using the given equality function
+     * <p>
+     * Actually assumes that equals is implemented properly and just checks that the first element is equal to all others
+     * <p>
+     * If {@code collection} contains less than two elements, this method will always return {@code true}.
+     * 
+     * @param <T> the element type
+     * @param collection the collection of elements to test for equality
+     * @param comparator the function to use to test equality
+     * @return {@code true} if all elements of {@code collection} are equal, {@code false} otherwise
+     */
+    public static <T> boolean allEqual(Collection<? extends T> collection, BiPredicate<? super T, ? super T> comparator) {
+        Iterator<? extends T> i = collection.iterator();
+        if (!i.hasNext()) {
+            return true;
+        }
+    
+        T first = i.next();
+        while (i.hasNext()) {
+            if (!equals(first, i.next(), comparator)) {
+                return false;
+            }
+        }
+    
+        return true;
+    }
+
+    /**
+     * Tests if two objects are equal, using {@code comparator} to test their equality if both {@code a} and {@code b} are not {@code null}.
+     * 
+     * @param <T> the type of {@code a} and {@code b}
+     * @param a the first object
+     * @param b the second object
+     * @param comparator the comparison function
+     * @return {@code true} if {@code a} and {@code b} are equal, {@code false} otherwise
+     */
+    public static <T> boolean equals(T a, T b, BiPredicate<? super T, ? super T> comparator) {
+        if (a == null) {
+            return b == null ? true : false;
+        } else {
+            return b == null ? false : comparator.test(a, b);
+        }
+    }
+
+    /**
+     * Converts {@code null} to an empty map
+     * 
+     * @param in a map, or {@code null}
+     * @return an empty map if {@code in} is {@code null}, otherwise {@code in}
+     */
+    @Trivial
+    public static <K, V> Map<K, V> notNull(Map<K, V> in) {
+        if (in == null) {
+            return Collections.emptyMap();
+        } else {
+            return in;
+        }
+    }
+
+    /**
+     * Converts {@code null} to an empty list
+     * 
+     * @param in a list, or {@code null}
+     * @return an empty list if {@code in} is {@code null}, otherwise {@code in}
+     */
+    @Trivial
+    public static <V> List<V> notNull(List<V> in) {
+        if (in == null) {
+            return Collections.emptyList();
+        } else {
+            return in;
+        }
     }
 }

@@ -1,0 +1,219 @@
+openapi: 3.0.3
+info:
+  title: "Merged documentation"
+  version: "1.0"
+paths:
+  "/test1/testfoo":
+    post:
+      parameters: 
+        - $ref: "#/components/parameters/fooParameter"
+      requestBody:
+        $ref: "#/components/requestBodies/fooRequestBody"
+      responses:
+        200:
+          $ref: "#/components/responses/fooResponse"
+        202:
+          description: "success"
+      security:
+        - fooSecurityScheme: []
+      callbacks:
+        test1:
+          $ref: "#/components/callbacks/fooCallback"
+  "/test1/testbar":
+    post:
+      parameters: 
+        - $ref: "#/components/parameters/barParameter"
+      requestBody:
+        $ref: "#/components/requestBodies/barRequestBody"
+      responses:
+        200:
+          $ref: "#/components/responses/barResponse"
+        202:
+          description: "success"
+      security:
+        - barSecurityScheme: []
+      callbacks:
+        test1:
+          $ref: "#/components/callbacks/barCallback"
+  "/test2/testfoo":
+    post:
+      parameters: 
+        - $ref: "#/components/parameters/fooParameter1"
+      requestBody:
+        $ref: "#/components/requestBodies/fooRequestBody1"
+      responses:
+        200:
+          $ref: "#/components/responses/fooResponse1"
+        202:
+          description: "success"
+      security:
+        - fooSecurityScheme1: []
+      callbacks:
+        test2:
+          $ref: "#/components/callbacks/fooCallback1"
+components:
+  schemas:
+    fooSchema:
+      type: string
+      description: test1
+    barSchema:
+      type: string
+      description: test1
+    fooSchema1:
+      type: string
+      description: test2
+  responses:
+    fooResponse:
+      description: test1
+      content:
+        text/plain:
+          schema:
+            $ref: "#/components/schemas/fooSchema"
+          examples: 
+            foo:
+              $ref: "#/components/examples/fooExample"
+      headers:
+        foo: 
+          $ref: "#/components/headers/fooHeader"
+      links:
+        foo:
+          $ref: "#/components/links/fooLink"
+    barResponse:
+      description: test1
+      content:
+        text/plain:
+          schema:
+            $ref: "#/components/schemas/barSchema"
+          examples: 
+            bar:
+              $ref: "#/components/examples/barExample"
+      headers:
+        bar:
+          $ref: "#/components/headers/barHeader"
+      links:
+        bar:
+          $ref: "#/components/links/barLink"
+    fooResponse1:
+      description: test2
+      content:
+        text/plain:
+          schema:
+            $ref: "#/components/schemas/fooSchema1"
+          examples: 
+            foo:
+              $ref: "#/components/examples/fooExample1"
+      headers:
+        foo: 
+          $ref: "#/components/headers/fooHeader1"
+      links:
+        foo:
+          $ref: "#/components/links/fooLink1"
+  parameters:
+    fooParameter:
+      name: foo
+      description: test1
+      in: query
+      required: true
+      schema:
+        type: string
+    barParameter:
+      name: bar
+      description: test1
+      in: query
+      required: true
+      schema:
+        type: string
+    fooParameter1:
+      name: foo
+      description: test2
+      in: query
+      required: true
+      schema:
+        type: string
+  examples:
+    fooExample:
+      value: test1
+    barExample:
+      value: test1
+    fooExample1:
+      value: test2
+  requestBodies:
+    fooRequestBody:
+      description: test1
+      content: {}
+    barRequestBody:
+      description: test1
+      content: {}
+    fooRequestBody1:
+      description: test2
+      content: {}
+  headers:
+    fooHeader:
+      description: test1
+      schema:
+        type: string
+    barHeader:
+      description: test1
+      schema:
+        type: string
+    fooHeader1:
+      description: test2
+      schema:
+        type: string
+  securitySchemes:
+    fooSecurityScheme:
+      name: test1
+      type: apiKey
+      in: query
+    barSecurityScheme:
+      name: test1
+      type: apiKey
+      in: query
+    fooSecurityScheme1:
+      name: test2
+      type: apiKey
+      in: query
+  links:
+    fooLink: 
+      description: test1
+    barLink:
+      description: test1
+    fooLink1: 
+      description: test2
+  callbacks:
+    fooCallback:
+      "$request.body#/callbackURL":
+        post:
+          requestBody:
+            description: test1
+            content:
+              'application/json':
+                schema:
+                  type: object
+          responses:
+            202:
+              description: test1
+    barCallback:
+      "$request.body#/callbackURL":
+        post:
+          requestBody:
+            description: test1
+            content:
+              'application/json':
+                schema:
+                  type: object
+          responses:
+            202:
+              description: test1
+    fooCallback1:
+      "$request.body#/callbackURL":
+        post:
+          requestBody:
+            description: test2
+            content:
+              'application/json':
+                schema:
+                  type: object
+          responses:
+            202:
+              description: test2

@@ -1,0 +1,15 @@
+openapi: 3.0.3
+info:
+  title: "Merged documentation"
+  version: "1.0"
+paths:
+  /test1/testA:
+    get:
+      responses:
+        202:
+          description: "success"
+  /test2/testB:
+    get:
+      responses:
+        202:
+          description: "success"
