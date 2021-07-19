@@ -301,6 +301,7 @@ public class FileArtifactNotifier implements ArtifactNotifier {
                 return;
             }
             serviceProperties.put(Constants.SERVICE_VENDOR, "IBM");
+
             // Adding INTERNAL parameter MONITOR_IDENTIFICATION_NAME to identify this monitor.
             serviceProperties.put(com.ibm.ws.kernel.filemonitor.FileMonitor.MONITOR_IDENTIFICATION_NAME, "com.ibm.ws.kernel.monitor.artifact");
 
@@ -379,6 +380,7 @@ public class FileArtifactNotifier implements ArtifactNotifier {
             }
             BundleContext ctx = cfh.getBundleContext();
             nonRecurseServiceProperties.put(Constants.SERVICE_VENDOR, "IBM");
+
             //Adding INTERNAL parameter MONITOR_IDENTIFICATION_NAME to identify this monitor
             nonRecurseServiceProperties.put(com.ibm.ws.kernel.filemonitor.FileMonitor.MONITOR_IDENTIFICATION_NAME, "com.ibm.ws.kernel.monitor.artifact");
 
