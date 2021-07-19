@@ -175,6 +175,7 @@ public class RESTfulServletContainerInitializer extends ResteasyServletInitializ
     }
 
     private void registerResourcesAndProviders(ServletRegistration reg, Set<Class<?>> providers, Set<Class<?>> resources) {
+        reg.setInitParameter("resteasy.proxy.implement.all.interfaces", "true");
         if (resources.size() > 0) {
             StringBuilder builder = new StringBuilder();
             boolean first = true;

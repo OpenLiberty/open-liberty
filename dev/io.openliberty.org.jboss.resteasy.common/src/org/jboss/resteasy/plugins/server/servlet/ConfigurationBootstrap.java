@@ -1,11 +1,12 @@
 package org.jboss.resteasy.plugins.server.servlet;
 
 import org.jboss.resteasy.core.ResteasyDeploymentImpl;
-import org.jboss.resteasy.microprofile.config.ResteasyConfigProvider;
 import org.jboss.resteasy.resteasy_jaxrs.i18n.LogMessages;
 import org.jboss.resteasy.resteasy_jaxrs.i18n.Messages;
+import org.jboss.resteasy.spi.config.Configuration;
 import org.jboss.resteasy.spi.ResteasyConfiguration;
 import org.jboss.resteasy.spi.ResteasyDeployment;
+import org.jboss.resteasy.spi.config.DefaultConfiguration;
 import org.jboss.resteasy.util.HttpHeaderNames;
 
 import javax.ws.rs.core.Application;
@@ -25,6 +26,7 @@ import java.util.Map;
 public abstract class ConfigurationBootstrap implements ResteasyConfiguration
 {
    private ResteasyDeployment deployment = new ResteasyDeploymentImpl();
+   private final Configuration config = new DefaultConfiguration(this);
 
 
    public ResteasyDeployment createDeployment()
@@ -251,6 +253,19 @@ public abstract class ConfigurationBootstrap implements ResteasyConfiguration
       {
          deployment.setStatisticsEnabled(Boolean.valueOf(statisticsEnabled));
       }
+
+      String proxiesImplAllInterfaces = getParameter(ResteasyContextParameters.RESTEASY_PROXY_IMPLEMENT_ALL_INTERFACES);
+      if (proxiesImplAllInterfaces != null)
+      {
+         boolean b = parseBooleanParam(ResteasyContextParameters.RESTEASY_PROXY_IMPLEMENT_ALL_INTERFACES,
+               proxiesImplAllInterfaces);
+         deployment.setProperty(ResteasyContextParameters.RESTEASY_PROXY_IMPLEMENT_ALL_INTERFACES, b);
+      }
+      else
+      {
+         deployment.setProperty(ResteasyContextParameters.RESTEASY_PROXY_IMPLEMENT_ALL_INTERFACES, false);
+      }
+
       return deployment;
    }
 
@@ -349,28 +364,22 @@ public abstract class ConfigurationBootstrap implements ResteasyConfiguration
 
    public String getParameter(String name)
    {
-      String propName = getInitParameter(name);
-      if (propName == null) {
-          if (System.getSecurityManager() == null) {
-              propName = ResteasyConfigProvider.getConfig()
-                              .getOptionalValue(name, String.class)
-                              .orElse(null);
+      String propName = null;
+      if (System.getSecurityManager() == null) {
+         propName = config.getOptionalValue(name, String.class).orElse(null);
 
-          } else {
+      } else {
 
-              try {
-                  propName = AccessController.doPrivileged(new PrivilegedExceptionAction<String>() {
-                      @Override
-                      public String run() throws Exception {
-                          return ResteasyConfigProvider.getConfig()
-                                          .getOptionalValue(name, String.class)
-                                          .orElse(null);
-                      }
-                  });
-              } catch (PrivilegedActionException pae) {
-                  throw new RuntimeException(pae);
-              }
-          }
+         try {
+            propName = AccessController.doPrivileged(new PrivilegedExceptionAction<String>() {
+               @Override
+               public String run() throws Exception {
+                  return config.getOptionalValue(name, String.class).orElse(null);
+               }
+            });
+         } catch (PrivilegedActionException pae) {
+            throw new RuntimeException(pae);
+         }
       }
       return propName;
    }
