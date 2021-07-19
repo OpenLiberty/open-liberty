@@ -140,8 +140,10 @@ public class SMTPTest {
         // which is then used to create the actual GreenMail server
         int smtpPort = Integer.getInteger("smtp_port"); // As per server.xml
 
-        System.out.println("Starting SMTP server on port "+smtpPort);
+        System.out.println("Starting SMTP server on port " + smtpPort);
         ServerSetup smtpSetup = new ServerSetup(smtpPort, "localhost", "smtp");
+        // give mail server 30 seconds to start
+        smtpSetup.setServerStartupTimeout(30000);
 
         smtpServer = new GreenMail(smtpSetup);
         // Start the mailTestServer
