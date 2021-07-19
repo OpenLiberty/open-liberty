@@ -14,6 +14,7 @@ import java.io.File;
 
 import org.eclipse.microprofile.config.spi.Converter;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -91,7 +92,6 @@ public class Config20Tests extends FATServletClient {
                         .addProperty(ConvertersTestServlet.DUPLICATE_CONVERTERS_KEY_1, "input1")
                         .addProperty(ConvertersTestServlet.DUPLICATE_CONVERTERS_KEY_2, "input2")
                         .addProperty(ConvertersTestServlet.DUPLICATE_CONVERTERS_KEY_3, "input3");
-
         /*
          * Build Wars
          */
@@ -109,6 +109,7 @@ public class Config20Tests extends FATServletClient {
 
         WebArchive defaultSourcesWar = ShrinkWrap.create(WebArchive.class, DEFAULT_SOURCES_APP_NAME + ".war")
                         .addPackages(true, DefaultSourcesTestServlet.class.getPackage())
+                        .addAsResource(EmptyAsset.INSTANCE, "META-INF/microprofile-config.properties")
                         .addAsManifestResource(new File("publish/resources/" + DEFAULT_SOURCES_APP_NAME + "/permissions.xml"), "permissions.xml");
 
         WebArchive configPropertiesWar = ShrinkWrap.create(WebArchive.class, CONFIG_PROPERTIES_APP_NAME + ".war")

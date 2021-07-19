@@ -1,1 +1,1 @@
-io.openliberty.microprofile.config.internal.extension.OLSmallRyeConfigExtension
+io.smallrye.config.inject.ConfigExtension

@@ -34,10 +34,13 @@ import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.BadConfigPropertiesBean;
+import io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.BadConfigPropertyBean;
 import io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.BadConfigPropertyInConstructorBean;
 import io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.BadConfigPropertyInMethodBean;
+import io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.BadObserverBean;
+import io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.MissingPropertyExpressionBean;
 import io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.converters.BadConverter;
-import io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.converters.TypeWithBadConverter;
 import io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.converters.TypeWithNoConverter;
 import io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.converters.ValidConverter;
 
@@ -63,7 +66,7 @@ public class Config20ExceptionTests extends FATServletClient {
                         .addProperty("noConverterKey", "aValue");
 
         WebArchive brokenInjectionWar = ShrinkWrap.create(WebArchive.class, BROKEN_INJECTION_APP_NAME + ".war")
-                        .addPackages(true, "io.openliberty.microprofile.config.internal_fat.apps.brokenInjection")
+                        .addPackages(true, BadConfigPropertiesBean.class.getPackage())
                         .addAsServiceProvider(Converter.class, ValidConverter.class, BadConverter.class)
                         .addAsResource(brokenInjectionConfigSource, "META-INF/microprofile-config.properties");
 
@@ -76,8 +79,10 @@ public class Config20ExceptionTests extends FATServletClient {
 
     @Test
     public void testBadObserver() throws Exception {
+        String beanDir = BadObserverBean.class.getName();
         List<String> errors = server
-                        .findStringsInLogs("SRCFG02000: No Config Value exists for required property DOESNOTEXIST");
+                        .findStringsInLogs("SRCFG02000: Failed to Inject @ConfigProperty for key DOESNOTEXIST into " + beanDir
+                                           + ".observerMethod\\(Object, String\\) since the config property could not be found in any config source");
         assertNotNull("error not found", errors);
         assertTrue("error not found: " + errors.size(), errors.size() > 0);
     }
@@ -85,13 +90,16 @@ public class Config20ExceptionTests extends FATServletClient {
     /**
      * Check an appropriate error message occurs when a user tries to Inject a non-existing Config Property without a "name" field into a Method.
      *
-     * Should be: java.lang.IllegalStateException: SRCFG02002: Could not find default name for @ConfigProperty InjectionPoint [BackedAnnotatedParameter] Parameter 1 of
-     * [BackedAnnotatedMethod] @Inject public io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.ConfigUnnamedMethodInjectionBean.aMethod(@ConfigProperty String)
+     * Should be: io.smallrye.config.inject.ConfigException: SRCFG02001: Failed to Inject @ConfigProperty for key null into
+     * io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.BadConfigPropertyInConstructorBean(String) SRCFG02002: Could not find default name for @ConfigProperty
+     * InjectionPoint [BackedAnnotatedParameter] Parameter 1 of [BackedAnnotatedConstructor] @Inject public
+     * io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.BadConfigPropertyInConstructorBean(@ConfigProperty String)
      */
     @Test
     public void testMethodUnnamed() throws Exception {
         String beanDir = BadConfigPropertyInMethodBean.class.getName();
-        List<String> errors = server.findStringsInLogs("SRCFG02002: .*" + beanDir + ".aMethod\\(@ConfigProperty String\\)");
+        List<String> errors = server.findStringsInLogs("SRCFG02001: Failed to Inject @ConfigProperty for key null into " + beanDir + ".aMethod\\(String\\) "
+                                                       + "SRCFG02002: Could not find default name for @ConfigProperty .*" + beanDir + ".aMethod\\(@ConfigProperty String\\)");
         assertNotNull(errors);
         assertTrue(errors.size() > 0);
     }
@@ -99,28 +107,37 @@ public class Config20ExceptionTests extends FATServletClient {
     /**
      * Check an appropriate error message occurs when a user tries to Inject a non-existing Config Property without a "name" field into a Constructor.
      *
-     * Should be: java.lang.IllegalStateException: SRCFG02002: Could not find default name for @ConfigProperty InjectionPoint [BackedAnnotatedParameter] Parameter 1 of
-     * [BackedAnnotatedConstructor] @Inject public io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.ConfigUnnamedConstructorInjectionBean(@ConfigProperty
-     * String)
+     * Should be: io.smallrye.config.inject.ConfigException: SRCFG02001: Failed to Inject @ConfigProperty for key null into
+     * io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.BadConfigPropertyInConstructorBean(String) SRCFG02002: Could not find default name for @ConfigProperty
+     * InjectionPoint [BackedAnnotatedParameter] Parameter 1 of [BackedAnnotatedConstructor] @Inject public
+     * io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.BadConfigPropertyInConstructorBean(@ConfigProperty String)
      */
     @Test
     public void testConstructorUnnamed() throws Exception {
         String beanDir = BadConfigPropertyInConstructorBean.class.getName();
-        List<String> errors = server.findStringsInLogs("SRCFG02002: .*" + beanDir + "\\(@ConfigProperty String\\)");
+        List<String> errors = server
+                        .findStringsInLogs("SRCFG02001: Failed to Inject @ConfigProperty for key null into " + beanDir + "\\(String\\) "
+                                           + "SRCFG02002: Could not find default name for @ConfigProperty .*" + beanDir + "\\(@ConfigProperty String\\)");
         assertNotNull(errors);
         assertTrue(errors.size() > 0);
     }
 
     @Test
     public void testNonExistantKey() throws Exception {
-        List<String> errors = server.findStringsInLogs("SRCFG02000: No Config Value exists for required property nonExistantKey");
+        String beanDir = BadConfigPropertyBean.class.getName();
+        List<String> errors = server
+                        .findStringsInLogs("SRCFG02000: Failed to Inject @ConfigProperty for key nonExistantKey into " + beanDir
+                                           + ".nonExistantKey1 since the config property could not be found in any config source");
         assertNotNull(errors);
         assertTrue(errors.size() > 0);
     }
 
     @Test
     public void testNonExistantKeyWithCustomConverter() throws Exception {
-        List<String> errors = server.findStringsInLogs("SRCFG02000: No Config Value exists for required property nonExistingKeyWithCustomConverter");
+        String beanDir = BadConfigPropertyBean.class.getName();
+        List<String> errors = server
+                        .findStringsInLogs("SRCFG02000: Failed to Inject @ConfigProperty for key nonExistingKeyWithCustomConverter into " + beanDir
+                                           + ".nonExistantKey2 since the config property could not be found in any config source");
         assertNotNull(errors);
         assertTrue(errors.size() > 0);
 
@@ -131,37 +148,66 @@ public class Config20ExceptionTests extends FATServletClient {
 
     @Test
     public void testConverterMissing() throws Exception {
-        List<String> errors = server.findStringsInLogs("SRCFG02006: The property noConverterKey cannot be converted to class " + TypeWithNoConverter.class.getName());
+        String beanDir = BadConfigPropertyBean.class.getName();
+        List<String> errors = server.findStringsInLogs("SRCFG02001: Failed to Inject @ConfigProperty for key noConverterKey into " + beanDir + ".noConverterProp"
+                                                       + " SRCFG02007: No Converter registered for class " + TypeWithNoConverter.class.getName());
         assertNotNull(errors);
         assertTrue(errors.size() > 0);
     }
 
     @Test
     public void testBadConverter() throws Exception {
-        List<String> errors = server.findStringsInLogs("SRCFG02006: The property badConverterKey cannot be converted to class " + TypeWithBadConverter.class.getName());
+        String beanDir = BadConfigPropertyBean.class.getName();
+        List<String> errors = server
+                        .findStringsInLogs("SRCFG02001: Failed to Inject @ConfigProperty for key badConverterKey into " + beanDir + ".badConverterProp"
+                                           + " SRCFG00039: The config property badConverterKey with the config value \"aValue\" threw an Exception whilst being converted Converter throwing intentional exception");
         assertNotNull(errors);
         assertTrue(errors.size() > 0);
     }
 
     @Test
     public void testBadConfigPropertiesInjection() throws Exception {
-        List<String> errors = server.findStringsInLogs("SRCFG00029: Expected an integer value, got \"aString\"");
+        List<String> errors = server
+                        .findStringsInLogs("SRCFG00039: The config property validPrefix.myString with the config value \"aString\" threw an Exception whilst being converted"
+                                           + " SRCFG00029: Expected an integer value, got \"aString\"");
         assertNotNull(errors);
         assertTrue(errors.size() > 0);
     }
 
+    /**
+     * Should be: io.smallrye.config.inject.ConfigException: SRCFG02001: Failed to Inject @ConfigProperty for key keyFromVariableInServerXML into
+     * io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.MissingPropertyExpressionBean.nonExistantPropertyExpressionVariable SRCFG00011: Could not expand value
+     * nonExistingPropertyForServerXMLVariable in property keyFromVariableInServerXML
+     */
     @Test
     public void testNonExistingPropertyExpressionForServerXMLVariable() throws Exception {
+        String beanDir = MissingPropertyExpressionBean.class.getName();
+        String key = "keyFromVariableInServerXML";
+        String field = "nonExistantPropertyExpressionVariable";
+        String propertyExpression = "nonExistingPropertyForServerXMLVariable";
+
         List<String> errors = server
-                        .findStringsInLogs("SRCFG00011: Could not expand value nonExistingPropertyForServerXMLVariable in property keyFromVariableInServerXML");
+                        .findStringsInLogs("SRCFG02001: Failed to Inject @ConfigProperty for key " + key + " into " + beanDir + "." + field
+                                           + " SRCFG00011: Could not expand value " + propertyExpression + " in property " + key);
         assertNotNull(errors);
         assertTrue(errors.size() > 0);
     }
 
+    /**
+     * Should be: io.smallrye.config.inject.ConfigException: SRCFG02001: Failed to Inject @ConfigProperty for key keyFromAppPropertyInServerXML into
+     * io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.MissingPropertyExpressionBean.nonExistantPropertyExpressionAppProperty SRCFG00011: Could not expand
+     * value nonExistingPropertyForServerXMLAppProperty in property keyFromAppPropertyInServerXML
+     */
     @Test
     public void testNonExistingPropertyExpressionForServerXMLAppProperty() throws Exception {
+        String beanDir = MissingPropertyExpressionBean.class.getName();
+        String key = "keyFromAppPropertyInServerXML";
+        String field = "nonExistantPropertyExpressionAppProperty";
+        String propertyExpression = "nonExistingPropertyForServerXMLAppProperty";
+
         List<String> errors = server
-                        .findStringsInLogs("SRCFG00011: Could not expand value nonExistingPropertyForServerXMLAppProperty in property keyFromAppPropertyInServerXML");
+                        .findStringsInLogs("SRCFG02001: Failed to Inject @ConfigProperty for key " + key + " into " + beanDir + "." + field
+                                           + " SRCFG00011: Could not expand value " + propertyExpression + " in property " + key);
         assertNotNull(errors);
         assertTrue(errors.size() > 0);
     }

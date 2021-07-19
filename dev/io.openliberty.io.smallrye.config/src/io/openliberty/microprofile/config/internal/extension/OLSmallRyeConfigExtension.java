@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,15 +10,21 @@
  *******************************************************************************/
 package io.openliberty.microprofile.config.internal.extension;
 
+import java.util.Collections;
+import java.util.Set;
+
 import javax.enterprise.inject.spi.Extension;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
-import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
-
+import io.openliberty.cdi.spi.CDIExtensionMetadata;
 import io.smallrye.config.inject.ConfigExtension;
 
-@Component(service = WebSphereCDIExtension.class, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM" }, immediate = true)
-public class OLSmallRyeConfigExtension extends ConfigExtension implements Extension, WebSphereCDIExtension {
+@Component(service = CDIExtensionMetadata.class, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM" }, immediate = true)
+public class OLSmallRyeConfigExtension implements CDIExtensionMetadata {
+    @Override
+    public Set<Class<? extends Extension>> getExtensions() {
+        return Collections.singleton(ConfigExtension.class);
+    }
 }
