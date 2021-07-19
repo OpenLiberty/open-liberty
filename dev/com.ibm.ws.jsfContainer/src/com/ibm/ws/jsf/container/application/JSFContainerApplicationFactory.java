@@ -146,7 +146,7 @@ public class JSFContainerApplicationFactory extends ApplicationFactory {
     private static boolean isVersionValid(String version) {
         // A simple way of checking that version is within MAJOR.MINOR.*
         String specLevel = JSFContainer.getJSFSpecLevel();
-        return version.equals(specLevel) || version.startsWith(specLevel + ".");
+        return version.equals(specLevel) || version.startsWith(specLevel + ".") || version.startsWith(specLevel + "-");
     }
 
     private IllegalStateException noJsfProviderFound() {
