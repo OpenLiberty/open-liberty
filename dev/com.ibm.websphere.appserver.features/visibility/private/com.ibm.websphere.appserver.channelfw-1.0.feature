@@ -4,8 +4,10 @@ WLP-DisableAllFeatures-OnConflict: false
 IBM-API-Package: com.ibm.websphere.endpoint; type="ibm-api"
 IBM-Process-Types: server, \
  client
+-features=com.ibm.ws.wsbytebuffer-1.0
 -bundles=com.ibm.ws.timer, \
- com.ibm.ws.channelfw
+ com.ibm.ws.channelfw, \
+ com.ibm.ws.wsbytebuffer
 -jars=com.ibm.websphere.appserver.api.endpoint; location:=dev/api/ibm/
 -files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.endpoint_1.0-javadoc.zip
 kind=ga

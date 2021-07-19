@@ -44,6 +44,7 @@ import com.ibm.ws.channelfw.internal.chains.OutboundChain;
 import com.ibm.ws.channelfw.internal.chains.StopChainTask;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.FFDCSelfIntrospectable;
+import com.ibm.wsspi.bytebuffer.WsByteBufferPoolManager;
 import com.ibm.wsspi.channelfw.BoundRegion;
 import com.ibm.wsspi.channelfw.ChainEventListener;
 import com.ibm.wsspi.channelfw.Channel;
@@ -181,6 +182,7 @@ public class ChannelFrameworkImpl implements ChannelFramework, FFDCSelfIntrospec
     private final AtomicLong channelNameCounter = new AtomicLong(0);
 
     private AsyncIOHelper asyncIOHelper = null;
+    private WsByteBufferPoolManager wsbbmgr = null;
 
     /** Singleton instance of the framework */
     private volatile static ChannelFrameworkImpl singleton = null;
@@ -5126,5 +5128,24 @@ public class ChannelFrameworkImpl implements ChannelFramework, FFDCSelfIntrospec
     public boolean getAsyncIOEnabled() {
         AsyncIOHelper asyncIOHelper = this.asyncIOHelper;
         return asyncIOHelper != null && asyncIOHelper.enableAsyncIO();
+    }
+
+    /**
+     * Set the buffer manager
+     *
+     * @param bufferManager
+     */
+    public void setBufferManager(WsByteBufferPoolManager bufferManager) {
+        this.wsbbmgr = bufferManager;
+    }
+
+    /**
+     * Retrieve the buffer pool manager as previously set from the current OSGi
+     * buffer service reference.
+     *
+     * @return {@link WsByteBufferPoolManager}
+     */
+    public WsByteBufferPoolManager getWsByteBufferPoolManager() {
+        return this.wsbbmgr;
     }
 }

@@ -8,10 +8,8 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.websphere.channelfw.osgi;
+package com.ibm.websphere.wsbytebuffer.osgi;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.Callable;
@@ -33,58 +31,43 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
-import com.ibm.io.async.IAsyncProvider.AsyncIOHelper;
-import com.ibm.websphere.channelfw.ChainData;
-import com.ibm.websphere.channelfw.ChannelUtils;
-import com.ibm.websphere.channelfw.EndPointMgr;
-import com.ibm.websphere.channelfw.FlowType;
 import com.ibm.websphere.event.EventEngine;
 import com.ibm.websphere.event.ScheduledEventService;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.wsbytebuffer.osgi.WsByteBufferBundle;
-import com.ibm.ws.channelfw.internal.ChannelFrameworkConstants;
-import com.ibm.ws.channelfw.internal.ChannelFrameworkImpl;
-import com.ibm.ws.channelfw.internal.chains.EndPointMgrImpl;
+import com.ibm.ws.bytebuffer.internal.ByteBufferConfiguration;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.feature.ServerStarted;
-import com.ibm.ws.tcpchannel.internal.TCPChannelFactory;
-import com.ibm.ws.udpchannel.internal.UDPChannelFactory;
+import com.ibm.wsspi.bytebuffer.WsByteBufferFactory;
 import com.ibm.wsspi.bytebuffer.WsByteBufferPoolManager;
-import com.ibm.wsspi.channelfw.ChannelFramework;
-import com.ibm.wsspi.channelfw.ChannelFrameworkFactory;
-import com.ibm.wsspi.channelfw.HttpProtocolBehavior;
 import com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener;
 import com.ibm.wsspi.timer.ApproximateTime;
 import com.ibm.wsspi.timer.QuickApproxTime;
 
 /**
- * OSGi public bundle API for the channel framework. This allows cross bundle
- * dependency to be defined against the framework and provides proper access to
- * the framework itself.
+ * OSGi public bundle API for WsByteBuffer. 
  */
-@Component(service = { CHFWBundle.class, ServerQuiesceListener.class },
-           name = "com.ibm.ws.channelfw",
-           configurationPid = "com.ibm.ws.channelfw",
+@Component(service = { WsByteBufferBundle.class, ServerQuiesceListener.class },
+           name = "com.ibm.ws.wsbytebuffer",
+           configurationPid = "com.ibm.ws.wsbytebuffer",
            configurationPolicy = ConfigurationPolicy.OPTIONAL,
            immediate = true,
            property = { "service.vendor=IBM" })
-public class CHFWBundle implements ServerQuiesceListener {
+public class WsByteBufferBundle implements ServerQuiesceListener {
 
     /** Trace service */
-    private static final TraceComponent tc = Tr.register(CHFWBundle.class,
-                                                         ChannelFrameworkConstants.BASE_TRACE_NAME,
-                                                         ChannelFrameworkConstants.BASE_BUNDLE);
+    private static final TraceComponent tc = Tr.register(WsByteBufferBundle.class,
+                                                         com.ibm.ws.bytebuffer.internal.WsByteBufferConstants.BASE_TRACE_NAME,
+                                                         com.ibm.ws.bytebuffer.internal.WsByteBufferConstants.BASE_BUNDLE);
 
     /**
      * Active HttpDispatcher instance. May be null between deactivate and activate
      * calls.
      */
-    private static final AtomicReference<CHFWBundle> instance = new AtomicReference<CHFWBundle>();
+    private static final AtomicReference<WsByteBufferBundle> instance = new AtomicReference<WsByteBufferBundle>();
 
-    /** Reference to the channel framework */
-    private ChannelFrameworkImpl chfw = null;
-
+    /** Reference to ByteBufferConfiguration */
+    private ByteBufferConfiguration wsbbConfig = null;
     /** Reference to the event service */
     private EventEngine eventService = null;
     /** Reference to the scheduler service -- required */
@@ -99,24 +82,11 @@ public class CHFWBundle implements ServerQuiesceListener {
     private static Object syncStarted = new Object() {
     }; // use brackets/inner class to make lock appear in dumps using class name
 
-    private volatile ServiceReference<HttpProtocolBehavior> protocolBehaviorRef;
-
-    private WsByteBufferBundle wsbbbundle;
-    private static volatile String httpVersionSetting = null;
-    private static volatile boolean versionSet = false;
-    private static volatile boolean default20Off = false;
-    private static volatile boolean default20On = false;
-
-    /** The channel will disable HTTP/2.0 by default. */
-    private static final String OPTIONAL_DEFAULT_OFF_20 = "2.0_Optional_Off";
-    /** The channel will be enabled for HTTP/2.0 by default". */
-    private static final String OPTIONAL_DEFAULT_ON_20 = "2.0_Optional_On";
-
     /**
      * Constructor.
      */
-    public CHFWBundle() {
-        this.chfw = ChannelFrameworkImpl.getRef();
+    public WsByteBufferBundle() {
+        //TODO delete this.chfw = WsByteImpl.getRef();
     }
 
     /**
@@ -126,20 +96,16 @@ public class CHFWBundle implements ServerQuiesceListener {
      */
     @Activate
     protected void activate(ComponentContext context, Map<String, Object> config) {
-        System.out.println(" ### Gordon ### ");
-        System.err.println(" ### Gordon ### ");
-
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(this, tc, "Activating ", config);
         }
 
+        // TODO
         // handle config (such as TCP factory info) before registering
         // factories, as the register will trigger an automatic load of any
         // delayed configuration, and we need the config before that happens
-        modified(config);
+        // modified(config);
 
-        this.chfw.registerFactory("TCPChannel", TCPChannelFactory.class);
-        this.chfw.registerFactory("UDPChannel", UDPChannelFactory.class);
 
         instance.set(this); // required components have been activated
     }
@@ -159,18 +125,16 @@ public class CHFWBundle implements ServerQuiesceListener {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(this, tc, "Destroying all endpoints");
         }
-        EndPointMgrImpl.destroyEndpoints();
+        // EndPointMgrImpl.destroyEndpoints();
 
         try {
-            this.chfw.destroy();
+        //    this.chfw.destroy();
         } catch (Throwable t) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "Error destroying framework: " + t);
             }
         }
 
-        this.chfw.deregisterFactory("TCPChannel");
-        this.chfw.deregisterFactory("UDPChannel");
     }
 
     /**
@@ -178,38 +142,19 @@ public class CHFWBundle implements ServerQuiesceListener {
      * service properties associated with the service are updated through a
      * configuration change.
      *
-     * @param cfwConfiguration
+     * @param configuration
      *                             the configuration data
      */
     @Modified
-    protected synchronized void modified(Map<String, Object> cfwConfiguration) {
+    protected synchronized void modified(Map<String, Object> configuration) {
 
-        if (null == cfwConfiguration) {
-            return;
-        }
+    	// No WsByteBuffer specific config in CF.
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(this, tc, "Processing config", cfwConfiguration);
+            Tr.event(this, tc, "Processing config", configuration);
         }
 
-        this.chfw.updateConfig(cfwConfiguration);
-    }
-
-    /**
-     * Make sure we have an active/ready/configured ByteBuffer service
-     */
-    @Reference(service = WsByteBufferBundle.class, cardinality = ReferenceCardinality.MANDATORY)
-    protected void setByteBufferBundle(WsByteBufferBundle wsbbb) {
-        chfw.setBufferManager(wsbbb != null ? wsbbb.getBufferManager() : null);
-    }
-
-    @Reference(service = AsyncIOHelper.class, cardinality = ReferenceCardinality.OPTIONAL)
-    protected void setAsyncIOHelper(AsyncIOHelper asyncIOHelper) {
-        chfw.setAsyncIOHelper(asyncIOHelper);
-    }
-
-    protected void unsetAsyncIOHelper(AsyncIOHelper asyncIOHelper) {
-        chfw.setAsyncIOHelper(null);
+        return;
     }
 
     /**
@@ -221,22 +166,7 @@ public class CHFWBundle implements ServerQuiesceListener {
     @Override
     public void serverStopping() {
         // If the system is configured to quiesce connections..
-        long timeout = chfw.getDefaultChainQuiesceTimeout();
-        if (timeout > 0) {
-            ChainData[] runningChains = chfw.getRunningChains();
-
-            // build list of chain names to pass to stop, use ChannelUtils.stopChains so as to not return until the
-            // channels are inactive or the quiesce timeout has hit.
-            List<String> names = new ArrayList<String>();
-            for (int i = 0; i < runningChains.length; i++) {
-                if (FlowType.INBOUND.equals(runningChains[i].getType())) {
-                    names.add(runningChains[i].getName());
-                }
-            }
-
-            ChannelUtils.stopChains(names, -1, null);
-
-        }
+        // Are there any external mapped buffer/free actions possible?
     }
 
     /**
@@ -255,19 +185,10 @@ public class CHFWBundle implements ServerQuiesceListener {
         // the server is fully started, but before the "smarter planet" message has been output. Use this signal to run tasks, mostly likely tasks that will
         // finish the port listening logic, that need to run at the end of server startup
 
-        Callable<?> task;
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(this, tc, "CHFW signaled- Server Completely Started signal received");
+            Tr.debug(this, tc, "WsByteBuffer signaled- Server Completely Started signal received");
         }
-        while ((task = serverStartedTasks.poll()) != null) {
-            try {
-                task.call();
-            } catch (Exception e) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "caught exception performing late cycle server startup task: " + e);
-                }
-            }
-        }
+        
 
         synchronized (syncStarted) {
             serverCompletelyStarted.set(true);
@@ -332,12 +253,30 @@ public class CHFWBundle implements ServerQuiesceListener {
     }
 
     /**
+     * Make sure we have an active/ready/configured ByteBuffer service
+     */
+    @Reference(service = ByteBufferConfiguration.class,
+               cardinality = ReferenceCardinality.MANDATORY)
+    protected void setByteBufferConfig(ByteBufferConfiguration bbConfig) {
+        wsbbConfig = bbConfig;
+    }
+
+    /**
+     * DS method for removing the ByteBufferConfiguration.
+     * This is a required reference, will be called after deactivate.
+     *
+     * @param service
+     */
+    protected void unsetByteBufferConfig(ByteBufferConfiguration bbConfig) {
+    }
+
+    /**
      * Access the event service.
      *
      * @return EventEngine - null if not found
      */
     public static EventEngine getEventService() {
-        CHFWBundle c = instance.get();
+        WsByteBufferBundle c = instance.get();
         if (null != c) {
             return c.eventService;
         }
@@ -365,13 +304,13 @@ public class CHFWBundle implements ServerQuiesceListener {
     }
 
     /**
-     * Access the channel framework's {@link java.util.concurrent.ExecutorService} to
+     * Access the {@link java.util.concurrent.ExecutorService} to
      * use for work dispatch.
      *
-     * @return the executor service instance to use within the channel framework
+     * @return the executor service instance to use
      */
     public static ExecutorService getExecutorService() {
-        CHFWBundle c = instance.get();
+        WsByteBufferBundle c = instance.get();
         if (null != c) {
             return c.executorService;
         }
@@ -405,7 +344,7 @@ public class CHFWBundle implements ServerQuiesceListener {
      * @return ScheduledEventService - null if not found
      */
     public static ScheduledEventService getScheduleService() {
-        CHFWBundle c = instance.get();
+        WsByteBufferBundle c = instance.get();
         if (null != c) {
             return c.scheduler;
         }
@@ -438,7 +377,7 @@ public class CHFWBundle implements ServerQuiesceListener {
      * @return ScheduledEventService - null if not found
      */
     public static ScheduledExecutorService getScheduledExecutorService() {
-        CHFWBundle c = instance.get();
+        WsByteBufferBundle c = instance.get();
         if (null != c) {
             return c.scheduledExecutor;
         }
@@ -466,39 +405,9 @@ public class CHFWBundle implements ServerQuiesceListener {
     }
 
     /**
-     * DS method to set a factory provider.
+     * Access the {@link ApproximateTime} service.
      *
-     * @param provider
-     */
-    @Reference(service = ChannelFactoryProvider.class,
-               cardinality = ReferenceCardinality.MULTIPLE,
-               policy = ReferencePolicy.DYNAMIC,
-               policyOption = ReferencePolicyOption.GREEDY)
-    protected void setFactoryProvider(ChannelFactoryProvider provider) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(this, tc, "Add factory provider; " + provider);
-        }
-
-        this.chfw.registerFactories(provider);
-    }
-
-    /**
-     * DS method to remove a factory provider.
-     *
-     * @param provider
-     */
-    protected void unsetFactoryProvider(ChannelFactoryProvider provider) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(this, tc, "Remove factory provider; " + provider);
-        }
-
-        this.chfw.deregisterFactories(provider);
-    }
-
-    /**
-     * Access the channel framework's {@link ApproximateTime} service.
-     *
-     * @return the approximate time service instance to use within the channel framework
+     * @return the approximate time service instance to use
      */
     public static long getApproxTime() {
         return QuickApproxTime.getApproxTime();
@@ -516,80 +425,22 @@ public class CHFWBundle implements ServerQuiesceListener {
         // do nothing: need the ref for activation of service
     }
 
-    @Reference(service = HttpProtocolBehavior.class, cardinality = ReferenceCardinality.OPTIONAL,
-               policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
-    protected synchronized void setBehavior(ServiceReference<HttpProtocolBehavior> reference) {
-
-        protocolBehaviorRef = reference;
-        httpVersionSetting = (String) reference.getProperty(HttpProtocolBehavior.HTTP_VERSION_SETTING);
-        if (OPTIONAL_DEFAULT_OFF_20.equalsIgnoreCase(httpVersionSetting)) {
-            default20Off = true;
-            versionSet = true;
-        } else if (OPTIONAL_DEFAULT_ON_20.equalsIgnoreCase(httpVersionSetting)) {
-            default20On = true;
-            versionSet = true;
-        }
-    }
-
-    protected synchronized void unsetBehavior(ServiceReference<HttpProtocolBehavior> reference) {
-        if (reference == this.protocolBehaviorRef) {
-            protocolBehaviorRef = null;
-            httpVersionSetting = null;
-            versionSet = false;
-            default20Off = false;
-            default20On = false;
-        }
-    }
-
-    public static String getServletConfiguredHttpVersionSetting() {
-        return httpVersionSetting;
-    }
-
-    public static boolean isHttp2DisabledByDefault() {
-        return versionSet && default20Off;
-    }
-
-    public static boolean isHttp2EnabledByDefault() {
-        return versionSet && default20On;
-    }
-
     /**
-     * Remove the reference to the approximate time service.
-     * This is a required reference, will be called after deactivate.
-     *
-     * @param ref ApproximateTime service instance/provider to remove
-     */
-    protected void unsetApproxTimeService(ApproximateTime ref) {
-        // do nothing: need the ref for activation of service
-    }
-
-    /**
-     * Query the reference to the channel framework.
-     *
-     * @return ChannelFramework
-     */
-    public ChannelFramework getFramework() {
-        return this.chfw;
-    }
-
-    /**
-     * Access the reference to the bytebuffer pool manager
-     * that will be used by the channel framework.
+     * Access the reference to the bytebuffer pool manager created by this
+     * bundle, or the default/fallback pool.
      *
      * This method should never return null
      *
      * @return WsByteBufferPoolManager
      */
     public WsByteBufferPoolManager getBufferManager() {
-        return ChannelFrameworkFactory.getBufferManager();
+        ByteBufferConfiguration bbConfig = this.wsbbConfig;
+
+        // Get the byte buffer manager-- bbMgr could return null
+        WsByteBufferPoolManager result = (bbConfig == null) ? null : bbConfig.getBufferManager();
+
+        // Fall back to a default if bbMgr was null or null was returned
+        return result != null ? result : WsByteBufferFactory.getBufferManager();
     }
 
-    /**
-     * helper method for getting access to the EndPointMgr
-     *
-     * @return EndPointMgr
-     */
-    public EndPointMgr getEndpointManager() {
-        return EndPointMgrImpl.getRef();
-    }
 }
