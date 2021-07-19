@@ -3,7 +3,6 @@ symbolicName=io.openliberty.grpc1.0.internal.ee-9.0
 singleton=true
 Subsystem-Name: Jakarta gRPC internal 1.0
 -features=\
-  com.ibm.websphere.appserver.servlet-5.0, \ 
   io.openliberty.jakarta.annotation-2.0, \
   com.ibm.websphere.appserver.anno-2.0
 -bundles=\

@@ -5,7 +5,6 @@ singleton=true
 Subsystem-Version: 1.0.0
 Subsystem-Name: Jakarta gRPC Client 1.0
 -features=\
-  com.ibm.websphere.appserver.servlet-5.0, \ 
   io.openliberty.jakarta.annotation-2.0, \
   com.ibm.websphere.appserver.anno-2.0
 -bundles=\
