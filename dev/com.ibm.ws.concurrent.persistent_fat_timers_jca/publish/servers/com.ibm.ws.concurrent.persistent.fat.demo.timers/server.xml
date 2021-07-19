@@ -1,0 +1,50 @@
+<!--
+    Copyright (c) 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+  <featureManager>
+    <feature>componenttest-2.0</feature>
+    <feature>enterpriseBeansPersistentTimer-4.0</feature>
+    <feature>servlet-5.0</feature>
+  </featureManager>
+
+  <include location="../fatTestPorts.xml"/>
+  
+  <!-- Edit persistentExecutor defaults with attribute missedTaskThreshold to enable failover -->
+  <persistentExecutor id="defaultEJBPersistentTimerExecutor" missedTaskThreshold="120s"/>
+  
+  <dataSource id="DefaultDataSource">
+    <jdbcDriver libraryRef="derbyLib"/>
+    <properties.derby.embedded  createDatabase="create" databaseName="memory:persistenttimersdemo"/>
+  </dataSource>
+  
+  <dataSource id="derbyds" jndiName="jdbc/derbyds">
+    <jdbcDriver libraryRef="derbyLib"/>
+    <connectionManager maxPoolSize="10" numConnectionsPerThreadLocal="1" reapTime="30s" />
+    <properties.derby.embedded  createDatabase="create" databaseName="memory:persistenttimersdemo"/>
+  </dataSource>
+  
+  <library id="derbyLib">
+    <fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
+  </library>
+  
+  <!-- JDBC driver -->
+  <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+  
+  <!-- File read write permissions -->
+  <javaPermission className="java.util.PropertyPermission" name="user.dir" actions="read"/>
+  <javaPermission className="java.io.FilePermission" name="files/timertestoutput.txt" actions="read,write"/>
+  <javaPermission className="java.io.FilePermission" name="files" actions="write"/>
+  <javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
+  <javaPermission className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
+  <javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
+  
+  <variable name="onError" value="FAIL"/>
+</server>

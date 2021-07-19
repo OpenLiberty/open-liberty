@@ -139,6 +139,11 @@ public interface ConnectionManagerMBean {
     public long getSize();
 
     /**
+     * TODO remove
+     */
+    public void setSize(long size);
+
+    /**
      * Displays the free space of the connection pool associated with
      * this Connection Manager as a human readable string.
      *

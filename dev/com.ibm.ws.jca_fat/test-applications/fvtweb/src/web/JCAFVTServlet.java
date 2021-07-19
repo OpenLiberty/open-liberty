@@ -596,6 +596,83 @@ public class JCAFVTServlet extends FATServlet {
         }
     }
 
+    public void testMBeanPurgeAndReset(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        ConnectionFactory cf = (ConnectionFactory) new InitialContext().lookup("java:comp/env/jms/cf1");
+        Connection con = null;
+        UserTransaction tran = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
+        try {
+            // -- get connection: 1 connection in sharedPool
+            tran.begin();//Starting this removes the LTC
+            con = cf.createConnection();
+
+            MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+            ObjectInstance bean = getMBeanObjectInstance("jms/cf1");
+
+            assertEquals("Connection should be in sharedPool", 1, getPoolSize(bean));
+
+            // -- close connection: 1 connection in freePool
+            con.close();
+            tran.commit();
+            assertEquals("Connection should have been returned to freePool", 1, getPoolSize(bean));
+
+            // -- purgeAndReset: 1 connection in freePool
+            mbs.invoke(bean.getObjectName(), "purgePoolContents", new Object[] { "purgeAndReset" }, null);
+            assertEquals("Free connection should NOT have been purged", 1, getPoolSize(bean));
+
+            // -- get connection: 1 connection in sharedPool
+            tran.begin();//Starting this removes the LTC
+            con = cf.createConnection();
+            assertEquals("Connection should be in sharedPool", 1, getPoolSize(bean));
+
+            // -- close connection: 0 connections in freePool, connection should be destroyed
+            con.close();
+            tran.commit();
+            assertEquals("Connection should NOT have been returned to freePool", 0, getPoolSize(bean));
+
+        } finally {
+            if (con != null)
+                con.close();
+        }
+    }
+
+    /**
+     * Starts a transaction, acquires a connection, attempts purgeAndReset.
+     * Asserts that active connection was not purged.
+     * Closes connection and ends transaction.
+     * Asserts that connection was not returned to free pool
+     */
+    public void testMBeanPurgeAndResetDuringTransaction(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        ConnectionFactory cf = (ConnectionFactory) new InitialContext().lookup("java:comp/env/jms/cf1");
+        Connection con = null;
+        UserTransaction tran = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
+        try {
+            // -- get connection: 1 connection in sharedPool
+            tran.begin();
+            con = cf.createConnection();
+
+            MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+            ObjectInstance bean = getMBeanObjectInstance("jms/cf1");
+
+            assertEquals("Connection should be in sharedPool", 1, getPoolSize(bean));
+
+            // -- purgeAndReset: 1 connection in freePool
+            mbs.invoke(bean.getObjectName(), "purgePoolContents", new Object[] { "purgeAndReset" }, null);
+            System.out.println("** Pool contents after purge but during tran:\n" + getPoolContents(bean));
+
+            assertEquals("Connection should NOT have been purged from sharedPool.", 1, getPoolSize(bean));
+
+            // -- close connection: 0 connections in freePool, connection should be destroyed
+            con.close();
+            tran.commit();
+
+            assertEquals("Connection should NOT have been returned to freePool", 0, getPoolSize(bean));
+
+        } finally {
+            if (con != null)
+                con.close();
+        }
+    }
+
     /**
      * Starts a transaction, acquires a connection, purge the pool, closes connection and ends transaction,
      * then checks to see if the pool is purged.
@@ -875,6 +952,9 @@ public class JCAFVTServlet extends FATServlet {
         return s.iterator().next();
     }
 
+    /**
+     * returns _pm.totalConnectionCount.get();
+     */
     private int getPoolSize(ObjectInstance bean) throws Exception {
         return Integer.parseInt((String) ManagementFactory.getPlatformMBeanServer().getAttribute(bean.getObjectName(), "size"));
     }

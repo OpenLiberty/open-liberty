@@ -26,7 +26,6 @@ import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.LibertyServerFactory;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -38,9 +37,6 @@ import componenttest.topology.impl.LibertyServerFactory;
 })
 public class FATSuite {
 
-    public static final String javaeeServer = "com.ibm.ws.jca.fat";
-    public static final String jakartaeeServer = "com.ibm.ws.jca.fat.jakarta";
-
     /*
      * EE7 will run with full fat only. EE9 will be run with lite and full fat.
      */
@@ -48,12 +44,15 @@ public class FATSuite {
     public static RepeatTests r = RepeatTests.with(new EmptyAction().fullFATOnly())
                     .andWith(FeatureReplacementAction.EE9_FEATURES());
 
-    public static LibertyServer getServer() {
+    public static void addServerVariables(LibertyServer server) {
         if (JakartaEE9Action.isActive()) {
-            return LibertyServerFactory.getLibertyServer(jakartaeeServer);
+            server.addEnvVar("TOPIC", "jakarta.jms.Topic");
+            server.addEnvVar("PASSWORD_CRED", "jakarta.resource.spi.security.PasswordCredential");
         } else {
-            return LibertyServerFactory.getLibertyServer(javaeeServer);
+            server.addEnvVar("TOPIC", "javax.jms.Topic");
+            server.addEnvVar("PASSWORD_CRED", "javax.resource.spi.security.PasswordCredential");
         }
 
     }
+
 }
