@@ -2375,13 +2375,17 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                         mcw.markForPurgeDestruction();
                         --freePool[j].numberOfConnectionsAssignedToThisFreePool;
 
-                        if (mcw.getManagedConnection() instanceof WSManagedConnection) {
-                            ((WSManagedConnection) mcw.getManagedConnection()).markStale();
+                        if (mcw.getManagedConnectionWithoutStateCheck() instanceof WSManagedConnection) {
+                            try {
+                                ((WSManagedConnection) mcw.getManagedConnectionWithoutTrace()).markStale();
+                            } catch (IllegalStateException e) {
+                                //Ignore: Connection was not in a state to be marked stale.
+                            }
                         }
 
                         if (purgeWithAbort && mcw instanceof com.ibm.ejs.j2c.MCWrapper
                             && ((com.ibm.ejs.j2c.MCWrapper) mcw).abortMC()) {
-                            // The MCW aborted the connection sucessfully
+                            // The MCW aborted the connection successfully
                         } else {
                             if (purgeWithAbort && TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                                 Tr.debug(tc, "Unable to purge connection with abort.  Using ThreadSupportedCleanupAndDestroy.", mcw);
@@ -2408,13 +2412,16 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                     for (int j = 0; j < sharedPool[i].getMCWrapperListSize(); ++j) {
                         if (!mcwl[j].isDestroyState()) {
                             mcwl[j].setDestroyState();
-
                             if (purgeWithAbort && mcwl[j] instanceof com.ibm.ejs.j2c.MCWrapper
                                 && ((com.ibm.ejs.j2c.MCWrapper) mcwl[j]).abortMC()) {
-                                // The MCW aborted the connection sucessfully
+                                // The MCW aborted the connection successfully
                             } else {
-                                if (mcwl[j].getManagedConnection() instanceof WSManagedConnection) {
-                                    ((WSManagedConnection) mcwl[j].getManagedConnection()).markStale();
+                                if (mcwl[j].getManagedConnectionWithoutStateCheck() instanceof WSManagedConnection) {
+                                    try {
+                                        ((WSManagedConnection) mcwl[j].getManagedConnectionWithoutTrace()).markStale();
+                                    } catch (IllegalStateException e) {
+                                        //Ignore: Connection was not in a state to be marked stale.
+                                    }
                                 }
                                 this.totalConnectionCount.decrementAndGet();
                             }
@@ -2442,11 +2449,12 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                         && ((com.ibm.ejs.j2c.MCWrapper) mcw).abortMC()) {
                         // The MCW aborted the connection successfully
                     } else {
-                        ManagedConnection mc = mcw.getManagedConnection();
-                        if (mc instanceof WSManagedConnection) {
-                            //Safe state operation since we have a write lock
-                            //This is for relational resource adapter to help with removing connections in use.
-                            ((WSManagedConnection) mc).markStale();
+                        if (mcw.getManagedConnectionWithoutStateCheck() instanceof WSManagedConnection) {
+                            try {
+                                ((WSManagedConnection) mcw.getManagedConnectionWithoutTrace()).markStale();
+                            } catch (IllegalStateException e) {
+                                //Ignore: Connection was not in a state to be marked stale.
+                            }
                         }
                         this.totalConnectionCount.decrementAndGet();
                     } // end abort or mark stale

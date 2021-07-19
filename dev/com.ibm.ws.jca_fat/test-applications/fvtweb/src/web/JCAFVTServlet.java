@@ -12,9 +12,11 @@ package web;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.lang.management.ManagementFactory;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -79,6 +81,38 @@ public class JCAFVTServlet extends FATServlet {
 
     public void setServletInstanceStillActive(HttpServletRequest request, HttpServletResponse response) throws Throwable {
         state = "SERVLET_INSTANCE_STILL_ACTIVE";
+    }
+
+    @Override
+    protected void before() throws Exception {
+        UserTransaction tran = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
+        //Starting transaction to remove the LTC
+        tran.begin();
+        Connection con1 = null, con6 = null;
+        try {
+            //Create and close a connection to ensure that PoolManager is created before any tests run
+            ConnectionFactory cf1 = (ConnectionFactory) new InitialContext().lookup("java:comp/env/jms/cf1");
+            con1 = cf1.createConnection();
+
+            ConnectionFactory cf6 = (ConnectionFactory) new InitialContext().lookup("java:comp/env/jms/cf6");
+            con6 = cf6.createConnection();
+
+            con1.close();
+            con6.close();
+            tran.commit();
+        } catch (Exception e) {
+            tran.rollback();
+        }
+    }
+
+    public void cleanUpConnectionPoolCF1(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        System.out.println("==> Cleaning up connection pool before test.");
+        ObjectInstance bean = getMBeanObjectInstance("jms/cf1");
+        if (getPoolSize(bean) == 0)
+            return;
+        ManagementFactory.getPlatformMBeanServer().invoke(bean.getObjectName(), "purgePoolContents", new Object[] { "abort" }, null);
+        assertPoolSize(bean, "Not all connections were purged from the pool!", 0);
+        System.out.println("<=== Cleaning up connection pool before test");
     }
 
     /**
@@ -588,11 +622,145 @@ public class JCAFVTServlet extends FATServlet {
 
             // Pool size should be 0 after purge
             System.out.println("**  Pool contents after purge:\n" + getPoolContents(bean));
-            if (getPoolSize(bean) != 0)
-                throw new Exception("Not all connections were purged from the pool!");
+            assertPoolSize(bean, "Not all connections were purged from the pool!", 0);
         } finally {
             if (con != null)
                 con.close();
+        }
+    }
+
+    public void testMBeanPurgeAndDestroyCount(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+        ObjectInstance bean = getMBeanObjectInstance("jms/cf1");
+        ObjectName cf1Stats = getConnPoolStatsMBeanObjName("cf1");
+
+        //Setup connection factory and transaction
+        ConnectionFactory cf1 = (ConnectionFactory) new InitialContext().lookup("java:comp/env/jms/cf1-unshareable");
+        Connection conn = null, conn2 = null;
+
+        try {
+            conn = cf1.createConnection();
+            conn2 = cf1.createConnection();
+
+            //Ensure two connections were created
+            int poolSize = assertPoolSize(bean, "Unexpected inital pool size.", 2);
+
+            // Get stats and init destoryCount
+            int initialDestroyCount = getMonitorData(cf1Stats, "DestroyCount");
+            System.out.println("Initial connectionPool stats: " + cf1Stats);
+
+            //Abort connections
+            mbs.invoke(bean.getObjectName(), "purgePoolContents", new Object[] { "abort" }, null);
+            getPoolContents(bean);
+
+            // Two Connections when purge issued, in transaction cannot be purged until transaction ends
+            int destroyCountAfterPurge = getMonitorData(cf1Stats, "DestroyCount");
+            int difference1 = destroyCountAfterPurge - initialDestroyCount;
+            assertTrue("Destroy count should not have increased when connections are still open - expecting 0 but was: " + difference1, difference1 == 0);
+
+            // close connections
+            conn.close();
+            conn2.close();
+
+            //Ensure connections were purged from pool
+            assertPoolSize(bean, "Not all connections were purged from the pool!", 0);
+
+            //Connections were marked to be destroyed, and are in the Thread supported cleanup and destroy connection pool.
+            // Wait for threads to destroy connections
+            boolean result = false;
+            int difference2 = -1;
+            for (int i = 0; i < 6; i++) {
+                int destoyCountAfterClose = getMonitorData(cf1Stats, "DestroyCount");
+                difference2 = destoyCountAfterClose - initialDestroyCount;
+                if (difference2 != poolSize) {
+                    System.out.println("Waiting for connections to be destroyed. Attempt:" + i);
+                    Thread.sleep(Duration.ofSeconds(10).toMillis());
+                    continue;
+                }
+                result = true;
+            }
+            if (!result) {
+                throw new Exception("Destroy count should not have been the same after closing connections - expecting " + poolSize + " but was: " + difference2);
+            }
+
+        } finally {
+            if (conn != null) {
+                conn.close();
+            }
+            if (conn2 != null) {
+                conn2.close();
+            }
+        }
+    }
+
+    public void testMBeanPurgeAndDestroyCountDuringTransaction(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+        ObjectInstance bean = getMBeanObjectInstance("jms/cf1");
+        ObjectName cf1Stats = getConnPoolStatsMBeanObjName("cf1");
+
+        //Setup connection factory and transaction
+        ConnectionFactory cf1 = (ConnectionFactory) new InitialContext().lookup("java:comp/env/jms/cf1-unshareable");
+        UserTransaction tran = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
+        Connection conn = null, conn2 = null;
+
+        try {
+            tran.begin();
+            conn = cf1.createConnection();
+            conn2 = cf1.createConnection();
+
+            int poolSize = assertPoolSize(bean, "Unexpected inital pool size.", 2);
+            int initialDestroyCount = getMonitorData(cf1Stats, "DestroyCount");
+
+            //Abort connections and monitor destory counter
+            mbs.invoke(bean.getObjectName(), "purgePoolContents", new Object[] { "abort" }, null);
+            getPoolContents(bean);
+
+            // Two Connections when purge issued, in transaction cannot be purged until transaction ends
+            int destroyCountAfterPurge = getMonitorData(cf1Stats, "DestroyCount");
+            int difference1 = destroyCountAfterPurge - initialDestroyCount;
+            assertTrue("Destroy count should not have increased when connections are in transaction- expecting 0 but was: " + difference1, difference1 == 0);
+
+            // close connections
+            conn.close();
+            conn2.close();
+
+            // Destroy count should not change after closing connections
+            int destroyCountAfterClose = getMonitorData(cf1Stats, "DestroyCount");
+            int difference2 = destroyCountAfterClose - initialDestroyCount;
+            assertTrue("Destroy count should not have increased after closing connection - expecting 0 but was: " + difference2, difference2 == 0);
+
+            // end transaction
+            tran.commit();
+
+            assertPoolSize(bean, "Not all connections were purged from the pool!", 0);
+
+            //Connections were marked to be destroyed, and are in the Thread supported cleanup and destroy connection pool.
+            // Wait for threads to destroy connections
+            boolean result = false;
+            int difference3 = -1;
+            for (int i = 0; i < 6; i++) {
+                int destoyCountAfterCommit = getMonitorData(cf1Stats, "DestroyCount");
+                difference3 = destoyCountAfterCommit - initialDestroyCount;
+                if (difference3 != poolSize) {
+                    System.out.println("Waiting for connections to be destroyed. Attempt:" + i);
+                    Thread.sleep(Duration.ofSeconds(10).toMillis());
+                    continue;
+                }
+                result = true;
+            }
+            if (!result) {
+                throw new Exception("Destroy count should not have been the same after closing connections - expecting " + poolSize + " but was: " + difference2);
+            }
+        } catch (Exception e) {
+            tran.rollback();
+            throw e;
+        } finally {
+            if (conn != null) {
+                conn.close();
+            }
+            if (conn2 != null) {
+                conn2.close();
+            }
         }
     }
 
@@ -622,8 +790,7 @@ public class JCAFVTServlet extends FATServlet {
 
             // Show pool contents after tran, verify size=0
             System.out.println("**  Pool contents after purge:\n" + getPoolContents(bean));
-            if (getPoolSize(bean) != 0)
-                throw new Exception("Not all connections were purged from the pool!");
+            assertPoolSize(bean, "Not all connections were purged from the pool!", 0);
         } finally {
             if (con != null)
                 con.close();
@@ -650,8 +817,7 @@ public class JCAFVTServlet extends FATServlet {
             MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
             mbs.invoke(bean.getObjectName(), "purgePoolContents", new Object[] { "immediate" }, null);
             System.out.println("**  Pool contents after purge:\n" + getPoolContents(bean));
-            if (getPoolSize(bean) != 0)
-                throw new Exception("Not all connections were purged from the pool!");
+            assertPoolSize(bean, "Not all connections were purged from the pool!", 0);
         } finally {
             if (con != null)
                 con.close();
@@ -683,16 +849,14 @@ public class JCAFVTServlet extends FATServlet {
             System.out.println("**  Pool contents during transaction:\n" + duringTran);
             if (!duringTran.contains("ActiveInTransactionToBePurged"))
                 throw new Exception("Expected 1 connection waiting to be purged.");
-            if (getPoolSize(bean) != 0)
-                throw new Exception("Not all connections were purged from the pool!");
+            assertPoolSize(bean, "Not all connections were purged from the pool!", 0);
 
             // Transaction done, connection closed: able to be purged.
             con.close();
             tran.commit();
 
             System.out.println("**  Pool contents after purge:\n" + getPoolContents(bean));
-            if (getPoolSize(bean) != 0)
-                throw new Exception("Not all connections were purged from the pool!");
+            assertPoolSize(bean, "Not all connections were purged from the pool!", 0);
         } finally {
             if (con != null)
                 con.close();
@@ -736,8 +900,7 @@ public class JCAFVTServlet extends FATServlet {
             // Verify pool is empty after pool is purged
             String poolContentsAfter = getPoolContents(bean);
             System.out.println("**  Pool contents after purge: \n" + poolContentsAfter);
-            if (!poolContentsAfter.contains("size=0"))
-                throw new Exception("Not all connections were purged from the pool!");
+            assertPoolSize(bean, "Not all connections were purged from the pool!", 0);
         } finally {
             if (con1 != null)
                 con1.close();
@@ -883,5 +1046,34 @@ public class JCAFVTServlet extends FATServlet {
         String contents = "   ";
         contents += (String) ManagementFactory.getPlatformMBeanServer().invoke(bean.getObjectName(), "showPoolContents", null, null);
         return contents.replace("\n", "\n   ");
+    }
+
+    private ObjectName getConnPoolStatsMBeanObjName(String connectionFactory) throws Exception {
+        Set<ObjectInstance> mxBeanSet;
+        ObjectInstance oi;
+        mxBeanSet = ManagementFactory.getPlatformMBeanServer().queryMBeans(new ObjectName("WebSphere:type=ConnectionPoolStats,name=*" + connectionFactory + "*"), null);
+        if (mxBeanSet != null && mxBeanSet.size() > 0) {
+            Iterator<ObjectInstance> it = mxBeanSet.iterator();
+            oi = it.next();
+            return oi.getObjectName();
+        } else
+            throw new Exception("ConnectionPoolStatsMBean:NotFound");
+    }
+
+    private int getMonitorData(ObjectName name, String attribute) throws Exception {
+        return Integer.parseInt((ManagementFactory.getPlatformMBeanServer().getAttribute(name, attribute)).toString());
+    }
+
+    /**
+     * Asserts pool size and then returns the current pool size
+     */
+    private int assertPoolSize(ObjectInstance bean, String message, int expected) throws Exception {
+        int actual = getPoolSize(bean);
+        if (actual != expected) {
+            message += " Expected: " + expected;
+            message += " Actual: " + actual;
+            throw new Exception(message);
+        }
+        return actual;
     }
 }
