@@ -1,0 +1,46 @@
+<client>
+	<include location="../fatTestPorts.xml"/>
+    <featureManager>
+      
+       <feature>javaeeClient-7.0</feature>
+      
+    </featureManager>
+    
+   <application id="TestClientIDAppClient" name="TestClientIDApp" type="ear" location="TestClientIDApp.ear"/>
+   
+ 
+   
+   
+ <jmsQueueConnectionFactory jndiName="jndi_JMS_BASE_QCF" connectionManagerRef="ConMgr6">
+      <properties.wasJms clientID="" remoteServerAddress="localhost:${bvt.prop.jms.1}:BootstrapBasicMessaging" /> 
+	</jmsQueueConnectionFactory>
+    <connectionManager id="ConMgr6" maxPoolSize="10"/>
+    
+    <jmsConnectionFactory jndiName="jndi_JMS_BASE_CF" connectionManagerRef="ConMgr7">
+      <properties.wasJms  clientID="" remoteServerAddress="localhost:${bvt.prop.jms.1}:BootstrapBasicMessaging" /> 
+	</jmsConnectionFactory>
+	<connectionManager id="ConMgr7" maxPoolSize="10"/>
+	
+	<jmsTopicConnectionFactory jndiName="eis/tcf" connectionManagerRef="ConMgr9">
+      <properties.wasJms clientID="" remoteServerAddress="localhost:${bvt.prop.jms.1}:BootstrapBasicMessaging" /> 
+    </jmsTopicConnectionFactory>
+    <connectionManager id="ConMgr7" maxPoolSize="10"/>
+    
+    
+    <jmsQueue jndiName="jndi_INPUT_Q">
+      <properties.wasJms 	queueName="QUEUE1" />
+    </jmsQueue>
+    
+    <jmsQueue jndiName="jndi_INPUT_Q1">
+      <properties.wasJms 	queueName="exQUEUE" />
+    </jmsQueue>   
+    
+    <jmsQueue jndiName="jndi_INPUT_Q2">
+      <properties.wasJms 	queueName="QUEUE2" />
+    </jmsQueue>
+    
+    <jmsTopic jndiName="jndi_INPUT_T">
+      <properties.wasJms 	topicSpace="TOPIC1" />
+    </jmsTopic>
+    
+</client>
