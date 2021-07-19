@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1845,6 +1845,73 @@ public class HttpXForwardedAndForwardedHeaderTests {
         assertTrue("Response does not contain the expected Remote Host", response.contains("Remote Host: clienttest.com"));
         assertTrue("Response does not contain expected Scheme", response.contains("Scheme: http"));
         assertTrue("Response does not contain expected isSecure", response.contains("isSecure: false"));
+    }
+
+    /**
+     *
+     * Test that a malformed proto attribute defined in a Forwarded header will result in the response
+     * containing a status code of 400 Bad Request.
+     *
+     * The remote client information should be verified.
+     *
+     * @throws Exception
+     */
+    @Test
+    @Mode(TestMode.FULL)
+    public void testForwardedHeaderProtoAttributeMalformed() throws Exception {
+        String variation = "IPv4IPv6RemoteIP";
+        String testName = "testForwardedHeaderProtoAttributeMalformed";
+        String servletName = "EndpointInformationServlet";
+
+        // Start the server with the accessLogRemoteIP configuration
+        startServer(variation);
+
+        // First request
+        List<BasicHeader> headerList = new ArrayList<BasicHeader>();
+        headerList.addAll(Arrays.asList(new BasicHeader("Forwarded", "for=192.100.0.299,for=192.168.0.101,for=192.168.2.322,for=172.31.255.188;"
+                                                                     + "host=clienttest.com;"
+                                                                     + "proto=http,https")));
+
+        HttpResponse httpResponse = execute(APP_NAME, servletName, headerList, testName);
+        String response = getResponseAsString(httpResponse);
+        int statusCode = httpResponse.getStatusLine().getStatusCode();
+
+        Log.info(ME, testName, "Response: " + response);
+
+        assertTrue("Response is expected to have status code of 400, but had [" + statusCode + "]", statusCode == 400);
+
+    }
+
+    /**
+     *
+     * Test that a malformed X-Forwarded-Proto will result in the response containing a status code
+     * of 400 Bad Request.
+     *
+     * The remote client information should be verified.
+     *
+     * @throws Exception
+     */
+    @Test
+    @Mode(TestMode.FULL)
+    public void testXForwardedProtoMalformed() throws Exception {
+        String variation = "IPv4IPv6RemoteIP";
+        String testName = "testXForwardedProtoMalformed";
+        String servletName = "EndpointInformationServlet";
+        startServer(variation);
+
+        List<BasicHeader> headerList = new ArrayList<BasicHeader>();
+        headerList.addAll(Arrays.asList(new BasicHeader("X-Forwarded-For", "192.100.0.299, 192.168.123.123, 2001:db9:cafe::17, 2001:db8:ab:1234::ad32"),
+                                        new BasicHeader("X-Forwarded-By", "169.254.478.368"),
+                                        new BasicHeader("X-Forwarded-Proto", "http, https")));
+
+        HttpResponse httpResponse = execute(APP_NAME, servletName, headerList, testName);
+        String response = getResponseAsString(httpResponse);
+        int statusCode = httpResponse.getStatusLine().getStatusCode();
+
+        Log.info(ME, testName, "Response: " + response);
+
+        assertTrue("Response is expected to have status code of 400, but had [" + statusCode + "]", statusCode == 400);
+
     }
 
     /**
