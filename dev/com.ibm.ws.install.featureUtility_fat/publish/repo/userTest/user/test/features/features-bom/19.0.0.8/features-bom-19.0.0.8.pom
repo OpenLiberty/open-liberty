@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>sarah.user.test.features</groupId>
+  <artifactId>features-bom</artifactId>
+  <version>19.0.0.8</version>
+  <packaging>pom</packaging>
+  <name>user features bill of materials</name>
+  <description>user features bill of materials</description>
+  <url>https://openliberty.io/</url>
+  <licenses>
+    <license>
+      <name>Eclipse Public License</name>
+      <url>https://www.eclipse.org/legal/epl-v10.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>ericglau</id>
+      <name>Eric Lau</name>
+      <email>ericglau@ca.ibm.com</email>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:git@github.com:OpenLiberty/open-liberty.git</connection>
+    <developerConnection>scm:git:git@github.com:OpenLiberty/open-liberty.git</developerConnection>
+    <url>git@github.com:OpenLiberty/open-liberty.git</url>
+  </scm>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>test.user.test.features</groupId>
+        <artifactId>testesa1</artifactId>
+        <version>19.0.0.8</version>
+        <type>esa</type>
+        <scope>provided</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+</project>

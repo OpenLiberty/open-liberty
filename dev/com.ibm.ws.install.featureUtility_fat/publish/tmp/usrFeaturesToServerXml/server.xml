@@ -3,9 +3,7 @@
 
     <!-- Enable features -->
     <featureManager>
-		<feature>testesa1</feature>
-		<feature>jsp-2.3</feature>
-		<feature>ssl-1.0</feature>
+	<feature>ext.test:testesa1</feature>
     </featureManager>
 
     <!-- To access this server from a remote client add a host attribute to the

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,8 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.install.featureUtility.fat;
+
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -399,5 +401,47 @@ public abstract class FeatureUtilityToolTest {
 
         return etc;
 
+    }
+    
+    protected static boolean deleteUsrFolder(String methodName){
+        boolean usr = TestUtils.deleteFolder(new File(minifiedRoot + "/usr/tmp"));
+        Log.info(c, methodName, "DELETED files/folders: /usr/tmp ? VALUE: " + usr);
+
+        return usr;
+    }
+    
+    protected static boolean deleteUsrExtFolder(String methodName){
+        boolean usr = TestUtils.deleteFolder(new File(minifiedRoot + "/usr/cik"));
+        Log.info(c, methodName, "DELETED files/folders: /usr/cik ? VALUE: " + usr);
+
+        return usr;
+    }
+    
+    protected static void assertFilesExist(String[] filePaths)  throws Exception {
+    	for (String filePath : filePaths) {
+    		assertTrue(filePath + " does not exist.", new File(minifiedRoot, filePath).exists());
+    	}
+    }
+    
+    protected void createExtensionDirs(String extensionName) throws Exception {
+        //create extensionName.properties file in wlp/etc/extensions
+        String methodName = "createExtensionDirs";
+        String propsName = extensionName + ".properties";
+
+        //create /etc/extensions
+        File extensionsDir = new File(minifiedRoot + "/etc/extensions");
+        boolean success = extensionsDir.mkdir();
+        Log.info(c, methodName, "Extension dir " + extensionsDir.getAbsolutePath() + " created= " + success);
+
+        //create extension folder
+        File extensionsInstallDir = new File(minifiedRoot + "/usr/cik/extensions", extensionName);
+        success = extensionsInstallDir.mkdir();
+        Log.info(c, methodName, "Extension install dir created= " + success);
+
+        File propsFile = new File(extensionsDir, propsName);
+        
+        writeToProps(propsFile.toString(),"com.ibm.websphere.productId", extensionName );
+        writeToProps(propsFile.toString(),"com.ibm.websphere.productInstall", extensionsInstallDir.getAbsolutePath() );
+        
     }
 }
