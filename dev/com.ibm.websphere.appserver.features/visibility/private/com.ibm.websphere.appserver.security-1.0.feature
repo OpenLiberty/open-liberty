@@ -22,3 +22,4 @@ IBM-API-Package: com.ibm.wsspi.security.tai; type="ibm-api", \
  dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.security.spnego_1.1-javadoc.zip
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

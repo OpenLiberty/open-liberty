@@ -6,3 +6,4 @@ WLP-DisableAllFeatures-OnConflict: false
  com.ibm.ws.security.registry.basic
 kind=ga
 edition=core
+WLP-Activation-Type: parallel
