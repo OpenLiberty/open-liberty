@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -21,6 +21,15 @@ Export-Package: \
 Import-Package: com.ibm.ws.common.internal.encoder, !*.internal.*, !com.ibm.ws.kernel.boot.cmdline, *
 
 instrument.disabled: true
+
+Service-Component:\
+  com.ibm.ws.crypto.ltpakeyutil.classProvider;\
+    implementation:=com.ibm.ws.serialization.DeserializationClassProvider;\
+    provide:=com.ibm.ws.serialization.DeserializationClassProvider;\
+    properties:="\
+      service.vendor=IBM,\
+      classes=com.ibm.ws.crypto.ltpakeyutil.LTPAPrivateKey|\
+              com.ibm.ws.crypto.ltpakeyutil.LTPAPublicKey"
 
 -buildpath: \
 	com.ibm.ws.common.encoder;version=latest, \

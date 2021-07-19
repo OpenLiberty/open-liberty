@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -52,7 +52,8 @@ import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 /**
  *
  */
-@Component(immediate = true,
+@Component(service = JAASService.class,
+           immediate = true,
            configurationPolicy = ConfigurationPolicy.IGNORE,
            property = "service.vendor=IBM")
 public class JAASServiceImpl implements JAASService {
@@ -210,7 +211,7 @@ public class JAASServiceImpl implements JAASService {
      * <li>If there are module pids, and some can't be found, add the entry to the pending list.
      * <li>If all is well, add it to the map.
      * </ul>
-     * 
+     *
      * @param ref JAASLoginContextEntry service reference
      */
     private void processContextEntry(ServiceReference<JAASLoginContextEntry> ref) {
@@ -316,7 +317,7 @@ public class JAASServiceImpl implements JAASService {
 
     /**
      * Performs a JAAS login.
-     * 
+     *
      * @param jaasEntryName
      * @param callbackHandler
      * @param partialSubject

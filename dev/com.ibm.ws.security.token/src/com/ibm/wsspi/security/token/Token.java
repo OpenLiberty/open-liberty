@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2011 IBM Corporation and others.
+ * Copyright (c) 2004, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,17 +10,19 @@
  *******************************************************************************/
 package com.ibm.wsspi.security.token;
 
+import java.io.Serializable;
+
 /**
  * This interface should not be implemented directly but rather
  * one should implement either AuthenticationToken, AuthorizationToken,
  * SingleSignonToken or PropagationToken.
- * 
+ *
  * @author IBM Corporation
  * @version 5.1.1
  * @since 5.1.1
  * @ibm-spi
  */
-public interface Token extends java.lang.Cloneable {
+public interface Token extends java.lang.Cloneable, Serializable {
 
     /**
      * <p>
@@ -31,7 +33,7 @@ public interface Token extends java.lang.Cloneable {
      * where the call was made, e.g., NO_PERMISSION, WSLoginFailedException,
      * etc.) and the request will be rejected.
      * </p>
-     * 
+     *
      * @return boolean
      **/
     public boolean isValid();
@@ -40,7 +42,7 @@ public interface Token extends java.lang.Cloneable {
      * <p>
      * This returns the expiration time in milli-seconds.
      * </p>
-     * 
+     *
      * @return long
      **/
     public long getExpiration();
@@ -51,7 +53,7 @@ public interface Token extends java.lang.Cloneable {
      * Some token implementations may not be intended to be propagated
      * downstream, it's up to the implementation to determine this.
      * <p>
-     * 
+     *
      * @return boolean
      **/
     public boolean isForwardable();
@@ -65,7 +67,7 @@ public interface Token extends java.lang.Cloneable {
      * tokens using either the Identity Token or Authentication Token
      * principal.
      * </p>
-     * 
+     *
      * @return String
      **/
     public String getPrincipal();
@@ -73,7 +75,7 @@ public interface Token extends java.lang.Cloneable {
     /**
      * Gets the bytes to be sent across the wire. The information in the byte[]
      * needs to be enough to recreate the Token object at the target server.
-     * 
+     *
      * @return byte[]
      **/
     public byte[] getBytes();
@@ -82,7 +84,7 @@ public interface Token extends java.lang.Cloneable {
      * <p>
      * Gets the name of the token, used to identify the byte[] in the protocol message.
      * </p>
-     * 
+     *
      * @return String
      **/
     public String getName();
@@ -90,7 +92,7 @@ public interface Token extends java.lang.Cloneable {
     /**
      * Gets the version of the token as an short. This is also used to identify the
      * byte[] in the protocol message.
-     * 
+     *
      * @return short
      **/
     public short getVersion();
@@ -122,12 +124,12 @@ public interface Token extends java.lang.Cloneable {
      * in the Subject will be added together and used in the SSO token
      * for lookup. A one-way hash of this string will be created as the
      * unique ID.
-     * 
+     *
      * When altering a token to contain a non-null value here, the token
      * must be added to the Subject prior to the commit phase or before
      * the wsMap module commit is called.
      * </p>
-     * 
+     *
      * @return String
      **/
     public String getUniqueID();
@@ -146,7 +148,7 @@ public interface Token extends java.lang.Cloneable {
      * Gets the attribute value based on the named value. A string array
      * is returned containing all values of the attribute previously set.
      * </p>
-     * 
+     *
      * @param String key
      * @return String[]
      **/
@@ -160,7 +162,7 @@ public interface Token extends java.lang.Cloneable {
      * set for key, not including the current value being set, or null
      * if not previously set.
      * </p>
-     * 
+     *
      * @param String key
      * @param String value
      * @return String[]
@@ -171,7 +173,7 @@ public interface Token extends java.lang.Cloneable {
      * <p>
      * Gets the List of all attribute names present in the token.
      * </p>
-     * 
+     *
      * @return java.util.Enumeration
      **/
     public java.util.Enumeration getAttributeNames();
@@ -182,7 +184,7 @@ public interface Token extends java.lang.Cloneable {
      * session. For each invocation to that session, we should use a copy
      * of the propagation token to go downstream instead of a reference to
      * the token.
-     * 
+     *
      * @return Object
      */
     public Object clone();

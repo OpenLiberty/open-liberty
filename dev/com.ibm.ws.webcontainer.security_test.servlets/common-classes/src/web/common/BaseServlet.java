@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -219,7 +219,7 @@ public abstract class BaseServlet extends HttpServlet {
      * logic is done, a flush() may get called and lock out changes to the
      * response.
      *
-     * @param sb Running StringBuffer
+     * @param sb  Running StringBuffer
      * @param msg Message to write
      */
     void writeLine(StringBuffer sb, String msg) {

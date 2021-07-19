@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2011 IBM Corporation and others.
+ * Copyright (c) 1997, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,9 +22,11 @@ import com.ibm.wsspi.security.token.SingleSignonToken;
 
 public class SingleSignonTokenImpl extends AbstractTokenImpl implements SingleSignonToken {
 
+    private static final long serialVersionUID = -7144674627439090488L;
+
     private Token token = null;
     private final short version = 2;
-    private final TokenService tokenService;
+    private transient final TokenService tokenService; // TODO Need to rethink this.
 
     public SingleSignonTokenImpl(TokenService tokenService) {
         this.tokenService = tokenService;
@@ -34,7 +36,6 @@ public class SingleSignonTokenImpl extends AbstractTokenImpl implements SingleSi
         initializeToken(ssoToken, false);
     }
 
-    @SuppressWarnings("unchecked")
     public void initializeToken(byte[] ssoToken, boolean refreshIfExpired) throws LoginException {
         try {
             token = null;
@@ -46,30 +47,27 @@ public class SingleSignonTokenImpl extends AbstractTokenImpl implements SingleSi
             }
 
             final Token tokenPriv = token;
-            AccessController.doPrivileged(new java.security.PrivilegedAction()
-            {
-                public Object run()
-                  {
-                      setToken(tokenPriv);
-                      return null;
-                  }
+            AccessController.doPrivileged(new java.security.PrivilegedAction<Void>() {
+                @Override
+                public Void run() {
+                    setToken(tokenPriv);
+                    return null;
+                }
             });
         } catch (Exception e) {
             throw new LoginException(e.getMessage());
         }
     }
 
-    @SuppressWarnings("unchecked")
     public void initializeToken(final Token token) {
         this.token = token;
 
-        AccessController.doPrivileged(new java.security.PrivilegedAction()
-        {
-            public Object run()
-              {
-                  setToken(token);
-                  return null;
-              }
+        AccessController.doPrivileged(new java.security.PrivilegedAction<Void>() {
+            @Override
+            public Void run() {
+                setToken(token);
+                return null;
+            }
         });
     }
 
@@ -89,13 +87,12 @@ public class SingleSignonTokenImpl extends AbstractTokenImpl implements SingleSi
     @Override
     public Object clone() {
         SingleSignonToken newToken = new SingleSignonTokenImpl(tokenService);
-        token = AccessController.doPrivileged(new java.security.PrivilegedAction<Token>()
-            {
-                public Token run()
-                  {
-                      return getToken();
-                  }
-            });
+        token = AccessController.doPrivileged(new java.security.PrivilegedAction<Token>() {
+            @Override
+            public Token run() {
+                return getToken();
+            }
+        });
         ((SingleSignonTokenImpl) newToken).initializeToken((Token) token.clone());
         return newToken;
     }

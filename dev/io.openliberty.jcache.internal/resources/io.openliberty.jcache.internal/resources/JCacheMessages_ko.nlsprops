@@ -1,0 +1,18 @@
+###############################################################################
+# Copyright (c) 2021 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.jcache.internal/resources/io/openliberty/jcache/internal/resources/JCacheMessages.nlsprops
+#COMPONENTPREFIX CWIML
+#COMPONENTNAMEFOR Open Liberty JCache
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+

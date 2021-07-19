@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2020 IBM Corporation and others.
+# Copyright (c) 2017, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -74,10 +74,11 @@ Service-Component: \
     modified:='modified'; \
     cacheKeyProvider=com.ibm.ws.security.authentication.cache.CacheKeyProvider; \
     cacheEvictionListener=com.ibm.ws.security.authentication.cache.CacheEvictionListener; \
+    jCacheService=io.openliberty.jcache.JCacheService; \
     credentialService=com.ibm.ws.security.credentials.CredentialsService; \
-    optional:='cacheKeyProvider,cacheEvictionListener,credentialsService'; \
+    optional:='cacheKeyProvider,cacheEvictionListener,credentialsService,jCacheService'; \
     multiple:='cacheKeyProvider,cacheEvictionListener'; \
-    properties:="service.vendor=IBM", \
+    properties:="service.vendor=IBM,jCacheService.target=(id=unbound)", \
   com.ibm.ws.security.authentication.internal.cache.keyproviders.BasicAuthCacheKeyProvider; \
     implementation:=com.ibm.ws.security.authentication.internal.cache.keyproviders.BasicAuthCacheKeyProvider; \
     provide:=com.ibm.ws.security.authentication.cache.CacheKeyProvider; \
@@ -110,7 +111,7 @@ Service-Component: \
     credentialProvider=com.ibm.ws.security.credentials.CredentialProvider; \
     optional:='credentialProvider'; \
     multiple:='credentialProvider'; \
-	dynamic:='credentialProvider'; \
+    dynamic:='credentialProvider'; \
     properties:="service.vendor=IBM"
 
 -dsannotations: \
@@ -144,6 +145,8 @@ instrument.classesExcludes: com/ibm/ws/security/authentication/internal/resource
 	com.ibm.ws.kernel.boot,\
 	com.ibm.ws.security.mp.jwt.proxy;version=latest,\
 	com.ibm.websphere.security.authentication;version=latest,\
+	io.openliberty.jcache.internal;version=latest,\
+	com.ibm.websphere.javaee.jcache.1.1;version=latest,\
 	org.eclipse.osgi,\
 	osgi.core
 

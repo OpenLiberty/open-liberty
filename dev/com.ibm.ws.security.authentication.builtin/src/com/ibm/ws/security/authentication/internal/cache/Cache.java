@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2011 IBM Corporation and others.
+ * Copyright (c) 1997, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.security.authentication.internal.cache;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -20,7 +22,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.security.authentication.cache.CacheEvictionListener;
+
+import io.openliberty.jcache.JCacheService;
 
 /**
  * Cache containing three internal tables in order to implement a least-recently-used removal algorithm.
@@ -28,11 +33,6 @@ import com.ibm.ws.security.authentication.cache.CacheEvictionListener;
 public class Cache {
 
     private static final TraceComponent tc = Tr.register(Cache.class, "Authentication");
-
-    /**
-     * Default cache timeout.
-     */
-    private static long defaultTimeout;
 
     /**
      * Primary hash table containing the most recently used entries.
@@ -70,6 +70,21 @@ public class Cache {
      */
     private Timer timer;
 
+    /**
+     * The {@link JCacheService} being used, if one is provided.
+     */
+    private JCacheService jCacheService = null;
+
+    private boolean registeredJCacheListener = false;
+
+    public Cache(JCacheService jCacheService, Set<CacheEvictionListener> callbackSet) {
+        /*
+         * Eviction, map sizing, etc are all handled by the JCache implementation.
+         */
+        this.jCacheService = jCacheService;
+        this.cacheEvictionListenerSet = callbackSet;
+    }
+
     public Cache(int initialSize, int entryLimit, long timeoutInMilliSeconds) {
         this(initialSize, entryLimit, timeoutInMilliSeconds, null);
     }
@@ -100,6 +115,13 @@ public class Cache {
      * Remove an object from the Cache.
      */
     public synchronized void remove(Object key) {
+        javax.cache.Cache<Object, byte[]> jCache = getJCache();
+        if (jCache != null) {
+            jCache.remove(key);
+            printJCacheContents(jCache); // TODO REMOVE
+            return;
+        }
+
         Object victim = null;
         if (cacheEvictionListenerSet.isEmpty() == false) {
             victim = get(key);
@@ -122,6 +144,26 @@ public class Cache {
      * Find and return the object associated with the specified key.
      */
     public synchronized Object get(Object key) {
+        javax.cache.Cache<Object, byte[]> jCache = getJCache();
+        if (jCache != null) {
+            printJCacheContents(jCache); // TODO REMOVE
+
+            /*
+             * Search the JCache for the entry.
+             */
+            byte[] objBytes = jCache.get(key);
+            if (objBytes == null) {
+                Tr.debug(tc, "JCache MISS for key " + key);
+            } else {
+                Tr.debug(tc, "JCache HIT for key " + key);
+            }
+
+            /*
+             * Use the SerializationService to deserialize the entry.
+             */
+            return jCacheService.deserialize(objBytes);
+        }
+
         ConcurrentHashMap<Object, Object> tableRef = primaryTable;
         Entry curEntry = (Entry) primaryTable.get(key);
 
@@ -166,6 +208,13 @@ public class Cache {
      * Insert the value into the Cache using the specified key.
      */
     public synchronized void insert(Object key, Object value) {
+        javax.cache.Cache<Object, byte[]> jCache = getJCache();
+        if (jCache != null) {
+            jCache.put(key, jCacheService.serialize(value));
+            printJCacheContents(jCache); // TODO REMOVE
+            return;
+        }
+
         // evict until size < maxSize
         while (isEvictionRequired() && entryLimit > 0 && entryLimit < Integer.MAX_VALUE) {
             evictStaleEntries();
@@ -188,6 +237,13 @@ public class Cache {
      * to be evicted.
      */
     protected boolean isEvictionRequired() {
+        /*
+         * JCache implementation will handle eviction.
+         */
+        if (getJCache() != null) {
+            return false;
+        }
+
         boolean evictionRequired = false;
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             int size = primaryTable.size() + secondaryTable.size() + tertiaryTable.size();
@@ -212,6 +268,13 @@ public class Cache {
      * Implementation of the eviction strategy.
      */
     protected synchronized void evictStaleEntries() {
+        /*
+         * JCache implementation will handle eviction.
+         */
+        if (getJCache() != null) {
+            return;
+        }
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             int size = primaryTable.size() + secondaryTable.size() + tertiaryTable.size();
             Tr.debug(tc, "The current cache size is " + size + "( " + primaryTable.size() + ", " + secondaryTable.size() + ", " + tertiaryTable.size() + ")");
@@ -245,37 +308,37 @@ public class Cache {
      * the cache.
      */
     protected synchronized void clearAllEntries() {
+        return; // TODO This needs to be removed. Here to stop init on startup.
 
-        tertiaryTable.putAll(primaryTable);
-        tertiaryTable.putAll(secondaryTable);
-
-        primaryTable.clear();
-        secondaryTable.clear();
-
-        evictStaleEntries();
+//        javax.cache.Cache<Object, byte[]> jCache = getJCache();
+//        if (jCache != null) {
+//            printJCacheContents(jCache); // TODO REMOVE
+//            jCache.removeAll(); // Notifies listeners, clear() does not.
+//            return;
+//        }
+//
+//        tertiaryTable.putAll(primaryTable);
+//        tertiaryTable.putAll(secondaryTable);
+//
+//        primaryTable.clear();
+//        secondaryTable.clear();
+//
+//        evictStaleEntries();
     }
 
-    public static long getDefaultTimeout() {
-        return defaultTimeout;
-    }
+    // TODO If we don't need this, remove as it only adds work to serialization.
+    public static class Entry implements Serializable {
+        // TODO Generate UID
+        private static final long serialVersionUID = 1L;
 
-    public static void setDefaultTimeout(long timeout) {
-        defaultTimeout = timeout;
-    }
-
-    public static class Entry {
         public Object value;
-        public int timesAccessed;
 
-        public Entry() {}
+        public Entry() {
+        }
 
         public Entry(Object value) {
             this.value = value;
         }
-    }
-
-    int getEntryLimit() {
-        return entryLimit;
     }
 
     private class EvictionTask extends TimerTask {
@@ -292,5 +355,44 @@ public class Cache {
         if (timer != null) {
             timer.cancel();
         }
+    }
+
+    /**
+     * Get the JCache {@link javax.cache.Cache} instance that backs this cache. This method
+     * will also register the cache eviction listeners with the JCache cache {@link javax.cache.Cache}.
+     *
+     * @return The JCache {@link javax.cache.Cache} instance that backs this cache, if there is one. Otherwise; null.
+     */
+    private javax.cache.Cache<Object, byte[]> getJCache() {
+        javax.cache.Cache<Object, byte[]> jCache = null;
+        if (jCacheService != null) {
+            jCache = jCacheService.getCache();
+
+            /*
+             * Register as JCache listeners.
+             *
+             * TODO Need to unregister on teardown? Reset registeredJCacheListener
+             */
+            if (!registeredJCacheListener) {
+// TODO Causes weird CNFE on multi-node hazelcast cluster
+//                JCacheListener<Object, byte[]> jcl = new JCacheListener<Object, byte[]>(jCacheService, cacheEvictionListenerSet);
+//                jCache.registerCacheEntryListener(new MutableCacheEntryListenerConfiguration<Object, byte[]>(FactoryBuilder.factoryOf(jcl), null, false, false));
+                registeredJCacheListener = true;
+            }
+        }
+
+        return jCache;
+    }
+
+    // TODO REMOVE
+    @Trivial
+    private void printJCacheContents(javax.cache.Cache<Object, byte[]> jCache) {
+        Iterator<javax.cache.Cache.Entry<Object, byte[]>> iter = jCache.iterator();
+        Set<String> entries = new HashSet<String>();
+        while (iter.hasNext()) {
+            javax.cache.Cache.Entry<Object, byte[]> entry = iter.next();
+            entries.add(entry.getKey() + ": " + entry.getValue().length);
+        }
+        Tr.debug(tc, "Entries: " + entries);
     }
 }

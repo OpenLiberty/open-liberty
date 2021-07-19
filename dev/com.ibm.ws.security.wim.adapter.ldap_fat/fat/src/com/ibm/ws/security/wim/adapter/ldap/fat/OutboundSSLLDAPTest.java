@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,7 +39,6 @@ public class OutboundSSLLDAPTest {
     private static LibertyServer myServer = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.wim.adapter.ldap.fat.outbound.ssl");
     private static final Class<?> c = OutboundSSLLDAPTest.class;
 
-    protected final static String BASIC_AUTH_SERVLET = "basicauth";
     protected final static String LDAP_DEFAULT_OUTBOUND_SSL = "LDAPwithDefaultOutboundSSL.xml";
     protected final static String LDAP_OUTBOUND_FILTER = "LDAPwithDynamicOutboundSSL.xml";
     protected final static String DEFAULT_CONFIG_FILE = "outboundSSL.server.xml";

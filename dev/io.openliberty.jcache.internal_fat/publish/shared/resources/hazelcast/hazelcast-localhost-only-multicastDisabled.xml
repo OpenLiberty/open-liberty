@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<hazelcast
+	xsi:schemaLocation="http://www.hazelcast.com/schema/config hazelcast-config-3.9.xsd"
+	xmlns="http://www.hazelcast.com/schema/config"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<group>
+		<name>${hazelcast.group.name}</name>
+		<password>${hazelcast.group.password}</password>
+	</group>
+
+	<network>
+	    <!--  TODO Remove this or add constant. Needed this on MY machine b/c 5702 was used by some system process.  -->
+		<port auto-increment="true" port-count="100">5703</port>
+
+		<join>
+			<multicast enabled="false" />
+			<tcp-ip enabled="true">
+				<interface>127.0.0.1</interface>
+			</tcp-ip>
+		</join>
+	</network>
+
+	<executor-service name="default">
+		<pool-size>12</pool-size>
+	</executor-service>
+
+    <!-- Require some of this to the cache in management center. -->
+    <!-- 
+	<cache name="jCache1">
+		<key-type class-name="java.lang.Object" />
+		<value-type class-name="[B" />
+		<eviction size="100000" eviction-policy="LFU"
+			max-size-policy="ENTRY_COUNT" />
+		<statistics-enabled>true</statistics-enabled>
+	</cache>
+    -->
+    
+    <!-- To use management center. -->
+    <!-- 
+	<management-center enabled="true">
+		http://localhost:8080/mancenter
+	</management-center>
+    -->
+</hazelcast>

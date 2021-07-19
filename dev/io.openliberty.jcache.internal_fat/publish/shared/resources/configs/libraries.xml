@@ -1,0 +1,41 @@
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+	<library id="HazelcastLib">
+		<fileset dir="${shared.resource.dir}/hazelcast"
+			includes="hazelcast.jar" />
+	</library>
+
+	<library id="HazelcastClientLib">
+		<fileset dir="${shared.resource.dir}/hazelcast"
+			includes="hazelcast-client.jar,hazelcast.jar" />
+	</library>
+
+	<library id="HazelcastAllLib">
+		<fileset dir="${shared.resource.dir}/hazelcast"
+			includes="hazelcast-all.jar" />
+	</library>
+ 
+ <!-- 
+    AllPermission needed if running with SecurityManager enabled.
+ -->
+	<javaPermission
+		codebase="${shared.resource.dir}/hazelcast/hazelcast.jar"
+		className="java.security.AllPermission" />
+	<javaPermission
+		codebase="${shared.resource.dir}/hazelcast/hazelcast-client.jar"
+		className="java.security.AllPermission" />
+	<javaPermission
+		codebase="${shared.resource.dir}/hazelcast/hazelcast-all.jar"
+		className="java.security.AllPermission" />
+
+</server>

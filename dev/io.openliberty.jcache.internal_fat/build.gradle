@@ -1,0 +1,83 @@
+/*******************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+def hazelcastVersion = "3.9.2" // 4.2' // 3.9.2' // 3.12.12'
+
+configurations {
+  hazelcast
+  hazelcastClient
+  hazelcastAll
+}
+
+dependencies {
+  requiredLibs project(':com.ibm.ws.webcontainer.security_test.servlets'),
+               project(':io.openliberty.org.apache.commons.logging'),
+               project(':io.openliberty.org.apache.commons.codec'),
+               project(':com.ibm.ws.com.meterware.httpunit.1.7'),
+               'jtidy:jtidy:4aug2000r7-dev',
+               'rhino:js:1.6R5'
+  
+
+  hazelcast "com.hazelcast:hazelcast:${hazelcastVersion}" 
+  hazelcastClient "com.hazelcast:hazelcast-client:${hazelcastVersion}"
+  hazelcastAll "com.hazelcast:hazelcast-all:${hazelcastVersion}"
+}
+
+task addHazelcastToSharedDir(type: Copy) {
+  println configurations.hazelcast.resolve()
+
+  from configurations.hazelcast
+  into new File(autoFvtDir, 'publish/shared/resources/hazelcast')
+  rename "hazelcast-${hazelcastVersion}.jar", 'hazelcast.jar'
+}
+
+task addHazelcastClientToSharedDir(type: Copy) {
+  from configurations.hazelcastClient
+  into new File(autoFvtDir, 'publish/shared/resources/hazelcast')
+  rename "hazelcast-client-${hazelcastVersion}.jar", 'hazelcast-client.jar'
+  exclude "hazelcast-${hazelcastVersion}.jar"
+}
+
+task addHazelcastAllToSharedDir(type: Copy) {
+  from configurations.hazelcastAll
+  into new File(autoFvtDir, 'publish/shared/resources/hazelcast')
+  rename "hazelcast-all-${hazelcastVersion}.jar", 'hazelcast-all.jar'
+}
+
+addRequiredLibraries {
+  dependsOn addHazelcastToSharedDir
+  dependsOn addHazelcastClientToSharedDir
+  dependsOn addHazelcastAllToSharedDir
+}
+
+
+autoFVT.dependsOn ':com.ibm.ws.security.fat.common:assemble'
+autoFVT.dependsOn ':com.ibm.ws.webcontainer.security_test.servlets:assemble'
+autoFVT.doLast {
+  /*
+   * Copy the basicauth.zip into test servers.
+   */
+  def servers = [
+    'io.openliberty.jcache.internal.fat.multi.1',
+    'io.openliberty.jcache.internal.fat.multi.2'
+  ]
+  servers.each { server ->
+    copy { 
+      from new File(project(':com.ibm.ws.webcontainer.security_test.servlets').buildDir, 'test-application/basicauth.zip')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+      rename 'basicauth.zip', 'basicauth.war'
+    }
+    copy { 
+      from new File(project(':com.ibm.ws.security.fat.common').buildDir, 'test-application/testmarker.war')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
+    }
+  }
+}

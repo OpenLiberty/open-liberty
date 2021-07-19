@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<metatype:MetaData
+	xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"
+	xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+	xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0"
+	localization="OSGI-INF/l10n/metatype">
+
+	<Designate factoryPid="io.openliberty.jcache">
+		<Object ocdref="io.openliberty.jcache.metatype" />
+	</Designate>
+
+	<OCD id="io.openliberty.jcache.metatype" ibm:alias="jCache"
+		name="%jCache.config" description="%jCache.config.desc">
+
+		<AD id="name" type="String" required="true" name="%name"
+			description="%name.desc" />
+
+		<AD id="cachingProvider" type="String" required="false"
+			name="%cachingProvider" description="%cachingProvider.desc" />
+
+		<AD id="uri" type="String" ibm:type="location" required="false"
+			name="%uri" description="%uri.desc" />
+
+		<AD id="properties" required="false" type="String" cardinality="1"
+			ibm:type="pid" ibm:reference="io.openliberty.jcache.properties"
+			ibm:flat="true" />
+
+		<AD id="libraryRef" type="String" required="false" ibm:type="pid"
+			ibm:reference="com.ibm.ws.classloading.sharedlibrary" cardinality="1"
+			name="%libraryRef" description="%libraryRef.desc" />
+
+		<AD id="library.target" type="String"
+			default="(service.pid=${libraryRef})" ibm:final="true"
+			name="internal" description="internal use only" />
+
+	</OCD>
+
+	<Designate pid="io.openliberty.jcache.properties">
+		<Object ocdref="io.openliberty.jcache.properties.metatype" />
+	</Designate>
+
+	<OCD id="io.openliberty.jcache.properties.metatype"
+		name="%properties" description="%properties.desc"
+		ibmui:extraProperties="true"
+		ibmui:localization="OSGI-INF/l10n/metatype" />
+
+</metatype:MetaData>

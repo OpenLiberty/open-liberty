@@ -1,0 +1,33 @@
+###############################################################################
+# Copyright (c) 2021 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.jcache.internal/resources/io/openliberty/jcache/internal/resources/JCacheMessages.nlsprops
+#COMPONENTPREFIX JCCHE
+#COMPONENTNAMEFOR Open Liberty JCache
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+JCCHE0001I=JCCHE0001I: The {0} JCache cache was created.
+JCCHE0001I.explanation=The named JCache cache was created as it was not found.
+JCCHE0001I.useraction=If the named JCache cache was expected to exist, verify the JCache configuration is correct and try again.
+
+JCCHE0002I=JCCHE0002I: The existing {0} JCache cache was found.
+JCCHE0002I.explanation=The named JCache cache was found, so it was not created.
+JCCHE0002I.useraction=If the named JCache cache was not expected to exist, verify the JCache configuration is correct and try again.
+
+JCCHE0003I=JCCHE0003I: The {0} JCache cache is using the {1} JCache caching provider.
+JCCHE0003I.explanation=The named JCache cache is using the specified provider.
+JCCHE0003I.useraction=If the named JCache cache should be using a different provider, verify the correct JCache provider library has been configured and try again. 
+
+JCCHE0004E=JCCHE0004E: Failed to load a JCache caching provider.
+JCCHE0004E.explanation=
+JCCHE0004E.useraction= 

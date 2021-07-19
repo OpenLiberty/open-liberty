@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 IBM Corporation and others.
+ * Copyright (c) 2010, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.security.authentication.internal.cache;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -53,15 +52,15 @@ public class CacheTest {
         }
     }
 
-    /**
-     * Constructor Cache(int,int,long) shall set the entry limit
-     * to the 2nd integer value.
-     */
-    @Test
-    public void constructor_IntIntLong() {
-        Cache cache = new Cache(0, 12345, 0);
-        assertEquals(12345, cache.getEntryLimit());
-    }
+//    /**
+//     * Constructor Cache(int,int,long) shall set the entry limit
+//     * to the 2nd integer value.
+//     */
+//    @Test
+//    public void constructor_IntIntLong() {
+//        Cache cache = new Cache(0, 12345, 0);
+//        assertEquals(12345, cache.getEntryLimit());
+//    }
 
     /**
      * insert shall not evict any entries in the cache until the entryLimit

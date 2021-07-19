@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -42,7 +42,14 @@ Service-Component: \
     optional:='credentialProvider,basicAuthCredentialProvider'; \
     multiple:='credentialProvider'; \
     dynamic:='credentialProvider,basicAuthCredentialProvider'; \
-    properties:="service.vendor=IBM"
+    properties:="service.vendor=IBM", \
+  com.ibm.ws.security.credentials.classProvider;\
+    implementation:=com.ibm.ws.serialization.DeserializationClassProvider;\
+    provide:=com.ibm.ws.serialization.DeserializationClassProvider;\
+    properties:="\
+      service.vendor=IBM,\
+      classes=com.ibm.ws.security.authentication.principals.WSPrincipal|\
+              com.ibm.ws.security.credentials.wscred.WSCredentialImpl"
 
 -dsannotations=com.ibm.ws.security.credentials.wscred.BasicAuthCredentialProvider, \
   com.ibm.ws.security.jwtsso.token.proxy.JwtSSOTokenHelper

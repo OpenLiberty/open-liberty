@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,6 +37,8 @@ import com.ibm.ws.security.registry.UserRegistryChangeListener;
 import com.ibm.ws.security.util.ByteArray;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
+import io.openliberty.jcache.JCacheService;
+
 /**
  * Implements the authentication cache.
  */
@@ -56,6 +58,7 @@ public class AuthCacheServiceImpl implements AuthCacheService, UserRegistryChang
     private AuthCacheConfig authCacheConfig;
     private final Set<CacheEvictionListener> cacheEvictionListenerSet = new HashSet<CacheEvictionListener>();
     private final AtomicServiceReference<CredentialsService> credServiceRef = new AtomicServiceReference<CredentialsService>(KEY_CREDENTIAL_SERVICE);
+    private JCacheService jCacheService = null;
 
     /** {@inheritDoc} */
     @FFDCIgnore(Exception.class)
@@ -168,6 +171,7 @@ public class AuthCacheServiceImpl implements AuthCacheService, UserRegistryChang
     /** {@inheritDoc} */
     @Override
     public void removeAllEntries() {
+        // TODO This appears to get called on init. That will clear the cache on any server starting up and joining.
         cache.clearAllEntries();
     }
 
@@ -196,7 +200,17 @@ public class AuthCacheServiceImpl implements AuthCacheService, UserRegistryChang
         }
         authCacheConfig = new AuthCacheConfigImpl(initialSize, maxSize, timeoutInMilliSeconds, allowBasicAuthLookup);
         stopCacheEvictionTask();
-        cache = new Cache(initialSize, maxSize, timeoutInMilliSeconds, cacheEvictionListenerSet);
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "jCacheService: " + jCacheService);
+        }
+
+        if (jCacheService != null) {
+            // TODO Can probably not do most of the above?
+            cache = new Cache(jCacheService, cacheEvictionListenerSet);
+        } else {
+            cache = new Cache(initialSize, maxSize, timeoutInMilliSeconds, cacheEvictionListenerSet);
+        }
     }
 
     protected void deactivate(ComponentContext componentContext) {
@@ -232,6 +246,17 @@ public class AuthCacheServiceImpl implements AuthCacheService, UserRegistryChang
 
     protected void unsetCredentialService(ServiceReference<CredentialsService> reference) {
         credServiceRef.unsetReference(reference);
+    }
+
+    protected void setJCacheService(JCacheService jCacheService) {
+        this.jCacheService = jCacheService;
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "jCacheService: " + this.jCacheService);
+        }
+    }
+
+    protected void unsetJCacheService(ServiceReference<JCacheService> jCacheService) {
+        jCacheService = null;
     }
 
     /** {@inheritDoc} */
