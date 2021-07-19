@@ -10,14 +10,13 @@
  *******************************************************************************/
 package com.ibm.ws.classloading;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+//import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertEquals;
+//import static org.hamcrest.Matchers.equalTo;
+//import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
-import java.util.Collections;
+//import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 
 import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
@@ -48,19 +47,20 @@ public class BellFatTest {
         buildAndExportBellLibrary(server, "testNoEntry.jar", "NoEntry");
         buildAndExportBellLibrary(server, "testOneValidEntry.jar", "OneValidEntry");
         buildAndExportBellLibrary(server, "testMultipleValidServices.jar", "MultipleValidServices");
-        buildAndExportBellLibrary(server, "testMultipleImplsOfSingleService.jar", "MultipleImplsOfSingleService");
+        buildAndExportBellLibrary(server, "testMultipleImplsOfSingleService.jar", "MultipleImplsOfSingleService");  // TODO Specify both service classes here?
         buildAndExportBellLibrary(server, "testInterfaceClassNotFound.jar", "InterfaceClassNotFound");
         buildAndExportBellLibrary(server, "testImplClassThrowsException.jar", "ImplClassThrowsException");
         buildAndExportBellLibrary(server, "testImplClassNotFound.jar", "ImplClassNotFound");
         buildAndExportBellLibrary(server, "testImplClassNotConstructible.jar", "ImplClassNotConstructible");
         buildAndExportBellLibrary(server, "testReadingServicesFile.jar", "MyService", "MySecondService");
+        buildAndExportBellLibrary(server, "testSpiTypeVisible.jar", "SpiTypeVisible");
 
         server.installUserBundle(USER_BUNDLE_NAME);
         server.installUserFeature(USER_FEATURE_NAME);
     }
 
     /**
-     * Build a Bell library and export it to the "sharedLib" directory of the target server.
+     * Build a Bell and export it to the "sharedLib" directory of the target server.
      *
      * @param String targetServer The server that will contain the exported archive.
      * @param String archiveName The name of the Bell archive, including the file extension (e.g. ".jar").
@@ -84,8 +84,8 @@ public class BellFatTest {
     public static void tearDown() throws Throwable {
         stopServer();
         try {
-            server.uninstallUserFeature(USER_FEATURE_NAME);
-            server.uninstallUserBundle(USER_BUNDLE_NAME);
+//            server.uninstallUserFeature(USER_FEATURE_NAME);
+//            server.uninstallUserBundle(USER_BUNDLE_NAME);
         } catch (final Exception e) {
             e.printStackTrace();
         }
@@ -119,157 +119,187 @@ public class BellFatTest {
     private static final String NO_CLASSDEF_FOUND_EXCEPTION = "java.lang.NoClassDefFoundError";
     private static final String EXCEPTION = "java.lang.Exception";
 
+//    /**
+//     * Test no META-INF/services entries — library should behave normally
+//     * but warn that no services were found to export.
+//     */
+//    @Test
+//    @AllowedFFDC({INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION} )
+//    public void testNoEntry() throws Exception {
+//        assertNotNull("Should warn that no services were found to export from the 'testNoEntry' library.", server.waitForStringInLog(".*CWWKL0055W: .*testNoEntry"));
+//    }
+//
+//    /**
+//     * Test one valid META-INF/services entry — library should report that it exports the service.
+//     */
+//    @Test
+//    @AllowedFFDC({INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION} )
+//    public void testOneValidEntry() throws Exception {
+//        final String logEntry = server.waitForStringInLog(".*CWWKL0050I: .*testOneValidEntry");
+//        assertNotNull("Should load a service from META-INF services in the 'testOneValidEntry' library.", logEntry);
+//
+//        assertLogSpecifiesJar(logEntry, "testOneValidEntry.jar");
+//        assertLogSpecifiesMetaInfServicesFile(logEntry, "com.ibm.ws.classloading.exporting.test.TestInterface");
+//        assertLogSpecifiesImplementationType(logEntry, "com.ibm.ws.test.OneValidEntry");
+//    }
+//
+//    /**
+//     * Test multiple valid services — one report per service.
+//     */
+//    @Test
+//    @AllowedFFDC({INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION} )
+//    public void testMultipleValidServices() throws Exception {
+//        final String logEntry1 = server.waitForStringInLog(".*CWWKL0050I: .*testAllValidServices.*MultipleValidServices1");
+//        final String logEntry2 = server.waitForStringInLog(".*CWWKL0050I: .*testAllValidServices.*MultipleValidServices2");
+//
+//        assertNotNull("Should load a service when more than one are present.", logEntry1);
+//        assertNotNull("Should load another service when more than one are present.", logEntry2);
+//    }
+//
+//    /**
+//     * Test multiple valid services — but scoped to register only one.
+//     */
+//    @Test
+//    @AllowedFFDC({INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION} )
+//    public void testScopeValidServices() throws Exception {
+//        final String logEntry1 = server.waitForStringInLog(".*CWWKL0050I: .*testScopeValidServices.*MultipleValidServices2");
+//        final String logEntry2 = server.waitForStringInLog(".*CWWKL0050I: .*testScopeValidServices.*MultipleValidServices1", 1000);
+//        assertNotNull("Should load the scoped service when more than one are present.", logEntry1);
+//        assertNull("Should not load another service.", logEntry2);
+//    }
+//
+//    /**
+//     * Test multiple implementations of a single service.
+//     */
+//    @Test
+//    @AllowedFFDC({INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION} )
+//    public void testMultipleImplsOfSingleService() throws Exception {
+//        final int numOfLogEntries = server.waitForMultipleStringsInLog(2, ".*CWWKL0050I: .*testMultipleImplsOfSingleService");
+//        assertEquals("Should load both implementations of the service.",
+//                     2,
+//                     numOfLogEntries);
+//    }
+//
+//    /**
+//     * Test invalid service: interface class not found.
+//     */
+//    @Test
+//    @AllowedFFDC({INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION} )
+//    public void testInterfaceClassNotFound() throws Exception {
+//        final String logEntry = server.waitForStringInLog(".*CWWKL0052W: .*testInterfaceClassNotFound");
+//        assertNotNull("Should warn that the 'TestInterface3' interface does not exist.", logEntry);
+//
+//        assertLogSpecifiesJar(logEntry, "testInterfaceClassNotFound.jar");
+//        assertLogSpecifiesMetaInfServicesFile(logEntry, "com.ibm.ws.classloading.exporting.test.TestInterface3");
+//        assertLogSpecifiesImplementationType(logEntry, "com.ibm.ws.test.InterfaceClassNotFound");
+//        assertLogIncludesException(logEntry, "java.lang.NoClassDefFoundError");
+//    }
+//
+//    /**
+//     * Test invalid service: implementation class not found.
+//     */
+//    @Test
+//    @AllowedFFDC({INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION} )
+//    public void testImplClassNotFound() throws Exception {
+//        final String logEntry = server.waitForStringInLog(".*CWWKL0051W: .*testImplClassNotFound");
+//        assertNotNull("Should warn that 'NotARealClass' cannot be found.", logEntry);
+//
+//        assertLogSpecifiesJar(logEntry, "testImplClassNotFound.jar");
+//        assertLogSpecifiesMetaInfServicesFile(logEntry, "com.ibm.ws.classloading.exporting.test.TestInterface");
+//        assertLogSpecifiesImplementationType(logEntry, "com.ibm.ws.test.NotARealClass");
+//    }
+//
+//    /**
+//     * Test invalid service: implementation class not constructible (no-arguments constructor is present).
+//     */
+//    @Test
+//    @AllowedFFDC({INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION} )
+//    public void testImplClassNotConstructible() throws Exception {
+//        final String logEntry = server.waitForStringInLog(".*CWWKL0053W: .*testImplClassNotConstructible");
+//        assertNotNull("Should warn that 'ImplClassNotConstructible' cannot be constructed/", logEntry);
+//
+//        assertLogSpecifiesJar(logEntry, "testImplClassNotConstructible.jar");
+//        assertLogSpecifiesMetaInfServicesFile(logEntry, "com.ibm.ws.classloading.exporting.test.TestInterface");
+//        assertLogSpecifiesImplementationType(logEntry, "com.ibm.ws.test.ImplClassNotConstructible");
+//    }
+//
+//    /**
+//     * Test invalid service: implementation class throws error on construction.
+//     */
+//    @Test
+//    @AllowedFFDC({INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION} )
+//    public void testImplClassThrowsException() throws Exception {
+//        final String logEntry = server.waitForStringInLog(".*CWWKL0057W: .*testImplClassThrowsException");
+//        assertNotNull("Should warn that an exception occurs when creating 'ImplClassThrowsException'.", logEntry);
+//
+//        assertLogSpecifiesJar(logEntry, "testImplClassThrowsException.jar");
+//        assertLogSpecifiesMetaInfServicesFile(logEntry, "com.ibm.ws.classloading.exporting.test.TestInterface");
+//        assertLogSpecifiesImplementationType(logEntry, "com.ibm.ws.test.ImplClassThrowsException");
+//        assertLogIncludesException(logEntry, "java.lang.Exception");
+//    }
+//
+//    /**
+//     * Test that we can correctly load the services even when the lines are riddled with comments and whitespace.
+//     */
+//    @Test
+//    @AllowedFFDC({INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION} )
+//    public void testReadingMessyServicesFile() throws Exception {
+//        final int numberOfServicesCreated = server.waitForMultipleStringsInLog(2, ".*CWWKL0050I: .*testReadingServicesFile");
+//        assertEquals("Should load both 'MyService' and 'MySecondService'.",
+//                     2,
+//                     numberOfServicesCreated);
+//    }
+//
+//    /**
+//     * Test that we don't try to load lines which begin with '#' (comments).
+//     */
+//    @Test
+//    @AllowedFFDC({INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION} )
+//    public void testCommentedOutService() throws Exception {
+//        assertThat("Should not try to do anything with 'NotARealService' since it is commented out.",
+//                   server.findStringsInLogs(".*com.ibm.ws.test.NotARealService"),
+//                   equalTo(Collections.EMPTY_LIST));
+//    }
+//
+//    /**
+//     * Test that we don't try to load any lines which should be ignored.
+//     */
+//    @Test
+//    @AllowedFFDC({INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION} )
+//    public void testReadingServicesFileWithComment() throws Exception {
+//        assertThat("The 'testReadingServicesFile' library should not produce any warnings.",
+//                   server.findStringsInLogs(".*W: .*testReadingServicesFile"),
+//                   equalTo(Collections.EMPTY_LIST));
+//    }
+
+    private static final String
+            IBMSPI_CLASS_NAME = "com.ibm.wsspi.rest.handler.RESTHandler",  // SPI type ibm-spi from restConnector-2.0
+            SPI_CLASS_NAME = "com.ibm.wsspi.webcontainer";  // SPI from servlet-3.1
+
     /**
-     * Test no META-INF/services entries — library should behave normally
-     * but warn that no services were found to export.
+     * Verify BELL services can see SPI types when library spiTypeVisibility is set
      */
     @Test
     @AllowedFFDC({INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION} )
-    public void testNoEntry() throws Exception {
-        assertNotNull("Should warn that no services were found to export from the 'testNoEntry' library.", server.waitForStringInLog(".*CWWKL0055W: .*testNoEntry"));
+    public void testIbmSpiTypeVisibile() throws Exception {
+        final String logEntry1 = server.waitForStringInLog(".*CWWKL0050I: .*testSpiTypeVisible.*SpiTypeVisible");
+        final String logEntry2 = server.waitForStringInLog(".*" + IBMSPI_CLASS_NAME + " is visible to the BELL library classloader");
+
+        assertNotNull("The server should load the META-INF service in the 'testSpiTypeVisible' library referenced by the BELL.", logEntry1);
+        assertNotNull("IBM-SPI packages should be visible to the BELL service when library spiTypeVisibility is 'spi'", logEntry2);
     }
 
     /**
-     * Test one valid META-INF/services entry — library should report that it exports the service.
+     * Verify BELL services cannot see SPI types when library spiTypeVisibility is not set (i.e. the default.)
      */
     @Test
     @AllowedFFDC({INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION} )
-    public void testOneValidEntry() throws Exception {
-        final String logEntry = server.waitForStringInLog(".*CWWKL0050I: .*testOneValidEntry");
-        assertNotNull("Should load a service from META-INF services in the 'testOneValidEntry' library.", logEntry);
+    public void testNoIbmSpiTypeVisibile() throws Exception {
+        final String logEntry1 = server.waitForStringInLog(".*CWWKL0050I: .*testNoSpiTypeVisible.*SpiTypeVisible");
+        final String logEntry2 = server.waitForStringInLog(".*" + IBMSPI_CLASS_NAME + " is not visible to the BELL library classloader");
 
-        assertLogSpecifiesJar(logEntry, "testOneValidEntry.jar");
-        assertLogSpecifiesMetaInfServicesFile(logEntry, "com.ibm.ws.classloading.exporting.test.TestInterface");
-        assertLogSpecifiesImplementationType(logEntry, "com.ibm.ws.test.OneValidEntry");
-    }
-
-    /**
-     * Test multiple valid services — one report per service.
-     */
-    @Test
-    @AllowedFFDC({INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION} )
-    public void testMultipleValidServices() throws Exception {
-        final String logEntry1 = server.waitForStringInLog(".*CWWKL0050I: .*testAllValidServices.*MultipleValidServices1");
-        final String logEntry2 = server.waitForStringInLog(".*CWWKL0050I: .*testAllValidServices.*MultipleValidServices2");
-
-        assertNotNull("Should load a service when more than one are present.", logEntry1);
-        assertNotNull("Should load another service when more than one are present.", logEntry2);
-    }
-
-
-    /**
-     * Test multiple valid services — but scoped to register only one.
-     */
-    @Test
-    @AllowedFFDC({INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION} )
-    public void testScopeValidServices() throws Exception {
-        final String logEntry1 = server.waitForStringInLog(".*CWWKL0050I: .*testScopeValidServices.*MultipleValidServices2");
-        final String logEntry2 = server.waitForStringInLog(".*CWWKL0050I: .*testScopeValidServices.*MultipleValidServices1", 1000);
-        assertNotNull("Should load the scoped service when more than one are present.", logEntry1);
-        assertNull("Should not load another service.", logEntry2);
-    }
-    /**
-     * Test multiple implementations of a single service.
-     */
-    @Test
-    @AllowedFFDC({INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION} )
-    public void testMultipleImplsOfSingleService() throws Exception {
-        final int numOfLogEntries = server.waitForMultipleStringsInLog(2, ".*CWWKL0050I: .*testMultipleImplsOfSingleService");
-        assertEquals("Should load both implementations of the service.",
-                     2,
-                     numOfLogEntries);
-    }
-
-    /**
-     * Test invalid service: interface class not found.
-     */
-    @Test
-    @AllowedFFDC({INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION} )
-    public void testInterfaceClassNotFound() throws Exception {
-        final String logEntry = server.waitForStringInLog(".*CWWKL0052W: .*testInterfaceClassNotFound");
-        assertNotNull("Should warn that the 'TestInterface3' interface does not exist.", logEntry);
-
-        assertLogSpecifiesJar(logEntry, "testInterfaceClassNotFound.jar");
-        assertLogSpecifiesMetaInfServicesFile(logEntry, "com.ibm.ws.classloading.exporting.test.TestInterface3");
-        assertLogSpecifiesImplementationType(logEntry, "com.ibm.ws.test.InterfaceClassNotFound");
-        assertLogIncludesException(logEntry, "java.lang.NoClassDefFoundError");
-    }
-
-    /**
-     * Test invalid service: implementation class not found.
-     */
-    @Test
-    @AllowedFFDC({INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION} )
-    public void testImplClassNotFound() throws Exception {
-        final String logEntry = server.waitForStringInLog(".*CWWKL0051W: .*testImplClassNotFound");
-        assertNotNull("Should warn that 'NotARealClass' cannot be found.", logEntry);
-
-        assertLogSpecifiesJar(logEntry, "testImplClassNotFound.jar");
-        assertLogSpecifiesMetaInfServicesFile(logEntry, "com.ibm.ws.classloading.exporting.test.TestInterface");
-        assertLogSpecifiesImplementationType(logEntry, "com.ibm.ws.test.NotARealClass");
-    }
-
-    /**
-     * Test invalid service: implementation class not constructible (no-arguments constructor is present).
-     */
-    @Test
-    @AllowedFFDC({INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION} )
-    public void testImplClassNotConstructible() throws Exception {
-        final String logEntry = server.waitForStringInLog(".*CWWKL0053W: .*testImplClassNotConstructible");
-        assertNotNull("Should warn that 'ImplClassNotConstructible' cannot be constructed/", logEntry);
-
-        assertLogSpecifiesJar(logEntry, "testImplClassNotConstructible.jar");
-        assertLogSpecifiesMetaInfServicesFile(logEntry, "com.ibm.ws.classloading.exporting.test.TestInterface");
-        assertLogSpecifiesImplementationType(logEntry, "com.ibm.ws.test.ImplClassNotConstructible");
-    }
-
-    /**
-     * Test invalid service: implementation class throws error on construction.
-     */
-    @Test
-    @AllowedFFDC({INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION} )
-    public void testImplClassThrowsException() throws Exception {
-        final String logEntry = server.waitForStringInLog(".*CWWKL0057W: .*testImplClassThrowsException");
-        assertNotNull("Should warn that an exception occurs when creating 'ImplClassThrowsException'.", logEntry);
-
-        assertLogSpecifiesJar(logEntry, "testImplClassThrowsException.jar");
-        assertLogSpecifiesMetaInfServicesFile(logEntry, "com.ibm.ws.classloading.exporting.test.TestInterface");
-        assertLogSpecifiesImplementationType(logEntry, "com.ibm.ws.test.ImplClassThrowsException");
-        assertLogIncludesException(logEntry, "java.lang.Exception");
-    }
-
-    /**
-     * Test that we can correctly load the services even when the lines are riddled with comments and whitespace.
-     */
-    @Test
-    @AllowedFFDC({INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION} )
-    public void testReadingMessyServicesFile() throws Exception {
-        final int numberOfServicesCreated = server.waitForMultipleStringsInLog(2, ".*CWWKL0050I: .*testReadingServicesFile");
-        assertEquals("Should load both 'MyService' and 'MySecondService'.",
-                     2,
-                     numberOfServicesCreated);
-    }
-
-    /**
-     * Test that we don't try to load lines which begin with '#' (comments).
-     */
-    @Test
-    @AllowedFFDC({INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION} )
-    public void testCommentedOutService() throws Exception {
-        assertThat("Should not try to do anything with 'NotARealService' since it is commented out.",
-                   server.findStringsInLogs(".*com.ibm.ws.test.NotARealService"),
-                   equalTo(Collections.EMPTY_LIST));
-    }
-
-    /**
-     * Test that we don't try to load any lines which should be ignored.
-     */
-    @Test
-    @AllowedFFDC({INSTANTIATION_EXCEPTION, CLASS_NOT_FOUND_EXCEPTION, NO_CLASSDEF_FOUND_EXCEPTION, EXCEPTION} )
-    public void testReadingServicesFileWithComment() throws Exception {
-        assertThat("The 'testReadingServicesFile' library should not produce any warnings.",
-                   server.findStringsInLogs(".*W: .*testReadingServicesFile"),
-                   equalTo(Collections.EMPTY_LIST));
+        assertNotNull("The server should load the META-INF service in the 'testNoSpiTypeVisible' library referenced by the BELL.", logEntry1);
+        assertNotNull("IBM-SPI packages should not be visible to the BELL service when library spiTypeVisibility is not set", logEntry2);
     }
 
     private void assertLogSpecifiesImplementationType(final String logEntry, final String implClass) {

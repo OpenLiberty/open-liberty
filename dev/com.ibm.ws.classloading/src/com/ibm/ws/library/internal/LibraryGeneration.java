@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,6 +43,9 @@ final class LibraryGeneration {
 
     private volatile boolean cancelled;
     private final SharedLibraryImpl library;
+
+    private final boolean isSpiVisible;
+    private static final Boolean isBetaEdition = Boolean.getBoolean("com.ibm.ws.beta.edition");
 
     LibraryGeneration(SharedLibraryImpl library, String libraryId, Dictionary<String, Object> props) {
         this.library = library;
@@ -88,6 +91,7 @@ final class LibraryGeneration {
         this.files = files;
         this.folders = folders;
         this.apiTypeVisibility = apiTypeVisibility;
+        this.isSpiVisible = isBetaEdition && "spi".equalsIgnoreCase((String)props.get("spiTypeVisibility"));
         if (this.filesetRefs.isEmpty()) {
             filesets = Collections.emptyList();
         } else {
@@ -147,6 +151,10 @@ final class LibraryGeneration {
 
     EnumSet<ApiType> getApiTypeVisibility() {
         return EnumSet.copyOf((EnumSet<ApiType>) apiTypeVisibility);
+    }
+
+    boolean getSpiTypeVisibility() {
+        return isSpiVisible;
     }
 
     Collection<File> getFiles() {

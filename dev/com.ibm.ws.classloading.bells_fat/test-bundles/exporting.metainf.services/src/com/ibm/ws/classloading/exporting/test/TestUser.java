@@ -23,7 +23,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
 /**
- *
+ * Component TestUser exercises Bell service test behaviors in the course of tracking new services.
  */
 @Component(immediate=true)
 public class TestUser {
@@ -35,14 +35,22 @@ public class TestUser {
             @Override
             public Object addingService(ServiceReference<Object> ref) {
                 Object service =  context.getService(ref);
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    if (service instanceof TestInterface) {
-                        Tr.debug(tc, "addingService", ((TestInterface) service).isThere("impl"));
-                    } else if (service instanceof TestInterface2) {
-                        Tr.debug(tc, "addingService", ((TestInterface2) service).isThere2("impl2"));
-                    }
+                if (service instanceof TestInterface) {
+                    String isThere = ((TestInterface) service).isThere("impl");
+                    logEventResult("addingService", isThere);
+                } else if (service instanceof TestInterface2) {
+                    String isThere2 = ((TestInterface2) service).isThere2("impl");
+                    logEventResult("addingService", isThere2);
                 }
                 return service;
+            }
+
+            void logEventResult(String event, String result) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, event, result);
+                else
+                   // This is handy for debugging
+                   System.out.println("TestUser: " + event + ": " + result);
             }
 
             @Override
