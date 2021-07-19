@@ -51,7 +51,7 @@ import org.apache.james.mime4j.storage.StorageProvider;
 import org.apache.james.mime4j.storage.ThresholdStorageProvider;
 import org.apache.james.mime4j.stream.BodyDescriptorBuilder;
 import org.apache.james.mime4j.stream.MimeConfig;
-import org.jboss.resteasy.microprofile.config.ResteasyConfigProvider;
+import org.jboss.resteasy.spi.config.ConfigurationFactory;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -83,7 +83,7 @@ public class Mime4JWorkaround {
             BodyDescriptorBuilder bdb = new DefaultBodyDescriptorBuilder(null, strict ? DefaultFieldParser.getParser() : LenientFieldParser.getParser(), mon);
 
             StorageProvider storageProvider;
-            if (ResteasyConfigProvider.getConfig().getOptionalValue(DefaultStorageProvider.DEFAULT_STORAGE_PROVIDER_PROPERTY, String.class).orElse(null) != null) {
+            if (ConfigurationFactory.getInstance().getConfiguration().getOptionalValue(DefaultStorageProvider.DEFAULT_STORAGE_PROVIDER_PROPERTY, String.class).orElse(null) != null) {
                 storageProvider = DefaultStorageProvider.getInstance();
             } else {
                 StorageProvider backend = new CustomTempFileStorageProvider();
@@ -110,9 +110,9 @@ public class Mime4JWorkaround {
         //int threshold = 1024;
         try {
             int threshold = Integer.parseInt(
-                ResteasyConfigProvider.getConfig()
-                                      .getOptionalValue(MEM_THRESHOLD_PROPERTY, String.class)
-                                      .orElse("1024"));
+                ConfigurationFactory.getInstance().getConfiguration()
+                                                  .getOptionalValue(MEM_THRESHOLD_PROPERTY, String.class)
+                                                  .orElse("1024"));
             if (threshold > -1) {
                 return threshold;
             }
