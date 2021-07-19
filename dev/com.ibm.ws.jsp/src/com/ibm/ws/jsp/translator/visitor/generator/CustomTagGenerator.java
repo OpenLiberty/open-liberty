@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2007 IBM Corporation and others.
+ * Copyright (c) 1997, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -503,7 +503,19 @@ public class CustomTagGenerator extends CodeGeneratorBase {
                 }
             }
             tagWriter.print("))");
-            tagWriter.print((methodReturnBoolean) ? " return true;" : " return;");
+            if (methodReturnBoolean) {
+                tagWriter.println(" {");
+                if (!jspOptions.isDisableResourceInjection()) {
+                   tagWriter.println("   _jspx_iaHelper.doPreDestroy("+parentTagName+");");
+                   tagWriter.println("   _jspx_iaHelper.cleanUpTagHandlerFromCdiMap("+parentTagName+");");
+                }
+
+                tagWriter.println("   return true;");
+                tagWriter.print("}");
+            }
+            else {
+                tagWriter.print(" return;"); 
+            }
             tagWriter.println();
 
             //232818
