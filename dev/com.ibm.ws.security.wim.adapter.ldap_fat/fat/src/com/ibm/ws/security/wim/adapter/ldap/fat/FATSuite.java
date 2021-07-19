@@ -17,6 +17,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({ URAPIs_TDSLDAPTest.class,
+                URAPIs_TDSLDAP_SearchBaseTest.class,
                 URAPIs_ADLDAPTest.class,
                 URAPIs_TDSLDAP_SSLTest.class,
                 URAPIs_ADLDAP_SSLTest.class,
