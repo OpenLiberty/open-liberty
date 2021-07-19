@@ -193,6 +193,7 @@ public class OidcRedirectServlet extends HttpServlet {
         if ((oidcClientId != null && !oidcClientId.isEmpty()) || id_token != null) {
             postToWASReqURL(request, response, requestUrl, oidcClientId); //  implicit flow???
         } else {
+            sendError(request, response);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "OIDC _SSO RP Servlet redirecting to [" + requestUrl + "]");
             }
