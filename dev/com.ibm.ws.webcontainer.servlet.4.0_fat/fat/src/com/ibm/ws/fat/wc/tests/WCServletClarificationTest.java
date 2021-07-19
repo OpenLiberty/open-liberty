@@ -48,7 +48,7 @@ public class WCServletClarificationTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        LOG.info("Setup : add TestSertvlet40 app to server if not already present");
+        LOG.info("Setup : add TestServlet40Clarifications app to server if not already present");
 
         ShrinkHelper.defaultDropinApp(server, "TestServlet40Clarifications.war", "servletclarifications.servlets");
 

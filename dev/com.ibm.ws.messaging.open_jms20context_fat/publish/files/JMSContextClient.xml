@@ -128,4 +128,6 @@
     <properties.wasJms topicSpace="NewTopic3"/>
   </jmsTopic>
 
+  <javaPermission className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
+  
 </server>
