@@ -19,6 +19,8 @@ import javax.servlet.annotation.WebServlet;
 import org.junit.Test;
 
 import com.ibm.ws.el30.fat.varargstest.EL30VarargsMethodMatchingTestBean;
+import com.ibm.ws.el30.fat.varargstest.Bird;
+import com.ibm.ws.el30.fat.varargstest.Falcon;
 
 import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
@@ -42,9 +44,11 @@ public class EL30VarargsMethodMatchingServlet extends FATServlet {
 
         // Create an instance of the EL30VarargsMethodMatchingTestBean bean
         EL30VarargsMethodMatchingTestBean testBean = new EL30VarargsMethodMatchingTestBean();
+        Bird falcon = new Falcon();
 
-        // Add the bean to the ELProcessor
+        // Add the beans to the ELProcessor
         elp.defineBean("testBean", testBean);
+        elp.defineBean("bird", falcon);
  
 
     }
@@ -102,6 +106,14 @@ public class EL30VarargsMethodMatchingServlet extends FATServlet {
     public void testVarargsInt() throws Exception {
         
         getMethodExpression("testBean.testMethod(testBean.number)", "(int... param1)");
+
+    }
+
+    @Test
+    @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
+    public void selectMethodWithNoVarargs() throws Exception {
+        
+        getMethodExpression("testBean.chirp(bird)", "chirp(Bird bird1)");
 
     }
 

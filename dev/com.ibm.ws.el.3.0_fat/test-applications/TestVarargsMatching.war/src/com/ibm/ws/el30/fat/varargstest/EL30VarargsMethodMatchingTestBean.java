@@ -53,4 +53,12 @@ public class EL30VarargsMethodMatchingTestBean{
         return "(int... param1)";
     }
 
+    public String chirp(Bird bird1) {
+        return "chirp(Bird bird1)";
+    }
+
+    public String chirp(Falcon bird1, String... param2) {
+        return "chirp(Falcon bird1, String... param2)";
+    }
+
 }
