@@ -19,6 +19,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
@@ -80,6 +81,7 @@ public class BasicSseTest extends FATServletClient {
     }
 
     @Test
+    @AllowedFFDC(value = { "javax.ws.rs.InternalServerErrorException", "javax.ws.rs.BadRequestException" })
     public void testErrorSse() throws Exception {
         runTest(server, SERVLET_PATH, "testErrorSse");
     }

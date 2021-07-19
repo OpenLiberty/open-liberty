@@ -131,7 +131,7 @@ public abstract class AbstractResourceInfo {
         CONTEXT_PROPS.put("org.apache.cxf.jaxrs.provider.MultipartProvider", new ProviderContextInfo(Collections.singleton("mc"), null));
         CONTEXT_PROPS.put("org.apache.cxf.jaxrs.nio.NioMessageBodyWriter", ProviderContextInfo.NO_PROCESSING_REQUIRED);
         CONTEXT_PROPS.put("org.apache.cxf.jaxrs.model.wadl.WadlGenerator", ProviderContextInfo.NO_PROCESSING_REQUIRED);
-        CONTEXT_PROPS.put("com.ibm.ws.jaxrs21.sse.LibertySseEventSinkContextProvider", ProviderContextInfo.NO_PROCESSING_REQUIRED);
+//        CONTEXT_PROPS.put("com.ibm.ws.jaxrs21.sse.LibertySseEventSinkContextProvider", ProviderContextInfo.NO_PROCESSING_REQUIRED);
         CONTEXT_PROPS.put("org.apache.cxf.jaxrs.sse.SseContextProvider", ProviderContextInfo.NO_PROCESSING_REQUIRED);
         CONTEXT_PROPS.put("com.ibm.ws.jaxrs20.providers.customexceptionmapper.CustomWebApplicationExceptionMapper", ProviderContextInfo.NO_PROCESSING_REQUIRED);
         CONTEXT_PROPS.put("com.ibm.ws.jaxrs20.security.LibertyAuthFilter", ProviderContextInfo.NO_PROCESSING_REQUIRED);

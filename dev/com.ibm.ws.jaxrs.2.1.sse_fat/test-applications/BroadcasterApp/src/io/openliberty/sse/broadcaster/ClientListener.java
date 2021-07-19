@@ -40,6 +40,7 @@ public class ClientListener implements Runnable, Closeable {
     ClientListener(WebTarget target, CountDownLatch latch) {
         this.target = target;
         this.sharedLatch.set(latch);
+        System.out.println("Jim... ClientListener.init()");
     }
 
     /*
@@ -50,10 +51,15 @@ public class ClientListener implements Runnable, Closeable {
     @Override
     public void run() {
         privateLatch = new CountDownLatch(1);
+        
+        System.out.println("Jim... ClientListener.run(): " + System.currentTimeMillis());
+
 
         try (SseEventSource source = SseEventSource.target(target).build()) {
             holder.value = source;
+            System.out.println("Jim... ClientListener.run() source: " + source.getClass().getName());
             source.register(event -> {
+                System.out.println("Jim...listener id " + id + " received event " + event);
                 _log.info("listener id " + id + " received event " + event);
                 String msg = event.readData();
                 receivedEvents.add(msg);                

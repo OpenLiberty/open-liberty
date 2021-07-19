@@ -10,17 +10,20 @@
 #*******************************************************************************
 -include= jar:${fileuri;${repo;org.apache.cxf:cxf-rt-rs-sse;3.3.0}}!/META-INF/MANIFEST.MF,bnd.overrides
 
+cxfVersion=3.4.3
 
 -includeresource: \
-   @${repo;org.apache.cxf:cxf-rt-rs-sse;3.3.0}!/!META-INF/*,\
-   org/apache/cxf=${bin}/org/apache/cxf
+   @${repo;org.apache.cxf:cxf-rt-rs-sse;${cxfVersion};EXACT}!/!META-INF/*, \
+  org/apache/cxf=${bin}/org/apache/cxf
    
 instrument.classesExcludes: org/apache/cxf/jaxrs/sse/client/SseEventSourceImpl$InboundSseEventListenerImpl.class
 
--buildpath: org.apache.cxf:cxf-rt-rs-sse;version=3.3.0,\
+-buildpath: org.apache.cxf:cxf-rt-rs-sse;strategy=exact;version=${cxfVersion},\
   com.ibm.websphere.javaee.jaxrs.2.1;version=latest,\
   com.ibm.ws.logging.core;version=latest,\
   com.ibm.ws.org.apache.cxf.cxf.rt.rs.client.3.2;version=latest,\
+  com.ibm.websphere.javaee.servlet.4.0;version=latest,\
+  com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.3.2;version=latest,\
   com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxrs.3.2;version=latest,\
   com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest

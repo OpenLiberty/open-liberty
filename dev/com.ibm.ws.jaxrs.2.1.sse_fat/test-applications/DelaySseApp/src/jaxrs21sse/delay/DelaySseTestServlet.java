@@ -163,7 +163,7 @@ public class DelaySseTestServlet extends FATServlet {
                                     executionLatch.countDown();
                                 }
                             });
-
+            System.out.println("DelaySseTestServlet:  calling client source open");
             source.open();
             System.out.println("DelaySseTestServlet:  client source open");
 
