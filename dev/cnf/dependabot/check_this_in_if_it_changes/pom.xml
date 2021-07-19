@@ -559,7 +559,7 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-resolver</artifactId>
-      <version>4.1.62.Final</version>
+      <version>4.1.66.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
