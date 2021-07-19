@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,13 +8,13 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.grpc.internal.monitor;
+package io.openliberty.grpc.internal.client.monitor;
 
 import com.ibm.websphere.monitor.meters.Counter;
 import com.ibm.websphere.monitor.meters.Meter;
 import com.ibm.websphere.monitor.meters.StatisticsMeter;
 
-import io.openliberty.grpc.monitor.GrpcClientStatsMXBean;
+import io.openliberty.grpc.internal.client.monitor.GrpcClientStatsMXBean;
 
 /**
  * Holds metrics used for client-side monitoring of gRPC services. </br>

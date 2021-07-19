@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.net.URL;
+import java.util.Collections;
+import java.util.Set;
+import java.util.logging.Logger;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -41,49 +44,72 @@ import componenttest.topology.utils.FATServletClient;
 public class GrpcMetricsTest extends FATServletClient {
 
     protected static final Class<?> c = GrpcMetricsTest.class;
+    private static final Logger LOG = Logger.getLogger(c.getName());
+
+    private static final String GRPC_CLIENT_METRICS = "grpc.client.metrics.server.xml";
+    private static final String GRPC_SERVER_METRICS = "grpc.server.metrics.server.xml";
+    private static final String GRPC_BOTH_METRICS = "grpc.both.metrics.server.xml";
+    private static final Set<String> appName = Collections.singleton("HelloWorldClient");
+    private static final Set<String> appName_srv = Collections.singleton("HelloWorldService");
+    String clientContextRoot = "HelloWorldClient";
+
+    // keep track of the number of client calls made, at the class level since the client server and app are never restarted
+    private static int clientCallCount = 0;
 
     @Rule
     public TestName name = new TestName();
 
-    @Server("HelloWorldServer")
-    public static LibertyServer grpcMetricsServer;
+    @Server("GrpcClientOnly")
+    public static LibertyServer GrpcClientOnly;
+
+    @Server("GrpcServerOnly")
+    public static LibertyServer GrpcServerOnly;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        // add all classes from com.ibm.ws.grpc.fat.helloworld.service and io.grpc.examples.helloworld
-        // to a new app HelloWorldService.war
-        ShrinkHelper.defaultDropinApp(grpcMetricsServer, "HelloWorldService.war",
+        LOG.info("GrpcMetricsTest : setUp() : add HelloWorldClient and HelloWorldService to GrpcClientOnly");
+        ShrinkHelper.defaultDropinApp(GrpcClientOnly, "HelloWorldClient.war",
+                                      "com.ibm.ws.grpc.fat.helloworld.client",
+                                      "io.grpc.examples.helloworld");
+
+        // add the "service" app to the client server, to be used by testGrpcMetricsSingleServer()
+        ShrinkHelper.defaultDropinApp(GrpcClientOnly, "HelloWorldService.war",
+                                    "com.ibm.ws.grpc.fat.helloworld.service",
+                                    "io.grpc.examples.helloworld");
+
+        LOG.info("GrpcMetricsTest : setUp() : add HelloWorldService app to GrpcServerOnly");
+        ShrinkHelper.defaultDropinApp(GrpcServerOnly, "HelloWorldService.war",
                                       "com.ibm.ws.grpc.fat.helloworld.service",
                                       "io.grpc.examples.helloworld");
 
-        // add all classes from com.ibm.ws.grpc.fat.helloworld.client, io.grpc.examples.helloworld,
-        // and com.ibm.ws.fat.grpc.tls to a new app HelloWorldClient.war.
-        ShrinkHelper.defaultDropinApp(grpcMetricsServer, "HelloWorldClient.war",
-                                      "com.ibm.ws.grpc.fat.helloworld.client",
-                                      "io.grpc.examples.helloworld",
-                                      "com.ibm.ws.fat.grpc.tls");
-
-        grpcMetricsServer.startServer(GrpcMetricsTest.class.getSimpleName() + ".log");
-        assertNotNull("CWWKO0219I.*ssl not received", grpcMetricsServer.waitForStringInLog("CWWKO0219I.*ssl"));
+        LOG.info("GrpcMetricsTest : setUp() : start the grpc servers");
+        GrpcClientOnly.useSecondaryHTTPPort();
+        GrpcClientOnly.startServer(GrpcMetricsTest.class.getSimpleName() + ".client.log");
+        GrpcServerOnly.startServer(GrpcMetricsTest.class.getSimpleName() + ".server.log");
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        grpcMetricsServer.stopServer();
+        GrpcClientOnly.stopServer();
+        GrpcServerOnly.stopServer();
     }
 
     /**
-     * Tests gRPC server-side and client-side metrics.
+     * Tests gRPC server-side and client-side metrics, with each client and server app running on separate servers
      *
      * @throws Exception
      */
     @Test
-    public void testGrpcMetrics() throws Exception {
-        String contextRoot = "HelloWorldClient";
+    public void testGrpcMetricsSeparateServers() throws Exception {
+
+        // enable mpMetrics-2.3 on both servers
+        GrpcTestUtils.setServerConfiguration(GrpcClientOnly, null, GRPC_CLIENT_METRICS, appName, LOG);
+        GrpcTestUtils.setServerConfiguration(GrpcServerOnly, null, GRPC_SERVER_METRICS, appName_srv, LOG);
+
         try (WebClient webClient = new WebClient()) {
 
             // Construct the URL for the test
-            URL url = GrpcTestUtils.createHttpUrl(grpcMetricsServer, contextRoot, "grpcClient");
+            URL url = GrpcTestUtils.createHttpUrl(GrpcClientOnly, clientContextRoot, "grpcClient");
 
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
@@ -102,32 +128,103 @@ public class GrpcMetricsTest extends FATServletClient {
 
             // set the port
             HtmlTextInput inputPort = (HtmlTextInput) form.getInputByName("port");
-            inputPort.setValueAttribute(String.valueOf(grpcMetricsServer.getHttpDefaultPort()));
+            inputPort.setValueAttribute(String.valueOf(GrpcServerOnly.getHttpDefaultPort()));
 
             // set the hostname
             HtmlTextInput inputHost = (HtmlTextInput) form.getInputByName("address");
-            inputHost.setValueAttribute(grpcMetricsServer.getHostname());
+            inputHost.setValueAttribute(GrpcServerOnly.getHostname());
 
             // submit, and execute the RPC
             HtmlSubmitInput submitButton = form.getInputByName("submit");
             page = submitButton.click();
-
-            // check the gRPC client-side metrics
-            checkMetric(grpcMetricsServer, "/metrics/vendor/grpc.client.rpcStarted.total", "1");
-            checkMetric(grpcMetricsServer, "/metrics/vendor/grpc.client.rpcCompleted.total", "1");
-            checkMetric(grpcMetricsServer, "/metrics/vendor/grpc.client.sentMessages.total", "1");
-            checkMetric(grpcMetricsServer, "/metrics/vendor/grpc.client.receivedMessages.total", "1");
-
-            // check the gRPC server-side metrics
-            checkMetric(grpcMetricsServer, "/metrics/vendor/grpc.server.rpcStarted.total", "1");
-            checkMetric(grpcMetricsServer, "/metrics/vendor/grpc.server.rpcCompleted.total", "1");
-            checkMetric(grpcMetricsServer, "/metrics/vendor/grpc.server.sentMessages.total", "1");
-            checkMetric(grpcMetricsServer, "/metrics/vendor/grpc.server.receivedMessages.total", "1");
+            clientCallCount++;
 
             // Log the page for debugging if necessary in the future.
             Log.info(c, name.getMethodName(), page.asText());
             assertTrue("the gRPC request did not complete correctly", page.asText().contains("us3r1"));
+
+            // check the gRPC server-side metrics
+            checkMetric(GrpcServerOnly, "/metrics/vendor/grpc.server.rpcStarted.total", "1");
+            checkMetric(GrpcServerOnly, "/metrics/vendor/grpc.server.rpcCompleted.total", "1");
+            checkMetric(GrpcServerOnly, "/metrics/vendor/grpc.server.sentMessages.total", "1");
+            checkMetric(GrpcServerOnly, "/metrics/vendor/grpc.server.receivedMessages.total", "1");
+
+            // check the gRPC client-side metrics
+            checkMetric(GrpcClientOnly, "/metrics/vendor/grpc.client.rpcStarted.total", String.valueOf(clientCallCount));
+            checkMetric(GrpcClientOnly, "/metrics/vendor/grpc.client.rpcCompleted.total", String.valueOf(clientCallCount));
+            checkMetric(GrpcClientOnly, "/metrics/vendor/grpc.client.sentMessages.total", String.valueOf(clientCallCount));
+            checkMetric(GrpcClientOnly, "/metrics/vendor/grpc.client.receivedMessages.total", String.valueOf(clientCallCount));
         }
     }
 
+    /**
+     * Tests gRPC server-side and client-side metrics, with both apps running on the same server.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testGrpcMetricsSingleServer() throws Exception {
+
+        // enable mpMetrics-2.3 along with grpc-1.0 and grpcClient-1.0 on GrpcClientOnly
+        GrpcTestUtils.setServerConfiguration(GrpcClientOnly, null, GRPC_BOTH_METRICS, appName_srv, LOG);
+
+        // set the service call count to zero, we'll be checking the grpc service count on GrpcClientOnly for the first time
+        int serverCallCount = 0;
+
+        try (WebClient webClient = new WebClient()) {
+
+            // Construct the URL for the test
+            URL url = GrpcTestUtils.createHttpUrl(GrpcClientOnly, clientContextRoot, "grpcClient");
+
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
+
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            Log.info(c, name.getMethodName(), page.asXml());
+
+            assertTrue("the servlet was not loaded correctly",
+                       page.asText().contains("gRPC helloworld client example"));
+
+            HtmlForm form = page.getFormByName("form1");
+
+            // set a name, which we'll expect the RPC to return
+            HtmlTextInput inputText = (HtmlTextInput) form.getInputByName("user");
+            inputText.setValueAttribute("us3r1");
+
+            // set the port
+            HtmlTextInput inputPort = (HtmlTextInput) form.getInputByName("port");
+            inputPort.setValueAttribute(String.valueOf(GrpcClientOnly.getHttpDefaultPort()));
+
+            // set the hostname
+            HtmlTextInput inputHost = (HtmlTextInput) form.getInputByName("address");
+            inputHost.setValueAttribute(GrpcClientOnly.getHostname());
+
+            // submit, and execute the RPC
+            HtmlSubmitInput submitButton = form.getInputByName("submit");
+
+            // submit a few RPCs so we can make sure the metrics are incrementing as expected
+            for (int i = 0; i < 5; i++) {
+                page = submitButton.click();
+                clientCallCount++;
+                serverCallCount++;
+                Thread.sleep(15);
+            }
+
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), page.asText());
+            assertTrue("the gRPC request did not complete correctly", page.asText().contains("us3r1"));
+
+            // check the gRPC server-side metrics
+            checkMetric(GrpcClientOnly, "/metrics/vendor/grpc.server.rpcStarted.total", String.valueOf(serverCallCount));
+            checkMetric(GrpcClientOnly, "/metrics/vendor/grpc.server.rpcCompleted.total", String.valueOf(serverCallCount));
+            checkMetric(GrpcClientOnly, "/metrics/vendor/grpc.server.sentMessages.total", String.valueOf(serverCallCount));
+            checkMetric(GrpcClientOnly, "/metrics/vendor/grpc.server.receivedMessages.total", String.valueOf(serverCallCount));
+
+            // check the gRPC client-side metrics
+            checkMetric(GrpcClientOnly, "/metrics/vendor/grpc.client.rpcStarted.total", String.valueOf(clientCallCount));
+            checkMetric(GrpcClientOnly, "/metrics/vendor/grpc.client.rpcCompleted.total", String.valueOf(clientCallCount));
+            checkMetric(GrpcClientOnly, "/metrics/vendor/grpc.client.sentMessages.total", String.valueOf(clientCallCount));
+            checkMetric(GrpcClientOnly, "/metrics/vendor/grpc.client.receivedMessages.total", String.valueOf(clientCallCount));
+        }
+    }
 }

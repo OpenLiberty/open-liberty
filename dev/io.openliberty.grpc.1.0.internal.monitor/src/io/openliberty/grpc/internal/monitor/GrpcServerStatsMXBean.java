@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.grpc.monitor;
+package io.openliberty.grpc.internal.monitor;
 
 import com.ibm.websphere.monitor.jmx.StatisticsMeter;
 
