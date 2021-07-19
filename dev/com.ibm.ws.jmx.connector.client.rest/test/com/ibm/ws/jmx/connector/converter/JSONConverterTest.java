@@ -137,6 +137,7 @@ public class JSONConverterTest {
     private static final String N_SIMPLEKEY = "simpleKey";
     private static final String N_SOURCE = "source";
     private static final String N_STACKTRACE = "stackTrace";
+    private static final String N_EXCEPTION_MESSAGE = "error";
     private static final String N_THROWABLE = "throwable";
     private static final String N_TIMESTAMP = "timeStamp";
     private static final String N_TYPE = "type";
@@ -286,7 +287,7 @@ public class JSONConverterTest {
 
     private static final String TEST_ATTRIBUTE_NAME = "attributeName";
 
-    private static final String TEST_THROWABLE_STACK_TRACE = "throwable stack trace";
+    private static final String TEST_THROWABLE_MESSAGE = "throwable stack trace";
 
     private static final String TEST_INVOCATION_SIGNATURE = "invocation signature";
 
@@ -2946,20 +2947,14 @@ public class JSONConverterTest {
         StringBuilder regex = new StringBuilder();
         StringWriter stackTrace = new StringWriter();
 
-        Throwable throwable = new Throwable(TEST_THROWABLE_STACK_TRACE);
+        Throwable throwable = new Throwable(TEST_THROWABLE_MESSAGE);
         //Setup test parameters
         try {
-
             regex.append(ESCAPE);
             regex.append(OPEN_JSON);
-
             regex.append(encloseString(N_THROWABLE, ".+"));
             regex.append(COMMA);
-
-            throwable.printStackTrace(new PrintWriter(stackTrace));
-            converter.writeString(tempOut, stackTrace.toString());
-
-            regex.append(encloseString(N_STACKTRACE, ".+"));
+            regex.append(encloseString(N_EXCEPTION_MESSAGE, ".+"));
             regex.append(ESCAPE);
             regex.append(CLOSE_JSON);
         } catch (Exception e) {
@@ -2975,7 +2970,7 @@ public class JSONConverterTest {
             JSONArtifact art = JSON.parse(out.toString());
             JSONObject obj = (JSONObject) art;
 
-            assertEquals(obj.get(N_STACKTRACE), stackTrace.toString());
+            assertEquals(obj.get(N_EXCEPTION_MESSAGE), TEST_THROWABLE_MESSAGE);
 
         } catch (Exception e) {
             fail("Exception encoutered " + e);
@@ -2990,7 +2985,7 @@ public class JSONConverterTest {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         InputStream in;
 
-        Throwable throwable = new Throwable(TEST_THROWABLE_STACK_TRACE);
+        Throwable throwable = new Throwable(TEST_THROWABLE_MESSAGE);
 
         try {
             //setup output stream to get data.
