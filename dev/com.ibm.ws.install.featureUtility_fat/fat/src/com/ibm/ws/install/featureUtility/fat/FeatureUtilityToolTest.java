@@ -404,11 +404,17 @@ public abstract class FeatureUtilityToolTest {
     }
     
     protected static boolean deleteUsrFolder(String methodName){
-        boolean usr = TestUtils.deleteFolder(new File(minifiedRoot + "/usr"));
-        Log.info(c, methodName, "DELETED files/folders: /usr ? VALUE: " + usr);
+        boolean usr = TestUtils.deleteFolder(new File(minifiedRoot + "/usr/tmp"));
+        Log.info(c, methodName, "DELETED files/folders: /usr/tmp ? VALUE: " + usr);
 
         return usr;
+    }
+    
+    protected static boolean deleteUsrExtFolder(String methodName){
+        boolean usr = TestUtils.deleteFolder(new File(minifiedRoot + "/usr/cik"));
+        Log.info(c, methodName, "DELETED files/folders: /usr/cik ? VALUE: " + usr);
 
+        return usr;
     }
     
     protected static void assertFilesExist(String[] filePaths)  throws Exception {

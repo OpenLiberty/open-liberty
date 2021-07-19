@@ -41,6 +41,9 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         // rollback wlp version 2 times (e.g 20.0.0.5 -> 20.0.0.3)
         replaceWlpProperties(getPreviousWlpVersion());
         replaceWlpProperties(getPreviousWlpVersion());
+        deleteUsrFolder(methodName);
+        deleteUsrExtFolder(methodName);
+        deleteEtcFolder(methodName);
         Log.exiting(c, methodName);
     }
 

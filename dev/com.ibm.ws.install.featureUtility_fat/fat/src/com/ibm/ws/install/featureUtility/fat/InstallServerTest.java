@@ -36,6 +36,9 @@ public class InstallServerTest extends FeatureUtilityToolTest {
         copyFileToMinifiedRoot("usr/temp", "../../publish/tmp/serverX.zip");
         replaceWlpProperties(getPreviousWlpVersion());
         replaceWlpProperties(getPreviousWlpVersion());
+        deleteUsrFolder(methodName);
+        deleteUsrExtFolder(methodName);
+        deleteEtcFolder(methodName);
         Log.exiting(c, methodName);
     }
 

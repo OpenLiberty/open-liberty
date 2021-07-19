@@ -51,9 +51,9 @@ public class PropertiesUtils {
     public final static String PROXY_USER = "proxyUser";
     public final static String PROXY_PASSWORD = "proxyPassword";
     public final static String FEATURE_LOCAL_REPO = "featureLocalRepo";
-    public final static String FEATURES_BOM = "featuresBOM";
+    public final static String FEATURES_BOM = ".featuresbom";
     public final static String EQUALS = "=";
-    private final static String[] SUPPORTED_KEYS = { USE_WLP_REPO, PROXY_HOST, PROXY_PORT, PROXY_USER, PROXY_PASSWORD, FEATURE_LOCAL_REPO, FEATURES_BOM, "enable.options" };
+    private final static String[] SUPPORTED_KEYS = { USE_WLP_REPO, PROXY_HOST, PROXY_PORT, PROXY_USER, PROXY_PASSWORD, FEATURE_LOCAL_REPO, "enable.options" };
     private static final Logger logger = Logger.getLogger(InstallConstants.LOGGER_NAME);
 
 
@@ -213,7 +213,7 @@ public class PropertiesUtils {
         if (Arrays.asList(SUPPORTED_KEYS).contains(key))
             return true;
         if (key.endsWith(URL_SUFFIX)  ||
-                key.endsWith(USER_SUFFIX) || key.endsWith(PWD_SUFFIX))
+                key.endsWith(USER_SUFFIX) || key.endsWith(PWD_SUFFIX) || key.endsWith(".options") || key.endsWith(FEATURES_BOM))
             return true;
         return false;
     }
@@ -240,16 +240,15 @@ public class PropertiesUtils {
                 validationResults.add(new RepositoryConfigValidationResult(lineNum, RepositoryConfigValidationResult.ValidationFailedReason.EMPTY_KEY, InstallLogUtils.Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("MSG_VALIDATION_EMPTY_KEY")));
                 return;
             }
-            
 
             //key is not supported
-            if(key.contains(FEATURES_BOM) && !isOptionsEnabled(repoProperties)) {
+            if(key.endsWith(FEATURES_BOM) && !isOptionsEnabled(repoProperties)) {
             	validationResults.add(new RepositoryConfigValidationResult(lineNum, RepositoryConfigValidationResult.ValidationFailedReason.INVALID_KEY, InstallLogUtils.Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("MSG_VALIDATION_INVALID_KEY",
                         key)));
             	return;
             }else if (!isKeySupported(key)) {
-                validationResults.add(new RepositoryConfigValidationResult(lineNum, RepositoryConfigValidationResult.ValidationFailedReason.INVALID_KEY, InstallLogUtils.Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("MSG_VALIDATION_INVALID_KEY",
-                        key)));
+	                validationResults.add(new RepositoryConfigValidationResult(lineNum, RepositoryConfigValidationResult.ValidationFailedReason.INVALID_KEY, InstallLogUtils.Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("MSG_VALIDATION_INVALID_KEY",
+	                        key)));
                 return;
             }
 
