@@ -3,7 +3,7 @@
 
     <!-- Enable features -->
     <featureManager>
-        <feature>jakartaee-9.0</feature>
+        <feature>jakartaee-9.1</feature>
     </featureManager>
 
     <!-- This template enables security. To get the full use of all the capabilities, a keystore and user registry are required. -->

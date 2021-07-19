@@ -22,7 +22,7 @@ src: \
 fat.project: true
 
 tested.features: \
-  jakartaeeClient-9.0
+  jakartaeeClient-9.1
 
 # Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
 #      or binaries from Artifactory (e.g. commons-logging:commons-logging)
