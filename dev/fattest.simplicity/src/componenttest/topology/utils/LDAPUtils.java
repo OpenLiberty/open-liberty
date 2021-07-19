@@ -18,6 +18,7 @@ import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map.Entry;
@@ -201,20 +202,22 @@ public class LDAPUtils {
         try {
             services = getLdapServices(2, CONSUL_LDAP_AD_SVT_SERVICE);
 
-            remoteServers[2] = new LdapServer();
-            remoteServers[2].serverName = services.get(0).getAddress();
-            remoteServers[2].ldapPort = services.get(0).getProperties().get(CONSUL_LDAP_PORT_KEY);
-            remoteServers[2].ldapsPort = services.get(0).getProperties().get(CONSUL_LDAPS_PORT_KEY);
-            remoteServers[2].bindDn = services.get(0).getProperties().get(CONSUL_BIND_DN_KEY);
-            remoteServers[2].bindPwd = services.get(0).getProperties().get(CONSUL_BIND_PASSWORD_KEY);
+            int ldapRef1 = 0;
+            int ldapRef2 = services.size() == 1 ? 0 : 1;
 
-            /* LDAP_SERVER_6 is dead, but was duplicate of LDAP_SERVER_2 */
+            remoteServers[2] = new LdapServer();
+            remoteServers[2].serverName = services.get(ldapRef1).getAddress();
+            remoteServers[2].ldapPort = services.get(ldapRef1).getProperties().get(CONSUL_LDAP_PORT_KEY);
+            remoteServers[2].ldapsPort = services.get(ldapRef1).getProperties().get(CONSUL_LDAPS_PORT_KEY);
+            remoteServers[2].bindDn = services.get(ldapRef1).getProperties().get(CONSUL_BIND_DN_KEY);
+            remoteServers[2].bindPwd = services.get(ldapRef1).getProperties().get(CONSUL_BIND_PASSWORD_KEY);
+
             remoteServers[6] = new LdapServer();
-            remoteServers[6].serverName = services.get(1).getAddress();
-            remoteServers[6].ldapPort = services.get(1).getProperties().get(CONSUL_LDAP_PORT_KEY);
-            remoteServers[6].ldapsPort = services.get(1).getProperties().get(CONSUL_LDAPS_PORT_KEY);
-            remoteServers[6].bindDn = services.get(1).getProperties().get(CONSUL_BIND_DN_KEY);
-            remoteServers[6].bindPwd = services.get(1).getProperties().get(CONSUL_BIND_PASSWORD_KEY);
+            remoteServers[6].serverName = services.get(ldapRef2).getAddress();
+            remoteServers[6].ldapPort = services.get(ldapRef2).getProperties().get(CONSUL_LDAP_PORT_KEY);
+            remoteServers[6].ldapsPort = services.get(ldapRef2).getProperties().get(CONSUL_LDAPS_PORT_KEY);
+            remoteServers[6].bindDn = services.get(ldapRef2).getProperties().get(CONSUL_BIND_DN_KEY);
+            remoteServers[6].bindPwd = services.get(ldapRef2).getProperties().get(CONSUL_BIND_PASSWORD_KEY);
         } finally {
             releaseServices(services);
         }
@@ -223,13 +226,16 @@ public class LDAPUtils {
         try {
             services = getLdapServices(2, CONSUL_LDAP_IBM_CONTINUOUS_SERVICE);
 
+            int ldapRef1 = 0;
+            int ldapRef2 = services.size() == 1 ? 0 : 1;
+
             remoteServers[1] = new LdapServer();
-            remoteServers[1].serverName = services.get(0).getAddress();
-            remoteServers[1].ldapPort = services.get(0).getProperties().get(CONSUL_LDAP_PORT_KEY);
+            remoteServers[1].serverName = services.get(ldapRef1).getAddress();
+            remoteServers[1].ldapPort = services.get(ldapRef1).getProperties().get(CONSUL_LDAP_PORT_KEY);
 
             remoteServers[5] = new LdapServer();
-            remoteServers[5].serverName = services.get(1).getAddress();
-            remoteServers[5].ldapPort = services.get(1).getProperties().get(CONSUL_LDAP_PORT_KEY);
+            remoteServers[5].serverName = services.get(ldapRef2).getAddress();
+            remoteServers[5].ldapPort = services.get(ldapRef2).getProperties().get(CONSUL_LDAP_PORT_KEY);
         } finally {
             releaseServices(services);
         }
@@ -238,26 +244,30 @@ public class LDAPUtils {
         try {
             services = getLdapServices(3, CONSUL_LDAP_IBM_SECURITY_FVT_SERVICE);
 
+            int ldapRef1 = 0;
+            int ldapRef2 = services.size() == 1 ? 0 : 1;
+            int ldapRef3 = services.size() < 3 ? 0 : 2;
+
             remoteServers[4] = new LdapServer();
-            remoteServers[4].serverName = services.get(0).getAddress();
-            remoteServers[4].ldapPort = services.get(0).getProperties().get(CONSUL_LDAP_PORT_KEY);
-            remoteServers[4].ldapsPort = services.get(0).getProperties().get(CONSUL_LDAPS_PORT_KEY);
-            remoteServers[4].bindDn = services.get(0).getProperties().get(CONSUL_BIND_DN_KEY);
-            remoteServers[4].bindPwd = services.get(0).getProperties().get(CONSUL_BIND_PASSWORD_KEY);
+            remoteServers[4].serverName = services.get(ldapRef1).getAddress();
+            remoteServers[4].ldapPort = services.get(ldapRef1).getProperties().get(CONSUL_LDAP_PORT_KEY);
+            remoteServers[4].ldapsPort = services.get(ldapRef1).getProperties().get(CONSUL_LDAPS_PORT_KEY);
+            remoteServers[4].bindDn = services.get(ldapRef1).getProperties().get(CONSUL_BIND_DN_KEY);
+            remoteServers[4].bindPwd = services.get(ldapRef1).getProperties().get(CONSUL_BIND_PASSWORD_KEY);
 
             remoteServers[7] = new LdapServer();
-            remoteServers[7].serverName = services.get(1).getAddress();
-            remoteServers[7].ldapPort = services.get(1).getProperties().get(CONSUL_LDAP_PORT_KEY);
-            remoteServers[7].ldapsPort = services.get(1).getProperties().get(CONSUL_LDAPS_PORT_KEY);
-            remoteServers[7].bindDn = services.get(1).getProperties().get(CONSUL_BIND_DN_KEY);
-            remoteServers[7].bindPwd = services.get(1).getProperties().get(CONSUL_BIND_PASSWORD_KEY);
+            remoteServers[7].serverName = services.get(ldapRef2).getAddress();
+            remoteServers[7].ldapPort = services.get(ldapRef2).getProperties().get(CONSUL_LDAP_PORT_KEY);
+            remoteServers[7].ldapsPort = services.get(ldapRef2).getProperties().get(CONSUL_LDAPS_PORT_KEY);
+            remoteServers[7].bindDn = services.get(ldapRef2).getProperties().get(CONSUL_BIND_DN_KEY);
+            remoteServers[7].bindPwd = services.get(ldapRef2).getProperties().get(CONSUL_BIND_PASSWORD_KEY);
 
             remoteServers[8] = new LdapServer();
-            remoteServers[8].serverName = services.get(2).getAddress();
-            remoteServers[8].ldapPort = services.get(2).getProperties().get(CONSUL_LDAP_PORT_KEY);
-            remoteServers[8].ldapsPort = services.get(2).getProperties().get(CONSUL_LDAPS_PORT_KEY);
-            remoteServers[8].bindDn = services.get(2).getProperties().get(CONSUL_BIND_DN_KEY);
-            remoteServers[8].bindPwd = services.get(2).getProperties().get(CONSUL_BIND_PASSWORD_KEY);
+            remoteServers[8].serverName = services.get(ldapRef3).getAddress();
+            remoteServers[8].ldapPort = services.get(ldapRef3).getProperties().get(CONSUL_LDAP_PORT_KEY);
+            remoteServers[8].ldapsPort = services.get(ldapRef3).getProperties().get(CONSUL_LDAPS_PORT_KEY);
+            remoteServers[8].bindDn = services.get(ldapRef3).getProperties().get(CONSUL_BIND_DN_KEY);
+            remoteServers[8].bindPwd = services.get(ldapRef3).getProperties().get(CONSUL_BIND_PASSWORD_KEY);
         } finally {
             releaseServices(services);
         }
@@ -266,17 +276,20 @@ public class LDAPUtils {
         try {
             services = getLdapServices(2, CONSUL_LDAP_IBM_SECURITY_SERVICE);
 
+            int ldapRef1 = 0;
+            int ldapRef2 = services.size() == 1 ? 0 : 1;
+
             remoteServers[10] = new LdapServer();
-            remoteServers[10].serverName = services.get(0).getAddress();
-            remoteServers[10].ldapPort = services.get(0).getProperties().get(CONSUL_LDAP_PORT_KEY);
-            remoteServers[10].bindDn = services.get(0).getProperties().get(CONSUL_BIND_DN_KEY);
-            remoteServers[10].bindPwd = services.get(0).getProperties().get(CONSUL_BIND_PASSWORD_KEY);
+            remoteServers[10].serverName = services.get(ldapRef1).getAddress();
+            remoteServers[10].ldapPort = services.get(ldapRef1).getProperties().get(CONSUL_LDAP_PORT_KEY);
+            remoteServers[10].bindDn = services.get(ldapRef1).getProperties().get(CONSUL_BIND_DN_KEY);
+            remoteServers[10].bindPwd = services.get(ldapRef1).getProperties().get(CONSUL_BIND_PASSWORD_KEY);
 
             remoteServers[12] = new LdapServer();
-            remoteServers[12].serverName = services.get(1).getAddress();
-            remoteServers[12].ldapPort = services.get(1).getProperties().get(CONSUL_LDAP_PORT_KEY);
-            remoteServers[12].bindDn = services.get(1).getProperties().get(CONSUL_BIND_DN_KEY);
-            remoteServers[12].bindPwd = services.get(1).getProperties().get(CONSUL_BIND_PASSWORD_KEY);
+            remoteServers[12].serverName = services.get(ldapRef2).getAddress();
+            remoteServers[12].ldapPort = services.get(ldapRef2).getProperties().get(CONSUL_LDAP_PORT_KEY);
+            remoteServers[12].bindDn = services.get(ldapRef2).getProperties().get(CONSUL_BIND_DN_KEY);
+            remoteServers[12].bindPwd = services.get(ldapRef2).getProperties().get(CONSUL_BIND_PASSWORD_KEY);
         } finally {
             releaseServices(services);
         }
@@ -543,6 +556,36 @@ public class LDAPUtils {
         for (int requested = count; requested > 0; requested--) {
             try {
                 List<ExternalTestService> services = new ArrayList<ExternalTestService>(ExternalTestService.getServices(requested, service));
+
+                /*
+                 * Remove services that are not available.
+                 */
+                Set<ExternalTestService> toRemove = new HashSet<ExternalTestService>();
+                for (ExternalTestService serviceToPing : services) {
+                    try {
+                        if (!isLdapServerAvailable(serviceToPing.getAddress(),
+                                                   serviceToPing.getProperties().get(CONSUL_LDAP_PORT_KEY), false,
+
+                                                   serviceToPing.getProperties().get(CONSUL_BIND_DN_KEY),
+                                                   serviceToPing.getProperties().get(CONSUL_BIND_PASSWORD_KEY))) {
+                            Log.warning(c, "Ldap at " + serviceToPing.getAddress() + " failed to ping");
+                            toRemove.add(serviceToPing);
+                        }
+                    } catch (Exception e) {
+                        Log.warning(c, "Ldap at " + serviceToPing.getAddress() + " failed to ping with exception: " + e.getMessage());
+                        toRemove.add(serviceToPing);
+                    }
+                }
+                if (services.size() == toRemove.size()) {
+                    if (services.isEmpty()) {
+                        Log.warning(c, "No LDAPs responded to ping, follow regular failover path which will run local LDAP if possible.");
+                    }
+                } else if (!toRemove.isEmpty()) {
+                    if (services.isEmpty()) {
+                        Log.warning(c, "Some LDAPS failed to ping, will remove from services list and run with good LDAPs only.");
+                    }
+                    services.removeAll(toRemove);
+                }
 
                 /*
                  * Copy unique instances to fill out the requested count of services.
