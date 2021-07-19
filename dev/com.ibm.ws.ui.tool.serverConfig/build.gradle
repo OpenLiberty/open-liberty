@@ -10,8 +10,67 @@
  *******************************************************************************/
 
 ant.importBuild 'import.xml'
+apply from: rootProject.file('wlp-gradle/javascript.gradle')
+
+task postCompile {
+    //dependsOn getJquery
+    dependsOn getBootstrap
+    //dependsOn getOrion
+    doLast {
+        copy {
+            from rootProject.file("wlp-gradle/js/lib/fonts/helvetica-neue/helvetica-neue-roman.woff")
+            into "lib/fonts"
+        }
+        copy {
+            from({ rootProject.file('com.ibm.ws.ui.shared/resources/WEB-CONTENT/jsShared/utils') }) {
+                include "apiMsgUtils.js"
+            }
+            into "build/jsShared/utils"
+        }
+    }
+}
+
+'minify-js' {
+    dependsOn postCompile
+}
+
+closureDevSetup {
+    dependsOn postCompile
+}
 
 jar {
     dependsOn 'compile-js'
+    dependsOn postCompile
     dependsOn 'post-compile'
+    dependsOn 'minify-js'
+    dependsOn 'closureDevSetup'
 }
+
+/*
+    <property name="jsdoc.src.dir" value="${basedir}/resources/WEB-CONTENT/jsServerConfig/*" />
+
+	<target name="css-validation-files">
+        <echo>Overriding the default CSS file set! Working around known tool limitations / bugs</echo>
+        <fileset id="css.sources" dir="${basedir}/resources/WEB-CONTENT">
+          <include name="*-/*.css"/>
+          <exclude name="*-/*ExcludeValidator.css"/>
+        </fileset>
+    </target>
+
+    <target name="post-compile">
+        <antcall target="get-jquery-lib" />
+        <antcall target="get-bootstrap-lib" />
+        <antcall target="get-orion-lib" />
+        <copy-one-font-file font-file="helvetica-neue/helvetica-neue-roman.woff" font-target-dir="lib/fonts" />
+        <antcall target="404_copy_to_tools"></antcall>
+
+        <copy todir="${basedir}/build/jsShared/utils">
+            <fileset dir="${basedir}/../com.ibm.ws.ui.shared/resources/WEB-CONTENT/jsShared/utils">
+            	<include name="apiMsgUtils.js" />
+            </fileset>
+        </copy>
+
+    	<antcall target="minify-js" />
+        <antcall target="closureDevSetup" />
+    </target>
+*/
