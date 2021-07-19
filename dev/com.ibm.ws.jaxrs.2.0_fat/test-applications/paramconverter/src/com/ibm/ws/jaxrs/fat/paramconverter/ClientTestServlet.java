@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,6 @@ package com.ibm.ws.jaxrs.fat.paramconverter;
 
 import static org.junit.Assert.assertEquals;
 
-import java.awt.PageAttributes.MediaType;
 import java.lang.reflect.Array;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -29,6 +28,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.junit.After;
 import org.junit.Test;
@@ -243,8 +244,20 @@ public class ClientTestServlet extends FATServlet {
         assertEquals("expected: " + expected + " actual: " + actual, expected, actual);
     }
 
+ // Waiting for feature 15234    @Test
+    public void testQueryParamSpecialCharacters() throws Exception {
+        Response response = client.target(URI_CONTEXT_ROOT)
+                        .path("application/resource/queryParamSpecialCharacters")
+                        .queryParam("/?abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._~%1A!$'()*+,;:@", "apiKeyQueryParam1Value")
+                        .request(MediaType.APPLICATION_JSON_TYPE)
+                        .get();
+        assertEquals(200, response.getStatus());
+        String actual = response.readEntity(String.class);
+        String expected = "apiKeyQueryParam1Value";
+        assertEquals("expected: " + expected + " actual: " + actual, expected, actual);
+    }
 
-    @Test
+// Waiting for feature 15234    @Test
     public void testQueryParamSpecialCharactersEncoded() throws Exception {
         Response response = client.target(URI_CONTEXT_ROOT)
                         .path("application/resource/queryParamSpecialCharacters")
