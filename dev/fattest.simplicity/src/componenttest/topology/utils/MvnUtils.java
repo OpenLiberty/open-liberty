@@ -72,6 +72,7 @@ public class MvnUtils {
     private static final String DEFAULT_APP_DEPLOY_TIMEOUT = "180";
     private static final String DEFAULT_APP_UNDEPLOY_TIMEOUT = "60";
     private static final int DEFAULT_MBEAN_TIMEOUT = 60000;
+    private static final String DEFAULT_FILE_ENCODING = "UTF-8";
 
     public static final String DEFAULT_SUITE_FILENAME = "tck-suite.xml";
     public static final String API_VERSION = "api.version";
@@ -968,6 +969,12 @@ public class MvnUtils {
         pb.environment()
                         .put("MAVEN_OPTS", "-Dorg.slf4j.simpleLogger.showDateTime=true" +
                                            " -Dorg.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss,SSS");
+
+        // Ensure that Maven is running under a sensible encoding so its output is not in native system encoding (like ebcdic for zos)
+        pb.environment()
+                        .put("MAVEN_OPTS", "-Dfile.encoding=" + DEFAULT_FILE_ENCODING +
+                                           " -Dproject.build.sourceEncoding=" + DEFAULT_FILE_ENCODING +
+                                           " -Dproject.reporting.outputEncoding=" + DEFAULT_FILE_ENCODING);
 
         pb.directory(workingDirectory);
         pb.redirectOutput(outputFile);
