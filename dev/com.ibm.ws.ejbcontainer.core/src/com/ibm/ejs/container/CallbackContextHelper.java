@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2016 IBM Corporation and others.
+ * Copyright (c) 2006, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -46,8 +46,7 @@ import com.ibm.ws.uow.embeddable.UOWToken;
  * ejbRemove are all considered lifecycle callback event methods or an Init
  * method in the case of ejbCreate of a SFSB.
  */
-class CallbackContextHelper
-{
+class CallbackContextHelper {
     private static final String CLASS_NAME = CallbackContextHelper.class.getName();
     private static final TraceComponent tc = Tr.register(CallbackContextHelper.class, "EJBContainer", "com.ibm.ejs.container.container");
 
@@ -119,8 +118,7 @@ class CallbackContextHelper
      * associated with the container will be used for suspending/resuming TX
      * currently associated with calling thread.
      */
-    CallbackContextHelper(BeanO beanO)
-    {
+    CallbackContextHelper(BeanO beanO) {
         ivBeanO = beanO;
     }
 
@@ -129,7 +127,7 @@ class CallbackContextHelper
      * global transaction) currently associated with a thread and begin a new
      * transaction, and push contexts as required.
      *
-     * @param beginTx the transaction context to begin
+     * @param beginTx      the transaction context to begin
      * @param pushContexts the contexts to begin
      * @throws CSIException if an exception occurs while beginning the LTC
      */
@@ -139,12 +137,9 @@ class CallbackContextHelper
             Tr.entry(tc, "begin: tx=" + beginTx + ", contexts=" + pushContexts);
 
         ivThreadData = EJSContainer.getThreadData(); // d630940
-        if (pushContexts == Contexts.All)
-        {
+        if (pushContexts == Contexts.All) {
             ivThreadData.pushContexts(ivBeanO);
-        }
-        else
-        {
+        } else {
             ivThreadData.pushCallbackBeanO(ivBeanO);
         }
         ivPopContexts = pushContexts;
@@ -164,8 +159,7 @@ class CallbackContextHelper
         if (beginTx != null) {
             // This duplicates logic from TranStrategy.
 
-            if (ivUowToken != null)
-            {
+            if (ivUowToken != null) {
                 throw new CSIException("Cannot begin until prior TX is resumed");
             }
 
@@ -173,8 +167,7 @@ class CallbackContextHelper
             UOWCurrent uowCurrent = EmbeddableTransactionManagerFactory.getUOWCurrent(); //d632706
 
             // Only suspend if there is a UOWCurrent.
-            if (uowCurrent != null)
-            {
+            if (uowCurrent != null) {
                 // Suspend the current UOW.
                 try {
                     ivUowToken = ivBeanO.container.ivUOWManager.suspend(); // d578360
@@ -193,8 +186,7 @@ class CallbackContextHelper
                 ivLocalTransactionCurrent = EmbeddableTransactionManagerFactory.getLocalTransactionCurrent();
                 ivLocalTransactionCurrent.begin();
 
-                if (isTraceOn && tc.isEventEnabled())
-                {
+                if (isTraceOn && tc.isEventEnabled()) {
                     LocalTransactionCoordinator lCoord = ivLocalTransactionCurrent.getLocalTranCoord();
                     if (lCoord != null) {
                         Tr.event(tc, "Began LTC cntxt: tid=" +
@@ -231,29 +223,23 @@ class CallbackContextHelper
      * and and resume any UOW that was suspended by the begin method.
      *
      * @param commit must be true if and only if you want the unspecified TX
-     *            started by begin method to be committed. Otherwise, the
-     *            unspecified TX is rolled back.
+     *                   started by begin method to be committed. Otherwise, the
+     *                   unspecified TX is rolled back.
      *
      * @throws CSIException is thrown if any exception occurs when trying to
-     *             complete the unspecified TX that was started by suspend method.
+     *                          complete the unspecified TX that was started by suspend method.
      */
-    void complete(boolean commit) throws CSIException
-    {
+    void complete(boolean commit) throws CSIException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
-        if (isTraceOn && tc.isEntryEnabled())
-        {
+        if (isTraceOn && tc.isEntryEnabled()) {
             Tr.entry(tc, "complete called with commit argument set to: " + commit);
         }
 
-        if (ivPopContexts != null)
-        {
-            if (ivPopContexts == Contexts.All)
-            {
+        if (ivPopContexts != null) {
+            if (ivPopContexts == Contexts.All) {
                 ivThreadData.popContexts();
-            }
-            else
-            {
+            } else {
                 ivThreadData.popCallbackBeanO(); // d630940
             }
 
@@ -263,8 +249,7 @@ class CallbackContextHelper
             ivThreadData = null;
         }
 
-        try
-        {
+        try {
             // This duplicates logic from TranStrategy.
 
             // Complete the UOW started by the begin method.
@@ -300,9 +285,7 @@ class CallbackContextHelper
                     ivTransactionManager.rollback();
                 }
             } else if (ivLocalTransactionCurrent != null) {
-                int endMode = (commit)
-                                ? LocalTransactionCurrent.EndModeCommit
-                                : LocalTransactionCurrent.EndModeRollBack;
+                int endMode = (commit) ? LocalTransactionCurrent.EndModeCommit : LocalTransactionCurrent.EndModeRollBack;
 
                 if (isTraceOn && tc.isEventEnabled()) {
                     LocalTransactionCoordinator lCoord = ivLocalTransactionCurrent.getLocalTranCoord();
@@ -313,23 +296,19 @@ class CallbackContextHelper
                         Tr.event(tc, "Completing LTC cntxt: " + "null Coordinator!");
                 }
 
-                ivLocalTransactionCurrent.complete(endMode);
+                // Use end rather than complete to properly apply resolver action
+                ivLocalTransactionCurrent.end(endMode);
             }
-        } catch (Throwable t)
-        {
+        } catch (Throwable t) {
             //FFDCFilter.processException( t, CLASS_NAME + ".complete", "168", this );
-            if (isTraceOn && tc.isDebugEnabled())
-            {
+            if (isTraceOn && tc.isDebugEnabled()) {
                 Tr.debug(tc, "unspecified UOW completion failure: " + t, t);
             }
             throw new CSIException("unspecified UOW completion failure: " + t, t);
-        } finally
-        {
+        } finally {
             // Ensure suspended UOW is resumed.
-            if (ivUowToken != null)
-            {
-                if (isTraceOn)
-                {
+            if (ivUowToken != null) {
+                if (isTraceOn) {
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "complete is resuming UOW with UOWToken = " + ivUowToken);
                     if (tc.isEventEnabled())
@@ -349,8 +328,7 @@ class CallbackContextHelper
             }
         }
 
-        if (isTraceOn && tc.isEntryEnabled())
-        {
+        if (isTraceOn && tc.isEntryEnabled()) {
             Tr.exit(tc, "complete");
         }
     }
@@ -361,8 +339,7 @@ class CallbackContextHelper
      * @return UOWCoordinator.
      */
     //456222
-    private UOWCoordinator getUOWCoordinator()
-    {
+    private UOWCoordinator getUOWCoordinator() {
         UOWCoordinator uowCoord = null;
         UOWCurrent uowCurrent = EmbeddableTransactionManagerFactory.getUOWCurrent();
         if (uowCurrent != null) {
