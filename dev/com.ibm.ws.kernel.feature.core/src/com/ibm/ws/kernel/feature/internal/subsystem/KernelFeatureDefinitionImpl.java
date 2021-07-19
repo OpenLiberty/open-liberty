@@ -22,11 +22,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import org.apache.aries.util.manifest.ManifestHeaderProcessor;
-import org.apache.aries.util.manifest.ManifestHeaderProcessor.NameValuePair;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
+import org.osgi.framework.namespace.PackageNamespace;
+import org.osgi.framework.wiring.BundleCapability;
+import org.osgi.framework.wiring.BundleRevision;
 
 import com.ibm.ws.kernel.feature.provisioning.ActivationType;
 import com.ibm.ws.kernel.feature.provisioning.FeatureResource;
@@ -205,35 +206,41 @@ public class KernelFeatureDefinitionImpl extends SubsystemFeatureDefinitionImpl 
 
             // Process any tagged packages exported by the system bundle for inclusion in the API and SPI lists
             Bundle systemBundle = ctx.getBundle(Constants.SYSTEM_BUNDLE_LOCATION);
-            if (systemBundle != null) {
+            BundleRevision systemRevision = systemBundle == null ? null : systemBundle.adapt(BundleRevision.class);
+            if (systemRevision != null) {
+                // find the first package from system.packages and system.packages extra property
+                String firstSystemPackage = getFirstPackage(ctx.getProperty(Constants.FRAMEWORK_SYSTEMPACKAGES));
+                String firstExtraPackage = getFirstPackage(ctx.getProperty(Constants.FRAMEWORK_SYSTEMPACKAGES_EXTRA));
+                boolean isSystemPackage = false;
+                for (BundleCapability packageCapability : systemRevision.getDeclaredCapabilities(PackageNamespace.PACKAGE_NAMESPACE)) {
+                    Map<String, Object> attrs = packageCapability.getAttributes();
+                    String pkgName = (String) attrs.get(PackageNamespace.PACKAGE_NAMESPACE);
+                    if (pkgName.equals(firstSystemPackage)) {
+                        isSystemPackage = true;
+                    } else if (pkgName.equals(firstExtraPackage)) {
+                        isSystemPackage = false;
+                    }
 
-                // There are a lot of exports from the system bundle. So lets go through this once
-                // and classify the packages as we go..
-                String bundleExports = systemBundle.getHeaders("").get(Constants.EXPORT_PACKAGE);
-                if (bundleExports != null) {
-                    List<NameValuePair> exports = ManifestHeaderProcessor.parseExportString(bundleExports);
+                    String spiType = (String) attrs.get("ibm-spi-type");
+                    String apiType = (String) attrs.get("ibm-api-type");
 
-                    //check each package for the attribute
-                    for (NameValuePair nvp : exports) {
-                        Map<String, String> attrs = nvp.getAttributes();
-                        String pkgName = nvp.getName();
-                        String spiType = attrs.remove("ibm-spi-type");
-                        String apiType = attrs.remove("ibm-api-type");
-
-                        if (apiType != null) {
-                            // API
-                            attrs.put(FeatureDefinitionUtils.FILTER_TYPE_KEY, apiType);
-                            sysPkgApiHeader.add(new HeaderElementDefinitionImpl(pkgName, attrs));
-                        } else if (spiType != null) {
-                            // SPI
-                            attrs.put(FeatureDefinitionUtils.FILTER_TYPE_KEY, spiType);
-                            sysPkgSpiHeader.add(new HeaderElementDefinitionImpl(pkgName, attrs));
-                        } else if (pkgName.startsWith(OSGI_PKG_PREFIX)) {
-                            // OSGI --> SPI type="spec"
-                            //special case to add all OSGi packages as spec SPI
-                            attrs.put(FeatureDefinitionUtils.FILTER_TYPE_KEY, "spec");
-                            sysPkgSpiHeader.add(new HeaderElementDefinitionImpl(pkgName, attrs));
-                        }
+                    if (apiType != null) {
+                        // API
+                        Map<String, String> packageAttrs = Collections.singletonMap(FeatureDefinitionUtils.FILTER_TYPE_KEY, apiType);
+                        sysPkgApiHeader.add(new HeaderElementDefinitionImpl(pkgName, packageAttrs));
+                    } else if (spiType != null) {
+                        // SPI
+                        Map<String, String> packageAttrs = Collections.singletonMap(FeatureDefinitionUtils.FILTER_TYPE_KEY, spiType);
+                        sysPkgSpiHeader.add(new HeaderElementDefinitionImpl(pkgName, packageAttrs));
+                    } else if (pkgName.startsWith(OSGI_PKG_PREFIX)) {
+                        // OSGI --> SPI type="spec"
+                        //special case to add all OSGi packages as spec SPI
+                        Map<String, String> packageAttrs = Collections.singletonMap(FeatureDefinitionUtils.FILTER_TYPE_KEY, "spec");
+                        sysPkgSpiHeader.add(new HeaderElementDefinitionImpl(pkgName, packageAttrs));
+                    } else if (isSystemPackage) {
+                        // treat all system packages as API spec
+                        Map<String, String> packageAttrs = Collections.singletonMap(FeatureDefinitionUtils.FILTER_TYPE_KEY, "spec");
+                        sysPkgApiHeader.add(new HeaderElementDefinitionImpl(pkgName, packageAttrs));
                     }
                 }
             }
@@ -244,6 +251,24 @@ public class KernelFeatureDefinitionImpl extends SubsystemFeatureDefinitionImpl 
 
         // Need one string for all API services provided by the kernel
         addKernelApiServices(getApiServices());
+    }
+
+    private String getFirstPackage(String packages) {
+        if (packages == null) {
+            return null;
+        }
+        String pkgName = packages;
+        int firstComma = packages.indexOf(',');
+        if (firstComma != -1) {
+            pkgName = packages.substring(0, firstComma);
+            int firstSemiColon = pkgName.indexOf(';');
+            if (firstSemiColon != -1) {
+                return pkgName.substring(0, firstSemiColon).trim();
+            } else {
+                return pkgName.substring(0, firstComma).trim();
+            }
+        }
+        return null;
     }
 
     private void addKernelApiServices(String newServices) {
