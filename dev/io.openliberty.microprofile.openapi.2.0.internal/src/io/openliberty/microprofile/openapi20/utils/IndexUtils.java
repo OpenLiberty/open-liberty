@@ -10,21 +10,10 @@
  *******************************************************************************/
 package io.openliberty.microprofile.openapi20.utils;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.IndexView;
@@ -36,8 +25,10 @@ import com.ibm.ws.container.service.app.deploy.ContainerInfo;
 import com.ibm.ws.container.service.app.deploy.ContainerInfo.Type;
 import com.ibm.ws.container.service.app.deploy.ModuleClassesContainerInfo;
 import com.ibm.ws.container.service.app.deploy.WebModuleInfo;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
+import com.ibm.wsspi.adaptable.module.FastModeControl;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 
 import io.smallrye.openapi.api.OpenApiConfig;
@@ -76,7 +67,12 @@ public class IndexUtils {
                 indexContainer(ci.getContainer(), null, indexer, filter);
             } else if (ci.getType() == Type.WEB_INF_LIB) {
                 if (acceptJarForScanning(config, ci.getContainer().getName())) {
-                    indexContainer(ci.getContainer(), null, indexer, filter);
+                    FastModeControl control = enableFastMode(ci.getContainer());
+                    try {
+                        indexContainer(ci.getContainer(), null, indexer, filter);
+                    } finally {
+                        disableFastMode(control);
+                    }
                 }
             }
         }
@@ -189,5 +185,22 @@ public class IndexUtils {
         }
         
         return acceptJar;
+    }
+    
+    @FFDCIgnore(UnableToAdaptException.class)
+    private static FastModeControl enableFastMode(Container container) {
+        try {
+            FastModeControl control = container.adapt(FastModeControl.class);
+            control.useFastMode();
+            return control;
+        } catch (UnableToAdaptException e) {
+            return null;
+        }
+    }
+    
+    private static void disableFastMode(FastModeControl fastMode) {
+        if (fastMode != null) {
+            fastMode.stopUsingFastMode();
+        }
     }
 }
