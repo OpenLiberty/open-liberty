@@ -47,6 +47,8 @@ public class ConfigSerializer {
         SCAN_DEPENDENCIES_JARS("scanDependenciesJars", c -> serializeSet(c.scanDependenciesJars())),
         CUSTOM_SCHEMA_REGISTRY_CLASS("customSchemaRegistryClass", OpenApiConfig::customSchemaRegistryClass),
         APPLICATION_PATH_DISABLE("applicationPathDisable", c -> Boolean.toString(c.applicationPathDisable())),
+        PRIVATE_PROPERTIES_ENABLE("privatePropertiesEnable", c -> Boolean.toString(c.privatePropertiesEnable())),
+        PROPERTY_NAMING_STRATEGY("propertyNamingStrategy", OpenApiConfig::propertyNamingStrategy),
         SCHEMAS("getSchemas", c -> serializeMap(c.getSchemas())),
         OPEN_API_VERSION("getOpenApiVersion", OpenApiConfig::getOpenApiVersion),
         INFO_TITLE("getInfoTitle", OpenApiConfig::getInfoTitle),

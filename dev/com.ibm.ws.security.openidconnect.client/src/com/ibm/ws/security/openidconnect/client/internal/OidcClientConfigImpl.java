@@ -11,7 +11,11 @@
 package com.ibm.ws.security.openidconnect.client.internal;
 
 import java.io.IOException;
+import java.security.AccessController;
+import java.security.GeneralSecurityException;
+import java.security.Key;
 import java.security.KeyStoreException;
+import java.security.PrivilegedExceptionAction;
 import java.security.PublicKey;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
@@ -19,6 +23,7 @@ import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.net.ssl.SSLSocketFactory;
 
@@ -53,11 +58,15 @@ import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.websphere.ssl.Constants;
 import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.config.CommonConfigUtils;
 import com.ibm.ws.security.common.config.DiscoveryConfigUtils;
 import com.ibm.ws.security.common.jwk.impl.JWKSet;
+import com.ibm.ws.security.jwt.config.ConsumerUtils;
+import com.ibm.ws.security.jwt.utils.JwtUtils;
 import com.ibm.ws.security.openidconnect.clients.common.ClientConstants;
 import com.ibm.ws.security.openidconnect.clients.common.HashUtils;
 import com.ibm.ws.security.openidconnect.clients.common.OIDCClientAuthenticatorUtil;
@@ -211,6 +220,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     private String sslRef;
     private String sslConfigurationName;
     private String signatureAlgorithm;
+    private long clockSkew;
     private long clockSkewInSeconds;
     private long authenticationTimeLimitInSeconds;
     private String discoveryEndpointUrl;
@@ -276,6 +286,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     private final CommonConfigUtils configUtils = new CommonConfigUtils();
     private final ConfigUtils oidcConfigUtils = new ConfigUtils(configAdminRef);
     private final DiscoveryConfigUtils discoveryUtils = new DiscoveryConfigUtils();
+    private ConsumerUtils consumerUtils = null;
 
     private boolean useSystemPropertiesForHttpClientConnections = false;
     private boolean tokenReuse = false;
@@ -359,6 +370,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
         sslSupportRef.deactivate(cc);
         keyStoreServiceRef.deactivate(cc);
         locationAdminRef.deactivate(cc);
+        consumerUtils = null;
     }
 
     private void processConfigProps(Map<String, Object> props) {
@@ -427,7 +439,8 @@ public class OidcClientConfigImpl implements OidcClientConfig {
             // 220146
             Tr.warning(tc, "OIDC_CLIENT_NONE_ALG", new Object[] { id, signatureAlgorithm });
         }
-        clockSkewInSeconds = (Long) props.get(CFG_KEY_CLOCK_SKEW) / 1000; // Duration types are always in milliseconds, convert to seconds.
+        clockSkew = (Long) props.get(CFG_KEY_CLOCK_SKEW);
+        clockSkewInSeconds = clockSkew / 1000; // Duration types are always in milliseconds, convert to seconds.
         authenticationTimeLimitInSeconds = (Long) props.get(CFG_KEY_AUTHENTICATION_TIME_LIMIT) / 1000;
         validationMethod = trimIt((String) props.get(CFG_KEY_VALIDATION_METHOD));
         userInfoEndpointEnabled = (Boolean) props.get(CFG_KEY_USERINFO_ENDPOINT_ENABLED);
@@ -527,6 +540,8 @@ public class OidcClientConfigImpl implements OidcClientConfig {
         if (discovery) {
             logDiscoveryMessage("OIDC_CLIENT_DISCOVERY_COMPLETE");
         }
+
+        consumerUtils = new ConsumerUtils(keyStoreServiceRef);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "id: " + id);
@@ -1875,6 +1890,106 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     @Override
     public String getKeyManagementKeyAlias() {
         return keyManagementKeyAlias;
+    }
+
+    @Override
+    @Sensitive
+    public Key getJweDecryptionKey() throws GeneralSecurityException {
+        String keyAlias = getKeyManagementKeyAlias();
+        if (keyAlias != null) {
+            String keyStoreRef = getKeyStoreRef();
+            return JwtUtils.getPrivateKey(keyAlias, keyStoreRef);
+        }
+        return null;
+    }
+
+    @Override
+    public String getIssuer() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public boolean ignoreAudClaimIfNotConfigured() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public String getKeyStoreRef() {
+        String keyStoreName = null;
+        String sslRef = getSslRef();
+        if (sslRef == null) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "sslRef not configured");
+            }
+            return null;
+        }
+        // TODO - this isn't working correctly
+        Properties sslConfigProps = getSslConfigProperties(sslRef);
+        if (sslConfigProps != null) {
+            keyStoreName = sslConfigProps.getProperty(com.ibm.websphere.ssl.Constants.SSLPROP_KEY_STORE_NAME);
+        }
+        return keyStoreName;
+    }
+
+    @Trivial
+    @FFDCIgnore(Exception.class)
+    Properties getSslConfigProperties(String sslRef) {
+        SSLSupport sslSupportService = sslSupportRef.getService();
+        if (sslSupportService == null) {
+            return null;
+        }
+        Properties sslConfigProps;
+        try {
+            final Map<String, Object> connectionInfo = new HashMap<String, Object>();
+            connectionInfo.put(Constants.CONNECTION_INFO_DIRECTION, Constants.DIRECTION_INBOUND);
+            sslConfigProps = (Properties) AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
+                @Override
+                public Object run() throws Exception {
+                    return sslSupportService.getJSSEHelper().getProperties(sslRef, connectionInfo, null, true);
+                }
+            });
+        } catch (Exception e) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Caught exception getting SSL properties: " + e);
+            }
+            return null;
+        }
+        return sslConfigProps;
+    }
+
+    @Override
+    public String getTrustedAlias() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public long getClockSkew() {
+        return clockSkew;
+    }
+
+    @Override
+    public boolean getJwkEnabled() {
+        return false;
+    }
+
+    @Override
+    public ConsumerUtils getConsumerUtils() {
+        return consumerUtils;
+    }
+
+    @Override
+    public boolean isValidationRequired() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public List<String> getAMRClaim() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

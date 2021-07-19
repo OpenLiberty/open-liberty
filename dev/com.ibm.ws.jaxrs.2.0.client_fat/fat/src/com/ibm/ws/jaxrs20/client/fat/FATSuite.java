@@ -76,7 +76,7 @@ import componenttest.rules.repeater.RepeatTests;
 })
 public class FATSuite {
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification()
+    public static RepeatTests r = RepeatTests.withoutModificationInFullMode()
     .andWith(FeatureReplacementAction.EE8_FEATURES().withID("JAXRS-2.1"))
     .andWith(new JakartaEE9Action().alwaysAddFeature("jsonb-2.0"));
 }

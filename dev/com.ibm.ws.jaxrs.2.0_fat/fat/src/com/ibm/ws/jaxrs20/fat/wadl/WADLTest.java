@@ -39,7 +39,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
-@SkipForRepeat("EE9_FEATURES") // currently broken due to multiple issues
+@SkipForRepeat("EE9_FEATURES") // WADL is not supported in EE9
 public class WADLTest {
 
     @Server("com.ibm.ws.jaxrs.fat.wadl")

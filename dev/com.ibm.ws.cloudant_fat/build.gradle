@@ -28,4 +28,4 @@ task copyCloudant(type: Copy) {
 }
 
 addRequiredLibraries.dependsOn copyCloudant
-addRequiredLibraries.dependsOn addTestcontainers
+addRequiredLibraries.dependsOn copyTestContainers

@@ -1,0 +1,14 @@
+<server>
+    <featureManager>
+		<feature>componentTest-2.0</feature>
+        <feature>servlet-5.0</feature>
+        <feature>enterpriseBeans-4.0</feature>
+    </featureManager>
+    
+    <include location="../fatTestPorts.xml"/>
+    
+	<application id="AsyncInLocalIf2Bean" name="AsyncInLocalIf2Bean" type="ear" location="AsyncInLocalIf2Bean.ear"/>
+    <application id="AsyncInRemoteIf1Bean" name="AsyncInRemoteIf1Bean" type="ear" location="AsyncInRemoteIf1Bean.ear"/>
+	
+    <javaPermission codebase="${server.config.dir}/lib/global/io.openliberty.ejbcontainer.jakarta.fat_tools.jar" className="java.lang.RuntimePermission" name="getClassLoader"/>
+</server>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,7 +22,8 @@ import componenttest.topology.impl.LibertyServerFactory;
 @RunWith(Suite.class)
 @SuiteClasses({
     ConcurrentWorkFATTest.class,
-    ConcurrentWorkCDIFATTest.class
+    ConcurrentWorkCDIFATTest.class,
+    ConcurrentWorkConfigFATTest.class
 })
 public class FATSuite {
     private static final LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.concurrent.fat.work");

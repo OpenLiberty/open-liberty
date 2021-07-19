@@ -269,4 +269,10 @@ public interface RecoveryLog {
      * Delete the underlying file or RDBMS resources
      */
     public void delete();
+
+    /**
+     * A method to support the "original" peer recovery behaviour, where recovery logs
+     * would not be deleted.
+     */
+    public void retainLogsInPeerRecoveryEnv(boolean retainLogs);
 }

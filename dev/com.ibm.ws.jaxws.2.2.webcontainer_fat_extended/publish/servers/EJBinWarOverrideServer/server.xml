@@ -1,0 +1,12 @@
+<server>
+    <featureManager>
+        <feature>jsp-2.3</feature>
+        <feature>ejbLite-3.2</feature>
+        <feature>jaxws-2.2</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+    
+    <application id="helloEJBApp" name="helloEJBApp" type="ear" location="helloEJBApp.ear" />
+    
+</server>

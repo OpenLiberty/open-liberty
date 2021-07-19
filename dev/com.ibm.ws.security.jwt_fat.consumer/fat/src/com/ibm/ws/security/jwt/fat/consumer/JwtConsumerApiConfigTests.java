@@ -1825,7 +1825,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
 
         String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "key_encrypt_good_RS256", null);
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6056E_CAN_NOT_EXTRACT_JWS_FROM_JWE + ".+InvalidKeyException", currentAction, consumerServer, "missing_sslRef_decrypt_RS256");
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6056E_CAN_NOT_EXTRACT_JWS_FROM_JWE + ".+" + JwtConsumerMessageConstants.CWWKS6066E_JWE_DECRYPTION_KEY_MISSING, currentAction, consumerServer, "missing_sslRef_decrypt_RS256");
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, "missing_sslRef_decrypt_RS256", jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -1845,7 +1845,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
 
         String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "key_encrypt_good_RS256", null);
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6056E_CAN_NOT_EXTRACT_JWS_FROM_JWE + ".+InvalidKeyException", currentAction, consumerServer, "bad_sslRef_decrypt_RS256");
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6056E_CAN_NOT_EXTRACT_JWS_FROM_JWE + ".+" + JwtConsumerMessageConstants.CWWKS6066E_JWE_DECRYPTION_KEY_MISSING, currentAction, consumerServer, "bad_sslRef_decrypt_RS256");
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, "bad_sslRef_decrypt_RS256", jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -1864,7 +1864,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
 
         String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "key_encrypt_good_RS256", null);
 
-        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6056E_CAN_NOT_EXTRACT_JWS_FROM_JWE + ".+InvalidKeyException", currentAction, consumerServer, "decrypt_ES384");
+        Expectations expectations = consumerHelpers.buildNegativeAttributeExpectations(JwtConsumerMessageConstants.CWWKS6056E_CAN_NOT_EXTRACT_JWS_FROM_JWE + ".+" + "ClassCastException", currentAction, consumerServer, "decrypt_ES384");
 
         Page response = actions.invokeJwtConsumer(_testName, consumerServer, "decrypt_ES384", jwtToken);
         validationUtils.validateResult(response, currentAction, expectations);

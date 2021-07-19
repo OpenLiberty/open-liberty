@@ -63,4 +63,29 @@ public class TestOLGH14457_EJB_SF_Servlet extends EJBTestVehicleServlet {
         final String testResource = "test-jpa-resource-cmts";
         executeTest(testName, testMethod, testResource);
     }
+
+    // testCaseExpressionReturnTypeParameter
+    @Test
+    public void jpa_eclipselink_olgh14457_testCaseExpressionReturnTypeParameter_EJB_SF_AMJTA_Web() throws Exception {
+        final String testName = "jpa_eclipselink_olgh14457_testCaseExpressionReturnTypeParameter_EJB_SF_AMJTA_Web";
+        final String testMethod = "testCaseExpressionReturnTypeParameter";
+        final String testResource = "test-jpa-resource-amjta";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_eclipselink_olgh14457_testCaseExpressionReturnTypeParameter_EJB_SF_AMRL_Web() throws Exception {
+        final String testName = "jpa_eclipselink_olgh14457_testCaseExpressionReturnTypeParameter_EJB_SF_AMRL_Web";
+        final String testMethod = "testCaseExpressionReturnTypeParameter";
+        final String testResource = "test-jpa-resource-amrl";
+        executeTest(testName, testMethod, testResource);
+    }
+
+    @Test
+    public void jpa_eclipselink_olgh14457_testCaseExpressionReturnTypeParameter_EJB_SF_CMTS_Web() throws Exception {
+        final String testName = "jpa_eclipselink_olgh14457_testCaseExpressionReturnTypeParameter_EJB_SF_CMTS_Web";
+        final String testMethod = "testCaseExpressionReturnTypeParameter";
+        final String testResource = "test-jpa-resource-cmts";
+        executeTest(testName, testMethod, testResource);
+    }
 }

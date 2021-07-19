@@ -22,7 +22,7 @@
 	    <feature>jwt-1.0</feature>
         <feature>timedexit-1.0</feature>
     </featureManager>
-    
+        
 	<include location="${server.config.dir}/imports/goodBasicRegistry.xml" />
 
 	<include location="${server.config.dir}/imports/goodSSLSettings.xml" />
@@ -34,6 +34,7 @@
 	<include location="${server.config.dir}/imports/op_fatTestPorts.xml" />
 	
 	<include location="${server.config.dir}/imports/tokenEndpointApplication.xml" />
+	<include location="${server.config.dir}/imports/userinfoEndpointApplication.xml" />
 
     <keyStore
          id="trust_allSigAlg"
@@ -61,7 +62,7 @@
 		allowPublicClients="false"
 		oauthOnly="true"
 		autoAuthorize="true"
-		jwtAccessToken="true"
+		jwtAccessToken="${oidcCreateJWTToken}"
 	>
 
 		<autoAuthorizeClient>client01</autoAuthorizeClient>
@@ -72,7 +73,9 @@
 				name="client01"
 				secret="{xor}LDo8LTor"
 				displayname="client01"
-				redirect="http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignHS256EncryptRS256,
+				introspectTokens="true"
+				redirect="http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/client01,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignHS256EncryptRS256,
 					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignHS256EncryptRS384,
 					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignHS256EncryptRS512,
 					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignHS384EncryptRS256,
@@ -156,6 +159,18 @@
 		/>
 -->
 
+	<jwtBuilder 
+		id="defaultJWT"
+		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		signatureAlgorithm="RS256"
+		keyStoreRef="key_allSigAlg"
+        keyAlias="rs256"
+        trustStoreRef="trust_allSigAlg"
+		keyManagementKeyAlgorithm="RSA-OAEP"
+		keyManagementKeyAlias="rs256"
+        contentEncryptionAlgorithm="A256GCM" />
+		/>
+		
 	<!-- SignRS256EncryptRS256Builder would be the same as RS256Builder :) -->
 	<jwtBuilder 
 		id="SignRS256EncryptRS256Builder"

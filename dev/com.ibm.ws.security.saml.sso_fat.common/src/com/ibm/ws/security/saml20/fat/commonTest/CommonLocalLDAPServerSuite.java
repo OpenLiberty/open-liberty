@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -67,7 +67,14 @@ public class CommonLocalLDAPServerSuite {
      */
     @BeforeClass
     public void ldapSetUp() throws Exception {
-        ds = new InMemoryLDAPServer(LDAP_PARTITION_1_DN);
+        ldapSetUp(0); // use the default ports
+    }
+
+    public void ldapSetUp(int instance) throws Exception {
+        // Choose a port for LDAP - we ran into an instance where 8020 and 8021 were chosen
+        // This caused problems starting one of the other servers that the tests use
+        // ds = new InMemoryLDAPServer(LDAP_PARTITION_1_DN);
+        ds = new InMemoryLDAPServer(true, SAMLConstants.DEFAULT_LDAP_PORT + instance, SAMLConstants.DEFAULT_LDAP_SECURE_PORT + instance, LDAP_PARTITION_1_DN);
 
         ldapPort = ds.getLdapPort();
         ldapSSLPort = ds.getLdapsPort();

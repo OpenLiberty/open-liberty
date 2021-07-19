@@ -40,4 +40,7 @@
 		<url-pattern>/query</url-pattern>
 	</servlet-mapping>
 
+	<error-page>
+		<location>/jsp/errorPage.jsp</location>
+	</error-page>
 </web-app>

@@ -142,7 +142,7 @@ public class BasicAuthAuditAUTHZTest {
     @AfterClass
     public static void tearDown() throws Exception {
         try {
-            myServer.stopServer();
+            myServer.stopServer("CWWKE1102W", "CWWKE1106W");
         } finally {
             JACCFatUtils.uninstallJaccUserFeature(myServer);
         }

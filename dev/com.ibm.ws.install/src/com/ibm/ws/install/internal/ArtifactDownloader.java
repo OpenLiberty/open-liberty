@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,14 +29,20 @@ import java.net.URLConnection;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.logging.Logger;
 
 import com.ibm.ws.install.InstallException;
 import com.ibm.ws.install.internal.InstallLogUtils.Messages;
 
-public class ArtifactDownloader {
+public class ArtifactDownloader implements AutoCloseable {
 
     private final int PROGRESS_CHUNK = 500000;
 
@@ -46,14 +52,31 @@ public class ArtifactDownloader {
 
     private final String appVersion = "1.0.0"; //TODO replace with openliberty version?
 
-    private final List<File> downloadedFiles = new ArrayList<File>();
+    private final List<File> downloadedFiles;
 
     private final static Logger logger = InstallLogUtils.getInstallLogger();
 
-    private final ProgressBar progressBar = ProgressBar.getInstance();
+    private final ProgressBar progressBar;
+
     private static Map<String, Object> envMap = null;
 
-    public void synthesizeAndDownloadFeatures(List<String> mavenCoords, String dLocation, MavenRepository repository) throws InstallException {
+    private final ExecutorService executor;
+
+    ArtifactDownloader() {
+        this.downloadedFiles = new ArrayList<File>();
+        this.progressBar = ProgressBar.getInstance();
+        this.executor = Executors.newFixedThreadPool(ArtifactDownloaderUtils.getNumThreads());
+    }
+
+    private Future<String> submitDownloadRequest(String coords, String fileType, String dLocation, MavenRepository repository) {
+        return executor.submit(() -> {
+            synthesizeAndDownload(coords, fileType, dLocation, repository, false);
+            return coords + "." + fileType;
+        });
+    }
+
+    public void synthesizeAndDownloadFeatures(List<String> mavenCoords, String dLocation,
+                                              MavenRepository repository) throws InstallException {
         info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_CONTACTING_MAVEN_REPO"));
         checkValidProxy();
         configureProxyAuthentication();
@@ -75,11 +98,13 @@ public class ArtifactDownloader {
         }
         updateProgress(progressBar.getMethodIncrement("establishConnection"));
         info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_MAVEN_REPO_CONNECTION_SUCCESSFUL"));
+
         try {
             missingFeatures = ArtifactDownloaderUtils.getMissingFiles(featureURLs, envMap);
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException | ExecutionException e) {
             throw new InstallException(e.getMessage());
         }
+
         if (!missingFeatures.isEmpty()) {
 
             List<String> missingFeatureList = new ArrayList<String>();
@@ -93,20 +118,44 @@ public class ArtifactDownloader {
             fine("The remote repository is missing the following artifacts: " + missingFeatureList.toString());
             throw ExceptionUtils.createByKey("ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_REPO", "required", "feature(s)", repo);
         } else {
-            // we have downloaded mavenCoords.length amount of features.
-            double individualSize = progressBar.getMethodIncrement("downloadArtifacts") / mavenCoords.size();
-            progressBar.updateMethodMap("downloadArtifact", individualSize);
-            logger.info(Messages.INSTALL_KERNEL_MESSAGES.getMessage("MSG_BEGINNING_DOWNLOAD_FEATURES"));
-            for (String coords : mavenCoords) {
-                synthesizeAndDownload(coords, "esa", dLocation, repository, false);
-                synthesizeAndDownload(coords, "pom", dLocation, repository, false);
+            List<String> result = new ArrayList<String>();
 
-                // update progress bar, drain the downloadArtifacts total size
-                updateProgress(individualSize);
-                progressBar.updateMethodMap("downloadArtifacts", progressBar.getMethodIncrement("downloadArtifacts") - individualSize);
-                progressBar.manuallyUpdate();
-                fine("Finished downloading artifact: " + coords);
+            final List<Future<?>> futures = new ArrayList<>();
+            // we have downloaded mavenCoords.length * 2 (esa and pom) amount of features.
+            double individualSize = progressBar.getMethodIncrement("downloadArtifacts") / (2 * mavenCoords.size());
+            progressBar.updateMethodMap("downloadArtifact", individualSize);
+            info(Messages.INSTALL_KERNEL_MESSAGES.getMessage("MSG_BEGINNING_DOWNLOAD_FEATURES"));
+            for (String coords : mavenCoords) {
+                Future<?> future1 = submitDownloadRequest(coords, "esa", dLocation, repository);
+                futures.add(future1);
+                Future<?> future2 = submitDownloadRequest(coords, "pom", dLocation, repository);
+                futures.add(future2);
             }
+
+            while (!futures.isEmpty()) {
+                Iterator<Future<?>> iter = futures.iterator();
+                try {
+                    while (iter.hasNext()) {
+                        Future<?> future = iter.next();
+                        if (future.isDone()) {
+                            String downloadedCoords;
+                            downloadedCoords = (String) future.get();
+                            // update progress bar, drain the downloadArtifacts total size
+                            updateProgress(individualSize);
+                            progressBar.updateMethodMap("downloadArtifacts",
+                                                        progressBar.getMethodIncrement("downloadArtifacts") - individualSize);
+                            fine("Finished downloading artifact: " + downloadedCoords);
+
+                            iter.remove();
+                        }
+                    }
+                    fine("Remaining artifacts: " + futures.size());
+                    Thread.sleep(ArtifactDownloaderUtils.THREAD_SLEEP);
+                } catch (InterruptedException | ExecutionException e) {
+                    throw new InstallException(e.getMessage());
+                }
+            }
+            progressBar.manuallyUpdate();
         }
     }
 
@@ -157,9 +206,10 @@ public class ArtifactDownloader {
             }
         }
         String[] checksumFormats = new String[3];
-        checksumFormats[0] = "SHA256";
-        checksumFormats[1] = "MD5";
-        checksumFormats[2] = "SHA1";
+
+        checksumFormats[0] = "MD5";
+        checksumFormats[1] = "SHA1";
+        checksumFormats[2] = "SHA256";
 
         try {
             if (individualDownload && ArtifactDownloaderUtils.fileIsMissing(urlLocation, envMap)) {
@@ -185,11 +235,12 @@ public class ArtifactDownloader {
             boolean someChecksumExists = false;
             boolean checksumFail = false;
             boolean checksumSuccess = false;
+            HashMap<String, String> checkSumCache = new HashMap<String, String>();
             for (String checksumFormat : checksumFormats) {
                 if (!checksumSuccess) {
-                    if (checksumIsAvailable(urlLocation, checksumFormat)) {
+                    if (checksumIsAvailable(urlLocation, checksumFormat, checkSumCache)) {
                         someChecksumExists = true;
-                        if (isIncorrectChecksum(fileLoc.getAbsolutePath(), urlLocation, checksumFormat)) {
+                        if (isIncorrectChecksum(fileLoc.getAbsolutePath(), urlLocation, checksumFormat, checkSumCache)) {
                             fine("Failed to validate " + checksumFormat + " checksum for file: " + filename);
                             checksumFail = true;
                         } else {
@@ -217,17 +268,20 @@ public class ArtifactDownloader {
         }
     }
 
-    private boolean checksumIsAvailable(String urlLocation, String checksumFormat) {
+    private boolean checksumIsAvailable(String urlLocation, String checksumFormat, HashMap<String, String> checkSumCache) {
         boolean result = true;
         try {
-            ArtifactDownloaderUtils.getPrimaryChecksum(urlLocation, checksumFormat);
+            if (checkSumCache.containsKey(checksumFormat))
+                return true;
+            String checkSum = ArtifactDownloaderUtils.getPrimaryChecksum(urlLocation, checksumFormat);
+            checkSumCache.put(checksumFormat, checkSum);
         } catch (IOException e) {
             result = false;
         }
         return result;
     }
 
-    private boolean isIncorrectChecksum(String localFile, String urlLocation, String checksumFormat) throws NoSuchAlgorithmException {
+    private boolean isIncorrectChecksum(String localFile, String urlLocation, String checksumFormat, HashMap<String, String> checkSumCache) throws NoSuchAlgorithmException {
         boolean result = false;
         String checksumLocal;
         try {
@@ -235,13 +289,8 @@ public class ArtifactDownloader {
         } catch (IOException e) {
             return true;
         }
-        String checksumOrigin;
-        try {
-            checksumOrigin = ArtifactDownloaderUtils.getPrimaryChecksum(urlLocation, checksumFormat);
-        } catch (IOException e) {
-            return true;
-        }
-        if (!checksumLocal.equals(checksumOrigin)) {
+        String checksumOrigin = checkSumCache.get(checksumFormat);
+        if (checksumOrigin == null || !checksumLocal.equals(checksumOrigin)) {
             result = true;
         }
         return result;
@@ -288,7 +337,8 @@ public class ArtifactDownloader {
                 return true;
             }
         } catch (IOException e) {
-
+            logger.warning(repository.getRepositoryUrl() + " cannot be connected");
+            logger.fine(e.getMessage());
         }
         return false;
     }
@@ -309,7 +359,8 @@ public class ArtifactDownloader {
                 return true;
             }
         } catch (IOException e) {
-
+            logger.warning(repository.getRepositoryUrl() + " cannot be connected");
+            logger.fine(e.getMessage());
         }
         return false;
     }
@@ -486,6 +537,11 @@ public class ArtifactDownloader {
     private void severe(String msg) {
         logger.severe(msg);
 
+    }
+
+    @Override
+    public void close() {
+        executor.shutdown();
     }
 
 }

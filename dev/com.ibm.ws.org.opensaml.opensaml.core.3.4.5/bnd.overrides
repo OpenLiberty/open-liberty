@@ -165,7 +165,4 @@ Include-Resource: \
  @${repo;org.bouncycastle:bcpkix-jdk15on;1.61;EXACT},\
  META-INF=resources/META-INF
 
-Archiver-Version:
-Build-Jdk:
-Built-By:
-Main-Class:
+jakartaeeMe: true

@@ -25,7 +25,6 @@ import javax.ws.rs.core.Response;
 
 import org.junit.Test;
 
-import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
 
 @WebServlet(urlPatterns = "/CustomSecurityContextTestServlet")
@@ -37,7 +36,6 @@ public class CustomSecurityContextTestServlet extends FATServlet {
     private final String customEndpoint = "http://localhost:" + Integer.getInteger("bvt.prop.HTTP_default") + "/CustomSecurityContext/CustomSecurityContextResource/";
 
     @Test
-    @SkipForRepeat("EE9_FEATURES") // default authorization not yet implemented without web.xml?
     public void testDefaultSecurityContext() throws Exception {
         String uri = defaultEndpoint + "Get";
         String token = "adam:password1";
@@ -60,7 +58,6 @@ public class CustomSecurityContextTestServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat("EE9_FEATURES") // Skip this test for EE9 as this test is failing intermittently with EE9.  See issue  https://github.com/OpenLiberty/open-liberty/issues/16693
     public void testCustomSecurityContextSetInFilter() throws Exception {
         String uri = customEndpoint + "Get";
         String token = "adam:password1";

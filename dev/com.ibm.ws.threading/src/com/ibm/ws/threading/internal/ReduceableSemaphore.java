@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,8 +18,8 @@ import java.util.concurrent.Semaphore;
 public class ReduceableSemaphore extends Semaphore {
     private static final long serialVersionUID = 1L;
 
-    public ReduceableSemaphore(int permits, boolean fair) {
-        super(permits, fair);
+    public ReduceableSemaphore(int numPermits, boolean fair) {
+        super(numPermits, fair);
     }
 
     @Override // to make visible

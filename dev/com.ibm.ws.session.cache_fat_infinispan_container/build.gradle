@@ -12,10 +12,7 @@
 configurations {
   //Transitive dependancies that aren't required. Excluding isn't necessary with Artifactory,
   //but would be beneficial with a mavenCentral cache.
-  infinispanClient {
-      transitive = false
-  }
-
+  infinispanClient { transitive = false; }
 }
 
 // Define G:A:V coordinates of each dependency
@@ -47,5 +44,5 @@ addRequiredLibraries {
   dependsOn addDerby
   dependsOn addInfinispanClientLibs
   dependsOn addJakartaTransformer
-  dependsOn addTestcontainers
+  dependsOn copyTestContainers
 }

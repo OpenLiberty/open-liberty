@@ -61,10 +61,4 @@ Import-Package:  \
 DynamicImport-Package: \
   com.ctc.wstx.*
 
-Include-Resource: \
-  @${repo;org.apache.cxf:cxf-rt-ws-security;3.4.1;EXACT}!/META-INF/DEPENDENCIES, \
-  @${repo;org.apache.cxf:cxf-rt-ws-security;3.4.1;EXACT}!/META-INF/LICENSE, \
-  @${repo;org.apache.cxf:cxf-rt-ws-security;3.4.1;EXACT}!/META-INF/NOTICE, \
-  @${repo;org.apache.cxf:cxf-rt-ws-security;3.4.1;EXACT}!/META-INF/cxf/*,\
-  cxf-ehcache.xml=resources/cxf-ehcache.xml
-
+jakartaeeMe: true

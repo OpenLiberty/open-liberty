@@ -13,11 +13,13 @@ package com.ibm.ws.wssecurity.fat.cxf.samltoken2.OneServerTests;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import componenttest.custom.junit.runner.FATRunner;
 
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLMessageConstants;
@@ -43,10 +45,8 @@ import componenttest.topology.utils.HttpUtils;
  * TFIM IdP. The client invokes the SP application by sending the SAML
  * 2.0 token in the HTTP POST request.
  */
+
 @LibertyServerWrapper
-//orig from CL:
-//@Mode(TestMode.FULL)
-//1/26/2021 set as LITE test caller to the supper class CxfSAMLCallerTests; without mode annotation
 @RunWith(FATRunner.class)
 public class CxfSAMLCaller1ServerTests extends CxfSAMLCallerTests {
 
@@ -76,10 +76,10 @@ public class CxfSAMLCaller1ServerTests extends CxfSAMLCallerTests {
 
         List<String> extraApps = new ArrayList<String>();
         extraApps.add(SAMLConstants.SAML_CXF_CALLER_CLIENT_APP);
-
+        
         startSPWithIDPServer("com.ibm.ws.wssecurity_fat.saml.caller", "server_2_in_1.xml", SAMLConstants.SAML_SERVER_TYPE, extraMsgs, extraApps, true, SAMLConstants.EXAMPLE_CALLBACK, SAMLConstants.EXAMPLE_CALLBACK_FEATURE);
-
-        testSAMLServer.getServer().copyFileToLibertyInstallRoot("lib/features", "internalFeatures/securitylibertyinternals-1.0.mf");
+        
+        testSAMLServer.getServer().copyFileToLibertyInstallRoot("lib/features", "internalFeatures/securitylibertyinternals-1.0.mf");    
         servicePort = Integer.toString(testSAMLServer.getServerHttpPort());
         serviceSecurePort = Integer.toString(testSAMLServer.getServerHttpsPort());
 
@@ -89,6 +89,9 @@ public class CxfSAMLCaller1ServerTests extends CxfSAMLCallerTests {
         testSettings.setSpTargetApp(testSAMLServer.getHttpString() + "/samlcallerclient/CxfSamlCallerSvcClient");
         testSettings.setSamlTokenValidationData(testSettings.getIdpUserName(), testSettings.getSamlTokenValidationData().getIssuer(), testSettings.getSamlTokenValidationData().getInResponseTo(), testSettings.getSamlTokenValidationData().getMessageID(), testSettings.getSamlTokenValidationData().getEncryptionKeyUser(), testSettings.getSamlTokenValidationData().getRecipient(), SAMLConstants.AES256);
 
-        testSAMLServer.addIgnoredServerExceptions(SAMLMessageConstants.CWWKS5207W_SAML_CONFIG_IGNORE_ATTRIBUTES, SAMLMessageConstants.CWWKG0101W_CONFIG_NOT_VISIBLE_TO_OTHER_BUNDLES);
+        //3/2021 
+        testSAMLServer.addIgnoredServerExceptions(SAMLMessageConstants.CWWKS5207W_SAML_CONFIG_IGNORE_ATTRIBUTES, SAMLMessageConstants.CWWKG0101W_CONFIG_NOT_VISIBLE_TO_OTHER_BUNDLES, SAMLMessageConstants.CWWKF0001E_FEATURE_MISSING);
+        
+        
     }
 }

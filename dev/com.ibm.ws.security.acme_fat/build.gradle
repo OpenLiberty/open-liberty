@@ -10,8 +10,8 @@
  *******************************************************************************/
 
 configurations {
-    runPebble  { extendsFrom testcontainers }
-    runBoulder { extendsFrom testcontainers }
+    runPebble
+    runBoulder
 }
 
 dependencies {
@@ -28,8 +28,8 @@ dependencies {
   
 }
 
-addRequiredLibraries.dependsOn addTestcontainers
 addRequiredLibraries.dependsOn addJakartaTransformer
+addRequiredLibraries.dependsOn copyTestContainers
 
 autoFVT.doLast {
   /*

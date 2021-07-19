@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,14 +19,18 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.After;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -43,6 +47,9 @@ public class NoTablesTest extends FATServletClient {
 
     @Server("com.ibm.ws.ejbcontainer.timer.persistent.fat.NoTablesServer")
     public static LibertyServer server;
+
+    @ClassRule
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.timer.persistent.fat.NoTablesServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.timer.persistent.fat.NoTablesServer")).andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.timer.persistent.fat.NoTablesServer"));
 
     @After
     public void cleanUp() throws Exception {
@@ -72,7 +79,7 @@ public class NoTablesTest extends FATServletClient {
         JavaArchive NoDBPersistAutoTimerEJB = ShrinkHelper.buildJavaArchive("NoDBPersistAutoTimerEJB.jar", "com.ibm.ws.ejbcontainer.timer.nodb.pauto.ejb.");
         EnterpriseArchive NoDBPersistAutoTimerApp = ShrinkWrap.create(EnterpriseArchive.class, "NoDBPersistAutoTimerApp.ear");
         NoDBPersistAutoTimerApp.addAsModule(NoDBPersistAutoTimerEJB);
-        ShrinkHelper.exportToServer(server, "dropins", NoDBPersistAutoTimerApp);
+        ShrinkHelper.exportToServer(server, "dropins", NoDBPersistAutoTimerApp, DeployOptions.SERVER_ONLY);
 
         // Verify the application failed to start with correct messages
         assertNotNull(CNTR0218E, server.waitForStringInLogUsingMark(CNTR0218E)); // persistent timers not supported

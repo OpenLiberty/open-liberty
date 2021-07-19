@@ -38,11 +38,11 @@ Import-Package: \
   *
 
 Export-Package: \
-	!com.ibm.ws.microprofile.health20.resources,\
 	com.ibm.ws.microprofile.health.impl,\
 	com.ibm.ws.microprofile.health.spi.impl
 
 Private-Package: \
+	com.ibm.ws.microprofile.health.resources,\
 	com.ibm.ws.microprofile.health.internal,\
 	com.ibm.ws.microprofile.health.services,\
 	com.ibm.ws.microprofile.health.services.impl,\

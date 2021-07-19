@@ -26,8 +26,15 @@ import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.logging.Logger;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -35,15 +42,60 @@ import com.ibm.ws.install.InstallException;
 
 public class ArtifactDownloaderUtils {
 
-    private static boolean isFinished = false;
+    private final static Logger logger = InstallLogUtils.getInstallLogger();
+    private final static Integer DEFAULT_THREAD_NUM = 8;
+    public final static int THREAD_SLEEP = 300;
+    private static int thread_num = 0;
 
-    public static List<String> getMissingFiles(List<String> featureURLs, Map<String, Object> envMap) throws IOException {
-        List<String> result = new ArrayList<String>();
-        for (String url : featureURLs) {
-            if (!(exists(url, envMap) == HttpURLConnection.HTTP_OK)) {
-                result.add(url);
+    public static int getNumThreads() {
+        if (thread_num == 0) {
+            try {
+                String num_thread = System.getProperty("com.ibm.ws.install.featureUtility.artifactThreads", DEFAULT_THREAD_NUM.toString());
+                thread_num = Integer.parseInt(num_thread);
+            } catch (NumberFormatException e) {
+                logger.warning("Could not convert com.ibm.ws.install.featureUtility.artifactThreads to integer value: " + e.getMessage());
+                thread_num = DEFAULT_THREAD_NUM;
             }
+            logger.info("Using " + thread_num + " threads to download artifacts.");
         }
+        return thread_num;
+    }
+
+    public static List<String> getMissingFiles(List<String> featureURLs, Map<String, Object> envMap) throws IOException, InterruptedException, ExecutionException {
+        List<String> result = new Vector<String>();
+        logger.fine("number of missing features: " + featureURLs.size());
+
+        int numThreads = getNumThreads();
+        final ExecutorService executor = Executors.newFixedThreadPool(numThreads);
+        final List<Future<?>> futures = new ArrayList<>();
+
+        for (String url : featureURLs) {
+            Future<?> future = executor.submit(() -> {
+                try {
+                    if (!(exists(url, envMap) == HttpURLConnection.HTTP_OK)) {
+                        result.add(url);
+                    }
+                } catch (IOException e) {
+                    logger.fine(e.getMessage());
+                }
+            });
+            futures.add(future);
+        }
+
+        while (!futures.isEmpty()) {
+            Iterator<Future<?>> iter = futures.iterator();
+
+            while (iter.hasNext()) {
+                Future<?> future = iter.next();
+                if (future.isDone()) {
+                    future.get();
+                    iter.remove();
+                }
+            }
+            logger.fine("Finding " + futures.size() + " maven artifacts.. ");
+            Thread.sleep(THREAD_SLEEP);
+        }
+        executor.shutdown();
         return result;
     }
 

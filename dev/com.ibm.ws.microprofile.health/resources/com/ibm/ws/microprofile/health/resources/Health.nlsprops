@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -45,6 +45,11 @@ healthcheck.bean.call.exception.CWMH0050E.explanation=The specified call method 
 healthcheck.bean.call.exception.CWMH0050E.useraction=Review your call method within the HealthCheck bean to identify the exception that occurred.
 
 # The HealthCheck bean call method had a DOWN outcome
-healthcheck.application.down.CWMH0051W=CWMH0051W: The {0} implementing HealthCheckResponse in the {1} application in module {2}, reported a DOWN outcome {3} with data {4}.
-healthcheck.application.down.CWMH0051W.explanation=The DOWN outcome might cause a monitoring service to take action on this server.
-healthcheck.application.down.CWMH0051W.useraction=No user action is required.  This warning is a record of the DOWN outcome.
+healthcheck.application.down.CWMH0052W=CWMH0052W: The {0} implementing HealthCheckResponse in the {1} application in module {2}, reported a {3} status with data {4}.
+healthcheck.application.down.CWMH0052W.explanation=The DOWN status might cause a monitoring service to take action on this server.
+healthcheck.application.down.CWMH0052W.useraction=No user action is required.  This warning is a record of the DOWN status.
+
+# The Readiness HealthCheck had a DOWN outcome, when applications are not started yet
+readiness.healthcheck.applications.not.started.down.CWMH0053W=CWMH0053W: The readiness health check reported a DOWN overall status because the following applications are not started yet: {0}
+readiness.healthcheck.applications.not.started.down.CWMH0053W.explanation=The readiness health check reported a DOWN overall status because the specified applications are not started yet and are not ready to process requests.
+readiness.healthcheck.applications.not.started.down.CWMH0053W.useraction=This warning is a record of the DOWN status and no user action is needed. Wait until all the applications are started. After all the applications are started, the user-defined health checks are processed.

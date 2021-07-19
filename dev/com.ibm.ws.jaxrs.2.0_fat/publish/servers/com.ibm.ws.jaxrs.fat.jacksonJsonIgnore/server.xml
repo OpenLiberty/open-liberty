@@ -1,7 +1,7 @@
 <server>
     <featureManager>
         <feature>jaxrs-2.0</feature>
-        
+        <feature>jaxb-2.2</feature>
     </featureManager>
     
     <application type="war" id="jacksonJsonIgnore" name="jacksonJsonIgnore" location="jacksonJsonIgnore.war">        

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -34,12 +34,15 @@ import com.ibm.ws.jaxrs20.fat.TestUtils;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
-@SkipForRepeat("EE9_FEATURES") // currently broken due to multiple issues
+@AllowedFFDC({
+    "org.apache.cxf.service.factory.ServiceConstructionException",
+    "javax.servlet.ServletException"
+})
 public class ValidationTest {
 
     @Server("com.ibm.ws.jaxrs.fat.validation")
@@ -69,14 +72,21 @@ public class ValidationTest {
 
     @AfterClass
     public static void tearDown() throws Exception {
+        String[] expectedMessages = {
+            "No resource methods have been found for resource class com.ibm.ws.jaxrs.fat.pathmethods.PathResource",
+            "No resource methods have been found for resource class com.ibm.ws.jaxrs.fat.pathmethods.PathWarningResource",
+            "SRVE0271E.*PathMethodValidation", // no resource classes in app
+            "SRVE0276E.*PathMethodValidation", // servlet init error for app
+            "SRVE0315E" // more servlet errors for same no resource class issue
+            };
         if (server != null) {
-            server.stopServer();
+            server.stopServer(expectedMessages);
         }
     }
 
     @Before
     public void getHttpClient() {
-        client = new DefaultHttpClient();
+        client = HttpClientBuilder.create().build();
     }
 
     @After
@@ -123,6 +133,10 @@ public class ValidationTest {
      * Tests that the runtime will randomly choose a constructor between two
      * constructors with the same number of parameters. A warning should be
      * issued.
+     * In the EE9 implementation, the default constructor should be invoked
+     * because CDI is handling the lifecycle of the resource bean, and it is
+     * not able to inject {@code @Context} or {@code @*Param} objects into
+     * the constructor.
      */
     @Test
     public void testConstructorWithSameParamWarning() throws Exception {
@@ -132,19 +146,21 @@ public class ValidationTest {
         HttpResponse resp = client.execute(getMethod);
         assertEquals(200, resp.getStatusLine().getStatusCode());
         String c = asString(resp);
-        boolean foundConstructor = false;
-        if ("context1".equals(c)) {
-            foundConstructor = true;
-        } else if ("query1".equals(c)) {
-            foundConstructor = true;
+        if (JakartaEE9Action.isActive()) {
+            assertEquals("default1", c);
+        } else {
+            assertTrue("Returned message body was: " + c, "context1".equals(c) || "query1".equals(c));
         }
-        assertTrue("Returned message body was: " + c, foundConstructor);
     }
 
     /**
      * Tests that the runtime will randomly choose a constructor between two
      * constructors with the same parameters except different types. A warning
      * should be issued.
+     * In the EE9 implementation, the default constructor should be invoked
+     * because CDI is handling the lifecycle of the resource bean, and it is
+     * not able to inject {@code @Context} or {@code @*Param} objects into
+     * the constructor.
      */
     @Test
     public void testConstructorWithSameParamWarning2() throws Exception {
@@ -154,13 +170,11 @@ public class ValidationTest {
         HttpResponse resp = client.execute(getMethod);
         assertEquals(200, resp.getStatusLine().getStatusCode());
         String c = asString(resp);
-        boolean foundConstructor = false;
-        if ("queryInt1".equals(c)) {
-            foundConstructor = true;
-        } else if ("queryString1".equals(c)) {
-            foundConstructor = true;
+        if (JakartaEE9Action.isActive()) {
+            assertEquals("default1", c);
+        } else {
+            assertTrue("Returned message body was: " + c, "queryInt1".equals(c) || "queryString1".equals(c));
         }
-        assertTrue("Returned message body was: " + c, foundConstructor);
     }
 
     /**
@@ -284,7 +298,7 @@ public class ValidationTest {
             assertEquals(200, resp.getStatusLine().getStatusCode());
             assertEquals("public", asString(resp));
         } finally {
-            client = new DefaultHttpClient();
+            client = HttpClientBuilder.create().build();
         }
 
         String uri2 = getBaseTestUri(valwar, "constructors", "subresource/sub?which=package");
@@ -299,7 +313,10 @@ public class ValidationTest {
     public void testValidationMultipleEntities() throws Exception {
 
         String uri = getBaseTestUri(valwar, "entity", "/params/multientity");
-        HttpGet httpMethod = new HttpGet(uri);
+        HttpPost httpMethod = new HttpPost(uri);
+        StringEntity entity = new StringEntity("firstkey=somevalue&someothervalue=somethingelse");
+        entity.setContentType("application/x-www-form-urlencoded");
+        httpMethod.setEntity(entity);
         HttpResponse resp = client.execute(httpMethod);
         // Supposed to get back a 404 --This is wrong in WINK!!
         //according to jaxrs2.0 spec, if return type is void, we should return 204, so modify test case
@@ -352,7 +369,7 @@ public class ValidationTest {
         httpMethod.setEntity(entity);
         HttpResponse resp = client.execute(httpMethod);
         assertEquals(200, resp.getStatusLine().getStatusCode());
-        assertEquals("somevalue:", asString(resp));
+        assertEquals("somevalue:firstkey=somevalue&someothervalue=somethingelse", asString(resp));
     }
 
     /**
@@ -375,14 +392,18 @@ public class ValidationTest {
 
     @Test
     public void testNonPublicMethodPathWarning() throws Exception {
+        // The CXF impl results in a servlet init error (500) when no resource methods/classes are found
+        // whereas RESTEasy correctly (IMO) returns the 404.
+        final int expectedResponseCode = JakartaEE9Action.isActive() ? 404 : 500;
+
         try {
             String uri1 = getBaseTestUri(valwar, "pathmethod", "pathwarnings/private");
             HttpGet httpMethod = new HttpGet(uri1);
 
             HttpResponse resp = client.execute(httpMethod);
-            assertEquals(404, resp.getStatusLine().getStatusCode());
+            assertEquals(expectedResponseCode, resp.getStatusLine().getStatusCode());
         } finally {
-            client = new DefaultHttpClient();
+            client = HttpClientBuilder.create().build();
         }
 
         try {
@@ -390,16 +411,16 @@ public class ValidationTest {
             HttpGet httpMethod = new HttpGet(uri2);
 
             HttpResponse resp = client.execute(httpMethod);
-            assertEquals(404, resp.getStatusLine().getStatusCode());
+            assertEquals(expectedResponseCode, resp.getStatusLine().getStatusCode());
         } finally {
-            client = new DefaultHttpClient();
+            client = HttpClientBuilder.create().build();
         }
 
         String uri3 = getBaseTestUri(valwar, "pathmethod", "pathwarnings/package");
         HttpGet httpMethod = new HttpGet(uri3);
 
         HttpResponse resp = client.execute(httpMethod);
-        assertEquals(404, resp.getStatusLine().getStatusCode());
+        assertEquals(expectedResponseCode, resp.getStatusLine().getStatusCode());
     }
 
 }

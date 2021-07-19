@@ -258,29 +258,33 @@ public class oAuth20MongoSetup extends HttpServlet {
      *
      */
     private void addEntryMongo(DB ds, String compId, String clientID, String secret, String dispName,
-                               String redirectUri, boolean enabled, JSONObject metaData) {
+                               String redirectUri, boolean enabled, JSONObject metaData) throws Exception {
 
-        System.out.println(CLASS_NAME + "Create on OauthClient: " + clientID + " " + compId);
+        System.out.println(CLASS_NAME + "Creating on OauthClient: " + clientID + " " + compId);
 
-        try {
-            DBCollection col = mongoDB.getCollection(OAUTHCLIENT);
-            BasicDBObject d = new BasicDBObject(CLIENTID, clientID);
+        for (int i = 0; i < 3; i++) {
+            try {
+                DBCollection col = mongoDB.getCollection(OAUTHCLIENT);
+                BasicDBObject d = new BasicDBObject(CLIENTID, clientID);
 
-            d.append(PROVIDERID, compId);
+                d.append(PROVIDERID, compId);
 
-            d.append(CLIENTSECRET, secret);
-            d.append(DISPLAYNAME, dispName);
-            d.append(REDIRECTURI, redirectUri);
-            d.append(ENABLED, enabled);
-            d.append(METADATA, metaData.toString());
+                d.append(CLIENTSECRET, secret);
+                d.append(DISPLAYNAME, dispName);
+                d.append(REDIRECTURI, redirectUri);
+                d.append(ENABLED, enabled);
+                d.append(METADATA, metaData.toString());
 
-            col.insert(d);
+                col.insert(d);
 
-        } catch (Throwable e) {
-            System.out.println("oAuth20MongoSetup Exception trying to add " + clientID);
-            e.printStackTrace();
+                System.out.println(CLASS_NAME + "Created on OauthClient: " + clientID + " " + compId);
+                break;
+            } catch (Throwable e) {
+                System.out.println("oAuth20MongoSetup Exception trying to add " + clientID + ", will try again");
+                e.printStackTrace();
+                Thread.sleep(1000);
+            }
         }
-
     }
 
     /**
@@ -291,21 +295,28 @@ public class oAuth20MongoSetup extends HttpServlet {
     private void queryTableMongo() throws Exception {
         System.out.println("oAuth20MongoSetup queryTable, double check setup on " + mongoDB.getName());
 
-        DBCollection col = mongoDB.getCollection(OAUTHCLIENT);
-        System.out.println("oAuth20MongoSetup Collection " + col.getName());
+        for (int i = 0; i < 3; i++) {
+            try {
+                DBCollection col = mongoDB.getCollection(OAUTHCLIENT);
+                System.out.println("oAuth20MongoSetup Collection " + col.getName());
 
-        DBCursor cursor = col.find();
+                DBCursor cursor = col.find();
 
-        if (cursor != null && cursor.size() > 0) {
-            while (cursor.hasNext()) {
-                DBObject dbo = cursor.next();
-                System.out.println("oAuth20MongoSetup Client " + dbo.get(CLIENTID) + " " + dbo.get(PROVIDERID) + " "
-                                   + dbo.get("_id"));
+                if (cursor != null && cursor.size() > 0) {
+                    while (cursor.hasNext()) {
+                        DBObject dbo = cursor.next();
+                        System.out.println("oAuth20MongoSetup Client " + dbo.get(CLIENTID) + " " + dbo.get(PROVIDERID) + " "
+                                           + dbo.get("_id"));
+                    }
+                } else {
+                    System.out.println("oAuth20MongoSetup Query returned no results");
+                }
+                break;
+            } catch (Exception e) {
+                System.out.println("oAuth20MongoSetup queryTableMongo hit an exception, try again. " + e);
+                Thread.sleep(1000);
             }
-        } else {
-            System.out.println("oAuth20MongoSetup Query returned no results");
         }
-
     }
 
     private String getSecretType(String clientId, String providerId) throws Exception {
@@ -473,12 +484,19 @@ public class oAuth20MongoSetup extends HttpServlet {
      * Create the default table used by the tests.
      *
      */
-    private void createCacheTableMongo(DB ds) {
+    private void createCacheTableMongo(DB ds) throws Exception {
 
-        mongoDB.getCollection(OAUTHCLIENT);
-        mongoDB.getCollection(OAUTHCONSENT);
-        mongoDB.getCollection(OAUTHTOKEN);
-
+        for (int i = 0; i < 3; i++) {
+            try {
+                mongoDB.getCollection(OAUTHCLIENT);
+                mongoDB.getCollection(OAUTHCONSENT);
+                mongoDB.getCollection(OAUTHTOKEN);
+                break;
+            } catch (Exception e) {
+                System.out.println("oAuth20MongoSetup creating tables hit an exception, try again. " + e);
+                Thread.sleep(1000);
+            }
+        }
         System.out.println("oAuth20MongoSetup created tables");
     }
 
@@ -610,7 +628,6 @@ public class oAuth20MongoSetup extends HttpServlet {
             mongoClient = new MongoClient(new ServerAddress(dbHost, Integer.parseInt(dbPort)), null, clientOptions);
             mongoDB = mongoClient.getDB(dbName);
             System.out.println("oAuth20MongoSetup connected to the database");
-
         } catch (UnknownHostException e) {
             System.out.println("oAuth20MongoSetup failed connecting to the database " + e);
             e.printStackTrace();
@@ -642,7 +659,6 @@ public class oAuth20MongoSetup extends HttpServlet {
             mongoClient = new MongoClient(new ServerAddress(dbHost, Integer.parseInt(dbPort)), credentials, clientOptions);
             mongoDB = mongoClient.getDB(dbName);
             System.out.println("oAuth20MongoSetup connected to the database");
-
         } catch (UnknownHostException e) {
             System.out.println("oAuth20MongoSetup failed connecting to the database " + e);
             e.printStackTrace();

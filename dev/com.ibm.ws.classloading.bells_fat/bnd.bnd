@@ -1,0 +1,46 @@
+#*******************************************************************************
+# Copyright (c) 2021 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+-sub: *.bnd
+
+src: \
+	fat/src,\
+	test-applications/testImplClassNotConstructible.jar/src, \
+	test-applications/testImplClassNotFound.jar/src, \
+	test-applications/testImplClassThrowsException.jar/src, \
+	test-applications/testInterfaceClassNotFound.jar/src, \
+	test-applications/testMultipleImplsOfSingleService.jar/src, \
+	test-applications/testMultipleValidServices.jar/src, \
+	test-applications/testNoEntry.jar/src, \
+	test-applications/testOneValidEntry.jar/src, \
+	test-applications/testReadingServicesFile.jar/src, \
+	test-bundles/exporting.metainf.services/src
+
+fat.project: true
+
+tested.features: \
+	bells-1.0, \
+	servlet-3.0
+
+-buildpath: \
+	com.ibm.websphere.javaee.annotation.1.1;version=latest, \
+	com.ibm.websphere.javaee.servlet.3.1;version=latest, \
+	com.ibm.websphere.org.osgi.core;version=latest, \
+	com.ibm.websphere.org.osgi.service.component;version=latest, \
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
+	com.ibm.ws.logging;version=latest, \
+	com.ibm.ws.componenttest, \
+	com.ibm.ws.context, \
+	com.ibm.ws.logging, \
+	com.ibm.ws.serialization, \
+	fattest.simplicity

@@ -11,6 +11,7 @@
 package com.ibm.ws.jaxrs.fat.standard;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 
 import javax.ws.rs.GET;
@@ -22,7 +23,7 @@ import javax.ws.rs.core.Response;
 @Path("providers/standard/file")
 public class FileResource {
 
-    private static File f;
+    private static byte[] fileBytes = new byte[1000];
 
     @POST
     public File postFile(File f) {
@@ -31,12 +32,14 @@ public class FileResource {
 
     @GET
     public Response getFile() {
-        return Response.ok(FileResource.f).build();
+        return Response.ok(FileResource.fileBytes).build();
     }
 
     @PUT
     public void putFile(File f) throws IOException {
-        FileResource.f = f;
+        try (FileInputStream fis = new FileInputStream(f)) {
+            fis.read(FileResource.fileBytes);
+        }
     }
 
     @POST

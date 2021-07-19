@@ -28,14 +28,14 @@ import com.ibm.tx.jta.TransactionManagerFactory;
 import com.ibm.tx.jta.util.TxTMHelper;
 import com.ibm.tx.util.TMHelper;
 import com.ibm.tx.util.Utils;
-import com.ibm.tx.util.logging.FFDCFilter;
-import com.ibm.tx.util.logging.Tr;
-import com.ibm.tx.util.logging.TraceComponent;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.Transaction.JTA.FailureScopeLifeCycle;
 import com.ibm.ws.Transaction.JTA.FailureScopeLifeCycleHelper;
 import com.ibm.ws.Transaction.JTA.JTAResource;
 import com.ibm.ws.Transaction.JTA.Util;
 import com.ibm.ws.Transaction.JTS.Configuration;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.recoverylog.spi.DistributedRecoveryLog;
 import com.ibm.ws.recoverylog.spi.FailureScope;
 import com.ibm.ws.recoverylog.spi.InternalLogException;
@@ -155,6 +155,9 @@ public class RecoveryManager implements Runnable {
     protected final Object _recoveryMonitor = new Object();
 
     protected boolean _cleanRemoteShutdown;
+
+    private boolean _retainHomeLogs = false;
+    private boolean _retainPeerLogs = false;
 
     public RecoveryManager(FailureScopeController fsc, RecoveryAgent agent, RecoveryLog tranLog, RecoveryLog xaLog, RecoveryLog recoverXaLog, byte[] defaultApplId,
                            int defaultEpoch)/*
@@ -693,7 +696,7 @@ public class RecoveryManager implements Runnable {
      */
     public void deleteServerLease(String recoveryIdentity) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "deleteServerLease", new Object[] { this, recoveryIdentity });
+            Tr.entry(tc, "deleteServerLease", this, recoveryIdentity);
         try {
             if (_leaseLog != null) {
                 _leaseLog.releasePeerLease(recoveryIdentity);
@@ -707,6 +710,31 @@ public class RecoveryManager implements Runnable {
         }
         if (tc.isEntryEnabled())
             Tr.exit(tc, "deleteServerLease");
+    }
+
+    /**
+     * When we are operating in a peer recovery environment it is desirable to be able to delete the home server's
+     * recovery logs where it has shutdown cleanly. This method accomplishes this operation.
+     */
+    public void deleteRecoveryLogsIfPeerRecoveryEnv() {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "deleteRecoveryLogsIfPeerRecoveryEnv", this);
+
+        if (_leaseLog != null && _localRecoveryIdentity != null && _localRecoveryIdentity.equals(_failureScopeController.serverName())) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "The recovery logs of home Server " + _failureScopeController.serverName() + " with identity " + _localRecoveryIdentity + " are being processed");
+
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Should home recovery logs be retained ", _retainHomeLogs);
+            if (!_retainHomeLogs) {
+                // Delete the home server's recovery logs.
+                _tranLog.delete();
+                _xaLog.delete();
+            }
+        }
+
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "deleteRecoveryLogsIfPeerRecoveryEnv");
     }
 
     protected void checkPartnerServiceData(RecoverableUnit ru) throws IOException {
@@ -1575,23 +1603,9 @@ public class RecoveryManager implements Runnable {
                             Tr.debug(tc, "Server with identity " + _localRecoveryIdentity + " has recovered the logs of server " + _failureScopeController.serverName());
                         deleteServerLease(_failureScopeController.serverName());
 
-                        boolean retainPeerLogs = false;
-                        try {
-                            retainPeerLogs = AccessController.doPrivileged(
-                                                                           new PrivilegedExceptionAction<Boolean>() {
-                                                                               @Override
-                                                                               public Boolean run() {
-                                                                                   return Boolean.getBoolean("com.ibm.ws.recoverylog.disablepeerlogdeletion");
-                                                                               }
-                                                                           });
-                        } catch (PrivilegedActionException e) {
-                            FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RecoveryManager", "1588");
-                            if (tc.isDebugEnabled())
-                                Tr.debug(tc, "Exception disabling peer log deletion", e);
-                        }
                         if (tc.isDebugEnabled())
-                            Tr.debug(tc, "Should peer recovery logs be retained ", retainPeerLogs);
-                        if (!retainPeerLogs) {
+                            Tr.debug(tc, "Should peer recovery logs be retained ", _retainPeerLogs);
+                        if (!_retainPeerLogs) {
                             // Delete the peer recovery logs.
                             _tranLog.delete();
                             _xaLog.delete();
@@ -2282,29 +2296,67 @@ public class RecoveryManager implements Runnable {
             Tr.exit(tc, "haltDownlevelRecovery");
     }
 
-    public void setLeaseLog(SharedServerLeaseLog leaseLog) {
+    public void configurePeerRecovery(SharedServerLeaseLog leaseLog, String recoveryGroup, String recoveryIdentity) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "setLeaseLog", new Object[] { leaseLog });
+            Tr.entry(tc, "configurePeerRecovery", new Object[] { leaseLog, recoveryGroup, recoveryIdentity });
 
         _leaseLog = leaseLog;
-
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "RecoveryManager", this);
-    }
-
-    public void setRecoveryGroup(String recoveryGroup) {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "setRecoveryGroup", new Object[] { recoveryGroup });
         _recoveryGroup = recoveryGroup;
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "setRecoveryGroup");
-    }
-
-    public void setLocalRecoveryIdentity(String recoveryIdentity) {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "setLocalRecoveryIdentity", new Object[] { recoveryIdentity });
         _localRecoveryIdentity = recoveryIdentity;
+
+        if (_localRecoveryIdentity.equals(_failureScopeController.serverName())) {
+            // If the recovery logs belong to the home server in a peer recovery environment, then check whether the system property has
+            // been set to disable the deletion of the logs on clean shutdown.
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "The recovery logs of home Server " + _failureScopeController.serverName() + " with identity " + _localRecoveryIdentity + " are being processed");
+
+            try {
+                _retainHomeLogs = AccessController.doPrivileged(
+                                                                new PrivilegedExceptionAction<Boolean>() {
+                                                                    @Override
+                                                                    public Boolean run() {
+                                                                        return Boolean.getBoolean("com.ibm.ws.recoverylog.disablehomelogdeletion");
+                                                                    }
+                                                                });
+            } catch (PrivilegedActionException e) {
+                FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RecoveryManager", "2324");
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Exception disabling peer log deletion", e);
+            }
+        } else {
+            // If the recovery logs belong to a peer server in a peer recovery environment, then check whether the system property has
+            // been set to disable the deletion of the logs on successful peer recovery.
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Server with identity " + _localRecoveryIdentity + " is processing the logs of server " + _failureScopeController.serverName());
+
+            try {
+                _retainPeerLogs = AccessController.doPrivileged(
+                                                                new PrivilegedExceptionAction<Boolean>() {
+                                                                    @Override
+                                                                    public Boolean run() {
+                                                                        return Boolean.getBoolean("com.ibm.ws.recoverylog.disablepeerlogdeletion");
+                                                                    }
+                                                                });
+            } catch (PrivilegedActionException e) {
+                FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RecoveryManager", "2343");
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Exception disabling peer log deletion", e);
+            }
+        }
+
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "Should home recovery logs be retained ", _retainHomeLogs);
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "Should peer recovery logs be retained ", _retainPeerLogs);
+
+        if (_retainHomeLogs || _retainPeerLogs) {
+            if (_tranLog != null)
+                _tranLog.retainLogsInPeerRecoveryEnv(true);
+            if (_xaLog != null)
+                _xaLog.retainLogsInPeerRecoveryEnv(true);
+        }
+
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "setLocalRecoveryIdentity");
+            Tr.exit(tc, "configurePeerRecovery", this);
     }
 }

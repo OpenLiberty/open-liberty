@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.CountDownLatch;
@@ -116,6 +117,10 @@ public class JSPExtensionFactory extends AbstractJSPExtensionFactory implements 
     private static String loadedSpecLevel = SPEC_LEVEL_UNLOADED;
 
     protected static volatile CountDownLatch selfInit = new CountDownLatch(1);
+
+    // See OL #15317 
+    private boolean isPagesVersionLoaded = false;
+    ArrayList<GlobalTagLibConfig> storedGlobalTagLibConfigs = new ArrayList<GlobalTagLibConfig>();
     
     /**
      * Active JSPExtensionFactory instance. May be null between deactivate and activate
@@ -196,6 +201,11 @@ public class JSPExtensionFactory extends AbstractJSPExtensionFactory implements 
     protected synchronized void setVersion(ServiceReference<PagesVersion> reference) {
       this.versionRef = reference;
       JSPExtensionFactory.loadedSpecLevel = (String) reference.getProperty("version");
+      isPagesVersionLoaded = true;
+      if(!storedGlobalTagLibConfigs.isEmpty()){
+        storedGlobalTagLibConfigs.forEach(tagConfig ->  setGlobalTagLibConfig(tagConfig));
+        storedGlobalTagLibConfigs.clear();
+      }
     }
 
     protected synchronized void unsetVersion(ServiceReference<PagesVersion> reference) {
@@ -598,7 +608,21 @@ public class JSPExtensionFactory extends AbstractJSPExtensionFactory implements 
      */
     @Reference(cardinality=ReferenceCardinality.MULTIPLE, policy=ReferencePolicy.DYNAMIC)
     protected void setGlobalTagLibConfig(GlobalTagLibConfig globalTagLibConfig) {
-            getGlobalTagLibraryCache().addGlobalTagLibConfig(globalTagLibConfig);
+            
+            /*  
+                Cache the globalTagLibConfig argument until setVersion is called. 
+
+                setGlobalTagLibConfig creates the GlobalTagLibraryCache if it doesn't exist yet 
+                isPages30orHigher is called with in the GlobalTagLibraryCache constuctor.  
+                setGlobalTagLibConfig is called before setVersion and it created a problem 
+                since the JSP/Pages version is needed to determine which JSTL/Tags TLDs to load. 
+            */  
+            
+            if(!isPagesVersionLoaded){
+                storedGlobalTagLibConfigs.add(globalTagLibConfig);
+            } else {
+                getGlobalTagLibraryCache().addGlobalTagLibConfig(globalTagLibConfig);
+            }
     }
 
     /**
@@ -640,6 +664,14 @@ public class JSPExtensionFactory extends AbstractJSPExtensionFactory implements 
             }
         }
         return JSPExtensionFactory.loadedSpecLevel;
+    }
+    
+    public static boolean isPages30orHigher(){
+        String version = getLoadedPagesSpecLevel();
+        if(version.equals("2.2" ) || version.equals("2.3")){
+            return false;
+        }
+        return true;
     }
 }
 

@@ -123,7 +123,7 @@ public class MongoConfigUpdateTest extends FATServletClient {
             element.setCursorFinalizerEnabled(true);
             element.setDescription("descccccc");
             element.setMaxAutoConnectRetryTime(Long.valueOf(5666));
-            element.setMaxWaitTime(1895);
+            element.setMaxWaitTime(18950);
             element.setReadPreference("nearest");
             element.setWriteConcern("ACKNOWLEDGED");
             element.setSocketKeepAlive(false);
@@ -139,7 +139,7 @@ public class MongoConfigUpdateTest extends FATServletClient {
         assertEquals("11000", dbConfig.get("connectTimeout"));
         assertEquals("descccccc", dbConfig.get("description"));
         assertEquals("5666", dbConfig.get("maxAutoConnectRetryTime"));
-        assertEquals("1895", dbConfig.get("maxWaitTime"));
+        assertEquals("18950", dbConfig.get("maxWaitTime"));
         assertEquals("nearest", dbConfig.get("readPreference"));
         assertEquals("false", dbConfig.get("socketKeepAlive"));
         assertEquals("12345", dbConfig.get("socketTimeout"));

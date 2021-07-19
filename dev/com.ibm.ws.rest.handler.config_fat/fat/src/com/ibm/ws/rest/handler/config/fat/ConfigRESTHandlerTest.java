@@ -143,11 +143,23 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         assertEquals(err, "webservices-bnd", wsBnd.getString("configElementName"));
         assertEquals(err, "application[bogus]/webservices-bnd[default-0]", wsBnd.getString("uid"));
         JsonArray wsEndpointPropsArray = wsBnd.getJsonArray("webservice-endpoint-properties");
-        assertEquals(err, 1, wsArray.size());
+        assertEquals(err, 1, wsEndpointPropsArray.size());
         JsonObject wsEndpointProps = wsEndpointPropsArray.getJsonObject(0);
         assertEquals(err, "test", wsEndpointProps.getString("someAttribute"));
         assertEquals(err, "application[bogus]/webservices-bnd[default-0]/webservice-endpoint-properties[default-0]",
                      wsEndpointProps.getString("uid"));
+
+        JsonArray appBndArray = app.getJsonArray("application-bnd");
+        assertEquals(err, 1, appBndArray.size());
+        JsonObject appBnd = appBndArray.getJsonObject(0);
+        assertEquals(err, "application-bnd", appBnd.getString("configElementName"));
+        assertEquals(err, "application[bogus]/application-bnd[default-0]", appBnd.getString("uid"));
+        JsonArray securityRoleArray = appBnd.getJsonArray("security-role");
+        assertEquals(err, 1, securityRoleArray.size());
+        JsonObject securityRole = securityRoleArray.getJsonObject(0);
+        assertEquals(err, "JOBSTARTER", securityRole.getString("name"));
+        assertEquals(err, "application[bogus]/application-bnd[default-0]/security-role[default-0]", securityRole.getString("uid"));
+
     }
 
     //Test the config api when a configuration element's feature is not enabled

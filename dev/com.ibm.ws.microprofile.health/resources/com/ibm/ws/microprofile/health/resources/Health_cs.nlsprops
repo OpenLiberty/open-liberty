@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -45,6 +45,11 @@ healthcheck.bean.call.exception.CWMH0050E.explanation=Ur\u010den\u00e1 metoda vo
 healthcheck.bean.call.exception.CWMH0050E.useraction=P\u0159ezkoumejte metodu vol\u00e1n\u00ed v r\u00e1mci objektu typu HealthCheck bean, abyste identifikovali v\u00fdjimku, ke kter\u00e9 do\u0161lo.
 
 # The HealthCheck bean call method had a DOWN outcome
-healthcheck.application.down.CWMH0051W=CWMH0051W: Metoda {0} implementuj\u00edc\u00ed HealthCheckResponse v aplikaci {1} v modulu {2} m\u00e1 v\u00fdstup DOWN {3} s daty {4}.
-healthcheck.application.down.CWMH0051W.explanation=V\u00fdstup DOWN m\u016f\u017ee zp\u016fsobit, \u017ee slu\u017eba monitorov\u00e1n\u00ed provede na tomto serveru akci.
-healthcheck.application.down.CWMH0051W.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce u\u017eivatele. Toto varov\u00e1n\u00ed je z\u00e1znamem v\u00fdstupu DOWN.
+healthcheck.application.down.CWMH0052W=CWMH0052W: Metoda {0} implementuj\u00edc\u00ed HealthCheckResponse v aplikaci {1} v modulu {2}, nahl\u00e1sila stav {3} s daty {4}.
+healthcheck.application.down.CWMH0052W.explanation=Stav DOWN m\u016f\u017ee zp\u016fsobit, \u017ee slu\u017eba monitorov\u00e1n\u00ed provede na tomto serveru akci.
+healthcheck.application.down.CWMH0052W.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce u\u017eivatele. Toto varov\u00e1n\u00ed je z\u00e1znamem stavu DOWN.
+
+# The Readiness HealthCheck had a DOWN outcome, when applications are not started yet
+readiness.healthcheck.applications.not.started.down.CWMH0053W=CWMH0053W: Kontrola stavu p\u0159ipravenosti nahl\u00e1sila celkov\u00fd stav DOWN, proto\u017ee n\u00e1sleduj\u00edc\u00ed aplikace je\u0161t\u011b nejsou spu\u0161t\u011bny: {0}
+readiness.healthcheck.applications.not.started.down.CWMH0053W.explanation=Kontrola stavu p\u0159ipravenosti nahl\u00e1sila celkov\u00fd stav DOWN, proto\u017ee ur\u010den\u00e9 aplikace je\u0161t\u011b nejsou spu\u0161t\u011bny a nejsou p\u0159ipraveny ke zpracov\u00e1n\u00ed po\u017eadavk\u016f.
+readiness.healthcheck.applications.not.started.down.CWMH0053W.useraction=Toto varov\u00e1n\u00ed je z\u00e1znamem stavu DOWN a nen\u00ed zapot\u0159eb\u00ed \u017e\u00e1dn\u00e1 akce u\u017eivatele. Po\u010dkejte, a\u017e se spust\u00ed v\u0161echny aplikace. Po spu\u0161t\u011bn\u00ed v\u0161ech aplikac\u00ed jsou zpracov\u00e1ny kontroly stavu definovan\u00e9 u\u017eivatelem.

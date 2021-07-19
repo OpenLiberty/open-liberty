@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,10 +28,12 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.ExpectedFFDC;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.RepeatTestFilter;
+import componenttest.rules.repeater.EE8FeatureReplacementAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -40,10 +42,11 @@ import componenttest.topology.utils.FATServletClient;
 @Mode(FULL)
 @RunWith(FATRunner.class)
 public class AsyncErrTest extends FATServletClient {
+    public static String eeVersion;
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().forServers("com.ibm.ws.ejbcontainer.session.async.fat.AsyncErrServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.session.async.fat.AsyncErrServer"));
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().forServers("com.ibm.ws.ejbcontainer.session.async.fat.AsyncErrServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.session.async.fat.AsyncErrServer")).andWith(FeatureReplacementAction.EE9_FEATURES().forServers("com.ibm.ws.ejbcontainer.session.async.fat.AsyncErrServer"));
 
     protected void runTest(String servlet, String testName) throws Exception {
         FATServletClient.runTest(server, servlet, testName);
@@ -51,6 +54,8 @@ public class AsyncErrTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        eeVersion = JakartaEE9Action.isActive() ? "_EE9" : RepeatTestFilter.isRepeatActionActive(EE8FeatureReplacementAction.ID) ? "_EE8" : "";
+
         server = LibertyServerFactory.getLibertyServer("com.ibm.ws.ejbcontainer.session.async.fat.AsyncErrServer");
 
         // Use ShrinkHelper to build the ears
@@ -74,13 +79,13 @@ public class AsyncErrTest extends FATServletClient {
         EnterpriseArchive AsyncErrTest = ShrinkWrap.create(EnterpriseArchive.class, "AsyncErrTest.ear");
         AsyncErrTest.addAsModule(AsyncErrTestWar);
 
-        ShrinkHelper.exportDropinAppToServer(server, AsyncErr1BeanApp);
-        ShrinkHelper.exportAppToServer(server, AsyncErr2BeanApp, DeployOptions.DISABLE_VALIDATION);
-        ShrinkHelper.exportDropinAppToServer(server, AsyncXMLErr1BeanApp);
-        ShrinkHelper.exportDropinAppToServer(server, AsyncXMLErr2BeanApp);
-        ShrinkHelper.exportDropinAppToServer(server, AsyncXMLErr3BeanApp);
-        ShrinkHelper.exportDropinAppToServer(server, AsyncErrTest);
-        ShrinkHelper.exportToServer(server, "lib/global", AsyncAErrIntf);
+        ShrinkHelper.exportDropinAppToServer(server, AsyncErr1BeanApp, DeployOptions.SERVER_ONLY);
+        ShrinkHelper.exportAppToServer(server, AsyncErr2BeanApp, DeployOptions.DISABLE_VALIDATION, DeployOptions.SERVER_ONLY);
+        ShrinkHelper.exportDropinAppToServer(server, AsyncXMLErr1BeanApp, DeployOptions.SERVER_ONLY);
+        ShrinkHelper.exportDropinAppToServer(server, AsyncXMLErr2BeanApp, DeployOptions.SERVER_ONLY);
+        ShrinkHelper.exportDropinAppToServer(server, AsyncXMLErr3BeanApp, DeployOptions.SERVER_ONLY);
+        ShrinkHelper.exportDropinAppToServer(server, AsyncErrTest, DeployOptions.SERVER_ONLY);
+        ShrinkHelper.exportToServer(server, "lib/global", AsyncAErrIntf, DeployOptions.SERVER_ONLY);
 
         server.startServer();
     }
@@ -107,27 +112,10 @@ public class AsyncErrTest extends FATServletClient {
      * Invalid bean type - Message Driven Bean
      */
     @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @ExpectedFFDC({ "com.ibm.ws.container.service.state.StateChangeException", "com.ibm.ejs.container.EJBConfigurationException" })
     public void testMDB() throws Exception {
         server.setMarkToEndOfLog();
-        server.setServerConfigurationFile("AsyncErr2BeanApp_server.xml");
-        server.waitForConfigUpdateInLogUsingMark(null, "");
-
-        assertNotNull("Message was not logged: CNTR0185E", server.waitForStringInLogUsingMark("CNTR0185E"));
-        assertNotNull("An exception did NOT occurred while starting the application AsyncErr2BeanApp. CWWKZ0002E message should have been found.",
-                      server.waitForStringInLogUsingMark("CWWKZ0002E"));
-    }
-
-    /**
-     * Invalid bean type - Message Driven Bean
-     */
-    @Test
-    @SkipForRepeat(SkipForRepeat.EE7_FEATURES)
-    @ExpectedFFDC({ "com.ibm.ws.container.service.state.StateChangeException", "com.ibm.ejs.container.EJBConfigurationException" })
-    public void testMDB_EE8() throws Exception {
-        server.setMarkToEndOfLog();
-        server.setServerConfigurationFile("AsyncErr2BeanApp_server_EE8.xml");
+        server.setServerConfigurationFile("AsyncErr2BeanApp_server" + eeVersion + ".xml");
         server.waitForConfigUpdateInLogUsingMark(null, "");
 
         assertNotNull("Message was not logged: CNTR0185E", server.waitForStringInLogUsingMark("CNTR0185E"));

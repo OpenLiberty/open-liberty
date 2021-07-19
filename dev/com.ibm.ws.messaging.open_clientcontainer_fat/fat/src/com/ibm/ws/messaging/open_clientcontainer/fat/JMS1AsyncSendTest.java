@@ -102,6 +102,8 @@ public class JMS1AsyncSendTest extends FATBase {
   @Test
   public void testJMS1TimeToLive() throws Exception { runTest(); }
   @Test
+  public void testJMS1NegativeTimeToLive() throws Exception { runTest(); }
+  @Test
   public void testJMS1Priority() throws Exception { runTest(); }
   @Test
   public void testJMS1NegativePriority() throws Exception { runTest(); }

@@ -90,8 +90,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
      */
     volatile private boolean _serverStopping;
 
-    protected TxRecoveryAgentImpl() {
-	}
+    protected TxRecoveryAgentImpl() {}
 
     private static ThreadLocal<Boolean> _replayThread = new ThreadLocal<Boolean>();
 
@@ -135,8 +134,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
     }
 
     @Override
-    public void agentReportedFailure(int clientId, FailureScope failureScope) {
-    }
+    public void agentReportedFailure(int clientId, FailureScope failureScope) {}
 
     @Override
     public int clientIdentifier() {
@@ -377,9 +375,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                     }
                 }
 
-                _recoveryManager.setLeaseLog(_leaseLog);
-                _recoveryManager.setRecoveryGroup(_recoveryGroup);
-                _recoveryManager.setLocalRecoveryIdentity(localRecoveryIdentity);
+                _recoveryManager.configurePeerRecovery(_leaseLog, _recoveryGroup, localRecoveryIdentity);
             }
 
             final Thread t = AccessController.doPrivileged(new PrivilegedAction<Thread>() {

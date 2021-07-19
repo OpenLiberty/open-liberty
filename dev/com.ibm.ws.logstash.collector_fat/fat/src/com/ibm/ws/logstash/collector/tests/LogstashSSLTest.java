@@ -60,13 +60,14 @@ public class LogstashSSLTest extends LogstashCollectorTest {
     @BeforeClass
     public static void setUp() throws Exception {
         os = System.getProperty("os.name").toLowerCase();
+        if (os != null && (os.contains("os/390") || os.contains("z/os") || os.contains("zos")))
+            runTest = false;
+
         Log.info(c, "setUp", "os.name = " + os);
         Log.info(c, "setUp", "runTest = " + runTest);
-
-        if (!runTest) {
-            return;
-        }
-
+        
+        Assume.assumeTrue(runTest); // runTest must be true to run test
+        
         clearContainerOutput();
         String host = logstashContainer.getContainerIpAddress();
         String port = String.valueOf(logstashContainer.getMappedPort(5043));
@@ -84,15 +85,14 @@ public class LogstashSSLTest extends LogstashCollectorTest {
         if (!checkGcSpecialCase()) {
             found_liberty_gc_at_startup = waitForStringInContainerOutput(LIBERTY_GC) != null;
         }
-
+        
+        assertNotNull("The application is not ready", server.waitForStringInLogUsingMark("CWWKT0016I", 10000));
         assertNotNull("Cannot find TRAS0218I from Logstash output", waitForStringInContainerOutput("TRAS0218I"));
         clearContainerOutput();
     }
 
     @Before
     public void setUpTest() throws Exception {
-        Assume.assumeTrue(runTest); // runTest must be true to run test
-
         testName = "setUpTest";
         if (!server.isStarted()) {
             serverStart();

@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -45,6 +45,11 @@ healthcheck.bean.call.exception.CWMH0050E.explanation=Il metodo della chiamata s
 healthcheck.bean.call.exception.CWMH0050E.useraction=Esaminare il metodo della chiamata nel bean HealthCheck per identificare l'eccezione che si \u00e8 verificata.
 
 # The HealthCheck bean call method had a DOWN outcome
-healthcheck.application.down.CWMH0051W=CWMH0051W: L'HealthCheckResponse che implementa {0} nell'applicazione {1} nel modulo {2} ha riportato un esito DOWN {3} con dati {4}.
-healthcheck.application.down.CWMH0051W.explanation=A causa dell'esito DOWN, il servizio di monitoraggio potrebbe intraprendere azioni su questo server.
-healthcheck.application.down.CWMH0051W.useraction=Non \u00e8 richiesta alcuna azione da parte dell'utente.  Questa avvertenza \u00e8 una registrazione dell'esito DOWN.
+healthcheck.application.down.CWMH0052W=CWMH0052W: L'HealthCheckResponse che implementa {0} nell'applicazione {1} nel modulo {2} ha riportato uno stato {3} con dati {4}.
+healthcheck.application.down.CWMH0052W.explanation=A causa dello stato DOWN, il servizio di monitoraggio potrebbe intraprendere azioni su questo server.
+healthcheck.application.down.CWMH0052W.useraction=Non \u00e8 richiesta alcuna azione da parte dell'utente.  Questa avvertenza \u00e8 una registrazione dello stato DOWN.
+
+# The Readiness HealthCheck had a DOWN outcome, when applications are not started yet
+readiness.healthcheck.applications.not.started.down.CWMH0053W=CWMH0053W: Il controllo dello stato di disponibilit\u00e0 ha riportato uno stato generale DOWN perch\u00e9 le seguenti applicazioni sono sono ancora avviate: {0}
+readiness.healthcheck.applications.not.started.down.CWMH0053W.explanation=Il controllo dello stato di disponibilit\u00e0 ha riportato uno stato generale DOWN perch\u00e9 le applicazioni specificate sono sono ancora avviate e non sono pronte ad elaborare le richieste.
+readiness.healthcheck.applications.not.started.down.CWMH0053W.useraction=Questa avvertenza \u00e8 una registrazione dello stato DOWN e non \u00e8 necessaria alcuna azione da parte dell'utente. Attendere l'avvio di tutte le applicazioni. Una volta avviate tutte le applicazioni, i controlli dello stato definiti dall'utente vengono elaborati.

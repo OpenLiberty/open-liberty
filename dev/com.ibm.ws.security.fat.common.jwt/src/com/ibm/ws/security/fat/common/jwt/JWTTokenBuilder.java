@@ -122,6 +122,8 @@ public class JWTTokenBuilder {
         String thisMethod = "fromPemEncoded";
         int beginIndex = pem.indexOf(BEGIN_PRIV_KEY) + BEGIN_PRIV_KEY.length();
         int endIndex = pem.indexOf(END_PRIV_KEY);
+        Log.info(thisClass, thisMethod, "begin: " + beginIndex);
+        Log.info(thisClass, thisMethod, "end: " + endIndex);
         String base64 = pem.substring(beginIndex, endIndex).trim();
         Log.info(thisClass, thisMethod, "base64: " + base64 + " end");
         byte[] decode = SimplePEMEncoder.decode(base64);
@@ -328,7 +330,7 @@ public class JWTTokenBuilder {
         }
         try {
             _jws.setPayload(_claims.toJson());
-            Log.info(thisClass, thisMethod, "after setPayload");
+            Log.info(thisClass, thisMethod, "after setPayload in build");
         } catch (Exception e) {
             e.printStackTrace(System.out);
             return null;
@@ -362,8 +364,9 @@ public class JWTTokenBuilder {
             if (contentType != null) {
                 _jwe.setHeader("cty", contentType);
             }
+            Log.info(thisClass,  thisMethod, "JWE header: " + _jwe.getHeader());
             _jwe.setPayload(jwsPart);
-            Log.info(thisClass, thisMethod, "after setPayload");
+            Log.info(thisClass, thisMethod, "after setPayload in jwe");
         } catch (Exception e) {
             e.printStackTrace(System.out);
             return null;

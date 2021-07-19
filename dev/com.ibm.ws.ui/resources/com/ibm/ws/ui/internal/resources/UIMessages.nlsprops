@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013 IBM Corporation and others.
+# Copyright (c) 2013, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -309,3 +309,11 @@ UNSUPPORTED_SSL_SOCKET_FACTORY.useraction=Get a JVM that supports Liberty profil
 OSGI_SERVICE_ERROR=CWWKX1066E: The {0} OSGi service is not available.
 OSGI_SERVICE_ERROR.explanation=This internal server error occurred because the specified service is not available.
 OSGI_SERVICE_ERROR.useraction=Restart the server with the clean option.
+
+TOOLBOX_FILE_PROMOTED_TO_ENCODED_NAME=CWWKX1068I: The Admin Center toolbox for user {0} was loaded from the persisted storage using its old file name and has converted to its new file name.
+TOOLBOX_FILE_PROMOTED_TO_ENCODED_NAME.explanation=The product loaded the Admin Center toolbox from persisted storage using its old file name and stored a copy into the new file name. The copy in the new file name will be loaded by subsequent access to persisted storage.
+TOOLBOX_FILE_PROMOTED_TO_ENCODED_NAME.useraction=No action is required.
+
+TOOL_DATA_PROMOTED_TO_ENCODED_NAME=CWWKX1069I: Tool {0} data for user {1} was loaded from the persisted storage using its old file name and has converted to its new file name.
+TOOL_DATA_PROMOTED_TO_ENCODED_NAME.explanation=The product loaded the tool data for the specified user and tool from persisted storage using its old file name and stored a copy into the new file name. The copy in the new file name will be loaded by subsequent access to persisted storage.
+TOOL_DATA_PROMOTED_TO_ENCODED_NAME.useraction=No action is required.

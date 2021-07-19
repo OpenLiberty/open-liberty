@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -121,9 +121,11 @@ public class MultiServerTest extends WSATTest {
 			String result = br.readLine();
 			assertNotNull(result);
 			System.out.println("testOneway Result : " + result);
+			// The fault exception can start with jakarta or jaxa depending
+			// on if EE9 or before.
 			assertTrue(
 					"Cannot get expected exception from server",
-					result.contains("javax.xml.ws.soap.SOAPFaultException:"
+					result.contains(".xml.ws.soap.SOAPFaultException:"
 							+ " WS-AT can not work on ONE-WAY webservice method"));
 			// List<String> errors = new ArrayList<String>();
 			// errors.add("WTRN0127E");

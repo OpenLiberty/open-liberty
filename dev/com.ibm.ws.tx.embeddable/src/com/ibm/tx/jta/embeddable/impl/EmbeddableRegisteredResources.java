@@ -1,7 +1,5 @@
-package com.ibm.tx.jta.embeddable.impl;
-
 /*******************************************************************************
- * Copyright (c) 2009, 2011 IBM Corporation and others.
+ * Copyright (c) 2009, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +8,7 @@ package com.ibm.tx.jta.embeddable.impl;
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+package com.ibm.tx.jta.embeddable.impl;
 
 import java.util.ArrayList;
 
@@ -25,7 +24,6 @@ import com.ibm.tx.jta.impl.RecoveryManager;
 import com.ibm.tx.jta.impl.RegisteredResources;
 import com.ibm.tx.jta.impl.TransactionImpl;
 import com.ibm.tx.remote.TransactionWrapper;
-import com.ibm.tx.util.logging.FFDCFilter;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.Transaction.JTA.HeuristicHazardException;
@@ -35,12 +33,12 @@ import com.ibm.ws.Transaction.JTA.StatefulResource;
 import com.ibm.ws.Transaction.JTA.XAReturnCodeHelper;
 import com.ibm.ws.Transaction.test.XAFlowCallback;
 import com.ibm.ws.Transaction.test.XAFlowCallbackControl;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.recoverylog.spi.LogCursor;
 import com.ibm.ws.recoverylog.spi.RecoverableUnit;
 import com.ibm.ws.recoverylog.spi.RecoverableUnitSection;
 
-public class EmbeddableRegisteredResources extends RegisteredResources
-{
+public class EmbeddableRegisteredResources extends RegisteredResources {
     private static final TraceComponent tc = Tr.register(EmbeddableRegisteredResources.class, TranConstants.TRACE_GROUP, TranConstants.NLS_FILE);
 
     public static final int WSAT_PREPARE_ORDER_CONCURRENT = 0; // "concurrent"
@@ -55,22 +53,20 @@ public class EmbeddableRegisteredResources extends RegisteredResources
      */
     private ArrayList<JTAAsyncResourceBase> _asyncResourceObjects;
 
-    public EmbeddableRegisteredResources(TransactionImpl tran, boolean disableTwoPhase)
-    {
+    public EmbeddableRegisteredResources(TransactionImpl tran, boolean disableTwoPhase) {
         super(tran, disableTwoPhase);
     }
 
     /**
      * Adds a reference to a Resource object to the list in the registered state.
-     * 
+     *
      * This is intended to be used for registering WSAT Async Resource objects which do not need any start association.
-     * 
+     *
      * @param resource
-     * 
+     *
      * @return
      */
-    public void addAsyncResource(JTAAsyncResourceBase resource) throws SystemException
-    {
+    public void addAsyncResource(JTAAsyncResourceBase resource) throws SystemException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "addAsyncResource", new Object[] { this, resource });
 
@@ -104,16 +100,14 @@ public class EmbeddableRegisteredResources extends RegisteredResources
     }
 
     @Override
-    protected void prePrepareGetAsyncPrepareResults(long startTime) throws HeuristicHazardException, RollbackException, SystemException, HeuristicMixedException
-    {
+    protected void prePrepareGetAsyncPrepareResults(long startTime) throws HeuristicHazardException, RollbackException, SystemException, HeuristicMixedException {
         final boolean traceOn = TraceComponent.isAnyTracingEnabled();
 
         if (traceOn && tc.isEntryEnabled())
             Tr.entry(tc, "prePrepareGetAsyncPrepareResults", this);
 
         // Wait if we've been instructed to do so
-        if (_wsatPrepareOrder == WSAT_PREPARE_ORDER_BEFORE)
-        {
+        if (_wsatPrepareOrder == WSAT_PREPARE_ORDER_BEFORE) {
             getAsyncPrepareResults(startTime);
         }
 
@@ -122,15 +116,13 @@ public class EmbeddableRegisteredResources extends RegisteredResources
     }
 
     @Override
-    protected void postPreparePrepareAsyncResources() throws SystemException, RollbackException
-    {
+    protected void postPreparePrepareAsyncResources() throws SystemException, RollbackException {
         final boolean traceOn = TraceComponent.isAnyTracingEnabled();
 
         if (traceOn && tc.isEntryEnabled())
             Tr.entry(tc, "postPreparePrepareAsyncResources", this);
 
-        if (_wsatPrepareOrder == WSAT_PREPARE_ORDER_AFTER)
-        {
+        if (_wsatPrepareOrder == WSAT_PREPARE_ORDER_AFTER) {
             prepareAsyncResources();
         }
 
@@ -139,16 +131,14 @@ public class EmbeddableRegisteredResources extends RegisteredResources
     }
 
     @Override
-    protected void postPrepareGetAsyncPrepareResults(long startTime) throws HeuristicHazardException, RollbackException, SystemException, HeuristicMixedException
-    {
+    protected void postPrepareGetAsyncPrepareResults(long startTime) throws HeuristicHazardException, RollbackException, SystemException, HeuristicMixedException {
         final boolean traceOn = TraceComponent.isAnyTracingEnabled();
 
         if (traceOn && tc.isEntryEnabled())
             Tr.entry(tc, "postPrepareGetAsyncPrepareResults", this);
 
         if (_wsatPrepareOrder == WSAT_PREPARE_ORDER_CONCURRENT ||
-            _wsatPrepareOrder == WSAT_PREPARE_ORDER_AFTER)
-        {
+            _wsatPrepareOrder == WSAT_PREPARE_ORDER_AFTER) {
             getAsyncPrepareResults(startTime);
         }
 
@@ -157,8 +147,7 @@ public class EmbeddableRegisteredResources extends RegisteredResources
     }
 
     @Override
-    protected void prePreparePrepareAsyncResources() throws SystemException, RollbackException
-    {
+    protected void prePreparePrepareAsyncResources() throws SystemException, RollbackException {
         final boolean traceOn = TraceComponent.isAnyTracingEnabled();
 
         if (traceOn && tc.isEntryEnabled())
@@ -178,8 +167,7 @@ public class EmbeddableRegisteredResources extends RegisteredResources
      * Used when transaction HAS TIMED OUT.
      * This will not start a retry thread
      */
-    void rollbackResources()
-    {
+    void rollbackResources() {
         final boolean traceOn = TraceComponent.isAnyTracingEnabled();
 
         if (traceOn && tc.isEntryEnabled())
@@ -193,8 +181,7 @@ public class EmbeddableRegisteredResources extends RegisteredResources
             Tr.exit(tc, "rollbackResources", _retryRequired);
     }
 
-    protected void getAsyncPrepareResults(long startTime) throws HeuristicHazardException, RollbackException, SystemException, HeuristicMixedException
-    {
+    protected void getAsyncPrepareResults(long startTime) throws HeuristicHazardException, RollbackException, SystemException, HeuristicMixedException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "getAsyncPrepareResults", new Object[] { startTime, this });
 
@@ -202,26 +189,21 @@ public class EmbeddableRegisteredResources extends RegisteredResources
         awaitAsyncResponses(startTime);
 
         // This is the wrong loop atm
-        for (JTAAsyncResourceBase currResource : _asyncResourceObjects)
-        {
+        for (JTAAsyncResourceBase currResource : _asyncResourceObjects) {
             final int currResult = prepareResource(currResource);
             // Take an action depending on the participant's vote.
-            if (currResult == XAResource.XA_OK)
-            {
+            if (currResult == XAResource.XA_OK) {
                 //
                 // Update the resource state to prepared.
                 //
                 currResource.setResourceStatus(StatefulResource.PREPARED);
 
-                if (_prepareResult == XA_RDONLY)
-                {
+                if (_prepareResult == XA_RDONLY) {
                     _prepareResult = XA_OK;
                 }
 
                 _okVoteCount++;
-            }
-            else
-            {
+            } else {
                 //
                 // Set the state of a participant that votes read-only to completed as it
                 // replies.  The consolidated vote does not change.
@@ -244,8 +226,7 @@ public class EmbeddableRegisteredResources extends RegisteredResources
 
     }
 
-    protected void prepareAsyncResources() throws SystemException, RollbackException
-    {
+    protected void prepareAsyncResources() throws SystemException, RollbackException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "prepareAsyncResources", this);
 
@@ -298,48 +279,37 @@ public class EmbeddableRegisteredResources extends RegisteredResources
     }
 
     @Override
-    protected boolean completeAsyncResources()
-    {
+    protected boolean completeAsyncResources() {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "completeAsyncResources", this);
 
         boolean retryRequired = false;
 
-        for (JTAAsyncResourceBase currResource : _asyncResourceObjects)
-        {
+        for (JTAAsyncResourceBase currResource : _asyncResourceObjects) {
             boolean informResource = true;
             int flowType = -1;
-            try
-            {
-                switch (currResource.getResourceStatus())
-                {
+            try {
+                switch (currResource.getResourceStatus()) {
                     case StatefulResource.PREPARED:
                         currResource.setResourceStatus(StatefulResource.COMPLETING);
                         // NB. no break
                     case StatefulResource.COMPLETING: // retry case
-                        if (_outcome)
-                        {
-                            if (xaFlowCallbackEnabled)
-                            {
+                        if (_outcome) {
+                            if (xaFlowCallbackEnabled) {
                                 informResource = XAFlowCallbackControl.beforeXAFlow(XAFlowCallback.COMMIT, XAFlowCallback.COMMIT_2PC);
                                 flowType = XAFlowCallback.COMMIT;
                             }
 
-                            if (informResource)
-                            {
+                            if (informResource) {
                                 currResource.sendAsyncCommit();
                             }
-                        }
-                        else
-                        {
-                            if (xaFlowCallbackEnabled)
-                            {
+                        } else {
+                            if (xaFlowCallbackEnabled) {
                                 informResource = XAFlowCallbackControl.beforeXAFlow(XAFlowCallback.ROLLBACK, XAFlowCallback.ROLLBACK_NORMAL);
                                 flowType = XAFlowCallback.ROLLBACK;
                             }
 
-                            if (informResource)
-                            {
+                            if (informResource) {
                                 currResource.sendAsyncRollback();
                             }
                         }
@@ -350,14 +320,12 @@ public class EmbeddableRegisteredResources extends RegisteredResources
                         {
                             currResource.setResourceStatus(StatefulResource.COMPLETING);
 
-                            if (xaFlowCallbackEnabled)
-                            {
+                            if (xaFlowCallbackEnabled) {
                                 informResource = XAFlowCallbackControl.beforeXAFlow(XAFlowCallback.ROLLBACK, XAFlowCallback.ROLLBACK_NORMAL);
                                 flowType = XAFlowCallback.ROLLBACK;
                             }
 
-                            if (informResource)
-                            {
+                            if (informResource) {
                                 currResource.sendAsyncRollback();
                             }
                         }
@@ -365,20 +333,17 @@ public class EmbeddableRegisteredResources extends RegisteredResources
                     default:
                         break;
                 }
-            } catch (XAException xae)
-            {
+            } catch (XAException xae) {
                 _errorCode = xae.errorCode; // Save locally for FFDC
                 FFDCFilter.processException(xae, "com.ibm.ws.tx.jta.RegisteredResources.distributeOutcome", "1929", this);
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "XAException: error code " + XAReturnCodeHelper.convertXACode(_errorCode), xae);
 
-                if (xaFlowCallbackEnabled)
-                {
+                if (xaFlowCallbackEnabled) {
                     XAFlowCallbackControl.afterXAFlow(flowType, XAFlowCallback.AFTER_FAIL);
                 }
 
-                if (_errorCode == XAException.XAER_RMERR)
-                {
+                if (_errorCode == XAException.XAER_RMERR) {
                     //
                     // According to XA, XAER_RMERR occured in committing the
                     // work performed on behalf of the transaction branch and
@@ -394,14 +359,11 @@ public class EmbeddableRegisteredResources extends RegisteredResources
                     currResource.setResourceStatus(StatefulResource.ROLLEDBACK);
                     currResource.destroy();
 
-                    if (_outcome)
-                    {
+                    if (_outcome) {
                         _diagnosticsRequired = true;
                         Tr.error(tc, "WTRN0047_XAER_RMERR_ON_COMMIT", currResource);
                     }
-                }
-                else if (_errorCode == XAException.XAER_RMFAIL)
-                {
+                } else if (_errorCode == XAException.XAER_RMFAIL) {
                     logRmfailOnCompleting(currResource, xae); // PK47444
 
                     // Set the resource's state to failed so that
@@ -413,19 +375,14 @@ public class EmbeddableRegisteredResources extends RegisteredResources
                     // Retry the commit/rollback flow
                     addToFailedResources(currResource);
                     retryRequired = true;
-                }
-                else
-                {
+                } else {
                     currResource.setResourceStatus(StatefulResource.COMPLETED);
                     currResource.destroy();
 
                     _diagnosticsRequired = true;
-                    if (_outcome)
-                    {
+                    if (_outcome) {
                         Tr.error(tc, "WTRN0050_UNEXPECTED_XA_ERROR_ON_COMMIT", XAReturnCodeHelper.convertXACode(_errorCode));
-                    }
-                    else
-                    {
+                    } else {
                         Tr.error(tc, "WTRN0051_UNEXPECTED_XA_ERROR_ON_ROLLBACK", XAReturnCodeHelper.convertXACode(_errorCode));
                     }
 
@@ -441,17 +398,14 @@ public class EmbeddableRegisteredResources extends RegisteredResources
     }
 
     @Override
-    protected boolean getAsyncCompletionResults(long startTime, boolean retryRequired)
-    {
+    protected boolean getAsyncCompletionResults(long startTime, boolean retryRequired) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "getAsyncCompletionResults", new Object[] { startTime, retryRequired, this });
         // Wait for responses from async resources
 
         // Browse through the async participants, processing them as appropriate
-        for (JTAAsyncResourceBase currResource : _asyncResourceObjects)
-        {
-            if (deliverOutcome(currResource))
-            {
+        for (JTAAsyncResourceBase currResource : _asyncResourceObjects) {
+            if (deliverOutcome(currResource)) {
                 retryRequired = true;
             }
         }
@@ -465,21 +419,16 @@ public class EmbeddableRegisteredResources extends RegisteredResources
      * Log any prepared resources
      */
     @Override
-    protected void logResources() throws SystemException
-    {
+    protected void logResources() throws SystemException {
         final boolean traceOn = TraceComponent.isAnyTracingEnabled();
 
         if (traceOn && tc.isEntryEnabled())
             Tr.entry(tc, "logResources", _resourcesLogged);
 
-        if (!_resourcesLogged)
-        {
-            if (_asyncResourceObjects != null)
-            {
-                for (JTAAsyncResourceBase resource : _asyncResourceObjects)
-                {
-                    if (resource.getResourceStatus() == StatefulResource.PREPARED)
-                    {
+        if (!_resourcesLogged) {
+            if (_asyncResourceObjects != null) {
+                for (JTAAsyncResourceBase resource : _asyncResourceObjects) {
+                    if (resource.getResourceStatus() == StatefulResource.PREPARED) {
                         recordLog(resource);
                     }
                 }
@@ -496,11 +445,10 @@ public class EmbeddableRegisteredResources extends RegisteredResources
      * Informs the caller if a single 1PC CAPABLE resource is enlisted in this unit of work.
      */
     @Override
-    public boolean isOnlyAgent()
-    {
+    public boolean isOnlyAgent() {
         final boolean result = (_resourceObjects.size() == 1 &&
                                 _resourceObjects.get(0) instanceof ResourceSupportsOnePhaseCommit &&
-                        (_asyncResourceObjects == null || _asyncResourceObjects.size() == 0));
+                                (_asyncResourceObjects == null || _asyncResourceObjects.size() == 0));
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "isOnlyAgent", result);
@@ -510,13 +458,12 @@ public class EmbeddableRegisteredResources extends RegisteredResources
     /**
      * Records information in the transaction log about a JTAResource object in the appropriate
      * log section. This indicates that the object has prepared to commit.
-     * 
+     *
      * @param resource The resource object to log.
      * @throws SystemException
      */
     @Override
-    protected RecoverableUnitSection recordOtherResourceTypes(JTAResource resource) throws SystemException
-    {
+    protected RecoverableUnitSection recordOtherResourceTypes(JTAResource resource) throws SystemException {
         final boolean traceOn = TraceComponent.isAnyTracingEnabled();
 
         if (traceOn && tc.isEntryEnabled())
@@ -524,10 +471,8 @@ public class EmbeddableRegisteredResources extends RegisteredResources
 
         RecoverableUnitSection rus = null;
 
-        if (resource instanceof WSATParticipantWrapper)
-        {
-            if (_wsatAsyncSection == null)
-            {
+        if (resource instanceof WSATParticipantWrapper) {
+            if (_wsatAsyncSection == null) {
                 _wsatAsyncSection = createLogSection(TransactionImpl.WSAT_ASYNC_RESOURCE_SECTION, _logUnit);
             }
             rus = _wsatAsyncSection;
@@ -542,12 +487,11 @@ public class EmbeddableRegisteredResources extends RegisteredResources
      * Directs the RegisteredResources to recover its state after a failure.
      * <p>
      * This is based on the given RecoverableUnit object. The participant list is reconstructed.
-     * 
+     *
      * @param log The RecoverableUnit holding the RegisteredResources state.
      */
     @Override
-    public void reconstruct(RecoveryManager rm, RecoverableUnit log) throws SystemException
-    {
+    public void reconstruct(RecoveryManager rm, RecoverableUnit log) throws SystemException {
         final boolean traceOn = TraceComponent.isAnyTracingEnabled();
 
         if (traceOn && tc.isEntryEnabled())
@@ -594,7 +538,7 @@ public class EmbeddableRegisteredResources extends RegisteredResources
 //                Tr.fatal(tc, "WTRN0000_ERR_INT_ERROR", new Object[]{"reconstruct", "com.ibm.ws.tx.jta.RegisteredResources", exc});
 //                if (logData != null) logData.close();
 //                if (traceOn && tc.isEventEnabled()) Tr.event(tc, "Exception raised reconstructing corba resource");
-//                if (traceOn && tc.isEntryEnabled()) Tr.exit(tc, "reconstruct");                
+//                if (traceOn && tc.isEntryEnabled()) Tr.exit(tc, "reconstruct");
 //                throw (SystemException)new SystemException(exc.toString()).initCause(exc);
 //            }
 //
@@ -616,21 +560,17 @@ public class EmbeddableRegisteredResources extends RegisteredResources
             final byte[] tid = _transaction.getXidImpl().toBytes();
 
             LogCursor logData = null;
-            try
-            {
+            try {
                 logData = _xalogSection.data();
-                while (logData.hasNext())
-                {
+                while (logData.hasNext()) {
                     final byte[] data = (byte[]) logData.next();
-                    try
-                    {
+                    try {
                         final JTAXAResourceImpl res = new JTAXAResourceImpl(recoveryManager.getPartnerLogTable(), tid, data);
                         res.setResourceStatus(StatefulResource.PREPARED);
                         _resourceObjects.add(res);
                         if (res.getPriority() != JTAResource.DEFAULT_COMMIT_PRIORITY)
                             _gotPriorityResourcesEnlisted = true;
-                    } catch (Throwable exc)
-                    {
+                    } catch (Throwable exc) {
                         FFDCFilter.processException(exc, "com.ibm.tx.jta.embeddable.impl.EmbeddableRegisteredResources.reconstruct", "843", this);
                         Tr.error(tc, "WTRN0045_CANNOT_RECOVER_RESOURCE",
                                  new Object[] { com.ibm.ejs.util.Util.toHexString(data), exc });
@@ -638,8 +578,7 @@ public class EmbeddableRegisteredResources extends RegisteredResources
                     }
                 }
                 logData.close();
-            } catch (Throwable exc)
-            {
+            } catch (Throwable exc) {
                 FFDCFilter.processException(exc, "com.ibm.tx.jta.embeddable.impl.EmbeddableRegisteredResources.reconstruct", "853", this);
                 Tr.fatal(tc, "WTRN0000_ERR_INT_ERROR", new Object[] { "reconstruct", "com.ibm.ws.tx.jta.RegisteredResources", exc });
                 if (logData != null)

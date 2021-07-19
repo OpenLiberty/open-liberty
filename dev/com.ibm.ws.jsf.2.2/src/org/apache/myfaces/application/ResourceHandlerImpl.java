@@ -114,6 +114,16 @@ public class ResourceHandlerImpl extends ResourceHandler
             String contentType)
     {
         Resource resource = null;
+
+        if (resourceName == null)
+        {
+            throw new NullPointerException();
+        }
+
+        if (resourceName.length() == 0)
+        {
+            return null;
+        }
         
         if (resourceName.charAt(0) == '/')
         {

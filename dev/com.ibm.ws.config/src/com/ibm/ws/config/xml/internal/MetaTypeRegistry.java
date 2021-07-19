@@ -1289,7 +1289,7 @@ public final class MetaTypeRegistry {
                                 attributeMap = ocd.getAttributeMap();
                                 if (attributeMap != null) {
                                     ExtendedAttributeDefinition id = attributeMap.get("id");
-                                    if (id.isFinal())
+                                    if (id != null && id.isFinal())
                                         return -1; // cardinality is negative for Vector, positive for array
                                 }
                             }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -156,8 +156,7 @@ public class BroadcasterTestServlet extends FATServlet {
             
             if (!latch.await(timeout, TimeUnit.SECONDS)) {                
                 throw new RuntimeException(m + " timed out waiting for initial registration welcome with timeout of: " + timeout);
-            }
-
+            }            
             // everybody should receive the welcome event - but then two of the four should be closed/removed from the broadcaster
             latch = new CountDownLatch(numClients - 2);
             for (ClientListener clientListener : clients) {
@@ -174,7 +173,7 @@ public class BroadcasterTestServlet extends FATServlet {
             }
  
             int numOfReceivedEvents = 0;
-            for (ClientListener clientListener : clients) {                
+            for (ClientListener clientListener : clients) { 
                 List<String> events = clientListener.getReceivedEvents();
                 if (events.size() == 1 && events.get(0).equals("Event1")) {
                     numOfReceivedEvents++;

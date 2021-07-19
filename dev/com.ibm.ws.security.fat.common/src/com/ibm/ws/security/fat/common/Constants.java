@@ -168,6 +168,7 @@ public class Constants {
     public static final String[] ALL_TEST_HSSIGALGS = { SIGALG_HS256, SIGALG_HS384, SIGALG_HS512 };
     public static final String[] ALL_TEST_RSSIGALGS = { SIGALG_RS256, SIGALG_RS384, SIGALG_RS512 };
     public static final String[] ALL_TEST_ESSIGALGS = { SIGALG_ES256, SIGALG_ES384, SIGALG_ES512 };
+    public static final String[] ALL_TEST_ENCRYPTALGS = { SIGALG_RS256, SIGALG_RS384, SIGALG_RS512, SIGALG_ES256, SIGALG_ES384, SIGALG_ES512 };
 
     public static final String SUCCESSFUL_LOGOUT_MSG = "You have successfully logged out";
 
@@ -218,4 +219,7 @@ public class Constants {
 
     /* ****************** Misc ****************************** */
     public static final String TEST_CASE = "test_case";
+    public static final int DEFAULT_LDAP_PORT = 9085;
+    public static final int DEFAULT_LDAP_SECURE_PORT = 8995;
+
 }

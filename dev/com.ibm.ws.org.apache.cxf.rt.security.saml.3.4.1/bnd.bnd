@@ -11,7 +11,7 @@
 -include= jar:${fileuri;${repo;org.apache.cxf:cxf-rt-security-saml;3.4.1;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 -includeresource: \
-    @${repo;org.apache.cxf:cxf-rt-security-saml;3.4.1;EXACT}!/!META-INF/maven/*|META-INF/MANIFEST.MF
+    @${repo;org.apache.cxf:cxf-rt-security-saml;3.4.1;EXACT}!/!META-INF/maven/*|META-INF/MANIFEST.MF|META-INF/cxf/*
 
 globalize: false
 instrument.ffdc: true

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -48,7 +48,7 @@ public class Krb5Helper {
      * @param userName
      * @param password
      * @param krb5LoginConfig - Absolute file path of the Kerberos configuration file to be used for login. This value
-     *                            will be set as the value of the "java.security.krb5.conf" system property.
+     *            will be set as the value of the "java.security.krb5.conf" system property.
      * @return
      * @throws Exception
      */
@@ -62,10 +62,10 @@ public class Krb5Helper {
      * @param server
      * @param userName
      * @param password
-     * @param realm                 - The Kerberos realm to be used for login. If not null, this value will be set as the value of the
-     *                                  "java.security.krb5.realm" system property.
-     * @param kdcHostName           - The host name of the KDC to be used for login. If realm is not null and this value is not
-     *                                  null, this value will be set as the value of the "java.security.krb5.kdc" system property.
+     * @param realm - The Kerberos realm to be used for login. If not null, this value will be set as the value of the
+     *            "java.security.krb5.realm" system property.
+     * @param kdcHostName - The host name of the KDC to be used for login. If realm is not null and this value is not
+     *            null, this value will be set as the value of the "java.security.krb5.kdc" system property.
      * @param jaasLoginContextEntry - JaasLoginContextEntry
      * @return
      * @throws Exception
@@ -80,13 +80,13 @@ public class Krb5Helper {
      * @param server
      * @param userName
      * @param password
-     * @param krb5LoginConfig       - Absolute file path of the Kerberos configuration file to be used for login. This value
-     *                                  will be set as the value of the "java.security.krb5.conf" system property.
-     * @param realm                 - The Kerberos realm to be used for login. If non-null, this value will be set as the value of the
-     *                                  "java.security.krb5.realm" system property; the krb5LoginConfig value will not be used and the
-     *                                  "java.security.krb5.conf" system property will not be set.
-     * @param kdcHostName           - The host name of the KDC to be used for login. If realm is not null and this value is not
-     *                                  null, this value will be set as the value of the "java.security.krb5.kdc" system property.
+     * @param krb5LoginConfig - Absolute file path of the Kerberos configuration file to be used for login. This value
+     *            will be set as the value of the "java.security.krb5.conf" system property.
+     * @param realm - The Kerberos realm to be used for login. If non-null, this value will be set as the value of the
+     *            "java.security.krb5.realm" system property; the krb5LoginConfig value will not be used and the
+     *            "java.security.krb5.conf" system property will not be set.
+     * @param kdcHostName - The host name of the KDC to be used for login. If realm is not null and this value is not
+     *            null, this value will be set as the value of the "java.security.krb5.kdc" system property.
      * @param jaasLoginContextEntry - JaasLoginContextEntry
      * @return
      * @throws Exception
@@ -131,7 +131,7 @@ public class Krb5Helper {
      * @param kdcHostName
      * @return jaasLoginContextEntry
      */
-    private String setupLoginConfig(LibertyServer server, String krb5Config, String realm, String kdcHostName, String jaasLoginContextEntry) {
+    public String setupLoginConfig(LibertyServer server, String krb5Config, String realm, String kdcHostName, String jaasLoginContextEntry) {
         String thisMethod = "setupLoginConfig";
         Log.info(thisClass, thisMethod, "krb5Config: " + krb5Config + " realm: " + realm + " kdcHostName: " + InitClass.getKDCHostnameMask(kdcHostName));
         String loginContextEntry = IBM_JDK_KRB5_LOGIN;

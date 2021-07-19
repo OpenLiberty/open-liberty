@@ -190,4 +190,7 @@
 			dir="${server.config.dir}"
 			includes="testLib.jar" />
 	</library>
+	
+	<include location="${server.config.dir}/imports/java2Permissions.xml" />
+	
 </server>

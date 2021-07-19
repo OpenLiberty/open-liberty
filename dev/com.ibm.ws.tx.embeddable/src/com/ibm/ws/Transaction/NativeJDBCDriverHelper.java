@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2007 IBM Corporation and others.
+ * Copyright (c) 2006, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,13 +14,13 @@ import java.lang.reflect.Method;
 
 import com.ibm.ejs.ras.Tr;
 import com.ibm.ejs.ras.TraceComponent;
+import com.ibm.tx.TranConstants;
 
 /**
  * This is a utility class used to resolve incompatibilities with native
  * type 2 JDBC drivers.
  */
-public class NativeJDBCDriverHelper
-{
+public class NativeJDBCDriverHelper {
     /**
      * TraceComponent for this class.
      */
@@ -32,8 +32,7 @@ public class NativeJDBCDriverHelper
     /**
      * DB2 t2zos JDBC driver utilities class name
      */
-    static private final String EXTERNAL_OPS =
-                    "com.ibm.db2.jcc.t2zos.ExternalOps";
+    static private final String EXTERNAL_OPS = "com.ibm.db2.jcc.t2zos.ExternalOps";
 
     /**
      * Boolean indicating classload of DB2 JDBC driver was attempted.
@@ -59,14 +58,13 @@ public class NativeJDBCDriverHelper
      * may block indefinitely. This method alerts the DB2 for z/OS JDBC
      * driver that the current thread is about to go into a WLM SELECT WORK
      * block and the connection should be removed from the thread.
-     * 
+     *
      * This method is meant to be a happy medium between enabling and
      * disabling DB2DISABLETAF. This performs essentially the same function,
      * except that WebSphere attempts to tell DB2 when to disassociate the
      * affinity, instead of having DB2 disassociate after each JDBC call.
      */
-    public static void threadSwitch()
-    {
+    public static void threadSwitch() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(tc, "threadSwitch");
 
@@ -115,7 +113,7 @@ public class NativeJDBCDriverHelper
 //                            getInstance().loadClass(EXTERNAL_OPS);
 //                        _dissociateCurrentAttachmentFromTCB =
 //                            externalOps.getMethod(
-//                            "dissociateCurrentAttachmentFromTCB", 
+//                            "dissociateCurrentAttachmentFromTCB",
 //                            new Class[0]);
 //                    }
 //                    catch (Throwable t)
@@ -146,7 +144,7 @@ public class NativeJDBCDriverHelper
 //
 //                        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
 //                        {
-//                            Tr.event(tc, "Could not drive DB2 driver " + 
+//                            Tr.event(tc, "Could not drive DB2 driver " +
 //                                     "method", t);
 //                        }
 //                    }

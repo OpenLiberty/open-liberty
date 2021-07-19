@@ -15,4 +15,6 @@
      
   	<include location="../fatTestPorts.xml"/>
  
+    <javaPermission className="javax.security.auth.AuthPermission" name="wssecurity.getCallerSubject"/>
+    <javaPermission className="javax.security.auth.AuthPermission" name="wssecurity.getRunAsSubject"/>
 </server>

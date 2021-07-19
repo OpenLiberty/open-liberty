@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,13 +14,14 @@ import static com.ibm.ws.jaxrs20.fat.TestUtils.asString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
 import java.net.ConnectException;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -47,7 +48,7 @@ public class JAXRSWebContainerTest {
 
     private static final String webwar = "webcontainer";
 
-    private static HttpClient httpClient;
+    private static CloseableHttpClient httpClient;
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -65,18 +66,18 @@ public class JAXRSWebContainerTest {
     @AfterClass
     public static void tearDown() throws Exception {
         if (server != null) {
-            server.stopServer("CWWKW0100W", "SRVE8094W", "SRVE8115W");
+            server.stopServer("CWWKW0100W", "SRVE8094W", "SRVE8115W", "CWWKW1305W");
         }
     }
 
     @Before
     public void getHttpClient() {
-        httpClient = new DefaultHttpClient();
+        httpClient = HttpClientBuilder.create().build();
     }
 
     @After
-    public void resetHttpClient() {
-        httpClient.getConnectionManager().shutdown();
+    public void resetHttpClient() throws IOException {
+        httpClient.close();
     }
 
     private static int getPort() {

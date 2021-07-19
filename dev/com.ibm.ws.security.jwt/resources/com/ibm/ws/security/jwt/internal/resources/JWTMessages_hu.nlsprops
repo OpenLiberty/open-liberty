@@ -318,6 +318,7 @@ SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.useraction=Ellen\u0151rizze a k\u00e9r\u00e
 MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED=CWWKS6053W: A MicroProfile Config tulajdons\u00e1gok \u00e1ltal meghat\u00e1rozott [{0}] al\u00e1\u00edr\u00e1si algoritmus nem t\u00e1mogatott. A(z) [{1}] al\u00e1\u00edr\u00e1si algoritmus ker\u00fcl alkalmaz\u00e1sra. A t\u00e1mogatott algoritmusok: {2}
 MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED.explanation=Csak bizonyos RSA t\u00edpusok, az elliptikus g\u00f6rbe \u00e9s a HMAC al\u00e1\u00edr\u00e1si algoritmusok t\u00e1mogatottak. A MicroProfile Config tulajdons\u00e1gok \u00e1ltal meghat\u00e1rozott al\u00e1\u00edr\u00e1si algoritmus nem tartozik a t\u00e1mogatott al\u00e1\u00edr\u00e1si algoritmusok k\u00f6z\u00e9.
 MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED.useraction=Adjon meg t\u00e1mogatott al\u00e1\u00edr\u00e1si algoritmust a MicroProfile Config tulajdons\u00e1gokban. A t\u00e1mogatott algoritmusok megtal\u00e1lhat\u00f3k az \u00fczenetben.
+
 # Do not translate "JSON Web Token", "AMR", "JWT"
 # 0=AMR claim of the token, 1=JWT configuration ID, 2=AMR specified in server configuration
 JWT_AMR_CLAIM_NOT_VALID=CWWKS6054E: A megadott JSON web token (JWT) [{0}] AMR t\u00edpus nem szerepel megb\u00edzhat\u00f3 AMR le\u00edr\u00e1sk\u00e9nt a(z) [{1}] JWT konfigur\u00e1ci\u00f3ban. A megb\u00edzhat\u00f3 AMR le\u00edr\u00e1sok: [{2}].
@@ -381,3 +382,7 @@ JWE_REQUIRED_BUT_TOKEN_NOT_JWE.useraction=Ha JWE tokenek helyett JWS tokeneket k
 NESTED_JWS_REQUIRED_BUT_NOT_FOUND=CWWKS6065E: A k\u00e9r\u00e9sben szerepl\u0151 JSON Web Encryption (JWE) token hasznos tartalma nem JSON Web Signature (JWS) token.
 NESTED_JWS_REQUIRED_BUT_NOT_FOUND.explanation=A JWE token hasznos tartalma csak \u00e9rv\u00e9nyes JSON Web Token (JWT) lehet JWS form\u00e1tumban.
 NESTED_JWS_REQUIRED_BUT_NOT_FOUND.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a JWE token hasznos tartalma \u00e9rv\u00e9nyes JWT JWS form\u00e1tumban.
+
+JWE_DECRYPTION_KEY_MISSING=CWWKS6066E: A JSON Web Encryption (JWE) token nem fejthet\u0151 vissza, mert nem tal\u00e1lhat\u00f3 a visszafejt\u00e9si kulcs. A(z) {0} kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3s attrib\u00fatum be\u00e1ll\u00edt\u00e1sa: [{1}].
+JWE_DECRYPTION_KEY_MISSING.explanation=A JWE token visszafejt\u00e9s\u00e9hez visszafejt\u00e9si kulcs sz\u00fcks\u00e9ges. A visszafejt\u0151 kulcsnak rendelkez\u00e9sre kell \u00e1llnia a JWT fogyaszt\u00f3i kulcst\u00e1rol\u00f3ban, vagy meg kell adni a MicroProfile konfigur\u00e1ci\u00f3s tulajdons\u00e1gokban.
+JWE_DECRYPTION_KEY_MISSING.useraction=Ellen\u0151rizze, hogy az \u00fczenetben megadott kulcs\u00e1ln\u00e9v l\u00e9tezik-e a JWT fogyaszt\u00f3i kulcst\u00e1rol\u00f3ban. Ha az \u00e1ln\u00e9v nincs be\u00e1ll\u00edtva, akkor a visszafejt\u0151 kulcsot a MicroProfile konfigur\u00e1ci\u00f3s tulajdons\u00e1gokban kell megadni.

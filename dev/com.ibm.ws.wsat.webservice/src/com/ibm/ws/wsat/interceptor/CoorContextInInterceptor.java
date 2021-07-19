@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,11 +24,11 @@ import org.apache.cxf.binding.soap.SoapMessage;
 import org.apache.cxf.binding.soap.interceptor.SoapInterceptor;
 import org.apache.cxf.endpoint.Endpoint;
 import org.apache.cxf.headers.Header;
-import org.apache.cxf.helpers.XMLUtils;
 import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.message.Exchange;
 import org.apache.cxf.phase.AbstractPhaseInterceptor;
 import org.apache.cxf.phase.Phase;
+import org.apache.cxf.staxutils.StaxUtils;
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
 import org.apache.cxf.ws.policy.PolicyVerificationInInterceptor;
 import org.w3c.dom.Element;
@@ -74,7 +74,7 @@ public class CoorContextInInterceptor extends AbstractPhaseInterceptor<SoapMessa
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.cxf.interceptor.Interceptor#handleMessage(org.apache.cxf.message.Message)
      */
     @Override
@@ -96,11 +96,17 @@ public class CoorContextInInterceptor extends AbstractPhaseInterceptor<SoapMessa
                         Element element = (Element) soapHeader.getObject();
                         // XMLUtils.printDOM(element);
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            String elementString;
+                            try {
+                                elementString = StaxUtils.toString(element);
+                            } catch (Exception e) {
+                                elementString = "Exception " + e + " while getting string version of " + element;
+                            }
                             Tr.debug(
                                      tc,
                                      "handleMessage",
                                      "Extract the CoordinationContext from soap header",
-                                     XMLUtils.toString(element));
+                                     elementString);
                         }
 
                         cc = (CoordinationContext) unmarshaller.unmarshal(element);
@@ -187,7 +193,7 @@ public class CoorContextInInterceptor extends AbstractPhaseInterceptor<SoapMessa
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.cxf.binding.soap.interceptor.SoapInterceptor#getRoles()
      */
     @Override
@@ -198,7 +204,7 @@ public class CoorContextInInterceptor extends AbstractPhaseInterceptor<SoapMessa
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.cxf.binding.soap.interceptor.SoapInterceptor#getUnderstoodHeaders()
      */
     @Override

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -112,27 +112,28 @@ public class JSF22CDIGeneralTests extends FATServletClient {
         // Construct the URL for the test
         URL url = JSFUtils.createHttpUrl(server, contextRoot, "index.xhtml");
 
-        WebClient webClient = new WebClient();
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+        try (WebClient webClient = new WebClient()) {
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        String responseText = page.asText();
+            String responseText = page.asText();
 
-        // Log the page for debugging if necessary in the future.
-        Log.info(c, name.getMethodName(), responseText);
-        Log.info(c, name.getMethodName(), page.asXml());
+            // Log the page for debugging if necessary in the future.
+            Log.info(c, name.getMethodName(), responseText);
+            Log.info(c, name.getMethodName(), page.asXml());
 
-        assertTrue("Page does not contain expected response.", responseText.contains("CDI Integration Test"));
+            assertTrue("Page does not contain expected response.", responseText.contains("CDI Integration Test"));
 
-        assertTrue("The Custom ApplicationFactory was not invoked.",
-                   !server.findStringsInTrace("CustomApplicationFactory was invoked!").isEmpty());
+            assertTrue("The Custom ApplicationFactory was not invoked.",
+                       !server.findStringsInTrace("CustomApplicationFactory was invoked!").isEmpty());
 
-        assertTrue("The Custom Application was not invoked.",
-                   !server.findStringsInTrace("CustomApplication was invoked!").isEmpty());
+            assertTrue("The Custom Application was not invoked.",
+                       !server.findStringsInTrace("CustomApplication was invoked!").isEmpty());
 
-        assertTrue("The Custom ViewHandler was not invoked.",
-                   !server.findStringsInTrace("CustomViewHandler was invoked!").isEmpty());
+            assertTrue("The Custom ViewHandler was not invoked.",
+                       !server.findStringsInTrace("CustomViewHandler was invoked!").isEmpty());
 
-        assertTrue("The IBMViewHandler was not used.",
-                   !server.findStringsInTrace("setViewHandler Setting IBM View Handler").isEmpty());
+            assertTrue("The IBMViewHandler was not used.",
+                       !server.findStringsInTrace("setViewHandler Setting IBM View Handler").isEmpty());
+        }
     }
 }

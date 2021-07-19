@@ -16,6 +16,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+//issue 17687
+import java.util.HashMap;
 
 import javax.net.ssl.TrustManager;
 
@@ -112,6 +114,9 @@ public class SAMLCommonTest extends CommonTest {
     protected static List<CommonLocalLDAPServerSuite> ldapRefList = new ArrayList<CommonLocalLDAPServerSuite>();
     protected static boolean cipherMayExceed128 = false;
     public static boolean usingExternalLDAPServer = false;
+    //issue 17687
+    public static String callbackHandlerWss4j = SAMLConstants.EXAMPLE_CALLBACK_WSS4J;
+    public static String featureWss4j = SAMLConstants.EXAMPLE_CALLBACK_FEATURE_WSS4J;
 
     @Rule
     public final TestName testName = new TestName();
@@ -152,7 +157,6 @@ public class SAMLCommonTest extends CommonTest {
         testSettings = null;
         samlConfigSettings = new SAMLConfigSettings();
         helpers = null;
-        timeoutCounter = 0;
         //allowableTimeoutCount = 0;
         flowType = null;
         copyMetaData = true;
@@ -200,10 +204,28 @@ public class SAMLCommonTest extends CommonTest {
 
     }
 
+    //issue 17687
     public static SAMLTestServer commonSetUp(String requestedServer,
                                              String serverXML, String testType, String serverType,
                                              List<String> addtlApps, List<String> addtlMessages, Boolean checkForSecuityStart, String callbackHandler,
                                              String feature) throws Exception {
+
+        Map<String, String> cbHandlers = null;
+        if (callbackHandler != null && feature != null) {
+            cbHandlers = new HashMap<String, String>();
+            cbHandlers.put(callbackHandler, feature);
+            cbHandlers.put(callbackHandlerWss4j, featureWss4j);
+        }
+
+        return commonSetUp(requestedServer, serverXML, testType, serverType, addtlApps, addtlMessages, checkForSecuityStart, cbHandlers);
+
+    } //End issue 17687
+
+    //issue 17687
+    public static SAMLTestServer commonSetUp(String requestedServer,
+                                             String serverXML, String testType, String serverType,
+                                             List<String> addtlApps, List<String> addtlMessages, Boolean checkForSecuityStart, Map<String, String> cbHandlers) throws Exception {
+        //End issue 17687
 
         String thisMethod = "commonSetUp";
         msgUtils.printMethodName(thisMethod);
@@ -222,7 +244,6 @@ public class SAMLCommonTest extends CommonTest {
             }
         }
 
-        timeoutCounter = 0;
         //        allowableTimeoutCount = 0;
         //		Integer defaultPort = null;
         String httpString = null;
@@ -239,12 +260,12 @@ public class SAMLCommonTest extends CommonTest {
             // The usable server xml should NOT be the one ending in ".base"
             String usableServerXml = (outputServerXml != null) ? outputServerXml : serverXML;
 
-            if (callbackHandler == null) {
+            //issue 17687
+            if (cbHandlers == null) {
                 aTestServer = new SAMLTestServer(requestedServer, usableServerXml, serverType);
             } else {
-                Log.info(thisClass, "commonSetup", "callbackHandler: " + callbackHandler + " feature: " + feature);
-                aTestServer = new SAMLTestServer(requestedServer, usableServerXml, serverType, callbackHandler, feature);
-            }
+                aTestServer = new SAMLTestServer(requestedServer, usableServerXml, serverType, cbHandlers);
+            } //End issue 17687
 
             aTestServer.removeServerConfigFiles();
             aTestServer.setServerNameAndHostIp();
@@ -289,7 +310,7 @@ public class SAMLCommonTest extends CommonTest {
                 CommonLocalLDAPServerSuite two = new CommonLocalLDAPServerSuite();
                 one.ldapSetUp();
                 ldapRefList.add(one);
-                two.ldapSetUp();
+                two.ldapSetUp(1);
                 ldapRefList.add(two);
                 // we're having an issue with the in memory LDAP server on z/OS, added a method to see if it can accept requests,
                 // if NOT, we'll use a "external" LDAP server (Shibboleth allows for failover to additional LDAP servers, but,
@@ -438,10 +459,10 @@ public class SAMLCommonTest extends CommonTest {
      *
      * @param server
      * @param configFileName
-     *            Config file name within the configs/ directory of the server.
+     *                             Config file name within the configs/ directory of the server.
      * @param configOutputName
-     *            File name to which the result will be written, relative to the server's configs/ directory.
-     *            If null or empty, this will be set to the value of {@code configFileName}.
+     *                             File name to which the result will be written, relative to the server's configs/ directory.
+     *                             If null or empty, this will be set to the value of {@code configFileName}.
      * @return The path to the resulting configuration file.
      */
     public static String updateConfigFileWithDefaultSettings(SAMLTestServer server, String configFileName, String configOutputName) {
@@ -458,11 +479,11 @@ public class SAMLCommonTest extends CommonTest {
      *
      * @param server
      * @param configFileName
-     *            Config file name within the configs/ directory of the server.
+     *                             Config file name within the configs/ directory of the server.
      * @param configSettings
      * @param configOutputName
-     *            File name to which the result will be written, relative to the server's configs/ directory.
-     *            If null or empty, this will be set to the value of {@code configFileName}.
+     *                             File name to which the result will be written, relative to the server's configs/ directory.
+     *                             If null or empty, this will be set to the value of {@code configFileName}.
      * @return The path to the resulting configuration file.
      */
     public static String updateConfigFile(SAMLTestServer server, String configFileName, BaseConfigSettings configSettings, String configOutputName) {
@@ -476,12 +497,12 @@ public class SAMLCommonTest extends CommonTest {
      *
      * @param server
      * @param configFileName
-     *            Config file name within the configs/ directory of the server.
+     *                             Config file name within the configs/ directory of the server.
      * @param replaceVals
-     *            Maps variable names to the values to be used to replace them within the file.
+     *                             Maps variable names to the values to be used to replace them within the file.
      * @param configOutputName
-     *            File name to which the result will be written, relative to the server's configs/ directory.
-     *            If null or empty, this will be set to the value of {@code configFileName}.
+     *                             File name to which the result will be written, relative to the server's configs/ directory.
+     *                             If null or empty, this will be set to the value of {@code configFileName}.
      * @return The path to the resulting configuration file.
      */
     public static String updateConfigFile(SAMLTestServer server, String configFileName, Map<String, String> replaceVals, String configOutputName) {
@@ -928,6 +949,7 @@ public class SAMLCommonTest extends CommonTest {
         try {
             for (SAMLTestServer server : serverRefList) {
                 addToAllowableTimeoutCount(server.getRetryTimeoutCount());
+                addToAllowableTimeoutCount(server.getSslWaitTimeoutCount());
             }
             timeoutChecker();
         } catch (Exception e) {
@@ -1186,7 +1208,7 @@ public class SAMLCommonTest extends CommonTest {
      * Add the newly added server to the list of server references
      *
      * @param server
-     *            - server reference to add
+     *                   - server reference to add
      * @throws Exception
      */
     private static void addToServerRefList(SAMLTestServer server) throws Exception {
@@ -1213,7 +1235,7 @@ public class SAMLCommonTest extends CommonTest {
      * JakartaEE9 transform a list of applications.
      *
      * @param myServer The server to transform the applications on.
-     * @param apps The names of the applications to transform. Should include the path from the server root directory.
+     * @param apps     The names of the applications to transform. Should include the path from the server root directory.
      */
     private static void transformApps(LibertyServer myServer, String... apps) {
         if (JakartaEE9Action.isActive()) {
@@ -1224,6 +1246,7 @@ public class SAMLCommonTest extends CommonTest {
         }
     }
 
+    @Override
     public WebClient getAndSaveWebClient() throws Exception {
 
         WebClient webClient = SAMLCommonTestHelpers.getWebClient();
@@ -1231,6 +1254,7 @@ public class SAMLCommonTest extends CommonTest {
         return webClient;
     }
 
+    @Override
     public WebClient getAndSaveWebClient(boolean override) throws Exception {
 
         WebClient webClient = SAMLCommonTestHelpers.getWebClient(override);

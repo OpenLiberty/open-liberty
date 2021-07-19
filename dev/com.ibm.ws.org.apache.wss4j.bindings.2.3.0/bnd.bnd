@@ -10,4 +10,7 @@
 #*******************************************************************************
 -include= jar:${fileuri;${repo;org.apache.wss4j:wss4j-bindings;2.3.0}}!/META-INF/MANIFEST.MF,bnd.overrides
 
+-includeresource: \
+ @${repo;org.apache.wss4j:wss4j-bindings;2.3.0}!/!META-INF/MANIFEST.MF|META-INF/maven/*
+
 -buildpath: org.apache.wss4j:wss4j-bindings;version=2.3.0

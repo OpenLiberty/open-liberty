@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2020 IBM Corporation and others.
+ * Copyright (c) 1997, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -170,14 +170,14 @@ public class RecoveryLogManagerImpl implements RecoveryLogManager {
      * object provided by the client service.
      * </p>
      *
-     * @param failureScope  The required FailureScope
+     * @param failureScope The required FailureScope
      * @param logProperties Contains the identity and physical properties of the
-     *                          recovery log.
+     *            recovery log.
      *
      * @return The RecoveryLog instance.
      *
      * @exception InvalidLogPropertiesException The RLS does not recognize or cannot
-     *                                              support the supplied LogProperties
+     *                support the supplied LogProperties
      */
     @Override
     public synchronized RecoveryLog getRecoveryLog(FailureScope failureScope, LogProperties logProperties) throws InvalidLogPropertiesException {
@@ -335,7 +335,10 @@ public class RecoveryLogManagerImpl implements RecoveryLogManager {
                         throw new InvalidLogPropertiesException();
                     }
 
-                    recoveryLog = factory.createRecoveryLog(customLogProperties, _recoveryAgent, Configuration.getRecoveryLogComponent(), failureScope);
+                    recoveryLog = factory.createRecoveryLog(customLogProperties,
+                                                            _recoveryAgent,
+                                                            Configuration.getRecoveryLogComponent(),
+                                                            failureScope);
                     if (recoveryLog == null) {
                         if (tc.isEventEnabled())
                             Tr.event(tc, "Custom recovery log factory returned NULL recovery log", customLogId);

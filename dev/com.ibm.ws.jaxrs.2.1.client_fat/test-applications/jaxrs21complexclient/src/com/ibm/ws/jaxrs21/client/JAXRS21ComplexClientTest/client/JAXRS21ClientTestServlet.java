@@ -113,7 +113,11 @@ public class JAXRS21ClientTestServlet extends HttpServlet {
 
                 WebTarget t1 = c.target("http://" + serverIP + ":" + serverPort + "/" + moduleName + "/JAXRS21ComplexClientTest/JAXRS21ComplexResource").register(JAXRS21ClientRequestFilter1.class);
                 t1.path("echo1").path("test1").request().get(String.class);
-                String result1 = c.getConfiguration().getProperties().toString();
+                Map<String, Object> props = c.getConfiguration().getProperties();
+                if (!(props instanceof HashMap)) {
+                    props = new HashMap<>(props);
+                }
+                String result1 = props.toString();
                 System.out.println("callable1: result1: " + result1);
 
                 return result1;
@@ -136,7 +140,11 @@ public class JAXRS21ClientTestServlet extends HttpServlet {
 
                 WebTarget t2 = c.target("http://" + serverIP + ":" + serverPort + "/" + moduleName + "/JAXRS21ComplexClientTest/JAXRS21ComplexResource").register(JAXRS21ClientRequestFilter2.class);
                 t2.path("echo2").path("test2").request().get(String.class);
-                String result2 = c.getConfiguration().getProperties().toString();
+                Map<String, Object> props = c.getConfiguration().getProperties();
+                if (!(props instanceof HashMap)) {
+                    props = new HashMap<>(props);
+                }
+                String result2 = props.toString();
                 System.out.println("callable2: result2: " + result2);
 
                 return result2;

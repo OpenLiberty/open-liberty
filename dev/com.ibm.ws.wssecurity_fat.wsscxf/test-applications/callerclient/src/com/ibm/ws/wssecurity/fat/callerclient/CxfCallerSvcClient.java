@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,10 @@ import javax.xml.ws.Dispatch;
 import javax.xml.ws.Service;
 import javax.xml.ws.Service.Mode;
 import javax.xml.ws.soap.SOAPBinding;
+
+//2/2021 Aruna's change can't be saved - '..never used'
+//import javax.xml.ws.soap.SOAPFaultException;
+//import javax.xml.soap.SOAPFault;
 
 import test.libertyfat.caller.contract.FatBAC01Service;
 import test.libertyfat.caller.contract.FatBAC02Service;
@@ -71,6 +75,9 @@ public class CxfCallerSvcClient extends HttpServlet {
 
     String untID = "";
     String untPassword = "";
+    //2/2021
+    String errMsgVersion = "";
+    String errMsgVersionInX509 = "";
 
     private StringReader reqMsg = null;
     static boolean unlimitCryptoKeyLength = false;
@@ -113,7 +120,8 @@ public class CxfCallerSvcClient extends HttpServlet {
                            " untPassword:" + untPassword +
                            " serviceName:" + serviceName +
                            " servicePort:" + servicePort +
-                           " servername:" + serverName);
+                           " servername:" + serverName +
+                           "errorMsgVersion:" + errMsgVersion); //2/2021
 
         // This piece of code is a work-around for a bug defect 89493
 /*
@@ -121,10 +129,10 @@ public class CxfCallerSvcClient extends HttpServlet {
  * // Let set up some SSL attribute. This is a bug-to-be-fixed, customers do not need to do so.
  * String strServerDir = System.getProperty("server.config.dir").replace('\\', '/');
  * String strJksLocation = strServerDir + "/sslServerTrust.jks";
- * 
+ *
  * System.setProperty("javax.net.ssl.trustStore" , strJksLocation);
  * System.setProperty("javax.net.ssl.trustStorePassword", "LibertyServer");
- * 
+ *
  * System.out.println("set javax.net.ssl.trustStore to " + strJksLocation);
  * System.out.println("set javax.net.ssl.trustStorePassword to " + "LibertyServer");
  * }
@@ -144,7 +152,15 @@ public class CxfCallerSvcClient extends HttpServlet {
             } else if (thisMethod.equals("testCxfCallerHttpsPolicy")) {
                 service = new FatBAC02Service(wsdlURL, serviceName);
                 strExpect = "Liberty Fat Caller bac02(" + untID + ")";
-                strSubErrMsg = "The security token could not be authenticated or authorized (Unexpected number of certificates: 0)";
+
+                //2/2021
+                if (errMsgVersion.equals("EE7")) {
+                    strSubErrMsg = "The security token could not be authenticated or authorized (Unexpected number of certificates: 0)";
+                }
+                if (errMsgVersion.equals("EE8")) {
+                    strSubErrMsg = "Unexpected number of certificates: 0";
+                } //End 2/2021
+
             } else if (thisMethod.equals("testCxfCallerNoPolicy")) {
                 service = new FatBAC03Service(wsdlURL, serviceName);
                 strExpect = "Liberty Fat Caller bac03(" + untID + ")";
@@ -152,13 +168,26 @@ public class CxfCallerSvcClient extends HttpServlet {
                 service = new FatBAC04Service(wsdlURL, serviceName);
                 strExpect = "Liberty Fat Caller bac04(" + untID + ")";
                 //strSubErrMsg = "There is no Username token in the message to process caller.";
-                strSubErrMsg = "The security token could not be authenticated or authorized (UsernameToken is missing)";
+
+                //2/2021
+                if (errMsgVersion.equals("EE7")) {
+                    strSubErrMsg = "The security token could not be authenticated or authorized (UsernameToken is missing)";
+                }
+                if (errMsgVersion.equals("EE8")) {
+                    strSubErrMsg = "UsernameToken is missing";
+                } //End 2/2021
 
                 // msg is There is no username token in the message to process the caller
                 //    in nlsprops
                 if (!thisMethod.equals(methodFull)) { // Test this test in x509 Caller
                     //strSubErrMsg = "There is no Asymmetric signature token exists in the message";
-                    strSubErrMsg = "The security token could not be authenticated or authorized (Unexpected number of certificates: 0)";
+                    //2/2021
+                    if (errMsgVersionInX509.equals("EE7")) {
+                        strSubErrMsg = "The security token could not be authenticated or authorized (Unexpected number of certificates: 0)";
+                    }
+                    if (errMsgVersionInX509.equals("EE8")) {
+                        strSubErrMsg = "Unexpected number of certificates: 0";
+                    } //End 2/2021
                 }
             } else if (thisMethod.equals("testCxfCallerX509TokenPolicy")) {
                 service = new FatBAC05Service(wsdlURL, serviceName);
@@ -192,6 +221,7 @@ public class CxfCallerSvcClient extends HttpServlet {
                                   HttpServletResponse response,
                                   javax.xml.ws.Service service,
                                   String strExpect) throws ServletException, IOException {
+
         testCxfService(request, response, service, strExpect, (String) null);
         return;
     }
@@ -204,10 +234,12 @@ public class CxfCallerSvcClient extends HttpServlet {
                                   HttpServletResponse response,
                                   javax.xml.ws.Service service,
                                   String strExpect, String strSubErrMsg) throws ServletException, IOException {
+
         if (testMode.startsWith("positive")) {
             testCxfPositiveMigService(request, response, service, strExpect, strSubErrMsg);
         } else {
             testCxfNegativeMigService(request, response, service, strSubErrMsg);
+
         }
 
         return;
@@ -309,7 +341,14 @@ public class CxfCallerSvcClient extends HttpServlet {
 
         } catch (Exception ex) {
             ex.printStackTrace();
+            //2/2021
+            if (ex instanceof javax.xml.ws.soap.SOAPFaultException) {
+                javax.xml.soap.SOAPFault sf = ((javax.xml.ws.soap.SOAPFaultException) ex).getFault();
+
+                System.out.println(thisMethod + "@AV999 : fault code:" + sf.getFaultCode());
+            } //End 2/2021
             printExpectingException(response, ex, strSubErrMsg);
+
         }
 
         return;
@@ -317,7 +356,7 @@ public class CxfCallerSvcClient extends HttpServlet {
 
     // get the parameters from test-client request
     void getTestParameters(HttpServletRequest request) {
-        // Extract valuse sent by the client
+        // Extract value sent by the client
         try {
             serverName = request.getParameter("serverName");
             System.out.println("gkuo: servername:" + serverName);
@@ -332,6 +371,9 @@ public class CxfCallerSvcClient extends HttpServlet {
             methodFull = request.getParameter("methodFull");
             serviceName = new QName(SERVICE_NS, rawServiceName);
             servicePort = new QName(SERVICE_NS, request.getParameter("servicePort"));
+            //2/2021
+            errMsgVersion = request.getParameter("errorMsgVersion");
+            errMsgVersionInX509 = request.getParameter("errorMsgVersionInX509");
 
             untID = request.getParameter("untID");
             if (untID == null)
@@ -357,7 +399,7 @@ public class CxfCallerSvcClient extends HttpServlet {
             String strSoapEnv = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\">" +
                                 "<soapenv:Header></soapenv:Header>" +
                                 "<soapenv:Body xmlns=\"http://caller.liberty.test/types\"><invoke>" +
-                                callerPolicy + ":" + testMode + ":" + methodFull + // add the callerPolicy, testMode and methodFull for easier debugging 
+                                callerPolicy + ":" + testMode + ":" + methodFull + // add the callerPolicy, testMode and methodFull for easier debugging
                                 "</invoke></soapenv:Body></soapenv:Envelope>";
             reqMsg = new StringReader(strSoapEnv);
             Source src = new StreamSource(reqMsg);
@@ -400,7 +442,9 @@ public class CxfCallerSvcClient extends HttpServlet {
     // print results
     // when we expect service-provider throws an Exception.
     // But double check the exception to have some specified sub-message
+
     void printExpectingException(HttpServletResponse response, Exception ex, String strSubErrMsg) throws IOException {
+
         PrintWriter rsp = getPrintWriter(response);
         String strMsg = ex.getMessage();
         if (strMsg == null)

@@ -54,8 +54,8 @@ task copyCommonFiles {
 addRequiredLibraries.dependsOn copyFAT
 addRequiredLibraries.dependsOn copyCommonFiles
 addRequiredLibraries.dependsOn copyJdbcDrivers
-addRequiredLibraries.dependsOn copyDatabaseRotationDrivers
 addRequiredLibraries.dependsOn addJakartaTransformer
+addRequiredLibraries.dependsOn copyTestContainers
 
 jar {
   dependsOn copyCommonFiles

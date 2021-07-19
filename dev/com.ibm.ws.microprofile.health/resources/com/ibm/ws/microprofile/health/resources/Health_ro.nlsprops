@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -45,6 +45,11 @@ healthcheck.bean.call.exception.CWMH0050E.explanation=Metoda de apelare specific
 healthcheck.bean.call.exception.CWMH0050E.useraction=Examina\u0163i-v\u0103 metoda de apelare din bean-ul HealthCheck pentru a identifica excep\u0163ia care a survenit.
 
 # The HealthCheck bean call method had a DOWN outcome
-healthcheck.application.down.CWMH0051W=CWMH0051W: Implementarea HealthCheckResponse {0} \u00een aplica\u0163ia {1} din modulul {2} a raportat o ie\u015fire DOWN {3} cu date {4}.
-healthcheck.application.down.CWMH0051W.explanation=Ie\u015firea DOWN ar putea fi cauza unui serviciu de monitorizare pentru a ac\u0163iona pe acest server.
-healthcheck.application.down.CWMH0051W.useraction=Nu este necesar\u0103 nici-o ac\u0163iune din partea utilizatorului.  Acest avertisment este o \u00eenregistrare ie\u015firii DOWN.
+healthcheck.application.down.CWMH0052W=CWMH0052W: {0} care implementeaz\u0103 HealthCheckResponse \u00een aplica\u0163ia {1} din modulul {2}, a raportat o stare {3} cu datele {4}.
+healthcheck.application.down.CWMH0052W.explanation=Starea DOWN poate duce la o ac\u0163iune a serviciului de monitorizare pe acest server.
+healthcheck.application.down.CWMH0052W.useraction=Nu este necesar\u0103 nici-o ac\u0163iune din partea utilizatorului.  Acest avertisment este o \u00eenregistrare a st\u0103rii DOWN.
+
+# The Readiness HealthCheck had a DOWN outcome, when applications are not started yet
+readiness.healthcheck.applications.not.started.down.CWMH0053W=CWMH0053W: Starea de s\u0103n\u0103tate legat\u0103 de preg\u0103tire a raportat o stare general\u0103 DOWN deoarece urm\u0103toarele aplica\u0163ii nu sunt \u00eenc\u0103 pornite: {0}
+readiness.healthcheck.applications.not.started.down.CWMH0053W.explanation=Starea de s\u0103n\u0103tate legat\u0103 de preg\u0103tire a raportat o stare general\u0103 DOWN deoarece aplica\u0163iile specificate nu sunt \u00eenc\u0103 pornite \u015fi nu sunt preg\u0103tite s\u0103 proceseze cererile.
+readiness.healthcheck.applications.not.started.down.CWMH0053W.useraction=Acest avertisment este o \u00eenregistrare a st\u0103rii DOWN \u015fi nu este necesar\u0103 nicio ac\u0163iune a utilizatorului. A\u015ftepta\u0163i p\u00e2n\u0103 sunt pornite toate aplica\u0163iile. Dup\u0103 ce sunt pornite toate aplica\u0163iile, sunt procesate verific\u0103rile de s\u0103n\u0103tate definite de utilizator.

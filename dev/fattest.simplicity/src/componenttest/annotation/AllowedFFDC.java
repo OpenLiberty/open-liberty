@@ -12,11 +12,13 @@ package componenttest.annotation;
 
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 
 /**
  * An FFDC produced for the specified exception will be ignored; it will not cause the test to fail.
  */
+@Repeatable(AllowedFFDCs.class)
 @Retention(RUNTIME)
 public @interface AllowedFFDC {
 

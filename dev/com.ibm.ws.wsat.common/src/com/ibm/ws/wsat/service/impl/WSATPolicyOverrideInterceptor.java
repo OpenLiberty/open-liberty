@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,13 +16,13 @@ import java.util.Collection;
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.endpoint.Endpoint;
-import org.apache.cxf.helpers.DOMUtils;
 import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.message.Exchange;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.phase.AbstractPhaseInterceptor;
 import org.apache.cxf.phase.Phase;
 import org.apache.cxf.service.model.BindingOperationInfo;
+import org.apache.cxf.staxutils.StaxUtils;
 import org.apache.cxf.ws.policy.AssertionInfoMap;
 import org.apache.cxf.ws.policy.EffectivePolicyImpl;
 import org.apache.cxf.ws.policy.EndpointPolicyImpl;
@@ -37,6 +37,7 @@ import org.w3c.dom.Element;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.jaxws.wsat.Constants;
+import com.ibm.ws.wsat.cxf.utils.WSATCXFUtils;
 
 /**
  *
@@ -75,13 +76,11 @@ public class WSATPolicyOverrideInterceptor extends AbstractPhaseInterceptor<Mess
             }
             throw new RuntimeException("InputStream Object is null, not able to generate ws-at policy...");
         } else {
-            policyElement = DOMUtils.readXml(is).getDocumentElement();
+            policyElement = StaxUtils.read(is).getDocumentElement();
             if (TC.isDebugEnabled()) {
                 Tr.debug(TC, "Try getting policy element", policyElement);
             }
-            PolicyBuilder builder = msg.getExchange()
-                            .getBus()
-                            .getExtension(PolicyBuilder.class);
+            PolicyBuilder builder = msg.getExchange().getBus().getExtension(PolicyBuilder.class);
 
             Policy wsatPolicy = builder.getPolicy(policyElement);
             if (TC.isDebugEnabled())
@@ -111,7 +110,7 @@ public class WSATPolicyOverrideInterceptor extends AbstractPhaseInterceptor<Mess
 
         EndpointPolicyImpl endpi = new EndpointPolicyImpl(p);
         EffectivePolicyImpl effectivePolicy = new EffectivePolicyImpl();
-        effectivePolicy.initialise(endpi, (PolicyEngineImpl) pe, false);
+        WSATCXFUtils.initializeEffectivePolicy(effectivePolicy, endpi, (PolicyEngineImpl) pe, false, msg);
 
         Collection<Assertion> assertions = new ArrayList<Assertion>();
         assertions.addAll(effectivePolicy.getChosenAlternative());
@@ -124,7 +123,7 @@ public class WSATPolicyOverrideInterceptor extends AbstractPhaseInterceptor<Mess
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.cxf.interceptor.Interceptor#handleMessage(org.apache.cxf.message.Message)
      */
     @Override

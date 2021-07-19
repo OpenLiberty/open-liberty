@@ -35,8 +35,9 @@ public class HealthCenterTest {
     public static void beforeClass() throws Exception {
         server = LibertyServerFactory.getLibertyServer("com.ibm.ws.logging.healthcenter");
         ShrinkHelper.defaultDropinApp(server, "logger-servlet", "com.ibm.ws.logging.fat.logger.servlet");
-
-        Assume.assumeTrue(JavaInfo.forServer(server).vendor().equals(JavaInfo.Vendor.IBM));
+        // IBM JDK supports Health Center except IBM Java 11
+        Assume.assumeTrue((JavaInfo.forServer(server).vendor().equals(JavaInfo.Vendor.IBM)) &&
+                          (JavaInfo.forServer(server).majorVersion() != 11));
 
         if (!server.isStarted())
             server.startServer();

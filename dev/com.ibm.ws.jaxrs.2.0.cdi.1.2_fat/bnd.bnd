@@ -15,6 +15,7 @@ src: \
     fat/src,\
     test-applications/basic/src,\
     test-applications/beanvalidation/src,\
+    test-applications/cdiinjectintoapp/src,\
     test-applications/complex/src,\
     test-applications/contextandclient/src,\
     test-applications/contextandCDI/src,\

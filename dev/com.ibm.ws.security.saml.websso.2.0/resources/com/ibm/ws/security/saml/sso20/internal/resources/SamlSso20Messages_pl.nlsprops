@@ -180,14 +180,14 @@ SAML20_ELEMENT_ERR=CWWKS5050E: Asercja SAML nie zawiera elementu [{0}].  Element
 SAML20_ELEMENT_ERR.explanation=W asercji SAML brakuje elementu wymaganego przez \u015brodowisko wykonawcze.
 SAML20_ELEMENT_ERR.useraction=Wymagany element nale\u017cy doda\u0107 do asercji SAML.  Skontaktuj si\u0119 z administratorem dostawcy to\u017csamo\u015bci, aby upewni\u0107 si\u0119, \u017ce dostawca to\u017csamo\u015bci jest skonfigurowany poprawnie.
 
-SAML20_SUBJECT_NOTBEFORE_ERR=CWWKS5051E: Asercja SAML zawiera element SubjectConfirmationData z atrybutem NotBefore.  Ten warunek jest niedozwolony.
+SAML20_SUBJECT_NOTBEFORE_ERR=CWWKS5051E: Asercja SAML zawiera element SubjectConfirmationData z atrybutem NotBefore.  Taka sytuacja nie jest dozwolona.
 SAML20_SUBJECT_NOTBEFORE_ERR.explanation=Element SubjectConfirmationData w asercji SAML nie mo\u017ce zawiera\u0107 atrybutu NotBefore.
 SAML20_SUBJECT_NOTBEFORE_ERR.useraction=Skontaktuj si\u0119 z administratorem dostawcy to\u017csamo\u015bci, aby upewni\u0107 si\u0119, \u017ce dostawca to\u017csamo\u015bci jest skonfigurowany poprawnie.
 
 # Examples:
 # {0} = NotOnOrAfter
 # {1} = SubjectConfirmationData
-SAML20_ELEMENT_ATTR_ERR=CWWKS5052E: Atrybut [{0}] w elemencie [{1}] asercji SAML jest nieobecny lub pusty.  Ten warunek jest niedozwolony.
+SAML20_ELEMENT_ATTR_ERR=CWWKS5052E: Atrybut [{0}] w elemencie [{1}] asercji SAML jest nieobecny lub pusty.  Taka sytuacja nie jest dozwolona.
 SAML20_ELEMENT_ATTR_ERR.explanation=Asercja SAML zawiera element, kt\u00f3ry nie ma atrybutu wymaganego przez \u015brodowisko wykonawcze.
 SAML20_ELEMENT_ATTR_ERR.useraction=Wymagany atrybut nale\u017cy doda\u0107 do asercji SAML.  Skontaktuj si\u0119 z administratorem dostawcy to\u017csamo\u015bci, aby upewni\u0107 si\u0119, \u017ce dostawca to\u017csamo\u015bci jest skonfigurowany poprawnie.
 
@@ -282,7 +282,7 @@ SAML20_NO_IDP_URL_OR_METADATA=CWWKS5080E: Dostawca us\u0142ug [{0}] nie mo\u017c
 SAML20_NO_IDP_URL_OR_METADATA.explanation=Dostawca us\u0142ug nie ma informacji dotycz\u0105cych metadanych dostawcy to\u017csamo\u015bci. Mo\u017ce by\u0107 to spowodowane jedn\u0105 z nast\u0119puj\u0105cych przyczyn: atrybut idpMetadata nie jest ustawiony poprawnie lub plik podany w atrybucie nie istnieje.
 SAML20_NO_IDP_URL_OR_METADATA.useraction=Upewnij si\u0119, \u017ce istnieje plik przywo\u0142ywany przez atrybut idpMetadata (o ile ustawiono ten atrybut).
 
-SAML20_AUTHN_REQUEST_EXPIRED=CWWKS5081E: Dostawca us\u0142ug nie mo\u017ce przetworzy\u0107 odpowiedzi SAML, poniewa\u017c \u017c\u0105danie SAML utraci\u0142o wa\u017cno\u015b\u0107. Dostawca us\u0142ug nie otrzyma\u0142 odpowiedzi SAML od dostawcy to\u017csamo\u015bci w oczekiwanym przedziale czasu. \u017b\u0105danie SAML zosta\u0142o utworzone o godzinie [{0}]. Poniewa\u017c atrybut konfiguracji authnRequestTime jest ustawiony na warto\u015b\u0107 [{1}] min., \u017c\u0105danie utraci\u0142o wa\u017cno\u015b\u0107 o godzinie [{2}], a bie\u017c\u0105ca godzina to [{3}].
+SAML20_AUTHN_REQUEST_EXPIRED=CWWKS5081E: Dostawca us\u0142ug nie mo\u017ce przetworzy\u0107 odpowiedzi SAML, poniewa\u017c \u017c\u0105danie SAML utraci\u0142o wa\u017cno\u015b\u0107. Dostawca us\u0142ug nie otrzyma\u0142 odpowiedzi SAML od dostawcy to\u017csamo\u015bci w oczekiwanym przedziale czasu. \u017b\u0105danie SAML zosta\u0142o utworzone o godzinie [{0}]. Poniewa\u017c atrybut konfiguracji authnRequestTime jest ustawiony na warto\u015b\u0107 [{1}] min, \u017c\u0105danie utraci\u0142o wa\u017cno\u015b\u0107 o godzinie [{2}], a bie\u017c\u0105ca godzina to [{3}].
 SAML20_AUTHN_REQUEST_EXPIRED.explanation=By\u0107 mo\u017ce dostawca to\u017csamo\u015bci nie przetworzy\u0142 \u017c\u0105dania SAML w odpowiednim czasie. Sprawd\u017a dzienniki dostawcy to\u017csamo\u015bci, aby upewni\u0107 si\u0119, \u017ce dostawca to\u017csamo\u015bci dzia\u0142a poprawnie.
 SAML20_AUTHN_REQUEST_EXPIRED.useraction=Wy\u015blij \u017c\u0105danie ponownie, a tak\u017ce zwi\u0119ksz warto\u015b\u0107 atrybutu authnRequestTime, aby upewni\u0107 si\u0119, \u017ce dostawca to\u017csamo\u015bci ma wystarczaj\u0105co du\u017co czasu na przetworzenie \u017c\u0105dania SAML.
 

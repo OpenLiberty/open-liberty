@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2001, 2019 IBM Corporation and others.
+# Copyright (c) 2001, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -215,7 +215,7 @@ FEATURE_NOT_IMPLEMENTED=DSRA1300E: Feature is not implemented: {0}
 FEATURE_NOT_IMPLEMENTED.explanation=The feature that was requested is not available.
 FEATURE_NOT_IMPLEMENTED.useraction=Avoid using the feature, or switch to a driver version that supports the feature if possible.
 
-# 1301 deleted
+# 1301 reserved for other NLS file
 # 3000-3020 deleted
 # 3100-3127 deleted
 # 3200-3202 deleted
@@ -291,7 +291,8 @@ DSRA4015.no.ucp.connection.pool.datasource.useraction=Update the data source to 
 # 
 # Using 7000-7599 for DataStore Helper exception messages and warnings
 # 
-# 7000-7009 deleted
+# 7000 reserved for other NLS file
+# 7001-7009 deleted
 
 # No Comment Provided
 DB2_FILE_OUTSTREAM_ERROR=DSRA7010E: trace file specified {0} does not exist, an exception will be thrown from the database if problem is not corrected.
@@ -325,7 +326,9 @@ META_DATA_EXCEPTION=DSRA7018I: Database metadata access caused a non-stale conne
 META_DATA_EXCEPTION.explanation=An exception occurred when the Application Server was trying to get or access the metadata object for the database.
 META_DATA_EXCEPTION.useraction=Verify that the metadata is enabled on the backend database.
 
-# 7019-7042 deleted
+# 7019 deleted
+# 7020 reserved for other NLS file
+# 7021-7042 deleted
 # 7600-7606 deleted
 
 # ----------------------------------------------------------------------------
@@ -552,7 +555,7 @@ OBJECT_CLOSED.explanation=Attempted to perform an operation on an object that is
 OBJECT_CLOSED.useraction=Retrieve a new instance of the object on which to perform the operation.
 
 # 9115 deleted
-# 9120-9121 - deleted
+# 9120-9121 - reserved for other NLS file
 
 # 9122E      NO_WRAPPED_OBJECT
 # 
@@ -562,7 +565,7 @@ NO_WRAPPED_OBJECT=DSRA9122E: {0} does not wrap any objects of type {1}.
 NO_WRAPPED_OBJECT.explanation=The wrapper that is specified does not contain the wrapped object type that is specified.
 NO_WRAPPED_OBJECT.useraction=Verify that the wrapper and the parameters for the wrapped object are specified correctly.
 
-# 9123 deleted
+# 9123 reserved for other NLS file
 
 # 9124       NOT_AN_INTERFACE
 #
@@ -570,6 +573,8 @@ NO_WRAPPED_OBJECT.useraction=Verify that the wrapper and the parameters for the 
 NOT_AN_INTERFACE=DSRA9124E: Cannot unwrap object to {0} because {0} is not an interface class.
 NOT_AN_INTERFACE.explanation=The unwrap method only permits unwrapping to an interface class.
 NOT_AN_INTERFACE.useraction=Unwrap to a class that is an interface instead of a concrete class.
+
+# 9125 reserved for other NLS file
 
 # 9130E      OPERATION_NOT_PERMITTED
 # 

@@ -40,6 +40,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -72,6 +73,11 @@ public class DelayAppStartupHealthCheckTest {
                                     .withID("mpHealth-3.0")
                                     .addFeature("mpHealth-3.0")
                                     .removeFeature("mpHealth-2.0")
+                                    .forServers(SERVER_NAME))
+                    .andWith(new FeatureReplacementAction()
+                                    .withID("mpHealth-3.1")
+                                    .addFeature("mpHealth-3.1")
+                                    .removeFeature("mpHealth-3.0")
                                     .forServers(SERVER_NAME));
 
     @Server(SERVER_NAME)
@@ -288,6 +294,7 @@ public class DelayAppStartupHealthCheckTest {
 
     @Test
     @Mode(TestMode.FULL)
+    @SkipForRepeat("mpHealth-3.1") // Due to the addition of the new Startup endpoint, the /health endpoint will be DOWN as well, so this test will be skipped for mpHealth-3.1
     public void testDelayedAppStartUpHealthCheck() throws Exception {
         log("testDelayedAppStartUpHealthCheck", "Testing the /health endpoint, before application has started.");
         HttpURLConnection conHealth = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, HEALTH_ENDPOINT);

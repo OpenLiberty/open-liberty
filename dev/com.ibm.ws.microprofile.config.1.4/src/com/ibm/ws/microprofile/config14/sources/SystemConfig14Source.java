@@ -49,9 +49,13 @@ public class SystemConfig14Source extends InternalConfigSource implements Extend
     public Map<String, String> getProperties() {
         // Return a copy, removing any entries where either the key or value is not a string
         // This is a bit slow
-        return priv.getProperties().entrySet().stream()
-                        .filter(e -> e.getKey() instanceof String && e.getValue() instanceof String)
-                        .collect(Collectors.toMap(e -> (String) e.getKey(), e -> (String) e.getValue()));
+        // Properties.stringPropertyNames() returns an enumeration over the keys that will not change while we're using it
+        Properties props = priv.getProperties();
+        return props.stringPropertyNames().stream()
+                        .collect(Collectors.toMap(e -> e, e -> props.getProperty(e))) //create a new Map<String, String>
+                        .entrySet().stream()
+                        .filter(e -> e.getValue() != null) //remove the null values
+                        .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue()));
     }
 
     @Override

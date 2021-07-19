@@ -19,12 +19,12 @@
 	<keyStore
 		id="myKeyStore"
 		password="Liberty"
-		type="jks"
+		type="pkcs12"
 		location="${server.config.dir}/oauthTestKeyStore.p12" />
 	<keyStore
 		id="myTrustStore"
 		password="Liberty"
-		type="jks"
+		type="pkcs12"
 		location="${server.config.dir}/oauthTestTrustStore.p12" />
 
 </server>        

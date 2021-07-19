@@ -1722,7 +1722,6 @@ public class WSKeyStore extends Properties {
 
         if (!san.isEmpty()) {
             for (String sanEntry : san) {
-                System.out.println("sanEntry is " + sanEntry);
                 if (buildSanString != null)
                     buildSanString = buildSanString + "," + sanEntry;
                 else

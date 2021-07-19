@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -45,6 +45,11 @@ healthcheck.bean.call.exception.CWMH0050E.explanation=O m\u00e9todo de chamada e
 healthcheck.bean.call.exception.CWMH0050E.useraction=Revise seu m\u00e9todo de chamada dentro do bean HealthCheck para identificar a exce\u00e7\u00e3o ocorrida.
 
 # The HealthCheck bean call method had a DOWN outcome
-healthcheck.application.down.CWMH0051W=CWMH0051W: O {0} que implementa HealthCheckResponse no aplicativo {1} no m\u00f3dulo {2} relatou um resultado INATIVO {3} com dados {4}.
-healthcheck.application.down.CWMH0051W.explanation=O resultado INATIVO pode fazer com que um servi\u00e7o de monitoramento execute a\u00e7\u00e3o neste servidor.
-healthcheck.application.down.CWMH0051W.useraction=Nenhuma a\u00e7\u00e3o do usu\u00e1rio \u00e9 necess\u00e1ria.  Esse aviso \u00e9 um registro do resultado INATIVO.
+healthcheck.application.down.CWMH0052W=CWMH0052W: O {0} que est\u00e1 implementando HealthCheckResponse no aplicativo {1} no m\u00f3dulo {2} relatou um status {3} com dados {4}.
+healthcheck.application.down.CWMH0052W.explanation=O status DOWN pode fazer com que um servi\u00e7o de monitoramento tome uma a\u00e7\u00e3o nesse servidor.
+healthcheck.application.down.CWMH0052W.useraction=Nenhuma a\u00e7\u00e3o do usu\u00e1rio \u00e9 necess\u00e1ria.  Esse aviso \u00e9 um registro do status DOWN.
+
+# The Readiness HealthCheck had a DOWN outcome, when applications are not started yet
+readiness.healthcheck.applications.not.started.down.CWMH0053W=CWMH0053W: A verifica\u00e7\u00e3o de funcionamento de prontid\u00e3o relatou um status geral de DOWN porque os aplicativos a seguir ainda n\u00e3o foram iniciados: {0}
+readiness.healthcheck.applications.not.started.down.CWMH0053W.explanation=A verifica\u00e7\u00e3o de funcionamento de prontid\u00e3o relatou um status geral de DOWN porque os aplicativos especificados n\u00e3o foram iniciados ainda e n\u00e3o est\u00e3o prontos para processar solicita\u00e7\u00f5es.
+readiness.healthcheck.applications.not.started.down.CWMH0053W.useraction=Este aviso \u00e9 um registro do status DOWN e nenhuma a\u00e7\u00e3o do usu\u00e1rio \u00e9 necess\u00e1ria. Espere at\u00e9 que todos os aplicativos sejam iniciados. Ap\u00f3s todos os aplicativos serem iniciados, as verifica\u00e7\u00f5es de funcionamento definidas pelo usu\u00e1rio ser\u00e3o processadas.

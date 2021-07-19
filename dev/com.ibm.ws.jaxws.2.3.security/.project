@@ -20,4 +20,11 @@
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>bndtools.core.bndnature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>com.ibm.ws.jaxws.security-src</name>
+			<type>2</type>
+			<locationURI>PARENT-1-PROJECT_LOC/com.ibm.ws.jaxws.security/src</locationURI>
+		</link>
+	</linkedResources>
 </projectDescription>

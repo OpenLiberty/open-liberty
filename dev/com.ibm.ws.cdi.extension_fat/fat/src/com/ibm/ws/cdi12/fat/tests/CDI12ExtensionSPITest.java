@@ -70,6 +70,7 @@ public class CDI12ExtensionSPITest {
                                       , "Injection of a normal scoped class that was registered via getBeanClasses"
                                       , "An Interceptor registered via getBeanClasses in the SPI intercepted a normal scoped class registered via getBeanClasses"
                                       , "Could not find unregistered bean"
+                                      , "Could not find unregistered BDA bean"
                                       , "An Interceptor registered via getBeanClasses in the SPI intercepted a normal scoped class in the application WAR"
                                       , "A Bean with an annotation registered via getBeanDefiningAnnotationClasses was successfully injected into a different bean with an annotation registered via getBeanDefiningAnnotationClasses"  });
     }

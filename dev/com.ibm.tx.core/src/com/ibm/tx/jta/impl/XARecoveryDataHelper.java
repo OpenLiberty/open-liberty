@@ -1,6 +1,7 @@
 package com.ibm.tx.jta.impl;
+
 /*******************************************************************************
- * Copyright (c) 2011, 2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,8 +18,8 @@ import org.osgi.framework.ServiceReference;
 import com.ibm.tx.TranConstants;
 import com.ibm.tx.jta.XAResourceFactory;
 import com.ibm.tx.jta.util.TxTMHelper;
-import com.ibm.tx.util.logging.Tr;
-import com.ibm.tx.util.logging.TraceComponent;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 
 public class XARecoveryDataHelper {
     private static final TraceComponent tc = Tr.register(XARecoveryDataHelper.class, TranConstants.TRACE_GROUP, TranConstants.NLS_FILE);
