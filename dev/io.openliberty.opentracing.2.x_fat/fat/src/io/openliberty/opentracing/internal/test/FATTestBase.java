@@ -63,17 +63,12 @@ public class FATTestBase {
     }
     
     /**
-     * Stop a server with jaxrsHelloWorld.war and assert the
-     * expected messages since there is no tracer factory configured.
+     * Stop the server with jaxrsHelloWorld.war
      * 
      * @param server The started server.
      * @throws Exception Any issues stopping the server.
      */
     protected static void stopHelloWorldServer(LibertyServer server) throws Exception {
-        try {
-            Assert.assertNotNull("Expecting CWMOT0010W message", server.waitForStringInLogUsingMark("CWMOT0010W", 0));
-        } finally {
-            server.stopServer("CWMOT0010W");
-        }
+        server.stopServer("CWMOT0010W");
     }
 }

@@ -24,6 +24,8 @@ import io.opentracing.Tracer;
 
 public class OpentracingUtils {
     private static final TraceComponent tc = Tr.register(OpentracingUtils.class);
+    public static final String TRACE_ID = "traceId";
+    public static final String SPAN_ID = "spanId";
 
     /**
      * <p>Answer a text string for a tracer for use in trace output.</p>
