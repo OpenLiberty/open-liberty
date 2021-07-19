@@ -55,10 +55,9 @@
 
     <wsp:PolicyAttachment>
 		<wsp:AppliesTo>
-		     <wsp:URI>http://wsstemplates.wssecfvt.test#wsdl11.service(WSSTemplatesService2)</wsp:URI>
-             <!--<wsa:EndpointReference>
+             <wsa:EndpointReference>
                  <wsa:Address>https://localhost:8020/wsstemplates/WSSTemplatesService2</wsa:Address>
-             </wsa:EndpointReference>-->
+             </wsa:EndpointReference>
 		</wsp:AppliesTo>
 		  <!-- UsernameToken with plain text password -->
 		<wsp:Policy wsu:Id="UserNameTokenPasswordTextOverSSL">
@@ -164,10 +163,9 @@
 
     <wsp:PolicyAttachment>
         <wsp:AppliesTo>
-             <wsp:URI>http://wsstemplates.wssecfvt.test#wsdl11.service(WSSTemplatesService4)</wsp:URI>
-             <!-- <wsa:EndpointReference>
+            <wsa:EndpointReference>
                  <wsa:Address>http://localhost:8010/wsstemplates/WSSTemplatesService4</wsa:Address>
-             </wsa:EndpointReference> -->
+             </wsa:EndpointReference>
         </wsp:AppliesTo>
           <!-- UsernameToken Mutual Authentication -->
         <wsp:Policy wsu:Id="AsymmetricX509MutualAuthenticationWithUnt">

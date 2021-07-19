@@ -25,7 +25,7 @@
     	databaseName="${shared.config.dir}/data/derbydb" -->
         <properties.derby.embedded createDatabase="create" databaseName="memory:database"/>
     </dataSource>
-
+    
     <javaPermission codebase="${shared.resource.dir}derby/derby.jar" className="java.security.AllPermission"/>
     <javaPermission codebase="${server.config.dir}/dropins/testParticipant.war" className="java.security.AllPermission"/>
 </server>

@@ -20,7 +20,6 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -130,7 +129,6 @@ public class DBOptionalTestDisabled extends DBTestBase {
 	}
 
 	@Test
-    @SkipForRepeat({"jaxws-2.3", SkipForRepeat.EE9_FEATURES})
 	public void testDBDisabled10() {
 		String testURL = "/" + appNameOptional + "/ClientServlet";
 		String wsatURL = CLient_URL + testURL + "?" + server1Name + "p="
@@ -148,7 +146,6 @@ public class DBOptionalTestDisabled extends DBTestBase {
 	}
 
 	@Test
-    @SkipForRepeat({"jaxws-2.3", SkipForRepeat.EE9_FEATURES})
 	public void testDBDisabled12() {
 		String testURL = "/" + appNameOptional + "/ClientServlet";
 		String wsatURL = CLient_URL + testURL + "?" + server1Name + "p="
