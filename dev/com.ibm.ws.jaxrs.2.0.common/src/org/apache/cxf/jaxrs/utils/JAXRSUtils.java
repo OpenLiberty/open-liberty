@@ -1413,11 +1413,7 @@ public final class JAXRSUtils {
             }
         }
 
-        if (decode) {  // CXF change:  https://github.com/apache/cxf/pull/809
-            queries.add(HttpUtils.urlDecode(name), value);
-        } else {
-            queries.add(name, value);
-        }    
+        queries.add(HttpUtils.urlDecode(name), value);
     }
 
     @FFDCIgnore({ IOException.class, WebApplicationException.class, Exception.class })
