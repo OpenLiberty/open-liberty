@@ -23,6 +23,7 @@ import com.ibm.ws.ejbcontainer.remote.singleton.mix.shared.MixHelper;
 import com.ibm.ws.ejbcontainer.remote.singleton.mix.shared.StatefulEJBRefLocal;
 import com.ibm.ws.ejbcontainer.remote.singleton.mix.shared.StatefulEJBRefRemote;
 
+import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
 
 /**
@@ -44,6 +45,8 @@ public class PassivationServlet extends FATServlet {
      * Passivate and activate an SFSB with a reference to a singleton bean's business interface
      */
     @Test
+    // TODO: Remove Skip when #17757 is fixed
+    @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
     public void testMixPassivateSingleton() throws Exception {
         // Create an instance of the bean by looking up the business interface and ensure the bean contains the default state.
         StatefulEJBRefLocal localBean = lookupLocal();

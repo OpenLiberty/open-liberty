@@ -1,0 +1,101 @@
+/*******************************************************************************
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+dependencies {
+  requiredLibs 'org.apache.httpcomponents:httpclient:4.1.2',
+               'org.apache.httpcomponents:httpcore:4.1.2',
+               project(':io.openliberty.org.apache.commons.codec'),
+               project(':io.openliberty.org.apache.commons.logging'),
+               project(':com.ibm.ws.webcontainer.security_test.servlets')
+}
+
+addRequiredLibraries.dependsOn addJakartaTransformer
+
+/* 
+ * This is where all application ZIP and WARs will be built.
+ */
+def appBuildDir = "${buildDir}/test-application"
+
+
+/******************************************************************
+ ** Copy feature bundles and applications to specific servers.
+ **
+ ******************************************************************/
+ autoFVT.dependsOn ':com.ibm.ws.webcontainer.security_test.servlets:war'
+autoFVT.doLast {
+  
+  /******************************************************************
+   * Copy authentication.filter_fat files.
+   ******************************************************************/
+  copy {
+    from new File(project(':com.ibm.ws.security.authentication.filter_fat').projectDir, 'publish/files')
+    into new File(autoFvtDir, 'lib/LibertyFATTestFiles')
+    include '**'
+  }
+
+
+  /******************************************************************
+   * Setup server: AuthFilterElementTest
+   ******************************************************************/
+  def server = 'AuthFilterElementTest'
+  copy { 
+    from new File(project(':com.ibm.ws.webcontainer.security_test.servlets').buildDir, 'test-application/basicauth.zip')
+    into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    rename 'basicauth.zip', 'basicauth.war'
+  }
+  copy { 
+    from new File(project(':com.ibm.ws.security.authentication.filter_fat').projectDir, 'publish/files/server_modules')
+    into new File(autoFvtDir, 'publish/servers/' + server + '/imports')
+    include 'application_definition/**.xml'
+    include 'configs/**.xml'
+    include 'ltpa/serversettings/**.xml'
+  }
+  copy { 
+    from new File(project(':com.ibm.ws.security.authentication.filter_fat').projectDir, 'publish/files/resources/security')
+    into new File(autoFvtDir, 'publish/servers/' + server + '/resources/security')
+    include '**'
+  }
+
+
+  /******************************************************************
+   * Setup server: com.ibm.ws.security.authentication.filter.fat.setup
+   ******************************************************************/
+  server = 'com.ibm.ws.security.authentication.filter.fat.setup'
+  copy { 
+    from new File(project(':com.ibm.ws.security.authentication.filter_fat').projectDir, 'publish/files/resources/security')
+    into new File(autoFvtDir, 'publish/servers/' + server + '/resources/security')
+    include '**'
+  }
+
+
+  /******************************************************************
+   * Setup server: DynamicAuthFilterTest
+   ******************************************************************/
+  server = 'DynamicAuthFilterTest'
+  copy { 
+    from new File(project(':com.ibm.ws.webcontainer.security_test.servlets').buildDir, 'test-application/basicauth.zip')
+    into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    rename 'basicauth.zip', 'basicauth.war'
+  }
+  copy {
+    from new File(project(':com.ibm.ws.security.authentication.filter_fat').projectDir, 'publish/files/server_modules')
+    into new File(autoFvtDir, 'publish/servers/' + server + '/imports')
+    include 'application_definition/**.xml'
+    include 'configs/**.xml'
+    include 'ltpa/serversettings/**.xml'
+  }
+  copy { 
+    from new File(project(':com.ibm.ws.security.authentication.filter_fat').projectDir, 'publish/files/resources/security')
+    into new File(autoFvtDir, 'publish/servers/' + server + '/resources/security')
+    include '**'
+  }
+    
+}

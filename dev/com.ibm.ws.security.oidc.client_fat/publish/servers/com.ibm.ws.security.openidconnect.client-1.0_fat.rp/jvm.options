@@ -16,4 +16,4 @@
 -Dhttps.proxyHost=1.2.3.4
 
 # beta fence for additional sigalg & encryption testing
-#-Dcom.ibm.ws.beta.edition=true
+-Dcom.ibm.ws.beta.edition=true

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.ejbcontainer.remote.client.web.RemoteTxAttrServlet;
 
 import componenttest.annotation.Server;
@@ -51,7 +52,8 @@ public class Server2ServerTests extends AbstractTest {
     @ClassRule
     public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.remote.fat.RemoteServerClient",
                                                                                                                     "com.ibm.ws.ejbcontainer.remote.fat.RemoteServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.remote.fat.RemoteServerClient",
-                                                                                                                                                                                                                                   "com.ibm.ws.ejbcontainer.remote.fat.RemoteServer"));
+                                                                                                                                                                                                                                   "com.ibm.ws.ejbcontainer.remote.fat.RemoteServer")).andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.remote.fat.RemoteServerClient",
+                                                                                                                                                                                                                                                                                                                                                                "com.ibm.ws.ejbcontainer.remote.fat.RemoteServer"));
 
     @BeforeClass
     public static void beforeClass() throws Exception {
@@ -63,8 +65,8 @@ public class Server2ServerTests extends AbstractTest {
         EnterpriseArchive InitTxRecoveryLogApp = ShrinkWrap.create(EnterpriseArchive.class, "InitTxRecoveryLogApp.ear");
         InitTxRecoveryLogApp.addAsModule(InitTxRecoveryLogEJBJar);
 
-        ShrinkHelper.exportDropinAppToServer(clientServer, InitTxRecoveryLogApp);
-        ShrinkHelper.exportDropinAppToServer(remoteServer, InitTxRecoveryLogApp);
+        ShrinkHelper.exportDropinAppToServer(clientServer, InitTxRecoveryLogApp, DeployOptions.SERVER_ONLY);
+        ShrinkHelper.exportDropinAppToServer(remoteServer, InitTxRecoveryLogApp, DeployOptions.SERVER_ONLY);
 
         //#################### RemoteClientApp
         JavaArchive RemoteServerSharedJar = ShrinkHelper.buildJavaArchive("RemoteServerShared.jar", "com.ibm.ws.ejbcontainer.remote.server.shared.", "test.");
@@ -75,7 +77,7 @@ public class Server2ServerTests extends AbstractTest {
         RemoteClientApp.addAsModule(RemoteClientWeb);
         RemoteClientApp = (EnterpriseArchive) ShrinkHelper.addDirectory(RemoteClientApp, "test-applications/RemoteClientApp.ear/resources");
 
-        ShrinkHelper.exportDropinAppToServer(clientServer, RemoteClientApp);
+        ShrinkHelper.exportDropinAppToServer(clientServer, RemoteClientApp, DeployOptions.SERVER_ONLY);
 
         //#################### RemoteServerApp
         JavaArchive RemoteServerEJBJar = ShrinkHelper.buildJavaArchive("RemoteServerEJB.jar", "com.ibm.ws.ejbcontainer.remote.server.ejb.");
@@ -84,7 +86,7 @@ public class Server2ServerTests extends AbstractTest {
         RemoteServerApp.addAsLibraries(RemoteServerSharedJar).addAsModule(RemoteServerEJBJar);
         RemoteServerApp = (EnterpriseArchive) ShrinkHelper.addDirectory(RemoteServerApp, "test-applications/RemoteServerApp.ear/resources");
 
-        ShrinkHelper.exportDropinAppToServer(remoteServer, RemoteServerApp);
+        ShrinkHelper.exportDropinAppToServer(remoteServer, RemoteServerApp, DeployOptions.SERVER_ONLY);
 
         // Finally, start servers
         remoteServer.startServer();

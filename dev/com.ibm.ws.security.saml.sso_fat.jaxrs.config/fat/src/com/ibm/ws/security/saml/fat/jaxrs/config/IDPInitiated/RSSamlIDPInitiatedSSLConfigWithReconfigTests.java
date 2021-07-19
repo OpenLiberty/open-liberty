@@ -21,10 +21,13 @@ import com.ibm.ws.security.saml.fat.jaxrs.config.utils.RSSamlProviderSettings;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLMessageConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLTestSettings;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.EmptyAction;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServerWrapper;
 
 /**
@@ -93,7 +96,9 @@ public class RSSamlIDPInitiatedSSLConfigWithReconfigTests extends RSSamlIDPIniti
      *
      * @throws Exception
      */
-    @ExpectedFFDC({ "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.ws.security.SecurityPolicyException" })
+    @ExpectedFFDC({ "com.ibm.ws.security.saml.error.SamlException" })
+    @ExpectedFFDC(value = { "org.opensaml.ws.security.SecurityPolicyException" }, repeatAction = {EmptyAction.ID})
+    @ExpectedFFDC(value = { "org.opensaml.messaging.handler.MessageHandlerException" }, repeatAction = {JakartaEE9Action.ID})
     @Test
     public void RSSamlIDPInitiatedConfigTests_signatureMethodAlgorithm_SHA256() throws Exception {
 

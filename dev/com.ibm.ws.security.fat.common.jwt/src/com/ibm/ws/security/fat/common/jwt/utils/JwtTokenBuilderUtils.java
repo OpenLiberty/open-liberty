@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,10 +11,12 @@
 package com.ibm.ws.security.fat.common.jwt.utils;
 
 import java.security.Key;
+import java.util.List;
 
 import org.jose4j.jws.AlgorithmIdentifiers;
 import org.jose4j.jwt.NumericDate;
 
+import com.gargoylesoftware.htmlunit.util.NameValuePair;
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.jwt.JWTTokenBuilder;
@@ -113,6 +115,12 @@ public class JwtTokenBuilderUtils {
         return jwtToken;
     }
 
+    public String buildAlternatePayloadJWEToken(Key key, List<NameValuePair> extraPayload) throws Exception {
+        JWTTokenBuilder builder = createAlternateJWEPayload(populateAlternateJWEToken(key), extraPayload);
+        String jwtToken = builder.buildAlternateJWE();
+        return jwtToken;
+    }
+
     /**
      * Builds a JWE Token with an alternate (Json) Payload and a JWE header with an alternate type and/or contentType.
      * We can't use the Liberty builder as it does NOT provide a way to update the typ and cty JWE header attributes
@@ -167,13 +175,17 @@ public class JwtTokenBuilderUtils {
 
     /**
      * Create and add a simple Json payload to the passed in builder
-     * 
+     *
      * @param builder - the builder to upate
      * @return - returns the builder with a simple Json payload (method just creates some random values - currently, no one is looking at them
      * @throws Exception
      */
     public JWTTokenBuilder createAlternateJWEPayload(JWTTokenBuilder builder) throws Exception {
-        // Json Content (buildJWE method will override payload, buildAlternateJWE* methods will use what's set below)
+        return createAlternateJWEPayload(builder, null);
+    }
+
+    public JWTTokenBuilder createAlternateJWEPayload(JWTTokenBuilder builder, List<NameValuePair> extraPayload) throws Exception {
+// Json Content (buildJWE method will override payload, buildAlternateJWE* methods will use what's set below)
         JSONObject payload = new JSONObject();
         payload.put(PayloadConstants.ISSUER, "client01");
         NumericDate now = NumericDate.now();
@@ -187,7 +199,11 @@ public class JwtTokenBuilderUtils {
         payload.put("key2", "my.dog.has.fleas");
         payload.put("key3", "testing.to.bump.up.part.count");
         payload.put("key4", "hereWe.goAgain");
-
+        if (extraPayload != null && !extraPayload.isEmpty()) {
+            for (NameValuePair claim : extraPayload) {
+                payload.put(claim.getName(), claim.getValue());
+            }
+        }
         String payloadString = payload.toString();
         builder.setPayload(payloadString);
         return builder;

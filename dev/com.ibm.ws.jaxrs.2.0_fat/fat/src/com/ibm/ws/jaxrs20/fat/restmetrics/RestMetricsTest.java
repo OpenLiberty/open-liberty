@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,12 +24,12 @@ import java.net.URL;
 import java.util.ArrayList;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -40,12 +40,11 @@ import com.ibm.ws.jaxrs.fat.restmetrics.MetricsUnmappedUncheckedException;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
-@SkipForRepeat("EE9_FEATURES") // currently broken due to multiple issues
 public class RestMetricsTest {
 
      // Array to hold the names that identify the methods in metrics 2.3
@@ -105,8 +104,12 @@ public class RestMetricsTest {
                       server.waitForStringInLog("CWWKF0011I"));
 
         // wait for LTPA key to be available to avoid CWWKS4000E
-        assertNotNull("CWWKS4105I.* not received on server",
+        //TODO: make sure to remove this check when MP 5.0 is available - where MP Metrics supports EE9
+        //      metrics loads LTPA, so when we use MP Metrics in MP 5, we'll need to verify that LTPA is started
+        if (!JakartaEE9Action.isActive()) {
+            assertNotNull("CWWKS4105I.* not received on server",
                       server.waitForStringInLog("CWWKS4105I.*"));
+        }
     }
 
 
@@ -114,16 +117,16 @@ public class RestMetricsTest {
     public static void tearDown() throws Exception {
         if (server != null) {
             server.stopServer("MetricsUnmappedUncheckedException", "MetricsUnmappedCheckedException",
-                              "Fault: Unmapped Checked","SRVE0777E");
+                              "Fault: Unmapped Checked","SRVE0777E", "SRVE0315E");
         }
     }
 
-    public HttpClient getHttpClient() {
-        return new DefaultHttpClient();
+    public CloseableHttpClient getHttpClient() {
+        return HttpClientBuilder.create().build();
     }
 
-    public void resetHttpClient(HttpClient client) {
-        client.getConnectionManager().shutdown();
+    public void resetHttpClient(CloseableHttpClient client) throws IOException {
+        client.close();
     }
 
     private static int getPort() {
@@ -184,7 +187,7 @@ public class RestMetricsTest {
     //    @AllowedFFDC("com.ibm.ws.jaxrs.fat.restmetrics.MetricsUnmappedCheckedException")
 
     @Test
-    @AllowedFFDC("org.apache.cxf.interceptor.Fault")
+    @AllowedFFDC({"org.apache.cxf.interceptor.Fault", "org.jboss.resteasy.spi.UnhandledException"})
     public void testCheckedExceptions() throws IOException {
 
 
@@ -202,7 +205,7 @@ public class RestMetricsTest {
     }
 
     @Test
-    @AllowedFFDC("com.ibm.ws.jaxrs.fat.restmetrics.MetricsUnmappedUncheckedException")
+    @AllowedFFDC({"com.ibm.ws.jaxrs.fat.restmetrics.MetricsUnmappedUncheckedException", "org.jboss.resteasy.spi.UnhandledException"})
     public void testUncheckedExceptions() throws IOException {
 
         runGetUncheckedExceptionMethod(UNCHECKED_METHOD_INDEX, 200, "/restmetrics/rest/restmetrics/unchecked/mappedUnchecked", "Mapped Unchecked");
@@ -487,7 +490,7 @@ public class RestMetricsTest {
         StringEntity entity = new StringEntity("Post");
         entity.setContentType("text/*");
         postMethod.setEntity(entity);
-        HttpClient client = getHttpClient();
+        CloseableHttpClient client = getHttpClient();
 
         try {
             HttpResponse resp = client.execute(postMethod);
@@ -508,7 +511,7 @@ public class RestMetricsTest {
         entity.setContentType("text/*");
         putMethod.setEntity(entity);
 
-        HttpClient client = getHttpClient();
+        CloseableHttpClient client = getHttpClient();
 
         try {
             HttpResponse resp = client.execute(putMethod);
@@ -528,7 +531,7 @@ public class RestMetricsTest {
     private void runDeleteMethod(int index) throws IOException {
         HttpDelete deleteMethod = new HttpDelete(MAPPEDURI + "/delete1");
 
-        HttpClient client = getHttpClient();
+        CloseableHttpClient client = getHttpClient();
 
         try {
             HttpResponse resp = client.execute(deleteMethod);
@@ -543,6 +546,11 @@ public class RestMetricsTest {
     }
 
     private ArrayList<String> getMetricsStrings(String metricString) {
+        //TODO: remove this check when MP 5.0 is available - where MP Metrics supports EE9:
+        if (JakartaEE9Action.isActive()) {
+            return null;
+        }
+
         HttpURLConnection con = null;
         try {
             URL url = new URL("http://" + getHost() + ":" + getPort() + metricString);
@@ -586,6 +594,10 @@ public class RestMetricsTest {
 
 
     private float checkMetrics(ArrayList<String> lines, int index) {
+        //TODO: remove this check when MP 5.0 is available - where MP Metrics supports EE9:
+        if (JakartaEE9Action.isActive()) {
+            return -1.0f;
+        }
 
         float responseTime = -1;
         int value = -1;

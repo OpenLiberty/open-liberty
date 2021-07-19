@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,9 @@
 package com.ibm.ws.install.featureUtility.cli;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,6 +21,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -43,6 +46,7 @@ import com.ibm.ws.product.utility.CommandConsole;
 import com.ibm.ws.product.utility.CommandTaskRegistry;
 import com.ibm.ws.product.utility.ExecutionContext;
 import com.ibm.ws.product.utility.extension.ValidateCommandTask;
+import com.ibm.ws.kernel.boot.cmdline.Utils;
 
 public class InstallServerAction implements ActionHandler {
 
@@ -232,19 +236,58 @@ public class InstallServerAction implements ActionHandler {
         }
 
 
+        private boolean isEnableOption() {
+        	File f = new File(Utils.getInstallDir() + "/etc/featureUtility.properties");
+            if(f.exists()) {
+            	try (InputStream input = new FileInputStream(f)){
+                	Properties prop = new Properties();
+                	prop.load(input);
+                	String enableOptionsForFAT = prop.getProperty("enable.options");
+                	if(enableOptionsForFAT != null && enableOptionsForFAT.toString().equals("true")) {
+                		return true;
+                	}	
+                } catch (IOException e) {
+        			e.printStackTrace();
+        		} 
+            }
+        	return false;
+        }
+        
         private ExitCode assetInstallInit(Collection<String> assetIds) {
                 List<String> features = new ArrayList<>();
                 List<String> userFeatures = new ArrayList<>();
                 // find all user features in server.xml
                 for(String asset : assetIds){
-                	if(asset.contains(":")){
-                		String[] assetSplit = asset.split(":");
-                		featureToExt.put(assetSplit[1], assetSplit[0]);
-                    	featureNames.add(assetSplit[1]);
-                	} else {
-                		featureToExt.put(asset, "");
-                		featureNames.add(asset);
-                	}
+                	if(isEnableOption()) {
+                		if(asset.contains(":")){
+                    		String[] assetSplit = asset.split(":");
+                    		featureToExt.put(assetSplit[1], assetSplit[0]);
+                        	featureNames.add(assetSplit[1]);
+                    	} else {
+                    		featureToExt.put(asset, "");
+                    		featureNames.add(asset);
+                    	}
+                	}else {
+                		if(asset.startsWith("usr:")){
+                            userFeatures.add(asset.substring("usr:".length()));
+    	                } else {
+    	                    features.add(asset);
+    	                }
+                    	
+                    	if(!userFeatures.isEmpty()){
+                            logger.info(InstallLogUtils.Messages.INSTALL_KERNEL_MESSAGES.getMessage("MSG_USER_FEATURE_SERVER_XML", userFeatures.toString()));
+
+                            // remove any user features before installation.
+                            for(String feature : features){
+                                    if(!userFeatures.contains(feature)){
+                                        featureNames.add(feature);
+                                    }
+                            }
+    	                } else {
+    	                        featureNames.addAll(features);
+    	                }
+                	}	
+                	
                 }
                 return ReturnCode.OK;
         }

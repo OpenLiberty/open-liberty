@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ package com.ibm.ws.jaxrs20.fat.params;
 import static com.ibm.ws.jaxrs20.fat.TestUtils.asString;
 import static com.ibm.ws.jaxrs20.fat.TestUtils.getBaseTestUri;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -27,16 +28,18 @@ import javax.xml.ws.http.HTTPException;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.CookieSpecs;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.client.params.CookiePolicy;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicHeader;
+import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -50,10 +53,10 @@ import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
-@SkipForRepeat("EE9_FEATURES") // currently broken due to multiple issues
 public class ParamsTest {
 
     @Server("com.ibm.ws.jaxrs.fat.params")
@@ -61,7 +64,7 @@ public class ParamsTest {
 
     private static final String paramwar = "params";
 
-    private static HttpClient client;
+    private static CloseableHttpClient client;
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -89,12 +92,12 @@ public class ParamsTest {
 
     @Before
     public void getHttpClient() {
-        client = new DefaultHttpClient();
+        client = HttpClientBuilder.create().build();
     }
 
     @After
-    public void resetHttpClient() {
-        client.getConnectionManager().shutdown();
+    public void resetHttpClient() throws IOException {
+        client.close();
     }
 
     private static String COOKIE_URL_PATTERN = "newcookies";
@@ -103,7 +106,7 @@ public class ParamsTest {
         String uri = getBaseTestUri(paramwar, COOKIE_URL_PATTERN, "cookiestests");
         // call put to set the cookies
         HttpPut putHttpMethod = new HttpPut(uri);
-        putHttpMethod.getParams().setParameter("http.protocol.cookie-policy", CookiePolicy.RFC_2965);
+        putHttpMethod.setConfig(RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build());
 
         HttpResponse resp = client.execute(putHttpMethod);
         System.out.println("Response body: ");
@@ -131,7 +134,7 @@ public class ParamsTest {
         // call get to exercise HttpHeaders.getCookies()
         HttpGet getHttpMethod = new HttpGet(uri);
         // This isn't resulting in cookies being set on the request
-        getHttpMethod.getParams().setParameter("http.protocol.cookie-policy", CookiePolicy.RFC_2965);
+        getHttpMethod.setConfig(RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build());
         System.out.println("Request headers for GET:");
         System.out.println(Arrays.asList(getHttpMethod.getAllHeaders()));
 
@@ -199,7 +202,7 @@ public class ParamsTest {
         String uri = getBaseTestUri(paramwar, COOKIE_URL_PATTERN, "cookiestests/getValue2");
         HttpGet getHttpMethod = new HttpGet(uri);
         // This isn't resulting in cookies being set on the request
-        getHttpMethod.getParams().setParameter("http.protocol.cookie-policy", CookiePolicy.RFC_2965);
+        getHttpMethod.setConfig(RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build());
         System.out.println("Request headers:");
         System.out.println(Arrays.asList(getHttpMethod.getAllHeaders()));
 
@@ -225,7 +228,7 @@ public class ParamsTest {
         String uri = getBaseTestUri(paramwar, PARAM_URL_PATTERN, "cookiemonster");
 
         HttpPut httpMethod = new HttpPut(uri);
-        httpMethod.getParams().setParameter("http.protocol.cookie-policy", CookiePolicy.RFC_2109);
+        httpMethod.setConfig(RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build());
 
         try {
             HttpResponse resp = client.execute(httpMethod);
@@ -233,11 +236,11 @@ public class ParamsTest {
             assertEquals(200, resp.getStatusLine().getStatusCode());
             assertEquals("swiped:" + 0, responseBody);
         } finally {
-            client = new DefaultHttpClient();
+            getHttpClient();
         }
 
         httpMethod = new HttpPut(uri);
-        httpMethod.getParams().setParameter("http.protocol.cookie-policy", CookiePolicy.RFC_2109);
+        httpMethod.setConfig(RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build());
         httpMethod.setHeader("Cookie", "jar=1");
 
         HttpResponse resp = client.execute(httpMethod);
@@ -422,22 +425,21 @@ public class ParamsTest {
         HttpResponse resp = client.execute(httpMethod);
         String responseBody = asString(resp);
         assertEquals(200, resp.getStatusLine().getStatusCode());
-        assertEquals("getShopInRegionDecoded:location=! * ' ( ) ; : @ & = + $ , / ? % # [ ];appversion=",
-                     responseBody);
+        assertThat(responseBody, Matchers.startsWith("getShopInRegionDecoded:location=! * ' ( ) ; : @ & = + $ , / ? % # [ ];appversion="));
     }
 
     @Test
     public void testSingleEncodedFormParam() throws Exception {
         String uri = getBaseTestUri(paramwar, PARAM_URL_PATTERN, BASE_URI_ENCODE, "region;appversion=1.1%2B");
         HttpPost httpMethod = new HttpPost(uri);
-        StringEntity entity = new StringEntity("location=The%20Southwest", "UTF-8");
+        StringEntity entity = new StringEntity("location=The+Southwest", "UTF-8");
         entity.setContentType("application/x-www-form-urlencoded");
         httpMethod.setEntity(entity);
 
         HttpResponse resp = client.execute(httpMethod);
         String responseBody = asString(resp);
         assertEquals(200, resp.getStatusLine().getStatusCode());
-        assertEquals("getShopInRegion:location=The%20Southwest;appversion=1.1%2B",
+        assertEquals("getShopInRegion:location=The+Southwest;appversion=1.1%2B",
                      responseBody);
     }
 
@@ -445,14 +447,14 @@ public class ParamsTest {
     public void testSingleEncodedFormParamMethod() throws Exception {
         String uri = getBaseTestUri(paramwar, PARAM_URL_PATTERN, BASE_URI_ENCODE, "method/region;appversion=1.1%2B");
         HttpPost httpMethod = new HttpPost(uri);
-        StringEntity entity = new StringEntity("location=The%20Southwest", "UTF-8");
+        StringEntity entity = new StringEntity("location=The+Southwest", "UTF-8");
         entity.setContentType("application/x-www-form-urlencoded");
         httpMethod.setEntity(entity);
 
         HttpResponse resp = client.execute(httpMethod);
         String responseBody = asString(resp);
         assertEquals(200, resp.getStatusLine().getStatusCode());
-        assertEquals("getShopInRegionMethod:location=The%20Southwest;appversion=1.1%2B",
+        assertEquals("getShopInRegionMethod:location=The+Southwest;appversion=1.1%2B",
                      responseBody);
     }
 
@@ -543,7 +545,7 @@ public class ParamsTest {
             assertEquals("english", resp.getFirstHeader("RespAccept-Language").getValue());
             assertEquals("MyCustomMethodHeader", resp.getFirstHeader("RespCustomMethodHeader").getValue());
         } finally {
-            client = new DefaultHttpClient();
+            getHttpClient();
         }
 
         /*
@@ -584,7 +586,7 @@ public class ParamsTest {
             assertEquals("", responseBody);
             assertEquals("314", resp.getFirstHeader("RespCustomNumHeader").getValue());
         } finally {
-            client = new DefaultHttpClient();
+            getHttpClient();
         }
 
         getMethod = new HttpGet(uri);
@@ -592,7 +594,6 @@ public class ParamsTest {
 
         HttpResponse resp = client.execute(getMethod);
         String responseBody = asString(resp);
-        assertEquals("", responseBody);
         assertEquals(400, resp.getStatusLine().getStatusCode());
     }
 
@@ -612,7 +613,7 @@ public class ParamsTest {
      * </ul>
      */
     @Test
-    @AllowedFFDC("java.lang.NullPointerException")
+    @AllowedFFDC({"java.lang.NullPointerException", "org.jboss.resteasy.spi.UnhandledException"})
     public void testHeaderParamStringConstructorException() throws Exception {
         executeStringConstructorHeaderTest("headerparam/exception/constructor", "CustomStringHeader");
     }
@@ -629,7 +630,7 @@ public class ParamsTest {
      * </ul>
      */
     @Test
-    @AllowedFFDC("java.lang.NullPointerException")
+    @AllowedFFDC({"java.lang.NullPointerException", "org.jboss.resteasy.spi.UnhandledException"})
     public void testHeaderParamValueOfException() throws Exception {
         executeValueOfHeaderTest("headerparam/exception/valueof", "CustomValueOfHeader");
     }
@@ -646,7 +647,7 @@ public class ParamsTest {
      * </ul>
      */
     @Test
-    @AllowedFFDC("java.lang.IllegalArgumentException")
+    @AllowedFFDC({"java.lang.IllegalArgumentException", "org.jboss.resteasy.spi.UnhandledException"})
     public void testHeaderParamListValueOfException() throws Exception {
         executeValueOfHeaderTest("headerparam/exception/listvalueof", "CustomListValueOfHeader");
     }
@@ -663,7 +664,7 @@ public class ParamsTest {
      * </ul>
      */
     @Test
-    @AllowedFFDC("java.lang.IllegalArgumentException")
+    @AllowedFFDC({"java.lang.IllegalArgumentException", "org.jboss.resteasy.spi.UnhandledException"})
     public void testHeaderParamSetValueOfException() throws Exception {
         executeValueOfHeaderTest("headerparam/exception/setvalueof", "CustomSetValueOfHeader");
     }
@@ -680,7 +681,7 @@ public class ParamsTest {
      * </ul>
      */
     @Test
-    @AllowedFFDC("java.lang.IllegalArgumentException")
+    @AllowedFFDC({"java.lang.IllegalArgumentException", "org.jboss.resteasy.spi.UnhandledException"})
     public void testHeaderParamSortedSetValueOfException() throws Exception {
         executeValueOfHeaderTest("headerparam/exception/sortedsetvalueof", "CustomSortedSetValueOfHeader");
     }
@@ -697,7 +698,7 @@ public class ParamsTest {
      * </ul>
      */
     @Test
-    @AllowedFFDC("java.lang.NullPointerException")
+    @AllowedFFDC({"java.lang.NullPointerException", "org.jboss.resteasy.spi.UnhandledException"})
     public void testHeaderFieldStringConstructorException() throws Exception {
         executeStringConstructorHeaderTest("headerparam/exception/fieldstrcstr", "CustomStringConstructorFieldHeader");
     }
@@ -714,7 +715,7 @@ public class ParamsTest {
      * </ul>
      */
     @Test
-    @AllowedFFDC("java.lang.NullPointerException")
+    @AllowedFFDC({"java.lang.NullPointerException", "org.jboss.resteasy.spi.UnhandledException"})
     public void testHeaderFieldValueOfException() throws Exception {
         executeValueOfHeaderTest("headerparam/exception/fieldvalueof", "CustomValueOfFieldHeader");
     }
@@ -731,7 +732,7 @@ public class ParamsTest {
      * </ul>
      */
     @Test
-    @AllowedFFDC("java.lang.NullPointerException")
+    @AllowedFFDC({"java.lang.NullPointerException", "org.jboss.resteasy.spi.UnhandledException"})
     public void testHeaderPropertyStringConstructorException() throws Exception {
         executeStringConstructorHeaderTest("headerparam/exception/propertystrcstr", "CustomStringConstructorPropertyHeader");
     }
@@ -748,7 +749,7 @@ public class ParamsTest {
      * </ul>
      */
     @Test
-    @AllowedFFDC("java.lang.NullPointerException")
+    @AllowedFFDC({"java.lang.NullPointerException", "org.jboss.resteasy.spi.UnhandledException"})
     public void testHeaderPropertyValueOfException() throws Exception {
         executeValueOfHeaderTest("headerparam/exception/propertyvalueof", "CustomValueOfPropertyHeader");
     }
@@ -779,7 +780,7 @@ public class ParamsTest {
             // connection issues because multiple method invocations
             // would be happening on the same client instance.
             // Perhaps a better way is to reset the client somehow.
-            client = new DefaultHttpClient();
+            getHttpClient();
         }
 
         // no header set--this will cause an NPE in the HeaderParamExceptionResource
@@ -790,7 +791,7 @@ public class ParamsTest {
             HttpResponse resp = client.execute(getMethod);
             assertEquals(500, resp.getStatusLine().getStatusCode());
         } finally {
-            client = new DefaultHttpClient();
+            getHttpClient();
         }
 
         // web app ex thrown
@@ -803,7 +804,7 @@ public class ParamsTest {
             assertEquals(499, resp.getStatusLine().getStatusCode());
             assertEquals("HeaderStringConstructorWebAppEx", responseBody);
         } finally {
-            client = new DefaultHttpClient();
+            getHttpClient();
         }
 
         // runtime exception thrown
@@ -813,7 +814,7 @@ public class ParamsTest {
             HttpResponse resp = client.execute(getMethod);
             assertEquals(400, resp.getStatusLine().getStatusCode());
         } finally {
-            client = new DefaultHttpClient();
+            getHttpClient();
         }
 
         // exception thrown
@@ -847,7 +848,7 @@ public class ParamsTest {
             assertEquals("", responseBody);
             assertEquals("MyCustomHeaderValue", resp.getFirstHeader("Resp" + header).getValue());
         } finally {
-            client = new DefaultHttpClient();
+            getHttpClient();
         }
 
         // no header set
@@ -857,7 +858,7 @@ public class ParamsTest {
             HttpResponse resp = client.execute(getMethod);
             assertEquals(500, resp.getStatusLine().getStatusCode());
         } finally {
-            client = new DefaultHttpClient();
+            getHttpClient();
         }
 
         // web app ex thrown
@@ -870,7 +871,7 @@ public class ParamsTest {
             assertEquals(498, resp.getStatusLine().getStatusCode());
             assertEquals("HeaderValueOfWebAppEx", responseBody);
         } finally {
-            client = new DefaultHttpClient();
+            getHttpClient();
         }
 
         // runtime exception thrown
@@ -880,7 +881,7 @@ public class ParamsTest {
             HttpResponse resp = client.execute(getMethod);
             assertEquals(400, resp.getStatusLine().getStatusCode());
         } finally {
-            client = new DefaultHttpClient();
+            getHttpClient();
         }
 
         // exception thrown
@@ -1318,20 +1319,25 @@ public class ParamsTest {
      */
     @Test
     public void testNoQueryParam() throws Exception {
-        assertEquals("deleteConstructorQueryID:null",
-                     sendGoodRequestAndGetResponse("query", HttpDelete.class));
-        assertEquals("getConstructorQueryID:null", sendGoodRequestAndGetResponse("query",
-                                                                                 HttpGet.class));
-        assertEquals("postConstructorQueryID:null", sendGoodRequestAndGetResponse("query",
-                                                                                  HttpPost.class));
-        assertEquals("putConstructorQueryID:null", sendGoodRequestAndGetResponse("query",
-                                                                                 HttpPut.class));
+        assertThat(sendGoodRequestAndGetResponse("query", HttpDelete.class),
+                   Matchers.isOneOf("deleteConstructorQueryID:null",
+                                    "deleteConstructorQueryID:notvalid-exceptInEE9"));
+        assertThat(sendGoodRequestAndGetResponse("query", HttpGet.class),
+                   Matchers.isOneOf("getConstructorQueryID:null",
+                                    "getConstructorQueryID:notvalid-exceptInEE9"));
+        assertThat(sendGoodRequestAndGetResponse("query", HttpPost.class),
+                   Matchers.isOneOf("postConstructorQueryID:null",
+                                    "postConstructorQueryID:notvalid-exceptInEE9"));
+        assertThat(sendGoodRequestAndGetResponse("query", HttpPut.class),
+                   Matchers.isOneOf("putConstructorQueryID:null",
+                                    "putConstructorQueryID:notvalid-exceptInEE9"));
     }
 
     /**
      * Tests the constructor query parameter is processed.
      */
     @Test
+    @SkipForRepeat("EE9_FEATURES") // query params in constructors are not allowed in EE9, since they are a CDI bean
     public void testConstructorQueryParam() throws Exception {
         assertEquals("deleteConstructorQueryID:HelloWorld",
                      sendGoodRequestAndGetResponse("query?queryid=HelloWorld", HttpDelete.class));
@@ -1348,18 +1354,7 @@ public class ParamsTest {
      */
     @Test
     public void testSimpleQueryParam() throws Exception {
-        assertEquals("deleteSimpleQueryParameter:somequeryid;hi",
-                     sendGoodRequestAndGetResponse("query/simple?queryid=somequeryid&simpleParam=hi",
-                                                   HttpDelete.class));
-        assertEquals("getSimpleQueryParameter:somequeryid;hi",
-                     sendGoodRequestAndGetResponse("query/simple?queryid=somequeryid&simpleParam=hi",
-                                                   HttpGet.class));
-        assertEquals("postSimpleQueryParameter:somequeryid;hi",
-                     sendGoodRequestAndGetResponse("query/simple?queryid=somequeryid&simpleParam=hi",
-                                                   HttpPost.class));
-        assertEquals("putSimpleQueryParameter:somequeryid;hi",
-                     sendGoodRequestAndGetResponse("query/simple?queryid=somequeryid&simpleParam=hi",
-                                                   HttpPut.class));
+        testSimpleQueryParam("query/simple?queryid=somequeryid&simpleParam=hi");
     }
 
     /**
@@ -1367,15 +1362,19 @@ public class ParamsTest {
      */
     @Test
     public void testNoConstructorQueryParamAndSimpleQueryParam() throws Exception {
-        assertEquals("deleteSimpleQueryParameter:null;hi",
-                     sendGoodRequestAndGetResponse("query/simple/?simpleParam=hi",
-                                                   HttpDelete.class));
-        assertEquals("getSimpleQueryParameter:null;hi",
-                     sendGoodRequestAndGetResponse("query/simple/?simpleParam=hi", HttpGet.class));
-        assertEquals("postSimpleQueryParameter:null;hi",
-                     sendGoodRequestAndGetResponse("query/simple/?simpleParam=hi", HttpPost.class));
-        assertEquals("putSimpleQueryParameter:null;hi",
-                     sendGoodRequestAndGetResponse("query/simple/?simpleParam=hi", HttpPut.class));
+        final String query = "query/simple/?simpleParam=hi";
+        assertThat(sendGoodRequestAndGetResponse(query, HttpDelete.class),
+                   Matchers.isOneOf("deleteSimpleQueryParameter:null;hi",
+                                    "deleteSimpleQueryParameter:notvalid-exceptInEE9;hi"));
+        assertThat(sendGoodRequestAndGetResponse(query, HttpGet.class),
+                   Matchers.isOneOf("getSimpleQueryParameter:null;hi",
+                                    "getSimpleQueryParameter:notvalid-exceptInEE9;hi"));
+        assertThat(sendGoodRequestAndGetResponse(query, HttpPost.class),
+                   Matchers.isOneOf("postSimpleQueryParameter:null;hi",
+                                    "postSimpleQueryParameter:notvalid-exceptInEE9;hi"));
+        assertThat(sendGoodRequestAndGetResponse(query, HttpPut.class),
+                   Matchers.isOneOf("putSimpleQueryParameter:null;hi",
+                                    "putSimpleQueryParameter:notvalid-exceptInEE9;hi"));
     }
 
     /**
@@ -1383,37 +1382,41 @@ public class ParamsTest {
      */
     @Test
     public void testOutOfOrderSimpleQueryParam() throws Exception {
-        assertEquals("deleteSimpleQueryParameter:somequeryid;hi",
-                     sendGoodRequestAndGetResponse("query/simple?simpleParam=hi&queryid=somequeryid",
-                                                   HttpDelete.class));
-        assertEquals("getSimpleQueryParameter:somequeryid;hi",
-                     sendGoodRequestAndGetResponse("query/simple?simpleParam=hi&queryid=somequeryid",
-                                                   HttpGet.class));
-        assertEquals("postSimpleQueryParameter:somequeryid;hi",
-                     sendGoodRequestAndGetResponse("query/simple?simpleParam=hi&queryid=somequeryid",
-                                                   HttpPost.class));
-        assertEquals("putSimpleQueryParameter:somequeryid;hi",
-                     sendGoodRequestAndGetResponse("query/simple?simpleParam=hi&queryid=somequeryid",
-                                                   HttpPut.class));
+        testSimpleQueryParam("query/simple?simpleParam=hi&queryid=somequeryid");
     }
 
+    private void testSimpleQueryParam(String query) throws Exception {
+        assertThat(sendGoodRequestAndGetResponse(query, HttpDelete.class),
+                   Matchers.isOneOf("deleteSimpleQueryParameter:somequeryid;hi",
+                                    "deleteSimpleQueryParameter:notvalid-exceptInEE9;hi"));
+        assertThat(sendGoodRequestAndGetResponse(query, HttpGet.class),
+                   Matchers.isOneOf("getSimpleQueryParameter:somequeryid;hi",
+                                    "getSimpleQueryParameter:notvalid-exceptInEE9;hi"));
+        assertThat(sendGoodRequestAndGetResponse(query, HttpPost.class),
+                   Matchers.isOneOf("postSimpleQueryParameter:somequeryid;hi",
+                                    "postSimpleQueryParameter:notvalid-exceptInEE9;hi"));
+        assertThat(sendGoodRequestAndGetResponse(query, HttpPut.class),
+                   Matchers.isOneOf("putSimpleQueryParameter:somequeryid;hi",
+                                    "putSimpleQueryParameter:notvalid-exceptInEE9;hi"));
+    }
     /**
      * Tests that query parameters are case sensitive.
      */
     @Test
     public void testLowercaseQueryParam() throws Exception {
-        assertEquals("getSimpleQueryParameter:null;null",
-                     sendGoodRequestAndGetResponse("query/simple/?simpleparam=hi&QUERYID=abcd",
-                                                   HttpGet.class));
-        assertEquals("postSimpleQueryParameter:null;null",
-                     sendGoodRequestAndGetResponse("query/simple/?simpleparam=hi&QUERYID=abcd",
-                                                   HttpPost.class));
-        assertEquals("putSimpleQueryParameter:null;null",
-                     sendGoodRequestAndGetResponse("query/simple/?simpleparam=hi&QUERYID=abcd",
-                                                   HttpPut.class));
-        assertEquals("deleteSimpleQueryParameter:null;null",
-                     sendGoodRequestAndGetResponse("query/simple/?simpleparam=hi&QUERYID=abcd",
-                                                   HttpDelete.class));
+        final String query = "query/simple/?simpleparam=hi&QUERYID=abcd";
+        assertThat(sendGoodRequestAndGetResponse(query, HttpDelete.class),
+                   Matchers.isOneOf("deleteSimpleQueryParameter:null;null",
+                                    "deleteSimpleQueryParameter:notvalid-exceptInEE9;null"));
+        assertThat(sendGoodRequestAndGetResponse(query, HttpGet.class),
+                   Matchers.isOneOf("getSimpleQueryParameter:null;null",
+                                    "getSimpleQueryParameter:notvalid-exceptInEE9;null"));
+        assertThat(sendGoodRequestAndGetResponse(query, HttpPost.class),
+                   Matchers.isOneOf("postSimpleQueryParameter:null;null",
+                                    "postSimpleQueryParameter:notvalid-exceptInEE9;null"));
+        assertThat(sendGoodRequestAndGetResponse(query, HttpPut.class),
+                   Matchers.isOneOf("putSimpleQueryParameter:null;null",
+                                    "putSimpleQueryParameter:notvalid-exceptInEE9;null"));
     }
 
     /**
@@ -1421,16 +1424,17 @@ public class ParamsTest {
      */
     @Test
     public void testMultipleQueryParam() throws Exception {
-        assertEquals("getMultiQueryParameter:somequeryid;hi;789;1moreparam2go",
+        String ctorVal = JakartaEE9Action.isActive() ? "notvalid-exceptInEE9" : "somequeryid";
+        assertEquals("getMultiQueryParameter:" + ctorVal + ";hi;789;1moreparam2go",
                      sendGoodRequestAndGetResponse("query/multiple?queryid=somequeryid&multiParam1=hi&123Param=789&1MOREParam=1moreparam2go",
                                                    HttpGet.class));
-        assertEquals("deleteMultiQueryParameter:somequeryid;hi;789;1moreparam2go",
+        assertEquals("deleteMultiQueryParameter:" + ctorVal + ";hi;789;1moreparam2go",
                      sendGoodRequestAndGetResponse("query/multiple?queryid=somequeryid&multiParam1=hi&123Param=789&1MOREParam=1moreparam2go",
                                                    HttpDelete.class));
-        assertEquals("putMultiQueryParameter:somequeryid;hi;789;1moreparam2go",
+        assertEquals("putMultiQueryParameter:" + ctorVal + ";hi;789;1moreparam2go",
                      sendGoodRequestAndGetResponse("query/multiple?queryid=somequeryid&multiParam1=hi&123Param=789&1MOREParam=1moreparam2go",
                                                    HttpPut.class));
-        assertEquals("postMultiQueryParameter:somequeryid;hi;789;1moreparam2go",
+        assertEquals("postMultiQueryParameter:" + ctorVal + ";hi;789;1moreparam2go",
                      sendGoodRequestAndGetResponse("query/multiple?queryid=somequeryid&multiParam1=hi&123Param=789&1MOREParam=1moreparam2go",
                                                    HttpPost.class));
     }
@@ -1480,7 +1484,7 @@ public class ParamsTest {
             assertEquals(499, resp.getStatusLine().getStatusCode());
             assertEquals("ParamStringConstructor", asString(resp));
         } finally {
-            client = new DefaultHttpClient();
+            getHttpClient();
         }
 
         httpMethod = new HttpGet(qpExcBaseUri + "/fieldstrcstr?CustomStringConstructorFieldQuery=throwNull");
@@ -1488,7 +1492,7 @@ public class ParamsTest {
             HttpResponse resp = client.execute(httpMethod);
             assertEquals(404, resp.getStatusLine().getStatusCode());
         } finally {
-            client = new DefaultHttpClient();
+            getHttpClient();
         }
 
         httpMethod = new HttpGet(qpExcBaseUri + "/fieldstrcstr?CustomStringConstructorFieldQuery=throwEx");
@@ -1496,7 +1500,7 @@ public class ParamsTest {
             HttpResponse resp = client.execute(httpMethod);
             assertEquals(404, resp.getStatusLine().getStatusCode());
         } finally {
-            client = new DefaultHttpClient();
+            getHttpClient();
         }
 
         /*
@@ -1508,7 +1512,7 @@ public class ParamsTest {
             assertEquals(498, resp.getStatusLine().getStatusCode());
             assertEquals("ParamValueOfWebAppEx", asString(resp));
         } finally {
-            client = new DefaultHttpClient();
+            getHttpClient();
         }
 
         httpMethod = new HttpGet(qpExcBaseUri + "/fieldvalueof?CustomValueOfFieldQuery=throwNull");
@@ -1516,7 +1520,7 @@ public class ParamsTest {
             HttpResponse resp = client.execute(httpMethod);
             assertEquals(404, resp.getStatusLine().getStatusCode());
         } finally {
-            client = new DefaultHttpClient();
+            getHttpClient();
         }
 
         httpMethod = new HttpGet(qpExcBaseUri + "/fieldvalueof?CustomValueOfFieldQuery=throwEx");
@@ -1524,7 +1528,7 @@ public class ParamsTest {
             HttpResponse resp = client.execute(httpMethod);
             assertEquals(404, resp.getStatusLine().getStatusCode());
         } finally {
-            client = new DefaultHttpClient();
+            getHttpClient();
         }
 
         /*
@@ -1536,7 +1540,7 @@ public class ParamsTest {
             assertEquals(499, resp.getStatusLine().getStatusCode());
             assertEquals("ParamStringConstructor", asString(resp));
         } finally {
-            client = new DefaultHttpClient();
+            getHttpClient();
         }
 
         httpMethod = new HttpGet(qpExcBaseUri + "/propertystrcstr?CustomStringConstructorPropertyHeader=throwNull");
@@ -1544,7 +1548,7 @@ public class ParamsTest {
             HttpResponse resp = client.execute(httpMethod);
             assertEquals(404, resp.getStatusLine().getStatusCode());
         } finally {
-            client = new DefaultHttpClient();
+            getHttpClient();
         }
 
         httpMethod = new HttpGet(qpExcBaseUri + "/propertystrcstr?CustomStringConstructorPropertyHeader=throwEx");
@@ -1552,7 +1556,7 @@ public class ParamsTest {
             HttpResponse resp = client.execute(httpMethod);
             assertEquals(404, resp.getStatusLine().getStatusCode());
         } finally {
-            client = new DefaultHttpClient();
+            getHttpClient();
         }
 
         /*
@@ -1564,7 +1568,7 @@ public class ParamsTest {
             assertEquals(498, resp.getStatusLine().getStatusCode());
             assertEquals("ParamValueOfWebAppEx", asString(resp));
         } finally {
-            client = new DefaultHttpClient();
+            getHttpClient();
         }
 
         httpMethod = new HttpGet(qpExcBaseUri + "/propertyvalueof?CustomValueOfPropertyHeader=throwNull");
@@ -1572,7 +1576,7 @@ public class ParamsTest {
             HttpResponse resp = client.execute(httpMethod);
             assertEquals(404, resp.getStatusLine().getStatusCode());
         } finally {
-            client = new DefaultHttpClient();
+            getHttpClient();
         }
 
         httpMethod = new HttpGet(qpExcBaseUri + "/propertyvalueof?CustomValueOfPropertyHeader=throwEx");
@@ -1580,7 +1584,7 @@ public class ParamsTest {
             HttpResponse resp = client.execute(httpMethod);
             assertEquals(404, resp.getStatusLine().getStatusCode());
         } finally {
-            client = new DefaultHttpClient();
+            getHttpClient();
         }
 
         httpMethod = new HttpGet(qpExcBaseUri + "/primitive?CustomNumQuery=notANumber");

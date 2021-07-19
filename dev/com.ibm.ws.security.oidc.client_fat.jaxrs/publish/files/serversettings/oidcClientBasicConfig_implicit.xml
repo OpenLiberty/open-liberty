@@ -36,9 +36,35 @@
 		issuerIdentifier="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample"
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
 		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
-		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+		tokenEndpointUrl="${special_tokenEndpoint}"
 		authFilterRef="myAuthFilter"
-	>
+		keyManagementK4YeyAlias="${special_keyManagementKeyAlias}"
+		sslRef="${special_sslref}"
+		trustStoreRef="${special_trustStoreRef}"
+		trustAliasName="${special_trustAlias}"
+		signatureAlgorithm="${speical_sigAlg}"
+	 >
 	</openidConnectClient>
+<!-- 		
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+		authorizationEndpointUrl="${special_authorizeEndpoint}"
+ -->
+ 	<ssl
+		id="allSigAlgSSLSettings"
+		keyStoreRef="key_allSigAlg"
+		trustStoreRef="trust_allSigAlg"
+		clientAuthenticationSupported="true" />
+		
+    <keyStore
+         id="trust_allSigAlg"
+         password="Liberty"
+         type="PKCS12"
+         location="${server.config.dir}/allAlgTrustStore.p12" />
+
+    <keyStore
+         id="key_allSigAlg"
+         password="Liberty"
+         type="PKCS12"
+         location="${server.config.dir}/allAlgKeyStore.p12" />
 
 </server>

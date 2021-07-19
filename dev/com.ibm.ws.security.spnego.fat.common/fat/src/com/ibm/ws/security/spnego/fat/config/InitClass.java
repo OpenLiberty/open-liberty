@@ -289,7 +289,7 @@ public class InitClass {
      * @param canonicalHostName
      * @return
      */
-	 protected static String createRandomStringHostName(String canonicalHostName) {
+    protected static String createRandomStringHostName(String canonicalHostName) {
         String methodName = "createRandomStringHostName";
         rndHostName = libertyHostMap.get(canonicalHostName);
         if (rndHostName == null) {
@@ -315,8 +315,8 @@ public class InitClass {
      * "ibm.com", the same value provided for canonicalHostName is returned.
      *
      * @param canonicalHostName
-     * @param issueMsg          - Boolean indicating whether a message should be logged if the canonical host name does not
-     *                              include the IBM domain.
+     * @param issueMsg - Boolean indicating whether a message should be logged if the canonical host name does not
+     *            include the IBM domain.
      * @return
      */
     public static String getShortHostName(String canonicalHostName, boolean issueMsg) {

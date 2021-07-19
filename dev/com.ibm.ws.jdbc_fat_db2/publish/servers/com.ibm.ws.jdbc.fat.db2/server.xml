@@ -55,7 +55,7 @@
     <properties.db2.jcc
       databaseName="${DB2_DBNAME}" serverName="${DB2_HOSTNAME}" portNumber="${DB2_PORT_SECURE}"
       user="${DB2_USER}" password="${DB2_PASS}"
-      sslConnection="true"/>
+      sslConnection="true" sslVersion="TLSv1.2"/>
   </dataSource>
   
   <dataSource jndiName="jdbc/db2-using-driver">

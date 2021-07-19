@@ -1,7 +1,7 @@
 package com.ibm.tx.jta.impl;
 
 /*******************************************************************************
- * Copyright (c) 2002, 2010 IBM Corporation and others.
+ * Copyright (c) 2002, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,9 +17,9 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.transaction.xa.Xid;
 
 import com.ibm.tx.TranConstants;
-import com.ibm.tx.util.logging.FFDCFilter;
-import com.ibm.tx.util.logging.Tr;
-import com.ibm.tx.util.logging.TraceComponent;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.recoverylog.spi.DistributedRecoveryLog;
 import com.ibm.ws.recoverylog.spi.RecoveryLog;
 
@@ -80,11 +80,11 @@ public class PartnerLogTable {
     /**
      * Return the entry in the recovery table at the given
      * index, or null if the index is out of the table's bounds
-     * 
+     *
      * The supplied index is actually one greater than the index into the table.
-     * 
+     *
      * @param index the index in the table of the PartnerLogData object
-     * 
+     *
      * @return the entry in the recovery table at the given
      *         index, or null if the index is out of the table's bounds
      */
@@ -113,9 +113,9 @@ public class PartnerLogTable {
 
     /**
      * Add an entry at the end of the recovery table.
-     * 
+     *
      * @param logData the PartnerLogData object to add to the table
-     * 
+     *
      * @return result the entry index into the table
      */
     public void addEntry(PartnerLogData logData) {
@@ -184,13 +184,13 @@ public class PartnerLogTable {
      * This method searches the partner log table for an entry with matching wrapper.
      * If an entry does not exist, one is created and added to the table. It should
      * only be accessing the "runtime" table.
-     * 
+     *
      * Called from: TranManagerSet.registerResourceInfo
      * TranManagerSet.registerJCAProvider
      * TransactionState.setState when logging a superior coord on a subordinate at prepare time
      * WSCoordinatorWrapper.log when logging a subordinate coord on a superior at prepare time
      * RecoveryManager.shutdown when checking for a subordinate or superior coord at shutdown
-     * 
+     *
      * @param rw
      * @return
      */
@@ -252,7 +252,7 @@ public class PartnerLogTable {
      * marked not recovered. (These are either real not recoverd records or records that belong to
      * active transactions.) If there are no recovery records left, then we zap the files, otherwise
      * we need to rewrite a shutdown record.
-     * 
+     *
      * @return whether there are entries we need to keep
      */
     public boolean shutdown() {
@@ -338,11 +338,11 @@ public class PartnerLogTable {
 
     /**
      * Determine XA RMs needing recovery.
-     * 
+     *
      * <p>
      * For each resource manager known to the transaction service all
      * indoubt transactions are located.
-     * 
+     *
      * @param cl A class loader for contacting XA RMs
      */
     public boolean recover(RecoveryManager recoveryManager, ClassLoader cl, Xid[] xids) {
@@ -359,7 +359,7 @@ public class PartnerLogTable {
                 success = false;
             }
 
-            // Determine if shutdown processing started on another thread. 
+            // Determine if shutdown processing started on another thread.
             // If it has, no further action can be taken.
             if (recoveryManager.shutdownInProgress()) {
                 success = false;
@@ -385,9 +385,9 @@ public class PartnerLogTable {
             // loop through those partners that are being merged, to check
             // for duplicate entries that have conflicting recovered flags
 
-            // The following is attempting to find identical resources within the array that have conflicting recovered flags.  
-            // Each instance of an unrecovered RecoveryWrapper in the incoming array is compared against any following instances 
-            // of recovered objects in the array.  If a recovered object is a matching instance of the unrecovered RecoveryWrapper, 
+            // The following is attempting to find identical resources within the array that have conflicting recovered flags.
+            // Each instance of an unrecovered RecoveryWrapper in the incoming array is compared against any following instances
+            // of recovered objects in the array.  If a recovered object is a matching instance of the unrecovered RecoveryWrapper,
             // that object is changed to be flagged as unrecovered.
 
             if (incomingItems != null) {

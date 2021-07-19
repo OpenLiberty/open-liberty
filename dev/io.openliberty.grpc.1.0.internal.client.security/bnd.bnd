@@ -10,7 +10,7 @@
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
-grpcVersion=1.36.1
+grpcVersion=1.38.1
 nettyVersion=4.1.62.Final
 
 Bundle-Name: gRPC Client security

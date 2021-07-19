@@ -2,7 +2,7 @@
 	<featureManager>
 		<feature>ssl-1.0</feature>
 		<feature>usr:wsseccbh-1.0</feature>
-		<feature>servlet-3.0</feature>
+		<feature>servlet-3.1</feature>
 		<feature>appSecurity-2.0</feature>
 		<feature>jsp-2.2</feature>
 		<feature>jaxws-2.2</feature>
@@ -88,7 +88,7 @@
 
 	<wsSecurityProvider
 		id="default"
-		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbh.CommonPasswordCallback"
+		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbh.CommonPasswordCallback"	
 	>
 		<callerToken name="UsernameToken" />
 		<signatureProperties

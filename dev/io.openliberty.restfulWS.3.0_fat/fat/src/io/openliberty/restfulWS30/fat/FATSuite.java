@@ -21,6 +21,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 CDIInjectIntoAppTest.class,
                 ExceptionTest.class,
                 InjectAppTest.class,
+                JakartaPackageTest.class,
                 JsonbTest.class,
                 ManagedBeansTest.class,
                 ValidatorTest.class,

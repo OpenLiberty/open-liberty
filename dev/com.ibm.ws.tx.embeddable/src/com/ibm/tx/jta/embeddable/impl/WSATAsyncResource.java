@@ -1,7 +1,5 @@
-package com.ibm.tx.jta.embeddable.impl;
-
 /*******************************************************************************
- * Copyright (c) 2004, 2008 IBM Corporation and others.
+ * Copyright (c) 2004, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +8,7 @@ package com.ibm.tx.jta.embeddable.impl;
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+package com.ibm.tx.jta.embeddable.impl;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -26,18 +25,17 @@ import com.ibm.tx.TranConstants;
 import com.ibm.tx.jta.XAResourceFactory;
 import com.ibm.tx.jta.XAResourceNotAvailableException;
 import com.ibm.tx.jta.impl.XARecoveryDataHelper;
-import com.ibm.tx.util.logging.FFDCFilter;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.FFDCFilter;
 
 /**
  * This class defines a 2PC participant and allows the TransactionManager to communicate with it via web services
- * 
+ *
  * This is the thing we're gonna construct from what we're given and is what we're gonna log
  */
 
-public final class WSATAsyncResource implements Serializable
-{
+public final class WSATAsyncResource implements Serializable {
     /**  */
     private static final long serialVersionUID = 4244509484588694781L;
 
@@ -47,8 +45,7 @@ public final class WSATAsyncResource implements Serializable
     protected final String _XAResourceFactoryFilter;
     protected final Serializable _XAResourceFactoryKey;
 
-    public WSATAsyncResource(String factoryFilter, Serializable key, Xid xid)
-    {
+    public WSATAsyncResource(String factoryFilter, Serializable key, Xid xid) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "WSATAsyncResource", new Object[] { factoryFilter, key, xid });
 
@@ -60,8 +57,7 @@ public final class WSATAsyncResource implements Serializable
             Tr.exit(tc, "WSATAsyncResource", this);
     }
 
-    String getTxIdentifier()
-    {
+    String getTxIdentifier() {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "getTxIdentifier", _xid);
         return _xid.toString();
@@ -69,8 +65,7 @@ public final class WSATAsyncResource implements Serializable
 
     // This is what we call to get the answer back. All the wsat happens here
     // It's gonna be called asynchronously
-    public int prepareOperation() throws XAException, XAResourceNotAvailableException
-    {
+    public int prepareOperation() throws XAException, XAResourceNotAvailableException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "prepareOperation", new Object[] { this });
 
@@ -81,8 +76,7 @@ public final class WSATAsyncResource implements Serializable
         return retVal;
     }
 
-    public void commitOperation() throws XAException, XAResourceNotAvailableException
-    {
+    public void commitOperation() throws XAException, XAResourceNotAvailableException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "commitOperation", new Object[] { this });
 
@@ -92,8 +86,7 @@ public final class WSATAsyncResource implements Serializable
             Tr.exit(tc, "commitOperation");
     }
 
-    public void rollbackOperation() throws XAException, XAResourceNotAvailableException
-    {
+    public void rollbackOperation() throws XAException, XAResourceNotAvailableException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "rollbackOperation", new Object[] { this });
 
@@ -103,8 +96,7 @@ public final class WSATAsyncResource implements Serializable
             Tr.exit(tc, "rollbackOperation");
     }
 
-    public void forgetOperation() throws XAException, XAResourceNotAvailableException
-    {
+    public void forgetOperation() throws XAException, XAResourceNotAvailableException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "forgetOperation", new Object[] { this });
 
@@ -115,8 +107,7 @@ public final class WSATAsyncResource implements Serializable
     }
 
     // Distributed logData call only - z/os encodes log data in WSATCRAsyncResource
-    byte[] toLogData() throws javax.transaction.SystemException
-    {
+    byte[] toLogData() throws javax.transaction.SystemException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "toLogData", this);
 
@@ -124,13 +115,11 @@ public final class WSATAsyncResource implements Serializable
 
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-        try
-        {
+        try {
             final ObjectOutputStream oos = new ObjectOutputStream(baos);
             oos.writeObject(this);
             logData = baos.toByteArray();
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             FFDCFilter.processException(e, "com.ibm.ws.Transaction.wstx.WSATAsyncResource.toLogData", "279", this);
 
             final SystemException se = new SystemException();
@@ -147,21 +136,18 @@ public final class WSATAsyncResource implements Serializable
     }
 
     // Distributed logData call only - z/os encodes log data in WSATCRAsyncResource
-    static WSATAsyncResource fromLogData(byte[] bytes) throws javax.transaction.SystemException
-    {
+    static WSATAsyncResource fromLogData(byte[] bytes) throws javax.transaction.SystemException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "fromLogData", bytes);
 
         WSATAsyncResource resource = null;
         final ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
 
-        try
-        {
+        try {
             final ObjectInputStream ois = new ObjectInputStream(bais);
             final Object obj = ois.readObject();
             resource = (WSATAsyncResource) obj;
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             FFDCFilter.processException(e, "com.ibm.ws.Transaction.wstx.WSATAsyncResource.fromLogData", "307");
 
             final SystemException se = new SystemException();
@@ -177,8 +163,7 @@ public final class WSATAsyncResource implements Serializable
         return resource;
     }
 
-    String describe()
-    {
+    String describe() {
         return _XAResourceFactoryKey.toString();
     }
 

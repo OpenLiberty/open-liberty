@@ -31,7 +31,7 @@ import web.dbrotation.DbRotationServlet;
  * Example test class showing how to setup a test class that can
  * be run against any of our supported databases.
  *
- * This workload is commonly refered to as "Database Rotation", but
+ * This workload is commonly referred to as "Database Rotation", but
  * it should be noted that the rotation workflow happens as part of our
  * SOE testing and not within the test infrastructure itself.
  */
@@ -44,13 +44,15 @@ public class DatabaseRotationTest {
     @TestServlet(servlet = DbRotationServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
-    /*
+    /**
      * Here we are using a child class of GenericContainer called JdbcDatabaseContainer.
      * This class has extra workflows specific to database containers.
+     * <br>
      *
      * The DatabaseContainerFactory is from fattest.simplicity and will setup and return
      * a container based on the fat.bucket.db.type property. This can be set either on the
-     * commandline when doing ./gradlew <project>:buildandrun or on a build system.
+     * commandline when doing ./gradlew \<project\>:buildandrun or on a build system.
+     * <br>
      *
      * This is how our SOE builds run against each database.
      */

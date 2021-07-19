@@ -1,0 +1,21 @@
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+    version="2.5">
+
+    <servlet>
+        <servlet-name>JPAEjbInWarJavaCompRRInEJB2TestServlet</servlet-name>
+        <servlet-class>com.ibm.ws.jpa.fvt.ejbinwar_javacomp.web.rrinejb2.JPAEjbInWarJavaCompRRInEJB2TestServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>JPAEjbInWarJavaCompRRInEJB2TestServlet</servlet-name>
+        <url-pattern>/JPAEjbInWarJavaCompRRInEJB2TestServlet</url-pattern>
+    </servlet-mapping>
+
+    
+    <ejb-local-ref>
+        <ejb-ref-name>ejbinwar/javaCompEnv/JPAEjbInWarJavaCompEJB</ejb-ref-name>
+        <local>com.ibm.ws.jpa.fvt.ejbinwar_javacomp.ejb.JPAEjbInWarJavaCompEJBLocal</local>
+        <ejb-link>JPAEjbInWarJavaCompEJB</ejb-link>
+    </ejb-local-ref>
+</web-app>

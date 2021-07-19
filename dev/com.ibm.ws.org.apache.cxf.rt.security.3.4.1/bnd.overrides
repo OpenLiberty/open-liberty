@@ -30,3 +30,4 @@ Import-Package:  \
   com.ibm.ws.ffdc, \
   *
 
+jakartaeeMe: true

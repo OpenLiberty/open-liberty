@@ -13,11 +13,14 @@ package com.ibm.ws.wssecurity.fat.cxf.samltoken.TwoServerTests;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
+
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLMessageConstants;
 import com.ibm.ws.wssecurity.fat.cxf.samltoken.common.CxfSAMLBasicTests;
@@ -43,10 +46,8 @@ import componenttest.topology.utils.HttpUtils;
  * TFIM IdP. The client invokes the SP application by sending the SAML
  * 2.0 token in the HTTP POST request.
  */
+
 @LibertyServerWrapper
-//1/20/2021 the FULL mode was already in CL FAT, but commented out to make it as LITE in OL
-//@Mode(TestMode.FULL)
-//1/21/2021 added
 @RunWith(FATRunner.class)
 public class CxfSAMLBasic2ServerTests extends CxfSAMLBasicTests {
 
@@ -82,11 +83,14 @@ public class CxfSAMLBasic2ServerTests extends CxfSAMLBasicTests {
         copyMetaData = true;
         testSAMLServer2 = commonSetUp("com.ibm.ws.wssecurity_fat.saml.2servers", "server_2.xml", SAMLConstants.SAML_ONLY_SETUP, SAMLConstants.SAML_SERVER_TYPE, extraApps2, extraMsgs2);
         copyMetaData = true;
-        testSAMLServer = commonSetUp("com.ibm.ws.wssecurity_fat.saml", "server_1.xml", SAMLConstants.SAML_ONLY_SETUP, SAMLConstants.SAML_SERVER_TYPE, extraApps, extraMsgs, SAMLConstants.EXAMPLE_CALLBACK, SAMLConstants.EXAMPLE_CALLBACK_FEATURE);
+        
+        //3/2021 the test doesn't use callbackhandler
+        testSAMLServer = commonSetUp("com.ibm.ws.wssecurity_fat.saml", "server_1.xml", SAMLConstants.SAML_ONLY_SETUP, SAMLConstants.SAML_SERVER_TYPE, extraApps, extraMsgs);
 
-        testSAMLServer.addIgnoredServerExceptions(SAMLMessageConstants.CWWKS5207W_SAML_CONFIG_IGNORE_ATTRIBUTES);
+        //3/2021 
+        testSAMLServer.addIgnoredServerExceptions(SAMLMessageConstants.CWWKS5207W_SAML_CONFIG_IGNORE_ATTRIBUTES, SAMLMessageConstants.CWWKF0001E_FEATURE_MISSING);
         testSAMLServer2.addIgnoredServerExceptions(SAMLMessageConstants.CWWKS5207W_SAML_CONFIG_IGNORE_ATTRIBUTES, SAMLMessageConstants.CWWKG0101W_CONFIG_NOT_VISIBLE_TO_OTHER_BUNDLES, SAMLMessageConstants.CWWKF0001E_FEATURE_MISSING);
-
+        
         // now, we need to update the IDP files
         shibbolethHelpers.fixSPInfoInShibbolethServer(testSAMLServer, testIDPServer);
         shibbolethHelpers.fixVarsInShibbolethServerWithDefaultValues(testIDPServer);
@@ -108,6 +112,7 @@ public class CxfSAMLBasic2ServerTests extends CxfSAMLBasicTests {
         testSettings.setSpTargetApp(testSAMLServer.getHttpString() + "/samlcxfclient/CxfSamlSvcClient");
         testSettings.setSamlTokenValidationData(testSettings.getIdpUserName(), testSettings.getSamlTokenValidationData().getIssuer(), testSettings.getSamlTokenValidationData().getInResponseTo(), testSettings.getSamlTokenValidationData().getMessageID(), testSettings.getSamlTokenValidationData().getEncryptionKeyUser(), testSettings.getSamlTokenValidationData().getRecipient(), testSettings.getSamlTokenValidationData().getEncryptAlg());
 
+        
     }
 
 }

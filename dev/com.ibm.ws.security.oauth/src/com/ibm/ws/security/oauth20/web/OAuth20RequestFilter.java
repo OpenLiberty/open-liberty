@@ -38,7 +38,8 @@ public class OAuth20RequestFilter implements Filter {
     public static final String REGEX_COMPONENT_ID = "/([\\w-]+)/"; // first capture group, /name_of_provider/
 
     // Matches paths such as /registration/* to extract clientId values
-    public static final String REGEX_REGISTRATION = "registration(/[\u0020-\u007E]*)?";
+    public static final String REGEX_RANGE_VSCHAR = "[\u0020-\u007E]";
+    public static final String REGEX_REGISTRATION = "registration(/" + REGEX_RANGE_VSCHAR + "*)?";
     public static final String PATH_PTM = "personalTokenManagement";
     public static final String PATH_UTM = "usersTokenManagement";
     public static final String PATH_CLIENTMGT = "clientManagement";

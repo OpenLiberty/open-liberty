@@ -29,7 +29,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
-@SkipForRepeat("EE9_FEATURES") // currently broken due to multiple issues
+@SkipForRepeat("EE9_FEATURES") // this test application uses CXF-specific extras that are not available in RESTEasy / EE9
 public class JAXRS20ClientServerBookTest extends AbstractTest {
 
     @Server("com.ibm.ws.jaxrs.fat.bookstore")

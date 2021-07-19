@@ -382,3 +382,7 @@ JWE_REQUIRED_BUT_TOKEN_NOT_JWE.useraction=Aby akceptowane by\u0142y znaczniki JW
 NESTED_JWS_REQUIRED_BUT_NOT_FOUND=CWWKS6065E: \u0141adunek znacznika JSON Web Encryption (JWE) zawarty w \u017c\u0105daniu nie jest znacznikiem JSON Web Signature (JWS).
 NESTED_JWS_REQUIRED_BUT_NOT_FOUND.explanation=\u0141adunek znacznika JWE musi by\u0107 poprawnym znacznikiem JSON Web Token (JWT) w formacie JWS.
 NESTED_JWS_REQUIRED_BUT_NOT_FOUND.useraction=Upewnij si\u0119, \u017ce \u0142adunek znacznika JWE jest poprawnym znacznikiem JWT w formacie JWS.
+
+JWE_DECRYPTION_KEY_MISSING=CWWKS6066E: Nie mo\u017cna zdeszyfrowa\u0107 znacznika JWE (JSON Web Encryption), poniewa\u017c nie znaleziono klucza deszyfrowania. Atrybut konfiguracji serwera {0} jest ustawiony na [{1}].
+JWE_DECRYPTION_KEY_MISSING.explanation=Do deszyfrowania znacznika JWE wymagany jest klucz deszyfrowania. Klucz deszyfrowania musi by\u0107 obecny w magazynie kluczy konsumenta JWT lub musi by\u0107 okre\u015blony we w\u0142a\u015bciwo\u015bciach konfiguracji MicroProfile.
+JWE_DECRYPTION_KEY_MISSING.useraction=Upewnij si\u0119, \u017ce alias klucza podany w komunikacie istnieje w magazynie kluczy konsumenta JWT. Je\u015bli alias nie jest skonfigurowany, klucz deszyfrowany musi by\u0107 okre\u015blony we w\u0142a\u015bciwo\u015bciach konfiguracji MicroProfile.

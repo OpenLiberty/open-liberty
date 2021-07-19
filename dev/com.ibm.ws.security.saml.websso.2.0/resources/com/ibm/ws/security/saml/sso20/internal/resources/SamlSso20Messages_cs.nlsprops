@@ -221,7 +221,7 @@ sekund.
 SAML20_SESSION_ERR.explanation=Deklarace SAML byla p\u0159ijata v \u010dase, kter\u00fd je v r\u00e1mci deklarace ur\u010den\u00fd nastaven\u00edm SessionNotOnOrAfter prvku AuthnStatement, nebo pozd\u011bji. Tato situace nen\u00ed povolena. P\u0159\u00ed\u010dinou chyby m\u016f\u017ee b\u00fdt skute\u010dnost, \u017ee hodiny p\u0159\u00edjemce nejsou synchronizovan\u00e9 s hodinami tv\u016frce deklarace nebo byla deklarace z\u00edsk\u00e1na a p\u0159eposl\u00e1na neautorizovanou aplikac\u00ed.
 SAML20_SESSION_ERR.useraction=Prove\u010fte synchronizaci hodin poskytovatele slu\u017eeb (SP) SAML a poskytovatele identit (IdP), nebo zvy\u0161te hodnotu posunu hodin.
 
-SAML20_AUTHENTICATION_FAIL=CWWKS5063E: V\u00fdjimka SAML: Poskytoval slu\u017eeb (SP) SAML nedok\u00e1zal zpracovat po\u017eadavek o ov\u011b\u0159en\u00ed.
+SAML20_AUTHENTICATION_FAIL=CWWKS5063E: V\u00fdjimka SAML: Poskytoval slu\u017eeb (SP) SAML nedok\u00e1zal zpracovat \u017e\u00e1dost o ov\u011b\u0159en\u00ed.
 SAML20_AUTHENTICATION_FAIL.explanation=Proces ov\u011b\u0159en\u00ed nebyl \u00fasp\u011b\u0161n\u00fd, nebo\u0165 p\u0159ed touto zpr\u00e1vou do\u0161lo k n\u011bjak\u00e9 jin\u00e9 chyb\u011b.
 SAML20_AUTHENTICATION_FAIL.useraction=Projd\u011bte si akce u\u017eivatele pro tuto chybu, kter\u00e9 se zobrazily p\u0159ed touto zpr\u00e1vou. 
 

@@ -51,12 +51,14 @@ public class ContainersTest extends FATServletClient {
     public static final String POSTGRES_PASSWORD = "test";
     public static final int POSTGRE_PORT = 5432;
 
-    /*
+    /**
      * When using a generic container you will need to provide all the information needed
      * to run that container. This is equivalent of constructing a docker run command.
+     * <br>
      *
      * This is annotated as a ClassRule which will call start/stop on the container automatically
      *
+     * <pre>
      * ~~Common settings~~
      * Constructor: accepts image name in form user/container:version
      * - withExposedPorts: what ports does that container use that need to be exposed
@@ -65,6 +67,7 @@ public class ContainersTest extends FATServletClient {
      * - withLogConsumer: redirect stout/sterr from container to a log consumer
      * Use the SimpleLogConsumer from fattest.simplicity to redirect those logs to output.txt
      * - waitingFor: defines a wait strategy to know when container has started
+     * </pre>
      *
      * NOTE: the testcontainers project has a pre-configured PostgreSQLContainer class that could
      * have been used here. This is just an example of how to setup a GenericContainer.

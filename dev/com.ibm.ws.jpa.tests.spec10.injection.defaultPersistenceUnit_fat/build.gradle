@@ -54,8 +54,8 @@ task addJPAFATTools (type: Copy) {
 
 addRequiredLibraries {
   dependsOn copyJdbcDrivers
-  dependsOn copyDatabaseRotationDrivers
   dependsOn addhibernateJPA22
   dependsOn addJakartaTransformer
   dependsOn addJPAFATTools
+  dependsOn copyTestContainers
 }

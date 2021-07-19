@@ -120,6 +120,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
     private final Set<String> addFeatures = new LinkedHashSet<>();
     private final Set<String> alwaysAddFeatures = new HashSet<>();
     private TestMode testRunMode = TestMode.LITE;
+    private boolean liteFATOnly = false;
     private final Set<String> serverConfigPaths = new HashSet<String>();
     private boolean calledForServers = false;
     private boolean calledForServerConfigPaths = false;
@@ -264,6 +265,13 @@ public class FeatureReplacementAction implements RepeatTestAction {
 
     public FeatureReplacementAction fullFATOnly() {
         this.testRunMode = TestMode.FULL;
+        liteFATOnly = false;
+        return this;
+    }
+
+    public FeatureReplacementAction liteFATOnly() {
+        this.testRunMode = TestMode.LITE;
+        liteFATOnly = true;
         return this;
     }
 
@@ -373,6 +381,12 @@ public class FeatureReplacementAction implements RepeatTestAction {
                                      " is not valid for current mode " + TestModeFilter.FRAMEWORK_TEST_MODE);
             return false;
         }
+        if (liteFATOnly && TestModeFilter.FRAMEWORK_TEST_MODE.compareTo(TestMode.LITE) != 0) {
+            Log.info(c, "isEnabled", "Skipping action '" + toString() + "' because the test mode " + testRunMode +
+                                     " is not LITE and the test is marked to run in LITE FAT mode only.");
+            return false;
+        }
+
         return true;
     }
 
@@ -516,7 +530,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
                     // If we found a feature to remove that is actually present in config file, then
                     // replace it with the corresponding feature
                     if (removed) {
-                        String toAdd = getReplacementFeature(removeFeature, addFeatures);
+                        String toAdd = getReplacementFeature(removeFeature, addFeatures, alwaysAddFeatures);
                         if (toAdd != null)
                             features.add(toAdd);
                     }
@@ -560,7 +574,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
      *
      * @return                     The replacement feature name. Null if no replacement is available.
      */
-    private static String getReplacementFeature(String originalFeature, Set<String> replacementFeatures) {
+    private static String getReplacementFeature(String originalFeature, Set<String> replacementFeatures, Set<String> alwaysAddFeatures) {
         String methodName = "getReplacementFeature";
         // Example: servlet-3.1 --> servlet-4.0
         int dashOffset = originalFeature.indexOf('-');
@@ -576,6 +590,11 @@ public class FeatureReplacementAction implements RepeatTestAction {
         for (String replacementFeature : replacementFeatures) {
             if (replacementFeature.toLowerCase().startsWith(baseFeature.toLowerCase())) {
                 replaceFeature = replacementFeature;
+            }
+        }
+        for (String alwaysAddFeature : alwaysAddFeatures) {
+            if (alwaysAddFeature.toLowerCase().startsWith(baseFeature.toLowerCase())) {
+                replaceFeature = alwaysAddFeature;
             }
         }
         if (replaceFeature != null) {

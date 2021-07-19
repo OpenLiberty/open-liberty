@@ -273,6 +273,10 @@ public class MongoDBUtils {
         File trustStore = null;
 
         MongoClientOptions.Builder optionsBuilder = new MongoClientOptions.Builder().connectTimeout(30000);
+        optionsBuilder.socketTimeout(10000);
+        optionsBuilder.socketKeepAlive(true);
+        optionsBuilder.maxWaitTime(30000);
+
         try {
             trustStore = File.createTempFile("mongoTrustStore", "jks");
             Map<String, String> serviceProperties = mongoService.getProperties();
@@ -291,7 +295,9 @@ public class MongoDBUtils {
                      "Attempting to contact server " + dbHost + ":" + port + " with password " + (password != null ? "set" : "not set") + " and truststore "
                                         + "not set");
             mongoClient = new MongoClient(new ServerAddress(dbHost, port), credentials, clientOptions);
+            Log.info(thisClass, method, "New client connected");
             mongoClient.getDB(TEST_DATABASE_REMOTE).getCollectionNames();
+            Log.info(thisClass, method, "getDB/getCollectionNames called.");
             dbName = TEST_DATABASE_REMOTE;
             mongoClient.close();
         } catch (Exception e) {

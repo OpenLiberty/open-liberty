@@ -382,3 +382,7 @@ JWE_REQUIRED_BUT_TOKEN_NOT_JWE.useraction=Chcete-li p\u0159ijmout tokeny JWS m\u
 NESTED_JWS_REQUIRED_BUT_NOT_FOUND=CWWKS6065E: Informa\u010dn\u00ed obsah tokenu JSON Web Encryption (JWE), kter\u00fd je sou\u010d\u00e1st\u00ed po\u017eadavku, nen\u00ed token JSON Web Signature (JWS).
 NESTED_JWS_REQUIRED_BUT_NOT_FOUND.explanation=Informa\u010dn\u00ed obsah tokenu JWE mus\u00ed b\u00fdt platn\u00fdm tokenem JSON Web Token (JWT) ve form\u00e1tu JWS.
 NESTED_JWS_REQUIRED_BUT_NOT_FOUND.useraction=Ujist\u011bte se, \u017ee informa\u010dn\u00ed obsah tokenu JWE je platn\u00fd JWT ve form\u00e1tu JWS.
+
+JWE_DECRYPTION_KEY_MISSING=CWWKS6066E: Token JSON Web Encryption (JWE) nem\u016f\u017ee b\u00fdt de\u0161ifrov\u00e1n, proto\u017ee de\u0161ifrovac\u00ed kl\u00ed\u010d nelze nal\u00e9zt. Atribut konfigurace serveru {0} je nastaven na [{1}].
+JWE_DECRYPTION_KEY_MISSING.explanation=K de\u0161ifrov\u00e1n\u00ed tokenu JWE je vy\u017eadov\u00e1n de\u0161ifrovac\u00ed kl\u00ed\u010d. De\u0161ifrovac\u00ed kl\u00ed\u010d mus\u00ed b\u00fdt v \u00falo\u017ei\u0161ti kl\u00ed\u010d\u016f spot\u0159ebitele JWT, nebo mus\u00ed b\u00fdt uveden ve vlastnostech konfigurace MicroProfile.
+JWE_DECRYPTION_KEY_MISSING.useraction=Ov\u011b\u0159te, zda alias kl\u00ed\u010de, kter\u00fd je uveden ve zpr\u00e1v\u011b, existuje v \u00falo\u017ei\u0161ti kl\u00ed\u010d\u016f spot\u0159ebitele JWT. Jestli\u017ee alias nen\u00ed nakonfigurov\u00e1n, mus\u00ed b\u00fdt de\u0161ifrovac\u00ed kl\u00ed\u010d uveden ve vlastnostech konfigurace MicroProfile.

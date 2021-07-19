@@ -179,7 +179,10 @@ public class HTTPTransportActivator
         if (name != null) {
             props.put(name, info);
         }
-        addToSortedInfos(info);
+
+	if (matcher != null) {
+            addToSortedInfos(info);
+	}
     }
 
     private synchronized void addToSortedInfos(PidInfo pi) {

@@ -58,8 +58,6 @@
 		id="OAuthConfigSample"
 		filter="request-url%=SimpleServlet;request-url!=snooping"
 		httpsRequired="false"
-		allowPublicClients="false"
-		oauthOnly="true"
 		autoAuthorize="true"
 		jwtAccessToken="true"
 	>
@@ -164,5 +162,83 @@
 		audiences="client01"
 		keyStoreRef="key_allSigAlg"
         keyAlias="es512" />
-		/>										
+		/>		
+		
+	<jwtBuilder 
+		id="diff_HS256Builder"
+		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		signatureAlgorithm="HS256"
+		sharedKey="myOtherKey"
+		audiences="client01"
+		/>
+		
+	<jwtBuilder 
+		id="diff_HS384Builder"
+		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		signatureAlgorithm="HS384"
+		sharedKey="myOtherKey"
+		audiences="client01"
+		/>
+		
+	<jwtBuilder 
+		id="diff_HS512Builder"
+		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		signatureAlgorithm="HS512"
+		sharedKey="myOtherKey"
+		audiences="client01"
+		/>
+		
+	<jwtBuilder 
+		id="short_RS256Builder"
+		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		signatureAlgorithm="RS256"
+		audiences="client01"
+		keyStoreRef="key_allSigAlg"
+        keyAlias="short_rs256" />
+		/>
+	
+	<jwtBuilder 
+		id="short_RS384Builder"
+		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		signatureAlgorithm="RS384"
+		audiences="client01"
+		keyStoreRef="key_allSigAlg"
+        keyAlias="short_rs384" />
+		/>		
+
+	<jwtBuilder 
+		id="short_RS512Builder"
+		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		signatureAlgorithm="RS512"
+		audiences="client01"
+		keyStoreRef="key_allSigAlg"
+        keyAlias="short_rs512" />
+		/>
+		
+	<jwtBuilder 
+		id="short_ES256Builder"
+		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		signatureAlgorithm="ES256"
+		audiences="client01"
+		keyStoreRef="key_allSigAlg"
+        keyAlias="short_es256" />
+		/>
+		
+	<jwtBuilder 
+		id="short_ES384Builder"
+		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		signatureAlgorithm="ES384"
+		audiences="client01"
+		keyStoreRef="key_allSigAlg"
+        keyAlias="short_es384" />
+		/>
+		
+	<jwtBuilder 
+		id="short_ES512Builder"
+		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		signatureAlgorithm="ES512"
+		audiences="client01"
+		keyStoreRef="key_allSigAlg"
+        keyAlias="short_es512" />
+		/>												
 </server>

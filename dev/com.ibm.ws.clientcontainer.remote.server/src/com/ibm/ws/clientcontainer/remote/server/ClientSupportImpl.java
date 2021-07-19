@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -85,7 +85,8 @@ public class ClientSupportImpl implements ClientSupport {
         }
 
         @Override
-        public void setMetaData(MetaDataSlot slot, Object metadata) {}
+        public void setMetaData(MetaDataSlot slot, Object metadata) {
+        }
 
         @Override
         public Object getMetaData(MetaDataSlot slot) {
@@ -93,7 +94,8 @@ public class ClientSupportImpl implements ClientSupport {
         }
 
         @Override
-        public void release() {}
+        public void release() {
+        }
 
         @Override
         public ModuleMetaData getModuleMetaData() {
@@ -125,7 +127,7 @@ public class ClientSupportImpl implements ClientSupport {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.clientcontainer.remote.common.ClientSupport#getRemoteObjectInstance(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
@@ -157,7 +159,7 @@ public class ClientSupportImpl implements ClientSupport {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.clientcontainer.remote.common.ClientSupport#hasRemoteObjectWithPrefix(java.lang.String, java.lang.String, java.lang.String, java.lang.String,
      * java.lang.String)
      */
@@ -184,7 +186,7 @@ public class ClientSupportImpl implements ClientSupport {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.clientcontainer.remote.common.ClientSupport#listRemoteInstances(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
@@ -331,7 +333,7 @@ public class ClientSupportImpl implements ClientSupport {
         if (factory != null) {
             return factory.getRmicCompatibleClasses(appName);
         }
-        throw new RemoteException("ejbRemote feature is not enabled in server process.");
+        throw new RemoteException("Enterprise beans remote feature is not enabled in server process.");
     }
 
     @Override
@@ -340,7 +342,7 @@ public class ClientSupportImpl implements ClientSupport {
         if (factory != null) {
             return factory.create(appName, moduleName, beanName, beanInterface);
         }
-        throw new RemoteException("ejbRemote feature is not enabled in server process.");
+        throw new RemoteException("Enterprise beans remote feature is not enabled in server process.");
     }
 
     @Override
@@ -349,7 +351,7 @@ public class ClientSupportImpl implements ClientSupport {
         if (factory != null) {
             return factory.create(appName, beanName, beanInterface);
         }
-        throw new RemoteException("ejbRemote feature is not enabled in server process.");
+        throw new RemoteException("Enterprise beans remote feature is not enabled in server process.");
     }
 
     @Override
@@ -358,7 +360,7 @@ public class ClientSupportImpl implements ClientSupport {
         if (factory != null) {
             return factory.findByBeanName(appName, beanName, beanInterface);
         }
-        throw new RemoteException("ejbRemote feature is not enabled in server process.");
+        throw new RemoteException("Enterprise beans remote feature is not enabled in server process.");
     }
 
     @Override
@@ -367,7 +369,7 @@ public class ClientSupportImpl implements ClientSupport {
         if (factory != null) {
             return factory.findByInterface(appName, beanInterface);
         }
-        throw new RemoteException("ejbRemote feature is not enabled in server process.");
+        throw new RemoteException("Enterprise beans remote feature is not enabled in server process.");
     }
 
 }

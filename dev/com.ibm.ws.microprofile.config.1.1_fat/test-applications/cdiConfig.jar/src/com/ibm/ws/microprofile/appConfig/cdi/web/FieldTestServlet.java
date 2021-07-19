@@ -79,7 +79,7 @@ public class FieldTestServlet extends AbstractBeanServlet {
     }
 
     @Test
-    @SkipForRepeat(MicroProfileActions.MP40_ID) // TODO: The intended behaviour for this is not defined in the MP Config spec. It may be covered by the answer to this: https://github.com/eclipse/microprofile-config/issues/608
+    @SkipForRepeat({ MicroProfileActions.MP40_ID, MicroProfileActions.MP41_ID }) // TODO: The intended behaviour for this is not defined in the MP Config spec. It may be covered by the answer to this: https://github.com/eclipse/microprofile-config/issues/608
     public void testNullWithDefault() throws Exception {
         test("NULL_WITH_DEFAULT_KEY", "null");
     }

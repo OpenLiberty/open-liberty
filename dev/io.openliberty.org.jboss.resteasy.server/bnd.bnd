@@ -20,7 +20,7 @@ src: src, resources
 -cdiannotations:
 
 -dsannotations: \
-  io.openliberty.org.jboss.resteasy.common.component.LibertyResteasyCdiExtension, \
+  io.openliberty.org.jboss.resteasy.common.component.ResteasyCDIExtensionMetadata, \
   io.openliberty.org.jboss.resteasy.common.component.ResteasyInjectionClassListCollaborator
 -dsannotations-inherit: true
 

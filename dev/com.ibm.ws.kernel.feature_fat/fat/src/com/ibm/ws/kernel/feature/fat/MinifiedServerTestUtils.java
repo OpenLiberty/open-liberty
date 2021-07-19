@@ -92,9 +92,9 @@ public class MinifiedServerTestUtils {
     /**
      * This sets up the class ready to be used but does not create the minified server.
      *
-     * @param className  The name of the test class
+     * @param className The name of the test class
      * @param serverName The name of the server being used
-     * @param lserver    The server to be minified
+     * @param lserver The server to be minified
      * @throws Exception
      */
     public void setup(String className, String serverName, LibertyServer lserver) throws Exception {
@@ -118,9 +118,9 @@ public class MinifiedServerTestUtils {
     /**
      * This minifies a server and then extracts the minified server and starts it.
      *
-     * @param className  The name of the test class
+     * @param className The name of the test class
      * @param serverName The name of the server being used
-     * @param lserver    The server to be minified
+     * @param lserver The server to be minified
      * @throws Exception
      */
     public void setupAndStartMinifiedServer(String className, String serverName, LibertyServer lserver) throws Exception {
@@ -345,6 +345,20 @@ public class MinifiedServerTestUtils {
         }
     }
 
+    /**
+     * Checks if the manifest or lib/extract folders were created for the this test.
+     * If they were created they are invalid and may cause other test buckets to fail.
+     *
+     * @return true if the manifest or lib/extract was created with dummy values; else false
+     */
+    public boolean isManifestOrLibExtractCreatedForTest() {
+
+        if (createdManifest || createdLibExtract)
+            return true;
+        else
+            return false;
+    }
+
     public void tearDown() throws Exception {
         Log.info(MinifiedServerTestUtils.class, "tearDown", "issuing stop to server at " + server.getInstallRoot());
 
@@ -461,5 +475,4 @@ public class MinifiedServerTestUtils {
             br.close();
         }
     }
-
 }

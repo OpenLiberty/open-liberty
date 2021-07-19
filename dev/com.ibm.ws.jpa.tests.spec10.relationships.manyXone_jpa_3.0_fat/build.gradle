@@ -57,10 +57,10 @@ task copyCommonFiles {
 
 addRequiredLibraries {
   dependsOn copyJdbcDrivers
-  dependsOn copyDatabaseRotationDrivers
   dependsOn addJakartaTransformer
   dependsOn addJPAFATTools
   dependsOn copyFAT
+  dependsOn copyTestContainers
 }
 
 jar {

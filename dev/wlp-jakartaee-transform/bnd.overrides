@@ -24,4 +24,4 @@ globalize: false
 instrument.disabled: true
 publish.wlp.jar.disabled: true
 tool.project: true
-generate.replacement: false
+generate.replacement: true

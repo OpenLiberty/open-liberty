@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,7 +37,8 @@ dependencies {
                   project(':com.ibm.ws.security.openidconnect.clients.common')
 
                   
-   requiredLibs project(':com.ibm.ws.security.fat.common')            
+   requiredLibs project(':com.ibm.ws.security.fat.common'),  
+   				project(':com.ibm.ws.security.fat.common.jwt')            
 }
 
 addRequiredLibraries.dependsOn addJakartaTransformer
@@ -290,23 +291,73 @@ task testTokenEndpoint_ZIP (type: Zip, dependsOn: classes) {
   /* start of jose4j copy */
   /* copy contents of the jose4j jar into our test app - we don't have another way to get to the jar */
   from(zipTree("../com.ibm.ws.org.jose4j/build/libs/com.ibm.ws.org.jose4j.jar")) {
+    exclude("META-INF/MANIFEST.MF")
+    into "WEB-INF/classes"
+  }
+  /* end of jose4j copy */
+  
+  /* start of slf4j copy */
+  /* copy contents of the slf4j jar into our test app - we don't have another way to get to the jar */
+  from(zipTree("../com.ibm.ws.org.slf4j.api/build/libs/com.ibm.ws.org.slf4j.api.1.7.7.jar")) {
+    exclude("META-INF/MANIFEST.MF")
+    into "WEB-INF/classes"
+  }
+  /* end of slf4j copy */
+
+  /* start of common security fat copy */
+  /* copy contents of the common security fat jar into our test app - we don't have another way to get to the jar */
+  from(zipTree("../com.ibm.ws.security.fat.common/build/libs/com.ibm.ws.security.fat.common.jar")) {
+    exclude("META-INF/MANIFEST.MF")
+    into "WEB-INF/classes"
+  }
+  /* end of common security copy */  
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** testUserinfoEndpoint.zip
+ **
+ ******************************************************************
+ ******************************************************************/
+task testUserinfoEndpoint_ZIP (type: Zip, dependsOn: classes) { 
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'testUserinfoEndpoint.zip'
+
+  from (new File(projectDir, 'test-applications/testUserinfoEndpoint/resources')) {
+    include 'META-INF/**', 'WEB-INF/**', '*.jsp', '*.html'
+  }
+  from (new File(projectDir, 'build/classes/java/main')) {
+    include 'com/ibm/ws/security/fat/testUserinfoEndpoint/UserinfoEndpointServlet.class'
+    into 'WEB-INF/classes'
+  }
+  
+  /* start of jose4j copy */
+  /* copy contents of the jose4j jar into our test app - we don't have another way to get to the jar */
+  from(zipTree("../com.ibm.ws.org.jose4j/build/libs/com.ibm.ws.org.jose4j.jar")) {
+    exclude("META-INF/MANIFEST.MF")
     into "WEB-INF/classes"
   }
   /* end of jose4j copy */
   /* start of slf4j copy */
   /* copy contents of the slf4j jar into our test app - we don't have another way to get to the jar */
   from(zipTree("../com.ibm.ws.org.slf4j.api/build/libs/com.ibm.ws.org.slf4j.api.1.7.7.jar")) {
+    exclude("META-INF/MANIFEST.MF")
     into "WEB-INF/classes"
   }
-  /* end of jose4j copy */
   /* start of common security fat copy */
   /* copy contents of the common security fat jar into our test app - we don't have another way to get to the jar */
   from(zipTree("../com.ibm.ws.security.fat.common/build/libs/com.ibm.ws.security.fat.common.jar")) {
+    exclude("META-INF/MANIFEST.MF")
     into "WEB-INF/classes"
   }
-  /* end of jose4j copy */  
+    /* start of common security jwt fat copy */
+  /* copy contents of the common security fat jar into our test app - we don't have another way to get to the jar */
+  from(zipTree("../com.ibm.ws.security.fat.common.jwt/build/libs/com.ibm.ws.security.fat.common.jwt.jar")) {
+    exclude("META-INF/MANIFEST.MF")
+    into "WEB-INF/classes"
+  }
 }
-
 /******************************************************************
  ******************************************************************
  **
@@ -367,6 +418,7 @@ assemble.dependsOn oauthclientcert_ZIP
 assemble.dependsOn testMediator_ZIP
 assemble.dependsOn oauthtaidemo_EAR
 assemble.dependsOn testTokenEndpoint_ZIP
+assemble.dependsOn testUserinfoEndpoint_ZIP
 
 
 /******************************************************************

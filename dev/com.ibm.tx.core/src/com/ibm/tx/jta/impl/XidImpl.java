@@ -1,7 +1,7 @@
 package com.ibm.tx.jta.impl;
 
 /*******************************************************************************
- * Copyright (c) 2002, 2014 IBM Corporation and others.
+ * Copyright (c) 2002, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,18 +18,16 @@ import java.util.Arrays;
 import javax.transaction.xa.Xid;
 
 import com.ibm.tx.TranConstants;
-import com.ibm.tx.config.ConfigurationProvider;
-import com.ibm.tx.config.ConfigurationProviderManager;
-import com.ibm.tx.util.logging.Tr;
-import com.ibm.tx.util.logging.TraceComponent;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.Transaction.JTA.Util;
 import com.ibm.ws.Transaction.JTS.Configuration;
 
 /**
- * 
+ *
  * The XidImpl class provides an implementation of the X/Open transaction
  * identifier. It implements JTA javax.transaction.xa.Xid interface.
- * 
+ *
  */
 public class XidImpl implements Xid, Serializable {
     private static final TraceComponent tc = Tr.register(XidImpl.class, TranConstants.TRACE_GROUP, TranConstants.NLS_FILE);
@@ -44,7 +42,7 @@ public class XidImpl implements Xid, Serializable {
     });
 
     //
-    // The format identifier for the Xid. A value of -1 indicates 
+    // The format identifier for the Xid. A value of -1 indicates
     // that the NULL Xid
     //
     final protected int _formatId;
@@ -86,13 +84,11 @@ public class XidImpl implements Xid, Serializable {
     //
     protected final static int WAS_FORMAT_ID = WAS_FID_WASD;
 
-    private static ConfigurationProvider _configProvider = ConfigurationProviderManager.getConfigurationProvider();
-
     /**
      * Initialize an XidImpl using an existing gtrid and a new branch.
-     * 
+     *
      * @param gtrid The gtrid of the original transaction branch
-     * @param pk The new primary key
+     * @param pk    The new primary key
      * @param index The new branch index
      */
     public XidImpl(byte[] gtrid, TxPrimaryKey pk, int index) /* @LI3187A */
@@ -103,10 +99,10 @@ public class XidImpl implements Xid, Serializable {
     /**
      * Initialize an XidImpl using an existing gtrid and a new branch
      * with the formatId specified.
-     * 
-     * @param gtrid The gtrid of the original transaction branch
-     * @param pk The new primary key
-     * @param index The new branch index
+     *
+     * @param gtrid    The gtrid of the original transaction branch
+     * @param pk       The new primary key
+     * @param index    The new branch index
      * @param formatID The formatId
      */
     public XidImpl(byte[] gtrid, TxPrimaryKey pk, int index, int formatID) /* @LI3187A */
@@ -136,7 +132,7 @@ public class XidImpl implements Xid, Serializable {
     /**
      * Mainline constructor. Build an XidImpl from the native Xid as defined
      * in the XA specification.
-     * 
+     *
      * <pre>
      * struct xid_t {
      * long formatID; // format identifier
@@ -149,8 +145,8 @@ public class XidImpl implements Xid, Serializable {
     public XidImpl(byte[] nativeXid, int offset) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "XidImpl", new Object[] {
-                                                  Util.toHexString(nativeXid),
-                                                  offset });
+                                                   Util.toHexString(nativeXid),
+                                                   offset });
 
         _formatId = Util.getIntFromBytes(nativeXid, offset, 4);
 
@@ -188,23 +184,23 @@ public class XidImpl implements Xid, Serializable {
 
     /**
      * XidImpl new branch constructor.
-     * 
+     *
      * Creates a new Xid based on the Xid that was passed in. The only
      * field that differs is the sequence number. A new sequence number
      * should be passed in by the unit of work indicating that this xid
      * represents a new branch of the transaction.
-     * 
-     * @param oldXid The XidImpl to clone
+     *
+     * @param oldXid         The XidImpl to clone
      * @param sequenceNumber The sequence number to use for the new
-     *            Xid. This should be one higher than the previous sequence
-     *            number used by the UnitOfWork, which is keeping track of
-     *            this.
+     *                           Xid. This should be one higher than the previous sequence
+     *                           number used by the UnitOfWork, which is keeping track of
+     *                           this.
      */
     public XidImpl(Xid oldXid, int sequenceNumber) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "XidImpl", new Object[] {
-                                                  oldXid,
-                                                  sequenceNumber });
+                                                   oldXid,
+                                                   sequenceNumber });
         if (tc.isDebugEnabled())
             Tr.debug(tc, "Creating XID for a resource branch");
 
@@ -228,11 +224,11 @@ public class XidImpl implements Xid, Serializable {
     /**
      * XidImpl constructor. This constructor builds an Xid using the native
      * Xid.
-     * 
+     *
      * @param nativeXid The Xid generated by the native TM
-     * @param sequence The sequence number for this transaction branch.
-     * @param stoken The stoken to be logged in this Xid. If null,
-     *            use the stoken for this space.
+     * @param sequence  The sequence number for this transaction branch.
+     * @param stoken    The stoken to be logged in this Xid. If null,
+     *                      use the stoken for this space.
      */
     public XidImpl(byte[] nativeXid,
                    int sequence,
@@ -263,7 +259,7 @@ public class XidImpl implements Xid, Serializable {
 
     /**
      * Initialize an XidImpl using the primary key for a transaction.
-     * 
+     *
      * @param pk The primary key used for the generated XidImpl
      */
     public XidImpl(TxPrimaryKey pk) // @LI3187-3C
@@ -275,9 +271,9 @@ public class XidImpl implements Xid, Serializable {
      * Initialize an XidImpl using the primary key for a transaction. This is the Xid associated
      * with an imported global transaction. The Xid consists of both a gtrid and
      * bqual portion, the gtrid is a copy of the imported gtrid.
-     * 
+     *
      * @param oldXid The old Xid used as a base for the generated XidImpl
-     *            id The local ID used for the generated XidImpl
+     *                   id The local ID used for the generated XidImpl
      */
     public XidImpl(Xid oldXid, TxPrimaryKey pk) {
         this(oldXid.getGlobalTransactionId(), pk, 1); /* @LI3187C */
@@ -285,13 +281,13 @@ public class XidImpl implements Xid, Serializable {
 
     /**
      * yet another contructor.
-     * 
+     *
      * Initialize an XidImpl using the primary key for a transaction. This is the Xid associated
      * with a locally created global transaction. The Xid consists of both a gtrid and
      * bqual portion, the bqual is a copy of the gtrid but with a branch index of 1.
-     * 
+     *
      * @param formatId The format ID used for the generated XidImpl
-     *            pk The primary key used for the generated XidImpl
+     *                     pk The primary key used for the generated XidImpl
      */
     protected XidImpl(int formatId, TxPrimaryKey pk) {
         if (tc.isEntryEnabled())
@@ -323,9 +319,9 @@ public class XidImpl implements Xid, Serializable {
 
     /**
      * Determine whether or not two objects of this type are equal.
-     * 
+     *
      * @param o the object to be compared with this XidImpl.
-     * 
+     *
      * @return Returns true of the supplied object represents the same
      *         global transaction as this, otherwise returns false.
      */
@@ -349,7 +345,7 @@ public class XidImpl implements Xid, Serializable {
 
     /**
      * Return a string representing this XidImpl for debuging
-     * 
+     *
      * @return the string representation of this Xid
      */
     @Override
@@ -368,7 +364,7 @@ public class XidImpl implements Xid, Serializable {
 
     /**
      * Obtain the format identifier part of the XidImpl.
-     * 
+     *
      * @return Format identifier.
      */
     @Override
@@ -378,7 +374,7 @@ public class XidImpl implements Xid, Serializable {
 
     /**
      * Returns the global transaction identifier for this XidImpl.
-     * 
+     *
      * @return the global transaction identifier
      */
     @Override
@@ -388,7 +384,7 @@ public class XidImpl implements Xid, Serializable {
 
     /**
      * Returns the branch qualifier for this XidImpl.
-     * 
+     *
      * @return the branch qualifier
      */
     @Override
@@ -399,7 +395,7 @@ public class XidImpl implements Xid, Serializable {
     /**
      * Build a native Xid form suitable for recreating with the mainline
      * constructor as in the XA specification.
-     * 
+     *
      * <pre>
      * struct xid_t {
      * long formatID; // format identifier
@@ -433,7 +429,7 @@ public class XidImpl implements Xid, Serializable {
 
     /**
      * Gets the otid.tid style raw byte representation of this XidImpl.
-     * 
+     *
      * <pre>
      * struct otid_t {
      * long formatID;
@@ -441,7 +437,7 @@ public class XidImpl implements Xid, Serializable {
      * sequence &lt;octet&gt; tid;
      * };
      * </pre>
-     * 
+     *
      * This is not a huge performer. It is only called when someone
      * has registered a SynchronizationCallback via the LI850 SPIs or if
      * the Activity service needs the tx identifier.
@@ -484,21 +480,20 @@ public class XidImpl implements Xid, Serializable {
     /**
      * Get the cruuid associated with this Xid. For distributed this is
      * the same as the server applid.
-     * 
+     *
      * @return The cruuid for this Xid in byte array format.
      */
     public byte[] getCruuid() {
-        byte[] theCruuid =
-                        Util.duplicateByteArray(
-                                                _bqual,
-                                                BQUAL_UUID_OFFSET,
-                                                BQUAL_UUID_LENGTH);
+        byte[] theCruuid = Util.duplicateByteArray(
+                                                   _bqual,
+                                                   BQUAL_UUID_OFFSET,
+                                                   BQUAL_UUID_LENGTH);
         return theCruuid;
     }
 
     /**
      * Get the stoken associated with this Xid
-     * 
+     *
      * @return The stoken for this Xid in byte array format.
      */
     public byte[] getStoken() {
@@ -529,7 +524,7 @@ public class XidImpl implements Xid, Serializable {
 
     /**
      * Get the sequence number assigned to this transaction branch.
-     * 
+     *
      * @return The sequence number assigned to this transaction branch,
      *         stored in a byte array of size 2.
      */
@@ -564,7 +559,7 @@ public class XidImpl implements Xid, Serializable {
 
     /**
      * Get the epoch number associated with this Xid.
-     * 
+     *
      * @return The epoch number for this Xid in integer format.
      */
     public int getEpoch() {
@@ -580,7 +575,7 @@ public class XidImpl implements Xid, Serializable {
 
     /**
      * Compute the hash code.
-     * 
+     *
      * @return the computed hashcode
      */
     @Override
@@ -597,7 +592,7 @@ public class XidImpl implements Xid, Serializable {
      * This is a first pass check on recovery to filter XIDs from RMs.
      * We do not need to validate platform as the next phase check is for
      * UUID which will be different for each application server.
-     * 
+     *
      * @return true iff the format ID is 0xC9C20186 or 0xC9C2D3E3 and z/OS
      *         or 0x57415344 for distributed.
      */
@@ -631,11 +626,11 @@ public class XidImpl implements Xid, Serializable {
 
     /**
      * Returns the bquals branch index.
-     * 
+     *
      * @return the global transaction identifier
      */
     public final int getBqualBranchIndex() {
-        // Bit wise & means most significant bit of bqual branch index no longer signifies -128 as it is no longer the MSB 
+        // Bit wise & means most significant bit of bqual branch index no longer signifies -128 as it is no longer the MSB
         return 0xff & _bqual[BQUAL_BRANCH_INDEX_OFFSET];
     }
 
@@ -644,10 +639,10 @@ public class XidImpl implements Xid, Serializable {
 /*
  * private final static int BQUAL_PKEY_STCK_OFFSET = 0;
  * private final static int BQUAL_PKEY_STCK_LENGTH = 8;
- * 
+ *
  * private final static int BQUAL_PKEY_EPOCH_OFFSET = 8;
  * private final static int BQUAL_PKEY_EPOCH_LENGTH = 4;
- * 
+ *
  * private final static int BQUAL_PKEY_SEQUENCE_OFFSET = 12;
  * private final static int BQUAL_PKEY_SEQUENCE_LENGTH = 4;
  */
@@ -677,4 +672,4 @@ public class XidImpl implements Xid, Serializable {
 
     public final static int BQUAL_JTA_BQUAL_LENGTH = 54;
 
-} // class XidImpl 
+} // class XidImpl

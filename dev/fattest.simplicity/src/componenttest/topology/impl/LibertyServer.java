@@ -858,9 +858,10 @@ public class LibertyServer implements LogMonitorClient {
      */
     public void reconfigureServerUsingExpandedConfiguration(String testName, String configDir, String newConfig, boolean resetMark, String... waitForMessages) throws Exception {
 
+        String thisMethod = "reconfigureServerUsingExpandedConfiguration";
         ServerFileUtils serverFileUtils = new ServerFileUtils();
         String newServerCfg = serverFileUtils.expandAndBackupCfgFile(this, configDir + "/" + newConfig, testName);
-        Log.info(c, "reconfigureServerUsingExpandedConfiguration", "Reconfiguring server to use new config: " + newConfig);
+        Log.info(c, thisMethod, "Reconfiguring server to use new config: " + newConfig);
         if (resetMark) {
             setMarkToEndOfLog();
         }
@@ -868,6 +869,29 @@ public class LibertyServer implements LogMonitorClient {
 
         Thread.sleep(200); // Sleep for 200ms to ensure we do not process the file "too quickly" by a subsequent call
         waitForConfigUpdateInLogUsingMark(listAllInstalledAppsForValidation(), waitForMessages);
+
+        // wait for ssl port restart
+        waitForSSLRestart();
+
+    }
+
+    public void waitForSSLRestart() throws Exception {
+
+        String thisMethod = "waitForSSLRestart";
+        // look for the "CWWKO0220I: TCP Channel defaultHttpEndpoint-ssl has stopped listening for requests on host " message
+        // if we find it, then wait for "CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl has been started and is now listening for requests on host"
+        String sslStopMsg = waitForStringInLogUsingMark("CWWKO0220I:.*defaultHttpEndpoint-ssl.*", 500);
+        if (sslStopMsg != null) {
+            String sslStartMsg = waitForStringInLogUsingMark("CWWKO0219I:.*defaultHttpEndpoint-ssl.*");
+            if (sslStartMsg == null) {
+                Log.warning(c, "SSL may not have started properly - future failures may be due to this");
+            } else {
+                Log.info(c, thisMethod, "SSL appears have restarted properly");
+            }
+        } else {
+            Log.info(c, thisMethod, "Did not detect a restart of the SSL port");
+        }
+
     }
 
     /**
@@ -977,7 +1001,7 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     /**
-     * Given a formatted "CWWKO0221E" error string, parse out a port number and use it to invoke 
+     * Given a formatted "CWWKO0221E" error string, parse out a port number and use it to invoke
      * printProcessHoldingPort
      *
      * Example error (newlines added for readability):
@@ -1002,7 +1026,7 @@ public class LibertyServer implements LogMonitorClient {
                     int port = Integer.parseInt(errorString.substring(start, end));
                     if (port > 0) {
                         printProcessHoldingPort(port);
-                        return;    
+                        return;
                     }
                 } catch (NumberFormatException nfe) {
                     Log.info(c, m, "Failed to find a port number, cannot log the process holding the port");
@@ -4235,6 +4259,8 @@ public class LibertyServer implements LogMonitorClient {
     public void restoreServerConfigurationAndWaitForApps(String... extraMsgs) throws Exception {
         restoreServerConfiguration();
         waitForConfigUpdateInLogUsingMark(listAllInstalledAppsForValidation(), extraMsgs);
+        // wait for ssl port restart
+        waitForSSLRestart();
     }
 
     public String getServerConfigurationPath() {

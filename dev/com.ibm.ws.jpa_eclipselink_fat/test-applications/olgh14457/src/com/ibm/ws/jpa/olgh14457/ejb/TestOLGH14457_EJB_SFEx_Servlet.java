@@ -43,4 +43,13 @@ public class TestOLGH14457_EJB_SFEx_Servlet extends EJBTestVehicleServlet {
         final String testResource = "test-jpa-resource-cmex";
         executeTest(testName, testMethod, testResource);
     }
+
+    // testCaseExpressionReturnTypeParameter
+    @Test
+    public void jpa_eclipselink_olgh14457_testCaseExpressionReturnTypeParameter_EJB_SFEx_CMTS_Web() throws Exception {
+        final String testName = "jpa_eclipselink_olgh14457_testCaseExpressionReturnTypeParameter_EJB_SFEx_CMTS_Web";
+        final String testMethod = "testCaseExpressionReturnTypeParameter";
+        final String testResource = "test-jpa-resource-cmex";
+        executeTest(testName, testMethod, testResource);
+    }
 }

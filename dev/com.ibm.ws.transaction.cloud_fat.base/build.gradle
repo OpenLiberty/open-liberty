@@ -24,5 +24,5 @@ task addDerbyToSharedDir(type: Copy) {
 
 addRequiredLibraries.dependsOn addDerbyToSharedDir
 addRequiredLibraries.dependsOn copyJdbcDrivers
-addRequiredLibraries.dependsOn copyDatabaseRotationDrivers
 addRequiredLibraries.dependsOn addJakartaTransformer
+addRequiredLibraries.dependsOn copyTestContainers

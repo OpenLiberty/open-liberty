@@ -1,0 +1,79 @@
+#*******************************************************************************
+# Copyright (c) 2021 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: WebService AtomicTransaction Common
+Bundle-SymbolicName: com.ibm.ws.wsat.common.3.2
+Bundle-Description: WebService AtomicTransaction Common bundle; version=${bVersion}
+
+jakartaeeMe: true
+
+IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
+
+WS-TraceGroup: WSAT
+
+Import-Package: \
+  javax.xml.ws.*;version="[2.2,3)", \
+  org.apache.cxf.*;version="[3.2,4)", \
+  *
+
+Export-Package: \
+  com.ibm.ws.wsat.service, \
+  com.ibm.wsspi.webservices.wsat;provide=true
+ 
+Private-Package: \
+  com.ibm.ws.wsat.resources, \
+  com.ibm.ws.wsat.common.impl, \
+  com.ibm.ws.wsat.service.impl, \
+  com.ibm.ws.wsat.tm.impl
+
+Include-Resource: \
+  OSGI-INF=../com.ibm.ws.wsat.common/resources/OSGI-INF, \
+  META-INF=../com.ibm.ws.wsat.common/resources/META-INF
+  
+-dsannotations: \
+  com.ibm.ws.wsat.service.impl.HandlerService, \
+  com.ibm.ws.wsat.service.impl.ProtocolService, \
+  com.ibm.ws.wsat.service.impl.WSATConfigServiceImpl, \
+  com.ibm.ws.wsat.service.impl.WSATServiceImpl, \
+  com.ibm.ws.wsat.tm.impl.ParticipantFactoryService, \
+  com.ibm.ws.wsat.tm.impl.CoordinatorFactoryService
+
+instrument.classesExcludes: com/ibm/ws/wsat/resources/*.class
+
+-buildpath: \
+    com.ibm.ws.wsat.common;version=latest,\
+	com.ibm.tx.jta;version=latest,\
+	com.ibm.websphere.appserver.spi.httptransport;version=latest,\
+	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
+	com.ibm.websphere.appserver.spi.logging;version=latest,\
+	com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.ws.channelfw;version=latest,\
+	com.ibm.ws.classloading;version=latest,\
+	com.ibm.ws.jaxws.wsat;version=latest,\
+	com.ibm.ws.kernel.feature;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.logging;version=latest,\
+	com.ibm.ws.wsat.cxf.utils.3.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.frontend.simple.3.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.3.2;version=latest,\
+	com.ibm.ws.org.apache.neethi.3.1.1;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.transport.http;version=latest,\
+	com.ibm.ws.tx.embeddable;version=latest,\
+	com.ibm.ws.wsat.webclient;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest

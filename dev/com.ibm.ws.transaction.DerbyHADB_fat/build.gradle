@@ -34,8 +34,8 @@ autoFVT.dependsOn copyFeatureBundle
 
 addRequiredLibraries.dependsOn copyJdbcDrivers
 addRequiredLibraries.dependsOn copyTxJdbcDrivers
-addRequiredLibraries.dependsOn copyDatabaseRotationDrivers
 addRequiredLibraries.dependsOn addJakartaTransformer
+addRequiredLibraries.dependsOn copyTestContainers
 
 clean.doLast {
   if (file('build').exists()){

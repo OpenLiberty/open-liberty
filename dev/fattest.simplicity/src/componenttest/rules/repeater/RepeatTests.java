@@ -12,6 +12,7 @@ package componenttest.rules.repeater;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.junit.rules.ExternalResource;
 import org.junit.runner.Description;
@@ -47,6 +48,13 @@ public class RepeatTests extends ExternalResource {
     }
 
     /**
+     * Adds an iteration of test execution without making any modifications, but only run in FULL mode
+     */
+    public static RepeatTests withoutModificationInFullMode() {
+        return new RepeatTests().andWithoutModificationInFullMode();
+    }
+
+    /**
      * Adds an iteration of test execution, where the action.setup() is called before repeating the tests.
      */
     public static RepeatTests with(RepeatTestAction action) {
@@ -70,10 +78,30 @@ public class RepeatTests extends ExternalResource {
     }
 
     /**
+     * Adds an iteration of test execution without making any modifications, but run in FULL mode
+     */
+    public RepeatTests andWithoutModificationInFullMode() {
+        actions.add(new EmptyAction().fullFATOnly());
+        return this;
+    }
+
+    /**
      * Adds an iteration of test execution, where the action.setup() is called before repeating the tests.
      */
     public RepeatTests andWith(RepeatTestAction action) {
         actions.add(action);
+        return this;
+    }
+
+    /**
+     * Removes an iteration of test execution of the previous <code>and*</code> call if the passed-in supplier
+     * returns false. If true or if no test executions have been added, this method will have no effect.
+     */
+    public RepeatTests onlyIf(Supplier<Boolean> check) {
+        int size = actions.size();
+        if (size > 0 && !check.get()) {
+            actions.remove(size - 1);
+        }
         return this;
     }
 

@@ -1,0 +1,1 @@
+DELETE FROM ${schemaname}.CIEntity;

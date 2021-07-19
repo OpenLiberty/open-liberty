@@ -43,6 +43,7 @@ import org.omg.CosNaming.NameComponent;
 import org.omg.CosNaming.NamingContext;
 import org.omg.CosNaming.NamingContextHelper;
 
+import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
 
 @WebServlet("/EJBHomeTestServlet")
@@ -115,6 +116,8 @@ public class EJBHomeTestServlet extends FATServlet {
      * so a tie mismatch will result in an OutOfMemoryError.
      */
     @Test
+    // TODO: Remove Skip when #17757 is fixed
+    @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
     public void testEJBHomeWriteValueDirect_EJBHomeTest() throws Exception {
         List<?> expected = new ArrayList<Object>(Arrays.asList("a", "b", "c"));
         List<?> actual = stubTestWriteValue((Stub) home.create(), expected);

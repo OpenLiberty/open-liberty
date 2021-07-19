@@ -15,8 +15,12 @@ case "$1" in
 
         echo "Setting up the systemd openliberty service"
         if [ -x "/etc/init.d/openliberty" ] && [ -r "/lib/systemd/system/openliberty@.service" ]; then
-            systemctl daemon-reload
-            systemctl enable openliberty@defaultServer.service
+            #only enable defaultServer service if any openliberty@ services exist. 
+            NUM_EXISTING_SERVICE=`ls /etc/systemd/system/multi-user.target.wants/ |grep openliberty@ | wc -l`
+            if [ "${NUM_EXISTING_SERVICE}" -eq "0" ]; then
+                systemctl daemon-reload
+                systemctl enable openliberty@defaultServer.service
+            fi
         fi
 
         echo "Creating the license directory"

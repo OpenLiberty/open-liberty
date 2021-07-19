@@ -54,6 +54,5 @@ task copyDB2(type: Copy) {
   dependsOn copyAutomaticDerby
   dependsOn copyDB2
   dependsOn copyJdbcDrivers
-  //Database Rotation
-  dependsOn copyDatabaseRotationDrivers
+  dependsOn copyTestContainers
 }

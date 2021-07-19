@@ -36,6 +36,7 @@ import org.omg.CosNaming.NamingContext;
 import org.omg.CosNaming.NamingContextHelper;
 
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
 
 @WebServlet("/BasicRemoteTestServlet")
@@ -211,6 +212,8 @@ public class BasicRemoteTestServlet extends FATServlet {
     }
 
     @Test
+    // TODO: Remove Skip when #17742 is fixed
+    @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
     @ExpectedFFDC({
                     "java.lang.reflect.InvocationTargetException",
                     "com.ibm.ws.ejbcontainer.remote.fat.basic.TestRollbackException",

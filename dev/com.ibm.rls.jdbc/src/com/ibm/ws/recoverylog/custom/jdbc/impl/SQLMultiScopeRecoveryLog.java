@@ -36,9 +36,9 @@ import java.util.concurrent.locks.ReentrantLock;
 import javax.sql.DataSource;
 
 import com.ibm.tx.config.ConfigurationProviderManager;
-import com.ibm.tx.util.logging.FFDCFilter;
-import com.ibm.tx.util.logging.Tr;
-import com.ibm.tx.util.logging.TraceComponent;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.recoverylog.spi.Configuration;
 import com.ibm.ws.recoverylog.spi.CustomLogProperties;
@@ -4257,6 +4257,20 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
         _lightweightTransientRetryAttempts = lightweightTransientErrorRetryAttempts;
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.recoverylog.spi.RecoveryLog#retainLogsInPeerRecoveryEnv(boolean)
+     */
+    @Override
+    public void retainLogsInPeerRecoveryEnv(boolean retainLogs) {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "retainLogsInPeerRecoveryEnv", new Object[] { retainLogs, this });
+        // a noop in this implementation
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "retainLogsInPeerRecoveryEnv", this);
+    }
+
     /**
      * This concrete class extends SQLHADBRetry providing the local recovery log claim code to be retried in an HA RDBMS environment.
      *
@@ -4372,4 +4386,5 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
         }
 
     }
+
 }

@@ -416,18 +416,25 @@ public class WSS4JInInterceptor extends AbstractWSS4JInterceptor {
                     newNode = DOMUtils.getDomElement(document.importNode(node, true));
                     elem.getOwnerDocument().getDocumentElement().getFirstChild().
                         getNextSibling().replaceChild(newNode, node);
-                    List<WSSecurityEngineResult> encryptResults = wsResult.getActionResults().get(WSConstants.ENCR);
-                    if (encryptResults != null) {
-                        for (WSSecurityEngineResult result : wsResult.getActionResults().get(WSConstants.ENCR)) {
+                    //Liberty code change start
+                    List<WSSecurityEngineResult> encryptResults = new ArrayList<>();
+                    if (wsResult.getActionResults().containsKey(WSConstants.ENCR)) {
+                        encryptResults.addAll(wsResult.getActionResults().get(WSConstants.ENCR));
+                    }               
+                    //List<WSSecurityEngineResult> encryptResults = wsResult.getActionResults().get(WSConstants.ENCR);               
+                    if (!encryptResults.isEmpty()) {
+                        for (WSSecurityEngineResult result : encryptResults) {
                             List<WSDataRef> dataRefs = CastUtils.cast((List<?>)result
                                                                       .get(WSSecurityEngineResult.TAG_DATA_REF_URIS));
-                            for (WSDataRef dataRef : dataRefs) {
-                                if (dataRef.getProtectedElement() == node) {
-                                    dataRef.setProtectedElement((Element)newNode);
+                            if (dataRefs != null) {
+                                for (WSDataRef dataRef : dataRefs) {
+                                    if (dataRef.getProtectedElement() == node) {
+                                        dataRef.setProtectedElement((Element)newNode);
+                                    }
                                 }
                             }
                         }
-                    }
+                    } //Liberty code change end
 
                     List<WSSecurityEngineResult> signedResults = new ArrayList<>();
                     if (wsResult.getActionResults().containsKey(WSConstants.SIGN)) {
@@ -442,11 +449,13 @@ public class WSS4JInInterceptor extends AbstractWSS4JInterceptor {
                     for (WSSecurityEngineResult result : signedResults) {
                         List<WSDataRef> dataRefs = CastUtils.cast((List<?>)result
                                                                   .get(WSSecurityEngineResult.TAG_DATA_REF_URIS));
-                        for (WSDataRef dataRef :dataRefs) {
-                            if (dataRef.getProtectedElement() == node) {
-                                dataRef.setProtectedElement((Element)newNode);
+                        if (dataRefs != null) { //Liberty code change start
+                            for (WSDataRef dataRef :dataRefs) {
+                                if (dataRef.getProtectedElement() == node) {
+                                    dataRef.setProtectedElement((Element)newNode);
+                                }
                             }
-                        }
+                        } //Liberty code change end
                     }
                 } catch (Exception ex) {
                     //just to the best try

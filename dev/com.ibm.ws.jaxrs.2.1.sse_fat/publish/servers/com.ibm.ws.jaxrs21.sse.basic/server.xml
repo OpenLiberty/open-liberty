@@ -19,5 +19,8 @@
 	<variable name="onError" value="FAIL" />
 
 	<application location="BasicSseApp.war"/>
+	
+	<javaPermission codebase="${server.config.dir}/apps/BasicSseApp.war" className="java.lang.RuntimePermission" name="modifyThread"/>
+	
 
 </server>

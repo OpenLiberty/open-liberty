@@ -50,3 +50,4 @@ Import-Package: \
   @${repo;org.bouncycastle:bcprov-jdk15on;1.61;EXACT}, \
   @${repo;org.bouncycastle:bcpkix-jdk15on;1.61;EXACT}
 
+jakartaeeMe: true

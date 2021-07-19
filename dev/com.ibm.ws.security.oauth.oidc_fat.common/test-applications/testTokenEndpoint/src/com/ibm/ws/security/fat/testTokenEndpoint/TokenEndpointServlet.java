@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.fat.testTokenEndpoint;
 
@@ -28,7 +28,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.json.java.JSONObject;
-import com.ibm.websphere.security.jwt.Claims;
 import com.ibm.websphere.security.jwt.JwtBuilder;
 import com.ibm.websphere.security.jwt.JwtToken;
 import com.ibm.ws.security.fat.common.utils.KeyTools;
@@ -70,25 +69,27 @@ public class TokenEndpointServlet extends HttpServlet {
         JwtBuilder builder = null;
         JwtToken builtToken = null;
 
-        Map<String, String[]> foo = req.getParameterMap();
-        foo.entrySet().iterator();
+        Map<String, String[]> parms = req.getParameterMap();
+        parms.entrySet().iterator();
         Iterator<Entry<String, String[]>> itr = req.getParameterMap().entrySet().iterator();
         while (itr.hasNext()) {
             Map.Entry<String, String[]> entry = itr.next();
             System.out.println("Parm: " + entry.getKey() + " with Value: " + req.getParameter(entry.getKey()));
         }
 
-        String builderId = req.getParameter("builderId");
-        System.out.println("Using builderId: " + builderId);
+        String builderId = null;
         try {
             token = req.getParameter("overrideToken");
             if (token == null) { // if the calling test hacked up a token that we want to use, skip creating a new token
+                builderId = req.getParameter("builderId");
+                System.out.println("Using builderId: " + builderId);
                 if (builderId == null) {
                     // just use the default builder
                     builder = JwtBuilder.create();
                 } else {
                     builder = JwtBuilder.create(builderId);
                 }
+                builder.claim("token_src", "tokenEndpoint stub");
                 builder.claim("test", "token for testing");
                 builder.claim("at_hash", "dummy_hash_value");
                 builder.claim("uniqueSecurityName", "testuser");
@@ -98,7 +99,6 @@ public class TokenEndpointServlet extends HttpServlet {
                 setEncryptWith(builder, req);
                 builtToken = builder.buildJwt();
                 token = builtToken.compact();
-                //            token = hackHeader(writer, token, req);
             }
         } catch (Exception e) {
             writer.println(e);
@@ -166,25 +166,17 @@ public class TokenEndpointServlet extends HttpServlet {
             pw.println("Header: Key: " + key + " value: " + headerInfo.get(key));
         }
 
-        Claims theClaims = jwtToken.getClaims();
-        if (theClaims == null) {
+        Map<String, Object> claims = jwtToken.getClaims();
+        if (null == claims || claims.isEmpty()) {
             pw.println("Token contained no claims");
-            return;
-        }
-
-        // Print everything that is in the payload
-        String jString = theClaims.toJsonString();
-        pw.println("JSON String: " + jString);
-
-        if (jString != null) {
-            JsonObject jObject = Json.createReader(new StringReader(jString)).readObject();
-            Set<String> claimKeys = jObject.keySet();
-            for (String key : claimKeys) {
-                pw.println("Claim: Key: " + key + " value: " + jObject.get(key));
-            }
         } else {
-            pw.println("Claim json string is null");
+            Iterator<Map.Entry<String, Object>> claimItr = claims.entrySet().iterator();
+            while (claimItr.hasNext()) {
+                Map.Entry<String, Object> claim = claimItr.next();
+                pw.println("Claim: Key: " + claim.getKey() + " value: " + claim.getValue());
+            }
         }
+
     }
 
     /**
@@ -217,8 +209,7 @@ public class TokenEndpointServlet extends HttpServlet {
             if (encryptKeyString != null) {
                 encryptKey = KeyTools.getKeyFromPem(encryptKeyString);
             }
-            System.out.println("Calling encryptWith with parms: keyManagementAlg=" + keyMgmtAlg + ", keyManagementKey=" + encryptKey + ", contentEncryptionAlg="
-                               + contentEncryptAlg);
+            System.out.println("Calling encryptWith with parms: keyManagementAlg=" + keyMgmtAlg + ", keyManagementKey=" + encryptKey + ", contentEncryptionAlg=" + contentEncryptAlg);
             // encryptWith will use default values for all but the actual key - that must be passed
             builder.encryptWith(keyMgmtAlg, encryptKey, contentEncryptAlg);
             //            }
@@ -227,54 +218,5 @@ public class TokenEndpointServlet extends HttpServlet {
         }
 
     }
-
-    //    protected String hackHeader(PrintWriter pw, String origToken, HttpServletRequest req) throws Exception {
-    //
-    //        String type = req.getParameter("type");
-    //        String contentType = req.getParameter("contentType");
-    //
-    //        if (type != null || contentType != null) {
-    //            if (token == null) {
-    //                pw.println("Token was null");
-    //                throw new Exception("Null token was passed");
-    //            }
-    //
-    //            String[] tokenParts = token.split("\\.");
-    //            if (tokenParts == null) {
-    //                pw.println("Token array is null");
-    //                throw new Exception("Split token was null Null");
-    //            }
-    //
-    //            //            String decodedHeader = new String(Base64.getDecoder().decode(tokenParts[0]), "UTF-8");
-    //            //            pw.println("Decoded header: " + decodedHeader);
-    //            //
-    //            //            JsonObject headerInfo = Json.createReader(new StringReader(decodedHeader)).readObject();
-    //            JsonWebEncryption _origjwe = (JsonWebEncryption) JsonWebEncryption.fromCompactSerialization(origToken);
-    //            JsonWebEncryption _jwe = new JsonWebEncryption();
-    //            //            Headers foo = _origjwe.getHeaders();
-    //
-    //            //Set<String> headerKeys = headerInfo.keySet();
-    //            if (type != null) {
-    //                //                headerInfo.put("typ", JsonValue.class.cast(type)) ;
-    //                _jwe.setHeader("typ", type);
-    //                //                foo.setStringHeaderValue("typ", type);
-    //            }
-    //            if (contentType != null) {
-    //                //                headerInfo.put("cty", JsonValue.class.cast(contentType));
-    //                _jwe.setHeader("cty", contentType);
-    //                //                foo.setStringHeaderValue("cty", contentType);
-    //            }
-    //            //            String encryptKeyString = req.getParameter("encrypt_key");
-    //            //            if (encryptKeyString != null) {
-    //            //                Key key = KeyTools.getKeyFromPem(encryptKeyString);
-    //            //                _jwe.setKey(key);
-    //            //            }
-    //            _jwe.setPayload(_origjwe.getPayload());
-    //            _jwe.setKey(_origjwe.getKey());
-    //            return _jwe.getCompactSerialization();
-    //        } else {
-    //            return origToken;
-    //        }
-    //    }
 
 }

@@ -14,6 +14,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 
+import com.ibm.ws.jca.fat.classloading.sharedlib.LibraryClassThatDoesNotUseResourceAdapterClasses;
+import com.ibm.ws.jca.fat.classloading.sharedlib.LibraryClassThatUsesResourceAdapterClasses;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -124,4 +127,24 @@ public class ClassLoadingTestServlet extends HttpServlet {
             System.out.println("Was not able to load third party class, this is correct.");
 
     }
+
+    /**
+     * Verify that resource adapter classes are available to a library that the
+     * resourceAdapter classloader references, which is in turn referenced by the application
+     * classloader via classProviderRef.
+     */
+    public void testResourceAdapterClassesAccessibleToSharedLibrary(HttpServletRequest request, PrintWriter out) throws Exception {
+        LibraryClassThatUsesResourceAdapterClasses libClassInstance = new LibraryClassThatUsesResourceAdapterClasses();
+        libClassInstance.createQueue();
+        libClassInstance.createTopic();
+    }
+
+    /**
+     * Verify that the application can use classes from a shared library.
+     */
+    public void testSharedLibraryClassesAccessibleToApplication(HttpServletRequest request, PrintWriter out) throws Exception {
+        LibraryClassThatDoesNotUseResourceAdapterClasses libClassInstance = new LibraryClassThatDoesNotUseResourceAdapterClasses();
+        libClassInstance.createSomething();
+    }
+
 }

@@ -29,12 +29,4 @@ Import-Package: \
  org.apache.cxf.*;version="[3.2.4,4.0)", \
  *
 
-DynamicImport-Package: org.apache.cxf.bus, \
- org.apache.cxf.*
-
-Include-Resource:\
-  @${repo;org.apache.cxf:cxf-rt-ws-mex;3.4.1;EXACT}!/META-INF/DEPENDENCIES, \
-  @${repo;org.apache.cxf:cxf-rt-ws-mex;3.4.1;EXACT}!/META-INF/LICENSE, \
-  @${repo;org.apache.cxf:cxf-rt-ws-mex;3.4.1;EXACT}!/META-INF/NOTICE, \
-  @${repo;org.apache.cxf:cxf-rt-ws-mex;3.4.1;EXACT}!/META-INF/cxf/*
-
+jakartaeeMe: true

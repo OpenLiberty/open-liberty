@@ -1245,7 +1245,7 @@ public class BaseTraceService implements TrService {
     private FileLogHeader newFileLogHeader(boolean trace, LogProviderConfigImpl config) {
         boolean isJSON = false;
         String messageFormat = config.getMessageFormat();
-        if (LoggingConstants.JSON_FORMAT.equals(messageFormat)) {
+        if (!trace && LoggingConstants.JSON_FORMAT.equals(messageFormat)) {
             isJSON = true;
             String jsonHeader = constructJSONHeader(messageFormat, config);
             return new FileLogHeader(jsonHeader, trace, javaLangInstrument, isJSON);

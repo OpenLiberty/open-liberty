@@ -12,10 +12,17 @@
 package com.ibm.ws.recoverylog.spi;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Stack;
 
-import com.ibm.tx.util.logging.Tr;
-import com.ibm.tx.util.logging.TraceComponent;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 
 //------------------------------------------------------------------------------
 // Class: RLSUtils
@@ -25,7 +32,7 @@ import com.ibm.tx.util.logging.TraceComponent;
  */
 public class RLSUtils {
     private static final TraceComponent tc = Tr.register(RLSUtils.class,
-                                                         TraceConstants.TRACE_GROUP, null);
+                                                         TraceConstants.TRACE_GROUP, TraceConstants.NLS_FILE);
 
     /**
      * Lookup string that allows character digit lookup by index value.
@@ -164,7 +171,7 @@ public class RLSUtils {
                 if (tc.isEventEnabled())
                     Tr.event(tc, "Creating directory tree", requiredDirectoryTree);
 
-                Stack pathStack = new Stack();
+                Stack<File> pathStack = new Stack<File>();
 
                 while (target != null) {
                     pathStack.push(target);
@@ -172,7 +179,7 @@ public class RLSUtils {
                 }
 
                 while (!pathStack.empty() && exists) {
-                    target = (File) pathStack.pop();
+                    target = pathStack.pop();
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Checking path to " + target.getAbsolutePath());
 
@@ -228,34 +235,78 @@ public class RLSUtils {
         }
 
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "createDirectoryTree", new Boolean(exists));
+            Tr.exit(tc, "createDirectoryTree", exists);
         return exists;
+    }
+
+    /**
+     * Move a filesystem directory to a hidden trash directory for subsequent deletion
+     *
+     * @param directoryToBeDeleted
+     * @return
+     */
+    public static void archiveAndDeleteDirectoryTree(File directoryToBeDeleted) {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "archiveAndDeleteDirectoryTree", directoryToBeDeleted.getAbsolutePath());
+        String trashDir = directoryToBeDeleted.getParent() + File.separator + ".trash";
+        createDirectoryTree(trashDir);
+        File to = new File(trashDir + File.separator + directoryToBeDeleted.getName());
+
+        directoryToBeDeleted.renameTo(to);
+
+        File trashDirFile = new File(trashDir);
+        for (File file : trashDirFile.listFiles()) {
+            deleteDirectoryTreeTrash(file);
+        }
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "archiveAndDeleteDirectoryTree");
     }
 
     /**
      * Recursively delete a filesystem directory and its contents.
      *
      * @param directoryToBeDeleted
-     * @return
      */
-    public static boolean deleteDirectoryTree(File directoryToBeDeleted) {
+    public static void deleteDirectoryTreeTrash(File directoryToBeDeleted) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "deleteDirectoryTree", directoryToBeDeleted.getAbsolutePath());
-        boolean deleted = false;
+            Tr.entry(tc, "deleteDirectoryTreeTrash", directoryToBeDeleted.getAbsolutePath());
+        Path rootPath = Paths.get(directoryToBeDeleted.getAbsolutePath());
 
-        synchronized (_directoryCreationLock) {
-            File[] allContents = directoryToBeDeleted.listFiles();
-            if (allContents != null) {
-                for (File file : allContents) {
-                    deleteDirectoryTree(file);
+        try {
+            Files.walkFileTree(rootPath, new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
+                    if (tc.isEntryEnabled())
+                        Tr.debug(tc, "deleting file ", file.toString());
+                    try {
+                        Files.delete(file);
+                    } catch (IOException e) {
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "visitFile: failed to delete because:", e);
+                    }
+                    return FileVisitResult.CONTINUE;
                 }
-            }
-            deleted = directoryToBeDeleted.delete();
+
+                @Override
+                public FileVisitResult postVisitDirectory(Path dir, IOException exc) {
+                    if (tc.isEntryEnabled())
+                        Tr.debug(tc, "deleting dir ", dir.toString());
+                    try {
+                        Files.delete(dir);
+                    } catch (IOException e) {
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "postVisitDirectory: failed to delete because:", e);
+                    }
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+        } catch (IOException e) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "deleteDirectoryTreeTrash: failed to delete because:", e);
         }
 
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "deleteDirectoryTree", new Boolean(deleted));
-        return deleted;
-
+            Tr.exit(tc, "deleteDirectoryTreeTrash");
+        return;
     }
 }

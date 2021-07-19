@@ -317,7 +317,8 @@ SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.useraction=Verifica\u0163i URL-ul de cerere
 # 0=Signature algorithm from MP Config properties, 1=Default algorithm that will be used, 2=List of supported algorithms
 MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED=CWWKS6053W: Algoritmul de semn\u0103tur\u0103 [{0}] care este specificat de propriet\u0103\u0163ile MicroProfile Config nu este suportat. Va fi folosit algoritmul de semn\u0103tur\u0103 [{1}]. Algoritmii suporta\u0163i sunt: {2}
 MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED.explanation=Doar un anumit set de algoritmi RSA, Elliptical Curve \u015fi HMAC sunt suporta\u0163i. Algoritmul de semn\u0103tur\u0103 care este specificat de propriet\u0103\u0163ile MicroProfile Config nu este unul dintre algoritmii de semn\u0103tur\u0103 suporta\u0163i.
-MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED.useraction=Specifica\u0163i un algoritm de semn\u0103tur\u0103 suportat \u00een propriet\u0103\u0163ile MicroProfile Config. Algoritmii suporta\u0163i sunt afi\u015fa\u0163i \u00een mesaj. 
+MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED.useraction=Specifica\u0163i un algoritm de semn\u0103tur\u0103 suportat \u00een propriet\u0103\u0163ile MicroProfile Config. Algoritmii suporta\u0163i sunt afi\u015fa\u0163i \u00een mesaj.
+
 # Do not translate "JSON Web Token", "AMR", "JWT"
 # 0=AMR claim of the token, 1=JWT configuration ID, 2=AMR specified in server configuration
 JWT_AMR_CLAIM_NOT_VALID=CWWKS6054E: AMR-ul [{0}] al jetonului web JSON (JWT) furnizat nu este listat ca un AMR de \u00eencredere \u00een configura\u0163ia JWT [{1}]. AMR-urile de \u00eencredere sunt [{2}].
@@ -381,3 +382,7 @@ JWE_REQUIRED_BUT_TOKEN_NOT_JWE.useraction=Pentru a accepta JWS \u00een locu de j
 NESTED_JWS_REQUIRED_BUT_NOT_FOUND=CWWKS6065E: Datele utile (payload) ale jetonului JWE (JSON Web Encryption) care este inclus \u00een cerere nu este un jeton JWS (JSON Web Signature).
 NESTED_JWS_REQUIRED_BUT_NOT_FOUND.explanation=Datele utile ale unui jeton JWE trebuie s\u0103 fie un JWT (JSON Web Token) \u00een formatul JWS.
 NESTED_JWS_REQUIRED_BUT_NOT_FOUND.useraction=Asigura\u0163i-v\u0103 c\u0103 datele utile ale jetonului JWE reprezint\u0103 un JWT valid \u00een formatul JWS.
+
+JWE_DECRYPTION_KEY_MISSING=CWWKS6066E: Jetonul JWE (JSON Web Encryption) nu poate fi decriptat deoarece nu a putut fi g\u0103sit\u0103 o cheie de decriptare. Atributul de configura\u0163ie server {0} este setat la [{1}].
+JWE_DECRYPTION_KEY_MISSING.explanation=Pentru a decripta jetonul JWE este necesar\u0103 o cheie de decriptare. Cheia de decriptare trebuie s\u0103 fie prezent\u0103 \u00een depozitul de chei al consumatorului JWT, sau cheia trebuie specificat\u0103 \u00een propriet\u0103\u0163ile MicroProfile Config.
+JWE_DECRYPTION_KEY_MISSING.useraction=Verifica\u0163i c\u0103 aliasul de cheie care este specificat \u00een mesaj exist\u0103 \u00een depozitul de chei al consumatorului JWT. Dac\u0103 aliasul nu este configurat, cheia de decriptare trebuie specificat\u0103 \u00een propriet\u0103\u0163ile MicroProfile Config.
