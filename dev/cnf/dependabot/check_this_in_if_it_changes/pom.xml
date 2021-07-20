@@ -484,7 +484,7 @@
     <dependency>
       <groupId>io.jaegertracing</groupId>
       <artifactId>jaeger-client</artifactId>
-      <version>0.34.0</version>
+      <version>1.6.0</version>
     </dependency>
     <dependency>
       <groupId>io.jaegertracing</groupId>
