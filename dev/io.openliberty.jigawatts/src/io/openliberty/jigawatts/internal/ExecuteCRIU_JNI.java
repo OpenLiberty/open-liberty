@@ -17,14 +17,21 @@ import org.openjdk.jigawatts.Jigawatts;
 import org.osgi.service.component.annotations.Component;
 
 import io.openliberty.checkpoint.internal.criu.ExecuteCRIU;
+import io.openliberty.checkpoint.spi.SnapshotResult;
+import io.openliberty.checkpoint.spi.SnapshotResult.SnapshotResultType;
 
 // let other implementations win by using low ranking
 @Component(property = "service.ranking:Integer=-100")
 public class ExecuteCRIU_JNI implements ExecuteCRIU {
 
     @Override
-    public int dump(File directory) throws IOException {
-        return Jigawatts.saveTheWorld(directory.getAbsolutePath());
+    public SnapshotResult dump(File directory) {
+        try {
+            Jigawatts.saveTheWorld(directory.getAbsolutePath());
+            return new SnapshotResult(SnapshotResultType.SUCCESS, "Success", null);
+        } catch (IOException e) {
+            return new SnapshotResult(SnapshotResultType.SNAPSHOT_FAILED, "The criu dump command failed with error: Snapshot Failed", e);
+        }
     }
 
 }

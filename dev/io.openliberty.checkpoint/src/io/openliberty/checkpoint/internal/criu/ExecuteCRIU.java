@@ -11,11 +11,11 @@
 package io.openliberty.checkpoint.internal.criu;
 
 import java.io.File;
-import java.io.IOException;
+import io.openliberty.checkpoint.spi.SnapshotResult;
 
 /**
  *
  */
 public interface ExecuteCRIU {
-    int dump(File directory) throws IOException;
+    SnapshotResult dump(File directory);
 }
