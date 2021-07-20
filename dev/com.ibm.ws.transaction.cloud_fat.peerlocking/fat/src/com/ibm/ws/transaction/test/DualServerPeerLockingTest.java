@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.transaction.test.tests;
+package com.ibm.ws.transaction.test;
 
 import static org.junit.Assert.fail;
 
@@ -21,6 +21,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.transaction.test.tests.DualServerDynamicTestBase;
 import com.ibm.ws.transaction.web.Simple2PCCloudServlet;
 
 import componenttest.annotation.AllowedFFDC;
@@ -239,7 +240,7 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
 
         }
 
-        tidyServerAfterTest(server1);
+        tidyServersAfterTest(server1);
         // XA resource data is cleared in setup servlet methods. Probably should do it here.
         if (testFailed)
             fail(testFailureString);
@@ -374,8 +375,7 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
 
             }
         } finally {
-            tidyServerAfterTest(server1);
-            tidyServerAfterTest(longPeerStaleTimeServer2);
+            tidyServersAfterTest(server1, longPeerStaleTimeServer2);
         }
 
         // XA resource data is cleared in setup servlet methods. Probably should do it here.
@@ -441,7 +441,7 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
             }
         }
 
-        tidyServerAfterTest(longPeerStaleTimeServer1);
+        tidyServersAfterTest(longPeerStaleTimeServer1);
 
         // XA resource data is cleared in setup servlet methods. Probably should do it here.
         if (testFailed)
@@ -544,7 +544,7 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
             }
         }
 
-        tidyServerAfterTest(peerLockingEnabledServer1);
+        tidyServersAfterTest(peerLockingEnabledServer1);
 
         // XA resource data is cleared in setup servlet methods. Probably should do it here.
         if (testFailed)
@@ -679,8 +679,7 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
 
         }
 
-        tidyServerAfterTest(peerLockingDisabledServer1);
-        tidyServerAfterTest(server2);
+        tidyServersAfterTest(peerLockingDisabledServer1, server2);
 
         // XA resource data is cleared in setup servlet methods. Probably should do it here.
         if (testFailed)
@@ -702,5 +701,11 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
         // are created from scratch.
         server1.deleteFileFromLibertyInstallRoot("/usr/shared/resources/data/tranlogdb");
         dynamicTest(server1, server2, 7, 2);
+    }
+
+    @Override
+    protected void setUp(LibertyServer server) throws Exception {
+        // TODO Auto-generated method stub
+
     }
 }

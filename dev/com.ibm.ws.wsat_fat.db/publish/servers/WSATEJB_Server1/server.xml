@@ -25,6 +25,6 @@
     	databaseName="${shared.config.dir}/data/derbydb" -->
     	<properties.derby.embedded createDatabase="create" databaseName="memory:WsatDatabase1"></properties.derby.embedded>
     </dataSource>
-    <logging traceSpecification="*=info: wsat=all: Transaction=all"></logging>
+    <logging traceSpecification="*=info: wsat=all: Transaction=all: com.ibm.ws.jaxws.support.LibertyLoggingInInterceptor=all"></logging>
     <javaPermission codebase="${shared.resource.dir}derby/derby.jar" className="java.security.AllPermission"/>
 </server>

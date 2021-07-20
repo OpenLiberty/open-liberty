@@ -19,10 +19,7 @@ import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
-import com.ibm.websphere.simplicity.ProgramOutput;
-import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.transaction.test.FATSuite;
 import com.ibm.ws.transaction.test.tests.DualServerDynamicCoreTest2;
 import com.ibm.ws.transaction.web.Simple2PCCloudServlet;
 
@@ -30,8 +27,6 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
-import componenttest.topology.database.container.DatabaseContainerType;
-import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
 
 @Mode
@@ -50,29 +45,14 @@ public class DualServerDynamicDBRotationTest2 extends DualServerDynamicCoreTest2
 
     public static JdbcDatabaseContainer<?> testContainer;
 
-    public static void setUp(LibertyServer server) throws Exception {
-        JdbcDatabaseContainer<?> testContainer = FATSuite.testContainer;
-        //Get driver name
-        server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
-
-        //Setup server DataSource properties
-        DatabaseContainerUtil.setupDataSourceProperties(server, testContainer);
-
-        server.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
+    @Override
+    public void setUp(LibertyServer server) throws Exception {
+        setupDriver(server);
     }
 
     @BeforeClass
     public static void setUp() throws Exception {
-        server1 = firstServer;
-        server2 = secondServer;
-        servletName = APP_NAME + "/Simple2PCCloudServlet";
-        cloud1RecoveryIdentity = "cloud001";
-        // Create a WebArchive that will have the file name 'app1.war' once it's written to a file
-        // Include the 'app1.web' package and all of it's java classes and sub-packages
-        // Automatically includes resources under 'test-applications/APP_NAME/resources/' folder
-        // Exports the resulting application to the ${server.config.dir}/apps/ directory
-        ShrinkHelper.defaultApp(server1, APP_NAME, "com.ibm.ws.transaction.*");
-        ShrinkHelper.defaultApp(server2, APP_NAME, "com.ibm.ws.transaction.*");
+        setup(firstServer, secondServer, "Simple2PCCloudServlet", "cloud001");
     }
 
     @Override
@@ -143,30 +123,6 @@ public class DualServerDynamicDBRotationTest2 extends DualServerDynamicCoreTest2
 
     @After
     public void tearDown() throws Exception {
-        tidyServerAfterTest(server1);
-        tidyServerAfterTest(server2);
-    }
-
-    private void startServers(LibertyServer... servers) {
-        final String method = "startServers";
-
-        for (LibertyServer server : servers) {
-            assertNotNull("Attempted to start a null server", server);
-            ProgramOutput po = null;
-            try {
-                setUp(server);
-                po = server.startServerAndValidate(false, false, false);
-                if (po.getReturnCode() != 0) {
-                    Log.info(getClass(), method, po.getCommand() + " returned " + po.getReturnCode());
-                    Log.info(getClass(), method, "Stdout: " + po.getStdout());
-                    Log.info(getClass(), method, "Stderr: " + po.getStderr());
-                    throw new Exception(po.getCommand() + " returned " + po.getReturnCode());
-                }
-                server.validateAppLoaded(APP_NAME);
-            } catch (Throwable t) {
-                Log.error(getClass(), method, t);
-                assertNull("Failed to start server: " + t.getMessage() + (po == null ? "" : " " + po.getStdout()), t);
-            }
-        }
+        tidyServersAfterTest(server1, server2);
     }
 }

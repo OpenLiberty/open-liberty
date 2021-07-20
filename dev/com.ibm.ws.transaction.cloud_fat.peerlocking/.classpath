@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="fat/src" including="com/ibm/ws/transaction/test/FATSuite.java"/>
+	<classpathentry kind="src" path="fat/src" including="com/ibm/ws/transaction/test/*.java"/>
 	<classpathentry kind="src" path="com.ibm.ws.transaction.cloud_fat.base-fatsrc" including="com/ibm/ws/transaction/test/tests/*.java"/>
 	<classpathentry kind="src" path="com.ibm.ws.transaction.cloud_fat.base-transaction"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>

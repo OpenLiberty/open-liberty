@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.transaction.test.tests;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 import java.io.FileNotFoundException;
@@ -17,6 +19,7 @@ import java.io.FileNotFoundException;
 import com.ibm.tx.jta.ut.util.LastingXAResourceImpl;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.RemoteFile;
+import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.custom.junit.runner.Mode;
@@ -37,18 +40,10 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
     protected static final int Cloud2ServerPort = 9992;
 
     public static LibertyServer server1;
-
     public static LibertyServer server2;
+
     public static String servletName;
     public static String cloud1RecoveryIdentity;
-
-    /**
-     * @deprecated Use {@link #dynamicTest(LibertyServer,LibertyServer,int,int)} instead
-     */
-    @Deprecated
-    public void dynamicTest(int test, int resourceCount) throws Exception {
-        dynamicTest(server1, server2, test, resourceCount);
-    }
 
     public void dynamicTest(LibertyServer server1, LibertyServer server2, int test, int resourceCount) throws Exception {
         String testSuffix = String.format("%03d", test);
@@ -152,25 +147,73 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
 
         }
 
-        tidyServerAfterTest(server1);
-        tidyServerAfterTest(server2);
+        tidyServersAfterTest(server1, server2);
         // XA resource data is cleared in setup servlet methods. Probably should do it here.
         if (testFailed)
             fail(testFailureString);
     }
 
-    protected void tidyServerAfterTest(LibertyServer s) throws Exception {
-        if (s.isStarted()) {
-            s.stopServer();
-        }
-        try {
-            final RemoteFile rf = s.getFileFromLibertySharedDir(LastingXAResourceImpl.STATE_FILE_ROOT);
-            if (rf.exists()) {
-                rf.delete();
+    protected void tidyServersAfterTest(LibertyServer... servers) throws Exception {
+        for (LibertyServer server : servers) {
+            if (server.isStarted()) {
+                server.stopServer();
             }
-        } catch (FileNotFoundException e) {
-            // Already gone
+            try {
+                final RemoteFile rf = server.getFileFromLibertySharedDir(LastingXAResourceImpl.STATE_FILE_ROOT);
+                if (rf.exists()) {
+                    rf.delete();
+                }
+            } catch (FileNotFoundException e) {
+                // Already gone
+            }
         }
+    }
 
+    protected void startServers(LibertyServer... servers) {
+        final String method = "startServers";
+
+        for (LibertyServer server : servers) {
+            assertNotNull("Attempted to start a null server", server);
+            ProgramOutput po = null;
+            try {
+                setUp(server);
+                po = server.startServerAndValidate(false, false, false);
+                if (po.getReturnCode() != 0) {
+                    Log.info(getClass(), method, po.getCommand() + " returned " + po.getReturnCode());
+                    Log.info(getClass(), method, "Stdout: " + po.getStdout());
+                    Log.info(getClass(), method, "Stderr: " + po.getStderr());
+                    throw new Exception(po.getCommand() + " returned " + po.getReturnCode());
+                }
+                server.validateAppLoaded(APP_NAME);
+            } catch (Throwable t) {
+                Log.error(getClass(), method, t);
+                assertNull("Failed to start server: " + t.getMessage() + (po == null ? "" : " " + po.getStdout()), t);
+            }
+        }
+    }
+
+    /**
+     * @param server
+     * @throws Exception
+     */
+    protected abstract void setUp(LibertyServer server) throws Exception;
+
+    /**
+     * @param firstServer
+     * @param secondServer
+     * @param string
+     * @param string2
+     */
+    public static void setup(LibertyServer s1, LibertyServer s2, String servlet, String recoveryId) throws Exception {
+        server1 = s1;
+        server2 = s2;
+        servletName = APP_NAME + "/" + servlet;
+        cloud1RecoveryIdentity = recoveryId;
+
+        ShrinkHelper.defaultApp(server1, APP_NAME, "com.ibm.ws.transaction.*");
+        ShrinkHelper.defaultApp(server2, APP_NAME, "com.ibm.ws.transaction.*");
+
+        server1.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
+        server2.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
     }
 }
