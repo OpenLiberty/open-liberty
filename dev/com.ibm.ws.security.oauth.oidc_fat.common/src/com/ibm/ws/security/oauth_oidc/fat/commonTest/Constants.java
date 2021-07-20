@@ -710,6 +710,7 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String SAML_CLIENT_APP = "samlclient";
 
     public static final String IDToken_STR = "IDToken:\\{.*?\"iss\":\"http";
+    public static final String IDToken_STR_START = "IDToken:\\{";
     public static final String JWT_STR_START = "JsonWebToken:\\{";
 
     public static final String CURRENT_VALUE = "currentValue";

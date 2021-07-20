@@ -47,7 +47,10 @@ import com.ibm.ws.security.fat.common.CommonMessageTools;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ResponseFullExpectation;
 import com.ibm.ws.security.fat.common.expectations.ResponseStatusExpectation;
+import com.ibm.ws.security.fat.common.jwt.JwtTokenForTest;
+import com.ibm.ws.security.fat.common.jwt.utils.JwtKeyTools;
 import com.ibm.ws.security.fat.common.utils.AutomationTools;
+import com.ibm.ws.security.jwt.utils.JweHelper;
 import com.ibm.ws.security.oauth20.util.HashSecretUtils;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestSettings.StoreType;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.ValidationData.validationData;
@@ -585,7 +588,8 @@ public class CommonValidationTools {
         // it can be used to verify the content of the token, or individual segments
         String thisMethod = "validateIdToken";
         String id_token = null;
-        String[] id_token_parts;
+        String id_token_jws = null;
+        String[] jws_token_parts = null;
 
         try {
             String testSigAlg = setExpectedSigAlg(settings);
@@ -597,23 +601,34 @@ public class CommonValidationTools {
 
             // should only get this far if we're needing to validate the contents of the id token
             if (!id_token.equals(Constants.NOT_FOUND)) {
-                id_token_parts = id_token.split("\\.");
+                
+                String decryptKey = settings.getDecryptKey();
+                
+                JwtTokenForTest jwtToken;
+                if (JweHelper.isJwe(id_token) && decryptKey != null) {
+                    jwtToken = new JwtTokenForTest(id_token, decryptKey);
+                } else {
+                    jwtToken = new JwtTokenForTest(id_token);
+                }
 
-                String decodedToken = ApacheJsonUtils.fromBase64StringToJsonString(id_token_parts[1]);
+                id_token_jws = jwtToken.getJwsString();
+                jws_token_parts = id_token_jws.split("\\.");
+
+                String decodedToken = ApacheJsonUtils.fromBase64StringToJsonString(jws_token_parts[1]);
                 Log.info(thisClass, thisMethod, "Decoded payload Token : " + decodedToken);
                 JSONObject tokenInfo = JSONObject.parse(decodedToken);
 
                 // no keys passed indicates that we want to do general id_token validation (check format, required parms, ...)
                 if (expected.getValidationKey() == null) {
                     // validate general token content
-                    genericIDTokenValidation(settings, testSigAlg, id_token, id_token_parts, tokenInfo);
+                    genericIDTokenValidation(settings, testSigAlg, id_token_jws, jws_token_parts, tokenInfo);
 
                 } else {
                     // validate specific key's value
                     specificKeysTokenValidation(expected, tokenInfo);
                 }
-                // valdiate Header
-                validateJWTTokenHeader(JSONObject.parse(ApacheJsonUtils.fromBase64StringToJsonString(id_token_parts[0])), settings, null);
+                // validate Header
+                validateJWTTokenHeader(JSONObject.parse(ApacheJsonUtils.fromBase64StringToJsonString(jws_token_parts[0])), settings, null);
 
             } else {
                 Log.info(thisClass, thisMethod, "id_token was not found - it should have been there");
