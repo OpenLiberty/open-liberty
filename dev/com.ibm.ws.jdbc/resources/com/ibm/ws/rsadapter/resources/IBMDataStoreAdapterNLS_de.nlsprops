@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2001, 2019 IBM Corporation and others.
+# Copyright (c) 2001, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -215,7 +215,7 @@ FEATURE_NOT_IMPLEMENTED=DSRA1300E: Feature nicht implementiert: {0}
 FEATURE_NOT_IMPLEMENTED.explanation=Das angeforderte Feature ist nicht verf\u00fcgbar.
 FEATURE_NOT_IMPLEMENTED.useraction=Verwenden Sie das Feature nicht, oder stellen Sie auf eine Treiberversion um, die das Feature unterst\u00fctzt.
 
-# 1301 deleted
+# 1301 reserved for other NLS file
 # 3000-3020 deleted
 # 3100-3127 deleted
 # 3200-3202 deleted
@@ -291,7 +291,8 @@ DSRA4015.no.ucp.connection.pool.datasource.useraction=\u00c4ndern Sie den Typ f\
 # 
 # Using 7000-7599 for DataStore Helper exception messages and warnings
 # 
-# 7000-7009 deleted
+# 7000 reserved for other NLS file
+# 7001-7009 deleted
 
 # No Comment Provided
 DB2_FILE_OUTSTREAM_ERROR=DSRA7010E: Die angegebene Tracedatei {0} ist nicht vorhanden. Die Datenbank l\u00f6st eine Ausnahme aus, wenn der Fehler nicht behoben wird.
@@ -325,7 +326,9 @@ META_DATA_EXCEPTION=DSRA7018I: Der Zugriff auf die Metadaten der Datenbank haben
 META_DATA_EXCEPTION.explanation=Es ist eine Ausnahme vom Typ eingetreten, als der Anwendungsserver versucht hat, auf das Metadatenobjekt f\u00fcr die Datenbank zuzugreifen.
 META_DATA_EXCEPTION.useraction=Stellen Sie sicher, dass die Metadaten in der Back-End-Datenbank aktiviert sind.
 
-# 7019-7042 deleted
+# 7019 deleted
+# 7020 reserved for other NLS file
+# 7021-7042 deleted
 # 7600-7606 deleted
 
 # ----------------------------------------------------------------------------
@@ -552,7 +555,7 @@ OBJECT_CLOSED.explanation=Es wurde versucht, eine Operation f\u00fcr ein geschlo
 OBJECT_CLOSED.useraction=Rufen Sie eine neue Instanz des Objekts ab, um die Operation durchzuf\u00fchren.
 
 # 9115 deleted
-# 9120-9121 - deleted
+# 9120-9121 - reserved for other NLS file
 
 # 9122E      NO_WRAPPED_OBJECT
 # 
@@ -562,7 +565,7 @@ NO_WRAPPED_OBJECT=DSRA9122E: {0} enth\u00e4lt keine Objekte vom Typ {1}.
 NO_WRAPPED_OBJECT.explanation=Der angegebene Wrapper enth\u00e4lt nicht das Wrapped-Objekt des angegebenen Typs.
 NO_WRAPPED_OBJECT.useraction=Stellen Sie sicher, dass der Wrapper und die Parameter f\u00fcr das eingeschlossene Objekt richtig angegeben sind.
 
-# 9123 deleted
+# 9123 reserved for other NLS file
 
 # 9124       NOT_AN_INTERFACE
 #
@@ -570,6 +573,8 @@ NO_WRAPPED_OBJECT.useraction=Stellen Sie sicher, dass der Wrapper und die Parame
 NOT_AN_INTERFACE=DSRA9124E: Das Objekt-Wrapping f\u00fcr {0} kann nicht aufgehoben werden, weil {0} keine Schnittstellenklasse ist.
 NOT_AN_INTERFACE.explanation=Die Unwrap-Methode erlaubt nur das Aufheben von Wrapping f\u00fcr eine Schnittstellenklasse.
 NOT_AN_INTERFACE.useraction=Heben Sie das Wrapping f\u00fcr eine Klasse auf, die eine Schnittstelle ist, anstatt f\u00fcr eine konkrete Klasse.
+
+# 9125 reserved for other NLS file
 
 # 9130E      OPERATION_NOT_PERMITTED
 # 
