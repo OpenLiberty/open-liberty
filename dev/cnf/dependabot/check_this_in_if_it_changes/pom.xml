@@ -2529,7 +2529,7 @@
     <dependency>
       <groupId>org.jmockit</groupId>
       <artifactId>jmockit</artifactId>
-      <version>1.25</version>
+      <version>1.49</version>
     </dependency>
     <dependency>
       <groupId>org.json</groupId>
