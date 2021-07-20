@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2015 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,16 +26,26 @@ public final class ApplicationClientAdapter implements ContainerAdapter<Applicat
     @Override
     public ApplicationClient adapt(Container root, OverlayContainer rootOverlay, ArtifactContainer artifactContainer, Container containerToAdapt) throws UnableToAdaptException {
         NonPersistentCache cache = containerToAdapt.adapt(NonPersistentCache.class);
-        ApplicationClient appClient = (ApplicationClient) cache.getFromCache(ApplicationClient.class);
-        if (appClient != null) {
+        ApplicationClient appClient = (ApplicationClient)
+            cache.getFromCache(ApplicationClient.class);
+        if ( appClient != null ) {
             return appClient;
         }
-        AltDDEntryGetter altDDGetter = (AltDDEntryGetter) cache.getFromCache(AltDDEntryGetter.class);
-        Entry ddEntry = altDDGetter != null ? altDDGetter.getAltDDEntry(ContainerInfo.Type.CLIENT_MODULE) : null;
-        if (ddEntry == null) {
+
+        Entry ddEntry = null;
+        AltDDEntryGetter altDDGetter = (AltDDEntryGetter)
+            cache.getFromCache(AltDDEntryGetter.class);
+        if ( altDDGetter != null ) {
+            ddEntry = altDDGetter.getAltDDEntry(ContainerInfo.Type.CLIENT_MODULE);
+        }
+        if ( ddEntry == null ) {
             ddEntry = containerToAdapt.getEntry(ApplicationClient.DD_NAME);
         }
-        return ddEntry == null ? null : ddEntry.adapt(ApplicationClient.class);
+        if ( ddEntry == null ) {
+            return null;
+        }
+
+        return ddEntry.adapt(ApplicationClient.class);
     }
 
 }

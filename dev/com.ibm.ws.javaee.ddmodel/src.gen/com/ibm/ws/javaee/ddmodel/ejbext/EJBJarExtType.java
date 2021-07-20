@@ -64,15 +64,16 @@ public class EJBJarExtType extends com.ibm.ws.javaee.ddmodel.DDParser.ElementCon
 
     @Override
     public void finish(DDParser parser) throws DDParser.ParseException {
+        if ( version == null ) {
+            version = parser.parseToken( parser.getDottedVersionText() );
+        }
         this.idMap = parser.idMap;
 
-        {
-            java.util.Map<String, com.ibm.ws.javaee.dd.ejbext.EnterpriseBean> beans = new java.util.HashMap<String, com.ibm.ws.javaee.dd.ejbext.EnterpriseBean>(getEnterpriseBeans().size());
-            for (com.ibm.ws.javaee.dd.ejbext.EnterpriseBean bean : getEnterpriseBeans()) {
-                com.ibm.ws.javaee.dd.ejbext.EnterpriseBean existing = beans.put(bean.getName(), bean);
-                if (existing != null) {
-                    throw new DDParser.ParseException(Tr.formatMessage(tc, "found.duplicate.ejbname", parser.getDeploymentDescriptorPath(), existing.getName()));
-                }
+        java.util.Map<String, com.ibm.ws.javaee.dd.ejbext.EnterpriseBean> beans = new java.util.HashMap<String, com.ibm.ws.javaee.dd.ejbext.EnterpriseBean>(getEnterpriseBeans().size());
+        for (com.ibm.ws.javaee.dd.ejbext.EnterpriseBean bean : getEnterpriseBeans()) {
+            com.ibm.ws.javaee.dd.ejbext.EnterpriseBean existing = beans.put(bean.getName(), bean);
+            if (existing != null) {
+                throw new DDParser.ParseException(Tr.formatMessage(tc, "found.duplicate.ejbname", parser.getDeploymentDescriptorPath(), existing.getName()));
             }
         }
     }

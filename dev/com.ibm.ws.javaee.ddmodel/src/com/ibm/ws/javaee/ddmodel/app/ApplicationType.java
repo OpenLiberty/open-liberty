@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -367,12 +367,22 @@ public class ApplicationType extends JNDIEnvironmentRefs implements Application,
     @Override
     public void finish(DDParser parser) throws ParseException {
         if (version == null) {
-            if (parser.version < 14) {
-                version = parser.parseToken(parser.version == 12 ? "1.2" : "1.3");
-            } else {
-                throw new ParseException(parser.requiredAttributeMissing("version"));
-            }
+            // In all cases, not just for 1.2 and 1.3, 
+            // ensure that the local version variable is
+            // assigned.
+            //
+            // Previously, only the two DTD based formats
+            // might be missing a version attribute.
+            // Changes to enable more descriptor deviations
+            // mean that other cases might also be missing
+            // a version attribute.
+
+            // The version text is text of the version as
+            // it appears in the XML text.
+
+            version = parser.parseToken( parser.getVersionText() );
         }
+
         this.idMap = parser.idMap;
     }
 

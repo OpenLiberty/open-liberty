@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,74 +11,40 @@
 package com.ibm.ws.javaee.ddmodel.web;
 
 import com.ibm.ws.javaee.dd.web.WebApp;
-import com.ibm.ws.javaee.dd.web.WebFragment;
-import com.ibm.ws.javaee.ddmodel.DDParser;
+import com.ibm.ws.javaee.ddmodel.DDParserSpec;
 import com.ibm.ws.javaee.ddmodel.web.common.WebFragmentType;
+import com.ibm.ws.javaee.version.JavaEEVersion;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
 
-/**
- *
- */
-public class WebFragmentDDParser extends DDParser {
+public class WebFragmentDDParser extends DDParserSpec {
+    private static VersionData[] VERSION_DATA = {
+        new VersionData("3.0", null, NAMESPACE_SUN_JAVAEE, WebApp.VERSION_3_0, JavaEEVersion.VERSION_6_0_INT),
+        new VersionData("3.1", null, NAMESPACE_JCP_JAVAEE, WebApp.VERSION_3_1, JavaEEVersion.VERSION_7_0_INT),
+        new VersionData("4.0", null, NAMESPACE_JCP_JAVAEE, WebApp.VERSION_4_0, JavaEEVersion.VERSION_8_0_INT),
 
-    private final int maxVersion;
+        new VersionData("5.0", null, NAMESPACE_JAKARTA, WebApp.VERSION_5_0, JavaEEVersion.VERSION_9_0_INT)
+    };
 
-    public WebFragmentDDParser(Container ddRootContainer, Entry ddEntry, int version) throws ParseException {
-        super(ddRootContainer, ddEntry);
-        trimSimpleContentAsRequiredByServletSpec = true;
-        this.maxVersion = version;
+    @Override
+    protected VersionData[] getVersionData() {
+        return VERSION_DATA;
     }
 
-    WebFragment parse() throws ParseException {
-        super.parseRootElement();
-        return (WebFragment) rootParsable;
+    public WebFragmentDDParser(Container ddRootContainer, Entry ddEntry, int maxSchemaVersion) throws ParseException {
+        super( ddRootContainer, ddEntry,
+               WebAppDDParser.adjustSchemaVersion(maxSchemaVersion),
+               TRIM_SIMPLE_CONTENT,
+               "web-fragment" );
     }
 
     @Override
-    protected ParsableElement createRootParsable() throws ParseException {
-        if (!"web-fragment".equals(rootElementLocalName)) {
-            throw new ParseException(invalidRootElement());
-        }
-        String vers = getAttributeValue("", "version");
-        if (vers == null) {
-            throw new ParseException(missingDeploymentDescriptorVersion());
-        }
+    public WebFragmentType parse() throws ParseException {
+        return (WebFragmentType) super.parse();
+    }
 
-        if (maxVersion == 50)
-            runtimeVersion = 90;
-        else if (maxVersion == 40)
-            runtimeVersion = 80;
-        else if (maxVersion == 31)
-            runtimeVersion = 70;
-        else
-            runtimeVersion = 60; //Servlet-3.0 is the earliest Liberty runtime spec.
-
-        if ("3.0".equals(vers)) {
-            if ("http://java.sun.com/xml/ns/javaee".equals(namespace)) {
-                version = WebApp.VERSION_3_0;
-                eePlatformVersion = 60;
-                return new WebFragmentType(getDeploymentDescriptorPath());
-            }
-        } else if (maxVersion >= 31 && "3.1".equals(vers)) {
-            if ("http://xmlns.jcp.org/xml/ns/javaee".equals(namespace)) {
-                version = WebApp.VERSION_3_1;
-                eePlatformVersion = 70;
-                return new WebFragmentType(getDeploymentDescriptorPath());
-            }
-        } else if ((maxVersion >= 40) && "4.0".equals(vers)) {
-            if ("http://xmlns.jcp.org/xml/ns/javaee".equals(namespace)) {
-                version = WebApp.VERSION_4_0;
-                eePlatformVersion = 80;
-                return new WebFragmentType(getDeploymentDescriptorPath());
-            }
-        } else if ((maxVersion >= 50) && "5.0".equals(vers)) {
-            if ("https://jakarta.ee/xml/ns/jakartaee".equals(namespace)) {
-                version = WebApp.VERSION_5_0;
-                eePlatformVersion = 80;
-                return new WebFragmentType(getDeploymentDescriptorPath());
-            }
-        }
-        throw new ParseException(invalidDeploymentDescriptorNamespace(vers));
+    @Override
+    protected ParsableElement createRootElement() {
+        return new WebFragmentType( getDeploymentDescriptorPath() );        
     }
 }

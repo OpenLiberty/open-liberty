@@ -132,7 +132,7 @@ private com.ibm.ws.javaee.ddmodel.ejbbnd.EJBJarBndComponentImpl getConfigOverrid
           }
           configuredModuleNames.removeAll(moduleNames);
           if ( !configuredModuleNames.isEmpty() )
-               Tr.error(tc, "module.name.invalid", configuredModuleNames, "ejb-jar-bnd");
+              Tr.error(tc, "module.name.invalid", configuredModuleNames, "ejb-jar-bnd");
           rootOverlay.getParentOverlay().addToNonPersistentCache(MODULE_NAME_INVALID, EJBJarBndAdapter.class, MODULE_NAME_INVALID);
           }
      }

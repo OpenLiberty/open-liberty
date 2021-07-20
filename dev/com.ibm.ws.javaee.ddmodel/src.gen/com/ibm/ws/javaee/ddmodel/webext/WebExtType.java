@@ -232,6 +232,9 @@ public class WebExtType extends com.ibm.ws.javaee.ddmodel.DDParser.ElementConten
 
     @Override
     public void finish(DDParser parser) throws DDParser.ParseException {
+        if ( version == null ) {
+            version = parser.parseToken( parser.getDottedVersionText() );            
+        }        
         this.idMap = parser.idMap;
     }
 

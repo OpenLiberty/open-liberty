@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012,2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,8 +34,8 @@ import com.ibm.ws.container.service.app.deploy.extended.ExtendedApplicationInfo;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.javaee.dd.app.Application;
 import com.ibm.ws.javaee.dd.app.Module;
-import com.ibm.ws.javaee.ddmodel.DDParser;
 import com.ibm.ws.javaee.ddmodel.DDParser.ParseException;
+import com.ibm.ws.javaee.ddmodel.DDParserBndExt;
 import com.ibm.ws.javaee.ddmodel.wsbnd.WebservicesBnd;
 import com.ibm.ws.javaee.ddmodel.wsbnd.impl.WebservicesBndComponentImpl;
 import com.ibm.ws.javaee.ddmodel.wsbnd.impl.WebservicesBndType;
@@ -83,7 +83,7 @@ public final class WebservicesBndAdapter implements ContainerAdapter<Webservices
 
         if (ddEntry != null) {
             try {
-                WsClientBindingParser parser = new WsClientBindingParser(containerToAdapt, ddEntry);
+                WsClientBndParser parser = new WsClientBndParser(containerToAdapt, ddEntry);
                 WebservicesBnd wsBind = parser.parse();
                 if (fromConfig == null) {
                     return wsBind;
@@ -178,38 +178,29 @@ public final class WebservicesBndAdapter implements ContainerAdapter<Webservices
         // EMPTY
     }
 
-    /**
-     * DDParser for webservices.xml
-     */
-    private static final class WsClientBindingParser extends DDParser {
-
-        public WsClientBindingParser(Container ddRootContainer, Entry ddEntry) throws ParseException {
-            super(ddRootContainer, ddEntry);
-        }
-
-        WebservicesBnd parse() throws ParseException {
-            super.parseRootElement();
-            return (WebservicesBnd) rootParsable;
+    private static final class WsClientBndParser extends DDParserBndExt {
+        public WsClientBndParser(Container ddRootContainer, Entry ddEntry) throws ParseException {
+            super(ddRootContainer, ddEntry,
+                    UNUSED_CROSS_COMPONENT_TYPE,
+                    !IS_XMI, WEBSERVICES_BND_ELEMENT_NAME, UNUSED_XMI_NAMESPACE,
+                    XML_VERSION_MAPPINGS_10_10,
+                    10);
         }
 
         @Override
-        protected ParsableElement createRootParsable() throws ParseException {
-            if (WEBSERVICES_BND_ELEMENT_NAME.equals(rootElementLocalName)) {
-                return createXMLRootParsable();
-            }
-            return null;
+        public WebservicesBndType parse() throws ParseException {
+            super.parseRootElement();
+            return (WebservicesBndType) rootParsable;
         }
 
-        private DDParser.ParsableElement createXMLRootParsable() throws ParseException {
-            if (namespace == null) {
-                throw new ParseException(unknownDeploymentDescriptorVersion());
-            }
-            if ("http://websphere.ibm.com/xml/ns/javaee".equals(namespace)) {
-                version = 10;
-                return new WebservicesBndType(getDeploymentDescriptorPath());
-            } else {
-                throw new ParseException(unknownDeploymentDescriptorVersion());
-            }
+        @Override
+        protected WebservicesBndType createRootParsable() throws ParseException {
+            return (WebservicesBndType) super.createRootParsable();
+        }
+
+        @Override
+        protected WebservicesBndType createRoot() {
+            return new WebservicesBndType( getDeploymentDescriptorPath() );            
         }
     }
 }

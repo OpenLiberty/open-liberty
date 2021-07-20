@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.javaee.ddmodel.web.common;
 
+import com.ibm.ws.javaee.dd.web.WebApp;
 import com.ibm.ws.javaee.dd.web.WebFragment;
 import com.ibm.ws.javaee.dd.web.common.Ordering;
 import com.ibm.ws.javaee.ddmodel.AnySimpleType;
@@ -76,6 +77,32 @@ public class WebFragmentType extends WebCommonType implements WebFragment, DDPar
         return true;
     }
 
+    //
+
+    /**
+     * Override: Ensure that the version is assigned.
+     * 
+     * Use the version computed by the parser to ensure
+     * the local version variable is assigned. 
+     */
+    @Override
+    public void finish(DDParser parser) throws ParseException {
+        if ( version == null ) {
+            // In all cases, not just for 2.2 and 2.3, 
+            // ensure that the local version variable is
+            // assigned.
+            //
+            // Previously, only the two DTD based formats
+            // might be missing a version attribute.
+            // Changes to enable more descriptor deviations
+            // mean that other cases might also be missing
+            // a version attribute.
+            version = parser.parseToken( parser.getDottedVersionText() );            
+        }
+        
+        super.finish(parser);
+    }
+    
     @Override
     public boolean handleAttribute(DDParser parser, String nsURI, String localName, int index) throws ParseException {
         if (nsURI == null) {
@@ -107,7 +134,10 @@ public class WebFragmentType extends WebCommonType implements WebFragment, DDPar
             parser.parse(ordering);
             if (this.ordering == null) {
                 this.ordering = ordering;
-            } else if (parser.runtimeVersion >= 70) { //EE7 clarification, can only have one ordering element.
+            } else if (parser.maxVersion >= WebApp.VERSION_3_1) {
+                // WebApp 3.1, which corresponds to JavaEE7, clarified the
+                // parsing of absolute ordering: At most one ordering
+                // is allowed.
                 throw new ParseException(parser.tooManyElements("ordering"));
             }
             return true;

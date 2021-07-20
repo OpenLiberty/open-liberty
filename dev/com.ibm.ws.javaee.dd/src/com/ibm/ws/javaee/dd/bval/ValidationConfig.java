@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,15 +16,13 @@ import com.ibm.ws.javaee.dd.DeploymentDescriptor;
 
 public interface ValidationConfig extends DeploymentDescriptor {
 
-    /**
-     * Represents "1.0" for {@link #getVersionID}.
-     */
     int VERSION_1_0 = 10;
-
-    /**
-     * Represents "1.1" for {@link #getVersionID}.
-     */
     int VERSION_1_1 = 11;
+    
+    // The "1.0" validation configuration schema does not have
+    // a version attribute.
+    // String VERSION_1_0_STR = "1.0";
+    String VERSION_1_1_STR = "1.1";
 
     int getVersionID();
 

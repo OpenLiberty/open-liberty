@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,42 +23,45 @@ import com.ibm.wsspi.adaptable.module.adapters.EntryAdapter;
 import com.ibm.wsspi.artifact.ArtifactEntry;
 import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 
-/**
- *
- */
 public class FacesConfigEntryAdapter implements EntryAdapter<FacesConfig> {
-
-    private static final int DEFAULT_JSF_LOADED_VERSION = FacesConfig.VERSION_2_0;
-
     private ServiceReference<FacesVersion> versionRef;
-    private volatile int version = DEFAULT_JSF_LOADED_VERSION;
+    private int version = FacesConfigAdapter.DEFAULT_JSF_VERSION;
 
     public synchronized void setVersion(ServiceReference<FacesVersion> reference) {
-
         versionRef = reference;
         version = (Integer) reference.getProperty("version");
     }
 
     public synchronized void unsetVersion(ServiceReference<FacesVersion> reference) {
-        if (reference == this.versionRef) {
+        if ( reference == this.versionRef ) {
             versionRef = null;
-            version = DEFAULT_JSF_LOADED_VERSION;
+            version = FacesConfigAdapter.DEFAULT_JSF_VERSION;
         }
     }
+
+    public synchronized int getVersion() {
+        return version;
+    }
+    
+    //
 
     @FFDCIgnore(ParseException.class)
     @Override
-    public FacesConfig adapt(Container root, OverlayContainer rootOverlay, ArtifactEntry artifactEntry, Entry entryToAdapt) throws UnableToAdaptException {
-        if (entryToAdapt != null) {
-            try {
-                FacesConfigDDParser ddParser = new FacesConfigDDParser(root, entryToAdapt, version);
-                FacesConfig facesConfig = ddParser.parse();
-                return facesConfig;
-            } catch (ParseException e) {
-                throw new UnableToAdaptException(e);
-            }
-        }
-        return null;
-    }
+    public FacesConfig adapt(
+        Container root,
+        OverlayContainer rootOverlay, ArtifactEntry artifactEntry,
+        Entry ddEntry) throws UnableToAdaptException {
 
+        if ( ddEntry == null ) {
+            return null;
+        }
+
+        try {
+            FacesConfigDDParser ddParser =
+                new FacesConfigDDParser( root, ddEntry, getVersion() );
+            return ddParser.parse();
+        } catch ( ParseException e ) {
+            throw new UnableToAdaptException(e);
+        }
+    }
 }

@@ -681,7 +681,7 @@ public class WebCommonType extends JNDIEnvironmentRefsGroup implements WebCommon
     }
 
     @Override
-    public void finish(DDParser parser) throws ParseException {
+    public void finish(DDParser parser) throws ParseException {        
         this.idMap = parser.idMap;
     }
 

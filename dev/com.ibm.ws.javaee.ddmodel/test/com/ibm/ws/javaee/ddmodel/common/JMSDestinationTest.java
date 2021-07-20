@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,12 +21,12 @@ import com.ibm.ws.javaee.dd.common.JMSDestination;
 import com.ibm.ws.javaee.dd.common.Property;
 import com.ibm.ws.javaee.ddmodel.DDParser;
 
-public class JMSDestinationTest extends JNDIEnvironmentRefsTestBase {
+public class JMSDestinationTest extends CommonTestBase {
     @Test
     public void testDefault() throws Exception {
         String xml = "<jms-destination>" +
-                     "  <name>name0</name>" +
-                     "  <interface-name>intf0</interface-name>" +
+                     "<name>name0</name>" +
+                     "<interface-name>intf0</interface-name>" +
                      "</jms-destination>";
         JMSDestination o = parse(xml).getJMSDestinations().get(0);
         Assert.assertEquals(Arrays.asList(), o.getDescriptions());
@@ -41,29 +41,29 @@ public class JMSDestinationTest extends JNDIEnvironmentRefsTestBase {
     @Test(expected = DDParser.ParseException.class)
     public void testDefaultEJB31() throws Exception {
         parseEJB31("<jms-destination>" +
-                   "  <name>name0</name>" +
-                   "  <interface-name>intf0</interface-name>" +
+                       "<name>name0</name>" +
+                       "<interface-name>intf0</interface-name>" +
                    "</jms-destination>");
     }
 
     @Test
     public void testAll() throws Exception {
         String xml = "<jms-destination>" +
-                     "  <description>desc0</description>" +
-                     "  <description>desc1</description>" +
-                     "  <name>name0</name>" +
-                     "  <interface-name>intf0</interface-name>" +
-                     "  <class-name>class0</class-name>" +
-                     "  <resource-adapter>ra0</resource-adapter>" +
-                     "  <destination-name>dest0</destination-name>" +
-                     "  <property>" +
-                     "    <name>prop0</name>" +
-                     "    <value>value0</value>" +
-                     "  </property>" +
-                     "  <property>" +
-                     "    <name>prop1</name>" +
-                     "    <value>value1</value>" +
-                     "  </property>" +
+                         "<description>desc0</description>" +
+                         "<description>desc1</description>" +
+                         "<name>name0</name>" +
+                         "<interface-name>intf0</interface-name>" +
+                         "<class-name>class0</class-name>" +
+                         "<resource-adapter>ra0</resource-adapter>" +
+                         "<destination-name>dest0</destination-name>" +
+                         "<property>" +
+                             "<name>prop0</name>" +
+                             "<value>value0</value>" +
+                         "</property>" +
+                         "<property>" +
+                             "<name>prop1</name>" +
+                             "<value>value1</value>" +
+                         "</property>" +
                      "</jms-destination>";
         JMSDestination o = parse(xml).getJMSDestinations().get(0);
         List<Description> descs = o.getDescriptions();

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,13 +21,13 @@ import com.ibm.ws.javaee.dd.common.Description;
 import com.ibm.ws.javaee.dd.common.Property;
 import com.ibm.ws.javaee.ddmodel.DDParser;
 
-public class ConnectionFactoryTest extends JNDIEnvironmentRefsTestBase {
+public class ConnectionFactoryTest extends CommonTestBase {
     @Test
     public void testDefault() throws Exception {
         String xml = "<connection-factory>" +
-                     "  <name>name0</name>" +
-                     "  <interface-name>intf0</interface-name>" +
-                     "  <resource-adapter>ra0</resource-adapter>" +
+                         "<name>name0</name>" +
+                         "<interface-name>intf0</interface-name>" +
+                         "<resource-adapter>ra0</resource-adapter>" +
                      "</connection-factory>";
         ConnectionFactory o = parse(xml).getConnectionFactories().get(0);
         Assert.assertEquals(Arrays.asList(), o.getDescriptions());
@@ -43,43 +43,43 @@ public class ConnectionFactoryTest extends JNDIEnvironmentRefsTestBase {
     @Test(expected = DDParser.ParseException.class)
     public void testDefaultEJB31() throws Exception {
         parseEJB31("<connection-factory>" +
-                   "  <name>name0</name>" +
-                   "  <interface-name>intf0</interface-name>" +
-                   "  <resource-adapter>ra0</resource-adapter>" +
+                       "<name>name0</name>" +
+                       "<interface-name>intf0</interface-name>" +
+                       "<resource-adapter>ra0</resource-adapter>" +
                    "</connection-factory>");
     }
 
     @Test
     public void testAll() throws Exception {
         String xml = "<connection-factory>" +
-                     "  <description>desc0</description>" +
-                     "  <description>desc1</description>" +
-                     "  <name>name0</name>" +
-                     "  <interface-name>intf0</interface-name>" +
-                     "  <resource-adapter>ra0</resource-adapter>" +
-                     "  <max-pool-size>100</max-pool-size>" +
-                     "  <min-pool-size>10</min-pool-size>" +
-                     "  <transaction-support>NoTransaction</transaction-support>" +
-                     "  <property>" +
-                     "    <name>prop0</name>" +
-                     "    <value>value0</value>" +
-                     "  </property>" +
-                     "  <property>" +
-                     "    <name>prop1</name>" +
-                     "    <value>value1</value>" +
-                     "  </property>" +
+                         "<description>desc0</description>" +
+                         "<description>desc1</description>" +
+                         "<name>name0</name>" +
+                         "<interface-name>intf0</interface-name>" +
+                         "<resource-adapter>ra0</resource-adapter>" +
+                         "<max-pool-size>100</max-pool-size>" +
+                         "<min-pool-size>10</min-pool-size>" +
+                         "<transaction-support>NoTransaction</transaction-support>" +
+                         "<property>" +
+                             "<name>prop0</name>" +
+                             "<value>value0</value>" +
+                         "</property>" +
+                         "<property>" +
+                             "<name>prop1</name>" +
+                             "<value>value1</value>" +
+                         "</property>" +
                      "</connection-factory>" +
                      "<connection-factory>" +
-                     "  <name>name0</name>" +
-                     "  <interface-name>intf0</interface-name>" +
-                     "  <resource-adapter>ra0</resource-adapter>" +
-                     "  <transaction-support>LocalTransaction</transaction-support>" +
+                         "<name>name0</name>" +
+                         "<interface-name>intf0</interface-name>" +
+                         "<resource-adapter>ra0</resource-adapter>" +
+                         "<transaction-support>LocalTransaction</transaction-support>" +
                      "</connection-factory>" +
                      "<connection-factory>" +
-                     "  <name>name0</name>" +
-                     "  <interface-name>intf0</interface-name>" +
-                     "  <resource-adapter>ra0</resource-adapter>" +
-                     "  <transaction-support>XATransaction</transaction-support>" +
+                         "<name>name0</name>" +
+                         "<interface-name>intf0</interface-name>" +
+                         "<resource-adapter>ra0</resource-adapter>" +
+                         "<transaction-support>XATransaction</transaction-support>" +
                      "</connection-factory>";
         List<ConnectionFactory> os = parse(xml).getConnectionFactories();
         ConnectionFactory o = os.get(0);
