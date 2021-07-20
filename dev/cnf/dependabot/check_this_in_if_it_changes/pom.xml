@@ -274,7 +274,7 @@
     <dependency>
       <groupId>com.sebastian-daschner</groupId>
       <artifactId>jaxrs-analyzer</artifactId>
-      <version>0.9</version>
+      <version>0.17</version>
     </dependency>
     <dependency>
       <groupId>com.sun.activation</groupId>
