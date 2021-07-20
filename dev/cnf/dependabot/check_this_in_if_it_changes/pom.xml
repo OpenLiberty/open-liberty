@@ -2359,7 +2359,7 @@
     <dependency>
       <groupId>org.jboss.arquillian.core</groupId>
       <artifactId>arquillian-core-spi</artifactId>
-      <version>1.3.0.Final</version>
+      <version>1.6.0.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.arquillian.test</groupId>
