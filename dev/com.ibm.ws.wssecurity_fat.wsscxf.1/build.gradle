@@ -21,6 +21,7 @@ dependencies {
                'httpunit:httpunit:1.5.4'
 }
 
+addRequiredLibraries.dependsOn addJakartaTransformer
 
 autoFVT.doLast {
 
