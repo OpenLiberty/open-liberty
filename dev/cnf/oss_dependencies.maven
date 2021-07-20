@@ -198,12 +198,16 @@ net.sourceforge.htmlunit:neko-htmlunit:2.27
 net.sourceforge.htmlunit:neko-htmlunit:2.28
 net.sourceforge.htmlunit:neko-htmlunit:2.44.0
 net.sourceforge.htmlunit:webdriver:2.6
+net.sourceforge.serp:serp:1.15.1
 org.antlr:antlr4-runtime:4.7.1
 org.apache.ant:ant-junit:1.10.10
 org.apache.ant:ant:1.10.10
+org.apache.commons:commons-collections4:4.4
 org.apache.commons:commons-compress:1.20
+org.apache.commons:commons-dbcp2:2.7.0
 org.apache.commons:commons-lang3:3.8
 org.apache.commons:commons-math:2.2
+org.apache.commons:commons-pool2:2.6.0
 org.apache.commons:commons-text:1.9
 org.apache.cxf.xjc-utils:cxf-xjc-runtime:2.6.0
 org.apache.cxf.xjcplugins:cxf-xjc-boolean:2.6.0
@@ -298,6 +302,7 @@ org.apache.myfaces.core:myfaces-impl:2.2.12
 org.apache.myfaces.core:myfaces-impl:2.3.9
 org.apache.myfaces.core:myfaces-impl:3.0.1
 org.apache.neethi:neethi:3.1.1
+org.apache.openjpa:openjpa:3.1.2
 org.apache.santuario:xmlsec:2.2.0
 org.apache.servicemix.bundles:org.apache.servicemix.bundles.bcel:5.2_3
 org.apache.sshd:sshd-common:2.5.1
@@ -319,6 +324,7 @@ org.apache.wss4j:wss4j-ws-security-dom:2.3.0
 org.apache.wss4j:wss4j-ws-security-policy-stax:2.3.0
 org.apache.wss4j:wss4j-ws-security-stax:2.3.0
 org.apache.wss4j:wss4j-ws-security-web:2.3.0
+org.apache.xbean:xbean-asm8-shaded:4.17
 org.bouncycastle:bcprov-jdk15on:1.61
 org.brotli:dec:0.1.2
 org.checkerframework:checker-compat-qual:2.5.2

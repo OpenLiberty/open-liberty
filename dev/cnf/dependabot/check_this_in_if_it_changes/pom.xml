@@ -1012,6 +1012,11 @@
       <version>2.6</version>
     </dependency>
     <dependency>
+      <groupId>net.sourceforge.serp</groupId>
+      <artifactId>serp</artifactId>
+      <version>1.15.1</version>
+    </dependency>
+    <dependency>
       <groupId>org.antlr</groupId>
       <artifactId>antlr4-runtime</artifactId>
       <version>4.7.1</version>
@@ -1028,8 +1033,18 @@
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
+      <artifactId>commons-collections4</artifactId>
+      <version>4.4</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
       <artifactId>commons-compress</artifactId>
       <version>1.20</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-dbcp2</artifactId>
+      <version>2.7.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -1040,6 +1055,11 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-math</artifactId>
       <version>2.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-pool2</artifactId>
+      <version>2.6.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -1512,6 +1532,11 @@
       <version>3.1.1</version>
     </dependency>
     <dependency>
+      <groupId>org.apache.openjpa</groupId>
+      <artifactId>openjpa</artifactId>
+      <version>3.1.2</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.santuario</groupId>
       <artifactId>xmlsec</artifactId>
       <version>2.2.0</version>
@@ -1615,6 +1640,11 @@
       <groupId>org.apache.wss4j</groupId>
       <artifactId>wss4j-ws-security-web</artifactId>
       <version>2.3.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.xbean</groupId>
+      <artifactId>xbean-asm8-shaded</artifactId>
+      <version>4.17</version>
     </dependency>
     <dependency>
       <groupId>org.bouncycastle</groupId>
