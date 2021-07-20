@@ -239,7 +239,7 @@ public abstract class BaseCommandTask implements SecurityUtilityTask {
                                       ConsoleWrapper stdin, PrintStream stdout) {
         for (int i = 1; i < args.length; i++) {
             String key = args[i].split("=")[0];
-            if (key.equals(arg)) {
+            if (key.equalsIgnoreCase(arg)) {
                 String value = getValue(args[i]);
                 if (arg.equals(passwordArgKey) && value == null) {
                     return promptForPassword(stdin, stdout);

@@ -8,30 +8,17 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.utility;
+package com.ibm.ws.security.utility.test;
 
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
+
+@RunWith(Suite.class)
+@SuiteClasses({ SecurityUtilityEncodeTest.class, SecurityUtilityImportSignerTest.class })
 /**
- *
+ * Purpose: This suite collects and runs all known good test suites.
  */
-public enum SecurityUtilityReturnCodes {
-    OK(0),
-    ERR_GENERIC(1),
-
-    ERR_SERVER_NOT_FOUND(2),
-    ERR_CLIENT_NOT_FOUND(3),
-    ERR_PATH_CANNOT_BE_CREATED(4),
-    ERR_FILE_EXISTS(5),
-    ERR_CERT_CHAIN_NOT_FOUND(6),
-    ERR_WRITE_FAILED(7);
-
-    final int rc;
-
-    private SecurityUtilityReturnCodes(int val) {
-        rc = val;
-    }
-
-    int getReturnCode() {
-        return rc;
-    }
+public class FATSuite {
 
 }

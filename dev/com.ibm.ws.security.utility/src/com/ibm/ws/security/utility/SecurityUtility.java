@@ -19,11 +19,7 @@ import com.ibm.ws.crypto.certificateutil.DefaultSSLCertificateFactory;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAKeyFileUtility;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAKeyFileUtilityImpl;
 import com.ibm.ws.kernel.service.util.UtilityTemplate;
-import com.ibm.ws.security.utility.tasks.CreateLTPAKeysTask;
-import com.ibm.ws.security.utility.tasks.CreateSSLCertificateTask;
-import com.ibm.ws.security.utility.tasks.EncodeTask;
-import com.ibm.ws.security.utility.tasks.HelpTask;
-import com.ibm.ws.security.utility.tasks.TLSProfilerTask;
+import com.ibm.ws.security.utility.tasks.*;
 import com.ibm.ws.security.utility.utils.CommandUtils;
 import com.ibm.ws.security.utility.utils.ConsoleWrapper;
 import com.ibm.ws.security.utility.utils.FileUtility;
@@ -151,7 +147,7 @@ public class SecurityUtility extends UtilityTemplate {
      * @param args
      */
     public static void main(String[] args) {
-        ConsoleWrapper console = new ConsoleWrapper(System.console(), System.err);
+        ConsoleWrapper console = new ConsoleWrapper(System.console(), System.err, System.out);
 
         // Create / obtain the collaborators
         DefaultSSLCertificateCreator certCreator = DefaultSSLCertificateFactory.getDefaultSSLCertificateCreator();
@@ -164,6 +160,7 @@ public class SecurityUtility extends UtilityTemplate {
         util.registerTask(new CreateSSLCertificateTask(certCreator, fileUtil, SCRIPT_NAME));
         util.registerTask(new CreateLTPAKeysTask(ltpaKeyFileCreator, fileUtil, SCRIPT_NAME));
         util.registerTask(new TLSProfilerTask(fileUtil, SCRIPT_NAME));
+        util.registerTask(new ImportSignerTask(SCRIPT_NAME));
 
         // Kick everything off
         int rc = util.runProgram(args).getReturnCode();
