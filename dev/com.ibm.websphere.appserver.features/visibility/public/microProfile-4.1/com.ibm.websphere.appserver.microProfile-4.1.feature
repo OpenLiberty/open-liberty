@@ -22,5 +22,5 @@ Subsystem-Name: MicroProfile 4.1
   com.ibm.websphere.appserver.mpOpenAPI-2.0, \
   com.ibm.websphere.appserver.mpOpenTracing-2.0, \
   com.ibm.websphere.appserver.mpRestClient-2.0
-kind=beta
+kind=ga
 edition=core
