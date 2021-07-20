@@ -11,7 +11,7 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 grpcVersion=1.38.1
-nettyVersion=4.1.62.Final
+nettyVersion=4.1.66.Final
 
 Bundle-Name: Open Liberty gRPC Client Third Party API
 Bundle-SymbolicName: io.openliberty.grpc.client.1.0.thirdparty
@@ -21,6 +21,8 @@ Bundle-Description: Open Liberty gRPC Client Third Party API
 # from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the 
 # packages from Java when using Java 8 or earlier and from the new shipped bundles for Java 9 and later.
 Import-Package: \
+  !com.aayushatharva.brotli4j*,\
+  !com.github.luben.zstd,\
   !com.google.code.gson,\
   !org.checkerframework,\
   !com.google.protobuf.nano,\
