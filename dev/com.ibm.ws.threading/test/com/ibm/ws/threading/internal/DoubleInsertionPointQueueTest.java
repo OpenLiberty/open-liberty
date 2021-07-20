@@ -48,7 +48,7 @@ public class DoubleInsertionPointQueueTest {
     //boolean expeditedOfferIsPush() {
     //    return true;
     //}
-    class DoubleInsertionPointQueue<T> extends DoubleQueue<T> {
+    class DoubleInsertionPointQueue<T> extends ConcurrentPriorityBlockingQueue<T> {
         boolean expeditedOfferIsPush() {
             return false;
         }
@@ -465,7 +465,7 @@ public class DoubleInsertionPointQueueTest {
         TimeUnit.NANOSECONDS.sleep(durationOfTestNS);
         done.set(true);
         for (Future<?> future : f)
-            future.get();
+            future.get(1000, TimeUnit.MILLISECONDS);
 
         assertEquals(size.get(), q.size());
 
@@ -511,10 +511,10 @@ public class DoubleInsertionPointQueueTest {
     public void testExpeditedOfferPollOfferPoll() {
         DoubleInsertionPointQueue<Number> q = new DoubleInsertionPointQueue<Number>();
         if (q.expeditedOfferIsPush()) {
-            q.offer(new IntQueueItem(20, true));
-            q.offer(new IntQueueItem(15, true));
-            q.offer(new IntQueueItem(10, true));
             q.offer(new IntQueueItem(5, true));
+            q.offer(new IntQueueItem(10, true));
+            q.offer(new IntQueueItem(15, true));
+            q.offer(new IntQueueItem(20, true));
         } else {
             q.offer(new IntQueueItem(5, true));
             q.offer(new IntQueueItem(10, true));

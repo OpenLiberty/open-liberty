@@ -18,15 +18,15 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -95,28 +95,55 @@ import com.ibm.wsspi.webcontainer.util.ThreadContextHelper;
  */
 @SuppressWarnings("unchecked")
 public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.WebAppFilterManager {
+
+    /**
+     * Provides a simple Map class that just has get and put on it.  The gets are guarded
+     * with a read lock while the put is guarded with a write lock.
+     *
+     * @param <K> key class type
+     * @param <V> value class type
+     */
+    private static class ReadWriteSimpleMap<K, V> {
+        private final Map<K,V> wrappedMap;
+        private final ReadWriteLock rwLock = new ReentrantReadWriteLock();
+        ReadWriteSimpleMap(final int initialCapacity, final int maxSize) {
+            wrappedMap = new LinkedHashMap<K, V>(initialCapacity, .75f, true) {
+                private static final long serialVersionUID = 1L;
+
+                public boolean removeEldestEntry(Map.Entry<K, V> eldest) {
+                    return size() > maxSize;
+                };
+            };
+        }
+
+        V get(K key) {
+            rwLock.readLock().lock();
+            try {
+                return wrappedMap.get(key);
+            } finally {
+                rwLock.readLock().unlock();
+            }
+        }
+
+        V put(K key, V value) {
+            rwLock.writeLock().lock();
+            try {
+                return wrappedMap.put(key, value);
+            } finally {
+                rwLock.writeLock().unlock();
+            }
+        }
+    }
+
     protected Hashtable _filterWrappers = new Hashtable();
 
-    private Map chainCache = (Map) Collections.synchronizedMap(new LinkedHashMap(20, .75f, true) {
-        public boolean removeEldestEntry(Map.Entry eldest) {
-            return size() > 200;
-        }
-    });
-    private Map forwardChainCache = (Map) Collections.synchronizedMap(new LinkedHashMap(10, .75f, true) {
-        public boolean removeEldestEntry(Map.Entry eldest) {
-            return size() > 100;
-        }
-    });
-    private Map includeChainCache = (Map) Collections.synchronizedMap(new LinkedHashMap(5, .75f, true) {
-        public boolean removeEldestEntry(Map.Entry eldest) {
-            return size() > 100;
-        }
-    });
-    private Map errorChainCache = (Map) Collections.synchronizedMap(new LinkedHashMap(2, .75f, true) {
-        public boolean removeEldestEntry(Map.Entry eldest) {
-            return size() > 100;
-        }
-    });
+    private ReadWriteSimpleMap<String, FilterChainContents> chainCache = new ReadWriteSimpleMap<>(20, 200);
+
+    private ReadWriteSimpleMap<String, FilterChainContents> forwardChainCache = new ReadWriteSimpleMap<>(10, 100);
+
+    private ReadWriteSimpleMap<String, FilterChainContents> includeChainCache = new ReadWriteSimpleMap<>(5, 100);
+
+    private ReadWriteSimpleMap<String, FilterChainContents> errorChainCache = new ReadWriteSimpleMap<>(2, 100);
 
     public boolean _filtersDefined = false;
 
@@ -707,22 +734,22 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
             // see if the chain has been previously constructed (look for a
             // filter contents object)
             if (dispatcherType == DispatcherType.REQUEST) {
-                fcc = (FilterChainContents) chainCache.get(strippedUri);
+                fcc = chainCache.get(strippedUri);
                 if (isTraceOn && logger.isLoggable(Level.FINE)) {
                     logger.logp(Level.FINE, CLASS_NAME, "getFilterChainContents", "filter request mode, get cache entry fcc->" + fcc);
                 }
             } else if (dispatcherType == DispatcherType.FORWARD) {
-                fcc = (FilterChainContents) forwardChainCache.get(strippedUri);
+                fcc = forwardChainCache.get(strippedUri);
                 if (isTraceOn && logger.isLoggable(Level.FINE)) {
                     logger.logp(Level.FINE, CLASS_NAME, "getFilterChainContents", "filter forward mode, get cache entry fcc->" + fcc);
                 }
             } else if (dispatcherType == DispatcherType.INCLUDE) {
-                fcc = (FilterChainContents) includeChainCache.get(strippedUri);
+                fcc = includeChainCache.get(strippedUri);
                 if (isTraceOn && logger.isLoggable(Level.FINE)) {
                     logger.logp(Level.FINE, CLASS_NAME, "getFilterChainContents", "filter include mode, get cache entry fcc->" + fcc);
                 }
             } else if (dispatcherType == DispatcherType.ERROR) {
-                fcc = (FilterChainContents) errorChainCache.get(strippedUri);
+                fcc = errorChainCache.get(strippedUri);
                 if (isTraceOn && logger.isLoggable(Level.FINE)) {
                     logger.logp(Level.FINE, CLASS_NAME, "getFilterChainContents", "filter error mode, get cache entry fcc->" + fcc);
                 }
@@ -730,22 +757,22 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
 
         } else {
             if (dispatcherType == DispatcherType.REQUEST) {
-                fcc = (FilterChainContents) chainCache.get(reqServletName);
+                fcc = chainCache.get(reqServletName);
                 if (isTraceOn && logger.isLoggable(Level.FINE)) {
                     logger.logp(Level.FINE, CLASS_NAME, "getFilterChainContents", "filter request mode, get cache entry fcc->" + fcc);
                 }
             } else if (dispatcherType == DispatcherType.FORWARD) {
-                fcc = (FilterChainContents) forwardChainCache.get(reqServletName);
+                fcc = forwardChainCache.get(reqServletName);
                 if (isTraceOn && logger.isLoggable(Level.FINE)) {
                     logger.logp(Level.FINE, CLASS_NAME, "getFilterChainContents", "filter forward mode, get cache entry fcc->" + fcc);
                 }
             } else if (dispatcherType == DispatcherType.INCLUDE) {
-                fcc = (FilterChainContents) includeChainCache.get(reqServletName);
+                fcc = includeChainCache.get(reqServletName);
                 if (isTraceOn && logger.isLoggable(Level.FINE)) {
                     logger.logp(Level.FINE, CLASS_NAME, "getFilterChainContents", "filter include mode, get cache entry fcc->" + fcc);
                 }
             } else if (dispatcherType == DispatcherType.ERROR) {
-                fcc = (FilterChainContents) errorChainCache.get(reqServletName);
+                fcc = errorChainCache.get(reqServletName);
                 if (isTraceOn && logger.isLoggable(Level.FINE)) {
                     logger.logp(Level.FINE, CLASS_NAME, "getFilterChainContents", "filter error mode, get cache entry fcc->" + fcc);
                 }
