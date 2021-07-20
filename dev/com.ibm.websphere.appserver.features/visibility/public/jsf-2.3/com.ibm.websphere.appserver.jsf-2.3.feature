@@ -42,7 +42,8 @@ Subsystem-Name: JavaServer Faces 2.3
   com.ibm.websphere.appserver.eeCompatible-8.0, \
   com.ibm.websphere.appserver.javax.cdi-2.0, \
   com.ibm.websphere.appserver.javax.validation-2.0, \
-  com.ibm.websphere.appserver.javax.jsf-2.3
+  com.ibm.websphere.appserver.javax.jsf-2.3, \
+  io.openliberty.javaee.websocket-1.1
 -bundles=com.ibm.ws.org.apache.myfaces.2.3, \
  com.ibm.ws.org.apache.commons.beanutils.1.9.4, \
  com.ibm.ws.org.apache.commons.collections, \
@@ -52,7 +53,6 @@ Subsystem-Name: JavaServer Faces 2.3
  io.openliberty.faces.internal, \
  com.ibm.ws.cdi.interfaces, \
  com.ibm.ws.org.apache.commons.digester.1.8, \
- com.ibm.websphere.javaee.websocket.1.1; apiJar=false; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.websocket:javax.websocket-api:1.1", \
  com.ibm.websphere.appserver.thirdparty.jsf-2.3; location:="dev/api/third-party/"
 kind=ga
 edition=core
