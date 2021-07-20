@@ -27,14 +27,12 @@ fat.project: true
 # These features get added programmatically
 tested.features: \
   jaxws-2.2,\
-  ejbLite-3.2, \
   jaxws-2.3, \
   jaxb-2.3, \
-  appSecurity-3.0, \
-  enterpriseBeansLite-4.0, \
+  jsp-2.2, \
+  jsp-2.3, \
   pages-3.0, \
   servlet-5.0, \
-  appSecurity-4.0, \
   xmlBinding-3.0, \
   xmlWS-3.0
 

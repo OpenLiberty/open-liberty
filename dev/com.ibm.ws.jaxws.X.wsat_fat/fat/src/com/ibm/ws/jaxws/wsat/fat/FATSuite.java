@@ -33,7 +33,10 @@ public class FATSuite {
 	
 	// TODO: Enable repeats for tests against other buckets (currently failing)
     //@ClassRule
-    //public static RepeatTests r = RepeatTests.with(new EmptyAction()).andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly().removeFeature("jaxws-2.2").addFeature("jaxws-2.3").withID("jaxws-2.3")).andWith(FeatureReplacementAction.EE9_FEATURES().removeFeature("jaxws-2.3"));
+    // Only run EE9 in lite mode and for now don't run JAXWS 2.3.  If you run all of them
+    // in full fat mode, it blows past the 3 hour limit for full fat mode on some platforms.
+    @ClassRule
+    public static RepeatTests r = RepeatTests.with(new EmptyAction()).andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly().removeFeature("jaxws-2.2").addFeature("jaxws-2.3").withID("jaxws-2.3")).andWith(FeatureReplacementAction.EE9_FEATURES().removeFeature("jaxws-2.3"));
 
 
 }
