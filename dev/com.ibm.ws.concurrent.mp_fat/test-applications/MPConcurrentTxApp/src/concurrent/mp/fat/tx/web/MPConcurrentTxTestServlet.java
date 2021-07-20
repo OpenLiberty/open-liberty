@@ -24,6 +24,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.SQLNonTransientConnectionException;
 import java.sql.SQLRecoverableException;
 import java.sql.Statement;
@@ -48,6 +49,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
+import javax.transaction.RollbackException;
 import javax.transaction.Status;
 import javax.transaction.SystemException;
 import javax.transaction.Transaction;
@@ -1759,6 +1761,302 @@ public class MPConcurrentTxTestServlet extends HttpServlet {
             ResultSet result = st.executeQuery("SELECT SUM(POPULATION) FROM MNCOUNTIES WHERE NAME='Kittson' OR NAME='Lac qui Parle'");
             assertTrue(result.next());
             assertEquals(0, result.getInt(1));
+        }
+    }
+
+    /**
+     * Try out the proposed stageableCommit function where all stages succeed,
+     * so the whenComplete action should commit the transaction.
+     */
+    @Test
+    public void testStageableCommit() throws Exception {
+        MockContextServiceOrUserTransactionAPI ctx = new MockContextServiceOrUserTransactionAPI();
+
+        CompletableFuture<Integer> commitStage;
+        CompletableFuture<Integer> initialStage = txExecutor.newIncompleteFuture();
+        tx.begin();
+        try {
+            commitStage = initialStage.thenApplyAsync(count -> {
+                try (Connection con = onePhaseDataSource.getConnection()) {
+                    Statement st = con.createStatement();
+                    return count + st.executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Dodge', 20087)");
+                } catch (SQLException x) {
+                    throw new CompletionException(x);
+                }
+            }).thenApply(count -> {
+                try (Connection con = onePhaseDataSource.getConnection()) {
+                    Statement st = con.createStatement();
+                    return count + st.executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Grant', 6018)");
+                } catch (SQLException x) {
+                    throw new CompletionException(x);
+                }
+            }).thenApply(count -> {
+                try (Connection con = onePhaseDataSource.getConnection()) {
+                    Statement st = con.createStatement();
+                    return count + st.executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Koochiching', 13311)");
+                } catch (SQLException x) {
+                    throw new CompletionException(x);
+                }
+            }).whenComplete(ctx.stageableCommit());
+        } catch (Exception x) {
+            tx.rollback();
+            throw x;
+        }
+
+        assertEquals(Status.STATUS_NO_TRANSACTION, tx.getStatus());
+
+        initialStage.complete(0);
+
+        assertEquals(Integer.valueOf(3), commitStage.join());
+
+        // check if updates were committed
+        try (Connection con = onePhaseDataSource.getConnection()) {
+            Statement st = con.createStatement();
+            ResultSet result = st.executeQuery("SELECT SUM(POPULATION) FROM MNCOUNTIES WHERE " +
+                                               "NAME='Dodge' OR NAME='Grant' OR NAME='Koochiching'");
+            assertTrue(result.next());
+            assertEquals(39416, result.getInt(1));
+        }
+    }
+
+    /**
+     * Try out the proposed stageableCommit function where all stages succeed,
+     * so the whenComplete action should commit the transaction.
+     * This test enlists multiple resources in order to use two-phase commit.
+     */
+    @Test
+    public void testStageableCommit2Phase() throws Exception {
+        MockContextServiceOrUserTransactionAPI ctx = new MockContextServiceOrUserTransactionAPI();
+
+        CompletableFuture<Integer> commitStage;
+        CompletableFuture<Integer> initialStage = txExecutor.newIncompleteFuture();
+        tx.begin();
+        try {
+            commitStage = initialStage.thenApplyAsync(count -> {
+                try (Connection con = defaultDataSource.getConnection()) {
+                    Statement st = con.createStatement();
+                    return count + st.executeUpdate("INSERT INTO IACOUNTIES VALUES ('Audubon', 6119)");
+                } catch (SQLException x) {
+                    throw new CompletionException(x);
+                }
+            }).thenApply(count -> {
+                try (Connection con = defaultDataSource_unsharable.getConnection()) {
+                    Statement st = con.createStatement();
+                    return count + st.executeUpdate("INSERT INTO IACOUNTIES VALUES ('Black Hawk', 131090)");
+                } catch (SQLException x) {
+                    throw new CompletionException(x);
+                }
+            }).thenApply(count -> {
+                try (Connection con = defaultDataSource_unsharable.getConnection()) {
+                    Statement st = con.createStatement();
+                    return count + st.executeUpdate("INSERT INTO IACOUNTIES VALUES ('Boone', 26306)");
+                } catch (SQLException x) {
+                    throw new CompletionException(x);
+                }
+            }).whenComplete(ctx.stageableCommit());
+        } catch (Exception x) {
+            tx.rollback();
+            throw x;
+        }
+
+        assertEquals(Status.STATUS_NO_TRANSACTION, tx.getStatus());
+
+        initialStage.complete(0);
+
+        assertEquals(Integer.valueOf(3), commitStage.join());
+
+        // check if updates were committed
+        try (Connection con = defaultDataSource.getConnection()) {
+            Statement st = con.createStatement();
+            ResultSet result = st.executeQuery("SELECT SUM(POPULATION) FROM IACOUNTIES WHERE " +
+                                               "NAME='Audubon' OR NAME='Black Hawk' OR NAME='Boone'");
+            assertTrue(result.next());
+            assertEquals(163515, result.getInt(1));
+        }
+    }
+
+    /**
+     * Try out the proposed stageableCommit function where one of stages raises an
+     * exception, so the whenComplete action should roll back the transaction.
+     */
+    @Test
+    public void testStageableCommitWithException() throws Exception {
+        MockContextServiceOrUserTransactionAPI ctx = new MockContextServiceOrUserTransactionAPI();
+
+        CompletableFuture<Integer> commitStage;
+        CompletableFuture<Integer> initialStage = txExecutor.newIncompleteFuture();
+        tx.begin();
+        try {
+            commitStage = initialStage.thenApplyAsync(count -> {
+                try (Connection con = onePhaseDataSource.getConnection()) {
+                    Statement st = con.createStatement();
+                    return count + st.executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Red Lake', 4089)");
+                } catch (SQLException x) {
+                    throw new CompletionException(x);
+                }
+            }).thenApply(count -> {
+                try (Connection con = onePhaseDataSource.getConnection()) {
+                    Statement st = con.createStatement();
+                    // Force a SQLException by inserting a duplicate entry
+                    return count + st.executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Red Lake', 4098)");
+                } catch (SQLException x) {
+                    throw new CompletionException(x);
+                }
+            }).thenApply(count -> {
+                try (Connection con = onePhaseDataSource.getConnection()) {
+                    Statement st = con.createStatement();
+                    return count + st.executeUpdate("INSERT INTO MNCOUNTIES VALUES ('Yellow Medicine', 10438)");
+                } catch (SQLException x) {
+                    throw new CompletionException(x);
+                }
+            }).whenComplete(ctx.stageableCommit());
+        } catch (Exception x) {
+            tx.rollback();
+            throw x;
+        }
+
+        assertEquals(Status.STATUS_NO_TRANSACTION, tx.getStatus());
+
+        initialStage.complete(0);
+
+        try {
+            int numUpdates = commitStage.join();
+            fail("Failure on completion stage action should cause exception to be raised. Instead: " + numUpdates);
+        } catch (CompletionException x) {
+            if (x.getCause() instanceof SQLIntegrityConstraintViolationException)
+                ; // expected due to attempt to insert duplicate key
+            else
+                throw x;
+        }
+
+        // verify that updates were rolled back
+        try (Connection con = onePhaseDataSource.getConnection()) {
+            Statement st = con.createStatement();
+            ResultSet result = st.executeQuery("SELECT * FROM MNCOUNTIES WHERE " +
+                                               "NAME='Red Lake' OR NAME='Yellow Medicine'");
+            assertFalse(result.next());
+        }
+    }
+
+    /**
+     * Try out the proposed stageableCommit function where one of stages marks the
+     * transaction for roll back only, so the whenComplete action should roll back
+     * the transaction.
+     */
+    @Test
+    public void testStageableCommitWithRollbackOnly() throws Exception {
+        MockContextServiceOrUserTransactionAPI ctx = new MockContextServiceOrUserTransactionAPI();
+
+        CompletableFuture<Integer> commitStage;
+        CompletableFuture<Integer> initialStage = txExecutor.newIncompleteFuture();
+        tx.begin();
+        try {
+            commitStage = initialStage.thenApplyAsync(count -> {
+                try (Connection con = defaultDataSource.getConnection()) {
+                    Statement st = con.createStatement();
+                    return count + st.executeUpdate("INSERT INTO IACOUNTIES VALUES ('Adair', 7682)");
+                } catch (SQLException x) {
+                    throw new CompletionException(x);
+                }
+            }).thenApply(count -> {
+                try (Connection con = defaultDataSource_unsharable.getConnection()) {
+                    Statement st = con.createStatement();
+                    return count + st.executeUpdate("INSERT INTO IACOUNTIES VALUES ('Adams', 4029)");
+                } catch (SQLException x) {
+                    throw new CompletionException(x);
+                }
+            }).thenApply(count -> {
+                try (Connection con = defaultDataSource.getConnection()) {
+                    Statement st = con.createStatement();
+                    count += st.executeUpdate("INSERT INTO IACOUNTIES VALUES ('Appanoose', 12884)");
+                    tx.setRollbackOnly();
+                    return count;
+                } catch (SQLException | SystemException x) {
+                    throw new CompletionException(x);
+                }
+            }).whenComplete(ctx.stageableCommit());
+        } catch (Exception x) {
+            tx.rollback();
+            throw x;
+        }
+
+        assertEquals(Status.STATUS_NO_TRANSACTION, tx.getStatus());
+
+        initialStage.complete(0);
+
+        try {
+            int numUpdates = commitStage.join();
+            fail("Transaction marked rollback only should cause exception to be raised. Instead: " + numUpdates);
+        } catch (CompletionException x) {
+            if (x.getCause() instanceof RollbackException)
+                ; // expected due to setRollbackOnly
+            else
+                throw x;
+        }
+
+        // verify that updates were rolled back
+        try (Connection con = defaultDataSource.getConnection()) {
+            Statement st = con.createStatement();
+            ResultSet result = st.executeQuery("SELECT * FROM IACOUNTIES WHERE " +
+                                               "NAME='Adair' OR NAME='Adams' OR NAME='Appanoose'");
+            assertFalse(result.next());
+        }
+    }
+
+    /**
+     * Try out the most straightforward approach with the proposed stageableCommit function
+     * but which requires the transaction manager to tolerate a possible overlap of the
+     * same transaction on 2 threads at once, although never with enlisted resources
+     * on 2 threads at once.
+     */
+    // @Test // TODO to enable, transaction manager would need to be more lenient about raising
+    // "IllegalStateException: Transaction already active on thread ..."
+    // Otherwise fails intermittently based on whether the first stage happens to start before
+    // the transaction is suspended from the main servlet thread
+    public void testStageableCommitWithTransactionOverlap() throws Exception {
+        MockContextServiceOrUserTransactionAPI ctx = new MockContextServiceOrUserTransactionAPI();
+
+        CompletableFuture<Integer> commitStage;
+        tx.begin();
+        try {
+            commitStage = txExecutor.supplyAsync(() -> {
+                try (Connection con = defaultDataSource.getConnection()) {
+                    Statement st = con.createStatement();
+                    return st.executeUpdate("INSERT INTO IACOUNTIES VALUES ('Bremer', 24276)");
+                } catch (SQLException x) {
+                    throw new CompletionException(x);
+                }
+            }).thenApply(count -> {
+                try (Connection con = onePhaseDataSource.getConnection()) {
+                    Statement st = con.createStatement();
+                    return count + st.executeUpdate("INSERT INTO IACOUNTIES VALUES ('Buchanan', 20958)");
+                } catch (SQLException x) {
+                    throw new CompletionException(x);
+                }
+            }).thenApply(count -> {
+                try (Connection con = defaultDataSource_unsharable.getConnection()) {
+                    Statement st = con.createStatement();
+                    return count + st.executeUpdate("INSERT INTO IACOUNTIES VALUES ('Buena Vista', 20260)");
+                } catch (SQLException x) {
+                    throw new CompletionException(x);
+                }
+            }).whenComplete(ctx.stageableCommit());
+        } catch (Exception x) {
+            tx.rollback();
+            throw x;
+        }
+
+        assertEquals(Status.STATUS_NO_TRANSACTION, tx.getStatus());
+
+        assertEquals(Integer.valueOf(3), commitStage.join());
+
+        // check if updates were committed
+        try (Connection con = defaultDataSource.getConnection()) {
+            Statement st = con.createStatement();
+            ResultSet result = st.executeQuery("SELECT SUM(POPULATION) FROM IACOUNTIES WHERE " +
+                                               "NAME='Bremer' OR NAME='Buchanan' OR NAME='Buena Vista'");
+            assertTrue(result.next());
+            assertEquals(65494, result.getInt(1));
         }
     }
 
