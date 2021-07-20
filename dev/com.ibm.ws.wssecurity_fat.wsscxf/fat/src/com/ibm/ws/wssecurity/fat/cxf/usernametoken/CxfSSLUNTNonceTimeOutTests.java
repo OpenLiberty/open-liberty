@@ -11,6 +11,8 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.usernametoken;
 
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+
 import java.io.File;
 import java.util.Set;
 
@@ -24,19 +26,20 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
+@SkipForRepeat({ EE9_FEATURES })
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class CxfSSLUNTNonceTimeOutTests extends SSLTestCommon {
 
     static private final Class<?> thisClass = CxfSSLUNTNonceTimeOutTests.class;
 
-    //10/2020
     static final private String serverName = "com.ibm.ws.wssecurity_fat.ssl";
     @Server(serverName)
     public static LibertyServer server;
@@ -44,10 +47,8 @@ public class CxfSSLUNTNonceTimeOutTests extends SSLTestCommon {
     @BeforeClass
     public static void setUp() throws Exception {
         String thisMethod = "setup";
-        //4/2021
         String copyFromFile = "";
 
-        //4/2021
         ServerConfiguration config = server.getServerConfiguration();
         Set<String> features = config.getFeatureManager().getFeatures();
         if (features.contains("jaxws-2.2")) {
@@ -62,9 +63,7 @@ public class CxfSSLUNTNonceTimeOutTests extends SSLTestCommon {
                            server.getPathToAutoFVTNamedServer() +
                            "server_customize_ee8.xml";
         }
-        //End 4/2021
 
-        //Added 10/2020
         ShrinkHelper.defaultDropinApp(server, "untsslclient", "com.ibm.ws.wssecurity.fat.untsslclient", "fats.cxf.basicssl.wssec", "fats.cxf.basicssl.wssec.types");
         ShrinkHelper.defaultDropinApp(server, "untoken", "com.ibm.ws.wssecurity.fat.untoken");
         PrepInitServer serverObject = new PrepInitServer();
@@ -100,8 +99,9 @@ public class CxfSSLUNTNonceTimeOutTests extends SSLTestCommon {
      */
     @Test
     //5/2021 added PrivilegedActionExc, NoSuchMethodExc as a result of java11 and ee8
-    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.lang.ClassNotFoundException", "java.security.PrivilegedActionException",
-                           "java.lang.NoSuchMethodException" })
+    //@AllowedFFDC(value = { "java.util.MissingResourceException", "java.lang.ClassNotFoundException", "java.security.PrivilegedActionException",
+    //                       "java.lang.NoSuchMethodException" })
+    @AllowedFFDC(value = { "java.util.MissingResourceException" })
     public void testCxfUntHardcodedReplayOneAndMoreMinutesSSL() throws Exception {
 
         //reconfigAndRestartServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_customize.xml");

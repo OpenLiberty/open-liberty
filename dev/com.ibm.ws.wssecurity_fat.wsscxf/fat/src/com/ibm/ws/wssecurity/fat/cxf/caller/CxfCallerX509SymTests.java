@@ -11,6 +11,7 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.caller;
 
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -33,17 +34,18 @@ import com.meterware.httpunit.WebResponse;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
+@SkipForRepeat({ EE9_FEATURES })
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class CxfCallerX509SymTests {
 
-    //10/2020
     static final private String serverName = "com.ibm.ws.wssecurity_fat.x509symcaller";
     @Server(serverName)
     public static LibertyServer server;
@@ -75,7 +77,6 @@ public class CxfCallerX509SymTests {
 
         String thisMethod = "setup";
 
-        //2/2021
         ServerConfiguration config = server.getServerConfiguration();
         Set<String> features = config.getFeatureManager().getFeatures();
         if (features.contains("usr:wsseccbh-1.0")) {
@@ -88,7 +89,6 @@ public class CxfCallerX509SymTests {
             copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
         }
 
-        //Added 11/2020
         ShrinkHelper.defaultDropinApp(server, "callerclient", "com.ibm.ws.wssecurity.fat.callerclient", "test.libertyfat.caller.contract", "test.libertyfat.caller.types");
         ShrinkHelper.defaultDropinApp(server, "callertoken", "test.libertyfat.caller");
 
@@ -129,8 +129,9 @@ public class CxfCallerX509SymTests {
      */
 
     //5/2021 added PrivilegedActionExc, NoSuchMethodExc as a result of java11 and ee8
-    @AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException", "java.security.PrivilegedActionException",
-                           "java.lang.NoSuchMethodException" })
+    //@AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException", "java.security.PrivilegedActionException",
+    //                       "java.lang.NoSuchMethodException" })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testCxfCallerSymmetricEndorsingPolicy() throws Exception {
 
@@ -162,7 +163,6 @@ public class CxfCallerX509SymTests {
      *
      */
 
-    //4/2021
     @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testCxfCallerSymmetricEndorsingPolicyHttps() throws Exception {

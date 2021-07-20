@@ -42,14 +42,22 @@ src: \
 -sub: *.bnd
 
 fat.project: true
-
-tested.features: jaxws-2.3, \
+	
+tested.features:\
+  jaxws-2.3, \
+  xmlWS-3.0, \
+  jaxb-2.3, \
+  xmlBinding-3.0, \
   jsp-2.3, \
+  pages-3.0, \
   servlet-4.0, \
+  servlet-5.0, \
   appSecurity-3.0, \
+  appSecurity-4.0, \
   cdi-2.0, \
-  axb-2.3, \
-  el-3.0
+  cdi-3.0, \
+  el-3.0, \
+  expressionlanguage-4.0	
 	
 	
 -buildpath: \

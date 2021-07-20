@@ -11,6 +11,7 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.sample;
 
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -33,17 +34,18 @@ import com.meterware.httpunit.WebResponse;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
+@SkipForRepeat({ EE9_FEATURES })
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class CxfInteropX509Tests {
 
-    //11/2020
     static final private String serverName = "com.ibm.ws.wssecurity_fat.sample";
     @Server(serverName)
 
@@ -68,7 +70,6 @@ public class CxfInteropX509Tests {
 
         String thisMethod = "setup";
 
-        //2/2021
         ServerConfiguration config = server.getServerConfiguration();
         Set<String> features = config.getFeatureManager().getFeatures();
         if (features.contains("usr:wsseccbh-1.0")) {
@@ -82,7 +83,6 @@ public class CxfInteropX509Tests {
             copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_x509_wss4j.xml");
         }
 
-        //Added 11/2020
         //apps/webcontent and apps/WSSampleSeiClient are checked in the repo publish/server folder
         ShrinkHelper.defaultDropinApp(server, "WSSampleSei", "com.ibm.was.wssample.sei.echo");
         ShrinkHelper.defaultDropinApp(server, "webcontentprovider", "com.ibm.was.cxfsample.sei.echo");
@@ -135,8 +135,8 @@ public class CxfInteropX509Tests {
         return;
     }
 
-    //4/2021
-    @AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
+    //@AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testEcho21Service() throws Exception {
         String thisMethod = "testEcho21Service";
@@ -167,7 +167,6 @@ public class CxfInteropX509Tests {
         return;
     }
 
-    //4/2021
     @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testEcho22Service() throws Exception {
@@ -199,7 +198,6 @@ public class CxfInteropX509Tests {
         return;
     }
 
-    //4/2021
     @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testEcho23Service() throws Exception {

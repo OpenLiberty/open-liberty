@@ -11,10 +11,14 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.sample;
 
+import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
+import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Set;
 
 import org.junit.AfterClass;
@@ -34,14 +38,16 @@ import com.meterware.httpunit.WebResponse;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
+@SkipForRepeat({ NO_MODIFICATION, EE8_FEATURES })
 @RunWith(FATRunner.class)
 public class CxfSampleTests {
 
-    //11/2020
     static final private String serverName = "com.ibm.ws.wssecurity_fat.sample";
     @Server(serverName)
 
@@ -68,7 +74,6 @@ public class CxfSampleTests {
         String thisMethod = "setup";
         String defaultPort = "8010";
 
-        //2/2021
         ServerConfiguration config = server.getServerConfiguration();
         Set<String> features = config.getFeatureManager().getFeatures();
         if (features.contains("usr:wsseccbh-1.0")) {
@@ -82,10 +87,18 @@ public class CxfSampleTests {
             copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_asym_wss4j.xml");
         }
 
-        //Added 11/2020
         //apps/webcontent and apps/WSSampleSeiClient are checked in the repo publish/server folder
         ShrinkHelper.defaultDropinApp(server, "WSSampleSei", "com.ibm.was.wssample.sei.echo");
         ShrinkHelper.defaultDropinApp(server, "webcontentprovider", "com.ibm.was.cxfsample.sei.echo");
+
+        //7/2021
+        //JakartaEE9 transforms the sample client applications which exist at '<server>/apps/<appname>'.
+        if (JakartaEE9Action.isActive()) {
+            Path webcontent_archive = Paths.get(server.getServerRoot() + File.separatorChar + "apps" + File.separatorChar + "webcontent");
+            Path WSSampleSeiClient_archive = Paths.get(server.getServerRoot() + File.separatorChar + "apps" + File.separatorChar + "WSSampleSeiClient");
+            JakartaEE9Action.transformApp(webcontent_archive);
+            JakartaEE9Action.transformApp(WSSampleSeiClient_archive);
+        }
 
         // start server "com.ibm.ws.wssecurity_fat.sample"
         server.addInstalledAppForValidation("WSSampleSei");
@@ -142,8 +155,6 @@ public class CxfSampleTests {
         return;
     }
 
-    //4/2021 added allowed ffdc to run with EE8
-    @AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
     @Test
     public void testEchoServiceCXF() throws Exception {
 
@@ -169,8 +180,8 @@ public class CxfSampleTests {
         return;
     }
 
-    //5/2021 added PrivilegedActionExc, NoSuchMethodExc as a result of java11 and ee8
-    @AllowedFFDC(value = { "java.net.MalformedURLException", "java.security.PrivilegedActionException", "java.lang.NoSuchMethodException" })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
+    //@AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID, JakartaEE9Action.ID })
     @Test
     public void testEchoService() throws Exception {
         String thisMethod = "testEchoService";
@@ -182,7 +193,7 @@ public class CxfSampleTests {
                         thisMethod, // String thisMethod,
                         WSSampleClientUrl,
                         securedServiceClientUrl + "/WSSampleSei/EchoService", // the serviceURL of the WebServiceProvider. This needs to be updated in the Echo wsdl files
-                        "EchoService", // Secnerio name. For distinguish the testing scenario
+                        "EchoService", // Scenario name. For distinguish the testing scenario
                         "echo", // testing type: ping, echo, async
                         "1", // msgcount: how many times to run the test from service-client to  service-provider
                         "soap11", // options: soap11 or soap12 or else (will be added soap11 to its end)
@@ -195,8 +206,8 @@ public class CxfSampleTests {
         return;
     }
 
-    //4/2021 added allowed ffdc to run with EE8
     @AllowedFFDC(value = { "java.net.MalformedURLException" })
+    //@AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID, JakartaEE9Action.ID })
     @Test
     public void testEcho4Service() throws Exception {
         String thisMethod = "testEcho4Service";

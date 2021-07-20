@@ -11,6 +11,7 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.usernametoken;
 
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.AfterClass;
@@ -28,17 +29,18 @@ import com.meterware.httpunit.WebResponse;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 
+@SkipForRepeat({ EE9_FEATURES })
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class CxfUntNoPassTests {
     private static String serverName = "com.ibm.ws.wssecurity_fat";
 
-    //Added 10/2020
     @Server("com.ibm.ws.wssecurity_fat")
     public static LibertyServer server;
 
@@ -66,7 +68,6 @@ public class CxfUntNoPassTests {
 
         String thisMethod = "setup";
 
-        //Added 10/2020
         ShrinkHelper.defaultDropinApp(server, "nopassclient", "com.ibm.ws.wssecurity.fat.nopassclient", "fats.cxf.basic.wssec", "fats.cxf.basic.wssec.types", "test.wssecfat");
         ShrinkHelper.defaultDropinApp(server, "nopassunt", "wssecfat.test");
 
@@ -89,7 +90,6 @@ public class CxfUntNoPassTests {
      *
      */
 
-    //4/2021
     @AllowedFFDC(value = { "java.lang.ClassNotFoundException" })
     @Test
     public void testCxfNoPassService() throws Exception {
