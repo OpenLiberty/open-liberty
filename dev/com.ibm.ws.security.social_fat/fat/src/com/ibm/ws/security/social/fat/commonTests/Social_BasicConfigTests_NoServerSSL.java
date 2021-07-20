@@ -65,7 +65,7 @@ public class Social_BasicConfigTests_NoServerSSL extends SocialCommonTest {
 
         //        reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_noServerSSL_goodTrust.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_goodTrust");
@@ -98,7 +98,7 @@ public class Social_BasicConfigTests_NoServerSSL extends SocialCommonTest {
             return;
         }
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
         webClient.getOptions().setTimeout(10000);
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
@@ -145,7 +145,7 @@ public class Social_BasicConfigTests_NoServerSSL extends SocialCommonTest {
         // re-enabled the reconfig when/if we can automate google testing
         //        reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_noServerSSL_goodTrust.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_goodJwksUri_goodTrust");
@@ -174,7 +174,7 @@ public class Social_BasicConfigTests_NoServerSSL extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_noServerSSL.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         String lastStep = perform_social_login;
         String[] steps = inovke_social_login_actions;

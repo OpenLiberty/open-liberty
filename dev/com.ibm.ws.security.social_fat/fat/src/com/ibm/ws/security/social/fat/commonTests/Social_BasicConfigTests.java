@@ -129,7 +129,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_badClientId.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_badClientId");
@@ -187,7 +187,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     private void blankOrEmptyClientId(String specificConfig, String appToCall) throws Exception {
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + specificConfig, null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + appToCall);
@@ -282,7 +282,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + specificConfig, null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + appToCall);
@@ -386,7 +386,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_xorSecret.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_xorSecret");
@@ -410,7 +410,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     @Test
     public void Social_BasicConfigTests_enabledTrue() throws Exception {
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_enabledTrue");
@@ -427,7 +427,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     //    @Test
     public void Social_BasicConfigTests_enabledFalse() throws Exception {
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_enabledFalse");
@@ -452,7 +452,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_goodAuthFilterRef.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         // use the default app - which, won't match the configured filter.  Show that we get a failure - just to make sure we're not accidentally matching everything
         // TODO - currently the runtime is not returning the 401 properly - we should get an error page, but are not
@@ -486,7 +486,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
         extraMsgs.add(SocialMessageConstants.CWWKG0033W_ATTRIBUTE_VALUE_NOT_FOUND);
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_badAuthFilterRef.xml", extraMsgs);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_badAuthFilterRef");
@@ -517,7 +517,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_goodTrust.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_goodTrust");
@@ -546,7 +546,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_badTrust.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         String lastStep = perform_social_login;
         String[] steps = inovke_social_login_actions;
@@ -607,7 +607,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + specificConfig, null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + appToCall);
@@ -633,7 +633,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_goodAuthEndpoint.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_goodAuthEndpoint");
@@ -650,7 +650,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_badAuthEndpoint.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_badAuthEndpoint");
@@ -695,7 +695,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + specificConfig, null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         int badStatus = SocialConstants.FORBIDDEN_STATUS;
         String badMessage = SocialConstants.FORBIDDEN;
@@ -736,7 +736,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_goodTokenEndpoint.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_goodTokenEndpoint");
@@ -756,7 +756,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_badTokenEndpoint.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_badTokenEndpoint");
@@ -812,7 +812,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + specificConfig, null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + appToCall);
@@ -846,7 +846,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_tEAM_clientSecretBasic.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_tEAM_clientSecretBasic");
@@ -880,7 +880,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_tEAM_clientSecretPost.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_tEAM_clientSecretPost");
@@ -898,7 +898,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_tEAM_clientSecretBad.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_tEAM_clientSecretBad");
@@ -923,7 +923,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_goodUserApi.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_goodUserApi");
@@ -942,7 +942,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_badUserApi.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_badUserApi");
@@ -985,7 +985,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + specificConfig, null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + appToCall);
@@ -1019,7 +1019,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     @Test
     public void Social_BasicConfigTests_basicUserApiType() throws Exception {
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_basicUserApiType");
@@ -1057,7 +1057,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     @Test
     public void Social_BasicConfigTests_introspectUserApiType() throws Exception {
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_introspectUserApiType");
@@ -1093,7 +1093,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     @Test
     public void Social_BasicConfigTests_kubeUserApiType() throws Exception {
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_kubeUserApiType");
@@ -1131,7 +1131,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     @Test
     public void Social_BasicConfigTests_goodUserApiToken() throws Exception {
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_good_userApiToken");
@@ -1153,7 +1153,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     @Test
     public void Social_BasicConfigTests_badUserApiToken() throws Exception {
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_bad_userApiToken");
@@ -1187,7 +1187,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     public void Social_BasicConfigTests_UserApiToken_withMissingPermissions() throws Exception {
 
         if (provider.equals(SocialConstants.OPENSHIFT_PROVIDER) && genericTestServer.getBootstrapProperty("service.account.token.missing.permissions") != null) {
-            WebClient webClient = getWebClient();
+            WebClient webClient = getAndSaveWebClient();
 
             SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
             updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_missingPermissions_userApiToken");
@@ -1215,7 +1215,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     @Test
     public void Social_BasicConfigTests_blankUserApiToken() throws Exception {
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_blank_userApiToken");
@@ -1248,7 +1248,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     @Test
     public void Social_BasicConfigTests_emptyUserApiToken() throws Exception {
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_empty_userApiToken");
@@ -1278,7 +1278,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_realmName.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_realmName");
@@ -1337,7 +1337,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + specificConfig, null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + appToCall);
@@ -1354,7 +1354,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_mapToUserRegistryFalse.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_mapToUserRegistryFalse");
@@ -1371,7 +1371,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_mapToUserRegistryTrue_userNotInRegistry.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_mapToUserRegistryTrue");
@@ -1414,7 +1414,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
 
         }
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_mapToUserRegistryTrue");
@@ -1433,7 +1433,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_goodJwt_builder.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_good_jwt_builder");
@@ -1456,7 +1456,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_blankJwt_builder.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_blank_jwt_builder");
@@ -1478,7 +1478,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_emptyJwt_builder.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_empty_jwt_builder");
@@ -1495,7 +1495,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_jwt_builder_HS256.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_jwt_builder_HS256");
@@ -1518,7 +1518,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_goodJwksUri.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_goodJwksUri");
@@ -1536,7 +1536,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_badJwksUri.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_badJwksUri");
@@ -1579,7 +1579,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     public void blankOrEmptyJwksUri(String specificConfig, String appToCall) throws Exception {
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + specificConfig, null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + appToCall);
@@ -1607,7 +1607,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_jwksUri_jwkDisabledInOP.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_jwksUri_jwkDisabledInOP");
@@ -1626,7 +1626,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_badIssuer.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_badIssuer");
@@ -1670,7 +1670,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + specificConfig, null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + appToCall);
@@ -1695,7 +1695,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_isClientSideRedirectSupported_true.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_isClientSideRedirectSupported_true");
@@ -1711,7 +1711,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_isClientSideRedirectSupported_false.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_isClientSideRedirectSupported_false");
@@ -1728,7 +1728,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_badScope.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
         String[] steps = inovke_social_login_actions;
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
@@ -1804,7 +1804,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + specificConfig, null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + appToCall);
@@ -2129,7 +2129,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + specificConfig, null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = settings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + appToCall);
@@ -2193,7 +2193,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_badRedirectToRPHostAndPort.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_badRedirectToRPHostAndPort");
@@ -2288,7 +2288,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + specificConfig, null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = settings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + appToCall);
@@ -2332,7 +2332,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_idTokenTokenResponseType.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_idTokenTokenResponseType");
@@ -2372,7 +2372,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_idTokenResponseType.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_idTokenResponseType");
@@ -2420,7 +2420,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_tokenResponseType.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_tokenResponseType");
@@ -2464,7 +2464,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
         }
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_codeResponseType.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_opMissingAuthCodeGrantType_codeResponseType");
@@ -2493,7 +2493,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_idTokenTokenResponseType.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_opMissingImplicitGrantType_idTokenTokenResponseType");
@@ -2523,7 +2523,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_idTokenResponseType.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_opMissingImplicitGrantType_idTokenResponseType");
@@ -2552,7 +2552,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_tokenResponseType.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_opMissingImplicitGrantType_tokenResponseType");
@@ -2594,7 +2594,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_responseModeFormPost_idTokenTokenResponseType.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_responseModeFormPost_idTokenTokenResponseType");
@@ -2631,7 +2631,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_responseModeFormPost_idTokenResponseType.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_responseModeFormPost_idTokenResponseType");
@@ -2676,7 +2676,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
 
         reconfigIfProviderSpecificConfig(genericTestServer, providerConfigString + "_responseModeFormPost_tokenResponseType.xml", null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_responseModeFormPost_tokenResponseType");
@@ -2710,7 +2710,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     public void Social_BasicConfigTests_accessTokenRequiredTrue_tokenPassed_noLTPA() throws Exception {
 
         String access_token = getAccessToken();
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         // when using the introspect endpoint, we need the clientId and ClientSecret in the config (we want to test with minimum configs, so, don't want to
@@ -2769,7 +2769,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     @Test
     public void Social_BasicConfigTests_accessTokenRequiredTrue_tokenPassed_goodLTPA() throws Exception {
 
-        WebClient webClientForAccess = getWebClient();
+        WebClient webClientForAccess = getAndSaveWebClient();
         String access_token = getAccessToken(webClientForAccess);
         WebClient webClient = createWebClientWithGoodCookieValue(webClientForAccess);
 
@@ -2800,7 +2800,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     @Test
     public void Social_BasicConfigTests_accessTokenRequiredTrue_tokenNotPassed_noLTPA() throws Exception {
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         // when using the introspect endpoint, we need the clientId and ClientSecret in the config (we want to test with minimum configs, so, don't want to
@@ -2852,7 +2852,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     @Test
     public void Social_BasicConfigTests_accessTokenRequiredTrue_tokenNotPassed_goodLTPA() throws Exception {
 
-        WebClient webClientForAccess = getWebClient();
+        WebClient webClientForAccess = getAndSaveWebClient();
         getAccessToken(webClientForAccess);
         WebClient webClient = createWebClientWithGoodCookieValue(webClientForAccess);
 
@@ -2881,7 +2881,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     @Test
     public void Social_BasicConfigTests_accessTokenRequiredTrue_badTokenPassed_noLTPA() throws Exception {
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         // when using the introspect endpoint, we need the clientId and ClientSecret in the config (we want to test with minimum configs, so, don't want to
@@ -2966,7 +2966,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     @Test
     public void Social_BasicConfigTests_accessTokenRequiredTrue_badTokenPassed_goodLTPA() throws Exception {
 
-        WebClient webClientForAccess = getWebClient();
+        WebClient webClientForAccess = getAndSaveWebClient();
         getAccessToken(webClientForAccess);
         WebClient webClient = createWebClientWithGoodCookieValue(webClientForAccess);
 
@@ -3013,7 +3013,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     public void Social_BasicConfigTests_accessTokenRequiredDefault_tokenPassed() throws Exception {
 
         String access_token = getAccessToken();
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld");
@@ -3038,7 +3038,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     @Test
     public void Social_BasicConfigTests_accessTokenRequiredDefault_tokenNotPassed() throws Exception {
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld");
@@ -3060,7 +3060,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     public void Social_BasicConfigTests_accessTokenRequiredDefault_badTokenPassed() throws Exception {
 
         String access_token = "somebadvalueForAnAccessToken";
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld");
@@ -3086,7 +3086,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     public void Social_BasicConfigTests_accessTokenRequiredFalse_tokenPassed_noLTPA() throws Exception {
 
         String access_token = getAccessToken();
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_accessTokenRequiredFalse");
@@ -3111,7 +3111,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     @Test
     public void Social_BasicConfigTests_accessTokenRequiredFalse_tokenPassed_badLTPA() throws Exception {
 
-        WebClient webClientForAccess = getWebClient();
+        WebClient webClientForAccess = getAndSaveWebClient();
         String access_token = getAccessToken(webClientForAccess);
         WebClient webClient = createWebClientWithBadCookieValue("SomeBadCookieValue");
 
@@ -3138,7 +3138,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     @Test
     public void Social_BasicConfigTests_accessTokenRequiredFalse_tokenPassed_goodLTPA() throws Exception {
 
-        WebClient webClientForAccess = getWebClient();
+        WebClient webClientForAccess = getAndSaveWebClient();
         String access_token = getAccessToken(webClientForAccess);
         WebClient webClient = createWebClientWithGoodCookieValue(webClientForAccess);
 
@@ -3165,7 +3165,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     @Test
     public void Social_BasicConfigTests_accessTokenRequiredFalse_tokenNotPassed_noLTPA() throws Exception {
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_accessTokenRequiredFalse");
@@ -3207,7 +3207,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     @Test
     public void Social_BasicConfigTests_accessTokenRequiredFalse_tokenNotPassed_goodLTPA() throws Exception {
 
-        WebClient webClientForAccess = getWebClient();
+        WebClient webClientForAccess = getAndSaveWebClient();
         getAccessToken(webClientForAccess);
         WebClient webClient = createWebClientWithGoodCookieValue(webClientForAccess);
 
@@ -3231,7 +3231,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     public void Social_BasicConfigTests_accessTokenRequiredFalse_badTokenPassed_noLTPA() throws Exception {
 
         String access_token = "somebadvalueForAnAccessToken";
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_accessTokenRequiredFalse");
@@ -3283,7 +3283,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     public void Social_BasicConfigTests_accessTokenRequiredFalse_badTokenPassed_goodLTPA() throws Exception {
 
         String access_token = "somebadvalueForAnAccessToken";
-        WebClient webClientForAccess = getWebClient();
+        WebClient webClientForAccess = getAndSaveWebClient();
         getAccessToken(webClientForAccess);
         WebClient webClient = createWebClientWithGoodCookieValue(webClientForAccess);
 
@@ -3309,7 +3309,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     public void Social_BasicConfigTests_accessTokenSupportedTrue_tokenPassed_noLTPA() throws Exception {
 
         String access_token = getAccessToken();
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         // when using the introspect endpoint, we need the clientId and ClientSecret in the config (we want to test with minimum configs, so, don't want to
@@ -3366,7 +3366,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     @Test
     public void Social_BasicConfigTests_accessTokenSupportedTrue_tokenPassed_goodLTPA() throws Exception {
 
-        WebClient webClientForAccess = getWebClient();
+        WebClient webClientForAccess = getAndSaveWebClient();
         String access_token = getAccessToken(webClientForAccess);
         WebClient webClient = createWebClientWithGoodCookieValue(webClientForAccess);
 
@@ -3396,7 +3396,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     @Test
     public void Social_BasicConfigTests_accessTokenSupportedTrue_optionalParmsIncluded_tokenNotPassed_noLTPA() throws Exception {
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_accessTokenSupportedTrue_optionalParmsIncluded");
@@ -3434,7 +3434,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     @Test
     public void Social_BasicConfigTests_accessTokenSupportedTrue_optionalParmsIncluded_tokenNotPassed_goodLTPA() throws Exception {
 
-        WebClient webClientForAccess = getWebClient();
+        WebClient webClientForAccess = getAndSaveWebClient();
         getAccessToken(webClientForAccess);
         WebClient webClient = createWebClientWithGoodCookieValue(webClientForAccess);
 
@@ -3456,7 +3456,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     @Test
     public void Social_BasicConfigTests_accessTokenSupportedTrue_optionalParmsOmitted_tokenNotPassed_noLTPA() throws Exception {
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         List<validationData> expectations = null;
@@ -3512,7 +3512,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     @Test
     public void Social_BasicConfigTests_accessTokenSupportedTrue_optionalParmsOmitted_tokenNotPassed_goodLTPA() throws Exception {
 
-        WebClient webClientForAccess = getWebClient();
+        WebClient webClientForAccess = getAndSaveWebClient();
         getAccessToken(webClientForAccess);
         WebClient webClient = createWebClientWithGoodCookieValue(webClientForAccess);
 
@@ -3540,7 +3540,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     @Test
     public void Social_BasicConfigTests_accessTokenSupportedTrue_optionalParmsIncluded_badTokenPassed_noLTPA() throws Exception {
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_accessTokenSupportedTrue_optionalParmsIncluded");
@@ -3605,7 +3605,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     @Test
     public void Social_BasicConfigTests_accessTokenSupportedTrue_optionalParmsIncluded_badTokenPassed_goodLTPA() throws Exception {
 
-        WebClient webClientForAccess = getWebClient();
+        WebClient webClientForAccess = getAndSaveWebClient();
         getAccessToken(webClientForAccess);
         WebClient webClient = createWebClientWithGoodCookieValue(webClientForAccess);
 
@@ -3637,7 +3637,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     @Test
     public void Social_BasicConfigTests_accessTokenSupportedTrue_optionalParmsOmitted_badTokenPassed_noLTPA() throws Exception {
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         List<validationData> expectations = null;
@@ -3715,7 +3715,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     @Test
     public void Social_BasicConfigTests_accessTokenSupportedTrue_optionalParmsOmitted_badTokenPassed_goodLTPA() throws Exception {
 
-        WebClient webClientForAccess = getWebClient();
+        WebClient webClientForAccess = getAndSaveWebClient();
         getAccessToken(webClientForAccess);
         WebClient webClient = createWebClientWithGoodCookieValue(webClientForAccess);
 
@@ -3753,7 +3753,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     public void Social_BasicConfigTests_accessTokenSupportedDefault_tokenPassed() throws Exception {
 
         String access_token = getAccessToken();
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld");
@@ -3776,7 +3776,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     @Test
     public void Social_BasicConfigTests_accessTokenSupportedDefault_tokenNotPassed() throws Exception {
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld");
@@ -3795,7 +3795,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     @Test
     public void Social_BasicConfigTests_accessTokenSupportedDefault_badTokenPassed() throws Exception {
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld");
@@ -3817,7 +3817,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     public void Social_BasicConfigTests_accessTokenSupportedFalse_tokenPassed_noLTPA() throws Exception {
 
         String access_token = getAccessToken();
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_accessTokenSupportedFalse");
@@ -3864,7 +3864,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     @Test
     public void Social_BasicConfigTests_accessTokenSupportedFalse_tokenPassed_goodLTPA() throws Exception {
 
-        WebClient webClientForAccess = getWebClient();
+        WebClient webClientForAccess = getAndSaveWebClient();
         String access_token = getAccessToken(webClientForAccess);
         WebClient webClient = createWebClientWithGoodCookieValue(webClientForAccess);
 
@@ -3887,7 +3887,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     @Test
     public void Social_BasicConfigTests_accessTokenSupportedFalse_tokenNotPassed_noLTPA() throws Exception {
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_accessTokenSupportedFalse");
@@ -3925,7 +3925,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     @Test
     public void Social_BasicConfigTests_accessTokenSupportedFalse_tokenNotPassed_goodLTPA() throws Exception {
 
-        WebClient webClientForAccess = getWebClient();
+        WebClient webClientForAccess = getAndSaveWebClient();
         getAccessToken(webClientForAccess);
         WebClient webClient = createWebClientWithGoodCookieValue(webClientForAccess);
 
@@ -3950,7 +3950,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     @Test
     public void Social_BasicConfigTests_accessTokenSupportedFalse_badTokenPassed_noLTPA() throws Exception {
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_accessTokenSupportedFalse");
@@ -3992,7 +3992,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     @Test
     public void Social_BasicConfigTests_accessTokenSupportedFalse_badTokenPassed_goodLTPA() throws Exception {
 
-        WebClient webClientForAccess = getWebClient();
+        WebClient webClientForAccess = getAndSaveWebClient();
         getAccessToken(webClientForAccess);
         WebClient webClient = createWebClientWithGoodCookieValue(webClientForAccess);
 
@@ -4021,7 +4021,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     public void Social_BasicConfigTests_accessTokenRequiredTrue_accessTokenSupportedTrue_tokenPassed() throws Exception {
 
         String access_token = getAccessToken();
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_both_accessTokenRequiredTrue_accessTokenSupportedTrue");
@@ -4045,7 +4045,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     @Test
     public void Social_BasicConfigTests_accessTokenRequiredTrue_accessTokenSupportedTrue_tokenNotPassed() throws Exception {
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_both_accessTokenRequiredTrue_accessTokenSupportedTrue");
@@ -4067,7 +4067,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     @Test
     public void Social_BasicConfigTests_accessTokenRequiredTrue_accessTokenSupportedTrue_badTokenPassed() throws Exception {
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_both_accessTokenRequiredTrue_accessTokenSupportedTrue");
@@ -4106,7 +4106,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     public void Social_BasicConfigTests_accessTokenHeaderNameBearer_passAsBearer() throws Exception {
 
         String access_token = getAccessToken();
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_accessTokenHeaderNameBearer");
@@ -4129,7 +4129,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     @Test
     public void Social_BasicConfigTests_accessTokenHeaderNameBearer_passAsXForwardedAccessToken() throws Exception {
         String access_token = getAccessToken();
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_accessTokenHeaderNameBearer");
@@ -4153,7 +4153,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     public void Social_BasicConfigTests_accessTokenHeaderNameXForwardedAccessToken_passAsXForwardedAccessToken() throws Exception {
 
         String access_token = getAccessToken();
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_accessTokenHeaderNameXForwardedAccessToken");
@@ -4177,7 +4177,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     public void Social_BasicConfigTests_accessTokenHeaderNameXForwardedAccessToken_passAsBearer() throws Exception {
 
         String access_token = getAccessToken();
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_accessTokenHeaderNameXForwardedAccessToken");
@@ -4200,7 +4200,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     public void Social_BasicConfigTests_accessTokenHeaderNameUserDefined_passUserDefined() throws Exception {
 
         String access_token = getAccessToken();
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_accessTokenHeaderNameUserDefined");
@@ -4224,7 +4224,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
     public String getAccessToken(WebClient webClient) throws Exception {
 
         if (webClient == null) {
-            webClient = getWebClient();
+            webClient = getAndSaveWebClient();
         }
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
@@ -4242,7 +4242,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
 
     public WebClient createWebClientWithGoodCookieValue(WebClient origClient) throws Exception {
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         Cookie badCookie = new Cookie(origClient.getCookieManager().getCookie("LtpaToken2").getDomain(), "LtpaToken2", origClient.getCookieManager().getCookie("LtpaToken2").getValue());
         Log.info(thisClass, _testName, "Before updating Cookies");
@@ -4256,7 +4256,7 @@ public class Social_BasicConfigTests extends SocialCommonTest {
 
     public WebClient createWebClientWithBadCookieValue(String badValue) throws Exception {
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         Cookie badCookie = new Cookie("localhost", "LtpaToken2", badValue);
         Log.info(thisClass, _testName, "Before updating Cookies");
