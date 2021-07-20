@@ -3539,7 +3539,7 @@
     <dependency>
       <groupId>javax.interceptor</groupId>
       <artifactId>javax.interceptor-api</artifactId>
-      <version>1.2</version>
+      <version>1.2.2</version>
     </dependency>
     <dependency>
       <groupId>javax.jms</groupId>
