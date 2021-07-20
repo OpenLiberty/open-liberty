@@ -18,6 +18,8 @@ Bundle-SymbolicName: io.openliberty.io.netty
 Bundle-Description: Netty as an OSGi bundle for OpenLiberty, version ${bVersion}
 
 Import-Package: \
+  !com.aayushatharva.brotli4j*,\
+  !com.github.luben.zstd,\
   !com.google.protobuf*,\
   !com.jcraft.jzlib,\
   !com.ning.*,\

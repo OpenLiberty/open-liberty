@@ -18,6 +18,8 @@ Bundle-SymbolicName: io.openliberty.io.netty.ssl
 Bundle-Description: Netty SSL classes as an OSGi bundle for OpenLiberty, version ${bVersion}
 
 Import-Package: \
+  !com.aayushatharva.brotli4j*,\
+  !com.github.luben.zstd,\
   !com.google.protobuf*, \
   !com.jcraft.jzlib,\
   !com.ning.*,\
