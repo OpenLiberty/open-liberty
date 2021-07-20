@@ -2629,7 +2629,7 @@
     <dependency>
       <groupId>org.opensaml</groupId>
       <artifactId>opensaml-profile-api</artifactId>
-      <version>3.4.5</version>
+      <version>4.0.1</version>
     </dependency>
     <dependency>
       <groupId>org.opensaml</groupId>
