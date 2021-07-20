@@ -83,7 +83,7 @@ subprojects {
     //  A number of tests make heavy use of java.util.Random, which can drain the entropy pool of /dev/random on Linux when
     // running on OpenJDK-based distributions. This results in large delays as tests wait for the entropy pool to be repopulated.
     // The fix is thus to ensure we use the pseudorandom entropy pool (/dev/urandom) (which is also valid for Windows/zOS).
-    jvmArgs '-Djava.security.egd=file:///dev/urandom'
+    jvmArgs '-Djava.security.egd=file:/dev/urandom'
   }
 
   
