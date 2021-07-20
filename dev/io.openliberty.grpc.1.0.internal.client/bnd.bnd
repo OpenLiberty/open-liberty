@@ -17,6 +17,8 @@ Bundle-SymbolicName: io.openliberty.grpc.1.0.internal.client
 Bundle-Description: Liberty gRPC Client, version ${bVersion}
 
 Import-Package: \
+  !com.aayushatharva.brotli4j*,\
+  !com.github.luben.zstd,\
   !com.google.protobuf.nano,\
   !com.google.code.gson,\
   !org.checkerframework,\
