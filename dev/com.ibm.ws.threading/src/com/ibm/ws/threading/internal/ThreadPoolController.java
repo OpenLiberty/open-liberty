@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -169,7 +169,7 @@ public final class ThreadPoolController {
      * The number of cpus available to the threadpool is a key input to various controller
      * decisions.
      */
-    private final static int NUMBER_CPUS = CpuInfo.getAvailableProcessors();
+    private final int numberCpus;
 
     /**
      * Counter of number of cycles the controller has run in which the historical
@@ -477,7 +477,7 @@ public final class ThreadPoolController {
      * creation in the case where every new task immediately gets blocked by the same
      * underlying condition.
      */
-    private final static int MAX_THREADS_TO_BREAK_HANG = Math.max(1000, 128 * NUMBER_CPUS);
+    private final int maxThreadsToBreakHang;
 
     /**
      * Reference to the configured ExecutorService implementation that
@@ -641,15 +641,18 @@ public final class ThreadPoolController {
             activeTask = new IntervalTask(this);
             timer.schedule(activeTask, interval, interval);
         }
+        numberCpus = CpuInfo.getAvailableProcessors().get();
         /**
          * if coreThreads has been configured to a small value, we will use the
          * configured value as guidance for how large to make poolSize changes
          */
-        if (coreThreads < NUMBER_CPUS * 2) {
+        if (coreThreads < numberCpus * 2) {
             poolChangeBasis = Math.max(1, coreThreads / 2);
         } else {
-            poolChangeBasis = NUMBER_CPUS;
+            poolChangeBasis = numberCpus;
         }
+
+        maxThreadsToBreakHang = Math.max(1000, 128 * numberCpus);
         /**
          * Now that poolChangeBasis is set, we can assign the poolIncrement limit values
          * using poolChangeBasis, rather than NUMBER_CPUS, if the system properties are not present
@@ -701,7 +704,7 @@ public final class ThreadPoolController {
             return; // if no pool (during shutdown), nothing to retune/reset
 
         // 8/22/2012: Introduced factor - was hard coded at 2
-        final int availableProcessors = NUMBER_CPUS;
+        final int availableProcessors = numberCpus;
 
         int factor = 2500 * availableProcessors / Math.max(1, (int) previousThroughput);
         factor = Math.min(factor, 4);
@@ -1550,7 +1553,7 @@ public final class ThreadPoolController {
             if (!checkTargetPoolSize(poolSize)) {
                 if (!highCpu) {
                     setPoolIncrementDecrement(poolSize);
-                    if (poolSize + poolIncrement <= maxThreads && poolSize < MAX_THREADS_TO_BREAK_HANG) {
+                    if (poolSize + poolIncrement <= maxThreads && poolSize < maxThreadsToBreakHang) {
                         targetPoolSize = adjustPoolSize(poolSize, poolIncrement);
                         if (tc.isEventEnabled()) {
                             Tr.event(tc, "Increasing pool size to resolve hang, from " + poolSize + " to " + targetPoolSize);
@@ -1935,7 +1938,7 @@ public final class ThreadPoolController {
         out.println(INDENT + "currentMinimumPoolSize = " + currentMinimumPoolSize);
         out.println(INDENT + "interval = " + interval);
         out.println(INDENT + "compareRange = " + compareRange);
-        out.println(INDENT + "NUMBER_CPUS = " + NUMBER_CPUS);
+        out.println(INDENT + "NUMBER_CPUS = " + numberCpus);
         out.println(INDENT + "controllerCycle = " + controllerCycle);
         out.println(INDENT + "poolChangeBasis = " + poolChangeBasis);
         out.println(INDENT + "poolIncrement = " + poolIncrement);

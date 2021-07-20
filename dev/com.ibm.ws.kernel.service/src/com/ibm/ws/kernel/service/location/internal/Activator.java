@@ -28,6 +28,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.pseudo.internal.PseudoContextFactory;
+import com.ibm.ws.kernel.service.util.CpuInfo;
 import com.ibm.wsspi.kernel.service.location.VariableRegistry;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsResource;
@@ -77,8 +78,13 @@ public class Activator implements BundleActivator {
             context.registerService(SnapshotHookFactory.class, (p) -> {
                 return new SnapshotHook() {
                     @Override
-                    @FFDCIgnore({ NumberFormatException.class, IOException.class, IllegalArgumentException.class })
                     public void restore() {
+                        restoreTimer();
+                        resetCpus();
+                    }
+
+                    @FFDCIgnore({ NumberFormatException.class, IOException.class, IllegalArgumentException.class })
+                    private void restoreTimer() {
                         long restoreTime = 0;
                         try {
                             WsResource restoreTimeResource = locServiceImpl.getServerWorkareaResource("restoreTime");
@@ -96,6 +102,10 @@ public class Activator implements BundleActivator {
                         }
                         long startTimeNano = System.nanoTime() - TimeUnit.MILLISECONDS.toNanos(restoreTime);
                         TimestampUtils.resetStartTime(startTimeNano);
+                    }
+
+                    private void resetCpus() {
+                        CpuInfo.resetTimer();
                     }
                 };
             }, null);
