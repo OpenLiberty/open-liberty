@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -92,7 +92,8 @@ public class WsocConnLink {
     private final int WAIT_ON_WRITE_TO_CLOSE = 5500; // watchdog timer on waiting to write a close frame once a close has been initiated.
     private final int WAIT_ON_READ_TO_CLOSE = 8500; // watchdog timer on waiting to cancel a read once a close has been initiated.
 
-    public Object linkSync = new Object() {};
+    public Object linkSync = new Object() {
+    };
     public boolean readNotifyTriggered = false;
     public boolean writeNotifyTriggered = false;
 
@@ -669,8 +670,9 @@ public class WsocConnLink {
                 }
             }
 
-            //close down the link
-            deviceConnLink.close(vConnection, null);
+            // if another thread has started the close, allow it to finish
+            if (!checkIfClosingAlready())
+                deviceConnLink.close(vConnection, null);
         }
     }
 
@@ -1199,7 +1201,7 @@ public class WsocConnLink {
         // ok to pass null for either of these parameters
         CloseReason closeReason = new CloseReason(closeCode, reasonPhrase);
 
-        if (readLinkStatus == READ_LINK_STATUS.OK_TO_READ) {
+        if (readLinkStatus == READ_LINK_STATUS.OK_TO_READ || readLinkStatus == READ_LINK_STATUS.READ_ON_WIRE) {
             // error callback unexpectedly called while trying to read, rather than when we know we are closing, so cleanup the message read object
             // because we will not try to read for the close frame
             cleanupRead = true;
