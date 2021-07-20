@@ -36,7 +36,12 @@ Export-Package: \
 Service-Component= \
   com.ibm.ws.logging.internal.ffdcjanitor; \
     scheduler=java.util.concurrent.ScheduledExecutorService; \
-    implementation:=com.ibm.ws.logging.internal.osgi.FFDCJanitor
+    implementation:=com.ibm.ws.logging.internal.osgi.FFDCJanitor \
+  com.ibm.ws.logging.internal.osgi.stackjoiner.ThrowableProxyComponent; \
+    implementation:="com.ibm.ws.logging.internal.osgi.stackjoiner.ThrowableProxyComponent"; \
+    instrumentation=java.lang.instrument.Instrumentation; \
+    properties:="service.vendor=IBM"; \
+    version:=1.1, \
    
 IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
@@ -46,10 +51,12 @@ instrument.disabled: true
 	org.eclipse.osgi;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.websphere.org.osgi.service.cm;version=latest,\
+	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.wsspi.org.osgi.service.event;version=latest,\
 	com.ibm.wsspi.org.osgi.service.log;version=latest,\
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.ws.ras.instrument;version=latest, \
+	com.ibm.ws.org.objectweb.asm;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
 
 -testpath: \
