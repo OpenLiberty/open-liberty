@@ -72,6 +72,11 @@ INVALID_BOOLEAN_PROPERTY_CWWKW1304W=CWWKW1304W: Proprietatea de client {0} trebu
 INVALID_BOOLEAN_PROPERTY_CWWKW1304W.explanation=Propriet\u0103\u0163ile de client, cum ar fi dac\u0103 s\u0103 se urmeze automat redirec\u0163ion\u0103rile, trebuie configurate ca un booleean sau un \u015fir care poate fi convertit la un booleean. Acest mesaj arat\u0103 c\u0103 o proprietate client a fost setat\u0103 la o valoare invalid\u0103. Aceast\u0103 proprietate va fi ignorat\u0103.
 INVALID_BOOLEAN_PROPERTY_CWWKW1304W.useraction=Examina\u0163i codul aplica\u0163iei \u015fi configura\u0163ia serverului pentru a determina dac\u0103 aceast\u0103 proprietate a fost setat\u0103 incorect, \u015fi fie \u00eenl\u0103tura\u0163i proprietatea, fie modifica\u0163i-o la o valoare booleean\u0103 valid\u0103.
 
+INVALID_PROVIDER_CWWKW1305W=CWWKW1305W: Serverul ignor\u0103 furnizorul {0}, deoarece nu este valid.
+INVALID_PROVIDER_CWWKW1305W.explanation=Clasa de furnizor specificat\u0103 probabil c\u0103 nu con\u0163ine un constructor public valid sau nu implementeaz\u0103 o interfa\u0163\u0103 de furnizor REST Jakarta. Cerin\u0163ele pentru implementarea unui furnizor valid sunt prezentate \u00een sec\u0163iunea a 4-a din specifica\u0163ia Jakarta RESTful Web Services.
+INVALID_PROVIDER_CWWKW1305W.useraction=Examina\u0163i codul aplica\u0163iei \u015fi asigura\u0163i-v\u0103 c\u0103 furnizorul specificat implementeaz\u0103 corect interfa\u0163a de furnizor \u015fi con\u0163ine un constructor public valid, conform cerin\u0163elor specifica\u0163iei.
+
+
 # Same message as in /com.ibm.ws.jaxrs.2.0.client/resources/com/ibm/ws/jaxrs20/client/internal/resources/JAXRSClientMessages.nlsprops
 warn_missing_mpjwt_token=CWWKW0707W: Atributul [{0}] din configura\u0163ia [{1}] este setat la [{2}], JWT-ul (JSON Web Token) MicroProfile nu este disponibil. Cererea nu con\u0163ine un antet de autorizare cu jetonul.
 warn_missing_mpjwt_token.explanation=Runtime-ul a e\u015fuat s\u0103 g\u0103seasc\u0103 JWT-ul MicroProfile \u00een subiectul runAs. Aceast\u0103 eroare de obicei indic\u0103 o problem\u0103 cu autentificarea. Asigura\u0163i-v\u0103 c\u0103 nu au ap\u0103rut erori \u00een timp ce caracteristica MicroProfile JWT autentic\u0103 un utilizator.

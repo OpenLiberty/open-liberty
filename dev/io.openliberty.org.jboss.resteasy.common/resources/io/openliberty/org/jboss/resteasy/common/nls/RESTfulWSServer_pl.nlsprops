@@ -72,6 +72,11 @@ INVALID_BOOLEAN_PROPERTY_CWWKW1304W=CWWKW1304W: W\u0142a\u015bciwo\u015b\u0107 k
 INVALID_BOOLEAN_PROPERTY_CWWKW1304W.explanation=W\u0142a\u015bciwo\u015bci klienta, np. okre\u015blaj\u0105ce, czy automatycznie pod\u0105\u017ca\u0107 za przekierowaniami, musz\u0105 by\u0107 konfigurowane jako warto\u015bci boolowskie lub \u0142a\u0144cuchy mo\u017cliwe do przekszta\u0142cenia w warto\u015bci boolowskie. Ten komunikat oznacza, \u017ce w\u0142a\u015bciwo\u015b\u0107 klienta zosta\u0142a ustawiona na niepoprawn\u0105 warto\u015b\u0107. Ta w\u0142a\u015bciwo\u015b\u0107 zostanie zignorowana.
 INVALID_BOOLEAN_PROPERTY_CWWKW1304W.useraction=Sprawd\u017a kod aplikacji i konfiguracj\u0119 serwera, aby ustali\u0107, w kt\u00f3rym miejscu ta w\u0142a\u015bciwo\u015b\u0107 jest nieprawid\u0142owo ustawiana, i usu\u0144 w\u0142a\u015bciwo\u015b\u0107 lub zmie\u0144 j\u0105 na poprawn\u0105 warto\u015b\u0107 boolowsk\u0105.
 
+INVALID_PROVIDER_CWWKW1305W=CWWKW1305W: Serwer ignoruje dostawc\u0119 {0}, poniewa\u017c nie jest on poprawny.
+INVALID_PROVIDER_CWWKW1305W.explanation=Okre\u015blona klasa dostawcy prawdopodobnie nie zawiera poprawnego konstruktora publicznego lub nie implementuje interfejsu REST dostawcy Jakarta. Wymagania dotycz\u0105ce implementacji dostawcy s\u0105 opisane w rozdziale 4 specyfikacji us\u0142ug WWW RESTful Jakarta.
+INVALID_PROVIDER_CWWKW1305W.useraction=Sprawd\u017a kod aplikacji, aby upewni\u0107 si\u0119, \u017ce okre\u015blony dostawca prawid\u0142owo implementuje interfejs dostawcy i zawiera poprawny konstruktor publiczny, zgodnie ze specyfikacj\u0105.
+
+
 # Same message as in /com.ibm.ws.jaxrs.2.0.client/resources/com/ibm/ws/jaxrs20/client/internal/resources/JAXRSClientMessages.nlsprops
 warn_missing_mpjwt_token=CWWKW0707W: Atrybut [{0}] w konfiguracji [{1}] jest ustawiony na [{2}], ale znacznik MicroProfile JSON Web Token (JWT) jest niedost\u0119pny. \u017b\u0105danie nie zawiera nag\u0142\u00f3wka Authorization ze znacznikiem.
 warn_missing_mpjwt_token.explanation=\u015arodowisko wykonawcze nie mog\u0142o znale\u017a\u0107 znacznika MicroProfile JWT w podmiocie runAs. Ten b\u0142\u0105d zwykle wskazuje problem zwi\u0105zany z uwierzytelnianiem. Nale\u017cy zadba\u0107 o to, aby nie wyst\u0119powa\u0142y b\u0142\u0119dy, gdy sk\u0142adnik MicroProfile JWT uwierzytelnia u\u017cytkownika.

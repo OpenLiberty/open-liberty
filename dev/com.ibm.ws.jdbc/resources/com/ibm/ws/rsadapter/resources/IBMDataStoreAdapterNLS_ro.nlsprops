@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2001, 2019 IBM Corporation and others.
+# Copyright (c) 2001, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -215,7 +215,7 @@ FEATURE_NOT_IMPLEMENTED=DSRA1300E: Caracteristica nu este implementat\u0103: {0}
 FEATURE_NOT_IMPLEMENTED.explanation=Caracteristica cerut\u0103 nu este disponibil\u0103.
 FEATURE_NOT_IMPLEMENTED.useraction=Evita\u0163i utilizarea caracteristicii sau comuta\u0163i pe o versiune de driver care suport\u0103 caracteristica dac\u0103 este posibil.
 
-# 1301 deleted
+# 1301 reserved for other NLS file
 # 3000-3020 deleted
 # 3100-3127 deleted
 # 3200-3202 deleted
@@ -291,7 +291,8 @@ DSRA4015.no.ucp.connection.pool.datasource.useraction=Actualiza\u0163i sursa de 
 # 
 # Using 7000-7599 for DataStore Helper exception messages and warnings
 # 
-# 7000-7009 deleted
+# 7000 reserved for other NLS file
+# 7001-7009 deleted
 
 # No Comment Provided
 DB2_FILE_OUTSTREAM_ERROR=DSRA7010E: fi\u015fierul de urm\u0103rire specificat {0} nu exist\u0103, o excep\u0163ie va fi aruncat\u0103 de baza de date \u00een cazul \u00een care problema nu este corectat\u0103.
@@ -325,7 +326,9 @@ META_DATA_EXCEPTION=DSRA7018I: Accestul la metadatele bazei de date au cauzat o 
 META_DATA_EXCEPTION.explanation=A ap\u0103rut o exception c\u00e2nd serverul de aplica\u0163ii \u00eencerca s\u0103 ob\u0163in\u0103 sau s\u0103 acceseze obie ctul de metadate pentru baza de date.
 META_DATA_EXCEPTION.useraction=Verifica\u0163i c\u0103 metadatele sunt activate pe baza de date back-end.
 
-# 7019-7042 deleted
+# 7019 deleted
+# 7020 reserved for other NLS file
+# 7021-7042 deleted
 # 7600-7606 deleted
 
 # ----------------------------------------------------------------------------
@@ -552,7 +555,7 @@ OBJECT_CLOSED.explanation=A fost o \u00eencercare de realizare a unei opera\u016
 OBJECT_CLOSED.useraction=Extrage\u0163i o nou\u0103 instan\u0163\u0103 a obiectului pe care s\u0103 realiza\u0163i opera\u0163ia.
 
 # 9115 deleted
-# 9120-9121 - deleted
+# 9120-9121 - reserved for other NLS file
 
 # 9122E      NO_WRAPPED_OBJECT
 # 
@@ -562,7 +565,7 @@ NO_WRAPPED_OBJECT=DSRA9122E: {0} nu face wrap pentru nici un obiect de tip {1}.
 NO_WRAPPED_OBJECT.explanation=Wrapper-ul care este specificat nu con\u0163ine tipul de obiect wrapped care este specificat.
 NO_WRAPPED_OBJECT.useraction=Verifica\u0163i c\u0103 wrapper-ul \u015fi parametrii pentru obiectul wrapped sunt specifica\u0163i corect.
 
-# 9123 deleted
+# 9123 reserved for other NLS file
 
 # 9124       NOT_AN_INTERFACE
 #
@@ -570,6 +573,8 @@ NO_WRAPPED_OBJECT.useraction=Verifica\u0163i c\u0103 wrapper-ul \u015fi parametr
 NOT_AN_INTERFACE=DSRA9124E: Nu se poate face unwrap obiectului la {0} deoarece {0} nu este o clas\u0103 de interfa\u0163\u0103.
 NOT_AN_INTERFACE.explanation=Metoda unwrap permite unwrapping numai la o clas\u0103 de interfa\u0163\u0103.
 NOT_AN_INTERFACE.useraction=Face\u0163i unwrap la o clas\u0103 care este interfa\u0163\u0103 \u00een locul unei clase concrete.
+
+# 9125 reserved for other NLS file
 
 # 9130E      OPERATION_NOT_PERMITTED
 # 

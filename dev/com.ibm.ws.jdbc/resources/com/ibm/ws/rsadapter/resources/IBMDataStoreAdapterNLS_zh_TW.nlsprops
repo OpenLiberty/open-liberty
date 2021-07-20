@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2001, 2019 IBM Corporation and others.
+# Copyright (c) 2001, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -220,7 +220,7 @@ FEATURE_NOT_IMPLEMENTED=DSRA1300E: \u672a\u5be6\u4f5c\u7279\u6027\uff1a{0}
 FEATURE_NOT_IMPLEMENTED.explanation=\u8981\u6c42\u7684\u7279\u6027\u7121\u6cd5\u4f7f\u7528\u3002
 FEATURE_NOT_IMPLEMENTED.useraction=\u8acb\u907f\u514d\u4f7f\u7528\u9019\u500b\u7279\u6027\uff0c\u53ef\u80fd\u7684\u8a71\uff0c\u5207\u63db\u81f3\u652f\u63f4\u9019\u500b\u7279\u6027\u7684\u9a45\u52d5\u7a0b\u5f0f\u7248\u672c\u3002
 
-# 1301 deleted
+# 1301 reserved for other NLS file
 # 3000-3020 deleted
 # 3100-3127 deleted
 # 3200-3202 deleted
@@ -295,7 +295,8 @@ DSRA4015.no.ucp.connection.pool.datasource.useraction=\u8acb\u66f4\u65b0\u8cc7\u
 # 
 # Using 7000-7599 for DataStore Helper exception messages and warnings
 # 
-# 7000-7009 deleted
+# 7000 reserved for other NLS file
+# 7001-7009 deleted
 
 # No Comment Provided
 DB2_FILE_OUTSTREAM_ERROR=DSRA7010E: \u8ffd\u8e64\u6a94\u6307\u5b9a\u7684 {0} \u4e0d\u5b58\u5728\uff0c\u5982\u679c\u6c92\u6709\u66f4\u6b63\u554f\u984c\uff0c\u8cc7\u6599\u5eab\u6703\u64f2\u51fa\u7570\u5e38\u72c0\u6cc1\u3002
@@ -330,7 +331,9 @@ META_DATA_EXCEPTION=DSRA7018I: \u8cc7\u6599\u5eab metadata \u5b58\u53d6\u5c0e\u8
 META_DATA_EXCEPTION.explanation=\u61c9\u7528\u7a0b\u5f0f\u4f3a\u670d\u5668\u8a66\u5716\u53d6\u5f97\u6216\u5b58\u53d6\u8cc7\u6599\u5eab\u7684 meta \u8cc7\u6599\u7269\u4ef6\u6642\uff0c\u767c\u751f\u7570\u5e38\u72c0\u6cc1\u3002
 META_DATA_EXCEPTION.useraction=\u8acb\u78ba\u8a8d\u5f8c\u7aef\u8cc7\u6599\u5eab\u5df2\u555f\u7528 meta \u8cc7\u6599\u3002
 
-# 7019-7042 deleted
+# 7019 deleted
+# 7020 reserved for other NLS file
+# 7021-7042 deleted
 # 7600-7606 deleted
 
 # ----------------------------------------------------------------------------
@@ -558,7 +561,7 @@ OBJECT_CLOSED.explanation=\u8a66\u5716\u5728\u5df2\u95dc\u9589\u7684\u7269\u4ef6
 OBJECT_CLOSED.useraction=\u8acb\u64f7\u53d6\u8981\u57f7\u884c\u4f5c\u696d\u7684\u65b0\u7269\u4ef6\u5be6\u4f8b\u3002
 
 # 9115 deleted
-# 9120-9121 - deleted
+# 9120-9121 - reserved for other NLS file
 
 # 9122E      NO_WRAPPED_OBJECT
 # 
@@ -568,7 +571,7 @@ NO_WRAPPED_OBJECT=DSRA9122E: {0} \u4e0d\u6703\u5305\u88dd {1} \u985e\u578b\u7684
 NO_WRAPPED_OBJECT.explanation=\u6307\u5b9a\u7684\u5c01\u5957\u4e0d\u5305\u542b\u6307\u5b9a\u7684\u5c01\u88dd\u7269\u4ef6\u985e\u578b\u3002
 NO_WRAPPED_OBJECT.useraction=\u8acb\u78ba\u8a8d\u5df2\u6b63\u78ba\u6307\u5b9a\u5c01\u88dd\u7269\u4ef6\u7684\u5c01\u5957\u548c\u53c3\u6578\u3002
 
-# 9123 deleted
+# 9123 reserved for other NLS file
 
 # 9124       NOT_AN_INTERFACE
 #
@@ -576,6 +579,8 @@ NO_WRAPPED_OBJECT.useraction=\u8acb\u78ba\u8a8d\u5df2\u6b63\u78ba\u6307\u5b9a\u5
 NOT_AN_INTERFACE=DSRA9124E: \u7121\u6cd5\u5c07\u7269\u4ef6\u89e3\u9664\u5c01\u88dd\u81f3 {0}\uff0c\u56e0\u70ba {0} \u4e0d\u662f\u4ecb\u9762\u985e\u5225\u3002
 NOT_AN_INTERFACE.explanation=\u89e3\u9664\u5c01\u88dd\u65b9\u6cd5\u53ea\u5141\u8a31\u89e3\u9664\u5c01\u88dd\u81f3\u4ecb\u9762\u985e\u5225\u3002
 NOT_AN_INTERFACE.useraction=\u8acb\u89e3\u9664\u5c01\u88dd\u81f3\u4e00\u500b\u4f5c\u70ba\u4ecb\u9762\u7684\u985e\u5225\uff0c\u800c\u975e\u89e3\u9664\u5c01\u88dd\u81f3\u5177\u9ad4\u985e\u5225\u3002
+
+# 9125 reserved for other NLS file
 
 # 9130E      OPERATION_NOT_PERMITTED
 # 

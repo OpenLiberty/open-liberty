@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2001, 2019 IBM Corporation and others.
+# Copyright (c) 2001, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -215,7 +215,7 @@ FEATURE_NOT_IMPLEMENTED=DSRA1300E: Szolg\u00e1ltat\u00e1s nincs megval\u00f3s\u0
 FEATURE_NOT_IMPLEMENTED.explanation=A k\u00e9rt szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el.
 FEATURE_NOT_IMPLEMENTED.useraction=Ker\u00fclje a szolg\u00e1ltat\u00e1s haszn\u00e1lat\u00e1t, vagy ha lehets\u00e9ges, akkor v\u00e1ltson olyan illeszt\u0151programra, ami t\u00e1mogatja a szolg\u00e1ltat\u00e1st.
 
-# 1301 deleted
+# 1301 reserved for other NLS file
 # 3000-3020 deleted
 # 3100-3127 deleted
 # 3200-3202 deleted
@@ -291,7 +291,8 @@ DSRA4015.no.ucp.connection.pool.datasource.useraction=Friss\u00edtse az adatforr
 # 
 # Using 7000-7599 for DataStore Helper exception messages and warnings
 # 
-# 7000-7009 deleted
+# 7000 reserved for other NLS file
+# 7001-7009 deleted
 
 # No Comment Provided
 DB2_FILE_OUTSTREAM_ERROR=DSRA7010E: Ha a(z) {0} megadott nyomk\u00f6vet\u00e9si f\u00e1jl nem l\u00e9tezik, akkor az adatb\u00e1zis kiv\u00e9telt dob, amennyiben a probl\u00e9ma nem ker\u00fcl kijav\u00edt\u00e1sra.
@@ -325,7 +326,9 @@ META_DATA_EXCEPTION=DSRA7018I: Az adatb\u00e1zis metaadatainak el\u00e9r\u00e9se
 META_DATA_EXCEPTION.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt, amikor az alkalmaz\u00e1skiszolg\u00e1l\u00f3 megpr\u00f3b\u00e1lt hozz\u00e1f\u00e9rni az adatb\u00e1zis metaadat-objektum\u00e1hoz.
 META_DATA_EXCEPTION.useraction=Ellen\u0151rizze, hogy a metaadatok a h\u00e1tt\u00e9r-adatb\u00e1zison enged\u00e9lyezve vannak-e.
 
-# 7019-7042 deleted
+# 7019 deleted
+# 7020 reserved for other NLS file
+# 7021-7042 deleted
 # 7600-7606 deleted
 
 # ----------------------------------------------------------------------------
@@ -370,15 +373,15 @@ PROP_SET_ERROR.useraction=Ellen\u0151rizze, hogy a megadott \u00e9rt\u00e9k a tu
 # {0}         The invalid attribute value
 # {1}         The allowed attribute values
 # Do not translate: identifyException, as
-8066E_IDENTIFY_EXCEPTION_INVALID_TARGET=DSRA8066E: A(z) ''{0}'' \u00e9rv\u00e9nytelen \u00e9rt\u00e9k lett megadva az ''as'' attrib\u00fatumhoz az identifyException elemben. A megengedett \u00e9rt\u00e9kek a k\u00f6vetkez\u0151k: {1}
-8066E_IDENTIFY_EXCEPTION_INVALID_TARGET.explanation=\u00c9rv\u00e9nytelen \u00e9rt\u00e9k lett megadva az identifyException gs elemhez.
-8066E_IDENTIFY_EXCEPTION_INVALID_TARGET.useraction=Friss\u00edtse a konfigur\u00e1ci\u00f3t a megengedett \u00e9rt\u00e9kek egyik\u00e9nek megad\u00e1s\u00e1hoz.
+8066E_IDENTIFY_EXCEPTION_INVALID_TARGET=DSRA8066E: \u00c9rv\u00e9nytelen ''{0}'' \u00e9rt\u00e9k lett megadva az identifyException elem ''as'' attrib\u00fatumak\u00e9nt. A megengedett \u00e9rt\u00e9kek: {1}
+8066E_IDENTIFY_EXCEPTION_INVALID_TARGET.explanation=Az identifyException konfigur\u00e1ci\u00f3s elemre vonatkoz\u00f3an \u00e9rv\u00e9nytelen \u00e9rt\u00e9k lett megadva.
+8066E_IDENTIFY_EXCEPTION_INVALID_TARGET.useraction=A konfigur\u00e1ci\u00f3 friss\u00edt\u00e9s\u00e9vel adjon meg egy megengedett \u00e9rt\u00e9ket.
 
 # 8067E
 # Do not translate: errorCode, sqlState, identifyException
-8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE=DSRA8067E: Az 'errorCode' \u00e9s 'sqlState' attrib\u00fatumok legal\u00e1bb egyik\u00e9t meg kell adni az identifyException elemben.
-8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE.explanation=Az errorCode \u00e9s sqlState attrib\u00fatumok legal\u00e1bb egyik\u00e9t meg kell adni.
-8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE.useraction=Friss\u00edtse a konfigur\u00e1ci\u00f3t az errorCode \u00e9s sqlState attrib\u00fatumok legal\u00e1bb egyik\u00e9nek megad\u00e1s\u00e1hoz az identifyException elemben.
+8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE=DSRA8067E: Az identifyException elemre vonatkoz\u00f3an az 'errorCode', vagy az 'sqlState' attrib\u00fatumok legal\u00e1bb egyik\u00e9t meg kell adni.
+8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE.explanation=Az errorCode vagy sqlState attrib\u00fatumok valamelyik\u00e9t meg kell adni.
+8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE.useraction=A konfigur\u00e1ci\u00f3 friss\u00edt\u00e9s\u00e9vel adja meg az errorCode vagy sqlState attrib\u00fatumok egyik\u00e9t az identifyException elemre vonatkoz\u00f3an.
 
 # 8100E      JAVAX_CONN_ERR
 # 
@@ -552,7 +555,7 @@ OBJECT_CLOSED.explanation=Egy lez\u00e1rt objektumon pr\u00f3b\u00e1ltak meg m\u
 OBJECT_CLOSED.useraction=K\u00e9rje le az objektum egy \u00faj p\u00e9ld\u00e1ny\u00e1t, majd pr\u00f3b\u00e1lja meg \u00fajra v\u00e9grehajtani a m\u0171veletet.
 
 # 9115 deleted
-# 9120-9121 - deleted
+# 9120-9121 - reserved for other NLS file
 
 # 9122E      NO_WRAPPED_OBJECT
 # 
@@ -562,7 +565,7 @@ NO_WRAPPED_OBJECT=DSRA9122E: A(z) {0} a(z) {1} t\u00edpus\u00fa objektumokat nem
 NO_WRAPPED_OBJECT.explanation=A megadott \u00e1talak\u00edt\u00f3 nem tartalmazza a megadott \u00e1talak\u00edtott objektumt\u00edpust.
 NO_WRAPPED_OBJECT.useraction=Ellen\u0151rizze, hogy az \u00e1talak\u00edt\u00f3 \u00e9s az \u00e1talak\u00edtott objektum param\u00e9terei helyesen lettek megadva.
 
-# 9123 deleted
+# 9123 reserved for other NLS file
 
 # 9124       NOT_AN_INTERFACE
 #
@@ -570,6 +573,8 @@ NO_WRAPPED_OBJECT.useraction=Ellen\u0151rizze, hogy az \u00e1talak\u00edt\u00f3 
 NOT_AN_INTERFACE=DSRA9124E: Az objektum nem bonthat\u00f3 ki a(z) {0} oszt\u00e1lyba, mert a(z) {0} nem fel\u00fcleti oszt\u00e1ly.
 NOT_AN_INTERFACE.explanation=A kicsomagol\u00e1si met\u00f3dus csak fel\u00fcleti oszt\u00e1lyba t\u00f6rt\u00e9n\u0151 kicsomagol\u00e1st tesz lehet\u0151v\u00e9.
 NOT_AN_INTERFACE.useraction=V\u00e9gezze a kibont\u00e1st egy fel\u00fcletoszt\u00e1lyba konkr\u00e9t oszt\u00e1ly helyett.
+
+# 9125 reserved for other NLS file
 
 # 9130E      OPERATION_NOT_PERMITTED
 # 
@@ -662,9 +667,9 @@ KERBEROS_NOT_SUPPORTED_WARNING.useraction= Kapcsolja ki a Kerberos hiteles\u00ed
 
 # 9544-9548 deleted
 
-KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED=DSRA9549E: Az IBM Java 8 SDK haszn\u00e1lata Oracle adatb\u00e1zissal nem t\u00e1mogatott. Az Oracle JDBC illeszt\u0151program csak az OpenJDK, OpenJ9 vagy m\u00e1s hasonl\u00f3 SDK eszk\u00f6z\u00f6kben el\u00e9rhet\u0151 alap\u00e9rtelmezett biztons\u00e1gi API-k haszn\u00e1lat\u00e1val t\u00e1mogatja a Kerberos hiteles\u00edt\u00e9st.
-KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED.explanation=Az IBM Java 8 SDK haszn\u00e1lata Oracle adatb\u00e1zissal nem t\u00e1mogatott. Az Oracle JDBC illeszt\u0151program csak az OpenJDK, OpenJ9 vagy m\u00e1s hasonl\u00f3 SDK eszk\u00f6z\u00f6kben el\u00e9rhet\u0151 alap\u00e9rtelmezett biztons\u00e1gi API-k haszn\u00e1lat\u00e1val t\u00e1mogatja a Kerberos hiteles\u00edt\u00e9st.
-KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED.useraction=Tiltsa le az Oracle adatforr\u00e1s Kerberos hiteles\u00edt\u00e9s\u00e9t, illetve v\u00e1ltson \u00e1t m\u00e1sik Java SDK k\u00e9szletre az IBM Java 8 SDK mellett.
+KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED=DSRA9549E: Az IBM Java 8 SDK haszn\u00e1lata Oracle adatb\u00e1zissal nem t\u00e1mogatott. Az Oracle JDBC illeszt\u0151program csak az OpenJDK, OpenJ9 vagy m\u00e1s hasonl\u00f3 SDK eszk\u00f6zben el\u00e9rhet\u0151 alap\u00e9rtelmezett biztons\u00e1gi API-kat haszn\u00e1l\u00f3 Kerberos hiteles\u00edt\u00e9st t\u00e1mogatja.
+KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED.explanation=Az IBM Java 8 SDK haszn\u00e1lata Oracle adatb\u00e1zissal nem t\u00e1mogatott. Az Oracle JDBC illeszt\u0151program csak az OpenJDK, OpenJ9 vagy m\u00e1s hasonl\u00f3 SDK eszk\u00f6zben el\u00e9rhet\u0151 alap\u00e9rtelmezett biztons\u00e1gi API-kat haszn\u00e1l\u00f3 Kerberos hiteles\u00edt\u00e9st t\u00e1mogatja.
+KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED.useraction=Tiltsa le az Oracle adatforr\u00e1s Kerberos hiteles\u00edt\u00e9s\u00e9t, vagy v\u00e1ltson m\u00e1sik Java SDK k\u00e9szletre az IBM Java 8 SDK mellett.
 
 # 9600-9603 deleted 
 # 9900 deleted

@@ -72,6 +72,11 @@ INVALID_BOOLEAN_PROPERTY_CWWKW1304W=CWWKW1304W: Die Clienteigenschaft {0} muss v
 INVALID_BOOLEAN_PROPERTY_CWWKW1304W.explanation=Clienteigenschaften, mit denen beispielsweise festgelegt wird, ob automatisch Weiterleitungen gefolgt wird, m\u00fcssen als Eigenschaften des Typs Boolean oder Eigenschaften des Typs String, die in einen Typ Boolean konvertiert werden k\u00f6nnen, konfiguriert werden. Diese Nachricht gibt an, dass eine Clienteigenschaft auf einen ung\u00fcltigen Wert gesetzt wurde. Diese Eigenschaft wird ignoriert.
 INVALID_BOOLEAN_PROPERTY_CWWKW1304W.useraction=\u00dcberpr\u00fcfen Sie den Anwendungscode und die Serverkonfiguration, um zu ermitteln, an welcher Stelle diese Eigenschaft falsch definiert wurde. Entfernen Sie entweder die Eigenschaft oder \u00e4ndern Sie den Wert in einen g\u00fcltigen booleschen Wert.
 
+INVALID_PROVIDER_CWWKW1305W=CWWKW1305W: Der Server ignoriert den Provider {0}, weil er nicht g\u00fcltig ist.
+INVALID_PROVIDER_CWWKW1305W.explanation=Die angegebene Providerklasse enth\u00e4lt wahrscheinlich keinen g\u00fcltigen \u00f6ffentlichen Konstruktor oder sie implementiert keine Jakarta-REST-Providerschnittstelle. Die Voraussetzungen f\u00fcr eine g\u00fcltige Providerimplementierung sind in Abschnitt 4 der Jakarta-Spezifikation f\u00fcr REST-konforme Web-Services dokumentiert.
+INVALID_PROVIDER_CWWKW1305W.useraction=\u00dcberpr\u00fcfen Sie den Anwendungscode, um sicherzustellen, dass der angegebene Provider die Providerschnittstelle ordnungsgem\u00e4\u00df implementiert und entsprechend den Spezifikationsanforderungen einen g\u00fcltigen \u00f6ffentlichen Konstruktor enth\u00e4lt.
+
+
 # Same message as in /com.ibm.ws.jaxrs.2.0.client/resources/com/ibm/ws/jaxrs20/client/internal/resources/JAXRSClientMessages.nlsprops
 warn_missing_mpjwt_token=CWWKW0707W: Das Attribut [{0}] in der Konfiguration [{1}] ist auf [{2}] gesetzt, aber das MicroProfile JSON Web Token (JWT) ist nicht verf\u00fcgbar. Die Anforderung enth\u00e4lt keinen Authorization-Header mit dem Token.
 warn_missing_mpjwt_token.explanation=Die Laufzeitumgebung hat das MicroProfile JWT nicht im RunAs-Subjekt gefunden. Dieser Fehler weist gew\u00f6hnlich auf ein Problem mit der Authentifizierung hin. Stellen Sie sicher, dass keine Fehler auftreten, w\u00e4hrend das Feature MicroProfile JWT einen Benutzer authentifiziert.

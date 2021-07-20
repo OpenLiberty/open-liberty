@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2001, 2019 IBM Corporation and others.
+# Copyright (c) 2001, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -215,7 +215,7 @@ FEATURE_NOT_IMPLEMENTED=DSRA1300E: \uae30\ub2a5\uc774 \uad6c\ud604\ub418\uc9c0 \
 FEATURE_NOT_IMPLEMENTED.explanation=\uc694\uccad\ub41c \uae30\ub2a5\uc744 \uc0ac\uc6a9\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
 FEATURE_NOT_IMPLEMENTED.useraction=\uae30\ub2a5\uc744 \uc0ac\uc6a9\ud558\uc9c0 \ub9d0\uac70\ub098 \uac00\ub2a5\ud55c \uacbd\uc6b0, \uae30\ub2a5\uc744 \uc9c0\uc6d0\ud558\ub294 \ub4dc\ub77c\uc774\ubc84 \ubc84\uc804\uc73c\ub85c \uc804\ud658\ud558\uc2ed\uc2dc\uc624.
 
-# 1301 deleted
+# 1301 reserved for other NLS file
 # 3000-3020 deleted
 # 3100-3127 deleted
 # 3200-3202 deleted
@@ -291,7 +291,8 @@ DSRA4015.no.ucp.connection.pool.datasource.useraction=XADataSource \ub610\ub294 
 # 
 # Using 7000-7599 for DataStore Helper exception messages and warnings
 # 
-# 7000-7009 deleted
+# 7000 reserved for other NLS file
+# 7001-7009 deleted
 
 # No Comment Provided
 DB2_FILE_OUTSTREAM_ERROR=DSRA7010E: \uc9c0\uc815\ub41c \ucd94\uc801 \ud30c\uc77c {0}\uc774(\uac00) \uc874\uc7ac\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \ubb38\uc81c\ub97c \ud574\uacb0\ud558\uc9c0 \uc54a\uc73c\uba74 \ub370\uc774\ud130\ubca0\uc774\uc2a4\uc5d0\uc11c \uc608\uc678\uac00 \ubc1c\uc0dd\ud569\ub2c8\ub2e4.
@@ -325,7 +326,9 @@ META_DATA_EXCEPTION=DSRA7018I: \ub370\uc774\ud130\ubca0\uc774\uc2a4 \uba54\ud0c0
 META_DATA_EXCEPTION.explanation=\uc560\ud50c\ub9ac\ucf00\uc774\uc158 \uc11c\ubc84\uac00 \ub370\uc774\ud130\ubca0\uc774\uc2a4\uc758 \uba54\ud0c0\ub370\uc774\ud130 \uc624\ube0c\uc81d\ud2b8\ub97c \uac00\uc838\uc624\uac70\ub098 \uc561\uc138\uc2a4\ud558\ub824\uace0 \ud558\ub294 \uc911 \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
 META_DATA_EXCEPTION.useraction=\uba54\ud0c0\ub370\uc774\ud130\uac00 \ubc31\uc5d4\ub4dc \ub370\uc774\ud130\ubca0\uc774\uc2a4\uc5d0\uc11c \uc0ac\uc6a9 \uac00\ub2a5\ud55c\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
 
-# 7019-7042 deleted
+# 7019 deleted
+# 7020 reserved for other NLS file
+# 7021-7042 deleted
 # 7600-7606 deleted
 
 # ----------------------------------------------------------------------------
@@ -552,7 +555,7 @@ OBJECT_CLOSED.explanation=\ub2eb\ud78c \uc624\ube0c\uc81d\ud2b8\uc5d0 \ub300\ud5
 OBJECT_CLOSED.useraction=\uc870\uc791\uc744 \uc218\ud589\ud560 \uc624\ube0c\uc81d\ud2b8\uc758 \uc0c8 \uc778\uc2a4\ud134\uc2a4\ub97c \uac80\uc0c9\ud558\uc2ed\uc2dc\uc624.
 
 # 9115 deleted
-# 9120-9121 - deleted
+# 9120-9121 - reserved for other NLS file
 
 # 9122E      NO_WRAPPED_OBJECT
 # 
@@ -562,7 +565,7 @@ NO_WRAPPED_OBJECT=DSRA9122E: {0}\uc774(\uac00) {1} \uc720\ud615\uc758 \uc624\ube
 NO_WRAPPED_OBJECT.explanation=\uc9c0\uc815\ub41c \ub7a9\ud37c\uc5d0 \uc9c0\uc815\ub41c \ub7a9\ud551\ub41c \uc624\ube0c\uc81d\ud2b8 \uc720\ud615\uc774 \ub4e4\uc5b4 \uc788\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 NO_WRAPPED_OBJECT.useraction=\ub7a9\ud37c \ubc0f \ub7a9\ud551\ub41c \uc624\ube0c\uc81d\ud2b8\uc758 \ub9e4\uac1c\ubcc0\uc218\uac00 \uc62c\ubc14\ub974\uac8c \uc9c0\uc815\ub418\uc5c8\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
 
-# 9123 deleted
+# 9123 reserved for other NLS file
 
 # 9124       NOT_AN_INTERFACE
 #
@@ -570,6 +573,8 @@ NO_WRAPPED_OBJECT.useraction=\ub7a9\ud37c \ubc0f \ub7a9\ud551\ub41c \uc624\ube0c
 NOT_AN_INTERFACE=DSRA9124E: {0}\uc774(\uac00) \uc778\ud130\ud398\uc774\uc2a4 \ud074\ub798\uc2a4\uac00 \uc544\ub2c8\ubbc0\ub85c \uc624\ube0c\uc81d\ud2b8\ub97c {0}(\uc73c)\ub85c \ub7a9\ud551 \ud574\uc81c\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
 NOT_AN_INTERFACE.explanation=\ub7a9\ud551 \ud574\uc81c \uba54\uc18c\ub4dc\uc5d0\uc11c\ub294 \uc778\ud130\ud398\uc774\uc2a4 \ud074\ub798\uc2a4\ub85c\uc758 \ub7a9\ud551 \ud574\uc81c\ub9cc \ud5c8\uc6a9\ud569\ub2c8\ub2e4.
 NOT_AN_INTERFACE.useraction=\uad6c\uccb4\uc801 \ud074\ub798\uc2a4 \ub300\uc2e0 \uc778\ud130\ud398\uc774\uc2a4\uc778 \ud074\ub798\uc2a4\ub85c \ub7a9\ud551 \ud574\uc81c\ud558\uc2ed\uc2dc\uc624.
+
+# 9125 reserved for other NLS file
 
 # 9130E      OPERATION_NOT_PERMITTED
 # 

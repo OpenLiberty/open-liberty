@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2001, 2019 IBM Corporation and others.
+# Copyright (c) 2001, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -215,7 +215,7 @@ FEATURE_NOT_IMPLEMENTED=DSRA1300E: La fonction {0} n''a pas \u00e9t\u00e9 impl\u
 FEATURE_NOT_IMPLEMENTED.explanation=La fonction demand\u00e9e n'est pas disponible.
 FEATURE_NOT_IMPLEMENTED.useraction=Evitez d'utiliser cette fonction ou si possible, passez sur une version du pilote qui la prend en charge.
 
-# 1301 deleted
+# 1301 reserved for other NLS file
 # 3000-3020 deleted
 # 3100-3127 deleted
 # 3200-3202 deleted
@@ -291,7 +291,8 @@ DSRA4015.no.ucp.connection.pool.datasource.useraction=Mettez \u00e0 jour la sour
 # 
 # Using 7000-7599 for DataStore Helper exception messages and warnings
 # 
-# 7000-7009 deleted
+# 7000 reserved for other NLS file
+# 7001-7009 deleted
 
 # No Comment Provided
 DB2_FILE_OUTSTREAM_ERROR=DSRA7010E: Le fichier de trace indiqu\u00e9, {0}, n''existe pas. S''il n''est pas rem\u00e9di\u00e9 \u00e0 cet incident, une exception sera \u00e9mise \u00e0 partir de la base de donn\u00e9es.
@@ -325,7 +326,9 @@ META_DATA_EXCEPTION=DSRA7018I: L''acc\u00e8s aux m\u00e9tadonn\u00e9es de la bas
 META_DATA_EXCEPTION.explanation=Une exception s'est produite alors que le serveur d'applications tentait d'acc\u00e9der \u00e0 l'objet m\u00e9tadonn\u00e9es pour la base de donn\u00e9es.
 META_DATA_EXCEPTION.useraction=V\u00e9rifiez que les m\u00e9tadonn\u00e9es sont activ\u00e9es sur votre base de donn\u00e9es dorsale.
 
-# 7019-7042 deleted
+# 7019 deleted
+# 7020 reserved for other NLS file
+# 7021-7042 deleted
 # 7600-7606 deleted
 
 # ----------------------------------------------------------------------------
@@ -552,7 +555,7 @@ OBJECT_CLOSED.explanation=Une op\u00e9ration a \u00e9t\u00e9 tent\u00e9e sur un 
 OBJECT_CLOSED.useraction=Extrayez une nouvelle instance de l'objet sur laquelle effectuer cette op\u00e9ration.
 
 # 9115 deleted
-# 9120-9121 - deleted
+# 9120-9121 - reserved for other NLS file
 
 # 9122E      NO_WRAPPED_OBJECT
 # 
@@ -562,7 +565,7 @@ NO_WRAPPED_OBJECT=DSRA9122E: {0} n''encapsule aucun objet du type {1}.
 NO_WRAPPED_OBJECT.explanation=L'encapsuleur indiqu\u00e9 ne contient pas le type d'objet encapsul\u00e9 indiqu\u00e9.
 NO_WRAPPED_OBJECT.useraction=V\u00e9rifiez que l'encapsuleur et les param\u00e8tres associ\u00e9s \u00e0 l'objet encapsul\u00e9 sont correctement d\u00e9finis.
 
-# 9123 deleted
+# 9123 reserved for other NLS file
 
 # 9124       NOT_AN_INTERFACE
 #
@@ -570,6 +573,8 @@ NO_WRAPPED_OBJECT.useraction=V\u00e9rifiez que l'encapsuleur et les param\u00e8t
 NOT_AN_INTERFACE=DSRA9124E: Impossible de d\u00e9sencapsuler l''objet dans {0} car {0} n''est pas une classe d''interface.
 NOT_AN_INTERFACE.explanation=La m\u00e9thode de d\u00e9sencapsulage permet uniquement le d\u00e9sencapsulage dans une classe d'interface.
 NOT_AN_INTERFACE.useraction=Proc\u00e9dez au d\u00e9sencapsulage dans une classe qui est une interface au lieu d'une classe concr\u00e8te.
+
+# 9125 reserved for other NLS file
 
 # 9130E      OPERATION_NOT_PERMITTED
 # 

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2001, 2019 IBM Corporation and others.
+# Copyright (c) 2001, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -215,7 +215,7 @@ FEATURE_NOT_IMPLEMENTED=DSRA1300E: Nie zaimplementowano funkcji: {0}.
 FEATURE_NOT_IMPLEMENTED.explanation=\u017b\u0105dana funkcja jest niedost\u0119pna.
 FEATURE_NOT_IMPLEMENTED.useraction=Unikaj u\u017cywania tej funkcji lub, je\u015bli to mo\u017cliwe, w\u0142\u0105cz wersj\u0119 sterownika, kt\u00f3ra obs\u0142uguje t\u0119 funkcj\u0119.
 
-# 1301 deleted
+# 1301 reserved for other NLS file
 # 3000-3020 deleted
 # 3100-3127 deleted
 # 3200-3202 deleted
@@ -291,7 +291,8 @@ DSRA4015.no.ucp.connection.pool.datasource.useraction=Zaktualizuj \u017ar\u00f3d
 # 
 # Using 7000-7599 for DataStore Helper exception messages and warnings
 # 
-# 7000-7009 deleted
+# 7000 reserved for other NLS file
+# 7001-7009 deleted
 
 # No Comment Provided
 DB2_FILE_OUTSTREAM_ERROR=DSRA7010E: Podany plik \u015bledzenia {0} nie istnieje. Je\u015bli problem nie zostanie rozwi\u0105zany, zostanie zg\u0142oszony wyj\u0105tek z bazy danych.
@@ -325,7 +326,9 @@ META_DATA_EXCEPTION=DSRA7018I: Dost\u0119p do metadanych bazy danych spowodowa\u
 META_DATA_EXCEPTION.explanation=Wyst\u0105pi\u0142 wyj\u0105tek, gdy serwer aplikacji pr\u00f3bowa\u0142 pobra\u0107 obiekt metadanych dla bazy danych lub uzyska\u0107 do niego dost\u0119p.
 META_DATA_EXCEPTION.useraction=Sprawd\u017a, czy metadane s\u0105 w\u0142\u0105czone w zapleczu bazy danych.
 
-# 7019-7042 deleted
+# 7019 deleted
+# 7020 reserved for other NLS file
+# 7021-7042 deleted
 # 7600-7606 deleted
 
 # ----------------------------------------------------------------------------
@@ -373,11 +376,13 @@ PROP_SET_ERROR.useraction=Sprawd\u017a, czy okre\u015blona warto\u015b\u0107 jes
 8066E_IDENTIFY_EXCEPTION_INVALID_TARGET=DSRA8066E: Dla atrybutu ''as'' w elemencie identifyException okre\u015blono niepoprawn\u0105 warto\u015b\u0107 ''{0}''. Dozwolone warto\u015bci to: {1}.
 8066E_IDENTIFY_EXCEPTION_INVALID_TARGET.explanation=Okre\u015blono niepoprawn\u0105 warto\u015b\u0107 elementu konfiguracji identifyException.
 8066E_IDENTIFY_EXCEPTION_INVALID_TARGET.useraction=Zmie\u0144 konfiguracj\u0119, aby okre\u015bli\u0107 jedn\u0105 z dozwolonych warto\u015bci.
+
 # 8067E
 # Do not translate: errorCode, sqlState, identifyException
 8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE=DSRA8067E: W elemencie identifyException musi by\u0107 okre\u015blony co najmniej jeden z atrybut\u00f3w 'errorCode' lub 'sqlState'.
 8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE.explanation=Nale\u017cy okre\u015bli\u0107 jeden z atrybut\u00f3w errorCode lub sqlState.
 8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE.useraction=Zmie\u0144 konfiguracj\u0119 tak, aby okre\u015bla\u0142a co najmniej jeden z atrybut\u00f3w errorCode lub sqlState w elemencie identifyException.
+
 # 8100E      JAVAX_CONN_ERR
 # 
 # {0}        Type of Connection: XAConnection or PooledConnection.
@@ -550,7 +555,7 @@ OBJECT_CLOSED.explanation=Pr\u00f3bowano wykona\u0107 operacj\u0119 na zamkni\u0
 OBJECT_CLOSED.useraction=Pobierz now\u0105 instancj\u0119 obiektu, na kt\u00f3rym ma zosta\u0107 wykonana operacja.
 
 # 9115 deleted
-# 9120-9121 - deleted
+# 9120-9121 - reserved for other NLS file
 
 # 9122E      NO_WRAPPED_OBJECT
 # 
@@ -560,7 +565,7 @@ NO_WRAPPED_OBJECT=DSRA9122E: Obiekt {0} nie opakowuje \u017cadnych obiekt\u00f3w
 NO_WRAPPED_OBJECT.explanation=Okre\u015blone opakowanie nie zawiera opakowanych obiekt\u00f3w podanego typu.
 NO_WRAPPED_OBJECT.useraction=Sprawd\u017a, czy opakowanie i parametry opakowanego obiektu zosta\u0142y podane poprawnie.
 
-# 9123 deleted
+# 9123 reserved for other NLS file
 
 # 9124       NOT_AN_INTERFACE
 #
@@ -568,6 +573,8 @@ NO_WRAPPED_OBJECT.useraction=Sprawd\u017a, czy opakowanie i parametry opakowaneg
 NOT_AN_INTERFACE=DSRA9124E: Nie mo\u017cna odpakowa\u0107 obiektu do klasy {0}, poniewa\u017c klasa {0} nie jest klas\u0105 interfejsu.
 NOT_AN_INTERFACE.explanation=Metoda unwrap zezwala tylko na odpakowywanie do klasy interfejsu.
 NOT_AN_INTERFACE.useraction=Odpakuj do klasy interfejsu, a nie do klasy konkretnej.
+
+# 9125 reserved for other NLS file
 
 # 9130E      OPERATION_NOT_PERMITTED
 # 
@@ -663,5 +670,6 @@ KERBEROS_NOT_SUPPORTED_WARNING.useraction= Wy\u0142\u0105cz uwierzytelnianie Ker
 KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED=DSRA9549E: Nie mo\u017cna u\u017cywa\u0107 pakietu IBM Java 8 SDK z baz\u0105 danych Oracle. Sterownik JDBC Oracle obs\u0142uguje uwierzytelnianie Kerberos wy\u0142\u0105cznie przy u\u017cyciu domy\u015blnych interfejs\u00f3w API zabezpiecze\u0144 dost\u0119pnych w pakietach OpenJDK, OpenJ9 lub podobnych pakietach SDK.
 KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED.explanation=Nie mo\u017cna u\u017cywa\u0107 pakietu IBM Java 8 SDK z baz\u0105 danych Oracle. Sterownik JDBC Oracle obs\u0142uguje uwierzytelnianie Kerberos wy\u0142\u0105cznie przy u\u017cyciu domy\u015blnych interfejs\u00f3w API zabezpiecze\u0144 dost\u0119pnych w pakietach OpenJDK, OpenJ9 lub podobnych pakietach SDK.
 KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED.useraction=Wy\u0142\u0105cz uwierzytelnianie Kerberos dla \u017ar\u00f3d\u0142a danych Oracle lub skorzystaj z pakietu Java SDK innego ni\u017c IBM Java 8 SDK.
+
 # 9600-9603 deleted 
 # 9900 deleted
