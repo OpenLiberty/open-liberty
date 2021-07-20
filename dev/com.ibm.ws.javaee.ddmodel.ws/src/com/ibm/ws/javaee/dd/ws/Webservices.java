@@ -16,15 +16,21 @@ import com.ibm.ws.javaee.dd.DeploymentDescriptor;
 import com.ibm.ws.javaee.dd.common.DescriptionGroup;
 
 public interface Webservices extends DeploymentDescriptor, DescriptionGroup {
+    String DD_SHORT_NAME = "webservices.xml";
     String WEB_DD_NAME = "WEB-INF/webservices.xml";
     String EJB_DD_NAME = "META-INF/webservices.xml";
 
-    int VERSION_1_1 = 11;
-    int VERSION_1_2 = 12;
-    int VERSION_1_3 = 13;
-    int VERSION_1_4 = 14;
-    int VERSION_2_0 = 20;
+    int VERSION_1_1 = 11; // J2EE 1.4
+    int VERSION_1_2 = 12; // Java EE 5
+    int VERSION_1_3 = 13; // Java EE 6
+    int VERSION_1_4 = 14; // Java EE 7, Java EE 8
+    int VERSION_2_0 = 20; // Jakarta 9
 
+    int[] VERSIONS = {
+            VERSION_1_1, VERSION_1_2, VERSION_1_3, VERSION_1_4,
+            VERSION_2_0
+    };
+    
     String VERSION_1_1_STR = "1.1";    
     String VERSION_1_2_STR = "1.2";
     String VERSION_1_3_STR = "1.3";

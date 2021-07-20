@@ -1108,7 +1108,7 @@ public abstract class DDParser {
 
     // Version handling ...
 
-    protected static class VersionData {
+    public static class VersionData {
         public final String versionAttr;
         public final String namespace;
         public final String publicId;

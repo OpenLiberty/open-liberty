@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.javaee.ddmodel;
+package com.ibm.ws.javaee.ddmodel.ws;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -32,13 +32,13 @@ import com.ibm.wsspi.artifact.ArtifactEntry;
 import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 
 /**
- * Duplicated as com.ibm.ws.javaee.ddmodel.ws.DDTestBase_Webservices.
- *
+ * Duplicate of com.ibm.ws.javaee.ddmodel.DDTestBase.
+ * 
  * Copied for simplicity.  I'm not sure how to setup a
  * dependency of test code in a project on other test code
  * in another project.
  */
-public class DDTestBase {
+public class DDTestBase_Webservices {
     // 1.2
     // 1.3
     //
