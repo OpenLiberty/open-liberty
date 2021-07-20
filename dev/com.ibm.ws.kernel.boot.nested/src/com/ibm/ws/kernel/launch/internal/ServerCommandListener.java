@@ -25,6 +25,8 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.osgi.framework.BundleContext;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
@@ -93,7 +95,8 @@ public class ServerCommandListener extends ServerCommand {
      * @param bootProps
      * @param uuid
      */
-    public ServerCommandListener(BootstrapConfig bootProps, String uuid, FrameworkManager frameworkManager, Thread listeningThread) {
+    public ServerCommandListener(BootstrapConfig bootProps, String uuid, FrameworkManager frameworkManager,
+                                 Thread listeningThread, BundleContext bndCtxt) {
 
         super(bootProps);
         this.frameworkManager = frameworkManager;
@@ -127,25 +130,25 @@ public class ServerCommandListener extends ServerCommand {
 
         try {
             sci = init(commandPort, commandFileTmp);
+
             createCommandFile(commandFileTmp);
         } catch (IOException ex) {
             throw new LaunchException("Failed to initialize server command listener", MessageFormat.format(BootstrapConstants.messages.getString("error.serverCommand.init"), ex));
         }
 
         //Set up snapshotHookFactory for checkpoint restore of the .sCommand file
-        frameworkManager.systemBundleCtx.registerService(SnapshotHookFactory.class,
-                                                         new SnapshotHookFactory() {
-                                                             @Override
-                                                             public SnapshotHook create(Phase phase) {
-                                                                 return new SnapshotHook() {
-                                                                     @Override
-                                                                     public void restore() {
-                                                                         File commandFileTmp = createCommandFileTmp(serverWorkArea);
-                                                                         createCommandFile(commandFileTmp);
-                                                                     }
-                                                                 };
-                                                             }
-                                                         }, null);
+        bndCtxt.registerService(SnapshotHookFactory.class, new SnapshotHookFactory() {
+            @Override
+            public SnapshotHook create(Phase phase) {
+                return new SnapshotHook() {
+                    @Override
+                    public void restore() {
+                        File commandFileTmp = createCommandFileTmp(serverWorkArea);
+                        createCommandFile(commandFileTmp);
+                    }
+                };
+            }
+        }, null);
     }
 
     /**

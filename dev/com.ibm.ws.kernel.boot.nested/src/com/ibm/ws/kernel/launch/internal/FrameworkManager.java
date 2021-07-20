@@ -758,7 +758,7 @@ public class FrameworkManager {
             @Override
             public void run() {
                 String uuid = systemBundleCtx.getProperty("org.osgi.framework.uuid");
-                sc = new ServerCommandListener(config, uuid, FrameworkManager.this, this);
+                sc = new ServerCommandListener(config, uuid, FrameworkManager.this, this, FrameworkManager.this.systemBundleCtx);
                 serverListenerLatch.countDown();
                 sc.startListening();
             }
