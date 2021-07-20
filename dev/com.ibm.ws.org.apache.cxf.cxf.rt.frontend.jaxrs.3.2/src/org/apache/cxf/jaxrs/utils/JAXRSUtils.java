@@ -1445,8 +1445,12 @@ public final class JAXRSUtils {
                 value = (";".equals(sep)) ? HttpUtils.pathDecode(value) : HttpUtils.urlDecode(value);
             }
         }
-
-        queries.add(HttpUtils.urlDecode(name), value);
+        
+        if (decode) {  // CXF change:  https://github.com/apache/cxf/pull/809
+            queries.add(HttpUtils.urlDecode(name), value);
+        } else {
+            queries.add(name, value);
+        }    
     }
 
     @FFDCIgnore({ IOException.class, WebApplicationException.class, Exception.class })
