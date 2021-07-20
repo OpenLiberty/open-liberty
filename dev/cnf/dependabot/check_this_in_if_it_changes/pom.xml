@@ -2329,7 +2329,7 @@
     <dependency>
       <groupId>org.jacoco</groupId>
       <artifactId>org.jacoco.report</artifactId>
-      <version>0.7.9</version>
+      <version>0.8.7</version>
     </dependency>
     <dependency>
       <groupId>org.jasypt</groupId>
