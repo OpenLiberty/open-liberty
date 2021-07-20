@@ -17,8 +17,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.management.Query;
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 
 import org.junit.Assert;
 
@@ -59,11 +59,6 @@ public class JPATestOLGH14137Logic extends AbstractTestLogic {
             for (String key : testProps.keySet()) {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
-        }
-
-        //TODO: Disable test until EclipseLink 3.0 is updated to include the fix
-        if ((isUsingJPA30Feature()) && JPAProviderImpl.ECLIPSELINK.equals(getJPAProviderImpl(jpaResource))) {
-            return;
         }
 
         Integer id = new Integer(41);
