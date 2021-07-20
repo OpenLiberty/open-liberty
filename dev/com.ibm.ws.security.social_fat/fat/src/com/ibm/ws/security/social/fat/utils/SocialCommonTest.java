@@ -651,48 +651,6 @@ public class SocialCommonTest extends CommonTest {
     }
 
     /**
-     * create a WebClient instance and have it return a response instead of an exception for
-     * negative instances (meaning when tests expect a non-200 status code...
-     *
-     * @return - a new WebClient instance
-     * @throws Exception
-     */
-    public static WebClient getWebClient() throws Exception {
-
-        java.util.logging.Logger.getLogger("com.gargoylesoftware.htmlunit").setLevel(java.util.logging.Level.OFF);
-        java.util.logging.Logger.getLogger("org.apache.http").setLevel(java.util.logging.Level.OFF);
-
-        return getWebClient(true);
-    }
-
-    /**
-     * Creates a new WebClient - adding settings to ignore script and status errors if requested
-     *
-     * @param overrideException
-     *            - flag indicating if scripting errors and failing status codes should be ignored
-     * @return - returns a new WebClient instance
-     * @throws Exception
-     */
-    public static WebClient getWebClient(Boolean overrideException) throws Exception {
-
-        WebClient webClient = new WebClient();
-        //        WebClient webClient = new WebClient(BrowserVersion.FIREFOX_24);
-        if (overrideException) {
-            webClient.getOptions().setThrowExceptionOnScriptError(false);
-            webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
-        }
-
-        // test/junit client should trust ALL servers
-        webClient.getOptions().setUseInsecureSSL(true);
-
-        return webClient;
-    }
-
-    //        public WebResponse genericSocial(String testcase, WebConversation wc, SocialTestSettings settings, String[] testActions, List<validationData> expectations) throws Exception {
-    //            return genericSocial(testcase, wc, settings, testActions, expectations, null);
-    //        }
-
-    /**
      * Invokes {@link #genericSocial(String testcase, WebClient webClient, Object somePage, String[] testActions,
      * SocialTestSettings settings, List<validationData> expectations)} - making the
      * assumption that the previous page was null
@@ -745,7 +703,7 @@ public class SocialCommonTest extends CommonTest {
         msgUtils.printMethodName(thisMethod);
 
         if (webClient == null) {
-            webClient = getWebClient();
+            webClient = getAndSaveWebClient();
         }
 
         // reduce logging
