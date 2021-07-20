@@ -76,7 +76,7 @@ public class BasicSolicitedSPInitiatedTests extends BasicSAMLTests {
         // we should wait for any providers that this test requires
         extraMsgs = getDefaultSAMLStartMsgs();
         // make sure that we wait for ssl to be up and ready during the original start and server restarts
-        extraMsgs.add("CWWKO0219I:.*defaultHttpEndpoint-ssl.*");
+        extraMsgs.add(SAMLMessageConstants.CWWKO0219I_SSL_CHANNEL_READY);
 
         extraApps.add(SAMLConstants.SAML_CLIENT_APP);
 
