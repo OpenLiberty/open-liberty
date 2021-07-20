@@ -2704,7 +2704,7 @@
     <dependency>
       <groupId>org.opensaml</groupId>
       <artifactId>opensaml-xmlsec-impl</artifactId>
-      <version>3.4.5</version>
+      <version>4.0.1</version>
     </dependency>
     <dependency>
       <groupId>org.osgi</groupId>
