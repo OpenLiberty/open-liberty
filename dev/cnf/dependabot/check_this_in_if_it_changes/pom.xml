@@ -1764,7 +1764,7 @@
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-http</artifactId>
-      <version>9.4.39.v20210325</version>
+      <version>11.0.2</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
