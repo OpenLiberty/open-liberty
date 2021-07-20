@@ -30,6 +30,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.logging.Level;
+import java.util.logging.Logger; // Liberty code change
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -40,6 +41,7 @@ import javax.xml.namespace.QName;
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.attachment.AttachmentDataSource;
+import org.apache.cxf.common.logging.LogUtils; // Liberty code change
 import org.apache.cxf.common.util.Base64Exception;
 import org.apache.cxf.common.util.Base64Utility;
 import org.apache.cxf.common.util.PropertyUtils;
@@ -78,6 +80,7 @@ import org.apache.cxf.ws.addressing.ContextUtils;
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
 import org.apache.cxf.ws.addressing.EndpointReferenceUtils;
 
+import com.ibm.websphere.ras.annotation.Trivial; // Liberty code change
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cxf.exceptions.InvalidCharsetException;
@@ -109,7 +112,7 @@ public abstract class AbstractHTTPDestination
     private static final String SSL_PEER_CERT_CHAIN_ATTRIBUTE = "javax.servlet.request.X509Certificate";
 
     private static final String DECODE_BASIC_AUTH_WITH_ISO8859 = "decode.basicauth.with.iso8859";
-    //private static final Logger LOG = LogUtils.getL7dLogger(AbstractHTTPDestination.class);
+    private static final Logger LOG = LogUtils.getL7dLogger(AbstractHTTPDestination.class); // Liberty code change
     private static final TraceComponent tc = Tr.register(AbstractHTTPDestination.class);
 
     protected final Bus bus;
@@ -548,10 +551,15 @@ public abstract class AbstractHTTPDestination
      * @return the inbuilt backchannel
      */
     @Override
+    // Liberty code change
+    @Trivial
     protected Conduit getInbuiltBackChannel(Message inMessage) {
+        LOG.entering("AbstractHTTPDestination", "getInbuiltBackChannel");
         HttpServletResponse response = (HttpServletResponse) inMessage.get(HTTP_RESPONSE);
+        LOG.exiting("AbstractHTTPDestination", "getInbuiltBackChannel");
         return new BackChannelConduit(response);
     }
+    // Liberty code change end
 
     private void initConfig() {
 
@@ -575,13 +583,18 @@ public abstract class AbstractHTTPDestination
         return sp;
     }
 
+    // Liberty code change start
+    @Trivial
     private HTTPServerPolicy calcServerPolicy(Message m) {
+        LOG.entering("AbstractHTTPDestination", "calcServerPolicy");
         HTTPServerPolicy sp = serverPolicy;
         if (!serverPolicyCalced) {
             sp = calcServerPolicyInternal(m);
         }
+        LOG.exiting("AbstractHTTPDestination", "calcServerPolicy");
         return sp;
     }
+    // Liberty code change end
 
     /**
      * On first write, we need to make sure any attachments and such that are still on the incoming stream
@@ -943,10 +956,15 @@ public abstract class AbstractHTTPDestination
     }
 
     @Override
+    // Liberty code change start
+    @Trivial
     public void assertMessage(Message message) {
+        LOG.entering("AbstractHTTPDestination", "assertMessage");
         PolicyDataEngine pde = bus.getExtension(PolicyDataEngine.class);
         pde.assertMessage(message, calcServerPolicy(message), new ServerPolicyCalculator());
+        LOG.entering("AbstractHTTPDestination", "assertMessage");
     }
+    // Liberty code change end
 
     @Override
     public boolean canAssert(QName type) {
