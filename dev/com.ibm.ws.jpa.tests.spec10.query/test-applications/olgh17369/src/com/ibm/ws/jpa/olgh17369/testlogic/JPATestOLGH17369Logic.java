@@ -11,6 +11,7 @@
 
 package com.ibm.ws.jpa.olgh17369.testlogic;
 
+import java.beans.Expression;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +21,6 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaBuilder.SimpleCase;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Root;
 
@@ -59,9 +59,8 @@ public class JPATestOLGH17369Logic extends AbstractTestLogic {
             }
         }
 
-        //TODO: Disable test until EclipseLink 3.0 is updated to include the fix
         //TODO: Disable test until EclipseLink 2.7 is updated to include the fix
-        if ((isUsingJPA22Feature() || isUsingJPA30Feature()) && JPAProviderImpl.ECLIPSELINK.equals(getJPAProviderImpl(jpaResource))) {
+        if ((isUsingJPA22Feature()) && JPAProviderImpl.ECLIPSELINK.equals(getJPAProviderImpl(jpaResource))) {
             return;
         }
 
@@ -177,9 +176,8 @@ public class JPATestOLGH17369Logic extends AbstractTestLogic {
             }
         }
 
-        //TODO: Disable test until EclipseLink 3.0 is updated to include the fix
         //TODO: Disable test until EclipseLink 2.7 is updated to include the fix
-        if ((isUsingJPA22Feature() || isUsingJPA30Feature()) && JPAProviderImpl.ECLIPSELINK.equals(getJPAProviderImpl(jpaResource))) {
+        if ((isUsingJPA22Feature()) && JPAProviderImpl.ECLIPSELINK.equals(getJPAProviderImpl(jpaResource))) {
             return;
         }
 
@@ -335,9 +333,8 @@ public class JPATestOLGH17369Logic extends AbstractTestLogic {
             }
         }
 
-        //TODO: Disable test until EclipseLink 3.0 is updated to include the fix
         //TODO: Disable test until EclipseLink 2.7 is updated to include the fix
-        if ((isUsingJPA22Feature() || isUsingJPA30Feature()) && JPAProviderImpl.ECLIPSELINK.equals(getJPAProviderImpl(jpaResource))) {
+        if ((isUsingJPA22Feature()) && JPAProviderImpl.ECLIPSELINK.equals(getJPAProviderImpl(jpaResource))) {
             return;
         }
 
@@ -456,9 +453,8 @@ public class JPATestOLGH17369Logic extends AbstractTestLogic {
             }
         }
 
-        //TODO: Disable test until EclipseLink 3.0 is updated to include the fix
         //TODO: Disable test until EclipseLink 2.7 is updated to include the fix
-        if ((isUsingJPA22Feature() || isUsingJPA30Feature()) && JPAProviderImpl.ECLIPSELINK.equals(getJPAProviderImpl(jpaResource))) {
+        if ((isUsingJPA22Feature()) && JPAProviderImpl.ECLIPSELINK.equals(getJPAProviderImpl(jpaResource))) {
             return;
         }
 
@@ -608,9 +604,8 @@ public class JPATestOLGH17369Logic extends AbstractTestLogic {
             }
         }
 
-        //TODO: Disable test until EclipseLink 3.0 is updated to include the fix
         //TODO: Disable test until EclipseLink 2.7 is updated to include the fix
-        if ((isUsingJPA22Feature() || isUsingJPA30Feature()) && JPAProviderImpl.ECLIPSELINK.equals(getJPAProviderImpl(jpaResource))) {
+        if ((isUsingJPA22Feature()) && JPAProviderImpl.ECLIPSELINK.equals(getJPAProviderImpl(jpaResource))) {
             return;
         }
 
@@ -689,9 +684,8 @@ public class JPATestOLGH17369Logic extends AbstractTestLogic {
             }
         }
 
-        //TODO: Disable test until EclipseLink 3.0 is updated to include the fix
         //TODO: Disable test until EclipseLink 2.7 is updated to include the fix
-        if ((isUsingJPA22Feature() || isUsingJPA30Feature()) && JPAProviderImpl.ECLIPSELINK.equals(getJPAProviderImpl(jpaResource))) {
+        if ((isUsingJPA22Feature()) && JPAProviderImpl.ECLIPSELINK.equals(getJPAProviderImpl(jpaResource))) {
             return;
         }
 
@@ -788,9 +782,8 @@ public class JPATestOLGH17369Logic extends AbstractTestLogic {
             }
         }
 
-        //TODO: Disable test until EclipseLink 3.0 is updated to include the fix
         //TODO: Disable test until EclipseLink 2.7 is updated to include the fix
-        if ((isUsingJPA22Feature() || isUsingJPA30Feature()) && JPAProviderImpl.ECLIPSELINK.equals(getJPAProviderImpl(jpaResource))) {
+        if ((isUsingJPA22Feature()) && JPAProviderImpl.ECLIPSELINK.equals(getJPAProviderImpl(jpaResource))) {
             return;
         }
 
@@ -864,9 +857,8 @@ public class JPATestOLGH17369Logic extends AbstractTestLogic {
             }
         }
 
-        //TODO: Disable test until EclipseLink 3.0 is updated to include the fix
         //TODO: Disable test until EclipseLink 2.7 is updated to include the fix
-        if ((isUsingJPA22Feature() || isUsingJPA30Feature()) && JPAProviderImpl.ECLIPSELINK.equals(getJPAProviderImpl(jpaResource))) {
+        if ((isUsingJPA22Feature()) && JPAProviderImpl.ECLIPSELINK.equals(getJPAProviderImpl(jpaResource))) {
             return;
         }
 
