@@ -57,8 +57,7 @@ public class IBMMultipartProvider implements MessageBodyReader<Object>, MessageB
 
     @Context
     Providers providers;
-    
-    private MessageBodyReader<MultipartInput> reader = new MultipartReader();
+
     private LibertyMultipartWriter writer = new LibertyMultipartWriter();
 
     @Override
