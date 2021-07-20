@@ -30,9 +30,8 @@ import componenttest.topology.impl.LibertyServerFactory;
     TestSpanUtils.class,
     FATOpentracing.class,
     FATOpentracingHelloWorld.class,
-    FATMPOpenTracing.class
-// Comment out this test class until microprofile-4.0 is available
-//    MicroProfile40NoTracer.class  
+    FATMPOpenTracing.class,
+    MicroProfile40NoTracer.class  
     
 })
 public class FATSuite implements FATOpentracingConstants {
