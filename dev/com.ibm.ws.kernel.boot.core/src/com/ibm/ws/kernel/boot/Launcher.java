@@ -290,24 +290,11 @@ public class Launcher {
             case LIST_ACTION:
                 rc = new ListServerHelper(bootProps, launchArgs).listServers();
                 break;
-            case CHECKPOINT_ACTION:
-                validateCheckpointSupported();
-                rc = new ListServerHelper(bootProps, launchArgs).listServers();
-                break;
             default:
                 showHelp(launchArgs);
                 rc = ReturnCode.BAD_ARGUMENT;
         }
         return rc;
-    }
-
-    /**
-     *
-     */
-    private void validateCheckpointSupported() {
-        // Valid what we can that the linux only checkpoint function is available. A more through check for
-        // can be done once the platform is up and certain SCR services are available.
-
     }
 
     /**
