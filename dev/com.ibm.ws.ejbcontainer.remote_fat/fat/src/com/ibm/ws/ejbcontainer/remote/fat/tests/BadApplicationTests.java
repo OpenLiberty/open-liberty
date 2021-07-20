@@ -195,11 +195,13 @@ public class BadApplicationTests extends AbstractTest {
         server.setMarkToEndOfLog();
         server.saveServerConfiguration();
         server.setServerConfigurationFile("ExtendsThrowable" + eeVersion + ".xml");
+        server.waitForStringInLogUsingMark("CWWKG0016I", 240 * 1000); // Starting server configuration update.
         server.waitForConfigUpdateInLogUsingMark(installedApps);
         assertNotNull(server.waitForStringInLogUsingMark("CNTR5107E"));
         assertNotNull(server.waitForStringInLogUsingMark("CWWKZ0106E"));
         server.setMarkToEndOfLog();
         server.restoreServerConfiguration();
+        server.waitForStringInLogUsingMark("CWWKG0016I", 240 * 1000); // Starting server configuration update.
         server.waitForConfigUpdateInLogUsingMark(installedApps);
     }
 
