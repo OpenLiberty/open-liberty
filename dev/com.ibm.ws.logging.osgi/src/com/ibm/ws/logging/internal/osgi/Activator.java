@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,11 +17,13 @@ import org.eclipse.equinox.log.ExtendedLogReaderService;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
+import org.osgi.service.component.ComponentContext;
 import org.osgi.service.log.LogReaderService;
 
 import com.ibm.websphere.ras.TrConfigurator;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.TraceComponentChangeListener;
+import com.ibm.ws.logging.internal.osgi.stackjoiner.ThrowableProxyActivator;
 import com.ibm.ws.ras.instrument.internal.main.LibertyJava8WorkaroundRuntimeTransformer;
 import com.ibm.ws.ras.instrument.internal.main.LibertyRuntimeTransformer;
 
@@ -30,17 +32,49 @@ import com.ibm.ws.ras.instrument.internal.main.LibertyRuntimeTransformer;
  */
 public class Activator implements BundleActivator {
 
-    private MessageRouterConfigurator msgRouter;
-    private TraceRouterConfigurator traceRouter;
-    private CollectorManagerPipelineConfigurator collectorMgrPipeConfigurator; 
+	private MessageRouterConfigurator msgRouter;
+	private TraceRouterConfigurator traceRouter;
+	private CollectorManagerPipelineConfigurator collectorMgrPipeConfigurator; 
+	private LoggingConfigurationService logCfgService;
+	private Instrumentation inst;
+	private RuntimeTransformerComponentListener runtimeTransformer = null;
+	private static TraceComponentChangeListenerTracker listenerTracker = null;
+	private ComponentContext componentContext;
+	private ThrowableProxyActivator proxyActivator;
+	
+	/**
+     * Activation callback from the Declarative Services runtime where the
+     * component is ready for activation.
+     *
+     * @param bundleContext the bundleContext
+     */
+	synchronized void activate(ComponentContext componentContext) throws Exception {
+		this.componentContext = componentContext;
+		this.proxyActivator = new ThrowableProxyActivator(this.inst, componentContext.getBundleContext());
+		this.proxyActivator.activate();
+	}
+    
+    /**
+     * Deactivation callback from the Declarative Services runtime where the
+     * component is deactivated.
+     *
+     * @param bundleContext the bundleContext
+     */
+    synchronized void deactivate() throws Exception {
+        this.proxyActivator.deactivate();
+    }
 
-    private LoggingConfigurationService logCfgService;
 
-    private Instrumentation inst;
-    private RuntimeTransformerComponentListener runtimeTransformer = null;
-
-    private static TraceComponentChangeListenerTracker listenerTracker = null;
-
+    /**
+     * 
+     * Inject reference to the {@link java.lang.instrument.Instrumentation} implementation.
+     *
+     * @param instrumentationAgent the JVM's {@code Instrumentation) reference
+     */
+    protected void setInstrumentation(Instrumentation instrumentation) {
+        this.inst = instrumentation;
+    }
+    
     /**
      * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
      * @see com.ibm.liberty.kernel.internal.Activator#start(org.osgi.framework.BundleContext)

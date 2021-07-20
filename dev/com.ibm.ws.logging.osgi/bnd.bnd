@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -36,7 +36,12 @@ Export-Package: \
 Service-Component= \
   com.ibm.ws.logging.internal.ffdcjanitor; \
     scheduler=java.util.concurrent.ScheduledExecutorService; \
-    implementation:=com.ibm.ws.logging.internal.osgi.FFDCJanitor
+    implementation:=com.ibm.ws.logging.internal.osgi.FFDCJanitor, \
+  com.ibm.ws.logging.internal.osgi.Activator; \
+    implementation:="com.ibm.ws.logging.internal.osgi.Activator"; \
+    instrumentation=java.lang.instrument.Instrumentation; \
+    properties:="service.vendor=IBM"; \
+    version:=1.1 \
    
 IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
@@ -46,11 +51,14 @@ instrument.disabled: true
 	org.eclipse.osgi;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.websphere.org.osgi.service.cm;version=latest,\
+	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.wsspi.org.osgi.service.event;version=latest,\
 	com.ibm.wsspi.org.osgi.service.log;version=latest,\
 	com.ibm.ws.logging;version=latest,\
-	com.ibm.ws.ras.instrument;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	com.ibm.ws.ras.instrument;version=latest,\
+	com.ibm.ws.org.objectweb.asm;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.kernel.boot.core
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
