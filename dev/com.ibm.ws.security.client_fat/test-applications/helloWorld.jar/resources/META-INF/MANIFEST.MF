@@ -1,0 +1,3 @@
+Manifest-Version: 1.0
+Main-Class: com.ibm.ws.app.manager.client.HelloWorld
+Class-Path: ejb31DD.jar
