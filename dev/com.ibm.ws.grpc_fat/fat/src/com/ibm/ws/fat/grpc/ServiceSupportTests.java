@@ -110,8 +110,9 @@ public class ServiceSupportTests extends FATServletClient {
         assertTrue("Expected the grpc feature 'grpc-1.0' to be enabled but was not: " + features,
                    features.contains("grpc-1.0"));
 
+        // Ignore case for EE9 RepeatAction
         assertTrue("Expected the grpc feature 'grpcClient-1.0' to be enabled but was not: " + features,
-                   features.contains("grpcClient-1.0"));
+                   features.contains("grpcClient-1.0") || features.contains("grpcclient-1.0")); 
 
     }
 

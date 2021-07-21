@@ -1,6 +1,13 @@
-/**
+/*******************************************************************************
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- */
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.fat.grpc;
 
 import static org.junit.Assert.assertNotNull;
@@ -19,6 +26,7 @@ import com.ibm.testapp.g3store.restConsumer.client.ConsumerEndpointJWTCookieFATS
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -28,6 +36,7 @@ import componenttest.topology.utils.FATServletClient;
  *
  */
 
+@SkipForRepeat(SkipForRepeat.EE9_FEATURES)
 @RunWith(FATRunner.class)
 public class StoreServicesSecurityTests extends FATServletClient {
 
