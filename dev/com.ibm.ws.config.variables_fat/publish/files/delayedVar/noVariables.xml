@@ -18,15 +18,11 @@
 	<application id="varmergedconfig" name="varmergedconfig"
 		type="war" location="varmerge.war" />
 
-	<variable name="variableDelayTest" value="evaluated" />
-	
-	<variable name="variableDefaultTest" defaultValue="this is the default"/>
-
 	<delayedVar delayedVariable="${variableDelayTest}"
 		immediateVar="${variableDelayTest}" immediateVarTwo="${variableDelayTest}" 
 		defaultTest="${variableDefaultTest}" 
 		defaultInstanceWithValueTest="${defaultInstanceWithValue}"
 		defaultInstanceNoValueTest="${defaultInstanceNoValue}"
-	/>
+		/>
 
 </server>

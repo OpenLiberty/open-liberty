@@ -18,6 +18,8 @@ Bundle-Description: Test bundle for variable behavior, version=${bVersion}
 -dsannotations: com.ibm.ws.config.variables.ConfigVariableComponent
 Export-Package: \
 	com.ibm.ws.config.variables
+
+IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 		
 Include-Resource: \
     OSGI-INF=test-bundles/test.config.variables/resources/OSGI-INF
