@@ -32,6 +32,8 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.EE8FeatureReplacementAction;
+import componenttest.rules.repeater.EmptyAction;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
@@ -43,17 +45,14 @@ public class CxfSha2SigTests extends CommonTests {
 //    static private UpdateWSDLPortNum newWsdl = null;
     static final private String serverName = "com.ibm.ws.wssecurity_fat.sha2sig";
 
-    //2/2021
     static private final Class<?> thisClass = CxfSha2SigTests.class;
 
-    //Added 10/2020
     @Server(serverName)
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
 
-        //2/2021
         ServerConfiguration config = server.getServerConfiguration();
         Set<String> features = config.getFeatureManager().getFeatures();
         if (features.contains("usr:wsseccbh-1.0")) {
@@ -66,7 +65,6 @@ public class CxfSha2SigTests extends CommonTests {
             copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
         }
 
-        //Added 11/2020
         ShrinkHelper.defaultDropinApp(server, "sha2sigclient", "com.ibm.ws.wssecurity.fat.sha2sigclient", "test.wssecfvt.sha2sig", "test.wssecfvt.sha2sig.types");
         ShrinkHelper.defaultDropinApp(server, "sha2sig", "com.ibm.ws.wssecurity.fat.sha2sig");
 
@@ -86,7 +84,6 @@ public class CxfSha2SigTests extends CommonTests {
      * in this test. This is a positive scenario.
      *
      */
-    //2/2021 to test with EE7, then the corresponding server_orig.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     public void testCxfSha2SignSoapBodyEE7Only() throws Exception {
@@ -120,12 +117,9 @@ public class CxfSha2SigTests extends CommonTests {
 
     }
 
-    //2/2021 to test with EE8, then the corresponding server_orig_wss4j.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    //5/2021 added PrivilegedActionExc, NoSuchMethodExc as a result of java11 and ee8
-    @AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException", "java.security.PrivilegedActionException",
-                           "java.lang.NoSuchMethodException" })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfSha2SignSoapBodyEE8Only() throws Exception {
 
         String thisMethod = "testCxfSha2SignSoapBody";
@@ -166,10 +160,9 @@ public class CxfSha2SigTests extends CommonTests {
      * in the algorithm suite. This is a positive scenario.
      *
      */
-    //2/2021 to test with EE7, then the corresponding server_orig.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    @AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testCxfSha2DigestAlgorithmEE7Only() throws Exception {
 
         String thisMethod = "testCxfSha2DigestAlgorithm";
@@ -201,11 +194,9 @@ public class CxfSha2SigTests extends CommonTests {
 
     }
 
-    //2/2021 to test with EE8, then the corresponding server_orig_wss4j.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    //4/2021
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfSha2DigestAlgorithmEE8Only() throws Exception {
 
         String thisMethod = "testCxfSha2DigestAlgorithm";
@@ -246,7 +237,6 @@ public class CxfSha2SigTests extends CommonTests {
      * in this test. This is a positive scenario.
      *
      */
-    //2/2021 to test with EE7, then the corresponding server_sha384.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     public void testCxfSha384SigAlgorithmEE7Only() throws Exception {
@@ -280,11 +270,9 @@ public class CxfSha2SigTests extends CommonTests {
 
     }
 
-    //2/2021 to test with EE8, then the corresponding server_sha384_wss4j.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    //4/2021
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfSha384SigAlgorithmEE8Only() throws Exception {
 
         String thisMethod = "testCxfSha384SigAlgorithm";
@@ -325,7 +313,6 @@ public class CxfSha2SigTests extends CommonTests {
      * in this test. This is a positive scenario.
      *
      */
-    //2/2021 to test with EE7, then the corresponding server_sha512.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     public void testCxfSha512SigAlgorithmEE7Only() throws Exception {
@@ -359,11 +346,9 @@ public class CxfSha2SigTests extends CommonTests {
 
     }
 
-    //2/2021 to test with EE8, then the corresponding server_sha512_wss4j.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    //4/2021
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfSha512SigAlgorithmEE8Only() throws Exception {
 
         String thisMethod = "testCxfSha512SigAlgorithm";
@@ -407,10 +392,9 @@ public class CxfSha2SigTests extends CommonTests {
      *
      */
 
-    //2/2021 to test with EE7, then the corresponding server_sha2.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    @AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testCxfSha1ToSha2SigAlgorithmEE7Only() throws Exception {
 
         String thisMethod = "testCxfSha1ToSha2SigAlgorithm";
@@ -446,11 +430,10 @@ public class CxfSha2SigTests extends CommonTests {
 
     }
 
-    //2/2021 to test with EE8, then the corresponding server_sha2_wss4j.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    //4/2021
-    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
+    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException", "java.lang.ClassNotFoundException" },
+                 repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfSha1ToSha2SigAlgorithmEE8Only() throws Exception {
 
         String thisMethod = "testCxfSha1ToSha2SigAlgorithm";
@@ -496,7 +479,6 @@ public class CxfSha2SigTests extends CommonTests {
      *
      */
 
-    //2/2021 to test with EE7, then the corresponding server_2048.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     public void testCxfSha256SigAlg2048KeylenEE7Only() throws Exception {
@@ -530,11 +512,9 @@ public class CxfSha2SigTests extends CommonTests {
 
     }
 
-    //4/2021
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
-    //2/2021 to test with EE8, then the corresponding server_2048_wss4j.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfSha256SigAlg2048KeylenEE8Only() throws Exception {
 
         String thisMethod = "testCxfSha256SigAlg2048Keylen";
@@ -577,7 +557,6 @@ public class CxfSha2SigTests extends CommonTests {
      *
      */
 
-    //2/2021 to test with EE7, then the corresponding server_sha3sym.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     public void testCxfSha384SymBindingEE7Only() throws Exception {
@@ -611,11 +590,9 @@ public class CxfSha2SigTests extends CommonTests {
 
     }
 
-    //4/2021
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
-    //2/2021 to test with EE8, then the corresponding server_sha3sym_wss4j.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfSha384SymBindingEE8Only() throws Exception {
 
         String thisMethod = "testCxfSha384SymBinding";
@@ -658,7 +635,6 @@ public class CxfSha2SigTests extends CommonTests {
      *
      */
 
-    //2/2021 to test with EE7, then the corresponding server_sha5sym.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     public void testCxfSha512SymBindingEE7Only() throws Exception {
@@ -691,11 +667,9 @@ public class CxfSha2SigTests extends CommonTests {
 
     }
 
-    //4/2021
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
-    //2/2021 to test with EE8, then the corresponding server_sha5sym_wss4j.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfSha512SymBindingEE8Only() throws Exception {
 
         String thisMethod = "testCxfSha512SymBinding";
@@ -740,7 +714,6 @@ public class CxfSha2SigTests extends CommonTests {
 //        }
 //    }
 
-    //2/2021
     public static void copyServerXml(String copyFromFile) throws Exception {
 
         try {

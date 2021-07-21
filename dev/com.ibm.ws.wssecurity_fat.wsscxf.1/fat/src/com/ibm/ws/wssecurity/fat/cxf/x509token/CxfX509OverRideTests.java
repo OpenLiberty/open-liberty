@@ -39,6 +39,8 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.EE8FeatureReplacementAction;
+import componenttest.rules.repeater.EmptyAction;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
@@ -47,7 +49,6 @@ import componenttest.topology.impl.LibertyServer;
 @RunWith(FATRunner.class)
 public class CxfX509OverRideTests {
 
-    //Added 11/2020
     static final private String serverName = "com.ibm.ws.wssecurity_fat.x509_1";
     @Server(serverName)
     public static LibertyServer server;
@@ -75,7 +76,6 @@ public class CxfX509OverRideTests {
 
         String thisMethod = "setup";
 
-        //2/2021
         ServerConfiguration config = server.getServerConfiguration();
         Set<String> features = config.getFeatureManager().getFeatures();
         if (features.contains("usr:wsseccbh-1.0")) {
@@ -88,7 +88,6 @@ public class CxfX509OverRideTests {
             copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
         }
 
-        //Added 11/2020
         ShrinkHelper.defaultDropinApp(server, "x509client", "com.ibm.ws.wssecurity.fat.x509client", "test.wssecfvt.basicplcy", "test.wssecfvt.basicplcy.types");
         ShrinkHelper.defaultDropinApp(server, "x509token", "basicplcy.wssecfvt.test");
 
@@ -107,7 +106,6 @@ public class CxfX509OverRideTests {
         assertNotNull("defaultHttpEndpoint SSL port may not be started at:" + portNumberSecure,
                       server.waitForStringInLog("CWWKO0219I.*" + portNumberSecure));
 
-        //2/2021
         if (features.contains("jaxws-2.2")) {
             x509ClientUrl = "http://localhost:" + portNumber
                             + "/x509client/CxfX509SvcClient";
@@ -130,11 +128,8 @@ public class CxfX509OverRideTests {
     // overwrite them.
     //
 
-    //5/2021 added PrivilegedActionExc, NoSuchMethodExc as a result of java11 and ee8
-    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException", "java.lang.ClassNotFoundException",
-                           "java.security.PrivilegedActionException",
-                           "java.lang.NoSuchMethodException" })
     @Test
+    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfX509Service() throws Exception {
         String thisMethod = "testCxfX509Service";
 
@@ -158,10 +153,10 @@ public class CxfX509OverRideTests {
     //   This test that the cxf service client can set the properties to overwrite the server.xml
     //   with "negative", the cxf service won't set the x509 properties. And the test ought to throw exception
     //
-    //2/2021 to test with EE7, then the corresponding exception can be expected
+
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    @AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testCxfX50NegativeServiceEE7Only() throws Exception {
 
         String thisMethod = "testCxfX509Service";
@@ -182,10 +177,9 @@ public class CxfX509OverRideTests {
         return;
     }
 
-    //2/2021 to test with EE8, then the corresponding exception can be expected
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    @ExpectedFFDC("org.apache.wss4j.common.ext.WSSecurityException")
+    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfX50NegativeServiceEE8Only() throws Exception {
 
         String thisMethod = "testCxfX509Service";
@@ -267,7 +261,6 @@ public class CxfX509OverRideTests {
             e.printStackTrace(System.out);
         }
 
-        //2/2021
         server.deleteFileFromLibertyInstallRoot("usr/extension/lib/bundles/com.ibm.ws.wssecurity.example.cbh.jar");
         server.deleteFileFromLibertyInstallRoot("usr/extension/lib/features/wsseccbh-1.0.mf");
         server.deleteFileFromLibertyInstallRoot("usr/extension/lib/bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
@@ -281,7 +274,6 @@ public class CxfX509OverRideTests {
         System.err.println("*****************************" + strMethod);
     }
 
-    //2/2021
     public static void copyServerXml(String copyFromFile) throws Exception {
 
         try {

@@ -33,6 +33,7 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.EE8FeatureReplacementAction;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
@@ -45,18 +46,15 @@ public class CxfX509ASyncTests extends CommonTests {
     static private UpdateWSDLPortNum newWsdl = null;
     static final private String serverName = "com.ibm.ws.wssecurity_fat.x509async";
 
-    //Added 11/2020
     @Server(serverName)
     public static LibertyServer server;
 
-    //2/26/2021 to use EE7 or EE8 CallBackHandler
     private static String CBHVersion = "";
 
     @BeforeClass
     public static void setUp() throws Exception {
 
         //6/2021 need to update CommonTest.java to get req parameter of CBHVersion; comment out for now
-        //2/2021
         ServerConfiguration config = server.getServerConfiguration();
         Set<String> features = config.getFeatureManager().getFeatures();
         if (features.contains("usr:wsseccbh-1.0")) {
@@ -71,18 +69,15 @@ public class CxfX509ASyncTests extends CommonTests {
             CBHVersion = "EE8";
         }
 
-        //Added 11/2020
         ShrinkHelper.defaultDropinApp(server, "x509aSyncclient", "com.ibm.ws.wssecurity.fat.x509Asyncclient", "test.wssecfvt.x509async", "test.wssecfvt.x509async.types");
         ShrinkHelper.defaultDropinApp(server, "x509aSync", "com.ibm.ws.wssecurity.fat.x509async", "test.wssecfvt.x509async", "test.wssecfvt.x509async.types");
         PrepCommonSetup serverObject = new PrepCommonSetup();
         serverObject.prepareSetup(server);
         commonSetUp(serverName, false, "/x509aSyncclient/CxfX509AsyncSvcClient");
         portNumber = "" + server.getHttpDefaultPort();
-        //Mei: 2/2021
         clientHttpUrl = "http://localhost:" + portNumber +
                         "/x509aSyncclient/CxfX509AsyncSvcClient";
 
-        //6/2021
         Log.info(thisClass, "setup", "CBHVersion in setup: " + CBHVersion);
 
     }
@@ -104,14 +99,11 @@ public class CxfX509ASyncTests extends CommonTests {
     //@Test
     //skip EE7 test
     //@SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    //5/2021 added PrivilegedActionExc, NoSuchMethodExc as a result of java11 and ee8
-    @AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException", "java.security.PrivilegedActionException",
-                           "java.lang.NoSuchMethodException" })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfAsyncInvokeNonBlocking() throws Exception {
 
         Log.info(thisClass, "setup", "CBHVersion in test method: " + CBHVersion);
-        //genericTest(
-        genericAsyncTest( //6/20201
+        genericAsyncTest(
                          // test name for logging
                          testName.getMethodName(),
                          // Svc Client Url that generic test code should use
@@ -135,7 +127,7 @@ public class CxfX509ASyncTests extends CommonTests {
                          //"This is WSSECFVT CXF X509AsyncService",
                          // msg to issue if do NOT get the expected result
                          "The test expected a succesful message from the server.",
-                         CBHVersion); //2/26/2021
+                         CBHVersion);
 
     }
 
@@ -149,12 +141,10 @@ public class CxfX509ASyncTests extends CommonTests {
      *
      */
 
-    //2/2021
     //@Test
     public void testCxfAsyncInvokeBlocking() throws Exception {
 
-        //genericTest(
-        genericAsyncTest( //6/2021
+        genericAsyncTest(
                          // test name for logging
                          testName.getMethodName(),
                          // Svc Client Url that generic test code should use
@@ -178,7 +168,7 @@ public class CxfX509ASyncTests extends CommonTests {
                          //"This is WSSECFVT CXF X509AsyncService",
                          // msg to issue if do NOT get the expected result
                          "The test expected a succesful message from the server.",
-                         CBHVersion); //2/26/2021
+                         CBHVersion);
 
     }
 
@@ -192,12 +182,10 @@ public class CxfX509ASyncTests extends CommonTests {
      *
      */
 
-    //2/2021
     //@Test
     public void testCxfAsyncInvokeWithHandler() throws Exception {
 
-        //genericTest(
-        genericAsyncTest( //6/20201
+        genericAsyncTest(
                          // test name for logging
                          testName.getMethodName(),
                          // Svc Client Url that generic test code should use
@@ -221,7 +209,7 @@ public class CxfX509ASyncTests extends CommonTests {
                          //"This is WSSECFVT CXF X509AsyncService",
                          // msg to issue if do NOT get the expected result
                          "The test expected a succesful message from the server.",
-                         CBHVersion); //2/26/2021
+                         CBHVersion);
 
     }
 
@@ -259,7 +247,6 @@ public class CxfX509ASyncTests extends CommonTests {
         }
     }
 
-    //2/2021
     public static void copyServerXml(String copyFromFile) throws Exception {
 
         try {

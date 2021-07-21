@@ -33,6 +33,8 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.EE8FeatureReplacementAction;
+import componenttest.rules.repeater.EmptyAction;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
@@ -45,20 +47,17 @@ public class CxfX509StrTypeTests extends CommonTests {
 //    static private UpdateWSDLPortNum newWsdl = null;
     static final private String serverName = "com.ibm.ws.wssecurity_fat.x509sig";
 
-    //Added 11/2020
     @Server(serverName)
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
 
-        //Added 11/2020
         ShrinkHelper.defaultDropinApp(server, "x509sigclient", "com.ibm.ws.wssecurity.fat.x509sigclient", "test.wssecfvt.x509sig", "test.wssecfvt.x509sig.types");
         ShrinkHelper.defaultDropinApp(server, "x509sig", "com.ibm.ws.wssecurity.fat.x509sig");
         PrepCommonSetup serverObject = new PrepCommonSetup();
         serverObject.prepareSetup(server);
 
-        //2/2021
         ServerConfiguration config = server.getServerConfiguration();
         Set<String> features = config.getFeatureManager().getFeatures();
         if (features.contains("usr:wsseccbh-1.0")) {
@@ -81,10 +80,8 @@ public class CxfX509StrTypeTests extends CommonTests {
      * This is a positive scenario.
      */
 
-    //5/2021 added PrivilegedActionExc, NoSuchMethodExc as a result of java11 and ee8
-    @AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException", "java.security.PrivilegedActionException",
-                           "java.lang.NoSuchMethodException" })
     @Test
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfClientSignThumbPrint() throws Exception {
 
         // use server config with encryption keystore files
@@ -122,9 +119,8 @@ public class CxfX509StrTypeTests extends CommonTests {
      * This is a positive scenario.
      */
 
-    //4/2021
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfClientSignIssuerSerial() throws Exception {
 
         // use server config with encryption keystore files
@@ -162,10 +158,10 @@ public class CxfX509StrTypeTests extends CommonTests {
      * but the Web service is configured with a keystore that does not contain the key used for signing the
      * SOAP body. The request is expected to be rejected with an appropriate exception.
      */
-    //2/2021 to test with EE7, then the corresponding server_badenc.xml can be used
+
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    @AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testCxfClientKeysMismatchEE7Only() throws Exception {
 
         // use server config with encryption keystore files
@@ -200,10 +196,9 @@ public class CxfX509StrTypeTests extends CommonTests {
 
     }
 
-    //2/2021 to test with EE8, then the corresponding server_badenc_wss4j.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    @ExpectedFFDC("org.apache.wss4j.common.ext.WSSecurityException") //@AV999
+    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID }) //@AV999
     public void testCxfClientKeysMismatchEE8Only() throws Exception {
 
         // use server config with encryption keystore files
@@ -274,7 +269,6 @@ public class CxfX509StrTypeTests extends CommonTests {
 //        }
 //    }
 
-    //2/2021
     public static void copyServerXml(String copyFromFile) throws Exception {
 
         try {

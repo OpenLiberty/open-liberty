@@ -38,6 +38,7 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.EE8FeatureReplacementAction;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
@@ -46,7 +47,6 @@ import componenttest.topology.impl.LibertyServer;
 @RunWith(FATRunner.class)
 public class CxfX509BasicTests {
 
-    //Added 11/2020
     static final private String serverName = "com.ibm.ws.wssecurity_fat.x509";
 
     static private final Class<?> thisClass = CxfX509BasicTests.class;
@@ -68,7 +68,6 @@ public class CxfX509BasicTests {
      * in dropins.
      */
 
-    //Added 11/2020
     @Server(serverName)
     public static LibertyServer server;
 
@@ -77,7 +76,6 @@ public class CxfX509BasicTests {
 
         String thisMethod = "setup";
 
-        //2/2021
         ServerConfiguration config = server.getServerConfiguration();
         Set<String> features = config.getFeatureManager().getFeatures();
         if (features.contains("usr:wsseccbh-1.0")) {
@@ -90,7 +88,6 @@ public class CxfX509BasicTests {
             copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
         }
 
-        //Added 11/2020
         ShrinkHelper.defaultDropinApp(server, "x509client", "com.ibm.ws.wssecurity.fat.x509client", "test.wssecfvt.basicplcy", "test.wssecfvt.basicplcy.types");
         ShrinkHelper.defaultDropinApp(server, "x509token", "basicplcy.wssecfvt.test");
 
@@ -127,10 +124,8 @@ public class CxfX509BasicTests {
      *
      */
 
-    //5/2021 added PrivilegedActionExc, NoSuchMethodExc as a result of java11 and ee8
-    @AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException", "java.security.PrivilegedActionException",
-                           "java.lang.NoSuchMethodException" })
     @Test
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfX509Service() throws Exception {
         String thisMethod = "testCxfX509Service";
 
@@ -158,9 +153,8 @@ public class CxfX509BasicTests {
      *
      */
 
-    //4/2021
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfX509ServiceHttps() throws Exception {
 
         String thisMethod = "testCxfX509Service";
@@ -260,7 +254,6 @@ public class CxfX509BasicTests {
         System.err.println("*****************************" + strMethod);
     }
 
-    //2/2021
     public static void copyServerXml(String copyFromFile) throws Exception {
 
         try {

@@ -40,6 +40,8 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.EE8FeatureReplacementAction;
+import componenttest.rules.repeater.EmptyAction;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
@@ -48,14 +50,12 @@ import componenttest.topology.impl.LibertyServer;
 @RunWith(FATRunner.class)
 public class CxfX509MigSymTests {
 
-    //Added 11/2020
     static final private String serverName = "com.ibm.ws.wssecurity_fat.x509migsym";
     @Server(serverName)
     public static LibertyServer server;
 
     static private final Class<?> thisClass = CxfX509MigSymTests.class;
 
-    //2/2021 to use EE7 or EE8 error messages in CxfX509MigSvcClient or CxfX509MigBadSvcClient
     private static String errMsgVersion = "";
 
     static boolean debugOnHttp = true;
@@ -83,7 +83,6 @@ public class CxfX509MigSymTests {
 
         String thisMethod = "setup";
 
-        //2/2021
         ServerConfiguration config = server.getServerConfiguration();
         Set<String> features = config.getFeatureManager().getFeatures();
         if (features.contains("usr:wsseccbh-1.0")) {
@@ -99,7 +98,6 @@ public class CxfX509MigSymTests {
             errMsgVersion = "EE8";
         }
 
-        //Added 11/2020
         ShrinkHelper.defaultDropinApp(server, "x509migclient", "com.ibm.ws.wssecurity.fat.x509migclient", "test.libertyfat.x509mig.contract", "test.libertyfat.x509mig.types");
         ShrinkHelper.defaultDropinApp(server, "x509migbadclient", "com.ibm.ws.wssecurity.fat.x509migbadclient", "test.libertyfat.x509mig.contract",
                                       "test.libertyfat.x509mig.types");
@@ -287,9 +285,8 @@ public class CxfX509MigSymTests {
      */
 
     @Test
-    //5/2021 added PrivilegedActionExc, NoSuchMethodExc as a result of java11 and ee8
-    @AllowedFFDC(value = { "java.lang.Exception", "java.net.MalformedURLException", "java.lang.ClassNotFoundException", "java.security.PrivilegedActionException",
-                           "java.lang.NoSuchMethodException" })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
+    @AllowedFFDC(value = { "java.lang.Exception" }, repeatAction = { EmptyAction.ID, EE8FeatureReplacementAction.ID })
     public void testCxfX509KeyIdMigSymService() throws Exception {
 
         String thisMethod = "testCxfX509KeyIdMigSymService";
@@ -321,8 +318,8 @@ public class CxfX509MigSymTests {
      */
 
     @Test
-    //4/2021
-    @AllowedFFDC(value = { "java.lang.Exception", "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
+    @AllowedFFDC(value = { "java.lang.Exception" }, repeatAction = { EmptyAction.ID, EE8FeatureReplacementAction.ID })
     public void testCxfX509KeyIdMigSymServiceHttps() throws Exception {
 
         String thisMethod = "testCxfX509KeyIdMigSymService";
@@ -503,8 +500,8 @@ public class CxfX509MigSymTests {
      *
      */
 
-    //4/2021
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
+    @Test
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfX509IssuerSerialMigSymService() throws Exception {
         String thisMethod = "testCxfX509IssuerSerialMigSymService";
         methodFull = "testCxfX509IssuerSerialMigSymService";
@@ -698,9 +695,8 @@ public class CxfX509MigSymTests {
      *
      */
 
-    //4/2021
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfX509ProtectTokensMigSymService() throws Exception {
         String thisMethod = "testCxfX509ProtectTokensMigSymService";
         methodFull = "testCxfX509ProtectTokensMigSymService";
@@ -874,9 +870,8 @@ public class CxfX509MigSymTests {
      *
      */
 
-    //4/2021
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfX509ThumbprintMigSymService() throws Exception {
         String thisMethod = "testCxfX509ThumbprintMigSymService";
         methodFull = "testCxfX509ThumbprintMigSymService";
@@ -1082,9 +1077,8 @@ public class CxfX509MigSymTests {
      *
      */
 
-    //4/2021
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfX509KeyIdDerivedMigSymService() throws Exception {
         String thisMethod = "testCxfX509KeyIdDerivedMigSymService";
         methodFull = "testCxfX509KeyIdDerivedMigSymService";
@@ -1290,9 +1284,8 @@ public class CxfX509MigSymTests {
      *
      */
 
-    //4/2021
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfX509ThumbprintDerivedMigSymService() throws Exception {
         String thisMethod = "testCxfX509ThumbprintDerivedMigSymService";
         methodFull = "testCxfX509ThumbprintDerivedMigSymService";
@@ -1332,9 +1325,8 @@ public class CxfX509MigSymTests {
      *
      **/
 
-    //4/2021
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testX509KeyIdentifierUNTService() throws Exception {
         String thisMethod = "testX509KeyIdentifierUNTService";
         methodFull = "testX509KeyIdentifierUNTService";
@@ -1376,9 +1368,8 @@ public class CxfX509MigSymTests {
      *
      **/
 
-    //4/2021
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testX509SignatureConfirmService() throws Exception {
         String thisMethod = "testX509SignatureConfirmService";
         methodFull = "testX509SignatureConfirmService";
@@ -1416,9 +1407,8 @@ public class CxfX509MigSymTests {
      * It expects to pass
      **/
 
-    //4/2021
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testSymEncSignService() throws Exception {
         String thisMethod = "testSymEncSignService";
         methodFull = "testSymEncSignService";
@@ -1450,9 +1440,8 @@ public class CxfX509MigSymTests {
      *
      **/
 
-    //4/2021
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testSymEncSignStrictService() throws Exception {
         String thisMethod = "testSymEncSignStrictService";
         methodFull = "testSymEncSignStrictService";
@@ -1482,8 +1471,8 @@ public class CxfX509MigSymTests {
      * Once it's implemented, the test become positive and test in here is set to negative on regular tests
      **/
     @Test
-    //4/2021
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
+    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testBasic192Service() throws Exception {
         String thisMethod = "testBasic192Service";
         methodFull = "testBasic192Service";
@@ -1578,8 +1567,7 @@ public class CxfX509MigSymTests {
     // With SymmetricBinding
     //
     @Test
-    //4/2021
-    @AllowedFFDC(value = { "javax.net.ssl.SSLException", "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testSymmetricEndorsingUNTPolicy() throws Exception {
         String thisMethod = "testSymmetricEndorsingUNTPolicy";
         methodFull = "testSymmetricEndorsingUNTPolicy";
@@ -1610,9 +1598,8 @@ public class CxfX509MigSymTests {
         return;
     }
 
-    //4/2021
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testSymmetricEndorsingUNTPolicyHttps() throws Exception {
         String thisMethod = "testSymmetricEndorsingUNTPolicy";
         methodFull = "testSymmetricEndorsingUNTPolicyHttps";
@@ -1718,8 +1705,9 @@ public class CxfX509MigSymTests {
      */
 
     @Test
-    //4/2021
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.lang.Exception", "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
+    @AllowedFFDC(value = { "java.lang.Exception" }, repeatAction = { EmptyAction.ID, EE8FeatureReplacementAction.ID })
     public void testBadCxfX509KeyIdMigSymEncryptBeforeSigningService() throws Exception {
         String thisMethod = "testCxfX509KeyIdMigSymEncryptBeforeSigningService";
         methodFull = "testBadCxfX509KeyIdMigSymEncryptBeforeSigningService";
@@ -1750,8 +1738,8 @@ public class CxfX509MigSymTests {
      */
 
     @Test
-    //4/2021
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testBadCxfX509IssuerSerialMigSymNoEncryptSignatureService() throws Exception {
         String thisMethod = "testCxfX509IssuerSerialMigSymNoEncryptSignatureService";
         methodFull = "testBadCxfX509IssuerSerialMigSymNoEncryptSignatureService";
@@ -1782,8 +1770,8 @@ public class CxfX509MigSymTests {
      */
 
     @Test
-    //4/2021
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testBadCxfX509ProtectTokensMigSymService() throws Exception {
         String thisMethod = "testCxfX509ProtectTokensMigSymService";
         methodFull = "testBadCxfX509ProtectTokensMigSymService";
@@ -1846,8 +1834,8 @@ public class CxfX509MigSymTests {
      */
 
     @Test
-    //4/2021
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testBadCxfX509KeyIdDerivedMigSymService() throws Exception {
         String thisMethod = "testCxfX509KeyIdDerivedMigSymService";
         methodFull = "testBadCxfX509KeyIdDerivedMigSymService";
@@ -1878,8 +1866,8 @@ public class CxfX509MigSymTests {
      */
 
     @Test
-    //4/2021
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testBadCxfX509ThumbprintDerivedMigSymService() throws Exception {
         String thisMethod = "testCxfX509ThumbprintDerivedMigSymService";
         methodFull = "testBadCxfX509ThumbprintDerivedMigSymService";
@@ -1920,8 +1908,8 @@ public class CxfX509MigSymTests {
      *
      **/
     @Test
-    //4/2021
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testBadX509KeyIdentifierUNTService() throws Exception {
         String thisMethod = "testBadX509KeyIdentifierUNTService";
         methodFull = "testBadX509KeyIdentifierUNTService";
@@ -1964,8 +1952,8 @@ public class CxfX509MigSymTests {
      *
      **/
     @Test
-    //4/2021
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testBadX509SignatureConfirmService() throws Exception {
         String thisMethod = "testBadX509SignatureConfirmService";
         methodFull = "testBadX509SignatureConfirmService";
@@ -2007,8 +1995,8 @@ public class CxfX509MigSymTests {
      *
      **/
     @Test
-    //4/2021
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
+    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testBadSymEncSignService() throws Exception {
         String thisMethod = "testBadSymEncSignService";
         methodFull = "testBadSymEncSignService";
@@ -2040,9 +2028,8 @@ public class CxfX509MigSymTests {
      *
      **/
 
-    //4/2021
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testBadSymEncSignStrictService() throws Exception {
         String thisMethod = "testBadSymEncSignStrictService";
         methodFull = "testBadSymEncSignStrictService";
@@ -2073,8 +2060,8 @@ public class CxfX509MigSymTests {
      **/
 
     @Test
-    //4/2021
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
+    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testBadBasic192Service() throws Exception {
         String thisMethod = "testBadBasic192Service";
         methodFull = "testBadBasic192Service";
@@ -2116,8 +2103,8 @@ public class CxfX509MigSymTests {
     //      </ds:SignedInfo>
     //  in tcpmon
     @Test
-    //4/2021
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
+    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testBadInclusiveC14NService() throws Exception {
         String thisMethod = "testBadInclusiveC14NService";
         methodFull = "testBadInclusiveC14NService";
@@ -2159,9 +2146,8 @@ public class CxfX509MigSymTests {
     // It expects to fail
     //
 
-    //4/2021
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testBadSymmetricEndorsingUNTPolicy() throws Exception {
         String thisMethod = "testBadSymmetricEndorsingUNTPolicy";
         methodFull = "testBadSymmetricEndorsingUNTPolicy";
@@ -2202,7 +2188,6 @@ public class CxfX509MigSymTests {
      *
      */
 
-    //2/2021
     protected void testRoutine(
                                String thisMethod,
                                String x509Policy,
@@ -2221,12 +2206,11 @@ public class CxfX509MigSymTests {
                        strServicePort,
                        x509MigSymClientUrl,
                        "",
-                       null); //2/2201
+                       null);
 
         return;
     }
 
-    //2/2021
     protected void testRoutine(
                                String thisMethod,
                                String x509Policy,
@@ -2246,7 +2230,7 @@ public class CxfX509MigSymTests {
                        strServicePort,
                        x509MigSymClientUrl,
                        "",
-                       errMsgVersion); //2/2201
+                       errMsgVersion);
 
         return;
     }
@@ -2261,7 +2245,6 @@ public class CxfX509MigSymTests {
      *
      */
 
-    //2/2021
     protected void testBadRoutine(
                                   String thisMethod,
                                   String x509Policy,
@@ -2280,12 +2263,11 @@ public class CxfX509MigSymTests {
                        strServicePort,
                        x509MigBadSymClientUrl,
                        "Bad",
-                       null); //2/2021
+                       null);
 
         return;
     }
 
-    //2/2021
     protected void testBadRoutine(
                                   String thisMethod,
                                   String x509Policy,
@@ -2305,7 +2287,7 @@ public class CxfX509MigSymTests {
                        strServicePort,
                        x509MigBadSymClientUrl,
                        "Bad",
-                       errMsgVersion); //2/2021
+                       errMsgVersion);
 
         return;
     }
@@ -2329,7 +2311,7 @@ public class CxfX509MigSymTests {
                                   String strServicePort,
                                   String strClientUrl,
                                   String strBadOrGood,
-                                  String errMsgVersion) throws Exception { //2/2021
+                                  String errMsgVersion) throws Exception {
         try {
 
             WebRequest request = null;
@@ -2351,7 +2333,6 @@ public class CxfX509MigSymTests {
             request.setParameter("serviceName", strServiceName);
             request.setParameter("servicePort", strServicePort);
             request.setParameter("methodFull", methodFull);
-            //2/2021
             request.setParameter("errorMsgVersion", errMsgVersion);
 
             Log.info(thisClass, methodFull, "The request is: '" + request);
@@ -2393,7 +2374,6 @@ public class CxfX509MigSymTests {
             e.printStackTrace(System.out);
         }
 
-        //2/2021
         server.deleteFileFromLibertyInstallRoot("usr/extension/lib/bundles/com.ibm.ws.wssecurity.example.cbh.jar");
         server.deleteFileFromLibertyInstallRoot("usr/extension/lib/features/wsseccbh-1.0.mf");
         server.deleteFileFromLibertyInstallRoot("usr/extension/lib/bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");

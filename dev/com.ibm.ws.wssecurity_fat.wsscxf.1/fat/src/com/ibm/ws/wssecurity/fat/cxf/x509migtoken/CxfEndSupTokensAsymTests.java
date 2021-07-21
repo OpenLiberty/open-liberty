@@ -34,6 +34,7 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.EE8FeatureReplacementAction;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
@@ -48,21 +49,18 @@ public class CxfEndSupTokensAsymTests extends CommonTests {
     static private String newClientWsdl = null;
 //    static private boolean bConfigServer = false;
 
-    //Added 11/2020
     @Server(serverName)
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
 
-        //Added 11/2020
         ShrinkHelper.defaultDropinApp(server, "endsuptokensclient", "com.ibm.ws.wssecurity.fat.endsuptokensclient", "test.wssecfvt.endsuptokens",
                                       "test.wssecfvt.endsuptokens.types");
         ShrinkHelper.defaultDropinApp(server, "endsuptokens", "com.ibm.ws.wssecurity.fat.endsuptokens");
         PrepCommonSetup serverObject = new PrepCommonSetup();
         serverObject.prepareSetup(server);
 
-        //2/2021
         ServerConfiguration config = server.getServerConfiguration();
         Set<String> features = config.getFeatureManager().getFeatures();
         if (features.contains("usr:wsseccbh-1.0")) {
@@ -75,7 +73,7 @@ public class CxfEndSupTokensAsymTests extends CommonTests {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
             commonSetUp(serverName, "server_asym_wss4j.xml", true, "/endsuptokensclient/CxfEndSupTokensSvcClient");
             //copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
-        } //End 2/2021
+        }
 
     }
 
@@ -90,9 +88,7 @@ public class CxfEndSupTokensAsymTests extends CommonTests {
      *
      */
     @Test
-    //5/2021 added PrivilegedActionExc, NoSuchMethodExc as a result of java11 and ee8
-    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException", "java.lang.ClassNotFoundException", "java.security.PrivilegedActionException",
-                           "java.lang.NoSuchMethodException" })
+    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFEndSupTokens0() throws Exception {
 
         String thisMethod = "testCXFEndSupTokens0";
@@ -178,8 +174,7 @@ public class CxfEndSupTokensAsymTests extends CommonTests {
      *
      */
     @Test
-    //4/2021
-    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFEndSupTokens0Body() throws Exception {
 
         String thisMethod = "testCXFEndSupTokens0Body";
@@ -222,8 +217,7 @@ public class CxfEndSupTokensAsymTests extends CommonTests {
      *
      */
     @Test
-    //4/2021
-    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFEndSupTokens0BodyElement() throws Exception {
 
         String thisMethod = "testCXFEndSupTokens0BodyElement";
@@ -308,8 +302,7 @@ public class CxfEndSupTokensAsymTests extends CommonTests {
      *
      */
     @Test
-    //4/2021
-    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFEndSupTokens1() throws Exception {
 
         String thisMethod = "testCXFEndSupTokens1";
@@ -419,7 +412,6 @@ public class CxfEndSupTokensAsymTests extends CommonTests {
         }
     }
 
-    //added 11/2020
     public static void copyServerXml(String copyFromFile) throws Exception {
 
         try {

@@ -48,14 +48,12 @@ import componenttest.topology.impl.LibertyServer;
 @RunWith(FATRunner.class)
 public class CxfX509MigTests {
 
-    //Added 11/2020
     static final private String serverName = "com.ibm.ws.wssecurity_fat.x509mig";
     @Server(serverName)
     public static LibertyServer server;
 
     static private final Class<?> thisClass = CxfX509MigTests.class;
 
-    //2/2021 to use EE7 or EE8 error messages in CxfX509MigSvcClient or CxfX509MigBadSvcClient
     private static String errMsgVersion = "";
 
     static boolean debugOnHttp = true;
@@ -85,7 +83,6 @@ public class CxfX509MigTests {
 
         String thisMethod = "setup";
 
-        //2/2021
         ServerConfiguration config = server.getServerConfiguration();
         Set<String> features = config.getFeatureManager().getFeatures();
         if (features.contains("usr:wsseccbh-1.0")) {
@@ -100,7 +97,6 @@ public class CxfX509MigTests {
             errMsgVersion = "EE8";
         }
 
-        //Added 11/2020
         ShrinkHelper.defaultDropinApp(server, "x509migclient", "com.ibm.ws.wssecurity.fat.x509migclient", "test.libertyfat.x509mig.contract", "test.libertyfat.x509mig.types");
         ShrinkHelper.defaultDropinApp(server, "x509migbadclient", "com.ibm.ws.wssecurity.fat.x509migbadclient", "test.libertyfat.x509mig.contract",
                                       "test.libertyfat.x509mig.types");
@@ -3407,7 +3403,6 @@ public class CxfX509MigTests {
      *
      */
 
-    //2/2021
     protected void testRoutine(
                                String thisMethod,
                                String x509Policy,
@@ -3430,7 +3425,6 @@ public class CxfX509MigTests {
         return;
     }
 
-    //2/2021
     protected void testRoutine(
                                String thisMethod,
                                String x509Policy,
@@ -3515,8 +3509,7 @@ public class CxfX509MigTests {
      * It expects to fail
      **/
     @Test
-    @AllowedFFDC(value = { "java.net.MalformedURLException", "org.apache.wss4j.common.ext.WSSecurityException" },
-                 repeatAction = { JakartaEE9Action.ID })
+    @AllowedFFDC(value = { "java.net.MalformedURLException", "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { JakartaEE9Action.ID })
     public void testBadAsymEndSignService() throws Exception {
         String thisMethod = "testBadAsymEncSignService";
         methodFull = "testBadAsymEncSignService";
@@ -3627,7 +3620,6 @@ public class CxfX509MigTests {
      * The test passes, since <sp:InclusiveC14N/> is ignored.
      *
      */
-    //2/2021 to run with EE7 as positive
     //@Test not valid test?
     @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
     public void testBadBasic128ServiceEE7Only() throws Exception {
@@ -3651,11 +3643,9 @@ public class CxfX509MigTests {
         return;
     }
 
-    //2/2021 to run with EE8 as negative (failed)
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    //2/2021
-    @AllowedFFDC("org.apache.wss4j.common.ext.WSSecurityException")
+    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { JakartaEE9Action.ID })
     public void testBadBasic128Service() throws Exception {
         String thisMethod = "testBadBasic128Service";
         methodFull = "testBadBasic128Service";
@@ -3704,12 +3694,11 @@ public class CxfX509MigTests {
                        strServiceName,
                        strServicePort,
                        x509MigBadClientUrl,
-                       null); //2/2021
+                       null);
 
         return;
     }
 
-    //2/2021
     protected void testBadRoutine(
                                   String thisMethod,
                                   String x509Policy,
@@ -3728,7 +3717,7 @@ public class CxfX509MigTests {
                        strServiceName,
                        strServicePort,
                        x509MigBadClientUrl,
-                       errMsgVersion); //2/2021
+                       errMsgVersion);
 
         return;
     }
@@ -3751,7 +3740,7 @@ public class CxfX509MigTests {
                                   String strServiceName,
                                   String strServicePort,
                                   String strClientUrl,
-                                  String errMsgVersion) throws Exception { //2/2021
+                                  String errMsgVersion) throws Exception {
         try {
 
             WebRequest request = null;
@@ -3773,7 +3762,6 @@ public class CxfX509MigTests {
             request.setParameter("serviceName", strServiceName);
             request.setParameter("servicePort", strServicePort);
             request.setParameter("methodFull", methodFull);
-            //2/2021
             request.setParameter("errorMsgVersion", errMsgVersion);
 
             // Invoke the client
@@ -3810,7 +3798,6 @@ public class CxfX509MigTests {
         //orig from CL:
         //SharedTools.unInstallCallbackHandler(server);
 
-        //2/2021
         server.deleteFileFromLibertyInstallRoot("usr/extension/lib/bundles/com.ibm.ws.wssecurity.example.cbh.jar");
         server.deleteFileFromLibertyInstallRoot("usr/extension/lib/features/wsseccbh-1.0.mf");
         server.deleteFileFromLibertyInstallRoot("usr/extension/lib/bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
@@ -3824,7 +3811,6 @@ public class CxfX509MigTests {
         System.err.println("*****************************" + strMethod);
     }
 
-    //2/2021
     public static void copyServerXml(String copyFromFile) throws Exception {
 
         try {
