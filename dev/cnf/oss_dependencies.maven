@@ -492,6 +492,8 @@ org.jboss.narayana.rts:narayana-lra:5.10.6.Final
 org.jboss.narayana:common:5.10.6.Final
 org.jboss.resteasy:resteasy-cdi:4.7.0.Final
 org.jboss.resteasy:resteasy-client-api:4.7.0.Final
+org.jboss.resteasy:resteasy-client-microprofile-base:4.7.0.Final
+org.jboss.resteasy:resteasy-client-microprofile:4.7.0.Final
 org.jboss.resteasy:resteasy-client:4.7.0.Final
 org.jboss.resteasy:resteasy-core-spi:4.7.0.Final
 org.jboss.resteasy:resteasy-core:4.7.0.Final

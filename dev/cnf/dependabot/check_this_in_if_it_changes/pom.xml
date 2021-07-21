@@ -2483,6 +2483,16 @@
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-client-microprofile-base</artifactId>
+      <version>4.7.0.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-client-microprofile</artifactId>
+      <version>4.7.0.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-client</artifactId>
       <version>4.7.0.Final</version>
     </dependency>
