@@ -11,6 +11,8 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.wss11sig;
 
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+
 import java.io.File;
 import java.util.Set;
 
@@ -35,6 +37,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
+@SkipForRepeat({ EE9_FEATURES })
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class CxfWss11SigTests extends CommonTests {
