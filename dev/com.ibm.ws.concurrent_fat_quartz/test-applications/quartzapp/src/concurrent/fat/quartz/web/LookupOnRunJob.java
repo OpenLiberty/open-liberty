@@ -23,21 +23,19 @@ import org.quartz.JobExecutionException;
  * Quartz job that looks up a resource reference that is only available
  * when running with the context of the application component.
  */
-public class LookupOnInitJob implements Job {
-    private Object lookedUpInstance;
-    private UserTransaction lookedUpTran;
-
-    public LookupOnInitJob() throws NamingException {
-        // Quartz uses the ThreadExecutor for its single scheduler thread that instantiates the job,
-        // which allows this to work,
-        lookedUpInstance = InitialContext.doLookup("java:module/env/concurrent/quartzExecutorRef");
-        lookedUpTran = InitialContext.doLookup("java:comp/UserTransaction");
-        System.out.println("instantiate on 0x" + Long.toHexString(Thread.currentThread().getId()) + " " + Thread.currentThread().getName());
-    }
-
+public class LookupOnRunJob implements Job {
     @Override
     public void execute(JobExecutionContext jobCtx) throws JobExecutionException {
-        System.out.println("LookupOnInitJob execute on 0x" + Long.toHexString(Thread.currentThread().getId()) + " " + Thread.currentThread().getName());
-        jobCtx.setResult(new Object[] { lookedUpInstance, lookedUpTran });
+        System.out.println("LookupOnRunJob execute on 0x" + Long.toHexString(Thread.currentThread().getId()) + " " + Thread.currentThread().getName());
+
+        try {
+            Object instance = InitialContext.doLookup("java:module/env/concurrent/quartzExecutorRef");
+            UserTransaction tran = InitialContext.doLookup("java:comp/UserTransaction");
+            jobCtx.setResult(new Object[] { instance, tran });
+        } catch (NamingException x) {
+            System.out.println("ResourceReferenceLookupJob execute failed with " + x);
+            jobCtx.setResult(x);
+            throw new JobExecutionException(x);
+        }
     }
 }

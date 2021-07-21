@@ -12,9 +12,11 @@ package concurrent.fat.quartz.web;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 import java.util.Date;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -29,10 +31,12 @@ import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.SimpleScheduleBuilder;
+import org.quartz.SimpleTrigger;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 import org.quartz.impl.matchers.KeyMatcher;
+import org.quartz.impl.matchers.NameMatcher;
 
 import componenttest.app.FATServlet;
 
@@ -80,7 +84,7 @@ public class QuartzTestServlet extends FATServlet {
 
     /**
      * Verify that Quartz jobs initialize with application component context
-     * on the thread when backed by a ManagedExecutorService.
+     * on the thread when the ThreadExecutor is backed by a ManagedExecutorService.
      */
     @Test
     public void testQuartzJobInitializesWithAppComponentContext() throws Exception {
@@ -99,6 +103,106 @@ public class QuartzTestServlet extends FATServlet {
         try {
             scheduler.scheduleJob(job, onceAfter300ms);
 
+            Object[] results = (Object[]) listener.awaitResult(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            assertNotNull(results);
+            assertNotNull(results[0]);
+            assertNotNull(results[1]);
+        } finally {
+            scheduler.getListenerManager().removeJobListener(listener.name);
+        }
+    }
+
+    /**
+     * Verify that Quartz jobs runs with application component context
+     * on the thread when the ThreadPool is backed by a ManagedExecutorService.
+     */
+    @Test
+    public void testQuartzJobRunsWithAppComponentContext() throws Exception {
+        JobDetail job = JobBuilder.newJob(LookupOnRunJob.class) //
+                        .withIdentity("testQuartzJobRunsWithAppComponentContext-job") //
+                        .build();
+
+        Trigger onceAfter400ms = TriggerBuilder.newTrigger() //
+                        .startAt(new Date(System.currentTimeMillis() + 400)) //
+                        .withSchedule(SimpleScheduleBuilder.simpleSchedule().withRepeatCount(0)) //
+                        .withIdentity("testQuartzJobRunsWithAppComponentContext-400ms-trigger") //
+                        .build();
+
+        JobTracker listener = new JobTracker("testQuartzJobRunsWithAppComponentContext-listener");
+        scheduler.getListenerManager().addJobListener(listener, KeyMatcher.keyEquals(job.getKey()));
+        try {
+            scheduler.scheduleJob(job, onceAfter400ms);
+
+            Object[] results = (Object[]) listener.awaitResult(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            assertNotNull(results);
+            assertNotNull(results[0]);
+            assertNotNull(results[1]);
+        } finally {
+            scheduler.getListenerManager().removeJobListener(listener.name);
+        }
+    }
+
+    /**
+     * Verify that the managed executor's concurrencyPolicy max constrains the number of Quartz jobs
+     * that can run at the same time.
+     */
+    @Test
+    public void testQuartzJobsConstrainedByConcurrencyPolicy() throws Exception {
+        CountDownLatch allowJobsToComplete = new CountDownLatch(1);
+        LengthyJob.signals.put("testQuartzJobsConstrainedByConcurrencyPolicy", allowJobsToComplete);
+
+        JobDetail job1 = JobBuilder.newJob(LengthyJob.class) //
+                        .withIdentity("testQuartzJobsConstrainedByConcurrencyPolicy-job-1") //
+                        .build();
+
+        JobDetail job2 = JobBuilder.newJob(LengthyJob.class) //
+                        .withIdentity("testQuartzJobsConstrainedByConcurrencyPolicy-job-2") //
+                        .build();
+
+        JobDetail job3 = JobBuilder.newJob(LengthyJob.class) //
+                        .withIdentity("testQuartzJobsConstrainedByConcurrencyPolicy-job-3") //
+                        .build();
+
+        JobDetail job4 = JobBuilder.newJob(LengthyJob.class) //
+                        .withIdentity("testQuartzJobsConstrainedByConcurrencyPolicy-job-4") //
+                        .build();
+
+        JobDetail job5 = JobBuilder.newJob(LengthyJob.class) //
+                        .withIdentity("testQuartzJobsConstrainedByConcurrencyPolicy-job-5") //
+                        .build();
+
+        TriggerBuilder<SimpleTrigger> onceAfter500ms = TriggerBuilder.newTrigger() //
+                        .startAt(new Date(System.currentTimeMillis() + 500)) //
+                        .withSchedule(SimpleScheduleBuilder.simpleSchedule().withRepeatCount(0));
+
+        JobTracker listener = new JobTracker("testQuartzJobsConstrainedByConcurrencyPolicy-listener");
+        scheduler.getListenerManager().addJobListener(listener, NameMatcher.jobNameStartsWith("testQuartzJobsConstrainedByConcurrencyPolicy-job-"));
+        try {
+            scheduler.scheduleJob(job1, onceAfter500ms.withIdentity("testQuartzJobsConstrainedByConcurrencyPolicy-500ms-trigger-1").build());
+            scheduler.scheduleJob(job2, onceAfter500ms.withIdentity("testQuartzJobsConstrainedByConcurrencyPolicy-500ms-trigger-2").build());
+            scheduler.scheduleJob(job3, onceAfter500ms.withIdentity("testQuartzJobsConstrainedByConcurrencyPolicy-500ms-trigger-3").build());
+            scheduler.scheduleJob(job4, onceAfter500ms.withIdentity("testQuartzJobsConstrainedByConcurrencyPolicy-500ms-trigger-4").build());
+            scheduler.scheduleJob(job5, onceAfter500ms.withIdentity("testQuartzJobsConstrainedByConcurrencyPolicy-500ms-trigger-5").build());
+
+            assertNotNull(listener.awaitStart(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertNotNull(listener.awaitStart(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertNotNull(listener.awaitStart(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            // per concurrencyPolicy max, only 3 can run at once
+            assertNull(listener.awaitStart(1, TimeUnit.SECONDS));
+
+            // unblock jobs
+            allowJobsToComplete.countDown();
+
+            // fourth and fifth jobs start now
+            assertNotNull(listener.awaitStart(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertNotNull(listener.awaitStart(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            // all jobs must complete successfully
+            assertNotNull(listener.awaitResult(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertNotNull(listener.awaitResult(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertNotNull(listener.awaitResult(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertNotNull(listener.awaitResult(TIMEOUT_NS, TimeUnit.NANOSECONDS));
             assertNotNull(listener.awaitResult(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         } finally {
             scheduler.getListenerManager().removeJobListener(listener.name);
