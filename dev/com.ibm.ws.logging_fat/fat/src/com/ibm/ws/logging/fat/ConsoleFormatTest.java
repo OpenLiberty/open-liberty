@@ -334,7 +334,7 @@ public class ConsoleFormatTest {
     /*
      * This test sets consoleFormat=tbasic and verifies if the method and class names are included.
      */
-     @Test
+    @Test
     public void testTBasicFormatWithClassMessage() throws Exception {
         // Retrieve the consoleLogFile RemoteFile
         RemoteFile consoleLogFile = server.getConsoleLogFile();
@@ -342,17 +342,17 @@ public class ConsoleFormatTest {
         // Set the consoleFormat="tbasic", traceSpec=off, isoDateFormat=false in server.xml
         setServerConfiguration(server, TBASIC_FORMAT, false, false, consoleLogFile);
 
-
         // Run application to generate Audit messages including the method and class name using logger.logp
         hitWebPage("tbasic-servlet", "TBasicServlet", false, null);
 
         // Verify the Audit message
         String line = server.waitForStringInLog(" helloMethod ", consoleLogFile);
         Log.info(c, "testTBasicFormatWithClassMessage", "The SystemOut message in tBasic format : " + line);
+        assertNotNull("Message HELLO0001W did not appear in console.log", line);
         assertTrue("The message is not in the TBASIC console format.", isStringinTBasicFormat(line, TBASIC_FORMAT_REGEX_PATTERN_CLASS));
         assertTrue("The message is not in the TBASIC console format.", line.contains("com.ibm.ws.logging.fat.tbasic.servlet.TBasicServlet"));
-        
-     }
+
+    }
 
     /*
      * This test sets consoleFormat=simple and generates an exception and verifies if the exception is not trimmed/suppressed are formatted correctly.
