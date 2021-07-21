@@ -12,6 +12,7 @@
 
     <featureManager>
         <feature>concurrent-2.0</feature>
+        <feature>jndi-1.0</feature>
         <feature>servlet-5.0</feature>
         <feature>componenttest-2.0</feature>
     </featureManager>
@@ -24,10 +25,15 @@
 
     <library id="quartz">
       <file name="${server.config.dir}/quartz/quartz-2.2.1.jar"/>
+      <file name="${server.config.dir}/quartz/quartz-extensions.jar"/>
       <file name="${server.config.dir}/quartz/slf4j-api-1.7.30.jar"/>
       <file name="${server.config.dir}/quartz/slf4j-simple-1.7.30.jar"/>
     </library>
 
+    <managedExecutorService jndiName="concurrent/quartzExecutor">
+      <concurrencyPolicy max="3"/>
+      <longRunningPolicy max="1"/>
+    </managedExecutorService>
 
     <!-- permissions for Quartz and slf4j -->
     <javaPermission codebase="${server.config.dir}/quartz/quartz-2.2.1.jar" className="java.io.FilePermission" name="quartz.properties" actions="read"/>

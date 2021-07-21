@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.fat.quartz;
 
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -34,6 +36,12 @@ public class ConcurrentQuartzTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        JavaArchive quartzExtensions = ShrinkWrap //
+                        .create(JavaArchive.class, "quartz-extensions.jar") //
+                        .addPackage("example.quartz.concurrent");
+
+        ShrinkHelper.exportToServer(server, "quartz", quartzExtensions);
+
         ShrinkHelper.defaultApp(server, APP_NAME, "concurrent.fat.quartz.web");
 
         server.startServer();
