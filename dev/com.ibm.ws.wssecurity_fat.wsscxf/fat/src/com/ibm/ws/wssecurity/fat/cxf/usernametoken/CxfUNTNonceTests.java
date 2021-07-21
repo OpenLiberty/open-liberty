@@ -30,7 +30,6 @@ import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
-import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
@@ -85,7 +84,6 @@ public class CxfUNTNonceTests {
      *
      */
 
-    @AllowedFFDC(value = { "java.lang.ClassNotFoundException" })
     @Test
     public void testUntNonceAndCreated() throws Exception {
 

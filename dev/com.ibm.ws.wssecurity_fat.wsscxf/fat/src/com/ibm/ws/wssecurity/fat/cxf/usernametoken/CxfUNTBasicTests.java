@@ -28,7 +28,6 @@ import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
-import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
@@ -99,8 +98,6 @@ public class CxfUNTBasicTests {
      *
      */
 
-    @AllowedFFDC(value = { "java.lang.ClassNotFoundException" })
-    //@AllowedFFDC(value = { "java.lang.ClassNotFoundException" }, repeatAction = { EE8FeatureReplacementAction.ID, JakartaEE9Action.ID })
     @Test
     public void testUntCxfSvcClient() throws Exception {
 

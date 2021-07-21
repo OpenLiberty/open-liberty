@@ -38,6 +38,7 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.EE8FeatureReplacementAction;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
@@ -52,7 +53,6 @@ public class CxfCallerX509AsymTests {
 
     static private final Class<?> thisClass = CxfCallerX509AsymTests.class;
 
-    //2/2021 to use EE7 or EE8 error messages in CxfCallerSvcClient
     private static String errMsgVersion = "";
     private static String errMsgVersionInX509 = "";
 
@@ -136,10 +136,7 @@ public class CxfCallerX509AsymTests {
      *
      */
 
-    //5/2021 added PrivilegedActionExc, NoSuchMethodExc as a result of java11 and ee8
-    //@AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException", "java.security.PrivilegedActionException",
-    //                       "java.lang.NoSuchMethodException" })
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void testCxfCallerX509TokenPolicy() throws Exception {
 
@@ -171,7 +168,7 @@ public class CxfCallerX509AsymTests {
      *
      */
 
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void testCxfCallerX509TransportEndorsingPolicy() throws Exception {
         // In case, the sequence on test cases are random... then need to unmark next line
@@ -205,7 +202,7 @@ public class CxfCallerX509AsymTests {
      *
      */
 
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void testCxfCallerHttpPolicyInX509() throws Exception {
 
@@ -241,7 +238,7 @@ public class CxfCallerX509AsymTests {
      *
      */
 
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void testCxfCallerHttpsPolicyInx509() throws Exception {
 

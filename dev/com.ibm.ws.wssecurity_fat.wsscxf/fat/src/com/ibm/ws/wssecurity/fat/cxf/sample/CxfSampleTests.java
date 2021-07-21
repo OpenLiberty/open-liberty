@@ -180,8 +180,7 @@ public class CxfSampleTests {
         return;
     }
 
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
-    //@AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID, JakartaEE9Action.ID })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { JakartaEE9Action.ID })
     @Test
     public void testEchoService() throws Exception {
         String thisMethod = "testEchoService";
@@ -206,8 +205,7 @@ public class CxfSampleTests {
         return;
     }
 
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
-    //@AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID, JakartaEE9Action.ID })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { JakartaEE9Action.ID })
     @Test
     public void testEcho4Service() throws Exception {
         String thisMethod = "testEcho4Service";

@@ -34,6 +34,8 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.EE8FeatureReplacementAction;
+import componenttest.rules.repeater.EmptyAction;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
@@ -85,10 +87,7 @@ public class CxfDeriveKeyTests extends CommonTests {
      *
      */
 
-    //5/2021 added PrivilegedActionExc, NoSuchMethodExc as a result of java11 and ee8
-    //@AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException", "java.security.PrivilegedActionException",
-    //                       "java.lang.NoSuchMethodException" })
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void testCXFDeriveKey1() throws Exception {
 
@@ -133,7 +132,8 @@ public class CxfDeriveKeyTests extends CommonTests {
      *
      */
     @Test
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
+    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFDeriveKey1WrongPw() throws Exception {
 
         String thisMethod = "testCXFDeriveKey1WrongPw";
@@ -178,7 +178,8 @@ public class CxfDeriveKeyTests extends CommonTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFDeriveKey1ClMissingPToken() throws Exception {
 
         String thisMethod = "testCXFDeriveKey1ClMissingPToken";
@@ -222,7 +223,8 @@ public class CxfDeriveKeyTests extends CommonTests {
      *
      */
     @Test
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFDeriveKey1X509NotUNT() throws Exception {
 
         String thisMethod = "testCXFDeriveKey1X509NotUNT";
@@ -265,7 +267,7 @@ public class CxfDeriveKeyTests extends CommonTests {
      *
      */
 
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void testCXFDeriveKey2() throws Exception {
 
@@ -311,7 +313,8 @@ public class CxfDeriveKeyTests extends CommonTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFDeriveKey2ClMissingReqDerivedKeys() throws Exception {
 
         String thisMethod = "testCXFDeriveKey2ClMissingReqDerivedKeys";
@@ -357,7 +360,8 @@ public class CxfDeriveKeyTests extends CommonTests {
      *
      */
     @Test
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFDeriveKey1ReqDerivedKeysOnlyInClient() throws Exception {
 
         String thisMethod = "testCXFDeriveKey1ReqDerivedKeysOnlyInClient";
@@ -401,7 +405,7 @@ public class CxfDeriveKeyTests extends CommonTests {
      *
      */
 
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void testCXFDeriveKey3() throws Exception {
 
@@ -447,7 +451,7 @@ public class CxfDeriveKeyTests extends CommonTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFDeriveKey4() throws Exception {
 
         String thisMethod = "testCXFDeriveKey4";
@@ -538,7 +542,7 @@ public class CxfDeriveKeyTests extends CommonTests {
      *
      */
 
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void testCXFDeriveKey4ClAddEncrypted() throws Exception {
 
@@ -585,7 +589,7 @@ public class CxfDeriveKeyTests extends CommonTests {
      *
      */
 
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void testCXFDeriveKey4ClAddSigned() throws Exception {
 
@@ -632,7 +636,7 @@ public class CxfDeriveKeyTests extends CommonTests {
      *
      */
 
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void testCXFDeriveKey4ClAddSignedEncrypted() throws Exception {
 
@@ -677,7 +681,7 @@ public class CxfDeriveKeyTests extends CommonTests {
      *
      */
 
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void testCXFDeriveKey5() throws Exception {
 
@@ -722,7 +726,7 @@ public class CxfDeriveKeyTests extends CommonTests {
      *
      */
 
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void testCXFDeriveKey5AddEncrypted() throws Exception {
 
@@ -813,7 +817,8 @@ public class CxfDeriveKeyTests extends CommonTests {
      *
      */
     @Test
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFDeriveKey5MissingSignedAddEncrypted() throws Exception {
 
         String thisMethod = "testCXFDeriveKey5MissingSignedAddEncrypted";
@@ -858,7 +863,7 @@ public class CxfDeriveKeyTests extends CommonTests {
      *
      */
 
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void testCXFDeriveKey6() throws Exception {
 
@@ -903,7 +908,7 @@ public class CxfDeriveKeyTests extends CommonTests {
      *
      */
 
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void testCXFDeriveKey6AddSigned() throws Exception {
 
@@ -949,7 +954,8 @@ public class CxfDeriveKeyTests extends CommonTests {
      *
      */
     @Test
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFDeriveKey6MissingEncrypted() throws Exception {
 
         String thisMethod = "testCXFDeriveKey6MissingEncrypted";
@@ -995,7 +1001,8 @@ public class CxfDeriveKeyTests extends CommonTests {
      *
      */
     @Test
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFDeriveKey6MissingEncryptedAddSigned() throws Exception {
 
         String thisMethod = "testCXFDeriveKey6MissingEncryptedAddSigned";
@@ -1040,7 +1047,7 @@ public class CxfDeriveKeyTests extends CommonTests {
      *
      */
 
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void testCXFDeriveKey7() throws Exception {
 
@@ -1085,7 +1092,8 @@ public class CxfDeriveKeyTests extends CommonTests {
      *
      */
     @Test
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFDeriveKey7MissingEncrypted() throws Exception {
 
         String thisMethod = "testCXFDeriveKey7MissingEncrypted";
@@ -1176,7 +1184,8 @@ public class CxfDeriveKeyTests extends CommonTests {
      *
      */
     @Test
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFDeriveKey7MissingSignedEncrypted() throws Exception {
 
         String thisMethod = "testCXFDeriveKey7MissingSignedEncrypted";

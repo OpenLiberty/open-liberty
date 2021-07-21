@@ -37,6 +37,7 @@ import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
@@ -50,7 +51,6 @@ public class CxfCallerUNTTests {
 
     static private final Class<?> thisClass = CxfCallerUNTTests.class;
 
-    //2/2021 to use EE7 or EE8 error messages in CxfCallerSvcClient
     private static String errMsgVersion = "";
 
     static boolean debugOnHttp = true;
@@ -131,8 +131,7 @@ public class CxfCallerUNTTests {
      *
      */
 
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
-    //@AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID, JakartaEE9Action.ID })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { JakartaEE9Action.ID })
     @Test
     public void testCxfCallerHttpPolicy() throws Exception {
         //UpdateServerXml.reconfigServer(server, System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
@@ -164,8 +163,7 @@ public class CxfCallerUNTTests {
      *
      */
 
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
-    //@AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID, JakartaEE9Action.ID })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { JakartaEE9Action.ID })
     @Test
     public void testCxfCallerHttpsPolicy() throws Exception {
         //UpdateServerXml.reconfigServer(server, System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
@@ -183,8 +181,7 @@ public class CxfCallerUNTTests {
                         "UrnCallerToken02", //String strServicePort
                         "test2", // Expecting User ID
                         "test2", // Password
-                        errMsgVersion //2/2021
-            );
+                        errMsgVersion);
         } catch (Exception e) {
             throw e;
         }
@@ -265,7 +262,6 @@ public class CxfCallerUNTTests {
      *
      */
 
-    //2/2021
     protected void testRoutine(
                                String thisMethod,
                                String callerPolicy,
@@ -293,7 +289,6 @@ public class CxfCallerUNTTests {
         return;
     }
 
-    //2/2021
     protected void testRoutine(
                                String thisMethod,
                                String callerPolicy,
@@ -304,7 +299,7 @@ public class CxfCallerUNTTests {
                                String strServicePort,
                                String untID,
                                String untPassword,
-                               String errMsgVersion) throws Exception { //2/2021
+                               String errMsgVersion) throws Exception {
         testSubRoutine(
                        thisMethod,
                        callerPolicy,
@@ -317,7 +312,7 @@ public class CxfCallerUNTTests {
                        "",
                        untID,
                        untPassword,
-                       errMsgVersion); //2/2021
+                       errMsgVersion);
 
         return;
     }
@@ -332,7 +327,6 @@ public class CxfCallerUNTTests {
      *
      */
 
-    //2/2021
     protected void testBadRoutine(
                                   String thisMethod,
                                   String callerPolicy,
@@ -355,12 +349,11 @@ public class CxfCallerUNTTests {
                        "Bad",
                        untID,
                        untPassword,
-                       null); //2/2021
+                       null);
 
         return;
     }
 
-    //2/2021
     protected void testBadRoutine(
                                   String thisMethod,
                                   String callerPolicy,
@@ -384,7 +377,7 @@ public class CxfCallerUNTTests {
                        "Bad",
                        untID,
                        untPassword,
-                       errMsgVersion); //2/2021
+                       errMsgVersion);
 
         return;
     }
@@ -434,7 +427,7 @@ public class CxfCallerUNTTests {
             request.setParameter("methodFull", methodFull);
             request.setParameter("untID", untID);
             request.setParameter("untPassword", untPassword);
-            //2/2021
+
             request.setParameter("errorMsgVersion", errMsgVersion);
 
             // Invoke the client
@@ -487,7 +480,6 @@ public class CxfCallerUNTTests {
         System.err.println("*****************************" + strMethod);
     }
 
-    //2/2021
     public static void copyServerXml(String copyFromFile) throws Exception {
 
         try {

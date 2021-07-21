@@ -38,6 +38,7 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.EE8FeatureReplacementAction;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
@@ -135,8 +136,7 @@ public class CxfInteropX509Tests {
         return;
     }
 
-    //@AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void testEcho21Service() throws Exception {
         String thisMethod = "testEcho21Service";
@@ -167,7 +167,7 @@ public class CxfInteropX509Tests {
         return;
     }
 
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void testEcho22Service() throws Exception {
         String thisMethod = "testEcho22Service";
@@ -198,7 +198,7 @@ public class CxfInteropX509Tests {
         return;
     }
 
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void testEcho23Service() throws Exception {
         String thisMethod = "testEcho23Service";

@@ -25,6 +25,7 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.EE8FeatureReplacementAction;
 
 @SkipForRepeat({ EE9_FEATURES })
 @Mode(TestMode.FULL)
@@ -50,10 +51,7 @@ public class CxfWssTemplatesTests extends CommonTests {
      * Verify that the Web service is invoked successfully. This is a positive scenario.
      */
     @Test
-    //5/2021 added PrivilegedActionExc, NoSuchMethodExc as a result of java11 and ee8
-    //@AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException", "java.lang.ClassNotFoundException", "java.security.PrivilegedActionException",
-    //                       "java.lang.NoSuchMethodException" })
-    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFUserNameTokenPasswordHashOverSSL() throws Exception {
         // reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_enchdr.xml");
         genericTest(
@@ -94,8 +92,7 @@ public class CxfWssTemplatesTests extends CommonTests {
      * Verify that the Web service is invoked successfully. This is a positive scenario.
      */
     @Test
-    //4/2021
-    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFUserNameTokenPasswordTextOverSSL() throws Exception {
         genericTest(
                     // test name for logging
@@ -137,8 +134,7 @@ public class CxfWssTemplatesTests extends CommonTests {
      * Verify that the Web service is invoked successfully. This is a positive scenario.
      */
 
-    //4/2021
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void testCXFAsymmetricX509MutualAuthenticationWithUnt() throws Exception {
         genericTest(
@@ -183,7 +179,6 @@ public class CxfWssTemplatesTests extends CommonTests {
      * Verify that the Web service is invoked successfully. This is a positive scenario.
      */
 
-    //2/2021 to test with EE7, then the corresponding server_sym.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     public void testCXFUsernameTokenAsEndorsingAndX509SymmetricEE7Only() throws Exception {
@@ -213,8 +208,7 @@ public class CxfWssTemplatesTests extends CommonTests {
                     "The test expected a successful message from the server.");
     }
 
-    //4/2021
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
     public void testCXFUsernameTokenAsEndorsingAndX509SymmetricEE8Only() throws Exception {
@@ -258,7 +252,6 @@ public class CxfWssTemplatesTests extends CommonTests {
      * Verify that the Web service is invoked successfully. This is a positive scenario.
      */
 
-    //2/2021 to test with EE7, then the corresponding server_sym.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     public void testCXFX509SymmetricAndEndorsingEE7Only() throws Exception {
@@ -288,9 +281,7 @@ public class CxfWssTemplatesTests extends CommonTests {
                     "The test expected a successful message from the server.");
     }
 
-    //4/2021
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
-    //2/2021 to test with EE8, then the corresponding server_sym_wss4j.xml can be used
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
     public void testCXFX509SymmetricAndEndorsingEE8Only() throws Exception {
@@ -340,7 +331,6 @@ public class CxfWssTemplatesTests extends CommonTests {
      * Verify that the Web service is invoked successfully. This is a positive scenario.
      */
 
-    //2/2021 to test with EE7, then the corresponding server_sym.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     public void testCXFX509SymmetricForMessageAndUntForClientEE7Only() throws Exception {
@@ -370,9 +360,7 @@ public class CxfWssTemplatesTests extends CommonTests {
                     "The test expected a successful message from the server.");
     }
 
-    //4/2021
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
-    //2/2021 to test with EE8, then the corresponding server_sym_wss4j.xml can be used
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
     public void testCXFX509SymmetricForMessageAndUntForClientEE8Only() throws Exception {
