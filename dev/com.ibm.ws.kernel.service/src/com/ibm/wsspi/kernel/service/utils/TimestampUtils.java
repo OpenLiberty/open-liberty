@@ -71,7 +71,7 @@ public class TimestampUtils {
                             public void restore() {
                                 long restoreTime = 0;
                                 try {
-                                    WsResource restoreTimeResource = locServiceImpl.getServerWorkareaResource("restoreTime");
+                                    WsResource restoreTimeResource = locServiceImpl.getServerWorkareaResource("checkpoint/restoreTime");
                                     List<String> restoreStartTimeEnv = Files.readAllLines(restoreTimeResource.asFile().toPath());
                                     System.out.println("restore time: " + restoreStartTimeEnv);
                                     if (!restoreStartTimeEnv.isEmpty()) {
