@@ -28,7 +28,7 @@ tested.features: spnego-1.0
 	com.ibm.ws.security;version=latest,\
 	com.ibm.ws.security.authentication.filter;version=latest,\
 	com.ibm.ws.security.jaas.common;version=latest,\
-	com.ibm.ws.security.kerberos.java8;version=latest,\
+	com.ibm.ws.security.kerberos.s4u;version=latest,\
 	com.ibm.ws.security.spnego_fat;version=latest,\
 	com.ibm.ws.security.spnego.fat.common;version=latest,\
 	com.ibm.ws.security.token;version=latest,\

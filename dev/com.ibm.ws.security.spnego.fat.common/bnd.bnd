@@ -33,7 +33,7 @@ test.project: true
     com.ibm.ws.security;version=latest,\
     com.ibm.ws.security.authentication.filter;version=latest,\
     com.ibm.ws.security.jaas.common;version=latest,\
-    com.ibm.ws.security.kerberos.java8;version=latest,\
+    com.ibm.ws.security.kerberos.s4u;version=latest,\
     com.ibm.ws.security.token;version=latest,\
     com.ibm.ws.security.token.s4u2;version=latest,\
     com.ibm.ws.security.wim.adapter.ldap_fat.krb5;version=latest, \

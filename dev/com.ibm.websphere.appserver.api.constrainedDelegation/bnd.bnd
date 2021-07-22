@@ -24,4 +24,4 @@ Export-Package: com.ibm.websphere.security.s4u2proxy
 publish.wlp.jar.suffix: dev/api/ibm
 
 -buildpath: \
-	com.ibm.ws.security.kerberos.java8
+	com.ibm.ws.security.kerberos.s4u
