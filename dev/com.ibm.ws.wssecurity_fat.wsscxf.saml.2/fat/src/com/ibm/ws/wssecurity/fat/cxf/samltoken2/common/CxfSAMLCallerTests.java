@@ -21,13 +21,15 @@ import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTest;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTestHelpers;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLTestSettings;
-import com.ibm.ws.wssecurity.fat.cxf.samltoken2.common.CXFSAMLCommonUtils;
 
-import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.AllowedFFDC;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServerWrapper;
+import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
+import componenttest.rules.repeater.EE8FeatureReplacementAction;
+import componenttest.rules.repeater.JakartaEE9Action;
+
 
 /**
  * The testcases in this class were ported from tWAS' test SamlWebSSOTests.
@@ -71,6 +73,7 @@ public class CxfSAMLCallerTests extends SAMLCommonTest {
      * 
      */
     
+    //runs EE7 and EE8 from full fat; EE9 from lite fat (e.g., CxfSAMLCaller1ServerTests.java)
     //scenario 1 - done
     @Test
     public void testCxfCallerHttpPolicy() throws Exception {
@@ -92,10 +95,9 @@ public class CxfSAMLCallerTests extends SAMLCommonTest {
         updatedTestSettings.getCXFSettings().setTestMode(testMode);
         genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setDefaultGoodSAMLCXFExpectations(null, flowType, updatedTestSettings));
     }
-    
-    //3/2021 to run with EE7
+   
     //scenario 2
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
     @Test
     public void testCxfCallerHttpsPolicyEE7Only() throws Exception {
         
@@ -133,14 +135,12 @@ public class CxfSAMLCallerTests extends SAMLCommonTest {
 
     }
     
-    //3/2021 to run with EE8
+    //runs EE8 from full fat, EE9 from lite fat
     //scenario 2
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    //@AllowedFFDC(value = { "java.util.MissingResourceException", "java.lang.ClassNotFoundException", "java.net.MalformedURLException" }) //@AV999
-    //6/2021
-    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.lang.ClassNotFoundException", "java.net.MalformedURLException", "java.security.PrivilegedActionException", "java.lang.NoSuchMethodException" })
+    @SkipForRepeat({ NO_MODIFICATION })
+    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID, JakartaEE9Action.ID })
     @Test
-    public void testCxfCallerHttpsPolicyEE8Only() throws Exception {
+    public void testCxfCallerHttpsPolicy() throws Exception {
         if (testSAMLServer2 == null) {
             //1 server reconfig
             testSAMLServer.reconfigServer(buildSPServerName("server_2in1_asymProtection_wss4j.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
@@ -175,10 +175,8 @@ public class CxfSAMLCallerTests extends SAMLCommonTest {
 
     }
     
-
-    //3/2021 to run with EE7
     //scenario 3 - done
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
     @Test
     public void testCxfCaller_WithRealmNameEE7Only() throws Exception {
         
@@ -216,12 +214,12 @@ public class CxfSAMLCallerTests extends SAMLCommonTest {
 
     }
     
-    //3/2021 to run with EE8
+    //runs EE8 from full fat, EE9 from lite fat
     //scenario 3 - done
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.lang.ClassNotFoundException" }) //@AV999
+    @SkipForRepeat({ NO_MODIFICATION })
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID, JakartaEE9Action.ID })
     @Test
-    public void testCxfCaller_WithRealmNameEE8Only() throws Exception {
+    public void testCxfCaller_WithRealmName() throws Exception {
         if (testSAMLServer2 == null) {
             // 1 server reconfig
             testSAMLServer.reconfigServer(buildSPServerName("server_2in1_realmName_ee8.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
@@ -255,8 +253,7 @@ public class CxfSAMLCallerTests extends SAMLCommonTest {
 
     }
 
-    //3/2021 to run with EE7
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
     //scenario 5
     @Test
     public void testCxfCallerHttpsPolicy_IncludeTokenInSubjectIsFalseEE7Only() throws Exception {
@@ -289,12 +286,12 @@ public class CxfSAMLCallerTests extends SAMLCommonTest {
         
     }
     
-    //3/2021 to run with EE8
+    //runs EE8 from full fat, EE9 from lite fat
     //scenario 5
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
+    @SkipForRepeat({ NO_MODIFICATION })
+    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID, JakartaEE9Action.ID })
     @Test
-    public void testCxfCallerHttpsPolicy_IncludeTokenInSubjectIsFalseEE8Only() throws Exception {
+    public void testCxfCallerHttpsPolicy_IncludeTokenInSubjectIsFalse() throws Exception {
         if (testSAMLServer2 == null) {
             // 1 server reconfig
             testSAMLServer.reconfigServer(buildSPServerName("server_2in1_asymProtection_TokenInSubFalse_wss4j.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);

@@ -13,22 +13,22 @@ package com.ibm.ws.wssecurity.fat.cxf.samltoken2.OneServerTests;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import componenttest.custom.junit.runner.FATRunner;
 
-import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLMessageConstants;
 import com.ibm.ws.wssecurity.fat.cxf.samltoken2.common.CxfSAMLCallerTests;
 
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServerWrapper;
-import componenttest.topology.utils.HttpUtils;
+//import componenttest.topology.utils.HttpUtils;
+import componenttest.annotation.SkipForRepeat;
+import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
+import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
+
 
 /**
  * The testcases in this class were ported from tWAS' test SamlWebSSOTests.
@@ -46,6 +46,7 @@ import componenttest.topology.utils.HttpUtils;
  * 2.0 token in the HTTP POST request.
  */
 
+@SkipForRepeat({ NO_MODIFICATION, EE8_FEATURES })
 @LibertyServerWrapper
 @RunWith(FATRunner.class)
 public class CxfSAMLCaller1ServerTests extends CxfSAMLCallerTests {
@@ -89,7 +90,6 @@ public class CxfSAMLCaller1ServerTests extends CxfSAMLCallerTests {
         testSettings.setSpTargetApp(testSAMLServer.getHttpString() + "/samlcallerclient/CxfSamlCallerSvcClient");
         testSettings.setSamlTokenValidationData(testSettings.getIdpUserName(), testSettings.getSamlTokenValidationData().getIssuer(), testSettings.getSamlTokenValidationData().getInResponseTo(), testSettings.getSamlTokenValidationData().getMessageID(), testSettings.getSamlTokenValidationData().getEncryptionKeyUser(), testSettings.getSamlTokenValidationData().getRecipient(), SAMLConstants.AES256);
 
-        //3/2021 
         testSAMLServer.addIgnoredServerExceptions(SAMLMessageConstants.CWWKS5207W_SAML_CONFIG_IGNORE_ATTRIBUTES, SAMLMessageConstants.CWWKG0101W_CONFIG_NOT_VISIBLE_TO_OTHER_BUNDLES, SAMLMessageConstants.CWWKF0001E_FEATURE_MISSING);
         
         
