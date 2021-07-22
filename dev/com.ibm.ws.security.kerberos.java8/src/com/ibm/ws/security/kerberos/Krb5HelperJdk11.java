@@ -41,7 +41,6 @@ import com.sun.security.auth.module.Krb5LoginModule;
 import com.sun.security.jgss.ExtendedGSSContext;
 import com.sun.security.jgss.ExtendedGSSCredential;
 
-
 /**
  * Handle Kerberos constrained delegation and Krb5LoginModule specific to other support JDKs such as
  * Oracle 8 or higher, Java 11 or higher, openJDK OpenJ9 and Hotspot
@@ -57,8 +56,13 @@ public class Krb5HelperJdk11 implements Krb5HelperJdk {
     /**
      * We don't do anything with the process, but having it set allows us to only be activated by DS if criteria we set
      * about the Java version are met.
+     *
+     * JDK 1.8 and vendor IBM, using IBM JGSS/KRB5
+     * JDK 1.8 and vendor not IBM, using SUN JGSS/KRB5
+     * JDK greater than 1.8 are using SUN JGSS/KRB5
      */
-    @Reference(policy = ReferencePolicy.STATIC, target = "(&(java.specification.version>=1.8)(!(java.vendor=ibm corporation)))")
+    @Reference(policy = ReferencePolicy.STATIC, target = "(|(java.specification.version>=9)(!(java.vendor=ibm corporation)))")
+
     protected void setProcess(LibertyProcess process) {}
 
     @Override

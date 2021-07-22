@@ -41,7 +41,6 @@ import com.ibm.websphere.security.auth.WSSubject;
 import com.ibm.ws.kernel.LibertyProcess;
 import com.ibm.ws.security.krb5.Krb5Common;
 
-
 /**
  * Handle Kerberos constrained delegation and Krb5LoginModule specific to the IBM JDK 8 and less
  * service.ranking:Integer=5 to override the Krb5HelperJdk8
@@ -57,7 +56,7 @@ public class Krb5HelperJdk8 implements Krb5HelperJdk {
      * We don't do anything with the process, but having it set allows us to only be activated by DS if criteria we set
      * about the Java version are met.
      */
-    @Reference(policy = ReferencePolicy.STATIC, target = "(&(java.specification.version>=1.8)(java.vendor=ibm corporation))")
+    @Reference(policy = ReferencePolicy.STATIC, target = "(&(java.specification.version=1.8)(java.vendor=ibm corporation))")
     protected void setProcess(LibertyProcess process) {}
 
     @Override
