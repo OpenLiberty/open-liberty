@@ -38,6 +38,7 @@
 
     <!-- permissions for Quartz and slf4j -->
     <javaPermission codebase="${server.config.dir}/quartz/quartz-2.2.1.jar" className="java.io.FilePermission" name="quartz.properties" actions="read"/>
+    <javaPermission codebase="${server.config.dir}/quartz/quartz-2.2.1.jar" className="java.net.URLPermission" name="http://www.terracotta.org/kit/reflector" actions="GET:"/>
     <javaPermission codebase="${server.config.dir}/quartz/quartz-2.2.1.jar" className="java.util.PropertyPermission" name="org.quartz.*" actions="read"/>
     <javaPermission codebase="${server.config.dir}/quartz/quartz-2.2.1.jar" className="java.util.PropertyPermission" name="quartz.*" actions="read"/>
     <javaPermission codebase="${server.config.dir}/quartz/quartz-2.2.1.jar" className="java.util.PropertyPermission" name="*" actions="read,write"/>
@@ -48,6 +49,7 @@
     <javaPermission codebase="${server.config.dir}/quartz/slf4j-api-1.7.30.jar" className="java.util.PropertyPermission" name="org.slf4j.*" actions="read"/>
 
     <javaPermission codebase="${server.config.dir}/apps/quartzapp.war" className="java.io.FilePermission" name="quartz.properties" actions="read"/>
+    <javaPermission codebase="${server.config.dir}/apps/quartzapp.war" className="java.net.URLPermission" name="http://www.terracotta.org/kit/reflector" actions="GET:"/>
     <javaPermission codebase="${server.config.dir}/apps/quartzapp.war" className="java.util.PropertyPermission" name="slf4j.*" actions="read"/>
     <javaPermission codebase="${server.config.dir}/apps/quartzapp.war" className="java.util.PropertyPermission" name="org.quartz.*" actions="read"/>
     <javaPermission codebase="${server.config.dir}/apps/quartzapp.war" className="java.util.PropertyPermission" name="org.slf4j.*" actions="read"/>

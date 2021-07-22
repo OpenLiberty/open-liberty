@@ -64,6 +64,7 @@ public class QuartzTestServlet extends FATServlet {
         if (scheduler != null)
             try {
                 scheduler.shutdown();
+                scheduler = null;
             } catch (SchedulerException x) {
                 x.printStackTrace(System.out);
                 fail(x.getMessage());
