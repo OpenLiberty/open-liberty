@@ -223,8 +223,7 @@ public class CxfCallerX509AsymTests {
                         "UrnCallerToken01", //String strServicePort
                         "test3", // Expecting User ID
                         "test3", // Password for UserNameToken
-                        errMsgVersionInX509 //2/2021
-            );
+                        errMsgVersionInX509);
         } catch (Exception e) {
             throw e;
         }
@@ -259,8 +258,7 @@ public class CxfCallerX509AsymTests {
                         "UrnCallerToken02", //String strServicePort
                         "test2", // Expecting User ID
                         "test2", // Password
-                        errMsgVersion //2/2021
-            );
+                        errMsgVersion);
         } catch (Exception e) {
             throw e;
         }
@@ -328,9 +326,8 @@ public class CxfCallerX509AsymTests {
                         "UrnCallerToken04", //String strServicePort
                         "test4", // Expecting User ID
                         "test4", // Password
-                        errMsgVersion, //2/2021
-                        errMsgVersionInX509 //2/2021
-            );
+                        errMsgVersion,
+                        errMsgVersionInX509);
         } catch (Exception e) {
             throw e;
         }

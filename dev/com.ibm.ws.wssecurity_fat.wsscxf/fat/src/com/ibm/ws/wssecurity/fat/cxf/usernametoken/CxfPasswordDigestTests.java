@@ -128,7 +128,6 @@ public class CxfPasswordDigestTests extends CommonTests {
      *
      */
 
-    @AllowedFFDC(value = { "java.lang.ClassNotFoundException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void testPWDigestCXFSvcClientSpecifyUser() throws Exception {
 
@@ -438,10 +437,9 @@ public class CxfPasswordDigestTests extends CommonTests {
     //@Test
     public void testPWDigestCXFSvcClientNoPasswordSSL() throws Exception {
 
-        //Mei:
         //String newClientWsdl = updateClientWsdl(defaultClientWsdlLoc + "UsrTokenPWDigestNoPasswordSvc.wsdl",
         //defaultClientWsdlLoc + "UsrTokenPWDigestNoPasswordSvcUpdated.wsdl"); //@AV999 this is not a valid testcase
-        //End
+
         genericTest(testName.getMethodName(), clientHttpsUrl, httpsPortNumber, "user1", "UsrTokenPWDigestNoPasswordSvcSSL",
                     hashingPolicyNotEnforced, "No password specified - Expected Exception \"");
 
