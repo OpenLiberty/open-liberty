@@ -13,12 +13,9 @@ package com.ibm.ws.wssecurity.fat.cxf.samltoken1.OneServerTests;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
-
-import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLConstants;
@@ -29,7 +26,8 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServerWrapper;
-import componenttest.topology.utils.HttpUtils;
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+import componenttest.annotation.SkipForRepeat;
 
 /**
  * The testcases in this class were ported from tWAS' test SamlWebSSOTests.
@@ -47,12 +45,12 @@ import componenttest.topology.utils.HttpUtils;
  * 2.0 token in the HTTP POST request.
  */
 
+@SkipForRepeat({ EE9_FEATURES })
 @LibertyServerWrapper
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class CxfSAMLWSSTemplates1ServerTests extends CxfSAMLWSSTemplatesTests {
 
-    //6/2021
 	private static final Class<?> thisClass = CxfSAMLWSSTemplates1ServerTests.class;
 	
     //	protected static String audienceRestrictError = "put real message here" ;
@@ -71,9 +69,6 @@ public class CxfSAMLWSSTemplates1ServerTests extends CxfSAMLWSSTemplatesTests {
 
         msgUtils.printClassName(thisClass.toString());
         Log.info(thisClass, "setupBeforeTest", "Prep for test");
-
-        //1-12-2021 commented out
-        //HttpUtils.enableSSLv3();
 
         // add any additional messages that you want the "start" to wait for
         // we should wait for any providers that this test requires

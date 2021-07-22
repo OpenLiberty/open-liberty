@@ -23,10 +23,10 @@ import com.ibm.ws.security.saml20.fat.commonTest.SAMLMessageConstants;
 import com.ibm.ws.wssecurity.fat.cxf.samltoken1.common.CxfSSLSAMLBasicTests;
 
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServerWrapper;
-import componenttest.topology.utils.HttpUtils;
+import componenttest.annotation.SkipForRepeat;
+import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
+import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
 
 /**
  * The testcases in this class were ported from tWAS' test SamlWebSSOTests.
@@ -43,10 +43,9 @@ import componenttest.topology.utils.HttpUtils;
  * TFIM IdP. The client invokes the SP application by sending the SAML
  * 2.0 token in the HTTP POST request.
  */
+
+@SkipForRepeat({ NO_MODIFICATION, EE8_FEATURES })
 @LibertyServerWrapper
-//1/20/2021 the FULL mode was already in CL FAT, but commented out to make it as LITE in OL
-//@Mode(TestMode.FULL)
-//1/21/2021 added
 @RunWith(FATRunner.class)
 public class CxfSSLSAMLBasic2ServerTests extends CxfSSLSAMLBasicTests {
 
@@ -59,9 +58,6 @@ public class CxfSSLSAMLBasic2ServerTests extends CxfSSLSAMLBasicTests {
 
         msgUtils.printClassName(thisClass.toString());
         Log.info(thisClass, "setupBeforeTest", "Prep for test");
-
-        //1-12-2021 commented out
-        //HttpUtils.enableSSLv3();
 
         // add any additional messages that you want the "start" to wait for
         // we should wait for any providers that this test requires
@@ -86,7 +82,7 @@ public class CxfSSLSAMLBasic2ServerTests extends CxfSSLSAMLBasicTests {
 
         testSAMLServer.addIgnoredServerExceptions(SAMLMessageConstants.CWWKS5207W_SAML_CONFIG_IGNORE_ATTRIBUTES, SAMLMessageConstants.CWWKF0001E_FEATURE_MISSING);
         testSAMLServer2.addIgnoredServerExceptions(SAMLMessageConstants.CWWKS5207W_SAML_CONFIG_IGNORE_ATTRIBUTES, SAMLMessageConstants.CWWKF0001E_FEATURE_MISSING, SAMLMessageConstants.CWWKG0101W_CONFIG_NOT_VISIBLE_TO_OTHER_BUNDLES);
-
+        
         // now, we need to update the IDP files
         shibbolethHelpers.fixSPInfoInShibbolethServer(testSAMLServer, testIDPServer);
         shibbolethHelpers.fixVarsInShibbolethServerWithDefaultValues(testIDPServer);
