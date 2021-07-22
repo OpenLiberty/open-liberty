@@ -33,9 +33,11 @@ dependencies {
                'xalan:xalan:2.7.2',
                'xerces:xercesImpl:2.11.0',
                'xml-apis:xml-apis:1.4.01'
-               
-                        
+                                 
 }
+
+addRequiredLibraries.dependsOn addJakartaTransformer
+
 /* 'xml-apis:xml-apis:1.4.01'*
 /*
  * This is where all application WARs will be built.

@@ -28,6 +28,12 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServerWrapper;
+import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
+import componenttest.rules.repeater.EmptyAction;
+import componenttest.rules.repeater.EE8FeatureReplacementAction;
+
 
 /**
  * The testcases in this class were ported from tWAS' test SamlWebSSOTests.
@@ -45,6 +51,7 @@ import componenttest.topology.impl.LibertyServerWrapper;
  * 2.0 token in the HTTP POST request.
  */
 
+@SkipForRepeat({ EE9_FEATURES })
 @LibertyServerWrapper
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
@@ -68,15 +75,8 @@ public class CxfSAMLAsymSignEncTests extends SAMLCommonTest {
      * Test should succeed in accessing the server side service.
      * 
      */
-  
-    //3/2021 workaround: Add cache config cxf-ehcache_ee8.xml to securityClient_1_AsymSignEnc_wss4j.xml for EE8 test; 
-    //otherwise ffdc "no protocol: cxf-ehcache.xml", "NPE" will fail the test
-    //Also add allowed ffdc MalformedURLException to avoid failure count after cxf-ehcache_ee8.xml is added
-    //See https://github.com/OpenLiberty/open-liberty/issues/16214
     
-    //3/2021 to run with EE7
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    @AllowedFFDC(value = { "java.lang.Exception" })
+    @SkipForRepeat({ EE8_FEATURES })
     @Test
     public void testSAMLCXFSignedSupportingTokens_AsymmmetricEE7Only() throws Exception {
         
@@ -91,14 +91,11 @@ public class CxfSAMLAsymSignEncTests extends SAMLCommonTest {
 
     }
 
-    //3/2021 to run with EE8
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    //6/2021
-    @AllowedFFDC(value = { "java.lang.Exception", "java.lang.ClassNotFoundException", "java.net.MalformedURLException", "java.security.PrivilegedActionException", "java.lang.NoSuchMethodException" })
+    @SkipForRepeat({ NO_MODIFICATION })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void testSAMLCXFSignedSupportingTokens_AsymmmetricEE8Only() throws Exception {
 
-    	//3/2021
     	if (testSAMLServer2 == null) {
             //1 server reconfig
     		testSAMLServer.reconfigServer(buildSPServerName("server_2_in_1_AsymSignEnc_wss4j.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
@@ -106,7 +103,7 @@ public class CxfSAMLAsymSignEncTests extends SAMLCommonTest {
     		//2 servers reconfig
     		testSAMLServer2.reconfigServer("server_2_AsymSignEnc_wss4j.xml", _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
     		testSAMLServer.reconfigServer("server_1_AsymSignEnc_wss4j.xml", _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
-    	} //End 3/2021
+    	} 
     	
         WebClient webClient = SAMLCommonTestHelpers.getWebClient();
 
@@ -124,10 +121,9 @@ public class CxfSAMLAsymSignEncTests extends SAMLCommonTest {
      * The client uses a policy that does not specify that the request be signed
      * The test should fail since the policy can not be satisfied
      */
-    //3/2021 to run with EE7, then the corresponding error message can be expected
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    @AllowedFFDC(value = { "java.lang.Exception" })
-    @ExpectedFFDC(value = { "org.apache.ws.security.WSSecurityException" })
+    
+    @SkipForRepeat({ EE8_FEATURES })
+    @ExpectedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     @Test
     public void testSAMLCXFSignedSupportingTokens_Asymmmetric_ClientNotSignedEE7Only() throws Exception {
         
@@ -142,13 +138,11 @@ public class CxfSAMLAsymSignEncTests extends SAMLCommonTest {
 
     }
     
-    //3/2021 to run with EE8, then the corresponding error message can be expected
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    @AllowedFFDC(value = { "java.lang.Exception", "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
+    @SkipForRepeat({ NO_MODIFICATION })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void testSAMLCXFSignedSupportingTokens_Asymmmetric_ClientNotSignedEE8Only() throws Exception {
 
-    	//3/2021
     	if (testSAMLServer2 == null) {
             //1 server reconfig
     		testSAMLServer.reconfigServer(buildSPServerName("server_2_in_1_AsymSignEnc_wss4j.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
@@ -156,7 +150,7 @@ public class CxfSAMLAsymSignEncTests extends SAMLCommonTest {
     		//2 servers reconfig
     		testSAMLServer2.reconfigServer("server_2_AsymSignEnc_wss4j.xml", _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
     		testSAMLServer.reconfigServer("server_1_AsymSignEnc_wss4j.xml", _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
-    	} //End 3/2021
+    	} 
     	
         WebClient webClient = SAMLCommonTestHelpers.getWebClient();
 
@@ -165,15 +159,12 @@ public class CxfSAMLAsymSignEncTests extends SAMLCommonTest {
         updatedTestSettings.setCXFSettings(_testName, null, servicePort, null, null, null, "SAMLAsymSignService",
                 "SAMLAsymSignPort", "", "False", null, commonUtils.processClientWsdl("ClientAsymOmitSign.wsdl", servicePort));
 
-        //3/2021
         //@AV999, the client sends a signed supporting token even though the policy says supporting token? is this just with saml token or any supporting token? TODO
         genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setDefaultGoodSAMLCXFExpectations(null, flowType, updatedTestSettings, SAMLConstants.CXF_SAML_TOKEN_ASYM_SIGN_SERVICE));
 
     }
 
-    //3/2021 to run with EE7
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    @AllowedFFDC(value = { "java.lang.Exception" })
+    @SkipForRepeat({ EE8_FEATURES })
     @Test
     public void testSAMLCXFEncryptedSupportingTokens_AsymmmetricEE7Only() throws Exception {
         
@@ -188,13 +179,11 @@ public class CxfSAMLAsymSignEncTests extends SAMLCommonTest {
 
     }
 
-    //3/2021 to run with EE8
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    @AllowedFFDC(value = { "java.lang.Exception", "java.net.MalformedURLException" })
+    @SkipForRepeat({ NO_MODIFICATION })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void testSAMLCXFEncryptedSupportingTokens_AsymmmetricEE8Only() throws Exception {
-    	
-    	//3/2021
+    
     	if (testSAMLServer2 == null) {
             //1 server reconfig
     		testSAMLServer.reconfigServer(buildSPServerName("server_2_in_1_AsymSignEnc_wss4j.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
@@ -202,7 +191,7 @@ public class CxfSAMLAsymSignEncTests extends SAMLCommonTest {
     		//2 servers reconfig
     		testSAMLServer2.reconfigServer("server_2_AsymSignEnc_wss4j.xml", _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
     		testSAMLServer.reconfigServer("server_1_AsymSignEnc_wss4j.xml", _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
-    	} //End 3/2021
+    	} 
     	
         WebClient webClient = SAMLCommonTestHelpers.getWebClient();
 
@@ -220,10 +209,9 @@ public class CxfSAMLAsymSignEncTests extends SAMLCommonTest {
      * The client uses a policy that does not specify that the request be encrypted
      * The test should fail since the policy can not be satisfied
      */
-    //3/2021 to run with EE7
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    @AllowedFFDC(value = { "java.lang.Exception" })
-    @ExpectedFFDC(value = { "org.apache.ws.security.WSSecurityException" })
+    
+    @SkipForRepeat({ EE8_FEATURES })
+    @ExpectedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     @Test
     public void testSAMLCXFEncryptedSupportingTokens_Asymmmetric_ClientNotEncryptedEE7Only() throws Exception {
         
@@ -238,13 +226,11 @@ public class CxfSAMLAsymSignEncTests extends SAMLCommonTest {
 
     }
 
-    //3/2021 to run with EE8
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    @AllowedFFDC(value = { "java.lang.Exception", "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" }) 
+    @SkipForRepeat({ NO_MODIFICATION })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID }) 
     @Test
     public void testSAMLCXFEncryptedSupportingTokens_Asymmmetric_ClientNotEncryptedEE8Only() throws Exception {
 
-    	//3/2021
     	if (testSAMLServer2 == null) {
             //1 server reconfig
     		testSAMLServer.reconfigServer(buildSPServerName("server_2_in_1_AsymSignEnc_wss4j.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
@@ -252,7 +238,8 @@ public class CxfSAMLAsymSignEncTests extends SAMLCommonTest {
     		//2 servers reconfig
     	    testSAMLServer2.reconfigServer("server_2_AsymSignEnc_wss4j.xml", _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
     		testSAMLServer.reconfigServer("server_1_AsymSignEnc_wss4j.xml", _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
-    	} //End 3/2021
+    	} 
+    	
         WebClient webClient = SAMLCommonTestHelpers.getWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
@@ -264,9 +251,7 @@ public class CxfSAMLAsymSignEncTests extends SAMLCommonTest {
 
     }
     
-    //3/2021 to run with EE7
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    @AllowedFFDC(value = { "java.lang.Exception" })
+    @SkipForRepeat({ EE8_FEATURES })
     @Test
     public void testSAMLCXFSignedEncryptedSupportingTokens_AsymmmetricEE7Only() throws Exception {
 
@@ -281,13 +266,11 @@ public class CxfSAMLAsymSignEncTests extends SAMLCommonTest {
 
     }
 
-    //3/2021 to run with EE8
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    @AllowedFFDC(value = { "java.lang.Exception", "java.net.MalformedURLException" })
+    @SkipForRepeat({ NO_MODIFICATION })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void testSAMLCXFSignedEncryptedSupportingTokens_AsymmmetricEE8Only() throws Exception {
     	
-    	//3/2021
     	if (testSAMLServer2 == null) {
             //1 server reconfig
     		testSAMLServer.reconfigServer(buildSPServerName("server_2_in_1_AsymSignEnc_wss4j.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
@@ -295,7 +278,7 @@ public class CxfSAMLAsymSignEncTests extends SAMLCommonTest {
     		//2 servers reconfig
     	    testSAMLServer2.reconfigServer("server_2_AsymSignEnc_wss4j.xml", _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
     		testSAMLServer.reconfigServer("server_1_AsymSignEnc_wss4j.xml", _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
-    	} //End 3/2021
+    	} 
     	
         WebClient webClient = SAMLCommonTestHelpers.getWebClient();
 
@@ -313,10 +296,9 @@ public class CxfSAMLAsymSignEncTests extends SAMLCommonTest {
      * The client uses a policy that does not specify that the request be encrypted
      * The test should fail since the policy can not be satisfied
      */
-    //3/2021 to run with EE7
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    @AllowedFFDC(value = { "java.lang.Exception" })
-    @ExpectedFFDC(value = { "org.apache.ws.security.WSSecurityException" })
+    
+    @SkipForRepeat({ EE8_FEATURES })
+    @ExpectedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     @Test
     public void testSAMLCXFSignedEncryptedSupportingTokens_Asymmmetric_ClientNotEncryptedEE7Only() throws Exception {
         WebClient webClient = SAMLCommonTestHelpers.getWebClient();
@@ -330,13 +312,11 @@ public class CxfSAMLAsymSignEncTests extends SAMLCommonTest {
 
     }
 
-    //3/2021 to run with EE8
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    @AllowedFFDC(value = { "java.lang.Exception", "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
+    @SkipForRepeat({ NO_MODIFICATION })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void testSAMLCXFSignedEncryptedSupportingTokens_Asymmmetric_ClientNotEncryptedEE8Only() throws Exception {
 
-    	//3/2021
     	if (testSAMLServer2 == null) {
             //1 server reconfig
     		testSAMLServer.reconfigServer(buildSPServerName("server_2_in_1_AsymSignEnc_wss4j.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
@@ -344,7 +324,7 @@ public class CxfSAMLAsymSignEncTests extends SAMLCommonTest {
     		//2 servers reconfig
     		testSAMLServer2.reconfigServer("server_2_AsymSignEnc_wss4j.xml", _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
     		testSAMLServer.reconfigServer("server_1_AsymSignEnc_wss4j.xml", _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
-    	} //End 3/2021
+    	}
     	
         WebClient webClient = SAMLCommonTestHelpers.getWebClient();
 
@@ -362,10 +342,9 @@ public class CxfSAMLAsymSignEncTests extends SAMLCommonTest {
      * The client uses a policy that does not specify that the request be encrypted
      * The test should fail since the policy can not be satisfied
      */
-    //3/2021 to run with EE7, then the corresponding error message can be expected
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    @AllowedFFDC(value = { "java.lang.Exception" })
-    @ExpectedFFDC(value = { "org.apache.ws.security.WSSecurityException" })
+    
+    @SkipForRepeat({ EE8_FEATURES })
+    @ExpectedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     @Test
     public void testSAMLCXFSignedEncryptedSupportingTokens_Asymmmetric_ClientNotSignedEE7Only() throws Exception {
         
@@ -380,13 +359,11 @@ public class CxfSAMLAsymSignEncTests extends SAMLCommonTest {
 
     }
 
-    //3/2021 to run with EE8, then the corresponding error message can be expected
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    @AllowedFFDC(value = { "java.lang.Exception", "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
+    @SkipForRepeat({ NO_MODIFICATION })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void testSAMLCXFSignedEncryptedSupportingTokens_Asymmmetric_ClientNotSignedEE8Only() throws Exception {
 
-    	//3/2021
     	if (testSAMLServer2 == null) {
             //1 server reconfig
     		testSAMLServer.reconfigServer(buildSPServerName("server_2_in_1_AsymSignEnc_wss4j.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
@@ -394,7 +371,7 @@ public class CxfSAMLAsymSignEncTests extends SAMLCommonTest {
     		//2 servers reconfig
     	    testSAMLServer2.reconfigServer("server_2_AsymSignEnc_wss4j.xml", _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
     		testSAMLServer.reconfigServer("server_1_AsymSignEnc_wss4j.xml", _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
-    	} //End 3/2021
+    	} 
     	
         WebClient webClient = SAMLCommonTestHelpers.getWebClient();
 
@@ -403,15 +380,12 @@ public class CxfSAMLAsymSignEncTests extends SAMLCommonTest {
         updatedTestSettings.setCXFSettings(_testName, null, servicePort, null, null, null, "SAMLAsymSignEncrService",
                 "SAMLAsymSignEncrPort", "", "False", null, commonUtils.processClientWsdl("ClientAsymOmitSignKeepEncr.wsdl", servicePort));
 
-        //3/2021
         //@AV999 TODO need to check whether the new runtime is correct in implementing the policy
         genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setDefaultGoodSAMLCXFExpectations(null, flowType, updatedTestSettings, SAMLConstants.CXF_SAML_TOKEN_ASYM_SIGN_ENCR_SERVICE));
 
     }
     
-    //3/2021 to run with EE7
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    @AllowedFFDC(value = { "java.lang.Exception" })
+    @SkipForRepeat({ EE8_FEATURES })
     @Test
     public void testSAMLCXFSignedEncryptedAsyncSupportingTokens_AsymmmetricEE7Only() throws Exception {
         WebClient webClient = SAMLCommonTestHelpers.getWebClient();
@@ -425,13 +399,11 @@ public class CxfSAMLAsymSignEncTests extends SAMLCommonTest {
 
     }
     
-    //3/2021 to run with EE8
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    @AllowedFFDC(value = { "java.lang.Exception", "java.net.MalformedURLException" })
+    @SkipForRepeat({ NO_MODIFICATION })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void testSAMLCXFSignedEncryptedAsyncSupportingTokens_AsymmmetricEE8Only() throws Exception {
 
-    	//3/2021
     	if (testSAMLServer2 == null) {
             //1 server reconfig
     		testSAMLServer.reconfigServer(buildSPServerName("server_2_in_1_AsymSignEnc_wss4j.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
@@ -439,7 +411,7 @@ public class CxfSAMLAsymSignEncTests extends SAMLCommonTest {
     		//2 servers reconfig
     		testSAMLServer2.reconfigServer("server_2_AsymSignEnc_wss4j.xml", _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
     		testSAMLServer.reconfigServer("server_1_AsymSignEnc_wss4j.xml", _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
-    	} //End 3/2021
+    	} 
     	
         WebClient webClient = SAMLCommonTestHelpers.getWebClient();
 
