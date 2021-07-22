@@ -11,6 +11,10 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.samltoken.OneServerTests;
 
+import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +38,8 @@ import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.EE8FeatureReplacementAction;
+import componenttest.rules.repeater.EmptyAction;
 import componenttest.topology.impl.LibertyServerWrapper;
 import componenttest.topology.utils.HttpUtils;
 
@@ -53,6 +59,7 @@ import componenttest.topology.utils.HttpUtils;
  * 2.0 token in the HTTP POST request.
  */
 
+@SkipForRepeat({ EE9_FEATURES })
 @LibertyServerWrapper
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
@@ -65,15 +72,11 @@ public class CxfSAMLBasic1ServerTests extends CxfSAMLBasicTests {
     @BeforeClass
     public static void setupBeforeTest() throws Exception {
 
-        //		flowType = SAMLConstants.SOLICITED_SP_INITIATED ;
         flowType = chooseRandomFlow();
         idpSupportedType = SAMLConstants.TFIM_TYPE;
 
         msgUtils.printClassName(thisClass.toString());
         Log.info(thisClass, "setupBeforeTest", "Prep for test");
-
-        //1-12-2021 commented out
-        //HttpUtils.enableSSLv3();
 
         // add any additional messages that you want the "start" to wait for
         // we should wait for any providers that this test requires
@@ -115,9 +118,8 @@ public class CxfSAMLBasic1ServerTests extends CxfSAMLBasicTests {
      *
      */
 
-    //3/2021 to run with EE7, then the corresponding error message can be expected
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    @ExpectedFFDC(value = { "org.apache.ws.security.WSSecurityException" })
+    @SkipForRepeat({ EE8_FEATURES })
+    @ExpectedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     @Test
     public void CxfSAMLBasicTests_clockSkew_testEE7Only() throws Exception {
 
@@ -139,9 +141,8 @@ public class CxfSAMLBasic1ServerTests extends CxfSAMLBasicTests {
         genericSAML(_testName, webClient, updatedTestSettings, standardFlow, expectations);
     }
 
-    //3/2021 to run with EE8, then the corresponding error message can be expected
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    @AllowedFFDC(value = { "java.util.MissingResourceException", "org.apache.wss4j.common.ext.WSSecurityException" }) //@AV999
+    @SkipForRepeat({ NO_MODIFICATION })
+    @AllowedFFDC(value = { "java.util.MissingResourceException", "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void CxfSAMLBasicTests_clockSkew_testEE8Only() throws Exception {
 
@@ -157,8 +158,6 @@ public class CxfSAMLBasic1ServerTests extends CxfSAMLBasicTests {
 
         updatedTestSettings.setCXFSettings(_testName, null, servicePort, serviceSecurePort, "user1", "user1pwd", "SAMLSOAPService2", "SAMLSoapPort2", "", "False", null, null);
 
-        //3/2021
-        //@AV999
         String CXF_SAML_TOKEN_GENERAL_FAILURE_MSG = "SAML token security failure"; //@AV999 TODO select the message depending on the runtime
         List<validationData> expectations = helpers.setErrorSAMLCXFExpectations(null, flowType, updatedTestSettings, CXF_SAML_TOKEN_GENERAL_FAILURE_MSG);
         
@@ -180,9 +179,8 @@ public class CxfSAMLBasic1ServerTests extends CxfSAMLBasicTests {
      *
      */
     
-    //3/2021 to run with EE7, then the corresponding error message can be expected
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    @ExpectedFFDC(value = { "org.apache.ws.security.WSSecurityException" })
+    @SkipForRepeat({ EE8_FEATURES })
+    @ExpectedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     @Test
     public void CxfSAMLBasicTests_wantAssertionsSignedTrue_missingSignatureEE7Only() throws Exception {
 
@@ -207,9 +205,8 @@ public class CxfSAMLBasic1ServerTests extends CxfSAMLBasicTests {
         genericSAML(_testName, webClient, updatedTestSettings, standardFlow, expectations);
     }
 
-    //3/2021 to run with EE8, then the corresponding error message can be expected
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    @AllowedFFDC(value = { "java.util.MissingResourceException", "org.apache.wss4j.common.ext.WSSecurityException" }) //@AV999
+    @SkipForRepeat({ NO_MODIFICATION })
+    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void CxfSAMLBasicTests_wantAssertionsSignedTrue_missingSignatureEE8Only() throws Exception {
 
@@ -223,7 +220,7 @@ public class CxfSAMLBasic1ServerTests extends CxfSAMLBasicTests {
 
         updatedTestSettings.setCXFSettings(_testName, null, servicePort, serviceSecurePort, "user1", "user1pwd", "SAMLSOAPService2", "SAMLSoapPort2", "", "False", null, null);
 
-        String CXF_SAML_TOKEN_GENERAL_FAILURE_MSG = "SAML token security failure"; //@AV999
+        String CXF_SAML_TOKEN_GENERAL_FAILURE_MSG = "SAML token security failure";
         List<validationData> expectations = helpers.setErrorSAMLCXFExpectations(null, flowType, updatedTestSettings, CXF_SAML_TOKEN_GENERAL_FAILURE_MSG);
         
         // The server is NOT logging an error message indicating the real cause of the failure - defect 251665 has been opened to add a message
@@ -249,9 +246,7 @@ public class CxfSAMLBasic1ServerTests extends CxfSAMLBasicTests {
      *
      */
     
-    //3/2021 to run with EE7
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    //@AllowedFFDC(value = { "java.util.MissingResourceException" }) //@AV999
+    @SkipForRepeat({ EE8_FEATURES })
     @Test
     public void CxfSAMLBasicTests_audienceRestrictions_multiple_validEE7Only() throws Exception {
         
@@ -266,9 +261,8 @@ public class CxfSAMLBasic1ServerTests extends CxfSAMLBasicTests {
         genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setDefaultGoodSAMLCXFExpectations(null, flowType, updatedTestSettings));
     }
     
-    //3/2021 to run with EE8
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    @AllowedFFDC(value = { "java.util.MissingResourceException" }) //@AV999
+    @SkipForRepeat({ NO_MODIFICATION })
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void CxfSAMLBasicTests_audienceRestrictions_multiple_validEE8Only() throws Exception {
 
@@ -283,9 +277,8 @@ public class CxfSAMLBasic1ServerTests extends CxfSAMLBasicTests {
         genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setDefaultGoodSAMLCXFExpectations(null, flowType, updatedTestSettings));
     }
 
-    //3/2021 to run with EE7, then the corresponding error message can be expected
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    @ExpectedFFDC(value = { "org.apache.ws.security.WSSecurityException" })
+    @SkipForRepeat({ EE8_FEATURES })
+    @ExpectedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     @Test
     public void CxfSAMLBasicTests_audienceRestrictions_multiple_invalidEE7Only() throws Exception {
         
@@ -304,10 +297,8 @@ public class CxfSAMLBasic1ServerTests extends CxfSAMLBasicTests {
         genericSAML(_testName, webClient, updatedTestSettings, standardFlow, expectations);
     }
     
-    //3/2021 to run with EE8, then the corresponding error message can be expected
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    //@AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }) //@AV999
-    @AllowedFFDC(value = { "java.util.MissingResourceException", "org.apache.wss4j.common.ext.WSSecurityException" })
+    @SkipForRepeat({ NO_MODIFICATION })
+    @AllowedFFDC(value = { "java.util.MissingResourceException", "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void CxfSAMLBasicTests_audienceRestrictions_multiple_invalidEE8Only() throws Exception {
 
@@ -319,7 +310,7 @@ public class CxfSAMLBasic1ServerTests extends CxfSAMLBasicTests {
 
         updatedTestSettings.setCXFSettings(_testName, null, servicePort, serviceSecurePort, "user1", "user1pwd", "SAMLSOAPService2", "SAMLSoapPort2", "", "False", null, null);
 
-        String CXF_SAML_TOKEN_GENERAL_FAILURE_MSG = "SAML token security failure"; //@AV999
+        String CXF_SAML_TOKEN_GENERAL_FAILURE_MSG = "SAML token security failure";
         List<validationData> expectations = helpers.setErrorSAMLCXFExpectations(null, flowType, updatedTestSettings, CXF_SAML_TOKEN_GENERAL_FAILURE_MSG);
         
         expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_MESSAGES_LOG, SAMLConstants.STRING_CONTAINS, "Did NOT fail because the audienceRestrictions weren't satisfied.", null, audienceRestrictError);
@@ -327,8 +318,7 @@ public class CxfSAMLBasic1ServerTests extends CxfSAMLBasicTests {
         genericSAML(_testName, webClient, updatedTestSettings, standardFlow, expectations);
     }
 
-    //3/2021 to run with EE7
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    @SkipForRepeat({ EE8_FEATURES })
     @Test
     public void CxfSAMLBasicTests_audienceRestrictions_single_validEE7Only() throws Exception {
         
@@ -343,9 +333,8 @@ public class CxfSAMLBasic1ServerTests extends CxfSAMLBasicTests {
         genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setDefaultGoodSAMLCXFExpectations(null, flowType, updatedTestSettings));
     }
     
-    //3/2021 to run with EE8
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    @AllowedFFDC(value = { "java.util.MissingResourceException" })
+    @SkipForRepeat({ NO_MODIFICATION })
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void CxfSAMLBasicTests_audienceRestrictions_single_validEE8Only() throws Exception {
 
@@ -361,9 +350,8 @@ public class CxfSAMLBasic1ServerTests extends CxfSAMLBasicTests {
     }
     
 
-    //3/2021 to run with EE7, then the corresponding error message can be expected
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    @ExpectedFFDC(value = { "org.apache.ws.security.WSSecurityException" })
+    @SkipForRepeat({ EE8_FEATURES })
+    @ExpectedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     @Test
     public void CxfSAMLBasicTests_audienceRestrictions_single_invalidEE7Only() throws Exception {
     
@@ -382,9 +370,8 @@ public class CxfSAMLBasic1ServerTests extends CxfSAMLBasicTests {
         genericSAML(_testName, webClient, updatedTestSettings, standardFlow, expectations);
     }
     
-    //3/2021 to run with EE8, then the corresponding error message can be expected
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.util.MissingResourceException" })
+    @SkipForRepeat({ NO_MODIFICATION })
+    @AllowedFFDC(value = { "java.util.MissingResourceException", "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void CxfSAMLBasicTests_audienceRestrictions_single_invalidEE8Only() throws Exception {
 
@@ -396,7 +383,7 @@ public class CxfSAMLBasic1ServerTests extends CxfSAMLBasicTests {
 
         updatedTestSettings.setCXFSettings(_testName, null, servicePort, serviceSecurePort, "user1", "user1pwd", "SAMLSOAPService2", "SAMLSoapPort2", "", "False", null, null);
 
-        String CXF_SAML_TOKEN_GENERAL_FAILURE_MSG = "SAML token security failure"; //@AV999
+        String CXF_SAML_TOKEN_GENERAL_FAILURE_MSG = "SAML token security failure";
         List<validationData> expectations = helpers.setErrorSAMLCXFExpectations(null, flowType, updatedTestSettings, CXF_SAML_TOKEN_GENERAL_FAILURE_MSG);
         
         expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_MESSAGES_LOG, SAMLConstants.STRING_CONTAINS, "Did NOT fail because the audienceRestrictions weren't satisfied.", null, audienceRestrictError);

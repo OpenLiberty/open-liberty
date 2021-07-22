@@ -11,6 +11,10 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.samltoken.common;
 
+import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
+
 import java.util.List;
 
 import org.junit.Test;
@@ -27,9 +31,12 @@ import com.ibm.ws.security.saml20.fat.commonTest.SAMLTestSettings;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.EE8FeatureReplacementAction;
+import componenttest.rules.repeater.EmptyAction;
 import componenttest.topology.impl.LibertyServerWrapper;
 
 /**
@@ -70,9 +77,8 @@ public class CxfSAMLBasicTests extends SAMLCommonTest {
      * Test should succeed in accessing the server side service.
      *
      */
-    //1/20/2021 added the FULL mode
     @Mode(TestMode.FULL)
-    @AllowedFFDC(value = { "java.lang.Exception" })
+    @SkipForRepeat({ EE9_FEATURES })
     @Test
     public void CxfSAMLBasicTests_validUserPw_test() throws Exception {
 
@@ -99,7 +105,7 @@ public class CxfSAMLBasicTests extends SAMLCommonTest {
      */
     
     @Mode(TestMode.LITE)
-    @AllowedFFDC(value = { "java.lang.Exception" })
+    @SkipForRepeat({ NO_MODIFICATION, EE8_FEATURES })
     @Test
     public void CxfSAMLBasicTests_noUserPw_test() throws Exception {
 
@@ -126,9 +132,9 @@ public class CxfSAMLBasicTests extends SAMLCommonTest {
      * Test should succeed in accessing the server side service.
      *
      */
-    //1/20/2021 added the FULL mode
+
     @Mode(TestMode.FULL)
-    @AllowedFFDC(value = { "java.lang.Exception" })
+    @SkipForRepeat({ EE9_FEATURES })
     @Test
     public void CxfSAMLBasicTests_validUserBadPw_test() throws Exception {
 
@@ -156,9 +162,9 @@ public class CxfSAMLBasicTests extends SAMLCommonTest {
      * Test should succeed in accessing the server side service.
      *
      */
-    //1/20/2021 added the FULL mode
+
     @Mode(TestMode.FULL)
-    @AllowedFFDC(value = { "java.lang.Exception" })
+    @SkipForRepeat({ EE9_FEATURES })
     @Test
     public void CxfSAMLBasicTests_badUserValidPw_test() throws Exception {
 
@@ -184,10 +190,10 @@ public class CxfSAMLBasicTests extends SAMLCommonTest {
      * Test should succeed in accessing the server side service.
      *
      */
-    //1/20/2021 added the FULL mode
+
     @Mode(TestMode.FULL)
-    @AllowedFFDC(value = { "java.lang.Exception" })
-    @ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException" })
+    @SkipForRepeat({ EE9_FEATURES })
+    @ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException" }, repeatAction = { EmptyAction.ID, EE8FeatureReplacementAction.ID })
     @Test
     public void CxfSAMLBasicTests_SAMLTokenMissingSignature_test() throws Exception {
 
@@ -214,8 +220,8 @@ public class CxfSAMLBasicTests extends SAMLCommonTest {
      *
      */
 
-    //1/20/2021 added the FULL mode
     @Mode(TestMode.FULL)
+    @SkipForRepeat({ EE9_FEATURES })
     @Test
     public void CxfSAMLBasicTests_clientUserNameTokenPolicy_test() throws Exception {
 

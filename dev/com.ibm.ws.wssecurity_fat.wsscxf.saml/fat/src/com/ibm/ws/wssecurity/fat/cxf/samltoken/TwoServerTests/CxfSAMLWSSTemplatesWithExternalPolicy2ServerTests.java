@@ -11,6 +11,8 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.samltoken.TwoServerTests;
 
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -25,6 +27,7 @@ import com.ibm.ws.security.saml20.fat.commonTest.SAMLConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLMessageConstants;
 import com.ibm.ws.wssecurity.fat.cxf.samltoken.common.CxfSAMLWSSTemplatesTests;
 
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -47,6 +50,7 @@ import componenttest.topology.utils.HttpUtils;
  * 2.0 token in the HTTP POST request.
  */
 
+@SkipForRepeat({ EE9_FEATURES })
 @LibertyServerWrapper
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
@@ -62,9 +66,6 @@ public class CxfSAMLWSSTemplatesWithExternalPolicy2ServerTests extends CxfSAMLWS
         msgUtils.printClassName(thisClass.toString());
         Log.info(thisClass, "setupBeforeTest", "Prep for test");
  
-        //1-12-2021 commented out
-        //HttpUtils.enableSSLv3();
-
         // add any additional messages that you want the "start" to wait for
         // we should wait for any providers that this test requires
         List<String> extraMsgs = new ArrayList<String>();
@@ -88,7 +89,6 @@ public class CxfSAMLWSSTemplatesWithExternalPolicy2ServerTests extends CxfSAMLWS
         copyMetaData = true;
         testSAMLServer = commonSetUp("com.ibm.ws.wssecurity_fat.saml.wssTemplateswithep", "server_1.xml", SAMLConstants.SAML_ONLY_SETUP, SAMLConstants.SAML_SERVER_TYPE, extraApps, extraMsgs);
 
-        //3/2021
         testSAMLServer.addIgnoredServerExceptions(SAMLMessageConstants.CWWKS5207W_SAML_CONFIG_IGNORE_ATTRIBUTES, SAMLMessageConstants.CWWKG0101W_CONFIG_NOT_VISIBLE_TO_OTHER_BUNDLES, SAMLMessageConstants.CWWKF0001E_FEATURE_MISSING);
         testSAMLServer2.addIgnoredServerExceptions(SAMLMessageConstants.CWWKS5207W_SAML_CONFIG_IGNORE_ATTRIBUTES, SAMLMessageConstants.CWWKG0101W_CONFIG_NOT_VISIBLE_TO_OTHER_BUNDLES, SAMLMessageConstants.CWWKF0001E_FEATURE_MISSING);
 
