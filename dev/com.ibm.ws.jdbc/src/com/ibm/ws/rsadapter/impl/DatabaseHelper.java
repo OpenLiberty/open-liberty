@@ -191,11 +191,10 @@ public class DatabaseHelper {
     /**
      * Creates a legacy DataStoreHelper and populates or overrides some default values from it.
      *
-     * @throws PrivilegedActionException if an error occurs.
-     * @throws ResourceException if an error occurs.
      * @throws ClassNotFoundException if unable to load a data store helper class.
+     * @throws Exception if an error occurs.
      */
-    final void createDataStoreHelper() throws PrivilegedActionException, ResourceException, ClassNotFoundException {
+    final void createDataStoreHelper() throws Exception {
         DSConfig config = mcf.dsConfig.get();
         Properties helperProps = new Properties();
         Object value;
@@ -250,68 +249,79 @@ public class DatabaseHelper {
                 if (key instanceof String || key instanceof Integer)
                     map.put(key, exceptionClass);
                 else
-                    // TODO NLS message
-                    throw new IllegalArgumentException("The sqlState and errorCode attributes cannot both be configured on the same identifyException element when replaceExceptions=true is enabled.");
+                    throw new IllegalArgumentException(Tr.formatMessage(tc, "8068_EXC_REPLACE_CONFLICT", config.jndiName == null ? config.id : config.jndiName));
             } catch (ClassNotFoundException x) {
-                Tr.error(tc, "8066E_IDENTIFY_EXCEPTION_INVALID_TARGET", entry.getValue(), Arrays.toString(IdentifyExceptionAs.values()) + ", com.ibm.websphere.ce.cm.*, ...");
+                Tr.error(tc, "8066E_IDENTIFY_EXCEPTION_INVALID_TARGET", entry.getValue(), Arrays.toString(IdentifyExceptionAs.values()));
                 throw x;
             }
 
-        dataStoreHelper = AccessController.doPrivileged((PrivilegedExceptionAction<?>) () -> {
-            Class<?> c = mcf.jdbcDriverLoader.loadClass(helperClassName);
-            Object h = c.getConstructor(Properties.class).newInstance(helperProps);
+        try {
+            dataStoreHelper = AccessController.doPrivileged((PrivilegedExceptionAction<?>) () -> {
+                Class<?> c = mcf.jdbcDriverLoader.loadClass(helperClassName);
+                Object h = c.getConstructor(Properties.class).newInstance(helperProps);
 
-            // dataStoreHelper.setConfig(mcf.dsConfig);
-            c.getMethod("setConfig", Object.class).invoke(h, mcf.dsConfig);
+                // dataStoreHelper.setConfig(mcf.dsConfig);
+                c.getMethod("setConfig", Object.class).invoke(h, mcf.dsConfig);
 
-            // genPw = dataStoreHelper.getPrintWriter();
-            if (genPw == null)
-                genPw = (PrintWriter) c.getMethod("getPrintWriter").invoke(h);
+                // genPw = dataStoreHelper.getPrintWriter();
+                if (genPw == null)
+                    genPw = (PrintWriter) c.getMethod("getPrintWriter").invoke(h);
 
-            // mcf.defaultIsolationLevel = dataStoreHelper.getIsolationLevel(null);
-            Class<?> AccessIntent = mcf.jdbcDriverLoader.loadClass("com.ibm.websphere.appprofile.accessintent.AccessIntent");
-            mcf.defaultIsolationLevel = (Integer) c.getMethod("getIsolationLevel", AccessIntent).invoke(h, (Object) null);
+                // mcf.defaultIsolationLevel = dataStoreHelper.getIsolationLevel(null);
+                Class<?> AccessIntent = mcf.jdbcDriverLoader.loadClass("com.ibm.websphere.appprofile.accessintent.AccessIntent");
+                mcf.defaultIsolationLevel = (Integer) c.getMethod("getIsolationLevel", AccessIntent).invoke(h, (Object) null);
 
-            // dataStoreHelper.setUserDefinedMap(map);
-            if (!map.isEmpty())
-                c.getMethod("setUserDefinedMap", Map.class).invoke(h, map);
+                // dataStoreHelper.setUserDefinedMap(map);
+                if (!map.isEmpty())
+                    c.getMethod("setUserDefinedMap", Map.class).invoke(h, map);
 
-            // DataStoreHelperMetaData metadata = dataStoreHelper.getMetaData();
-            Object metadata = c.getMethod("getMetaData").invoke(h);
+                // DataStoreHelperMetaData metadata = dataStoreHelper.getMetaData();
+                Object metadata = c.getMethod("getMetaData").invoke(h);
 
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(this, tc, "createDataStoreHelper", dataStoreHelper, metadata, map);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "createDataStoreHelper", dataStoreHelper, metadata, map);
 
-            doConnectionCleanup = c.getMethod("doConnectionCleanup", Connection.class);
-            doConnectionCleanupPerCloseConnection = c.getMethod("doConnectionCleanupPerCloseConnection", Connection.class, boolean.class, Object.class);
-            doConnectionSetup = c.getMethod("doConnectionSetup", Connection.class);
-            doConnectionSetupPerGetConnection = c.getMethod("doConnectionSetupPerGetConnection", Connection.class, boolean.class, Object.class);
-            doConnectionSetupPerTransaction = c.getMethod("doConnectionSetupPerTransaction", Subject.class, String.class, Connection.class, boolean.class, Object.class);
-            doStatementCleanup = c.getMethod("doStatementCleanup", PreparedStatement.class);
-            modifyXAFlag = c.getMethod("modifyXAFlag", int.class);
+                doConnectionCleanup = c.getMethod("doConnectionCleanup", Connection.class);
+                doConnectionCleanupPerCloseConnection = c.getMethod("doConnectionCleanupPerCloseConnection", Connection.class, boolean.class, Object.class);
+                doConnectionSetup = c.getMethod("doConnectionSetup", Connection.class);
+                doConnectionSetupPerGetConnection = c.getMethod("doConnectionSetupPerGetConnection", Connection.class, boolean.class, Object.class);
+                doConnectionSetupPerTransaction = c.getMethod("doConnectionSetupPerTransaction", Subject.class, String.class, Connection.class, boolean.class, Object.class);
+                doStatementCleanup = c.getMethod("doStatementCleanup", PreparedStatement.class);
+                modifyXAFlag = c.getMethod("modifyXAFlag", int.class);
 
-            Class<?> mdc = metadata.getClass();
+                Class<?> mdc = metadata.getClass();
 
-            // mcf.doesStatementCacheIsoLevel = metadata.doesStatementCacheIsoLevel();
-            mcf.doesStatementCacheIsoLevel = (Boolean) mdc.getMethod("doesStatementCacheIsoLevel").invoke(metadata);
+                // mcf.doesStatementCacheIsoLevel = metadata.doesStatementCacheIsoLevel();
+                mcf.doesStatementCacheIsoLevel = (Boolean) mdc.getMethod("doesStatementCacheIsoLevel").invoke(metadata);
 
-            // mcf.supportsGetCatalog = metadata.supportsGetCatalog();
-            mcf.supportsGetCatalog = (Boolean) mdc.getMethod("supportsGetCatalog").invoke(metadata);
+                // mcf.supportsGetCatalog = metadata.supportsGetCatalog();
+                mcf.supportsGetCatalog = (Boolean) mdc.getMethod("supportsGetCatalog").invoke(metadata);
 
-            // mcf.supportsGetNetworkTimeout = metadata.supportsGetNetworkTimeout();
-            mcf.supportsGetNetworkTimeout = (Boolean) mdc.getMethod("supportsGetNetworkTimeout").invoke(metadata);
+                // mcf.supportsGetNetworkTimeout = metadata.supportsGetNetworkTimeout();
+                mcf.supportsGetNetworkTimeout = (Boolean) mdc.getMethod("supportsGetNetworkTimeout").invoke(metadata);
 
-            // mcf.supportsGetSchema = metadata.supportsGetSchema();
-            mcf.supportsGetSchema = (Boolean) mdc.getMethod("supportsGetSchema").invoke(metadata);
+                // mcf.supportsGetSchema = metadata.supportsGetSchema();
+                mcf.supportsGetSchema = (Boolean) mdc.getMethod("supportsGetSchema").invoke(metadata);
 
-            // mcf.supportsGetTypeMap = metadata.supportsGetTypeMap();
-            mcf.supportsGetTypeMap = (Boolean) mdc.getMethod("supportsGetTypeMap").invoke(metadata);
+                // mcf.supportsGetTypeMap = metadata.supportsGetTypeMap();
+                mcf.supportsGetTypeMap = (Boolean) mdc.getMethod("supportsGetTypeMap").invoke(metadata);
 
-            // mcf.supportsIsReadOnly = metadata.supportsIsReadOnly();
-            mcf.supportsIsReadOnly = (Boolean) mdc.getMethod("supportsIsReadOnly").invoke(metadata);
+                // mcf.supportsIsReadOnly = metadata.supportsIsReadOnly();
+                mcf.supportsIsReadOnly = (Boolean) mdc.getMethod("supportsIsReadOnly").invoke(metadata);
 
-            return h;
-        });
+                return h;
+            });
+        } catch (Throwable x) {
+            if (x instanceof PrivilegedActionException)
+                x = x.getCause();
+            if (x instanceof InvocationTargetException)
+                x = x.getCause();
+            Tr.error(tc, "8069_HELPER_INIT_ERR", config.jndiName == null ? config.id : config.jndiName, helperClassName, x);
+            if (x instanceof Exception)
+                throw (Exception) x;
+            else
+                throw (Error) x;
+        }
     }
 
     /**

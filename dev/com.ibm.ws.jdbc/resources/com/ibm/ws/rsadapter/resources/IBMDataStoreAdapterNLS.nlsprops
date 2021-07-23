@@ -339,14 +339,22 @@ PROP_SET_ERROR.useraction=Verify that the value that is specified is valid for t
 # {0}         The invalid attribute value
 # {1}         The recommended attribute values
 # Do not translate: identifyException, as
-8066E_IDENTIFY_EXCEPTION_INVALID_TARGET=DSRA8066E: The ''{0}'' invalid value was specified for the ''as'' attribute on the identifyException element. Allowed values are: {1}
+8066E_IDENTIFY_EXCEPTION_INVALID_TARGET=DSRA8066E: The ''{0}'' invalid value was specified for the ''as'' attribute on the identifyException element. Recommended values are: {1}
 8066E_IDENTIFY_EXCEPTION_INVALID_TARGET.explanation=An invalid value was specified for the identifyException configuration element.
-8066E_IDENTIFY_EXCEPTION_INVALID_TARGET.useraction=Update the configuration to specify one of the allowed values.
+8066E_IDENTIFY_EXCEPTION_INVALID_TARGET.useraction=Update the configuration to specify one of the recommended values.
 
 # Do not translate: errorCode, sqlState, identifyException
 8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE=DSRA8067E: At least one of the 'errorCode' or 'sqlState' attributes must be specified on the identifyException element.
 8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE.explanation=One of the errorCode or sqlState attributes must be specified.
 8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE.useraction=Update the configuration to specify at least one of the errorCode or sqlState attributes on the identifyException element.
+
+8068_EXC_REPLACE_CONFLICT=DSRA8068E: DataSource {0} cannot configure both the sqlState and errorCode attributes on the same identifyException element when replaceExceptions=true is enabled.
+8068_EXC_REPLACE_CONFLICT.explanation=When replacing exceptions, the exception can be identified by its SQL State or its error code, not the combination of both.
+8068_EXC_REPLACE_CONFLICT.useraction=Specify separate identifyException configuration elements for the sqlState and the errorCode.
+
+8069_HELPER_INIT_ERR=DSRA8069E: DataSource {0} is unable to initialize DataStoreHelper implementation {1} due to an error: {2}
+8069_HELPER_INIT_ERR.explanation=The configured DataStoreHelper class was either inaccessible, lacked a public constructor with a single java.util.Properties parameter, or raised an error when invoked.
+8069_HELPER_INIT_ERR.useraction=Inspect the chained exception to determine the cause.
 
 # {0}        Type of Connection: XAConnection or PooledConnection.
 JAVAX_CONN_ERR=DSRA8100E: Unable to get a {0} from the DataSource.
