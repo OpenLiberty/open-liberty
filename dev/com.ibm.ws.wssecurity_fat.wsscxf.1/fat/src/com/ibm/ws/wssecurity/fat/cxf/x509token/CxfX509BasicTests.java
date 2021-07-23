@@ -240,7 +240,7 @@ public class CxfX509BasicTests {
         }
         //orig from CL
         //SharedTools.unInstallCallbackHandler(server);
-        //2/2021
+
         server.deleteFileFromLibertyInstallRoot("usr/extension/lib/bundles/com.ibm.ws.wssecurity.example.cbh.jar");
         server.deleteFileFromLibertyInstallRoot("usr/extension/lib/features/wsseccbh-1.0.mf");
         server.deleteFileFromLibertyInstallRoot("usr/extension/lib/bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");

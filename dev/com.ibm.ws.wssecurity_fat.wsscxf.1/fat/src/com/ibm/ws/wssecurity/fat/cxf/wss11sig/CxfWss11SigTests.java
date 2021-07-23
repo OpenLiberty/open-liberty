@@ -308,7 +308,7 @@ public class CxfWss11SigTests extends CommonTests {
 
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFClientBasicEncryptedElementMisMatchEE8Only() throws Exception {
 
         String thisMethod = "testCXFClientBasicEncryptedElementMisMatchEE8Only";
@@ -483,7 +483,7 @@ public class CxfWss11SigTests extends CommonTests {
 
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFClientBasicSigSignedElementMisMatchEE8Only() throws Exception {
 
         String thisMethod = "testCXFClientBasicSigSignedElementMisMatchEE8Only";

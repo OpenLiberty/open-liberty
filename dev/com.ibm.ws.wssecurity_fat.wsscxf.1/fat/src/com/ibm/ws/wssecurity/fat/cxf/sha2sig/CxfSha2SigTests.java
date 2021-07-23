@@ -162,7 +162,6 @@ public class CxfSha2SigTests extends CommonTests {
      */
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testCxfSha2DigestAlgorithmEE7Only() throws Exception {
 
         String thisMethod = "testCxfSha2DigestAlgorithm";
@@ -196,7 +195,7 @@ public class CxfSha2SigTests extends CommonTests {
 
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfSha2DigestAlgorithmEE8Only() throws Exception {
 
         String thisMethod = "testCxfSha2DigestAlgorithm";
@@ -432,8 +431,7 @@ public class CxfSha2SigTests extends CommonTests {
 
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException", "java.lang.ClassNotFoundException" },
-                 repeatAction = { EE8FeatureReplacementAction.ID })
+    @AllowedFFDC(value = { "java.net.MalformedURLException", "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfSha1ToSha2SigAlgorithmEE8Only() throws Exception {
 
         String thisMethod = "testCxfSha1ToSha2SigAlgorithm";

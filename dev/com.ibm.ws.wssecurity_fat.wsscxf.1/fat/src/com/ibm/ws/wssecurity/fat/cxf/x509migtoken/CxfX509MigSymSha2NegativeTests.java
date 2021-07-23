@@ -139,7 +139,6 @@ public class CxfX509MigSymSha2NegativeTests {
     @Test
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    @AllowedFFDC(value = { "java.lang.Exception" }, repeatAction = { EmptyAction.ID, EE8FeatureReplacementAction.ID })
     public void testCxfX509KeyIdMigSymServiceSha1ToSha512() throws Exception {
 
         String thisMethod = "testCxfX509KeyIdMigSymService";
@@ -154,7 +153,7 @@ public class CxfX509MigSymSha2NegativeTests {
                         "", //String portNumberSecure
                         "FatBAX01Service", //String strServiceName,
                         "UrnX509Token01", //String strServicePort
-                        errMsgVersion //2/2021 CxfX509MigSvcClient
+                        errMsgVersion //CxfX509MigSvcClient
             );
         } catch (Exception e) {
             throw e;
@@ -175,7 +174,6 @@ public class CxfX509MigSymSha2NegativeTests {
     @Test
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    @AllowedFFDC(value = { "java.lang.Exception" }, repeatAction = { EmptyAction.ID, EE8FeatureReplacementAction.ID })
     public void testCxfX509KeyIdMigSymServiceHttpsSha1ToSha512() throws Exception {
 
         String thisMethod = "testCxfX509KeyIdMigSymService";
@@ -190,7 +188,7 @@ public class CxfX509MigSymSha2NegativeTests {
                         portNumberSecure, //String portNumberSecure
                         "FatBAX01Service", //String strServiceName,
                         "UrnX509Token01", //String strServicePort
-                        errMsgVersion //2/2021  CxfX509MigSvcClient
+                        errMsgVersion //CxfX509MigSvcClient
             );
         } catch (Exception e) {
             throw e;
@@ -225,7 +223,7 @@ public class CxfX509MigSymSha2NegativeTests {
                         "", //String portNumberSecure
                         "FatBAX03Service", //String strServiceName,
                         "UrnX509Token03", //String strServicePort
-                        errMsgVersion //2/2021 CxfX509MigSvcClient
+                        errMsgVersion //CxfX509MigSvcClient
             );
         } catch (Exception e) {
             throw e;

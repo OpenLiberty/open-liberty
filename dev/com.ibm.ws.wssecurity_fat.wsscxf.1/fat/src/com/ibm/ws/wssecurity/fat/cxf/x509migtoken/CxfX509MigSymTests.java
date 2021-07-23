@@ -286,7 +286,6 @@ public class CxfX509MigSymTests {
 
     @Test
     @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    @AllowedFFDC(value = { "java.lang.Exception" }, repeatAction = { EmptyAction.ID, EE8FeatureReplacementAction.ID })
     public void testCxfX509KeyIdMigSymService() throws Exception {
 
         String thisMethod = "testCxfX509KeyIdMigSymService";
@@ -319,7 +318,6 @@ public class CxfX509MigSymTests {
 
     @Test
     @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    @AllowedFFDC(value = { "java.lang.Exception" }, repeatAction = { EmptyAction.ID, EE8FeatureReplacementAction.ID })
     public void testCxfX509KeyIdMigSymServiceHttps() throws Exception {
 
         String thisMethod = "testCxfX509KeyIdMigSymService";
@@ -1707,7 +1705,6 @@ public class CxfX509MigSymTests {
     @Test
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
-    @AllowedFFDC(value = { "java.lang.Exception" }, repeatAction = { EmptyAction.ID, EE8FeatureReplacementAction.ID })
     public void testBadCxfX509KeyIdMigSymEncryptBeforeSigningService() throws Exception {
         String thisMethod = "testCxfX509KeyIdMigSymEncryptBeforeSigningService";
         methodFull = "testBadCxfX509KeyIdMigSymEncryptBeforeSigningService";
@@ -2075,7 +2072,7 @@ public class CxfX509MigSymTests {
                            "", //String portNumberSecure
                            "FatBAX31Service", //String strServiceName,
                            "UrnX509Token31", //String strServicePort
-                           errMsgVersion //2/2021 CxfX509MigBadSvcClient
+                           errMsgVersion //CxfX509MigBadSvcClient
             );
         } catch (Exception e) {
             throw e;
@@ -2119,7 +2116,7 @@ public class CxfX509MigSymTests {
                            "", //String portNumberSecure
                            "FatBAX33Service", //String strServiceName,
                            "UrnX509Token33", //String strServicePort
-                           errMsgVersion //2/2021 CxfX509MigBadSvcClient
+                           errMsgVersion //CxfX509MigBadSvcClient
             );
         } catch (Exception e) {
             throw e;

@@ -2188,8 +2188,7 @@ public class CxfX509MigTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "java.net.MalformedURLException", "org.apache.wss4j.common.ext.WSSecurityException" },
-                 repeatAction = { JakartaEE9Action.ID })
+    @AllowedFFDC(value = { "java.net.MalformedURLException", "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { JakartaEE9Action.ID })
     public void testCxfX509AsymmetricSignatureReplayMigService() throws Exception {
         // This is a negative test case.
         // It ought to fail at the second request.
@@ -3584,7 +3583,7 @@ public class CxfX509MigTests {
                            "", //String portNumberSecure
                            "FatBAX32Service", //String strServiceName,
                            "UrnX509Token32", //String strServicePort
-                           errMsgVersion //2/2021 CxfX509MigBadSvcClient
+                           errMsgVersion //CxfX509MigBadSvcClient
             );
         } catch (Exception e) {
             throw e;
@@ -3659,7 +3658,7 @@ public class CxfX509MigTests {
                            "", //String portNumberSecure
                            "FatBAX34Service", //String strServiceName,
                            "UrnX509Token34", //String strServicePort
-                           errMsgVersion //2/2021 CxfX509MigBadSvcClient
+                           errMsgVersion //CxfX509MigBadSvcClient
             );
         } catch (Exception e) {
             throw e;
