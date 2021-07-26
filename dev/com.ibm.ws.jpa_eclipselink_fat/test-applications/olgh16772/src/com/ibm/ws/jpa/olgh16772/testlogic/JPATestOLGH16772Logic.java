@@ -62,11 +62,6 @@ public class JPATestOLGH16772Logic extends AbstractTestLogic {
             }
         }
 
-        //TODO: Disable test until EclipseLink 3.0 are updated to include the fix
-        if ((isUsingJPA30Feature()) && JPAProviderImpl.ECLIPSELINK.equals(getJPAProviderImpl(jpaResource))) {
-            return;
-        }
-
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
 
         final boolean isSQLServer = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.SQLSERVER);
@@ -166,11 +161,6 @@ public class JPATestOLGH16772Logic extends AbstractTestLogic {
             for (String key : testProps.keySet()) {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
-        }
-
-        //TODO: Disable test until EclipseLink 3.0 is updated to include the fix
-        if ((isUsingJPA30Feature()) && JPAProviderImpl.ECLIPSELINK.equals(getJPAProviderImpl(jpaResource))) {
-            return;
         }
 
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
@@ -273,11 +263,6 @@ public class JPATestOLGH16772Logic extends AbstractTestLogic {
             for (String key : testProps.keySet()) {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
-        }
-
-        //TODO: Disable test until EclipseLink 3.0 is updated to include the fix
-        if ((isUsingJPA30Feature()) && JPAProviderImpl.ECLIPSELINK.equals(getJPAProviderImpl(jpaResource))) {
-            return;
         }
 
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
@@ -384,11 +369,6 @@ public class JPATestOLGH16772Logic extends AbstractTestLogic {
             }
         }
 
-        //TODO: Disable test until EclipseLink 3.0 are updated to include the fix
-        if ((isUsingJPA30Feature()) && JPAProviderImpl.ECLIPSELINK.equals(getJPAProviderImpl(jpaResource))) {
-            return;
-        }
-
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
 
         final boolean isSQLServer = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.SQLSERVER);
@@ -491,11 +471,6 @@ public class JPATestOLGH16772Logic extends AbstractTestLogic {
             }
         }
 
-        //TODO: Disable test until EclipseLink 3.0 is updated to include the fix
-        if ((isUsingJPA30Feature()) && JPAProviderImpl.ECLIPSELINK.equals(getJPAProviderImpl(jpaResource))) {
-            return;
-        }
-
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
 
         final boolean isSQLServer = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.SQLSERVER);
@@ -596,11 +571,6 @@ public class JPATestOLGH16772Logic extends AbstractTestLogic {
             for (String key : testProps.keySet()) {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
-        }
-
-        //TODO: Disable test until EclipseLink 3.0 is updated to include the fix
-        if ((isUsingJPA30Feature()) && JPAProviderImpl.ECLIPSELINK.equals(getJPAProviderImpl(jpaResource))) {
-            return;
         }
 
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
