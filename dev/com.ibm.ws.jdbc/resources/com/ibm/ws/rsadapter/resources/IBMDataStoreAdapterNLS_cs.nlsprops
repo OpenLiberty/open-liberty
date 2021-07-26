@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2001, 2019 IBM Corporation and others.
+# Copyright (c) 2001, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -215,7 +215,7 @@ FEATURE_NOT_IMPLEMENTED=DSRA1300E: Funkce nen\u00ed implementov\u00e1na: {0}
 FEATURE_NOT_IMPLEMENTED.explanation=Po\u017eadovan\u00e1 funkce nen\u00ed k dispozici.
 FEATURE_NOT_IMPLEMENTED.useraction=Nepou\u017e\u00edvejte tuto funkci nebo p\u0159epn\u011bte na verzi ovlada\u010de podporuj\u00edc\u00ed tuto funkci, je-li to mo\u017en\u00e9.
 
-# 1301 deleted
+# 1301 reserved for other NLS file
 # 3000-3020 deleted
 # 3100-3127 deleted
 # 3200-3202 deleted
@@ -291,7 +291,8 @@ DSRA4015.no.ucp.connection.pool.datasource.useraction=Aktualizujte zdroj dat tak
 # 
 # Using 7000-7599 for DataStore Helper exception messages and warnings
 # 
-# 7000-7009 deleted
+# 7000 reserved for other NLS file
+# 7001-7009 deleted
 
 # No Comment Provided
 DB2_FILE_OUTSTREAM_ERROR=DSRA7010E: Zadan\u00fd soubor trasov\u00e1n\u00ed {0} neexistuje. Pokud nebude probl\u00e9m odstran\u011bn, bude z datab\u00e1ze vyvol\u00e1na v\u00fdjimka.
@@ -325,7 +326,9 @@ META_DATA_EXCEPTION=DSRA7018I: P\u0159\u00edstup k metadat\u016fm datab\u00e1ze 
 META_DATA_EXCEPTION.explanation=P\u0159i pokusu aplika\u010dn\u00edho serveru o z\u00edsk\u00e1n\u00ed objektu metadat pro datab\u00e1zi nebo o p\u0159\u00edstup k n\u011bmu do\u0161lo k v\u00fdjimce.
 META_DATA_EXCEPTION.useraction=Ov\u011b\u0159te, \u017ee jsou povolena v datab\u00e1zi typu back-end povolena metadata.
 
-# 7019-7042 deleted
+# 7019 deleted
+# 7020 reserved for other NLS file
+# 7021-7042 deleted
 # 7600-7606 deleted
 
 # ----------------------------------------------------------------------------
@@ -552,7 +555,7 @@ OBJECT_CLOSED.explanation=Do\u0161lo k pokusu o proveden\u00ed operace pro objek
 OBJECT_CLOSED.useraction=Na\u010dt\u011bte novou instanci objektu, pro kter\u00fd chcete operaci prov\u00e9st.
 
 # 9115 deleted
-# 9120-9121 - deleted
+# 9120-9121 - reserved for other NLS file
 
 # 9122E      NO_WRAPPED_OBJECT
 # 
@@ -562,7 +565,7 @@ NO_WRAPPED_OBJECT=DSRA9122E: Objekt {0} nezahrnuje \u017e\u00e1dn\u00e9 objekty 
 NO_WRAPPED_OBJECT.explanation=Ur\u010den\u00fd modul wrapper neobsahuje ur\u010den\u00fd typ objektu zpracovan\u00e9ho modulem wrapper.
 NO_WRAPPED_OBJECT.useraction=Ov\u011b\u0159te spr\u00e1vn\u00e9 ur\u010den\u00ed modulu wrapper a parametr\u016f pro objekt zpracovan\u00fd modulem wrapper.
 
-# 9123 deleted
+# 9123 reserved for other NLS file
 
 # 9124       NOT_AN_INTERFACE
 #
@@ -570,6 +573,8 @@ NO_WRAPPED_OBJECT.useraction=Ov\u011b\u0159te spr\u00e1vn\u00e9 ur\u010den\u00ed
 NOT_AN_INTERFACE=DSRA9124E: Nelze rozbalit objekt do {0}, proto\u017ee {0} nen\u00ed t\u0159\u00edda rozhran\u00ed.
 NOT_AN_INTERFACE.explanation=Metoda rozbalen\u00ed povoluje pouze rozbalen\u00ed do t\u0159\u00eddy rozhran\u00ed.
 NOT_AN_INTERFACE.useraction=Prove\u010fte rozbalen\u00ed do t\u0159\u00eddy, kter\u00e1 je rozhran\u00edm nam\u00edsto konkr\u00e9tn\u00ed t\u0159\u00eddy.
+
+# 9125 reserved for other NLS file
 
 # 9130E      OPERATION_NOT_PERMITTED
 # 
