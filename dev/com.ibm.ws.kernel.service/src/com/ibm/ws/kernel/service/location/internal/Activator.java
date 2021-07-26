@@ -29,8 +29,8 @@ import com.ibm.wsspi.kernel.service.location.VariableRegistry;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
-import io.openliberty.checkpoint.spi.SnapshotHook;
-import io.openliberty.checkpoint.spi.SnapshotHookFactory;
+import io.openliberty.checkpoint.spi.CheckpointHook;
+import io.openliberty.checkpoint.spi.CheckpointHookFactory;
 
 public class Activator implements BundleActivator {
     private static final TraceComponent tc = Tr.register(Activator.class);
@@ -68,9 +68,10 @@ public class Activator implements BundleActivator {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(tc, "Failed to install initialContextFactoryBuilder because it was already installed", ex);
             }
+
             // Hook to reset timer
-            context.registerService(SnapshotHookFactory.class, (p) -> {
-                return new SnapshotHook() {
+            context.registerService(CheckpointHookFactory.class, (p) -> {
+                return new CheckpointHook() {
                     @Override
                     public void restore() {
                         CpuInfo.resetTimer();

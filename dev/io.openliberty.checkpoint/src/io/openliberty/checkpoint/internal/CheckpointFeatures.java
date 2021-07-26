@@ -21,9 +21,10 @@ import com.ibm.ws.runtime.update.RuntimeUpdateListener;
 import com.ibm.ws.runtime.update.RuntimeUpdateManager;
 import com.ibm.ws.runtime.update.RuntimeUpdateNotification;
 import com.ibm.ws.threading.listeners.CompletionListener;
+import com.ibm.ws.kernel.boot.internal.BootstrapConstants;
 
-import io.openliberty.checkpoint.spi.Checkpoint;
-import io.openliberty.checkpoint.spi.Checkpoint.Phase;
+import io.openliberty.checkpoint.internal.Checkpoint;
+import io.openliberty.checkpoint.spi.CheckpointHookFactory.Phase;
 import io.openliberty.checkpoint.spi.SnapshotFailed;
 import io.openliberty.checkpoint.spi.SnapshotFailed.Type;
 
@@ -36,7 +37,7 @@ public class CheckpointFeatures implements RuntimeUpdateListener {
     @Activate
     public CheckpointFeatures(@Reference Checkpoint checkpoint, BundleContext bc) {
         this.checkpoint = checkpoint;
-        this.doCheckpoint = "features".equals(bc.getProperty(Checkpoint.CHECKPOINT_PROPERTY_NAME));
+        this.doCheckpoint = "features".equals(bc.getProperty(BootstrapConstants.CHECKPOINT_PROPERTY_NAME));
     }
 
     @Override

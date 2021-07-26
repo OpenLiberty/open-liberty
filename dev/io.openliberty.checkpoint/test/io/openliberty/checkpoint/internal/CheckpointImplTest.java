@@ -26,13 +26,13 @@ import java.util.List;
 import org.junit.Test;
 import org.osgi.service.component.ComponentContext;
 
-import io.openliberty.checkpoint.internal.CheckpointImplTest.TestSnapshotHookFactory.TestSnapshotHook;
+import io.openliberty.checkpoint.internal.CheckpointImplTest.TestCheckpointHookFactory.TestCheckpointHook;
 import io.openliberty.checkpoint.internal.criu.ExecuteCRIU;
-import io.openliberty.checkpoint.spi.Checkpoint.Phase;
+import io.openliberty.checkpoint.spi.CheckpointHookFactory.Phase;
+import io.openliberty.checkpoint.spi.CheckpointHook;
+import io.openliberty.checkpoint.spi.CheckpointHookFactory;
 import io.openliberty.checkpoint.spi.SnapshotFailed;
 import io.openliberty.checkpoint.spi.SnapshotFailed.Type;
-import io.openliberty.checkpoint.spi.SnapshotHook;
-import io.openliberty.checkpoint.spi.SnapshotHookFactory;
 
 /**
  *
@@ -70,25 +70,25 @@ public class CheckpointImplTest {
 
     }
 
-    static class TestSnapshotHookFactory implements SnapshotHookFactory {
+    static class TestCheckpointHookFactory implements CheckpointHookFactory {
         final RuntimeException prepareException;
         final RuntimeException restoreException;
 
-        public TestSnapshotHookFactory() {
+        public TestCheckpointHookFactory() {
             prepareException = null;
             restoreException = null;
         }
 
-        public TestSnapshotHookFactory(RuntimeException prepareException, RuntimeException restoreException) {
+        public TestCheckpointHookFactory(RuntimeException prepareException, RuntimeException restoreException) {
             this.prepareException = prepareException;
             this.restoreException = restoreException;
         }
 
         volatile boolean nullHook = false;
-        volatile TestSnapshotHook hook = null;
+        volatile TestCheckpointHook hook = null;
         volatile Phase phase;
 
-        class TestSnapshotHook implements SnapshotHook {
+        class TestCheckpointHook implements CheckpointHook {
             volatile boolean prepareCalled = false;
             volatile Exception abortPrepareCause = null;
             volatile boolean restoreCalled = false;
@@ -122,12 +122,12 @@ public class CheckpointImplTest {
         }
 
         @Override
-        public SnapshotHook create(Phase phase) {
+        public CheckpointHook create(Phase phase) {
             this.phase = phase;
             if (nullHook) {
                 return null;
             }
-            return hook = new TestSnapshotHook();
+            return hook = new TestCheckpointHook();
         }
     }
 
@@ -149,7 +149,7 @@ public class CheckpointImplTest {
     @Test
     public void testNullHook() throws SnapshotFailed {
         TestCRIU criu = new TestCRIU();
-        TestSnapshotHookFactory factory = new TestSnapshotHookFactory();
+        TestCheckpointHookFactory factory = new TestCheckpointHookFactory();
         CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(factory), criu);
         checkPhase(factory, checkpoint, criu);
     }
@@ -157,14 +157,14 @@ public class CheckpointImplTest {
     @Test
     public void testPrepareRestore() throws SnapshotFailed {
         TestCRIU criu = new TestCRIU();
-        TestSnapshotHookFactory f1 = new TestSnapshotHookFactory();
-        TestSnapshotHookFactory f2 = new TestSnapshotHookFactory();
-        TestSnapshotHookFactory f3 = new TestSnapshotHookFactory();
+        TestCheckpointHookFactory f1 = new TestCheckpointHookFactory();
+        TestCheckpointHookFactory f2 = new TestCheckpointHookFactory();
+        TestCheckpointHookFactory f3 = new TestCheckpointHookFactory();
         CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(f1, f2, f3), criu);
 
         checkDirectory(Phase.APPLICATIONS, checkpoint, criu);
-        List<TestSnapshotHook> hooks = getHooks(f1, f2, f3);
-        for (TestSnapshotHook hook : hooks) {
+        List<TestCheckpointHook> hooks = getHooks(f1, f2, f3);
+        for (TestCheckpointHook hook : hooks) {
             assertEquals("Prepare not called.", true, hook.prepareCalled);
             assertNull("Unexpected Prepare Exception.", hook.abortPrepareCause);
             assertEquals("Restore not called.", true, hook.restoreCalled);
@@ -176,9 +176,9 @@ public class CheckpointImplTest {
     public void testPrepareException() throws SnapshotFailed {
         TestCRIU criu = new TestCRIU();
         RuntimeException prepareException = new RuntimeException("prepare exception test.");
-        TestSnapshotHookFactory f1 = new TestSnapshotHookFactory();
-        TestSnapshotHookFactory f2 = new TestSnapshotHookFactory(prepareException, null);
-        TestSnapshotHookFactory f3 = new TestSnapshotHookFactory();
+        TestCheckpointHookFactory f1 = new TestCheckpointHookFactory();
+        TestCheckpointHookFactory f2 = new TestCheckpointHookFactory(prepareException, null);
+        TestCheckpointHookFactory f3 = new TestCheckpointHookFactory();
         CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(f1, f2, f3), criu);
 
         try {
@@ -188,8 +188,8 @@ public class CheckpointImplTest {
             assertEquals("Wrong type.", Type.PREPARE_ABORT, e.getType());
             assertEquals("Wrong cause.", prepareException, e.getCause());
         }
-        List<TestSnapshotHook> hooks = getHooks(f1, f2, f3);
-        for (TestSnapshotHook hook : hooks) {
+        List<TestCheckpointHook> hooks = getHooks(f1, f2, f3);
+        for (TestCheckpointHook hook : hooks) {
             assertEquals("Unexpected Restore called.", false, hook.restoreCalled);
             assertNull("Unexpected Restore Exception.", hook.abortRestoreCause);
         }
@@ -209,15 +209,15 @@ public class CheckpointImplTest {
     public void testAbortPrepareFromFailedDump() {
         TestCRIU criu = new TestCRIU();
         criu.throwIOException = true;
-        TestSnapshotHookFactory f1 = new TestSnapshotHookFactory();
-        TestSnapshotHookFactory f2 = new TestSnapshotHookFactory();
-        TestSnapshotHookFactory f3 = new TestSnapshotHookFactory();
+        TestCheckpointHookFactory f1 = new TestCheckpointHookFactory();
+        TestCheckpointHookFactory f2 = new TestCheckpointHookFactory();
+        TestCheckpointHookFactory f3 = new TestCheckpointHookFactory();
         CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(f1, f2, f3), criu);
 
         checkFailDump(Phase.FEATURES, checkpoint, criu);
 
-        List<TestSnapshotHook> hooks = getHooks(f1, f2, f3);
-        for (TestSnapshotHook hook : hooks) {
+        List<TestCheckpointHook> hooks = getHooks(f1, f2, f3);
+        for (TestCheckpointHook hook : hooks) {
             assertEquals("Prepare not called.", true, hook.prepareCalled);
             assertTrue("Unexpected Prepare Exception.", hook.abortPrepareCause instanceof IOException);
             assertEquals("Unexpected Restore called.", false, hook.restoreCalled);
@@ -229,9 +229,9 @@ public class CheckpointImplTest {
     public void testRestoreException() throws SnapshotFailed {
         TestCRIU criu = new TestCRIU();
         RuntimeException restoreException = new RuntimeException("restore exception test.");
-        TestSnapshotHookFactory f1 = new TestSnapshotHookFactory();
-        TestSnapshotHookFactory f2 = new TestSnapshotHookFactory(null, restoreException);
-        TestSnapshotHookFactory f3 = new TestSnapshotHookFactory();
+        TestCheckpointHookFactory f1 = new TestCheckpointHookFactory();
+        TestCheckpointHookFactory f2 = new TestCheckpointHookFactory(null, restoreException);
+        TestCheckpointHookFactory f3 = new TestCheckpointHookFactory();
         CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(f1, f2, f3), criu);
 
         File test = new File("test");
@@ -242,8 +242,8 @@ public class CheckpointImplTest {
             assertEquals("Wrong type.", Type.RESTORE_ABORT, e.getType());
             assertEquals("Wrong cause.", restoreException, e.getCause());
         }
-        List<TestSnapshotHook> hooks = getHooks(f1, f2, f3);
-        for (TestSnapshotHook hook : hooks) {
+        List<TestCheckpointHook> hooks = getHooks(f1, f2, f3);
+        for (TestCheckpointHook hook : hooks) {
             assertEquals("Prepare not called.", true, hook.prepareCalled);
             assertNull("Unexpected Prepare Exception.", hook.abortPrepareCause);
         }
@@ -259,15 +259,15 @@ public class CheckpointImplTest {
         assertEquals("Expected to have called criu", test, criu.directory);
     }
 
-    private List<TestSnapshotHook> getHooks(TestSnapshotHookFactory... factories) {
-        List<TestSnapshotHook> hooks = new ArrayList<>();
-        for (TestSnapshotHookFactory factory : factories) {
+    private List<TestCheckpointHook> getHooks(TestCheckpointHookFactory... factories) {
+        List<TestCheckpointHook> hooks = new ArrayList<>();
+        for (TestCheckpointHookFactory factory : factories) {
             hooks.add(factory.hook);
         }
         return hooks;
     }
 
-    private void checkPhase(TestSnapshotHookFactory factory, CheckpointImpl checkpoint, TestCRIU criu) throws SnapshotFailed {
+    private void checkPhase(TestCheckpointHookFactory factory, CheckpointImpl checkpoint, TestCRIU criu) throws SnapshotFailed {
         checkDirectory(Phase.APPLICATIONS, checkpoint, criu);
         assertEquals("Wrong phase.", Phase.APPLICATIONS, factory.phase);
 //        checkFailDump(Phase.SERVER, checkpoint, criu);

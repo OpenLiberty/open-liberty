@@ -34,14 +34,15 @@ import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
 
 import io.openliberty.checkpoint.internal.criu.ExecuteCRIU;
-import io.openliberty.checkpoint.spi.Checkpoint;
+import io.openliberty.checkpoint.internal.Checkpoint;
+import io.openliberty.checkpoint.spi.CheckpointHook;
+import io.openliberty.checkpoint.spi.CheckpointHookFactory;
+import io.openliberty.checkpoint.spi.CheckpointHookFactory.Phase;
 import io.openliberty.checkpoint.spi.SnapshotFailed;
 import io.openliberty.checkpoint.spi.SnapshotFailed.Type;
-import io.openliberty.checkpoint.spi.SnapshotHook;
-import io.openliberty.checkpoint.spi.SnapshotHookFactory;
 
 @Component(
-           reference = @Reference(name = "hookFactories", service = SnapshotHookFactory.class, cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC,
+           reference = @Reference(name = "hookFactories", service = CheckpointHookFactory.class, cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC,
                                   policyOption = ReferencePolicyOption.GREEDY),
            property = { "osgi.command.function=snapshot", "osgi.command.scope=criu" })
 public class CheckpointImpl implements Checkpoint {
@@ -69,12 +70,12 @@ public class CheckpointImpl implements Checkpoint {
     /**
      * Perform a snapshot for the specified phase. The result of the
      * snapshot will be stored in the specified directory.
-     * Before the snapshot is taken the registered {@link SnapshotHookFactory#create(Phase)}
-     * methods are called to obtain the {@link SnapshotHook} instances which will participate
+     * Before the snapshot is taken the registered {@link CheckpointHookFactory#create(Phase)}
+     * methods are called to obtain the {@link CheckpointHook} instances which will participate
      * in the prepare and restore steps for the snapshot process.
-     * Each snapshot hook instance will their {@link SnapshotHook#prepare(Phase)}
+     * Each snapshot hook instance will their {@link CheckpointHook#prepare(Phase)}
      * methods are called before the snapshot is taken. After the snapshot
-     * is taken each snapshot hook instance will have their {@link SnapshotHook#restore(Phase)}
+     * is taken each snapshot hook instance will have their {@link CheckpointHook#restore(Phase)}
      * methods called.
      *
      * @deprecated Provided to support debugging from osgi console.
@@ -98,8 +99,8 @@ public class CheckpointImpl implements Checkpoint {
     private void doSnapshot(Phase phase, File directory) throws SnapshotFailed {
         directory.mkdirs();
         Object[] factories = cc.locateServices("hookFactories");
-        List<SnapshotHook> snapshotHooks = getHooks(factories, phase);
-        prepare(snapshotHooks);
+        List<CheckpointHook> checkpointHooks = getHooks(factories, phase);
+        prepare(checkpointHooks);
         try {
             ExecuteCRIU currentCriu = criu;
             if (currentCriu == null) {
@@ -119,24 +120,24 @@ public class CheckpointImpl implements Checkpoint {
                 }
             }
         } catch (Exception e) {
-            abortPrepare(snapshotHooks, e);
+            abortPrepare(checkpointHooks, e);
             if (e instanceof SnapshotFailed) {
                 throw (SnapshotFailed) e;
             }
             throw new SnapshotFailed(Type.SNAPSHOT_FAILED, "Failed to create snapshot.", e, 0);
         }
-        restore(phase, snapshotHooks);
+        restore(phase, checkpointHooks);
     }
 
-    List<SnapshotHook> getHooks(Object[] factories, Phase phase) {
+    List<CheckpointHook> getHooks(Object[] factories, Phase phase) {
         if (factories == null) {
             return Collections.emptyList();
         }
-        List<SnapshotHook> hooks = new ArrayList<>(factories.length);
+        List<CheckpointHook> hooks = new ArrayList<>(factories.length);
         for (Object o : factories) {
-            // if o is anything other than a SnapshotHookFactory then
+            // if o is anything other than a CheckpointHookFactory then
             // there is a bug in SCR
-            SnapshotHook hook = ((SnapshotHookFactory) o).create(phase);
+            CheckpointHook hook = ((CheckpointHookFactory) o).create(phase);
             if (hook != null) {
                 hooks.add(hook);
             }
@@ -144,17 +145,17 @@ public class CheckpointImpl implements Checkpoint {
         return hooks;
     }
 
-    private void callHooks(List<SnapshotHook> snapshotHooks,
-                           Consumer<SnapshotHook> perform,
-                           BiConsumer<SnapshotHook, Exception> abort,
+    private void callHooks(List<CheckpointHook> checkpointHooks,
+                           Consumer<CheckpointHook> perform,
+                           BiConsumer<CheckpointHook, Exception> abort,
                            Function<Exception, SnapshotFailed> failed) throws SnapshotFailed {
-        List<SnapshotHook> called = new ArrayList<>(snapshotHooks.size());
-        for (SnapshotHook snapshotHook : snapshotHooks) {
+        List<CheckpointHook> called = new ArrayList<>(checkpointHooks.size());
+        for (CheckpointHook checkpointHook : checkpointHooks) {
             try {
-                perform.accept(snapshotHook);
-                called.add(snapshotHook);
+                perform.accept(checkpointHook);
+                called.add(checkpointHook);
             } catch (Exception abortCause) {
-                for (SnapshotHook abortHook : called) {
+                for (CheckpointHook abortHook : called) {
                     try {
                         abort.accept(abortHook, abortCause);
                     } catch (Exception unexpected) {
@@ -166,10 +167,10 @@ public class CheckpointImpl implements Checkpoint {
         }
     }
 
-    private void prepare(List<SnapshotHook> snapshotHooks) throws SnapshotFailed {
-        callHooks(snapshotHooks,
-                  SnapshotHook::prepare,
-                  SnapshotHook::abortPrepare,
+    private void prepare(List<CheckpointHook> checkpointHooks) throws SnapshotFailed {
+        callHooks(checkpointHooks,
+                  CheckpointHook::prepare,
+                  CheckpointHook::abortPrepare,
                   CheckpointImpl::failedPrepare);
     }
 
@@ -177,8 +178,8 @@ public class CheckpointImpl implements Checkpoint {
         return new SnapshotFailed(Type.PREPARE_ABORT, "Failed to prepare for a snapshot.", cause, 0);
     }
 
-    private void abortPrepare(List<SnapshotHook> snapshotHooks, Exception cause) {
-        for (SnapshotHook hook : snapshotHooks) {
+    private void abortPrepare(List<CheckpointHook> checkpointHooks, Exception cause) {
+        for (CheckpointHook hook : checkpointHooks) {
             try {
                 hook.abortPrepare(cause);
             } catch (Exception e) {
@@ -187,10 +188,10 @@ public class CheckpointImpl implements Checkpoint {
         }
     }
 
-    private void restore(Phase phase, List<SnapshotHook> snapshotHooks) throws SnapshotFailed {
-        callHooks(snapshotHooks,
-                  SnapshotHook::restore,
-                  SnapshotHook::abortRestore,
+    private void restore(Phase phase, List<CheckpointHook> checkpointHooks) throws SnapshotFailed {
+        callHooks(checkpointHooks,
+                  CheckpointHook::restore,
+                  CheckpointHook::abortRestore,
                   CheckpointImpl::failedRestore);
     }
 
