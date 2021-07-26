@@ -12,19 +12,16 @@ package io.openliberty.checkpoint.spi;
 
 import org.osgi.annotation.versioning.ConsumerType;
 
-import io.openliberty.checkpoint.spi.Checkpoint.Phase;
-
 /**
- * A hook that gets called during a snapshot to allow the system to
- * prepare and restore during a snapshot operation.
+ * A hook that gets called during a checkpoint to allow the system to
+ * prepare and restore during a checkpoint operation.
  *
- * @see Checkpoint#snapshot(Phase, java.io.File)
  */
 @ConsumerType
-public interface SnapshotHook {
+public interface CheckpointHook {
     /**
-     * Prepare to snapshot. If the hook throws
-     * an exception then the snapshot will be aborted. All hooks
+     * Prepare to checkpoint. If the hook throws
+     * an exception then the checkpoint will be aborted. All hooks
      * that already had their {@link prepare()} method called
      * will then have their {@link #abortPrepare(Exception)}
      * method called.
@@ -33,7 +30,7 @@ public interface SnapshotHook {
     };
 
     /**
-     * Abort the prepare for snapshot.
+     * Abort the prepare for checkpoint.
      *
      * @param cause the exception that caused the abort
      */
@@ -41,7 +38,7 @@ public interface SnapshotHook {
     };
 
     /**
-     * Restore the state after a snapshot. If the hook
+     * Restore the state after a checkpoint. If the hook
      * throws an exception then the restore will be aborted. All hooks
      * that already had their {@link #restore()} method called
      * will then have their {@link #abortRestore(Exception)}
@@ -51,7 +48,7 @@ public interface SnapshotHook {
     };
 
     /**
-     * Abort the restore from snapshot.
+     * Abort the restore from checkpoint.
      *
      * @param cause the exception the caused the abort
      */

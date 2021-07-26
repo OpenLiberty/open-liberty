@@ -19,9 +19,10 @@ import org.osgi.service.component.annotations.Reference;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.kernel.feature.ServerReadyStatus;
+import com.ibm.ws.kernel.boot.internal.BootstrapConstants;
 
-import io.openliberty.checkpoint.spi.Checkpoint;
-import io.openliberty.checkpoint.spi.Checkpoint.Phase;
+import io.openliberty.checkpoint.internal.Checkpoint;
+import io.openliberty.checkpoint.spi.CheckpointHookFactory.Phase;
 import io.openliberty.checkpoint.spi.SnapshotFailed;
 import io.openliberty.checkpoint.spi.SnapshotFailed.Type;
 
@@ -36,7 +37,7 @@ public class CheckpointApplications implements ServerReadyStatus {
     @Activate
     public CheckpointApplications(@Reference Checkpoint checkpoint, BundleContext bc) {
         this.checkpoint = checkpoint;
-        this.doCheckpoint = "applications".equals(bc.getProperty(Checkpoint.CHECKPOINT_PROPERTY_NAME));
+        this.doCheckpoint = "applications".equals(bc.getProperty(BootstrapConstants.CHECKPOINT_PROPERTY_NAME));
     }
 
     @Override

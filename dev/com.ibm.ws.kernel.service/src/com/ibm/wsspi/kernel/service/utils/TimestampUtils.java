@@ -31,9 +31,9 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsResource;
 
-import io.openliberty.checkpoint.spi.Checkpoint.Phase;
-import io.openliberty.checkpoint.spi.SnapshotHook;
-import io.openliberty.checkpoint.spi.SnapshotHookFactory;
+import io.openliberty.checkpoint.spi.CheckpointHook;
+import io.openliberty.checkpoint.spi.CheckpointHookFactory;
+import io.openliberty.checkpoint.spi.CheckpointHookFactory.Phase;
 
 /**
  *
@@ -61,11 +61,11 @@ public class TimestampUtils {
                 // taking shortcuts because this bundle registers the WsLocationAdmin service
                 final WsLocationAdmin locServiceImpl = bc.getService(bc.getServiceReference(WsLocationAdmin.class));
                 // Look for time file created during CRIU restore. Use it to calculate more accurate server start time.
-                bc.registerService("io.openliberty.checkpoint.spi.SnapshotHookFactory", new SnapshotHookFactory() {
+                bc.registerService("io.openliberty.checkpoint.spi.CheckpointHookFactory", new CheckpointHookFactory() {
 
                     @Override
-                    public SnapshotHook create(Phase phase) {
-                        return new SnapshotHook() {
+                    public CheckpointHook create(Phase phase) {
+                        return new CheckpointHook() {
                             @Override
                             @FFDCIgnore({ NumberFormatException.class, IOException.class, IllegalArgumentException.class })
                             public void restore() {
