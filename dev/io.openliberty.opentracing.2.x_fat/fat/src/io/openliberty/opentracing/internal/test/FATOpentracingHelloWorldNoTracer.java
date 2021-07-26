@@ -22,34 +22,31 @@ import componenttest.topology.impl.LibertyServerFactory;
 import junit.framework.Assert;
 
 /**
- * <p>Test the correct log messages if microProfile-1.3
- * is enabled but no Tracer factory is supplied.
- * No application is needed, we just start the
- * server and check the messages.</p>
+ * <p>Test that a JAXRS application works even if the opentracing
+ * feature is enabled without a Tracer.</p>
  * 
  * <p>The test suite:</p>
  *
  * <ul>
- * <li>{@link #testHelloWorldMP40()}</li>
- * <li>{@link #testHelloWorldMP40SecondRequest()}</li>
+ * <li>{@link #testHelloWorld()}</li>
  * </ul>
  */
 @Mode(TestMode.FULL)
 @MinimumJavaLevel(javaLevel = 8)
-public class MicroProfile40NoTracer extends FATTestBase {
+public class FATOpentracingHelloWorldNoTracer extends FATTestBase {
     /**
      * Set to the generated server before any tests are run.
      */
     private static LibertyServer server;
 
     /**
-     * Start the server.
+     * Deploy the application and start the server.
      * 
      * @throws Exception Errors deploying the application.
      */
     @BeforeClass
     public static void setUp() throws Exception {
-        server = LibertyServerFactory.getLibertyServer("opentracingFATServer4");
+        server = LibertyServerFactory.getLibertyServer("opentracingFATServer2");
         deployHelloWorldApp(server);
         server.startServer();
     }
@@ -61,7 +58,6 @@ public class MicroProfile40NoTracer extends FATTestBase {
      */
     @AfterClass
     public static void tearDown() throws Exception {
-        Assert.assertNotNull("Expecting CWMOT0010W message", server.waitForStringInLogUsingMark("CWMOT0010W"));
         stopHelloWorldServer(server);
     }
 
@@ -71,17 +67,9 @@ public class MicroProfile40NoTracer extends FATTestBase {
      * @throws Exception Errors executing the service.
      */
     @Test
-    public void testHelloWorldMP40() throws Exception {
+    public void testNoTracer() throws Exception {
         testHelloWorld(server);
-    }
+        Assert.assertNotNull("Expecting CWMOT0010W message", server.waitForStringInLogUsingMark("CWMOT0010W"));
 
-    /**
-     * Execute the Hello World JAXRS service and ensure it returns the expected response.
-     * 
-     * @throws Exception Errors executing the service.
-     */
-    @Test
-    public void testHelloWorldMP40SecondRequest() throws Exception {
-        testHelloWorld(server);
     }
 }

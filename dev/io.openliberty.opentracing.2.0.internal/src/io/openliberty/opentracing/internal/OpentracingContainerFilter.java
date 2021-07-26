@@ -26,6 +26,7 @@ import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MultivaluedMap;
 
+import com.ibm.websphere.logging.hpel.LogRecordContext;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
@@ -54,7 +55,7 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
     public static final String EXCEPTION_KEY = OpentracingContainerFilter.class.getName() + ".Exception";
 
     private static final String TAG_COMPONENT_JAXRS = "jaxrs";
-
+    
     @Context
     protected ResourceInfo resourceInfo;
 
@@ -136,6 +137,10 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
             }
 
             incomingRequestContext.setProperty(SERVER_SPAN_PROP_ID, new ActiveSpan(span, scope));
+            
+            //Add traceId and spanId to LogRecordContext
+            LogRecordContext.addExtension(OpentracingUtils.TRACE_ID, span.context().toTraceId());
+            LogRecordContext.addExtension(OpentracingUtils.SPAN_ID, span.context().toSpanId());
         }
 
         incomingRequestContext.setProperty(SERVER_SPAN_SKIPPED_ID, !process);
@@ -200,6 +205,10 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
         }
         activeSpan.getScope().close();
         span.finish();
+        
+        // Remove traceId and spanId from LogRecordContext
+        LogRecordContext.removeExtension(OpentracingUtils.TRACE_ID);
+        LogRecordContext.removeExtension(OpentracingUtils.SPAN_ID);
     }
 
     private static class MultivaluedMapToTextMap implements TextMap {

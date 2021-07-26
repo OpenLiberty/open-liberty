@@ -21,6 +21,7 @@ import javax.ws.rs.client.ClientResponseContext;
 import javax.ws.rs.client.ClientResponseFilter;
 import javax.ws.rs.core.MultivaluedMap;
 
+import com.ibm.websphere.logging.hpel.LogRecordContext;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
@@ -138,6 +139,10 @@ public class OpentracingClientFilter implements ClientRequestFilter, ClientRespo
 
             clientRequestContext.setProperty(CLIENT_CONTINUATION_PROP_ID, new ActiveSpan(span, scope));
 
+            //Add traceId and spanId to LogRecordContext
+            LogRecordContext.addExtension(OpentracingUtils.TRACE_ID, span.context().toTraceId());
+            LogRecordContext.addExtension(OpentracingUtils.SPAN_ID, span.context().toSpanId());
+
         } else {
 
             Span currentSpan = tracer.activeSpan();
@@ -145,6 +150,11 @@ public class OpentracingClientFilter implements ClientRequestFilter, ClientRespo
                 tracer.inject(
                               currentSpan.context(),
                               Format.Builtin.HTTP_HEADERS, new MultivaluedMapToTextMap(clientRequestContext.getHeaders()));
+
+                //Add traceId and spanId to LogRecordContext
+                LogRecordContext.addExtension(OpentracingUtils.TRACE_ID, currentSpan.context().toTraceId());
+                LogRecordContext.addExtension(OpentracingUtils.SPAN_ID, currentSpan.context().toSpanId());
+
             }
         }
 
@@ -214,6 +224,10 @@ public class OpentracingClientFilter implements ClientRequestFilter, ClientRespo
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, methodName + " finish span", span);
         }
+        
+        // Remove traceId and spanId from LogRecordContext
+        LogRecordContext.removeExtension(OpentracingUtils.TRACE_ID);
+        LogRecordContext.removeExtension(OpentracingUtils.SPAN_ID);
     }
 
     private class MultivaluedMapToTextMap implements TextMap {

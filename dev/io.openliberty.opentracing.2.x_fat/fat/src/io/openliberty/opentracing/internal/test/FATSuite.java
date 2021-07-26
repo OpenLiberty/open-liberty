@@ -29,7 +29,8 @@ import componenttest.topology.impl.LibertyServerFactory;
 @SuiteClasses({
     TestSpanUtils.class,
     FATOpentracing.class,
-    FATOpentracingHelloWorld.class,
+    FATOpentracingHelloWorldLRC.class,
+    FATOpentracingHelloWorldNoTracer.class,
     FATMPOpenTracing.class
 // Comment out this test class until microprofile-4.0 is available
 //    MicroProfile40NoTracer.class  
