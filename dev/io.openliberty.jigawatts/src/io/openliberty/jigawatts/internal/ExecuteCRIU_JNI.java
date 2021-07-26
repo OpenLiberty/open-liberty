@@ -26,5 +26,10 @@ public class ExecuteCRIU_JNI implements ExecuteCRIU {
     public int dump(File directory) throws IOException {
         return Jigawatts.saveTheWorld(directory.getAbsolutePath());
     }
+    
+    @Override
+    public boolean isCheckpointSupported() {
+        return true;
+    }
 
 }

@@ -55,4 +55,9 @@ public class ExecuteCRIU_OpenJ9 implements BundleActivator, ExecuteCRIU {
         return -50;
     }
 
+    @Override
+    public boolean isCheckpointSupported() {
+        return CRIUSupport.isCRIUSupportEnabled();
+    }
+
 }
