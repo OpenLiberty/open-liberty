@@ -994,17 +994,17 @@
     <dependency>
       <groupId>net.sourceforge.htmlunit</groupId>
       <artifactId>neko-htmlunit</artifactId>
-      <version>2.27</version>
+      <version>2.52.0</version>
     </dependency>
     <dependency>
       <groupId>net.sourceforge.htmlunit</groupId>
       <artifactId>neko-htmlunit</artifactId>
-      <version>2.28</version>
+      <version>2.52.0</version>
     </dependency>
     <dependency>
       <groupId>net.sourceforge.htmlunit</groupId>
       <artifactId>neko-htmlunit</artifactId>
-      <version>2.44.0</version>
+      <version>2.52.0</version>
     </dependency>
     <dependency>
       <groupId>net.sourceforge.htmlunit</groupId>
