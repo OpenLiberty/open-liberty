@@ -24,7 +24,6 @@ import com.ibm.ws.security.saml20.fat.commonTest.SAMLMessageConstants;
 import com.ibm.ws.wssecurity.fat.cxf.samltoken2.common.CxfSAMLCallerTests;
 
 import componenttest.topology.impl.LibertyServerWrapper;
-//import componenttest.topology.utils.HttpUtils;
 import componenttest.annotation.SkipForRepeat;
 import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
 import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
@@ -64,9 +63,6 @@ public class CxfSAMLCaller1ServerTests extends CxfSAMLCallerTests {
 
         msgUtils.printClassName(thisClass.toString());
         Log.info(thisClass, "setupBeforeTest", "Prep for test");
-
-        //1/26/2021
-        //HttpUtils.enableSSLv3();
 
         // add any additional messages that you want the "start" to wait for
         // we should wait for any providers that this test requires

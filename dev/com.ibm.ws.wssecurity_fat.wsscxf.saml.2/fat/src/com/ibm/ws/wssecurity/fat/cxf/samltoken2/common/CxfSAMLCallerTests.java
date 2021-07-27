@@ -118,11 +118,6 @@ public class CxfSAMLCallerTests extends SAMLCommonTest {
         String partToCheck = "pass:true::FatSamlC03Service";
         String testMode = "positive";
         WebClient webClient = SAMLCommonTestHelpers.getWebClient();
-        
-        // Added to fix hostname mismatch to Common Name on the server certificate. This change ignore this check  
-        // If set to true, the client will accept connections to any host, regardless of whether they have valid certificates or not.
-        //6/2021 not needed now; the above SAMLCommonTestHelpers contains the same setting:
-        //webClient.getOptions().setUseInsecureSSL(true); 
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
@@ -159,11 +154,6 @@ public class CxfSAMLCallerTests extends SAMLCommonTest {
         String testMode = "positive";
         WebClient webClient = SAMLCommonTestHelpers.getWebClient();
         
-        // Added to fix hostname mismatch to Common Name on the server certificate. This change ignore this check  
-        // If set to true, the client will accept connections to any host, regardless of whether they have valid certificates or not.
-        //6/2021 not needed now; the above SAMLCommonTestHelpers contains the same setting:
-        //webClient.getOptions().setUseInsecureSSL(true); 
-
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
         updatedTestSettings.setCXFSettings("testCxfCallerHttpsPolicy", "cxf", servicePort, serviceSecurePort, userName, userPass, webServiceName,
@@ -198,11 +188,6 @@ public class CxfSAMLCallerTests extends SAMLCommonTest {
         String partToCheck = "pass:true::FatSamlC02Service";
         String testMode = "positive";
         WebClient webClient = SAMLCommonTestHelpers.getWebClient();
-
-        // Added to fix hostname mismatch to Common Name on the server certificate. This change ignore this check
-        // If set to true, the client will accept connections to any host, regardless of whether they have valid certificates or not.
-        //6/2021 not needed now; the above SAMLCommonTestHelpers contains the same setting:
-        //webClient.getOptions().setUseInsecureSSL(true); 
      
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
@@ -239,10 +224,6 @@ public class CxfSAMLCallerTests extends SAMLCommonTest {
         String testMode = "positive";
         WebClient webClient = SAMLCommonTestHelpers.getWebClient();
 
-        // Added to fix hostname mismatch to Common Name on the server certificate. This change ignore this check
-        // If set to true, the client will accept connections to any host, regardless of whether they have valid certificates or not.
-        webClient.getOptions().setUseInsecureSSL(true); 
-     
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
         updatedTestSettings.setCXFSettings("testCxfCaller_WithRealmName", "cxf", servicePort, serviceSecurePort, userName, userPass, webServiceName, webServicePort, "", "False", null, null);
