@@ -8,14 +8,8 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.simple;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
-
-@RunWith(Suite.class)
-@SuiteClasses({
-                FeaturesStartTest.class,
-})
-public class FATSuite {}
+// Define G:A:V coordinates of each dependency
+dependencies {
+  requiredLibs project(':io.openliberty.org.apache.commons.logging')
+}
