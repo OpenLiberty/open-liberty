@@ -36,8 +36,8 @@ import componenttest.rules.repeater.RepeatTests;
  * Purpose: This suite collects and runs all known good test suites.
  */
 public class FATSuite {
-
-	//No lite fat for EE9
+	
+	//The following run EE7 and EE8 full fat and no EE9 lite fat
     @ClassRule
     public static RepeatTests r = RepeatTests.with(new EmptyAction().fullFATOnly()).andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly().removeFeature("jsp-2.2").removeFeature("jaxws-2.2").removeFeature("servlet-3.1").removeFeature("usr:wsseccbh-1.0").addFeature("jsp-2.3").addFeature("jaxws-2.3").addFeature("servlet-4.0").addFeature("usr:wsseccbh-2.0")).andWith(FeatureReplacementAction.EE9_FEATURES());
 
