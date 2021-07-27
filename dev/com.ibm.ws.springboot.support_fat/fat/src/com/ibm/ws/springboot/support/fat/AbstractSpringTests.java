@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -172,6 +172,15 @@ public abstract class AbstractSpringTests {
         return true;
     }
 
+    public List<String> getExpectedWebApplicationEndpoints() {
+        String testMethodName = testName.getMethodName();
+        List<String> expectedEndpoints = new ArrayList<String>();
+        if (testMethodName != null && testMethodName.contains(DEFAULT_HOST_WITH_APP_PORT)) {
+            expectedEndpoints.add("default_host");
+        }
+        return expectedEndpoints;
+    }
+
     public void modifyAppConfiguration(SpringBootApplication appConfig) {
         // do nothing by default
     }
@@ -256,14 +265,13 @@ public abstract class AbstractSpringTests {
                 assertNotNull("The application was not installed", server
                                 .waitForStringInLog("CWWKZ0001I:.*"));
                 if (expectWebApplication()) {
-                    String testMethodName = testName.getMethodName();
-                    if (testMethodName != null && testMethodName.contains(DEFAULT_HOST_WITH_APP_PORT)) {
-                        assertNotNull("The endpoint not available on default_host", server
-                                        .waitForStringInLog("CWWKT0016I:.*\\bdefault_host\\b.*"));
-                    } else {
+                    List<String> expectedEndpoints = getExpectedWebApplicationEndpoints();
+                    for (String ep : getExpectedWebApplicationEndpoints())
+                        assertNotNull("The endpoint \"" + ep + "\" is not available", server
+                                        .waitForStringInLog("CWWKT0016I:.*\\b" + ep + "\\b.*"));
+                    if (expectedEndpoints.isEmpty())
                         assertNotNull("The endpoint is not available", server
                                         .waitForStringInLog("CWWKT0016I:.*"));
-                    }
                 }
             }
         }
