@@ -11,7 +11,10 @@ S * Copyright (c) 2020, 2021 IBM Corporation and others.
 
 package com.ibm.ws.wssecurity.fat.cxf.usernametoken;
 
-//4/2021
+import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
+
 import java.io.File;
 
 import org.junit.Test;
@@ -21,7 +24,10 @@ import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.EmptyAction;
+import componenttest.rules.repeater.JakartaEE9Action;
 
+@SkipForRepeat({ NO_MODIFICATION, EE8_FEATURES })
 @RunWith(FATRunner.class)
 public class CxfSSLUNTNonceTests extends SSLTestCommon {
 
@@ -39,9 +45,7 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
      */
 
     @Test
-    //5/2021 added PrivilegedActionExc, NoSuchMethodExc as a result of java11 and ee8
-    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException", "java.lang.ClassNotFoundException", "java.security.PrivilegedActionException",
-                           "java.lang.NoSuchMethodException" })
+    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException" }, repeatAction = { JakartaEE9Action.ID })
     public void testCxfUntNonceOnlySSL() throws Exception {
 
         genericTest("testCxfUntNonceOnlySSL", untSSLClientUrl,
@@ -64,8 +68,7 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
      */
 
     @Test
-    //4/2021
-    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
+    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException" }, repeatAction = { JakartaEE9Action.ID })
     public void testCxfUntNonceAndCreatedSSL() throws Exception {
 
         genericTest("testCxfUntNonceAndCreatedSSL", untSSLClientUrl,
@@ -89,8 +92,7 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
      */
 
     @Test
-    //4/2021
-    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
+    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException" }, repeatAction = { JakartaEE9Action.ID })
     public void testCxfUntNonceAndCreatedNoIdSSL() throws Exception {
 
         genericTest("testCxfUntNonceAndCreatedNoIdSSL", untSSLClientUrl,
@@ -116,11 +118,9 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
      *
      */
     @Test
-    //2/2021
-    @AllowedFFDC(value = { "java.util.MissingResourceException", "org.apache.wss4j.common.ext.WSSecurityException", "org.apache.ws.security.WSSecurityException" })
+    @AllowedFFDC(value = { "java.util.MissingResourceException", "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { JakartaEE9Action.ID })
     public void testCxfUntExpiredMsgSSL() throws Exception {
 
-        //4/2021
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_ee8.xml");
 
         genericTest("testCxfUntExpiredMsgSSL", untSSLClientUrl, portNumberSecure,
@@ -142,10 +142,9 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
      *
      */
 
-    //2/2021 run with EE7
     @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    @AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testCxfUntOldExtFutureTimestampSSLEE7Only() throws Exception {
 
         genericTest(
@@ -164,13 +163,12 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
     }
 
     @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    //4/2021
-    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.util.MissingResourceException", "java.net.MalformedURLException" })
-    public void testCxfUntOldExtFutureTimestampSSLEE8Only() throws Exception {
+    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.util.MissingResourceException", "java.net.MalformedURLException" },
+                 repeatAction = { JakartaEE9Action.ID })
+    public void testCxfUntOldExtFutureTimestampSSLEE9Only() throws Exception {
 
         genericTest(
-                    "testCxfUntOldExtFutureTimestampSSLEE8Only",
+                    "testCxfUntOldExtFutureTimestampSSLEE9Only",
                     untSSLClientUrl,
                     portNumberSecure,
                     "user1",
@@ -196,8 +194,7 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
      */
 
     @Test
-    //4/2021
-    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
+    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException" }, repeatAction = { JakartaEE9Action.ID })
     public void testCxfUntReqTimestampSSL() throws Exception {
 
         genericTest("testCxfUntReqTimestampSSL", untSSLClientUrl,
@@ -219,10 +216,9 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
      *
      */
 
-    //2/2021 run with EE7
     @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    @ExpectedFFDC("org.apache.ws.security.WSSecurityException")
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
+    @ExpectedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testCxfUntReqTimestampMissingSSLEE7Only() throws Exception {
 
         genericTest(
@@ -240,14 +236,12 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
 
     }
 
-    //2/2021 run with EE8
     @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    @AllowedFFDC(value = { "java.util.MissingResourceException", "org.apache.wss4j.common.ext.WSSecurityException" }) //@AV999
-    public void testCxfUntReqTimestampMissingSSLEE8Only() throws Exception {
+    @AllowedFFDC(value = { "java.util.MissingResourceException", "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { JakartaEE9Action.ID })
+    public void testCxfUntReqTimestampMissingSSLEE9Only() throws Exception {
 
         genericTest(
-                    "testCxfUntReqTimestampMissingSSLEE8Only",
+                    "testCxfUntReqTimestampMissingSSLEE9Only",
                     untSSLClientUrl,
                     portNumberSecure,
                     "user1",
@@ -317,10 +311,9 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
      *
      */
 
-    //2/2021 run with EE7
     @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    @ExpectedFFDC("org.apache.ws.security.WSSecurityException")
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
+    @ExpectedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testCxfUntReplaySSLEE7Only() throws Exception {
 
         genericTest("testCxfUntReplaySSLEE7Only", untSSLClientUrl, portNumberSecure,
@@ -329,13 +322,11 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
                     "Second call to FVTVersionBA7Service should have failed");
     }
 
-    //2/2021 run with EE8
     @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    @AllowedFFDC(value = { "java.util.MissingResourceException", "org.apache.wss4j.common.ext.WSSecurityException" }) //@AV999
-    public void testCxfUntReplaySSLEE8Only() throws Exception {
+    @AllowedFFDC(value = { "java.util.MissingResourceException", "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { JakartaEE9Action.ID })
+    public void testCxfUntReplaySSLEE9Only() throws Exception {
 
-        genericTest("testCxfUntReplaySSLEE8Only", untSSLClientUrl, portNumberSecure,
+        genericTest("testCxfUntReplaySSLEE9Only", untSSLClientUrl, portNumberSecure,
                     "user1", "security", "FVTVersionBA7Service", "UrnBasicPlcyBA7",
                     "true", "", replayAttackNew, //@AV999
                     "Second call to FVTVersionBA7Service should have failed");
@@ -353,11 +344,9 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
      *
      */
 
-    //2/2021 run with EE7
     @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    //Orig:
-    @ExpectedFFDC("org.apache.ws.security.WSSecurityException")
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
+    @ExpectedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testCxfUntHardcodedReplaySSLEE7Only() throws Exception {
 
         genericTest("testCxfUntHardcodedReplaySSLEE7Only", untSSLClientUrl, portNumberSecure,
@@ -366,15 +355,13 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
                     "Second call to FVTVersionBA7Service should have failed");
     }
 
-    //2/2021 run with EE8
     @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    @AllowedFFDC(value = { "java.util.MissingResourceException", "org.apache.wss4j.common.ext.WSSecurityException" }) //@AV999
-    public void testCxfUntHardcodedReplaySSLEE8Only() throws Exception {
+    @AllowedFFDC(value = { "java.util.MissingResourceException", "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { JakartaEE9Action.ID })
+    public void testCxfUntHardcodedReplaySSLEE9Only() throws Exception {
 
-        genericTest("testCxfUntHardcodedReplaySSLEE8Only", untSSLClientUrl, portNumberSecure,
+        genericTest("testCxfUntHardcodedReplaySSLEE9Only", untSSLClientUrl, portNumberSecure,
                     "user1", "security", "FVTVersionBA7Service", "UrnBasicPlcyBA7",
-                    "true", "strReplayNonce", replayAttackNew, //@AV999
+                    "true", "strReplayNonce", replayAttackNew,
                     "Second call to FVTVersionBA7Service should have failed");
     }
 

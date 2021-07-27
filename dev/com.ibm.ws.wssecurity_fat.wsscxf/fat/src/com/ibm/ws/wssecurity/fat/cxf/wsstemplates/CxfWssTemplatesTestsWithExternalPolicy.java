@@ -11,14 +11,14 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.wsstemplates;
 
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+
 import java.io.File;
 import java.util.Set;
 
 import org.junit.BeforeClass;
-//Added 10/2020
 import org.junit.runner.RunWith;
 
-//Added 10/2020
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
@@ -26,33 +26,29 @@ import com.ibm.ws.wssecurity.fat.cxf.usernametoken.CxfWssTemplatesTests;
 import com.ibm.ws.wssecurity.fat.utils.common.PrepCommonSetup;
 import com.ibm.ws.wssecurity.fat.utils.common.UpdateWSDLPortNum;
 
-//Added 10/2020
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
-//Added 11/2020
+@SkipForRepeat({ EE9_FEATURES })
 @Mode(TestMode.FULL)
-//Added 10/2020
 @RunWith(FATRunner.class)
 public class CxfWssTemplatesTestsWithExternalPolicy extends CxfWssTemplatesTests {
 
     static private UpdateWSDLPortNum newWsdl = null;
     static final private String serverName = "com.ibm.ws.wssecurity_fat.wsstemplateswithep";
-    //2/2021
     static private final Class<?> thisClass = CxfWssTemplatesTestsWithExternalPolicy.class;
 
-    //Added 10/2020
     @Server(serverName)
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
 
-        //2/2021
         ServerConfiguration config = server.getServerConfiguration();
         Set<String> features = config.getFeatureManager().getFeatures();
         if (features.contains("usr:wsseccbh-1.0")) {
@@ -65,19 +61,15 @@ public class CxfWssTemplatesTestsWithExternalPolicy extends CxfWssTemplatesTests
             copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
         }
 
-        //Added 11/2020
         ShrinkHelper.defaultDropinApp(server, "wsstemplatesclientwithep", "com.ibm.ws.wssecurity.fat.wsstemplatesclientwithep", "test.wssecfvt.wsstemplates",
                                       "test.wssecfvt.wsstemplates.types");
         ShrinkHelper.defaultDropinApp(server, "wsstemplateswithep", "com.ibm.ws.wssecurity.fat.wsstemplateswithep");
         PrepCommonSetup serverObject = new PrepCommonSetup();
         serverObject.prepareSetup(server);
 
-        //orig from CL
-        //commonSetUp(serverName, true, "/wsstemplatesclient/CxfWssTemplatesSvcClient");
         commonSetUp(serverName, true, "/wsstemplatesclientwithep/CxfWssTemplatesSvcClientWithep");
     }
 
-    //2/2021
     public static void copyServerXml(String copyFromFile) throws Exception {
 
         try {

@@ -21,6 +21,9 @@ dependencies {
                'httpunit:httpunit:1.5.4'
 }
 
+addRequiredLibraries.dependsOn addJakartaTransformer
+
+
 /* Unzip webcontent.war, WSSampleSeiClient.war from com.ibm.ws.wssecurity_fat.sample/apps */
 task unzip1(type: Copy) {
   def zipFile1 = file('publish/servers/com.ibm.ws.wssecurity_fat.sample/apps/webcontent.war')
@@ -38,6 +41,79 @@ task unzip2(type: Copy) {
 
 autoFVT.dependsOn unzip1, unzip2
 
+//Uncomment the section of building client war when it's needed to rebuild the war to replace the version in github repo
+//def appBuildDir = "${buildDir}/test-application"
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** webcontent.war
+ **
+ ******************************************************************
+ ******************************************************************/
+/*task webcontent_WAR(type: War, dependsOn: classes) {
+  destinationDir file(appBuildDir)
+  archiveName "webcontent.war"
+  
+  from ('test-applications/webcontentclient/resources') {
+    include '**'
+  }
+  from ('build/classes/java/main') {
+    include 'com/ibm/was/cxfsample/client/**' 
+    include 'com/ibm/was/cxfsample/sei/echo/**'
+    into 'WEB-INF/classes'
+  }
+}
+*/
+/******************************************************************
+ ******************************************************************
+ **
+ ** WSSampleSeiClient.war
+ **
+ ******************************************************************
+ ******************************************************************/
+/*task WSSampleSeiClien_WAR(type: War, dependsOn: classes) {
+  destinationDir file(appBuildDir)
+  archiveName "WSSampleSeiClient.war"
+  
+  from ('test-applications/WSSampleSeiClient/resources') {
+    include '**'
+  }
+  from ('build/classes/java/main') {
+    include 'com/ibm/was/wssample/client/**' 
+    include 'com/ibm/was/wssample/sei/async/**'
+    include 'com/ibm/was/wssample/sei/echo/**'
+    include 'com/ibm/was/wssample/sei/ping/**'
+    include 'com/ibm/wstest/wstf/**'
+    into 'WEB-INF/classes'
+  }
+}
+*/
+/*
+ * The 'assemble' task builds all these applications.
+ */
+/* 
+assemble { 
+  dependsOn webcontent_WAR
+  dependsOn WSSampleSeiClien_WAR
+}
+
+task unzip1(type: Copy) {
+    def zipFile1 = file("${appBuildDir}/webcontent.war")
+    def outputDir1 = file("${autoFvtDir}/publish/servers/com.ibm.ws.wssecurity_fat.sample/apps/webcontent")
+    from zipTree(zipFile1)
+      into outputDir1
+  }
+
+  task unzip2(type: Copy) {
+    def zipFile2 = file("${appBuildDir}/WSSampleSeiClient.war")
+    def outputDir2 = file("${autoFvtDir}/publish/servers/com.ibm.ws.wssecurity_fat.sample/apps/WSSampleSeiClient")
+    from zipTree(zipFile2)
+      into outputDir2  
+  }
+
+autoFVT.dependsOn unzip1, unzip2
+*/
 
 autoFVT.doLast {
 
@@ -166,4 +242,24 @@ autoFVT.doLast {
     }
   }
 
+  servers = [
+        'com.ibm.ws.wssecurity_fat.sample'
+  ]
+  
+  //Uncomment when the sample client war to be retrieved
+  /*
+  servers.each { server ->
+    copy {
+    from new File(appBuildDir, 'webcontent.war')
+    into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    }
+  }
+  
+  servers.each { server ->
+    copy {
+    from new File(appBuildDir, 'WSSampleSeiClient.war')
+    into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    }
+  }
+  */
 }

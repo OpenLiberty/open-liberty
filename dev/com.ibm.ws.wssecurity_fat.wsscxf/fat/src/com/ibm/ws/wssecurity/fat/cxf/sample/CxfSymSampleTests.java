@@ -11,10 +11,14 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.sample;
 
+import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
+import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Set;
 
 import org.junit.AfterClass;
@@ -34,14 +38,16 @@ import com.meterware.httpunit.WebResponse;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
+@SkipForRepeat({ NO_MODIFICATION, EE8_FEATURES })
 @RunWith(FATRunner.class)
 public class CxfSymSampleTests {
 
-    //11/2020
     static final private String serverName = "com.ibm.ws.wssecurity_fat.sample";
     @Server(serverName)
 
@@ -66,7 +72,6 @@ public class CxfSymSampleTests {
         String thisMethod = "setup";
         String defaultPort = "8010";
 
-        //2/2021
         ServerConfiguration config = server.getServerConfiguration();
         Set<String> features = config.getFeatureManager().getFeatures();
         if (features.contains("usr:wsseccbh-1.0")) {
@@ -80,10 +85,18 @@ public class CxfSymSampleTests {
             copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha384_wss4j.xml");
         }
 
-        //Added 11/2020
         //apps/webcontent and apps/WSSampleSeiClient are checked in the repo publish/server folder
         ShrinkHelper.defaultDropinApp(server, "WSSampleSei", "com.ibm.was.wssample.sei.echo");
         ShrinkHelper.defaultDropinApp(server, "webcontentprovider", "com.ibm.was.cxfsample.sei.echo");
+
+        //7/2021
+        //JakartaEE9 transforms the sample client applications which exist at '<server>/apps/<appname>'.
+        if (JakartaEE9Action.isActive()) {
+            Path webcontent_archive = Paths.get(server.getServerRoot() + File.separatorChar + "apps" + File.separatorChar + "webcontent");
+            Path WSSampleSeiClient_archive = Paths.get(server.getServerRoot() + File.separatorChar + "apps" + File.separatorChar + "WSSampleSeiClient");
+            JakartaEE9Action.transformApp(webcontent_archive);
+            JakartaEE9Action.transformApp(WSSampleSeiClient_archive);
+        }
 
         server.addInstalledAppForValidation("WSSampleSei");
         server.addInstalledAppForValidation("webcontentprovider");
@@ -137,9 +150,7 @@ public class CxfSymSampleTests {
         return;
     }
 
-    //5/2021 added PrivilegedActionExc, NoSuchMethodExc as a result of java11 and ee8
-    @AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException", "java.security.PrivilegedActionException",
-                           "java.lang.NoSuchMethodException" })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { JakartaEE9Action.ID })
     @Test
     public void testEcho1Service() throws Exception {
         String thisMethod = "testEcho1Service";
@@ -164,8 +175,7 @@ public class CxfSymSampleTests {
         return;
     }
 
-    //4/2021 add allowed ffdc to run with EE8
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { JakartaEE9Action.ID })
     @Test
     public void testEcho2Service() throws Exception {
         String thisMethod = "testEcho2Service";
@@ -190,8 +200,7 @@ public class CxfSymSampleTests {
         return;
     }
 
-    //4/2021 add allowed ffdc to run with EE8
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { JakartaEE9Action.ID })
     @Test
     public void testEcho3Service() throws Exception {
         String thisMethod = "testEcho3Service";
@@ -216,8 +225,7 @@ public class CxfSymSampleTests {
         return;
     }
 
-    //4/2021 add allowed ffdc to run with EE8
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { JakartaEE9Action.ID })
     @Test
     public void testEcho5Service() throws Exception {
         String thisMethod = "testEcho5Service";
@@ -242,8 +250,7 @@ public class CxfSymSampleTests {
         return;
     }
 
-    //4/2021 add allowed ffdc to run with EE8
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { JakartaEE9Action.ID })
     @Test
     public void testEcho6Service() throws Exception {
         String thisMethod = "testEcho6Service";

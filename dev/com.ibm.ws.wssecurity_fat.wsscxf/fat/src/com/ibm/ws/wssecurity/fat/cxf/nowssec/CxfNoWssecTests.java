@@ -11,6 +11,8 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.nowssec;
 
+import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
+import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
 import static org.junit.Assert.assertTrue;
 
 import java.io.StringReader;
@@ -29,15 +31,16 @@ import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
 //Note: the potential collided factor in testCxfClientNoWsse(), when full mode annotation is used
 //12/2020 Setting this test class for LITE bucket
+@SkipForRepeat({ NO_MODIFICATION, EE8_FEATURES })
 @RunWith(FATRunner.class)
 public class CxfNoWssecTests {
 
-    //2/2021
     static final private String serverName = "com.ibm.ws.wssecurity_fat";
     @Server(serverName)
 
@@ -52,7 +55,6 @@ public class CxfNoWssecTests {
     //                server.getHttpDefaultPort() +
     //                "/nowssec/SOAPService1?wsdl";
 
-    //added 10/2020
     private static String wsdlLocation;
 
     private static String serviceClientUrl = "";
@@ -67,12 +69,11 @@ public class CxfNoWssecTests {
     @BeforeClass
     public static void setUp() throws Exception {
 
-        //Added 10/2020
         ShrinkHelper.defaultDropinApp(server, "cxfclient", "com.ibm.ws.wssecurity.fat.cxfclient", "fats.cxf.basic.wssec", "fats.cxf.basic.wssec.types");
         ShrinkHelper.defaultDropinApp(server, "nowssec", "com.ibm.ws.wssecurity.fat.nowssec");
 
         server.startServer();// check CWWKS0008I: The security service is ready.
-        //Added 10/2020
+
         wsdlLocation = "http://localhost:" + server.getHttpDefaultPort() + "/nowssec/SOAPService1?wsdl";
 
         SharedTools.waitForMessageInLog(server, "CWWKS0008I");

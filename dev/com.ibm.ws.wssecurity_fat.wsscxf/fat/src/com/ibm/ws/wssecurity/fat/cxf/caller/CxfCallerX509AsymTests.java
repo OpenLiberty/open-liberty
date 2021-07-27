@@ -11,6 +11,7 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.caller;
 
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -33,24 +34,25 @@ import com.meterware.httpunit.WebResponse;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.EE8FeatureReplacementAction;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
+@SkipForRepeat({ EE9_FEATURES })
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class CxfCallerX509AsymTests {
 
-    //10/2020
     static final private String serverName = "com.ibm.ws.wssecurity_fat.x509caller";
     @Server(serverName)
     public static LibertyServer server;
 
     static private final Class<?> thisClass = CxfCallerX509AsymTests.class;
 
-    //2/2021 to use EE7 or EE8 error messages in CxfCallerSvcClient
     private static String errMsgVersion = "";
     private static String errMsgVersionInX509 = "";
 
@@ -79,7 +81,6 @@ public class CxfCallerX509AsymTests {
 
         String thisMethod = "setup";
 
-        //2/2021
         ServerConfiguration config = server.getServerConfiguration();
         Set<String> features = config.getFeatureManager().getFeatures();
         if (features.contains("usr:wsseccbh-1.0")) {
@@ -96,7 +97,6 @@ public class CxfCallerX509AsymTests {
             errMsgVersionInX509 = "EE8";
         }
 
-        //11/2020
         ShrinkHelper.defaultDropinApp(server, "callerclient", "com.ibm.ws.wssecurity.fat.callerclient", "test.libertyfat.caller.contract", "test.libertyfat.caller.types");
         ShrinkHelper.defaultDropinApp(server, "callertoken", "test.libertyfat.caller");
 
@@ -136,9 +136,7 @@ public class CxfCallerX509AsymTests {
      *
      */
 
-    //5/2021 added PrivilegedActionExc, NoSuchMethodExc as a result of java11 and ee8
-    @AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException", "java.security.PrivilegedActionException",
-                           "java.lang.NoSuchMethodException" })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void testCxfCallerX509TokenPolicy() throws Exception {
 
@@ -170,8 +168,7 @@ public class CxfCallerX509AsymTests {
      *
      */
 
-    //4/2021
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void testCxfCallerX509TransportEndorsingPolicy() throws Exception {
         // In case, the sequence on test cases are random... then need to unmark next line
@@ -205,8 +202,7 @@ public class CxfCallerX509AsymTests {
      *
      */
 
-    //4/2021
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void testCxfCallerHttpPolicyInX509() throws Exception {
 
@@ -227,8 +223,7 @@ public class CxfCallerX509AsymTests {
                         "UrnCallerToken01", //String strServicePort
                         "test3", // Expecting User ID
                         "test3", // Password for UserNameToken
-                        errMsgVersionInX509 //2/2021
-            );
+                        errMsgVersionInX509);
         } catch (Exception e) {
             throw e;
         }
@@ -242,8 +237,7 @@ public class CxfCallerX509AsymTests {
      *
      */
 
-    //4/2021
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void testCxfCallerHttpsPolicyInx509() throws Exception {
 
@@ -264,8 +258,7 @@ public class CxfCallerX509AsymTests {
                         "UrnCallerToken02", //String strServicePort
                         "test2", // Expecting User ID
                         "test2", // Password
-                        errMsgVersion //2/2021
-            );
+                        errMsgVersion);
         } catch (Exception e) {
             throw e;
         }
@@ -333,9 +326,8 @@ public class CxfCallerX509AsymTests {
                         "UrnCallerToken04", //String strServicePort
                         "test4", // Expecting User ID
                         "test4", // Password
-                        errMsgVersion, //2/2021
-                        errMsgVersionInX509 //2/2021
-            );
+                        errMsgVersion,
+                        errMsgVersionInX509);
         } catch (Exception e) {
             throw e;
         }
@@ -353,7 +345,6 @@ public class CxfCallerX509AsymTests {
      *
      */
 
-    //2/2021
     protected void testRoutine(
                                String thisMethod,
                                String callerPolicy,
@@ -383,7 +374,6 @@ public class CxfCallerX509AsymTests {
         return;
     }
 
-    //2/2021
     protected void testRoutine(
                                String thisMethod,
                                String callerPolicy,
@@ -395,7 +385,7 @@ public class CxfCallerX509AsymTests {
                                String untID,
                                String untPassword,
                                String errMsgVersion) throws Exception {
-        //2/2021
+
         testSubRoutine(
                        thisMethod,
                        callerPolicy,
@@ -408,13 +398,12 @@ public class CxfCallerX509AsymTests {
                        "",
                        untID,
                        untPassword,
-                       errMsgVersion, //2/2021
-                       null); //2/2021
+                       errMsgVersion,
+                       null);
 
         return;
     }
 
-    //2/2021
     protected void testRoutine(
                                String thisMethod,
                                String callerPolicy,
@@ -427,7 +416,7 @@ public class CxfCallerX509AsymTests {
                                String untPassword,
                                String errMsgVersion,
                                String errMsgVersionInX509) throws Exception {
-        //2/2021
+
         testSubRoutine(
                        thisMethod,
                        callerPolicy,
@@ -478,12 +467,11 @@ public class CxfCallerX509AsymTests {
                        untID,
                        untPassword,
                        null,
-                       null); //2/2021
+                       null);
 
         return;
     }
 
-    //2/2021
     protected void testBadRoutine(
                                   String thisMethod,
                                   String callerPolicy,
@@ -508,12 +496,11 @@ public class CxfCallerX509AsymTests {
                        untID,
                        untPassword,
                        null,
-                       errMsgVersionInX509); //2/2021
+                       errMsgVersionInX509);
 
         return;
     }
 
-    //2/2021
     protected void testBadRoutine(
                                   String thisMethod,
                                   String callerPolicy,
@@ -526,7 +513,7 @@ public class CxfCallerX509AsymTests {
                                   String untPassword,
                                   String errMsgVersion,
                                   String errMsgVersionInX509) throws Exception {
-        //2/2021
+
         testSubRoutine(
                        thisMethod,
                        callerPolicy,
@@ -568,7 +555,7 @@ public class CxfCallerX509AsymTests {
                                   String untPassword,
                                   String errMsgVersion,
                                   String errMsgVersionInX509) throws Exception {
-        //2/2021
+
         try {
 
             WebRequest request = null;
@@ -592,7 +579,7 @@ public class CxfCallerX509AsymTests {
             request.setParameter("methodFull", methodFull);
             request.setParameter("untID", untID);
             request.setParameter("untPassword", untPassword);
-            //2/2021
+
             request.setParameter("errorMsgVersion", errMsgVersion);
             request.setParameter("errorMsgVersionInX509", errMsgVersionInX509);
 
@@ -641,14 +628,12 @@ public class CxfCallerX509AsymTests {
 
     }
 
-    //2/2021
     private static void printMethodName(String strMethod) {
         Log.info(thisClass, strMethod, "*****************************"
                                        + strMethod);
         System.err.println("*****************************" + strMethod);
     }
 
-    //2/2021
     public static void copyServerXml(String copyFromFile) throws Exception {
 
         try {
