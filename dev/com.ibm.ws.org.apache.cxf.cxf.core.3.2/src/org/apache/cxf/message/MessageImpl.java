@@ -23,8 +23,10 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger; // Liberty code change
 
 import org.apache.cxf.Bus;
+import org.apache.cxf.common.logging.LogUtils; // Liberty code change
 import org.apache.cxf.endpoint.Endpoint;
 import org.apache.cxf.helpers.CastUtils;
 import org.apache.cxf.interceptor.InterceptorChain;
@@ -32,7 +34,13 @@ import org.apache.cxf.service.Service;
 import org.apache.cxf.service.model.EndpointInfo;
 import org.apache.cxf.transport.Destination;
 
+import com.ibm.websphere.ras.annotation.Trivial; // Liberty code change
+
+@Trivial // Liberty code change
 public class MessageImpl extends StringMapImpl implements Message {
+    
+    private static final Logger LOG = LogUtils.getL7dLogger(MessageImpl.class); // Liberty code change
+    
     private static final long serialVersionUID = -3020763696429459865L;
 
     private Exchange exchange;
@@ -98,18 +106,26 @@ public class MessageImpl extends StringMapImpl implements Message {
 
     @SuppressWarnings("unchecked")
     public <T> T getContent(Class<T> format) {
+        // Liberty code change start
+        LOG.entering("MessageImpl", "getContent");
         for (int x = 0; x < index; x += 2) {
             if (contents[x] == format) {
+                LOG.exiting("MessageImpl", "getContent");
                 return (T)contents[x + 1];
             }
         }
+        LOG.exiting("MessageImpl", "getContent");
+        // Liberty code change end
         return null;
     }
 
     public <T> void setContent(Class<T> format, Object content) {
+        // Liberty code change start
+        LOG.entering("MessageImpl", "setContent");
         for (int x = 0; x < index; x += 2) {
             if (contents[x] == format) {
                 contents[x + 1] = content;
+                LOG.exiting("MessageImpl", "setContent");
                 return;
             }
         }
@@ -123,6 +139,8 @@ public class MessageImpl extends StringMapImpl implements Message {
         contents[index] = format;
         contents[index + 1] = content;
         index += 2;
+        LOG.exiting("MessageImpl", "setContent");
+        // Liberty code change end
     }
 
     public <T> void removeContent(Class<T> format) {
