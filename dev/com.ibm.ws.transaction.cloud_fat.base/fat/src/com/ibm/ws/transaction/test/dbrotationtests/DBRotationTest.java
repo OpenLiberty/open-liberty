@@ -55,9 +55,13 @@ public class DBRotationTest extends FATServletClient {
     @TestServlet(servlet = Simple2PCCloudServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server2;
 
-    @Server("com.ibm.ws.transaction_ANYDBCLOUD001.longlease")
+    @Server("com.ibm.ws.transaction_ANYDBCLOUD001.longleasecompete")
     @TestServlet(servlet = Simple2PCCloudServlet.class, contextRoot = APP_NAME)
-    public static LibertyServer longLeaseLengthServer1;
+    public static LibertyServer longLeaseCompeteServer1;
+
+    @Server("com.ibm.ws.transaction_ANYDBCLOUD001.longleaselogfail")
+    @TestServlet(servlet = Simple2PCCloudServlet.class, contextRoot = APP_NAME)
+    public static LibertyServer longLeaseLogFailServer1;
 
     @Server("com.ibm.ws.transaction_ANYDBCLOUD001.noShutdown")
     @TestServlet(servlet = Simple2PCCloudServlet.class, contextRoot = APP_NAME)
@@ -67,7 +71,8 @@ public class DBRotationTest extends FATServletClient {
     public static void init() throws Exception {
         ShrinkHelper.defaultApp(server1, APP_NAME, "com.ibm.ws.transaction.*");
         ShrinkHelper.defaultApp(server2, APP_NAME, "com.ibm.ws.transaction.*");
-        ShrinkHelper.defaultApp(longLeaseLengthServer1, APP_NAME, "com.ibm.ws.transaction.*");
+        ShrinkHelper.defaultApp(longLeaseCompeteServer1, APP_NAME, "com.ibm.ws.transaction.*");
+        ShrinkHelper.defaultApp(longLeaseLogFailServer1, APP_NAME, "com.ibm.ws.transaction.*");
         ShrinkHelper.defaultApp(noShutdownServer1, APP_NAME, "com.ibm.ws.transaction.*");
     }
 
@@ -223,21 +228,17 @@ public class DBRotationTest extends FATServletClient {
         StringBuilder sb = null;
         String id = "001";
 
-        // longLeaseLengthServer1 is shared  with the log failure tests which turn FFDC checking off.
-        // Need to explicitly turn it on here in case those tests ran earlier
-        longLeaseLengthServer1.setFFDCChecking(true);
-
-        startServers(longLeaseLengthServer1);
+        startServers(longLeaseCompeteServer1);
         try {
-            runTestWithResponse(longLeaseLengthServer1, SERVLET_NAME, "modifyLeaseOwner");
+            runTestWithResponse(longLeaseCompeteServer1, SERVLET_NAME, "modifyLeaseOwner");
 
             // We expect this to fail since it is gonna crash the server
-            sb = runTestWithResponse(longLeaseLengthServer1, SERVLET_NAME, "setupRec" + id);
+            sb = runTestWithResponse(longLeaseCompeteServer1, SERVLET_NAME, "setupRec" + id);
         } catch (Throwable e) {
         }
 
-        assertNotNull(longLeaseLengthServer1.getServerName() + " didn't crash properly", longLeaseLengthServer1.waitForStringInLog("Dump State:"));
-        longLeaseLengthServer1.postStopServerArchive(); // must explicitly collect since crashed server
+        assertNotNull(longLeaseCompeteServer1.getServerName() + " didn't crash properly", longLeaseCompeteServer1.waitForStringInLog("Dump State:"));
+        longLeaseCompeteServer1.postStopServerArchive(); // must explicitly collect since crashed server
         // Need to ensure we have a long (5 minute) timeout for the lease, otherwise we may decide that we CAN delete
         // and renew our own lease. longLeasLengthServer1 is a clone of server1 with a longer lease length.
 
@@ -245,9 +246,9 @@ public class DBRotationTest extends FATServletClient {
         try {
             // The server has been halted but its status variable won't have been reset because we crashed it. In order to
             // setup the server for a restart, set the server state manually.
-            longLeaseLengthServer1.setStarted(false);
-            setUp(longLeaseLengthServer1);
-            longLeaseLengthServer1.startServerExpectFailure("recovery-dblog-fail.log", false, true);
+            longLeaseCompeteServer1.setStarted(false);
+            setUp(longLeaseCompeteServer1);
+            longLeaseCompeteServer1.startServerExpectFailure("recovery-dblog-fail.log", false, true);
         } catch (Exception ex) {
             // Tolerate an exception here, as recovery is asynch and the "successful start" message
             // may have been produced by the main thread before the recovery thread had completed
@@ -255,12 +256,12 @@ public class DBRotationTest extends FATServletClient {
         }
 
         // Server appears to have failed as expected. Check for log failure string
-        if (longLeaseLengthServer1.waitForStringInLog("RECOVERY_LOG_FAILED") == null) {
+        if (longLeaseCompeteServer1.waitForStringInLog("RECOVERY_LOG_FAILED") == null) {
             Exception ex = new Exception("Recovery logs should have failed");
             Log.error(getClass(), "recoveryTestCompeteForLock", ex);
             throw ex;
         }
-        longLeaseLengthServer1.postStopServerArchive(); // must explicitly collect since server start failed
+        longLeaseCompeteServer1.postStopServerArchive(); // must explicitly collect since server start failed
         // defect 210055: Now start cloud2 so that we can tidy up the environment, otherwise cloud1
         // is unstartable because its lease is owned by cloud2.
         server2.setHttpDefaultPort(cloud2ServerPort);
@@ -276,9 +277,9 @@ public class DBRotationTest extends FATServletClient {
         final String method = "testLogFailure";
         if (FATSuite.type != DatabaseContainerType.Derby) { // Embedded Derby cannot support tests with concurrent server startup
             // First server will get loads of FFDCs
-            longLeaseLengthServer1.setFFDCChecking(false);
+            longLeaseLogFailServer1.setFFDCChecking(false);
             server2.setHttpDefaultPort(cloud2ServerPort);
-            startServers(longLeaseLengthServer1, server2);
+            startServers(longLeaseLogFailServer1, server2);
 
             // server2 does not know that server1 has a much longer leaseTimeout configured so it will prematurely
             // (from server1's point of view) acquire server1's log and recover it.
@@ -290,25 +291,25 @@ public class DBRotationTest extends FATServletClient {
             // server1 now attempts some 2PC and will fail and terminate because its logs have been taken
             try {
                 // We expect this to fail since it is gonna crash the server
-                runTestWithResponse(longLeaseLengthServer1, SERVLET_NAME, "setupRecLostLog");
+                runTestWithResponse(longLeaseLogFailServer1, SERVLET_NAME, "setupRecLostLog");
             } catch (Throwable e) {
             }
 
-            int serverStatus = longLeaseLengthServer1.executeServerScript("status", null).getReturnCode();
-            Log.info(getClass(), method, "Status of " + longLeaseLengthServer1.getServerName() + " is " + serverStatus);
+            int serverStatus = longLeaseLogFailServer1.executeServerScript("status", null).getReturnCode();
+            Log.info(getClass(), method, "Status of " + longLeaseLogFailServer1.getServerName() + " is " + serverStatus);
 
             int retries = 0;
             while (serverStatus == 0 && retries++ < 50) {
                 Thread.sleep(5000);
-                serverStatus = longLeaseLengthServer1.executeServerScript("status", null).getReturnCode();
-                Log.info(getClass(), method, "Status of " + longLeaseLengthServer1.getServerName() + " is " + serverStatus);
+                serverStatus = longLeaseLogFailServer1.executeServerScript("status", null).getReturnCode();
+                Log.info(getClass(), method, "Status of " + longLeaseLogFailServer1.getServerName() + " is " + serverStatus);
             }
 
             // server1 should be stopped
-            assertFalse(longLeaseLengthServer1.getServerName() + " is not stopped (" + serverStatus + ")", 0 == serverStatus);
+            assertFalse(longLeaseLogFailServer1.getServerName() + " is not stopped (" + serverStatus + ")", 0 == serverStatus);
             // The server has been halted but its status variable won't have been reset because we crashed it. In order to
             // setup the server for a restart, set the server state manually.
-            longLeaseLengthServer1.setStarted(false);
+            longLeaseLogFailServer1.setStarted(false);
         }
         Log.info(this.getClass(), method, "test complete");
     }
