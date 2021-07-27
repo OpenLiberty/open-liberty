@@ -106,7 +106,7 @@ securitySchemeInvalidURL=Objekt Security Scheme mus\u00ed obsahovat platnou adre
 
 schemaTypeArrayNullItems=Objekt Schema typu \"array\" mus\u00ed m\u00edt nadefinov\u00e1nu vlastnost \"items\"
 schemaReadOnlyOrWriteOnly=Objekt Schema nesm\u00ed m\u00edt nastaveny pole \"readOnly\" a \"writeOnly\" na true
-schemaMultipleOfLessThanOne=Objekt Schema mus\u00ed m\u00edt striktn\u011b nastavenu vlastnost \"multipleOf\" na \u010d\u00edslo v\u011bt\u0161\u00ed ne\u017e nula
+schemaMultipleOfNotGreaterThanZero=Objekt Schema mus\u00ed m\u00edt striktn\u011b nastavenu vlastnost \"multipleOf\" na \u010d\u00edslo v\u011bt\u0161\u00ed ne\u017e nula
 schemaPropertyLessThanZero=Vlastnost \"{0}\" objektu Schema mus\u00ed b\u00fdt v\u011bt\u0161\u00ed ne\u017e nebo rovno nule
 schemaTypeDoesNotMatchProperty=Vlastnost \"{0}\" neodpov\u00edd\u00e1 objektu Schema typu \"{1}\"
 

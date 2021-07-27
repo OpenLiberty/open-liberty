@@ -106,7 +106,7 @@ securitySchemeInvalidURL=Az Security Scheme objektumnak \u00e9rv\u00e9nyes URL c
 
 schemaTypeArrayNullItems=Az \"array\" t\u00edpus\u00fa Schema objektumhoz meg kell hat\u00e1rozni az \"items\" tulajdons\u00e1got
 schemaReadOnlyOrWriteOnly=A Schema objektum nem tartalmazhat egyszerre true \u00e9rt\u00e9kre be\u00e1ll\u00edtott \"readOnly\" \u00e9s \"writeOnly\" mez\u0151ket
-schemaMultipleOfLessThanOne=A Schema objektumnak tartalmaznia kell a \"multipleOf\" tulajdons\u00e1got, amely szigor\u00faan egy null\u00e1n\u00e1l nagyobb sz\u00e1mra van be\u00e1ll\u00edtva
+schemaMultipleOfNotGreaterThanZero=A Schema objektumnak tartalmaznia kell a \"multipleOf\" tulajdons\u00e1got, amely szigor\u00faan egy null\u00e1n\u00e1l nagyobb sz\u00e1mra van be\u00e1ll\u00edtva
 schemaPropertyLessThanZero=A Schema objektum \"{0}\" tulajdons\u00e1ga csak null\u00e1n\u00e1l nagyobb vagy egyenl\u0151 lehet
 schemaTypeDoesNotMatchProperty=A(z) \"{0}\" tulajdons\u00e1g nem megfelel\u0151 a(z) \"{1}\" t\u00edpus\u00fa Schema objektumhoz
 

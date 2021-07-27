@@ -92,8 +92,8 @@ public class ValidationMessageConstants {
 
     public static final String SCHEMA_TYPE_ARRAY_NULL_ITEMS             = "schemaTypeArrayNullItems"; //$NON-NLS-1$
     public static final String SCHEMA_READ_ONLY_OR_WRITE_ONLY           = "schemaReadOnlyOrWriteOnly"; //$NON-NLS-1$
-    public static final String SCHEMA_MULTIPLE_OF_LESS_THAN_ONE         = "schemaMultipleOfLessThanOne"; //$NON-NLS-1$
-    public static final String SCHEMA_MULTIPLE_OF_LESS_THAN_ZERO        = "schemaPropertyLessThanZero"; //$NON-NLS-1$
+    public static final String SCHEMA_MULTIPLE_OF_NOT_GREATER_THAN_ZERO = "schemaMultipleOfNotGreaterThanZero"; //$NON-NLS-1$
+    public static final String SCHEMA_PROPERTY_LESS_THAN_ZERO           = "schemaPropertyLessThanZero"; //$NON-NLS-1$
     public static final String SCHEMA_TYPE_DOES_NOT_MATCH_PROPERTY      = "schemaTypeDoesNotMatchProperty"; //$NON-NLS-1$
     
     public static final String SECURITY_REQ_NOT_DECLARED                = "securityRequirementNotDeclared"; //$NON-NLS-1$
