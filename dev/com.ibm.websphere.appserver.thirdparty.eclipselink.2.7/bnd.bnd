@@ -16,6 +16,7 @@ eclVersion=2.7.9
 eclHash=2c549e2
 eclFullVersion=${eclVersion}
 eclPackageVersion=2.0.16
+asmFullVersion=9.1.0
 
 Bundle-SymbolicName: com.ibm.websphere.appserver.thirdparty.eclipselink.2.7
 Bundle-Description: EclipseLink JPA
@@ -35,7 +36,7 @@ Export-Package: \
             org.eclipse.persistence.internal.jpa.config.*;version="${eclPackageVersion}", \
             org.eclipse.persistence.internal.jpa.metadata.graphs;version="${eclPackageVersion}", \
             org.eclipse.persistence.internal.jpa.metadata.sop;version="${eclPackageVersion}", \
-            org.eclipse.persistence.internal.libraries.asm*;version="${eclPackageVersion}", \
+            org.eclipse.persistence.internal.libraries.asm*;version="${asmFullVersion}", \
             org.eclipse.persistence.internal.libraries.antlr.runtime*;version="${eclPackageVersion}", \
             org.eclipse.persistence.jpa.jpql*;version="${eclPackageVersion}", \
             org.eclipse.persistence.*;version="${eclVersion}"
@@ -110,11 +111,11 @@ Private-Package: com.ibm.ws.eclipselink.osgi
 
 Include-Resource: \
   @${repo;org.eclipse.persistence:org.eclipse.persistence.antlr;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence:org.eclipse.persistence.asm;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
+  @${repo;org.eclipse.persistence:org.eclipse.persistence.asm;${asmFullVersion};EXACT}!/!META-INF/maven/*,\
   @${repo;org.eclipse.persistence:org.eclipse.persistence.core;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
   @${repo;org.eclipse.persistence:org.eclipse.persistence.jpa;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
   @${repo;org.eclipse.persistence:org.eclipse.persistence.jpa.jpql;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
+  @${repo;org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen.processor;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
   org/eclipse/persistence/internal/helper=${bin}/org/eclipse/persistence/internal/helper
 
 
