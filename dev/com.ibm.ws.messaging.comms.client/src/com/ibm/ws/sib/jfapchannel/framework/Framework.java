@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2008 IBM Corporation and others.
+ * Copyright (c) 2006, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -324,22 +324,6 @@ public abstract class Framework
     * @return Returns the port number
     */
    public abstract int getHostPort(Object endPoint);
-
-   /**
-    * This method will issue a warning message if the transport name requires SSL but
-    * no SSL properties have been specified in the external properties file.
-    *
-    * @param outputTransportName
-    */
-   public abstract void warnIfSSLAndPropertiesFileMissing(String outputTransportName);
-
-   /**
-    * This method will issue a warning message if the endpoint has specified to use SSL but
-    * no SSL properties have been specified in the external properties file.
-    *
-    * @param endPoint The endpoint.
-    */
-   public abstract void warnIfSSLAndPropertiesFileMissing(Object endPoint);
 
    /**
     * As different endpoints are used in different environements and some of them do not implement
