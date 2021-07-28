@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.ejbcontainer.exception.web.ExceptionServlet;
 
 import componenttest.annotation.Server;
@@ -37,7 +38,7 @@ public class ExceptionTest {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.exception.fat.ExceptionServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.exception.fat.ExceptionServer"));
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.exception.fat.ExceptionServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.exception.fat.ExceptionServer")).andWith(FeatureReplacementAction.EE9_FEATURES().forServers("com.ibm.ws.ejbcontainer.exception.fat.ExceptionServer"));
 
     @BeforeClass
     public static void beforeClass() throws Exception {
@@ -49,7 +50,7 @@ public class ExceptionTest {
         ExceptionApp.addAsModule(ExceptionBean).addAsModule(ExceptionWeb);
         ExceptionApp = (EnterpriseArchive) ShrinkHelper.addDirectory(ExceptionApp, "test-applications/ExceptionApp.ear/resources");
 
-        ShrinkHelper.exportDropinAppToServer(server, ExceptionApp);
+        ShrinkHelper.exportDropinAppToServer(server, ExceptionApp, DeployOptions.SERVER_ONLY);
 
         server.startServer();
     }
