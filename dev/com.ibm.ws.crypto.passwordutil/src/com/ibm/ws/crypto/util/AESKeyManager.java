@@ -22,16 +22,14 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
+import com.ibm.wsspi.security.crypto.KeyStringResolver;
+
 /**
  *
  */
 public class AESKeyManager {
     private static final AtomicReference<KeyHolder> _key = new AtomicReference<KeyHolder>();
     private static final AtomicReference<KeyStringResolver> _resolver = new AtomicReference<KeyStringResolver>();
-
-    public static interface KeyStringResolver {
-        public char[] getKey(String val);
-    }
 
     private static class KeyHolder {
         private final char[] keyChars;
