@@ -109,6 +109,11 @@ public class ClientConfigTests extends FATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         Exception excep = null;
+        
+        LOG.info("ClientConfigTests : tearDown() : serverConfigurationFile set to null");
+        // Setting serverConfigurationFile to null forces a server.xml update (when GrpcTestUtils.setServerConfiguration() is first called) on the repeat run
+        // If not set to null, test failures may occur (since the incorrect server.xml could be used)
+        serverConfigurationFile = null;
 
         try {
             stopClientServer();
@@ -135,6 +140,7 @@ public class ClientConfigTests extends FATServletClient {
 
     private static void stopClientServer() throws Exception {
         if (GrpcClientOnly != null && GrpcClientOnly.isStarted()) {
+            
             /*
              * CWWKG0083W: expected by testInvalidMaxInboundMessageSize due to invalid message size config
              * CWWKG0076W: expected when a previous config is still in use because an invalid config was rejected
