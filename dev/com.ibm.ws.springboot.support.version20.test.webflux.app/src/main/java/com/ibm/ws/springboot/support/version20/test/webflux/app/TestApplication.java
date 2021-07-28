@@ -39,6 +39,9 @@ public class TestApplication {
 
     @Bean
     public RouterFunction<ServerResponse> monoRouterFunction(EchoHandler echoHandler) {
-        return route(POST("/echo"), echoHandler::echo);
+        System.out.println(">>>> ENTER TestApplication monoRouterFunction");
+        RouterFunction<ServerResponse> resp = route(POST("/echo"), echoHandler::echo);
+        System.out.println(">>>> EXIT TestApplication monoRouterFunction");
+        return resp;
     }
 }

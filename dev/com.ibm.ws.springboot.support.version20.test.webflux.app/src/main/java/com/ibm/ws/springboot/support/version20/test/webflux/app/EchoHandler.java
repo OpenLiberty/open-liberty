@@ -20,7 +20,11 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 public class EchoHandler {
 
     public Mono<ServerResponse> echo(ServerRequest request) {
-        return ServerResponse.ok().body(request.bodyToMono(String.class), String.class);
+        System.out.println(">>>> ENTER EchoHandler echo");
+    	Mono<ServerResponse> resp = ServerResponse.ok().body(request.bodyToMono(String.class), String.class);
+    	System.out.println(">>>> EXIT EchoHandler echo");
+    	return resp;
+//    	return ServerResponse.ok().body(request.bodyToMono(String.class), String.class);
     }
 
 }
