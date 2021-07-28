@@ -4,43 +4,36 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 
 import org.eclipse.microprofile.config.Config;
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.config.spi.ConfigBuilder;
+import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 
-import io.openliberty.restfulWS.config.ConfigProviderResolverImpl;
-
+/**
+ * @see org.jboss.resteasy.spi.config.Configuration
+ * @see org.jboss.resteasy.spi.config.ConfigurationFactory
+ * @deprecated Use the {@link org.jboss.resteasy.spi.config.Configuration}
+ */
+@Deprecated
 public final class ResteasyConfigProvider
 {
-   private static final ConfigProviderResolverImpl INSTANCE = new ConfigProviderResolverImpl(); // Liberty change
-
-   //Liberty change start
-   public static ConfigProviderResolverImpl getInstance() {
-       return INSTANCE;
-   }
-   //Liberty change end
-
    public static Config getConfig() {
-      // Liberty change start
-      //return ConfigProvider.getConfig(ResteasyConfigProvider.class.getClassLoader());
-      return INSTANCE.getConfig();
-      //
+      return ConfigProvider.getConfig(getThreadContextClassLoader());
    }
 
    public static void registerConfig(Config config) {
-      // Liberty change start
-      //ConfigProviderResolver.instance().registerConfig(config, ResteasyConfigProvider.class.getClassLoader());
-      INSTANCE.registerConfig(config, getTCCL());
-      // Liberty change end
+      ConfigProviderResolver.instance().registerConfig(config, getThreadContextClassLoader());
    }
 
    public static ConfigBuilder getBuilder() {
-      // Liberty change start
-      //return ConfigProviderResolver.instance().getBuilder().forClassLoader(ResteasyConfigProvider.class.getClassLoader());
-      return INSTANCE.getBuilder().forClassLoader(ResteasyConfigProvider.class.getClassLoader());
-      // Liberty change end
+      return ConfigProviderResolver.instance().getBuilder().forClassLoader(getThreadContextClassLoader());
    }
 
-   private static ClassLoader getTCCL() {
-       return AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () ->
+   // Liberty change - use TCCL instead of this class's loader - also note the 3 methods above that call this method
+   private static ClassLoader getThreadContextClassLoader() {
+       if (System.getSecurityManager() == null) {
+           return Thread.currentThread().getContextClassLoader();
+       }
+       return AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> 
            Thread.currentThread().getContextClassLoader());
    }
 }

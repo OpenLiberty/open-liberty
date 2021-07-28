@@ -29,11 +29,8 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 
-import io.openliberty.restfulWS.config.ConfigImpl;
-
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
-import org.jboss.resteasy.microprofile.config.ResteasyConfigProvider;
 import org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher;
 import org.jboss.resteasy.plugins.server.servlet.ResteasyContextParameters;
 import org.jboss.resteasy.plugins.servlet.ResteasyServletInitializer;
@@ -175,6 +172,14 @@ public class RESTfulServletContainerInitializer extends ResteasyServletInitializ
     }
 
     private void registerResourcesAndProviders(ServletRegistration reg, Set<Class<?>> providers, Set<Class<?>> resources) {
+        reg.setInitParameter("resteasy.proxy.implement.all.interfaces", "true");
+        String unwrappedExceptions = reg.getInitParameter("resteasy.unwrapped.exceptions");
+        if (unwrappedExceptions == null) {
+            reg.setInitParameter("resteasy.unwrapped.exceptions", "jakarta.ejb.EJBException");
+        } else if (!unwrappedExceptions.contains("jakarta.ejb.EJBException")){
+            reg.setInitParameter("resteasy.unwrapped.exceptions", unwrappedExceptions + ",jakarta.ejb.EJBException");
+        }
+
         if (resources.size() > 0) {
             StringBuilder builder = new StringBuilder();
             boolean first = true;
@@ -201,10 +206,6 @@ public class RESTfulServletContainerInitializer extends ResteasyServletInitializ
                 builder.append(provider.getName());
             }
             reg.setInitParameter(ResteasyContextParameters.RESTEASY_SCANNED_PROVIDERS, builder.toString());
-        }
-        Config config = ResteasyConfigProvider.getInstance().getConfig();
-        if (config instanceof ConfigImpl) {
-            ((ConfigImpl)config).updateProperties(reg.getInitParameters());
         }
     }
 

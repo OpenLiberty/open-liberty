@@ -337,11 +337,24 @@ public class SseEventSourceImpl implements SseEventSource
                onConnection();
                eventInput = clientResponse.readEntity(SseEventInputImpl.class);
                //if 200<= response code <300 and response contentType is null, fail the connection.
+               //Liberty change start
+               /*
+               if (eventInput == null)
+               {
+                  if (!alwaysReconnect) {
+                     internalClose();
+                  } else {
+                     reconnect(this.reconnectDelay);
+                  }
+                  return;
+               }
+               */
                if (eventInput == null && !alwaysReconnect)
                {
                   internalClose();
                   return;
                }
+               //Liberty change end
             }
             else
             {
@@ -380,11 +393,18 @@ public class SseEventSourceImpl implements SseEventSource
          final Providers providers = (ClientConfiguration) target.getConfiguration();
          while (!Thread.currentThread().isInterrupted() && state.get() == State.OPEN)
          {
+            // Liberty change start
+            /*
+            if (eventInput != null && eventInput.isClosed()) {
+               break;
+            }
+            */
             if (eventInput == null || eventInput.isClosed())
             {
                internalClose();
                break;
             }
+            // Liberty change end
             try
             {
                InboundSseEvent event = eventInput.read(providers);
@@ -444,9 +464,9 @@ public class SseEventSourceImpl implements SseEventSource
          {
             reconnectDelay = event.getReconnectDelay();
          }
-         
+
          try {  // https://issues.redhat.com/browse/RESTEASY-2950
-             
+
              onEventConsumers.forEach(consumer -> {
                 consumer.accept(event);
              });
