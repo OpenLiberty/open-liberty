@@ -37,6 +37,7 @@ import com.ibm.ws.fat.wc.tests.WCServletContainerInitializerFilterServletNameMap
 import com.ibm.ws.fat.wc.tests.WCServletPathForDefaultMappingDefault;
 import com.ibm.ws.fat.wc.tests.WCServletPathForDefaultMappingFalse;
 import com.ibm.ws.fat.wc.tests.WCTrailersTest;
+import com.ibm.ws.fat.wc.tests.WCServerMiscTest;
 
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
@@ -87,7 +88,8 @@ import componenttest.rules.repeater.RepeatTests;
                 WCSendRedirectRelativeURLTrue.class,
                 WCSendRedirectRelativeURLDefault.class,
                 WC5GetContextPath.class,
-                WCSCIHandlesTypesTest.class
+                WCSCIHandlesTypesTest.class,
+                WCServerMiscTest.class
 })
 
 public class FATSuite {
