@@ -103,7 +103,7 @@ securitySchemeInvalidURL=Das Security-Scheme-Objekt muss eine g\u00fcltige URL e
 
 schemaTypeArrayNullItems=F\u00fcr das Schema-Objekt des Typs \"array\" muss die Eigenschaft \"items\" definiert sein.
 schemaReadOnlyOrWriteOnly=F\u00fcr das Schema-Objekt d\u00fcrfen die Felder \"readOnly\" und \"writeOnly\" nicht beide auf true gesetzt sein.
-schemaMultipleOfLessThanOne=F\u00fcr das Schema-Objekt muss die Eigenschaft \"multipleOf\" auf eine Zahl gesetzt sein, die streng gr\u00f6\u00dfer als null ist.
+schemaMultipleOfNotGreaterThanZero=F\u00fcr das Schema-Objekt muss die Eigenschaft \"multipleOf\" auf eine Zahl gesetzt sein, die streng gr\u00f6\u00dfer als null ist.
 schemaPropertyLessThanZero=Die Eigenschaft \"{0}\" des Schema-Objekts muss gr\u00f6\u00dfer-gleich null sein.
 schemaTypeDoesNotMatchProperty=Die Eigenschaft \"{0}\" ist f\u00fcr das Schema-Objekt des Typs \"{1}\" nicht geeignet.
 

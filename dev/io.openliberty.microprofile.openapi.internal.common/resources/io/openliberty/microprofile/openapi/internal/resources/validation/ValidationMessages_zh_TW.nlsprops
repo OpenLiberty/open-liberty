@@ -106,7 +106,7 @@ securitySchemeInvalidURL=Security Scheme \u7269\u4ef6\u5fc5\u9808\u5305\u542b\u6
 
 schemaTypeArrayNullItems=\"array\" \u985e\u578b\u7684 Schema \u7269\u4ef6\u5fc5\u9808\u5b9a\u7fa9\u4e86 \"items\" \u5167\u5bb9
 schemaReadOnlyOrWriteOnly=Schema \u7269\u4ef6\u7684 \"readOnly\" \u548c \"writeOnly\" \u6b04\u4f4d\u4e0d\u5f97\u90fd\u8a2d\u70ba true
-schemaMultipleOfLessThanOne=Schema \u7269\u4ef6\u7684 \"multipleOf\" \u5167\u5bb9\u5fc5\u9808\u8a2d\u70ba\u4e00\u500b\u78ba\u5be6\u5927\u65bc\u96f6\u7684\u6578\u5b57
+schemaMultipleOfNotGreaterThanZero=Schema \u7269\u4ef6\u7684 \"multipleOf\" \u5167\u5bb9\u5fc5\u9808\u8a2d\u70ba\u4e00\u500b\u78ba\u5be6\u5927\u65bc\u96f6\u7684\u6578\u5b57
 schemaPropertyLessThanZero=Schema \u7269\u4ef6\u7684 \"{0}\" \u5167\u5bb9\u5fc5\u9808\u5927\u65bc\u6216\u7b49\u65bc\u96f6
 schemaTypeDoesNotMatchProperty=\"{0}\" \u5167\u5bb9\u4e0d\u9069\u7528\u65bc \"{1}\" \u985e\u578b\u7684 Schema \u7269\u4ef6
 

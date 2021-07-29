@@ -106,7 +106,7 @@ securitySchemeInvalidURL=L''objet Sch\u00e9ma de s\u00e9curit\u00e9 doit conteni
 
 schemaTypeArrayNullItems=La propri\u00e9t\u00e9 \"items\" doit \u00eatre d\u00e9finie pour l'objet Sch\u00e9ma de type \"array\".
 schemaReadOnlyOrWriteOnly=Les zones \"readOnly\" et \"writeOnly\" de l'objet Sch\u00e9ma ne peuvent pas toutes les deux comporter la valeur true.
-schemaMultipleOfLessThanOne=La propri\u00e9t\u00e9 \"multipleOf\" de l'objet Sch\u00e9ma doit avoir pour valeur un nombre strictement sup\u00e9rieur \u00e0 z\u00e9ro.
+schemaMultipleOfNotGreaterThanZero=La propri\u00e9t\u00e9 \"multipleOf\" de l'objet Sch\u00e9ma doit avoir pour valeur un nombre strictement sup\u00e9rieur \u00e0 z\u00e9ro.
 schemaPropertyLessThanZero=La valeur de la propri\u00e9t\u00e9 \"{0}\" de l''objet Sch\u00e9ma doit \u00eatre sup\u00e9rieure ou \u00e9gale \u00e0 z\u00e9ro.
 schemaTypeDoesNotMatchProperty=La propri\u00e9t\u00e9 \"{0}\" n''est pas appropri\u00e9e pour l''objet Sch\u00e9ma de type \"{1}\".
 
