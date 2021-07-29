@@ -37,6 +37,7 @@ project(':com.ibm.ws.org.apache.commons.io'),               project(':io.openlib
                         
 }
 
+addRequiredLibraries.dependsOn addJakartaTransformer
 
 /*
  * This is where all application WARs will be built.
