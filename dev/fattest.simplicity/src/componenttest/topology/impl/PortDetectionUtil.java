@@ -316,25 +316,28 @@ public abstract class PortDetectionUtil {
                 ProgramOutput po = machine.execute(NETSTAT_CMD, NETSTAT_PARMS);
                 String cmdOutput = po.getStdout();
                 StringTokenizer st = new StringTokenizer(cmdOutput, "/-" + LS);
+                String pattern = "^tcp.*:" + port + "\\s.*listen.*";
                 while (st.hasMoreTokens()) {
                     String s = st.nextToken().trim().toLowerCase();
                     Log.finer(c, m, s);
-                    if (s.startsWith("tcp") && s.contains(":" + port + " ") && s.contains("listen")) {
+                    if (s.matches(pattern)) {
                         pid = s.substring(s.lastIndexOf(' ')).trim();
                         break;
                     }
                 }
 
                 if (!pid.isEmpty()) {
-                    Log.finer(c, m, "Process holding port " + port + " is " + pid);
+                    Log.info(c, m, "Process holding port " + port + " is " + pid);
 
                     po = machine.execute(PS_CMD, PS_PARMS);
                     cmdOutput = po.getStdout();
                     st = new StringTokenizer(cmdOutput, LS);
+                    pattern = ".*\\s" + pid + "\\s*$";
+                    Log.finer(c, m, "Looking for " + pattern);
                     while (st.hasMoreTokens()) {
                         String s = st.nextToken().trim();
                         Log.finer(c, m, s);
-                        if (s.endsWith(pid)) {
+                        if (s.matches(pattern)) {
                             commandLine = s;
                             break;
                         }
@@ -350,70 +353,10 @@ public abstract class PortDetectionUtil {
             }
 
             if (commandLine.isEmpty()) {
-                return "Couln't determine process holding port " + pid;
+                return "Couln't determine process holding port " + port;
             } else {
                 return commandLine;
             }
-        }
-
-        /*
-         * (non-Javadoc)
-         *
-         * @see componenttest.topology.impl.PortDetectionUtil#determineOwnerOfPort(int)
-         */
-        public String XdetermineOwnerOfPort(final int port) throws IOException {
-
-            final String m = "determineOwnerOfPort";
-            String pidInfo = "";
-            try {
-                ProgramOutput po = machine.execute(NETSTAT_CMD, NETSTAT_PARMS);
-                String cmdOutput = po.getStdout();
-                //Output should resemble:
-                //                Active Internet connections (only servers)
-                //                Proto Recv-Q Send-Q Local Address               Foreign Address             State       PID/Program name
-                //                tcp        0      0 0.0.0.0:139                 0.0.0.0:*                   LISTEN      -
-                //                tcp        0      0 0.0.0.0:111                 0.0.0.0:*                   LISTEN      -
-                //                tcp        0      0 127.0.0.1:8979              0.0.0.0:*                   LISTEN      -
-                //                tcp        0      0 0.0.0.0:48500               0.0.0.0:*                   LISTEN      -
-                //                tcp        0      0 192.168.122.1:53            0.0.0.0:*                   LISTEN      -
-                //                tcp        0      0 ::ffff:127.0.0.1:65341      :::*                        LISTEN      5124/sametime
-                //                tcp        0      0 :::445                      :::*                        LISTEN      -
-                //                tcp        0      0 ::ffff:127.0.0.1:38848      :::*                        LISTEN      4823/java
-                //                tcp        0      0 ::ffff:127.0.0.1:57248      :::*                        LISTEN      3944/symphony
-                StringTokenizer st = new StringTokenizer(cmdOutput, "/-" + LS);
-                int pid = -1;
-                while (st.hasMoreTokens()) {
-                    String s = st.nextToken().trim();
-                    if (s.startsWith("tcp") && s.contains(":" + port + " ") && s.contains("LISTEN")) {
-                        String pidString = s.substring(s.lastIndexOf(' ')).trim();
-                        pid = Integer.parseInt(pidString);
-                        break;
-                    }
-                }
-
-                if (pid < 0) {
-                    // we did not find the port in the netstat cmd output
-                    String msg = "Could not find port (" + port + ") listed in netstat output";
-                    Log.info(c, m, msg + ":" + LS + cmdOutput);
-                    throw new Exception(msg);
-                }
-
-                String[] parms = Arrays.copyOf(PS_PARMS, PS_PARMS.length + 1);
-                parms[PS_PARMS.length] = "" + pid;
-                po = machine.execute(PS_CMD, parms);
-                pidInfo = po.getStdout();
-
-                if ("".equals(pidInfo)) {
-                    // we didn't find the pid in the list of processes...
-                    // possibly whatever process was listening on that port has exited...
-                    String msg = "Could not find PID, " + pid + " in PID list - possibly that process already exited";
-                    Log.info(c, m, msg + ":" + cmdOutput);
-                    throw new Exception(msg);
-                }
-            } catch (Exception ex) {
-                throw new IOException("Failed to determine owner of port " + port, ex);
-            }
-            return pidInfo;
         }
     }
 

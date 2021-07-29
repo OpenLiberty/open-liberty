@@ -187,6 +187,12 @@ public abstract class DualServerDynamicTestBase extends FATServletClient {
                 server.validateAppLoaded(APP_NAME);
             } catch (Throwable t) {
                 Log.error(getClass(), method, t);
+                // We need the logs for this server to debug what the problem was
+                try {
+                    server.postStopServerArchive();
+                } catch (Exception e) {
+                    Log.error(getClass(), method, e);
+                }
                 assertNull("Failed to start server: " + t.getMessage() + (po == null ? "" : " " + po.getStdout()), t);
             }
         }
