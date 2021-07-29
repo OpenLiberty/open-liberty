@@ -265,6 +265,25 @@ public class AccessTokenCacheHelperTest extends CommonTestClass {
     }
 
     @Test
+    public void test_isTokenInCachedResultExpired_missingExp() {
+        final Hashtable<String, Object> customProperties = new Hashtable<String, Object>();
+        Map<String, Object> tokenInfoMap = new HashMap<String, Object>();
+        tokenInfoMap.put("one", 1);
+        tokenInfoMap.put("two", "two");
+        customProperties.put(Constants.ACCESS_TOKEN_INFO, tokenInfoMap);
+
+        mockery.checking(new Expectations() {
+            {
+                one(authnResult).getCustomProperties();
+                will(returnValue(customProperties));
+            }
+        });
+
+        boolean result = cacheHelper.isTokenInCachedResultExpired(authnResult, clientConfig);
+        assertFalse("A token without an expiration time should not have been considered as an expired token.", result);
+    }
+
+    @Test
     public void test_isTokenInCachedResultExpired_zeroExp() {
         long expValue = 0;
         final Hashtable<String, Object> customProperties = new Hashtable<String, Object>();
@@ -304,6 +323,81 @@ public class AccessTokenCacheHelperTest extends CommonTestClass {
 
         boolean result = cacheHelper.isTokenInCachedResultExpired(authnResult, clientConfig);
         assertFalse("A token expiration time of " + expValue + " compared to current time should not have been considered as an expired token.", result);
+    }
+
+    @Test
+    public void test_doesPropertyExistInAccessTokenInfo_nullCustomProperties() {
+        boolean result = cacheHelper.doesPropertyExistInAccessTokenInfo("exp", null);
+        assertFalse("Custom property should not exist when the properties set is null.", result);
+    }
+
+    @Test
+    public void test_doesPropertyExistInAccessTokenInfo_emptyCustomProperties() {
+        Hashtable<String, Object> customProperties = new Hashtable<String, Object>();
+        boolean result = cacheHelper.doesPropertyExistInAccessTokenInfo("exp", customProperties);
+        assertFalse("Custom property should not exist when the properties set is empty.", result);
+    }
+
+    @Test
+    public void test_doesPropertyExistInAccessTokenInfo_missingTokenInfo() {
+        Hashtable<String, Object> customProperties = new Hashtable<String, Object>();
+        customProperties.put("one", 1);
+        customProperties.put("two", "two");
+
+        boolean result = cacheHelper.doesPropertyExistInAccessTokenInfo("exp", customProperties);
+        assertFalse("Custom property should not exist when the properties set is null.", result);
+    }
+
+    @Test
+    public void test_doesPropertyExistInAccessTokenInfo_tokenInfoEntryWrongType() {
+        Hashtable<String, Object> customProperties = new Hashtable<String, Object>();
+        customProperties.put(Constants.ACCESS_TOKEN_INFO, "wrong type");
+
+        boolean result = cacheHelper.doesPropertyExistInAccessTokenInfo("exp", customProperties);
+        assertFalse("Custom property should not exist when the properties set does not contain access token info.", result);
+    }
+
+    @Test
+    public void test_doesPropertyExistInAccessTokenInfo_tokenInfoEmpty() {
+        Hashtable<String, Object> customProperties = new Hashtable<String, Object>();
+        Map<String, Object> tokenInfoMap = new HashMap<String, Object>();
+        customProperties.put(Constants.ACCESS_TOKEN_INFO, tokenInfoMap);
+
+        boolean result = cacheHelper.doesPropertyExistInAccessTokenInfo("exp", customProperties);
+        assertFalse("Custom property should not exist when the access token info is empty.", result);
+    }
+
+    @Test
+    public void test_doesPropertyExistInAccessTokenInfo_tokenInfoMissingProp() {
+        Hashtable<String, Object> customProperties = new Hashtable<String, Object>();
+        Map<String, Object> tokenInfoMap = new HashMap<String, Object>();
+        tokenInfoMap.put("one", "one");
+        customProperties.put(Constants.ACCESS_TOKEN_INFO, tokenInfoMap);
+
+        boolean result = cacheHelper.doesPropertyExistInAccessTokenInfo("exp", customProperties);
+        assertFalse("Custom property should not exist when its key does not exist in access token info.", result);
+    }
+
+    @Test
+    public void test_doesPropertyExistInAccessTokenInfo_propNull() {
+        Hashtable<String, Object> customProperties = new Hashtable<String, Object>();
+        Map<String, Object> tokenInfoMap = new HashMap<String, Object>();
+        tokenInfoMap.put("exp", null);
+        customProperties.put(Constants.ACCESS_TOKEN_INFO, tokenInfoMap);
+
+        boolean result = cacheHelper.doesPropertyExistInAccessTokenInfo("exp", customProperties);
+        assertFalse("Custom property should not exist when its value is null.", result);
+    }
+
+    @Test
+    public void test_doesPropertyExistInAccessTokenInfo_propExists() {
+        Hashtable<String, Object> customProperties = new Hashtable<String, Object>();
+        Map<String, Object> tokenInfoMap = new HashMap<String, Object>();
+        tokenInfoMap.put("exp", 300);
+        customProperties.put(Constants.ACCESS_TOKEN_INFO, tokenInfoMap);
+
+        boolean result = cacheHelper.doesPropertyExistInAccessTokenInfo("exp", customProperties);
+        assertTrue("Custom property should exist when it is found in the access token info and its value is not null.", result);
     }
 
     @Test
@@ -364,6 +458,17 @@ public class AccessTokenCacheHelperTest extends CommonTestClass {
         Hashtable<String, Object> customProperties = new Hashtable<String, Object>();
         Map<String, Object> tokenInfoMap = new HashMap<String, Object>();
         tokenInfoMap.put("exp", "wrong type");
+        customProperties.put(Constants.ACCESS_TOKEN_INFO, tokenInfoMap);
+
+        long result = cacheHelper.getTokenExpirationFromCustomProperties(customProperties);
+        assertEquals("Did not get expected expiration time from the custom properties.", 0, result);
+    }
+
+    @Test
+    public void test_getTokenExpirationFromCustomProperties_expNull() {
+        Hashtable<String, Object> customProperties = new Hashtable<String, Object>();
+        Map<String, Object> tokenInfoMap = new HashMap<String, Object>();
+        tokenInfoMap.put("exp", null);
         customProperties.put(Constants.ACCESS_TOKEN_INFO, tokenInfoMap);
 
         long result = cacheHelper.getTokenExpirationFromCustomProperties(customProperties);
