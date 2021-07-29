@@ -26,6 +26,11 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServerWrapper;
+import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
+import componenttest.rules.repeater.JakartaEE9Action;
+
 
 /**
  * The testcases in this class were ported from tWAS' test SamlWebSSOTests.
@@ -42,11 +47,8 @@ import componenttest.topology.impl.LibertyServerWrapper;
  * TFIM IdP. The client invokes the SP application by sending the SAML
  * 2.0 token in the HTTP POST request.
  */
+
 @LibertyServerWrapper
-//1/20/2021 the FULL mode at class level was already in CL FAT and will not work for LITE in OL, instead, we mix the FULL modes in the test case level below
-//with the existing LITE mode
-//@Mode(TestMode.FULL)
-//1/21/2021 added
 @RunWith(FATRunner.class)
 public class CxfSSLSAMLBasicTests extends SAMLCommonTest {
 
@@ -67,13 +69,9 @@ public class CxfSSLSAMLBasicTests extends SAMLCommonTest {
      * 
      */
     
-    //3/2021 to run with EE7
     @Mode(TestMode.LITE)
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    @AllowedFFDC(value = { "java.lang.Exception" })
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
     @Test
-    //Orig:
-    //public void testSAMLCxfSvcClient_TransportEnabled() throws Exception {	
     public void testSAMLCxfSvcClient_TransportEnabledEE7Only() throws Exception {
 
         WebClient webClient = SAMLCommonTestHelpers.getWebClient();
@@ -87,16 +85,12 @@ public class CxfSSLSAMLBasicTests extends SAMLCommonTest {
 
     }
     
-    //3/2021 to run with EE8
     @Mode(TestMode.LITE)
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    //@AllowedFFDC(value = { "java.lang.Exception",  "java.util.MissingResourceException", "java.lang.ClassNotFoundException"}) //@AV999 TODO: look into CNFE
-    //6/2021
-    @AllowedFFDC(value = { "java.lang.Exception",  "java.util.MissingResourceException", "java.lang.ClassNotFoundException", "java.security.PrivilegedActionException", "java.lang.NoSuchMethodException" })
+    @SkipForRepeat({ NO_MODIFICATION, EE8_FEATURES })
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { JakartaEE9Action.ID })
     @Test
-    public void testSAMLCxfSvcClient_TransportEnabledEE8Only() throws Exception {	
-
-    	//3/2021
+    public void testSAMLCxfSvcClient_TransportEnabledEE9Only() throws Exception {
+    		
     	if (testSAMLServer2 == null) {
             //1 server reconfig
     		testSAMLServer.reconfigServer(buildSPServerName("server_2_in_1_ee8.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
@@ -104,7 +98,7 @@ public class CxfSSLSAMLBasicTests extends SAMLCommonTest {
     	    //2 servers reconfig
     		testSAMLServer2.reconfigServer("server_2_ee8.xml", _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
     		testSAMLServer.reconfigServer("server_1_wss4j.xml", _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
-    	} //End 3/2021
+    	} 
     	
         WebClient webClient = SAMLCommonTestHelpers.getWebClient();
 
@@ -129,17 +123,9 @@ public class CxfSSLSAMLBasicTests extends SAMLCommonTest {
      * 
      */
     
-    //3/2021 to run with EE7, then the corresponding error message is expected
-    //1/20/2021 added FULL mode
     @Mode(TestMode.FULL)
-    //Ask Aruna if this is temporary?
-    //@Mode(TestMode.LITE)
-    //3/2021
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    @AllowedFFDC(value = { "java.lang.Exception" })
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
     @Test
-    //3/2021 Orig:
-    //public void testSAMLCxfSvcClient_TransportEnabled_httpFromClient() throws Exception {
     public void testSAMLCxfSvcClient_TransportEnabled_httpFromClientEE7Only() throws Exception {
 
         WebClient webClient = SAMLCommonTestHelpers.getWebClient();
@@ -154,18 +140,11 @@ public class CxfSSLSAMLBasicTests extends SAMLCommonTest {
        
     }
 
-    //3/2021 to run with EE8, then the corresponding error message is expected
-    //1/20/2021 added FULL mode
     @Mode(TestMode.FULL)
-    //Ask Aruna if this is temporary?
-    //@Mode(TestMode.LITE)
-    //3/2021
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    @AllowedFFDC(value = { "java.lang.Exception" })
+    @SkipForRepeat({ NO_MODIFICATION, EE9_FEATURES })
     @Test
     public void testSAMLCxfSvcClient_TransportEnabled_httpFromClientEE8Only() throws Exception {
-
-    	//3/2021
+    	
     	if (testSAMLServer2 == null) {
             //1 server reconfig
     		testSAMLServer.reconfigServer(buildSPServerName("server_2_in_1_ee8.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
@@ -173,7 +152,7 @@ public class CxfSSLSAMLBasicTests extends SAMLCommonTest {
     	    //2 servers reconfig
     		testSAMLServer2.reconfigServer("server_2_ee8.xml", _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
     		testSAMLServer.reconfigServer("server_1_wss4j.xml", _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
-    	} //End 3/2021
+    	} 
     	
         WebClient webClient = SAMLCommonTestHelpers.getWebClient();
 
@@ -182,8 +161,6 @@ public class CxfSSLSAMLBasicTests extends SAMLCommonTest {
         updatedTestSettings.setCXFSettings(_testName, null, servicePort, null, "user1", "user1pwd", "SamlTokenTransportSecure",
                 "SamlTokenTransportSecurePort", "", "False", null, null);
 
-        //3/2021
-        //@AV999
         String CXF_SAML_TOKEN_SERVICE_HTTPS_NOT_USED = "HttpsToken could not be asserted: Not an HTTPs connection"; // @AV999 slightly different error with new runtime
         genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setErrorSAMLCXFExpectations(null, flowType, updatedTestSettings, CXF_SAML_TOKEN_SERVICE_HTTPS_NOT_USED));
     }
@@ -200,13 +177,10 @@ public class CxfSSLSAMLBasicTests extends SAMLCommonTest {
      * "more secure" than the server
      * 
      */
-    //3/2021 to run with EE7
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    
     @Mode(TestMode.LITE)
-    @AllowedFFDC(value = { "java.lang.Exception" })
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
     @Test
-    //Orig:
-    //public void testSAMLCxfSvcClient_TransportNotEnabled_httpsFromClient() throws Exception {
     public void testSAMLCxfSvcClient_TransportNotEnabled_httpsFromClientEE7Only() throws Exception {
 
         WebClient webClient = SAMLCommonTestHelpers.getWebClient();
@@ -220,23 +194,20 @@ public class CxfSSLSAMLBasicTests extends SAMLCommonTest {
 
     }
 
-    //3/2021 to run with EE8
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
     @Mode(TestMode.LITE)
-    @AllowedFFDC(value = { "java.lang.Exception", "java.util.MissingResourceException" })
+    @SkipForRepeat({ NO_MODIFICATION, EE8_FEATURES })
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { JakartaEE9Action.ID })
     @Test
-    public void testSAMLCxfSvcClient_TransportNotEnabled_httpsFromClientEE8Only() throws Exception {
-
-    	//6/2021 added if condition
+    public void testSAMLCxfSvcClient_TransportNotEnabled_httpsFromClientEE9Only() throws Exception {
+  
     	if (testSAMLServer2 == null) {
             //1 server reconfig
     		testSAMLServer.reconfigServer(buildSPServerName("server_2_in_1_ee8.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
     	} else {
     	    //2 servers reconfig
-    	    //3/2021
     	    testSAMLServer2.reconfigServer("server_2_ee8.xml", _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 		    testSAMLServer.reconfigServer("server_1_wss4j.xml", _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
-    	} //End 6/2021
+    	} 
     	
         WebClient webClient = SAMLCommonTestHelpers.getWebClient();
 
