@@ -22,7 +22,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.kernel.service.util.JavaInfo;
-import com.ibm.ws.kernel.service.util.JavaInfo.Vendor;
 
 /**
  * Krb5Common
@@ -36,16 +35,10 @@ public class Krb5Common {
     static public Oid KRB5_MECH_OID;
 
     // Is IBM JDK 1.8
-    static public boolean isIBMJdk18 = (JavaInfo.vendor() == Vendor.IBM && JavaInfo.majorVersion() == 8);
-
-    // Is Oracle JDK
-    static public boolean isOracleJdk = (JavaInfo.vendor() == Vendor.ORACLE);
-
-    // Is IBM, Oracle and Open JDK 11 or higher
-    static private boolean isJdk11OrUp = JavaInfo.majorVersion() >= 11;
+    static public boolean isIBMJdk18 = JavaInfo.isAvailable("com.ibm.security.auth.module.Krb5LoginModule");
 
     // SPNEGO support IBM JDK 8 and lower and JDK 11 and higher
-    static public boolean isOtherSupportJDKs = isOracleJdk || isJdk11OrUp;
+    static public boolean isOtherSupportJDKs = JavaInfo.isAvailable("com.sun.security.auth.module.Krb5LoginModule");;
 
     // Kerberos KDC host name
     static public final String KRB5_KDC = "java.security.krb5.kdc";

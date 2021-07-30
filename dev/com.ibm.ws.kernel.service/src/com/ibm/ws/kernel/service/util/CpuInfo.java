@@ -253,7 +253,7 @@ public class CpuInfo {
             return new NullCpuInfoAccessor();
         }
         try {
-            if (JavaInfo.vendor() == Vendor.IBM) {
+            if (JavaInfo.isAccessible("com.ibm.lang.management.OperatingSystemMXBean")) {
                 return new IBMJavaCpuInfoAccessor(mbean);
             }
             return new ModernJavaCpuInfoAccessor(mbean);
