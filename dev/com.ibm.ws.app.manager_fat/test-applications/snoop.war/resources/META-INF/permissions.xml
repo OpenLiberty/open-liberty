@@ -9,4 +9,9 @@
 		<name>*</name>
 		<actions>*</actions>
 	</permission>
+	<permission>
+		<class-name>java.io.FilePermission</class-name>
+		<name>*</name>
+        <actions>read,write</actions>
+	</permission>
 </permissions>
