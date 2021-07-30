@@ -919,7 +919,7 @@ public class BaseTraceService implements TrService {
                     retMe &= externalMsgRouter.route(routedMessage.getFormattedMsg(), routedMessage.getLogRecord());
                 }
                 if (internalMsgRouter != null) {
-                    retMe &= internalMsgRouter.route(routedMessage);
+                    retMe &= internalMsgRouter.route(routedMessage, isMessageHidden(routedMessage.getFormattedMsg()));
                 } else {
                     String message = formatter.messageLogFormat(routedMessage.getLogRecord(), routedMessage.getFormattedVerboseMsg());
                     RoutedMessage specialRoutedMessage = new RoutedMessageImpl(routedMessage.getFormattedMsg(), routedMessage.getFormattedVerboseMsg(), message, routedMessage.getLogRecord());
