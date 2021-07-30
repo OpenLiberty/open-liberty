@@ -11,6 +11,8 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.wss11sig;
 
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+
 import java.io.File;
 import java.util.Set;
 
@@ -32,9 +34,12 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.EE8FeatureReplacementAction;
+import componenttest.rules.repeater.EmptyAction;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
+@SkipForRepeat({ EE9_FEATURES })
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class CxfWss11SigTests extends CommonTests {
@@ -44,14 +49,12 @@ public class CxfWss11SigTests extends CommonTests {
     static private String newClientWsdl = null;
     static final private String serverName = "com.ibm.ws.wssecurity_fat.wss11sig";
 
-    //Added 10/2020
     @Server(serverName)
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
 
-        //2/2021
         ServerConfiguration config = server.getServerConfiguration();
         Set<String> features = config.getFeatureManager().getFeatures();
         if (features.contains("usr:wsseccbh-1.0")) {
@@ -64,7 +67,6 @@ public class CxfWss11SigTests extends CommonTests {
             copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
         }
 
-        //Added 11/2020
         ShrinkHelper.defaultDropinApp(server, "wss11sigclient", "com.ibm.ws.wssecurity.fat.wss11sigclient", "test.wssecfvt.wss11sig", "test.wssecfvt.wss11sig.types");
         ShrinkHelper.defaultDropinApp(server, "wss11sig", "com.ibm.ws.wssecurity.fat.wss11sig");
         PrepCommonSetup serverObject = new PrepCommonSetup();
@@ -84,10 +86,8 @@ public class CxfWss11SigTests extends CommonTests {
      *
      */
 
-    //5/2021 added PrivilegedActionExc, NoSuchMethodExc as a result of java11 and ee8
-    @AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException", "java.security.PrivilegedActionException",
-                           "java.lang.NoSuchMethodException" })
     @Test
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFClientBasicSigConfirm() throws Exception {
 
         genericTest(
@@ -128,9 +128,8 @@ public class CxfWss11SigTests extends CommonTests {
      *
      */
 
-    //4/2021
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFClientBasicSigConfirmNoSig() throws Exception {
 
         genericTest(
@@ -170,9 +169,10 @@ public class CxfWss11SigTests extends CommonTests {
      * This is a negative scenario.
      *
      */
+
     @Test
-    //4/2021
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
+    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFClientBasicSigClConfSrvNoConf() throws Exception {
 
         String thisMethod = "testCXFClientBasicSigClConfSrvNoConf";
@@ -219,9 +219,8 @@ public class CxfWss11SigTests extends CommonTests {
      *
      */
 
-    //4/2021
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFClientBasicSigClNoConfSrvConf() throws Exception {
 
         String thisMethod = "testCXFClientBasicSigClNoConfSrvConf";
@@ -269,10 +268,9 @@ public class CxfWss11SigTests extends CommonTests {
      *
      */
 
-    //2/2021 to test with EE7, then the corresponding message can be expected
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    @AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testCXFClientBasicEncryptedElementMisMatchEE7Only() throws Exception {
 
         String thisMethod = "testCXFClientBasicEncryptedElement";
@@ -308,12 +306,9 @@ public class CxfWss11SigTests extends CommonTests {
 
     }
 
-    //2/2021 to test with EE8, then the corresponding message can be expected
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    //@AllowedFFDC("org.apache.wss4j.common.ext.WSSecurityException")
-    //4/2021
-    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFClientBasicEncryptedElementMisMatchEE8Only() throws Exception {
 
         String thisMethod = "testCXFClientBasicEncryptedElementMisMatchEE8Only";
@@ -365,7 +360,7 @@ public class CxfWss11SigTests extends CommonTests {
      * This is a positive scenario.
      *
      */
-    //2/2021 to test with EE7, then the corresponding server_enchdr.xml can be used
+
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     public void testCXFClientBasicEncryptedElementEE7Only() throws Exception {
@@ -400,11 +395,9 @@ public class CxfWss11SigTests extends CommonTests {
 
     }
 
-    //4/2021
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
-    //2/2021 to test with EE8, then the corresponding server_enchdr_wss4j.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFClientBasicEncryptedElementEE8Only() throws Exception {
 
         String thisMethod = "testCXFClientBasicEncryptedElementEE8Only";
@@ -450,10 +443,9 @@ public class CxfWss11SigTests extends CommonTests {
      *
      */
 
-    //2/2021 to test with EE7, then the corresponding message can be expected
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    @AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testCXFClientBasicSigSignedElementMisMatchEE7Only() throws Exception {
 
         String thisMethod = "testCXFClientBasicSigSignedElement";
@@ -489,11 +481,9 @@ public class CxfWss11SigTests extends CommonTests {
 
     }
 
-    //2/2021 to test with EE8, then the corresponding message can be expected and server_wss4j.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    //4/2021
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFClientBasicSigSignedElementMisMatchEE8Only() throws Exception {
 
         String thisMethod = "testCXFClientBasicSigSignedElementMisMatchEE8Only";
@@ -542,7 +532,6 @@ public class CxfWss11SigTests extends CommonTests {
      * This is a positive scenario.
      */
 
-    //2/2021 run with EE7
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     public void testCXFClientBasicSigSignedElementEE7Only() throws Exception {
@@ -574,11 +563,9 @@ public class CxfWss11SigTests extends CommonTests {
 
     }
 
-    //4/2021
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
-    //2/2021 run with EE8
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFClientBasicSigSignedElementEE8Only() throws Exception {
 
         String thisMethod = "testCXFClientBasicSigSignedElement";
@@ -618,7 +605,7 @@ public class CxfWss11SigTests extends CommonTests {
      * response is missing the signature confirmation that it expects.
      * This is a negative scenario.
      */
-    //2/2021 run with EE7
+
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     public void testCXFClientBasicSigClNoSignConfSrvNoSignNoConfEE7Only() throws Exception {
@@ -655,11 +642,9 @@ public class CxfWss11SigTests extends CommonTests {
 
     }
 
-    //4/2021
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
-    //2/2021 run with EE8
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFClientBasicSigClNoSignConfSrvNoSignNoConfEE8Only() throws Exception {
 
         String thisMethod = "testCXFClientBasicSigClNoSignConfSrvNoSignNoConf";
@@ -732,7 +717,6 @@ public class CxfWss11SigTests extends CommonTests {
         }
     }
 
-    //2/2021
     public static void copyServerXml(String copyFromFile) throws Exception {
 
         try {

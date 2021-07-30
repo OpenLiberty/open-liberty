@@ -11,6 +11,8 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.x509token;
 
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+
 import java.io.File;
 import java.util.Set;
 
@@ -33,9 +35,12 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.EE8FeatureReplacementAction;
+import componenttest.rules.repeater.EmptyAction;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
+@SkipForRepeat({ EE9_FEATURES })
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class CxfX509EncTests extends CommonTests {
@@ -45,11 +50,9 @@ public class CxfX509EncTests extends CommonTests {
     static private String newClientWsdl = null;
     static final private String serverName = "com.ibm.ws.wssecurity_fat.x509enc";
 
-    //Added 10/2020
     @Server(serverName)
     public static LibertyServer server;
 
-    //Added 10/2020
     protected static String portNumber = "";
     protected static String checkPort = "";
     protected static String portNumberSecure = "";
@@ -61,7 +64,6 @@ public class CxfX509EncTests extends CommonTests {
     @BeforeClass
     public static void setUp() throws Exception {
 
-        //2/2021
         ServerConfiguration config = server.getServerConfiguration();
         Set<String> features = config.getFeatureManager().getFeatures();
         if (features.contains("usr:wsseccbh-1.0")) {
@@ -74,7 +76,6 @@ public class CxfX509EncTests extends CommonTests {
             copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
         }
 
-        //Added 10/2020
         ShrinkHelper.defaultDropinApp(server, "x509encclient", "com.ibm.ws.wssecurity.fat.x509encclient", "test.wssecfvt.x509enc", "test.wssecfvt.x509enc.types");
         ShrinkHelper.defaultDropinApp(server, "x509enc", "com.ibm.ws.wssecurity.fat.x509enc");
 
@@ -96,10 +97,8 @@ public class CxfX509EncTests extends CommonTests {
      *
      */
 
-    //5/2021 added PrivilegedActionExc, NoSuchMethodExc as a result of java11 and ee8
-    @AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException", "java.security.PrivilegedActionException",
-                           "java.lang.NoSuchMethodException" })
     @Test
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFClientEncryptUsernameToken() throws Exception {
 
         genericTest(
@@ -226,9 +225,8 @@ public class CxfX509EncTests extends CommonTests {
      *
      */
 
-    //4/2021
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFClientEncryptBodyAndUnt() throws Exception {
 
         genericTest(
@@ -268,9 +266,8 @@ public class CxfX509EncTests extends CommonTests {
      *
      */
 
-    //4/2021
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFClientEncryptUntNonce() throws Exception {
 
         genericTest(
@@ -309,9 +306,8 @@ public class CxfX509EncTests extends CommonTests {
      *
      */
 
-    //4/2021
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfClientEncryptSignature() throws Exception {
 
         genericTest(
@@ -397,10 +393,10 @@ public class CxfX509EncTests extends CommonTests {
      * This is a negative scenario.
      *
      */
-    //2/2021 to test with EE7, then the corresponding message can be expected
+
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    @AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testCXFClientWrongEncKeyAlgorithmEE7Only() throws Exception {
 
         String thisMethod = "testCXFClientWrongEncKeyAlgorithm";
@@ -435,12 +431,10 @@ public class CxfX509EncTests extends CommonTests {
 
     }
 
-    //2/2021 to test with EE8, then the corresponding message can be expected
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    @ExpectedFFDC("org.apache.wss4j.common.ext.WSSecurityException") //@AV999
-    //4/2021
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
+    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID }) //@AV999
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFClientWrongEncKeyAlgorithmEE8Only() throws Exception {
 
         String thisMethod = "testCXFClientWrongEncKeyAlgorithm";
@@ -485,10 +479,10 @@ public class CxfX509EncTests extends CommonTests {
      * This is a negative scenario.
      *
      */
-    //2/2021 to test with EE7, then the corresponding message can be expected
+
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    @AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testCXFClientWrongDataEncAlgorithmEE7Only() throws Exception {
 
         String thisMethod = "testCXFClientWrongDataEncAlgorithm";
@@ -524,12 +518,10 @@ public class CxfX509EncTests extends CommonTests {
 
     }
 
-    //2/2021 to test with EE8, then the corresponding message can be expected
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    @ExpectedFFDC("org.apache.wss4j.common.ext.WSSecurityException") //@AV999
-    //4/2021
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
+    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID }) //@AV999
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFClientWrongDataEncAlgorithmEE8Only() throws Exception {
 
         String thisMethod = "testCXFClientWrongDataEncAlgorithm";
@@ -574,10 +566,10 @@ public class CxfX509EncTests extends CommonTests {
      * This is a negative scenario.
      *
      */
-    //2/2021 to test with EE7, then the corresponding server_sym.xml can be used
+
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    @AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testCXFClientWrongEncryptionKeyEE7Only() throws Exception {
 
         String thisMethod = "testCXFClientWrongEncryptionKey";
@@ -619,12 +611,10 @@ public class CxfX509EncTests extends CommonTests {
 
     }
 
-    //2/2021 to test with EE8, then the corresponding message can be expected
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    @ExpectedFFDC("org.apache.wss4j.common.ext.WSSecurityException") //@AV999
-    //4/2021
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
+    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID }) //@AV999
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFClientWrongEncryptionKeyEE8Only() throws Exception {
 
         String thisMethod = "testCXFClientWrongEncryptionKey";
@@ -675,7 +665,7 @@ public class CxfX509EncTests extends CommonTests {
      * This is a negative scenario.
      *
      */
-    //2/2021 run with EE7
+
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     public void testCXFClientEncryptionBeforeSignEE7Only() throws Exception {
@@ -705,11 +695,9 @@ public class CxfX509EncTests extends CommonTests {
 
     }
 
-    //4/2021
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
-    //2/2021 run with EE8 and the corresponding server_wss4j.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFClientEncryptionBeforeSignEE8Only() throws Exception {
 
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
@@ -776,7 +764,6 @@ public class CxfX509EncTests extends CommonTests {
         }
     }
 
-    //2/2021
     public static void copyServerXml(String copyFromFile) throws Exception {
 
         try {

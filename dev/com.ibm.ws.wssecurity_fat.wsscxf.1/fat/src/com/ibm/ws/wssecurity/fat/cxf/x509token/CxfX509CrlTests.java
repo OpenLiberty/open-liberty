@@ -11,6 +11,8 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.x509token;
 
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+
 import java.io.File;
 import java.util.Set;
 
@@ -32,9 +34,12 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.EE8FeatureReplacementAction;
+import componenttest.rules.repeater.EmptyAction;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
+@SkipForRepeat({ EE9_FEATURES })
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class CxfX509CrlTests extends CommonTests {
@@ -43,16 +48,13 @@ public class CxfX509CrlTests extends CommonTests {
 //    static private UpdateWSDLPortNum newWsdl = null;
     static final private String serverName = "com.ibm.ws.wssecurity_fat.x509crl";
 
-    //Added 11/2020
     @Server(serverName)
     public static LibertyServer server;
-    //2/2021
     static private final Class<?> thisClass = CxfX509CrlTests.class;
 
     @BeforeClass
     public static void setUp() throws Exception {
 
-        //2/2021
         ServerConfiguration config = server.getServerConfiguration();
         Set<String> features = config.getFeatureManager().getFeatures();
         if (features.contains("usr:wsseccbh-1.0")) {
@@ -65,7 +67,6 @@ public class CxfX509CrlTests extends CommonTests {
             copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
         }
 
-        //Added 11/2020
         WebArchive x509crlclient_war = ShrinkHelper.buildDefaultApp("x509crlclient", "com.ibm.ws.wssecurity.fat.x509crlclient", "test.wssecfvt.x509crl",
                                                                     "test.wssecfvt.x509crl.types");
         WebArchive x509crl_war = ShrinkHelper.buildDefaultApp("x509crl", "com.ibm.ws.wssecurity.fat.x509crl");
@@ -92,7 +93,7 @@ public class CxfX509CrlTests extends CommonTests {
      * This is a positive scenario.
      *
      */
-    //2/2021 to test with EE7, then the corresponding server_certp.xml can be used
+
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     public void testCXFClientCRLPNotInListEE7Only() throws Exception {
@@ -126,12 +127,9 @@ public class CxfX509CrlTests extends CommonTests {
 
     }
 
-    //5/2021 added PrivilegedActionExc, NoSuchMethodExc as a result of java11 and ee8
-    @AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException", "java.security.PrivilegedActionException",
-                           "java.lang.NoSuchMethodException" })
-    //2/2021 to test with EE8, then the corresponding server_certp_wss4j.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFClientCRLPNotInListEE8Only() throws Exception {
 
         String thisMethod = "testCXFClientCRLPNotInList";
@@ -174,10 +172,10 @@ public class CxfX509CrlTests extends CommonTests {
      * This is a negative scenario.
      *
      */
-    //2/2021 to test with EE7, then the corresponding server_certn.xml can be used
+
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    @AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     public void testCXFClientCRLNInListEE7Only() throws Exception {
 
         String thisMethod = "testCXFClientCRLNInList";
@@ -211,12 +209,10 @@ public class CxfX509CrlTests extends CommonTests {
 
     }
 
-    //2/2021 to test with EE8, then the corresponding server_certn_wss4j.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    @ExpectedFFDC("org.apache.wss4j.common.ext.WSSecurityException") //@AV999
-    //4/2021
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
+    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EE8FeatureReplacementAction.ID }) //@AV999
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFClientCRLNInListEE8Only() throws Exception {
 
         String thisMethod = "testCXFClientCRLNInList";
@@ -263,7 +259,6 @@ public class CxfX509CrlTests extends CommonTests {
 //        }
 //    }
 
-    //2/2021
     public static void copyServerXml(String copyFromFile) throws Exception {
 
         try {

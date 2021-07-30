@@ -11,6 +11,7 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.x509migtoken;
 
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -33,24 +34,26 @@ import com.meterware.httpunit.WebResponse;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.EE8FeatureReplacementAction;
+import componenttest.rules.repeater.EmptyAction;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
+@SkipForRepeat({ EE9_FEATURES })
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class CxfX509MigSymSha2NegativeTests {
 
-    //Added 11/2020
     static final private String serverName = "com.ibm.ws.wssecurity_fat.x509migsym";
     @Server(serverName)
     public static LibertyServer server;
 
     static private final Class<?> thisClass = CxfX509MigSymSha2NegativeTests.class;
 
-    //2/2021 to use EE7 or EE8 error messages in CxfX509MigSvcClient
     private static String errMsgVersion = "";
 
     static boolean debugOnHttp = true;
@@ -78,7 +81,6 @@ public class CxfX509MigSymSha2NegativeTests {
 
         String thisMethod = "setup";
 
-        //2/2021
         ServerConfiguration config = server.getServerConfiguration();
         Set<String> features = config.getFeatureManager().getFeatures();
         if (features.contains("usr:wsseccbh-1.0")) {
@@ -94,7 +96,6 @@ public class CxfX509MigSymSha2NegativeTests {
             errMsgVersion = "EE8";
         }
 
-        //Added 11/2020
         ShrinkHelper.defaultDropinApp(server, "x509migclient", "com.ibm.ws.wssecurity.fat.x509migclient", "test.libertyfat.x509mig.contract", "test.libertyfat.x509mig.types");
         ShrinkHelper.defaultDropinApp(server, "x509migbadclient", "com.ibm.ws.wssecurity.fat.x509migbadclient", "test.libertyfat.x509mig.contract",
                                       "test.libertyfat.x509mig.types");
@@ -136,10 +137,8 @@ public class CxfX509MigSymSha2NegativeTests {
      */
 
     @Test
-    //5/2021 added PrivilegedActionExc, NoSuchMethodExc as a result of java11 and ee8
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.lang.Exception", "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException",
-                           "java.lang.ClassNotFoundException", "java.security.PrivilegedActionException",
-                           "java.lang.NoSuchMethodException" })
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
+    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfX509KeyIdMigSymServiceSha1ToSha512() throws Exception {
 
         String thisMethod = "testCxfX509KeyIdMigSymService";
@@ -154,7 +153,7 @@ public class CxfX509MigSymSha2NegativeTests {
                         "", //String portNumberSecure
                         "FatBAX01Service", //String strServiceName,
                         "UrnX509Token01", //String strServicePort
-                        errMsgVersion //2/2021 CxfX509MigSvcClient
+                        errMsgVersion //CxfX509MigSvcClient
             );
         } catch (Exception e) {
             throw e;
@@ -173,9 +172,8 @@ public class CxfX509MigSymSha2NegativeTests {
      */
 
     @Test
-    //4/2021
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.lang.Exception", "org.apache.wss4j.common.ext.WSSecurityException",
-                           "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
+    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfX509KeyIdMigSymServiceHttpsSha1ToSha512() throws Exception {
 
         String thisMethod = "testCxfX509KeyIdMigSymService";
@@ -190,7 +188,7 @@ public class CxfX509MigSymSha2NegativeTests {
                         portNumberSecure, //String portNumberSecure
                         "FatBAX01Service", //String strServiceName,
                         "UrnX509Token01", //String strServicePort
-                        errMsgVersion //2/2021  CxfX509MigSvcClient
+                        errMsgVersion //CxfX509MigSvcClient
             );
         } catch (Exception e) {
             throw e;
@@ -209,8 +207,8 @@ public class CxfX509MigSymSha2NegativeTests {
      */
 
     @Test
-    //4/2021
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
+    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCxfX509IssuerSerialMigSymServiceSha1ToSha512() throws Exception {
 
         String thisMethod = "testCxfX509IssuerSerialMigSymService";
@@ -225,7 +223,7 @@ public class CxfX509MigSymSha2NegativeTests {
                         "", //String portNumberSecure
                         "FatBAX03Service", //String strServiceName,
                         "UrnX509Token03", //String strServicePort
-                        errMsgVersion //2/2021 CxfX509MigSvcClient
+                        errMsgVersion //CxfX509MigSvcClient
             );
         } catch (Exception e) {
             throw e;
@@ -244,7 +242,6 @@ public class CxfX509MigSymSha2NegativeTests {
      *
      */
 
-    //2/2021
     protected void testRoutine(
                                String thisMethod,
                                String x509Policy,
@@ -263,12 +260,11 @@ public class CxfX509MigSymSha2NegativeTests {
                        strServicePort,
                        x509MigSymClientUrl,
                        "",
-                       null); //2/2021
+                       null);
 
         return;
     }
 
-    //2/2021
     protected void testRoutine(
                                String thisMethod,
                                String x509Policy,
@@ -288,7 +284,7 @@ public class CxfX509MigSymSha2NegativeTests {
                        strServicePort,
                        x509MigSymClientUrl,
                        "",
-                       errMsgVersion); //2/2021
+                       errMsgVersion);
 
         return;
     }
@@ -312,7 +308,7 @@ public class CxfX509MigSymSha2NegativeTests {
                                   String strServicePort,
                                   String strClientUrl,
                                   String strBadOrGood,
-                                  String errMsgVersion) throws Exception { //2/2021
+                                  String errMsgVersion) throws Exception {
         try {
 
             WebRequest request = null;
@@ -335,7 +331,6 @@ public class CxfX509MigSymSha2NegativeTests {
             request.setParameter("servicePort", strServicePort);
             request.setParameter("methodFull", methodFull);
 
-            //2/2021
             request.setParameter("errorMsgVersion", errMsgVersion);
 
             Log.info(thisClass, methodFull, "The request is: " + request);
@@ -378,7 +373,6 @@ public class CxfX509MigSymSha2NegativeTests {
             e.printStackTrace(System.out);
         }
 
-        //2/2021
         server.deleteFileFromLibertyInstallRoot("usr/extension/lib/bundles/com.ibm.ws.wssecurity.example.cbh.jar");
         server.deleteFileFromLibertyInstallRoot("usr/extension/lib/features/wsseccbh-1.0.mf");
         server.deleteFileFromLibertyInstallRoot("usr/extension/lib/bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
