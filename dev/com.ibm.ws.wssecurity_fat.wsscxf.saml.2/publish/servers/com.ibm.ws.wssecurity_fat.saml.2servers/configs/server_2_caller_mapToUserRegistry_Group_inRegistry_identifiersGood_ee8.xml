@@ -1,3 +1,14 @@
+<!--
+    Copyright (c) 2020, 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+ 
 <server>
 
 	<!--  3/2021 update to add samlcaller_cxf_features.xml content here to replace the include of imports/samlcaller_cxf_features.xml -->
@@ -10,15 +21,13 @@
 		<feature>jndi-1.0</feature>
 		<feature>jaxws-2.2</feature>
 		<feature>appSecurity-2.0</feature>
-		<!-- 1/26/2021 -->
-		<!-- <feature>servlet-3.0</feature>-->
 		<feature>servlet-3.1</feature>
 		<feature>wsSecuritySaml-1.1</feature>
 		<feature>samlWeb-2.0</feature>
 		<feature>usr:wsseccbh-1.0</feature>
 		<feature>securitylibertyinternals-1.0</feature>
 	</featureManager>
-	
+     
 	<!-- 3/2021 <include location="imports/samlcaller_cxf_features.xml" /> -->
 	
 	<include location="imports/BasicRegistry_withoutIDPUsers.xml" />
@@ -27,7 +36,6 @@
 	<include location="imports/samlcallertoken_testApp.xml" />
 	<include
 		location="imports/securityProviderWithCaller_mapToUserRegistry_Group_identifiersGood_ee8.xml" />
-
-     <!-- 3/2021 update with securityProviderWithCaller_mapToUserRegistry_Group_identifiersGood_ee8.xml -->
+    <include location="imports/java2Permissions.xml" />
      
 </server>
