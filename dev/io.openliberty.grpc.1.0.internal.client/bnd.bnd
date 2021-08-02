@@ -16,6 +16,8 @@ Bundle-Name: gRPC Client
 Bundle-SymbolicName: io.openliberty.grpc.1.0.internal.client
 Bundle-Description: Liberty gRPC Client, version ${bVersion}
 
+jakartaeeMe: true
+
 Import-Package: \
   !com.aayushatharva.brotli4j*,\
   !com.github.luben.zstd,\
