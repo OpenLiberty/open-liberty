@@ -9,8 +9,26 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-var editorTree = (function() {
+ var editorTree = (function() {
     "use strict";
+
+    // Used to generate unique identifier
+    var nodeCount = 0;
+
+    // Append nodeID and nodeName to the element
+    var getElementMetadataString = function(element) {
+        var elementId = element.getAttribute("id");
+        var nodeName = element.nodeName;
+
+        return validationUtils.getMetadataStringForTreeNode(nodeName, elementId);
+    };
+
+
+    // Check whether the node is supported by validation API.
+    var isValidationSupportedNode = function (nodeName) {
+        return validationUtils.isSupportedNode(nodeName);
+    };
+
 
     var renderEditorTree = function(documentElement) {
         var editorTree = $("#editorTree");
@@ -35,6 +53,7 @@ var editorTree = (function() {
         // Obtain element label (defaults to capitalized element name if no label is specified)
         var elementLabel = element.nodeName;
         var elementSuffix = "";
+        var elementMetadataString = "";
 
         // Obtain element information
         var elementPath = xmlUtils.getElementPath(element);
@@ -48,6 +67,7 @@ var editorTree = (function() {
                 // Obtain suffix (when applicable)
                 elementSuffix = getElementSuffix(element, elementDeclaration);
                 elementSuffix = apiMsgUtils.encodeData(elementSuffix);
+                elementMetadataString = getElementMetadataString(element);
             }
         }
 
@@ -66,7 +86,9 @@ var editorTree = (function() {
             treeRoleAndExpandedState += " aria-expanded=\"false\"";
             treeRoleAndExpandedState += " aria-selected=\"false\"";
         }
-        var treeNodeControl = $("<div class=\"editorTreeNode\" " + treeRoleAndExpandedState + " aria-label=\"" + elementLabel + " " + elementSuffix + "\"></div>");
+        nodeCount++;
+        var identifier_string = "editorTreeNode_" + nodeCount;
+        var treeNodeControl = $("<div id=\"" + identifier_string + "\" class=\"editorTreeNode\" " + treeRoleAndExpandedState + " aria-label=\"" + elementLabel + "\" " + elementMetadataString + elementSuffix + "\"></div>");
 
         // Create expansion button control
         var expandButtonControl = $("<div class=\"editorTreeNodeExpandButton\"><span class=\"sr-only\">" + editorMessages.EXPAND_COLLAPSE + "</span></div>");
@@ -78,7 +100,7 @@ var editorTree = (function() {
         }
 
         // Create label control
-        var labelControl = $("<div class=\"editorTreeNodeLabel\">" + elementLabel + "</div>");
+        var labelControl = $("<label for=\"" + identifier_string + "\"  class=\"editorTreeNodeLabel\">" + elementLabel + "</label>");
         if(elementIsRoot) {
             labelControl.addClass("editorTreeNodeRoot");
             labelControl.attr("id", "editorTreeNodeRootLabel");
@@ -142,6 +164,20 @@ var editorTree = (function() {
     };
 
 
+    // Update nodeID and nodeName in the element
+    var updateElementMetaData = function(element) {
+        var elementId = element.getAttribute("id");
+        var elementNodeName = element.nodeName;
+        if(elementNodeName && isValidationSupportedNode(elementNodeName)) {
+            if(elementId === null) {
+                elementId = "null";
+            }
+            var treeNodeElement = $("#editorTree .active");
+            $(treeNodeElement).data('elementid', elementId);
+            $(treeNodeElement).data('elementnodename', elementNodeName);
+        }                
+    };
+
     var getElementSuffix = function(element, elementDeclaration) {
         var suffix = "";
         if(schemaUtils.elementContainsText(elementDeclaration) && element.textContent !== null && element.textContent !== undefined) {
@@ -167,6 +203,7 @@ var editorTree = (function() {
                 var suffix = getElementSuffix(element, elementDeclaration);
                 var suffixControl = $("#editorTree .active .editorTreeNodeSuffix");
                 suffixControl.text(suffix);
+                updateElementMetaData(element);
 
                 // Handle bidi
                 if(globalization.isBidiEnabled()) {
@@ -252,6 +289,10 @@ var editorTree = (function() {
 
             // Select new tree node
             var addedTreeNode = $(".editorTreeNode:last", treeNodeChildren);
+            
+            // Add flag to indicate it is a new element.
+            $(addedTreeNode).addClass("unsavedElement");
+
             selectTreeNode(addedTreeNode);
 
             // Ensure new tree node is visible
@@ -260,7 +301,6 @@ var editorTree = (function() {
             if(offset > editorTree.innerHeight()){
                 editorTree.animate({scrollTop: offset}, 300);
             }
-
         }
     };
 
@@ -351,6 +391,7 @@ var editorTree = (function() {
                     selectTreeNode(treeNode);
                 }
             }
+            validationUtils.updateTestConnectionButtonStatus();
         });
 
         // Handle tooltips for clipped tree node suffixes

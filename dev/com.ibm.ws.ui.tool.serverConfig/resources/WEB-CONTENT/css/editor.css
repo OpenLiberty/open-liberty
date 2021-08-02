@@ -20,6 +20,24 @@ html {
 	src: url('../fonts/helvetica-neue-roman.woff');
 }
 
+/* reset carbon-css effects - start */
+body {
+	line-height: 1.42857143;
+	font: unset;
+	letter-spacing: normal;
+	-moz-osx-font-smoothing: auto;
+	font-weight: normal;
+}
+
+#loginConfigId, #authAliasInput {
+	background-color: #fff;
+}
+
+.bx--label {
+	margin-bottom: 0;
+}
+/* reset carbon-css effects - end */
+
 body,
 .tooltip,
 .popover {
@@ -874,7 +892,7 @@ footer  {
 #editorNavigation .editorNavigationTab.active {
 	cursor: default;
 	background-color: inherit;
-	color: #4178BE;
+	color: #204e75;
     box-shadow: inset 0px -2px 0px 0px #4178BE;
 }
 
@@ -957,7 +975,7 @@ footer  {
 }
 
 #testEndResult h4,
-#dialogTestDatasourceJSONContainer h4,
+#dialogTestConnectionJSONContainer h4,
 #testParameters h4,
 #editorForm label {
 	color: black;
@@ -1155,8 +1173,8 @@ footer  {
 
 /* TESTING DATASOURCE DIALOG */
 #authModeTabs {
-	margin-top: 10px;
-	margin-bottom: 15px;
+	margin-top: 0px;
+	margin-bottom: 0px;
 }
 
 /* ADD CHILD DIALOG */
@@ -1181,17 +1199,12 @@ footer  {
 	background-color: white;
 }
 
-#dialogTestDatasourceDescription {
-	min-height: 72px;
-	height: auto;
-}
-
-#dialogTestDatasourceDescription:focus,
+#dialogTestConnectionDescription:focus,
 #dialogAddChildElementDescription:focus {
 	background-color: #C0E6FF;
 }
 
-#dialogTestDatasourceDescription,
+#dialogTestConnectionDescription,
 #dialogAddChildElementDescription {
 	color: black;
 	box-shadow: none;
@@ -1202,10 +1215,20 @@ footer  {
 	cursor: default;
 }
 
+#dialogTestConnectionDescription {
+	min-height: 100px;
+	height: auto;
+}
+
 #testEndResult,
-#dialogTestDatasourceJSONContainer,
+#dialogTestConnectionJSONContainer,
 #dialogAddChildElementDescriptionContainer {
 	margin: 15px;
+}
+
+#testEndResult, #dialogTestConnectionJSONContainer {
+	margin-top: 5px;
+	margin-bottom: 0px;
 }
 
 #dialogAddChildElementListContainer .dialogAddChildElementListItem {
@@ -1652,4 +1675,154 @@ footer  {
 	outline-color: white;
 	color: white;
 	background-color: #404e56;
+}
+
+.containerAuthenticationRow {
+	float: left;
+	height: auto;
+	width: 100%;
+}
+
+#testAuthAliasParameter .containerAuthSubSection {
+	margin-left: 25px;
+}
+
+#testAuthAliasParameter, #testParameters {
+	margin-bottom: 0;
+}
+
+#testNoReference {
+	padding-bottom: 5px;
+}
+
+.containerAuthenticationRow h6 {
+	margin: 0 0 5px 0;
+}
+
+.containerAuthenticationLeftSection {
+	width: 30px;
+	float: left;
+}
+
+.containerAuthenticationRightSection {
+	width: calc(100% - 40px);
+	float: left;
+}
+
+.containerAuthenticationFullRowSection {
+	width: calc(100% - 10px);
+	float: left;
+	padding-top: 5px;
+}
+
+.containerAuthenticationRadioElement {
+	padding: 5px;
+}
+
+.containerAuthenticationRadioLabel {
+	font-weight: normal;
+	margin-bottom: 5px;
+}
+
+.keyValueTable {
+	margin: 10px 0;
+	width: 100%;
+	height: auto;
+}
+
+.keyValueTableRow {
+	width: 102%;
+	border: 0;
+	float: left;
+	min-height: 20px;
+}
+
+#keyValueTableRowValueSection {
+	width: 100%;
+	float: left;
+	height: auto;
+	min-height: 120px;
+	max-height: 11vh;
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+
+.keyValueTableRowTitle {
+	width: calc(100% - 120px);
+	height: auto;
+	float: left;
+	font-size: 14px;
+}
+
+.keyValueTableItemKey, .keyValueTableItemValue {
+	width: calc(50% - 60px);
+	height: auto;
+	float: left;
+}
+
+.keyValueTableTitle {
+	background: #dbdbdf;
+	display: block;
+}
+
+.keyValueTableTitle.keyValueTableItemKey {
+	border-top-left-radius: 5px;
+}
+
+.keyValueTableItemAction {
+	float: left;
+	margin-left: 5px;
+}
+
+.keyValueTableTitle.keyValueTableItemAction {
+	border-top-right-radius: 5px;
+}
+
+.keyValueTableItemActionIcon {
+	cursor: pointer;
+	background-color: #327632;
+	color: white;
+	opacity: 1;
+	min-width: 65px;
+	max-width: 90px;
+}
+
+.keyValueTableItemActionIcon:hover {
+	opacity: 0.7;
+}
+
+.keyValueTableItemActionIconRemove {
+	background-color: #58595b;
+	margin-top: 25px;
+}
+
+.keyValueTableItemActionIconDisabled, .keyValueTableItemActionIconDisabled:hover {
+	cursor: not-allowed;
+	pointer-events: none;
+}
+
+#testAuthAliasParameter .has-error {
+	border-color: #a94442;
+}
+
+#dialogTestConnectionButton {
+	margin-top: 15px;
+}
+
+#authModeTabs.disabledButton {
+	display: none;
+}
+
+#testButton.unsavedNodeTestConnectionButton {
+	opacity: 0.65;
+	cursor: not-allowed;
+}
+
+#testPasswordInputTitle {
+	margin-top: 15px;
+}
+
+#containerAuthLegend {
+	height: 1px;
+    font-size: 0;
 }

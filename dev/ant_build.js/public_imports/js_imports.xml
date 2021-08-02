@@ -15,6 +15,7 @@
 	<import file="internal_imports/jshint.xml" />
 	<import file="internal_imports/cssValidation.xml" />
 	<import file="internal_imports/jquery.xml" />
+	<import file="internal_imports/carbon.xml" />
 	<import file="internal_imports/bootstrap.xml" />
 	<import file="internal_imports/orion.xml" />
 	<import file="internal_imports/svg4everybody.xml" />

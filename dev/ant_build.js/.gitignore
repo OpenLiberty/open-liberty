@@ -12,6 +12,8 @@ lib/dojo-doh-junit-report/*.zip
 lib/intern/*.zip
 lib/jquery/jquery-3.5.1/
 lib/jquery/*.jar
+lib/carbon/*.jar
+lib/carbon/carbon-components-10.44.0/
 lib/jshint/*.jar
 lib/nodejs/*.gz
 lib/nodejs/*.exe
