@@ -57,6 +57,9 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
     private final File variableCacheFile;
     // variables explicitly defined in server.xml
     private Map<String, LibertyVariable> configVariables;
+    // variables explicitly defined in bundle defaultInstances files
+    private Map<String, LibertyVariable> defaultConfigVariables;
+
     // cache of external variables
     private Map<String, Object> variableCache;
     // cache of variables defined in default configurations
@@ -79,6 +82,7 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
         this.bindingRootDirectoryFile = new File(bindingRoot);
         this.serviceBindingVariables = new HashMap<String, ServiceBindingVariable>();
         this.configVariables = Collections.emptyMap();
+        this.defaultConfigVariables = Collections.emptyMap();
         this.variableCacheFile = variableCacheFile;
         if (variableCacheFile != null) {
             loadVariableCache();
@@ -237,15 +241,27 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
         return this.configVariables;
     }
 
+    @Sensitive
+    public Map<String, LibertyVariable> getDefaultConfigVariables() {
+        return this.defaultConfigVariables;
+    }
+
     /*
      * Override system variables.
      */
     public void updateSystemVariables(@Sensitive Map<String, LibertyVariable> newVariables) {
+        // Remove any variables that were removed from config. Replace with a defaultInstance value if it exists.
         for (String variableName : configVariables.keySet()) {
             if (!newVariables.containsKey(variableName)) {
-                registry.removeVariable(variableName);
+                LibertyVariable defaultInstanceVar = defaultConfigVariables.get(variableName);
+                if (defaultInstanceVar == null || defaultInstanceVar.getValue() == null)
+                    registry.removeVariable(variableName);
+                else
+                    registry.replaceVariable(variableName, defaultInstanceVar.getValue());
             }
         }
+
+        // Replace values that have changed
         for (Map.Entry<String, LibertyVariable> entry : newVariables.entrySet()) {
             String variableName = entry.getKey();
             String variableValue = entry.getValue().getValue();
@@ -254,6 +270,7 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
             else
                 registry.removeVariable(variableName);
         }
+
         configVariables = newVariables;
 
         // Override with command line variables if necessary
@@ -420,17 +437,35 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
         }
     }
 
+    @Sensitive
     public synchronized void setDefaultVariables(Map<String, LibertyVariable> variables) {
         boolean dirty = false;
+
+        for (Map.Entry<String, LibertyVariable> entry : defaultConfigVariables.entrySet()) {
+            // If the variable doesn't exist in the new set of defaultInstances and doesn't exist in server.xml, remove it from
+            // the registry
+            if (!variables.containsKey(entry.getKey())) {
+                LibertyVariable configuredVar = configVariables.get(entry.getKey());
+                if (configuredVar == null && entry.getValue().getValue() != null) {
+                    registry.removeVariable(entry.getKey());
+                    defaultVariableCache.remove(entry.getKey());
+                    dirty = true;
+                }
+            }
+        }
+
+        defaultConfigVariables = variables;
+
         for (Map.Entry<String, LibertyVariable> entry : variables.entrySet()) {
             String variableName = entry.getKey();
-            String currentValue = lookupVariable(variableName);
-            if (currentValue == null) {
-                // variable is not set anywhere, so set it to default value
-                String defaultValue = entry.getValue().getValue();
-                registry.addVariable(variableName, defaultValue);
-                Object oldValue = defaultVariableCache.put(variableName, defaultValue);
-                dirty = (oldValue == null) ? true : !oldValue.equals(defaultValue);
+            String variableValue = entry.getValue().getValue();
+
+            // If there is no server.xml version, update the registry
+            LibertyVariable configVariable = configVariables.get(entry.getKey());
+            if (configVariable == null && variableValue != null) {
+                registry.replaceVariable(variableName, variableValue);
+                Object oldValue = defaultVariableCache.put(variableName, variableValue);
+                dirty = (oldValue == null) ? true : !oldValue.equals(variableValue);
             }
         }
         if (dirty) {
@@ -500,6 +535,13 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
             userDefinedVariables.put(entry.getKey(), entry.getValue().getValue());
         }
 
+        for (Map.Entry<String, LibertyVariable> entry : defaultConfigVariables.entrySet()) {
+            LibertyVariable var = entry.getValue();
+            if (var.getValue() != null) {
+                userDefinedVariables.put(var.getName(), var.getValue());
+            }
+        }
+
         for (Map.Entry<String, LibertyVariable> entry : configVariables.entrySet()) {
             LibertyVariable var = entry.getValue();
             if (var.getValue() != null) {
@@ -517,6 +559,10 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
      */
     public String lookupVariableDefaultValue(String variableName) {
         LibertyVariable cv = configVariables.get(variableName);
+
+        if (cv == null)
+            cv = defaultConfigVariables.get(variableName);
+
         return cv == null ? null : cv.getDefaultValue();
     }
 
@@ -532,6 +578,20 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
             LibertyVariable var = entry.getValue();
             if (var.getValue() == null && var.getDefaultValue() != null) {
                 userDefinedVariables.put(var.getName(), var.getDefaultValue());
+            }
+        }
+        for (Map.Entry<String, LibertyVariable> entry : defaultConfigVariables.entrySet()) {
+            LibertyVariable var = entry.getValue();
+            if (userDefinedVariables.containsKey(entry.getKey())) {
+                if (var.getValue() != null) {
+                    //If a value was specified in defaultInstances, remove the defaultValue from server.xml
+                    userDefinedVariables.remove(entry.getKey());
+                }
+            } else {
+                // Add the defaultValue if there is no server.xml version
+                if (var.getValue() == null && var.getDefaultValue() != null) {
+                    userDefinedVariables.put(var.getName(), var.getDefaultValue());
+                }
             }
         }
         return userDefinedVariables;
