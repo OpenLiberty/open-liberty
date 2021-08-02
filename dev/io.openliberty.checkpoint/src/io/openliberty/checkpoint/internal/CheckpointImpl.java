@@ -19,8 +19,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import org.apache.felix.service.command.Descriptor;
-import org.apache.felix.service.command.Parameter;
+import org.osgi.framework.Constants;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -28,24 +27,23 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
-import org.osgi.framework.Constants;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
-import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
+import com.ibm.ws.kernel.boot.internal.BootstrapConstants;
+import com.ibm.ws.kernel.feature.ServerReadyStatus;
 import com.ibm.ws.runtime.update.RuntimeUpdateListener;
 import com.ibm.ws.runtime.update.RuntimeUpdateManager;
 import com.ibm.ws.runtime.update.RuntimeUpdateNotification;
 import com.ibm.ws.threading.listeners.CompletionListener;
-import com.ibm.ws.kernel.boot.internal.BootstrapConstants;
-import com.ibm.ws.kernel.feature.ServerReadyStatus;
+import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
+import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
 
+import io.openliberty.checkpoint.internal.CheckpointFailed.Type;
 import io.openliberty.checkpoint.internal.criu.ExecuteCRIU;
 import io.openliberty.checkpoint.spi.CheckpointHook;
 import io.openliberty.checkpoint.spi.CheckpointHookFactory;
 import io.openliberty.checkpoint.spi.CheckpointHookFactory.Phase;
-import io.openliberty.checkpoint.internal.CheckpointFailed.Type;
 
 @Component(
            reference = @Reference(name = "hookFactories", service = CheckpointHookFactory.class, cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC,
@@ -66,19 +64,19 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
 
     @Activate
     public CheckpointImpl(ComponentContext cc) {
-        this.cc = cc;
-        this.checkpointFeatures = "features".equals(cc.getBundleContext().getProperty(BootstrapConstants.CHECKPOINT_PROPERTY_NAME));
-        this.checkpointApplications = "applications".equals(cc.getBundleContext().getProperty(BootstrapConstants.CHECKPOINT_PROPERTY_NAME));
+        this(cc, null, //
+             "features".equals(cc.getBundleContext().getProperty(BootstrapConstants.CHECKPOINT_PROPERTY_NAME)), //
+             "applications".equals(cc.getBundleContext().getProperty(BootstrapConstants.CHECKPOINT_PROPERTY_NAME)));
     }
 
     // only for unit tests
-    CheckpointImpl(ComponentContext cc, ExecuteCRIU criu) {
+    CheckpointImpl(ComponentContext cc, ExecuteCRIU criu, boolean checkpointFeatures, boolean checkpointApplications) {
         this.cc = cc;
         this.criu = criu;
-        this.checkpointFeatures = "features".equals(cc.getBundleContext().getProperty(BootstrapConstants.CHECKPOINT_PROPERTY_NAME));
-        this.checkpointApplications = "applications".equals(cc.getBundleContext().getProperty(BootstrapConstants.CHECKPOINT_PROPERTY_NAME));
+        this.checkpointFeatures = checkpointFeatures;
+        this.checkpointApplications = checkpointApplications;
     }
-    
+
     @Override
     public void notificationCreated(RuntimeUpdateManager updateManager, RuntimeUpdateNotification notification) {
         if (checkpointFeatures && RuntimeUpdateNotification.APPLICATIONS_STARTING.equals(notification.getName())) {
@@ -103,7 +101,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
             });
         }
     }
-    
+
     @Override
     public void check() {
         if (checkpointApplications) {
@@ -118,30 +116,14 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         }
     }
 
-    /**
-     * Perform a checkpoint for the specified phase. The result of the
-     * checkpoint will be stored in the specified directory.
-     * Before the checkpoint is done the registered {@link CheckpointHookFactory#create(Phase)}
-     * methods are called to obtain the {@link CheckpointHook} instances which will participate
-     * in the prepare and restore steps for the checkpoint process.
-     * Each checkpoint hook instance will their {@link CheckpointHook#prepare(Phase)}
-     * methods are called before the checkpoint is done. After the checkpoint
-     * is done each checkpoint hook instance will have their {@link CheckpointHook#restore(Phase)}
-     * methods called.
-     *
-     * @deprecated Provided to support debugging from osgi console.
-     * @param phase the phase to take the checkpoint
-     * @throws CheckpointFailed if the checkpoint fails
-     */
-    @Deprecated
+    /* For unit tests only */
     void checkpoint(Phase phase, File directory) throws CheckpointFailed {
         doCheckpoint(phase, directory);
     }
 
-    @Descriptor("Do a checkpoint")
-    public void checkpoint(Phase phase) throws CheckpointFailed {
+    private void checkpoint(Phase phase) throws CheckpointFailed {
         doCheckpoint(phase,
-                   locAdmin.resolveResource(WsLocationConstants.SYMBOL_SERVER_WORKAREA_DIR + "checkpoint/image/").asFile());
+                     locAdmin.resolveResource(WsLocationConstants.SYMBOL_SERVER_WORKAREA_DIR + "checkpoint/image/").asFile());
     }
 
     private void doCheckpoint(Phase phase, File directory) throws CheckpointFailed {
