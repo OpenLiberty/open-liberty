@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.concurrent.mp.v1_2.fat.tck;
+package com.ibm.ws.concurrent.mp.v1_3.fat.tck;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -24,7 +24,7 @@ import componenttest.topology.utils.MvnUtils;
 @RunWith(FATRunner.class)
 public class MPContextPropagationTCKLauncher {
 
-    @Server("tckServerForMPContextPropagation12")
+    @Server("tckServerForMPContextPropagation13")
     public static LibertyServer server;
 
     @BeforeClass
@@ -42,9 +42,9 @@ public class MPContextPropagationTCKLauncher {
                    "org.jboss.weld.contexts.ContextNotActiveException" // expected when testing TransactionScoped bean cannot be accessed outside of transaction
     })
     @Test
-    public void launchMPContextPropagation_1_2_Tck() throws Exception {
+    public void launchMPContextPropagation_1_3_Tck() throws Exception {
         // TODO use this to only test with local build
         // if (FATRunner.FAT_TEST_LOCALRUN)
-        MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.concurrency.mp.1.2_fat_tck", this.getClass() + ":launchMPContextPropagationTck");
+        MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.concurrency.mp.1.3_fat_tck", this.getClass() + ":launchMPContextPropagationTck");
     }
 }
