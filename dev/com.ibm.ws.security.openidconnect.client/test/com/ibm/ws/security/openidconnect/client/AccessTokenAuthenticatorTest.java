@@ -274,6 +274,8 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
                 one(req).setAttribute(OidcClient.PROPAGATION_TOKEN_AUTHENTICATED, Boolean.TRUE);
                 one(clientConfig).getAccessTokenInLtpaCookie();
                 will(returnValue(false));
+                one(clientConfig).getTokenReuse();
+                will(returnValue(false));
                 allowing(clientConfig).getAccessTokenCacheEnabled();
                 will(returnValue(false));
                 allowing(clientConfig).getValidationMethod();
@@ -322,6 +324,8 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
 
                 one(clientConfig).getAccessTokenInLtpaCookie();
                 will(returnValue(false));
+                one(clientConfig).getTokenReuse();
+                will(returnValue(false));
                 allowing(clientConfig).getAccessTokenCacheEnabled();
                 will(returnValue(false));
                 one(clientConfig).getValidationMethod();
@@ -360,6 +364,8 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
 
                 one(clientConfig).getAccessTokenInLtpaCookie();
                 will(returnValue(false));
+                one(clientConfig).getTokenReuse();
+                will(returnValue(false));
                 one(clientConfig).getAccessTokenCacheEnabled();
                 will(returnValue(false));
                 exactly(2).of(clientConfig).getValidationMethod();
@@ -395,6 +401,8 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
                 will(returnValue(BEARER));
 
                 one(clientConfig).getAccessTokenInLtpaCookie();
+                will(returnValue(false));
+                one(clientConfig).getTokenReuse();
                 will(returnValue(false));
                 allowing(clientConfig).getAccessTokenCacheEnabled();
                 will(returnValue(false));
@@ -448,6 +456,8 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
                 one(req).setAttribute(OidcClient.PROPAGATION_TOKEN_AUTHENTICATED, Boolean.TRUE);
 
                 one(clientConfig).getAccessTokenInLtpaCookie();
+                will(returnValue(false));
+                one(clientConfig).getTokenReuse();
                 will(returnValue(false));
                 allowing(clientConfig).getAccessTokenCacheEnabled();
                 will(returnValue(false));
@@ -525,7 +535,7 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
 
                 one(statusLine).getStatusCode();
                 will(returnValue(HttpServletResponse.SC_OK));
-                one(clientConfig).getCache();
+                exactly(2).of(clientConfig).getCache();
                 will(returnValue(cache));
             }
         });
@@ -557,6 +567,8 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
                 will(returnValue(BEARER));
 
                 one(clientConfig).getAccessTokenInLtpaCookie();
+                will(returnValue(false));
+                one(clientConfig).getTokenReuse();
                 will(returnValue(false));
                 allowing(clientConfig).getAccessTokenCacheEnabled();
                 will(returnValue(false));
@@ -601,6 +613,8 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
                 will(returnValue(false));
                 one(clientConfig).getAccessTokenCacheEnabled();
                 will(returnValue(false));
+                one(clientConfig).getTokenReuse();
+                will(returnValue(false));
                 exactly(2).of(clientConfig).getValidationMethod();
                 will(returnValue(ClientConstants.VALIDATION_INTROSPECT));
                 one(clientConfig).getClientSecret();
@@ -631,6 +645,8 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
                 will(returnValue(BEARER));
 
                 one(clientConfig).getAccessTokenInLtpaCookie();
+                will(returnValue(false));
+                one(clientConfig).getTokenReuse();
                 will(returnValue(false));
                 one(clientConfig).getAccessTokenCacheEnabled();
                 will(returnValue(false));
@@ -699,6 +715,8 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
                 will(returnValue(ACCESS_TOKEN));
 
                 one(clientConfig).getAccessTokenInLtpaCookie();
+                will(returnValue(false));
+                one(clientConfig).getTokenReuse();
                 will(returnValue(false));
                 one(clientConfig).getAccessTokenCacheEnabled();
                 will(returnValue(false));

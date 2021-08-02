@@ -28,7 +28,7 @@ public class AccessTokenCacheHelper {
     private static final TraceComponent tc = Tr.register(AccessTokenCacheHelper.class);
 
     public ProviderAuthenticationResult getCachedTokenAuthenticationResult(OidcClientConfig clientConfig, String token) {
-        if (!clientConfig.getAccessTokenCacheEnabled() || !clientConfig.getTokenReuse()) {
+        if (!clientConfig.getAccessTokenCacheEnabled()) {
             return null;
         }
         SingleTableCache cache = clientConfig.getCache();
