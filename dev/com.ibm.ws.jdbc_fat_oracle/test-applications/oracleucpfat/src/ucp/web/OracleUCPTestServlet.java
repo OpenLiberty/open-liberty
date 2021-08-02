@@ -112,7 +112,7 @@ public class OracleUCPTestServlet extends FATServlet {
 
     /**
      * Checks to see if an ExecutionException was caused by a ConnectionWaitTimeoutException.
-     * If it was a junit failure is produced with a meaningful debug message for future servicability.
+     * If it was a ConnectionWaitTimeoutException, a junit failure is produced with a meaningful debug message for future serviceability.
      *
      * @param exception - ExecutionException from an async getConnection request.
      * @param jndiName  - jndiName of datasource involved in getConnectionRequest
