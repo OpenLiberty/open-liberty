@@ -24,7 +24,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
+import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentContext;
+
+import com.ibm.ws.kernel.boot.internal.BootstrapConstants;
 
 import io.openliberty.checkpoint.internal.CheckpointFailed.Type;
 import io.openliberty.checkpoint.internal.CheckpointImplTest.TestCheckpointHookFactory.TestCheckpointHook;
@@ -39,16 +42,36 @@ import io.openliberty.checkpoint.spi.CheckpointHookFactory.Phase;
 public class CheckpointImplTest {
     static class Factories implements InvocationHandler {
         final Object[] factories;
+        final boolean applications;
+        final boolean features;
 
-        public Factories(Object[] factories) {
+        public Factories(Object[] factories, boolean applications, boolean features) {
             super();
             this.factories = factories;
+            this.applications = applications;
+            this.features = features;
         }
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
             if ("locateServices".equals(method.getName())) {
                 return factories;
+            }
+            if ("getBundleContext".equals(method.getName())) {
+                return Proxy.newProxyInstance(getClass().getClassLoader(), new Class[] { BundleContext.class }, (p, m, a) -> {
+                    if ("getProperty".equals(m.getName())) {
+                        if (BootstrapConstants.CHECKPOINT_PROPERTY_NAME.equals(a[0])) {
+                            if (features) {
+                                return "features";
+                            }
+                            if (applications) {
+                                return "applications";
+                            }
+                        }
+                        return null;
+                    }
+                    throw new UnsupportedOperationException(m.getName());
+                });
             }
             throw new UnsupportedOperationException(method.getName());
         }
@@ -135,16 +158,21 @@ public class CheckpointImplTest {
     }
 
     private ComponentContext createComponentContext(Object... factories) {
+        return createComponentContext(false, false, factories);
+
+    }
+
+    private ComponentContext createComponentContext(boolean applications, boolean features, Object... factories) {
         if (factories.length == 0) {
             factories = null;
         }
-        return (ComponentContext) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[] { ComponentContext.class }, new Factories(factories));
+        return (ComponentContext) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[] { ComponentContext.class }, new Factories(factories, applications, features));
     }
 
     @Test
     public void testNullFactories() throws CheckpointFailed {
         TestCRIU criu = new TestCRIU();
-        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(), criu, false, false);
+        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(), criu);
         checkDirectory(Phase.FEATURES, checkpoint, criu);
         checkFailDump(Phase.FEATURES, checkpoint, criu);
     }
@@ -153,7 +181,7 @@ public class CheckpointImplTest {
     public void testNullHook() throws CheckpointFailed {
         TestCRIU criu = new TestCRIU();
         TestCheckpointHookFactory factory = new TestCheckpointHookFactory();
-        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(factory), criu, false, false);
+        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(factory), criu);
         checkPhase(factory, checkpoint, criu);
     }
 
@@ -163,7 +191,7 @@ public class CheckpointImplTest {
         TestCheckpointHookFactory f1 = new TestCheckpointHookFactory();
         TestCheckpointHookFactory f2 = new TestCheckpointHookFactory();
         TestCheckpointHookFactory f3 = new TestCheckpointHookFactory();
-        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(f1, f2, f3), criu, false, false);
+        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(f1, f2, f3), criu);
 
         checkDirectory(Phase.APPLICATIONS, checkpoint, criu);
         List<TestCheckpointHook> hooks = getHooks(f1, f2, f3);
@@ -182,7 +210,7 @@ public class CheckpointImplTest {
         TestCheckpointHookFactory f1 = new TestCheckpointHookFactory();
         TestCheckpointHookFactory f2 = new TestCheckpointHookFactory(prepareException, null);
         TestCheckpointHookFactory f3 = new TestCheckpointHookFactory();
-        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(f1, f2, f3), criu, false, false);
+        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(f1, f2, f3), criu);
 
         try {
             checkpoint.checkpoint(Phase.APPLICATIONS, new File("test"));
@@ -215,7 +243,7 @@ public class CheckpointImplTest {
         TestCheckpointHookFactory f1 = new TestCheckpointHookFactory();
         TestCheckpointHookFactory f2 = new TestCheckpointHookFactory();
         TestCheckpointHookFactory f3 = new TestCheckpointHookFactory();
-        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(f1, f2, f3), criu, false, false);
+        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(f1, f2, f3), criu);
 
         checkFailDump(Phase.FEATURES, checkpoint, criu);
 
@@ -235,7 +263,7 @@ public class CheckpointImplTest {
         TestCheckpointHookFactory f1 = new TestCheckpointHookFactory();
         TestCheckpointHookFactory f2 = new TestCheckpointHookFactory(null, restoreException);
         TestCheckpointHookFactory f3 = new TestCheckpointHookFactory();
-        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(f1, f2, f3), criu, false, false);
+        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(f1, f2, f3), criu);
 
         File test = new File("test");
         try {

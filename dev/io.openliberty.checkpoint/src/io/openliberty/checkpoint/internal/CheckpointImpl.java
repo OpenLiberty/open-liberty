@@ -64,17 +64,15 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
 
     @Activate
     public CheckpointImpl(ComponentContext cc) {
-        this(cc, null, //
-             "features".equals(cc.getBundleContext().getProperty(BootstrapConstants.CHECKPOINT_PROPERTY_NAME)), //
-             "applications".equals(cc.getBundleContext().getProperty(BootstrapConstants.CHECKPOINT_PROPERTY_NAME)));
+        this(cc, null);
     }
 
     // only for unit tests
-    CheckpointImpl(ComponentContext cc, ExecuteCRIU criu, boolean checkpointFeatures, boolean checkpointApplications) {
+    CheckpointImpl(ComponentContext cc, ExecuteCRIU criu) {
         this.cc = cc;
         this.criu = criu;
-        this.checkpointFeatures = checkpointFeatures;
-        this.checkpointApplications = checkpointApplications;
+        this.checkpointFeatures = "features".equals(cc.getBundleContext().getProperty(BootstrapConstants.CHECKPOINT_PROPERTY_NAME));
+        this.checkpointApplications = "applications".equals(cc.getBundleContext().getProperty(BootstrapConstants.CHECKPOINT_PROPERTY_NAME));
     }
 
     @Override
