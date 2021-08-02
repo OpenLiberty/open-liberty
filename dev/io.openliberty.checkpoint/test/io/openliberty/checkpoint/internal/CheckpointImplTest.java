@@ -26,13 +26,12 @@ import java.util.List;
 import org.junit.Test;
 import org.osgi.service.component.ComponentContext;
 
+import io.openliberty.checkpoint.internal.CheckpointFailed.Type;
 import io.openliberty.checkpoint.internal.CheckpointImplTest.TestCheckpointHookFactory.TestCheckpointHook;
 import io.openliberty.checkpoint.internal.criu.ExecuteCRIU;
-import io.openliberty.checkpoint.spi.CheckpointHookFactory.Phase;
 import io.openliberty.checkpoint.spi.CheckpointHook;
 import io.openliberty.checkpoint.spi.CheckpointHookFactory;
-import io.openliberty.checkpoint.spi.SnapshotFailed;
-import io.openliberty.checkpoint.spi.SnapshotFailed.Type;
+import io.openliberty.checkpoint.spi.CheckpointHookFactory.Phase;
 
 /**
  *
@@ -68,6 +67,10 @@ public class CheckpointImplTest {
             return 0;
         }
 
+        @Override
+        public boolean isCheckpointSupported() {
+            return true;
+        }
     }
 
     static class TestCheckpointHookFactory implements CheckpointHookFactory {
@@ -139,28 +142,28 @@ public class CheckpointImplTest {
     }
 
     @Test
-    public void testNullFactories() throws SnapshotFailed {
+    public void testNullFactories() throws CheckpointFailed {
         TestCRIU criu = new TestCRIU();
-        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(), criu);
+        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(), criu, false, false);
         checkDirectory(Phase.FEATURES, checkpoint, criu);
         checkFailDump(Phase.FEATURES, checkpoint, criu);
     }
 
     @Test
-    public void testNullHook() throws SnapshotFailed {
+    public void testNullHook() throws CheckpointFailed {
         TestCRIU criu = new TestCRIU();
         TestCheckpointHookFactory factory = new TestCheckpointHookFactory();
-        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(factory), criu);
+        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(factory), criu, false, false);
         checkPhase(factory, checkpoint, criu);
     }
 
     @Test
-    public void testPrepareRestore() throws SnapshotFailed {
+    public void testPrepareRestore() throws CheckpointFailed {
         TestCRIU criu = new TestCRIU();
         TestCheckpointHookFactory f1 = new TestCheckpointHookFactory();
         TestCheckpointHookFactory f2 = new TestCheckpointHookFactory();
         TestCheckpointHookFactory f3 = new TestCheckpointHookFactory();
-        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(f1, f2, f3), criu);
+        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(f1, f2, f3), criu, false, false);
 
         checkDirectory(Phase.APPLICATIONS, checkpoint, criu);
         List<TestCheckpointHook> hooks = getHooks(f1, f2, f3);
@@ -173,18 +176,18 @@ public class CheckpointImplTest {
     }
 
     @Test
-    public void testPrepareException() throws SnapshotFailed {
+    public void testPrepareException() throws CheckpointFailed {
         TestCRIU criu = new TestCRIU();
         RuntimeException prepareException = new RuntimeException("prepare exception test.");
         TestCheckpointHookFactory f1 = new TestCheckpointHookFactory();
         TestCheckpointHookFactory f2 = new TestCheckpointHookFactory(prepareException, null);
         TestCheckpointHookFactory f3 = new TestCheckpointHookFactory();
-        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(f1, f2, f3), criu);
+        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(f1, f2, f3), criu, false, false);
 
         try {
-            checkpoint.snapshot(Phase.APPLICATIONS, new File("test"));
-            fail("Expected SnapshotFailed exception.");
-        } catch (SnapshotFailed e) {
+            checkpoint.checkpoint(Phase.APPLICATIONS, new File("test"));
+            fail("Expected CheckpointFailed exception.");
+        } catch (CheckpointFailed e) {
             assertEquals("Wrong type.", Type.PREPARE_ABORT, e.getType());
             assertEquals("Wrong cause.", prepareException, e.getCause());
         }
@@ -212,7 +215,7 @@ public class CheckpointImplTest {
         TestCheckpointHookFactory f1 = new TestCheckpointHookFactory();
         TestCheckpointHookFactory f2 = new TestCheckpointHookFactory();
         TestCheckpointHookFactory f3 = new TestCheckpointHookFactory();
-        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(f1, f2, f3), criu);
+        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(f1, f2, f3), criu, false, false);
 
         checkFailDump(Phase.FEATURES, checkpoint, criu);
 
@@ -226,19 +229,19 @@ public class CheckpointImplTest {
     }
 
     @Test
-    public void testRestoreException() throws SnapshotFailed {
+    public void testRestoreException() throws CheckpointFailed {
         TestCRIU criu = new TestCRIU();
         RuntimeException restoreException = new RuntimeException("restore exception test.");
         TestCheckpointHookFactory f1 = new TestCheckpointHookFactory();
         TestCheckpointHookFactory f2 = new TestCheckpointHookFactory(null, restoreException);
         TestCheckpointHookFactory f3 = new TestCheckpointHookFactory();
-        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(f1, f2, f3), criu);
+        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(f1, f2, f3), criu, false, false);
 
         File test = new File("test");
         try {
-            checkpoint.snapshot(Phase.APPLICATIONS, test);
-            fail("Expected SnapshotFailed exception.");
-        } catch (SnapshotFailed e) {
+            checkpoint.checkpoint(Phase.APPLICATIONS, test);
+            fail("Expected CheckpointFailed exception.");
+        } catch (CheckpointFailed e) {
             assertEquals("Wrong type.", Type.RESTORE_ABORT, e.getType());
             assertEquals("Wrong cause.", restoreException, e.getCause());
         }
@@ -267,7 +270,7 @@ public class CheckpointImplTest {
         return hooks;
     }
 
-    private void checkPhase(TestCheckpointHookFactory factory, CheckpointImpl checkpoint, TestCRIU criu) throws SnapshotFailed {
+    private void checkPhase(TestCheckpointHookFactory factory, CheckpointImpl checkpoint, TestCRIU criu) throws CheckpointFailed {
         checkDirectory(Phase.APPLICATIONS, checkpoint, criu);
         assertEquals("Wrong phase.", Phase.APPLICATIONS, factory.phase);
 //        checkFailDump(Phase.SERVER, checkpoint, criu);
@@ -275,9 +278,9 @@ public class CheckpointImplTest {
 
     }
 
-    private void checkDirectory(Phase phase, CheckpointImpl checkpoint, TestCRIU criu) throws SnapshotFailed {
+    private void checkDirectory(Phase phase, CheckpointImpl checkpoint, TestCRIU criu) throws CheckpointFailed {
         File test1 = new File("test1");
-        checkpoint.snapshot(phase, test1);
+        checkpoint.checkpoint(phase, test1);
         assertEquals("Wrong file.", test1, criu.directory);
     }
 
@@ -285,9 +288,9 @@ public class CheckpointImplTest {
         File test2 = new File("test2");
         criu.throwIOException = true;
         try {
-            checkpoint.snapshot(phase, test2);
-            fail("Expected SnapshotFailed exception.");
-        } catch (SnapshotFailed e) {
+            checkpoint.checkpoint(phase, test2);
+            fail("Expected CheckpointFailed exception.");
+        } catch (CheckpointFailed e) {
             assertEquals("Wrong type.", Type.SNAPSHOT_FAILED, e.getType());
             assertTrue("Wrong cause.", e.getCause() instanceof IOException);
         }

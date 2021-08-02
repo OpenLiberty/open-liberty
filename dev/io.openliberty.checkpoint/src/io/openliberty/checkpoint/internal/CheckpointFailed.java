@@ -9,12 +9,12 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package io.openliberty.checkpoint.spi;
+package io.openliberty.checkpoint.internal;
 
 import org.osgi.annotation.versioning.ProviderType;
 
 @ProviderType
-public class SnapshotFailed extends Exception {
+public class CheckpointFailed extends Exception {
     private static final long serialVersionUID = -669718085413549145L;
 
     public enum Type {
@@ -27,7 +27,7 @@ public class SnapshotFailed extends Exception {
     private final int errorCode;
     private final Type type;
 
-    public SnapshotFailed(Type type, String msg, Exception cause, int errorCode) {
+    public CheckpointFailed(Type type, String msg, Exception cause, int errorCode) {
         super(msg, cause);
         this.type = type;
         this.errorCode = errorCode;

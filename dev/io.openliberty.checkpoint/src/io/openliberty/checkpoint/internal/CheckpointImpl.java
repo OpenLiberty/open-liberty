@@ -14,12 +14,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Future;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import org.apache.felix.service.command.Descriptor;
-import org.apache.felix.service.command.Parameter;
+import org.osgi.framework.Constants;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -30,25 +30,31 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.kernel.boot.internal.BootstrapConstants;
+import com.ibm.ws.kernel.feature.ServerReadyStatus;
+import com.ibm.ws.runtime.update.RuntimeUpdateListener;
+import com.ibm.ws.runtime.update.RuntimeUpdateManager;
+import com.ibm.ws.runtime.update.RuntimeUpdateNotification;
+import com.ibm.ws.threading.listeners.CompletionListener;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
 
+import io.openliberty.checkpoint.internal.CheckpointFailed.Type;
 import io.openliberty.checkpoint.internal.criu.ExecuteCRIU;
-import io.openliberty.checkpoint.internal.Checkpoint;
 import io.openliberty.checkpoint.spi.CheckpointHook;
 import io.openliberty.checkpoint.spi.CheckpointHookFactory;
 import io.openliberty.checkpoint.spi.CheckpointHookFactory.Phase;
-import io.openliberty.checkpoint.spi.SnapshotFailed;
-import io.openliberty.checkpoint.spi.SnapshotFailed.Type;
 
 @Component(
            reference = @Reference(name = "hookFactories", service = CheckpointHookFactory.class, cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC,
                                   policyOption = ReferencePolicyOption.GREEDY),
-           property = { "osgi.command.function=snapshot", "osgi.command.scope=criu" })
-public class CheckpointImpl implements Checkpoint {
+           property = { Constants.SERVICE_RANKING + ":Integer=-10000" })
+public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus {
 
     private static final TraceComponent tc = Tr.register(CheckpointImpl.class);
     private final ComponentContext cc;
+    private final boolean checkpointFeatures;
+    private final boolean checkpointApplications;
 
     @Reference
     WsLocationAdmin locAdmin;
@@ -58,45 +64,69 @@ public class CheckpointImpl implements Checkpoint {
 
     @Activate
     public CheckpointImpl(ComponentContext cc) {
-        this.cc = cc;
+        this(cc, null, //
+             "features".equals(cc.getBundleContext().getProperty(BootstrapConstants.CHECKPOINT_PROPERTY_NAME)), //
+             "applications".equals(cc.getBundleContext().getProperty(BootstrapConstants.CHECKPOINT_PROPERTY_NAME)));
     }
 
     // only for unit tests
-    CheckpointImpl(ComponentContext cc, ExecuteCRIU criu) {
+    CheckpointImpl(ComponentContext cc, ExecuteCRIU criu, boolean checkpointFeatures, boolean checkpointApplications) {
         this.cc = cc;
         this.criu = criu;
-    }
-
-    /**
-     * Perform a snapshot for the specified phase. The result of the
-     * snapshot will be stored in the specified directory.
-     * Before the snapshot is taken the registered {@link CheckpointHookFactory#create(Phase)}
-     * methods are called to obtain the {@link CheckpointHook} instances which will participate
-     * in the prepare and restore steps for the snapshot process.
-     * Each snapshot hook instance will their {@link CheckpointHook#prepare(Phase)}
-     * methods are called before the snapshot is taken. After the snapshot
-     * is taken each snapshot hook instance will have their {@link CheckpointHook#restore(Phase)}
-     * methods called.
-     *
-     * @deprecated Provided to support debugging from osgi console.
-     * @param phase the phase to take the snapshot
-     * @throws SnapshotFailed if the snapshot fails
-     */
-    @Deprecated
-    @Descriptor("Take a snapshot")
-    public void snapshot(@Parameter(names = "-p", absentValue = "") @Descriptor("The phase to snapshot") Phase phase,
-                         @Descriptor("Directory to store the snapshot") File directory) throws SnapshotFailed {
-        doSnapshot(phase, directory);
+        this.checkpointFeatures = checkpointFeatures;
+        this.checkpointApplications = checkpointApplications;
     }
 
     @Override
-    @Descriptor("Take a snapshot")
-    public void snapshot(Phase phase) throws SnapshotFailed {
-        doSnapshot(phase,
-                   locAdmin.resolveResource(WsLocationConstants.SYMBOL_SERVER_WORKAREA_DIR + "checkpoint/image/").asFile());
+    public void notificationCreated(RuntimeUpdateManager updateManager, RuntimeUpdateNotification notification) {
+        if (checkpointFeatures && RuntimeUpdateNotification.APPLICATIONS_STARTING.equals(notification.getName())) {
+            notification.onCompletion(new CompletionListener<Boolean>() {
+                @Override
+                public void successfulCompletion(Future<Boolean> future, Boolean result) {
+                    if (result) {
+                        try {
+                            checkpoint(Phase.FEATURES);
+                        } catch (CheckpointFailed e) {
+                            if (e.getType() == Type.SNAPSHOT_FAILED) {
+                                new Thread(() -> System.exit(e.getErrorCode()), "Checkpoint exit.").start();
+                            }
+                            // TODO should we always exit on failure?
+                        }
+                    }
+                }
+
+                @Override
+                public void failedCompletion(Future<Boolean> future, Throwable t) {
+                }
+            });
+        }
     }
 
-    private void doSnapshot(Phase phase, File directory) throws SnapshotFailed {
+    @Override
+    public void check() {
+        if (checkpointApplications) {
+            try {
+                checkpoint(Phase.APPLICATIONS);
+            } catch (CheckpointFailed e) {
+                if (e.getType() == Type.SNAPSHOT_FAILED) {
+                    new Thread(() -> System.exit(e.getErrorCode()), "Checkpoint exit.").start();
+                }
+                // TODO should we always exit on failure?
+            }
+        }
+    }
+
+    /* For unit tests only */
+    void checkpoint(Phase phase, File directory) throws CheckpointFailed {
+        doCheckpoint(phase, directory);
+    }
+
+    private void checkpoint(Phase phase) throws CheckpointFailed {
+        doCheckpoint(phase,
+                     locAdmin.resolveResource(WsLocationConstants.SYMBOL_SERVER_WORKAREA_DIR + "checkpoint/image/").asFile());
+    }
+
+    private void doCheckpoint(Phase phase, File directory) throws CheckpointFailed {
         directory.mkdirs();
         Object[] factories = cc.locateServices("hookFactories");
         List<CheckpointHook> checkpointHooks = getHooks(factories, phase);
@@ -104,7 +134,7 @@ public class CheckpointImpl implements Checkpoint {
         try {
             ExecuteCRIU currentCriu = criu;
             if (currentCriu == null) {
-                throw new SnapshotFailed(Type.SNAPSHOT_FAILED, "The criu command is not available.", null, 0);
+                throw new CheckpointFailed(Type.SNAPSHOT_FAILED, "The criu command is not available.", null, 0);
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "criu attempt dump to '" + directory + "' and exit process.");
@@ -112,7 +142,7 @@ public class CheckpointImpl implements Checkpoint {
 
                 int dumpCode = currentCriu.dump(directory);
                 if (dumpCode < 0) {
-                    throw new SnapshotFailed(Type.SNAPSHOT_FAILED, "The criu dump command failed with error: " + dumpCode, null, dumpCode);
+                    throw new CheckpointFailed(Type.SNAPSHOT_FAILED, "The criu dump command failed with error: " + dumpCode, null, dumpCode);
                 }
 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -121,10 +151,10 @@ public class CheckpointImpl implements Checkpoint {
             }
         } catch (Exception e) {
             abortPrepare(checkpointHooks, e);
-            if (e instanceof SnapshotFailed) {
-                throw (SnapshotFailed) e;
+            if (e instanceof CheckpointFailed) {
+                throw (CheckpointFailed) e;
             }
-            throw new SnapshotFailed(Type.SNAPSHOT_FAILED, "Failed to create snapshot.", e, 0);
+            throw new CheckpointFailed(Type.SNAPSHOT_FAILED, "Failed to do checkpoint.", e, 0);
         }
         restore(phase, checkpointHooks);
     }
@@ -148,7 +178,7 @@ public class CheckpointImpl implements Checkpoint {
     private void callHooks(List<CheckpointHook> checkpointHooks,
                            Consumer<CheckpointHook> perform,
                            BiConsumer<CheckpointHook, Exception> abort,
-                           Function<Exception, SnapshotFailed> failed) throws SnapshotFailed {
+                           Function<Exception, CheckpointFailed> failed) throws CheckpointFailed {
         List<CheckpointHook> called = new ArrayList<>(checkpointHooks.size());
         for (CheckpointHook checkpointHook : checkpointHooks) {
             try {
@@ -167,15 +197,15 @@ public class CheckpointImpl implements Checkpoint {
         }
     }
 
-    private void prepare(List<CheckpointHook> checkpointHooks) throws SnapshotFailed {
+    private void prepare(List<CheckpointHook> checkpointHooks) throws CheckpointFailed {
         callHooks(checkpointHooks,
                   CheckpointHook::prepare,
                   CheckpointHook::abortPrepare,
                   CheckpointImpl::failedPrepare);
     }
 
-    private static SnapshotFailed failedPrepare(Exception cause) {
-        return new SnapshotFailed(Type.PREPARE_ABORT, "Failed to prepare for a snapshot.", cause, 0);
+    private static CheckpointFailed failedPrepare(Exception cause) {
+        return new CheckpointFailed(Type.PREPARE_ABORT, "Failed to prepare for a checkpoint.", cause, 0);
     }
 
     private void abortPrepare(List<CheckpointHook> checkpointHooks, Exception cause) {
@@ -188,14 +218,14 @@ public class CheckpointImpl implements Checkpoint {
         }
     }
 
-    private void restore(Phase phase, List<CheckpointHook> checkpointHooks) throws SnapshotFailed {
+    private void restore(Phase phase, List<CheckpointHook> checkpointHooks) throws CheckpointFailed {
         callHooks(checkpointHooks,
                   CheckpointHook::restore,
                   CheckpointHook::abortRestore,
                   CheckpointImpl::failedRestore);
     }
 
-    private static SnapshotFailed failedRestore(Exception cause) {
-        return new SnapshotFailed(Type.RESTORE_ABORT, "Failed to restore from snapshot.", cause, 0);
+    private static CheckpointFailed failedRestore(Exception cause) {
+        return new CheckpointFailed(Type.RESTORE_ABORT, "Failed to restore from checkpoint.", cause, 0);
     }
 }
