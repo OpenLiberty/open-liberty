@@ -10,16 +10,23 @@
 #*******************************************************************************
 -include= jar:${fileuri;${repo;org.apache.cxf:cxf-rt-ws-policy;3.4.3;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
 
+instrument.disabled: false
 
 cxfVersion=3.4.3
 
 -includeresource: \
    @${repo;org.apache.cxf:cxf-rt-ws-policy;${cxfVersion};EXACT}!/!*-INF/*, \
+   org/apache/cxf=${bin}/org/apache/cxf, \
    META-INF/cxf=resources/META-INF/cxf
 
--buildpath: org.apache.cxf:cxf-rt-ws-policy;strategy=exact;version=${cxfVersion},\
-  com.ibm.websphere.org.osgi.core,\
-  com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-  com.ibm.ws.logging.core
+-buildpath: org.apache.cxf:cxf-rt-ws-policy;strategy=exact;version=${cxfVersion}, \
+  com.ibm.websphere.javaee.wsdl4j.1.2;version=latest, \
+  com.ibm.websphere.org.osgi.core, \
+  com.ibm.ws.logging.core, \
+  com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest, \
+  com.ibm.ws.org.apache.neethi.3.0.2;version=latest, \
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+  org.apache.aries.blueprint:org.apache.aries.blueprint;version=latest, \
+  org.springframework:spring-core;version=3.0.7.RELEASE
 
 jakartaeeMe: true
