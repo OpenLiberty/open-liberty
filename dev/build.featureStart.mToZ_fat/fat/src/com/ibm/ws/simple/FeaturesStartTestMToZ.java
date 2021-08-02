@@ -266,6 +266,9 @@ public class FeaturesStartTestMToZ {
             }
         }
 
+        if (feature.equalsIgnoreCase("wmqMessagingClient-3.0")) // wmqJmsClient.rar.location variable has not been set
+            return true;
+
         if (feature.equalsIgnoreCase("wmqJmsClient-2.0")) // wmqJmsClient.rar.location variable has not been set
             return true;
 
