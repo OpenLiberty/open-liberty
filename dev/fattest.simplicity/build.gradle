@@ -84,10 +84,9 @@ task extractArquillianSupportJakartaFeature(type:Sync) {
 task publishArquillianSupportFeature(type:Copy) {
     dependsOn extractArquillianSupportFeature
     from('build/arquillian-feature-extract/extension')
-    into(buildImage.file('wlp'))
-
     dependsOn extractArquillianSupportJakartaFeature
     from('build/arquillian-jakarta-feature-extract/extension')
+
     into(buildImage.file('wlp'))
 }
 
