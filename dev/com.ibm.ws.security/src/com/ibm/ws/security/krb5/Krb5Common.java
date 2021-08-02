@@ -38,7 +38,7 @@ public class Krb5Common {
     static public boolean isIBMJdk18 = JavaInfo.isAvailable("com.ibm.security.auth.module.Krb5LoginModule");
 
     // SPNEGO support IBM JDK 8 and lower and JDK 11 and higher
-    static public boolean isOtherSupportJDKs = JavaInfo.isAvailable("com.sun.security.auth.module.Krb5LoginModule");;
+    static public boolean isOtherSupportJDKs = JavaInfo.isAvailable("com.sun.security.auth.module.Krb5LoginModule");
 
     // Kerberos KDC host name
     static public final String KRB5_KDC = "java.security.krb5.kdc";
