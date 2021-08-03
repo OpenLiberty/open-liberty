@@ -36,6 +36,9 @@ dependencies {
                
                         
 }
+
+addRequiredLibraries.dependsOn addJakartaTransformer
+
 /* 'xml-apis:xml-apis:1.4.01'*
 /*
  * This is where all application WARs will be built.

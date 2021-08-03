@@ -22,9 +22,22 @@ src: \
   
 fat.project: true
 
-#tested.features: jsp-2.3, jdbc-4.1, el-3.0
-#1/29/2021 update
-tested.features: jsp-2.3, jdbc-4.1, el-3.0, appsecurity-3.0, servlet-4.0, jaxb-2.3, cdi-2.0, jaxws-2.3, federatedregistry-1.0, ldapregistry-3.0
+tested.features:\
+  jdbc-4.1, \
+  jsp-2.3, \
+  pages-3.0, \
+  el-3.0, \
+  expressionlanguage-4.0, \
+  appsecurity-3.0, \
+  appSecurity-4.0, \
+  servlet-4.0, \
+  servlet-5.0, \
+  jaxb-2.3, \
+  xmlBinding-3.0, \
+  cdi-2.0, \
+  cdi-3.0, \
+  jaxws-2.3, \
+  xmlWS-3.0
 
 
 # Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
