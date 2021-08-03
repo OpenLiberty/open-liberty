@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.security.kerberos.internal;
 
+import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.Map;
 
 import javax.security.auth.Subject;
@@ -19,6 +21,8 @@ import org.ietf.jgss.GSSContext;
 import org.ietf.jgss.GSSCredential;
 import org.ietf.jgss.GSSException;
 import org.ietf.jgss.Oid;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -27,12 +31,14 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferencePolicy;
-import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.kernel.LibertyProcess;
+import com.ibm.ws.security.kerberos.IBMKrb5Helper;
 import com.ibm.ws.security.kerberos.Krb5HelperJdk;
+import com.ibm.ws.security.kerberos.OtherKrb5Helper;
+import com.ibm.ws.security.kerberos.auth.Krb5LoginModuleWrapper;
 import com.ibm.ws.security.s4u2proxy.KerberosExtService;
 
 /**
@@ -54,7 +60,8 @@ public class KerberosExtServiceImpl implements KerberosExtService {
     private static final TraceComponent tc = Tr.register(KerberosExtServiceImpl.class);
     static final String KEY_KRB5_HELPER_JDK = "Krb5HelperJdk";
     private KerberosExtConfig kerberosExtConfig = null;
-    private Krb5HelperJdk krb5HelperJdk = null;
+    private volatile Krb5HelperJdk krb5HelperJdk = null;
+    private ServiceRegistration<Krb5HelperJdk> krb5HelperJdkReg;
 
     /**
      * We don't do anything with the process, but having it set allows us to only be activated by DS if criteria we set
@@ -63,28 +70,10 @@ public class KerberosExtServiceImpl implements KerberosExtService {
     @Reference(policy = ReferencePolicy.STATIC, target = "(java.specification.version>=1.8)")
     protected void setProcess(LibertyProcess process) {}
 
-    @Reference(service = Krb5HelperJdk.class,
-               name = KEY_KRB5_HELPER_JDK,
-               policy = ReferencePolicy.DYNAMIC,
-               policyOption = ReferencePolicyOption.GREEDY)
-
-    protected void setKrb5HelperJdk(Krb5HelperJdk krb5HelperJdk) {
-        this.krb5HelperJdk = krb5HelperJdk;
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "The Krb5HelperJdk service with class name " + this.krb5HelperJdk.getClass().getSimpleName() + " has been activated");
-    }
-
-    protected void unsetKrb5HelperJdk(Krb5HelperJdk krb5HelperJdk) {
-        if (this.krb5HelperJdk == krb5HelperJdk) {
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "The Krb5HelperJdk service with class name " + this.krb5HelperJdk.getClass().getSimpleName() + " has been deactivated");
-            this.krb5HelperJdk = null;
-        }
-    }
-
     @Activate
     protected void activate(ComponentContext cc, Map<String, Object> props) {
         kerberosExtConfig = new KerberosExtConfig(props);
+        registerKrb5HelperJdk(cc);
     }
 
     @Modified
@@ -93,7 +82,11 @@ public class KerberosExtServiceImpl implements KerberosExtService {
     }
 
     @Deactivate
-    protected void deactivate(ComponentContext cc) {}
+    protected void deactivate(ComponentContext cc) {
+        if (krb5HelperJdkReg != null) {
+            krb5HelperJdkReg.unregister();
+        }
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -144,5 +137,27 @@ public class KerberosExtServiceImpl implements KerberosExtService {
     @Override
     public boolean isS4U2proxyEnable() {
         return (kerberosExtConfig != null ? kerberosExtConfig.isS4U2proxyEnable() : false);
+    }
+
+    /**
+     * Register the webcontainer's default delegation provider.
+     *
+     * @param cc
+     */
+    private void registerKrb5HelperJdk(ComponentContext cc) {
+        Dictionary<String, Object> props = new Hashtable<String, Object>();
+        if (Krb5LoginModuleWrapper.isIBMLoginModuleAvailable()) {
+            krb5HelperJdk = new IBMKrb5Helper();
+            props.put("name", "IBMKrb5Helper");
+        } else {
+            krb5HelperJdk = new OtherKrb5Helper();
+            props.put("name", "OtherKrb5Helper");
+        }
+        BundleContext bc = cc.getBundleContext();
+        krb5HelperJdkReg = bc.registerService(Krb5HelperJdk.class, krb5HelperJdk, props);
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Register the OSGI service  " + props.get("name"));
+        }
     }
 }
