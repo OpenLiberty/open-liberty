@@ -13,6 +13,8 @@ package com.ibm.ws.kernel.service.util;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+
 /**
  * API for reading information related to the JDK
  */
@@ -154,11 +156,13 @@ public class JavaInfo {
     public static boolean isAvailable(String className) {
         return AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
             @Override
+            @FFDCIgnore(ClassNotFoundException.class)
             public Boolean run() {
                 try {
                     Class.forName(className);
                     return true;
                 } catch (ClassNotFoundException e) {
+                    //No FFDC needed
                     return false;
                 }
             }
@@ -171,7 +175,7 @@ public class JavaInfo {
      * Instead if there are behaviour differences between JVMs a test should be performed
      * to detect the actual capability used before making a decision. For example if there
      * is a different class on one JVM that needs to be used vs another an attempt should
-     * be made to load the class and take the code path. 
+     * be made to load the class and take the code path.
      *
      * <p>This method is intended to only be used for debug purposes.</p>
      *
