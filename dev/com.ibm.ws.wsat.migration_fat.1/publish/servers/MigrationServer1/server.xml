@@ -12,7 +12,7 @@
 	<include location="../fatTestPorts.xml" />
 	
   <logging
-    traceSpecification="Transaction=all:wsat=all"
+    traceSpecification="Transaction=all:WSAT=all: com.ibm.ws.jaxws.support.LibertyLoggingInInterceptor=all"
 		traceFileName="trace.log"
 		maxFileSize="2000"
 		maxFiles="20"

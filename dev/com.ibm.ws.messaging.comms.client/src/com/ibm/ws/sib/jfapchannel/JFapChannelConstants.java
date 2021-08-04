@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2014 IBM Corporation and others.
+ * Copyright (c) 2003, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -169,11 +169,8 @@ public class JFapChannelConstants {
     // Names of factory classes
     public final static String CLASS_JFAP_CHANNEL_FACTORY = "com.ibm.ws.sib.jfapchannel.impl.WSJFapChannelFactory";
     public final static String CLASS_TCP_CHANNEL_FACTORY = "com.ibm.ws.tcp.channel.impl.WSTCPChannelFactory";
-    public final static String CLASS_SSL_CHANNEL_FACTORY = "com.ibm.ws.ssl.channel.impl.WSSSLChannelFactory";
-    public final static String CLASS_HTTPT_CHANNEL_FACTORY = "com.ibm.ws.httptunnel.channel.WSHttpTunnelOutboundChannelFactory";
     public final static String CLASS_HTTP_CHANNEL_FACTORY = "com.ibm.ws.http.channel.outbound.impl.WSHttpOutboundChannelFactory";
-    public final static String CLASS_TCPPROXY_CHANNEL_FACTORY = "com.ibm.ws.tcpchannelproxy.jfap.impl.TCPProxyChannelFactory"; // F244595
-
+    
     private final static int SECONDS_PER_YEAR = 365 * 24 * 60 * 60;
 
     // Minimum and maximum permissible values for heartbeating.

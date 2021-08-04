@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2020 IBM Corporation and others.
+ * Copyright (c) 2002, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -397,17 +397,19 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
 
                 TxRecoveryAgentImpl txAgent = createRecoveryAgent(_recoveryDirector);
 
-                // We will do peer recovery if the recovery identity and group are set
-                if (_recoveryIdentity != null && _recoveryGroup != null && !_recoveryIdentity.isEmpty() && !_recoveryGroup.isEmpty()) {
-                    _recLogService.setPeerRecoverySupported(true);
-                    txAgent.setPeerRecoverySupported(true);
-                    // Override the disable2PC property if it has been set
-                    TransactionImpl.setDisable2PCDefault(false);
-                    Tr.audit(tc, "WTRN0108I: Server with identity " + _recoveryIdentity + " is monitoring its peers for Transaction Peer Recovery");
-                }
-
                 if (_recoveryGroup != null && !_recoveryGroup.isEmpty()) {
                     txAgent.setRecoveryGroup(_recoveryGroup);
+
+                    // We will do peer recovery if the recovery identity and group are set
+                    if (_recoveryIdentity != null && !_recoveryIdentity.isEmpty()) {
+                        _recLogService.setPeerRecoverySupported(true);
+                        txAgent.setPeerRecoverySupported(true);
+                        // Override the disable2PC property if it has been set
+                        TransactionImpl.setDisable2PCDefault(false);
+                        Tr.audit(tc, "WTRN0108I: Server with identity " + _recoveryIdentity + " is monitoring its peers for Transaction Peer Recovery");
+                    } else {
+                        Tr.audit(tc, "WTRN0108I: recoveryIdentity is not set. Transaction Peer Recovery is disabled");
+                    }
                 }
 
                 setRecoveryAgent(txAgent);

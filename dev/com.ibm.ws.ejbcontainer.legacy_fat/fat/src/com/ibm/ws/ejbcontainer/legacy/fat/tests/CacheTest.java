@@ -22,6 +22,7 @@ import org.junit.runner.RunWith;
 import com.ibm.ejb2x.base.cache.web.StatefulOnceServlet;
 import com.ibm.ejb2x.base.cache.web.StatefulTranServlet;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -46,7 +47,7 @@ public class CacheTest {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().forServers("com.ibm.ws.ejbcontainer.legacy.server.notrace")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.legacy.server.notrace"));
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().forServers("com.ibm.ws.ejbcontainer.legacy.server.notrace")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.legacy.server.notrace")).andWith(FeatureReplacementAction.EE9_FEATURES().forServers("com.ibm.ws.ejbcontainer.legacy.server.notrace"));
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -65,7 +66,7 @@ public class CacheTest {
         StatefulCacheApp.addAsModules(StatefulCacheEJB, StatefulCacheWeb);
         ShrinkHelper.addDirectory(StatefulCacheApp, "test-applications/StatefulCacheApp.ear/resources");
 
-        ShrinkHelper.exportDropinAppToServer(server, StatefulCacheApp);
+        ShrinkHelper.exportDropinAppToServer(server, StatefulCacheApp, DeployOptions.SERVER_ONLY);
 
         server.startServer();
     }

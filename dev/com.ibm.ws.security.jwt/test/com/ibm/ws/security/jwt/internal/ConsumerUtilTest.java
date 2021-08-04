@@ -773,11 +773,11 @@ public class ConsumerUtilTest {
             final String tokenString = testName.getMethodName();
             mockery.checking(new Expectations() {
                 {
-                    one(jwtContext).getJwtClaims();
+                    allowing(jwtContext).getJwtClaims();
                     will(returnValue(jwtClaims));
-                    one(jwtClaims).getExpirationTime();
+                    allowing(jwtClaims).getExpirationTime();
                     will(returnValue(createDate(1000 * 60 * 60 * 2)));
-                    one(jwtConfig).getClockSkew();
+                    allowing(jwtConfig).getClockSkew();
                     will(returnValue(3600L));
                 }
             });

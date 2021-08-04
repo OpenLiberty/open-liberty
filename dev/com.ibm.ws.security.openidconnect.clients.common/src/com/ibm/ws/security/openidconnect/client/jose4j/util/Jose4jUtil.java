@@ -394,6 +394,7 @@ public class Jose4jUtil {
                 }
                 customProperties.put(AuthenticationConstants.INTERNAL_ASSERTION_KEY, Boolean.TRUE);
             }
+            customProperties.put(Constants.ACCESS_TOKEN_INFO, jwtClaims.getClaimsMap());
 
             //addJWTTokenToSubject(customProperties, idToken, clientConfig);
 

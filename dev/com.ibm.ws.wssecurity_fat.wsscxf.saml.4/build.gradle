@@ -36,6 +36,8 @@ dependencies {
                         
 }
 
+addRequiredLibraries.dependsOn addJakartaTransformer
+
 
 /*
  * This is where all application WARs will be built.

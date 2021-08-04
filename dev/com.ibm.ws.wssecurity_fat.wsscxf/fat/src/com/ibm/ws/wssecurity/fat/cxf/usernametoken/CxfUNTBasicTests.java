@@ -11,6 +11,8 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.usernametoken;
 
+import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
+import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.AfterClass;
@@ -26,16 +28,16 @@ import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
-import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.vulnerability.LeakedPasswordChecker;
 
+@SkipForRepeat({ NO_MODIFICATION, EE8_FEATURES })
 @RunWith(FATRunner.class)
 public class CxfUNTBasicTests {
 
-    //Added 10/2020
     static final private String serverName = "com.ibm.ws.wssecurity_fat";
     @Server(serverName)
     public static LibertyServer server;
@@ -46,7 +48,7 @@ public class CxfUNTBasicTests {
 
     private static String httpPortNumber = "";
 
-    private static LeakedPasswordChecker leakedPasswordChecker = new LeakedPasswordChecker(server);
+    private static LeakedPasswordChecker leakedPasswordChecker;
 
     /**
      * Sets up any configuration required for running the OAuth tests.
@@ -56,8 +58,6 @@ public class CxfUNTBasicTests {
     @BeforeClass
     public static void setUp() throws Exception {
 
-        //Added 10/2020
-        //Added the additional packages which untclient needs
         ShrinkHelper.defaultDropinApp(server, "untclient", "com.ibm.ws.wssecurity.fat.untclient", "fats.cxf.basic.wssec", "fats.cxf.basic.wssec.types");
         ShrinkHelper.defaultDropinApp(server, "untoken", "com.ibm.ws.wssecurity.fat.untoken");
 
@@ -69,6 +69,8 @@ public class CxfUNTBasicTests {
 
         untClientUrl = "http://localhost:" + httpPortNumber +
                        "/untclient/CxfUntSvcClient";
+
+        leakedPasswordChecker = new LeakedPasswordChecker(server);
 
         return;
 
@@ -98,8 +100,6 @@ public class CxfUNTBasicTests {
      *
      */
 
-    //4/2021 add allowed ffdc to run with EE8
-    @AllowedFFDC(value = { "java.lang.ClassNotFoundException" })
     @Test
     public void testUntCxfSvcClient() throws Exception {
 
@@ -142,8 +142,7 @@ public class CxfUNTBasicTests {
                    respReceived.contains(expectedResponse));
         Log.info(thisClass, thisMethod, "assertTrue");
 
-        //Orig:
-        //leakedPasswordChecker.checkForPasswordInTrace("security</wsse:Password>");
+        leakedPasswordChecker.checkForPasswordInTrace("security</wsse:Password>");
 
         return;
     }
@@ -247,8 +246,7 @@ public class CxfUNTBasicTests {
         assertTrue("The testUntCxfBadPswd test failed",
                    respReceived.contains(expectedResponse));
 
-        //Orig:
-        //leakedPasswordChecker.checkForPasswordInTrace("badpswd123</wsse:Password>");
+        leakedPasswordChecker.checkForPasswordInTrace("badpswd123</wsse:Password>");
 
         return;
 

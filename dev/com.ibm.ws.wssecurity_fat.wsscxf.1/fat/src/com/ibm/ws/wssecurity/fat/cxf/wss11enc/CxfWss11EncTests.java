@@ -11,6 +11,8 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.wss11enc;
 
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+
 import java.io.File;
 import java.util.Set;
 
@@ -30,9 +32,11 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.EE8FeatureReplacementAction;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
+@SkipForRepeat({ EE9_FEATURES })
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class CxfWss11EncTests extends CommonTests {
@@ -41,14 +45,12 @@ public class CxfWss11EncTests extends CommonTests {
     //static private UpdateWSDLPortNum newWsdl = null;
     static final private String serverName = "com.ibm.ws.wssecurity_fat.wss11enc";
 
-    //Added 10/2020
     @Server(serverName)
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
 
-        //2/2021
         ServerConfiguration config = server.getServerConfiguration();
         Set<String> features = config.getFeatureManager().getFeatures();
         if (features.contains("usr:wsseccbh-1.0")) {
@@ -61,7 +63,6 @@ public class CxfWss11EncTests extends CommonTests {
             copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
         }
 
-        //Added 11/2020
         ShrinkHelper.defaultDropinApp(server, "wss11encclient", "com.ibm.ws.wssecurity.fat.wss11encclient", "test.wssecfvt.wss11enc", "test.wssecfvt.wss11enc.types");
         ShrinkHelper.defaultDropinApp(server, "wss11enc", "com.ibm.ws.wssecurity.fat.wss11enc");
         PrepCommonSetup serverObject = new PrepCommonSetup();
@@ -95,7 +96,6 @@ public class CxfWss11EncTests extends CommonTests {
      * Verify that the Web service is invoked successfully. This is a positive scenario.
      */
 
-    //2/2021 to test with EE7, then the corresponding server_enchdr.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     public void testCXFClientEncryptHeaderNS1EE7Only() throws Exception {
@@ -125,12 +125,9 @@ public class CxfWss11EncTests extends CommonTests {
                     "The test expected a succesful message from the server.");
     }
 
-    //5/2021 added PrivilegedActionExc, NoSuchMethodExc as a result of java11 and ee8
-    @AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException", "java.security.PrivilegedActionException",
-                           "java.lang.NoSuchMethodException" })
-    //2/2021 to test with EE8, then the corresponding server_enchdr_wss4j.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFClientEncryptHeaderNS1EE8Only() throws Exception {
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_enchdr_wss4j.xml");
         genericTest(
@@ -184,7 +181,7 @@ public class CxfWss11EncTests extends CommonTests {
      *
      * Verify that the Web service is invoked successfully. This is a positive scenario.
      */
-    //2/2021 to test with EE7, then the corresponding server.xml and callbackhandler can be used
+
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     public void testCXFClientEncryptHeaderNS2EE7Only() throws Exception {
@@ -214,11 +211,9 @@ public class CxfWss11EncTests extends CommonTests {
                     "The test expected a succesful message from the server.");
     }
 
-    //4/2021
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
-    //2/2021 to test with EE8, then the corresponding server_wss4j.xml and callbackhandler can be used
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFClientEncryptHeaderNS2EE8Only() throws Exception {
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
         genericTest(
@@ -271,7 +266,6 @@ public class CxfWss11EncTests extends CommonTests {
      * Verify that the Web service is invoked successfully. This is a positive scenario.
      */
 
-    //2/2021 to test with EE7, then the corresponding server.xml and callbackhandler can be used
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     public void testCXFClientEncryptHeaderAnyEE7Only() throws Exception {
@@ -301,11 +295,9 @@ public class CxfWss11EncTests extends CommonTests {
                     "The test expected a succesful message from the server.");
     }
 
-    //4/2021
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
-    //2/2021 to test with EE8, then the corresponding server_wss4j.xml and callbackhandler can be used
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     public void testCXFClientEncryptHeaderAnyEE8Only() throws Exception {
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
         genericTest(
@@ -345,7 +337,6 @@ public class CxfWss11EncTests extends CommonTests {
 //        }
 //    }
 
-    //2/2021
     public static void copyServerXml(String copyFromFile) throws Exception {
 
         try {

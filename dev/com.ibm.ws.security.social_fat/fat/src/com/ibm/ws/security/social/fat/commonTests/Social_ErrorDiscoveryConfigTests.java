@@ -127,7 +127,7 @@ public class Social_ErrorDiscoveryConfigTests extends SocialCommonTest {
 
         genericTestServer.reconfigServer("server_LibertyOP_errorDiscoveryTests_oidc_hostNameVerify.xml", _testName, Constants.JUNIT_REPORTING, Constants.NO_EXTRA_MSGS);
         
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_hostNameVerificationEnabledTrue");
@@ -155,7 +155,7 @@ public class Social_ErrorDiscoveryConfigTests extends SocialCommonTest {
 
         genericTestServer.reconfigServer("server_LibertyOP_errorDiscoveryTests_oidc_malFormedUrl.xml", _testName, Constants.JUNIT_REPORTING, Constants.NO_EXTRA_MSGS);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_oidcLogin1");
@@ -182,7 +182,7 @@ public class Social_ErrorDiscoveryConfigTests extends SocialCommonTest {
 
         genericTestServer.reconfigServer("server_LibertyOP_errorDiscoveryTests_oidc_emptyDiscoveryUrl.xml", _testName, Constants.JUNIT_REPORTING, Constants.NO_EXTRA_MSGS);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_oidcLogin1");
@@ -206,7 +206,7 @@ public class Social_ErrorDiscoveryConfigTests extends SocialCommonTest {
 
         genericTestServer.reconfigServer("server_LibertyOP_errorDiscoveryTests_oidc_blankDiscoveryUrl.xml", _testName, Constants.JUNIT_REPORTING, Constants.NO_EXTRA_MSGS);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_oidcLogin1");
@@ -231,7 +231,7 @@ public class Social_ErrorDiscoveryConfigTests extends SocialCommonTest {
 
         genericTestServer.reconfigServer("server_LibertyOP_errorDiscoveryTests_oidc_nonHttpsUrl.xml", _testName, Constants.JUNIT_REPORTING, Constants.NO_EXTRA_MSGS);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_oidcLogin1");
@@ -265,7 +265,7 @@ public class Social_ErrorDiscoveryConfigTests extends SocialCommonTest {
   public void Social_ErrorDiscoveryConfigTests_discoveredEndpointsOverrideConfigured() throws Exception {
 
       genericTestServer.reconfigServer("server_LibertyOP_errorDiscoveryTests_oidc_overrideEndpts.xml", _testName, Constants.JUNIT_REPORTING, Constants.NO_EXTRA_MSGS);
-      WebClient webClient = getWebClient();
+      WebClient webClient = getAndSaveWebClient();
 
       SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
       updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_overrideEndpts");
@@ -296,7 +296,7 @@ public class Social_ErrorDiscoveryConfigTests extends SocialCommonTest {
   public void Social_ErrorDiscoveryConfigTests_discoveredIssuerOverridesConfigured() throws Exception {
 
       genericTestServer.reconfigServer("server_LibertyOP_errorDiscoveryTests_oidc_badIssuer.xml", _testName, Constants.JUNIT_REPORTING, Constants.NO_EXTRA_MSGS);
-      WebClient webClient = getWebClient();
+      WebClient webClient = getAndSaveWebClient();
 
       SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
       updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_badIssuer");
@@ -327,7 +327,7 @@ public class Social_ErrorDiscoveryConfigTests extends SocialCommonTest {
    public void Social_ErrorDiscoveryConfigTests_discoveredJwkUriOverridesConfigured() throws Exception {
       
      genericTestServer.reconfigServer("server_LibertyOP_errorDiscoveryTests_oidc_overrideJwksUri.xml", _testName, Constants.JUNIT_REPORTING, Constants.NO_EXTRA_MSGS);
-     WebClient webClient = getWebClient();
+     WebClient webClient = getAndSaveWebClient();
 
      SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
      updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_goodJwksUri");
@@ -360,7 +360,7 @@ public class Social_ErrorDiscoveryConfigTests extends SocialCommonTest {
   public void Social_ErrorDiscoveryConfigTests_autoAdjustScopeAndTokenEndptAuthMethod() throws Exception {
      
     genericTestServer.reconfigServer("server_LibertyOP_errorDiscoveryTests_oidc_adjustDefaults.xml", _testName, Constants.JUNIT_REPORTING, Constants.NO_EXTRA_MSGS);
-    WebClient webClient = getWebClient();
+    WebClient webClient = getAndSaveWebClient();
 
     SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
     updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_autoAdjust");
@@ -399,7 +399,7 @@ public class Social_ErrorDiscoveryConfigTests extends SocialCommonTest {
   public void Social_ErrorDiscoveryConfigTests_badSSLTrust() throws Exception {
 
       genericTestServer.reconfigServer("server_LibertyOP_errorDiscoveryTests_oidc_badTrust.xml", _testName, Constants.JUNIT_REPORTING, Constants.NO_EXTRA_MSGS);
-      WebClient webClient = getWebClient();
+      WebClient webClient = getAndSaveWebClient();
 
       SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
 
@@ -435,7 +435,7 @@ public class Social_ErrorDiscoveryConfigTests extends SocialCommonTest {
       // Start with a discovery endpoint which contains an error so that discovery fails with an error message.
       genericTestServer.reconfigServer("server_LibertyOP_errorDiscoveryTests_oidc_malFormedUrl.xml", _testName, Constants.JUNIT_REPORTING, Constants.NO_EXTRA_MSGS);
 
-      WebClient webClient = getWebClient();
+      WebClient webClient = getAndSaveWebClient();
 
       SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
       updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_oidcLogin1");
@@ -452,7 +452,7 @@ public class Social_ErrorDiscoveryConfigTests extends SocialCommonTest {
       
       genericTestServer.reconfigServer("server_LibertyOP_minimalConfig_oidc_usingSocialDiscoveryConfig.xml", _testName, Constants.JUNIT_REPORTING, Constants.NO_EXTRA_MSGS);
       
-      webClient = getWebClient();
+      webClient = getAndSaveWebClient();
       List<validationData> expectations2 = setGoodSocialExpectations(socialSettings, doNotAddJWTTokenValidation);
       expectations2 = validationTools.addMessageExpectation(genericTestServer, expectations2, SocialConstants.INVOKE_SOCIAL_RESOURCE, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_CONTAINS, "Message log did not contain message indicating discovery was processed successfully", "CWWKS6110I.*oidcLogin1");
 
@@ -477,7 +477,7 @@ public class Social_ErrorDiscoveryConfigTests extends SocialCommonTest {
       // Start with a discovery endpoint which contains an error so that discovery fails with an error message.
       genericTestServer.reconfigServer("server_LibertyOP_errorDiscoveryTests_oidc_nonHttpsUrl.xml", _testName, Constants.JUNIT_REPORTING, Constants.NO_EXTRA_MSGS);
 
-      WebClient webClient = getWebClient();
+      WebClient webClient = getAndSaveWebClient();
 
       SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
       updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_oidcLogin1");
@@ -492,7 +492,7 @@ public class Social_ErrorDiscoveryConfigTests extends SocialCommonTest {
       
       genericTestServer.reconfigServer("server_LibertyOP_configuredEndpoints_oidc_usingSocialConfig.xml", _testName, Constants.JUNIT_REPORTING, Constants.NO_EXTRA_MSGS);
       
-      webClient = getWebClient();
+      webClient = getAndSaveWebClient();
       List<validationData> expectations2 = setGoodSocialExpectations(socialSettings, doNotAddJWTTokenValidation);
 
       genericSocial(_testName, webClient, inovke_social_login_actions, updatedSocialTestSettings, expectations2);
@@ -516,7 +516,7 @@ public class Social_ErrorDiscoveryConfigTests extends SocialCommonTest {
       // Start with a config that has explicitly configured endpoints and successful access to protected resource.
       genericTestServer.reconfigServer("server_LibertyOP_configuredEndpoints_oidc_usingSocialConfig.xml", _testName, Constants.JUNIT_REPORTING, Constants.NO_EXTRA_MSGS);
 
-      WebClient webClient = getWebClient();
+      WebClient webClient = getAndSaveWebClient();
 
       SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
       updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_oidcLogin1");
@@ -530,7 +530,7 @@ public class Social_ErrorDiscoveryConfigTests extends SocialCommonTest {
       
       genericTestServer.reconfigServer("server_LibertyOP_minimalConfig_oidc_usingSocialDiscoveryConfig.xml", _testName, Constants.JUNIT_REPORTING, Constants.NO_EXTRA_MSGS);
       
-      webClient = getWebClient();
+      webClient = getAndSaveWebClient();
       List<validationData> expectations2 = setGoodSocialExpectations(updatedSocialTestSettings, doNotAddJWTTokenValidation);
       expectations2 = validationTools.addMessageExpectation(genericTestServer, expectations2, SocialConstants.INVOKE_SOCIAL_RESOURCE, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_CONTAINS, "Message log did not contain message indicating discovery was processed successfully", "CWWKS6110I.*oidcLogin1");
 
@@ -554,7 +554,7 @@ public void Social_ErrorDiscoveryConfigTests_dynamicUpdateDiscoveredEndpointsToC
    // Start with a config that has discovered endpoints, verify that discovery was successful and protected resource is accessed.
    genericTestServer.reconfigServer("server_LibertyOP_minimalConfig_oidc_usingSocialDiscoveryConfig.xml", _testName, Constants.JUNIT_REPORTING, Constants.NO_EXTRA_MSGS);
 
-   WebClient webClient = getWebClient();
+   WebClient webClient = getAndSaveWebClient();
 
    SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
    updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld_oidcLogin1");
@@ -567,7 +567,7 @@ public void Social_ErrorDiscoveryConfigTests_dynamicUpdateDiscoveredEndpointsToC
    // Dynamically update the server to use configured endpoints and verify that the protected resource can be accessed successfully.
    genericTestServer.reconfigServer("server_LibertyOP_configuredEndpoints_oidc_usingSocialConfig.xml", _testName, Constants.JUNIT_REPORTING, Constants.NO_EXTRA_MSGS);
   
-   webClient = getWebClient();
+   webClient = getAndSaveWebClient();
    List<validationData> expectations2 = setGoodSocialExpectations(updatedSocialTestSettings, doNotAddJWTTokenValidation);
 
    genericSocial(_testName, webClient, inovke_social_login_actions, updatedSocialTestSettings, expectations2);

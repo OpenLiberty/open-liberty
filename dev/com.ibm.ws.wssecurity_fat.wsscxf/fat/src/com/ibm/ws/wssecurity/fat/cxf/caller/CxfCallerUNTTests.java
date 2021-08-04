@@ -11,6 +11,8 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.caller;
 
+import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
+import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -33,21 +35,22 @@ import com.meterware.httpunit.WebResponse;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
+@SkipForRepeat({ NO_MODIFICATION, EE8_FEATURES })
 @RunWith(FATRunner.class)
 public class CxfCallerUNTTests {
 
-    //Added 10/2020
     static final private String serverName = "com.ibm.ws.wssecurity_fat.caller";
     @Server(serverName)
     public static LibertyServer server;
 
     static private final Class<?> thisClass = CxfCallerUNTTests.class;
 
-    //2/2021 to use EE7 or EE8 error messages in CxfCallerSvcClient
     private static String errMsgVersion = "";
 
     static boolean debugOnHttp = true;
@@ -75,7 +78,6 @@ public class CxfCallerUNTTests {
 
         String thisMethod = "setup";
 
-        //2/2021
         ServerConfiguration config = server.getServerConfiguration();
         Set<String> features = config.getFeatureManager().getFeatures();
         if (features.contains("usr:wsseccbh-1.0")) {
@@ -90,7 +92,6 @@ public class CxfCallerUNTTests {
             errMsgVersion = "EE8";
         }
 
-        //Added 11/2020
         ShrinkHelper.defaultDropinApp(server, "callerclient", "com.ibm.ws.wssecurity.fat.callerclient", "test.libertyfat.caller.contract", "test.libertyfat.caller.types");
         ShrinkHelper.defaultDropinApp(server, "callertoken", "test.libertyfat.caller");
         server.addInstalledAppForValidation("callerclient");
@@ -130,9 +131,7 @@ public class CxfCallerUNTTests {
      *
      */
 
-    //5/2021 added PrivilegedActionExc, NoSuchMethodExc as a result of java11 and ee8
-    @AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException", "java.security.PrivilegedActionException",
-                           "java.lang.NoSuchMethodException" })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { JakartaEE9Action.ID })
     @Test
     public void testCxfCallerHttpPolicy() throws Exception {
         //UpdateServerXml.reconfigServer(server, System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
@@ -164,8 +163,7 @@ public class CxfCallerUNTTests {
      *
      */
 
-    //4/2021 add allowed ffdc to run with EE8
-    @AllowedFFDC(value = { "java.net.MalformedURLException" })
+    @AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { JakartaEE9Action.ID })
     @Test
     public void testCxfCallerHttpsPolicy() throws Exception {
         //UpdateServerXml.reconfigServer(server, System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
@@ -183,8 +181,7 @@ public class CxfCallerUNTTests {
                         "UrnCallerToken02", //String strServicePort
                         "test2", // Expecting User ID
                         "test2", // Password
-                        errMsgVersion //2/2021
-            );
+                        errMsgVersion);
         } catch (Exception e) {
             throw e;
         }
@@ -265,7 +262,6 @@ public class CxfCallerUNTTests {
      *
      */
 
-    //2/2021
     protected void testRoutine(
                                String thisMethod,
                                String callerPolicy,
@@ -293,7 +289,6 @@ public class CxfCallerUNTTests {
         return;
     }
 
-    //2/2021
     protected void testRoutine(
                                String thisMethod,
                                String callerPolicy,
@@ -304,7 +299,7 @@ public class CxfCallerUNTTests {
                                String strServicePort,
                                String untID,
                                String untPassword,
-                               String errMsgVersion) throws Exception { //2/2021
+                               String errMsgVersion) throws Exception {
         testSubRoutine(
                        thisMethod,
                        callerPolicy,
@@ -317,7 +312,7 @@ public class CxfCallerUNTTests {
                        "",
                        untID,
                        untPassword,
-                       errMsgVersion); //2/2021
+                       errMsgVersion);
 
         return;
     }
@@ -332,7 +327,6 @@ public class CxfCallerUNTTests {
      *
      */
 
-    //2/2021
     protected void testBadRoutine(
                                   String thisMethod,
                                   String callerPolicy,
@@ -355,12 +349,11 @@ public class CxfCallerUNTTests {
                        "Bad",
                        untID,
                        untPassword,
-                       null); //2/2021
+                       null);
 
         return;
     }
 
-    //2/2021
     protected void testBadRoutine(
                                   String thisMethod,
                                   String callerPolicy,
@@ -384,7 +377,7 @@ public class CxfCallerUNTTests {
                        "Bad",
                        untID,
                        untPassword,
-                       errMsgVersion); //2/2021
+                       errMsgVersion);
 
         return;
     }
@@ -434,7 +427,7 @@ public class CxfCallerUNTTests {
             request.setParameter("methodFull", methodFull);
             request.setParameter("untID", untID);
             request.setParameter("untPassword", untPassword);
-            //2/2021
+
             request.setParameter("errorMsgVersion", errMsgVersion);
 
             // Invoke the client
@@ -487,7 +480,6 @@ public class CxfCallerUNTTests {
         System.err.println("*****************************" + strMethod);
     }
 
-    //2/2021
     public static void copyServerXml(String copyFromFile) throws Exception {
 
         try {

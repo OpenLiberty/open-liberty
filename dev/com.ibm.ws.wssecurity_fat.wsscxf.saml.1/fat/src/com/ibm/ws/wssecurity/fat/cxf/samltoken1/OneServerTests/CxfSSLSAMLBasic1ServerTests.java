@@ -26,7 +26,8 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServerWrapper;
-import componenttest.topology.utils.HttpUtils;
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+import componenttest.annotation.SkipForRepeat;
 
 /**
  * The testcases in this class were ported from tWAS' test SamlWebSSOTests.
@@ -43,9 +44,10 @@ import componenttest.topology.utils.HttpUtils;
  * TFIM IdP. The client invokes the SP application by sending the SAML
  * 2.0 token in the HTTP POST request.
  */
+
+@SkipForRepeat({ EE9_FEATURES })
 @LibertyServerWrapper
 @Mode(TestMode.FULL)
-//1/21/2021 added
 @RunWith(FATRunner.class)
 public class CxfSSLSAMLBasic1ServerTests extends CxfSSLSAMLBasicTests {
 
@@ -59,9 +61,6 @@ public class CxfSSLSAMLBasic1ServerTests extends CxfSSLSAMLBasicTests {
 
         msgUtils.printClassName(thisClass.toString());
         Log.info(thisClass, "setupBeforeTest", "Prep for test");
-
-        //1-12-2021 commented out
-        //HttpUtils.enableSSLv3();
 
         // add any additional messages that you want the "start" to wait for
         // we should wait for any providers that this test requires

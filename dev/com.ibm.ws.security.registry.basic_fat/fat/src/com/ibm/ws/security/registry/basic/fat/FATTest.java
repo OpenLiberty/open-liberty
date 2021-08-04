@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011,2020 IBM Corporation and others.
+ * Copyright (c) 2011,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -264,6 +264,36 @@ public class FATTest {
 
         result = servlet.getGroups("*tractors)*", 0);
         assertEquals(1, result.getList().size());
+    }
+
+    /**
+     * Test user with backslash in name.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void getUsersWithSingleBackslash() throws Exception {
+        Log.info(c, "getUsersWithSingleBackslash", "Check getUsers with single backslash pattern");
+
+        setServerConfiguration(server, DEFAULT_CONFIG_FILE);
+
+        SearchResult result = servlet.getUsers("dan\\", 0);
+        assertEquals("Expected to find user \"dan\\\" with backslash in name.", 1, result.getList().size());
+    }
+
+    /**
+     * Test group with backslash in name.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void getGroupsWithSingleBackslash() throws Exception {
+        Log.info(c, "getGroupsWithSingleBackslash", "Check getGroups with single backslash pattern");
+
+        setServerConfiguration(server, DEFAULT_CONFIG_FILE);
+
+        SearchResult result = servlet.getGroups("*group3\\*", 0);
+        assertEquals("Expected to find group \"group3\\, backslash\" with backslash in name.", 1, result.getList().size());
     }
 
     /**

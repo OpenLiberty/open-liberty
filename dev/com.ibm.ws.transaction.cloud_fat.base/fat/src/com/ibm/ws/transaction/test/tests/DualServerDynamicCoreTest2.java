@@ -12,6 +12,8 @@ package com.ibm.ws.transaction.test.tests;
 
 import org.junit.Test;
 
+import com.ibm.ws.transaction.test.dbrotationtests.DualServerDynamicRotationTestBase;
+
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.Mode;
@@ -22,7 +24,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  * Test plan is attached to RTC WI 213854
  */
 @Mode
-public abstract class DualServerDynamicCoreTest2 extends DualServerDynamicTestBase {
+public abstract class DualServerDynamicCoreTest2 extends DualServerDynamicRotationTestBase {
 
     @Test
     @SkipForRepeat({ SkipForRepeat.EE8_FEATURES, SkipForRepeat.NO_MODIFICATION })

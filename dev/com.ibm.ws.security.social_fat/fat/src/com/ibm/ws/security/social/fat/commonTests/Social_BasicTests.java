@@ -67,7 +67,7 @@ public class Social_BasicTests extends SocialCommonTest {
     @SkipForRepeat(SkipForRepeat.EE9_FEATURES) // TODO See note 1 in class javadoc.
     public void Social_BasicTests_MainPath() throws Exception {
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         String lastStep = inovke_social_login_actions[inovke_social_login_actions.length - 1];
 
@@ -126,7 +126,7 @@ public class Social_BasicTests extends SocialCommonTest {
 
         genericTestServer.reconfigServer(providerConfigString + "_withJwtSsoFeature.xml", _testName, true, null);
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         String lastStep = inovke_social_login_actions[inovke_social_login_actions.length - 1];
 
@@ -153,7 +153,7 @@ public class Social_BasicTests extends SocialCommonTest {
     @Test
     public void Social_BasicTests_InvalidUserPassword() throws Exception {
 
-        WebClient webClient = getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
         updatedSocialTestSettings.setUserPassword("badPw");

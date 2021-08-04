@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2008 IBM Corporation and others.
+ * Copyright (c) 2004, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,17 +36,8 @@ public class ConnectionMetaDataImpl implements ConnectionMetaData
    /** @see com.ibm.ws.sib.comms.ConnectionMetaData#getChainName() */
    public String getChainName() { return conversationMetaData.getChainName(); }
 
-   /** @see com.ibm.ws.sib.comms.ConnectionMetaData#containsSSLChannel() */
-   public boolean containsSSLChannel() { return conversationMetaData.containsSSLChannel(); }
-
-   /** @see com.ibm.ws.sib.comms.ConnectionMetaData#containsHTTPTunnelChannel() */
-   public boolean containsHTTPTunnelChannel() { return conversationMetaData.containsHTTPTunnelChannel(); }
-
    /** @see com.ibm.ws.sib.comms.ConnectionMetaData#isInbound() */
    public boolean isInbound() { return conversationMetaData.isInbound(); }
-   
-   /** @see com.ibm.ws.sib.comms.ConnectionMetaData#isTrusted() */
-   public boolean isTrusted() { return conversationMetaData.isTrusted(); }         // F224759.1
    
    /** @see com.ibm.ws.sib.comms.ConnectionMetaData#getSSLSession() */
    public SSLSession getSSLSession() { return conversationMetaData.getSSLSession(); }

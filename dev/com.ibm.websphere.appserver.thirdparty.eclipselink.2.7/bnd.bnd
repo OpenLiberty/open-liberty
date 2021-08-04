@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -12,10 +12,11 @@
 bVersion=1.0
 
 # Eclipselink version info
-eclVersion=2.7.8
-eclHash=ecdf3c3
+eclVersion=2.7.9
+eclHash=2c549e2
 eclFullVersion=${eclVersion}
 eclPackageVersion=2.0.16
+asmFullVersion=9.1.0
 
 Bundle-SymbolicName: com.ibm.websphere.appserver.thirdparty.eclipselink.2.7
 Bundle-Description: EclipseLink JPA
@@ -35,7 +36,7 @@ Export-Package: \
             org.eclipse.persistence.internal.jpa.config.*;version="${eclPackageVersion}", \
             org.eclipse.persistence.internal.jpa.metadata.graphs;version="${eclPackageVersion}", \
             org.eclipse.persistence.internal.jpa.metadata.sop;version="${eclPackageVersion}", \
-            org.eclipse.persistence.internal.libraries.asm*;version="${eclPackageVersion}", \
+            org.eclipse.persistence.internal.libraries.asm*;version="${asmFullVersion}", \
             org.eclipse.persistence.internal.libraries.antlr.runtime*;version="${eclPackageVersion}", \
             org.eclipse.persistence.jpa.jpql*;version="${eclPackageVersion}", \
             org.eclipse.persistence.*;version="${eclVersion}"
@@ -110,16 +111,13 @@ Private-Package: com.ibm.ws.eclipselink.osgi
 
 Include-Resource: \
   @${repo;org.eclipse.persistence:org.eclipse.persistence.antlr;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence:org.eclipse.persistence.asm;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
+  @${repo;org.eclipse.persistence:org.eclipse.persistence.asm;${asmFullVersion};EXACT}!/!META-INF/maven/*,\
   @${repo;org.eclipse.persistence:org.eclipse.persistence.core;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
   @${repo;org.eclipse.persistence:org.eclipse.persistence.jpa;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
   @${repo;org.eclipse.persistence:org.eclipse.persistence.jpa.jpql;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
   @${repo;org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen.processor;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
-  org/eclipse/persistence/config=${bin}/org/eclipse/persistence/config,\
-  org/eclipse/persistence/internal/databaseaccess=${bin}/org/eclipse/persistence/internal/databaseaccess,\
-  org/eclipse/persistence/internal/helper=${bin}/org/eclipse/persistence/internal/helper,\
-  org/eclipse/persistence/internal/jpa=${bin}/org/eclipse/persistence/internal/jpa,\
-  org/eclipse/persistence/sessions=${bin}/org/eclipse/persistence/sessions
+  org/eclipse/persistence/internal/helper=${bin}/org/eclipse/persistence/internal/helper
+
 
 publish.wlp.jar.suffix: dev/api/third-party
 

@@ -39,6 +39,7 @@ public class Constants {
     public static final String SIG_ALG_HS256 = "HS256";
     public static final String SIG_ALG_RS256 = "RS256";
     public static final String CREDENTIAL_STORING_TIME_MILLISECONDS = "com.ibm.wssi.security.oidc.client.credential.storing.utc.time.milliseconds"; // GMT==UTC
+    public static final String ACCESS_TOKEN_INFO = "access_token_info";
 
     public static final int STATE_LENGTH = 20;
 

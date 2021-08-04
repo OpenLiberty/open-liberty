@@ -44,6 +44,7 @@ import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.jwt.utils.JweHelper;
+import com.ibm.ws.security.openidconnect.client.internal.AccessTokenCacheHelper;
 import com.ibm.ws.security.openidconnect.client.internal.TraceConstants;
 import com.ibm.ws.security.openidconnect.client.jose4j.util.Jose4jUtil;
 import com.ibm.ws.security.openidconnect.clients.common.ClientConstants;
@@ -73,6 +74,7 @@ public class AccessTokenAuthenticator {
     OidcClientUtil oidcClientUtil = new OidcClientUtil();
     SSLSupport sslSupport = null;
     private Jose4jUtil jose4jUtil = null;
+    AccessTokenCacheHelper cacheHelper = new AccessTokenCacheHelper();
 
     private static boolean issuedBetaMessage = false;
 
@@ -111,9 +113,7 @@ public class AccessTokenAuthenticator {
         if (accessToken == null) {
             accessToken = getBearerAccessTokenToken(req, clientConfig);
         }
-
         if (accessToken == null) {
-
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "access token in the request as attribute: ", accessToken);
             }
@@ -121,7 +121,11 @@ public class AccessTokenAuthenticator {
             // logging an error produced spurious log messages if the token was missing but fallbacks were available.
             oidcClientRequest.setRsFailMsg("", "suppress_CWWKS1704W"); // suppress later warning message if token is just missing.
             return oidcResult;
+        }
 
+        ProviderAuthenticationResult cachedResult = cacheHelper.getCachedTokenAuthenticationResult(clientConfig, accessToken);
+        if (cachedResult != null) {
+            return cachedResult;
         }
 
         String validationMethod = clientConfig.getValidationMethod();
@@ -169,6 +173,8 @@ public class AccessTokenAuthenticator {
             oidcResult = fixSubject(oidcResult); // replace IdToken Object if needed
             // this is authenticated by the access_token
             req.setAttribute(OidcClient.PROPAGATION_TOKEN_AUTHENTICATED, Boolean.TRUE);
+
+            cacheHelper.cacheTokenAuthenticationResult(clientConfig, accessToken, oidcResult);
         }
 
         if (tc.isDebugEnabled()) {
@@ -919,6 +925,7 @@ public class AccessTokenAuthenticator {
 
         Hashtable<String, Object> customProperties = attributeToSubject.handleCustomProperties();
         customProperties.put(Constants.ACCESS_TOKEN, accessToken);
+        customProperties.put(Constants.ACCESS_TOKEN_INFO, jobj);
         ProviderAuthenticationResult oidcResult = null;
         // The doMapping() will save the current time.
         // ClientConstants.CREDENTIAL_STORING_TIME_MILLISECONDS

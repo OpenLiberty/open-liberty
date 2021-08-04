@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.security.saml20.fat.commonTest;
 
-public class SAMLMessageConstants {
+import com.ibm.ws.security.fat.common.MessageConstants;
+
+public class SAMLMessageConstants extends MessageConstants {
 
     public static final String CWWKS5000I_SAML_CONFIG_PROCESSED = "CWWKS5000I";
     public static final String CWWKS5002I_SAML_SERVICE_ACTIVATED = "CWWKS5002I";

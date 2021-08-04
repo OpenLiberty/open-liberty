@@ -13,7 +13,6 @@ package com.ibm.ws.transaction.test.tests;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.transaction.web.Simple2PCCloudServlet;
 
 import componenttest.annotation.Server;
@@ -35,19 +34,10 @@ public class DualServerDynamicDBTest2 extends DualServerDynamicCoreTest2 {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        System.out.println("NYTRACE: DualServerDynamicDBTest.setUp called");
-        server1 = firstServer;
-        server2 = secondServer;
-        servletName = "transaction/Simple2PCCloudServlet";
-        cloud1RecoveryIdentity = "cloud001";
-        // Create a WebArchive that will have the file name 'app1.war' once it's written to a file
-        // Include the 'app1.web' package and all of it's java classes and sub-packages
-        // Automatically includes resources under 'test-applications/APP_NAME/resources/' folder
-        // Exports the resulting application to the ${server.config.dir}/apps/ directory
-        ShrinkHelper.defaultApp(server1, APP_NAME, "com.ibm.ws.transaction.*");
-        ShrinkHelper.defaultApp(server2, APP_NAME, "com.ibm.ws.transaction.*");
+        setup(firstServer, secondServer, "Simple2PCCloudServlet", "cloud001");
+    }
 
-        server1.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
-        server2.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
+    @Override
+    protected void setUp(LibertyServer server) throws Exception {
     }
 }

@@ -106,7 +106,7 @@ securitySchemeInvalidURL=Obiectul Schem\u0103 de securitate trebuie s\u0103 con\
 
 schemaTypeArrayNullItems=Obiectul Schem\u0103 de tipul \"array\" trebuie s\u0103 aib\u0103 definit\u0103 proprietatea \"items\"
 schemaReadOnlyOrWriteOnly=Obiectul Schem\u0103 nu trebuie s\u0103 aib\u0103 ambele c\u00e2mpuri, \"readOnly\" \u015fi \"writeOnly\", setate la true
-schemaMultipleOfLessThanOne=Obiectul Schem\u0103 trebuie s\u0103 aib\u0103 proprietatea \"multipleOf\" setat\u0103 la un num\u0103r strict mai mare dec\u00e2t zero
+schemaMultipleOfNotGreaterThanZero=Obiectul Schem\u0103 trebuie s\u0103 aib\u0103 proprietatea \"multipleOf\" setat\u0103 la un num\u0103r strict mai mare dec\u00e2t zero
 schemaPropertyLessThanZero=Proprietatea \"{0}\" a Obiectului Schem\u0103 trebuie s\u0103 fie mai mare sau egal dec\u00e2t zero
 schemaTypeDoesNotMatchProperty=Proprietatea \"{0}\" nu este potrivit\u0103 pentru Obiectul Schem\u0103 de tipul \"{1}\"
 
