@@ -54,13 +54,13 @@
         <AD name="internal" description="%lease.check.strategy.desc"
             id="leaseCheckStrategy" required="false" type="String" default="round-robin" />            
 
-        <AD name="%lease.check.interval%" description="%lease.check.interval.desc"
+        <AD name="%lease.check.interval" description="%lease.check.interval.desc"
             id="leaseCheckInterval" required="false" type="String" ibm:type="duration(s)" min="0" default="60s" />
             
-		<AD name="%lease.renewal.threshold%" description="%lease.renewal.threshold.desc"
+		<AD name="%lease.renewal.threshold" description="%lease.renewal.threshold.desc"
             id="leaseRenewalThreshold" required="false" type="Integer" min="1" max="100" default="90" />
 
-        <AD name="%lease.length%" description="%lease.length.desc"
+        <AD name="%lease.length" description="%lease.length.desc"
             id="leaseLength" required="false" type="String" ibm:type="duration(s)" min="0" default="60s" />
 
         <AD name="%transaction.log.size" description="%transaction.log.size.desc"
