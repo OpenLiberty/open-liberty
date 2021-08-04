@@ -43,12 +43,5 @@
 	   <name>ALL FILES</name>
 	   <actions>read</actions>
 	</permission>
-    
-    <!-- To avoid ee7 test error when enabling java2sec -->
-    <permission>
-		<class-name>java.security.AllPermission</class-name>
-		<name>*</name>
-		<actions>*</actions>
-	</permission>
 	
 </permissions>
