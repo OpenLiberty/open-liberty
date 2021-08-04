@@ -24,6 +24,7 @@
         <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.impl"/>
         <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.org.apache.xerces.internal.dom"/>
         <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+        <javaPermission className="java.lang.RuntimePermission" name="setContextClassLoader"/>
         <javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="com.ibm.ws.security.saml.sso20.token.Saml20TokenImpl" principalType="com.ibm.ws.security.authentication.principals.WSPrincipal" principalName="*" actions="read"/>
         <javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="com.ibm.ws.security.token.internal.SingleSignonTokenImpl" principalType="com.ibm.ws.security.authentication.principals.WSPrincipal" principalName="*" actions="read"/>
         <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.org.apache.xml.serializer.dom3"/>
