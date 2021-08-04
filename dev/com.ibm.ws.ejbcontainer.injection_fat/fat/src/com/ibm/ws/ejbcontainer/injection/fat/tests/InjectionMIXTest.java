@@ -10,6 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.ejbcontainer.injection.fat.tests;
 
+import java.io.File;
+import java.util.Set;
+
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
@@ -22,7 +25,10 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
+import com.ibm.websphere.simplicity.config.ServerConfigurationFactory;
 import com.ibm.ws.ejbcontainer.injection.fat.tests.repeataction.RepeatWithCDI;
+import com.ibm.ws.ejbcontainer.injection.fat.tests.repeataction.RepeatWithEE9CDI;
 import com.ibm.ws.ejbcontainer.injection.mix.web.AdvSFEnvInjectionServlet;
 import com.ibm.ws.ejbcontainer.injection.mix.web.AdvSFRemoteEnvInjectionServlet;
 import com.ibm.ws.ejbcontainer.injection.mix.web.AdvSLEnvInjectionServlet;
@@ -62,7 +68,7 @@ public class InjectionMIXTest {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("ejbcontainer.injection.ra.fat.MsgEndpointServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("ejbcontainer.injection.ra.fat.MsgEndpointServer")).andWith(RepeatWithCDI.WithRepeatWithCDI().forServers("ejbcontainer.injection.ra.fat.MsgEndpointServer"));
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("ejbcontainer.injection.ra.fat.MsgEndpointServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("ejbcontainer.injection.ra.fat.MsgEndpointServer")).andWith(RepeatWithCDI.WithRepeatWithCDI().forServers("ejbcontainer.injection.ra.fat.MsgEndpointServer")).andWith(FeatureReplacementAction.EE9_FEATURES().forServers("ejbcontainer.injection.ra.fat.MsgEndpointServer")).andWith(RepeatWithEE9CDI.EE9CDI_FEATURES().forServers("ejbcontainer.injection.ra.fat.MsgEndpointServer"));
 
     @BeforeClass
     public static void beforeClass() throws Exception {
@@ -97,5 +103,19 @@ public class InjectionMIXTest {
     @AfterClass
     public static void afterClass() throws Exception {
         server.stopServer("J2CA8501E", "CNTR0168W", "CNTR0338W", "CWNEN0013W", "CNTR0020E");
+
+        // Remove the appSecurity feature that was added by the CDI repeat actions
+        if (RepeatWithCDI.isActive() || RepeatWithEE9CDI.isActive()) {
+            File publishConfigFile = new File("publish/servers/ejbcontainer.injection.ra.fat.MsgEndpointServer/server.xml");
+            ServerConfiguration config = ServerConfigurationFactory.fromFile(publishConfigFile);
+            Set<String> features = config.getFeatureManager().getFeatures();
+            for (String feature : features) {
+                if (feature.toLowerCase().startsWith("appsecurity-")) {
+                    features.remove(feature);
+                    ServerConfigurationFactory.toFile(publishConfigFile, config);
+                    break;
+                }
+            }
+        }
     }
 }

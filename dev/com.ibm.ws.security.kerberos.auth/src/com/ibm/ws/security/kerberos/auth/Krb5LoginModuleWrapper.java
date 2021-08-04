@@ -25,7 +25,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.service.util.JavaInfo;
-import com.ibm.ws.kernel.service.util.JavaInfo.Vendor;
 
 public class Krb5LoginModuleWrapper implements LoginModule {
     private static final TraceComponent tc = Tr.register(Krb5LoginModuleWrapper.class);
@@ -46,8 +45,7 @@ public class Krb5LoginModuleWrapper implements LoginModule {
     }
 
     // Cannot rely purely on JavaInfo.vendor() because IBM JDK 8 for Mac OS reports vendor = Oracle and only has some IBM API available
-    private static final boolean isIBMJdk8 = JavaInfo.majorVersion() <= 8 &&
-                                             (JavaInfo.vendor() == Vendor.IBM || isIBMLoginModuleAvailable());
+    private static final boolean isIBMJdk8 = isIBMLoginModuleAvailable();
 
     public CallbackHandler callbackHandler;
     public Subject subject;

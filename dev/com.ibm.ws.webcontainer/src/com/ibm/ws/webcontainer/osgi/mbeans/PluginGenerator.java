@@ -87,7 +87,6 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.service.util.JavaInfo;
-import com.ibm.ws.kernel.service.util.JavaInfo.Vendor;
 import com.ibm.ws.webcontainer.httpsession.SessionManager;
 import com.ibm.ws.webcontainer.osgi.DynamicVirtualHost;
 import com.ibm.ws.webcontainer.osgi.DynamicVirtualHostManager;
@@ -162,12 +161,8 @@ public class PluginGenerator {
     private static final boolean CHANGE_TRANSFORMER;
 
     static {
-        if (!JavaInfo.vendor().equals(Vendor.IBM)) {
-            CHANGE_TRANSFORMER = false;
-        } else {
-            int majorVersion = JavaInfo.majorVersion();
-            CHANGE_TRANSFORMER = majorVersion == 8;
-        }
+        // Question, could we remove this?
+        CHANGE_TRANSFORMER = JavaInfo.isAvailable("org.apache.xalan.processor.TransformerFactoryImpl");
     }
 
     /**
