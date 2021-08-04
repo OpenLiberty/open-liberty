@@ -55,26 +55,23 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
     private final ComponentContext cc;
     private final boolean checkpointFeatures;
     private final boolean checkpointApplications;
-
-    @Reference
-    WsLocationAdmin locAdmin;
+    private final WsLocationAdmin locAdmin;
 
     @Reference(cardinality = ReferenceCardinality.OPTIONAL, policyOption = ReferencePolicyOption.GREEDY)
     private volatile ExecuteCRIU criu;
 
     @Activate
-    public CheckpointImpl(ComponentContext cc) {
-        this(cc, null, //
-             "features".equals(cc.getBundleContext().getProperty(BootstrapConstants.CHECKPOINT_PROPERTY_NAME)), //
-             "applications".equals(cc.getBundleContext().getProperty(BootstrapConstants.CHECKPOINT_PROPERTY_NAME)));
+    public CheckpointImpl(ComponentContext cc, @Reference WsLocationAdmin locAdmin) {
+        this(cc, null, locAdmin);
     }
 
     // only for unit tests
-    CheckpointImpl(ComponentContext cc, ExecuteCRIU criu, boolean checkpointFeatures, boolean checkpointApplications) {
+    CheckpointImpl(ComponentContext cc, ExecuteCRIU criu, WsLocationAdmin locAdmin) {
         this.cc = cc;
         this.criu = criu;
-        this.checkpointFeatures = checkpointFeatures;
-        this.checkpointApplications = checkpointApplications;
+        this.locAdmin = locAdmin;
+        this.checkpointFeatures = "features".equals(cc.getBundleContext().getProperty(BootstrapConstants.CHECKPOINT_PROPERTY_NAME));
+        this.checkpointApplications = "applications".equals(cc.getBundleContext().getProperty(BootstrapConstants.CHECKPOINT_PROPERTY_NAME));
     }
 
     @Override
@@ -116,12 +113,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         }
     }
 
-    /* For unit tests only */
-    void checkpoint(Phase phase, File directory) throws CheckpointFailed {
-        doCheckpoint(phase, directory);
-    }
-
-    private void checkpoint(Phase phase) throws CheckpointFailed {
+    void checkpoint(Phase phase) throws CheckpointFailed {
         doCheckpoint(phase,
                      locAdmin.resolveResource(WsLocationConstants.SYMBOL_SERVER_WORKAREA_DIR + "checkpoint/image/").asFile());
     }
