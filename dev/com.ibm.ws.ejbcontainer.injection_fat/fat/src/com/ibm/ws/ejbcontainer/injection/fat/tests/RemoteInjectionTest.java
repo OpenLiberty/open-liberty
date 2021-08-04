@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2018 IBM Corporation and others.
+ * Copyright (c) 2006, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.ejbcontainer.injection.ann.web.SFEnvInjectionServlet;
 import com.ibm.ws.ejbcontainer.injection.ann.web.SFRemoteEnvInjectionServlet;
 import com.ibm.ws.ejbcontainer.injection.ann.web.SLEnvInjectionServlet;
@@ -43,7 +44,7 @@ public class RemoteInjectionTest {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().forServers("com.ibm.ws.ejbcontainer.injection.fat.server")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.injection.fat.server"));
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().forServers("com.ibm.ws.ejbcontainer.injection.fat.server")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.injection.fat.server")).andWith(FeatureReplacementAction.EE9_FEATURES().forServers("com.ibm.ws.ejbcontainer.injection.fat.server"));
 
     @BeforeClass
     public static void beforeClass() throws Exception {
@@ -56,7 +57,7 @@ public class RemoteInjectionTest {
         EJB3INJSATestApp.addAsModule(EJB3INJSABeanJar).addAsModule(EJB3INJSAWeb);
         EJB3INJSATestApp = (EnterpriseArchive) ShrinkHelper.addDirectory(EJB3INJSATestApp, "test-applications/EJB3INJSATestApp.ear/resources");
 
-        ShrinkHelper.exportDropinAppToServer(server, EJB3INJSATestApp);
+        ShrinkHelper.exportDropinAppToServer(server, EJB3INJSATestApp, DeployOptions.SERVER_ONLY);
 
         server.startServer();
     }

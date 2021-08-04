@@ -10,48 +10,43 @@
  *******************************************************************************/
 package com.ibm.ws.ejbcontainer.injection.fat.tests.repeataction;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.JakartaEE9Action;
 
 /**
  *
  */
-public class RepeatWithCDI extends FeatureReplacementAction {
+public class RepeatWithEE9CDI extends JakartaEE9Action {
 
-    public static final String ID = "CDIENABLED";
+    public static final String ID = JakartaEE9Action.ID + "_CDIENABLED";
 
-    private static Set<String> featuresToAdd() {
-        Set<String> addFeatures = new HashSet<>();
-        // We are actually adding appSecurity-3.0 for custom login modules but it pulls in CDI
-        addFeatures.add("appSecurity-3.0");
-        return addFeatures;
+    public RepeatWithEE9CDI() {
+        alwaysAddFeature("appSecurity-4.0");
+        withID(ID);
     }
 
-    public RepeatWithCDI() {
-        super(featuresToAdd());
-        forceAddFeatures(true);
-        this.withID(ID);
-    }
-
-    public static FeatureReplacementAction WithRepeatWithCDI() {
-        return new RepeatWithCDI();
+    public static FeatureReplacementAction EE9CDI_FEATURES() {
+        return new RepeatWithEE9CDI();
     }
 
     public static boolean isActive() {
         return RepeatTestFilter.isRepeatActionActive(ID);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see componenttest.rules.repeater.RepeatTestAction#getID()
-     */
+    @Override
+    public RepeatWithEE9CDI withID(String id) {
+        return (RepeatWithEE9CDI) super.withID(id);
+    }
+
     @Override
     public String getID() {
         return ID;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + " with CDI Enabled (appSecurity-4.0 added)";
     }
 
 }
