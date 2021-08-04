@@ -146,7 +146,7 @@ public class KerberosExtServiceImpl implements KerberosExtService {
      */
     private void registerKrb5HelperJdk(ComponentContext cc) {
         Dictionary<String, Object> props = new Hashtable<String, Object>();
-        if (Krb5LoginModuleWrapper.isIBMLoginModuleAvailable()) {
+        if (Krb5LoginModuleWrapper.IBM_KRB5_LOGIN_MODULE_AVAILABLE) {
             krb5HelperJdk = new IBMKrb5Helper();
             props.put("name", "IBMKrb5Helper");
         } else {
