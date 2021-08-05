@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,43 +23,22 @@ import org.ietf.jgss.GSSException;
 import org.ietf.jgss.GSSManager;
 import org.ietf.jgss.GSSName;
 import org.ietf.jgss.Oid;
-import org.osgi.service.component.ComponentContext;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
-import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Modified;
-import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferencePolicy;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.auth.WSSubject;
-import com.ibm.ws.kernel.LibertyProcess;
 import com.ibm.ws.security.krb5.Krb5Common;
 import com.sun.security.auth.module.Krb5LoginModule;
 import com.sun.security.jgss.ExtendedGSSContext;
 import com.sun.security.jgss.ExtendedGSSCredential;
 
-
 /**
  * Handle Kerberos constrained delegation and Krb5LoginModule specific to other support JDKs such as
  * Oracle 8 or higher, Java 11 or higher, openJDK OpenJ9 and Hotspot
- * service.ranking:Integer=5 to override the Krb5HelperJdk8
  */
-@Component(service = Krb5HelperJdk.class,
-           configurationPolicy = ConfigurationPolicy.IGNORE,
-           property = { "service.vendor=IBM", "name=Krb5HelperJdk11" })
-public class Krb5HelperJdk11 implements Krb5HelperJdk {
+public class OtherKrb5Helper implements Krb5HelperJdk {
 
-    private static final TraceComponent tc = Tr.register(Krb5HelperJdk11.class);
-
-    /**
-     * We don't do anything with the process, but having it set allows us to only be activated by DS if criteria we set
-     * about the Java version are met.
-     */
-    @Reference(policy = ReferencePolicy.STATIC, target = "(&(java.specification.version>=1.8)(!(java.vendor=ibm corporation)))")
-    protected void setProcess(LibertyProcess process) {}
+    private static final TraceComponent tc = Tr.register(OtherKrb5Helper.class);
 
     @Override
     public GSSCredential getDelegateGSSCredUsingS4U2self(final String upn,
@@ -138,14 +117,4 @@ public class Krb5HelperJdk11 implements Krb5HelperJdk {
 
         return subject;
     }
-
-    @Activate
-    protected void activate(ComponentContext cc, Map<String, Object> props) {}
-
-    @Modified
-    protected void modified(Map<String, Object> props) {}
-
-    @Deactivate
-    protected void deactivate(ComponentContext cc) {}
-
 }

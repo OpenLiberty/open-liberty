@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,19 +33,7 @@ public class Krb5LoginModuleWrapper implements LoginModule {
     public static final String COM_SUN_SECURITY_AUTH_MODULE_KRB5LOGINMODULE = "com.sun.security.auth.module.Krb5LoginModule";
     public static final String COM_SUN_SECURITY_JGSS_KRB5_INITIATE = "com.sun.security.jgss.krb5.initiate";
     public static final String COM_SUN_SECURITY_JGSS_KRB5_ACCEPT = "com.sun.security.jgss.krb5.accept";
-
-    @FFDCIgnore(Throwable.class)
-    private static boolean isIBMLoginModuleAvailable() {
-        try {
-            Class.forName(COM_IBM_SECURITY_AUTH_MODULE_KRB5LOGINMODULE);
-            return true;
-        } catch (Throwable t) {
-            return false;
-        }
-    }
-
-    // Cannot rely purely on JavaInfo.vendor() because IBM JDK 8 for Mac OS reports vendor = Oracle and only has some IBM API available
-    private static final boolean isIBMJdk8 = isIBMLoginModuleAvailable();
+    public static final boolean IBM_KRB5_LOGIN_MODULE_AVAILABLE = JavaInfo.isAvailable(COM_IBM_SECURITY_AUTH_MODULE_KRB5LOGINMODULE);
 
     public CallbackHandler callbackHandler;
     public Subject subject;
@@ -60,7 +48,7 @@ public class Krb5LoginModuleWrapper implements LoginModule {
      * <p>Construct an uninitialized Krb5LoginModuleWrapper object.</p>
      */
     public Krb5LoginModuleWrapper() {
-        String targetClass = isIBMJdk8 //
+        String targetClass = IBM_KRB5_LOGIN_MODULE_AVAILABLE //
                         ? COM_IBM_SECURITY_AUTH_MODULE_KRB5LOGINMODULE //
                         : COM_SUN_SECURITY_AUTH_MODULE_KRB5LOGINMODULE;
         if (TraceComponent.isAnyTracingEnabled()) {
@@ -87,10 +75,10 @@ public class Krb5LoginModuleWrapper implements LoginModule {
         final String IBM_JDK_USE_KEYTAB = "useKeytab"; // URL
         final String OPENJDK_USE_KEYTAB = "useKeyTab"; // boolean
 
-        if (!isIBMJdk8)
+        if (!IBM_KRB5_LOGIN_MODULE_AVAILABLE)
             useKeytabValue = options.get(OPENJDK_USE_KEYTAB);
 
-        if (isIBMJdk8) {
+        if (IBM_KRB5_LOGIN_MODULE_AVAILABLE) {
             // Sanitize any OpenJDK-only config options
 
             //Remove OpenJDK-only style options.
