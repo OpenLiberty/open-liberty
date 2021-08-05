@@ -148,35 +148,17 @@ public abstract class AbstractProxyServices implements ProxyServices {
 				//Do nothing, move on to defining the class. 
 			}
 			try {
-				try {
-					java.lang.reflect.Method method;
-					Object[] args;
-					if (protectionDomain == null) {
-						method = ClassLoaderMethods.defineClass1;
-						args = new Object[]{className, classBytes, off, len};
-					} else {
-						method = ClassLoaderMethods.defineClass2;
-						args = new Object[]{className, classBytes, off, len, protectionDomain};
-					}
-					Class<?> clazz = (Class) method.invoke(loader, args); //This is the line that actually puts a new class into a ClassLoader.
-					return clazz;
-
-                                //Even though we have a syncronized block it's still possible for the loadClass above to return a ClassNotFoundException after we have put the class into the ClassLoader
-                                //If this race condition hits the second attempt to put the class into the ClassLoader will result in a LinkageError.
-
-                                //So we catch the LinkageError and keep trying to load the class from the ClassLoader until the timing issues resolve themselves.
-				} catch (LinkageError e) {
-					int tries = 10;
-					while (tries > 0) {
-						Class<?> clazz = loadClass​(className, loader);
-						if (clazz != null) {
-							return clazz;
-						}
-						Thread.sleep(1000);
-						tries--;
-					}
-					throw e;
+				java.lang.reflect.Method method;
+				Object[] args;
+				if (protectionDomain == null) {
+					method = ClassLoaderMethods.defineClass1;
+					args = new Object[]{className, classBytes, off, len};
+				} else {
+					method = ClassLoaderMethods.defineClass2;
+					args = new Object[]{className, classBytes, off, len, protectionDomain};
 				}
+				Class<?> clazz = (Class) method.invoke(loader, args); //This is the line that actually puts a new class into a ClassLoader.
+				return clazz;
 			} catch (RuntimeException e) {
 				throw e;
 			} catch (java.lang.reflect.InvocationTargetException e) {
