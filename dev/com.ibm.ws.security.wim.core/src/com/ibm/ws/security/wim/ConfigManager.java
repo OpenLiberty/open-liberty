@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -71,6 +71,8 @@ public class ConfigManager implements RuntimeUpdateListener {
     static final String KEY_CONFIG_ADMIN = "configurationAdmin";
     public static final String ENTITY_NAME = "name";
     public static final String DEFAULT_PARENT = "defaultParent";
+    public static final String CONFIG_PROP_FAIL_RESPONSE_DELAY_MIN = "failedLoginDelayMin";
+    public static final String CONFIG_PROP_FAIL_RESPONSE_DELAY_MAX = "failedLoginDelayMax";
 
     public static final String EXTENDED_PROPERTY = "extendedProperty";
     public static final String PROPERTY_NAME = "name";
@@ -91,6 +93,10 @@ public class ConfigManager implements RuntimeUpdateListener {
     private static final Object PAGE_CACHE_TIMEOUT = "pageCacheTimeout";
 
     private static final Long DEFAULT_PAGE_CACHE_TIMEOUT = new Long(30000);
+
+    public final static int DEFAULT_MAX_DELAY = 5000;
+    private int failResponseDelayMin = 0;
+    private int failResponseDelayMax = DEFAULT_MAX_DELAY;
 
     private volatile Map<String, Object> originalConfig;
     private volatile Map<String, Object> config;
@@ -278,6 +284,64 @@ public class ConfigManager implements RuntimeUpdateListener {
             Group.reInitializePropertyNames();
             PersonAccount.reInitializePropertyNames();
         }
+
+        /*
+         * Process custom property for failed login delay
+         *
+         * Only a correct disable configuration, 0 for min and max, disables the login delay. Otherwise the defaults are used
+         * or the provided configuration.
+         */
+        int maxTime = DEFAULT_MAX_DELAY;
+        if (properties.containsKey(CONFIG_PROP_FAIL_RESPONSE_DELAY_MAX)) {
+            maxTime = Integer.parseInt(String.valueOf(properties.get(CONFIG_PROP_FAIL_RESPONSE_DELAY_MAX)));
+        }
+        int minTime = 0;
+        if (properties.containsKey(CONFIG_PROP_FAIL_RESPONSE_DELAY_MIN)) {
+            minTime = Integer.parseInt(String.valueOf(properties.get(CONFIG_PROP_FAIL_RESPONSE_DELAY_MIN)));
+        }
+
+        boolean customConfigSet = false;
+
+        if (minTime == 0 && maxTime == 0) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "failed response login delay is disabled: " + CONFIG_PROP_FAIL_RESPONSE_DELAY_MAX + "=" + maxTime);
+            }
+            failResponseDelayMax = 0;
+            customConfigSet = true;
+        } else if ((minTime >= 0) && minTime < maxTime) {
+            failResponseDelayMin = minTime;
+            failResponseDelayMax = maxTime;
+            customConfigSet = true;
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Using the provided settings for the failed response login delay (ms): " + failResponseDelayMin + " and "
+                             + failResponseDelayMax);
+            }
+        }
+
+        if (!customConfigSet) {
+            /*
+             * Will use default config -- if/when the properties are public, add a warning message
+             */
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc,
+                         "Provided config of, " + minTime + ":" + maxTime
+                             + ", was invalid. Using the default settings for the failed response login delay (ms): "
+                             + failResponseDelayMin + " and " + failResponseDelayMax);
+            }
+        }
+
+        if (failResponseDelayMax > 0) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc,
+                         "failed response login delay is enabled with the following min/max (ms): " + failResponseDelayMin + " and " + failResponseDelayMax);
+            }
+        }
+        updatedConfig.put(CONFIG_PROP_FAIL_RESPONSE_DELAY_MAX, failResponseDelayMax);
+        updatedConfig.put(CONFIG_PROP_FAIL_RESPONSE_DELAY_MIN, failResponseDelayMin);
+
+        /*
+         * End processing custom property for failed login delay
+         */
         return updatedConfig;
     }
 
@@ -295,6 +359,26 @@ public class ConfigManager implements RuntimeUpdateListener {
             isAllowOpIfRepoDown = getRealmConfig(realmName).isAllowOpIfRepoDown();
         }
         return isAllowOpIfRepoDown;
+    }
+
+    /**
+     * Fetch the failResponseDelayMin
+     *
+     * @return
+     */
+    @Trivial
+    public int getFailResponseDelayMin() {
+        return failResponseDelayMin;
+    }
+
+    /**
+     * Fetch the failResponseDelayMax
+     *
+     * @return
+     */
+    @Trivial
+    public int getFailResponseDelayMax() {
+        return failResponseDelayMax;
     }
 
     /**

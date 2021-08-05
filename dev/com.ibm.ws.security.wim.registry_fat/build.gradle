@@ -38,7 +38,8 @@ autoFVT.doLast {
     'com.ibm.ws.security.wim.registry.fat.DefaultWIMRealmMultipleRepos',
     'com.ibm.ws.security.wim.registry.fat.WIMURRegression',
     'com.ibm.ws.security.wim.registry.fat.MultiValuedOutputPropMapping',
-    'com.ibm.ws.security.wim.registry.fat.FederateStandaloneCur'
+    'com.ibm.ws.security.wim.registry.fat.FederateStandaloneCur',
+    'com.ibm.ws.security.wim.registry.fat.UserEnumeration'
   ]
   servers.each { server ->
     copy { 
