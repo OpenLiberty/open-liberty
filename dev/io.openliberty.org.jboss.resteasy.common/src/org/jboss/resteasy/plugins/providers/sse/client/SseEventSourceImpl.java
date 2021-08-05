@@ -344,29 +344,28 @@ public class SseEventSourceImpl implements SseEventSource
             }
             final ClientResponse clientResponse = (ClientResponse) request.invoke();
             response = clientResponse;
+            
             if (Family.SUCCESSFUL.equals(clientResponse.getStatusInfo().getFamily()))
             {
                onConnection();
+               // liberty change start
+               if (clientResponse.getStatus() == 204) {
+                   // per spec, only completion listeners should be invoked on a 204 response
+                   runCompletionListeners();
+                   return;
+               }
+               // liberty change start
                eventInput = clientResponse.readEntity(SseEventInputImpl.class);
                //if 200<= response code <300 and response contentType is null, fail the connection.
-               //Liberty change start
-               /*
                if (eventInput == null)
                {
                   if (!alwaysReconnect) {
-                     internalClose();
+                     runCompletionListeners(); // Liberty change - just run completion listeners instead of internalClose()
                   } else {
                      reconnect(this.reconnectDelay);
                   }
                   return;
                }
-               */
-               if (eventInput == null && !alwaysReconnect)
-               {
-                   runCompletionListeners(); // Liberty change - just run completion listeners instead of internalClose()
-                  return;
-               }
-               //Liberty change end
             }
             else
             {
