@@ -130,6 +130,7 @@ public class AccessTokenAuthenticator {
             cachedResult = cacheHelper.getCachedTokenAuthenticationResult(clientConfig, accessToken);
         }
         if (cachedResult != null) {
+            req.setAttribute(OidcClient.PROPAGATION_TOKEN_AUTHENTICATED, Boolean.TRUE);
             return cachedResult;
         }
 

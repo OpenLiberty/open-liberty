@@ -746,6 +746,7 @@ public class AccessTokenAuthenticatorTest extends CommonTestClass {
             {
                 one(req).getHeader(Authorization_Header);
                 will(returnValue(BEARER));
+                one(req).setAttribute(OidcClient.PROPAGATION_TOKEN_AUTHENTICATED, Boolean.TRUE);
                 one(clientConfig).getAccessTokenInLtpaCookie();
                 will(returnValue(false));
                 one(clientConfig).getAccessTokenCacheEnabled();
