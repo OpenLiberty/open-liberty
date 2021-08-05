@@ -8,10 +8,10 @@ IBM-App-ForceRestart: install, uninstall
 IBM-API-Package: \
   org.eclipse.microprofile.context; type="stable", \
   org.eclipse.microprofile.context.spi; type="stable"
-# TODO add io.openliberty.mpCompatible-5.0
 -features=\
   io.openliberty.org.eclipse.microprofile.contextpropagation-1.3, \
-  io.openliberty.concurrent-2.0
+  io.openliberty.concurrent-2.0, \
+  io.openliberty.mpCompatible-5.0
 -bundles=\
   com.ibm.ws.microprofile.contextpropagation.1.0
 kind=noship
