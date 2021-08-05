@@ -137,10 +137,6 @@ public class PluginGenerator {
     private static final String HTTP_ALLOWED_ENDPOINT = "allowFromEndpointRef";
     private static final String LOCALHOST = "localhost";
 
-    private static final String TRANSFORMER_FACTORY_JVM_PROPERTY_NAME = "javax.xml.transform.TransformerFactory";
-
-    private static final Object transformerLock = new Object();
-
     protected enum Role {
         PRIMARY, SECONDARY
     }
@@ -157,13 +153,6 @@ public class PluginGenerator {
     // save a reference to the previously-generated configuration hash
     private Integer previousConfigHash = null;
     private File cachedFile;
-
-    private static final boolean CHANGE_TRANSFORMER;
-
-    static {
-        // Question, could we remove this?
-        CHANGE_TRANSFORMER = JavaInfo.isAvailable("org.apache.xalan.processor.TransformerFactoryImpl");
-    }
 
     /**
      * Constructor.
@@ -801,7 +790,7 @@ public class PluginGenerator {
                         StreamSource xsltSource = new StreamSource(new StringReader(styleSheet));
 
                         // Use transform apis to do generic serialization
-                        TransformerFactory tfactory = getTransformerFactory();
+                        TransformerFactory tfactory = TransformerFactory.newInstance();
                         Transformer serializer = tfactory.newTransformer(xsltSource);
                         Properties oprops = new Properties();
                         oprops.put(OutputKeys.METHOD, "xml");
@@ -899,74 +888,6 @@ public class PluginGenerator {
                         if (outChannel != null) outChannel.close();
                     }
                 }
-
-    private static TransformerFactory getTransformerFactory() {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.entry(tc, "getTransformerFactory", "CHANGE_TRANSORMER = " + CHANGE_TRANSFORMER);
-        }
-
-        TransformerFactory tf = null;
-
-        if (CHANGE_TRANSFORMER) {
-
-            // Synchronize setting and restoring the jvm property to prevent this sequence:
-            // 1. Thread 1 gets jvm property
-            // 2. Thread 1 sets jvm property
-            // 3. Thread 2 gets jvm property set by Thread 1
-            // 4. Thread 1 resets jvm property to value obtained at 1.
-            // 5. Thread 2 resets jvm property to value set by Thread 1.
-            synchronized (transformerLock) {
-
-                final String defaultTransformerFactory = getJVMProperty(TRANSFORMER_FACTORY_JVM_PROPERTY_NAME);
-
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "JDK = " + JavaInfo.vendor() + ", JDK level = " + JavaInfo.majorVersion() + "." + JavaInfo.minorVersion() + ", current TF jvm property value = "
-                                 + defaultTransformerFactory);
-                }
-
-                AccessController.doPrivileged(new PrivilegedAction<Object>() {
-                    @Override
-                    public Object run() {
-                        System.setProperty(TRANSFORMER_FACTORY_JVM_PROPERTY_NAME, "org.apache.xalan.processor.TransformerFactoryImpl");
-                        return null;
-                    }
-                });
-
-                tf = TransformerFactory.newInstance();
-
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "IBM JDK : Use transformer factory: " + tf.getClass().getName());
-                }
-
-                AccessController.doPrivileged(new PrivilegedAction<Object>() {
-                    @Override
-                    public Object run() {
-                        if (defaultTransformerFactory != null)
-                            System.setProperty(TRANSFORMER_FACTORY_JVM_PROPERTY_NAME, defaultTransformerFactory);
-                        else
-                            System.clearProperty(TRANSFORMER_FACTORY_JVM_PROPERTY_NAME);
-                        return null;
-                    }
-                });
-
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "IBM JDK : TF jvm property value restored: " + getJVMProperty(TRANSFORMER_FACTORY_JVM_PROPERTY_NAME));
-                }
-            }
-        } else {
-            tf = TransformerFactory.newInstance();
-
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Not IBM JDK : Use transformer factory: " + tf.getClass().getName());
-            }
-        }
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.exit(tc, "getTransformerFactory");
-        }
-        return tf;
-
-    }
 
     private static String getJVMProperty(final String propertyName) {
         String propValue = AccessController.doPrivileged(new PrivilegedAction<String>() {
