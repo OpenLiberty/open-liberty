@@ -123,6 +123,8 @@ public class WSKeyStore extends Properties {
 
     private final Map<String, SerializableProtectedString> certAliasInfo = new HashMap<String, SerializableProtectedString>();
 
+    private static final SerializableProtectedString racfPass = new SerializableProtectedString(("password").toCharArray());
+
     /** Read/Write lock to prevent multiple processes writing the keystore file at the same time, or reading while we are writing. Added for acmeCA feature. **/
     private final ReadWriteLock rwKeyStoreLock = new ReentrantReadWriteLock();
 
@@ -245,8 +247,15 @@ public class WSKeyStore extends Properties {
         }
 
         if ((type.equals(Constants.KEYSTORE_TYPE_JCERACFKS) || type.equals(Constants.KEYSTORE_TYPE_JCECCARACFKS)
-             || type.equals(Constants.KEYSTORE_TYPE_JCEHYBRIDRACFKS) || type.equals(Constants.KEYSTORE_TYPE_JAVACRYPTO)))
+             || type.equals(Constants.KEYSTORE_TYPE_JCEHYBRIDRACFKS) || type.equals(Constants.KEYSTORE_TYPE_JAVACRYPTO))) {
             setFileBased(false);
+        }
+
+        if ((type.equals(Constants.KEYSTORE_TYPE_JCERACFKS) || type.equals(Constants.KEYSTORE_TYPE_JCECCARACFKS)
+             || type.equals(Constants.KEYSTORE_TYPE_JCEHYBRIDRACFKS))) {
+            if (password == null || password.isEmpty())
+                password = racfPass;
+        }
 
         this.isDefault = LibertyConstants.DEFAULT_KEYSTORE_REF_ID.equals(name);
 
