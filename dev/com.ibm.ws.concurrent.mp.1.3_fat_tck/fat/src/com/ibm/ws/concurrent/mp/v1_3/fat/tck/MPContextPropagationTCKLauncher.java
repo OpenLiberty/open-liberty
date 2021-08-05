@@ -43,8 +43,8 @@ public class MPContextPropagationTCKLauncher {
     })
     @Test
     public void launchMPContextPropagation_1_3_Tck() throws Exception {
-        // TODO use this to only test with local build
-        // if (FATRunner.FAT_TEST_LOCALRUN)
-        MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.concurrency.mp.1.3_fat_tck", this.getClass() + ":launchMPContextPropagationTck");
+        // TODO use this to only test with local build (when tckRunner/tck.pom.xml specifies a #.#-SNAPSHOT version)
+        if (FATRunner.FAT_TEST_LOCALRUN)
+            MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.concurrency.mp.1.3_fat_tck", this.getClass() + ":launchMPContextPropagationTck");
     }
 }

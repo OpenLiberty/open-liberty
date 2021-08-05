@@ -16,4 +16,4 @@ src: \
 
 fat.project: true
 
-tested.features=concurrent-1.0
+tested.features=concurrent-2.0
