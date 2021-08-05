@@ -1,3 +1,14 @@
+<!--
+    Copyright (c) 2020, 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
 <server>
 	<featureManager>
 		<feature>ssl-1.0</feature>
@@ -112,34 +123,7 @@
 			org.apache.ws.security.crypto.merlin.keystore.alias="alice"
 			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/receiver.jks" />
 	</wsSecurityProvider>
-	<!-- -->
-	
-	<!-- added 12/2020  -->
-	    <javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read"/>
-        <javaPermission className="org.osgi.framework.ServicePermission" name="*" actions="get"/>
-        <javaPermission className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
-        <javaPermission className="java.net.NetPermission" name="setDefaultAuthenticator"/>
-        <javaPermission className="java.lang.RuntimePermission" name="setContextClassLoader"/>   
-        <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap"/>
-        <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.ver1_1"/>
-        <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.impl"/>
-        <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.name"/>   
-        <javaPermission className="java.net.URLPermission" name="http://localhost:8010/webcontentprovider/EchoService" actions="POST:AcceptSOAPActionUser-Agent"/>
-        <javaPermission className="java.net.URLPermission" name="https://localhost:8020/WSSampleSei/EchoService" actions="POST:AcceptSOAPActionUser-Agent"/>
-        <javaPermission className="java.net.URLPermission" name="https://localhost:8020/WSSampleSei/Echo4Service" actions="POST:AcceptSOAPActionUser-Agent"/>
-        <javaPermission className="java.net.URLPermission" name="https://localhost:8020/WSSampleSei/Echo1Service" actions="POST:AcceptSOAPActionUser-Agent"/>
-        <javaPermission className="java.net.URLPermission" name="https://localhost:8020/WSSampleSei/Echo2Service" actions="POST:AcceptSOAPActionUser-Agent"/>
-        <javaPermission className="java.net.URLPermission" name="https://localhost:8020/WSSampleSei/Echo3Service" actions="POST:AcceptSOAPActionUser-Agent"/>
-        <javaPermission className="java.net.URLPermission" name="https://localhost:8020/WSSampleSei/Echo5Service" actions="POST:AcceptSOAPActionUser-Agent"/>
-        <javaPermission className="java.net.URLPermission" name="https://localhost:8020/WSSampleSei/Echo6Service" actions="POST:AcceptSOAPActionUser-Agent"/>
-        <javaPermission className="java.net.URLPermission" name="https://localhost:8020/WSSampleSei/Echo7Service" actions="POST:AcceptSOAPActionUser-Agent"/>
-        <javaPermission className="java.net.URLPermission" name="http://localhost:8010/WSSampleSei/Echo11Service" actions="POST:AcceptSOAPActionUser-Agent"/>
-        <javaPermission className="java.net.URLPermission" name="http://localhost:8010/WSSampleSei/Echo21Service" actions="POST:AcceptSOAPActionUser-Agent"/>
-        <javaPermission className="java.net.URLPermission" name="http://localhost:8010/WSSampleSei/Echo12Service" actions="POST:AcceptSOAPActionUser-Agent"/>
-        <javaPermission className="java.net.URLPermission" name="http://localhost:8010/WSSampleSei/Echo22Service" actions="POST:AcceptSOAPActionUser-Agent"/>
-        <javaPermission className="java.net.URLPermission" name="http://localhost:8010/WSSampleSei/Echo13Service" actions="POST:AcceptSOAPActionUser-Agent"/>
-        <javaPermission className="java.net.URLPermission" name="http://localhost:8010/WSSampleSei/Echo14Service" actions="POST:AcceptSOAPActionUser-Agent"/>
-        <javaPermission className="java.net.URLPermission" name="http://localhost:8010/WSSampleSei/Echo23Service" actions="POST:AcceptSOAPActionUser-Agent"/>
-        <javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="java.util.Hashtable" principalType="*" principalName="*" actions="read"/>
-        
+
+    <include location="imports/java2Permissions.xml" />
+    
 </server>
