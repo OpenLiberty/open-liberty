@@ -42,5 +42,5 @@
    	   <class-name>java.lang.reflect.ReflectPermission</class-name>
    	   <name>suppressAccessChecks</name>
     </permission>
- 
+	
 </permissions>

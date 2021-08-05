@@ -25,9 +25,45 @@ addRequiredLibraries.dependsOn addJakartaTransformer
 
 autoFVT.doLast {
 
-/* Copy securitykeys/key.jks, and sslServerTrust.jks to these servers */
+/* Copy common files to autoFVT */
+      
+    copy {
+    from project.file('publish/files/serversettings')
+    include '**'
+    into new File(autoFvtDir, 'imports')
+    }
+    
+    
+/* Copy common files to all servers */
 
   def servers = [
+        'com.ibm.ws.wssecurity_fat.endsuptokens',
+        'com.ibm.ws.wssecurity_fat.x509',
+        'com.ibm.ws.wssecurity_fat.x509_1',
+        'com.ibm.ws.wssecurity_fat.x509_2',
+        'com.ibm.ws.wssecurity_fat.x509mig',
+        'com.ibm.ws.wssecurity_fat.x509migsym',
+        'com.ibm.ws.wssecurity_fat.x509crl',
+        'com.ibm.ws.wssecurity_fat.x509enc',
+        'com.ibm.ws.wssecurity_fat.x509sig',
+        'com.ibm.ws.wssecurity_fat.x509async',
+        'com.ibm.ws.wssecurity_fat.wss11enc',
+        'com.ibm.ws.wssecurity_fat.wss11sig',
+        'com.ibm.ws.wssecurity_fat.sha2sig'
+        
+  ]
+
+  servers.each { server ->
+    copy {
+      from project.file('publish/files/serversettings')
+      include '*.xml'
+      into new File(autoFvtDir, 'publish/servers/' + server + '/imports')
+    }
+  }
+  
+/* Copy securitykeys/key.jks, and sslServerTrust.jks to these servers */
+
+  servers = [
         'com.ibm.ws.wssecurity_fat.endsuptokens',
         'com.ibm.ws.wssecurity_fat.x509',
         'com.ibm.ws.wssecurity_fat.x509_1',

@@ -1,3 +1,14 @@
+<!--
+    Copyright (c) 2020, 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+ 
 <server>
 	<featureManager>
 		<feature>ssl-1.0</feature>
@@ -75,7 +86,6 @@
 		ws-security.password="security"
 		ws-security.username="user1"
 	>
-	<!-- 2/2021 EE8 Callbackhandler -->
 	
 		<!-- **Do not need the private key password in Symmetric tests ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbh.CommonPasswordCallback"> 
 			But put back for EndorsingSupportingToken BAX35 -->
@@ -101,8 +111,6 @@
 		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbhwss4j.CommonPasswordCallbackWss4j"
 		ws-security.return.security.error="true"
 	>
-	<!-- 3/2021 added ws-security.return.security.error -->
-	<!-- 2/2021 EE8 Callbackhandler -->
 	
 		<!-- **Do not need Signature properties in Symmetric. But put back for 
 			EndorsingSupportingToken BAX35 -->
@@ -120,36 +128,7 @@
 			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/x509ServerSecond.jks" />
 	</wsSecurityProvider>
 
-    <!-- added 12/2020 -->
-    <javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read"/> 
-	<javaPermission className="org.osgi.framework.ServicePermission" name="*" actions="get"/>
-    <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap"/>
-    <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.ver1_1"/>
-    <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.util"/>
-    <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.name"/>
-    <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.impl"/>
-    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/x509migtoken/FatBAX01Service" actions="POST:AcceptSOAPActionUser-Agent"/>
-    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/x509migtoken/FatBAX31Service" actions="POST:AcceptSOAPActionUser-Agent"/>
-    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/x509migtoken/FatBAX29Service" actions="POST:AcceptSOAPActionUser-Agent"/>
-    <javaPermission className="java.net.URLPermission" name="https://localhost:8020/x509migtoken/FatBAX01Service" actions="POST:AcceptSOAPActionUser-Agent"/>
-    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/x509migtoken/FatBAX03Service" actions="POST:AcceptSOAPActionUser-Agent"/>
-    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/x509migtoken/FatBAX09Service" actions="POST:AcceptSOAPActionUser-Agent"/>
-    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/x509migtoken/FatBAX04Service" actions="POST:AcceptSOAPActionUser-Agent"/>
-    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/x509migtoken/FatBAX05Service" actions="POST:AcceptSOAPActionUser-Agent"/>
-    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/x509migtoken/FatBAX06Service" actions="POST:AcceptSOAPActionUser-Agent"/>
-    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/x509migtoken/FatBAX24Service" actions="POST:AcceptSOAPActionUser-Agent"/>
-    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/x509migtoken/FatBAX25Service" actions="POST:AcceptSOAPActionUser-Agent"/>
-    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/x509migtoken/FatBAX27Service" actions="POST:AcceptSOAPActionUser-Agent"/>
-    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/x509migtoken/FatBAX35Service" actions="POST:AcceptSOAPActionUser-Agent"/>
-    <javaPermission className="java.net.URLPermission" name="https://localhost:8020/x509migtoken/FatBAX35Service" actions="POST:AcceptSOAPActionUser-Agent"/>
-    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/x509migtoken/FatBAX33Service" actions="POST:AcceptSOAPActionUser-Agent"/>
-    <javaPermission className="java.util.PropertyPermission" name="javax.xml.soap.MessageFactory" actions="read"/>
-    <javaPermission className="java.util.PropertyPermission" name="javax.xml.soap.MetaFactory" actions="read"/>
-    <javaPermission className="java.util.PropertyPermission" name="java.home" actions="read"/>
-    <!-- 2/2021 EE8 -->
-    <javaPermission className="org.osgi.framework.AdminPermission" name="*" actions="*"/>
-    <javaPermission className="java.security.SecurityPermission" name="org.apache.xml.security.register"/>
-    <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.sun.net.www.protocol.c"/>
+    <include location="imports/java2Permissions.xml" />
     
 </server>
 
