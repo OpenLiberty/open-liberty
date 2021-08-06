@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -57,6 +57,7 @@ tested.features: jaxws-2.3, \
   servlet-4.0, \
   cdi-2.0, \
   appSecurity-3.0, \
+  connectors-2.0,\
   enterpriseBeansLite-4.0, \
   pages-3.0, \
   servlet-5.0, \
