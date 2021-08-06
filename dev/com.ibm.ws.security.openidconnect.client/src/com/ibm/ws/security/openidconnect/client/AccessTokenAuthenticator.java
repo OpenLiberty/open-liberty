@@ -123,14 +123,20 @@ public class AccessTokenAuthenticator {
             return oidcResult;
         }
 
-        ProviderAuthenticationResult cachedResult = cacheHelper.getCachedTokenAuthenticationResult(clientConfig, accessToken);
+        boolean accessTokenIsJWT = isTokenJWT(accessToken);
+
+        ProviderAuthenticationResult cachedResult = null;
+        if (clientConfig.getTokenReuse() || !accessTokenIsJWT) {
+            cachedResult = cacheHelper.getCachedTokenAuthenticationResult(clientConfig, accessToken);
+        }
         if (cachedResult != null) {
+            req.setAttribute(OidcClient.PROPAGATION_TOKEN_AUTHENTICATED, Boolean.TRUE);
             return cachedResult;
         }
 
         String validationMethod = clientConfig.getValidationMethod();
 
-        if (isTokenJWT(accessToken)) {
+        if (accessTokenIsJWT) {
             // accessToken is a JWT Token
             validationMethod = ClientConstants.VALIDATION_LOCAL;
             oidcClientRequest.setTokenType(OidcClientRequest.TYPE_JWT_TOKEN);

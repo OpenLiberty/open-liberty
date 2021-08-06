@@ -93,28 +93,11 @@ public class AccessTokenCacheHelperTest extends CommonTestClass {
     }
 
     @Test
-    public void test_getCachedTokenAuthenticationResult_tokenReuse_false() {
-        mockery.checking(new Expectations() {
-            {
-                one(clientConfig).getAccessTokenCacheEnabled();
-                will(returnValue(true));
-                one(clientConfig).getTokenReuse();
-                will(returnValue(false));
-            }
-        });
-
-        ProviderAuthenticationResult result = cacheHelper.getCachedTokenAuthenticationResult(clientConfig, ACCESS_TOKEN);
-        assertNull("Result should have been null but wasn't.", result);
-    }
-
-    @Test
     public void test_getCachedTokenAuthenticationResult_cacheEmpty() {
         SingleTableCache cache = getCache();
         mockery.checking(new Expectations() {
             {
                 one(clientConfig).getAccessTokenCacheEnabled();
-                will(returnValue(true));
-                one(clientConfig).getTokenReuse();
                 will(returnValue(true));
                 one(clientConfig).getCache();
                 will(returnValue(cache));
@@ -134,8 +117,6 @@ public class AccessTokenCacheHelperTest extends CommonTestClass {
             {
                 one(clientConfig).getAccessTokenCacheEnabled();
                 will(returnValue(true));
-                one(clientConfig).getTokenReuse();
-                will(returnValue(true));
                 one(clientConfig).getCache();
                 will(returnValue(cache));
             }
@@ -153,8 +134,6 @@ public class AccessTokenCacheHelperTest extends CommonTestClass {
         mockery.checking(new Expectations() {
             {
                 one(clientConfig).getAccessTokenCacheEnabled();
-                will(returnValue(true));
-                one(clientConfig).getTokenReuse();
                 will(returnValue(true));
                 one(clientConfig).getCache();
                 will(returnValue(cache));
