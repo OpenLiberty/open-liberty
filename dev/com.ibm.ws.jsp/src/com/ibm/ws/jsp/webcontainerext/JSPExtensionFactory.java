@@ -456,7 +456,8 @@ public class JSPExtensionFactory extends AbstractJSPExtensionFactory implements 
     protected JspClassloaderContext createJspClassloaderContext(IServletContext webapp, JspXmlExtConfig webAppConfig) {
         final ClassLoader loader;
         ClassLoader appLoader = webapp.getClassLoader();
-        if (!osgiAppsCanProvideJSTL && (appLoader instanceof BundleReference)) {
+        // osgiAppsCanProvideJSTL is not supported for EE9 or higher
+        if (!this.isPages30orHigher() && !osgiAppsCanProvideJSTL && (appLoader instanceof BundleReference)) {
             Bundle systemBundle = bundleContext.getBundle(org.osgi.framework.Constants.SYSTEM_BUNDLE_LOCATION);
             FrameworkWiring fw = systemBundle.adapt(FrameworkWiring.class);
             Collection<BundleCapability> caps = fw.findProviders(new RequirementImpl());
