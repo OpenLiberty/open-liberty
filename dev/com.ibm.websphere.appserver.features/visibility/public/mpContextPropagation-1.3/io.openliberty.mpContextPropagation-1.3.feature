@@ -1,5 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=com.ibm.websphere.appserver.mpContextPropagation-1.3
+symbolicName=io.openliberty.mpContextPropagation-1.3
 visibility=public
 singleton=true
 IBM-ShortName: mpContextPropagation-1.3

@@ -12,5 +12,16 @@
         <packages>
             <package name="org.eclipse.microprofile.context.tck.*"/>
         </packages>
+        <!-- TODO remove once mpConfig-3.0 feature supporting jakarta packages is added -->
+        <classes>
+            <class name="org.eclipse.microprofile.context.tck.MPConfigTest">
+                <methods>
+                    <exclude name="defaultContextPropagationForManagedExecutorViaMPConfig"/>
+                    <exclude name="defaultContextPropagationForThreadContextViaMPConfig"/>
+                    <exclude name="defaultMaxAsyncAndMaxQueuedForManagedExecutorViaMPConfig"/>
+                    <exclude name="explicitlySpecifyMaxQueued5"/>
+                </methods>
+            </class>
+        </classes>
     </test>
 </suite>
