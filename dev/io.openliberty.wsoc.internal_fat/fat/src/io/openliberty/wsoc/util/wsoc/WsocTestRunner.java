@@ -111,6 +111,8 @@ public class WsocTestRunner {
             _wtr.setTimedout(true);
         }
 
+        LOG.info("Waiting complete.");
+
         // We've had some test failures that are not found in local env and some builds.  This short wait should flesh them out locally...
         java.lang.Thread.sleep(50);
         if (sess.isOpen()) {

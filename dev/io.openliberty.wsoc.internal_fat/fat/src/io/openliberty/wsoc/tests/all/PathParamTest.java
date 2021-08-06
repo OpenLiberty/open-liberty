@@ -122,7 +122,7 @@ public class PathParamTest {
         //appended to message.
         String[] expectedData = { "msg1,1" };
 
-        runEchoTest(new BasicClientEP.TestOnOpen(readerValues), path, readerValues, expectedData);
+        runEchoTest(new BasicClientEP.TestOnOpen(readerValues), path, readerValues, expectedData, Constants.getLongTimeout());
 
         //server endpoint uri path is /basic/pathparamonerrortest/{String-var}/{Integer-var}
         String path2 = "/basic/pathparamonclosetest/testString/1";
@@ -131,7 +131,7 @@ public class PathParamTest {
         //'testString' from onClose() method of previous test gets appended to the return mssage 
         String[] expectedData2 = { "msg1,testString" };
 
-        runEchoTest(new BasicClientEP.TestOnClose(readerValues2), path2, readerValues2, expectedData2);
+        runEchoTest(new BasicClientEP.TestOnClose(readerValues2), path2, readerValues2, expectedData2, Constants.getLongTimeout());
     }
 
     /*

@@ -64,7 +64,7 @@ public class WsocTestContext {
      */
     public WsocTestContext(int numMsgsExpected) {
         this(numMsgsExpected, false);
-        LOG.info("WsocTestContext object created: " + this.toString());
+        LOG.info("WsocTestContext object created: " + this.toString() + "with numMsgsExpected of " + numMsgsExpected);
     }
 
     /**
@@ -75,6 +75,8 @@ public class WsocTestContext {
     public WsocTestContext(int numMsgsExected, boolean messageCountOnly) {
         _numMsgsExpected = numMsgsExected;
         _messageCountOnly = messageCountOnly;
+
+        LOG.info("WsocTestContext object created: " + this.toString() + "with numMsgsExpected of " + numMsgsExected);
 
         if (!_messageCountOnly) {
             _messages = new ArrayList<Object>(numMsgsExected);
@@ -100,7 +102,7 @@ public class WsocTestContext {
     public synchronized void addMessage(Object msg) {
 
         _curMessage++;
-        // log the six messages of each test, for better debugging
+        // log the first six messages of each test, for better debugging
         if (_curMessage <= 6) {
             LOG.info("Adding message to test results, message #: " + _curMessage + " " + msg);
         }
@@ -120,6 +122,7 @@ public class WsocTestContext {
             if (_curMessage >= _numMsgsExpected) {
                 LOG.info(this.toString() + " --  Message Total: " + this._messages.toString());
                 _limitReached = true;
+                LOG.info("_limitReached set to true");
 
             }
         }
@@ -140,6 +143,7 @@ public class WsocTestContext {
     public void terminateClient() {
         LOG.info("Wsoc process has been terminated for " + this.toString());
         _limitReached = true;
+        LOG.info("_limitReached set to true");
         if (completeLatch != null) {
             LOG.info("completeLatch countdown Called!");
             completeLatch.countDown();
@@ -221,7 +225,7 @@ public class WsocTestContext {
      * @param timed
      */
     public void setTimedout(boolean timed) {
-        LOG.info("Timeout set to true");
+        LOG.info("Timeout set to " + timed);
         _timedOut = timed;
     }
 

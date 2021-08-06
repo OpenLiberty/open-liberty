@@ -39,18 +39,19 @@ public class BasicClientEP implements TestHelper {
         public int _counter = 0;
 
         public TestOnOpen(String[] data) {
+            LOG.info("BasicClientEP.TestOnOpen data:" + java.util.Arrays.toString(data));
             _data = data;
         }
 
         @OnMessage
         public String echoText(String data) {
 
+            LOG.info("BasicClientEP.TestOnOpen.echoText() data:" + data);
             _wtr.addMessage(data);
 
             if (_wtr.limitReached()) {
                 _wtr.terminateClient();
-            }
-            else {
+            } else {
                 return _data[_counter++];
             }
             return null;
@@ -60,7 +61,9 @@ public class BasicClientEP implements TestHelper {
         public void onOpen(Session sess) {
             try {
                 String s = _data[_counter++];
+                LOG.info("start: BasicClientEP.TestOnOpen.onOpen() getBasicRemote().sendText() data:" + s);
                 sess.getBasicRemote().sendText(s);
+                LOG.info("end: BasicClientEP.TestOnOpen.onOpen() getBasicRemote().sendText() data:" + s);
             } catch (Exception e) {
                 _wtr.addExceptionAndTerminate("Error publishing initial message", e);
 
@@ -80,18 +83,19 @@ public class BasicClientEP implements TestHelper {
         public int _counter = 0;
 
         public TestOnClose(String[] data) {
+             LOG.info("BasicClientEP.TestOnClose data:" + java.util.Arrays.toString(data));
             _data = data;
         }
 
         @OnMessage
         public String echoText(String data) {
 
+            LOG.info("BasicClientEP.TestOnClose.echoText() data:" + data);
             _wtr.addMessage(data);
 
             if (_wtr.limitReached()) {
                 _wtr.terminateClient();
-            }
-            else {
+            } else {
                 return _data[_counter++];
             }
             return null;
@@ -101,7 +105,9 @@ public class BasicClientEP implements TestHelper {
         public void onOpen(Session sess) {
             try {
                 String s = _data[_counter++];
+                LOG.info("start: BasicClientEP.TestOnClose.onOpen() getBasicRemote().sendText() data:" + s);
                 sess.getBasicRemote().sendText(s);
+                LOG.info("end: BasicClientEP.TestOnClose.onOpen() getBasicRemote().sendText() data:" + s);
             } catch (Exception e) {
                 _wtr.addExceptionAndTerminate("Error publishing initial message", e);
 
@@ -133,8 +139,7 @@ public class BasicClientEP implements TestHelper {
 
             if (_wtr.limitReached()) {
                 _wtr.terminateClient();
-            }
-            else {
+            } else {
                 return _data[_counter++];
             }
             return null;
