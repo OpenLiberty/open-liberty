@@ -41,7 +41,6 @@ Subsystem-Name: Jakarta Server Pages 3.0
  io.openliberty.jakarta.jstl.2.0; location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:2.0.0", \
  com.ibm.ws.jsp.2.3.jakarta, \
  com.ibm.ws.jsp.jakarta, \
- io.openliberty.jstl.facade; start-phase:=CONTAINER_EARLY, \
  io.openliberty.org.apache.taglibs.standard
 -jars=com.ibm.websphere.appserver.spi.jsp; location:=dev/spi/ibm/, \
  com.ibm.websphere.javaee.jsp.tld.2.2.jakarta; location:=dev/api/spec/
