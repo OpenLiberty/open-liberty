@@ -7,6 +7,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
@@ -43,6 +44,8 @@ public class SseEventSourceImpl implements SseEventSource
    }
 
    private final AtomicReference<State> state = new AtomicReference<>(State.PENDING);
+
+   private final AtomicBoolean completionListenersInvoked = new AtomicBoolean(false);
 
    private final List<Consumer<InboundSseEvent>> onEventConsumers = new CopyOnWriteArrayList<>();
 
@@ -252,6 +255,15 @@ public class SseEventSourceImpl implements SseEventSource
       }
    }
 
+   // Liberty change start
+   private void runCompletionListeners()
+   {
+       if (!completionListenersInvoked.getAndSet(true)) {
+           onCompleteConsumers.forEach(Runnable::run);
+       }
+   }
+   // Liberty change end
+
    private void internalClose()
    {
       if (state.getAndSet(State.CLOSED) == State.CLOSED)
@@ -273,7 +285,7 @@ public class SseEventSourceImpl implements SseEventSource
          }
       }
       sseEventSourceScheduler.shutdownNow();
-      onCompleteConsumers.forEach(Runnable::run);
+      runCompletionListeners();
    }
 
    private class EventHandler implements Runnable
@@ -332,29 +344,28 @@ public class SseEventSourceImpl implements SseEventSource
             }
             final ClientResponse clientResponse = (ClientResponse) request.invoke();
             response = clientResponse;
+            
             if (Family.SUCCESSFUL.equals(clientResponse.getStatusInfo().getFamily()))
             {
                onConnection();
+               // liberty change start
+               if (clientResponse.getStatus() == 204) {
+                   // per spec, only completion listeners should be invoked on a 204 response
+                   runCompletionListeners();
+                   return;
+               }
+               // liberty change start
                eventInput = clientResponse.readEntity(SseEventInputImpl.class);
                //if 200<= response code <300 and response contentType is null, fail the connection.
-               //Liberty change start
-               /*
                if (eventInput == null)
                {
                   if (!alwaysReconnect) {
-                     internalClose();
+                     runCompletionListeners(); // Liberty change - just run completion listeners instead of internalClose()
                   } else {
                      reconnect(this.reconnectDelay);
                   }
                   return;
                }
-               */
-               if (eventInput == null && !alwaysReconnect)
-               {
-                  internalClose();
-                  return;
-               }
-               //Liberty change end
             }
             else
             {
@@ -399,9 +410,9 @@ public class SseEventSourceImpl implements SseEventSource
                break;
             }
             */
-            if (eventInput == null || eventInput.isClosed())
+            if (eventInput == null /*|| eventInput.isClosed()*/)
             {
-               internalClose();
+               runCompletionListeners(); // Liberty change - just run completion listeners instead of internalClose()
                break;
             }
             // Liberty change end
@@ -413,9 +424,9 @@ public class SseEventSourceImpl implements SseEventSource
                   onEvent(event);
                }
                //event sink closed
-               else if (!alwaysReconnect)
+               else if (!alwaysReconnect || eventInput.isClosed())
                {
-                  internalClose();
+                  runCompletionListeners(); // Liberty change - just run completion listeners instead of internalClose()
                   break;
                }
             }
