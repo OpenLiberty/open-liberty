@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2018 IBM Corporation and others.
+ * Copyright (c) 2015, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.cdi12.fat.tests;
 
-import static componenttest.rules.repeater.EERepeatTests.EEVersion.EE7;
-import static componenttest.rules.repeater.EERepeatTests.EEVersion.EE8;
 import static org.junit.Assert.fail;
 
 import java.io.File;
@@ -45,6 +43,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.EERepeatTests;
+import componenttest.rules.repeater.EERepeatTests.EEVersion;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyClient;
 import componenttest.topology.impl.LibertyClientFactory;
@@ -93,7 +92,7 @@ public class VisTest extends FATServletClient {
     public static final String CLIENT_NAME = "visTestClient";
 
     @ClassRule
-    public static RepeatTests r = EERepeatTests.with(SERVER_NAME, CLIENT_NAME, EE8, EE7);
+    public static RepeatTests r = EERepeatTests.with(SERVER_NAME, CLIENT_NAME, EEVersion.EE8, EEVersion.EE7);
 
     public static final String VIS_TEST_APP_NAME = "visTestWar";
 
@@ -212,6 +211,8 @@ public class VisTest extends FATServletClient {
                                                    .addClass(vistest.qualifiers.InAppClientAsEjbLib.class)
                                                    .addClass(vistest.qualifiers.InWarLib.class)
                                                    .addClass(vistest.qualifiers.InEjbWarLib.class)
+                                                   .addClass(vistest.qualifiers.InCommonLib.class)
+                                                   .addClass(vistest.qualifiers.InPrivateLib.class)
                                                    .addClass(vistest.framework.TargetBean.class)
                                                    .addClass(vistest.framework.VisTester.class)
                                                    .addClass(vistest.framework.TestingBean.class);
@@ -238,12 +239,26 @@ public class VisTest extends FATServletClient {
                                               .addAsModule(visTestEjbAppClientLib16)
                                               .addAsModule(visTestWarAppClientLib17)
                                               .addAsModule(visTestNonLib18)
-                                              .addAsLibrary(visTestFramework19)
                                               .addAsLibrary(visTestEarLib20)
                                               .addAsResource("com/ibm/ws/cdi12/fat/tests/permissions.xml", "permissions.xml");
 
+        JavaArchive visTestCommonLibrary = ShrinkWrap.create(JavaArchive.class, "visTestCommonLib.jar")
+                                                     .addClass(vistest.commonLib.CommonLibTargetBean.class)
+                                                     .addClass(vistest.commonLib.CommonLibTestingBean.class);
+
+        JavaArchive visTestPrivateLibrary = ShrinkWrap.create(JavaArchive.class, "visTestPrivateLib.jar")
+                                                      .addClass(vistest.privateLib.PrivateLibTargetBean.class)
+                                                      .addClass(vistest.privateLib.PrivateLibTestingBean.class);
+
         ShrinkHelper.exportAppToServer(server, visTest, DeployOptions.SERVER_ONLY);
+        ShrinkHelper.exportToServer(server, "/", visTestPrivateLibrary, DeployOptions.SERVER_ONLY);
+        ShrinkHelper.exportToServer(server, "/", visTestCommonLibrary, DeployOptions.SERVER_ONLY);
+        ShrinkHelper.exportToServer(server, "/", visTestFramework19, DeployOptions.SERVER_ONLY);
+
         ShrinkHelper.exportAppToClient(client, visTest, DeployOptions.SERVER_ONLY);
+        ShrinkHelper.exportToClient(client, "/", visTestPrivateLibrary, DeployOptions.SERVER_ONLY);
+        ShrinkHelper.exportToClient(client, "/", visTestCommonLibrary, DeployOptions.SERVER_ONLY);
+        ShrinkHelper.exportToClient(client, "/", visTestFramework19, DeployOptions.SERVER_ONLY);
 
         server.startServer();
         getAppClientResults();
@@ -275,7 +290,9 @@ public class VisTest extends FATServletClient {
         InAppClientAsEjbLib,
         InAppClientAsWarLib,
         InAppClientAsAppClientLib,
-        InWar2
+        InWar2,
+        InCommonLib,
+        InPrivateLib
     }
 
     /**
@@ -289,7 +306,9 @@ public class VisTest extends FATServletClient {
                                                                               Location.InEjbAsEjbLib,
                                                                               Location.InEjbAsWarLib,
                                                                               Location.InEjbAsAppClientLib,
-                                                                              Location.InAppClientAsEjbLib));
+                                                                              Location.InAppClientAsEjbLib,
+                                                                              Location.InCommonLib,
+                                                                              Location.InPrivateLib));
 
     /**
      * Set of locations that should be visible from WARs and their libraries
@@ -307,7 +326,9 @@ public class VisTest extends FATServletClient {
                                                                               Location.InEjbAsWarLib,
                                                                               Location.InEjbAsAppClientLib,
                                                                               Location.InAppClientAsEjbLib,
-                                                                              Location.InAppClientAsWarLib));
+                                                                              Location.InAppClientAsWarLib,
+                                                                              Location.InCommonLib,
+                                                                              Location.InPrivateLib));
 
     /**
      * Set of locations that should be visible from app clients and their libraries
@@ -318,9 +339,14 @@ public class VisTest extends FATServletClient {
                                                                                      Location.InWarAppClientLib,
                                                                                      Location.InEarLib,
                                                                                      Location.InEjbAsAppClientLib,
-                                                                                     Location.InAppClientAsAppClientLib));
+                                                                                     Location.InAppClientAsAppClientLib,
+                                                                                     Location.InCommonLib,
+                                                                                     Location.InPrivateLib));
 
-    Set<Location> EAR_LIB_VISIBLE_LOCATIONS = new HashSet<Location>(Arrays.asList(Location.InEarLib));
+    /**
+     * Set of locations that should be visible from common server libraries
+     */
+    Set<Location> COMMON_LIB_VISIBLE_LOCATIONS = new HashSet<Location>(Arrays.asList(Location.InCommonLib));
 
     private static Map<Location, String> appClientResults = null;
 
@@ -444,6 +470,16 @@ public class VisTest extends FATServletClient {
         doTestWithAppClient(Location.InAppClientAsAppClientLib, APP_CLIENT_VISIBLE_LOCATIONS);
     }
 
+    @Test
+    public void testVisibilityFromCommonLib() throws Exception {
+        doTestWithServlet(Location.InCommonLib, COMMON_LIB_VISIBLE_LOCATIONS);
+    }
+
+    @Test
+    public void testVisibilityFromPrivateLib() throws Exception {
+        doTestWithServlet(Location.InPrivateLib, EJB_VISIBLE_LOCATIONS);
+    }
+
     /**
      * Retrieves the visibility of beans from a given location by requesting the information from a servlet. Then checks the result and fails the test if it does not match the
      * expected set of visible locations
@@ -556,7 +592,7 @@ public class VisTest extends FATServletClient {
             String locationString = parts[0];
             Integer resultCount;
             try {
-                resultCount = new Integer(parts[1]);
+                resultCount = Integer.valueOf(parts[1]);
             } catch (NumberFormatException ex) {
                 throw parsingException(line, resultString, ex);
             }
