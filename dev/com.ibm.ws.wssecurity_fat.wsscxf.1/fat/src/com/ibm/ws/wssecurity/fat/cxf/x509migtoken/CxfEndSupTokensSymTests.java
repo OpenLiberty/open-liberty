@@ -76,7 +76,6 @@ public class CxfEndSupTokensSymTests extends CommonTests {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
             commonSetUp(serverName, "server_sym_wss4j.xml", true,
                         "/endsuptokensclient/CxfEndSupTokensSvcClient");
-            //copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
         }
 
     }
@@ -835,7 +834,8 @@ public class CxfEndSupTokensSymTests extends CommonTests {
                 newWsdl = null;
                 newClientWsdl = null;
             }
-            restoreServer();
+            //Removed to resolve RTC 285315
+            //restoreServer();
         } catch (Exception e) {
             e.printStackTrace(System.out);
         }
