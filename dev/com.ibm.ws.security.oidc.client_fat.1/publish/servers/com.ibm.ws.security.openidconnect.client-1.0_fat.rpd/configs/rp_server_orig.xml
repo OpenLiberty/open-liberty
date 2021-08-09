@@ -1,0 +1,52 @@
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<server>
+
+	<include location="${server.config.dir}/imports/oidcClientFeatures.xml" />
+
+	<include location="${server.config.dir}/imports/oidcClientDiscoveryBasicConfig.xml" />
+	<include location="${server.config.dir}/imports/oidcClientDiscoveryBasicConfig_addParms.xml" />
+	<include location="${server.config.dir}/imports/oidcClientDiscoveryBasicConfig_addBadParms.xml" />
+	<include location="${server.config.dir}/imports/oidcClientDiscoveryBasicConfig_addDynamicParm.xml" />
+	<include location="${server.config.dir}/imports/oidcClientDiscoveryBasicConfig_regexp_redirect.xml" />
+        <include location="${server.config.dir}/imports/oidcClientDiscoveryBasicConfig_nonceEnabled.xml" />
+        <include location="${server.config.dir}/imports/oidcClientDiscoveryBasicConfigBadFilter.xml" />
+	<include location="${server.config.dir}/imports/oidcClientDiscoveryBasicConfig_consent.xml" />
+	<include location="${server.config.dir}/imports/oidcClientDiscoveryBasicConfig_http_redirect.xml" />
+        <include location="${server.config.dir}/imports/oidcClientDiscoveryBasicConfig_default_redirect.xml" />
+	<include location="${server.config.dir}/imports/oidcClientDiscoveryHttpsTrue.xml" />
+	<include location="${server.config.dir}/imports/oidcClientDiscoveryBasicSSLConfig.xml" />
+	<include location="${server.config.dir}/imports/oidcClientDiscoveryNoRedirectSSL.xml" />
+	<include location="${server.config.dir}/imports/oidcClientDiscoveryNoOpenidConfig.xml" />
+	<include location="${server.config.dir}/imports/oidcClientDiscoveryBadClientSecret.xml" />
+	<include location="${server.config.dir}/imports/oidcClientDiscoverySSLHttpsTrue.xml" />
+	<include location="${server.config.dir}/imports/oidcClientDiscoverySSLHttpsFalse.xml" />
+	<include location="${server.config.dir}/imports/oidcClientDiscoveryBasicConfig_sigAlgNone_withSecret.xml" />
+	<include location="${server.config.dir}/imports/oidcClientDiscoveryBasicConfig_sigAlgNone_withoutSecret.xml" />
+	<include location="${server.config.dir}/imports/oidcClientDiscoveryBasicConfig_sigAlgHS256.xml" />
+	<include location="${server.config.dir}/imports/oidcClientDiscoveryBasicConfig_pwdTest.xml" />
+	<include location="${server.config.dir}/imports/oidcClientDiscoveryBadClientID.xml" />
+	<include location="${server.config.dir}/imports/oidcClientDiscoveryBadSharedKey.xml" />
+	<include location="${server.config.dir}/imports/oidcClientDiscoveryConflictConfig.xml" />
+	<include location="${server.config.dir}/imports/oidcClientDiscoveryNonHTTPSBasicSSLConfig.xml" />
+	<include location="${server.config.dir}/imports/oidcClientDiscoveryMalFormedBasicSSLConfig.xml" />
+	<include location="${server.config.dir}/imports/oidcClientDiscoveryBasicIssIdentSSLConfig.xml" />
+
+	<include location="${server.config.dir}/imports/goodBasicRegistry.xml" />
+
+	<include location="${server.config.dir}/imports/goodSSLSettings.xml" />
+
+	<include location="${server.config.dir}/imports/formlogin_1.xml" />
+
+	<include location="${server.config.dir}/imports/rp_fatTestPorts.xml" />
+
+</server>
