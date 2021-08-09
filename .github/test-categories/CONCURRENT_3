@@ -8,6 +8,7 @@ com.ibm.ws.concurrent_fat_db
 com.ibm.ws.concurrent_fat_demo
 com.ibm.ws.concurrent_fat_ejb
 com.ibm.ws.concurrent_fat_policy
+com.ibm.ws.concurrent_fat_quartz
 com.ibm.ws.concurrent_fat_work
 com.ibm.ws.context_fat
 com.ibm.ws.context_fat_customproviders
